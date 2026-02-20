@@ -25,12 +25,13 @@
 #ifndef _DEOGLCOLLIDELISTPROPFIELD_H_
 #define _DEOGLCOLLIDELISTPROPFIELD_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include "deoglCollideListPropFieldType.h"
+
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRPropField;
 class deoglRPropFieldType;
-class deoglCollideListPropFieldType;
 class deoglOcclusionTest;
 
 
@@ -40,10 +41,7 @@ class deoglOcclusionTest;
 class deoglCollideListPropField{
 private:
 	deoglRPropField *pPropField;
-	
-	decPointerList pTypes;
-	int pTypeCount;
-	
+	decTList<deoglCollideListPropFieldType> pTypes;
 	
 	
 public:
@@ -52,8 +50,15 @@ public:
 	/** Create collide list prop field. */
 	deoglCollideListPropField();
 	
-	/** Clean up collide list prop field. */
-	~deoglCollideListPropField();
+	explicit deoglCollideListPropField(deoglRPropField *propField);
+	
+	/** Copy. */
+	deoglCollideListPropField(const deoglCollideListPropField &other) = delete;
+	deoglCollideListPropField &operator=(const deoglCollideListPropField &other) = delete;
+	
+	/** Move. */
+	deoglCollideListPropField(deoglCollideListPropField &&other) noexcept;
+	deoglCollideListPropField &operator=(deoglCollideListPropField &&other) noexcept;
 	/*@}*/
 	
 	
@@ -64,7 +69,7 @@ public:
 	void Clear();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &referencePosition);
 	
 	
 	
@@ -75,16 +80,17 @@ public:
 	inline deoglRPropField *GetPropField() const{ return pPropField; }
 	
 	/** Set prop field. */
-	void SetPropField( deoglRPropField *propField );
+	void SetPropField(deoglRPropField *propField);
 	
 	/** Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** Type at the index. */
-	deoglCollideListPropFieldType *GetTypeAt( int index ) const;
+	deoglCollideListPropFieldType &GetTypeAt(int index);
+	const deoglCollideListPropFieldType &GetTypeAt(int index) const;
 	
 	/** Add type. */
-	deoglCollideListPropFieldType *AddType( deoglRPropFieldType *type );
+	deoglCollideListPropFieldType &AddType(deoglRPropFieldType *type);
 	
 	/** Remove all types. */
 	void RemoveAllTypes();

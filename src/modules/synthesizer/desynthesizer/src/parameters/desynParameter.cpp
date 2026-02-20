@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynParameter::desynParameter( deDESynthesizer &synthesizer ) : pSynthesizer( synthesizer ){
+desynParameter::desynParameter(deDESynthesizer &synthesizer) : pSynthesizer(synthesizer){
 }
 
 desynParameter::~desynParameter(){

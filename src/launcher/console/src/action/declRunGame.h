@@ -27,6 +27,7 @@
 
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameRunParams.h>
+#include <delauncher/game/profile/delGPModule.h>
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -35,7 +36,6 @@
 
 class declLauncher;
 class delGameProfile;
-class delGPModuleList;
 
 
 /**
@@ -53,7 +53,7 @@ private:
 	decUnicodeArgumentList pGameArgs;
 	
 	delGame::Ref pGame;
-	delGPModuleList *pModuleParameters;
+	deTUniqueReference<delGPModule::List> pModuleParameters;
 	decUuid pPatchIdentifier;
 	bool pHasPatchIdentifier;
 	delGameRunParams pRunParams;
@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create action. */
-	declRunGame( declLauncher &launcher );
+	declRunGame(declLauncher &launcher);
 	
 	/** Clean up action. */
 	~declRunGame();
@@ -84,7 +84,7 @@ public:
 	bool ParseArguments();
 	
 	/** Parse module parameter argument. */
-	bool ParseModuleParameter( const decString &value );
+	bool ParseModuleParameter(const decString &value);
 	
 	/** Locate game to run. */
 	bool LocateGame();
@@ -102,10 +102,10 @@ public:
 	void PrintGameProblems();
 	
 	/** Print the problems with the profile. */
-	void PrintProfileProblems( const delGameProfile &profile );
+	void PrintProfileProblems(const delGameProfile &profile);
 	
 	/** Print module problem if there are any. */
-	void PrintModuleProblem( const char *moduleName, deModuleSystem::eModuleTypes moduleType );
+	void PrintModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType);
 	
 	/** Run action. */
 	void Run();

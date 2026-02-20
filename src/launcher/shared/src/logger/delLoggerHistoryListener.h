@@ -37,8 +37,7 @@ class delLoggerHistoryEntry;
 class DE_DLL_EXPORT delLoggerHistoryListener : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delLoggerHistoryListener> Ref;
-	
+	using Ref = deTObjectReference<delLoggerHistoryListener>;
 	
 	
 public:
@@ -49,7 +48,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~delLoggerHistoryListener();
+	~delLoggerHistoryListener() override;
 	/*@}*/
 	
 	
@@ -61,13 +60,13 @@ public:
 	 * \brief Message added.
 	 * \note Histroy mutex is locked while this method is called.
 	 */
-	virtual void MessageAdded( const delLoggerHistory &history, const delLoggerHistoryEntry &entry );
+	virtual void MessageAdded(const delLoggerHistory &history, const delLoggerHistoryEntry &entry);
 	
 	/**
 	 * \brief History cleared.
 	 * \note Histroy mutex is locked while this method is called.
 	 */
-	virtual void HistoryCleared( const delLoggerHistory &history );
+	virtual void HistoryCleared(const delLoggerHistory &history);
 	/*@}*/
 };
 

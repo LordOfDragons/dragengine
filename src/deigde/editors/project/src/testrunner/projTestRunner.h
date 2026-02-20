@@ -31,9 +31,9 @@
 #include <dragengine/app/include_windows.h>
 #endif
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
-#include "profile/projTRProfileList.h"
+#include "profile/projTRProfile.h"
 
 class projWindowMain;
 class projProfile;
@@ -47,14 +47,14 @@ class projTestRunner{
 private:
 	projWindowMain &pWindowMain;
 	
-	projTRProfileList pLauncherProfiles;
+	projTRProfile::List pLauncherProfiles;
 	decString pDefaultLauncherProfileName;
 	
 	projProfile *pProfile;
 	projTRProfile *pLauncherProfile;
 	
 	decString pPathLogFile;
-	decBaseFileReaderReference pLogFileReader;
+	decBaseFileReader::Ref pLogFileReader;
 	
 	#ifdef OS_W32
 	HANDLE pPipeIn;
@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create test runner. */
-	projTestRunner( projWindowMain &windowMain );
+	projTestRunner(projWindowMain &windowMain);
 	
 	/** \brief Clean up test runner. */
 	~projTestRunner();
@@ -96,14 +96,14 @@ public:
 	void LoadEngineConfiguration();
 	
 	/** \brief Launcher profiles. */
-	inline projTRProfileList &GetLauncherProfiles(){ return pLauncherProfiles; }
-	inline const projTRProfileList &GetLauncherProfiles() const{ return pLauncherProfiles; }
+	inline projTRProfile::List &GetLauncherProfiles(){ return pLauncherProfiles; }
+	inline const projTRProfile::List &GetLauncherProfiles() const{ return pLauncherProfiles; }
 	
 	/** \brief Default launcher profile name. */
 	inline const decString &GetDefaultLauncherProfileName() const{ return pDefaultLauncherProfileName; }
 	
 	/** \brief Set fefault launcher profile name. */
-	void SetDefaultLauncherProfileName( const char *name );
+	void SetDefaultLauncherProfileName(const char *name);
 	
 	/** \brief Launcher profile. */
 	inline const projTRProfile *GetLauncherProfile() const{ return pLauncherProfile; }
@@ -112,7 +112,7 @@ public:
 	bool IsRunning();
 	
 	/** \brief Start. */
-	void Start( projProfile *profile, projTRProfile *launcherProfile );
+	void Start(projProfile *profile, projTRProfile *launcherProfile);
 	
 	/** \brief Stop. */
 	void Stop();
@@ -123,19 +123,19 @@ public:
 	
 	
 	/** \brief Write unsigned char to pipe. */
-	void WriteUCharToPipe( int value );
+	void WriteUCharToPipe(int value);
 	
 	/** \brief Write unsigned short to pipe. */
-	void WriteUShortToPipe( int value );
+	void WriteUShortToPipe(int value);
 	
 	/** \brief Write float to pipe. */
-	void WriteFloatToPipe( float value );
+	void WriteFloatToPipe(float value);
 	
 	/** \brief Write string to pipe using unsigned short as length. */
-	void WriteString16ToPipe( const char *string );
+	void WriteString16ToPipe(const char *string);
 	
 	/** \brief Write data to pipe. */
-	void WriteToPipe( const void *data, int length );
+	void WriteToPipe(const void *data, int length);
 	
 	/** \brief Read unsigned char from pipe. */
 	int ReadUCharFromPipe();
@@ -147,10 +147,10 @@ public:
 	float ReadFloatFromPipe();
 	
 	/** \brief Read string from pipe using unsigned short as length. */
-	void ReadString16FromPipe( decString &string );
+	void ReadString16FromPipe(decString &string);
 	
 	/** \brief Read data from pipe. */
-	void ReadFromPipe( void *data, int length );
+	void ReadFromPipe(void *data, int length);
 	
 	
 	

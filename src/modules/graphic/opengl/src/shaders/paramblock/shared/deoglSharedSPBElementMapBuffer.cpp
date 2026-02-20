@@ -38,9 +38,9 @@
 ////////////////////////////
 
 
-deoglSharedSPBElementMapBuffer::deoglSharedSPBElementMapBuffer( deoglSharedSPBElement &element ) :
-pElement( element ),
-pBlock( nullptr )
+deoglSharedSPBElementMapBuffer::deoglSharedSPBElementMapBuffer(deoglSharedSPBElement &element) :
+pElement(element),
+pBlock(nullptr)
 {
 	Map();
 }
@@ -55,7 +55,7 @@ deoglSharedSPBElementMapBuffer::~deoglSharedSPBElementMapBuffer(){
 ///////////////
 
 void deoglSharedSPBElementMapBuffer::Map(){
-	if( pBlock ){
+	if(pBlock){
 		return;
 	}
 	
@@ -63,12 +63,12 @@ void deoglSharedSPBElementMapBuffer::Map(){
 }
 
 deoglShaderParameterBlock &deoglSharedSPBElementMapBuffer::GetBlockRef() const{
-	DEASSERT_NOTNULL( pBlock );
+	DEASSERT_NOTNULL(pBlock);
 	return *pBlock;
 }
 
 void deoglSharedSPBElementMapBuffer::Unmap(){
-	if( ! pBlock ){
+	if(!pBlock){
 		return;
 	}
 	

@@ -48,7 +48,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
@@ -65,7 +64,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *BasicNetworkCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *BasicNetworkCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -75,14 +74,14 @@ MOD_ENTRY_POINT_ATTR deBaseModule *BasicNetworkCreateModule( deLoadableModule *l
 // Entry Function
 ///////////////////
 
-deBaseModule *BasicNetworkCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *BasicNetworkCreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deNetworkBasic( *loadableModule );
+		module = new deNetworkBasic(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 	
 	return module;
@@ -101,8 +100,8 @@ static decTimer timerTotal;
 static decTimer timer;
 
 #define DEBUG_RESET_TIMERS					timer.Reset(); timerTotal.Reset()
-#define DEBUG_PRINT_TIMER(nb,what)			(nb).LogInfoFormat( "NetworkBasic Timer: %s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
-#define DEBUG_PRINT_TIMER_TOTAL(nb,what)	(nb).LogInfoFormat( "NetworkBasic Timer-Total %s = %iys", what, ( int )( timerTotal.GetElapsedTime() * 1000000.0 ) )
+#define DEBUG_PRINT_TIMER(nb,what)			(nb).LogInfoFormat("NetworkBasic Timer: %s = %iys", what, (int)(timer.GetElapsedTime() * 1000000.0))
+#define DEBUG_PRINT_TIMER_TOTAL(nb,what)	(nb).LogInfoFormat("NetworkBasic Timer-Total %s = %iys", what, (int)(timerTotal.GetElapsedTime() * 1000000.0))
 #else
 #define DEBUG_RESET_TIMERS
 #define DEBUG_PRINT_TIMER(nb,what)
@@ -112,31 +111,30 @@ static decTimer timer;
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkBasic::deNetworkBasic( deLoadableModule &loadableModule ) :
-deBaseNetworkModule( loadableModule ),
-pHeadConnection( nullptr ),
-pTailConnection( nullptr ),
-pHeadServer( nullptr ),
-pTailServer( nullptr ),
-pHeadSocket( nullptr ),
-pTailSocket( nullptr ),
-pDatagram( nullptr )
+deNetworkBasic::deNetworkBasic(deLoadableModule &loadableModule) :
+deBaseNetworkModule(loadableModule),
+pHeadConnection(nullptr),
+pTailConnection(nullptr),
+pHeadServer(nullptr),
+pTailServer(nullptr),
+pHeadSocket(nullptr),
+pTailSocket(nullptr)
 #ifdef OS_W32
-,pWSAStartupCalled( false )
+,pWSAStartupCalled(false)
 #endif
 {
 	try{
-		pParameters.AddParameter( new debnPLogLevel( *this ) );
+		pParameters.Add(deTUniqueReference<debnPLogLevel>::New(*this));
 		/*
-		pParameters.AddParameter( new debnPConnectResendInterval( *this ) );
-		pParameters.AddParameter( new debnPConnectTimeout( *this ) );
-		pParameters.AddParameter( new debnPReliableResendInterval( *this ) );
-		pParameters.AddParameter( new debnPReliableTimeout( *this ) );
+		pParameters.AddParameter(deTUniqueReference<debnPConnectResendInterval>::New(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPConnectTimeout>::New(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPReliableResendInterval>::New(*this));
+		pParameters.AddParameter(deTUniqueReference<debnPReliableTimeout>::NEw(*this));
 		*/
 		
-		debnLoadConfiguration( *this ).LoadConfig( pConfiguration );
+		debnLoadConfiguration(*this).LoadConfig(pConfiguration);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		CleanUp();
 		throw;
 	}
@@ -156,24 +154,24 @@ bool deNetworkBasic::Init(){
 		// operating system specific startup calls
 		#ifdef OS_W32
 		WSADATA wsaData;
-		if( WSAStartup(MAKEWORD( 2, 2 ), &wsaData ) ){
-			DETHROW_INFO( deeInvalidAction, "WSAStartup failed" );
+		if(WSAStartup(MAKEWORD(2, 2), &wsaData)){
+			DETHROW_INFO(deeInvalidAction, "WSAStartup failed");
 		}
 		pWSAStartupCalled = true;
 		
-		if( LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ){
-			DETHROW_INFO( deeInvalidAction, "WSAStartup succeeded but returned unsupported version" );
+		if(LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2){
+			DETHROW_INFO(deeInvalidAction, "WSAStartup succeeded but returned unsupported version");
 		}
 		#endif
 		
 		// create shared datagram
-		pDatagram = new deNetworkMessage;
-		pDatagram->SetDataLength( 1024 );
+		pDatagram = deNetworkMessage::Ref::New();
+		pDatagram->SetDataLength(1024);
 		
 		// create receive address
-		pSharedSendDatagram.TakeOver( new deNetworkMessage );
-		pSharedSendDatagram->SetDataLength( 50 );
-		pSharedSendDatagramWriter.TakeOver( new deNetworkMessageWriter( pSharedSendDatagram, false ) );
+		pSharedSendDatagram = deNetworkMessage::Ref::New();
+		pSharedSendDatagram->SetDataLength(50);
+		pSharedSendDatagramWriter = deNetworkMessageWriter::Ref::New(pSharedSendDatagram, false);
 		
 		// create send and receive message queues
 		//pMessagesSend = new debnMessageQueue;
@@ -185,8 +183,8 @@ bool deNetworkBasic::Init(){
 		//pMessage = new deNetworkMessage;
 		//if( ! pMessage ) DETHROW( deeOutOfMemory );
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		CleanUp();
 		return false;
 	}
@@ -199,18 +197,17 @@ void deNetworkBasic::CleanUp(){
 		delete pMessage;
 		pMessage = NULL;
 	}
-	if( pMessagesSend ){
+	if(pMessagesSend){
 		delete pMessagesSend;
 		pMessagesSend = NULL;
 	}
-	if( pMessagesReceive ){
+	if(pMessagesReceive){
 		delete pMessagesReceive;
 		pMessagesReceive = NULL;
 	}*/
 	
-	if( pDatagram ){
-		pDatagram->FreeReference();
-		pDatagram = NULL;
+	if(pDatagram){
+		pDatagram = nullptr;
 	}
 	
 	// ensure all linked lists are NULL
@@ -225,7 +222,7 @@ void deNetworkBasic::CleanUp(){
 	
 	// operating system specific startup calls
 	#ifdef OS_W32
-	if( pWSAStartupCalled ){
+	if(pWSAStartupCalled){
 		pWSAStartupCalled = false;
 		WSACleanup();
 	}
@@ -237,22 +234,22 @@ DEBUG_RESET_TIMERS;
 	const float elapsedTime = GetGameEngine()->GetElapsedTime();
 	
 	// process all messages destined to go out
-	pProcessConnections( elapsedTime );
-DEBUG_PRINT_TIMER( *this, "Process Connections" );
+	pProcessConnections(elapsedTime);
+DEBUG_PRINT_TIMER(*this, "Process Connections");
 	
 	// sleep a little bit to avoid hogging the cpu
 	/*
 	struct timeval timout;
 	timout.tv_sec = 0;
 	timout.tv_usec = 1000; // 1ms
-	select( 0, NULL, NULL, NULL, &timout );
+	select(0, NULL, NULL, NULL, &timout);
 	*/
-DEBUG_PRINT_TIMER( *this, "Sleep" );
+DEBUG_PRINT_TIMER(*this, "Sleep");
 	
 	// check on incoming messages
 	pReceiveDatagrams();
-DEBUG_PRINT_TIMER( *this, "Receive Datagrams" );
-DEBUG_PRINT_TIMER_TOTAL( *this, "Process Network" );
+DEBUG_PRINT_TIMER(*this, "Receive Datagrams");
+DEBUG_PRINT_TIMER_TOTAL(*this, "Process Network");
 }
 
 
@@ -260,14 +257,14 @@ DEBUG_PRINT_TIMER_TOTAL( *this, "Process Network" );
 // Peer Management
 ////////////////////
 
-void deNetworkBasic::RegisterConnection( debnConnection *connection ){
-	if( ! connection || connection->GetIsRegistered() ){
-		DETHROW( deeInvalidParam );
+void deNetworkBasic::RegisterConnection(debnConnection *connection){
+	if(!connection || connection->GetIsRegistered()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTailConnection ){
-		pTailConnection->SetNextConnection( connection );
-		connection->SetPreviousConnection( pTailConnection );
+	if(pTailConnection){
+		pTailConnection->SetNextConnection(connection);
+		connection->SetPreviousConnection(pTailConnection);
 		pTailConnection = connection;
 		
 	}else{
@@ -275,44 +272,44 @@ void deNetworkBasic::RegisterConnection( debnConnection *connection ){
 		pTailConnection = connection;
 	}
 	
-	connection->SetIsRegistered( true );
+	connection->SetIsRegistered(true);
 }
 
-void deNetworkBasic::UnregisterConnection( debnConnection *connection ){
-	if( ! connection || ! connection->GetIsRegistered() ){
-		DETHROW( deeInvalidParam );
+void deNetworkBasic::UnregisterConnection(debnConnection *connection){
+	if(!connection || !connection->GetIsRegistered()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	debnConnection * const previous = connection->GetPreviousConnection();
 	debnConnection * const next = connection->GetNextConnection();
 	
-	if( previous ){
-		previous->SetNextConnection( next );
+	if(previous){
+		previous->SetNextConnection(next);
 		
 	}else{
 		pHeadConnection = next;
 	}
 	
-	if( next ){
-		next->SetPreviousConnection( previous );
+	if(next){
+		next->SetPreviousConnection(previous);
 		
 	}else{
 		pTailConnection = previous;
 	}
 	
-	connection->SetIsRegistered( false );
-	connection->SetNextConnection( NULL );
-	connection->SetPreviousConnection( NULL );
+	connection->SetIsRegistered(false);
+	connection->SetNextConnection(nullptr);
+	connection->SetPreviousConnection(nullptr);
 }
 
-void deNetworkBasic::RegisterServer( debnServer *server ){
-	if( ! server || server->GetIsRegistered() ){
-		DETHROW( deeInvalidParam );
+void deNetworkBasic::RegisterServer(debnServer *server){
+	if(!server || server->GetIsRegistered()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTailServer ){
-		pTailServer->SetNextServer( server );
-		server->SetPreviousServer( pTailServer );
+	if(pTailServer){
+		pTailServer->SetNextServer(server);
+		server->SetPreviousServer(pTailServer);
 		pTailServer = server;
 		
 	}else{
@@ -320,44 +317,44 @@ void deNetworkBasic::RegisterServer( debnServer *server ){
 		pTailServer = server;
 	}
 	
-	server->SetIsRegistered( true );
+	server->SetIsRegistered(true);
 }
 
-void deNetworkBasic::UnregisterServer( debnServer *server ){
-	if( ! server || ! server->GetIsRegistered() ){
-		DETHROW( deeInvalidParam );
+void deNetworkBasic::UnregisterServer(debnServer *server){
+	if(!server || !server->GetIsRegistered()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	debnServer * const previous = server->GetPreviousServer();
 	debnServer * const next = server->GetNextServer();
 	
-	if( previous ){
-		previous->SetNextServer( next );
+	if(previous){
+		previous->SetNextServer(next);
 		
 	}else{
 		pHeadServer = next;
 	}
 	
-	if( next ){
-		next->SetPreviousServer( previous );
+	if(next){
+		next->SetPreviousServer(previous);
 		
 	}else{
 		pTailServer = previous;
 	}
 	
-	server->SetIsRegistered( false );
-	server->SetNextServer( NULL );
-	server->SetPreviousServer( NULL );
+	server->SetIsRegistered(false);
+	server->SetNextServer(nullptr);
+	server->SetPreviousServer(nullptr);
 }
 
-void deNetworkBasic::RegisterSocket( debnSocket *bnSocket ){
-	if( ! bnSocket || bnSocket->GetIsRegistered() ){
-		DETHROW( deeInvalidParam );
+void deNetworkBasic::RegisterSocket(debnSocket *bnSocket){
+	if(!bnSocket || bnSocket->GetIsRegistered()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTailSocket ){
-		pTailSocket->SetNextSocket( bnSocket );
-		bnSocket->SetPreviousSocket( pTailSocket );
+	if(pTailSocket){
+		pTailSocket->SetNextSocket(bnSocket);
+		bnSocket->SetPreviousSocket(pTailSocket);
 		pTailSocket = bnSocket;
 		
 	}else{
@@ -365,50 +362,50 @@ void deNetworkBasic::RegisterSocket( debnSocket *bnSocket ){
 		pTailSocket = bnSocket;
 	}
 	
-	bnSocket->SetIsRegistered( true );
+	bnSocket->SetIsRegistered(true);
 }
 
-void deNetworkBasic::UnregisterSocket( debnSocket *bnSocket ){
-	if( ! bnSocket || ! bnSocket->GetIsRegistered() ){
-		DETHROW( deeInvalidParam );
+void deNetworkBasic::UnregisterSocket(debnSocket *bnSocket){
+	if(!bnSocket || !bnSocket->GetIsRegistered()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	debnSocket * const previous = bnSocket->GetPreviousSocket();
 	debnSocket * const next = bnSocket->GetNextSocket();
 	
-	if( previous ){
-		previous->SetNextSocket( next );
+	if(previous){
+		previous->SetNextSocket(next);
 		
 	}else{
 		pHeadSocket = next;
 	}
 	
-	if( next ){
-		next->SetPreviousSocket( previous );
+	if(next){
+		next->SetPreviousSocket(previous);
 		
 	}else{
 		pTailSocket = previous;
 	}
 	
-	bnSocket->SetIsRegistered( false );
-	bnSocket->SetNextSocket( NULL );
-	bnSocket->SetPreviousSocket( NULL );
+	bnSocket->SetIsRegistered(false);
+	bnSocket->SetNextSocket(nullptr);
+	bnSocket->SetPreviousSocket(nullptr);
 }
 
 
 
-void deNetworkBasic::FindPublicAddresses( decStringList &list ){
-	debnSocket::FindAddresses( list, true );
+void deNetworkBasic::FindPublicAddresses(decStringList &list){
+	debnSocket::FindAddresses(list, true);
 }
 
-void deNetworkBasic::CloseConnections( debnSocket *bnSocket ){
+void deNetworkBasic::CloseConnections(debnSocket *bnSocket){
 	debnConnection *connection = pHeadConnection;
 	
-	while( connection ){
+	while(connection){
 		debnConnection * const checkConnection = connection;
 		connection = connection->GetNextConnection();
 		
-		if( checkConnection->GetSocket() == bnSocket ){
+		if(checkConnection->GetSocket() == bnSocket){
 			checkConnection->Disconnect();
 		}
 	}
@@ -417,41 +414,41 @@ void deNetworkBasic::CloseConnections( debnSocket *bnSocket ){
 
 
 int deNetworkBasic::GetParameterCount() const{
-	return pParameters.GetParameterCount();
+	return pParameters.GetCount();
 }
 
-void deNetworkBasic::GetParameterInfo( int index, deModuleParameter &info ) const{
-	info = pParameters.GetParameterAt( index );
+void deNetworkBasic::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters.GetAt(index);
 }
 
-int deNetworkBasic::IndexOfParameterNamed( const char *name ) const{
-	return pParameters.IndexOfParameterNamed( name );
+int deNetworkBasic::IndexOfParameterNamed(const char *name) const{
+	return pParameters.IndexOfNamed(name);
 }
 
-decString deNetworkBasic::GetParameterValue( const char *name ) const{
-	return pParameters.GetParameterNamed( name ).GetParameterValue();
+decString deNetworkBasic::GetParameterValue(const char *name) const{
+	return pParameters.GetNamed(name).GetParameterValue();
 }
 
-void deNetworkBasic::SetParameterValue( const char *name, const char *value ){
-	pParameters.GetParameterNamed( name ).SetParameterValue( value );
+void deNetworkBasic::SetParameterValue(const char *name, const char *value){
+	pParameters.GetNamed(name).SetParameterValue(value);
 }
 
 
 
-deBaseNetworkWorld *deNetworkBasic::CreateWorld( deWorld *world ){
-	return new debnWorld( this, world );
+deBaseNetworkWorld *deNetworkBasic::CreateWorld(deWorld *world){
+	return new debnWorld(this, world);
 }
 
-deBaseNetworkServer *deNetworkBasic::CreateServer( deServer *server ){
-	return new debnServer( this, server );
+deBaseNetworkServer *deNetworkBasic::CreateServer(deServer *server){
+	return new debnServer(this, server);
 }
 
-deBaseNetworkConnection *deNetworkBasic::CreateConnection( deConnection *connection ){
-	return new debnConnection( this, connection );
+deBaseNetworkConnection *deNetworkBasic::CreateConnection(deConnection *connection){
+	return new debnConnection(this, connection);
 }
 
-deBaseNetworkState *deNetworkBasic::CreateState( deNetworkState *state ){
-	return new debnState( *state );
+deBaseNetworkState *deNetworkBasic::CreateState(deNetworkState *state){
+	return new debnState(*state);
 }
 
 
@@ -460,10 +457,10 @@ deBaseNetworkState *deNetworkBasic::CreateState( deNetworkState *state ){
 // Private Functions
 //////////////////////
 
-debnConnection *deNetworkBasic::pFindConnection( const debnSocket *bnSocket, const debnAddress &address ) const{
+debnConnection *deNetworkBasic::pFindConnection(const debnSocket *bnSocket, const debnAddress &address) const{
 	debnConnection *connection = pHeadConnection;
-	while( connection ){
-		if( connection->Matches( bnSocket, address ) ){
+	while(connection){
+		if(connection->Matches(bnSocket, address)){
 			return connection;
 		}
 		connection = connection->GetNextConnection();
@@ -471,16 +468,16 @@ debnConnection *deNetworkBasic::pFindConnection( const debnSocket *bnSocket, con
 	return nullptr;
 }
 
-debnServer *deNetworkBasic::pFindServer( const debnSocket *bnSocket ) const{
+debnServer *deNetworkBasic::pFindServer(const debnSocket *bnSocket) const{
 	debnServer *server = pHeadServer;
 	
-	while( server ){
-		if( bnSocket == server->GetSocket() ) return server;
+	while(server){
+		if(bnSocket == server->GetSocket()) return server;
 		
 		server = server->GetNextServer();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -488,68 +485,67 @@ debnServer *deNetworkBasic::pFindServer( const debnSocket *bnSocket ) const{
 void deNetworkBasic::pReceiveDatagrams(){
 	debnSocket *bnSocket = pHeadSocket;
 	
-	while( bnSocket ){
-		while( bnSocket->ReceiveDatagram( *pDatagram, pAddressReceive ) ){
-			decBaseFileReaderReference reader;
-			reader.TakeOver( new deNetworkMessageReader( pDatagram ) );
+	while(bnSocket){
+		while(bnSocket->ReceiveDatagram(*pDatagram, pAddressReceive)){
+			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::New(pDatagram));
 			
-			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );
-			const eCommandCodes command = ( eCommandCodes )reader->ReadByte();
+			debnConnection * const connection = pFindConnection(bnSocket, pAddressReceive);
+			const eCommandCodes command = (eCommandCodes)reader->ReadByte();
 			
-			if( connection ){
-				switch( command ){
+			if(connection){
+				switch(command){
 				case eccConnectionAck:
-					connection->ProcessConnectionAck( reader );
+					connection->ProcessConnectionAck(reader);
 					break;
 					
 				case eccConnectionClose:
-					connection->ProcessConnectionClose( reader );
+					connection->ProcessConnectionClose(reader);
 					break;
 					
 				case eccMessage:
-					connection->ProcessMessage( reader );
+					connection->ProcessMessage(reader);
 					break;
 					
 				case eccReliableMessage:
-					connection->ProcessReliableMessage( reader );
+					connection->ProcessReliableMessage(reader);
 					break;
 					
 				case eccReliableLinkState:
-					connection->ProcessReliableLinkState( reader );
+					connection->ProcessReliableLinkState(reader);
 					break;
 					
 				case eccReliableAck:
-					connection->ProcessReliableAck( reader );
+					connection->ProcessReliableAck(reader);
 					break;
 					
 				case eccLinkUp:
-					connection->ProcessLinkUp( reader );
+					connection->ProcessLinkUp(reader);
 					break;
 					
 				case eccLinkDown:
-					connection->ProcessLinkDown( reader );
+					connection->ProcessLinkDown(reader);
 					break;
 					
 				case eccLinkUpdate:
-					connection->ProcessLinkUpdate( reader );
+					connection->ProcessLinkUpdate(reader);
 					break;
 					
 				case eccReliableMessageLong:
-					connection->ProcessReliableMessageLong( reader );
+					connection->ProcessReliableMessageLong(reader);
 					break;
 					
 				case eccReliableLinkStateLong:
-					connection->ProcessReliableLinkStateLong( reader );
+					connection->ProcessReliableLinkStateLong(reader);
 					break;
 					
 				default:
 					break;
 				}
 				
-			}else if( command == eccConnectionRequest ){
-				debnServer * const server = pFindServer( bnSocket );
-				if( server ){
-					server->ProcessConnectionRequest( pAddressReceive, reader );
+			}else if(command == eccConnectionRequest){
+				debnServer * const server = pFindServer(bnSocket);
+				if(server){
+					server->ProcessConnectionRequest(pAddressReceive, reader);
 				}
 			}
 		}
@@ -558,11 +554,11 @@ void deNetworkBasic::pReceiveDatagrams(){
 	}
 }
 
-void deNetworkBasic::pProcessConnections( float elapsedTime ){
+void deNetworkBasic::pProcessConnections(float elapsedTime){
 	debnConnection *connection = pHeadConnection;
 	
-	while( connection ){
-		connection->Process( elapsedTime );
+	while(connection){
+		connection->Process(elapsedTime);
 		
 		connection = connection->GetNextConnection();
 	}
@@ -577,6 +573,8 @@ void deNetworkBasic::pProcessConnections( float elapsedTime ){
 
 class denbModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<denbModuleInternal>;
+	
 	denbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicNetwork");
 		SetDescription("Basic network module.");
@@ -596,7 +594,7 @@ public:
 	}
 };
 
-deInternalModule *denbRegisterInternalModule(deModuleSystem *system){
-	return new denbModuleInternal(system);
+deTObjectReference<deInternalModule> denbRegisterInternalModule(deModuleSystem *system){
+	return denbModuleInternal::Ref::New(system);
 }
 #endif

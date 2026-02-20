@@ -26,7 +26,7 @@
 #define _DEOALENVPROBELEVEL_H_
 
 #include "raytrace/deoalSoundRayList.h"
-#include "raytrace/deoalSoundRayInteractionList.h"
+#include "raytrace/deoalSoundRayInteraction.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -43,7 +43,7 @@
 class deoalEnvProbeLevel{
 private:
 	deoalSoundRayList pSoundRayList;
-	deoalSoundRayInteractionList pSRIList;
+	deoalSoundRayInteraction::List pSRIList;
 	int pRayCount;
 	float pRayOpeningAngle;
 	
@@ -79,20 +79,20 @@ public:
 	inline const deoalSoundRayList &GetSoundRayList() const{ return pSoundRayList; }
 	
 	/** \brief First reflection sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRIList(){ return pSRIList; }
-	inline const deoalSoundRayInteractionList &GetSRIList() const{ return pSRIList; }
+	inline deoalSoundRayInteraction::List &GetSRIList(){ return pSRIList; }
+	inline const deoalSoundRayInteraction::List &GetSRIList() const{ return pSRIList; }
 	
 	/** \brief Number of rays used to calculate probe. */
 	inline int GetRayCount() const{ return pRayCount; }
 	
 	/** \brief Set number of rays used to calculate probe. */
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	
 	/** \brief Ray beam opening angle used for calculating probe. */
 	inline float GetRayOpeningAngle() const{ return pRayOpeningAngle; }
 	
 	/** \brief Set ray beam opening angle used for calculating probe. */
-	void SetRayOpeningAngle( float angle );
+	void SetRayOpeningAngle(float angle);
 	
 	
 	
@@ -106,13 +106,13 @@ public:
 	inline float GetReverberationTimeHigh() const{ return pReverberationTimeHigh; }
 	
 	/** \brief Set reverberation. */
-	void SetReverberationTime( float timeLow, float timeMedium, float timeHigh );
+	void SetReverberationTime(float timeLow, float timeMedium, float timeHigh);
 	
 	/** \brief Echo delay. */
 	inline float GetEchoDelay() const{ return pEchoDelay; }
 	
 	/** \brief Set echo. */
-	void SetEcho( float delay );
+	void SetEcho(float delay);
 	
 	
 	
@@ -132,7 +132,7 @@ public:
 	inline float GetRoomSabineHigh() const{ return pRoomSabineHigh; }
 	
 	/** \brief Set room indirect sound parameters. */
-	void SetRoom( float volume, float surface, float sabineLow, float sabineMedium, float sabineHigh );
+	void SetRoom(float volume, float surface, float sabineLow, float sabineMedium, float sabineHigh);
 	/*@}*/
 };
 

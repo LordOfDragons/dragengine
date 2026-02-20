@@ -26,7 +26,8 @@
 #define _DEANIMATORRULESUBANIMATOR_H_
 
 #include "deAnimatorRule.h"
-#include "../deAnimatorReference.h"
+#include "../deAnimator.h"
+#include "../../../common/collection/decTList.h"
 
 
 /**
@@ -47,20 +48,18 @@
 class DE_DLL_EXPORT deAnimatorRuleSubAnimator : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleSubAnimator> Ref;
-	
+	using Ref = deTObjectReference<deAnimatorRuleSubAnimator>;
 	
 	
 private:
-	deAnimatorReference pSubAnimator;
+	deAnimator::Ref pSubAnimator;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
 	
-	int *pConnections;
-	int pConnectionCount;
+	decTList<int> pConnections;
 	
 	
 	
@@ -77,7 +76,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimatorRuleSubAnimator();
+	~deAnimatorRuleSubAnimator() override;
 	/*@}*/
 	
 	
@@ -89,31 +88,31 @@ public:
 	deAnimator *GetSubAnimator() const{ return pSubAnimator; }
 	
 	/** \brief Set sub animator or NULL if not assigned. */
-	void SetSubAnimator( deAnimator *animator );
+	void SetSubAnimator(deAnimator *animator);
 	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
 	/** \brief Sets if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
 	/** \brief Sets if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
 	/** \brief Sets if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
 	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/**
 	 * \brief Update connection count.
@@ -123,20 +122,23 @@ public:
 	 */
 	void UpdateConnectionCount();
 	
+	/** \brief Connections. */
+	inline const decTList<int> &GetConnections() const{ return pConnections; }
+	
 	/**
 	 * \brief Count of connections which is the number of controllers in the sub animator
 	 *        if existing or 0 if there is no sub animator assigned.
 	 */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
+	inline int GetConnectionCount() const{ return pConnections.GetCount(); }
 	
 	/** \brief Index of the local controller for the given controller in the sub animator. */
-	int GetConnectionAt( int targetController ) const;
+	int GetConnectionAt(int targetController) const;
 	
 	/** \brief Set index of the local controller for the given controller in the sub animator. */
-	void SetConnectionAt( int targetController, int localController );
+	void SetConnectionAt(int targetController, int localController);
 	
 	/** \brief Set connections by matching controller names. */
-	void SetMatchingConnections( const deAnimator &animator );
+	void SetMatchingConnections(const deAnimator &animator);
 	
 	/** \brief Clear all connections setting them to -1. */
 	void ClearConnections();
@@ -147,7 +149,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	void Visit(deAnimatorRuleVisitor &visitor) override;
 	/*@}*/
 };
 

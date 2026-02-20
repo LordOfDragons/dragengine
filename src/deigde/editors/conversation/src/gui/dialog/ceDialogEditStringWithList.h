@@ -25,11 +25,10 @@
 #ifndef _CEDIALOGEDITSTRINGWITHLIST_H_
 #define _CEDIALOGEDITSTRINGWITHLIST_H_
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
-class decStringList;
-
+#include <dragengine/common/string/decStringList.h>
 
 
 /**
@@ -44,20 +43,23 @@ class decStringList;
  */
 class ceDialogEditStringWithList : public igdeDialog{
 private:
-	igdeComboBoxFilterReference pCBString;
+	igdeComboBoxFilter::Ref pCBString;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceDialogEditStringWithList>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	ceDialogEditStringWithList( igdeEnvironment &environment, const char *windowTitle,
-		const char *textLabel, const char *value, const decStringList &choices );
+	ceDialogEditStringWithList(igdeEnvironment &environment, const char *windowTitle,
+		const char *textLabel, const char *value, const decStringList &choices);
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~ceDialogEditStringWithList();
+	~ceDialogEditStringWithList() override;
 	/*@}*/
 	
 	
@@ -76,7 +78,7 @@ public:
 	 * Called by Run() after dialog is created. Subclass can implement to init controls
 	 * after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	/*@}*/
 };
 

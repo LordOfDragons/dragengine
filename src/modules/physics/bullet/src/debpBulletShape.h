@@ -47,17 +47,22 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<debpBulletShape>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletShape( btCollisionShape *shape );
+	debpBulletShape(btCollisionShape *shape);
 	
+protected:
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	virtual ~debpBulletShape();
+	~debpBulletShape() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */

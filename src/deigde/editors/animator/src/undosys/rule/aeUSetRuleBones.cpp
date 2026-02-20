@@ -43,25 +43,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleBones::aeUSetRuleBones( aeRule *rule, const decStringSet &newValue ) :
-pRule( NULL ),
-pNewValue( newValue )
+aeUSetRuleBones::aeUSetRuleBones(aeRule *rule, const decStringSet &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = rule->GetListBones();
-	SetShortInfo( "Set rule bones" );
+	SetShortInfo("@Animator.Undo.SetRuleBones");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleBones::~aeUSetRuleBones(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -70,9 +66,9 @@ aeUSetRuleBones::~aeUSetRuleBones(){
 ///////////////
 
 void aeUSetRuleBones::Undo(){
-	pRule->SetListBones( pOldValue );
+	pRule->SetListBones(pOldValue);
 }
 
 void aeUSetRuleBones::Redo(){
-	pRule->SetListBones( pNewValue );
+	pRule->SetListBones(pNewValue);
 }

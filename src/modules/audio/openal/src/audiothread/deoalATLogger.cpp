@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalATLogger::deoalATLogger( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ){
+deoalATLogger::deoalATLogger(deoalAudioThread &audioThread) :
+pAudioThread(audioThread){
 }
 
 deoalATLogger::~deoalATLogger(){
@@ -69,107 +69,107 @@ void deoalATLogger::Synchronize(){
 
 
 
-void deoalATLogger::LogInfo( const char *message ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogInfo( LOGGING_SOURCE, message );
+void deoalATLogger::LogInfo(const char *message){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogInfo(LOGGING_SOURCE, message);
 		
 	}else{
-		pAudioThread.GetOal().LogInfo( message );
+		pAudioThread.GetOal().LogInfo(message);
 	}
 }
 
-void deoalATLogger::LogInfoFormat( const char *message, ... ){
+void deoalATLogger::LogInfoFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
+	va_start(list, message);
 	
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogInfoFormatUsing( LOGGING_SOURCE, message, list );
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogInfoFormatUsing(LOGGING_SOURCE, message, list);
 		
 	}else{
-		pAudioThread.GetOal().LogInfoFormatUsing( message, list );
+		pAudioThread.GetOal().LogInfoFormatUsing(message, list);
 	}
 	
-	va_end( list );
+	va_end(list);
 }
 
-void deoalATLogger::LogInfoFormatUsing( const char *message, va_list args ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogInfoFormatUsing( LOGGING_SOURCE, message, args );
+void deoalATLogger::LogInfoFormatUsing(const char *message, va_list args){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogInfoFormatUsing(LOGGING_SOURCE, message, args);
 		
 	}else{
-		pAudioThread.GetOal().LogInfoFormatUsing( message, args );
+		pAudioThread.GetOal().LogInfoFormatUsing(message, args);
 	}
 }
 
-void deoalATLogger::LogWarn( const char *message ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogWarn( LOGGING_SOURCE, message );
+void deoalATLogger::LogWarn(const char *message){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogWarn(LOGGING_SOURCE, message);
 		
 	}else{
-		pAudioThread.GetOal().LogWarn( message );
+		pAudioThread.GetOal().LogWarn(message);
 	}
 }
 
-void deoalATLogger::LogWarnFormat( const char *message, ... ){
+void deoalATLogger::LogWarnFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
+	va_start(list, message);
 	
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogWarnFormatUsing( LOGGING_SOURCE, message, list );
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogWarnFormatUsing(LOGGING_SOURCE, message, list);
 		
 	}else{
-		pAudioThread.GetOal().LogWarnFormatUsing( message, list );
+		pAudioThread.GetOal().LogWarnFormatUsing(message, list);
 	}
 	
-	va_end( list );
+	va_end(list);
 }
 
-void deoalATLogger::LogWarnFormatUsing( const char *message, va_list args ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogWarnFormatUsing( LOGGING_SOURCE, message, args );
+void deoalATLogger::LogWarnFormatUsing(const char *message, va_list args){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogWarnFormatUsing(LOGGING_SOURCE, message, args);
 		
 	}else{
-		pAudioThread.GetOal().LogWarnFormatUsing( message, args );
+		pAudioThread.GetOal().LogWarnFormatUsing(message, args);
 	}
 }
 
-void deoalATLogger::LogError( const char *message ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogError( LOGGING_SOURCE, message );
+void deoalATLogger::LogError(const char *message){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogError(LOGGING_SOURCE, message);
 		
 	}else{
-		pAudioThread.GetOal().LogError( message );
+		pAudioThread.GetOal().LogError(message);
 	}
 }
 
-void deoalATLogger::LogErrorFormat( const char *message, ... ){
+void deoalATLogger::LogErrorFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
+	va_start(list, message);
 	
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogErrorFormatUsing( LOGGING_SOURCE, message, list );
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogErrorFormatUsing(LOGGING_SOURCE, message, list);
 		
 	}else{
-		pAudioThread.GetOal().LogErrorFormatUsing( message, list );
+		pAudioThread.GetOal().LogErrorFormatUsing(message, list);
 	}
 	
-	va_end( list );
+	va_end(list);
 }
 
-void deoalATLogger::LogErrorFormatUsing( const char *message, va_list args ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogErrorFormatUsing( LOGGING_SOURCE, message, args );
+void deoalATLogger::LogErrorFormatUsing(const char *message, va_list args){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogErrorFormatUsing(LOGGING_SOURCE, message, args);
 		
 	}else{
-		pAudioThread.GetOal().LogErrorFormatUsing( message, args );
+		pAudioThread.GetOal().LogErrorFormatUsing(message, args);
 	}
 }
 
-void deoalATLogger::LogException( const deException &exception ){
-	if( pAudioThread.GetAsyncAudio() ){
-		GetLogger().LogException( LOGGING_SOURCE, exception );
+void deoalATLogger::LogException(const deException &exception){
+	if(pAudioThread.GetAsyncAudio()){
+		GetLogger().LogException(LOGGING_SOURCE, exception);
 		
 	}else{
-		pAudioThread.GetOal().LogException( exception );
+		pAudioThread.GetOal().LogException(exception);
 	}
 }

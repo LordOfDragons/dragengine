@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetSolverBone::aeURuleIKSetSolverBone( aeRuleInverseKinematic *rule, const char *newName ){
-	if( ! rule || ! newName ) DETHROW( deeInvalidParam );
+aeURuleIKSetSolverBone::aeURuleIKSetSolverBone(aeRuleInverseKinematic *rule, const char *newName){
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldName = rule->GetSolverBone();
 		pNewName = newName;
 		
-		SetShortInfo( "Set inverse kinematic rule solver bone" );
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicSolverBone");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeURuleIKSetSolverBone::~aeURuleIKSetSolverBone(){
 ///////////////
 
 void aeURuleIKSetSolverBone::Undo(){
-	pRule->SetSolverBone( pOldName.GetString() );
+	pRule->SetSolverBone(pOldName.GetString());
 }
 
 void aeURuleIKSetSolverBone::Redo(){
-	pRule->SetSolverBone( pNewName.GetString() );
+	pRule->SetSolverBone(pNewName.GetString());
 }
 
 
@@ -82,5 +80,4 @@ void aeURuleIKSetSolverBone::Redo(){
 //////////////////////
 
 void aeURuleIKSetSolverBone::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMENUCHECK_H_
 
 #include "../foxtoolkit.h"
+#include "../../../menu/igdeMenuCheck.h"
 
 class igdeMenuCheck;
 
@@ -33,8 +34,8 @@ class igdeMenuCheck;
 /**
  * FOX native widget.
  */
-class igdeNativeFoxMenuCheck : public FXMenuCheck{
-	FXDECLARE( igdeNativeFoxMenuCheck )
+class igdeNativeFoxMenuCheck : public FXMenuCheck, public igdeMenuCheck::cNativeMenuCheck{
+	FXDECLARE(igdeNativeFoxMenuCheck)
 	
 protected:
 	igdeNativeFoxMenuCheck();
@@ -51,13 +52,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuCheck( igdeMenuCheck &owner, FXComposite *parent );
+	igdeNativeFoxMenuCheck(igdeMenuCheck &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuCheck();
+	~igdeNativeFoxMenuCheck() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuCheck* CreateNativeWidget( igdeMenuCheck &owner );
+	static igdeNativeFoxMenuCheck* CreateNativeWidget(igdeMenuCheck &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -70,20 +71,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateChecked();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
-	static FXString BuildConstrText( igdeMenuCheck &owner );
+	void UpdateChecked() override;
+	
+	static FXString BuildConstrText(igdeMenuCheck &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onMenuAction( FXObject*, FXSelector, void* );
-	long updateMenuAction( FXObject*, FXSelector, void* );
+	long onMenuAction(FXObject*, FXSelector, void*);
+	long updateMenuAction(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuCheck igdeNativeMenuCheck;
+using igdeNativeMenuCheck = igdeNativeFoxMenuCheck;
 
 #endif

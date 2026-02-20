@@ -25,7 +25,7 @@
 #ifndef _DEBPCOLLIDERCOLLISIONTEST_H_
 #define _DEBPCOLLIDERCOLLISIONTEST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
@@ -42,7 +42,7 @@ private:
 	debpCollider &pParentCollider;
 	deColliderCollisionTest &pCollisionTest;
 	
-	decObjectList pCollisionInfo;
+	decTObjectList<deCollisionInfo> pCollisionInfo;
 	int pCollisionInfoCount;
 	bool pSortByDistance;
 	
@@ -52,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a collider attachment. */
-	debpColliderCollisionTest( debpCollider &parentCollider, deColliderCollisionTest &collisionTest );
+	debpColliderCollisionTest(debpCollider &parentCollider, deColliderCollisionTest &collisionTest);
 	
 	/** \brief Clean up the collider attachment. */
-	virtual ~debpColliderCollisionTest();
+	~debpColliderCollisionTest() override;
 	/*@}*/
 	
 	
@@ -81,35 +81,35 @@ public:
 	void Reset();
 	
 	/** \brief Test ray collision. */
-	void RayHits( const decDVector &position, const decVector &direction );
+	void RayHits(const decDVector &position, const decVector &direction);
 	
 	/** \brief Test collider hits collision. */
-	void ColliderHits( const decDVector &position );
+	void ColliderHits(const decDVector &position);
 	
 	/** \brief Test collider hits collision. */
-	void ColliderHits( const decDVector &position, const decQuaternion &orientation );
+	void ColliderHits(const decDVector &position, const decQuaternion &orientation);
 	
 	/** \brief Test collider move hits collision. */
-	void ColliderMoveHits( const decDVector &position, const decVector &direction );
+	void ColliderMoveHits(const decDVector &position, const decVector &direction);
 	
 	/** \brief Test collider move hits collision. */
-	void ColliderMoveHits( const decDVector &position, const decQuaternion &orientation,
-	const decVector &direction );
+	void ColliderMoveHits(const decDVector &position, const decQuaternion &orientation,
+	const decVector &direction);
 	
 	/** \brief Test collider rotate hits collision. */
-	void ColliderRotateHits( const decDVector &position, const decVector &rotation );
+	void ColliderRotateHits(const decDVector &position, const decVector &rotation);
 	
 	/** \brief Test collider rotate hits collision. */
-	void ColliderRotateHits( const decDVector &position, const decQuaternion &orientation,
-	const decVector &rotation );
+	void ColliderRotateHits(const decDVector &position, const decQuaternion &orientation,
+	const decVector &rotation);
 	
 	/** \brief Test collider move rotate hits collision. */
-	void ColliderMoveRotateHits( const decDVector &position, const decVector &direction,
-	const decVector &rotation );
+	void ColliderMoveRotateHits(const decDVector &position, const decVector &direction,
+	const decVector &rotation);
 	
 	/** \brief Test collider move rotate hits collision. */
-	void ColliderMoveRotateHits( const decDVector &position, const decQuaternion &orientation,
-	const decVector &direction, const decVector &rotation );
+	void ColliderMoveRotateHits(const decDVector &position, const decQuaternion &orientation,
+	const decVector &direction, const decVector &rotation);
 	/*@}*/
 	
 	
@@ -121,7 +121,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
@@ -132,7 +132,7 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/*@}*/
 };
 

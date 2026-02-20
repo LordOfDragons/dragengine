@@ -30,6 +30,8 @@
 #include "ceTextBox.h"
 #include "ceTextBoxText.h"
 
+#include <deigde/gui/igdeApplication.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
@@ -54,23 +56,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceTextBox::ceTextBox( deEngine &engine, deLogger &logger ) :
-pEngine( engine ),
-pLogger( logger ),
-pBackgroundColor( 0.0f, 0.0f, 0.0f, 0.5f ),
-pTextColor( 1.0f, 1.0f, 1.0f, 1.0f ),
-pTextSize( 18 ),
-pPadding( 10 ),
-pTextOffset( 200 ),
-pCanvasView( NULL )
+ceTextBox::ceTextBox(deEngine &engine, deLogger &logger) :
+pEngine(engine),
+pLogger(logger),
+pBackgroundColor(0.0f, 0.0f, 0.0f, 0.5f),
+pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
+pTextSize(18),
+pPadding(10),
+pTextOffset(200)
 {
 	try{
 		pCanvasView = engine.GetCanvasManager()->CreateCanvasView();
-		pCanvasView->SetOrder( 10.0f );
+		pCanvasView->SetOrder(10.0f);
 		
-		SetPathFont( "/igde/fonts/sans_9_border.defont" );
+		SetPathFont("/igde/fonts/sans_9_border.defont");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -96,8 +97,8 @@ void ceTextBox::SetPathFont(const char *path){
 	UpdateCanvas();
 }
 
-void ceTextBox::SetBackgroundColor( const decColor &color ){
-	if( color.IsEqualTo( pBackgroundColor ) ){
+void ceTextBox::SetBackgroundColor(const decColor &color){
+	if(color.IsEqualTo(pBackgroundColor)){
 		return;
 	}
 	
@@ -105,8 +106,8 @@ void ceTextBox::SetBackgroundColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void ceTextBox::SetTextColor( const decColor &color ){
-	if( color.IsEqualTo( pTextColor ) ){
+void ceTextBox::SetTextColor(const decColor &color){
+	if(color.IsEqualTo(pTextColor)){
 		return;
 	}
 	
@@ -114,7 +115,7 @@ void ceTextBox::SetTextColor( const decColor &color ){
 	UpdateCanvas();
 }
 
-void ceTextBox::SetTextSize( int size ){
+void ceTextBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
 	if(size == pTextSize){
@@ -126,12 +127,12 @@ void ceTextBox::SetTextSize( int size ){
 	UpdateCanvas();
 }
 
-void ceTextBox::SetPadding( int padding ){
-	if( padding < 0 ){
+void ceTextBox::SetPadding(int padding){
+	if(padding < 0){
 		padding = 0;
 	}
 	
-	if( padding == pPadding ){
+	if(padding == pPadding){
 		return;
 	}
 	
@@ -139,12 +140,12 @@ void ceTextBox::SetPadding( int padding ){
 	UpdateCanvas();
 }
 
-void ceTextBox::SetTextOffset( int offset ){
-	if( offset < 0 ){
+void ceTextBox::SetTextOffset(int offset){
+	if(offset < 0){
 		offset = 0;
 	}
 	
-	if( offset == pTextOffset ){
+	if(offset == pTextOffset){
 		return;
 	}
 	
@@ -157,7 +158,7 @@ void ceTextBox::SetTextOffset( int offset ){
 void ceTextBox::UpdateCanvas(){
 	// if there is no parent canvas there is no use in updating anything
 	deCanvasView * const parentView = pCanvasView->GetParentView();
-	if( ! parentView ){
+	if(!parentView){
 		return;
 	}
 	
@@ -165,61 +166,53 @@ void ceTextBox::UpdateCanvas(){
 	pCanvasView->RemoveAllCanvas();
 	
 	// calculate required box size
-	const int count = pTexts.GetCount();
-	int boxHeight = pPadding * 2;
-	int i;
+	const int padding = igdeApplication::app().DisplayScaled(pPadding);
+	int boxHeight = padding * 2;
 	
-	for( i=0; i<count; i++ ){
-		ceTextBoxText &text = *pTexts.GetAt( i );
-		
-		text.Layout( *this );
-		boxHeight += text.GetCanvasView()->GetSize().y;
-	}
+	pTexts.Visit([&](ceTextBoxText &t){
+		t.Layout(*this);
+		boxHeight += t.GetCanvasView()->GetSize().y;
+	});
 	
 	// keep box at a height of at least 20 pixel
-	if( pEngFont ){
-		boxHeight = decMath::max( boxHeight, pPadding * 2 + pTextSize );
+	if(pEngFont){
+		boxHeight = decMath::max(boxHeight, padding * 2 + igdeApplication::app().DisplayScaled(pTextSize));
 	}
 	
 	// resize canvas
 	const decPoint &parentSize = parentView->GetSize();
 	
-	pCanvasView->SetSize( decPoint( parentSize.x, boxHeight ) );
-	pCanvasView->SetPosition( decPoint( 0, parentSize.y - boxHeight ) );
+	pCanvasView->SetSize(decPoint(parentSize.x, boxHeight));
+	pCanvasView->SetPosition(decPoint(0, parentSize.y - boxHeight));
 	
 	// add background color canvas
-	deCanvasPaint *canvasBackground = NULL;
+	deCanvasPaint::Ref canvasBackground;
 	try{
 		canvasBackground = pEngine.GetCanvasManager()->CreateCanvasPaint();
-		canvasBackground->SetShapeType( deCanvasPaint::estRectangle );
-		canvasBackground->SetFillColor( pBackgroundColor );
-		canvasBackground->SetLineColor( decColor( pBackgroundColor, 0.0f ) );
-		canvasBackground->SetThickness( 0.0f );
-		canvasBackground->SetOrder( 0.0f );
-		canvasBackground->SetSize( pCanvasView->GetSize() );
-		pCanvasView->AddCanvas( canvasBackground );
-		canvasBackground->FreeReference();
-		
-	}catch( const deException & ){
-		if( canvasBackground ){
-			canvasBackground->FreeReference();
-		}
+		canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
+		canvasBackground->SetFillColor(pBackgroundColor);
+		canvasBackground->SetLineColor(decColor(pBackgroundColor, 0.0f));
+		canvasBackground->SetThickness(0.0f);
+		canvasBackground->SetOrder(0.0f);
+		canvasBackground->SetSize(pCanvasView->GetSize());
+		pCanvasView->AddCanvas(canvasBackground);
+	}catch(const deException &){
 		throw;
 	}
 	
 	// add text canvas
-	int y = pPadding;
+	int y = padding, order = 1;
 	
-	for( i=0; i<count; i++ ){
-		deCanvasView * const textCanvas = pTexts.GetAt( i )->GetCanvasView();
+	pTexts.Visit([&](const ceTextBoxText &t){
+		deCanvasView * const textCanvas = t.GetCanvasView();
 		const int height = textCanvas->GetSize().y;
 		
-		textCanvas->SetPosition( decPoint( 0, y ) );
-		textCanvas->SetOrder( ( float )( 1 + i ) );
-		pCanvasView->AddCanvas( textCanvas );
+		textCanvas->SetPosition(decPoint(0, y));
+		textCanvas->SetOrder((float)(order++));
+		pCanvasView->AddCanvas(textCanvas);
 		
 		y += height;
-	}
+	});
 }
 
 
@@ -229,10 +222,6 @@ void ceTextBox::UpdateCanvas(){
 
 void ceTextBox::pCleanUp(){
 	pTexts.RemoveAll();
-	
-	if( pCanvasView ){
-		pCanvasView->FreeReference();
-	}
 }
 
 
@@ -240,7 +229,7 @@ void ceTextBox::pCleanUp(){
 void ceTextBox::pUpdateFont(){
 	try{
 		if(!pPathFont.IsEmpty()){
-			pEngFont.TakeOver(pEngine.GetFontManager()->LoadFont(pPathFont, "/"));
+			pEngFont = pEngine.GetFontManager()->LoadFont(pPathFont, "/");
 			
 		}else{
 			pEngFont = nullptr;
@@ -258,7 +247,7 @@ void ceTextBox::pUpdateFontSize(){
 	}
 	
 	try{
-		pEngFontSize = pEngFont->PrepareSize(pTextSize);
+		pEngFontSize = pEngFont->PrepareSize(igdeApplication::app().DisplayScaled(pTextSize));
 		
 	}catch(const deException &e){
 		pLogger.LogException(LOGSOURCE, e);

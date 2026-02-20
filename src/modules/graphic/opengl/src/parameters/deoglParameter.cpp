@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglParameter::deoglParameter( deGraphicOpenGl &oal ) : pOgl( oal ){
+deoglParameter::deoglParameter(deGraphicOpenGl &oal) : pOgl(oal){
 }
 
 deoglParameter::~deoglParameter(){

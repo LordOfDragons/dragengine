@@ -26,9 +26,8 @@
 #define _IGDETABBOOK_H_
 
 #include "igdeContainer.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -37,17 +36,57 @@
  * \brief IGDE UI Tab book.
  */
 class DE_DLL_EXPORT igdeTabBook : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTabBook>;
+	
+	
+	/**
+	 * \brief Header.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	class DE_DLL_EXPORT cHeader : public deObject{
+	public:
+		using Ref = deTObjectReference<cHeader>;
+		using List = decTObjectOrderedSet<cHeader>;
+		
+		decString text;
+		decString description;
+		igdeIcon::Ref icon;
+		
+		cHeader(const char *text, igdeIcon *icon, const char *description);
+		
+	protected:
+		~cHeader() override;
+	};
+	
+	class cNativeTabBook{
+	public:
+		virtual ~cNativeTabBook() = default;
+		virtual void AddHeader(const igdeTabBook::cHeader &header) = 0;
+		virtual void UpdateHeader(int index, const igdeTabBook::cHeader &header) = 0;
+		virtual void RemoveHeader(int index) = 0;
+		virtual void RemoveAllHeaders() = 0;
+		virtual void ChangePanel(int index) = 0;
+		virtual void *GetNativeContainer() = 0;
+	};
+	
+	
 private:
-	decObjectList pHeaders;
+	cHeader::List pHeaders;
 	int pActivePanel;
 	
+	
+protected:
+	cNativeTabBook *pNativeTabBook;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeTabBook( igdeEnvironment &environment );
+	igdeTabBook(igdeEnvironment &environment);
 	
 	
 	
@@ -58,7 +97,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTabBook();
+	~igdeTabBook() override;
 	/*@}*/
 	
 	
@@ -70,28 +109,28 @@ public:
 	inline int GetActivePanel() const{ return pActivePanel; }
 	
 	/** \brief Set active panel by index. */
-	void SetActivePanel( int index );
+	void SetActivePanel(int index);
 	
 	
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child, const char *text );
+	virtual void AddChild(igdeWidget *child, const char *text);
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child, const char *text, igdeIcon *icon );
+	virtual void AddChild(igdeWidget *child, const char *text, igdeIcon *icon);
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child, const char *text, igdeIcon *icon,
-		const char *description );
+	virtual void AddChild(igdeWidget *child, const char *text, igdeIcon *icon,
+		const char *description);
 	
 	/** \brief Add child not possible without header information. */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	void RemoveChild(igdeWidget *child) override;
 	
 	/** \brief Remove all children. */
-	virtual void RemoveAllChildren();
+	void RemoveAllChildren() override;
 	/*@}*/
 	
 	
@@ -102,37 +141,28 @@ public:
 	 */
 	/*@{*/
 	/**
-	 * \brief Header.
-	 * \warning IGDE Internal Use Only. Do not use.
-	 */
-	class DE_DLL_EXPORT cHeader : public deObject{
-	public:
-		decString text;
-		decString description;
-		igdeIconReference icon;
-		
-		cHeader( const char *text, igdeIcon *icon, const char *description );
-		virtual ~cHeader();
-	};
-	
-	/**
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
 	/**
 	 * \brief Get native container widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void *GetNativeContainer() const;
+	void *GetNativeContainer() const override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -140,7 +170,10 @@ protected:
 	 * \brief Create child widget native widgets.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateChildWidgetNativeWidgets();
+	void CreateChildWidgetNativeWidgets() override;
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

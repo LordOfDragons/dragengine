@@ -38,26 +38,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meMapIDGroup::meMapIDGroup( igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix ) :
-pProperty( nullptr ),
-pGroup( nullptr ),
-pPropertyPrefix( propertyPrefix )
+meMapIDGroup::meMapIDGroup(igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix) :
+
+pPropertyPrefix(propertyPrefix)
 {
-	DEASSERT_NOTNULL( property )
-	DEASSERT_NOTNULL( group )
+	DEASSERT_NOTNULL(property)
+	DEASSERT_NOTNULL(group)
 	
 	pProperty = property;
-	property->AddReference();
-	
 	pGroup = group;
-	group->AddReference();
 }
 
 meMapIDGroup::~meMapIDGroup(){
-	if( pGroup ){
-		pGroup->FreeReference();
-	}
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }

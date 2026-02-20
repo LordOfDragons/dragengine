@@ -27,6 +27,7 @@
 
 #include "../dearControllerTarget.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
@@ -43,17 +44,18 @@ class deDEAnimator;
  * Base animator rule class.
  */
 class dearRule{
+public:
+	using Ref = deTUniqueReference<dearRule>;
+	
 private:
 	dearAnimatorInstance &pInstance;
 	const dearAnimator &pAnimator;
 	const deAnimatorRule &pRule;
 	
-	int *pBoneMappings;
-	int pBoneMappingCount;
+	decTList<int> pBoneMappings;
 	bool pUseAllBones;
 	
-	int *pVPSMappings;
-	int pVPSMappingCount;
+	decTList<int> pVPSMappings;
 	bool pUseAllVPS;
 	
 	dearControllerTarget pTargetBlendFactor;
@@ -67,8 +69,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRule( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRule &rule );
+	dearRule(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRule &rule);
 	
 	/** Clean up animator. */
 	virtual ~dearRule();
@@ -98,7 +100,7 @@ public:
 	int GetBoneMappingCount() const;
 	
 	/** Bone mapping for bone index. */
-	int GetBoneMappingFor( int boneIndex ) const;
+	int GetBoneMappingFor(int boneIndex) const;
 	
 	
 	
@@ -109,7 +111,7 @@ public:
 	int GetVPSMappingCount() const;
 	
 	/** Vertex position set mapping for vertex position set index. */
-	int GetVPSMappingFor( int vpsIndex ) const;
+	int GetVPSMappingFor(int vpsIndex) const;
 	
 	
 	
@@ -133,13 +135,13 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	
 	/**
 	 * Check if a full rebuild of the animator instance is required.
@@ -147,10 +149,10 @@ public:
 	virtual bool RebuildInstance() const;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ) = 0;
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) = 0;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();

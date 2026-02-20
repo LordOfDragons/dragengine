@@ -27,13 +27,12 @@
 
 #include "../../../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerDictionaryExt.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskTexture;
-class deoglQuickSorter;
 class deoglPersistentRenderTaskInstance;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroup;
@@ -46,12 +45,12 @@ class deoglVAO;
 class deoglPersistentRenderTaskVAO{
 private:
 	deoglPersistentRenderTaskPool &pPool;
-	decPointerLinkedList::cListEntry pLLTexture;
+	decTLinkedList<deoglPersistentRenderTaskVAO>::Element pLLTexture;
 	
 	deoglPersistentRenderTaskTexture *pParentTexture;
 	const deoglVAO *pVAO;
-	decPointerLinkedList pInstances;
-	decPointerDictionaryExt pInstancesMap;
+	decTLinkedList<deoglPersistentRenderTaskInstance> pInstances;
+	decTDictionary<unsigned int,deoglPersistentRenderTaskInstance*> pInstancesMap;
 	
 	
 	
@@ -59,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create persistent render task vao. */
-	deoglPersistentRenderTaskVAO( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskVAO(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up persistent render task vao. */
 	~deoglPersistentRenderTaskVAO();
@@ -73,13 +72,13 @@ public:
 	inline deoglPersistentRenderTaskTexture *GetParentTexture() const{ return pParentTexture; }
 	
 	/** Set parent texture. */
-	void SetParentTexture( deoglPersistentRenderTaskTexture *texture );
+	void SetParentTexture(deoglPersistentRenderTaskTexture *texture);
 	
 	/** VAO. */
 	inline const deoglVAO *GetVAO() const{ return pVAO; }
 	
 	/** Set VAO. */
-	void SetVAO( const deoglVAO *vao );
+	void SetVAO(const deoglVAO *vao);
 	
 	
 	
@@ -91,21 +90,24 @@ public:
 	
 	
 	
+	/** Instances. */
+	inline const decTLinkedList<deoglPersistentRenderTaskInstance> &GetInstances() const{ return pInstances; }
+	
 	/** Number of instances. */
 	int GetInstanceCount() const;
 	
 	/** Root instance. */
-	decPointerLinkedList::cListEntry *GetRootInstance() const;
+	decTLinkedList<deoglPersistentRenderTaskInstance>::Element *GetRootInstance() const;
 	
 	/** Instance with shared sub instance spb. */
-	deoglPersistentRenderTaskInstance *GetInstanceWith( const deoglSharedSPBRTIGroup *group ) const;
+	deoglPersistentRenderTaskInstance *GetInstanceWith(const deoglSharedSPBRTIGroup *group) const;
 	
 	/** Add instance. */
-	deoglPersistentRenderTaskInstance *AddInstance( deoglSharedSPB *spb = NULL,
-		const deoglSharedSPBRTIGroup *group = NULL );
+	deoglPersistentRenderTaskInstance *AddInstance(deoglSharedSPB *spb = nullptr,
+		const deoglSharedSPBRTIGroup *group = nullptr);
 	
 	/** Remove instance. */
-	void RemoveInstance( deoglPersistentRenderTaskInstance *instance );
+	void RemoveInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();
@@ -121,8 +123,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTexture(){ return pLLTexture; }
-	inline const decPointerLinkedList::cListEntry &GetLLTexture() const{ return pLLTexture; }
+	inline decTLinkedList<deoglPersistentRenderTaskVAO>::Element &GetLLTexture(){ return pLLTexture; }
+	inline const decTLinkedList<deoglPersistentRenderTaskVAO>::Element &GetLLTexture() const{ return pLLTexture; }
 	/*@}*/
 };
 

@@ -39,18 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModEnablePos::aeUSetRuleSModEnablePos( aeRuleStateManipulator *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModEnablePos::aeUSetRuleSModEnablePos(aeRuleStateManipulator *rule){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorEnablePosition");
 		
-		SetShortInfo( "Set state manipulator rule enable position" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +64,11 @@ aeUSetRuleSModEnablePos::~aeUSetRuleSModEnablePos(){
 ///////////////
 
 void aeUSetRuleSModEnablePos::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 void aeUSetRuleSModEnablePos::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
 
@@ -79,5 +77,4 @@ void aeUSetRuleSModEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnablePos::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

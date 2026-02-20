@@ -25,14 +25,15 @@
 #ifndef _FEVIEWFONTIMAGE_H_
 #define _FEVIEWFONTIMAGE_H_
 
-#include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include "feViewFIImage.h"
+#include "feViewFontImageListener.h"
+#include "../../font/feFont.h"
+
+#include <deigde/gui/igdeScrollBar.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class feWindowMain;
-class feViewFIImage;
-class feViewFontImageListener;
-class feFont;
 
 
 
@@ -43,18 +44,22 @@ class feFont;
  * widget as well as scrollbars for altering the viewport.
  */
 class feViewFontImage : public igdeContainerBorder{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<feViewFontImage>;
+	
 private:
 	feWindowMain &pWindowMain;
-	feViewFontImageListener *pListener;
-	feFont *pFont;
+	feViewFontImageListener::Ref pListener;
+	feFont::Ref pFont;
 	
 	decPoint pContentSize;
 	decPoint pScrollOffset;
 	
-	igdeScrollBarReference pSBHorizontal;
-	igdeScrollBarReference pSBVertical;
-	igdeComboBoxReference pCBZoom;
-	feViewFIImage *pViewImage;
+	igdeScrollBar::Ref pSBHorizontal;
+	igdeScrollBar::Ref pSBVertical;
+	igdeComboBox::Ref pCBZoom;
+	feViewFIImage::Ref pViewImage;
 	
 	
 	
@@ -62,10 +67,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font image view. */
-	feViewFontImage( feWindowMain &windowMain );
+	feViewFontImage(feWindowMain &windowMain);
 	
 	/** \brief Clean up font image view. */
-	virtual ~feViewFontImage();
+protected:
+	~feViewFontImage() override;
+public:
 	/*@}*/
 	
 	
@@ -73,13 +80,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	
 	
 	
@@ -90,7 +97,7 @@ public:
 	void OnBeforeEngineStop();
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	
 	
@@ -98,11 +105,11 @@ public:
 	void ResetView();
 	
 	/** \brief View image. */
-	inline feViewFIImage &GetViewImage() const{ return *pViewImage; }
+	inline const feViewFIImage::Ref &GetViewImage() const{ return pViewImage; }
 	
 	
 	/** \brief Game like frame update. */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	
 	/** \brief Update scrollbar ranges. */
 	void UpdateScrollbarRanges();

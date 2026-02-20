@@ -49,10 +49,10 @@ deNavigationSpaceWall::~deNavigationSpaceWall(){
 // Management
 ///////////////
 
-void deNavigationSpaceWall::SetFace( unsigned short face ){
+void deNavigationSpaceWall::SetFace(unsigned short face){
 	pFace = face;
 }
 
-void deNavigationSpaceWall::SetType( unsigned short type ){
+void deNavigationSpaceWall::SetType(unsigned short type){
 	pType = type;
 }

@@ -25,12 +25,13 @@
 #ifndef _DEOGLDYNAMICSKIN_H_
 #define _DEOGLDYNAMICSKIN_H_
 
+#include "deoglRDynamicSkin.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicDynamicSkin.h>
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglDSRenderable;
-class deoglRDynamicSkin;
 class deoglDynamicSkinListener;
 
 class deGraphicOpenGl;
@@ -46,12 +47,12 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDynamicSkin &pDynamicSkin;
 	
-	deoglRDynamicSkin *pRDynamicSkin;
+	deoglRDynamicSkin::Ref pRDynamicSkin;
 	
-	decPointerList pRenderables;
+	decTList<deoglDSRenderable*> pRenderables;
 	bool pDirtyRenderables;
 	
-	decPointerSet pListeners;
+	decTOrderedSet<deoglDynamicSkinListener*> pListeners;
 	
 	
 	
@@ -59,21 +60,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglDynamicSkin( deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin );
+	deoglDynamicSkin(deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin);
 	
 	/** Clean up peer. */
-	virtual ~deoglDynamicSkin();
+	~deoglDynamicSkin() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** Graphic module. */
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	
 	/** Dynamic skin resources. */
 	inline const deDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Render dynamic skin. */
-	inline deoglRDynamicSkin *GetRDynamicSkin() const{ return pRDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetRDynamicSkin() const{ return pRDynamicSkin; }
 	
 	
 	
@@ -82,7 +86,7 @@ public:
 	int GetRenderableCount() const;
 	
 	/** Renderable at index. */
-	deoglDSRenderable *GetRenderableAt( int index ) const;
+	deoglDSRenderable *GetRenderableAt(int index) const;
 	
 	
 	
@@ -95,10 +99,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglDynamicSkinListener *listener );
+	void AddListener(deoglDynamicSkinListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglDynamicSkinListener *listener );
+	void RemoveListener(deoglDynamicSkinListener *listener);
 	
 	/** Notify all dynamic skin has been destroyed. */
 	void NotifyDestroyed();
@@ -107,10 +111,10 @@ public:
 	void NotifyRenderablesChanged();
 	
 	/** Notify all renderable changed. */
-	void NotifyRenderableChanged( deoglDSRenderable &renderable );
+	void NotifyRenderableChanged(deoglDSRenderable &renderable);
 	
 	/** Notify all renderable content requires sync. */
-	void NotifyRenderableRequiresSync( deoglDSRenderable &renderable );
+	void NotifyRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	
@@ -118,16 +122,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Renderable added. */
-	virtual void RenderableAdded( int index, deDSRenderable *renderable );
+	void RenderableAdded(int index, deDSRenderable *renderable) override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged( int index, deDSRenderable *renderable );
+	void RenderableChanged(int index, deDSRenderable *renderable) override;
 	
 	/** Renderable removed. */
-	virtual void RenderableRemoved( int index, deDSRenderable *renderable );
+	void RenderableRemoved(int index, deDSRenderable *renderable) override;
 	
 	/** All renderables removed. */
-	virtual void AllRenderablesRemoved();
+	void AllRenderablesRemoved() override;
 	/*@}*/
 	
 	

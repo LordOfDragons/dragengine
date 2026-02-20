@@ -33,7 +33,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
@@ -58,14 +58,15 @@ class cActionLMTrackCam : public igdeAction{
 	meWPSensors &pPanel;
 	
 public:
-	cActionLMTrackCam( meWPSensors &panel ) : igdeAction( "Track Camera", "Track camera." ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionLMTrackCam>;
+	cActionLMTrackCam(meWPSensors &panel) : igdeAction("@World.WPSensors.Action.TrackCamera", "@World.WPSensors.TrackCamera"),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
-		if( lumimeter ){
-			lumimeter->SetTrackCamera( ! lumimeter->GetTrackCamera() );
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
+		if(lumimeter){
+			lumimeter->SetTrackCamera(!lumimeter->GetTrackCamera());
 		}
 	}
 };
@@ -74,13 +75,14 @@ class cEditLMPos : public igdeEditDVectorListener{
 	meWPSensors &pPanel;
 	
 public:
-	cEditLMPos( meWPSensors &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cEditLMPos>;
+	cEditLMPos(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+	void OnDVectorChanged(igdeEditDVector *editDVector) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
-		if( lumimeter ){
-			lumimeter->SetPosition( editDVector->GetDVector() );
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
+		if(lumimeter){
+			lumimeter->SetPosition(editDVector->GetDVector());
 		}
 		
 	}
@@ -90,13 +92,14 @@ class cEditLMDir : public igdeEditVectorListener{
 	meWPSensors &pPanel;
 	
 public:
-	cEditLMDir( meWPSensors &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cEditLMDir>;
+	cEditLMDir(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
-		if( lumimeter ){
-			lumimeter->SetDirection( editVector->GetVector() );
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
+		if(lumimeter){
+			lumimeter->SetDirection(editVector->GetVector());
 		}
 		
 	}
@@ -106,13 +109,14 @@ class cTextLMConeIA : public igdeTextFieldListener{
 	meWPSensors &pPanel;
 	
 public:
-	cTextLMConeIA( meWPSensors &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextLMConeIA>;
+	cTextLMConeIA(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
-		if( lumimeter ){
-			lumimeter->SetConeInnerAngle( textField->GetFloat() );
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
+		if(lumimeter){
+			lumimeter->SetConeInnerAngle(textField->GetFloat());
 		}
 	}
 };
@@ -121,13 +125,14 @@ class cTextLMConeOA : public igdeTextFieldListener{
 	meWPSensors &pPanel;
 	
 public:
-	cTextLMConeOA( meWPSensors &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextLMConeOA>;
+	cTextLMConeOA(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
-		if( lumimeter ){
-			lumimeter->SetConeOuterAngle( textField->GetFloat() );
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
+		if(lumimeter){
+			lumimeter->SetConeOuterAngle(textField->GetFloat());
 		}
 	}
 };
@@ -136,13 +141,14 @@ class cTextLMConeExp : public igdeTextFieldListener{
 	meWPSensors &pPanel;
 	
 public:
-	cTextLMConeExp( meWPSensors &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextLMConeExp>;
+	cTextLMConeExp(meWPSensors &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
-		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
-		if( lumimeter ){
-			lumimeter->SetConeExponent( textField->GetFloat() );
+		meLumimeter * const lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
+		if(lumimeter){
+			lumimeter->SetConeExponent(textField->GetFloat());
 		}
 	}
 };
@@ -157,38 +163,38 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPSensors::meWPSensors( meWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties )
+meWPSensors::meWPSensors(meWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox;
+	igdeContainer::Ref content, groupBox;
 	
-// 	pListener = new meWPViewListener( *this );
+// 	pListener = meWPViewListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// lumimeter
-	helper.GroupBox( content, groupBox, "Lumimeter:" );
+	helper.GroupBox(content, groupBox, "@World.WPSensors.Lumimeter");
 	
-	helper.CheckBox( groupBox, pChkLMTrackCam, new cActionLMTrackCam( *this ), true );
-	helper.EditDVector( groupBox, "Position:", "Position", pEditLMPos, new cEditLMPos( *this ) );
-	helper.EditVector( groupBox, "Direction:", "Direction", pEditLMDir, new cEditLMDir( *this ) );
-	helper.EditFloat( groupBox, "Inner Angle:", "Cone inner angle in degrees",
-		pEditLMConeIA, new cTextLMConeIA( *this ) );
-	helper.EditFloat( groupBox, "Outer Angle:", "Cone outer angle in degrees",
-		pEditLMConeOA, new cTextLMConeOA( *this ) );
-	helper.EditFloat( groupBox, "Exponent:",
-		"Cone exponent smoothing between inner and outer angle",
-		pEditLMConeExp, new cTextLMConeExp( *this ) );
+	helper.CheckBox(groupBox, pChkLMTrackCam, cActionLMTrackCam::Ref::New(*this));
+	helper.EditDVector(groupBox, "@World.WPSensors.Label.Position", "@World.WPSensors.Position.ToolTip", pEditLMPos, cEditLMPos::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSensors.Direction", "@World.WPSensors.Direction.ToolTip", pEditLMDir, cEditLMDir::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSensors.InnerAngle", "@World.WPSensors.ConeInnerAngle.ToolTip",
+		pEditLMConeIA, cTextLMConeIA::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSensors.OuterAngle", "@World.WPSensors.ConeOuterAngle.ToolTip",
+		pEditLMConeOA, cTextLMConeOA::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSensors.Exponent",
+		"@World.WPSensors.ConeExponent.ToolTip",
+		pEditLMConeExp, cTextLMConeExp::Ref::New(*this));
 	
-	helper.EditFloat( groupBox, "Measured Luminance:", "Measured luminance", pEditLMLumi, NULL );
-	pEditLMLumi->SetEditable( false );
-	helper.ColorBox( groupBox, "Measured Color:", "Measured color", pEditLMColor, NULL );
-	pEditLMColor->SetEnabled( false );
+	helper.EditFloat(groupBox, "@World.WPSensors.MeasuredLuminance", "@World.WPSensors.MeasuredLuminance.ToolTip", pEditLMLumi, {});
+	pEditLMLumi->SetEditable(false);
+	helper.ColorBox(groupBox, "@World.WPSensors.MeasuredColor", "@World.WPSensors.MeasuredColor.ToolTip", pEditLMColor, {});
+	pEditLMColor->SetEnabled(false);
 }
 
 meWPSensors::~meWPSensors(){
@@ -205,35 +211,35 @@ void meWPSensors::UpdateSensors(){
 
 void meWPSensors::UpdateLumimeter(){
 	meWorld * const world = pWindowProperties.GetWindowMain().GetWorld();
-	meLumimeter * lumimeter = world ? world->GetLumimeter() : NULL;
+	meLumimeter * lumimeter = world ? world->GetLumimeter().Pointer() : nullptr;
 	
-	if( lumimeter ){
-		pChkLMTrackCam->SetChecked( lumimeter->GetTrackCamera() );
-		pEditLMPos->SetDVector( lumimeter->GetPosition() );
-		pEditLMDir->SetVector( lumimeter->GetDirection() );
-		pEditLMConeIA->SetFloat( lumimeter->GetConeInnerAngle() );
-		pEditLMConeOA->SetFloat( lumimeter->GetConeOuterAngle() );
-		pEditLMConeExp->SetFloat( lumimeter->GetConeExponent() );
+	if(lumimeter){
+		pChkLMTrackCam->SetChecked(lumimeter->GetTrackCamera());
+		pEditLMPos->SetDVector(lumimeter->GetPosition());
+		pEditLMDir->SetVector(lumimeter->GetDirection());
+		pEditLMConeIA->SetFloat(lumimeter->GetConeInnerAngle());
+		pEditLMConeOA->SetFloat(lumimeter->GetConeOuterAngle());
+		pEditLMConeExp->SetFloat(lumimeter->GetConeExponent());
 		
-		pEditLMLumi->SetFloat( lumimeter->MeasureLuminance() );
-		pEditLMColor->SetColor( lumimeter->MeasureColor() );
+		pEditLMLumi->SetFloat(lumimeter->MeasureLuminance());
+		pEditLMColor->SetColor(lumimeter->MeasureColor());
 		
 	}else{
-		pChkLMTrackCam->SetChecked( false );
-		pEditLMPos->SetDVector( decDVector() );
-		pEditLMDir->SetVector( decVector() );
+		pChkLMTrackCam->SetChecked(false);
+		pEditLMPos->SetDVector(decDVector());
+		pEditLMDir->SetVector(decVector());
 		pEditLMConeIA->ClearText();
 		pEditLMConeOA->ClearText();
 		pEditLMConeExp->ClearText();
 		pEditLMLumi->ClearText();
-		pEditLMColor->SetColor( decColor() );
+		pEditLMColor->SetColor(decColor());
 	}
 	
 	const bool enable = lumimeter;
-	pChkLMTrackCam->SetEnabled( enable );
-	pEditLMPos->SetEnabled( enable );
-	pEditLMDir->SetEnabled( enable );
-	pEditLMConeIA->SetEnabled( enable );
-	pEditLMConeOA->SetEnabled( enable );
-	pEditLMConeExp->SetEnabled( enable );
+	pChkLMTrackCam->SetEnabled(enable);
+	pEditLMPos->SetEnabled(enable);
+	pEditLMDir->SetEnabled(enable);
+	pEditLMConeIA->SetEnabled(enable);
+	pEditLMConeOA->SetEnabled(enable);
+	pEditLMConeExp->SetEnabled(enable);
 }

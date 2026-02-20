@@ -52,10 +52,10 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -65,7 +65,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -81,23 +81,23 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	cBaseTextFieldListener( reWPBone &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(reWPBone &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if( ! rig || ! bone ){
+		if(!rig || !bone){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, rig, bone ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, rig, bone));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig *rig, reRigBone *bone ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -105,23 +105,23 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	cBaseEditVectorListener( reWPBone &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
+	cBaseEditVectorListener(reWPBone &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if( ! rig || ! bone ){
+		if(!rig || !bone){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), rig, bone ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editVector->GetVector(), rig, bone));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig *rig, reRigBone *bone ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -129,25 +129,25 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	cBaseAction( reWPBone &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(reWPBone &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if( ! rig || ! bone ){
+		if(!rig || !bone){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( rig, bone ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(rig, bone));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( reRig *rig, reRigBone *bone ) = 0;
+	virtual igdeUndo::Ref OnAction(reRig *rig, reRigBone *bone) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -155,174 +155,190 @@ protected:
 	reWPBone &pPanel;
 	
 public:
-	cBaseComboBoxListener( reWPBone &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
+	cBaseComboBoxListener(reWPBone &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigBone * const bone = pPanel.GetBone();
-		if( ! rig || ! bone ){
+		if(!rig || !bone){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnTextChanged( comboBox, rig, bone ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnTextChanged(comboBox, rig, bone));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged( igdeComboBox *comboBox, reRig *rig, reRigBone *bone ) = 0;
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) = 0;
 };
 
 
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	cTextName( reWPBone &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextName>;
+	cTextName(reWPBone &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig *rig, reRigBone *bone ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone) override{
 		const decString &name = textField->GetText();
-		if( name == bone->GetName() ){
-			return NULL;
+		if(name == bone->GetName()){
+			return {};
 		}
-		if( rig->GetBoneNamed( name ) ){
-			igdeCommonDialogs::ErrorFormat( &pPanel, "Invalid Bone Name",
-				"There exists already a bone named %s.", name.GetString() );
-			return NULL;
+		if(rig->GetBones().HasNamed(name)){
+			igdeCommonDialogs::ErrorFormat(pPanel, "@Rig.PanelBone.Dialog.InvalidBoneName",
+				pPanel.Translate("Rig.PanelBone.Error.DuplicateName").ToUTF8(), name.GetString());
+			return {};
 		}
-		return new reUSetBoneName( bone, name );
+		return reUSetBoneName::Ref::New(bone, name);
 	}
 };
 
 class cComboParent : public cBaseComboBoxListener{
 public:
-	cComboParent( reWPBone &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboParent>;
+	cComboParent(reWPBone &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged( igdeComboBox *comboBox, reRig *rig, reRigBone *bone ){
+	igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) override{
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		reRigBone *parent = NULL;
-		if( selection ){
-			parent = ( reRigBone* )selection->GetData();
+		reRigBone *parent = nullptr;
+		if(selection){
+			parent = (reRigBone*)selection->GetData();
 		}
 		
-		if( parent == bone->GetParentBone() ){
-			return NULL;
+		if(parent == bone->GetParentBone()){
+			return {};
 		}
 		
-		if( parent && ! bone->CanHaveParent( parent ) ){
-			igdeCommonDialogs::ErrorFormat( &pPanel, "Invalid Parent Bone",
-				"Internal error. Bone '%s' is not valid as parent and should not have been selectable!",
-				parent->GetName().GetString() );
-			return NULL;
+		if(parent && !bone->CanHaveParent(parent)){
+			igdeCommonDialogs::ErrorFormat(pPanel, "@Rig.PanelBone.Dialog.InvalidParentBone",
+				pPanel.Translate("Rig.PanelBone.Error.InvalidParent").ToUTF8(),
+				parent->GetName().GetString());
+			return {};
 		}
 
-		return new reUSetBoneParent( bone, parent );
+		return reUSetBoneParent::Ref::New(bone, parent);
 	}
 };
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
-	cEditPosition( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditPosition>;
+	cEditPosition(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig *rig, reRigBone *bone ){
-		if( vector.IsEqualTo( bone->GetPosition() ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) override{
+		if(vector.IsEqualTo(bone->GetPosition())){
+			return {};
 		}
-		return new reUSetBonePosition( bone, vector );
+		return reUSetBonePosition::Ref::New(bone, vector);
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	cEditRotation( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditRotation>;
+	cEditRotation(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig *rig, reRigBone *bone ){
-		if( vector.IsEqualTo( bone->GetOrientation() ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) override{
+		if(vector.IsEqualTo(bone->GetOrientation())){
+			return {};
 		}
-		return new reUSetBoneOrientation( bone, vector );
+		return reUSetBoneOrientation::Ref::New(bone, vector);
 	}
 };
 
 class cEditCentralMassPoint : public cBaseEditVectorListener{
 public:
-	cEditCentralMassPoint( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditCentralMassPoint>;
+	cEditCentralMassPoint(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig *rig, reRigBone *bone ){
-		if( vector.IsEqualTo( bone->GetCentralMassPoint() ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) override{
+		if(vector.IsEqualTo(bone->GetCentralMassPoint())){
+			return {};
 		}
-		return new reUSetBoneCentralMassPoint( bone, vector );
+		return reUSetBoneCentralMassPoint::Ref::New(bone, vector);
 	}
 };
 
 class cTextMass : public cBaseTextFieldListener{
 public:
-	cTextMass( reWPBone &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextMass>;
+	cTextMass(reWPBone &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig *rig, reRigBone *bone ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone) override{
 		const float mass = textField->GetFloat();
-		if( fabsf( mass - bone->GetMass() ) < FLOAT_SAFE_EPSILON ){
-			return NULL;
+		if(fabsf(mass - bone->GetMass()) < FLOAT_SAFE_EPSILON){
+			return {};
 		}
-		return new reUSetBoneMass( bone, mass );
+		return reUSetBoneMass::Ref::New(bone, mass);
 	}
 };
 
 class cCheckDynamic : public cBaseAction{
 public:
-	cCheckDynamic( reWPBone &panel ) : cBaseAction( panel, "Dynamic",
-		"Determines if the bone is affected by physics." ){ }
+	using Ref = deTObjectReference<cCheckDynamic>;
 	
-	virtual igdeUndo *OnAction( reRig *rig, reRigBone *bone ){
-		return new reUToggleBoneDynamic( bone );
+public:
+	cCheckDynamic(reWPBone &panel) : cBaseAction(panel, "@Rig.PanelBone.Physics.Dynamic",
+		"@Rig.PanelBone.Physics.Dynamic.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(reRig *rig, reRigBone *bone) override{
+		return reUToggleBoneDynamic::Ref::New(bone);
 	}
 };
 
 class cEditIKLimitsLower : public cBaseEditVectorListener{
 public:
-	cEditIKLimitsLower( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditIKLimitsLower>;
+	cEditIKLimitsLower(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
-		if( vector.IsEqualTo( bone->GetIKLimitsLower() ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigBone *bone) override{
+		if(vector.IsEqualTo(bone->GetIKLimitsLower())){
+			return {};
 		}
-		return new reUSetBoneIKLimitsLower( bone, vector );
+		return reUSetBoneIKLimitsLower::Ref::New(bone, vector);
 	}
 };
 
 class cEditIKLimitsUpper : public cBaseEditVectorListener{
 public:
-	cEditIKLimitsUpper( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditIKLimitsUpper>;
+	cEditIKLimitsUpper(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
-		if( vector.IsEqualTo( bone->GetIKLimitsUpper() ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigBone *bone) override{
+		if(vector.IsEqualTo(bone->GetIKLimitsUpper())){
+			return {};
 		}
-		return new reUSetBoneIKLimitsUpper( bone, vector );
+		return reUSetBoneIKLimitsUpper::Ref::New(bone, vector);
 	}
 };
 
 class cEditIKResistance : public cBaseEditVectorListener{
 public:
-	cEditIKResistance( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditIKResistance>;
+	cEditIKResistance(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
-		if( vector.IsEqualTo( bone->GetIKResistance() ) ){
-			return NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigBone *bone) override{
+		if(vector.IsEqualTo(bone->GetIKResistance())){
+			return {};
 		}
-		return new reUSetBoneIKResistance( bone, vector );
+		return reUSetBoneIKResistance::Ref::New(bone, vector);
 	}
 };
 
 class cCheckIKLocked : public cBaseAction{
+public:
+	using Ref = deTObjectReference<cCheckIKLocked>;
+	
+private:
 	const int pAxis;
 public:
-	cCheckIKLocked( reWPBone &panel, int axis, const char *text ) : cBaseAction( panel, text,
-		"Determines if the IK Axis is locked." ), pAxis( axis ){ }
+	cCheckIKLocked(reWPBone &panel, int axis, const char *text) : cBaseAction(panel, text,
+		"@Rig.PanelBone.IkLimits.Locked.ToolTip"), pAxis(axis){ }
 	
-	virtual igdeUndo *OnAction( reRig *rig, reRigBone *bone ){
-		return new reUToggleBoneIKLocked( bone, pAxis );
+	igdeUndo::Ref OnAction(reRig *rig, reRigBone *bone) override{
+		return reUToggleBoneIKLocked::Ref::New(bone, pAxis);
 	}
 };
 
@@ -336,84 +352,73 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPBone::reWPBone( reWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pRig( NULL ),
-pBone( NULL ),
-pListener( NULL )
+reWPBone::reWPBone(reWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPBoneListener( *this );
+	pListener = reWPBoneListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	// structure
-	helper.GroupBox( content, groupBox, "Structure:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Structure");
 	
-	helper.EditString( groupBox, "Name:", "Unique name of the bone.",
-		pEditName, new cTextName( *this ) );
+	helper.EditString(groupBox, "@Rig.PanelBone.Structure.Name", "@Rig.PanelBone.Structure.Name.ToolTip",
+		pEditName, cTextName::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Parent:", true,
-		"Name of the parent bone or the empty string if this is a top level bone.",
-		pCBParent, new cComboParent( *this ) );
+	helper.ComboBox(groupBox, "@Rig.PanelBone.Structure.Parent", true,
+		"@Rig.PanelBone.Structure.Parent.ToolTip",
+		pCBParent, cComboParent::Ref::New(*this));
 	pCBParent->SetDefaultSorter();
 	
 	// geometry
-	helper.GroupBox( content, groupBox, "Geometry:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Geometry");
 	
-	helper.EditVector( groupBox, "Position:",
-		"Position of the bone relative to the world or parent bone.",
-		pEditPosition, new cEditPosition( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Position",
+		"@Rig.PanelBone.Geometry.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
 	
-	helper.EditVector( groupBox, "Rotation:",
-		"Rotation of the bone relative to the world or parent bone.",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelBone.Geometry.Rotation",
+		"@Rig.PanelBone.Geometry.Rotation.ToolTip",
+		pEditRotation, cEditRotation::Ref::New(*this));
 	
 	// physics
-	helper.GroupBox( content, groupBox, "Physics:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.Physics");
 	
-	helper.EditVector( groupBox, "CMP:",
-		"Central mass point relative to the world or parent bone.",
-		pEditCentralMassPoint, new cEditCentralMassPoint( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelBone.Physics.Cmp",
+		"@Rig.PanelBone.Physics.Cmp.ToolTip",
+		pEditCentralMassPoint, cEditCentralMassPoint::Ref::New(*this));
 	
-	helper.EditFloat( groupBox, "Mass:", "Mass in kg of the matter around the bone.",
-		pEditMass, new cTextMass( *this ) );
+	helper.EditFloat(groupBox, "@Rig.PanelBone.Physics.Mass", "@Rig.PanelBone.Physics.Mass.ToolTip",
+		pEditMass, cTextMass::Ref::New(*this));
 	
-	helper.CheckBox( groupBox, pChkDynamic, new cCheckDynamic( *this ), true );
+	helper.CheckBox(groupBox, pChkDynamic, cCheckDynamic::Ref::New(*this));
 	
 	// inverse kinematic limits
-	helper.GroupBox( content, groupBox, "Inverse Kinematic Limits:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelBone.GroupBox.IkLimits");
 	
-	helper.EditVector( groupBox, "Lower:", "Lower IK Limits per axis in degrees.",
-		pEditIKLimitsLower, new cEditIKLimitsLower( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Lower", "@Rig.PanelBone.IkLimits.Lower.ToolTip",
+		pEditIKLimitsLower, cEditIKLimitsLower::Ref::New(*this));
 	
-	helper.EditVector( groupBox, "Upper:", "Upper IK Limits per axis in degrees.",
-		pEditIKLimitsUpper, new cEditIKLimitsUpper( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Upper", "@Rig.PanelBone.IkLimits.Upper.ToolTip",
+		pEditIKLimitsUpper, cEditIKLimitsUpper::Ref::New(*this));
 	
-	helper.EditVector( groupBox, "Resistance:", "Resistance per axis in degrees in the range from 0 to 1.",
-		pEditIKResistance, new cEditIKResistance( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelBone.IkLimits.Resistance", "@Rig.PanelBone.IkLimits.Resistance.ToolTip",
+		pEditIKResistance, cEditIKResistance::Ref::New(*this));
 	
-	helper.FormLine( groupBox, "Locked:", "IK axis is locked", frameLine );
-	helper.CheckBox( frameLine, pChkIKLockedX, new cCheckIKLocked( *this, 0, "X" ), true );
-	helper.CheckBox( frameLine, pChkIKLockedY, new cCheckIKLocked( *this, 1, "Y" ), true );
-	helper.CheckBox( frameLine, pChkIKLockedZ, new cCheckIKLocked( *this, 2, "Z" ), true );
+	helper.FormLine(groupBox, "@Rig.PanelBone.IkLimits.Locked", "@Rig.PanelBone.IkLimits.Locked.ToolTip", frameLine);
+	helper.CheckBox(frameLine, pChkIKLockedX, cCheckIKLocked::Ref::New(*this, 0, "@Rig.PanelBone.IkLimits.X"));
+	helper.CheckBox(frameLine, pChkIKLockedY, cCheckIKLocked::Ref::New(*this, 1, "@Rig.PanelBone.IkLimits.Y"));
+	helper.CheckBox(frameLine, pChkIKLockedZ, cCheckIKLocked::Ref::New(*this, 2, "@Rig.PanelBone.IkLimits.Z"));
 }
 
 reWPBone::~reWPBone(){
-	SetRig( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
-	
-	if( pBone ){
-		pBone->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -421,44 +426,31 @@ reWPBone::~reWPBone(){
 // Management
 ///////////////
 
-void reWPBone::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reWPBone::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	SetBone( NULL );
+	SetBone(nullptr);
 	
-	if( pRig ){
-		pRig->RemoveNotifier( pListener );
-		pRig->FreeReference();
-		pRig = NULL;
+	if(pRig){
+		pRig->RemoveNotifier(pListener);
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
-		rig->AddNotifier( pListener );
-		rig->AddReference();
-		
-		SetBone( rig->GetSelectionBones()->GetActiveBone() );
+	if(rig){
+		rig->AddNotifier(pListener);
+		SetBone(rig->GetSelectionBones()->GetActiveBone());
 	}
 }
 
-void reWPBone::SetBone( reRigBone *bone ){
-	if( bone == pBone ){
+void reWPBone::SetBone(reRigBone *bone){
+	if(bone == pBone){
 		return;
 	}
-	
-	if( pBone ){
-		pBone->FreeReference();
-	}
-	
 	pBone = bone;
-	
-	if( bone ){
-		bone->AddReference();
-	}
-	
 	UpdateBone();
 }
 
@@ -466,18 +458,14 @@ void reWPBone::SetBone( reRigBone *bone ){
 
 void reWPBone::UpdateParentBoneList(){
 	pCBParent->RemoveAllItems();
-	pCBParent->AddItem( "< No Parent >", NULL, NULL );
+	pCBParent->AddItem(Translate("Rig.PanelBone.Parent.NoParent").ToUTF8(), nullptr, nullptr);
 	
-	if( pRig && pBone ){
-		const int boneCount = pRig->GetBoneCount();
-		int i;
-		
-		for( i=0; i<boneCount; i++ ){
-			reRigBone * const bone = pRig->GetBoneAt( i );
-			if( pBone->CanHaveParent( bone ) ){
-				pCBParent->AddItem( bone->GetName(), NULL, bone );
+	if(pRig && pBone){
+		pRig->GetBones().Visit([&](reRigBone *bone){
+			if(pBone->CanHaveParent(bone)){
+				pCBParent->AddItem(bone->GetName(), nullptr, bone);
 			}
-		}
+		});
 	}
 	
 	pCBParent->SortItems();
@@ -486,49 +474,49 @@ void reWPBone::UpdateParentBoneList(){
 void reWPBone::UpdateBone(){
 	UpdateParentBoneList();
 	
-	if( pBone ){
-		pEditName->SetText( pBone->GetName() );
-		pCBParent->SetSelection( pCBParent->IndexOfItemWithData( pBone->GetParentBone() ) );
-		pEditPosition->SetVector( pBone->GetPosition() );
-		pEditRotation->SetVector( pBone->GetOrientation() );
-		pEditCentralMassPoint->SetVector( pBone->GetCentralMassPoint() );
-		pEditIKLimitsLower->SetVector( pBone->GetIKLimitsLower() );
-		pEditIKLimitsUpper->SetVector( pBone->GetIKLimitsUpper() );
-		pEditIKResistance->SetVector( pBone->GetIKResistance() );
-		pEditMass->SetFloat( pBone->GetMass() );
-		pChkDynamic->SetChecked( pBone->GetDynamic() );
-		pChkIKLockedX->SetChecked( pBone->GetIKLockedX() );
-		pChkIKLockedY->SetChecked( pBone->GetIKLockedY() );
-		pChkIKLockedZ->SetChecked( pBone->GetIKLockedZ() );
+	if(pBone){
+		pEditName->SetText(pBone->GetName());
+		pCBParent->SetSelection(pCBParent->IndexOfItemWithData(pBone->GetParentBone()));
+		pEditPosition->SetVector(pBone->GetPosition());
+		pEditRotation->SetVector(pBone->GetOrientation());
+		pEditCentralMassPoint->SetVector(pBone->GetCentralMassPoint());
+		pEditIKLimitsLower->SetVector(pBone->GetIKLimitsLower());
+		pEditIKLimitsUpper->SetVector(pBone->GetIKLimitsUpper());
+		pEditIKResistance->SetVector(pBone->GetIKResistance());
+		pEditMass->SetFloat(pBone->GetMass());
+		pChkDynamic->SetChecked(pBone->GetDynamic());
+		pChkIKLockedX->SetChecked(pBone->GetIKLockedX());
+		pChkIKLockedY->SetChecked(pBone->GetIKLockedY());
+		pChkIKLockedZ->SetChecked(pBone->GetIKLockedZ());
 		
 	}else{
 		pEditName->ClearText();
-		pCBParent->SetSelection( pCBParent->IndexOfItemWithData( NULL ) );
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
-		pEditCentralMassPoint->SetVector( decVector() );
-		pEditIKLimitsLower->SetVector( decVector() );
-		pEditIKLimitsUpper->SetVector( decVector() );
-		pEditIKResistance->SetVector( decVector() );
+		pCBParent->SetSelection(pCBParent->IndexOfItemWithData(nullptr));
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
+		pEditCentralMassPoint->SetVector(decVector());
+		pEditIKLimitsLower->SetVector(decVector());
+		pEditIKLimitsUpper->SetVector(decVector());
+		pEditIKResistance->SetVector(decVector());
 		pEditMass->ClearText();
-		pChkDynamic->SetChecked( false );
-		pChkIKLockedX->SetChecked( false );
-		pChkIKLockedY->SetChecked( false );
-		pChkIKLockedZ->SetChecked( false );
+		pChkDynamic->SetChecked(false);
+		pChkIKLockedX->SetChecked(false);
+		pChkIKLockedY->SetChecked(false);
+		pChkIKLockedZ->SetChecked(false);
 	}
 	
-	const bool enabled = pBone != NULL;
-	pEditName->SetEnabled( enabled );
-	pCBParent->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditCentralMassPoint->SetEnabled( enabled );
-	pEditIKLimitsLower->SetEnabled( enabled );
-	pEditIKLimitsUpper->SetEnabled( enabled );
-	pEditIKResistance->SetEnabled( enabled );
-	pEditMass->SetEnabled( enabled );
-	pChkDynamic->SetEnabled( enabled );
-	pChkIKLockedX->SetEnabled( enabled );
-	pChkIKLockedY->SetEnabled( enabled );
-	pChkIKLockedZ->SetEnabled( enabled );
+	const bool enabled = pBone.IsNotNull();
+	pEditName->SetEnabled(enabled);
+	pCBParent->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditCentralMassPoint->SetEnabled(enabled);
+	pEditIKLimitsLower->SetEnabled(enabled);
+	pEditIKLimitsUpper->SetEnabled(enabled);
+	pEditIKResistance->SetEnabled(enabled);
+	pEditMass->SetEnabled(enabled);
+	pChkDynamic->SetEnabled(enabled);
+	pChkIKLockedX->SetEnabled(enabled);
+	pChkIKLockedY->SetEnabled(enabled);
+	pChkIKLockedZ->SetEnabled(enabled);
 }

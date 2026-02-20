@@ -25,7 +25,9 @@
 #ifndef _DEOGLCOMPONENTLOD_H_
 #define _DEOGLCOMPONENTLOD_H_
 
-class deoglRComponentLOD;
+#include "deoglRComponentLOD.h"
+#include <dragengine/deTUniqueReference.h>
+
 class deoglComponent;
 
 
@@ -34,16 +36,19 @@ class deoglComponent;
  */
 class deoglComponentLOD{
 public:
+	/** \brief Type holding unique reference. */
+	using Ref = deTUniqueReference<deoglComponentLOD>;
+	
 	deoglComponent &pComponent;
 	const int pLODIndex;
 	
-	deoglRComponentLOD *pRLOD;
+	deoglRComponentLOD::Ref pRLOD;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component lod. */
-	deoglComponentLOD( deoglComponent &component, int lodIndex );
+	deoglComponentLOD(deoglComponent &component, int lodIndex);
 	
 	/** Clean up component lod. */
 	~deoglComponentLOD();
@@ -60,7 +65,7 @@ public:
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
 	/** Render component lod. */
-	inline deoglRComponentLOD *GetRLOD() const{ return pRLOD; }
+	inline const deoglRComponentLOD::Ref &GetRLOD() const{ return pRLOD; }
 	/*@}*/
 	
 private:

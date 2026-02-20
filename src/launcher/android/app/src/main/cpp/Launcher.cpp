@@ -2,7 +2,6 @@
 
 #include <jni.h>
 #include <android/native_window_jni.h>
-#include <android/native_window_jni.h>
 #include <android/log.h>
 
 #include <delauncher/engine/modules/delEngineModule.h>
@@ -25,18 +24,16 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
 }
 
 Launcher::Launcher(const sConfig &config) : delLauncher(config),
-pFDContainer(FDVFSContainer::Ref::New(new FDVFSContainer(
-    decPath::CreatePathUnix("/fds")))){
+pFDContainer(FDVFSContainer::Ref::New(decPath::CreatePathUnix("/fds"))){
 }
 
 Launcher::~Launcher(){
 }
 
-delGameList Launcher::ReadDelgaGames(const decString &path){
-    delGameList games;
-    const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-            GetEngineInstanceFactory().CreateEngineInstance(
-                    *this, GetEngine().GetLogFile())));
+delGame::List Launcher::ReadDelgaGames(const decString &path){
+    delGame::List games;
+    const delEngineInstance::Ref instance(GetEngineInstanceFactory().
+        CreateEngineInstance(*this, GetEngine().GetLogFile()));
     instance->StartEngine();
     instance->LoadModules();
 
@@ -130,7 +127,7 @@ JNIEnv *env, jobject thiz, jlong plauncher) {
     JniHelpers h(env);
     try {
         const Launcher &launcher = *((Launcher *) (intptr_t) plauncher);
-        const delGameList &games = launcher.GetGameManager().GetGames();
+        const delGame::List &games = launcher.GetGameManager().GetGames();
         const int gameCount = games.GetCount();
         int i;
 
@@ -186,7 +183,7 @@ JNIEnv *env, jobject thiz, jlong plauncher, jstring path){
     try {
         Launcher &launcher = *((Launcher *) (intptr_t) plauncher);
 
-        const delGameList games(launcher.ReadDelgaGames(h.convertString(path)));
+        const delGame::List games(launcher.ReadDelgaGames(h.convertString(path)));
         const int gameCount = games.GetCount();
         int i;
 
@@ -215,7 +212,7 @@ JNIEnv *env, jobject thiz, jlong plauncher){
     JniHelpers h(env);
     try {
         const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
-        const delGameProfileList &profiles = launcher.GetGameManager().GetProfiles();
+        const delGameProfile::List &profiles = launcher.GetGameManager().GetProfiles();
         const int profileCount = profiles.GetCount();
         int i;
 

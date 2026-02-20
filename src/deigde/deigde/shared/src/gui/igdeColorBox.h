@@ -27,13 +27,12 @@
 
 #include "igdeWidget.h"
 #include "event/igdeAction.h"
+#include "event/igdeColorBoxListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
-
-class igdeColorBoxListener;
 
 
 /**
@@ -41,48 +40,67 @@ class igdeColorBoxListener;
  */
 class DE_DLL_EXPORT igdeColorBox : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeColorBox>;
+	
+	
 	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionCopy( igdeColorBox &colorBox );
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionCopy>;
+		cActionCopy(igdeColorBox &colorBox);
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionCopyHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionCopyHex( igdeColorBox &colorBox );
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionCopyHex>;
+		cActionCopyHex(igdeColorBox &colorBox);
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionPaste : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionPaste( igdeColorBox &colorBox );
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionPaste>;
+		cActionPaste(igdeColorBox &colorBox);
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionPasteHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionPasteHex( igdeColorBox &colorBox );
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionPasteHex>;
+		cActionPasteHex(igdeColorBox &colorBox);
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionEditValues : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionEditValues( igdeColorBox &colorBox );
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionEditValues>;
+		cActionEditValues(igdeColorBox &colorBox);
+		void OnAction() override;
 	};
 	
 	class DE_DLL_EXPORT cActionEditHex : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:
-		cActionEditHex( igdeColorBox &colorBox );
-		virtual void OnAction();
+		using Ref = deTObjectReference<cActionEditHex>;
+		cActionEditHex(igdeColorBox &colorBox);
+		void OnAction() override;
 	};
 	
+	class cNativeColorBox{
+	public:
+		virtual ~cNativeColorBox() = default;
+		virtual void UpdateColor() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void ClipboardPutColor(const decColor &color) = 0;
+		virtual decColor ClipboardGetColor() = 0;
+	};
 	
 	
 private:
@@ -90,18 +108,21 @@ private:
 	bool pEnabled;
 	decColor pColor;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeColorBoxListener> pListeners;
 	
+	
+protected:
+	cNativeColorBox *pNativeColorBox;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create color box. */
-	igdeColorBox( igdeEnvironment &environment );
+	igdeColorBox(igdeEnvironment &environment);
 	
 	/** \brief Create color box. */
-	igdeColorBox( igdeEnvironment &environment, const char *description );
+	igdeColorBox(igdeEnvironment &environment, const char *description);
 	
 	
 	
@@ -112,7 +133,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeColorBox();
+	~igdeColorBox() override;
 	/*@}*/
 	
 	
@@ -124,19 +145,19 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief ColorBox is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if color box is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -144,16 +165,16 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeColorBoxListener *listener );
+	void AddListener(igdeColorBoxListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeColorBoxListener *listener );
+	void RemoveListener(igdeColorBoxListener *listener);
 	
 	/** \brief Notify listeners color changed. */
 	virtual void NotifyColorChanged();
 	
 	/** \brief Show context menu at position. */
-	virtual void ShowContextMenu( const decPoint &position );
+	virtual void ShowContextMenu(const decPoint &position);
 	/*@}*/
 	
 	
@@ -167,14 +188,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -186,6 +212,9 @@ protected:
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

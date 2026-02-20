@@ -25,11 +25,11 @@
 #ifndef _DEFONTMANAGER_H_
 #define _DEFONTMANAGER_H_
 
+#include "deFont.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 
 class deEngine;
-class deFont;
 class deFontSize;
 class deFontBuilder;
 
@@ -47,16 +47,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font resource manager. */
-	deFontManager( deEngine *engine );
+	deFontManager(deEngine *engine);
 	
 	/** \brief Clean up font resource manager and reports leaking resources. */
-	virtual ~deFontManager();
+	~deFontManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Fonts. */
+	inline const deFileResourceList &GetFonts() const{ return pFonts; }
+	
 	/** \brief Number of fonts. */
 	int GetFontCount() const;
 	
@@ -64,32 +67,32 @@ public:
 	deFont *GetRootFont() const;
 	
 	/** \brief Font with filename or NULL. */
-	deFont *GetFontWith( const char *filename ) const;
+	deFont *GetFontWith(const char *filename) const;
 	
 	/** \brief Font with filename or NULL. */
-	deFont *GetFontWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deFont *GetFontWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new font. */
-	deFont *CreateFont( const char *filename, deFontBuilder &builder );
+	deFont::Ref CreateFont(const char *filename, deFontBuilder &builder);
 	
 	/** \brief Create new font. */
-	deFont *CreateFont( deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder );
+	deFont::Ref CreateFont(deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder);
 	
 	/** \brief Load font from file relative to base path. */
-	deFont *LoadFont( const char *filename, const char *basePath );
+	deFont::Ref LoadFont(const char *filename, const char *basePath);
 	
 	/** \brief Load font from file relative to base path. */
-	deFont *LoadFont( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deFont::Ref LoadFont(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Load debug font. */
-	deFont *LoadDebugFont();
+	deFont::Ref LoadDebugFont();
 	
 	/**
 	 * \brief Add loaded and prepared font.
 	 * 
 	 * \warning To be used only by deResourceLoader.
 	 */
-	void AddLoadedFont( deFont *font );
+	void AddLoadedFont(deFont *font);
 	
 	/**
 	 * \brief Load font size if supported and required.
@@ -101,7 +104,7 @@ public:
 	deFontSize *LoadFontSize(deFont &font, int size);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -109,10 +112,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Create graphic system peers. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Free graphic system peers. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -124,13 +127,13 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadFontSources( deFont *font );
+	void pLoadFontSources(deFont *font);
 };
 
 #endif

@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetVFSPath::gdeUGDSetVFSPath( gdeGameDefinition *gameDefinition, const char *newValue ) :
-pGameDefinition( NULL ),
-pNewValue( newValue )
+gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition *gameDefinition, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set VFS path" );
+	SetShortInfo("@GameDefinition.Undo.GDSetVFSPath");
 	
 	pOldValue = gameDefinition->GetVFSPath();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetVFSPath::~gdeUGDSetVFSPath(){
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ gdeUGDSetVFSPath::~gdeUGDSetVFSPath(){
 ///////////////
 
 void gdeUGDSetVFSPath::Undo(){
-	pGameDefinition->SetVFSPath( pOldValue );
+	pGameDefinition->SetVFSPath(pOldValue);
 }
 
 void gdeUGDSetVFSPath::Redo(){
-	pGameDefinition->SetVFSPath( pNewValue );
+	pGameDefinition->SetVFSPath(pNewValue);
 }

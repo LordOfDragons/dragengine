@@ -26,12 +26,13 @@
 #define _GDEVAOLIGHT_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/light/gdeOCLight.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCLight;
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/light/deLight.h>
+
 class igdeWCoordSysArrows;
 
 class deComponent;
@@ -44,13 +45,18 @@ class deComponent;
  * \todo Use DebugDrawerShape to visualize light cone.
  */
 class gdeVAOLight : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOLight> Ref;
+	
+	
 private:
-	gdeOCLight *pOCLight;
+	gdeOCLight::Ref pOCLight;
 	
-	deLightReference pLight;
+	deLight::Ref pLight;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -59,8 +65,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object light. */
-	gdeVAOLight( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCLight *oclight );
+	gdeVAOLight(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCLight *oclight);
 	
 protected:
 	/**
@@ -69,7 +75,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOLight();
+	~gdeVAOLight() override;
 	/*@}*/
 	
 	
@@ -78,13 +84,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class light. */
-	inline gdeOCLight *GetOCLight() const{ return pOCLight; }
+	inline const gdeOCLight::Ref &GetOCLight() const{ return pOCLight; }
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Reattach resources. */
 	void AttachResources();
@@ -93,10 +99,10 @@ public:
 	void DetachResources();
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Ignore component during shadow casting. */
-	void ShadowIgnoreComponent( deComponent *component );
+	void ShadowIgnoreComponent(deComponent *component);
 	/*@}*/
 	
 	

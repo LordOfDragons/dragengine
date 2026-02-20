@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLumimeterManager::deLumimeterManager( deEngine *engine ) : deResourceManager( engine, ertLumimeter ){
-	SetLoggingName( "lumimeter" );
+deLumimeterManager::deLumimeterManager(deEngine *engine) : deResourceManager(engine, ertLumimeter){
+	SetLoggingName("lumimeter");
 }
 
 deLumimeterManager::~deLumimeterManager(){
@@ -58,27 +58,13 @@ int deLumimeterManager::GetLumimeterCount() const{
 }
 
 deLumimeter *deLumimeterManager::GetRootLumimeter() const{
-	return ( deLumimeter* )pLumimeters.GetRoot();
+	return (deLumimeter*)pLumimeters.GetRoot();
 }
 
-deLumimeter *deLumimeterManager::CreateLumimeter(){
-	deLumimeter *lumimeter = NULL;
-	
-	try{
-		lumimeter = new deLumimeter( this );
-		if( ! lumimeter ) DETHROW( deeOutOfMemory );
-		
-		GetGraphicSystem()->LoadLumimeter( lumimeter );
-		
-		pLumimeters.Add( lumimeter );
-		
-	}catch( const deException & ){
-		if( lumimeter ){
-			lumimeter->FreeReference();
-		}
-		throw;
-	}
-	
+deLumimeter::Ref deLumimeterManager::CreateLumimeter(){
+	const deLumimeter::Ref lumimeter(deLumimeter::Ref::New(this));
+	GetGraphicSystem()->LoadLumimeter(lumimeter);
+	pLumimeters.Add(lumimeter);
 	return lumimeter;
 }
 
@@ -87,8 +73,8 @@ deLumimeter *deLumimeterManager::CreateLumimeter(){
 void deLumimeterManager::ReleaseLeakingResources(){
 	int count = GetLumimeterCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking lumimeter", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking lumimeter", count);
 		pLumimeters.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -97,31 +83,24 @@ void deLumimeterManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deLumimeterManager::SystemGraphicLoad(){
-	deLumimeter *lumimeter = ( deLumimeter* )pLumimeters.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
-	
-	while( lumimeter ){
-		if( ! lumimeter->GetPeerGraphic() ){
-			graSys.LoadLumimeter( lumimeter );
+	pLumimeters.GetResources().Visit([&](deResource *res){
+		deLumimeter *lumimeter = static_cast<deLumimeter*>(res);
+		if(!lumimeter->GetPeerGraphic()){
+			graSys.LoadLumimeter(lumimeter);
 		}
-		
-		lumimeter = ( deLumimeter* )lumimeter->GetLLManagerNext();
-	}
+	});
 }
 
 void deLumimeterManager::SystemGraphicUnload(){
-	deLumimeter *lumimeter = ( deLumimeter* )pLumimeters.GetRoot();
-	
-	while( lumimeter ){
-		lumimeter->SetPeerGraphic( NULL );
-		lumimeter = ( deLumimeter* )lumimeter->GetLLManagerNext();
-	}
+	pLumimeters.GetResources().Visit([](deResource *res){
+		static_cast<deLumimeter*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 
 
-void deLumimeterManager::RemoveResource( deResource *resource ){
-	pLumimeters.RemoveIfPresent( resource );
+void deLumimeterManager::RemoveResource(deResource *resource){
+	pLumimeters.RemoveIfPresent(resource);
 }

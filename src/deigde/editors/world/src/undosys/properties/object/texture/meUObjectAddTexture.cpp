@@ -41,27 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddTexture::meUObjectAddTexture( meObject *object, meObjectTexture *texture ) :
-pObject( NULL ),
-pTexture( NULL )
+meUObjectAddTexture::meUObjectAddTexture(meObject *object, meObjectTexture *texture) :
+pObject(nullptr)
 {
-	if( ! object || ! texture ) DETHROW( deeInvalidParam );
+	if(!object || !texture) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(!world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Add Object Texture" );
+	SetShortInfo("@World.UObjectAddTexture.AddObjectTexture");
 	
 	pObject = object;
-	object->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectAddTexture::~meUObjectAddTexture(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pObject ) pObject->FreeReference();
 }
 
 
@@ -70,9 +64,9 @@ meUObjectAddTexture::~meUObjectAddTexture(){
 ///////////////
 
 void meUObjectAddTexture::Undo(){
-	pObject->RemoveTexture( pTexture );
+	pObject->RemoveTexture(pTexture);
 }
 
 void meUObjectAddTexture::Redo(){
-	pObject->AddTexture( pTexture );
+	pObject->AddTexture(pTexture);
 }

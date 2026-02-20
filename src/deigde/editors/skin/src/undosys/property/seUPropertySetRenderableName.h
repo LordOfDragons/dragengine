@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -35,8 +35,12 @@ class seProperty;
  * \brief Undo Action Property Set Renderable Name.
  */
 class seUPropertySetRenderableName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertySetRenderableName>;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decString pOldName;
 	decString pNewName;
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetRenderableName( seProperty *property, const char *newName );
+	seUPropertySetRenderableName(seProperty *property, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertySetRenderableName();
+	~seUPropertySetRenderableName() override;
 	/*@}*/
 	
 	
@@ -57,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

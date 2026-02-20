@@ -50,6 +50,7 @@
 #include "selection/gdeWPSSky.h"
 #include "../../gamedef/gdeGameDefinition.h"
 
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTreeList.h>
@@ -95,36 +96,37 @@ class cTreeObjects : public igdeTreeListListener{
 	gdeWPSelection &pPanel;
 	
 public:
-	cTreeObjects( gdeWPSelection &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cTreeObjects> Ref;
+	cTreeObjects(gdeWPSelection &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeTreeList *treeList ){
-		if( ! pPanel.GetGameDefinition() || ! pPanel.GetModelTreeObjects() 
-		|| pPanel.GetModelTreeObjects()->GetIgnoreSelectionChange() ){
+	virtual void OnSelectionChanged(igdeTreeList *treeList){
+		if(!pPanel.GetGameDefinition() || !pPanel.GetModelTreeObjects() 
+		|| pPanel.GetModelTreeObjects()->GetIgnoreSelectionChange()){
 			return;
 		}
 		
-		gdeWPSTreeItemModel * const item = ( gdeWPSTreeItemModel* )treeList->GetSelection();
-		if( item ){
+		gdeWPSTreeItemModel * const item = treeList->GetSelection().DynamicCast<gdeWPSTreeItemModel>();
+		if(item){
 			item->OnSelected();
 			
 		}else{
-			pPanel.GetGameDefinition()->SetSelectedObjectType( gdeGameDefinition::eotNoSelection );
+			pPanel.GetGameDefinition()->SetSelectedObjectType(gdeGameDefinition::eotNoSelection);
 		}
 	}
 	
-	virtual void OnItemCollapsed( igdeTreeList*, igdeTreeItem* ){
+	virtual void OnItemCollapsed(igdeTreeList*, igdeTreeItem*){
 	}
 	
-	virtual void OnItemExpanded( igdeTreeList*, igdeTreeItem* ){
+	virtual void OnItemExpanded(igdeTreeList*, igdeTreeItem*){
 	}
 	
-	virtual void AddContextMenuEntries( igdeTreeList *treeList, igdeMenuCascade &menu ){
-		gdeWPSTreeItemModel * const item = ( gdeWPSTreeItemModel* )treeList->GetSelection();
-		if( item ){
-			item->OnContextMenu( menu );
+	virtual void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu){
+		gdeWPSTreeItemModel * const item = treeList->GetSelection().DynamicCast<gdeWPSTreeItemModel>();
+		if(item){
+			item->OnContextMenu(menu);
 			
 		}else{
-			( ( gdeWPSTreeModel* )treeList )->OnContextMenu( menu );
+			((gdeWPSTreeModel*)treeList)->OnContextMenu(menu);
 		}
 	}
 };
@@ -139,88 +141,83 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSelection::gdeWPSelection( gdeWindowProperties &windowProperties ) :
-igdeContainerSplitted( windowProperties.GetEnvironment(), igdeContainerSplitted::espBottom, 600 ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL ),
-pSwitcher( NULL ),
-pTreeObjects( NULL ),
-pModelTreeObjects( NULL )
+gdeWPSelection::gdeWPSelection(gdeWindowProperties &windowProperties) :
+igdeContainerSplitted(windowProperties.GetEnvironment(), igdeContainerSplitted::espBottom,
+	igdeApplication::app().DisplayScaled(600)),
+pWindowProperties(windowProperties),
+pSwitcher(nullptr),
+pTreeObjects(nullptr),
+pModelTreeObjects(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new gdeWPSelectionListener( *this );
+	pListener = gdeWPSelectionListener::Ref::New(*this);
 	
-	pSwitcher.TakeOver( new igdeSwitcher( env ) );
-	AddChild( pSwitcher, igdeContainerSplitted::eaSide );
+	pSwitcher = igdeSwitcher::Ref::New(env);
+	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
 	
-	helper.TreeList( 10, "Game definition objects", pTreeObjects, new cTreeObjects( *this ) );
-	AddChild( pTreeObjects, igdeContainerSplitted::eaCenter );
+	helper.TreeList(10, "@GameDefinition.WPSelection.TreeGameDefinitionObjects", pTreeObjects, cTreeObjects::Ref::New(*this));
+	AddChild(pTreeObjects, igdeContainerSplitted::eaCenter);
 	
-	helper.Label( pSwitcher, "No Selection" );
+	helper.Label(pSwitcher, "@GameDefinition.WPSelection.NoSelection");
 	
-	pPanelCategory.TakeOver( new gdeWPSCategory( windowProperties ) );
-	pSwitcher->AddChild( pPanelCategory );
+	pPanelCategory = gdeWPSCategory::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelCategory);
 	
-	pPanelObjectClass.TakeOver( new gdeWPSObjectClass( windowProperties ) );
-	pSwitcher->AddChild( pPanelObjectClass );
+	pPanelObjectClass = gdeWPSObjectClass::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelObjectClass);
 	
-	pPanelOCBillboard.TakeOver( new gdeWPSOCBillboard( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCBillboard );
+	pPanelOCBillboard = gdeWPSOCBillboard::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCBillboard);
 	
-	pPanelOCCamera.TakeOver( new gdeWPSOCCamera( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCCamera );
+	pPanelOCCamera = gdeWPSOCCamera::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCCamera);
 	
-	pPanelOCComponent.TakeOver( new gdeWPSOCComponent( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCComponent );
+	pPanelOCComponent = gdeWPSOCComponent::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCComponent);
 	
-	pPanelOCEnvMapProbe.TakeOver( new gdeWPSOCEnvMapProbe( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCEnvMapProbe );
+	pPanelOCEnvMapProbe = gdeWPSOCEnvMapProbe::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCEnvMapProbe);
 	
-	pPanelOCLight.TakeOver( new gdeWPSOCLight( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCLight );
+	pPanelOCLight = gdeWPSOCLight::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCLight);
 	
-	pPanelOCNavigationBlocker.TakeOver( new gdeWPSOCNavigationBlocker( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCNavigationBlocker );
+	pPanelOCNavigationBlocker = gdeWPSOCNavigationBlocker::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCNavigationBlocker);
 	
-	pPanelOCNavigationSpace.TakeOver( new gdeWPSOCNavigationSpace( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCNavigationSpace );
+	pPanelOCNavigationSpace = gdeWPSOCNavigationSpace::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCNavigationSpace);
 	
-	pPanelOCParticleEmitter.TakeOver( new gdeWPSOCParticleEmitter( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCParticleEmitter );
+	pPanelOCParticleEmitter = gdeWPSOCParticleEmitter::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCParticleEmitter);
 	
-	pPanelOCForceField.TakeOver( new gdeWPSOCForceField( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCForceField );
+	pPanelOCForceField = gdeWPSOCForceField::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCForceField);
 	
-	pPanelOCSnapPoint.TakeOver( new gdeWPSOCSnapPoint( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCSnapPoint );
+	pPanelOCSnapPoint = gdeWPSOCSnapPoint::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCSnapPoint);
 	
-	pPanelOCSpeaker.TakeOver( new gdeWPSOCSpeaker( windowProperties ) );
-	pSwitcher->AddChild( pPanelOCSpeaker );
+	pPanelOCSpeaker = gdeWPSOCSpeaker::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelOCSpeaker);
 	
-	pPanelOCWorld.TakeOver(new gdeWPSOCWorld(windowProperties));
+	pPanelOCWorld = gdeWPSOCWorld::Ref::New(windowProperties);
 	pSwitcher->AddChild(pPanelOCWorld);
 	
-	pPanelParticleEmitter.TakeOver( new gdeWPSParticleEmitter( windowProperties ) );
-	pSwitcher->AddChild( pPanelParticleEmitter );
+	pPanelParticleEmitter = gdeWPSParticleEmitter::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelParticleEmitter);
 	
-	pPanelSkin.TakeOver( new gdeWPSSkin( windowProperties ) );
-	pSwitcher->AddChild( pPanelSkin );
+	pPanelSkin = gdeWPSSkin::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelSkin);
 	
-	pPanelSky.TakeOver( new gdeWPSSky( windowProperties ) );
-	pSwitcher->AddChild( pPanelSky );
+	pPanelSky = gdeWPSSky::Ref::New(windowProperties);
+	pSwitcher->AddChild(pPanelSky);
 	
-	pSwitcher->SetCurrent( epNone );
+	pSwitcher->SetCurrent(epNone);
 }
 
 gdeWPSelection::~gdeWPSelection(){
-	SetGameDefinition( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetGameDefinition(nullptr);
 }
 
 
@@ -228,67 +225,64 @@ gdeWPSelection::~gdeWPSelection(){
 // Management
 ///////////////
 
-void gdeWPSelection::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	( ( gdeWPSCategory& )( igdeWidget& )pPanelCategory ).SetGameDefinition( NULL );
-	( ( gdeWPSObjectClass& )( igdeWidget& )pPanelObjectClass ).SetGameDefinition( NULL );
-	( ( gdeWPSOCBillboard& )( igdeWidget& )pPanelOCBillboard ).SetGameDefinition( NULL );
-	( ( gdeWPSOCCamera& )( igdeWidget& )pPanelOCCamera ).SetGameDefinition( NULL );
-	( ( gdeWPSOCComponent& )( igdeWidget& )pPanelOCComponent ).SetGameDefinition( NULL );
-	( ( gdeWPSOCEnvMapProbe& )( igdeWidget& )pPanelOCEnvMapProbe ).SetGameDefinition( NULL );
-	( ( gdeWPSOCLight& )( igdeWidget& )pPanelOCLight ).SetGameDefinition( NULL );
-	( ( gdeWPSOCNavigationBlocker& )( igdeWidget& )pPanelOCNavigationBlocker ).SetGameDefinition( NULL );
-	( ( gdeWPSOCNavigationSpace& )( igdeWidget& )pPanelOCNavigationSpace ).SetGameDefinition( NULL );
-	( ( gdeWPSOCParticleEmitter& )( igdeWidget& )pPanelOCParticleEmitter ).SetGameDefinition( NULL );
-	( ( gdeWPSOCForceField& )( igdeWidget& )pPanelOCForceField ).SetGameDefinition( NULL );
-	( ( gdeWPSOCSnapPoint& )( igdeWidget& )pPanelOCSnapPoint ).SetGameDefinition( NULL );
-	( ( gdeWPSOCSpeaker& )( igdeWidget& )pPanelOCSpeaker ).SetGameDefinition( NULL );
-	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(nullptr);
-	( ( gdeWPSParticleEmitter& )( igdeWidget& )pPanelParticleEmitter ).SetGameDefinition( NULL );
-	( ( gdeWPSSkin& )( igdeWidget& )pPanelSkin ).SetGameDefinition( NULL );
-	( ( gdeWPSSky& )( igdeWidget& )pPanelSky ).SetGameDefinition( NULL );
+	pPanelCategory.DynamicCast<gdeWPSCategory>()->SetGameDefinition(nullptr);
+	pPanelObjectClass.DynamicCast<gdeWPSObjectClass>()->SetGameDefinition(nullptr);
+	pPanelOCBillboard.DynamicCast<gdeWPSOCBillboard>()->SetGameDefinition(nullptr);
+	pPanelOCCamera.DynamicCast<gdeWPSOCCamera>()->SetGameDefinition(nullptr);
+	pPanelOCComponent.DynamicCast<gdeWPSOCComponent>()->SetGameDefinition(nullptr);
+	pPanelOCEnvMapProbe.DynamicCast<gdeWPSOCEnvMapProbe>()->SetGameDefinition(nullptr);
+	pPanelOCLight.DynamicCast<gdeWPSOCLight>()->SetGameDefinition(nullptr);
+	pPanelOCNavigationBlocker.DynamicCast<gdeWPSOCNavigationBlocker>()->SetGameDefinition(nullptr);
+	pPanelOCNavigationSpace.DynamicCast<gdeWPSOCNavigationSpace>()->SetGameDefinition(nullptr);
+	pPanelOCParticleEmitter.DynamicCast<gdeWPSOCParticleEmitter>()->SetGameDefinition(nullptr);
+	pPanelOCForceField.DynamicCast<gdeWPSOCForceField>()->SetGameDefinition(nullptr);
+	pPanelOCSnapPoint.DynamicCast<gdeWPSOCSnapPoint>()->SetGameDefinition(nullptr);
+	pPanelOCSpeaker.DynamicCast<gdeWPSOCSpeaker>()->SetGameDefinition(nullptr);
+	pPanelOCWorld.DynamicCast<gdeWPSOCWorld>()->SetGameDefinition(nullptr);
+	pPanelParticleEmitter.DynamicCast<gdeWPSParticleEmitter>()->SetGameDefinition(nullptr);
+	pPanelSkin.DynamicCast<gdeWPSSkin>()->SetGameDefinition(nullptr);
+	pPanelSky.DynamicCast<gdeWPSSky>()->SetGameDefinition(nullptr);
 	
-	if( pModelTreeObjects ){
+	if(pModelTreeObjects){
 		delete pModelTreeObjects;
-		pModelTreeObjects = NULL;
+		pModelTreeObjects = nullptr;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
-		pGameDefinition->FreeReference();
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
-		gameDefinition->AddReference();
-		
-		pModelTreeObjects = new gdeWPSTreeModel( pTreeObjects, pWindowProperties.GetWindowMain(), gameDefinition );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
+		pModelTreeObjects = new gdeWPSTreeModel(pTreeObjects, pWindowProperties.GetWindowMain(), gameDefinition);
 	}
 	
-	( ( gdeWPSCategory& )( igdeWidget& )pPanelCategory ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSObjectClass& )( igdeWidget& )pPanelObjectClass ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCBillboard& )( igdeWidget& )pPanelOCBillboard ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCCamera& )( igdeWidget& )pPanelOCCamera ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCComponent& )( igdeWidget& )pPanelOCComponent ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCEnvMapProbe& )( igdeWidget& )pPanelOCEnvMapProbe ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCLight& )( igdeWidget& )pPanelOCLight ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCNavigationBlocker& )( igdeWidget& )pPanelOCNavigationBlocker ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCNavigationSpace& )( igdeWidget& )pPanelOCNavigationSpace ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCParticleEmitter& )( igdeWidget& )pPanelOCParticleEmitter ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCForceField& )( igdeWidget& )pPanelOCForceField ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCSnapPoint& )( igdeWidget& )pPanelOCSnapPoint ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSOCSpeaker& )( igdeWidget& )pPanelOCSpeaker ).SetGameDefinition( gameDefinition );
-	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(gameDefinition);
-	( ( gdeWPSParticleEmitter& )( igdeWidget& )pPanelParticleEmitter ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSSkin& )( igdeWidget& )pPanelSkin ).SetGameDefinition( gameDefinition );
-	( ( gdeWPSSky& )( igdeWidget& )pPanelSky ).SetGameDefinition( gameDefinition );
+	pPanelCategory.DynamicCast<gdeWPSCategory>()->SetGameDefinition(gameDefinition);
+	pPanelObjectClass.DynamicCast<gdeWPSObjectClass>()->SetGameDefinition(gameDefinition);
+	pPanelOCBillboard.DynamicCast<gdeWPSOCBillboard>()->SetGameDefinition(gameDefinition);
+	pPanelOCCamera.DynamicCast<gdeWPSOCCamera>()->SetGameDefinition(gameDefinition);
+	pPanelOCComponent.DynamicCast<gdeWPSOCComponent>()->SetGameDefinition(gameDefinition);
+	pPanelOCEnvMapProbe.DynamicCast<gdeWPSOCEnvMapProbe>()->SetGameDefinition(gameDefinition);
+	pPanelOCLight.DynamicCast<gdeWPSOCLight>()->SetGameDefinition(gameDefinition);
+	pPanelOCNavigationBlocker.DynamicCast<gdeWPSOCNavigationBlocker>()->SetGameDefinition(gameDefinition);
+	pPanelOCNavigationSpace.DynamicCast<gdeWPSOCNavigationSpace>()->SetGameDefinition(gameDefinition);
+	pPanelOCParticleEmitter.DynamicCast<gdeWPSOCParticleEmitter>()->SetGameDefinition(gameDefinition);
+	pPanelOCForceField.DynamicCast<gdeWPSOCForceField>()->SetGameDefinition(gameDefinition);
+	pPanelOCSnapPoint.DynamicCast<gdeWPSOCSnapPoint>()->SetGameDefinition(gameDefinition);
+	pPanelOCSpeaker.DynamicCast<gdeWPSOCSpeaker>()->SetGameDefinition(gameDefinition);
+	pPanelOCWorld.DynamicCast<gdeWPSOCWorld>()->SetGameDefinition(gameDefinition);
+	pPanelParticleEmitter.DynamicCast<gdeWPSParticleEmitter>()->SetGameDefinition(gameDefinition);
+	pPanelSkin.DynamicCast<gdeWPSSkin>()->SetGameDefinition(gameDefinition);
+	pPanelSky.DynamicCast<gdeWPSSky>()->SetGameDefinition(gameDefinition);
 	
-	if( gameDefinition ){
+	if(gameDefinition){
 		pModelTreeObjects->SetCurrentItemFromGameDef();
 	}
 	
@@ -298,65 +292,65 @@ void gdeWPSelection::SetGameDefinition( gdeGameDefinition *gameDefinition ){
 
 
 void gdeWPSelection::SelectedObjectChanged(){
-	if( ! pGameDefinition ){
-		pSwitcher->SetCurrent( epNone );
+	if(!pGameDefinition){
+		pSwitcher->SetCurrent(epNone);
 		return;
 	}
 	
-	switch( pGameDefinition->GetSelectedObjectType() ){
+	switch(pGameDefinition->GetSelectedObjectType()){
 	case gdeGameDefinition::eotCategoryObjectClass:
 	case gdeGameDefinition::eotCategorySkin:
 	case gdeGameDefinition::eotCategorySky:
 	case gdeGameDefinition::eotCategoryParticleEmitter:
-		pSwitcher->SetCurrent( epCategory );
+		pSwitcher->SetCurrent(epCategory);
 		break;
 		
 	case gdeGameDefinition::eotObjectClass:
-		pSwitcher->SetCurrent( epObjectClass );
+		pSwitcher->SetCurrent(epObjectClass);
 		break;
 		
 	case gdeGameDefinition::eotOCBillboard:
-		pSwitcher->SetCurrent( epOCBillboard );
+		pSwitcher->SetCurrent(epOCBillboard);
 		break;
 		
 	case gdeGameDefinition::eotOCCamera:
-		pSwitcher->SetCurrent( epOCCamera );
+		pSwitcher->SetCurrent(epOCCamera);
 		break;
 		
 	case gdeGameDefinition::eotOCComponent:
-		pSwitcher->SetCurrent( epOCComponent );
+		pSwitcher->SetCurrent(epOCComponent);
 		break;
 		
 	case gdeGameDefinition::eotOCEnvMapProbe:
-		pSwitcher->SetCurrent( epOCEnvMapProbe );
+		pSwitcher->SetCurrent(epOCEnvMapProbe);
 		break;
 		
 	case gdeGameDefinition::eotOCLight:
-		pSwitcher->SetCurrent( epOCLight );
+		pSwitcher->SetCurrent(epOCLight);
 		break;
 		
 	case gdeGameDefinition::eotOCNavigationBlocker:
-		pSwitcher->SetCurrent( epOCNavigationBlocker );
+		pSwitcher->SetCurrent(epOCNavigationBlocker);
 		break;
 		
 	case gdeGameDefinition::eotOCNavigationSpace:
-		pSwitcher->SetCurrent( epOCNavigationSpace );
+		pSwitcher->SetCurrent(epOCNavigationSpace);
 		break;
 		
 	case gdeGameDefinition::eotOCParticleEmitter:
-		pSwitcher->SetCurrent( epOCParticleEmitter );
+		pSwitcher->SetCurrent(epOCParticleEmitter);
 		break;
 		
 	case gdeGameDefinition::eotOCForceField:
-		pSwitcher->SetCurrent( epOCForceField );
+		pSwitcher->SetCurrent(epOCForceField);
 		break;
 		
 	case gdeGameDefinition::eotOCSnapPoint:
-		pSwitcher->SetCurrent( epOCSnapPoint );
+		pSwitcher->SetCurrent(epOCSnapPoint);
 		break;
 		
 	case gdeGameDefinition::eotOCSpeaker:
-		pSwitcher->SetCurrent( epOCSpeaker );
+		pSwitcher->SetCurrent(epOCSpeaker);
 		break;
 		
 	case gdeGameDefinition::eotOCWorld:
@@ -364,32 +358,32 @@ void gdeWPSelection::SelectedObjectChanged(){
 		break;
 		
 	case gdeGameDefinition::eotParticleEmitter:
-		pSwitcher->SetCurrent( epParticleEmitter );
+		pSwitcher->SetCurrent(epParticleEmitter);
 		break;
 		
 	case gdeGameDefinition::eotSkin:
-		pSwitcher->SetCurrent( epSkin );
+		pSwitcher->SetCurrent(epSkin);
 		break;
 		
 	case gdeGameDefinition::eotSky:
-		pSwitcher->SetCurrent( epSky );
+		pSwitcher->SetCurrent(epSky);
 		break;
 		
 	default:
-		pSwitcher->SetCurrent( epNone );
+		pSwitcher->SetCurrent(epNone);
 	}
 }
 
-void gdeWPSelection::Find( const char *text ){
-	if( ! pGameDefinition ){
+void gdeWPSelection::Find(const char *text){
+	if(!pGameDefinition){
 		return;
 	}
 	
-	gdeWPSTreeItemModel * const item = ( gdeWPSTreeItemModel* )pTreeObjects->GetSelection();
-	if( item ){
-		item->SelectBestMatching( text );
+	gdeWPSTreeItemModel * const item = pTreeObjects->GetSelection().DynamicCast<gdeWPSTreeItemModel>();
+	if(item){
+		item->SelectBestMatching(text);
 		
 	}else{
-		pModelTreeObjects->SelectBestMatching( text );
+		pModelTreeObjects->SelectBestMatching(text);
 	}
 }

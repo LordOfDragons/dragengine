@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleLimit;
  * Undo action rule bone set target bone.
  */
 class aeURuleLimitSetTargetBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleLimitSetTargetBone>;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decString pOldBone;
 	decString pNewBone;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetTargetBone( aeRuleLimit *rule, const char *newBone );
+	aeURuleLimitSetTargetBone(aeRuleLimit *rule, const char *newBone);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetTargetBone();
+	~aeURuleLimitSetTargetBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

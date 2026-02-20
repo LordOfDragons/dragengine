@@ -25,17 +25,18 @@
 #ifndef _PROJDIALOGDISTRIBUTE_H_
 #define _PROJDIALOGDISTRIBUTE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include "../task/projTaskDistribute.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
-#include <deigde/gui/event/igdeActionExternOpenReference.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 
 #include <dragengine/common/string/decString.h>
 
 class projWindowMain;
 class projProfile;
-class projTaskDistribute;
 
 
 /**
@@ -49,20 +50,21 @@ public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<projDialogDistribute> Ref;
 	
+	
 private:
 	projWindowMain &pWindowMain;
 	projProfile *pProfile;
 	
-	igdeActionExternOpenReference pActionShowInFSManager;
+	igdeActionExternOpen::Ref pActionShowInFSManager;
 	
-	igdeTextFieldReference pEditDelgaPath;
-	igdeTextFieldReference pEditDelgaSize;
-	igdeTextFieldReference pEditDelgaFileCount;
-	igdeTextFieldReference pEditDelgaDirCount;
-	igdeTextAreaReference pEditLogs;
-	igdeButtonReference pBtnShowInFSMgr;
+	igdeTextField::Ref pEditDelgaPath;
+	igdeTextField::Ref pEditDelgaSize;
+	igdeTextField::Ref pEditDelgaFileCount;
+	igdeTextField::Ref pEditDelgaDirCount;
+	igdeTextArea::Ref pEditLogs;
+	igdeButton::Ref pBtnShowInFSMgr;
 	
-	projTaskDistribute *pTaskDistribute;
+	projTaskDistribute::Ref pTaskDistribute;
 	decString pLastTaskMessage;
 	
 	bool pCloseDialogOnFinished;
@@ -76,10 +78,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	projDialogDistribute( projWindowMain &windowMain, projProfile *profile );
+	projDialogDistribute(projWindowMain &windowMain, projProfile *profile);
 	
 	/** Clean up dialog. */
+protected:
 	virtual ~projDialogDistribute();
+public:
 	/*@}*/
 	
 	
@@ -93,7 +97,7 @@ public:
 	inline projProfile &GetProfile() const{ return *pProfile; }
 	
 	/** Add log message. */
-	void LogMessage( const char *message );
+	void LogMessage(const char *message);
 	
 	/**
 	 * Game like frame update while running modal.
@@ -103,10 +107,10 @@ public:
 	virtual void OnFrameUpdate();
 	
 	/** Close dialog once finished. */
-	void SetCloseDialogOnFinished( bool closeDialogOnFinished );
+	void SetCloseDialogOnFinished(bool closeDialogOnFinished);
 	
 	/** Print to console in addition to loggers. */
-	void SetPrintToConsole( bool printToConsole );
+	void SetPrintToConsole(bool printToConsole);
 	
 	/** Success. */
 	inline bool GetSuccess() const{ return pSuccess; }

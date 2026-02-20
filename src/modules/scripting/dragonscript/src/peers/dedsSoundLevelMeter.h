@@ -50,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsSoundLevelMeter( deScriptingDragonScript &ds, deSoundLevelMeter *soundLevelMeter );
+	dedsSoundLevelMeter(deScriptingDragonScript &ds, deSoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedsSoundLevelMeter();
+	~dedsSoundLevelMeter() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object or \em NULL. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	/*@}*/
 	
 	
@@ -74,12 +74,12 @@ public:
 	/**
 	 * \brief Speaker became audible.
 	 */
-	virtual void SpeakerAudible( const deSoundLevelMeter::cAudibleSpeaker &speaker );
+	void SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker) override;
 	
 	/**
 	 * \brief Speaker became inaudible.
 	 */
-	virtual void SpeakerInaudible( deSpeaker *speaker );
+	void SpeakerInaudible(deSpeaker *speaker) override;
 	/*@}*/
 };
 

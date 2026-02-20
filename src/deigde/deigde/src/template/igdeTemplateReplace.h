@@ -26,6 +26,7 @@
 #define _IGDETEMPLATEREPLACE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -35,6 +36,13 @@
  */
 class igdeTemplateReplace : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTemplateReplace>;
+
+	/** \brief List of template replacements. */
+	using List = decTObjectOrderedSet<igdeTemplateReplace>;
+
+
 	/** \brief Replacement value. */
 	enum eValues{
 		/** \brief Absolute project directory path. */
@@ -107,11 +115,11 @@ public:
 	igdeTemplateReplace();
 	
 	/** \brief Create template. */
-	igdeTemplateReplace( const igdeTemplateReplace &file );
+	igdeTemplateReplace(const igdeTemplateReplace &file);
 	
 protected:
 	/** \brief Clean up template. */
-	virtual ~igdeTemplateReplace();
+	~igdeTemplateReplace() override;
 	/*@}*/
 	
 	
@@ -123,19 +131,19 @@ public:
 	inline const decString &GetToken() const{ return pToken; }
 	
 	/** \brief Set token string to replace. */
-	void SetToken( const char *token );
+	void SetToken(const char *token);
 	
 	/** \brief Value to replace token with. */
 	inline eValues GetValue() const{ return pValue; }
 	
 	/** \brief Set value to replace token with. */
-	void SetValue( eValues value );
+	void SetValue(eValues value);
 	
 	/** \brief Format of replacement value. */
 	inline eFormats GetFormat() const{ return pFormat; }
 	
 	/** \brief Set format of replacement value. */
-	void SetFormat( eFormats format );
+	void SetFormat(eFormats format);
 	/*@}*/
 };
 

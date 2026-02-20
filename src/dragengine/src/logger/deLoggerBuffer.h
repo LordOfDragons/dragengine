@@ -27,6 +27,7 @@
 
 #include "deLogger.h"
 #include "../common/string/decString.h"
+#include "../common/collection/decTList.h"
 #include "../threading/deMutex.h"
 
 
@@ -43,8 +44,7 @@
 class DE_DLL_EXPORT deLoggerBuffer : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerBuffer> Ref;
-	
+	using Ref = deTObjectReference<deLoggerBuffer>;
 	
 	
 public:
@@ -75,18 +75,19 @@ public:
 		sEntry();
 		
 		/** \brief Copy constructor. */
-		sEntry( const sEntry &entry );
+		sEntry(const sEntry &entry);
+		
+		/** \brief Create entry. */
+		sEntry(eMessageTypes type, const decString &source, const decString &message);
 		
 		/** \brief Assign entry. */
-		sEntry &operator=( const sEntry &entry );
+		sEntry &operator=(const sEntry &entry);
 	};
 	
 	
 	
 private:
-	sEntry *pEntries;
-	int pEntrySize;
-	int pEntryCount;
+	decTList<sEntry> pEntries;
 	deMutex pMutex;
 	
 	
@@ -104,7 +105,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deLoggerBuffer();
+	~deLoggerBuffer() override;
 	/*@}*/
 	
 	
@@ -116,39 +117,33 @@ public:
 	int GetEntryCount();
 	
 	/** \brief Copy of entry at index. */
-	sEntry GetEntryAt( int index );
+	sEntry GetEntryAt(int index);
 	
 	/** \brief Add entry. */
-	void AddEntry( eMessageTypes type, const decString &source, const decString &message );
+	void AddEntry(eMessageTypes type, const decString &source, const decString &message);
 	
 	/** \brief Clear buffer. */
 	void Clear();
 	
 	/** \brief Send messages in the buffer to a logger and clear the buffer afterwards. */
-	void SendToLogger( deLogger &logger );
+	void SendToLogger(deLogger &logger);
 	
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 	
 	
 	
 protected:
 	inline deMutex &GetMutex(){ return pMutex; }
-	
-	
-	
-private:
-	void pClear();
-	void pAddEntry( eMessageTypes type, const decString &source, const decString &message );
 };
 
 #endif

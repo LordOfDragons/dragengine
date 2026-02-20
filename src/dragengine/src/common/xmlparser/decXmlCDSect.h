@@ -34,19 +34,18 @@
 class DE_DLL_EXPORT decXmlCDSect : public decXmlCharacterData{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlCDSect> Ref;
-	
+	using Ref = deTObjectReference<decXmlCDSect>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml cd section with the given data. */
-	decXmlCDSect( const char *data );
+	decXmlCDSect(const char *data);
 	
 protected:
 	/** \brief Clean up xml cd section. */
-	virtual ~decXmlCDSect();
+	~decXmlCDSect() override;
 	/*@}*/
 	
 	
@@ -60,15 +59,15 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToCDSect() const;
-	virtual decXmlCDSect *CastToCDSect();
+	bool CanCastToCDSect() const override;
+	decXmlCDSect *CastToCDSect() override;
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -58,8 +58,7 @@ class deBaseModule;
 class fbxProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxProperty> Ref;
-	
+	using Ref = deTObjectReference<fbxProperty>;
 	
 	
 public:
@@ -91,10 +90,10 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create property. */
-	fbxProperty( eType type );
+	fbxProperty(eType type);
 	
 	/** \brief Clean up property. */
-	virtual ~fbxProperty();
+	~fbxProperty() override;
 	/*@}*/
 	
 	
@@ -130,31 +129,31 @@ public:
 	virtual double GetValueAsDouble() const;
 	
 	virtual int GetValueCount() const;
-	virtual bool GetValueAtAsBool( int index ) const;
-	virtual int GetValueAtAsInt( int index ) const;
-	virtual int64_t GetValueAtAsLong( int index ) const;
-	virtual float GetValueAtAsFloat( int index ) const;
-	virtual double GetValueAtAsDouble( int index ) const;
+	virtual bool GetValueAtAsBool(int index) const;
+	virtual int GetValueAtAsInt(int index) const;
+	virtual int64_t GetValueAtAsLong(int index) const;
+	virtual float GetValueAtAsFloat(int index) const;
+	virtual double GetValueAtAsDouble(int index) const;
 	
 	/** \brief Read sequence of values as composed type. */
-	virtual decVector2 GetValueAtAsVector2( int index ) const;
-	virtual decVector GetValueAtAsVector( int index ) const;
-	virtual decMatrix GetValueAtAsMatrix( int index ) const;
+	virtual decVector2 GetValueAtAsVector2(int index) const;
+	virtual decVector GetValueAtAsVector(int index) const;
+	virtual decMatrix GetValueAtAsMatrix(int index) const;
 	
-	inline decVector2 GetValueAsVector2() const{ return GetValueAtAsVector2( 0 ); }
-	inline decVector GetValueAsVector() const{ return GetValueAtAsVector( 0 ); }
-	inline decMatrix GetValueAsMatrix() const{ return GetValueAtAsMatrix( 0 ); }
+	inline decVector2 GetValueAsVector2() const{ return GetValueAtAsVector2(0); }
+	inline decVector GetValueAsVector() const{ return GetValueAtAsVector(0); }
+	inline decMatrix GetValueAsMatrix() const{ return GetValueAtAsMatrix(0); }
 	
 	
 	
 	/** \brief Read from file. */
-	static fbxProperty *Read( decBaseFileReader &reader );
+	static fbxProperty::Ref Read(decBaseFileReader &reader);
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer ) = 0;
+	virtual void Save(decBaseFileWriter &writer) = 0;
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const = 0;
+	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const = 0;
 	
 	/** \brief Debug type names. */
 	const char *DebugTypeName() const;
@@ -163,7 +162,7 @@ public:
 	
 	
 protected:
-	void pGetValueReader( decBaseFileReader &reader, decBaseFileReaderReference &valueReader );
+	void pGetValueReader(decBaseFileReader &reader, decBaseFileReader::Ref &valueReader);
 };
 
 #endif

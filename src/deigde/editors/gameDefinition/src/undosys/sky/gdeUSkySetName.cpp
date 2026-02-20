@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUSkySetName::gdeUSkySetName(
-gdeSky *sky, const char *newValue ) :
-pSky( NULL )
+gdeSky *sky, const char *newValue) :
+pSky(nullptr)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky set name" );
+	SetShortInfo("@GameDefinition.Undo.SkySetName");
 	
 	pOldValue = sky->GetName();
 	pNewValue = newValue;
 	
 	pSky = sky;
-	sky->AddReference();
 }
 
 gdeUSkySetName::~gdeUSkySetName(){
-	if( pSky ){
-		pSky->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUSkySetName::~gdeUSkySetName(){
 ///////////////
 
 void gdeUSkySetName::Undo(){
-	pSky->SetName( pOldValue );
+	pSky->SetName(pOldValue);
 }
 
 void gdeUSkySetName::Redo(){
-	pSky->SetName( pNewValue );
+	pSky->SetName(pNewValue);
 }

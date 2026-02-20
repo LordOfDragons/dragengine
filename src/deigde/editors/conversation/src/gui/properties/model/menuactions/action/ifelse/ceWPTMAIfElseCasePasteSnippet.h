@@ -37,6 +37,9 @@ class ceCAIfElseCase;
  * \brief Menu action paste conversation snippet to topic.
  */
 class ceWPTMAIfElseCasePasteSnippet : public ceWPTMAPasteSnippet{
+public:
+	using Ref = deTObjectReference<ceWPTMAIfElseCasePasteSnippet>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -53,9 +56,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCasePasteSnippet( ceWindowMain &windowMain,
+	ceWPTMAIfElseCasePasteSnippet(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index );
+		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index);
 	/*@}*/
 	
 	
@@ -75,7 +78,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions) override;
 	/*@}*/
 };
 

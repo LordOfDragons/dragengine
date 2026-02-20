@@ -39,13 +39,14 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasImage::deCanvasImage( deCanvasManager *manager ) :
-deCanvas( manager ),
-pRepeatX( 1 ),
-pRepeatY( 1 ){
+deCanvasImage::deCanvasImage(deCanvasManager *manager) :
+deCanvas(manager),
+pRepeatX(1),
+pRepeatY(1){
 }
 
 deCanvasImage::~deCanvasImage(){
+	SetPeerGraphic(nullptr);
 }
 
 
@@ -53,8 +54,8 @@ deCanvasImage::~deCanvasImage(){
 // Management
 ///////////////
 
-void deCanvasImage::SetImage( deImage *image ){
-	if( image == pImage ){
+void deCanvasImage::SetImage(deImage *image){
+	if(image == pImage){
 		return;
 	}
 	
@@ -63,12 +64,12 @@ void deCanvasImage::SetImage( deImage *image ){
 	NotifyContentChanged();
 }
 
-void deCanvasImage::SetRepeatX( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deCanvasImage::SetRepeatX(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeatX ){
+	if(count == pRepeatX){
 		return;
 	}
 	
@@ -76,12 +77,12 @@ void deCanvasImage::SetRepeatX( int count ){
 	NotifyContentChanged();
 }
 
-void deCanvasImage::SetRepeatY( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deCanvasImage::SetRepeatY(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeatY ){
+	if(count == pRepeatY){
 		return;
 	}
 	
@@ -94,6 +95,6 @@ void deCanvasImage::SetRepeatY( int count ){
 // Visiting
 /////////////
 
-void deCanvasImage::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitImage( *this );
+void deCanvasImage::Visit(deCanvasVisitor &visitor){
+	visitor.VisitImage(*this);
 }

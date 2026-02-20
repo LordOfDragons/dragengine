@@ -36,9 +36,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meIDGroupID::meIDGroupID( const char *id ) :
-pID( id ),
-pUsageCount( 1 ){
+meIDGroupID::meIDGroupID(const char *id) :
+pID(id),
+pUsageCount(1){
 }
 
 meIDGroupID::~meIDGroupID(){
@@ -54,7 +54,7 @@ void meIDGroupID::Increment(){
 }
 
 void meIDGroupID::Decrement(){
-	if( pUsageCount > 0 ){
+	if(pUsageCount > 0){
 		pUsageCount--;
 	}
 }
@@ -64,6 +64,6 @@ void meIDGroupID::Decrement(){
 // Operators
 //////////////
 
-bool meIDGroupID::operator==( const meIDGroupID &id ) const{
+bool meIDGroupID::operator==(const meIDGroupID &id) const{
 	return pID == id.pID;
 }

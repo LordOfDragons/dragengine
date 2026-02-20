@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 
@@ -37,6 +37,10 @@ class meWorld;
  * \brief Undo action world add property.
  */
 class meUWorldAddProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUWorldAddProperty>;
+	
+	
 private:
 	meWorld *pWorld;
 	
@@ -49,11 +53,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldAddProperty( meWorld *world, const char *key, const char *value );
+	meUWorldAddProperty(meWorld *world, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUWorldAddProperty();
+
+protected:
+	~meUWorldAddProperty() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();

@@ -62,10 +62,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create synchronization thread. */
-	deoxrThreadSync( deVROpenXR &oxr );
+	deoxrThreadSync(deVROpenXR &oxr);
 	
 	/** Clean up synchronization thread. */
-	virtual ~deoxrThreadSync();
+	~deoxrThreadSync() override;
 	/*@}*/
 	
 	
@@ -92,7 +92,7 @@ public:
 	 * Overwrite to implement what the threa is supposed to be doing. Once this function
 	 * ends the thread is stopped.
 	 */
-	virtual void Run();
+	void Run() override;
 	/*@}*/
 	
 	

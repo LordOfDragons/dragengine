@@ -27,19 +27,19 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/skin/deSkinMapped.h>
+#include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
 
 class decXmlElementTag;
 class decXmlAttValue;
 class decXmlWriter;
-class deSkinTexture;
 class deSkinProperty;
 class deSkinPropertyConstructed;
 class decPath;
 class decCurveBezier;
 class decCurveBezierPoint;
 class deSkinPropertyMapped;
-class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 class deSkinPropertyNodeImage;
 class deSkinPropertyNodeShape;
@@ -52,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deSkinModule( deLoadableModule &loadableModule );
+	deSkinModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deSkinModule();
+	~deSkinModule() override;
 	/*@}*/
 	
 	
@@ -63,44 +63,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load skin. */
-	virtual void LoadSkin( decBaseFileReader &reader, deSkin &skin );
+	void LoadSkin(decBaseFileReader &reader, deSkin &skin) override;
 	
 	/** \brief Save skin. */
-	virtual void SaveSkin( decBaseFileWriter &writer, const deSkin &skin );
+	void SaveSkin(decBaseFileWriter &writer, const deSkin &skin) override;
 	/*@}*/
 	
 private:
-	decXmlElementTag *pGetTagAt( const decXmlElementTag &tag, int index );
-	decXmlAttValue *pFindAttribute( const decXmlElementTag &tag, const char *name );
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name );
-	int pGetAttributeInt( const decXmlElementTag &tag, const char *name );
-	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name );
-	bool pGetAttributeBool( const decXmlElementTag &tag, const char *name );
+	decXmlElementTag *pGetTagAt(const decXmlElementTag &tag, int index);
+	decXmlAttValue *pFindAttribute(const decXmlElementTag &tag, const char *name);
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name);
+	int pGetAttributeInt(const decXmlElementTag &tag, const char *name);
+	float pGetAttributeFloat(const decXmlElementTag &tag, const char *name);
+	bool pGetAttributeBool(const decXmlElementTag &tag, const char *name);
 	
-	void pParseSkin( const decXmlElementTag &root, deSkin &skin );
+	void pParseSkin(const decXmlElementTag &root, deSkin &skin);
 	
-	deSkinMapped::Ref pParseMapped( const decXmlElementTag &root, const char *forceName = nullptr );
-	void pParseMappedCurve( const decXmlElementTag &root, decCurveBezier &curve );
-	void pParseMappedCurvePoint( const decXmlElementTag &root, decCurveBezier &curve );
+	deSkinMapped::Ref pParseMapped(const decXmlElementTag &root, const char *forceName = nullptr);
+	void pParseMappedCurve(const decXmlElementTag &root, decCurveBezier &curve);
+	void pParseMappedCurvePoint(const decXmlElementTag &root, decCurveBezier &curve);
 	
-	deSkinTexture *pParseTexture( const decXmlElementTag &root, decPath &basePath, deSkin &skin );
-	void pParsePropertyMapped( const decXmlElementTag &root, deSkin &skin, deSkinPropertyMapped &property );
-	void pParsePropertyConstructed( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyConstructed &property );
+	deSkinTexture::Ref pParseTexture(const decXmlElementTag &root, decPath &basePath, deSkin &skin);
+	void pParsePropertyMapped(const decXmlElementTag &root, deSkin &skin, deSkinPropertyMapped &property);
+	void pParsePropertyConstructed(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyConstructed &property);
 	
-	deSkinPropertyNode *pParsePropertyNode( const decXmlElementTag &tag, const deSkin &skin );
-	bool pParsePropertyNodeCommon( const decXmlElementTag &tag, const deSkin &skin, deSkinPropertyNode &node );
-	void pParsePropertyNodeGroup( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeGroup &group );
-	void pParsePropertyNodeImage( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeImage &group );
-	void pParsePropertyNodeShape( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeShape &group );
-	void pParsePropertyNodeText( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeText &group );
+	deSkinPropertyNode::Ref pParsePropertyNode(const decXmlElementTag &tag, const deSkin &skin);
+	bool pParsePropertyNodeCommon(const decXmlElementTag &tag, const deSkin &skin, deSkinPropertyNode &node);
+	void pParsePropertyNodeGroup(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeGroup &group);
+	void pParsePropertyNodeImage(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeImage &group);
+	void pParsePropertyNodeShape(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeShape &group);
+	void pParsePropertyNodeText(const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeText &group);
 	
-	decColor pParseColor( const decXmlElementTag &root );
-	void pReadVector2( const decXmlElementTag &tag, decVector2 &vector );
+	decColor pParseColor(const decXmlElementTag &root);
+	void pReadVector2(const decXmlElementTag &tag, decVector2 &vector);
 	
-	void pWriteSkin( decXmlWriter &writer, const deSkin &skin );
-	void pWriteMapped( decXmlWriter &writer, const deSkinMapped &mapped );
-	void pWriteTexture( decXmlWriter &writer, const deSkin &skin, const deSkinTexture &texture );
-	void pWriteProperty( decXmlWriter& writer, const deSkin &skin, deSkinProperty &property );
+	void pWriteSkin(decXmlWriter &writer, const deSkin &skin);
+	void pWriteMapped(decXmlWriter &writer, const deSkinMapped &mapped);
+	void pWriteTexture(decXmlWriter &writer, const deSkin &skin, const deSkinTexture &texture);
+	void pWriteProperty(decXmlWriter& writer, const deSkin &skin, deSkinProperty &property);
 };
 
 #endif

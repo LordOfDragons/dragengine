@@ -41,23 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsNavigationInfo::dedsNavigationInfo( deScriptingDragonScript &ds ) :
-pDS( ds ),
+dedsNavigationInfo::dedsNavigationInfo(deScriptingDragonScript &ds) :
+pDS(ds),
 
-pCostType( 0 ),
+pCostType(0),
 
-pPathIndex( -1 ),
-pPathFactor( 0.0f ){
+pPathIndex(-1),
+pPathFactor(0.0f){
 }
 
-dedsNavigationInfo::dedsNavigationInfo( const dedsNavigationInfo &info ) :
-pDS( info.pDS ),
+dedsNavigationInfo::dedsNavigationInfo(const dedsNavigationInfo &info) :
+pDS(info.pDS),
 
-pPosition( info.pPosition ),
-pCostType( info.pCostType ),
+pPosition(info.pPosition),
+pCostType(info.pCostType),
 
-pPathIndex( info.pPathIndex ),
-pPathFactor( info.pPathFactor ){
+pPathIndex(info.pPathIndex),
+pPathFactor(info.pPathFactor){
 }
 
 dedsNavigationInfo::~dedsNavigationInfo(){
@@ -68,24 +68,24 @@ dedsNavigationInfo::~dedsNavigationInfo(){
 // Management
 ///////////////
 
-void dedsNavigationInfo::SetPosition( const decDVector &position ){
+void dedsNavigationInfo::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void dedsNavigationInfo::SetCostType( int costType ){
+void dedsNavigationInfo::SetCostType(int costType){
 	pCostType = costType;
 }
 
 
 
-void dedsNavigationInfo::SetPathIndex( int index ){
-	if( index < -1 ){
-		DSTHROW( dueInvalidParam );
+void dedsNavigationInfo::SetPathIndex(int index){
+	if(index < -1){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	pPathIndex = index;
 }
 
-void dedsNavigationInfo::SetPathFactor( float factor ){
-	pPathFactor = decMath::clamp( factor, 0.0f, 1.0f );
+void dedsNavigationInfo::SetPathFactor(float factor){
+	pPathFactor = decMath::clamp(factor, 0.0f, 1.0f);
 }

@@ -230,27 +230,26 @@ void deMicrosoftGdk::pInitGdk(const deServiceObject::Ref& data)
 
 	const decPath pathGameConfig(decPath::CreatePathUnix(
 		data->GetChildAt("pathGameConfig")->GetString()));
-	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-		GetGameEngine()->GetVirtualFileSystem()->OpenFileForReading(pathGameConfig)));
+	const decBaseFileReader::Ref reader(
+		GetGameEngine()->GetVirtualFileSystem()->OpenFileForReading(pathGameConfig));
 	const int lenGameConfig = reader->GetLength();
-	char *gameConfig = nullptr;
 
 	DEASSERT_TRUE(lenGameConfig > 0)
 
 	try
 	{
-		gameConfig = new char[lenGameConfig + 1];
-		reader->Read(gameConfig, lenGameConfig);
+		decTList<char> gameConfig(lenGameConfig + 1, 0);
+		reader->Read(gameConfig.GetArrayPointer(), lenGameConfig);
 		gameConfig[lenGameConfig] = 0;
 
-		char *useGameConfig = gameConfig;
+		char *useGameConfig = gameConfig.GetArrayPointer();
 
 		// tools like the game definition editor from microsoft love to add BOM
 		// to the beginning of the configuration. interestingly the initialize
 		// call below fails if this BOM is present. why add a BOM if the function
 		// consuming the data later fails if BOM is present? detect the BOM and
 		// remove it to avoid problems
-		if( strncmp( useGameConfig, "\xef\xbb\xbf", 3 ) == 0 ){
+		if(strncmp(useGameConfig, "\xef\xbb\xbf", 3) == 0){
 			useGameConfig += 3;
 		}
 
@@ -270,16 +269,6 @@ void deMicrosoftGdk::pInitGdk(const deServiceObject::Ref& data)
 	}
 	catch(const deException &e)
 	{
-		if(pGameConfig)
-		{
-			delete pGameConfig;
-			pGameConfig = nullptr;
-		}
-
-		if(gameConfig)
-		{
-			delete [] gameConfig;
-		}
 
 		LogException(e);
 		throw;

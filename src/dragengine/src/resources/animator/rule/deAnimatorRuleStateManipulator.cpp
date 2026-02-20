@@ -41,12 +41,12 @@
 ////////////////////////////
 
 deAnimatorRuleStateManipulator::deAnimatorRuleStateManipulator() :
-pMinVertexPositionSet( 0.0f ),
-pMaxVertexPositionSet( 0.0f ),
-pEnableVertexPositionSet( true )
+pMinVertexPositionSet(0.0f),
+pMaxVertexPositionSet(0.0f),
+pEnableVertexPositionSet(true)
 {
-	pMinSize.Set( 1.0f, 1.0f, 1.0f );
-	pMaxSize.Set( 1.0f, 1.0f, 1.0f );
+	pMinSize.Set(1.0f, 1.0f, 1.0f);
+	pMaxSize.Set(1.0f, 1.0f, 1.0f);
 	pEnablePosition = false;
 	pEnableRotation = true;
 	pEnableSize = false;
@@ -60,51 +60,51 @@ deAnimatorRuleStateManipulator::~deAnimatorRuleStateManipulator(){
 // Management
 ///////////////
 
-void deAnimatorRuleStateManipulator::SetMinimumPosition( const decVector &position ){
+void deAnimatorRuleStateManipulator::SetMinimumPosition(const decVector &position){
 	pMinPosition = position;
 }
 
-void deAnimatorRuleStateManipulator::SetMaximumPosition( const decVector &position ){
+void deAnimatorRuleStateManipulator::SetMaximumPosition(const decVector &position){
 	pMaxPosition = position;
 }
 
-void deAnimatorRuleStateManipulator::SetMinimumRotation( const decVector &orientation ){
+void deAnimatorRuleStateManipulator::SetMinimumRotation(const decVector &orientation){
 	pMinRotation = orientation;
 }
 
-void deAnimatorRuleStateManipulator::SetMaximumRotation( const decVector &orientation ){
+void deAnimatorRuleStateManipulator::SetMaximumRotation(const decVector &orientation){
 	pMaxRotation = orientation;
 }
 
-void deAnimatorRuleStateManipulator::SetMinimumSize( const decVector &size ){
+void deAnimatorRuleStateManipulator::SetMinimumSize(const decVector &size){
 	pMinSize = size;
 }
 
-void deAnimatorRuleStateManipulator::SetMaximumSize( const decVector &size ){
+void deAnimatorRuleStateManipulator::SetMaximumSize(const decVector &size){
 	pMaxSize = size;
 }
 
-void deAnimatorRuleStateManipulator::SetMinimumVertexPositionSet( float weight ){
+void deAnimatorRuleStateManipulator::SetMinimumVertexPositionSet(float weight){
 	pMinVertexPositionSet = weight;
 }
 
-void deAnimatorRuleStateManipulator::SetMaximumVertexPositionSet( float weight ){
+void deAnimatorRuleStateManipulator::SetMaximumVertexPositionSet(float weight){
 	pMaxVertexPositionSet = weight;
 }
 
-void deAnimatorRuleStateManipulator::SetEnablePosition( bool enable ){
+void deAnimatorRuleStateManipulator::SetEnablePosition(bool enable){
 	pEnablePosition = enable;
 }
 
-void deAnimatorRuleStateManipulator::SetEnableRotation( bool enable ){
+void deAnimatorRuleStateManipulator::SetEnableRotation(bool enable){
 	pEnableRotation = enable;
 }
 
-void deAnimatorRuleStateManipulator::SetEnableSize( bool enable ){
+void deAnimatorRuleStateManipulator::SetEnableSize(bool enable){
 	pEnableSize = enable;
 }
 
-void deAnimatorRuleStateManipulator::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleStateManipulator::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
@@ -113,6 +113,6 @@ void deAnimatorRuleStateManipulator::SetEnableVertexPositionSet( bool enabled ){
 // Visiting
 /////////////
 
-void deAnimatorRuleStateManipulator::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitStateManipulator( *this );
+void deAnimatorRuleStateManipulator::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitStateManipulator(*this);
 }

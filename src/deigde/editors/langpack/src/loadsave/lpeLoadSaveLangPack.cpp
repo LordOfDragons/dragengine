@@ -54,9 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeLoadSaveLangPack::lpeLoadSaveLangPack( deBaseLanguagePackModule *module ){
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+lpeLoadSaveLangPack::lpeLoadSaveLangPack(deBaseLanguagePackModule *module){
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
@@ -68,12 +68,12 @@ lpeLoadSaveLangPack::lpeLoadSaveLangPack( deBaseLanguagePackModule *module ){
 	
 	pName = loadableModule.GetName();
 	
-	for( i=0; i<patternCount; i++ ){
-		if( i > 0 ){
-			pPattern.AppendCharacter( ',' );
+	for(i=0; i<patternCount; i++){
+		if(i > 0){
+			pPattern.AppendCharacter(',');
 		}
-		pPattern.AppendCharacter( '*' );
-		pPattern.Append( patternList.GetAt( i ) );
+		pPattern.AppendCharacter('*');
+		pPattern.Append(patternList.GetAt(i));
 	}
 }
 
@@ -85,17 +85,17 @@ lpeLoadSaveLangPack::~lpeLoadSaveLangPack(){
 // Management
 ///////////////
 
-void lpeLoadSaveLangPack::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void lpeLoadSaveLangPack::SetName(const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
 }
 
-void lpeLoadSaveLangPack::SetPattern( const char *pattern ){
-	if( ! pattern ){
-		DETHROW( deeInvalidParam );
+void lpeLoadSaveLangPack::SetPattern(const char *pattern){
+	if(!pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPattern = pattern;
@@ -108,75 +108,46 @@ public:
 	cDirectLangPackLoader(){
 	}
 	
-	void BuildLanguagePack( deLanguagePack &langPack ){
+	void BuildLanguagePack(deLanguagePack &langPack){
 	}
 };
 
-void lpeLoadSaveLangPack::LoadLangPack( lpeLangPack *langpack, decBaseFileReader *file ){
-	if( ! langpack || ! file ){
-		DETHROW( deeInvalidParam );
+void lpeLoadSaveLangPack::LoadLangPack(lpeLangPack *langpack, decBaseFileReader *file){
+	if(!langpack || !file){
+		DETHROW(deeInvalidParam);
 	}
-	
-	deEngine *engine = pModule->GetGameEngine();
-	lpeLangPackEntry *entry = NULL;
-	deLanguagePack *engLangPack = NULL;
-	int i, entryCount;
 	
 	cDirectLangPackLoader builder;
 	
-	try{
-		engLangPack = engine->GetLanguagePackManager()->CreateLanguagePack( "", builder );
-		pModule->LoadLanguagePack( *file, *engLangPack );
+	const deLanguagePack::Ref engLangPack(pModule->GetGameEngine()->
+		GetLanguagePackManager()->CreateLanguagePack("", builder));
+	pModule->LoadLanguagePack(*file, engLangPack);
+	
+	langpack->SetIdentifier(engLangPack->GetIdentifier());
+	langpack->SetName(engLangPack->GetName());
+	langpack->SetDescription(engLangPack->GetDescription());
+	langpack->SetMissingText(engLangPack->GetMissingText());
+	
+	const int entryCount = engLangPack->GetEntryCount();
+	int i;
+	
+	for(i=0; i<entryCount; i++){
+		const deLanguagePackEntry &engEntry = engLangPack->GetEntryAt(i);
 		
-		langpack->SetIdentifier( engLangPack->GetIdentifier() );
-		langpack->SetName( engLangPack->GetName() );
-		langpack->SetDescription( engLangPack->GetDescription() );
-		langpack->SetMissingText( engLangPack->GetMissingText() );
-		
-		entryCount = engLangPack->GetEntryCount();
-		
-		for( i=0; i<entryCount; i++ ){
-			const deLanguagePackEntry &engEntry = engLangPack->GetEntryAt( i );
-			
-			entry = new lpeLangPackEntry;
-			entry->SetName( engEntry.GetName() );
-			entry->SetText( engEntry.GetText() );
-			
-			langpack->AddEntry( entry );
-			entry->FreeReference();
-			entry = NULL;
-		}
-		
-		engLangPack->FreeReference();
-		
-	}catch( const deException & ){
-		if( entry ){
-			entry->FreeReference();
-		}
-		if( engLangPack ){
-			engLangPack->FreeReference();
-		}
-		throw;
+		const lpeLangPackEntry::Ref entry(lpeLangPackEntry::Ref::New());
+		entry->SetName(engEntry.GetName());
+		entry->SetText(engEntry.GetText());
+		langpack->AddEntry(entry);
 	}
 }
 
-void lpeLoadSaveLangPack::SaveLangPack( lpeLangPack *langpack, decBaseFileWriter *file ){
-	if( ! langpack || ! file ){
-		DETHROW( deeInvalidParam );
+void lpeLoadSaveLangPack::SaveLangPack(lpeLangPack *langpack, decBaseFileWriter *file){
+	if(!langpack || !file){
+		DETHROW(deeInvalidParam);
 	}
 	
-	lpeLangPackBuilder builder( langpack );
-	deLanguagePack *temporaryLangPack = NULL;
-	
-	try{
-		temporaryLangPack = langpack->GetEngine()->GetLanguagePackManager()->CreateLanguagePack( "", builder );
-		pModule->SaveLanguagePack( *file, *temporaryLangPack );
-		temporaryLangPack->FreeReference();
-		
-	}catch( const deException & ){
-		if( temporaryLangPack ){
-			temporaryLangPack->FreeReference();
-		}
-		throw;
-	}
+	lpeLangPackBuilder builder(langpack);
+	const deLanguagePack::Ref temporaryLangPack(langpack->GetEngine()->
+		GetLanguagePackManager()->CreateLanguagePack("", builder));
+	pModule->SaveLanguagePack(*file, temporaryLangPack);
 }

@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXSWITCHER_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeSwitcher.h"
+#include "../../resources/igdeFont.h"
 
 class igdeSwitcher;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native switcher.
  */
-class igdeNativeFoxSwitcher : public FXSwitcher{
-	FXDECLARE( igdeNativeFoxSwitcher )
+class igdeNativeFoxSwitcher : public FXSwitcher, public igdeSwitcher::cNativeSwitcher{
+	FXDECLARE(igdeNativeFoxSwitcher)
 	
 protected:
 	igdeNativeFoxSwitcher();
@@ -55,13 +56,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxSwitcher( igdeSwitcher &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxSwitcher(igdeSwitcher &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxSwitcher();
+	~igdeNativeFoxSwitcher() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSwitcher* CreateNativeWidget( igdeSwitcher &owner );
+	static igdeNativeFoxSwitcher* CreateNativeWidget(igdeSwitcher &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -74,10 +75,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateCurrent();
+	void UpdateCurrent() override;
 	/*@}*/
 };
 
-typedef igdeNativeFoxSwitcher igdeNativeSwitcher;
+using igdeNativeSwitcher = igdeNativeFoxSwitcher;
 
 #endif

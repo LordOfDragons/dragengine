@@ -27,6 +27,7 @@
 
 #include "deIesImageInfo.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class decBaseFileReader;
@@ -49,8 +50,8 @@ protected:
 		int index2;
 		float blend1;
 		float blend2;
-		void Set( int index );
-		void Set( int index, float blend );
+		void Set(int index);
+		void Set(int index, float blend);
 	};
 	
 	enum ePhotometricType{
@@ -73,8 +74,7 @@ protected:
 	
 	decString pTilt;
 	
-	int pAngleFactorCount;
-	sAngleFactor *pAngleFactors;
+	decTList<sAngleFactor> pAngleFactors;
 	
 	int pLampCount;
 	float pLumensPerLamp;
@@ -95,16 +95,16 @@ protected:
 	
 	float pFinalLumMultiplier;
 	
-	float *pVerticalAngles;
-	float *pHorizontalAngles;
-	float *pCandelaValues;
+	decTList<float> pVerticalAngles;
+	decTList<float> pHorizontalAngles;
+	decTList<float> pCandelaValues;
 	
 	float pSmallestVerticalStep;
 	float pSmallestHorizontalStep;
 	int pVerticalResolution;
 	int pHorizontalResolution;
-	sSamplePoint *pVerticalSamplePoints;
-	sSamplePoint *pHorizontalSamplePoints;
+	decTList<sSamplePoint> pVerticalSamplePoints;
+	decTList<sSamplePoint> pHorizontalSamplePoints;
 	
 	
 	
@@ -115,7 +115,7 @@ public:
 	deIesFormatLm63d1986();
 	
 	/** \brief Clean up image information. */
-	virtual ~deIesFormatLm63d1986();
+	~deIesFormatLm63d1986() override;
 	/*@}*/
 	
 	
@@ -123,16 +123,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load header. */
-	virtual bool LoadHeader( decBaseFileReader &reader );
+	bool LoadHeader(decBaseFileReader &reader) override;
 	
 	/** \brief Load file. */
-	virtual void LoadFile( unsigned short *pixels );
+	void LoadFile(unsigned short *pixels) override;
 	/*@}*/
 	
 	
 	
 protected:
-	void pReadValues( decStringList &values, int count );
+	void pReadValues(decStringList &values, int count);
 	bool pFindTilt();
 	void pReadTilt();
 	void pReadLampConfig();
@@ -146,15 +146,15 @@ protected:
 	void pSanitizeCandelaValues();
 	void pGammaCorrectCandelaValues();
 	void pCreateSamplePoints();
-	bool pIsAngle( float angle, float requiredAngle );
-	void pFillSamples( int index, sSamplePoint *samples, int sampleCount );
-	void pSample( const float *angles, int angleCount, sSamplePoint *samples, int sampleCount );
-	void pMirrorSamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
-	void pCopySamples( const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount );
-	void pSetPixelsEquirect( unsigned short *pixels );
-	void pSetPixelsCubemap( unsigned short *pixels );
-	void pSetPixelsCubemapFace( unsigned short *pixels, const decMatrix &matrix );
-	void pGetMatrixForFace( decMatrix &matrix, int face );
+	bool pIsAngle(float angle, float requiredAngle);
+	void pFillSamples(int index, sSamplePoint *samples, int sampleCount);
+	void pSample(const float *angles, int angleCount, sSamplePoint *samples, int sampleCount);
+	void pMirrorSamples(const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount);
+	void pCopySamples(const sSamplePoint *samplesFrom, sSamplePoint *samplesTo, int sampleCount);
+	void pSetPixelsEquirect(unsigned short *pixels);
+	void pSetPixelsCubemap(unsigned short *pixels);
+	void pSetPixelsCubemapFace(unsigned short *pixels, const decMatrix &matrix);
+	void pGetMatrixForFace(decMatrix &matrix, int face);
 };
 
 #endif

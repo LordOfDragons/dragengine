@@ -68,7 +68,7 @@ public:
 	deoalWOVRayTrace();
 	
 	/** \brief Clean up visitor. */
-	virtual ~deoalWOVRayTrace();
+	~deoalWOVRayTrace() override;
 	/*@}*/
 	
 	
@@ -107,13 +107,13 @@ public:
 	inline const decDVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
-	void SetRay( const decDVector &origin, const decDVector &direction );
+	void SetRay(const decDVector &origin, const decDVector &direction);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -127,16 +127,16 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalWorldOctree &node );
+	void VisitNode(deoalWorldOctree &node) override;
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	void VisitNode(deoalDOctree *node, int intersection) override;
 	/*@}*/
 	
 	
 	
 protected:
-	bool pRayHitsBox( const decDVector &center, const decDVector &halfExtends );
+	bool pRayHitsBox(const decDVector &center, const decDVector &halfExtends);
 };
 
 #endif

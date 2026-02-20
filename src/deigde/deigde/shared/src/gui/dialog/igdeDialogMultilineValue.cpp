@@ -26,7 +26,7 @@
 #include "../igdeLabel.h"
 #include "../igdeTextArea.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>
@@ -39,22 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogMultilineValue::igdeDialogMultilineValue( igdeEnvironment &environment,
-	const char *title, const char *message, int rows, int columns ) :
-igdeDialog( environment, title )
+igdeDialogMultilineValue::igdeDialogMultilineValue(igdeEnvironment &environment,
+	const char *title, const char *message, int rows, int columns) :
+igdeDialog(environment, title)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
-	content.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) );
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
+		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
 	
-	helper.Label( content, message );
-	helper.EditString( content, "", pEditValue, columns, rows, NULL );
+	helper.Label(content, message);
+	helper.EditString(content, "", pEditValue, columns, rows, {});
 	
-	igdeContainerReference buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Discard" );
+	igdeContainer::Ref buttonBar;
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
 }
 
 igdeDialogMultilineValue::~igdeDialogMultilineValue(){
@@ -69,6 +69,6 @@ const decString &igdeDialogMultilineValue::GetValue() const{
 	return pEditValue->GetText();
 }
 
-void igdeDialogMultilineValue::SetValue( const char *value ){
-	pEditValue->SetText( value );
+void igdeDialogMultilineValue::SetValue(const char *value){
+	pEditValue->SetText(value);
 }

@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSnapToggleEnableRotation::aeURuleSnapToggleEnableRotation( aeRuleStateSnapshot *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSnapToggleEnableRotation::aeURuleSnapToggleEnableRotation(aeRuleStateSnapshot *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleSnapshotToggleEnableRotation");
 		
-		SetShortInfo( "Rule state snapshot toggle enable rotation" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleSnapToggleEnableRotation::~aeURuleSnapToggleEnableRotation(){
 ///////////////
 
 void aeURuleSnapToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 void aeURuleSnapToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleSnapToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableRotation::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoalASound.h"
 #include "deoalDecodeBuffer.h"
 #include "../deoalCaches.h"
@@ -37,14 +34,11 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
-#include <dragengine/resources/sound/deSoundDecoderReference.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 
 
@@ -86,52 +80,50 @@ struct sCacheHeader{
 // Constructor, destructor
 ////////////////////////////
 
-deoalASound::deoalASound( deoalAudioThread &audioThread, deSound &sound ) :
-pAudioThread( audioThread ),
-pFilename( sound.GetFilename() ),
+deoalASound::deoalASound(deoalAudioThread &audioThread, deSound &sound) :
+pAudioThread(audioThread),
+pFilename(sound.GetFilename()),
 
-pBytesPerSample( sound.GetBytesPerSample() ),
-pSampleCount( sound.GetSampleCount() ),
-pChannelCount( sound.GetChannelCount() ),
-pSampleRate( sound.GetSampleRate() ),
-pPlayTime( sound.GetPlayTime() ),
+pBytesPerSample(sound.GetBytesPerSample()),
+pSampleCount(sound.GetSampleCount()),
+pChannelCount(sound.GetChannelCount()),
+pSampleRate(sound.GetSampleRate()),
+pPlayTime(sound.GetPlayTime()),
 
-pBuffer( 0 ),
-pFormat( 0 ),
-pValid( false ),
+pBuffer(0),
+pFormat(0),
+pValid(false),
 
-pStreamData( NULL ),
-pStreamDataSize( 0 ),
-pStreaming( true ),
-pIsUsed( false ),
-pIsCached( false )
+pStreaming(true),
+pIsUsed(false),
+pIsCached(false)
 {
 	pDetermineFormat();
-	if( ! pValid ){
-		LEAK_CHECK_CREATE( audioThread, Sound );
+	if(!pValid){
+		LEAK_CHECK_CREATE(audioThread, Sound);
 		return;
 	}
 	
 	pDetermineStreaming();
-	if( pStreaming ){
-		LEAK_CHECK_CREATE( audioThread, Sound );
+	if(pStreaming){
+		LEAK_CHECK_CREATE(audioThread, Sound);
 		return;
 	}
 	
 	pLoadFromCache();
-	if( pIsCached ){
-		LEAK_CHECK_CREATE( audioThread, Sound );
+	if(pIsCached){
+		LEAK_CHECK_CREATE(audioThread, Sound);
 		return;
 	}
 	
-	pLoadEntireSound( sound );
+	pLoadEntireSound(sound);
 	pWriteToCache();
 	
-	LEAK_CHECK_CREATE( audioThread, Sound );
+	LEAK_CHECK_CREATE(audioThread, Sound);
 }
 
 deoalASound::~deoalASound(){
-	LEAK_CHECK_FREE( pAudioThread, Sound );
+	LEAK_CHECK_FREE(pAudioThread, Sound);
 	
 	pCleanUp();
 }
@@ -141,24 +133,24 @@ deoalASound::~deoalASound(){
 // Management
 ///////////////
 
-void deoalASound::PreloadSound( deSound &sound ){
+void deoalASound::PreloadSound(deSound &sound){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( pStreaming || ! pValid || ! pFormat ){
+	if(pStreaming || !pValid || !pFormat){
 		return;
 	}
 	
-	if( ! pIsUsed ){
+	if(!pIsUsed){
 		// first time the sound is used. samples data could be already loaded
 		// asynchronously during construction time. if loaded from cache and marked
 		// not used we have to first load the data before we can create the buffer
-		if( ENABLE_CACHE_LOGGING ){
-			pAudioThread.GetLogger().LogInfoFormat( "Sound '%s': Marked used for the first time",
-				pFilename.GetString() );
+		if(ENABLE_CACHE_LOGGING){
+			pAudioThread.GetLogger().LogInfoFormat("Sound '%s': Marked used for the first time",
+				pFilename.GetString());
 		}
 		
-		if( ! pStreamData ){
-			pLoadEntireSound( sound );
+		if(pStreamData.IsEmpty()){
+			pLoadEntireSound(sound);
 		}
 		
 		pIsUsed = true;
@@ -167,14 +159,14 @@ void deoalASound::PreloadSound( deSound &sound ){
 }
 
 void deoalASound::PrepareBuffers(){
-	if( pStreaming || ! pValid || ! pFormat ){
+	if(pStreaming || !pValid || !pFormat){
 		return;
 	}
 	
-	if( ! pBuffer ){
-		OAL_CHECK( pAudioThread, alGenBuffers( 1, &pBuffer ) );
-		OAL_CHECK( pAudioThread, alBufferData( pBuffer, pFormat,
-			( const ALvoid * )pStreamData, pStreamDataSize, pSampleRate ) );
+	if(!pBuffer){
+		OAL_CHECK(pAudioThread, alGenBuffers(1, &pBuffer));
+		OAL_CHECK(pAudioThread, alBufferData(pBuffer, pFormat,
+			(const ALvoid *)pStreamData.GetArrayPointer(), pStreamData.GetCount(), pSampleRate));
 	}
 }
 
@@ -188,38 +180,29 @@ public:
 	ALuint buffer;
 	
 	deoalASoundDeletion() :
-	buffer( 0 ){
+	buffer(0){
 	}
 	
-	virtual ~deoalASoundDeletion(){
+	~deoalASoundDeletion() override{
 	}
 	
-	virtual void DeleteObjects( deoalAudioThread& ){
-		if( buffer ){
-			alDeleteBuffers( 1, &buffer );
+	void DeleteObjects(deoalAudioThread&) override{
+		if(buffer){
+			alDeleteBuffers(1, &buffer);
 		}
 	}
 };
 
 void deoalASound::pCleanUp(){
-	if( pStreamData ){
-		delete [] pStreamData;
-	}
-	
 	// delayed deletion
-	if( pBuffer ){
-		deoalASoundDeletion *delayedDeletion = NULL;
-		
+	if(pBuffer){
 		try{
-			delayedDeletion = new deoalASoundDeletion;
+			auto delayedDeletion = deTUniqueReference<deoalASoundDeletion>::New();
 			delayedDeletion->buffer = pBuffer;
-			pAudioThread.GetDelayed().AddDeletion( delayedDeletion );
+			pAudioThread.GetDelayed().AddDeletion(std::move(delayedDeletion));
 			
-		}catch( const deException &e ){
-			if( delayedDeletion ){
-				delete delayedDeletion;
-			}
-			pAudioThread.GetLogger().LogException( e );
+		}catch(const deException &e){
+			pAudioThread.GetLogger().LogException(e);
 			throw;
 		}
 	}
@@ -234,10 +217,9 @@ void deoalASound::pLoadFromCache(){
 	deoalCaches &caches = pAudioThread.GetCaches();
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileReaderReference reader;
 	
-	const decPath path( decPath::CreatePathUnix( pFilename ) );
-	if( ! vfs.CanReadFile( path ) ){
+	const decPath path(decPath::CreatePathUnix(pFilename));
+	if(!vfs.CanReadFile(path)){
 		// without a source file no cache since it is no more unique
 		return;
 	}
@@ -245,101 +227,99 @@ void deoalASound::pLoadFromCache(){
 	caches.Lock();
 	
 	try{
-		reader.TakeOver( cacheSound.Read( pFilename ) );
-		if( ! reader ){
+		decBaseFileReader::Ref reader(cacheSound.Read(pFilename));
+		if(!reader){
 			// cache file absent
 			caches.Unlock();
 			return;
 		}
 		
-		if( enableCacheLogging ){
-			logger.LogInfoFormat( "Sound '%s': Load from cache", pFilename.GetString() );
+		if(enableCacheLogging){
+			logger.LogInfoFormat("Sound '%s': Load from cache", pFilename.GetString());
 		}
 		
 		// read header and compare parameters
 		sCacheHeader header;
-		reader->Read( &header, sizeof( header ) );
+		reader->Read(&header, sizeof(header));
 		
 		// check file modification times to reject the cached file if the source model changed
-		if( header.filetime != ( uint64_t )vfs.GetFileModificationTime( path ) ){
+		if(header.filetime != (uint64_t)vfs.GetFileModificationTime(path)){
 			// cache file outdated
-			reader = NULL;
-			cacheSound.Delete( pFilename );
+			reader = nullptr;
+			cacheSound.Delete(pFilename);
 			caches.Unlock();
 			
-			if( enableCacheLogging ){
-				logger.LogInfoFormat( "Sound '%s': Modification time changed. Cache discarded",
-					pFilename.GetString() );
+			if(enableCacheLogging){
+				logger.LogInfoFormat("Sound '%s': Modification time changed. Cache discarded",
+					pFilename.GetString());
 			}
 			return;
 		}
 		
 		// check cache version in case we upgraded
-		if( header.version != CACHE_VERSION ){
+		if(header.version != CACHE_VERSION){
 			// cache file outdated
-			reader = NULL;
-			cacheSound.Delete( pFilename );
+			reader = nullptr;
+			cacheSound.Delete(pFilename);
 			caches.Unlock();
 			
-			if( enableCacheLogging ){
-				logger.LogInfoFormat( "Sound '%s': Cache version changed. Cache discarded",
-					pFilename.GetString() );
+			if(enableCacheLogging){
+				logger.LogInfoFormat("Sound '%s': Cache version changed. Cache discarded",
+					pFilename.GetString());
 			}
 			return;
 		}
 		
 		// read header and check if the parameters are matching
-		if( ( int )header.bytesPerSample != pBytesPerSample
-		|| ( int )header.channelCount != pChannelCount
-		|| ( int )header.sampleCount != pSampleCount
-		|| ( int )header.sampleRate != pSampleRate
-		|| ( ALenum )header.format != pFormat ){
+		if((int)header.bytesPerSample != pBytesPerSample
+		|| (int)header.channelCount != pChannelCount
+		|| (int)header.sampleCount != pSampleCount
+		|| (int)header.sampleRate != pSampleRate
+		|| (ALenum)header.format != pFormat){
 			// cache file outdated
-			reader = NULL;
-			cacheSound.Delete( pFilename );
+			reader = nullptr;
+			cacheSound.Delete(pFilename);
 			caches.Unlock();
 			
-			if( enableCacheLogging ){
-				logger.LogInfoFormat( "Sound '%s': Sound parameters mismatch. Cache discarded",
-					pFilename.GetString() );
+			if(enableCacheLogging){
+				logger.LogInfoFormat("Sound '%s': Sound parameters mismatch. Cache discarded",
+					pFilename.GetString());
 			}
 			return;
 		}
 		
 		// read buffer data. data is present only if FLAG_IS_USED is set
-		if( header.bufferSize > 10000000 ){
-			DETHROW( deeInvalidParam );
+		if(header.bufferSize > 10000000){
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( header.bufferSize > 0 ){
-			pStreamData = new char[ header.bufferSize ];
-			pStreamDataSize = header.bufferSize;
-			reader->Read( pStreamData, pStreamDataSize );
+		if(header.bufferSize > 0){
+			pStreamData.SetCountDiscard(header.bufferSize);
+			reader->Read(pStreamData.GetArrayPointer(), pStreamData.GetCount());
 		}
 		
 		// done
-		reader = NULL;
+		reader = nullptr;
 		
-		pIsUsed = ( header.flags & FLAG_IS_USED ) == FLAG_IS_USED;
+		pIsUsed = (header.flags & FLAG_IS_USED) == FLAG_IS_USED;
 		pIsCached = true;
 		
 		caches.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		// damaged cache file
-		reader = NULL;
-		cacheSound.Delete( pFilename );
+		cacheSound.Delete(pFilename);
 		caches.Unlock();
 		
-		if( enableCacheLogging ){
-			logger.LogInfoFormat( "Sound '%s': Cache file damaged. Cache discarded",
-				pFilename.GetString() );
+		if(enableCacheLogging){
+			logger.LogInfoFormat("Sound '%s': Cache file damaged. Cache discarded",
+				pFilename.GetString());
 		}
 	}
 }
 
 void deoalASound::pWriteToCache(){
-	if( ! pValid || pStreaming ){
+	if(!pValid || pStreaming){
 		return;
 	}
 	
@@ -349,54 +329,52 @@ void deoalASound::pWriteToCache(){
 	deoalCaches &caches = pAudioThread.GetCaches();
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileWriterReference writer;
 	
-	const decPath path( decPath::CreatePathUnix( pFilename ) );
-	if( ! vfs.CanReadFile( path ) ){
+	const decPath path(decPath::CreatePathUnix(pFilename));
+	if(!vfs.CanReadFile(path)){
 		return; // without a source file no cache since it is no more unique
 	}
 	
 	// collect cache parameters
 	sCacheHeader header;
-	header.filetime = ( uint64_t )vfs.GetFileModificationTime( path );
-	header.version = ( uint8_t )CACHE_VERSION;
+	header.filetime = (uint64_t)vfs.GetFileModificationTime(path);
+	header.version = (uint8_t)CACHE_VERSION;
 	
 	header.flags = 0;
-	if( pIsUsed ){
+	if(pIsUsed){
 		header.flags |= FLAG_IS_USED;
 	}
 	
-	header.bytesPerSample = ( uint8_t )pBytesPerSample;
-	header.channelCount = ( uint8_t )pChannelCount;
-	header.sampleCount = ( uint32_t )pSampleCount;
-	header.sampleRate = ( uint32_t )pSampleRate;
-	header.format = ( uint32_t )pFormat;
-	header.bufferSize = ( uint32_t )pStreamDataSize;
+	header.bytesPerSample = (uint8_t)pBytesPerSample;
+	header.channelCount = (uint8_t)pChannelCount;
+	header.sampleCount = (uint32_t)pSampleCount;
+	header.sampleRate = (uint32_t)pSampleRate;
+	header.format = (uint32_t)pFormat;
+	header.bufferSize = (uint32_t)pStreamData.GetCount();
 	
 	// write cache
 	caches.Lock();
 	
 	try{
-		writer.TakeOver( cacheSound.Write( pFilename ) );
-		writer->Write( &header, sizeof( header ) );
-		if( pStreamDataSize > 0 ){
-			writer->Write( pStreamData, pStreamDataSize );
+		decBaseFileWriter::Ref writer(cacheSound.Write(pFilename));
+		writer->Write(&header, sizeof(header));
+		if(pStreamData.IsNotEmpty()){
+			writer->Write(pStreamData.GetArrayPointer(), pStreamData.GetCount());
 		}
-		writer = NULL;
+		writer = nullptr;
 		
 		caches.Unlock();
-		if( enableCacheLogging ){
-			logger.LogInfoFormat( "Sound '%s': Cache written", pFilename.GetString() );
+		if(enableCacheLogging){
+			logger.LogInfoFormat("Sound '%s': Cache written", pFilename.GetString());
 		}
 		
-	}catch( const deException &e ){
-		writer = NULL;
-		cacheSound.Delete( pFilename );
+	}catch(const deException &e){
+		cacheSound.Delete(pFilename);
 		caches.Unlock();
 		
-		if( enableCacheLogging ){
-			logger.LogException( e );
-			logger.LogErrorFormat( "Sound '%s': Failed writing cache file", pFilename.GetString() );
+		if(enableCacheLogging){
+			logger.LogException(e);
+			logger.LogErrorFormat("Sound '%s': Failed writing cache file", pFilename.GetString());
 		}
 	}
 }
@@ -427,45 +405,45 @@ void deoalASound::pDetermineStreaming(){
 	pStreaming = pChannelCount > 1
 		|| requiredBufferSize > pAudioThread.GetConfiguration().GetStreamBufSizeThreshold();
 	/*
-	pAudioThread.GetLogger().LogInfoFormat( "Sound(%s) samp=%d(%.1fs) bps=%d cc=%d rbs=%d rs=%d",
-		pFilename.GetString(), pSampleCount, ( float )pSampleCount / ( float )pSampleRate,
-		pBytesPerSample, pChannelCount, requiredBufferSize, pStreaming );
+	pAudioThread.GetLogger().LogInfoFormat("Sound(%s) samp=%d(%.1fs) bps=%d cc=%d rbs=%d rs=%d",
+		pFilename.GetString(), pSampleCount, (float)pSampleCount / (float)pSampleRate,
+		pBytesPerSample, pChannelCount, requiredBufferSize, pStreaming);
 	*/
 }
 
 void deoalASound::pDetermineFormat(){
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	
-	if( pBytesPerSample != 1 && pBytesPerSample != 2 ){
-		logger.LogWarnFormat( "%s: %i bytes per sample not supported only 1 or 2.\n",
-			pFilename.GetString(), pBytesPerSample );
+	if(pBytesPerSample != 1 && pBytesPerSample != 2){
+		logger.LogWarnFormat("%s: %i bytes per sample not supported only 1 or 2.\n",
+			pFilename.GetString(), pBytesPerSample);
 	}
 	
-	if( pChannelCount != 1 && pChannelCount != 2 ){
-		logger.LogWarnFormat( "%s: %i channels not supported only 1 or 2.\n",
-			pFilename.GetString(), pChannelCount );
+	if(pChannelCount != 1 && pChannelCount != 2){
+		logger.LogWarnFormat("%s: %i channels not supported only 1 or 2.\n",
+			pFilename.GetString(), pChannelCount);
 	}
 	
-	if( pSampleCount == 0 ){
+	if(pSampleCount == 0){
 		return;
 	}
 	
-	if( pBytesPerSample == 1 ){
-		if( pChannelCount == 1 ){
+	if(pBytesPerSample == 1){
+		if(pChannelCount == 1){
 			pFormat = AL_FORMAT_MONO8;
 			pValid = true;
 			
-		}else if( pChannelCount == 2 ){
+		}else if(pChannelCount == 2){
 			pFormat = AL_FORMAT_STEREO8;
 			pValid = true;
 		}
 		
-	}else if( pBytesPerSample == 2 ){
-		if( pChannelCount == 1 ){
+	}else if(pBytesPerSample == 2){
+		if(pChannelCount == 1){
 			pFormat = AL_FORMAT_MONO16;
 			pValid = true;
 			
-		}else if( pChannelCount == 2 ){
+		}else if(pChannelCount == 2){
 			pFormat = AL_FORMAT_STEREO16;
 			pValid = true;
 		}
@@ -474,22 +452,21 @@ void deoalASound::pDetermineFormat(){
 
 
 
-void deoalASound::pLoadEntireSound( deSound &sound ){
-	if( pStreamData ){
+void deoalASound::pLoadEntireSound(deSound &sound){
+	if(pStreamData.IsNotEmpty()){
 		return;
 	}
 	
 	const int bufferSize = pSampleCount * pBytesPerSample * pChannelCount;
-	if( bufferSize == 0 ){
-		pStreamData = new char[ 1 ]; // just so we know there is nothing
+	if(bufferSize == 0){
+		// just so we know there is nothing
+		pStreamData.SetCountDiscard(1);
+		pStreamData[0] = 0;
 		return;
 	}
 	
-	deSoundDecoderReference decoder;
-	decoder.TakeOver( pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder( &sound ) );
+	pStreamData.SetCountDiscard(bufferSize);
 	
-	pStreamData = new char[ bufferSize ];
-	pStreamDataSize = bufferSize;
-	
-	decoder->ReadSamples( pStreamData, bufferSize );
+	pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder(&sound)->
+		ReadSamples(pStreamData.GetArrayPointer(), bufferSize);
 }

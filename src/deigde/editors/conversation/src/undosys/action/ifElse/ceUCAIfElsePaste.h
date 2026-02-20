@@ -27,8 +27,8 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAIfElseCase;
-class ceCAIfElse;
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 
@@ -36,19 +36,24 @@ class ceCAIfElse;
  * \brief Undo action if-else add conversation action.
  */
 class ceUCAIfElsePaste : public ceUCActionPaste{
+public:
+	using Ref = deTObjectReference<ceUCAIfElsePaste>;
+
 private:
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElsePaste( ceConversationTopic *topic, ceCAIfElse *ifElse,
-	ceCAIfElseCase *ifcase, const ceConversationActionList &actions, int index );
+	ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse *ifElse,
+	ceCAIfElseCase *ifcase, const ceConversationAction::List &actions, int index);
 	
 	/** \brief Clean up undo object. */
-	virtual ~ceUCAIfElsePaste();
+protected:
+	~ceUCAIfElsePaste() override;
+public:
 	/*@}*/
 	
 	
@@ -57,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

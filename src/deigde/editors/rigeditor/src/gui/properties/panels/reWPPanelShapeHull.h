@@ -27,9 +27,9 @@
 
 #include "reWPPanelShape.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 class reRigShapeHull;
 
@@ -39,13 +39,16 @@ class reRigShapeHull;
  * \brief Rig shape hull panel.
  */
 class reWPPanelShapeHull : public reWPPanelShape{
+public:
+	using Ref = deTObjectReference<reWPPanelShapeHull>;
+	
 private:
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeSpinTextFieldReference pSpinPoint;
-	igdeButtonReference pBtnPointAdd;
-	igdeButtonReference pBtnPointRemove;
-	igdeEditVectorReference pEditPoint;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeSpinTextField::Ref pSpinPoint;
+	igdeButton::Ref pBtnPointAdd;
+	igdeButton::Ref pBtnPointRemove;
+	igdeEditVector::Ref pEditPoint;
 	
 	
 	
@@ -53,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeHull( reWPShape &wpShapes );
+	reWPPanelShapeHull(reWPShape &wpShapes);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShapeHull();
+	~reWPPanelShapeHull() override;
 	/*@}*/
 	
 	
@@ -66,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update . */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	
 	/** \brief Selected point of -1. */
 	int GetSelectedPoint() const;

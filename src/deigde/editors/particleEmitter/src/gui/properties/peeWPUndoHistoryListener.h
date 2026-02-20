@@ -35,6 +35,10 @@ class peeWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class peeWPUndoHistoryListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWPUndoHistoryListener>;
+	
 private:
 	peeWPUndoHistory &pPanel;
 	
@@ -42,10 +46,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWPUndoHistoryListener( peeWPUndoHistory &panel );
+	peeWPUndoHistoryListener(peeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~peeWPUndoHistoryListener();
+protected:
+	~peeWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	
@@ -53,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( peeEmitter *emitter );
+	void UndoChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

@@ -26,32 +26,32 @@
 #define _GDEWPSOCCOMPONENT_H_
 
 #include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCComponentListener.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCComponent;
 class gdeOCComponentTexture;
 class gdeWindowProperties;
-class gdeWPSOCComponentListener;
 
 
 
@@ -59,60 +59,63 @@ class gdeWPSOCComponentListener;
  * \brief Object class component property panel.
  */
 class gdeWPSOCComponent : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCComponent> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCComponentListener *pListener;
+	gdeWPSOCComponentListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pEngModelTexNames;
 	decString pEngModelPath;
 	bool pDirtyEngModelTexNames;
 	
-	igdeActionContextMenuReference pActionTexturesMenu;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
-	decObjectList pActionsTextureAddFromModel;
-	igdeActionReference pActionTexturePropertyValueSet;
-	igdeActionReference pActionTexturePropertyValueRemove;
-	igdeActionReference pActionTexturePropertyValueClear;
+	igdeActionContextMenu::Ref pActionTexturesMenu;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
+	decTObjectList<igdeAction> pActionsTextureAddFromModel;
+	igdeAction::Ref pActionTexturePropertyValueSet;
+	igdeAction::Ref pActionTexturePropertyValueRemove;
+	igdeAction::Ref pActionTexturePropertyValueClear;
 	
-	igdeEditPathReference pEditPathModel;
-	igdeEditPathReference pEditPathSkin;
-	igdeEditPathReference pEditPathRig;
-	igdeEditPathReference pEditPathAnimator;
-	igdeEditPathReference pEditPathAnimation;
-	igdeTextFieldReference pEditMove;
-	igdeEditPathReference pEditPathOcclusionMesh;
-	igdeEditPathReference pEditPathAudioModel;
-	igdeTextFieldReference pEditPlaybackController;
-	igdeCheckBoxReference pChkDoNotScale;
-	igdeCheckBoxReference pChkStatic;
-	igdeCheckBoxReference pChkRenderEnvMap;
-	igdeCheckBoxReference pChkAffectsAudio;
-	igdeCheckBoxReference pChkPartialHide;
-	igdeCheckBoxReference pChkAttachTarget;
-	igdeCheckBoxReference pChkLightShadowIgnore;
-	igdeComboBoxReference pCBCollisionResponseType;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
+	igdeEditPath::Ref pEditPathModel;
+	igdeEditPath::Ref pEditPathSkin;
+	igdeEditPath::Ref pEditPathRig;
+	igdeEditPath::Ref pEditPathAnimator;
+	igdeEditPath::Ref pEditPathAnimation;
+	igdeTextField::Ref pEditMove;
+	igdeEditPath::Ref pEditPathOcclusionMesh;
+	igdeEditPath::Ref pEditPathAudioModel;
+	igdeTextField::Ref pEditPlaybackController;
+	igdeCheckBox::Ref pChkDoNotScale;
+	igdeCheckBox::Ref pChkStatic;
+	igdeCheckBox::Ref pChkRenderEnvMap;
+	igdeCheckBox::Ref pChkAffectsAudio;
+	igdeCheckBox::Ref pChkPartialHide;
+	igdeCheckBox::Ref pChkAttachTarget;
+	igdeCheckBox::Ref pChkLightShadowIgnore;
+	igdeComboBox::Ref pCBCollisionResponseType;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTextures;
-	igdeButtonReference pBtnTextures;
-	igdeTextFieldReference pTextureEditName;
-	igdeEditPathReference pTextureEditPathSkin;
-	igdeEditVector2Reference pTextureEditOffset;
-	igdeTextFieldReference pTextureEditRotation;
-	igdeEditVector2Reference pTextureEditScale;
-	igdeColorBoxReference pTextureClrTint;
+	igdeComboBox::Ref pCBTextures;
+	igdeButton::Ref pBtnTextures;
+	igdeTextField::Ref pTextureEditName;
+	igdeEditPath::Ref pTextureEditPathSkin;
+	igdeEditVector2::Ref pTextureEditOffset;
+	igdeTextField::Ref pTextureEditRotation;
+	igdeEditVector2::Ref pTextureEditScale;
+	igdeColorBox::Ref pTextureClrTint;
 	
-	igdeComboBoxReference pTextureCBPropertyKeys;
-	igdeButtonReference pTextureBtnPropertyValueSet;
-	igdeIconListBoxReference pTextureListProperties;
+	igdeComboBox::Ref pTextureCBPropertyKeys;
+	igdeButton::Ref pTextureBtnPropertyValueSet;
+	igdeIconListBox::Ref pTextureListProperties;
 	
 	
 	
@@ -120,7 +123,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCComponent( gdeWindowProperties &windowMain );
+	gdeWPSOCComponent(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -132,28 +135,28 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class component or \em NULL if not set. */
+	/** \brief Active object class component or \em nullptr if not set. */
 	gdeOCComponent *GetComponent() const;
 	
-	/** \brief Active object class component texture or \em NULL if not set. */
+	/** \brief Active object class component texture or \em nullptr if not set. */
 	gdeOCComponentTexture *GetTexture() const;
 	
 	/** \brief Active object class component texture property or empty string if not set. */
 	const decString &GetTextureProperty() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCComponent::eProperties GetPropertyName() const;
+	gdeOCComponent::eProperties GetPropertyName() const;
 	
 	/** \brief Active property key (in combo box). */
 	const decString &GetTexturePropertyKey() const;
@@ -198,7 +201,7 @@ public:
 	 * Marks the list dirty if the path changed. List will be update only when
 	 * PrepareEngineModelPath() is called to keep performance up.
 	 */
-	void SetEngineModelPath( const char *path );
+	void SetEngineModelPath(const char *path);
 	
 	/**
 	 * \brief Prepare engine model texture list if dirty.
@@ -210,13 +213,13 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline const decObjectList &GetActionsTextureAddFromModel() const{ return pActionsTextureAddFromModel; }
-	inline igdeAction *GetActionTexturePropertyValueSet() const{ return pActionTexturePropertyValueSet; }
-	inline igdeAction *GetActionTexturePropertyValueRemove() const{ return pActionTexturePropertyValueRemove; }
-	inline igdeAction *GetActionTexturePropertyValueClear() const{ return pActionTexturePropertyValueClear; }
+	inline const igdeActionContextMenu::Ref &GetActionTexturesMenu() const{ return pActionTexturesMenu; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const decTObjectList<igdeAction> &GetActionsTextureAddFromModel() const{ return pActionsTextureAddFromModel; }
+	inline const igdeAction::Ref &GetActionTexturePropertyValueSet() const{ return pActionTexturePropertyValueSet; }
+	inline const igdeAction::Ref &GetActionTexturePropertyValueRemove() const{ return pActionTexturePropertyValueRemove; }
+	inline const igdeAction::Ref &GetActionTexturePropertyValueClear() const{ return pActionTexturePropertyValueClear; }
 	/*@}*/
 };
 

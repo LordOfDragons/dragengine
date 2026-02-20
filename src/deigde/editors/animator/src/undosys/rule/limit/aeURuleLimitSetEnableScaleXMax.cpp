@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleXMax::aeURuleLimitSetEnableScaleXMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleXMax::aeURuleLimitSetEnableScaleXMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum x scaling" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumXScaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleXMax::~aeURuleLimitSetEnableScaleXMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableScaleXMax::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleXMax::Redo(){
-	pRule->SetEnableScalingXMax( ! pRule->GetEnableScalingXMax() );
+	pRule->SetEnableScalingXMax(!pRule->GetEnableScalingXMax());
 }

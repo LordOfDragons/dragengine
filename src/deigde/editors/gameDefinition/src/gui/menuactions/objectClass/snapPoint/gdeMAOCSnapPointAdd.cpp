@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSnapPointAdd::gdeMAOCSnapPointAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Snap Point...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class snap point" )
+gdeMAOCSnapPointAdd::gdeMAOCSnapPointAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCSnapPointAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCSnapPointAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Snap Point...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference snapPoint;
-	snapPoint.TakeOver( new gdeOCSnapPoint );
-	return new gdeUOCAddSnapPoint( &objectClass, ( gdeOCSnapPoint* )( deObject* )snapPoint );
+igdeUndo::Ref gdeMAOCSnapPointAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddSnapPoint::Ref::New(&objectClass, gdeOCSnapPoint::Ref::New());
 }
 
 void gdeMAOCSnapPointAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

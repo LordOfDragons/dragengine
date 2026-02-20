@@ -28,7 +28,6 @@
 
 #include "debpDebug.h"
 #include "debpDebugInformation.h"
-#include "debpDebugInformationList.h"
 #include "../dePhysicsBullet.h"
 
 #include <dragengine/common/exceptions.h>
@@ -41,82 +40,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpDebug::debpDebug( dePhysicsBullet &bullet ) :
-pBullet( bullet ),
-pEnabled( false ),
-pDIColliderPrepareDetection( NULL ),
-pDIColliderDetectCustomCollision( NULL ),
-pDIColliderUpdateFromBody( NULL ),
-pDIColliderFinishDetection( NULL ),
-pDIColliderCollisionTests( NULL ),
-pDIColliderUpdateOctree( NULL ),
-pDITouchSensorApplyChanges( NULL ),
-pDIWorldStepSimulation( NULL ),
-pDIWorldUpdateOctrees( NULL ),
-pDIWorldCheckDynamicCollisions( NULL )
+debpDebug::debpDebug(dePhysicsBullet &bullet) :
+pBullet(bullet),
+pEnabled(false)
 {
-	pDIColliderPrepareDetection = new debpDebugInformation( "Collider PrepareDetection:" );
-	pDebugInfoList.Add( pDIColliderPrepareDetection );
+	pDIColliderPrepareDetection = debpDebugInformation::Ref::New("Collider PrepareDetection:");
+	pDebugInfoList.Add(pDIColliderPrepareDetection);
 	
-	pDIColliderDetectCustomCollision = new debpDebugInformation( "Collider DetectCustomCollision:" );
-	pDebugInfoList.Add( pDIColliderDetectCustomCollision );
+	pDIColliderDetectCustomCollision = debpDebugInformation::Ref::New("Collider DetectCustomCollision:");
+	pDebugInfoList.Add(pDIColliderDetectCustomCollision);
 	
-	pDIColliderUpdateFromBody = new debpDebugInformation( "Collider UpdateFromBody:" );
-	pDebugInfoList.Add( pDIColliderUpdateFromBody );
+	pDIColliderUpdateFromBody = debpDebugInformation::Ref::New("Collider UpdateFromBody:");
+	pDebugInfoList.Add(pDIColliderUpdateFromBody);
 	
-	pDIColliderFinishDetection = new debpDebugInformation( "Collider FinishDetection:" );
-	pDebugInfoList.Add( pDIColliderFinishDetection );
+	pDIColliderFinishDetection = debpDebugInformation::Ref::New("Collider FinishDetection:");
+	pDebugInfoList.Add(pDIColliderFinishDetection);
 	
-	pDIColliderCollisionTests = new debpDebugInformation( "Collider CollisionTests:" );
-	pDebugInfoList.Add( pDIColliderCollisionTests );
+	pDIColliderCollisionTests = debpDebugInformation::Ref::New("Collider CollisionTests:");
+	pDebugInfoList.Add(pDIColliderCollisionTests);
 	
-	pDIColliderUpdateOctree = new debpDebugInformation( "Collider UpdateOctreePosition:" );
-	pDebugInfoList.Add( pDIColliderUpdateOctree );
+	pDIColliderUpdateOctree = debpDebugInformation::Ref::New("Collider UpdateOctreePosition:");
+	pDebugInfoList.Add(pDIColliderUpdateOctree);
 	
-	pDITouchSensorApplyChanges = new debpDebugInformation( "TouchSensor ApplyChanges:" );
-	pDebugInfoList.Add( pDITouchSensorApplyChanges );
+	pDITouchSensorApplyChanges = debpDebugInformation::Ref::New("TouchSensor ApplyChanges:");
+	pDebugInfoList.Add(pDITouchSensorApplyChanges);
 	
-	pDIWorldStepSimulation = new debpDebugInformation( "World StepSimulation:" );
-	pDebugInfoList.Add( pDIWorldStepSimulation );
+	pDIWorldStepSimulation = debpDebugInformation::Ref::New("World StepSimulation:");
+	pDebugInfoList.Add(pDIWorldStepSimulation);
 	
-	pDIWorldUpdateOctrees = new debpDebugInformation( "World UpdateOctrees:" );
-	pDebugInfoList.Add( pDIWorldUpdateOctrees );
+	pDIWorldUpdateOctrees = debpDebugInformation::Ref::New("World UpdateOctrees:");
+	pDebugInfoList.Add(pDIWorldUpdateOctrees);
 	
-	pDIWorldCheckDynamicCollisions = new debpDebugInformation( "World CheckDynamicCollisions:" );
-	pDebugInfoList.Add( pDIWorldCheckDynamicCollisions );
+	pDIWorldCheckDynamicCollisions = debpDebugInformation::Ref::New("World CheckDynamicCollisions:");
+	pDebugInfoList.Add(pDIWorldCheckDynamicCollisions);
 }
 
 debpDebug::~debpDebug(){
-	if( pDIWorldCheckDynamicCollisions ){
-		pDIWorldCheckDynamicCollisions->FreeReference();
-	}
-	if( pDIWorldUpdateOctrees ){
-		pDIWorldUpdateOctrees->FreeReference();
-	}
-	if( pDIWorldStepSimulation ){
-		pDIWorldStepSimulation->FreeReference();
-	}
-	if( pDITouchSensorApplyChanges ){
-		pDITouchSensorApplyChanges->FreeReference();
-	}
-	if( pDIColliderPrepareDetection ){
-		pDIColliderPrepareDetection->FreeReference();
-	}
-	if( pDIColliderDetectCustomCollision ){
-		pDIColliderDetectCustomCollision->FreeReference();
-	}
-	if( pDIColliderUpdateOctree ){
-		pDIColliderUpdateOctree->FreeReference();
-	}
-	if( pDIColliderUpdateFromBody ){
-		pDIColliderUpdateFromBody->FreeReference();
-	}
-	if( pDIColliderFinishDetection ){
-		pDIColliderFinishDetection->FreeReference();
-	}
-	if( pDIColliderCollisionTests ){
-		pDIColliderCollisionTests->FreeReference();
-	}
 }
 
 
@@ -124,8 +83,8 @@ debpDebug::~debpDebug(){
 // Management
 ///////////////
 
-void debpDebug::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void debpDebug::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
@@ -134,8 +93,8 @@ void debpDebug::SetEnabled( bool enabled ){
 
 
 
-void debpDebug::BeginProcessPhysics( debpWorld *world ){
-	if( ! pEnabled ){
+void debpDebug::BeginProcessPhysics(debpWorld *world){
+	if(!pEnabled){
 		return;
 	}
 	
@@ -151,14 +110,14 @@ void debpDebug::BeginProcessPhysics( debpWorld *world ){
 	pDIWorldCheckDynamicCollisions->Clear();
 }
 
-void debpDebug::EndProcessPhysics( debpWorld *world ){
-	if( ! pEnabled ){
+void debpDebug::EndProcessPhysics(debpWorld *world){
+	if(!pEnabled){
 		return;
 	}
 	
 	pUpdateDebugInformation();
 	
-	pBullet.LogInfoFormat( "DebugInfo World %p", world );
+	pBullet.LogInfoFormat("DebugInfo World %p", world);
 	pLogDebugInformation();
 }
 
@@ -171,36 +130,36 @@ void debpDebug::pUpdateDebugInformation(){
 	const int count = pDebugInfoList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pUpdateDebugInformation( *pDebugInfoList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pUpdateDebugInformation(*pDebugInfoList.GetAt(i));
 	}
 }
 
-void debpDebug::pUpdateDebugInformation( debpDebugInformation &debugInfo ){
-	decString text( debugInfo.GetName() );
+void debpDebug::pUpdateDebugInformation(debpDebugInformation &debugInfo){
+	decString text(debugInfo.GetName());
 	
-	if( debugInfo.HasElapsedTime() ){
-		text.AppendFormat( " %d.%01dms", ( int )( debugInfo.GetElapsedTime() * 1000.0f ),
-			( int )( debugInfo.GetElapsedTime() * 10000.0f ) % 10 );
+	if(debugInfo.HasElapsedTime()){
+		text.AppendFormat(" %d.%01dms", (int)(debugInfo.GetElapsedTime() * 1000.0f),
+			(int)(debugInfo.GetElapsedTime() * 10000.0f) % 10);
 	}
 	
-	if( debugInfo.HasCounter() ){
-		text.AppendFormat( " %dx", debugInfo.GetCounter() );
+	if(debugInfo.HasCounter()){
+		text.AppendFormat(" %dx", debugInfo.GetCounter());
 		
-		if( debugInfo.GetCounter() > 0 ){
-			const double average = ( double )debugInfo.GetElapsedTime() / ( double )debugInfo.GetCounter();
-			text.AppendFormat( "(%dys)", ( int )( average * 1e6f ) );
+		if(debugInfo.GetCounter() > 0){
+			const double average = (double)debugInfo.GetElapsedTime() / (double)debugInfo.GetCounter();
+			text.AppendFormat("(%dys)", (int)(average * 1e6f));
 		}
 	}
 	
-	debugInfo.SetText( text );
+	debugInfo.SetText(text);
 }
 
 void debpDebug::pLogDebugInformation(){
 	const int count = pDebugInfoList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pBullet.LogInfo( pDebugInfoList.GetAt( i )->GetText() );
+	for(i=0; i<count; i++){
+		pBullet.LogInfo(pDebugInfoList.GetAt(i)->GetText());
 	}
 }

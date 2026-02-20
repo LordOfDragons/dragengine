@@ -36,6 +36,10 @@ class aeAnimator;
  * Undo action animator remove vertex position set.
  */
 class aeUAnimatorRemoveVertexPositionSet : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAnimatorRemoveVertexPositionSet>;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pVertexPositionSets;
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUAnimatorRemoveVertexPositionSet( aeAnimator *animator, const char *pattern );
+	aeUAnimatorRemoveVertexPositionSet(aeAnimator *animator, const char *pattern);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorRemoveVertexPositionSet();
+	~aeUAnimatorRemoveVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

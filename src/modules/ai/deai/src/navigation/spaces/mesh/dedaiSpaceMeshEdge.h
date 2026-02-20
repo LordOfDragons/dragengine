@@ -59,25 +59,25 @@ public:
 	inline unsigned short GetVertex1() const{ return pVertex1; }
 	
 	/** \brief Set index of first vertex. */
-	void SetVertex1( unsigned short vertex );
+	void SetVertex1(unsigned short vertex);
 	
 	/** \brief Index of second vertex. */
 	inline unsigned short GetVertex2() const{ return pVertex2; }
 	
 	/** \brief Set index of second vertex. */
-	void SetVertex2( unsigned short vertex );
+	void SetVertex2(unsigned short vertex);
 	
 	/** \brief Index of first face or -1 if not linked to any face. */
 	inline short GetFace1() const{ return pFace1; }
 	
 	/** \brief Set index of first face or -1 if not linked to any face. */
-	void SetFace1( short face );
+	void SetFace1(short face);
 	
 	/** \brief Index of second face or -1 if not linked to two faces. */
 	inline short GetFace2() const{ return pFace2; }
 	
 	/** \brief Set index of second face or -1 if not linked to two faces. */
-	void SetFace2( short face );
+	void SetFace2(short face);
 	/*@}*/
 };
 

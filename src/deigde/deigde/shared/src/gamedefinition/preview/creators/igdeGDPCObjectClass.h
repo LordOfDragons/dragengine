@@ -28,10 +28,10 @@
 #include "igdeGDPreviewCreator.h"
 #include "../../../gui/wrapper/igdeWObject.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
 
 class igdeGDClass;
 class igdeWSky;
@@ -42,23 +42,28 @@ class igdeWSky;
  * \brief Create preview for game definition object class asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCObjectClass : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDPCObjectClass>;
+	
+	
 private:
 	class DE_DLL_EXPORT cAsyncFinished : public igdeWObject::cAsyncLoadFinished {
 	public:
 		bool asyncLoadFinished;
 	public:
 		cAsyncFinished();
-		virtual void LoadFinished( igdeWObject &wrapper, bool succeeded );
+		void LoadFinished(igdeWObject &wrapper, bool succeeded) override;
 	};
 	
 	igdeGDClass *pGDClass;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
-	deLightReference pLight;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
+	deLight::Ref pLight;
 	igdeWObject::Ref pObject;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	cAsyncFinished pAsyncFinished;
 	
@@ -68,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPCObjectClass( igdeEnvironment &environment, igdeGDClass *gdclass, const decPoint &size );
+	igdeGDPCObjectClass(igdeEnvironment &environment, igdeGDClass *gdclass, const decPoint &size);
 	
 	
 	
@@ -79,7 +84,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGDPCObjectClass();
+	~igdeGDPCObjectClass() override;
 	/*@}*/
 	
 	
@@ -94,16 +99,16 @@ public:
 	
 protected:
 	/** \brief Debug prefix. */
-	virtual decString DebugPrefix();
+	decString DebugPrefix() override;
 	
 	/** \brief Set up canvas to render. */
-	virtual void PrepareCanvasForRender();
+	void PrepareCanvasForRender() override;
 	
 	/** \brief Wait for canvas to be ready for rendering. */
-	virtual bool IsCanvasReadyForRender();
+	bool IsCanvasReadyForRender() override;
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed );
+	void UpdateCanvasForRender(float elapsed) override;
 	/*@}*/
 };
 

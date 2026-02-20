@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetRotMin::aeURuleLimitSetRotMin( aeRuleLimit *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetRotMin::aeURuleLimitSetRotMin(aeRuleLimit *rule, const decVector &newMin){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Limit set minimum rotation" );
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumRotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleLimitSetRotMin::~aeURuleLimitSetRotMin(){
 ///////////////
 
 void aeURuleLimitSetRotMin::Undo(){
-	pRule->SetMinimumRotation( pOldMin );
+	pRule->SetMinimumRotation(pOldMin);
 }
 
 void aeURuleLimitSetRotMin::Redo(){
-	pRule->SetMinimumRotation( pNewMin );
+	pRule->SetMinimumRotation(pNewMin);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleLimitSetRotMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetRotMin::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

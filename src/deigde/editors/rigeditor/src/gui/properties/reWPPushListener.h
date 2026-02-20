@@ -35,6 +35,9 @@ class reWPPush;
  * \brief Push panel listenerer
  */
 class reWPPushListener : public reRigNotifier{
+public:
+	using Ref = deTObjectReference<reWPPushListener>;
+	
 private:
 	reWPPush &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPPushListener( reWPPush &panel );
+	reWPPushListener(reWPPush &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPPushListener();
+protected:
+	~reWPPushListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,10 +60,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief A push changed. */
-	void PushChanged( reRig *rig, reRigPush *push );
+	void PushChanged(reRig *rig, reRigPush *push) override;
 	
 	/** \brief The active push changed. */
-	void ActivePushChanged( reRig *rig );
+	void ActivePushChanged(reRig *rig) override;
 	/*@}*/
 };
 

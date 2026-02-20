@@ -30,8 +30,8 @@
 // Class deBaseSynthesizerModule
 //////////////////////////////////
 
-deBaseSynthesizerModule::deBaseSynthesizerModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseSynthesizerModule::deBaseSynthesizerModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseSynthesizerModule::~deBaseSynthesizerModule(){

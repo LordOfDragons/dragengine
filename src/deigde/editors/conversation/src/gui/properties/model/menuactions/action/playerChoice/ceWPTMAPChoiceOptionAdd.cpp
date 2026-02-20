@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,12 +50,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionAdd::ceWPTMAPChoiceOptionAdd( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice ) :
-ceWPTMenuAction( windowMain, "Add Option", windowMain.GetIconActionOption() ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ){
+ceWPTMAPChoiceOptionAdd::ceWPTMAPChoiceOptionAdd(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.AddOption", windowMain.GetIconActionOption()),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice){
 }
 
 
@@ -64,40 +64,24 @@ pPlayerChoice( &playerChoice ){
 ///////////////
 
 void ceWPTMAPChoiceOptionAdd::OnAction(){
-	ceCAPlayerChoiceOption *selectOption = NULL;
-	ceCAPlayerChoiceOption *option = NULL;
-	igdeUndoReference undo;
-	
-	try{
-		option = new ceCAPlayerChoiceOption;
-		undo.TakeOver( new ceUCAPChoiceOptionAdd( pTopic, pPlayerChoice,
-			option, pPlayerChoice->GetOptions().GetCount() ) );
-		selectOption = option;
-		option->FreeReference();
-		option = NULL;
-		
-		pConversation->GetUndoSystem()->Add( undo );
-		
-	}catch( const deException & ){
-		if( option ){
-			option->FreeReference();
-		}
-		throw;
-	}
+	const ceCAPlayerChoiceOption::Ref option(ceCAPlayerChoiceOption::Ref::New());
+	pConversation->GetUndoSystem()->Add(ceUCAPChoiceOptionAdd::Ref::New(
+		pTopic, pPlayerChoice, option, pPlayerChoice->GetOptions().GetCount()));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(!wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAPlayerChoice * const modelPlayerChoice = ( ceWPTTIMAPlayerChoice* )model.DeepFindAction( pPlayerChoice );
-	if( ! modelPlayerChoice ){
+	ceWPTTIMAPlayerChoice * const modelPlayerChoice =
+		static_cast<ceWPTTIMAPlayerChoice*>(model.DeepFindAction(pPlayerChoice));
+	if(!modelPlayerChoice){
 		return;
 	}
 	
-	ceWPTTIMAPlayerChoiceOption * const modelOption = modelPlayerChoice->GetOptionChild( selectOption );
-	if( ! modelOption ){
+	ceWPTTIMAPlayerChoiceOption * const modelOption = modelPlayerChoice->GetOptionChild(option);
+	if(!modelOption){
 		return;
 	}
 	

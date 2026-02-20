@@ -36,7 +36,6 @@ class dellLauncher;
 class dellGame;
 class dellGameProfile;
 class dellGPModuleList;
-class decStringList;
 
 
 /**
@@ -59,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create run game. */
-	dellRunGame( dellLauncher &launcher );
+	dellRunGame(dellLauncher &launcher);
 	
 	/** Clean up run game. */
 	~dellRunGame();
@@ -91,7 +90,7 @@ public:
 	void ShowProfileProblems();
 	
 	/** Show module problem if there are any. */
-	void ShowModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType );
+	void ShowModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType);
 	
 	/** Run game. */
 	void Run();

@@ -27,11 +27,11 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 
 class meHTVRulePropCount;
 
@@ -41,25 +41,28 @@ class meHTVRulePropCount;
  * \brief Vegetation Editing Window Node Prop Count.
  */
 class meWVNodePropCount : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodePropCount>;
+	
 private:
 	meHTVRulePropCount *pRulePC;
 	
-	igdeActionContextMenuReference pActionMenuClass;
+	igdeActionContextMenu::Ref pActionMenuClass;
 	
-	igdeContainerReference pFraParameters;
-	igdeComboBoxFilterReference pCBPropClass;
-	igdeButtonReference pBtnPropClass;
-	igdeTextFieldReference pEditSearchRadius;
+	igdeContainer::Ref pFraParameters;
+	igdeComboBoxFilter::Ref pCBPropClass;
+	igdeButton::Ref pBtnPropClass;
+	igdeTextField::Ref pEditSearchRadius;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodePropCount( meWindowVegetation &windowVegetation, meHTVRulePropCount *rule );
+	meWVNodePropCount(meWindowVegetation &windowVegetation, meHTVRulePropCount *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodePropCount();
+	~meWVNodePropCount() override;
 	/*@}*/
 	
 	
@@ -71,10 +74,14 @@ public:
 	inline meHTVRulePropCount *GetRulePropCount() const{ return pRulePC; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update class lists. */
-	virtual void UpdateClassLists();
+	void UpdateClassLists() override;
+	
+	
+	/** \brief Game project game definition changed. */
+	void OnGameDefinitionChanged() override;
 	/*@}*/
 };
 

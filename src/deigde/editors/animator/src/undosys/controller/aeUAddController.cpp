@@ -40,17 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAddController::aeUAddController( aeAnimator *animator, aeController *controller ){
-	if( ! animator || ! controller ) DETHROW( deeInvalidParam );
+aeUAddController::aeUAddController(aeAnimator *animator, aeController *controller, const char *shortInfo){
+	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pController = NULL;
+	pAnimator = nullptr;
+	pController = nullptr;
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
+	
+	SetShortInfo(shortInfo ? shortInfo : "@Animator.Undo.AddController");
 }
 
 aeUAddController::~aeUAddController(){
@@ -63,12 +62,12 @@ aeUAddController::~aeUAddController(){
 ///////////////
 
 void aeUAddController::Undo(){
-	pAnimator->RemoveController( pController );
+	pAnimator->RemoveController(pController);
 }
 
 void aeUAddController::Redo(){
-	pAnimator->AddController( pController );
-	pAnimator->SetActiveController( pController );
+	pAnimator->AddController(pController);
+	pAnimator->SetActiveController(pController);
 }
 
 
@@ -77,6 +76,4 @@ void aeUAddController::Redo(){
 //////////////////////
 
 void aeUAddController::pCleanUp(){
-	if( pController ) pController->FreeReference();
-	if( pAnimator ) pAnimator->FreeReference();
 }

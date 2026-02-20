@@ -25,15 +25,14 @@
 #ifndef _DEEFFECTMANAGER_H_
 #define _DEEFFECTMANAGER_H_ 
 
+#include "deEffectFilterKernel.h"
+#include "deEffectOverlayImage.h"
+#include "deEffectColorMatrix.h"
+#include "deEffectDistortImage.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deEffect;
-class deEffectFilterKernel;
-class deEffectOverlayImage;
-class deEffectColorMatrix;
-class deEffectDistortImage;
 
 
 /**
@@ -50,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new effect resource manager linked to the given engine. */
-	deEffectManager( deEngine *engine );
+	deEffectManager(deEngine *engine);
 	
 	/** \brief Clean up effect resource manager and reports leaking resources. */
-	virtual ~deEffectManager();
+	~deEffectManager() override;
 	/*@}*/
 	
 	
@@ -67,27 +66,27 @@ public:
 	deEffect *GetRootEffect() const;
 	
 	/** \brief Create new effect filter kernel. */
-	deEffectFilterKernel *CreateEffectFilterKernel();
+	deEffectFilterKernel::Ref CreateEffectFilterKernel();
 	
 	/** \brief Create new effect overlay image. */
-	deEffectOverlayImage *CreateEffectOverlayImage();
+	deEffectOverlayImage::Ref CreateEffectOverlayImage();
 	
 	/** \brief Create new color matrix effect. */
-	deEffectColorMatrix *CreateEffectColorMatrix();
+	deEffectColorMatrix::Ref CreateEffectColorMatrix();
 	
 	/** \brief Create new distort image effect. */
-	deEffectDistortImage *CreateEffectDistortImage();
+	deEffectDistortImage::Ref CreateEffectDistortImage();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	//void SystemPhysicsLoad();
 	//void SystemPhysicsUnload();
 	/*@}*/
@@ -100,7 +99,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

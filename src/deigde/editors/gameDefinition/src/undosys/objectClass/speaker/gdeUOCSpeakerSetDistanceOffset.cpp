@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set distance offset" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetDistanceOffset");
 	
 	pOldValue = speaker->GetDistanceOffset();
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetDistanceOffset::~gdeUOCSpeakerSetDistanceOffset(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCSpeakerSetDistanceOffset::~gdeUOCSpeakerSetDistanceOffset(){
 ///////////////
 
 void gdeUOCSpeakerSetDistanceOffset::Undo(){
-	pSpeaker->SetDistanceOffset( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetDistanceOffset(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetDistanceOffset::Redo(){
-	pSpeaker->SetDistanceOffset( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetDistanceOffset(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

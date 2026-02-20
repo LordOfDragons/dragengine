@@ -42,25 +42,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategory::gdeWPSTIMCategory( gdeWPSTreeModel &tree, eTypes type, gdeCategory *category ) :
-gdeWPSTreeItemModel( tree, type ),
-pCategory( NULL )
+gdeWPSTIMCategory::gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category) :
+gdeWPSTreeItemModel(tree, type)
 {
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(!category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetText( category->GetName() );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(category->GetName());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeWPSTIMCategory::~gdeWPSTIMCategory(){
-	if( pCategory ){
-		pCategory->FreeReference();
-	}
 }
 
 
@@ -68,17 +63,17 @@ gdeWPSTIMCategory::~gdeWPSTIMCategory(){
 // Management
 ///////////////
 
-int gdeWPSTIMCategory::Compare( const gdeWPSTreeItemModel &item ) const{
-	const gdeWPSTIMCategory &other = ( const gdeWPSTIMCategory & )item;
-	return pCategory->GetName().Compare( other.GetCategory()->GetName() );
+int gdeWPSTIMCategory::Compare(const gdeWPSTreeItemModel &item) const{
+	const gdeWPSTIMCategory &other = (const gdeWPSTIMCategory &)item;
+	return pCategory->GetName().Compare(other.GetCategory()->GetName());
 }
 
-void gdeWPSTIMCategory::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMCategory::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategoryAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategoryRemove() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategoryAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategoryRemove());
 	
 	// TODO Copy Category Decal
 	// TODO Cut Category Decal

@@ -25,20 +25,21 @@
 #ifndef _FEWINDOWMAIN_H_
 #define _FEWINDOWMAIN_H_
 
-#include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include "feWindowMainListener.h"
+#include "fontimage/feViewFontImage.h"
+#include "properties/feWindowProperties.h"
+#include "../font/feFont.h"
 
-class feWindowMainListener;
+#include <deigde/gui/igdeEditorWindow.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeFont.h>
+#include <deigde/gui/resources/igdeIcon.h>
+
 class feConfiguration;
-class feViewFontImage;
-class feFont;
 class feClipboard;
-class feWindowProperties;
 class feLoadSaveSystem;
 
 
@@ -47,34 +48,38 @@ class feLoadSaveSystem;
  * \brief Editor window.
  */
 class feWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<feWindowMain>;
+	
+	
 private:
-	feWindowMainListener *pListener;
+	feWindowMainListener::Ref pListener;
 	
-	//igdeIconReference pIconEditPaste;
+	//igdeIcon::Ref pIconEditPaste;
 	
-	igdeActionReference pActionFontNew;
-	igdeActionReference pActionFontOpen;
-	igdeActionReference pActionFontSave;
-	igdeActionReference pActionFontSaveAs;
-	igdeActionReference pActionFontGenerate;
+	igdeAction::Ref pActionFontNew;
+	igdeAction::Ref pActionFontOpen;
+	igdeAction::Ref pActionFontSave;
+	igdeAction::Ref pActionFontSaveAs;
+	igdeAction::Ref pActionFontGenerate;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	feConfiguration *pConfiguration;
 	feClipboard *pClipboard;
 	feLoadSaveSystem *pLoadSaveSystem;
 	
-	feViewFontImage *pViewFontImage;
-	feWindowProperties *pWndProps;
+	feViewFontImage::Ref pViewFontImage;
+	feWindowProperties::Ref pWndProps;
 	
-	feFont *pFont;
+	feFont::Ref pFont;
 	
 	igdeFont::sConfiguration pGenFontConfig;
 	
@@ -84,11 +89,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor window. */
-	feWindowMain( igdeEditorModule &module );
+	feWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up editor window. */
-	virtual ~feWindowMain();
+	~feWindowMain() override;
 	/*@}*/
 	
 	
@@ -101,17 +106,17 @@ public:
 	//inline igdeIcon* GetIconFontNew() const{ return pIconFontNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionFontNew() const{ return pActionFontNew; }
-	inline igdeAction *GetActionFontOpen() const{ return pActionFontOpen; }
-	inline igdeAction *GetActionFontSave() const{ return pActionFontSave; }
-	inline igdeAction *GetActionFontSaveAs() const{ return pActionFontSaveAs; }
-	inline igdeAction *GetActionFontGenerate() const{ return pActionFontGenerate; }
+	inline const igdeAction::Ref &GetActionFontNew() const{ return pActionFontNew; }
+	inline const igdeAction::Ref &GetActionFontOpen() const{ return pActionFontOpen; }
+	inline const igdeAction::Ref &GetActionFontSave() const{ return pActionFontSave; }
+	inline const igdeAction::Ref &GetActionFontSaveAs() const{ return pActionFontSaveAs; }
+	inline const igdeAction::Ref &GetActionFontGenerate() const{ return pActionFontGenerate; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -129,56 +134,56 @@ public:
 	inline const igdeFont::sConfiguration &GetGenFontConfig() const{ return pGenFontConfig; }
 	
 	/** \brief Set font generation font configuration. */
-	void SetGenFontConfig( const igdeFont::sConfiguration &config );
+	void SetGenFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** Retrieves the rig. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	/** Sets the font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	/** Creates a new font. */
 	void CreateNewFont();
 	/** Saves the font under the given file. */
-	void SaveFont( const char *filename );
+	void SaveFont(const char *filename);
 	
 	/** \brief Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** \brief Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** \brief Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** \brief Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** \brief Module is has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief List of unsaved open documents. */
-	virtual void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	void LoadDocument(const char *filename) override;
 	
 	/** \brief Request document to be saved. */
-	virtual bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * \brief Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/** \brief Game project has changed. */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	/*@}*/
 	
 	
@@ -189,8 +194,8 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFont( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
+	void pCreateMenuFont(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
 };
 
 #endif

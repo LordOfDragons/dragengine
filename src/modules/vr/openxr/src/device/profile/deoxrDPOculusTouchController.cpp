@@ -43,10 +43,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPOculusTouchController::deoxrDPOculusTouchController( deoxrInstance &instance ) :
-deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/oculus/touch_controller" ),
-	"Occulus Touch Controller" )
+deoxrDPOculusTouchController::deoxrDPOculusTouchController(deoxrInstance &instance) :
+deoxrDPBaseTwoHandController(instance,
+	deoxrPath(instance, "/interaction_profiles/oculus/touch_controller"),
+	"Occulus Touch Controller")
 {
 }
 
@@ -92,93 +92,93 @@ void deoxrDPOculusTouchController::pSuggestBindings(){
 	// - /output/haptic
 	
 	const int bindingCount = 12 * 2 + 5 + 5;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const decString basePathList[2] = {"/user/hand/left", "/user/hand/right"};
 	int i;
 	
 	// both hands
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
+	for(i=0; i<2; i++){
+		const decString &basePath = basePathList[i];
 		
-		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
-		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd(b, pPoseAction(i == 0), basePath + "/input/grip/pose");
+		pAdd(b, pPoseAction2(i == 0), basePath + "/input/aim/pose");
 		
-		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
-		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
+		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value");
+		pAdd(b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value");
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
-		pAdd( b, deVROpenXR::eiaTriggerTouch, basePath + "/input/trigger/touch" );
+		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value");
+		pAdd(b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value");
+		pAdd(b, deVROpenXR::eiaTriggerTouch, basePath + "/input/trigger/touch");
 		
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
-		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
-		pAdd( b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch" );
+		pAdd(b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick");
+		pAdd(b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click");
+		pAdd(b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch");
 		
-		pAdd( b, deVROpenXR::eiaThumbrestTouch, basePath + "/input/thumbrest/touch" );
+		pAdd(b, deVROpenXR::eiaThumbrestTouch, basePath + "/input/thumbrest/touch");
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	}
 	
 	// left hand
-	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/left/input/x/click" );
-	pAdd( b, deVROpenXR::eiaButtonPrimaryTouch, "/user/hand/left/input/x/touch" );
+	pAdd(b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/left/input/x/click");
+	pAdd(b, deVROpenXR::eiaButtonPrimaryTouch, "/user/hand/left/input/x/touch");
 	
-	pAdd( b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/left/input/y/click" );
-	pAdd( b, deVROpenXR::eiaButtonSecondaryTouch, "/user/hand/left/input/y/touch" );
+	pAdd(b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/left/input/y/click");
+	pAdd(b, deVROpenXR::eiaButtonSecondaryTouch, "/user/hand/left/input/y/touch");
 	
-	pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, "/user/hand/left/input/menu/click" );
+	pAdd(b, deVROpenXR::eiaButtonAuxiliary1Press, "/user/hand/left/input/menu/click");
 	
 	// right hand
-	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/right/input/a/click" );
-	pAdd( b, deVROpenXR::eiaButtonPrimaryTouch, "/user/hand/right/input/a/touch" );
+	pAdd(b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/right/input/a/click");
+	pAdd(b, deVROpenXR::eiaButtonPrimaryTouch, "/user/hand/right/input/a/touch");
 	
-	pAdd( b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/right/input/b/click" );
-	pAdd( b, deVROpenXR::eiaButtonSecondaryTouch, "/user/hand/right/input/b/touch" );
+	pAdd(b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/right/input/b/click");
+	pAdd(b, deVROpenXR::eiaButtonSecondaryTouch, "/user/hand/right/input/b/touch");
 	
-	pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, "/user/hand/right/input/system/click" );
+	pAdd(b, deVROpenXR::eiaButtonAuxiliary1Press, "/user/hand/right/input/system/click");
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
-void deoxrDPOculusTouchController::pAddDevice( bool left ){
+void deoxrDPOculusTouchController::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( device ){
+	if(device){
 		return;
 	}
 	
-	pCreateDevice( device, left, "otc_", true );
+	pCreateDevice(device, left, "otc_", true);
 	
-	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
-	pAddAxisTrigger( device, trigger );
-	pAddButtonTrigger( device, trigger, true ); // has to be button 0
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
+	pAddAxisTrigger(device, trigger);
+	pAddButtonTrigger(device, trigger, true); // has to be button 0
 	
-	if( left ){
-		pAddButton( device, ebaPrimary, eblX, true ); // has to be button 1
-		pAddButton( device, ebaSecondary, eblY, true ); // has to be button 2
-		pAddButton( device, ebaAuxiliary1, eblHome, false ); // has to be button 3
+	if(left){
+		pAddButton(device, ebaPrimary, eblX, true); // has to be button 1
+		pAddButton(device, ebaSecondary, eblY, true); // has to be button 2
+		pAddButton(device, ebaAuxiliary1, eblHome, false); // has to be button 3
 		
 	}else{
-		pAddButton( device, ebaPrimary, eblA, true ); // has to be button 1
-		pAddButton( device, ebaSecondary, eblB, true ); // has to be button 2
-		pAddButton( device, ebaAuxiliary1, eblSystem, false ); // has to be button 3
+		pAddButton(device, ebaPrimary, eblA, true); // has to be button 1
+		pAddButton(device, ebaSecondary, eblB, true); // has to be button 2
+		pAddButton(device, ebaAuxiliary1, eblSystem, false); // has to be button 3
 	}
 	
-	deoxrDeviceComponent * const joystick = pAddComponentJoystick( device );
-	pAddAxesJoystick( device, joystick );
-	pAddButtonJoystick( device, joystick, true, true );
+	deoxrDeviceComponent * const joystick = pAddComponentJoystick(device);
+	pAddAxesJoystick(device, joystick);
+	pAddButtonJoystick(device, joystick, true, true);
 	
-	deoxrDeviceComponent * const thumbrest = pAddComponentThumbrest( device );
-	pAddButtonThumbrest( device, thumbrest );
+	deoxrDeviceComponent * const thumbrest = pAddComponentThumbrest(device);
+	pAddButtonThumbrest(device, thumbrest);
 	
-	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxisGripGrab( device, grip );
-	pAddButtonGrip( device, grip, false );
+	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
+	pAddAxisGripGrab(device, grip);
+	pAddButtonGrip(device, grip, false);
 	
 	pAddHandTracker(device, left, true);
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	GetInstance().GetOxr().GetDevices().Add(device);
 }

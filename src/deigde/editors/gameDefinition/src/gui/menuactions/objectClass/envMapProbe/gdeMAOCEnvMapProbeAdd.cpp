@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbeAdd::gdeMAOCEnvMapProbeAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Environment Map Probe...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class environment map probe" )
+gdeMAOCEnvMapProbeAdd::gdeMAOCEnvMapProbeAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbeAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCEnvMapProbeAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Environment Map Probe...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference envMapProbe;
-	envMapProbe.TakeOver( new gdeOCEnvMapProbe );
-	return new gdeUOCAddEnvMapProbe( &objectClass, ( gdeOCEnvMapProbe* )( deObject* )envMapProbe );
+igdeUndo::Ref gdeMAOCEnvMapProbeAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddEnvMapProbe::Ref::New(&objectClass, gdeOCEnvMapProbe::Ref::New());
 }
 
 void gdeMAOCEnvMapProbeAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

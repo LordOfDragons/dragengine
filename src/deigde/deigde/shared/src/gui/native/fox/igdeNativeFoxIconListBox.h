@@ -28,7 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeIconListBox.h"
+#include "../../resources/igdeFont.h"
 
 
 class igdeListItem;
@@ -40,8 +41,8 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native icon list box.
  */
-class igdeNativeFoxIconListBox : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxIconListBox )
+class igdeNativeFoxIconListBox : public FXVerticalFrame, public igdeIconListBox::cNativeIconListBox{
+	FXDECLARE(igdeNativeFoxIconListBox)
 protected:
 	   igdeNativeFoxIconListBox();
 	
@@ -55,7 +56,7 @@ public:
 	
 private:
 	igdeIconListBox *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXIconList *pListBox;
 	igdeNativeFoxResizer *pResizer;
 	decPoint pDefaultSize;
@@ -66,14 +67,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxIconListBox( igdeIconListBox &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxIconListBox(igdeIconListBox &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxIconListBox();
+	~igdeNativeFoxIconListBox() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxIconListBox* CreateNativeWidget( igdeIconListBox &owner );
+	static igdeNativeFoxIconListBox* CreateNativeWidget(igdeIconListBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -89,57 +90,59 @@ public:
 	/** \brief List box. */
 	inline FXIconList *GetListBox() const{ return pListBox; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	
 	
-	virtual void BuildHeader();
-	virtual void BuildList();
-	virtual void InsertItem( int index, igdeListItem &item );
-	virtual void UpdateItem( int index );
-	virtual void MoveItem( int fromIndex, int toIndex );
-	virtual void RemoveItem( int index );
-	virtual void UpdateSelection();
-	virtual void UpdateHeader();
-	virtual void UpdateStyles();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
-	virtual void UpdateMinimumSize();
-	virtual void Focus();
-	virtual void MakeItemVisible( int index );
-	virtual void RemoveAllItems();
+	void BuildHeader() override;
+	void BuildList() override;
+	void InsertItem(int index, igdeListItem &item) override;
+	void UpdateItem(int index) override;
+	void MoveItem(int fromIndex, int toIndex) override;
+	void RemoveItem(int index) override;
+	void UpdateSelection() override;
+	void UpdateHeader() override;
+	void UpdateStyles() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
+	void UpdateMinimumSize() override;
+	void Focus() override;
+	void MakeItemVisible(int index) override;
+	void RemoveAllItems() override;
+	virtual decPoint GetContentPosition() const;
+	void SetContentPosition(const decPoint &position) override;
 	
-	static int IconListBoxFlagsBorder( const igdeIconListBox &owner );
-	static int IconListBoxFlags( const igdeIconListBox &owner );
-	static igdeFont *IconListBoxFont( const igdeIconListBox &owner, const igdeGuiTheme &guitheme );
-	static int IconListBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int IconListBoxPadRight( const igdeGuiTheme &guitheme );
-	static int IconListBoxPadTop( const igdeGuiTheme &guitheme );
-	static int IconListBoxPadBottom( const igdeGuiTheme &guitheme );
+	static int IconListBoxFlagsBorder(const igdeIconListBox &owner);
+	static int IconListBoxFlags(const igdeIconListBox &owner);
+	static igdeFont *IconListBoxFont(const igdeIconListBox &owner, const igdeGuiTheme &guitheme);
+	static int IconListBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int IconListBoxPadRight(const igdeGuiTheme &guitheme);
+	static int IconListBoxPadTop(const igdeGuiTheme &guitheme);
+	static int IconListBoxPadBottom(const igdeGuiTheme &guitheme);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onListCommand( FXObject*, FXSelector, void* );
-	long onListChanged( FXObject*, FXSelector, void* );
-	long onListSelected( FXObject*, FXSelector, void* );
-	long onListDeselected( FXObject*, FXSelector, void* );
-	long onListHeaderChanged( FXObject*, FXSelector, void* );
-	long onListHeaderClicked( FXObject*, FXSelector, void* );
-	long onListRightMouseDown( FXObject*, FXSelector, void* );
-	long onListRightMouseUp( FXObject*, FXSelector, void* );
-	long onListDoubleClicked( FXObject*, FXSelector, void* );
+	long onListCommand(FXObject*, FXSelector, void*);
+	long onListChanged(FXObject*, FXSelector, void*);
+	long onListSelected(FXObject*, FXSelector, void*);
+	long onListDeselected(FXObject*, FXSelector, void*);
+	long onListHeaderChanged(FXObject*, FXSelector, void*);
+	long onListHeaderClicked(FXObject*, FXSelector, void*);
+	long onListRightMouseDown(FXObject*, FXSelector, void*);
+	long onListRightMouseUp(FXObject*, FXSelector, void*);
+	long onListDoubleClicked(FXObject*, FXSelector, void*);
 	
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxIconListBox igdeNativeIconListBox;
+using igdeNativeIconListBox = igdeNativeFoxIconListBox;
 
 #endif

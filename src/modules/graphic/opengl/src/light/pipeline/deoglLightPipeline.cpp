@@ -33,12 +33,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightPipeline::deoglLightPipeline( const deoglPipeline *pipeline, const deoglLightShader::Ref &shader ) :
-pPipeline( pipeline ),
-pShader( shader )
+deoglLightPipeline::deoglLightPipeline(const deoglPipeline *pipeline, const deoglLightShader::Ref &shader) :
+pPipeline(pipeline),
+pShader(shader)
 {
-	DEASSERT_NOTNULL( pipeline )
-	DEASSERT_NOTNULL( shader )
+	DEASSERT_NOTNULL(pipeline)
+	DEASSERT_NOTNULL(shader)
 }
 
 deoglLightPipeline::~deoglLightPipeline(){

@@ -35,6 +35,10 @@
  * Undo action set mapped renderable.
  */
 class seUMappedSetRenderable : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedSetRenderable>;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetRenderable( seMapped *mapped, const char *newRenderable );
+	seUMappedSetRenderable(seMapped *mapped, const char *newRenderable);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetRenderable();
+	~seUMappedSetRenderable() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

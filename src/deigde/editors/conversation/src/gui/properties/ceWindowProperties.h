@@ -25,28 +25,32 @@
 #ifndef _CEWINDOWPROPERTIES_H_
 #define _CEWINDOWPROPERTIES_H_
 
+#include "ceWPTopic.h"
+#include "ceWPConversation.h"
+#include "ceWPView.h"
+#include "ceWPUndoHistory.h"
+
 #include <deigde/gui/igdeTabBook.h>
 
 class ceWindowMain;
 class ceConversation;
-class ceWPTopic;
-class ceWPConversation;
-class ceWPTopic;
-class ceWPView;
-class ceWPUndoHistory;
 
 
 /**
  * \brief Properties Panel.
  */
 class ceWindowProperties : public igdeTabBook{
+public:
+	using Ref = deTObjectReference<ceWindowProperties>;
+	
+	
 private:
 	ceWindowMain &pWindowMain;
 	
-	ceWPConversation *pPanelConversation;
-	ceWPTopic *pPanelTopic;
-	ceWPView *pPanelView;
-	ceWPUndoHistory *pPanelUndoHistory;
+	ceWPConversation::Ref pPanelConversation;
+	ceWPTopic::Ref pPanelTopic;
+	ceWPView::Ref pPanelView;
+	ceWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -54,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWindowProperties( ceWindowMain &windowMain );
+	ceWindowProperties(ceWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~ceWindowProperties();
+	~ceWindowProperties() override;
 	/*@}*/
 	
 	
@@ -70,10 +74,10 @@ public:
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Topic panel. */
-	ceWPTopic &GetPanelTopic() const;
+	inline const ceWPTopic::Ref &GetPanelTopic() const{ return pPanelTopic; }
 	
 	/** \brief Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Conversation path changed. */
 	void OnConversationPathChanged();

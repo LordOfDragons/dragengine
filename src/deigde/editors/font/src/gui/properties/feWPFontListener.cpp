@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWPFontListener::feWPFontListener( feWPFont &panel ) :
-pPanel( panel ){
+feWPFontListener::feWPFontListener(feWPFont &panel) :
+pPanel(panel){
 }
 
 feWPFontListener::~feWPFontListener(){
@@ -52,10 +52,10 @@ feWPFontListener::~feWPFontListener(){
 ///////////////
 
 
-void feWPFontListener::FontChanged( feFont *font ){
+void feWPFontListener::FontChanged(feFont *font){
 	pPanel.UpdateFont();
 }
 
-void feWPFontListener::ImageChanged( feFont *font, feFontImage *image ){
+void feWPFontListener::ImageChanged(feFont *font, feFontImage *image){
     pPanel.UpdateFont();
 }

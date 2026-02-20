@@ -26,9 +26,9 @@
 #ifndef _PROJUDISTRIBUTORSETPATHCONFIG_H_
 #define _PROJUDISTRIBUTORSETPATHCONFIG_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/projProject.h"
 
-class projProject;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -45,13 +45,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProjectSetPathConfig>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetPathConfig( projProject *project, const char *newValue );
+	projUProjectSetPathConfig(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProjectSetPathConfig();
+protected:
+	~projUProjectSetPathConfig() override;
+public:
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

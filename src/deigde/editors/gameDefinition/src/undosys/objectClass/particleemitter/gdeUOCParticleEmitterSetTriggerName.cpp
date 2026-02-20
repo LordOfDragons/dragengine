@@ -39,35 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetTriggerName::gdeUOCParticleEmitterSetTriggerName( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eTriggers trigger, const char *newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL ),
-pTrigger( trigger )
+gdeUOCParticleEmitterSetTriggerName::gdeUOCParticleEmitterSetTriggerName(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eTriggers trigger, const char *newValue) :
+
+
+pTrigger(trigger)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "ParticleEmitter set trigger name" );
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetTriggerName");
 	
-	pOldValue = particleEmitter->GetTriggerName( trigger );
+	pOldValue = particleEmitter->GetTriggerName(trigger);
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetTriggerName::~gdeUOCParticleEmitterSetTriggerName(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCParticleEmitterSetTriggerName::~gdeUOCParticleEmitterSetTriggerName(){
 ///////////////
 
 void gdeUOCParticleEmitterSetTriggerName::Undo(){
-	pParticleEmitter->SetTriggerName( pTrigger, pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetTriggerName(pTrigger, pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetTriggerName::Redo(){
-	pParticleEmitter->SetTriggerName( pTrigger, pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetTriggerName(pTrigger, pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

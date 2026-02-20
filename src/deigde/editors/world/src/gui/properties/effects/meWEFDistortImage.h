@@ -45,7 +45,7 @@ class deEngine;
  * Panel for editing an overlay image effect.
  */
 class meWEFDistortImage : public FXVerticalFrame{
-	FXDECLARE( meWEFDistortImage )
+	FXDECLARE(meWEFDistortImage)
 protected:
 	meWEFDistortImage();
 	
@@ -71,16 +71,16 @@ private:
 	
 public:
 	// constructor, destructor
-	meWEFDistortImage( deEffectDistortImage *effectDistort, meWindowEffects *windowEffects, FXComposite *container );
+	meWEFDistortImage(deEffectDistortImage *effectDistort, meWindowEffects *windowEffects, FXComposite *container);
 	virtual ~meWEFDistortImage();
 	
 	// management
 	
 	// events
-	long onEditImageCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditStrengthUCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditStrengthVCommand( FXObject *sender, FXSelector selector, void *data );
-	long onCheckEnableCommand( FXObject *sender, FXSelector selector, void *data );
+	long onEditImageCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditStrengthUCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditStrengthVCommand(FXObject *sender, FXSelector selector, void *data);
+	long onCheckEnableCommand(FXObject *sender, FXSelector selector, void *data);
 };
 
 // end of include only once

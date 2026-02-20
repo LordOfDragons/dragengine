@@ -25,9 +25,10 @@
 #ifndef _DECANVAS_H_
 #define _DECANVAS_H_
 
-#include "deCanvasReference.h"
+#include "deCanvas.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deBaseGraphicCanvas;
 class deCanvasManager;
@@ -55,8 +56,7 @@ class deCanvasView;
 class DE_DLL_EXPORT deCanvas : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvas> Ref;
-	
+	using Ref = deTObjectReference<deCanvas>;
 	
 	
 public:
@@ -89,14 +89,13 @@ private:
 	float pOrder;
 	float pTransparency;
 	eBlendModes pBlendMode;
-	deCanvasReference pMask;
+	deCanvas::Ref pMask;
 	
 	deBaseGraphicCanvas *pPeerGraphic;
 	
 	deCanvas *pParentMask;
 	deCanvasView *pParentView;
-	deCanvas *pLLViewPrev;
-	deCanvas *pLLViewNext;
+	decTObjectLinkedList<deCanvas>::Element pLLView;
 	
 	
 	
@@ -108,7 +107,7 @@ public:
 	 * 
 	 * The default size is set to 20x20 units.
 	 */
-	deCanvas( deCanvasManager *manager );
+	deCanvas(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -117,7 +116,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvas();
+	~deCanvas() override;
 	/*@}*/
 	
 	
@@ -129,55 +128,55 @@ public:
 	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position in parent canvas view units. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Size in parent canvas view units. */
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size in parent canvas view units. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	/** \brief Transformation matrix affecting the canvas and all its content. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** \brief Set transformation matrix affecting the canvas and all its content. */
-	void SetTransform( const decTexMatrix2 &transform );
+	void SetTransform(const decTexMatrix2 &transform);
 	
 	/** \brief Transformation matrix affecting the canvas content color. */
 	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
 	/** \brief Set transformation matrix affecting the canvas content color. */
-	void SetColorTransform( const decColorMatrix &transform );
+	void SetColorTransform(const decColorMatrix &transform);
 	
 	/** \brief Canvas is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** \brief Set if canvas is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Render order. Larger renders ontop of smaller. */
 	inline float GetOrder() const{ return pOrder; }
 	
 	/** \brief Set render order. Larger renders ontop of smaller. */
-	void SetOrder( float order );
+	void SetOrder(float order);
 	
 	/** \brief Transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** \brief Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** \brief Blend mode used to blend canvas over previous content. */
 	inline eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
 	/** \brief Set blend mode used to blend canvas over previous content. */
-	void SetBlendMode( eBlendModes blendMode );
+	void SetBlendMode(eBlendModes blendMode);
 	
 	/** \brief Mask canvas or NULL if not set. */
-	inline deCanvas *GetMask() const{ return pMask; }
+	inline const deCanvas::Ref &GetMask() const{ return pMask; }
 	
 	/** \brief Set mask canvas or NULL if not set. */
-	void SetMask( deCanvas *mask );
+	void SetMask(deCanvas *mask);
 	
 	
 	
@@ -193,7 +192,7 @@ public:
 	inline deBaseGraphicCanvas *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not set. */
-	void SetPeerGraphic( deBaseGraphicCanvas *peer );
+	void SetPeerGraphic(deBaseGraphicCanvas *peer);
 	/*@}*/
 	
 	
@@ -201,7 +200,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 	
 	
@@ -212,25 +211,17 @@ public:
 	inline deCanvas *GetParentMask() const{ return pParentMask; }
 	
 	/** \brief Set parent mask or NULL if not set. */
-	void SetParentMask( deCanvas *mask );
+	void SetParentMask(deCanvas *mask);
 	
 	/** \brief Parent view or NULL if not set. */
 	inline deCanvasView *GetParentView() const{ return pParentView; }
 	
 	/** \brief Set parent view or NULL if not set. */
-	void SetParentView( deCanvasView *view );
+	void SetParentView(deCanvasView *view);
 	
-	/** \brief Previous canvas in the parent view linked list or NULL if not set. */
-	inline deCanvas *GetLLViewPrev() const{ return pLLViewPrev; }
-	
-	/** \brief Set next canvas in the parent view linked list or NULL if not set. */
-	void SetLLViewPrev( deCanvas *canvas );
-	
-	/** \brief Next canvas in the parent view linked list or NULL if not set. */
-	inline deCanvas *GetLLViewNext() const{ return pLLViewNext; }
-	
-	/** \brief Set next canvas in the parent view linked list NULL if not set. */
-	void SetLLViewNext( deCanvas *canvas );
+	/** \brief Parent view linked list. */
+	inline decTObjectLinkedList<deCanvas>::Element &GetLLView(){ return pLLView; }
+	inline const decTObjectLinkedList<deCanvas>::Element &GetLLView() const{ return pLLView; }
 	/*@}*/
 };
 

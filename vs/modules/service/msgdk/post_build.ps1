@@ -12,7 +12,7 @@ $OutputDir = SanitizeScriptInputPath($OutputDir)
 $GrdkDir = SanitizeScriptInputPath($GrdkDir)
 
 # application
-$Version = "1.23"
+$Version = "1.30"
 
 $TargetDir = "$DistributeDir\$PathDistDEDataModules\service\msgdk\$Version"
 

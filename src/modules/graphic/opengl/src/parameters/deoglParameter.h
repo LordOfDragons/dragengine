@@ -25,6 +25,7 @@
 #ifndef _DEOGLPARAMETER_H_
 #define _DEOGLPARAMETER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -39,6 +40,27 @@ class deGraphicOpenGl;
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class deoglParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<deoglParameter>{
+	public:
+		using decTUniqueList<deoglParameter>::decTUniqueList;
+		
+		deoglParameter &GetNamed(const char *name) const{
+			deoglParameter * const found = FindOrNull([&](const deoglParameter &p){
+				return p.GetName() == name;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const deoglParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	deGraphicOpenGl &pOgl;
 	
@@ -48,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglParameter( deGraphicOpenGl &ogl );
+	deoglParameter(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
 	virtual ~deoglParameter();
@@ -62,7 +84,7 @@ public:
 	virtual decString GetParameterValue() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value ) = 0;
+	virtual void SetParameterValue(const char *value) = 0;
 	/*@}*/
 };
 

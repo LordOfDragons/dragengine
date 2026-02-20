@@ -51,7 +51,7 @@ public:
 	deIesImageInfo();
 	
 	/** \brief Clean up image information. */
-	virtual ~deIesImageInfo();
+	~deIesImageInfo() override;
 	/*@}*/
 	
 	
@@ -59,31 +59,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the width in pixels. */
-	virtual int GetWidth();
+	int GetWidth() override;
 	
 	/** \brief Retrieves the height in pixels. */
-	virtual int GetHeight();
+	int GetHeight() override;
 	
 	/** \brief Retrieves the depth in pixels. */
-	virtual int GetDepth();
+	int GetDepth() override;
 	
 	/** \brief Retrieves the number of components. */
-	virtual int GetComponentCount();
+	int GetComponentCount() override;
 	
 	/** \brief Retrieves the bit count of each component. */
-	virtual int GetBitCount();
+	int GetBitCount() override;
 	
 	/** \brief Load header. */
-	virtual bool LoadHeader( decBaseFileReader &reader ) = 0;
+	virtual bool LoadHeader(decBaseFileReader &reader) = 0;
 	
 	/** \brief Load file. */
-	virtual void LoadFile( unsigned short *pixels ) = 0;
+	virtual void LoadFile(unsigned short *pixels) = 0;
 	/*@}*/
 	
 	
 	
 protected:
-	void pReadLines( decBaseFileReader &reader );
+	void pReadLines(decBaseFileReader &reader);
 };
 
 #endif

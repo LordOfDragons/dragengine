@@ -25,7 +25,6 @@
 #ifndef _DEOGLCAPABILITIES_H_
 #define _DEOGLCAPABILITIES_H_
 
-#include "deoglCapsTextureFormatList.h"
 #include "deoglCapsFmtSupport.h"
 #include "checks/deoglCapCheckATLUnbind.h"
 #include "checks/deoglCapCheckUBOIndirectMatrixAccess.h"
@@ -92,7 +91,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create capabilities object. */
-	deoglCapabilities( deoglRenderThread &renderThread );
+	deoglCapabilities(deoglRenderThread &renderThread);
 	
 	/** Clean up capabilities object. */
 	~deoglCapabilities();
@@ -181,19 +180,19 @@ public:
 	
 	/** Indirect UBO matrix access check. */
 	inline const deoglCapCheckUBOIndirectMatrixAccess &GetUBOIndirectMatrixAccess() const{
-		return pUBOIndirectMatrixAccess; }
+		return pUBOIndirectMatrixAccess;}
 	
 	/** Cleare all layers in an array texture. */
 	inline const deoglCapCheckClearEntireArrayTexture &GetClearEntireArrayTexture() const{
-		return pClearEntireArrayTexture; }
+		return pClearEntireArrayTexture;}
 	
 	/** UBO direct linking dead-loop. */
 	inline const deoglCapCheckUBODirectLinkDeadloop &GetUBODirectLinkDeadloop() const{
-		return pUBODirectLinkDeadloop; }
+		return pUBODirectLinkDeadloop;}
 	
 	/** Framebuffer texture single. */
 	inline const deoglCapCheckFramebufferTextureSingle &GetFramebufferTextureSingle() const{
-		return pFramebufferTextureSingle; }
+		return pFramebufferTextureSingle;}
 	
 	/** Std430 support. */
 	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
@@ -213,7 +212,7 @@ public:
 	
 private:
 	#ifdef OS_ANDROID
-	void pAndroidTest( deoglFramebuffer *framebuffer );
+	void pAndroidTest(deoglFramebuffer *framebuffer);
 	#endif
 };
 

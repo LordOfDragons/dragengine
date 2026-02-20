@@ -28,15 +28,13 @@
 #include <stddef.h>
 
 #include "../igdeWindow.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 
 #include <dragengine/common/string/decString.h>
 
 class igdeWidget;
-class igdeContainerReference;
-
-
 
 /**
  * \brief IGDE UI Dialog.
@@ -46,6 +44,10 @@ class igdeContainerReference;
  */
 class DE_DLL_EXPORT igdeDialog : public igdeWindow{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDialog>;
+	
+	
 	/**
 	 * \brief Accept dialog action calling Accept() on dialog.
 	 */
@@ -54,10 +56,15 @@ public:
 		igdeDialog &pDialog;
 		
 	public:
-		AcceptDialog( igdeDialog &dialog, const char *text, igdeIcon *icon = NULL );
-		virtual ~AcceptDialog();
+		using Ref = deTObjectReference<AcceptDialog>;
 		
-		virtual void OnAction();
+		AcceptDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
+		
+	protected:
+		~AcceptDialog() override;
+		
+	public:
+		void OnAction() override;
 	};
 	
 	
@@ -69,33 +76,47 @@ public:
 		igdeDialog &pDialog;
 		
 	public:
-		CancelDialog( igdeDialog &dialog, const char *text, igdeIcon *icon = NULL );
-		virtual ~CancelDialog();
+		using Ref = deTObjectReference<CancelDialog>;
 		
-		virtual void OnAction();
+		CancelDialog(igdeDialog &dialog, const char *text, igdeIcon *icon = nullptr);
+		
+	protected:
+		~CancelDialog() override;
+		
+	public:
+		void OnAction() override;
 	};
 	
+	
+	class cNativeDialog : public cNativeWindow{
+	public:
+		virtual ~cNativeDialog() = default;
+		virtual void ShowDialog() = 0;
+		virtual void CloseDialog(bool accepted) = 0;
+	};
 	
 	
 private:
 	igdeWidget *pOwner;
 	bool pAccepted;
-	decPoint pInitialSize;
 	
+	
+protected:
+	cNativeDialog *pNativeDialog;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialog( igdeEnvironment &environment, const char *title,
-		igdeIcon *icon = NULL, bool canResize = true );
+	igdeDialog(igdeEnvironment &environment, const char *title,
+		igdeIcon *icon = nullptr, bool canResize = true);
 	
 	
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialog();
+	~igdeDialog() override;
 	/*@}*/
 	
 	
@@ -103,12 +124,6 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Initial size when shown or (0,0) to choose automatically. */
-	inline const decPoint &GetInitialSize() const{ return pInitialSize; }
-	
-	/** \brief Set initial size when shown or (0,0) to choose automatically. */
-	void SetInitialSize( const decPoint &initialSize );
-	
 	/**
 	 * \brief Default action changed requiring dialog to update.
 	 * 
@@ -120,7 +135,7 @@ public:
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	
 	
 	
@@ -132,7 +147,7 @@ public:
 	 * the content container. Content and button bar widget have to be created by the
 	 * user. CreateButtonBar() can be used to create the button bar easily.
 	 */
-	void AddContent( igdeWidget *content, igdeWidget *buttonBar );
+	void AddContent(igdeWidget *content, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Add button bar with content above with header.
@@ -143,7 +158,7 @@ public:
 	 * button bar widget have to be created by the user. CreateButtonBar() can be
 	 * used to create the button bar easily.
 	 */
-	void AddContent( igdeWidget *content, igdeWidget *header, igdeWidget *buttonBar );
+	void AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Add button bar with content above with header and optional side panels.
@@ -155,33 +170,33 @@ public:
 	 * side panels and button bar widget have to be created by the user. CreateButtonBar()
 	 * can be used to create the button bar easily.
 	 */
-	void AddContent( igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
-		igdeWidget *rightPanel, igdeWidget *buttonBar );
+	void AddContent(igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
+		igdeWidget *rightPanel, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Create button bar using actions.
 	 */
-	void CreateButtonBar( igdeContainerReference &buttonBar, igdeAction *action );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar, igdeAction *action);
 	
-	void CreateButtonBar( igdeContainerReference &buttonBar,
-		igdeAction *action1, igdeAction *action2 );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		igdeAction *action1, igdeAction *action2);
 	
-	void CreateButtonBar( igdeContainerReference &buttonBar,
-		igdeAction *action1, igdeAction *action2, igdeAction *action3 );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		igdeAction *action1, igdeAction *action2, igdeAction *action3);
 	
-	void CreateButtonBar( igdeContainerReference &buttonBar,
-		igdeAction **actions, int actionCount );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		igdeAction **actions, int actionCount);
 	
 	/**
 	 * \brief Create button bar with action CancelDialog.
 	 */
-	void CreateButtonBar( igdeContainerReference &buttonBar, const char *text );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar, const char *text);
 	
 	/**
 	 * \brief Create button bar with action AcceptDialog and CancelDialog.
 	 */
-	void CreateButtonBar( igdeContainerReference &buttonBar,
-		const char *textAccept, const char *textCancel );
+	void CreateButtonBar(igdeContainer::Ref &buttonBar,
+		const char *textAccept, const char *textCancel);
 	
 	
 	
@@ -189,7 +204,7 @@ public:
 	 * \brief Run dialog modal.
 	 * \returns \em true if dialog has been accepted or \em false if cancelled.
 	 */
-	bool Run( igdeWidget *owner );
+	bool Run(igdeWidget *owner);
 	
 	
 	
@@ -217,7 +232,7 @@ public:
 	virtual bool Cancel();
 	
 	/** \brief Close dialog and makes Run() exit with accepted value. */
-	virtual void CloseDialog( bool accepted );
+	virtual void CloseDialog(bool accepted);
 	
 	
 	
@@ -248,50 +263,55 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	/*@}*/
 	
 	
-	
 protected:
-	void pAddContent( igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
-		igdeWidget *rightPanel, igdeWidget *buttonBar );
+	void pAddContent(igdeWidget *content, igdeWidget *header, igdeWidget *leftPanel,
+		igdeWidget *rightPanel, igdeWidget *buttonBar);
 	
 	/**
 	 * \brief Window title changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnTitleChanged();
+	void OnTitleChanged() override;
 	
 	/**
 	 * \brief Window icon changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnIconChanged();
+	void OnIconChanged() override;
 	
 	/**
 	 * \brief Window size changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnSizeChanged();
+	void OnSizeChanged() override;
 	
 	/**
 	 * \brief Window position changed.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void OnPositionChanged();
+	void OnPositionChanged() override;
 	
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
+	void OnEnabledChanged() override;
 	/*@}*/
 };
 

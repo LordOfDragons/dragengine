@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassDuplicate::gdeMAObjectClassDuplicate( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Duplicate Object Class...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongRight ),
-	"Duplicate object class" )
+gdeMAObjectClassDuplicate::gdeMAObjectClassDuplicate(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassDuplicate",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
+	"@GameDefinition.Menu.ObjectClassDuplicate.ToolTip")
 {
 }
 
@@ -59,36 +58,35 @@ gdeBaseAction( windowMain, "Duplicate Object Class...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassDuplicate::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMAObjectClassDuplicate::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
-		return NULL;
+	if(!objectClass){
+		return {};
 	}
 	
-	const gdeObjectClassList &list = gameDefinition.GetObjectClasses();
-	decString name( objectClass->GetName() );
+	const gdeObjectClass::List &list = gameDefinition.GetObjectClasses();
+	decString name(objectClass->GetName());
 	
-	while( igdeCommonDialogs::GetString( &pWindowMain, "Duplicate Object Class", "Name:", name ) ){
-		if( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindowMain, "Duplicate Object Class", "Object Class exists already." );
+	while(igdeCommonDialogs::GetString(pWindowMain, "@GameDefinition.Dialog.ObjectClassDuplicate.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.Name", name)){
+		if(list.HasNamed(name)){
+			igdeCommonDialogs::Error(pWindowMain, "@GameDefinition.Dialog.ObjectClassDuplicate.Title", "@GameDefinition.Dialog.ObjectClassDuplicate.ErrorExists");
 			continue;
 		}
 		
-		deObjectReference duplicate;
-		duplicate.TakeOver( new gdeObjectClass( *objectClass ) );
-		( ( gdeObjectClass& )( deObject& )duplicate ).SetName( name );
-		return new gdeUAddObjectClass( &gameDefinition, ( gdeObjectClass* )( deObject* )duplicate );
+		const gdeObjectClass::Ref duplicate(gdeObjectClass::Ref::New(*objectClass));
+		duplicate->SetName(name);
+		return gdeUAddObjectClass::Ref::New(&gameDefinition, duplicate);
 	}
-	return NULL;
+	return {};
 }
 
 void gdeMAObjectClassDuplicate::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != nullptr);
 }

@@ -25,11 +25,11 @@
 #ifndef _DEBILLBOARDMANAGER_H_
 #define _DEBILLBOARDMANAGER_H_ 
 
+#include "deBillboard.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deBillboard;
 
 
 /**
@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new billboard resource manager. */
-	deBillboardManager( deEngine *engine );
+	deBillboardManager(deEngine *engine);
 	
 	/** \brief Clean up billboard resource manager. */
-	virtual ~deBillboardManager();
+	~deBillboardManager() override;
 	/*@}*/
 	
 	
@@ -62,18 +62,18 @@ public:
 	deBillboard *GetRootBillboard() const;
 	
 	/** \brief Create new billboard. */
-	deBillboard *CreateBillboard();
+	deBillboard::Ref CreateBillboard();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -84,7 +84,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

@@ -25,23 +25,36 @@
 #ifndef _GDEVIEWACTIVEOBJECT_H_
 #define _GDEVIEWACTIVEOBJECT_H_
 
-#include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include "gdeVAOBillboard.h"
+#include "gdeVAOCamera.h"
+#include "gdeVAOComponent.h"
+#include "gdeVAOParticleEmitter.h"
+#include "gdeVAOForceField.h"
+#include "gdeVAOLight.h"
+#include "gdeVAOEnvMapProbe.h"
+#include "gdeVAONavSpace.h"
+#include "gdeVAONavBlocker.h"
+#include "gdeVAOSnapPoint.h"
+#include "gdeVAOSpeaker.h"
+#include "gdeVAOWorld.h"
+#include "gdeViewActiveObjectListener.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
+
+#include <deigde/gui/igdeViewRenderWindow.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/model/deModelReference.h>
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/sky/deSkyInstanceReference.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
 
 class gdeWindowMain;
-class gdeViewActiveObjectListener;
 
-class gdeGameDefinition;
-class gdeObjectClass;
 class gdeOCBillboard;
 class gdeOCComponent;
 class gdeOCComponentTexture;
@@ -69,39 +82,43 @@ class deCollider;
  * \todo Add DebugDrawerShape to show ObjectClass bounding box if an object class is selected.
  */
 class gdeViewActiveObject : public igdeViewRenderWindow{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeViewActiveObject> Ref;
+	
 private:
 	gdeWindowMain &pWindowMain;
-	gdeViewActiveObjectListener *pListener;
+	gdeViewActiveObjectListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
-	deComponentReference pPreviewComponent;
-	deModelReference pPreviewModelBox;
-	deSkinReference pPreviewSkin;
-	deSkyInstanceReference pPreviewSky;
-	deParticleEmitterInstanceReference pPreviewParticleEmitter;
+	deComponent::Ref pPreviewComponent;
+	deModel::Ref pPreviewModelBox;
+	deSkin::Ref pPreviewSkin;
+	deSkyInstance::Ref pPreviewSky;
+	deParticleEmitterInstance::Ref pPreviewParticleEmitter;
 	
-	decObjectList pOCBillboards;
-	decObjectList pOCCameras;
-	decObjectList pOCComponents;
-	decObjectList pOCParticleEmitters;
-	decObjectList pOCForceFields;
-	decObjectList pOCLights;
-	decObjectList pOCEnvMapProbes;
-	decObjectList pOCNavSpaces;
-	decObjectList pOCNavBlockers;
-	decObjectList pOCSnapPoints;
-	decObjectList pOCSpeakers;
-	decObjectList pOCWorlds;
+	decTObjectOrderedSet<gdeVAOBillboard> pOCBillboards;
+	decTObjectOrderedSet<gdeVAOCamera> pOCCameras;
+	decTObjectOrderedSet<gdeVAOComponent> pOCComponents;
+	decTObjectOrderedSet<gdeVAOParticleEmitter> pOCParticleEmitters;
+	decTObjectOrderedSet<gdeVAOForceField> pOCForceFields;
+	decTObjectOrderedSet<gdeVAOLight> pOCLights;
+	decTObjectOrderedSet<gdeVAOEnvMapProbe> pOCEnvMapProbes;
+	decTObjectOrderedSet<gdeVAONavSpace> pOCNavSpaces;
+	decTObjectOrderedSet<gdeVAONavBlocker> pOCNavBlockers;
+	decTObjectOrderedSet<gdeVAOSnapPoint> pOCSnapPoints;
+	decTObjectOrderedSet<gdeVAOSpeaker> pOCSpeakers;
+	decTObjectOrderedSet<gdeVAOWorld> pOCWorlds;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	
 	bool pShowEnvMapProbes;
 	bool pShowNavBlockers;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	
@@ -109,7 +126,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	gdeViewActiveObject( gdeWindowMain &windowMain );
+	gdeViewActiveObject(gdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
@@ -130,18 +147,18 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Monitored game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Widget size changed. */
 	virtual void OnResize();
@@ -151,8 +168,8 @@ public:
 	
 	
 	
-	/** \brief Selected object class or \em NULL. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	/** \brief Selected object class or \em nullptr. */
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Set camera position to show active object properly. */
 	void ResetCameraPosition();
@@ -168,7 +185,7 @@ public:
 	
 	
 	
-	/** \brief Attach component collider or \em NULL. */
+	/** \brief Attach component collider or \em nullptr. */
 	deCollider *GetAttachComponentCollider() const;
 	
 	
@@ -177,70 +194,70 @@ public:
 	void RebuildOCBillboards();
 	
 	/** \brief Rebuild object class billboard. */
-	void RebuildOCBillboard( gdeOCBillboard *ocbillboard );
+	void RebuildOCBillboard(gdeOCBillboard *ocbillboard);
 	
 	/** \brief Rebuild object class cameras. */
 	void RebuildOCCameras();
 	
 	/** \brief Rebuild object class camera. */
-	void RebuildOCCamera( gdeOCCamera *occamera );
+	void RebuildOCCamera(gdeOCCamera *occamera);
 	
 	/** \brief Rebuild object class components. */
 	void RebuildOCComponents();
 	
 	/** \brief Rebuild object class component. */
-	void RebuildOCComponent( gdeOCComponent *occomponent );
+	void RebuildOCComponent(gdeOCComponent *occomponent);
 	
 	/** \brief Update object class component texture. */
-	void UpdateOCComponentTexture( gdeOCComponent *occomponent, gdeOCComponentTexture *texture );
+	void UpdateOCComponentTexture(gdeOCComponent *occomponent, gdeOCComponentTexture *texture);
 	
 	/** \brief Rebuild object class lights. */
 	void RebuildOCLights();
 	
 	/** \brief Rebuild object class light. */
-	void RebuildOCLight( gdeOCLight *oclight );
+	void RebuildOCLight(gdeOCLight *oclight);
 	
 	/** \brief Rebuild object class environment map probes. */
 	void RebuildOCEnvMapProbes();
 	
 	/** \brief Rebuild object class environment map probe. */
-	void RebuildOCEnvMapProbe( gdeOCEnvMapProbe *ocenvMapProbe );
+	void RebuildOCEnvMapProbe(gdeOCEnvMapProbe *ocenvMapProbe);
 	
 	/** \brief Rebuild object class navigation spaces. */
 	void RebuildOCNavSpaces();
 	
 	/** \brief Rebuild object class navigation spaces. */
-	void RebuildOCNavSpace( gdeOCNavigationSpace *ocnavspace );
+	void RebuildOCNavSpace(gdeOCNavigationSpace *ocnavspace);
 	
 	/** \brief Rebuild object class navigation blockers. */
 	void RebuildOCNavBlockers();
 	
 	/** \brief Rebuild object class navigation blockers. */
-	void RebuildOCNavBlocker( gdeOCNavigationBlocker *ocnavblocker );
+	void RebuildOCNavBlocker(gdeOCNavigationBlocker *ocnavblocker);
 	
 	/** \brief Rebuild object class particle emitters. */
 	void RebuildOCParticleEmitters();
 	
 	/** \brief Rebuild object class particle emitter. */
-	void RebuildOCParticleEmitter( gdeOCParticleEmitter *ocemitter );
+	void RebuildOCParticleEmitter(gdeOCParticleEmitter *ocemitter);
 	
 	/** \brief Rebuild object class force fields. */
 	void RebuildOCForceFields();
 	
 	/** \brief Rebuild object class force field. */
-	void RebuildOCForceField( gdeOCForceField *ocfield );
+	void RebuildOCForceField(gdeOCForceField *ocfield);
 	
 	/** \brief Rebuild object class snap points. */
 	void RebuildOCSnapPoints();
 	
 	/** \brief Rebuild object class snap points. */
-	void RebuildOCSnapPoint( gdeOCSnapPoint *ocsnapPoint );
+	void RebuildOCSnapPoint(gdeOCSnapPoint *ocsnapPoint);
 	
 	/** \brief Rebuild object class speakers. */
 	void RebuildOCSpeakers();
 	
 	/** \brief Rebuild object class speaker. */
-	void RebuildOCSpeaker( gdeOCSpeaker *ocspeaker );
+	void RebuildOCSpeaker(gdeOCSpeaker *ocspeaker);
 	
 	/** \brief Rebuild object class worlds. */
 	void RebuildOCWorlds();
@@ -254,13 +271,13 @@ public:
 	inline bool GetShowEnvMapProbes() const{ return pShowEnvMapProbes; }
 	
 	/** \brief Set show all environment map probes. */
-	void SetShowEnvMapProbes( bool show );
+	void SetShowEnvMapProbes(bool show);
 	
 	/** \brief Show all navigation blockers. */
 	inline bool GetShowNavBlockers() const{ return pShowNavBlockers; }
 	
 	/** \brief Set show all navigation blockers. */
-	void SetShowNavBlockers( bool show );
+	void SetShowNavBlockers(bool show);
 	/*@}*/
 	
 	
@@ -275,40 +292,40 @@ private:
 	void pInitSky();
 	void pInitParticleEmitter();
 	
-	void pInitObjectClassOCs( const gdeObjectClass &objectClass, const decString &propertyPrefix, int filter );
-	void pInitOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pInitOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitObjectClassOCs(const gdeObjectClass &objectClass, const decString &propertyPrefix, int filter);
+	void pInitOCBillboards(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCCameras(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCComponents(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCLights(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCParticleEmitters(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCForceFields(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCEnvMapProbes(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCNavigationSpaces(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCNavigationBlockers(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCSnapPoints(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pInitOCSpeakers(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	void pInitOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	void pAddComponentShadowIgnore();
-	void pRebuildOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix );
-	void pRebuildOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCBillboards(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCCameras(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCComponents(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCLights(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCParticleEmitters(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCForceFields(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCEnvMapProbes(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCNavigationSpaces(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCNavigationBlockers(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCSnapPoints(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	void pRebuildOCSpeakers(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	void pRebuildOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	
 	void pOCReattachAllObjects();
 	
-	void pCenterOnObjectClass( igdeCamera &camera );
-	void pCenterOnSkin( igdeCamera &camera );
-	void pCenterOnSky( igdeCamera &camera );
-	void pCenterOnParticleEmitter( igdeCamera &camera );
-	void pCenterOnBox( igdeCamera &camera, const decVector &minExtend, const decVector &maxExtend );
+	void pCenterOnObjectClass(igdeCamera &camera);
+	void pCenterOnSkin(igdeCamera &camera);
+	void pCenterOnSky(igdeCamera &camera);
+	void pCenterOnParticleEmitter(igdeCamera &camera);
+	void pCenterOnBox(igdeCamera &camera, const decVector &minExtend, const decVector &maxExtend);
 };
 
 #endif

@@ -25,11 +25,11 @@
 #ifndef _DESERVERMANAGER_H_
 #define _DESERVERMANAGER_H_ 
 
+#include "deServer.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deServer;
 
 
 /**
@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create server resource manager linked to the given engine. */
-	deServerManager( deEngine *engine );
+	deServerManager(deEngine *engine);
 	
 	/** \brief Clean up server resource manager and reports leaking resources. */
-	virtual ~deServerManager();
+	~deServerManager() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	deServer *GetRootServer() const;
 	
 	/** \brief Create server. */
-	deServer *CreateServer();
+	deServer::Ref CreateServer();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -74,16 +74,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Network System Peers of all stored resources have to be created. */
-	virtual void SystemNetworkLoad();
+	void SystemNetworkLoad() override;
 	
 	/** \brief Network System Peers of all stored resources have to be freed. */
-	virtual void SystemNetworkUnload();
+	void SystemNetworkUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

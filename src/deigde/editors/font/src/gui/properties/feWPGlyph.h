@@ -25,15 +25,16 @@
 #ifndef _FEWPGLYPH_H_
 #define _FEWPGLYPH_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include "feWPGlyphListener.h"
+#include "../../font/feFont.h"
+#include "../../font/glyph/feFontGlyph.h"
+
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class feFont;
-class feFontGlyph;
 class feWindowProperties;
-class feWPGlyphListener;
 
 
 
@@ -41,15 +42,18 @@ class feWPGlyphListener;
  * \brief Glyph panel.
  */
 class feWPGlyph : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<feWPGlyph>;
+	
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feFontGlyph *pGlyph;
-	feWPGlyphListener *pListener;
+	feFont::Ref pFont;
+	feFontGlyph::Ref pGlyph;
+	feWPGlyphListener::Ref pListener;
 	
-	igdeComboBoxReference pCBGlyph;
-	igdeButtonReference pBtnGlyphAdd, pBtnGlyphDel;
-	igdeTextFieldReference pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
+	igdeComboBox::Ref pCBGlyph;
+	igdeButton::Ref pBtnGlyphAdd, pBtnGlyphDel;
+	igdeTextField::Ref pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
 		pEditBearingY, pEditAdvance;
 	
 	
@@ -58,10 +62,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	feWPGlyph( feWindowProperties &windowProperties );
+	feWPGlyph(feWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
-	virtual ~feWPGlyph();
+protected:
+	~feWPGlyph() override;
+public:
 	/*@}*/
 	
 	
@@ -72,16 +78,16 @@ public:
 	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	
 	/** \brief Glyph. */
-	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
+	inline const feFontGlyph::Ref &GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
-	void SetGlyph( feFontGlyph *glyph );
+	void SetGlyph(feFontGlyph *glyph);
 	
 	/** \brief Update glyph list. */
 	void UpdateGlyphList();

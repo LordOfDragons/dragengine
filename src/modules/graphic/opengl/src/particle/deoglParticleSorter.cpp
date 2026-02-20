@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglParticleSorter.h"
 #include "deoglRParticleEmitterInstance.h"
 #include "../rendering/task/deoglAddToRenderTaskParticles.h"
@@ -33,121 +29,39 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class deoglParticleSorter
 //////////////////////////////
-
-// Constructor, destructor
-////////////////////////////
-
-deoglParticleSorter::deoglParticleSorter(){
-	pParticles = NULL;
-	pParticleCount = 0;
-	pParticleSize = 0;
-}
-
-deoglParticleSorter::~deoglParticleSorter(){
-	if( pParticles ){
-		while( pParticleSize > 0 ){
-			pParticleSize--;
-			if( pParticles[ pParticleSize ] ){
-				delete pParticles[ pParticleSize ];
-			}
-		}
-		
-		delete [] pParticles;
-	}
-}
-
-
 
 // Management
 ///////////////
 
-const deoglParticleSorter::sParticle &deoglParticleSorter::GetParticleAt( int index ) const{
-	if( index < 0 || index >= pParticleCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return *pParticles[ index ];
+const deoglParticleSorter::sParticle &deoglParticleSorter::GetParticleAt(int index) const{
+	return *pSortedParticles.GetAt(index);
 }
 
-void deoglParticleSorter::AddToRenderTask( deoglAddToRenderTaskParticles &renderTask ){
-	deoglRParticleEmitterInstance *instance;
-	int p;
-	
-	for( p=0; p<pParticleCount; p++ ){
-		instance = pParticles[ p ]->instance;
-		
-		renderTask.AddParticle( *instance, instance->GetParticles() + pParticles[ p ]->particle );
-	}
+void deoglParticleSorter::AddToRenderTask(deoglAddToRenderTaskParticles &renderTask){
+	pSortedParticles.Visit([&](const sParticle *p){
+		renderTask.AddParticle(*p->instance, &p->instance->GetParticles()[p->particle]);
+	});
 }
 
 void deoglParticleSorter::Clear(){
-	pParticleCount = 0;
+	pSortedParticles.RemoveAll();
+	pParticles.RemoveAll();
 }
 
-void deoglParticleSorter::AddParticle( deoglRParticleEmitterInstance *instance, int particle, float distance ){
-	if( pParticleCount == pParticleSize ){
-		int newSize = pParticleSize + 10;
-		sParticle **newArray = new sParticle*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pParticles ){
-			memcpy( newArray, pParticles, sizeof( sParticle* ) * pParticleSize );
-			delete [] pParticles;
-		}
-		pParticles = newArray;
-		for( ; pParticleSize<newSize; pParticleSize++ ){
-			pParticles[ pParticleSize ] = new sParticle;
-			if( ! pParticles[ pParticleSize ] ) DETHROW( deeOutOfMemory );
-		}
-	}
-	
-	pParticles[ pParticleCount ]->instance = instance;
-	pParticles[ pParticleCount ]->particle = particle;
-	pParticles[ pParticleCount ]->distance = distance;
-	pParticleCount++;
+void deoglParticleSorter::AddParticle(deoglRParticleEmitterInstance *instance, int particle, float distance){
+	pParticles.Add({instance, particle, distance});
 }
 
 void deoglParticleSorter::Sort(){
-	if( pParticleCount > 0 ){
-		pSortParticle( 0, pParticleCount - 1 );
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglParticleSorter::pSortParticle( int left, int right ){
-	sParticle *pivotParticle = pParticles[ left ];
-	float pivot = pivotParticle->distance;
-	int r_hold = right;
-	int l_hold = left;
+	pSortedParticles.RemoveAll();
+	pSortedParticles.EnlargeCapacity(pParticles.GetCount());
+	pParticles.Visit([&](const sParticle &p){
+		pSortedParticles.Add(&p);
+	});
 	
-	while( left < right ){
-		while( ( pParticles[ right ]->distance <= pivot ) && ( left < right ) ){
-			right--;
-		}
-		if( left != right ){
-			pParticles[ left ] = pParticles[ right ];
-			left++;
-		}
-		while( ( pParticles[ left ]->distance >= pivot ) && ( left < right ) ){
-			left++;
-		}
-		if( left != right ){
-			pParticles[ right ] = pParticles[ left ];
-			right--;
-		}
-	}
-	
-	pParticles[ left ] = pivotParticle;
-	if( l_hold < left ){
-		pSortParticle( l_hold, left - 1 );
-	}
-	if( r_hold > left ){
-		pSortParticle( left + 1, r_hold );
-	}
+	pSortedParticles.Sort([](const sParticle *a, const sParticle *b){
+		return DECompare(b->distance, a->distance);
+	});
 }

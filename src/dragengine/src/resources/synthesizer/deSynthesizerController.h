@@ -45,8 +45,7 @@
 class DE_DLL_EXPORT deSynthesizerController : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerController> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerController>;
 	
 	
 private:
@@ -65,7 +64,7 @@ public:
 	deSynthesizerController();
 	
 	/** \brief Create copy of controller. */
-	deSynthesizerController( const deSynthesizerController &controller );
+	deSynthesizerController(const deSynthesizerController &controller);
 	
 protected:
 	/**
@@ -74,7 +73,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerController();
+	~deSynthesizerController() override;
 	/*@}*/
 	
 	
@@ -86,7 +85,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Minimum value. */
 	inline float GetMinimumValue() const{ return pMinValue; }
@@ -95,19 +94,19 @@ public:
 	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set value range. */
-	void SetValueRange( float minValue, float maxValue );
+	void SetValueRange(float minValue, float maxValue);
 	
 	/** \brief Clamp current value to range instead of wrapping around at the end points. */
 	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if current value is clamped to range instead of wrapping around at the end points. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Value curve. */
 	inline const decCurveBezier &GetCurve() const{ return pCurve; }
 	
 	/** \brief Set value curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	/*@}*/
 	
 	
@@ -115,7 +114,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller parameters. */
-	deSynthesizerController &operator=( const deSynthesizerController &controller );
+	deSynthesizerController &operator=(const deSynthesizerController &controller);
 	/*@}*/
 };
 

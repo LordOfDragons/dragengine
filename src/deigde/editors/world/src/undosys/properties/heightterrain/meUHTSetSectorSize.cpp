@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetSectorSize::meUHTSetSectorSize( meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize ){
-	if( ! world || ! heightTerrain ){
-		DETHROW( deeInvalidParam );
+meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize){
+	if(!world || !heightTerrain){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWorld = world;
@@ -51,13 +51,10 @@ meUHTSetSectorSize::meUHTSetSectorSize( meWorld *world, meHeightTerrain *heightT
 	pOldSectorSize = heightTerrain->GetSectorSize();
 	pNewSectorSize = newSectorSize;
 	
-	SetShortInfo( "Set Height Terrain Sector Size" );
-	
-	world->AddReference();
+	SetShortInfo("@World.UHTSetSectorSize.SetHeightTerrainSectorSize");
 }
 
 meUHTSetSectorSize::~meUHTSetSectorSize(){
-	if( pWorld ) pWorld->FreeReference();
 }
 
 
@@ -67,9 +64,9 @@ meUHTSetSectorSize::~meUHTSetSectorSize(){
 
 
 void meUHTSetSectorSize::Undo(){
-	pHeightTerrain->SetSectorSize( pOldSectorSize );
+	pHeightTerrain->SetSectorSize(pOldSectorSize);
 }
 
 void meUHTSetSectorSize::Redo(){
-	pHeightTerrain->SetSectorSize( pNewSectorSize );
+	pHeightTerrain->SetSectorSize(pNewSectorSize);
 }

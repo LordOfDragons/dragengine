@@ -25,42 +25,51 @@
 #ifndef _CESPEECHANIMATION_H_
 #define _CESPEECHANIMATION_H_
 
-#include "ceSAPhonemeList.h"
-#include "ceSAWordList.h"
+#include "ceSAPhoneme.h"
+#include "ceSAWord.h"
 
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 class deEngine;
-class deAnimator;
-class deAnimatorInstance;
 
 
 
 /**
  * \brief Speech Animation.
  */
-class ceSpeechAnimation{
+class ceSpeechAnimation : public deObject{
+public:
+	using Ref = deTObjectReference<ceSpeechAnimation>;
+	
+	
 private:
-	struct sSpeakPhoneme{
-		int phoneme;
+	class cSpeakPhoneme : public deObject{
+	public:
+		using Ref = deTObjectReference<cSpeakPhoneme>;
+		int ipa;
 		float length;
+		cSpeakPhoneme(int aipa, float alength) : ipa(aipa), length(alength){}
+	protected:
+		~cSpeakPhoneme() override = default;
 	};
 	
 	deEngine *pEngine;
 	
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	decString pNeutralMoveName;
 	decStringSet pNeutralVertexPositionSets;
-	ceSAPhonemeList pPhonemeList;
-	ceSAWordList pWordList;
+	ceSAPhoneme::Map pPhonemes;
+	ceSAWord::List pWords;
 	
-	sSpeakPhoneme *pSpeakPhonemes;
-	int pSpeakPhonemeCount;
-	int pSpeakPhonemeSize;
+	decTObjectList<cSpeakPhoneme> pSpeakPhonemes;
 	float pSpeakLength;
 	int pSpeakPos;
 	float pSpeakElapsed;
@@ -72,10 +81,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speech animation. */
-	ceSpeechAnimation( deEngine *engine );
+	ceSpeechAnimation(deEngine *engine);
 	
 	/** Clean up speech animation. */
-	~ceSpeechAnimation();
+protected:
+	~ceSpeechAnimation() override;
+public:
 	/*@}*/
 	
 	
@@ -86,34 +97,34 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** Animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Animator instance. */
-	inline deAnimatorInstance *GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
 	
 	/** Neutral move name. */
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
 	
 	/** Set neutral move name. */
-	void SetNeutralMoveName( const char *name );
+	void SetNeutralMoveName(const char *name);
 	
 	/** Neutral vertex position sets. */
 	inline decStringSet &GetNeutralVertexPositionSets(){ return pNeutralVertexPositionSets; }
 	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
 	
 	/** Phoneme list. */
-	inline ceSAPhonemeList &GetPhonemeList(){ return pPhonemeList; }
-	inline const ceSAPhonemeList &GetPhonemeList() const{ return pPhonemeList; }
+	inline ceSAPhoneme::Map &GetPhonemes(){ return pPhonemes; }
+	inline const ceSAPhoneme::Map &GetPhonemes() const{ return pPhonemes; }
 	
 	/** Word list. */
-	inline ceSAWordList &GetWordList(){ return pWordList; }
-	inline const ceSAWordList &GetWordList() const{ return pWordList; }
+	inline ceSAWord::List &GetWords(){ return pWords; }
+	inline const ceSAWord::List &GetWords() const{ return pWords; }
 	
 	/** Remove all speak phonemes. */
 	void RemoveAllSpeakPhonemes();
 	
 	/** Add speak phoneme. */
-	void AddSpeakPhoneme( int phoneme, float length );
+	void AddSpeakPhoneme(int ipa, float length);
 	
 	/** Length of speaking. */
 	inline float GetSpeakLength() const{ return pSpeakLength; }
@@ -125,7 +136,7 @@ public:
 	void CreateAnimator();
 	
 	/** Update speech animation. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Clear speech animation. */
 	void Clear();

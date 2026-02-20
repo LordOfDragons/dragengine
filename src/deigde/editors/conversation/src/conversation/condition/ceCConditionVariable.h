@@ -36,6 +36,9 @@
  */
 class ceCConditionVariable : public ceConversationCondition{
 public:
+	using Ref = deTObjectReference<ceCConditionVariable>;
+
+public:
 	/** \brief Compare operators. */
 	enum eOperators{
 		/** \brief True if the variable value is equal to the test value. */
@@ -74,10 +77,12 @@ public:
 	ceCConditionVariable();
 	
 	/** \brief Create conversation condition. */
-	ceCConditionVariable( const ceCConditionVariable &condition );
+	ceCConditionVariable(const ceCConditionVariable &condition);
 	
 	/** \brief Clean up conversation condition. */
-	virtual ~ceCConditionVariable();
+protected:
+	~ceCConditionVariable() override;
+public:
 	/*@}*/
 	
 	
@@ -88,30 +93,30 @@ public:
 	inline const decString &GetVariable() const{ return pVariable; }
 	
 	/** \brief Set name of variable to test. */
-	void SetVariable( const char *name );
+	void SetVariable(const char *name);
 	
 	/** \brief Operator. */
 	inline eOperators GetOperator() const{ return pOperator; }
 	
 	/** \brief Set operator. */
-	void SetOperator( eOperators aOperator );
+	void SetOperator(eOperators aOperator);
 	
 	/** \brief Test value. */
 	inline int GetTestValue() const{ return pTestValue; }
 	
 	/** \brief Set test value. */
-	void SetTestValue( int value );
+	void SetTestValue(int value);
 	
 	/** \brief Test variable or empty string to use test value. */
 	inline const decString &GetTestVariable() const{ return pTestVariable; }
 	
 	/** \brief Set test variable or empty string to use test value. */
-	void SetTestVariable( const char *variable );
+	void SetTestVariable(const char *variable);
 	
 	
 	
 	/** \brief Create copy of condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 };
 

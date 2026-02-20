@@ -43,8 +43,8 @@ igdeEditSliderTextListener::~igdeEditSliderTextListener(){
 // Events
 ///////////
 
-void igdeEditSliderTextListener::OnSliderTextValueChanged( igdeEditSliderText* ){
+void igdeEditSliderTextListener::OnSliderTextValueChanged(igdeEditSliderText*){
 }
 
-void igdeEditSliderTextListener::OnSliderTextValueChanging( igdeEditSliderText* ){
+void igdeEditSliderTextListener::OnSliderTextValueChanging(igdeEditSliderText*){
 }

@@ -44,13 +44,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Map block. */
-	deoglSPBMapBufferRead( deoglSPBlockSSBO &block );
+	deoglSPBMapBufferRead(deoglSPBlockSSBO &block);
 	
 	/** Map block. */
-	deoglSPBMapBufferRead( deoglSPBlockSSBO &block, int element );
+	deoglSPBMapBufferRead(deoglSPBlockSSBO &block, int element);
 	
 	/** Map block. */
-	deoglSPBMapBufferRead( deoglSPBlockSSBO &block, int element, int count );
+	deoglSPBMapBufferRead(deoglSPBlockSSBO &block, int element, int count);
 	
 	/** Unmap block if mapped. */
 	~deoglSPBMapBufferRead();

@@ -25,16 +25,16 @@
 #ifndef _AEWPANIMATOR_H_
 #define _AEWPANIMATOR_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeWindowProperties;
-class aeWPAnimatorListener;
+#include "aeWPAnimatorListener.h"
 
 
 
@@ -42,23 +42,27 @@ class aeWPAnimatorListener;
  * Animator panel.
  */
 class aeWPAnimator : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<aeWPAnimator>;
+	
+	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPAnimatorListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPAnimatorListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
-	igdeEditPathReference pEditRigPath;
-	igdeEditPathReference pEditAnimPath;
+	igdeEditPath::Ref pEditRigPath;
+	igdeEditPath::Ref pEditAnimPath;
 	
-	igdeListBoxReference pListBones;
-	igdeComboBoxFilterReference pCBBones;
-	igdeButtonReference pBtnBoneAdd;
-	igdeButtonReference pBtnBoneDel;
+	igdeListBox::Ref pListBones;
+	igdeComboBoxFilter::Ref pCBBones;
+	igdeButton::Ref pBtnBoneAdd;
+	igdeButton::Ref pBtnBoneDel;
 	
-	igdeListBoxReference pListVertexPositionSets;
-	igdeComboBoxFilterReference pCBVertexPositionSets;
-	igdeButtonReference pBtnVertexPositionSetAdd;
-	igdeButtonReference pBtnVertexPositionSetDel;
+	igdeListBox::Ref pListVertexPositionSets;
+	igdeComboBoxFilter::Ref pCBVertexPositionSets;
+	igdeButton::Ref pBtnVertexPositionSetAdd;
+	igdeButton::Ref pBtnVertexPositionSetDel;
 	
 	
 	
@@ -66,11 +70,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAnimator( aeWindowProperties &windowProperties );
+	aeWPAnimator(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAnimator();
+	~aeWPAnimator() override;
 	/*@}*/
 	
 	
@@ -82,10 +86,10 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Update animator. */
 	void UpdateAnimator();
@@ -100,7 +104,7 @@ public:
 	const decString &GetCBRigBoneText() const;
 	
 	/** Set rig bone combo box text. */
-	void SetCBRigBoneText( const char *text );
+	void SetCBRigBoneText(const char *text);
 	
 	/** Update rig vertex position set list. */
 	void UpdateModelVertexPositionSetList();
@@ -109,7 +113,7 @@ public:
 	const decString &GetCBModelVertexPositionSetText() const;
 	
 	/** Set vertex position set combo box text. */
-	void SetCBModelVertexPositionSetText( const char *text );
+	void SetCBModelVertexPositionSetText(const char *text);
 	/*@}*/
 };
 

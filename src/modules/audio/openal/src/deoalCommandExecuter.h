@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create command executer. */
-	deoalCommandExecuter( deAudioOpenAL &audioThread );
+	deoalCommandExecuter(deAudioOpenAL &audioThread);
 	
 	/** \brief Clean up command executer. */
 	~deoalCommandExecuter();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run command. */
-	void ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** \brief Help message. */
-	void CmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void CmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** \brief Display extensions. */
-	void CmdExtensions( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void CmdExtensions(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 };
 

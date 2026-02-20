@@ -22,21 +22,18 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RECLIDENTIFY_H_
 #define _RECLIDENTIFY_H_
 
-// includes
-#include "dragengine/systems/modules/scripting/deBaseScriptingCollider.h"
-#include "dragengine/common/math/decMath.h"
+#include "../rig/bone/reRigBone.h"
+#include "../rig/shape/reRigShape.h"
 
-// predefinitions
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+
 class reRig;
-class reRigBone;
-class reRigShape;
-class deCollider;
-class deColliderVolume;
-
 
 
 /**
@@ -45,27 +42,27 @@ class deColliderVolume;
  */
 class reCLIdentify : public deBaseScriptingCollider{
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigShape *pShape;
+	reRig &pRig;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision listener. */
-	reCLIdentify( reRig *rig );
+	reCLIdentify(reRig &rig);
 	/** Cleans up the collision listener. */
-	virtual ~reCLIdentify();
+	~reCLIdentify() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Resets the visitor. */
 	void Reset();
-	/** Retrieves the bone or NULL. */
-	inline reRigBone *GetBone() const{ return pBone; }
-	/** Retrieves the shape or NULL. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	/** Retrieves the bone or nullptr. */
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
+	/** Retrieves the shape or nullptr. */
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	/** Determines if a bone is hit. */
 	bool HasBone() const;
 	/** Determines if a shape is hit. */
@@ -79,21 +76,21 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * Determines if this collider can be hit by the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	
 private:
-	reRigBone *pGetBoneFromCollider( deCollider *collider ) const;
-	reRigShape *pGetShapeFromCollider( deColliderVolume *collider ) const;
+	reRigBone *pGetBoneFromCollider(deCollider *collider) const;
+	reRigShape *pGetShapeFromCollider(deColliderVolume *collider) const;
 };
 
 // end of include only once

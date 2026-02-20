@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,22 +46,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsMoveAction::ceWPTMAWaitActionsMoveAction( ceWindowMain &windowMain,
+ceWPTMAWaitActionsMoveAction::ceWPTMAWaitActionsMoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAWait &wait, ceConversationAction *action,
-int index, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pWait( &wait ),
-pAction( action ),
-pIndex( index )
+int index, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pConversation(&conversation),
+pTopic(&topic),
+pWait(&wait),
+pAction(action),
+pIndex(index)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(!action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled( index >= 0 && index < wait.GetActions().GetCount() );
+	SetEnabled(index >= 0 && index < wait.GetActions().GetCount());
 }
 
 
@@ -70,11 +70,9 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAWaitActionsMoveAction::OnAction(){
-	if( pIndex < 0 || pIndex > pWait->GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(pIndex < 0 || pIndex > pWait->GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 	
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAWaitMove( pTopic, pWait, pAction, pIndex ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAWaitMove::Ref::New(pTopic, pWait, pAction, pIndex));
 }

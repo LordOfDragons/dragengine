@@ -46,14 +46,14 @@ deFileSearchVisitor::~deFileSearchVisitor(){
 // Visiting
 /////////////
 
-bool deFileSearchVisitor::VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
+bool deFileSearchVisitor::VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
 	return true;
 }
 
-bool deFileSearchVisitor::VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path ){
+bool deFileSearchVisitor::VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
 	return true;
 }
 
-bool deFileSearchVisitor::VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path ){
+bool deFileSearchVisitor::VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
 	return true;
 }

@@ -25,12 +25,14 @@
 #ifndef _CEUCGESTURESETNAME_H_
 #define _CEUCGESTURESETNAME_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/gesture/ceGesture.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
-class ceConversationActionList;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversationTopic;
 
 
@@ -39,36 +41,40 @@ class ceConversationTopic;
  * \brief Undo Action Gesture Set Name.
  */
 class ceUCGestureSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCGestureSetName>;
+	
+	
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	decString pOldName;
 	decString pNewName;
 	
-	ceUndoCActionList pActionList;
+	decTObjectOrderedSet<ceUndoCAction> pActions;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureSetName( ceGesture *file, const char *newName );
+	ceUCGestureSetName(ceGesture *file, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCGestureSetName();
+	~ceUCGestureSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:
-	void pSetName( const char *oldNname, const char *newName );
-	void pAddActions( ceConversationTopic *topic, const ceConversationActionList &list );
+	void pSetName(const char *oldNname, const char *newName);
+	void pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list);
 };
 
 #endif

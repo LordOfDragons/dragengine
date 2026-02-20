@@ -27,18 +27,20 @@
 
 #include "../ceWPTTreeItemModel.h"
 #include "../../../../conversation/action/ceConversationAction.h"
-#include "../../../../conversation/action/ceConversationActionReference.h"
 
 
 /**
  * \brief Base class for actions.
  */
 class ceWPTTIMAction : public ceWPTTreeItemModel{
+public:
+	using Ref = deTObjectReference<ceWPTTIMAction>;
+	
 private:
-	ceConversationActionReference pAction;
+	ceConversationAction::Ref pAction;
 	
 public:
-	static const ceConversationAction::eActionTypes ListAddMenuActions[ 19 ];
+	static const ceConversationAction::eActionTypes ListAddMenuActions[19];
 	static const int ListAddMenuActionsCount;
 	
 	
@@ -47,12 +49,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAction( ceWindowMain &windowMain, eTypes type,
-		ceConversation &conversation, ceConversationAction *action );
+	ceWPTTIMAction(ceWindowMain &windowMain, eTypes type,
+		ceConversation &conversation, ceConversationAction *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAction();
+	~ceWPTTIMAction() override;
 	/*@}*/
 	
 	
@@ -61,13 +63,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline const ceConversationAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Deep find action. */
-	virtual ceWPTTIMAction *DeepFindAction( ceConversationAction *action );
+	ceWPTTIMAction *DeepFindAction(ceConversationAction *action) override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Update action. */
 	virtual void Update();
@@ -76,10 +78,10 @@ public:
 	virtual void UpdateActionLists();
 	
 	/** \brief Get action owning this model if any. */
-	virtual ceConversationAction *GetOwnerAction() const;
+	ceConversationAction *GetOwnerAction() const override;
 	
 	/** \brief Build playback continuing from here. */
-	virtual void BuildPlaybackFromHere() const;
+	void BuildPlaybackFromHere() const override;
 	/*@}*/
 };
 

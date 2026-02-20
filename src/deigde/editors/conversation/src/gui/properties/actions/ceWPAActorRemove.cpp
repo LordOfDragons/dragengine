@@ -46,11 +46,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -67,18 +67,18 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorRemove &pPanel;
 	
 public:
-	cComboActorID( ceWPAActorRemove &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboActorID>;
+	cComboActorID(ceWPAActorRemove &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorRemove * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetActor() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAActorRemoveSetActor( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAActorRemoveSetActor::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -92,13 +92,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorRemove::ceWPAActorRemove( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorRemove::ceWPAActorRemove(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor ID:", true, "ID of the actor to remove from conversation",
-		pCBActorID, new cComboActorID( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionActorRemove.ActorID", true, "@Conversation.ActorToRemove.ToolTip",
+		pCBActorID, cComboActorID::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 }
 
@@ -113,11 +113,11 @@ ceWPAActorRemove::~ceWPAActorRemove(){
 ceCAActorRemove *ceWPAActorRemove::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorRemove ){
-		return ( ceCAActorRemove* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorRemove){
+		return (ceCAActorRemove*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -126,8 +126,8 @@ void ceWPAActorRemove::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetActor() );
+	if(action){
+		pCBActorID->SetText(action->GetActor());
 		
 	}else{
 		pCBActorID->ClearText();
@@ -138,5 +138,5 @@ void ceWPAActorRemove::UpdateAction(){
 
 void ceWPAActorRemove::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

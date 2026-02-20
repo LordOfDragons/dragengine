@@ -27,6 +27,9 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTUniqueReference.h>
+#include <dragengine/common/collection/decTList.h>
+
 class deoglShaderParameterBlock;
 class deoglRenderTaskSharedInstance;
 
@@ -37,6 +40,8 @@ class deoglRenderTaskSharedInstance;
  */
 class deoglRenderTaskInstance{
 public:
+	using Ref = deTUniqueReference<deoglRenderTaskInstance>;
+	
 	/** Sub instance. */
 	struct sSubInstance{
 		int instance;
@@ -48,9 +53,7 @@ public:
 private:
 	const deoglRenderTaskSharedInstance *pInstance;
 	
-	sSubInstance *pSubInstances;
-	int pSubInstanceCount;
-	int pSubInstanceSize;
+	decTList<sSubInstance> pSubInstances;
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
 	int pSIIndexInstanceFirst;
 	int pDrawIndirectIndex;
@@ -76,18 +79,13 @@ public:
 	inline const deoglRenderTaskSharedInstance *GetInstance() const{ return pInstance; }
 	
 	/** Set shared render task instance. */
-	void SetInstance( const deoglRenderTaskSharedInstance *instance );
+	void SetInstance(const deoglRenderTaskSharedInstance *instance);
 	
 	
 	
-	/** Count of sub instances to render. */
-	inline int GetSubInstanceCount() const{ return pSubInstanceCount; }
-	
-	/** Sub instance at index. */
-	const sSubInstance &GetSubInstanceAt( int index ) const;
-	
-	/** Add sub instance. */
-	void AddSubInstance( int indexInstance, int flags );
+	/** Sub instances to render. */
+	inline decTList<sSubInstance> &GetSubInstances(){ return pSubInstances; }
+	inline const decTList<sSubInstance> &GetSubInstances() const{ return pSubInstances; }
 	
 	/** Sub instance index SPB. */
 	inline deoglShaderParameterBlock *GetSIIndexInstanceSPB() const{ return pSIIndexInstanceSPB; }
@@ -96,23 +94,23 @@ public:
 	inline int GetSIIndexInstanceFirst() const{ return pSIIndexInstanceFirst; }
 	
 	/** Set sub instance SPB information for later update. */
-	void SetSIIndexInstanceParam( deoglShaderParameterBlock *paramBlock, int firstIndex );
+	void SetSIIndexInstanceParam(deoglShaderParameterBlock *paramBlock, int firstIndex);
 	
 	/** Write sub instance indices for instance shared SPB. */
-	void WriteSIIndexInstanceInt( bool useFlags );
+	void WriteSIIndexInstanceInt(bool useFlags);
 	void WriteSIIndexInstanceCompute();
 	
 	/** Draw indirect index. */
 	inline int GetDrawIndirectIndex() const{ return pDrawIndirectIndex; }
 	
 	/** Set draw indirect index. */
-	void SetDrawIndirectIndex( int index );
+	void SetDrawIndirectIndex(int index);
 	
 	/** Draw indirect count. */
 	inline int GetDrawIndirectCount() const{ return pDrawIndirectCount; }
 	
 	/** Set draw indirect count. */
-	void SetDrawIndirectCount( int count );
+	void SetDrawIndirectCount(int count);
 	
 	
 	

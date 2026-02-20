@@ -43,5 +43,5 @@ igdeEditVector2Listener::~igdeEditVector2Listener(){
 // Events
 ///////////
 
-void igdeEditVector2Listener::OnVector2Changed( igdeEditVector2 *editVector2 ){
+void igdeEditVector2Listener::OnVector2Changed(igdeEditVector2 *editVector2){
 }

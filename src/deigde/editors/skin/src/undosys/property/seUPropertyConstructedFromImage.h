@@ -26,12 +26,12 @@
 #define _SEUPROPERTYCONSTRUCTEDFROMIMAGE_H_
 
 #include "../../skin/property/seProperty.h"
+#include "../../skin/property/node/sePropertyNodeGroup.h"
 
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
 
 
 
@@ -39,11 +39,15 @@ class sePropertyNodeGroup;
  * \brief Undo action property set constructed from image.
  */
 class seUPropertyConstructedFromImage : public igdeUndo{
-private:
-	seProperty *pProperty;
+public:
+	using Ref = deTObjectReference<seUPropertyConstructedFromImage>;
 	
-	sePropertyNodeGroup *pOldContent;
-	sePropertyNodeGroup *pNewContent;
+	
+private:
+	seProperty::Ref pProperty;
+	
+	sePropertyNodeGroup::Ref pOldContent;
+	sePropertyNodeGroup::Ref pNewContent;
 	int pOldBitCount;
 	int pNewBitCount;
 	
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedFromImage( seProperty *property );
+	seUPropertyConstructedFromImage(seProperty *property);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyConstructedFromImage();
+	~seUPropertyConstructedFromImage() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

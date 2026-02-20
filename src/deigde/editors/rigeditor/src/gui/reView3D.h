@@ -25,20 +25,20 @@
 #ifndef _REVIEW3D_H_
 #define _REVIEW3D_H_
 
+#include "../rig/reRig.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseDragListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/event/igdeMouseDragListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
 class reWindowMain;
-class reRig;
 class reCamera;
 class deColliderVolume;
 class deBaseScriptingCollider;
 class decLayerMask;
-class reTemporaryConstraint;
 
 
 
@@ -46,17 +46,20 @@ class reTemporaryConstraint;
  * \brief 3D view.
  */
 class reView3D : public igdeViewRenderWindow{
+public:
+	using Ref = deTObjectReference<reView3D>;
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
-	igdeMouseDragListenerReference pSimulationInteraction;
-	igdeMouseDragListenerReference pSelectInteraction;
-	igdeMouseDragListenerReference pMoveInteraction;
-	igdeMouseDragListenerReference pScaleInteraction;
-	igdeMouseDragListenerReference pRotateInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeMouseDragListener::Ref pSimulationInteraction;
+	igdeMouseDragListener::Ref pSelectInteraction;
+	igdeMouseDragListener::Ref pMoveInteraction;
+	igdeMouseDragListener::Ref pScaleInteraction;
+	igdeMouseDragListener::Ref pRotateInteraction;
 	
 	
 	
@@ -64,11 +67,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create 3d view. */
-	reView3D( reWindowMain &windowMain );
+	reView3D(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up 3d view. */
-	virtual ~reView3D();
+	~reView3D() override;
 	/*@}*/
 	
 	
@@ -83,16 +86,16 @@ public:
 	void ResetView();
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

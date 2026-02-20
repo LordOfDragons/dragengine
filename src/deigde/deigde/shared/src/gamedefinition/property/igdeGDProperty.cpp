@@ -38,31 +38,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDProperty::igdeGDProperty( const char *name ) :
-pName( name ),
-pType( eptString ),
-pMinimumValue( 0.0f ),
-pMaximumValue( 1.0f ),
-pPathPatternType( epptAll ),
-pIdentifierUsage( false )
+igdeGDProperty::igdeGDProperty(const char *name) :
+pName(name),
+pType(eptString),
+pMinimumValue(0.0f),
+pMaximumValue(1.0f),
+pPathPatternType(epptAll),
+pIdentifierUsage(false)
 {
-	if( pName.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pName.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeGDProperty::igdeGDProperty( const igdeGDProperty &property ) :
-pName( property.pName ),
-pDescription( property.pDescription ),
-pType( property.pType ),
-pMinimumValue( property.pMinimumValue ),
-pMaximumValue( property.pMaximumValue ),
-pDefaultValue( property.pDefaultValue ),
-pOptions( property.pOptions ),
-pPathPatternType( property.pPathPatternType ),
-pCustomPathPattern( property.pCustomPathPattern ),
-pIdentifierGroup( property.pIdentifierGroup ),
-pIdentifierUsage( property.pIdentifierUsage ){
+igdeGDProperty::igdeGDProperty(const igdeGDProperty &property) :
+pName(property.pName),
+pDescription(property.pDescription),
+pType(property.pType),
+pMinimumValue(property.pMinimumValue),
+pMaximumValue(property.pMaximumValue),
+pDefaultValue(property.pDefaultValue),
+pOptions(property.pOptions),
+pPathPatternType(property.pPathPatternType),
+pCustomPathPattern(property.pCustomPathPattern),
+pIdentifierGroup(property.pIdentifierGroup),
+pIdentifierUsage(property.pIdentifierUsage){
 }
 
 igdeGDProperty::~igdeGDProperty(){
@@ -73,51 +73,51 @@ igdeGDProperty::~igdeGDProperty(){
 // Management
 ///////////////
 
-void igdeGDProperty::SetName( const char *name ){
+void igdeGDProperty::SetName(const char *name){
 	pName = name;
 }
 
-void igdeGDProperty::SetDescription( const char *description ){
+void igdeGDProperty::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeGDProperty::SetType( ePropertyTypes type ){
-	if( type < 0 || type >= CountTypes ){
-		DETHROW( deeInvalidParam );
+void igdeGDProperty::SetType(ePropertyTypes type){
+	if(type < 0 || type >= CountTypes){
+		DETHROW(deeInvalidParam);
 	}
 	pType = type;
 }
 
-void igdeGDProperty::SetMinimumValue( float value ){
+void igdeGDProperty::SetMinimumValue(float value){
 	pMinimumValue = value;
 }
 
-void igdeGDProperty::SetMaximumValue( float value ){
+void igdeGDProperty::SetMaximumValue(float value){
 	pMaximumValue = value;
 }
 
-void igdeGDProperty::SetPathPatternType( ePathPatternTypes type ){
-	if( type < 0 || type >= CountPatternTypes ){
-		DETHROW( deeInvalidParam );
+void igdeGDProperty::SetPathPatternType(ePathPatternTypes type){
+	if(type < 0 || type >= CountPatternTypes){
+		DETHROW(deeInvalidParam);
 	}
 	pPathPatternType = type;
 }
 
-void igdeGDProperty::SetIdentifierGroup( const char *group ){
+void igdeGDProperty::SetIdentifierGroup(const char *group){
 	pIdentifierGroup = group;
 }
 
-void igdeGDProperty::SetIdentifierUsage( bool usage ){
+void igdeGDProperty::SetIdentifierUsage(bool usage){
 	pIdentifierUsage = usage;
 }
 
-void igdeGDProperty::SetDefaultValue( const char *value ){
+void igdeGDProperty::SetDefaultValue(const char *value){
 	pDefaultValue = value;
 }
 
 
 
-igdeGDProperty &igdeGDProperty::operator=( const igdeGDProperty &property ){
+igdeGDProperty &igdeGDProperty::operator=(const igdeGDProperty &property){
 	pName = property.pName;
 	pDescription = property.pDescription;
 	pType = property.pType;

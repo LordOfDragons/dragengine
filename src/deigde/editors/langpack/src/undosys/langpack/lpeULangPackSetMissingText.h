@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class lpeLangPack;
+#include "../../langpack/lpeLangPack.h"
 
 
 
@@ -37,6 +37,10 @@ class lpeLangPack;
  * \brief Undo action language pack set missing text.
  */
 class lpeULangPackSetMissingText : public igdeUndo{
+public:
+	using Ref = deTObjectReference<lpeULangPackSetMissingText>;
+	
+	
 private:
 	lpeLangPack *pLangPack;
 	
@@ -49,11 +53,11 @@ public:
 	/** \missingText Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackSetMissingText( lpeLangPack *langpack, const decUnicodeString &newMissingText );
+	lpeULangPackSetMissingText(lpeLangPack *langpack, const decUnicodeString &newMissingText);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~lpeULangPackSetMissingText();
+	~lpeULangPackSetMissingText() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \missingText Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

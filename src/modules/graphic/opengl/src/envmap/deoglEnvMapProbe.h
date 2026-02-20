@@ -25,9 +25,9 @@
 #ifndef _DEOGLENVMAPPROBE_H_
 #define _DEOGLENVMAPPROBE_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicEnvMapProbe.h>
+#include "deoglREnvMapProbe.h"
 
-class deoglREnvMapProbe;
+#include <dragengine/systems/modules/graphic/deBaseGraphicEnvMapProbe.h>
 
 class deGraphicOpenGl;
 class deEnvMapProbe;
@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEnvMapProbe &pEnvMapProbe;
 	
-	deoglREnvMapProbe *pREnvMapProbe;
+	deoglREnvMapProbe::Ref pREnvMapProbe;
 	
 	bool pDirtyOctreeNode;
 	bool pDirtyEnvMapProbe;
@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglEnvMapProbe( deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe );
+	deoglEnvMapProbe(deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe);
 	
 	/** Clean up peer. */
-	virtual ~deoglEnvMapProbe();
+	~deoglEnvMapProbe() override;
 	/*@}*/
 	
 	
@@ -72,7 +72,7 @@ public:
 	
 	
 	/** Render environment map probe. */
-	inline deoglREnvMapProbe *GetREnvMapProbe() const{ return pREnvMapProbe; }
+	inline const deoglREnvMapProbe::Ref &GetREnvMapProbe() const{ return pREnvMapProbe; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -83,31 +83,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** Shape list influence changed. */
-	virtual void ShapeListInfluenceChanged();
+	void ShapeListInfluenceChanged() override;
 	
 	/** Shape reflection changed. */
-	virtual void ShapeReflectionChanged();
+	void ShapeReflectionChanged() override;
 	
 	/** Influence border size changed. */
-	virtual void InfluenceBorderSizeChanged();
+	void InfluenceBorderSizeChanged() override;
 	
 	/** Influence priority changed. */
-	virtual void InfluencePriorityChanged();
+	void InfluencePriorityChanged() override;
 	
 	/** Image changed. */
-	virtual void ImageChanged();
+	void ImageChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	/*@}*/
 	
 private:

@@ -35,6 +35,9 @@ class seWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class seWPUndoHistoryListener : public seSkinListener{
+public:
+	using Ref = deTObjectReference<seWPUndoHistoryListener>;
+	
 private:
 	seWPUndoHistory &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPUndoHistoryListener( seWPUndoHistory &panel );
+	seWPUndoHistoryListener(seWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPUndoHistoryListener();
+protected:
+	~seWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( seSkin *skin );
+	void UndoChanged(seSkin *skin) override;
 	/*@}*/
 };
 

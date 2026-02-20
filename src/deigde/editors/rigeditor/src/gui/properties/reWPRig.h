@@ -25,15 +25,16 @@
 #ifndef _REWPRIG_H_
 #define _REWPRIG_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include "reWPRigListener.h"
+#include "../../rig/reRig.h"
+
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
 class reWindowProperties;
-class reWPRigListener;
 
 
 
@@ -41,16 +42,19 @@ class reWPRigListener;
  * \brief Rig panel.
  */
 class reWPRig : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<reWPRig>;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reWPRigListener *pListener;
+	reRig::Ref pRig;
+	reWPRigListener::Ref pListener;
 	
-	igdeComboBoxReference pCBRootBone;
-	igdeCheckBoxReference pChkDynamic;
-	igdeCheckBoxReference pChkModelCollision;
-	igdeEditVectorReference pEditCentralMassPoint;
-	igdeTextFieldReference pEditMass;
+	igdeComboBox::Ref pCBRootBone;
+	igdeCheckBox::Ref pChkDynamic;
+	igdeCheckBox::Ref pChkModelCollision;
+	igdeEditVector::Ref pEditCentralMassPoint;
+	igdeTextField::Ref pEditMass;
 	
 	
 	
@@ -58,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPRig( reWindowProperties &windowProperties );
+	reWPRig(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPRig();
+	~reWPRig() override;
 	/*@}*/
 	
 	
@@ -71,10 +75,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Update root bone list. */
 	void UpdateRootBoneList();

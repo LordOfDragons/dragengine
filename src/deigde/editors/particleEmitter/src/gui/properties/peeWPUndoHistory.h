@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class peeEmitter;
-class peeWPUndoHistoryListener;
+#include "../../emitter/peeEmitter.h"
+#include "peeWPUndoHistoryListener.h"
 
 
 
@@ -36,9 +36,13 @@ class peeWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class peeWPUndoHistory : public igdeWPUndoHistory{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWPUndoHistory>;
+	
 private:
-	peeWPUndoHistoryListener *pListener;
-	peeEmitter *pEmitter;
+	peeWPUndoHistoryListener::Ref pListener;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPUndoHistory( igdeEnvironment &environment );
+	peeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~peeWPUndoHistory();
+	~peeWPUndoHistory() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	/*@}*/
 };
 

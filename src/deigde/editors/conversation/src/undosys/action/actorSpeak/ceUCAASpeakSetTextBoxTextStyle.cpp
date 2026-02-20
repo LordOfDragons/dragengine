@@ -41,33 +41,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, const char *newText ){
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, const char *newText){
+	if(!topic){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	pOldStyle = actorSpeak->GetTextBoxTextStyle();
 	pNewStyle = newText;
 	
-	SetShortInfo( "Actor speak text box text style" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakTextBoxTextStyle");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxTextStyle::~ceUCAASpeakSetTextBoxTextStyle(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ ceUCAASpeakSetTextBoxTextStyle::~ceUCAASpeakSetTextBoxTextStyle(){
 ///////////////
 
 void ceUCAASpeakSetTextBoxTextStyle::Undo(){
-	pActorSpeak->SetTextBoxTextStyle( pOldStyle );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetTextBoxTextStyle(pOldStyle);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetTextBoxTextStyle::Redo(){
-	pActorSpeak->SetTextBoxTextStyle( pNewStyle );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetTextBoxTextStyle(pNewStyle);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

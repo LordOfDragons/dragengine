@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeAction.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 
 
 class igdeMenuCascade;
@@ -45,11 +45,11 @@ class igdeMenuCascade;
 class DE_DLL_EXPORT igdeActionContextMenu : public igdeAction{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeActionContextMenu> Ref;
+	using Ref = deTObjectReference<igdeActionContextMenu>;
 	
 	
 private:
-	igdeWidgetReference pWidget;
+	igdeWidget::WeakRef pWidget;
 	
 	
 	
@@ -57,17 +57,17 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionContextMenu( const char *text, igdeIcon *icon, const char *description );
+	igdeActionContextMenu(const char *text, igdeIcon *icon, const char *description);
 	
-	igdeActionContextMenu( const char *text, igdeIcon *icon, const char *description,
-		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+	igdeActionContextMenu(const char *text, igdeIcon *icon, const char *description,
+		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
-	igdeActionContextMenu( igdeWidget *widget, const char *text,
-		igdeIcon *icon, const char *description );
+	igdeActionContextMenu(igdeWidget *widget, const char *text,
+		igdeIcon *icon, const char *description);
 	
-	igdeActionContextMenu( igdeWidget *widget, const char *text,
+	igdeActionContextMenu(igdeWidget *widget, const char *text,
 		igdeIcon *icon, const char *description,
-		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
 	
 	
@@ -78,7 +78,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionContextMenu();
+	~igdeActionContextMenu() override;
 	/*@}*/
 	
 	
@@ -86,11 +86,11 @@ protected:
 public:
 	/** \text Management */
 	/*@{*/
-	/** \brief Widget to show context menu below or NULL if not present. */
-	inline igdeWidget *GetWidget() const{ return pWidget; }
+	/** \brief Widget to show context menu below or nullptr if not present. */
+	inline const igdeWidget::WeakRef &GetWidget() const{ return pWidget; }
 	
-	/** \brief Set widget to show context menu below or NULL if not present. */
-	void SetWidget( igdeWidget *widget );
+	/** \brief Set widget to show context menu below or nullptr if not present. */
+	void SetWidget(igdeWidget *widget);
 	
 	
 	
@@ -98,9 +98,9 @@ public:
 	 * \brief Run action.
 	 * 
 	 * Calls AddContextMenuEntries() to fill the context menu then shows it. If the widget
-	 * is NULL, the widget is invisible or the context menu is empty this action is a no-op.
+	 * is nullptr, the widget is invisible or the context menu is empty this action is a no-op.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Add context menu entries.
@@ -108,7 +108,7 @@ public:
 	 * The most simple way to fill the context menu is to use
 	 * contextMenu.GetEnvironment().GetUIHelper() .
 	 */
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

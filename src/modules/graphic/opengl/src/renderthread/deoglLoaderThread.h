@@ -25,15 +25,15 @@
 #ifndef _DEOGLRLOADERTHREAD_H_
 #define _DEOGLRLOADERTHREAD_H_
 
+#include "deoglLoaderThreadTask.h"
 #include "../deoglBasics.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
 #include <dragengine/threading/deThread.h>
 
 class deoglRenderThread;
-class deoglLoaderThreadTask;
 
 
 /**
@@ -48,7 +48,7 @@ private:
 	bool pShutdown;
 	bool pContextEnabled;
 	
-	decPointerList pTasks;
+	decTThreadSafeObjectOrderedSet<deoglLoaderThreadTask> pTasks;
 	
 	
 	
@@ -56,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader thread. */
-	deoglLoaderThread( deoglRenderThread &renderThread );
+	deoglLoaderThread(deoglRenderThread &renderThread);
 	
 	/** Clean up loader thread. */
-	virtual ~deoglLoaderThread();
+	~deoglLoaderThread() override;
 	/*@}*/
 	
 	
@@ -67,22 +67,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run render thread. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Loader is enabled. */
 	bool IsEnabled();
 	
 	/** Enable context. */
-	void EnableContext( bool enable );
+	void EnableContext(bool enable);
 	
 	/** Add task to process. Returns true if added or false if loader is disabled. */
-	bool AddTask( deoglLoaderThreadTask *task );
+	bool AddTask(const deoglLoaderThreadTask::Ref &task);
 	
 	/**
 	 * Add task and wait for it to be processed then returns.
 	 * Returns true if process or false if loader is disabled.
 	 */
-	bool AwaitTask( deoglLoaderThreadTask *task );
+	bool AwaitTask(const deoglLoaderThreadTask::Ref &task);
 	/*@}*/
 	
 	

@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileWriter.h"
-#include "../../../common/file/decBaseFileWriterReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -48,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteOcclusionMesh::deRLTaskWriteOcclusionMesh( deEngine &engine,
+deRLTaskWriteOcclusionMesh::deRLTaskWriteOcclusionMesh(deEngine &engine,
 deResourceLoader &resourceLoader, deOcclusionMesh *occlusionMesh,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertOcclusionMesh ),
-pOcclusionMesh( occlusionMesh ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertOcclusionMesh),
+pOcclusionMesh(occlusionMesh),
+pSucceeded(false)
 {
-	if( ! occlusionMesh ){
-		DETHROW( deeInvalidParam );
+	if(!occlusionMesh){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteOcclusionMesh::~deRLTaskWriteOcclusionMesh(){
@@ -71,18 +70,16 @@ deRLTaskWriteOcclusionMesh::~deRLTaskWriteOcclusionMesh(){
 
 void deRLTaskWriteOcclusionMesh::Run(){
 	LogRunEnter();
-	deBaseOcclusionMeshModule * const module = ( deBaseOcclusionMeshModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtOcclusionMesh, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseOcclusionMeshModule * const module = (deBaseOcclusionMeshModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtOcclusionMesh, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
-	decBaseFileWriterReference writer;
-	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
-	module->SaveOcclusionMesh( writer, pOcclusionMesh );
+	module->SaveOcclusionMesh(GetVFS()->OpenFileForWriting(path), pOcclusionMesh);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -90,16 +87,16 @@ void deRLTaskWriteOcclusionMesh::Run(){
 
 void deRLTaskWriteOcclusionMesh::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pOcclusionMesh );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pOcclusionMesh);
+		SetState(esSucceeded);
 		
 	}else{
-		pOcclusionMesh = NULL;
-		SetState( esFailed );
+		pOcclusionMesh = nullptr;
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

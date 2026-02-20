@@ -25,16 +25,15 @@
 #ifndef _IGDEEDITEDITDIRECTORY_H_
 #define _IGDEEDITEDITDIRECTORY_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeButton.h"
+#include "../igdeTextField.h"
 #include "../event/igdeAction.h"
-#include "../event/igdeActionReference.h"
 #include "../event/igdeActionSelectDirectory.h"
-#include "../event/igdeActionSelectDirectoryReference.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEditDirectoryListener;
 class igdeMenuCascade;
@@ -48,6 +47,12 @@ class igdeUIHelper;
  * widget. The button is used to bring up directory dialogs to select directory.
  */
 class DE_DLL_EXPORT igdeEditDirectory : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditDirectory>;
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
@@ -55,9 +60,14 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		cListenerTextField( igdeEditDirectory &editDirectory );
-		virtual ~cListenerTextField();
-		virtual void OnTextChanged( igdeTextField *textField );
+		using Ref = deTObjectReference<cListenerTextField>;
+		explicit cListenerTextField(igdeEditDirectory &editDirectory);
+		
+	protected:
+		~cListenerTextField() override;
+		
+	public:
+		void OnTextChanged(igdeTextField *textField) override;
 	};
 	
 	/** \brief Button action. */
@@ -66,10 +76,15 @@ protected:
 		igdeEditDirectory &pEditDirectory;
 		
 	public:
-		cActionButton( igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description );
-		virtual ~cActionButton();
-		virtual decString DefaultDirectory();
-		virtual void Update();
+		using Ref = deTObjectReference<cActionButton>;
+		cActionButton(igdeEditDirectory &editDirectory, igdeTextField &textField, const char *description);
+		
+	protected:
+		~cActionButton() override;
+		
+	public:
+		decString DefaultDirectory() override;
+		void Update() override;
 	};
 	
 	
@@ -79,12 +94,12 @@ private:
 	bool pAutoValidateDirectory;
 	bool pUseGameVFS;
 	
-	igdeActionSelectDirectoryReference pActionButton;
+	igdeActionSelectDirectory::Ref pActionButton;
 	
-	igdeTextFieldReference pText;
-	igdeButtonReference pButton;
+	igdeTextField::Ref pText;
+	igdeButton::Ref pButton;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditDirectoryListener> pListeners;
 	
 	
 	
@@ -92,7 +107,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit directory. */
-	igdeEditDirectory( igdeUIHelper &helper, const char *description = "", bool useGameVFS = true );
+	igdeEditDirectory(igdeUIHelper &helper, const char *description = "", bool useGameVFS = true);
 	
 	
 	
@@ -103,7 +118,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditDirectory();
+	~igdeEditDirectory() override;
 	/*@}*/
 	
 	
@@ -119,7 +134,7 @@ public:
 	 * 
 	 * Validates directory if changed.
 	 */
-	void SetDirectory( const char *directory );
+	void SetDirectory(const char *directory);
 	
 	/** \brief Clear path. */
 	void ClearDirectory();
@@ -128,19 +143,19 @@ public:
 	bool GetEnabled() const;
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	const decString &GetDescription() const;
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Default path. */
 	inline const decString &GetDefaultDirectory() const{ return pDefaultDirectory; }
 	
 	/** \brief Set default path. */
-	void SetDefaultDirectory( const char *path );
+	void SetDefaultDirectory(const char *path);
 	
 	/** \brief Directory is valid. */
 	bool IsDirectoryValid() const;
@@ -149,7 +164,7 @@ public:
 	inline bool GetAutoValidateDirectory() const{ return pAutoValidateDirectory; }
 	
 	/** \brief Set if path is auto validated if changed. */
-	void SetAutoValidateDirectory( bool autoValidateDirectory );
+	void SetAutoValidateDirectory(bool autoValidateDirectory);
 	
 	/** \brief Validate path. */
 	void ValidateDirectory();
@@ -163,10 +178,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditDirectoryListener *listener );
+	void AddListener(igdeEditDirectoryListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditDirectoryListener *listener );
+	void RemoveListener(igdeEditDirectoryListener *listener);
 	
 	/** \brief Notify listeners path changed. */
 	virtual void NotifyEditDirectoryChanged();

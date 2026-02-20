@@ -36,6 +36,10 @@
  * Render effect overlay image.
  */
 class deoglREffectOverlayImage : public deoglREffect{
+public:
+	using Ref = deTObjectReference<deoglREffectOverlayImage>;
+	
+	
 private:
 	float pTransparency;
 	deoglRImage::Ref pImage;
@@ -47,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffectOverlayImage( deoglRenderThread &renderThread );
+	deoglREffectOverlayImage(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
-	virtual ~deoglREffectOverlayImage();
+	~deoglREffectOverlayImage() override;
 	/*@}*/
 	
 	
@@ -61,13 +65,13 @@ public:
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** Image or nullptr to render nothing. */
 	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image or nullptr to render nothing. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	
 	
@@ -76,10 +80,10 @@ public:
 	const deoglPipeline *GetPipelineStereo();
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender();
+	void PrepareForRender() override;
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan );
+	void Render(deoglRenderPlan &plan) override;
 };
 
 #endif

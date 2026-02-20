@@ -50,5 +50,5 @@ deoglWorldOctreeVisitor::~deoglWorldOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoglWorldOctreeVisitor::VisitNode( deoglDOctree *node, int intersection ){
+void deoglWorldOctreeVisitor::VisitNode(deoglDOctree *node, int intersection){
 }

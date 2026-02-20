@@ -43,20 +43,20 @@ igdeIconListBoxListener::~igdeIconListBoxListener(){
 // Events
 ///////////
 
-void igdeIconListBoxListener::OnSelectionChanged( igdeIconListBox *listBox ){
+void igdeIconListBoxListener::OnSelectionChanged(igdeIconListBox *listBox){
 }
 
-void igdeIconListBoxListener::OnItemSelected( igdeIconListBox *listBox, int index ){
+void igdeIconListBoxListener::OnItemSelected(igdeIconListBox *listBox, int index){
 }
 
-void igdeIconListBoxListener::OnItemDeselected( igdeIconListBox *listBox, int index ){
+void igdeIconListBoxListener::OnItemDeselected(igdeIconListBox *listBox, int index){
 }
 
-void igdeIconListBoxListener::OnDoubleClickItem( igdeIconListBox *listBox, int index ){
+void igdeIconListBoxListener::OnDoubleClickItem(igdeIconListBox *listBox, int index){
 }
 
-void igdeIconListBoxListener::AddContextMenuEntries( igdeIconListBox *listBox, igdeMenuCascade &menu ){
+void igdeIconListBoxListener::AddContextMenuEntries(igdeIconListBox *listBox, igdeMenuCascade &menu){
 }
 
-void igdeIconListBoxListener::OnHeaderClicked( igdeIconListBox *listBox, int index ){
+void igdeIconListBoxListener::OnHeaderClicked(igdeIconListBox *listBox, int index){
 }

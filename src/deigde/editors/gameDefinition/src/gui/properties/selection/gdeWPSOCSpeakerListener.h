@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _GDEWPSOCLIGHTLISTENER_H_
-#define _GDEWPSOCLIGHTLISTENER_H_
+#ifndef _GDEWPSOCSPEAKERLISTENER_H_
+#define _GDEWPSOCSPEAKERLISTENER_H_
 
 #include "../../../gamedef/gdeGameDefinitionListener.h"
 
@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCSpeakerListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCSpeakerListener( gdeWPSOCSpeaker &panel );
+	gdeWPSOCSpeakerListener(gdeWPSOCSpeaker &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCSpeakerListener();
+protected:
+	~gdeWPSOCSpeakerListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,28 +58,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class speakers changed. */
-	virtual void OCSpeakersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCSpeakersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class speaker changed. */
-	virtual void OCSpeakerChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	void OCSpeakerChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSpeaker *speaker) override;
 	
 	/** \brief Active object class speaker changed. */
-	virtual void ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition );
+	void ActiveOCSpeakerChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

@@ -25,9 +25,10 @@
 #ifndef _DEOGLSKY_H_
 #define _DEOGLSKY_H_
 
+#include "deoglRSky.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicSky.h>
 
-class deoglRSky;
 class deoglSkyLayer;
 class deGraphicOpenGl;
 
@@ -43,7 +44,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSky &pSky;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	bool pDirtyParameters;
 	unsigned int pUpdateTracker;
@@ -54,10 +55,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky. */
-	deoglSky( deGraphicOpenGl &ogl, const deSky &sky );
+	deoglSky(deGraphicOpenGl &ogl, const deSky &sky);
 	
 	/** Clean up sky. */
-	virtual ~deoglSky();
+	~deoglSky() override;
 	/*@}*/
 	
 	
@@ -71,7 +72,7 @@ public:
 	inline const deSky &GetSky() const{ return pSky; }
 	
 	/** Render sky. */
-	inline deoglRSky *GetRSky() const{ return pRSky; }
+	inline const deoglRSky::Ref &GetRSky() const{ return pRSky; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -85,7 +86,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Parameters changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	/*@}*/
 };
 

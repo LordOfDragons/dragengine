@@ -27,12 +27,12 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeListBoxReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeListBox.h"
+#include "../igdeTextField.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 
 class igdeTriggerTargetList;
@@ -44,24 +44,29 @@ class igdeEnvironment;
  * \brief Trigger table panel.
  */
 class DE_DLL_EXPORT igdeWPTriggerTable : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWPTriggerTable>;
+	
+	
 private:
 	igdeTriggerTargetList *pTriggerTargetList;
 	
-	igdeIconReference pIconFired;
-	igdeIconReference pIconNotFired;
+	igdeIcon::Ref pIconFired;
+	igdeIcon::Ref pIconNotFired;
 	
-	igdeActionReference pActionToggle;
-	igdeActionReference pActionClear;
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionFire;
-	igdeActionReference pActionReset;
-	igdeActionReference pActionFullReset;
+	igdeAction::Ref pActionToggle;
+	igdeAction::Ref pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionFire;
+	igdeAction::Ref pActionReset;
+	igdeAction::Ref pActionFullReset;
 	
-	igdeListBoxReference pListTriggerTable;
-	igdeTextFieldReference pEditTriggerTableFilter;
+	igdeListBox::Ref pListTriggerTable;
+	igdeTextField::Ref pEditTriggerTableFilter;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	
@@ -69,16 +74,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPTriggerTable( igdeEnvironment &environment );
+	igdeWPTriggerTable(igdeEnvironment &environment);
 	
 	/** \brief Create panel. */
-	igdeWPTriggerTable( igdeEnvironment &environment, igdeAction *action );
+	igdeWPTriggerTable(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
 protected:
 	/** \brief Clean up widget. */
-	virtual ~igdeWPTriggerTable();
+	~igdeWPTriggerTable() override;
 	/*@}*/
 	
 	
@@ -86,37 +91,40 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Trigger target list or NULL if not set. */
+	/** \brief Trigger target list or nullptr if not set. */
 	inline igdeTriggerTargetList *GetTriggerTargetList() const{ return pTriggerTargetList; }
 	
-	/** \brief Set trigger target list or NULL if not set. */
-	void SetTriggerTargetList( igdeTriggerTargetList *triggerTargetList );
+	/** \brief Set trigger target list or nullptr if not set. */
+	void SetTriggerTargetList(igdeTriggerTargetList *triggerTargetList);
 	
-	/** \brief Selected target or NULL. */
+	/** \brief Selected target or nullptr. */
 	igdeTriggerTarget *GetSelectedTarget() const;
 	
 	/** \brief Select target if possible. */
-	void SelectTarget( igdeTriggerTarget *target );
+	void SelectTarget(igdeTriggerTarget *target);
 	
 	/** \brief Update after changing trigger target list outside widget. */
 	void UpdateTable();
 	
+	/** \brief Update target in list if present. */
+	void UpdateTarget(igdeTriggerTarget *target);
+	
 	/** \brief Actions. */
-	inline igdeAction *GetActionToggle() const{ return pActionToggle; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionFire() const{ return pActionFire; }
-	inline igdeAction *GetActionReset() const{ return pActionReset; }
-	inline igdeAction *GetActionFullReset() const{ return pActionFullReset; }
+	inline const igdeAction::Ref &GetActionToggle() const{ return pActionToggle; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionFire() const{ return pActionFire; }
+	inline const igdeAction::Ref &GetActionReset() const{ return pActionReset; }
+	inline const igdeAction::Ref &GetActionFullReset() const{ return pActionFullReset; }
 	
 	
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	/** \brief Set action or nullptr. */
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * \brief Trigger table changed.
@@ -127,10 +135,16 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	void OnDestroyed(igdeAction *action) override;
+	
+	/** \brief List box. */
+	inline const igdeListBox::Ref &GetListBox() const{ return pListTriggerTable; }
+	
+	/** \brief Trigger table filter text field. */
+	inline const igdeTextField::Ref &GetTextFieldFilter() const{ return pEditTriggerTableFilter; }
 	/*@}*/
 	
 	

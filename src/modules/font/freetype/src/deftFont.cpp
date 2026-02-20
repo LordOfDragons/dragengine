@@ -91,7 +91,7 @@ void deftFont::LoadFont(deFont &font){
 	pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, 16), "FT_Set_Pixel_Sizes");
 	
 	font.SetImagePath("");
-	font.SetImage(deImage::Ref::New(pModule.GetGameEngine()->GetImageManager()->LoadDefault()));
+	font.SetImage(pModule.GetGameEngine()->GetImageManager()->LoadDefault());
 	
 	font.SetLineHeight(16);
 	font.SetBaseLine(16 * 3 / 4);
@@ -123,7 +123,7 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 		lineHeight = pLineHeightLimit;
 	}
 	
-	size.TakeOver(new deFontSize(lineHeight, font.GetGlyphCount()));
+	size = deFontSize::Ref::New(lineHeight, font.GetGlyphCount());
 	
 	pRealFontSize = pFindBestSize(font, size);
 	
@@ -156,13 +156,13 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	decPoint3 imageSize(pCalcLayout(size));
 	DEASSERT_FALSE(imageSize == decPoint3())
 	pModule.LogInfoFormat("LoadFontSize[%s,%d]: Layout calculated, %d glyphs, image size (%d,%d,%d)",
-		filename, lineHeight, size->GetGlyphCount(), imageSize.x, imageSize.y, imageSize.z);
+		filename, lineHeight, size->GetGlyphs().GetCount(), imageSize.x, imageSize.y, imageSize.z);
 	
 	// pDebugPrintGlyphs(font, size);
 	
 	decTimer timer;
-	const deImage::Ref image(deImage::Ref::New(pModule.GetGameEngine()->GetImageManager()->
-		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8)));
+	const deImage::Ref image(pModule.GetGameEngine()->GetImageManager()->
+		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8));
 	pRenderGlyphs(size, image);
 	image->NotifyImageDataChanged();
 	size->SetImage(image);
@@ -297,7 +297,7 @@ decPoint3 deftFont::pCalcLayout(deFontSize &size){
 		return decPoint3();
 	}
 	
-	const int glyphCount = size.GetGlyphCount();
+	const int glyphCount = size.GetGlyphs().GetCount();
 	decPoint3 coords, imageSize;
 	int i;
 	
@@ -334,16 +334,13 @@ decPoint3 deftFont::pCalcLayout(deFontSize &size){
 void deftFont::pDebugPrintGlyphs(const deFont &font, const deFontSize &size){
 	const char * const filename = font.GetFilename();
 	const int lineHeight = size.GetLineHeight();
-	const int glyphCount = size.GetGlyphCount();
-	int i;
 	
-	for(i=0; i<glyphCount; i++){
-		const deFontGlyph &g = size.GetGlyphAt(i);
+	size.GetGlyphs().Visit([&](const deFontGlyph &g){
 		pModule.LogInfoFormat(
 			"LoadFontSize[%s,%d].Glyph: u=0x%x s=(%d,%d) b=(%d,%d) a=%d tc=(%d,%d,%d)",
 			filename, lineHeight, g.GetUnicode(), g.GetWidth(), g.GetHeight(), g.GetBearing(),
 			g.GetBearingY(), g.GetAdvance(), g.GetX(), g.GetY(), g.GetZ());
-	}
+	});
 }
 
 void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){
@@ -366,7 +363,7 @@ void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){
 				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
 				pModule.AssertFT(FT_Render_Glyph(pFace->glyph, FT_RENDER_MODE_NORMAL), "FT_Render_Glyph");
 				
-				const deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
+				const deFontGlyph &glyph = size.GetGlyphs()[glyphIndex++];
 				
 				if(pFace->glyph->bitmap.buffer){
 					const int rows = pFace->glyph->bitmap.rows;
@@ -440,7 +437,7 @@ void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){
 				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
 				pModule.AssertFT(FT_Render_Glyph(pFace->glyph, FT_RENDER_MODE_NORMAL), "FT_Render_Glyph");
 				
-				const deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
+				const deFontGlyph &glyph = size.GetGlyphs()[glyphIndex++];
 				
 				if(pFace->glyph->bitmap.buffer){
 					const int rows = pFace->glyph->bitmap.rows;

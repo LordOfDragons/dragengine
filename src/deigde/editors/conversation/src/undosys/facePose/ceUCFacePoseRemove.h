@@ -25,10 +25,11 @@
 #ifndef _CEUCFACEPOSEREMOVE_H_
 #define _CEUCFACEPOSEREMOVE_H_
 
+#include "../../conversation/facepose/ceFacePose.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceFacePose;
 
 
 
@@ -36,27 +37,31 @@ class ceFacePose;
  * \brief Undo Action Remove Face Pose.
  */
 class ceUCFacePoseRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCFacePoseRemove>;
+	
+	
 private:
 	ceConversation *pConversation;
-	ceFacePose *pFacePose;
+	ceFacePose::Ref pFacePose;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFacePoseRemove( ceFacePose *facePose );
+	ceUCFacePoseRemove(ceFacePose *facePose);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCFacePoseRemove();
+	~ceUCFacePoseRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

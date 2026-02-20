@@ -99,16 +99,16 @@
 
 
 // internal stuff
+#include "../../../gui/filedialog/igdeFilePattern.h"
+
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
 class igdeHotKey;
 class igdeWidget;
 class igdeContainer;
 class igdeEnvironment;
-class igdeFilePatternList;
 
 class igdeUIFoxHelper{
 public:
@@ -124,25 +124,31 @@ private:
 	igdeUIFoxHelper();
 	
 public:
-	static FXString AccelString( const igdeHotKey &hotKey );
-	static FXuchar MnemonicKey( deInputEvent::eKeyCodes keyCode );
-	static FXString MnemonizeString( const char* string, deInputEvent::eKeyCodes keyCode );
-	static deInputEvent::eKeyCodes KeyCodeFromEvent( const FXEvent &event );
-	static int ModifiersFromEvent( const FXEvent &event );
-	static FXString FilePatternListToFOX( const igdeFilePatternList &filePatterns );
+	static FXString AccelStringSystem(const igdeHotKey &hotKey);
+	static FXString AccelStringTranslated(const igdeWidget &widget, const igdeHotKey &hotKey);
+	static FXuchar MnemonicKey(deInputEvent::eKeyCodes keyCode);
+	static FXString MnemonizeString(const char* string, deInputEvent::eKeyCodes keyCode);
+	static deInputEvent::eKeyCodes KeyCodeFromEvent(const FXEvent &event);
+	static int ModifiersFromEvent(const FXEvent &event);
+	static FXString FilePatternListToFOX(const igdeFilePattern::List &filePatterns);
+	static FXString FilePatternListToFOX(const igdeWidget &widget,
+		const igdeFilePattern::List &filePatterns);
 	
-	static int GetChildLayoutFlags( igdeWidget *widget, int defaultFlags =
-		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT );
-	static sChildLayoutFlags GetChildLayoutFlagsAll( igdeWidget *widget,
-		int defaultFlags = LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT );
-	static void UpdateLayoutFlags( igdeWidget *widget );
-	static void UpdateLayoutFlagsChildren( igdeContainer *container );
-	static FXColor BlendColor( FXColor color1, FXColor color2, float factor );
+	static int GetChildLayoutFlags(igdeWidget *widget, int defaultFlags =
+		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT);
+	static sChildLayoutFlags GetChildLayoutFlagsAll(igdeWidget *widget,
+		int defaultFlags = LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_SIDE_LEFT);
+	static void UpdateLayoutFlags(igdeWidget *widget);
+	static void UpdateLayoutFlagsChildren(igdeContainer *container);
+	static FXColor BlendColor(FXColor color1, FXColor color2, float factor);
 	static FX::FXColor ConvertColor(const decColor& color);
 	static decColor ConvertColor(FX::FXColor color);
 	static FX::FXColor BrighterColor(FX::FXColor color, int amount);
 	
-	static int DebugCountWindows( FXWindow *rootWindow );
+	static int DebugCountWindows(FXWindow *rootWindow);
+	
+	static FXString Translate(const igdeWidget &widget, const char *name);
+	static FXString TranslateIf(const igdeWidget &widget, const char *text);
 };
 
 #define SEL_IGDE_CHILD_LAYOUT_FLAGS (SEL_LAST + 1)

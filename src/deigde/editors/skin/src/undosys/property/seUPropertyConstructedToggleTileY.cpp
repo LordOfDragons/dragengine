@@ -38,23 +38,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY( seProperty *property ) :
-pProperty( NULL )
+seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY(seProperty *property) :
+pProperty(nullptr)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed tile Y" );
+	SetShortInfo("@Skin.Undo.PropertyConstructedTileY");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -63,9 +59,9 @@ seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
 ///////////////
 
 void seUPropertyConstructedToggleTileY::Undo(){
-	pProperty->SetNodeTileY( ! pProperty->GetNodeTileY() );
+	pProperty->SetNodeTileY(!pProperty->GetNodeTileY());
 }
 
 void seUPropertyConstructedToggleTileY::Redo(){
-	pProperty->SetNodeTileY( ! pProperty->GetNodeTileY() );
+	pProperty->SetNodeTileY(!pProperty->GetNodeTileY());
 }

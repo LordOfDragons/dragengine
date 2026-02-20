@@ -45,19 +45,19 @@
 
 
 // public func void colliderEntered( int shape, Collider collider )
-deClassTouchSensorListener::nfColliderEntered::nfColliderEntered( const sInitData &init ) :
-dsFunction( init.clsTSL, "colliderEntered", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
+deClassTouchSensorListener::nfColliderEntered::nfColliderEntered(const sInitData &init) :
+dsFunction(init.clsTSL, "colliderEntered", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassTouchSensorListener::nfColliderEntered::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassTouchSensorListener::nfColliderEntered::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 // public func void colliderLeft( int shape, Collider collider )
-deClassTouchSensorListener::nfColliderLeft::nfColliderLeft( const sInitData &init ) :
-dsFunction( init.clsTSL, "colliderLeft", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // collider
+deClassTouchSensorListener::nfColliderLeft::nfColliderLeft(const sInitData &init) :
+dsFunction(init.clsTSL, "colliderLeft", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassTouchSensorListener::nfColliderLeft::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassTouchSensorListener::nfColliderLeft::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 
@@ -66,22 +66,22 @@ void deClassTouchSensorListener::nfColliderLeft::RunFunction( dsRunTime *RT, dsV
 //////////////////////////////////
 
 // constructor
-deClassTouchSensorListener::deClassTouchSensorListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
-dsClass( "TouchSensorListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassTouchSensorListener::deClassTouchSensorListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("TouchSensorListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(!gameEngine || !scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	// set parser info
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent(DENS_SCENERY);
 	// do the rest
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 deClassTouchSensorListener::~deClassTouchSensorListener(){
 }
 
 // management
-void deClassTouchSensorListener::CreateClassMembers( dsEngine *engine ){
+void deClassTouchSensorListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -92,14 +92,14 @@ void deClassTouchSensorListener::CreateClassMembers( dsEngine *engine ){
 	init.clsCol = pScrMgr->GetClassCollider();
 	
 	// add functions
-	AddFunction( new nfColliderEntered( init ) ); // function 0
-	AddFunction( new nfColliderLeft( init ) ); // function 1
+	AddFunction(new nfColliderEntered(init)); // function 0
+	AddFunction(new nfColliderLeft(init)); // function 1
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function indices for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexColliderEntered = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexColliderLeft = funcList.GetIndexOf( GetFunction( 1 ) );
+	pFuncIndexColliderEntered = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexColliderLeft = funcList.GetIndexOf(GetFunction(1));
 }

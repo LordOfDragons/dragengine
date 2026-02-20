@@ -26,9 +26,8 @@
 #define _DEHEIGHTTERRAINTEXTURE_H_
 
 #include "../../../common/math/decMath.h"
-
-class deSkin;
-class deImage;
+#include "../../skin/deSkin.h"
+#include "../../image/deImage.h"
 
 
 /**
@@ -48,13 +47,13 @@ class deImage;
  */
 class DE_DLL_EXPORT deHeightTerrainTexture{
 private:
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	
 	decVector2 pProjOffset;
 	decVector2 pProjScaling;
 	float pProjRotation;
 	
-	deImage *pMaskImage;
+	deImage::Ref pMaskImage;
 	
 	
 	
@@ -73,34 +72,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Projection offset. */
 	inline const decVector2 &GetProjectionOffset() const{ return pProjOffset; }
 	
 	/** \brief Set projection offset. */
-	void SetProjectionOffset( const decVector2 &offset );
+	void SetProjectionOffset(const decVector2 &offset);
 	
 	/** \brief Projection scaling. */
 	inline const decVector2 &GetProjectionScaling() const{ return pProjScaling; }
 	
 	/** \brief Set projection scaling. */
-	void SetProjectionScaling( const decVector2 &scaling );
+	void SetProjectionScaling(const decVector2 &scaling);
 	
 	/** \brief Projection rotation. */
 	inline float GetProjectionRotation() const{ return pProjRotation; }
 	
 	/** \brief Set projection rotation. */
-	void SetProjectionRotation( float rotation );
+	void SetProjectionRotation(float rotation);
 	
 	/** \brief Mask image or NULL if not set. */
-	inline deImage *GetMaskImage() const{ return pMaskImage; }
+	inline const deImage::Ref &GetMaskImage() const{ return pMaskImage; }
 	
 	/** \brief Set mask image or NULL if not set. */
-	void SetMaskImage( deImage *image );
+	void SetMaskImage(deImage *image);
 	/*@}*/
 };
 

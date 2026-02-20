@@ -25,10 +25,11 @@
 #ifndef _IGDEEDITORWINDOW_H_
 #define _IGDEEDITORWINDOW_H_
 
+#include "igdeStepableTask.h"
 #include "layout/igdeContainerBox.h"
 #include "../utils/igdeRecentFiles.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -36,7 +37,6 @@ class igdeAction;
 class igdeEditorModule;
 class igdeMenuCascade;
 class igdeToolBar;
-class igdeStepableTask;
 
 class deException;
 
@@ -45,12 +45,21 @@ class deException;
  * \brief Editor window.
  */
 class DE_DLL_EXPORT igdeEditorWindow : public igdeContainerBox{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditorWindow>;
+	
+	using SharedMenusList = decTOrderedSet<deTObjectReference<igdeMenuCascade>, igdeMenuCascade*>;
+	using SharedToolBarsList = decTOrderedSet<deTObjectReference<igdeToolBar>, igdeToolBar*>;
+	using UpdateActionsList = decTOrderedSet<deTObjectReference<igdeAction>, igdeAction*>;
+	
+	
 private:
 	igdeEditorModule &pEditorModule;
 	bool pActiveModule;
-	decObjectOrderedSet pSharedMenus;
-	decObjectOrderedSet pSharedToolBars;
-	decObjectOrderedSet pUpdateActions;
+	SharedMenusList pSharedMenus;
+	SharedToolBarsList pSharedToolBars;
+	UpdateActionsList pUpdateActions;
 	igdeRecentFiles pRecentFiles;
 	
 	
@@ -59,8 +68,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeEditorWindow( igdeEditorModule &editorModule );
+	igdeEditorWindow(igdeEditorModule &editorModule);
 	
+	igdeEditorWindow(const igdeEditorWindow&) = delete;
+	igdeEditorWindow& operator=(const igdeEditorWindow&) = delete;
 	
 	
 protected:
@@ -70,7 +81,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditorWindow();
+	~igdeEditorWindow() override;
 	/*@}*/
 	
 	
@@ -112,7 +123,7 @@ public:
 #endif
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -123,12 +134,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -138,7 +149,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -162,15 +173,15 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update NULL can be returned. The caller delets the task once
+	 * does not need any update nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns NULL.
+	 * The default implementation returns nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	
 	/** \brief Display exception error in a message dialog. */
-	void DisplayException( const deException &exception );
+	void DisplayException(const deException &exception);
 	/*@}*/
 	
 	
@@ -181,17 +192,14 @@ public:
 	 * Shared menus are shown in the main IGDE window when the editor module is active.
 	 */
 	/*@{*/
-	/** \brief Number of shared menus. */
-	int GetSharedMenuCount() const;
-	
-	/** \brief Shared menu at index. */
-	igdeMenuCascade *GetSharedMenuAt( int index ) const;
+	/** \brief Shared menus. */
+	const SharedMenusList &GetSharedMenus() const{ return pSharedMenus; }
 	
 	/** \brief Add shared menu. */
-	void AddSharedMenu( igdeMenuCascade *menu );
+	void AddSharedMenu(igdeMenuCascade *menu);
 	
 	/** \brief Remove shared menu. */
-	void RemoveSharedMenu( igdeMenuCascade *menu );
+	void RemoveSharedMenu(igdeMenuCascade *menu);
 	
 	/** \brief Remove all shared menus. */
 	void RemoveAllSharedMenus();
@@ -205,17 +213,14 @@ public:
 	 * Shared toolbars are shown in the main IGDE window when the editor module is active.
 	 */
 	/*@{*/
-	/** \brief Number of shared toolbars. */
-	int GetSharedToolBarCount() const;
-	
-	/** \brief Shared toolbar at index. */
-	igdeToolBar *GetSharedToolBarAt( int index ) const;
+	/** \brief Shared toolbars. */
+	const SharedToolBarsList &GetSharedToolBars() const{ return pSharedToolBars; }
 	
 	/** \brief Add shared tool bar. */
-	void AddSharedToolBar( igdeToolBar *toolbar );
+	void AddSharedToolBar(igdeToolBar *toolbar);
 	
 	/** \brief Remove shared tool bar. */
-	void RemoveSharedToolBar( igdeToolBar *toolbar );
+	void RemoveSharedToolBar(igdeToolBar *toolbar);
 	
 	/** \brief Remove all shared tool bars. */
 	void RemoveAllSharedToolBars();
@@ -230,10 +235,10 @@ public:
 	 */
 	/*@{*/
 	/** \brief Add action to be updated when UpdateAllActions() is called. */
-	void AddUpdateAction( igdeAction *action );
+	void AddUpdateAction(igdeAction *action);
 	
 	/** \brief Remove action to be updated when UpdateAllActions() is called. */
-	void RemoveUpdateAction( igdeAction *action );
+	void RemoveUpdateAction(igdeAction *action);
 	
 	/** \brief Remove all update actions. */
 	void RemoveAllUpdateActions();
@@ -253,7 +258,7 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	/*@}*/
 };
 

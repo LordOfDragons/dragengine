@@ -22,13 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPMODELOCTREE_H_
 #define _DEBPMODELOCTREE_H_
 
-// includes
 #include "../coldet/octree/debpDOctree.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -37,18 +36,16 @@
  */
 class debpModelOctree : public debpDOctree{
 private:
-	int *pFaces;
-	int pFaceCount;
-	int pFaceSize;
+	decTList<int> pFaces;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model octree. */
-	debpModelOctree( const decDVector &center, const decDVector &halfSize );
-	debpModelOctree( const decVector &center, const decVector &halfSize );
+	debpModelOctree(const decDVector &center, const decDVector &halfSize);
+	debpModelOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the model object. */
-	virtual ~debpModelOctree();
+	~debpModelOctree() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -58,31 +55,31 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual debpDOctree *CreateOctree( int octant ) const;
+	debpDOctree *CreateOctree(int octant) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** Clears all faces from the entire octree. */
 	void ClearFaces();
 	/** Insert face into octree. */
-	void InsertFaceIntoTree( int face, const decVector &center, const decVector &halfSize, int maxDepth = 8 );
+	void InsertFaceIntoTree(int face, const decVector &center, const decVector &halfSize, int maxDepth = 8);
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	/** Retrieves the face at the given index. */
-	int GetFaceAt( int index ) const;
+	int GetFaceAt(int index) const;
 	/** Retrieves the index of the given face or -1 if not found. */
-	int IndexOfFace( int face ) const;
+	int IndexOfFace(int face) const;
 	/** Adds a face. */
-	void AddFace( int face );
+	void AddFace(int face);
 	/** Removes a face. */
-	void RemoveFace( int face );
+	void RemoveFace(int face);
 	/** Removes all faces. */
 	void RemoveAllFaces();
 	/*@}*/
 	
 private:
-	debpModelOctree *pGetNodeFor( const decVector &center, const decVector &halfSize, int maxDepth );
+	debpModelOctree *pGetNodeFor(const decVector &center, const decVector &halfSize, int maxDepth);
 };
 
 // end of include only once

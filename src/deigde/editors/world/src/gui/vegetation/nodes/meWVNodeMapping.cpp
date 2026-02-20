@@ -45,9 +45,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -64,18 +62,18 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cTextLower( meWVNodeMapping &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextLower>;
+	cTextLower(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleMapping()->GetLower() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleMapping()->GetLower()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleMapSetLower( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMapping(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapSetLower::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping(), value));
 	}
 };
 
@@ -84,18 +82,18 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cTextUpper( meWVNodeMapping &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextUpper>;
+	cTextUpper(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleMapping()->GetUpper() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleMapping()->GetUpper()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleMapSetUpper( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMapping(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapSetUpper::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping(), value));
 	}
 };
 
@@ -104,18 +102,18 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cTextValue( meWVNodeMapping &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextValue>;
+	cTextValue(meWVNodeMapping &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleMapping()->GetValue() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleMapping()->GetValue()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleMapSetValue( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMapping(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapSetValue::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping(), value));
 	}
 };
 
@@ -124,14 +122,14 @@ protected:
 	meWVNodeMapping &pNode;
 	
 public:
-	cActionInversed( meWVNodeMapping &node ) :
-		igdeAction( "Inversed", NULL, "Invert value" ), pNode( node ){ }
+	using Ref = deTObjectReference<cActionInversed>;
+	cActionInversed(meWVNodeMapping &node) :
+		igdeAction("@World.WVNodeMapping.Action.Inversed", nullptr, "@World.WVNodeMapping.Action.Inversed"), pNode(node){}
 	
-	virtual void OnAction(){
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleMapToggleInversed(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMapping() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+	void OnAction() override{
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapToggleInversed::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping()));
 	}
 };
 
@@ -145,45 +143,45 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeMapping::meWVNodeMapping( meWindowVegetation &windowVegetation, meHTVRuleMapping *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleMapping( rule )
+meWVNodeMapping::meWVNodeMapping(meWindowVegetation &windowVegetation, meHTVRuleMapping *rule) :
+meWVNode(windowVegetation, rule),
+pRuleMapping(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Mapping" );
+	SetTitle("@World.WVNodeMapping.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Mapped value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeMapping.Output.Result", "@World.WVNodeMapping.Output.Result.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Lower", "Lower value",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower ) );
-	helper.EditFloat( slot, "Lower value if slot is not connected.",
-		pEditLower, new cTextLower( *this ) );
-	AddSlot( slot );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeMapping.Output.Lower", "@World.WVNodeMapping.Output.Lower.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
+	helper.EditFloat(slot, "@World.WVNodeMapping.LowerValue",
+		pEditLower, cTextLower::Ref::New(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Upper", "Upper value",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper ) );
-	helper.EditFloat( slot, "Upper value if slot is not connected.",
-		pEditUpper, new cTextUpper( *this ) );
-	AddSlot( slot );
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Output.Upper", "@World.WVNodeMapping.Output.Upper.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
+	helper.EditFloat(slot, "@World.WVNodeMapping.UpperValue",
+		pEditUpper, cTextUpper::Ref::New(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value to map",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue ) );
-	helper.EditFloat( slot, "Value to map if slot is not connected.",
-		pEditValue, new cTextValue( *this ) );
-	AddSlot( slot );
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeMapping.Input.Value", "@World.WVNodeMapping.Input.Value.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
+	helper.EditFloat(slot, "@World.WVNodeMapping.ValueToMap",
+		pEditValue, cTextValue::Ref::New(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 	
-	helper.CheckBox( pFraParameters, pChkInversed, new cActionInversed( *this ) );
+	helper.CheckBox(pFraParameters, pChkInversed, cActionInversed::Ref::New(*this));
 }
 
 meWVNodeMapping::~meWVNodeMapping(){
@@ -197,8 +195,8 @@ meWVNodeMapping::~meWVNodeMapping(){
 void meWVNodeMapping::Update(){
 	meWVNode::Update();
 	
-	pEditLower->SetFloat( pRuleMapping->GetLower() );
-	pEditUpper->SetFloat( pRuleMapping->GetUpper() );
-	pEditValue->SetFloat( pRuleMapping->GetValue() );
-	pChkInversed->SetChecked( pRuleMapping->GetInversed() );
+	pEditLower->SetFloat(pRuleMapping->GetLower());
+	pEditUpper->SetFloat(pRuleMapping->GetUpper());
+	pEditValue->SetFloat(pRuleMapping->GetValue());
+	pChkInversed->SetChecked(pRuleMapping->GetInversed());
 }

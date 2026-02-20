@@ -40,8 +40,8 @@
 ////////////////////////////
 
 deSynthesizerEffectVisitorIdentify::deSynthesizerEffectVisitorIdentify() :
-pEffect( NULL ),
-pType( eetUnknown ){
+pEffect(nullptr),
+pType(eetUnknown){
 }
 
 deSynthesizerEffectVisitorIdentify::~deSynthesizerEffectVisitorIdentify(){
@@ -53,14 +53,14 @@ deSynthesizerEffectVisitorIdentify::~deSynthesizerEffectVisitorIdentify(){
 ///////////////
 
 deSynthesizerEffectStretch &deSynthesizerEffectVisitorIdentify::CastToStretch() const{
-	if( pType != eetStretch ){
-		DETHROW( deeInvalidParam );
+	if(pType != eetStretch){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deSynthesizerEffectStretch* )pEffect );
+	return *((deSynthesizerEffectStretch*)pEffect);
 }
 
 void deSynthesizerEffectVisitorIdentify::Reset(){
-	pEffect = NULL;
+	pEffect = nullptr;
 	pType = eetUnknown;
 }
 
@@ -69,12 +69,12 @@ void deSynthesizerEffectVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deSynthesizerEffectVisitorIdentify::VisitEffect( deSynthesizerEffect &source ){
+void deSynthesizerEffectVisitorIdentify::VisitEffect(deSynthesizerEffect &source){
 	pEffect = &source;
 	pType = eetUnknown;
 }
 
-void deSynthesizerEffectVisitorIdentify::VisitStretch( deSynthesizerEffectStretch &source ){
+void deSynthesizerEffectVisitorIdentify::VisitStretch(deSynthesizerEffectStretch &source){
 	pEffect = &source;
 	pType = eetStretch;
 }

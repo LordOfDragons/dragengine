@@ -47,9 +47,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -66,23 +64,23 @@ protected:
 	meWVNodeVectorMath &pNode;
 	
 public:
-	cComboOperator( meWVNodeVectorMath &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cComboOperator>;
+	cComboOperator(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( ! pNode.GetRuleVectorMath() ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		if(!pNode.GetRuleVectorMath()){
 			return;
 		}
 		
-		const meHTVRuleVectorMath::eOperators op = ( meHTVRuleVectorMath::eOperators )( intptr_t )
+		const meHTVRuleVectorMath::eOperators op = (meHTVRuleVectorMath::eOperators)(intptr_t)
 			comboBox->GetSelectedItem()->GetData();
-		if( op == pNode.GetRuleVectorMath()->GetOperator() ){
+		if(op == pNode.GetRuleVectorMath()->GetOperator()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleVecMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleVectorMath(), op ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleVecMathSetOp::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleVectorMath(), op));
 	}
 };
 
@@ -91,18 +89,18 @@ protected:
 	meWVNodeVectorMath &pNode;
 	
 public:
-	cTextVectorA( meWVNodeVectorMath &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextVectorA>;
+	cTextVectorA(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		const decVector &value = editVector->GetVector();
-		if( value.IsEqualTo( pNode.GetRuleVectorMath()->GetVectorA() ) ){
+		if(value.IsEqualTo(pNode.GetRuleVectorMath()->GetVectorA())){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleVecMathSetVectorA( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleVectorMath(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleVecMathSetVectorA::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleVectorMath(), value));
 	}
 };
 
@@ -111,18 +109,18 @@ protected:
 	meWVNodeVectorMath &pNode;
 	
 public:
-	cTextVectorB( meWVNodeVectorMath &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextVectorB>;
+	cTextVectorB(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		const decVector &value = editVector->GetVector();
-		if( value.IsEqualTo( pNode.GetRuleVectorMath()->GetVectorB() ) ){
+		if(value.IsEqualTo(pNode.GetRuleVectorMath()->GetVectorB())){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleVecMathSetVectorB( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleVectorMath(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleVecMathSetVectorB::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleVectorMath(), value));
 	}
 };
 
@@ -136,49 +134,50 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeVectorMath::meWVNodeVectorMath( meWindowVegetation &windowVegetation, meHTVRuleVectorMath *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleVectorMath( NULL )
+meWVNodeVectorMath::meWVNodeVectorMath(meWindowVegetation &windowVegetation, meHTVRuleVectorMath *rule) :
+meWVNode(windowVegetation, rule),
+pRuleVectorMath(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Vector-Math" );
+	SetTitle("@World.WVNodeVectorMath.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value result of operation",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeVectorMath.Output.Value", "@World.WVNodeVectorMath.Output.Value.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector result of operation",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eosVector ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeVectorMath.Output.Result", "@World.WVNodeVectorMath.Output.Result.ToolTip",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eosVector));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector A", "First operand",
-		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA ) );
-	helper.EditVector( slot, "First operant if slot is not connected.",
-		pEditVectorA, new cTextVectorA( *this ) );
-	AddSlot( slot );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeVectorMath.Input.A", "@World.WVNodeVectorMath.Input.A.ToolTip",
+		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA));
+	helper.EditVector(slot, "@World.WVNodeVectorMath.FirstOperant",
+		pEditVectorA, cTextVectorA::Ref::New(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector B", "Second operand if required",
-		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB ) );
-	helper.EditVector( slot, "Second operant if slot is not connected.",
-		pEditVectorB, new cTextVectorB( *this ) );
-	AddSlot( slot );
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeVectorMath.Input.B", "@World.WVNodeVectorMath.Input.B.ToolTip",
+		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB);
+	helper.EditVector(slot, "@World.WVNodeVectorMath.SecondOperant",
+		pEditVectorB, cTextVectorB::Ref::New(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 	
-	helper.ComboBox( pFraParameters, "Operator:", "Operator to use.", pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "Add", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopAdd );
-	pCBOperator->AddItem( "Subtract", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopSubtract );
-	pCBOperator->AddItem( "Average", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopAverage );
-	pCBOperator->AddItem( "Normalize", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopNormalize );
-	pCBOperator->AddItem( "Dot", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopDot );
-	pCBOperator->AddItem( "Cross", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopCross );
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.Operator.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAdd);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Subtract", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopSubtract);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Average", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopAverage);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Normalize", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopNormalize);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Dot", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopDot);
+	pCBOperator->AddItem("@World.WVNodeVectorMath.Operator.Cross", nullptr, (void*)(intptr_t)meHTVRuleVectorMath::eopCross);
 	
 	pRuleVectorMath = rule; // required for combo box listener to not fire while list is build
 }
@@ -194,7 +193,7 @@ meWVNodeVectorMath::~meWVNodeVectorMath(){
 void meWVNodeVectorMath::Update(){
 	meWVNode::Update();
 	
-	pCBOperator->SetSelectionWithData( ( void* )( intptr_t )pRuleVectorMath->GetOperator() );
-	pEditVectorA->SetVector( pRuleVectorMath->GetVectorA() );
-	pEditVectorB->SetVector( pRuleVectorMath->GetVectorB() );
+	pCBOperator->SetSelectionWithData((void*)(intptr_t)pRuleVectorMath->GetOperator());
+	pEditVectorA->SetVector(pRuleVectorMath->GetVectorA());
+	pEditVectorB->SetVector(pRuleVectorMath->GetVectorB());
 }

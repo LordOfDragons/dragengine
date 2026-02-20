@@ -40,27 +40,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalPAuralizationQuality::deoalPAuralizationQuality( deAudioOpenAL &oal ) : deoalParameter( oal )
+deoalPAuralizationQuality::deoalPAuralizationQuality(deAudioOpenAL &oal) : deoalParameter(oal)
 {
-	SetName( "auralizationQuality" );
-	SetDescription( "Auralization quality weighting quality versus performance."
+	SetName("auralizationQuality");
+	SetDescription("Auralization quality weighting quality versus performance."
 		" This parameter is only used if 'AuralizationMode' is set to 'full'."
-	);
-	SetType( deModuleParameter::eptSelection );
+);
+	SetType(deModuleParameter::eptSelection);
 	
-	const deModuleParameter::SelectionEntry entries[ 5 ] = {
-		{ "veryLow", "Very Low", "Very low quality. For weak CPU delivering best performance." },
-		{ "low", "Low", "Low quality. Prefer performance over quality." },
-		{ "medium", "Medium", "Medium quality. Balance between quality and performance. Recommended choice." },
-		{ "high", "High", "High quality. Prefer quality over performance." },
-		{ "veryHigh", "Very High", "Very high quality. For high-end CPU delivering best quality." }
-	};
+	AddSelectionEntry({"veryLow", "Very Low",
+		"Very low quality. For weak CPU delivering best performance."});
 	
-	AddSelectionEntries( entries, 5 );
+	AddSelectionEntry({"low", "Low",
+		"Low quality. Prefer performance over quality."});
 	
-	SetCategory( ecBasic );
-	SetDisplayName( "Auralization Quality" );
-	SetDefaultValue( "medium" );
+	AddSelectionEntry({"medium", "Medium",
+		"Medium quality. Balance between quality and performance. Recommended choice."});
+	
+	AddSelectionEntry({"high", "High",
+		"High quality. Prefer quality over performance."});
+	
+	AddSelectionEntry({"veryHigh", "Very High",
+		"Very high quality. For high-end CPU delivering best quality."});
+	
+	SetCategory(ecBasic);
+	SetDisplayName("Auralization Quality");
+	SetDefaultValue("medium");
 }
 
 deoalPAuralizationQuality::~deoalPAuralizationQuality(){
@@ -72,7 +77,7 @@ deoalPAuralizationQuality::~deoalPAuralizationQuality(){
 ///////////////
 
 decString deoalPAuralizationQuality::GetParameterValue(){
-	switch( pOal.GetConfiguration().GetAuralizationQuality() ){
+	switch(pOal.GetConfiguration().GetAuralizationQuality()){
 	case deoalConfiguration::eaqVeryLow:
 		return "veryLow";
 		
@@ -93,24 +98,24 @@ decString deoalPAuralizationQuality::GetParameterValue(){
 	}
 }
 
-void deoalPAuralizationQuality::SetParameterValue( const char *value ){
-	const decString svalue( decString( value ).GetLower() );
-	if( svalue.EqualsInsensitive( "verylow" ) ){
-		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqVeryLow );
+void deoalPAuralizationQuality::SetParameterValue(const char *value){
+	const decString svalue(decString(value).GetLower());
+	if(svalue.EqualsInsensitive("verylow")){
+		pOal.GetConfiguration().SetAuralizationQuality(deoalConfiguration::eaqVeryLow);
 		
-	}else if( svalue.EqualsInsensitive( "low" ) ){
-		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqLow );
+	}else if(svalue.EqualsInsensitive("low")){
+		pOal.GetConfiguration().SetAuralizationQuality(deoalConfiguration::eaqLow);
 		
-	}else if( svalue.EqualsInsensitive( "medium" ) ){
-		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqMedium );
+	}else if(svalue.EqualsInsensitive("medium")){
+		pOal.GetConfiguration().SetAuralizationQuality(deoalConfiguration::eaqMedium);
 		
-	}else if( svalue.EqualsInsensitive( "high" ) ){
-		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqHigh );
+	}else if(svalue.EqualsInsensitive("high")){
+		pOal.GetConfiguration().SetAuralizationQuality(deoalConfiguration::eaqHigh);
 		
-	}else if( svalue.EqualsInsensitive( "veryhigh" ) ){
-		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqVeryHigh );
+	}else if(svalue.EqualsInsensitive("veryhigh")){
+		pOal.GetConfiguration().SetAuralizationQuality(deoalConfiguration::eaqVeryHigh);
 		
 	}else{
-		pOal.GetConfiguration().SetAuralizationQuality( deoalConfiguration::eaqMedium );
+		pOal.GetConfiguration().SetAuralizationQuality(deoalConfiguration::eaqMedium);
 	}
 }

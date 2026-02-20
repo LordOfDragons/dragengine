@@ -47,6 +47,10 @@
  */
 class meHTVRuleClosestProp : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleClosestProp>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Distance. */
@@ -70,10 +74,13 @@ public:
 	meHTVRuleClosestProp();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleClosestProp( const meHTVRuleClosestProp &rule );
+	meHTVRuleClosestProp(const meHTVRuleClosestProp &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleClosestProp();
+	~meHTVRuleClosestProp() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -81,24 +88,24 @@ public:
 	/** Retrieves the class name of the prop to search for. */
 	inline const decString &GetPropClass() const{ return pPropClass; }
 	/** Sets the class name of the prop to search for. */
-	void SetPropClass( const char *propClass );
+	void SetPropClass(const char *propClass);
 	/** Retrieves the search radius. */
 	inline float GetSearchRadius() const{ return pSearchRadius; }
 	/** Sets the search radius. */
-	void SetSearchRadius( float searchRadius );
+	void SetSearchRadius(float searchRadius);
 	
 	/** Update the result if required. */
-	void UpdateResult( meHTVEvaluationEnvironment &evalEnv );
+	void UpdateResult(meHTVEvaluationEnvironment &evalEnv);
 	
 	/** Resets the rule state. */
-	virtual void Reset();
+	void Reset() override;
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

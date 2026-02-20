@@ -30,15 +30,12 @@
 #include "../gui/projWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gui/filedialog/igdeFilePattern.h>
-#include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/filesystem/dePatternList.h>
 
 
 
@@ -55,8 +52,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projLoadSaveSystem::projLoadSaveSystem( projWindowMain &windowMain ) :
-pWindowMain( windowMain )
+projLoadSaveSystem::projLoadSaveSystem(projWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
 	pBuildFilePattern();
 }
@@ -75,16 +72,5 @@ projLoadSaveSystem::~projLoadSaveSystem(){
 //////////////////////
 
 void projLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
-	
-	try{
-		filePattern = new igdeFilePattern( "DELGA", "*.delga", ".delga" );
-		pFPDelga.AddFilePattern( filePattern );
-		
-	}catch( const deException & ){
-		if( filePattern ){
-			delete filePattern;
-		}
-		throw;
-	}
+	pFPDelga.Add(igdeFilePattern::Ref::New("DELGA", "*.delga", ".delga"));
 }

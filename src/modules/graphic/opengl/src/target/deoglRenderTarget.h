@@ -39,7 +39,7 @@ class deoglTexture;
  */
 class deoglRenderTarget : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderTarget> Ref;
+	using Ref = deTObjectReference<deoglRenderTarget>;
 	
 	
 private:
@@ -59,14 +59,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRenderTarget( deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount );
+	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount);
 	
+protected:
 	/** Clean up render render target. */
-	virtual ~deoglRenderTarget();
+	~deoglRenderTarget() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Size. */
@@ -82,7 +83,7 @@ public:
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	
 	
@@ -104,7 +105,7 @@ public:
 	inline bool GetTextureDirty() const{ return pDirtyTexture; }
 	
 	/** Set texture dirty. */
-	void SetTextureDirty( bool dirty );
+	void SetTextureDirty(bool dirty);
 	
 	// texture management
 	inline deoglTexture *GetTexture() const{ return pTexture; }

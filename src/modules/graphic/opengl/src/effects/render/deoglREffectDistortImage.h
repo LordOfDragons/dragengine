@@ -36,6 +36,10 @@
  * Render effect distort image.
  */
 class deoglREffectDistortImage : public deoglREffect{
+public:
+	using Ref = deTObjectReference<deoglREffectDistortImage>;
+	
+	
 private:
 	decVector2 pStrength;
 	deoglRImage::Ref pImage;
@@ -47,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffectDistortImage( deoglRenderThread &renderThread );
+	deoglREffectDistortImage(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
-	virtual ~deoglREffectDistortImage();
+	~deoglREffectDistortImage() override;
 	/*@}*/
 	
 	
@@ -61,13 +65,13 @@ public:
 	inline const decVector2 &GetStrength() const{ return pStrength; }
 	
 	/** Set distortion strength in U and V direction. */
-	void SetStrength( const decVector2 &strength );
+	void SetStrength(const decVector2 &strength);
 	
 	/** Image or nullptr to render nothing. */
 	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image or nullptr to render nothing. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	
 	
@@ -76,10 +80,10 @@ public:
 	const deoglPipeline *GetPipelineStereo();
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender();
+	void PrepareForRender() override;
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan );
+	void Render(deoglRenderPlan &plan) override;
 };
 
 #endif

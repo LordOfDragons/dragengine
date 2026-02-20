@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCamDistFrom::ceUCCShotSetCamDistFrom( ceCameraShot *cameraShot, float newDist ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetCamDistFrom::ceUCCShotSetCamDistFrom(ceCameraShot *cameraShot, float newDist){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set Start Camera Distance" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetStartCameraDistance");
 	
 	pOldDist = cameraShot->GetCameraDistanceFrom();
 	pNewDist = newDist;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamDistFrom::~ceUCCShotSetCamDistFrom(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetCamDistFrom::~ceUCCShotSetCamDistFrom(){
 ///////////////
 
 void ceUCCShotSetCamDistFrom::Undo(){
-	pCameraShot->SetCameraDistanceFrom( pOldDist );
+	pCameraShot->SetCameraDistanceFrom(pOldDist);
 }
 
 void ceUCCShotSetCamDistFrom::Redo(){
-	pCameraShot->SetCameraDistanceFrom( pNewDist );
+	pCameraShot->SetCameraDistanceFrom(pNewDist);
 }

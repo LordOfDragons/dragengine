@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetRotation::gdeUOCLightSetRotation( gdeObjectClass *objectClass,
-gdeOCLight *light, const decVector &newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetRotation::gdeUOCLightSetRotation(gdeObjectClass *objectClass,
+gdeOCLight *light, const decVector &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set orientation" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetRotation");
 	
 	pOldValue = light->GetRotation();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetRotation::~gdeUOCLightSetRotation(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetRotation::~gdeUOCLightSetRotation(){
 ///////////////
 
 void gdeUOCLightSetRotation::Undo(){
-	pLight->SetRotation( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetRotation(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetRotation::Redo(){
-	pLight->SetRotation( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetRotation(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

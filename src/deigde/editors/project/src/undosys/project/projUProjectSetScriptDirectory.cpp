@@ -40,26 +40,22 @@
 ////////////////////////////
 
 projUProjectSetScriptDirectory::projUProjectSetScriptDirectory(
-projProject *project, const char *newValue ) :
-pProject( NULL ),
-pNewValue( newValue )
+projProject *project, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! project ){
-		DETHROW( deeInvalidParam );
+	if(!project){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Project set script directory" );
+	SetShortInfo("@Project.Undo.ProjectSetScriptDirectory");
 	
 	pOldValue = project->GetScriptDirectory();
 	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProjectSetScriptDirectory::~projUProjectSetScriptDirectory(){
-	if( pProject ){
-		pProject->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ projUProjectSetScriptDirectory::~projUProjectSetScriptDirectory(){
 ///////////////
 
 void projUProjectSetScriptDirectory::Undo(){
-	pProject->SetScriptDirectory( pOldValue );
+	pProject->SetScriptDirectory(pOldValue);
 }
 
 void projUProjectSetScriptDirectory::Redo(){
-	pProject->SetScriptDirectory( pNewValue );
+	pProject->SetScriptDirectory(pNewValue);
 }

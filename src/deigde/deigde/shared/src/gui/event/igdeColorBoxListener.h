@@ -36,6 +36,12 @@ class igdeColorBox;
  * \brief IGDE UI ColorBox Listener.
  */
 class DE_DLL_EXPORT igdeColorBoxListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeColorBoxListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeColorBoxListener();
+	~igdeColorBoxListener() override;
 	/*@}*/
 	
 	
@@ -64,7 +70,7 @@ public:
 	 * 
 	 * User changed color by interaction.
 	 */
-	virtual void OnColorChanged( igdeColorBox *colorBox );
+	virtual void OnColorChanged(igdeColorBox *colorBox);
 	/*@}*/
 };
 

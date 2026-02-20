@@ -25,15 +25,15 @@
 #ifndef _DEOGLRENVMAPPROBE_H_
 #define _DEOGLRENVMAPPROBE_H_
 
+#include "deoglEnvironmentMap.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/shape/decShape.h>
 
-class decShape;
-class decShapeList;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglWorldOctree;
-class deoglEnvironmentMap;
 
 
 /**
@@ -51,22 +51,27 @@ private:
 	
 	decDMatrix pMatrix;
 	
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	
 	bool pWorldMarkedRemove;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglREnvMapProbe>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render environment map probe. */
-	deoglREnvMapProbe( deoglRenderThread &renderThread );
+	deoglREnvMapProbe(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render environment map probe. */
-	virtual ~deoglREnvMapProbe();
+	~deoglREnvMapProbe() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -78,13 +83,13 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
-	void SetParentWorld( deoglRWorld *world );
+	void SetParentWorld(deoglRWorld *world);
 	
 	/** Octree node or \em NULL if there is none. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** Set octree node or \em NULL if there is none. */
-	void SetOctreeNode( deoglWorldOctree *node );
+	void SetOctreeNode(deoglWorldOctree *node);
 	
 	
 	
@@ -92,7 +97,7 @@ public:
 	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
 	
 	/** Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	
 	
@@ -100,20 +105,20 @@ public:
 	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
 	
 	/** Set matrix. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	
 	
 	/** Retrieves the environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetEnvironmentMap() const{ return pEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetEnvironmentMap() const{ return pEnvMap; }
 	
 	
 	
 	/** Update influence shape. */
-	void UpdateInfluenceShape( const decShapeList &shapeList );
+	void UpdateInfluenceShape(const decShape::List &shapeList);
 	
 	/** Update reflection shape. */
-	void UpdateReflectionShape( const decShapeList &maskShapeList, decShape *shape );
+	void UpdateReflectionShape(const decShape::List &maskShapeList, decShape *shape);
 	
 	
 	
@@ -135,7 +140,7 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 	
 private:

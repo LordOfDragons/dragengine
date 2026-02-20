@@ -28,22 +28,29 @@
 #include <dragengine/common/math/decMath.h>
 #include <deigde/undo/igdeUndo.h>
 
+class igdeEnvironment;
 
 
 /**
  * \brief Base class for undo action moving things around.
  */
 class reBaseUndoMove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reBaseUndoMove>;
+	
+	
 private:
+	igdeEnvironment &pEnvironment;
 	decVector pDist;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reBaseUndoMove();
+	explicit reBaseUndoMove(igdeEnvironment &environment);
 	
 protected:
-	virtual ~reBaseUndoMove();
+	~reBaseUndoMove() override;
 	/*@}*/
 	
 	
@@ -55,7 +62,7 @@ public:
 	inline decVector GetDistance() const{ return pDist; }
 	
 	/** \brief Set distance. */
-	void SetDistance( const decVector &distance );
+	void SetDistance(const decVector &distance);
 	
 	/** \brief Progressive redo. */
 	virtual void ProgressiveRedo();

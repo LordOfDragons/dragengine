@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightTestForTouch::deoglLightTestForTouch( deoglRLight &light ) :
-pLight( light ){
+deoglLightTestForTouch::deoglLightTestForTouch(deoglRLight &light) :
+pLight(light){
 }
 
 deoglLightTestForTouch::~deoglLightTestForTouch(){
@@ -53,15 +53,15 @@ deoglLightTestForTouch::~deoglLightTestForTouch(){
 // Visiting
 /////////////
 
-void deoglLightTestForTouch::VisitNode( deoglDOctree *node, int intersection ){
-	const deoglWorldOctree &soNode = *( ( deoglWorldOctree* )node );
+void deoglLightTestForTouch::VisitNode(deoglDOctree *node, int intersection){
+	const deoglWorldOctree &soNode = *((deoglWorldOctree*)node);
 	const int componentCount = soNode.GetComponentCount();
 	deoglRComponent *component;
 	int i;
 	
-	for( i=0; i<componentCount; i++ ){
-		component = soNode.GetComponentAt( i );
-		component->SetMarked( false );
-		pLight.TestComponent( component );
+	for(i=0; i<componentCount; i++){
+		component = soNode.GetComponentAt(i);
+		component->SetMarked(false);
+		pLight.TestComponent(component);
 	}
 }

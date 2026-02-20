@@ -27,6 +27,8 @@
 
 #include "dearRule.h"
 
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 
 
@@ -50,11 +52,8 @@ private:
 	int pMirrorBone;
 	decMatrix pMirrorMatrix;
 	
-	sBonePair *pBonePairs;
-	int pBonePairCount;
-	
-	sVPSPair *pVPSPairs;
-	int pVPSPairCount;
+	decTList<sBonePair> pBonePairs;
+	decTList<sVPSPair> pVPSPairs;
 	
 	const deAnimatorRuleMirror::eMirrorAxis pMirrorAxis;
 	const bool pEnablePosition;
@@ -68,11 +67,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleMirror( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleMirror &rule );
+	dearRuleMirror(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleMirror &rule);
 	
 	/** Clean up rule. */
-	virtual ~dearRuleMirror();
+	~dearRuleMirror() override;
 	/*@}*/
 	
 	
@@ -80,10 +79,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 	

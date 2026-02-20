@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "meUndoDataDecal.h"
-#include "../../../world/decal/meDecal.h"
-#include "../../../world/object/meObject.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -38,8 +34,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataDecal::meUndoDataDecal( meDecal *decal ){
-	if( ! decal ) DETHROW( deeInvalidParam );
+meUndoDataDecal::meUndoDataDecal(meDecal *decal){
+	DEASSERT_NOTNULL(decal)
 	
 	pOldPosition = decal->GetPosition();
 	pOldOrientation = decal->GetRotation();
@@ -48,17 +44,15 @@ meUndoDataDecal::meUndoDataDecal( meDecal *decal ){
 	pParentObject = decal->GetParentObject();
 	
 	pIndex = -1;
-	if( pParentObject ){
-		pIndex = pParentObject->IndexOfDecal( decal );
+	if(pParentObject){
+		pIndex = pParentObject->GetDecals().IndexOf(decal);
 	}
 	//if( pIndex == -1 ) DETHROW( deeInvalidParam );
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUndoDataDecal::~meUndoDataDecal(){
-	if( pDecal ) pDecal->FreeReference();
 }
 
 

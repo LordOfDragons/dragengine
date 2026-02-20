@@ -26,9 +26,9 @@
 #define _IGDENATIVEFOXBUTTON_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
+#include "../../igdeButton.h"
 
-class igdeButton;
 class igdeEnvironment;
 class igdeGuiTheme;
 class igdeWidget;
@@ -37,8 +37,8 @@ class igdeWidget;
 /**
  * FOX Native button.
  */
-class igdeNativeFoxButton : public FXButton{
-	FXDECLARE( igdeNativeFoxButton )
+class igdeNativeFoxButton : public FXButton, public igdeButton::cNativeButton{
+	FXDECLARE(igdeNativeFoxButton)
 	
 protected:
 	igdeNativeFoxButton();
@@ -50,20 +50,20 @@ public:
 	
 private:
 	igdeButton *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxButton( igdeButton &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxButton(igdeButton &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxButton();
+	~igdeNativeFoxButton() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxButton* CreateNativeWidget( igdeButton &owner );
+	static igdeNativeFoxButton* CreateNativeWidget(igdeButton &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -76,34 +76,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
-	virtual void Focus();
-	virtual void UpdateStyle();
-	virtual void UpdateText();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
-	virtual void UpdateEnabled();
+	void Focus() override;
+	void UpdateStyle() override;
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
 	
-	static const char *ButtonText( const igdeButton &owner );
-	static FXIcon *ButtonIcon( const igdeButton &owner );
-	static int ButtonFlags( const igdeButton &owner );
-	static igdeFont *ButtonFont( const igdeButton &owner, const igdeGuiTheme &guitheme );
-	static int ButtonPadLeft( const igdeGuiTheme &guitheme );
-	static int ButtonPadRight( const igdeGuiTheme &guitheme );
-	static int ButtonPadTop( const igdeGuiTheme &guitheme );
-	static int ButtonPadBottom( const igdeGuiTheme &guitheme );
+	static FXString ButtonText(const igdeButton &owner);
+	static FXIcon *ButtonIcon(const igdeButton &owner);
+	static int ButtonFlags(const igdeButton &owner);
+	static igdeFont *ButtonFont(const igdeButton &owner, const igdeGuiTheme &guitheme);
+	static int ButtonPadLeft(const igdeGuiTheme &guitheme);
+	static int ButtonPadRight(const igdeGuiTheme &guitheme);
+	static int ButtonPadTop(const igdeGuiTheme &guitheme);
+	static int ButtonPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxButton igdeNativeButton;
+using igdeNativeButton = igdeNativeFoxButton;
 
 #endif

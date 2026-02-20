@@ -26,7 +26,7 @@
 #define _IGDEDIALOGMULTILINEVALUE_H_
 
 #include "igdeDialog.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeTextArea.h"
 
 
 
@@ -34,8 +34,14 @@
  * \brief IGDE dialog supporting input of multiline values.
  */
 class DE_DLL_EXPORT igdeDialogMultilineValue : public igdeDialog{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeDialogMultilineValue>;
+	
+	
 private:
-	igdeTextAreaReference pEditValue;
+	igdeTextArea::Ref pEditValue;
 	
 	
 	
@@ -43,14 +49,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogMultilineValue( igdeEnvironment &environment, const char *title, const char *message,
-		int rows = 8, int columns = 50 );
+	igdeDialogMultilineValue(igdeEnvironment &environment, const char *title, const char *message,
+		int rows = 8, int columns = 50);
 	
 	
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~igdeDialogMultilineValue();
+	~igdeDialogMultilineValue() override;
 	/*@}*/
 	
 	
@@ -62,7 +68,7 @@ public:
 	const decString &GetValue() const;
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 };
 

@@ -25,14 +25,11 @@
 #ifndef _MEUOBJECTCLONEPROPERTIESTOSELECTED_H_
 #define _MEUOBJECTCLONEPROPERTIESTOSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataObjectProperty.h"
+
 #include <dragengine/common/string/decStringDictionary.h>
 
 #include <deigde/undo/igdeUndo.h>
-
-class meObject;
-class meObjectList;
-class meUndoDataObjectProperty;
 
 
 
@@ -40,39 +37,44 @@ class meUndoDataObjectProperty;
  * \brief Undo Action Clone Object Properties to all selected objects.
  */
 class meUObjectClonePropertiesToSelected : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectClonePropertiesToSelected>;
+	
+	
 private:
-	decObjectList pList;
+	meUndoDataObjectProperty::List pList;
 	decStringDictionary pProperties;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectClonePropertiesToSelected( const meObjectList &list, const decStringDictionary &properties );
+	meUObjectClonePropertiesToSelected(const meObject::List &list, const decStringDictionary &properties);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectClonePropertiesToSelected();
+
+protected:
+	~meUObjectClonePropertiesToSelected() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataObjectProperty::List &GetList(){ return pList; }
+	inline const meUndoDataObjectProperty::List &GetList() const{ return pList; }
 	/** Retrieves the list of properties to apply. */
 	inline decStringDictionary &GetProperties(){ return pProperties; }
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

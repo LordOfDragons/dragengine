@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDecalManager::deDecalManager( deEngine *engine ) : deResourceManager( engine, ertDecal ){
-	SetLoggingName( "decal" );
+deDecalManager::deDecalManager(deEngine *engine) : deResourceManager(engine, ertDecal){
+	SetLoggingName("decal");
 }
 
 deDecalManager::~deDecalManager(){
@@ -61,28 +61,15 @@ int deDecalManager::GetDecalCount() const{
 }
 
 deDecal *deDecalManager::GetRootDecal() const{
-	return ( deDecal* )pDecals.GetRoot();
+	return (deDecal*)pDecals.GetRoot();
 }
 
-deDecal *deDecalManager::CreateDecal(){
-	deDecal *decal = NULL;
-	
-	try{
-		decal = new deDecal( this );
-		
-		GetGraphicSystem()->LoadDecal( decal );
-		GetPhysicsSystem()->LoadDecal( decal );
-		GetAudioSystem()->LoadDecal( decal );
-		
-		pDecals.Add( decal );
-		
-	}catch( const deException & ){
-		if( decal ){
-			decal->FreeReference();
-		}
-		throw;
-	}
-	
+deDecal::Ref deDecalManager::CreateDecal(){
+	const deDecal::Ref decal(deDecal::Ref::New(this));
+	GetGraphicSystem()->LoadDecal(decal);
+	GetPhysicsSystem()->LoadDecal(decal);
+	GetAudioSystem()->LoadDecal(decal);
+	pDecals.Add(decal);
 	return decal;
 }
 
@@ -91,8 +78,8 @@ deDecal *deDecalManager::CreateDecal(){
 void deDecalManager::ReleaseLeakingResources(){
 	const int count = GetDecalCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking decals", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking decals", count);
 		pDecals.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -101,75 +88,56 @@ void deDecalManager::ReleaseLeakingResources(){
 
 // Systems support
 ////////////////////
-
 void deDecalManager::SystemGraphicLoad(){
-	deDecal *decal = ( deDecal* )pDecals.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
-	
-	while( decal ){
-		if( ! decal->GetPeerGraphic() ){
-			graSys.LoadDecal( decal );
+	pDecals.GetResources().Visit([&](deResource *res){
+		deDecal *decal = static_cast<deDecal*>(res);
+		if(!decal->GetPeerGraphic()){
+			graSys.LoadDecal(decal);
 		}
-		
-		decal = ( deDecal* )decal->GetLLManagerNext();
-	}
+	});
 }
 
 void deDecalManager::SystemGraphicUnload(){
-	deDecal *decal = ( deDecal* )pDecals.GetRoot();
-	
-	while( decal ){
-		decal->SetPeerGraphic( NULL );
-		decal = ( deDecal* )decal->GetLLManagerNext();
-	}
+	pDecals.GetResources().Visit([&](deResource *res){
+		static_cast<deDecal*>(res)->SetPeerGraphic(nullptr);
+	});
 }
 
 void deDecalManager::SystemPhysicsLoad(){
-	deDecal *decal = ( deDecal* )pDecals.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
-	
-	while( decal ){
-		if( ! decal->GetPeerPhysics() ){
-			phySys.LoadDecal( decal );
+	pDecals.GetResources().Visit([&](deResource *res){
+		deDecal *decal = static_cast<deDecal*>(res);
+		if(!decal->GetPeerPhysics()){
+			phySys.LoadDecal(decal);
 		}
-		
-		decal = ( deDecal* )decal->GetLLManagerNext();
-	}
+	});
 }
 
 void deDecalManager::SystemPhysicsUnload(){
-	deDecal *decal = ( deDecal* )pDecals.GetRoot();
-	
-	while( decal ){
-		decal->SetPeerPhysics( NULL );
-		decal = ( deDecal* )decal->GetLLManagerNext();
-	}
+	pDecals.GetResources().Visit([&](deResource *res){
+		static_cast<deDecal*>(res)->SetPeerPhysics(nullptr);
+	});
 }
 
 void deDecalManager::SystemAudioLoad(){
-	deDecal *decal = ( deDecal* )pDecals.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
-	
-	while( decal ){
-		if( ! decal->GetPeerAudio() ){
-			audSys.LoadDecal( decal );
+	pDecals.GetResources().Visit([&](deResource *res){
+		deDecal *decal = static_cast<deDecal*>(res);
+		if(!decal->GetPeerAudio()){
+			audSys.LoadDecal(decal);
 		}
-		
-		decal = ( deDecal* )decal->GetLLManagerNext();
-	}
+	});
 }
 
 void deDecalManager::SystemAudioUnload(){
-	deDecal *decal = ( deDecal* )pDecals.GetRoot();
-	
-	while( decal ){
-		decal->SetPeerAudio( NULL );
-		decal = ( deDecal* )decal->GetLLManagerNext();
-	}
+	pDecals.GetResources().Visit([&](deResource *res){
+		static_cast<deDecal*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 
 
-void deDecalManager::RemoveResource( deResource *resource ){
-	pDecals.RemoveIfPresent( resource );
+void deDecalManager::RemoveResource(deResource *resource){
+	pDecals.RemoveIfPresent(resource);
 }

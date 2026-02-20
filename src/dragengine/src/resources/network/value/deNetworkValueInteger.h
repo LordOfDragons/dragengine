@@ -38,8 +38,7 @@
 class DE_DLL_EXPORT deNetworkValueInteger : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueInteger> Ref;
-	
+	using Ref = deTObjectReference<deNetworkValueInteger>;
 	
 	
 private:
@@ -52,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueInteger( eValueFormats format, int64_t value );
+	deNetworkValueInteger(eValueFormats format, int64_t value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueInteger();
+	~deNetworkValueInteger() override;
 	/*@}*/
 	
 	
@@ -69,7 +68,7 @@ public:
 	inline int64_t GetInt() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetInt( int64_t value );
+	void SetInt(int64_t value);
 	/*@}*/
 	
 	
@@ -77,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

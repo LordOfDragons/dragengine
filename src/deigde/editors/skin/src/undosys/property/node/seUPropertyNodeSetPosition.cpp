@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeSetPosition::seUPropertyNodeSetPosition(
-sePropertyNode *node, const decPoint3 &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNode *node, const decPoint3 &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set position" );
+	SetShortInfo("@Skin.Undo.NodeSetPosition");
 	
 	pOldValue = node->GetPosition();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetPosition::~seUPropertyNodeSetPosition(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeSetPosition::~seUPropertyNodeSetPosition(){
 ///////////////
 
 void seUPropertyNodeSetPosition::Undo(){
-	pNode->SetPosition( pOldValue );
+	pNode->SetPosition(pOldValue);
 }
 
 void seUPropertyNodeSetPosition::Redo(){
-	pNode->SetPosition( pNewValue );
+	pNode->SetPosition(pNewValue);
 }

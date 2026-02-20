@@ -26,8 +26,8 @@
 #define _GDEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class gdeWindowMain;
 class gdeGameDefinition;
@@ -39,13 +39,16 @@ class gdeWPSelection;
  * \brief Properties window.
  */
 class gdeWindowProperties : public igdeTabBook{
+public:
+	typedef deTObjectReference<gdeWindowProperties> Ref;
+	
 private:
 	gdeWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelGameDefinition;
-	igdeWidgetReference pPanelSelection;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWidget::Ref pPanelGameDefinition;
+	igdeWidget::Ref pPanelSelection;
+	igdeWidget::Ref pPanelView;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	
@@ -53,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	gdeWindowProperties( gdeWindowMain &windowMain );
+	gdeWindowProperties(gdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -69,7 +72,7 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set game definition to monitor. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Selection panel. */
 	gdeWPSelection &GetPanelSelection() const;

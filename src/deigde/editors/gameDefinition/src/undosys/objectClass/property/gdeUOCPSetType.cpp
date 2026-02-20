@@ -39,34 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetType::gdeUOCPSetType( gdeObjectClass *objectClass,
-gdeProperty *property, gdeProperty::ePropertyTypes newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetType::gdeUOCPSetType(gdeObjectClass *objectClass,
+gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set type" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetType");
 	
 	pOldValue = property->GetType();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetType::~gdeUOCPSetType(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCPSetType::~gdeUOCPSetType(){
 ///////////////
 
 void gdeUOCPSetType::Undo(){
-	pProperty->SetType( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetType(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetType::Redo(){
-	pProperty->SetType( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetType(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

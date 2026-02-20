@@ -27,14 +27,15 @@
 
 #include <stdint.h>
 
-#include "dePathList.h"
+
 #include "../deObject.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/file/decPath.h"
+#include "../common/file/decBaseFileReader.h"
+#include "../common/file/decBaseFileWriter.h"
 #include "../common/utils/decDateTime.h"
 
 class deContainerFileSearch;
-class decBaseFileReader;
-class decBaseFileWriter;
 
 
 /**
@@ -58,8 +59,10 @@ class decBaseFileWriter;
 class DE_DLL_EXPORT deVFSContainer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVFSContainer> Ref;
+	using Ref = deTObjectReference<deVFSContainer>;
 	
+	/** \brief Container list. */
+	using List = decTObjectOrderedSet<deVFSContainer>;
 	
 	
 public:
@@ -80,7 +83,7 @@ public:
 private:
 	const decPath pRootPath;
 	bool pHidden;
-	dePathList pHiddenPath;
+	decPath::List pHiddenPath;
 	
 	
 	
@@ -91,7 +94,7 @@ public:
 	deVFSContainer();
 	
 	/** \brief Create virtual file system container with the given root path. */
-	deVFSContainer( const decPath &rootPath );
+	deVFSContainer(const decPath &rootPath);
 	
 protected:
 	/**
@@ -100,7 +103,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVFSContainer();
+	~deVFSContainer() override;
 	/*@}*/
 	
 	
@@ -115,7 +118,7 @@ public:
 	inline bool GetHidden() const{ return pHidden; }
 	
 	/** \brief Set if container is hidden. */
-	void SetHidden( bool hidden );
+	void SetHidden(bool hidden);
 	
 	/**
 	 * \brief Count of hidden path.
@@ -127,25 +130,25 @@ public:
 	 * \brief Removed hidden path at index.
 	 * \version 1.13
 	 */
-	const decPath &GetHiddenPathAt( int index ) const;
+	const decPath &GetHiddenPathAt(int index) const;
 	
 	/**
 	 * \brief Removed hidden path is present.
 	 * \version 1.13
 	 */
-	bool HasHiddenPath( const decPath &path ) const;
+	bool HasHiddenPath(const decPath &path) const;
 	
 	/**
 	 * \brief Add hidden path.
 	 * \version 1.13
 	 */
-	void AddHiddenPath( const decPath &path );
+	void AddHiddenPath(const decPath &path);
 	
 	/**
 	 * \brief Remove hidden path.
 	 * \version 1.13
 	 */
-	void RemoveHiddenPath( const decPath &path );
+	void RemoveHiddenPath(const decPath &path);
 	
 	/**
 	 * \brief Remove all hidden path.
@@ -160,7 +163,7 @@ public:
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path ) = 0;
+	virtual bool ExistsFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief File can be read.
@@ -169,7 +172,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path ) = 0;
+	virtual bool CanReadFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief File can be written.
@@ -181,14 +184,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path ) = 0;
+	virtual bool CanWriteFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path ) = 0;
+	virtual bool CanDeleteFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief Path is hidden for all lower containers.
@@ -197,7 +200,7 @@ public:
 	 * Path is relative to the root path. Use to hide path in containers below this
 	 * container for example to remove files while patching.
 	 */
-	virtual bool IsPathHiddenBelow( const decPath &path );
+	virtual bool IsPathHiddenBelow(const decPath &path);
 	
 	
 	
@@ -208,7 +211,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path ) = 0;
+	virtual decBaseFileReader::Ref OpenFileForReading(const decPath &path) = 0;
 	
 	/**
 	 * \brief Open file for writing.
@@ -219,45 +222,45 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path ) = 0;
+	virtual decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) = 0;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path ) = 0;
+	virtual void DeleteFile(const decPath &path) = 0;
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path ) = 0;
+	virtual void TouchFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 * 
 	 * All found files and directories are added to the file listing.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher ) = 0;
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) = 0;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path ) = 0;
+	virtual eFileTypes GetFileType(const decPath &path) = 0;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path ) = 0;
+	virtual uint64_t GetFileSize(const decPath &path) = 0;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path ) = 0;
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path) = 0;
 	/*@}*/
 };
 

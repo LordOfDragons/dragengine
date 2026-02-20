@@ -40,27 +40,23 @@
 ////////////////////////////
 
 seUPropertySetConstructedSize::seUPropertySetConstructedSize(
-seProperty *property, const decPoint3 &newValue ) :
+seProperty *property, const decPoint3 &newValue) :
 
-pProperty( NULL ),
-pNewValue( newValue )
+
+pNewValue(newValue)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed set size" );
+	SetShortInfo("@Skin.Undo.PropertyConstructedSetSize");
 	
 	pOldValue = property->GetNodeGroup()->GetSize();
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetConstructedSize::~seUPropertySetConstructedSize(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -69,9 +65,9 @@ seUPropertySetConstructedSize::~seUPropertySetConstructedSize(){
 ///////////////
 
 void seUPropertySetConstructedSize::Undo(){
-	pProperty->GetNodeGroup()->SetSize( pOldValue );
+	pProperty->GetNodeGroup()->SetSize(pOldValue);
 }
 
 void seUPropertySetConstructedSize::Redo(){
-	pProperty->GetNodeGroup()->SetSize( pNewValue );
+	pProperty->GetNodeGroup()->SetSize(pNewValue);
 }

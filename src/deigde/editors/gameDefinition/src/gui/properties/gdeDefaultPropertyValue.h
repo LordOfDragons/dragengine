@@ -28,12 +28,10 @@
 #include "../../gamedef/property/gdeProperty.h"
 
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
+#include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
 
-
 class gdeProperty;
-class igdeEditPropertyValueReference;
-
 
 /**
  * \brief Default property value widget.
@@ -42,19 +40,23 @@ class igdeEditPropertyValueReference;
  * from a gdeProperty.
  */
 class gdeDefaultPropertyValue : public igdeEditPropertyValue{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeDefaultPropertyValue>;
+	
 private:
-	igdeGDProperty *pGDProperty;
+	igdeGDProperty::Ref pGDProperty;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	gdeDefaultPropertyValue( igdeUIHelper &helper );
+	gdeDefaultPropertyValue(igdeUIHelper &helper);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeDefaultPropertyValue();
+	~gdeDefaultPropertyValue() override;
 	/*@}*/
 	
 	
@@ -63,15 +65,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create and add. */
-	static void CreateAndAdd( igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValueReference &widget, igdeEditPropertyValueListener *listener );
+	static void CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
+		gdeDefaultPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener);
 	
-	static void CreateAndAdd( igdeContainer &form, igdeUIHelper &helper, const char *label,
-		const char *description, igdeEditPropertyValueReference &widget,
-		igdeEditPropertyValueListener *listener );
+	static void CreateAndAdd(igdeContainer &form, igdeUIHelper &helper, const char *label,
+		const char *description, gdeDefaultPropertyValue::Ref &widget,
+		igdeEditPropertyValueListener *listener);
 	
 	/** \brief Set value. */
-	void SetValue( const decString &value, const gdeProperty &property );
+	void SetValue(const decString &value, const gdeProperty &property);
 	/*@}*/
 };
 

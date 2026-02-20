@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	deoalParameterBool( deAudioOpenAL &oal );
+	deoalParameterBool(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
-	virtual ~deoalParameterBool();
+	~deoalParameterBool() override;
 	/*@}*/
 	
 	
@@ -47,16 +47,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	
 	/** \brief Current value. */
 	virtual bool GetParameterBool() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterBool( bool value ) = 0;
+	virtual void SetParameterBool(bool value) = 0;
 	/*@}*/
 };
 

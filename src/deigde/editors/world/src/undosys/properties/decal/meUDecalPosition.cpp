@@ -39,31 +39,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalPosition::meUDecalPosition( meDecal *decal, const decDVector &newPosition ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalPosition::meUDecalPosition(meDecal *decal, const decDVector &newPosition){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
-	SetShortInfo( "Set decal position" );
+	SetShortInfo("@World.UDecalPosition.SetDecalPosition");
 	
 	pOldPosition = decal->GetPosition();
 	pNewPosition = newPosition;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalPosition::~meUDecalPosition(){
-	if( pDecal ){
-		pDecal->FreeReference();
-	}
 }
 
 
@@ -72,11 +68,11 @@ meUDecalPosition::~meUDecalPosition(){
 ///////////////
 
 void meUDecalPosition::Undo(){
-	pDecal->SetPosition( pOldPosition );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetPosition(pOldPosition);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalPosition::Redo(){
-	pDecal->SetPosition( pNewPosition );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetPosition(pNewPosition);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

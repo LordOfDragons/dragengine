@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileWriter.h"
-#include "../../../common/file/decBaseFileWriterReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -48,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteRig::deRLTaskWriteRig( deEngine &engine,
+deRLTaskWriteRig::deRLTaskWriteRig(deEngine &engine,
 deResourceLoader &resourceLoader, deRig *rig,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertRig ),
-pRig( rig ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertRig),
+pRig(rig),
+pSucceeded(false)
 {
-	if( ! rig ){
-		DETHROW( deeInvalidParam );
+	if(!rig){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteRig::~deRLTaskWriteRig(){
@@ -71,18 +70,16 @@ deRLTaskWriteRig::~deRLTaskWriteRig(){
 
 void deRLTaskWriteRig::Run(){
 	LogRunEnter();
-	deBaseRigModule * const module = ( deBaseRigModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtRig, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseRigModule * const module = (deBaseRigModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtRig, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
-	decBaseFileWriterReference writer;
-	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
-	module->SaveRig( writer, pRig );
+	module->SaveRig(GetVFS()->OpenFileForWriting(path), pRig);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -90,16 +87,16 @@ void deRLTaskWriteRig::Run(){
 
 void deRLTaskWriteRig::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pRig );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pRig);
+		SetState(esSucceeded);
 		
 	}else{
-		pRig = NULL;
-		SetState( esFailed );
+		pRig = nullptr;
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

@@ -51,107 +51,107 @@
 ///////////////
 
 // public static func int getParameterCount()
-deClassScriptSystem::nfGetParameterCount::nfGetParameterCount( const sInitData &init ) :
-dsFunction( init.clsScrSys, "getParameterCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+deClassScriptSystem::nfGetParameterCount::nfGetParameterCount(const sInitData &init) :
+dsFunction(init.clsScrSys, "getParameterCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
-void deClassScriptSystem::nfGetParameterCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassScriptSystem *clsScrSys = ( deClassScriptSystem* )GetOwnerClass();
+void deClassScriptSystem::nfGetParameterCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassScriptSystem *clsScrSys = (deClassScriptSystem*)GetOwnerClass();
 	deScriptingSystem *audSys = clsScrSys->GetDS().GetGameEngine()->GetScriptingSystem();
 	deBaseScriptingModule *module = audSys->GetActiveModule();
 	
-	rt->PushInt( module->GetParameterCount() );
+	rt->PushInt(module->GetParameterCount());
 }
 
 // public static func ModuleParameter getParameterInfo( int index )
-deClassScriptSystem::nfGetParameterInfo::nfGetParameterInfo( const sInitData &init ) :
-dsFunction( init.clsScrSys, "getParameterInfo", DSFT_FUNCTION,
+deClassScriptSystem::nfGetParameterInfo::nfGetParameterInfo(const sInitData &init) :
+dsFunction(init.clsScrSys, "getParameterInfo", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
-	p_AddParameter( init.clsInteger ); // index
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassScriptSystem::nfGetParameterInfo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassScriptSystem *clsScrSys = ( deClassScriptSystem* )GetOwnerClass();
+void deClassScriptSystem::nfGetParameterInfo::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassScriptSystem *clsScrSys = (deClassScriptSystem*)GetOwnerClass();
 	deScriptingSystem *audSys = clsScrSys->GetDS().GetGameEngine()->GetScriptingSystem();
 	deBaseScriptingModule *module = audSys->GetActiveModule();
-	int index = rt->GetValue( 0 )->GetInt();
+	int index = rt->GetValue(0)->GetInt();
 	
-	if( index < 0 || index >= module->GetParameterCount() ) DSTHROW( dueInvalidParam );
+	if(index < 0 || index >= module->GetParameterCount()) DSTHROW(dueInvalidParam);
 	
-	clsScrSys->GetDS().GetClassModuleParameter()->PushParameter( rt, module, index );
+	clsScrSys->GetDS().GetClassModuleParameter()->PushParameter(rt, module, index);
 }
 
 // public static func ModuleParameter getParameterInfo( String name )
-deClassScriptSystem::nfGetParameterInfo2::nfGetParameterInfo2( const sInitData &init ) :
-dsFunction( init.clsScrSys, "getParameterInfo", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar ){
-	p_AddParameter( init.clsString ); // name
+deClassScriptSystem::nfGetParameterInfo2::nfGetParameterInfo2(const sInitData &init) :
+dsFunction(init.clsScrSys, "getParameterInfo", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
+	p_AddParameter(init.clsString); // name
 }
-void deClassScriptSystem::nfGetParameterInfo2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassScriptSystem* )GetOwnerClass() )->GetDS();
+void deClassScriptSystem::nfGetParameterInfo2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassScriptSystem*)GetOwnerClass())->GetDS();
 	const deScriptingSystem &audSys = *ds.GetGameEngine()->GetScriptingSystem();
 	deBaseScriptingModule * const module = audSys.GetActiveModule();
 	
-	ds.GetClassModuleParameter()->PushParameter( rt, module,
-		module->IndexOfParameterNamed( rt->GetValue( 0 )->GetString() ) );
+	ds.GetClassModuleParameter()->PushParameter(rt, module,
+		module->IndexOfParameterNamed(rt->GetValue(0)->GetString()));
 }
 
 // public static func String getParameterValue( String name )
-deClassScriptSystem::nfGetParameterValue::nfGetParameterValue( const sInitData &init ) :
-dsFunction( init.clsScrSys, "getParameterValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
-	p_AddParameter( init.clsString ); // name
+deClassScriptSystem::nfGetParameterValue::nfGetParameterValue(const sInitData &init) :
+dsFunction(init.clsScrSys, "getParameterValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
+	p_AddParameter(init.clsString); // name
 }
-void deClassScriptSystem::nfGetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassScriptSystem *clsScrSys = ( deClassScriptSystem* )GetOwnerClass();
+void deClassScriptSystem::nfGetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassScriptSystem *clsScrSys = (deClassScriptSystem*)GetOwnerClass();
 	deScriptingSystem *audSys = clsScrSys->GetDS().GetGameEngine()->GetScriptingSystem();
 	deBaseScriptingModule *module = audSys->GetActiveModule();
-	rt->PushString( module->GetParameterValue( rt->GetValue( 0 )->GetString() ) );
+	rt->PushString(module->GetParameterValue(rt->GetValue(0)->GetString()));
 }
 
 // public static func void setParameterValue( String name, String value )
-deClassScriptSystem::nfSetParameterValue::nfSetParameterValue( const sInitData &init ) :
-dsFunction( init.clsScrSys, "setParameterValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsString ); // name
-	p_AddParameter( init.clsString ); // value
+deClassScriptSystem::nfSetParameterValue::nfSetParameterValue(const sInitData &init) :
+dsFunction(init.clsScrSys, "setParameterValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsString); // name
+	p_AddParameter(init.clsString); // value
 }
-void deClassScriptSystem::nfSetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassScriptSystem *clsScrSys = ( deClassScriptSystem* )GetOwnerClass();
+void deClassScriptSystem::nfSetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassScriptSystem *clsScrSys = (deClassScriptSystem*)GetOwnerClass();
 	deScriptingSystem *audSys = clsScrSys->GetDS().GetGameEngine()->GetScriptingSystem();
 	deBaseScriptingModule *module = audSys->GetActiveModule();
 	
-	module->SetParameterValue( rt->GetValue( 0 )->GetString(), rt->GetValue( 1 )->GetString() );
+	module->SetParameterValue(rt->GetValue(0)->GetString(), rt->GetValue(1)->GetString());
 }
 
 
 
 // public static func String sendCommand( String command )
-deClassScriptSystem::nfSendCommand::nfSendCommand( const sInitData &init ) : dsFunction( init.clsScrSys,
-"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
-	p_AddParameter( init.clsString ); // command
+deClassScriptSystem::nfSendCommand::nfSendCommand(const sInitData &init) : dsFunction(init.clsScrSys,
+"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
+	p_AddParameter(init.clsString); // command
 }
-void deClassScriptSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassScriptSystem* )GetOwnerClass() )->GetDS();
+void deClassScriptSystem::nfSendCommand::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassScriptSystem*)GetOwnerClass())->GetDS();
 	const deScriptingSystem &scriptSystem = *ds.GetGameEngine()->GetScriptingSystem();
 	deBaseScriptingModule &module = *scriptSystem.GetActiveModule();
 	decUnicodeArgumentList argList;
 	decUnicodeString command;
 	decUnicodeString answer;
 	
-	command.SetFromUTF8( rt->GetValue( 0 )->GetString() );
-	argList.ParseCommand( command );
-	module.SendCommand( argList, answer );
-	rt->PushString( answer.ToUTF8() );
+	command.SetFromUTF8(rt->GetValue(0)->GetString());
+	argList.ParseCommand(command);
+	module.SendCommand(argList, answer);
+	rt->PushString(answer.ToUTF8());
 }
 
 // public static func int getFPSRate()
-deClassScriptSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
-dsFunction( init.clsScrSys, "getFPSRate", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+deClassScriptSystem::nfGetFPSRate::nfGetFPSRate(const sInitData &init) :
+dsFunction(init.clsScrSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
-void deClassScriptSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassScriptSystem* )GetOwnerClass() )->GetDS();
-	rt->PushInt( ds.GetGameEngine()->GetFPSRate() );
+void deClassScriptSystem::nfGetFPSRate::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassScriptSystem*)GetOwnerClass())->GetDS();
+	rt->PushInt(ds.GetGameEngine()->GetFPSRate());
 }
 
 
@@ -162,14 +162,14 @@ void deClassScriptSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
 // Constructor, Destructor
 ////////////////////////////
 
-deClassScriptSystem::deClassScriptSystem( deScriptingDragonScript &ds ) :
-dsClass( "ScriptSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds )
+deClassScriptSystem::deClassScriptSystem(deScriptingDragonScript &ds) :
+dsClass("ScriptSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassScriptSystem::~deClassScriptSystem(){
@@ -180,7 +180,7 @@ deClassScriptSystem::~deClassScriptSystem(){
 // Management
 ///////////////
 
-void deClassScriptSystem::CreateClassMembers( dsEngine *engine ){
+void deClassScriptSystem::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -193,12 +193,12 @@ void deClassScriptSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	
 	// add functions
-	AddFunction( new nfGetParameterCount( init ) );
-	AddFunction( new nfGetParameterInfo( init ) );
-	AddFunction( new nfGetParameterInfo2( init ) );
-	AddFunction( new nfGetParameterValue( init ) );
-	AddFunction( new nfSetParameterValue( init ) );
+	AddFunction(new nfGetParameterCount(init));
+	AddFunction(new nfGetParameterInfo(init));
+	AddFunction(new nfGetParameterInfo2(init));
+	AddFunction(new nfGetParameterValue(init));
+	AddFunction(new nfSetParameterValue(init));
 	
-	AddFunction( new nfSendCommand( init ) );
-	AddFunction( new nfGetFPSRate( init ) );
+	AddFunction(new nfSendCommand(init));
+	AddFunction(new nfGetFPSRate(init));
 }

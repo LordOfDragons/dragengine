@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCLight;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/light/gdeOCLight.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class add light.
  */
 class gdeUOCAddLight : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCAddLight> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddLight( gdeObjectClass *objectClass, gdeOCLight *light );
+	gdeUOCAddLight(gdeObjectClass *objectClass, gdeOCLight *light);
 	
 protected:
 	/** \brief Clean up undo action. */

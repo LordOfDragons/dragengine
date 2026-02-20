@@ -39,21 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetRestitution::meUHTVVarSetRestitution( meHTVVariation *variation, float newRestitution ){
-	if( ! variation ) DETHROW( deeInvalidParam );
+meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation *variation, float newRestitution){
+	if(!variation) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	
 	pOldRestitution = variation->GetRestitution();
 	pNewRestitution = newRestitution;
 	
-	SetShortInfo( "Vegetation Layer Variation Set Restitution" );
-	
-	variation->AddReference();
+	SetShortInfo("@World.UHTVVarSetRestitution.VegetationLayerVariationSetRestitution");
 }
 
 meUHTVVarSetRestitution::~meUHTVVarSetRestitution(){
-	if( pVariation ) pVariation->FreeReference();
 }
 
 
@@ -62,9 +59,9 @@ meUHTVVarSetRestitution::~meUHTVVarSetRestitution(){
 ///////////////
 
 void meUHTVVarSetRestitution::Undo(){
-	pVariation->SetRestitution( pOldRestitution );
+	pVariation->SetRestitution(pOldRestitution);
 }
 
 void meUHTVVarSetRestitution::Redo(){
-	pVariation->SetRestitution( pNewRestitution );
+	pVariation->SetRestitution(pNewRestitution);
 }

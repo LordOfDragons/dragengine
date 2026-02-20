@@ -47,12 +47,13 @@ protected:
 	ceWPTMAIfElseElseAddAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAIfElseElseAddAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseElseAddAction( ceWindowMain &windowMain,
+	ceWPTMAIfElseElseAddAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-		ceConversationAction::eActionTypes actionType, int index );
+		ceConversationAction::eActionTypes actionType, int index);
 	/*@}*/
 	
 	
@@ -69,7 +70,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationAction *action );
+	igdeUndo::Ref CreateUndo(ceConversationAction *action) override;
 	/*@}*/
 };
 

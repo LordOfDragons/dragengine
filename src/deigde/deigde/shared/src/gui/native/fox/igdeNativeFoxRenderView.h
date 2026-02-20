@@ -26,9 +26,7 @@
 #define _IGDENATIVEFOXRENDERVIEW_H_
 
 #include "foxtoolkit.h"
-
-
-class igdeViewRenderWindow;
+#include "../../igdeViewRenderWindow.h"
 
 
 /**
@@ -41,8 +39,8 @@ class igdeViewRenderWindow;
  * container inside which the FXFrame is located we can mess around with.
  */
 
-class igdeNativeFoxRenderView : public FXFrame{
-	FXDECLARE( igdeNativeFoxRenderView )
+class igdeNativeFoxRenderView : public FXFrame, public igdeViewRenderWindow::cNativeViewRenderWindow{
+	FXDECLARE(igdeNativeFoxRenderView)
 	
 public:
 	enum eFoxIDs{
@@ -71,13 +69,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeNativeFoxRenderView( igdeViewRenderWindow &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxRenderView(igdeViewRenderWindow &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up widget. */
-	virtual ~igdeNativeFoxRenderView();
+	~igdeNativeFoxRenderView() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxRenderView* CreateNativeWidget( igdeViewRenderWindow &owner );
+	static igdeNativeFoxRenderView* CreateNativeWidget(igdeViewRenderWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -90,17 +88,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void destroy();
-	FXbool canFocus() const;
+	void destroy() override;
+	FXbool canFocus() const override;
 	
 	inline bool GetCanRender() const{ return pCanRender; }
 	inline bool GetRenderWindowAttached() const{ return pRenderWindowAttached; }
 	
-	virtual void DropNativeWindow();
-	virtual bool IsReallyVisible() const;
-	virtual bool IsShown() const;
-	virtual decPoint GetSize() const;
-	virtual void OnFrameUpdate();
+	void DropNativeWindow() override;
+	bool IsReallyVisible() const override;
+	bool IsShown() const override;
+	decPoint GetSize() const override;
+	void OnFrameUpdate() override;
 	
 	
 	/**
@@ -109,7 +107,7 @@ public:
 	 * Uses owner RenderWindow from stored reference if present. Destroys the FOX created
 	 * window and attaches instead the render window window.
 	 */
-	virtual void AttachRenderWindow();
+	void AttachRenderWindow() override;
 	
 	/**
 	 * \brief Detach render window if present.
@@ -117,40 +115,40 @@ public:
 	 * Uses owner RenderWindow from stored reference if present. Detaches render window window
 	 * and creates a new FOX window.
 	 */
-	virtual void DetachRenderWindow();
+	void DetachRenderWindow() override;
 	
-	void DrawEngineUnavailable( FXDCWindow &dc );
-	void DrawErrorRenderWindow( FXDCWindow &dc );
-	void DrawErrorRendering( FXDCWindow &dc );
+	void DrawEngineUnavailable(FXDCWindow &dc);
+	void DrawErrorRenderWindow(FXDCWindow &dc);
+	void DrawErrorRendering(FXDCWindow &dc);
 	
-	virtual void GrabInput();
-	virtual void ReleaseInput();
+	void GrabInput() override;
+	void ReleaseInput() override;
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onMap( FXObject*, FXSelector, void* );
-	long onUnmap( FXObject*, FXSelector, void* );
-	long onPaint( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onMap(FXObject*, FXSelector, void*);
+	long onUnmap(FXObject*, FXSelector, void*);
+	long onPaint(FXObject*, FXSelector, void*);
 	
-	long onKeyPress( FXObject*, FXSelector, void* );
-	long onKeyRelease( FXObject*, FXSelector, void* );
-	long onLeftMouseDown( FXObject*, FXSelector, void* );
-	long onLeftMouseUp( FXObject*, FXSelector, void* );
-	long onRightMouseDown( FXObject*, FXSelector, void* );
-	long onRightMouseUp( FXObject*, FXSelector, void* );
-	long onMiddleMouseDown( FXObject*, FXSelector, void* );
-	long onMiddleMouseUp( FXObject*, FXSelector, void* );
-	long onMouseMove( FXObject*, FXSelector, void* );
-	long onMouseWheel( FXObject*, FXSelector, void* );
-	long onDoubleClicked( FXObject*, FXSelector, void* );
-	long onMouseEnter( FXObject*, FXSelector, void* );
-	long onMouseLeave( FXObject*, FXSelector, void* );
+	long onKeyPress(FXObject*, FXSelector, void*);
+	long onKeyRelease(FXObject*, FXSelector, void*);
+	long onLeftMouseDown(FXObject*, FXSelector, void*);
+	long onLeftMouseUp(FXObject*, FXSelector, void*);
+	long onRightMouseDown(FXObject*, FXSelector, void*);
+	long onRightMouseUp(FXObject*, FXSelector, void*);
+	long onMiddleMouseDown(FXObject*, FXSelector, void*);
+	long onMiddleMouseUp(FXObject*, FXSelector, void*);
+	long onMouseMove(FXObject*, FXSelector, void*);
+	long onMouseWheel(FXObject*, FXSelector, void*);
+	long onDoubleClicked(FXObject*, FXSelector, void*);
+	long onMouseEnter(FXObject*, FXSelector, void*);
+	long onMouseLeave(FXObject*, FXSelector, void*);
 	
-	long onTimeoutRetryMap( FXObject*, FXSelector, void* );
+	long onTimeoutRetryMap(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 	
@@ -160,6 +158,6 @@ private:
 	void pSyncSizes();
 };
 
-typedef igdeNativeFoxRenderView igdeNativeRenderView;
+using igdeNativeRenderView = igdeNativeFoxRenderView;
 
 #endif

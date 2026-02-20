@@ -25,20 +25,21 @@
 #ifndef _SEWPDYNAMICSKIN_H_
 #define _SEWPDYNAMICSKIN_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
+#include "seWPDynamicSkinListener.h"
+#include "../../../skin/seSkin.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSkin;
 class seDynamicSkinRenderable;
 class seWindowProperties;
-class seWPDynamicSkinListener;
 
 
 
@@ -46,32 +47,35 @@ class seWPDynamicSkinListener;
  * \brief Dynamic skin panel.
  */
 class seWPDynamicSkin : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<seWPDynamicSkin>;
+	
 private:
 	seWindowProperties &pWindowProperties;
-	seWPDynamicSkinListener *pListener;
+	seWPDynamicSkinListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	
-	igdeListBoxReference pListRenderable;
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBRenderableType;
+	igdeListBox::Ref pListRenderable;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBRenderableType;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	
-	igdeEditSliderTextReference pSldValue;
-	igdeTextFieldReference pEditValueLower;
-	igdeTextFieldReference pEditValueUpper;
+	igdeEditSliderText::Ref pSldValue;
+	igdeTextField::Ref pEditValueLower;
+	igdeTextField::Ref pEditValueUpper;
 	
-	igdeColorBoxReference pClrColor;
-	igdeEditSliderTextReference pSldColorRed;
-	igdeEditSliderTextReference pSldColorGreen;
-	igdeEditSliderTextReference pSldColorBlue;
-	igdeEditSliderTextReference pSldColorAlpha;
+	igdeColorBox::Ref pClrColor;
+	igdeEditSliderText::Ref pSldColorRed;
+	igdeEditSliderText::Ref pSldColorGreen;
+	igdeEditSliderText::Ref pSldColorBlue;
+	igdeEditSliderText::Ref pSldColorAlpha;
 	
-	igdeEditPathReference pEditImagePath;
+	igdeEditPath::Ref pEditImagePath;
 	
-	igdeEditPathReference pEditVideoPath;
+	igdeEditPath::Ref pEditVideoPath;
 	
 	
 	
@@ -79,11 +83,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPDynamicSkin( seWindowProperties &windowProperties );
+	seWPDynamicSkin(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~seWPDynamicSkin();
+	~seWPDynamicSkin() override;
 	/*@}*/
 	
 	
@@ -95,10 +99,10 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Active renderable. */
 	seDynamicSkinRenderable *GetRenderable() const;

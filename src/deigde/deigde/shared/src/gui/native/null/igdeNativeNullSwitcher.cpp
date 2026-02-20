@@ -39,7 +39,8 @@ igdeNativeNullSwitcher::igdeNativeNullSwitcher(){
 igdeNativeNullSwitcher::~igdeNativeNullSwitcher(){
 }
 
-igdeNativeNullSwitcher *igdeNativeNullSwitcher::CreateNativeWidget( igdeSwitcher& ){
+igdeNativeNullSwitcher *igdeNativeNullSwitcher::CreateNativeWidget(igdeSwitcher&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullSwitcher;
 }
 

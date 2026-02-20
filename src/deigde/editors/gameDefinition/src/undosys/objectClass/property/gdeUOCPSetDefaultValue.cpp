@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetDefaultValue::gdeUOCPSetDefaultValue( gdeObjectClass *objectClass,
-	gdeProperty *property, const char *newValue, const char *oldValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetDefaultValue::gdeUOCPSetDefaultValue(gdeObjectClass *objectClass,
+	gdeProperty *property, const char *newValue, const char *oldValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set default value" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetDefaultValue");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetDefaultValue::~gdeUOCPSetDefaultValue(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCPSetDefaultValue::~gdeUOCPSetDefaultValue(){
 ///////////////
 
 void gdeUOCPSetDefaultValue::Undo(){
-	pProperty->SetDefaultValue( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetDefaultValue::Redo(){
-	pProperty->SetDefaultValue( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

@@ -25,12 +25,9 @@
 #ifndef _DEEFFECTCHAIN_H_
 #define _DEEFFECTCHAIN_H_
 
+#include "deEffect.h"
 #include "../../common/math/decMath.h"
 
-
-// definitions
-
-class deEffect;
 class deEffectVisitor;
 
 
@@ -45,9 +42,13 @@ class deEffectVisitor;
  * chain itself once the user class is destroyed.
  */
 class DE_DLL_EXPORT deEffectChain{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deEffectChain>;
+	
+	
 private:
-	deEffect **pEffects;
-	int pEffectCount, pEffectSize;
+	deEffect::List pEffects;
 	
 	
 	
@@ -65,24 +66,27 @@ public:
 	
 	/** \name Effect management */
 	/*@{*/
+	/** \brief Effects. */
+	inline const decTObjectOrderedSet<deEffect> &GetEffects() const{ return pEffects; }
+	
 	/** \brief Number of effects in the chain. */
-	inline int GetEffectCount() const{ return pEffectCount; }
+	inline int GetEffectCount() const{ return pEffects.GetCount(); }
 	
 	/** \brief Effect at the given index. */
-	deEffect *GetEffectAt( int index ) const;
+	const deEffect::Ref &GetEffectAt(int index) const;
 	
 	/** \brief Given effect is already part of the chain. */
-	bool HasEffect( deEffect *effect ) const;
+	bool HasEffect(deEffect *effect) const;
 	
 	/** \brief Position of the given effect in the chain or -1 if not part of it. */
-	int IndexOfEffect( deEffect *effect ) const;
+	int IndexOfEffect(deEffect *effect) const;
 	
 	/**
 	 * \brief Add effect to the chain.
 	 * 
 	 * Throws an exception if already in the chain.
 	 */
-	void AddEffect( deEffect *effect );
+	void AddEffect(deEffect *effect);
 	
 	/**
 	 * \brief Insert effect at the given position to the chain.
@@ -90,10 +94,10 @@ public:
 	 * Throws an exception if already already part of it. The new effect is inserted
 	 * at the given position moving all effects after it up one position.
 	 */
-	void InsertEffect( deEffect *effect, int position );
+	void InsertEffect(deEffect *effect, int position);
 	
 	/** \brief Removes the given effect from the chain. */
-	void RemoveEffect( deEffect *effect );
+	void RemoveEffect(deEffect *effect);
 	
 	/** \brief Removes all effects from the chain. */
 	void RemoveAllEffects();
@@ -103,7 +107,7 @@ public:
 	 * 
 	 * The effect is placed at the new position moving all effects after it up one position.
 	 */
-	void MoveEffect( deEffect *effect, int newPosition );
+	void MoveEffect(deEffect *effect, int newPosition);
 	/*@}*/
 	
 	
@@ -111,7 +115,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effects. */
-	void VisitEffects( deEffectVisitor &visitor );
+	void VisitEffects(deEffectVisitor &visitor);
 	/*@}*/
 };
 

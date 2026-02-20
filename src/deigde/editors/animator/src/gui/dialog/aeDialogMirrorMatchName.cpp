@@ -26,7 +26,7 @@
 
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -43,27 +43,28 @@
 ////////////////////////////
 
 aeDialogMirrorMatchName::aeDialogMirrorMatchName(
-	igdeEnvironment &environment, const char *windowTitle ) :
-igdeDialog( environment, windowTitle )
+	igdeEnvironment &environment, const char *windowTitle) :
+igdeDialog(environment, windowTitle)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
+		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBox( content, "Type:", "How to match the name.", pCBType, nullptr );
-	pCBType->AddItem( "Begin of name", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emntFirst );
-	pCBType->AddItem( "End of name", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emntLast );
-	pCBType->AddItem( "Middle of name", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emntMiddle );
-	pCBType->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleMirror::emntLast );
+	helper.ComboBox(content, "@Animator.DialogMirrorMatchName.Type", "@Animator.DialogMirrorMatchName.Type.ToolTip", pCBType, {});
+	pCBType->SetAutoTranslateItems(true);
+	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.BeginOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntFirst);
+	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.EndOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntLast);
+	pCBType->AddItem("@Animator.DialogMirrorMatchName.Type.MiddleOfName", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntMiddle);
+	pCBType->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	
-	helper.EditString( content, "First:", "First name string component to match.", 30, pEditFirst, nullptr );
-	helper.EditString( content, "Second:", "Second name string component to match.", 30, pEditSecond, nullptr );
+	helper.EditString(content, "@Animator.DialogMirrorMatchName.First", "@Animator.DialogMirrorMatchName.First.ToolTip", 30, pEditFirst, {});
+	helper.EditString(content, "@Animator.DialogMirrorMatchName.Second", "@Animator.DialogMirrorMatchName.Second.ToolTip", 30, pEditSecond, {});
 	
-	igdeContainerReference buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Cancel" );
+	igdeContainer::Ref buttonBar;
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Cancel");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
 }
 
 aeDialogMirrorMatchName::~aeDialogMirrorMatchName(){
@@ -74,16 +75,15 @@ aeDialogMirrorMatchName::~aeDialogMirrorMatchName(){
 // Management
 ///////////////
 
-void aeDialogMirrorMatchName::Set( const aeRuleMirror::cMatchName &matchName ){
-	pCBType->SetSelectionWithData( ( void* )( intptr_t )matchName.GetType() );
-	pEditFirst->SetText( matchName.GetFirst() );
-	pEditSecond->SetText( matchName.GetSecond() );
+void aeDialogMirrorMatchName::Set(const aeRuleMirror::MatchName &matchName){
+	pCBType->SetSelectionWithData((void*)(intptr_t)matchName.type);
+	pEditFirst->SetText(matchName.first);
+	pEditSecond->SetText(matchName.second);
 }
 
-aeRuleMirror::cMatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
-	return aeRuleMirror::cMatchName::Ref::New( new aeRuleMirror::cMatchName(
-		pEditFirst->GetText(), pEditSecond->GetText(), ( deAnimatorRuleMirror::eMatchNameType )
-			( intptr_t )pCBType->GetSelectedItem()->GetData() ) );
+aeRuleMirror::MatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
+	return aeRuleMirror::MatchName::Ref::New(pEditFirst->GetText(), pEditSecond->GetText(),
+		(deAnimatorRuleMirror::eMatchNameType)(intptr_t)pCBType->GetSelectedItem()->GetData());
 }
 
 void aeDialogMirrorMatchName::OnDialogShown(){
@@ -94,12 +94,12 @@ bool aeDialogMirrorMatchName::Accept(){
 	const decString &first = pEditFirst->GetText();
 	const decString &second = pEditSecond->GetText();
 	
-	if( first.IsEmpty() ){
-		igdeCommonDialogs::Error( this, GetTitle(), "First name string component to match can not be empty" );
+	if(first.IsEmpty()){
+		igdeCommonDialogs::Error(*this, GetTitle(), "@Animator.DialogMirrorMatchName.ErrorFirstEmpty");
 		return false;
 	}
-	if( second.IsEmpty() ){
-		igdeCommonDialogs::Error( this, GetTitle(), "Second name string component to match can not be empty" );
+	if(second.IsEmpty()){
+		igdeCommonDialogs::Error(*this, GetTitle(), "@Animator.DialogMirrorMatchName.ErrorSecondEmpty");
 		return false;
 	}
 	

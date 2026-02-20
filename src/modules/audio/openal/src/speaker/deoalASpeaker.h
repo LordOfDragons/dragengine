@@ -26,25 +26,28 @@
 #define _DEOALASPEAKER_H_
 
 #include "../deoalBasics.h"
+#include "../sound/deoalASound.h"
+#include "../synthesizer/deoalASynthesizerInstance.h"
+#include "../video/deoalAVideoPlayer.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTLinkedList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/resources/sound/deSoundDecoderReference.h>
+#include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 
 class deoalAudioThread;
 class deoalAMicrophone;
-class deoalASound;
-class deoalASynthesizerInstance;
-class deoalAVideoPlayer;
 class deoalSource;
 class deoalAWorld;
 class deoalWorldOctree;
 class deoalEnvironment;
 class deoalSpeaker;
 class deoalSharedEffectSlot;
+class deoalASoundLevelMeter;
 
 
 
@@ -60,11 +63,11 @@ private:
 	deoalAMicrophone *pParentMicrophone;
 	deoalWorldOctree *pOctreeNode;
 	
-	deoalASound *pSound;
-	deoalASynthesizerInstance *pSynthesizer;
-	deoalAVideoPlayer *pVideoPlayer;
+	deoalASound::Ref pSound;
+	deoalASynthesizerInstance::Ref pSynthesizer;
+	deoalAVideoPlayer::Ref pVideoPlayer;
 	unsigned int pSourceUpdateTracker;
-	deSoundDecoderReference pSoundDecoder;
+	deSoundDecoder::Ref pSoundDecoder;
 	
 	deSpeaker::eSpeakerType pSpeakerType;
 	decDVector pPosition;
@@ -95,8 +98,7 @@ private:
 	int pBufferSampleCount;
 	int pBufferSize;
 	int pBufferSampleSize;
-	char *pBufferData;
-	int pBufferDataCapacity;
+	decTList<char> pBufferData;
 	int pQueueSampleOffset;
 	ALenum pBufferFormat;
 	
@@ -126,24 +128,27 @@ private:
 	deoalSharedEffectSlot *pSharedEffectSlot;
 	bool pDelayedDropSharedEffectSlot;
 	
-	decPointerSet pSoundLevelMeters;
+	decTOrderedSet<deoalASoundLevelMeter*> pSoundLevelMeters;
 	
 	bool pMicrophoneMarkedRemove;
 	bool pWorldMarkedRemove;
-	deoalASpeaker *pLLWorldPrev;
-	deoalASpeaker *pLLWorldNext;
+	decTObjectLinkedList<deoalASpeaker>::Element pLLWorld;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalASpeaker>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker peer. */
-	deoalASpeaker( deoalAudioThread &audioThread );
+	deoalASpeaker(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up speaker peer. */
-	virtual ~deoalASpeaker();
+	~deoalASpeaker() override;
 	/*@}*/
 	
 	
@@ -158,34 +163,34 @@ public:
 	inline deoalSpeaker *GetBackLink() const{ return pBackLink; }
 	
 	/** Back link for use with sound level meter only. */
-	void SetBackLink( deoalSpeaker *speaker );
+	void SetBackLink(deoalSpeaker *speaker);
 	
 	
 	
 	/** Sound object or \em NULL. */
-	inline deoalASound *GetSound() const{ return pSound; }
+	inline const deoalASound::Ref &GetSound() const{ return pSound; }
 	
 	/** Synthesizer instance object or \em NULL. */
-	inline deoalASynthesizerInstance *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deoalASynthesizerInstance::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** Video player object or \em NULL. */
-	inline deoalAVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoalAVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/**
 	 * Set source.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetSource( deoalASound *sound, deoalASynthesizerInstance *synthesizer,
-		deoalAVideoPlayer *videoPlayer );
+	void SetSource(deoalASound *sound, deoalASynthesizerInstance *synthesizer,
+		deoalAVideoPlayer *videoPlayer);
 	
 	/** Sound decoder or NULL. */
-	inline deSoundDecoder *GetSoundDecoder() const{ return pSoundDecoder; }
+	inline const deSoundDecoder::Ref &GetSoundDecoder() const{ return pSoundDecoder; }
 	
 	/**
 	 * Set sound decoder or NULL.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetSoundDecoder( deSoundDecoder *decoder );
+	void SetSoundDecoder(deSoundDecoder *decoder);
 	
 	
 	
@@ -193,7 +198,7 @@ public:
 	inline deSpeaker::eSpeakerType GetSpeakerType() const{ return pSpeakerType; }
 	
 	/** Set type. */
-	void SetSpeakerType( deSpeaker::eSpeakerType type );
+	void SetSpeakerType(deSpeaker::eSpeakerType type);
 	
 	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
@@ -202,19 +207,19 @@ public:
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** Set geometry. */
-	void SetGeometry( const decDVector &position, const decQuaternion &orientation );
+	void SetGeometry(const decDVector &position, const decQuaternion &orientation);
 	
 	/** Velocity. */
 	inline const decVector &GetVelocity() const{ return pVelocity; }
 	
 	/** Set velocity. */
-	void SetVelocity( const decVector &velocity );
+	void SetVelocity(const decVector &velocity);
 	
 	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -228,13 +233,13 @@ public:
 	 * Set if enabled.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** Positionless. */
 	inline bool GetPositionless() const{ return pPositionless; }
 	
 	/** Set if positionless. */
-	void SetPositionless( bool positionless );
+	void SetPositionless(bool positionless);
 	
 	
 	
@@ -254,22 +259,22 @@ public:
 	 * Set play state.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetPlayState( deSpeaker::ePlayStates playState );
+	void SetPlayState(deSpeaker::ePlayStates playState);
 	
 	/** Looping. */
 	inline bool GetLooping() const{ return pLooping; }
 	
 	/** Set looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** Muted. */
 	inline bool GetMuted() const{ return pMuted; }
 	
 	/** Set mutex. */
-	void SetMuted( bool muted );
+	void SetMuted(bool muted);
 	
 	/** Set speaker play range. */
-	void SetSpeakerPlayRange( int from, int to );
+	void SetSpeakerPlayRange(int from, int to);
 	
 	
 	
@@ -282,7 +287,7 @@ public:
 	inline bool GetFlag() const{ return pFlag; }
 	
 	/** Set flag. */
-	void SetFlag( bool flag );
+	void SetFlag(bool flag);
 	
 	/** Prepare process audio. */
 	void PrepareProcessAudio();
@@ -320,19 +325,19 @@ public:
 	inline deoalAWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL. */
-	void SetParentWorld( deoalAWorld *world );
+	void SetParentWorld(deoalAWorld *world);
 	
 	/** Parent microphone or \em NULL. */
 	inline deoalAMicrophone *GetParentMicrophone() const{ return pParentMicrophone; }
 	
 	/** Set parent microphone or \em NULL. */
-	void SetParentMicrophone( deoalAMicrophone *microphone );
+	void SetParentMicrophone(deoalAMicrophone *microphone);
 	
 	/** World octree node or NULL. */
 	inline deoalWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/** Set world octree node or NULL. */
-	void SetOctreeNode( deoalWorldOctree *node );
+	void SetOctreeNode(deoalWorldOctree *node);
 	
 	/** Update octree node. */
 	void UpdateOctreeNode();
@@ -343,7 +348,7 @@ public:
 	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	
 	/** Set play speed. */
-	void SetPlaySpeed( float speed );
+	void SetPlaySpeed(float speed);
 	
 	
 	
@@ -354,13 +359,13 @@ public:
 	inline float GetRangeSquared() const{ return pRangeSquared; }
 	
 	/** Set range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** Volume. */
 	inline float GetVolume() const{ return pVolume; }
 	
 	/** Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** Attenuation reference distance. */
 	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
@@ -369,16 +374,16 @@ public:
 	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
 	/** Set roll-off. */
-	void SetAttenuationRolloff( float rolloff );
+	void SetAttenuationRolloff(float rolloff);
 	
 	/** Attenuation distance offset. */
 	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
 	
 	/** Set attenuation distance offset. */
-	void SetAttenuationDistanceOffset( float distanceOffset );
+	void SetAttenuationDistanceOffset(float distanceOffset);
 	
 	/** Calculate gain for distance using attenuation. */
-	float AttenuatedGain( float distance ) const;
+	float AttenuatedGain(float distance) const;
 	
 	
 	
@@ -398,13 +403,13 @@ public:
 	inline float GetSharedEffectSlotDistance() const{ return pSharedEffectSlotDistance; }
 	
 	/** Set shared effect slot distance. */
-	void SetSharedEffectSlotDistance( float distance );
+	void SetSharedEffectSlotDistance(float distance);
 	
 	/** Shared effect slot. */
 	inline deoalSharedEffectSlot *GetSharedEffectSlot() const{ return pSharedEffectSlot; }
 	
 	/** Set shared effect slot. */
-	void SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot );
+	void SetSharedEffectSlot(deoalSharedEffectSlot *effectSlot);
 	
 	/** Drop shared effect slot. */
 	void DropSharedEffectSlot();
@@ -412,8 +417,8 @@ public:
 	
 	
 	/** Sound level meters tracking this speaker. */
-	inline decPointerSet &GetSoundLevelMeters(){ return pSoundLevelMeters; }
-	inline const decPointerSet &GetSoundLevelMeters() const{ return pSoundLevelMeters; }
+	inline decTOrderedSet<deoalASoundLevelMeter*> &GetSoundLevelMeters(){ return pSoundLevelMeters; }
+	inline const decTOrderedSet<deoalASoundLevelMeter*> &GetSoundLevelMeters() const{ return pSoundLevelMeters; }
 	
 	
 	
@@ -435,7 +440,7 @@ public:
 	 * Set marked for removal.
 	 * For use by deoalAMicrophone only. Non-thread safe.
 	 */
-	void SetMicrophoneMarkedRemove( bool marked );
+	void SetMicrophoneMarkedRemove(bool marked);
 		
 	/**
 	 * Marked for removal.
@@ -447,19 +452,11 @@ public:
 	 * Set marked for removal.
 	 * For use by deoalAWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 		
-	/** Linked list world previous. */
-	inline deoalASpeaker *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** Set linked list world previous. */
-	void SetLLWorldPrev( deoalASpeaker *speaker );
-	
-	/** Linked list world next. */
-	inline deoalASpeaker *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** Set linked list world next. */
-	void SetLLWorldNext( deoalASpeaker *speaker );
+	/** Linked list world element. */
+	inline decTObjectLinkedList<deoalASpeaker>::Element &GetLLWorld(){ return pLLWorld; }
+	inline const decTObjectLinkedList<deoalASpeaker>::Element &GetLLWorld() const{ return pLLWorld; }
 	/*@}*/
 	
 	
@@ -468,11 +465,11 @@ private:
 	void pCleanUp();
 	
 	void pDecodeInitial();
-	void pDecodeNext( bool underrun );
+	void pDecodeNext(bool underrun);
 	void pSynthInit();
-	void pSynthNext( bool underrun );
+	void pSynthNext(bool underrun);
 	void pVideoPlayerInit();
-	void pVideoPlayerNext( bool underrun );
+	void pVideoPlayerNext(bool underrun);
 	void pUpdatePlayRange();
 	void pUpdateAttenuation();
 	

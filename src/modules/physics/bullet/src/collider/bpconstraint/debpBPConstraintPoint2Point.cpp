@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBPConstraintPoint2Point::debpBPConstraintPoint2Point( debpColliderConstraint &constraint,
-btRigidBody &rbA, btRigidBody &rbB, const btVector3 &pivotInA, const btVector3 &pivotInB ) :
-btPoint2PointConstraint( rbA, rbB, pivotInA, pivotInB ),
-pConstraint( constraint )
+debpBPConstraintPoint2Point::debpBPConstraintPoint2Point(debpColliderConstraint &constraint,
+btRigidBody &rbA, btRigidBody &rbB, const btVector3 &pivotInA, const btVector3 &pivotInB) :
+btPoint2PointConstraint(rbA, rbB, pivotInA, pivotInB),
+pConstraint(constraint)
 {
 	(void)pConstraint; // for future use
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
-debpBPConstraintPoint2Point::debpBPConstraintPoint2Point( debpColliderConstraint &constraint,
-btRigidBody &rbA, const btVector3 &pivotInA, const btVector3 &pivotInB ) :
-btPoint2PointConstraint( rbA, getFixedBody(), pivotInA, pivotInB ),
-pConstraint( constraint )
+debpBPConstraintPoint2Point::debpBPConstraintPoint2Point(debpColliderConstraint &constraint,
+btRigidBody &rbA, const btVector3 &pivotInA, const btVector3 &pivotInB) :
+btPoint2PointConstraint(rbA, getFixedBody(), pivotInA, pivotInB),
+pConstraint(constraint)
 {
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
 debpBPConstraintPoint2Point::~debpBPConstraintPoint2Point(){
@@ -64,6 +64,6 @@ debpBPConstraintPoint2Point::~debpBPConstraintPoint2Point(){
 // Management
 ///////////////
 
-void debpBPConstraintPoint2Point::getInfo2( btTypedConstraint::btConstraintInfo2 *info ){
-	btPoint2PointConstraint::getInfo2( info );
+void debpBPConstraintPoint2Point::getInfo2(btTypedConstraint::btConstraintInfo2 *info){
+	btPoint2PointConstraint::getInfo2(info);
 }

@@ -32,6 +32,8 @@
 #include "../action/ceCAPlayerChoiceOption.h"
 #include "../ceConversation.h"
 
+#include <deigde/gui/igdeApplication.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/font/deFont.h>
@@ -49,16 +51,12 @@
 ////////////////////////////
 
 cePCBOption::cePCBOption() :
-pAction( NULL ),
-pActionOption( NULL ),
-pCanvasView( NULL ){
+
+pActionOption(nullptr){
 }
 
 cePCBOption::~cePCBOption(){
-	if( pCanvasView ){
-		pCanvasView->FreeReference();
-	}
-	SetActionOption( NULL, NULL );
+	SetActionOption(nullptr, nullptr);
 }
 
 
@@ -66,105 +64,81 @@ cePCBOption::~cePCBOption(){
 // Management
 ///////////////
 
-void cePCBOption::SetText( const decUnicodeString &text ){
+void cePCBOption::SetText(const decUnicodeString &text){
 	pText = text;
 }
 
-void cePCBOption::SetActionOption( ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option ){
-	if( action != pAction ){
-		if( pAction ){
-			pAction->FreeReference();
-		}
-		
+void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
+	if(action != pAction){
 		pAction = action;
-		
-		if( action ){
-			action->AddReference();
-		}
 	}
 	
-	if( option != pActionOption ){
-		if( pActionOption ){
-			pActionOption->FreeReference();
-		}
-		
+	if(option != pActionOption){
 		pActionOption = option;
-		
-		if( option ){
-			option->AddReference();
-		}
 	}
 }
 
 
 
-void cePCBOption::Layout( const cePlayerChoiceBox &pcbox, bool selected ){
+void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *pcbox.GetConversation().GetEngine()->GetCanvasManager();
-	if( ! pCanvasView ){
+	if(!pCanvasView){
 		pCanvasView = canvasManager.CreateCanvasView();
 	}
 	
 	// clear canvas
 	pCanvasView->RemoveAllCanvas();
-	pCanvasView->SetSize( decPoint( 10, 1 ) );
+	pCanvasView->SetSize(decPoint(10, 1));
 	
 	// get font. if not existing exit since we can not render anything this way
 	deFont * const font = pcbox.GetFont();
-	if( ! font ){
+	if(!font){
 		return;
 	}
 	
 	// determine required height
 	deCanvasView &parentVide = *pcbox.GetCanvasView();
 	const decPoint &parentSize = parentVide.GetSize();
-	deCanvasText *canvasText = NULL;
-	deCanvasPaint *canvasBackground = NULL;
+	deCanvasText::Ref canvasText;
+	deCanvasPaint::Ref canvasBackground;
 	
-	const decString text( pText.ToUTF8() );
+	const decString text(pText.ToUTF8());
 	
-	const int textHeight = pcbox.GetTextSize();
+	const int textHeight = igdeApplication::app().DisplayScaled(pcbox.GetTextSize());
 	
-	pCanvasView->SetSize( decPoint( parentSize.x, textHeight ) );
+	pCanvasView->SetSize(decPoint(parentSize.x, textHeight));
 	
 	try{
 		canvasBackground = canvasManager.CreateCanvasPaint();
-		canvasBackground->SetShapeType( deCanvasPaint::estRectangle );
-		if( selected ){
-			canvasBackground->SetFillColor( pcbox.GetSelectedBackgroundColor() );
+		canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
+		if(selected){
+			canvasBackground->SetFillColor(pcbox.GetSelectedBackgroundColor());
 		}else{
-			canvasBackground->SetFillColor( pcbox.GetBackgroundColor() );
+			canvasBackground->SetFillColor(pcbox.GetBackgroundColor());
 		}
-		canvasBackground->SetLineColor( decColor( canvasBackground->GetFillColor(), 0.0f ) );
-		canvasBackground->SetThickness( 0.0f );
-		canvasBackground->SetOrder( 0.0f );
-		canvasBackground->SetSize( pCanvasView->GetSize() );
-		pCanvasView->AddCanvas( canvasBackground );
-		canvasBackground->FreeReference();
-		canvasBackground = NULL;
+		canvasBackground->SetLineColor(decColor(canvasBackground->GetFillColor(), 0.0f));
+		canvasBackground->SetThickness(0.0f);
+		canvasBackground->SetOrder(0.0f);
+		canvasBackground->SetSize(pCanvasView->GetSize());
+		pCanvasView->AddCanvas(canvasBackground);
+		canvasBackground = nullptr;
 		
 		canvasText = canvasManager.CreateCanvasText();
-		if( selected ){
-			canvasText->SetColor( pcbox.GetSelectedTextColor() );
+		if(selected){
+			canvasText->SetColor(pcbox.GetSelectedTextColor());
 		}else{
-			canvasText->SetColor( pcbox.GetTextColor() );
+			canvasText->SetColor(pcbox.GetTextColor());
 		}
-		canvasText->SetFont( font );
-		canvasText->SetFontSize( ( float )textHeight );
-		canvasText->SetText( text );
-		canvasText->SetOrder( 0.0f );
-		canvasText->SetSize( pCanvasView->GetSize() );
-		pCanvasView->AddCanvas( canvasText );
-		canvasText->FreeReference();
-		canvasText = NULL;
+		canvasText->SetFont(font);
+		canvasText->SetFontSize((float)textHeight);
+		canvasText->SetText(text);
+		canvasText->SetOrder(0.0f);
+		canvasText->SetSize(pCanvasView->GetSize());
+		pCanvasView->AddCanvas(canvasText);
+		canvasText = nullptr;
 		
-	}catch( const deException & ){
-		if( canvasText ){
-			canvasText->FreeReference();
-		}
-		if( canvasBackground ){
-			canvasBackground->FreeReference();
-		}
+	}catch(const deException &){
 		throw;
 	}
 }

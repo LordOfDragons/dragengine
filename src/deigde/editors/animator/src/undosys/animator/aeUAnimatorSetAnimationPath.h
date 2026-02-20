@@ -35,6 +35,10 @@ class aeAnimator;
  * Undo action set animation path.
  */
 class aeUAnimatorSetAnimationPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAnimatorSetAnimationPath>;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decString pOldValue;
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAnimatorSetAnimationPath( aeAnimator *rule, const char *newValue );
+	aeUAnimatorSetAnimationPath(aeAnimator *rule, const char *newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorSetAnimationPath();
+	~aeUAnimatorSetAnimationPath() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

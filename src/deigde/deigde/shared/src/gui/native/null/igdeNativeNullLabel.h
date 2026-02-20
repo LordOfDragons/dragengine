@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLLABEL_H_
 #define _IGDENATIVENULLLABEL_H_
 
+#include "../../igdeLabel.h"
+
 class igdeLabel;
 
 
 /**
  * Null label.
  */
-class igdeNativeNullLabel{
+class igdeNativeNullLabel : public igdeLabel::cNativeLabel{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullLabel();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullLabel* CreateNativeWidget( igdeLabel &owner );
+	static igdeNativeNullLabel* CreateNativeWidget(igdeLabel &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,10 +57,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateText();
-	virtual void UpdateAlignment();
-	virtual void UpdateDescription();
-	virtual void UpdateIcon();
+	void UpdateText() override;
+	void UpdateAlignment() override;
+	void UpdateDescription() override;
+	void UpdateIcon() override;
 	/*@}*/
 };
 

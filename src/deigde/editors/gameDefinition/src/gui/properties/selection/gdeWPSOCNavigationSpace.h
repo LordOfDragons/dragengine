@@ -26,19 +26,19 @@
 #define _GDEWPSOCNAVIGATIONSPACE_H_
 
 #include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCNavigationSpaceListener.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCNavigationSpace;
 class gdeWindowProperties;
-class gdeWPSOCNavigationSpaceListener;
 
 
 
@@ -46,25 +46,28 @@ class gdeWPSOCNavigationSpaceListener;
  * \brief Object class navigation space property panel.
  */
 class gdeWPSOCNavigationSpace : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCNavigationSpace> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCNavigationSpaceListener *pListener;
+	gdeWPSOCNavigationSpaceListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPath;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeTextFieldReference pEditLayer;
-	igdeTextFieldReference pEditSnapDistance;
-	igdeComboBoxReference pCBType;
-	igdeTextFieldReference pEditSnapAngle;
-	igdeTextFieldReference pEditBlockingPriority;
-	igdeTextFieldReference pEditBlockerShape;
+	igdeEditPath::Ref pEditPath;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeTextField::Ref pEditLayer;
+	igdeTextField::Ref pEditSnapDistance;
+	igdeComboBox::Ref pCBType;
+	igdeTextField::Ref pEditSnapAngle;
+	igdeTextField::Ref pEditBlockingPriority;
+	igdeTextField::Ref pEditBlockerShape;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	
@@ -72,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCNavigationSpace( gdeWindowProperties &windowMain );
+	gdeWPSOCNavigationSpace(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -84,22 +87,22 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class navigation space or \em NULL if not set. */
+	/** \brief Active object class navigation space or \em nullptr if not set. */
 	gdeOCNavigationSpace *GetNavigationSpace() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCNavigationSpace::eProperties GetPropertyName() const;
+	gdeOCNavigationSpace::eProperties GetPropertyName() const;
 	
 	
 	

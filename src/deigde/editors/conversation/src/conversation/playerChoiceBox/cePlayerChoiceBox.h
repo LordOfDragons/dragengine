@@ -25,15 +25,15 @@
 #ifndef _CEPLAYERCHOICEBOX_H_
 #define _CEPLAYERCHOICEBOX_H_
 
+#include "cePCBOption.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-#include "cePCBOptionList.h"
-
-class deCanvasView;
 class deGraphicContext;
 class ceConversation;
 
@@ -42,7 +42,10 @@ class ceConversation;
 /**
  * \brief Player choice box in a conversation.
  */
-class cePlayerChoiceBox{
+class cePlayerChoiceBox : public deObject{
+public:
+	using Ref = deTObjectReference<cePlayerChoiceBox>;
+	
 private:
 	ceConversation &pConversation;
 	
@@ -58,19 +61,21 @@ private:
 	int pPadding;
 	int pPlaybackStackDepth;
 	
-	cePCBOptionList pOptions;
+	cePCBOption::List pOptions;
 	int pSelectedOption;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box. */
-	cePlayerChoiceBox( ceConversation &conversation );
+	cePlayerChoiceBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
-	~cePlayerChoiceBox();
+protected:
+	~cePlayerChoiceBox() override;
+public:
 	/*@}*/
 	
 	
@@ -87,71 +92,71 @@ public:
 	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
 	inline const decString &GetPathFont() const{ return pPathFont; }
 	
 	/** \brief Set font path. */
-	void SetPathFont( const char *path );
+	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
 	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
 	inline const decColor &GetTextColor() const{ return pTextColor; }
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	/** \brief Selected background color. */
 	inline const decColor &GetSelectedBackgroundColor() const{ return pSelectedBackgroundColor; }
 	
 	/** \brief Set selected background color. */
-	void SetSelectedBackgroundColor( const decColor &color );
+	void SetSelectedBackgroundColor(const decColor &color);
 	
 	/** \brief Selected text color. */
 	inline const decColor &GetSelectedTextColor() const{ return pSelectedTextColor; }
 	
 	/** \brief Set selected text color. */
-	void SetSelectedTextColor( const decColor &color );
+	void SetSelectedTextColor(const decColor &color);
 	
 	/** \brief Text size. */
 	inline int GetTextSize() const{ return pTextSize; }
 	
 	/** \brief Set text size. */
-	void SetTextSize( int size );
+	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
 	inline int GetPadding() const{ return pPadding; }
 	
 	/** \brief Set text padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Playback stack depth to return to after selecting an option. */
 	inline int GetPlaybackStackDepth() const{ return pPlaybackStackDepth; }
 	
 	/** \brief Set playback stack depth to return to after selecting an option. */
-	void SetPlaybackStackDepth( int depth );
+	void SetPlaybackStackDepth(int depth);
 	
 	/** \brief List of options. */
-	inline cePCBOptionList &GetOptionList(){ return pOptions; }
-	inline const cePCBOptionList &GetOptionList() const{ return pOptions; }
+	inline cePCBOption::List &GetOptionList(){ return pOptions; }
+	inline const cePCBOption::List &GetOptionList() const{ return pOptions; }
 	
 	/** \brief Index of the selected option or -1 if there is none. */
 	inline int GetSelectedOption() const{ return pSelectedOption; }
 	
 	/** \brief Set index of the selected option or -1 if there is none. */
-	void SetSelectedOption( int index );
+	void SetSelectedOption(int index);
 	
 	/** \brief Index of the option under the given cursor position or -1 if there is none. */
-	int IndexOfOptionAt( int x, int y ) const;
+	int IndexOfOptionAt(int x, int y) const;
 	
 	/** \brief Select option under the given cursor position if located over an option. */
-	void SelectOptionAt( int x, int y );
+	void SelectOptionAt(int x, int y);
 	
 	/** \brief Clear player choice box. */
 	void Clear();

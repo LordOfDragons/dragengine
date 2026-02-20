@@ -66,14 +66,14 @@ enum eSPEffect{
 // Constructor, destructor
 ////////////////////////////
 
-deoglREffectDistortImage::deoglREffectDistortImage( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread )
+deoglREffectDistortImage::deoglREffectDistortImage(deoglRenderThread &renderThread) :
+deoglREffect(renderThread)
 {
-	LEAK_CHECK_CREATE( renderThread, EffectDistortImage );
+	LEAK_CHECK_CREATE(renderThread, EffectDistortImage);
 }
 
 deoglREffectDistortImage::~deoglREffectDistortImage(){
-	LEAK_CHECK_FREE( GetRenderThread(), EffectDistortImage );
+	LEAK_CHECK_FREE(GetRenderThread(), EffectDistortImage);
 }
 
 
@@ -81,81 +81,81 @@ deoglREffectDistortImage::~deoglREffectDistortImage(){
 // Management
 ///////////////
 
-void deoglREffectDistortImage::SetStrength( const decVector2 &strength ){
+void deoglREffectDistortImage::SetStrength(const decVector2 &strength){
 	pStrength = strength;
 }
 
-void deoglREffectDistortImage::SetImage( deoglRImage *image ){
+void deoglREffectDistortImage::SetImage(deoglRImage *image){
 	pImage = image;
 }
 
 
 
 const deoglPipeline *deoglREffectDistortImage::GetPipeline(){
-	if( ! pPipeline ){
+	if(!pPipeline){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().SetCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines(defines);
 		
-		pipconf.SetDepthMask( false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
 		
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pipconf.SetShader( GetRenderThread(), "Effect Distort Image", defines );
-		pPipeline = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("NO_POSTRANSFORM", "FULLSCREENQUAD");
+		pipconf.SetShader(GetRenderThread(), "Effect Distort Image", defines);
+		pPipeline = pipelineManager.GetWith(pipconf);
 	}
 	
 	return pPipeline;
 }
 
 const deoglPipeline *deoglREffectDistortImage::GetPipelineStereo(){
-	if( ! pPipelineStereo ){
+	if(!pPipelineStereo){
 		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
 		deoglPipelineConfiguration pipconf;
 		deoglShaderDefines defines;
 		
-		GetRenderThread().GetShader().SetCommonDefines( defines );
+		GetRenderThread().GetShader().SetCommonDefines(defines);
 		
-		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		defines.SetDefines("NO_POSTRANSFORM", "FULLSCREENQUAD");
 		
-		pipconf.SetDepthMask( false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
 		
 		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
-		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_LAYER" );
-			pipconf.SetShader( GetRenderThread(), "Effect Distort Image", defines );
+		if(GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer()){
+			defines.SetDefines("VS_RENDER_LAYER");
+			pipconf.SetShader(GetRenderThread(), "Effect Distort Image", defines);
 			
 		}else{
-			pipconf.SetShader( GetRenderThread(), "Effect Distort Image Stereo", defines );
+			pipconf.SetShader(GetRenderThread(), "Effect Distort Image Stereo", defines);
 		}
 		
-		pPipelineStereo = pipelineManager.GetWith( pipconf );
+		pPipelineStereo = pipelineManager.GetWith(pipconf);
 	}
 	
 	return pPipelineStereo;
 }
 
 void deoglREffectDistortImage::PrepareForRender(){
-	if( pImage ){
+	if(pImage){
 		pImage->PrepareForRender();
 	}
 }
 
-void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
-	if( ! pImage ){
+void deoglREffectDistortImage::Render(deoglRenderPlan &plan){
+	if(!pImage){
 		return;
 	}
 	
 	deoglTexture * const texture = pImage->GetTexture();
-	if( ! texture ){
+	if(!texture){
 		return;
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "EffectDistortImage.Render" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "EffectDistortImage.Render");
 	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -164,18 +164,18 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	//int width = defren.GetWidth();
 	//int height = defren.GetHeight();
 	//int realHeight = defren.GetRealHeight();
-	float su = pStrength.x * defren.GetScalingU(); //( float )width;
-	float sv = pStrength.y * defren.GetScalingV(); //( float )height;
+	float su = pStrength.x * defren.GetScalingU(); //(float)width;
+	float sv = pStrength.y * defren.GetScalingV(); //(float)height;
 	
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
 	pipeline.Activate();
 	
-	renderWorld.SetViewport( plan );
+	renderWorld.SetViewport(plan);
 	
 	defren.SwapPostProcessTarget();
-	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-	tsmgr.EnableTexture( 1, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	defren.ActivatePostProcessFBO(false);
+	tsmgr.EnableArrayTexture(0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig(deoglRTShader::etscClampLinear));
+	tsmgr.EnableTexture(1, *texture, *rtshader.GetTexSamplerConfig(deoglRTShader::etscClampLinear));
 	
 	// set shader program
 	// transform image
@@ -187,11 +187,11 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	deoglShaderCompiled &shader = pipeline.GetShader();
-	shader.SetParameterFloat( speDistortTransform, 2.0f * su, -2.0f * sv, -su, sv );
+	shader.SetParameterFloat(speDistortTransform, 2.0f * su, -2.0f * sv, -su, sv);
 	
 	// TODO correctly we need an explicite clamp in the shader here since the texture
 	// can be larger than the area we tap into.
 	
-	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
-		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
+	renderWorld.RenderFullScreenQuadVAO(plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer());
 }

@@ -27,7 +27,7 @@
 
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
-class ceCAWait;
+#include "../../../../../conversation/action/ceCAWait.h"
 class ceWPTTIMAWait;
 
 
@@ -35,8 +35,11 @@ class ceWPTTIMAWait;
  * \brief Condition wait actions.
  */
 class ceWPTTIMAWaitCondition : public ceWPTTIMConditionContainer{
+public:
+	using Ref = deTObjectReference<ceWPTTIMAWaitCondition>;
+	
 private:
-	ceCAWait *pAction;
+	ceCAWait::Ref pAction;
 	
 	
 	
@@ -44,12 +47,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAWaitCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAWait *action );
+	ceWPTTIMAWaitCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceCAWait *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAWaitCondition();
+	~ceWPTTIMAWaitCondition() override;
 	/*@}*/
 	
 	
@@ -58,7 +61,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAWait *GetAction() const{ return pAction; }
+	inline const ceCAWait::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Parent wait model. */
 	ceWPTTIMAWait *GetModelWait() const;
@@ -67,13 +70,13 @@ public:
 	void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition) override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	/*@}*/
 };
 

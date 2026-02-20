@@ -25,11 +25,12 @@
 #ifndef _DESYNCREATESYNTHESIZERSOURCE_H_
 #define _DESYNCREATESYNTHESIZERSOURCE_H_
 
+#include "source/desynSynthesizerSource.h"
+
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitor.h>
 
 class deDESynthesizer;
 class desynSynthesizer;
-class desynSynthesizerSource;
 
 
 
@@ -41,7 +42,7 @@ private:
 	desynSynthesizer &pSynthesizer;
 	const int pFirstLink;
 	
-	desynSynthesizerSource *pSource;
+	desynSynthesizerSource::Ref pSource;
 	
 	
 	
@@ -49,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desynCreateSynthesizerSource( desynSynthesizer &synthesizer, int firstLink );
+	desynCreateSynthesizerSource(desynSynthesizer &synthesizer, int firstLink);
 	
 	/** \brief Clean up visitor. */
-	virtual ~desynCreateSynthesizerSource();
+	~desynCreateSynthesizerSource() override;
 	/*@}*/
 	
 	
@@ -60,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created source or \em NULL if not present. */
-	inline desynSynthesizerSource *GetSource() const{ return pSource; }
+	inline desynSynthesizerSource::Ref &GetSource(){ return pSource; }
 	
 	/** \brief Reset. */
 	void Reset();
@@ -71,22 +72,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void VisitSource( deSynthesizerSource &source );
+	void VisitSource(deSynthesizerSource &source) override;
 	
 	/** \brief Visit sound source. */
-	virtual void VisitSound( deSynthesizerSourceSound &source );
+	void VisitSound(deSynthesizerSourceSound &source) override;
 	
 	/** \brief Visit wave generator source. */
-	virtual void VisitWave( deSynthesizerSourceWave &source );
+	void VisitWave(deSynthesizerSourceWave &source) override;
 	
 	/** \brief Visit chain source. */
-	virtual void VisitChain( deSynthesizerSourceChain &source );
+	void VisitChain(deSynthesizerSourceChain &source) override;
 	
 	/** \brief Visit synthesizer source. */
-	virtual void VisitSynthesizer( deSynthesizerSourceSynthesizer &source );
+	void VisitSynthesizer(deSynthesizerSourceSynthesizer &source) override;
 	
 	/** \brief Visit group source. */
-	virtual void VisitGroup( deSynthesizerSourceGroup &source );
+	void VisitGroup(deSynthesizerSourceGroup &source) override;
 	/*@}*/
 };
 

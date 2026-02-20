@@ -25,10 +25,10 @@
 #ifndef _CEWPAACTORSPEAK_H_
 #define _CEWPAACTORSPEAK_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 
 #include "ceWPAction.h"
 
@@ -41,29 +41,30 @@ class ceCAActorSpeak;
  */
 class ceWPAActorSpeak : public ceWPAction{
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeTextFieldReference pEditTextBoxText;
-	igdeButtonReference pBtnTextBoxText;
-	igdeTextFieldReference pEditTextBoxTextTranslate;
-	igdeTextFieldReference pEditShowTranslation;
-	igdeButtonReference pBtnTextBoxTextTranslate;
-	igdeTextFieldReference pEditTextBoxTextStyle;
-	igdeTextFieldReference pEditMovement;
-	igdeEditPathReference pEditPathSound;
-	igdeTextFieldReference pEditMinSpeechTime;
-	igdeCheckBoxReference pChkUseSpeechAnimation;
+	igdeComboBox::Ref pCBActorID;
+	igdeTextField::Ref pEditTextBoxText;
+	igdeButton::Ref pBtnTextBoxText;
+	igdeTextField::Ref pEditTextBoxTextTranslate;
+	igdeTextField::Ref pEditShowTranslation;
+	igdeButton::Ref pBtnTextBoxTextTranslate;
+	igdeTextField::Ref pEditTextBoxTextStyle;
+	igdeTextField::Ref pEditMovement;
+	igdeEditPath::Ref pEditPathSound;
+	igdeTextField::Ref pEditMinSpeechTime;
+	igdeCheckBox::Ref pChkUseSpeechAnimation;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPAActorSpeak>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAActorSpeak( ceWPTopic &parentPanel );
+	ceWPAActorSpeak(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAActorSpeak();
+	~ceWPAActorSpeak() override;
 	/*@}*/
 	
 	
@@ -78,10 +79,10 @@ public:
 	void UpdateAction();
 	
 	/** \brief Update actor id lists. */
-	virtual void UpdateActorIDLists();
+	void UpdateActorIDLists() override;
 	
 	/** \brief Conversation path changed. */
-	virtual void OnConversationPathChanged();
+	void OnConversationPathChanged() override;
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleBoneTransformator.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleBoneTransformator;
  * Undo action rule bone transformator set coordinate frame.
  */
 class aeURuleBTransSetCFrame : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleBTransSetCFrame>;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pOldCoordFrame;
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pNewCoordFrame;
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetCFrame( aeRuleBoneTransformator *rule, deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame );
+	aeURuleBTransSetCFrame(aeRuleBoneTransformator *rule, deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetCFrame();
+	~aeURuleBTransSetCFrame() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -28,25 +28,29 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 /**
  * Undo action toggle wrap Y.
  */
 class aeULinkToggleWrapY : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeULinkToggleWrapY>;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkToggleWrapY( aeLink *link );
+	aeULinkToggleWrapY(aeLink *link);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkToggleWrapY();
+	~aeULinkToggleWrapY() override;
 	/*@}*/
 	
 	
@@ -55,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

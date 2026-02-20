@@ -25,6 +25,8 @@
 #ifndef _DEOGLRENDERABLECOLORARRAYTEXTUREMANAGER_H_
 #define _DEOGLRENDERABLECOLORARRAYTEXTUREMANAGER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
+
 class deoglRenderThread;
 class deoglRenderableColorArrayTexture;
 
@@ -41,9 +43,7 @@ class deoglRenderableColorArrayTextureManager{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRenderableColorArrayTexture **pArrayTextures;
-	int pArrayTextureCount;
-	int pArrayTextureSize;
+	decTUniqueList<deoglRenderableColorArrayTexture> pArrayTextures;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable texture manager. */
-	deoglRenderableColorArrayTextureManager( deoglRenderThread &renderThread );
+	deoglRenderableColorArrayTextureManager(deoglRenderThread &renderThread);
 	
 	/** Clean up renderable texture manager. */
 	~deoglRenderableColorArrayTextureManager();
@@ -62,14 +62,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of renderable textures. */
-	inline int GetCount() const{ return pArrayTextureCount; }
+	inline int GetCount() const{ return pArrayTextures.GetCount(); }
 	
 	/** Renderable texture at index for reading purpose only. */
-	const deoglRenderableColorArrayTexture *GetAt( int index ) const;
+	const deoglRenderableColorArrayTexture *GetAt(int index) const;
 	
 	/** Renderable texture matching format. */
-	deoglRenderableColorArrayTexture *GetWith( int width, int height, int layerCount,
-		int componentCount, bool isFloat );
+	deoglRenderableColorArrayTexture *GetWith(int width, int height, int layerCount,
+		int componentCount, bool isFloat);
 	/*@}*/
 };
 

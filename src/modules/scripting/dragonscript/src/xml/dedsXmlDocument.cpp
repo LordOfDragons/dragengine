@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsXmlDocument::dedsXmlDocument( const char *filename ) :
-pFilename( filename ),
-pParseFailed( false ){
+dedsXmlDocument::dedsXmlDocument(const char *filename) :
+pFilename(filename),
+pParseFailed(false){
 }
 
 dedsXmlDocument::~dedsXmlDocument(){
@@ -52,14 +52,14 @@ dedsXmlDocument::~dedsXmlDocument(){
 // Management
 ///////////////////////
 
-void dedsXmlDocument::SetFilename( const char *filename ){
+void dedsXmlDocument::SetFilename(const char *filename){
 	pFilename = filename;
 }
 
-void dedsXmlDocument::SetParseFailed( bool parseFailed ){
+void dedsXmlDocument::SetParseFailed(bool parseFailed){
 	pParseFailed = parseFailed;
 }
 
-void dedsXmlDocument::SetParseLog( const char *text ){
+void dedsXmlDocument::SetParseLog(const char *text){
 	pParseLog = text;
 }

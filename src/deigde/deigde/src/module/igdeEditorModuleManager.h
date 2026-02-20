@@ -25,8 +25,7 @@
 #ifndef _IGDEEDITORMODULEMANAGER_H_
 #define _IGDEEDITORMODULEMANAGER_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeEditorModuleDefinition;
@@ -40,12 +39,16 @@ class igdeWindowMain;
  * the module directory for valid modules and loading them.
  */
 class igdeEditorModuleManager{
+public:
+	typedef decTObjectOrderedSet<igdeEditorModuleDefinition> ModulesList;
+	
+	
 private:
 	decString pPathModules;
 	igdeWindowMain &pWindowMain;
-	decObjectOrderedSet pModules;
+	ModulesList pModules;
 	igdeEditorModuleDefinition *pActiveModule;
-	decPointerList pRecentlyUsed;
+	decTOrderedSet<igdeEditorModuleDefinition*> pRecentlyUsed;
 	
 	
 	
@@ -53,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new editor module manager. */
-	igdeEditorModuleManager( igdeWindowMain &windowMain );
+	igdeEditorModuleManager(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up editor module manager. */
 	~igdeEditorModuleManager();
@@ -69,11 +72,11 @@ public:
 	/** \brief Module path. */
 	inline const decString &GetPathModules() const{ return pPathModules; }
 	
-	/** \brief Activate module or NULL if none is active. */
+	/** \brief Activate module or nullptr if none is active. */
 	inline igdeEditorModuleDefinition *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Set active module. */
-	void SetActiveModule( igdeEditorModuleDefinition *module );
+	void SetActiveModule(igdeEditorModuleDefinition *module);
 	
 	/** \brief Activate first possible module. */
 	void ActivateMostRecentModule();
@@ -86,14 +89,11 @@ public:
 	
 	/** \name Modules */
 	/*@{*/
-	/** \brief Number of modules. */
-	int GetModuleCount() const;
+	/** \brief Modules. */
+	const ModulesList &GetModules() const{ return pModules; }
 	
-	/** \brief Module at index. */
-	igdeEditorModuleDefinition *GetModuleAt( int index ) const;
-	
-	/** \brief Module with ID or NULL if not found. */
-	igdeEditorModuleDefinition *GetModuleWithID ( const char *id ) const;
+	/** \brief Module with ID or nullptr if not found. */
+	igdeEditorModuleDefinition *GetModuleWithID (const char *id) const;
 	
 	/** \brief Remove all modules. */
 	void RemoveAllModules();
@@ -104,11 +104,11 @@ public:
 	/** \brief Stops all modules. */
 	void StopModules();
 	
-	/** \brief Recent module. */
-	igdeEditorModuleDefinition *GetRecentModuleAt( int index ) const;
+	/** \brief Recent modules. */
+	inline const decTOrderedSet<igdeEditorModuleDefinition*> &GetRecentModules() const{ return pRecentlyUsed; }
 	
 	/** \brief Change recent used position of module. */
-	void ChangeModuleRecentUsedPosition( igdeEditorModuleDefinition *module, int position );
+	void ChangeModuleRecentUsedPosition(igdeEditorModuleDefinition *module, int position);
 	
 	/** \brief Reset recently used position of modules. */
 	void ResetRecentUsedPosition();

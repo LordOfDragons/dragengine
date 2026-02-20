@@ -34,19 +34,18 @@
 class devkPipelineCompute : public devkPipeline{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkPipelineCompute> Ref;
-	
+	using Ref = deTObjectReference<devkPipelineCompute>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkPipelineCompute( devkDevice &device, const devkPipelineConfiguration &configuration );
+	devkPipelineCompute(devkDevice &device, const devkPipelineConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkPipelineCompute();
+	~devkPipelineCompute() override;
 	/*@}*/
 	
 	

@@ -41,30 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddLight::gdeUOCAddLight( gdeObjectClass *objectClass, gdeOCLight *light ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCAddLight::gdeUOCAddLight(gdeObjectClass *objectClass, gdeOCLight *light) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add light" );
+	SetShortInfo("@GameDefinition.Undo.OCAddLight");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddLight::~gdeUOCAddLight(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -74,18 +64,23 @@ gdeUOCAddLight::~gdeUOCAddLight(){
 
 void gdeUOCAddLight::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCLight() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCLight()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCLight( NULL );
+		gameDefinition->SetActiveOCLight(nullptr);
 	}
 	
-	pObjectClass->GetLights().Remove( pLight );
+	pObjectClass->GetLights().Remove(pLight);
 	pObjectClass->NotifyLightsChanged();
 }
 
 void gdeUOCAddLight::Redo(){
-	pObjectClass->GetLights().Add( pLight );
+	pObjectClass->GetLights().Add(pLight);
 	pObjectClass->NotifyLightsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCLight(pLight);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCLight);
 }

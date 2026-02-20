@@ -40,30 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightToggleActivated::gdeUOCLightToggleActivated( gdeObjectClass *objectClass, gdeOCLight *light ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass *objectClass, gdeOCLight *light) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light toggle activated" );
+	SetShortInfo("@GameDefinition.Undo.OCLightToggleActivated");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightToggleActivated::~gdeUOCLightToggleActivated(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -72,8 +62,8 @@ gdeUOCLightToggleActivated::~gdeUOCLightToggleActivated(){
 ///////////////
 
 void gdeUOCLightToggleActivated::Undo(){
-	pLight->SetActivated( ! pLight->GetActivated() );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetActivated(!pLight->GetActivated());
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightToggleActivated::Redo(){

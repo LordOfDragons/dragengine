@@ -50,14 +50,21 @@ private:
 	PyObject *pPyModule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<spScriptFile> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new module. */
-	spScriptFile( ScriptingPython &sp, const char *fullname, const char *path );
+	spScriptFile(ScriptingPython &sp, const char *fullname, const char *path);
+	
+protected:
 	/** \brief Cleans up the module. */
 	virtual ~spScriptFile();
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */
@@ -71,7 +78,7 @@ public:
 	inline const decString &GetModuleName() const{ return pModuleName; }
 	
 	/** \brief Retrieve owner class of a python object. */
-	static spScriptFile *GetOwnerClass( PyObject *object );
+	static spScriptFile *GetOwnerClass(PyObject *object);
 	
 	/** \brief Retrieves the python module. */
 	inline PyObject *GetPyModule() const{ return pPyModule; }
@@ -86,7 +93,7 @@ private:
 	void pCreateModuleDefinition();
 	void pCreateModule();
 	void pLoadFile();
-	void pParseImportPath( decPath &vfsPath ) const;
+	void pParseImportPath(decPath &vfsPath) const;
 };
 
 #endif

@@ -40,9 +40,7 @@
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -59,17 +57,17 @@ protected:
 	meWVNodeConstant &pNode;
 	
 public:
-	cEditVector( meWVNodeConstant &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cEditVector>;
+	cEditVector(meWVNodeConstant &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
-		if( editVector->GetVector().IsEqualTo( pNode.GetRuleConstant()->GetVector() ) ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
+		if(editVector->GetVector().IsEqualTo(pNode.GetRuleConstant()->GetVector())){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleConstSetVector( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleConstant(), editVector->GetVector() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleConstSetVector::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleConstant(), editVector->GetVector()));
 	}
 };
 
@@ -83,39 +81,38 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeConstant::meWVNodeConstant( meWindowVegetation &windowVegetation, meHTVRuleConstant *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleConstant( rule )
+meWVNodeConstant::meWVNodeConstant(meWindowVegetation &windowVegetation, meHTVRuleConstant *rule) :
+meWVNode(windowVegetation, rule),
+pRuleConstant(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Constant" );
+	SetTitle("@World.WVNodeConstant.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector value",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeConstant.Output.Vector", "@World.WVNodeConstant.Output.Vector.ToolTip",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "X", "X value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeConstant.Output.X", "@World.WVNodeConstant.Output.X.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeConstant.Output.Y", "@World.WVNodeConstant.Output.Y.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Z", "Z value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeConstant.Output.Z", "@World.WVNodeConstant.Output.Z.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 	
-	helper.EditVector( pFraParameters, "Vector:", "Vector value.", pEditVector, new cEditVector( *this ) );
+	helper.EditVector(pFraParameters, "@World.WVNodeConstant.Vector", "@World.WVNodeConstant.VectorValue.ToolTip", pEditVector, cEditVector::Ref::New(*this));
 }
 
 meWVNodeConstant::~meWVNodeConstant(){
@@ -129,5 +126,5 @@ meWVNodeConstant::~meWVNodeConstant(){
 void meWVNodeConstant::Update(){
 	meWVNode::Update();
 	
-	pEditVector->SetVector( pRuleConstant->GetVector() );
+	pEditVector->SetVector(pRuleConstant->GetVector());
 }

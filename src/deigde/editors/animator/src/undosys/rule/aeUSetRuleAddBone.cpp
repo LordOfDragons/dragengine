@@ -43,49 +43,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAddBone::aeUSetRuleAddBone( aeRule *rule, const char *pattern ){
-	if( ! rule || ! pattern ){
-		DETHROW( deeInvalidParam );
+aeUSetRuleAddBone::aeUSetRuleAddBone(aeRule *rule, const char *pattern){
+	if(!rule || !pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	const decStringSet &ruleBoneList = rule->GetListBones();
 	const deRig *engRig = rule->GetAnimator()->GetEngineRig();
 	
-	if( engRig ){
+	if(engRig){
 		const int boneCount = engRig->GetBoneCount();
 		int i;
 		
-		for( i=0; i<boneCount; i++ ){
-			const decString bone( engRig->GetBoneAt( i ).GetName() );
+		for(i=0; i<boneCount; i++){
+			const decString bone(engRig->GetBoneAt(i)->GetName());
 			
-			if( bone.MatchesPattern( pattern ) && ! ruleBoneList.Has( bone ) ){
-				pBones.Add( bone );
+			if(bone.MatchesPattern(pattern) && !ruleBoneList.Has(bone)){
+				pBones.Add(bone);
 			}
 		}
 		
 	}else{
-		if( ! ruleBoneList.Has( pattern ) ){
-			pBones.Add( pattern );
+		if(!ruleBoneList.Has(pattern)){
+			pBones.Add(pattern);
 		}
 	}
 	
-	if( pBones.GetCount() == 1 ){
-		SetShortInfo( "Add bone to rule" );
+	if(pBones.GetCount() == 1){
+		SetShortInfo("@Animator.Undo.SetRuleAddBone");
 		
 	}else{
-		SetShortInfo( "Add bones to rule" );
+		SetShortInfo("@Animator.Undo.SetRuleAddBones");
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAddBone::~aeUSetRuleAddBone(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -97,8 +93,8 @@ void aeUSetRuleAddBone::Undo(){
 	const int count = pBones.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->RemoveBone( pBones.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->RemoveBone(pBones.GetAt(i));
 	}
 }
 
@@ -106,7 +102,7 @@ void aeUSetRuleAddBone::Redo(){
 	const int count = pBones.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->AddBone( pBones.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->AddBone(pBones.GetAt(i));
 	}
 }

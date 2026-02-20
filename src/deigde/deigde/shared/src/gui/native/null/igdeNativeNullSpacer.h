@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLSPACER_H_
 #define _IGDENATIVENULLSPACER_H_
 
+#include "../../igdeSpacer.h"
+
 class igdeSpacer;
 
 
 /**
  * Null Spacer.
  */
-class igdeNativeNullSpacer{
+class igdeNativeNullSpacer : public igdeSpacer::cNativeSpacer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullSpacer();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSpacer* CreateNativeWidget( igdeSpacer &owner );
+	static igdeNativeNullSpacer* CreateNativeWidget(igdeSpacer &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -56,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Set size. */
-	virtual void SetSize( int width, int height );
+	void SetSize(int width, int height) override;
 };
 
 typedef igdeNativeNullSpacer igdeNativeSpacer;

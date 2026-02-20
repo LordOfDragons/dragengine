@@ -41,31 +41,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCOffset::meUDecalTCOffset( meDecal *decal, const decVector2 &newOffset ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Decal Texture Offset" );
+	SetShortInfo("@World.UDecalTCOffset.DecalTextureOffset");
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
 	pOldOffset = decal->GetTexCoordOffset();
 	pNewOffset = newOffset;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCOffset::~meUDecalTCOffset(){
-	if( pDecal ){
-		pDecal->FreeReference();
-	}
 }
 
 
@@ -74,11 +70,11 @@ meUDecalTCOffset::~meUDecalTCOffset(){
 ///////////////
 
 void meUDecalTCOffset::Undo(){
-	pDecal->SetTexCoordOffset( pOldOffset );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetTexCoordOffset(pOldOffset);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalTCOffset::Redo(){
-	pDecal->SetTexCoordOffset( pNewOffset );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetTexCoordOffset(pNewOffset);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

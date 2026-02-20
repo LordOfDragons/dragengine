@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
 
 
 
@@ -36,9 +36,13 @@ class ceCAPlayerChoice;
  * \brief Undo Action Player Choice Set Variable Name.
  */
 class ceUCAPChoiceSetVarName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAPChoiceSetVarName>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
 	decString pOldName;
 	decString pNewName;
 	
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceSetVarName( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName );
+	ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAPChoiceSetVarName();
+	~ceUCAPChoiceSetVarName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

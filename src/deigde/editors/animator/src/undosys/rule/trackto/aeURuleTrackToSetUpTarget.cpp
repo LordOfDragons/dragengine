@@ -39,25 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleTrackToSetUpTarget::aeURuleTrackToSetUpTarget( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleTrackToSetUpTarget::aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldTarget = rule->GetUpTarget();
 	pNewTarget = newTarget;
 	
-	SetShortInfo( "TrackTo Set Up Target" );
+	SetShortInfo("@Animator.Undo.RuleTrackToSetUpTarget");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetUpTarget::~aeURuleTrackToSetUpTarget(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ aeURuleTrackToSetUpTarget::~aeURuleTrackToSetUpTarget(){
 ///////////////
 
 void aeURuleTrackToSetUpTarget::Undo(){
-	pRule->SetUpTarget( pOldTarget );
+	pRule->SetUpTarget(pOldTarget);
 }
 
 void aeURuleTrackToSetUpTarget::Redo(){
-	pRule->SetUpTarget( pNewTarget );
+	pRule->SetUpTarget(pNewTarget);
 }

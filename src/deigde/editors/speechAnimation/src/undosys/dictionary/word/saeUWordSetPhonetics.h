@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class saeWord;
+#include "../../../sanimation/dictionary/saeWord.h"
 
 
 
@@ -37,8 +37,12 @@ class saeWord;
  * Undo Action Word Set Phonetics.
  */
 class saeUWordSetPhonetics : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUWordSetPhonetics>;
+	
+	
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decUnicodeString pOldPhonetics;
 	decUnicodeString pNewPhonetics;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordSetPhonetics( saeWord *word, const decUnicodeString &newPhonetics );
+	saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUWordSetPhonetics();
+	~saeUWordSetPhonetics() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

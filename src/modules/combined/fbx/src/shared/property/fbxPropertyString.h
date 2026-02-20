@@ -35,6 +35,10 @@
  * \brief FBX property string.
  */
 class fbxPropertyString : public fbxProperty{
+public:
+	using Ref = deTObjectReference<fbxPropertyString>;
+	
+	
 private:
 	decString pValue;
 	
@@ -47,11 +51,11 @@ public:
 	fbxPropertyString();
 	
 	/** \brief Load property. */
-	fbxPropertyString( decBaseFileReader &reader );
+	explicit fbxPropertyString(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~fbxPropertyString();
+	~fbxPropertyString() override;
 	/*@}*/
 	
 	
@@ -63,18 +67,18 @@ public:
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Casting throwing exception if wrong type. */
-	virtual fbxPropertyString &CastString();
+	fbxPropertyString &CastString() override;
 	
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	void Save(decBaseFileWriter &writer) override;
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const override;
 	/*@}*/
 };
 

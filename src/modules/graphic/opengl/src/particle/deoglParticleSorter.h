@@ -25,9 +25,10 @@
 #ifndef _DEOGLPARTICLESORTER_H_
 #define _DEOGLPARTICLESORTER_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglAddToRenderTaskParticles;
 class deoglRParticleEmitterInstance;
-
 
 
 /**
@@ -36,43 +37,47 @@ class deoglRParticleEmitterInstance;
 class deoglParticleSorter{
 public:
 	struct sParticle{
-		deoglRParticleEmitterInstance *instance;
-		int particle;
-		float distance;
+		deoglRParticleEmitterInstance *instance = nullptr;
+		int particle = 0;
+		float distance = 0.0f;
+		
+		inline sParticle() = default;
+		inline sParticle(deoglRParticleEmitterInstance *inst, int part, float dist) :
+		instance(inst), particle(part), distance(dist){}
 	};
 	
+	
 private:
-	sParticle **pParticles;
-	int pParticleCount;
-	int pParticleSize;
+	decTList<sParticle> pParticles;
+	decTList<const sParticle*> pSortedParticles;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new particle sorter. */
-	deoglParticleSorter();
-	/** Cleans up the particle sorter. */
-	virtual ~deoglParticleSorter();
+	deoglParticleSorter() = default;
 	/*@}*/
+	
 	
 	/** \name Management */
 	/*@{*/
+	/** Sorted particles. */
+	inline const decTList<const sParticle*> &GetSortedParticles() const{ return pSortedParticles; }
+	
 	/** Retrieves the number of particles. */
-	inline int GetParticleCount() const{ return pParticleCount; }
+	inline int GetParticleCount() const{ return pSortedParticles.GetCount(); }
 	/** Retrieves the particle at the given position. */
-	const sParticle &GetParticleAt( int index ) const;
+	const sParticle &GetParticleAt(int index) const;
 	/** Add particles to a render task particles. */
-	void AddToRenderTask( deoglAddToRenderTaskParticles &renderTask );
+	void AddToRenderTask(deoglAddToRenderTaskParticles &renderTask);
 	/** Clears the sorter. */
 	void Clear();
 	/** Adds a particle. */
-	void AddParticle( deoglRParticleEmitterInstance *instance, int particle, float distance );
+	void AddParticle(deoglRParticleEmitterInstance *instance, int particle, float distance);
 	/** Sort particles. */
 	void Sort();
 	/*@}*/
-	
-private:
-	void pSortParticle( int left, int right );
 };
 
 #endif

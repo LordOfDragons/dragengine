@@ -43,50 +43,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeLink::aeLink( const char *name ) :
-pAnimator( NULL ),
-pEngLink( NULL ),
-pName( name ),
-pController( NULL ),
-pRepeat( 1 ),
-pBoneParameter( deAnimatorLink::ebpPositionZ ),
-pBoneMinimum( 0.0f ),
-pBoneMaximum( 1.0f ),
-pVertexPositionSetMinimum( 0.0f ),
-pVertexPositionSetMaximum( 1.0f ),
-pWrapY( false )
+aeLink::aeLink(const char *name) :
+pAnimator(nullptr),
+pEngLink(nullptr),
+pName(name),
+pRepeat(1),
+pBoneParameter(deAnimatorLink::ebpPositionZ),
+pBoneMinimum(0.0f),
+pBoneMaximum(1.0f),
+pVertexPositionSetMinimum(0.0f),
+pVertexPositionSetMaximum(1.0f),
+pWrapY(false)
 {
 	pCurve.SetDefaultLinear();
 }
 
-aeLink::aeLink( const aeLink &copy ) :
-pAnimator( NULL ),
-pEngLink( NULL ),
-pName( copy.pName ),
-pController( NULL ),
-pRepeat( copy.pRepeat ),
-pCurve( copy.pCurve ),
-pBone( copy.pBone ),
-pBoneParameter( copy.pBoneParameter ),
-pBoneMinimum( copy.pBoneMinimum ),
-pBoneMaximum( copy.pBoneMaximum ),
-pVertexPositionSet( copy.pVertexPositionSet ),
-pVertexPositionSetMinimum( copy.pVertexPositionSetMinimum ),
-pVertexPositionSetMaximum( copy.pVertexPositionSetMaximum ),
-pWrapY( copy.pWrapY )
+aeLink::aeLink(const aeLink &copy) :
+pAnimator(nullptr),
+pEngLink(nullptr),
+pName(copy.pName),
+pRepeat(copy.pRepeat),
+pCurve(copy.pCurve),
+pBone(copy.pBone),
+pBoneParameter(copy.pBoneParameter),
+pBoneMinimum(copy.pBoneMinimum),
+pBoneMaximum(copy.pBoneMaximum),
+pVertexPositionSet(copy.pVertexPositionSet),
+pVertexPositionSetMinimum(copy.pVertexPositionSetMinimum),
+pVertexPositionSetMaximum(copy.pVertexPositionSetMaximum),
+pWrapY(copy.pWrapY)
 {
 	pController = copy.pController;
-	if( pController ){
-		pController->AddReference();
-	}
 }
 
 aeLink::~aeLink(){
-	SetAnimator( NULL );
-	
-	if( pController ){
-		pController->FreeReference();
-	}
+	SetAnimator(nullptr);
 }
 
 
@@ -94,41 +85,31 @@ aeLink::~aeLink(){
 // Management
 ///////////////
 
-void aeLink::SetAnimator( aeAnimator *animator ){
-	if( animator == pAnimator ){
+void aeLink::SetAnimator(aeAnimator *animator){
+	if(animator == pAnimator){
 		return;
 	}
 	
-	if( pAnimator && pEngLink ){
-		pAnimator->GetEngineAnimator()->RemoveLink( pEngLink );
-		pEngLink = NULL;
+	if(pAnimator && pEngLink){
+		pAnimator->GetEngineAnimator()->RemoveLink(pEngLink);
+		pEngLink = nullptr;
 	}
 	
 	pAnimator = animator;
 	
-	if( animator ){
-		deAnimatorLink *link = NULL;
-		
-		try{
-			link = new deAnimatorLink;
-			animator->GetEngineAnimator()->AddLink( link );
-			pEngLink = link;
-			
-		}catch( const deException & ){
-			if( link ){
-				delete link;
-			}
-			throw;
-		}
+	if(animator){
+		const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
+		animator->GetEngineAnimator()->AddLink(link);
+		pEngLink = link;
 		
 		UpdateController();
 		
-		pEngLink->SetRepeat( pRepeat );
-		pEngLink->SetBone( pBone );
-		pEngLink->SetBoneParameter( pBoneParameter );
-		pEngLink->SetVertexPositionSet( pVertexPositionSet );
-		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
-		pEngLink->SetWrapY( pWrapY );
+		pEngLink->SetRepeat(pRepeat);
+		pEngLink->SetBone(pBone);
+		pEngLink->SetBoneParameter(pBoneParameter);
+		pEngLink->SetVertexPositionSet(pVertexPositionSet);
+		pEngLink->SetVertexPositionSetValueRange(pVertexPositionSetMinimum, pVertexPositionSetMaximum);
+		pEngLink->SetWrapY(pWrapY);
 		pUpdateBoneLimits();
 		
 		NotifyLinkChanged();
@@ -137,63 +118,53 @@ void aeLink::SetAnimator( aeAnimator *animator ){
 	}
 }
 
-void aeLink::SetName( const char *name ){
-	if( pName.Equals( name ) ){
+void aeLink::SetName(const char *name){
+	if(pName.Equals(name)){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkNameChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkNameChanged(this);
 	}
 }
 
-void aeLink::SetController( aeController *controller, bool notify ){
-	if( controller == pController ){
+void aeLink::SetController(aeController *controller, bool notify){
+	if(controller == pController){
 		return;
 	}
-	
-	if( pController ){
-		pController->FreeReference();
-	}
-	
 	pController = controller;
-	
-	if( controller ){
-		controller->AddReference();
-	}
-	
 	UpdateController();
 	
-	if( pAnimator && notify ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator && notify){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetRepeat( int repeat ){
-	if( repeat < 1 ){
-		DETHROW( deeInvalidParam );
+void aeLink::SetRepeat(int repeat){
+	if(repeat < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( repeat == pRepeat ){
+	if(repeat == pRepeat){
 		return;
 	}
 	
 	pRepeat = repeat;
 	
-	if( pEngLink ){
-		pEngLink->SetRepeat( pRepeat );
+	if(pEngLink){
+		pEngLink->SetRepeat(pRepeat);
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetCurve( const decCurveBezier &curve ){
-	if( curve == pCurve ){
+void aeLink::SetCurve(const decCurveBezier &curve){
+	if(curve == pCurve){
 		return;
 	}
 	
@@ -201,173 +172,173 @@ void aeLink::SetCurve( const decCurveBezier &curve ){
 	
 	pUpdateCurve();
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetBone( const char *bone ){
-	if( pBone == bone ){
+void aeLink::SetBone(const char *bone){
+	if(pBone == bone){
 		return;
 	}
 	
 	pBone = bone;
 	
-	if( pEngLink ){
-		pEngLink->SetBone( pBone );
+	if(pEngLink){
+		pEngLink->SetBone(pBone);
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetBoneParameter( deAnimatorLink::eBoneParameter parameter ){
-	if( pBoneParameter == parameter ){
+void aeLink::SetBoneParameter(deAnimatorLink::eBoneParameter parameter){
+	if(pBoneParameter == parameter){
 		return;
 	}
 	
 	pBoneParameter = parameter;
 	
-	if( pEngLink ){
-		pEngLink->SetBoneParameter( pBoneParameter );
+	if(pEngLink){
+		pEngLink->SetBoneParameter(pBoneParameter);
 		pUpdateBoneLimits();
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetBoneMinimum( float value ){
-	if( fabsf( pBoneMinimum - value ) < FLOAT_SAFE_EPSILON ){
+void aeLink::SetBoneMinimum(float value){
+	if(fabsf(pBoneMinimum - value) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBoneMinimum = value;
 	
-	if( pEngLink ){
+	if(pEngLink){
 		pUpdateBoneLimits();
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetBoneMaximum( float value ){
-	if( fabsf( pBoneMaximum - value ) < FLOAT_SAFE_EPSILON ){
+void aeLink::SetBoneMaximum(float value){
+	if(fabsf(pBoneMaximum - value) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBoneMaximum = value;
 	
-	if( pEngLink ){
+	if(pEngLink){
 		pUpdateBoneLimits();
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetVertexPositionSet( const char *vertexPositionSet ){
-	if( pVertexPositionSet == vertexPositionSet ){
+void aeLink::SetVertexPositionSet(const char *vertexPositionSet){
+	if(pVertexPositionSet == vertexPositionSet){
 		return;
 	}
 	
 	pVertexPositionSet = vertexPositionSet;
 	
-	if( pEngLink ){
-		pEngLink->SetVertexPositionSet( pVertexPositionSet );
+	if(pEngLink){
+		pEngLink->SetVertexPositionSet(pVertexPositionSet);
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetVertexPositionSetMinimum( float value ){
-	if( fabsf( pVertexPositionSetMinimum - value ) < FLOAT_SAFE_EPSILON ){
+void aeLink::SetVertexPositionSetMinimum(float value){
+	if(fabsf(pVertexPositionSetMinimum - value) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pVertexPositionSetMinimum = value;
 	
-	if( pEngLink ){
-		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+	if(pEngLink){
+		pEngLink->SetVertexPositionSetValueRange(pVertexPositionSetMinimum, pVertexPositionSetMaximum);
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetVertexPositionSetMaximum( float value ){
-	if( fabsf( pVertexPositionSetMaximum - value ) < FLOAT_SAFE_EPSILON ){
+void aeLink::SetVertexPositionSetMaximum(float value){
+	if(fabsf(pVertexPositionSetMaximum - value) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pVertexPositionSetMaximum = value;
 	
-	if( pEngLink ){
-		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+	if(pEngLink){
+		pEngLink->SetVertexPositionSetValueRange(pVertexPositionSetMinimum, pVertexPositionSetMaximum);
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
-void aeLink::SetWrapY( bool wrap ){
-	if( wrap == pWrapY ){
+void aeLink::SetWrapY(bool wrap){
+	if(wrap == pWrapY){
 		return;
 	}
 	
 	pWrapY = wrap;
 	
-	if( pEngLink ){
-		pEngLink->SetWrapY( wrap );
+	if(pEngLink){
+		pEngLink->SetWrapY(wrap);
 		NotifyLinkChanged();
 	}
 	
-	if( pAnimator ){
-		pAnimator->NotifyLinkChanged( this );
+	if(pAnimator){
+		pAnimator->NotifyLinkChanged(this);
 	}
 }
 
 
 
 void aeLink::NotifyLinkChanged(){
-	if( pEngLink && pAnimator ){
+	if(pEngLink && pAnimator){
 		deAnimator *engAnimator = pAnimator->GetEngineAnimator();
 		
-		engAnimator->NotifyLinkChangedAt( engAnimator->IndexOfLink( pEngLink ) );
+		engAnimator->NotifyLinkChangedAt(engAnimator->GetLinks().IndexOf(pEngLink));
 	}
 }
 
 
 
 void aeLink::UpdateController(){
-	if( ! pEngLink ){
+	if(!pEngLink){
 		return;
 	}
 	
 	deAnimator *engAnimator = pAnimator->GetEngineAnimator();
 	int indexController = -1;
 	
-	if( pController && engAnimator ){
+	if(pController && engAnimator){
 		indexController = pController->GetEngineControllerIndex();
 	}
 	
-	pEngLink->SetController( indexController );
+	pEngLink->SetController(indexController);
 	
 	NotifyLinkChanged();
 }
@@ -377,10 +348,10 @@ void aeLink::UpdateController(){
 // Operators
 //////////////
 
-aeLink &aeLink::operator=( const aeLink &copy ){
-	SetName( copy.pName );
-	SetController( copy.pController );
-	SetRepeat( copy.pRepeat );
+aeLink &aeLink::operator=(const aeLink &copy){
+	SetName(copy.pName);
+	SetController(copy.pController);
+	SetRepeat(copy.pRepeat);
 	pCurve = copy.pCurve;
 	pBone = copy.pBone;
 	pBoneParameter = copy.pBoneParameter;
@@ -394,28 +365,28 @@ aeLink &aeLink::operator=( const aeLink &copy ){
 }
 
 void aeLink::pUpdateCurve(){
-	if( ! pEngLink ){
+	if(!pEngLink){
 		return;
 	}
 	
-	pEngLink->SetCurve( pCurve );
+	pEngLink->SetCurve(pCurve);
 	
 	NotifyLinkChanged();
 }
 
 void aeLink::pUpdateBoneLimits(){
-	if( ! pEngLink ){
+	if(!pEngLink){
 		return;
 	}
 	
-	switch( pBoneParameter ){
+	switch(pBoneParameter){
 	case deAnimatorLink::ebpRotationX:
 	case deAnimatorLink::ebpRotationY:
 	case deAnimatorLink::ebpRotationZ:
-		pEngLink->SetBoneValueRange( pBoneMinimum * DEG2RAD, pBoneMaximum * DEG2RAD );
+		pEngLink->SetBoneValueRange(pBoneMinimum * DEG2RAD, pBoneMaximum * DEG2RAD);
 		break;
 		
 	default:
-		pEngLink->SetBoneValueRange( pBoneMinimum, pBoneMaximum );
+		pEngLink->SetBoneValueRange(pBoneMinimum, pBoneMaximum);
 	}
 }

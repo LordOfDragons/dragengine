@@ -39,6 +39,10 @@
  *          to handle invalid or unknown commands.
  */
 class ceCAGameCommand : public ceConversationAction{
+public:
+	using Ref = deTObjectReference<ceCAGameCommand>;
+	
+	
 private:
 	decString pCommand;
 	
@@ -48,9 +52,11 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAGameCommand();
 	/** \brief Creates a new conversation action. */
-	ceCAGameCommand( const ceCAGameCommand &action );
+	ceCAGameCommand(const ceCAGameCommand &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCAGameCommand();
+protected:
+	~ceCAGameCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -58,10 +64,10 @@ public:
 	/** \brief Retrieves the command string. */
 	inline const decString &GetCommand() const{ return pCommand; }
 	/** \brief Sets the command string. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

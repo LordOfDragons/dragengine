@@ -38,7 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsClearCondition::ceWPTMAWaitActionsClearCondition( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait ) :
-ceWPTMenuAction( windowMain, "Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pWait( &wait )
+ceWPTMAWaitActionsClearCondition::ceWPTMAWaitActionsClearCondition(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.ClearCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pWait(&wait)
 {
-	SetEnabled( wait.GetCondition() != NULL );
+	SetEnabled(wait.GetCondition() != nullptr);
 }
 
 
@@ -64,7 +64,6 @@ pWait( &wait )
 ///////////////
 
 void ceWPTMAWaitActionsClearCondition::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAWaitSetCondition( pTopic, pWait, NULL ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(ceUCAWaitSetCondition::Ref::New(
+		pTopic, pWait, nullptr));
 }

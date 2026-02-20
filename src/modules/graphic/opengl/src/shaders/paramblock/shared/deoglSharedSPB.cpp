@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSharedSPB.h"
 #include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
@@ -41,22 +37,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPB::deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock ) :
-pParameterBlock( parameterBlock ),
-pElements( NULL ),
-pSize( parameterBlock->GetElementCount() ),
-pCount( 0 )
+deoglSharedSPB::deoglSharedSPB(const deoglShaderParameterBlock::Ref &parameterBlock) :
+pParameterBlock(parameterBlock),
+pCount(0)
 {
-	DEASSERT_TRUE( parameterBlock->GetElementCount() >= 1 )
+	const int size = parameterBlock->GetElementCount();
+	DEASSERT_TRUE(size >= 1)
 	
-	pElements = new deoglSharedSPBElement*[ pSize ];
-	memset( pElements, '\0', sizeof( deoglSharedSPB* ) * pSize );
-}
-
-deoglSharedSPB::~deoglSharedSPB(){
-	if( pElements ){
-		delete [] pElements;
-	}
+	pElements = decTList<deoglSharedSPBElement*>(size, nullptr);
 }
 
 
@@ -64,34 +52,34 @@ deoglSharedSPB::~deoglSharedSPB(){
 // Management
 ///////////////
 
-deoglSharedSPBElement *deoglSharedSPB::GetElementAt( int index ) const{
-	return pElements[ index ];
+deoglSharedSPBElement *deoglSharedSPB::GetElementAt(int index) const{
+	return pElements.GetAt(index);
 }
 
-deoglSharedSPBElement *deoglSharedSPB::AddElement(){
-	if( pCount == pSize ){
-		return NULL;
+deoglSharedSPBElement::Ref deoglSharedSPB::AddElement(){
+	const int size = pElements.GetCount();
+	if(pCount == size){
+		return {};
 	}
 	
 	int i;
-	for( i=0; i<pSize; i++ ){
-		if( pElements[ i ] ){
+	for(i=0; i<size; i++){
+		if(pElements.GetAt(i)){
 			continue;
 		}
 		
-		pElements[ i ] = new deoglSharedSPBElement( *this, i );
+		const auto element = deoglSharedSPBElement::Ref::New(*this, i);
+		pElements.SetAt(i, element);
 		pCount++;
-		return pElements[ i ];
+		return element;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deoglSharedSPB::RemoveElement( int index ){
-	if( index < 0 || index >= pSize || ! pElements[ index ] ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglSharedSPB::RemoveElement(int index){
+	DEASSERT_NOTNULL(pElements.GetAt(index))
 	
-	pElements[ index ] = NULL;
+	pElements.SetAt(index, nullptr);
 	pCount--;
 }

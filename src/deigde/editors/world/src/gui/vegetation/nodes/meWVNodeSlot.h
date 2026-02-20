@@ -36,6 +36,10 @@ class meWVNode;
  */
 class meWVNodeSlot : public igdeNVSlot{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meWVNodeSlot>;
+	
+	
 	/** \brief Slot Types. */
 	enum eSlotTypes{
 		estValue,
@@ -55,12 +59,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create slot. */
-	meWVNodeSlot( igdeEnvironment &environment, const char *text, const char *description,
-		bool isInput, meWVNode &node, eSlotTypes type, int ruleSlot );
+	meWVNodeSlot(igdeEnvironment &environment, const char *text, const char *description,
+		bool isInput, meWVNode &node, eSlotTypes type, int ruleSlot);
 	
 protected:
 	/** \brief Clean up slot. */
-	virtual ~meWVNodeSlot();
+	~meWVNodeSlot() override;
 	/*@}*/
 	
 	

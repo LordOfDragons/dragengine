@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projWindowMainListener::projWindowMainListener( projWindowMain &window ) :
-pWindow( window ){
+projWindowMainListener::projWindowMainListener(projWindowMain &window) :
+pWindow(window){
 }
 
 projWindowMainListener::~projWindowMainListener(){
@@ -54,27 +54,27 @@ projWindowMainListener::~projWindowMainListener(){
 // Notifications
 //////////////////
 
-void projWindowMainListener::StateChanged( projProject* ){
+void projWindowMainListener::StateChanged(projProject*){
 }
 
-void projWindowMainListener::UndoChanged( projProject* ){
+void projWindowMainListener::UndoChanged(projProject*){
 	pWindow.GetActionEditUndo()->Update();
 	pWindow.GetActionEditRedo()->Update();
 }
 
-void projWindowMainListener::ProjectChanged( projProject* ){
+void projWindowMainListener::ProjectChanged(projProject*){
 	pWindow.GetActionDistSave()->Update();
 	pWindow.UpdateShowActionPath();
 }
 
-void projWindowMainListener::ProfileStructureChanged( projProject* ){
+void projWindowMainListener::ProfileStructureChanged(projProject*){
 	pWindow.GetActionProfileRemove()->Update();
 	pWindow.GetActionProfileDuplicate()->Update();
 	pWindow.GetActionProfileDistribute()->Update();
 	pWindow.GetActionProfileTestRun()->Update();
 }
 
-void projWindowMainListener::ActiveProfileChanged( projProject* ){
+void projWindowMainListener::ActiveProfileChanged(projProject*){
 	pWindow.GetActionProfileRemove()->Update();
 	pWindow.GetActionProfileDuplicate()->Update();
 	pWindow.GetActionProfileDistribute()->Update();

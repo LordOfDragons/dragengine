@@ -25,9 +25,10 @@
 #ifndef _DESYNSYNTHESIZERSOURCECHAIN_H_
 #define _DESYNSYNTHESIZERSOURCECHAIN_H_
 
-
 #include "desynSynthesizerSource.h"
 #include "../../desynBasics.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 class desynSound;
 
@@ -52,8 +53,7 @@ private:
 		void Clear();
 	};
 	
-	sSound *pSounds;
-	int pSoundCount;
+	decTList<sSound> pSounds;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -70,11 +70,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSourceChain( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceChain &source );
+	desynSynthesizerSourceChain(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceChain &source);
 	
 	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSourceChain();
+	~desynSynthesizerSourceChain() override;
 	/*@}*/
 	
 	
@@ -96,13 +96,13 @@ public:
 	
 	
 	/** \brief Speed target. */
-	float GetSpeed( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetSpeed(const desynSynthesizerInstance &instance, int sample) const;
 	
 	/** \brief Select target. */
-	int GetSelect( const desynSynthesizerInstance &instance, int sample ) const;
+	int GetSelect(const desynSynthesizerInstance &instance, int sample) const;
 	
 	/** \brief Play from target. */
-	float GetPlay( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetPlay(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -111,10 +111,13 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	int StateDataSizeSource(int offset) override;
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	void InitStateDataSource(char *stateData) override;
+	
+	/** Clean up state data of source itself. */
+	void CleanUpStateDataSource(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound using source.
@@ -124,8 +127,8 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) override;
 	
 	/**
 	 * \brief Generate mono sound.
@@ -133,8 +136,8 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSoundMono( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundMono(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Generate stereo sound.
@@ -142,8 +145,8 @@ public:
 	 * \param[in] offset Offset in samples to start producing sound at.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSoundStereo( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundStereo(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
@@ -152,8 +155,8 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) override;
 	/*@}*/
 };
 

@@ -29,7 +29,7 @@
 #include "deoglRFontGlyphs.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 
@@ -38,7 +38,8 @@
  */
 class deoglRFont : public deObject{
 public:
-	typedef deTObjectReference<deoglRFont> Ref;
+	using Ref = deTObjectReference<deoglRFont>;
+	
 	
 private:
 	const decString pFilename;
@@ -46,7 +47,7 @@ private:
 	
 	deoglRFontGlyphs pGlyphs;
 	
-	decObjectList pSizes;
+	decTObjectList<deoglRFontSize> pSizes;
 	deMutex pMutex;
 	
 	
@@ -54,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render font. */
-	deoglRFont( deoglRenderThread &renderThread, const deFont &font );
+	deoglRFont(deoglRenderThread &renderThread, const deFont &font);
 	
 protected:
 	/** Clean up render font. */

@@ -27,9 +27,10 @@
 
 #include "../igdeWidget.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
+
 
 
 /**
@@ -37,10 +38,21 @@
  * 
  * Calls OnAction() if user clicks the menu entry and it is enabled.
  */
-class DE_DLL_EXPORT igdeMenuCommand : public igdeWidget, igdeActionListener{
+class DE_DLL_EXPORT igdeMenuCommand : public igdeWidget, public igdeActionListener{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuCommand> Ref;
+	using Ref = deTObjectReference<igdeMenuCommand>;
+	
+	
+	class cNativeMenuCommand{
+	public:
+		virtual ~cNativeMenuCommand() = default;
+		virtual void UpdateText() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateHotKey() = 0;
+		virtual void UpdateIcon() = 0;
+		virtual void UpdateEnabled() = 0;
+	};
 	
 	
 private:
@@ -48,20 +60,23 @@ private:
 	decString pDescription;
 	igdeHotKey pHotKey;
 	deInputEvent::eKeyCodes pMnemonic;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
+	
+protected:
+	cNativeMenuCommand *pNativeMenuCommand;
 	
 	
 public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuCommand( igdeEnvironment &environment );
+	igdeMenuCommand(igdeEnvironment &environment);
 	
 	/** \brief Create menu entry. */
-	igdeMenuCommand( igdeEnvironment &environment, igdeAction *action );
+	igdeMenuCommand(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -72,7 +87,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMenuCommand();
+	~igdeMenuCommand() override;
 	/*@}*/
 	
 	
@@ -84,43 +99,43 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text shown in the menu entry. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Hot-Key. */
 	const igdeHotKey &GetHotKey() const{ return pHotKey; }
 	
 	/** \brief Set Hot-Key. */
-	void SetHotKey( const igdeHotKey &hotKey );
+	void SetHotKey(const igdeHotKey &hotKey);
 	
 	/** \brief Mnemonic key or ekcUndefined if not used. */
 	inline deInputEvent::eKeyCodes GetMnemonic() const{ return pMnemonic; }
 	
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
-	void SetMnemonic( deInputEvent::eKeyCodes mnemonic );
+	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if menu entry is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	/** \brief Set action or nullptr. */
+	void SetAction(igdeAction *action);
 	
 	
 	
@@ -132,10 +147,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -149,14 +164,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -177,6 +197,9 @@ protected:
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

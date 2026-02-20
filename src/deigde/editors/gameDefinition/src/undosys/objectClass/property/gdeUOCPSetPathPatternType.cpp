@@ -39,34 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetPathPatternType::gdeUOCPSetPathPatternType( gdeObjectClass *objectClass,
-gdeProperty *property, gdeProperty::ePathPatternTypes newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetPathPatternType::gdeUOCPSetPathPatternType(gdeObjectClass *objectClass,
+gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set path pattern type" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetPathPatternType");
 	
 	pOldValue = property->GetPathPatternType();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetPathPatternType::~gdeUOCPSetPathPatternType(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCPSetPathPatternType::~gdeUOCPSetPathPatternType(){
 ///////////////
 
 void gdeUOCPSetPathPatternType::Undo(){
-	pProperty->SetPathPatternType( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetPathPatternType::Redo(){
-	pProperty->SetPathPatternType( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

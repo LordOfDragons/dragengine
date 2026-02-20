@@ -18,11 +18,11 @@ private:
 	
 public:
 	detCurveBezier3D();
-	~detCurveBezier3D();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detCurveBezier3D() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 private:
 	void TestInitial();

@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRule;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRule.h"
 
 
 
@@ -41,25 +41,35 @@ class meHTVRule;
  * Undo action for adding a height terrain vegetation rule.
  */
 class meUHTVRuleAdd : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleAdd>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRule *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRule::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleAdd( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleAdd();
+
+protected:
+	~meUHTVRuleAdd() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

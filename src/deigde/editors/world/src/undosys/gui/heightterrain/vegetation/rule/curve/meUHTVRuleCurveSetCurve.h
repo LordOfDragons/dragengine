@@ -30,8 +30,8 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 
 
-class meHTVegetationLayer;
-class meHTVRuleCurve;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleCurve.h"
 
 
 
@@ -39,9 +39,13 @@ class meHTVRuleCurve;
  * \brief Undo Height Terrain Vegetation Rule Curve Set Curve.
  */
 class meUHTVRuleCurveSetCurve : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleCurveSetCurve>;
+	
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCurve *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCurve::Ref pRule;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
@@ -51,11 +55,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCurveSetCurve( meHTVegetationLayer *vlayer, meHTVRuleCurve *rule, const decCurveBezier &newCurve );
+	meUHTVRuleCurveSetCurve(meHTVegetationLayer *vlayer, meHTVRuleCurve *rule, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleCurveSetCurve();
+
+protected:
+	~meUHTVRuleCurveSetCurve() override;
+
+public:
 	/*@}*/
 	
 	
@@ -64,13 +72,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new curve. */
-	void SetNewCurve( const decCurveBezier &curve );
+	void SetNewCurve(const decCurveBezier &curve);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

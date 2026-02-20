@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -41,26 +41,30 @@ class aeRuleStateManipulator;
  * Undo to set enable size of a state modifier rule.
  */
 class aeUSetRuleSModEnableSize : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleSModEnableSize>;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModEnableSize( aeRuleStateManipulator *rule );
+	aeUSetRuleSModEnableSize(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModEnableSize();
+	~aeUSetRuleSModEnableSize() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

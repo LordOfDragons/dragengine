@@ -48,41 +48,41 @@ deoglModelFace::~deoglModelFace(){
 // Management
 ///////////////
 
-void deoglModelFace::SetVertex1( int vertex ){
-	pVertices[ 0 ] = vertex;
+void deoglModelFace::SetVertex1(int vertex){
+	pVertices[0] = vertex;
 }
 
-void deoglModelFace::SetVertex2( int vertex ){
-	pVertices[ 1 ] = vertex;
+void deoglModelFace::SetVertex2(int vertex){
+	pVertices[1] = vertex;
 }
 
-void deoglModelFace::SetVertex3( int vertex ){
-	pVertices[ 2 ] = vertex;
+void deoglModelFace::SetVertex3(int vertex){
+	pVertices[2] = vertex;
 }
 
-void deoglModelFace::SetVertexAt( int index, int vertex ){
-	if( index < 0 || index > 2 ) DETHROW( deeInvalidParam );
+void deoglModelFace::SetVertexAt(int index, int vertex){
+	if(index < 0 || index > 2) DETHROW(deeInvalidParam);
 	
-	pVertices[ index ] = vertex;
+	pVertices[index] = vertex;
 }
 
-void deoglModelFace::SetFaceNormal( const decVector &normal ){
+void deoglModelFace::SetFaceNormal(const decVector &normal){
 	pFaceNormal = normal;
 }
 
-void deoglModelFace::SetExtends( const decVector &minExtend, const decVector &maxExtend ){
+void deoglModelFace::SetExtends(const decVector &minExtend, const decVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
-void deoglModelFace::SetCenter( const decVector &center ){
+void deoglModelFace::SetCenter(const decVector &center){
 	pCenter = center;
 }
 
-void deoglModelFace::SetTexture( int texture ){
+void deoglModelFace::SetTexture(int texture){
 	pTexture = texture;
 }
 
-void deoglModelFace::SetIndex( int index ){
+void deoglModelFace::SetIndex(int index){
 	pIndex = index;
 }

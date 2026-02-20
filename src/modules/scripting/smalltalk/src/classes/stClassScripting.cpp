@@ -48,9 +48,9 @@ struct csScripting : public csObject{
 // Constructor, destructor
 ////////////////////////////
 
-stClassScripting::stClassScripting( ScriptingSmalltalk *st ) :
-pST( st ),
-pSingleton( NULL ){
+stClassScripting::stClassScripting(ScriptingSmalltalk *st) :
+pST(st),
+pSingleton(NULL){
 }
 
 stClassScripting::~stClassScripting(){
@@ -62,32 +62,32 @@ stClassScripting::~stClassScripting(){
 // Management
 ///////////////
 
-ScriptingSmalltalk &stClassScripting::GetSTFromOOP( OOP object ){
-	return *( ( csScripting* )OOP_TO_OBJ( object ) )->st;
+ScriptingSmalltalk &stClassScripting::GetSTFromOOP(OOP object){
+	return *((csScripting*)OOP_TO_OBJ(object))->st;
 }
 
 void stClassScripting::CreateSingleton(){
 	OOP oopClass = NULL;
 	
-	oopClass = gst_class_name_to_oop( "DEScripting" );
-	if( ! oopClass ){
-		DETHROW( deeInvalidParam );
+	oopClass = gst_class_name_to_oop("DEScripting");
+	if(!oopClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSingleton = pST->CreateNewObject( oopClass, sizeof( csScripting ) - sizeof( csObject ) );
-	if( ! pSingleton || pSingleton == pST->GetNil() ){
-		DETHROW( deeOutOfMemory );
+	pSingleton = pST->CreateNewObject(oopClass, sizeof(csScripting) - sizeof(csObject));
+	if(!pSingleton || pSingleton == pST->GetNil()){
+		DETHROW(deeOutOfMemory);
 	}
 	
-	gst_register_oop( pSingleton );
+	gst_register_oop(pSingleton);
 	
-	csScripting &csobj = *( ( csScripting* )OOP_TO_OBJ( pSingleton ) );
+	csScripting &csobj = *((csScripting*)OOP_TO_OBJ(pSingleton));
 	csobj.st = pST;
 }
 
 void stClassScripting::FreeSingleton(){
-	if( pSingleton ){
-		gst_unregister_oop( pSingleton );
+	if(pSingleton){
+		gst_unregister_oop(pSingleton);
 		pSingleton = NULL;
 	}
 }

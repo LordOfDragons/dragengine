@@ -35,6 +35,9 @@ class ceWindowMain;
  * \brief Window Main Listener.
  */
 class ceWindowMainListener : public ceConversationListener{
+public:
+	using Ref = deTObjectReference<ceWindowMainListener>;
+	
 private:
 	ceWindowMain &pWindow;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceWindowMainListener( ceWindowMain &window );
+	ceWindowMainListener(ceWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	~ceWindowMainListener();
+protected:
+	~ceWindowMainListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( ceConversation *conversation );
+	void StateChanged(ceConversation *conversation) override;
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( ceConversation *conversation );
+	void UndoChanged(ceConversation *conversation) override;
 	
 	/** \brief View properties changed. */
-	virtual void ViewChanged( ceConversation *conversation );
+	void ViewChanged(ceConversation *conversation) override;
 	/*@}*/
 };
 

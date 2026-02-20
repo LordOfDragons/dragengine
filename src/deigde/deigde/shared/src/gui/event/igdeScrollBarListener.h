@@ -36,6 +36,12 @@ class igdeScrollBar;
  * \brief IGDE UI ScrollBar Listener.
  */
 class DE_DLL_EXPORT igdeScrollBarListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeScrollBarListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeScrollBarListener();
+	~igdeScrollBarListener() override;
 	/*@}*/
 	
 	
@@ -60,7 +66,7 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief ScrollBar value changed. */
-	virtual void OnValueChanged( igdeScrollBar *scrollBar );
+	virtual void OnValueChanged(igdeScrollBar *scrollBar);
 	/*@}*/
 };
 

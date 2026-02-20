@@ -34,10 +34,12 @@
  */
 class ceUCAWaitPasteCondition : public ceUCAWaitSetCondition{
 public:
+	using Ref = deTObjectReference<ceUCAWaitPasteCondition>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitPasteCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition );
+	ceUCAWaitPasteCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition);
 	/*@}*/
 };
 

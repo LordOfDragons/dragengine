@@ -35,6 +35,9 @@ class meWPBrowser;
  * \brief Browser panel listener.
  */
 class meWPBrowserListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWPBrowserListener>;
+	
 private:
 	meWPBrowser &pPanel;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPBrowserListener( meWPBrowser &panel );
+	meWPBrowserListener(meWPBrowser &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWPBrowserListener();
+	~meWPBrowserListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,7 +61,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged( meWorld *world );
+	void EditingChanged(meWorld *world) override;
 	/*@}*/
 };
 

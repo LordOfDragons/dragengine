@@ -40,7 +40,6 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
@@ -56,18 +55,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *FBXRigCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *FBXRigCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new fbxRigModule( *loadableModule );
+		return new fbxRigModule(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 }
 
@@ -79,8 +78,8 @@ deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-fbxRigModule::fbxRigModule( deLoadableModule &loadableModule ) :
-deBaseRigModule( loadableModule ){
+fbxRigModule::fbxRigModule(deLoadableModule &loadableModule) :
+deBaseRigModule(loadableModule){
 }
 
 fbxRigModule::~fbxRigModule(){
@@ -91,23 +90,23 @@ fbxRigModule::~fbxRigModule(){
 // Loading and Saving
 ///////////////////////
 
-void fbxRigModule::LoadRig( decBaseFileReader &reader, deRig &rig ){
+void fbxRigModule::LoadRig(decBaseFileReader &reader, deRig &rig){
 	try{
-		fbxScene scene( reader );
-		scene.Prepare( *this );
+		fbxScene scene(reader);
+		scene.Prepare(*this);
 		
-		pLoadRig( rig, scene );
+		pLoadRig(rig, scene);
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Failed reading file '%s' at file position %d",
-			reader.GetFilename(), reader.GetPosition() );
+	}catch(const deException &){
+		LogErrorFormat("Failed reading file '%s' at file position %d",
+			reader.GetFilename(), reader.GetPosition());
 		throw;
 	}
 }
 
 void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 	// nothing yet
-	DETHROW_INFO( deeInvalidAction, "Saving not supported yet" );
+	DETHROW_INFO(deeInvalidAction, "Saving not supported yet");
 }
 
 
@@ -115,13 +114,13 @@ void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 // Private Functions
 //////////////////////
 
-void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
-	fbxNode * const nodePose = scene.FirstNodeNamed( "Pose" );
-	const fbxRig::Ref loadRig( fbxRig::Ref::New( new fbxRig( scene, nodePose ) ) );
+void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
+	fbxNode * const nodePose = scene.FirstNodeNamed("Pose");
+	const fbxRig::Ref loadRig(fbxRig::Ref::New(scene, nodePose));
 	/*
 	decVector r(loadRig->GetMatrix().GetEulerAngles() * RAD2DEG);
 	LogInfoFormat("rigmat (%f,%f,%f)", r.x, r.y, r.z);
-	if( loadRig->GetBoneCount() > 0 ){
+	if(loadRig->GetBoneCount() > 0){
 		r = loadRig->GetBoneAt(0)->GetOrientation().GetEulerAngles() * RAD2DEG;
 		LogInfoFormat("bonemat (%f,%f,%f)", r.x, r.y, r.z);
 	}
@@ -130,29 +129,20 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 	*/
 	// scene.DebugPrintStructure( *this, true );
 	
-	const int boneCount = loadRig->GetBoneCount();
-	deRigBone *rigBone = nullptr;
-	int i;
-	
 	try{
-		for( i=0; i<boneCount; i++ ){
-			const fbxRigBone &loadBone = *loadRig->GetBoneAt( i );
-			rigBone = new deRigBone( loadBone.GetName() );
+		loadRig->GetBones().Visit([&](const fbxRigBone &b){
+			auto rigBone = deRigBone::Ref::New(b.GetName());
 			
-			rigBone->SetPosition( loadBone.GetPosition() );
-			rigBone->SetRotation( loadBone.GetOrientation().GetEulerAngles() );
-			if( loadBone.GetParent() ){
-				rigBone->SetParent( loadBone.GetParent()->GetIndex() );
+			rigBone->SetPosition(b.GetPosition());
+			rigBone->SetRotation(b.GetOrientation().GetEulerAngles());
+			if(b.GetParent()){
+				rigBone->SetParent(b.GetParent()->GetIndex());
 			}
 			
-			rig.AddBone( rigBone );
-			rigBone = nullptr;
-		}
+			rig.AddBone(std::move(rigBone));
+		});
 		
-	}catch( const deException & ){
-		if( rigBone ){
-			delete rigBone;
-		}
+	}catch(const deException &){
 		throw;
 	}
 }
@@ -166,6 +156,8 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 
 class fbxRigModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<fbxRigModuleInternal>;
+	
 	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXRig");
 		SetDescription("Handles rigs in the binary FBX format.");
@@ -188,7 +180,7 @@ public:
 	}
 };
 
-deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
-	return new fbxRigModuleInternal(system);
+deTObjectReference<deInternalModule> fbxRigRegisterInternalModule(deModuleSystem *system){
+	return fbxRigModuleInternal::Ref::New(system);
 }
 #endif

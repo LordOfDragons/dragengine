@@ -27,24 +27,24 @@
 
 
 namespace debpDebugDrawerColors{
-	const decColor colorLow( 0.25f, 0.25f, 0.25f );
+	const decColor colorLow(0.25f, 0.25f, 0.25f);
 	
-	const decColor colliderFill( 1.0f, 0.5f, 0.0f, 0.1f );
-	const decColor colliderEdge( colliderFill, 0.8f );
+	const decColor colliderFill(1.0f, 0.5f, 0.0f, 0.1f);
+	const decColor colliderEdge(colliderFill, 0.8f);
 	
-	const decColor colliderLowFill( colliderFill * 0.25f + colorLow * 0.75f, 0.1f );
-	const decColor colliderLowEdge( colliderLowFill, 0.8f );
-	
-	
-	
-	const decColor colliderBoneFill( colliderFill );
-	const decColor colliderBoneEdge( colliderBoneFill, 0.8f );
-	
-	const decColor colliderBoneLowFill( colliderBoneFill * 0.25f + colorLow * 0.75f );
-	const decColor colliderBoneLowEdge( colliderBoneLowFill, 0.8f );
+	const decColor colliderLowFill(colliderFill * 0.25f + colorLow * 0.75f, 0.1f);
+	const decColor colliderLowEdge(colliderLowFill, 0.8f);
 	
 	
 	
-	const decColor touchSensorFill( 0.0f, 1.0f, 1.0f, 0.1f );
-	const decColor touchSensorEdge( touchSensorFill, 0.8f );
+	const decColor colliderBoneFill(colliderFill);
+	const decColor colliderBoneEdge(colliderBoneFill, 0.8f);
+	
+	const decColor colliderBoneLowFill(colliderBoneFill * 0.25f + colorLow * 0.75f);
+	const decColor colliderBoneLowEdge(colliderBoneLowFill, 0.8f);
+	
+	
+	
+	const decColor touchSensorFill(0.0f, 1.0f, 1.0f, 0.1f);
+	const decColor touchSensorEdge(touchSensorFill, 0.8f);
 }

@@ -26,10 +26,10 @@
 #define _CEUCATRIGGERSETACTION_H_
 
 #include "../../../conversation/action/ceCATrigger.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
 
 
 
@@ -37,9 +37,13 @@ class ceConversationTopic;
  * \brief Undo action trigger conversation action set action.
  */
 class ceUCATriggerSetAction : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCATriggerSetAction>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCATrigger *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCATrigger::Ref pAction;
 	ceCATrigger::eActions pOldAction;
 	ceCATrigger::eActions pNewAction;
 	
@@ -47,18 +51,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCATriggerSetAction( ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator );
+	ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCATriggerSetAction();
+protected:
+	~ceUCATriggerSetAction() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

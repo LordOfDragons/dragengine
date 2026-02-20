@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMenuSeparator::igdeMenuSeparator( igdeEnvironment &environment ) :
-igdeWidget( environment ){
+igdeMenuSeparator::igdeMenuSeparator(igdeEnvironment &environment) :
+igdeWidget(environment){
 }
 
 igdeMenuSeparator::~igdeMenuSeparator(){
@@ -54,20 +54,20 @@ igdeMenuSeparator::~igdeMenuSeparator(){
 ///////////////
 
 void igdeMenuSeparator::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMenuSeparator * const native = igdeNativeMenuSeparator::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMenuSeparator * const native = igdeNativeMenuSeparator::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeMenuSeparator::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeMenuSeparator* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeMenuSeparator*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }

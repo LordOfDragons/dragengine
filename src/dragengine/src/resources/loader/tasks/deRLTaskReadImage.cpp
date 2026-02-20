@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -50,23 +49,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadImage::deRLTaskReadImage( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deImage *image ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertImage ),
-pSucceeded( false )
+deRLTaskReadImage::deRLTaskReadImage(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deImage *image) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertImage),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( image ){
+	if(image){
 		pImage = image;
-		SetResource( image );
-		SetState( esSucceeded );
+		SetResource(image);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pImage.TakeOver( new deImage( engine.GetImageManager(), vfs, path, 0 ) );
+	pImage = deImage::Ref::New(engine.GetImageManager(), vfs, path, 0);
 	LogCreateExit();
 }
 
@@ -80,41 +79,40 @@ deRLTaskReadImage::~deRLTaskReadImage(){
 
 void deRLTaskReadImage::Run(){
 	LogRunEnter();
-	deBaseImageModule * const module = ( deBaseImageModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtImage, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseImageModule * const module = (deBaseImageModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
-	deBaseImageInfo *infos = NULL;
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
+	deBaseImageInfo *infos = nullptr;
 	
 	try{
-		decBaseFileReaderReference reader;
-		reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+		decBaseFileReader::Ref reader(GetVFS()->OpenFileForReading(vfsPath));
 		
-		infos = module->InitLoadImage( reader );
-		if( ! infos ){
-			DETHROW( deeInvalidParam );
+		infos = module->InitLoadImage(reader);
+		if(!infos){
+			DETHROW(deeInvalidParam);
 		}
 		
-		pImage->FinalizeConstruction( infos->GetWidth(), infos->GetHeight(),
-			infos->GetDepth(), infos->GetComponentCount(), infos->GetBitCount() );
-		pImage->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-		pImage->SetAsynchron( true );
+		pImage->FinalizeConstruction(infos->GetWidth(), infos->GetHeight(),
+			infos->GetDepth(), infos->GetComponentCount(), infos->GetBitCount());
+		pImage->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+		pImage->SetAsynchron(true);
 		
-		module->LoadImage( reader, pImage, *infos );
+		module->LoadImage(reader, pImage, *infos);
 		
 		delete infos;
 		
-	}catch( const deException & ){
-		if( infos ){
+	}catch(const deException &){
+		if(infos){
 			delete infos;
 		}
 		throw;
 	}
 	
-	GetEngine().GetGraphicSystem()->LoadImage( pImage );
+	GetEngine().GetGraphicSystem()->LoadImage(pImage);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -122,32 +120,32 @@ void deRLTaskReadImage::Run(){
 
 void deRLTaskReadImage::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded ){
-		SetState( esFailed );
-		pImage = NULL;
+	if(!pSucceeded){
+		SetState(esFailed);
+		pImage = nullptr;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deImageManager &imageManager = *GetEngine().GetImageManager();
-	deImage * const checkImage = imageManager.GetImageWith( GetPath() );
+	deImage * const checkImage = imageManager.GetImageWith(GetPath());
 	
-	if( checkImage ){
-		SetResource( checkImage );
+	if(checkImage){
+		SetResource(checkImage);
 		
 	}else{
-		imageManager.AddLoadedImage( pImage );
+		imageManager.AddLoadedImage(pImage);
 		
-		pImage->SetAsynchron( false );
+		pImage->SetAsynchron(false);
 		pImage->PeersRetainImageData();
 		
-		SetResource( pImage );
+		SetResource(pImage);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

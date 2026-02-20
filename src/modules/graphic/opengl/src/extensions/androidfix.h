@@ -292,9 +292,9 @@ typedef void (EGLAPIENTRYP PFNGLCLIPCONTROLPROC) (GLenum origin, GLenum depth);
 #define GL_TEXTURE_1D GL_TEXTURE_2D
 
 // these functions are core in opengl but not defined in EGL. simulate them
-void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvoid *img );
+void glGetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid *img);
 
-void glPolygonMode( GLenum face, GLenum mode );
+void glPolygonMode(GLenum face, GLenum mode);
 #define GL_POINT				0x1B00
 #define GL_LINE					0x1B01
 #define GL_FILL					0x1B02

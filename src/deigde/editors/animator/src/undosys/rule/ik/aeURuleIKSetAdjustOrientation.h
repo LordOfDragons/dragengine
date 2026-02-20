@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -41,26 +41,30 @@ class aeRuleInverseKinematic;
  * Undo to set if the inverse kinematic rule adjusts the orientation.
  */
 class aeURuleIKSetAdjustOrientation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleIKSetAdjustOrientation>;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetAdjustOrientation( aeRuleInverseKinematic *rule );
+	aeURuleIKSetAdjustOrientation(aeRuleInverseKinematic *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleIKSetAdjustOrientation();
+	~aeURuleIKSetAdjustOrientation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

@@ -35,6 +35,11 @@ class deoglRenderPlanSkyLight;
  * Parallel task finding content.
  */
 class deoglRPTSkyLightFindContent : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoglRPTSkyLightFindContent>;
+	
+	
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	float pElapsedTime;
@@ -45,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightFindContent( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightFindContent(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
-	virtual ~deoglRPTSkyLightFindContent();
+	~deoglRPTSkyLightFindContent() override;
 	/*@}*/
 	
 	
@@ -56,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Run task. */
-	virtual void Run();
+	void Run() override;
 	
 	/** Task finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	/** Debug name. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }

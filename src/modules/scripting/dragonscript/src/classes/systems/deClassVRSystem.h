@@ -25,8 +25,7 @@
 #ifndef _DECLASSVRSYSTEM_H_
 #define _DECLASSVRSYSTEM_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-
+#include <dragengine/common/collection/decTList.h>
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
@@ -42,7 +41,7 @@ private:
 	
 	dsClass *pClsVRFeatureSupportLevel;
 	
-	decObjectList pCachedDevices;
+	decTObjectList<dedsInputDevice> pCachedDevices;
 	bool pCacheDirty;
 	
 	
@@ -50,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassVRSystem( deScriptingDragonScript &ds );
+	deClassVRSystem(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	virtual ~deClassVRSystem();
+	~deClassVRSystem() override;
 	/*@}*/
 	
 	
@@ -61,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
@@ -70,7 +69,7 @@ public:
 	int GetCachedDeviceCount();
 	
 	/** \brief Cached device. */
-	dedsInputDevice *GetCachedDeviceAt( int index );
+	dedsInputDevice *GetCachedDeviceAt(int index);
 	
 	/** \brief Invalidate cached devices. */
 	void InvalidCachedDevices();
@@ -101,48 +100,48 @@ private:
 		dsClass *clsVRFeatureSupportLevel;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfRuntimeUsable );
-	DEF_NATFUNC( nfRequestFeatureEyeGazeTracking );
-	DEF_NATFUNC( nfRequestFeatureFacialTracking );
-	DEF_NATFUNC( nfStartRuntime );
-	DEF_NATFUNC( nfStopRuntime );
-	DEF_NATFUNC( nfIsRuntimeRunning );
+	DEF_NATFUNC(nfRuntimeUsable);
+	DEF_NATFUNC(nfRequestFeatureEyeGazeTracking);
+	DEF_NATFUNC(nfRequestFeatureFacialTracking);
+	DEF_NATFUNC(nfStartRuntime);
+	DEF_NATFUNC(nfStopRuntime);
+	DEF_NATFUNC(nfIsRuntimeRunning);
 	
-	DEF_NATFUNC( nfGetCamera );
-	DEF_NATFUNC( nfSetCamera );
-	DEF_NATFUNC( nfSupportsPassthrough );
-	DEF_NATFUNC( nfGetEnablePassthrough );
-	DEF_NATFUNC( nfSetEnablePassthrough );
-	DEF_NATFUNC( nfGetPassthroughTransparency );
-	DEF_NATFUNC( nfSetPassthroughTransparency );
+	DEF_NATFUNC(nfGetCamera);
+	DEF_NATFUNC(nfSetCamera);
+	DEF_NATFUNC(nfSupportsPassthrough);
+	DEF_NATFUNC(nfGetEnablePassthrough);
+	DEF_NATFUNC(nfSetEnablePassthrough);
+	DEF_NATFUNC(nfGetPassthroughTransparency);
+	DEF_NATFUNC(nfSetPassthroughTransparency);
 	DEF_NATFUNC(nfCenterPlayspace);
 
 	
-	DEF_NATFUNC( nfGetDeviceCount );
-	DEF_NATFUNC( nfGetDeviceAt );
-	DEF_NATFUNC( nfIndexOfDeviceWithID );
-	DEF_NATFUNC( nfIndexOfButtonWithID );
-	DEF_NATFUNC( nfIndexOfAxisWithID );
-	DEF_NATFUNC( nfIndexOfFeedbackWithID );
-	DEF_NATFUNC( nfGetButtonPressed );
-	DEF_NATFUNC( nfGetButtonTouched );
+	DEF_NATFUNC(nfGetDeviceCount);
+	DEF_NATFUNC(nfGetDeviceAt);
+	DEF_NATFUNC(nfIndexOfDeviceWithID);
+	DEF_NATFUNC(nfIndexOfButtonWithID);
+	DEF_NATFUNC(nfIndexOfAxisWithID);
+	DEF_NATFUNC(nfIndexOfFeedbackWithID);
+	DEF_NATFUNC(nfGetButtonPressed);
+	DEF_NATFUNC(nfGetButtonTouched);
 	DEF_NATFUNC(nfGetButtonNear);
-	DEF_NATFUNC( nfGetAxisValue );
-	DEF_NATFUNC( nfGetFeedbackValue );
-	DEF_NATFUNC( nfSetFeedbackValue );
+	DEF_NATFUNC(nfGetAxisValue);
+	DEF_NATFUNC(nfGetFeedbackValue);
+	DEF_NATFUNC(nfSetFeedbackValue);
 	
-	DEF_NATFUNC( nfGetParameterCount );
-	DEF_NATFUNC( nfGetParameterInfo );
-	DEF_NATFUNC( nfGetParameterInfo2 );
-	DEF_NATFUNC( nfGetParameterValue );
-	DEF_NATFUNC( nfSetParameterValue );
-	DEF_NATFUNC( nfSendCommand );
+	DEF_NATFUNC(nfGetParameterCount);
+	DEF_NATFUNC(nfGetParameterInfo);
+	DEF_NATFUNC(nfGetParameterInfo2);
+	DEF_NATFUNC(nfGetParameterValue);
+	DEF_NATFUNC(nfSetParameterValue);
+	DEF_NATFUNC(nfSendCommand);
 #undef DEF_NATFUNC
 };
 

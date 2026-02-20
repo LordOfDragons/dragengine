@@ -26,6 +26,7 @@
 #define _DEOALAMODEL_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -46,6 +47,10 @@ class deModelLOD;
  */
 class deoalAModel : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalAModel>;
+	
+	
 	/** \brief Weight. */
 	struct sWeight{
 		int bone;
@@ -67,13 +72,9 @@ private:
 	decStringList pBoneNames;
 	decStringList pTextureNames;
 	
-	deoalModelFace *pFaces;
-	int pFaceCount;
-	
-	sWeight *pWeights;
-	int pWeightCount;
-	sWeightSet *pWeightSets;
-	int pWeightSetCount;
+	decTList<deoalModelFace> pFaces;
+	decTList<sWeight> pWeights;
+	decTList<sWeightSet> pWeightSets;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -94,11 +95,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create audio model. */
-	deoalAModel( deoalAudioThread &audioThread, const deModel &model );
+	deoalAModel(deoalAudioThread &audioThread, const deModel &model);
 	
 protected:
 	/** \brief Clean up model peer. */
-	virtual ~deoalAModel();
+	~deoalAModel() override;
 	/*@}*/
 	
 	
@@ -123,24 +124,24 @@ public:
 	
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	
 	/** \brief Face at index. */
-	const deoalModelFace &GetFaceAt( int index ) const;
+	const deoalModelFace &GetFaceAt(int index) const;
 	
 	
 	
 	/** \brief Weights. */
-	inline const sWeight *GetWeights() const{ return pWeights; }
+	inline const sWeight *GetWeights() const{ return pWeights.GetArrayPointer(); }
 	
 	/** \brief Number of weights. */
-	inline int GetWeightCount() const{ return pWeightCount; }
+	inline int GetWeightCount() const{ return pWeights.GetCount(); }
 	
 	/** \brief Weight sets. */
-	inline sWeightSet *GetWeightSets() const{ return pWeightSets; }
+	inline const sWeightSet *GetWeightSets() const{ return pWeightSets.GetArrayPointer(); }
 	
 	/** \brief Weight set count. */
-	inline int GetWeightSetCount() const{ return pWeightSetCount; }
+	inline int GetWeightSetCount() const{ return pWeightSets.GetCount(); }
 	
 	
 	
@@ -186,15 +187,15 @@ public:
 	
 private:
 	void pCleanUp();
-	void pInitBoneNames( const deModel &model );
-	void pInitTextureNames( const deModel &model );
-	void pBuildWeights( const deModelLOD &lod );
-	void pBuildFaces( const deModelLOD &lod );
+	void pInitBoneNames(const deModel &model);
+	void pInitTextureNames(const deModel &model);
+	void pBuildWeights(const deModelLOD &lod);
+	void pBuildFaces(const deModelLOD &lod);
 	void pBuildOctree();
 // 	void pInitRTSphere( const deModelLOD &lod );
 	
-	void pDebugLogOctreePerfMetrics( const deoalModelOctree &octree );
-	void pDebugLogOctreePerfMetrics( const deoalModelOctree &node, int level, int &count );
+	void pDebugLogOctreePerfMetrics(const deoalModelOctree &octree);
+	void pDebugLogOctreePerfMetrics(const deoalModelOctree &node, int level, int &count);
 };
 
 #endif

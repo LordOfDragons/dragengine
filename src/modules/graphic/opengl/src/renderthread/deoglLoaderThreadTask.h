@@ -27,7 +27,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/threading/deThreadSafeObject.h>
-#include <dragengine/threading/deThreadSafeObjectReference.h>
 
 
 /**
@@ -36,8 +35,7 @@
 class deoglLoaderThreadTask : public deThreadSafeObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglLoaderThreadTask> Ref;
-	
+	using Ref = deTThreadSafeObjectReference<deoglLoaderThreadTask>;
 	
 	
 public:
@@ -48,7 +46,7 @@ public:
 	
 protected:
 	/** Clean up loader thread task. */
-	virtual ~deoglLoaderThreadTask();
+	~deoglLoaderThreadTask() override;
 	/*@}*/
 	
 	

@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create navigation space clip data. */
-	meCDNSNavigationSpace( meNavigationSpace *navspace );
+	meCDNSNavigationSpace(meNavigationSpace *navspace);
 	
 	/** \brief Clean up clip data. */
 	~meCDNSNavigationSpace();
@@ -60,7 +60,7 @@ public:
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Update navigation space with stored data. */
-	void UpdateNavSpace( meNavigationSpace &navspace ) const;
+	void UpdateNavSpace(meNavigationSpace &navspace) const;
 	/*@}*/
 };
 

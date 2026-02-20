@@ -73,13 +73,11 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWordList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhonemeList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.cpp">
@@ -192,13 +190,11 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWordList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhonemeList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.h">

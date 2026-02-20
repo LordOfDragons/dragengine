@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetGoalPosition::aeURuleIKSetGoalPosition( aeRuleInverseKinematic *rule, const decVector &newPos ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeURuleIKSetGoalPosition::aeURuleIKSetGoalPosition(aeRuleInverseKinematic *rule, const decVector &newPos){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldPos = rule->GetGoalPosition();
 		pNewPos = newPos;
 		
-		SetShortInfo( "Set inverse kinematic rule goal position" );
+		SetShortInfo("@Animator.Undo.SetRuleInverseKinematicGoalPosition");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeURuleIKSetGoalPosition::~aeURuleIKSetGoalPosition(){
 ///////////////
 
 void aeURuleIKSetGoalPosition::Undo(){
-	pRule->SetGoalPosition( pOldPos );
+	pRule->SetGoalPosition(pOldPos);
 }
 
 void aeURuleIKSetGoalPosition::Redo(){
-	pRule->SetGoalPosition( pNewPos );
+	pRule->SetGoalPosition(pNewPos);
 }
 
 
@@ -82,5 +80,4 @@ void aeURuleIKSetGoalPosition::Redo(){
 //////////////////////
 
 void aeURuleIKSetGoalPosition::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

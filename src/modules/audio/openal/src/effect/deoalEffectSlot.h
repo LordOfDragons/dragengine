@@ -38,8 +38,7 @@
  */
 class deoalEffectSlot : public deObject{
 public:
-	typedef deTObjectReference<deoalEffectSlot> Ref;
-	
+	using Ref = deTObjectReference<deoalEffectSlot>;
 	
 	
 private:
@@ -63,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal effect slot. */
-	deoalEffectSlot( deoalAudioThread &audioThread );
+	deoalEffectSlot(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up openal effect slot. */
-	virtual ~deoalEffectSlot();
+	~deoalEffectSlot() override;
 	/*@}*/
 	
 	
@@ -90,7 +89,7 @@ public:
 	inline void *GetOwner() const{ return pOwner; }
 	
 	/** Assign owner and clear effect. */
-	void AssignOwner( void *owner, float importance );
+	void AssignOwner(void *owner, float importance);
 	
 	/** Clear owner and clear effect. */
 	void ClearOwner();
@@ -99,22 +98,22 @@ public:
 	inline float GetImportance() const{ return pImportance; }
 	
 	/** Set importance. */
-	void SetImportance( float importance );
+	void SetImportance(float importance);
 	
 	
 	
 	/** Set effect type. */
-	void SetEffectType( ALenum type );
+	void SetEffectType(ALenum type);
 	
 	
 	
 	/** Update effect slot with effect parameters if changed and reset keep-alive. */
-	void UpdateSlot( float timeout );
+	void UpdateSlot(float timeout);
 	
 	
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	

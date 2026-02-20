@@ -34,11 +34,11 @@
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataCondition.h"
 #include "../../../../../conversation/ceConversation.h"
-#include "../../../../../conversation/condition/ceConversationConditionReference.h"
+#include "../../../../../conversation/condition/ceConversationCondition.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -47,22 +47,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPasteCondition::ceWPTMAPasteCondition( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Paste Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation )
+ceWPTMAPasteCondition::ceWPTMAPasteCondition(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.PasteCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation)
 {
-	SetEnabled( windowMain.GetClipboard().HasWithTypeName( ceClipboardDataCondition::TYPE_NAME ) );
+	SetEnabled(windowMain.GetClipboard().HasWithTypeName(ceClipboardDataCondition::TYPE_NAME));
 }
 
-ceWPTMAPasteCondition::ceWPTMAPasteCondition( ceWindowMain &windowMain,
-ceConversation &conversation, const char *text ) :
-ceWPTMenuAction( windowMain, text,
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation )
+ceWPTMAPasteCondition::ceWPTMAPasteCondition(ceWindowMain &windowMain,
+ceConversation &conversation, const char *text) :
+ceWPTMenuAction(windowMain, text,
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation)
 {
-	SetEnabled( windowMain.GetClipboard().HasWithTypeName( ceClipboardDataCondition::TYPE_NAME ) );
+	SetEnabled(windowMain.GetClipboard().HasWithTypeName(ceClipboardDataCondition::TYPE_NAME));
 }
 
 
@@ -71,25 +71,20 @@ pConversation( &conversation )
 ///////////////
 
 void ceWPTMAPasteCondition::OnAction(){
-	ceClipboardDataCondition * const cdata = ( ceClipboardDataCondition* )GetWindowMain().
-		GetClipboard().GetWithTypeName( ceClipboardDataCondition::TYPE_NAME );
-	if( ! cdata ){
+	ceClipboardDataCondition * const cdata = (ceClipboardDataCondition*)GetWindowMain().
+		GetClipboard().GetWithTypeName(ceClipboardDataCondition::TYPE_NAME);
+	if(!cdata){
 		return;
 	}
 	
-	ceConversationConditionReference condition;
-	condition.TakeOver( cdata->GetConditions().GetAt( 0 )->CreateCopy() );
+	ceConversationCondition::List conditions;
+	conditions.Add(cdata->GetConditions().First()->CreateCopy());
 	
-	ceConversationConditionList conditions;
-	conditions.Add( condition );
-	
-	igdeUndoReference undo;
-	undo.TakeOver( CreateUndo( conditions ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(CreateUndo(conditions));
 }
 
-igdeUndo *ceWPTMAPasteCondition::CreateUndo( const ceConversationConditionList &conditions ){
+igdeUndo::Ref ceWPTMAPasteCondition::CreateUndo(const ceConversationCondition::List &conditions){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

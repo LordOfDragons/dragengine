@@ -27,10 +27,11 @@
 
 #include "../../common/string/decString.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTUniqueList.h"
+#include "deAnimationKeyframe.h"
+#include "deAnimationKeyframeVertexPositionSet.h"
 
 class deAnimation;
-class deAnimationKeyframeList;
-class deAnimationKeyframeVertexPositionSetList;
 class decCurveBezier;
 
 
@@ -40,6 +41,20 @@ class decCurveBezier;
  */
 class DE_DLL_EXPORT deAnimationMove{
 public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deAnimationMove>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deAnimationMove>;
+	
+	/** \brief Keyframe list reference. */
+	using KeyframeListRef = deTUniqueReference<deAnimationKeyframe::List>;
+	using VertexPositionSetKeyframeListRef = deTUniqueReference<deAnimationKeyframeVertexPositionSet::List>;
+	
+	/** \brief Keyframe list. */
+	using KeyframeList = decTUniqueList<deAnimationKeyframe::List>;
+	using VertexPositionSetKeyframeList = decTUniqueList<deAnimationKeyframeVertexPositionSet::List>;
+	
 	/**
 	 * \brief 2D curve bone parameter.
 	 * \version 1.28
@@ -78,14 +93,8 @@ private:
 	decString pName;
 	float pPlaytime;
 	float pFPS;
-	
-	deAnimationKeyframeList **pLists;
-	int pListCount;
-	int pListSize;
-	
-	deAnimationKeyframeVertexPositionSetList **pVertexPositionSetLists;
-	int pVertexPositionSetListCount;
-	int pVertexPositionSetListSize;
+	KeyframeList pLists;
+	VertexPositionSetKeyframeList pVertexPositionSetLists;
 	
 	
 public:
@@ -106,13 +115,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name of the move */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Playtime of the move which is the largest time of all keyframes. */
 	inline float GetPlaytime() const{ return pPlaytime; }
 	
 	/** \brief Set playtime for the move which is the largest time of all keyframes. */
-	void SetPlaytime( float playtime );
+	void SetPlaytime(float playtime);
 	
 	/**
 	 * \brief Frames per second.
@@ -128,34 +137,40 @@ public:
 	 * 
 	 * Used for saving only if animation file format requires sampling.
 	 */
-	void SetFPS( float fps );
+	void SetFPS(float fps);
+	
+	/** \brief Keyframe list list. */
+	inline const KeyframeList &GetKeyframeLists() const{ return pLists; }
 	
 	/** \brief Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{ return pListCount; }
+	inline int GetKeyframeListCount() const{ return pLists.GetCount(); }
 	
 	/** \brief Keyframe at the given index. */
-	deAnimationKeyframeList *GetKeyframeList( int index ) const;
+	const KeyframeListRef &GetKeyframeList(int index) const;
 	
 	/** \brief Adds a keyframe list */
-	void AddKeyframeList( deAnimationKeyframeList *list );
+	void AddKeyframeList(KeyframeListRef &&list);
+	
+	/** \brief Keyframe list list. */
+	inline const VertexPositionSetKeyframeList &GetVertexPositionSetKeyframeLists() const{ return pVertexPositionSetLists; }
 	
 	/**
 	 * \brief Count of keyframe lists.
 	 * \version 1.17
 	 */
-	inline int GetVertexPositionSetKeyframeListCount() const{ return pVertexPositionSetListCount; }
+	inline int GetVertexPositionSetKeyframeListCount() const{ return pVertexPositionSetLists.GetCount(); }
 	
 	/**
 	 * \brief Keyframe at the given index.
 	 * \version 1.17
 	 */
-	deAnimationKeyframeVertexPositionSetList *GetVertexPositionSetKeyframeList( int index ) const;
+	const VertexPositionSetKeyframeListRef &GetVertexPositionSetKeyframeList(int index) const;
 	
 	/**
 	 * \brief Adds a keyframe list.
 	 * \version 1.17
 	 */
-	void AddVertexPositionSetKeyframeList( deAnimationKeyframeVertexPositionSetList *list );
+	void AddVertexPositionSetKeyframeList(VertexPositionSetKeyframeListRef &&list);
 	
 	/**
 	 * \brief Create bezier curve from bone keyframes.

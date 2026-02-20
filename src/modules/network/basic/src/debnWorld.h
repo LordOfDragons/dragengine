@@ -26,6 +26,7 @@
 #define _DEBNWORLD_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/network/deBaseNetworkWorld.h>
 
 class deWorld;
@@ -44,8 +45,7 @@ private:
 	
 	bool pCanCreateStates;
 	
-	debnState **pStateSlots;
-	int pStateSlotCount;
+	decTList<debnState*> pStateSlots;
 	
 	debnNetwork *pParentNetwork;
 	
@@ -55,10 +55,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create world. */
-	debnWorld( deNetworkBasic *oal, deWorld *world );
+	debnWorld(deNetworkBasic *oal, deWorld *world);
 	
 	/** \brief Clean up world. */
-	virtual ~debnWorld();
+	~debnWorld() override;
 	/*@}*/
 	
 	
@@ -72,7 +72,7 @@ public:
 	inline bool GetCanCreateStates() const{ return pCanCreateStates; }
 	
 	/** \brief Set if user is allowed to create states. */
-	void SetCanCreateStates( bool canCreateStates );
+	void SetCanCreateStates(bool canCreateStates);
 	
 	/** \brief Initialize network states. */
 	void InitStates();
@@ -81,7 +81,7 @@ public:
 	inline debnNetwork *GetParentNetwork() const{ return pParentNetwork; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentNetwork( debnNetwork *network );
+	void SetParentNetwork(debnNetwork *network);
 	/*@}*/
 	
 	
@@ -89,13 +89,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief NetworkState has been added. */
-	virtual void NetworkStateAdded( deNetworkState *state );
+	void NetworkStateAdded(deNetworkState *state) override;
 	
 	/** \brief NetworkState has been removed. */
-	virtual void NetworkStateRemoved( deNetworkState *state );
+	void NetworkStateRemoved(deNetworkState *state) override;
 	
 	/** \brief All states have been removed. */
-	virtual void AllNetworkStatesRemoved();
+	void AllNetworkStatesRemoved() override;
 	/*@}*/
 	
 	

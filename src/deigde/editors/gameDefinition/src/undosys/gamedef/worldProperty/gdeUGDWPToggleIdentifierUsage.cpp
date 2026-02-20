@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUGDWPToggleIdentifierUsage::gdeUGDWPToggleIdentifierUsage(
-gdeGameDefinition *gamedef, gdeProperty *property ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeGameDefinition *gamedef, gdeProperty *property) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property toggle identifier usage" );
+	SetShortInfo("@GameDefinition.Undo.GDWPToggleIdentifierUsage");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPToggleIdentifierUsage::~gdeUGDWPToggleIdentifierUsage(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ gdeUGDWPToggleIdentifierUsage::~gdeUGDWPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUGDWPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

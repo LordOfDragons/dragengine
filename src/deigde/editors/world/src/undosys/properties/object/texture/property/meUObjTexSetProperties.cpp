@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexSetProperties::meUObjTexSetProperties( meObjectTexture *texture,
-const decStringDictionary &newValues ) :
-pTexture( texture ),
-pNewValues( newValues )
+meUObjTexSetProperties::meUObjTexSetProperties(meObjectTexture *texture,
+const decStringDictionary &newValues) :
+pTexture(texture),
+pNewValues(newValues)
 {
-	if( ! texture || ! texture->GetObject() || ! texture->GetObject()->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(!texture || !texture->GetObject() || !texture->GetObject()->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object texture set properties" );
+	SetShortInfo("@World.UObjTexSetProperties.ObjectTextureSetProperties");
 	
 	pOldValues = texture->GetProperties();
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexSetProperties::~meUObjTexSetProperties(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
 }
 
 
@@ -69,9 +65,9 @@ meUObjTexSetProperties::~meUObjTexSetProperties(){
 ///////////////
 
 void meUObjTexSetProperties::Undo(){
-	pTexture->SetProperties( pOldValues );
+	pTexture->SetProperties(pOldValues);
 }
 
 void meUObjTexSetProperties::Redo(){
-	pTexture->SetProperties( pNewValues );
+	pTexture->SetProperties(pNewValues);
 }

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create memory consumption usage. */
-	deoglMemoryConsumptionTextureUse( deoglMemoryConsumptionTexture &tracker );
+	deoglMemoryConsumptionTextureUse(deoglMemoryConsumptionTexture &tracker);
 	
 	/** Clean up vbo memory consumption. */
 	~deoglMemoryConsumptionTextureUse();
@@ -78,19 +78,19 @@ public:
 	void Clear();
 	
 	/** Set consumption. */
-	void Set( unsigned long long consumption, bool depth, bool compressed );
+	void Set(unsigned long long consumption, bool depth, bool compressed);
 	
 #ifdef BACKEND_OPENGL
 	/** Set compressed consumption. */
-	void SetCompressed( unsigned long long consumption, const deoglCapsTextureFormat &format );
+	void SetCompressed(unsigned long long consumption, const deoglCapsTextureFormat &format);
 	
 	/** Set uncompressed consumption. */
-	void SetUncompressed( const deoglCapsTextureFormat &format, int width, int height,
-		int depth, int mipMapLevels );
+	void SetUncompressed(const deoglCapsTextureFormat &format, int width, int height,
+		int depth, int mipMapLevels);
 	
 	/** Calculate base uncompressed consumption. */
-	unsigned long long BaseConsumption( const deoglCapsTextureFormat &format,
-		int width, int height, int depth ) const;
+	unsigned long long BaseConsumption(const deoglCapsTextureFormat &format,
+		int width, int height, int depth) const;
 	
 #elif defined BACKEND_VULKAN
 	/** Set compressed consumption. */
@@ -104,8 +104,8 @@ public:
 #endif
 	
 	/** Calculate mip mapped uncompressed consumption. */
-	unsigned long long MipMappedConsumption( int levels, int width, int height,
-		unsigned long long baseConsumption ) const;
+	unsigned long long MipMappedConsumption(int levels, int width, int height,
+		unsigned long long baseConsumption) const;
 	/*@}*/
 };
 

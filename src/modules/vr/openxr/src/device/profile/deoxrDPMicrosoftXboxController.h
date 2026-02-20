@@ -33,14 +33,16 @@
  */
 class deoxrDPMicrosoftXboxController : public deoxrDeviceProfile{
 public:
+	using Ref = deTObjectReference<deoxrDPMicrosoftXboxController>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPMicrosoftXboxController( deoxrInstance &instance );
+	deoxrDPMicrosoftXboxController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPMicrosoftXboxController();
+	~deoxrDPMicrosoftXboxController() override;
 	/*@}*/
 	
 	
@@ -49,7 +51,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Suggest bindings. */
-	virtual void SuggestBindings();
+	void SuggestBindings() override;
 	/*@}*/
 };
 

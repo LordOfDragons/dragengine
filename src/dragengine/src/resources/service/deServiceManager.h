@@ -29,12 +29,14 @@
 #include "deServiceObject.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
-#include "../../common/collection/decObjectList.h"
-#include "../../common/collection/decPointerOrderedSet.h"
+#include "../../common/collection/decTList.h"
+#include "../../common/collection/decTOrderedSet.h"
 #include "../../common/string/decStringSet.h"
 #include "../../threading/deMutex.h"
 
 class deEngine;
+class deBaseServiceModule;
+class cEvent;
 
 
 /**
@@ -44,9 +46,9 @@ class deEngine;
 class DE_DLL_EXPORT deServiceManager : public deResourceManager{
 private:
 	deMutex pMutex;
-	decObjectList pEventQueue;
+	decTObjectList<cEvent> pEventQueue;
 	deResourceList pServices;
-	decPointerOrderedSet pModules;
+	decTOrderedSet<deBaseServiceModule*> pModules;
 	bool pDirtyModules;
 	
 	
@@ -55,16 +57,22 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create service manager linked to the given engine. */
-	deServiceManager( deEngine *engine );
+	deServiceManager(deEngine *engine);
 	
 	/** \brief Clean up service manager. */
 	~deServiceManager() override;
+
+	deServiceManager(const deServiceManager&) = delete;
+	deServiceManager& operator=(const deServiceManager&) = delete;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Service modules. */
+	inline const decTOrderedSet<deBaseServiceModule*> &GetModules() const{ return pModules; }
+	
 	/** \brief Number of service resource. */
 	int GetServiceCount() const;
 	
@@ -84,37 +92,34 @@ public:
 	/**
 	 * \brief Create named service.
 	 * \throw deeInvalidParam Named service not supported by any loaded service module.
-	 * 
-	 * Caller takes over reference. Use deService::Ref::New() or deService::Ref:TakeOver
-	 * to acquire the returned reference correctly.
 	 */
-	deService *CreateService( const char *name, const deServiceObject::Ref &data );
+	deService::Ref CreateService(const char *name, const deServiceObject::Ref &data);
 	
 	/**
 	 * \brief Queue request response event.
 	 * \note Can be called from any thread.
 	 */
-	void QueueRequestResponse( deService *service, const decUniqueID &id,
-	const deServiceObject::Ref &response, bool finished );
+	void QueueRequestResponse(deService *service, const decUniqueID &id,
+	const deServiceObject::Ref &response, bool finished);
 	
 	/**
 	 * \brief Queue request failed event.
 	 * \note Can be called from any thread.
 	 */
-	void QueueRequestFailed( deService *service, const decUniqueID &id,
-	const deServiceObject::Ref &error );
+	void QueueRequestFailed(deService *service, const decUniqueID &id,
+	const deServiceObject::Ref &error);
 	
 	/**
 	 * \brief Queue event received event.
 	 * \note Can be called from any thread.
 	 */
-	void QueueEventReceived( deService *service, const deServiceObject::Ref &event );
+	void QueueEventReceived(deService *service, const deServiceObject::Ref &event);
 	
 	/**
 	 * \brief Remove all events matching service.
 	 * \note Can be called from any thread.
 	 */
-	void RemoveAllMatchingEvents( deService *service );
+	void RemoveAllMatchingEvents(deService *service);
 	
 	
 	
@@ -143,7 +148,7 @@ public:
 	 * \brief Those functions are only for resource objects and should never be called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource ) override;
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 	
 	

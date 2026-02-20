@@ -35,6 +35,9 @@ class feWPFont;
  * \brief Font Properties Panel Listener.
  */
 class feWPFontListener : public feFontNotifier{
+public:
+	using Ref = deTObjectReference<feWPFontListener>;
+	
 private:
 	feWPFont &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWPFontListener( feWPFont &panel );
+	feWPFontListener(feWPFont &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWPFontListener();
+protected:
+	~feWPFontListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font parameters changed. */
-	virtual void FontChanged( feFont *font );
+	void FontChanged(feFont *font) override;
 	
 	/** \brief An image changed. */
-    virtual void ImageChanged( feFont *font, feFontImage *image );
+    void ImageChanged(feFont *font, feFontImage *image) override;
 	/*@}*/
 };
 

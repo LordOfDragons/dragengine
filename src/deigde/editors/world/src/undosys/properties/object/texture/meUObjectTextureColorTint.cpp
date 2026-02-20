@@ -41,36 +41,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureColorTint::meUObjectTextureColorTint( meObjectTexture *texture, const decColor &newColor ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, const decColor &newColor){
+	if(!texture){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(!object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Objext Texture Color Tint" );
+	SetShortInfo("@World.UObjectTextureColorTint.ObjextTextureColorTint");
 	
-	pTexture = NULL;
+	pTexture = nullptr;
 	
 	pOldColor = texture->GetColorTint();
 	pNewColor = newColor;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureColorTint::~meUObjectTextureColorTint(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
 }
 
 
@@ -79,9 +75,9 @@ meUObjectTextureColorTint::~meUObjectTextureColorTint(){
 ///////////////
 
 void meUObjectTextureColorTint::Undo(){
-	pTexture->SetColorTint( pOldColor );
+	pTexture->SetColorTint(pOldColor);
 }
 
 void meUObjectTextureColorTint::Redo(){
-	pTexture->SetColorTint( pNewColor );
+	pTexture->SetColorTint(pNewColor);
 }

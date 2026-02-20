@@ -27,8 +27,8 @@
 
 #include <dragengine/deObject.h>
 
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,26 +38,30 @@ class ceConversationTopic;
  */
 class ceUndoCAction : public deObject{
 private:
-	ceConversationAction *pAction;
-	ceConversationTopic *pTopic;
+	ceConversationAction::Ref pAction;
+	ceConversationTopic::Ref pTopic;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceUndoCAction>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUndoCAction( ceConversationAction *action, ceConversationTopic *topic );
+	ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUndoCAction();
+	~ceUndoCAction() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline const ceConversationAction::Ref &GetAction() const{ return pAction; }
 	/** \brief Retrieves the topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline const ceConversationTopic::Ref &GetTopic() const{ return pTopic; }
 	/*@}*/
 };
 

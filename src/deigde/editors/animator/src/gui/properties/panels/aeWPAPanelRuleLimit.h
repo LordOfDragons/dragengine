@@ -27,45 +27,49 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 /**
  * Limit rule panel.
  */
 class aeWPAPanelRuleLimit : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleLimit>;
+	
+	
 private:
-	igdeEditVectorReference pEditMinPos;
-	igdeEditVectorReference pEditMaxPos;
-	igdeEditVectorReference pEditMinRot;
-	igdeEditVectorReference pEditMaxRot;
-	igdeEditVectorReference pEditMinScale;
-	igdeEditVectorReference pEditMaxScale;
-	igdeTextFieldReference pEditMinVertexPositionSet;
-	igdeTextFieldReference pEditMaxVertexPositionSet;
-	igdeComboBoxReference pCBCoordFrame;
-	igdeCheckBoxReference pChkEnablePosXMin;
-	igdeCheckBoxReference pChkEnablePosXMax;
-	igdeCheckBoxReference pChkEnablePosYMin;
-	igdeCheckBoxReference pChkEnablePosYMax;
-	igdeCheckBoxReference pChkEnablePosZMin;
-	igdeCheckBoxReference pChkEnablePosZMax;
-	igdeCheckBoxReference pChkEnableRotXMin;
-	igdeCheckBoxReference pChkEnableRotXMax;
-	igdeCheckBoxReference pChkEnableRotYMin;
-	igdeCheckBoxReference pChkEnableRotYMax;
-	igdeCheckBoxReference pChkEnableRotZMin;
-	igdeCheckBoxReference pChkEnableRotZMax;
-	igdeCheckBoxReference pChkEnableScaleXMin;
-	igdeCheckBoxReference pChkEnableScaleXMax;
-	igdeCheckBoxReference pChkEnableScaleYMin;
-	igdeCheckBoxReference pChkEnableScaleYMax;
-	igdeCheckBoxReference pChkEnableScaleZMin;
-	igdeCheckBoxReference pChkEnableScaleZMax;
-	igdeCheckBoxReference pChkEnableVertexPositionSetMin;
-	igdeCheckBoxReference pChkEnableVertexPositionSetMax;
-	igdeComboBoxFilterReference pCBTargetBone;
+	igdeEditVector::Ref pEditMinPos;
+	igdeEditVector::Ref pEditMaxPos;
+	igdeEditVector::Ref pEditMinRot;
+	igdeEditVector::Ref pEditMaxRot;
+	igdeEditVector::Ref pEditMinScale;
+	igdeEditVector::Ref pEditMaxScale;
+	igdeTextField::Ref pEditMinVertexPositionSet;
+	igdeTextField::Ref pEditMaxVertexPositionSet;
+	igdeComboBox::Ref pCBCoordFrame;
+	igdeCheckBox::Ref pChkEnablePosXMin;
+	igdeCheckBox::Ref pChkEnablePosXMax;
+	igdeCheckBox::Ref pChkEnablePosYMin;
+	igdeCheckBox::Ref pChkEnablePosYMax;
+	igdeCheckBox::Ref pChkEnablePosZMin;
+	igdeCheckBox::Ref pChkEnablePosZMax;
+	igdeCheckBox::Ref pChkEnableRotXMin;
+	igdeCheckBox::Ref pChkEnableRotXMax;
+	igdeCheckBox::Ref pChkEnableRotYMin;
+	igdeCheckBox::Ref pChkEnableRotYMax;
+	igdeCheckBox::Ref pChkEnableRotZMin;
+	igdeCheckBox::Ref pChkEnableRotZMax;
+	igdeCheckBox::Ref pChkEnableScaleXMin;
+	igdeCheckBox::Ref pChkEnableScaleXMax;
+	igdeCheckBox::Ref pChkEnableScaleYMin;
+	igdeCheckBox::Ref pChkEnableScaleYMax;
+	igdeCheckBox::Ref pChkEnableScaleZMin;
+	igdeCheckBox::Ref pChkEnableScaleZMax;
+	igdeCheckBox::Ref pChkEnableVertexPositionSetMin;
+	igdeCheckBox::Ref pChkEnableVertexPositionSetMax;
+	igdeComboBoxFilter::Ref pCBTargetBone;
 	
 	
 	
@@ -73,11 +77,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleLimit( aeWPRule &wpRule );
+	aeWPAPanelRuleLimit(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleLimit();
+	~aeWPAPanelRuleLimit() override;
 	/*@}*/
 	
 	
@@ -86,10 +90,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Updates the rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	/*@}*/
 };
 

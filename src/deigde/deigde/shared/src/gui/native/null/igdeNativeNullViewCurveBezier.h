@@ -25,46 +25,15 @@
 #ifndef _IGDENATIVENULLVIEWCURVEBEZIER_H_
 #define _IGDENATIVENULLVIEWCURVEBEZIER_H_
 
+#include "../../curveedit/igdeViewCurveBezier.h"
+
 class igdeViewCurveBezier;
-
-
-/**
- * Null list box view.
- */
-class igdeNativeFoxViewCurveBezierView{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create native widget. */
-	igdeNativeFoxViewCurveBezierView();
-	
-	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxViewCurveBezierView();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdateDefaultSize();
-	virtual void UpdateCurve();
-	virtual void UpdateSelectedPoint();
-	virtual void UpdateClamp();
-	
-	virtual void ResetView();
-	virtual void FitViewToCurve();
-	/*@}*/
-};
 
 
 /**
  * Null view curve bezier.
  */
-class igdeNativeNullViewCurveBezier{
-private:
-	igdeNativeFoxViewCurveBezierView *pView;
-	
+class igdeNativeNullViewCurveBezier : public igdeViewCurveBezier::cNativeViewCurveBezier{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -75,7 +44,7 @@ public:
 	virtual ~igdeNativeNullViewCurveBezier();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullViewCurveBezier* CreateNativeWidget( igdeViewCurveBezier &owner );
+	static igdeNativeNullViewCurveBezier* CreateNativeWidget(igdeViewCurveBezier &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -83,8 +52,13 @@ public:
 	/** \brief Destroy native widget. */
 	virtual void DestroyNativeWidget();
 	
-	/** \brief View curve bezier. */
-	inline igdeNativeFoxViewCurveBezierView &GetView() const{ return *pView; }
+	void UpdateEnabled() override;
+	void UpdateDefaultSize() override;
+	void UpdateCurve() override;
+	void UpdateSelectedPoint() override;
+	void UpdateClamp() override;
+	void ResetView() override;
+	void FitViewToCurve() override;
 	/*@}*/
 };
 

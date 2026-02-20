@@ -37,9 +37,15 @@ class igdeEnvironment;
 /**
  * \brief IGDE UI Action Clear.
  * 
- * Clear all undo actions. Set Undo System to use or NULL if not available.
+ * Clear all undo actions. Set Undo System to use or nullptr if not available.
  */
 class DE_DLL_EXPORT igdeActionClearUndo : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeActionClearUndo>;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeUndoSystem *pUndoSystem;
@@ -50,7 +56,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionClearUndo( igdeEnvironment &environment, igdeUndoSystem *undoSystem = NULL );
+	igdeActionClearUndo(igdeEnvironment &environment, igdeUndoSystem *undoSystem = nullptr);
 	
 	
 	
@@ -61,7 +67,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionClearUndo();
+	~igdeActionClearUndo() override;
 	/*@}*/
 	
 	
@@ -72,11 +78,11 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetRedoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -85,7 +91,7 @@ public:
 	 * 
 	 * Called if user interacts with a UI element triggering actions.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Request update of action parameters if required.
@@ -93,7 +99,7 @@ public:
 	 * Called for example by UI elements to update action parameters.
 	 * Default implementation does nothing.
 	 */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

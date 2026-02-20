@@ -25,7 +25,7 @@
 #ifndef _DEVKDESCRIPTORSETLAYOUTMANAGER_H_
 #define _DEVKDESCRIPTORSETLAYOUTMANAGER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class devkDevice;
 class devkDescriptorSetLayout;
@@ -39,7 +39,7 @@ class devkDescriptorSetLayoutManager{
 private:
 	devkDevice &pDevice;
 	
-	decObjectList pLayouts;
+	decTObjectList<devkDescriptorSetLayout> pLayouts;
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor set layout manager. */
-	devkDescriptorSetLayoutManager( devkDevice &device );
+	devkDescriptorSetLayoutManager(devkDevice &device);
 	
 	/** Clean up descriptor set layouts manager. */
 	~devkDescriptorSetLayoutManager();
@@ -64,13 +64,13 @@ public:
 	int GetCount() const;
 	
 	/** Descriptor set layout at index. Caller does not hold reference. */
-	devkDescriptorSetLayout *GetAt( int index ) const;
+	devkDescriptorSetLayout *GetAt(int index) const;
 	
 	/** Descriptor set layout with configuration creating it if absent. Caller does not hold reference. */
-	devkDescriptorSetLayout *GetWith( const devkDescriptorSetLayoutConfiguration &configuration );
+	devkDescriptorSetLayout *GetWith(const devkDescriptorSetLayoutConfiguration &configuration);
 	
 	/** Descriptor set layout with configuration is present. */
-	bool HasWith( const devkDescriptorSetLayoutConfiguration &configuration ) const;
+	bool HasWith(const devkDescriptorSetLayoutConfiguration &configuration) const;
 	
 	/** Remove all descriptor set layouts. */
 	void Clear();

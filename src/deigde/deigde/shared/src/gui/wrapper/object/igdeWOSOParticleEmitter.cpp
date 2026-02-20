@@ -46,12 +46,10 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
-#include <dragengine/resources/particle/deParticleEmitterReference.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceManager.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
@@ -73,34 +71,36 @@ private:
 	bool pSuccess;
 	
 public:
-	igdeWOSOParticleEmitterResLoadComponent( igdeWOSOParticleEmitter &owner ) :
-	pOwner( &owner ), pCounter( 0 ), pSuccess( true ){
+	typedef deTObjectReference<igdeWOSOParticleEmitterResLoadComponent> Ref;
+	
+	igdeWOSOParticleEmitterResLoadComponent(igdeWOSOParticleEmitter &owner) :
+	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
 	
 	virtual ~igdeWOSOParticleEmitterResLoadComponent(){
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
-	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource){
-		if( ! pOwner ){
+	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource){
+		if(!pOwner){
 			return;
 		}
 		CheckFinished();
 	}
 	
-	virtual void LoadingFailed( const igdeResourceLoaderTask &task ){
-		if( ! pOwner ){
+	virtual void LoadingFailed(const igdeResourceLoaderTask &task){
+		if(!pOwner){
 			return;
 		}
 		CheckFinished();
 	}
 	
 	void CheckFinished(){
-		if( pOwner && pCounter == 0 ){
-			pOwner->AsyncLoadFinished( pSuccess );
+		if(pOwner && pCounter == 0){
+			pOwner->AsyncLoadFinished(pSuccess);
 		}
 	}
 };
@@ -112,23 +112,23 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSOParticleEmitter::igdeWOSOParticleEmitter( igdeWObject &wrapper,
-	const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix ) :
-igdeWOSubObject( wrapper, prefix ),
-pGDParticleEmitter( gdParticleEmitter ),
-pAddedToWorld( false ),
-pAttachment( NULL )
+igdeWOSOParticleEmitter::igdeWOSOParticleEmitter(igdeWObject &wrapper,
+	const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix) :
+igdeWOSubObject(wrapper, prefix),
+pGDParticleEmitter(gdParticleEmitter),
+pAddedToWorld(false),
+pAttachment(nullptr)
 {
 	pLoadResources();
 }
 
 igdeWOSOParticleEmitter::~igdeWOSOParticleEmitter(){
-	if( pResLoad ){
-		( ( igdeWOSOParticleEmitterResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
-		pResLoad = NULL;
+	if(pResLoad){
+		pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>()->Drop();
+		pResLoad = nullptr;
 	}
 	pDestroyParticleEmitter();
-	pClearTrigger( pTriggerCasting );
+	pClearTrigger(pTriggerCasting);
 }
 
 
@@ -141,33 +141,33 @@ void igdeWOSOParticleEmitter::UpdateParameters(){
 }
 
 void igdeWOSOParticleEmitter::InitTriggers(){
-	pInitTrigger( pTriggerCasting, pGDParticleEmitter.GetTriggerName( igdeGDCParticleEmitter::etCasting ) );
+	pInitTrigger(pTriggerCasting, pGDParticleEmitter.GetTriggerName(igdeGDCParticleEmitter::etCasting));
 }
 
 void igdeWOSOParticleEmitter::UpdateTriggers(){
-	if( ! pParticleEmitter ){
+	if(!pParticleEmitter){
 		return;
 	}
 	
 	bool enableCasting = false;
 	
-	if( GetWrapper().GetVisible() ){
-		if( pTriggerCasting ){
+	if(GetWrapper().GetVisible()){
+		if(pTriggerCasting){
 			pTriggerCasting->Evaluate();
 			enableCasting = pTriggerCasting->GetResult();
 			
 		}else{
 			enableCasting = GetBoolProperty(
-				pGDParticleEmitter.GetPropertyName( igdeGDCParticleEmitter::epCasting ),
-				pGDParticleEmitter.GetCasting() );
+				pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epCasting),
+				pGDParticleEmitter.GetCasting());
 		}
 	}
 	
-	if( enableCasting != pParticleEmitter->GetEnableCasting() ){
-		if( enableCasting ){
+	if(enableCasting != pParticleEmitter->GetEnableCasting()){
+		if(enableCasting){
 			pParticleEmitter->ResetBurst();
 		}
-		pParticleEmitter->SetEnableCasting( enableCasting );
+		pParticleEmitter->SetEnableCasting(enableCasting);
 	}
 }
 
@@ -179,8 +179,8 @@ void igdeWOSOParticleEmitter::UpdateLayerMasks(){
 }
 
 void igdeWOSOParticleEmitter::UpdateCollisionFilter(){
-	if( pParticleEmitter ){
-		pParticleEmitter->SetCollisionFilter( GetWrapper().GetCollisionFilterParticles() );
+	if(pParticleEmitter){
+		pParticleEmitter->SetCollisionFilter(GetWrapper().GetCollisionFilterParticles());
 	}
 }
 
@@ -188,18 +188,18 @@ void igdeWOSOParticleEmitter::OnAllSubObjectsFinishedLoading(){
 	pUpdateParticleEmitter();
 }
 
-void igdeWOSOParticleEmitter::Visit( igdeWOSOVisitor &visitor ){
-	visitor.VisitParticleEmitter( *this );
+void igdeWOSOParticleEmitter::Visit(igdeWOSOVisitor &visitor){
+	visitor.VisitParticleEmitter(*this);
 }
 
-void igdeWOSOParticleEmitter::AsyncLoadFinished( bool success ){
-	if( ! pResLoad ){
+void igdeWOSOParticleEmitter::AsyncLoadFinished(bool success){
+	if(!pResLoad){
 		return;
 	}
 	
-	( ( igdeWOSOParticleEmitterResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
+	pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>()->Drop();
 	
-	GetWrapper().SubObjectFinishedLoading( *this, success );
+	GetWrapper().SubObjectFinishedLoading(*this, success);
 }
 
 
@@ -208,25 +208,23 @@ void igdeWOSOParticleEmitter::AsyncLoadFinished( bool success ){
 //////////////////////
 
 void igdeWOSOParticleEmitter::pLoadResources(){
-	if( pResLoad ){
-		( ( igdeWOSOParticleEmitterResLoadComponent& )( igdeResourceLoaderListener& )pResLoad ).Drop();
-		pResLoad = NULL;
+	if(pResLoad){
+		pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>()->Drop();
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver( new igdeWOSOParticleEmitterResLoadComponent( *this ) );
-	igdeWOSOParticleEmitterResLoadComponent &rl =
-		( igdeWOSOParticleEmitterResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+	pResLoad = igdeWOSOParticleEmitterResLoadComponent::Ref::New(*this);
+	igdeWOSOParticleEmitterResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>();
 	
 	rl.CheckFinished();
 }
 
 void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
-	const igdeWOSOParticleEmitterResLoadComponent &rl =
-		( igdeWOSOParticleEmitterResLoadComponent& )( igdeResourceLoaderListener& )pResLoad;
+	const igdeWOSOParticleEmitterResLoadComponent &rl = pResLoad.DynamicCast<igdeWOSOParticleEmitterResLoadComponent>();
 	(void)rl;
 	
-	if( ! pParticleEmitter ){
-		pParticleEmitter.TakeOver( GetEngine().GetParticleEmitterInstanceManager()->CreateInstance() );
+	if(!pParticleEmitter){
+		pParticleEmitter = GetEngine().GetParticleEmitterInstanceManager()->CreateInstance();
 		
 		UpdateLayerMasks();
 		UpdateCollisionFilter();
@@ -235,59 +233,58 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 		UpdateVisibility();
 	}
 	
-	decString pathEmitter( GetStringProperty(
-		pGDParticleEmitter.GetPropertyName( igdeGDCParticleEmitter::epPath ),
-		pGDParticleEmitter.GetPath() ) );
+	decString pathEmitter(GetStringProperty(
+		pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epPath),
+		pGDParticleEmitter.GetPath()));
 	
-	if( pathEmitter != pPathEmitter ){
-		deParticleEmitterReference emitter( pParticleEmitter->GetEmitter() );
+	if(pathEmitter != pPathEmitter){
+		deParticleEmitter::Ref emitter(pParticleEmitter->GetEmitter());
 		
-		if( ! pathEmitter.IsEmpty() ){
-			igdeLoadParticleEmitter loadEmitter( GetEnvironment(), &GetLogger(), "DEIGDE" );
-			const decPath vfsPath( decPath::CreatePathUnix( pathEmitter ) );
+		if(!pathEmitter.IsEmpty()){
+			igdeLoadParticleEmitter loadEmitter(GetEnvironment(), &GetLogger(), "DEIGDE");
+			const decPath vfsPath(decPath::CreatePathUnix(pathEmitter));
 			deEngine &engine = GetEngine();
 			
-			if( engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
+			if(engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 				try{
-					decBaseFileReaderReference reader;
-					reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) );
-					emitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
-					loadEmitter.Load( pathEmitter, emitter, reader );
+					emitter = engine.GetParticleEmitterManager()->CreateParticleEmitter();
+					loadEmitter.Load(pathEmitter, emitter,
+						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 					
-				}catch( const deException &e ){
-					emitter = NULL;
-					GetLogger().LogException( "DEIGDE", e );
+				}catch(const deException &e){
+					emitter = nullptr;
+					GetLogger().LogException("DEIGDE", e);
 				}
 			}
 		}
 		
-		pParticleEmitter->SetEmitter( emitter );
+		pParticleEmitter->SetEmitter(emitter);
 		pPathEmitter = pathEmitter;
 	}
 	
-	if( ! pAddedToWorld ){
-		GetWrapper().GetWorld()->AddParticleEmitter( pParticleEmitter );
+	if(!pAddedToWorld){
+		GetWrapper().GetWorld()->AddParticleEmitter(pParticleEmitter);
 		pAddedToWorld = true;
 	}
-	if( pAddedToWorld && ! pAttachedToCollider ){
+	if(pAddedToWorld && !pAttachedToCollider){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOParticleEmitter::pDestroyParticleEmitter(){
-	if( ! pParticleEmitter ){
+	if(!pParticleEmitter){
 		return;
 	}
 	
 	DetachFromCollider();
 	
-	if( pAddedToWorld ){
-		GetWrapper().GetWorld()->RemoveParticleEmitter( pParticleEmitter );
+	if(pAddedToWorld){
+		GetWrapper().GetWorld()->RemoveParticleEmitter(pParticleEmitter);
 	}
 	
-	pParticleEmitter = NULL;
+	pParticleEmitter = nullptr;
 	pPathEmitter.Empty();
 	pAddedToWorld = false;
 }
@@ -295,53 +292,45 @@ void igdeWOSOParticleEmitter::pDestroyParticleEmitter(){
 void igdeWOSOParticleEmitter::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pParticleEmitter ){
+	if(!pParticleEmitter){
 		return;
 	}
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
 	
-	try{
-		attachment = new deColliderAttachment( pParticleEmitter );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		attachment->SetPosition( GetVectorProperty(
-			pGDParticleEmitter.GetPropertyName( igdeGDCParticleEmitter::epAttachPosition ),
-			pGDParticleEmitter.GetPosition() ) );
-		attachment->SetOrientation( GetRotationProperty(
-			pGDParticleEmitter.GetPropertyName( igdeGDCParticleEmitter::epAttachRotation ),
-			pGDParticleEmitter.GetOrientation() ) );
-		
-		if( colliderComponent ){
-			if( ! pGDParticleEmitter.GetBoneName().IsEmpty() ){
-				attachment->SetAttachType( deColliderAttachment::eatBone );
-				attachment->SetTrackBone( pGDParticleEmitter.GetBoneName() );
-			}
-			colliderComponent->AddAttachment( attachment );
-			pAttachedToCollider = colliderComponent;
-			
-		}else{
-			colliderFallback->AddAttachment( attachment );
-			pAttachedToCollider = colliderFallback;
+	auto attachment = deColliderAttachment::Ref::New(pParticleEmitter);
+	attachment->SetAttachType(deColliderAttachment::eatStatic);
+	attachment->SetPosition(GetVectorProperty(
+		pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epAttachPosition),
+		pGDParticleEmitter.GetPosition()));
+	attachment->SetOrientation(GetRotationProperty(
+		pGDParticleEmitter.GetPropertyName(igdeGDCParticleEmitter::epAttachRotation),
+		pGDParticleEmitter.GetOrientation()));
+	auto attachmentPtr = attachment.Pointer();
+	
+	if(colliderComponent){
+		if(!pGDParticleEmitter.GetBoneName().IsEmpty()){
+			attachment->SetAttachType(deColliderAttachment::eatBone);
+			attachment->SetTrackBone(pGDParticleEmitter.GetBoneName());
 		}
+		colliderComponent->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderComponent;
 		
-		pAttachment = attachment;
-		
-	}catch( const deException & ){
-		if( attachment ){
-			delete attachment;
-		}
-		throw;
+	}else{
+		colliderFallback->AddAttachment(std::move(attachment));
+		pAttachedToCollider = colliderFallback;
 	}
+	
+	pAttachment = attachmentPtr;
 }
 
 void igdeWOSOParticleEmitter::DetachFromCollider(){
-	if( ! pAttachedToCollider ){
+	if(!pAttachedToCollider){
 		return;
 	}
 	
-	pAttachedToCollider->RemoveAttachment( pAttachment );
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachedToCollider->RemoveAttachment(pAttachment);
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

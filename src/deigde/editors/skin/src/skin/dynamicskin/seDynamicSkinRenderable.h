@@ -26,11 +26,12 @@
 #define _SEDYNAMICSKINRENDERABLE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/video/deVideoReference.h>
-#include <dragengine/resources/video/deVideoPlayerReference.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/video/deVideo.h>
+#include <dragengine/resources/video/deVideoPlayer.h>
 
 class seDynamicSkin;
 
@@ -43,6 +44,10 @@ class deEngine;
  */
 class seDynamicSkinRenderable : public deObject{
 public:
+	using Ref = deTObjectReference<seDynamicSkinRenderable>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<seDynamicSkinRenderable>,seDynamicSkinRenderable>;
+	
+	
 	/** Renderable types. */
 	enum eRenderableTypes{
 		/** Value. */
@@ -79,13 +84,13 @@ private:
 	decColor pColor;
 	
 	decString pPathImage;
-	deImageReference pEngImage;
+	deImage::Ref pEngImage;
 	
 	// canvas stuff
 	
 	decString pPathVideo;
-	deVideoReference pEngVideo;
-	deVideoPlayerReference pEngVideoPlayer;
+	deVideo::Ref pEngVideo;
+	deVideoPlayer::Ref pEngVideoPlayer;
 	
 	// camera stuff
 	
@@ -93,9 +98,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable. */
-	seDynamicSkinRenderable( deEngine *engine, const char *name = "Renderable" );
+	explicit seDynamicSkinRenderable(deEngine *engine, const char *name);
 	/** Cleans up the renderable. */
-	virtual ~seDynamicSkinRenderable();
+protected:
+	~seDynamicSkinRenderable() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -103,24 +110,24 @@ public:
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
-	/** Retrieves the parent dynamic skin or NULL if there is none. */
+	/** Retrieves the parent dynamic skin or nullptr if there is none. */
 	inline seDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
-	/** Sets the parent dynamic skin or NULL if there is none. */
-	void SetDynamicSkin( seDynamicSkin *dynamicSkin );
+	/** Sets the parent dynamic skin or nullptr if there is none. */
+	void SetDynamicSkin(seDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the renderable type. */
 	inline eRenderableTypes GetRenderableType() const{ return pRenderableType; }
 	/** Sets the renderable type. */
-	void SetRenderableType( eRenderableTypes type );
+	void SetRenderableType(eRenderableTypes type);
 	
 	/** Determines if the renderable is the active one. */
 	inline bool GetActive() const{ return pActive; }
 	/** Sets if the renderable is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Notifies the listeners that the renderable changed. */
 	void NotifyChanged();
@@ -128,7 +135,7 @@ public:
 	void NotifyEngineDynamicSkinChanged();
 	
 	/** Update renderable. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Create value renderable. */
 	void CreateRenderableValue();
@@ -149,19 +156,19 @@ public:
 	/** Retrieves the value. */
 	inline float GetValue() const{ return pValue; }
 	/** Sets the value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Slider lower range. */
 	inline float GetSliderValueLower() const{ return pSliderValueLower; }
 	
 	/** \brief Set slider range. */
-	void SetSliderLowerRange( float range );
+	void SetSliderLowerRange(float range);
 	
 	/** \brief Slider upper range. */
 	inline float GetSliderValueUpper() const{ return pSliderValueUpper; }
 	
 	/** \brief Set slider range. */
-	void SetSliderUpperRange( float range );
+	void SetSliderUpperRange(float range);
 	/*@}*/
 	
 	/** \name Color Renderable */
@@ -169,7 +176,7 @@ public:
 	/** Retrieves the static color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	/** Sets the static color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	/*@}*/
 	
 	/** \name Image Renderable */
@@ -177,9 +184,9 @@ public:
 	/** Retrieves the image path. */
 	inline const decString &GetImagePath() const{ return pPathImage; }
 	/** Sets the image path. */
-	void SetImagePath( const char *imagePath );
-	/** Retrieves the engine image or NULL if not set. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	void SetImagePath(const char *imagePath);
+	/** Retrieves the engine image or nullptr if not set. */
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	/** Update image. */
 	void UpdateImage();
 	
@@ -192,11 +199,11 @@ public:
 	/** Retrieves the video path. */
 	inline const decString &GetVideoPath() const{ return pPathVideo; }
 	/** Sets the video path. */
-	void SetVideoPath( const char *videoPath );
-	/** Retrieves the engine video or NULL if not set. */
-	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
-	/** Retrieves the engine video player or NULL if not set. */
-	inline deVideoPlayer *GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
+	void SetVideoPath(const char *videoPath);
+	/** Retrieves the engine video or nullptr if not set. */
+	inline const deVideo::Ref &GetEngineVideo() const{ return pEngVideo; }
+	/** Retrieves the engine video player or nullptr if not set. */
+	inline const deVideoPlayer::Ref &GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
 	/** Update video. */
 	void UpdateVideo();
 	

@@ -25,16 +25,24 @@
 #ifndef _IGDENATIVENULLWINDOW_H_
 #define _IGDENATIVENULLWINDOW_H_
 
+#include "../../igdeWindow.h"
+
 class igdeWindow;
+
+
+class igdeNativeNullWindowBase{
+public:
+	bool isClosed = false;
+	
+	virtual ~igdeNativeNullWindowBase() = default;
+	virtual void OnFrameUpdate() = 0;
+};
 
 
 /**
  * Null window.
  */
-class igdeNativeNullWindow{
-private:
-	bool pIsClosed;
-	
+class igdeNativeNullWindow : public igdeNativeNullWindowBase, public igdeWindow::cNativeWindow{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,10 +50,10 @@ public:
 	igdeNativeNullWindow();
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeNullWindow();
+	~igdeNativeNullWindow() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullWindow* CreateNativeWidget( igdeWindow &owner );
+	static igdeNativeNullWindow* CreateNativeWidget(igdeWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,19 +63,16 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void RaiseAndActivate();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
-	virtual void OnFrameUpdate();
-	inline bool GetIsClosed() const{ return pIsClosed; }
-	void SetIsClosed( bool isClosed );
+	void OnFrameUpdate() override;
 	/*@}*/
 };
 

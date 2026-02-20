@@ -25,13 +25,12 @@
 #ifndef _IGDEPROPERTY_H_
 #define _IGDEPROPERTY_H_
 
-#include "../../gui/filedialog/igdeFilePatternList.h"
+#include "../../gui/filedialog/igdeFilePattern.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
-
-class igdeFilePatternList;
 
 
 
@@ -43,6 +42,13 @@ class igdeFilePatternList;
  */
 class DE_DLL_EXPORT igdeGDProperty : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDProperty>;
+	
+	/** \brief List of properties. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeGDProperty>,igdeGDProperty>;
+	
+	
 	/** \brief Property type. */
 	enum ePropertyTypes{
 		/** \brief String value. */
@@ -179,7 +185,7 @@ private:
 	decString pDefaultValue;
 	decStringList pOptions;
 	ePathPatternTypes pPathPatternType;
-	igdeFilePatternList pCustomPathPattern;
+	igdeFilePattern::List pCustomPathPattern;
 	decString pIdentifierGroup;
 	bool pIdentifierUsage;
 	
@@ -189,14 +195,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create property. */
-	igdeGDProperty( const char *name );
+	igdeGDProperty(const char *name);
 	
 	/** \brief Create copy of property. */
-	igdeGDProperty( const igdeGDProperty &property );
+	igdeGDProperty(const igdeGDProperty &property);
 	
 protected:
 	/** \brief Clean up property. */
-	virtual ~igdeGDProperty();
+	~igdeGDProperty() override;
 	/*@}*/
 	
 	
@@ -208,31 +214,31 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Type. */
 	inline ePropertyTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( ePropertyTypes type );
+	void SetType(ePropertyTypes type);
 	
 	/** \brief Minimum value. */
 	inline float GetMinimumValue() const{ return pMinimumValue; }
 	
 	/** \brief Set minimum value. */
-	void SetMinimumValue( float value );
+	void SetMinimumValue(float value);
 	
 	/** \brief Maximum value. */
 	inline float GetMaximumValue() const{ return pMaximumValue; }
 	
 	/** \brief Set maximum value. */
-	void SetMaximumValue( float value );
+	void SetMaximumValue(float value);
 	
 	/** \brief Select options. */
 	inline decStringList &GetOptions(){ return pOptions; }
@@ -242,34 +248,34 @@ public:
 	inline ePathPatternTypes GetPathPatternType() const{ return pPathPatternType; }
 	
 	/** \brief Set path pattern type. */
-	void SetPathPatternType( ePathPatternTypes type );
+	void SetPathPatternType(ePathPatternTypes type);
 	
 	/** \brief Custom path pattern list. */
-	inline igdeFilePatternList &GetCustomPathPattern(){ return pCustomPathPattern; }
-	inline const igdeFilePatternList &GetCustomPathPattern() const{ return pCustomPathPattern; }
+	inline igdeFilePattern::List &GetCustomPathPattern(){ return pCustomPathPattern; }
+	inline const igdeFilePattern::List &GetCustomPathPattern() const{ return pCustomPathPattern; }
 	
 	/** \brief Identifier group or empty string if not set. */
 	inline const decString &GetIdentifierGroup() const{ return pIdentifierGroup; }
 	
 	/** \brief Set identifier group or empty string if not set. */
-	void SetIdentifierGroup( const char *group );
+	void SetIdentifierGroup(const char *group);
 	
 	/** \brief Usage count of identifier in group is altered. */
 	inline bool GetIdentifierUsage() const{ return pIdentifierUsage; }
 	
 	/** \brief Set if usage count of identifier in group is altered. */
-	void SetIdentifierUsage( bool usage );
+	void SetIdentifierUsage(bool usage);
 	
 	/** \brief Default value. */
 	inline const decString &GetDefaultValue() const{ return pDefaultValue; }
 	
 	/** \brief Set default value. */
-	void SetDefaultValue( const char *value );
+	void SetDefaultValue(const char *value);
 	
 	
 	
 	/** \brief Set from another property. */
-	igdeGDProperty &operator=( const igdeGDProperty &property );
+	igdeGDProperty &operator=(const igdeGDProperty &property);
 	/*@}*/
 };
 

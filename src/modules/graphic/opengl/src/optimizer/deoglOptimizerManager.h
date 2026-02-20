@@ -26,8 +26,9 @@
 #ifndef _DEOGLOPTIMIZERMANAGER_H_
 #define _DEOGLOPTIMIZERMANAGER_H_
 
-// predefinitions
-class deoglOptimizer;
+#include "deoglOptimizer.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 
@@ -40,8 +41,7 @@ class deoglOptimizer;
  */
 class deoglOptimizerManager{
 private:
-	deoglOptimizer **pOptimizers;
-	int pOptimizerCount, pOptimizerSize;
+	decTObjectOrderedSet<deoglOptimizer> pOptimizers;
 	int pNextOptimizer;
 	
 public:
@@ -55,18 +55,15 @@ public:
 	
 	/** \name Optimizer Management */
 	/*@{*/
-	/** Retrieves the number of optimizers. */
-	inline int GetOptimizerCount() const{ return pOptimizerCount; }
-	/** Retrieves the optimizer at the given index. */
-	deoglOptimizer *GetOptimizerAt( int index ) const;
-	/** Determines if the given optimizer exists. */
-	bool HasOptimizer( deoglOptimizer *optimizer ) const;
-	/** Determines the index of the given optimizer or -1 if not found. */
-	int IndexOfOptimizer( deoglOptimizer *optimizer ) const;
+	/** Optimizers. */
+	inline const decTObjectOrderedSet<deoglOptimizer>& Optimizers() const{ return pOptimizers; }
+	
 	/** Adds an optimizer. */
-	void AddOptimizer( deoglOptimizer *optimizer );
+	void AddOptimizer(deoglOptimizer *optimizer);
+
 	/** Removes the given optimizer. */
-	void RemoveOptimizer( deoglOptimizer *optimizer );
+	void RemoveOptimizer(deoglOptimizer *optimizer);
+
 	/** Removes all optimizers. */
 	void RemoveAllOptimizers();
 	/*@}*/
@@ -74,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Runs optimizers until the given time slice in micro-seconds has elapsed. */
-	void Run( int timeSlice );
+	void Run(int timeSlice);
 	/*@}*/
 	
 private:

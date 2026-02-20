@@ -37,11 +37,11 @@
 // Class deoxrThreadSync
 //////////////////////////
 
-deoxrThreadSync::deoxrThreadSync( deVROpenXR &oxr ) :
-pOxr( oxr ),
-pNextCommand( ecNone ),
-pWaitFrameRunning( false ),
-pWaitFrameFailed( false ){
+deoxrThreadSync::deoxrThreadSync(deVROpenXR &oxr) :
+pOxr(oxr),
+pNextCommand(ecNone),
+pWaitFrameRunning(false),
+pWaitFrameFailed(false){
 }
 
 deoxrThreadSync::~deoxrThreadSync(){
@@ -53,11 +53,11 @@ deoxrThreadSync::~deoxrThreadSync(){
 ///////////////
 
 void deoxrThreadSync::StartWaitFrame(){
-	const deMutexGuard guard( pMutex );
-	if( pNextCommand == ecExit ){
+	const deMutexGuard guard(pMutex);
+	if(pNextCommand == ecExit){
 		return;
 	}
-	DEASSERT_TRUE( pNextCommand == ecNone )
+	DEASSERT_TRUE(pNextCommand == ecNone)
 	
 	pNextCommand = ecWaitFrame;
 	pWaitFrameFailed = false;
@@ -67,28 +67,28 @@ void deoxrThreadSync::StartWaitFrame(){
 
 void deoxrThreadSync::WaitWaitFrameFinished(){
 	{
-	const deMutexGuard guard( pMutex );
-	if( pNextCommand != ecWaitFrame ){
+	const deMutexGuard guard(pMutex);
+	if(pNextCommand != ecWaitFrame){
 		return;
 	}
-	if( ! pWaitFrameRunning ){
-		DEASSERT_FALSE( pWaitFrameFailed )
+	if(!pWaitFrameRunning){
+		DEASSERT_FALSE(pWaitFrameFailed)
 	}
 	}
 	
 	pSemaphoreWaitFrameFinished.Wait();
 	
-	const deMutexGuard guard( pMutex );
-	if( pNextCommand == ecExit ){
+	const deMutexGuard guard(pMutex);
+	if(pNextCommand == ecExit){
 		return;
 	}
-	DEASSERT_FALSE( pWaitFrameFailed )
+	DEASSERT_FALSE(pWaitFrameFailed)
 }
 
 
 
 void deoxrThreadSync::ExitThread(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	pNextCommand = ecExit;
 	pSemaphoreNextCommand.Signal();
 }
@@ -96,16 +96,16 @@ void deoxrThreadSync::ExitThread(){
 
 
 void deoxrThreadSync::Run(){
-	while( true ){
+	while(true){
 		pSemaphoreNextCommand.Wait();
 		
 		eCommand nextCommand;
 		{
-		const deMutexGuard guard( pMutex );
+		const deMutexGuard guard(pMutex);
 		nextCommand = pNextCommand;
 		}
 		
-		switch( nextCommand ){
+		switch(nextCommand){
 		case ecNone:
 			break;
 			
@@ -129,22 +129,22 @@ void deoxrThreadSync::Run(){
 
 void deoxrThreadSync::pWaitFrame(){
 	try{
-		const deMutexGuard guard( pOxr.GetMutexOpenXR() );
-		if( pOxr.GetSession() ){
+		const deMutexGuard guard(pOxr.GetMutexOpenXR());
+		if(pOxr.GetSession()){
 			pOxr.GetSession()->WaitFrame();
 		}
 		pWaitFrameFailed = false;
 		
-	}catch( const deException &e ){
-		pOxr.LogException( e );
+	}catch(const deException &e){
+		pOxr.LogException(e);
 		pWaitFrameFailed = true;
 	}
 	
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	
 	pWaitFrameRunning = false;
 	
-	if( pNextCommand != ecExit ){
+	if(pNextCommand != ecExit){
 		pNextCommand = ecNone;
 	}
 	

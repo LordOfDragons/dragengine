@@ -28,6 +28,9 @@
 #include "../../../world/object/meObject.h"
 #include "../../../world/object/meObjectSelection.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -38,56 +41,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteObject::meUDeleteObject( meWorld *world ) :
-pWorld( NULL )
+meUDeleteObject::meUDeleteObject(meWorld *world) :
+pWorld(nullptr)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectList &list = world->GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
-	deObjectReference ref;
-	decString text;
-	int i;
+	pWorld = world;
 	
-	SetShortInfo( "Delete Objects" );
-	if( count > 1 ){
-		text.Format( "%i objects", count );
+	const meObject::List &list = world->GetSelectionObject().GetSelected();
+	list.Visit([&](meObject *o){
+		pObjects.Add(meUndoDataObject::Ref::New(o));
+	});
+	
+	// keep track of object attached to deleted objects
+	world->GetObjects().Visit([&](meObject *o){
+		if(o->GetAttachedTo() && list.Has(o->GetAttachedTo())){
+			pAttached.Add(meUndoDataObject::Ref::New(o));
+		}
+	});
+	
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
+	SetShortInfo("@World.UDeleteObject.DeleteObjects");
+	decString text;
+	if(pObjects.GetCount() > 1){
+		text.FormatSafe(tm.Translate("World.UDeleteObject.CountObjects").ToUTF8(), pObjects.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UDeleteObject.OneObject").ToUTF8();
 	}
-	SetLongInfo( text );
-	
-	try{
-		pWorld = world;
-		world->AddReference();
-		
-		for( i=0; i<count; i++ ){
-			ref.TakeOver( new meUndoDataObject( list.GetAt( i ) ) );
-			pObjects.Add( ref );
-		}
-		
-		// keep track of object attached to deleted objects
-		const meObjectList &allObjects = world->GetObjects();
-		const int allCount = allObjects.GetCount();
-		for( i=0; i<allCount; i++ ){
-			meObject * const object = allObjects.GetAt( i );
-			if( object->GetAttachedTo() && list.Has( object->GetAttachedTo() ) ){
-				ref.TakeOver( new meUndoDataObject( object ) );
-				pAttached.Add( ref );
-			}
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	SetLongInfo(text);
 }
 
 meUDeleteObject::~meUDeleteObject(){
-	pCleanUp();
 }
 
 
@@ -97,72 +85,46 @@ meUDeleteObject::~meUDeleteObject(){
 
 void meUDeleteObject::Undo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
-	const int count = pObjects.GetCount();
-	int i;
 	
 	selection.Reset();
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		pWorld->AddObject( object );
-		selection.Add( object );
+		pWorld->AddObject(object);
+		selection.Add(object);
 		
-		pWorld->NotifyObjectAdded( object );
+		pWorld->NotifyObjectAdded(object);
 		
-		object->SetAttachedTo( data.GetAttachedTo() );
-	}
+		object->SetAttachedTo(data.GetAttachedTo());
+	});
 	
-	const int attachCount = pAttached.GetCount();
-	for( i=0; i<attachCount; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pAttached.GetAt( i ) );
-		meObject * const object = data.GetObject();
-		object->SetAttachedTo( data.GetAttachedTo() );
-	}
-	
-	selection.ActivateNext();
+	pAttached.Visit([&](const meUndoDataObject &data){
+		data.GetObject()->SetAttachedTo(data.GetAttachedTo());
+	});
 	
 	pWorld->NotifyObjectSelectionChanged();
 }
 
 void meUDeleteObject::Redo(){
 	meObjectSelection &selection = pWorld->GetSelectionObject();
-	int i;
 	
-	const int attachCount = pAttached.GetCount();
-	for( i=0; i<attachCount; i++ ){
-		( ( meUndoDataObject* )pAttached.GetAt( i ) )->GetObject()->SetAttachedTo( NULL );
-	}
+	pAttached.Visit([&](const meUndoDataObject &data){
+		data.GetObject()->SetAttachedTo(nullptr);
+	});
 	
-	const int count = pObjects.GetCount();
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		object->SetAttachedTo( NULL );
+		object->SetAttachedTo(nullptr);
 			// done automatically if removed from world but better be safe
 		
-		selection.Remove( object );
-		if( object->GetActive() ){
-			selection.ActivateNext();
-		}
+		selection.Remove(object);
 		
-		pWorld->RemoveObject( object );
+		pWorld->RemoveObject(object);
 		
-		pWorld->NotifyObjectRemoved( object );
-	}
+		pWorld->NotifyObjectRemoved(object);
+	});
 	
 	pWorld->NotifyObjectSelectionChanged();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDeleteObject::pCleanUp(){
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
 }

@@ -25,7 +25,7 @@
 #ifndef _DESYNTHESIZERCONTROLLERTARGET_H_
 #define _DESYNTHESIZERCONTROLLERTARGET_H_
 
-#include "../../common/collection/decIntList.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -33,7 +33,7 @@
  */
 class DE_DLL_EXPORT deSynthesizerControllerTarget{
 private:
-	decIntList pLinks;
+	decTList<int> pLinks;
 	
 	
 	
@@ -44,7 +44,7 @@ public:
 	deSynthesizerControllerTarget();
 	
 	/** \brief Create copy of target. */
-	deSynthesizerControllerTarget( const deSynthesizerControllerTarget &target );
+	deSynthesizerControllerTarget(const deSynthesizerControllerTarget &target);
 	
 	/** \brief Clean up target. */
 	~deSynthesizerControllerTarget();
@@ -54,26 +54,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/**
-	 * \brief Link at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetLinkCount().
-	 */
-	int GetLinkAt( int index ) const;
-	
-	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink( int link ) const;
+	/** \brief Links. */
+	inline const decTList<int> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
-	void AddLink( int link );
+	void AddLink(int link);
 	
 	/**
 	 * \brief Remove link.
 	 * \throws deeInvalidParam \em link is absent.
 	 */
-	void RemoveLink( int link );
+	void RemoveLink(int link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();

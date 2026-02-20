@@ -22,21 +22,18 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUHTIMPORTHEIGHTIMAGE_H_
 #define _MEUHTIMPORTHEIGHTIMAGE_H_
 
-// includes
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrainSector.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 
-// predefinitions
-class meWorld;
-class meHeightTerrainSector;
-
 class deImage;
-
 
 
 /**
@@ -45,34 +42,40 @@ class deImage;
  * Undo action to import a height image into a height terrain.
  */
 class meUHTImportHeightImage : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTImportHeightImage>;
+	
+	
+public:
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	
-	float *pOldHeights;
-	float *pNewHeights;
+	meHeightTerrainSector::Ref pSector;
+	decTList<float> pOldHeights, pNewHeights;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTImportHeightImage( meWorld *world, meHeightTerrainSector *sector, deImage *image );
+	meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
+	
+protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTImportHeightImage();
+	~meUHTImportHeightImage() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	void pDoIt( float *heights );
+	void pDoIt(const float *heights);
 };
 
-// end of include only once
 #endif

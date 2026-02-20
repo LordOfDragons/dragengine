@@ -41,8 +41,8 @@
 ////////////////////////////
 
 deSynthesizerSourceChain::deSynthesizerSourceChain() :
-pMinSpeed( 1.0f ),
-pMaxSpeed( 1.0f ){
+pMinSpeed(1.0f),
+pMaxSpeed(1.0f){
 }
 
 deSynthesizerSourceChain::~deSynthesizerSourceChain(){
@@ -53,20 +53,12 @@ deSynthesizerSourceChain::~deSynthesizerSourceChain(){
 // Management
 ///////////////
 
-int deSynthesizerSourceChain::GetSoundCount() const{
-	return pSounds.GetCount();
+void deSynthesizerSourceChain::AddSound(deSound *sound){
+	pSounds.Add(sound);
 }
 
-deSound *deSynthesizerSourceChain::GetSoundAt( int index ) const{
-	return ( deSound* )pSounds.GetAt( index );
-}
-
-void deSynthesizerSourceChain::AddSound( deSound *sound ){
-	pSounds.Add( sound );
-}
-
-void deSynthesizerSourceChain::RemoveSound( int index ){
-	pSounds.RemoveFrom( index );
+void deSynthesizerSourceChain::RemoveSound(int index){
+	pSounds.RemoveFrom(index);
 }
 
 void deSynthesizerSourceChain::RemoveAllSounds(){
@@ -75,11 +67,11 @@ void deSynthesizerSourceChain::RemoveAllSounds(){
 
 
 
-void deSynthesizerSourceChain::SetMinSpeed( float speed ){
+void deSynthesizerSourceChain::SetMinSpeed(float speed){
 	pMinSpeed = speed;
 }
 
-void deSynthesizerSourceChain::SetMaxSpeed( float speed ){
+void deSynthesizerSourceChain::SetMaxSpeed(float speed){
 	pMaxSpeed = speed;
 }
 
@@ -88,6 +80,6 @@ void deSynthesizerSourceChain::SetMaxSpeed( float speed ){
 // Visiting
 /////////////
 
-void deSynthesizerSourceChain::Visit( deSynthesizerSourceVisitor &visitor ){
-	visitor.VisitChain( *this );
+void deSynthesizerSourceChain::Visit(deSynthesizerSourceVisitor &visitor){
+	visitor.VisitChain(*this);
 }

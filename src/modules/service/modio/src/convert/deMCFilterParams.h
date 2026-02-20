@@ -44,11 +44,11 @@ public:
 	};
 	
 	/** Convert service object string to constant. */
-	static sSortBy SortFieldType( const deServiceObject &so );
-	static Modio::FilterParams::RevenueFilterType RevenueFilterType( const deServiceObject &so );
+	static sSortBy SortFieldType(const deServiceObject &so);
+	static Modio::FilterParams::RevenueFilterType RevenueFilterType(const deServiceObject &so);
 	
 	/** Convert service object to modio struct. */
-	static Modio::FilterParams FilterParams( const deServiceObject &so );
+	static Modio::FilterParams FilterParams(const deServiceObject &so);
 	/*@}*/
 };
 

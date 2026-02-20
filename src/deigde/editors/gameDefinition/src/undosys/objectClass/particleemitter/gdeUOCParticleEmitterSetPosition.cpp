@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const decVector &newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const decVector &newValue) :
+
+pParticleEmitter(nullptr)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set position" );
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetPosition");
 	
 	pOldValue = particleEmitter->GetPosition();
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetPosition::~gdeUOCParticleEmitterSetPosition(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCParticleEmitterSetPosition::~gdeUOCParticleEmitterSetPosition(){
 ///////////////
 
 void gdeUOCParticleEmitterSetPosition::Undo(){
-	pParticleEmitter->SetPosition( pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPosition(pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetPosition::Redo(){
-	pParticleEmitter->SetPosition( pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetPosition(pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

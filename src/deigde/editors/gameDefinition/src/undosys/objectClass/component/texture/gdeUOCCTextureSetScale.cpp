@@ -41,41 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetScale::gdeUOCCTextureSetScale( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, const decVector2 &newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pTexture( NULL )
+gdeUOCCTextureSetScale::gdeUOCCTextureSetScale(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decVector2 &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! component || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component texture set scale" );
+	SetShortInfo("@GameDefinition.Undo.OCCTextureSetScale");
 	
 	pOldValue = texture->GetScale();
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCTextureSetScale::~gdeUOCCTextureSetScale(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -84,11 +68,11 @@ gdeUOCCTextureSetScale::~gdeUOCCTextureSetScale(){
 ///////////////
 
 void gdeUOCCTextureSetScale::Undo(){
-	pTexture->SetScale( pOldValue );
-	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
+	pTexture->SetScale(pOldValue);
+	pObjectClass->NotifyComponentTextureChanged(pComponent, pTexture);
 }
 
 void gdeUOCCTextureSetScale::Redo(){
-	pTexture->SetScale( pNewValue );
-	pObjectClass->NotifyComponentTextureChanged( pComponent, pTexture );
+	pTexture->SetScale(pNewValue);
+	pObjectClass->NotifyComponentTextureChanged(pComponent, pTexture);
 }

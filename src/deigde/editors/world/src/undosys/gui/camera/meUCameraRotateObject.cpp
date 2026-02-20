@@ -42,16 +42,12 @@ meUCameraRotateObject::meUCameraRotateObject(meObject *object){
 	
 	pOldRotation = object->GetRotation();
 	pNewRotation = pOldRotation;
-	SetShortInfo("Rotate Camera Object");
+	SetShortInfo("@World.UCameraRotateObject.RotateCameraObject");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUCameraRotateObject::~meUCameraRotateObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -64,7 +60,7 @@ void meUCameraRotateObject::SetNewRotation(const decVector &rotation){
 }
 
 bool meUCameraRotateObject::HasChanged() const{
-	return ! pNewRotation.IsEqualTo(pOldRotation);
+	return !pNewRotation.IsEqualTo(pOldRotation);
 }
 
 void meUCameraRotateObject::Undo(){

@@ -38,7 +38,7 @@ class deglWindowLoggerTable;
  * Logger Window. Display the logging history.
  */
 class deglWindowLogger : public FXTopWindow{
-	FXDECLARE( deglWindowLogger )
+	FXDECLARE(deglWindowLogger)
 	
 protected:
 	deglWindowLogger();
@@ -66,10 +66,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create logger window. */
-	deglWindowLogger( FXApp *app );
+	deglWindowLogger(FXApp *app);
 	
 	/** Clean up logger window. */
-	virtual ~deglWindowLogger();
+	~deglWindowLogger() override;
 	/*@}*/
 	
 	
@@ -77,19 +77,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create window. */
-	virtual void create();
+	void create() override;
 	
 	/** Logger to monitor or nullptr if none. */
-	inline delLoggerHistory *GetLogger() const{ return pLogger; }
+	inline const delLoggerHistory::Ref &GetLogger() const{ return pLogger; }
 	
 	/** Set logger to monitor or nullptr if none. */
-	void SetLogger( delLoggerHistory *logger );
+	void SetLogger(delLoggerHistory *logger);
 	
 	/** Update logs table. */
 	void UpdateLogs();
 	
 	/** Add log to table. */
-	void AddLogToTable( const delLoggerHistoryEntry &entry );
+	void AddLogToTable(const delLoggerHistoryEntry &entry);
 	
 	/** Clear logs table. */
 	void ClearLogsTable();
@@ -99,8 +99,8 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onMap( FXObject *sender, FXSelector selector, void *data );
-	long onClose( FXObject *sender, FXSelector selector, void *data );
+	long onMap(FXObject *sender, FXSelector selector, void *data);
+	long onClose(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

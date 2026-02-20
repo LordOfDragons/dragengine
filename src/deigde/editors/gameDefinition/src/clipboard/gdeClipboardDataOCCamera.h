@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCCamera;
+#include "../gamedef/objectClass/camera/gdeOCCamera.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCCamera;
  */
 class gdeClipboardDataOCCamera : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCCamera>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCCamera *pCamera;
+	gdeOCCamera::Ref pCamera;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCCamera( gdeOCCamera *camera );
+	gdeClipboardDataOCCamera(gdeOCCamera *camera);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCCamera();
+	~gdeClipboardDataOCCamera() override;
 	/*@}*/
 	
 	

@@ -39,31 +39,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRotation::meUDecalRotation( meDecal *decal, const decVector &newRotation ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation){
+	if(!decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
-	SetShortInfo( "Set decal orientation" );
+	SetShortInfo("@World.UDecalRotation.SetDecalOrientation");
 	
 	pOldRotation = decal->GetRotation();
 	pNewRotation = newRotation;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRotation::~meUDecalRotation(){
-	if( pDecal ){
-		pDecal->FreeReference();
-	}
 }
 
 
@@ -72,11 +68,11 @@ meUDecalRotation::~meUDecalRotation(){
 ///////////////
 
 void meUDecalRotation::Undo(){
-	pDecal->SetRotation( pOldRotation );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetRotation(pOldRotation);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalRotation::Redo(){
-	pDecal->SetRotation( pNewRotation );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetRotation(pNewRotation);
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

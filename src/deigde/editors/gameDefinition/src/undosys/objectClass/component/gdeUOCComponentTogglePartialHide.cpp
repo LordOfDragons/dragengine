@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCComponentTogglePartialHide::gdeUOCComponentTogglePartialHide(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle partial hide" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentTogglePartialHide");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentTogglePartialHide::~gdeUOCComponentTogglePartialHide(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCComponentTogglePartialHide::~gdeUOCComponentTogglePartialHide(){
 ///////////////
 
 void gdeUOCComponentTogglePartialHide::Undo(){
-	pComponent->SetPartialHide( ! pComponent->GetPartialHide() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPartialHide(!pComponent->GetPartialHide());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentTogglePartialHide::Redo(){

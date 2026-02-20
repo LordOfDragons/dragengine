@@ -33,20 +33,22 @@
  */
 class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPGoogleDaydreamController>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPGoogleDaydreamController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	~deoxrDPGoogleDaydreamController() override;
 	/*@}*/
 	
 	
 protected:
-	virtual void pAddDevice( bool left );
-	virtual void pSuggestBindings();
+	void pAddDevice(bool left) override;
+	void pSuggestBindings() override;
 };
 
 #endif

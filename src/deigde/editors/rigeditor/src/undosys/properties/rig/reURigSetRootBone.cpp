@@ -39,26 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURigSetRootBone::reURigSetRootBone( reRig *rig, reRigBone *rootBone ){
-	if( ! rig || ! rootBone ) DETHROW( deeInvalidParam );
+reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone *rootBone){
+	if(!rig || !rootBone) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Set Rig Root Bone" );
+	SetShortInfo("@Rig.Undo.RigSetRootBone");
 	
 	pRig = rig;
-	pRig->AddReference();
-	
 	pOldBone = rig->GetRootBone();
-	if( pOldBone ) pOldBone->AddReference();
-	
 	pNewBone = rootBone;
-	if( rootBone ) rootBone->AddReference();
 }
 
 reURigSetRootBone::~reURigSetRootBone(){
-	if( pNewBone ) pNewBone->FreeReference();
-	if( pOldBone ) pOldBone->FreeReference();
-	
-	if( pRig ) pRig->FreeReference();
 }
 
 
@@ -67,9 +58,9 @@ reURigSetRootBone::~reURigSetRootBone(){
 ///////////////
 
 void reURigSetRootBone::Undo(){
-	pRig->SetRootBone( pOldBone );
+	pRig->SetRootBone(pOldBone);
 }
 
 void reURigSetRootBone::Redo(){
-	pRig->SetRootBone( pNewBone );
+	pRig->SetRootBone(pNewBone);
 }

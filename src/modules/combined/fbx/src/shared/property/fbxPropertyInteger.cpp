@@ -44,13 +44,13 @@
 ////////////////////////////
 
 fbxPropertyInteger::fbxPropertyInteger() :
-fbxProperty( etInteger ),
-pValue( 0 ){
+fbxProperty(etInteger),
+pValue(0){
 }
 
-fbxPropertyInteger::fbxPropertyInteger( decBaseFileReader &reader ) :
-fbxProperty( etInteger ),
-pValue( reader.ReadInt() ){
+fbxPropertyInteger::fbxPropertyInteger(decBaseFileReader &reader) :
+fbxProperty(etInteger),
+pValue(reader.ReadInt()){
 }
 
 fbxPropertyInteger::~fbxPropertyInteger(){
@@ -61,7 +61,7 @@ fbxPropertyInteger::~fbxPropertyInteger(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyInteger::SetValue( int value ){
+void fbxPropertyInteger::SetValue(int value){
 	pValue = value;
 }
 
@@ -82,7 +82,7 @@ int64_t fbxPropertyInteger::GetValueAsLong() const{
 }
 
 float fbxPropertyInteger::GetValueAsFloat() const{
-	return ( float )pValue;
+	return (float)pValue;
 }
 
 double fbxPropertyInteger::GetValueAsDouble() const{
@@ -91,9 +91,9 @@ double fbxPropertyInteger::GetValueAsDouble() const{
 
 
 
-void fbxPropertyInteger::Save(decBaseFileWriter &writer ){
+void fbxPropertyInteger::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyInteger::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty Integer: %d", prefix.GetString(), pValue );
+void fbxPropertyInteger::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty Integer: %d", prefix.GetString(), pValue);
 }

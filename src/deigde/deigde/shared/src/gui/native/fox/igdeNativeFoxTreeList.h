@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXTREELIST_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../igdeTreeList.h"
+#include "../../resources/igdeFont.h"
 
 
 class igdeTreeList;
@@ -38,8 +39,8 @@ class igdeNativeFoxResizer;
 /**
  * \brief FOX toolkit Native tree list.
  */
-class igdeNativeFoxTreeList : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxTreeList )
+class igdeNativeFoxTreeList : public FXVerticalFrame, public igdeTreeList::cNativeTreeList{
+	FXDECLARE(igdeNativeFoxTreeList)
 protected:
 	   igdeNativeFoxTreeList();
 	
@@ -52,7 +53,7 @@ public:
 	
 private:
 	igdeTreeList *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXTreeList *pTreeList;
 	igdeNativeFoxResizer *pResizer;
 	
@@ -61,14 +62,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxTreeList( igdeTreeList &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxTreeList(igdeTreeList &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxTreeList();
+	~igdeNativeFoxTreeList() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxTreeList* CreateNativeWidget( igdeTreeList &owner );
+	static igdeNativeFoxTreeList* CreateNativeWidget(igdeTreeList &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -84,56 +85,56 @@ public:
 	/** \brief List box. */
 	inline FXTreeList *GetTreeList() const{ return pTreeList; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	
 	
-	virtual void BuildTree();
-	virtual void UpdateItem( igdeTreeItem *item );
-	virtual void MakeItemVisible( igdeTreeItem *item );
-	virtual void CreateAndInsertItem( igdeTreeItem *item );
-	virtual void CreateAndAppendItem( igdeTreeItem *item );
-	virtual void RemoveItem( igdeTreeItem *item );
-	virtual void RemoveAllItems( igdeTreeItem *parent );
-	virtual void ItemMoved( igdeTreeItem *item );
-	virtual void SelectItem( igdeTreeItem *item );
-	virtual void ItemsSortedIn( igdeTreeItem *item );
-	virtual void Focus();
-	virtual void UpdateEnabled();
-	virtual void UpdateRows();
-	virtual void UpdateDescription();
+	void BuildTree() override;
+	void UpdateItem(igdeTreeItem *item) override;
+	void MakeItemVisible(igdeTreeItem *item) override;
+	void CreateAndInsertItem(igdeTreeItem *item) override;
+	void CreateAndAppendItem(igdeTreeItem *item) override;
+	void RemoveItem(igdeTreeItem *item) override;
+	void RemoveAllItems(igdeTreeItem *parent) override;
+	void ItemMoved(igdeTreeItem *item) override;
+	void SelectItem(igdeTreeItem *item) override;
+	void ItemsSortedIn(igdeTreeItem *item) override;
+	void Focus() override;
+	void UpdateEnabled() override;
+	void UpdateRows() override;
+	void UpdateDescription() override;
 	
-	static int TreeListFlags( const igdeTreeList &owner );
-	static igdeFont *TreeListFont( const igdeTreeList &owner, const igdeGuiTheme &guitheme );
-	static int TreeListPadLeft( const igdeGuiTheme &guitheme );
-	static int TreeListPadRight( const igdeGuiTheme &guitheme );
-	static int TreeListPadTop( const igdeGuiTheme &guitheme );
-	static int TreeListPadBottom( const igdeGuiTheme &guitheme );
+	static int TreeListFlags(const igdeTreeList &owner);
+	static igdeFont *TreeListFont(const igdeTreeList &owner, const igdeGuiTheme &guitheme);
+	static int TreeListPadLeft(const igdeGuiTheme &guitheme);
+	static int TreeListPadRight(const igdeGuiTheme &guitheme);
+	static int TreeListPadTop(const igdeGuiTheme &guitheme);
+	static int TreeListPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onExpanded( FXObject*, FXSelector, void* );
-	long onCollapsed( FXObject*, FXSelector, void* );
+	long onExpanded(FXObject*, FXSelector, void*);
+	long onCollapsed(FXObject*, FXSelector, void*);
 	
-	long onListCommand( FXObject*, FXSelector, void* );
-	long onListChanged( FXObject*, FXSelector, void* );
-	long onListRightMouseDown( FXObject*, FXSelector, void* );
-	long onListRightMouseUp( FXObject*, FXSelector, void* );
-	long onListDoubleClicked( FXObject*, FXSelector, void* );
+	long onListCommand(FXObject*, FXSelector, void*);
+	long onListChanged(FXObject*, FXSelector, void*);
+	long onListRightMouseDown(FXObject*, FXSelector, void*);
+	long onListRightMouseUp(FXObject*, FXSelector, void*);
+	long onListDoubleClicked(FXObject*, FXSelector, void*);
 	
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 	
 	
 private:
-	void pDropItemsNativeWidget( igdeTreeItem *parent );
+	void pDropItemsNativeWidget(igdeTreeItem *parent);
 };
 
-typedef igdeNativeFoxTreeList igdeNativeTreeList;
+using igdeNativeTreeList = igdeNativeFoxTreeList;
 
 #endif

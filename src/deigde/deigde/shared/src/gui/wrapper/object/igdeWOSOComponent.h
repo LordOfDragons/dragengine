@@ -26,12 +26,13 @@
 #define _IGDEWOSOCOMPONENT_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 class deColliderAttachment;
@@ -44,27 +45,32 @@ class deAnimatorController;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSOComponent>;
+	
+	
 private:
 	const igdeGDCComponent &pGDComponent;
 	deComponent::Ref pComponent;
 	deComponent::Ref pComponentInteraction;
 	deColliderComponent::Ref pCollider;
 	deColliderComponent::Ref pColliderInteraction;
-	igdeResourceLoaderListenerReference pResLoad;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
 	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	deAnimatorInstanceReference pAnimator;
+	deAnimatorInstance::Ref pAnimator;
 	int pPlaybackControllerIndex;
 	decString pPathAnimator;
 	decString pMove;
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
 	bool pLightShadowIgnore;
-	decObjectDictionary pTextureSkins;
+	decTObjectDictionary<deSkin> pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
-	deComponentReference pOutlineComponent;
+	deComponent::Ref pOutlineComponent;
 	
 	
 	
@@ -72,13 +78,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOComponent( igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix );
+	igdeWOSOComponent(igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
 	~igdeWOSOComponent() override;
-	/*@}*/
 	
-	
+public:
+	/*@}*/	
 	
 	/** \name Management */
 	/*@{*/
@@ -95,7 +102,7 @@ public:
 	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
 	
 	/** \brief Animator. */
-	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }
+	inline const deAnimatorInstance::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Playback controller index. */
 	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }
@@ -125,7 +132,7 @@ public:
 	void UpdateColliderResponseType() override;
 	
 	/** \brief Frame update. */
-	void Update( float elapsed ) override;
+	void Update(float elapsed) override;
 	
 	/** \brief Reset physics. */
 	void ResetPhysics() override;
@@ -140,10 +147,10 @@ public:
 	void OutlineSkinChanged() override;
 	
 	/** \brief Visit. */
-	void Visit( igdeWOSOVisitor &visitor ) override;
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	
 	/**
 	 * \brief Sub object is visible.
@@ -159,8 +166,8 @@ public:
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

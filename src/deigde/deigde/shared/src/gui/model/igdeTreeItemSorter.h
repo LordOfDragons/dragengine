@@ -25,7 +25,7 @@
 #ifndef _IGDETREEITEMSORTER_H_
 #define _IGDETREEITEMSORTER_H_
 
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -42,6 +42,12 @@ class igdeTreeItem;
  * Default implementation sorts igdeTreeItem by text lexicographically.
  */
 class DE_DLL_EXPORT igdeTreeItemSorter : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTreeItemSorter>;
+	
+	
 private:
 	bool pAscending;
 	
@@ -51,7 +57,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create tree item sorter. */
-	igdeTreeItemSorter( bool ascending = true );
+	igdeTreeItemSorter(bool ascending = true);
 	
 	
 	
@@ -62,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTreeItemSorter();
+	~igdeTreeItemSorter() override;
 	/*@}*/
 	
 	
@@ -74,7 +80,7 @@ public:
 	inline bool GetAscending() const{ return pAscending; }
 	
 	/** \brief Sort ascending. */
-	void SetAscending( bool ascending );
+	void SetAscending(bool ascending);
 	
 	
 	
@@ -84,7 +90,7 @@ public:
 	 * Default implementation compares item texts lexicographically using
 	 * "less than or equal" if sorting ascending otherwise "greater than or equal".
 	 */
-	virtual bool Precedes( const igdeTreeItem &item1, const igdeTreeItem &item2 );
+	virtual bool Precedes(const igdeTreeItem &item1, const igdeTreeItem &item2);
 	/*@}*/
 };
 

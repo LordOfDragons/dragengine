@@ -40,33 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetName::gdeUGDWPSetName( gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDWPSetName::gdeUGDWPSetName(gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set name" );
+	SetShortInfo("@GameDefinition.Undo.GDWPSetName");
 	
 	pOldValue = property->GetName();
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetName::~gdeUGDWPSetName(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ gdeUGDWPSetName::~gdeUGDWPSetName(){
 ///////////////
 
 void gdeUGDWPSetName::Undo(){
-	pProperty->SetName( pOldValue );
-	pGameDefinition->NotifyWorldPropertyNameChanged( pProperty );
+	pProperty->SetName(pOldValue);
+	pGameDefinition->NotifyWorldPropertyNameChanged(pProperty);
 }
 
 void gdeUGDWPSetName::Redo(){
-	pProperty->SetName( pNewValue );
-	pGameDefinition->NotifyWorldPropertyNameChanged( pProperty );
+	pProperty->SetName(pNewValue);
+	pGameDefinition->NotifyWorldPropertyNameChanged(pProperty);
 }

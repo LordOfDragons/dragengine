@@ -38,54 +38,56 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeListItem::igdeListItem( const char *text ) :
-pText( text ),
-pData( NULL ),
-pSelected( false ){
+igdeListItem::igdeListItem(const char *text) :
+pText(text),
+pData(nullptr),
+pSelected(false){
 }
 
-igdeListItem::igdeListItem( const char *text, igdeIcon *icon ) :
-pText( text ),
-pIcon( icon ),
-pData( NULL ){
+igdeListItem::igdeListItem(const char *text, igdeIcon *icon) :
+pText(text),
+pIcon(icon),
+pData(nullptr),
+pSelected(false){
 }
 
-igdeListItem::igdeListItem( const char *text, igdeIcon *icon, const char *description ) :
-pText( text ),
-pDescription( description ),
-pIcon( icon ),
-pData( NULL ),
-pSelected( false ){
+igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const char *description) :
+pText(text),
+pDescription(description),
+pIcon(icon),
+pData(nullptr),
+pSelected(false){
 }
 
-igdeListItem::igdeListItem( const char *text, void *data ) :
-pText( text ),
-pData( data ),
-pSelected( false ){
+igdeListItem::igdeListItem(const char *text, void *data) :
+pText(text),
+pData(data),
+pSelected(false){
 }
 
-igdeListItem::igdeListItem( const char *text, igdeIcon *icon, void *data ) :
-pText( text ),
-pIcon( icon ),
-pData( data ),
-pSelected( false ){
+igdeListItem::igdeListItem(const char *text, igdeIcon *icon, void *data) :
+pText(text),
+pIcon(icon),
+pData(data),
+pSelected(false){
 }
 
-igdeListItem::igdeListItem( const char *text, igdeIcon *icon, const char *description, void *data ) :
-pText( text ),
-pDescription( description ),
-pIcon( icon ),
-pData( data ),
-pSelected( false ){
+igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const char *description, void *data) :
+pText(text),
+pDescription(description),
+pIcon(icon),
+pData(data),
+pSelected(false){
 }
 
-igdeListItem::igdeListItem( const igdeListItem &listItem ) :
-pText( listItem.pText ),
-pDescription( listItem.pDescription ),
-pIcon( listItem.pIcon ),
-pData( listItem.pData ),
-pDetails( listItem.pDetails ),
-pSelected( false ){
+igdeListItem::igdeListItem(const igdeListItem &listItem) :
+pText(listItem.pText),
+pDescription(listItem.pDescription),
+pIcon(listItem.pIcon),
+pData(listItem.pData),
+pRefData(listItem.pRefData),
+pDetails(listItem.pDetails),
+pSelected(false){
 }
 
 igdeListItem::~igdeListItem(){
@@ -96,33 +98,38 @@ igdeListItem::~igdeListItem(){
 // Management
 ///////////////
 
-void igdeListItem::SetText( const char *text ){
+void igdeListItem::SetText(const char *text){
 	pText = text;
 }
 
-void igdeListItem::SetDescription( const char *description ){
+void igdeListItem::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeListItem::SetIcon( igdeIcon *icon ){
+void igdeListItem::SetIcon(igdeIcon *icon){
 	pIcon = icon;
 }
 
-void igdeListItem::SetData( void *data ){
+void igdeListItem::SetData(void *data){
 	pData = data;
 }
 
-void igdeListItem::SetSelected( bool selected ){
+void igdeListItem::SetRefData(const deObject::Ref &refData){
+	pRefData = refData;
+}
+
+void igdeListItem::SetSelected(bool selected){
 	pSelected = selected;
 }
 
 
 
-igdeListItem &igdeListItem::operator=( const igdeListItem &listItem ){
+igdeListItem &igdeListItem::operator=(const igdeListItem &listItem){
 	pText = listItem.pText;
 	pDescription = listItem.pDescription;
 	pIcon = listItem.pIcon;
 	pData = listItem.pData;
+	pRefData = listItem.pRefData;
 	pDetails = listItem.pDetails;
 	return *this;
 }

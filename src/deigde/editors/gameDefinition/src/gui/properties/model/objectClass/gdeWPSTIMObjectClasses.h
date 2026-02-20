@@ -36,14 +36,16 @@ class gdeObjectClass;
  */
 class gdeWPSTIMObjectClasses : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMObjectClasses> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMObjectClasses( gdeWPSTreeModel &tree );
+	gdeWPSTIMObjectClasses(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMObjectClasses();
+	~gdeWPSTIMObjectClasses() override;
 	/*@}*/
 	
 	
@@ -51,8 +53,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with object class or \em NULL. */
-	gdeWPSTIMObjectClass *GetChildWith( gdeObjectClass *objectClass ) const;
+	/** \brief Model with object class or \em nullptr. */
+	gdeWPSTIMObjectClass *GetChildWith(gdeObjectClass *objectClass) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -66,13 +68,13 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

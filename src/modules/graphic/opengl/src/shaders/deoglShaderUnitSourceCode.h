@@ -48,7 +48,7 @@ class decPath;
  */
 class deoglShaderUnitSourceCode : public deObject{
 public:
-	typedef deTObjectReference<deoglShaderUnitSourceCode> Ref;
+	using Ref = deTObjectReference<deoglShaderUnitSourceCode>;
 	
 	
 private:
@@ -64,7 +64,6 @@ public:
 	deoglShaderUnitSourceCode(deGraphicOpenGl &ogl, const decPath &path);
 	
 protected:
-	/** Cleans up the source code object. */
 	~deoglShaderUnitSourceCode() override = default;
 	/*@}*/
 	

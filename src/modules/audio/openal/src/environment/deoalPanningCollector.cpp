@@ -38,62 +38,55 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalPanningCollector::deoalPanningCollector( int resolution ) :
-pResolution( resolution ),
-pPixels( NULL ),
-pPixelCount( resolution * resolution * 6 ),
-pPixelsPerFace( resolution * resolution ),
-pPixelsXPos( NULL ),
-pPixelsXNeg( NULL ),
-pPixelsYPos( NULL ),
-pPixelsYNeg( NULL ),
-pPixelsZPos( NULL ),
-pPixelsZNeg( NULL )
+deoalPanningCollector::deoalPanningCollector(int resolution) :
+pResolution(resolution),
+pPixelsPerFace(resolution * resolution),
+pPixelsXPos(nullptr),
+pPixelsXNeg(nullptr),
+pPixelsYPos(nullptr),
+pPixelsYNeg(nullptr),
+pPixelsZPos(nullptr),
+pPixelsZNeg(nullptr)
 {
-	if( resolution < 1 ){
-		DETHROW( deeInvalidParam );
+	if(resolution < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPixels = new float[ pPixelCount ];
+	pPixels.AddRange(resolution * resolution * 6, {});
 	
-	pPixelsXPos = pPixels;
-	pPixelsXNeg = pPixels + pPixelsPerFace;
-	pPixelsYPos = pPixels + pPixelsPerFace * 2;
-	pPixelsYNeg = pPixels + pPixelsPerFace * 3;
-	pPixelsZPos = pPixels + pPixelsPerFace * 4;
-	pPixelsZNeg = pPixels + pPixelsPerFace * 5;
+	pPixelsXPos = pPixels.GetArrayPointer();
+	pPixelsXNeg = pPixels.GetArrayPointer() + pPixelsPerFace;
+	pPixelsYPos = pPixels.GetArrayPointer() + pPixelsPerFace * 2;
+	pPixelsYNeg = pPixels.GetArrayPointer() + pPixelsPerFace * 3;
+	pPixelsZPos = pPixels.GetArrayPointer() + pPixelsPerFace * 4;
+	pPixelsZNeg = pPixels.GetArrayPointer() + pPixelsPerFace * 5;
 	
 	Clear();
 }
 
-deoalPanningCollector::deoalPanningCollector( const deoalPanningCollector &collector ) :
-pResolution( collector.pResolution ),
-pPixels( NULL ),
-pPixelCount( collector.pPixelCount ),
-pPixelsPerFace( collector.pPixelsPerFace ),
-pPixelsXPos( NULL ),
-pPixelsXNeg( NULL ),
-pPixelsYPos( NULL ),
-pPixelsYNeg( NULL ),
-pPixelsZPos( NULL ),
-pPixelsZNeg( NULL )
+deoalPanningCollector::deoalPanningCollector(const deoalPanningCollector &collector) :
+pResolution(collector.pResolution),
+pPixelsPerFace(collector.pPixelsPerFace),
+pPixelsXPos(nullptr),
+pPixelsXNeg(nullptr),
+pPixelsYPos(nullptr),
+pPixelsYNeg(nullptr),
+pPixelsZPos(nullptr),
+pPixelsZNeg(nullptr)
 {
-	pPixels = new float[ pPixelCount ];
+	pPixels.AddRange(collector.pPixels.GetCount(), {});
 	
-	pPixelsXPos = pPixels;
-	pPixelsXNeg = pPixels + pPixelsPerFace;
-	pPixelsYPos = pPixels + pPixelsPerFace * 2;
-	pPixelsYNeg = pPixels + pPixelsPerFace * 3;
-	pPixelsZPos = pPixels + pPixelsPerFace * 4;
-	pPixelsZNeg = pPixels + pPixelsPerFace * 5;
+	pPixelsXPos = pPixels.GetArrayPointer();
+	pPixelsXNeg = pPixels.GetArrayPointer() + pPixelsPerFace;
+	pPixelsYPos = pPixels.GetArrayPointer() + pPixelsPerFace * 2;
+	pPixelsYNeg = pPixels.GetArrayPointer() + pPixelsPerFace * 3;
+	pPixelsZPos = pPixels.GetArrayPointer() + pPixelsPerFace * 4;
+	pPixelsZNeg = pPixels.GetArrayPointer() + pPixelsPerFace * 5;
 	
 	*this = collector;
 }
 
 deoalPanningCollector::~deoalPanningCollector(){
-	if( pPixels ){
-		delete [] pPixels;
-	}
 }
 
 
@@ -102,46 +95,46 @@ deoalPanningCollector::~deoalPanningCollector(){
 ///////////////
 
 void deoalPanningCollector::Clear(){
-	memset( pPixels, 0, sizeof( float ) * ( pPixelsPerFace * 6 ) );
+	pPixels.SetRangeAt(0, pPixels.GetCount(), 0.0f);
 }
 
 
 
-void deoalPanningCollector::Add( const decVector &, float ){
-	DETHROW( deeInvalidAction );
+void deoalPanningCollector::Add(const decVector &, float){
+	DETHROW(deeInvalidAction);
 }
 
 
 
 decVector deoalPanningCollector::CalcPanningVector() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 
 
-void deoalPanningCollector::DebugPrint( deoalAudioThread &audioThread ) const{
-	const char * const faceNames[ 6 ] = {
+void deoalPanningCollector::DebugPrint(deoalAudioThread &audioThread) const{
+	const char * const faceNames[6] = {
 		"Positive X-Axis", "Negative X-Axis", "Positive Y-Axis",
-		"Negative Y-Axis", "Positive Z-Axis", "Negative Z-Axis" };
+		"Negative Y-Axis", "Positive Z-Axis", "Negative Z-Axis"};
 	deoalATLogger &logger = audioThread.GetLogger();
 	decString text;
 	int i, j, k;
 	
-	logger.LogInfoFormat( "Panning Collector: Resolution %d", pResolution );
-	for( i=0; i<6; i++ ){
-		const float * const facePixels = pPixels + pPixelsPerFace * i;
-		logger.LogInfoFormat( "- Face %s", faceNames[ i ] );
-		for( j=0; j<pResolution; j++ ){
+	logger.LogInfoFormat("Panning Collector: Resolution %d", pResolution);
+	for(i=0; i<6; i++){
+		const float * const facePixels = pPixels.GetArrayPointer() + pPixelsPerFace * i;
+		logger.LogInfoFormat("- Face %s", faceNames[i]);
+		for(j=0; j<pResolution; j++){
 			const float * const rowPixels = facePixels + pResolution * j;;
-			text.Format( "  - Row %02d: [", j );
-			for( k=0; k<pResolution; k++ ){
-				if( k > 0 ){
+			text.Format("  - Row %02d: [", j);
+			for(k=0; k<pResolution; k++){
+				if(k > 0){
 					text += ", ";
 				}
-				text.AppendFormat( "%.3f", rowPixels[ k ] );
+				text.AppendFormat("%.3f", rowPixels[k]);
 			}
 			text += "]";
-			logger.LogInfo( text );
+			logger.LogInfo(text);
 		}
 	}
 }
@@ -151,25 +144,23 @@ void deoalPanningCollector::DebugPrint( deoalAudioThread &audioThread ) const{
 // Operators
 //////////////
 
-deoalPanningCollector &deoalPanningCollector::operator=( const deoalPanningCollector &collector ){
-	if( collector.pResolution != pResolution ){
-		DETHROW( deeInvalidParam );
-	}
-	memcpy( pPixels, collector.pPixels, sizeof( float ) * pPixelCount );
+deoalPanningCollector &deoalPanningCollector::operator=(const deoalPanningCollector &collector){
+	DEASSERT_TRUE(collector.pResolution == pResolution)
+	memcpy(pPixels.GetArrayPointer(), collector.pPixels.GetArrayPointer(), sizeof(float) * pPixels.GetCount());
 	return *this;
 }
 
-deoalPanningCollector &deoalPanningCollector::operator+=( const deoalPanningCollector &collector ){
-	if( collector.pResolution != pResolution ){
-		DETHROW( deeInvalidParam );
+deoalPanningCollector &deoalPanningCollector::operator+=(const deoalPanningCollector &collector){
+	if(collector.pResolution != pResolution){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int i;
-	for( i=0; i<pPixelCount; i++ ){
-		if( collector.pPixels[ i ] > pPixels[ i ] ){
-			pPixels[ i ] = collector.pPixels[ i ];
+	pPixels.VisitIndexed([&](int i, float &value){
+		const float otherValue = collector.pPixels[i];
+		if(otherValue > value){
+			value = otherValue;
 		}
-	}
+	});
 	
 	return *this;
 }

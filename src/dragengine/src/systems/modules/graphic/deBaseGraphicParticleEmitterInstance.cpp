@@ -70,13 +70,13 @@ void deBaseGraphicParticleEmitterInstance::BurstTimeChanged(){
 void deBaseGraphicParticleEmitterInstance::LayerMaskChanged(){
 }
 
-void deBaseGraphicParticleEmitterInstance::ControllerChanged( int ){
+void deBaseGraphicParticleEmitterInstance::ControllerChanged(int){
 }
 
-void deBaseGraphicParticleEmitterInstance::TypeChanged( int ){
+void deBaseGraphicParticleEmitterInstance::TypeChanged(int){
 }
 
-void deBaseGraphicParticleEmitterInstance::TypeParticlesChanged( int ){
+void deBaseGraphicParticleEmitterInstance::TypeParticlesChanged(int){
 }
 
 

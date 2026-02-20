@@ -25,33 +25,35 @@
 #ifndef _MEWPSOBJECT_H_
 #define _MEWPSOBJECT_H_
 
+#include "meWPSObjectListener.h"
+#include "../../meWPPropertyList.h"
+#include "../../../../world/meWorld.h"
+
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class meObject;
 class meObjectTexture;
 class meWindowProperties;
-class meWorld;
 class meWPSelection;
-class meWPSObjectListener;
 
 
 
@@ -59,76 +61,79 @@ class meWPSObjectListener;
  * Object Selection Panel.
  */
 class meWPSObject : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPSObject>;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectListener *pListener;
-	meWorld *pWorld;
+	meWPSObjectListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	
-	igdeActionContextMenuReference pActionMenuClass;
-	igdeActionReference pActionClassBrowse;
-	igdeActionReference pActionClassEdit;
+	igdeActionContextMenu::Ref pActionMenuClass;
+	igdeAction::Ref pActionClassBrowse;
+	igdeAction::Ref pActionClassEdit;
 	
-	igdeActionContextMenuReference pActionIdClass;
-	igdeActionReference pActionIdFind;
+	igdeActionContextMenu::Ref pActionIdClass;
+	igdeAction::Ref pActionIdFind;
 	
-	igdeActionContextMenuReference pActionMenuPosition;
-	igdeActionContextMenuReference pActionMenuRotation;
-	igdeActionContextMenuReference pActionMenuScale;
+	igdeActionContextMenu::Ref pActionMenuPosition;
+	igdeActionContextMenu::Ref pActionMenuRotation;
+	igdeActionContextMenu::Ref pActionMenuScale;
 	
-	igdeActionContextMenuReference pActionMenuTexture;
-	igdeActionReference pActionTextureAddCustom;
-	igdeActionReference pActionTextureAddAllModel;
-	igdeActionReference pActionTextureRemove;
-	igdeActionReference pActionTextureRemoveAll;
-	igdeActionReference pActionTextureRemoveAllNotModel;
-	igdeActionReference pActionTextureCopyToSelected;
-	igdeActionReference pActionTextureCloneToSelected;
+	igdeActionContextMenu::Ref pActionMenuTexture;
+	igdeAction::Ref pActionTextureAddCustom;
+	igdeAction::Ref pActionTextureAddAllModel;
+	igdeAction::Ref pActionTextureRemove;
+	igdeAction::Ref pActionTextureRemoveAll;
+	igdeAction::Ref pActionTextureRemoveAllNotModel;
+	igdeAction::Ref pActionTextureCopyToSelected;
+	igdeAction::Ref pActionTextureCloneToSelected;
 	
-	igdeActionReference pActionPropCopyToSel;
-	igdeActionReference pActionPropRemoveFromSel;
-	igdeActionReference pActionPropCloneToSel;
+	igdeAction::Ref pActionPropCopyToSel;
+	igdeAction::Ref pActionPropRemoveFromSel;
+	igdeAction::Ref pActionPropCloneToSel;
 	
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditSelCount;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditSelCount;
 	
-	igdeTextFieldReference pEditID;
-	igdeButtonReference pBtnIdMenu;
-	igdeTextFieldReference pEditAttach;
-	igdeComboBoxFilterReference pCBClass;
-	igdeButtonReference pBtnClassMenu;
-	igdeEditDVectorReference pEditPosition;
-	igdeButtonReference pBtnPositionMenu;
-	igdeEditVectorReference pEditRotation;
-	igdeButtonReference pBtnRotationMenu;
-	igdeEditVectorReference pEditSize;
-	igdeEditVectorReference pEditScaling;
-	igdeButtonReference pBtnScaleMenu;
+	igdeTextField::Ref pEditID;
+	igdeButton::Ref pBtnIdMenu;
+	igdeTextField::Ref pEditAttach;
+	igdeComboBoxFilter::Ref pCBClass;
+	igdeButton::Ref pBtnClassMenu;
+	igdeEditDVector::Ref pEditPosition;
+	igdeButton::Ref pBtnPositionMenu;
+	igdeEditVector::Ref pEditRotation;
+	igdeButton::Ref pBtnRotationMenu;
+	igdeEditVector::Ref pEditSize;
+	igdeEditVector::Ref pEditScaling;
+	igdeButton::Ref pBtnScaleMenu;
 	
-	igdeComboBoxReference pCBTexture;
-	igdeButtonReference pBtnTextureMenu;
-	igdeEditPathReference pEditTexSkin;
-	igdeEditVector2Reference pEditTexTCOffset;
-	igdeEditVector2Reference pEditTexTCScaling;
-	igdeTextFieldReference pEditTexTCRotation;
-	igdeColorBoxReference pClrTexTint;
-	igdeCheckBoxReference pChkShowMissingTextures;
-	igdeWidgetReference pEditTexProperties;
+	igdeComboBox::Ref pCBTexture;
+	igdeButton::Ref pBtnTextureMenu;
+	igdeEditPath::Ref pEditTexSkin;
+	igdeEditVector2::Ref pEditTexTCOffset;
+	igdeEditVector2::Ref pEditTexTCScaling;
+	igdeTextField::Ref pEditTexTCRotation;
+	igdeColorBox::Ref pClrTexTint;
+	igdeCheckBox::Ref pChkShowMissingTextures;
+	meWPPropertyList::Ref pEditTexProperties;
 	
-	igdeEditSliderTextReference pSldLigInt;
-	igdeColorBoxReference pClrLight;
-	igdeEditSliderTextReference pSldLigRange;
-	igdeEditSliderTextReference pSldLigHID;
-	igdeEditSliderTextReference pSldLigDist;
-	igdeTextFieldReference pEditLigDistInt;
+	igdeEditSliderText::Ref pSldLigInt;
+	igdeColorBox::Ref pClrLight;
+	igdeEditSliderText::Ref pSldLigRange;
+	igdeEditSliderText::Ref pSldLigHID;
+	igdeEditSliderText::Ref pSldLigDist;
+	igdeTextField::Ref pEditLigDistInt;
 	
-	igdeWidgetReference pEditProperties;
+	meWPPropertyList::Ref pEditProperties;
 	
-	igdeListBoxReference pListAttachBehaviors;
+	igdeListBox::Ref pListAttachBehaviors;
 	
-	igdeUndoReference pUndoAddProperty;
-	igdeUndoReference pUndoSetProperty;
+	igdeUndo::Ref pUndoAddProperty;
+	igdeUndo::Ref pUndoSetProperty;
 	
 	bool pPreventUpdate;
 	
@@ -137,11 +142,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPSObject( meWPSelection &wpselection );
+	explicit meWPSObject(meWPSelection &wpselection);
 	
 protected:
 	/** Clean up . */
-	virtual ~meWPSObject();
+	~meWPSObject() override;
 	/*@}*/
 	
 	
@@ -153,10 +158,10 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Active object. */
 	meObject *GetActiveObject() const;
@@ -242,32 +247,32 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** For use by listeners only. */
-	void SlideLightProperty( igdeGDCLight::eProperties property, const char *value, bool scrubbing );
+	void SlideLightProperty(igdeGDCLight::eProperties property, const char *value, bool scrubbing);
 	
 	
-	inline igdeAction *GetActionClassBrowse() const{ return pActionClassBrowse; }
-	inline igdeAction *GetActionClassEdit() const{ return pActionClassEdit; }
+	inline const igdeAction::Ref &GetActionClassBrowse() const{ return pActionClassBrowse; }
+	inline const igdeAction::Ref &GetActionClassEdit() const{ return pActionClassEdit; }
 	
-	inline igdeAction *GetActionIdFind() const{ return pActionIdFind; }
+	inline const igdeAction::Ref &GetActionIdFind() const{ return pActionIdFind; }
 	
-	inline igdeAction *GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
-	inline igdeAction *GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline igdeAction *GetActionTextureRemoveAll() const{ return pActionTextureRemoveAll; }
-	inline igdeAction *GetActionTextureRemoveAllNotModel() const{ return pActionTextureRemoveAllNotModel; }
-	inline igdeAction *GetActionTextureCopyToSelected() const{ return pActionTextureCopyToSelected; }
-	inline igdeAction *GetActionTextureCloneToSelected() const{ return pActionTextureCloneToSelected; }
+	inline const igdeAction::Ref &GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
+	inline const igdeAction::Ref &GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureRemoveAll() const{ return pActionTextureRemoveAll; }
+	inline const igdeAction::Ref &GetActionTextureRemoveAllNotModel() const{ return pActionTextureRemoveAllNotModel; }
+	inline const igdeAction::Ref &GetActionTextureCopyToSelected() const{ return pActionTextureCopyToSelected; }
+	inline const igdeAction::Ref &GetActionTextureCloneToSelected() const{ return pActionTextureCloneToSelected; }
 	
-	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
-	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
-	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
+	inline const igdeAction::Ref &GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline const igdeAction::Ref &GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline const igdeAction::Ref &GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 	
 	
 	
 private:
-	bool pPropertyValue( const meObject &object, const decString &prefix,
-		const decString &name, decString &value ) const;
+	bool pPropertyValue(const meObject &object, const decString &prefix,
+		const decString &name, decString &value) const;
 };
 
 #endif

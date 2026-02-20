@@ -25,10 +25,8 @@
 #ifndef _DEBPCREATESHAPE_H_
 #define _DEBPCREATESHAPE_H_
 
-#include <dragengine/deObjectReference.h>
+#include "../shape/debpShape.h"
 #include <dragengine/common/shape/decShapeVisitor.h>
-
-class debpShape;
 
 
 
@@ -40,7 +38,7 @@ class debpShape;
  */
 class debpCreateShape : public decShapeVisitor{
 private:
-	deObjectReference pShape;
+	debpShape::Ref pShape;
 	
 	
 	
@@ -51,7 +49,7 @@ public:
 	debpCreateShape();
 	
 	/** \brief Clean up visitor. */
-	~debpCreateShape();
+	~debpCreateShape() override;
 	/*@}*/
 	
 	
@@ -59,10 +57,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created shape or NULL if something went wrong. */
-	inline debpShape *GetCreatedShape() const{ return ( debpShape* )( deObject* )pShape; }
+	inline const debpShape::Ref &GetCreatedShape() const{ return pShape; }
 	
 	/** \brief Set created shape or NULL. */
-	void SetCreatedShape( debpShape *shape );
+	void SetCreatedShape(debpShape *shape);
 	
 	/** \brief Reset visitor setting shape to NULL. */
 	void Reset();
@@ -73,22 +71,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

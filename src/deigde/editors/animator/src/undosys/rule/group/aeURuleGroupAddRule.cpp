@@ -40,20 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupAddRule::aeURuleGroupAddRule( aeRuleGroup *group, aeRule *rule, int index ){
-	if( ! group || ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int index){
+	if(!group || !rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pGroup = NULL;
-	pRule = NULL;
+	pGroup = nullptr;
+	pRule = nullptr;
 	pIndex = index;
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupAddRule::~aeURuleGroupAddRule(){
@@ -66,12 +63,12 @@ aeURuleGroupAddRule::~aeURuleGroupAddRule(){
 ///////////////
 
 void aeURuleGroupAddRule::Undo(){
-	pGroup->RemoveRule( pRule );
+	pGroup->RemoveRule(pRule);
 }
 
 void aeURuleGroupAddRule::Redo(){
-	pGroup->InsertRuleAt( pRule, pIndex );
-	pGroup->GetAnimator()->SetActiveRule( pRule );
+	pGroup->InsertRuleAt(pRule, pIndex);
+	pGroup->GetAnimator()->SetActiveRule(pRule);
 }
 
 
@@ -80,10 +77,4 @@ void aeURuleGroupAddRule::Redo(){
 //////////////////////
 
 void aeURuleGroupAddRule::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
-	if( pGroup ){
-		pGroup->FreeReference();
-	}
 }

@@ -33,21 +33,22 @@
  */
 class gdeMAOCComponentAdd : public gdeBaseMAOCSubObject{
 public:
+	typedef deTObjectReference<gdeMAOCComponentAdd> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMAOCComponentAdd( gdeWindowMain &windowMain );
+	gdeMAOCComponentAdd(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass) override;
 	
 	/** \brief Request update of action parameters if required. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

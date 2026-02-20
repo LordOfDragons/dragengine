@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeImage;
+#include "../../../../skin/property/node/sePropertyNodeImage.h"
 
 
 
@@ -37,8 +37,12 @@ class sePropertyNodeImage;
  * \brief Undo action property node image set repeat.
  */
 class seUPropertyNodeImageSetRepeat : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeImageSetRepeat>;
+	
+	
 private:
-	sePropertyNodeImage *pNode;
+	sePropertyNodeImage::Ref pNode;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeImageSetRepeat( sePropertyNodeImage *node, const decPoint &newValue );
+	seUPropertyNodeImageSetRepeat(sePropertyNodeImage *node, const decPoint &newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertyNodeImageSetRepeat();
+	~seUPropertyNodeImageSetRepeat() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

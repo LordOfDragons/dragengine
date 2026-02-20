@@ -44,10 +44,10 @@
 // Constructor
 ////////////////
 
-gdeMASkinRemove::gdeMASkinRemove( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Remove Skin",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove skin" )
+gdeMASkinRemove::gdeMASkinRemove(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkinRemove",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"@GameDefinition.Menu.SkinRemove.ToolTip")
 {
 }
 
@@ -56,27 +56,27 @@ gdeBaseAction( windowMain, "Remove Skin",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkinRemove::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMASkinRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeSkin * const category = gameDefinition.GetActiveSkin();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotSkin ){
-		return NULL;
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotSkin){
+		return {};
 	}
 	
 	gdeSkin * const skin = gameDefinition.GetActiveSkin();
-	if( ! skin ){
-		return NULL;
+	if(!skin){
+		return {};
 	}
 	
-	return new gdeURemoveSkin( &gameDefinition, skin );
+	return gdeURemoveSkin::Ref::New(&gameDefinition, skin);
 }
 
 void gdeMASkinRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSkin 
-		&& gameDefinition->GetActiveSkin() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSkin 
+		&& gameDefinition->GetActiveSkin() != nullptr);
 }

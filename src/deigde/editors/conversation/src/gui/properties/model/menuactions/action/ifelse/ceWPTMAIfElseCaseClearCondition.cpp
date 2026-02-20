@@ -39,7 +39,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -48,17 +48,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseClearCondition::ceWPTMAIfElseCaseClearCondition( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseClearCondition::ceWPTMAIfElseCaseClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase ) :
-ceWPTMenuAction( windowMain, "Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase )
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.ClearCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase)
 {
-	SetEnabled( ifCase.GetCondition() != NULL );
+	SetEnabled(ifCase.GetCondition() != nullptr);
 }
 
 
@@ -67,7 +67,6 @@ pIfCase( &ifCase )
 ///////////////
 
 void ceWPTMAIfElseCaseClearCondition::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAIfElseCaseSetCondition( pTopic, pIfElse, pIfCase, NULL ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(ceUCAIfElseCaseSetCondition::Ref::New(
+		pTopic, pIfElse, pIfCase, nullptr));
 }

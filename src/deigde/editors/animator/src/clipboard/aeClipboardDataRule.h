@@ -25,7 +25,7 @@
 #ifndef _AECLIPBOARDDATARULE_H_
 #define _AECLIPBOARDDATARULE_H_
 
-#include "../animator/rule/aeRuleList.h"
+#include "../animator/rule/aeRule.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class aeClipboardDataRule : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeClipboardDataRule>;
+	
 	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	aeRuleList pRules;
+	aeRule::List pRules;
 	
 	
 	
@@ -50,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataRule( aeRule *rule );
+	aeClipboardDataRule(aeRule *rule);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataRule( const aeRuleList &rules );
+	aeClipboardDataRule(const aeRule::List &rules);
 	
 protected:
 	/**
@@ -62,7 +65,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~aeClipboardDataRule();
+	~aeClipboardDataRule() override;
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Rules. */
-	inline const aeRuleList &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return pRules; }
 	/*@}*/
 };
 

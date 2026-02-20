@@ -39,7 +39,6 @@
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../undosys/action/actorCommand/ceUCAACmdSetActor.h"
-#include "../../../undosys/action/actorCommand/ceUCAACmdSetActor.h"
 #include "../../../undosys/action/actorCommand/ceUCAACmdSetCommand.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -49,11 +48,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -70,18 +69,18 @@ class cComboActor : public igdeComboBoxListener {
 	ceWPAActorCmd &pPanel;
 	
 public:
-	cComboActor( ceWPAActorCmd &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboActor>;
+	cComboActor(ceWPAActorCmd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetActor() ){
+		if(!topic || !action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAACmdSetActor( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAACmdSetActor::Ref::New(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -89,18 +88,18 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPAActorCmd &pPanel;
 	
 public:
-	cTextCommand( ceWPAActorCmd &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextCommand>;
+	cTextCommand(ceWPAActorCmd &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetCommand() ){
+		if(!topic || !action || textField->GetText() == action->GetCommand()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAACmdSetCommand( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAACmdSetCommand::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -108,28 +107,28 @@ class cActionEditCommand : public igdeAction {
 	ceWPAActorCmd &pPanel;
 	
 public:
-	cActionEditCommand( ceWPAActorCmd &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionEditCommand>;
+	cActionEditCommand(ceWPAActorCmd &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorCommand * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
-		decString text( action->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == action->GetCommand() ){
+		decString text(action->GetCommand());
+		if(!igdeCommonDialogs::GetMultilineString(
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"@Conversation.Dialog.EditCommand", "@Conversation.Dialog.Command", text)
+		|| text == action->GetCommand()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAACmdSetCommand( topic, action, text ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAACmdSetCommand::Ref::New(topic, action, text));
 	}
 };
 
@@ -142,18 +141,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorCmd::ceWPAActorCmd( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorCmd::ceWPAActorCmd(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor ID:", true, "Actor to send command to", pCBActorID, new cComboActor( *this ) );
+	helper.ComboBox(*this, "@Conversation.WPActionActorCmd.ActorID", true, "@Conversation.ActorToSendCommand.ToolTip", pCBActorID, cComboActor::Ref::New(*this));
 	pCBActorID->SetDefaultSorter();
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPActionActorCmd.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionActorCmd.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 }
 
 ceWPAActorCmd::~ceWPAActorCmd(){
@@ -167,11 +166,11 @@ ceWPAActorCmd::~ceWPAActorCmd(){
 ceCAActorCommand *ceWPAActorCmd::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorCommand ){
-		return ( ceCAActorCommand* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorCommand){
+		return (ceCAActorCommand*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -180,9 +179,9 @@ void ceWPAActorCmd::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetActor() );
-		pEditCommand->SetText( action->GetCommand() );
+	if(action){
+		pCBActorID->SetText(action->GetActor());
+		pEditCommand->SetText(action->GetCommand());
 		
 	}else{
 		pCBActorID->ClearText();
@@ -194,5 +193,5 @@ void ceWPAActorCmd::UpdateAction(){
 
 void ceWPAActorCmd::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

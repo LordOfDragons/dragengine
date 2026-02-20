@@ -51,9 +51,9 @@ deSynthesizerEffectVisitor::~deSynthesizerEffectVisitor(){
 // Visiting
 /////////////
 
-void deSynthesizerEffectVisitor::VisitEffect( deSynthesizerEffect &source ){
+void deSynthesizerEffectVisitor::VisitEffect(deSynthesizerEffect &source){
 }
 
-void deSynthesizerEffectVisitor::VisitStretch( deSynthesizerEffectStretch &source ){
-	VisitEffect( source );
+void deSynthesizerEffectVisitor::VisitStretch(deSynthesizerEffectStretch &source){
+	VisitEffect(source);
 }

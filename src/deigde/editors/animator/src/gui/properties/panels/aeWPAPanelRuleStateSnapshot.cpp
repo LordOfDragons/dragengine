@@ -44,7 +44,7 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -53,7 +53,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -77,41 +77,41 @@ protected:
 	aeWPAPanelRuleStateSnapshot &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRuleStateSnapshot &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(aeWPAPanelRuleStateSnapshot &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleStateSnapshot * const rule = ( aeRuleStateSnapshot* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleStateSnapshot * const rule = (aeRuleStateSnapshot*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleStateSnapshot *rule ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleStateSnapshot * const rule = ( aeRuleStateSnapshot* )pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		aeRuleStateSnapshot * const rule = (aeRuleStateSnapshot*)pPanel.GetRule();
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleStateSnapshot & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRuleStateSnapshot &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -119,143 +119,170 @@ class cBaseTextFieldListener : public igdeTextFieldListener{
 	aeWPAPanelRuleStateSnapshot &pPanel;
 	
 public:
-	cBaseTextFieldListener( aeWPAPanelRuleStateSnapshot &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(aeWPAPanelRuleStateSnapshot &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleStateSnapshot * const rule = ( aeRuleStateSnapshot* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleStateSnapshot * const rule = (aeRuleStateSnapshot*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleStateSnapshot *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleStateSnapshot *rule) = 0;
 };
 
 
 class cActionUseLastState : public cBaseAction{
 public:
-	cActionUseLastState( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel,
-		"Use last animation state", NULL,
-		"Determines if the animation state from the last frame update is used or the stored snapshot" ){ }
+	using Ref = deTObjectReference<cActionUseLastState>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateSnapshot *rule ){
-		return new aeUSetRuleSnapUseLast( rule );
+public:
+	cActionUseLastState(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.UseLastState", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.UseLastState.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
+		return aeUSetRuleSnapUseLast::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleStateSnapshot &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetUseLastState() );
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetUseLastState());
 	}
 };
 
 class cTextID : public cBaseTextFieldListener{
 public:
-	cTextID( aeWPAPanelRuleStateSnapshot &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextID>;
+	cTextID(aeWPAPanelRuleStateSnapshot &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleStateSnapshot *rule ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateSnapshot *rule) override{
 		const int value = textField->GetInteger();
-		return rule->GetID() != value ? new aeURuleSnapSetID( rule, value ) : NULL;
+		return rule->GetID() != value ? aeURuleSnapSetID::Ref::New(rule, value) : aeURuleSnapSetID::Ref();
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateSnapshot *rule ){
-		return new aeURuleSnapToggleEnablePosition( rule );
+public:
+	cActionEnablePosition(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnablePosition.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
+		return aeURuleSnapToggleEnablePosition::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleStateSnapshot &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnablePosition() );
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnablePosition());
 	}
 };
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateSnapshot *rule ){
-		return new aeURuleSnapToggleEnableRotation( rule );
+public:
+	cActionEnableRotation(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableRotation.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
+		return aeURuleSnapToggleEnableRotation::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleStateSnapshot &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableOrientation() );
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableOrientation());
 	}
 };
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateSnapshot *rule ){
-		return new aeURuleSnapToggleEnableSize( rule );
+public:
+	cActionEnableSize(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableSize", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableSize.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
+		return aeURuleSnapToggleEnableSize::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleStateSnapshot &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableSize() );
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableSize());
 	}
 };
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	cActionEnableVertexPositionSet( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateSnapshot *rule ){
-		return new aeURuleSnapToggleEnableVertexPositionSet( rule );
+public:
+	cActionEnableVertexPositionSet(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateSnapshot *rule) override{
+		return aeURuleSnapToggleEnableVertexPositionSet::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleStateSnapshot &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableVertexPositionSet() );
+	void Update(const aeAnimator & , const aeRuleStateSnapshot &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableVertexPositionSet());
 	}
 };
 
 class cActionSnapshot : public cBaseAction{
 public:
-	cActionSnapshot( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel, "State", NULL,
-		"Takes a snapshot of the current animation state" ){ }
+	using Ref = deTObjectReference<cActionSnapshot>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleStateSnapshot *rule ){
+public:
+	cActionSnapshot(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionSnapshot.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) override{
 		deAnimatorInstance * const engAnimatorInstance = animator->GetEngineAnimatorInstance();
-		if( engAnimatorInstance ){
-			engAnimatorInstance->CaptureStateInto( rule->GetID() );
+		if(engAnimatorInstance){
+			engAnimatorInstance->CaptureStateInto(rule->GetID());
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionGetFrame : public cBaseAction{
 public:
-	cActionGetFrame( aeWPAPanelRuleStateSnapshot &panel ) : cBaseAction( panel, "Animation", NULL,
-		"Takes a snapshot of the selected animation frame" ){ }
+	using Ref = deTObjectReference<cActionGetFrame>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleStateSnapshot *rule ){
+public:
+	cActionGetFrame(aeWPAPanelRuleStateSnapshot &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame", nullptr,
+		"@Animator.WPAPanelRuleStateSnapshot.ActionGetFrame.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateSnapshot *rule) override{
 		deAnimatorInstance * const engAnimatorInstance = animator->GetEngineAnimatorInstance();
-		const decString moveName( pPanel.GetCBMoveNameText() );
-		if( engAnimatorInstance ){
-			engAnimatorInstance->StoreFrameInto( rule->GetID(), moveName, pPanel.GetTextMoveTime() );
+		const decString moveName(pPanel.GetCBMoveNameText());
+		if(engAnimatorInstance){
+			engAnimatorInstance->StoreFrameInto(rule->GetID(), moveName, pPanel.GetTextMoveTime());
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleStateSnapshot & ){
-		SetEnabled( ! pPanel.GetCBMoveNameText().IsEmpty() );
+	void Update(const aeAnimator &, const aeRuleStateSnapshot &) override{
+		SetEnabled(!pPanel.GetCBMoveNameText().IsEmpty());
 	}
 };
 
@@ -269,35 +296,39 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleStateSnapshot::aeWPAPanelRuleStateSnapshot( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot )
+aeWPAPanelRuleStateSnapshot::aeWPAPanelRuleStateSnapshot(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateSnapshot)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, formLine;
+	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox( *this, groupBox, "State Snapshot:" );
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleStateSnapshot.StateSnapshot");
 	
-	helper.CheckBox( groupBox, pChkUseLastState, new cActionUseLastState( *this ), true );
-	helper.EditInteger( groupBox, "ID:", "Identifier to snap state during runtime",
-		pEditID, new cTextID( *this ) );
+	helper.CheckBox(groupBox, pChkUseLastState, cActionUseLastState::Ref::New(*this));
+	helper.EditInteger(groupBox, "@Animator.WPAPanelRuleStateSnapshot.ID",
+		"@Animator.WPAPanelRuleStateSnapshot.ID.ToolTip",
+		pEditID, cTextID::Ref::New(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Move Name:", true, "Name of animation move to use",
-		pCBMoveName, NULL );
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveName", true,
+		"@Animator.WPAPanelRuleStateSnapshot.MoveName.ToolTip",
+		pCBMoveName, {});
 	pCBMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Move Time:", "Time in seconds of animation frame to retrieve",
-		pEditMoveTime, NULL );
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleStateSnapshot.MoveTime",
+		"@Animator.WPAPanelRuleStateSnapshot.MoveTime.ToolTip",
+		pEditMoveTime, {});
 	
-	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 	
-	helper.FormLine( groupBox, "Snapshot:", "Store snapshot (runtime simulation)", formLine );
-	helper.Button( formLine, pBtnSnapshot, new cActionSnapshot( *this ), true );
-	helper.Button( formLine, pBtnGetFrame, new cActionGetFrame( *this ), true );
+	helper.FormLine(groupBox, "@Animator.WPAPanelRuleStateSnapshot.Snapshot",
+		"@Animator.WPAPanelRuleStateSnapshot.Snapshot.ToolTip", formLine);
+	helper.Button(formLine, pBtnSnapshot, cActionSnapshot::Ref::New(*this));
+	helper.Button(formLine, pBtnGetFrame, cActionGetFrame::Ref::New(*this));
 }
 
 aeWPAPanelRuleStateSnapshot::~aeWPAPanelRuleStateSnapshot(){
@@ -311,18 +342,18 @@ aeWPAPanelRuleStateSnapshot::~aeWPAPanelRuleStateSnapshot(){
 void aeWPAPanelRuleStateSnapshot::UpdateAnimMoveList(){
 	aeWPAPanelRule::UpdateAnimMoveList();
 	
-	const decString moveName( pCBMoveName->GetText() );
+	const decString moveName(pCBMoveName->GetText());
 	
 	pCBMoveName->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deAnimation * const engAnimation = GetAnimator()->GetEngineAnimator()
-			? GetAnimator()->GetEngineAnimator()->GetAnimation() : NULL;
-		if( engAnimation ){
+			? GetAnimator()->GetEngineAnimator()->GetAnimation().Pointer() : nullptr;
+		if(engAnimation){
 			const int count = engAnimation->GetMoveCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBMoveName->AddItem( engAnimation->GetMove( i )->GetName() );
+			for(i=0; i<count; i++){
+				pCBMoveName->AddItem(engAnimation->GetMove(i)->GetName());
 			}
 		}
 	}
@@ -330,25 +361,25 @@ void aeWPAPanelRuleStateSnapshot::UpdateAnimMoveList(){
 	pCBMoveName->SortItems();
 	pCBMoveName->StoreFilterItems();
 	
-	pCBMoveName->SetText( moveName );
+	pCBMoveName->SetText(moveName);
 }
 
 void aeWPAPanelRuleStateSnapshot::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	const aeRuleStateSnapshot * const rule = ( aeRuleStateSnapshot* )GetRule();
+	const aeRuleStateSnapshot * const rule = (aeRuleStateSnapshot*)GetRule();
 	
-	if( rule ){
-		pEditID->SetInteger( rule->GetID() );
+	if(rule){
+		pEditID->SetInteger(rule->GetID());
 		
 	}else{
 		pEditID->ClearText();
 	}
 	
 	const bool enabled = rule;
-	pEditID->SetEnabled( enabled );
-	pCBMoveName->SetEnabled( enabled );
-	pEditMoveTime->SetEnabled( enabled );
+	pEditID->SetEnabled(enabled);
+	pCBMoveName->SetEnabled(enabled);
+	pEditMoveTime->SetEnabled(enabled);
 	
 	pChkUseLastState->GetAction()->Update();
 	pChkEnablePosition->GetAction()->Update();

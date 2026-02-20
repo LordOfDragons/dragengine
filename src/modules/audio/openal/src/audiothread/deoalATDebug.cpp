@@ -164,21 +164,21 @@ ALsizei length, const ALchar *message, void *userParam) AL_API_NOEXCEPT17{
 // Constructor, destructor
 ////////////////////////////
 
-deoalATDebug::deoalATDebug( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
+deoalATDebug::deoalATDebug(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
 
-pEnabled( false ),
+pEnabled(false),
 
-pLogCalcEnvProbe( false ),
-pShowSpeakerEnvInfo( false ),
-pShowSpeakerEnvInfoAt( false )
+pLogCalcEnvProbe(false),
+pShowSpeakerEnvInfo(false),
+pShowSpeakerEnvInfoAt(false)
 {
 #ifdef WITH_DEBUG
 	if(audioThread.GetExtensions().GetHasExtension(deoalExtensions::ext_ALC_EXT_debug)){
 		palDebugMessageCallback(fDebugOutput, &audioThread);
 		alEnable(AL_DEBUG_OUTPUT_EXT);
 		
-		palDebugMessageControl(AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, 0, NULL, AL_TRUE);
+		palDebugMessageControl(AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, 0, nullptr, AL_TRUE);
 		
 		audioThread.GetLogger().LogInfo("Debugging callback using ALC_EXT_debug activated");
 	}
@@ -200,43 +200,43 @@ void deoalATDebug::Synchronize(){
 	const deoalDevMode * const devmode = pAudioThread.GetOal().GetDevMode();
 	deoalDebugInfo &debugInfo = pAudioThread.GetDebugInfo();
 	
-	if( devmode && devmode->GetEnabled() ){
+	if(devmode && devmode->GetEnabled()){
 		pEnabled = true;
 		pLogCalcEnvProbe = devmode->GetLogCalcEnvProbe();
 		pShowSpeakerEnvInfo = devmode->GetShowSpeakerEnvInfo();
 		pShowSpeakerEnvInfoAt = devmode->GetShowSpeakerEnvInfoAt();
 		pShowSpeakerEnvInfoAtPosition = devmode->GetShowSpeakerEnvInfoAtPosition();
 		
-		if( devmode->GetShowModuleInfo() ){
+		if(devmode->GetShowModuleInfo()){
 			debugInfo.ShowDIModule();
 			
 		}else{
 			debugInfo.HideDIModule();
 		}
 		
-		if( devmode->GetShowActiveMicInfo() ){
+		if(devmode->GetShowActiveMicInfo()){
 			debugInfo.ShowDIActiveMic();
 			
 		}else{
 			debugInfo.HideDIActiveMic();
 		}
 		
-		if( devmode->GetCaptureMicRays() ){
+		if(devmode->GetCaptureMicRays()){
 			debugInfo.ShowDDActiveMicRays();
 		}
 		
-		if( devmode->GetShowSpeakerEnvInfo() ){
+		if(devmode->GetShowSpeakerEnvInfo()){
 			debugInfo.ShowDISpeakerAtPosition();
 			
 		}else{
 			debugInfo.HideDISpeakerAtPosition();
 		}
 		
-		debugInfo.VisAudSpeakers( devmode->GetVisualizeAudibleSpeakers() );
+		debugInfo.VisAudSpeakers(devmode->GetVisualizeAudibleSpeakers());
 		
-		debugInfo.PrepareDIClosestSpeakers( devmode->GetShowSpeakerEnvInfoClosest() );
+		debugInfo.PrepareDIClosestSpeakers(devmode->GetShowSpeakerEnvInfoClosest());
 		
-	}else if( pEnabled ){
+	}else if(pEnabled){
 		pLogCalcEnvProbe = false;
 		pShowSpeakerEnvInfo = false;
 		pShowSpeakerEnvInfoAt = false;
@@ -245,8 +245,8 @@ void deoalATDebug::Synchronize(){
 		debugInfo.HideDIActiveMic();
 		debugInfo.HideDDActiveMicRays();
 		debugInfo.HideDISpeakerAtPosition();
-		debugInfo.PrepareDIClosestSpeakers( 0 );
-		debugInfo.PrepareDDClosestSpeakersDirect( 0 );
+		debugInfo.PrepareDIClosestSpeakers(0);
+		debugInfo.PrepareDDClosestSpeakersDirect(0);
 		
 		pEnabled = false;
 	}

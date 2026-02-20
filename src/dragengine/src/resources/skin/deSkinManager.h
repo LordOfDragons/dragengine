@@ -50,16 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new skin resource manager linked to the given engine. */
-	deSkinManager( deEngine *engine );
+	deSkinManager(deEngine *engine);
 	
 	/** \brief Clean up skin resource manager and reports leaking resources. */
-	~deSkinManager();
+	~deSkinManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Skins. */
+	inline const deFileResourceList &GetSkins() const{ return pSkins; }
+	
 	/** \brief Count of skins. */
 	int GetSkinCount() const;
 	
@@ -67,25 +70,25 @@ public:
 	deSkin *GetRootSkin() const;
 	
 	/** \brief Skin with the given filename or NULL if not loaded yet. */
-	deSkin *GetSkinWith( const char *filename ) const;
+	deSkin *GetSkinWith(const char *filename) const;
 	
 	/** \brief Skin with the given filename or NULL if not loaded yet. */
-	deSkin *GetSkinWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deSkin *GetSkinWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new skin. */
-	deSkin *CreateSkin( const char *filename, deSkinBuilder &builder );
+	deSkin::Ref CreateSkin(const char *filename, deSkinBuilder &builder);
 	
 	/** \brief Create new skin. */
-	deSkin *CreateSkin( deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder );
+	deSkin::Ref CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder);
 	
 	/** \brief Loads a skinfrom the given file relative to the given base path. */
-	deSkin *LoadSkin( const char *filename, const char *basePath );
+	deSkin::Ref LoadSkin(const char *filename, const char *basePath);
 	
 	/** \brief Loads a skinfrom the given file relative to the given base path. */
-	deSkin *LoadSkin( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deSkin::Ref LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Loads the default skin. */
-	deSkin *LoadDefault();
+	deSkin::Ref LoadDefault();
 	
 	/**
 	 * \brief Add loaded and fully prepared skin.
@@ -93,25 +96,25 @@ public:
 	 * This method is to be used only by the resource loader to add an skin that has been
 	 * loaded asynchronously.
 	 */
-	void AddLoadedSkin( deSkin *skin );
+	void AddLoadedSkin(deSkin *skin);
 	
 	/** \brief Load resources used in properties. */
-	void LoadPropertyResources( deSkin &skin );
+	void LoadPropertyResources(deSkin &skin);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
-	void SystemAudioLoad();
-	void SystemAudioUnload();
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
 	/*@}*/
 	
 	
@@ -122,7 +125,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

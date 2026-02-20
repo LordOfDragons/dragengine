@@ -3,6 +3,7 @@
 #include "../deMicrosoftGdk.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSMemoryFiles.h>
@@ -11,7 +12,6 @@
 #include <dragengine/resources/loader/tasks/deResourceLoaderTask.h>
 #include <dragengine/parallel/deParallelTask.h>
 #include <dragengine/parallel/deParallelProcessing.h>
-#include <dragengine/threading/deThreadSafeObjectReference.h>
 
 
 // class cLoadResourceTask
@@ -19,13 +19,16 @@
 
 class cLoadResourceTask : public deParallelTask
 {
+public:
+	typedef deTThreadSafeObjectReference<cLoadResourceTask> Ref;
+
 private:
 	deMsgdkServiceMsgdk &pService;
 	const deMsgdkAsyncTask::Invalidator::Ref pInvalidator;
 	const deMsgdkResourceUrl pUrl;
 	const decUniqueID pRequestId;
 	const deVirtualFileSystem::Ref pVFS;
-	deThreadSafeObjectReference pTaskLoadResource;
+	deResourceLoaderTask::Ref pTaskLoadResource;
 		
 public:
 	cLoadResourceTask(deMsgdkServiceMsgdk &service, const decString &url,
@@ -35,25 +38,23 @@ public:
 	pInvalidator(service.GetInvalidator()),
 	pUrl(url),
 	pRequestId(requestId),
-	pVFS(deVirtualFileSystem::Ref::New(new deVirtualFileSystem))
+	pVFS(deVirtualFileSystem::Ref::New())
 	{
-		SetEmptyRun( true );
+		SetEmptyRun(true);
 
-		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::New(
-			new deVFSMemoryFiles(decPath::CreatePathUnix("/"))));
+		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::New(decPath::CreatePathUnix("/")));
 		container->AddMemoryFile(memoryFile);
 		pVFS->AddContainer(container);
 
 		pTaskLoadResource = service.GetModule().GetGameEngine()->GetResourceLoader()->
 			AddLoadRequest(pVFS, memoryFile->GetFilename(), deResourceLoader::ertImage);
-		deResourceLoaderTask * const rlt = (deResourceLoaderTask*)(deThreadSafeObject*)pTaskLoadResource;
 		
-		switch(rlt->GetState())
+		switch(pTaskLoadResource->GetState())
 		{
 		case deResourceLoaderTask::esPending:
-			if(!DoesDependOn(rlt))
+			if(!GetDependsOn().Has(pTaskLoadResource))
 			{
-				AddDependsOn(rlt);
+				AddDependsOn(pTaskLoadResource);
 			}
 			break;
 			
@@ -61,7 +62,7 @@ public:
 			break;
 			
 		case deResourceLoaderTask::esFailed:
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 			break;
 		}
 	}
@@ -74,7 +75,7 @@ public:
 	{
 		if(!pInvalidator->IsValid())
 		{
-			Cancel();
+			Cancel(pService.GetModule().GetGameEngine()->GetParallelProcessing());
 			return;
 		}
 		
@@ -97,7 +98,7 @@ public:
 
 	void FinishRequest(deFileResource *resource)
 	{
-		if(!resource )
+		if(!resource)
 		{
 			pService.FailRequest(pRequestId, deeInvalidAction(__FILE__, __LINE__, "Failed loading image"));
 			return;
@@ -138,7 +139,7 @@ deMTLoadUserResource::deMTLoadUserResource(deMsgdkServiceMsgdk &service,
 	const decUniqueID &id, const deServiceObject &request) :
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
-pUrl(request.GetChildAt( "url" )->GetString()),
+pUrl(request.GetChildAt("url")->GetString()),
 pRequestId(id)
 {
 	GetGamerPicture();
@@ -161,7 +162,7 @@ void deMTLoadUserResource::GetGamerPicture()
 	
 	pService.GetModule().LogInfoFormat("deMTLoadUserResource.GetGamerPicture: url=%s", pUrl.url.GetString());
 	
-	const deServiceObject::Ref data(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref data(deServiceObject::Ref::New());
 	data->SetStringChildAt("url", pUrl.url);
 	data->SetStringChildAt("resourceType", "image");
 	
@@ -248,7 +249,7 @@ void deMTLoadUserResource::OnFinished()
 		return;
 	}
 	
-	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(new decMemoryFile("/image.png")));
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New("/image.png"));
 	memoryFile->Resize((int)bufferSize);
 	size_t bufferUsed;
 	result = XUserGetGamerPictureResult(GetAsyncBlockPtr(),
@@ -263,8 +264,6 @@ void deMTLoadUserResource::OnFinished()
 	pService.GetModule().LogInfoFormat("deMTLoadUserResource.OnFinished: Load image from data for url '%s'",
 		pUrl.url.GetString());
 
-	deThreadSafeObjectReference task;
-	task.TakeOver(new cLoadResourceTask(pService, pUrl.url, pRequestId, memoryFile));
 	pService.GetModule().GetGameEngine()->GetParallelProcessing().AddTaskAsync(
-		(deParallelTask*)(deThreadSafeObject*)task);
+		cLoadResourceTask::Ref::New(pService, pUrl.url, pRequestId, memoryFile));
 }

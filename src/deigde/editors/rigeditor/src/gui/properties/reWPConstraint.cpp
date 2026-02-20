@@ -58,10 +58,10 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -71,7 +71,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -96,23 +96,23 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	cBaseTextFieldListener( reWPConstraint &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(reWPConstraint &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if( ! rig || ! constraint ){
+		if(!rig || !constraint){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, rig, constraint ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, rig, constraint));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig *rig, reRigConstraint *constraint ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -120,23 +120,23 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	cBaseEditVectorListener( reWPConstraint &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseEditVectorListener>;
+	cBaseEditVectorListener(reWPConstraint &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	void OnVectorChanged(igdeEditVector *editVector) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if( ! rig || ! constraint ){
+		if(!rig || !constraint){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), rig, constraint ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editVector->GetVector(), rig, constraint));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig *rig, reRigConstraint *constraint ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -144,25 +144,25 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	cBaseAction( reWPConstraint &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(reWPConstraint &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if( ! rig || ! constraint ){
+		if(!rig || !constraint){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( rig, constraint ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(rig, constraint));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( reRig *rig, reRigConstraint *constraint ) = 0;
+	virtual igdeUndo::Ref OnAction(reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -170,23 +170,23 @@ protected:
 	reWPConstraint &pPanel;
 	
 public:
-	cBaseComboBoxListener( reWPConstraint &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
+	cBaseComboBoxListener(reWPConstraint &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		reRig * const rig = pPanel.GetRig();
 		reRigConstraint * const constraint = pPanel.GetConstraint();
-		if( ! rig || ! constraint ){
+		if(!rig || !constraint){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnTextChanged( comboBox, rig, constraint ) );
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnTextChanged(comboBox, rig, constraint));
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged( igdeComboBox *comboBox, reRig *rig, reRigConstraint *constraint ) = 0;
+	virtual igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 
@@ -194,182 +194,197 @@ public:
 class cComboTarget : public cBaseComboBoxListener{
 	bool &pPreventUpdate;
 public:
-	cComboTarget( reWPConstraint &panel, bool &preventUpdate ) :
-	cBaseComboBoxListener( panel ), pPreventUpdate( preventUpdate ){ }
+	using Ref = deTObjectReference<cComboTarget>;
+	cComboTarget(reWPConstraint &panel, bool &preventUpdate) :
+	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnTextChanged( igdeComboBox *comboBox, reRig*, reRigConstraint *constraint ){
-		if( pPreventUpdate ){
-			return nullptr;
+	igdeUndo::Ref OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint *constraint) override{
+		if(pPreventUpdate){
+			return {};
 		}
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		reRigBone *bone = nullptr;
-		if( selection ){
-			bone = ( reRigBone* )selection->GetData();
+		if(selection){
+			bone = (reRigBone*)selection->GetData();
 		}
 		return bone != constraint->GetConstraintBone()
-			? new reUConstraintSetBoneTarget( constraint, bone ) : nullptr;
+			? reUConstraintSetBoneTarget::Ref::New(constraint, bone) : igdeUndo::Ref();
 	}
 };
 
 class cEditPosition : public cBaseEditVectorListener{
 public:
-	cEditPosition( reWPConstraint &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditPosition>;
+	cEditPosition(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigConstraint *constraint ){
-		return ! vector.IsEqualTo( constraint->GetPosition() )
-			? new reUConstraintSetPosition( constraint, vector ) : nullptr;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint) override{
+		return !vector.IsEqualTo(constraint->GetPosition())
+			? reUConstraintSetPosition::Ref::New(constraint, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	cEditRotation( reWPConstraint &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditRotation>;
+	cEditRotation(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigConstraint *constraint ){
-		return ! vector.IsEqualTo( constraint->GetOrientation() )
-			? new reUConstraintSetOrientation( constraint, vector ) : nullptr;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint) override{
+		return !vector.IsEqualTo(constraint->GetOrientation())
+			? reUConstraintSetOrientation::Ref::New(constraint, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditOffset : public cBaseEditVectorListener{
 public:
-	cEditOffset( reWPConstraint &panel ) : cBaseEditVectorListener( panel ){ }
+	using Ref = deTObjectReference<cEditOffset>;
+	cEditOffset(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigConstraint *constraint ){
-		return ! vector.IsEqualTo( constraint->GetOffset() )
-			? new reUConstraintSetOffset( constraint, vector ) : nullptr;
+	igdeUndo::Ref OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint) override{
+		return !vector.IsEqualTo(constraint->GetOffset())
+			? reUConstraintSetOffset::Ref::New(constraint, vector) : igdeUndo::Ref();
 	}
 };
 
 class cTextDofLower : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	cTextDofLower( reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof ) :
-	cBaseTextFieldListener( panel ), pDof( dof ){ }
+	using Ref = deTObjectReference<cTextDofLower>;
+	cTextDofLower(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
+	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
-		const reRigConstraintDof &dof = constraint->GetDof( pDof );
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
+		const reRigConstraintDof &dof = constraint->GetDof(pDof);
 		const float value = textField->GetFloat();
-		return fabsf( value - dof.GetLowerLimit() ) > dof.GetThresholdLimits()
-			? new reUConstraintDofSetLowerLimit( constraint, pDof, value ) : nullptr;
+		return fabsf(value - dof.GetLowerLimit()) > dof.GetThresholdLimits()
+			? reUConstraintDofSetLowerLimit::Ref::New(constraint, pDof, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDofUpper : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	cTextDofUpper( reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof ) :
-	cBaseTextFieldListener( panel ), pDof( dof ){ }
+	using Ref = deTObjectReference<cTextDofUpper>;
+	cTextDofUpper(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
+	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
-		const reRigConstraintDof &dof = constraint->GetDof( pDof );
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
+		const reRigConstraintDof &dof = constraint->GetDof(pDof);
 		const float value = textField->GetFloat();
-		return fabsf( value - dof.GetUpperLimit() ) > dof.GetThresholdLimits()
-			? new reUConstraintDofSetUpperLimit( constraint, pDof, value ) : nullptr;
+		return fabsf(value - dof.GetUpperLimit()) > dof.GetThresholdLimits()
+			? reUConstraintDofSetUpperLimit::Ref::New(constraint, pDof, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDofFrictionStatic : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	cTextDofFrictionStatic( reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof ) :
-	cBaseTextFieldListener( panel ), pDof( dof ){ }
+	using Ref = deTObjectReference<cTextDofFrictionStatic>;
+	cTextDofFrictionStatic(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
+	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetDof( pDof ).GetStaticFriction() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintDofSetStaticFriction( constraint, pDof, value ) : nullptr;
+		return fabsf(value - constraint->GetDof(pDof).GetStaticFriction()) > FLOAT_SAFE_EPSILON
+			? reUConstraintDofSetStaticFriction::Ref::New(constraint, pDof, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDofFrictionKinematic : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	cTextDofFrictionKinematic( reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof ) :
-	cBaseTextFieldListener( panel ), pDof( dof ){ }
+	using Ref = deTObjectReference<cTextDofFrictionKinematic>;
+	cTextDofFrictionKinematic(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
+	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetDof( pDof ).GetKinematicFriction() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintDofSetKinematicFriction( constraint, pDof, value ) : nullptr;
+		return fabsf(value - constraint->GetDof(pDof).GetKinematicFriction()) > FLOAT_SAFE_EPSILON
+			? reUConstraintDofSetKinematicFriction::Ref::New(constraint, pDof, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDofSpringStiffness : public cBaseTextFieldListener{
 	deColliderConstraint::eDegreesOfFreedom pDof;
 public:
-	cTextDofSpringStiffness( reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof ) :
-	cBaseTextFieldListener( panel ), pDof( dof ){ }
+	using Ref = deTObjectReference<cTextDofSpringStiffness>;
+	cTextDofSpringStiffness(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
+	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetDof( pDof ).GetSpringStiffness() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintDofSetSpringStiffness( constraint, pDof, value ) : nullptr;
+		return fabsf(value - constraint->GetDof(pDof).GetSpringStiffness()) > FLOAT_SAFE_EPSILON
+			? reUConstraintDofSetSpringStiffness::Ref::New(constraint, pDof, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDampingLinear : public cBaseTextFieldListener{
 public:
-	cTextDampingLinear( reWPConstraint &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextDampingLinear>;
+	cTextDampingLinear(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetLinearDamping() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintSetDampingLinear( constraint, value ) : nullptr;
+		return fabsf(value - constraint->GetLinearDamping()) > FLOAT_SAFE_EPSILON
+			? reUConstraintSetDampingLinear::Ref::New(constraint, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDampingAngular : public cBaseTextFieldListener{
 public:
-	cTextDampingAngular( reWPConstraint &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextDampingAngular>;
+	cTextDampingAngular(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetAngularDamping() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintSetDampingAngular( constraint, value ) : nullptr;
+		return fabsf(value - constraint->GetAngularDamping()) > FLOAT_SAFE_EPSILON
+			? reUConstraintSetDampingAngular::Ref::New(constraint, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextDampingSpring : public cBaseTextFieldListener{
 public:
-	cTextDampingSpring( reWPConstraint &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextDampingSpring>;
+	cTextDampingSpring(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetSpringDamping() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintSetDampingSpring( constraint, value ) : nullptr;
+		return fabsf(value - constraint->GetSpringDamping()) > FLOAT_SAFE_EPSILON
+			? reUConstraintSetDampingSpring::Ref::New(constraint, value) : igdeUndo::Ref();
 	}
 };
 
 class cCheckRope : public cBaseAction{
 public:
-	cCheckRope( reWPConstraint &panel ) : cBaseAction( panel, "Use rope physics",
-		"Determines if this constraint is a rope constraint." ){ }
+	using Ref = deTObjectReference<cCheckRope>;
+	cCheckRope(reWPConstraint &panel) : cBaseAction(panel, "@Rig.PanelConstraint.Rope.IsRope",
+		"@Rig.PanelConstraint.Rope.IsRope.ToolTip"){ }
 	
-	virtual igdeUndo *OnAction( reRig*, reRigConstraint *constraint ){
-		return new reUConstraintToggleIsRope( constraint );
+	igdeUndo::Ref OnAction(reRig*, reRigConstraint *constraint) override{
+		return reUConstraintToggleIsRope::Ref::New(constraint);
 	}
 };
 
 class cTextBreakingThreshold : public cBaseTextFieldListener{
 public:
-	cTextBreakingThreshold( reWPConstraint &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextBreakingThreshold>;
+	cTextBreakingThreshold(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig*, reRigConstraint *constraint ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint) override{
 		const float value = textField->GetFloat();
-		return fabsf( value - constraint->GetBreakingThreshold() ) > FLOAT_SAFE_EPSILON
-			? new reUConstraintSetBreakingThreshold( constraint, value ) : nullptr;
+		return fabsf(value - constraint->GetBreakingThreshold()) > FLOAT_SAFE_EPSILON
+			? reUConstraintSetBreakingThreshold::Ref::New(constraint, value) : igdeUndo::Ref();
 	}
 };
 
 class cCheckShowJointError : public cBaseAction{
 public:
-	cCheckShowJointError( reWPConstraint &panel ) : cBaseAction( panel, "Show joint error",
-		"Shows joint errors visually during simulation." ){ }
+	using Ref = deTObjectReference<cCheckShowJointError>;
+	cCheckShowJointError(reWPConstraint &panel) : cBaseAction(panel, "@Rig.PanelConstraint.Debugging.ShowJointError",
+		"@Rig.PanelConstraint.Debugging.ShowJointError.ToolTip"){}
 	
-	virtual igdeUndo *OnAction( reRig*, reRigConstraint *constraint ){
-		constraint->SetShowJointError( ! constraint->GetShowJointError() );
-		return nullptr;
+	igdeUndo::Ref OnAction(reRig*, reRigConstraint *constraint) override{
+		constraint->SetShowJointError(!constraint->GetShowJointError());
+		return {};
 	}
 };
 
@@ -383,118 +398,110 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPConstraint::reWPConstraint( reWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pRig( NULL ),
-pConstraint( NULL ),
-pListener( NULL ),
-pPreventUpdate( false )
+reWPConstraint::reWPConstraint(reWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPConstraintListener( *this );
+	pListener = reWPConstraintListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// structure
-	helper.GroupBox( content, groupBox, "Link Partners:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.LinkPartners");
 	
-	helper.EditString( groupBox, "Parent:", "Name of parent bone or empty string for entire rig.",
-		pEditBoneParent, NULL );
-	pEditBoneParent->SetEditable( false );
+	helper.EditString(groupBox, "@Rig.PanelConstraint.LinkPartners.Parent", "@Rig.PanelConstraint.LinkPartners.Parent.ToolTip",
+		pEditBoneParent, {});
+	pEditBoneParent->SetEditable(false);
 	
-	helper.ComboBox( groupBox, "Target:", true, "Name of target bone or empty string for the world.",
-		pCBBoneTarget, new cComboTarget( *this, pPreventUpdate ) );
+	helper.ComboBox(groupBox, "@Rig.PanelConstraint.LinkPartners.Target", true, "@Rig.PanelConstraint.LinkPartners.Target.ToolTip",
+		pCBBoneTarget, cComboTarget::Ref::New(*this, pPreventUpdate));
 	pCBBoneTarget->SetDefaultSorter();
 	
 	
 	// structure
-	helper.GroupBox( content, groupBox, "Geometry:" );
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Geometry");
 	
-	helper.EditVector( groupBox, "Position:",
-		"Position of the constraint relative to the bone local coordinate system.",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:",
-		"Rotation of the constraint relative to the bone local coordinate system.",
-		pEditRotation, new cEditRotation( *this ) );
-	helper.EditVector( groupBox, "Offset:",
-		"Offset of the bone local coordinate system relative to the constraint relative cooridnate system.",
-		pEditOffset, new cEditOffset( *this ) );
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Position",
+		"@Rig.PanelConstraint.Geometry.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Rotation",
+		"@Rig.PanelConstraint.Geometry.Rotation.ToolTip",
+		pEditRotation, cEditRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@Rig.PanelConstraint.Geometry.Offset",
+		"@Rig.PanelConstraint.Geometry.Offset.ToolTip",
+		pEditOffset, cEditOffset::Ref::New(*this));
 	
 	
 	// degree of freedoms
-	const char * const dofGroupText[ 6 ] = {
-		"DOF Linear X:", "DOF Linear Y:", "DOF Linear Z:",
-		"DOF Angular X:", "DOF Angular Y:", "DOF Angular Z:"
+	const char * const dofGroupText[6] = {
+		"@Rig.PanelConstraint.GroupBox.LinearX", "@Rig.PanelConstraint.GroupBox.LinearY", "@Rig.PanelConstraint.GroupBox.LinearZ",
+		"@Rig.PanelConstraint.GroupBox.AngularX", "@Rig.PanelConstraint.GroupBox.AngularY", "@Rig.PanelConstraint.GroupBox.AngularZ"
 	};
 	int dof;
 	
-	for( dof=0; dof<6; dof++ ){
-		helper.GroupBox( content, groupBox, dofGroupText[ dof ], dof < 3 );
+	for(dof=0; dof<6; dof++){
+		helper.GroupBox(content, groupBox, dofGroupText[dof], dof < 3);
 		
-		helper.FormLine( groupBox, "Range:",
-			"Lower and upper limit relative to constraint coordinate system. "
-			"locked(lower=upper) limited(upper>lower) free(upper<lower)", frameLine );
-		helper.EditFloat( frameLine, "Lower limit relative to constraint coordinate system.",
-			pEditDofLower[ dof ], new cTextDofLower( *this, vDegreesOfFreedom[ dof ] ) );
-		helper.EditFloat( frameLine, "Upper limit relative to constraint coordinate system.",
-			pEditDofUpper[ dof ], new cTextDofUpper( *this, vDegreesOfFreedom[ dof ] ) );
+		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Range",
+			"@Rig.PanelConstraint.Dof.Range.ToolTip", frameLine);
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.LowerLimit.ToolTip",
+			pEditDofLower[dof], cTextDofLower::Ref::New(*this, vDegreesOfFreedom[dof]));
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.UpperLimit.ToolTip",
+			pEditDofUpper[dof], cTextDofUpper::Ref::New(*this, vDegreesOfFreedom[dof]));
 		
-		helper.FormLine( groupBox, "Friction:",
-			"Static friction force and kinematic friction factor for joint inner friction.",
-			frameLine );
+		helper.FormLine(groupBox, "@Rig.PanelConstraint.Dof.Friction",
+			"@Rig.PanelConstraint.Dof.Friction.ToolTip",
+			frameLine);
 			
-		helper.EditFloat( frameLine, "Static friction force in newton per meter.",
-			pEditDofStaFric[ dof ], new cTextDofFrictionStatic( *this, vDegreesOfFreedom[ dof ] ) );
-		helper.EditFloat( frameLine, "Kinematic friction factor.",
-			pEditDofKinFric[ dof ], new cTextDofFrictionKinematic( *this, vDegreesOfFreedom[ dof ] ) );
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.StaticFriction.ToolTip",
+			pEditDofStaFric[dof], cTextDofFrictionStatic::Ref::New(*this, vDegreesOfFreedom[dof]));
+		helper.EditFloat(frameLine, "@Rig.PanelConstraint.Dof.KinematicFriction.ToolTip",
+			pEditDofKinFric[dof], cTextDofFrictionKinematic::Ref::New(*this, vDegreesOfFreedom[dof]));
 		
-		helper.EditString( groupBox, "Stiffness:", "Spring stiffness in newton per meter.",
-			pEditDofSprStiff[ dof ], new cTextDofSpringStiffness( *this, vDegreesOfFreedom[ dof ] ) );
+		helper.EditString(groupBox, "@Rig.PanelConstraint.Dof.Stiffness", "@Rig.PanelConstraint.Dof.Stiffness.ToolTip",
+			pEditDofSprStiff[dof], cTextDofSpringStiffness::Ref::New(*this, vDegreesOfFreedom[dof]));
 	}
 	
 	
 	// damping
-	helper.GroupBox( content, groupBox, "Damping:", true );
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Damping", true);
 	
-	helper.EditString( groupBox, "Linear:", "Damping of linear degrees of freedom.",
-		pEditDampLin, new cTextDampingLinear( *this ) );
-	helper.EditString( groupBox, "Angular:", "Damping of angular degrees of freedom.",
-		pEditDampAng, new cTextDampingAngular( *this ) );
-	helper.EditString( groupBox, "Spring:",
-		"Damping of spring degrees of freedom both linear and angular.",
-		pEditDampSpr, new cTextDampingSpring( *this ) );
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Linear", "@Rig.PanelConstraint.Damping.Linear.ToolTip",
+		pEditDampLin, cTextDampingLinear::Ref::New(*this));
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Angular", "@Rig.PanelConstraint.Damping.Angular.ToolTip",
+		pEditDampAng, cTextDampingAngular::Ref::New(*this));
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Damping.Spring",
+		"@Rig.PanelConstraint.Damping.Spring.ToolTip",
+		pEditDampSpr, cTextDampingSpring::Ref::New(*this));
 	
 	
 	// rope
-	helper.GroupBox( content, groupBox, "Rope:", true );
-	helper.CheckBox( groupBox, pChkRope, new cCheckRope( *this ), true );
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Rope", true);
+	helper.CheckBox(groupBox, pChkRope, cCheckRope::Ref::New(*this));
 	
 	
 	// breaking
-	helper.GroupBox( content, groupBox, "Breaking:", true );
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Breaking", true);
 	
-	helper.EditString( groupBox, "Breaking:",
-		"Breaking threshold impuls in newton seconds or 0 to disable.",
-		pEditBreakingThreshold, new cTextBreakingThreshold( *this ) );
+	helper.EditString(groupBox, "@Rig.PanelConstraint.Breaking.Threshold",
+		"@Rig.PanelConstraint.Breaking.Threshold.ToolTip",
+		pEditBreakingThreshold, cTextBreakingThreshold::Ref::New(*this));
 	
 	
 	// debugging
-	helper.GroupBox( content, groupBox, "Debugging:", true );
-	helper.CheckBox( groupBox, pChkShowJointError, new cCheckShowJointError( *this ), true );
+	helper.GroupBox(content, groupBox, "@Rig.PanelConstraint.GroupBox.Debugging", true);
+	helper.CheckBox(groupBox, pChkShowJointError, cCheckShowJointError::Ref::New(*this));
 }
 
 reWPConstraint::~reWPConstraint(){
-	SetRig( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -502,81 +509,62 @@ reWPConstraint::~reWPConstraint(){
 // Management
 ///////////////
 
-void reWPConstraint::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reWPConstraint::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	SetConstraint( NULL );
+	SetConstraint(nullptr);
 	
-	if( pRig ){
-		pRig->RemoveNotifier( pListener );
-		pRig->FreeReference();
-		pRig = NULL;
+	if(pRig){
+		pRig->RemoveNotifier(pListener);
+		pRig = nullptr;
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
-		rig->AddNotifier( pListener );
-		rig->AddReference();
-		
-		SetConstraint( rig->GetSelectionConstraints()->GetActiveConstraint() );
+	if(rig){
+		rig->AddNotifier(pListener);
+		SetConstraint(rig->GetSelectionConstraints()->GetActiveConstraint());
 	}
 }
 
-void reWPConstraint::SetConstraint( reRigConstraint *constraint ){
-	if( constraint == pConstraint ){
+void reWPConstraint::SetConstraint(reRigConstraint *constraint){
+	if(constraint == pConstraint){
 		return;
 	}
-	
-	if( pConstraint ){
-		pConstraint->FreeReference();
-	}
-	
 	pConstraint = constraint;
-	
-	if( constraint ){
-		constraint->AddReference();
-	}
-	
 	UpdateBoneLists();
 	UpdateConstraint();
 }
 
 void reWPConstraint::UpdateBoneLists(){
 	reRigBone * const selection = pCBBoneTarget->GetSelectedItem()
-		? ( reRigBone* )pCBBoneTarget->GetSelectedItem()->GetData() : nullptr;
+		? (reRigBone*)pCBBoneTarget->GetSelectedItem()->GetData() : nullptr;
 	pPreventUpdate = true;
 	
 	try{
 		pCBBoneTarget->RemoveAllItems();
-		pCBBoneTarget->AddItem( "< World >", NULL, NULL );
+		pCBBoneTarget->SetAutoTranslateItems(true);
+		pCBBoneTarget->AddItem(Translate("Rig.PanelConstraint.Target.World").ToUTF8(), nullptr, nullptr);
 		
-		if( pRig && pConstraint ){
-			const int count = pRig->GetBoneCount();
-			int i;
-			
-			for( i=0; i<count; i++ ){
-				reRigBone * const bone = pRig->GetBoneAt( i );
-				
-				if( pConstraint->GetRigBone() == bone ){
-					continue; // not yourself
+		if(pRig && pConstraint){
+			pRig->GetBones().Visit([&](reRigBone *bone){
+				if(pConstraint->GetRigBone() != bone){
+					pCBBoneTarget->AddItem(bone->GetName(), nullptr, bone);
 				}
-				
-				pCBBoneTarget->AddItem( bone->GetName(), NULL, bone );
-			}
+			});
 		}
 		
 		pCBBoneTarget->SortItems();
 		
-		if( selection ){
-			pCBBoneTarget->SetSelection( pCBBoneTarget->IndexOfItemWithData( selection ) );
+		if(selection){
+			pCBBoneTarget->SetSelection(pCBBoneTarget->IndexOfItemWithData(selection));
 		}
 		
 		pPreventUpdate = false;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
@@ -585,90 +573,90 @@ void reWPConstraint::UpdateBoneLists(){
 void reWPConstraint::UpdateConstraint(){
 	int dof;
 	
-	if( pConstraint ){
+	if(pConstraint){
 		const reRigBone * const parentBone = pConstraint->GetRigBone();
-		if( parentBone ){
-			pEditBoneParent->SetText( parentBone->GetName() );
+		if(parentBone){
+			pEditBoneParent->SetText(parentBone->GetName());
 			
 		}else{
-			pEditBoneParent->SetText( "< Rig >" );
+			pEditBoneParent->SetText(Translate("Rig.PanelConstraint.Parent.Rig").ToUTF8());
 		}
 		
-		pCBBoneTarget->SetSelection( pCBBoneTarget->IndexOfItemWithData(
-			pConstraint->GetConstraintBone() ) );
+		pCBBoneTarget->SetSelection(pCBBoneTarget->IndexOfItemWithData(
+			pConstraint->GetConstraintBone()));
 		
-		pEditPosition->SetVector( pConstraint->GetPosition() );
-		pEditRotation->SetVector( pConstraint->GetOrientation() );
-		pEditOffset->SetVector( pConstraint->GetOffset() );
+		pEditPosition->SetVector(pConstraint->GetPosition());
+		pEditRotation->SetVector(pConstraint->GetOrientation());
+		pEditOffset->SetVector(pConstraint->GetOffset());
 		
-		for( dof=0; dof<6; dof++ ){
-			const reRigConstraintDof &rigDof = pConstraint->GetDof( vDegreesOfFreedom[ dof ] );
-			pEditDofLower[ dof ]->SetFloat( rigDof.GetLowerLimit() );
-			pEditDofUpper[ dof ]->SetFloat( rigDof.GetUpperLimit() );
-			pEditDofStaFric[ dof ]->SetFloat( rigDof.GetStaticFriction() );
-			pEditDofKinFric[ dof ]->SetFloat( rigDof.GetKinematicFriction() );
-			pEditDofSprStiff[ dof ]->SetFloat( rigDof.GetSpringStiffness() );
+		for(dof=0; dof<6; dof++){
+			const reRigConstraintDof &rigDof = pConstraint->GetDof(vDegreesOfFreedom[dof]);
+			pEditDofLower[dof]->SetFloat(rigDof.GetLowerLimit());
+			pEditDofUpper[dof]->SetFloat(rigDof.GetUpperLimit());
+			pEditDofStaFric[dof]->SetFloat(rigDof.GetStaticFriction());
+			pEditDofKinFric[dof]->SetFloat(rigDof.GetKinematicFriction());
+			pEditDofSprStiff[dof]->SetFloat(rigDof.GetSpringStiffness());
 		}
 		
-		pEditDampLin->SetFloat( pConstraint->GetLinearDamping() );
-		pEditDampAng->SetFloat( pConstraint->GetAngularDamping() );
-		pEditDampSpr->SetFloat( pConstraint->GetSpringDamping() );
+		pEditDampLin->SetFloat(pConstraint->GetLinearDamping());
+		pEditDampAng->SetFloat(pConstraint->GetAngularDamping());
+		pEditDampSpr->SetFloat(pConstraint->GetSpringDamping());
 		
-		pChkRope->SetChecked( pConstraint->GetIsRope() );
+		pChkRope->SetChecked(pConstraint->GetIsRope());
 		
-		pEditBreakingThreshold->SetFloat( pConstraint->GetBreakingThreshold() );
+		pEditBreakingThreshold->SetFloat(pConstraint->GetBreakingThreshold());
 		
-		pChkShowJointError->SetChecked( pConstraint->GetShowJointError() );
+		pChkShowJointError->SetChecked(pConstraint->GetShowJointError());
 		
 	}else{
 		pEditBoneParent->ClearText();
-		pCBBoneTarget->SetSelection( pCBBoneTarget->IndexOfItemWithData( NULL ) );
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
-		pEditOffset->SetVector( decVector() );
+		pCBBoneTarget->SetSelection(pCBBoneTarget->IndexOfItemWithData(nullptr));
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
+		pEditOffset->SetVector(decVector());
 		
-		for( dof=0; dof<6; dof++ ){
-			pEditDofLower[ dof ]->ClearText();
-			pEditDofUpper[ dof ]->ClearText();
-			pEditDofStaFric[ dof ]->ClearText();
-			pEditDofKinFric[ dof ]->ClearText();
-			pEditDofSprStiff[ dof ]->ClearText();
+		for(dof=0; dof<6; dof++){
+			pEditDofLower[dof]->ClearText();
+			pEditDofUpper[dof]->ClearText();
+			pEditDofStaFric[dof]->ClearText();
+			pEditDofKinFric[dof]->ClearText();
+			pEditDofSprStiff[dof]->ClearText();
 		}
 		
 		pEditDampLin->ClearText();
 		pEditDampAng->ClearText();
 		pEditDampSpr->ClearText();
 		
-		pChkRope->SetChecked( false );
+		pChkRope->SetChecked(false);
 		
 		pEditBreakingThreshold->ClearText();
 		
-		pChkShowJointError->SetChecked( false );
+		pChkShowJointError->SetChecked(false);
 	}
 	
 	// enable UI
-	const bool enabled = pConstraint != NULL;
-	pEditBoneParent->SetEnabled( enabled );
-	pCBBoneTarget->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditOffset->SetEnabled( enabled );
+	const bool enabled = pConstraint.IsNotNull();
+	pEditBoneParent->SetEnabled(enabled);
+	pCBBoneTarget->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditOffset->SetEnabled(enabled);
 	
-	for( dof=0; dof<6; dof++ ){
-		pEditDofLower[ dof ]->SetEnabled( enabled );
-		pEditDofUpper[ dof ]->SetEnabled( enabled );
-		pEditDofStaFric[ dof ]->SetEnabled( enabled );
-		pEditDofKinFric[ dof ]->SetEnabled( enabled );
-		pEditDofSprStiff[ dof ]->SetEnabled( enabled );
+	for(dof=0; dof<6; dof++){
+		pEditDofLower[dof]->SetEnabled(enabled);
+		pEditDofUpper[dof]->SetEnabled(enabled);
+		pEditDofStaFric[dof]->SetEnabled(enabled);
+		pEditDofKinFric[dof]->SetEnabled(enabled);
+		pEditDofSprStiff[dof]->SetEnabled(enabled);
 	}
 	
-	pEditDampLin->SetEnabled( enabled );
-	pEditDampAng->SetEnabled( enabled );
-	pEditDampSpr->SetEnabled( enabled );
+	pEditDampLin->SetEnabled(enabled);
+	pEditDampAng->SetEnabled(enabled);
+	pEditDampSpr->SetEnabled(enabled);
 	
-	pChkRope->SetEnabled( enabled );
+	pChkRope->SetEnabled(enabled);
 	
-	pEditBreakingThreshold->SetEnabled( enabled );
+	pEditBreakingThreshold->SetEnabled(enabled);
 	
-	pChkShowJointError->SetEnabled( enabled );
+	pChkShowJointError->SetEnabled(enabled);
 }

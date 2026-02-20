@@ -26,10 +26,10 @@
 #define _DEOGLRCANVASVIEW_H_
 
 #include "deoglRCanvas.h"
+#include "../../target/deoglRenderTarget.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
-class deoglRenderTarget;
 class deoglRenderPlanMasked;
 
 
@@ -37,10 +37,15 @@ class deoglRenderPlanMasked;
  * Render canvas view.
  */
 class deoglRCanvasView : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRCanvasView>;
+	
+	
 private:
-	decObjectList pChildren;
+	decTObjectList<deoglRCanvas> pChildren;
 	unsigned int pPaintTracker;
-	deoglRenderTarget *pRenderTarget;
+	deoglRenderTarget::Ref pRenderTarget;
 	bool pResizeRenderTarget;
 	
 	
@@ -49,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasView( deoglRenderThread &renderThread );
+	deoglRCanvasView(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
-	virtual ~deoglRCanvasView();
+	~deoglRCanvasView() override;
 	/*@}*/
 	
 	
@@ -60,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Add children with the correct sorting by order. */
-	void AddChild( deoglRCanvas *canvas );
+	void AddChild(deoglRCanvas *canvas);
 	
 	/** Remove all children. */
 	void RemoveAllChildren();
@@ -77,7 +82,7 @@ public:
 	void IncrementPaintTracker();
 	
 	/** Render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Render target has to be resized. */
 	void SetResizeRenderTarget();
@@ -87,25 +92,25 @@ public:
 	 * target texture is rendered. After this call returns GetRenderTarget() returns a render
 	 * target with a valid texture object suitable for rendering unless an error occurred.
 	 */
-	void PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
-		int componentCount, int bitCount );
+	void PrepareRenderTarget(const deoglRenderPlanMasked *renderPlanMask,
+		int componentCount, int bitCount);
 	
 	/** Render render target if dirty. */
-	void RenderRenderTarget( const deoglRenderPlanMasked *renderPlanMask );
+	void RenderRenderTarget(const deoglRenderPlanMasked *renderPlanMask);
 	
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Prepare for rendering render. */
-	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Render.
 	 * Resets paint dirty flag. Paint tracker is kept unchanged.
 	 */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	void Render(const deoglRenderCanvasContext &context) override;
 	/*@}*/
 };
 

@@ -22,12 +22,15 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 
 #include "deClassCachedVegetation.h"
+#include "../dedsHelpers.h"
 #include "../math/deClassPoint.h"
 #include "../physics/deClassCollisionFilter.h"
 #include "../world/deClassWorld.h"
@@ -37,21 +40,18 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/resources/model/deModel.h>
-#include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/propfield/dePropField.h>
 #include <dragengine/resources/propfield/dePropFieldType.h>
 #include <dragengine/resources/propfield/dePropFieldInstance.h>
 #include <dragengine/resources/propfield/dePropFieldManager.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <libdscript/exceptions.h>
 
 
@@ -73,501 +73,386 @@ struct dedsCachedVegetationInstance{
 class dedsCachedVegetationPropField : public deBaseScriptingPropField{
 private:
 	float pHeight;
-	dePropField *pEngPF;
-	dedsCachedVegetationInstance *pInstances;
-	int pInstanceCount;
+	dePropField::Ref pEngPF;
+	decTList<dedsCachedVegetationInstance> pInstances;
 	decVector pScalePosition;
 	
 public:
 	dedsCachedVegetationPropField(){
-		pEngPF = NULL;
 		pHeight = 0.0f;
-		pInstances = NULL;
-		pInstanceCount = 0;
 	}
 	
-	~dedsCachedVegetationPropField(){
-		if( pInstances ) delete [] pInstances;
-		if( pEngPF ){
-			dedsPropField * const peer = ( dedsPropField* )pEngPF->GetPeerScripting();
-			if( peer ){
-				peer->SetDelegee( NULL );
+	~dedsCachedVegetationPropField() override{
+		if(pEngPF){
+			dedsPropField * const peer = static_cast<dedsPropField*>(pEngPF->GetPeerScripting());
+			if(peer){
+				peer->SetDelegee(nullptr);
 			}
-			pEngPF->FreeReference();
 		}
 	}
 	
-	inline dePropField *GetEnginePF() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePF() const{ return pEngPF; }
 	
-	void CreatePF( deEngine *engine ){
-		if( ! pEngPF ){
+	void CreatePF(const deEngine *engine){
+		if(!pEngPF){
 			pEngPF = engine->GetPropFieldManager()->CreatePropField();
-			if( ! pEngPF ) DSTHROW( dueOutOfMemory );
-			
-			dedsPropField *peer = ( dedsPropField* )pEngPF->GetPeerScripting();
-			peer->SetDelegee( this );
+			static_cast<dedsPropField*>(pEngPF->GetPeerScripting())->SetDelegee(this);
 		}
 	}
 	
 	inline float GetHeight() const{ return pHeight; }
 	
-	void SetHeight( float height ){
+	void SetHeight(float height){
 		pHeight = height;
 	}
 	
-	inline int GetInstanceCount() const{ return pInstanceCount; }
-	inline dedsCachedVegetationInstance *GetInstances() const{ return pInstances; }
+	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
+	inline decTList<dedsCachedVegetationInstance> &GetInstances(){ return pInstances; }
+	inline const decTList<dedsCachedVegetationInstance> &GetInstances() const{ return pInstances; }
 	
-	void SetInstanceCount( int count ){
-		if( count < 0 ) DSTHROW( dueInvalidParam );
-		
-		if( pInstances ){
-			delete [] pInstances;
-			pInstances = NULL;
-			pInstanceCount = 0;
-		}
-		
-		if( count > 0 ){
-			pInstances = new dedsCachedVegetationInstance[ count ];
-			if( ! pInstances ) DSTHROW( dueOutOfMemory );
-			pInstanceCount = count;
-		}
+	void SetInstanceCount(int count){
+		if(count < 0) DSTHROW(dueInvalidParam);
+		pInstances.SetAll(count, {});
 	}
 	
-	void SetCollisionFilter( const decCollisionFilter &filter ){
+	void SetCollisionFilter(const decCollisionFilter &filter){
 		int t, typeCount = pEngPF->GetTypeCount();
-		dePropFieldType *type;
 		
-		for( t=0; t<typeCount; t++ ){
-			type = pEngPF->GetTypeAt( t );
-			type->SetCollisionFilter( filter );
+		for(t=0; t<typeCount; t++){
+			pEngPF->GetTypeAt(t)->SetCollisionFilter(filter);
 		}
 	}
 	
-	void SetScalePosition( const decVector &scalePosition ){
+	void SetScalePosition(const decVector &scalePosition){
 		pScalePosition = scalePosition;
 	}
 	
-	virtual void CreateInstances( float density ){
-		decVector scaleRotation( ( DEG2RAD * 360.0f ) / 255.0f, ( DEG2RAD * 360.0f ) / 255.0f, ( DEG2RAD * 360.0f ) / 255.0f );
+	void CreateInstances(float density) override{
+		decVector scaleRotation((DEG2RAD * 360.0f) / 255.0f, (DEG2RAD * 360.0f) / 255.0f, (DEG2RAD * 360.0f) / 255.0f);
 		float scaleScaling = 5.0f / 255.0f;
 		
 		int t, typeCount = pEngPF->GetTypeCount();
 		dePropFieldInstance *pfinstances;
-		int pfi, pficount, upficount;
-		dePropFieldType *engPFType;
 		decVector ipos, irot;
 		float iscale;
-		int i;
 		
-		for( t=0; t<typeCount; t++ ){
+		for(t=0; t<typeCount; t++){
 			// determine how many instances match this type
-			pficount = 0;
-			for( i=0; i<pInstanceCount; i++ ){
-				if( t == pInstances[ i ].type ) pficount++;
-			}
+			int pficount = 0;
+			pInstances.Visit([&](const dedsCachedVegetationInstance &instance){
+				if(t == instance.type) pficount++;
+			});
 			
 			// pick only density times many instances from the pool. currently the instances
 			// are random so we can simply take only density times instances but in upcoming
 			// implementations this might no more be the case.
-			upficount = pficount; // ( int )( ceilf( ( float )pficount * density ) );
+			int upficount = pficount; // (int)(ceilf((float)pficount * density));
 			//if( upficount < 0 ) upficount = 0;
 			//if( upficount > pficount ) upficount = pficount;
 			
-			engPFType = pEngPF->GetTypeAt( t );
-			engPFType->SetInstanceCount( upficount );
+			dePropFieldType &engPFType = pEngPF->GetTypeAt(t);
+			engPFType.GetInstances().SetAll(upficount, {});
 			
 			// add vegetation instances with matching this type
-			if( upficount > 0 ){
-				pfinstances = engPFType->GetInstances();
+			if(upficount > 0){
+				pfinstances = engPFType.GetInstances().GetArrayPointer();
 				
-				for( pfi=0, i=0; i<pInstanceCount; i++ ){
-					if( t == pInstances[ i ].type ){
-						if( pfi == upficount ) break;
+				int pfi, i;
+				for(pfi=0, i=0; i<pInstances.GetCount(); i++){
+					if(t == pInstances[i].type){
+						if(pfi == upficount) break;
 						
-						dePropFieldInstance &pfinstance = pfinstances[ pfi ];
+						dePropFieldInstance &pfinstance = pfinstances[pfi];
 						
-						ipos.x = ( float )pInstances[ i ].positionX * pScalePosition.x;
-						ipos.y = pInstances[ i ].positionY;
-						ipos.z = ( float )pInstances[ i ].positionZ * pScalePosition.z;
-						irot.x = ( float )pInstances[ i ].rotationX * scaleRotation.x;
-						irot.y = ( float )pInstances[ i ].rotationY * scaleRotation.y;
-						irot.z = ( float )pInstances[ i ].rotationZ * scaleRotation.z;
-						iscale = ( float )pInstances[ i ].scaling * scaleScaling;
+						ipos.x = (float)pInstances[i].positionX * pScalePosition.x;
+						ipos.y = pInstances[i].positionY;
+						ipos.z = (float)pInstances[i].positionZ * pScalePosition.z;
+						irot.x = (float)pInstances[i].rotationX * scaleRotation.x;
+						irot.y = (float)pInstances[i].rotationY * scaleRotation.y;
+						irot.z = (float)pInstances[i].rotationZ * scaleRotation.z;
+						iscale = (float)pInstances[i].scaling * scaleScaling;
 						
-						pfinstance.SetPosition( ipos );
-						pfinstance.SetRotation( irot );
-						pfinstance.SetScaling( iscale );
+						pfinstance.SetPosition(ipos);
+						pfinstance.SetRotation(irot);
+						pfinstance.SetScaling(iscale);
 						
 						pfi++;
 					}
 				}
 				
-				if( pfi < upficount ) DSTHROW( dueInvalidAction );
+				if(pfi < upficount) DSTHROW(dueInvalidAction);
 			}
 			
 			// notify the engine that the instances are ready
-			pEngPF->NotifyInstancesChanged( t );
+			pEngPF->NotifyInstancesChanged(t);
 		}
 	}
 };
 
 class dedsCachedVegetationSector{
 private:
-	dedsCachedVegetationPropField *pPFs;
-	int pPFCount;
+	decTList<dedsCachedVegetationPropField> pPFs;
 	int pPFCellCount;
 	float pSectorDim;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decPoint pCoordinates;
 	decCollisionFilter pCollisionFilter;
 	
 public:
-	dedsCachedVegetationSector( deEngine *engine, float sectorDim, int pfCellCount, const decPoint &coordinates ){
-		if( ! engine || sectorDim < 10.0f || pfCellCount < 1 ) DSTHROW( dueInvalidParam );
+	dedsCachedVegetationSector(const deEngine *engine, float sectorDim, int pfCellCount,
+	const decPoint &coordinates){
+		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
-		int p, pfCount = pfCellCount * pfCellCount;
+		int pfCount = pfCellCount * pfCellCount;
 		
-		pPFs = NULL;
-		pPFCount = 0;
 		pPFCellCount = pfCellCount;
 		pSectorDim = sectorDim;
 		pCoordinates = coordinates;
-		pWorld = NULL;
 		
-		pPFs = new dedsCachedVegetationPropField[ pfCount ];
-		if( ! pPFs ) DSTHROW( dueOutOfMemory );
-		pPFCount = pfCount;
-		
-		for( p=0; p<pfCount; p++ ){
-			pPFs[ p ].CreatePF( engine );
-		}
+		pPFs.AddRange(pfCount, {});
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.CreatePF(engine);
+		});
 		UpdatePFPositions();
 	}
 	
 	~dedsCachedVegetationSector(){
-		SetWorld( NULL );
-		
-		if( pPFs ) delete [] pPFs;
+		SetWorld(nullptr);
 	}
 	
-	void SetWorld( deWorld *world ){
-		if( world != pWorld ){
-			int p;
-			
-			if( pWorld ){
-				pWorld->FreeReference();
-				
-				for( p=0; p<pPFCount; p++ ){
-					pWorld->RemovePropField( pPFs[ p ].GetEnginePF() );
-				}
-			}
-			
-			pWorld = world;
-			
-			if( world ){
-				world->AddReference();
-				
-				for( p=0; p<pPFCount; p++ ){
-					world->AddPropField( pPFs[ p ].GetEnginePF() );
-				}
-			}
+	void SetWorld(deWorld *world){
+		if(world == pWorld){
+			return;
+		}
+		
+		if(pWorld){
+			pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+				pWorld->RemovePropField(pf.GetEnginePF());
+			});
+		}
+		
+		pWorld = world;
+		
+		if(world){
+			pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+				world->AddPropField(pf.GetEnginePF());
+			});
 		}
 	}
 	
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
-	inline int GetPFCount() const{ return pPFCount; }
-	inline dedsCachedVegetationPropField *GetPFs() const{ return pPFs; }
+	inline int GetPFCount() const{ return pPFs.GetCount(); }
+	inline dedsCachedVegetationPropField *GetPFs(){ return pPFs.GetArrayPointer(); }
 	
-	void SetCollisionFilter( const decCollisionFilter &filter ){
-		int p;
-		
+	void SetCollisionFilter(const decCollisionFilter &filter){
 		pCollisionFilter = filter;
 		
-		for( p=0; p<pPFCount; p++ ){
-			pPFs[ p ].SetCollisionFilter( filter );
-		}
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.SetCollisionFilter(filter);
+		});
 	}
 	
 	void Clear(){
-		int p;
-		
-		for( p=0; p<pPFCount; p++ ){
-			pPFs[ p ].GetEnginePF()->RemoveAllTypes();
-		}
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.GetEnginePF()->RemoveAllTypes();
+		});
 	}
 	
 	void UpdatePFPositions(){
-		double cellSize = ( double )pSectorDim / ( double )pPFCellCount;
-		double cellOffset = ( ( double )pSectorDim - cellSize ) * 0.5;
-		double sectorOffsetX = ( double )pSectorDim * ( double )pCoordinates.x;
-		double sectorOffsetZ = ( double )pSectorDim * ( double )pCoordinates.y;
+		double cellSize = (double)pSectorDim / (double)pPFCellCount;
+		double cellOffset = ((double)pSectorDim - cellSize) * 0.5;
+		double sectorOffsetX = (double)pSectorDim * (double)pCoordinates.x;
+		double sectorOffsetZ = (double)pSectorDim * (double)pCoordinates.y;
 		decDVector position;
 		dePropField *engPF;
 		int x, y, p;
 		
-		for( y=0, p=0; y<pPFCellCount; y++ ){
-			position.z = sectorOffsetZ + cellOffset - cellSize * ( double )y;
+		for(y=0, p=0; y<pPFCellCount; y++){
+			position.z = sectorOffsetZ + cellOffset - cellSize * (double)y;
 			
-			for( x=0; x<pPFCellCount; x++, p++ ){
-				engPF = pPFs[ p ].GetEnginePF();
+			for(x=0; x<pPFCellCount; x++, p++){
+				engPF = pPFs[p].GetEnginePF();
 				
-				position.x = sectorOffsetX - cellOffset + cellSize * ( double )x;
-				position.y = pPFs[ p ].GetHeight();
+				position.x = sectorOffsetX - cellOffset + cellSize * (double)x;
+				position.y = pPFs[p].GetHeight();
 				
-				engPF->SetPosition( position );
+				engPF->SetPosition(position);
 			}
 		}
 	}
 	
-	void LoadCacheFile( deEngine *engine, decBaseFileReader &reader ){
+	void LoadCacheFile(const deEngine *engine, decBaseFileReader &reader){
 		deModelManager *mdlmgr = engine->GetModelManager();
 		deSkinManager *skinmgr = engine->GetSkinManager();
-		dedsCachedVegetationInstance *instances;
-		dePropFieldType *engPFType = NULL;
 		decDVector sectorPosition;
 		decVector scalePosition;
-		int i, instanceCount;
 		int t, typeCount;
-		int p;
 		
 		Clear();
 		
 		// determine sector position
-		sectorPosition.x = ( double )pSectorDim * ( double )pCoordinates.x;
+		sectorPosition.x = (double)pSectorDim * (double)pCoordinates.x;
 		sectorPosition.y = 0.0f;
-		sectorPosition.z = ( double )pSectorDim * ( double )pCoordinates.y;
+		sectorPosition.z = (double)pSectorDim * (double)pCoordinates.y;
 		
 		// read the header
 		char header[10];
-		reader.Read( ( char* )&header, 10 ); // signature { char[10] }
-		if( strncmp( header, "DEPFCache ", 10 ) != 0 ) DSTHROW( dueInvalidParam ); // deeInvalidFormat
+		reader.Read(reinterpret_cast<char*>(header), 10); // signature {char[10]}
+		if(strncmp(header, "DEPFCache ", 10) != 0) DSTHROW(dueInvalidParam); // deeInvalidFormat
 		
-		int version = reader.ReadByte(); // version { byte }
-		if( version != 1 ) DSTHROW( dueInvalidParam ); // deeInvalidFormat
+		int version = reader.ReadByte(); // version {byte}
+		if(version != 1) DSTHROW(dueInvalidParam); // deeInvalidFormat
 		
-		scalePosition.x = reader.ReadFloat(); // scalePositionX { float }
-		scalePosition.y = reader.ReadFloat(); // scalePositionY { float }
-		scalePosition.z = reader.ReadFloat(); // scalePositionZ { float }
-		for( p=0; p<pPFCount; p++ ){
-			pPFs[ p ].SetScalePosition( scalePosition );
-		}
+		scalePosition.x = reader.ReadFloat(); // scalePositionX {float}
+		scalePosition.y = reader.ReadFloat(); // scalePositionY {float}
+		scalePosition.z = reader.ReadFloat(); // scalePositionZ {float}
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			pf.SetScalePosition(scalePosition);
+		});
 		
 		// read the list of types and add them to each prop field
-		typeCount = reader.ReadShort(); // number of types { short }
+		typeCount = reader.ReadShort(); // number of types {short}
 		
-		float rotPerForce, restitution;
-		
-		for( t=0; t<typeCount; t++ ){
+		for(t=0; t<typeCount; t++){
 			// model path { string8 }
-			deModelReference model;
-			model.TakeOver( mdlmgr->LoadModel( reader.ReadString8(), "/" ) );
+			deModel::Ref model(mdlmgr->LoadModel(reader.ReadString8(), "/"));
 			
 			// skin path { string8 }
-			deSkinReference skin;
-			skin.TakeOver( skinmgr->LoadSkin( reader.ReadString8(), "/" ) );
+			deSkin::Ref skin(skinmgr->LoadSkin(reader.ReadString8(), "/"));
 			
-			rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force { float }
-			restitution = reader.ReadFloat(); // restitution { float }
+			const float rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force {float}
+			const float restitution = reader.ReadFloat(); // restitution {float}
 			
-			try{
-				for( p=0; p<pPFCount; p++ ){
-					engPFType = new dePropFieldType;
-					engPFType->SetModel( model );
-					engPFType->SetSkin( skin );
-					engPFType->SetRotationPerForce( rotPerForce );
-					engPFType->SetRestitution( restitution );
-					engPFType->SetCollisionFilter( pCollisionFilter );
-					
-					pPFs[ p ].GetEnginePF()->AddType( engPFType );
-					engPFType = NULL;
-				}
+			pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+				auto engPFType = dePropFieldType::Ref::New();
+				engPFType->SetModel(model);
+				engPFType->SetSkin(skin);
+				engPFType->SetRotationPerForce(rotPerForce);
+				engPFType->SetRestitution(restitution);
+				engPFType->SetCollisionFilter(pCollisionFilter);
 				
-			}catch( ... ){
-				if( engPFType ) delete engPFType;
-				throw;
-			}
+				pf.GetEnginePF()->AddType(std::move(engPFType));
+			});
 		}
 		
 		// read the prop fields
-		int propfieldCount = reader.ReadShort(); // prop field count { short }
-		if( propfieldCount != pPFCount ) DSTHROW( dueInvalidAction );
+		int propfieldCount = reader.ReadShort(); // prop field count {short}
+		if(propfieldCount != pPFs.GetCount()) DSTHROW(dueInvalidAction);
 		
-		for( p=0; p<pPFCount; p++ ){
-			reader.ReadFloat(); // prop field position X { float }
-			reader.ReadFloat(); // prop field position Y { float }
-			reader.ReadFloat(); // prop field position Z { float }
-			instanceCount = reader.ReadInt(); // instance count { int }
+		pPFs.Visit([&](dedsCachedVegetationPropField &pf){
+			reader.ReadFloat(); // prop field position X {float}
+			reader.ReadFloat(); // prop field position Y {float}
+			reader.ReadFloat(); // prop field position Z {float}
+			const int instanceCount = reader.ReadInt(); // instance count {int}
 			
-			pPFs[ p ].SetInstanceCount( instanceCount );
-			instances = pPFs[ p ].GetInstances();
+			pf.SetInstanceCount(instanceCount);
+			pf.GetInstances().Visit([&](dedsCachedVegetationInstance &instance){
+				instance.type = reader.ReadShort(); // instance type {short}
+				instance.positionX = reader.ReadShort(); // instance position X {short, encoded}
+				instance.positionY = reader.ReadFloat(); // instance position Y {float}
+				instance.positionZ = reader.ReadShort(); // instance position Z {short, encoded}
+				instance.rotationX = reader.ReadByte(); // instance rotation X {byte, encoded}
+				instance.rotationY = reader.ReadByte(); // instance rotation Y {byte, encoded}
+				instance.rotationZ = reader.ReadByte(); // instance rotation Z {byte, encoded}
+				instance.scaling = reader.ReadByte(); // instance scaling {byte, encoded}
+			});
 			
-			for( i=0; i<instanceCount; i++ ){
-				instances[ i ].type = reader.ReadShort(); // instance type { short }
-				instances[ i ].positionX = reader.ReadShort(); // instance position X { short, encoded }
-				instances[ i ].positionY = reader.ReadFloat(); // instance position Y { float }
-				instances[ i ].positionZ = reader.ReadShort(); // instance position Z { short, encoded }
-				instances[ i ].rotationX = reader.ReadByte(); // instance rotation X { byte, encoded }
-				instances[ i ].rotationY = reader.ReadByte(); // instance rotation Y { byte, encoded }
-				instances[ i ].rotationZ = reader.ReadByte(); // instance rotation Z { byte, encoded }
-				instances[ i ].scaling = reader.ReadByte(); // instance scaling { byte, encoded }
-			}
-			
-			pPFs[ p ].GetEnginePF()->NotifyGroundChanged();
-		}
+			pf.GetEnginePF()->NotifyGroundChanged();
+		});
 	}
 };
 
-class dedsCachedVegetation{
+class dedsCachedVegetation : public deObject{
+public:
+	using Ref = deTObjectReference<dedsCachedVegetation>;
+	
 private:
 	deEngine *pEngine;
-	dedsCachedVegetationSector **pSectors;
-	int pSectorCount;
-	int pSectorSize;
+	decTUniqueList<dedsCachedVegetationSector> pSectors;
 	float pSectorDim;
 	int pPFCellCount;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decCollisionFilter pCollisionFilter;
 	
-public:
-	dedsCachedVegetation( deEngine *engine, float sectorDim, int pfCellCount ){
-		if( ! engine || sectorDim < 10.0f || pfCellCount < 1 ) DSTHROW( dueInvalidParam );
+	public:
+	dedsCachedVegetation(deEngine *engine, float sectorDim, int pfCellCount){
+		if(!engine || sectorDim < 10.0f || pfCellCount < 1) DSTHROW(dueInvalidParam);
 		
 		pEngine = engine;
-		pSectors = NULL;
-		pSectorCount = 0;
-		pSectorSize = 0;
 		pSectorDim = sectorDim;
 		pPFCellCount = pfCellCount;
-		pWorld = NULL;
-	}
-	
-	~dedsCachedVegetation(){
+	}	protected:
+	~dedsCachedVegetation() override{
 		RemoveAllSectors();
-		if( pSectors ) delete [] pSectors;
-	}
-	
-	void SetWorld( deWorld *world ){
-		if( world != pWorld ){
-			int s;
-			
-			if( pWorld ){
-				pWorld->FreeReference();
-				
-				for( s=0; s<pSectorCount; s++ ){
-					pSectors[ s ]->SetWorld( NULL );
-				}
-			}
-			
-			pWorld = world;
-			
-			if( world ){
-				world->AddReference();
-				
-				for( s=0; s<pSectorCount; s++ ){
-					pSectors[ s ]->SetWorld( world );
-				}
-			}
+	}public:
+	void SetWorld(deWorld *world){
+		if(world == pWorld){
+			return;
+		}
+		
+		if(pWorld){
+			pSectors.Visit([&](dedsCachedVegetationSector &s){
+				s.SetWorld(nullptr);
+			});
+		}
+		
+		pWorld = world;
+		
+		if(world){
+			pSectors.Visit([&](dedsCachedVegetationSector &s){
+				s.SetWorld(world);
+			});
 		}
 	}
 	
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{ return pSectors.GetCount(); }
 	
-	dedsCachedVegetationSector *GetSectorAt( int index ) const{
-		if( index < 0 || index >= pSectorCount ) DSTHROW( dueInvalidParam );
-		
-		return pSectors[ index ];
+	dedsCachedVegetationSector *GetSectorAt(int index) const{
+		return pSectors.GetAt(index);
 	}
 	
-	dedsCachedVegetationSector *GetSectorWith( const decPoint &coordinates ) const{
-		int s;
-		
-		for( s=0; s<pSectorCount; s++ ){
-			if( pSectors[ s ]->GetCoordinates() == coordinates ){
-				return pSectors[ s ];
-			}
-		}
-		
-		return NULL;
+	dedsCachedVegetationSector *GetSectorWith(const decPoint &coordinates) const{
+		return pSectors.FindOrNull([&](const dedsCachedVegetationSector &s){
+			return s.GetCoordinates() == coordinates;
+		});
 	}
 	
-	void AddSectorWith( const decPoint &coordinates, const char *cacheFile ){
-		deVirtualFileSystem *vfs = pEngine->GetVirtualFileSystem();
-		dedsCachedVegetationSector *sector = NULL;
-		decPath path;
+	void AddSectorWith(const decPoint &coordinates, const char *cacheFile){
+		if(GetSectorWith(coordinates)) DSTHROW(dueInvalidParam);
 		
-		if( GetSectorWith( coordinates ) ) DSTHROW( dueInvalidParam );
-		
-		if( pSectorCount == pSectorSize ){
-			int newSize = pSectorSize * 3 / 2 + 1;
-			dedsCachedVegetationSector **newArray = new dedsCachedVegetationSector*[ newSize ];
-			if( ! newArray ) DSTHROW( dueOutOfMemory );
-			if( pSectors ){
-				memcpy( newArray, pSectors, sizeof( dedsCachedVegetationSector* ) * pSectorSize );
-				delete [] pSectors;
-			}
-			pSectors = newArray;
-			pSectorSize = newSize;
-		}
-		
-		pSectors[ pSectorCount ] = new dedsCachedVegetationSector( pEngine, pSectorDim, pPFCellCount, coordinates );
-		sector = pSectors[ pSectorCount ];
-		pSectorCount++;
-		
-		sector->SetCollisionFilter( pCollisionFilter );
-		sector->SetWorld( pWorld );
-		
-		try{
-			path.SetFromUnix( cacheFile );
-			
-			decBaseFileReaderReference reader;
-			reader.TakeOver( vfs->OpenFileForReading( path ) );
-			sector->LoadCacheFile( pEngine, reader );
-			
-		}catch( ... ){
-			sector->Clear();
-			throw;
-		}
+		auto sector = deTUniqueReference<dedsCachedVegetationSector>::New(
+			pEngine, pSectorDim, pPFCellCount, coordinates);
+		sector->SetCollisionFilter(pCollisionFilter);
+		sector->SetWorld(pWorld);
+		sector->LoadCacheFile(pEngine, pEngine->GetVirtualFileSystem()->OpenFileForReading(
+			decPath::CreatePathUnix(cacheFile)));
+		pSectors.Add(std::move(sector));
 	}
 	
-	void RemoveSectorWith( const decPoint &coordinates ){
-		int s, index = -1;
+	void RemoveSectorWith(const decPoint &coordinates){
+		const int index = pSectors.IndexOfMatching([&](const dedsCachedVegetationSector &s){
+			return s.GetCoordinates() == coordinates;
+		});
 		
-		for( s=0; s<pSectorCount; s++ ){
-			if( pSectors[ s ]->GetCoordinates() == coordinates ){
-				index = s;
-				break;
-			}
-		}
-		
-		if( index != -1 ){
-			pSectors[ index ]->SetWorld( NULL );
-			delete pSectors[ index ];
-			
-			for( s=index+1; s<pSectorCount; s++ ){
-				pSectors[ s - 1 ] = pSectors[ s ];
-			}
-			pSectorCount--;
+		if(index != -1){
+			pSectors.GetAt(index)->SetWorld(nullptr);
+			pSectors.RemoveFrom(index);
 		}
 	}
 	
 	void RemoveAllSectors(){
-		while( pSectorCount > 0 ){
-			pSectorCount--;
-			pSectors[ pSectorCount ]->SetWorld( NULL );
-			delete pSectors[ pSectorCount ];
-		}
+		pSectors.Visit([&](dedsCachedVegetationSector &s){
+			s.SetWorld(nullptr);
+		});
+		pSectors.RemoveAll();
 	}
 	
-	void SetCollisionFilter( const decCollisionFilter &filter ){
-		int s;
-		
+	void SetCollisionFilter(const decCollisionFilter &filter){
 		pCollisionFilter = filter;
-		
-		for( s=0; s<pSectorCount; s++ ){
-			pSectors[ s ]->SetCollisionFilter( filter );
-		}
+		pSectors.Visit([&](dedsCachedVegetationSector &s){
+			s.SetCollisionFilter(filter);
+		});
 	}
 };
 
@@ -577,7 +462,7 @@ public:
 /////////////////////
 
 struct sCVegNatDat{
-	dedsCachedVegetation *cveg;
+	dedsCachedVegetation::Ref cveg;
 };
 
 
@@ -586,42 +471,32 @@ struct sCVegNatDat{
 /////////////////////
 
 // public func new( float sectorDimension, int propfieldCellCount )
-deClassCachedVegetation::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsCVeg,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // sectorDimension
-	p_AddParameter( init.clsInt ); // propfieldCellCount
+deClassCachedVegetation::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCVeg,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // sectorDimension
+	p_AddParameter(init.clsInt); // propfieldCellCount
 }
-void deClassCachedVegetation::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sCVegNatDat *nd = ( sCVegNatDat* )p_GetNativeData( myself );
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
+void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sCVegNatDat &nd = dedsNewNativeData<sCVegNatDat>(p_GetNativeData(myself));
+	
+	deClassCachedVegetation * const clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	deEngine *engine = clsCVeg->GetDS()->GetGameEngine();
-	float sectorDim = rt->GetValue( 0 )->GetFloat();
-	int propfieldCellCount = rt->GetValue( 1 )->GetInt();
-	
-	// clear ( important )
-	nd->cveg = NULL;
-	
-	// create cached vegetation worker object
-	nd->cveg = new dedsCachedVegetation( engine, sectorDim, propfieldCellCount );
-	if( ! nd->cveg ) DSTHROW( dueOutOfMemory );
+	float sectorDim = rt->GetValue(0)->GetFloat();
+	int propfieldCellCount = rt->GetValue(1)->GetInt();
+	nd.cveg = dedsCachedVegetation::Ref::New(engine, sectorDim, propfieldCellCount);
 }
 
 // public func destructor()
-deClassCachedVegetation::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsCVeg,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassCachedVegetation::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsCVeg,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassCachedVegetation::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassCachedVegetation::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCVegNatDat *nd = ( sCVegNatDat* )p_GetNativeData( myself );
-	
-	if( nd->cveg ){
-		delete nd->cveg;
-		nd->cveg = NULL;
-	}
+	dedsGetNativeData<dedsCachedVegetationInstance>(p_GetNativeData(myself)).~dedsCachedVegetationInstance();
 }
 
 
@@ -630,82 +505,82 @@ void deClassCachedVegetation::nfDestructor::RunFunction( dsRunTime *rt, dsValue 
 ///////////////
 
 // public func void setCollisionFilter( CollisionFilter collisionFilter )
-deClassCachedVegetation::nfSetCollisionFilter::nfSetCollisionFilter( const sInitData &init ) : dsFunction( init.clsCVeg,
-"setCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCF ); // collisionFilter
+deClassCachedVegetation::nfSetCollisionFilter::nfSetCollisionFilter(const sInitData &init) : dsFunction(init.clsCVeg,
+"setCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCF); // collisionFilter
 }
-void deClassCachedVegetation::nfSetCollisionFilter::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
-	deClassCollisionFilter &clsCF = *clsCVeg->GetDS()->GetClassCollisionFilter();
+void deClassCachedVegetation::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
+	const deClassCollisionFilter &clsCF = *clsCVeg->GetDS()->GetClassCollisionFilter();
 	
-	const decCollisionFilter &collisionFilter = clsCF.GetCollisionFilter( rt->GetValue( 0 )->GetRealObject() );
+	const decCollisionFilter &collisionFilter = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	
-	cveg->SetCollisionFilter( collisionFilter );
+	cveg->SetCollisionFilter(collisionFilter);
 }
 
 
 
 // public func void hasSector( Point coordinates )
-deClassCachedVegetation::nfHasSector::nfHasSector( const sInitData &init ) : dsFunction( init.clsCVeg,
-"hasSector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsPt ); // coordinates
+deClassCachedVegetation::nfHasSector::nfHasSector(const sInitData &init) : dsFunction(init.clsCVeg,
+"hasSector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsPt); // coordinates
 }
-void deClassCachedVegetation::nfHasSector::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
+void deClassCachedVegetation::nfHasSector::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
-	dsRealObject *objCoord = rt->GetValue( 0 )->GetRealObject();
-	if( ! objCoord ) DSTHROW( dueNullPointer );
+	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
+	if(!objCoord) DSTHROW(dueNullPointer);
 	
-	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint( objCoord );
+	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint(objCoord);
 	
-	rt->PushBool( cveg->GetSectorWith( scoord ) );
+	rt->PushBool(cveg->GetSectorWith(scoord));
 }
 
 // public func void addSector( Point coordinates, String cacheFile )
-deClassCachedVegetation::nfAddSector::nfAddSector( const sInitData &init ) : dsFunction( init.clsCVeg,
-"addSector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsPt ); // coordinates
-	p_AddParameter( init.clsStr ); // cacheFile
+deClassCachedVegetation::nfAddSector::nfAddSector(const sInitData &init) : dsFunction(init.clsCVeg,
+"addSector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsPt); // coordinates
+	p_AddParameter(init.clsStr); // cacheFile
 }
-void deClassCachedVegetation::nfAddSector::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
+void deClassCachedVegetation::nfAddSector::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
-	dsRealObject *objCoord = rt->GetValue( 0 )->GetRealObject();
-	const char *cacheFile = rt->GetValue( 1 )->GetString();
+	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
+	const char *cacheFile = rt->GetValue(1)->GetString();
 	
-	if( ! objCoord ) DSTHROW( dueNullPointer );
+	if(!objCoord) DSTHROW(dueNullPointer);
 	
-	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint( objCoord );
+	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint(objCoord);
 	
-	cveg->AddSectorWith( scoord, cacheFile );
+	cveg->AddSectorWith(scoord, cacheFile);
 }
 
 // public func void removeSector( Point coordinates )
-deClassCachedVegetation::nfRemoveSector::nfRemoveSector( const sInitData &init ) : dsFunction( init.clsCVeg,
-"removeSector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsPt ); // coordinates
+deClassCachedVegetation::nfRemoveSector::nfRemoveSector(const sInitData &init) : dsFunction(init.clsCVeg,
+"removeSector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsPt); // coordinates
 }
-void deClassCachedVegetation::nfRemoveSector::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
+void deClassCachedVegetation::nfRemoveSector::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
-	dsRealObject *objCoord = rt->GetValue( 0 )->GetRealObject();
-	if( ! objCoord ) DSTHROW( dueNullPointer );
+	dsRealObject *objCoord = rt->GetValue(0)->GetRealObject();
+	if(!objCoord) DSTHROW(dueNullPointer);
 	
-	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint( objCoord );
+	const decPoint &scoord = clsCVeg->GetDS()->GetClassPoint()->GetPoint(objCoord);
 	
-	cveg->RemoveSectorWith( scoord );
+	cveg->RemoveSectorWith(scoord);
 }
 
 // public func void removeAllSectors()
-deClassCachedVegetation::nfRemoveAllSectors::nfRemoveAllSectors( const sInitData &init ) : dsFunction( init.clsCVeg,
-"removeAllSectors", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassCachedVegetation::nfRemoveAllSectors::nfRemoveAllSectors(const sInitData &init) : dsFunction(init.clsCVeg,
+"removeAllSectors", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassCachedVegetation::nfRemoveAllSectors::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
+void deClassCachedVegetation::nfRemoveAllSectors::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	
 	cveg->RemoveAllSectors();
 }
@@ -713,50 +588,50 @@ void deClassCachedVegetation::nfRemoveAllSectors::RunFunction( dsRunTime *rt, ds
 
 
 // public func void setWorld( World world )
-deClassCachedVegetation::nfSetWorld::nfSetWorld( const sInitData &init ) : dsFunction( init.clsCVeg,
-"setWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsWorld ); // world
+deClassCachedVegetation::nfSetWorld::nfSetWorld(const sInitData &init) : dsFunction(init.clsCVeg,
+"setWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsWorld); // world
 }
-void deClassCachedVegetation::nfSetWorld::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
-	deClassWorld *clsWorld = clsCVeg->GetDS()->GetClassWorld();
+void deClassCachedVegetation::nfSetWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
+	const deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
+	const deClassWorld *clsWorld = clsCVeg->GetDS()->GetClassWorld();
 	
-	dsRealObject *objWorld = rt->GetValue( 0 )->GetRealObject();
+	dsRealObject *objWorld = rt->GetValue(0)->GetRealObject();
 	
-	cveg->SetWorld( clsWorld->GetWorld( objWorld ) );
+	cveg->SetWorld(clsWorld->GetWorld(objWorld));
 }
 
 
 
 // public func int hashCode()
-deClassCachedVegetation::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsCVeg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCachedVegetation::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsCVeg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassCachedVegetation::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
+void deClassCachedVegetation::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
 	
-	rt->PushInt( ( int )( intptr_t )cveg );
+	rt->PushInt((int)(intptr_t)cveg);
 }
 
 // public func bool equals( Object obj )
-deClassCachedVegetation::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsCVeg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassCachedVegetation::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsCVeg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassCachedVegetation::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsCachedVegetation *cveg = ( ( sCVegNatDat* )p_GetNativeData( myself ) )->cveg;
-	deClassCachedVegetation *clsCVeg = ( deClassCachedVegetation* )GetOwnerClass();
-	dsValue *obj = rt->GetValue( 0 );
+void deClassCachedVegetation::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsCachedVegetation *cveg = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(myself)).cveg;
+	deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
+	dsValue *obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsCVeg ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(obj, clsCVeg)){
+		rt->PushBool(false);
 		
 	}else{
-		dedsCachedVegetation *other = ( ( sCVegNatDat* )p_GetNativeData( obj ) )->cveg;
+		const dedsCachedVegetation *other = dedsGetNativeData<sCVegNatDat>(p_GetNativeData(obj)).cveg;
 		
-		rt->PushBool( cveg == other );
+		rt->PushBool(cveg == other);
 	}
 }
 
@@ -769,16 +644,16 @@ void deClassCachedVegetation::nfEquals::RunFunction( dsRunTime *rt, dsValue *mys
 // Constructor, destructor
 ////////////////////////////
 
-deClassCachedVegetation::deClassCachedVegetation( deScriptingDragonScript *ds ) :
-dsClass( "CachedVegetation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
-	if( ! ds ) DSTHROW( dueInvalidParam );
+deClassCachedVegetation::deClassCachedVegetation(deScriptingDragonScript *ds) :
+dsClass("CachedVegetation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+	if(!ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sCVegNatDat ) );
+	p_SetNativeDataSize(dedsNativeDataSize<sCVegNatDat>());
 }
 
 deClassCachedVegetation::~deClassCachedVegetation(){
@@ -789,11 +664,11 @@ deClassCachedVegetation::~deClassCachedVegetation(){
 // Management
 ///////////////
 
-void deClassCachedVegetation::CreateClassMembers( dsEngine *engine ){
+void deClassCachedVegetation::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
-	memset( &init, '\0', sizeof( init ) );
+	memset(&init, '\0', sizeof(init));
 	
 	init.clsCVeg = this;
 	init.clsVoid = engine->GetClassVoid();
@@ -807,20 +682,20 @@ void deClassCachedVegetation::CreateClassMembers( dsEngine *engine ){
 	init.clsWorld = pDS->GetClassWorld();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfSetCollisionFilter( init ) );
+	AddFunction(new nfSetCollisionFilter(init));
 	
-	AddFunction( new nfHasSector( init ) );
-	AddFunction( new nfAddSector( init ) );
-	AddFunction( new nfRemoveSector( init ) );
-	AddFunction( new nfRemoveAllSectors( init ) );
+	AddFunction(new nfHasSector(init));
+	AddFunction(new nfAddSector(init));
+	AddFunction(new nfRemoveSector(init));
+	AddFunction(new nfRemoveAllSectors(init));
 	
-	AddFunction( new nfSetWorld( init ) );
+	AddFunction(new nfSetWorld(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();

@@ -57,7 +57,7 @@ public:
 	 * has a bad implementation choise where the user pointer is memory shared with an integer set
 	 * to -1. Checking against NULL is not going to work.
 	 */
-	static debpBPConstraintBase *GetBase( btTypedConstraint *constraint );
+	static debpBPConstraintBase *GetBase(btTypedConstraint *constraint);
 	
 	/** \brief Prepare constraint for next simulation step. */
 	virtual void PrepareForStep();
@@ -78,7 +78,7 @@ public:
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
 	 */
-	virtual void GetConstraintFriction( btTypedConstraint::btConstraintInfo2 &info );
+	virtual void GetConstraintFriction(btTypedConstraint::btConstraintInfo2 &info);
 	/*@}*/
 };
 

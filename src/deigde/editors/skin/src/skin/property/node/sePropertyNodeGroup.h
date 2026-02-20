@@ -27,16 +27,18 @@
 
 #include "sePropertyNode.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
 
 
 /**
- * \brief Texture property group node.
+ * Texture property group node.
  */
 class sePropertyNodeGroup : public sePropertyNode{
+public:
+	using Ref = deTObjectReference<sePropertyNodeGroup>;
+	
+	
 private:
-	decObjectOrderedSet pNodes;
+	sePropertyNode::List pNodes;
 	seProperty *pProperty;
 	bool pActiveGroup;
 	
@@ -45,68 +47,61 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create node. */
-	sePropertyNodeGroup( deEngine &engine );
+	/** Create node. */
+	explicit sePropertyNodeGroup(const deEngine &engine);
 	
-	/** \brief Create copy of node. */
-	sePropertyNodeGroup( const sePropertyNodeGroup &node );
+	/** Create copy of node. */
+	sePropertyNodeGroup(const sePropertyNodeGroup &node);
 	
-	/** \brief Clean up node. */
-	virtual ~sePropertyNodeGroup();
+	/** Clean up node. */
+protected:
+	~sePropertyNodeGroup() override;
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent property or \em NULL if not present. */
-	virtual seProperty *GetProperty() const;
+	/** Parent property or \em nullptr if not present. */
+	seProperty *GetProperty() const override;
 	
-	/** \brief Set parent property or \em NULL. */
-	void SetProperty( seProperty *property );
+	/** Set parent property or \em nullptr. */
+	void SetProperty(seProperty *property);
 	
-	/** \brief Node group is the active one. */
+	/** Node group is the active one. */
 	inline bool GetActiveGroup() const{ return pActiveGroup; }
 	
-	/** \brief Set if node group is the active one. */
-	void SetActiveGroup( bool active );
+	/** Set if node group is the active one. */
+	void SetActiveGroup(bool active);
 	
 	
 	
-	/** \brief Number of nodes. */
-	int GetNodeCount() const;
+	/** Nodes. */
+	inline const sePropertyNode::List &GetNodes() const{ return pNodes; }
 	
-	/** \brief Node at index. */
-	sePropertyNode *GetNodeAt( int index ) const;
+	/** Add node. */
+	void AddNode(sePropertyNode *node);
 	
-	/** \brief Node is present. */
-	bool HasNode( sePropertyNode *node ) const;
+	/** Insert node at index. */
+	void InsertNode(int index, sePropertyNode *node);
 	
-	/** \brief Index of node or -1 if absent. */
-	int IndexOfNode( sePropertyNode *node ) const;
+	/** Remove node. */
+	void RemoveNode(sePropertyNode *node);
 	
-	/** \brief Add node. */
-	void AddNode( sePropertyNode *node );
-	
-	/** \brief Insert node at index. */
-	void InsertNode( int index, sePropertyNode *node );
-	
-	/** \brief Remove node. */
-	void RemoveNode( sePropertyNode *node );
-	
-	/** \brief Remove all nodes. */
+	/** Remove all nodes. */
 	void RemoveAllNodes();
 	
-	/** \brief Move node to position. */
-	void MoveNode( sePropertyNode *node, int index );
+	/** Move node to position. */
+	void MoveNode(sePropertyNode *node, int index);
 	
 	
 	
-	/** \brief Create copy of node. */
-	virtual sePropertyNode *Copy() const;
+	/** Create copy of node. */
+	sePropertyNode::Ref Copy() const override;
 	
-	/** \brief Update resources. */
-	virtual void UpdateResources();
+	/** Update resources. */
+	void UpdateResources() override;
 	/*@}*/
 };
 

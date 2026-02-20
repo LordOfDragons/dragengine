@@ -41,8 +41,7 @@
 class DE_DLL_EXPORT delLoggerWritePipe : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delLoggerWritePipe> Ref;
-	
+	using Ref = deTObjectReference<delLoggerWritePipe>;
 	
 	
 private:
@@ -59,14 +58,14 @@ public:
 	/*@{*/
 	/** \brief Create logger. */
 #ifdef OS_W32
-	delLoggerWritePipe( HANDLE pipe );
+	delLoggerWritePipe(HANDLE pipe);
 #else
-	delLoggerWritePipe( int pipe );
+	delLoggerWritePipe(int pipe);
 #endif
 	
 protected:
 	/** \brief Clean up logger. */
-	virtual ~delLoggerWritePipe();
+	~delLoggerWritePipe() override;
 	/*@}*/
 	
 	
@@ -75,20 +74,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 	
 	
 	
 protected:
-	void LogToPipe( const char *source, const char *message, int type );
-	void WriteToPipe( const void *data, int length );
+	void LogToPipe(const char *source, const char *message, int type);
+	void WriteToPipe(const void *data, int length);
 };
 
 #endif

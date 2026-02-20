@@ -25,19 +25,18 @@
 #ifndef _FBXRIG_H_
 #define _FBXRIG_H_
 
-
+#include "fbxRigBone.h"
 #include "../fbxNode.h"
 
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
 class fbxScene;
-class fbxRigBone;
 
 class deBaseModule;
 
@@ -48,14 +47,13 @@ class deBaseModule;
 class fbxRig : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxRig> Ref;
-	
+	using Ref = deTObjectReference<fbxRig>;
 	
 	
 private:
 	fbxScene &pScene;
 	const fbxNode::Ref pNodePose;
-	decObjectOrderedSet pBones;
+	fbxRigBone::List pBones;
 	decMatrix pMatrix;
 	decMatrix pMatrixInverse;
 	
@@ -65,11 +63,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode *nodePose );
+	fbxRig(fbxScene &scene, fbxNode *nodePose);
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxRig();
+	~fbxRig() override;
 	/*@}*/
 	
 	
@@ -85,17 +83,8 @@ public:
 	
 	
 	
-	/** \brief Count of bones. */
-	int GetBoneCount() const;
-	
-	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt( int index ) const;
-	
-	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed( const char *name ) const;
-	
-	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID( int64_t id ) const;
+	/** \briet Bones. */
+	inline const fbxRigBone::List &GetBones() const{ return pBones; }
 	
 	
 	
@@ -108,13 +97,13 @@ public:
 	
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pAddRootBone( fbxScene &scene, fbxNode &nodeRoot );
+	void pAddRootBone(fbxScene &scene, fbxNode &nodeRoot);
 };
 
 #endif

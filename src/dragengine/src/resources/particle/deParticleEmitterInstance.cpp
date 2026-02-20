@@ -48,50 +48,36 @@
 // Constructor, destructor
 ////////////////////////////
 
-deParticleEmitterInstance::deParticleEmitterInstance( deParticleEmitterInstanceManager *manager ) :
-deResource( manager ),
-pControllers( NULL ),
-pControllerCount( 0 ),
-pControllerSize( 0 )
+deParticleEmitterInstance::deParticleEmitterInstance(deParticleEmitterInstanceManager *manager) :
+deResource(manager),
+pLLWorld(this)
 {
 	pEnableCasting = false;
 	pRemoveAfterLastParticleDied = false;
 	pTimeScale = 1.0f;
 	pWarmUpTime = 0.0f;
 	pBurstTime = 0.0f;
-	pLayerMask.SetBit( 0 );
+	pLayerMask.SetBit(0);
 	
-	pTypes = NULL;
-	pTypeCount = 0;
+	pPeerGraphic = nullptr;
+	pPeerPhysics = nullptr;
+	pPeerScripting = nullptr;
 	
-	pPeerGraphic = NULL;
-	pPeerPhysics = NULL;
-	pPeerScripting = NULL;
-	
-	pParentWorld = NULL;
-	pLLWorldPrev = NULL;
-	pLLWorldNext = NULL;
+	pParentWorld = nullptr;
 }
 
 deParticleEmitterInstance::~deParticleEmitterInstance(){
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
-		pPeerScripting = NULL;
+		pPeerScripting = nullptr;
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
-		pPeerPhysics = NULL;
+		pPeerPhysics = nullptr;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
-	}
-	
-	if( pTypes ){
-		delete [] pTypes;
-	}
-	if( pControllers ){
-		delete [] pControllers;
+		pPeerGraphic = nullptr;
 	}
 }
 
@@ -100,8 +86,8 @@ deParticleEmitterInstance::~deParticleEmitterInstance(){
 // Management
 ///////////////
 
-void deParticleEmitterInstance::SetEmitter( deParticleEmitter *emitter ){
-	if( pEmitter == emitter ){
+void deParticleEmitterInstance::SetEmitter(deParticleEmitter *emitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -110,95 +96,95 @@ void deParticleEmitterInstance::SetEmitter( deParticleEmitter *emitter ){
 	pUpdateControllers();
 	pUpdateTypes();
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->EmitterChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->EmitterChanged();
 	}
 }
 
 
 
-void deParticleEmitterInstance::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void deParticleEmitterInstance::SetPosition(const decDVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->PositionChanged();
 		}
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->PositionChanged();
 		}
 	}
 }
 
-void deParticleEmitterInstance::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void deParticleEmitterInstance::SetOrientation(const decQuaternion &orientation){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->OrientationChanged();
 		}
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->OrientationChanged();
 		}
 	}
 }
 
-void deParticleEmitterInstance::SetReferencePosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pReferencePosition ) ){
+void deParticleEmitterInstance::SetReferencePosition(const decDVector &position){
+	if(!position.IsEqualTo(pReferencePosition)){
 		pReferencePosition = position;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->ReferencePositionChanged();
 		}
 	}
 }
 
-void deParticleEmitterInstance::SetEnableCasting( bool enable ){
-	if( enable != pEnableCasting ){
+void deParticleEmitterInstance::SetEnableCasting(bool enable){
+	if(enable != pEnableCasting){
 		pEnableCasting = enable;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->EnableCastingChanged();
 		}
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->EnableCastingChanged();
 		}
 	}
 }
 
-void deParticleEmitterInstance::SetRemoveAfterLastParticleDied( bool remove ){
+void deParticleEmitterInstance::SetRemoveAfterLastParticleDied(bool remove){
 	pRemoveAfterLastParticleDied = remove;
 }
 
-void deParticleEmitterInstance::SetTimeScale( float scale ){
+void deParticleEmitterInstance::SetTimeScale(float scale){
 	pTimeScale = scale;
 }
 
-void deParticleEmitterInstance::SetWarmUpTime( float warmUpTime ){
-	if( fabsf( warmUpTime - pWarmUpTime ) > FLOAT_SAFE_EPSILON ){
+void deParticleEmitterInstance::SetWarmUpTime(float warmUpTime){
+	if(fabsf(warmUpTime - pWarmUpTime) > FLOAT_SAFE_EPSILON){
 		pWarmUpTime = warmUpTime;
 		
-		if( pEmitter->GetGraphicModuleSimulates() ){
-			if( pPeerGraphic ){
+		if(pEmitter->GetGraphicModuleSimulates()){
+			if(pPeerGraphic){
 				pPeerGraphic->WarmUpTimeChanged();
 			}
 			
 		}else{
-			if( pPeerPhysics ){
+			if(pPeerPhysics){
 				pPeerPhysics->WarmUpTimeChanged();
 			}
 		}
 	}
 }
 
-void deParticleEmitterInstance::SetBurstTime( float burstTime ){
-	if( fabsf( burstTime - pBurstTime ) > FLOAT_SAFE_EPSILON ){
+void deParticleEmitterInstance::SetBurstTime(float burstTime){
+	if(fabsf(burstTime - pBurstTime) > FLOAT_SAFE_EPSILON){
 		pBurstTime = burstTime;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->BurstTimeChanged();
 		}
 	}
@@ -206,124 +192,82 @@ void deParticleEmitterInstance::SetBurstTime( float burstTime ){
 
 
 
-void deParticleEmitterInstance::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deParticleEmitterInstance::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->LayerMaskChanged();
 	}
 }
 
-void deParticleEmitterInstance::SetCollisionFilter( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilter ){
+void deParticleEmitterInstance::SetCollisionFilter(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilter){
 		return;
 	}
 	
 	pCollisionFilter = collisionFilter;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->CollisionFilterChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->CollisionFilterChanged();
 	}
 }
 
 
 
-deParticleEmitterController &deParticleEmitterInstance::GetControllerAt( int index ){
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pControllers[ index ];
-}
-
-const deParticleEmitterController &deParticleEmitterInstance::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pControllers[ index ];
-}
-
-int deParticleEmitterInstance::IndexOfControllerNamed( const char *name ) const{
-	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ].GetName() == name ){
-			return i;
-		}
-	}
-	return -1;
-}
-
-void deParticleEmitterInstance::NotifyControllerChangedAt( int index ){
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+void deParticleEmitterInstance::NotifyControllerChangedAt(int index){
+	if(index < 0 || index >= pControllers.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->ControllerChanged( index );
+	if(pPeerGraphic){
+		pPeerGraphic->ControllerChanged(index);
 	}
-	if( pPeerPhysics ){
-		pPeerPhysics->ControllerChanged( index );
-	}
-}
-
-
-
-deParticleEmitterInstanceType &deParticleEmitterInstance::GetTypeAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pTypes[ index ];
-}
-
-const deParticleEmitterInstanceType &deParticleEmitterInstance::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pTypes[ index ];
-}
-
-void deParticleEmitterInstance::NotifyTypeChangedAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pPeerGraphic ){
-		pPeerGraphic->TypeChanged( index );
-	}
-	if( pPeerPhysics ){
-		pPeerPhysics->TypeChanged( index );
+	if(pPeerPhysics){
+		pPeerPhysics->ControllerChanged(index);
 	}
 }
 
-void deParticleEmitterInstance::NotifyTypeParticlesChangedAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
-	}
+
+
+void deParticleEmitterInstance::NotifyTypeChangedAt(int index){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pTypes.GetCount())
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->TypeParticlesChanged( index );
+	if(pPeerGraphic){
+		pPeerGraphic->TypeChanged(index);
+	}
+	if(pPeerPhysics){
+		pPeerPhysics->TypeChanged(index);
+	}
+}
+
+void deParticleEmitterInstance::NotifyTypeParticlesChangedAt(int index){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pTypes.GetCount())
+	
+	if(pPeerGraphic){
+		pPeerGraphic->TypeParticlesChanged(index);
 	}
 }
 
 
 
 void deParticleEmitterInstance::ResetBurst(){
-	if( pEmitter ){
-		if( pEmitter->GetGraphicModuleSimulates() ){
-			if( pPeerGraphic ){
+	if(pEmitter){
+		if(pEmitter->GetGraphicModuleSimulates()){
+			if(pPeerGraphic){
 				pPeerGraphic->ResetBurst();
 			}
 			
 		}else{
-			if( pPeerPhysics ){
+			if(pPeerPhysics){
 				pPeerPhysics->ResetBurst();
 			}
 		}
@@ -331,14 +275,14 @@ void deParticleEmitterInstance::ResetBurst(){
 }
 
 void deParticleEmitterInstance::KillAllParticles(){
-	if( pEmitter ){
-		if( pEmitter->GetGraphicModuleSimulates() ){
-			if( pPeerGraphic ){
+	if(pEmitter){
+		if(pEmitter->GetGraphicModuleSimulates()){
+			if(pPeerGraphic){
 				pPeerGraphic->KillAllParticles();
 			}
 			
 		}else{
-			if( pPeerPhysics ){
+			if(pPeerPhysics){
 				pPeerPhysics->KillAllParticles();
 			}
 		}
@@ -348,46 +292,34 @@ void deParticleEmitterInstance::KillAllParticles(){
 
 
 void deParticleEmitterInstance::NotifyLastParticleDied(){
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		pPeerScripting->LastParticleDied();
 	}
 }
 
-void deParticleEmitterInstance::CollisionResponse( deCollisionInfo *collisionInfo ){
-	if( pPeerScripting ){
-		pPeerScripting->CollisionResponse( collisionInfo );
+void deParticleEmitterInstance::CollisionResponse(deCollisionInfo *collisionInfo){
+	if(pPeerScripting){
+		pPeerScripting->CollisionResponse(collisionInfo);
 	}
 }
 
 
 
-// Colliders to ignore
-////////////////////////
+// Ignore colliders
+/////////////////////
 
-int deParticleEmitterInstance::GetIgnoreColliderCount() const{
-	return pIgnoreColliders.GetCount();
-}
-
-deCollider *deParticleEmitterInstance::GetIgnoreColliderAt( int index ) const{
-	return ( deCollider* )pIgnoreColliders.GetAt( index );
-}
-
-bool deParticleEmitterInstance::HasIgnoreCollider( deCollider *collider ) const{
-	return pIgnoreColliders.Has( collider );
-}
-
-void deParticleEmitterInstance::AddIgnoreCollider( deCollider *collider ){
-	pIgnoreColliders.Add( collider );
+void deParticleEmitterInstance::AddIgnoreCollider(deCollider *collider){
+	pIgnoreColliders.Add(collider);
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->IgnoreCollidersChanged();
 	}
 }
 
-void deParticleEmitterInstance::RemoveIgnoreCollider( deCollider *collider ){
-	pIgnoreColliders.Remove( collider );
+void deParticleEmitterInstance::RemoveIgnoreCollider(deCollider *collider){
+	pIgnoreColliders.Remove(collider);
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->IgnoreCollidersChanged();
 	}
 }
@@ -395,7 +327,7 @@ void deParticleEmitterInstance::RemoveIgnoreCollider( deCollider *collider ){
 void deParticleEmitterInstance::RemoveAllIgnoreColliders(){
 	pIgnoreColliders.RemoveAll();
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->IgnoreCollidersChanged();
 	}
 }
@@ -405,9 +337,9 @@ void deParticleEmitterInstance::RemoveAllIgnoreColliders(){
 // System Peers
 /////////////////
 
-void deParticleEmitterInstance::SetPeerGraphic( deBaseGraphicParticleEmitterInstance *peer ){
-	if( peer != pPeerGraphic ){
-		if( pPeerGraphic ){
+void deParticleEmitterInstance::SetPeerGraphic(deBaseGraphicParticleEmitterInstance *peer){
+	if(peer != pPeerGraphic){
+		if(pPeerGraphic){
 			delete pPeerGraphic;
 		}
 		
@@ -415,9 +347,9 @@ void deParticleEmitterInstance::SetPeerGraphic( deBaseGraphicParticleEmitterInst
 	}
 }
 
-void deParticleEmitterInstance::SetPeerPhysics( deBasePhysicsParticleEmitterInstance *peer ){
-	if( peer != pPeerPhysics ){
-		if( pPeerPhysics ){
+void deParticleEmitterInstance::SetPeerPhysics(deBasePhysicsParticleEmitterInstance *peer){
+	if(peer != pPeerPhysics){
+		if(pPeerPhysics){
 			delete pPeerPhysics;
 		}
 		
@@ -425,9 +357,9 @@ void deParticleEmitterInstance::SetPeerPhysics( deBasePhysicsParticleEmitterInst
 	}
 }
 
-void deParticleEmitterInstance::SetPeerScripting( deBaseScriptingParticleEmitterInstance *peer ){
-	if( peer != pPeerScripting ){
-		if( pPeerScripting ){
+void deParticleEmitterInstance::SetPeerScripting(deBaseScriptingParticleEmitterInstance *peer){
+	if(peer != pPeerScripting){
+		if(pPeerScripting){
 			delete pPeerScripting;
 		}
 		
@@ -440,16 +372,8 @@ void deParticleEmitterInstance::SetPeerScripting( deBaseScriptingParticleEmitter
 // Linked List
 ////////////////
 
-void deParticleEmitterInstance::SetParentWorld( deWorld *world ){
+void deParticleEmitterInstance::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deParticleEmitterInstance::SetLLWorldPrev( deParticleEmitterInstance *instance ){
-	pLLWorldPrev = instance;
-}
-
-void deParticleEmitterInstance::SetLLWorldNext( deParticleEmitterInstance *instance ){
-	pLLWorldNext = instance;
 }
 
 
@@ -458,43 +382,23 @@ void deParticleEmitterInstance::SetLLWorldNext( deParticleEmitterInstance *insta
 /////////////////////
 
 void deParticleEmitterInstance::pUpdateControllers(){
-	if( ! pEmitter ){
-		pControllerCount = 0;
+	pControllers.RemoveAll();
+	
+	if(!pEmitter){
 		return;
 	}
 	
-	const int controllerCount = pEmitter->GetControllerCount();
-	
-	if( controllerCount > pControllerSize ){
-		deParticleEmitterController * const newArray = new deParticleEmitterController[ controllerCount ];
-		
-		delete [] pControllers;
-		pControllers = newArray;
-		
-		pControllerSize = controllerCount;
-	}
-	
-	for( pControllerCount=0; pControllerCount<controllerCount; pControllerCount++ ){
-		pControllers[ pControllerCount ] = *pEmitter->GetControllerAt( pControllerCount );
-	}
+	pEmitter->GetControllers().Visit([&](deParticleEmitterController &controller){
+		pControllers.Add(deParticleEmitterController::Ref::New(controller));
+	});
 }
 
 void deParticleEmitterInstance::pUpdateTypes(){
-	if( pEmitter ){
-		const int typeCount = pEmitter->GetTypeCount();
-		deParticleEmitterInstanceType *newArray = new deParticleEmitterInstanceType[ typeCount ];
-		
-		if( pTypes ){
-			delete [] pTypes;
-		}
-		pTypes = newArray;
-		pTypeCount = typeCount;
-		
-	}else{
-		if( pTypes ){
-			delete [] pTypes;
-		}
-		pTypes = NULL;
-		pTypeCount = 0;
+	pTypes.RemoveAll();
+	
+	if(pEmitter){
+		pEmitter->GetTypes().Visit([&](deParticleEmitterType&){
+			pTypes.Add(deParticleEmitterInstanceType::Ref::New());
+		});
 	}
 }

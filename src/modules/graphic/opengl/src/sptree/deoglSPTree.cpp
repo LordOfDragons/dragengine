@@ -22,13 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deoglSPTree.h"
-#include "deoglSPTreeNode.h"
-#include "dragengine/common/exceptions.h"
-
+#include <dragengine/common/exceptions.h>
 
 
 // Class deoglSPTree
@@ -37,53 +32,46 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglSPTree::deoglSPTree( const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount ){
+deoglSPTree::deoglSPTree(const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount){
 	decVector size = maxExtend - minExtend;
 	int i;
 	
-	pNodeSize.x = size.x / ( float )nodeCount.x;
-	pNodeSize.y = size.y / ( float )nodeCount.y;
-	pNodeSize.z = size.z / ( float )nodeCount.z;
+	pNodeSize.x = size.x / (float)nodeCount.x;
+	pNodeSize.y = size.y / (float)nodeCount.y;
+	pNodeSize.z = size.z / (float)nodeCount.z;
 	
 	pNodeCount = nodeCount;
 	
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
-	pNodes = NULL;
 	
-	pTotalNodeCount = nodeCount.x * nodeCount.y * nodeCount.z;
+	const int totalNodeCount = nodeCount.x * nodeCount.y * nodeCount.z;
 	pStride = nodeCount.x * nodeCount.y;
 	
-	pNodes = new deoglSPTreeNode*[ pTotalNodeCount ];
-	if( ! pNodes ) DETHROW( deeOutOfMemory );
-	for( i=0; i<pTotalNodeCount; i++ ) pNodes[ i ] = NULL;
+	for(i=0; i<totalNodeCount; i++){
+		pNodes.Add({});
+	}
 }
-
-deoglSPTree::~deoglSPTree(){
-	ClearAllNodes();
-	if( pNodes ) delete [] pNodes;
-}
-
 
 
 // Management
 ///////////////
 
-bool deoglSPTree::IsIndexValid( const decPoint3 &index ) const{
-	if( index.x < 0 || index.x >= pNodeCount.x ) return false;
-	if( index.y < 0 || index.y >= pNodeCount.y ) return false;
-	if( index.z < 0 || index.z >= pNodeCount.z ) return false;
+bool deoglSPTree::IsIndexValid(const decPoint3 &index) const{
+	if(index.x < 0 || index.x >= pNodeCount.x) return false;
+	if(index.y < 0 || index.y >= pNodeCount.y) return false;
+	if(index.z < 0 || index.z >= pNodeCount.z) return false;
 	
 	return true;
 }
 
-void deoglSPTree::IndexOfNodeAt( decPoint3 &index, const decVector &position ) const{
-	index.x = ( int )( ( position.x - pMinExtend.x ) / pNodeSize.x );
-	if( index.x >= 0 && index.x < pNodeCount.x ){
-		index.y = ( int )( ( position.y - pMinExtend.y ) / pNodeSize.y );
-		if( index.y >= 0 && index.y < pNodeCount.y ){
-			index.z = ( int )( ( position.z - pMinExtend.z ) / pNodeSize.z );
-			if( index.z >= 0 && index.z < pNodeCount.z ){
+void deoglSPTree::IndexOfNodeAt(decPoint3 &index, const decVector &position) const{
+	index.x = (int)((position.x - pMinExtend.x) / pNodeSize.x);
+	if(index.x >= 0 && index.x < pNodeCount.x){
+		index.y = (int)((position.y - pMinExtend.y) / pNodeSize.y);
+		if(index.y >= 0 && index.y < pNodeCount.y){
+			index.z = (int)((position.z - pMinExtend.z) / pNodeSize.z);
+			if(index.z >= 0 && index.z < pNodeCount.z){
 				return;
 			}
 		}
@@ -94,30 +82,21 @@ void deoglSPTree::IndexOfNodeAt( decPoint3 &index, const decVector &position ) c
 	index.z = -1;
 }
 
-deoglSPTreeNode *deoglSPTree::GetNodeAt( const decPoint3 &index ) const{
-	if( ! IsIndexValid( index ) ) DETHROW( deeInvalidParam );
+const deoglSPTreeNode::Ref &deoglSPTree::GetNodeAt(const decPoint3 &index) const{
+	DEASSERT_TRUE(IsIndexValid(index))
 	
-	return pNodes[ pStride * index.z + pNodeCount.x * index.y + index.x ];
+	return pNodes.GetAt(pStride * index.z + pNodeCount.x * index.y + index.x);
 }
 
-void deoglSPTree::SetNodeAt( const decPoint3 &index, deoglSPTreeNode *node ){
-	if( ! IsIndexValid( index ) ) DETHROW( deeInvalidParam );
-	int realIndex = pStride * index.z + pNodeCount.x * index.y + index.x;
+void deoglSPTree::SetNodeAt(const decPoint3 &index, deoglSPTreeNode::Ref &&node){
+	DEASSERT_NOTNULL(node)
+	DEASSERT_TRUE(IsIndexValid(index))
 	
-	if( pNodes[ realIndex ] ){
-		delete pNodes[ realIndex ];
-	}
-	
-	pNodes[ realIndex ] = node;
+	pNodes.SetAt(pStride * index.z + pNodeCount.x * index.y + index.x, std::move(node));
 }
 
 void deoglSPTree::ClearAllNodes(){
-	int i, count = pNodeCount.x * pNodeCount.y * pNodeCount.z;
-	
-	for( i=0; i<count; i++ ){
-		if( pNodes[ i ] ){
-			delete pNodes[ i ];
-			pNodes[ i ] = NULL;
-		}
-	}
+	pNodes.Visit([](deoglSPTreeNode::Ref &n){
+		n.Clear();
+	});
 }

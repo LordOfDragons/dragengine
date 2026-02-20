@@ -25,6 +25,7 @@
 #ifndef _DEOALPARAMETER_H_
 #define _DEOALPARAMETER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -39,6 +40,27 @@ class deAudioOpenAL;
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class deoalParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<deoalParameter>{
+	public:
+		using decTUniqueList<deoalParameter>::decTUniqueList;
+		
+		deoalParameter &GetNamed(const char *name) const{
+			deoalParameter * const found = FindOrNull([&](const deoalParameter &p){
+				return p.GetName() == name;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const deoalParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	deAudioOpenAL &pOal;
 	
@@ -48,12 +70,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	deoalParameter( deAudioOpenAL &oal );
+	deoalParameter(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
-	virtual ~deoalParameter();
+	virtual ~deoalParameter() = default;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
@@ -62,7 +83,7 @@ public:
 	virtual decString GetParameterValue() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value ) = 0;
+	virtual void SetParameterValue(const char *value) = 0;
 	/*@}*/
 };
 

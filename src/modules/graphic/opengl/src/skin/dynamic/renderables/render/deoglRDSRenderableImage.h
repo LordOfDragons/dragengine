@@ -35,6 +35,11 @@
  * Render dynamic skin image renderable.
  */
 class deoglRDSRenderableImage : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDSRenderableImage>;
+	
+	
 private:
 	deoglRImage::Ref pImage;
 	
@@ -42,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin image renderable. */
-	deoglRDSRenderableImage( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableImage(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin image renderable. */
-	virtual ~deoglRDSRenderableImage();
+	~deoglRDSRenderableImage() override;
 	/*@}*/
 	
 	
@@ -56,16 +61,16 @@ public:
 	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Set image. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

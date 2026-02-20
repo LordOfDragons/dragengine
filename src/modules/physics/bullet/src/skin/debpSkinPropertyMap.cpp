@@ -49,26 +49,26 @@ debpSkinPropertyMap::~debpSkinPropertyMap(){
 // Management
 ///////////////
 
-int debpSkinPropertyMap::GetTypeFor( const char* type ) const{
-	if( strcmp( type, "particle.size.cast" ) == 0 ){
+int debpSkinPropertyMap::GetTypeFor(const char* type) const{
+	if(strcmp(type, "particle.size.cast") == 0){
 		return eptParticleSizeCast;
 		
-	}else if( strcmp( type, "particle.size.lifetime" ) == 0 ){
+	}else if(strcmp(type, "particle.size.lifetime") == 0){
 		return eptParticleSizeLifetime;
 		
-	}else if( strcmp( type, "particle.color.cast" ) == 0 ){
+	}else if(strcmp(type, "particle.color.cast") == 0){
 		return eptParticleColorCast;
 		
-	}else if( strcmp( type, "particle.color.lifetime" ) == 0 ){
+	}else if(strcmp(type, "particle.color.lifetime") == 0){
 		return eptParticleColorLifetime;
 		
-	}else if( strcmp( type, "particle.transparency.cast" ) == 0 ){
+	}else if(strcmp(type, "particle.transparency.cast") == 0){
 		return eptParticleTranspCast;
 		
-	}else if( strcmp( type, "particle.transparency.lifetime" ) == 0 ){
+	}else if(strcmp(type, "particle.transparency.lifetime") == 0){
 		return eptParticleTranspLifetime;
 		
-	}else if( strcmp( type, "bounciness" ) == 0 ){
+	}else if(strcmp(type, "bounciness") == 0){
 		return eptBounciness;
 		
 	}else{

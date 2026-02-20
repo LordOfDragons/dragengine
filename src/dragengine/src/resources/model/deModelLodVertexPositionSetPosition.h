@@ -26,6 +26,7 @@
 #define _DEMODELLODVERTEXPOSITIONSETPOSITION_H_
 
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -34,6 +35,11 @@
  * Position in a vertex position set.
  */
 class DE_DLL_EXPORT deModelLodVertexPositionSetPosition{
+public:
+	/** \brief List typedef. */
+	using List = decTList<deModelLodVertexPositionSetPosition>;
+	
+	
 private:
 	int pVertex;
 	decVector pPosition;
@@ -58,13 +64,13 @@ public:
 	inline int GetVertex() const{ return pVertex; }
 	
 	/** \brief Set index of vertex. */
-	void SetVertex( int vertex );
+	void SetVertex(int vertex);
 	
 	/** \brief Vertex position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set vertex position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/*@}*/
 };
 

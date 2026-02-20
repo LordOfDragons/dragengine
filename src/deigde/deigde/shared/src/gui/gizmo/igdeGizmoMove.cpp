@@ -49,22 +49,22 @@ const char * const igdeGizmoMove::ShapeNameMoveView = "move view";
 // Constructor, destructor
 ////////////////////////////
 
-igdeGizmoMove::igdeGizmoMove( igdeEnvironment &environment ) :
-igdeGizmo( environment ),
-pAction( eaNone )
+igdeGizmoMove::igdeGizmoMove(igdeEnvironment &environment) :
+igdeGizmo(environment),
+pAction(eaNone)
 {
-	SetShapeFromModel( environment.GetStockModel( igdeEnvironment::esmGizmoMove ) );
-	SetRig( environment.GetStockRig( igdeEnvironment::esrGizmoMove ) );
+	SetShapeFromModel(environment.GetStockModel(igdeEnvironment::esmGizmoMove));
+	SetRig(environment.GetStockRig(igdeEnvironment::esrGizmoMove));
 	
-	SetShapeColor( ShapeNameMoveX, decColor( 1.0f, 0.0f, 0.0f ) );
-	SetShapeColor( ShapeNameMoveY, decColor( 0.0f, 1.0f, 0.0f ) );
-	SetShapeColor( ShapeNameMoveZ, decColor( 0.0f, 0.0f, 1.0f ) );
+	SetShapeColor(ShapeNameMoveX, decColor(1.0f, 0.0f, 0.0f));
+	SetShapeColor(ShapeNameMoveY, decColor(0.0f, 1.0f, 0.0f));
+	SetShapeColor(ShapeNameMoveZ, decColor(0.0f, 0.0f, 1.0f));
 	
-	SetShapeColor( ShapeNameMoveYZ, decColor( 1.0f, 0.0f, 0.0f ) );
-	SetShapeColor( ShapeNameMoveXZ, decColor( 0.0f, 1.0f, 0.0f ) );
-	SetShapeColor( ShapeNameMoveXY, decColor( 0.0f, 0.0f, 1.0f ) );
+	SetShapeColor(ShapeNameMoveYZ, decColor(1.0f, 0.0f, 0.0f));
+	SetShapeColor(ShapeNameMoveXZ, decColor(0.0f, 1.0f, 0.0f));
+	SetShapeColor(ShapeNameMoveXY, decColor(0.0f, 0.0f, 1.0f));
 	
-	SetShapeColor( ShapeNameMoveView, decColor( 1.0f, 0.75f, 0.5f ) );
+	SetShapeColor(ShapeNameMoveView, decColor(1.0f, 0.75f, 0.5f));
 }
 
 igdeGizmoMove::~igdeGizmoMove(){
@@ -80,20 +80,20 @@ decQuaternion igdeGizmoMove::GetObjectOrientation(){
 }
 
 decVector igdeGizmoMove::GetObjectScale(){
-	return decVector( 1.0f, 1.0f, 1.0f );
+	return decVector(1.0f, 1.0f, 1.0f);
 }
 
 decDMatrix igdeGizmoMove::GetObjectMatrix(){
-	return decDMatrix::CreateWorld( GetObjectPosition(),
-		GetObjectOrientation(), decDVector( GetObjectScale() ) );
+	return decDMatrix::CreateWorld(GetObjectPosition(),
+		GetObjectOrientation(), decDVector(GetObjectScale()));
 }
 
-decDVector igdeGizmoMove::LimitPosition( const decDVector &position ){
+decDVector igdeGizmoMove::LimitPosition(const decDVector &position){
 	return position;
 }
 
 void igdeGizmoMove::OnObjectGeometryChanged(){
-	SetGeometry( GetObjectPosition(), GetObjectOrientation() );
+	SetGeometry(GetObjectPosition(), GetObjectOrientation());
 }
 
 
@@ -101,26 +101,26 @@ void igdeGizmoMove::OnObjectGeometryChanged(){
 // Protected Functions
 ////////////////////////
 
-igdeGizmoMove::eActions igdeGizmoMove::pShapeNameToAction( const decString &shapeName ) const{
-	if( shapeName == ShapeNameMoveX ){
+igdeGizmoMove::eActions igdeGizmoMove::pShapeNameToAction(const decString &shapeName) const{
+	if(shapeName == ShapeNameMoveX){
 		return eaMoveX;
 		
-	}else if( shapeName == ShapeNameMoveY ){
+	}else if(shapeName == ShapeNameMoveY){
 		return eaMoveY;
 		
-	}else if( shapeName == ShapeNameMoveZ ){
+	}else if(shapeName == ShapeNameMoveZ){
 		return eaMoveZ;
 		
-	}else if( shapeName == ShapeNameMoveXY ){
+	}else if(shapeName == ShapeNameMoveXY){
 		return eaMoveXY;
 		
-	}else if( shapeName == ShapeNameMoveYZ ){
+	}else if(shapeName == ShapeNameMoveYZ){
 		return eaMoveYZ;
 		
-	}else if( shapeName == ShapeNameMoveXZ ){
+	}else if(shapeName == ShapeNameMoveXZ){
 		return eaMoveXZ;
 		
-	}else if( shapeName == ShapeNameMoveView ){
+	}else if(shapeName == ShapeNameMoveView){
 		return eaMoveView;
 		
 	}else{
@@ -128,22 +128,22 @@ igdeGizmoMove::eActions igdeGizmoMove::pShapeNameToAction( const decString &shap
 	}
 }
 
-bool igdeGizmoMove::OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName, int modifiers ){
-	const eActions action = pShapeNameToAction( shapeName );
+bool igdeGizmoMove::OnStartEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName, int modifiers){
+	const eActions action = pShapeNameToAction(shapeName);
 	
-	const decDMatrix objectMatrix( decDMatrix::CreateFromQuaternion( GetObjectOrientation() ) );
+	const decDMatrix objectMatrix(decDMatrix::CreateFromQuaternion(GetObjectOrientation()));
 	pViewMatrix = viewMatrix;
 	pInteractOrigin = hitPoint;
 	pMoveOrigin = GetObjectPosition();
 	pPlanePosition = pInteractOrigin;
 	
-	switch( action ){
+	switch(action){
 	case eaMoveX:
 	case eaMoveY:
 	case eaMoveZ:
 		{
-		switch( action ){
+		switch(action){
 		case eaMoveX:
 			pInteractAxis = objectMatrix.TransformRight();
 			break;
@@ -162,14 +162,14 @@ const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shape
 		
 		pInteractAxis2.SetZero();
 		
-		const decDVector up( viewMatrix.TransformUp().Normalized() );
-		const decDVector right( viewMatrix.TransformRight().Normalized() );
+		const decDVector up(viewMatrix.TransformUp().Normalized());
+		const decDVector right(viewMatrix.TransformRight().Normalized());
 		
-		if( fabs( up * pInteractAxis ) < 0.707 ){ // roughly 45 degrees
-			pPlaneNormal = ( up % pInteractAxis ).Normalized();
+		if(fabs(up * pInteractAxis) < 0.707){ // roughly 45 degrees
+			pPlaneNormal = (up % pInteractAxis).Normalized();
 			
 		}else{
-			pPlaneNormal = ( pInteractAxis % right ).Normalized();
+			pPlaneNormal = (pInteractAxis % right).Normalized();
 		}
 		} return true;
 		
@@ -178,7 +178,7 @@ const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shape
 	case eaMoveXZ:
 	case eaMoveView:
 		{
-		switch( action ){
+		switch(action){
 		case eaMoveXY:
 			pInteractAxis = objectMatrix.TransformRight();
 			pInteractAxis2 = objectMatrix.TransformUp();
@@ -203,7 +203,7 @@ const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shape
 			return false;
 		}
 		
-		pPlaneNormal = ( pInteractAxis2 % pInteractAxis ).Normalized();
+		pPlaneNormal = (pInteractAxis2 % pInteractAxis).Normalized();
 		} return true;
 		
 	case eaNone:
@@ -212,28 +212,28 @@ const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shape
 	}
 }
 
-void igdeGizmoMove::OnUpdateEditing( const decDVector &rayOrigin,
-const decDVector &rayDirection, const decDMatrix &viewMatrix, int modifiers ){
+void igdeGizmoMove::OnUpdateEditing(const decDVector &rayOrigin,
+const decDVector &rayDirection, const decDMatrix &viewMatrix, int modifiers){
 	const double denom = rayDirection * pPlaneNormal;
-	if( fabs( denom ) < DOUBLE_SAFE_EPSILON ){
+	if(fabs(denom) < DOUBLE_SAFE_EPSILON){
 		return;
 	}
 	
-	const double lambda = ( ( pPlanePosition - rayOrigin ) * pPlaneNormal ) / denom;
-	const decDVector hitPoint( rayOrigin + rayDirection * lambda );
-	const decDVector direction( hitPoint - pInteractOrigin );
+	const double lambda = ((pPlanePosition - rayOrigin) * pPlaneNormal) / denom;
+	const decDVector hitPoint(rayOrigin + rayDirection * lambda);
+	const decDVector direction(hitPoint - pInteractOrigin);
 	
-	decDVector position( pMoveOrigin );
-	position += pInteractAxis * ( pInteractAxis * direction );
-	position += pInteractAxis2 * ( pInteractAxis2 * direction );
-	position = LimitPosition( position );
+	decDVector position(pMoveOrigin);
+	position += pInteractAxis * (pInteractAxis * direction);
+	position += pInteractAxis2 * (pInteractAxis2 * direction);
+	position = LimitPosition(position);
 	
-	SetObjectPosition( position );
+	SetObjectPosition(position);
 }
 
-void igdeGizmoMove::OnStopEditing( bool cancel ){
-	if( cancel ){
-		SetObjectPosition( pMoveOrigin );
+void igdeGizmoMove::OnStopEditing(bool cancel){
+	if(cancel){
+		SetObjectPosition(pMoveOrigin);
 	}
 	pAction = eaNone;
 }

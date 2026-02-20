@@ -25,9 +25,10 @@
 #ifndef _CEWPTTREEITEM_H_
 #define _CEWPTTREEITEM_H_
 
+#include "ceWPTTreeItemModel.h"
+
 #include <deigde/gui/model/igdeTreeItem.h>
 
-class ceWPTTreeItemModel;
 class igdeTreeList;
 class igdeMenuCascade;
 
@@ -38,9 +39,14 @@ class igdeMenuCascade;
  * Keeps reference to assigned model if present.
  */
 class ceWPTTreeItem : public igdeTreeItem{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceWPTTreeItem>;
+	
+	
 private:
 	igdeTreeList *pTreeList;
-	ceWPTTreeItemModel *pModel;
+	ceWPTTreeItemModel::Ref pModel;
 	
 	
 	
@@ -48,11 +54,11 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item. */
-	ceWPTTreeItem( igdeTreeList *treeList );
+	ceWPTTreeItem(igdeTreeList *treeList);
 	
 protected:
 	/** \brief Clean up tree item. */
-	virtual ~ceWPTTreeItem();
+	~ceWPTTreeItem() override;
 	/*@}*/
 	
 	
@@ -63,26 +69,26 @@ public:
 	/** \brief Tree list. */
 	inline igdeTreeList &GetTreeList() const{ return *pTreeList; }
 	
-	/** \brief Model or \em NULL. */
-	inline ceWPTTreeItemModel *GetModel() const{ return pModel; }
+	/** \brief Model or \em nullptr. */
+	inline const ceWPTTreeItemModel::Ref &GetModel() const{ return pModel; }
 	
-	/** \brief Set model or \em NULL. */
-	void SetModel( ceWPTTreeItemModel *model );
+	/** \brief Set model or \em nullptr. */
+	void SetModel(ceWPTTreeItemModel *model);
 	
 	
 	
 	/** \brief Add item with model. */
-	void AddItem( ceWPTTreeItemModel *model );
+	void AddItem(ceWPTTreeItemModel *model);
 	
 	/** \brief Insert item with model at position. */
-	void InsertItem( ceWPTTreeItemModel *model, int position );
+	void InsertItem(ceWPTTreeItemModel *model, int position);
 	
 	/**
 	 * \brief Remove item for model.
 	 * 
 	 * Clears model from removed item if present.
 	 */
-	void RemoveItem( ceWPTTreeItemModel *model );
+	void RemoveItem(ceWPTTreeItemModel *model);
 	
 	/**
 	 * \brief Remove all child items.
@@ -103,7 +109,7 @@ public:
 	void OnSelected();
 	
 	/** \brief Build context menu. */
-	void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief User expanded item. */
 	void OnExpanded();

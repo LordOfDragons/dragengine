@@ -40,57 +40,27 @@
 ////////////////////////////
 
 ceCAPlayerChoice::ceCAPlayerChoice() :
-ceConversationAction( eatPlayerChoice ),
-pTIMExpanded( true ),
-pTIMActionsExpanded( true ){
+ceConversationAction(eatPlayerChoice),
+pTIMExpanded(true),
+pTIMActionsExpanded(true){
 }
 
-ceCAPlayerChoice::ceCAPlayerChoice( const ceCAPlayerChoice &action ) :
-ceConversationAction( action ),
-pTIMExpanded( action.pTIMExpanded ),
-pTIMActionsExpanded( action.pTIMActionsExpanded )
+ceCAPlayerChoice::ceCAPlayerChoice(const ceCAPlayerChoice &action) :
+ceConversationAction(action),
+pTIMExpanded(action.pTIMExpanded),
+pTIMActionsExpanded(action.pTIMActionsExpanded)
 {
-	const ceCAPlayerChoiceOptionList &options = action.GetOptions();
-	const ceConversationActionList &actions = action.GetActions();
-	ceCAPlayerChoiceOption *newOption = NULL;
-	ceConversationAction *newAction = NULL;
-	int i, count;
-	
 	pVariableName = action.GetVariableName();
 	
-	try{
-		count = options.GetCount();
-		for( i=0; i<count; i++ ){
-			newOption = new ceCAPlayerChoiceOption( *options.GetAt( i ) );
-			pOptions.Add( newOption );
-			newOption->FreeReference();
-			newOption = NULL;
-		}
-		
-		count = actions.GetCount();
-		for( i=0; i<count; i++ ){
-			newAction = actions.GetAt( i )->CreateCopy();
-			pActions.Add( newAction );
-			newAction->FreeReference();
-			newAction = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( newAction ){
-			newAction->FreeReference();
-		}
-		if( newOption ){
-			newOption->FreeReference();
-		}
-		pActions.RemoveAll();
-		pOptions.RemoveAll();
-		throw;
-	}
+	action.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+		pOptions.Add(ceCAPlayerChoiceOption::Ref::New(o));
+	});
+	action.GetActions().Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceCAPlayerChoice::~ceCAPlayerChoice(){
-	pOptions.RemoveAll();
-	pActions.RemoveAll();
 }
 
 
@@ -98,15 +68,11 @@ ceCAPlayerChoice::~ceCAPlayerChoice(){
 // Management
 ///////////////
 
-ceConversationAction *ceCAPlayerChoice::CreateCopy() const{
-	return new ceCAPlayerChoice( *this );
+ceConversationAction::Ref ceCAPlayerChoice::CreateCopy() const{
+	return ceCAPlayerChoice::Ref::New(*this);
 }
 
-void ceCAPlayerChoice::SetVariableName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void ceCAPlayerChoice::SetVariableName(const char *name){
 	pVariableName = name;
 }
 
@@ -115,10 +81,10 @@ void ceCAPlayerChoice::SetVariableName( const char *name ){
 // UI
 ///////
 
-void ceCAPlayerChoice::SetTIMExpanded( bool expanded ){
+void ceCAPlayerChoice::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }
 
-void ceCAPlayerChoice::SetTIMActionsExpanded( bool expanded ){
+void ceCAPlayerChoice::SetTIMActionsExpanded(bool expanded){
 	pTIMActionsExpanded = expanded;
 }

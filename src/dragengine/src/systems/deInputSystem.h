@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create input system. */
-	deInputSystem( deEngine *engine );
+	deInputSystem(deEngine *engine);
 	
 	/** \brief Clean up input system. */
-	virtual ~deInputSystem();
+	~deInputSystem() override;
 	/*@}*/
 	
 	
@@ -80,7 +80,7 @@ public:
 	inline bool GetCaptureInputDevices() const{ return pCaptureInputDevices; }
 	
 	/** \brief Set if input devices are captured by the active input module if supported. */
-	void SetCaptureInputDevices( bool captureInputDevices );
+	void SetCaptureInputDevices(bool captureInputDevices);
 
 	/**
 	 * \brief Start drop input.
@@ -122,7 +122,7 @@ public:
 	 * 
 	 * Returns true if the event must be dropped.
 	 */
-	bool DropEvent( const deInputEvent &event ) const;
+	bool DropEvent(const deInputEvent &event) const;
 	/*@}*/
 	
 	
@@ -134,20 +134,20 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	void SetActiveModule(deLoadableModule *module) override;
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void ClearPermanents();
+	void ClearPermanents() override;
 	
 	/** \brief Carry out here actions right after the system started up. */
-	virtual void PostStart();
+	void PostStart() override;
 	
 	/** \brief Carry out here actions right before the system shuts down. */
-	virtual void PreStop();
+	void PreStop() override;
 	/*@}*/
 };
 

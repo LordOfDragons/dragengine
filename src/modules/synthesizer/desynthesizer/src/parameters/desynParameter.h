@@ -25,6 +25,7 @@
 #ifndef _DESYNPARAMETER_H_
 #define _DESYNPARAMETER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
@@ -38,6 +39,27 @@ class deDESynthesizer;
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
 class desynParameter : public deModuleParameter{
+public:
+	class List : public decTUniqueList<desynParameter>{
+	public:
+		using decTUniqueList<desynParameter>::decTUniqueList;
+		
+		desynParameter &GetNamed(const char *name) const{
+			desynParameter * const found = FindOrNull([&](const desynParameter &p){
+				return p.GetName() == name;
+			});
+			DEASSERT_NOTNULL(found)
+			return *found;
+		}
+		
+		int IndexOfNamed(const char *name) const{
+			return IndexOfMatching([&](const desynParameter &p){
+				return p.GetName() == name;
+			});
+		}
+	};
+	
+	
 protected:
 	deDESynthesizer &pSynthesizer;
 	
@@ -47,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	desynParameter( deDESynthesizer &synthesizer );
+	desynParameter(deDESynthesizer &synthesizer);
 	
 	/** \brief Clean up parameter. */
 	virtual ~desynParameter();
@@ -61,7 +83,7 @@ public:
 	virtual decString GetParameterValue() = 0;
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value ) = 0;
+	virtual void SetParameterValue(const char *value) = 0;
 	/*@}*/
 };
 

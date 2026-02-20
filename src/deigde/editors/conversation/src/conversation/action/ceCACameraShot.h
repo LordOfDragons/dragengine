@@ -37,6 +37,10 @@
  * with a unique name.
  */
 class ceCACameraShot : public ceConversationAction{
+public:
+	using Ref = deTObjectReference<ceCACameraShot>;
+	
+	
 private:
 	decString pName;
 	float pDuration;
@@ -49,9 +53,11 @@ public:
 	/** Creates a new camera shot conversation action. */
 	ceCACameraShot();
 	/** Creates a new camera shot conversation action. */
-	ceCACameraShot( const ceCACameraShot &action );
+	ceCACameraShot(const ceCACameraShot &action);
 	/** Cleans up the camera shot conversation action. */
-	virtual ~ceCACameraShot();
+protected:
+	~ceCACameraShot() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -59,22 +65,22 @@ public:
 	/** Retrieves the name of the camera shot to use. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name of the camera shot to use. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the duration. */
 	inline float GetDuration() const{ return pDuration; }
 	/** Sets the duration. */
-	void SetDuration( float duration );
+	void SetDuration(float duration);
 	/** Retrieves the camera target id. */
 	inline const decString &GetCameraTarget() const{ return pCameraTarget; }
 	/** Sets the camera target id. */
-	void SetCameraTarget( const char *target );
+	void SetCameraTarget(const char *target);
 	/** Retrieves the look-at target id. */
 	inline const decString &GetLookAtTarget() const{ return pLookAtTarget; }
 	/** Sets the look-at target id. */
-	void SetLookAtTarget( const char *target );
+	void SetLookAtTarget(const char *target);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

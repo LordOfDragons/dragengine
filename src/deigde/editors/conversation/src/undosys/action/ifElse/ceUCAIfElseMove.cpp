@@ -42,70 +42,52 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseMove::ceUCAIfElseMove( ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex ){
-	if( ! topic || ! ifElse || ! action ){
-		DETHROW( deeInvalidParam );
+ceUCAIfElseMove::ceUCAIfElseMove(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
+	if(!topic || !ifElse || !action){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int count = 0;
 	
-	pTopic = NULL;
-	pIfElse = NULL;
-	pAction = NULL;
-	pCase = NULL;
+	pTopic = nullptr;
+	pIfElse = nullptr;
+	pAction = nullptr;
+	pCase = nullptr;
 	pNewIndex = newIndex;
 	pOldIndex = -1;
 	
-	if( ifcase ){
-		pOldIndex = ifcase->GetActions().IndexOf( action );
+	if(ifcase){
+		pOldIndex = ifcase->GetActions().IndexOf(action);
 		count = ifcase->GetActions().GetCount();
 		
 	}else{
-		pOldIndex = ifElse->GetElseActions().IndexOf( action );
+		pOldIndex = ifElse->GetElseActions().IndexOf(action);
 		count = ifElse->GetElseActions().GetCount();
 	}
 	
-	if( pOldIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pOldIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
-	if( pNewIndex < 0 || pNewIndex >= count ){
-		DETHROW( deeInvalidParam );
+	if(pNewIndex < 0 || pNewIndex >= count){
+		DETHROW(deeInvalidParam);
 	}
-	if( pNewIndex == pOldIndex ){
-		DETHROW( deeInvalidParam );
+	if(pNewIndex == pOldIndex){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "IfElse Move Action" );
+	SetShortInfo("@Conversation.Undo.IfElseMoveAction");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
-	if( ifcase ){
+	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAIfElseMove::~ceUCAIfElseMove(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pCase ){
-		pCase->FreeReference();
-	}
-	if( pIfElse ){
-		pIfElse->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -114,23 +96,23 @@ ceUCAIfElseMove::~ceUCAIfElseMove(){
 ///////////////
 
 void ceUCAIfElseMove::Undo(){
-	if( pCase ){
-		pCase->GetActions().MoveTo( pAction, pOldIndex );
+	if(pCase){
+		pCase->GetActions().Move(pAction, pOldIndex);
 		
 	}else{
-		pIfElse->GetElseActions().MoveTo( pAction, pOldIndex );
+		pIfElse->GetElseActions().Move(pAction, pOldIndex);
 	}
 	
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pTopic->NotifyActionStructureChanged(pIfElse);
 }
 
 void ceUCAIfElseMove::Redo(){
-	if( pCase ){
-		pCase->GetActions().MoveTo( pAction, pNewIndex );
+	if(pCase){
+		pCase->GetActions().Move(pAction, pNewIndex);
 		
 	}else{
-		pIfElse->GetElseActions().MoveTo( pAction, pNewIndex );
+		pIfElse->GetElseActions().Move(pAction, pNewIndex);
 	}
 	
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pTopic->NotifyActionStructureChanged(pIfElse);
 }

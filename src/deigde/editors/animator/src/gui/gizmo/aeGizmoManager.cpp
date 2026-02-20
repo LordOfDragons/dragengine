@@ -39,8 +39,8 @@
 
 aeGizmoManager::aeGizmoManager(){
 	decLayerMask layerMask;
-	layerMask.SetBit( aeAnimator::eclGizmo );
-	SetRayCollisionFilter( decCollisionFilter( layerMask ) );
+	layerMask.SetBit(aeAnimator::eclGizmo);
+	SetRayCollisionFilter(decCollisionFilter(layerMask));
 }
 
 aeGizmoManager::~aeGizmoManager(){
@@ -51,8 +51,8 @@ aeGizmoManager::~aeGizmoManager(){
 // Management
 ///////////////
 
-igdeGizmo *aeGizmoManager::GizmoFromColliderUserPointer( void *userPointer ){
+igdeGizmo *aeGizmoManager::GizmoFromColliderUserPointer(void *userPointer){
 	aeCLClosestHit visitor;
-	( ( aeElementVisitable* )userPointer )->VisitElement( visitor );
+	((aeElementVisitable*)userPointer)->VisitElement(visitor);
 	return visitor.GetHitGizmo();
 }

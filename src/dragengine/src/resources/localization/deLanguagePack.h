@@ -25,11 +25,12 @@
 #ifndef _DELANGUAGEPACK_H_
 #define _DELANGUAGEPACK_H_
 
+#include "deLanguagePackEntry.h"
 #include "../deFileResource.h"
-#include "../../common/collection/decPointerDictionary.h"
+#include "../../common/collection/decTDictionary.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/string/unicode/decUnicodeString.h"
 
-class deLanguagePackEntry;
 class deLanguagePackManager;
 
 
@@ -41,8 +42,7 @@ class deLanguagePackManager;
 class DE_DLL_EXPORT deLanguagePack : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLanguagePack> Ref;
-	
+	using Ref = deTObjectReference<deLanguagePack>;
 	
 	
 private:
@@ -51,10 +51,9 @@ private:
 	decUnicodeString pDescription;
 	decUnicodeString pMissingText;
 	
-	deLanguagePackEntry *pEntries;
-	int pEntryCount;
+	decTList<deLanguagePackEntry> pEntries;
 	
-	decPointerDictionary pLookupTable;
+	decTStringDictionary<const deLanguagePackEntry*> pLookupTable;
 	
 	
 	
@@ -62,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create language pack. */
-	deLanguagePack( deLanguagePackManager *manager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deLanguagePack(deLanguagePackManager *manager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -72,7 +71,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deLanguagePack();
+	~deLanguagePack() override;
 	/*@}*/
 	
 	
@@ -84,50 +83,53 @@ public:
 	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set unique identifier. */
-	void SetIdentifier( const decString &identifier );
+	void SetIdentifier(const decString &identifier);
 	
 	/** \brief Name in native language. */
 	inline const decUnicodeString &GetName() const{ return pName; }
 	
 	/** \brief Set name in native language. */
-	void SetName( const decUnicodeString &name );
+	void SetName(const decUnicodeString &name);
 	
 	/** \brief Description in native language. */
 	inline const decUnicodeString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description in native language. */
-	void SetDescription( const decUnicodeString &description );
+	void SetDescription(const decUnicodeString &description);
 	
 	/** \brief Missing translation text in native language. */
 	inline const decUnicodeString &GetMissingText() const{ return pMissingText; }
 	
 	/** \brief Set missing translation text in native language. */
-	void SetMissingText( const decUnicodeString &missingText );
+	void SetMissingText(const decUnicodeString &missingText);
 	
 	
+	
+	/** \brief Entries. */
+	inline const decTList<deLanguagePackEntry> &GetEntries() const{ return pEntries; }
 	
 	/** \brief Number of entries. */
-	inline int GetEntryCount() const{ return pEntryCount; }
+	inline int GetEntryCount() const{ return pEntries.GetCount(); }
 	
 	/**
 	 * \brief Set number of entries.
 	 * 
 	 * All entries are set to empty.
 	 */
-	void SetEntryCount( int count );
+	void SetEntryCount(int count);
 	
 	/** \brief Entry at index. */
-	deLanguagePackEntry &GetEntryAt( int index );
-	const deLanguagePackEntry &GetEntryAt( int index ) const;
+	deLanguagePackEntry &GetEntryAt(int index);
+	const deLanguagePackEntry &GetEntryAt(int index) const;
 	
 	/** \brief Index of name entry or -1 if absent. */
-	int IndexOfEntryNamed( const char *name ) const;
+	int IndexOfEntryNamed(const char *name) const;
 	
 	/** \brief Translation for entry name or missing text if absent. */
-	const decUnicodeString &Translate( const char *name ) const;
+	const decUnicodeString &Translate(const char *name) const;
 	
 	/** \brief Translation for entry name or default value if absent. */
-	const decUnicodeString &Translate( const char *name, const decUnicodeString &defaultValue ) const;
+	const decUnicodeString &Translate(const char *name, const decUnicodeString &defaultValue) const;
 	
 	/**
 	 * \brief Translation for entry name.
@@ -135,7 +137,7 @@ public:
 	 * If translation entry is present text is set pointing to the translated text and
 	 * true is returned. Otherwise false is returned and text is unchanged.
 	 */
-	bool Translate( const char *name, const decUnicodeString **text ) const;
+	bool Translate(const char *name, const decUnicodeString **text) const;
 	
 	
 	

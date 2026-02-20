@@ -41,7 +41,7 @@ pWorld(world)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("World set path");
+	SetShortInfo("@GameDefinition.Undo.OCWorldSetPath");
 	
 	pOldValue = world->GetPath();
 	pNewValue = newValue;

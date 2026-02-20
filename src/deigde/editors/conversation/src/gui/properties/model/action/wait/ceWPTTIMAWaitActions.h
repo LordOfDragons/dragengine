@@ -36,15 +36,17 @@ class ceWPTTIMAWait;
  */
 class ceWPTTIMAWaitActions : public ceWPTTIMActions{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAWaitActions>;
+	
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAWaitActions( ceWindowMain &windowMain, ceConversation &conversation,
-		const ceConversationActionList &actions );
+	ceWPTTIMAWaitActions(ceWindowMain &windowMain, ceConversation &conversation,
+		const ceConversationAction::List &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAWaitActions();
+	~ceWPTTIMAWaitActions() override;
 	/*@}*/
 	
 	
@@ -58,19 +60,19 @@ public:
 	
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief User requests context menu for selected child action. */
-	virtual void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
+	void ContextMenuAction(igdeMenuCascade &contextMenu, ceConversationAction *action) override;
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	
 	/** \brief Build playback continuing from here. */
-	virtual void BuildPlaybackFromHere() const;
+	void BuildPlaybackFromHere() const override;
 	/*@}*/
 };
 

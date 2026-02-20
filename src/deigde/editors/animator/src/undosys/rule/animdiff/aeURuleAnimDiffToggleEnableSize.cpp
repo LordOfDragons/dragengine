@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleAnimDiffToggleEnableSize::aeURuleAnimDiffToggleEnableSize( aeRuleAnimationDifference *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleAnimDiffToggleEnableSize::aeURuleAnimDiffToggleEnableSize(aeRuleAnimationDifference *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleAnimationDifferenceToggleEnableSize");
 		
-		SetShortInfo( "Rule animation toggle enable size" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleAnimDiffToggleEnableSize::~aeURuleAnimDiffToggleEnableSize(){
 ///////////////
 
 void aeURuleAnimDiffToggleEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleAnimDiffToggleEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleAnimDiffToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnableSize::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

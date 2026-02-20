@@ -37,6 +37,9 @@ class ceCAIfElseCase;
  * \brief Menu action paste all topic actions.
  */
 class ceWPTMAIfElseCasePasteActions : public ceWPTMAPasteActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAIfElseCasePasteActions>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -53,14 +56,14 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCasePasteActions( ceWindowMain &windowMain,
+	ceWPTMAIfElseCasePasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index );
+		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCasePasteActions( ceWindowMain &windowMain,
+	ceWPTMAIfElseCasePasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index, const char *text );
+		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index, const char *text);
 	/*@}*/
 	
 	
@@ -80,7 +83,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions) override;
 	/*@}*/
 };
 

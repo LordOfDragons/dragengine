@@ -66,7 +66,7 @@ public:
 	 * Update dynamic parts of scene.
 	 * \param elapsed Seconds elapsed since last update
 	 */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/**
 	 * \brief Process physics simulation using the physics module.
@@ -75,7 +75,7 @@ public:
 	 * on dynamic colliders, particle and prop field simulations as well as moving
 	 * colliders attached to other colliders.
 	 */
-	virtual void ProcessPhysics( float elapsed );
+	virtual void ProcessPhysics(float elapsed);
 	/*@}*/
 	
 	
@@ -92,64 +92,64 @@ public:
 	virtual void HeightTerrainChanged();
 	
 	/** \brief Component has been added. */
-	virtual void ComponentAdded( deComponent *component );
+	virtual void ComponentAdded(deComponent *component);
 	
 	/** \brief Component has been removed. */
-	virtual void ComponentRemoved( deComponent *component );
+	virtual void ComponentRemoved(deComponent *component);
 	
 	/** \brief All components have been removed. */
 	virtual void AllComponentsRemoved();
 	
 	/** \brief Collider has been added. */
-	virtual void ColliderAdded( deCollider *collider );
+	virtual void ColliderAdded(deCollider *collider);
 	
 	/** \brief Collider has been removed. */
-	virtual void ColliderRemoved( deCollider *collider );
+	virtual void ColliderRemoved(deCollider *collider);
 	
 	/** \brief All colliders have been removed. */
 	virtual void AllCollidersRemoved();
 	
 	/** \brief Touch sensor has been added. */
-	virtual void TouchSensorAdded( deTouchSensor *touchSensor );
+	virtual void TouchSensorAdded(deTouchSensor *touchSensor);
 	
 	/** \brief Touch sensor has been removed. */
-	virtual void TouchSensorRemoved( deTouchSensor *touchSensor );
+	virtual void TouchSensorRemoved(deTouchSensor *touchSensor);
 	
 	/** \brief All touch sensors have been removed. */
 	virtual void AllTouchSensorsRemoved();
 	
 	/** \brief Prop field has been added. */
-	virtual void PropFieldAdded( dePropField *propField );
+	virtual void PropFieldAdded(dePropField *propField);
 	
 	/** \brief Prop field has been removed. */
-	virtual void PropFieldRemoved( dePropField *propField );
+	virtual void PropFieldRemoved(dePropField *propField);
 	
 	/** \brief All prop fields have been removed. */
 	virtual void AllPropFieldsRemoved();
 	
 	/** \brief Force field has been added. */
-	virtual void ForceFieldAdded( deForceField *forceField );
+	virtual void ForceFieldAdded(deForceField *forceField);
 	
 	/** \brief Force field has been removed. */
-	virtual void ForceFieldRemoved( deForceField *forceField );
+	virtual void ForceFieldRemoved(deForceField *forceField);
 	
 	/** \brief All force fields have been removed. */
 	virtual void AllForceFieldsRemoved();
 	
 	/** \brief Prop field has been added. */
-	virtual void ParticleEmitterAdded( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterAdded(deParticleEmitterInstance *emitter);
 	
 	/** \brief Prop field has been removed. */
-	virtual void ParticleEmitterRemoved( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterRemoved(deParticleEmitterInstance *emitter);
 	
 	/** \brief All prop fields have been removed. */
 	virtual void AllParticleEmittersRemoved();
 	
 	/** \brief Prop field has been added. */
-	virtual void SmokeEmitterAdded( deSmokeEmitter *smokeEmitter );
+	virtual void SmokeEmitterAdded(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief Prop field has been removed. */
-	virtual void SmokeEmitterRemoved( deSmokeEmitter *smokeEmitter );
+	virtual void SmokeEmitterRemoved(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief All prop fields have been removed. */
 	virtual void AllSmokeEmittersRemoved();
@@ -165,8 +165,8 @@ public:
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void PointHits( const decDVector &point, deBaseScriptingCollider *listener,
-		const decCollisionFilter &collisionFilter );
+	virtual void PointHits(const decDVector &point, deBaseScriptingCollider *listener,
+		const decCollisionFilter &collisionFilter);
 	
 	/**
 	 * \brief Tests a ray for collision with the element in the world.
@@ -174,8 +174,8 @@ public:
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-		deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter );
+	virtual void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+		deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter);
 	
 	/**
 	 * \brief Tests the collider for collision with world elements.
@@ -183,7 +183,7 @@ public:
 	 * For each collision the collisionResponse function of the listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	virtual void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Tests the moving collider for collision with world elements.
@@ -192,8 +192,8 @@ public:
 	 * of the listener is called. To stop testing set StopTesting in the provided
 	 * collision information object to true.
 	 */
-	virtual void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-		deBaseScriptingCollider *listener );
+	virtual void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Tests the rotating collider for collision with world elements.
@@ -202,8 +202,8 @@ public:
 	 * of the listener is called. To stop testing set StopTesting in the provided
 	 * collision information object to true.
 	 */
-	virtual void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-		deBaseScriptingCollider *listener );
+	virtual void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+		deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Tests the moving and rotating collider for collision with world elements.
@@ -212,8 +212,8 @@ public:
 	 * of the listener is called. To stop testing set StopTesting in the provided
 	 * collision information object to true.
 	 */
-	virtual void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-		const decVector &rotation, deBaseScriptingCollider *listener );
+	virtual void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+		const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 };

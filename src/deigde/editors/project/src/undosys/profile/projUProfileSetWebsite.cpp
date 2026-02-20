@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetWebsite::projUProfileSetWebsite( projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetWebsite::projUProfileSetWebsite(projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set website" );
+	SetShortInfo("@Project.Undo.ProfileSetWebsite");
 	
 	pOldValue = profile->GetWebsite();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetWebsite::~projUProfileSetWebsite(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ projUProfileSetWebsite::~projUProfileSetWebsite(){
 ///////////////
 
 void projUProfileSetWebsite::Undo(){
-	pProfile->SetWebsite( pOldValue );
+	pProfile->SetWebsite(pOldValue);
 }
 
 void projUProfileSetWebsite::Redo(){
-	pProfile->SetWebsite( pNewValue );
+	pProfile->SetWebsite(pNewValue);
 }

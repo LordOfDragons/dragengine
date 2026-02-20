@@ -25,13 +25,14 @@
 #ifndef _CEDIALOGEDITSTRIP_H_
 #define _CEDIALOGEDITSTRIP_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include "../../conversation/strip/ceStrip.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
-class ceStrip;
-class decStringList;
+#include <dragengine/common/string/decStringList.h>
 
 
 
@@ -40,22 +41,29 @@ class decStringList;
  */
 class ceDialogEditStrip : public igdeDialog{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceDialogEditStrip>;
+	
+	
 	class Listener : public deObject{
 	public:
-		typedef deTObjectReference<Listener> Ref;
-		
+		using Ref = deTObjectReference<Listener>;
+	
+	
 		Listener();
-		virtual float DefaultDuration(  const decString &id );
+		virtual float DefaultDuration(const decString &id);
 		
 	protected:
-		virtual ~Listener();
+protected:
+		~Listener() override;
+public:
 	};
 	
 private:
-	igdeComboBoxFilterReference pCBID;
-	igdeTextFieldReference pEditPause;
-	igdeTextFieldReference pEditDuration;
-	igdeButtonReference pBtnResetDuration;
+	igdeComboBoxFilter::Ref pCBID;
+	igdeTextField::Ref pEditPause;
+	igdeTextField::Ref pEditDuration;
+	igdeButton::Ref pBtnResetDuration;
 	Listener::Ref pListener;
 	bool pAutoResetDuration;
 	
@@ -65,11 +73,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	ceDialogEditStrip( igdeEnvironment &environment, const char *windowTitle, const char *textLabel );
+	ceDialogEditStrip(igdeEnvironment &environment, const char *windowTitle, const char *textLabel);
 	
 protected:
 	/** Clean up dialog. */
-	virtual ~ceDialogEditStrip();
+	~ceDialogEditStrip() override;
 	/*@}*/
 	
 	
@@ -78,28 +86,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set entries in list of possible identifiers to select. */
-	void SetIDList( const decStringList &list );
+	void SetIDList(const decStringList &list);
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Set pause. */
-	void SetPause( float pause );
+	void SetPause(float pause);
 	
 	/** Set duration. */
-	void SetDuration( float duration );
+	void SetDuration(float duration);
 	
 	/** Set from strip. */
-	void SetFromStrip( const ceStrip &strip );
+	void SetFromStrip(const ceStrip &strip);
 	
 	/** Update strip. */
-	void UpdateStrip( ceStrip &strip ) const;
+	void UpdateStrip(ceStrip &strip) const;
 	
 	/** Create new strip from data. */
-	ceStrip *CreateStrip() const;
+	ceStrip::Ref CreateStrip() const;
 	
 	/** Set listener or nullptr. */
-	void SetListener( const Listener::Ref &listener );
+	void SetListener(const Listener::Ref &listener);
 	
 	/** Reset duration to default duration. */
 	void ResetDuration();
@@ -108,7 +116,7 @@ public:
 	inline bool GetAutoResetDuration() const{ return pAutoResetDuration; }
 	
 	/** Set automatically reset duraation on changing identifier. */
-	void SetAutoResetDuration( bool autoResetDuration );
+	void SetAutoResetDuration(bool autoResetDuration);
 	
 	
 	
@@ -118,7 +126,7 @@ public:
 	 * Called by Run() after dialog is created. Subclass can implement to init controls
 	 * after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	/*@}*/
 };
 

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglDMBConvexVolumeFace.h"
 #include "deoglDMBConvexVolumeList.h"
 
@@ -53,12 +49,7 @@ deoglDMBConvexVolumeList::~deoglDMBConvexVolumeList(){
 // Subclassing
 ////////////////
 
-decConvexVolumeFace *deoglDMBConvexVolumeList::CreateVolumeFace( decConvexVolumeFace *face ){
-	deoglDMBConvexVolumeFace * const newFace = new deoglDMBConvexVolumeFace;
-	
-	if( face ){
-		newFace->SetDecalFace( ( ( deoglDMBConvexVolumeFace* )face )->GetDecalFace() );
-	}
-	
-	return newFace;
+decConvexVolumeFace::Ref deoglDMBConvexVolumeList::CreateVolumeFace(const decConvexVolumeFace *face){
+	return deoglDMBConvexVolumeFace::Ref::New(face
+		? static_cast<const deoglDMBConvexVolumeFace*>(face)->GetDecalFace() : false);
 }

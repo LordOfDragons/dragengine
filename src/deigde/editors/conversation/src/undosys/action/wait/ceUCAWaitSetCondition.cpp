@@ -41,46 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitSetCondition::ceUCAWaitSetCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition ){
-	if( ! topic || ! wait ) DETHROW( deeInvalidParam );
+ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition){
+	if(!topic || !wait) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pWait = NULL;
-	pOldCondition = NULL;
-	pNewCondition = NULL;
+	pTopic = nullptr;
+	pWait = nullptr;
+	pOldCondition = nullptr;
+	pNewCondition = nullptr;
 	
-	SetShortInfo( "Action Wait Set Condition" );
+	SetShortInfo("@Conversation.Undo.ActionWaitSetCondition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pOldCondition = wait->GetCondition();
-	if( pOldCondition ){
-		pOldCondition->AddReference();
-	}
-	
 	pNewCondition = newCondition;
-	if( newCondition ){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAWaitSetCondition::~ceUCAWaitSetCondition(){
-	if( pNewCondition ){
-		pNewCondition->FreeReference();
-	}
-	if( pOldCondition ){
-		pOldCondition->FreeReference();
-	}
-	if( pWait ){
-		pWait->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -89,15 +66,15 @@ ceUCAWaitSetCondition::~ceUCAWaitSetCondition(){
 ///////////////
 
 void ceUCAWaitSetCondition::Undo(){
-	pWait->SetCondition( pOldCondition );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->SetCondition(pOldCondition);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( pWait, pOldCondition );
+	pTopic->SetActive(pWait, pOldCondition);
 }
 
 void ceUCAWaitSetCondition::Redo(){
-	pWait->SetCondition( pNewCondition );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->SetCondition(pNewCondition);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( pWait, pNewCondition );
+	pTopic->SetActive(pWait, pNewCondition);
 }

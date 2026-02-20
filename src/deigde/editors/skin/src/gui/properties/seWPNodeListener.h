@@ -35,6 +35,9 @@ class seWPNode;
  * Node panel listener.
  */
 class seWPNodeListener : public seSkinListener{
+public:
+	using Ref = deTObjectReference<seWPNodeListener>;
+	
 private:
 	seWPNode &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	seWPNodeListener( seWPNode &panel );
+	seWPNodeListener(seWPNode &panel);
 	
 	/** Clean up listener. */
-	virtual ~seWPNodeListener();
+protected:
+	~seWPNodeListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,33 +60,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mapped have been added or removed. */
-	virtual void MappedStructureChanged( seSkin *skin );
+	void MappedStructureChanged(seSkin *skin) override;
 	
 	/** Mapped name changed. */
-	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped );
+	void MappedNameChanged(seSkin *skin, seMapped *mapped) override;
 	
 	
 	
 	/** Active texture changed. */
-	virtual void ActiveTextureChanged( seSkin *skin );
+	void ActiveTextureChanged(seSkin *skin) override;
 	
 	/** Property changed. */
-	virtual void PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** Active property changed. */
-	virtual void ActivePropertyChanged( seSkin *skin, seTexture *texture );
+	void ActivePropertyChanged(seSkin *skin, seTexture *texture) override;
 	
 	/** Property node changed. */
-	virtual void PropertyNodeChanged( seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node );
+	void PropertyNodeChanged(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node) override;
 	
 	/** Property node structre changed. */
-	virtual void PropertyNodeStructureChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyNodeStructureChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** Property selected nodes changed. */
-	virtual void PropertyNodeSelectionChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyNodeSelectionChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** Active property node changed. */
-	virtual void PropertyActiveNodeChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyActiveNodeChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	/*@}*/
 };
 

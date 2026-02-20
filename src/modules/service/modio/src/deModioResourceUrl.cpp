@@ -33,42 +33,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModioResourceUrl::deModioResourceUrl( const decString &nurl ) :
-url( nurl )
+deModioResourceUrl::deModioResourceUrl(const decString &nurl) :
+url(nurl)
 {
-	const int index = nurl.FindString( "://" );
-	DEASSERT_TRUE( index != -1 );
+	const int index = nurl.FindString("://");
+	DEASSERT_TRUE(index != -1);
 	
-	type = nurl.GetLeft( index );
-	components = nurl.GetMiddle( index + 3 ).Split( '/' );
+	type = nurl.GetLeft(index);
+	components = nurl.GetMiddle(index + 3).Split('/');
 }
 
 
 // Management
 ///////////////
 
-const decString &deModioResourceUrl::getComponentAt( int index, const char *paramName ) const{
-	if( index < 0 || index >= components.GetCount() ){
-		DETHROW_INFO( deeInvalidParam, paramName );
+const decString &deModioResourceUrl::getComponentAt(int index, const char *paramName) const{
+	if(index < 0 || index >= components.GetCount()){
+		DETHROW_INFO(deeInvalidParam, paramName);
 	}
-	return components.GetAt( index );
+	return components.GetAt(index);
 }
 
-decString deModioResourceUrl::FormatUrl( const char *part1, const char *part2,
-const char *part3, const char *part4 ){
+decString deModioResourceUrl::FormatUrl(const char *part1, const char *part2,
+const char *part3, const char *part4){
 	decString url;
-	url.Format( "res://%s/%s/%s/%s", part1, part2, part3, part4 );
+	url.Format("res://%s/%s/%s/%s", part1, part2, part3, part4);
 	return url;
 }
 
-decString deModioResourceUrl::FormatUrl( const char *part1, std::int64_t id,
-const char *part2, const char *part3 ){
-	return FormatUrl( part1, deMCCommon::IDToString( id ), part2, part3 );
+decString deModioResourceUrl::FormatUrl(const char *part1, std::int64_t id,
+const char *part2, const char *part3){
+	return FormatUrl(part1, deMCCommon::IDToString(id), part2, part3);
 }
 
-decString deModioResourceUrl::FormatUrl( const char *part1, std::int64_t id,
-const char *part2, int index, const char *part3 ){
+decString deModioResourceUrl::FormatUrl(const char *part1, std::int64_t id,
+const char *part2, int index, const char *part3){
 	decString url;
-	url.Format( "res://%s/%s/%s/%d/%s", part1, deMCCommon::IDToString( id ).GetString(), part2, index, part3 );
+	url.Format("res://%s/%s/%s/%d/%s", part1, deMCCommon::IDToString(id).GetString(), part2, index, part3);
 	return url;
 }

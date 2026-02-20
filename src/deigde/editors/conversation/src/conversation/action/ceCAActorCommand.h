@@ -41,6 +41,10 @@
  * Thus it is important to ensure make sure this action is used in the proper situation.
  */
 class ceCAActorCommand : public ceConversationAction{
+public:
+	using Ref = deTObjectReference<ceCAActorCommand>;
+	
+	
 private:
 	decString pActor;
 	decString pCommand;
@@ -51,9 +55,11 @@ public:
 	/** Creates a new conversation action. */
 	ceCAActorCommand();
 	/** Creates a new conversation action. */
-	ceCAActorCommand( const ceCAActorCommand &action );
+	ceCAActorCommand(const ceCAActorCommand &action);
 	/** Cleans up the conversation action. */
-	virtual ~ceCAActorCommand();
+protected:
+	~ceCAActorCommand() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -61,14 +67,14 @@ public:
 	/** Retrieves the actor id. */
 	inline const decString &GetActor() const{ return pActor; }
 	/** Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	/** Retrieves the command string. */
 	inline const decString &GetCommand() const{ return pCommand; }
 	/** Sets the command string. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

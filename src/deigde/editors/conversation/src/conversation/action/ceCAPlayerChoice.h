@@ -26,8 +26,7 @@
 #define _CECAPLAYERCHOICE_H_
 
 #include "ceConversationAction.h"
-#include "ceCAPlayerChoiceOptionList.h"
-#include "ceConversationActionList.h"
+#include "ceCAPlayerChoiceOption.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -41,8 +40,8 @@
  */
 class ceCAPlayerChoice : public ceConversationAction{
 private:
-	ceCAPlayerChoiceOptionList pOptions;
-	ceConversationActionList pActions;
+	ceCAPlayerChoiceOption::List pOptions;
+	ceConversationAction::List pActions;
 	decString pVariableName;
 	bool pTIMExpanded;
 	bool pTIMActionsExpanded;
@@ -50,30 +49,33 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<ceCAPlayerChoice>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new player choice conversation action. */
 	ceCAPlayerChoice();
 	/** Creates a new player choice conversation action. */
-	ceCAPlayerChoice( const ceCAPlayerChoice &action );
+	ceCAPlayerChoice(const ceCAPlayerChoice &action);
 	/** Cleans up the player choice conversation action. */
-	virtual ~ceCAPlayerChoice();
+protected:
+	~ceCAPlayerChoice() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of options. */
-	inline ceCAPlayerChoiceOptionList &GetOptions(){ return pOptions; }
-	inline const ceCAPlayerChoiceOptionList &GetOptions() const{ return pOptions; }
+	inline ceCAPlayerChoiceOption::List &GetOptions(){ return pOptions; }
+	inline const ceCAPlayerChoiceOption::List &GetOptions() const{ return pOptions; }
 	/** Retrieves the list of actions. */
-	inline ceConversationActionList &GetActions(){ return pActions; }
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline ceConversationAction::List &GetActions(){ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/** Retrieves the variable name. */
 	inline const decString &GetVariableName() const{ return pVariableName; }
 	/** Sets the variable name. */
-	void SetVariableName( const char *name );
+	void SetVariableName(const char *name);
 	/*@}*/
 	
 	
@@ -84,13 +86,13 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	
 	/** \brief Actions tree list item expanded state. */
 	inline bool GetTIMActionsExpanded() const{ return pTIMActionsExpanded; }
 	
 	/** \brief Set actions tree list item expanded state. */
-	void SetTIMActionsExpanded( bool expanded );
+	void SetTIMActionsExpanded(bool expanded);
 	/*@}*/
 };
 

@@ -25,11 +25,14 @@
 #ifndef _DEOGLCAMERA_H_
 #define _DEOGLCAMERA_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include "deoglRCamera.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
 
-class deoglRCamera;
 class deoglWorld;
+class deoglDSRenderableCamera;
+class deoglCanvasRenderWorld;
 
 class deGraphicOpenGl;
 class deCamera;
@@ -43,7 +46,7 @@ class deoglCamera : public deBaseGraphicCamera{
 private:
 	deGraphicOpenGl &pOgl;
 	const deCamera &pCamera;
-	deoglRCamera *pRCamera;
+	deoglRCamera::Ref pRCamera;
 	
 	deoglWorld *pParentWorld;
 	
@@ -61,8 +64,8 @@ private:
 	
 	bool pEnableVR;
 	
-	decPointerSet pNotifyRenderables;
-	decPointerSet pNotifyCanvas;
+	decTOrderedSet<deoglDSRenderableCamera*> pNotifyRenderables;
+	decTOrderedSet<deoglCanvasRenderWorld*> pNotifyCanvas;
 	
 	
 	
@@ -70,10 +73,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new opengl camera peer. */
-	deoglCamera( deGraphicOpenGl &ogl, const deCamera &camera );
+	deoglCamera(deGraphicOpenGl &ogl, const deCamera &camera);
 	
 	/** Clean up camera peer. */
-	virtual ~deoglCamera();
+	~deoglCamera() override;
 	/*@}*/
 	
 	
@@ -81,7 +84,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render camera. */
-	inline deoglRCamera *GetRCamera() const{ return pRCamera; }
+	inline const deoglRCamera::Ref &GetRCamera() const{ return pRCamera; }
 	
 	/** Camera. */
 	inline const deCamera &GetCamera() const{ return pCamera; }
@@ -90,12 +93,12 @@ public:
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
 	/** Updates the camera. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -105,12 +108,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	inline decTOrderedSet<deoglDSRenderableCamera*> &GetNotifyRenderables(){ return pNotifyRenderables; }
+	inline const decTOrderedSet<deoglDSRenderableCamera*> &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decTOrderedSet<deoglCanvasRenderWorld*> &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decTOrderedSet<deoglCanvasRenderWorld*> &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
 	
 	
@@ -118,33 +121,33 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** Camera parameter changed. */
-	virtual void ParameterChanged();
+	void ParameterChanged() override;
 	
 	/** Adaption parameter changed. */
-	virtual void AdaptionChanged();
+	void AdaptionChanged() override;
 	
 	/** Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** Request graphic module to reset adapted intensity to optimal value. */
-	virtual void ResetAdaptedIntensity();
+	void ResetAdaptedIntensity() override;
 	
 	
 	
 	/** Effect has been added. */
-	virtual void EffectAdded( int index, deEffect *effect );
+	void EffectAdded(int index, deEffect *effect) override;
 	
 	/** Effect has been removed. */
-	virtual void EffectRemoved( int index, deEffect *effect );
+	void EffectRemoved(int index, deEffect *effect) override;
 	
 	/** All effects have been removed. */
-	virtual void AllEffectsRemoved();
+	void AllEffectsRemoved() override;
 	/*@}*/
 	
 	
@@ -152,13 +155,13 @@ public:
 	/** \name For use by VR Module only */
 	/*@{*/
 	/** Camera assigned to HMD. */
-	virtual void VRAssignedToHMD();
+	void VRAssignedToHMD() override;
 	
 	/** Camera resigned from HMD. */
-	virtual void VRResignedFromHMD();
+	void VRResignedFromHMD() override;
 	
 	/** VR Render parameters changed. */
-	virtual void VRRenderParametersChanged();
+	void VRRenderParametersChanged() override;
 	/*@}*/
 	
 	

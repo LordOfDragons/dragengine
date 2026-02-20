@@ -25,11 +25,11 @@
 #ifndef _DEBPGHOSTOBJECT_H_
 #define _DEBPGHOSTOBJECT_H_
 
+#include "debpBulletShape.h"
 #include "debpCollisionObject.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class debpBulletShape;
 class btGhostObject;
 class debpCollisionWorld;
 
@@ -45,7 +45,7 @@ class debpGhostObject : public debpCollisionObject{
 private:
 	debpCollisionWorld *pDynWorld;
 	btGhostObject *pGhostObject;
-	debpBulletShape *pShape;
+	debpBulletShape::Ref pShape;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -59,7 +59,7 @@ public:
 	/** \brief Creates a new bullet ghost object. */
 	debpGhostObject();
 	/** \brief Cleans up the bullet ghost object. */
-	virtual ~debpGhostObject();
+	~debpGhostObject() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -69,25 +69,25 @@ public:
 	/** \brief Retrieves the dynamics world or NULL if not assigned to one yet. */
 	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	/** \brief Sets the dynamics world or NULL if not assigned to one yet. */
-	void SetDynamicsWorld( debpCollisionWorld *dynWorld );
+	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	/** \brief Retrieves the collision shape or NULL if not set. */
-	inline debpBulletShape *GetShape() const{ return pShape; }
+	inline const debpBulletShape::Ref &GetShape() const{ return pShape; }
 	/** \brief Sets the collision shape or NULL if not set. */
-	void SetShape( debpBulletShape *shape );
+	void SetShape(debpBulletShape *shape);
 	
 	/** \brief Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	/** \brief Retrieves the orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	/** \brief Sets the orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Determines if the ghost object is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	/** \brief Sets if the ghost object is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/** \brief Retrieves the ghost object matrix. */
 	const decDMatrix &GetMatrix();
 	

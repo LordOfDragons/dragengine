@@ -37,9 +37,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 
@@ -61,9 +59,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-feConfiguration::feConfiguration( feWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false ){
+feConfiguration::feConfiguration(feWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false){
 }
 
 feConfiguration::~feConfiguration(){
@@ -75,7 +73,7 @@ feConfiguration::~feConfiguration(){
 // Management
 ///////////////
 
-void feConfiguration::SetPreventSaving( bool preventSaving ){
+void feConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -87,42 +85,40 @@ void feConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/fontEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/fontEditor.xml"));
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
 		
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
-		feConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		feConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
+			vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void feConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/fontEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/fontEditor.xml"));
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
-	decBaseFileWriterReference writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		feConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		feConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
+			vfs.OpenFileForWriting(pathFile), *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 

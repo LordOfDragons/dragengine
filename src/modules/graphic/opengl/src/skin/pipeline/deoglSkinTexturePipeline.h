@@ -36,8 +36,7 @@ class deoglSkinShader;
  */
 class deoglSkinTexturePipeline : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinTexturePipeline> Ref;
-	
+	using Ref = deTObjectReference<deoglSkinTexturePipeline>;
 	
 	
 private:
@@ -50,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglSkinTexturePipeline( const deoglPipeline *pipeline, deoglSkinShader *shader );
+	deoglSkinTexturePipeline(const deoglPipeline *pipeline, deoglSkinShader *shader);
 	
 protected:
 	/** Clean up light pipeline. */
-	virtual ~deoglSkinTexturePipeline();
+	~deoglSkinTexturePipeline() override;
 	/*@}*/
 	
 	

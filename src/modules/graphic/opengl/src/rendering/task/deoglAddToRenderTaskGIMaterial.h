@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new add to render task. */
-	deoglAddToRenderTaskGIMaterial( deoglRenderThread &renderThread, deoglRenderTask &renderTask );
+	deoglAddToRenderTaskGIMaterial(deoglRenderThread &renderThread, deoglRenderTask &renderTask);
 	
 	/** Clean up add to render task . */
 	~deoglAddToRenderTaskGIMaterial();
@@ -69,7 +69,7 @@ public:
 	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
 	/** Set pipeline type. */
-	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
+	void SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type);
 	
 	
 	
@@ -83,15 +83,15 @@ public:
 	 * 
 	 * Component is supposed to be updated, and model, skin and parent world exist.
 	 */
-	deoglRenderTaskTexture *AddComponentTexture( deoglRComponentLOD &component, int texture );
+	deoglRenderTaskTexture *AddComponentTexture(deoglRComponentLOD &component, int texture);
 	/*@}*/
 	
 	
 	
 private:
-	bool pFilterReject( const deoglSkinTexture *skinTexture ) const;
+	bool pFilterReject(const deoglSkinTexture *skinTexture) const;
 	
-	deoglRenderTaskTexture *pGetTaskTexture( deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc );
+	deoglRenderTaskTexture *pGetTaskTexture(deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc);
 };
 
 #endif

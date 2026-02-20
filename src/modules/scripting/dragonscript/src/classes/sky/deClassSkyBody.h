@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkyBody( deScriptingDragonScript &ds );
+	deClassSkyBody(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassSkyBody();
+	~deClassSkyBody() override;
 	/*@}*/
 	
 	
@@ -60,10 +60,10 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Push body. */
-	void PushBody( dsRunTime *rt, deSky *sky, int layer, int index );
+	void PushBody(dsRunTime *rt, deSky *sky, int layer, int index);
 	/*@}*/
 	
 	
@@ -86,28 +86,28 @@ private:
 		dsClass *clsSkin;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSky );
-	DEF_NATFUNC( nfGetLayerIndex );
-	DEF_NATFUNC( nfGetBodyIndex );
+	DEF_NATFUNC(nfGetSky);
+	DEF_NATFUNC(nfGetLayerIndex);
+	DEF_NATFUNC(nfGetBodyIndex);
 	
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetSize );
-	DEF_NATFUNC( nfSetSize );
-	DEF_NATFUNC( nfGetColor );
-	DEF_NATFUNC( nfSetColor );
-	DEF_NATFUNC( nfGetSkin );
-	DEF_NATFUNC( nfSetSkin );
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetSize);
+	DEF_NATFUNC(nfSetSize);
+	DEF_NATFUNC(nfGetColor);
+	DEF_NATFUNC(nfSetColor);
+	DEF_NATFUNC(nfGetSkin);
+	DEF_NATFUNC(nfSetSkin);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

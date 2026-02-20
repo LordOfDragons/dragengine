@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetBlockingPriority::gdeUOCNavBlockerSetBlockingPriority( gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, int newValue ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeUOCNavBlockerSetBlockingPriority::gdeUOCNavBlockerSetBlockingPriority(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, int newValue) :
+
+pNavBlocker(nullptr)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker set blocking priority" );
+	SetShortInfo("@GameDefinition.Undo.OCNavBlockerSetBlockingPriority");
 	
 	pOldValue = navblocker->GetBlockingPriority();
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetBlockingPriority::~gdeUOCNavBlockerSetBlockingPriority(){
-	if( pNavBlocker ){
-		pNavBlocker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCNavBlockerSetBlockingPriority::~gdeUOCNavBlockerSetBlockingPriority(){
 ///////////////
 
 void gdeUOCNavBlockerSetBlockingPriority::Undo(){
-	pNavBlocker->SetBlockingPriority( pOldValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetBlockingPriority(pOldValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerSetBlockingPriority::Redo(){
-	pNavBlocker->SetBlockingPriority( pNewValue );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetBlockingPriority(pNewValue);
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }

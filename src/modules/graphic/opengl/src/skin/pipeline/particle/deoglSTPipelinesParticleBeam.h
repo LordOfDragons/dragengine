@@ -36,26 +36,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesParticleBeam( const deoglSkinTexture &texture );
+	explicit deoglSTPipelinesParticleBeam(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesParticleBeam();
+	~deoglSTPipelinesParticleBeam() override;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 };
 
 #endif

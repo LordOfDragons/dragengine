@@ -31,7 +31,6 @@
 #include "deMsgdkPendingRequest.h"
 #include "deMsgdkAsyncTask.h"
 
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -52,7 +51,7 @@ public:
 private:
 	deMicrosoftGdk &pModule;
 	deService * const pService;
-	decObjectList pPendingRequests;
+	deMsgdkPendingRequest::List pPendingRequests;
 	bool pIsInitialized;
 	const deMsgdkAsyncTask::Invalidator::Ref pInvalidator;
 	
@@ -62,7 +61,7 @@ private:
 
 	XblContextHandle pXblContext;
 	bool pAchievementsSynced;
-	decObjectList pFrameUpdateTasks;
+	deMsgdkAsyncTask::List pFrameUpdateTasks;
 
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 
@@ -103,7 +102,7 @@ public:
 	/**
 	 * \brief Run action returning result immediately.
 	 */
-	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	deServiceObject::Ref RunAction(const deServiceObject &action) override;
 	
 	/**
 	 * \brief Frame update.
@@ -126,13 +125,13 @@ public:
 	inline const XUserLocalId &GetUserLocalId() const{ return pUserLocalId; }
 	void SetUser(XUserHandle user);
 	
-	inline XblContextHandle GetXblContext() const{return pXblContext;}
+	inline XblContextHandle GetXblContext() const{ return pXblContext; }
 	
 	deMsgdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
 	deMsgdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr);
+		const decString& function, const deServiceObject::Ref& data = {});
 	
 	deServiceObject::Ref GetUserFeatures();
 	deServiceObject::Ref GetUserInfo();

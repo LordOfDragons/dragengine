@@ -40,12 +40,12 @@
 
 ceWPTMAWaitActionsRemoveAllActions::ceWPTMAWaitActionsRemoveAllActions(
 ceWindowMain &windowMain, ceConversation &conversation,
-ceConversationTopic &topic, ceCAWait &wait ) :
-ceWPTMARemoveAllActions( windowMain, conversation ),
-pTopic( &topic ),
-pWait( &wait )
+ceConversationTopic &topic, ceCAWait &wait) :
+ceWPTMARemoveAllActions(windowMain, conversation),
+pTopic(&topic),
+pWait(&wait)
 {
-	SetEnabled( wait.GetActions().GetCount() > 0 );
+	SetEnabled(wait.GetActions().GetCount() > 0);
 }
 
 
@@ -53,6 +53,6 @@ pWait( &wait )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsRemoveAllActions::CreateUndo(){
-	return new ceUCAWaitRemoveAll( pTopic, pWait );
+igdeUndo::Ref ceWPTMAWaitActionsRemoveAllActions::CreateUndo(){
+	return ceUCAWaitRemoveAll::Ref::New(pTopic, pWait);
 }

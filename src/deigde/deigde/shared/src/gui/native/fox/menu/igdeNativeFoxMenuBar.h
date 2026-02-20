@@ -34,7 +34,7 @@ class igdeMenuBar;
  * FOX native widget.
  */
 class igdeNativeFoxMenuBar : public FXMenuBar{
-	FXDECLARE( igdeNativeFoxMenuBar )
+	FXDECLARE(igdeNativeFoxMenuBar)
 	
 protected:
 	igdeNativeFoxMenuBar();
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuBar( igdeMenuBar &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxMenuBar(igdeMenuBar &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxMenuBar();
+	~igdeNativeFoxMenuBar() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuBar* CreateNativeWidget( igdeMenuBar &owner );
+	static igdeNativeFoxMenuBar* CreateNativeWidget(igdeMenuBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -65,10 +65,10 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxMenuBar igdeNativeMenuBar;
+using igdeNativeMenuBar = igdeNativeFoxMenuBar;
 
 #endif

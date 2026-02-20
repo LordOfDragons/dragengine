@@ -35,18 +35,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionTexture::deoglMemoryConsumptionTexture( const decString &baseName ) :
-all( baseName ),
-allCompressed( baseName + " Compressed" ),
-allUncompressed( baseName + " Uncompressed" ),
+deoglMemoryConsumptionTexture::deoglMemoryConsumptionTexture(const decString &baseName) :
+all(baseName),
+allCompressed(baseName + " Compressed"),
+allUncompressed(baseName + " Uncompressed"),
 
-color( baseName + " Color", all ),
-colorCompressed( baseName + " Color Compressed", color, allCompressed ),
-colorUncompressed( baseName + " Color Uncompressed", color, allUncompressed ),
+color(baseName + " Color", all),
+colorCompressed(baseName + " Color Compressed", color, allCompressed),
+colorUncompressed(baseName + " Color Uncompressed", color, allUncompressed),
 
-depth( baseName + " Depth", all ),
-depthCompressed( baseName + " Depth Compressed", depth, allCompressed ),
-depthUncompressed( baseName + " Depth Uncompressed", depth, allUncompressed ){
+depth(baseName + " Depth", all),
+depthCompressed(baseName + " Depth Compressed", depth, allCompressed),
+depthUncompressed(baseName + " Depth Uncompressed", depth, allUncompressed){
 }
 
 deoglMemoryConsumptionTexture::~deoglMemoryConsumptionTexture(){

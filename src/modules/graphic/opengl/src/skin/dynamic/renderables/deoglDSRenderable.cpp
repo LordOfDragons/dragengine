@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDSRenderable::deoglDSRenderable( deoglDynamicSkin &dynamicSkin, const deDSRenderable &renderable ) :
-pDynamicSkin( dynamicSkin ),
-pRenderable( renderable ){
+deoglDSRenderable::deoglDSRenderable(deoglDynamicSkin &dynamicSkin, const deDSRenderable &renderable) :
+pDynamicSkin(dynamicSkin),
+pRenderable(renderable){
 }
 
 deoglDSRenderable::~deoglDSRenderable(){

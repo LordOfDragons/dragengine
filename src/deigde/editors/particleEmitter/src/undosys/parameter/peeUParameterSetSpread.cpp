@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetSpread::peeUParameterSetSpread( peeType *type, peeParameter *parameter, float newSpread ){
-	if( ! type || ! parameter ){
-		DETHROW( deeInvalidParam );
+peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *parameter, float newSpread){
+	if(!type || !parameter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	pParameter = parameter;
 	
-	SetShortInfo( "Set Parameter Spread" );
+	SetShortInfo("@ParticleEmitter.Undo.Parameter.SetSpread");
 	
 	pOldSpread = parameter->GetSpread();
 	pNewSpread = newSpread;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetSpread::~peeUParameterSetSpread(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -69,9 +65,9 @@ peeUParameterSetSpread::~peeUParameterSetSpread(){
 ///////////////
 
 void peeUParameterSetSpread::Undo(){
-	pParameter->SetSpread( pOldSpread );
+	pParameter->SetSpread(pOldSpread);
 }
 
 void peeUParameterSetSpread::Redo(){
-	pParameter->SetSpread( pNewSpread );
+	pParameter->SetSpread(pNewSpread);
 }

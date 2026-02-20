@@ -41,17 +41,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkin::deSkin( deSkinManager *manager, deVirtualFileSystem *vfs, const char *filename,
-	TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
+deSkin::deSkin(deSkinManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime),
 
-pTextures( NULL ),
-pTextureCount( 0 ),
-pTextureSize( 0 ),
-
-pPeerGraphic( NULL ),
-pPeerAudio( NULL ),
-pPeerPhysics( NULL ){
+pPeerGraphic(nullptr),
+pPeerAudio(nullptr),
+pPeerPhysics(nullptr){
 }
 
 deSkin::~deSkin(){
@@ -63,40 +59,20 @@ deSkin::~deSkin(){
 // Textures
 /////////////
 
-void deSkin::AddTexture( deSkinTexture *tex ){
-	DEASSERT_NOTNULL( tex )
-	
-	if( pTextureCount == pTextureSize ){
-		int newSize = pTextureSize * 3 / 2 + 1;
-		deSkinTexture **newArray = new deSkinTexture*[ newSize ];
-		if( pTextures ){
-			memcpy( newArray, pTextures, sizeof( deSkinTexture* ) * pTextureSize );
-			delete [] pTextures;
-		}
-		pTextures = newArray;
-		pTextureSize = newSize;
-	}
-	
-	pTextures[ pTextureCount ] = tex;
-	pTextureCount++;
+void deSkin::AddTexture(deSkinTexture::Ref &&tex){
+	DEASSERT_NOTNULL(tex)
+	pTextures.Add(std::move(tex));
 }
 
-deSkinTexture *deSkin::GetTextureAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pTextureCount )
-	
-	return pTextures[ index ];
+const deSkinTexture::Ref &deSkin::GetTextureAt(int index) const{
+	return pTextures.GetAt(index);
 }
 
-int deSkin::IndexOfTextureNamed( const char *name ) const{
-	DEASSERT_NOTNULL( name )
-	int i;
-	
-	for( i=0; i<pTextureCount; i++ ){
-		if( strcmp( pTextures[ i ]->GetName(), name ) == 0 ) return i;
-	}
-	
-	return -1;
+int deSkin::IndexOfTextureNamed(const char *name) const{
+	DEASSERT_NOTNULL(name)
+	return pTextures.IndexOfMatching([&](const deSkinTexture &tex){
+		return tex.GetName() == name;
+	});
 }
 
 
@@ -104,67 +80,9 @@ int deSkin::IndexOfTextureNamed( const char *name ) const{
 // Mapped Values
 //////////////////
 
-int deSkin::GetMappedCount() const{
-	return pMapped.GetCount();
-}
-
-deSkinMapped *deSkin::GetMappedAt( int index ) const{
-	return ( deSkinMapped * )pMapped.GetAt( index );
-}
-
-deSkinMapped *deSkin::GetMappedNamed( const char *name ) const{
-	const int count = pMapped.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deSkinMapped * const mapped = ( deSkinMapped * )pMapped.GetAt( i );
-		if( mapped->GetName() == name ){
-			return mapped;
-		}
-	}
-	
-	return nullptr;
-}
-
-int deSkin::IndexOfMapped( deSkinMapped *mapped ) const{
-	return pMapped.IndexOf( mapped );
-}
-
-int deSkin::IndexOfMappedNamed( const char *name ) const{
-	const int count = pMapped.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( deSkinMapped * )pMapped.GetAt( i ) )->GetName() == name ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-bool deSkin::HasMapped( deSkinMapped *mapped ) const{
-	return pMapped.Has( mapped );
-}
-
-bool deSkin::HasMappedNamed( const char *name ) const{
-	const int count = pMapped.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( deSkinMapped * )pMapped.GetAt( i ) )->GetName() == name ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-void deSkin::AddMapped( deSkinMapped *mapped ){
-	DEASSERT_NOTNULL( mapped )
-	DEASSERT_FALSE( HasMapped( mapped ) )
-	
-	pMapped.Add( mapped );
+void deSkin::AddMapped(deSkinMapped *mapped){
+	DEASSERT_NOTNULL(mapped)
+	pMapped.AddOrThrow(mapped);
 }
 
 
@@ -172,23 +90,23 @@ void deSkin::AddMapped( deSkinMapped *mapped ){
 // System Peers
 /////////////////
 
-void deSkin::SetPeerGraphic( deBaseGraphicSkin *peer ){
-	if( peer != pPeerGraphic ){
-		if( pPeerGraphic ) delete pPeerGraphic;
+void deSkin::SetPeerGraphic(deBaseGraphicSkin *peer){
+	if(peer != pPeerGraphic){
+		if(pPeerGraphic) delete pPeerGraphic;
 		pPeerGraphic = peer;
 	}
 }
 
-void deSkin::SetPeerAudio( deBaseAudioSkin *peer ){
-	if( peer != pPeerAudio ){
-		if( pPeerAudio ) delete pPeerAudio;
+void deSkin::SetPeerAudio(deBaseAudioSkin *peer){
+	if(peer != pPeerAudio){
+		if(pPeerAudio) delete pPeerAudio;
 		pPeerAudio = peer;
 	}
 }
 
-void deSkin::SetPeerPhysics( deBasePhysicsSkin *peer ){
-	if( peer != pPeerPhysics ){
-		if( pPeerPhysics ) delete pPeerPhysics;
+void deSkin::SetPeerPhysics(deBasePhysicsSkin *peer){
+	if(peer != pPeerPhysics){
+		if(pPeerPhysics) delete pPeerPhysics;
 		pPeerPhysics = peer;
 	}
 }
@@ -199,22 +117,13 @@ void deSkin::SetPeerPhysics( deBasePhysicsSkin *peer ){
 //////////////////////
 
 void deSkin::pCleanUp(){
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
-	}
-	
-	if( pTextures ){
-		while( pTextureCount > 0 ){
-			pTextureCount--;
-			delete pTextures[ pTextureCount ];
-		}
-		
-		delete [] pTextures;
 	}
 }

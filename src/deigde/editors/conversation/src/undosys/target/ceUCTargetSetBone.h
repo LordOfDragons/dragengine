@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 
 
 
@@ -35,8 +35,12 @@ class ceTarget;
  * \brief Undo action target set bone.
  */
 class ceUCTargetSetBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCTargetSetBone>;
+	
+	
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldBone;
 	decString pNewBone;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetBone( ceTarget *target, const char *newBone );
+	ceUCTargetSetBone(ceTarget *target, const char *newBone);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCTargetSetBone();
+	~ceUCTargetSetBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

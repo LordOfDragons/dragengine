@@ -40,28 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotAdd::ceUCCShotAdd( ceConversation *conversation, ceCameraShot *cameraShot ){
-	if( ! conversation || ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraShot){
+	if(!conversation || !cameraShot) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pCameraShot = NULL;
+	pConversation = nullptr;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Add Camera Shot" );
+	SetShortInfo("@Conversation.Undo.AddCameraShot");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotAdd::~ceUCCShotAdd(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
-	if( pConversation ){
-		pConversation->FreeReference();
-	}
 }
 
 
@@ -70,10 +61,10 @@ ceUCCShotAdd::~ceUCCShotAdd(){
 ///////////////
 
 void ceUCCShotAdd::Undo(){
-	pConversation->RemoveCameraShot( pCameraShot );
+	pConversation->RemoveCameraShot(pCameraShot);
 }
 
 void ceUCCShotAdd::Redo(){
-	pConversation->AddCameraShot( pCameraShot );
-	pConversation->SetActiveCameraShot( pCameraShot );
+	pConversation->AddCameraShot(pCameraShot);
+	pConversation->SetActiveCameraShot(pCameraShot);
 }

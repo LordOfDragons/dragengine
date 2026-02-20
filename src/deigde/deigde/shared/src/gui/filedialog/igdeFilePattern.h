@@ -25,6 +25,8 @@
 #ifndef _IGDEFILEPATTERN_H_
 #define _IGDEFILEPATTERN_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -32,29 +34,35 @@
 /**
  * \brief File pattern defining a display name and file pattern.
  */
-class DE_DLL_EXPORT igdeFilePattern{
+class DE_DLL_EXPORT igdeFilePattern : public deObject{
+public:
+	using Ref = deTObjectReference<igdeFilePattern>;
+	
+	using List = decTObjectList<igdeFilePattern>;
+	
+	
 private:
 	decString pName;
 	decString pPattern;
 	decString pDefExtension;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file pattern. */
-	igdeFilePattern( const char *name, const char *pattern, const char *defaultExtension );
+	igdeFilePattern(const char *name, const char *pattern, const char *defaultExtension);
 	
 	/** \brief Create copy of a file pattern. */
-	igdeFilePattern( const igdeFilePattern &filePattern );
+	igdeFilePattern(const igdeFilePattern &filePattern);
 	
+protected:
 	/** \brief Clean up file pattern. */
-	~igdeFilePattern();
+	~igdeFilePattern() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */

@@ -26,7 +26,7 @@
 #define _DEOGLFRAMEBUFFERARRAY_H_
 
 #include "deoglFramebuffer.h"
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -34,14 +34,14 @@
  */
 class deoglFramebufferArray : public deObject{
 public:
-	typedef deTObjectReference<deoglFramebufferArray> Ref;
+	using Ref = deTObjectReference<deoglFramebufferArray>;
 	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	const int pLayerCount;
 	deoglFramebuffer::Ref pFBO;
-	decObjectList pLayerFBOs;
+	decTObjectList<deoglFramebuffer> pLayerFBOs;
 	
 	
 public:

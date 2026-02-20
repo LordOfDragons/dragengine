@@ -48,15 +48,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditorHeightPaint::meViewEditorHeightPaint( meView3D &view ) : meViewEditorNavigation( view ){
+meViewEditorHeightPaint::meViewEditorHeightPaint(meView3D &view) : meViewEditorNavigation(view){
 	pPainterElapsedTime = 0.0f;
 	pPainting = false;
 	
-	pHeightPainter = new meCLHeightPaint( view.GetWorld() );
+	pHeightPainter = new meCLHeightPaint(view.GetWorld());
 }
 
 meViewEditorHeightPaint::~meViewEditorHeightPaint(){
-	if( pHeightPainter ){
+	if(pHeightPainter){
 		delete pHeightPainter;
 	}
 }
@@ -66,26 +66,26 @@ meViewEditorHeightPaint::~meViewEditorHeightPaint(){
 // Management
 ///////////////
 
-void meViewEditorHeightPaint::OnFrameUpdate( float elapsed ){
-	if( pPainting ){
+void meViewEditorHeightPaint::OnFrameUpdate(float elapsed){
+	if(pPainting){
 		meCamera &camera = GetActiveCamera();
 		
 		pPainterElapsedTime += elapsed;
 		
 		const decDVector rayPosition = GetMatrixView().GetPosition();
-		const decVector rayDirection = camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), pPaintPosition.x, pPaintPosition.y ) * 500.0f; // 500m
-		pHeightPainter->SetRay( rayPosition, rayDirection );
+		const decVector rayDirection = camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), pPaintPosition.x, pPaintPosition.y) * 500.0f; // 500m
+		pHeightPainter->SetRay(rayPosition, rayDirection);
 		
 		pHeightPainter->PreparePaint();
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmEditing );
+		collisionCategory.SetBit(meWorld::eclmEditing);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmHeightTerrains );
-		RayTestCollision( pHeightPainter, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
+		collisionFilter.SetBit(meWorld::eclmHeightTerrains);
+		RayTestCollision(pHeightPainter, rayPosition, rayDirection, decCollisionFilter(collisionCategory, collisionFilter));
 		
-		pHeightPainter->Paint( pPainterElapsedTime );
+		pHeightPainter->Paint(pPainterElapsedTime);
 		
 		pPainterElapsedTime = 0.0f;
 	}
@@ -96,53 +96,53 @@ void meViewEditorHeightPaint::OnFrameUpdate( float elapsed ){
 // Callbacks
 //////////////
 
-void meViewEditorHeightPaint::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonPress( x, y, shift, control );
+void meViewEditorHeightPaint::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
 	meCamera &camera = GetActiveCamera();
 	
 	const decDVector rayPosition = GetMatrixView().GetPosition();
-	const decVector rayDirection = camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), x, y ) * 50.0f; // 50m
-	pHeightPainter->SetRay( rayPosition, rayDirection );
+	const decVector rayDirection = camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y) * 50.0f; // 50m
+	pHeightPainter->SetRay(rayPosition, rayDirection);
 	
 	pPainterElapsedTime = 0.0f;
 	
 	pHeightPainter->BeginSession();
 	
-	pPaintPosition.Set( x, y );
+	pPaintPosition.Set(x, y);
 	pPainting = true;
 }
 
-void meViewEditorHeightPaint::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonRelease( x, y, shift, control );
+void meViewEditorHeightPaint::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonRelease(x, y, shift, control);
 	
-	if( pPainting ){
+	if(pPainting){
 		pPainting = false;
 		pHeightPainter->EndSession();
 	}
 }
 
-void meViewEditorHeightPaint::OnMouseMove( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnMouseMove( x, y, shift, control );
+void meViewEditorHeightPaint::OnMouseMove(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if( pPainting ){
+	if(pPainting){
 		/*
 		meCamera *camera = pWorld->GetActiveCamera();
 		decLayerMask layerMask;
 		
 		const decDVector rayPosition = GetMatrixView().GetPosition();
-		const decVector rayDirection = camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), x, y ) * 50.0f; // 50m
-		pHeightPainter->SetRay( rayPosition, rayDirection );
+		const decVector rayDirection = camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y) * 50.0f; // 50m
+		pHeightPainter->SetRay(rayPosition, rayDirection);
 		
 		pHeightPainter->PreparePaint();
-		layerMask.SetBit( meWorld::eclmHeightTerrains );
-		TestCollisionWith( pHeightPainter, rayPosition, rayDirection, layerMask, 0 );
-		pHeightPainter->Paint( pPainterElapsedTime );
+		layerMask.SetBit(meWorld::eclmHeightTerrains);
+		TestCollisionWith(pHeightPainter, rayPosition, rayDirection, layerMask, 0);
+		pHeightPainter->Paint(pPainterElapsedTime);
 		pPainterElapsedTime = 0.0f;
 		
 		RequestUpdate();
 		*/
 		
-		pPaintPosition.Set( x, y );
+		pPaintPosition.Set(x, y);
 	}
 }

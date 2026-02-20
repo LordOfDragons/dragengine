@@ -45,5 +45,5 @@ deBaseScriptingServer::~deBaseScriptingServer(){
 // Notifications
 //////////////////
 
-void deBaseScriptingServer::ClientConnected( deConnection *connection ){
+void deBaseScriptingServer::ClientConnected(deConnection *connection){
 }

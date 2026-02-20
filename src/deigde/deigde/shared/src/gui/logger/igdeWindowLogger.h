@@ -25,12 +25,12 @@
 #ifndef _IGDEWINDOWLOGGER_H_
 #define _IGDEWINDOWLOGGER_H_
 
+#include "igdeWindowLoggerListener.h"
 #include "../igdeWindow.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeTextArea.h"
+#include "../../logger/igdeLoggerHistory.h"
 
-class igdeLoggerHistory;
 class igdeLoggerHistoryEntry;
-class igdeWindowLoggerListener;
 
 
 
@@ -39,6 +39,10 @@ class igdeWindowLoggerListener;
  */
 class DE_DLL_EXPORT igdeWindowLogger : public igdeWindow{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWindowLogger>;
+	
+	
 	/** \brief Warning style name. */
 	static const char *styleWarning;
 	
@@ -48,9 +52,9 @@ public:
 	
 	
 private:
-	igdeWindowLoggerListener *pListener;
-	igdeLoggerHistory *pLogger;
-	igdeTextAreaReference pEditLogs;
+	igdeWindowLoggerListener::Ref pListener;
+	igdeLoggerHistory::Ref pHistoryLogger;
+	igdeTextArea::Ref pEditLogs;
 	int pPendingAddedLogs;
 	bool pPendingClearLogs;
 	
@@ -60,21 +64,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create logger window. */
-	igdeWindowLogger( igdeEnvironment &environment );
+	explicit igdeWindowLogger(igdeEnvironment &environment);
 	
+protected:
 	/** \brief Clean up logger window. */
-	virtual ~igdeWindowLogger();
+	~igdeWindowLogger() override;
+	
+public:
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Logger or NULL. */
-	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
+	/** \brief History logger or nullptr. */
+	inline const igdeLoggerHistory::Ref &GetHistoryLogger() const{ return pHistoryLogger; }
 	
-	/** \brief Set logger or NULL. */
-	void SetLogger( igdeLoggerHistory *logger );
+	/** \brief Set logger or nullptr. */
+	void SetHistoryLogger(igdeLoggerHistory *logger);
 	
 	
 	
@@ -93,7 +100,7 @@ public:
 	 * Returns \em true to close window or \em false to keep it open. Default implementation
 	 * returns \em true.
 	 */
-	virtual bool CloseWindow();
+	bool CloseWindow() override;
 	
 	
 	
@@ -113,14 +120,14 @@ public:
 	
 protected:
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	/*@}*/
 	
 	
 	
 private:
 	void pRemoveOldLines();
-	void pAddLog( const igdeLoggerHistoryEntry &entry );
+	void pAddLog(const igdeLoggerHistoryEntry &entry);
 	void pClearLogs();
 };
 

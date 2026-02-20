@@ -26,10 +26,10 @@
 #define _CEUCAASPEAKSTRIPSSCALE_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,39 +38,50 @@ class ceConversationTopic;
  */
 class ceUCAASpeakStripsScale : public igdeUndo{
 public:
-	struct sStrip{
-		float pause;
-		float duration;
-	};
+	using Ref = deTObjectReference<ceUCAASpeakStripsScale>;
+	
 	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pStrips;
-	sStrip *pOldStates;
+	class cStrip : public deObject{
+	public:
+		using Ref = deTObjectReference<cStrip>;
+		const ceStrip::Ref strip;
+		const float pause;
+		const float duration;
+		
+		explicit inline cStrip(const ceStrip::Ref &s) :
+			strip(s), pause(s->GetPause()), duration(s->GetDuration()){}
+	protected:
+		~cStrip() override = default;
+	};
+	
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	decTObjectOrderedSet<cStrip> pStrips;
 	float pScaling;
 	
-public:
+protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripsScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAASpeakStripsScale();
+	~ceUCAASpeakStripsScale() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets the list of strips capturing the current state. */
-	void SetStrips( const ceStripList &strips );
+	void SetStrips(const ceStrip::List &strips);
 	/** \brief Set new scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

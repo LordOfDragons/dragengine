@@ -25,20 +25,20 @@
 #ifndef _DEBPCOLLIDERBONE_H_
 #define _DEBPCOLLIDERBONE_H_
 
-#include "../shape/debpShapeList.h"
+#include "debpColliderConstraint.h"
+#include "../shape/debpShape.h"
 #include "../debpCollisionObject.h"
+#include "../debpBulletShape.h"
 
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
-class debpColliderConstraint;
-class debpBulletShape;
 class debpPhysicsBody;
 
 class btGhostObject;
 class btCollisionObject;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deRigBone;
 
@@ -80,16 +80,16 @@ private:
 	int pIndex;
 	int pParent;
 	
-	decPointerOrderedSet pConstraints;
+	decTUniqueList<debpColliderConstraint> pConstraints;
 	
-	debpShapeList pShapes;
+	debpShape::List pShapes;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	bool pDirtyStaticTest;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
@@ -98,7 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a collider bone. */
-	debpColliderBone( debpCollider *collider, int index );
+	debpColliderBone(debpCollider *collider, int index);
 	
 	/** Clean up collider bone. */
 	~debpColliderBone();
@@ -128,23 +128,23 @@ public:
 	inline bool GetColBoneDynamic() const{ return pColBoneDynamic; }
 	
 	/** Set bone matrices. */
-	void SetBoneMatrices( const decDMatrix &matrix );
+	void SetBoneMatrices(const decDMatrix &matrix);
 	
 	/** Set collider matrices. */
-	void SetColliderMatrices( const decDMatrix &matrix );
+	void SetColliderMatrices(const decDMatrix &matrix);
 	
 	/** Set local matrix. */
-	void SetLocalMatrix( const decDMatrix &matrix );
+	void SetLocalMatrix(const decDMatrix &matrix);
 	
 	/** Set real matrix. */
-	void SetRealMatrix( const decDMatrix &matrix );
+	void SetRealMatrix(const decDMatrix &matrix);
 	
 	/** Dirty. */
 	inline bool GetDirty() const{ return pDirty; }
-	void SetDirty( bool dirty );
+	void SetDirty(bool dirty);
 	
 	/** Set matching collider bone is set dynamic. */
-	void SetColBoneDynamic( bool dynamic );
+	void SetColBoneDynamic(bool dynamic);
 	
 	/** Parent bone index with -1 meaning not parent. */
 	inline int GetParent() const{ return pParent; }
@@ -153,31 +153,34 @@ public:
 	inline const decDVector &GetOffset() const{ return pOffset; }
 	
 	/** Shapes. */
-	inline debpShapeList &GetShapes(){ return pShapes; }
-	inline const debpShapeList &GetShapes() const{ return pShapes; }
+	inline debpShape::List &GetShapes(){ return pShapes; }
+	inline const debpShape::List &GetShapes() const{ return pShapes; }
 	
 	/** Set parameters from rig bone. */
-	void SetFromRigBone( const deRigBone &bone );
+	void SetFromRigBone(const deRigBone &bone);
 	
 	
+	
+	/** Constraints. */
+	inline const decTUniqueList<debpColliderConstraint> &GetConstraints() const{ return pConstraints; }
 	
 	/** Number of constraints. */
 	int GetConstraintCount() const;
 	
 	/** Constraint at index. */
-	debpColliderConstraint *GetConstraintAt( int index ) const;
+	debpColliderConstraint *GetConstraintAt(int index) const;
 	
 	/** Index of constraint or -1 if absent. */
-	int IndexOfConstraint( debpColliderConstraint *constraint ) const;
+	int IndexOfConstraint(debpColliderConstraint *constraint) const;
 	
 	/** Constraint is present. */
-	bool HasConstraint( debpColliderConstraint *constraint ) const;
+	bool HasConstraint(debpColliderConstraint *constraint) const;
 	
 	/** Add constraint. */
-	void AddConstraint( debpColliderConstraint *constraint );
+	void AddConstraint(deTUniqueReference<debpColliderConstraint> &&constraint);
 	
 	/** Remove constraint. */
-	void RemoveConstraint( debpColliderConstraint *constraint );
+	void RemoveConstraint(debpColliderConstraint *constraint);
 	
 	/** Remove all constraints. */
 	void RemoveAllConstraints();
@@ -203,16 +206,16 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Set debug drawer or \em NULL if not activated. */
-	void SetDebugDrawer( deDebugDrawer *debugDrawer );
+	void SetDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
 	/** Set debug drawer shape or \em NULL if not activated. */
-	void SetDDSShape( deDebugDrawerShape *shape );
+	void SetDDSShape(deDebugDrawerShape *shape);
 	/*@}*/
 	
 	
@@ -220,7 +223,7 @@ public:
 private:
 	void pCleanUp();
 	void pUpdateStaticCollisionTest();
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 };
 
 #endif

@@ -35,6 +35,9 @@ class reWPUndoHistory;
  * \brief Undo History Panel Listener.
  */
 class reWPUndoHistoryListener : public reRigNotifier{
+public:
+	using Ref = deTObjectReference<reWPUndoHistoryListener>;
+	
 private:
 	reWPUndoHistory &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPUndoHistoryListener( reWPUndoHistory &panel );
+	reWPUndoHistoryListener(reWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPUndoHistoryListener();
+protected:
+	~reWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( reRig *rig );
+	void UndoChanged(reRig *rig) override;
 	/*@}*/
 };
 

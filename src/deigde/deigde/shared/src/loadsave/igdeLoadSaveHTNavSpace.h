@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load save object. */
-	igdeLoadSaveHTNavSpace( igdeEnvironment &environment, const char *loggingSource );
+	igdeLoadSaveHTNavSpace(igdeEnvironment &environment, const char *loggingSource);
 	
 	/** \brief Clean up load save object. */
 	virtual ~igdeLoadSaveHTNavSpace();
@@ -66,27 +66,27 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name to display in file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in file dialog. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern to display in file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
 	
 	/** \brief Set default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	
 	
 	/** \brief Load height terrain navigation space. */
-	virtual void Load( deHeightTerrainNavSpace &navspace, decBaseFileReader &reader );
+	virtual void Load(deHeightTerrainNavSpace &navspace, decBaseFileReader &reader);
 	
 	/** \brief Save height terrain navigation space. */
-	virtual void Save( const deHeightTerrainNavSpace &navspace, decBaseFileWriter &writer );
+	virtual void Save(const deHeightTerrainNavSpace &navspace, decBaseFileWriter &writer);
 	/*@}*/
 };
 

@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate( gdeObjectClass *objectClass ) :
-pObjectClass( NULL )
+gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate(gdeObjectClass *objectClass) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class toggle can instantiate" );
+	SetShortInfo("@GameDefinition.Undo.OCToggleCanInstantiate");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -64,7 +60,7 @@ gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
 ///////////////
 
 void gdeUOCToggleCanInstantiate::Undo(){
-	pObjectClass->SetCanInstantiate( ! pObjectClass->GetCanInstantiate() );
+	pObjectClass->SetCanInstantiate(!pObjectClass->GetCanInstantiate());
 }
 
 void gdeUOCToggleCanInstantiate::Redo(){

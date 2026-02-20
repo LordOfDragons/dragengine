@@ -25,12 +25,13 @@
 #ifndef _DEOGLHTVIEW_H_
 #define _DEOGLHTVIEW_H_
 
+#include "deoglHTViewSector.h"
 #include "deoglHeightTerrainListener.h"
 #include "deoglRHeightTerrain.h"
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglHTViewSector;
 class deoglCollisionVolume;
 
 
@@ -40,8 +41,7 @@ class deoglCollisionVolume;
  */
 class deoglHTView : public deoglHeightTerrainListener{
 public:
-	typedef deTObjectReference<deoglHTView> Ref;
-	
+	using Ref = deTObjectReference<deoglHTView>;
 	
 	
 private:
@@ -49,18 +49,18 @@ private:
 		deoglHTView &pHTView;
 		
 	public:
-		HTListener( deoglHTView &htview );
-		virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+		using Ref = deTObjectReference<HTListener>;
+		
+		explicit HTListener(deoglHTView &htview);
+		void SectorsChanged(deoglRHeightTerrain &heightTerrain) override;
 	};
 	
 	
 	
 	const deoglRHeightTerrain::Ref pHeightTerrain;
-	deoglHeightTerrainListener::Ref pHTListener;
+	HTListener::Ref pHTListener;
 	
-	deoglHTViewSector **pSectors;
-	int pSectorCount;
-	int pSectorSize;
+	decTUniqueList<deoglHTViewSector> pSectors;
 	
 	bool pDirtySectors;
 	
@@ -70,11 +70,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view. */
-	deoglHTView( deoglRHeightTerrain *heightTerrain );
+	deoglHTView(deoglRHeightTerrain *heightTerrain);
 	
 protected:
 	/** Clean up view. */
-	virtual ~deoglHTView();
+	~deoglHTView() override;
 	/*@}*/
 	
 	
@@ -86,13 +86,10 @@ public:
 	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Count of sectors. */
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{ return pSectors.GetCount(); }
 	
 	/** Sector at index. */
-	deoglHTViewSector *GetSectorAt( int index ) const;
-	
-	/** Add sector. */
-	void AddSector( deoglHTViewSector *sector );
+	deoglHTViewSector *GetSectorAt(int index) const;
 	
 	/** Remove all sectors. */
 	void RemoveAllSectors();
@@ -105,7 +102,7 @@ public:
 	 * terrain. LOD level neighbor rules are taken into account. Also updates the borders to
 	 * render the terrain correctly.
 	 */
-	void UpdateLODLevels( const decVector &camera );
+	void UpdateLODLevels(const decVector &camera);
 	
 	/** Prepate. */
 	void Prepare();
@@ -119,7 +116,7 @@ public:
 	
 	
 	/** Sectors changed. */
-	virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+	void SectorsChanged(deoglRHeightTerrain &heightTerrain) override;
 	/*@}*/
 	
 	

@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetSampleText::saeUPhonemeSetSampleText( saePhoneme *phoneme, const char *newText ){
-	if( ! phoneme || ! newText ) DETHROW( deeInvalidParam );
+saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const char *newText){
+	if(!phoneme || !newText) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
-	SetShortInfo( "Phoneme Set Sample Text" );
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetSampleText");
 	
 	pOldText = phoneme->GetSampleText();
 	pNewText = newText;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetSampleText::~saeUPhonemeSetSampleText(){
-	if( pPhoneme ){
-		pPhoneme->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUPhonemeSetSampleText::~saeUPhonemeSetSampleText(){
 ///////////////
 
 void saeUPhonemeSetSampleText::Undo(){
-	pPhoneme->SetSampleText( pOldText.GetString() );
+	pPhoneme->SetSampleText(pOldText.GetString());
 }
 
 void saeUPhonemeSetSampleText::Redo(){
-	pPhoneme->SetSampleText( pNewText.GetString() );
+	pPhoneme->SetSampleText(pNewText.GetString());
 }

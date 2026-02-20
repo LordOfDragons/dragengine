@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine WorldSector Editor
  *
- * Copyright (C) 2007, Plüss Roland ( roland@rptd.ch )
+ * Copyright (C) 2007, Plï¿½ss Roland ( roland@rptd.ch )
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -26,7 +26,7 @@
 #include "../../../world/meWorldSector.h"
 #include "../../../world/meSelectionObjects.h"
 #include "../../../worldedit.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -43,7 +43,7 @@ meUScaleObject::meUScaleObject( meWorld *world ){
 	int count = selection->GetObjectCount();
 	
 	pWorld = world;
-	pObjects = NULL;
+	pObjects = nullptr;
 	pObjectCount = 0;
 	
 	try{

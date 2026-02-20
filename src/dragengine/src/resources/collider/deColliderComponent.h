@@ -26,7 +26,7 @@
 #define _DECOLLIDERCOMPONENT_H_
 
 #include "deColliderRig.h"
-#include "../component/deComponentReference.h"
+#include "../component/deComponent.h"
 
 class deCollisionInfo;
 
@@ -51,12 +51,11 @@ class deCollisionInfo;
 class DE_DLL_EXPORT deColliderComponent : public deColliderRig{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deColliderComponent> Ref;
-	
+	using Ref = deTObjectReference<deColliderComponent>;
 	
 	
 private:
-	deComponentReference pComponent;
+	deComponent::Ref pComponent;
 	
 	
 	
@@ -64,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component collider. */
-	deColliderComponent( deColliderManager *manager );
+	deColliderComponent(deColliderManager *manager);
 	
 protected:
 	/**
@@ -73,7 +72,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deColliderComponent();
+	~deColliderComponent() override;
 	/*@}*/
 	
 	
@@ -82,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component or NULL if not set. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/**
 	 * \brief Set component or NULL if not set.
@@ -94,7 +93,7 @@ public:
 	 * module has to track this and call SetRig() whenever a rig change
 	 * in the component is detected.
 	 */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	
 	
@@ -112,7 +111,7 @@ public:
 	 * If the component is not set nothing is done at all. All linear and
 	 * angular velocities are set to zero.
 	 */
-	void CopyStateFromComponent( int bone );
+	void CopyStateFromComponent(int bone);
 	
 	/**
 	 * \brief Copy bone states to component bones if set.
@@ -126,7 +125,7 @@ public:
 	 * 
 	 * If the component is not set nothing is done at all.
 	 */
-	void CopyStateToComponent( int bone ) const;
+	void CopyStateToComponent(int bone) const;
 	
 	
 	
@@ -142,7 +141,7 @@ public:
 	 * \param[in] face Index of face. Typically comes from deCollisionInfo::GetFace().
 	 * \throws EInvalidParam Face index is outside allowed boundaries.
 	 */
-	void InitWeightAttachment( deColliderAttachment &attachment, int face );
+	void InitWeightAttachment(deColliderAttachment &attachment, int face);
 	/*@}*/
 	
 	
@@ -150,7 +149,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deColliderVisitor &visitor );
+	void Visit(deColliderVisitor &visitor) override;
 	/*@}*/
 };
 

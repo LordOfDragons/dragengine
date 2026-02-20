@@ -25,11 +25,11 @@
 #ifndef _DESKYMANAGER_H_
 #define _DESKYMANAGER_H_ 
 
+#include "deSky.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deSky;
 
 
 /**
@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene sky resource manager linked to the given engine. */
-	deSkyManager( deEngine *engine );
+	deSkyManager(deEngine *engine);
 	
 	/** \brief Clean up scene sky resource manager and reports leaking resources. */
-	~deSkyManager();
+	~deSkyManager() override;
 	/*@}*/
 	
 	
@@ -63,18 +63,18 @@ public:
 	deSky *GetRootSky() const;
 	
 	/** \brief Create new scene sky. */
-	deSky *CreateSky();
+	deSky::Ref CreateSky();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

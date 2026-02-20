@@ -36,6 +36,9 @@
  * Working object for rig capsule shape.
  */
 class reRigShapeCapsule : public reRigShape{
+public:
+	using Ref = deTObjectReference<reRigShapeCapsule>;
+	
 private:
 	float pTopRadius;
 	float pBottomRadius;
@@ -45,9 +48,11 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig capsule shape. */
-	reRigShapeCapsule( deEngine *engine );
+	reRigShapeCapsule(deEngine *engine);
 	/** Cleans up the rig shape shape. */
-	virtual ~reRigShapeCapsule();
+protected:
+	~reRigShapeCapsule() override;
+public:
 	/*@}*/
 	
 	/** @name Management */
@@ -55,25 +60,25 @@ public:
 	/** Retrieves the half height. */
 	inline float GetHalfHeight() const{ return pHalfHeight; }
 	/** Sets the half height. */
-	void SetHalfHeight( float halfHeight );
+	void SetHalfHeight(float halfHeight);
 	/** Retrieves the top radius. */
 	inline float GetTopRadius() const{ return pTopRadius; }
 	/** Sets the top radius. */
-	void SetTopRadius( float radius );
+	void SetTopRadius(float radius);
 	/** Retrieves the bottom radius. */
 	inline float GetBottomRadius() const{ return pBottomRadius; }
 	/** Sets the bottom radius. */
-	void SetBottomRadius( float radius );
+	void SetBottomRadius(float radius);
 	/** Sets both radi to the same value. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** Creates a copy of this shape. */
-	virtual reRigShape *Duplicate() const;
+	reRigShape::Ref Duplicate() const override;
 	/** Uniformly scale shape. */
-	virtual void Scale( float scale );
+	void Scale(float scale) override;
 	
 	/** Creates shape. */
-	virtual decShape *CreateShape();
+	decShape::Ref CreateShape() override;
 	/*@}*/
 };
 

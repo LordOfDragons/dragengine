@@ -25,11 +25,11 @@
 #ifndef _DEOGLRRDSRENDERABLECANVAS_H_
 #define _DEOGLRRDSRENDERABLECANVAS_H_
 
+#include "deoglRDSRenderable.h"
+#include "../../../../canvas/render/deoglRCanvasView.h"
+
 #include <dragengine/deObject.h>
 
-#include "deoglRDSRenderable.h"
-
-class deoglRCanvasView;
 class deDSRenderableCanvas;
 
 
@@ -38,8 +38,13 @@ class deDSRenderableCanvas;
  * Render dynamic skin canvas renderable.
  */
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDSRenderableCanvas>;
+	
+	
 private:
-	deoglRCanvasView *pCanvas;
+	deoglRCanvasView::Ref pCanvas;
 	int pComponentCount;
 	int pBitCount;
 	
@@ -49,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin canvas renderable. */
-	deoglRDSRenderableCanvas( deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
+	deoglRDSRenderableCanvas(deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up render dynamic skin canvas  renderable. */
-	virtual ~deoglRDSRenderableCanvas();
+	~deoglRDSRenderableCanvas() override;
 	/*@}*/
 	
 	
@@ -60,25 +65,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set canvas. */
-	void SetCanvas( deoglRCanvasView *canvas );
+	void SetCanvas(deoglRCanvasView *canvas);
 	
 	/** Set component count. */
-	void SetComponentCount( int componentCount );
+	void SetComponentCount(int componentCount);
 	
 	/** Set bit count. */
-	void SetBitCount( int bitCount );
+	void SetBitCount(int bitCount);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/** Render. */
-	virtual void Render( const deoglRenderPlanMasked *renderPlanMask );
+	void Render(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

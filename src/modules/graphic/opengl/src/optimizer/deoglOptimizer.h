@@ -26,14 +26,20 @@
 #ifndef _DEOGLOPTIMIZER_H_
 #define _DEOGLOPTIMIZER_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
+
 
 
 /**
  * Optimizer.
  * Optimizers are able to optimize progessively an engine object over time.
  */
-class deoglOptimizer{
+class deoglOptimizer : public deObject{
 public:
+	/** \brief Reference. */
+	using Ref = deTObjectReference<deoglOptimizer>;
+	
 	enum ePriorities{
 		epLowest,
 		epLower,
@@ -52,16 +58,19 @@ public:
 	/*@{*/
 	/** Creates a new optimizer. */
 	deoglOptimizer();
+	
+protected:
 	/** Cleans up the optimizer. */
-	virtual ~deoglOptimizer();
+	~deoglOptimizer() override = default;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the remaining time for this optimizer in micro-seconds. */
 	inline int GetRemainingTime() const{ return pRemainingTime; }
 	/** Decreases the remaining time by the given amount of micro-seconds. */
-	void DecreaseRemainingTime( int microSeconds );
+	void DecreaseRemainingTime(int microSeconds);
 	/** Resets the remaining Time to the maximal time. */
 	void ResetRemainingTime();
 	/** Retrieves the maximum time int micro-seconds. */
@@ -69,13 +78,13 @@ public:
 	/** Retrieves the priority. */
 	inline int GetPriority() const{ return pPriority; }
 	/** Sets the priority. */
-	void SetPriority( int priority );
+	void SetPriority(int priority);
 	/**
 	 * Runs optimizer until the given time slice in micro-seconds has elapsed.
 	 * Returns true if the optimizer requires more time to finish. If false
 	 * is returned the optimizer has finished running and will be removed.
 	 */
-	virtual bool Run( int timeSlice );
+	virtual bool Run(int timeSlice);
 	/*@}*/
 };
 

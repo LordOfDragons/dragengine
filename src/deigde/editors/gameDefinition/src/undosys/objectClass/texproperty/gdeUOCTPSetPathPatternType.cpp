@@ -39,34 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetPathPatternType::gdeUOCTPSetPathPatternType( gdeObjectClass *objectClass,
-gdeProperty *property, gdeProperty::ePathPatternTypes newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetPathPatternType::gdeUOCTPSetPathPatternType(gdeObjectClass *objectClass,
+gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set path pattern type" );
+	SetShortInfo("@GameDefinition.Undo.OCTPSetPathPatternType");
 	
 	pOldValue = property->GetPathPatternType();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPSetPathPatternType::~gdeUOCTPSetPathPatternType(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCTPSetPathPatternType::~gdeUOCTPSetPathPatternType(){
 ///////////////
 
 void gdeUOCTPSetPathPatternType::Undo(){
-	pProperty->SetPathPatternType( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetPathPatternType::Redo(){
-	pProperty->SetPathPatternType( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetPathPatternType(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

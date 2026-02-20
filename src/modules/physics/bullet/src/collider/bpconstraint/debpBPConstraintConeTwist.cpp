@@ -37,18 +37,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBPConstraintConeTwist::debpBPConstraintConeTwist( btRigidBody &rbA, btRigidBody &rbB,
-const btTransform &rbAFrame, const btTransform &rbBFrame )
-: btConeTwistConstraint( rbA, rbB, rbAFrame, rbBFrame )
+debpBPConstraintConeTwist::debpBPConstraintConeTwist(btRigidBody &rbA, btRigidBody &rbB,
+const btTransform &rbAFrame, const btTransform &rbBFrame)
+: btConeTwistConstraint(rbA, rbB, rbAFrame, rbBFrame)
 {
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
-debpBPConstraintConeTwist::debpBPConstraintConeTwist( btRigidBody &rbA, const btTransform &rbAFrame,
-const btTransform &rbBFrame )
-: btConeTwistConstraint( rbA, getFixedBody(), rbAFrame, rbBFrame )
+debpBPConstraintConeTwist::debpBPConstraintConeTwist(btRigidBody &rbA, const btTransform &rbAFrame,
+const btTransform &rbBFrame)
+: btConeTwistConstraint(rbA, getFixedBody(), rbAFrame, rbBFrame)
 {
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
 debpBPConstraintConeTwist::~debpBPConstraintConeTwist(){

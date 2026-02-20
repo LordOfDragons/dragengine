@@ -27,11 +27,11 @@
 #define _AEUPASTERULE_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../animator/rule/aeRuleList.h"
-#include "../../animator/link/aeLinkList.h"
-#include "../../animator/controller/aeControllerList.h"
+#include "../../animator/rule/aeRule.h"
+#include "../../animator/link/aeLink.h"
+#include "../../animator/controller/aeController.h"
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -39,31 +39,35 @@ class aeAnimator;
  * Undo action paste rule.
  */
 class aeUPasteRule : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUPasteRule>;
+	
+	
 private:
 	aeAnimator *pAnimator;
-	aeRuleList pRuleList;
-	aeLinkList pRemoveLinkList;
-	aeControllerList pRemoveControllerList;
+	aeRule::List pRuleList;
+	aeLink::List pRemoveLinkList;
+	aeController::List pRemoveControllerList;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeUPasteRule( aeAnimator *animator, const aeRuleList &ruleList, int index );
+	aeUPasteRule(aeAnimator *animator, const aeRule::List &ruleList, int index);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUPasteRule();
+	~aeUPasteRule() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

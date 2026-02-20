@@ -42,8 +42,7 @@
 class DE_DLL_EXPORT deAnimatorRuleTrackTo : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorRuleTrackTo> Ref;
-	
+	using Ref = deTObjectReference<deAnimatorRuleTrackTo>;
 	
 	
 public:
@@ -143,7 +142,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimatorRuleTrackTo();
+	~deAnimatorRuleTrackTo() override;
 	/*@}*/
 	
 public:
@@ -153,31 +152,31 @@ public:
 	inline const decString &GetTrackBone() const{ return pTrackBone; }
 	
 	/** \brief Set name of the track bone or empty string to use none. */
-	void SetTrackBone( const char *boneName );
+	void SetTrackBone(const char *boneName);
 	
 	/** \brief Track axis. */
 	inline eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
 	
 	/** \brief Set track axis. */
-	void SetTrackAxis( eTrackAxis axis );
+	void SetTrackAxis(eTrackAxis axis);
 	
 	/** \brief Up axis. */
 	inline eTrackAxis GetUpAxis() const{ return pUpAxis; }
 	
 	/** \brief Set up axis. */
-	void SetUpAxis( eTrackAxis axis );
+	void SetUpAxis(eTrackAxis axis);
 	
 	/** \brief Up target. */
 	inline eUpTarget GetUpTarget() const{ return pUpTarget; }
 	
 	/** \brief Set up target. */
-	void SetUpTarget( eUpTarget target );
+	void SetUpTarget(eUpTarget target);
 	
 	/** \brief Locked axis. */
 	inline eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
 	
 	/** \brief Set locked axis. */
-	void SetLockedAxis( eLockedAxis axis );
+	void SetLockedAxis(eLockedAxis axis);
 	
 	/** \brief Position target. */
 	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
@@ -193,7 +192,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	void Visit(deAnimatorRuleVisitor &visitor) override;
 	/*@}*/
 };
 

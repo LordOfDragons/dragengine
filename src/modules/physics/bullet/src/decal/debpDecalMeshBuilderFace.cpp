@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "debpDecalMeshBuilderFace.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -37,32 +37,47 @@
 ////////////////////////////
 
 debpDecalMeshBuilderFace::debpDecalMeshBuilderFace(){
-	pPoints[ 0 ] = 0;
-	pPoints[ 1 ] = 0;
-	pPoints[ 2 ] = 0;
+	pPoints[0] = 0;
+	pPoints[1] = 0;
+	pPoints[2] = 0;
 	pFaceIndex = -1;
 }
 
-debpDecalMeshBuilderFace::~debpDecalMeshBuilderFace(){
+debpDecalMeshBuilderFace::debpDecalMeshBuilderFace(const debpDecalMeshBuilderFace &other){
+	pPoints[0] = other.pPoints[0];
+	pPoints[1] = other.pPoints[1];
+	pPoints[2] = other.pPoints[2];
+	pFaceIndex = other.pFaceIndex;
 }
 
+debpDecalMeshBuilderFace &debpDecalMeshBuilderFace::operator=(const debpDecalMeshBuilderFace &other){
+	if(this != &other){
+		pPoints[0] = other.pPoints[0];
+		pPoints[1] = other.pPoints[1];
+		pPoints[2] = other.pPoints[2];
+		pFaceIndex = other.pFaceIndex;
+	}
+	return *this;
+}
+
+debpDecalMeshBuilderFace::~debpDecalMeshBuilderFace() = default;
 
 
 // Management
 ///////////////
 
-void debpDecalMeshBuilderFace::SetPoint1( int point ){
-	pPoints[ 0 ] = point;
+void debpDecalMeshBuilderFace::SetPoint1(int point){
+	pPoints[0] = point;
 }
 
-void debpDecalMeshBuilderFace::SetPoint2( int point ){
-	pPoints[ 1 ] = point;
+void debpDecalMeshBuilderFace::SetPoint2(int point){
+	pPoints[1] = point;
 }
 
-void debpDecalMeshBuilderFace::SetPoint3( int point ){
-	pPoints[ 2 ] = point;
+void debpDecalMeshBuilderFace::SetPoint3(int point){
+	pPoints[2] = point;
 }
 
-void debpDecalMeshBuilderFace::SetFaceIndex( int faceIndex ){
+void debpDecalMeshBuilderFace::SetFaceIndex(int faceIndex){
 	pFaceIndex = faceIndex;
 }

@@ -40,10 +40,10 @@
 ////////////////////////////
 
 deAnimatorRuleInverseKinematic::deAnimatorRuleInverseKinematic() :
-pAdjustPosition( true ),
-pAdjustOrientation( false ),
-pUseSolverBone( false ),
-pReachRange( 0.0f ){
+pAdjustPosition(true),
+pAdjustOrientation(false),
+pUseSolverBone(false),
+pReachRange(0.0f){
 }
 
 deAnimatorRuleInverseKinematic::~deAnimatorRuleInverseKinematic(){
@@ -54,50 +54,50 @@ deAnimatorRuleInverseKinematic::~deAnimatorRuleInverseKinematic(){
 // Management
 ///////////////
 
-void deAnimatorRuleInverseKinematic::SetGoalPosition( const decVector &position ){
+void deAnimatorRuleInverseKinematic::SetGoalPosition(const decVector &position){
 	pGoalPosition = position;
 }
 
-void deAnimatorRuleInverseKinematic::SetGoalOrientation( const decQuaternion &orientation ){
+void deAnimatorRuleInverseKinematic::SetGoalOrientation(const decQuaternion &orientation){
 	pGoalOrientation = orientation;
 }
 
-void deAnimatorRuleInverseKinematic::SetLocalPosition( const decVector &position ){
+void deAnimatorRuleInverseKinematic::SetLocalPosition(const decVector &position){
 	pLocalPosition = position;
 }
 
-void deAnimatorRuleInverseKinematic::SetLocalOrientation( const decQuaternion &orientation ){
+void deAnimatorRuleInverseKinematic::SetLocalOrientation(const decQuaternion &orientation){
 	pLocalOrientation = orientation;
 }
 
-void deAnimatorRuleInverseKinematic::SetAdjustPosition( bool adjust ){
+void deAnimatorRuleInverseKinematic::SetAdjustPosition(bool adjust){
 	pAdjustPosition = adjust;
 }
 
-void deAnimatorRuleInverseKinematic::SetAdjustOrientation( bool adjust ){
+void deAnimatorRuleInverseKinematic::SetAdjustOrientation(bool adjust){
 	pAdjustOrientation = adjust;
 }
 
 
 
-void deAnimatorRuleInverseKinematic::SetUseSolverBone( bool useSolverBone ){
+void deAnimatorRuleInverseKinematic::SetUseSolverBone(bool useSolverBone){
 	pUseSolverBone = useSolverBone;
 }
 
-void deAnimatorRuleInverseKinematic::SetSolverBone( const char *boneName ){
+void deAnimatorRuleInverseKinematic::SetSolverBone(const char *boneName){
 	pSolverBone = boneName;
 }
 
 
-void deAnimatorRuleInverseKinematic::SetReachRange( float range ){
-	pReachRange = decMath::max( range, 0.0f );
+void deAnimatorRuleInverseKinematic::SetReachRange(float range){
+	pReachRange = decMath::max(range, 0.0f);
 }
 
-void deAnimatorRuleInverseKinematic::SetReachBone( const char *bone ){
+void deAnimatorRuleInverseKinematic::SetReachBone(const char *bone){
 	pReachBone = bone;
 }
 
-void deAnimatorRuleInverseKinematic::SetReachCenter( const decVector &center ){
+void deAnimatorRuleInverseKinematic::SetReachCenter(const decVector &center){
 	pReachCenter = center;
 }
 
@@ -106,6 +106,6 @@ void deAnimatorRuleInverseKinematic::SetReachCenter( const decVector &center ){
 // Visiting
 /////////////
 
-void deAnimatorRuleInverseKinematic::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitInverseKinematic( *this );
+void deAnimatorRuleInverseKinematic::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitInverseKinematic(*this);
 }

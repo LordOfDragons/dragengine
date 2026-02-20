@@ -25,7 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dePathList.h"
 #include "deCollectFileSearchVisitor.h"
 #include "deVirtualFileSystem.h"
 #include "../common/file/decPath.h"
@@ -39,13 +38,13 @@
 ////////////////////////////
 
 deCollectFileSearchVisitor::deCollectFileSearchVisitor() :
-pRecursive( false ){
+pRecursive(false){
 }
 
-deCollectFileSearchVisitor::deCollectFileSearchVisitor( const char *pattern, bool recursive ) :
-pRecursive( recursive )
+deCollectFileSearchVisitor::deCollectFileSearchVisitor(const char *pattern, bool recursive) :
+pRecursive(recursive)
 {
-	AddPattern( pattern );
+	AddPattern(pattern);
 }
 
 deCollectFileSearchVisitor::~deCollectFileSearchVisitor(){
@@ -56,13 +55,13 @@ deCollectFileSearchVisitor::~deCollectFileSearchVisitor(){
 // Management
 ///////////////
 
-void deCollectFileSearchVisitor::AddPattern( const char *pattern ){
+void deCollectFileSearchVisitor::AddPattern(const char *pattern){
 	decPath path;
-	path.AddComponent( pattern );
-	pPatterns.Add( path );
+	path.AddComponent(pattern);
+	pPatterns.Add(path);
 }
 
-void deCollectFileSearchVisitor::SetRecursive( bool recursion ){
+void deCollectFileSearchVisitor::SetRecursive(bool recursion){
 	pRecursive = recursion;
 }
 
@@ -71,17 +70,17 @@ void deCollectFileSearchVisitor::SetRecursive( bool recursion ){
 // Visiting
 /////////////
 
-bool deCollectFileSearchVisitor::VisitFile( const deVirtualFileSystem &, const decPath &path ){
+bool deCollectFileSearchVisitor::VisitFile(const deVirtualFileSystem &, const decPath &path){
 	const int patternCount = pPatterns.GetCount();
-	if( patternCount == 0 ){
-		pFiles.Add( path );
+	if(patternCount == 0){
+		pFiles.Add(path);
 		return true;
 	}
 	
 	int i;
-	for( i=0; i<patternCount; i++ ){
-		if( path.MatchesPattern( pPatterns.GetAt( i ) ) ){
-			pFiles.Add( path );
+	for(i=0; i<patternCount; i++){
+		if(path.MatchesPattern(pPatterns.GetAt(i))){
+			pFiles.Add(path);
 			return true;
 		}
 	}
@@ -89,13 +88,13 @@ bool deCollectFileSearchVisitor::VisitFile( const deVirtualFileSystem &, const d
 	return true;
 }
 
-bool deCollectFileSearchVisitor::VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path ){
-	if( pRecursive ){
-		vfs.SearchFiles( path, *this );
+bool deCollectFileSearchVisitor::VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+	if(pRecursive){
+		vfs.SearchFiles(path, *this);
 	}
 	return true;
 }
 
-bool deCollectFileSearchVisitor::VisitSpecial( const deVirtualFileSystem &, const decPath &path ){
+bool deCollectFileSearchVisitor::VisitSpecial(const deVirtualFileSystem &, const decPath &path){
 	return true;
 }

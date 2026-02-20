@@ -29,8 +29,11 @@
 #include "../object/meObject.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 
 class meObject;
@@ -39,8 +42,6 @@ class meWorld;
 class igdeWDebugDrawerShape;
 class igdeEnvironment;
 
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 class decShape;
 
@@ -48,7 +49,7 @@ class decShape;
 
 /**
  * \brief Object Shape.
- * \details A single shape in an object shape. Whereas the meObjectShapeList corresponds to a decShapeList the
+ * \details A single shape in an object shape. Whereas the meObjectShape::List corresponds to a decShape::List the
  *          meObjectShape corresponds to an actual decShape inside the list. The shape is located in the coordinate
  *          system of the world. The user is responsible to transform the shape from and to the world coordinate
  *          system and whatever target element holds the object shape list.
@@ -56,7 +57,10 @@ class decShape;
 class meObjectShape : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meObjectShape> Ref;
+	using Ref = deTObjectReference<meObjectShape>;
+	
+	/** \brief List type. */
+	using List = decTObjectOrderedSet<meObjectShape>;
 	
 	
 private:
@@ -65,11 +69,11 @@ private:
 	meWorld *pWorld;
 	meObject *pParentObject;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pEngCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSShape;
+	deColliderVolume::Ref pEngCollider;
 	
-	decShape *pShape;
+	decShape::Ref pShape;
 	
 	bool pSelected;
 	bool pActive;
@@ -82,9 +86,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new object shape. */
-	meObjectShape( igdeEnvironment *environment, const decShape &shape );
+	meObjectShape(igdeEnvironment *environment, const decShape &shape);
+	
+protected:
 	/** \brief Cleans up the object shape. */
-	virtual ~meObjectShape();
+	~meObjectShape() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -93,30 +101,30 @@ public:
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Retrieves the engine collider. */
-	inline deColliderVolume *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderVolume::Ref &GetEngineCollider() const{ return pEngCollider; }
 	
-	/** \brief Retrieves the world or NULL. */
+	/** \brief Retrieves the world or nullptr. */
 	inline meWorld *GetWorld() const{ return pWorld; }
-	/** \brief Sets the world or NULL. */
-	void SetWorld( meWorld *world );
-	/** \brief Retrieves the parent object or NULL. */
+	/** \brief Sets the world or nullptr. */
+	void SetWorld(meWorld *world);
+	/** \brief Retrieves the parent object or nullptr. */
 	inline meObject *GetParentObject() const{ return pParentObject; }
-	/** \brief Sets the parent object or NULL. */
-	void SetParentObject( meObject *parentObject );
+	/** \brief Sets the parent object or nullptr. */
+	void SetParentObject(meObject *parentObject);
 	
 	/** \brief Retrieves the shape. */
-	inline const decShape *GetShape() const{ return pShape; }
+	inline const decShape::Ref &GetShape() const{ return pShape; }
 	/** \brief Sets the shape. Make sure it is of the matching shape type. */
-	void SetShape( const decShape &shape );
+	void SetShape(const decShape &shape);
 	
 	/** \brief Determines if the shape is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	/** \brief Sets if the shape is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	/** \brief Determines if the shape is active. */
 	inline bool GetActive() const{ return pActive; }
 	/** \brief Sets if the shape is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Update collider and debug drawer shape, position, orientation and scaling. */
 	void UpdateShape();
@@ -125,6 +133,13 @@ public:
 	
 	/** \brief Show states changed. This typically changes debug drawer shape visibilites. */
 	void ShowStateChanged();
+	
+	
+	/** Creates a shape list from this list. */
+	static void CreateShapeList(const List &list, decShape::List &result);
+	
+	/** Create property string from shape list. */
+	static void CreatePropertyString(const List &list, decString &result);
 	/*@}*/
 	
 private:

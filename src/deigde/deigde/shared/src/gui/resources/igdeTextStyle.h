@@ -26,6 +26,7 @@
 #define _IGDETEXTSTYLE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -35,6 +36,15 @@
  * \brief IGDE UI Text Style.
  */
 class DE_DLL_EXPORT igdeTextStyle : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTextStyle>;
+	
+	/** \brief Text style list. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeTextStyle>,igdeTextStyle>;
+	
+	
 private:
 	decString pName;
 	decColor pColor;
@@ -52,10 +62,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text style. */
-	igdeTextStyle( const char *name );
+	explicit igdeTextStyle(const char *name);
 	
 	/** \brief Create copy of text style. */
-	igdeTextStyle( const char *name, const igdeTextStyle &textStyle );
+	igdeTextStyle(const char *name, const igdeTextStyle &textStyle);
 	
 	
 	
@@ -66,7 +76,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTextStyle();
+	~igdeTextStyle() override;
 	/*@}*/
 	
 	
@@ -84,7 +94,7 @@ public:
 	inline bool GetHasColor() const{ return pHasColor; }
 	
 	/** \brief Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Clear text color. */
 	void ClearColor();
@@ -98,7 +108,7 @@ public:
 	inline bool GetHasBgColor() const{ return pHasBgColor; }
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	
 	/** \brief Clear background color. */
 	void ClearBgColor();
@@ -109,25 +119,25 @@ public:
 	inline bool GetBold() const{ return pBold; }
 	
 	/** \brief Set bold. */
-	void SetBold( bool bold );
+	void SetBold(bool bold);
 	
 	/** \brief Italic. */
 	inline bool GetItalic() const{ return pItalic; }
 	
 	/** \brief Set italic. */
-	void SetItalic( bool italic );
+	void SetItalic(bool italic);
 	
 	/** \brief Underline. */
 	inline bool GetUnderline() const{ return pUnderline; }
 	
 	/** \brief Set underline. */
-	void SetUnderline( bool underline );
+	void SetUnderline(bool underline);
 	
 	/** \brief Strike through. */
 	inline bool GetStrikeThrough() const{ return pStrikeThrough; }
 	
 	/** \brief Set strike through. */
-	void SetStrikeThrough( bool strikeThrough );
+	void SetStrikeThrough(bool strikeThrough);
 	/*@}*/
 	
 	
@@ -135,7 +145,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set text style. */
-	igdeTextStyle &operator=( const igdeTextStyle &textStyle );
+	igdeTextStyle &operator=(const igdeTextStyle &textStyle);
 	/*@}*/
 };
 

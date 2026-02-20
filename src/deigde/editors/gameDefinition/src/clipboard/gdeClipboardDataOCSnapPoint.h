@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCSnapPoint;
+#include "../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCSnapPoint;
  */
 class gdeClipboardDataOCSnapPoint : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCSnapPoint>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSnapPoint( gdeOCSnapPoint *snapPoint );
+	gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoint);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCSnapPoint();
+	~gdeClipboardDataOCSnapPoint() override;
 	/*@}*/
 	
 	

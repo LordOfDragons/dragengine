@@ -28,6 +28,9 @@
 #include "../../../world/navspace/meNavigationSpace.h"
 #include "../../../world/navspace/meNavigationSpaceSelection.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -38,49 +41,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteNavSpace::meUDeleteNavSpace( meWorld *world ) :
-pWorld( NULL ),
-pNavSpaces( NULL ),
-pNavSpaceCount( 0 )
-{
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+meUDeleteNavSpace::meUDeleteNavSpace(meWorld *world){
+	if(!world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meNavigationSpaceList &list = world->GetSelectionNavigationSpace().GetSelected();
-	int count = list.GetCount();
+	world->GetSelectionNavigationSpace().GetSelected().Visit([&](meNavigationSpace *n){
+		pNavSpaces.Add(meUndoDataNavSpace::Ref::New(n));
+	});
+	
 	decString text;
 	
-	SetShortInfo( "Delete Objects" );
-	if( count > 1 ){
-		text.Format( "%i objects", count );
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
+	SetShortInfo("@World.UDeleteObject.DeleteObjects");
+	if(pNavSpaces.GetCount() > 1){
+		text.FormatSafe(tm.Translate("World.UDeleteNavSpace.CountObjects").ToUTF8(), pNavSpaces.GetCount());
 		
 	}else{
-		text = "1 object";
+		text = tm.Translate("World.UDeleteNavSpace.OneObject").ToUTF8();
 	}
-	SetLongInfo( text );
-	
-	try{
-		pWorld = world;
-		world->AddReference();
-		
-		if( count > 0 ){
-			pNavSpaces = new meUndoDataNavSpace*[ count ];
-			
-			while( pNavSpaceCount < count ){
-				pNavSpaces[ pNavSpaceCount ] = new meUndoDataNavSpace( list.GetAt( pNavSpaceCount ) );
-				pNavSpaceCount++;
-			}
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	SetLongInfo(text);
 }
 
 meUDeleteNavSpace::~meUDeleteNavSpace(){
-	pCleanUp();
 }
 
 
@@ -90,60 +74,29 @@ meUDeleteNavSpace::~meUDeleteNavSpace(){
 
 void meUDeleteNavSpace::Undo(){
 	meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
-	int i;
 	
 	selection.Reset();
 	
-	for( i=0; i<pNavSpaceCount; i++ ){
-		meNavigationSpace * const navspace = pNavSpaces[ i ]->GetNavSpace();
-		
-		pWorld->AddNavSpace( navspace );
-		selection.Add( navspace );
+	pNavSpaces.Visit([&](const meUndoDataNavSpace &n){
+		pWorld->AddNavSpace(n.GetNavSpace());
+		selection.Add(n.GetNavSpace());
 		
 		pWorld->NotifyNavSpaceCountChanged();
-	}
-	
-	selection.ActivateNext();
+	});
 	
 	pWorld->NotifyNavSpaceSelectionChanged();
 }
 
 void meUDeleteNavSpace::Redo(){
 	meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
-	int i;
 	
-	for( i=0; i<pNavSpaceCount; i++ ){
-		meNavigationSpace * const navspace = pNavSpaces[ i ]->GetNavSpace();
+	pNavSpaces.Visit([&](const meUndoDataNavSpace &n){
+		selection.Remove(n.GetNavSpace());
 		
-		selection.Remove( navspace );
-		if( navspace->GetActive() ){
-			selection.ActivateNext();
-		}
-		
-		pWorld->RemoveNavSpace( pNavSpaces[ i ]->GetNavSpace() );
+		pWorld->RemoveNavSpace(n.GetNavSpace());
 		
 		pWorld->NotifyNavSpaceCountChanged();
-	}
+	});
 	
 	pWorld->NotifyNavSpaceSelectionChanged();
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDeleteNavSpace::pCleanUp(){
-	if( pNavSpaces ){
-		while( pNavSpaceCount > 0 ){
-			pNavSpaceCount--;
-			delete pNavSpaces[ pNavSpaceCount ];
-		}
-		
-		delete [] pNavSpaces;
-	}
-	
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
 }

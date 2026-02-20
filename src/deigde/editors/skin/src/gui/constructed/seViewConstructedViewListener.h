@@ -35,6 +35,9 @@ class seViewConstructedView;
  * \brief Constructed view listener.
  */
 class seViewConstructedViewListener : public seSkinListener{
+public:
+	using Ref = deTObjectReference<seViewConstructedViewListener>;
+	
 private:
 	seViewConstructedView &pView;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seViewConstructedViewListener( seViewConstructedView &view );
+	seViewConstructedViewListener(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
-	virtual ~seViewConstructedViewListener();
+protected:
+	~seViewConstructedViewListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,31 +60,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active texture changed. */
-	virtual void ActiveTextureChanged( seSkin *skin );
+	void ActiveTextureChanged(seSkin *skin) override;
 	
 	/** \brief Property changed. */
-	virtual void PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** \brief Active property changed. */
-	virtual void ActivePropertyChanged( seSkin *skin, seTexture *texture );
+	void ActivePropertyChanged(seSkin *skin, seTexture *texture) override;
 	
 	/** \brief Property node structre changed. */
-	virtual void PropertyNodeStructureChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyNodeStructureChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** \brief Property node changed. */
-	virtual void PropertyNodeChanged( seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node );
+	void PropertyNodeChanged(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node) override;
 	
 	/** \brief Active property node changed. */
-	virtual void PropertyActiveNodeChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyActiveNodeChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** \brief Property selected nodes changed. */
-	virtual void PropertyNodeSelectionChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyNodeSelectionChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** \brief Active property node group changed. */
-	virtual void PropertyActiveNodeGroupChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyActiveNodeGroupChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** \brief Active property node layer changed. */
-	virtual void PropertyActiveNodeLayerChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyActiveNodeLayerChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	/*@}*/
 };
 

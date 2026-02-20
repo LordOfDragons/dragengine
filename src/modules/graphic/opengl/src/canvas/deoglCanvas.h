@@ -25,10 +25,11 @@
 #ifndef _DEOGLCANVAS_H_
 #define _DEOGLCANVAS_H_
 
+#include "render/deoglRCanvas.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCanvas.h>
 
-class deoglRCanvas;
 class deCanvas;
 class deGraphicOpenGl;
 
@@ -42,7 +43,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deCanvas &pCanvas;
 	
-	deoglRCanvas *pRCanvas;
+	deoglRCanvas::Ref pRCanvas;
 	bool pDirtyGeometry;
 	bool pDirtyTransform;
 	bool pDirtyColorTransform;
@@ -58,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvas( deGraphicOpenGl &ogl, deCanvas &canvas );
+	deoglCanvas(deGraphicOpenGl &ogl, deCanvas &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvas();
+	~deoglCanvas() override;
 	/*@}*/
 	
 	
@@ -77,7 +78,7 @@ public:
 	inline const deCanvas &GetCanvas() const{ return pCanvas; }
 	
 	/** Render canvas or \em NULL if not set. */
-	inline deoglRCanvas *GetRCanvas() const{ return pRCanvas; }
+	inline const deoglRCanvas::Ref &GetRCanvas() const{ return pRCanvas; }
 	
 	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
@@ -105,34 +106,34 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Transform changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Color transform changed. */
-	virtual void ColorTransformChanged();
+	void ColorTransformChanged() override;
 	
 	/** Visible changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	
 	/** Render order changed. */
-	virtual void OrderChanged();
+	void OrderChanged() override;
 	
 	/** Transparency changed. */
-	virtual void TransparencyChanged();
+	void TransparencyChanged() override;
 	
 	/** Blend mode changed. */
-	virtual void BlendModeChanged();
+	void BlendModeChanged() override;
 	
 	/** Mask changed. */
-	virtual void MaskChanged();
+	void MaskChanged() override;
 	
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	

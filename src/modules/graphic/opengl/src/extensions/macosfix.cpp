@@ -26,8 +26,8 @@
 
 #include <dlfcn.h>
 
-void *macosGetProcAddress( const char *name ){
-	return dlsym( RTLD_NEXT, name );
+void *macosGetProcAddress(const char *name){
+	return dlsym(RTLD_NEXT, name);
 }
 
 #endif

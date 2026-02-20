@@ -34,14 +34,16 @@
  */
 class seUPNGroupNodesTop : public seUPNGroupMoveNodes{
 public:
+	using Ref = deTObjectReference<seUPNGroupNodesTop>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupNodesTop( sePropertyNodeGroup *node, const sePropertyNodeList &children );
+	seUPNGroupNodesTop(sePropertyNodeGroup *node, const sePropertyNode::List &children);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPNGroupNodesTop();
+	~seUPNGroupNodesTop() override;
 	/*@}*/
 	
 	
@@ -50,10 +52,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

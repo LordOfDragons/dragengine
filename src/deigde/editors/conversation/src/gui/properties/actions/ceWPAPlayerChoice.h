@@ -25,7 +25,7 @@
 #ifndef _CEWPAPLAYERCHOICE_H_
 #define _CEWPAPLAYERCHOICE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeButton.h>
 
 #include "ceWPAction.h"
 
@@ -39,21 +39,22 @@ class ceCAPlayerChoiceOption;
  */
 class ceWPAPlayerChoice : public ceWPAction{
 private:
-	igdeTextFieldReference pEditVarName;
-	igdeTextFieldReference pEditOptionText;
-	igdeButtonReference pBtnOptionText;
+	igdeTextField::Ref pEditVarName;
+	igdeTextField::Ref pEditOptionText;
+	igdeButton::Ref pBtnOptionText;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPAPlayerChoice>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	ceWPAPlayerChoice( ceWPTopic &parentPanel );
+	ceWPAPlayerChoice(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~ceWPAPlayerChoice();
+	~ceWPAPlayerChoice() override;
 	/*@}*/
 	
 	
@@ -61,10 +62,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Active action or \em NULL. */
+	/** \brief Active action or \em nullptr. */
 	ceCAPlayerChoice *GetAction() const;
 	
-	/** \brief Active option or \em NULL. */
+	/** \brief Active option or \em nullptr. */
 	ceCAPlayerChoiceOption *GetActiveOption() const;
 	
 	/** \brief Update action. */

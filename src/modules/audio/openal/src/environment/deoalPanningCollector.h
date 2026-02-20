@@ -26,6 +26,7 @@
 #define _DEOALPANNINGCOLLECTOR_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalAudioThread;
 
@@ -51,8 +52,7 @@ class deoalAudioThread;
 class deoalPanningCollector{
 private:
 	int pResolution;
-	float *pPixels;
-	int pPixelCount;
+	decTList<float> pPixels;
 	int pPixelsPerFace;
 	float *pPixelsXPos;
 	float *pPixelsXNeg;
@@ -67,10 +67,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panning collector. */
-	deoalPanningCollector( int resolution );
+	deoalPanningCollector(int resolution);
 	
 	/** \brief Create copy of panning collector. */
-	deoalPanningCollector( const deoalPanningCollector &collector );
+	deoalPanningCollector(const deoalPanningCollector &collector);
 	
 	/** \brief Clean up panning collector. */
 	~deoalPanningCollector();
@@ -89,7 +89,7 @@ public:
 	void Clear();
 	
 	/** \brief Add weighted direction. */
-	void Add( const decVector &direction, float weight );
+	void Add(const decVector &direction, float weight);
 	
 	/** \brief Calculate panning vector. */
 	decVector CalcPanningVector() const;
@@ -97,7 +97,7 @@ public:
 	
 	
 	/** \brief Debug print. */
-	void DebugPrint( deoalAudioThread &audioThread ) const;
+	void DebugPrint(deoalAudioThread &audioThread) const;
 	/*@}*/
 	
 	
@@ -105,10 +105,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set from other panning collector. */
-	deoalPanningCollector &operator=( const deoalPanningCollector &collector );
+	deoalPanningCollector &operator=(const deoalPanningCollector &collector);
 	
 	/** \brief Add from other panning collector. */
-	deoalPanningCollector &operator+=( const deoalPanningCollector &collector );
+	deoalPanningCollector &operator+=(const deoalPanningCollector &collector);
 	/*@}*/
 };
 

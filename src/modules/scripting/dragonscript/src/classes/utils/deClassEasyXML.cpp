@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -29,6 +31,7 @@
 
 #include "deClassEasyXML.h"
 #include "deClassEasyXMLElement.h"
+#include "../dedsHelpers.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -39,9 +42,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/visitors/decXmlVisitorWriter.h>
@@ -53,7 +54,7 @@
 
 // Native structure
 struct sXMLNatDat{
-	dedsXmlDocument *document;
+	dedsXmlDocument::Ref document;
 };
 
 
@@ -62,305 +63,249 @@ struct sXMLNatDat{
 /////////////////////
 
 // public func new()
-deClassEasyXML::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassEasyXML::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassEasyXML::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sXMLNatDat &nd = *( ( sXMLNatDat* )p_GetNativeData( myself ) );
+void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sXMLNatDat &nd = dedsNewNativeData<sXMLNatDat>(p_GetNativeData(myself));
 	
 	// prepare
-	nd.document = NULL;
 	
 	// create document
-	decXmlElementTag *root = NULL;
-	
 	try{
-		nd.document = new dedsXmlDocument( "" );
+		nd.document = dedsXmlDocument::Ref::New("");
+		nd.document->AddElement(decXmlElementTag::Ref::New("root"));
 		
-		root = new decXmlElementTag( "root" );
-		nd.document->AddElement( root );
-		root->FreeReference();
-		
-	}catch( const deException &e ){
-		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
-		if( root ){
-			root->FreeReference();
-		}
-		if( nd.document ){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
-		throw;
-		
-	}catch( ... ){
-		if( root ){
-			root->FreeReference();
-		}
-		if( nd.document ){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+	}catch(const deException &e){
+		static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS().LogException(e);
 		throw;
 	}
 }
 
 // public func new( String filename )
-deClassEasyXML::nfNewFile::nfNewFile( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
+deClassEasyXML::nfNewFile::nfNewFile(const sInitData &init) :
+dsFunction(init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
 }
-void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sXMLNatDat &nd = *( ( sXMLNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	sXMLNatDat &nd = dedsNewNativeData<sXMLNatDat>(p_GetNativeData(myself));
+	
+	const deScriptingDragonScript &ds = static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS();
 	
 	// prepare
-	nd.document = NULL;
 	
 	// check arguments
-	const char * const filename = rt->GetValue( 0 )->GetString();
-	if( ! filename ){
-		DSTHROW( dueNullPointer );
+	const char * const filename = rt->GetValue(0)->GetString();
+	if(!filename){
+		DSTHROW(dueNullPointer);
 	}
 	
 	// load xml
-	deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
-	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
+	const deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
+	dedsXmlParser parser(ds.GetGameEngine()->GetLogger());
 	
 	try{
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+		nd.document = dedsXmlDocument::Ref::New(filename);
 		
-		nd.document = new dedsXmlDocument( filename );
-		
-		if( parser.ParseXml( reader, nd.document ) ){
+		if(parser.ParseXml(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)), nd.document)){
 			nd.document->StripComments();
 			nd.document->CleanCharData();
 			
 		}else{
-			nd.document->SetParseFailed( true );
-			nd.document->SetParseLog( parser.GetParseLog() );
+			nd.document->SetParseFailed(true);
+			nd.document->SetParseLog(parser.GetParseLog());
 		}
 		
-	}catch( const deException &e ){
-		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
-		if( nd.document ){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
-		throw;
-		
-	}catch( ... ){
-		if( nd.document ){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+	}catch(const deException &e){
+		static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS().LogException(e);
 		throw;
 	}
 }
 
 // public func new(String filename, bool stripComments, bool cleanCharData)
-deClassEasyXML::nfNewFile2::nfNewFile2( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
-	p_AddParameter( init.clsBool ); // stripComments
-	p_AddParameter( init.clsBool ); // cleanCharData
+deClassEasyXML::nfNewFile2::nfNewFile2(const sInitData &init) :
+dsFunction(init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
+	p_AddParameter(init.clsBool); // stripComments
+	p_AddParameter(init.clsBool); // cleanCharData
 }
-void deClassEasyXML::nfNewFile2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sXMLNatDat &nd = *( ( sXMLNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+void deClassEasyXML::nfNewFile2::RunFunction(dsRunTime *rt, dsValue *myself){
+	sXMLNatDat &nd = dedsNewNativeData<sXMLNatDat>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS();
 	
 	// prepare
 	nd.document = nullptr;
 	
 	// check arguments
-	const char * const filename = rt->GetValue( 0 )->GetString();
-	if( ! filename ){
-		DSTHROW( dueNullPointer );
+	const char * const filename = rt->GetValue(0)->GetString();
+	if(!filename){
+		DSTHROW(dueNullPointer);
 	}
 	
-	const bool stripComments = rt->GetValue( 1 )->GetBool();
-	const bool cleanCharData = rt->GetValue( 2 )->GetBool();
+	const bool stripComments = rt->GetValue(1)->GetBool();
+	const bool cleanCharData = rt->GetValue(2)->GetBool();
 	
 	// load xml
-	deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
-	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
+	const deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
+	dedsXmlParser parser(ds.GetGameEngine()->GetLogger());
 	
 	try{
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+		nd.document = dedsXmlDocument::Ref::New(filename);
 		
-		nd.document = new dedsXmlDocument( filename );
-		
-		if( parser.ParseXml( reader, nd.document ) ){
-			if( stripComments ){
+		if(parser.ParseXml(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)), nd.document)){
+			if(stripComments){
 				nd.document->StripComments();
 			}
-			if( cleanCharData ){
+			if(cleanCharData){
 				nd.document->CleanCharData();
 			}
 			
 		}else{
-			nd.document->SetParseFailed( true );
-			nd.document->SetParseLog( parser.GetParseLog() );
+			nd.document->SetParseFailed(true);
+			nd.document->SetParseLog(parser.GetParseLog());
 		}
 		
-	}catch( const deException &e ){
-		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
-		if( nd.document ){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
-		throw;
-		
-	}catch( ... ){
-		if( nd.document ){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+	}catch(const deException &e){
+		static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS().LogException(e);
 		throw;
 	}
 }
 
 // public func destructor()
-deClassEasyXML::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassEasyXML::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsXmlDocument, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassEasyXML::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassEasyXML::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sXMLNatDat &nd = *( ( sXMLNatDat* )p_GetNativeData( myself ) );
-	
-	if( nd.document ){
-		nd.document->FreeReference();
-		nd.document = NULL;
-	}
+	dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).~sXMLNatDat();
 }
 
 
 
 // public func String getFilename()
-deClassEasyXML::nfGetFilename::nfGetFilename( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "getFilename", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassEasyXML::nfGetFilename::nfGetFilename(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "getFilename", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassEasyXML::nfGetFilename::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsXmlDocument &document = *( ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document );
-	rt->PushString( document.GetFilename() );
+void deClassEasyXML::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsXmlDocument &document = *(dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document);
+	rt->PushString(document.GetFilename());
 }
 
 // public func bool hasParseFailed()
-deClassEasyXML::nfHasParseFailed::nfHasParseFailed( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "hasParseFailed", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassEasyXML::nfHasParseFailed::nfHasParseFailed(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "hasParseFailed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassEasyXML::nfHasParseFailed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsXmlDocument &document = *( ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document );
-	rt->PushBool( document.GetParseFailed() );
+void deClassEasyXML::nfHasParseFailed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsXmlDocument &document = *(dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document);
+	rt->PushBool(document.GetParseFailed());
 }
 
 // public func String getParseLog()
-deClassEasyXML::nfGetParseLog::nfGetParseLog( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "getParseLog", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassEasyXML::nfGetParseLog::nfGetParseLog(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "getParseLog", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassEasyXML::nfGetParseLog::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsXmlDocument &document = *( ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document );
-	rt->PushString( document.GetParseLog() );
+void deClassEasyXML::nfGetParseLog::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsXmlDocument &document = *(dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document);
+	rt->PushString(document.GetParseLog());
 }
 
 // public func EasyXMLElement getRootElement()
-deClassEasyXML::nfGetRootElement::nfGetRootElement( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "getRootElement", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsXmlElement ){
+deClassEasyXML::nfGetRootElement::nfGetRootElement(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "getRootElement", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsXmlElement){
 }
-void deClassEasyXML::nfGetRootElement::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsXmlDocument &document = *( ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document );
-	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+void deClassEasyXML::nfGetRootElement::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsXmlDocument &document = *(dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document);
+	const deScriptingDragonScript &ds = static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS();
 	
-	ds.GetClassEasyXMLElement()->PushElement( rt, document.GetRoot() );
+	ds.GetClassEasyXMLElement()->PushElement(rt, document.GetRoot());
 }
 
 // public func void setRootElement( EasyXMLElement element )
-deClassEasyXML::nfSetRootElement::nfSetRootElement( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "setRootElement", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsXmlElement ); // element
+deClassEasyXML::nfSetRootElement::nfSetRootElement(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "setRootElement", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsXmlElement); // element
 }
-void deClassEasyXML::nfSetRootElement::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsXmlDocument &document = *( ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document );
-	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+void deClassEasyXML::nfSetRootElement::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsXmlDocument &document = *(dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document);
+	deScriptingDragonScript &ds = static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS();
 	
 	decXmlElement * const element = ds.GetClassEasyXMLElement()->GetElement(
-		rt->GetValue( 0 )->GetRealObject() );
-	if( ! element ){
-		DSTHROW( dueNullPointer );
+		rt->GetValue(0)->GetRealObject());
+	if(!element){
+		DSTHROW(dueNullPointer);
 	}
 	
 	document.RemoveAllElements();
-	document.AddElement( element );
+	document.AddElement(element);
 }
 
 // public func void writeToFile( FileWriter fileWriter, bool compact )
-deClassEasyXML::nfWriteToFile::nfWriteToFile( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "writeToFile", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFileWriter ); // fileWriter
-	p_AddParameter( init.clsBool ); // compact
+deClassEasyXML::nfWriteToFile::nfWriteToFile(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "writeToFile", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFileWriter); // fileWriter
+	p_AddParameter(init.clsBool); // compact
 }
-void deClassEasyXML::nfWriteToFile::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dedsXmlDocument &document = *( ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document );
-	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+void deClassEasyXML::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsXmlDocument &document = *(dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document);
+	deScriptingDragonScript &ds = static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS();
 	
 	decBaseFileWriter * const fileWriter = ds.GetClassFileWriter()->GetFileWriter(
-		rt->GetValue( 0 )->GetRealObject() );
-	const bool compact = rt->GetValue( 1 )->GetBool();
+		rt->GetValue(0)->GetRealObject());
+	const bool compact = rt->GetValue(1)->GetBool();
 	
-	if( ! fileWriter ){
-		DSTHROW( dueNullPointer );
+	if(!fileWriter){
+		DSTHROW(dueNullPointer);
 	}
 	
 	decXmlVisitorWriter visitor;
-	visitor.SetCompact( compact );
-	visitor.WriteDocument( fileWriter, document );
+	visitor.SetCompact(compact);
+	visitor.WriteDocument(fileWriter, document);
 }
 
 
 
 // public func int hashCode()
-deClassEasyXML::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "hashCode", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassEasyXML::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "hashCode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
-void deClassEasyXML::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsXmlDocument * const document = ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document;
-	rt->PushInt( ( int )( intptr_t )document );
+void deClassEasyXML::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsXmlDocument * const document = dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document;
+	rt->PushInt((int)(intptr_t)document);
 }
 
 // public func bool equals( Object obj )
-deClassEasyXML::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsXmlDocument, "equals", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // obj
+deClassEasyXML::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsXmlDocument, "equals", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // obj
 }
-void deClassEasyXML::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsXmlDocument * const document = ( ( sXMLNatDat* )p_GetNativeData( myself ) )->document;
-	deClassEasyXML * const clsXML = ( deClassEasyXML* )GetOwnerClass();
+void deClassEasyXML::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsXmlDocument * const document = dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself)).document;
+	deClassEasyXML * const clsXML = static_cast<deClassEasyXML*>(GetOwnerClass());
 	
-	dsValue * const obj = rt->GetValue( 0 );
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsXML ) ){
-		rt->PushBool( false );
+	if(!p_IsObjOfType(obj, clsXML)){
+		rt->PushBool(false);
 		
 	}else{
-		decXmlDocument * const other = ( ( sXMLNatDat* )p_GetNativeData( obj ) )->document;
-		rt->PushBool( document == other );
+		const decXmlDocument * const other = dedsGetNativeData<sXMLNatDat>(p_GetNativeData(obj)).document;
+		rt->PushBool(document == other);
 	}
 }
 
@@ -372,14 +317,14 @@ void deClassEasyXML::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 // Constructor
 ////////////////
 
-deClassEasyXML::deClassEasyXML( deScriptingDragonScript &ds ) :
-dsClass( "EasyXML", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassEasyXML::deClassEasyXML(deScriptingDragonScript &ds) :
+dsClass("EasyXML", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_XML );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_XML);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sXMLNatDat ) );
+	p_SetNativeDataSize(dedsNativeDataSize<sXMLNatDat>());
 }
 
 deClassEasyXML::~deClassEasyXML(){
@@ -390,7 +335,7 @@ deClassEasyXML::~deClassEasyXML(){
 // Management
 ///////////////
 
-void deClassEasyXML::CreateClassMembers( dsEngine *engine ){
+void deClassEasyXML::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsXmlDocument = this;
@@ -402,43 +347,42 @@ void deClassEasyXML::CreateClassMembers( dsEngine *engine ){
 	init.clsXmlElement = pDS.GetClassEasyXMLElement();
 	init.clsFileWriter = pDS.GetClassFileWriter();
 	
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfNewFile( init ) );
-	AddFunction( new nfNewFile2( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfNewFile(init));
+	AddFunction(new nfNewFile2(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetFilename( init ) );
-	AddFunction( new nfHasParseFailed( init ) );
-	AddFunction( new nfGetParseLog( init ) );
-	AddFunction( new nfGetRootElement( init ) );
+	AddFunction(new nfGetFilename(init));
+	AddFunction(new nfHasParseFailed(init));
+	AddFunction(new nfGetParseLog(init));
+	AddFunction(new nfGetRootElement(init));
 	
-	AddFunction( new nfSetRootElement( init ) );
-	AddFunction( new nfWriteToFile( init ) );
+	AddFunction(new nfSetRootElement(init));
+	AddFunction(new nfWriteToFile(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	CalcMemberOffsets();
 }
 
-dedsXmlDocument *deClassEasyXML::GetDocument( dsRealObject *myself ) const{
-	if( ! myself ){
-		return NULL;
+dedsXmlDocument *deClassEasyXML::GetDocument(dsRealObject *myself) const{
+	if(!myself){
+		return nullptr;
 	}
-	return ( ( sXMLNatDat* )p_GetNativeData( myself->GetBuffer() ) )->document;
+	return dedsGetNativeData<sXMLNatDat>(p_GetNativeData(myself->GetBuffer())).document;
 }
 
-void deClassEasyXML::PushDocument( dsRunTime *rt, dedsXmlDocument *document ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! document ){
-		rt->PushObject( NULL, this );
+	if(!document){
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sXMLNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->document = document;
-	document->AddReference();
+	rt->CreateObjectNakedOnStack(this);
+	dedsNewNativeData<sXMLNatDat>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())).document = document;
 }

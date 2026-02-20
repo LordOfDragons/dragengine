@@ -38,8 +38,7 @@ class deoxrSession;
 class deoxrPassthrough : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrPassthrough> Ref;
-	
+	using Ref = deTObjectReference<deoxrPassthrough>;
 	
 	
 private:
@@ -61,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create passthrough. */
-	deoxrPassthrough( deoxrSession &session );
+	deoxrPassthrough(deoxrSession &session);
 	
 protected:
 	/** Clean up passthrough. */
@@ -80,13 +79,13 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Set enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	/** Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	
 	/** Passthrough. */

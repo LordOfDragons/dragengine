@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -35,11 +35,15 @@ class reRigBone;
  * \brief Undo Set Bone Parent.
  */
 class reUSetBoneParent : public igdeUndo{
-private:
-	reRigBone *pBone;
+public:
+	using Ref = deTObjectReference<reUSetBoneParent>;
 	
-	reRigBone *pOldParent;
-	reRigBone *pNewParent;
+	
+private:
+	reRigBone::Ref pBone;
+	
+	reRigBone::Ref pOldParent;
+	reRigBone::Ref pNewParent;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneParent( reRigBone *bone, reRigBone *parent );
+	reUSetBoneParent(reRigBone *bone, reRigBone *parent);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetBoneParent();
+	~reUSetBoneParent() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

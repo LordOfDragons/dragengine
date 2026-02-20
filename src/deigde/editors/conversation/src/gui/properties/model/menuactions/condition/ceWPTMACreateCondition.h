@@ -28,9 +28,10 @@
 #include "../ceWPTMenuAction.h"
 #include "../../../../../conversation/condition/ceConversationCondition.h"
 
+#include <deigde/undo/igdeUndo.h>
+
 class ceWindowMain;
 class ceConversation;
-class igdeUndo;
 
 
 
@@ -49,11 +50,12 @@ protected:
 	ceWPTMACreateCondition();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMACreateCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu condition. */
-	ceWPTMACreateCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationCondition::eConditionTypes conditionType );
+	ceWPTMACreateCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -69,23 +71,23 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for adding condition. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	virtual igdeUndo::Ref CreateUndo(ceConversationCondition *condition);
 	
 	
 	
 	/** \brief Create condition. */
-	ceConversationCondition *CreateCondition();
+	ceConversationCondition::Ref CreateCondition();
 	
 	/** \brief Text for condition type. */
-	static const char *ConditionTypeText( ceWindowMain &windowMain,
-		ceConversationCondition::eConditionTypes conditionType );
+	static decString ConditionTypeText(ceWindowMain &windowMain,
+		ceConversationCondition::eConditionTypes conditionType);
 	
 	/** \brief Icon for condition type. */
-	static igdeIcon *ConditionTypeIcon( ceWindowMain &windowMain,
-		ceConversationCondition::eConditionTypes conditionType );
+	static igdeIcon *ConditionTypeIcon(ceWindowMain &windowMain,
+		ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 };
 

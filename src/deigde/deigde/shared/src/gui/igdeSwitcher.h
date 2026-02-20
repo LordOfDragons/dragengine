@@ -32,16 +32,32 @@
  * \brief IGDE UI Switching Widgets.
  */
 class DE_DLL_EXPORT igdeSwitcher : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeSwitcher>;
+	
+	
+	class cNativeSwitcher{
+	public:
+		virtual ~cNativeSwitcher() = default;
+		virtual void UpdateCurrent() = 0;
+	};
+	
+	
 private:
 	int pCurrent;
 	
+	
+protected:
+	cNativeSwitcher *pNativeSwitcher;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeSwitcher( igdeEnvironment &environment );
+	igdeSwitcher(igdeEnvironment &environment);
 	
 	
 	
@@ -52,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeSwitcher();
+	~igdeSwitcher() override;
 	/*@}*/
 	
 	
@@ -64,18 +80,18 @@ public:
 	inline int GetCurrent() const{ return pCurrent; }
 	
 	/** \brief Set current widget index. */
-	void SetCurrent( int current );
+	void SetCurrent(int current);
 	
 	
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	void RemoveChild(igdeWidget *child) override;
 	
 	/** \brief Remove all children. */
-	virtual void RemoveAllChildren();
+	void RemoveAllChildren() override;
 	/*@}*/
 	
 	
@@ -89,14 +105,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

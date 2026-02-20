@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSObjectShapeUpdater::meWPSObjectShapeUpdater( meWPSObjectShape &panel ) :
-pPanel( panel ){
+meWPSObjectShapeUpdater::meWPSObjectShapeUpdater(meWPSObjectShape &panel) :
+pPanel(panel){
 }
 
 meWPSObjectShapeUpdater::~meWPSObjectShapeUpdater(){
@@ -56,26 +56,26 @@ meWPSObjectShapeUpdater::~meWPSObjectShapeUpdater(){
 // Management
 ///////////////
 
-void meWPSObjectShapeUpdater::VisitShape( decShape& ){
+void meWPSObjectShapeUpdater::VisitShape(decShape&){
 	pPanel.UpdateShapeNone();
 }
 
-void meWPSObjectShapeUpdater::VisitShapeSphere( decShapeSphere &sphere ){
-	pPanel.UpdateShapeSphere( sphere );
+void meWPSObjectShapeUpdater::VisitShapeSphere(decShapeSphere &sphere){
+	pPanel.UpdateShapeSphere(sphere);
 }
 
-void meWPSObjectShapeUpdater::VisitShapeBox( decShapeBox &box ){
-	pPanel.UpdateShapeBox( box );
+void meWPSObjectShapeUpdater::VisitShapeBox(decShapeBox &box){
+	pPanel.UpdateShapeBox(box);
 }
 
-void meWPSObjectShapeUpdater::VisitShapeCylinder( decShapeCylinder &cylinder ){
-	pPanel.UpdateShapeCylinder( cylinder );
+void meWPSObjectShapeUpdater::VisitShapeCylinder(decShapeCylinder &cylinder){
+	pPanel.UpdateShapeCylinder(cylinder);
 }
 
-void meWPSObjectShapeUpdater::VisitShapeCapsule( decShapeCapsule &capsule ){
-	pPanel.UpdateShapeCapsule( capsule );
+void meWPSObjectShapeUpdater::VisitShapeCapsule(decShapeCapsule &capsule){
+	pPanel.UpdateShapeCapsule(capsule);
 }
 
-void meWPSObjectShapeUpdater::VisitShapeHull( decShapeHull &hull ){
-	VisitShape( hull );
+void meWPSObjectShapeUpdater::VisitShapeHull(decShapeHull &hull){
+	VisitShape(hull);
 }

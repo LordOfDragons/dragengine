@@ -65,16 +65,16 @@ public:
 	const deoglSkinBone *GetSkinBone() const{ return pSkinBone; }
 	
 	/** Set skin bone. */
-	void SetSkinBone( const deoglSkinBone *skinBone );
+	void SetSkinBone(const deoglSkinBone *skinBone);
 	
 	/** Bone index or -1 if not found. */
 	inline int GetBoneIndex() const{ return pBoneIndex; }
 	
 	/** Map bone. */
-	void MapBone( const deComponent &component );
+	void MapBone(const deComponent &component);
 	
 	/** Update bone. */
-	void UpdateBone( const deComponent &component );
+	void UpdateBone(const deComponent &component);
 	/*@}*/
 };
 

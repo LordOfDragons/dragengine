@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/camera/gdeOCCamera.h"
 #include "../../../../undosys/objectClass/camera/gdeUOCRemoveCamera.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCCameraCut::gdeMAOCCameraCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Camera",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class camera" )
+gdeMAOCCameraCut::gdeMAOCCameraCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraCut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"@GameDefinition.Menu.OCCameraCut.ToolTip")
 {
 }
 
@@ -60,31 +60,27 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Camera",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera ){
-		return NULL;
+igdeUndo::Ref gdeMAOCCameraCut::OnActionSubObject(
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera){
+		return {};
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
-	if( ! camera ){
-		return NULL;
+	if(!camera){
+		return {};
 	}
 	
-	deObjectReference clipOCCamera;
-	clipOCCamera.TakeOver( new gdeOCCamera( *camera ) );
+	const gdeOCCamera::Ref clipOCCamera(gdeOCCamera::Ref::New(*camera));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCCamera( ( gdeOCCamera* )( deObject* )clipOCCamera ) );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCCamera::Ref::New(clipOCCamera));
 	
-	pWindowMain.GetClipboard().Set( clipData );
-	
-	return new gdeUOCRemoveCamera( &objectClass, camera );
+	return gdeUOCRemoveCamera::Ref::New(&objectClass, camera);
 }
 
 void gdeMAOCCameraCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
-		&& gameDefinition->GetActiveOCCamera() != NULL );
+		&& gameDefinition->GetActiveOCCamera() != nullptr);
 }

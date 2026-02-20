@@ -26,9 +26,9 @@
 #define _REUSETSHAPEORIENTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShape;
+#include "../../../rig/shape/reRigShape.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShape;
  * \brief Undo Set Shape Orientation.
  */
 class reUSetShapeOrientation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUSetShapeOrientation>;
+	
+	
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeOrientation( reRigShape *shape, const decVector &newOrientation );
+	reUSetShapeOrientation(reRigShape *shape, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetShapeOrientation();
+	~reUSetShapeOrientation() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

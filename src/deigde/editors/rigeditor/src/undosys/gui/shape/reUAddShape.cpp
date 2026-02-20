@@ -41,27 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddShape::reUAddShape( reRig *rig, reRigBone *bone, reRigShape *shape ){
-	if( ! shape || ( ! rig && ! bone ) ) DETHROW( deeInvalidParam );
+reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
+	if(!shape || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	if( rig ) rig->AddReference();
-	
 	pBone = bone;
-	if( bone ) bone->AddReference();
-	
 	pShape = shape;
-	shape->AddReference();
 	
 	try{
-		if( bone ){
-			SetShortInfo( "Add Bone Shape" );
+		if(bone){
+			SetShortInfo("@Rig.Undo.ShapeAddBone");
 			
 		}else{
-			SetShortInfo( "Add Rig Shape" );
+			SetShortInfo("@Rig.Undo.ShapeAddRig");
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -77,36 +72,36 @@ reUAddShape::~reUAddShape(){
 ///////////////
 
 void reUAddShape::Undo(){
-	reRig *rig = pGetRig();
+	reRig * const rig = pGetRig();
 	
 	reSelectionShapes *selection = rig->GetSelectionShapes();
 	
-	if( pShape->GetSelected() ){
-		selection->RemoveShape( pShape );
+	if(pShape->GetSelected()){
+		selection->RemoveShape(pShape);
 	}
 	
-	if( pBone ){
-		pBone->RemoveShape( pShape );
+	if(pBone){
+		pBone->RemoveShape(pShape);
 		
 	}else{
-		rig->RemoveShape( pShape );
+		rig->RemoveShape(pShape);
 	}
 }
 
 void reUAddShape::Redo(){
-	reRig *rig = pGetRig();
+	reRig * const rig = pGetRig();
 	
 	reSelectionShapes *selection = rig->GetSelectionShapes();
 	
-	if( pBone ){
-		pBone->AddShape( pShape );
+	if(pBone){
+		pBone->AddShape(pShape);
 		
 	}else{
-		rig->AddShape( pShape );
+		rig->AddShape(pShape);
 	}
 	
 	selection->RemoveAllShapes();
-	selection->AddShape( pShape );
+	selection->AddShape(pShape);
 }
 
 
@@ -115,16 +110,15 @@ void reUAddShape::Redo(){
 //////////////////////
 
 void reUAddShape::pCleanUp(){
-	if( pShape ) pShape->FreeReference();
-	if( pBone ) pBone->FreeReference();
-	if( pRig ) pRig->FreeReference();
 }
 
 reRig *reUAddShape::pGetRig(){
-	if( pRig ) return pRig;
+	if(pRig){
+		return pRig;
+	}
 	
 	reRig *rig = pBone->GetRig();
-	if( ! rig ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL(rig)
 	
 	return rig;
 }

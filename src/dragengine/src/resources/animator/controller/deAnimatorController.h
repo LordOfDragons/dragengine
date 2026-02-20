@@ -25,6 +25,8 @@
 #ifndef _DEANIMATORCONTROLLER_H_
 #define _DEANIMATORCONTROLLER_H_
 
+#include "../../../deObject.h"
+#include "../../../common/collection/decTOrderedSet.h"
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
 
@@ -49,7 +51,15 @@
  * useful for certain specialized rules which need a position or even
  * orientations to do their work.
  */
-class DE_DLL_EXPORT deAnimatorController{
+class DE_DLL_EXPORT deAnimatorController : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deAnimatorController>;
+	
+	/** \brief List of controllers. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deAnimatorController>,deAnimatorController>;
+	
+	
 private:
 	decString pName;
 	float pMinValue;
@@ -67,19 +77,28 @@ public:
 	/** \brief Create unnamed animator controller with range 0 to 1 and value 0. */
 	deAnimatorController();
 	
-	/** \brief Clean up animator. */
-	~deAnimatorController();
+	/** \brief Create copy of animator controller. */
+	deAnimatorController(const deAnimatorController &copy);
+	
+protected:
+	/**
+	 * \brief Clean up animator controller.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deAnimatorController() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Minimum value. */
 	inline float GetMinimumValue() const{ return pMinValue; }
@@ -88,34 +107,34 @@ public:
 	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set value range. */
-	void SetValueRange( float minValue, float maxValue );
+	void SetValueRange(float minValue, float maxValue);
 	
 	/** \brief Current value. */
 	inline float GetCurrentValue() const{ return pCurValue; }
 	
 	/** \brief Set current value. */
-	void SetCurrentValue( float value );
+	void SetCurrentValue(float value);
 	
 	/** \brief Increment current value. */
-	void IncrementCurrentValue( float incrementBy );
+	void IncrementCurrentValue(float incrementBy);
 	
 	/** \brief Controller is frozen. */
 	inline bool GetFrozen() const{ return pFrozen; }
 	
 	/** \brief Set if controller is frozen. */
-	void SetFrozen( bool frozen );
+	void SetFrozen(bool frozen);
 	
 	/** \brief Values passing range are clamped instead of wrapped around. */
 	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if values passing range are clamped instead of wrapped around. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Vector. */
 	inline const decVector &GetVector() const{ return pVector; }
 	
 	/** \brief Set vector. */
-	void SetVector( const decVector &vector );
+	void SetVector(const decVector &vector);
 	/*@}*/
 	
 	
@@ -123,7 +142,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller parameters. */
-	deAnimatorController &operator=( const deAnimatorController &controller );
+	deAnimatorController &operator=(const deAnimatorController &controller);
 	/*@}*/
 	
 	

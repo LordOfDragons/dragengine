@@ -33,8 +33,8 @@
 //////////////////////////
 
 // constructor, destructor
-deTgaImageInfo::deTgaImageInfo(){ }
-deTgaImageInfo::~deTgaImageInfo(){ }
+deTgaImageInfo::deTgaImageInfo(){}
+deTgaImageInfo::~deTgaImageInfo(){}
 
 // management
 int deTgaImageInfo::GetWidth(){

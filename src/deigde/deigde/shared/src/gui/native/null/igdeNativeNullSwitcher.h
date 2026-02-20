@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLSWITCHER_H_
 #define _IGDENATIVENULLSWITCHER_H_
 
+#include "../../igdeSwitcher.h"
+
 class igdeSwitcher;
 
 
 /**
  * Null switcher.
  */
-class igdeNativeNullSwitcher{
+class igdeNativeNullSwitcher : public igdeSwitcher::cNativeSwitcher{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullSwitcher();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSwitcher* CreateNativeWidget( igdeSwitcher &owner );
+	static igdeNativeNullSwitcher* CreateNativeWidget(igdeSwitcher &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,7 +57,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateCurrent();
+	void UpdateCurrent() override;
 	/*@}*/
 };
 

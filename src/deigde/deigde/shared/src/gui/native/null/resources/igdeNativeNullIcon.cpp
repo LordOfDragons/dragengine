@@ -39,20 +39,20 @@ igdeNativeNullIcon::igdeNativeNullIcon(){
 igdeNativeNullIcon::~igdeNativeNullIcon(){
 }
 
-void *igdeNativeNullIcon::CreateNativeIcon( deImage& ){
+void *igdeNativeNullIcon::CreateNativeIcon(deImage&){
 	return new igdeNativeNullIcon;
 }
 
-void *igdeNativeNullIcon::CreateNativeIconPNG( decBaseFileReader& ){
+void *igdeNativeNullIcon::CreateNativeIconPNG(decBaseFileReader&){
 	return new igdeNativeNullIcon;
 }
 
-void *igdeNativeNullIcon::DuplicateNativeIcon( void* ){
+void *igdeNativeNullIcon::DuplicateNativeIcon(void*){
 	return new igdeNativeNullIcon;
 }
 
-void igdeNativeNullIcon::DestroyNativeIcon( void *native ){
-	delete ( igdeNativeNullIcon* )native;
+void igdeNativeNullIcon::DestroyNativeIcon(void *native){
+	delete (igdeNativeNullIcon*)native;
 }
 
 
@@ -60,14 +60,14 @@ void igdeNativeNullIcon::DestroyNativeIcon( void *native ){
 // Management
 ///////////////
 
-decPoint igdeNativeNullIcon::GetSize( void* ){
-	return decPoint( 32, 32 );
+decPoint igdeNativeNullIcon::GetSize(void*){
+	return decPoint(32, 32);
 }
 
-void igdeNativeNullIcon::Scale( const decPoint &, void* ){
+void igdeNativeNullIcon::Scale(const decPoint &, void*){
 }
 
-void igdeNativeNullIcon::UpdatePixels( void*, deImage& ){
+void igdeNativeNullIcon::UpdatePixels(void*, deImage&){
 }
 
 #endif

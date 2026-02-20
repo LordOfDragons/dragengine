@@ -26,27 +26,27 @@
 #define _IGDENATIVEFOXTREEITEM_H_
 
 #include "foxtoolkit.h"
-#include "../../model/igdeTreeItemReference.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../model/igdeTreeItem.h"
+#include "../../resources/igdeFont.h"
 
 
 /**
  * \brief FOX toolkit Native tree item.
  */
 class igdeNativeFoxTreeItem : public FXTreeItem{
-	FXDECLARE( igdeNativeFoxTreeItem )
+	FXDECLARE(igdeNativeFoxTreeItem)
 protected:
 	   igdeNativeFoxTreeItem();
 	
 private:
-	igdeTreeItemReference pOwner;
+	igdeTreeItem::Ref pOwner;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxTreeItem( igdeTreeItem &owner );
+	igdeNativeFoxTreeItem(igdeTreeItem &owner);
 	
 	/** \brief Clean up native widget. */
 	~igdeNativeFoxTreeItem() override;
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner. */
-	inline igdeTreeItem *GetOwner() const{ return pOwner; }
+	inline const igdeTreeItem::Ref &GetOwner() const{ return pOwner; }
 	
 	/** \brief Tip text. */
 	FXString getTipText() const override;

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpaceType;
-class meHeightTerrainNavSpaceFace;
+#include "../../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
+#include "../../../../../../world/terrain/meHeightTerrainNavSpaceFace.h"
 
 
 
@@ -36,9 +36,13 @@ class meHeightTerrainNavSpaceFace;
  * \brief Undo action height terrain navigation space add face.
  */
 class meUHTNavSpaceFaceAdd : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTNavSpaceFaceAdd>;
+	
+	
 private:
-	meHeightTerrainNavSpaceType *pType;
-	meHeightTerrainNavSpaceFace *pFace;
+	meHeightTerrainNavSpaceType::Ref pType;
+	meHeightTerrainNavSpaceFace::Ref pFace;
 	
 	
 	
@@ -46,11 +50,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceFaceAdd( meHeightTerrainNavSpaceType *type, meHeightTerrainNavSpaceFace *face );
+	meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType *type, meHeightTerrainNavSpaceFace *face);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~meUHTNavSpaceFaceAdd();
+
+protected:
+	~meUHTNavSpaceFaceAdd() override;
+
+public:
 	/*@}*/
 	
 	
@@ -59,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -39,34 +39,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetType::gdeUGDDPSetType( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeProperty::ePropertyTypes newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPSetType::gdeUGDDPSetType(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set type" );
+	SetShortInfo("@GameDefinition.Undo.GDDPSetType");
 	
 	pOldValue = property->GetType();
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetType::~gdeUGDDPSetType(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ gdeUGDDPSetType::~gdeUGDDPSetType(){
 ///////////////
 
 void gdeUGDDPSetType::Undo(){
-	pProperty->SetType( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetType(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPSetType::Redo(){
-	pProperty->SetType( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetType(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

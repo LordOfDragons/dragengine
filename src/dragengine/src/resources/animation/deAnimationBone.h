@@ -25,6 +25,7 @@
 #ifndef _DEANIMATIONBONE_H_
 #define _DEANIMATIONBONE_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/string/decString.h"
 
 class deAnimation;
@@ -36,7 +37,13 @@ class deAnimation;
  * Defines a bone in the animation.
  */
 class DE_DLL_EXPORT deAnimationBone{
-friend class deAnimation;
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deAnimationBone>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deAnimationBone>;
+	
 private:
 	decString pName;
 	
@@ -60,7 +67,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/*@}*/
 };
 

@@ -64,7 +64,7 @@ public:
 	virtual void VertexPositionSetsChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index, deAnimatorController *controller );
+	virtual void ControllerChanged(int index, deAnimatorController *controller);
 	
 	/** \brief Controllers added or removed. */
 	virtual void ControllerCountChanged();

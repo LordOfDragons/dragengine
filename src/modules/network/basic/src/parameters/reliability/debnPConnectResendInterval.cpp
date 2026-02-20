@@ -35,14 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnPConnectResendInterval::debnPConnectResendInterval( deNetworkBasic &network ) :
-debnParameterFloat( network )
+debnPConnectResendInterval::debnPConnectResendInterval(deNetworkBasic &network) :
+debnParameterFloat(network)
 {
-	SetName( "connectResendInterval" );
-	SetDescription( "Interval in seconds to keep resending connect request until connected or timed out." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Connect Resend Interval" );
-	SetDefaultValue( "1" );
+	SetName("connectResendInterval");
+	SetDescription("Interval in seconds to keep resending connect request until connected or timed out.");
+	SetCategory(ecExpert);
+	SetDisplayName("Connect Resend Interval");
+	SetDefaultValue("1");
 }
 
 
@@ -53,6 +53,6 @@ float debnPConnectResendInterval::GetParameterFloat(){
 	return pNetwork.GetConfiguration().GetConnectResendInterval();
 }
 
-void debnPConnectResendInterval::SetParameterFloat( float value ){
-	pNetwork.GetConfiguration().SetConnectResendInterval( value );
+void debnPConnectResendInterval::SetParameterFloat(float value){
+	pNetwork.GetConfiguration().SetConnectResendInterval(value);
 }

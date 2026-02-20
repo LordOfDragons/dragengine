@@ -26,25 +26,24 @@
 #define _PROJPANELTESTRUN_H_
 
 #include "projPanelRemoteClient.h"
+#include "projPanelTestRunListener.h"
 #include "../project/remote/projRemoteClient.h"
+#include "../project/profile/projProfile.h"
+#include "../project/projProject.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-#include <dragengine/deObjectReference.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
-class projProject;
-class projPanelTestRunListener;
 class projTestRunner;
 class projWindowMain;
-class projProfile;
 
 
 
@@ -53,43 +52,47 @@ class projProfile;
  */
 class projPanelTestRun : public igdeContainerSplitted{
 public:
+	using Ref = deTObjectReference<projPanelTestRun>;
+	
+	
 	static const char *styleWarning;
 	static const char *styleError;
 	
+	bool preventUpdateLaunchProfile;
 	
 	
 private:
 	projWindowMain &pWindowMain;
 	
-	projProject *pProject;
-	projPanelTestRunListener *pListener;
+	projProject::Ref pProject;
+	projPanelTestRunListener::Ref pListener;
 	
 	projTestRunner *pTestRunner;
 	bool pIsRunning;
 	int pMaxLines;
 	
-	deObjectReference pSelectedProfile;
+	projProfile::Ref pSelectedProfile;
 	
-	igdeActionReference pActionStart;
-	igdeActionReference pActionQuit;
-	igdeActionReference pActionKill;
+	igdeAction::Ref pActionStart;
+	igdeAction::Ref pActionQuit;
+	igdeAction::Ref pActionKill;
 	
-	igdeTabBookReference pTabContent;
+	igdeTabBook::Ref pTabContent;
 	
-	igdeTextAreaReference pEditLogs;
+	igdeTextArea::Ref pEditLogs;
 	
-	decObjectOrderedSet pRemoteClients;
+	decTObjectOrderedSet<projPanelRemoteClient> pRemoteClients;
 	
-	igdeComboBoxReference pCBProfile;
-	igdeComboBoxReference pCBLaunchProfile;
-	igdeButtonReference pBtnStart;
-	igdeButtonReference pBtnQuit;
-	igdeButtonReference pBtnKill;
+	igdeComboBox::Ref pCBProfile;
+	igdeComboBox::Ref pCBLaunchProfile;
+	igdeButton::Ref pBtnStart;
+	igdeButton::Ref pBtnQuit;
+	igdeButton::Ref pBtnKill;
 	
-	igdeTextFieldReference pEditRemoteAddress;
-	igdeButtonReference pBtnRemoteStartListen;
-	igdeButtonReference pBtnRemoteStopListen;
-	igdeButtonReference pBtnRemoteSynchronizeAll;
+	igdeTextField::Ref pEditRemoteAddress;
+	igdeButton::Ref pBtnRemoteStartListen;
+	igdeButton::Ref pBtnRemoteStopListen;
+	igdeButton::Ref pBtnRemoteSynchronizeAll;
 	
 	projRemoteClient::Set pPendingAddRemoteClient;
 	projRemoteClient::Set pPendingRemoveRemoteClient;
@@ -100,10 +103,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	projPanelTestRun( projWindowMain &windowMain );
+	projPanelTestRun(projWindowMain &windowMain);
 	
 	/** \brief Clean up view. */
-	virtual ~projPanelTestRun();
+protected:
+	~projPanelTestRun() override;
+public:
 	/*@}*/
 	
 	
@@ -114,12 +119,12 @@ public:
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	
-	/** \brief Test runner or \em NULL. */
+	/** \brief Test runner or \em nullptr. */
 	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }
 	
 	
@@ -140,10 +145,10 @@ public:
 	void LoadConfig();
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Update logs. */
-	void UpdateLogs( bool lastLogs = false );
+	void UpdateLogs(bool lastLogs = false);
 	
 	/** \brief Clear logs. */
 	void ClearLogs();
@@ -161,7 +166,7 @@ public:
 	projProfile *GetSelectedProfile() const;
 	
 	/** \brief Select profile. */
-	void SelectProfile( projProfile *profile );
+	void SelectProfile(projProfile *profile);
 	
 	/** \brief Select launcher profile. */
 	void SelectLauncherProfile();
@@ -195,7 +200,7 @@ public:
 	void UpdateRemoteClients(float elapsed);
 	
 	/** \brief Panel for remote client or nullptr. */
-	projPanelRemoteClient::Ref GetRemoteClientPanel(projRemoteClient *client) const;
+	projPanelRemoteClient *GetRemoteClientPanel(projRemoteClient *client) const;
 	/*@}*/
 	
 	

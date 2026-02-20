@@ -51,107 +51,37 @@
 // Class decConvexVolumeList
 //////////////////////////////
 
-// Constructors and Destructors
-/////////////////////////////////
-
-decConvexVolumeList::decConvexVolumeList(){
-	pVolumes = NULL;
-	pVolumeCount = 0;
-	pVolumeSize = 0;
-}
-
-decConvexVolumeList::~decConvexVolumeList(){
-	RemoveAllVolumes();
-	if( pVolumes ) delete [] pVolumes;
-}
-
-
-
 // Volume Management
 //////////////////////
 
-decConvexVolume *decConvexVolumeList::GetVolumeAt( int index ) const{
-	if( index < 0 || index >= pVolumeCount ) DETHROW( deeInvalidParam );
-	return pVolumes[ index ];
+const decConvexVolume::Ref &decConvexVolumeList::GetVolumeAt(int index) const{
+	return pVolumes.GetAt(index);
 }
 
-bool decConvexVolumeList::HasVolume( decConvexVolume *volume ) const{
-	int i;
-	
-	if( volume ){
-		for( i=0; i<pVolumeCount; i++ ){
-			if( pVolumes[ i ] == volume ) return true;
-		}
-	}
-	
-	return false;
+bool decConvexVolumeList::HasVolume(decConvexVolume *volume) const{
+	return pVolumes.Has(volume);
 }
 
-int decConvexVolumeList::IndexOfVolume( decConvexVolume *volume ) const{
-	int i;
-	
-	if( volume ){
-		for( i=0; i<pVolumeCount; i++ ){
-			if( pVolumes[ i ] == volume ) return i;
-		}
-	}
-	
-	return -1;
+int decConvexVolumeList::IndexOfVolume(decConvexVolume *volume) const{
+	return pVolumes.IndexOf(volume);
 }
 
-void decConvexVolumeList::AddVolume( decConvexVolume *volume ){
-	if( ! volume || HasVolume( volume ) ) DETHROW( deeInvalidParam );
+void decConvexVolumeList::AddVolume(decConvexVolume::Ref &&volume){
+	DEASSERT_NOTNULL(volume)
 	
-	if( pVolumeCount == pVolumeSize ){
-		int i, newSize = pVolumeSize * 3 / 2 + 1;
-		decConvexVolume **newArray = new decConvexVolume*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		
-		if( pVolumes ){
-			for( i=0; i<pVolumeSize; i++ ) newArray[ i ] = pVolumes[ i ];
-			delete [] pVolumes;
-		}
-		
-		pVolumes = newArray;
-		pVolumeSize = newSize;
-	}
-	
-	pVolumes[ pVolumeCount ] = volume;
-	pVolumeCount++;
+	pVolumes.Add(std::move(volume));
 }
 
-void decConvexVolumeList::RemoveVolume( decConvexVolume *volume ){
-	ExtractVolume( volume );
-	delete volume;
+void decConvexVolumeList::RemoveVolume(decConvexVolume *volume){
+	RemoveVolumeAt(pVolumes.IndexOf(volume));
 }
 
-void decConvexVolumeList::RemoveVolumeAt( int index ){
-	decConvexVolume *volume = GetVolumeAt( index );
-	ExtractVolumeAt( index );
-	delete volume;
-}
-
-void decConvexVolumeList::ExtractVolume( decConvexVolume *volume ){
-	int i, index = IndexOfVolume( volume );
-	if( index == -1 ) DETHROW( deeInvalidParam );
-	
-	for( i=index+1; i<pVolumeCount; i++ ) pVolumes[ i - 1 ] = pVolumes[ i ];
-	pVolumeCount--;
-}
-
-void decConvexVolumeList::ExtractVolumeAt( int index ){
-	if( index < 0 || index >= pVolumeCount ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=index+1; i<pVolumeCount; i++ ) pVolumes[ i - 1 ] = pVolumes[ i ];
-	pVolumeCount--;
+void decConvexVolumeList::RemoveVolumeAt(int index){
+	pVolumes.RemoveFrom(index);
 }
 
 void decConvexVolumeList::RemoveAllVolumes(){
-	while( pVolumeCount > 0 ){
-		pVolumeCount--;
-		delete pVolumes[ pVolumeCount ];
-	}
+	pVolumes.RemoveAll();
 }
 
 
@@ -159,131 +89,104 @@ void decConvexVolumeList::RemoveAllVolumes(){
 // Management
 ///////////////
 
-void decConvexVolumeList::SetToCube( const decVector &halfSize ){
-	if( halfSize < decVector( 0.0f, 0.0f, 0.0f ) ) DETHROW( deeInvalidParam );
-	decConvexVolume *volume = NULL;
+void decConvexVolumeList::SetToCube(const decVector &halfSize){
+	if(halfSize < decVector(0.0f, 0.0f, 0.0f)) DETHROW(deeInvalidParam);
 	
 	// remove all volumes
 	RemoveAllVolumes();
 	
 	// add new volume set to cube
-	try{
-		volume = CreateVolume( NULL, true );
-		if( ! volume ) DETHROW( deeOutOfMemory );
-		
-		volume->SetToCube( halfSize );
-		
-		AddVolume( volume );
-		
-	}catch( const deException & ){
-		if( volume ) delete volume;
-		throw;
-	}
+	decConvexVolume::Ref volume = CreateVolume(nullptr, true);
+	volume->SetToCube(halfSize);
+	AddVolume(std::move(volume));
 }
 
-void decConvexVolumeList::Move( const decVector &direction ){
-	int v;
-	
-	for( v=0; v<pVolumeCount; v++ ){
-		pVolumes[ v ]->Move( direction );
-	}
+void decConvexVolumeList::Move(const decVector &direction){
+	pVolumes.Visit([&](decConvexVolume &v){
+		v.Move(direction);
+	});
 }
 
-void decConvexVolumeList::SplitByPlane( const decVector &splitNormal, const decVector &splitPosition, bool deleteBackVolume, decConvexVolumeFace *cutFaceInit ){
-	int l, volumeCount, result;
-	
+void decConvexVolumeList::SplitByPlane(const decVector &splitNormal,
+const decVector &splitPosition, bool deleteBackVolume, const decConvexVolumeFace *cutFaceInit){
 	//printf( "split by plane: normal=(%g,%g,%g) position=(%g,%g,%g)\n", splitNormal.x, splitNormal.y, splitNormal.z, splitPosition.x, splitPosition.y, splitPosition.z );
 	// determine the split plane parameters
-	float splitDot = splitNormal * splitPosition;
+	const float splitDot = splitNormal * splitPosition;
+	int i;
 	
-	// loop over all volumes
-	volumeCount = pVolumeCount;
-	for( l=0; l<volumeCount; l++ ){
-		result = pTestByPlane( l, splitNormal, splitDot );
+	for(i=0; i<pVolumes.GetCount(); i++){
+		const int result = pTestByPlane(i, splitNormal, splitDot);
 		
-		if( deleteBackVolume ){
-			if( result == TEST_SPLIT ){
-				if( pSplitByPlane( l, splitNormal, splitDot, deleteBackVolume, cutFaceInit ) == SPLIT_NONE ){
-					volumeCount--;
-					l--;
+		if(deleteBackVolume){
+			if(result == TEST_SPLIT){
+				if(pSplitByPlane(i, splitNormal, splitDot, deleteBackVolume, cutFaceInit) == SPLIT_NONE){
+					i--;
 				}
 				
-			}else if( result == TEST_REMOVE ){
-				RemoveVolumeAt( l );
-				volumeCount--;
-				l--;
+			}else if(result == TEST_REMOVE){
+				RemoveVolumeAt(i);
+				i--;
 			}
 			
 		}else{
-			if( result == TEST_SPLIT ){
-				if( pSplitByPlane( l, splitNormal, splitDot, deleteBackVolume, cutFaceInit ) == SPLIT_NONE ){
-					volumeCount--;
-					l--;
+			if(result == TEST_SPLIT){
+				if(pSplitByPlane(i, splitNormal, splitDot, deleteBackVolume, cutFaceInit) == SPLIT_NONE){
+					i--;
 				}
 			}
 		}
 	}
 }
 
-void decConvexVolumeList::SplitByFace( const decConvexVolume &volume, int face ){
-	decConvexVolumeFace *splitFace = volume.GetFaceAt( face );
-	int l, volumeCount;
+void decConvexVolumeList::SplitByFace(const decConvexVolume &volume, int face){
+	const decConvexVolumeFace &splitFace = volume.GetFaceAt(face);
+	const decVector &splitNormal = splitFace.GetNormal();
+	const decVector &splitVertex = volume.GetVertexAt(splitFace.GetVertexAt(0));
+	const float splitDot = splitNormal * splitVertex;
+	int i;
 	
-	// determine the split plane parameters
-	const decVector &splitNormal = splitFace->GetNormal();
-	const decVector &splitVertex = volume.GetVertexAt( splitFace->GetVertexAt( 0 ) );
-	float splitDot = splitNormal * splitVertex;
-	
-	// loop over all volumes
-	volumeCount = pVolumeCount;
-	for( l=0; l<volumeCount; l++ ){
-		if( pTestByFace( l, volume, *splitFace ) ){
-			if( pSplitByPlane( l, splitNormal, splitDot, false, splitFace ) == SPLIT_NONE ){
-				volumeCount--;
-				l--;
+	for(i=0; i<pVolumes.GetCount(); i++){
+		if(pTestByFace(i, volume, splitFace)){
+			if(pSplitByPlane(i, splitNormal, splitDot, false, &splitFace) == SPLIT_NONE){
+				i--;
 			}
 		}
 	}
 }
 
-void decConvexVolumeList::SplitByVolume( const decConvexVolume &volume ){
-	int f, faceCount = volume.GetFaceCount();
-	decConvexVolumeFace *splitFace;
-	int l, volumeCount, result;
-	int testVolume;
-	float splitDot;
-	
-	// loop over all volumes
-	volumeCount = pVolumeCount;
-	for( l=0; l<volumeCount; l++ ){
+void decConvexVolumeList::SplitByVolume(const decConvexVolume &volume){
+	int i;
+	for(i=0; i<pVolumes.GetCount(); i++){
 		// test what to do with the volume
-		result = pTestByVolume( l, volume );
-		if( result == TEST_SPLIT ){
+		const int result = pTestByVolume(i, volume);
+		if(result == TEST_SPLIT){
 			// assign the current volume as the test volume
-			testVolume = l;
+			int testVolume = i;
 			
 			// loop over all split faces
-			for( f=0; f<faceCount; f++ ){
-				splitFace = volume.GetFaceAt( f );
+			const int faceCount = volume.GetFaceCount();
+			int j;
+			
+			for(j=0; j<faceCount; j++){
+				const decConvexVolumeFace &splitFace = volume.GetFaceAt(j);
 				
 				// determine the split plane parameters
-				const decVector &splitNormal = splitFace->GetNormal();
-				const decVector &splitVertex = volume.GetVertexAt( splitFace->GetVertexAt( 0 ) );
-				splitDot = splitNormal * splitVertex;
+				const decVector &splitNormal = splitFace.GetNormal();
+				const decVector &splitVertex = volume.GetVertexAt(splitFace.GetVertexAt(0));
+				const float splitDot = splitNormal * splitVertex;
 				
 				// split the volume using the split plane
-				result = pSplitByPlane( testVolume, splitNormal, splitDot, false, splitFace );
-				if( result == SPLIT_FRONT_BACK ){
-					testVolume = pVolumeCount - 1;
+				const int result2 = pSplitByPlane(testVolume, splitNormal, splitDot, false, &splitFace);
+				if(result2 == SPLIT_FRONT_BACK){
+					testVolume = pVolumes.GetCount() - 1;
 					
-				}else if( result == SPLIT_FRONT ){
+				}else if(result2 == SPLIT_FRONT){
 					testVolume = -1;
 					break;
 					
-				}else if( result == SPLIT_NONE ){
-					if( testVolume == l ){
-						volumeCount--;
-						l--;
+				}else if(result2 == SPLIT_NONE){
+					if(testVolume == i){
+						i--;
 					}
 					testVolume = -1;
 					break;
@@ -292,18 +195,16 @@ void decConvexVolumeList::SplitByVolume( const decConvexVolume &volume ){
 			
 			// if a test volume exists it is now completly inside the
 			// split volume and has to be removed
-			if( testVolume != -1 ){
-				RemoveVolumeAt( testVolume );
-				if( testVolume == l ){
-					volumeCount--;
-					l--;
+			if(testVolume != -1){
+				RemoveVolumeAt(testVolume);
+				if(testVolume == i){
+					i--;
 				}
 			}
 			
-		}else if( result == TEST_REMOVE ){
-			RemoveVolumeAt( l );
-			volumeCount--;
-			l--;
+		}else if(result == TEST_REMOVE){
+			RemoveVolumeAt(i);
+			i--;
 		}
 	}
 }
@@ -313,418 +214,353 @@ void decConvexVolumeList::SplitByVolume( const decConvexVolume &volume ){
 // Protected Functions
 ////////////////////////
 
-decConvexVolume *decConvexVolumeList::CreateVolume( decConvexVolume *volume, bool front ){
-	decConvexVolume *newVolume = new decConvexVolume();
-	if( ! newVolume ) DETHROW( deeOutOfMemory );
-	
-	return newVolume;
+decConvexVolume::Ref decConvexVolumeList::CreateVolume(const decConvexVolume*, bool){
+	return decConvexVolume::Ref::New();
 }
 
-decConvexVolumeFace *decConvexVolumeList::CreateVolumeFace( decConvexVolumeFace *face ){
-	decConvexVolumeFace *newFace = new decConvexVolumeFace();
-	if( ! newFace ) DETHROW( deeOutOfMemory );
-	
-	if( face ){
-		newFace->SetMarker( face->GetMarker() );
-	}
-	
-	return newFace;
+decConvexVolumeFace::Ref decConvexVolumeList::CreateVolumeFace(const decConvexVolumeFace *face){
+	return decConvexVolumeFace::Ref::New(face ? face->GetMarker() : 0);
 }
-
 
 
 // Private Functions
 //////////////////////
 
-int decConvexVolumeList::pTestByVolume( int volume, const decConvexVolume &splitVolume ) const{
-	int vertexCount = pVolumes[ volume ]->GetVertexCount();
+int decConvexVolumeList::pTestByVolume(int volume, const decConvexVolume &splitVolume) const{
+	int vertexCount = pVolumes.GetAt(volume)->GetVertexCount();
 	int sv, svCount = splitVolume.GetVertexCount();
 	int sf, sfCount = splitVolume.GetFaceCount();
-	decConvexVolumeFace *testFace, *splitFace;
-	int resultSide, curSide, testSide;
 	int v, f, faceCount;
-	float dot, planeDot;
 	
 	// loop over all split faces
-	resultSide = TEST_REMOVE;
-	for( sf=0; sf<sfCount; sf++ ){
-		splitFace = splitVolume.GetFaceAt( sf );
+	int resultSide = TEST_REMOVE;
+	for(sf=0; sf<sfCount; sf++){
+		const decConvexVolumeFace &splitFace = *splitVolume.GetFaceAt(sf);
 		
 		// determine the split plane parameters
-		const decVector &splitNormal = splitFace->GetNormal();
-		const decVector &splitVertex = splitVolume.GetVertexAt( splitFace->GetVertexAt( 0 ) );
+		const decVector &splitNormal = splitFace.GetNormal();
+		const decVector &splitVertex = splitVolume.GetVertexAt(splitFace.GetVertexAt(0));
 		float splitDot = splitNormal * splitVertex;
 		
 		// if the volume is completly on either side there is no split
-		curSide = TEST_SPLIT;
-		for( v=0; v<vertexCount; v++ ){
-			dot = splitNormal * pVolumes[ volume ]->GetVertexAt( v ) - splitDot;
-			if( dot > EQUALITY_THRESHOLD ){
+		int curSide = TEST_SPLIT;
+		for(v=0; v<vertexCount; v++){
+			const float dot = splitNormal * pVolumes.GetAt(volume)->GetVertexAt(v) - splitDot;
+			int testSide;
+			
+			if(dot > EQUALITY_THRESHOLD){
 				testSide = TEST_NONE;
-			}else if( dot < -EQUALITY_THRESHOLD ){
+			}else if(dot < -EQUALITY_THRESHOLD){
 				testSide = TEST_REMOVE;
 			}else{
 				testSide = TEST_SPLIT;
 			}
-			if( curSide == TEST_SPLIT ){
+			if(curSide == TEST_SPLIT){
 				curSide = testSide;
-			}else if( testSide != TEST_SPLIT && testSide != curSide ){
+			}else if(testSide != TEST_SPLIT && testSide != curSide){
 				curSide = TEST_SPLIT;
 				break;
 			}
 		}
-		if( curSide == TEST_NONE ) return TEST_NONE;
-		if( curSide == TEST_SPLIT ) resultSide = TEST_SPLIT;
+		if(curSide == TEST_NONE) return TEST_NONE;
+		if(curSide == TEST_SPLIT) resultSide = TEST_SPLIT;
 	}
 	
 	// if any of the volume face normals separates there is no split
-	faceCount = pVolumes[ volume ]->GetFaceCount();
-	for( f=0; f<faceCount; f++ ){
-		testFace = pVolumes[ volume ]->GetFaceAt( f );
-		const decVector &normal = testFace->GetNormal();
-		planeDot = normal * pVolumes[ volume ]->GetVertexAt( testFace->GetVertexAt( 0 ) );
+	faceCount = pVolumes.GetAt(volume)->GetFaceCount();
+	for(f=0; f<faceCount; f++){
+		const decConvexVolumeFace &testFace = *pVolumes.GetAt(volume)->GetFaceAt(f);
+		const decVector &normal = testFace.GetNormal();
+		const float planeDot = normal * pVolumes.GetAt(volume)->GetVertexAt(testFace.GetVertexAt(0));
 		
-		for( sv=0; sv<svCount; sv++ ){
-			if( normal * splitVolume.GetVertexAt( sv ) - planeDot < -EQUALITY_THRESHOLD ) break;
+		for(sv=0; sv<svCount; sv++){
+			if(normal * splitVolume.GetVertexAt(sv) - planeDot < -EQUALITY_THRESHOLD) break;
 		}
-		if( sv == svCount ) return TEST_NONE;
+		if(sv == svCount) return TEST_NONE;
 	}
 	
 	// return the result
 	return resultSide;
 }
 
-bool decConvexVolumeList::pTestByFace( int volume, const decConvexVolume &splitVolume, const decConvexVolumeFace &splitFace ) const{
-	int vertexCount = pVolumes[ volume ]->GetVertexCount();
-	decConvexVolumeFace *testFace;
+bool decConvexVolumeList::pTestByFace(int volume, const decConvexVolume &splitVolume,
+const decConvexVolumeFace &splitFace) const{
+	int vertexCount = pVolumes.GetAt(volume)->GetVertexCount();
 	int curSide, testSide;
 	int v, f, faceCount;
-	float dot, planeDot;
 	
 	// determine the split plane parameters
 	const decVector &splitNormal = splitFace.GetNormal();
-	const decVector &splitVertex = splitVolume.GetVertexAt( splitFace.GetVertexAt( 0 ) );
+	const decVector &splitVertex = splitVolume.GetVertexAt(splitFace.GetVertexAt(0));
 	float splitDot = splitNormal * splitVertex;
 	
 	// if the volume is completly on either side there is no split
 	curSide = TEST_SPLIT;
-	for( v=0; v<vertexCount; v++ ){
-		dot = splitNormal * pVolumes[ volume ]->GetVertexAt( v ) - splitDot;
-		if( dot > EQUALITY_THRESHOLD ){
+	for(v=0; v<vertexCount; v++){
+		const float dot = splitNormal * pVolumes.GetAt(volume)->GetVertexAt(v) - splitDot;
+		if(dot > EQUALITY_THRESHOLD){
 			testSide = TEST_NONE;
-		}else if( dot < -EQUALITY_THRESHOLD ){
+		}else if(dot < -EQUALITY_THRESHOLD){
 			testSide = TEST_REMOVE;
 		}else{
 			testSide = TEST_SPLIT;
 		}
-		if( curSide == TEST_SPLIT ){
+		if(curSide == TEST_SPLIT){
 			curSide = testSide;
-		}else if( testSide != TEST_SPLIT && testSide != curSide ){
+		}else if(testSide != TEST_SPLIT && testSide != curSide){
 			curSide = TEST_SPLIT;
 			break;
 		}
 	}
-	if( curSide != TEST_SPLIT ) return false;
+	if(curSide != TEST_SPLIT) return false;
 	
 	// if any of the volume face normals separates there is no split
-	faceCount = pVolumes[ volume ]->GetFaceCount();
+	faceCount = pVolumes.GetAt(volume)->GetFaceCount();
 	vertexCount = splitFace.GetVertexCount();
 	
-	for( f=0; f<faceCount; f++ ){
-		testFace = pVolumes[ volume ]->GetFaceAt( f );
-		const decVector &normal = testFace->GetNormal();
-		planeDot = normal * pVolumes[ volume ]->GetVertexAt( testFace->GetVertexAt( 0 ) );
+	for(f=0; f<faceCount; f++){
+		const decConvexVolumeFace &testFace = pVolumes.GetAt(volume)->GetFaceAt(f);
+		const decVector &normal = testFace.GetNormal();
+		const float planeDot = normal * pVolumes.GetAt(volume)->GetVertexAt(testFace.GetVertexAt(0));
 		
-		for( v=0; v<vertexCount; v++ ){
-			if( normal * splitVolume.GetVertexAt( v ) - planeDot < -EQUALITY_THRESHOLD ) break;
+		for(v=0; v<vertexCount; v++){
+			if(normal * splitVolume.GetVertexAt(v) - planeDot < -EQUALITY_THRESHOLD) break;
 		}
-		if( v == vertexCount ) return false;
+		if(v == vertexCount) return false;
 	}
 	
 	// the volume has to be split
 	return true;
 }
 
-int decConvexVolumeList::pTestByPlane( int volume, const decVector &splitNormal, float splitDot ) const{
-	int vertexCount = pVolumes[ volume ]->GetVertexCount();
+int decConvexVolumeList::pTestByPlane(int volume, const decVector &splitNormal, float splitDot) const{
+	int vertexCount = pVolumes.GetAt(volume)->GetVertexCount();
 	int curSide, testSide, v;
-	float dot;
 	
 	// if the volume is completly on either side there is no split
 	curSide = TEST_SPLIT;
-	for( v=0; v<vertexCount; v++ ){
-		dot = splitNormal * pVolumes[ volume ]->GetVertexAt( v ) - splitDot;
-		if( dot > EQUALITY_THRESHOLD ){
+	for(v=0; v<vertexCount; v++){
+		const float dot = splitNormal * pVolumes.GetAt(volume)->GetVertexAt(v) - splitDot;
+		if(dot > EQUALITY_THRESHOLD){
 			testSide = TEST_NONE;
-		}else if( dot < -EQUALITY_THRESHOLD ){
+		}else if(dot < -EQUALITY_THRESHOLD){
 			testSide = TEST_REMOVE;
 		}else{
 			testSide = TEST_SPLIT;
 		}
-		if( curSide == TEST_SPLIT ){
+		if(curSide == TEST_SPLIT){
 			curSide = testSide;
-		}else if( testSide != TEST_SPLIT && testSide != curSide ){
+		}else if(testSide != TEST_SPLIT && testSide != curSide){
 			curSide = TEST_SPLIT;
 			break;
 		}
 	}
-	if( curSide != TEST_SPLIT ) return curSide;
+	if(curSide != TEST_SPLIT) return curSide;
 	
 	// the volume has to be split
 	return TEST_SPLIT;
 }
 
-int decConvexVolumeList::pSplitByPlane( int volume, const decVector &splitNormal, float splitDot, bool deleteBackVolume, decConvexVolumeFace *face ){
-	int f, faceCount = pVolumes[ volume ]->GetFaceCount();
-	decConvexVolume *volumeFront = NULL;
-	decConvexVolume *volumeBack = NULL;
-	decConvexVolumeFace *faceFront = NULL;
-	decConvexVolumeFace *faceBack = NULL;
-	decConvexVolumeFace *faceCutFront = NULL;
-	decConvexVolumeFace *faceCutBack = NULL;
-	decConvexVolumeFace *testFace;
-	decVector edgeDirection, cutVertexPosition;
-	bool isFrontFirst, isFrontSecond;
-	float dotFirst, dotSecond;
-	int vertexFirst, vertexSecond;
-	int vertexIndex, v, vertexCount;
+int decConvexVolumeList::pSplitByPlane(int volume, const decVector &splitNormal,
+float splitDot, bool deleteBackVolume, const decConvexVolumeFace *face){
+	int f, faceCount = pVolumes.GetAt(volume)->GetFaceCount();
+	decConvexVolume::Ref volumeFront, volumeBack;
+	decConvexVolumeFace::Ref faceFront, faceBack, faceCutFront, faceCutBack;
 	int result = SPLIT_FRONT;
-	float lambda;
 	
-	// things can go wrong so we protect this place
-	try{
-		// loop over all faces
-		for( f=0; f<faceCount; f++ ){
-			testFace = pVolumes[ volume ]->GetFaceAt( f );
-			vertexCount = testFace->GetVertexCount();
+	// loop over all faces
+	for(f=0; f<faceCount; f++){
+		const decConvexVolumeFace &testFace = pVolumes.GetAt(volume)->GetFaceAt(f);
+		const int vertexCount = testFace.GetVertexCount();
+		int v;
+		
+		// for every face loop over all vertices
+		for(v=0; v<vertexCount; v++){
+			// get the first and second vertex of this edge
+			const int vertexFirst = testFace.GetVertexAt(v);
+			const int vertexSecond = testFace.GetVertexAt((v + 1) % vertexCount);
 			
-			// for every face loop over all vertices
-			for( v=0; v<vertexCount; v++ ){
-				// get the first and second vertex of this edge
-				vertexFirst = testFace->GetVertexAt( v );
-				vertexSecond = testFace->GetVertexAt( ( v + 1 ) % vertexCount );
+			const decVector &vertexFirstPosition = pVolumes.GetAt(volume)->GetVertexAt(vertexFirst);
+			const decVector &vertexSecondPosition = pVolumes.GetAt(volume)->GetVertexAt(vertexSecond);
+			
+			// determine if the vertices are in front of the split plane
+			const float dotFirst = splitNormal * vertexFirstPosition - splitDot;
+			const float dotSecond = splitNormal * vertexSecondPosition - splitDot;
+			const bool isFrontFirst = dotFirst > EQUALITY_THRESHOLD;
+			const bool isFrontSecond = dotSecond > EQUALITY_THRESHOLD;
+			
+			// add vertex to the front volume if front side
+			if(isFrontFirst){
+				// if the front volume does not exist we create it
+				if(!volumeFront){
+					volumeFront = CreateVolume(pVolumes.GetAt(volume), true);
+				}
 				
-				const decVector &vertexFirstPosition = pVolumes[ volume ]->GetVertexAt( vertexFirst );
-				const decVector &vertexSecondPosition = pVolumes[ volume ]->GetVertexAt( vertexSecond );
+				// if the front face does not exist we create it
+				if(!faceFront){
+					faceFront = CreateVolumeFace(&testFace);
+					faceFront->SetNormal(testFace.GetNormal());
+				}
 				
-				// determine if the vertices are in front of the split plane
-				dotFirst = splitNormal * vertexFirstPosition - splitDot;
-				dotSecond = splitNormal * vertexSecondPosition - splitDot;
-				isFrontFirst = ( dotFirst > EQUALITY_THRESHOLD );
-				isFrontSecond = ( dotSecond > EQUALITY_THRESHOLD );
+				// add the vertex if not existing already
+				int vertexIndex = volumeFront->IndexOfVertex(vertexFirstPosition);
+				if(vertexIndex == -1){
+					vertexIndex = volumeFront->GetVertexCount();
+					volumeFront->AddVertex(vertexFirstPosition);
+				}
 				
-				// add vertex to the front volume if front side
-				if( isFrontFirst ){
-					// if the front volume does not exist we create it
-					if( ! volumeFront ){
-						volumeFront = CreateVolume( pVolumes[ volume ], true );
-						if( ! volumeFront ) DETHROW( deeOutOfMemory );
-					}
-					
-					// if the front face does not exist we create it
-					if( ! faceFront ){
-						faceFront = CreateVolumeFace( testFace );
-						if( ! faceFront ) DETHROW( deeOutOfMemory );
-						faceFront->SetNormal( testFace->GetNormal() );
-					}
-					
-					// add the vertex if not existing already
-					vertexIndex = volumeFront->IndexOfVertex( vertexFirstPosition );
-					if( vertexIndex == -1 ){
-						vertexIndex = volumeFront->GetVertexCount();
-						volumeFront->AddVertex( vertexFirstPosition );
-					}
-					
-					// add to front face
-					faceFront->AddVertex( vertexIndex );
-					
-				// add vertex to the back volume if on back side and not marked for deletion
-				}else if( ! deleteBackVolume ){
+				// add to front face
+				faceFront->AddVertex(vertexIndex);
+				
+			// add vertex to the back volume if on back side and not marked for deletion
+			}else if(!deleteBackVolume){
+				// if the back volume does not exist we create it
+				if(!volumeBack){
+					volumeBack = CreateVolume(pVolumes.GetAt(volume), false);
+				}
+				
+				// if the back face does not exist we create it
+				if(!faceBack){
+					faceBack = CreateVolumeFace(&testFace);
+					faceBack->SetNormal(testFace.GetNormal());
+				}
+				
+				// add the vertex if not existing already
+				int vertexIndex = volumeBack->IndexOfVertex(vertexFirstPosition);
+				if(vertexIndex == -1){
+					vertexIndex = volumeBack->GetVertexCount();
+					volumeBack->AddVertex(vertexFirstPosition);
+				}
+				
+				// add to back face
+				faceBack->AddVertex(vertexIndex);
+			}
+			
+			// if both are different add cut vertex
+			if(isFrontFirst != isFrontSecond){
+				// calculate the cut vertex
+				const decVector edgeDirection(vertexSecondPosition - vertexFirstPosition);
+				const float lambda = (splitDot - splitNormal * vertexFirstPosition)
+					/ (splitNormal * edgeDirection);
+				const decVector cutVertexPosition(vertexFirstPosition + edgeDirection * lambda);
+				
+				// if the front volume does not exist we create it
+				if(!volumeFront){
+					volumeFront = CreateVolume(pVolumes.GetAt(volume), true);
+				}
+				
+				// if the front face does not exist we create it
+				if(!faceFront){
+					faceFront = CreateVolumeFace(&testFace);
+					faceFront->SetNormal(testFace.GetNormal());
+				}
+				
+				// if the front cut face does not exist we create it
+				if(!faceCutFront){
+					faceCutFront = CreateVolumeFace(face);
+					faceCutFront->SetNormal(-splitNormal);
+				}
+				
+				// add the vertex to front volume if not existing already
+				int vertexIndex = volumeFront->IndexOfVertex(cutVertexPosition);
+				if(vertexIndex == -1){
+					vertexIndex = volumeFront->GetVertexCount();
+					volumeFront->AddVertex(cutVertexPosition);
+				}
+				
+				// add vertex to front face and front cut face
+				faceFront->AddVertex(vertexIndex);
+				if(!faceCutFront->HasVertex(vertexIndex)){
+					faceCutFront->AddVertex(vertexIndex);
+				}
+				
+				// back volume stuff only if not marked for deletion
+				if(!deleteBackVolume){
 					// if the back volume does not exist we create it
-					if( ! volumeBack ){
-						volumeBack = CreateVolume( pVolumes[ volume ], false );
-						if( ! volumeBack ) DETHROW( deeOutOfMemory );
+					if(!volumeBack){
+						volumeBack = CreateVolume(pVolumes.GetAt(volume), false);
 					}
 					
 					// if the back face does not exist we create it
-					if( ! faceBack ){
-						faceBack = CreateVolumeFace( testFace );
-						if( ! faceBack ) DETHROW( deeOutOfMemory );
-						faceBack->SetNormal( testFace->GetNormal() );
+					if(!faceBack){
+						faceBack = CreateVolumeFace(&testFace);
+						faceBack->SetNormal(testFace.GetNormal());
 					}
 					
-					// add the vertex if not existing already
-					vertexIndex = volumeBack->IndexOfVertex( vertexFirstPosition );
-					if( vertexIndex == -1 ){
+					// if the back cut face does not exist we create it
+					if(!faceCutBack){
+						faceCutBack = CreateVolumeFace(face);
+						faceCutBack->SetNormal(splitNormal);
+					}
+					
+					// add the vertex to back volume if not existing already
+					vertexIndex = volumeBack->IndexOfVertex(cutVertexPosition);
+					if(vertexIndex == -1){
 						vertexIndex = volumeBack->GetVertexCount();
-						volumeBack->AddVertex( vertexFirstPosition );
+						volumeBack->AddVertex(cutVertexPosition);
 					}
 					
-					// add to back face
-					faceBack->AddVertex( vertexIndex );
-				}
-				
-				// if both are different add cut vertex
-				if( isFrontFirst != isFrontSecond ){
-					// calculate the cut vertex
-					edgeDirection = vertexSecondPosition - vertexFirstPosition;
-					lambda = ( splitDot - splitNormal * vertexFirstPosition )
-						/ ( splitNormal * edgeDirection );
-					cutVertexPosition = vertexFirstPosition + edgeDirection * lambda;
-					
-					// if the front volume does not exist we create it
-					if( ! volumeFront ){
-						volumeFront = CreateVolume( pVolumes[ volume ], true );
-						if( ! volumeFront ) DETHROW( deeOutOfMemory );
-					}
-					
-					// if the front face does not exist we create it
-					if( ! faceFront ){
-						faceFront = CreateVolumeFace( testFace );
-						if( ! faceFront ) DETHROW( deeOutOfMemory );
-						faceFront->SetNormal( testFace->GetNormal() );
-					}
-					
-					// if the front cut face does not exist we create it
-					if( ! faceCutFront ){
-						faceCutFront = CreateVolumeFace( face );
-						if( ! faceCutFront ) DETHROW( deeOutOfMemory );
-						faceCutFront->SetNormal( -splitNormal );
-					}
-					
-					// add the vertex to front volume if not existing already
-					vertexIndex = volumeFront->IndexOfVertex( cutVertexPosition );
-					if( vertexIndex == -1 ){
-						vertexIndex = volumeFront->GetVertexCount();
-						volumeFront->AddVertex( cutVertexPosition );
-					}
-					
-					// add vertex to front face and front cut face
-					faceFront->AddVertex( vertexIndex );
-					if( ! faceCutFront->HasVertex( vertexIndex ) ){
-						faceCutFront->AddVertex( vertexIndex );
-					}
-					
-					// back volume stuff only if not marked for deletion
-					if( ! deleteBackVolume ){
-						// if the back volume does not exist we create it
-						if( ! volumeBack ){
-							volumeBack = CreateVolume( pVolumes[ volume ], false );
-							if( ! volumeBack ) DETHROW( deeOutOfMemory );
-						}
-						
-						// if the back face does not exist we create it
-						if( ! faceBack ){
-							faceBack = CreateVolumeFace( testFace );
-							if( ! faceBack ) DETHROW( deeOutOfMemory );
-							faceBack->SetNormal( testFace->GetNormal() );
-						}
-						
-						// if the back cut face does not exist we create it
-						if( ! faceCutBack ){
-							faceCutBack = CreateVolumeFace( face );
-							if( ! faceCutBack ) DETHROW( deeOutOfMemory );
-							faceCutBack->SetNormal( splitNormal );
-						}
-						
-						// add the vertex to back volume if not existing already
-						vertexIndex = volumeBack->IndexOfVertex( cutVertexPosition );
-						if( vertexIndex == -1 ){
-							vertexIndex = volumeBack->GetVertexCount();
-							volumeBack->AddVertex( cutVertexPosition );
-						}
-						
-						// add vertex to back face and back cut face
-						faceBack->AddVertex( vertexIndex );
-						if( ! faceCutBack->HasVertex( vertexIndex ) ){
-							faceCutBack->AddVertex( vertexIndex );
-						}
+					// add vertex to back face and back cut face
+					faceBack->AddVertex(vertexIndex);
+					if(!faceCutBack->HasVertex(vertexIndex)){
+						faceCutBack->AddVertex(vertexIndex);
 					}
 				}
 			}
-			
-			// add faces to volumes if exising
-			if( faceFront ){
-				volumeFront->AddFace( faceFront );
-				faceFront = NULL;
-			}
-			if( faceBack ){
-				volumeBack->AddFace( faceBack );
-				faceBack = NULL;
-			}
 		}
 		
-		// add cut faces if existing
-		if( faceCutFront ){
-			if( ! faceCutFront->IsTooSmall( *volumeFront ) ){
-				faceCutFront->SortVertices( *volumeFront );
-				volumeFront->AddFace( faceCutFront );
-				
-			}else{
-				delete faceCutFront;
-			}
-			faceCutFront = NULL;
+		// add faces to volumes if exising
+		if(faceFront){
+			volumeFront->AddFace(std::move(faceFront));
 		}
-		
-		if( faceCutBack ){
-			if( ! faceCutBack->IsTooSmall( *volumeBack ) ){
-				faceCutBack->SortVertices( *volumeBack );
-				volumeBack->AddFace( faceCutBack );
-				
-			}else{
-				delete faceCutBack;
-			}
-			faceCutBack = NULL;
+		if(faceBack){
+			volumeBack->AddFace(std::move(faceBack));
 		}
+	}
+	
+	// add cut faces if existing
+	if(faceCutFront && !faceCutFront->IsTooSmall(volumeFront)){
+		faceCutFront->SortVertices(volumeFront);
+		volumeFront->AddFace(std::move(faceCutFront));
+	}
+	
+	if(faceCutBack && !faceCutBack->IsTooSmall(volumeBack)){
+		faceCutBack->SortVertices(volumeBack);
+		volumeBack->AddFace(std::move(faceCutBack));
+	}
+	
+	// add volumes if existing
+	if(volumeFront){
+		pVolumes.SetAt(volume, std::move(volumeFront));
 		
-		// add volumes if existing
-		if( volumeFront ){
-			delete pVolumes[ volume ];
-			pVolumes[ volume ] = volumeFront;
-			volumeFront = NULL;
-			
-			if( volumeBack ){
-				AddVolume( volumeBack );
-				volumeBack = NULL;
-				result = SPLIT_FRONT_BACK;
-				
-			}else{
-				result = SPLIT_FRONT;
-			}
-			
-		}else if( volumeBack ){
-			delete pVolumes[ volume ];
-			pVolumes[ volume ] = volumeBack;
-			volumeBack = NULL;
-			result = SPLIT_BACK;
+		if(volumeBack){
+			AddVolume(std::move(volumeBack));
+			result = SPLIT_FRONT_BACK;
 			
 		}else{
-			RemoveVolumeAt( volume );
-			result = SPLIT_NONE;
+			result = SPLIT_FRONT;
 		}
 		
-	}catch( const deException & ){
-		if( faceCutFront ) delete faceCutFront;
-		if( faceCutBack ) delete faceCutBack;
-		if( faceFront ) delete faceFront;
-		if( faceBack ) delete faceBack;
-		if( volumeFront ) delete volumeFront;
-		if( volumeBack ) delete volumeBack;
-		throw;
+	}else if(volumeBack){
+		pVolumes.SetAt(volume, std::move(volumeBack));
+		result = SPLIT_BACK;
+		
+	}else{
+		RemoveVolumeAt(volume);
+		result = SPLIT_NONE;
 	}
 	
 	return result;
 }
 
-int decConvexVolumeList::pSplitByVolume( int volume, const decConvexVolume &splitVolume ){
+int decConvexVolumeList::pSplitByVolume(int volume, const decConvexVolume &splitVolume){
 #ifdef NEVER_SET_ME
-	int f, faceCount = pVolumes[ volume ]->GetFaceCount();
-	decConvexVolume *volumeFront = NULL;
-	decConvexVolume *volumeBack = NULL;
-	decConvexVolumeFace *faceFront = NULL;
-	decConvexVolumeFace *faceBack = NULL;
-	decConvexVolumeFace *faceCutFront = NULL;
-	decConvexVolumeFace *faceCutBack = NULL;
+	int f, faceCount = pVolumes.GetAt(volume)->GetFaceCount();
+	decConvexVolume::Ref volumeFront, volumeBack;
+	decConvexVolumeFace *faceFront = nullptr;
+	decConvexVolumeFace *faceBack = nullptr;
+	decConvexVolumeFace *faceCutFront = nullptr;
+	decConvexVolumeFace *faceCutBack = nullptr;
 	decConvexVolumeFace *testFace;
 	decVector edgeDirection, cutVertexPosition;
 	bool isFrontFirst, isFrontSecond, hasCutVertex;
@@ -737,206 +573,189 @@ int decConvexVolumeList::pSplitByVolume( int volume, const decConvexVolume &spli
 	// things can go wrong so we protect this place
 	try{
 		// loop over all faces
-		for( f=0; f<faceCount; f++ ){
-			testFace = pVolumes[ volume ]->GetFaceAt( f );
-			vertexCount = testFace->GetVertexCount();
+		for(f=0; f<faceCount; f++){
+			testFace = pVolumes.GetAt(volume)->GetFaceAt(f);
+			vertexCount = testFace.GetVertexCount();
 			
 			// for every face loop over all vertices
-			for( v=0; v<vertexCount; v++ ){
+			for(v=0; v<vertexCount; v++){
 				// get the first and second vertex of this edge
-				vertexFirst = testFace->GetVertexAt( v );
-				vertexSecond = testFace->GetVertexAt( ( v + 1 ) % vertexCount );
+				vertexFirst = testFace.GetVertexAt(v);
+				vertexSecond = testFace.GetVertexAt((v + 1) % vertexCount);
 				
-				const decVector &vertexFirstPosition = pVolumes[ volume ]->GetVertexAt( vertexFirst );
-				const decVector &vertexSecondPosition = pVolumes[ volume ]->GetVertexAt( vertexSecond );
+				const decVector &vertexFirstPosition = pVolumes.GetAt(volume)->GetVertexAt(vertexFirst);
+				const decVector &vertexSecondPosition = pVolumes.GetAt(volume)->GetVertexAt(vertexSecond);
 				
 				// determine if the vertices are in front of the split plane
 				dotFirst = splitNormal * vertexFirstPosition - splitDot;
 				dotSecond = splitNormal * vertexSecondPosition - splitDot;
-				isFrontFirst = ( dotFirst > EQUALITY_THRESHOLD );
-				isFrontSecond = ( dotSecond > EQUALITY_THRESHOLD );
+				isFrontFirst = (dotFirst > EQUALITY_THRESHOLD);
+				isFrontSecond = (dotSecond > EQUALITY_THRESHOLD);
 				
 				// add vertex to the front volume if front side
-				if( isFrontFirst ){
+				if(isFrontFirst){
 					// if the front volume does not exist we create it
-					if( ! volumeFront ){
-						volumeFront = CreateVolume( pVolumes[ volume ], true );
-						if( ! volumeFront ) DETHROW( deeOutOfMemory );
+					if(!volumeFront){
+						volumeFront = CreateVolume(pVolumes.GetAt(volume), true);
 					}
 					
 					// if the front face does not exist we create it
-					if( ! faceFront ){
-						faceFront = CreateVolumeFace( testFace );
-						if( ! faceFront ) DETHROW( deeOutOfMemory );
-						faceFront->SetNormal( testFace->GetNormal() );
+					if(!faceFront){
+						faceFront = CreateVolumeFace(testFace);
+						faceFront->SetNormal(testFace.GetNormal());
 					}
 					
 					// add the vertex if not existing already
-					vertexIndex = volumeFront->IndexOfVertex( vertexFirstPosition );
-					if( vertexIndex == -1 ){
+					vertexIndex = volumeFront->IndexOfVertex(vertexFirstPosition);
+					if(vertexIndex == -1){
 						vertexIndex = volumeFront->GetVertexCount();
-						volumeFront->AddVertex( vertexFirstPosition );
+						volumeFront->AddVertex(vertexFirstPosition);
 					}
 					
 					// add to front face
-					faceFront->AddVertex( vertexIndex );
+					faceFront->AddVertex(vertexIndex);
 					
 				// add vertex to the back volume if on back side and not marked for deletion
-				}else if( ! deleteBackVolume ){
+				}else if(!deleteBackVolume){
 					// if the back volume does not exist we create it
-					if( ! volumeBack ){
-						volumeBack = CreateVolume( pVolumes[ volume ], false );
-						if( ! volumeBack ) DETHROW( deeOutOfMemory );
+					if(!volumeBack){
+						volumeBack = CreateVolume(pVolumes.GetAt(volume), false);
 					}
 					
 					// if the back face does not exist we create it
-					if( ! faceBack ){
-						faceBack = CreateVolumeFace( testFace );
-						if( ! faceBack ) DETHROW( deeOutOfMemory );
-						faceBack->SetNormal( testFace->GetNormal() );
+					if(!faceBack){
+						faceBack = CreateVolumeFace(testFace);
+						faceBack->SetNormal(testFace.GetNormal());
 					}
 					
 					// add the vertex if not existing already
-					vertexIndex = volumeBack->IndexOfVertex( vertexFirstPosition );
-					if( vertexIndex == -1 ){
+					vertexIndex = volumeBack->IndexOfVertex(vertexFirstPosition);
+					if(vertexIndex == -1){
 						vertexIndex = volumeBack->GetVertexCount();
-						volumeBack->AddVertex( vertexFirstPosition );
+						volumeBack->AddVertex(vertexFirstPosition);
 					}
 					
 					// add to back face
-					faceBack->AddVertex( vertexIndex );
+					faceBack->AddVertex(vertexIndex);
 				}
 				
 				// if both are different add cut vertex
-				if( isFrontFirst != isFrontSecond ){
+				if(isFrontFirst != isFrontSecond){
 					// calculate the cut vertex
 					edgeDirection = vertexSecondPosition - vertexFirstPosition;
-					lambda = ( splitDot - splitNormal * vertexFirstPosition )
-						/ ( splitNormal * edgeDirection );
+					lambda = (splitDot - splitNormal * vertexFirstPosition)
+						/ (splitNormal * edgeDirection);
 					cutVertexPosition = vertexFirstPosition + edgeDirection * lambda;
 					
 					// if the front volume does not exist we create it
-					if( ! volumeFront ){
-						volumeFront = CreateVolume( pVolumes[ volume ], true );
-						if( ! volumeFront ) DETHROW( deeOutOfMemory );
+					if(!volumeFront){
+						volumeFront = CreateVolume(pVolumes.GetAt(volume), true);
 					}
 					
 					// if the front face does not exist we create it
-					if( ! faceFront ){
-						faceFront = CreateVolumeFace( testFace );
-						if( ! faceFront ) DETHROW( deeOutOfMemory );
-						faceFront->SetNormal( testFace->GetNormal() );
+					if(!faceFront){
+						faceFront = CreateVolumeFace(testFace);
+						faceFront->SetNormal(testFace.GetNormal());
 					}
 					
 					// if the front cut face does not exist we create it
-					if( ! faceCutFront ){
+					if(!faceCutFront){
 						faceCutFront = CreateVolumeFace();
-						if( ! faceCutFront ) DETHROW( deeOutOfMemory );
-						faceCutFront->SetNormal( -splitNormal );
+						faceCutFront->SetNormal(-splitNormal);
 					}
 					
 					// add the vertex to front volume if not existing already
-					vertexIndex = volumeFront->IndexOfVertex( cutVertexPosition );
-					if( vertexIndex == -1 ){
+					vertexIndex = volumeFront->IndexOfVertex(cutVertexPosition);
+					if(vertexIndex == -1){
 						vertexIndex = volumeFront->GetVertexCount();
-						volumeFront->AddVertex( cutVertexPosition );
+						volumeFront->AddVertex(cutVertexPosition);
 					}
 					
 					// add vertex to front face and front cut face
-					faceFront->AddVertex( vertexIndex );
-					if( ! faceCutFront->HasVertex( vertexIndex ) ){
-						faceCutFront->AddVertex( vertexIndex );
+					faceFront->AddVertex(vertexIndex);
+					if(!faceCutFront->HasVertex(vertexIndex)){
+						faceCutFront->AddVertex(vertexIndex);
 					}
 					
 					// back volume stuff only if not marked for deletion
-					if( ! deleteBackVolume ){
+					if(!deleteBackVolume){
 						// if the back volume does not exist we create it
-						if( ! volumeBack ){
-							volumeBack = CreateVolume( pVolumes[ volume ], false );
-							if( ! volumeBack ) DETHROW( deeOutOfMemory );
+						if(!volumeBack){
+							volumeBack = CreateVolume(pVolumes.GetAt(volume), false);
 						}
 						
 						// if the back face does not exist we create it
-						if( ! faceBack ){
-							faceBack = CreateVolumeFace( testFace );
-							if( ! faceBack ) DETHROW( deeOutOfMemory );
-							faceBack->SetNormal( testFace->GetNormal() );
+						if(!faceBack){
+							faceBack = CreateVolumeFace(testFace);
+							faceBack->SetNormal(testFace.GetNormal());
 						}
 						
 						// if the back cut face does not exist we create it
-						if( ! faceCutBack ){
+						if(!faceCutBack){
 							faceCutBack = CreateVolumeFace();
-							if( ! faceCutBack ) DETHROW( deeOutOfMemory );
-							faceCutBack->SetNormal( splitNormal );
+							faceCutBack->SetNormal(splitNormal);
 						}
 						
 						// add the vertex to back volume if not existing already
-						vertexIndex = volumeBack->IndexOfVertex( cutVertexPosition );
-						if( vertexIndex == -1 ){
+						vertexIndex = volumeBack->IndexOfVertex(cutVertexPosition);
+						if(vertexIndex == -1){
 							vertexIndex = volumeBack->GetVertexCount();
-							volumeBack->AddVertex( cutVertexPosition );
+							volumeBack->AddVertex(cutVertexPosition);
 						}
 						
 						// add vertex to back face and back cut face
-						faceBack->AddVertex( vertexIndex );
-						if( ! faceCutBack->HasVertex( vertexIndex ) ){
-							faceCutBack->AddVertex( vertexIndex );
+						faceBack->AddVertex(vertexIndex);
+						if(!faceCutBack->HasVertex(vertexIndex)){
+							faceCutBack->AddVertex(vertexIndex);
 						}
 					}
 				}
 			}
 			
 			// add faces to volumes if exising
-			if( faceFront ){
-				volumeFront->AddFace( faceFront );
+			if(faceFront){
+				volumeFront->AddFace(faceFront);
 				faceFront = NULL;
 			}
-			if( faceBack ){
-				volumeBack->AddFace( faceBack );
+			if(faceBack){
+				volumeBack->AddFace(faceBack);
 				faceBack = NULL;
 			}
 		}
 		
 		// add cut faces if existing
-		if( faceCutFront ){
-			faceCutFront->SortVertices( *volumeFront );
-			volumeFront->AddFace( faceCutFront );
+		if(faceCutFront){
+			faceCutFront->SortVertices(volumeFront);
+			volumeFront->AddFace(faceCutFront);
 			faceCutFront = NULL;
 		}
-		if( faceCutBack ){
-			faceCutBack->SortVertices( *volumeBack );
-			volumeBack->AddFace( faceCutBack );
+		if(faceCutBack){
+			faceCutBack->SortVertices(volumeBack);
+			volumeBack->AddFace(faceCutBack);
 			faceCutBack = NULL;
 		}
 		
 		// add volumes if existing
-		if( volumeFront ){
-			delete pVolumes[ volume ];
-			pVolumes[ volume ] = volumeFront;
-			volumeFront = NULL;
+		if(volumeFront){
+			pVolumes.SetAt(volume, std::move(volumeFront));
 			
-			if( volumeBack ){
-				AddVolume( volumeBack );
-				volumeBack = NULL;
+			if(volumeBack){
+				AddVolume(std::move(volumeBack));
 			}
 			
-		}else if( volumeBack ){
-			delete pVolumes[ volume ];
-			pVolumes[ volume ] = volumeBack;
-			volumeBack = NULL;
+		}else if(volumeBack){
+			pVolumes.SetAt(volume, std::move(volumeBack));
 			
 		}else{
-			RemoveVolumeAt( volume );
+			RemoveVolumeAt(volume);
 			volumeRemoved = true;
 		}
 		
-	}catch( const deException & ){
-		if( faceCutFront ) delete faceCutFront;
-		if( faceCutBack ) delete faceCutBack;
-		if( faceFront ) delete faceFront;
-		if( faceBack ) delete faceBack;
-		if( volumeFront ) delete volumeFront;
-		if( volumeBack ) delete volumeBack;
+	}catch(const deException &){
+		if(faceCutFront) delete faceCutFront;
+		if(faceCutBack) delete faceCutBack;
+		if(faceFront) delete faceFront;
+		if(faceBack) delete faceBack;
 		throw;
 	}
 	

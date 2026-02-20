@@ -30,6 +30,9 @@
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
+
 #include <dragengine/common/exceptions.h>
 
 
@@ -40,45 +43,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteDecal::meUDeleteDecal( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUDeleteDecal::meUDeleteDecal(meWorld *world){
+	if(!world) DETHROW(deeInvalidParam);
 	decString text;
 	
-	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
-	int count = selection.GetCount();
-	
 	pWorld = world;
-	pDecals = NULL;
-	pDecalCount = 0;
 	
-	try{
-		if( count > 0 ){
-			pDecals = new meUndoDataDecal*[ count ];
-			if( ! pDecals ) DETHROW( deeOutOfMemory );
-			
-			while( pDecalCount < count ){
-				pDecals[ pDecalCount ] = new meUndoDataDecal( selection.GetAt( pDecalCount ) );
-				if( ! pDecals[ pDecalCount ] ) DETHROW( deeOutOfMemory );
-				pDecalCount++;
-			}
-		}
+	world->GetSelectionDecal().GetSelected().Visit([&](meDecal *decal){
+		pDecals.Add(meUndoDataDecal::Ref::New(decal));
+	});
+	
+	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	
+	SetShortInfo("@World.UDeleteDecal.DeleteDecals");
+	if(pDecals.GetCount() > 1){
+		text.FormatSafe(tm.Translate("World.UDeleteDecal.CountDecals").ToUTF8(), pDecals.GetCount());
 		
-		SetShortInfo( "Delete Decals" );
-		if( pDecalCount > 1 ){
-			text.Format( "%d decals", pDecalCount );
-		}else{
-			text = "1 object";
-		}
-		SetLongInfo( text );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	}else{
+		text = tm.Translate("World.UDeleteDecal.OneDecal").ToUTF8();
 	}
+	SetLongInfo(text);
 }
 
 meUDeleteDecal::~meUDeleteDecal(){
-	pCleanUp();
 }
 
 
@@ -88,55 +75,28 @@ meUDeleteDecal::~meUDeleteDecal(){
 
 void meUDeleteDecal::Undo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
-	meDecal *decal;
-	int i;
 	
 	selection.Reset();
-	for( i=0; i<pDecalCount; i++ ){
-		decal = pDecals[ i ]->GetDecal();
-		
-		if( pDecals[ i ]->GetParentObject() ){
-			pDecals[ i ]->GetParentObject()->InsertDecalAt( decal, pDecals[ i ]->GetIndex() );
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		if(data.GetParentObject()){
+			data.GetParentObject()->InsertDecalAt(data.GetDecal(), data.GetIndex());
 		}
 		
-		pWorld->AddDecal( decal );
-		selection.Add( decal );
-	}
-	selection.ActivateNext();
+		pWorld->AddDecal(data.GetDecal());
+		selection.Add(data.GetDecal());
+	});
 }
 
 void meUDeleteDecal::Redo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
-	meDecal *decal;
-	int i;
 	
-	for( i=0; i<pDecalCount; i++ ){
-		decal = pDecals[ i ]->GetDecal();
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		selection.Remove(data.GetDecal());
 		
-		selection.Remove( decal );
-		if( decal->GetActive() ){
-			selection.ActivateNext();
-		}
+		pWorld->RemoveDecal(data.GetDecal());
 		
-		pWorld->RemoveDecal( pDecals[ i ]->GetDecal() );
-		
-		if( pDecals[ i ]->GetParentObject() ){
-			pDecals[ i ]->GetParentObject()->RemoveDecal( decal );
+		if(data.GetParentObject()){
+			data.GetParentObject()->RemoveDecal(data.GetDecal());
 		}
-	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDeleteDecal::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
-			delete pDecals[ pDecalCount - 1 ];
-			pDecalCount--;
-		}
-		delete [] pDecals;
-	}
+	});
 }

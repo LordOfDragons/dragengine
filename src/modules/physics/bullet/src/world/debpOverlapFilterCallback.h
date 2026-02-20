@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlap filter. */
-	debpOverlapFilterCallback( debpSharedCollisionFiltering &collisionFiltering );
+	debpOverlapFilterCallback(debpSharedCollisionFiltering &collisionFiltering);
 	
 	/** \brief Clean up overlap filter. */
 	virtual ~debpOverlapFilterCallback();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Determine if two objects can collider in broadphase. */
-	virtual bool needBroadphaseCollision( btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1 ) const;
+	virtual bool needBroadphaseCollision(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1) const;
 	/*@}*/
 };
 

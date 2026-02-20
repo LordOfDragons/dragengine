@@ -40,6 +40,10 @@ class deFileResource;
  */
 class DE_DLL_EXPORT igdeResourceLoaderListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeResourceLoaderListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
@@ -47,7 +51,7 @@ public:
 	
 protected:
 	/** \brief Clean up listener. */
-	virtual ~igdeResourceLoaderListener();
+	~igdeResourceLoaderListener() override;
 	/*@}*/
 	
 	
@@ -56,10 +60,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Loading of the resource finished. */
-	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource );
+	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource);
 	
 	/** \brief Loading of the resource failed. */
-	virtual void LoadingFailed( const igdeResourceLoaderTask &task );
+	virtual void LoadingFailed(const igdeResourceLoaderTask &task);
 	/*@}*/
 };
 

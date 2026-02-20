@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 
 class deForceFieldManager;
 class deBasePhysicsForceField;
@@ -95,8 +95,7 @@ class deWorld;
 class DE_DLL_EXPORT deForceField : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deForceField> Ref;
-	
+	using Ref = deTObjectReference<deForceField>;
 	
 	
 public:
@@ -133,7 +132,7 @@ private:
 	decDVector pPosition;
 	decQuaternion pOrientation;
 	
-	decShapeList pInfluenceArea;
+	decShape::List pInfluenceArea;
 	float pRadius;
 	float pExponent;
 	
@@ -144,15 +143,14 @@ private:
 	float pFluctuationDirection;
 	float pFluctuationForce;
 	
-	decShapeList pShape;
+	decShape::List pShape;
 	decCollisionFilter pCollisionFilter;
 	bool pEnabled;
 	
 	deBasePhysicsForceField *pPeerPhysics;
 	
 	deWorld *pParentWorld;
-	deForceField *pLLWorldPrev;
-	deForceField *pLLWorldNext;
+	decTObjectLinkedList<deForceField>::Element pLLWorld;
 	
 	
 	
@@ -160,7 +158,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create force field. */
-	deForceField( deForceFieldManager *manager );
+	deForceField(deForceFieldManager *manager);
 	
 protected:
 	/**
@@ -169,7 +167,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deForceField();
+	~deForceField() override;
 	/*@}*/
 	
 	
@@ -181,33 +179,33 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	
 	
 	/** \brief Influence area. */
-	inline const decShapeList &GetInfluenceArea() const{ return pInfluenceArea; }
+	inline const decShape::List &GetInfluenceArea() const{ return pInfluenceArea; }
 	
 	/** \brief Set influence area. */
-	void SetInfluenceArea( const decShapeList &area );
+	void SetInfluenceArea(const decShape::List &area);
 	
 	/** \brief Falloff radius. */
 	inline float GetRadius() const{ return pRadius; }
 	
 	/** \brief Set falloff radius. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** \brief Falloff exponent. */
 	inline float GetExponent() const{ return pExponent; }
 	
 	/** \brief Set falloff exponent. */
-	void SetExponent( float exponent );
+	void SetExponent(float exponent);
 	
 	
 	
@@ -215,57 +213,57 @@ public:
 	inline eFieldTypes GetFieldType() const{ return pFieldType; }
 	
 	/** \brief Set field type. */
-	void SetFieldType( eFieldTypes type );
+	void SetFieldType(eFieldTypes type);
 	
 	/** \brief Force application type. */
 	inline eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set application type. */
-	void SetApplicationType( eApplicationTypes type );
+	void SetApplicationType(eApplicationTypes type);
 	
 	/** \brief Force direction. */
 	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Set force direction. */
-	void SetDirection( const decVector &direction );
+	void SetDirection(const decVector &direction);
 	
 	/** \brief Force in newton. */
 	inline float GetForce() const{ return pForce; }
 	
 	/** \brief Set force in newton. */
-	void SetForce( float force );
+	void SetForce(float force);
 	
 	/** \brief Fluctuation of direction in radians. */
 	inline float GetFluctuationDirection() const{ return pFluctuationDirection; }
 	
 	/** \brief Set fluctuation of direction in radians. */
-	void SetFluctuationDirection( float fluctuation );
+	void SetFluctuationDirection(float fluctuation);
 	
 	/** \brief Fluctuation of force in newton. */
 	inline float GetFluctuationForce() const{ return pFluctuationForce; }
 	
 	/** \brief Set fluctuation of force in newton. */
-	void SetFluctuationForce( float fluctuation );
+	void SetFluctuationForce(float fluctuation);
 	
 	
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShape::List &GetShape() const{ return pShape; }
 	
 	/** \brief Set sound shape. */
-	void SetShape( const decShapeList &shape );
+	void SetShape(const decShape::List &shape);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &filter );
+	void SetCollisionFilter(const decCollisionFilter &filter);
 	
 	/** \brief Force field is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if force field is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/*@}*/
 	
 	
@@ -276,7 +274,7 @@ public:
 	inline deBasePhysicsForceField *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
-	void SetPeerPhysics( deBasePhysicsForceField *peer );
+	void SetPeerPhysics(deBasePhysicsForceField *peer);
 	/*@}*/
 	
 	
@@ -289,17 +287,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous force field in the parent world linked list. */
-	inline deForceField *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next force field in the parent world linked list. */
-	void SetLLWorldPrev( deForceField *forceField );
-	
-	/** \brief Next force field in the parent world linked list. */
-	inline deForceField *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next force field in the parent world linked list. */
-	void SetLLWorldNext( deForceField *forceField );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deForceField>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

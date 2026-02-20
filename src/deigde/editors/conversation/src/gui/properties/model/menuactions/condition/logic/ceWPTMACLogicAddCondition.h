@@ -36,6 +36,9 @@ class ceConversationAction;
  * \brief Menu action add action to if-else case.
  */
 class ceWPTMACLogicAddCondition : public ceWPTMACreateCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMACLogicAddCondition>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceConversationAction *pAction;
@@ -51,10 +54,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicAddCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicAddCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceConversationAction &action, ceCConditionLogic &logic,
-		ceConversationCondition::eConditionTypes actionType );
+		ceConversationCondition::eConditionTypes actionType);
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *action );
+	igdeUndo::Ref CreateUndo(ceConversationCondition *action) override;
 	/*@}*/
 };
 

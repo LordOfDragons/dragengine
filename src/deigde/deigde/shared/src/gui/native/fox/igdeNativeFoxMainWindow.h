@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXMAINWINDOW_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeMainWindow.h"
 #include "../../../environment/igdeEnvironment.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -37,8 +38,8 @@ class igdeMainWindow;
 /**
  * \brief FOX toolkit native main window.
  */
-class igdeNativeFoxMainWindow : public FXMainWindow{
-	FXDECLARE( igdeNativeFoxMainWindow )
+class igdeNativeFoxMainWindow : public FXMainWindow, public igdeMainWindow::cNativeMainWindow{
+	FXDECLARE(igdeNativeFoxMainWindow)
 protected:
 	igdeNativeFoxMainWindow();
 	
@@ -46,13 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeFoxMainWindow( igdeMainWindow &owner );
+	igdeNativeFoxMainWindow(igdeMainWindow &owner);
 	
 	/** \brief Clean up container. */
-	virtual ~igdeNativeFoxMainWindow();
+	~igdeNativeFoxMainWindow() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMainWindow* CreateNativeWidget( igdeMainWindow &owner );
+	static igdeNativeFoxMainWindow* CreateNativeWidget(igdeMainWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -65,54 +66,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void create();
-	virtual void destroy();
+	void create() override;
+	void destroy() override;
 	
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Update window state. */
-	void UpdateWindowState();
+	void UpdateWindowState() override;
 	
 	/** \brief Update enabled state. */
-	virtual void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update position. */
-	virtual void UpdatePosition();
+	void UpdatePosition() override;
 	
 	/** \brief Update icon. */
-	virtual void UpdateIcon();
+	void UpdateIcon() override;
 	
 	/** \brief Update window title. */
-	virtual void UpdateTitle();
+	void UpdateTitle() override;
 	
 	/** \brief Update size. */
-	virtual void UpdateSize();
+	void UpdateSize() override;
+	
+	/** \brief Raise and activate window. */
+	void RaiseAndActivate() override;
 	
 	/** \brief Set window state to owner. */
 	void SetWindowState();
 	
 	/** \brief Get main app font config. */
-	static void GetAppFontConfig( igdeFont::sConfiguration &config );
+	static void GetAppFontConfig(igdeFont::sConfiguration &config);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onConfigure( FXObject*, FXSelector, void* );
-	long onMap( FXObject*, FXSelector, void* );
-	long onClose( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
-	long onMinimized( FXObject*, FXSelector, void* );
-	long onRestored( FXObject*, FXSelector, void* );
-	long onMaximized( FXObject*, FXSelector, void* );
+	long onConfigure(FXObject*, FXSelector, void*);
+	long onMap(FXObject*, FXSelector, void*);
+	long onClose(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
+	long onMinimized(FXObject*, FXSelector, void*);
+	long onRestored(FXObject*, FXSelector, void*);
+	long onMaximized(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 private:
 	igdeMainWindow *pOwner;
 };
 
-typedef igdeNativeFoxMainWindow igdeNativeMainWindow;
+using igdeNativeMainWindow = igdeNativeFoxMainWindow;
 
 #endif

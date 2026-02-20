@@ -31,7 +31,7 @@
 
 #include <stdint.h>
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRWorld;
@@ -44,7 +44,8 @@ class deoglWorldComputeElement;
  */
 class deoglWorldCompute : public deObject{
 public:
-	typedef deTObjectReference<deoglWorldCompute> Ref;
+	using Ref = deTObjectReference<deoglWorldCompute>;
+	
 	
 	/** Element flags. */
 	enum eElementFlags{
@@ -106,23 +107,21 @@ private:
 	deoglRWorld &pWorld;
 	
 	deoglSPBlockSSBO::Ref pSSBOElements;
-	decObjectList pElements;
+	decTObjectList<deoglWorldComputeElement> pElements;
 	
-	decObjectList pUpdateElements;
+	decTObjectList<deoglWorldComputeElement> pUpdateElements;
 	int pFullUpdateLimit;
 	float pFullUpdateFactor;
 	int pUpdateElementCount;
 	bool pForceFullUpdate;
 	
-	decObjectList pUpdateElementGeometries;
+	decTObjectList<deoglWorldComputeElement> pUpdateElementGeometries;
 	int pFullUpdateGeometryLimit;
 	float pFullUpdateGeometryFactor;
 	int pUpdateElementGeometryCount;
 	bool pForceFullUpdateGeometry;
 	
-	sClearGeometries *pClearGeometries;
-	int pClearGeometriesCount;
-	int pClearGeometriesSize;
+	decTList<sClearGeometries> pClearGeometries;
 	int pClearGeometryCount;
 	
 	deoglSPBlockSSBO::Ref pSSBOElementGeometries;
@@ -134,11 +133,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world compute. */
-	deoglWorldCompute( deoglRWorld &world );
+	deoglWorldCompute(deoglRWorld &world);
 	
 protected:
 	/** Clean up world compute. */
-	virtual ~deoglWorldCompute();
+	~deoglWorldCompute() override;
 	/*@}*/
 	
 	
@@ -164,16 +163,16 @@ public:
 	int GetElementCount() const;
 	
 	/** Element at index. */
-	deoglWorldComputeElement &GetElementAt( int index ) const;
+	deoglWorldComputeElement &GetElementAt(int index) const;
 	
 	/** Add element. */
-	void AddElement( deoglWorldComputeElement *element );
+	void AddElement(deoglWorldComputeElement *element);
 	
 	/** Update element. */
-	void UpdateElement( deoglWorldComputeElement *element );
+	void UpdateElement(deoglWorldComputeElement *element);
 	
 	/** Remove element. */
-	void RemoveElement( deoglWorldComputeElement *element );
+	void RemoveElement(deoglWorldComputeElement *element);
 	
 	/** Update element count. */
 	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
@@ -182,7 +181,7 @@ public:
 	int GetElementGeometryCount() const;
 	
 	/** Update element geometries. */
-	void UpdateElementGeometries( deoglWorldComputeElement *element );
+	void UpdateElementGeometries(deoglWorldComputeElement *element);
 	
 	/** Update element geometry count. */
 	inline int GetUpdateElementGeometryCount() const{ return pUpdateElementGeometryCount; }
@@ -204,8 +203,8 @@ public:
 private:
 	void pUpdateSSBOElements();
 	void pFullUpdateSSBOElements();
-	void pUpdateSSBOElement( deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data );
-	void pCheckElementGeometryCount( deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data );
+	void pUpdateSSBOElement(deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data);
+	void pCheckElementGeometryCount(deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data);
 	
 	void pUpdateSSBOElementGeometries();
 	void pFullUpdateSSBOElementGeometries();

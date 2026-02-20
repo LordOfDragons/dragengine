@@ -33,18 +33,20 @@
  */
 class gdeMACategorySkinAdd : public gdeMACategoryAdd{
 public:
+	using Ref = deTObjectReference<gdeMACategorySkinAdd>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMACategorySkinAdd( gdeWindowMain &windowMain );
+	gdeMACategorySkinAdd(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	/** \brief Run action if game definition is not nullptr. */
+	igdeUndo::Ref OnAction(gdeGameDefinition &gameDefinition) override;
 	/*@}*/
 };
 

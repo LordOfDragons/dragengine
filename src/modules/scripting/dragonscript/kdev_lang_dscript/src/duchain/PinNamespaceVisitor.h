@@ -51,9 +51,9 @@ private:
 	
 	
 public:
-	PinNamespaceVisitor( const EditorIntegrator &editorIntegrator, const DUContext *ctx );
+	PinNamespaceVisitor(const EditorIntegrator &editorIntegrator, const DUContext *ctx);
 	
-	void visitFullyQualifiedClassname( FullyQualifiedClassnameAst *node ) override;
+	void visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node) override;
 	
 	const QVector<DUChainPointer<const DUContext>> &namespaces() const{
 		return pNamespaces;
@@ -62,10 +62,10 @@ public:
 	
 	
 protected:
-	void reportSemanticHint( const RangeInRevision &range, const QString &hint );
+	void reportSemanticHint(const RangeInRevision &range, const QString &hint);
 	
-	void findNamespaceIn( const DUContext *searchContext, const QVector<IdentifierAst*> nodes,
-		const QVector<QString> &names, int index );
+	void findNamespaceIn(const DUContext *searchContext, const QVector<IdentifierAst*> nodes,
+		const QVector<QString> &names, int index);
 };
 
 }

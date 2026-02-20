@@ -32,7 +32,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceViewConversationListener::ceViewConversationListener( ceViewConversation &view ) :
-pView( view ){
+ceViewConversationListener::ceViewConversationListener(ceViewConversation &view) :
+pView(view){
 }
 
 ceViewConversationListener::~ceViewConversationListener(){
@@ -54,6 +54,6 @@ ceViewConversationListener::~ceViewConversationListener(){
 // Management
 ///////////////
 
-void ceViewConversationListener::ViewChanged( ceConversation *conversation ){
-	pView.GetRuleOfThirdsAid()->SetVisible( conversation->GetShowRuleOfThirdsAid() );
+void ceViewConversationListener::ViewChanged(ceConversation *conversation){
+	pView.GetRuleOfThirdsAid()->SetVisible(conversation->GetShowRuleOfThirdsAid());
 }

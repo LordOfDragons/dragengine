@@ -62,6 +62,11 @@ jobs:
     runs-on: windows-latest
     
     steps:
+      - name: Expand Pagefile
+        uses: al-cheb/configure-pagefile-action@v1.4
+        with:
+          minimum-size: 32GB
+      
       - uses: actions/checkout@v4
         with:
           lfs: ${{ !inputs.lfscache }}
@@ -89,6 +94,8 @@ jobs:
       
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
         
       - name: Install required packages
         run: choco install ninja 7zip
@@ -115,12 +122,30 @@ jobs:
           $Content = $Content -creplace "DebugBuild","${{ inputs.debugBuild && 'yes' || 'no' }}"
           Set-Content -Path "custom.py" -Value $Content
       
+      - name: Cache External Dependencies
+        id: cache-extern
+        uses: actions/cache@v4
+        with:
+          path: ./vs/extern
+          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/extern/**/*.ps1') }}
+          restore-keys: |
+            ${{ runner.os }}-extern-
+      
       - name: Build
         working-directory: vs
         run: |
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
-          msbuild /m -maxcpucount /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
+          $Platform = "x64"
+          # $env:MSBUILDDISABLENODEREUSE=1
+          # & msbuild /m:2 /p:CL_MPCount=2 `
+          #   -tl:off /nodeReuse:false /v:m `
+          & msbuild /m:2 `
+            -tl:off /v:m `
+            /p:Configuration=$Config `
+            /p:BuildVersion=$BuilVersion `
+            /p:Platform=$Platform `
+            dragengine.sln
       
       - name: Archive
         run: |

@@ -62,15 +62,17 @@ protected:
 	igdeWPWObject &pPanel;
 	
 public:
-	cBaseEditVector( igdeWPWObject &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseEditVector> Ref;
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
-		if( pPanel.GetObject() ){
-			OnVectorChanged( *pPanel.GetObject(), editVector->GetVector() );
+	cBaseEditVector(igdeWPWObject &panel) : pPanel(panel){}
+	
+	virtual void OnVectorChanged(igdeEditVector *editVector){
+		if(pPanel.GetObject()){
+			OnVectorChanged(*pPanel.GetObject(), editVector->GetVector());
 		}
 	}
 	
-	virtual void OnVectorChanged( igdeWObject &object, const decVector &vector ) = 0;
+	virtual void OnVectorChanged(igdeWObject &object, const decVector &vector) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -78,16 +80,18 @@ protected:
 	igdeWPWObject &pPanel;
 	
 public:
-	cBaseAction( igdeWPWObject &panel, const char *text, const char *description ) :
-	igdeAction( text, description ), pPanel( panel ){ }
+	typedef deTObjectReference<cBaseAction> Ref;
 	
-	virtual void OnAction(){
-		if( pPanel.GetObject() ){
-			OnAction( *pPanel.GetObject() );
+	cBaseAction(igdeWPWObject &panel, const char *text, const char *description) :
+	igdeAction(text, description), pPanel(panel){}
+	
+	void OnAction() override{
+		if(pPanel.GetObject()){
+			OnAction(*pPanel.GetObject());
 		}
 	}
 	
-	virtual void OnAction( igdeWObject &object ) = 0;
+	virtual void OnAction(igdeWObject &object) = 0;
 };
 
 
@@ -96,6 +100,8 @@ class cTextClass : public igdeTextFieldListener{
 	igdeWPWObject &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextClass> Ref;
+	
 	cTextClass(igdeWPWObject &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -106,14 +112,14 @@ public:
 		igdeWObject &object = *pPanel.GetObject();
 		igdeGDClass * const oldGDClass = object.GetGDClass();
 		igdeGDClass * const newGDClass = pPanel.GetEnvironment().GetGameProject()->
-			GetGameDefinition()->GetClassManager()->GetNamed(textField->GetText());
+			GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(textField->GetText());
 		if(newGDClass == oldGDClass){
 			return;
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetGDClassNew(newGDClass);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -128,8 +134,10 @@ class cActionSelectClass : public cBaseAction{
 	igdeTextField &pTextField;
 	
 public:
+	typedef deTObjectReference<cActionSelectClass> Ref;
+	
 	cActionSelectClass(igdeWPWObject &panel, igdeTextField &textField) :
-	cBaseAction(panel, "...", "Brings up a dialog to select the object class."),
+	cBaseAction(panel, "@Igde.TriplePoint", "@Igde.WPWObject.Action.SelectClass.ToolTip"),
 	pTextField(textField){}
 	
 	void OnAction(igdeWObject &object) override{
@@ -145,8 +153,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetGDClassNew(gdClass);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -160,6 +168,8 @@ public:
 
 class cEditPosition : public cBaseEditVector{
 public:
+	typedef deTObjectReference<cEditPosition> Ref;
+	
 	cEditPosition(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
 	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
@@ -168,8 +178,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetPositionNew(vector);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -182,6 +192,8 @@ public:
 
 class cEditOrientation : public cBaseEditVector{
 public:
+	typedef deTObjectReference<cEditOrientation> Ref;
+	
 	cEditOrientation(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
 	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
@@ -191,8 +203,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetOrientationNew(orientation);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -205,6 +217,8 @@ public:
 
 class cEditScaling : public cBaseEditVector{
 public:
+	typedef deTObjectReference<cEditScaling> Ref;
+	
 	cEditScaling(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
 	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
@@ -213,8 +227,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetScalingNew(vector);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -228,12 +242,14 @@ public:
 
 class cCheckVisible : public cBaseAction{
 public:
-	cCheckVisible(igdeWPWObject &panel) : cBaseAction(panel, "Visible", "Object is visible"){}
+	typedef deTObjectReference<cCheckVisible> Ref;
+	
+	cCheckVisible(igdeWPWObject &panel) : cBaseAction(panel, "@Igde.WPWObject.Visible", "@Igde.WPWObject.Visible.ToolTip"){}
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetVisibleNew(!object.GetVisible());
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -246,13 +262,15 @@ public:
 
 class cCheckDynamicCollider : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckDynamicCollider> Ref;
+	
 	cCheckDynamicCollider(igdeWPWObject &panel) :
-	cBaseAction(panel, "Dynamic Collider", "Object is attached using a dynamic collider"){}
+	cBaseAction(panel, "@Igde.WPWObject.DynamicCollider", "@Igde.WPWObject.DynamicCollider.ToolTip"){}
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject()));
 			undo->SetDynamicColliderNew(!object.GetDynamicCollider());
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -332,21 +350,21 @@ void igdeWPWObject::UndoChanges::Redo(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeWPWObject::igdeWPWObject( igdeEnvironment &environment ) :
-igdeContainerFlow( environment, igdeContainerFlow::eaY ),
+igdeWPWObject::igdeWPWObject(igdeEnvironment &environment) :
+igdeContainerFlow(environment, igdeContainerFlow::eaY),
 pObject(nullptr),
 pUndoSystem(nullptr)
 {
 	pCreateContent();
 }
 
-igdeWPWObject::igdeWPWObject( igdeEnvironment &environment, igdeAction *action ) :
-igdeContainerFlow( environment, igdeContainerFlow::eaY ),
+igdeWPWObject::igdeWPWObject(igdeEnvironment &environment, igdeAction *action) :
+igdeContainerFlow(environment, igdeContainerFlow::eaY),
 pObject(nullptr),
 pUndoSystem(nullptr)
 {
 	pCreateContent();
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeWPWObject::~igdeWPWObject(){
@@ -359,8 +377,8 @@ igdeWPWObject::~igdeWPWObject(){
 // Management
 ///////////////
 
-void igdeWPWObject::SetObject( igdeWObject *object ){
-	if( object == pObject ){
+void igdeWPWObject::SetObject(igdeWObject *object){
+	if(object == pObject){
 		return;
 	}
 	
@@ -369,54 +387,54 @@ void igdeWPWObject::SetObject( igdeWObject *object ){
 }
 
 void igdeWPWObject::UpdateObject(){
-	if( pObject ){
-		if( pObject->GetGDClass() ){
-			pEditClass->SetText( pObject->GetGDClass()->GetName() );
+	if(pObject){
+		if(pObject->GetGDClass()){
+			pEditClass->SetText(pObject->GetGDClass()->GetName());
 			
 		}else{
 			pEditClass->ClearText();
 		}
 		
-		pEditPosition->SetVector( pObject->GetPosition() );
-		pEditOrientation->SetVector( pObject->GetOrientation().GetEulerAngles() * RAD2DEG );
-		pEditScaling->SetVector( pObject->GetScaling() );
-		pChkVisible->SetChecked( pObject->GetVisible() );
-		pChkDynamicCollider->SetChecked( pObject->GetDynamicCollider() );
+		pEditPosition->SetVector(pObject->GetPosition());
+		pEditOrientation->SetVector(pObject->GetOrientation().GetEulerAngles() * RAD2DEG);
+		pEditScaling->SetVector(pObject->GetScaling());
+		pChkVisible->SetChecked(pObject->GetVisible());
+		pChkDynamicCollider->SetChecked(pObject->GetDynamicCollider());
 		
 	}else{
 		pEditClass->ClearText();
-		pEditPosition->SetVector( decVector() );
-		pEditOrientation->SetVector( decVector() );
-		pEditScaling->SetVector( decVector() );
-		pChkVisible->SetChecked( false );
-		pChkDynamicCollider->SetChecked( false );
+		pEditPosition->SetVector(decVector());
+		pEditOrientation->SetVector(decVector());
+		pEditScaling->SetVector(decVector());
+		pChkVisible->SetChecked(false);
+		pChkDynamicCollider->SetChecked(false);
 	}
 	
 	const bool enabled = pObject;
-	pEditClass->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );
-	pEditOrientation->SetEnabled( enabled );
-	pEditScaling->SetEnabled( enabled );
-	pChkVisible->SetEnabled( enabled );
-	pChkDynamicCollider->SetEnabled( enabled );
+	pEditClass->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);
+	pEditOrientation->SetEnabled(enabled);
+	pEditScaling->SetEnabled(enabled);
+	pChkVisible->SetEnabled(enabled);
+	pChkDynamicCollider->SetEnabled(enabled);
 }
 
 
 
-void igdeWPWObject::SetAction( igdeAction *action ){
-	if( pAction == action ){
+void igdeWPWObject::SetAction(igdeAction *action){
+	if(pAction == action){
 		return;
 	}
 	
-	if( pAction ){
-		pAction->RemoveListener( this );
+	if(pAction){
+		pAction->RemoveListener(this);
 	}
 	
 	pAction = action;
 	
-	if( action ){
-		action->AddListener( this );
-		OnParameterChanged( action );
+	if(action){
+		action->AddListener(this);
+		OnParameterChanged(action);
 	}
 }
 
@@ -426,19 +444,19 @@ void igdeWPWObject::SetUndoSystem(igdeUndoSystem *undoSystem){
 
 
 void igdeWPWObject::OnAction(){
-	if( pAction ){
+	if(pAction){
 		pAction->OnAction();
 	}
 }
 
-void igdeWPWObject::OnParameterChanged( igdeAction *action ){
+void igdeWPWObject::OnParameterChanged(igdeAction *action){
 	//SetEnabled( action->GetEnabled() );
 }
 
-void igdeWPWObject::OnDestroyed( igdeAction *action ){
-	GetLogger()->LogWarnFormat( "IGDE", "igdeWPWObject::OnDestroyed: "
-		"Action(%s) destroyed while still listening on it", action->GetText().GetString() );
-	pAction = NULL;
+void igdeWPWObject::OnDestroyed(igdeAction *action){
+	GetLogger()->LogWarnFormat("IGDE", "igdeWPWObject::OnDestroyed: "
+		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
+	pAction = nullptr;
 }
 
 
@@ -449,24 +467,24 @@ void igdeWPWObject::OnDestroyed( igdeAction *action ){
 void igdeWPWObject::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference form, frameLine;
+	igdeContainer::Ref form, frameLine;
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	AddChild( form );
+	form = igdeContainerForm::Ref::New(env);
+	AddChild(form);
 	
-	helper.FormLineStretchFirst( form, "Class:",
-		"Game definition class to use for the object.", frameLine );
-	helper.EditString( frameLine, "Path to the sky to use.",
-		pEditClass, new cTextClass( *this ) );
-	helper.Button( frameLine, pBtnClass, new cActionSelectClass( *this, pEditClass ), true );
+	helper.FormLineStretchFirst(form, "@Igde.WPWObject.Class",
+		"@Igde.WPWObject.Class.ToolTip", frameLine);
+	helper.EditString(frameLine, "@Igde.WPWObject.Class.ToolTip",
+		pEditClass, cTextClass::Ref::New(*this));
+	helper.Button(frameLine, pBtnClass, cActionSelectClass::Ref::New(*this, pEditClass));
 	
-	helper.EditVector( form, "Position:", "Position of object in meters.",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( form, "Orientation:", "Orientation of object in euler coordinates.",
-		pEditOrientation, new cEditOrientation( *this ) );
-	helper.EditVector( form, "Scaling:", "Scaling of object.",
-		pEditScaling, new cEditScaling( *this ) );
+	helper.EditVector(form, "@Igde.WPWObject.Position", "@Igde.WPWObject.Position.ToolTip",
+		pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(form, "@Igde.WPWObject.Orientation", "@Igde.WPWObject.Orientation.ToolTip",
+		pEditOrientation, cEditOrientation::Ref::New(*this));
+	helper.EditVector(form, "@Igde.WPWObject.Scaling", "@Igde.WPWObject.Scaling.ToolTip",
+		pEditScaling, cEditScaling::Ref::New(*this));
 	
-	helper.CheckBox( form, pChkVisible, new cCheckVisible( *this ), true );
-	helper.CheckBox( form, pChkDynamicCollider, new cCheckDynamicCollider( *this ), true );
+	helper.CheckBox(form, pChkVisible, cCheckVisible::Ref::New(*this));
+	helper.CheckBox(form, pChkDynamicCollider, cCheckDynamicCollider::Ref::New(*this));
 }

@@ -45,12 +45,12 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -67,25 +67,25 @@ class cComboTestMode : public igdeComboBoxListener {
 	ceWPCTrigger &pPanel;
 	
 public:
-	cComboTestMode( ceWPCTrigger &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cComboTestMode>;
+	cComboTestMode(ceWPCTrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionTrigger * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || ! comboBox->GetSelectedItem() ){
+		if(!topic || !action || !condition || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const ceCConditionTrigger::eTestModes testMode =
-			( ceCConditionTrigger::eTestModes )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( testMode == condition->GetTestMode() ){
+			(ceCConditionTrigger::eTestModes)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(testMode == condition->GetTestMode()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCTriggerSetTestMode( topic, action, condition, testMode ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCTriggerSetTestMode::Ref::New(topic, action, condition, testMode));
 	}
 };
 
@@ -93,19 +93,19 @@ class cTextTrigger : public igdeTextFieldListener {
 	ceWPCTrigger &pPanel;
 	
 public:
-	cTextTrigger( ceWPCTrigger &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextTrigger>;
+	cTextTrigger(ceWPCTrigger &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionTrigger * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || condition->GetTrigger() == textField->GetText() ){
+		if(!topic || !action || !condition || condition->GetTrigger() == textField->GetText()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCTriggerSetTrigger( topic, action, condition, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCTriggerSetTrigger::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -118,18 +118,19 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCTrigger::ceWPCTrigger( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCTrigger::ceWPCTrigger(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	helper.ComboBox( *this, "Test Mode:", "How to test the trigger",
-		pCBTestMode, new cComboTestMode( *this ) );
-	pCBTestMode->AddItem( "Fired", NULL, ( void* )( intptr_t )ceCConditionTrigger::etmFired );
-	pCBTestMode->AddItem( "Not Fired", NULL, ( void* )( intptr_t )ceCConditionTrigger::etmNotFired );
-	pCBTestMode->AddItem( "Has Ever Fired", NULL, ( void* )( intptr_t )ceCConditionTrigger::etmEverFired );
-	pCBTestMode->AddItem( "Has Never Fired", NULL, ( void* )( intptr_t )ceCConditionTrigger::etmNeverFired );
+	helper.ComboBox(*this, "@Conversation.WPConditionTrigger.TestMode", "@Conversation.TriggerTestMode.ToolTip",
+		pCBTestMode, cComboTestMode::Ref::New(*this));
+	pCBTestMode->SetAutoTranslateItems(true);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.Fired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmFired);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.NotFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNotFired);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.HasEverFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmEverFired);
+	pCBTestMode->AddItem("@Conversation.WPConditionTrigger.HasNeverFired", nullptr, (void*)(intptr_t)ceCConditionTrigger::etmNeverFired);
 	
-	helper.EditString( *this, "Trigger:", "Name of trigger to test", pEditTrigger, new cTextTrigger( *this ) );
+	helper.EditString(*this, "@Conversation.WPConditionTrigger.Trigger", "@Conversation.TriggerToTest.ToolTip", pEditTrigger, cTextTrigger::Ref::New(*this));
 }
 
 ceWPCTrigger::~ceWPCTrigger(){
@@ -143,23 +144,23 @@ ceWPCTrigger::~ceWPCTrigger(){
 ceCConditionTrigger *ceWPCTrigger::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectTrigger ){
-		return ( ceCConditionTrigger* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectTrigger){
+		return (ceCConditionTrigger*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 void ceWPCTrigger::UpdateCondition(){
 	const ceCConditionTrigger * const condition = GetCondition();
 	
-	if( condition ){
-		pCBTestMode->SetSelectionWithData( ( void* )( intptr_t )condition->GetTestMode() );
-		pEditTrigger->SetText( condition->GetTrigger() );
+	if(condition){
+		pCBTestMode->SetSelectionWithData((void*)(intptr_t)condition->GetTestMode());
+		pEditTrigger->SetText(condition->GetTrigger());
 		
 	}else{
-		pCBTestMode->SetSelectionWithData( ( void* )( intptr_t )ceCConditionTrigger::etmFired );
+		pCBTestMode->SetSelectionWithData((void*)(intptr_t)ceCConditionTrigger::etmFired);
 		pEditTrigger->ClearText();
 	}
 }

@@ -38,25 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectCopyRotation::meUObjectCopyRotation( meWorld *world, bool copyX, bool copyY, bool copyZ ) :
-pCopyX( copyX ),
-pCopyY( copyY ),
-pCopyZ( copyZ )
+meUObjectCopyRotation::meUObjectCopyRotation(meWorld *world, bool copyX, bool copyY, bool copyZ) :
+pCopyX(copyX),
+pCopyY(copyY),
+pCopyZ(copyZ)
 {
-	if( ! world || ! world->GetSelectionObject().GetActive() ){
-		DETHROW( deeInvalidParam );
+	if(!world || !world->GetSelectionObject().GetActive()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectList &list = world->GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
-	int i;
+	SetShortInfo("@World.UObjectCopyRotation.CopyObjectRotation");
+	SetLongInfo("@World.UObjectCopyRotation.CopyObjectRotation");
 	
-	SetShortInfo( "Copy Object Rotation" );
-	SetLongInfo( "Copy Object Rotation" );
-	
-	for( i=0; i<count; i++ ){
-		pObjects.Add( meUndoDataObject::Ref::New( new meUndoDataObject( list.GetAt( i ) ) ) );
-	}
+	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
+		pObjects.Add(meUndoDataObject::Ref::New(o));
+	});
 	
 	pNewRotation = world->GetSelectionObject().GetActive()->GetRotation();
 }
@@ -70,39 +66,31 @@ meUObjectCopyRotation::~meUObjectCopyRotation(){
 ///////////////
 
 void meUObjectCopyRotation::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		object->SetRotation( data.GetOldOrientation() );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
-	}
+		object->SetRotation(data.GetOldRotation());
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
+	});
 }
 
 void meUObjectCopyRotation::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		decVector rotation( data.GetOldOrientation() );
+		decVector rotation(data.GetOldRotation());
 		
-		if( pCopyX ){
+		if(pCopyX){
 			rotation.x = pNewRotation.x;
 		}
-		if( pCopyY ){
+		if(pCopyY){
 			rotation.y = pNewRotation.y;
 		}
-		if( pCopyZ ){
+		if(pCopyZ){
 			rotation.z = pNewRotation.z;
 		}
 		
-		object->SetRotation( rotation );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
-	}
+		object->SetRotation(rotation);
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
+	});
 }

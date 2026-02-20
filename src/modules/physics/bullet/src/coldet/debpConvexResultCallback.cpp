@@ -50,9 +50,9 @@
 // Constructors
 /////////////////
 
-debpConvexResultCallback::debpConvexResultCallback( deCollisionInfo *colinfo ){
-	if( ! colinfo ){
-		DETHROW( deeInvalidParam );
+debpConvexResultCallback::debpConvexResultCallback(deCollisionInfo *colinfo){
+	if(!colinfo){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pColInfo = colinfo;
@@ -69,14 +69,14 @@ debpConvexResultCallback::debpConvexResultCallback( deCollisionInfo *colinfo ){
 ///////////////
 
 void debpConvexResultCallback::Reset(){
-	m_closestHitFraction = ( btScalar )1.0; // this means to continue testing
+	m_closestHitFraction = (btScalar)1.0; // this means to continue testing
 }
 
 
 
-void debpConvexResultCallback::SetTestRay( const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void debpConvexResultCallback::SetTestRay(const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRayCollisionFilter = collisionFilter;
@@ -85,9 +85,9 @@ void debpConvexResultCallback::SetTestRay( const decCollisionFilter *collisionFi
 	pListener = listener;
 }
 
-void debpConvexResultCallback::SetTestShape( debpShape *shape, deBaseScriptingCollider *listener ){
-	if( shape && ! listener ){
-		DETHROW( deeInvalidParam );
+void debpConvexResultCallback::SetTestShape(debpShape *shape, deBaseScriptingCollider *listener){
+	if(shape && !listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRayCollisionFilter = NULL;
@@ -96,9 +96,9 @@ void debpConvexResultCallback::SetTestShape( debpShape *shape, deBaseScriptingCo
 	pListener = listener;
 }
 
-void debpConvexResultCallback::SetTestCollider( debpCollider *collider, deBaseScriptingCollider *listener ){
-	if( collider && ! listener ){
-		DETHROW( deeInvalidParam );
+void debpConvexResultCallback::SetTestCollider(debpCollider *collider, deBaseScriptingCollider *listener){
+	if(collider && !listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRayCollisionFilter = NULL;
@@ -112,52 +112,52 @@ void debpConvexResultCallback::SetTestCollider( debpCollider *collider, deBaseSc
 // Bullet
 ///////////
 
-bool debpConvexResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const{
+bool debpConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if( ! ConvexResultCallback::needsCollision( proxy0 ) ){
+	if(!ConvexResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
 	// determine the collision partner using the custom pointer
-	const btCollisionObject &collisionObject = *( ( btCollisionObject* )proxy0->m_clientObject );
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )collisionObject.getUserPointer() );
+	const btCollisionObject &collisionObject = *((btCollisionObject*)proxy0->m_clientObject);
+	const debpCollisionObject &colObj = *((debpCollisionObject*)collisionObject.getUserPointer());
 	
 	// test against a collider
-	if( colObj.IsOwnerCollider() ){
+	if(colObj.IsOwnerCollider()){
 		debpCollider * const collider = colObj.GetOwnerCollider();
 		
-		if( pShape ){
+		if(pShape){
 			// TODO
 			
-		}else if( pCollider ){
+		}else if(pCollider){
 			// no self collision. this happens because for testing a collision a separate
 			// collision shape so individual shapes can be tested and transforms respected
-			if( collider == pCollider ){
+			if(collider == pCollider){
 				return false;
 			}
 			
 			// check if a collision is possible according to layer mask
 			deCollider * const engOrgCollider = &pCollider->GetCollider();
-			if( pCollider->CollidesNot( *collider ) ){
+			if(pCollider->CollidesNot(*collider)){
 				return false;
 			}
 			
 			// check if a collision is possible according to the collider listener. this uses
 			// the set listener instead of the collider listener
 			deCollider * const engCollider = &collider->GetCollider();
-			if( pListener && ! pListener->CanHitCollider( engOrgCollider, engCollider ) ){
+			if(pListener && !pListener->CanHitCollider(engOrgCollider, engCollider)){
 				return false;
 			}
 			
 		}else{
 			// check if a collision is possible according to layer mask
 			deCollider * const engCollider = &collider->GetCollider();
-			if( pRayCollisionFilter && pRayCollisionFilter->CollidesNot( engCollider->GetCollisionFilter() ) ){
+			if(pRayCollisionFilter && pRayCollisionFilter->CollidesNot(engCollider->GetCollisionFilter())){
 				return false;
 			}
 			
 			// check if a collision is possible according to the collider listener
-			if( ! pListener->CanHitCollider( NULL, engCollider ) ){
+			if(!pListener->CanHitCollider(NULL, engCollider)){
 				return false;
 			}
 		}
@@ -165,18 +165,18 @@ bool debpConvexResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const
 		return true;
 		
 	// test against a height terrain sector
-	}else if( colObj.IsOwnerHTSector() ){
+	}else if(colObj.IsOwnerHTSector()){
 		const decCollisionFilter &cfHT = colObj.GetOwnerHTSector()->GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter();
 		
-		if( pShape ){
+		if(pShape){
 			// TODO
 			
-		}else if( pCollider ){
-			return pCollider->GetCollider().GetCollisionFilter().Collides( cfHT );
+		}else if(pCollider){
+			return pCollider->GetCollider().GetCollisionFilter().Collides(cfHT);
 			
 		}else{
-			if( pRayCollisionFilter ){
-				return pRayCollisionFilter->Collides( cfHT );
+			if(pRayCollisionFilter){
+				return pRayCollisionFilter->Collides(cfHT);
 			}
 		}
 		
@@ -187,50 +187,50 @@ bool debpConvexResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const
 	return false;
 }
 
-btScalar debpConvexResultCallback::addSingleResult( btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace ){
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )convexResult.m_hitCollisionObject->getUserPointer() );
+btScalar debpConvexResultCallback::addSingleResult(btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace){
+	const debpCollisionObject &colObj = *((debpCollisionObject*)convexResult.m_hitCollisionObject->getUserPointer());
 	bool callListener = false;
 	
-	if( colObj.IsOwnerCollider() ){
-		pColInfo->SetCollider( &colObj.GetOwnerCollider()->GetCollider(), colObj.GetOwnerBone(),
-			( int )( intptr_t )convexResult.m_hitCollisionShape->getUserPointer() - 1,
-			-1 /* convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index */ );
+	if(colObj.IsOwnerCollider()){
+		pColInfo->SetCollider(&colObj.GetOwnerCollider()->GetCollider(), colObj.GetOwnerBone(),
+			(int)(intptr_t)convexResult.m_hitCollisionShape->getUserPointer() - 1,
+			-1 /* convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index */);
 		callListener = true;
 		
-	}else if( colObj.IsOwnerHTSector() ){
+	}else if(colObj.IsOwnerHTSector()){
 		const debpHTSector &htsector = *colObj.GetOwnerHTSector();
-		pColInfo->SetHTSector( htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector() );
+		pColInfo->SetHTSector(htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector());
 		callListener = true;
 	}
 	
-	if( callListener ){
+	if(callListener){
 		btVector3 hitNormal;
-		if( normalInWorldSpace ){
+		if(normalInWorldSpace){
 			hitNormal = convexResult.m_hitNormalLocal;
 			
 		}else{
 			hitNormal = convexResult.m_hitCollisionObject->getWorldTransform().getBasis() * convexResult.m_hitNormalLocal;
 		}
 		
-		pColInfo->SetDistance( ( float )convexResult.m_hitFraction );
-		pColInfo->SetNormal( decVector( ( float )hitNormal.x(), ( float )hitNormal.y(), ( float )hitNormal.z() ) );
+		pColInfo->SetDistance((float)convexResult.m_hitFraction);
+		pColInfo->SetNormal(decVector((float)hitNormal.x(), (float)hitNormal.y(), (float)hitNormal.z()));
 		
-		if( pShape ){
+		if(pShape){
 			// TODO
 			
-		}else if( pCollider ){
-			pListener->CollisionResponse( &pCollider->GetCollider(), pColInfo );
+		}else if(pCollider){
+			pListener->CollisionResponse(&pCollider->GetCollider(), pColInfo);
 			
 		}else{
-			pListener->CollisionResponse( NULL, pColInfo );
+			pListener->CollisionResponse(NULL, pColInfo);
 		}
 	}
 	
 	// bullet uses m_closestHitFraction after addSingleResult returns to determine if
 	// further collision tests are required. so we hijack the variable for the purpose
 	// of stopping collision testing if the game requests.
-	if( pColInfo->GetStopTesting() ){
-		m_closestHitFraction = ( btScalar )0.0f;
+	if(pColInfo->GetStopTesting()){
+		m_closestHitFraction = (btScalar)0.0f;
 	}
 	
 	return m_closestHitFraction; // no idea what the return value does. other implementations use m_closestHitFraction

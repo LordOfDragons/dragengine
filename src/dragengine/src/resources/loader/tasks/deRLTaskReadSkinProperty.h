@@ -59,11 +59,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deRLTaskReadSkinProperty( deResourceLoader &resourceLoader, deRLTaskReadSkinInternal &task,
-		deEngine &engine, deVirtualFileSystem *vfs, const char *basePath );
+	deRLTaskReadSkinProperty(deResourceLoader &resourceLoader, deRLTaskReadSkinInternal &task,
+		deEngine &engine, deVirtualFileSystem *vfs, const char *basePath);
 	
 	/** \brief Clean up visitor. */
-	virtual ~deRLTaskReadSkinProperty();
+	~deRLTaskReadSkinProperty() override;
 	/*@}*/
 	
 	
@@ -71,13 +71,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit image property. */
-	virtual void VisitImage( deSkinPropertyImage &property );
+	void VisitImage(deSkinPropertyImage &property) override;
 	
 	/** \brief Visit video property. */
-	virtual void VisitVideo( deSkinPropertyVideo &property );
+	void VisitVideo(deSkinPropertyVideo &property) override;
 	
 	/** \brief Visit constructed property. */
-	virtual void VisitConstructed( deSkinPropertyConstructed &property );
+	void VisitConstructed(deSkinPropertyConstructed &property) override;
 	/*@}*/
 };
 

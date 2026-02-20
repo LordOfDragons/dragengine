@@ -59,11 +59,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-feLoadSaveFont::feLoadSaveFont( deBaseFontModule *module ) :
-pModule( module )
+feLoadSaveFont::feLoadSaveFont(deBaseFontModule *module) :
+pModule(module)
 {
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
@@ -72,12 +72,12 @@ pModule( module )
 	int i;
 	
 	pName = loadableModule.GetName();
-	for( i=0; i<patternCount; i++ ){
-		if( i > 0 ){
-			pPattern.AppendCharacter( ',' );
+	for(i=0; i<patternCount; i++){
+		if(i > 0){
+			pPattern.AppendCharacter(',');
 		}
-		pPattern.AppendCharacter( '*' );
-		pPattern.Append( patternList.GetAt( i ) );
+		pPattern.AppendCharacter('*');
+		pPattern.Append(patternList.GetAt(i));
 	}
 }
 
@@ -90,11 +90,11 @@ feLoadSaveFont::~feLoadSaveFont(){
 // Management
 ///////////////
 
-void feLoadSaveFont::SetName( const char *name ){
+void feLoadSaveFont::SetName(const char *name){
 	pName = name;
 }
 
-void feLoadSaveFont::SetPattern( const char *pattern ){
+void feLoadSaveFont::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
@@ -111,7 +111,7 @@ private:
 	deEngine *pEngine;
 	
 public:
-	cDirectFontLoader( deEngine *engine, const char *virtualPath, decBaseFileReader *file, deBaseFontModule *module ){
+	cDirectFontLoader(deEngine *engine, const char *virtualPath, decBaseFileReader *file, deBaseFontModule *module){
 		pModule = module;
 		pFile = file;
 		pEngine = engine;
@@ -119,96 +119,67 @@ public:
 	}
 	virtual ~cDirectFontLoader(){}
 	
-	virtual void BuildFont( deFont *font ){
+	virtual void BuildFont(deFont *font){
 		deImageManager &imageMgr = *pEngine->GetImageManager();
-		deImage *image = NULL;
+		
+		pModule->LoadFont(*pFile, *font);
+		
 		decPath basePath;
+		basePath.SetFromUnix(pVirtualPath.GetString());
+		basePath.RemoveLastComponent();
 		
-		pModule->LoadFont( *pFile, *font );
-		
-		try{
-			basePath.SetFromUnix( pVirtualPath.GetString() );
-			basePath.RemoveLastComponent();
-			
-			if( strlen( font->GetImagePath() ) > 0 ){
-				image = imageMgr.LoadImage( font->GetImagePath(), basePath.GetPathUnix() );
-				font->SetImage( image );
-				image->FreeReference();
-				image = NULL;
-			}
-			
-		}catch( const deException & ){
-			if( image ) image->FreeReference();
-			throw;
+		if(!font->GetImagePath().IsEmpty()){
+			font->SetImage(imageMgr.LoadImage(font->GetImagePath(), basePath.GetPathUnix()));
 		}
 	}
 };
 
-void feLoadSaveFont::LoadFont( const char *virtualPath, feFont *font, decBaseFileReader *file ){
-	if( ! font || ! file ) DETHROW( deeInvalidParam );
+void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFileReader *file){
+	if(!font || !file) DETHROW(deeInvalidParam);
 	
 	feFontImage &fontImage = *font->GetFontImage();
 	deEngine *engine = pModule->GetGameEngine();
-	feFontGlyph *glyph = NULL;
-	deFont *engFont = NULL;
 	
-	cDirectFontLoader directFontLoader( engine, virtualPath, file, pModule );
+	cDirectFontLoader directFontLoader(engine, virtualPath, file, pModule);
 	
-	// protect this area
-	try{
-		// try to load the font
-		engFont = engine->GetFontManager()->CreateFont( "", directFontLoader );
+	// try to load the font
+	const deFont::Ref engFont(engine->GetFontManager()->CreateFont("", directFontLoader));
+	
+	// store font information
+	font->SetFilePath(virtualPath);
+	font->SetLineHeight(engFont->GetLineHeight());
+	font->SetBaseLine(engFont->GetBaseLine());
+	font->SetColorFont(engFont->GetIsColorFont());
+	
+	// store font image information
+	fontImage.SetFilename(engFont->GetImagePath(), true);
+	
+	// store glyph information
+	const int glyphCount = engFont->GetGlyphCount();
+	int i;
+	
+	// TODO engFont->GetUndefinedGlyph()
+	
+	for(i=0; i<glyphCount; i++){
+		const deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
 		
-		// store font information
-		font->SetFilePath( virtualPath );
-		font->SetLineHeight( engFont->GetLineHeight() );
-		font->SetBaseLine(engFont->GetBaseLine());
-		font->SetColorFont( engFont->GetIsColorFont() );
+		const feFontGlyph::Ref glyph(feFontGlyph::Ref::New());
+		glyph->SetCode(engGlyph.GetUnicode());
+		glyph->SetU(engGlyph.GetX());
+		glyph->SetV(engGlyph.GetY());
+		// engGlyph.GetZ()
+		glyph->SetWidth(engGlyph.GetWidth());
+		glyph->SetHeight(engGlyph.GetHeight());
+		glyph->SetBearing(engGlyph.GetBearing());
+		glyph->SetBearingY(engGlyph.GetBearingY());
+		glyph->SetAdvance(engGlyph.GetAdvance());
 		
-		// store font image information
-		fontImage.SetFilename( engFont->GetImagePath(), true );
-		
-		// store glyph information
-		const int glyphCount = engFont->GetGlyphCount();
-		int i;
-		
-		// TODO engFont->GetUndefinedGlyph()
-		
-		for( i=0; i<glyphCount; i++ ){
-			const deFontGlyph &engGlyph = engFont->GetGlyphAt( i );
-			
-			glyph = new feFontGlyph;
-			glyph->SetCode( engGlyph.GetUnicode() );
-			glyph->SetU( engGlyph.GetX() );
-			glyph->SetV( engGlyph.GetY() );
-			// engGlyph.GetZ()
-			glyph->SetWidth( engGlyph.GetWidth() );
-			glyph->SetHeight(engGlyph.GetHeight());
-			glyph->SetBearing( engGlyph.GetBearing() );
-			glyph->SetBearingY(engGlyph.GetBearingY());
-			glyph->SetAdvance( engGlyph.GetAdvance() );
-			
-			font->AddGlyph( glyph );
-			glyph = NULL;
-		}
-		
-		// time to release the font resource
-		engFont->FreeReference();
-		
-	}catch( const deException &e ){
-		e.PrintError();
-		if( glyph ){
-			glyph->FreeReference();
-		}
-		if( engFont ){
-			engFont->FreeReference();
-		}
-		throw;
+		font->AddGlyph(glyph);
 	}
 }
 
-void feLoadSaveFont::SaveFont( const char *virtualPath, feFont *font, decBaseFileWriter *file ){
-	if( ! font || ! file ) DETHROW( deeInvalidParam );
+void feLoadSaveFont::SaveFont(const char *virtualPath, feFont *font, decBaseFileWriter *file){
+	if(!font || !file) DETHROW(deeInvalidParam);
 	
 	deEngine &engine = *pModule->GetGameEngine();
 	deImageManager &imgmgr = *engine.GetImageManager();
@@ -219,27 +190,27 @@ void feLoadSaveFont::SaveFont( const char *virtualPath, feFont *font, decBaseFil
 	font->Rebuild();
 	
 	// if nothing went wrong we have now a font to save
-	if( ! font->GetEngineFont() ) DETHROW( deeInvalidParam );
+	if(!font->GetEngineFont()) DETHROW(deeInvalidParam);
 	
-	pModule->SaveFont( *file, *font->GetEngineFont() );
-	font->SetFilePath( virtualPath );
+	pModule->SaveFont(*file, *font->GetEngineFont());
+	font->SetFilePath(virtualPath);
 	
 	// save the fonr image if required
 	feFontImage &fontImage = *font->GetFontImage();
 	
-	if( fontImage.GetChanged() && fontImage.GetEngineImage() ){
+	if(fontImage.GetChanged() && fontImage.GetEngineImage()){
 		decPath path;
 		
-		path.SetFromUnix( fontImage.GetFilename() );
-		if( path.IsRelative() ){
-			path.SetFromUnix( font->GetDirectoryPath() );
-			path.AddUnixPath( fontImage.GetFilename() );
+		path.SetFromUnix(fontImage.GetFilename());
+		if(path.IsRelative()){
+			path.SetFromUnix(font->GetDirectoryPath());
+			path.AddUnixPath(fontImage.GetFilename());
 		}
 		
-		imgmgr.SaveImage( fontImage.GetEngineImage(), path.GetPathUnix() );
+		imgmgr.SaveImage(fontImage.GetEngineImage(), path.GetPathUnix());
 		
-		fontImage.SetSaved( true );
-		fontImage.SetChanged( false );
+		fontImage.SetSaved(true);
+		fontImage.SetChanged(false);
 	}
 	
 }

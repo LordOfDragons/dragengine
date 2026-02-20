@@ -40,21 +40,21 @@
 
 
 // public func void speakerAudible( SoundLevelMeterSpeaker speaker )
-deClassSoundLevelMeterListener::nfSpeakerAudible::nfSpeakerAudible( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeterListener, "speakerAudible", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsSoundLevelMeterSpeaker ); // speaker
+deClassSoundLevelMeterListener::nfSpeakerAudible::nfSpeakerAudible(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeterListener, "speakerAudible", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsSoundLevelMeterSpeaker); // speaker
 }
-void deClassSoundLevelMeterListener::nfSpeakerAudible::RunFunction( dsRunTime*, dsValue* ){
+void deClassSoundLevelMeterListener::nfSpeakerAudible::RunFunction(dsRunTime*, dsValue*){
 }
 
 // public func void speakerInaudible( Speaker speaker )
-deClassSoundLevelMeterListener::nfSpeakerInaudible::nfSpeakerInaudible( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeterListener, "speakerInaudible", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsSpeaker ); // speaker
+deClassSoundLevelMeterListener::nfSpeakerInaudible::nfSpeakerInaudible(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeterListener, "speakerInaudible", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsSpeaker); // speaker
 }
-void deClassSoundLevelMeterListener::nfSpeakerInaudible::RunFunction( dsRunTime*, dsValue* ){
+void deClassSoundLevelMeterListener::nfSpeakerInaudible::RunFunction(dsRunTime*, dsValue*){
 }
 
 
@@ -65,13 +65,13 @@ void deClassSoundLevelMeterListener::nfSpeakerInaudible::RunFunction( dsRunTime*
 // Constructor
 ////////////////
 
-deClassSoundLevelMeterListener::deClassSoundLevelMeterListener( deScriptingDragonScript &ds ) :
-dsClass( "SoundLevelMeterListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ),
-pDS( ds )
+deClassSoundLevelMeterListener::deClassSoundLevelMeterListener(deScriptingDragonScript &ds) :
+dsClass("SoundLevelMeterListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent(DENS_SCENERY);
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassSoundLevelMeterListener::~deClassSoundLevelMeterListener(){
@@ -81,7 +81,7 @@ deClassSoundLevelMeterListener::~deClassSoundLevelMeterListener(){
 // Management
 ///////////////
 
-void deClassSoundLevelMeterListener::CreateClassMembers( dsEngine *engine ){
+void deClassSoundLevelMeterListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -95,14 +95,14 @@ void deClassSoundLevelMeterListener::CreateClassMembers( dsEngine *engine ){
 	init.clsSpeaker = pDS.GetClassSpeaker();
 	
 	// add functions
-	AddFunction( new nfSpeakerAudible( init ) ); // function 0
-	AddFunction( new nfSpeakerInaudible( init ) ); // function 1
+	AddFunction(new nfSpeakerAudible(init)); // function 0
+	AddFunction(new nfSpeakerInaudible(init)); // function 1
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function indices for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexSpeakerAudible = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexSpeakerInaudible = funcList.GetIndexOf( GetFunction( 1 ) );
+	pFuncIndexSpeakerAudible = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexSpeakerInaudible = funcList.GetIndexOf(GetFunction(1));
 }

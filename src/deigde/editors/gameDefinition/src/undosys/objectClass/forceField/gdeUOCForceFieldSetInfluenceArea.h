@@ -27,10 +27,10 @@
 #define _GDEUOCFORCEFIELDSETINFLUENCEAREA_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/common/shape/decShapeList.h>
+#include <dragengine/common/shape/decShape.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,12 +38,16 @@ class gdeObjectClass;
  * \brief Undo action object class force field set influence area.
  */
 class gdeUOCForceFieldSetInfluenceArea : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+public:
+	using Ref = deTObjectReference<gdeUOCForceFieldSetInfluenceArea>;
 	
-	decShapeList pOldValue;
-	decShapeList pNewValue;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
+	
+	decShape::List pOldValue;
+	decShape::List pNewValue;
 	
 	
 	
@@ -51,12 +55,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetInfluenceArea( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decShapeList &newValue );
+	gdeUOCForceFieldSetInfluenceArea(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, const decShape::List &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCForceFieldSetInfluenceArea();
+	~gdeUOCForceFieldSetInfluenceArea() override;
 	/*@}*/
 	
 	
@@ -65,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

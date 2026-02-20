@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLSPINTEXTFIELD_H_
 #define _IGDENATIVENULLSPINTEXTFIELD_H_
 
+#include "../../igdeSpinTextField.h"
+
 class igdeSpinTextField;
 
 
 /**
  * Null spinTextField.
  */
-class igdeNativeNullSpinTextField{
+class igdeNativeNullSpinTextField : public igdeSpinTextField::cNativeSpinTextField{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullSpinTextField();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSpinTextField* CreateNativeWidget( igdeSpinTextField &owner );
+	static igdeNativeNullSpinTextField* CreateNativeWidget(igdeSpinTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,11 +57,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateRange();
-	virtual void UpdateEnabled();
-	virtual void UpdateValue();
-	virtual void UpdateDescription();
+	void Focus() override;
+	void UpdateRange() override;
+	void UpdateEnabled() override;
+	void UpdateValue() override;
+	void UpdateDescription() override;
 	/*@}*/
 };
 

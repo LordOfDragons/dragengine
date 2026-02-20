@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileWriter.h"
-#include "../../../common/file/decBaseFileWriterReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -48,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteAnimation::deRLTaskWriteAnimation( deEngine &engine,
+deRLTaskWriteAnimation::deRLTaskWriteAnimation(deEngine &engine,
 deResourceLoader &resourceLoader, deAnimation *animation,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertAnimation ),
-pAnimation( animation ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertAnimation),
+pAnimation(animation),
+pSucceeded(false)
 {
-	if( ! animation ){
-		DETHROW( deeInvalidParam );
+	if(!animation){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteAnimation::~deRLTaskWriteAnimation(){
@@ -71,18 +70,16 @@ deRLTaskWriteAnimation::~deRLTaskWriteAnimation(){
 
 void deRLTaskWriteAnimation::Run(){
 	LogRunEnter();
-	deBaseAnimationModule * const module = ( deBaseAnimationModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtAnimation, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseAnimationModule * const module = (deBaseAnimationModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtAnimation, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
-	decBaseFileWriterReference writer;
-	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
-	module->SaveAnimation( writer, pAnimation );
+	module->SaveAnimation(GetVFS()->OpenFileForWriting(path), pAnimation);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -90,16 +87,16 @@ void deRLTaskWriteAnimation::Run(){
 
 void deRLTaskWriteAnimation::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pAnimation );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pAnimation);
+		SetState(esSucceeded);
 		
 	}else{
-		pAnimation = NULL;
-		SetState( esFailed );
+		pAnimation = nullptr;
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

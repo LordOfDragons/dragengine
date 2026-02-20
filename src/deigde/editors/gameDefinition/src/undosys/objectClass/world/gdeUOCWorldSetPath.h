@@ -36,6 +36,10 @@
  * \brief Undo action object class world set path.
  */
 class gdeUOCWorldSetPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCWorldSetPath>;
+	
+	
 private:
 	const gdeObjectClass::Ref pObjectClass;
 	const gdeOCWorld::Ref pWorld;

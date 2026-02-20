@@ -53,21 +53,21 @@ deEffectVisitor::~deEffectVisitor(){
 // Visiting
 /////////////
 
-void deEffectVisitor::VisitEffect( deEffect &effect ){
+void deEffectVisitor::VisitEffect(deEffect &effect){
 }
 
-void deEffectVisitor::VisitFilterKernel( deEffectFilterKernel &effect ){
-	VisitEffect( effect );
+void deEffectVisitor::VisitFilterKernel(deEffectFilterKernel &effect){
+	VisitEffect(effect);
 }
 
-void deEffectVisitor::VisitOverlayImage( deEffectOverlayImage &effect ){
-	VisitEffect( effect );
+void deEffectVisitor::VisitOverlayImage(deEffectOverlayImage &effect){
+	VisitEffect(effect);
 }
 
-void deEffectVisitor::VisitColorMatrix( deEffectColorMatrix &effect ){
-	VisitEffect( effect );
+void deEffectVisitor::VisitColorMatrix(deEffectColorMatrix &effect){
+	VisitEffect(effect);
 }
 
-void deEffectVisitor::VisitDistortImage( deEffectDistortImage &effect ){
-	VisitEffect( effect );
+void deEffectVisitor::VisitDistortImage(deEffectDistortImage &effect){
+	VisitEffect(effect);
 }

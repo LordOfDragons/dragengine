@@ -50,7 +50,7 @@ deoglBVHRayCast::~deoglBVHRayCast(){
 // Management
 ///////////////
 
-void deoglBVHRayCast::RayCast( deoglBVH &bvh ){
+void deoglBVHRayCast::RayCast(deoglBVH &bvh){
 }
 
 
@@ -58,5 +58,5 @@ void deoglBVHRayCast::RayCast( deoglBVH &bvh ){
 // Protected Functions
 ////////////////////////
 
-void deoglBVHRayCast::RayCastNode( deoglBVH &bvh, deoglBVHNode &node ){
+void deoglBVHRayCast::RayCastNode(deoglBVH &bvh, deoglBVHNode &node){
 }

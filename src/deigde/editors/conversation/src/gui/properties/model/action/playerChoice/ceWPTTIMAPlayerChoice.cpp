@@ -47,26 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAPlayerChoice::ceWPTTIMAPlayerChoice( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAPlayerChoice *action ) :
-ceWPTTIMAction( windowMain, etActionPlayerChoice, conversation, action ),
-pActions( NULL )
+ceWPTTIMAPlayerChoice::ceWPTTIMAPlayerChoice(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAPlayerChoice *action) :
+ceWPTTIMAction(windowMain, etActionPlayerChoice, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionPlayerChoice() );
-	SetText( "Player Choice" );
+	SetIcon(windowMain.GetIconActionPlayerChoice());
+	SetText(windowMain.Translate("Conversation.WPTTIMAPlayerChoice.PlayerChoice").ToUTF8());
 	
-	try{
-		pActions = new ceWPTTIMAPlayerChoiceActions( windowMain, conversation, action->GetActions() );
-		AddChild( pActions );
-		
-	}catch( const deException & ){
-		if( pActions ){
-			pActions->FreeReference();
-		}
-		throw;
-	}
-	
-	pActions->FreeReference(); // held by super-class child list
+	pActions = ceWPTTIMAPlayerChoiceActions::Ref::New(windowMain, conversation, action->GetActions());
+	AddChild(pActions);
 }
 
 ceWPTTIMAPlayerChoice::~ceWPTTIMAPlayerChoice(){
@@ -77,71 +66,62 @@ ceWPTTIMAPlayerChoice::~ceWPTTIMAPlayerChoice(){
 // Management
 ///////////////
 
-ceWPTTIMAPlayerChoiceOption *ceWPTTIMAPlayerChoice::GetOptionChild( ceCAPlayerChoiceOption *option ) const{
-	const int count = GetChildCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTreeItemModel * const child = GetChildAt( i );
-		if( child->GetType() != etActionPlayerChoiceOption ){
+ceWPTTIMAPlayerChoiceOption *ceWPTTIMAPlayerChoice::GetOptionChild(ceCAPlayerChoiceOption *option) const{
+	for(const auto &c : GetChildren()){
+		if(c->GetType() != etActionPlayerChoiceOption){
 			continue;
 		}
 		
-		ceWPTTIMAPlayerChoiceOption * const childOption = ( ceWPTTIMAPlayerChoiceOption* )child;
-		if( childOption->GetOption() == option ){
+		const ceWPTTIMAPlayerChoiceOption::Ref childOption(c.DynamicCast<ceWPTTIMAPlayerChoiceOption>());
+		if(childOption->GetOption() == option){
 			return childOption;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTIMAPlayerChoice::Update(){
 	const ceCAPlayerChoice &playerChoice = *GetActionPlayerChoice();
-	SetExpanded( playerChoice.GetTIMExpanded() );
+	SetExpanded(playerChoice.GetTIMExpanded());
 	
 	pUpdateOptions();
 	
 	const int countOptions = GetActionPlayerChoice()->GetOptions().GetCount();
-	if( GetChildAt( countOptions ) != pActions ){
-		MoveChild( pActions, countOptions );
+	if(GetChildren().GetAt(countOptions) != pActions){
+		MoveChild(pActions.Pointer(), countOptions);
 	}
 	pActions->Update();
 	
 	const int count = countOptions + 1;
-	while( GetChildCount() > count ){
-		RemoveChild( GetChildAt( GetChildCount() - 1 ) );
+	while(GetChildren().GetCount() > count){
+		RemoveChild(GetChildren().Last());
 	}
 }
 
 void ceWPTTIMAPlayerChoice::UpdateActionLists(){
-	const int count = GetChildCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTreeItemModel * const child = GetChildAt( i );
-		
-		switch( child->GetType() ){
+	GetChildren().Visit([](const ceWPTTreeItemModel::Ref &c){
+		switch(c->GetType()){
 		case etActionPlayerChoiceOption:
-			( ( ceWPTTIMAPlayerChoiceOption* )child )->UpdateActionLists();
+			c.DynamicCast<ceWPTTIMAPlayerChoiceOption>()->UpdateActionLists();
 			break;
 			
 		case etActionPlayerChoiceActions:
-			( ( ceWPTTIMAPlayerChoiceActions* )child )->UpdateActions();
+			c.DynamicCast<ceWPTTIMAPlayerChoiceActions>()->UpdateActions();
 			break;
 			
 		default:
 			break;
 		}
-	}
+	});
 }
 
 void ceWPTTIMAPlayerChoice::OnExpandedChanged(){
-	GetActionPlayerChoice()->SetTIMExpanded( GetExpanded() );
+	GetActionPlayerChoice()->SetTIMExpanded(GetExpanded());
 }
 
-void ceWPTTIMAPlayerChoice::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMAPlayerChoice::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(!GetTreeItem()){
 		return;
 	}
 	
@@ -149,18 +129,18 @@ void ceWPTTIMAPlayerChoice::OnContextMenu( igdeMenuCascade &contextMenu ){
 	ceCAPlayerChoice &playerChoice = *GetActionPlayerChoice();
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
-		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+		? conversation.GetActiveFile()->GetActiveTopic().Pointer() : nullptr;
+	if(!topic){
 		return;
 	}
 	
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, new ceWPTMAPChoiceOptionAdd(
-		windowMain, conversation, *topic, playerChoice ), true );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, ceWPTMAPChoiceOptionAdd::Ref::New(
+		windowMain, conversation, *topic, playerChoice));
+	helper.MenuSeparator(contextMenu);
 	
-	ceWPTTIMAction::OnContextMenu( contextMenu );
+	ceWPTTIMAction::OnContextMenu(contextMenu);
 }
 
 
@@ -174,24 +154,24 @@ void ceWPTTIMAPlayerChoice::pUpdateOptions(){
 	ceConversation &conversation = GetConversation();
 	
 	// update if-cases
-	const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
+	const ceCAPlayerChoiceOption::List &options = playerChoice.GetOptions();
 	const int optionCount = options.GetCount();
 	int i, j;
 	
-	for( i=0; i<optionCount; i++ ){
-		ceCAPlayerChoiceOption * const option = options.GetAt( i );
+	for(i=0; i<optionCount; i++){
+		ceCAPlayerChoiceOption * const option = options.GetAt(i);
 		
 		// find item matching option if present
-		ceWPTTIMAPlayerChoiceOption *model = NULL;
-		const int childCount = GetChildCount();
-		for( j=i; j<childCount; j++ ){
-			ceWPTTreeItemModel * const child = GetChildAt( j );
-			if( child->GetType() != etActionPlayerChoiceOption ){
+		ceWPTTIMAPlayerChoiceOption::Ref model;
+		const int childCount = GetChildren().GetCount();
+		for(j=i; j<childCount; j++){
+			const ceWPTTreeItemModel::Ref &child = GetChildren().GetAt(j);
+			if(child->GetType() != etActionPlayerChoiceOption){
 				continue;
 			}
 			
-			ceWPTTIMAPlayerChoiceOption * const childOption = ( ceWPTTIMAPlayerChoiceOption* )child;
-			if( childOption->GetOption() == option ){
+			const ceWPTTIMAPlayerChoiceOption::Ref childOption(child.DynamicCast<ceWPTTIMAPlayerChoiceOption>());
+			if(childOption->GetOption() == option){
 				model = childOption;
 				break;
 			}
@@ -200,26 +180,23 @@ void ceWPTTIMAPlayerChoice::pUpdateOptions(){
 		// if model exists move it to the right location if required and update it.
 		// if model does not exist create it and add it at the current location.
 		// in both cases the index is 
-		if( model ){
-			if( j != i ){
-				MoveChild( j, i );
+		if(model){
+			if(j != i){
+				MoveChild(j, i);
 			}
-			model->SetIndex( i );
+			model->SetIndex(i);
 			model->Update();
 			
 		}else{
-			model = new ceWPTTIMAPlayerChoiceOption( windowMain, conversation, playerChoice, option, i );
+			model = ceWPTTIMAPlayerChoiceOption::Ref::New(windowMain, conversation, playerChoice, option, i);
 			
 			try{
-				InsertChild( model, i );
+				InsertChild(model, i);
 				model->Update();
 				
-			}catch( const deException & ){
-				model->FreeReference();
+			}catch(const deException &){
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 }

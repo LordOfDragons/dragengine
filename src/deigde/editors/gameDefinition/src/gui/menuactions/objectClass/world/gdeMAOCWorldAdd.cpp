@@ -32,7 +32,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -43,16 +42,16 @@
 ////////////////
 
 gdeMAOCWorldAdd::gdeMAOCWorldAdd(gdeWindowMain &windowMain) :
-gdeBaseMAOCSubObject(windowMain, "Add Object Class World...",
-	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add object class world"){
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCWorldAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@GameDefinition.Menu.OCWorldAdd.ToolTip"){
 }
 
 
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCWorldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddWorld(&objectClass, gdeOCWorld::Ref::New(new gdeOCWorld));
+igdeUndo::Ref gdeMAOCWorldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddWorld::Ref::New(&objectClass, gdeOCWorld::Ref::New());
 }
 
 void gdeMAOCWorldAdd::Update(){

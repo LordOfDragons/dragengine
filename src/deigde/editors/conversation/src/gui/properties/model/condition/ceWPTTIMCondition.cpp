@@ -41,7 +41,7 @@
 // Static parameters
 //////////////////////
 
-const ceConversationCondition::eConditionTypes ceWPTTIMCondition::ListAddMenuConditions[ 8 ] = {
+const ceConversationCondition::eConditionTypes ceWPTTIMCondition::ListAddMenuConditions[8] = {
 	ceConversationCondition::ectActorCommand,
 	ceConversationCondition::ectActorInConversation,
 	ceConversationCondition::ectActorParameter,
@@ -59,14 +59,14 @@ const int ceWPTTIMCondition::ListAddMenuConditionsCount = 8;
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCondition::ceWPTTIMCondition( ceWindowMain &windowMain, eTypes type,
-ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition ) :
-ceWPTTreeItemModel( windowMain, conversation, type ),
-pAction( &action ),
-pCondition( condition )
+ceWPTTIMCondition::ceWPTTIMCondition(ceWindowMain &windowMain, eTypes type,
+ceConversation &conversation, ceConversationAction &action, ceConversationCondition *condition) :
+ceWPTTreeItemModel(windowMain, conversation, type),
+pAction(&action),
+pCondition(condition)
 {
-	if( ! condition ){
-		DETHROW( deeInvalidParam );
+	if(!condition){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -78,26 +78,26 @@ ceWPTTIMCondition::~ceWPTTIMCondition(){
 // Management
 ///////////////
 
-ceWPTTIMCondition *ceWPTTIMCondition::DeepFindCondition( ceConversationCondition *condition ){
-	if( pCondition == condition ){
+ceWPTTIMCondition *ceWPTTIMCondition::DeepFindCondition(ceConversationCondition *condition){
+	if(pCondition == condition){
 		return this;
 		
 	}else{
-		return ceWPTTreeItemModel::DeepFindCondition( condition );
+		return ceWPTTreeItemModel::DeepFindCondition(condition);
 	}
 }
 
 void ceWPTTIMCondition::Update(){
 }
 
-void ceWPTTIMCondition::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMCondition::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(!GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTreeItemModel * const parent = GetParent();
-	if( parent ){
-		parent->ContextMenuCondition( contextMenu, GetCondition() );
+	if(parent){
+		parent->ContextMenuCondition(contextMenu, GetCondition());
 	}
 }
 

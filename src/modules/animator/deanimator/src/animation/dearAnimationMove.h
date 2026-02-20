@@ -26,6 +26,8 @@
 #define _DEARANIMATIONMOVE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/string/decString.h>
 
 class deAnimationMove;
@@ -40,23 +42,25 @@ private:
 	decString pName;
 	float pPlaytime;
 	
-	dearAnimationKeyframeList **pKeyframeLists;
-	int pKeyframeListCount;
+	decTUniqueList<dearAnimationKeyframeList> pKeyframeLists;
 	
-	dearAnimationKeyframeVPSList **pKeyframeVPSLists;
-	int pKeyframeVPSListCount;
+	decTUniqueList<dearAnimationKeyframeVPSList> pKeyframeVPSLists;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<dearAnimationMove>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<dearAnimationMove>,dearAnimationMove>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animation move. */
-	dearAnimationMove( const deAnimationMove &move );
+	explicit dearAnimationMove(const deAnimationMove &move);
 	
 protected:
 	/** Clean up the animation move. */
-	virtual ~dearAnimationMove();
+	~dearAnimationMove() override;
 	/*@}*/
 	
 	
@@ -71,16 +75,16 @@ public:
 	inline float GetPlaytime() const{ return pPlaytime; }
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{ return pKeyframeListCount; }
+	inline int GetKeyframeListCount() const{ return pKeyframeLists.GetCount(); }
 	
 	/** Keyframe list at index. */
-	dearAnimationKeyframeList *GetKeyframeListAt( int index ) const;
+	dearAnimationKeyframeList *GetKeyframeListAt(int index) const;
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSListCount; }
+	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSLists.GetCount(); }
 	
 	/** Keyframe list at index. */
-	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt( int index ) const;
+	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt(int index) const;
 	/*@}*/
 	
 	
@@ -88,8 +92,8 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframeLists( const deAnimationMove &move );
-	void pCreateKeyframeVPSLists( const deAnimationMove &move );
+	void pCreateKeyframeLists(const deAnimationMove &move);
+	void pCreateKeyframeVPSLists(const deAnimationMove &move);
 };
 
 #endif

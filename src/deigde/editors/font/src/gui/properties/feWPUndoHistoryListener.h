@@ -35,6 +35,9 @@ class feWPUndoHistory;
  * \brief Undo History Panel Listener.
  */
 class feWPUndoHistoryListener : public feFontNotifier{
+public:
+	using Ref = deTObjectReference<feWPUndoHistoryListener>;
+	
 private:
 	feWPUndoHistory &pPanel;
 	
@@ -44,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWPUndoHistoryListener( feWPUndoHistory &panel );
+	feWPUndoHistoryListener(feWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWPUndoHistoryListener();
+	~feWPUndoHistoryListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( feFont *font );
+	void UndoChanged(feFont *font) override;
 	/*@}*/
 };
 

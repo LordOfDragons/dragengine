@@ -25,50 +25,50 @@
 #ifndef _MEUOBJECTPROPERTYREMOVEFROMSELECTED_H_
 #define _MEUOBJECTPROPERTYREMOVEFROMSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataObjectProperty.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class meObject;
-class meObjectList;
-class meUndoDataObjectProperty;
-
 
 
 /**
  * \brief Undo Action Remove Object Property from all selected objects.
  */
 class meUObjectPropertyRemoveFromSelected : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectPropertyRemoveFromSelected>;
+	
+	
 private:
-	decObjectList pList;
+	meUndoDataObjectProperty::List pList;
 	decString pKey;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectPropertyRemoveFromSelected( const meObjectList &list, const char *key );
+	meUObjectPropertyRemoveFromSelected(const meObject::List &list, const char *key);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectPropertyRemoveFromSelected();
+
+protected:
+	~meUObjectPropertyRemoveFromSelected() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataObjectProperty::List &GetList(){ return pList; }
+	inline const meUndoDataObjectProperty::List &GetList() const{ return pList; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

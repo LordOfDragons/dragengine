@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, int newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, int newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set blocking priority" );
+	SetShortInfo("@GameDefinition.Undo.OCNavSpaceSetBlockingPriority");
 	
 	pOldValue = navspace->GetBlockingPriority();
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetBlockingPriority::~gdeUOCNavSpaceSetBlockingPriority(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCNavSpaceSetBlockingPriority::~gdeUOCNavSpaceSetBlockingPriority(){
 ///////////////
 
 void gdeUOCNavSpaceSetBlockingPriority::Undo(){
-	pNavSpace->SetBlockingPriority( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetBlockingPriority(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetBlockingPriority::Redo(){
-	pNavSpace->SetBlockingPriority( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetBlockingPriority(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

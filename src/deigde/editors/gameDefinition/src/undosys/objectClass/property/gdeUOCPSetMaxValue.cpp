@@ -40,33 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetMaxValue::gdeUOCPSetMaxValue( gdeObjectClass *objectClass, gdeProperty *property, float newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetMaxValue::gdeUOCPSetMaxValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set maximum value" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetMaxValue");
 	
 	pOldValue = property->GetMaximumValue();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetMaxValue::~gdeUOCPSetMaxValue(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCPSetMaxValue::~gdeUOCPSetMaxValue(){
 ///////////////
 
 void gdeUOCPSetMaxValue::Undo(){
-	pProperty->SetMaximumValue( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetMaximumValue(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetMaxValue::Redo(){
-	pProperty->SetMaximumValue( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetMaximumValue(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

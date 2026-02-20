@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetAxis::gdeUOCBillboardSetAxis( gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const decVector &newValue ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCBillboardSetAxis::gdeUOCBillboardSetAxis(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const decVector &newValue) :
+
+pBillboard(nullptr)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard set axis" );
+	SetShortInfo("@GameDefinition.Undo.OCBillboardSetAxis");
 	
 	pOldValue = billboard->GetAxis();
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetAxis::~gdeUOCBillboardSetAxis(){
-	if( pBillboard ){
-		pBillboard->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCBillboardSetAxis::~gdeUOCBillboardSetAxis(){
 ///////////////
 
 void gdeUOCBillboardSetAxis::Undo(){
-	pBillboard->SetAxis( pOldValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetAxis(pOldValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardSetAxis::Redo(){
-	pBillboard->SetAxis( pNewValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetAxis(pNewValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }

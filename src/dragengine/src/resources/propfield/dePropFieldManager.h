@@ -25,11 +25,11 @@
 #ifndef _DEPROPFIELDMANAGER_H_
 #define _DEPROPFIELDMANAGER_H_
 
+#include "dePropField.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class dePropField;
 
 
 /**
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new resource manager. */
-	dePropFieldManager( deEngine *engine );
+	dePropFieldManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
-	virtual ~dePropFieldManager();
+	~dePropFieldManager() override;
 	/*@}*/
 	
 	
@@ -64,10 +64,10 @@ public:
 	dePropField *GetRootPropField() const;
 	
 	/** \brief Create new prop field. */
-	dePropField *CreatePropField();
+	dePropField::Ref CreatePropField();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -75,22 +75,22 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be created. */
-	virtual void SystemPhysicsLoad();
+	void SystemPhysicsLoad() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be freed. */
-	virtual void SystemPhysicsUnload();
+	void SystemPhysicsUnload() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be created. */
-	virtual void SystemScriptingLoad();
+	void SystemScriptingLoad() override;
 	
 	/** \brief Scripting System Peers of all stored resources have to be freed. */
-	virtual void SystemScriptingUnload();
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

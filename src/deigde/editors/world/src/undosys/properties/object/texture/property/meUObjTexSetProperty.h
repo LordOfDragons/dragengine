@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -35,8 +35,12 @@ class meObjectTexture;
  * \brief Undo action object texture set property.
  */
 class meUObjTexSetProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjTexSetProperty>;
+	
+	
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pKey;
 	decString pOldValue;
 	decString pNewValue;
@@ -47,11 +51,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjTexSetProperty( meObjectTexture *texture, const char *key, const char *oldValue, const char *newValue );
+	meUObjTexSetProperty(meObjectTexture *texture, const char *key, const char *oldValue, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjTexSetProperty();
+
+protected:
+	~meUObjTexSetProperty() override;
+
+public:
 	/*@}*/
 	
 	
@@ -60,22 +68,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new value. */
-	void SetNewValue( const char *value );
+	void SetNewValue(const char *value);
 	
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

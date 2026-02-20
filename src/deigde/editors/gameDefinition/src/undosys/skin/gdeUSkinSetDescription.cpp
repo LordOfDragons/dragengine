@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUSkinSetDescription::gdeUSkinSetDescription(
-gdeSkin *skin, const char *newValue ) :
-pSkin( NULL )
+gdeSkin *skin, const char *newValue) :
+pSkin(nullptr)
 {
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(!skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Skin set description" );
+	SetShortInfo("@GameDefinition.Undo.SkinSetDescription");
 	
 	pOldValue = skin->GetDescription();
 	pNewValue = newValue;
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeUSkinSetDescription::~gdeUSkinSetDescription(){
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUSkinSetDescription::~gdeUSkinSetDescription(){
 ///////////////
 
 void gdeUSkinSetDescription::Undo(){
-	pSkin->SetDescription( pOldValue );
+	pSkin->SetDescription(pOldValue);
 }
 
 void gdeUSkinSetDescription::Redo(){
-	pSkin->SetDescription( pNewValue );
+	pSkin->SetDescription(pNewValue);
 }

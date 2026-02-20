@@ -25,18 +25,19 @@
 #ifndef _DEMODEL_H_
 #define _DEMODEL_H_
 
+#include "deModelBone.h"
+#include "deModelTexture.h"
+#include "deModelLOD.h"
+#include "deModelVertexPositionSet.h"
 #include "../deFileResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decStringList.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deModelBone;
-class deModelTexture;
-class deModelLOD;
 class deModelManager;
 class deBaseGraphicModel;
 class deBasePhysicsModel;
 class deBaseAudioModel;
-class deModelVertexPositionSet;
 class deModelWeight;
 
 
@@ -49,28 +50,17 @@ class deModelWeight;
 class DE_DLL_EXPORT deModel : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deModel> Ref;
-	
+	using Ref = deTObjectReference<deModel>;
 	
 	
 private:
-	deModelBone **pBones;
-	int pBoneCount;
-	int pBoneSize;
-	
-	deModelTexture **pTextures;
-	int pTextureCount;
-	int pTextureSize;
-	
-	deModelLOD **pLODs;
-	int pLODCount;
-	int pLODSize;
+	deModelBone::List pBones;
+	deModelTexture::List pTextures;
+	deModelLOD::List pLODs;
 	
 	decStringList pTextureCoordinatesSetList;
 	
-	deModelVertexPositionSet **pVertexPositionSets;
-	int pVertexPositionSetCount;
-	int pVertexPositionSetSize;
+	deModelVertexPositionSet::List pVertexPositionSets;
 	
 	deBaseGraphicModel *pPeerGraphic;
 	deBasePhysicsModel *pPeerPhysics;
@@ -82,8 +72,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new model object with the given resource manager and filename. */
-	deModel( deModelManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deModel(deModelManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -92,7 +82,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deModel();
+	~deModel() override;
 	/*@}*/
 	
 	
@@ -101,8 +91,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of texture coordinates sets names. */
-	inline decStringList &GetTextureCoordinatesSetList(){ return pTextureCoordinatesSetList; }
-	inline const decStringList &GetTextureCoordinatesSetList() const{ return pTextureCoordinatesSetList; }
+	inline decStringList &GetTextureCoordinatesSets(){ return pTextureCoordinatesSetList; }
+	inline const decStringList &GetTextureCoordinatesSets() const{ return pTextureCoordinatesSetList; }
 	/*@}*/
 	
 	
@@ -120,74 +110,86 @@ public:
 	
 	/** \name Bone Management */
 	/*@{*/
+	/** \brief Bones. */
+	inline const deModelBone::List &GetBones() const{ return pBones; }
+	
 	/** \brief Count of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{ return pBones.GetCount(); }
 	
 	/** \brief Bone at the given index. */
-	deModelBone *GetBoneAt( int index ) const;
+	const deModelBone::Ref &GetBoneAt(int index) const{ return pBones.GetAt(index); }
 	
 	/** \brief Index of the bone with the given name or -1 if not found. */
-	int IndexOfBoneNamed( const char *name ) const;
+	int IndexOfBoneNamed(const char *name) const;
 	
 	/** \brief Determiens if a bone with the given name exists. */
-	bool HasBoneNamed( const char *name ) const;
+	bool HasBoneNamed(const char *name) const;
 	
 	/** \brief Adds a new bone with the given name. */
-	void AddBone( deModelBone *bone );
+	void AddBone(deModelBone::Ref &&bone);
 	/*@}*/
 	
 	
 	
 	/** \name Texture Management */
 	/*@{*/
+	/** \brief Textures. */
+	inline const deModelTexture::List &GetTextures() const{ return pTextures; }
+	
 	/** \brief Count of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** \brief Texture at the given index. */
-	deModelTexture *GetTextureAt( int index ) const;
+	const deModelTexture::Ref &GetTextureAt(int index) const{ return pTextures.GetAt(index); }
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
-	int IndexOfTextureNamed( const char *name ) const;
+	int IndexOfTextureNamed(const char *name) const;
 	
 	/** \brief Determiens if a texture with the given name exists. */
-	bool HasTextureNamed( const char *name ) const;
+	bool HasTextureNamed(const char *name) const;
 	
 	/** \brief Adds a new texture with the given name and size. */
-	void AddTexture( deModelTexture *texture );
+	void AddTexture(deModelTexture::Ref &&texture);
 	/*@}*/
 	
 	
 	
 	/** \name LOD Management */
 	/*@{*/
+	/** \brief LOD meshes. */
+	inline const deModelLOD::List &GetLODs() const{ return pLODs; }
+	
 	/** \brief Count of LOD meshes. */
-	inline int GetLODCount() const{ return pLODCount; }
+	inline int GetLODCount() const{ return pLODs.GetCount(); }
 	
 	/** \brief LOD mesh at the given index. */
-	deModelLOD *GetLODAt( int index ) const;
+	const deModelLOD::Ref &GetLODAt(int index) const{ return pLODs.GetAt(index); }
 	
 	/** \brief Adds a new LOD mesh. */
-	void AddLOD( deModelLOD *lod );
+	void AddLOD(deModelLOD::Ref &&lod);
 	/*@}*/
 	
 	
 	
 	/** \name Vertex position set management */
 	/*@{*/
+	/** \brief Vertex position sets. */
+	inline const deModelVertexPositionSet::List &GetVertexPositionSets() const{ return pVertexPositionSets; }
+	
 	/** \brief Count of vertex position sets. */
-	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSets.GetCount(); }
 	
 	/** \brief Vertex position set at index. */
-	deModelVertexPositionSet *GetVertexPositionSetAt( int index ) const;
+	inline const deModelVertexPositionSet::Ref &GetVertexPositionSetAt(int index) const{ return pVertexPositionSets.GetAt(index); }
 	
 	/** \brief Index of named vertex position set with name or -1 if absent. */
-	int IndexOfVertexPositionSetNamed( const char *name ) const;
+	int IndexOfVertexPositionSetNamed(const char *name) const;
 	
 	/** \brief Named vertex position set is present. */
-	bool HasVertexPositionSetNamed( const char *name ) const;
+	bool HasVertexPositionSetNamed(const char *name) const;
 	
 	/** \brief Add vertex position set. */
-	void AddVertexPositionSet( deModelVertexPositionSet *set );
+	void AddVertexPositionSet(deModelVertexPositionSet::Ref &&set);
 	/*@}*/
 	
 	
@@ -198,19 +200,19 @@ public:
 	inline deBaseGraphicModel *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicModel *peer );
+	void SetPeerGraphic(deBaseGraphicModel *peer);
 	
 	/** \brief Physics system peer. */
 	inline deBaseAudioModel *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerAudio ( deBaseAudioModel *peer );
+	void SetPeerAudio (deBaseAudioModel *peer);
 	
 	/** \brief Physics system peer. */
 	inline deBasePhysicsModel *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer. */
-	void SetPeerPhysics( deBasePhysicsModel *peer );
+	void SetPeerPhysics(deBasePhysicsModel *peer);
 	/*@}*/
 	
 	

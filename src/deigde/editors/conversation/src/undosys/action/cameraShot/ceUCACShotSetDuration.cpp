@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACShotSetDuration::ceUCACShotSetDuration( ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration ){
-	if( ! topic ) DETHROW( deeInvalidParam );
+ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration){
+	if(!topic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pCameraShot = NULL;
+	pTopic = nullptr;
+	pCameraShot = nullptr;
 	pOldDuration = cameraShot->GetDuration();
 	pNewDuration = newDuration;
 	
-	SetShortInfo( "Camera Shot Set Duration" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetDuration");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetDuration::~ceUCACShotSetDuration(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCACShotSetDuration::~ceUCACShotSetDuration(){
 ///////////////
 
 void ceUCACShotSetDuration::Undo(){
-	pCameraShot->SetDuration( pOldDuration );
-	pTopic->NotifyActionChanged( pCameraShot );
+	pCameraShot->SetDuration(pOldDuration);
+	pTopic->NotifyActionChanged(pCameraShot);
 }
 
 void ceUCACShotSetDuration::Redo(){
-	pCameraShot->SetDuration( pNewDuration );
-	pTopic->NotifyActionChanged( pCameraShot );
+	pCameraShot->SetDuration(pNewDuration);
+	pTopic->NotifyActionChanged(pCameraShot);
 }

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -37,8 +37,12 @@ class meDecal;
  * \brief Undo Action Decal TexCoord Scaling.
  */
 class meUDecalTCScaling : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUDecalTCScaling>;
+	
+	
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	
@@ -46,20 +50,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCScaling( meDecal *decal, const decVector2 &newScaling );
+	meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUDecalTCScaling();
+
+protected:
+	~meUDecalTCScaling() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

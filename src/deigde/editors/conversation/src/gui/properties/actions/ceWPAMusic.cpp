@@ -45,11 +45,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -66,18 +66,18 @@ class cTextName : public igdeTextFieldListener {
 	ceWPAMusic &pPanel;
 	
 public:
-	cTextName( ceWPAMusic &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextName>;
+	cTextName(ceWPAMusic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAMusic * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetName() ){
+		if(!topic || !action || textField->GetText() == action->GetName()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAMusicSetName( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAMusicSetName::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -91,13 +91,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAMusic::ceWPAMusic( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAMusic::ceWPAMusic(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.EditString( *this, "Name:", "Name of the music to use or empty to not change",
-		pEditName, new cTextName( *this ) );
+	helper.EditString(*this, "@Conversation.WPActionMusic.Name", "@Conversation.MusicName.ToolTip",
+		pEditName, cTextName::Ref::New(*this));
 }
 
 ceWPAMusic::~ceWPAMusic(){
@@ -111,11 +111,11 @@ ceWPAMusic::~ceWPAMusic(){
 ceCAMusic *ceWPAMusic::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatMusic ){
-		return ( ceCAMusic* )action;
+	if(action && action->GetType() == ceConversationAction::eatMusic){
+		return (ceCAMusic*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -124,8 +124,8 @@ void ceWPAMusic::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditName->SetText( action->GetName() );
+	if(action){
+		pEditName->SetText(action->GetName());
 		
 	}else{
 		pEditName->ClearText();

@@ -25,17 +25,17 @@
 #ifndef _DEANIMATOR_H_
 #define _DEANIMATOR_H_
 
+#include "controller/deAnimatorController.h"
 #include "../deResource.h"
-#include "../animation/deAnimationReference.h"
-#include "../rig/deRigReference.h"
+#include "../animation/deAnimation.h"
+#include "../rig/deRig.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decStringSet.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deAnimatorRule;
 class deAnimatorLink;
 class deAnimatorManager;
-class deAnimatorController;
 class deBaseAnimatorAnimator;
 
 
@@ -55,23 +55,16 @@ class deBaseAnimatorAnimator;
 class DE_DLL_EXPORT deAnimator : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimator> Ref;
-	
+	using Ref = deTObjectReference<deAnimator>;
 	
 	
 private:
-	deRigReference pRig;
-	deAnimationReference pAnimation;
+	deRig::Ref pRig;
+	deAnimation::Ref pAnimation;
 	
-	deAnimatorController **pControllers;
-	int pControllerCount;
-	int pControllerSize;
-	
-	deAnimatorLink **pLinks;
-	int pLinkCount;
-	int pLinkSize;
-	
-	decObjectOrderedSet pRules;
+	deAnimatorController::List pControllers;
+	decTObjectOrderedSet<deAnimatorLink> pLinks;
+	decTObjectOrderedSet<deAnimatorRule> pRules;
 	
 	decStringSet pListBones;
 	decStringSet pListVertexPositionSets;
@@ -84,8 +77,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create animator. */
-	deAnimator( deAnimatorManager *manager );
+	deAnimator(deAnimatorManager *manager);
 	
+	deAnimator(const deAnimator&) = delete;
+	deAnimator& operator=(const deAnimator&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up animator.
@@ -93,23 +89,23 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimator();
+	~deAnimator() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig or NULL. */
-	inline deRig *GetRig() const{ return pRig; }
+	inline const deRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL. */
-	void SetRig( deRig *rig );
+	void SetRig(deRig *rig);
 	
 	/** \brief Animation or NULL. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline const deAnimation::Ref &GetAnimation() const{ return pAnimation; }
 	
 	/** \brief Set animation or NULL. */
-	void SetAnimation( deAnimation *animation );
+	void SetAnimation(deAnimation *animation);
 	
 	/** \brief Bones. */
 	inline decStringSet &GetListBones(){ return pListBones; }
@@ -130,84 +126,54 @@ public:
 	
 	/** \name Controller Management */
 	/*@{*/
-	/** \brief Count of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/** \brief Controller at index. */
-	deAnimatorController *GetControllerAt( int index ) const;
-	
-	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController( deAnimatorController *controller ) const;
-	
-	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *controller ) const;
-	
-	/** \brief Controller is present. */
-	bool HasController( deAnimatorController *controller ) const;
+	/** \brief Controllers. */
+	inline const deAnimatorController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
-	void AddController( deAnimatorController *controller );
+	void AddController(deAnimatorController *controller);
 	
 	/** \brief Remove controller. */
-	void RemoveController( deAnimatorController *controller );
+	void RemoveController(deAnimatorController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
 	
 	/** \brief Notify peers controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	/*@}*/
 	
 	
 	
 	/** \name Link Management */
 	/*@{*/
-	/** \brief Count of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
-	
-	/** \brief Link at index. */
-	deAnimatorLink *GetLinkAt( int index ) const;
-	
-	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink( deAnimatorLink *link ) const;
-	
-	/** \brief Link is present. */
-	bool HasLink( deAnimatorLink *link ) const;
+	/** \brief Links. */
+	inline const decTObjectOrderedSet<deAnimatorLink> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
-	void AddLink( deAnimatorLink *link );
+	void AddLink(deAnimatorLink *link);
 	
 	/** \brief Remove link. */
-	void RemoveLink( deAnimatorLink *link );
+	void RemoveLink(deAnimatorLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
 	/** \brief Notify peers link changed. */
-	void NotifyLinkChangedAt( int index );
+	void NotifyLinkChangedAt(int index);
 	/*@}*/
 	
 	
 	
 	/** \name Rule Management */
 	/*@{*/
-	/** \brief Count of rules. */
-	int GetRuleCount() const;
-	
-	/** \brief Rule at index. */
-	deAnimatorRule *GetRuleAt( int index ) const;
-	
-	/** \brief Index of rule or -1 if absent. */
-	int IndexOfRule( deAnimatorRule *rule ) const;
-	
-	/** \brief Rule is present. */
-	bool HasRule( deAnimatorRule *rule ) const;
+	/** \brief Rules. */
+	inline const decTObjectOrderedSet<deAnimatorRule> &GetRules() const{ return pRules; }
 	
 	/** \brief Add rule. */
-	void AddRule( deAnimatorRule *rule );
+	void AddRule(deAnimatorRule *rule);
 	
 	/** \brief Remove rule. */
-	void RemoveRule( deAnimatorRule *rule );
+	void RemoveRule(deAnimatorRule *rule);
 	
 	/** \brief Remove all rules. */
 	void RemoveAllRules();
@@ -224,7 +190,7 @@ public:
 	inline deBaseAnimatorAnimator *GetPeerAnimator() const{ return pPeerAnimator; }
 	
 	/** \brief Set animator system peer. */
-	void SetPeerAnimator( deBaseAnimatorAnimator *peer );
+	void SetPeerAnimator(deBaseAnimatorAnimator *peer);
 	/*@}*/
 	
 	

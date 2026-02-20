@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English</description>
+	
+	<!-- Window Main -->
+	<translation name="Project.WindowMain.Tab.Profiles">Profiles</translation>
+	<translation name="Project.WindowMain.Tab.TestRun">Test-Run</translation>
+	<translation name="Project.WindowMain.Tab.UndoHistory">Undo History</translation>
+	
+	<!-- Menu items -->
+	<translation name="Project.Menu.Project">Project</translation>
+	<translation name="Project.Menu.Edit">Edit</translation>
+	<translation name="Project.Menu.Profile">Profile</translation>
+	
+	<!-- Actions -->
+	<translation name="Project.Action.Save">Save</translation>
+	<translation name="Project.Action.Save.Description">Save project</translation>
+	<translation name="Project.Action.Cut">Cut</translation>
+	<translation name="Project.Action.Cut.Description">Cut selected objects</translation>
+	<translation name="Project.Action.Copy">Copy</translation>
+	<translation name="Project.Action.Copy.Description">Copy selected objects</translation>
+	<translation name="Project.Action.Paste">Paste</translation>
+	<translation name="Project.Action.Paste.Description">Paste objects</translation>
+	<translation name="Project.Action.ProfileAdd">Add...</translation>
+	<translation name="Project.Action.ProfileAdd.Description">Add profile</translation>
+	<translation name="Project.Action.ProfileRemove">Remove</translation>
+	<translation name="Project.Action.ProfileRemove.Description">Remove selected profile</translation>
+	<translation name="Project.Action.ProfileDuplicate">Duplicate</translation>
+	<translation name="Project.Action.ProfileDuplicate.Description">Duplicate profile</translation>
+	<translation name="Project.Action.ProfileDistribute">Build DELGA...</translation>
+	<translation name="Project.Action.ProfileDistribute.Description">Build DELGA file using selected profile</translation>
+	<translation name="Project.Action.ProfileTestRun">Test-Run...</translation>
+	<translation name="Project.Action.ProfileTestRun.Description">Test-Run selected profile</translation>
+	<translation name="Project.Action.ShowDelga">Browse DELGA</translation>
+	<translation name="Project.Action.ShowDelga.Description">Open DELGA Directory in File Manager</translation>
+	<translation name="Project.Action.ShowContent">Browse Content</translation>
+	<translation name="Project.Action.ShowContent.Description">Open Content directory in File Manager</translation>
+	<translation name="Project.Action.ShowConfig">Browse Run Config</translation>
+	<translation name="Project.Action.ShowConfig.Description">Open Run-Time Configuration Directory in File Manager</translation>
+	<translation name="Project.Action.ShowOverlay">Browse Run Overlay</translation>
+	<translation name="Project.Action.ShowOverlay.Description">Open Run-Time Overlay Directory in File Manager</translation>
+	<translation name="Project.Action.ShowCapture">Browse Run Capture</translation>
+	<translation name="Project.Action.ShowCapture.Description">Open Run-Time Capture Directory in File Manager</translation>
+	<translation name="Project.Action.ShowLogs">Open Run Logs</translation>
+	<translation name="Project.Action.ShowLogs.Description">Open Run-Time Log File in External Application</translation>
+	
+	<!-- Panel Profiles -->
+	<translation name="Project.PanelProfiles.Label.Profiles">Profiles</translation>
+	<translation name="Project.PanelProfiles.Group.Content">Content:</translation>
+	<translation name="Project.PanelProfiles.Group.TestRun">Test-Run:</translation>
+	<translation name="Project.PanelProfiles.Group.Distribution">Distribution:</translation>
+	<translation name="Project.PanelProfiles.Field.Name">Name:</translation>
+	<translation name="Project.PanelProfiles.Field.Name.Description">Profile name.</translation>
+	<translation name="Project.PanelProfiles.Field.Description">Description:</translation>
+	<translation name="Project.PanelProfiles.Field.Description.Description">Profile description.</translation>
+	<translation name="Project.PanelProfiles.Group.GameParameters">Game Parameters:</translation>
+	<translation name="Project.PanelProfiles.Field.ScriptDirectory">Script Directory:</translation>
+	<translation name="Project.PanelProfiles.Field.ScriptDirectory.Description">VFS directory where the game scripts are located.</translation>
+	<translation name="Project.PanelProfiles.Field.GameObject">Game Object:</translation>
+	<translation name="Project.PanelProfiles.Field.GameObject.Description">Game object the scripting module uses as entry point to run the game.</translation>
+	<translation name="Project.PanelProfiles.Field.PathConfig">Config Path:</translation>
+	<translation name="Project.PanelProfiles.Field.PathConfig.Description">VFS directory where the game stores configuration files.</translation>
+	<translation name="Project.PanelProfiles.Field.PathCapture">Capture Path:</translation>
+	<translation name="Project.PanelProfiles.Field.PathCapture.Description">VFS directory where the game stores captured files.</translation>
+	<translation name="Project.PanelProfiles.Field.Identifier">Identifier:</translation>
+	<translation name="Project.PanelProfiles.Field.Identifier.Description">Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!</translation>
+	<translation name="Project.PanelProfiles.Field.AliasIdentifier">Alias Identifier:</translation>
+	<translation name="Project.PanelProfiles.Field.AliasIdentifier.Description">Alias identifier of game used by Launchers to simplify running the game.</translation>
+	<translation name="Project.PanelProfiles.Field.Title">Title:</translation>
+	<translation name="Project.PanelProfiles.Field.Title.Description">Title to display for the game by Launchers.</translation>
+	<translation name="Project.PanelProfiles.Field.GameDescription">Description:</translation>
+	<translation name="Project.PanelProfiles.Field.GameDescription.Description">Description to display for the game by Launchers.</translation>
+	<translation name="Project.PanelProfiles.Field.Creator">Creator:</translation>
+	<translation name="Project.PanelProfiles.Field.Creator.Description">Creator (or author) of the game.</translation>
+	<translation name="Project.PanelProfiles.Field.Website">Website:</translation>
+	<translation name="Project.PanelProfiles.Field.Website.Description">Website (or any other kind of internet presence) of project or creator (author).</translation>
+	<translation name="Project.PanelProfiles.Field.WindowSize">Window Size:</translation>
+	<translation name="Project.PanelProfiles.Field.WindowSize.Description">Size of run-time window or 0 to run fullscreen.</translation>
+	<translation name="Project.PanelProfiles.Group.ProcessingParameters">Processing Parameters:</translation>
+	<translation name="Project.PanelProfiles.Group.Icons">Icons:</translation>
+	<translation name="Project.PanelProfiles.Field.IconPath">Path:</translation>
+	<translation name="Project.PanelProfiles.Field.IconPath.Description">Set of icons of different size representing the project.</translation>
+	<translation name="Project.PanelProfiles.Action.AddIcon.Description">Add icon</translation>
+	<translation name="Project.PanelProfiles.Action.RemoveIcon.Description">Remove selected icon</translation>
+	<translation name="Project.PanelProfiles.Group.ExcludePatterns">Exclude Patterns:</translation>
+	<translation name="Project.PanelProfiles.Field.ExcludePattern">Pattern:</translation>
+	<translation name="Project.PanelProfiles.Field.ExcludePattern.Description">Set of file patterns to exclude from projribution process.</translation>
+	<translation name="Project.PanelProfiles.Action.AddExcludePattern.Description">Add file pattern to set</translation>
+	<translation name="Project.PanelProfiles.Action.RemoveExcludePattern.Description">Remove selected file pattern from set</translation>
+	<translation name="Project.PanelProfiles.Group.RequiredExtensions">Required Extensions:</translation>
+	<translation name="Project.PanelProfiles.Field.RequiredExtension">Extension:</translation>
+	<translation name="Project.PanelProfiles.Field.RequiredExtension.Description">Set of resource file extensions (.extension) required by the project</translation>
+	<translation name="Project.PanelProfiles.Action.AddRequiredExtension.Description">Add resource file extension to set</translation>
+	<translation name="Project.PanelProfiles.Action.RemoveRequiredExtension.Description">Remove selected resource file extension from set</translation>
+	<translation name="Project.PanelProfiles.Group.DelgaParameters">DELGA Parameters:</translation>
+	<translation name="Project.PanelProfiles.Field.DelgaFile">DELGA File:</translation>
+	<translation name="Project.PanelProfiles.Field.DelgaFile.Description">VFS directory where to place the build DELGA file.</translation>
+	<translation name="Project.PanelProfiles.Field.Arguments">Arguments:</translation>
+	<translation name="Project.PanelProfiles.Field.Arguments.Description">Arguments to use while test running</translation>
+	<translation name="Project.PanelProfiles.Action.GenerateIdentifier">Generate Identifier</translation>
+	<translation name="Project.PanelProfiles.Action.GenerateIdentifier.Description">Generate Identifier</translation>
+	<translation name="Project.PanelProfiles.Action.GenerateIdentifier.Confirm">Generating new identifier can break the game. Do you really want to generate new identifier?</translation>
+	<translation name="Project.PanelProfiles.Dialog.RenameProfile">Rename profile</translation>
+	<translation name="Project.PanelProfiles.Dialog.RenameProfile.Error">A profile with this name exists already.</translation>
+	<translation name="Project.PanelProfiles.Dialog.InvalidInput">Invalid Input</translation>
+	<translation name="Project.PanelProfiles.Dialog.InvalidInput.Identifier">Identifier has to be a valid UUID in the format 8-4-4-4-6 groups of hex-encoded values</translation>
+	<translation name="Project.PanelProfiles.Dialog.AddProfile">Add Profile</translation>
+	<translation name="Project.PanelProfiles.Dialog.AddProfile.Name">Name:</translation>
+	<translation name="Project.PanelProfiles.Dialog.AddProfile.Error">A profile with this name exists already.</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile">Duplicate Profile</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile.Name">Name:</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile.Error">A profile with this name exists already.</translation>
+	<translation name="Project.PanelProfiles.Dialog.DuplicateProfile.NameCopy">{0} Copy</translation>
+	<translation name="Project.PanelProfiles.Dialog.Distribute.RequestSave">Unsaved changes are present. To projribute it is recommended to save them</translation>
+	
+	<!-- Panel Test Run -->
+	<translation name="Project.PanelTestRun.Action.Start">Start</translation>
+	<translation name="Project.PanelTestRun.Action.Start.Description">Test-Run project using selected Launcher Profile</translation>
+	<translation name="Project.PanelTestRun.Action.Stop">Stop</translation>
+	<translation name="Project.PanelTestRun.Action.Stop.Description">Stop Test-Run project</translation>
+	<translation name="Project.PanelTestRun.Action.Kill">Kill</translation>
+	<translation name="Project.PanelTestRun.Action.Kill.Description">Kill Test-Run project</translation>
+	<translation name="Project.PanelTestRun.Label.Profile">Profile:</translation>
+	<translation name="Project.PanelTestRun.Field.Profile.Description">Distribution profile to run.</translation>
+	<translation name="Project.PanelTestRun.Label.LaunchProfile">Launch Profile:</translation>
+	<translation name="Project.PanelTestRun.Field.LaunchProfile.Description">Launcher profile to use for testing.</translation>
+	<translation name="Project.PanelTestRun.Field.LaunchProfile.DefaultItem">&lt; IGDE Default &gt;</translation>
+	<translation name="Project.PanelTestRun.Group.RemoteLaunching">Remote Launching:</translation>
+	<translation name="Project.PanelTestRun.Field.Address">Address:</translation>
+	<translation name="Project.PanelTestRun.Field.Address.Description">IP address to listen for remote client connections</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStartListen">Start Listen</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStartListen.Description">Start listening for remote client connections</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStopListen">Stop Listen</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteStopListen.Description">Stop listening for remote client connections</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteSynchronizeAll">Synchronize All</translation>
+	<translation name="Project.PanelTestRun.Action.RemoteSynchronizeAll.Description">Synchronize all remote clients</translation>
+	<translation name="Project.PanelTestRun.Group.LogsDebug">Logs / Debug:</translation>
+	<translation name="Project.PanelTestRun.Tab.Logs">Logs</translation>
+	<translation name="Project.PanelTestRun.Dialog.StartTestRunning.RequestSave">Unsaved changes are present. To start Test-Running it is recommended to save them</translation>
+	
+	<!-- Dialog Distribute -->
+	<translation name="Project.DialogDistribute.Title">Distribute</translation>
+	<translation name="Project.DialogDistribute.Group.Delga">DELGA:</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaFile">DELGA File:</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaFile.Description">DELGA file being build.</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaSize">DELGA Size:</translation>
+	<translation name="Project.DialogDistribute.Field.DelgaSize.Description">Size of DELGA file.</translation>
+	<translation name="Project.DialogDistribute.Field.Files">Files:</translation>
+	<translation name="Project.DialogDistribute.Field.Files.Description">Number of processed files.</translation>
+	<translation name="Project.DialogDistribute.Field.Directories">Directories:</translation>
+	<translation name="Project.DialogDistribute.Field.Directories.Description">Number of processed directories.</translation>
+	<translation name="Project.DialogDistribute.Group.Logs">Logs:</translation>
+	<translation name="Project.DialogDistribute.Field.Logs.Description">Building logs.</translation>
+	<translation name="Project.DialogDistribute.Action.ShowInFileManager">Show in File Manager</translation>
+	<translation name="Project.DialogDistribute.Action.ShowInFileManager.Description">Show DELGA file in File Manager</translation>
+	<translation name="Project.DialogDistribute.Format.DelgaSize">{0} ({1} bytes)</translation>
+	
+	<!-- Undo operations -->
+	<translation name="Project.Undo.ProfileAdd">Add profile</translation>
+	<translation name="Project.Undo.ProfileRemove">Remove profile</translation>
+	<translation name="Project.Undo.ProfileSetName">Profile set name</translation>
+	<translation name="Project.Undo.ProfileSetDescription">Profile set description</translation>
+	<translation name="Project.Undo.ProfileSetScriptDirectory">Profile set script directory</translation>
+	<translation name="Project.Undo.ProfileSetGameObject">Profile set game object</translation>
+	<translation name="Project.Undo.ProfileSetPathConfig">Profile set config path</translation>
+	<translation name="Project.Undo.ProfileSetPathCapture">Profile set capture path</translation>
+	<translation name="Project.Undo.ProfileSetIdentifier">Profile set identifier</translation>
+	<translation name="Project.Undo.ProfileSetAliasIdentifier">Profile set alias identifier</translation>
+	<translation name="Project.Undo.ProfileSetTitle">Profile set title</translation>
+	<translation name="Project.Undo.ProfileSetGameDescription">Profile set game description</translation>
+	<translation name="Project.Undo.ProfileSetCreator">Profile set creator</translation>
+	<translation name="Project.Undo.ProfileSetWebsite">Profile set website</translation>
+	<translation name="Project.Undo.ProfileSetWindowSize">Profile set window size</translation>
+	<translation name="Project.Undo.ProfileSetDelgaPath">Profile set delga path</translation>
+	<translation name="Project.Undo.ProfileSetRunArguments">Profile set run arguments</translation>
+	<translation name="Project.Undo.ProfileSetIcons">Profile set icons</translation>
+	<translation name="Project.Undo.ProfileSetExcludePatterns">Profile set exclude patterns</translation>
+	<translation name="Project.Undo.ProfileSetRequiredExtensions">Profile set required extensions</translation>
+	<translation name="Project.Undo.ProjectSetScriptDirectory">Project set script directory</translation>
+	<translation name="Project.Undo.ProjectSetGameObject">Project set game object</translation>
+	<translation name="Project.Undo.ProjectSetPathConfig">Project set config path</translation>
+	<translation name="Project.Undo.ProjectSetPathCapture">Project set capture path</translation>
+	
+	<!-- Dialog Distribute -->
+	<translation name="Project.DialogDistribute.Button.Close">Close</translation>
+	
+	<!-- Panel Profiles -->
+	<translation name="Project.PanelProfiles.Action.IdentifierMenu.Description">Identifier menu</translation>
+	
+	<!-- Panel Remote Client -->
+	<translation name="Project.PanelRemoteClient.Action.Disconnect">Disconnect</translation>
+	<translation name="Project.PanelRemoteClient.Action.Disconnect.Description">Disconnect remote client</translation>
+	<translation name="Project.PanelRemoteClient.Action.Synchronize">Synchronize</translation>
+	<translation name="Project.PanelRemoteClient.Action.Synchronize.Description">Synchronize profile specific project data to client</translation>
+	<translation name="Project.PanelRemoteClient.Action.Start">Start</translation>
+	<translation name="Project.PanelRemoteClient.Action.Start.Description">Test-Run project using selected profile</translation>
+	<translation name="Project.PanelRemoteClient.Action.Stop">Stop</translation>
+	<translation name="Project.PanelRemoteClient.Action.Stop.Description">Stop Test-Run project</translation>
+	<translation name="Project.PanelRemoteClient.Action.Kill">Kill</translation>
+	<translation name="Project.PanelRemoteClient.Action.Kill.Description">Kill Test-Run project</translation>
+	<translation name="Project.PanelRemoteClient.GroupBox.Client">Client:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Name">Name:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Name.ToolTip">Client name</translation>
+	<translation name="Project.PanelRemoteClient.Client.Address">Address:</translation>
+	<translation name="Project.PanelRemoteClient.Client.Address.ToolTip">IP address of connected client</translation>
+	<translation name="Project.PanelRemoteClient.GroupBox.Synchronize">Synchronize:</translation>
+	<translation name="Project.PanelRemoteClient.Synchronize.State.ToolTip">Synchronize state</translation>
+	<translation name="Project.PanelRemoteClient.GroupBox.Launching">Launching:</translation>
+	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile">Launch Profile:</translation>
+	<translation name="Project.PanelRemoteClient.Launching.LaunchProfile.ToolTip">Launcher profile to use for testing.</translation>
+	<translation name="Project.PanelRemoteClient.Tab.Logs">Logs</translation>
+	<translation name="Project.PanelRemoteClient.Dialog.StartTestRunning.Title">Start Test-Running</translation>
+	<translation name="Project.PanelRemoteClient.Dialog.StartTestRunning.Message">Unsaved changes are present. To start Test-Running it is recommended to save them</translation>
+	
+	<!-- Dialog Distribute Messages -->
+	
+	<!-- Window Main Messages -->
+	<translation name="Project.WindowMain.Default.ProfileName">Profile</translation>
+	<translation name="Project.WindowMain.Error.UnknownArgument">Unknown argument '{0}'</translation>
+	<translation name="Project.WindowMain.Error.UnknownProfile">Unknown profile '{0}'</translation>
+	<translation name="Project.WindowMain.Error.MissingArgumentProfile">Missing argument: profile</translation>
+	<translation name="Project.WindowMain.Error.DistributeFailed">Distribute failed</translation>
+	<translation name="Project.WindowMain.Syntax1">   Build distribution file (*.delga) for profile in game project.</translation>
+	<translation name="Project.WindowMain.Syntax2">   Absolute path to distribution file (*.delga).</translation>
+	<translation name="Project.WindowMain.Syntax3">   List all profiles in game project. Prints each profile name on a new line.</translation>
+</languagePack>

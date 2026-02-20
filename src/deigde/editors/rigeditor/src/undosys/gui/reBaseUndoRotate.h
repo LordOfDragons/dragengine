@@ -28,13 +28,19 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
 
 
 /**
  * Base class for undo actions rotating things around.
  */
 class reBaseUndoRotate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reBaseUndoRotate>;
+	
+	
 private:
+	igdeEnvironment &pEnvironment;
 	float pAngle;
 	decPoint3 pCenterSector;
 	decVector pCenterPosition, pAxis;
@@ -48,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reBaseUndoRotate();
+	explicit reBaseUndoRotate(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reBaseUndoRotate();
+	~reBaseUndoRotate() override;
 	/*@}*/
 	
 	
@@ -62,17 +68,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	inline float GetAngle() const{ return pAngle; }
-	void SetAngle( float angle );
+	void SetAngle(float angle);
 	inline const decPoint3 &GetCenterSector() const{ return pCenterSector; }
-	void SetCenterSector( const decPoint3 &sector );
+	void SetCenterSector(const decPoint3 &sector);
 	inline const decVector &GetCenterPosition() const{ return pCenterPosition; }
-	void SetCenterPosition( const decVector &position );
+	void SetCenterPosition(const decVector &position);
 	inline const decVector &GetAxis() const{ return pAxis; }
-	void SetAxis( const decVector &axis );
+	void SetAxis(const decVector &axis);
 	inline bool GetModifyPosition() const{ return pModifyPosition; }
-	void SetModifyPosition( bool modifyPosition );
+	void SetModifyPosition(bool modifyPosition);
 	inline bool GetModifyOrientation() const{ return pModifyOrientation; }
-	void SetModifyOrientation( bool modifyOrientation );
+	void SetModifyOrientation(bool modifyOrientation);
 	inline const decMatrix &GetRotationMatrix() const{ return pMatrix; }
 	void Update();
 	

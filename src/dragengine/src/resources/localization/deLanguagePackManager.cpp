@@ -46,10 +46,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLanguagePackManager::deLanguagePackManager( deEngine *engine ) :
-deFileResourceManager( engine, ertLanguagePack )
+deLanguagePackManager::deLanguagePackManager(deEngine *engine) :
+deFileResourceManager(engine, ertLanguagePack)
 {
-	SetLoggingName( "language pack" );
+	SetLoggingName("language pack");
 }
 
 deLanguagePackManager::~deLanguagePackManager(){
@@ -66,124 +66,108 @@ int deLanguagePackManager::GetLanguagePackCount() const{
 }
 
 deLanguagePack *deLanguagePackManager::GetRootLanguagePack() const{
-	return ( deLanguagePack* )pLangPacks.GetRoot();
+	return (deLanguagePack*)pLangPacks.GetRoot();
 }
 
-deLanguagePack *deLanguagePackManager::GetLanguagePackWith( const char *filename ) const{
-	return GetLanguagePackWith( GetEngine()->GetVirtualFileSystem(), filename );
+deLanguagePack *deLanguagePackManager::GetLanguagePackWith(const char *filename) const{
+	return GetLanguagePackWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-deLanguagePack *deLanguagePackManager::GetLanguagePackWith( deVirtualFileSystem *vfs,
-const char *filename ) const{
-	deLanguagePack * const langpack = ( deLanguagePack* )pLangPacks.GetWithFilename( vfs, filename );
-	return langpack && ! langpack->GetOutdated() ? langpack : NULL;
+deLanguagePack *deLanguagePackManager::GetLanguagePackWith(deVirtualFileSystem *vfs,
+const char *filename) const{
+	deLanguagePack * const langpack = (deLanguagePack*)pLangPacks.GetWithFilename(vfs, filename);
+	return langpack && !langpack->GetOutdated() ? langpack : nullptr;
 }
 
-deLanguagePack *deLanguagePackManager::CreateLanguagePack(
-const char *filename, deLanguagePackBuilder &builder ){
-	return CreateLanguagePack( GetEngine()->GetVirtualFileSystem(), filename, builder );
+deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(
+const char *filename, deLanguagePackBuilder &builder){
+	return CreateLanguagePack(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deLanguagePack *deLanguagePackManager::CreateLanguagePack( deVirtualFileSystem *vfs,
-const char *filename, deLanguagePackBuilder &builder ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(deVirtualFileSystem *vfs,
+const char *filename, deLanguagePackBuilder &builder){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
-	deLanguagePack *langPack = NULL;
+	deLanguagePack::Ref langPack;
 	
 	try{
-		deLanguagePack * const findLangPack = ( deLanguagePack* )
-			pLangPacks.GetWithFilename( vfs, filename );
-		if( findLangPack ){
-			DETHROW( deeInvalidParam );
+		deLanguagePack * const findLangPack = (deLanguagePack*)
+			pLangPacks.GetWithFilename(vfs, filename);
+		if(findLangPack){
+			DETHROW(deeInvalidParam);
 		}
 		
-		langPack = new deLanguagePack( this, vfs, filename, decDateTime::GetSystemTime() );
-		builder.BuildLanguagePack( *langPack );
+		langPack = deLanguagePack::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
+		builder.BuildLanguagePack(*langPack);
 		
-		if( ! langPack->Verify() ){
-			DETHROW( deeInvalidParam );
+		if(!langPack->Verify()){
+			DETHROW(deeInvalidParam);
 		}
 		langPack->BuildLookupTable();
 		
-		pLangPacks.Add( langPack );
+		pLangPacks.Add(langPack);
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Creating language pack '%s' failed", filename );
-		if( langPack ){
-			langPack->FreeReference();
-		}
+	}catch(const deException &){
+		LogErrorFormat("Creating language pack '%s' failed", filename);
 		throw;
 	}
 	
 	return langPack;
 }
 
-deLanguagePack *deLanguagePackManager::LoadLanguagePack(
-const char *filename, const char *basePath ){
-	return LoadLanguagePack( GetEngine()->GetVirtualFileSystem(), filename, basePath );
+deLanguagePack::Ref deLanguagePackManager::LoadLanguagePack(
+const char *filename, const char *basePath){
+	return LoadLanguagePack(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deLanguagePack *deLanguagePackManager::LoadLanguagePack( deVirtualFileSystem *vfs,
-const char *filename, const char *basePath ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deLanguagePack::Ref deLanguagePackManager::LoadLanguagePack(deVirtualFileSystem *vfs,
+const char *filename, const char *basePath){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader = NULL;
-	deLanguagePack *langPack = NULL;
-	deLanguagePack *findLangPack;
+	deLanguagePack::Ref langPack;
 	decPath path;
 	
 	try{
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		findLangPack = ( deLanguagePack* )pLangPacks.GetWithFilename( vfs, path.GetPathUnix() );
+		deLanguagePack *findLangPack = (deLanguagePack*)
+			pLangPacks.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findLangPack && findLangPack->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Language Pack '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findLangPack && findLangPack->GetModificationTime() != modificationTime){
+			LogInfoFormat("Language Pack '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findLangPack->MarkOutdated();
-			findLangPack = NULL;
+			findLangPack = nullptr;
 		}
 		
-		if( findLangPack ){
-			findLangPack->AddReference();
+		if(findLangPack){
 			langPack = findLangPack;
 			
 		}else{
-			deBaseLanguagePackModule * const module = ( deBaseLanguagePackModule* )
-				GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtLanguagePack,
-					path.GetPathUnix() );
+			deBaseLanguagePackModule * const module = (deBaseLanguagePackModule*)
+				GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtLanguagePack,
+					path.GetPathUnix());
 			
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix() );
+			langPack = deLanguagePack::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
+			module->LoadLanguagePack(OpenFileForReading(*vfs, path.GetPathUnix()), *langPack);
 			
-			langPack = new deLanguagePack( this, vfs, path.GetPathUnix(), modificationTime );
-			module->LoadLanguagePack( *fileReader, *langPack );
-			
-			fileReader->FreeReference();
-			fileReader = NULL;
-			
-			if( ! langPack->Verify() ){
-				DETHROW( deeInvalidParam );
+			if(!langPack->Verify()){
+				DETHROW(deeInvalidParam);
 			}
 			langPack->BuildLookupTable();
 			
-			pLangPacks.Add( langPack );
+			pLangPacks.Add(langPack);
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Loading language pack '%s' (base path '%s') failed",
-			filename, basePath ? basePath : "" );
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		if( langPack ){
-			langPack->FreeReference();
-		}
+	}catch(const deException &){
+		LogErrorFormat("Loading language pack '%s' (base path '%s') failed",
+			filename, basePath ? basePath : "");
 		throw;
 	}
 	
@@ -192,27 +176,24 @@ const char *filename, const char *basePath ){
 
 
 
-void deLanguagePackManager::AddLoadedLanguagePack( deLanguagePack *languagePack ){
-	if( ! languagePack ){
-		DETHROW( deeInvalidParam );
+void deLanguagePackManager::AddLoadedLanguagePack(deLanguagePack *languagePack){
+	if(!languagePack){
+		DETHROW(deeInvalidParam);
 	}
-	pLangPacks.Add( languagePack );
+	pLangPacks.Add(languagePack);
 }
-
 void deLanguagePackManager::ReleaseLeakingResources(){
 	const int count = GetLanguagePackCount();
 	
-	if( count > 0 ){
-		deLanguagePack *langPack = ( deLanguagePack* )pLangPacks.GetRoot();
+	if(count > 0){
+		LogWarnFormat("%i leaking language packs", count);
 		
-		LogWarnFormat( "%i leaking language packs", count );
+		pLangPacks.GetResources().Visit([&](deResource *resource){
+			deLanguagePack *langPack = static_cast<deLanguagePack*>(resource);
+			LogWarnFormat("- %s", langPack->GetFilename().GetString());
+		});
 		
-		while( langPack ){
-			LogWarnFormat( "- %s", langPack->GetFilename().GetString() );
-			langPack = ( deLanguagePack* )langPack->GetLLManagerNext();
-		}
-		
-		pLangPacks.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
+		pLangPacks.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 	}
 }
 
@@ -221,6 +202,6 @@ void deLanguagePackManager::ReleaseLeakingResources(){
 // Systems Support
 ////////////////////
 
-void deLanguagePackManager::RemoveResource( deResource *resource ){
-	pLangPacks.RemoveIfPresent( resource );
+void deLanguagePackManager::RemoveResource(deResource *resource){
+	pLangPacks.RemoveIfPresent(resource);
 }

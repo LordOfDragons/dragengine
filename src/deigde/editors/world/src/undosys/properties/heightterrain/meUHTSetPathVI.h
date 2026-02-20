@@ -32,8 +32,8 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrainSector;
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrainSector.h"
 
 
 
@@ -43,9 +43,13 @@ class meHeightTerrainSector;
  * Undo action to set the path of the visibility image.
  */
 class meUHTSetPathVI : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetPathVI>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
+	meHeightTerrainSector::Ref pSector;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -54,20 +58,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetPathVI( meWorld *world, meHeightTerrainSector *sector, const char *newPath );
+	meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetPathVI();
+
+protected:
+	~meUHTSetPathVI() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

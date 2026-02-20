@@ -54,7 +54,7 @@ public:
 	dedaiShapeToConvexVolume();
 	
 	/**  \brief Clean up visitor. */
-	virtual ~dedaiShapeToConvexVolume();
+	~dedaiShapeToConvexVolume() override;
 	/*@}*/
 	
 	
@@ -65,7 +65,7 @@ public:
 	inline decConvexVolumeList *GetList() const{ return pList; }
 	
 	/** \brief Set convex volume list to add volumes to or \em NULL if not set. */
-	void SetList( decConvexVolumeList *list );
+	void SetList(decConvexVolumeList *list);
 	
 	
 	
@@ -73,13 +73,13 @@ public:
 	inline int GetSphereRingCount() const{ return pSphereRingCount; }
 	
 	/** \brief Set number of rings to generate for spheres clamped to 2 or larger. */
-	void SetSphereRingCount( int ringCount );
+	void SetSphereRingCount(int ringCount);
 	
 	/** \brief Number of segments to generate for spheres. */
 	inline int GetSphereSegmentCount() const{ return pSphereSegmentCount; }
 	
 	/** \brief Set number of segments to generate for spheres clamped to 8 or larger. */
-	void SetSphereSegmentsCount( int segmentCount );
+	void SetSphereSegmentsCount(int segmentCount);
 	
 	
 	
@@ -87,13 +87,13 @@ public:
 	 * \brief Adds a triangle convex face.
 	 * \details Calculates the normal for the new face.
 	 */
-	void AddTriangle( decConvexVolume &volume, int p1, int p2, int p3 );
+	void AddTriangle(decConvexVolume &volume, int p1, int p2, int p3);
 	
 	/**
 	 * \brief Adds a quadrilateral convex face.
 	 * \details Calculates the normal for the new face.
 	 */
-	void AddQuad( decConvexVolume &volume, int p1, int p2, int p3, int p4 );
+	void AddQuad(decConvexVolume &volume, int p1, int p2, int p3, int p4);
 	
 	
 	
@@ -102,14 +102,14 @@ public:
 	 * \details Overwrite to provide your own subclass instance. The default
 	 *          implementation create an instance of decConvexVolume.
 	 */
-	virtual decConvexVolume *CreateVolume();
+	virtual decConvexVolume::Ref CreateVolume();
 	
 	/**
 	 * \brief Create convex volume face and adds it to the volume.
 	 * \details Overwrite to provide your own subclass instance. The default
 	 *          implementation create an instance of decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateFace();
+	virtual decConvexVolumeFace::Ref CreateFace();
 	/*@}*/
 	
 	
@@ -117,22 +117,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

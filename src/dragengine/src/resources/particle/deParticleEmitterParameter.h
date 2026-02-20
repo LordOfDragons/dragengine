@@ -67,25 +67,25 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set cast value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Cast value spread. */
 	inline float GetSpread() const{ return pSpread; }
 	
 	/** \brief Set cast value spread. */
-	void SetSpread( float spread );
+	void SetSpread(float spread);
 	
 	/** \brief Curve controller for the cast value. */
 	inline int GetControllerValue() const{ return pControllerValue; }
 	
 	/** \brief Set curve controller for the cast value. */
-	void SetControllerValue( int controller );
+	void SetControllerValue(int controller);
 	
 	/** \brief Curve controller for the cast value spread. */
 	inline int GetControllerSpread() const{ return pControllerSpread; }
 	
 	/** \brief Set curve controller for the cast value spread. */
-	void SetControllerSpread( int controller );
+	void SetControllerSpread(int controller);
 	
 	/** \brief Cast value curve. */
 	inline decCurveBezier &GetCurveValue(){ return pCurveValue; }

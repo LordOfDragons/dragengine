@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create memory consumption usage. */
-	deoglMemoryConsumptionDeferredRenderingUse( deoglMemoryConsumptionDeferredRendering &tracker );
+	deoglMemoryConsumptionDeferredRenderingUse(deoglMemoryConsumptionDeferredRendering &tracker);
 	
 	/** Clean up vbo memory consumption. */
 	~deoglMemoryConsumptionDeferredRenderingUse();

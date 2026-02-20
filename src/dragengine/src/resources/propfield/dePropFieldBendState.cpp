@@ -52,18 +52,18 @@ dePropFieldBendState::~dePropFieldBendState(){
 // Management
 ///////////////
 
-void dePropFieldBendState::SetBendX( float bend ){
+void dePropFieldBendState::SetBendX(float bend){
 	pBendX = bend;
 }
 
-void dePropFieldBendState::SetBendZ( float bend ){
+void dePropFieldBendState::SetBendZ(float bend){
 	pBendZ = bend;
 }
 
-void dePropFieldBendState::SetVelocityX( float bend ){
+void dePropFieldBendState::SetVelocityX(float bend){
 	pVeloX = bend;
 }
 
-void dePropFieldBendState::SetVelocityZ( float bend ){
+void dePropFieldBendState::SetVelocityZ(float bend){
 	pVeloZ = bend;
 }

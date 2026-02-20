@@ -35,6 +35,11 @@ class dearAnimatorInstance;
  * Task applying rules to an animator instance state.
  */
 class dearTaskApplyRules : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<dearTaskApplyRules>;
+	
+	
 private:
 	dearAnimatorInstance &pInstance;
 	bool pDropped;
@@ -45,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	dearTaskApplyRules( dearAnimatorInstance &instance );
+	dearTaskApplyRules(dearAnimatorInstance &instance);
 	
 	/** Clean up task. */
-	virtual ~dearTaskApplyRules();
+	~dearTaskApplyRules() override;
 	/*@}*/
 	
 	
@@ -62,7 +67,7 @@ public:
 	void Drop();
 	
 	/** Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/**
 	 * Synchronous processing of task Run() finished.
@@ -72,7 +77,7 @@ public:
 	 *          task has been cancelled or finished successfully. Finished() will
 	 *          be called in all circumstances to allow proper cleaning up.
 	 */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -80,10 +85,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 };
 

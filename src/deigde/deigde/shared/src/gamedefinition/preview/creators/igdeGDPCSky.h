@@ -27,9 +27,9 @@
 
 #include "igdeGDPreviewCreator.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeGDSky;
 class igdeWSky;
@@ -40,13 +40,18 @@ class igdeWSky;
  * \brief Create preview for game definition sky asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCSky : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDPCSky>;
+	
+	
 private:
 	igdeGDSky *pGDSky;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	
 	
@@ -54,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPCSky( igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size );
+	igdeGDPCSky(igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size);
 	
 	
 	
@@ -65,7 +70,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGDPCSky();
+	~igdeGDPCSky() override;
 	/*@}*/
 	
 	
@@ -80,16 +85,16 @@ public:
 	
 protected:
 	/** \brief Debug prefix. */
-	virtual decString DebugPrefix();
+	decString DebugPrefix() override;
 	
 	/** \brief Set up canvas to render. */
-	virtual void PrepareCanvasForRender();
+	void PrepareCanvasForRender() override;
 	
 	/** \brief Wait for canvas to be ready for rendering. */
-	virtual bool IsCanvasReadyForRender();
+	bool IsCanvasReadyForRender() override;
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed );
+	void UpdateCanvasForRender(float elapsed) override;
 	/*@}*/
 };
 

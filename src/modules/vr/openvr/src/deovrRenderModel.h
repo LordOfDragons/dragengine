@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deovrRenderModel> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	
@@ -56,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load render model. */
-	deovrRenderModel( deVROpenVR &ovr, const char *name );
+	deovrRenderModel(deVROpenVR &ovr, const char *name);
 	
 protected:
 	/** Clean up render model. */
@@ -75,7 +74,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Texture ID. */
 	inline vr::TextureID_t GetTextureID() const{ return pTextureID; }

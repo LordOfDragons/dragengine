@@ -25,7 +25,7 @@
 #ifndef _DEOGLOCCLUSIONMAPPOOL_H_
 #define _DEOGLOCCLUSIONMAPPOOL_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglOcclusionMap;
@@ -38,14 +38,14 @@ class deoglOcclusionMapPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decPointerList pOcclusionMaps;
+	decTList<deoglOcclusionMap*> pOcclusionMaps;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create ooclusion mpa manager. */
-	deoglOcclusionMapPool( deoglRenderThread &renderThread );
+	deoglOcclusionMapPool(deoglRenderThread &renderThread);
 	
 	/** Clean up occlusion map manager. */
 	~deoglOcclusionMapPool();
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get occlusion map for size. */
-	deoglOcclusionMap *Get( int width, int height, int layerCount );
+	deoglOcclusionMap *Get(int width, int height, int layerCount);
 	
 	/** Return occlusion map. */
-	void Return( deoglOcclusionMap *occlusionMap );
+	void Return(deoglOcclusionMap *occlusionMap);
 	/*@}*/
 };
 

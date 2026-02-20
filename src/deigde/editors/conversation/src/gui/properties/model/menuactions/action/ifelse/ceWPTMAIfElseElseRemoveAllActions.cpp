@@ -40,12 +40,12 @@
 
 ceWPTMAIfElseElseRemoveAllActions::ceWPTMAIfElseElseRemoveAllActions(
 ceWindowMain &windowMain, ceConversation &conversation,
-ceConversationTopic &topic, ceCAIfElse &ifElse ) :
-ceWPTMARemoveAllActions( windowMain, conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse )
+ceConversationTopic &topic, ceCAIfElse &ifElse) :
+ceWPTMARemoveAllActions(windowMain, conversation),
+pTopic(&topic),
+pIfElse(&ifElse)
 {
-	SetEnabled( ifElse.GetElseActions().GetCount() > 0 );
+	SetEnabled(ifElse.GetElseActions().GetCount() > 0);
 }
 
 
@@ -53,6 +53,6 @@ pIfElse( &ifElse )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseElseRemoveAllActions::CreateUndo(){
-	return new ceUCAIfElseRemoveAll( pTopic, pIfElse, NULL );
+igdeUndo::Ref ceWPTMAIfElseElseRemoveAllActions::CreateUndo(){
+	return ceUCAIfElseRemoveAll::Ref::New(pTopic, pIfElse, nullptr);
 }

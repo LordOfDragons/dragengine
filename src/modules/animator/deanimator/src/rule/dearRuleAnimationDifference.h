@@ -28,8 +28,8 @@
 #include "dearRule.h"
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
+#include "../animation/dearAnimationMove.h"
 
-class dearAnimationMove;
 class dearAnimationState;
 class deAnimatorRuleAnimationDifference;
 
@@ -44,8 +44,8 @@ private:
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
-	dearAnimationMove *pMove1;
-	dearAnimationMove *pMove2;
+	dearAnimationMove::Ref pMove1;
+	dearAnimationMove::Ref pMove2;
 	
 	dearControllerTarget pTargetLeadingMoveTime;
 	dearControllerTarget pTargetReferenceMoveTime;
@@ -59,11 +59,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleAnimationDifference( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleAnimationDifference &rule );
+	dearRuleAnimationDifference(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimationDifference &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleAnimationDifference();
+	~dearRuleAnimationDifference() override;
 	/*@}*/
 	
 	
@@ -71,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

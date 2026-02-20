@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create capability check. */
-	deoglCapCheckStd430( deoglCapabilities &capabilities );
+	deoglCapCheckStd430(deoglCapabilities &capabilities);
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	inline bool Working() const{ return pWorking; }
 	
 	/** Std430 not supported. */
-	inline bool Broken() const{ return ! pWorking; }
+	inline bool Broken() const{ return !pWorking; }
 	
 	/** Run check. */
 	void Check();

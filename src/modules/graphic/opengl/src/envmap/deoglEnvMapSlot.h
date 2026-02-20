@@ -55,12 +55,12 @@ public:
 	/** Determines if the slot is in use. */
 	inline bool GetInUse() const{ return pInUse; }
 	/** Sets if the slot is in use. */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	
 	/** Retrieves the environment map or NULL if the slot is empty. */
 	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }
 	/** Sets the environment map or NULL if the slot is empty. */
-	void SetEnvMap( deoglEnvironmentMap *envmap );
+	void SetEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Retrieves the last used. */
 	inline int GetLastUsed() const{ return pLastUsed; }

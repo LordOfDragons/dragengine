@@ -39,7 +39,7 @@
 
 #define LOGSOURCE "Dragengine"
 
-typedef const deModuleSystem::FPRegisterInternalModule* (*FUNC_FUNCTIONS)();
+using FUNC_FUNCTIONS = deModuleSystem::FPRegisterInternalModule* (*)();
 
 
 // class deLibraryModule

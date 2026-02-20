@@ -25,11 +25,9 @@
 #ifndef _MEUSCALEOBJECT_H_
 #define _MEUSCALEOBJECT_H_
 
+#include "meUndoDataObject.h"
 #include "../meBaseUndoScale.h"
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class meObjectList;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -37,22 +35,25 @@ class meWorld;
  * Undo action for scaling a set of objects.
  */
 class meUScaleObject : public meBaseUndoScale{
+public:
+	using Ref = deTObjectReference<meUScaleObject>;
+	
 private:
 	meWorld *pWorld;
-	decObjectOrderedSet pObjects;
+	meUndoDataObject::List pObjects;
 	
 public:
 	// constructor, destructor
-	meUScaleObject( meWorld *world, const meObjectList &objects );
-	virtual ~meUScaleObject();
-	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
-	virtual void ProgressiveRedo();
+	meUScaleObject(meWorld *world, const meObject::List &objects);
 	
-private:
-	void pCleanUp();
+protected:
+	~meUScaleObject() override;
+	
+public:
+	// undo and redo operations
+	void Undo() override;
+	void Redo() override;
+	void ProgressiveRedo() override;
 };
 
-// end of include only once
 #endif

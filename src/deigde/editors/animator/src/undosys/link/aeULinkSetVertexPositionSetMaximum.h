@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -35,8 +35,12 @@ class aeLink;
  * Undo action set link bone maximum.
  */
 class aeULinkSetVertexPositionSetMaximum : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeULinkSetVertexPositionSetMaximum>;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	float pOldValue;
 	float pNewValue;
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetVertexPositionSetMaximum( aeLink *link, float newValue );
+	aeULinkSetVertexPositionSetMaximum(aeLink *link, float newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkSetVertexPositionSetMaximum();
+	~aeULinkSetVertexPositionSetMaximum() override;
 	/*@}*/
 	
 	
@@ -58,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

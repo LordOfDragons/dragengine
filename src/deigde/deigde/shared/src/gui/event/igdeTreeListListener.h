@@ -38,6 +38,12 @@ class igdeMenuCascade;
  * \brief IGDE UI TreeList Listener.
  */
 class DE_DLL_EXPORT igdeTreeListListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTreeListListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -53,7 +59,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTreeListListener();
+	~igdeTreeListListener() override;
 	/*@}*/
 	
 	
@@ -62,16 +68,16 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief TreeList selection changed. */
-	virtual void OnSelectionChanged( igdeTreeList *treeList );
+	virtual void OnSelectionChanged(igdeTreeList *treeList);
 	
 	/** \brief Item has been expanded. */
-	virtual void OnItemExpanded( igdeTreeList *treeList, igdeTreeItem *item );
+	virtual void OnItemExpanded(igdeTreeList *treeList, igdeTreeItem *item);
 	
 	/** \brief Item has been collapsed. */
-	virtual void OnItemCollapsed( igdeTreeList *treeList, igdeTreeItem *item );
+	virtual void OnItemCollapsed(igdeTreeList *treeList, igdeTreeItem *item);
 	
 	/** \brief Double click on item. */
-	virtual void OnDoubleClickItem( igdeTreeList *treeList, igdeTreeItem *item );
+	virtual void OnDoubleClickItem(igdeTreeList *treeList, igdeTreeItem *item);
 	
 	/**
 	 * \brief Create context menu for selected item.
@@ -80,7 +86,7 @@ public:
 	 * to add entries to the context menu without affecting others. If entries are already
 	 * present the listener should also add a separator first.
 	 */
-	virtual void AddContextMenuEntries( igdeTreeList *treeList, igdeMenuCascade &menu );
+	virtual void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu);
 	/*@}*/
 };
 

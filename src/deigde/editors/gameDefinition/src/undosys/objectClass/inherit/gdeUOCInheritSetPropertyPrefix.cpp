@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCInheritSetPropertyPrefix::gdeUOCInheritSetPropertyPrefix( gdeObjectClass *objectClass,
-gdeOCInherit *inherit, const char *newValue ) :
-pObjectClass( NULL ),
-pInherit( NULL )
+gdeUOCInheritSetPropertyPrefix::gdeUOCInheritSetPropertyPrefix(gdeObjectClass *objectClass,
+gdeOCInherit *inherit, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! inherit ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !inherit){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Inherit set property prefix" );
+	SetShortInfo("@GameDefinition.Undo.OCInheritSetPropertyPrefix");
 	
 	pOldValue = inherit->GetPropertyPrefix();
 	pNewValue = newValue;
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCInheritSetPropertyPrefix::~gdeUOCInheritSetPropertyPrefix(){
-	if( pInherit ){
-		pInherit->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCInheritSetPropertyPrefix::~gdeUOCInheritSetPropertyPrefix(){
 ///////////////
 
 void gdeUOCInheritSetPropertyPrefix::Undo(){
-	pInherit->SetPropertyPrefix( pOldValue );
-	pObjectClass->NotifyInheritChanged( pInherit );
+	pInherit->SetPropertyPrefix(pOldValue);
+	pObjectClass->NotifyInheritChanged(pInherit);
 }
 
 void gdeUOCInheritSetPropertyPrefix::Redo(){
-	pInherit->SetPropertyPrefix( pNewValue );
-	pObjectClass->NotifyInheritChanged( pInherit );
+	pInherit->SetPropertyPrefix(pNewValue);
+	pObjectClass->NotifyInheritChanged(pInherit);
 }

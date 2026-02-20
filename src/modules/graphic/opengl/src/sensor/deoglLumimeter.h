@@ -25,10 +25,10 @@
 #ifndef _DEOGLLUMIMETER_H_
 #define _DEOGLLUMIMETER_H_
 
+#include "deoglRLumimeter.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicLumimeter.h>
 #include <dragengine/common/math/decMath.h>
-
-class deoglRLumimeter;
 
 class deGraphicOpenGl;
 class deLumimeter;
@@ -43,7 +43,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deLumimeter &pLumimeter;
 	
-	deoglRLumimeter *pRLumimeter;
+	deoglRLumimeter::Ref pRLumimeter;
 	
 	float pLuminance;
 	decColor pColor;
@@ -55,10 +55,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create lumimeter peer. */
-	deoglLumimeter( deGraphicOpenGl &ogl, const deLumimeter &lumimeter );
+	deoglLumimeter(deGraphicOpenGl &ogl, const deLumimeter &lumimeter);
 	
 	/** Clean up lumimeter peer. */
-	virtual ~deoglLumimeter();
+	~deoglLumimeter() override;
 	/*@}*/
 	
 	
@@ -71,7 +71,7 @@ public:
 	
 	
 	/** Render lumimter. */
-	inline deoglRLumimeter *GetRLumimeter() const{ return pRLumimeter; }
+	inline const deoglRLumimeter::Ref &GetRLumimeter() const{ return pRLumimeter; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -82,13 +82,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Direction changed. */
-	virtual void DirectionChanged();
+	void DirectionChanged() override;
 	
 	/** Cone parameter changed. */
-	virtual void ConeParameterChanged();
+	void ConeParameterChanged() override;
 	/*@}*/
 	
 	
@@ -96,10 +96,10 @@ public:
 	/** \name Measuring */
 	/*@{*/
 	/** Measures the luminance. */
-	virtual float MeasureLuminance();
+	float MeasureLuminance() override;
 	
 	/** Measures the color. */
-	virtual decColor MeasureColor();
+	decColor MeasureColor() override;
 	/*@}*/
 	
 private:

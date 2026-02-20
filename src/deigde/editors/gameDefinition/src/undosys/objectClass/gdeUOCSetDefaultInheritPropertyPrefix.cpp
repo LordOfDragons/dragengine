@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix( gdeObjectClass *objectClass, const char *newValue ) :
-pObjectClass( NULL )
+gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix(gdeObjectClass *objectClass, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set default inherit property prefix" );
+	SetShortInfo("@GameDefinition.Undo.OCSetDefaultInheritPropertyPrefix");
 	
 	pOldValue = objectClass->GetDefaultInheritPropertyPrefix();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
 ///////////////
 
 void gdeUOCSetDefaultInheritPropertyPrefix::Undo(){
-	pObjectClass->SetDefaultInheritPropertyPrefix( pOldValue );
+	pObjectClass->SetDefaultInheritPropertyPrefix(pOldValue);
 }
 
 void gdeUOCSetDefaultInheritPropertyPrefix::Redo(){
-	pObjectClass->SetDefaultInheritPropertyPrefix( pNewValue );
+	pObjectClass->SetDefaultInheritPropertyPrefix(pNewValue);
 }

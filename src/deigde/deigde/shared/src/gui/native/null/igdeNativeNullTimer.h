@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLTIMER_H_
 #define _IGDENATIVENULLTIMER_H_
 
+#include "../../igdeTimer.h"
+
 class igdeTimer;
 
 
 /**
  * Null Timer.
  */
-class igdeNativeNullTimer{
+class igdeNativeNullTimer : public igdeTimer::cNativeTimer{
 private:
 	igdeTimer &pOwner;
 	
@@ -39,16 +41,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create timer. */
-	igdeNativeNullTimer( igdeTimer &owner );
+	igdeNativeNullTimer(igdeTimer &owner);
 	
 	/** \brief Clean up timer. */
 	virtual ~igdeNativeNullTimer();
 	
 	/** \brief Create native timer. */
-	static igdeNativeNullTimer* CreateNativeTimer( igdeTimer &owner );
+	static igdeNativeNullTimer* CreateNativeTimer(igdeTimer &owner);
 	
 	/** \brief Destroy native timer. */
-	virtual void DestroyNativeTimer();
+	void DestroyNativeTimer() override;
 	/*@}*/
 	
 	
@@ -56,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start timer. */
-	virtual void StartTimer();
+	void StartTimer() override;
 	
 	/** \brief Stop timer. */
-	virtual void StopTimer();
+	void StopTimer() override;
 	/*@}*/
 };
 

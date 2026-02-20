@@ -26,7 +26,7 @@
 #define _DEOGLRRTDEBUG_H_
 
 #include "../deoglBasics.h"
-#include "../debug/deoglDebugInformationList.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../debug/deoglDebugMemoryConsumption.h"
 
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -46,7 +46,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglDebugSaveTexture *pDebugSaveTexture;
 	deoglDeveloperMode *pDeveloperMode;
-	deoglDebugInformationList pDebugInformation;
+	deoglDebugInformation::List pDebugInformation;
 	bool pEnableHwDebugOutput;
 	deoglDebugMemoryConsumption pDebugMemoryConsumption;
 	bool pEnableDebugTrace;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTDebug( deoglRenderThread &renderThread );
+	deoglRTDebug(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTDebug();
@@ -78,17 +78,17 @@ public:
 	 * \details Creates a temporary file writer with the content written to the actual file
 	 *          once the render thread synchronizes with the main thread.
 	 */
-	decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path);
 	
 	/** Debug information list. */
-	inline deoglDebugInformationList &GetDebugInformationList(){ return pDebugInformation; }
-	inline const deoglDebugInformationList &GetDebugInformationList() const{ return pDebugInformation; }
+	inline deoglDebugInformation::List &GetDebugInformationList(){ return pDebugInformation; }
+	inline const deoglDebugInformation::List &GetDebugInformationList() const{ return pDebugInformation; }
 	
 	/** Enable hardware debug output. */
 	inline bool GetEnableHwDebugOutput() const{ return pEnableHwDebugOutput; }
 	
 	/** Set enable hardware debug output. */
-	void SetEnableHwDebugOutput( bool enable );
+	void SetEnableHwDebugOutput(bool enable);
 	
 	/** Debug memory consumption. */
 	inline deoglDebugMemoryConsumption &GetDebugMemoryConsumption(){ return pDebugMemoryConsumption; }
@@ -98,13 +98,13 @@ public:
 	inline bool GetEnableDebugTrace() const{ return pEnableDebugTrace; }
 	
 	/** Begin debug group for structuring GPU traces. */
-	void BeginDebugGroup( const char *name, int id );
+	void BeginDebugGroup(const char *name, int id);
 	
 	/** End debug group for structuring GPU traces. */
 	void EndDebugGroup();
 	
 	/** Set debug object label. */
-	void SetDebugObjectLabel( GLenum type, GLuint object, const char *name );
+	void SetDebugObjectLabel(GLenum type, GLuint object, const char *name);
 	/*@}*/
 	
 	

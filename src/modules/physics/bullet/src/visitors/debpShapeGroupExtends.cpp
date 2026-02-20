@@ -31,12 +31,12 @@
 #include "../coldet/collision/debpDCollisionCylinder.h"
 #include "../coldet/collision/debpDCollisionCapsule.h"
 
-#include "dragengine/common/shape/decShapeBox.h"
-#include "dragengine/common/shape/decShapeSphere.h"
-#include "dragengine/common/shape/decShapeCylinder.h"
-#include "dragengine/common/shape/decShapeCapsule.h"
-#include "dragengine/common/shape/decShapeHull.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/shape/decShapeBox.h>
+#include <dragengine/common/shape/decShapeSphere.h>
+#include <dragengine/common/shape/decShapeCylinder.h>
+#include <dragengine/common/shape/decShapeCapsule.h>
+#include <dragengine/common/shape/decShapeHull.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -64,11 +64,11 @@ void debpShapeGroupExtends::Reset(){
 	pExtendsNotSetYet = true;
 }
 
-void debpShapeGroupExtends::SetRotation( const decQuaternion &rotation ){
-	pMatrix.SetFromQuaternion( rotation );
+void debpShapeGroupExtends::SetRotation(const decQuaternion &rotation){
+	pMatrix.SetFromQuaternion(rotation);
 }
 
-void debpShapeGroupExtends::SetReferencePoint( const decDVector &referencePoint ){
+void debpShapeGroupExtends::SetReferencePoint(const decDVector &referencePoint){
 	pMinExtend = referencePoint;
 	pMaxExtend = referencePoint;
 	pExtendsNotSetYet = false;
@@ -79,10 +79,10 @@ void debpShapeGroupExtends::SetReferencePoint( const decDVector &referencePoint 
 // Visiting
 /////////////
 
-void debpShapeGroupExtends::VisitShape( decShape &shape ){
+void debpShapeGroupExtends::VisitShape(decShape &shape){
 }
 
-void debpShapeGroupExtends::VisitShapeSphere( decShapeSphere &sphere ){
+void debpShapeGroupExtends::VisitShapeSphere(decShapeSphere &sphere){
 	const decDVector &position = sphere.GetPosition();
 	float radius = sphere.GetRadius();
 	decDVector minExtend, maxExtend;
@@ -95,39 +95,36 @@ void debpShapeGroupExtends::VisitShapeSphere( decShapeSphere &sphere ){
 	maxExtend.y = position.y + radius;
 	maxExtend.z = position.z + radius;
 	
-	pAddExtends( minExtend, maxExtend );
+	pAddExtends(minExtend, maxExtend);
 }
 
-void debpShapeGroupExtends::VisitShapeBox( decShapeBox &box ){
-	debpDCollisionBox colBox( box.GetPosition(), box.GetHalfExtends(),
-		( decDMatrix::CreateFromQuaternion( box.GetOrientation() ) * pMatrix ).ToQuaternion() );
+void debpShapeGroupExtends::VisitShapeBox(decShapeBox &box){
+	debpDCollisionBox colBox(box.GetPosition(), box.GetHalfExtends(),
+		(decDMatrix::CreateFromQuaternion(box.GetOrientation()) * pMatrix).ToQuaternion());
 	
-	pAddExtendsFrom( colBox );
+	pAddExtendsFrom(colBox);
 }
 
-void debpShapeGroupExtends::VisitShapeCylinder( decShapeCylinder &cylinder ){
-	debpDCollisionCylinder colCylinder( cylinder.GetPosition(), cylinder.GetHalfHeight(),
+void debpShapeGroupExtends::VisitShapeCylinder(decShapeCylinder &cylinder){
+	debpDCollisionCylinder colCylinder(cylinder.GetPosition(), cylinder.GetHalfHeight(),
 		cylinder.GetTopRadius(), cylinder.GetBottomRadius(),
-		( decDMatrix::CreateFromQuaternion( cylinder.GetOrientation() ) * pMatrix ).ToQuaternion() );
+		(decDMatrix::CreateFromQuaternion(cylinder.GetOrientation()) * pMatrix).ToQuaternion());
 	
-	pAddExtendsFrom( colCylinder );
+	pAddExtendsFrom(colCylinder);
 }
 
-void debpShapeGroupExtends::VisitShapeCapsule( decShapeCapsule &capsule ){
-	debpDCollisionCapsule colCapsule( capsule.GetPosition(), capsule.GetHalfHeight(),
+void debpShapeGroupExtends::VisitShapeCapsule(decShapeCapsule &capsule){
+	debpDCollisionCapsule colCapsule(capsule.GetPosition(), capsule.GetHalfHeight(),
 		capsule.GetTopRadius(), capsule.GetBottomRadius(),
-		( decDMatrix::CreateFromQuaternion( capsule.GetOrientation() ) * pMatrix ).ToQuaternion() );
+		(decDMatrix::CreateFromQuaternion(capsule.GetOrientation()) * pMatrix).ToQuaternion());
 	
-	pAddExtendsFrom( colCapsule );
+	pAddExtendsFrom(colCapsule);
 }
 
-void debpShapeGroupExtends::VisitShapeHull( decShapeHull &hull ){
-	const int count = hull.GetPointCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		const decVector &point = hull.GetPointAt( i );
-		pAddExtends( point, point );
-	}
+void debpShapeGroupExtends::VisitShapeHull(decShapeHull &hull){
+	hull.GetPoints().Visit([&](const decVector &point){
+		pAddExtends(point, point);
+	});
 }
 
 
@@ -135,40 +132,40 @@ void debpShapeGroupExtends::VisitShapeHull( decShapeHull &hull ){
 // Private Functions
 //////////////////////
 
-void debpShapeGroupExtends::pAddExtends( const decDVector &minExtend, const decDVector &maxExtend ){
-	if( pExtendsNotSetYet ){
+void debpShapeGroupExtends::pAddExtends(const decDVector &minExtend, const decDVector &maxExtend){
+	if(pExtendsNotSetYet){
 		pMinExtend = minExtend;
 		pMaxExtend = maxExtend;
 		pExtendsNotSetYet = false;
 		
 	}else{
-		if( minExtend.x < pMinExtend.x ){
+		if(minExtend.x < pMinExtend.x){
 			pMinExtend.x = minExtend.x;
 		}
-		if( maxExtend.x > pMaxExtend.x ){
+		if(maxExtend.x > pMaxExtend.x){
 			pMaxExtend.x = maxExtend.x;
 		}
 		
-		if( minExtend.y < pMinExtend.y ){
+		if(minExtend.y < pMinExtend.y){
 			pMinExtend.y = minExtend.y;
 		}
-		if( maxExtend.y > pMaxExtend.y ){
+		if(maxExtend.y > pMaxExtend.y){
 			pMaxExtend.y = maxExtend.y;
 		}
 		
-		if( minExtend.z < pMinExtend.z ){
+		if(minExtend.z < pMinExtend.z){
 			pMinExtend.z = minExtend.z;
 		}
-		if( maxExtend.z > pMaxExtend.z ){
+		if(maxExtend.z > pMaxExtend.z){
 			pMaxExtend.z = maxExtend.z;
 		}
 	}
 }
 
-void debpShapeGroupExtends::pAddExtendsFrom( debpDCollisionVolume &volume ){
+void debpShapeGroupExtends::pAddExtendsFrom(debpDCollisionVolume &volume){
 	debpDCollisionBox extendsBox;
 	
-	volume.GetEnclosingBox( &extendsBox );
+	volume.GetEnclosingBox(&extendsBox);
 	
-	pAddExtends( extendsBox.GetCenter() - extendsBox.GetHalfSize(), extendsBox.GetCenter() + extendsBox.GetHalfSize() );
+	pAddExtends(extendsBox.GetCenter() - extendsBox.GetHalfSize(), extendsBox.GetCenter() + extendsBox.GetHalfSize());
 }

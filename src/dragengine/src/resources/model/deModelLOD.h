@@ -25,13 +25,14 @@
 #ifndef _DEMODELLOD_H_
 #define _DEMODELLOD_H_
 
+#include "deModelWeight.h"
+#include "deModelVertex.h"
+#include "deModelFace.h"
+#include "deModelTextureCoordinatesSet.h"
+#include "deModelLodVertexPositionSet.h"
+#include "../../common/collection/decTList.h"
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/math/decMath.h"
-
-class deModelWeight;
-class deModelVertex;
-class deModelFace;
-class deModelTextureCoordinatesSet;
-class deModelLodVertexPositionSet;
 
 
 /**
@@ -50,30 +51,31 @@ class deModelLodVertexPositionSet;
  * in the sequence they are stored.
  */
 class DE_DLL_EXPORT deModelLOD{
-private:
-	deModelWeight *pWeights;
-	int pWeightCount;
-	int *pWeightGroups;
-	int pWeightGroupCount;
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelLOD>;
 	
-	deModelVertex *pVertices;
-	int pVertexCount;
+	/** \brief List type. */
+	using List = decTUniqueList<deModelLOD>;
+	
+private:
+	decTList<deModelWeight> pWeights;
+	decTList<int> pWeightGroups;
+	
+	decTList<deModelVertex> pVertices;
 	
 	int pNormalCount;
 	int pTangentCount;
 	
-	deModelFace *pFaces;
-	int pFaceCount;
+	decTList<deModelFace> pFaces;
 	
-	deModelTextureCoordinatesSet *pTextureCoordinatesSets;
-	int pTextureCoordinatesSetsCount;
+	decTList<deModelTextureCoordinatesSet> pTextureCoordinatesSets;
 	int pTextureCoordinatesCount;
 	
 	bool pHasLodError;
 	float pLodError;
 	
-	deModelLodVertexPositionSet *pVertexPositionSets;
-	int pVertexPositionSetCount;
+	decTList<deModelLodVertexPositionSet> pVertexPositionSets;
 	
 	
 	
@@ -95,62 +97,35 @@ public:
 	inline bool GetHasLodError() const{ return pHasLodError; }
 	
 	/** \brief Set has custom lod error. */
-	void SetHasLodError( bool hasError );
+	void SetHasLodError(bool hasError);
 	
 	/** \brief Custom lod error. */
 	inline float GetLodError() const{ return pLodError; }
 	
 	/** \brief Set custom lod error. */
-	void SetLodError( float error );
+	void SetLodError(float error);
 	/*@}*/
 	
 	
 	
 	/** \name Weight Sets Management */
 	/*@{*/
-	/** \brief Number of weights. */
-	inline int GetWeightCount() const{ return pWeightCount; }
+	/** \brief Weights. */
+	inline decTList<deModelWeight> &GetWeights(){ return pWeights; }
+	inline const decTList<deModelWeight> &GetWeights() const{ return pWeights; }
 	
-	/** \brief Set number of weights. */
-	void SetWeightCount( int count );
-	
-	/** \brief Weight at the given position. */
-	deModelWeight &GetWeightAt( int index ) const;
-	
-	/** \brief Pointer to the weights. */
-	inline deModelWeight *GetWeights() const{ return pWeights; }
-	
-	/** \brief Number of weight groups. */
-	inline int GetWeightGroupCount() const{ return pWeightGroupCount; }
-	
-	/** \brief Set number of weight groups. */
-	void SetWeightGroupCount( int count );
-	
-	/** \brief Weight group at the given position. */
-	int GetWeightGroupAt( int index ) const;
-	
-	/** \brief Set weight group at the given position. */
-	void SetWeightGroupAt( int index, int weightSetCount ) const;
-	
-	/** \brief Pointer to the weight groups. */
-	inline int *GetWeightGroups() const{ return pWeightGroups; }
+	/** \brief Weight groups. */
+	inline decTList<int> &GetWeightGroups(){ return pWeightGroups; }
+	inline const decTList<int> &GetWeightGroups() const{ return pWeightGroups; }
 	/*@}*/
 	
 	
 	
 	/** \name Vertex Management */
 	/*@{*/
-	/** \brief Count of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
-	
-	/** \brief Set number of vertices. */
-	void SetVertexCount( int count );
-	
-	/** \brief Vertex at the given index. */
-	deModelVertex &GetVertexAt( int index ) const;
-	
-	/** \brief Pointer to the vertices. */
-	inline deModelVertex *GetVertices() const{ return pVertices; }
+	/** \brief Vertices. */
+	inline decTList<deModelVertex> &GetVertices(){ return pVertices; }
+	inline const decTList<deModelVertex> &GetVertices() const{ return pVertices; }
 	/*@}*/
 	
 	
@@ -161,25 +136,17 @@ public:
 	inline int GetNormalCount() const{ return pNormalCount; }
 	
 	/** \brief Set count of normals. */
-	void SetNormalCount( int count );
+	void SetNormalCount(int count);
 	
 	/** \brief Count of tangents. */
 	inline int GetTangentCount() const{ return pTangentCount; }
 	
 	/** \brief Set count of tangents. */
-	void SetTangentCount( int count );
+	void SetTangentCount(int count);
 	
-	/** \brief Count of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
-	
-	/** \brief Set number of faces. */
-	void SetFaceCount( int count );
-	
-	/** \brief Face at the given index. */
-	deModelFace &GetFaceAt( int index ) const;
-	
-	/** \brief Pointer to the faces. */
-	inline deModelFace *GetFaces() const{ return pFaces; }
+	/** \brief Faces. */
+	inline decTList<deModelFace> &GetFaces(){ return pFaces; }
+	inline const decTList<deModelFace> &GetFaces() const{ return pFaces; }
 	/*@}*/
 	
 	
@@ -190,36 +157,20 @@ public:
 	inline int GetTextureCoordinatesCount() const{ return pTextureCoordinatesCount; }
 	
 	/** \brief Set number of texture coordinates per set. */
-	void SetTextureCoordinatesCount( int count );
+	void SetTextureCoordinatesCount(int count);
 	
-	/** \brief Number of texture coordinates sets. */
-	inline int GetTextureCoordinatesSetCount() const{ return pTextureCoordinatesSetsCount; }
-	
-	/** \brief Set number of texture coordinates sets which has to be at least 1. */
-	void SetTextureCoordinatesSetCount( int count );
-	
-	/** \brief Texture coordinates set at the given index. */
-	deModelTextureCoordinatesSet &GetTextureCoordinatesSetAt( int index ) const;
-	
-	/** \brief Pointer to the texture coordinates sets. */
-	inline deModelTextureCoordinatesSet *GetTextureCoordinatesSets() const{ return pTextureCoordinatesSets; }
+	/** \brief Texture coordinates sets. */
+	inline decTList<deModelTextureCoordinatesSet> &GetTextureCoordinatesSets(){ return pTextureCoordinatesSets; }
+	inline const decTList<deModelTextureCoordinatesSet> &GetTextureCoordinatesSets() const{ return pTextureCoordinatesSets; }
 	/*@}*/
 	
 	
 	
 	/** \name Vertex position sets. */
 	/*@{*/
-	/** \brief Count of vertex position sets. */
-	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
-	
-	/** \brief Set count of vertex position sets. */
-	void SetVertexPositionSetCount( int count );
-	
-	/** \brief Vertex position set at index. */
-	deModelLodVertexPositionSet &GetVertexPositionSetAt( int index ) const;
-	
-	/** \brief Pointer to the vertex position sets. */
-	inline deModelLodVertexPositionSet *GetVertexPositionSets() const{ return pVertexPositionSets; }
+	/** \brief Vertex position sets. */
+	inline decTList<deModelLodVertexPositionSet> &GetVertexPositionSets(){ return pVertexPositionSets; }
+	inline const decTList<deModelLodVertexPositionSet> &GetVertexPositionSets() const{ return pVertexPositionSets; }
 	/*@}*/
 };
 

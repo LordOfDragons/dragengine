@@ -56,7 +56,7 @@ public:
 	 * The density indicates the percentage of instances to use compared to a fully
 	 * populated prop field.
 	 */
-	virtual void CreateInstances( float density );
+	virtual void CreateInstances(float density);
 	/*@}*/
 };
 

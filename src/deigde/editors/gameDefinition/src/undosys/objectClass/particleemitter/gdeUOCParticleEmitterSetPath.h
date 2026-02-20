@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,12 +37,15 @@ class gdeObjectClass;
  * \brief Undo action object class particleEmitter set path.
  */
 class gdeUOCParticleEmitterSetPath : public igdeUndo{
-private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+public:
+	using Ref = deTObjectReference<gdeUOCParticleEmitterSetPath>;
 	
-	decString pOldValue;
-	decString pNewValue;
+	
+private:
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
+	
+	decString pOldValue, pNewValue;
 	
 	
 	
@@ -50,12 +53,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetPath( gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, const char *newValue );
+	gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCParticleEmitterSetPath();
+	~gdeUOCParticleEmitterSetPath() override;
 	/*@}*/
 	
 	
@@ -64,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

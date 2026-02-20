@@ -26,10 +26,10 @@
 #define _DEOGLCANVASVIEW_H_
 
 #include "deoglCanvas.h"
+#include "render/deoglRCanvasView.h"
 
-#include <dragengine/common/collection/decPointerSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
-class deoglRCanvasView;
 class deCanvasView;
 class deoglCanvasViewListener;
 
@@ -40,12 +40,12 @@ class deoglCanvasViewListener;
 class deoglCanvasView : public deoglCanvas{
 private:
 	deCanvasView &pCanvasView;
-	deoglRCanvasView *pRCanvasView;
+	deoglRCanvasView::Ref pRCanvasView;
 	
 	bool pDirtyPaint;
 	bool pResizeRenderTarget;
 	
-	decPointerSet pListeners;
+	decTOrderedSet<deoglCanvasViewListener*> pListeners;
 	bool pSyncRequestSend;
 	
 	
@@ -54,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasView( deGraphicOpenGl &ogl, deCanvasView &canvas );
+	deoglCanvasView(deGraphicOpenGl &ogl, deCanvasView &canvas);
 	
 	/** Clean up peer. */
-	virtual ~deoglCanvasView();
+	~deoglCanvasView() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
 	/** Drop render canvas if not \em NULL. */
-	virtual void DropRCanvas();
+	void DropRCanvas() override;
 	
 	/** Order of a child changed. */
 	void ChildOrderChanged();
@@ -80,13 +80,13 @@ public:
 	void SetDirtyPaint();
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	
 	/**
 	 * Prepare content for render thread counterpart.
 	 * \details Called if content is dirty.
 	 */
-	virtual void SyncContentToRender();
+	void SyncContentToRender() override;
 	/*@}*/
 	
 	
@@ -94,10 +94,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglCanvasViewListener *listener );
+	void AddListener(deoglCanvasViewListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglCanvasViewListener *listener );
+	void RemoveListener(deoglCanvasViewListener *listener);
 	
 	/** Notify all canvas view has been destroyed. */
 	void NotifyDestroyed();
@@ -111,38 +111,38 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Size changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Transform changed. */
-	virtual void TransformChanged();
+	void TransformChanged() override;
 	
 	/** Color transform changed. */
-	virtual void ColorTransformChanged();
+	void ColorTransformChanged() override;
 	
 	/** Visible changed. */
-	virtual void VisibleChanged();
+	void VisibleChanged() override;
 	
 	/** Render order changed. */
-	virtual void OrderChanged();
+	void OrderChanged() override;
 	
 	/** Transparency changed. */
-	virtual void TransparencyChanged();
+	void TransparencyChanged() override;
 	
 	/** Blend mode changed. */
-	virtual void BlendModeChanged();
+	void BlendModeChanged() override;
 	
 	/** Content changed. */
-	virtual void ContentChanged();
+	void ContentChanged() override;
 	/*@}*/
 	
 	
 	
 protected:
 	/** Create render canvas. Subclass responsibility. */
-	virtual deoglRCanvas *CreateRCanvas();
+	deoglRCanvas *CreateRCanvas() override;
 	
 	
 	

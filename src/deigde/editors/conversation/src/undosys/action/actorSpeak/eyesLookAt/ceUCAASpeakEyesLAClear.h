@@ -25,12 +25,12 @@
 #ifndef _CEUCAASPEAKEYESLACLEAR_H_
 #define _CEUCAASPEAKEYESLACLEAR_H_
 
-#include "../../../../conversation/strip/ceStripList.h"
+#include "../../../../conversation/strip/ceStrip.h"
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -38,10 +38,14 @@ class ceConversationTopic;
  * \brief Undo action actor speak conversation action clear eyes look-at.
  */
 class ceUCAASpeakEyesLAClear : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAASpeakEyesLAClear>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStripList pOldStrips;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::List pOldStrips;
 	
 	
 	
@@ -49,10 +53,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCAASpeakEyesLAClear( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakEyesLAClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
-	virtual ~ceUCAASpeakEyesLAClear();
+protected:
+	~ceUCAASpeakEyesLAClear() override;
+public:
 	/*@}*/
 	
 	
@@ -61,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

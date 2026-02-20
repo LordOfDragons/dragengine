@@ -34,15 +34,16 @@
  */
 class ceWPTTIMACoordSystemRemove : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMACoordSystemRemove>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMACoordSystemRemove( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCACoordSystemRemove *action );
+	ceWPTTIMACoordSystemRemove(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCACoordSystemRemove *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMACoordSystemRemove();
+	~ceWPTTIMACoordSystemRemove() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACoordSystemRemove *GetActionCoordSystemRemove() const{ return ( ceCACoordSystemRemove* )GetAction(); }
+	inline ceCACoordSystemRemove *GetActionCoordSystemRemove() const{ return GetAction().DynamicCast<ceCACoordSystemRemove>(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

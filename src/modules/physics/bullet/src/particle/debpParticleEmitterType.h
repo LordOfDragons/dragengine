@@ -27,6 +27,7 @@
 
 #include "LinearMath/btVector3.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
 class deParticleEmitter;
@@ -95,9 +96,9 @@ private:
 	debpModel *pModel;
 	debpSkin *pModelSkin;
 	
-	float *pParameterValueSamples;
-	float *pParameterSpreadSamples;
-	float *pParameterProgressSamples;
+	decTList<float> pParameterValueSamples;
+	decTList<float> pParameterSpreadSamples;
+	decTList<float> pParameterProgressSamples;
 	
 	float pParamFactorLinVelo;
 	float pParamFactorAngVelo;
@@ -116,11 +117,11 @@ public:
 	/** Retrieves the emitter. */
 	inline deParticleEmitter *GetEmitter() const{ return pEmitter; }
 	/** Sets the emitter. */
-	void SetEmitter( deParticleEmitter *emitter );
+	void SetEmitter(deParticleEmitter *emitter);
 	/** Retrieves the type. */
 	inline int GetType() const{ return pType; }
 	/** Sets the type. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	/** Retrieves the skin or NULL if not set. */
 	inline debpSkin *GetSkin() const{ return pSkin; }
@@ -132,11 +133,11 @@ public:
 	/** Retrieves the linear velocity parameter factor. */
 	inline float GetParamFactorLinVelo() const{ return pParamFactorLinVelo; }
 	/** Sets the linear velocity parameter factor. */
-	void SetParamFactorLinVelo( float factor );
+	void SetParamFactorLinVelo(float factor);
 	/** Retrieves the angular velocity parameter factor. */
 	inline float GetParamFactorAngVelo() const{ return pParamFactorAngVelo; }
 	/** Sets the angular velocity parameter factor. */
-	void SetParamFactorAngVelo( float factor );
+	void SetParamFactorAngVelo(float factor);
 	
 	/** Update type. */
 	void UpdateType();
@@ -144,17 +145,17 @@ public:
 	/** Update parameters. */
 	void UpdateParameters();
 	/** Evaluate progress parameter. */
-	float EvaluateProgressParameter( int curve, float lifetime ) const;
+	float EvaluateProgressParameter(int curve, float lifetime) const;
 	/** Evaluate cast parameter. */
-	float EvaluateCastParameter( const deParticleEmitterInstance &instance, int curve, deParticleEmitterType::eParameters parameter ) const;
+	float EvaluateCastParameter(const deParticleEmitterInstance &instance, int curve, deParticleEmitterType::eParameters parameter) const;
 	/** Evaluate value parameter. */
-	float EvaluateValueParameter( const deParticleEmitterInstance &instance, int curve, deParticleEmitterType::eParameters parameter ) const;
+	float EvaluateValueParameter(const deParticleEmitterInstance &instance, int curve, deParticleEmitterType::eParameters parameter) const;
 	/** Evaluate spread parameter. */
-	float EvaluateSpreadParameter( const deParticleEmitterInstance &instance, int curve, deParticleEmitterType::eParameters parameter ) const;
+	float EvaluateSpreadParameter(const deParticleEmitterInstance &instance, int curve, deParticleEmitterType::eParameters parameter) const;
 	/*@}*/
 	
 private:
-	void pSampleParameters( int curve, const deParticleEmitterParameter &parameter );
+	void pSampleParameters(int curve, const deParticleEmitterParameter &parameter);
 };
 
 #endif

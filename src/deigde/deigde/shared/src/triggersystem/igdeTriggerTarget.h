@@ -25,7 +25,7 @@
 #ifndef _IGDETRIGGERTARGET_H_
 #define _IGDETRIGGERTARGET_H_
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
 
@@ -37,11 +37,19 @@ class igdeTriggerListener;
  * \brief Trigger Target.
  */
 class DE_DLL_EXPORT igdeTriggerTarget : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTriggerTarget>;
+	
+	/** \brief List of targets. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<igdeTriggerTarget>,igdeTriggerTarget>;
+	
+	
 private:
 	decString pName;
 	bool pFired;
 	bool pHasFired;
-	decObjectSet pListeners;
+	decTObjectOrderedSet<igdeTriggerListener> pListeners;
 	
 	
 	
@@ -49,13 +57,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger target. */
-	igdeTriggerTarget( const char *name );
+	explicit igdeTriggerTarget(const char *name);
 	
+	igdeTriggerTarget(const igdeTriggerTarget&) = delete;
+	igdeTriggerTarget& operator=(const igdeTriggerTarget&) = delete;
 	
 	
 protected:
 	/** \brief Clean up trigger target. */
-	virtual ~igdeTriggerTarget();
+	~igdeTriggerTarget() override;
 	/*@}*/
 	
 	
@@ -70,13 +80,13 @@ public:
 	inline bool GetFired() const{ return pFired; }
 	
 	/** \brief Sets if the target is currently fired or not. */
-	void SetFired( bool fired );
+	void SetFired(bool fired);
 	
 	/** \brief Determines if the target has ever fired. */
 	inline bool GetHasFired() const{ return pHasFired; }
 	
 	/** \brief Sets if the target has ever fired. */
-	void SetHasFired( bool hasFired );
+	void SetHasFired(bool hasFired);
 	
 	/** \brief Fire the trigger action. */
 	void Fire();
@@ -88,10 +98,10 @@ public:
 	void FullReset();
 	
 	/** \brief Adds a listener. */
-	void AddListener( igdeTriggerListener *listener );
+	void AddListener(igdeTriggerListener *listener);
 	
 	/** \brief Removes a listener if existing. */
-	void RemoveListener( igdeTriggerListener *listener );
+	void RemoveListener(igdeTriggerListener *listener);
 	
 	/** \brief Notify all listeners. */
 	void NotifyListeners();

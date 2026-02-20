@@ -25,8 +25,9 @@
 #ifndef _DEVIDEOAUDIODECODER_H_
 #define _DEVIDEOAUDIODECODER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../../deObject.h"
+#include "../../common/collection/decTLinkedList.h"
 
 class deVideoManager;
 class deBaseVideoAudioDecoder;
@@ -43,18 +44,16 @@ class deBaseVideoAudioDecoder;
 class DE_DLL_EXPORT deVideoAudioDecoder : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideoAudioDecoder> Ref;
-	
+	using Ref = deTObjectReference<deVideoAudioDecoder>;
 	
 	
 private:
 	deVideoManager &pVideoManager;
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	deBaseVideoAudioDecoder *pPeerVideo;
 	
-	deVideoAudioDecoder *pLLManagerPrev;
-	deVideoAudioDecoder *pLLManagerNext;
+	decTLinkedList<deVideoAudioDecoder>::Element pLLManager;
 	
 	
 	
@@ -62,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound decoder. */
-	deVideoAudioDecoder( deVideoManager &manager, deVideo *sound );
+	deVideoAudioDecoder(deVideoManager &manager, deVideo *sound);
 	
 protected:
 	/**
@@ -71,7 +70,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVideoAudioDecoder();
+	~deVideoAudioDecoder() override;
 	/*@}*/
 	
 	
@@ -88,7 +87,7 @@ public:
 	int GetPosition();
 	
 	/** \brief Set file position in samples from the beginning. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	
 	/**
 	 * \brief Read chunk of sound data from current file position and advance.
@@ -99,7 +98,7 @@ public:
 	 * has been reached. If reading fails an error is signaled using the engine error
 	 * signaling and 0 returned.
 	 */
-	int ReadSamples( void *buffer, int size );
+	int ReadSamples(void *buffer, int size);
 	/*@}*/
 	
 	
@@ -110,7 +109,7 @@ public:
 	inline deBaseVideoAudioDecoder *GetPeerVideo() const{ return pPeerVideo; }
 	
 	/** \brief Set decoder peer. */
-	void SetPeerVideo( deBaseVideoAudioDecoder *peer );
+	void SetPeerVideo(deBaseVideoAudioDecoder *peer);
 	/*@}*/
 	
 	
@@ -120,23 +119,8 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deVideoAudioDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerPrev( deVideoAudioDecoder *resource );
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deVideoAudioDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For internal use only. Never call on your own!
-	 */
-	void SetLLManagerNext( deVideoAudioDecoder *resource );
+	/** \brief Manager linked list element. */
+	inline decTLinkedList<deVideoAudioDecoder>::Element &GetLLManager(){ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

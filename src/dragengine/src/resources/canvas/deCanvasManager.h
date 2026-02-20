@@ -25,17 +25,16 @@
 #ifndef _DECANVASMANAGER_H_
 #define _DECANVASMANAGER_H_
 
+#include "deCanvasImage.h"
+#include "deCanvasPaint.h"
+#include "deCanvasCanvasView.h"
+#include "deCanvasRenderWorld.h"
+#include "deCanvasText.h"
+#include "deCanvasVideoPlayer.h"
+#include "deCanvasView.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
-class deCanvas;
-class deCanvasImage;
-class deCanvasPaint;
-class deCanvasCanvasView;
-class deCanvasRenderWorld;
-class deCanvasText;
-class deCanvasVideoPlayer;
-class deCanvasView;
 class deEngine;
 
 
@@ -52,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas resource manager. */
-	deCanvasManager( deEngine *engine );
+	deCanvasManager(deEngine *engine);
 	
 	/** \brief Clean up canvas resource manager and reports leaking resources. */
-	virtual ~deCanvasManager();
+	~deCanvasManager() override;
 	/*@}*/
 	
 	
@@ -69,28 +68,28 @@ public:
 	deCanvas *GetRootCanvas() const;
 	
 	/** \brief Create image canvas. */
-	deCanvasImage *CreateCanvasImage();
+	deCanvasImage::Ref CreateCanvasImage();
 	
 	/** \brief Create paint canvas. */
-	deCanvasPaint *CreateCanvasPaint();
+	deCanvasPaint::Ref CreateCanvasPaint();
 	
 	/** \brief Create canvas view canvas. */
-	deCanvasCanvasView *CreateCanvasCanvasView();
+	deCanvasCanvasView::Ref CreateCanvasCanvasView();
 	
 	/** \brief Create render world canvas. */
-	deCanvasRenderWorld *CreateCanvasRenderWorld();
+	deCanvasRenderWorld::Ref CreateCanvasRenderWorld();
 	
 	/** \brief Create text canvas. */
-	deCanvasText *CreateCanvasText();
+	deCanvasText::Ref CreateCanvasText();
 	
 	/** \brief Create video player canvas. */
-	deCanvasVideoPlayer *CreateCanvasVideoPlayer();
+	deCanvasVideoPlayer::Ref CreateCanvasVideoPlayer();
 	
 	/** \brief Create view canvas. */
-	deCanvasView *CreateCanvasView();
+	deCanvasView::Ref CreateCanvasView();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -98,10 +97,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic system peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic system peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -113,7 +112,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

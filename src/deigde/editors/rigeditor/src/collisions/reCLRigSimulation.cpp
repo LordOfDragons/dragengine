@@ -50,8 +50,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLRigSimulation::reCLRigSimulation( reRig &rig ) :
-pRig( rig ){
+reCLRigSimulation::reCLRigSimulation(reRig &rig) :
+pRig(rig){
 }
 
 reCLRigSimulation::~reCLRigSimulation(){
@@ -62,43 +62,43 @@ reCLRigSimulation::~reCLRigSimulation(){
 // Notifications
 //////////////////
 
-void reCLRigSimulation::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( owner != pRig.GetEngineSimulationCollider() ){
+void reCLRigSimulation::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(owner != pRig.GetEngineSimulationCollider()){
 		return;
 	}
 	
 	deColliderComponent &collider = *pRig.GetEngineSimulationCollider();
 	
-	switch( collider.GetResponseType() ){
+	switch(collider.GetResponseType()){
 	case deCollider::ertDynamic:{
 		const int ownerBoneIndex = info->GetOwnerBone();
 		
-		if( ownerBoneIndex == -1 ){
+		if(ownerBoneIndex == -1){
 			/*
 			const decVector &linvelo = collider.GetLinearVelocity();
 			const float mass = collider.GetMass();
 			const float impulse = linvelo.Length() * mass;
-			pRig.GetLogger()->LogInfoFormat( LOGSOURCE, "CollisionResponse rig: velocity=%f mass=%f impulse=%f",
-				linvelo.Length(), mass, impulse );
+			pRig.GetLogger()->LogInfoFormat(LOGSOURCE, "CollisionResponse rig: velocity=%f mass=%f impulse=%f",
+				linvelo.Length(), mass, impulse);
 			*/
 			
 		}else{
-			deColliderBone &ownerBone = collider.GetBoneAt( ownerBoneIndex );
+			deColliderBone &ownerBone = collider.GetBoneAt(ownerBoneIndex);
 			const decVector &linvelo = ownerBone.GetLinearVelocity();
 			
-			if( ownerBone.GetDynamic() ){
+			if(ownerBone.GetDynamic()){
 				/*
 				const float mass = ownerBone.GetMass();
 				const float impulse = linvelo.Length() * mass;
-				pRig.GetLogger()->LogInfoFormat( LOGSOURCE, "CollisionResponse bone(%i): velocity=%f mass=%f impulse=%f",
-					ownerBoneIndex, linvelo.Length(), mass, impulse );
+				pRig.GetLogger()->LogInfoFormat(LOGSOURCE, "CollisionResponse bone(%i): velocity=%f mass=%f impulse=%f",
+					ownerBoneIndex, linvelo.Length(), mass, impulse);
 				*/
 				
 			}else{
 				const decVector &normal = info->GetNormal();
-				if( linvelo * normal < 0.0f ){
-					ownerBone.SetPosition( ownerBone.GetPosition() + decDVector( normal ) * 0.001 );
-					ownerBone.SetLinearVelocity( linvelo - normal * ( normal * linvelo ) );
+				if(linvelo * normal < 0.0f){
+					ownerBone.SetPosition(ownerBone.GetPosition() + decDVector(normal) * 0.001);
+					ownerBone.SetLinearVelocity(linvelo - normal * (normal * linvelo));
 				}
 			}
 		}
@@ -108,9 +108,9 @@ void reCLRigSimulation::CollisionResponse( deCollider *owner, deCollisionInfo *i
 	case deCollider::ertKinematic:{
 		const decVector &linvelo = collider.GetLinearVelocity();
 		const decVector &normal = info->GetNormal();
-		if( linvelo * normal < 0.0f ){
-			collider.SetPosition( collider.GetPosition() + decDVector( normal ) * 0.001 );
-			collider.SetLinearVelocity( linvelo - normal * ( normal * linvelo ) );
+		if(linvelo * normal < 0.0f){
+			collider.SetPosition(collider.GetPosition() + decDVector(normal) * 0.001);
+			collider.SetLinearVelocity(linvelo - normal * (normal * linvelo));
 		}
 		}break;
 		
@@ -119,7 +119,7 @@ void reCLRigSimulation::CollisionResponse( deCollider *owner, deCollisionInfo *i
 	}
 }
 
-bool reCLRigSimulation::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool reCLRigSimulation::CanHitCollider(deCollider *owner, deCollider *collider){
 	// currently we allow no collisions at all. once we have pushers or other
 	// objects this can change.
 	return false;
@@ -127,15 +127,15 @@ bool reCLRigSimulation::CanHitCollider( deCollider *owner, deCollider *collider 
 	/*
 	deColliderVisitorIdentify identify;
 	
-	collider->Visit( identify );
-	if( identify.IsVolume() ){
+	collider->Visit(identify);
+	if(identify.IsVolume()){
 		deColliderVolume *colliderVolume = identify.CastToVolume();
 		
-		if( pCanSelectBones && pGetBoneFromCollider( colliderVolume ) ){
+		if(pCanSelectBones && pGetBoneFromCollider(colliderVolume)){
 			return true;
 		}
 		
-		if( pCanSelectShapes && pGetShapeFromCollider( colliderVolume ) ){
+		if(pCanSelectShapes && pGetShapeFromCollider(colliderVolume)){
 			return true;
 		}
 	}
@@ -144,6 +144,6 @@ bool reCLRigSimulation::CanHitCollider( deCollider *owner, deCollider *collider 
 	*/
 }
 
-void reCLRigSimulation::ColliderChanged( deCollider *owner ){
+void reCLRigSimulation::ColliderChanged(deCollider *owner){
 	pRig.UpdateFromSimulation();
 }

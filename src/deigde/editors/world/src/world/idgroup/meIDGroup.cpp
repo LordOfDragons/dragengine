@@ -22,13 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "meIDGroup.h"
-#include "meIDGroupID.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class meIDGroup
@@ -37,12 +33,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meIDGroup::meIDGroup( const char *name ) :
-pName( name ){
+meIDGroup::meIDGroup(const char *name) :
+pName(name){
 }
 
 meIDGroup::~meIDGroup(){
-	RemoveAll();
 }
 
 
@@ -50,71 +45,34 @@ meIDGroup::~meIDGroup(){
 // Management
 ///////////////
 
-int meIDGroup::GetCount() const{
-	return pIDs.GetCount();
-}
-
 decStringList meIDGroup::GetIDList() const{
 	return pIDs.GetKeys();
 }
 
-int meIDGroup::GetUsageCountFor( const char *id ) const{
-	deObject *object;
+int meIDGroup::GetUsageCountFor(const char *id) const{
+	const meIDGroupID::Ref *f;
+	return pIDs.GetAt(id, f) ? (*f)->GetUsageCount() : 0;
+}
+
+void meIDGroup::Add(const char *id){
+	DEASSERT_NOTNULL(id)
 	
-	if( pIDs.GetAt( id, &object ) ){
-		return ( ( meIDGroupID* )object )->GetUsageCount();
+	const meIDGroupID::Ref *f;
+	if(pIDs.GetAt(id, f)){
+		(*f)->Increment();
 		
 	}else{
-		return 0;
+		pIDs.SetAt(id, meIDGroupID::Ref::New(id));
 	}
 }
 
-bool meIDGroup::Has( const char *id ) const{
-	return pIDs.Has( id );
-}
-
-void meIDGroup::Add( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
-	}
+void meIDGroup::Remove(const char *id){
+	DEASSERT_NOTNULL(id)
 	
-	deObject *object;
-	
-	if( pIDs.GetAt( id, &object ) ){
-		( ( meIDGroupID* )object )->Increment();
-		return;
-	}
-	
-	meIDGroupID *groupID = NULL;
-	
-	try{
-		groupID = new meIDGroupID( id );
-		pIDs.SetAt( id, groupID );
-		groupID->FreeReference();
-		
-	}catch( const deException & ){
-		if( groupID ){
-			groupID->FreeReference();
-		}
-		throw;
-	}
-}
-
-void meIDGroup::Remove( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deObject *object;
-	
-	if( ! pIDs.GetAt( id, &object ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	meIDGroupID &groupID = *( ( meIDGroupID* )object );
-	groupID.Decrement();
-	if( groupID.GetUsageCount() == 0 ){
-		pIDs.Remove( id );
+	meIDGroupID &f = pIDs.GetAt(id);
+	f.Decrement();
+	if(f.GetUsageCount() == 0){
+		pIDs.Remove(id);
 	}
 }
 

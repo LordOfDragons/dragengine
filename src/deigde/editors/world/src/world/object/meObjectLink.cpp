@@ -49,42 +49,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-meObjectLink::meObjectLink( igdeEnvironment *environment, meObject *anchor, meObject *target ){
-	if( ! environment || ! anchor || ! target  ){
-		DETHROW( deeInvalidParam );
-	}
+meObjectLink::meObjectLink(igdeEnvironment *environment, meObject *anchor, meObject *target) :
+pEnvironment(environment),
+pAnchor(anchor),
+pTarget(target)
+{
+	DEASSERT_NOTNULL(environment)
+	DEASSERT_NOTNULL(anchor)
+	DEASSERT_NOTNULL(target)
 	
-	pEnvironment = environment;
-	pWorld = NULL;
+	pWorld = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSConnection = NULL;
-	
-	pAnchor = NULL;
-	pTarget = NULL;
+	pDDSConnection = nullptr;
 	
 	try{
 		pAnchor = anchor;
-		anchor->AddReference();
-		
 		pTarget = target;
-		target->AddReference();
-		
 		// create debug drawer and shapes
 		pDebugDrawer = environment->GetEngineController()->GetEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
 		pDDSConnection = new igdeWConnection;
-		pDDSConnection->SetArrowSize( 0.05f );
-		pDDSConnection->SetArrowOnAnchor( false );
-		pDDSConnection->SetArrowOnTarget( true );
-		pDDSConnection->SetColor( decColor( 1.0f, 0.0f, 1.0f ) );
-		pDDSConnection->SetParentDebugDrawer( pDebugDrawer );
+		pDDSConnection->SetArrowSize(0.05f);
+		pDDSConnection->SetArrowOnAnchor(false);
+		pDDSConnection->SetArrowOnTarget(true);
+		pDDSConnection->SetParentDebugDrawer(pDebugDrawer);
 		
 		// update the rest
 		pUpdateConnection();
+		UpdateColor();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -99,32 +94,40 @@ meObjectLink::~meObjectLink(){
 // Management
 ///////////////
 
-void meObjectLink::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meObjectLink::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->GetEngineWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pWorld){
+		pWorld->GetEngineWorld()->RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->GetEngineWorld()->AddDebugDrawer( pDebugDrawer );
+	if(world){
+		world->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
 	}
 }
 
-void meObjectLink::SetAnchorProperty( const char *property ){
+void meObjectLink::SetAnchorProperty(const char *property){
 	pAnchorProperty = property;
 }
 
-void meObjectLink::SetTargetProperty( const char *property ){
+void meObjectLink::SetTargetProperty(const char *property){
 	pTargetProperty = property;
 }
 
 void meObjectLink::ObjectsMoved(){
 	pUpdateConnection();
+}
+
+void meObjectLink::UpdateColor(){
+	if(pAnchor->GetActive()){
+		pDDSConnection->SetColor(decColor(1.0f, 0.5f, 1.0f));
+	}else{
+		pDDSConnection->SetColor(decColor(1.0f, 0.0f, 1.0f));
+	}
 }
 
 
@@ -133,20 +136,9 @@ void meObjectLink::ObjectsMoved(){
 //////////////////////
 
 void meObjectLink::pCleanUp(){
-	SetWorld( NULL );
-	
-	if( pTarget ){
-		pTarget->FreeReference();
-	}
-	if( pAnchor ){
-		pAnchor->FreeReference();
-	}
-	
-	if( pDDSConnection ){
+	SetWorld(nullptr);
+	if(pDDSConnection){
 		delete pDDSConnection;
-	}
-	if( pDebugDrawer ){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -154,6 +146,6 @@ void meObjectLink::pUpdateConnection(){
 	const decDVector &anchorPosition = pAnchor->GetPosition();
 	const decDVector &targetPosition = pTarget->GetPosition();
 	
-	pDebugDrawer->SetPosition( anchorPosition );
-	pDDSConnection->SetTargetPosition( ( targetPosition - anchorPosition ).ToVector() );
+	pDebugDrawer->SetPosition(anchorPosition);
+	pDDSConnection->SetTargetPosition((targetPosition - anchorPosition).ToVector());
 }

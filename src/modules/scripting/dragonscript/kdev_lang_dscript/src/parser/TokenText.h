@@ -7,7 +7,7 @@
 // dsp_tokentext.h which defines fuctions in headers! this causes multiple-definition
 // problems. so we limit now the text to one inclusion unit only. stupid but necessary
 namespace DragonScript{
-	QString TokenText( int token );
+	QString TokenText(int token);
 }
 
 #endif

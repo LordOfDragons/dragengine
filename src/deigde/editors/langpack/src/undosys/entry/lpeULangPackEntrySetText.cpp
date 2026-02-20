@@ -40,26 +40,22 @@
 ////////////////////////////
 
 lpeULangPackEntrySetText::lpeULangPackEntrySetText(
-	lpeLangPackEntry *entry, const decUnicodeString &newName ) :
-pEntry( NULL ),
-pNewText( newName )
+	lpeLangPackEntry *entry, const decUnicodeString &newName) :
+
+pNewText(newName)
 {
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
+	if(!entry){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Entry set text" );
+	SetShortInfo("@LangPack.Undo.EntrySetText");
 	
 	pOldText = entry->GetText();
 	
 	pEntry = entry;
-	entry->AddReference();
 }
 
 lpeULangPackEntrySetText::~lpeULangPackEntrySetText(){
-	if( pEntry ){
-		pEntry->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ lpeULangPackEntrySetText::~lpeULangPackEntrySetText(){
 ///////////////
 
 void lpeULangPackEntrySetText::Undo(){
-	pEntry->SetText( pOldText );
+	pEntry->SetText(pOldText);
 }
 
 void lpeULangPackEntrySetText::Redo(){
-	pEntry->SetText( pNewText );
+	pEntry->SetText(pNewText);
 }

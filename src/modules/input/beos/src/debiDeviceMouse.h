@@ -34,16 +34,20 @@
  */
 class debiDeviceMouse : public debiDevice{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceMouse> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceMouse( deBeOSInput &module );
+	debiDeviceMouse(deBeOSInput &module);
 	
 	
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~debiDeviceMouse();
+	~debiDeviceMouse() override;
 	/*@}*/
 	
 	
@@ -52,7 +56,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

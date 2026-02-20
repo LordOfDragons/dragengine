@@ -47,11 +47,10 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -61,17 +60,17 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -91,19 +90,11 @@ enum ePanels{
 // Class projWindowMain
 /////////////////////////
 
-projWindowMain::projWindowMain( igdeEditorModule &module ) :
-igdeEditorWindow( module ),
-
-pListener(nullptr),
+projWindowMain::projWindowMain(igdeEditorModule &module) :
+igdeEditorWindow(module),
 pConfiguration(nullptr),
 
-pLoadSaveSystem( *this ),
-
-pProject(nullptr),
-
-pPanelProfiles(nullptr),
-pPanelTestRun(nullptr),
-pPanelUndoHistory(nullptr)
+pLoadSaveSystem(*this)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -111,7 +102,7 @@ pPanelUndoHistory(nullptr)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new projWindowMainListener( *this );
+	pListener = projWindowMainListener::Ref::New(*this);
 	pConfiguration = new projConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
@@ -120,47 +111,35 @@ pPanelUndoHistory(nullptr)
 	pCreateToolBarDistribute();
 	pCreateToolBarEdit();
 	
-	pTabPanels.TakeOver( new igdeTabBook( env ) );
-	AddChild( pTabPanels );
+	pTabPanels = igdeTabBook::Ref::New(env);
+	AddChild(pTabPanels);
 	
-	pPanelProfiles = new projPanelProfiles( *this );
-	pTabPanels->AddChild( pPanelProfiles, "Profiles" );
+	pPanelProfiles = projPanelProfiles::Ref::New(*this);
+	pTabPanels->AddChild(pPanelProfiles, "@Project.WindowMain.Tab.Profiles");
 	
-	pPanelTestRun = new projPanelTestRun( *this );
-	pTabPanels->AddChild( pPanelTestRun, "Test-Run" );
+	pPanelTestRun = projPanelTestRun::Ref::New(*this);
+	pTabPanels->AddChild(pPanelTestRun, "@Project.WindowMain.Tab.TestRun");
 	
-	pPanelUndoHistory = new projPanelUndoHistory( env );
-	pTabPanels->AddChild( pPanelUndoHistory, "Undo History" );
+	pPanelUndoHistory = projPanelUndoHistory::Ref::New(env);
+	pTabPanels->AddChild(pPanelUndoHistory, "@Project.WindowMain.Tab.UndoHistory");
 	
 	// load game project
 	LoadProject();
 }
 
 projWindowMain::~projWindowMain(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
 	}
 	
 	SetProject(nullptr);
 	
-	if( pPanelProfiles ){
-		pPanelProfiles->FreeReference();
-		pPanelProfiles = nullptr;
-	}
-	if( pPanelTestRun ){
-		pPanelTestRun->FreeReference();
-		pPanelTestRun = nullptr;
-	}
-	if( pPanelUndoHistory ){
-		pPanelUndoHistory->FreeReference();
-		pPanelUndoHistory = nullptr;
-	}
+	pPanelProfiles = nullptr;
+	pPanelTestRun = nullptr;
+	pPanelUndoHistory = nullptr;
 	
 	if(pConfiguration){
 		delete pConfiguration;
-	}
-	if( pListener ){
-		pListener->FreeReference();
 	}
 }
 
@@ -179,158 +158,140 @@ bool projWindowMain::QuitRequest(){
 
 
 
-void projWindowMain::SetProject( projProject *project ){
-	if( project == pProject ){
+void projWindowMain::SetProject(projProject *project){
+	if(project == pProject){
 		return;
 	}
 	
-	pPanelProfiles->SetProject( NULL );
-	pPanelTestRun->SetProject( NULL );
-	pPanelUndoHistory->SetProject( NULL );
-	pActionEditUndo->SetUndoSystem( NULL );
-	pActionEditRedo->SetUndoSystem( NULL );
+	pPanelProfiles->SetProject(nullptr);
+	pPanelTestRun->SetProject(nullptr);
+	pPanelUndoHistory->SetProject(nullptr);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
-	if( pProject ){
-		pProject->RemoveListener( pListener );
-		pProject->FreeReference();
+	if(pProject){
+		pProject->RemoveListener(pListener);
 	}
 	
 	pProject = project;
 	
-	if( project ){
-		project->AddReference();
-		project->AddListener( pListener );
+	if(project){
+		project->AddListener(pListener);
 		
-		pActionEditUndo->SetUndoSystem( project->GetUndoSystem() );
-		pActionEditRedo->SetUndoSystem( project->GetUndoSystem() );
+		pActionEditUndo->SetUndoSystem(project->GetUndoSystem());
+		pActionEditRedo->SetUndoSystem(project->GetUndoSystem());
 	}
 	
-	pPanelProfiles->SetProject( project );
-	pPanelTestRun->SetProject( project );
-	pPanelUndoHistory->SetProject( project );
+	pPanelProfiles->SetProject(project);
+	pPanelTestRun->SetProject(project);
+	pPanelUndoHistory->SetProject(project);
 	
 	UpdateShowActionPath();
 }
 
 void projWindowMain::LoadProject(){
-	projProject *project = NULL;
 	
 	try{
-		project = new projProject( &GetEnvironment() );
+		const projProject::Ref project(projProject::Ref::New(&GetEnvironment()));
 		
 		// load project
-		decBaseFileReaderReference reader;
+		decDiskFileReader::Ref reader;
 		
 		try{
-			reader.TakeOver( new decDiskFileReader( project->GetFilePath() ) );
+			reader = decDiskFileReader::Ref::New(project->GetFilePath());
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			// file does not exist. this is fine and allowed.
 		}
 		
-		if( reader ){
+		if(reader){
 			// file exists. parse it. should this fail we do show an error otherwise not
-			projProjectXml( GetLogger(), LOGSOURCE ).ReadFromFile( reader, *project );
-			reader = NULL;
+			projProjectXml(GetLogger(), LOGSOURCE).ReadFromFile(reader, project);
+			reader = nullptr;
 		}
 		
 		// load local project settings if present
-		LoadProjectLocal( *project );
+		LoadProjectLocal(project);
 		
 		// finish loading
-		SetProject( project );
+		SetProject(project);
 		
-		project->SetChanged( false ); // SetProject can trigger changes
+		project->SetChanged(false); // SetProject can trigger changes
+	}catch(const deException &e){
+		DisplayException(e);
 		
-		project->FreeReference();
-		
-	}catch( const deException &e ){
-		if( project ){
-			project->FreeReference();
-		}
-		DisplayException( e );
-		
-		project = new projProject( &GetEnvironment() );
-		SetProject( project );
-		project->FreeReference();
+		SetProject(projProject::Ref::New(&GetEnvironment()));
 	}
 }
 
-void projWindowMain::LoadProjectLocal( projProject &project ){
+void projWindowMain::LoadProjectLocal(projProject &project){
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSContainerReference directory;
-	directory.TakeOver( new deVFSDiskDirectory( 
-		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) ) );
-	
-	decBaseFileReaderReference reader;
-	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
-	path.AddComponent( "project.xml" );
+	decBaseFileReader::Ref reader;
+	decPath path(decPath::CreatePathUnix(gameProject.GetPathLocal()));
+	path.AddComponent("project.xml");
 	
 	try{
-		reader.TakeOver( directory->OpenFileForReading( path ) );
+		reader = deVFSDiskDirectory::Ref::New(
+			decPath::CreatePathNative(gameProject.GetDirectoryPath()))->OpenFileForReading(path);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		// file does not exist. this is fine and allowed.
 	}
 	
-	if( reader ){
+	if(reader){
 		// file exists. parse it. should this fail we do show an error otherwise not
-		projProjectLocalXml( GetLogger(), LOGSOURCE ).ReadFromFile( reader, project );
+		projProjectLocalXml(GetLogger(), LOGSOURCE).ReadFromFile(reader, project);
 	}
 }
 
 void projWindowMain::SaveProject(){
-	if( ! pProject ){
+	if(!pProject){
 		return;
 	}
 	
-	decBaseFileWriterReference writer;
-	writer.TakeOver( new decDiskFileWriter( pProject->GetFilePath(), false ) );
-	projProjectXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
-	pProject->SetChanged( false );
+	projProjectXml(GetLogger(), LOGSOURCE).WriteToFile(
+		decDiskFileWriter::Ref::New(pProject->GetFilePath(), false), *pProject);
+	pProject->SetChanged(false);
 }
 
 void projWindowMain::SaveProjectLocal(){
-	if( ! pProject ){
+	if(!pProject){
 		return;
 	}
 	
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSContainerReference directory;
-	directory.TakeOver( new deVFSDiskDirectory( 
-		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) ) );
-	
-	decBaseFileWriterReference writer;
-	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
-	path.AddComponent( "project.xml" );
-	writer.TakeOver( directory->OpenFileForWriting( path ) );
-	projProjectLocalXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
+	decBaseFileWriter::Ref writer;
+	decPath path(decPath::CreatePathUnix(gameProject.GetPathLocal()));
+	path.AddComponent("project.xml");
+	writer = deVFSDiskDirectory::Ref::New(
+		decPath::CreatePathNative(gameProject.GetDirectoryPath()))->OpenFileForWriting(path);
+	projProjectLocalXml(GetLogger(), LOGSOURCE).WriteToFile(writer, *pProject);
 }
 
 
 
-void projWindowMain::OnFrameUpdate( float elapsed ){
-	pPanelTestRun->Update( elapsed );
+void projWindowMain::OnFrameUpdate(float elapsed){
+	pPanelTestRun->Update(elapsed);
 }
 
 
 
-void projWindowMain::GetChangedDocuments( decStringList &list ){
-	if( pProject && pProject->GetChanged() ){
-		list.Add( pProject->GetFilePath() );
+void projWindowMain::GetChangedDocuments(decStringList &list){
+	if(pProject && pProject->GetChanged()){
+		list.Add(pProject->GetFilePath());
 	}
 }
 
-bool projWindowMain::SaveDocument( const char *filename ){
-	if( pProject && pProject->GetFilePath() == filename ){
+bool projWindowMain::SaveDocument(const char *filename){
+	if(pProject && pProject->GetFilePath() == filename){
 		try{
 			SaveProject();
 			SaveProjectLocal();
 			
-		}catch( const deException &e ){
-			DisplayException( e );
+		}catch(const deException &e){
+			DisplayException(e);
 		}
 		return true; // TODO better implement this so failure can be detected
 	}
@@ -376,7 +337,7 @@ void projWindowMain::UpdateShowActionPath(){
 	path.AddComponent("testRun.log");
 	pActionShowLogs->SetPath(path.GetPathNative());
 	
-	const projProfile * const profile = pProject ? pProject->GetActiveProfile() : nullptr;
+	const projProfile * const profile = pProject ? pProject->GetActiveProfile().Pointer() : nullptr;
 	if(profile){
 		path.SetFromNative(gameProject.GetDirectoryPath());
 		path.AddUnixPath(profile->GetDelgaPath());
@@ -390,23 +351,23 @@ void projWindowMain::UpdateShowActionPath(){
 	}
 }
 
-bool projWindowMain::ProcessCommandLine( decUnicodeStringList &arguments ){
-	while( arguments.GetCount() > 0 ){
-		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+bool projWindowMain::ProcessCommandLine(decUnicodeStringList &arguments){
+	while(arguments.GetCount() > 0){
+		const decString arg(arguments.GetAt(0).ToUTF8());
 		
-		if( arg == "--project.profile.distribute" ){
-			arguments.RemoveFrom( 0 );
-			return pCmdLineProfileDistribute( arguments );
+		if(arg == "--project.profile.distribute"){
+			arguments.RemoveFrom(0);
+			return pCmdLineProfileDistribute(arguments);
 			
-		}else if( arg == "--project.profile.distribute.file" ){
-			arguments.RemoveFrom( 0 );
-			return pCmdLineProfileDistributeFile( arguments );
+		}else if(arg == "--project.profile.distribute.file"){
+			arguments.RemoveFrom(0);
+			return pCmdLineProfileDistributeFile(arguments);
 			
-		}else if( arg == "--project.profile.list" ){
-			arguments.RemoveFrom( 0 );
-			return pCmdLineProfileList( arguments );
+		}else if(arg == "--project.profile.list"){
+			arguments.RemoveFrom(0);
+			return pCmdLineProfileList(arguments);
 			
-		}else if( arg == "--help" ){
+		}else if(arg == "--help"){
 			pCmdLineHelp();
 			break;
 			
@@ -423,38 +384,38 @@ bool projWindowMain::ProcessCommandLine( decUnicodeStringList &arguments ){
 /////////////////
 
 void projWindowMain::ActivatePanelTestRun(){
-	pTabPanels->SetActivePanel( epTestRun );
+	pTabPanels->SetActivePanel(epTestRun);
 }
 
 /*
-void projWindowMain::SetProgressVisible( bool visible ){
-	GetEnvironment()->SetProgressVisible( visible );
+void projWindowMain::SetProgressVisible(bool visible){
+	GetEnvironment()->SetProgressVisible(visible);
 }
 
-void projWindowMain::SetProgress( float progress ){
-	GetEnvironment()->SetProgress( progress );
+void projWindowMain::SetProgress(float progress){
+	GetEnvironment()->SetProgress(progress);
 }
 
-void projWindowMain::SetProgressText( const char *text ){
-	GetEnvironment()->SetProgressText( text );
+void projWindowMain::SetProgressText(const char *text){
+	GetEnvironment()->SetProgressText(text);
 }
 */
 
 /*
-void projWindowMain::ChangePanel( int panel ){
-	if( panel < epProfiles || panel > epUndoHistory ){
-		DETHROW( deeInvalidParam );
+void projWindowMain::ChangePanel(int panel){
+	if(panel < epProfiles || panel > epUndoHistory){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( panel == pSwitcher->getCurrent() ){
+	if(panel == pSwitcher->getCurrent()){
 		return;
 	}
 	
-	pSwitcher->setCurrent( panel );
+	pSwitcher->setCurrent(panel);
 	
-	pBtnProfiles->setState( panel == epProfiles );
-	pBtnTestRun->setState( panel == epTestRun );
-	pBtnUndoHistory->setState( panel == epUndoHistory );
+	pBtnProfiles->setState(panel == epProfiles);
+	pBtnTestRun->setState(panel == epTestRun);
+	pBtnUndoHistory->setState(panel == epUndoHistory);
 }
 */
 
@@ -470,114 +431,126 @@ protected:
 	projWindowMain &pWindow;
 	
 public:
-	cActionBase( projWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	typedef deTObjectReference<cActionBase> Ref;
+	cActionBase(projWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	igdeAction( text, icon, description, mnemonic, igdeHotKey( modifiers, keyCode ) ),
-	pWindow( window ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
+	pWindow(window){}
 	
-	cActionBase( projWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	igdeAction( text, icon, description, mnemonic ),
-	pWindow( window ){}
+	cActionBase(projWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	igdeAction(text, icon, description, mnemonic),
+	pWindow(window){}
 };
 
 
 class cActionDistSave : public cActionBase{
 public:
-	cActionDistSave( projWindowMain &window ) : cActionBase( window,
-		"Save", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ),
-		"Save project", deInputEvent::esmControl,
-		deInputEvent::ekcS, deInputEvent::ekcS ){}
+	typedef deTObjectReference<cActionDistSave> Ref;
 	
-	virtual void OnAction(){
+	cActionDistSave(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.Save", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Project.Action.Save.Description", deInputEvent::esmControl,
+		deInputEvent::ekcS, deInputEvent::ekcS){}
+	
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
-		if( ! project ){
+		if(!project){
 			return;
 		}
-		if( project->GetChanged() ){
+		if(project->GetChanged()){
 			pWindow.SaveProject();
 		}
 		pWindow.SaveProjectLocal();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetProject() && pWindow.GetProject()->GetChanged() );
+	void Update() override{
+		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetChanged());
 	}
 };
 
 
 class cActionEditCut : public cActionBase{
 public:
-	cActionEditCut( projWindowMain &window ) : cActionBase( window,
-		"Cut", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-		"Cut selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcX, deInputEvent::ekcT ){}
+	typedef deTObjectReference<cActionEditCut> Ref;
 	
-	virtual void OnAction(){
+	cActionEditCut(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Project.Action.Cut.Description", deInputEvent::esmControl,
+		deInputEvent::ekcX, deInputEvent::ekcT){}
+	
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled( false );
+	void Update() override{
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditCopy : public cActionBase{
 public:
-	cActionEditCopy( projWindowMain &window ) : cActionBase( window,
-		"Copy", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-		"Copy selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcC, deInputEvent::ekcC ){}
+	typedef deTObjectReference<cActionEditCopy> Ref;
 	
-	virtual void OnAction(){
+	cActionEditCopy(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Project.Action.Copy.Description", deInputEvent::esmControl,
+		deInputEvent::ekcC, deInputEvent::ekcC){}
+	
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled( false );
+	void Update() override{
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditPaste : public cActionBase{
 public:
-	cActionEditPaste( projWindowMain &window ) : cActionBase( window,
-		"Paste", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste objects", deInputEvent::esmControl,
-		deInputEvent::ekcV, deInputEvent::ekcP ){}
+	typedef deTObjectReference<cActionEditPaste> Ref;
 	
-	virtual void OnAction(){
+	cActionEditPaste(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Project.Action.Paste.Description", deInputEvent::esmControl,
+		deInputEvent::ekcV, deInputEvent::ekcP){}
+	
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
-		SetEnabled( false );//pWindow.GetClipboard().HasClip() );
+	void Update() override{
+		SetEnabled(false);//pWindow.GetClipboard().HasClip());
 	}
 };
 
 
 class cActionProfileAdd : public cActionBase{
 public:
-	cActionProfileAdd( projWindowMain &window ) : cActionBase( window,
-		"Add...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add profile", deInputEvent::ekcA ){}
+	typedef deTObjectReference<cActionProfileAdd> Ref;
 	
-	virtual void OnAction(){
+	cActionProfileAdd(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.ProfileAdd", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Project.Action.ProfileAdd.Description", deInputEvent::ekcA){}
+	
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
-		if( ! project ){
+		if(!project){
 			return;
 		}
 		
-		const projProfileList &list = project->GetProfiles();
-		decString name( "Profile" );
+		const projProfile::List &list = project->GetProfiles();
+		decString name(pWindow.Translate("Project.WindowMain.Default.ProfileName").ToUTF8());
 		
-		while( true ){
-			if( ! igdeCommonDialogs::GetString( &pWindow, "Add Profile", "Name:", name ) ){
+		while(true){
+			if(!igdeCommonDialogs::GetString(pWindow, "@Project.PanelProfiles.Dialog.AddProfile",
+			"@Project.PanelProfiles.Dialog.AddProfile.Name", name)){
 				return;
 			}
 			
-			if( list.HasNamed( name ) ){
-				igdeCommonDialogs::Error( &pWindow, "Add Profile",
-					"A profile with this name exists already." );
+			if(list.HasNamed(name)){
+				igdeCommonDialogs::Error(pWindow, "@Project.PanelProfiles.Dialog.AddProfile",
+					"@Project.PanelProfiles.Dialog.AddProfile.Error");
 				
 			}else{
 				break;
@@ -585,195 +558,179 @@ public:
 		}
 		
 		const projProfile * const selectedProfile = project->GetActiveProfile();
-		projProfile *safeProfile = NULL;
-		projProfile *profile = NULL;
-		igdeUndoReference undo;
+		projProfile::Ref profile;
 		
 		try{
-			profile = new projProfile;
-			profile->SetName( name );
-			if( selectedProfile ){
-				profile->SetIdentifier( selectedProfile->GetIdentifier() );
-				profile->SetAliasIdentifier( selectedProfile->GetAliasIdentifier() );
-				profile->SetGameObject( selectedProfile->GetGameObject() );
-				profile->SetPathCapture( selectedProfile->GetPathCapture() );
-				profile->SetPathConfig( selectedProfile->GetPathConfig() );
-				profile->SetRequiredExtensions( selectedProfile->GetRequiredExtensions() );
-				profile->SetScriptDirectory( selectedProfile->GetScriptDirectory() );
-				profile->SetCreator( selectedProfile->GetCreator() );
-				profile->SetWebsite( selectedProfile->GetWebsite() );
+			profile = projProfile::Ref::New();
+			profile->SetName(name);
+			if(selectedProfile){
+				profile->SetIdentifier(selectedProfile->GetIdentifier());
+				profile->SetAliasIdentifier(selectedProfile->GetAliasIdentifier());
+				profile->SetGameObject(selectedProfile->GetGameObject());
+				profile->SetPathCapture(selectedProfile->GetPathCapture());
+				profile->SetPathConfig(selectedProfile->GetPathConfig());
+				profile->SetRequiredExtensions(selectedProfile->GetRequiredExtensions());
+				profile->SetScriptDirectory(selectedProfile->GetScriptDirectory());
+				profile->SetCreator(selectedProfile->GetCreator());
+				profile->SetWebsite(selectedProfile->GetWebsite());
 				
 			}else{
-				profile->SetIdentifier( decUuid::Random() );
+				profile->SetIdentifier(decUuid::Random());
 			}
-			undo.TakeOver( new projUProfileAdd( project, profile ) );
-			safeProfile = profile;
-			profile->FreeReference();
-			profile = NULL;
 			
-			project->GetUndoSystem()->Add( undo );
+			project->GetUndoSystem()->Add(projUProfileAdd::Ref::New(project, profile));
+			project->SetActiveProfile(profile);
 			
-		}catch( const deException &e ){
-			if( profile ){
-				profile->FreeReference();
-			}
-			pWindow.DisplayException( e );
-			return;
+		}catch(const deException &e){
+			pWindow.DisplayException(e);
+			project->SetActiveProfile(nullptr);
 		}
-		
-		project->SetActiveProfile( safeProfile );
 	}
 };
 
 
 class cActionProfileRemove : public cActionBase{
 public:
-	cActionProfileRemove( projWindowMain &window ) : cActionBase( window,
-		"Remove", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove selected profile", deInputEvent::ekcR ){}
+	typedef deTObjectReference<cActionProfileRemove> Ref;
 	
-	virtual void OnAction(){
+	cActionProfileRemove(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.ProfileRemove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Project.Action.ProfileRemove.Description", deInputEvent::ekcR){}
+	
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
-		if( ! project ){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if( ! profile ){
+		if(!profile){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new projUProfileRemove( project, profile ) );
-		project->GetUndoSystem()->Add( undo );
+		project->GetUndoSystem()->Add(projUProfileRemove::Ref::New(project, profile));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile() );
+	void Update() override{
+		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
 
 
 class cActionProfileDuplicate : public cActionBase{
 public:
-	cActionProfileDuplicate( projWindowMain &window ) : cActionBase( window,
-		"Duplicate", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-		"Duplicate profile", deInputEvent::ekcD ){}
+	typedef deTObjectReference<cActionProfileDuplicate> Ref;
 	
-	virtual void OnAction(){
+	cActionProfileDuplicate(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.ProfileDuplicate", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Project.Action.ProfileDuplicate.Description", deInputEvent::ekcD){}
+	
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
-		if( ! project ){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if( ! profile ){
+		if(!profile){
 			return;
 		}
 		
-		const projProfileList &list = project->GetProfiles();
+		const projProfile::List &list = project->GetProfiles();
 		decString name;
-		name.Format( "%s Copy", profile->GetName().GetString() );
+		name.FormatSafe(pWindow.Translate("Project.PanelProfiles.Dialog.DuplicateProfile.NameCopy").ToUTF8(),
+			profile->GetName());
 		
-		while( true ){
-			if( ! igdeCommonDialogs::GetString( &pWindow, "Duplicate Profile", "Name:", name ) ){
+		while(true){
+			if(!igdeCommonDialogs::GetString(pWindow, "@Project.PanelProfiles.Dialog.DuplicateProfile",
+					"@Project.PanelProfiles.Dialog.DuplicateProfile.Name", name)){
 				return;
 			}
 			
-			if( list.HasNamed( name ) ){
-				igdeCommonDialogs::Error( &pWindow, "Duplicate Profile",
-					"A profile with this name exists already." );
+			if(list.HasNamed(name)){
+				igdeCommonDialogs::Error(pWindow, "@Project.PanelProfiles.Dialog.DuplicateProfile",
+					"@Project.PanelProfiles.Dialog.DuplicateProfile.Error");
 				
 			}else{
 				break;
 			}
 		}
 		
-		projProfile *safeProfile = NULL;
-		projProfile *duplicatedProfile = NULL;
-		igdeUndoReference undo;
-		
 		try{
-			duplicatedProfile = new projProfile( *profile );
-			duplicatedProfile->SetName( name );
-			undo.TakeOver( new projUProfileAdd( project, duplicatedProfile ) );
-			safeProfile = duplicatedProfile;
-			duplicatedProfile->FreeReference();
-			duplicatedProfile = NULL;
+			const projProfile::Ref duplicated(projProfile::Ref::New(*profile));
+			duplicated->SetName(name);
 			
-			project->GetUndoSystem()->Add( undo );
+			project->GetUndoSystem()->Add(projUProfileAdd::Ref::New(project, duplicated));
+			project->SetActiveProfile(duplicated);
 			
-		}catch( const deException &e ){
-			if( duplicatedProfile ){
-				duplicatedProfile->FreeReference();
-			}
-			pWindow.DisplayException( e );
-			return;
+		}catch(const deException &e){
+			pWindow.DisplayException(e);
+			project->SetActiveProfile(nullptr);
 		}
-		
-		project->SetActiveProfile( safeProfile );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile() );
+	void Update() override{
+		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
 
 
 class cActionProfileDistribute : public cActionBase{
 public:
-	cActionProfileDistribute( projWindowMain &window ) : cActionBase( window, "Build DELGA...",
-		window.GetIconDelga(), "Build DELGA file using selected profile", deInputEvent::ekcD ){}
+	typedef deTObjectReference<cActionProfileDistribute> Ref;
 	
-	virtual void OnAction(){
+	cActionProfileDistribute(projWindowMain &window) : cActionBase(window, "@Project.Action.ProfileDistribute",
+		window.GetIconDelga(), "@Project.Action.ProfileDistribute.Description", deInputEvent::ekcD){}
+	
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
-		if( ! project || ! project->GetActiveProfile() ){
+		if(!project || !project->GetActiveProfile()){
 			return;
 		}
 		
-		if( project->GetChanged() ){
+		if(project->GetChanged()){
 			pWindow.SaveProject();
 		}
 		pWindow.SaveProjectLocal();
 		
-		if( ! pWindow.GetEnvironment().RequestSaveDocuments( "Distribute",
-		"Unsaved changes are present. To projribute it is recommended to save them" ) ){
+		if(!pWindow.GetEnvironment().RequestSaveDocuments(pWindow.Translate("Project.Action.ProfileDistribute").ToUTF8(),
+		pWindow.Translate("Project.PanelProfiles.Dialog.Distribute.RequestSave").ToUTF8())){
 			return;
 		}
 		
-		igdeDialogReference dialog;
-		dialog.TakeOver( new projDialogDistribute( pWindow, project->GetActiveProfile() ) );
-		dialog->Run( &pWindow );
+		projDialogDistribute::Ref::New(pWindow, project->GetActiveProfile())->Run(&pWindow);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile() );
+	void Update() override{
+		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
 
 
 class cActionProfileTestRun : public cActionBase{
 public:
-	cActionProfileTestRun( projWindowMain &window ) : cActionBase( window,
-		"Test-Run...", window.GetIconStart(), "Test-Run selected profile", deInputEvent::ekcR ){}
+	typedef deTObjectReference<cActionProfileTestRun> Ref;
 	
-	virtual void OnAction(){
+	cActionProfileTestRun(projWindowMain &window) : cActionBase(window,
+		"@Project.Action.ProfileTestRun", window.GetIconStart(), "@Project.Action.ProfileTestRun.Description", deInputEvent::ekcR){}
+	
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
-		if( ! project ){
+		if(!project){
 			return;
 		}
 		
 		projProfile * const profile = project->GetActiveProfile();
-		if( ! profile ){
+		if(!profile){
 			return;
 		}
 		
 		pWindow.ActivatePanelTestRun();
-		pWindow.GetPanelTestRun().SelectProfile( profile );
+		pWindow.GetPanelTestRun().SelectProfile(profile);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile() );
+	void Update() override{
+		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
 
@@ -785,259 +742,256 @@ public:
 //////////////////////
 
 void projWindowMain::pLoadIcons(){
-	pIconStart.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/start.png" ) );
-	pIconStop.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/stop.png" ) );
-	pIconKill.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/kill.png" ) );
-	pIconDelga.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/delga.png" ) );
+	pIconStart = igdeIcon::LoadPNG(GetEditorModule(), "icons/start.png");
+	pIconStop = igdeIcon::LoadPNG(GetEditorModule(), "icons/stop.png");
+	pIconKill = igdeIcon::LoadPNG(GetEditorModule(), "icons/kill.png");
+	pIconDelga = igdeIcon::LoadPNG(GetEditorModule(), "icons/delga.png");
 }
 
 void projWindowMain::pCreateActions(){
 	igdeEnvironment &env = GetEnvironment();
 	
-	pActionDistSave.TakeOver( new cActionDistSave( *this ) );
-	pActionEditUndo.TakeOver( new igdeActionUndo( env ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( env ) );
-	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
-	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
-	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
-	pActionProfileAdd.TakeOver( new cActionProfileAdd( *this ) );
-	pActionProfileRemove.TakeOver( new cActionProfileRemove( *this ) );
-	pActionProfileDuplicate.TakeOver( new cActionProfileDuplicate( *this ) );
-	pActionProfileDistribute.TakeOver( new cActionProfileDistribute( *this ) );
-	pActionProfileTestRun.TakeOver( new cActionProfileTestRun( *this ) );
+	pActionDistSave = cActionDistSave::Ref::New(*this);
+	pActionEditUndo = igdeActionUndo::Ref::New(env);
+	pActionEditRedo = igdeActionRedo::Ref::New(env);
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
+	pActionProfileAdd = cActionProfileAdd::Ref::New(*this);
+	pActionProfileRemove = cActionProfileRemove::Ref::New(*this);
+	pActionProfileDuplicate = cActionProfileDuplicate::Ref::New(*this);
+	pActionProfileDistribute = cActionProfileDistribute::Ref::New(*this);
+	pActionProfileTestRun = cActionProfileTestRun::Ref::New(*this);
 	
-	pActionShowDelga.TakeOver( new igdeActionExternOpen( env,
-		"Browse DELGA", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open DELGA Directory in File Manager" ) );
+	pActionShowDelga = igdeActionExternOpen::Ref::New(env,
+		"@Project.Action.ShowDelga", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowDelga.Description");
 	
-	pActionShowContent.TakeOver( new igdeActionExternOpen( env,
-		"Browse Content", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open Content directory in File Manager" ) );
+	pActionShowContent = igdeActionExternOpen::Ref::New(env,
+		"@Project.Action.ShowContent", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowContent.Description");
 	
-	pActionShowConfig.TakeOver( new igdeActionExternOpen( env,
-		"Browse Run Config", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open Run-Time Configuration Directory in File Manager" ) );
+	pActionShowConfig = igdeActionExternOpen::Ref::New(env,
+		"@Project.Action.ShowConfig", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowConfig.Description");
 	
-	pActionShowOverlay.TakeOver( new igdeActionExternOpen( env,
-		"Browse Run Overlay", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open Run-Time Overlay Directory in File Manager" ) );
+	pActionShowOverlay = igdeActionExternOpen::Ref::New(env,
+		"@Project.Action.ShowOverlay", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowOverlay.Description");
 	
-	pActionShowCapture.TakeOver( new igdeActionExternOpen( env,
-		"Browse Run Capture", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open Run-Time Capture Directory in File Manager" ) );
+	pActionShowCapture = igdeActionExternOpen::Ref::New(env,
+		"@Project.Action.ShowCapture", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowCapture.Description");
 	
-	pActionShowLogs.TakeOver( new igdeActionExternOpen( env,
-		"Open Run Logs", env.GetStockIcon( igdeEnvironment::esiOpen ),
-		"Open Run-Time Log File in External Application" ) );
+	pActionShowLogs = igdeActionExternOpen::Ref::New(env,
+		"@Project.Action.ShowLogs", env.GetStockIcon(igdeEnvironment::esiOpen),
+		"@Project.Action.ShowLogs.Description");
 }
 
 void projWindowMain::pCreateToolBarDistribute(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBDistribute.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBDistribute = igdeToolBar::Ref::New(GetEnvironment());
 	
-	helper.ToolBarButton( pTBDistribute, pActionDistSave );
+	helper.ToolBarButton(pTBDistribute, pActionDistSave);
 	
-	AddSharedToolBar( pTBDistribute );
+	AddSharedToolBar(pTBDistribute);
 }
 
 void projWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
-	helper.ToolBarButton( pTBEdit, pActionEditUndo );
-	helper.ToolBarButton( pTBEdit, pActionEditRedo );
+	helper.ToolBarButton(pTBEdit, pActionEditUndo);
+	helper.ToolBarButton(pTBEdit, pActionEditRedo);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditCut );
-	helper.ToolBarButton( pTBEdit, pActionEditCopy );
-	helper.ToolBarButton( pTBEdit, pActionEditPaste );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditCut);
+	helper.ToolBarButton(pTBEdit, pActionEditCopy);
+	helper.ToolBarButton(pTBEdit, pActionEditPaste);
 	
-	AddSharedToolBar( pTBEdit );
+	AddSharedToolBar(pTBEdit);
 }
 
 void projWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Project", deInputEvent::ekcD ) );
-	pCreateMenuDistribute( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Project.Menu.Project", deInputEvent::ekcD);
+	pCreateMenuDistribute(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
-	pCreateMenuEdit( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Project.Menu.Edit", deInputEvent::ekcE);
+	pCreateMenuEdit(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Profile", deInputEvent::ekcP ) );
-	pCreateMenuProfile( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Project.Menu.Profile", deInputEvent::ekcP);
+	pCreateMenuProfile(cascade);
+	AddSharedMenu(cascade);
 }
 
-void projWindowMain::pCreateMenuDistribute( igdeMenuCascade &menu ){
+void projWindowMain::pCreateMenuDistribute(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionDistSave );
+	helper.MenuCommand(menu, pActionDistSave);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionShowContent );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionShowContent);
 }
 
-void projWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
+void projWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEditUndo );
-	helper.MenuCommand( menu, pActionEditRedo );
+	helper.MenuCommand(menu, pActionEditUndo);
+	helper.MenuCommand(menu, pActionEditRedo);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditCut );
-	helper.MenuCommand( menu, pActionEditCopy );
-	helper.MenuCommand( menu, pActionEditPaste );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditCut);
+	helper.MenuCommand(menu, pActionEditCopy);
+	helper.MenuCommand(menu, pActionEditPaste);
 }
 
-void projWindowMain::pCreateMenuProfile( igdeMenuCascade &menu ){
+void projWindowMain::pCreateMenuProfile(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionProfileAdd );
-	helper.MenuCommand( menu, pActionProfileRemove );
+	helper.MenuCommand(menu, pActionProfileAdd);
+	helper.MenuCommand(menu, pActionProfileRemove);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionProfileDistribute );
-	helper.MenuCommand( menu, pActionShowDelga );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionProfileDistribute);
+	helper.MenuCommand(menu, pActionShowDelga);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionProfileTestRun );
-	helper.MenuCommand( menu, pActionShowLogs );
-	helper.MenuCommand( menu, pActionShowConfig );
-	helper.MenuCommand( menu, pActionShowOverlay );
-	helper.MenuCommand( menu, pActionShowCapture );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionProfileTestRun);
+	helper.MenuCommand(menu, pActionShowLogs);
+	helper.MenuCommand(menu, pActionShowConfig);
+	helper.MenuCommand(menu, pActionShowOverlay);
+	helper.MenuCommand(menu, pActionShowCapture);
 }
 
-bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments ){
+bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 	// --project.profile.distribute <profile>
 	
-	DEASSERT_NOTNULL( pProject );
+	DEASSERT_NOTNULL(pProject);
 	
 	projProfile *profile = nullptr;
 	
-	while( arguments.GetCount() > 0 ){
-		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
-		arguments.RemoveFrom( 0 );
+	while(arguments.GetCount() > 0){
+		const decString arg(arguments.GetAt(0).ToUTF8());
+		arguments.RemoveFrom(0);
 		
-		if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+		if(arg.BeginsWith("--") || arg.BeginsWith("-")){
 			decString message;
-			message.Format( "Unknown argument '%s'", arg.GetString() );
-			DETHROW_INFO( deeInvalidParam, message );
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
+			DETHROW_INFO(deeInvalidParam, message);
 			
-		}else if( ! profile ){
-			profile = pProject->GetProfiles().GetNamed( arg );
-			if( ! profile ){
+		}else if(!profile){
+			profile = pProject->GetProfiles().FindNamed(arg);
+			if(!profile){
 				decString message;
-				message.Format( "Unknown profile '%s'", arg.GetString() );
-				DETHROW_INFO( deeInvalidParam, message );
+				message.FormatSafe(Translate("Project.WindowMain.Error.UnknownProfile").ToUTF8(), arg.GetString());
+				DETHROW_INFO(deeInvalidParam, message);
 			}
 			
 		}else{
 			decString message;
-			message.Format( "Unknown argument '%s'", arg.GetString() );
-			DETHROW_INFO( deeInvalidParam, message );
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
+			DETHROW_INFO(deeInvalidParam, message);
 		}
 	}
 	
-	if( ! profile ){
-		DETHROW_INFO( deeInvalidParam, "Missing argument: profile" );
+	if(!profile){
+		DETHROW_INFO(deeInvalidParam, Translate("Project.WindowMain.Error.MissingArgumentProfile").ToUTF8());
 	}
 	
-	GetEnvironment().ActivateEditor( &GetEditorModule() );
+	GetEnvironment().ActivateEditor(&GetEditorModule());
 	
-	const projDialogDistribute::Ref dialog( projDialogDistribute::Ref::New(
-		new projDialogDistribute( *this, profile ) ) );
-	dialog->SetCloseDialogOnFinished( true );
-	dialog->SetPrintToConsole( true );
-	dialog->Run( this );
+	const projDialogDistribute::Ref dialog(projDialogDistribute::Ref::New(*this, profile));
+	dialog->SetCloseDialogOnFinished(true);
+	dialog->SetPrintToConsole(true);
+	dialog->Run(this);
 	
-	if( ! dialog->GetSuccess() ){
-		DETHROW_INFO( deeInvalidAction, "Distribute failed" );
+	if(!dialog->GetSuccess()){
+		DETHROW_INFO(deeInvalidAction, Translate("Project.WindowMain.Error.DistributeFailed").ToUTF8());
 	}
 	
 	return false;
 }
 
-bool projWindowMain::pCmdLineProfileDistributeFile( decUnicodeStringList &arguments ){
+bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &arguments){
 	// --project.profile.distribute.file <profile>
 	
-	DEASSERT_NOTNULL( pProject );
+	DEASSERT_NOTNULL(pProject);
 	
 	projProfile *profile = nullptr;
 	
-	while( arguments.GetCount() > 0 ){
-		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
-		arguments.RemoveFrom( 0 );
+	while(arguments.GetCount() > 0){
+		const decString arg(arguments.GetAt(0).ToUTF8());
+		arguments.RemoveFrom(0);
 		
-		if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+		if(arg.BeginsWith("--") || arg.BeginsWith("-")){
 			decString message;
-			message.Format( "Unknown argument '%s'", arg.GetString() );
-			DETHROW_INFO( deeInvalidParam, message );
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
+			DETHROW_INFO(deeInvalidParam, message);
 			
-		}else if( ! profile ){
-			profile = pProject->GetProfiles().GetNamed( arg );
-			if( ! profile ){
+		}else if(!profile){
+			profile = pProject->GetProfiles().FindNamed(arg);
+			if(!profile){
 				decString message;
-				message.Format( "Unknown profile '%s'", arg.GetString() );
-				DETHROW_INFO( deeInvalidParam, message );
+				message.FormatSafe(Translate("Project.WindowMain.Error.UnknownProfile").ToUTF8(), arg.GetString());
+				DETHROW_INFO(deeInvalidParam, message);
 			}
 			
 		}else{
 			decString message;
-			message.Format( "Unknown argument '%s'", arg.GetString() );
-			DETHROW_INFO( deeInvalidParam, message );
+			message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arg.GetString());
+			DETHROW_INFO(deeInvalidParam, message);
 		}
 	}
 	
-	if( ! profile ){
-		DETHROW_INFO( deeInvalidParam, "Missing argument: profile" );
+	if(!profile){
+		DETHROW_INFO(deeInvalidParam, Translate("Project.WindowMain.Error.MissingArgumentProfile").ToUTF8());
 	}
 	
-	GetEnvironment().ActivateEditor( &GetEditorModule() );
+	GetEnvironment().ActivateEditor(&GetEditorModule());
 	
 	decPath path;
-	path.SetFromNative( pProject->GetDirectoryPath() );
-	path.AddUnixPath( profile->GetDelgaPath() );
-	printf( "%s\n", path.GetPathNative().GetString() );
+	path.SetFromNative(pProject->GetDirectoryPath());
+	path.AddUnixPath(profile->GetDelgaPath());
+	printf("%s\n", path.GetPathNative().GetString());
 	
 	return false;
 }
 
-bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
+bool projWindowMain::pCmdLineProfileList(decUnicodeStringList &arguments){
 	// --project.profile.list
 	
-	DEASSERT_NOTNULL( pProject );
+	DEASSERT_NOTNULL(pProject);
 	
-	if( arguments.GetCount() > 0 ){
+	if(arguments.GetCount() > 0){
 		decString message;
-		message.Format( "Unknown argument '%s'", arguments.GetAt( 0 ).ToUTF8().GetString() );
-		DETHROW_INFO( deeInvalidParam, message );
+		message.FormatSafe(Translate("Project.WindowMain.Error.UnknownArgument").ToUTF8(), arguments.GetAt(0).ToUTF8().GetString());
+		DETHROW_INFO(deeInvalidParam, message);
 	}
 	
-	const int count = pProject->GetProfiles().GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		printf( "%s\n", pProject->GetProfiles().GetAt( i )->GetName().GetString() );
-	}
+	pProject->GetProfiles().Visit([&](const projProfile &profile){
+		printf("%s\n", profile.GetName().GetString());
+	});
 	
 	return false;
 }
 
 void projWindowMain::pCmdLineHelp(){
-	printf( "\n" );
-	printf( "deigde <path-project.degp> --project.profile.distribute <profile>\n" );
-	printf( "   Build distribution file (*.delga) for profile in game project.\n" );
+	printf("\n");
+	printf("deigde <path-project.degp> --project.profile.distribute <profile>\n");
+	printf("%s", Translate("Project.WindowMain.Syntax1").ToUTF8().GetString());
 	
-	printf( "\n" );
-	printf( "deigde <path-project.degp> --project.profile.distribute.file <profile>\n" );
-	printf( "   Absolute path to distribution file (*.delga).\n" );
+	printf("\n\n");
+	printf("deigde <path-project.degp> --project.profile.distribute.file <profile>\n");
+	printf("%s", Translate("Project.WindowMain.Syntax2").ToUTF8().GetString());
 	
-	printf( "\n" );
-	printf( "deigde <path-project.degp> --project.profile.list\n" );
-	printf( "   List all profiles in game project. Prints each profile name on a new line.\n" );
+	printf("\n\n");
+	printf("deigde <path-project.degp> --project.profile.list\n");
+	printf("%s", Translate("Project.WindowMain.Syntax3").ToUTF8().GetString());
 }

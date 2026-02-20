@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXSPACER_H_
 
 #include "foxtoolkit.h"
+#include "../../igdeSpacer.h"
 
 class igdeSpacer;
 
@@ -33,8 +34,8 @@ class igdeSpacer;
 /**
  * \brief FOX toolkit Native Spacer.
  */
-class igdeNativeFoxSpacer : public FXFrame{
-	FXDECLARE( igdeNativeFoxSpacer )
+class igdeNativeFoxSpacer : public FXFrame, public igdeSpacer::cNativeSpacer{
+	FXDECLARE(igdeNativeFoxSpacer)
 protected:
 	igdeNativeFoxSpacer();
 	
@@ -42,13 +43,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeFoxSpacer( igdeSpacer &owner, FXComposite *parent, int childFlags );
+	igdeNativeFoxSpacer(igdeSpacer &owner, FXComposite *parent, int childFlags);
 	
 	/** \brief Clean up container. */
-	virtual ~igdeNativeFoxSpacer();
+	~igdeNativeFoxSpacer() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSpacer* CreateNativeWidget( igdeSpacer &owner );
+	static igdeNativeFoxSpacer* CreateNativeWidget(igdeSpacer &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -62,13 +63,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Set size. */
-	virtual void SetSize( int width, int height );
+	void SetSize(int width, int height) override;
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	
 	/** \brief Process layout flags. */
-	static int LayoutFlags( int childFlags );
+	static int LayoutFlags(int childFlags);
 	/*@}*/
 	
 private:
@@ -77,6 +78,6 @@ private:
 	int pHeight;
 };
 
-typedef igdeNativeFoxSpacer igdeNativeSpacer;
+using igdeNativeSpacer = igdeNativeFoxSpacer;
 
 #endif

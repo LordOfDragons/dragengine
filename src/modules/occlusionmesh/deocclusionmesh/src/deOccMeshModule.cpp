@@ -28,7 +28,6 @@
 
 #include "deOccMeshModule.h"
 #include "deoccmWeightSet.h"
-#include "deoccmWeightSetList.h"
 
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshBone.h>
@@ -48,20 +47,20 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DEOccMeshCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DEOccMeshCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *DEOccMeshCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *DEOccMeshCreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deOccMeshModule( *loadableModule );
+		module = new deOccMeshModule(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 	
 	return module;
@@ -90,8 +89,8 @@ struct sWeight{
 // Constructor, destructor
 ////////////////////////////
 
-deOccMeshModule::deOccMeshModule( deLoadableModule &loadableModule ) :
-deBaseOcclusionMeshModule( loadableModule ){
+deOccMeshModule::deOccMeshModule(deLoadableModule &loadableModule) :
+deBaseOcclusionMeshModule(loadableModule){
 }
 
 deOccMeshModule::~deOccMeshModule(){
@@ -102,12 +101,12 @@ deOccMeshModule::~deOccMeshModule(){
 // Loading and Saving
 ///////////////////////
 
-void deOccMeshModule::LoadOcclusionMesh( decBaseFileReader &file, deOcclusionMesh &occmesh ){
-	pLoadMesh( file, occmesh );
+void deOccMeshModule::LoadOcclusionMesh(decBaseFileReader &file, deOcclusionMesh &occmesh){
+	pLoadMesh(file, occmesh);
 }
 
-void deOccMeshModule::SaveOcclusionMesh( decBaseFileWriter &file, const deOcclusionMesh &occmesh ){
-	DETHROW( deeInvalidAction );
+void deOccMeshModule::SaveOcclusionMesh(decBaseFileWriter &file, const deOcclusionMesh &occmesh){
+	DETHROW(deeInvalidAction);
 }
 
 
@@ -115,49 +114,48 @@ void deOccMeshModule::SaveOcclusionMesh( decBaseFileWriter &file, const deOcclus
 // Private Functions
 //////////////////////
 
-void deOccMeshModule::pLoadMesh( decBaseFileReader &reader, deOcclusionMesh &mesh ){
+void deOccMeshModule::pLoadMesh(decBaseFileReader &reader, deOcclusionMesh &mesh){
 	const char *signature = "Drag[en]gine Occlusion Mesh";
-	char sigbuf[ 27 ];
+	char sigbuf[27];
 	sMeshInfos infos;
 	
 	// check signature
-	reader.Read( &sigbuf, 27 );
-	if( strncmp( sigbuf, signature, 27 ) != 0 ){
-		DETHROW( deeInvalidFormat );
+	reader.Read(&sigbuf, 27);
+	if(strncmp(sigbuf, signature, 27) != 0){
+		DETHROW(deeInvalidFormat);
 	}
 	
 	// read infos
-	infos.version = ( int )reader.ReadUShort();
-	infos.flags = ( int )reader.ReadUShort();
-	infos.boneCount = ( int )reader.ReadUShort();
-	infos.weightSetList = NULL;
+	infos.version = (int)reader.ReadUShort();
+	infos.flags = (int)reader.ReadUShort();
+	infos.boneCount = (int)reader.ReadUShort();
+	infos.weightSetList = new deoccmWeightSet::List;
 	
 	try{
-		infos.weightSetList = new deoccmWeightSetList;
 		
-		if( infos.version == 1 ){
-			infos.weightsCount = ( int )reader.ReadUShort();
-			infos.vertexCount = ( int )reader.ReadUShort();
-			infos.cornerCount = ( int )reader.ReadUShort();
-			infos.faceCount = ( int )reader.ReadUShort();
-			infos.doubleSidedFaceCount = ( int )reader.ReadUShort();
+		if(infos.version == 1){
+			infos.weightsCount = (int)reader.ReadUShort();
+			infos.vertexCount = (int)reader.ReadUShort();
+			infos.cornerCount = (int)reader.ReadUShort();
+			infos.faceCount = (int)reader.ReadUShort();
+			infos.doubleSidedFaceCount = (int)reader.ReadUShort();
 			
-			mesh.SetBoneCount( infos.boneCount );
-			mesh.SetVertexCount( infos.vertexCount );
-			mesh.SetCornerCount( infos.cornerCount );
-			mesh.SetFaceCount( infos.faceCount );
-			mesh.SetDoubleSidedFaceCount( infos.doubleSidedFaceCount );
+			mesh.GetBones().AddRange(infos.boneCount, {});
+			mesh.GetVertices().AddRange(infos.vertexCount, {});
+			mesh.GetCorners().AddRange(infos.cornerCount, {});
+			mesh.GetFaces().AddRange(infos.faceCount, {});
+			mesh.SetDoubleSidedFaceCount(infos.doubleSidedFaceCount);
 			
-			pLoadBones( reader, mesh, infos );
-			pLoadWeights( reader, mesh, infos );
-			pLoadVertices( reader, mesh, infos );
-			pLoadFaces( reader, mesh, infos );
+			pLoadBones(reader, mesh, infos);
+			pLoadWeights(reader, mesh, infos);
+			pLoadVertices(reader, mesh, infos);
+			pLoadFaces(reader, mesh, infos);
 		}
 		
 		delete infos.weightSetList;
 		
-	}catch( const deException & ){
-		if( infos.weightSetList ){
+	}catch(const deException &){
+		if(infos.weightSetList){
 			delete infos.weightSetList;
 		}
 		
@@ -165,155 +163,147 @@ void deOccMeshModule::pLoadMesh( decBaseFileReader &reader, deOcclusionMesh &mes
 	}
 }
 
-void deOccMeshModule::pLoadBones( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos ){
+void deOccMeshModule::pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
 	decString name;
-	int b, parent;
+	int b;
 	
-	for( b=0; b<infos.boneCount; b++ ){
-		deOcclusionMeshBone &bone = mesh.GetBoneAt( b );
+	for(b=0; b<infos.boneCount; b++){
+		deOcclusionMeshBone &bone = mesh.GetBones()[b];
 		
-		reader.ReadString8Into( name );
-		if( mesh.HasBoneNamed( name.GetString() ) ){
-			DETHROW( deeInvalidFormat );
+		reader.ReadString8Into(name);
+		if(mesh.HasBoneNamed(name.GetString())){
+			DETHROW(deeInvalidFormat);
 		}
 		
-		bone.SetName( name.GetString() );
-		bone.SetPosition( reader.ReadVector() );
-		bone.SetOrientation( reader.ReadQuaternion() );
+		bone.SetName(name.GetString());
+		bone.SetPosition(reader.ReadVector());
+		bone.SetOrientation(reader.ReadQuaternion());
 		
-		parent = ( int )( reader.ReadUShort() ) - 1;
-		if( parent >= infos.boneCount || parent == b ){
-			DETHROW( deeInvalidFormat );
+		const int parent = (int)(reader.ReadUShort()) - 1;
+		if(parent >= infos.boneCount || parent == b){
+			DETHROW(deeInvalidFormat);
 		}
-		bone.SetParent( parent );
+		bone.SetParent(parent);
 	}
 }
 
-void deOccMeshModule::pLoadWeights( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos ){
-	deoccmWeightSet *weightSet = NULL;
-	int w, b, boneCount;
+void deOccMeshModule::pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
+	int w;
 	float factor;
 	int bone;
 	
-	try{
-		for( w=0; w<infos.weightsCount; w++ ){
-			weightSet = new deoccmWeightSet;
-			
-			boneCount = ( int )reader.ReadByte();
-			for( b=0; b<boneCount; b++ ){
-				bone = ( int )reader.ReadUShort();
-				if( bone >= infos.boneCount ){
-					DETHROW( deeInvalidFormat );
-				}
-				
-				factor = ( float )reader.ReadUShort() / 1000.0f;
-				
-				weightSet->Set( bone, factor );
+	for(w=0; w<infos.weightsCount; w++){
+		deoccmWeightSet::Ref weightSet = deoccmWeightSet::Ref::New();
+		
+		const int boneCount = (int)reader.ReadByte();
+		int b;
+		for(b=0; b<boneCount; b++){
+			bone = (int)reader.ReadUShort();
+			if(bone >= infos.boneCount){
+				DETHROW(deeInvalidFormat);
 			}
 			
-			weightSet->Normalize();
+			factor = (float)reader.ReadUShort() / 1000.0f;
 			
-			infos.weightSetList->Add( weightSet );
-			weightSet = NULL;
+			weightSet->Set(bone, factor);
 		}
 		
-	}catch( const deException & ){
-		if( weightSet ){
-			delete weightSet;
-		}
-		
-		throw;
+		weightSet->Normalize();
+		infos.weightSetList->Add(std::move(weightSet));
 	}
 	
 	// add weights sorted by the number of weights stored inside from the lowest to the highest
-	const int weightGroupCount = infos.weightSetList->GetLargestWeightCount();
+	const int weightGroupCount = infos.weightSetList->Inject(0, [](int largest, const deoccmWeightSet &ws){
+		return decMath::max(largest, ws.GetWeights().GetCount());
+	});
 	const int weightSetCount = infos.weightSetList->GetCount();
 	int i, j, k, weightCount = 0, weightSetIndex = 0;
 	
-	for( i=0; i<weightSetCount; i++ ){
-		weightCount += infos.weightSetList->GetAt( i )->GetCount();
+	for(i=0; i<weightSetCount; i++){
+		weightCount += infos.weightSetList->GetAt(i)->GetWeights().GetCount();
 	}
 	
-	mesh.SetWeightGroupCount( weightGroupCount );
-	mesh.SetWeightCount( weightCount );
+	mesh.GetWeightGroups().AddRange(weightGroupCount, {});
+	mesh.GetWeights().AddRange(weightCount, {});
 	
-	deOcclusionMeshWeight * const meshWeights = mesh.GetWeights();
-	int * const meshWeightGroups = mesh.GetWeightGroups();
+	deOcclusionMeshWeight * const meshWeights = mesh.GetWeights().GetArrayPointer();
+	int * const meshWeightGroups = mesh.GetWeightGroups().GetArrayPointer();
 	weightCount = 0;
 	weightSetIndex = 0;
 	
-	for( i=0; i<weightGroupCount; i++ ){
+	for(i=0; i<weightGroupCount; i++){
 		const int tempCount = i + 1;
 		
-		meshWeightGroups[ i ] = 0;
+		meshWeightGroups[i] = 0;
 		
-		for( j=0; j<weightSetCount; j++ ){
-			deoccmWeightSet &weightSet2 = *infos.weightSetList->GetAt( j );
+		for(j=0; j<weightSetCount; j++){
+			deoccmWeightSet &weightSet2 = infos.weightSetList->GetAt(j);
 			
-			if( weightSet2.GetCount() == tempCount ){
-				for( k=0; k<tempCount; k++ ){
-					meshWeights[ weightCount + k ].SetBone( weightSet2.GetBoneAt( k ) );
-					meshWeights[ weightCount + k ].SetWeight( weightSet2.GetWeightAt( k ) );
+			if(weightSet2.GetWeights().GetCount() == tempCount){
+				for(k=0; k<tempCount; k++){
+					meshWeights[weightCount + k].SetBone(weightSet2.GetWeights()[k].bone);
+					meshWeights[weightCount + k].SetWeight(weightSet2.GetWeights()[k].weight);
 				}
 				
-				weightSet2.SetGroupedIndex( weightSetIndex );
+				weightSet2.SetGroupedIndex(weightSetIndex);
 				
 				weightSetIndex++;
 				weightCount += tempCount;
-				meshWeightGroups[ i ]++;
+				meshWeightGroups[i]++;
 			}
 		}
 	}
 }
 
-void deOccMeshModule::pLoadVertices( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos ){
-	deOcclusionMeshVertex * const vertices = mesh.GetVertices();
-	int v, weights;
+void deOccMeshModule::pLoadVertices(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
+	deOcclusionMeshVertex * const vertices = mesh.GetVertices().GetArrayPointer();
+	int v;
 	
-	for( v=0; v<infos.vertexCount; v++ ){
-		deOcclusionMeshVertex &vertex = vertices[ v ];
+	for(v=0; v<infos.vertexCount; v++){
+		deOcclusionMeshVertex &vertex = vertices[v];
 		
-		weights = ( int )reader.ReadUShort() - 1;
-		if( weights >= infos.weightsCount ){
-			DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+		const int weights = (int)reader.ReadUShort() - 1;
+		if(weights >= infos.weightsCount){
+			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
 		
-		if( weights < 0 ){
-			vertex.SetWeightSet( -1 );
+		if(weights < 0){
+			vertex.SetWeightSet(-1);
 			
 		}else{
-			vertex.SetWeightSet( infos.weightSetList->GetAt( weights )->GetGroupedIndex() );
+			vertex.SetWeightSet(infos.weightSetList->GetAt(weights)->GetGroupedIndex());
 		}
 		
-		vertex.SetPosition( reader.ReadVector() );
+		vertex.SetPosition(reader.ReadVector());
 	}
 }
 
-void deOccMeshModule::pLoadFaces( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos ){
-	unsigned short * const corners = mesh.GetCorners();
-	unsigned short * const faces = mesh.GetFaces();
-	int f, c, cornerCount;
+void deOccMeshModule::pLoadFaces(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos){
+	unsigned short * const corners = mesh.GetCorners().GetArrayPointer();
+	unsigned short * const faces = mesh.GetFaces().GetArrayPointer();
+	int f;
 	int cindex = 0;
 	
 	// NOTE: possible optimization could be to store corner vertex indices only as byte if the
 	// mesh does contain at most 256 vertices. in general though occlusion mesh files are already
 	// rather small to begin with
 	
-	for( f=0; f<infos.faceCount; f++ ){
-		cornerCount = ( int )reader.ReadByte();
+	for(f=0; f<infos.faceCount; f++){
+		const int cornerCount = (int)reader.ReadByte();
 		
-		for( c=0; c<cornerCount; c++ ){
-			if( cindex == infos.cornerCount ){
-				DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+		int c;
+		for(c=0; c<cornerCount; c++){
+			if(cindex == infos.cornerCount){
+				DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 			}
-			corners[ cindex++ ] = reader.ReadUShort();
+			corners[cindex++] = reader.ReadUShort();
 		}
 		
-		faces[ f ] = ( unsigned short )cornerCount;
+		faces[f] = (unsigned short)cornerCount;
 	}
 	
-	if( cindex < infos.cornerCount ){
-		DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+	if(cindex < infos.cornerCount){
+		DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 	}
 }
 
@@ -326,6 +316,8 @@ void deOccMeshModule::pLoadFaces( decBaseFileReader &reader, deOcclusionMesh &me
 
 class deoccmModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<deoccmModuleInternal>;
+	
 	deoccmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEOcclusionMesh");
 		SetDescription("Handles occlusion meshes in the Drag[en]gine occlusion mesh format.");
@@ -347,7 +339,7 @@ public:
 	}
 };
 
-deInternalModule *deoccmRegisterInternalModule(deModuleSystem *system){
-	return new deoccmModuleInternal(system);
+deTObjectReference<deInternalModule> deoccmRegisterInternalModule(deModuleSystem *system){
+	return deoccmModuleInternal::Ref::New(system);
 }
 #endif

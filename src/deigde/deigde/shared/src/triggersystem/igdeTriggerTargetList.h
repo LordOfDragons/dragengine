@@ -25,9 +25,7 @@
 #ifndef _IGDETRIGGERTARGETLIST_H_
 #define _IGDETRIGGERTARGETLIST_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class igdeTriggerTarget;
+#include "igdeTriggerTarget.h"
 
 
 
@@ -36,7 +34,7 @@ class igdeTriggerTarget;
  */
 class DE_DLL_EXPORT igdeTriggerTargetList{
 private:
-	decObjectOrderedSet pTargets;
+	igdeTriggerTarget::List pTargets;
 	
 	
 	
@@ -54,32 +52,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of targets. */
-	int GetCount() const;
-	
-	/** \brief Target at index. */
-	igdeTriggerTarget *GetAt( int position ) const;
-	
-	/** \brief Named target or NULL if absent. */
-	igdeTriggerTarget *GetNamed( const char *name ) const;
+	/** \brief Targets. */
+	inline const igdeTriggerTarget::List &GetTargets() const{ return pTargets; }
 	
 	/** \brief Named target adding it if absent. */
-	igdeTriggerTarget *GetNamedAddIfMissing( const char *name );
-	
-	/** \brief Index of target or -1 if absent. */
-	int IndexOf( igdeTriggerTarget *target ) const;
-	
-	/** \brief Target is present. */
-	bool Has( igdeTriggerTarget *target ) const;
-	
-	/** \brief Named target is present. */
-	bool HasNamed( const char *name ) const;
+	igdeTriggerTarget *GetNamedAddIfMissing(const char *name);
 	
 	/** \brief Add target throwing exception if present. */
-	void Add( igdeTriggerTarget *target );
+	void Add(igdeTriggerTarget *target);
 	
 	/** \brief Remove target throwing exception if absent. */
-	void Remove( igdeTriggerTarget *target );
+	void Remove(igdeTriggerTarget *target);
 	
 	/** \brief Remove all targets. */
 	void RemoveAll();

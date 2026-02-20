@@ -25,20 +25,20 @@
 #ifndef _AEWPLINK_H_
 #define _AEWPLINK_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeLink;
 class aeWindowProperties;
-class aeWPLinkListener;
+#include "aeWPLinkListener.h"
 class aeEditLinkMapping;
 
 
@@ -47,25 +47,29 @@ class aeEditLinkMapping;
  * Link panel.
  */
 class aeWPLink : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<aeWPLink>;
+	
+	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPLinkListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPLinkListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
-	igdeListBoxReference pListLink;
+	igdeListBox::Ref pListLink;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBController;
-	igdeSpinTextFieldReference pSpinRepeat;
-	igdeViewCurveBezierReference pEditCurve;
-	igdeComboBoxFilterReference pCBBone;
-	igdeComboBoxReference pCBBoneParameter;
-	igdeTextFieldReference pEditBoneMinimum;
-	igdeTextFieldReference pEditBoneMaximum;
-	igdeComboBoxFilterReference pCBVertexPositionSet;
-	igdeTextFieldReference pEditVertexPositionSetMinimum;
-	igdeTextFieldReference pEditVertexPositionSetMaximum;
-	igdeCheckBoxReference pChkWrapY;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBController;
+	igdeSpinTextField::Ref pSpinRepeat;
+	igdeViewCurveBezier::Ref pEditCurve;
+	igdeComboBoxFilter::Ref pCBBone;
+	igdeComboBox::Ref pCBBoneParameter;
+	igdeTextField::Ref pEditBoneMinimum;
+	igdeTextField::Ref pEditBoneMaximum;
+	igdeComboBoxFilter::Ref pCBVertexPositionSet;
+	igdeTextField::Ref pEditVertexPositionSetMinimum;
+	igdeTextField::Ref pEditVertexPositionSetMaximum;
+	igdeCheckBox::Ref pChkWrapY;
 	
 	bool pPreventUpdate;
 	
@@ -75,11 +79,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPLink( aeWindowProperties &windowProperties );
+	aeWPLink(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPLink();
+	~aeWPLink() override;
 	/*@}*/
 	
 	
@@ -91,10 +95,10 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Active link. */
 	aeLink *GetLink() const;
@@ -116,6 +120,8 @@ public:
 	
 	/** Update controller list. */
 	void UpdateControllerList();
+	
+	void OnLanguageChanged() override;
 	/*@}*/
 };
 

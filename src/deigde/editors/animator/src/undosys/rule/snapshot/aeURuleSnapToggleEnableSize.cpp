@@ -39,20 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize( aeRuleStateSnapshot *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleSnapshotToggleEnableSize");
 		
-		SetShortInfo( "Rule state snapshot toggle enable size" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleSnapToggleEnableSize::~aeURuleSnapToggleEnableSize(){
 ///////////////
 
 void aeURuleSnapToggleEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 void aeURuleSnapToggleEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleSnapToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableSize::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

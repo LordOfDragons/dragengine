@@ -25,14 +25,12 @@
 #ifndef _CEUCCLOGICREMOVEALL_H_
 #define _CEUCCLOGICREMOVEALL_H_
 
-#include "../../../conversation/condition/ceConversationConditionList.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
+#include "../../../conversation/condition/ceCConditionLogic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class ceCConditionLogic;
-class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -40,11 +38,15 @@ class ceConversationTopic;
  * \brief Undo logic conversation condition remove all conditions.
  */
 class ceUCCLogicRemoveAll : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCLogicRemoveAll>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationConditionList pConditions;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::List pConditions;
 	
 	
 	
@@ -52,11 +54,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCLogicRemoveAll( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionLogic *logic );
+	ceUCCLogicRemoveAll(ceConversationTopic *topic,
+		ceConversationAction *action, ceCConditionLogic *logic);
 	
 	/** \brief Clean up undo object. */
-	virtual ~ceUCCLogicRemoveAll();
+protected:
+	~ceUCCLogicRemoveAll() override;
+public:
 	/*@}*/
 	
 	
@@ -65,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

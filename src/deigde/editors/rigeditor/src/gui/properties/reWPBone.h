@@ -25,17 +25,18 @@
 #ifndef _REWPBONE_H_
 #define _REWPBONE_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include "reWPBoneListener.h"
+#include "../../rig/reRig.h"
+#include "../../rig/bone/reRigBone.h"
+
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
-class reRigBone;
 class reWindowProperties;
-class reWPBoneListener;
 
 
 
@@ -43,25 +44,28 @@ class reWPBoneListener;
  * \brief Rig Panel
  */
 class reWPBone : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<reWPBone>;
+	
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigBone *pBone;
-	reWPBoneListener *pListener;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reWPBoneListener::Ref pListener;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBParent;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditCentralMassPoint;
-	igdeEditVectorReference pEditIKLimitsLower;
-	igdeEditVectorReference pEditIKLimitsUpper;
-	igdeEditVectorReference pEditIKResistance;
-	igdeTextFieldReference pEditMass;
-	igdeCheckBoxReference pChkDynamic;
-	igdeCheckBoxReference pChkIKLockedX;
-	igdeCheckBoxReference pChkIKLockedY;
-	igdeCheckBoxReference pChkIKLockedZ;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBParent;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditCentralMassPoint;
+	igdeEditVector::Ref pEditIKLimitsLower;
+	igdeEditVector::Ref pEditIKLimitsUpper;
+	igdeEditVector::Ref pEditIKResistance;
+	igdeTextField::Ref pEditMass;
+	igdeCheckBox::Ref pChkDynamic;
+	igdeCheckBox::Ref pChkIKLockedX;
+	igdeCheckBox::Ref pChkIKLockedY;
+	igdeCheckBox::Ref pChkIKLockedZ;
 	
 	
 	
@@ -69,11 +73,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPBone( reWindowProperties &windowProperties );
+	reWPBone(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPBone();
+	~reWPBone() override;
 	/*@}*/
 	
 	
@@ -82,16 +86,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Bone. */
-	inline reRigBone *GetBone() const{ return pBone; }
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
 	
 	/** \brief Set bone. */
-	void SetBone( reRigBone *bone );
+	void SetBone(reRigBone *bone);
 	
 	/** \brief Update list of possible parent bone names. */
 	void UpdateParentBoneList();

@@ -48,10 +48,10 @@ public:
 	inline static DSLanguageSupport *self(){ return pSelf; }
 	
 	/** \brief Name of language.*/
-	virtual QString name() const override;
+	QString name() const override;
 	
 	/** \brief Create parse job used by background parser to parse \p url.*/
-	virtual ParseJob *createParseJob( const IndexedString &url ) override;
+	ParseJob *createParseJob(const IndexedString &url) override;
 	
 	/** \brief Code highlighting instance. */
 	ICodeHighlighting *codeHighlighting() const override;
@@ -60,8 +60,8 @@ public:
 	int perProjectConfigPages() const override;
 	
 	/** \brief Create per-project configuration page. */
-	ConfigPage* perProjectConfigPage( int number, const KDevelop::ProjectConfigOptions &options,
-		QWidget *parent ) override;
+	ConfigPage* perProjectConfigPage(int number, const KDevelop::ProjectConfigOptions &options,
+		QWidget *parent) override;
 };
 
 }

@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglParameterFloat( deGraphicOpenGl &oal );
+	deoglParameterFloat(deGraphicOpenGl &oal);
 	/*@}*/
 	
 	
@@ -47,16 +47,16 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	
 	/** Current value. */
 	virtual float GetParameterFloat() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterFloat( float value ) = 0;
+	virtual void SetParameterFloat(float value) = 0;
 	/*@}*/
 };
 

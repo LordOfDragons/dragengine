@@ -40,14 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalModel::deoalModel( deAudioOpenAL &oal, const deModel &model ) :
-pOal( oal ),
-pModel( model ),
-pAModel( new deoalAModel( oal.GetAudioThread(), model ) ){
+deoalModel::deoalModel(deAudioOpenAL &oal, const deModel &model) :
+pOal(oal),
+pModel(model),
+pAModel(deoalAModel::Ref::New(oal.GetAudioThread(), model)){
 }
 
 deoalModel::~deoalModel(){
-	if( pAModel ){
-		pAModel->FreeReference();
-	}
 }

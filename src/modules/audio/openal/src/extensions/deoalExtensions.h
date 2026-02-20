@@ -54,8 +54,8 @@ private:
 	int pVersionMinor;
 	decStringList pStrListExtensions;
 	
-	bool pHasExtension[ EXT_COUNT ];
-	bool pDisableExtension[ EXT_COUNT ];
+	bool pHasExtension[EXT_COUNT];
+	bool pDisableExtension[EXT_COUNT];
 	
 	bool pHasRequiredFunctions;
 	bool pHasEFX;
@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create extensions. */
-	deoalExtensions( deoalAudioThread &audioThread );
+	deoalExtensions(deoalAudioThread &audioThread);
 	
 	/** Clean up extensions. */
 	~deoalExtensions();
@@ -106,13 +106,13 @@ public:
 	
 	
 	/** Extensions is supported. */
-	bool GetHasExtension( eExtensions extension ) const;
+	bool GetHasExtension(eExtensions extension) const;
 	
 	/** Name of extension. */
-	const char *GetExtensionName( eExtensions extension ) const;
+	const char *GetExtensionName(eExtensions extension) const;
 	
 	/** Disable extension. */
-	void DisableExtension( eExtensions extension );
+	void DisableExtension(eExtensions extension);
 	
 	
 	
@@ -140,8 +140,8 @@ private:
 	void pFetchRequiredFunctions();
 	void pFetchOptionalFunctions();
 	
-	void pGetRequiredFunction( void **funcPointer, const char *funcName );
-	void pGetOptionalFunction( void **funcPointer, const char *funcName, int extensionIndex );
+	void pGetRequiredFunction(void **funcPointer, const char *funcName);
+	void pGetOptionalFunction(void **funcPointer, const char *funcName, int extensionIndex);
 	void pGetOptionalFunction(void **funcPointer, const char *funcName,
 		const char *funcName2, int extensionIndex);
 };

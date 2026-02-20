@@ -25,9 +25,9 @@
 #ifndef _IGDEDECONSOLE_H_
 #define _IGDEDECONSOLE_H_
 
-#include "../igdeComboBoxReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeComboBox.h"
+#include "../igdeTextField.h"
+#include "../igdeTextArea.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/unicode/decUnicodeLineBuffer.h>
@@ -40,13 +40,17 @@ class igdeDialogEngine;
  * \brief Panel allowing to send commands directly to the module using the module console ability of the engine.
  */
 class DE_DLL_EXPORT igdeDEConsole : public igdeContainerFlow{
+public:
+	using Ref = deTObjectReference<igdeDEConsole>;
+	
+	
 private:
 	igdeDialogEngine &pDialogEngine;
 	decUnicodeLineBuffer pLog;
 	
-	igdeComboBoxReference pCBModule;
-	igdeTextFieldReference pEditCommand;
-	igdeTextAreaReference pEditLogs;
+	igdeComboBox::Ref pCBModule;
+	igdeTextField::Ref pEditCommand;
+	igdeTextArea::Ref pEditLogs;
 	
 	
 	
@@ -54,13 +58,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEConsole( igdeDialogEngine &dialogEngine );
+	igdeDEConsole(igdeDialogEngine &dialogEngine);
 	
 	
 	
 protected:
 	/** \brief Cleans up panel. */
-	virtual ~igdeDEConsole();
+	~igdeDEConsole() override;
 	/*@}*/
 	
 	
@@ -69,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	void UpdateModulesList();
-	void AddToConsole( decUnicodeString &text );
+	void AddToConsole(decUnicodeString &text);
 	void ClearConsole();
 	
 	/** \brief Send command. */

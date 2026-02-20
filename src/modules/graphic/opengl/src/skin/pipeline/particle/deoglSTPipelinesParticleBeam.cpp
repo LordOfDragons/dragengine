@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesParticleBeam::deoglSTPipelinesParticleBeam( const deoglSkinTexture &texture ) :
-deoglSTPipelinesParticle( texture ){
+deoglSTPipelinesParticleBeam::deoglSTPipelinesParticleBeam(const deoglSkinTexture &texture) :
+deoglSTPipelinesParticle(texture){
 }
 
 deoglSTPipelinesParticleBeam::~deoglSTPipelinesParticleBeam(){
@@ -60,16 +60,16 @@ const char *deoglSTPipelinesParticleBeam::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesParticleBeam::pPreparePipelines( const ChannelInfo &cinfo,
-deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesParticleBeam::pPreparePipelines(const ChannelInfo &cinfo,
+deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmParticle );
-	baseShaderConfig.SetParticleMode( deoglSkinShaderConfig::epmBeam );
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmParticle);
+	baseShaderConfig.SetParticleMode(deoglSkinShaderConfig::epmBeam);
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
-	pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
+	pPrepareGeometryDepthTest(baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
 	// pPrepareMask( baseShaderConfig, cinfo, batched);
 	// pPrepareAllShadow( baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);

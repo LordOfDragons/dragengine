@@ -41,48 +41,27 @@
 ////////////////////////////
 
 ceCAPlayerChoiceOption::ceCAPlayerChoiceOption() :
-pCondition( NULL ),
-pTIMExpanded( true ),
-pTIMConditionExpanded( true ),
-pTIMActionsExpanded( true ){
+
+pTIMExpanded(true),
+pTIMConditionExpanded(true),
+pTIMActionsExpanded(true){
 }
 
-ceCAPlayerChoiceOption::ceCAPlayerChoiceOption( const ceCAPlayerChoiceOption &option ) :
-pText( option.pText ),
-pCondition( NULL ),
-pTIMExpanded( option.pTIMExpanded ),
-pTIMConditionExpanded( option.pTIMConditionExpanded ),
-pTIMActionsExpanded( option.pTIMActionsExpanded )
+ceCAPlayerChoiceOption::ceCAPlayerChoiceOption(const ceCAPlayerChoiceOption &option) :
+pText(option.pText),
+pTIMExpanded(option.pTIMExpanded),
+pTIMConditionExpanded(option.pTIMConditionExpanded),
+pTIMActionsExpanded(option.pTIMActionsExpanded)
 {
-	const ceConversationActionList &actions = option.GetActions();
-	ceConversationAction *action = NULL;
-	int i;
-	
-	try{
-		if( option.pCondition ){
-			SetCondition( option.pCondition->CreateCopy() );
-		}
-		
-		const int count = actions.GetCount();
-		for( i=0; i<count; i++ ){
-			action = actions.GetAt( i )->CreateCopy();
-			pActions.Add( action );
-			action->FreeReference();
-			action = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( action ){
-			action->FreeReference();
-		}
-		pActions.RemoveAll();
-		throw;
+	if(option.pCondition){
+		SetCondition(option.pCondition->CreateCopy());
 	}
+	option.GetActions().Visit([&](const ceConversationAction &a){
+		pActions.Add(a.CreateCopy());
+	});
 }
 
 ceCAPlayerChoiceOption::~ceCAPlayerChoiceOption(){
-	pActions.RemoveAll();
-	SetCondition( NULL );
 }
 
 
@@ -90,24 +69,12 @@ ceCAPlayerChoiceOption::~ceCAPlayerChoiceOption(){
 // Management
 ///////////////
 
-void ceCAPlayerChoiceOption::SetText( const decUnicodeString &text ){
+void ceCAPlayerChoiceOption::SetText(const decUnicodeString &text){
 	pText = text;
 }
 
-void ceCAPlayerChoiceOption::SetCondition( ceConversationCondition *condition ){
-	if( condition == pCondition ){
-		return;
-	}
-	
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	
+void ceCAPlayerChoiceOption::SetCondition(ceConversationCondition *condition){
 	pCondition = condition;
-	
-	if( condition ){
-		condition->AddReference();
-	}
 }
 
 
@@ -115,14 +82,14 @@ void ceCAPlayerChoiceOption::SetCondition( ceConversationCondition *condition ){
 // UI
 ///////
 
-void ceCAPlayerChoiceOption::SetTIMExpanded( bool expanded ){
+void ceCAPlayerChoiceOption::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }
 
-void ceCAPlayerChoiceOption::SetTIMConditionExpanded( bool expanded ){
+void ceCAPlayerChoiceOption::SetTIMConditionExpanded(bool expanded){
 	pTIMConditionExpanded = expanded;
 }
 
-void ceCAPlayerChoiceOption::SetTIMActionsExpanded( bool expanded ){
+void ceCAPlayerChoiceOption::SetTIMActionsExpanded(bool expanded){
 	pTIMActionsExpanded = expanded;
 }

@@ -25,12 +25,12 @@
 #ifndef _IGDEWSKY_H_
 #define _IGDEWSKY_H_
 
-#include "../../gamedefinition/sky/igdeGDSkyReference.h"
+#include "../../gamedefinition/sky/igdeGDSky.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/sky/deSkyInstanceReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeEnvironment;
 
@@ -56,7 +56,7 @@ public:
 		virtual ~cAsyncLoadFinished();
 		
 		/** \brief Loading finished. */
-		virtual void LoadFinished( igdeWSky &wrapper, bool succeeded ) = 0;
+		virtual void LoadFinished(igdeWSky &wrapper, bool succeeded) = 0;
 	};
 	
 	
@@ -64,10 +64,10 @@ public:
 private:
 	igdeEnvironment &pEnvironment;
 	
-	deWorldReference pEngWorld;
-	deSkyInstanceReference pEngSkyInstance;
+	deWorld::Ref pEngWorld;
+	deSkyInstance::Ref pEngSkyInstance;
 	float pMaxLightIntensity;
-	igdeGDSkyReference pGDSky;
+	igdeGDSky::Ref pGDSky;
 	decString pPath;
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;
@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky wrapper. */
-	igdeWSky( igdeEnvironment &environment );
+	igdeWSky(igdeEnvironment &environment);
 	
 	/** \brief Clean up wrapper. */
 	~igdeWSky();
@@ -92,11 +92,11 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief World or NULL. */
-	inline deWorld *GetWorld() const{ return pEngWorld; }
+	/** \brief World or nullptr. */
+	inline const deWorld::Ref &GetWorld() const{ return pEngWorld; }
 	
-	/** \brief Set world or NULL. */
-	void SetWorld( deWorld *world );
+	/** \brief Set world or nullptr. */
+	void SetWorld(deWorld *world);
 	
 	/** \brief Maximum light intensity found in the sky. */
 	inline float GetMaxLightIntensity() const{ return pMaxLightIntensity; }
@@ -105,47 +105,47 @@ public:
 	int GetControllerCount() const;
 	
 	/** \brief Get sky instance controller. */
-	const deSkyController &GetControllerAt( int index ) const;
+	const deSkyController &GetControllerAt(int index) const;
 	
 	/** \brief Set controller value. */
-	void SetControllerValue( int index, float value );
+	void SetControllerValue(int index, float value);
 	
-	/** \brief Get sky or NULL. */
+	/** \brief Get sky or nullptr. */
 	const deSky *GetSky() const;
 	
-	/** \brief Game definition sky or NULL if sky is set manually. */
-	inline igdeGDSky *GetGDSky() const{ return pGDSky; }
+	/** \brief Game definition sky or nullptr if sky is set manually. */
+	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
 	
-	/** \brief Sky path or NULL if sky is set manually. */
+	/** \brief Sky path or nullptr if sky is set manually. */
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set sky to use. */
-	void SetSky( deSky *sky );
+	void SetSky(deSky *sky);
 	
 	/** \brief Set sky from default sky game definition if present. */
 	void SetGDDefaultSky();
 	
 	/** \brief Set sky from game definition sky. */
-	void SetGDSky( igdeGDSky *gdSky );
+	void SetGDSky(igdeGDSky *gdSky);
 	
 	/**
 	 * \brief Set sky from path if present.
 	 * 
 	 * If path exists in game definition stores also the game definition.
 	 */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	
 	
-	/** \brief Asynchronous load finished listener or NULL. */
+	/** \brief Asynchronous load finished listener or nullptr. */
 	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
 	/**
-	 * \brief Set asynchronous load finished listener or NULL.
+	 * \brief Set asynchronous load finished listener or nullptr.
 	 * 
 	 * Caller is responsible to keep the listener alive. Wrapper does not hold reference.
 	 */
-	void SetAsyncLoadFinished( cAsyncLoadFinished *listener );
+	void SetAsyncLoadFinished(cAsyncLoadFinished *listener);
 	
 	
 	
@@ -160,7 +160,7 @@ public:
 	
 	
 private:
-	void pLoadSky( const char *path );
+	void pLoadSky(const char *path);
 	void pCheckAsyncLoadFinished();
 };
 

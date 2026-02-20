@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "dePropFieldType.h"
 #include "dePropFieldInstance.h"
 #include "dePropFieldBendState.h"
@@ -43,95 +40,35 @@
 dePropFieldType::dePropFieldType(){
 	pRotationPerForce = 5.0f;
 	pRestitution = 0.5f;
-	
-	pInstances = NULL;
-	pInstanceCount = 0;
-	
-	pBendStates = NULL;
-	pBendStateCount = 0;
 }
 
-dePropFieldType::~dePropFieldType(){
-	if( pBendStates ) delete [] pBendStates;
-	if( pInstances ) delete [] pInstances;
-}
+dePropFieldType::~dePropFieldType() = default;
 
 
 
 // Management
 ///////////////
 
-void dePropFieldType::SetModel( deModel *model ){
+void dePropFieldType::SetModel(deModel *model){
 	pModel = model;
 }
 
-void dePropFieldType::SetSkin( deSkin *skin ){
+void dePropFieldType::SetSkin(deSkin *skin){
 	pSkin = skin;
 }
 
-void dePropFieldType::SetRotationPerForce( float rotation ){
-	if( rotation < 0.0f ) rotation = 0.0f;
+void dePropFieldType::SetRotationPerForce(float rotation){
+	if(rotation < 0.0f) rotation = 0.0f;
 	
 	pRotationPerForce = rotation;
 }
 
-void dePropFieldType::SetRestitution( float restitution ){
-	if( restitution < 0.0f ) restitution = 0.0f;
+void dePropFieldType::SetRestitution(float restitution){
+	if(restitution < 0.0f) restitution = 0.0f;
 	
 	pRestitution = restitution;
 }
 
-void dePropFieldType::SetCollisionFilter( const decCollisionFilter &collisionFilter ){
+void dePropFieldType::SetCollisionFilter(const decCollisionFilter &collisionFilter){
 	pCollisionFilter = collisionFilter;
-}
-
-void dePropFieldType::SetInstanceCount( int count ){
-	if( count < 0 ) DETHROW( deeInvalidParam );
-	
-	dePropFieldInstance *instances = NULL;
-	
-	if( count > 0 ){
-		instances = new dePropFieldInstance[ count ];
-		if( ! instances ) DETHROW( deeOutOfMemory );
-	}
-	
-	if( pInstances ) delete [] pInstances;
-	pInstances = instances;
-	pInstanceCount = count;
-}
-
-dePropFieldInstance &dePropFieldType::GetInstanceAt( int index ) const{
-	if( index < 0 || index >= pInstanceCount ) DETHROW( deeInvalidParam );
-	
-	return pInstances[ index ];
-}
-
-
-
-void dePropFieldType::SetBendStateCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( count == pBendStateCount ){
-		return;
-	}
-	
-	dePropFieldBendState *bendStates = NULL;
-	
-	if( count > 0 ){
-		bendStates = new dePropFieldBendState[ count ];
-	}
-	
-	if( pBendStates ){
-		delete [] pBendStates;
-	}
-	pBendStates = bendStates;
-	pBendStateCount = count;
-}
-
-dePropFieldBendState &dePropFieldType::GetBendStateAt( int index ) const{
-	if( index < 0 || index >= pBendStateCount ) DETHROW( deeInvalidParam );
-	
-	return pBendStates[ index ];
 }

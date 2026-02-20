@@ -32,7 +32,8 @@
 #include <openvr/openvr.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDeviceButton.h>
@@ -58,7 +59,6 @@ public:
 	typedef deTObjectReference<deovrDevice> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	
@@ -79,26 +79,25 @@ private:
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	deovrRenderModel::Ref pRenderModel;
 	deovrTextureMap::Ref pTextureMap;
 	
-	decObjectOrderedSet pButtons;
-	decObjectOrderedSet pAxes;
-	decObjectOrderedSet pFeedbacks;
-	decObjectOrderedSet pComponents;
+	decTObjectOrderedSet<deovrDeviceButton> pButtons;
+	decTObjectOrderedSet<deovrDeviceAxis> pAxes;
+	decTObjectOrderedSet<deovrDeviceFeedback> pFeedbacks;
+	decTObjectOrderedSet<deovrDeviceComponent> pComponents;
 	
 	vr::VRControllerState_t pState;
 	vr::InputPoseActionData_t pDevicePoseData;
 	vr::VRSkeletalSummaryData_t pSkeletalSummeryData;
-	vr::VRBoneTransform_t *pBoneTransformData;
+	decTList<vr::VRBoneTransform_t> pBoneTransformData;
 	int pBoneCount;
 	
 	deInputDevicePose pPoseDevice;
-	deInputDevicePose *pPoseBones;
-	int pPoseBoneCount;
+	decTList<deInputDevicePose> pPoseBones;
 	
 	
 	
@@ -106,7 +105,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	deovrDevice( deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex );
+	deovrDevice(deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex);
 	
 protected:
 	/** Clean up device. */
@@ -125,7 +124,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Device index. */
 	inline vr::TrackedDeviceIndex_t GetDeviceIndex() const{ return pDeviceIndex; }
@@ -154,7 +153,7 @@ public:
 	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
 	
 	/** Set device type. */
-	void SetType( deInputDevice::eDeviceTypes type );
+	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** Name number or -1 it not set. */
 	inline int GetNameNumber() const{ return pNameNumber; }
@@ -163,113 +162,100 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	/** Bone configuration. */
 	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
 	
 	/** Set bone configuration. */
-	void SetBoneConfiguration( deInputDevice::eBoneConfigurations config );
+	void SetBoneConfiguration(deInputDevice::eBoneConfigurations config);
 	
 	/** Render model. */
-	inline deovrRenderModel *GetRenderModel() const{ return pRenderModel; }
+	inline const deovrRenderModel::Ref &GetRenderModel() const{ return pRenderModel; }
 	
 	/** Set render model. */
-	void SetRenderModel( deovrRenderModel *renderModel );
+	void SetRenderModel(deovrRenderModel *renderModel);
 	
 	/** Texture map. */
-	inline deovrTextureMap *GetTextureMap() const{ return pTextureMap; }
+	inline const deovrTextureMap::Ref &GetTextureMap() const{ return pTextureMap; }
 	
 	/** Set texture map. */
-	void SetTextureMap( deovrTextureMap *textureMap );
+	void SetTextureMap(deovrTextureMap *textureMap);
 	
 	
 	
-	/** Number of buttons. */
-	int GetButtonCount() const;
+	/** Buttons. */
+	inline const decTObjectOrderedSet<deovrDeviceButton> &GetButtons() const{ return pButtons; }
 	
 	/** Add button. */
-	void AddButton( deovrDeviceButton *button );
-	
-	/** Button at index. */
-	deovrDeviceButton *GetButtonAt( int index ) const;
+	void AddButton(deovrDeviceButton *button);
 	
 	/** Button with identifier or nullptr if absent. */
-	deovrDeviceButton *GetButtonWithID( const char *id ) const;
+	deovrDeviceButton *GetButtonWithID(const char *id) const;
 	
 	/** Index of button with identifier or -1 if absent. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	
 	
 	
-	/** Number of axiss. */
-	int GetAxisCount() const;
+	/** Axes. */
+	inline const decTObjectOrderedSet<deovrDeviceAxis> &GetAxes() const{ return pAxes; }
 	
 	/** Add axis. */
-	void AddAxis( deovrDeviceAxis *axis );
-	
-	/** Axis at index. */
-	deovrDeviceAxis *GetAxisAt( int index ) const;
+	void AddAxis(deovrDeviceAxis *axis);
 	
 	/** Axis with identifier or nullptr if absent. */
-	deovrDeviceAxis *GetAxisWithID( const char *id ) const;
+	deovrDeviceAxis *GetAxisWithID(const char *id) const;
 	
 	/** Index of axis with identifier or -1 if absent. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	
 	
 	
-	/** Number of feedbacks. */
-	int GetFeedbackCount() const;
+	/** Feedbacks. */
+	inline const decTObjectOrderedSet<deovrDeviceFeedback> &GetFeedbacks() const{ return pFeedbacks; }
 	
 	/** Add feedback. */
-	void AddFeedback( deovrDeviceFeedback *feedback );
-	
-	/** Feedback at index. */
-	deovrDeviceFeedback *GetFeedbackAt( int index ) const;
+	void AddFeedback(deovrDeviceFeedback *feedback);
 	
 	/** Index of feedback with identifier or -1 if absent. */
-	int IndexOfFeedbackWithID( const char *id ) const;
+	int IndexOfFeedbackWithID(const char *id) const;
 	
 	
-	
-	/** Number of components. */
-	int GetComponentCount() const;
+	/** Components. */
+	inline const decTObjectOrderedSet<deovrDeviceComponent> &GetComponents() const{ return pComponents; }
 	
 	/** Add component. */
-	void AddComponent( deovrDeviceComponent *component );
-	
-	/** Component at index. */
-	deovrDeviceComponent *GetComponentAt( int index ) const;
+	void AddComponent(deovrDeviceComponent *component);
 	
 	/** Index of component with identifier or -1 if absent. */
-	int IndexOfComponentWithID( const char *id ) const;
+	int IndexOfComponentWithID(const char *id) const;
 	
 	
 	
 	/** Update engine input device information. */
-	void GetInfo( deInputDevice &info ) const;
+	void GetInfo(deInputDevice &info) const;
 	
 	/** Update device parameters. */
 	void UpdateParameters();
@@ -284,10 +270,10 @@ public:
 	inline const vr::VRControllerState_t &GetState() const{ return pState; }
 	
 	/** Get device pose. */
-	void GetDevicePose( deInputDevicePose &pose );
+	void GetDevicePose(deInputDevicePose &pose);
 	
 	/** Get bone pose. */
-	void GetBonePose( int bone, bool withController, deInputDevicePose &pose );
+	void GetBonePose(int bone, bool withController, deInputDevicePose &pose);
 	
 	/** Skeletal summary data. */
 	inline const vr::VRSkeletalSummaryData_t &GetSkeletalSummaryData() const{ return pSkeletalSummeryData; }
@@ -298,30 +284,30 @@ public:
 private:
 	void pUpdateParametersHMD();
 	void pUpdateParametersController();
-	void pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle );
+	void pUpdateParametersHandPose(vr::VRActionHandle_t actionHandle);
 	void pUpdateParametersTracker();
 	
-	deovrDeviceComponent *pAddComponent( deInputDeviceComponent::eComponentTypes type,
-		const char *name, const char *id, const char *displayText );
+	deovrDeviceComponent *pAddComponent(deInputDeviceComponent::eComponentTypes type,
+		const char *name, const char *id, const char *displayText);
 	
-	int pAddButton( deInputDeviceButton::eButtonTypes type, deovrDeviceComponent *component,
+	int pAddButton(deInputDeviceButton::eButtonTypes type, deovrDeviceComponent *component,
 		deVROpenVR::eInputActions actionPress, deVROpenVR::eInputActions actionTouch,
-		const char *name, const char *id, const char *displayText );
+		const char *name, const char *id, const char *displayText);
 	
-	int pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deVROpenVR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
+	int pAddAxisTrigger(deInputDeviceAxis::eAxisTypes type, deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText);
 	
-	void pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, deovrDeviceComponent *component,
-		int finger, const char *name, const char *id, const char *displayText );
+	void pAddAxisFinger(deInputDeviceAxis::eAxisTypes type, deovrDeviceComponent *component,
+		int finger, const char *name, const char *id, const char *displayText);
 	
-	int pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
+	int pAddAxesJoystick(deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText);
 	
-	int pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
+	int pAddAxesTrackpad(deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText);
 	
-	void pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const;
-	void pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const;
+	void pUpdatePose(const vr::TrackedDevicePose_t &in, deInputDevicePose &out) const;
+	void pUpdatePose(const vr::VRBoneTransform_t &in, deInputDevicePose &out) const;
 };
 
 #endif

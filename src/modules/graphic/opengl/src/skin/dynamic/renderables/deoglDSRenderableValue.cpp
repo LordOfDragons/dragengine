@@ -41,17 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDSRenderableValue::deoglDSRenderableValue( deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable ) :
-deoglDSRenderable( dynamicSkin, renderable ),
-pRenderableValue( renderable ),
-pRRenderableValue( NULL ),
-pValue( renderable.GetValue() ),
-pDirty( true )
+deoglDSRenderableValue::deoglDSRenderableValue(deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable) :
+deoglDSRenderable(dynamicSkin, renderable),
+pRenderableValue(renderable),
+pValue(renderable.GetValue()),
+pDirty(true)
 {
 	try{
-		pRRenderableValue = new deoglRDSRenderableValue( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableValue = deoglRDSRenderableValue::Ref::New(*dynamicSkin.GetRDynamicSkin());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -73,22 +72,22 @@ deoglRDSRenderable *deoglDSRenderableValue::GetRRenderable() const{
 void deoglDSRenderableValue::RenderableChanged(){
 	const float value = pRenderableValue.GetValue();
 	
-	if( fabsf( value - pValue ) >= FLOAT_SAFE_EPSILON ){
+	if(fabsf(value - pValue) >= FLOAT_SAFE_EPSILON){
 		pValue = value;
 		pDirty = true;
 		
-		pDynamicSkin.NotifyRenderableChanged( *this );
+		pDynamicSkin.NotifyRenderableChanged(*this);
 	}
 	
-	if( pRenderableValue.GetName() != pRRenderableValue->GetName() ){
+	if(pRenderableValue.GetName() != pRRenderableValue->GetName()){
 		pDynamicSkin.NotifyRenderablesChanged();
 	}
 }
 
 void deoglDSRenderableValue::SyncToRender(){
-	if( pDirty ){
-		pRRenderableValue->SetName( pRenderableValue.GetName() );
-		pRRenderableValue->SetValue( pRenderableValue.GetValue() );
+	if(pDirty){
+		pRRenderableValue->SetName(pRenderableValue.GetName());
+		pRRenderableValue->SetValue(pRenderableValue.GetValue());
 		pDirty = false;
 	}
 }
@@ -99,7 +98,4 @@ void deoglDSRenderableValue::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableValue::pCleanUp(){
-	if( pRRenderableValue ){
-		pRRenderableValue->FreeReference();
-	}
 }

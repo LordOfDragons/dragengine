@@ -36,13 +36,13 @@
 // class devkDescriptorPool
 /////////////////////////////
 
-devkDescriptorPool::devkDescriptorPool( devkDevice &device, VkDescriptorType type,
-devkDescriptorSetLayout *layout, int maxSetCount ) :
-pDevice( device ),
-pLayout( layout )
+devkDescriptorPool::devkDescriptorPool(devkDevice &device, VkDescriptorType type,
+devkDescriptorSetLayout *layout, int maxSetCount) :
+pDevice(device),
+pLayout(layout)
 {
-	if( ! layout ){
-		DETHROW_INFO( deeNullPointer, "layout" );
+	if(!layout){
+		DETHROW_INFO(deeNullPointer, "layout");
 	}
 	
 	pPoolSize = {};
@@ -63,28 +63,25 @@ devkDescriptorPool::~devkDescriptorPool(){
 // Management
 ///////////////
 
-devkDescriptorPoolSlot *devkDescriptorPool::Get(){
+devkDescriptorPoolSlot::Ref devkDescriptorPool::Get(){
 	// get next free slot from first pool with free slots
 	const int count = pPools.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		devkDescriptorPoolPool * const pool = ( devkDescriptorPoolPool* )pPools.GetAt( i );
-		devkDescriptorPoolSlot * const slot = pool->Get();
-		if( slot ){
+	for(i=0; i<count; i++){
+		devkDescriptorPoolPool * const pool = (devkDescriptorPoolPool*)pPools.GetAt(i);
+		devkDescriptorPoolSlot::Ref slot(pool->Get());
+		if(slot){
 			return slot;
 		}
 	}
 	
 	// no pool has free slots. create a new pool and get slot
-	devkDescriptorPoolPool::Ref pool( devkDescriptorPoolPool::Ref::New(
-			new devkDescriptorPoolPool( *this, pPoolCreateInfo ) ) );
-	pPools.Add( pool );
+	devkDescriptorPoolPool::Ref pool(devkDescriptorPoolPool::Ref::New(*this, pPoolCreateInfo));
+	pPools.Add(pool);
 	
-	devkDescriptorPoolSlot * const slot = pool->Get();
-	if( ! slot ){
-		DETHROW( deeOutOfMemory );
-	}
+	devkDescriptorPoolSlot::Ref slot(pool->Get());
+	DEASSERT_NOTNULL(slot)
 	
 	return slot;
 }

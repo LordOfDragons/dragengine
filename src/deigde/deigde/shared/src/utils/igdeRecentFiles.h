@@ -25,7 +25,7 @@
 #ifndef _IGDERECENTFILES_H_
 #define _IGDERECENTFILES_H_
 
-#include "../gui/menu/igdeMenuCascadeReference.h"
+#include "../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/common/string/decStringList.h>
 
@@ -46,7 +46,7 @@ private:
 	int pSize;
 	bool pUnixPath;
 	decStringList pFiles;
-	igdeMenuCascadeReference pMenu;
+	igdeMenuCascade::Ref pMenu;
 	
 	
 	
@@ -54,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create recent files. */
-	igdeRecentFiles( igdeEnvironment &environment, bool unixPath, int size );
+	igdeRecentFiles(igdeEnvironment &environment, bool unixPath, int size);
 	
 	/** \brief Create recent files. */
-	igdeRecentFiles( igdeEditorWindow &editorWindow, bool unixPath, int size );
+	igdeRecentFiles(igdeEditorWindow &editorWindow, bool unixPath, int size);
 	
 	/** \brief Clean up recent files. */
 	virtual ~igdeRecentFiles();
@@ -70,14 +70,14 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Editor window or NULL. */
+	/** \brief Editor window or nullptr. */
 	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
 	
 	/** \brief Maximum count of files to remember. */
 	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set maximum count of files to remember. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** \brief Use unix path. */
 	inline bool GetUnixPath() const{ return pUnixPath; }
@@ -86,16 +86,16 @@ public:
 	inline const decStringList &GetFiles() const{ return pFiles; }
 	
 	/** \brief Set recent files. */
-	void SetFiles( const decStringList &files );
+	void SetFiles(const decStringList &files);
 	
-	/** \brief Menu to synchronize or NULL if not used. */
-	inline igdeMenuCascade *GetMenu() const{ return pMenu; }
+	/** \brief Menu to synchronize or nullptr if not used. */
+	inline const igdeMenuCascade::Ref &GetMenu() const{ return pMenu; }
 	
-	/** \brief Set menu to synchronize or NULL if not used. */
-	void SetMenu( igdeMenuCascade *menu );
+	/** \brief Set menu to synchronize or nullptr if not used. */
+	void SetMenu(igdeMenuCascade *menu);
 	
 	/** \brief Add file in first position. */
-	void AddFile( const char *filename );
+	void AddFile(const char *filename);
 	
 	/** \brief Remove all files. */
 	void RemoveAllFiles();
@@ -109,7 +109,7 @@ public:
 	 * 
 	 * This call directly manipulates files list and does not call FilesChanged().
 	 */
-	void ReadFromXml( const decXmlElementTag &root );
+	void ReadFromXml(const decXmlElementTag &root);
 	
 	/**
 	 * \brief Save to XML.
@@ -117,7 +117,7 @@ public:
 	 * Writes tag with name \em tagName containing one child tag for each file entry.
 	 * The child tags have the name "filename" and contain as CDATA the filename.
 	 */
-	void WriteToXml( decXmlWriter &writer, const char *tagName = "recentFiles" ) const;
+	void WriteToXml(decXmlWriter &writer, const char *tagName = "recentFiles") const;
 	
 	
 	
@@ -126,7 +126,7 @@ public:
 	 * 
 	 * Default implementation calls igdeEditorWindow::LoadDocument() if editor window is present.
 	 */
-	virtual void OpenFile( const char *filename );
+	virtual void OpenFile(const char *filename);
 	
 	/** \brief Update menu if present. */
 	virtual void UpdateMenu();

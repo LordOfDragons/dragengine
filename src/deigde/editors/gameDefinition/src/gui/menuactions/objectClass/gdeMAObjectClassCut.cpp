@@ -33,7 +33,7 @@
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../undosys/objectClass/gdeURemoveObjectClass.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassCut::gdeMAObjectClassCut( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Cut Object Class",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class" )
+gdeMAObjectClassCut::gdeMAObjectClassCut(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@Igde.Action.Cut",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"@GameDefinition.Menu.ObjectClassCut.ToolTip")
 {
 }
 
@@ -59,35 +59,31 @@ gdeBaseAction( windowMain, "Cut Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassCut::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMAObjectClassCut::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
-		return NULL;
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
+		return {};
 	}
 	
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
-		return NULL;
+	if(!objectClass){
+		return {};
 	}
 	
-	deObjectReference clipObjectClass;
-	clipObjectClass.TakeOver( new gdeObjectClass( *objectClass ) );
+	const gdeObjectClass::Ref clipObjectClass(gdeObjectClass::Ref::New(*objectClass));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataObjectClass( ( gdeObjectClass* )( deObject* )clipObjectClass ) );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataObjectClass::Ref::New(clipObjectClass));
 	
-	pWindowMain.GetClipboard().Set( clipData );
-	
-	return new gdeURemoveObjectClass( &gameDefinition, objectClass );
+	return gdeURemoveObjectClass::Ref::New(&gameDefinition, objectClass);
 }
 
 void gdeMAObjectClassCut::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != nullptr);
 }

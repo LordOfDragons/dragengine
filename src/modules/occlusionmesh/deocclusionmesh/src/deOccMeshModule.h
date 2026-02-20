@@ -27,7 +27,7 @@
 
 #include <dragengine/systems/modules/occlusionmesh/deBaseOcclusionMeshModule.h>
 
-class deoccmWeightSetList;
+#include "deoccmWeightSet.h"
 
 struct sMeshInfos{
 	int version;
@@ -38,7 +38,7 @@ struct sMeshInfos{
 	int cornerCount;
 	int faceCount;
 	int doubleSidedFaceCount;
-	deoccmWeightSetList *weightSetList;
+	deoccmWeightSet::List *weightSetList;
 };
 
 
@@ -52,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deOccMeshModule( deLoadableModule &loadableModule );
+	deOccMeshModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deOccMeshModule();
+	~deOccMeshModule() override;
 	/*@}*/
 	
 	
@@ -63,18 +63,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load occlusion mesh. */
-	virtual void LoadOcclusionMesh( decBaseFileReader &reader, deOcclusionMesh &occlusionMesh );
+	void LoadOcclusionMesh(decBaseFileReader &reader, deOcclusionMesh &occlusionMesh) override;
 	
 	/** \brief Save occlusion mesh. */
-	virtual void SaveOcclusionMesh( decBaseFileWriter &writer, const deOcclusionMesh &occlusionMesh );
+	void SaveOcclusionMesh(decBaseFileWriter &writer, const deOcclusionMesh &occlusionMesh) override;
 	/*@}*/
 	
 private:
-	void pLoadMesh( decBaseFileReader &reader, deOcclusionMesh &mesh );
-	void pLoadBones( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos );
-	void pLoadWeights( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos );
-	void pLoadVertices( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos );
-	void pLoadFaces( decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos );
+	void pLoadMesh(decBaseFileReader &reader, deOcclusionMesh &mesh);
+	void pLoadBones(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos);
+	void pLoadWeights(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos);
+	void pLoadVertices(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos);
+	void pLoadFaces(decBaseFileReader &reader, deOcclusionMesh &mesh, sMeshInfos &infos);
 };
 
 #endif

@@ -39,6 +39,28 @@ deModelVertex::deModelVertex(){
 	pWeightSet = -1;
 }
 
+deModelVertex::deModelVertex(const decVector &position, int weightSet) :
+pPosition(position),
+pWeightSet(weightSet)
+{
+	if(weightSet < -1){
+		DETHROW(deeInvalidParam);
+	}
+}
+
+deModelVertex::deModelVertex(const deModelVertex &copy) :
+pPosition(copy.pPosition),
+pWeightSet(copy.pWeightSet){
+}
+
+deModelVertex &deModelVertex::operator=(const deModelVertex &other){
+	if(this != &other){
+		pPosition = other.pPosition;
+		pWeightSet = other.pWeightSet;
+	}
+	return *this;
+}
+
 deModelVertex::~deModelVertex(){
 }
 
@@ -47,14 +69,14 @@ deModelVertex::~deModelVertex(){
 // Management
 ///////////////
 
-void deModelVertex::SetWeightSet( int index ){
-	if( index < -1 ){
-		DETHROW( deeInvalidParam );
+void deModelVertex::SetWeightSet(int index){
+	if(index < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWeightSet = index;
 }
 
-void deModelVertex::SetPosition( const decVector &position ){
+void deModelVertex::SetPosition(const decVector &position){
 	pPosition = position;
 }

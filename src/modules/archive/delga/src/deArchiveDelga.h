@@ -37,10 +37,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deArchiveDelga( deLoadableModule &loadableModule );
+	deArchiveDelga(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deArchiveDelga();
+	~deArchiveDelga() override;
 	/*@}*/
 	
 	
@@ -48,7 +48,7 @@ public:
 	/*@{*/
 	/** \name Management */
 	/** \brief Create container peer. */
-	virtual deBaseArchiveContainer *CreateContainer( decBaseFileReader *reader );
+	deBaseArchiveContainer *CreateContainer(decBaseFileReader *reader) override;
 	/*@}*/
 };
 

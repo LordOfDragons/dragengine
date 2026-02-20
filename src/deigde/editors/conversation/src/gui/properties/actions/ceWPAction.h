@@ -25,9 +25,9 @@
 #ifndef _CEWPACTION_H_
 #define _CEWPACTION_H_
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 
 class igdeComboBox;
@@ -44,9 +44,9 @@ class ceWPAction : public igdeContainerForm{
 protected:
 	ceWPTopic &pParentPanel;
 	
-	igdeCheckBoxReference pChkWaitForActor, pChkWaitSpeakOnly;
-	igdeComboBoxReference pCBWaitForActorID;
-	igdeTextFieldReference pEditDelay;
+	igdeCheckBox::Ref pChkWaitForActor, pChkWaitSpeakOnly;
+	igdeComboBox::Ref pCBWaitForActorID;
+	igdeTextField::Ref pEditDelay;
 	
 	
 	
@@ -54,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAction( ceWPTopic &parentPanel );
+	ceWPAction(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAction();
+	~ceWPAction() override;
 	/*@}*/
 	
 	
@@ -70,16 +70,16 @@ public:
 	inline ceWPTopic &GetParentPanel() const{ return pParentPanel; }
 	
 	/** \brief Create common action parameters. */
-	void CreateGUICommon( igdeContainerForm &container );
+	void CreateGUICommon(igdeContainerForm &container);
 	
 	/** \brief Update common action parameters. */
 	void UpdateCommonParams();
 	
 	/** \brief Update a combo box with the list of actor ids an alias ids. */
-	void UpdateComboBoxWithActorIDList( igdeComboBox &combobox );
+	void UpdateComboBoxWithActorIDList(igdeComboBox &combobox);
 	
 	/** \brief Update a combo box with the list of convo coord system ids an alias ids. */
-	void UpdateComboBoxWithConvoCoordSysIDList( igdeComboBox &combobox );
+	void UpdateComboBoxWithConvoCoordSysIDList(igdeComboBox &combobox);
 	
 	/** \brief Update actor id lists. */
 	virtual void UpdateActorIDLists();

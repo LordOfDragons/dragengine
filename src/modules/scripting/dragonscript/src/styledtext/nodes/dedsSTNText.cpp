@@ -42,8 +42,8 @@
 dedsSTNText::dedsSTNText(){
 }
 
-dedsSTNText::dedsSTNText( const char* text ) :
-pText( text ){
+dedsSTNText::dedsSTNText(const char* text) :
+pText(text){
 }
 
 dedsSTNText::~dedsSTNText(){
@@ -54,6 +54,6 @@ dedsSTNText::~dedsSTNText(){
 // Management
 ///////////////
 
-void dedsSTNText::SetText ( const char *text ){
+void dedsSTNText::SetText (const char *text){
 	pText = text;
 }

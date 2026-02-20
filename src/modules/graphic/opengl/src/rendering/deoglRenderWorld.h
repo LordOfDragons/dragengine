@@ -65,10 +65,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderWorld( deoglRenderThread &renderThread );
+	deoglRenderWorld(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderWorld();
+	~deoglRenderWorld() override;
 	/*@}*/
 	
 	
@@ -99,39 +99,39 @@ public:
 	
 	
 	/** Render black screen. */
-	void RenderBlackScreen( deoglRenderPlan &plan );
+	void RenderBlackScreen(deoglRenderPlan &plan);
 	
 	/** Render world. */
-	void RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderWorld(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare render parameter shader parameter block. */
-	void PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareRenderParamBlock(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Render masked pass. */
-	void RenderMaskedPass( deoglRenderPlan &plan );
+	void RenderMaskedPass(deoglRenderPlan &plan);
 	
 	/** Render debug drawers. */
-	void RenderDebugDrawers( deoglRenderPlan &plan );
+	void RenderDebugDrawers(deoglRenderPlan &plan);
 	
 	/** Render effects. */
-	void RenderEffects( deoglRenderPlan &plan );
+	void RenderEffects(deoglRenderPlan &plan);
 	
 	/** Render anti aliasing pass. */
 	void RenderAntiAliasingPass();
 	
 	/** Render finalize pass to an FBO without color correction. */
-	void RenderFinalizeFBO( deoglRenderPlan &plan, bool withColorCorrection, bool withGammaCorrection );
+	void RenderFinalizeFBO(deoglRenderPlan &plan, bool withColorCorrection, bool withGammaCorrection);
 	
 	/** Render finalize pass to active graphics context with color correction. */
-	void RenderFinalizeContext( deoglRenderPlan &plan );
+	void RenderFinalizeContext(deoglRenderPlan &plan);
 	
 	
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

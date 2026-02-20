@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPBrowserListener::meWPBrowserListener( meWPBrowser &panel ) :
-pPanel( panel ){
+meWPBrowserListener::meWPBrowserListener(meWPBrowser &panel) :
+pPanel(panel){
 }
 
 meWPBrowserListener::~meWPBrowserListener(){
@@ -52,5 +52,5 @@ meWPBrowserListener::~meWPBrowserListener(){
 // Notifications
 //////////////////
 
-void meWPBrowserListener::EditingChanged( meWorld* ){
+void meWPBrowserListener::EditingChanged(meWorld*){
 }

@@ -25,10 +25,10 @@
 #ifndef _CEWPCTRIGGER_H_
 #define _CEWPCTRIGGER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -41,9 +41,12 @@ class ceWPTopic;
  * \brief Trigger conversation condition property window.
  */
 class ceWPCTrigger : public ceWPCondition{
+public:
+	using Ref = deTObjectReference<ceWPCTrigger>;
+
 private:
-	igdeComboBoxReference pCBTestMode;
-	igdeTextFieldReference pEditTrigger;
+	igdeComboBox::Ref pCBTestMode;
+	igdeTextField::Ref pEditTrigger;
 	
 	
 	
@@ -51,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCTrigger( ceWPTopic &parentPanel );
+	ceWPCTrigger(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPCTrigger();
+	~ceWPCTrigger() override;
 	/*@}*/
 	
 	

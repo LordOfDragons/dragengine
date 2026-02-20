@@ -30,9 +30,9 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -40,10 +40,14 @@ class gdeObjectClass;
  * \brief Undo action object class component texture set offset.
  */
 class gdeUOCCTextureSetOffset : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCCTextureSetOffset>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;
@@ -54,12 +58,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetOffset( gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, const decVector2 &newValue );
+	gdeUOCCTextureSetOffset(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, const decVector2 &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCCTextureSetOffset();
+	~gdeUOCCTextureSetOffset() override;
 	/*@}*/
 	
 	
@@ -68,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

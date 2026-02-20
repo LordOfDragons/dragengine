@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetEntityID::ceUCTargetSetEntityID( ceTarget *target, const char *newID ){
-	if( ! target || ! newID ) DETHROW( deeInvalidParam );
+ceUCTargetSetEntityID::ceUCTargetSetEntityID(ceTarget *target, const char *newID){
+	if(!target || !newID) DETHROW(deeInvalidParam);
 	
-	pTarget = NULL;
+	pTarget = nullptr;
 	
-	SetShortInfo( "Target Set Entity ID" );
+	SetShortInfo("@Conversation.Undo.TargetSetEntityID");
 	
 	pOldID = target->GetCoordSystem();
 	pNewID = newID;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetEntityID::~ceUCTargetSetEntityID(){
-	if( pTarget ){
-		pTarget->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCTargetSetEntityID::~ceUCTargetSetEntityID(){
 ///////////////
 
 void ceUCTargetSetEntityID::Undo(){
-	pTarget->SetCoordSystem( pOldID );
+	pTarget->SetCoordSystem(pOldID);
 }
 
 void ceUCTargetSetEntityID::Redo(){
-	pTarget->SetCoordSystem( pNewID );
+	pTarget->SetCoordSystem(pNewID);
 }

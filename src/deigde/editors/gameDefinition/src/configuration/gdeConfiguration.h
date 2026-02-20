@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	gdeConfiguration( gdeWindowMain &windowMain );
+	gdeConfiguration(gdeWindowMain &windowMain);
 	
 	/** \brief Clean up configuration. */
 	~gdeConfiguration();
@@ -107,11 +107,11 @@ public:
 	
 	/** \brief Color of environment map probes. */
 	inline const decColor &GetColorEnvMapProbeReflection() const{
-		return pColorEnvMapProbeReflection; }
+		return pColorEnvMapProbeReflection;}
 	
 	/** \brief Color of environment map probes. */
 	inline const decColor &GetColorEnvMapProbeInfluence() const{
-		return pColorEnvMapProbeInfluence; }
+		return pColorEnvMapProbeInfluence;}
 	
 	/** \brief Color of environment map probes. */
 	inline const decColor &GetColorEnvMapProbeMask() const{ return pColorEnvMapProbeMask; }
@@ -121,15 +121,15 @@ public:
 	
 	/** \brief Color of active environment map probes. */
 	inline const decColor &GetColorEnvMapProbeActiveReflection() const{
-		return pColorEnvMapProbeActiveReflection; }
+		return pColorEnvMapProbeActiveReflection;}
 	
 	/** \brief Color of active environment map probes. */
 	inline const decColor &GetColorEnvMapProbeActiveInfluence() const{
-		return pColorEnvMapProbeActiveInfluence; }
+		return pColorEnvMapProbeActiveInfluence;}
 	
 	/** \brief Color of active environment map probes. */
 	inline const decColor &GetColorEnvMapProbeActiveMask() const{
-		return pColorEnvMapProbeActiveMask; }
+		return pColorEnvMapProbeActiveMask;}
 	
 	/** \brief Color of light. */
 	inline const decColor &GetColorLight() const{ return pColorLight; }
@@ -185,7 +185,7 @@ public:
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/**
 	 * \brief Load configuration.

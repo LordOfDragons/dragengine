@@ -27,13 +27,13 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeButtonReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../igdeContainerReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../composed/igdeEditVectorReference.h"
+#include "../igdeButton.h"
+#include "../igdeCheckBox.h"
+#include "../igdeContainer.h"
+#include "../igdeTextField.h"
+#include "../composed/igdeEditVector.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../wrapper/igdeWObject.h"
 #include "../../gamedefinition/class/igdeGDClass.h"
@@ -57,15 +57,16 @@
 class DE_DLL_EXPORT igdeWPWObject : public igdeContainerFlow, igdeActionListener{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeWPWObject> Ref;
+	using Ref = deTObjectReference<igdeWPWObject>;
+	
 	
 	/** \brief Undo changes done by igdeWPWObject. */
 	class DE_DLL_EXPORT UndoChanges : public igdeUndo{
 	public:
 		/** \brief Type holding strong reference. */
-		typedef deTObjectReference<UndoChanges> Ref;
-		
-		
+		using Ref = deTObjectReference<UndoChanges>;
+	
+	
 	private:
 		const igdeWObject::Ref pObject;
 		
@@ -107,17 +108,17 @@ public:
 private:
 	igdeWObject::Ref pObject;
 	
-	igdeTextFieldReference pEditClass;
-	igdeButtonReference pBtnClass;
+	igdeTextField::Ref pEditClass;
+	igdeButton::Ref pBtnClass;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditOrientation;
-	igdeEditVectorReference pEditScaling;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditOrientation;
+	igdeEditVector::Ref pEditScaling;
 	
-	igdeCheckBoxReference pChkVisible;
-	igdeCheckBoxReference pChkDynamicCollider;
+	igdeCheckBox::Ref pChkVisible;
+	igdeCheckBox::Ref pChkDynamicCollider;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	igdeUndoSystem *pUndoSystem;
 	
 	
@@ -125,36 +126,36 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPWObject( igdeEnvironment &environment );
+	igdeWPWObject(igdeEnvironment &environment);
 	
 	/** \brief Create panel. */
-	igdeWPWObject( igdeEnvironment &environment, igdeAction *action );
+	igdeWPWObject(igdeEnvironment &environment, igdeAction *action);
 	
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~igdeWPWObject();
+	~igdeWPWObject() override;
 	/*@}*/
 	
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Object or NULL if not set. */
+	/** \brief Object or nullptr if not set. */
 	inline const igdeWObject::Ref &GetObject() const{ return pObject; }
 	
-	/** \brief Set object or NULL to clear. */
+	/** \brief Set object or nullptr to clear. */
 	void SetObject(igdeWObject *object);
 	
 	/** \brief Update widget after object changed outside. */
 	void UpdateObject();
 	
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	/** \brief Set action or nullptr. */
+	void SetAction(igdeAction *action);
 	
 	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
@@ -177,10 +178,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	

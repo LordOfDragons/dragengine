@@ -25,6 +25,7 @@
 #ifndef _DESKYCONTROLLER_H_
 #define _DESKYCONTROLLER_H_
 
+#include "../../deObject.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 
@@ -38,7 +39,12 @@
  * value matching your setup. The controller takes care of transforming the current
  * value into the proper 0 to 1 range required for sounds to work with.
  */
-class DE_DLL_EXPORT deSkyController{
+class DE_DLL_EXPORT deSkyController : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deSkyController>;
+	
+	
 private:
 	decString pName;
 	float pMinValue;
@@ -56,10 +62,16 @@ public:
 	deSkyController();
 	
 	/** \brief Create copy of controller. */
-	deSkyController( const deSkyController &controller );
+	deSkyController(const deSkyController &controller);
 	
-	/** \brief Clean up animator. */
-	~deSkyController();
+protected:
+	/**
+	 * \brief Clean up controller.
+	 * \note Subclasses should set their destructor protected too to avoid users
+	 * accidently deleting a reference counted object through the object
+	 * pointer. Only FreeReference() is allowed to delete the object.
+	 */
+	~deSkyController() override;
 	/*@}*/
 	
 	
@@ -71,7 +83,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Minimum value. */
 	inline float GetMinimumValue() const{ return pMinValue; }
@@ -80,28 +92,28 @@ public:
 	inline float GetMaximumValue() const{ return pMaxValue; }
 	
 	/** \brief Set value range. */
-	void SetValueRange( float minValue, float maxValue );
+	void SetValueRange(float minValue, float maxValue);
 	
 	/** \brief Current value. */
 	inline float GetCurrentValue() const{ return pCurValue; }
 	
 	/** \brief Set current value. */
-	void SetCurrentValue( float value );
+	void SetCurrentValue(float value);
 	
 	/** \brief Increment current value. */
-	void IncrementCurrentValue( float incrementBy );
+	void IncrementCurrentValue(float incrementBy);
 	
 	/** \brief Clamp current value to range instead of wrapping around at the end points. */
 	inline bool GetClamp() const{ return pClamp; }
 	
 	/** \brief Set if current value is clamped to range instead of wrapping around at the end points. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Controller is frozen. */
 	inline bool GetFrozen() const{ return pFrozen; }
 	
 	/** \brief Set if controller is frozen. */
-	void SetFrozen( bool frozen );
+	void SetFrozen(bool frozen);
 	/*@}*/
 	
 	
@@ -109,7 +121,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller to this controller. */
-	deSkyController &operator=( const deSkyController &controller );
+	deSkyController &operator=(const deSkyController &controller);
 	/*@}*/
 	
 	

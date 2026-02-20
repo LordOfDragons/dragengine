@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeInfluence::gdeUOCEnvMapProbeSetShapeInfluence( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decShapeList &newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCEnvMapProbeSetShapeInfluence::gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decShape::List &newValue) :
+
+pEnvMapProbe(nullptr)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set shape influence" );
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetShapeInfluence");
 	
 	pOldValue = envMapProbe->GetShapeListInfluence();
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetShapeInfluence::~gdeUOCEnvMapProbeSetShapeInfluence(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,10 +68,10 @@ gdeUOCEnvMapProbeSetShapeInfluence::~gdeUOCEnvMapProbeSetShapeInfluence(){
 
 void gdeUOCEnvMapProbeSetShapeInfluence::Undo(){
 	pEnvMapProbe->GetShapeListInfluence() = pOldValue;
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetShapeInfluence::Redo(){
 	pEnvMapProbe->GetShapeListInfluence() = pNewValue;
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

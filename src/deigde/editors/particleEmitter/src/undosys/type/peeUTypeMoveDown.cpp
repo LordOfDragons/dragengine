@@ -40,33 +40,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeMoveDown::peeUTypeMoveDown( peeType *type ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeMoveDown::peeUTypeMoveDown(peeType *type){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
 	peeEmitter *emitter = type->GetEmitter();
-	if( ! emitter ){
-		DETHROW( deeInvalidParam );
+	if(!emitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Move Type Down" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.MoveDown");
 	
-	pIndex = emitter->GetTypeList().IndexOf( type );
-	if( pIndex == -1 || pIndex == emitter->GetTypeList().GetCount() - 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = emitter->GetTypes().IndexOf(type);
+	if(pIndex == -1 || pIndex == emitter->GetTypes().GetCount() - 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeMoveDown::~peeUTypeMoveDown(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -75,9 +71,9 @@ peeUTypeMoveDown::~peeUTypeMoveDown(){
 ///////////////
 
 void peeUTypeMoveDown::Undo(){
-	pType->GetEmitter()->MoveTypeTo( pType, pIndex );
+	pType->GetEmitter()->MoveTypeTo(pType, pIndex);
 }
 
 void peeUTypeMoveDown::Redo(){
-	pType->GetEmitter()->MoveTypeTo( pType, pIndex + 1 );
+	pType->GetEmitter()->MoveTypeTo(pType, pIndex + 1);
 }

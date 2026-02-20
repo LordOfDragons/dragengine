@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPPushListener::reWPPushListener( reWPPush &panel ) :
-pPanel( panel ){
+reWPPushListener::reWPPushListener(reWPPush &panel) :
+pPanel(panel){
 }
 
 reWPPushListener::~reWPPushListener(){
@@ -50,14 +50,14 @@ reWPPushListener::~reWPPushListener(){
 // Notifications
 //////////////////
 
-void reWPPushListener::PushChanged( reRig *rig, reRigPush *push ){
-	if( push == pPanel.GetPush() ){
+void reWPPushListener::PushChanged(reRig *rig, reRigPush *push){
+	if(push == pPanel.GetPush()){
 		pPanel.UpdatePush();
 	}
 }
 
-void reWPPushListener::ActivePushChanged( reRig *rig ){
-	if( rig == pPanel.GetRig() ){
-		pPanel.SetPush( rig->GetSelectionPushes()->GetActivePush() );
+void reWPPushListener::ActivePushChanged(reRig *rig){
+	if(rig == pPanel.GetRig()){
+		pPanel.SetPush(rig->GetSelectionPushes()->GetActivePush());
 	}
 }

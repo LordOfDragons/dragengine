@@ -34,7 +34,7 @@
 ////////////////////////////
 
 deoglRTUniqueKey::deoglRTUniqueKey() :
-pNextKey( 0 ){
+pNextKey(0){
 }
 
 deoglRTUniqueKey::~deoglRTUniqueKey(){
@@ -46,13 +46,13 @@ deoglRTUniqueKey::~deoglRTUniqueKey(){
 ///////////////
 
 unsigned int deoglRTUniqueKey::Get(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	const int index = pFreeKeys.GetCount() - 1;
 	unsigned int key;
 	
-	if( index >= 0 ){
-		key = ( unsigned int )pFreeKeys.GetAt( index );
-		pFreeKeys.RemoveFrom( index );
+	if(index >= 0){
+		key = (unsigned int)pFreeKeys.GetAt(index);
+		pFreeKeys.RemoveFrom(index);
 		
 	}else{
 		key = pNextKey++;
@@ -61,7 +61,7 @@ unsigned int deoglRTUniqueKey::Get(){
 	return key;
 }
 
-void deoglRTUniqueKey::Return( unsigned int key ){
-	const deMutexGuard lock( pMutex );
-	pFreeKeys.Add( ( int )key );
+void deoglRTUniqueKey::Return(unsigned int key){
+	const deMutexGuard lock(pMutex);
+	pFreeKeys.Add((int)key);
 }

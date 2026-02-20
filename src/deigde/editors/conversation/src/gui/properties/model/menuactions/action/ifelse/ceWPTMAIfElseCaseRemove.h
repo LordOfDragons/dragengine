@@ -50,12 +50,13 @@ protected:
 	ceWPTMAIfElseCaseRemove();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseRemove>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseRemove( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseRemove(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase );
+		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase);
 	/*@}*/
 	
 	
@@ -75,7 +76,7 @@ public:
 	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

@@ -24,7 +24,6 @@
 
 #include "ceLoadSaveLangPack.h"
 #include "../langpack/ceLangPack.h"
-#include "../langpack/ceLangPackEntry.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -45,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceLoadSaveLangPack::ceLoadSaveLangPack( deBaseLanguagePackModule &module ) :
-pModule( module )
+ceLoadSaveLangPack::ceLoadSaveLangPack(deBaseLanguagePackModule &module) :
+pModule(module)
 {
 	const deLoadableModule &loadableModule = module.GetLoadableModule();
 	const decStringList &patternList = loadableModule.GetPatternList();
@@ -55,12 +54,12 @@ pModule( module )
 	
 	pName = loadableModule.GetName();
 	
-	for( i=0; i<patternCount; i++ ){
-		if( i > 0 ){
-			pPattern.AppendCharacter( ',' );
+	for(i=0; i<patternCount; i++){
+		if(i > 0){
+			pPattern.AppendCharacter(',');
 		}
-		pPattern.AppendCharacter( '*' );
-		pPattern.Append( patternList.GetAt( i ) );
+		pPattern.AppendCharacter('*');
+		pPattern.Append(patternList.GetAt(i));
 	}
 }
 
@@ -74,31 +73,27 @@ ceLoadSaveLangPack::~ceLoadSaveLangPack(){
 
 class cLoadLangPackLoader : public deLanguagePackBuilder{
 public:
-	cLoadLangPackLoader(){ }
-	void BuildLanguagePack( deLanguagePack& ){ }
+	cLoadLangPackLoader(){}
+	void BuildLanguagePack(deLanguagePack&) override{}
 };
 
-void ceLoadSaveLangPack::LoadLangPack( ceLangPack &langpack, decBaseFileReader &file ){
+void ceLoadSaveLangPack::LoadLangPack(ceLangPack &langpack, decBaseFileReader &file){
 	cLoadLangPackLoader builder;
-	const deLanguagePack::Ref engLangPack( deLanguagePack::Ref::New(
-		pModule.GetGameEngine()->GetLanguagePackManager()->CreateLanguagePack( "", builder ) ) );
-	pModule.LoadLanguagePack( file, engLangPack );
+	const deLanguagePack::Ref engLangPack(pModule.GetGameEngine()->
+		GetLanguagePackManager()->CreateLanguagePack("", builder));
+	pModule.LoadLanguagePack(file, engLangPack);
 	
-	langpack.SetIdentifier( engLangPack->GetIdentifier() );
-	langpack.SetName( engLangPack->GetName() );
-	langpack.SetDescription( engLangPack->GetDescription() );
-	langpack.SetMissingText( engLangPack->GetMissingText() );
+	langpack.SetIdentifier(engLangPack->GetIdentifier());
+	langpack.SetName(engLangPack->GetName());
+	langpack.SetDescription(engLangPack->GetDescription());
+	langpack.SetMissingText(engLangPack->GetMissingText());
 	
 	const int entryCount = engLangPack->GetEntryCount();
 	int i;
 	
-	for( i=0; i<entryCount; i++ ){
-		const deLanguagePackEntry &engEntry = engLangPack->GetEntryAt( i );
-		
-		const ceLangPackEntry::Ref entry( ceLangPackEntry::Ref::New( new ceLangPackEntry ) );
-		entry->SetName( engEntry.GetName() );
-		entry->SetText( engEntry.GetText() );
-		langpack.AddEntry( entry );
+	for(i=0; i<entryCount; i++){
+		const deLanguagePackEntry &engEntry = engLangPack->GetEntryAt(i);
+		langpack.GetEntries().SetAt(engEntry.GetName(), engEntry.GetText());
 	}
 }
 
@@ -106,30 +101,25 @@ class cSaveLangPackLoader : public deLanguagePackBuilder{
 	const ceLangPack &pLangPack;
 	
 public:
-	cSaveLangPackLoader( const ceLangPack &langpack ) : pLangPack( langpack ){}
+	cSaveLangPackLoader(const ceLangPack &langpack) : pLangPack(langpack){}
 	
-	virtual void BuildLanguagePack( deLanguagePack &langPack ) override{
-		const int entryCount = pLangPack.GetEntryCount();
-		int i;
+	void BuildLanguagePack(deLanguagePack &langPack) override{
+		langPack.SetIdentifier(pLangPack.GetIdentifier());
+		langPack.SetName(pLangPack.GetName());
+		langPack.SetDescription(pLangPack.GetDescription());
+		langPack.SetMissingText(pLangPack.GetMissingText());
 		
-		langPack.SetIdentifier( pLangPack.GetIdentifier() );
-		langPack.SetName( pLangPack.GetName() );
-		langPack.SetDescription( pLangPack.GetDescription() );
-		langPack.SetMissingText( pLangPack.GetMissingText() );
-		
-		langPack.SetEntryCount( entryCount );
-		for( i=0; i<entryCount; i++ ){
-			const ceLangPackEntry &entry = *pLangPack.GetEntryAt( i );
-			deLanguagePackEntry &engEntry = langPack.GetEntryAt( i );
-			
-			engEntry.SetName( entry.GetName() );
-			engEntry.SetText( entry.GetText() );
-		}
+		int index = 0;
+		pLangPack.GetEntries().Visit([&](const decString &name, const decUnicodeString &text){
+			deLanguagePackEntry &engEntry = langPack.GetEntryAt(index++);
+			engEntry.SetName(name);
+			engEntry.SetText(text);
+		});
 	}
 };
 
-void ceLoadSaveLangPack::SaveLangPack( const ceLangPack &langpack, decBaseFileWriter &file ){
-	cSaveLangPackLoader builder( langpack );
-	pModule.SaveLanguagePack( file, deLanguagePack::Ref::New(
-		pModule.GetGameEngine()->GetLanguagePackManager()->CreateLanguagePack( "", builder ) ) );
+void ceLoadSaveLangPack::SaveLangPack(const ceLangPack &langpack, decBaseFileWriter &file){
+	cSaveLangPackLoader builder(langpack);
+	pModule.SaveLanguagePack(file, pModule.GetGameEngine()->
+		GetLanguagePackManager()->CreateLanguagePack("", builder));
 }

@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -37,8 +37,12 @@ class reRigConstraint;
  * \brief Set constraint dof spring stiffness undo action.
  */
 class reUConstraintDofSetSpringStiffness : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUConstraintDofSetSpringStiffness>;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	deColliderConstraint::eDegreesOfFreedom pDof;
 	
 	float pOldValue;
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintDofSetSpringStiffness( reRigConstraint *constraint,
-		deColliderConstraint::eDegreesOfFreedom dof, float newValue );
+	reUConstraintDofSetSpringStiffness(reRigConstraint *constraint,
+		deColliderConstraint::eDegreesOfFreedom dof, float newValue);
 	
 protected:
 	/** \brief Clean up the undo. */
-	virtual ~reUConstraintDofSetSpringStiffness();
+	~reUConstraintDofSetSpringStiffness() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

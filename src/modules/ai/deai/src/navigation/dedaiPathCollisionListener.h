@@ -44,7 +44,7 @@ public:
 	dedaiPathCollisionListener();
 	
 	/** \brief Clean up listener. */
-	virtual ~dedaiPathCollisionListener();
+	~dedaiPathCollisionListener() override;
 	/*@}*/
 	
 	
@@ -68,7 +68,7 @@ public:
 	 *          by the scripting module with the response to the collision. In
 	 *          all other cases the info object should not be modified.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/**
 	 * \brief Determines if a collider can be hit.
@@ -77,20 +77,20 @@ public:
 	 *          between the ray and a collider or two colliders true has to be
 	 *          returned otherwise false.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/**
 	 * \brief The properties of the collider changed.
 	 * \details This is called by the physics module after the collision detection.
 	 *          This can possibly be called multiple times during collision detection.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	
 	/** \brief A collider constraint has broken. */
-	virtual void ColliderConstraintBroke( deCollider *owner, int index, deColliderConstraint *constraint );
+	void ColliderConstraintBroke(deCollider *owner, int index, deColliderConstraint *constraint) override;
 	
 	/** \brief A collider rig constraint has broken. */
-	virtual void RigConstraintBroke( deCollider *owner, int bone, int index, deRigConstraint *constraint );
+	void RigConstraintBroke(deCollider *owner, int bone, int index, deRigConstraint *constraint) override;
 	/*@}*/
 };
 

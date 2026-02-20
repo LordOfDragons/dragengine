@@ -41,17 +41,17 @@
 ////////////////////////////
 
 deSynthesizerController::deSynthesizerController() :
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pClamp( true ){
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pClamp(true){
 }
 
-deSynthesizerController::deSynthesizerController( const deSynthesizerController &controller ) :
-pName( controller.pName ),
-pMinValue( controller.pMinValue ),
-pMaxValue( controller.pMaxValue ),
-pClamp( controller.pClamp ),
-pCurve( controller.pCurve ){
+deSynthesizerController::deSynthesizerController(const deSynthesizerController &controller) :
+pName(controller.pName),
+pMinValue(controller.pMinValue),
+pMaxValue(controller.pMaxValue),
+pClamp(controller.pClamp),
+pCurve(controller.pCurve){
 }
 
 deSynthesizerController::~deSynthesizerController(){
@@ -62,20 +62,20 @@ deSynthesizerController::~deSynthesizerController(){
 // Management
 ///////////////
 
-void deSynthesizerController::SetName( const char *name ){
+void deSynthesizerController::SetName(const char *name){
 	pName = name;
 }
 
-void deSynthesizerController::SetValueRange( float minValue, float maxValue ){
+void deSynthesizerController::SetValueRange(float minValue, float maxValue){
 	pMinValue = minValue;
-	pMaxValue = decMath::max( maxValue, minValue );
+	pMaxValue = decMath::max(maxValue, minValue);
 }
 
-void deSynthesizerController::SetClamp( bool clamp ){
+void deSynthesizerController::SetClamp(bool clamp){
 	pClamp = clamp;
 }
 
-void deSynthesizerController::SetCurve( const decCurveBezier &curve ){
+void deSynthesizerController::SetCurve(const decCurveBezier &curve){
 	pCurve = curve;
 }
 
@@ -84,7 +84,7 @@ void deSynthesizerController::SetCurve( const decCurveBezier &curve ){
 // Operators
 //////////////
 
-deSynthesizerController &deSynthesizerController::operator=( const deSynthesizerController &controller ){
+deSynthesizerController &deSynthesizerController::operator=(const deSynthesizerController &controller){
 	pName = controller.pName;
 	pMinValue = controller.pMinValue;
 	pMaxValue = controller.pMaxValue;

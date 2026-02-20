@@ -32,16 +32,32 @@
  * \brief IGDE UI Spacer.
  */
 class DE_DLL_EXPORT igdeSpacer : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeSpacer>;
+	
+	
+	class cNativeSpacer{
+	public:
+		virtual ~cNativeSpacer() = default;
+		virtual void SetSize(int width, int height) = 0;
+	};
+	
+	
 private:
 	decPoint pSize;
 	
+	
+protected:
+	cNativeSpacer *pNativeSpacer;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create spacer. */
-	igdeSpacer( igdeEnvironment &environment, const decPoint &size );
+	igdeSpacer(igdeEnvironment &environment, const decPoint &size);
 	
 	
 	
@@ -52,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeSpacer();
+	~igdeSpacer() override;
 	/*@}*/
 	
 	
@@ -64,7 +80,7 @@ public:
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	
 	
@@ -77,14 +93,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

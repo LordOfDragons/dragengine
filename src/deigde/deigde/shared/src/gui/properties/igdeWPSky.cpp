@@ -64,14 +64,15 @@ class cTextPathSky : public igdeTextFieldListener{
 	igdeWPSky &pPanel;
 	
 public:
-	cTextPathSky( igdeWPSky &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cTextPathSky> Ref;
+	cTextPathSky(igdeWPSky &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		if( ! pPanel.GetSky() || textField->GetText() == pPanel.GetSky()->GetPath() ){
+	virtual void OnTextChanged(igdeTextField *textField){
+		if(!pPanel.GetSky() || textField->GetText() == pPanel.GetSky()->GetPath()){
 			return;
 		}
 		
-		pPanel.GetSky()->SetPath( textField->GetText() );
+		pPanel.GetSky()->SetPath(textField->GetText());
 		pPanel.UpdateSky();
 		pPanel.OnAction();
 	}
@@ -82,25 +83,26 @@ class cActionFromGDSky : public igdeAction{
 	igdeTextField &pTextField;
 	
 public:
-	cActionFromGDSky( igdeWPSky &panel, igdeTextField &textField ) :
-	igdeAction( "GDef", "Show dialog to select sky from game definition" ),
-	pPanel( panel ), pTextField( textField ){ }
+	typedef deTObjectReference<cActionFromGDSky> Ref;
+	cActionFromGDSky(igdeWPSky &panel, igdeTextField &textField) :
+	igdeAction("@Igde.WPSky.Action.GDef", "@Igde.WPSky.Action.GDef.ToolTip"),
+	pPanel(panel), pTextField(textField){}
 	
-	virtual void OnAction(){
-		if( ! pPanel.GetSky() ){
+	void OnAction() override{
+		if(!pPanel.GetSky()){
 			return;
 		}
 		
-		decString sky( pTextField.GetText() );
-		if( ! igdeDialogBrowserSky::SelectSky( &pPanel, sky ) ){
+		decString sky(pTextField.GetText());
+		if(!igdeDialogBrowserSky::SelectSky(&pPanel, sky)){
 			return;
 		}
 		
-		if( sky == pPanel.GetSky()->GetPath() ){
+		if(sky == pPanel.GetSky()->GetPath()){
 			return;
 		}
 		
-		pPanel.GetSky()->SetPath( sky );
+		pPanel.GetSky()->SetPath(sky);
 		pPanel.UpdateSky();
 		pPanel.OnAction();
 	}
@@ -111,27 +113,28 @@ class cActionPathSky : public igdeAction{
 	igdeTextField &pTextField;
 	
 public:
-	cActionPathSky( igdeWPSky &panel, igdeTextField &textField ) :
-	igdeAction( "...", "Show dialog to select the sky from file" ),
-	pPanel( panel ), pTextField( textField ){ }
+	typedef deTObjectReference<cActionPathSky> Ref;
+	cActionPathSky(igdeWPSky &panel, igdeTextField &textField) :
+	igdeAction("@Igde.TriplePoint", "@Igde.WPSky.Action.Select.ToolTip"),
+	pPanel(panel), pTextField(textField){}
 	
-	virtual void OnAction(){
-		if( ! pPanel.GetSky() ){
+	void OnAction() override{
+		if(!pPanel.GetSky()){
 			return;
 		}
 		
-		decString filename( pTextField.GetText().IsEmpty() ? decString( "/igde/skies" ) : pTextField.GetText() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pPanel, "Select Sky",
+		decString filename(pTextField.GetText().IsEmpty() ? decString("/igde/skies") : pTextField.GetText());
+		if(!igdeCommonDialogs::GetFileOpen(pPanel, "@Igde.WPSky.Dialog.SelectSky.Title",
 		*pPanel.GetEnvironment().GetFileSystemGame(),
 		*pPanel.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSky ), filename ) ){
 			return;
 		}
 		
-		if( filename == pPanel.GetSky()->GetPath() ){
+		if(filename == pPanel.GetSky()->GetPath()){
 			return;
 		}
 		
-		pPanel.GetSky()->SetPath( filename );
+		pPanel.GetSky()->SetPath(filename);
 		pPanel.UpdateSky();
 		pPanel.OnAction();
 	}
@@ -143,19 +146,20 @@ protected:
 	int pIndex;
 	
 public:
-	cEditControllerValue( igdeWPSky &panel, int index ) :
-	pPanel( panel ), pIndex( index ){ }
+	typedef deTObjectReference<cEditControllerValue> Ref;
+	cEditControllerValue(igdeWPSky &panel, int index) :
+	pPanel(panel), pIndex(index){}
 	
-	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ){
-		if( ! pPanel.GetSky() ){
+	virtual void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+		if(!pPanel.GetSky()){
 			return;
 		}
 		
-		pPanel.GetSky()->SetControllerValue( pIndex, sliderText->GetValue() );
+		pPanel.GetSky()->SetControllerValue(pIndex, sliderText->GetValue());
 	}
 	
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
-		OnSliderTextValueChanging( sliderText );
+	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
+		OnSliderTextValueChanging(sliderText);
 		pPanel.OnAction();
 	}
 };
@@ -170,24 +174,24 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWPSky::igdeWPSky( igdeEnvironment &environment ) :
-igdeContainerFlow( environment, igdeContainerFlow::eaY ),
-pSky( NULL )
+igdeWPSky::igdeWPSky(igdeEnvironment &environment) :
+igdeContainerFlow(environment, igdeContainerFlow::eaY),
+pSky(nullptr)
 {
 	pCreateContent();
 }
 
-igdeWPSky::igdeWPSky( igdeEnvironment &environment, igdeAction *action ) :
-igdeContainerFlow( environment, igdeContainerFlow::eaY ),
-pSky( NULL )
+igdeWPSky::igdeWPSky(igdeEnvironment &environment, igdeAction *action) :
+igdeContainerFlow(environment, igdeContainerFlow::eaY),
+pSky(nullptr)
 {
 	pCreateContent();
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeWPSky::~igdeWPSky(){
 	DestroyNativeWidget();
-	SetAction( NULL );
+	SetAction(nullptr);
 }
 
 
@@ -195,8 +199,8 @@ igdeWPSky::~igdeWPSky(){
 // Management
 ///////////////
 
-void igdeWPSky::SetSky( igdeWSky *sky ){
-	if( sky == pSky ){
+void igdeWPSky::SetSky(igdeWSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
@@ -205,14 +209,14 @@ void igdeWPSky::SetSky( igdeWSky *sky ){
 }
 
 void igdeWPSky::UpdateSky(){
-	if( pSky ){
-		pEditSkyPath->SetText( pSky->GetPath() );
+	if(pSky){
+		pEditSkyPath->SetText(pSky->GetPath());
 		
 	}else{
 		pEditSkyPath->ClearText();
 	}
 	
-	pEditSkyPath->SetEnabled( pSky != NULL );
+	pEditSkyPath->SetEnabled(pSky != nullptr);
 	
 	RebuildControllers();
 }
@@ -223,117 +227,131 @@ void igdeWPSky::RebuildControllers(){
 	const int controllerCount = pSky ? pSky->GetControllerCount() : 0;
 	
 	// remove superfluous widgets
-	while( pControllers.GetCount() > controllerCount ){
-		Controller &controller = *( ( Controller* )pControllers.GetAt( pControllers.GetCount() - 1 ) );
-		pFraControllers->RemoveChild( controller.slider );
-		pFraControllers->RemoveChild( controller.label );
-		pControllers.RemoveFrom( pControllers.GetCount() - 1 );
+	while(pControllers.GetCount() > controllerCount){
+		const cController &controller = pControllers.Last();
+		if(controller.slider){
+			pFraControllers->RemoveChild(controller.slider);
+		}
+		if(controller.label){
+			pFraControllers->RemoveChild(controller.label);
+		}
+		pControllers.RemoveFrom(pControllers.GetCount() - 1);
 	}
 	
 	// add new widgets
-	while( pControllers.GetCount() < controllerCount ){
-		Controller::Ref controller( Controller::Ref::New( new Controller ) );
-		
+	while(pControllers.GetCount() < controllerCount){
+		const cController::Ref controller(cController::Ref::New());
 		controller->controller = pControllers.GetCount();
 		
-		helper.EditSliderText( pFraControllers, "", "Current value of the controller ''",
-			0.0f, 1.0f, 6, 3, 0.1f, controller->slider,
-			new cEditControllerValue( *this, controller->controller ) );
+		igdeEditSliderText::Ref slider;
+		helper.EditSliderText(pFraControllers, "", "@Igde.WPSky.Controller.ToolTip",
+			0.0f, 1.0f, 6, 3, 0.1f, slider, cEditControllerValue::Ref::New(*this, controller->controller));
 		
-		controller->label = ( igdeLabel* )pFraControllers->GetChildAt(
-			pFraControllers->IndexOfChild( controller->slider ) - 1 );
+		controller->slider = slider;
+		controller->label = pFraControllers->GetChildren().GetAt(
+			pFraControllers->GetChildren().IndexOf(slider) - 1).DynamicCast<igdeLabel>();
 		
-		pControllers.Add( controller );
+		pControllers.Add(controller);
 	}
 	
 	// update widgets
 	int i;
-	for( i=0; i<controllerCount; i++ ){
-		UpdateController( i );
+	for(i=0; i<controllerCount; i++){
+		UpdateController(i);
 	}
 }
 
-void igdeWPSky::UpdateController( int index ){
-	Controller &controller = *( ( Controller* )pControllers.GetAt( index ) );
-	const deSkyController &skyController = pSky->GetControllerAt( index );
+void igdeWPSky::UpdateController(int index){
+	cController &controller = pControllers.GetAt(index);
+	const deSkyController &skyController = pSky->GetControllerAt(index);
 	
 	const decString &name = skyController.GetName();
 	
-	if( name != controller.name ){
+	if(name != controller.name){
 		controller.name = name;
-		controller.label->SetText( name );
+		if(controller.label){
+			controller.label->SetText(name);
+		}
 		
 		decString description;
-		description.Format( "Current value of the controller '%s'", name.GetString() );
-		controller.label->SetDescription( description );
-		controller.slider->SetDescription( description );
+		description.FormatSafe(Translate("Igde.WPSky.ControllerValue").ToUTF8(), name);
+		if(controller.label){
+			controller.label->SetDescription(description);
+		}
+		if(controller.slider){
+			controller.slider->SetDescription(description);
+		}
 	}
 	
 	const float minimum = skyController.GetMinimumValue();
 	const float maximum = skyController.GetMaximumValue();
 	const float value = skyController.GetCurrentValue();
 	
-	if( minimum != controller.minimum || maximum != controller.maximum ){
+	if(minimum != controller.minimum || maximum != controller.maximum){
 		controller.minimum = minimum;
 		controller.maximum = maximum;
 		
-		if( maximum > minimum ){
-			controller.slider->SetRange( minimum, maximum );
-			controller.slider->SetTickSpacing( ( maximum - minimum ) * 0.1f );
-			controller.slider->SetValue( value );
-			controller.slider->SetEnabled( true );
-			
-		}else{
-			controller.slider->SetRange( 0.0f, 1.0f );
-			controller.slider->SetTickSpacing( 0.1f );
-			controller.slider->SetValue( 0.0f );
-			controller.slider->SetEnabled( false );
+		if(controller.slider){
+			if(maximum > minimum){
+				controller.slider->SetRange(minimum, maximum);
+				controller.slider->SetTickSpacing((maximum - minimum) * 0.1f);
+				controller.slider->SetValue(value);
+				controller.slider->SetEnabled(true);
+				
+			}else{
+				controller.slider->SetRange(0.0f, 1.0f);
+				controller.slider->SetTickSpacing(0.1f);
+				controller.slider->SetValue(0.0f);
+				controller.slider->SetEnabled(false);
+			}
 		}
 	}
 	
-	controller.slider->SetValue( value );
+	if(controller.slider){
+		controller.slider->SetValue(value);
+	}
 }
 
-void igdeWPSky::UpdateControllerValue( int controller ){
-	igdeEditSliderText &slider = ( ( Controller* )pControllers.GetAt( controller ) )->slider;
-	const deSkyController &skyController = pSky->GetControllerAt( controller );
-	
-	slider.SetValue( skyController.GetCurrentValue() );
+void igdeWPSky::UpdateControllerValue(int controller){
+	igdeEditSliderText * const slider = pControllers.GetAt(controller)->slider;
+	if(slider){
+		slider->SetValue(pSky->GetControllerAt(controller).GetCurrentValue());
+	}
 }
 
 
 
-void igdeWPSky::SetAction( igdeAction *action ){
-	if( pAction == action ){
+void igdeWPSky::SetAction(igdeAction *action){
+	if(pAction == action){
 		return;
 	}
 	
-	if( pAction ){
-		pAction->RemoveListener( this );
+	if(pAction){
+		pAction->RemoveListener(this);
 	}
 	
 	pAction = action;
 	
-	if( action ){
-		action->AddListener( this );
-		OnParameterChanged( action );
+	if(action){
+		action->AddListener(this);
+		OnParameterChanged(action);
 	}
 }
 
 void igdeWPSky::OnAction(){
-	if( pAction ){
+	if(pAction){
 		pAction->OnAction();
 	}
 }
 
-void igdeWPSky::OnParameterChanged( igdeAction *action ){
+void igdeWPSky::OnParameterChanged(igdeAction *action){
 	//SetEnabled( action->GetEnabled() );
 }
 
-void igdeWPSky::OnDestroyed( igdeAction *action ){
-	GetLogger()->LogWarnFormat( "IGDE", "igdeWPSky::OnDestroyed: "
-		"Action(%s) destroyed while still listening on it", action->GetText().GetString() );
-	pAction = NULL;
+void igdeWPSky::OnDestroyed(igdeAction *action){
+	GetLogger()->LogWarnFormat("IGDE", "igdeWPSky::OnDestroyed: "
+		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
+	pAction = nullptr;
 }
 
 
@@ -344,16 +362,16 @@ void igdeWPSky::OnDestroyed( igdeAction *action ){
 void igdeWPSky::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference form, frameLine;
+	igdeContainer::Ref form, frameLine;
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	AddChild( form );
+	form = igdeContainerForm::Ref::New(env);
+	AddChild(form);
 	
-	helper.FormLineStretchFirst( form, "Sky Path:", "", frameLine );
-	helper.EditString( frameLine, "Path to the sky to use.",
-		pEditSkyPath, new cTextPathSky( *this ) );
-	helper.Button( frameLine, pBtnSkyPath, new cActionPathSky( *this, pEditSkyPath ), true );
-	helper.Button( frameLine, pBtnFromGDSky, new cActionFromGDSky( *this, pEditSkyPath ), true );
+	helper.FormLineStretchFirst(form, "@Igde.WPSky.SkyPath", "", frameLine);
+	helper.EditString(frameLine, "@Igde.WPSky.SkyPath.ToolTip",
+		pEditSkyPath, cTextPathSky::Ref::New(*this));
+	helper.Button(frameLine, pBtnSkyPath, cActionPathSky::Ref::New(*this, pEditSkyPath));
+	helper.Button(frameLine, pBtnFromGDSky, cActionFromGDSky::Ref::New(*this, pEditSkyPath));
 	
-	helper.GroupBox( *this, pFraControllers, "Controllers:" );
+	helper.GroupBox(*this, pFraControllers, "@Igde.WPSky.Controllers");
 }

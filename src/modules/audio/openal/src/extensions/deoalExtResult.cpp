@@ -33,37 +33,37 @@
 // ALC_EXT_EFX
 ////////////////
 
-LPALGENEFFECTS palGenEffects = NULL;
-LPALDELETEEFFECTS palDeleteEffects = NULL;
+LPALGENEFFECTS palGenEffects = nullptr;
+LPALDELETEEFFECTS palDeleteEffects = nullptr;
 // LPALISEFFECT palIsEffect = NULL;
-LPALEFFECTI palEffecti = NULL;
-LPALEFFECTIV palEffectiv = NULL;
-LPALEFFECTF palEffectf = NULL;
-LPALEFFECTFV palEffectfv = NULL;
+LPALEFFECTI palEffecti = nullptr;
+LPALEFFECTIV palEffectiv = nullptr;
+LPALEFFECTF palEffectf = nullptr;
+LPALEFFECTFV palEffectfv = nullptr;
 // LPALGETEFFECTI palGetEffecti = NULL;
 // LPALGETEFFECTIV palGetEffectiv = NULL;
 // LPALGETEFFECTF palGetEffectf = NULL;
 // LPALGETEFFECTFV palGetEffectfv = NULL;
 
-LPALGENFILTERS palGenFilters = NULL;
-LPALDELETEFILTERS palDeleteFilters = NULL;
+LPALGENFILTERS palGenFilters = nullptr;
+LPALDELETEFILTERS palDeleteFilters = nullptr;
 // LPALISFILTER palIsFilter = NULL;
-LPALFILTERI palFilteri = NULL;
-LPALFILTERIV palFilteriv = NULL;
-LPALFILTERF palFilterf = NULL;
-LPALFILTERFV palFilterfv = NULL;
+LPALFILTERI palFilteri = nullptr;
+LPALFILTERIV palFilteriv = nullptr;
+LPALFILTERF palFilterf = nullptr;
+LPALFILTERFV palFilterfv = nullptr;
 // LPALGETFILTERI palGetFilteri = NULL;
 // LPALGETFILTERIV palGetFilteriv = NULL;
 // LPALGETFILTERF palGetFilterf = NULL;
 // LPALGETFILTERFV palGetFilterfv = NULL;
 
-LPALGENAUXILIARYEFFECTSLOTS palGenAuxiliaryEffectSlots = NULL;
-LPALDELETEAUXILIARYEFFECTSLOTS palDeleteAuxiliaryEffectSlots = NULL;
+LPALGENAUXILIARYEFFECTSLOTS palGenAuxiliaryEffectSlots = nullptr;
+LPALDELETEAUXILIARYEFFECTSLOTS palDeleteAuxiliaryEffectSlots = nullptr;
 // LPALISAUXILIARYEFFECTSLOT palIsAuxiliaryEffectSlot = NULL;
-LPALAUXILIARYEFFECTSLOTI palAuxiliaryEffectSloti = NULL;
-LPALAUXILIARYEFFECTSLOTIV palAuxiliaryEffectSlotiv = NULL;
-LPALAUXILIARYEFFECTSLOTF palAuxiliaryEffectSlotf = NULL;
-LPALAUXILIARYEFFECTSLOTFV palAuxiliaryEffectSlotfv = NULL;
+LPALAUXILIARYEFFECTSLOTI palAuxiliaryEffectSloti = nullptr;
+LPALAUXILIARYEFFECTSLOTIV palAuxiliaryEffectSlotiv = nullptr;
+LPALAUXILIARYEFFECTSLOTF palAuxiliaryEffectSlotf = nullptr;
+LPALAUXILIARYEFFECTSLOTFV palAuxiliaryEffectSlotfv = nullptr;
 // LPALGETAUXILIARYEFFECTSLOTI palGetAuxiliaryEffectSloti = NULL;
 // LPALGETAUXILIARYEFFECTSLOTIV palGetAuxiliaryEffectSlotiv = NULL;
 // LPALGETAUXILIARYEFFECTSLOTF palGetAuxiliaryEffectSlotf = NULL;
@@ -74,8 +74,8 @@ LPALAUXILIARYEFFECTSLOTFV palAuxiliaryEffectSlotfv = NULL;
 // ALC_SOFT_HRTF
 //////////////////
 
-LPALCGETSTRINGI palcGetStringi = NULL;
-LPALCRESETDEVICE palcResetDevice = NULL;
+LPALCGETSTRINGI palcGetStringi = nullptr;
+LPALCRESETDEVICE palcResetDevice = nullptr;
 
 
 // AL_EXT_debug

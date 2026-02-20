@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRMaxRayLength::deoglPSSRMaxRayLength( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPSSRMaxRayLength::deoglPSSRMaxRayLength(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "ssrMaxRayLength" );
-	SetDescription( "Sets the maximum length of reflection rays in screen space reflections"
+	SetName("ssrMaxRayLength");
+	SetDescription("Sets the maximum length of reflection rays in screen space reflections"
 		" as percentage of the screen size. The largest screen size (width or height) is"
 		" multiplied with this factor to determine the maximum ray length in pixels."
 		" Limiting the maximum ray length may improve the ray sampling quality without"
@@ -53,10 +53,10 @@ deoglParameterFloat( ogl )
 		" length with the same ssrStepCount. As downside this reduces though the distance"
 		" of local reflections. This is more an esthetic tuning value to balance local"
 		" reflections versus global reflections. For rendering speed improvements better"
-		" use the ssrStepCount parameter." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSR Max Ray Length" );
-	SetDefaultValue( "1" );
+		" use the ssrStepCount parameter.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSR Max Ray Length");
+	SetDefaultValue("1");
 }
 
 deoglPSSRMaxRayLength::~deoglPSSRMaxRayLength(){
@@ -71,6 +71,6 @@ float deoglPSSRMaxRayLength::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSRMaxRayLength();
 }
 
-void deoglPSSRMaxRayLength::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSRMaxRayLength( value );
+void deoglPSSRMaxRayLength::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSRMaxRayLength(value);
 }

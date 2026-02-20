@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class navblocker toggle enabled.
  */
 class gdeUOCNavBlockerToggleEnabled : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavBlockerToggleEnabled>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	
@@ -47,12 +51,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerToggleEnabled( gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker );
+	gdeUOCNavBlockerToggleEnabled(gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navblocker);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavBlockerToggleEnabled();
+	~gdeUOCNavBlockerToggleEnabled() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

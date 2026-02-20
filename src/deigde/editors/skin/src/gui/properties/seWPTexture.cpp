@@ -57,7 +57,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSwitcher.h>
@@ -74,7 +74,6 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -82,10 +81,8 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -105,70 +102,73 @@ protected:
 	seWPTexture &pPanel;
 	
 public:
-	cBaseAction( seWPTexture &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	typedef deTObjectReference<cBaseAction> Ref;
+	cBaseAction(seWPTexture &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
-		if( ! skin || ! texture ){
+		if(!skin || !texture){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( skin, texture ) );
-		if( undo ){
-			skin->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(skin, texture));
+		if(undo){
+			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seSkin *skin, seTexture *texture ) = 0;
+	virtual igdeUndo::Ref OnAction(seSkin *skin, seTexture *texture) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
-		if( skin && texture ){
-			Update( *skin, *texture );
+		if(skin && texture){
+			Update(*skin, *texture);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const seSkin &, const seTexture & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const seSkin &, const seTexture &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 class cBaseActionProperty : public cBaseAction{
 public:
-	cBaseActionProperty( seWPTexture &panel, const char *text, igdeIcon *icon,
-		const char *description ) : cBaseAction( panel, text, icon, description ){ }
+	typedef deTObjectReference<cBaseActionProperty> Ref;
 	
-	virtual igdeUndo *OnAction( seSkin *skin, seTexture *texture ){
-		return pPanel.GetProperty() ? OnActionProperty( skin, texture, pPanel.GetProperty() ) : nullptr;
+public:
+	cBaseActionProperty(seWPTexture &panel, const char *text, igdeIcon *icon,
+		const char *description) : cBaseAction(panel, text, icon, description){}
+	
+	igdeUndo::Ref OnAction(seSkin *skin, seTexture *texture) override{
+		return pPanel.GetProperty() ? OnActionProperty(skin, texture, pPanel.GetProperty()) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionProperty( seSkin *skin, seTexture *texture, seProperty *property ) = 0;
+	virtual igdeUndo::Ref OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
 	
 	
-	virtual void Update( const seSkin &skin, const seTexture &texture ){
+	void Update(const seSkin &skin, const seTexture &texture) override{
 		seProperty * const property = pPanel.GetProperty();
-		if( property ){
-			UpdateProperty( skin, texture, *property );
+		if(property){
+			UpdateProperty(skin, texture, *property);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void UpdateProperty( const seSkin &, const seTexture &, const seProperty & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void UpdateProperty(const seSkin &, const seTexture &, const seProperty &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -177,25 +177,25 @@ protected:
 	seWPTexture &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
+	cBaseTextFieldListener(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! texture || ! property ){
+		if(!skin || !texture || !property){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( *textField, skin, texture, property ) );
-		if( undo ){
-			skin->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(*textField, skin, texture, property));
+		if(undo){
+			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin *skin,
-		seTexture *texture, seProperty *property ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin *skin,
+		seTexture *texture, seProperty *property) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -203,25 +203,25 @@ protected:
 	seWPTexture &pPanel;
 	
 public:
-	cBaseEditPathListener( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseEditPathListener> Ref;
+	cBaseEditPathListener(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! texture || ! property ){
+		if(!skin || !texture || !property){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( *editPath, skin, texture, property ) );
-		if( undo ){
-			skin->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(*editPath, skin, texture, property));
+		if(undo){
+			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeEditPath &editPath, seSkin *skin,
-		seTexture *texture, seProperty *property ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditPath &editPath, seSkin *skin,
+		seTexture *texture, seProperty *property) = 0;
 };
 
 class cBaseColorBoxListener : public igdeColorBoxListener{
@@ -229,88 +229,89 @@ protected:
 	seWPTexture &pPanel;
 	
 public:
-	cBaseColorBoxListener( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cBaseColorBoxListener> Ref;
+	cBaseColorBoxListener(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnColorChanged( igdeColorBox *colorBox ){
+	virtual void OnColorChanged(igdeColorBox *colorBox){
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! texture || ! property ){
+		if(!skin || !texture || !property){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( *colorBox, skin, texture, property ) );
-		if( undo ){
-			skin->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(*colorBox, skin, texture, property));
+		if(undo){
+			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeColorBox &colorBox, seSkin *skin,
-		seTexture *texture, seProperty *property ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin *skin,
+		seTexture *texture, seProperty *property) = 0;
 };
 
 
 class cListTextures : public igdeListBoxListener{
 	seWPTexture &pPanel;
 public:
-	cListTextures( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cListTextures> Ref;
+	cListTextures(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			skin->SetActiveTexture( listBox->GetSelectedItem()
-				? ( seTexture* )listBox->GetSelectedItem()->GetData() : nullptr );
+		if(skin){
+			skin->SetActiveTexture(listBox->GetSelectedItem()
+				? (seTexture*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		seWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeEnvironment &env = menu.GetEnvironment();
 		igdeUIHelper &helper = env.GetUIHelper();
 		
-		helper.MenuCommand( menu, windowMain.GetActionTextureAdd() );
-		helper.MenuCommand( menu, windowMain.GetActionTextureRemove() );
+		helper.MenuCommand(menu, windowMain.GetActionTextureAdd());
+		helper.MenuCommand(menu, windowMain.GetActionTextureRemove());
 		
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, windowMain.GetActionTextureImportFromFile() );
-		helper.MenuCommand( menu, windowMain.GetActionTextureImportFromGDef() );
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, windowMain.GetActionTextureImportFromFile());
+		helper.MenuCommand(menu, windowMain.GetActionTextureImportFromGDef());
 	}
 };
 
 class cTextTextureName : public igdeTextFieldListener{
 	seWPTexture &pPanel;
 public:
-	cTextTextureName( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cTextTextureName> Ref;
+	cTextTextureName(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seTexture * const texture = pPanel.GetTexture();
 		const decString &value = textField->GetText();
-		if( ! texture || texture->GetName() == value ){
+		if(!texture || texture->GetName() == value){
 			return;
 		}
 		
-		if( pPanel.GetSkin()->GetTextureList().HasNamed( value ) ){
-			igdeCommonDialogs::Error( &pPanel, "Set Texture Name", "Texture name exists already" );
-			textField->SetText( texture->GetName() );
+		if(pPanel.GetSkin()->GetTextures().HasNamed(value)){
+			igdeCommonDialogs::Error(pPanel, "@Skin.WPTexture.Dialog.SetTextureName.Title", "@Skin.WPTexture.Dialog.SetTextureName.Error");
+			textField->SetText(texture->GetName());
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new seUTextureSetName( texture, value ) );
-		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
+		pPanel.GetSkin()->GetUndoSystem()->Add(seUTextureSetName::Ref::New(texture, value));
 	}
 };
 
 class cEditPreviewEditTCOffset : public igdeEditPointListener{
 	seWPTexture &pPanel;
 public:
-	cEditPreviewEditTCOffset( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cEditPreviewEditTCOffset> Ref;
+	cEditPreviewEditTCOffset(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnPointChanged( igdeEditPoint *editPoint ){
+	virtual void OnPointChanged(igdeEditPoint *editPoint){
 		seTexture * const texture = pPanel.GetTexture();
-		if( texture ){
-			texture->SetTexCoordOffset( editPoint->GetPoint() );
+		if(texture){
+			texture->SetTexCoordOffset(editPoint->GetPoint());
 		}
 	}
 };
@@ -318,12 +319,13 @@ public:
 class cEditPreviewEditTCScale : public igdeEditPointListener{
 	seWPTexture &pPanel;
 public:
-	cEditPreviewEditTCScale( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cEditPreviewEditTCScale> Ref;
+	cEditPreviewEditTCScale(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnPointChanged( igdeEditPoint *editPoint ){
+	virtual void OnPointChanged(igdeEditPoint *editPoint){
 		seTexture * const texture = pPanel.GetTexture();
-		if( texture ){
-			texture->SetTexCoordScaling( editPoint->GetPoint() );
+		if(texture){
+			texture->SetTexCoordScaling(editPoint->GetPoint());
 		}
 	}
 };
@@ -331,12 +333,13 @@ public:
 class cEditPreviewEditTCRotation : public igdeTextFieldListener{
 	seWPTexture &pPanel;
 public:
-	cEditPreviewEditTCRotation( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cEditPreviewEditTCRotation> Ref;
+	cEditPreviewEditTCRotation(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seTexture * const texture = pPanel.GetTexture();
-		if( texture ){
-			texture->SetTexCoordRotation( textField->GetFloat() );
+		if(texture){
+			texture->SetTexCoordRotation(textField->GetFloat());
 		}
 	}
 };
@@ -345,126 +348,133 @@ public:
 class cListProperties : public igdeListBoxListener{
 	seWPTexture &pPanel;
 public:
-	cListProperties( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cListProperties> Ref;
+	cListProperties(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seTexture * const texture = pPanel.GetTexture();
-		if( texture ){
-			texture->SetActiveProperty( listBox->GetSelectedItem()
-				? ( seProperty* )listBox->GetSelectedItem()->GetData() : nullptr );
+		if(texture){
+			texture->SetActiveProperty(listBox->GetSelectedItem()
+				? (seProperty*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		seWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeEnvironment &env = menu.GetEnvironment();
 		igdeUIHelper &helper = env.GetUIHelper();
 		
-		helper.MenuCommand( menu, windowMain.GetActionTexturePropertyAdd() );
-		helper.MenuCommand( menu, windowMain.GetActionTexturePropertyRemove() );
+		helper.MenuCommand(menu, windowMain.GetActionTexturePropertyAdd());
+		helper.MenuCommand(menu, windowMain.GetActionTexturePropertyRemove());
 	}
 };
 
 class cComboPropertyValueType : public igdeComboBoxListener{
 	seWPTexture &pPanel;
 public:
-	cComboPropertyValueType( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cComboPropertyValueType> Ref;
+	cComboPropertyValueType(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seProperty * const property = pPanel.GetProperty();
-		if( ! property || ! comboBox->GetSelectedItem() ){
+		if(!property || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
-		const seProperty::eValueTypes value = ( seProperty::eValueTypes )( intptr_t )
+		const seProperty::eValueTypes value = (seProperty::eValueTypes)(intptr_t)
 			comboBox->GetSelectedItem()->GetData();
-		if( value == property->GetValueType() ){
+		if(value == property->GetValueType()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new seUPropertySetValueType( property, value ) );
-		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
+		pPanel.GetSkin()->GetUndoSystem()->Add(seUPropertySetValueType::Ref::New(property, value));
 	}
 };
 
 class cTextPropertyRenderable : public cBaseTextFieldListener{
 public:
-	cTextPropertyRenderable( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextPropertyRenderable> Ref;
+	cTextPropertyRenderable(seWPTexture &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
 		return property->GetRenderableName() != textField.GetText()
-			? new seUPropertySetRenderableName( property, textField.GetText() ) : nullptr;
+			? seUPropertySetRenderableName::Ref::New(property, textField.GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cTextPropertyBone : public cBaseTextFieldListener{
 public:
-	cTextPropertyBone( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextPropertyBone> Ref;
+	cTextPropertyBone(seWPTexture &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ) override{
+	igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
 		return property->GetBoneName() != textField.GetText()
-			? new seUPropertySetBoneName( property, textField.GetText() ) : nullptr;
+			? seUPropertySetBoneName::Ref::New(property, textField.GetText()) : igdeUndo::Ref();
 	}
 };
 
 
 class cTextPropertyValue : public cBaseTextFieldListener{
 public:
-	cTextPropertyValue( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextPropertyValue> Ref;
+	cTextPropertyValue(seWPTexture &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
+	igdeUndo::Ref OnChanged(igdeTextField &textField, seSkin*, seTexture*, seProperty *property) override{
 		const float value = textField.GetFloat();
-		return fabsf( property->GetValue() - value ) > FLOAT_SAFE_EPSILON
-			? new seUPropertySetValue( property, value ) : nullptr;
+		return fabsf(property->GetValue() - value) > FLOAT_SAFE_EPSILON
+			? seUPropertySetValue::Ref::New(property, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cColorPropertyColor : public cBaseColorBoxListener{
 public:
-	cColorPropertyColor( seWPTexture &panel ) : cBaseColorBoxListener( panel ){ }
+	typedef deTObjectReference<cColorPropertyColor> Ref;
+	cColorPropertyColor(seWPTexture &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property ){
-		return ! property->GetColor().IsEqualTo( colorBox.GetColor() )
-			? new seUPropertySetColor( property, colorBox.GetColor() ) : nullptr;
+	igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property) override{
+		return !property->GetColor().IsEqualTo(colorBox.GetColor())
+			? seUPropertySetColor::Ref::New(property, colorBox.GetColor()) : igdeUndo::Ref();
 	}
 };
 
 
 class cPathPropertyImage : public cBaseEditPathListener{
 public:
-	cPathPropertyImage( seWPTexture &panel ) : cBaseEditPathListener( panel ){ }
+	typedef deTObjectReference<cPathPropertyImage> Ref;
+	cPathPropertyImage(seWPTexture &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditPath &editPath, seSkin*, seTexture*, seProperty *property ){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, seSkin*, seTexture*, seProperty *property) override{
 		return property->GetImagePath() != editPath.GetPath()
-			? new seUPropertySetImagePath( property, editPath.GetPath() ) : nullptr;
+			? seUPropertySetImagePath::Ref::New(property, editPath.GetPath()) : igdeUndo::Ref();
 	}
 };
 
 
 class cPathPropertyVideo : public cBaseEditPathListener{
 public:
-	cPathPropertyVideo( seWPTexture &panel ) : cBaseEditPathListener( panel ){ }
+	typedef deTObjectReference<cPathPropertyVideo> Ref;
+	cPathPropertyVideo(seWPTexture &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeEditPath &editPath, seSkin*, seTexture*, seProperty *property ){
+	igdeUndo::Ref OnChanged(igdeEditPath &editPath, seSkin*, seTexture*, seProperty *property) override{
 		return property->GetVideoPath() != editPath.GetPath()
-			? new seUPropertySetVideoPath( property, editPath.GetPath() ) : nullptr;
+			? seUPropertySetVideoPath::Ref::New(property, editPath.GetPath()) : igdeUndo::Ref();
 	}
 };
 
 class cActionPropertyVideoUseShared : public cBaseActionProperty{
 public:
-	cActionPropertyVideoUseShared( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"Use shared time", nullptr, "Playback time is shared across instances" ){ }
+	typedef deTObjectReference<cActionPropertyVideoUseShared> Ref;
+	cActionPropertyVideoUseShared(seWPTexture &panel) : cBaseActionProperty(panel,
+		"@Skin.WPTexture.Action.UseSharedTime", nullptr, "@Skin.WPTexture.Action.UseSharedTime.ToolTip"){}
 	
-	virtual igdeUndo *OnActionProperty( seSkin*, seTexture* , seProperty *property ){
-		return new seUPropertyToggleVideoSharedTime( property );
+	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture* , seProperty *property){
+		return seUPropertyToggleVideoSharedTime::Ref::New(property);
 	}
 	
-	virtual void UpdateProperty( const seSkin &, const seTexture &, const seProperty &property ){
-		SetEnabled( true );
-		SetSelected( property.GetVideoSharedTime() );
+	void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property) override{
+		SetEnabled(true);
+		SetSelected(property.GetVideoSharedTime());
 	}
 };
 
@@ -472,9 +482,10 @@ public:
 class cSpinPropertyMappedComponent : public igdeSpinTextFieldListener{
 	seWPTexture &pPanel;
 public:
-	cSpinPropertyMappedComponent( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cSpinPropertyMappedComponent> Ref;
+	cSpinPropertyMappedComponent(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged( igdeSpinTextField* ){
+	virtual void OnValueChanged(igdeSpinTextField*){
 		pPanel.UpdatePropertyMappedComponent();
 	}
 };
@@ -483,112 +494,114 @@ class cComboPropertyMappedTarget : public igdeComboBoxListener{
 	seWPTexture &pPanel;
 	bool &pPreventUpdate;
 public:
-	cComboPropertyMappedTarget( seWPTexture &panel, bool &preventUpdate) :
-	pPanel( panel ), pPreventUpdate( preventUpdate ){ }
+	typedef deTObjectReference<cComboPropertyMappedTarget> Ref;
+	cComboPropertyMappedTarget(seWPTexture &panel, bool &preventUpdate) :
+	pPanel(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( pPreventUpdate ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(pPreventUpdate){
 			return;
 		}
 		
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! texture || ! property || ! comboBox->GetSelectedItem() ){
+		if(!skin || !texture || !property || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const int index = pPanel.GetPropertyMappedComponentIndex();
-		seMapped * const curMapped = property->GetMappedComponent( index );
-		seMapped * const newMapped = ( seMapped* )comboBox->GetSelectedItem()->GetData();
-		if( newMapped == curMapped ){
+		seMapped * const curMapped = property->GetMappedComponent(index);
+		seMapped * const newMapped = (seMapped*)comboBox->GetSelectedItem()->GetData();
+		if(newMapped == curMapped){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new seUPropertySetMappedComponent( property, index, newMapped ) );
-		skin->GetUndoSystem()->Add( undo );
+		skin->GetUndoSystem()->Add(seUPropertySetMappedComponent::Ref::New(
+			property, index, newMapped));
 	}
 };
 
 
 class cColorPropertyConstructed : public cBaseColorBoxListener{
 public:
-	cColorPropertyConstructed( seWPTexture &panel ) : cBaseColorBoxListener( panel ){ }
+	typedef deTObjectReference<cColorPropertyConstructed> Ref;
+	cColorPropertyConstructed(seWPTexture &panel) : cBaseColorBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property ){
-		return ! property->GetNodeColor().IsEqualTo( colorBox.GetColor() )
-			? new seUPropertySetConstructedColor( property, colorBox.GetColor() ) : nullptr;
+	igdeUndo::Ref OnChanged(igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property) override{
+		return !property->GetNodeColor().IsEqualTo(colorBox.GetColor())
+			? seUPropertySetConstructedColor::Ref::New(property, colorBox.GetColor()) : igdeUndo::Ref();
 	}
 };
 
 class cEditPropertyConstructedSize : public igdeEditPoint3Listener{
 	seWPTexture &pPanel;
 public:
-	cEditPropertyConstructedSize( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cEditPropertyConstructedSize> Ref;
+	cEditPropertyConstructedSize(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnPoint3Changed( igdeEditPoint3 *editPoint3 ){
+	virtual void OnPoint3Changed(igdeEditPoint3 *editPoint3){
 		seProperty * const property = pPanel.GetProperty();
-		if( ! property || property->GetNodeGroup()->GetSize() == editPoint3->GetPoint3() ){
+		if(!property || property->GetNodeGroup()->GetSize() == editPoint3->GetPoint3()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new seUPropertySetConstructedSize( property, editPoint3->GetPoint3() ) );
-		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
+		pPanel.GetSkin()->GetUndoSystem()->Add(seUPropertySetConstructedSize::Ref::New(
+			property, editPoint3->GetPoint3()));
 	}
 };
 
 class cActionConstructedChkTileX : public cBaseActionProperty{
 public:
-	cActionConstructedChkTileX( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"X-Axis", nullptr, "Tile nodes along X axis" ){ }
+	typedef deTObjectReference<cActionConstructedChkTileX> Ref;
+	cActionConstructedChkTileX(seWPTexture &panel) : cBaseActionProperty(panel,
+		"@Skin.WPTexture.Action.TileXAxis", nullptr, "@Skin.WPTexture.Action.TileXAxis.ToolTip"){}
 	
-	virtual igdeUndo *OnActionProperty( seSkin*, seTexture* , seProperty *property ){
-		return new seUPropertyConstructedToggleTileX( property );
+	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture* , seProperty *property){
+		return seUPropertyConstructedToggleTileX::Ref::New(property);
 	}
 	
-	virtual void UpdateProperty( const seSkin &, const seTexture &, const seProperty &property ){
-		SetEnabled( true );
-		SetSelected( property.GetNodeTileX() );
+	void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property) override{
+		SetEnabled(true);
+		SetSelected(property.GetNodeTileX());
 	}
 };
 
 class cActionConstructedChkTileY : public cBaseActionProperty{
 public:
-	cActionConstructedChkTileY( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"Y-Axis", nullptr, "Tile nodes along Y axis" ){ }
+	typedef deTObjectReference<cActionConstructedChkTileY> Ref;
+	cActionConstructedChkTileY(seWPTexture &panel) : cBaseActionProperty(panel,
+		"@Skin.WPTexture.Action.TileYAxis", nullptr, "@Skin.WPTexture.Action.TileYAxis.ToolTip"){}
 	
-	virtual igdeUndo *OnActionProperty( seSkin*, seTexture* , seProperty *property ){
-		return new seUPropertyConstructedToggleTileY( property );
+	virtual igdeUndo::Ref OnActionProperty(seSkin*, seTexture* , seProperty *property){
+		return seUPropertyConstructedToggleTileY::Ref::New(property);
 	}
 	
-	virtual void UpdateProperty( const seSkin &, const seTexture &, const seProperty &property ){
-		SetEnabled( true );
-		SetSelected( property.GetNodeTileY() );
+	void UpdateProperty(const seSkin &, const seTexture &, const seProperty &property) override{
+		SetEnabled(true);
+		SetSelected(property.GetNodeTileY());
 	}
 };
 
 class cComboConstructedBitCount : public igdeComboBoxListener{
 	seWPTexture &pPanel;
 public:
-	cComboConstructedBitCount( seWPTexture &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cComboConstructedBitCount> Ref;
+	cComboConstructedBitCount(seWPTexture &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSkin * const skin = pPanel.GetSkin();
 		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! pPanel.GetTexture() || ! property || ! comboBox->GetSelectedItem() ){
+		if(!skin || !pPanel.GetTexture() || !property || !comboBox->GetSelectedItem()){
 			return;
 		}
 		
-		const int bitCount = ( int )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( bitCount == property->GetNodeBitCount() ){
+		const int bitCount = (int)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(bitCount == property->GetNodeBitCount()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new seUPropertyConstructedSetBitCount( property, bitCount ) );
-		skin->GetUndoSystem()->Add( undo );
+		skin->GetUndoSystem()->Add(seUPropertyConstructedSetBitCount::Ref::New(property, bitCount));
 	}
 };
 
@@ -602,163 +615,158 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPTexture::seWPTexture( seWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( nullptr ),
-pSkin( nullptr ),
-pRequiresUpdate( false ),
-pPreventUpdateMappedTarget( false )
+seWPTexture::seWPTexture(seWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pRequiresUpdate(false),
+pPreventUpdateMappedTarget(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, panel, groupBox, form, formLine;
+	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPTextureListener( *this );
+	pListener = seWPTextureListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// texture
-	helper.GroupBoxFlow( content, groupBox, "Texture:" );
-	helper.ListBox( groupBox, 8, "Textures", pListTexture, new cListTextures( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupTexture");
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Textures", pListTexture, cListTextures::Ref::New(*this));
 	pListTexture->SetDefaultSorter();
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
-	helper.EditString( form, "Name:", "Name of texture", pEditTexName, new cTextTextureName( *this ) );
+	form = igdeContainerForm::Ref::New(env);
+	groupBox->AddChild(form);
+	helper.EditString(form, "@Skin.WPTexture.Name", "@Skin.WPTexture.Name.ToolTip", pEditTexName, cTextTextureName::Ref::New(*this));
 	
 	
 	// preview
-	helper.GroupBox( content, groupBox, "Texture Preview:", true );
-	helper.EditPoint( groupBox, "Translation:", "Texture coordinates translation.",
-		pPreviewEditTCOffset, new cEditPreviewEditTCOffset( *this ) );
-	helper.EditPoint( groupBox, "Scaling:", "Texture coordinates scaling.",
-		pPreviewEditTCScaling, new cEditPreviewEditTCScale( *this ) );
-	helper.EditFloat( groupBox, "Rotation:", "Texture coordinates rotation.",
-		pPreviewEditTCRotation, new cEditPreviewEditTCRotation( *this ) );
+	helper.GroupBox(content, groupBox, "@Skin.WPTexture.GroupPreview", true);
+	helper.EditPoint(groupBox, "@Skin.WPTexture.Translation", "@Skin.WPTexture.Translation.ToolTip",
+		pPreviewEditTCOffset, cEditPreviewEditTCOffset::Ref::New(*this));
+	helper.EditPoint(groupBox, "@Skin.WPTexture.Scaling", "@Skin.WPTexture.Scaling.ToolTip",
+		pPreviewEditTCScaling, cEditPreviewEditTCScale::Ref::New(*this));
+	helper.EditFloat(groupBox, "@Skin.WPTexture.Rotation", "@Skin.WPTexture.Rotation.ToolTip",
+		pPreviewEditTCRotation, cEditPreviewEditTCRotation::Ref::New(*this));
 	
 	
 	// property
-	helper.GroupBoxFlow( content, groupBox, "Property:" );
-	helper.ListBox( groupBox, 8, "Property", pListProperty, new cListProperties( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupProperty");
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Property", pListProperty, cListProperties::Ref::New(*this));
 	pListProperty->SetDefaultSorter();
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
+	form = igdeContainerForm::Ref::New(env);
+	groupBox->AddChild(form);
 	
-	helper.EditString( form, "Name:", "Name of property", pEditPropName, nullptr );
-	pEditPropName->SetEditable( false );
+	helper.EditString(form, "@Skin.WPTexture.PropertyName", "@Skin.WPTexture.PropertyName.ToolTip", pEditPropName, {});
+	pEditPropName->SetEditable(false);
 	
-	helper.EditString( form, "Renderable:", "Name of renderable to use or empty string to use none",
-		pEditPropRenderable, new cTextPropertyRenderable( *this ) );
+	helper.EditString(form, "@Skin.WPTexture.Renderable", "@Skin.WPTexture.Renderable.ToolTip",
+		pEditPropRenderable, cTextPropertyRenderable::Ref::New(*this));
 	
-	helper.EditString( form, "Bone:", "Name of bone to use or empty string. "
-		"Used by properties using vertex position instead of texture coordinates.",
-		pEditPropBone, new cTextPropertyBone( *this ) );
+	helper.EditString(form, "@Skin.WPTexture.Bone", "@Skin.WPTexture.Bone.ToolTip",
+		pEditPropBone, cTextPropertyBone::Ref::New(*this));
 	
-	helper.ComboBox( form, "Value Type:", "Type of value to use for the property",
-		pCBPropertyType, new cComboPropertyValueType( *this ) );
-	pCBPropertyType->AddItem( "Value", nullptr, ( void* )( intptr_t )seProperty::evtValue );
-	pCBPropertyType->AddItem( "Color", nullptr, ( void* )( intptr_t )seProperty::evtColor );
-	pCBPropertyType->AddItem( "Image", nullptr, ( void* )( intptr_t )seProperty::evtImage );
-	pCBPropertyType->AddItem( "Video", nullptr, ( void* )( intptr_t )seProperty::evtVideo );
-	pCBPropertyType->AddItem( "Constructed", nullptr, ( void* )( intptr_t )seProperty::evtConstructed );
-	pCBPropertyType->AddItem( "Mapped", nullptr, ( void* )( intptr_t )seProperty::evtMapped );
+	helper.ComboBox(form, "@Skin.WPTexture.ValueType", "@Skin.WPTexture.ValueType.ToolTip",
+		pCBPropertyType, cComboPropertyValueType::Ref::New(*this));
+	pCBPropertyType->SetAutoTranslateItems(true);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Value", nullptr, (void*)(intptr_t)seProperty::evtValue);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Color", nullptr, (void*)(intptr_t)seProperty::evtColor);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Image", nullptr, (void*)(intptr_t)seProperty::evtImage);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Video", nullptr, (void*)(intptr_t)seProperty::evtVideo);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Constructed", nullptr, (void*)(intptr_t)seProperty::evtConstructed);
+	pCBPropertyType->AddItem("@Skin.WPTexture.ValueType.Mapped", nullptr, (void*)(intptr_t)seProperty::evtMapped);
 	
 	
 	// property panel switcher
-	pSwitcher.TakeOver( new igdeSwitcher( env ) );
-	content->AddChild( pSwitcher );
+	pSwitcher = igdeSwitcher::Ref::New(env);
+	content->AddChild(pSwitcher);
 	
 	
 	// empty
-	helper.Label( pSwitcher, "", "" );
+	helper.Label(pSwitcher, "", "");
 	
 	
 	// static value
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	pSwitcher->AddChild( panel );
-	helper.GroupBox( panel, groupBox, "Value:" );
-	helper.EditFloat( groupBox, "Value:", "Value to use", pEditPvtValue, new cTextPropertyValue( *this ) );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	pSwitcher->AddChild(panel);
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupValue");
+	helper.EditFloat(groupBox, "@Skin.WPTexture.Value", "@Skin.WPTexture.Value.ToolTip", pEditPvtValue, cTextPropertyValue::Ref::New(*this));
 	
 	
 	// color value
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	pSwitcher->AddChild( panel );
-	helper.GroupBox( panel, groupBox, "Color:" );
-	helper.ColorBox( groupBox, "Color:", "Color to use", pClrPvtColor, new cColorPropertyColor( *this ) );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	pSwitcher->AddChild(panel);
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupColor");
+	helper.ColorBox(groupBox, "@Skin.WPTexture.Color", "@Skin.WPTexture.Color.ToolTip", pClrPvtColor, cColorPropertyColor::Ref::New(*this));
 	
 	
 	// image
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	pSwitcher->AddChild( panel );
-	helper.GroupBox( panel, groupBox, "Image:" );
-	helper.EditPath( groupBox, "Path:", "Path to the image to use", igdeEnvironment::efpltImage,
-		pEditPvtImagePath, new cPathPropertyImage( *this ) );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	pSwitcher->AddChild(panel);
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupImage");
+	helper.EditPath(groupBox, "@Skin.WPTexture.ImagePath", "@Skin.WPTexture.ImagePath.ToolTip", igdeEnvironment::efpltImage,
+		pEditPvtImagePath, cPathPropertyImage::Ref::New(*this));
 	
-	helper.EditString( groupBox, "", "Image information", pLabPvtImageInfo, nullptr );
-	pLabPvtImageInfo->SetEditable( false );
+	helper.EditString(groupBox, "", "@Skin.WPTexture.ImageInfo.ToolTip", pLabPvtImageInfo, {});
+	pLabPvtImageInfo->SetEditable(false);
 	
 	
 	// video
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	pSwitcher->AddChild( panel );
-	helper.GroupBox( panel, groupBox, "Video:" );
-	helper.EditPath( groupBox, "Path:", "Path to the video to use", igdeEnvironment::efpltVideo,
-		pEditPvtVideoPath, new cPathPropertyVideo( *this ) );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	pSwitcher->AddChild(panel);
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupVideo");
+	helper.EditPath(groupBox, "@Skin.WPTexture.VideoPath", "@Skin.WPTexture.VideoPath.ToolTip", igdeEnvironment::efpltVideo,
+		pEditPvtVideoPath, cPathPropertyVideo::Ref::New(*this));
 	
-	helper.EditString( groupBox, "", "Video information", pLabPvtVideoInfo, nullptr );
-	pLabPvtVideoInfo->SetEditable( false );
+	helper.EditString(groupBox, "", "@Skin.WPTexture.VideoInfo.ToolTip", pLabPvtVideoInfo, {});
+	pLabPvtVideoInfo->SetEditable(false);
 	
-	helper.CheckBox( groupBox, pChkPvtVideoSharedTime, new cActionPropertyVideoUseShared( *this ), true );
+	helper.CheckBox(groupBox, pChkPvtVideoSharedTime, cActionPropertyVideoUseShared::Ref::New(*this));
 	
 	
 	// constructed
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	pSwitcher->AddChild( panel );
-	helper.GroupBox( panel, groupBox, "Constructed:" );
-	helper.ColorBox( groupBox, "Color:", "Color to use",
-		pConstructedClrColor, new cColorPropertyConstructed( *this ) );
-	helper.EditPoint3( groupBox, "Size:", "Size of constructed image",
-		pConstructedEditSize, new cEditPropertyConstructedSize( *this ) );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	pSwitcher->AddChild(panel);
+	helper.GroupBox(panel, groupBox, "@Skin.WPTexture.GroupConstructed");
+	helper.ColorBox(groupBox, "@Skin.WPTexture.ConstructedColor", "@Skin.WPTexture.ConstructedColor.ToolTip",
+		pConstructedClrColor, cColorPropertyConstructed::Ref::New(*this));
+	helper.EditPoint3(groupBox, "@Skin.WPTexture.ConstructedSize", "@Skin.WPTexture.ConstructedSize.ToolTip",
+		pConstructedEditSize, cEditPropertyConstructedSize::Ref::New(*this));
 	
-	helper.FormLine( groupBox, "Tile:", "Tile nodes", formLine );
-	helper.CheckBox( formLine, pConstructedChkTileX, new cActionConstructedChkTileX( *this ), true );
-	helper.CheckBox( formLine, pConstructedChkTileY, new cActionConstructedChkTileY( *this ), true );
+	helper.FormLine(groupBox, "@Skin.WPTexture.Tile", "@Skin.WPTexture.Tile.ToolTip", formLine);
+	helper.CheckBox(formLine, pConstructedChkTileX, cActionConstructedChkTileX::Ref::New(*this));
+	helper.CheckBox(formLine, pConstructedChkTileY, cActionConstructedChkTileY::Ref::New(*this));
 	
-	helper.ComboBox( groupBox, "Bit Count:", "Bit count of constructed image",
-		pConstructedCBBitCount, new cComboConstructedBitCount( *this ) );
-	pConstructedCBBitCount->AddItem( "8-Bit", nullptr, ( void* )( intptr_t )8 );
-	pConstructedCBBitCount->AddItem( "16-Bit", nullptr, ( void* )( intptr_t )16 );
-	pConstructedCBBitCount->AddItem( "32-Bit", nullptr, ( void* )( intptr_t )32 );
+	helper.ComboBox(groupBox, "@Skin.WPTexture.BitCount", "@Skin.WPTexture.BitCount.ToolTip",
+		pConstructedCBBitCount, cComboConstructedBitCount::Ref::New(*this));
+	pConstructedCBBitCount->SetAutoTranslateItems(true);
+	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.8Bit", nullptr, (void*)(intptr_t)8);
+	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.16Bit", nullptr, (void*)(intptr_t)16);
+	pConstructedCBBitCount->AddItem("@Skin.WPTexture.BitCount.32Bit", nullptr, (void*)(intptr_t)32);
 	
 	
 	// mapped
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	pSwitcher->AddChild( panel );
-	helper.GroupBoxFlow( panel, groupBox, "Mapped:" );
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	pSwitcher->AddChild(panel);
+	helper.GroupBoxFlow(panel, groupBox, "@Skin.WPTexture.GroupMapped");
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
+	form = igdeContainerForm::Ref::New(env);
+	groupBox->AddChild(form);
 	
-	helper.EditSpinInteger( form, "Component:", "Component to edit (0=red, 1=green, 2=blue, 3=alpha)",
-		0, 3, pSpinPvtMappedComponent, new cSpinPropertyMappedComponent( *this ) );
+	helper.EditSpinInteger(form, "@Skin.WPTexture.Component", "@Skin.WPTexture.Component.ToolTip",
+		0, 3, pSpinPvtMappedComponent, cSpinPropertyMappedComponent::Ref::New(*this));
 	
-	helper.ComboBox( form, "Target:", "Target mapped to use for this component",
-		pCBPvtMappedTarget, new cComboPropertyMappedTarget( *this, pPreventUpdateMappedTarget ) );
+	helper.ComboBox(form, "@Skin.WPTexture.Target", "@Skin.WPTexture.Target.ToolTip",
+		pCBPvtMappedTarget, cComboPropertyMappedTarget::Ref::New(*this, pPreventUpdateMappedTarget));
 	
 	pCBPvtMappedTarget->SetDefaultSorter();
 	UpdatePropertyMappedTargetList();
 }
 
 seWPTexture::~seWPTexture(){
-	SetSkin( nullptr );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetSkin(nullptr);
 }
 
 
@@ -766,21 +774,19 @@ seWPTexture::~seWPTexture(){
 // Management
 ///////////////
 
-void seWPTexture::SetSkin( seSkin *skin ){
-	if( skin == pSkin ){
+void seWPTexture::SetSkin(seSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	if( pSkin ){
-		pSkin->RemoveListener( pListener );
-		pSkin->FreeReference();
+	if(pSkin){
+		pSkin->RemoveListener(pListener);
 	}
 	
 	pSkin = skin;
 	
-	if( skin ){
-		skin->AddListener( pListener );
-		skin->AddReference();
+	if(skin){
+		skin->AddListener(pListener);
 	}
 	
 	UpdatePropertyMappedTargetList();
@@ -789,64 +795,57 @@ void seWPTexture::SetSkin( seSkin *skin ){
 }
 
 void seWPTexture::OnSkinPathChanged(){
-	if( pSkin ){
-		pEditPvtImagePath->SetBasePath( pSkin->GetDirectoryPath() );
-		pEditPvtVideoPath->SetBasePath( pSkin->GetDirectoryPath() );
+	if(pSkin){
+		pEditPvtImagePath->SetBasePath(pSkin->GetDirectoryPath());
+		pEditPvtVideoPath->SetBasePath(pSkin->GetDirectoryPath());
 		
 	}else{
-		pEditPvtImagePath->SetBasePath( "" );
-		pEditPvtVideoPath->SetBasePath( "" );
+		pEditPvtImagePath->SetBasePath("");
+		pEditPvtVideoPath->SetBasePath("");
 	}
 }
 
 seTexture *seWPTexture::GetTexture() const{
-	return pSkin ? pSkin->GetActiveTexture() : nullptr;
+	return pSkin ? pSkin->GetActiveTexture().Pointer() : nullptr;
 }
 
 seProperty *seWPTexture::GetProperty() const{
 	seTexture * const texture = GetTexture();
-	return texture ? texture->GetActiveProperty() : nullptr;
+	return texture ? texture->GetActiveProperty().Pointer() : nullptr;
 }
 
 
 
 void seWPTexture::UpdateTextureList(){
-	seTexture * const selection = GetTexture();
-	
-	pListTexture->RemoveAllItems();
-	
-	if( pSkin ){
-		const seTextureList &list = pSkin->GetTextureList();
-		const int count = list.GetCount();
-		int i;
+	pListTexture->UpdateRestoreSelection([&](){
+		pListTexture->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			seTexture * const texture = list.GetAt( i );
-			pListTexture->AddItem( texture->GetName(), nullptr, texture );
+		if(pSkin){
+			pSkin->GetTextures().Visit([&](seTexture *texture){
+				pListTexture->AddItem(texture->GetName(), nullptr, texture);
+			});
+			pListTexture->SortItems();
 		}
-		
-		pListTexture->SortItems();
-	}
+	}, 0);
 	
-	pListTexture->SetSelectionWithData( selection );
 	UpdateTexture();
 }
 
 void seWPTexture::SelectActiveTexture(){
-	pListTexture->SetSelectionWithData( GetTexture() );
+	pListTexture->SetSelectionWithData(GetTexture());
 }
 
 void seWPTexture::UpdateTexture(){
 	const seTexture * const texture = GetTexture();
 	
-	if( texture ){
-		pEditTexName->SetText( texture->GetName() );
+	if(texture){
+		pEditTexName->SetText(texture->GetName());
 		
 	}else{
 		pEditTexName->ClearText();
 	}
 	
-	pEditTexName->SetEnabled( texture );
+	pEditTexName->SetEnabled(texture);
 	
 	UpdatePropertyList();
 	UpdatePreviewParameters();
@@ -855,49 +854,44 @@ void seWPTexture::UpdateTexture(){
 void seWPTexture::UpdatePreviewParameters(){
 	const seTexture * const texture = GetTexture();
 	
-	if( texture ){
-		pPreviewEditTCOffset->SetPoint( texture->GetTexCoordOffset() );
-		pPreviewEditTCScaling->SetPoint( texture->GetTexCoordScaling() );
-		pPreviewEditTCRotation->SetFloat( texture->GetTexCoordRotation() );
+	if(texture){
+		pPreviewEditTCOffset->SetPoint(texture->GetTexCoordOffset());
+		pPreviewEditTCScaling->SetPoint(texture->GetTexCoordScaling());
+		pPreviewEditTCRotation->SetFloat(texture->GetTexCoordRotation());
 		
 	}else{
-		pPreviewEditTCOffset->SetPoint( decPoint() );
-		pPreviewEditTCScaling->SetPoint( decPoint() );
+		pPreviewEditTCOffset->SetPoint(decPoint());
+		pPreviewEditTCScaling->SetPoint(decPoint());
 		pPreviewEditTCRotation->ClearText();
 	}
 	
 	const bool enabled = texture;
-	pPreviewEditTCOffset->SetEnabled( enabled );
-	pPreviewEditTCScaling->SetEnabled( enabled );
-	pPreviewEditTCRotation->SetEnabled( enabled );
+	pPreviewEditTCOffset->SetEnabled(enabled);
+	pPreviewEditTCScaling->SetEnabled(enabled);
+	pPreviewEditTCRotation->SetEnabled(enabled);
 }
 
 void seWPTexture::UpdatePropertyList(){
-	const seTexture * const texture = GetTexture();
-	seProperty * const selection = GetProperty();
-	
-	pListProperty->RemoveAllItems();
-	
-	if( texture ){
-		const sePropertyList &list = texture->GetPropertyList();
-		const int count = list.GetCount();
-		int i;
+	pListProperty->UpdateRestoreSelection([&](){
+		const seTexture * const texture = GetTexture();
 		
-		for( i=0; i<count; i++ ){
-			seProperty * const property = list.GetAt( i );
-			pListProperty->AddItem( property->GetName(), 0, property );
+		pListProperty->RemoveAllItems();
+		
+		if(texture){
+			texture->GetProperties().Visit([&](seProperty *property){
+				pListProperty->AddItem(property->GetName(), 0, property);
+			});
+			
+			pListProperty->SortItems();
 		}
-		
-		pListProperty->SortItems();
-	}
+	}, 0);
 	
-	pListProperty->SetSelectionWithData( selection );
 	ShowPropertyPanel();
 	UpdateProperty();
 }
 
 void seWPTexture::SelectActiveProperty(){
-	pListProperty->SetSelectionWithData( GetProperty() );
+	pListProperty->SetSelectionWithData(GetProperty());
 	
 	// catches certain cases
 	ShowPropertyPanel();
@@ -907,128 +901,128 @@ void seWPTexture::SelectActiveProperty(){
 void seWPTexture::ShowPropertyPanel(){
 	const seProperty * const property = GetProperty();
 	
-	if( property ){
-		switch( property->GetValueType() ){
+	if(property){
+		switch(property->GetValueType()){
 		case seProperty::evtValue:
-			pSwitcher->SetCurrent( 1 );
+			pSwitcher->SetCurrent(1);
 			break;
 			
 		case seProperty::evtColor:
-			pSwitcher->SetCurrent( 2 );
+			pSwitcher->SetCurrent(2);
 			break;
 			
 		case seProperty::evtImage:
-			pSwitcher->SetCurrent( 3 );
+			pSwitcher->SetCurrent(3);
 			break;
 			
 		case seProperty::evtVideo:
-			pSwitcher->SetCurrent( 4 );
+			pSwitcher->SetCurrent(4);
 			break;
 			
 		case seProperty::evtConstructed:
-			pSwitcher->SetCurrent( 5 );
+			pSwitcher->SetCurrent(5);
 			break;
 			
 		case seProperty::evtMapped:
-			pSwitcher->SetCurrent( 6 );
+			pSwitcher->SetCurrent(6);
 			break;
 			
 		default:
-			pSwitcher->SetCurrent( 0 ); // empty
+			pSwitcher->SetCurrent(0); // empty
 		}
 		
 	}else{
-		pSwitcher->SetCurrent( 0 ); // empty
+		pSwitcher->SetCurrent(0); // empty
 	}
 }
 
 void seWPTexture::UpdateProperty(){
 	const seProperty * const property = GetProperty();
 	
-	if( property ){
-		pEditPropName->SetText( property->GetName() );
-		pEditPropRenderable->SetText( property->GetRenderableName() );
-		pEditPropBone->SetText( property->GetBoneName() );
-		pCBPropertyType->SetSelectionWithData( ( void* )( intptr_t )property->GetValueType() );
+	if(property){
+		pEditPropName->SetText(property->GetName());
+		pEditPropRenderable->SetText(property->GetRenderableName());
+		pEditPropBone->SetText(property->GetBoneName());
+		pCBPropertyType->SetSelectionWithData((void*)(intptr_t)property->GetValueType());
 		
-		pEditPvtValue->SetFloat( property->GetValue() );
+		pEditPvtValue->SetFloat(property->GetValue());
 		
-		pClrPvtColor->SetColor( property->GetColor() );
+		pClrPvtColor->SetColor(property->GetColor());
 		
-		pEditPvtImagePath->SetPath( property->GetImagePath() );
+		pEditPvtImagePath->SetPath(property->GetImagePath());
 		
-		if( property->GetEngineImage() ){
+		if(property->GetEngineImage()){
 			const deImage &image = *property->GetEngineImage();
-			const char *type = "?";
+			decString type("?");
 			decString text;
 			
-			if( image.GetComponentCount() == 1 ){
-				type = "Gray";
+			if(image.GetComponentCount() == 1){
+				type = Translate("Skin.WPNode.ImageType.Gray").ToUTF8();
 				
-			}else if( image.GetComponentCount() == 2 ){
-				type = "Gray-Alpha";
+			}else if(image.GetComponentCount() == 2){
+				type = Translate("Skin.WPNode.ImageType.GrayAlpha").ToUTF8();
 				
-			}else if( image.GetComponentCount() == 3 ){
-				type = "RGB";
+			}else if(image.GetComponentCount() == 3){
+				type = Translate("Skin.WPNode.ImageType.RGB").ToUTF8();
 				
-			}else if( image.GetComponentCount() == 4 ){
-				type ="RGBA";
+			}else if(image.GetComponentCount() == 4){
+				type = Translate("Skin.WPNode.ImageType.RGBA").ToUTF8();
 			}
 			
-			text.Format( "%dx%dx%d, %s, %d-Bit", image.GetWidth(), image.GetHeight(),
-				image.GetDepth(), type, image.GetBitCount() );
-			pLabPvtImageInfo->SetText( text );
+			text.FormatSafe(Translate("Skin.WPNode.ImageInfo").ToUTF8(), image.GetWidth(),
+				image.GetHeight(), image.GetDepth(), type, image.GetBitCount());
+			pLabPvtImageInfo->SetText(text);
 			
 		}else{
 			pLabPvtImageInfo->ClearText();
 		}
 		
-		pEditPvtVideoPath->SetPath( property->GetVideoPath() );
-		if( property->GetEngineVideo() ){
+		pEditPvtVideoPath->SetPath(property->GetVideoPath());
+		if(property->GetEngineVideo()){
 			const deVideo &video = *property->GetEngineVideo();
-			const char *type = "?";
+			decString type("?");
 			decString text;
 			
-			switch( video.GetComponentCount() ){
+			switch(video.GetComponentCount()){
 			case 1:
-				type = "Grayscale";
+				type = Translate("Skin.WPTexture.VideoType.Grayscale").ToUTF8();
 				break;
 				
 			case 2:
-				type = "GrayscaleAlpha";
+				type = Translate("Skin.WPTexture.VideoType.GrayscaleAlpha").ToUTF8();
 				break;
 				
 			case 3:
-				type = "RGB";
+				type = Translate("Skin.WPNode.ImageType.RGB").ToUTF8();
 				break;
 				
 			case 4:
-				type = "RGBA";
+				type = Translate("Skin.WPNode.ImageType.RGBA").ToUTF8();
 				break;
 			}
 			
-			text.Format( "%dx%d %s, FPS %.1f, Frames %d, Playtime %.1fs", video.GetWidth(),
+			text.FormatSafe(Translate("Skin.WPNode.VideoInfo").ToUTF8(), video.GetWidth(),
 				video.GetHeight(), type, video.GetFrameRate(), video.GetFrameCount(),
-				video.GetPlayTime() );
-			pLabPvtVideoInfo->SetText( text );
+				video.GetPlayTime());
+			pLabPvtVideoInfo->SetText(text);
 			
 		}else{
 			pLabPvtVideoInfo->ClearText();
 		}
 		
-		pConstructedClrColor->SetColor( property->GetNodeColor() );
-		pConstructedEditSize->SetPoint3( property->GetNodeGroup()->GetSize() );
-		pConstructedCBBitCount->SetSelectionWithData( ( void* )( intptr_t )property->GetNodeBitCount() );
+		pConstructedClrColor->SetColor(property->GetNodeColor());
+		pConstructedEditSize->SetPoint3(property->GetNodeGroup()->GetSize());
+		pConstructedCBBitCount->SetSelectionWithData((void*)(intptr_t)property->GetNodeBitCount());
 		
 	}else{
 		pEditPropName->ClearText();
 		pEditPropRenderable->ClearText();
 		pEditPropBone->ClearText();
-		pCBPropertyType->SetSelectionWithData( ( void* )( intptr_t )seProperty::evtValue );
+		pCBPropertyType->SetSelectionWithData((void*)(intptr_t)seProperty::evtValue);
 		
 		pEditPvtValue->ClearText();
 		
-		pClrPvtColor->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+		pClrPvtColor->SetColor(decColor(1.0f, 1.0f, 1.0f));
 		
 		pEditPvtImagePath->ClearPath();
 		pLabPvtImageInfo->ClearText();
@@ -1036,31 +1030,31 @@ void seWPTexture::UpdateProperty(){
 		pEditPvtVideoPath->ClearPath();
 		pLabPvtVideoInfo->ClearText();
 		
-		pConstructedClrColor->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
-		pConstructedEditSize->SetPoint3( decPoint3() );
-		pConstructedCBBitCount->SetSelectionWithData( ( void* )( intptr_t )8 );
+		pConstructedClrColor->SetColor(decColor(1.0f, 1.0f, 1.0f));
+		pConstructedEditSize->SetPoint3(decPoint3());
+		pConstructedCBBitCount->SetSelectionWithData((void*)(intptr_t)8);
 	}
 	
 	const bool enabled = property;
-	pSpinPvtMappedComponent->SetEnabled( enabled );
-	pEditPropName->SetEnabled( enabled );
-	pEditPropRenderable->SetEnabled( enabled );
-	pEditPropBone->SetEnabled( enabled );
+	pSpinPvtMappedComponent->SetEnabled(enabled);
+	pEditPropName->SetEnabled(enabled);
+	pEditPropRenderable->SetEnabled(enabled);
+	pEditPropBone->SetEnabled(enabled);
 	
-	pEditPvtValue->SetEnabled( enabled );
+	pEditPvtValue->SetEnabled(enabled);
 	
-	pClrPvtColor->SetEnabled( enabled );
+	pClrPvtColor->SetEnabled(enabled);
 	
-	pEditPvtImagePath->SetEnabled( enabled );
+	pEditPvtImagePath->SetEnabled(enabled);
 	
-	pEditPvtVideoPath->SetEnabled( enabled );
+	pEditPvtVideoPath->SetEnabled(enabled);
 	pChkPvtVideoSharedTime->GetAction()->Update();
 	
-	pConstructedClrColor->SetEnabled( enabled );
-	pConstructedEditSize->SetEnabled( enabled );
+	pConstructedClrColor->SetEnabled(enabled);
+	pConstructedEditSize->SetEnabled(enabled);
 	pConstructedChkTileX->GetAction()->Update();
 	pConstructedChkTileY->GetAction()->Update();
-	pConstructedCBBitCount->SetEnabled( enabled );
+	pConstructedCBBitCount->SetEnabled(enabled);
 	
 	UpdatePropertyMappedComponent();
 }
@@ -1075,39 +1069,32 @@ void seWPTexture::UpdatePropertyMappedComponent(){
 	
 	pPreventUpdateMappedTarget = true;
 	
-	if( property ){
-		pCBPvtMappedTarget->SetSelectionWithData( property->GetMappedComponent( index ) );
+	if(property){
+		pCBPvtMappedTarget->SetSelectionWithData(property->GetMappedComponent(index));
 		
 	}else{
-		pCBPvtMappedTarget->SetSelectionWithData( nullptr );
+		pCBPvtMappedTarget->SetSelectionWithData(nullptr);
 	}
 	
 	pPreventUpdateMappedTarget = false;
 	
 	const bool enabled = property;
-	pCBPvtMappedTarget->SetEnabled( enabled );
+	pCBPvtMappedTarget->SetEnabled(enabled);
 }
 
 void seWPTexture::UpdatePropertyMappedTargetList(){
-	seMapped * const selection = pCBPvtMappedTarget->GetSelectedItem() ?
-		( seMapped* )pCBPvtMappedTarget->GetSelectedItem()->GetData() : nullptr;
+	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdateMappedTarget);
+	void * const selection = pCBPvtMappedTarget->GetSelectedItemData();
 	
-	pPreventUpdateMappedTarget = true;
 	pCBPvtMappedTarget->RemoveAllItems();
 	
-	if( pSkin ){
-		const seMappedList &list = pSkin->GetMappedList();
-		const int count = list.GetCount();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			seMapped * const mapped = list.GetAt( i );
-			pCBPvtMappedTarget->AddItem( mapped->GetName(), nullptr, mapped );
-		}
+	if(pSkin){
+		pSkin->GetMapped().Visit([&](seMapped *mapped){
+			pCBPvtMappedTarget->AddItem(mapped->GetName(), nullptr, mapped);
+		});
 		pCBPvtMappedTarget->SortItems();
 	}
 	
-	pCBPvtMappedTarget->InsertItem( 0, "< None >", nullptr, nullptr );
-	pCBPvtMappedTarget->SetSelectionWithData( selection );
-	pPreventUpdateMappedTarget = false;
+	pCBPvtMappedTarget->InsertItem(0, "< None >", nullptr, nullptr);
+	pCBPvtMappedTarget->SetSelectionWithData(selection);
 }

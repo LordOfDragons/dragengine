@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPDebugNoCulling::deoglPDebugNoCulling( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "debugNoCulling" );
-	SetDescription( "Disable software culling (slow!)" );
-	SetCategory( ecExpert );
+deoglPDebugNoCulling::deoglPDebugNoCulling(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("debugNoCulling");
+	SetDescription("Disable software culling (slow!)");
+	SetCategory(ecExpert);
 }
 
 deoglPDebugNoCulling::~deoglPDebugNoCulling(){
@@ -58,6 +58,6 @@ bool deoglPDebugNoCulling::GetParameterBool(){
 	return pOgl.GetConfiguration().GetDebugNoCulling();
 }
 
-void deoglPDebugNoCulling::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetDebugNoCulling( value );
+void deoglPDebugNoCulling::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetDebugNoCulling(value);
 }

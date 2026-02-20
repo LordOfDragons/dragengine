@@ -31,7 +31,6 @@
 #include "../igdeWidget.h"
 #include "../igdeUIHelper.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -43,27 +42,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionContextMenu::igdeActionContextMenu( const char *text, igdeIcon *icon,
-	const char *description ) :
-igdeAction( text, icon, description ){
+igdeActionContextMenu::igdeActionContextMenu(const char *text, igdeIcon *icon,
+	const char *description) :
+igdeAction(text, icon, description){
 }
 
-igdeActionContextMenu::igdeActionContextMenu( const char *text, igdeIcon *icon,
-	const char *description, deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey ) :
-igdeAction( text, icon, description, mnemonic, hotKey ){
+igdeActionContextMenu::igdeActionContextMenu(const char *text, igdeIcon *icon,
+	const char *description, deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey) :
+igdeAction(text, icon, description, mnemonic, hotKey){
 }
 
-igdeActionContextMenu::igdeActionContextMenu( igdeWidget *widget,
-	const char *text, igdeIcon *icon, const char *description ) :
-igdeAction( text, icon, description ),
-pWidget( widget ){
+igdeActionContextMenu::igdeActionContextMenu(igdeWidget *widget,
+	const char *text, igdeIcon *icon, const char *description) :
+igdeAction(text, icon, description),
+pWidget(widget){
 }
 
-igdeActionContextMenu::igdeActionContextMenu( igdeWidget *widget,
+igdeActionContextMenu::igdeActionContextMenu(igdeWidget *widget,
 	const char *text, igdeIcon *icon, const char *description,
-	deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey ) :
-igdeAction( text, icon, description, mnemonic, hotKey ),
-pWidget( widget ){
+	deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey) :
+igdeAction(text, icon, description, mnemonic, hotKey),
+pWidget(widget){
 }
 
 igdeActionContextMenu::~igdeActionContextMenu(){
@@ -74,26 +73,25 @@ igdeActionContextMenu::~igdeActionContextMenu(){
 // Management
 ///////////////
 
-void igdeActionContextMenu::SetWidget( igdeWidget *widget ){
+void igdeActionContextMenu::SetWidget(igdeWidget *widget){
 	pWidget = widget;
 }
 
 
 
 void igdeActionContextMenu::OnAction(){
-	if( ! pWidget || ! pWidget->GetVisible() ){
+	if(!pWidget || !pWidget->GetVisible()){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
-	menu.TakeOver( new igdeMenuCascade( pWidget->GetEnvironment() ) );
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(pWidget->GetEnvironment()));
 	
-	AddContextMenuEntries( menu );
+	AddContextMenuEntries(menu);
 	
-	if( menu->GetChildCount() != 0 ){
-		menu->PopupBottom( pWidget );
+	if(menu->GetChildren().IsNotEmpty()){
+		menu->PopupBottom(pWidget);
 	}
 }
 
-void igdeActionContextMenu::AddContextMenuEntries( igdeMenuCascade& ){
+void igdeActionContextMenu::AddContextMenuEntries(igdeMenuCascade&){
 }

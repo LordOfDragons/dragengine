@@ -34,15 +34,16 @@
  */
 class ceWPTTIMASnippet : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMASnippet>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMASnippet( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCASnippet *action );
+	ceWPTTIMASnippet(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCASnippet *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMASnippet();
+	~ceWPTTIMASnippet() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASnippet *GetActionSnippet() const{ return ( ceCASnippet* )GetAction(); }
+	inline ceCASnippet *GetActionSnippet() const{ return GetAction().DynamicCast<ceCASnippet>(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

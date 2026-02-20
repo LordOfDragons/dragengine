@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "reBaseUndoScale.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 
 // class reBaseUndoScale
@@ -35,10 +34,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseUndoScale::reBaseUndoScale(){
+reBaseUndoScale::reBaseUndoScale(igdeEnvironment &environment) :
+pEnvironment(environment)
+{
 	pModifyPosition = true;
 	pModifySize = true;
-	pFactors.Set( 1.0f, 1.0f, 1.0f );
+	pFactors.Set(1.0f, 1.0f, 1.0f);
 	Update();
 }
 
@@ -50,20 +51,20 @@ reBaseUndoScale::~reBaseUndoScale(){
 // Management
 ///////////////
 
-void reBaseUndoScale::SetModifyPosition( bool modifyPosition ){
+void reBaseUndoScale::SetModifyPosition(bool modifyPosition){
 	pModifyPosition = modifyPosition;
 }
 
-void reBaseUndoScale::SetModifySize( bool modifySize ){
+void reBaseUndoScale::SetModifySize(bool modifySize){
 	pModifySize = modifySize;
 }
 
-void reBaseUndoScale::SetFactors( const decVector &factors ){
+void reBaseUndoScale::SetFactors(const decVector &factors){
 	pFactors = factors;
 	Update();
 }
 
-void reBaseUndoScale::SetCenter( const decVector &center ){
+void reBaseUndoScale::SetCenter(const decVector &center){
 	pCenter = center;
 	Update();
 }
@@ -71,7 +72,7 @@ void reBaseUndoScale::SetCenter( const decVector &center ){
 void reBaseUndoScale::Update(){
 	// matrix... TODO
 	/*
-	return decMatrix::CreateTranslation( -p_center )
+	return decMatrix::CreateTranslation(-p_center)
 		* decMatrix::CreateRotationZ( -p_viewRot.z )
 		* decMatrix::CreateRotationY( -p_viewRot.y )
 		* decMatrix::CreateRotationX( -p_viewRot.x )
@@ -84,9 +85,9 @@ void reBaseUndoScale::Update(){
 	
 	// set information
 	decString info;
-	
-	info.Format( "factors(%g,%g,%g) center(%g,%g,%g)", pFactors.x, pFactors.y, pFactors.z, pCenter.x, pCenter.y, pCenter.z );
-	SetLongInfo( info.GetString() );
+	info.FormatSafe(pEnvironment.GetTranslationManager().Translate("Rig.Undo.Scale.Format").ToUTF8(),
+		pFactors.x, pFactors.y, pFactors.z, pCenter.x, pCenter.y, pCenter.z);
+	SetLongInfo(info.GetString());
 }
 
 

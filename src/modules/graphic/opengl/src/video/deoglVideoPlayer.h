@@ -25,13 +25,16 @@
 #ifndef _DEOGLVIDEOPLAYER_H_
 #define _DEOGLVIDEOPLAYER_H_
 
-#include <dragengine/common/collection/decPointerSet.h>
-#include <dragengine/resources/video/deVideoDecoderReference.h>
+#include "deoglRVideoPlayer.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideoPlayer.h>
 
 class deoglVideo;
 class deoglVideoDecodeThread;
-class deoglRVideoPlayer;
+class deoglDSRenderableVideoFrame;
+class deoglCanvasVideoPlayer;
 
 class deVideoPlayer;
 class deGraphicOpenGl;
@@ -54,13 +57,13 @@ public:
 	deoglVideo *pVideo;
 	
 	bool pBrokenVideoDecoder;
-	deVideoDecoderReference pVideoDecoder;
+	deVideoDecoder::Ref pVideoDecoder;
 	deoglVideoDecodeThread *pDecodeThread;
 	
-	deoglRVideoPlayer *pRVideoPlayer;
+	deoglRVideoPlayer::Ref pRVideoPlayer;
 	
-	decPointerSet pNotifyRenderables;
-	decPointerSet pNotifyCanvas;
+	decTOrderedSet<deoglDSRenderableVideoFrame*> pNotifyRenderables;
+	decTOrderedSet<deoglCanvasVideoPlayer*> pNotifyCanvas;
 	
 	
 	
@@ -68,10 +71,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglVideoPlayer( deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer );
+	deoglVideoPlayer(deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer);
 	
 	/** Clean up peer. */
-	virtual ~deoglVideoPlayer();
+	~deoglVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -89,10 +92,10 @@ public:
 	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	/** Render video player or \em NULL if not existing. */
-	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetRVideoPlayer() const{ return pRVideoPlayer; }
 	
 	/** Set current frame. */
-	void SetCurrentFrame( int frame );
+	void SetCurrentFrame(int frame);
 	
 	/** Update next frame. */
 	void UpdateNextFrame();
@@ -105,12 +108,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	inline decTOrderedSet<deoglDSRenderableVideoFrame*> &GetNotifyRenderables(){ return pNotifyRenderables; }
+	inline const decTOrderedSet<deoglDSRenderableVideoFrame*> &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decTOrderedSet<deoglCanvasVideoPlayer*> &GetNotifyCanvas(){ return pNotifyCanvas; }
+	inline const decTOrderedSet<deoglCanvasVideoPlayer*> &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
 	
 	
@@ -118,25 +121,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Sound source changed. */
-	virtual void SourceChanged();
+	void SourceChanged() override;
 	
 	/** Looping changed. */
-	virtual void LoopingChanged();
+	void LoopingChanged() override;
 	
 	/** Play range changed. */
-	virtual void PlayRangeChanged();
+	void PlayRangeChanged() override;
 	
 	/** Play speed changed. */
-	virtual void PlaySpeedChanged();
+	void PlaySpeedChanged() override;
 	
 	/**
 	 * Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged( bool seeking );
+	void PlayPositionChanged(bool seeking) override;
 	
 	/** Play state changed. */
-	virtual void PlayStateChanged();
+	void PlayStateChanged() override;
 	/*@}*/
 	
 	

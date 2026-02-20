@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATAFILE_H_
 #define _CECLIPBOARDDATAFILE_H_
 
-#include "../conversation/file/ceConversationFileList.h"
+#include "../conversation/file/ceConversationFile.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class ceClipboardDataFile : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceClipboardDataFile>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	ceConversationFileList pFiles;
+	ceConversationFile::List pFiles;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	ceClipboardDataFile( const ceConversationFileList &files );
+	ceClipboardDataFile(const ceConversationFile::List &files);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~ceClipboardDataFile();
+	~ceClipboardDataFile() override;
 	/*@}*/
 	
 	
@@ -68,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Files. */
-	inline const ceConversationFileList &GetFiles() const{ return pFiles; }
+	inline const ceConversationFile::List &GetFiles() const{ return pFiles; }
 	/*@}*/
 };
 

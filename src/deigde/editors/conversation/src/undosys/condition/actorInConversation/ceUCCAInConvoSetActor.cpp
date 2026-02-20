@@ -42,41 +42,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAInConvoSetActor::ceUCCAInConvoSetActor( ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorInConversation *condition, const char *newID ) :
-pTopic( NULL ),
-pAction( NULL ),
-pCondition( NULL )
+ceUCCAInConvoSetActor::ceUCCAInConvoSetActor(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorInConversation *condition, const char *newID) :
+
+
+pCondition(nullptr)
 {
-	if( ! topic || ! action || ! condition || ! newID ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !action || !condition || !newID){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldID = condition->GetActor();
 	pNewID = newID;
 	
-	SetShortInfo( "Actor in conversation set actor id" );
+	SetShortInfo("@Conversation.Undo.ActorInConversationSetActorID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAInConvoSetActor::~ceUCCAInConvoSetActor(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -85,11 +71,11 @@ ceUCCAInConvoSetActor::~ceUCCAInConvoSetActor(){
 ///////////////
 
 void ceUCCAInConvoSetActor::Undo(){
-	pCondition->SetActor( pOldID.GetString() );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetActor(pOldID.GetString());
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCAInConvoSetActor::Redo(){
-	pCondition->SetActor( pNewID.GetString() );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetActor(pNewID.GetString());
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

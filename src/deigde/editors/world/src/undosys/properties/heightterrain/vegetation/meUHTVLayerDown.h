@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrain;
-class meHTVegetationLayer;
+#include "../../../../world/meWorld.h"
+#include "../../../../world/terrain/meHeightTerrain.h"
+#include "../../../../world/heightterrain/meHTVegetationLayer.h"
 
 
 
@@ -42,30 +42,38 @@ class meHTVegetationLayer;
  * Undo action to move a vegetation layer down.
  */
 class meUHTVLayerDown : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVLayerDown>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrain *pHeightTerrain;
-	meHTVegetationLayer *pVLayer;
+	meHeightTerrain::Ref pHeightTerrain;
+	meHTVegetationLayer::Ref pVLayer;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVLayerDown( meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer );
+	meUHTVLayerDown(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUHTVLayerDown();
+
+protected:
+	~meUHTVLayerDown() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

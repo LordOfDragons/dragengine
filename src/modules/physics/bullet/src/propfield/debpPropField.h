@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEBPPROPFIELD_H_
 #define _DEBPPROPFIELD_H_
 
 // includes
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsPropField.h>
 
@@ -48,20 +48,16 @@ class debpPropField : public deBasePhysicsPropField{
 private:
 	dePhysicsBullet *pBullet;
 	dePropField *pPropField;
-	
-	debpPropFieldType **pTypes;
-	int pTypeCount;
-	int pTypeSize;
-	
+	decTUniqueList<debpPropFieldType> pTypes;
 	bool pDirty;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpPropField( dePhysicsBullet *bullet, dePropField *forceField );
+	debpPropField(dePhysicsBullet *bullet, dePropField *forceField);
 	/** Cleans up the peer. */
-	virtual ~debpPropField();
+	~debpPropField() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -72,38 +68,37 @@ public:
 	inline dePropField *GetPropField() const{ return pPropField; }
 	
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	/** Retrieves the type at the given index. */
-	debpPropFieldType *GetTypeAt( int index ) const;
+	debpPropFieldType *GetTypeAt(int index) const;
 	
 	/** Updates the prop field if required. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	/** @name Notification */
 	/*@{*/
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** Type has been added. */
-	virtual void TypeAdded( int index, dePropFieldType *type );
+	void TypeAdded(int index, dePropFieldType *type) override;
 	/** Type has been removed. */
-	virtual void TypeRemoved( int index, dePropFieldType *type );
+	void TypeRemoved(int index, dePropFieldType *type) override;
 	/** All types have been removed. */
-	virtual void AllTypesRemoved();
+	void AllTypesRemoved() override;
 	/** Type changed. */
-	virtual void TypeChanged( int index, dePropFieldType *type );
+	void TypeChanged(int index, dePropFieldType *type) override;
 	
 	/** Instances changed. */
-	virtual void InstancesChanged( int index, dePropFieldType *type );
+	void InstancesChanged(int index, dePropFieldType *type) override;
 	
 	/** Project all instances to the given ground. */
-	virtual void ProjectInstances( const dePropFieldGround &ground, const decVector &direction );
+	void ProjectInstances(const dePropFieldGround &ground, const decVector &direction) override;
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	void pProjectInstancesDown( const dePropFieldGround &ground );
+	void pProjectInstancesDown(const dePropFieldGround &ground);
 };
 
 // end of include only once

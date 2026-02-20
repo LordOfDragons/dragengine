@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount( seProperty *property, int newValue ) :
-pProperty( NULL ),
-pNewValue( newValue )
+seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount(seProperty *property, int newValue) :
+
+pNewValue(newValue)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed bit count" );
+	SetShortInfo("@Skin.Undo.PropertyConstructedBitCount");
 	
 	pOldValue = property->GetNodeBitCount();
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedSetBitCount::~seUPropertyConstructedSetBitCount(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ seUPropertyConstructedSetBitCount::~seUPropertyConstructedSetBitCount(){
 ///////////////
 
 void seUPropertyConstructedSetBitCount::Undo(){
-	pProperty->SetNodeBitCount( pOldValue );
+	pProperty->SetNodeBitCount(pOldValue);
 }
 
 void seUPropertyConstructedSetBitCount::Redo(){
-	pProperty->SetNodeBitCount( pNewValue );
+	pProperty->SetNodeBitCount(pNewValue);
 }

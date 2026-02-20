@@ -45,7 +45,7 @@ class deEffectColorMatrix;
  * Panel for editing a color matrix effect.
  */
 class meWEFColorMatrix : public FXVerticalFrame{
-	FXDECLARE( meWEFColorMatrix )
+	FXDECLARE(meWEFColorMatrix)
 	
 protected:
 	meWEFColorMatrix();
@@ -75,20 +75,20 @@ private:
 	
 public:
 	// constructor, destructor
-	meWEFColorMatrix( deEffectColorMatrix *effectColorMatrix, meWindowEffects *windowEffects, FXComposite *container );
+	meWEFColorMatrix(deEffectColorMatrix *effectColorMatrix, meWindowEffects *windowEffects, FXComposite *container);
 	virtual ~meWEFColorMatrix();
 	
 	// management
 	void UpdateColorMatrix();
 	
-	void AddTemplate( meWTColorMatrix *aTemplate );
+	void AddTemplate(meWTColorMatrix *aTemplate);
 	
 	// events
-	long onTableMatrixChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCheckEnableCommand( FXObject *sender, FXSelector selector, void *data );
-	long onCBTemplatesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnApplyTemplateCommand( FXObject *sender, FXSelector selector, void *data );
-	long onBtnSaveTemplateCommand( FXObject *sender, FXSelector selector, void *data );
+	long onTableMatrixChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCheckEnableCommand(FXObject *sender, FXSelector selector, void *data);
+	long onCBTemplatesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnApplyTemplateCommand(FXObject *sender, FXSelector selector, void *data);
+	long onBtnSaveTemplateCommand(FXObject *sender, FXSelector selector, void *data);
 	
 private:
 	void pAddTemplates();

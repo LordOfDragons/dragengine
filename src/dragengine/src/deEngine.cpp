@@ -117,8 +117,8 @@
 // Definitions
 ////////////////
 
-#define RESMGRSANCHECK( manager, type ) \
-	if( pResMgrs[ manager ]->GetResourceType() != deResourceManager::type ) DETHROW( deeAssertion )
+#define RESMGRSANCHECK(manager, type) \
+	if(pResMgrs.GetAt(manager)->GetResourceType() != deResourceManager::type) DETHROW(deeAssertion)
 
 #define LOGGING_NAME "Engine"
 
@@ -172,9 +172,9 @@ enum eResourceManager{
 	ermVideos,
 	ermVideoPlayers,
 	ermWorlds,
-	ermServices,
-	ermManagerCount
+	ermServices
 };
+constexpr int ManagerCount = ermServices + 1;
 
 enum eSystems{
 	esCrashRecovery,
@@ -187,11 +187,11 @@ enum eSystems{
 	esSynthesizer,
 	esAI,
 	esVR,
-	esScripting,
-	esSystemCount
+	esScripting
 };
+constexpr int vSystemCount = esScripting + 1;
 
-static const int vLocalResourcePeerCreationOrder[ ermManagerCount ] = {
+static const int vLocalResourcePeerCreationOrder[ManagerCount] = {
 	// file resource peer have to be created first in the right order
 	ermArchives,
 	
@@ -265,7 +265,7 @@ static const int vLocalResourcePeerCreationOrder[ ermManagerCount ] = {
 	ermServices
 };
 
-const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[ 0 ];
+const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[0];
 
 
 
@@ -275,43 +275,40 @@ const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[ 0 ];
 // Constructor, destructor
 ////////////////////////////
 
-deEngine::deEngine( deOS *os, deVirtualFileSystem *fileSystem ) :
-pArgs( nullptr ),
-pOS( os ),
-pOSFileSystem(deVirtualFileSystem::Ref::New(fileSystem)),
+deEngine::deEngine(deOS *os, deVirtualFileSystem *fileSystem) :
+pArgs(nullptr),
+pOS(os),
+pOSFileSystem(fileSystem),
 
-pErrorTrace( nullptr ),
-pScriptFailed( false ),
-pSystemFailed( false ),
-pLogger( nullptr ),
+pErrorTrace(nullptr),
+pScriptFailed(false),
+pSystemFailed(false),
 
-pModSys( nullptr ),
-pSystems( nullptr ),
+pModSys(nullptr),
 
-pParallelProcessing( nullptr ),
-pResLoader( nullptr ),
-pResMgrs( nullptr ),
+pParallelProcessing(nullptr),
+pResLoader(nullptr),
 
-pFrameTimer( nullptr ),
-pElapsedTime( 0.0f ),
-pAccumElapsedTime( 0.0f ),
+pFrameTimer(nullptr),
+pElapsedTime(0.0f),
+pAccumElapsedTime(0.0f),
 
-pFPSAccum( 0 ),
-pFPSFrames( 0 ),
-pFPSRate( 1 ),
+pFPSAccum(0),
+pFPSFrames(0),
+pFPSRate(1),
 
-pRequestQuit( false )
+pRequestQuit(false)
 {
-	if( ! os ){
-		DETHROW( deeInvalidParam );
+	if(!os){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		os->SetEngine( this );
+		os->SetEngine(this);
 		
 		pInit();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		pCleanUp();
 		throw;
@@ -341,16 +338,9 @@ void deEngine::ResetFailureFlags(){
 	pScriptFailed = false;
 }
 
-void deEngine::SetLogger( deLogger *logger ){
-	if( ! logger ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( logger != pLogger ){
-		pLogger->FreeReference();
-		pLogger = logger;
-		logger->AddReference();
-	}
+void deEngine::SetLogger(deLogger *logger){
+	DEASSERT_NOTNULL(logger)
+	pLogger = logger;
 }
 
 
@@ -359,57 +349,55 @@ void deEngine::SetLogger( deLogger *logger ){
 ////////////
 
 int deEngine::GetSystemCount() const{
-	return esSystemCount;
+	return pSystems.GetCount();
 }
 
-deBaseSystem *deEngine::GetSystemAt( int index ) const{
-	if( index < 0 || index >= esSystemCount ) DETHROW( deeInvalidParam );
-	
-	return pSystems[ index ];
+deBaseSystem *deEngine::GetSystemAt(int index) const{
+	return pSystems.GetAt(index);
 }
 
 deGraphicSystem *deEngine::GetGraphicSystem() const{
-	return ( deGraphicSystem* )pSystems[ esGraphic ];
+	return pSystems.GetAt(esGraphic).PointerStaticCast<deGraphicSystem>();
 }
 
 deInputSystem *deEngine::GetInputSystem() const{
-	return ( deInputSystem* )pSystems[ esInput ];
+	return pSystems.GetAt(esInput).PointerStaticCast<deInputSystem>();
 }
 
 dePhysicsSystem *deEngine::GetPhysicsSystem() const{
-	return ( dePhysicsSystem* )pSystems[ esPhysics ];
+	return pSystems.GetAt(esPhysics).PointerStaticCast<dePhysicsSystem>();
 }
 
 deScriptingSystem *deEngine::GetScriptingSystem() const{
-	return ( deScriptingSystem* )pSystems[ esScripting ];
+	return pSystems.GetAt(esScripting).PointerStaticCast<deScriptingSystem>();
 }
 
 deCrashRecoverySystem *deEngine::GetCrashRecoverySystem() const{
-	return ( deCrashRecoverySystem* )pSystems[ esCrashRecovery ];
+	return pSystems.GetAt(esCrashRecovery).PointerStaticCast<deCrashRecoverySystem>();
 }
 
 deAnimatorSystem *deEngine::GetAnimatorSystem() const{
-	return ( deAnimatorSystem* )pSystems[ esAnimator ];
+	return pSystems.GetAt(esAnimator).PointerStaticCast<deAnimatorSystem>();
 }
 
 deAudioSystem *deEngine::GetAudioSystem() const{
-	return ( deAudioSystem* )pSystems[ esAudio ];
+	return pSystems.GetAt(esAudio).PointerStaticCast<deAudioSystem>();
 }
 
 deNetworkSystem *deEngine::GetNetworkSystem() const{
-	return ( deNetworkSystem* )pSystems[ esNetwork ];
+	return pSystems.GetAt(esNetwork).PointerStaticCast<deNetworkSystem>();
 }
 
 deAISystem *deEngine::GetAISystem() const{
-	return ( deAISystem* )pSystems[ esAI ];
+	return pSystems.GetAt(esAI).PointerStaticCast<deAISystem>();
 }
 
 deSynthesizerSystem *deEngine::GetSynthesizerSystem() const{
-	return ( deSynthesizerSystem* )pSystems[ esSynthesizer ];
+	return pSystems.GetAt(esSynthesizer).PointerStaticCast<deSynthesizerSystem>();
 }
 
 deVRSystem *deEngine::GetVRSystem() const{
-	return ( deVRSystem* )pSystems[ esVR ];
+	return pSystems.GetAt(esVR).PointerStaticCast<deVRSystem>();
 }
 
 
@@ -418,235 +406,225 @@ deVRSystem *deEngine::GetVRSystem() const{
 //////////////////////
 
 int deEngine::GetResourceManagerCount() const{
-	return ermManagerCount;
+	return pResMgrs.GetCount();
 }
 
-deResourceManager *deEngine::GetResourceManagerAt( int index ) const{
-	if( index < 0 || index >= ermManagerCount ) DETHROW( deeOutOfBoundary );
-	
-	return pResMgrs[ index ];
+deResourceManager *deEngine::GetResourceManagerAt(int index) const{
+	return pResMgrs.GetAt(index);
 }
 
 deResourceManager *deEngine::GetResourceManagerFor(int resourceType) const{
-	int i;
-	
-	for( i=0; i<ermManagerCount; i++ ){
-		if( pResMgrs[ i ]->GetResourceType() == resourceType ){
-			return pResMgrs[ i ];
-		}
-	}
-	
-	return NULL;
+	return pResMgrs.FindOrNull([&](deResourceManager &m){
+		return m.GetResourceType() == resourceType;
+	});
 }
 
 deAnimationManager *deEngine::GetAnimationManager() const{
-	return ( deAnimationManager* )pResMgrs[ ermAnimations ];
+	return pResMgrs.GetAt(ermAnimations).PointerStaticCast<deAnimationManager>();
 }
 
 deAnimatorManager *deEngine::GetAnimatorManager() const{
-	return ( deAnimatorManager* )pResMgrs[ ermAnimators ];
+	return pResMgrs.GetAt(ermAnimators).PointerStaticCast<deAnimatorManager>();
 }
 
 deAnimatorInstanceManager *deEngine::GetAnimatorInstanceManager() const{
-	return ( deAnimatorInstanceManager* )pResMgrs[ ermAnimatorInstances ];
+	return pResMgrs.GetAt(ermAnimatorInstances).PointerStaticCast<deAnimatorInstanceManager>();
 }
 
 deArchiveManager *deEngine::GetArchiveManager() const{
-	return ( deArchiveManager* )pResMgrs[ ermArchives ];
+	return pResMgrs.GetAt(ermArchives).PointerStaticCast<deArchiveManager>();
 }
 
 deBillboardManager *deEngine::GetBillboardManager() const{
-	return ( deBillboardManager* )pResMgrs[ ermBillboards ];
+	return pResMgrs.GetAt(ermBillboards).PointerStaticCast<deBillboardManager>();
 }
 
 deCanvasManager *deEngine::GetCanvasManager() const{
-	return ( deCanvasManager* )pResMgrs[ ermCanvas ];
+	return pResMgrs.GetAt(ermCanvas).PointerStaticCast<deCanvasManager>();
 }
 
 deCameraManager *deEngine::GetCameraManager() const{
-	return ( deCameraManager* )pResMgrs[ ermCameras ];
+	return pResMgrs.GetAt(ermCameras).PointerStaticCast<deCameraManager>();
 }
 
 deCaptureCanvasManager *deEngine::GetCaptureCanvasManager() const{
-	return ( deCaptureCanvasManager* )pResMgrs[ ermCaptureCanvas ];
+	return pResMgrs.GetAt(ermCaptureCanvas).PointerStaticCast<deCaptureCanvasManager>();
 }
 
 deColliderManager *deEngine::GetColliderManager() const{
-	return ( deColliderManager* )pResMgrs[ ermColliders ];
+	return pResMgrs.GetAt(ermColliders).PointerStaticCast<deColliderManager>();
 }
 
 deComponentManager *deEngine::GetComponentManager() const{
-	return ( deComponentManager* )pResMgrs[ ermComponents ];
+	return pResMgrs.GetAt(ermComponents).PointerStaticCast<deComponentManager>();
 }
 
 deConnectionManager *deEngine::GetConnectionManager() const{
-	return ( deConnectionManager* )pResMgrs[ ermConnections ];
+	return pResMgrs.GetAt(ermConnections).PointerStaticCast<deConnectionManager>();
 }
 
 deDebugDrawerManager *deEngine::GetDebugDrawerManager() const{
-	return ( deDebugDrawerManager* )pResMgrs[ ermDebugDrawers ];
+	return pResMgrs.GetAt(ermDebugDrawers).PointerStaticCast<deDebugDrawerManager>();
 }
 
 deDecalManager *deEngine::GetDecalManager() const{
-	return ( deDecalManager* )pResMgrs[ ermDecals ];
+	return pResMgrs.GetAt(ermDecals).PointerStaticCast<deDecalManager>();
 }
 
 deDynamicSkinManager *deEngine::GetDynamicSkinManager() const{
-	return ( deDynamicSkinManager* )pResMgrs[ ermDynamicSkin ];
+	return pResMgrs.GetAt(ermDynamicSkin).PointerStaticCast<deDynamicSkinManager>();
 }
 
 deEffectManager *deEngine::GetEffectManager() const{
-	return ( deEffectManager* )pResMgrs[ ermEffects ];
+	return pResMgrs.GetAt(ermEffects).PointerStaticCast<deEffectManager>();
 }
 
 deEnvMapProbeManager *deEngine::GetEnvMapProbeManager() const{
-	return ( deEnvMapProbeManager* )pResMgrs[ ermEnvMapProbes ];
+	return pResMgrs.GetAt(ermEnvMapProbes).PointerStaticCast<deEnvMapProbeManager>();
 }
 
 deFontManager *deEngine::GetFontManager() const{
-	return ( deFontManager* )pResMgrs[ ermFonts ];
+	return pResMgrs.GetAt(ermFonts).PointerStaticCast<deFontManager>();
 }
 
 deForceFieldManager *deEngine::GetForceFieldManager() const{
-	return ( deForceFieldManager* )pResMgrs[ ermForceFields ];
+	return pResMgrs.GetAt(ermForceFields).PointerStaticCast<deForceFieldManager>();
 }
 
 deHeightTerrainManager *deEngine::GetHeightTerrainManager() const{
-	return ( deHeightTerrainManager* )pResMgrs[ ermHeightTerrains ];
+	return pResMgrs.GetAt(ermHeightTerrains).PointerStaticCast<deHeightTerrainManager>();
 }
 
 deImageManager *deEngine::GetImageManager() const{
-	return ( deImageManager* )pResMgrs[ ermImages ];
+	return pResMgrs.GetAt(ermImages).PointerStaticCast<deImageManager>();
 }
 
 deLanguagePackManager *deEngine::GetLanguagePackManager() const{
-	return ( deLanguagePackManager* )pResMgrs[ ermLanguagePacks ];
+	return pResMgrs.GetAt(ermLanguagePacks).PointerStaticCast<deLanguagePackManager>();
 }
 
 deLightManager *deEngine::GetLightManager() const{
-	return ( deLightManager* )pResMgrs[ ermLights ];
+	return pResMgrs.GetAt(ermLights).PointerStaticCast<deLightManager>();
 }
 
 deLumimeterManager *deEngine::GetLumimeterManager() const{
-	return ( deLumimeterManager* )pResMgrs[ ermLumimeters ];
+	return pResMgrs.GetAt(ermLumimeters).PointerStaticCast<deLumimeterManager>();
 }
 
 deMicrophoneManager *deEngine::GetMicrophoneManager() const{
-	return ( deMicrophoneManager* )pResMgrs[ ermMicrophones ];
+	return pResMgrs.GetAt(ermMicrophones).PointerStaticCast<deMicrophoneManager>();
 }
 
 deModelManager *deEngine::GetModelManager() const{
-	return ( deModelManager* )pResMgrs[ ermModels ];
+	return pResMgrs.GetAt(ermModels).PointerStaticCast<deModelManager>();
 }
 
 deNavigationBlockerManager *deEngine::GetNavigationBlockerManager() const{
-	return ( deNavigationBlockerManager* )pResMgrs[ ermNavigationBlocker ];
+	return pResMgrs.GetAt(ermNavigationBlocker).PointerStaticCast<deNavigationBlockerManager>();
 }
 
 deNavigationSpaceManager *deEngine::GetNavigationSpaceManager() const{
-	return ( deNavigationSpaceManager* )pResMgrs[ ermNavigationSpace ];
+	return pResMgrs.GetAt(ermNavigationSpace).PointerStaticCast<deNavigationSpaceManager>();
 }
 
 deNavigatorManager *deEngine::GetNavigatorManager() const{
-	return ( deNavigatorManager* )pResMgrs[ ermNavigator ];
+	return pResMgrs.GetAt(ermNavigator).PointerStaticCast<deNavigatorManager>();
 }
 
 deNetworkStateManager *deEngine::GetNetworkStateManager() const{
-	return ( deNetworkStateManager* )pResMgrs[ ermNetworkStates ];
+	return pResMgrs.GetAt(ermNetworkStates).PointerStaticCast<deNetworkStateManager>();
 }
 
 deOcclusionMeshManager *deEngine::GetOcclusionMeshManager() const{
-	return ( deOcclusionMeshManager* )pResMgrs[ ermOcclusionMesh ];
+	return pResMgrs.GetAt(ermOcclusionMesh).PointerStaticCast<deOcclusionMeshManager>();
 }
 
 deParticleEmitterManager *deEngine::GetParticleEmitterManager() const{
-	return ( deParticleEmitterManager* )pResMgrs[ ermParticleEmitters ];
+	return pResMgrs.GetAt(ermParticleEmitters).PointerStaticCast<deParticleEmitterManager>();
 }
 
 deParticleEmitterInstanceManager *deEngine::GetParticleEmitterInstanceManager() const{
-	return ( deParticleEmitterInstanceManager* )pResMgrs[ ermParticleEmitterInstances ];
+	return pResMgrs.GetAt(ermParticleEmitterInstances).PointerStaticCast<deParticleEmitterInstanceManager>();
 }
 
 dePropFieldManager *deEngine::GetPropFieldManager() const{
-	return ( dePropFieldManager* )pResMgrs[ ermPropFields ];
+	return pResMgrs.GetAt(ermPropFields).PointerStaticCast<dePropFieldManager>();
 }
 
 deRenderWindowManager *deEngine::GetRenderWindowManager() const{
-	return ( deRenderWindowManager* )pResMgrs[ ermRenderWindows ];
+	return pResMgrs.GetAt(ermRenderWindows).PointerStaticCast<deRenderWindowManager>();
 }
 
 deRigManager *deEngine::GetRigManager() const{
-	return ( deRigManager* )pResMgrs[ ermRigs ];
+	return pResMgrs.GetAt(ermRigs).PointerStaticCast<deRigManager>();
 }
 
 deServerManager *deEngine::GetServerManager() const{
-	return ( deServerManager* )pResMgrs[ ermServers ];
+	return pResMgrs.GetAt(ermServers).PointerStaticCast<deServerManager>();
 }
 
 deSkinManager *deEngine::GetSkinManager() const{
-	return ( deSkinManager* )pResMgrs[ ermSkins ];
+	return pResMgrs.GetAt(ermSkins).PointerStaticCast<deSkinManager>();
 }
 
 deSkyManager *deEngine::GetSkyManager() const{
-	return ( deSkyManager* )pResMgrs[ ermSkies ];
+	return pResMgrs.GetAt(ermSkies).PointerStaticCast<deSkyManager>();
 }
 
 deSkyInstanceManager *deEngine::GetSkyInstanceManager() const{
-	return ( deSkyInstanceManager* )pResMgrs[ ermSkyInstances ];
+	return pResMgrs.GetAt(ermSkyInstances).PointerStaticCast<deSkyInstanceManager>();
 }
 
 deSpeakerManager *deEngine::GetSpeakerManager() const{
-	return ( deSpeakerManager* )pResMgrs[ ermSpeakers ];
+	return pResMgrs.GetAt(ermSpeakers).PointerStaticCast<deSpeakerManager>();
 }
 
 deSmokeEmitterManager *deEngine::GetSmokeEmitterManager() const{
-	return ( deSmokeEmitterManager* )pResMgrs[ ermSmokeEmitters ];
+	return pResMgrs.GetAt(ermSmokeEmitters).PointerStaticCast<deSmokeEmitterManager>();
 }
 
 deSoundManager *deEngine::GetSoundManager() const{
-	return ( deSoundManager* )pResMgrs[ ermSounds ];
+	return pResMgrs.GetAt(ermSounds).PointerStaticCast<deSoundManager>();
 }
 
 deSoundLevelMeterManager *deEngine::GetSoundLevelMeterManager() const{
-	return ( deSoundLevelMeterManager* )pResMgrs[ ermSoundLevelMeters ];
+	return pResMgrs.GetAt(ermSoundLevelMeters).PointerStaticCast<deSoundLevelMeterManager>();
 }
 
 deSynthesizerManager *deEngine::GetSynthesizerManager() const{
-	return ( deSynthesizerManager* )pResMgrs[ ermSynthesizers ];
+	return pResMgrs.GetAt(ermSynthesizers).PointerStaticCast<deSynthesizerManager>();
 }
 
 deSynthesizerInstanceManager *deEngine::GetSynthesizerInstanceManager() const{
-	return ( deSynthesizerInstanceManager* )pResMgrs[ ermSynthesizerInstances ];
+	return pResMgrs.GetAt(ermSynthesizerInstances).PointerStaticCast<deSynthesizerInstanceManager>();
 }
 
 deTouchSensorManager *deEngine::GetTouchSensorManager() const{
-	return ( deTouchSensorManager* )pResMgrs[ ermTouchSensors ];
+	return pResMgrs.GetAt(ermTouchSensors).PointerStaticCast<deTouchSensorManager>();
 }
 
 deVideoManager *deEngine::GetVideoManager() const{
-	return ( deVideoManager* )pResMgrs[ ermVideos ];
+	return pResMgrs.GetAt(ermVideos).PointerStaticCast<deVideoManager>();
 }
 
 deVideoPlayerManager *deEngine::GetVideoPlayerManager() const{
-	return ( deVideoPlayerManager* )pResMgrs[ ermVideoPlayers ];
+	return pResMgrs.GetAt(ermVideoPlayers).PointerStaticCast<deVideoPlayerManager>();
 }
 
 deWorldManager *deEngine::GetWorldManager() const{
-	return ( deWorldManager* )pResMgrs[ ermWorlds ];
+	return pResMgrs.GetAt(ermWorlds).PointerStaticCast<deWorldManager>();
 }
 
 deServiceManager *deEngine::GetServiceManager() const{
-	return ( deServiceManager* )pResMgrs[ ermServices ];
+	return pResMgrs.GetAt(ermServices).PointerStaticCast<deServiceManager>();
 }
 
 
 
 void deEngine::RemoveLeakingResources(){
-	int i;
-	
-	for( i=0; i<ermManagerCount; i++ ){
-		pResMgrs[ i ]->ReleaseLeakingResources();
-	}
+	pResMgrs.Visit([](deResourceManager &m){
+		m.ReleaseLeakingResources();
+	});
 }
 
 
@@ -654,9 +632,9 @@ void deEngine::RemoveLeakingResources(){
 // FPS
 ////////
 
-void deEngine::SetElapsedTime( float elapsed ){
+void deEngine::SetElapsedTime(float elapsed){
 	ResetTimers();
-	pElapsedTime = decMath::max( elapsed, 0.0f );
+	pElapsedTime = decMath::max(elapsed, 0.0f);
 	pAccumElapsedTime = 0.0f;
 	pUpdateFPSRate();
 }
@@ -670,23 +648,23 @@ int deEngine::GetFPSRate() const{
 // Files
 //////////
 
-void deEngine::SetDataDir( const char *dataDir ){
+void deEngine::SetDataDir(const char *dataDir){
 	pPathData = dataDir;
 }
 
-void deEngine::SetCacheAppID( const char *cacheAppID ){
+void deEngine::SetCacheAppID(const char *cacheAppID){
 	pCacheAppID = cacheAppID;
 }
 
-void deEngine::SetPathOverlay( const char *path ){
+void deEngine::SetPathOverlay(const char *path){
 	pPathOverlay = path;
 }
 
-void deEngine::SetPathCapture( const char *path ){
+void deEngine::SetPathCapture(const char *path){
 	pPathCapture = path;
 }
 
-void deEngine::SetPathConfig( const char *path ){
+void deEngine::SetPathConfig(const char *path){
 	pPathConfig = path;
 }
 
@@ -715,8 +693,8 @@ static decTimer timerTotal;
 static decTimer timer;
 
 #define DEBUG_RESET_TIMERS				timer.Reset(); timerTotal.Reset()
-#define DEBUG_PRINT_TIMER(what)			pLogger->LogInfoFormat( LOGGING_NAME, "Timer: %s = %iys.", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
-#define DEBUG_PRINT_TIMER_TOTAL(what)	pLogger->LogInfoFormat( LOGGING_NAME, "Timer-Total %s = %iys.", what, ( int )( timerTotal.GetElapsedTime() * 1000000.0 ) )
+#define DEBUG_PRINT_TIMER(what)			pLogger->LogInfoFormat(LOGGING_NAME, "Timer: %s = %iys.", what, (int)(timer.GetElapsedTime() * 1000000.0))
+#define DEBUG_PRINT_TIMER_TOTAL(what)	pLogger->LogInfoFormat(LOGGING_NAME, "Timer-Total %s = %iys.", what, (int)(timerTotal.GetElapsedTime() * 1000000.0))
 #else
 #define DEBUG_RESET_TIMERS
 #define DEBUG_PRINT_TIMER(what)
@@ -725,8 +703,8 @@ static decTimer timer;
 
 
 
-bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
-	return Run( scriptDirectory, "", gameObject );
+bool deEngine::Run(const char *scriptDirectory, const char *gameObject){
+	return Run(scriptDirectory, "", gameObject);
 }
 
 bool deEngine::Run(const char *scriptDirectory, const char *scriptVersion, const char *gameObject){
@@ -756,7 +734,7 @@ DEBUG_RESET_TIMERS;
 				return false;
 			}
 		}
-DEBUG_PRINT_TIMER_TOTAL( "Run: Cycle" );
+DEBUG_PRINT_TIMER_TOTAL("Run: Cycle");
 	}
 	
 	return StopRun();
@@ -772,7 +750,7 @@ void deEngine::ResetTimers(){
 
 void deEngine::UpdateElapsedTime(){
 	pElapsedTime = pAccumElapsedTime + pFrameTimer->GetElapsedTime();
-	if( pElapsedTime < 1.0f / 200.0f ){ // frame limit
+	if(pElapsedTime < 1.0f / 200.0f){ // frame limit
 		pAccumElapsedTime = pElapsedTime;
 		return;
 	}
@@ -782,7 +760,7 @@ void deEngine::UpdateElapsedTime(){
 }
 
 bool deEngine::RunSingleFrame(){
-	if( pElapsedTime < 1.0f / 200.0f ){ // frame limit
+	if(pElapsedTime < 1.0f / 200.0f){ // frame limit
 		return true;
 	}
 	
@@ -801,41 +779,41 @@ bool deEngine::RunSingleFrame(){
 		
 		// process inputs
 		count = eventQueue.GetEventCount();
-		for( i=0; i<count; i++ ){
-			const deInputEvent &event = eventQueue.GetEventAt( i );
-			if( inpSys.DropEvent( event ) ){
+		for(i=0; i<count; i++){
+			const deInputEvent &event = eventQueue.GetEventAt(i);
+			if(inpSys.DropEvent(event)){
 				continue;
 			}
-			scrSys.SendEvent( ( deInputEvent* )&event );
-			if( pScriptFailed ){
-				deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
-					nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
-				tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+			scrSys.SendEvent(const_cast<deInputEvent*>(&event));
+			if(pScriptFailed){
+				deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
+					nullptr, "deEngine::RunDoSingleFrame", __LINE__);
+				tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 				eventQueue.RemoveAllEvents();
 				return false;
 			}
 		}
 		eventQueue.RemoveAllEvents();
-	DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
+	DEBUG_PRINT_TIMER("DoFrame: Process input events");
 		
 		// process vr inputs
 		count = vrEventQueue.GetEventCount();
-		for( i=0; i<count; i++ ){
-			const deInputEvent &event = vrEventQueue.GetEventAt( i );
-			if( inpSys.DropEvent( event ) ){
+		for(i=0; i<count; i++){
+			const deInputEvent &event = vrEventQueue.GetEventAt(i);
+			if(inpSys.DropEvent(event)){
 				continue;
 			}
-			scrSys.SendEvent( ( deInputEvent* )&event );
-			if( pScriptFailed ){
-				deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
-					nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
-				tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+			scrSys.SendEvent(const_cast<deInputEvent*>(&event));
+			if(pScriptFailed){
+				deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
+					nullptr, "deEngine::RunDoSingleFrame", __LINE__);
+				tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 				vrEventQueue.RemoveAllEvents();
 				return false;
 			}
 		}
 		vrEventQueue.RemoveAllEvents();
-	DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
+	DEBUG_PRINT_TIMER("DoFrame: Process VR events");
 		
 		// process service events
 		GetServiceManager()->FrameUpdate();
@@ -843,41 +821,40 @@ bool deEngine::RunSingleFrame(){
 		// frame update
 		pParallelProcessing->Update();
 		scrSys.OnFrameUpdate();
-	DEBUG_PRINT_TIMER( "DoFrame: Script OnFrameUpdate" );
-		if( pScriptFailed ){
-			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
-				nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
-			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+	DEBUG_PRINT_TIMER("DoFrame: Script OnFrameUpdate");
+		if(pScriptFailed){
+			deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
+				nullptr, "deEngine::RunDoSingleFrame", __LINE__);
+			tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 			return false;
 		}
 		
 		// process sound
 		audSys.ProcessAudio();
-	DEBUG_PRINT_TIMER( "DoFrame: Process audio" );
+	DEBUG_PRINT_TIMER("DoFrame: Process audio");
 		
 		// process network
 		netSys.ProcessNetwork();
-	DEBUG_PRINT_TIMER( "DoFrame: Process network" );
+	DEBUG_PRINT_TIMER("DoFrame: Process network");
 		
 		// draw screen
 		pParallelProcessing->Update();
 		graSys.RenderWindows();
-	DEBUG_PRINT_TIMER( "DoFrame: Render windows" );
+	DEBUG_PRINT_TIMER("DoFrame: Render windows");
 		
 		// check for problems
-		if( pScriptFailed ){
-			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
-				nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
-			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+		if(pScriptFailed){
+			deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(
+				nullptr, "deEngine::RunDoSingleFrame", __LINE__);
+			tracePoint.AddValueFloat("elapsedTime", pElapsedTime);
 			return false;
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pLogger->LogException("GameEngine", e);
 		
 		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
-			nullptr, "deEngine::Run", __LINE__);
+		deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
 		
 		const decStringList &backtrace = e.GetBacktrace();
 		const int btcount = backtrace.GetCount();
@@ -886,7 +863,7 @@ bool deEngine::RunSingleFrame(){
 		for(i=0; i<btcount; i++){
 			decString bttext;
 			bttext.Format("Backtrace %i", i + 1);
-			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+			tracePoint.AddValue(bttext, backtrace.GetAt(i));
 		}
 		return false;
 	}
@@ -908,7 +885,7 @@ const char *gameObject){
 	pLogger->LogInfoFormat(LOGGING_NAME, "Parallel Processing Threads: %d",
 		pParallelProcessing->GetThreadCount());
 	
-	if( true ){
+	if(true){
 		pLogger->LogInfoFormat(LOGGING_NAME, "Screen Size is %dx%d.",
 			pOS->GetDisplayCurrentResolution(0).x,
 			pOS->GetDisplayCurrentResolution(0).y);
@@ -930,12 +907,12 @@ const char *gameObject){
 	}
 	
 	// set script module directory and game object
-	scrSys.SetScriptDirectory( scriptDirectory );
-	scrSys.SetScriptVersion( scriptVersion );
-	scrSys.SetGameObject( gameObject );
+	scrSys.SetScriptDirectory(scriptDirectory);
+	scrSys.SetScriptVersion(scriptVersion);
+	scrSys.SetGameObject(gameObject);
 	
 	// start systems
-	while( hasErrors ){
+	while(hasErrors){
 		hasErrors = false;
 		
 		// reset some crash recovery variables. this is old stuff and will
@@ -944,49 +921,47 @@ const char *gameObject){
 		pSystemFailed = false;
 		
 		// check if all systems can be started
-		try{
-			for( i=0; i<esSystemCount; i++ ){
-				if( ! pSystems[ i ]->CanStart() ){
-					deErrorTracePoint *tracePoint = pErrorTrace->AddAndSetIfEmpty( "System is not ready to start",
-						NULL, "deEngine::Run", __LINE__ );
-					if( ! tracePoint ){
-						tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
-					}
-					tracePoint->AddValue( "system", pSystems[ i ]->GetSystemName() );
-					
-					hasErrors = true;
-					break;
-				}
+		pSystems.Visit([&](deBaseSystem &s){
+			if(hasErrors){
+				return;
 			}
 			
-		}catch( const deException &e ){
-			pErrorTrace->AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
-			deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
-			tracePoint->AddValue( "system", pSystems[ i ]->GetSystemName() );
-			
-			hasErrors = true;
-		}
-		
-		// start all systems
-		if( ! hasErrors ){
 			try{
-				for( i=0; i<esSystemCount; i++ ){
-					if( ! pSystems[ i ]->GetIsRunning() ){
-						pSystems[ i ]->Start();
-					}
+				if(!s.CanStart()){
+					DETHROW_INFO(deeInvalidAction, "System is not ready to start");
 				}
 				
-			}catch( const deException &e ){
-				pErrorTrace->AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
-				deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
-				tracePoint->AddValue( "system", pSystems[ i ]->GetSystemName() );
-				
+			}catch(const deException &e){
+				pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+				deErrorTracePoint &tp = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+				tp.AddValue("system", s.GetSystemName());
 				hasErrors = true;
 			}
+		});
+		
+		// start all systems
+		if(!hasErrors){
+			pSystems.Visit([&](deBaseSystem &s){
+				if(hasErrors){
+					return;
+				}
+				
+				try{
+					if(!s.GetIsRunning()){
+						s.Start();
+					}
+					
+				}catch(const deException &e){
+					pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+					deErrorTracePoint &tp = pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+					tp.AddValue("system", s.GetSystemName());
+					hasErrors = true;
+				}
+			});
 		}
 		
 		// if there are errors try a recovery
-		if( hasErrors ){
+		if(hasErrors){
 			return false;
 		}
 	}
@@ -1023,8 +998,7 @@ bool deEngine::ResumeRun(){
 		pLogger->LogException("GameEngine", e);
 		
 		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
-			nullptr, "deEngine::ResumeRun", __LINE__);
+		deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::ResumeRun", __LINE__);
 		
 		const decStringList &backtrace = e.GetBacktrace();
 		const int btcount = backtrace.GetCount();
@@ -1033,7 +1007,7 @@ bool deEngine::ResumeRun(){
 		for(i=0; i<btcount; i++){
 			decString bttext;
 			bttext.Format("Backtrace %i", i + 1);
-			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+			tracePoint.AddValue(bttext, backtrace.GetAt(i));
 		}
 		return false;
 	}
@@ -1054,10 +1028,10 @@ bool deEngine::RecoverFromError(){
 	pParallelProcessing->Pause();
 	
 	// should the crash recovery system be stopped start it
-	if( ! crSys->GetIsRunning() ){
+	if(!crSys->GetIsRunning()){
 		// test if we can start the crash recovery system can be started
-		if( ! crSys->CanStart() ){
-			pLogger->LogErrorFormat( LOGGING_NAME, "Crash Recovery System is not ready to start. Can not recover." );
+		if(!crSys->CanStart()){
+			pLogger->LogErrorFormat(LOGGING_NAME, "Crash Recovery System is not ready to start. Can not recover.");
 			pStopSystems();
 			return false;
 		}
@@ -1066,17 +1040,17 @@ bool deEngine::RecoverFromError(){
 		try{
 			crSys->Start();
 			
-		}catch( const deException &e ){
-			pLogger->LogException( LOGGING_NAME, e );
-			pLogger->LogErrorFormat( LOGGING_NAME, "The Crash Recovery System could not be started. Can not recover." );
+		}catch(const deException &e){
+			pLogger->LogException(LOGGING_NAME, e);
+			pLogger->LogErrorFormat(LOGGING_NAME, "The Crash Recovery System could not be started. Can not recover.");
 			pStopSystems();
 			return false;
 		}
 	}
 	
 	// run the crash recovery module
-	if( ! crSys->RecoverFromError() ){
-		pLogger->LogErrorFormat( LOGGING_NAME, "The Crash Recovery module could not recover from the error. Shutting now down." );
+	if(!crSys->RecoverFromError()){
+		pLogger->LogErrorFormat(LOGGING_NAME, "The Crash Recovery module could not recover from the error. Shutting now down.");
 		pErrorTrace->Clear();
 		pStopSystems();
 		return false;
@@ -1115,8 +1089,7 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 		pLogger->LogException("GameEngine", e);
 		
 		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
-		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
-			nullptr, "deEngine::ProcessEvents", __LINE__);
+		deErrorTracePoint &tracePoint = pErrorTrace->AddPoint(nullptr, "deEngine::ProcessEvents", __LINE__);
 		
 		const decStringList &backtrace = e.GetBacktrace();
 		const int btcount = backtrace.GetCount();
@@ -1125,7 +1098,7 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 		for(i=0; i<btcount; i++){
 			decString bttext;
 			bttext.Format("Backtrace %i", i + 1);
-			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+			tracePoint.AddValue(bttext, backtrace.GetAt(i));
 		}
 		return false;
 	}
@@ -1139,15 +1112,15 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 //////////////////////
 
 void deEngine::pInit(){
-	pLogger = new deLoggerConsoleColor;
+	pLogger = deLoggerConsoleColor::Ref::New();
 	pErrorTrace = new deErrorTrace;
 	pArgs = new deCmdLineArgs;
 	
 	pPathData = pOS->GetPathEngine();
-	pVFS = new deVirtualFileSystem;
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	// create systems and resource managers
-	pParallelProcessing = new deParallelProcessing( *this );
+	pParallelProcessing = new deParallelProcessing(*this);
 	
 	pInitSystems();
 	pInitResourceManagers();
@@ -1160,141 +1133,138 @@ void deEngine::pInit(){
 }
 
 void deEngine::pInitSystems(){
+	pModSys = new deModuleSystem(this);
+
 	int i;
-	
-	pModSys = new deModuleSystem( this );
-	
-	pSystems = new deBaseSystem*[ esSystemCount ];
-	for( i=0; i<esSystemCount; i++ ){
-		pSystems[ i ] = NULL;
+	for(i=0; i<vSystemCount; i++){
+		pSystems.Add({});
 	}
 	
-	pSystems[ esGraphic ] = new deGraphicSystem( this );
-	pSystems[ esInput ] = new deInputSystem( this );
-	pSystems[ esPhysics ] = new dePhysicsSystem( this );
-	pSystems[ esScripting ] = new deScriptingSystem( this );
-	pSystems[ esCrashRecovery ] = new deCrashRecoverySystem( this );
-	pSystems[ esAnimator ] = new deAnimatorSystem( this );
-	pSystems[ esAudio ] = new deAudioSystem( this );
-	pSystems[ esNetwork ] = new deNetworkSystem( this );
-	pSystems[ esSynthesizer ] = new deSynthesizerSystem( this );
-	pSystems[ esAI ] = new deAISystem( this );
-	pSystems[ esVR ] = new deVRSystem( this );
+	pSystems.SetAt(esGraphic, deTUniqueReference<deGraphicSystem>::New(this));
+	pSystems.SetAt(esInput, deTUniqueReference<deInputSystem>::New(this));
+	pSystems.SetAt(esPhysics, deTUniqueReference<dePhysicsSystem>::New(this));
+	pSystems.SetAt(esScripting, deTUniqueReference<deScriptingSystem>::New(this));
+	pSystems.SetAt(esCrashRecovery, deTUniqueReference<deCrashRecoverySystem>::New(this));
+	pSystems.SetAt(esAnimator, deTUniqueReference<deAnimatorSystem>::New(this));
+	pSystems.SetAt(esAudio, deTUniqueReference<deAudioSystem>::New(this));
+	pSystems.SetAt(esNetwork, deTUniqueReference<deNetworkSystem>::New(this));
+	pSystems.SetAt(esSynthesizer, deTUniqueReference<deSynthesizerSystem>::New(this));
+	pSystems.SetAt(esAI, deTUniqueReference<deAISystem>::New(this));
+	pSystems.SetAt(esVR, deTUniqueReference<deVRSystem>::New(this));
 }
 
 void deEngine::pInitResourceManagers(){
+	pResMgrs.EnlargeCapacity(ManagerCount);
 	int i;
-	
-	pResMgrs = new deResourceManager*[ ermManagerCount ];
-	for( i=0; i<ermManagerCount; i++ ){
-		pResMgrs[ i ] = nullptr;
+	for(i=0; i<ManagerCount; i++){
+		pResMgrs.Add({});
 	}
 	
-	pResMgrs[ ermAnimations ] = new deAnimationManager( this );
-	pResMgrs[ ermAnimatorInstances ] = new deAnimatorInstanceManager( this );
-	pResMgrs[ ermAnimators ] = new deAnimatorManager( this );
-	pResMgrs[ ermArchives ] = new deArchiveManager( this );
-	pResMgrs[ ermBillboards ] = new deBillboardManager( this );
-	pResMgrs[ ermCanvas ] = new deCanvasManager( this );
-	pResMgrs[ ermCameras ] = new deCameraManager( this );
-	pResMgrs[ ermCaptureCanvas ] = new deCaptureCanvasManager( this );
-	pResMgrs[ ermColliders ] = new deColliderManager( this );
-	pResMgrs[ ermComponents ] = new deComponentManager( this );
-	pResMgrs[ ermConnections ] = new deConnectionManager( this );
-	pResMgrs[ ermDebugDrawers ] = new deDebugDrawerManager( this );
-	pResMgrs[ ermDecals ] = new deDecalManager( this );
-	pResMgrs[ ermDynamicSkin ] = new deDynamicSkinManager( this );
-	pResMgrs[ ermEffects ] = new deEffectManager( this );
-	pResMgrs[ ermEnvMapProbes ] = new deEnvMapProbeManager( this );
-	pResMgrs[ ermFonts ] = new deFontManager( this );
-	pResMgrs[ ermForceFields ] = new deForceFieldManager( this );
-	pResMgrs[ ermHeightTerrains ] = new deHeightTerrainManager( this );
-	pResMgrs[ ermImages ] = new deImageManager( this );
-	pResMgrs[ ermLanguagePacks ] = new deLanguagePackManager( this );
-	pResMgrs[ ermLights ] = new deLightManager( this );
-	pResMgrs[ ermLumimeters ] = new deLumimeterManager( this );
-	pResMgrs[ ermMicrophones ] = new deMicrophoneManager( this );
-	pResMgrs[ ermModels ] = new deModelManager( this );
-	pResMgrs[ ermNavigationSpace ] = new deNavigationSpaceManager( this );
-	pResMgrs[ ermNavigationBlocker ] = new deNavigationBlockerManager( this );
-	pResMgrs[ ermNavigator ] = new deNavigatorManager( this );
-	pResMgrs[ ermNetworkStates ] = new deNetworkStateManager( this );
-	pResMgrs[ ermOcclusionMesh ] = new deOcclusionMeshManager( this );
-	pResMgrs[ ermParticleEmitterInstances ] = new deParticleEmitterInstanceManager( this );
-	pResMgrs[ ermParticleEmitters ] = new deParticleEmitterManager( this );
-	pResMgrs[ ermPropFields ] = new dePropFieldManager( this );
-	pResMgrs[ ermRenderWindows ] = new deRenderWindowManager( this );
-	pResMgrs[ ermRigs ] = new deRigManager( this );
-	pResMgrs[ ermServers ] = new deServerManager( this );
-	pResMgrs[ ermSkies ] = new deSkyManager( this );
-	pResMgrs[ ermSkyInstances ] = new deSkyInstanceManager( this );
-	pResMgrs[ ermSkins ] = new deSkinManager( this );
-	pResMgrs[ ermSmokeEmitters ] = new deSmokeEmitterManager( this );
-	pResMgrs[ ermSounds ] = new deSoundManager( this );
-	pResMgrs[ ermSoundLevelMeters ] = new deSoundLevelMeterManager( this );
-	pResMgrs[ ermSpeakers ] = new deSpeakerManager( this );
-	pResMgrs[ ermSynthesizers ] = new deSynthesizerManager( this );
-	pResMgrs[ ermSynthesizerInstances ] = new deSynthesizerInstanceManager( this );
-	pResMgrs[ ermTouchSensors ] = new deTouchSensorManager( this );
-	pResMgrs[ ermVideoPlayers ] = new deVideoPlayerManager( this );
-	pResMgrs[ ermVideos ] = new deVideoManager( this );
-	pResMgrs[ ermWorlds ] = new deWorldManager( this );
-	pResMgrs[ ermServices ] = new deServiceManager( this );
+	pResMgrs.SetAt(ermAnimations, deTUniqueReference<deAnimationManager>::New(this));
+	pResMgrs.SetAt(ermAnimatorInstances, deTUniqueReference<deAnimatorInstanceManager>::New(this));
+	pResMgrs.SetAt(ermAnimators, deTUniqueReference<deAnimatorManager>::New(this));
+	pResMgrs.SetAt(ermArchives, deTUniqueReference<deArchiveManager>::New(this));
+	pResMgrs.SetAt(ermBillboards, deTUniqueReference<deBillboardManager>::New(this));
+	pResMgrs.SetAt(ermCanvas, deTUniqueReference<deCanvasManager>::New(this));
+	pResMgrs.SetAt(ermCameras, deTUniqueReference<deCameraManager>::New(this));
+	pResMgrs.SetAt(ermCaptureCanvas, deTUniqueReference<deCaptureCanvasManager>::New(this));
+	pResMgrs.SetAt(ermColliders, deTUniqueReference<deColliderManager>::New(this));
+	pResMgrs.SetAt(ermComponents, deTUniqueReference<deComponentManager>::New(this));
+	pResMgrs.SetAt(ermConnections, deTUniqueReference<deConnectionManager>::New(this));
+	pResMgrs.SetAt(ermDebugDrawers, deTUniqueReference<deDebugDrawerManager>::New(this));
+	pResMgrs.SetAt(ermDecals, deTUniqueReference<deDecalManager>::New(this));
+	pResMgrs.SetAt(ermDynamicSkin, deTUniqueReference<deDynamicSkinManager>::New(this));
+	pResMgrs.SetAt(ermEffects, deTUniqueReference<deEffectManager>::New(this));
+	pResMgrs.SetAt(ermEnvMapProbes, deTUniqueReference<deEnvMapProbeManager>::New(this));
+	pResMgrs.SetAt(ermFonts, deTUniqueReference<deFontManager>::New(this));
+	pResMgrs.SetAt(ermForceFields, deTUniqueReference<deForceFieldManager>::New(this));
+	pResMgrs.SetAt(ermHeightTerrains, deTUniqueReference<deHeightTerrainManager>::New(this));
+	pResMgrs.SetAt(ermImages, deTUniqueReference<deImageManager>::New(this));
+	pResMgrs.SetAt(ermLanguagePacks, deTUniqueReference<deLanguagePackManager>::New(this));
+	pResMgrs.SetAt(ermLights, deTUniqueReference<deLightManager>::New(this));
+	pResMgrs.SetAt(ermLumimeters, deTUniqueReference<deLumimeterManager>::New(this));
+	pResMgrs.SetAt(ermMicrophones, deTUniqueReference<deMicrophoneManager>::New(this));
+	pResMgrs.SetAt(ermModels, deTUniqueReference<deModelManager>::New(this));
+	pResMgrs.SetAt(ermNavigationSpace, deTUniqueReference<deNavigationSpaceManager>::New(this));
+	pResMgrs.SetAt(ermNavigationBlocker, deTUniqueReference<deNavigationBlockerManager>::New(this));
+	pResMgrs.SetAt(ermNavigator, deTUniqueReference<deNavigatorManager>::New(this));
+	pResMgrs.SetAt(ermNetworkStates, deTUniqueReference<deNetworkStateManager>::New(this));
+	pResMgrs.SetAt(ermOcclusionMesh, deTUniqueReference<deOcclusionMeshManager>::New(this));
+	pResMgrs.SetAt(ermParticleEmitterInstances, deTUniqueReference<deParticleEmitterInstanceManager>::New(this));
+	pResMgrs.SetAt(ermParticleEmitters, deTUniqueReference<deParticleEmitterManager>::New(this));
+	pResMgrs.SetAt(ermPropFields, deTUniqueReference<dePropFieldManager>::New(this));
+	pResMgrs.SetAt(ermRenderWindows, deTUniqueReference<deRenderWindowManager>::New(this));
+	pResMgrs.SetAt(ermRigs, deTUniqueReference<deRigManager>::New(this));
+	pResMgrs.SetAt(ermServers, deTUniqueReference<deServerManager>::New(this));
+	pResMgrs.SetAt(ermSkies, deTUniqueReference<deSkyManager>::New(this));
+	pResMgrs.SetAt(ermSkyInstances, deTUniqueReference<deSkyInstanceManager>::New(this));
+	pResMgrs.SetAt(ermSkins, deTUniqueReference<deSkinManager>::New(this));
+	pResMgrs.SetAt(ermSmokeEmitters, deTUniqueReference<deSmokeEmitterManager>::New(this));
+	pResMgrs.SetAt(ermSounds, deTUniqueReference<deSoundManager>::New(this));
+	pResMgrs.SetAt(ermSoundLevelMeters, deTUniqueReference<deSoundLevelMeterManager>::New(this));
+	pResMgrs.SetAt(ermSpeakers, deTUniqueReference<deSpeakerManager>::New(this));
+	pResMgrs.SetAt(ermSynthesizers, deTUniqueReference<deSynthesizerManager>::New(this));
+	pResMgrs.SetAt(ermSynthesizerInstances, deTUniqueReference<deSynthesizerInstanceManager>::New(this));
+	pResMgrs.SetAt(ermTouchSensors, deTUniqueReference<deTouchSensorManager>::New(this));
+	pResMgrs.SetAt(ermVideoPlayers, deTUniqueReference<deVideoPlayerManager>::New(this));
+	pResMgrs.SetAt(ermVideos, deTUniqueReference<deVideoManager>::New(this));
+	pResMgrs.SetAt(ermWorlds, deTUniqueReference<deWorldManager>::New(this));
+	pResMgrs.SetAt(ermServices, deTUniqueReference<deServiceManager>::New(this));
 	
 	// sanity check
-	RESMGRSANCHECK( ermAnimations, ertAnimation );
-	RESMGRSANCHECK( ermAnimators, ertAnimator );
-	RESMGRSANCHECK( ermAnimatorInstances, ertAnimatorInstance );
-	RESMGRSANCHECK( ermArchives, ertArchive );
-	RESMGRSANCHECK( ermBillboards, ertBillboard );
-	RESMGRSANCHECK( ermCanvas, ertCanvas );
-	RESMGRSANCHECK( ermCameras, ertCamera );
-	RESMGRSANCHECK( ermCaptureCanvas, ertCaptureCanvas );
-	RESMGRSANCHECK( ermColliders, ertCollider );
-	RESMGRSANCHECK( ermComponents, ertComponent );
-	RESMGRSANCHECK( ermConnections, ertConnection );
-	RESMGRSANCHECK( ermDebugDrawers, ertDebugDrawer );
-	RESMGRSANCHECK( ermDecals, ertDecal );
-	RESMGRSANCHECK( ermDynamicSkin, ertDynamicSkin );
-	RESMGRSANCHECK( ermEffects, ertEffect );
-	RESMGRSANCHECK( ermEnvMapProbes, ertEnvMapProbe );
-	RESMGRSANCHECK( ermFonts, ertFont );
-	RESMGRSANCHECK( ermForceFields, ertForceField );
-	RESMGRSANCHECK( ermHeightTerrains, ertHeightTerrain );
-	RESMGRSANCHECK( ermImages, ertImage );
-	RESMGRSANCHECK( ermLanguagePacks, ertLanguagePack );
-	RESMGRSANCHECK( ermLights, ertLight );
-	RESMGRSANCHECK( ermLumimeters, ertLumimeter );
-	RESMGRSANCHECK( ermMicrophones, ertMicrophone );
-	RESMGRSANCHECK( ermModels, ertModel );
-	RESMGRSANCHECK( ermNavigationSpace, ertNavigationSpace );
-	RESMGRSANCHECK( ermNavigationBlocker, ertNavigationBlocker );
-	RESMGRSANCHECK( ermNavigator, ertNavigator );
-	RESMGRSANCHECK( ermNetworkStates, ertNetworkState );
-	RESMGRSANCHECK( ermOcclusionMesh, ertOcclusionMesh );
-	RESMGRSANCHECK( ermParticleEmitters, ertParticleEmitter );
-	RESMGRSANCHECK( ermParticleEmitterInstances, ertParticleEmitterInstance );
-	RESMGRSANCHECK( ermPropFields, ertPropField );
-	RESMGRSANCHECK( ermRenderWindows, ertRenderWindow );
-	RESMGRSANCHECK( ermRigs, ertRig );
-	RESMGRSANCHECK( ermServers, ertServer );
-	RESMGRSANCHECK( ermSmokeEmitters, ertSmokeEmitter );
-	RESMGRSANCHECK( ermSkies, ertSky );
-	RESMGRSANCHECK( ermSkyInstances, ertSkyInstance );
-	RESMGRSANCHECK( ermSkins, ertSkin );
-	RESMGRSANCHECK( ermSounds, ertSound );
-	RESMGRSANCHECK( ermSoundLevelMeters, ertSoundLevelMeter );
-	RESMGRSANCHECK( ermSpeakers, ertSpeaker );
-	RESMGRSANCHECK( ermSynthesizers, ertSynthesizer );
-	RESMGRSANCHECK( ermSynthesizerInstances, ertSynthesizerInstance );
-	RESMGRSANCHECK( ermTouchSensors, ertTouchSensor );
-	RESMGRSANCHECK( ermVideos, ertVideo );
-	RESMGRSANCHECK( ermVideoPlayers, ertVideoPlayer );
-	RESMGRSANCHECK( ermWorlds, ertWorld );
-	RESMGRSANCHECK( ermServices, ertService );
+	RESMGRSANCHECK(ermAnimations, ertAnimation);
+	RESMGRSANCHECK(ermAnimators, ertAnimator);
+	RESMGRSANCHECK(ermAnimatorInstances, ertAnimatorInstance);
+	RESMGRSANCHECK(ermArchives, ertArchive);
+	RESMGRSANCHECK(ermBillboards, ertBillboard);
+	RESMGRSANCHECK(ermCanvas, ertCanvas);
+	RESMGRSANCHECK(ermCameras, ertCamera);
+	RESMGRSANCHECK(ermCaptureCanvas, ertCaptureCanvas);
+	RESMGRSANCHECK(ermColliders, ertCollider);
+	RESMGRSANCHECK(ermComponents, ertComponent);
+	RESMGRSANCHECK(ermConnections, ertConnection);
+	RESMGRSANCHECK(ermDebugDrawers, ertDebugDrawer);
+	RESMGRSANCHECK(ermDecals, ertDecal);
+	RESMGRSANCHECK(ermDynamicSkin, ertDynamicSkin);
+	RESMGRSANCHECK(ermEffects, ertEffect);
+	RESMGRSANCHECK(ermEnvMapProbes, ertEnvMapProbe);
+	RESMGRSANCHECK(ermFonts, ertFont);
+	RESMGRSANCHECK(ermForceFields, ertForceField);
+	RESMGRSANCHECK(ermHeightTerrains, ertHeightTerrain);
+	RESMGRSANCHECK(ermImages, ertImage);
+	RESMGRSANCHECK(ermLanguagePacks, ertLanguagePack);
+	RESMGRSANCHECK(ermLights, ertLight);
+	RESMGRSANCHECK(ermLumimeters, ertLumimeter);
+	RESMGRSANCHECK(ermMicrophones, ertMicrophone);
+	RESMGRSANCHECK(ermModels, ertModel);
+	RESMGRSANCHECK(ermNavigationSpace, ertNavigationSpace);
+	RESMGRSANCHECK(ermNavigationBlocker, ertNavigationBlocker);
+	RESMGRSANCHECK(ermNavigator, ertNavigator);
+	RESMGRSANCHECK(ermNetworkStates, ertNetworkState);
+	RESMGRSANCHECK(ermOcclusionMesh, ertOcclusionMesh);
+	RESMGRSANCHECK(ermParticleEmitters, ertParticleEmitter);
+	RESMGRSANCHECK(ermParticleEmitterInstances, ertParticleEmitterInstance);
+	RESMGRSANCHECK(ermPropFields, ertPropField);
+	RESMGRSANCHECK(ermRenderWindows, ertRenderWindow);
+	RESMGRSANCHECK(ermRigs, ertRig);
+	RESMGRSANCHECK(ermServers, ertServer);
+	RESMGRSANCHECK(ermSmokeEmitters, ertSmokeEmitter);
+	RESMGRSANCHECK(ermSkies, ertSky);
+	RESMGRSANCHECK(ermSkyInstances, ertSkyInstance);
+	RESMGRSANCHECK(ermSkins, ertSkin);
+	RESMGRSANCHECK(ermSounds, ertSound);
+	RESMGRSANCHECK(ermSoundLevelMeters, ertSoundLevelMeter);
+	RESMGRSANCHECK(ermSpeakers, ertSpeaker);
+	RESMGRSANCHECK(ermSynthesizers, ertSynthesizer);
+	RESMGRSANCHECK(ermSynthesizerInstances, ertSynthesizerInstance);
+	RESMGRSANCHECK(ermTouchSensors, ertTouchSensor);
+	RESMGRSANCHECK(ermVideos, ertVideo);
+	RESMGRSANCHECK(ermVideoPlayers, ertVideoPlayer);
+	RESMGRSANCHECK(ermWorlds, ertWorld);
+	RESMGRSANCHECK(ermServices, ertService);
 	
 	// create resource loader
-	pResLoader = new deResourceLoader( *this );
+	pResLoader = new deResourceLoader(*this);
 }
 
 void deEngine::pCleanUp(){
@@ -1302,20 +1272,20 @@ void deEngine::pCleanUp(){
 	pStopSystems();
 	
 	// clear error trace and permanents
-	if( pErrorTrace ){
+	if(pErrorTrace){
 		pErrorTrace->Clear();
 	}
 	pClearPermanents();
 	
 	// free resource loader
-	if( pResLoader ){
+	if(pResLoader){
 		delete pResLoader;
 	}
 	
 	// remove all containers from the virtual file system. this prevents archive containers
 	// to be reported as leaking. it is normal for them to be still held by the virtual file
 	// system. from here on nobody has to access the virtual file system anymore
-	if( pVFS ){
+	if(pVFS){
 		pVFS->RemoveAllContainers();
 	}
 	
@@ -1324,62 +1294,45 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free resource managers
-	int i;
-	if( pResMgrs ){
-		pLogger->LogInfoFormat( LOGGING_NAME, "Free Resource Managers" );
-		for( i=0; i<ermManagerCount; i++ ){
-			if( pResMgrs[ i ] ){
-				delete pResMgrs[ i ];
-			}
-		}
-		delete [] pResMgrs;
-	}
+	pLogger->LogInfoFormat(LOGGING_NAME, "Free Resource Managers");
+	pResMgrs.RemoveAll();
 	
 	// free systems
-	if( pSystems ){
-		pLogger->LogInfoFormat( LOGGING_NAME, "Free Systems" );
-		for( i=esSystemCount-1; i>=0; i-- ){
-			if( pSystems[ i ] ){
-				delete pSystems[ i ];
-			}
-		}
-		delete [] pSystems;
+	pLogger->LogInfoFormat(LOGGING_NAME, "Free Systems");
+	while(pSystems.IsNotEmpty()){
+		pSystems.RemoveFrom(pSystems.GetCount() - 1);
 	}
 	
 	// free modules
-	if( pModSys ){
-		pLogger->LogInfoFormat( LOGGING_NAME, "Free Modules" );
+	if(pModSys){
+		pLogger->LogInfoFormat(LOGGING_NAME, "Free Modules");
 		delete pModSys;
 	}
 	
 	// free parallel processing
-	if( pParallelProcessing ){
+	if(pParallelProcessing){
 		delete pParallelProcessing;
-		pParallelProcessing = NULL;
+		pParallelProcessing = nullptr;
 	}
 	
 	// free the rest
-	if( pFrameTimer ){
+	if(pFrameTimer){
 		delete pFrameTimer;
 	}
 	pVFS = nullptr;
 	
-	if( pOS ){
+	if(pOS){
 		delete pOS;
 	}
-	if( pArgs ){
+	if(pArgs){
 		delete pArgs;
 	}
 	
-	if( pErrorTrace ){
+	if(pErrorTrace){
 		delete pErrorTrace;
 	}
 	
 	// free logger
-	if( pLogger ){
-		pLogger->FreeReference();
-	}
-	
 	// free os file system if present
 	pOSFileSystem = nullptr;
 }
@@ -1387,10 +1340,10 @@ void deEngine::pCleanUp(){
 void deEngine::pUpdateFPSRate(){
 	pFPSAccum += pElapsedTime;
 	pFPSFrames++;
-	if( pFPSAccum >= 1.0f ){
+	if(pFPSAccum >= 1.0f){
 		pFPSRate = pFPSFrames;
 		pFPSFrames = 0;
-		pFPSAccum -= ( int )pFPSAccum;
+		pFPSAccum -= (int)pFPSAccum;
 		//pLogger->LogInfoFormat( LOGGING_NAME, "Average FPS over the last second: %i frames, %ims frame time.", pFPSRate, 1000 / pFPSRate );
 		//printf( "Average FPS over the last second: %i frames, %ims frame time.", pFPSRate, 1000 / pFPSRate );
 	}
@@ -1398,63 +1351,60 @@ void deEngine::pUpdateFPSRate(){
 
 bool deEngine::pClearPermanents(){
 	bool success = true;
-	int i;
-	
-	// clear permanents
-	for( i=esSystemCount-1; i>=0; i-- ){
+	pSystems.VisitReverse([&](deBaseSystem &s){
 		try{
-			pSystems[ i ]->ClearPermanents();
+			s.ClearPermanents();
 			
-		}catch( const deException &e ){
-			pLogger->LogException( LOGGING_NAME, e );
-			pSystems[ i ]->LogError( "Clearing permanents failed." );
-			
+		}catch(const deException &e){
+			pLogger->LogException(LOGGING_NAME, e);
+			s.LogError("Clearing permanents failed.");
 			success = false;
 		}
-	}
-	
+	});
 	return success;
 }
 
 bool deEngine::pStopSystems(){
 	bool success = true;
-	int i;
 	
-	const bool parallelProcessingResume = ! pParallelProcessing->GetPaused();
-	if( parallelProcessingResume ){
+	const bool parallelProcessingResume = !pParallelProcessing->GetPaused();
+	if(parallelProcessingResume){
 		pParallelProcessing->FinishAndRemoveAllTasks();
 		pParallelProcessing->Pause();
 	}
 	
 	// shut down the scripting system first
+	deBaseSystem &scriptingSystem = pSystems.GetAt(esScripting);
 	try{
-		if( pSystems[ esScripting ]->GetIsRunning() ){
-			pSystems[ esScripting ]->Stop();
+		if(scriptingSystem.GetIsRunning()){
+			scriptingSystem.Stop();
 		}
 		
-	}catch( const deException &e ){
-		pLogger->LogException( LOGGING_NAME, e );
-		pSystems[ esScripting ]->LogError( "Shut down failed." );
-		
+	}catch(const deException &e){
+		pLogger->LogException(LOGGING_NAME, e);
+		scriptingSystem.LogError("Shut down failed.");
 		success = false;
 	}
 	
 	// shut down all systems logging all errors to the console
-	for( i=esSystemCount-1; i>=0; i-- ){
+	pSystems.VisitReverse([&](deBaseSystem &s){
+		if(&s == &scriptingSystem){
+			return;
+		}
+		
 		try{
-			if( pSystems[ i ]->GetIsRunning() ){
-				pSystems[ i ]->Stop();
+			if(s.GetIsRunning()){
+				s.Stop();
 			}
 			
-		}catch( const deException &e ){
-			pLogger->LogException( LOGGING_NAME, e );
-			pSystems[ i ]->LogError( "Shut down failed." );
-			
+		}catch(const deException &e){
+			pLogger->LogException(LOGGING_NAME, e);
+			s.LogError("Shut down failed.");
 			success = false;
 		}
-	}
+	});
 	
-	if( parallelProcessingResume ){
+	if(parallelProcessingResume){
 		pParallelProcessing->Resume();
 	}
 	

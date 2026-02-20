@@ -40,30 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceFaceAdd::meUHTNavSpaceFaceAdd( meHeightTerrainNavSpaceType *type, meHeightTerrainNavSpaceFace *face ) :
-pType( NULL ),
-pFace( NULL )
+meUHTNavSpaceFaceAdd::meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType *type, meHeightTerrainNavSpaceFace *face) :
+pType(nullptr)
 {
-	if( ! type || ! face ){
-		DETHROW( deeInvalidParam );
+	if(!type || !face){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Height terrain nav-space add face" );
+	SetShortInfo("@World.UHTNavSpaceFaceAdd.HeightTerrainNavSpaceAddFace");
 	
 	pType = type;
-	type->AddReference();
-	
 	pFace = face;
-	face->AddReference();
 }
 
 meUHTNavSpaceFaceAdd::~meUHTNavSpaceFaceAdd(){
-	if( pFace ){
-		pFace->FreeReference();
-	}
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -72,9 +62,9 @@ meUHTNavSpaceFaceAdd::~meUHTNavSpaceFaceAdd(){
 ///////////////
 
 void meUHTNavSpaceFaceAdd::Undo(){
-	pType->RemoveFace( pFace );
+	pType->RemoveFace(pFace);
 }
 
 void meUHTNavSpaceFaceAdd::Redo(){
-	pType->AddFace( pFace );
+	pType->AddFace(pFace);
 }

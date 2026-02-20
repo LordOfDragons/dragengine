@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetModelPath::peeUTypeSetModelPath( peeType *type, const char *newPath ){
-	if( ! type || ! newPath ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
+	if(!type || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Set Type Model Path" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetModelPath");
 	
 	pOldPath = type->GetModelPath();
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetModelPath::~peeUTypeSetModelPath(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ peeUTypeSetModelPath::~peeUTypeSetModelPath(){
 ///////////////
 
 void peeUTypeSetModelPath::Undo(){
-	pType->SetModelPath( pOldPath.GetString() );
+	pType->SetModelPath(pOldPath.GetString());
 }
 
 void peeUTypeSetModelPath::Redo(){
-	pType->SetModelPath( pNewPath.GetString() );
+	pType->SetModelPath(pNewPath.GetString());
 }

@@ -65,23 +65,19 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiNavigator::dedaiNavigator( deDEAIModule &deai, deNavigator &navigator ) :
-pDEAI( deai ),
-pNavigator( navigator ),
+dedaiNavigator::dedaiNavigator(deDEAIModule &deai, deNavigator &navigator) :
+pDEAI(deai),
+pNavigator(navigator),
 
-pParentWorld( NULL ),
+pParentWorld(nullptr),
 
-pTypeMappings( NULL ),
-pTypeMappingCount( 0 ),
-pDirtyTypeMappings( true ),
+pDirtyTypeMappings(true),
 
-pLayer( NULL ),
-
-pDebugDrawer( NULL ),
-pDDSPath( NULL ),
-pDDSPathFaces( NULL ),
-pDDSPathFacesOpen( NULL ),
-pDDSPathFacesClosed( NULL ){
+pLayer(nullptr),
+pDDSPath(nullptr),
+pDDSPathFaces(nullptr),
+pDDSPathFacesOpen(nullptr),
+pDDSPathFacesClosed(nullptr){
 }
 
 dedaiNavigator::~dedaiNavigator(){
@@ -93,26 +89,26 @@ dedaiNavigator::~dedaiNavigator(){
 // Management
 ///////////////
 
-void dedaiNavigator::SetParentWorld( dedaiWorld *world ){
-	if( world == pParentWorld ){
+void dedaiNavigator::SetParentWorld(dedaiWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
-	if( pDebugDrawer && pParentWorld ){
-		pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+	if(pDebugDrawer && pParentWorld){
+		pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 	}
 	
 	pParentWorld = world;
 	
-	if( world ){
-		pLayer = world->GetLayer( pNavigator.GetLayer() );
+	if(world){
+		pLayer = world->GetLayer(pNavigator.GetLayer());
 		
-		if( pDebugDrawer ){
-			world->GetWorld().AddDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			world->GetWorld().AddDebugDrawer(pDebugDrawer);
 		}
 		
 	}else{
-		pLayer = NULL;
+		pLayer = nullptr;
 	}
 	
 	UpdateDDSPath();
@@ -120,26 +116,26 @@ void dedaiNavigator::SetParentWorld( dedaiWorld *world ){
 
 
 
-float dedaiNavigator::GetFixCostFor( int costTableEntry ) const{
-	if( costTableEntry < 0 || costTableEntry >= pTypeMappingCount ){
+float dedaiNavigator::GetFixCostFor(int costTableEntry) const{
+	if(costTableEntry < 0 || costTableEntry >= pTypeMappings.GetCount()){
 		return pNavigator.GetDefaultFixCost();
 		
-	}else if( pTypeMappings[ costTableEntry ] ){
-		return pTypeMappings[ costTableEntry ]->GetFixCost();
+	}else if(pTypeMappings.GetAt(costTableEntry)){
+		return pTypeMappings.GetAt(costTableEntry)->GetFixCost();
 		
 	}else{
 		return pNavigator.GetDefaultFixCost();
 	}
 }
 
-void dedaiNavigator::GetCostParametersFor( int costTableEntry, float &fixCost, float &costPerMeter ) const{
-	if( costTableEntry < 0 || costTableEntry >= pTypeMappingCount ){
+void dedaiNavigator::GetCostParametersFor(int costTableEntry, float &fixCost, float &costPerMeter) const{
+	if(costTableEntry < 0 || costTableEntry >= pTypeMappings.GetCount()){
 		fixCost = pNavigator.GetDefaultFixCost();
 		costPerMeter = pNavigator.GetDefaultCostPerMeter();
 		
-	}else if( pTypeMappings[ costTableEntry ] ){
-		fixCost = pTypeMappings[ costTableEntry ]->GetFixCost();
-		costPerMeter = pTypeMappings[ costTableEntry ]->GetCostPerMeter();
+	}else if(pTypeMappings.GetAt(costTableEntry)){
+		fixCost = pTypeMappings.GetAt(costTableEntry)->GetFixCost();
+		costPerMeter = pTypeMappings.GetAt(costTableEntry)->GetCostPerMeter();
 		
 	}else{
 		fixCost = pNavigator.GetDefaultFixCost();
@@ -148,11 +144,11 @@ void dedaiNavigator::GetCostParametersFor( int costTableEntry, float &fixCost, f
 }
 
 void dedaiNavigator::Prepare(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
-	if( pDirtyTypeMappings ){
+	if(pDirtyTypeMappings){
 		pUpdateTypeMappings();
 		pDirtyTypeMappings = false;
 	}
@@ -164,91 +160,93 @@ void dedaiNavigator::UpdateDDSPath(){
 	// check if the developer mode is enabled and navigation spaces have to be shown
 	const dedaiDeveloperMode &devmode = pDEAI.GetDeveloperMode();
 	
-	if( devmode.GetEnabled() && ( devmode.GetShowPath() || devmode.GetShowPathFaces() ) ){
+	if(devmode.GetEnabled() && (devmode.GetShowPath() || devmode.GetShowPathFaces())){
 		// ensure the debug drawer exists
-		if( ! pDebugDrawer ){
+		if(!pDebugDrawer){
 			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
-			pDebugDrawer->SetXRay( true );
+			pDebugDrawer->SetXRay(true);
 			
-			if( pParentWorld ){
-				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+			if(pParentWorld){
+				pParentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 			}
 		}
 		
 		// ensure the debug drawer shapes exists or not depending on the show states
-		if( devmode.GetShowPath() ){
-			if( ! pDDSPath ){
-				pDDSPath = new deDebugDrawerShape;
-				pDDSPath->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
-				pDDSPath->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 0.8f ) );
-				pDebugDrawer->AddShape( pDDSPath );
+		if(devmode.GetShowPath()){
+			if(!pDDSPath){
+				auto shape = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
+				shape->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 0.8f));
+				pDDSPath = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			
 		}else{
-			if( pDDSPath ){
-				pDebugDrawer->RemoveShape( pDDSPath );
-				pDDSPath = NULL;
+			if(pDDSPath){
+				pDebugDrawer->RemoveShape(pDDSPath);
+				pDDSPath = nullptr;
 			}
 		}
 		
-		if( devmode.GetShowPathFaces() ){
-			if( ! pDDSPathFaces ){
-				pDDSPathFaces = new deDebugDrawerShape;
-				pDDSPathFaces->SetFillColor( decColor( 0.0f, 1.0f, 1.0f, 0.2f ) );
-				pDDSPathFaces->SetEdgeColor( decColor( 0.0f, 1.0f, 1.0f, 0.8f ) );
-				pDebugDrawer->AddShape( pDDSPathFaces );
+		if(devmode.GetShowPathFaces()){
+			if(!pDDSPathFaces){
+				auto shape = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(0.0f, 1.0f, 1.0f, 0.2f));
+				shape->SetEdgeColor(decColor(0.0f, 1.0f, 1.0f, 0.8f));
+				pDDSPathFaces = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			/*
-			if( ! pDDSPathFacesOpen ){
-				pDDSPathFacesOpen = new deDebugDrawerShape;
-				pDDSPathFacesOpen->SetFillColor( decColor( 0.0f, 0.6f, 0.0f, 0.2f ) );
-				pDDSPathFacesOpen->SetEdgeColor( decColor( 0.0f, 0.6f, 0.0f, 0.8f ) );
-				pDebugDrawer->AddShape( pDDSPathFacesOpen );
+			if(!pDDSPathFacesOpen){
+				auto shape = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(0.0f, 0.6f, 0.0f, 0.2f));
+				shape->SetEdgeColor(decColor(0.0f, 0.6f, 0.0f, 0.8f));
+				pDDSPathFacesOpen = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			
-			if( ! pDDSPathFacesClosed ){
-				pDDSPathFacesClosed = new deDebugDrawerShape;
-				pDDSPathFacesClosed->SetFillColor( decColor( 0.6f, 0.0f, 0.0f, 0.2f ) );
-				pDDSPathFacesClosed->SetEdgeColor( decColor( 0.6f, 0.0f, 0.0f, 0.8f ) );
-				pDebugDrawer->AddShape( pDDSPathFacesClosed );
+			if(!pDDSPathFacesClosed){
+				auto = deDebugDrawerShape::Ref::New();
+				shape->SetFillColor(decColor(0.6f, 0.0f, 0.0f, 0.2f));
+				shape->SetEdgeColor(decColor(0.6f, 0.0f, 0.0f, 0.8f));
+				pDDSPathFacesClosed = shape;
+				pDebugDrawer->AddShape(std::move(shape));
 			}
 			*/
 			
 		}else{
-			if( pDDSPathFaces ){
-				pDebugDrawer->RemoveShape( pDDSPathFaces );
-				pDDSPathFaces = NULL;
+			if(pDDSPathFaces){
+				pDebugDrawer->RemoveShape(pDDSPathFaces);
+				pDDSPathFaces = nullptr;
 			}
-			if( pDDSPathFacesOpen ){
-				pDebugDrawer->RemoveShape( pDDSPathFacesOpen );
-				pDDSPathFacesOpen = NULL;
+			if(pDDSPathFacesOpen){
+				pDebugDrawer->RemoveShape(pDDSPathFacesOpen);
+				pDDSPathFacesOpen = nullptr;
 			}
-			if( pDDSPathFacesClosed ){
-				pDebugDrawer->RemoveShape( pDDSPathFacesClosed );
-				pDDSPathFacesClosed = NULL;
+			if(pDDSPathFacesClosed){
+				pDebugDrawer->RemoveShape(pDDSPathFacesClosed);
+				pDDSPathFacesClosed = nullptr;
 			}
 		}
 		
 	}else{
 		// if the debug drawer exists remove it
-		if( pDebugDrawer ){
-			if( pParentWorld ){
-				pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			if(pParentWorld){
+				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
-			pDDSPath = NULL;
-			pDDSPathFaces = NULL;
-			pDDSPathFacesOpen = NULL;
-			pDDSPathFacesClosed = NULL;
-			
-			pDebugDrawer->FreeReference();
-			pDebugDrawer = NULL;
+			pDDSPath = nullptr;
+			pDDSPathFaces = nullptr;
+			pDDSPathFacesOpen = nullptr;
+			pDDSPathFacesClosed = nullptr;
+			pDebugDrawer = nullptr;
 		}
 	}
 }
 
-void dedaiNavigator::UpdateDDSPathShape( const deNavigatorPath &path ){
-	if( ! pDDSPath ){
+void dedaiNavigator::UpdateDDSPathShape(const deNavigatorPath &path){
+	if(!pDDSPath){
 		return;
 	}
 	
@@ -257,57 +255,42 @@ void dedaiNavigator::UpdateDDSPathShape( const deNavigatorPath &path ){
 	
 	const decDVector &refpos = pDebugDrawer->GetPosition();
 	const int count = path.GetCount();
-	decVector halfExtends( 0.02f, 0.02f, 0.02f );
-	const decVector upAlt( 0.0f, 0.0f, 1.0f );
-	const decVector up( 0.0f, 1.0f, 0.0f );
+	decVector halfExtends(0.02f, 0.02f, 0.02f);
+	const decVector upAlt(0.0f, 0.0f, 1.0f);
+	const decVector up(0.0f, 1.0f, 0.0f);
 	decQuaternion orientation;
-	decShape *shape = NULL;
 	decVector p1, p2, pd;
 	int i;
 	
-	try{
-		if( count > 0 ){
-			shape = new decShapeSphere( 0.05f );
-			pDDSPath->GetShapeList().Add( shape );
-			shape = NULL;
+	if(count > 0){
+		pDDSPath->GetShapeList().Add(decShapeSphere::Ref::New(0.05f));
+	}
+	
+	if(count > 1){
+		pDDSPath->GetShapeList().Add(decShapeSphere::Ref::New(0.05f, (path.GetAt(count - 1) - refpos).ToVector()));
+	}
+	
+	for(i=0; i<count; i++){
+		if(i > 0){
+			p1 = (path.GetAt(i - 1) - refpos).ToVector();
 		}
+		p2 = (path.GetAt(i) - refpos).ToVector();
+		pd = p2 - p1;
 		
-		if( count > 1 ){
-			shape = new decShapeSphere( 0.05f, ( path.GetAt( count - 1 ) - refpos ).ToVector() );
-			pDDSPath->GetShapeList().Add( shape );
-			shape = NULL;
-		}
+		halfExtends.z = pd.Length() * 0.5f;
 		
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				p1 = ( path.GetAt( i - 1 ) - refpos ).ToVector();
-			}
-			p2 = ( path.GetAt( i ) - refpos ).ToVector();
-			pd = p2 - p1;
+		if(halfExtends.z > FLOAT_SAFE_EPSILON){
+			pd.Normalize();
 			
-			halfExtends.z = pd.Length() * 0.5f;
-			
-			if( halfExtends.z > FLOAT_SAFE_EPSILON ){
-				pd.Normalize();
+			if(fabsf(pd.y) < 0.99f){
+				orientation = decMatrix::CreateWorld(p1, pd, up).ToQuaternion();
 				
-				if( fabsf( pd.y ) < 0.99f ){
-					orientation = decMatrix::CreateWorld( p1, pd, up ).ToQuaternion();
-					
-				}else{
-					orientation = decMatrix::CreateWorld( p1, pd, upAlt ).ToQuaternion();
-				}
-				
-				shape = new decShapeBox( halfExtends, ( p1 + p2 ) * 0.5f, orientation );
-				pDDSPath->GetShapeList().Add( shape );
-				shape = NULL;
+			}else{
+				orientation = decMatrix::CreateWorld(p1, pd, upAlt).ToQuaternion();
 			}
+			
+			pDDSPath->GetShapeList().Add(decShapeBox::Ref::New(halfExtends, (p1 + p2) * 0.5f, orientation));
 		}
-		
-	}catch( const deException & ){
-		if( shape ){
-			delete shape;
-		}
-		throw;
 	}
 }
 
@@ -317,11 +300,11 @@ void dedaiNavigator::UpdateDDSPathShape( const deNavigatorPath &path ){
 //////////////////
 
 void dedaiNavigator::LayerChanged(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
-	pLayer = pParentWorld->GetLayer( pNavigator.GetLayer() );
+	pLayer = pParentWorld->GetLayer(pNavigator.GetLayer());
 	
 	pDevModeMarkLayerDirty();
 }
@@ -344,8 +327,8 @@ void dedaiNavigator::ParametersChanged(){
 
 
 
-void dedaiNavigator::FindPath( deNavigatorPath &path, const decDVector &start, const decDVector &goal ){
-	if( ! pParentWorld ){
+void dedaiNavigator::FindPath(deNavigatorPath &path, const decDVector &start, const decDVector &goal){
+	if(!pParentWorld){
 		return;
 	}
 	
@@ -354,53 +337,45 @@ void dedaiNavigator::FindPath( deNavigatorPath &path, const decDVector &start, c
 	pLayer->Prepare();
 	Prepare();
 	
-	if( pNavigator.GetSpaceType() == deNavigationSpace::estGrid ){
+	if(pNavigator.GetSpaceType() == deNavigationSpace::estGrid){
 		dedaiPathFinderNavGrid pathfinder;
-		pathfinder.SetWorld( pParentWorld );
-		pathfinder.SetNavigator( this );
-		pathfinder.SetStartPoint( start );
-		pathfinder.SetEndPoint( goal );
+		pathfinder.SetWorld(pParentWorld);
+		pathfinder.SetNavigator(this);
+		pathfinder.SetStartPoint(start);
+		pathfinder.SetEndPoint(goal);
 		pathfinder.FindPath();
 		
-		const decDVector * const pfpath = pathfinder.GetPathPoints();
-		const int count = pathfinder.GetPathPointCount();
-		int i;
+		pathfinder.GetPathPoints().Visit([&](const decDVector &point){
+			path.Add(point);
+		});
 		
-		for( i=0; i<count; i++ ){
-			path.Add( pfpath[ i ] );
-		}
-		
-		if( pDDSPath ){
-			pDebugDrawer->SetPosition( start );
-			UpdateDDSPathShape( path );
+		if(pDDSPath){
+			pDebugDrawer->SetPosition(start);
+			UpdateDDSPathShape(path);
 			pDebugDrawer->NotifyShapeContentChanged();
 		}
 		
-	}else if( pNavigator.GetSpaceType() == deNavigationSpace::estMesh ){
+	}else if(pNavigator.GetSpaceType() == deNavigationSpace::estMesh){
 		dedaiPathFinderNavMesh pathfinder;
-		pathfinder.SetWorld( pParentWorld );
-		pathfinder.SetNavigator( this );
-		pathfinder.SetStartPoint( start );
-		pathfinder.SetEndPoint( goal );
-		pathfinder.SetDDSListOpen( pDDSPathFacesOpen );
-		pathfinder.SetDDSListClosed( pDDSPathFacesClosed );
+		pathfinder.SetWorld(pParentWorld);
+		pathfinder.SetNavigator(this);
+		pathfinder.SetStartPoint(start);
+		pathfinder.SetEndPoint(goal);
+		pathfinder.SetDDSListOpen(pDDSPathFacesOpen);
+		pathfinder.SetDDSListClosed(pDDSPathFacesClosed);
 		pathfinder.FindPath();
 		
-		const decDVector * const pfpath = pathfinder.GetPathPoints();
-		const int count = pathfinder.GetPathPointCount();
-		int i;
+		pathfinder.GetPathPoints().Visit([&](const decDVector &point){
+			path.Add(point);
+		});
 		
-		for( i=0; i<count; i++ ){
-			path.Add( pfpath[ i ] );
-		}
-		
-		if( pDDSPath || pDDSPathFaces ){
-			pDebugDrawer->SetPosition( start );
-			if( pDDSPath ){
-				UpdateDDSPathShape( path );
+		if(pDDSPath || pDDSPathFaces){
+			pDebugDrawer->SetPosition(start);
+			if(pDDSPath){
+				UpdateDDSPathShape(path);
 			}
-			if( pDDSPathFaces ){
-				pathfinder.UpdateDDSShapeFaces( *pDDSPathFaces );
+			if(pDDSPathFaces){
+				pathfinder.UpdateDDSShapeFaces(*pDDSPathFaces);
 			}
 			pDebugDrawer->NotifyShapeContentChanged();
 		}
@@ -413,59 +388,59 @@ void dedaiNavigator::CostTableDefinitionChanged(){
 
 
 
-bool dedaiNavigator::NearestPoint( const decDVector &point, float radius,
-decDVector &nearestPoint, int &nearestType ){
-	if( ! pParentWorld ){
+bool dedaiNavigator::NearestPoint(const decDVector &point, float radius,
+decDVector &nearestPoint, int &nearestType){
+	if(!pParentWorld){
 		return false;
 	}
 	
 	pLayer->Prepare();
 	Prepare();
 	
-	switch( pNavigator.GetSpaceType() ){
+	switch(pNavigator.GetSpaceType()){
 	case deNavigationSpace::estGrid:{
 		float nearestLambda;
-		dedaiSpaceGridEdge * const edge = pLayer->GetGridNearestPoint( point, radius, nearestPoint, nearestLambda );
-		if( edge ){
+		dedaiSpaceGridEdge * const edge = pLayer->GetGridNearestPoint(point, radius, nearestPoint, nearestLambda);
+		if(edge){
 			nearestType = edge->GetGrid()->GetSpace().GetLayer()->GetCostTable().GetTypeAt(
-				nearestLambda < 0.5f ? edge->GetTypeNumber1() : edge->GetTypeNumber2() );
+				nearestLambda < 0.5f ? edge->GetTypeNumber1() : edge->GetTypeNumber2());
 			return true;
 		}
 		}break;
 		
 	case deNavigationSpace::estMesh:{
-		dedaiSpaceMeshFace * const face = pLayer->GetNavMeshNearestPoint( point, radius, nearestPoint );
-		if( face ){
-			nearestType = face->GetMesh()->GetSpace().GetLayer()->GetCostTable().GetTypeAt( face->GetTypeNumber() );
+		dedaiSpaceMeshFace * const face = pLayer->GetNavMeshNearestPoint(point, radius, nearestPoint);
+		if(face){
+			nearestType = face->GetMesh()->GetSpace().GetLayer()->GetCostTable().GetTypeAt(face->GetTypeNumber());
 			return true;
 		}
 		}break;
 		
 	case deNavigationSpace::estVolume:
-		pDEAI.LogError( "TODO: Navigator.NearestPoint: implementation for Volume type" );
+		pDEAI.LogError("TODO: Navigator.NearestPoint: implementation for Volume type");
 		break;
 	}
 	
 	return false;
 }
 
-bool dedaiNavigator::LineCollide( const decDVector &origin, const decVector &direction, float &distance ) {
-	if( ! pParentWorld ){
+bool dedaiNavigator::LineCollide(const decDVector &origin, const decVector &direction, float &distance) {
+	if(!pParentWorld){
 		return false;
 	}
 	
 	pLayer->Prepare();
 	Prepare();
 	
-	switch( pNavigator.GetSpaceType() ){
+	switch(pNavigator.GetSpaceType()){
 	case deNavigationSpace::estGrid:
-		DETHROW_INFO( deeInvalidAction, "not supported for grid type" );
+		DETHROW_INFO(deeInvalidAction, "not supported for grid type");
 		
 	case deNavigationSpace::estMesh:
-		return pLayer->NavMeshLineCollide( origin, direction, distance );
+		return pLayer->NavMeshLineCollide(origin, direction, distance);
 		
 	case deNavigationSpace::estVolume:
-		pDEAI.LogError( "TODO: Navigator.LineCollide: implementation for Volume type" );
+		pDEAI.LogError("TODO: Navigator.LineCollide: implementation for Volume type");
 		break;
 	}
 	
@@ -474,19 +449,19 @@ bool dedaiNavigator::LineCollide( const decDVector &origin, const decVector &dir
 
 
 
-bool dedaiNavigator::PathCollideRay( const deNavigatorPath &path, deCollider &collider,
-int &hitAfterPoint, float &hitDistance ){
+bool dedaiNavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
+int &hitAfterPoint, float &hitDistance){
 	const int pointCount = path.GetCount();
 	dedaiPathCollisionListener listener;
 	int i;
 	
-	for( i=0; i<pointCount-1; i++ ){
-		const decDVector &from = path.GetAt( i );
-		const decDVector &to = path.GetAt( i + i );
+	for(i=0; i<pointCount-1; i++){
+		const decDVector &from = path.GetAt(i);
+		const decDVector &to = path.GetAt(i + i);
 		
-		collider.RayHits( from, ( to - from ).ToVector(), &listener );
+		collider.RayHits(from, (to - from).ToVector(), &listener);
 		
-		if( listener.GetHitDistance() < -0.5 ){
+		if(listener.GetHitDistance() < -0.5){
 			continue;
 		}
 		
@@ -498,10 +473,10 @@ int &hitAfterPoint, float &hitDistance ){
 	return false;
 }
 
-bool dedaiNavigator::PathCollideRay( const deNavigatorPath &path, deCollider &collider,
+bool dedaiNavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 const decDVector &startPosition, int nextPoint, float maxDistance, int &hitAfterPoint,
-float &hitDistance ){
-	if( maxDistance <= 0.0f ){
+float &hitDistance){
+	if(maxDistance <= 0.0f){
 		return false;
 	}
 	
@@ -510,27 +485,27 @@ float &hitDistance ){
 	float distance = 0.0f;
 	int i;
 	
-	if( nextPoint < 0 || nextPoint > pointCount ){
-		DETHROW( deeOutOfBoundary );
+	if(nextPoint < 0 || nextPoint > pointCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	for( i=nextPoint; i<pointCount; i++ ){
-		const decDVector &from = i > nextPoint ? path.GetAt( i - 1 ) : startPosition;
-		const decDVector &to = path.GetAt( i );
+	for(i=nextPoint; i<pointCount; i++){
+		const decDVector &from = i > nextPoint ? path.GetAt(i - 1) : startPosition;
+		const decDVector &to = path.GetAt(i);
 		
-		decVector segment( to - from );
+		decVector segment(to - from);
 		const float segmentLength = segment.Length();
 		
-		if( segmentLength > 0.001f && distance + segmentLength > maxDistance ){
-			segment = ( to - from ).ToVector() * ( ( maxDistance - distance ) / segmentLength );
+		if(segmentLength > 0.001f && distance + segmentLength > maxDistance){
+			segment = (to - from).ToVector() * ((maxDistance - distance) / segmentLength);
 		}
 		
 		distance += segmentLength;
 		
-		collider.RayHits( from, segment, &listener );
+		collider.RayHits(from, segment, &listener);
 		
-		if( listener.GetHitDistance() < -0.5 ){
-			if( distance >= maxDistance ){
+		if(listener.GetHitDistance() < -0.5){
+			if(distance >= maxDistance){
 				break;
 			}
 			continue;
@@ -544,20 +519,20 @@ float &hitDistance ){
 	return false;
 }
 
-bool dedaiNavigator::PathCollideShape( const deNavigatorPath &path, deCollider &collider,
-deCollider &agent, int &hitAfterPoint, float &hitDistance ){
+bool dedaiNavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
+deCollider &agent, int &hitAfterPoint, float &hitDistance){
 	const int pointCount = path.GetCount();
 	dedaiPathCollisionListener listener;
 	int i;
 	
-	for( i=0; i<pointCount-1; i++ ){
-		const decDVector &from = path.GetAt( i );
-		const decDVector &to = path.GetAt( i + 1 );
+	for(i=0; i<pointCount-1; i++){
+		const decDVector &from = path.GetAt(i);
+		const decDVector &to = path.GetAt(i + 1);
 		
-		agent.SetPosition( from );
-		collider.ColliderMoveHits( &agent, ( to - from ).ToVector(), &listener );
+		agent.SetPosition(from);
+		collider.ColliderMoveHits(&agent, (to - from).ToVector(), &listener);
 		
-		if( listener.GetHitDistance() < -0.5 ){
+		if(listener.GetHitDistance() < -0.5){
 			continue;
 		}
 		
@@ -569,10 +544,10 @@ deCollider &agent, int &hitAfterPoint, float &hitDistance ){
 	return false;
 }
 
-bool dedaiNavigator::PathCollideShape( const deNavigatorPath &path, deCollider &collider,
+bool dedaiNavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 deCollider &agent, const decDVector &startPosition, int nextPoint, float maxDistance,
-int &hitAfterPoint, float &hitDistance ){
-	if( maxDistance <= 0.0f ){
+int &hitAfterPoint, float &hitDistance){
+	if(maxDistance <= 0.0f){
 		return false;
 	}
 	
@@ -581,27 +556,27 @@ int &hitAfterPoint, float &hitDistance ){
 	float distance = 0.0f;
 	int i;
 	
-	if( nextPoint < 0 || nextPoint > pointCount ){
-		DETHROW( deeOutOfBoundary );
+	if(nextPoint < 0 || nextPoint > pointCount){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	for( i=nextPoint; i<pointCount; i++ ){
-		const decDVector &from = i > nextPoint ? path.GetAt( i - 1 ) : startPosition;
-		const decDVector &to = path.GetAt( i );
+	for(i=nextPoint; i<pointCount; i++){
+		const decDVector &from = i > nextPoint ? path.GetAt(i - 1) : startPosition;
+		const decDVector &to = path.GetAt(i);
 		
-		decVector segment( to - from );
+		decVector segment(to - from);
 		const float segmentLength = segment.Length();
 		
-		if( segmentLength > 0.001f && distance + segmentLength > maxDistance ){
-			segment = ( to - from ).ToVector() * ( ( maxDistance - distance ) / segmentLength );
+		if(segmentLength > 0.001f && distance + segmentLength > maxDistance){
+			segment = (to - from).ToVector() * ((maxDistance - distance) / segmentLength);
 		}
 		
 		distance += segmentLength;
 		
-		collider.ColliderMoveHits( &agent, segment, &listener );
+		collider.ColliderMoveHits(&agent, segment, &listener);
 		
-		if( listener.GetHitDistance() < -0.5 ){
-			if( distance >= maxDistance ){
+		if(listener.GetHitDistance() < -0.5){
+			if(distance >= maxDistance){
 				break;
 			}
 			continue;
@@ -621,41 +596,24 @@ int &hitAfterPoint, float &hitDistance ){
 //////////////////////
 
 void dedaiNavigator::pCleanUp(){
-	SetParentWorld( NULL );
-	
-	if( pTypeMappings ){
-		delete [] pTypeMappings;
-	}
-	if( pDebugDrawer ){
-		pDebugDrawer->FreeReference();
-	}
+	SetParentWorld(nullptr);
 }
 
 void dedaiNavigator::pUpdateTypeMappings(){
 	const int typeCount = pLayer->GetCostTable().GetTypeCount();
-	if( typeCount != pTypeMappingCount ){
-		if( pTypeMappings ){
-			delete [] pTypeMappings;
-			pTypeMappings = NULL;
-			pTypeMappingCount = 0;
-		}
-		
-		if( typeCount > 0 ){
-			pTypeMappings = new deNavigatorType*[ typeCount ];
-		}
-	}
+	pTypeMappings.RemoveAll();
 	
-	for( pTypeMappingCount=0; pTypeMappingCount<typeCount; pTypeMappingCount++ ){
-		pTypeMappings[ pTypeMappingCount ] = pNavigator.GetTypeWith( pLayer->GetCostTable().GetTypeAt( pTypeMappingCount ) );
+	for(int i=0; i<typeCount; i++){
+		pTypeMappings.Add(pNavigator.GetTypeWith(pLayer->GetCostTable().GetTypeAt(i)));
 	}
 }
 
 void dedaiNavigator::pDevModeMarkLayerDirty(){
-	if( ! pLayer ){
+	if(!pLayer){
 		return;
 	}
 	
-	if( pDEAI.GetDeveloperMode().GetEnabled() ){
+	if(pDEAI.GetDeveloperMode().GetEnabled()){
 		pLayer->MarkDirty();
 	}
 }

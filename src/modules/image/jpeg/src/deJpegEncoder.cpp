@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 
@@ -40,73 +36,59 @@
 // Constructor, destructor
 ////////////////////////////
 
-deJpegEncoder::deJpegEncoder( deJpegModule *module ){
-	if( ! module ){
-		DETHROW( deeInvalidParam );
-	}
+deJpegEncoder::deJpegEncoder(deJpegModule *module){
+	DEASSERT_NOTNULL(module)
 	
 	pModule = module;
 	
-	pDataBuffer = NULL;
-	pWriter = NULL;
-	
-	memset( &pErrorMgr, '\0', sizeof( pErrorMgr ) );
-	memset( &pDestMgr, '\0', sizeof( pDestMgr ) );
-	memset( &pEncode, '\0', sizeof( pEncode ) );
+	memset(&pErrorMgr, '\0', sizeof(pErrorMgr));
+	memset(&pDestMgr, '\0', sizeof(pDestMgr));
+	memset(&pEncode, '\0', sizeof(pEncode));
 	pEncode.client_data = this;
 	pEncode.err = &pErrorMgr;
 }
 
-deJpegEncoder::~deJpegEncoder(){
-	if( pDataBuffer ){
-		delete [] pDataBuffer;
-	}
-}
-
+deJpegEncoder::~deJpegEncoder() = default;
 
 
 // Data Buffer
 ////////////////
 
-void deJpegEncoder::InitWrite( decBaseFileWriter *writer ){
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
+void deJpegEncoder::InitWrite(decBaseFileWriter *writer){
+	if(!writer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWriter = writer;
 	
-	if( ! pDataBuffer ){
-		pDataBuffer = new JOCTET[ 1024 ];
+	if(pDataBuffer.IsEmpty()){
+		pDataBuffer.AddRange(1024, {});
 	}
 	
 	pEncode.dest = &pDestMgr;
 }
 
 void deJpegEncoder::ResetBuffer(){
-	pDestMgr.next_output_byte = pDataBuffer;
+	pDestMgr.next_output_byte = pDataBuffer.GetArrayPointer();
 	pDestMgr.free_in_buffer = 1024;
 }
 
 void deJpegEncoder::WriteEntireBuffer(){
-	pWriter->Write( pDataBuffer, 1024 );
+	pWriter->Write(pDataBuffer.GetArrayPointer(), 1024);
 	ResetBuffer();
 }
 
 void deJpegEncoder::WriteRemaining(){
-	const int bytes = 1024 - ( int )pDestMgr.free_in_buffer;
+	const int bytes = 1024 - (int)pDestMgr.free_in_buffer;
 	
-	if( bytes > 0 ){
-		pWriter->Write( pDataBuffer, bytes );
+	if(bytes > 0){
+		pWriter->Write(pDataBuffer.GetArrayPointer(), bytes);
 	}
 	
-	pDestMgr.next_output_byte = NULL;
+	pDestMgr.next_output_byte = nullptr;
 	pDestMgr.free_in_buffer = 0;
 }
 
 void deJpegEncoder::CloseReader(){
-	if( pDataBuffer ){
-		delete [] pDataBuffer;
-		pDataBuffer = NULL;
-	}
-	pWriter = NULL;
+	pWriter = nullptr;
 }

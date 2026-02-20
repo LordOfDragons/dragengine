@@ -25,8 +25,9 @@
 #ifndef _MEIDGROUPID_H_
 #define _MEIDGROUPID_H_
 
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/string/decString.h>
 
 
 /**
@@ -40,17 +41,22 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<meIDGroupID>;
+	using Map = decTObjectDictionary<meIDGroupID>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create identifier group identifier with usage count 1. */
-	meIDGroupID( const char *id );
+	explicit meIDGroupID(const char *id);
 	
+protected:
 	/** \brief Clean up identifier group identifier. */
-	virtual ~meIDGroupID();
+	~meIDGroupID() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Identifier. */
@@ -71,7 +77,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Objects are equal. */
-	bool operator==( const meIDGroupID &id ) const;
+	bool operator==(const meIDGroupID &id) const;
 	/*@}*/
 };
 

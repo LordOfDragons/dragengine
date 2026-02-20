@@ -35,6 +35,9 @@
  */
 class meCDProperties : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meCDProperties>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
@@ -49,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	meCDProperties( const decStringDictionary &properties );
+	meCDProperties(const decStringDictionary &properties);
 	
 protected:
 	/**
@@ -58,7 +61,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~meCDProperties();
+	~meCDProperties() override;
 	/*@}*/
 	
 	

@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUSkySetDescription::gdeUSkySetDescription(
-gdeSky *sky, const char *newValue ) :
-pSky( NULL )
+gdeSky *sky, const char *newValue) :
+pSky(nullptr)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky set description" );
+	SetShortInfo("@GameDefinition.Undo.SkySetDescription");
 	
 	pOldValue = sky->GetDescription();
 	pNewValue = newValue;
 	
 	pSky = sky;
-	sky->AddReference();
 }
 
 gdeUSkySetDescription::~gdeUSkySetDescription(){
-	if( pSky ){
-		pSky->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUSkySetDescription::~gdeUSkySetDescription(){
 ///////////////
 
 void gdeUSkySetDescription::Undo(){
-	pSky->SetDescription( pOldValue );
+	pSky->SetDescription(pOldValue);
 }
 
 void gdeUSkySetDescription::Redo(){
-	pSky->SetDescription( pNewValue );
+	pSky->SetDescription(pNewValue);
 }

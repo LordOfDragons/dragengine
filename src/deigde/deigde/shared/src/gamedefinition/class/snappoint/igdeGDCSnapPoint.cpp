@@ -39,18 +39,18 @@
 ////////////////////////////
 
 igdeGDCSnapPoint::igdeGDCSnapPoint() :
-pSnapDistance( 0.1f ),
-pSnapToRotation( true ){
+pSnapDistance(0.1f),
+pSnapToRotation(true){
 }
 
-igdeGDCSnapPoint::igdeGDCSnapPoint( const igdeGDCSnapPoint &snapPoint ) :
-pName( snapPoint.pName ),
+igdeGDCSnapPoint::igdeGDCSnapPoint(const igdeGDCSnapPoint &snapPoint) :
+pName(snapPoint.pName),
 
-pPosition( snapPoint.pPosition ),
-pRotation( snapPoint.pRotation ),
+pPosition(snapPoint.pPosition),
+pRotation(snapPoint.pRotation),
 
-pSnapDistance( snapPoint.pSnapDistance ),
-pSnapToRotation( snapPoint.pSnapToRotation ){
+pSnapDistance(snapPoint.pSnapDistance),
+pSnapToRotation(snapPoint.pSnapToRotation){
 }
 
 igdeGDCSnapPoint::~igdeGDCSnapPoint(){
@@ -61,26 +61,26 @@ igdeGDCSnapPoint::~igdeGDCSnapPoint(){
 // Management
 ///////////////
 
-void igdeGDCSnapPoint::SetName( const char *name ){
+void igdeGDCSnapPoint::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void igdeGDCSnapPoint::SetPosition( const decVector &position ){
+void igdeGDCSnapPoint::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void igdeGDCSnapPoint::SetRotation( const decVector &orientation ){
+void igdeGDCSnapPoint::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
 
 
-void igdeGDCSnapPoint::SetSnapDistance( float distance ){
-	pSnapDistance = decMath::max( distance, 0.0f );
+void igdeGDCSnapPoint::SetSnapDistance(float distance){
+	pSnapDistance = decMath::max(distance, 0.0f);
 }
 
-void igdeGDCSnapPoint::SetSnapToRotation( bool snapToRotation ){
+void igdeGDCSnapPoint::SetSnapToRotation(bool snapToRotation){
 	pSnapToRotation = snapToRotation;
 }

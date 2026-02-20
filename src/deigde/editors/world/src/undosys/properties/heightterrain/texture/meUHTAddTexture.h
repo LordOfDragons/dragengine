@@ -26,13 +26,11 @@
 #ifndef _MEUHTADDTEXTURE_H_
 #define _MEUHTADDTEXTURE_H_
 
-// includes
-#include <deigde/undo/igdeUndo.h>
+#include "../../../../world/meWorld.h"
+#include "../../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
-// predefinitions
-class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -42,29 +40,37 @@ class meHeightTerrainTexture;
  * Undo action to add a texture to a height terrain.
  */
 class meUHTAddTexture : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTAddTexture>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTAddTexture( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
+	meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTAddTexture();
+
+protected:
+	~meUHTAddTexture() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

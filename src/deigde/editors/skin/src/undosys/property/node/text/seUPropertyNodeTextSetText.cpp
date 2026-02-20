@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetText::seUPropertyNodeTextSetText(
-sePropertyNodeText *node, const char *newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeText *node, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node text set text" );
+	SetShortInfo("@Skin.Undo.NodeTextSetText");
 	
 	pOldValue = node->GetText();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetText::~seUPropertyNodeTextSetText(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -66,14 +62,14 @@ seUPropertyNodeTextSetText::~seUPropertyNodeTextSetText(){
 // Management
 ///////////////
 
-void seUPropertyNodeTextSetText::SetNewValue( const char *value ){
+void seUPropertyNodeTextSetText::SetNewValue(const char *value){
 	pNewValue = value;
 }
 
 void seUPropertyNodeTextSetText::Undo(){
-	pNode->SetText( pOldValue );
+	pNode->SetText(pOldValue);
 }
 
 void seUPropertyNodeTextSetText::Redo(){
-	pNode->SetText( pNewValue );
+	pNode->SetText(pNewValue);
 }

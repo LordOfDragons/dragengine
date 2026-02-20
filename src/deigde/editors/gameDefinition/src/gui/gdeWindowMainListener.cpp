@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWindowMainListener::gdeWindowMainListener( gdeWindowMain &window ) :
-pWindow( window ){
+gdeWindowMainListener::gdeWindowMainListener(gdeWindowMain &window) :
+pWindow(window){
 }
 
 gdeWindowMainListener::~gdeWindowMainListener(){
@@ -52,14 +52,14 @@ gdeWindowMainListener::~gdeWindowMainListener(){
 // Management
 ///////////////
 
-void gdeWindowMainListener::StateChanged( gdeGameDefinition* ){
+void gdeWindowMainListener::StateChanged(gdeGameDefinition*){
 	pWindow.UpdateAllActions();
 }
 
-void gdeWindowMainListener::UndoChanged( gdeGameDefinition* ){
+void gdeWindowMainListener::UndoChanged(gdeGameDefinition*){
 	pWindow.UpdateAllActions();
 }
 
-void gdeWindowMainListener::ViewChanged( gdeGameDefinition* ){
+void gdeWindowMainListener::ViewChanged(gdeGameDefinition*){
 	pWindow.UpdateAllActions();
 }

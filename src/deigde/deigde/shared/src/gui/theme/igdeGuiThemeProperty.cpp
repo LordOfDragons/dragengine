@@ -38,42 +38,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGuiThemeProperty::igdeGuiThemeProperty( const char *name, int value ) :
-pName( name ),
-pType( etInteger ),
-pInteger( value ),
-pFloat( 0.0f ){
+igdeGuiThemeProperty::igdeGuiThemeProperty(const char *name, int value) :
+pName(name),
+pType(etInteger),
+pInteger(value),
+pFloat(0.0f){
 }
 
-igdeGuiThemeProperty::igdeGuiThemeProperty( const char *name, float value ) :
-pName( name ),
-pType( etFloat ),
-pInteger( 0 ),
-pFloat( value ){
+igdeGuiThemeProperty::igdeGuiThemeProperty(const char *name, float value) :
+pName(name),
+pType(etFloat),
+pInteger(0),
+pFloat(value){
 }
 
-igdeGuiThemeProperty::igdeGuiThemeProperty( const char *name, const decPoint &value ) :
-pName( name ),
-pType( etPoint ),
-pInteger( 0 ),
-pFloat( 0.0f ),
-pPoint( value ){
+igdeGuiThemeProperty::igdeGuiThemeProperty(const char *name, const decPoint &value) :
+pName(name),
+pType(etPoint),
+pInteger(0),
+pFloat(0.0f),
+pPoint(value){
 }
 
-igdeGuiThemeProperty::igdeGuiThemeProperty( const char *name, const decColor &value ) :
-pName( name ),
-pType( etColor ),
-pInteger( 0 ),
-pFloat( 0.0f ),
-pColor( value ){
+igdeGuiThemeProperty::igdeGuiThemeProperty(const char *name, const decColor &value) :
+pName(name),
+pType(etColor),
+pInteger(0),
+pFloat(0.0f),
+pColor(value){
 }
 
-igdeGuiThemeProperty::igdeGuiThemeProperty( const char *name, const decString &value ) :
-pName( name ),
-pType( etString ),
-pInteger( 0 ),
-pFloat( 0.0f ),
-pString( value ){
+igdeGuiThemeProperty::igdeGuiThemeProperty(const char *name, const decString &value) :
+pName(name),
+pType(etString),
+pInteger(0),
+pFloat(0.0f),
+pString(value){
 }
 
 igdeGuiThemeProperty::~igdeGuiThemeProperty(){
@@ -85,36 +85,36 @@ igdeGuiThemeProperty::~igdeGuiThemeProperty(){
 ///////////////
 
 int igdeGuiThemeProperty::GetInt() const{
-	if( pType != etInteger ){
-		DETHROW( deeInvalidParam );
+	if(pType != etInteger){
+		DETHROW(deeInvalidParam);
 	}
 	return pInteger;
 }
 
 float igdeGuiThemeProperty::GetFloat() const{
-	if( pType != etFloat ){
-		DETHROW( deeInvalidParam );
+	if(pType != etFloat){
+		DETHROW(deeInvalidParam);
 	}
 	return pFloat;
 }
 
 const decPoint &igdeGuiThemeProperty::GetPoint() const{
-	if( pType != etPoint ){
-		DETHROW( deeInvalidParam );
+	if(pType != etPoint){
+		DETHROW(deeInvalidParam);
 	}
 	return pPoint;
 }
 
 const decColor &igdeGuiThemeProperty::GetColor() const{
-	if( pType != etColor ){
-		DETHROW( deeInvalidParam );
+	if(pType != etColor){
+		DETHROW(deeInvalidParam);
 	}
 	return pColor;
 }
 
 const decString &igdeGuiThemeProperty::GetString() const{
-	if( pType != etString ){
-		DETHROW( deeInvalidParam );
+	if(pType != etString){
+		DETHROW(deeInvalidParam);
 	}
 	return pString;
 }

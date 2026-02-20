@@ -26,7 +26,9 @@
 #define _DEDAINAVIGATOR_H_
 
 #include <dragengine/systems/modules/ai/deBaseAINavigator.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deDEAIModule;
 class dedaiCostTable;
@@ -34,7 +36,6 @@ class dedaiLayer;
 class dedaiPathFinderNavMesh;
 class dedaiWorld;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deNavigator;
 class deNavigatorType;
@@ -51,13 +52,12 @@ private:
 	
 	dedaiWorld *pParentWorld;
 	
-	deNavigatorType **pTypeMappings;
-	int pTypeMappingCount;
+	decTList<deNavigatorType*> pTypeMappings;
 	bool pDirtyTypeMappings;
 	
 	dedaiLayer *pLayer;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSPath;
 	deDebugDrawerShape *pDDSPathFaces;
 	deDebugDrawerShape *pDDSPathFacesOpen;
@@ -69,10 +69,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedaiNavigator( deDEAIModule &deai, deNavigator &navigator );
+	dedaiNavigator(deDEAIModule &deai, deNavigator &navigator);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiNavigator();
+	~dedaiNavigator() override;
 	/*@}*/
 	
 	
@@ -91,7 +91,7 @@ public:
 	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL if not set. */
-	void SetParentWorld( dedaiWorld *world );
+	void SetParentWorld(dedaiWorld *world);
 	
 	
 	
@@ -110,16 +110,15 @@ public:
 	
 	
 	/** \brief Type mappings. */
-	inline deNavigatorType **GetTypeMappings() const{ return pTypeMappings; }
 	
 	/** \brief Cost parameters for the given cost table entry. */
-	void GetCostParametersFor( int costTableEntry, float &fixCost, float &costPerMeter ) const;
+	void GetCostParametersFor(int costTableEntry, float &fixCost, float &costPerMeter) const;
 	
 	/** \brief Fix cost for the given cost table entry. */
-	float GetFixCostFor( int costTableEntry ) const;
+	float GetFixCostFor(int costTableEntry) const;
 	
 	/** \brief Number of type mappings. */
-	inline int GetTypeMappingCount() const{ return pTypeMappingCount; }
+	inline int GetTypeMappingCount() const{ return pTypeMappings.GetCount(); }
 	
 	
 	
@@ -138,7 +137,7 @@ public:
 	void UpdateDDSPath();
 	
 	/** \brief Update debug drawer shape from the navigation space if existing. */
-	void UpdateDDSPathShape( const deNavigatorPath &path );
+	void UpdateDDSPathShape(const deNavigatorPath &path);
 	/*@}*/
 	
 	
@@ -146,23 +145,23 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Layer number changed. */
-	virtual void LayerChanged();
+	void LayerChanged() override;
 	
 	/** \brief Space type changed. */
-	virtual void SpaceTypeChanged();
+	void SpaceTypeChanged() override;
 	
 	
 	
 	/** \brief Costs changed. */
-	virtual void CostsChanged();
+	void CostsChanged() override;
 	
 	/** \brief Types changed. */
-	virtual void TypesChanged();
+	void TypesChanged() override;
 	
 	
 	
 	/** \brief Parameters changed. */
-	virtual void ParametersChanged();
+	void ParametersChanged() override;
 	
 	
 	
@@ -184,7 +183,7 @@ public:
 	 * \retval false No nearest point found inside \em radius around \em point.
 	 * \retval false There are no matching navigation spaces.
 	 */
-	virtual bool NearestPoint( const decDVector &point, float radius, decDVector &nearestPoint, int &nearestType );
+	bool NearestPoint(const decDVector &point, float radius, decDVector &nearestPoint, int &nearestType) override;
 	
 	/**
 	 * \brief Distance moving from point along direction before crossing navigation space boundaries.
@@ -200,7 +199,7 @@ public:
 	 * \retval false \em origin is not located in the navigation space.
 	 * \retval false No navigation space boundary is hit moving along line.
 	 */
-	virtual bool LineCollide( const decDVector &origin, const decVector &direction, float &distance );
+	bool LineCollide(const decDVector &origin, const decVector &direction, float &distance) override;
 	
 	/**
 	 * \brief Find path.
@@ -211,7 +210,7 @@ public:
 	 * \param[in] start Start position of path.
 	 * \param[in] goal Goal position of path.
 	 */
-	virtual void FindPath( deNavigatorPath &path, const decDVector &start, const decDVector &goal );
+	void FindPath(deNavigatorPath &path, const decDVector &start, const decDVector &goal) override;
 	
 	/**
 	 * \brief Test path for collision using ray test.
@@ -224,8 +223,8 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideRay( const deNavigatorPath &path, deCollider &collider,
-		int &hitAfterPoint, float &hitDistance );
+	bool PathCollideRay(const deNavigatorPath &path, deCollider &collider,
+		int &hitAfterPoint, float &hitDistance) override;
 	
 	/**
 	 * \brief Test path for collision using ray test in range.
@@ -238,9 +237,9 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideRay( const deNavigatorPath &path, deCollider &collider,
+	bool PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 		const decDVector &startPosition, int nextPoint, float maxDistance,
-		int &hitAfterPoint, float &hitDistance );
+		int &hitAfterPoint, float &hitDistance) override;
 	
 	/**
 	 * \brief Test path for collision using a collider moved along the path.
@@ -253,8 +252,8 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideShape( const deNavigatorPath &path, deCollider &collider,
-		deCollider &agent, int &hitAfterPoint, float &hitDistance );
+	bool PathCollideShape(const deNavigatorPath &path, deCollider &collider,
+		deCollider &agent, int &hitAfterPoint, float &hitDistance) override;
 	
 	/**
 	 * \brief Test path for collision using a collider moved along the path in range.
@@ -267,9 +266,9 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideShape( const deNavigatorPath &path, deCollider &collider,
+	bool PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 		deCollider &agent, const decDVector &startPosition, int nextPoint,
-		float maxDistance, int &hitAfterPoint, float &hitDistance );
+		float maxDistance, int &hitAfterPoint, float &hitDistance) override;
 	/*@}*/
 	
 	

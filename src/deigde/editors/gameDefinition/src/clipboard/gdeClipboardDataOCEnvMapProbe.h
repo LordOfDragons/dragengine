@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCEnvMapProbe;
+#include "../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCEnvMapProbe;
  */
 class gdeClipboardDataOCEnvMapProbe : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCEnvMapProbe>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCEnvMapProbe( gdeOCEnvMapProbe *envMapProbe );
+	gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCEnvMapProbe();
+	~gdeClipboardDataOCEnvMapProbe() override;
 	/*@}*/
 	
 	

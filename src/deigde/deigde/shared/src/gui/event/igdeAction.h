@@ -26,10 +26,10 @@
 #define _IGDEACTION_H_
 
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 class igdeActionListener;
@@ -52,7 +52,7 @@ class igdeActionListener;
 class DE_DLL_EXPORT igdeAction : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeAction> Ref;
+	using Ref = deTObjectReference<igdeAction>;
 	
 	
 private:
@@ -60,11 +60,11 @@ private:
 	decString pDescription;
 	igdeHotKey pHotKey;
 	deInputEvent::eKeyCodes pMnemonic;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	bool pSelected;
 	bool pDefault;
-	decPointerOrderedSet pListeners;
+	decTOrderedSet<igdeActionListener*> pListeners;
 	
 	
 	
@@ -74,25 +74,25 @@ protected:
 	/** \brief Create action. */
 	igdeAction();
 	
-	igdeAction( const char *text, const char *description = "" );
+	igdeAction(const char *text, const char *description = "");
 	
-	igdeAction( const char *text, const char *description, const igdeHotKey &hotKey );
+	igdeAction(const char *text, const char *description, const igdeHotKey &hotKey);
 	
-	igdeAction( const char *text, const char *description, deInputEvent::eKeyCodes mnemonic );
+	igdeAction(const char *text, const char *description, deInputEvent::eKeyCodes mnemonic);
 	
-	igdeAction( const char *text, const char *description,
-		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+	igdeAction(const char *text, const char *description,
+		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
-	igdeAction( const char *text, igdeIcon *icon, const char *description = "" );
+	igdeAction(const char *text, igdeIcon *icon, const char *description = "");
 	
-	igdeAction( const char *text, igdeIcon *icon, const char *description,
-		const igdeHotKey &hotKey );
+	igdeAction(const char *text, igdeIcon *icon, const char *description,
+		const igdeHotKey &hotKey);
 	
-	igdeAction( const char *text, igdeIcon *icon, const char *description,
-		deInputEvent::eKeyCodes mnemonic );
+	igdeAction(const char *text, igdeIcon *icon, const char *description,
+		deInputEvent::eKeyCodes mnemonic);
 	
-	igdeAction( const char *text, igdeIcon *icon, const char *description,
-		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+	igdeAction(const char *text, igdeIcon *icon, const char *description,
+		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
 	
 	
@@ -103,7 +103,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeAction();
+	~igdeAction() override;
 	/*@}*/
 	
 	
@@ -115,49 +115,49 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text shown in the menu entry. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Hot-Key. */
 	const igdeHotKey &GetHotKey() const{ return pHotKey; }
 	
 	/** \brief Set Hot-Key. */
-	void SetHotKey( const igdeHotKey &hotKey );
+	void SetHotKey(const igdeHotKey &hotKey);
 	
 	/** \brief Mnemonic key or ekcUndefined if not used. */
 	inline deInputEvent::eKeyCodes GetMnemonic() const{ return pMnemonic; }
 	
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
-	void SetMnemonic( deInputEvent::eKeyCodes mnemonic );
+	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if menu entry is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Menu entry is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if menu entry is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** \brief Widget is the default widget if used in dialogs. */
 	inline bool GetDefault() const{ return pDefault; }
 	
 	/** \brief Set if if widget is the default widget if used in dialogs. */
-	void SetDefault( bool isdefault );
+	void SetDefault(bool isdefault);
 	
 	
 	
@@ -167,12 +167,12 @@ public:
 	 * Listener is stored only as pointer. Caller is responsible to hold reference to
 	 * action as long as the listener is not removed.
 	 */
-	void AddListener( igdeActionListener *listener );
+	void AddListener(igdeActionListener *listener);
 	
 	/**
 	 * \brief Remove listener.
 	 */
-	void RemoveListener( igdeActionListener *listener );
+	void RemoveListener(igdeActionListener *listener);
 	
 	/** \brief Notify listeners parameters changed. */
 	void NotifyParametersChanged();

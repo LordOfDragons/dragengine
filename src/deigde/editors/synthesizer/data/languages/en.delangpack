@@ -1,0 +1,478 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English</description>
+	
+	<!-- Window Main -->
+	<translation name="Synthesizer.WindowMain.Action.FileNew">New</translation>
+	<translation name="Synthesizer.WindowMain.Action.FileNew.ToolTip">Create new synthesizer</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.FileOpen">Open...</translation>
+	<translation name="Synthesizer.WindowMain.Action.FileOpen.ToolTip">Open synthesizer from file</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.FileSave">Save</translation>
+	<translation name="Synthesizer.WindowMain.Action.FileSave.ToolTip">Saves the synthesizer to file</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.FileSaveAs">Save As...</translation>
+	<translation name="Synthesizer.WindowMain.Action.FileSaveAs.ToolTip">Saves the synthesizer under a different file</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EditCut">Cut</translation>
+	<translation name="Synthesizer.WindowMain.Action.EditCut.ToolTip">Cut selected element to clipboard</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EditCopy">Copy</translation>
+	<translation name="Synthesizer.WindowMain.Action.EditCopy.ToolTip">Copy selected element to clipboard</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EditPaste">Paste</translation>
+	<translation name="Synthesizer.WindowMain.Action.EditPaste.ToolTip">Paste element from clipboard</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.ControllerAdd">Add...</translation>
+	<translation name="Synthesizer.WindowMain.Action.ControllerAdd.ToolTip">Add controller</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.ControllerRemove">Remove</translation>
+	<translation name="Synthesizer.WindowMain.Action.ControllerRemove.ToolTip">Remove controller</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.ControllerUp">Move Up</translation>
+	<translation name="Synthesizer.WindowMain.Action.ControllerUp.ToolTip">Move controller up</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.ControllerDown">Move Down</translation>
+	<translation name="Synthesizer.WindowMain.Action.ControllerDown.ToolTip">Move controller down</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceAddSound">Sound</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceAddSound.ToolTip">Add sound source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceAddWave">Wave</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceAddWave.ToolTip">Add wave source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceAddChain">Chain</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceAddChain.ToolTip">Add chain source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceAddGroup">Group</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceAddGroup.ToolTip">Add group source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceAddSynthesizer">Synthesizer</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceAddSynthesizer.ToolTip">Add synthesizer source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertSound">Sound</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertSound.ToolTip">Insert sound source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertWave">Wave</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertWave.ToolTip">Insert wave source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertChain">Chain</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertChain.ToolTip">Insert chain source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertGroup">Group</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertGroup.ToolTip">Insert group source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertSynthesizer">Synthesizer</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceInsertSynthesizer.ToolTip">Insert synthesizer source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceRemove">Remove</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceRemove.ToolTip">Remove source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceUp">Move Up</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceUp.ToolTip">Move source up</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.SourceDown">Move Down</translation>
+	<translation name="Synthesizer.WindowMain.Action.SourceDown.ToolTip">Move source down</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EffectAddStretch">Stretch Time/Pitch</translation>
+	<translation name="Synthesizer.WindowMain.Action.EffectAddStretch.ToolTip">Add stretch pitch and time effect</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EffectInsertStretch">Insert Time/Pitch</translation>
+	<translation name="Synthesizer.WindowMain.Action.EffectInsertStretch.ToolTip">Insert stretch pitch and time effect</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EffectRemove">Remove</translation>
+	<translation name="Synthesizer.WindowMain.Action.EffectRemove.ToolTip">Remove effect</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EffectUp">Move Up</translation>
+	<translation name="Synthesizer.WindowMain.Action.EffectUp.ToolTip">Move effect up</translation>
+	
+	<translation name="Synthesizer.WindowMain.Action.EffectDown">Move Down</translation>
+	<translation name="Synthesizer.WindowMain.Action.EffectDown.ToolTip">Move effect down</translation>
+	
+	<translation name="Synthesizer.WindowMain.NewSource.Name">Name:</translation>
+	<translation name="Synthesizer.WindowMain.NewSource.Default">Source</translation>
+	
+	<translation name="Synthesizer.WindowMain.Menu.Synthesizer">Synthesizer</translation>
+	<translation name="Synthesizer.WindowMain.Menu.Controller">Controller</translation>
+	<translation name="Synthesizer.WindowMain.Menu.Source">Source</translation>
+	<translation name="Synthesizer.WindowMain.Menu.Effect">Effect</translation>
+	
+	<!-- Undo: Controller -->
+	<translation name="Synthesizer.Undo.ControllerAdd">Add Controller</translation>
+	<translation name="Synthesizer.Undo.ControllerRemove">Remove Controller</translation>
+	<translation name="Synthesizer.Undo.ControllerMoveUp">Move Controller Up</translation>
+	<translation name="Synthesizer.Undo.ControllerMoveDown">Move Controller Down</translation>
+	<translation name="Synthesizer.Undo.ControllerSetName">Set Controller Name</translation>
+	<translation name="Synthesizer.Undo.ControllerSetMinValue">Set Controller Minimum Value</translation>
+	<translation name="Synthesizer.Undo.ControllerSetMaxValue">Set Controller Maximum Value</translation>
+	<translation name="Synthesizer.Undo.ControllerToggleClamp">Toggle Controller Clamp</translation>
+	<translation name="Synthesizer.Undo.ControllerSetCurve">Set Controller Curve</translation>
+	
+	<!-- Undo: Link -->
+	<translation name="Synthesizer.Undo.LinkAdd">Add Link</translation>
+	<translation name="Synthesizer.Undo.LinkRemove">Remove Link</translation>
+	<translation name="Synthesizer.Undo.LinkSetName">Set Link Name</translation>
+	<translation name="Synthesizer.Undo.LinkSetController">Set Link Controller</translation>
+	<translation name="Synthesizer.Undo.LinkSetRepeat">Link Set Repeat</translation>
+	<translation name="Synthesizer.Undo.LinkSetCurve">Set Link Curve</translation>
+	
+	<!-- Undo: Synthesizer -->
+	<translation name="Synthesizer.Undo.SynthesizerSetChannelCount">Synthesizer Set Channel Count</translation>
+	<translation name="Synthesizer.Undo.SynthesizerSetSampleRate">Synthesizer Set Sample Rate</translation>
+	<translation name="Synthesizer.Undo.SynthesizerSetSampleCount">Synthesizer Set Sample Count</translation>
+	<translation name="Synthesizer.Undo.SynthesizerSetBytesPerSample">Synthesizer Set Bytes Per Sample</translation>
+	
+	<!-- Undo: Source -->
+	<translation name="Synthesizer.Undo.SourceAdd">Add Source</translation>
+	<translation name="Synthesizer.Undo.SourceRemove">Remove Source</translation>
+	<translation name="Synthesizer.Undo.SourcePaste">Paste Source</translation>
+	<translation name="Synthesizer.Undo.SourceMoveUp">Move Source Up</translation>
+	<translation name="Synthesizer.Undo.SourceMoveDown">Move Source Down</translation>
+	<translation name="Synthesizer.Undo.SourceSetName">Set Source Name</translation>
+	<translation name="Synthesizer.Undo.SourceToggleEnabled">Toggle Source Enabled</translation>
+	<translation name="Synthesizer.Undo.SourceSetMixMode">Source Set Blend Mode</translation>
+	<translation name="Synthesizer.Undo.SourceSetBlendFactor">Source Set Blend Factor</translation>
+	<translation name="Synthesizer.Undo.SourceSetMinVolume">Source Set Minimum Volume</translation>
+	<translation name="Synthesizer.Undo.SourceSetMaxVolume">Source Set Maximum Volume</translation>
+	<translation name="Synthesizer.Undo.SourceSetMinPanning">Source Set Minimum Panning</translation>
+	<translation name="Synthesizer.Undo.SourceSetMaxPanning">Source Set Maximum Panning</translation>
+	<translation name="Synthesizer.Undo.SourceTargetAddLink">Source Target Add Link</translation>
+	<translation name="Synthesizer.Undo.SourceTargetRemoveLink">Source Target Remove Link</translation>
+	
+	<!-- Undo: Source Sound -->
+	<translation name="Synthesizer.Undo.SourceSoundSetPath">Set Sound Source Path Sound</translation>
+	<translation name="Synthesizer.Undo.SourceSoundSetMinSpeed">Set Sound Source Minimum Speed</translation>
+	<translation name="Synthesizer.Undo.SourceSoundSetMaxSpeed">Set Sound Source Maximum Speed</translation>
+	<translation name="Synthesizer.Undo.SourceSoundToggleLooping">Toggle Sound Source Looping</translation>
+	
+	<!-- Undo: Source Wave -->
+	<translation name="Synthesizer.Undo.SourceWaveSetType">Source Wave Set Type</translation>
+	<translation name="Synthesizer.Undo.SourceWaveSetMinFrequency">Source Wave Set Minimum Frequency</translation>
+	<translation name="Synthesizer.Undo.SourceWaveSetMaxFrequency">Source Wave Set Maximum Frequency</translation>
+	
+	<!-- Undo: Source Chain -->
+	<translation name="Synthesizer.Undo.SourceChainSetMinSpeed">Set Chain Source Minimum Speed</translation>
+	<translation name="Synthesizer.Undo.SourceChainSetMaxSpeed">Set Chain Source Maximum Speed</translation>
+	<translation name="Synthesizer.Undo.SourceChainSetPathSound">Chain Source Set Path Sound</translation>
+	<translation name="Synthesizer.Undo.SourceChainPathSoundAdd">Chain Source Add Path Sound</translation>
+	<translation name="Synthesizer.Undo.SourceChainPathSoundRemove">Chain Source Remove Path Sound</translation>
+	<translation name="Synthesizer.Undo.SourceChainPathSoundRemoveAll">Chain Source Remove All Path Sounds</translation>
+	<translation name="Synthesizer.Undo.SourceChainPathSoundMoveUp">Chain Source Move Path Sound Up</translation>
+	<translation name="Synthesizer.Undo.SourceChainPathSoundMoveDown">Chain Source Move Path Sound Down</translation>
+	
+	<!-- Undo: Source Group -->
+	<translation name="Synthesizer.Undo.SourceGroupSetApplicationType">Group Source Set Application Type</translation>
+	<translation name="Synthesizer.Undo.SourceGroupAddSource">Group Add Source</translation>
+	<translation name="Synthesizer.Undo.SourceGroupRemoveSource">Group Remove Source</translation>
+	<translation name="Synthesizer.Undo.SourceGroupPasteSource">Group Paste Source</translation>
+	<translation name="Synthesizer.Undo.SourceGroupMoveSourceUp">Group Move Source Up</translation>
+	<translation name="Synthesizer.Undo.SourceGroupMoveSourceDown">Group Move Source Down</translation>
+	
+	<!-- Undo: Source Synthesizer -->
+	<translation name="Synthesizer.Undo.SourceSynthesizerSetPath">Synthesizer Source Set Synthesizer Path</translation>
+	<translation name="Synthesizer.Undo.SourceSynthesizerSetConController">Synthesizer Source Set Connection Controller</translation>
+	<translation name="Synthesizer.Undo.SourceSynthesizerConTargetMore">Synthesizer Source More Connection Targets</translation>
+	<translation name="Synthesizer.Undo.SourceSynthesizerConTargetLess">Synthesizer Source Less Connection Targets</translation>
+	
+	<!-- Undo: Effect -->
+	<translation name="Synthesizer.Undo.EffectAdd">Add Effect</translation>
+	<translation name="Synthesizer.Undo.EffectRemove">Remove Effect</translation>
+	<translation name="Synthesizer.Undo.EffectPaste">Paste Effect</translation>
+	<translation name="Synthesizer.Undo.EffectMoveUp">Move Effect Up</translation>
+	<translation name="Synthesizer.Undo.EffectMoveDown">Move Effect Down</translation>
+	<translation name="Synthesizer.Undo.EffectToggleEnabled">Effect Toggle Enabled</translation>
+	<translation name="Synthesizer.Undo.EffectSetStrength">Effect Set Strength</translation>
+	<translation name="Synthesizer.Undo.EffectTargetAddLink">Effect Target Add Link</translation>
+	<translation name="Synthesizer.Undo.EffectTargetRemoveLink">Effect Target Remove Link</translation>
+	
+	<!-- Undo: Effect Stretch -->
+	<translation name="Synthesizer.Undo.EffectStretchSetMinTime">Effect Stretch Set Minimum Time</translation>
+	<translation name="Synthesizer.Undo.EffectStretchSetMaxTime">Effect Stretch Set Maximum Time</translation>
+	<translation name="Synthesizer.Undo.EffectStretchSetMinPitch">Effect Stretch Set Minimum Pitch</translation>
+	<translation name="Synthesizer.Undo.EffectStretchSetMaxPitch">Effect Stretch Set Maximum Pitch</translation>
+	
+	<!-- Property Panels: WPEffect -->
+	<translation name="Synthesizer.WPEffect.Action.PasteAppend">Paste Append</translation>
+	<translation name="Synthesizer.WPEffect.Action.PasteAppend.ToolTip">Paste effect from clipboard</translation>
+	<translation name="Synthesizer.WPEffect.GroupEffects">Effects:</translation>
+	<translation name="Synthesizer.WPEffect.LabelEffects">Effects</translation>
+	<translation name="Synthesizer.WPEffect.EffectType.Stretch">Time/Pitch Stretch</translation>
+	<translation name="Synthesizer.WPEffect.EffectType.Unknown">??</translation>
+	
+	<!-- Property Panels: WPSource -->
+	<translation name="Synthesizer.WPSource.GroupSources">Sources:</translation>
+	<translation name="Synthesizer.WPSource.Action.PasteIntoGroup">Paste Into Group</translation>
+	<translation name="Synthesizer.WPSource.Action.PasteIntoGroup.Description">Paste source into selected group from clipboard</translation>
+	<translation name="Synthesizer.WPSource.TreeSources.ToolTip">Source tree</translation>
+	
+	<!-- Property Panels: WPLink -->
+	<translation name="Synthesizer.WPLink.GroupLinks">Links:</translation>
+	<translation name="Synthesizer.WPLink.GroupLinkSettings">Link Settings:</translation>
+	<translation name="Synthesizer.WPLink.GroupLinkCurve">Link Curve:</translation>
+	<translation name="Synthesizer.WPLink.FieldName">Name:</translation>
+	<translation name="Synthesizer.WPLink.FieldName.ToolTip">Set link name</translation>
+	<translation name="Synthesizer.WPLink.FieldController">Controller:</translation>
+	<translation name="Synthesizer.WPLink.FieldController.ToolTip">Controller to query values from</translation>
+	<translation name="Synthesizer.WPLink.FieldRepeat">Repeat:</translation>
+	<translation name="Synthesizer.WPLink.FieldRepeat.ToolTip">Repeat curve along X direction</translation>
+	<translation name="Synthesizer.WPLink.ComboNoController">&lt; No Controller &gt;</translation>
+	<translation name="Synthesizer.WPLink.ListLinks.ToolTip">Link list</translation>
+	
+	<!-- Property Panels: WPController -->
+	<translation name="Synthesizer.WPController.GroupControllers">Controllers:</translation>
+	<translation name="Synthesizer.WPController.GroupControllerSettings">Controller Settings:</translation>
+	<translation name="Synthesizer.WPController.GroupControllerCurve">Controller Curve:</translation>
+	<translation name="Synthesizer.WPController.FieldName">Name:</translation>
+	<translation name="Synthesizer.WPController.FieldName.ToolTip">Set controller name</translation>
+	<translation name="Synthesizer.WPController.FieldMinValue">Minimum Value:</translation>
+	<translation name="Synthesizer.WPController.FieldMinValue.ToolTip">Minimum controller value</translation>
+	<translation name="Synthesizer.WPController.FieldMaxValue">Maximum Value:</translation>
+	<translation name="Synthesizer.WPController.FieldMaxValue.ToolTip">Maximum controller value</translation>
+	<translation name="Synthesizer.WPController.ListControllers.ToolTip">Controller list</translation>
+	<translation name="Synthesizer.WPController.FieldConstValue.ToolTip">Current controller value</translation>
+	
+	<!-- Property Panels: WPSynthesizer -->
+	<translation name="Synthesizer.WPSynthesizer.GroupSynthesizerSettings">Synthesizer Settings:</translation>
+	<translation name="Synthesizer.WPSynthesizer.GroupPlaybackTesting">Playback / Testing:</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldChannels">Channels:</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldChannels.ToolTip">Number of channels</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldSampleRate">Sample rate:</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldSampleRate.ToolTip">Sample rate in Hz</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldBytesPerSample">Bytes per sample:</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldBytesPerSample.ToolTip">Bytes per sample</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldSampleCount">Sample count:</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldSampleCount.ToolTip">Number of samples to create</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldPlayTime">Play time:</translation>
+	<translation name="Synthesizer.WPSynthesizer.FieldPlayTime.ToolTip">Play time in seconds</translation>
+	
+	<!-- Property Panels: Source General Panel -->
+	<translation name="Synthesizer.WPAPanelSource.GroupGeneralSettings">General Settings:</translation>
+	<translation name="Synthesizer.WPAPanelSource.GroupTargetsLinks">Targets and Links:</translation>
+	<translation name="Synthesizer.WPAPanelSource.GroupEffects">Effects:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldName">Name:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldName.ToolTip">Set source name</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMixMode">Mix Mode:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMixMode.ToolTip">Set mix mode</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldBlendFactor">Blend Factor:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldBlendFactor.ToolTip">Set blend factor</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMinVolume">Minimum Volume:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMinVolume.ToolTip">Minimum volume</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMaxVolume">Maximum Volume:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMaxVolume.ToolTip">Maximum volume</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMinPanning">Minimum Panning:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMinPanning.ToolTip">Minimum panning</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMaxPanning">Maximum Panning:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldMaxPanning.ToolTip">Maximum panning</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldTarget">Target:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldTarget.ToolTip">Target to edit</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldLink">Link:</translation>
+	<translation name="Synthesizer.WPAPanelSource.FieldLink.ToolTip">Link affecting target</translation>
+	<translation name="Synthesizer.WPAPanelSource.ListLinks.ToolTip">Links affecting target</translation>
+	<translation name="Synthesizer.WPAPanelSource.MixMode.Blend">Blend</translation>
+	<translation name="Synthesizer.WPAPanelSource.MixMode.Add">Add</translation>
+	
+	<!-- Property Panels: Source Sound Panel -->
+	<translation name="Synthesizer.WPAPanelSourceSound.GroupSound">Sound:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.FieldSound">Sound:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.FieldSound.ToolTip">Sound file to use</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.FieldMinSpeed">Minimum Speed:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.FieldMinSpeed.ToolTip">Minimum playback speed</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.FieldMaxSpeed">Maximum Speed:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.FieldMaxSpeed.ToolTip">Maximum playback speed</translation>
+	
+	<!-- Property Panels: Source Wave Panel -->
+	<translation name="Synthesizer.WPAPanelSourceWave.GroupWave">Wave:</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.FieldWaveType">Wave Type:</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.FieldWaveType.ToolTip">Type of wave to generate</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.FieldMinFrequency">Minimum Frequency:</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.FieldMinFrequency.ToolTip">Minimum frequency in Hz.</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.FieldMaxFrequency">Maximum Frequency:</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.FieldMaxFrequency.ToolTip">Maximum frequency in Hz</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.WaveType.Sine">Sine</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.WaveType.Square">Square</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.WaveType.SawTooth">Saw-Tooth</translation>
+	<translation name="Synthesizer.WPAPanelSourceWave.WaveType.Triangle">Triangle</translation>
+	
+	<!-- Property Panels: Source Chain Panel -->
+	<translation name="Synthesizer.WPAPanelSourceChain.GroupChain">Chain:</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.GroupSounds">Sounds:</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.FieldMinSpeed">Minimum Speed:</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.FieldMinSpeed.ToolTip">Minimum playback speed</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.FieldMaxSpeed">Maximum Speed:</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.FieldMaxSpeed.ToolTip">Maximum playback speed</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.ListSounds.ToolTip">Sounds to play</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.FieldSound">Sound:</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.FieldSound.ToolTip">Sound file</translation>
+	
+	<!-- Property Panels: Source Group Panel -->
+	<translation name="Synthesizer.WPAPanelSourceGroup.GroupGroup">Group:</translation>
+	<translation name="Synthesizer.WPAPanelSourceGroup.FieldApplicationType">Group:</translation>
+	<translation name="Synthesizer.WPAPanelSourceGroup.FieldApplicationType.ToolTip">Sets how child sources are process in the the group.
+Apply all sources (all) or blend between two selected sources using the select target (select).</translation>
+	<translation name="Synthesizer.WPAPanelSourceGroup.ApplicationType.All">All</translation>
+	<translation name="Synthesizer.WPAPanelSourceGroup.ApplicationType.Select">Select</translation>
+	<translation name="Synthesizer.WPAPanelSourceGroup.ApplicationType.Solo">Solo</translation>
+
+	
+	<!-- Property Panels: Source Synthesizer Panel -->
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.GroupSynthesizer">Synthesizer:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.GroupConnections">Connections:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.FieldPath">Path:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.FieldPath.ToolTip">Sets the synthesizer to use</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.FieldTarget">Target:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.FieldTarget.ToolTip">Target controller to edit</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.FieldController">Controller:</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.FieldController.ToolTip">Controller to take value from</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.ComboNoController">&lt; No Controller &gt;</translation>
+	
+	<!-- Property Panels: Effect General Panel -->
+	<translation name="Synthesizer.WPAPanelEffect.GroupGeneralSettings">General Settings:</translation>
+	<translation name="Synthesizer.WPAPanelEffect.GroupTargetsLinks">Targets and Links:</translation>
+	<translation name="Synthesizer.WPAPanelEffect.FieldStrength">Strength:</translation>
+	<translation name="Synthesizer.WPAPanelEffect.FieldStrength.ToolTip">Set effect strength</translation>
+	<translation name="Synthesizer.WPAPanelEffect.FieldTarget">Target:</translation>
+	<translation name="Synthesizer.WPAPanelEffect.FieldTarget.ToolTip">Target to edit</translation>
+	<translation name="Synthesizer.WPAPanelEffect.FieldLink">Link:</translation>
+	<translation name="Synthesizer.WPAPanelEffect.FieldLink.ToolTip">Link affecting target</translation>
+	<translation name="Synthesizer.WPAPanelEffect.ListLinks.ToolTip">Links affecting target</translation>
+	
+	<!-- Property Panels: Effect Stretch Panel -->
+	<translation name="Synthesizer.WPAPanelEffectStretch.GroupStretch">Stretch Time/Pitch:</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldTimeMin">Time Minimum:</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldTimeMin.ToolTip">Set minimum time stretch</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldTimeMax">Time Maximum:</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldTimeMax.ToolTip">Set maximum time stretch</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldPitchMin">Pitch Minimum:</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldPitchMin.ToolTip">Set minimum pitch stretch</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldPitchMax">Pitch Maximum:</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.FieldPitchMax.ToolTip">Set maximum pitch stretch</translation>
+	
+	<!-- Dialogs: Window Main -->
+	<translation name="Synthesizer.WindowMain.Dialog.NewSynthesizer.Title">New Synthesizer</translation>
+	<translation name="Synthesizer.WindowMain.Dialog.NewSynthesizer.Message">Creating a new Synthesizer discarding the current one is that ok?</translation>
+	<translation name="Synthesizer.WindowMain.Dialog.OpenSynthesizer.Title">Open Synthesizer</translation>
+	<translation name="Synthesizer.WindowMain.Dialog.SaveSynthesizer.Title">Save Synthesizer</translation>
+	<translation name="Synthesizer.WindowMain.Menu.Edit">Edit</translation>
+	<translation name="Synthesizer.WindowMain.Menu.Add">Add</translation>
+	<translation name="Synthesizer.WindowMain.Menu.Insert">Insert</translation>
+	<translation name="Synthesizer.WindowMain.Menu.AddIntoGroup">Add Into Group</translation>
+	
+	<!-- Actions and Menus: WPController -->
+	<translation name="Synthesizer.WPController.Error.InvalidValue.Title">Invalid Value</translation>
+	<translation name="Synthesizer.WPController.Error.DuplicateName">Duplicate controller name</translation>
+	<translation name="Synthesizer.WPController.Action.Clamp">Clamp value to range</translation>
+	<translation name="Synthesizer.WPController.Action.Clamp.ToolTip">Determines if the value of the controller is clamped to the given range</translation>
+	<translation name="Synthesizer.WPController.Action.CurveConst">Const</translation>
+	<translation name="Synthesizer.WPController.Action.CurveConst.ToolTip">Set curve to constant value</translation>
+	<translation name="Synthesizer.WPController.Action.CurveLinear">Linear</translation>
+	<translation name="Synthesizer.WPController.Action.CurveLinear.ToolTip">Set curve to linear curve from 0 to 1</translation>
+	<translation name="Synthesizer.WPController.Action.CurveInverse">Inverse</translation>
+	<translation name="Synthesizer.WPController.Action.CurveInverse.ToolTip">Set curve to linear curve from 1 to 0</translation>
+	<translation name="Synthesizer.WPController.Action.CurveBezier">Bezier</translation>
+	<translation name="Synthesizer.WPController.Action.CurveBezier.ToolTip">Set curve to bezier curve from 0 to 1</translation>
+	<translation name="Synthesizer.WPController.Action.CurveBezierInverse">Inverse</translation>
+	<translation name="Synthesizer.WPController.Action.CurveBezierInverse.ToolTip">Set curve to bezier curve from 1 to 0</translation>
+	
+	<!-- Actions: WPEffect -->
+	<translation name="Synthesizer.WPEffect.Menu.Add">Add</translation>
+	<translation name="Synthesizer.WPEffect.Menu.Insert">Insert</translation>
+	<translation name="Synthesizer.WPEffect.Action.Copy">Copy</translation>
+	<translation name="Synthesizer.WPEffect.Action.Copy.ToolTip">Copy effect to clipboard</translation>
+	<translation name="Synthesizer.WPEffect.Action.Cut">Cut</translation>
+	<translation name="Synthesizer.WPEffect.Action.Cut.ToolTip">Cut effect to clipboard</translation>
+	<translation name="Synthesizer.WPEffect.Action.Paste">Paste</translation>
+	<translation name="Synthesizer.WPEffect.Action.Paste.ToolTip">Paste effect from clipboard</translation>
+	
+	<!-- Actions: WPLink -->
+	<translation name="Synthesizer.WPLink.Action.Add">Add</translation>
+	<translation name="Synthesizer.WPLink.Action.Add.ToolTip">Add link</translation>
+	<translation name="Synthesizer.WPLink.Action.Remove">Remove</translation>
+	<translation name="Synthesizer.WPLink.Action.Remove.ToolTip">Remove link</translation>
+	
+	<!-- Actions: WPSource -->
+	<translation name="Synthesizer.WPSource.Menu.Add">Add</translation>
+	<translation name="Synthesizer.WPSource.Menu.AddIntoGroup">Add Into Group</translation>
+	<translation name="Synthesizer.WPSource.Menu.Insert">Insert</translation>
+	<translation name="Synthesizer.WPSource.Action.Copy">Copy</translation>
+	<translation name="Synthesizer.WPSource.Action.Copy.ToolTip">Copy source to clipboard</translation>
+	<translation name="Synthesizer.WPSource.Action.Cut">Cut</translation>
+	<translation name="Synthesizer.WPSource.Action.Cut.ToolTip">Cut source to clipboard</translation>
+	<translation name="Synthesizer.WPSource.Action.Paste">Paste</translation>
+	<translation name="Synthesizer.WPSource.Action.Paste.ToolTip">Paste source from clipboard</translation>
+	
+	<!-- Actions: WPSynthesizer -->
+	<translation name="Synthesizer.WPSynthesizer.Action.Looping">Looping</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Looping.ToolTip">Playback looping</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Play">Play</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Play.ToolTip">Start playing back</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Pause">Pause</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Pause.ToolTip">Pause playing back</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Stop">Stop</translation>
+	<translation name="Synthesizer.WPSynthesizer.Action.Stop.ToolTip">Stop playing back</translation>
+	
+	<!-- Actions: Panel Effect -->
+	<translation name="Synthesizer.WPAPanelEffect.Action.Enable">Enable effect</translation>
+	<translation name="Synthesizer.WPAPanelEffect.Action.Enable.ToolTip">Determines if the effect is affecting the source</translation>
+	<translation name="Synthesizer.WPAPanelEffect.Action.LinkAdd">Add</translation>
+	<translation name="Synthesizer.WPAPanelEffect.Action.LinkAdd.ToolTip">Add link</translation>
+	<translation name="Synthesizer.WPAPanelEffect.Action.LinkRemove">Remove</translation>
+	<translation name="Synthesizer.WPAPanelEffect.Action.LinkRemove.ToolTip">Remove link</translation>
+	<translation name="Synthesizer.WPAPanelEffect.Target.Strength">Strength</translation>
+	
+	<!-- Targets: Panel Effect Stretch -->
+	<translation name="Synthesizer.WPAPanelEffectStretch.Target.Time">Time</translation>
+	<translation name="Synthesizer.WPAPanelEffectStretch.Target.Pitch">Pitch</translation>
+	
+	<!-- Actions: Panel Source -->
+	<translation name="Synthesizer.WPAPanelSource.Action.Enable">Enable source</translation>
+	<translation name="Synthesizer.WPAPanelSource.Action.Enable.ToolTip">Determines if the source is affecting the model</translation>
+	<translation name="Synthesizer.WPAPanelSource.Action.LinkAdd">Add</translation>
+	<translation name="Synthesizer.WPAPanelSource.Action.LinkAdd.ToolTip">Add link</translation>
+	<translation name="Synthesizer.WPAPanelSource.Action.LinkRemove">Remove</translation>
+	<translation name="Synthesizer.WPAPanelSource.Action.LinkRemove.ToolTip">Remove link</translation>
+	<translation name="Synthesizer.WPAPanelSource.Target.BlendFactor">Blend Factor</translation>
+	<translation name="Synthesizer.WPAPanelSource.Target.Volume">Volume</translation>
+	<translation name="Synthesizer.WPAPanelSource.Target.Panning">Panning</translation>
+	
+	<!-- Actions: Panel Source Chain -->
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundAdd">Add</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundAdd.ToolTip">Add sound to list</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundRemove">Remove</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundRemove.ToolTip">Remove sound from list</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundUp">Move Up</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundUp.ToolTip">Move sound up in list</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundDown">Move Down</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Action.SoundDown.ToolTip">Move sound down in list</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Dialog.AddSound.Title">Add Sound</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Target.Speed">Speed</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Target.Select">Select</translation>
+	<translation name="Synthesizer.WPAPanelSourceChain.Target.Play">Play</translation>
+	
+	<!-- Targets: Panel Source Group -->
+	<translation name="Synthesizer.WPAPanelSourceGroup.Target.Select">Select</translation>
+	
+	<!-- Actions: Panel Source Synthesizer -->
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.Action.TargetMore.ToolTip">Increase the number of targets</translation>
+	<translation name="Synthesizer.WPAPanelSourceSynthesizer.Action.TargetLess.ToolTip">Decrease the number of targets</translation>
+	
+	<!-- Actions: Panel Source Sound -->
+	<translation name="Synthesizer.WPAPanelSourceSound.Action.Looping">Looping</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.Action.Looping.ToolTip">Sound is played back looping</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.Target.Speed">Speed</translation>
+	<translation name="Synthesizer.WPAPanelSourceSound.Target.Play">Play</translation>
+	
+	<!-- Targets: Panel Source Wave -->
+	<translation name="Synthesizer.WPAPanelSourceWave.Target.Frequency">Frequency</translation>
+	
+	<!-- Default Names -->
+	<translation name="Synthesizer.DefaultName.Controller">Controller</translation>
+	<translation name="Synthesizer.DefaultName.ControllerFormat">Controller #{0}</translation>
+	<translation name="Synthesizer.DefaultName.Link">Link</translation>
+	
+	<!-- Validation Messages -->
+	<translation name="Synthesizer.Validation.SoundMoreChannels">Sound has more channels than synthesizer!</translation>
+	<translation name="Synthesizer.Validation.SoundDifferentSampleRate">Sound sample rate differs synthesizer!</translation>
+</languagePack>

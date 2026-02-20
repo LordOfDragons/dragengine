@@ -5,6 +5,7 @@
 #include "../convert/deMCCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/service/deServiceManager.h>
 
 
@@ -19,8 +20,7 @@ deMTGetStatsAndAchievements::deMTGetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pStatNames(nullptr),
-pResultData(deServiceObject::Ref::New(new deServiceObject)),
+pResultData(deServiceObject::Ref::New()),
 pWaitAchievementsSynced(false)
 {
 	deServiceObject::Ref so;
@@ -105,7 +105,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 {
 	if(pAchievements.GetCount() == 0)
 	{
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::New( new deServiceObject ));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New());
 		return;
 	}
 	
@@ -124,7 +124,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 			achievementResult, &achievements, &achievementsCount),
 			"deMTGetStatsAndAchievements.pGetAchievements.XblAchievementsManagerResultGetAchievements");
 
-		const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref so(deServiceObject::Ref::New());
 		
 		for(i=0; i<achievementsCount; i++){
 			const char * const name = achievements[i].id;
@@ -152,7 +152,7 @@ void deMTGetStatsAndAchievements::pGetStats()
 		const deMsgdkPendingRequest::Ref pr(pService.GetPendingRequestWithId(pRequestId));
 		if(pr)
 		{
-			pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject));
+			pResultData->SetChildAt("stats", deServiceObject::Ref::New());
 			pService.GetModule().GetGameEngine()->GetServiceManager()->
 				QueueRequestResponse(pService.GetService(), pr->id, pr->data, true);
 		}
@@ -161,15 +161,15 @@ void deMTGetStatsAndAchievements::pGetStats()
 	}
 	
 	int i;
-	pStatNames = new const char*[count];
-	for( i=0; i<count; i++ ){
+	pStatNames.SetCountDiscard(count);
+	for(i=0; i<count; i++){
 		pStatNames[i] = pStats.GetAt(i).GetString();
 	}
 
 	pService.AssertResult(XblUserStatisticsGetSingleUserStatisticsAsync(
 		pService.GetXblContext(), pService.GetUserId(),
 		pService.GetModule().GetGameConfig().scid,
-		pStatNames, (size_t)count, GetAsyncBlockPtr()),
+		pStatNames.GetArrayPointer(), (size_t)count, GetAsyncBlockPtr()),
 		"deMTGetStatsAndAchievements.pGetStarts.XblUserStatisticsGetSingleUserStatisticsAsync");
 }
 
@@ -190,32 +190,26 @@ void deMTGetStatsAndAchievements::OnFinished()
 	}
 
 	const int statCount = pStats.GetCount();
-	bool *found = nullptr;
-	uint8_t *buffer = new uint8_t[bufferSize];
 
 	try
 	{
+		decTList<uint8_t> buffer((int)bufferSize, 0);
+		
 		XblUserStatisticsResult *usr;
 		size_t bufferUsed;
 		HRESULT result = XblUserStatisticsGetSingleUserStatisticsResult(GetAsyncBlockPtr(),
-			bufferSize, buffer, &usr, &bufferUsed);
+			bufferSize, buffer.GetArrayPointer(), &usr, &bufferUsed);
 		if(FAILED(result))
 		{
-			delete [] buffer;
-			buffer = nullptr;
 			pService.FailRequest(pr, result);
 			return;
 		}
 		
-		const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+		const deServiceObject::Ref so(deServiceObject::Ref::New());
 		const decString &scid = pService.GetModule().GetGameConfig().scid;
 		uint32_t i, j;
 
-		found = new bool[statCount];
-		for(i=0; i<(uint32_t)statCount; i++)
-		{
-			found[i] = false;
-		}
+		decTList<bool> found(statCount, false);
 
 		for(i=0; i<usr->serviceConfigStatisticsCount; i++)
 		{
@@ -262,19 +256,13 @@ void deMTGetStatsAndAchievements::OnFinished()
 			}
 		}
 
-		delete [] buffer;
-		buffer = nullptr;
-
 		for(i=0; i<(uint32_t)statCount; i++)
 		{
 			if(!found[i])
 			{
-				so->SetChildAt(pStats.GetAt(i), nullptr);
+				so->SetChildAt(pStats.GetAt(i), {});
 			}
 		}
-
-		delete [] found;
-		found = nullptr;
 
 		pResultData->SetChildAt("stats", so);
 
@@ -285,14 +273,6 @@ void deMTGetStatsAndAchievements::OnFinished()
 	}
 	catch(const deException &e)
 	{
-		if(found)
-		{
-			delete [] found;
-		}
-		if(buffer)
-		{
-			delete [] buffer;
-		}
 		pService.FailRequest(pr, e);
 		return;
 	}

@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 #include "../../../../undosys/objectClass/envmapprobe/gdeUOCAddEnvMapProbe.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbePaste::gdeMAOCEnvMapProbePaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Environment Map Probe",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class environment map probe" )
+gdeMAOCEnvMapProbePaste::gdeMAOCEnvMapProbePaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbePaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCEnvMapProbePaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Environment Map Probe",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCEnvMapProbe::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCEnvMapProbePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCEnvMapProbe &clipOCEnvMapProbe =
-		( const gdeClipboardDataOCEnvMapProbe & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddEnvMapProbe::Ref::New(&objectClass,
+		gdeOCEnvMapProbe::Ref::New(*clip.DynamicCast<gdeClipboardDataOCEnvMapProbe>()->GetEnvMapProbe()));
 	
-	deObjectReference envMapProbe;
-	envMapProbe.TakeOver( new gdeOCEnvMapProbe( *clipOCEnvMapProbe.GetEnvMapProbe() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddEnvMapProbe( &objectClass,
-		( gdeOCEnvMapProbe* )( deObject* )envMapProbe );
-	undo->SetShortInfo( "Paste object class environment map probe" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCEnvMapProbe");
 	return undo;
 }
 
 void gdeMAOCEnvMapProbePaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCEnvMapProbe::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME));
 }

@@ -26,10 +26,8 @@
 #define _IGDENATIVEFOXNVSLOT_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFontReference.h"
-
-
-class igdeNVSlot;
+#include "../../../resources/igdeFont.h"
+#include "../../../nodeview/igdeNVSlot.h"
 class igdeGuiTheme;
 class igdeNativeFoxNVSocket;
 
@@ -37,8 +35,8 @@ class igdeNativeFoxNVSocket;
 /**
  * \brief FOX toolkit Native NodeView Slot.
  */
-class igdeNativeFoxNVSlot : public FXHorizontalFrame{
-	FXDECLARE( igdeNativeFoxNVSlot )
+class igdeNativeFoxNVSlot : public FXHorizontalFrame, public igdeNVSlot::cNativeNVSlot{
+	FXDECLARE(igdeNativeFoxNVSlot)
 protected:
 	   igdeNativeFoxNVSlot();
 	
@@ -52,7 +50,7 @@ public:
 	
 private:
 	igdeNVSlot *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	igdeNativeFoxNVSocket *pSocket;
 	FXLabel *pLabel;
 	
@@ -64,14 +62,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxNVSlot( igdeNVSlot &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxNVSlot(igdeNVSlot &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxNVSlot();
+	~igdeNativeFoxNVSlot() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxNVSlot* CreateNativeWidget( igdeNVSlot &owner );
+	static igdeNativeFoxNVSlot* CreateNativeWidget(igdeNVSlot &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -84,7 +82,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXbool canFocus() const;
+	FXbool canFocus() const override;
 	
 	
 	/** \brief Owner. */
@@ -93,68 +91,68 @@ public:
 	
 	
 	/** \brief Update text from widget. */
-	void UpdateText();
+	void UpdateText() override;
 	
 	/** \brief Update description from widget. */
-	void UpdateDescription();
+	void UpdateDescription() override;
 	
 	/** \brief Update enabled from widget. */
-	void UpdateEnabled();
+	void UpdateEnabled() override;
 	
 	/** \brief Update color from widget. */
-	void UpdateColor();
+	void UpdateColor() override;
 	
 	/** \brief Update linked state from widget. */
-	void UpdateLinkedState();
+	void UpdateLinkedState() override;
 	
 	
 	
 	/** \brief Center of slot in local window coordinates. */
-	decPoint GetCenter() const;
+	decPoint GetCenter() const override;
 	
 	/** \brief Center of slot in owner node coordinates.. */
-	decPoint GetCenterNode() const;
+	decPoint GetCenterNode() const override;
 	
 	/** \brief Center of slot in owner board coordinates.. */
-	decPoint GetCenterBoard() const;
+	decPoint GetCenterBoard() const override;
 	
 	/** \brief Connector position of slot in local window coordinates. */
-	decPoint GetConnector() const;
+	decPoint GetConnector() const override;
 	
 	/** \brief Connector position of slot in owner node coordinates.. */
-	decPoint GetConnectorNode() const;
+	decPoint GetConnectorNode() const override;
 	
 	/** \brief Connector position of slot in owner board coordinates.. */
-	decPoint GetConnectorBoard() const;
+	decPoint GetConnectorBoard() const override;
 	
 	
 	
-	static int NVSlotFlags( const igdeNVSlot &owner );
-	static igdeFont *NVSlotFont( const igdeNVSlot &owner, const igdeGuiTheme &guitheme );
-	static int NVSlotPadLeft( const igdeGuiTheme &guitheme );
-	static int NVSlotPadRight( const igdeGuiTheme &guitheme );
-	static int NVSlotPadTop( const igdeGuiTheme &guitheme );
-	static int NVSlotPadBottom( const igdeGuiTheme &guitheme );
+	static int NVSlotFlags(const igdeNVSlot &owner);
+	static igdeFont *NVSlotFont(const igdeNVSlot &owner, const igdeGuiTheme &guitheme);
+	static int NVSlotPadLeft(const igdeGuiTheme &guitheme);
+	static int NVSlotPadRight(const igdeGuiTheme &guitheme);
+	static int NVSlotPadTop(const igdeGuiTheme &guitheme);
+	static int NVSlotPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onPaint(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	
-	long onSocketCommand( FXObject*, FXSelector, void* );
-	long onSocketLeftMouseDown( FXObject*, FXSelector, void* );
-	long onSocketMouseMoved( FXObject*, FXSelector, void* );
-	long onSocketLeftMouseUp( FXObject*, FXSelector, void* );
-	long onSocketDndEnter( FXObject*, FXSelector, void* );
-	long onSocketDndLeave( FXObject*, FXSelector, void* );
-	long onSocketDndDrop( FXObject*, FXSelector, void* );
-	long onSocketDndMotion( FXObject*, FXSelector, void* );
+	long onSocketCommand(FXObject*, FXSelector, void*);
+	long onSocketLeftMouseDown(FXObject*, FXSelector, void*);
+	long onSocketMouseMoved(FXObject*, FXSelector, void*);
+	long onSocketLeftMouseUp(FXObject*, FXSelector, void*);
+	long onSocketDndEnter(FXObject*, FXSelector, void*);
+	long onSocketDndLeave(FXObject*, FXSelector, void*);
+	long onSocketDndDrop(FXObject*, FXSelector, void*);
+	long onSocketDndMotion(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxNVSlot igdeNativeNVSlot;
+using igdeNativeNVSlot = igdeNativeFoxNVSlot;
 
 #endif

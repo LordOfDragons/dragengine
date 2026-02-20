@@ -42,7 +42,7 @@ class igdeEnvironment;
 class DE_DLL_EXPORT igdeActionExternOpen : public igdeAction{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeActionExternOpen> Ref;
+	using Ref = deTObjectReference<igdeActionExternOpen>;
 	
 	
 private:

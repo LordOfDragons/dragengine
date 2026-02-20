@@ -35,6 +35,10 @@ class meWindowChangelog;
  * \brief Changelog Window Listener
  */
 class meWindowChangelogListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWindowChangelogListener>;
+	
+	
 private:
 	meWindowChangelog &pWindow;
 	
@@ -44,10 +48,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWindowChangelogListener( meWindowChangelog &panel );
+	meWindowChangelogListener(meWindowChangelog &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWindowChangelogListener();
+	~meWindowChangelogListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,10 +62,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( meWorld *world );
+	void StateChanged(meWorld *world) override;
 	
 	/** \brief Height terrain sector state ( changed, saved, filename ) changed. */
-	virtual void HTStateChanged( meWorld *world );
+	void HTStateChanged(meWorld *world) override;
 	/*@}*/
 };
 

@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _MEUHTVLINKCUT_H_
 #define _MEUHTVLINKCUT_H_
 
-// includes
-#include <deigde/undo/igdeUndo.h>
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRLink.h"
 
-// predefinitions
-class meHTVegetationLayer;
-class meHTVRLink;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -41,34 +38,41 @@ class meHTVRLink;
  * Undo action for cutting height terrain vegetation links.
  */
 class meUHTVLinkCut : public igdeUndo{
-private:
-	meHTVegetationLayer *pVLayer;
+public:
+	using Ref = deTObjectReference<meUHTVLinkCut>;
 	
-	meHTVRLink **pLinks;
-	int pLinkCount;
+	
+public:
+	
+private:
+	meHTVegetationLayer::Ref pVLayer;
+	
+	meHTVRLink::List pLinks;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVLinkCut( meHTVegetationLayer *vlayer );
+	meUHTVLinkCut(meHTVegetationLayer *vlayer);
 	/** \brief Clean up object. */
-	virtual ~meUHTVLinkCut();
+
+protected:
+	~meUHTVLinkCut() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of links to cut. */
-	inline int GetCutLinkCount() const{ return pLinkCount; }
-	/** Adds a link to cut. */
-	void AddLinkToCut( meHTVRLink *link );
+	/** Links to cut. */
+	inline meHTVRLink::List &GetCutLinks(){ return pLinks; }
+	inline const meHTVRLink::List &GetCutLinks() const{ return pLinks; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 
-// end of include only once
 #endif

@@ -25,11 +25,13 @@
 #ifndef _MEMAPIDGROUP_H_
 #define _MEMAPIDGROUP_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/string/decString.h>
+#include "meIDGroup.h"
 
-class meIDGroup;
-class igdeGDProperty;
+#include <deigde/gamedefinition/property/igdeGDProperty.h>
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 
 /**
@@ -37,13 +39,13 @@ class igdeGDProperty;
  */
 class meMapIDGroup : public deObject{
 public:
-	typedef deTObjectReference<meMapIDGroup> Ref;
-	
+	using Ref = deTObjectReference<meMapIDGroup>;
+	using List = decTObjectOrderedSet<meMapIDGroup>;
 	
 	
 private:
-	igdeGDProperty *pProperty;
-	meIDGroup *pGroup;
+	igdeGDProperty::Ref pProperty;
+	meIDGroup::Ref pGroup;
 	const decString pPropertyPrefix;
 	
 	
@@ -52,10 +54,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create mapping between game definition property and Identifier group. */
-	meMapIDGroup( igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix );
+	meMapIDGroup(igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix);
 	
+protected:
 	/** Clean up mapping between game definition property and Identifier group. */
-	virtual ~meMapIDGroup();
+	~meMapIDGroup() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -63,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Game definition property. */
-	inline igdeGDProperty *GetProperty() const{ return pProperty; }
+	inline const igdeGDProperty::Ref &GetProperty() const{ return pProperty; }
 	
 	/** Identifier group. */
-	inline meIDGroup *GetGroup() const{ return pGroup; }
+	inline const meIDGroup::Ref &GetGroup() const{ return pGroup; }
 	
 	/** Property prefix. */
 	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }

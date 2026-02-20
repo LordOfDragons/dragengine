@@ -25,7 +25,7 @@
 #ifndef _DEVIDEOPLAYER_H_
 #define _DEVIDEOPLAYER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 
@@ -40,8 +40,7 @@ class deBaseAudioVideoPlayer;
 class DE_DLL_EXPORT deVideoPlayer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deVideoPlayer> Ref;
-	
+	using Ref = deTObjectReference<deVideoPlayer>;
 	
 	
 public:
@@ -60,7 +59,7 @@ public:
 	
 	
 private:
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	ePlayState pPlayState;
 	bool pLooping;
@@ -78,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video player. */
-	deVideoPlayer( deVideoPlayerManager *manager );
+	deVideoPlayer(deVideoPlayerManager *manager);
 	
 protected:
 	/**
@@ -87,7 +86,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deVideoPlayer();
+	~deVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -96,10 +95,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video or NULL if not set. */
-	inline deVideo *GetVideo() const{ return pVideo; }
+	inline const deVideo::Ref &GetVideo() const{ return pVideo; }
 	
 	/** \brief Set video or NULL if not set. */
-	void SetVideo( deVideo *video );
+	void SetVideo(deVideo *video);
 	
 	
 	
@@ -107,7 +106,7 @@ public:
 	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set if video is looping instead of being played back once. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	
 	
@@ -118,19 +117,19 @@ public:
 	inline float GetPlayTo() const{ return pPlayTo; }
 	
 	/** \brief Set play range. */
-	void SetPlayRange( float fromTime, float toTime );
+	void SetPlayRange(float fromTime, float toTime);
 	
 	/** \brief Play speed. */
 	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	
 	/** \brief Set play speed. */
-	void SetPlaySpeed( float playSpeed );
+	void SetPlaySpeed(float playSpeed);
 	
 	/** \brief Current play position in seconds. */
 	inline float GetPlayPosition() const{ return pPlayPosition; }
 	
 	/** \brief Set current play position in seconds. */
-	void SetPlayPosition( float position );
+	void SetPlayPosition(float position);
 	
 	
 	
@@ -147,7 +146,7 @@ public:
 	inline bool GetStopped() const{ return pPlayState == epsStopped; }
 	
 	/** \brief Set play state. */
-	void SetPlayState( ePlayState playState );
+	void SetPlayState(ePlayState playState);
 	
 	/** \brief Start playing back if not already playing back. */
 	void Play();
@@ -165,7 +164,7 @@ public:
 	 * 
 	 * Advances the play position if playing back.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	
@@ -176,20 +175,20 @@ public:
 	inline deBaseGraphicVideoPlayer *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicVideoPlayer *peer );
+	void SetPeerGraphic(deBaseGraphicVideoPlayer *peer);
 	
 	/** \brief Audio system peer. */
 	inline deBaseAudioVideoPlayer *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer. */
-	void SetPeerAudio( deBaseAudioVideoPlayer *peer );
+	void SetPeerAudio(deBaseAudioVideoPlayer *peer);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pSetPlayPosition( float position, bool seeking );
+	void pSetPlayPosition(float position, bool seeking);
 };
 
 #endif

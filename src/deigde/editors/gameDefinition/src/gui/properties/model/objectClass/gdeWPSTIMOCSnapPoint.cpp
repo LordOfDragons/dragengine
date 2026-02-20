@@ -37,7 +37,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,30 +46,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCSnapPoint::gdeWPSTIMOCSnapPoint( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCSnapPoint *snapPoint, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassSnapPoint, objectClass, index ),
-pSnapPoint( NULL ),
-pIndex( index )
+gdeWPSTIMOCSnapPoint::gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCSnapPoint *snapPoint, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassSnapPoint, objectClass, index),
+pIndex(index)
 {
-	if( ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Snap Point #%d: %s", index + 1, snapPoint->GetName().GetString() );
-	SetText( text );
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.SnapPointNumberName").ToUTF8(), index + 1, snapPoint->GetName().GetString());
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
 }
 
 gdeWPSTIMOCSnapPoint::~gdeWPSTIMOCSnapPoint(){
-	if( pSnapPoint ){
-		pSnapPoint->FreeReference();
-	}
 }
 
 
@@ -78,8 +73,8 @@ gdeWPSTIMOCSnapPoint::~gdeWPSTIMOCSnapPoint(){
 ///////////////
 
 void gdeWPSTIMOCSnapPoint::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
@@ -94,27 +89,27 @@ void gdeWPSTIMOCSnapPoint::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCSnapPoint::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCSnapPoint( pSnapPoint );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCSnapPoint );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCSnapPoint(pSnapPoint);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCSnapPoint);
 }
 
-void gdeWPSTIMOCSnapPoint::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCSnapPoint::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSnapPointAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSnapPointRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSnapPointAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSnapPointRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSnapPointCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSnapPointCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCSnapPointPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSnapPointCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSnapPointCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCSnapPointPaste());
 }
 
 void gdeWPSTIMOCSnapPoint::UpdateName(){
 	decString text;
-	text.Format( "Snap Point #%d: %s", pIndex + 1, pSnapPoint->GetName().GetString() );
-	SetText( text );
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.SnapPointNumberName").ToUTF8(), pIndex + 1, pSnapPoint->GetName().GetString());
+	SetText(text);
 	ItemChanged();
 }

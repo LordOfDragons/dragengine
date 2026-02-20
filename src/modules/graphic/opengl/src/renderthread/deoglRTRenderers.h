@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread renderers. */
-	deoglRTRenderers( deoglRenderThread &renderThread );
+	deoglRTRenderers(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread renderers. */
 	~deoglRTRenderers();

@@ -28,7 +28,6 @@
 
 #include "deoglHeightTerrain.h"
 #include "deoglHTSector.h"
-#include "deoglHTSector.h"
 #include "deoglRHeightTerrain.h"
 
 #include "../../deoglBasics.h"
@@ -50,22 +49,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglHeightTerrain::deoglHeightTerrain( deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain ) :
-pOgl( ogl ),
-pHeightTerrain( heightTerrain ),
-pDirtySectors( true )
+deoglHeightTerrain::deoglHeightTerrain(deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain) :
+pOgl(ogl),
+pHeightTerrain(heightTerrain),
+pDirtySectors(true)
 {
-	const int sectorCount = heightTerrain.GetSectorCount();
-	int i;
-	
 	try{
-		pRHeightTerrain.TakeOver( new deoglRHeightTerrain( ogl.GetRenderThread(), heightTerrain ) );
+		pRHeightTerrain = deoglRHeightTerrain::Ref::New(ogl.GetRenderThread(), heightTerrain);
 		
-		for( i=0; i<sectorCount; i++ ){
-			SectorAdded( heightTerrain.GetSectorAt( i ) );
-		}
+		heightTerrain.GetSectors().Visit([&](deHeightTerrainSector *sector){
+			SectorAdded(sector);
+		});
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -80,7 +76,7 @@ deoglHeightTerrain::~deoglHeightTerrain(){
 // Management
 ///////////////
 
-void deoglHeightTerrain::Update( float elapsed ){
+void deoglHeightTerrain::Update(float elapsed){
 	// TODO update skins... once we have this back working
 }
 
@@ -88,20 +84,20 @@ void deoglHeightTerrain::SyncToRender(){
 	const int count = pSectors.GetCount();
 	int i;
 	
-	if( pDirtySectors ){
+	if(pDirtySectors){
 		pRHeightTerrain->RemoveAllSectors();
 		
-		for( i=0; i<count; i++ ){
-			deoglHTSector * const htsector = ( deoglHTSector* )pSectors.GetAt( i );
+		for(i=0; i<count; i++){
+			deoglHTSector * const htsector = pSectors.GetAt(i);
 			htsector->SyncToRender();
-			pRHeightTerrain->AddSector( htsector->GetRSector() );
+			pRHeightTerrain->AddSector(htsector->GetRSector());
 		}
 		
 		pDirtySectors = false;
 		
 	}else{
-		for( i=0; i<count; i++ ){
-			( ( deoglHTSector* )pSectors.GetAt( i ) )->SyncToRender();
+		for(i=0; i<count; i++){
+			pSectors.GetAt(i)->SyncToRender();
 		}
 	}
 }
@@ -112,34 +108,39 @@ void deoglHeightTerrain::SyncToRender(){
 //////////////////
 
 void deoglHeightTerrain::ParametersChanged(){
+	const int count = pSectors.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		pSectors.GetAt(i)->SectorChanged();
+	}
+	
 	pDirtySectors = true;
 }
 
-void deoglHeightTerrain::HeightChanged( const decPoint &fromSector,
-const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates ){
+void deoglHeightTerrain::HeightChanged(const decPoint &fromSector,
+const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates){
 	const int imageDim = pHeightTerrain.GetSectorResolution();
-	const int count = pSectors.GetCount();
 	decPoint localFrom, localTo;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglHTSector &sector = *( ( deoglHTSector*)pSectors.GetAt( i ) );
-		const decPoint &scoord = pHeightTerrain.GetSectorAt( i )->GetSector();
+	pHeightTerrain.GetSectors().VisitIndexed([&](int i, deHeightTerrainSector *htsector){
+		deoglHTSector &sector = pSectors.GetAt(i);
+		const decPoint &scoord = htsector->GetSector();
 		
-		if( scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x && scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y ){
-			if( fromSector.x == toSector.x ){
+		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x && scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y){
+			if(fromSector.x == toSector.x){
 				localFrom.x = fromCoordinates.x;
 				localTo.x = toCoordinates.x;
 				
 			}else{
-				if( scoord.x == toSector.x ){
+				if(scoord.x == toSector.x){
 					localFrom.x = toCoordinates.x;
 					
 				}else{
 					localFrom.x = 0;
 				}
 				
-				if( scoord.x == fromSector.x ){
+				if(scoord.x == fromSector.x){
 					localTo.x = fromCoordinates.x;
 					
 				}else{
@@ -147,19 +148,19 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 				}
 			}
 			
-			if( fromSector.y == toSector.y ){
+			if(fromSector.y == toSector.y){
 				localFrom.y = fromCoordinates.y;
 				localTo.y = toCoordinates.y;
 				
 			}else{
-				if( scoord.y == toSector.y ){
+				if(scoord.y == toSector.y){
 					localFrom.y = toCoordinates.y;
 					
 				}else{
 					localFrom.y = 0;
 				}
 				
-				if( scoord.y == fromSector.y ){
+				if(scoord.y == fromSector.y){
 					localTo.y = fromCoordinates.y;
 					
 				}else{
@@ -167,33 +168,33 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 				}
 			}
 			
-			if( localFrom.x > 0 ){
+			if(localFrom.x > 0){
 				localFrom.x--;
 			}
-			if( localFrom.y > 0 ){
+			if(localFrom.y > 0){
 				localFrom.y--;
 			}
-			if( localTo.x < imageDim ){
+			if(localTo.x < imageDim){
 				localTo.x++;
 			}
-			if( localTo.y < imageDim ){
+			if(localTo.y < imageDim){
 				localTo.y++;
 			}
 			
-			sector.HeightChanged( localFrom, localTo );
+			sector.HeightChanged(localFrom, localTo);
 		}
-	}
+	});
 }
 
 
 
-void deoglHeightTerrain::SectorAdded( deHeightTerrainSector *sector ){
-	pSectors.Add( deoglHTSector::Ref::New( new deoglHTSector( *this, *sector ) ) );
+void deoglHeightTerrain::SectorAdded(deHeightTerrainSector *sector){
+	pSectors.Add(deoglHTSector::Ref::New(*this, *sector));
 	pDirtySectors = true;
 }
 
-void deoglHeightTerrain::SectorRemoved( int index ){
-	pSectors.RemoveFrom( index );
+void deoglHeightTerrain::SectorRemoved(int index){
+	pSectors.RemoveFrom(index);
 	pDirtySectors = true;
 }
 
@@ -202,20 +203,20 @@ void deoglHeightTerrain::AllSectorsRemoved(){
 	pDirtySectors = true;
 }
 
-void deoglHeightTerrain::SectorChanged( int index ){
-	( ( deoglHTSector* )pSectors.GetAt( index ) )->SectorChanged();
+void deoglHeightTerrain::SectorChanged(int index){
+	pSectors.GetAt(index)->SectorChanged();
 	pDirtySectors = true;
 }
 
 
 
-void deoglHeightTerrain::DecalAdded( int sector, deDecal *decal ){
+void deoglHeightTerrain::DecalAdded(int sector, deDecal *decal){
 }
 
-void deoglHeightTerrain::DecalRemoved( int sector, deDecal *decal ){
+void deoglHeightTerrain::DecalRemoved(int sector, deDecal *decal){
 }
 
-void deoglHeightTerrain::AllDecalsRemoved( int sector ){
+void deoglHeightTerrain::AllDecalsRemoved(int sector){
 }
 
 

@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionActorInConversation;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionActorInConversation.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,10 +37,14 @@ class ceConversationTopic;
  * \brief Undo action actor in conversation toggle negate.
  */
 class ceUCCAInConvoToggleNegate : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCAInConvoToggleNegate>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorInConversation *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorInConversation::Ref pCondition;
 	
 	
 	
@@ -48,11 +52,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCAInConvoToggleNegate( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorInConversation *condition );
+	ceUCCAInConvoToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorInConversation *condition);
 	
 	/** \brief Clean up undo object. */
-	virtual ~ceUCCAInConvoToggleNegate();
+protected:
+	~ceUCCAInConvoToggleNegate() override;
+public:
 	/*@}*/
 	
 	
@@ -61,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

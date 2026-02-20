@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSOCNavigationBlockerListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCNavigationBlockerListener( gdeWPSOCNavigationBlocker &panel );
+	gdeWPSOCNavigationBlockerListener(gdeWPSOCNavigationBlocker &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPSOCNavigationBlockerListener();
+protected:
+	~gdeWPSOCNavigationBlockerListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,36 +58,36 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Base path changed. */
-	virtual void BasePathChanged( gdeGameDefinition *gameDefinition );
+	void BasePathChanged(gdeGameDefinition *gameDefinition) override;
 	
 	/** \brief Base game definitions changed. */
-	virtual void BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition );
+	void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;
 	
 	
 	
 	/** \brief Object class navigation blockers changed. */
-	virtual void OCNavigationBlockersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	void OCNavigationBlockersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass) override;
 	
 	/** \brief Object class navigation blocker changed. */
-	virtual void OCNavigationBlockerChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker );
+	void OCNavigationBlockerChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) override;
 	
 	/** \brief Active object class navigation blocker changed. */
-	virtual void ActiveOCNavigationBlockerChanged( gdeGameDefinition *gameDefinition );
+	void ActiveOCNavigationBlockerChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

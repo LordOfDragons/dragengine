@@ -34,9 +34,7 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -58,33 +56,32 @@ namespace {
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeGeometry::meWVNodeGeometry( meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleGeometry( rule )
+meWVNodeGeometry::meWVNodeGeometry(meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule) :
+meWVNode(windowVegetation, rule),
+pRuleGeometry(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Geometry" );
+	SetTitle("@World.WVNodeGeometry.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Height", "Height of point relative to terrain position",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeGeometry.Output.Position", "@World.WVNodeGeometry.Output.Position.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Normal", "Normalized vector relative to terrain orientation",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleGeometry::eosNormal ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeGeometry.Output.Normal", "@World.WVNodeGeometry.Output.Normal.ToolTip",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleGeometry::eosNormal));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Terrain Type", "Terrain type",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeGeometry.Output.TerrainType", "@World.WVNodeGeometry.Output.TerrainType.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 }
 
 meWVNodeGeometry::~meWVNodeGeometry(){

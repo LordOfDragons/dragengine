@@ -25,9 +25,9 @@
 #ifndef _DEWMVORBISSTREAM_H_
 #define _DEWMVORBISSTREAM_H_
 
-#include <stdint.h>
 #include <webm/callback.h>
 #include <vorbis/codec.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dewmAudioTrackCallback;
 
@@ -53,7 +53,7 @@ private:
 	bool pBlockInited;
 	
 	ogg_packet pPacket;
-	uint8_t *pFillUpSample;
+	decTList<uint8_t> pFillUpSample;
 	
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vorbis stream. */
-	dewmVorbisStream( dewmAudioTrackCallback &callback );
+	dewmVorbisStream(dewmAudioTrackCallback &callback);
 	
 	/** Clean up vorbis stream. */
 	~dewmVorbisStream();
@@ -84,13 +84,13 @@ public:
 	inline int GetBufferSampleSize() const{ return pBufferSampleSize; }
 	
 	/** Open track. */
-	bool OpenTrack( const webm::TrackEntry &track );
+	bool OpenTrack(const webm::TrackEntry &track);
 	
 	/** Copy samples. */
 	void CopySamples();
 	
 	/** Load frame data. */
-	void LoadFrameData( std::uint64_t frameSize );
+	void LoadFrameData(std::uint64_t frameSize);
 	
 	/** Rewind. */
 	void Rewind();

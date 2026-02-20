@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 #include "../../../../undosys/objectClass/navblocker/gdeUOCAddNavBlocker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerPaste::gdeMAOCNavBlockerPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Blocker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class navigation blocker" )
+gdeMAOCNavBlockerPaste::gdeMAOCNavBlockerPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavBlockerPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCNavBlockerPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Blocker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCNavBlocker::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCNavBlockerPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCNavBlocker::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCNavBlocker &clipOCNavigationBlocker =
-		( const gdeClipboardDataOCNavBlocker & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddNavBlocker::Ref::New(&objectClass, 
+		gdeOCNavigationBlocker::Ref::New(*clip.DynamicCast<gdeClipboardDataOCNavBlocker>()->GetNavBlocker()));
 	
-	deObjectReference navBlocker;
-	navBlocker.TakeOver( new gdeOCNavigationBlocker( *clipOCNavigationBlocker.GetNavBlocker() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddNavBlocker( &objectClass,
-		( gdeOCNavigationBlocker* )( deObject* )navBlocker );
-	undo->SetShortInfo( "Paste object class navigation blocker" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCNavBlocker");
 	return undo;
 }
 
 void gdeMAOCNavBlockerPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCNavBlocker::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCNavBlocker::TYPE_NAME));
 }

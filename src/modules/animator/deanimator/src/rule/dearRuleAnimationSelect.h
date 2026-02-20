@@ -29,10 +29,11 @@
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class dearAnimationState;
 class deAnimatorRuleAnimationSelect;
+class dearAnimationMove;
 
 
 
@@ -45,7 +46,7 @@ private:
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
-	decObjectList pMoves;
+	decTObjectList<dearAnimationMove> pMoves;
 	
 	dearControllerTarget pTargetMoveTime;
 	dearControllerTarget pTargetSelect;
@@ -61,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleAnimationSelect( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleAnimationSelect &rule );
+	dearRuleAnimationSelect(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimationSelect &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleAnimationSelect();
+	~dearRuleAnimationSelect() override;
 	/*@}*/
 	
 	
@@ -73,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

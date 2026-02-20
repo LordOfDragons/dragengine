@@ -40,11 +40,11 @@
 ////////////////////////////
 
 deSkinPropertyNodeText::deSkinPropertyNodeText() :
-pFontSize( 10.0f )
+pFontSize(10.0f)
 {
 	int i;
-	for( i=0; i<TextMappedCount; i++ ){
-		pTextMapped[ i ] = -1;
+	for(i=0; i<TextMappedCount; i++){
+		pTextMapped[i] = -1;
 	}
 }
 
@@ -56,35 +56,35 @@ deSkinPropertyNodeText::~deSkinPropertyNodeText(){
 // Management
 ///////////////
 
-void deSkinPropertyNodeText::SetPath( const char *path ){
+void deSkinPropertyNodeText::SetPath(const char *path){
 	pPath = path;
 }
 
-void deSkinPropertyNodeText::SetFont( deFont *font ){
+void deSkinPropertyNodeText::SetFont(deFont *font){
 	pFont = font;
 }
 
-void deSkinPropertyNodeText::SetFontSize( float size ){
-	pFontSize = decMath::max( size, 0.0f );
+void deSkinPropertyNodeText::SetFontSize(float size){
+	pFontSize = decMath::max(size, 0.0f);
 }
 
-void deSkinPropertyNodeText::SetText( const char *text ){
+void deSkinPropertyNodeText::SetText(const char *text){
 	pText = text;
 }
 
-void deSkinPropertyNodeText::SetColor( const decColor &color ){
+void deSkinPropertyNodeText::SetColor(const decColor &color){
 	pColor = color;
 }
 
 
 
-int deSkinPropertyNodeText::GetTextMappedFor( eTextMapped mapped ) const{
-	return pTextMapped[ mapped ];
+int deSkinPropertyNodeText::GetTextMappedFor(eTextMapped mapped) const{
+	return pTextMapped[mapped];
 }
 
-void deSkinPropertyNodeText::SetTextMappedFor( eTextMapped mapped, int index ){
-	DEASSERT_TRUE( index >= -1 )
-	pTextMapped[ mapped ] = index;
+void deSkinPropertyNodeText::SetTextMappedFor(eTextMapped mapped, int index){
+	DEASSERT_TRUE(index >= -1)
+	pTextMapped[mapped] = index;
 }
 
 
@@ -92,6 +92,6 @@ void deSkinPropertyNodeText::SetTextMappedFor( eTextMapped mapped, int index ){
 // Visiting
 /////////////
 
-void deSkinPropertyNodeText::Visit( deSkinPropertyNodeVisitor &visitor ){
-	visitor.VisitText( *this );
+void deSkinPropertyNodeText::Visit(deSkinPropertyNodeVisitor &visitor){
+	visitor.VisitText(*this);
 }

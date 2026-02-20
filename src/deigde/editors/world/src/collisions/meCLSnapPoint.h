@@ -25,7 +25,7 @@
 #ifndef _MECLSNAPPOINT_H_
 #define _MECLSNAPPOINT_H_
 
-#include "../world/object/meObjectList.h"
+#include "../world/object/meObject.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
@@ -34,7 +34,6 @@ class meWorld;
 class meObject;
 class meObjectSnapPoint;
 class igdeGDCSnapPoint;
-class decShapeList;
 
 
 
@@ -57,7 +56,7 @@ private:
 	meObject *pTargetObject;
 	const igdeGDCSnapPoint *pTargetSnapPoint;
 	
-	meObjectList pIgnoreObjects;
+	meObject::List pIgnoreObjects;
 	
 	
 	
@@ -65,10 +64,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	meCLSnapPoint( meWorld &world, meObject *object );
+	meCLSnapPoint(meWorld &world, meObject *object);
 	
 	/** \brief Clean up visitor. */
-	virtual ~meCLSnapPoint();
+	~meCLSnapPoint() override;
 	/*@}*/
 	
 	
@@ -92,12 +91,12 @@ public:
 	 * relative to the object center. Thus set the collider position and orientation to
 	 * match the object position and orientation.
 	 */
-	void CalcBoundingBoxShape( decShapeList &list );
+	void CalcBoundingBoxShape(decShape::List &list);
 	
 	
 	
 	/** \brief Add object to ignore. */
-	void AddIgnoreObject( meObject *object );
+	void AddIgnoreObject(meObject *object);
 	
 	/** \brief Reset visitor. */
 	void Reset();
@@ -105,13 +104,13 @@ public:
 	/** \brief Distance between source point and target snap point. */
 	inline float GetDistance() const{ return pDistance; }
 	
-	/** \brief Source snap point or \em NULL to use object position. */
+	/** \brief Source snap point or \em nullptr to use object position. */
 	inline igdeGDCSnapPoint *GetSourceSnapPoint() const{ return pSourceSnapPoint; }
 	
-	/** \brief Target object or \em NULL if not set. */
+	/** \brief Target object or \em nullptr if not set. */
 	inline meObject *GetTargetObject() const{ return pTargetObject; }
 	
-	/** \brief Target snap point or \em NULL if not set. */
+	/** \brief Target snap point or \em nullptr if not set. */
 	inline const igdeGDCSnapPoint *GetTargetSnapPoint() const{ return pTargetSnapPoint; }
 	
 	
@@ -125,13 +124,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Can hit collider. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/** \brief Collider changed which is not used. */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

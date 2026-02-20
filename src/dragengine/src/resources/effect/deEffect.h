@@ -25,8 +25,9 @@
 #ifndef _DEEFFECT_H_
 #define _DEEFFECT_H_
 
-#include "../../common/math/decMath.h"
 #include "../deResource.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../common/math/decMath.h"
 
 
 class deEffectFilterKernel;
@@ -48,8 +49,10 @@ class deBaseGraphicEffect;
 class DE_DLL_EXPORT deEffect : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEffect> Ref;
+	using Ref = deTObjectReference<deEffect>;
 	
+	/** \brief List. */
+	using List = decTObjectOrderedSet<deEffect>;
 	
 	
 private:
@@ -62,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new world object with the given resource manager. */
-	deEffect( deEffectManager *manager );
+	deEffect(deEffectManager *manager);
 	
 protected:
 	/**
@@ -71,7 +74,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deEffect();
+	~deEffect() override;
 	/*@}*/
 	
 	
@@ -83,7 +86,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if effect is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/*@}*/
 	
 	
@@ -94,7 +97,7 @@ public:
 	inline deBaseGraphicEffect *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicEffect *peer );
+	void SetPeerGraphic(deBaseGraphicEffect *peer);
 	/*@}*/
 	
 	
@@ -102,7 +105,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	virtual void Visit(deEffectVisitor &visitor);
 	/*@}*/
 	
 	

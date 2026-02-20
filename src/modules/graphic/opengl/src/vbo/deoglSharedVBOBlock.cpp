@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglSharedVBO.h"
 #include "deoglSharedVBOList.h"
 #include "deoglSharedVBOBlock.h"
@@ -42,31 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size,
-int indexOffset, int indexCount ) :
-pVBO( vbo ),
-pOffset( offset ),
-pSize( size ),
-pData( NULL ),
-pIndexOffset( indexOffset ),
-pIndexCount( indexCount ),
-pIndexData( NULL ),
-pValid(  false ),
-pEmpty( true )
+deoglSharedVBOBlock::deoglSharedVBOBlock(deoglSharedVBO *vbo, int offset, int size,
+int indexOffset, int indexCount) :
+pVBO(vbo),
+pOffset(offset),
+pSize(size),
+pIndexOffset(indexOffset),
+pIndexCount(indexCount),
+pValid(false),
+pEmpty(true)
 {
-	if( ! vbo || offset < 0 || size < 0 || indexOffset < 0 || indexCount < 0 ){
-		DETHROW( deeInvalidParam );
+	if(!vbo || offset < 0 || size < 0 || indexOffset < 0 || indexCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deoglSharedVBOBlock::~deoglSharedVBOBlock(){
-	if( pIndexData ){
-		delete [] pIndexData;
-	}
-	if( pData ){
-		delete [] pData;
-	}
-}
+deoglSharedVBOBlock::~deoglSharedVBOBlock() = default;
 
 
 
@@ -74,70 +61,68 @@ deoglSharedVBOBlock::~deoglSharedVBOBlock(){
 ///////////////
 
 void deoglSharedVBOBlock::DropVBO(){
-	pVBO = NULL;
+	pVBO = nullptr;
 }
 
 void deoglSharedVBOBlock::DelayedRemove(){
 	class cDelayedRemove : public deObject{
 	private:
-		deoglSharedVBOBlock * const pVBOBlock;
+		const deoglSharedVBOBlock::Ref pVBOBlock;
 		
 	public:
-		cDelayedRemove( deoglSharedVBOBlock *vboBlock ) : pVBOBlock( vboBlock ){
-			vboBlock->AddReference();
-		}
+		using Ref = deTObjectReference<cDelayedRemove>;
+		explicit cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){}
 		
 	protected:
-		~cDelayedRemove(){
-			pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
-			pVBOBlock->FreeReference();
+		~cDelayedRemove() override{
+			pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
 		}
 	};
 	
-	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().AddReleaseObject(
-		deObject::Ref::New( new cDelayedRemove( this ) ) );
+	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().
+		AddReleaseObject(cDelayedRemove::Ref::New(this));
 }
 
-void deoglSharedVBOBlock::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSharedVBOBlock::SetSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size != pSize ){
+	if(size != pSize){
 		pSize = size;
 		pReallocData();
 	}
 }
 
-void deoglSharedVBOBlock::SetIndexCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSharedVBOBlock::SetIndexCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pIndexCount ){
+	if(count != pIndexCount){
 		pIndexCount = count;
 		pReallocData();
 	}
 }
 
-void deoglSharedVBOBlock::SetEmpty( bool empty ){
-	if( empty != pEmpty ){
+void deoglSharedVBOBlock::SetEmpty(bool empty){
+	if(empty != pEmpty){
 		pEmpty = empty;
 		pReallocData();
 	}
 }
 
-void deoglSharedVBOBlock::SetValid( bool valid ){
+void deoglSharedVBOBlock::SetValid(bool valid){
 	pValid = valid;
 	
-	if( ! valid && pVBO ){
+	if(!valid && pVBO){
 		pVBO->MarkDirty();
 	}
 }
 
 void deoglSharedVBOBlock::Prepare(){
-	if( ! pVBO ){
-		DETHROW( deeInvalidParam );
+	if(!pVBO){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pVBO->Prepare();
@@ -149,30 +134,20 @@ void deoglSharedVBOBlock::Prepare(){
 //////////////////////
 
 void deoglSharedVBOBlock::pReallocData(){
-	if( ! pVBO ){
-		DETHROW( deeInvalidParam );
+	if(!pVBO){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pEmpty ){
-		if( pIndexData ){
-			delete [] pIndexData;
-			pIndexData = NULL;
-		}
-		if( pData ){
-			delete [] pData;
-			pData = NULL;
-		}
+	if(pEmpty){
+		pIndexData.SetCountDiscard(0);
+		pData.SetCountDiscard(0);
 		
 	}else{
-		if( pSize > 0 && ! pData ){
-			pData = new unsigned char[ pVBO->GetParentList()->GetLayout().GetStride() * pSize ];
+		if(pSize > 0 && pData.IsEmpty()){
+			pData.SetCountDiscard(pVBO->GetParentList()->GetLayout().GetStride() * pSize);
 		}
-		if( pIndexCount > 0 && ! pIndexData ){
-			const int indexSize = pVBO->GetParentList()->GetLayout().GetIndexSize();
-			
-			if( indexSize > 0 ){
-				pIndexData = new unsigned char[ indexSize * pIndexCount ];
-			}
+		if(pIndexCount > 0 && pIndexData.IsEmpty()){
+			pIndexData.SetCountDiscard(pVBO->GetParentList()->GetLayout().GetIndexSize() * pIndexCount);
 		}
 	}
 	

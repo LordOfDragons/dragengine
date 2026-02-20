@@ -51,11 +51,6 @@ if tools:
 		parent_env['CROSSCOMPILE_SYSROOT'] = os.path.join(dirCompilerUp, compiler)
 		#print('sysroot: ' + parent_env['CROSSCOMPILE_SYSROOT'])
 		
-		# prevent stdc++6 problems with missnig symbols on different compilers
-		#parent_env.Append(CPPFLAGS = ['-std=c++11'])
-		#parent_env.Append(CROSSCOMPILE_CFLAGS = ['-std=c++11'])
-		#parent_env.Append(CROSSCOMPILE_CPPFLAGS = ['-std=c++11'])
-		
 		# app store requirements
 		parent_env.Append(LINKFLAGS = ['-Wl,--dynamicbase'])
 		parent_env.Append(LINKFLAGS = ['-Wl,--nxcompat'])
@@ -173,6 +168,7 @@ params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMa
 params.Add(StringVariable('with_cmake_c_flags', 'Additional C flags for external CMake builds', ''))
 params.Add(BoolVariable('with_engine_module_checks', 'Check engine module file before loading', True))
 params.Add(StringVariable('distro_maintained_info_url', 'Package is distribution maintaned and URL contains update information', ''))
+params.Add(BoolVariable('with_cachedir', 'Use cache dir ".scons_cache"', False))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',
@@ -344,7 +340,6 @@ params.Add(StringVariable('installer_name_igde_dev',
 params.Add(StringVariable('apk_name_launcher',
 	'Android Launcher APK file name without extension', 'DELauncher'))
 params.Add(StringVariable('android_version_code', 'Android version code', '99999'))
-
 
 if parent_env['OSMacOS']:
 	params.Add(TernaryVariable('with_dl', 'Use the dynamic library system'))
@@ -613,6 +608,10 @@ else:
 params.Update(parent_env)
 #print(parent_env.Dump())
 
+# cache dir
+if parent_env['with_cachedir']:
+	CacheDir('.scons_cache')
+
 # external flags
 parent_env.Replace(EXTERN_CMAKE_FLAGS = shlex.split(parent_env['with_cmake_flags']))
 parent_env.Replace(EXTERN_CMAKE_C_FLAGS = shlex.split(parent_env['with_cmake_c_flags']))
@@ -752,6 +751,8 @@ parent_env.Append(CPPFLAGS = ['-Wall'])
 
 parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
 
+# parent_env.Append(CXXFLAGS = ['-Wextra'])
+
 # disable the new (and truely stupid) new gcc 8.1 shenanigans.
 # see https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#index-Wclass-memaccess .
 # the idea behind all this is all nice and dandy but it prevents legit fast memory handling
@@ -775,6 +776,19 @@ if parent_env['platform_android'] != 'no':
 if parent_env['CROSSCOMPILE_CLANG']:
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-function'])
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
+
+# enable c++20
+parent_env.Append(CXXFLAGS = ['-std=c++20'])
+
+# in c++20 OR-ing unnamed enum constant values causes warnings. the main problem
+# here is the FOX toolkit which uses unnamed enums for flags. other libraries potentially
+# cause problems here too. disabled since in Drag[en]gine this concept is not used except
+# when dealing with foreign libraries
+parent_env.Append(CXXFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
+
+# this warning causes too many false positives requiring dummy range checks to be inserted
+# in various locations. warning is disabled unless proven to be actually helping
+parent_env.Append(CXXFLAGS = ['-Wno-alloc-size-larger-than'])
 
 # no default targets
 Default(None)
@@ -832,6 +846,15 @@ parent_report['build with thread sanitizing'] = 'yes' if parent_env['with_saniti
 parent_report['version'] = parent_env['version']
 
 
+
+# create compile commands database
+parent_env.Tool('compilation_db')
+parent_env['COMPILATIONDB_USE_ABSPATH'] = True
+targetCompileDb = parent_env.CompilationDatabase('compile_commands.json')
+
+# clean the database
+parent_env.AddPostAction(targetCompileDb,
+	'sed -i "s/-fsanitize=bounds-strict//g" compile_commands.json')
 
 # external libraries
 extdirs = []
@@ -1023,6 +1046,7 @@ buildAll = []
 installAll = []
 installAllRuntime = []
 installEngineRuntime = []
+installLauncherRuntime = []
 installIgdeRuntime = []
 doxygenAll = []
 clocAll = []
@@ -1041,6 +1065,9 @@ for key in parent_targets:
 	
 	if 'install-engine-runtime' in parent_targets[key]:
 		installEngineRuntime.append(parent_targets[key]['install-engine-runtime'])
+	
+	if 'install-launcher-runtime' in parent_targets[key]:
+		installLauncherRuntime.append(parent_targets[key]['install-launcher-runtime'])
 	
 	if 'install-igde-runtime' in parent_targets[key]:
 		installIgdeRuntime.append(parent_targets[key]['install-igde-runtime'])
@@ -1071,6 +1098,11 @@ targetInstallEngineRuntime = parent_env.Alias('install_engine_runtime', installE
 parent_targets['install_engine_runtime'] = {
 	'name' : 'Install Engine Runtime (no development files)',
 	'target' : targetInstallEngineRuntime}
+
+targetInstallLauncherRuntime = parent_env.Alias('install_launcher_runtime', installLauncherRuntime)
+parent_targets['install_launcher_runtime'] = {
+	'name' : 'Install Launcher Runtime (no development files)',
+	'target' : targetInstallLauncherRuntime}
 
 targetInstallIgdeRuntime = parent_env.Alias('install_igde_runtime', installIgdeRuntime)
 parent_targets['install_igde_runtime'] = {

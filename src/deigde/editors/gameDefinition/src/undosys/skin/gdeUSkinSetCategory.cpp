@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUSkinSetCategory::gdeUSkinSetCategory(
-gdeSkin *skin, const char *newValue ) :
-pSkin( NULL )
+gdeSkin *skin, const char *newValue) :
+pSkin(nullptr)
 {
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(!skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Skin set category" );
+	SetShortInfo("@GameDefinition.Undo.SkinSetCategory");
 	
 	pOldValue = skin->GetCategory();
 	pNewValue = newValue;
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeUSkinSetCategory::~gdeUSkinSetCategory(){
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUSkinSetCategory::~gdeUSkinSetCategory(){
 ///////////////
 
 void gdeUSkinSetCategory::Undo(){
-	pSkin->SetCategory( pOldValue );
+	pSkin->SetCategory(pOldValue);
 }
 
 void gdeUSkinSetCategory::Redo(){
-	pSkin->SetCategory( pNewValue );
+	pSkin->SetCategory(pNewValue);
 }

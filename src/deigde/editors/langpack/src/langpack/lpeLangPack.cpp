@@ -29,7 +29,6 @@
 
 #include "lpeLangPack.h"
 #include "lpeLangPackBuilder.h"
-#include "lpeLangPackListener.h"
 #include "entry/lpeLangPackEntry.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -52,10 +51,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeLangPack::lpeLangPack( igdeEnvironment *environment ) : igdeEditableEntity( environment ){
+lpeLangPack::lpeLangPack(igdeEnvironment *environment) : igdeEditableEntity(environment){
 	pIdentifier = "id";
-	pName.SetFromUTF8( "Language Pack" );
-	pMissingText.SetFromUTF8( "??" );
+	pName.SetFromUTF8("Language Pack");
+	pMissingText.SetFromUTF8("??");
 }
 
 lpeLangPack::~lpeLangPack(){
@@ -67,8 +66,8 @@ lpeLangPack::~lpeLangPack(){
 // Management
 ///////////////
 
-void lpeLangPack::SetIdentifier( const char *identifier ){
-	if( pIdentifier == identifier ){
+void lpeLangPack::SetIdentifier(const char *identifier){
+	if(pIdentifier == identifier){
 		return;
 	}
 	
@@ -76,22 +75,22 @@ void lpeLangPack::SetIdentifier( const char *identifier ){
 	NotifyLangPackChanged();
 }
 
-void lpeLangPack::SetName( const decUnicodeString &name ){
-	if( name != pName ){
+void lpeLangPack::SetName(const decUnicodeString &name){
+	if(name != pName){
 		pName = name;
 		NotifyLangPackChanged();
 	}
 }
 
-void lpeLangPack::SetDescription( const decUnicodeString &description ){
-	if( description != pDescription ){
+void lpeLangPack::SetDescription(const decUnicodeString &description){
+	if(description != pDescription){
 		pDescription = description;
 		NotifyLangPackChanged();
 	}
 }
 
-void lpeLangPack::SetMissingText( const decUnicodeString &missingText ){
-	if( missingText != pMissingText ){
+void lpeLangPack::SetMissingText(const decUnicodeString &missingText){
+	if(missingText != pMissingText){
 		pMissingText = missingText;
 		NotifyLangPackChanged();
 	}
@@ -102,31 +101,36 @@ void lpeLangPack::SetMissingText( const decUnicodeString &missingText ){
 // Entries
 /////////////
 
-void lpeLangPack::AddEntry( lpeLangPackEntry *entry ){
-	pEntryList.Add( entry );
-	entry->SetLangPack( this );
+void lpeLangPack::AddEntry(lpeLangPackEntry *entry){
+	DEASSERT_NOTNULL(entry)
+	pEntries.AddOrThrow(entry);
+	
+	entry->SetLangPack(this);
 	NotifyEntryStructureChanged();
 }
 
 
-void lpeLangPack::RemoveEntry( lpeLangPackEntry *entry ){
-	if( ! entry || entry->GetLangPack() != this ){
-		DETHROW( deeInvalidParam );
-	}
+void lpeLangPack::RemoveEntry(lpeLangPackEntry *entry){
+	const lpeLangPackEntry::Ref guard(entry);
+	pEntries.RemoveOrThrow(entry);
 	
-	entry->SetLangPack( NULL );
-	pEntryList.Remove( entry );
+	pEntrySelection.Remove(entry);
+	
+	entry->SetLangPack(nullptr);
 	NotifyEntryStructureChanged();
 }
 
 void lpeLangPack::RemoveAllEntries(){
-	const int count = pEntryList.GetCount();
-	int i;
-	
-	for( i =0; i <count; i++ ){
-		pEntryList.GetAt( i )->SetLangPack( NULL );
+	if(pEntries.IsEmpty()){
+		return;
 	}
-	pEntryList.RemoveAll();
+	
+	pEntrySelection.RemoveAll();
+	
+	pEntries.Visit([&](lpeLangPackEntry &e){
+		e.SetLangPack(nullptr);
+	});
+	pEntries.RemoveAll();
 	NotifyEntryStructureChanged();
 }
 
@@ -135,95 +139,68 @@ void lpeLangPack::RemoveAllEntries(){
 // Listeners
 //////////////
 
-void lpeLangPack::AddListener( lpeLangPackListener *listener ){
-	DEASSERT_NOTNULL( listener )
-	pListeners.Add( listener );
+void lpeLangPack::AddListener(lpeLangPackListener *listener){
+	DEASSERT_NOTNULL(listener)
+	pListeners.Add(listener);
 }
 
-void lpeLangPack::RemoveListener( lpeLangPackListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void lpeLangPack::RemoveListener(lpeLangPackListener *listener){
+	pListeners.Remove(listener);
 }
-
 
 
 void lpeLangPack::NotifyStateChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for( i =0; i <listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->StateChanged( this );
-	}
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.StateChanged(this);
+	});
 }
 
 void lpeLangPack::NotifyUndoChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for( i =0; i <listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->UndoChanged( this );
-	}
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.UndoChanged(this);
+	});
 }
 
 void lpeLangPack::NotifyLangPackChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.LangPackChanged(this);
+	});
 	
-	for( i =0; i <listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->LangPackChanged( this );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
-
-
 
 void lpeLangPack::NotifyEntryStructureChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.EntryStructureChanged(this);
+	});
 	
-	for( i =0; i <listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->EntryStructureChanged( this );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void lpeLangPack::NotifyEntryChanged( lpeLangPackEntry *entry ){
-	const int listenerCount = pListeners.GetCount();
-	int i;
+void lpeLangPack::NotifyEntryChanged(lpeLangPackEntry *entry){
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.EntryChanged(this, entry);
+	});
 	
-	for( i =0; i <listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->EntryChanged( this, entry );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void lpeLangPack::NotifyEntryNameChanged( lpeLangPackEntry *entry ){
-	const int listenerCount = pListeners.GetCount();
-	int i;
+void lpeLangPack::NotifyEntryNameChanged(lpeLangPackEntry *entry){
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.EntryNameChanged(this, entry);
+	});
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->EntryNameChanged( this, entry );
-	}
-	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void lpeLangPack::NotifyEntrySelectionChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for( i=0; i<listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->EntrySelectionChanged( this );
-	}
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.EntrySelectionChanged(this);
+	});
 }
 
 void lpeLangPack::NotifyActiveEntryChanged(){
-	const int listenerCount = pListeners.GetCount();
-	int i;
-	
-	for( i =0; i <listenerCount; i++ ){
-		( ( lpeLangPackListener* )pListeners.GetAt( i ) )->ActiveEntryChanged( this );
-	}
+	pListeners.Visit([&](lpeLangPackListener &listener){
+		listener.ActiveEntryChanged(this);
+	});
 }

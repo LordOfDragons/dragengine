@@ -48,5 +48,5 @@ debpDOctreeVisitor::~debpDOctreeVisitor(){
 // Visiting
 /////////////
 
-void debpDOctreeVisitor::VisitNode( debpDOctree *node, int intersection ){
+void debpDOctreeVisitor::VisitNode(debpDOctree *node, int intersection){
 }

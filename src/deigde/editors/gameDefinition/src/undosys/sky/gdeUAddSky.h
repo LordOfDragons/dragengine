@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeSky;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/sky/gdeSky.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeSky;
  * \brief Undo action add sky.
  */
 class gdeUAddSky : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUAddSky> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddSky( gdeGameDefinition *gameDefinition, gdeSky *sky );
+	gdeUAddSky(gdeGameDefinition *gameDefinition, gdeSky *sky);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -40,35 +40,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeRemoveMask::seUPropertyNodeRemoveMask( sePropertyNode *node ) :
-pNode( NULL ),
-pMask( NULL )
+seUPropertyNodeRemoveMask::seUPropertyNodeRemoveMask(sePropertyNode *node) :
+
+pMask(nullptr)
 {
-	if( ! node || ! node->GetProperty() || ! node->GetMask() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty() || !node->GetMask()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node remove mask" );
+	SetShortInfo("@Skin.Undo.NodeRemoveMask");
 	
 	pMask = node->GetMask();
-	pMask->AddReference();
-	
 	pOldPosition = pMask->GetPosition();
 	pOldSize = pMask->GetSize();
 	pOldRotation = pMask->GetRotation();
 	pOldShearing = pMask->GetShearing();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeRemoveMask::~seUPropertyNodeRemoveMask(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
-	if( pMask ){
-		pMask->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ seUPropertyNodeRemoveMask::~seUPropertyNodeRemoveMask(){
 ///////////////
 
 void seUPropertyNodeRemoveMask::Undo(){
-	pNode->GetParent()->RemoveNode( pMask );
+	pNode->GetParent()->RemoveNode(pMask);
 	
-	pMask->SetPosition( pOldPosition );
-	pMask->SetSize( pOldSize );
-	pMask->SetRotation( pOldRotation );
-	pMask->SetShearing( pOldShearing );
+	pMask->SetPosition(pOldPosition);
+	pMask->SetSize(pOldSize);
+	pMask->SetRotation(pOldRotation);
+	pMask->SetShearing(pOldShearing);
 	
-	pNode->SetMask( pMask );
+	pNode->SetMask(pMask);
 }
 
 void seUPropertyNodeRemoveMask::Redo(){
-	const decTexMatrix2 matrix( pMask->CreateParentTransformMatrix() * pNode->CreateParentTransformMatrix() );
-	pNode->SetMask( NULL );
-	pMask->SetFromMatrix( matrix, pOldSize, pOldRotation );
-	pNode->GetParent()->AddNode( pMask );
+	const decTexMatrix2 matrix(pMask->CreateParentTransformMatrix() * pNode->CreateParentTransformMatrix());
+	pNode->SetMask(nullptr);
+	pMask->SetFromMatrix(matrix, pOldSize, pOldRotation);
+	pNode->GetParent()->AddNode(pMask);
 }

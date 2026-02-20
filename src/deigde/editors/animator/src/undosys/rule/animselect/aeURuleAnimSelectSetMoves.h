@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class aeRuleAnimationSelect;
+#include "../../../animator/rule/aeRuleAnimationSelect.h"
 
 
 
@@ -37,8 +37,12 @@ class aeRuleAnimationSelect;
  * Undo set rule animation select set moves.
  */
 class aeURuleAnimSelectSetMoves : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleAnimSelectSetMoves>;
+	
+	
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	decStringList pOldMoves;
 	decStringList pNewMoves;
@@ -49,12 +53,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	aeURuleAnimSelectSetMoves( aeRuleAnimationSelect *rule, const decStringList &newMoves,
-		const char *description = "Set animation select rule moves" );
+	aeURuleAnimSelectSetMoves(aeRuleAnimationSelect *rule, const decStringList &newMoves,
+		const char *description = "@Animator.Undo.RuleAnimSelectSetMoves");
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleAnimSelectSetMoves();
+	~aeURuleAnimSelectSetMoves() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

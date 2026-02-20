@@ -26,9 +26,9 @@
 #ifndef _PROJUPROFILESETRUNARGUMENTS_H_
 #define _PROJUPROFILESETRUNARGUMENTS_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/profile/projProfile.h"
 
-class projProfile;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetRunArguments : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -45,13 +45,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProfileSetRunArguments>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetRunArguments( projProfile *profile, const char *newValue );
+	projUProfileSetRunArguments(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProfileSetRunArguments();
+protected:
+	~projUProfileSetRunArguments() override;
+public:
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

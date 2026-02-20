@@ -39,27 +39,23 @@
 ////////////////////////////
 
 seUPropertySetConstructedColor::seUPropertySetConstructedColor(
-seProperty *property, const decColor &newValue ) :
+seProperty *property, const decColor &newValue) :
 
-pProperty( NULL ),
-pNewValue( newValue )
+
+pNewValue(newValue)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(!property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed set color" );
+	SetShortInfo("@Skin.Undo.PropertyConstructedSetColor");
 	
 	pOldValue = property->GetNodeColor();
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetConstructedColor::~seUPropertySetConstructedColor(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ seUPropertySetConstructedColor::~seUPropertySetConstructedColor(){
 ///////////////
 
 void seUPropertySetConstructedColor::Undo(){
-	pProperty->SetNodeColor( pOldValue );
+	pProperty->SetNodeColor(pOldValue);
 }
 
 void seUPropertySetConstructedColor::Redo(){
-	pProperty->SetNodeColor( pNewValue );
+	pProperty->SetNodeColor(pNewValue);
 }

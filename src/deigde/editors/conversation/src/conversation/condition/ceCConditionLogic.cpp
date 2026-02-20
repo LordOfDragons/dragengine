@@ -39,36 +39,19 @@
 ////////////////////////////
 
 ceCConditionLogic::ceCConditionLogic() :
-ceConversationCondition( ectLogic ),
-pOperator( eopAll ),
-pTIMExpanded( true ){
+ceConversationCondition(ectLogic),
+pOperator(eopAll),
+pTIMExpanded(true){
 }
 
-ceCConditionLogic::ceCConditionLogic( const ceCConditionLogic &condition ) :
-ceConversationCondition( condition ),
-pOperator( condition.GetOperator() ),
-pTIMExpanded( condition.pTIMExpanded )
+ceCConditionLogic::ceCConditionLogic(const ceCConditionLogic &condition) :
+ceConversationCondition(condition),
+pOperator(condition.GetOperator()),
+pTIMExpanded(condition.pTIMExpanded)
 {
-	const ceConversationConditionList &conditions = condition.GetConditions();
-	ceConversationCondition *newCondition = NULL;
-	int i, count;
-	
-	try{
-		count = conditions.GetCount();
-		for( i=0; i<count; i++ ){
-			newCondition = conditions.GetAt( i )->CreateCopy();
-			pConditions.Add( newCondition );
-			newCondition->FreeReference();
-			newCondition = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( newCondition ){
-			newCondition->FreeReference();
-		}
-		pConditions.RemoveAll();
-		throw;
-	}
+	condition.GetConditions().Visit([&](const ceConversationCondition &c){
+		pConditions.Add(c.CreateCopy());
+	});
 }
 
 ceCConditionLogic::~ceCConditionLogic(){
@@ -79,9 +62,9 @@ ceCConditionLogic::~ceCConditionLogic(){
 // Management
 ///////////////
 
-void ceCConditionLogic::SetOperator( eOperators aOperator ){
-	if( aOperator < eopNone || aOperator > eopAll ){
-		DETHROW( deeInvalidParam );
+void ceCConditionLogic::SetOperator(eOperators aOperator){
+	if(aOperator < eopNone || aOperator > eopAll){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOperator = aOperator;
@@ -89,8 +72,8 @@ void ceCConditionLogic::SetOperator( eOperators aOperator ){
 
 
 
-ceConversationCondition *ceCConditionLogic::CreateCopy() const{
-	return new ceCConditionLogic( *this );
+ceConversationCondition::Ref ceCConditionLogic::CreateCopy() const{
+	return ceCConditionLogic::Ref::New(*this);
 }
 
 
@@ -98,6 +81,6 @@ ceConversationCondition *ceCConditionLogic::CreateCopy() const{
 // UI
 ///////
 
-void ceCConditionLogic::SetTIMExpanded( bool expanded ){
+void ceCConditionLogic::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }

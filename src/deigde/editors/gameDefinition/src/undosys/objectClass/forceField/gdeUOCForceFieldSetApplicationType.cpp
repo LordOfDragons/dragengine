@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetApplicationType::gdeUOCForceFieldSetApplicationType( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, deForceField::eApplicationTypes newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetApplicationType::gdeUOCForceFieldSetApplicationType(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, deForceField::eApplicationTypes newValue) :
+
+pForceField(nullptr)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set application type" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetApplicationType");
 	
 	pOldValue = forceField->GetApplicationType();
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetApplicationType::~gdeUOCForceFieldSetApplicationType(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetApplicationType::~gdeUOCForceFieldSetApplicationType(){
 ///////////////
 
 void gdeUOCForceFieldSetApplicationType::Undo(){
-	pForceField->SetApplicationType( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetApplicationType(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetApplicationType::Redo(){
-	pForceField->SetApplicationType( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetApplicationType(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

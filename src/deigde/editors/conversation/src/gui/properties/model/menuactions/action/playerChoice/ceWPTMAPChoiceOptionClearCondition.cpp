@@ -40,7 +40,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -49,17 +49,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionClearCondition::ceWPTMAPChoiceOptionClearCondition( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionClearCondition::ceWPTMAPChoiceOptionClearCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option ) :
-ceWPTMenuAction( windowMain, "Clear Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.ClearCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option)
 {
-	SetEnabled( option.GetCondition() != NULL );
+	SetEnabled(option.GetCondition() != nullptr);
 }
 
 
@@ -68,7 +68,6 @@ pOption( &option )
 ///////////////
 
 void ceWPTMAPChoiceOptionClearCondition::OnAction(){
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCAPChoiceOptionSetCondition( pTopic, pPlayerChoice, pOption, NULL ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(ceUCAPChoiceOptionSetCondition::Ref::New(
+		pTopic, pPlayerChoice, pOption, nullptr));
 }

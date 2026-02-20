@@ -29,7 +29,6 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -48,8 +47,7 @@ class fbxRigBone;
 class fbxModelCluster : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxModelCluster> Ref;
-	
+	using Ref = deTObjectReference<fbxModelCluster>;
 	
 	
 private:
@@ -64,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxModelCluster( fbxModel &model, fbxNode &nodeCluser );
+	fbxModelCluster(fbxModel &model, fbxNode &nodeCluser);
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxModelCluster();
+	~fbxModelCluster() override;
 	/*@}*/
 	
 	
@@ -89,7 +87,7 @@ public:
 	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set rig bone or NULL. */
-	void SetRigBone( fbxRigBone *rigBone );
+	void SetRigBone(fbxRigBone *rigBone);
 	
 	
 	
@@ -97,7 +95,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

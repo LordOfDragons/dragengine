@@ -26,11 +26,12 @@
 #define _IGDENATIVENULLCOMMONDIALOGS_H_
 
 #include "../../igdeCommonDialogs.h"
+#include "../../../gui/filedialog/igdeFilePattern.h"
 
-#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
-class igdeFilePatternList;
+class igdeWidget;
 
 class decString;
 class deException;
@@ -47,9 +48,11 @@ public:
 	/**
 	 * \brief Shows message dialog.
 	 */
-	static igdeCommonDialogs::eButton Message( igdeWidget *owner,
+	static igdeCommonDialogs::eButton Message(igdeWidget &owner,
 		igdeCommonDialogs::eButtonSet buttons, igdeCommonDialogs::eIcon icon,
-		const char *title, const char *text );
+		const char *title, const char *text);
+	
+	static void FatalError(const char *title, const char *text);
 	
 	
 	
@@ -60,7 +63,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetInteger( igdeWidget *owner, const char *title, const char *text, int &value );
+	static bool GetInteger(igdeWidget &owner, const char *title, const char *text, int &value);
 	
 	/**
 	 * \brief Request decimal input from user.
@@ -69,7 +72,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFloat( igdeWidget *owner, const char *title, const char *text, float &value );
+	static bool GetFloat(igdeWidget &owner, const char *title, const char *text, float &value);
 	
 	/**
 	 * \brief Request string input from user.
@@ -78,8 +81,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetString( igdeWidget *owner, const char *title, const char *text,
-		decString &value );
+	static bool GetString(igdeWidget &owner, const char *title, const char *text,
+		decString &value);
 	
 	/**
 	 * \brief Request string selection input from user.
@@ -88,8 +91,8 @@ public:
 	 * If the user accepts the input \em selection is updated with the user selection
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
-	static bool SelectString( igdeWidget *owner, const char *title, const char *text,
-		const decStringList &list, int &selection );
+	static bool SelectString(igdeWidget &owner, const char *title, const char *text,
+		const decStringList &list, int &selection);
 	
 	
 	
@@ -100,8 +103,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileOpen( igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileOpen(igdeWidget &owner, const char *title,
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request open file from user.
@@ -110,8 +113,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileOpen( igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileOpen(igdeWidget &owner, const char *title, deVirtualFileSystem &vfs,
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -120,8 +123,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileSave( igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileSave(igdeWidget &owner, const char *title,
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -130,8 +133,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileSave( igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileSave(igdeWidget &owner, const char *title, deVirtualFileSystem &vfs,
+		const igdeFilePattern::List &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request directory from user.
@@ -140,7 +143,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetDirectory( igdeWidget *owner, const char *title, decString &dirname );
+	static bool GetDirectory(igdeWidget &owner, const char *title, decString &dirname);
 	
 	/**
 	 * \brief Request directory from user.
@@ -149,8 +152,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetDirectory( igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		decString &dirname );
+	static bool GetDirectory(igdeWidget &owner, const char *title, deVirtualFileSystem &vfs,
+		decString &dirname);
 	
 	/**
 	 * \brief Select system font.
@@ -159,8 +162,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool SelectSystemFont( igdeWidget *owner, const char *title,
-		igdeFont::sConfiguration &config );
+	static bool SelectSystemFont(igdeWidget &owner, const char *title,
+		igdeFont::sConfiguration &config);
 	/*@}*/
 };
 

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSound.h"
 #include "deSoundDecoder.h"
 #include "deSoundManager.h"
@@ -38,6 +34,7 @@
 #include "../../errortracing/deErrorTracePoint.h"
 #include "../../errortracing/deErrorTraceValue.h"
 #include "../../filesystem/deVirtualFileSystem.h"
+#include "../../threading/deMutexGuard.h"
 #include "../../systems/deAudioSystem.h"
 #include "../../systems/deModuleSystem.h"
 #include "../../systems/deSynthesizerSystem.h"
@@ -56,14 +53,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSoundManager::deSoundManager( deEngine *engine ) :
-deFileResourceManager( engine, ertSound ),
-
-pDecoderRoot( NULL ),
-pDecoderTail( NULL ),
-pDecoderCount( 0 )
+deSoundManager::deSoundManager(deEngine *engine) :
+deFileResourceManager(engine, ertSound)
 {
-	SetLoggingName( "sound" );
+	SetLoggingName("sound");
 }
 
 deSoundManager::~deSoundManager(){
@@ -80,218 +73,171 @@ int deSoundManager::GetSoundCount() const{
 }
 
 deSound *deSoundManager::GetRootSound() const{
-	return ( deSound* )pSounds.GetRoot();
+	return (deSound*)pSounds.GetRoot();
 }
 
-deSound *deSoundManager::GetSoundWith( const char *filename ) const{
-	return GetSoundWith( GetEngine()->GetVirtualFileSystem(), filename );
+deSound *deSoundManager::GetSoundWith(const char *filename) const{
+	return GetSoundWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-deSound *deSoundManager::GetSoundWith( deVirtualFileSystem *vfs, const char *filename ) const{
-	deSound * const sound = ( deSound* )pSounds.GetWithFilename( vfs, filename );
-	return sound && ! sound->GetOutdated() ? sound : NULL;
+deSound *deSoundManager::GetSoundWith(deVirtualFileSystem *vfs, const char *filename) const{
+	deSound * const sound = (deSound*)pSounds.GetWithFilename(vfs, filename);
+	return sound && !sound->GetOutdated() ? sound : nullptr;
 }
 
-deSound *deSoundManager::LoadSound( const char *filename, const char *basePath, bool asynchron ){
-	return LoadSound( GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron );
+deSound::Ref deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
+	return LoadSound(GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron);
 }
 
-deSound *deSoundManager::LoadSound( deVirtualFileSystem *vfs, const char *filename,
-const char *basePath, bool asynchron ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deSound::Ref deSoundManager::LoadSound(deVirtualFileSystem *vfs, const char *filename,
+const char *basePath, bool asynchron){
+	if(!vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader;
 	deBaseSoundInfo soundInfo;
 	deBaseSoundModule *module;
-	deSound *sound = NULL;
+	deSound::Ref sound;
 	decPath path;
-	deSound *findSound;
 	
 	try{
 		// locate file
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(!FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the sound with this filename already exists
-		findSound = ( deSound* )pSounds.GetWithFilename( vfs, path.GetPathUnix() );
+		deSound *findSound = (deSound*)pSounds.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findSound && findSound->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Sound '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findSound && findSound->GetModificationTime() != modificationTime){
+			LogInfoFormat("Sound '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findSound->MarkOutdated();
-			findSound = NULL;
+			findSound = nullptr;
 		}
 		
-		if( findSound ){
-			findSound->AddReference();
+		if(findSound){
 			sound = findSound;
 			
 		}else{
 			// find the module able to handle this sound file
-			module = ( deBaseSoundModule* )GetModuleSystem()->GetModuleAbleToLoad(
-				deModuleSystem::emtSound, path.GetPathUnix() );
+			module = (deBaseSoundModule*)GetModuleSystem()->GetModuleAbleToLoad(
+				deModuleSystem::emtSound, path.GetPathUnix());
 			
 			// open file and read sound infos
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix() );
-			module->InitLoadSound( *fileReader, soundInfo );
+			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
+			module->InitLoadSound(*fileReader, soundInfo);
 			
 			// create sound file using the infos
-			sound = new deSound( this, vfs, path.GetPathUnix(), modificationTime,
+			sound = deSound::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				soundInfo.GetBytesPerSample(), soundInfo.GetSampleRate(),
-				soundInfo.GetSampleCount(), soundInfo.GetChannelCount() );
-			sound->SetAsynchron( asynchron );
-			
-			// clean up
-			fileReader->FreeReference();
-			fileReader = NULL;
+				soundInfo.GetSampleCount(), soundInfo.GetChannelCount());
+			sound->SetAsynchron(asynchron);
 			
 			// load into systems. modules can request to load the data if small enough
-			GetAudioSystem()->LoadSound( sound );
-			GetSynthesizerSystem()->LoadSound( sound );
+			GetAudioSystem()->LoadSound(sound);
+			GetSynthesizerSystem()->LoadSound(sound);
 			
 			// add sound
-			pSounds.Add( sound );
+			pSounds.Add(sound);
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Loading sound '%s' (base path '%s') failed",
-			filename, basePath ? basePath : "" );
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		if( sound ){
-			sound->FreeReference();
-		}
+	}catch(const deException &){
+		LogErrorFormat("Loading sound '%s' (base path '%s') failed",
+			filename, basePath ? basePath : "");
 		throw;
 	}
 	
-	if( sound ){
-		sound->SetAsynchron( false );
+	if(sound){
+		sound->SetAsynchron(false);
 	}
 	return sound;
 }
 
-void deSoundManager::SaveSound( deSound *sound, const char *filename ){
-	return SaveSound( GetEngine()->GetVirtualFileSystem(), sound, filename );
+void deSoundManager::SaveSound(deSound *sound, const char *filename){
+	return SaveSound(GetEngine()->GetVirtualFileSystem(), sound, filename);
 }
 
-void deSoundManager::SaveSound( deVirtualFileSystem *vfs, deSound *sound, const char *filename ){
-	if( ! sound || ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound *sound, const char *filename){
+	if(!sound || !vfs || !filename){
+		DETHROW(deeInvalidParam);
 	}
-	decBaseFileWriter *fileWriter = NULL;
-	deBaseSoundModule *module;
 	
-	try{
-		// find the module able to handle this sound file
-		module = ( deBaseSoundModule* )GetModuleSystem()->GetModuleAbleToLoad(
-			deModuleSystem::emtSound, filename );
-		
-		// save the file with it
-		fileWriter = OpenFileForWriting( *vfs, filename );
-		module->SaveSound( *fileWriter, *sound );
-		fileWriter->FreeReference();
-		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	deBaseSoundModule * const module = (deBaseSoundModule*)GetModuleSystem()->
+		GetModuleAbleToLoad(deModuleSystem::emtSound, filename);
+	DEASSERT_NOTNULL(module);
+	
+	module->SaveSound(OpenFileForWriting(*vfs, filename), *sound);
 }
 
-void deSoundManager::AddLoadedSound( deSound *sound ){
-	if( ! sound ){
-		DETHROW( deeInvalidParam );
+void deSoundManager::AddLoadedSound(deSound *sound){
+	if(!sound){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSounds.Add( sound );
+	pSounds.Add(sound);
 }
 
 
 
-deSoundDecoder *deSoundManager::CreateDecoder( deSound *sound ){
-	if( ! sound || ! sound->GetVirtualFileSystem() ){
-		DETHROW( deeInvalidParam );
+deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
+	if(!sound || !sound->GetVirtualFileSystem()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deSoundDecoder *soundDecoder = NULL;
-	deBaseSoundDecoder *peer = NULL;
-	decBaseFileReader *reader = NULL;
-	deBaseSoundModule *module = NULL;
+	deBaseSoundModule *module = nullptr;
+	deBaseSoundDecoder *peer = nullptr;
+	deSoundDecoder::Ref soundDecoder;
 	
 	try{
 		// sound decoder is what the user actually gets
-		soundDecoder = new deSoundDecoder( *this, sound );
+		soundDecoder = deSoundDecoder::Ref::New(*this, sound);
 		
 		// find module which handles the sound file. it is not so nice to check using
 		// the file name again for the right module to choose but the result is correct
-		module = ( deBaseSoundModule* )GetModuleSystem()->GetModuleAbleToLoad(
-			deModuleSystem::emtSound, sound->GetFilename() );
+		module = (deBaseSoundModule*)GetModuleSystem()->GetModuleAbleToLoad(
+			deModuleSystem::emtSound, sound->GetFilename());
+		DEASSERT_NOTNULL(module);
 		
 		// open file and create decoder peer
-		reader = OpenFileForReading( *sound->GetVirtualFileSystem(), sound->GetFilename() );
-		peer = module->CreateDecoder( reader );
-		reader->FreeReference();
-		reader = NULL;
+		peer = module->CreateDecoder(OpenFileForReading(
+			*sound->GetVirtualFileSystem(), sound->GetFilename()));
 		
 		// assign the peer
-		soundDecoder->SetPeerSound( peer );
+		soundDecoder->SetPeerSound(peer);
 		
-	}catch( const deException &e ){
-		if( reader ){
-			reader->FreeReference();
-		}
-		if( peer ){
+	}catch(const deException &e){
+		if(peer){
 			delete peer;
 		}
-		if( soundDecoder ){
-			soundDecoder->FreeReference();
-		}
-		
-		LogErrorFormat( "Creating decoder for sound '%s' failed",
-			sound->GetFilename().GetString() );
+		LogErrorFormat("Creating decoder for sound '%s' failed",
+			sound->GetFilename().GetString());
 		
 		deErrorTrace &errorTrace = *GetEngine()->GetErrorTrace();
-		errorTrace.AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
+		errorTrace.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
 		
-		deErrorTracePoint &etp = *errorTrace.AddPoint(
-			NULL, "deSoundManager::CreateDecoder", __LINE__ );
+		deErrorTracePoint &etp = errorTrace.AddPoint(
+			nullptr, "deSoundManager::CreateDecoder", __LINE__);
 		
-		deErrorTraceValue &etv = *etp.AddValue( "sound", "<deSound>" );
-		etv.AddSubValue( "filename", sound->GetFilename() );
-		etv.AddSubValueInt( "bytesPerSample", sound->GetBytesPerSample() );
-		etv.AddSubValueInt( "sampleRate", sound->GetSampleRate() );
-		etv.AddSubValueInt( "channelCount", sound->GetChannelCount() );
-		etv.AddSubValueInt( "sampleCount", sound->GetSampleCount() );
-		etv.AddSubValueFloat( "playTime", sound->GetPlayTime() );
+		deErrorTraceValue &etv = etp.AddValue("sound", "<deSound>");
+		etv.AddSubValue("filename", sound->GetFilename());
+		etv.AddSubValueInt("bytesPerSample", sound->GetBytesPerSample());
+		etv.AddSubValueInt("sampleRate", sound->GetSampleRate());
+		etv.AddSubValueInt("channelCount", sound->GetChannelCount());
+		etv.AddSubValueInt("sampleCount", sound->GetSampleCount());
+		etv.AddSubValueFloat("playTime", sound->GetPlayTime());
 		
-		if( module ){
-			etp.AddValue( "module", module->GetLoadableModule().GetName() );
+		if(module){
+			etp.AddValue("module", module->GetLoadableModule().GetName());
 		}
 		
 		throw;
 	}
 	
 	// track sound decoder and return it
-	pMutexDecoder.Lock();
-	
-	if( pDecoderTail ){
-		pDecoderTail->SetLLManagerNext( soundDecoder );
-		soundDecoder->SetLLManagerPrev( pDecoderTail );
-		pDecoderTail = soundDecoder;
-		
-	}else{ // it can never happen that root is non-NULL if tail is NULL
-		pDecoderRoot = soundDecoder;
-		pDecoderTail = soundDecoder;
-	}
-	
-	pDecoderCount++;
-	
-	pMutexDecoder.Unlock();
+	const deMutexGuard lock(pMutexDecoder);
+	pDecoders.Add(&soundDecoder->GetLLManager());
 	
 	return soundDecoder;
 }
@@ -300,43 +246,38 @@ deSoundDecoder *deSoundManager::CreateDecoder( deSound *sound ){
 
 void deSoundManager::ReleaseLeakingResources(){
 	// decoders
-	pMutexDecoder.Lock();
-	
-	if( pDecoderCount > 0 ){
+	{
+	const deMutexGuard lock(pMutexDecoder);
+	if(pDecoders.GetCount() > 0){
 		try{
-			LogWarnFormat( "%i leaking sound decoders", pDecoderCount );
+			LogWarnFormat("%i leaking sound decoders", pDecoders.GetCount());
 			
-			while( pDecoderRoot ){
-				LogWarnFormat( "- %s", pDecoderRoot->GetSound()->GetFilename().IsEmpty()
-					? "<temporary>" : pDecoderRoot->GetSound()->GetFilename().GetString() );
-				pDecoderRoot->MarkLeaking();
-				pDecoderRoot= pDecoderRoot->GetLLManagerNext();
-			}
+			pDecoders.Visit([&](deSoundDecoder *decoder){
+				LogWarnFormat("- %s", decoder->GetSound()->GetFilename().IsEmpty()
+					? "<temporary>" : decoder->GetSound()->GetFilename().GetString());
+				decoder->MarkLeaking();
+			});
+			pDecoders.RemoveAll();
 			
-			pDecoderTail = NULL;
-			pDecoderCount = 0;
-			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pMutexDecoder.Unlock();
 			throw;
 		}
 	}
-	
-	pMutexDecoder.Unlock();
+	}
 	
 	// sounds
 	const int count = GetSoundCount();
 	
-	if( count > 0 ){
-		const deSound *sound = ( const deSound * )pSounds.GetRoot();
+	if(count > 0){
+		LogWarnFormat("%i leaking sounds", count);
 		
-		LogWarnFormat( "%i leaking sounds", count );
-		
-		while( sound ){
-			LogWarnFormat( "- %s", sound->GetFilename().IsEmpty()
-				? "<temporary>" : sound->GetFilename().GetString() );
-			sound = ( const deSound * )sound->GetLLManagerNext();
-		}
+		// visit all resources and log them (use void returning lambda and C++ pointer casts)
+		pSounds.GetResources().Visit([&](deResource *res){
+			const deSound *sound = static_cast<const deSound*>(res);
+			LogWarnFormat("- %s", sound->GetFilename().IsEmpty()
+				? "<temporary>" : sound->GetFilename().GetString());
+		});
 		
 		pSounds.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
@@ -348,120 +289,54 @@ void deSoundManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSoundManager::SystemAudioLoad(){
-	deSound *sound = ( deSound* )pSounds.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while( sound ){
-		if( ! sound->GetPeerAudio() ){
-			audSys.LoadSound( sound );
+	// visit all sounds and ensure audio peer is loaded
+	pSounds.GetResources().Visit([&](deResource *res){
+		deSound *sound = static_cast<deSound*>(res);
+		if(!sound->GetPeerAudio()){
+			audSys.LoadSound(sound);
 		}
-		
-		sound = ( deSound* )sound->GetLLManagerNext();
-	}
+	});
 }
 
 void deSoundManager::SystemAudioUnload(){
-	deSound *sound = ( deSound* )pSounds.GetRoot();
-	
-	while( sound ){
-		sound->SetPeerAudio( NULL );
-		sound = ( deSound* )sound->GetLLManagerNext();
-	}
+	pSounds.GetResources().Visit([](deResource *res){
+		static_cast<deSound*>(res)->SetPeerAudio(nullptr);
+	});
 }
 
 
 
 void deSoundManager::SystemSynthesizerLoad(){
-	deSound *sound = ( deSound* )pSounds.GetRoot();
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
-	while( sound ){
-		if( ! sound->GetPeerSynthesizer() ){
-			synthSys.LoadSound( sound );
+	pSounds.GetResources().Visit([&](deResource *res){
+		deSound *sound = static_cast<deSound*>(res);
+		if(!sound->GetPeerSynthesizer()){
+			synthSys.LoadSound(sound);
 		}
-		
-		sound = ( deSound* )sound->GetLLManagerNext();
-	}
+	});
 }
 
 void deSoundManager::SystemSynthesizerUnload(){
-	deSound *sound = ( deSound* )pSounds.GetRoot();
-	
-	while( sound ){
-		sound->SetPeerSynthesizer( NULL );
-		sound = ( deSound* )sound->GetLLManagerNext();
-	}
+	pSounds.GetResources().Visit([](deResource *res){
+		static_cast<deSound*>(res)->SetPeerSynthesizer(nullptr);
+	});
 }
 
 
 
-void deSoundManager::RemoveResource( deResource *resource ){
-	pSounds.RemoveIfPresent( resource );
+void deSoundManager::RemoveResource(deResource *resource){
+	pSounds.RemoveIfPresent(resource);
 }
 
-void deSoundManager::RemoveDecoder( deSoundDecoder *decoder ){
-	if( ! decoder ){
-		DETHROW( deeInvalidParam );
+void deSoundManager::RemoveDecoder(deSoundDecoder *decoder){
+	if(!decoder){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pMutexDecoder.Lock();
-	
-	try{
-		if( decoder != pDecoderRoot && ! decoder->GetLLManagerNext()
-		&& ! decoder->GetLLManagerPrev() ){
-			return;
-		}
-		
-		if( pDecoderCount == 0 ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		if( decoder == pDecoderTail ){
-			if( decoder->GetLLManagerNext() ){
-				DETHROW( deeInvalidParam );
-			}
-			
-			pDecoderTail = pDecoderTail->GetLLManagerPrev();
-			if( pDecoderTail ){
-				pDecoderTail->SetLLManagerNext( NULL );
-			}
-			
-		}else{
-			if( ! decoder->GetLLManagerNext() ){
-				DETHROW( deeInvalidParam );
-			}
-			
-			decoder->GetLLManagerNext()->SetLLManagerPrev( decoder->GetLLManagerPrev() );
-		}
-		
-		if( decoder == pDecoderRoot ){
-			if( decoder->GetLLManagerPrev() ){
-				DETHROW( deeInvalidParam );
-			}
-			
-			pDecoderRoot = pDecoderRoot->GetLLManagerNext();
-			if( pDecoderRoot ){
-				pDecoderRoot->SetLLManagerPrev( NULL );
-			}
-			
-		}else{
-			if( ! decoder->GetLLManagerPrev() ){
-				DETHROW( deeInvalidParam );
-			}
-			
-			decoder->GetLLManagerPrev()->SetLLManagerNext( decoder->GetLLManagerNext() );
-		}
-		
-		decoder->SetLLManagerNext( NULL );
-		decoder->SetLLManagerPrev( NULL );
-		pDecoderCount--;
-		
-		decoder->MarkLeaking();
-		
-	}catch( const deException & ){
-		pMutexDecoder.Unlock();
-		throw;
-	}
-	
-	pMutexDecoder.Unlock();
+	const deMutexGuard lock(pMutexDecoder);
+	pDecoders.Remove(&decoder->GetLLManager());
+	decoder->MarkLeaking();
 }

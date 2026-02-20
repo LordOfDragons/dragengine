@@ -25,6 +25,7 @@
 #ifndef _DECTIMEHISTORY_H_
 #define _DECTIMEHISTORY_H_
 
+#include "../collection/decTList.h"
 #include "../string/decString.h"
 
 
@@ -37,8 +38,8 @@
  */
 class DE_DLL_EXPORT decTimeHistory{
 private:
-	float *pEntries;
-	float *pSorted;
+	decTList<float> pEntries;
+	decTList<float> pSorted;
 	int pSize;
 	
 	int pHead;
@@ -57,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create history with initial size. */
-	decTimeHistory( int initialSize, int cutExtremeValues );
+	decTimeHistory(int initialSize, int cutExtremeValues);
 	
 	/** \brief Clean up history. */
 	~decTimeHistory();
@@ -71,13 +72,13 @@ public:
 	inline int GetSize() const{ return pSize; }
 	
 	/** \brief Set size of history. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** \brief Time at position. */
-	float GetAt( int position ) const;
+	float GetAt(int position) const;
 	
 	/** \brief Add time. */
-	void Add( float time );
+	void Add(float time);
 	
 	/** \brief Clear history. */
 	void Clear();
@@ -89,7 +90,7 @@ public:
 	inline int GetCutExtremeValues() const{ return pCutExtremeValues; }
 	
 	/** \brief Set cut extreme values count. */
-	void SetCutExtremeValues( int cutExtremeValues );
+	void SetCutExtremeValues(int cutExtremeValues);
 	
 	/**
 	 * \brief Metrics are valid.

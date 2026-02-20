@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeWPUndoHistoryListener::lpeWPUndoHistoryListener( lpeWPUndoHistory &panel ) :
-pPanel( panel ){
+lpeWPUndoHistoryListener::lpeWPUndoHistoryListener(lpeWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 lpeWPUndoHistoryListener::~lpeWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ lpeWPUndoHistoryListener::~lpeWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void lpeWPUndoHistoryListener::UndoChanged( lpeLangPack *langpack ){
+void lpeWPUndoHistoryListener::UndoChanged(lpeLangPack *langpack){
 	pPanel.UpdateUndo();
 }

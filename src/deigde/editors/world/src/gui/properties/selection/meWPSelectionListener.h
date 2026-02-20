@@ -35,6 +35,9 @@ class meWPSelection;
  * \brief Selection Panel Listener.
  */
 class meWPSelectionListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWPSelectionListener>;
+	
 private:
 	meWPSelection &pPanel;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSelectionListener( meWPSelection &panel );
+	meWPSelectionListener(meWPSelection &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWPSelectionListener();
+	~meWPSelectionListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( meWorld *world );
+	void ModeChanged(meWorld *world) override;
 	/*@}*/
 };
 

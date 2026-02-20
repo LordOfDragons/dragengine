@@ -32,10 +32,9 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataAction.h"
-#include "../../../../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -44,13 +43,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACopyActions::ceWPTMACopyActions( ceWindowMain &windowMain,
-const ceConversationActionList &actions ) :
-ceWPTMenuAction( windowMain, "Copy Actions",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ) ),
-pActions( &actions )
+ceWPTMACopyActions::ceWPTMACopyActions(ceWindowMain &windowMain,
+	const ceConversationAction::List &actions) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.CopyActions",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
+pActions(actions)
 {
-	SetEnabled( actions.GetCount() > 0 );
+	SetEnabled(actions.IsNotEmpty());
 }
 
 
@@ -59,11 +58,7 @@ pActions( &actions )
 ///////////////
 
 void ceWPTMACopyActions::OnAction(){
-	if( pActions->GetCount() == 0 ){
-		return;
+	if(pActions.IsNotEmpty()){
+		GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::New(pActions));
 	}
-	
-	igdeClipboardDataReference cdata;
-	cdata.TakeOver( new ceClipboardDataAction( *pActions ) );
-	GetWindowMain().GetClipboard().Set( cdata );
 }

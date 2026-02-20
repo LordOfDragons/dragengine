@@ -32,8 +32,8 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrain;
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrain.h"
 
 
 
@@ -43,9 +43,13 @@ class meHeightTerrain;
  * Undo action to set the path of the height terrain file.
  */
 class meUHTSetPathHT : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetPathHT>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrain *pHeightTerrain;
+	meHeightTerrain::Ref pHeightTerrain;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -54,20 +58,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetPathHT( meWorld *world, meHeightTerrain *heightTerrain, const char *newPath );
+	meUHTSetPathHT(meWorld *world, meHeightTerrain *heightTerrain, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetPathHT();
+
+protected:
+	~meUHTSetPathHT() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

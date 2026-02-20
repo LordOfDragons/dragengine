@@ -26,15 +26,15 @@
 #define _MEOBJECTTEXTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class meObject;
 
 class igdeEnvironment;
-
-class deDynamicSkin;
-class deSkin;
 
 
 
@@ -43,9 +43,8 @@ class deSkin;
  */
 class meObjectTexture : public deObject{
 public:
-	/** Reference. */
-	typedef deTObjectReference<meObjectTexture> Ref;
-	
+	using Ref = deTObjectReference<meObjectTexture>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<meObjectTexture>,meObjectTexture>;
 	
 	
 private:
@@ -55,7 +54,7 @@ private:
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
 	float pTexCoordRotation;
@@ -65,7 +64,7 @@ private:
 	decStringDictionary pProperties;
 	decString pActiveProperty;
 	
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	
 	
@@ -73,13 +72,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object texture. */
-	meObjectTexture( igdeEnvironment *environment, const char *name );
+	meObjectTexture(igdeEnvironment *environment, const char *name);
 	
 	/** \brief Create copy of object texture. */
-	meObjectTexture( const meObjectTexture &texture );
+	meObjectTexture(const meObjectTexture &texture);
 	
+protected:
 	/** \brief Clean up object texture. */
-	virtual ~meObjectTexture();
+	~meObjectTexture() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -89,11 +91,11 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Parent object or \em NULL if not set. */
+	/** \brief Parent object or \em nullptr if not set. */
 	inline meObject *GetObject() const{ return pObject; }
 	
-	/** \brief Set parent object or \em NULL if not set. */
-	void SetObject( meObject *object );
+	/** \brief Set parent object or \em nullptr if not set. */
+	void SetObject(meObject *object);
 	
 	
 	
@@ -104,13 +106,13 @@ public:
 	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	
 	/** \brief Set skin file path. */
-	void SetSkinPath( const char *skinPath );
+	void SetSkinPath(const char *skinPath);
 	
 	/** \brief Load skin. */
 	void LoadSkin();
 	
-	/** \brief Engine skin or \em NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** \brief Engine skin or \em nullptr if not found. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	
@@ -118,19 +120,19 @@ public:
 	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
 	
 	/** \brief Set texture coordinates offset. */
-	void SetTexCoordOffset( const decVector2 &offset );
+	void SetTexCoordOffset(const decVector2 &offset);
 	
 	/** \brief Texture coordinates scaling. */
 	inline const decVector2 &GetTexCoordScaling() const{ return pTexCoordScaling; }
 	
 	/** \brief Set texture coordinates scaling. */
-	void SetTexCoordScaling( const decVector2 &scaling );
+	void SetTexCoordScaling(const decVector2 &scaling);
 	
 	/** \brief Texture coordinates rotation. */
 	inline float GetTexCoordRotation() const{ return pTexCoordRotation; }
 	
 	/** \brief Set texture coordinates rotation. */
-	void SetTexCoordRotation( float rotation );
+	void SetTexCoordRotation(float rotation);
 	
 	
 	
@@ -138,12 +140,12 @@ public:
 	inline const decColor &GetColorTint() const{ return pColorTint; }
 	
 	/** \brief Set color tint. */
-	void SetColorTint( const decColor &color );
+	void SetColorTint(const decColor &color);
 	
 	
 	
-	/** \brief Dynamic skin or \em NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	/** \brief Dynamic skin or \em nullptr if not used. */
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Update dynamic skin. */
 	void UpdateDynamicSkin();
@@ -168,13 +170,13 @@ public:
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
 	/** \brief Set property. */
-	void SetProperty( const char *key, const char *value );
+	void SetProperty(const char *key, const char *value);
 	
 	/** \brief Set properties. */
-	void SetProperties( const decStringDictionary &properties );
+	void SetProperties(const decStringDictionary &properties);
 	
 	/** \brief Remove property if present. */
-	void RemoveProperty( const char *key );
+	void RemoveProperty(const char *key);
 	
 	/** \brief Removes all properties. */
 	void RemoveAllProperties();
@@ -183,7 +185,7 @@ public:
 	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
 	/** \brief Set active property. */
-	void SetActiveProperty( const char *property );
+	void SetActiveProperty(const char *property);
 	/*@}*/
 	
 	

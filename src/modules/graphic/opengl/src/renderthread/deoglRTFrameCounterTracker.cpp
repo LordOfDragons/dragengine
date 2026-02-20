@@ -33,10 +33,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTFrameCounterTracker::deoglRTFrameCounterTracker( const deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pFrameCounter( 0 ),
-pElapsedFrames( 0 ){
+deoglRTFrameCounterTracker::deoglRTFrameCounterTracker(const deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pFrameCounter(0),
+pElapsedFrames(0){
 }
 
 deoglRTFrameCounterTracker::~deoglRTFrameCounterTracker(){
@@ -50,7 +50,7 @@ deoglRTFrameCounterTracker::~deoglRTFrameCounterTracker(){
 void deoglRTFrameCounterTracker::Update(){
 	const uint32_t counter = pRenderThread.GetFrameCounter();
 	
-	if( counter == 0 ){
+	if(counter == 0){
 		pElapsedFrames = 0;
 		
 	}else{

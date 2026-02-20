@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT decXmlPI : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlPI> Ref;
-	
+	using Ref = deTObjectReference<decXmlPI>;
 	
 	
 private:
@@ -49,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml process instruction. */
-	decXmlPI( const char *target );
+	decXmlPI(const char *target);
 	
 protected:
 	/** \brief Clean up xml process instruction. */
-	virtual ~decXmlPI();
+	~decXmlPI() override;
 	/*@}*/
 	
 	
@@ -65,28 +64,28 @@ public:
 	inline const decString &GetTarget() const{ return pTarget; }
 	
 	/** \brief Set target. */
-	void SetTarget( const char *target );
+	void SetTarget(const char *target);
 	
 	/** \brief Command. */
 	inline const decString &GetCommand() const{ return pCommand; }
 	
 	/** \brief Set command. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToPI() const;
-	virtual decXmlPI *CastToPI();
+	bool CanCastToPI() const override;
+	decXmlPI *CastToPI() override;
 	/*@}*/
 };
 

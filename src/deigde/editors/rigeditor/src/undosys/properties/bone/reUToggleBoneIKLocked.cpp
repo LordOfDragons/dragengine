@@ -35,20 +35,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUToggleBoneIKLocked::reUToggleBoneIKLocked( reRigBone *bone, int axis ) :
-pAxis( axis )
+reUToggleBoneIKLocked::reUToggleBoneIKLocked(reRigBone *bone, int axis) :
+pAxis(axis)
 {
-	if( ! bone ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	try{
-		decString text;
-		text.Format( "Toggle Bone IK Locked %c", 'X' + axis );
-		SetShortInfo( text );
+		switch(axis){
+		case 0:
+			SetShortInfo("@Rig.Undo.BoneToggleIkLockedX");
+			break;
+			
+		case 1:
+			SetShortInfo("@Rig.Undo.BoneToggleIkLockedY");
+			break;
+			
+		case 2:
+			SetShortInfo("@Rig.Undo.BoneToggleIkLockedZ");
+			break;
+			
+		default:
+			DETHROW_INFO(deeInvalidParam, "axis not in range 0..2");
+		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -64,11 +75,11 @@ reUToggleBoneIKLocked::~reUToggleBoneIKLocked(){
 ///////////////
 
 void reUToggleBoneIKLocked::Undo(){
-	pBone->SetIKLocked( pAxis, ! pBone->GetIKLocked( pAxis ) );
+	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
 void reUToggleBoneIKLocked::Redo(){
-	pBone->SetIKLocked( pAxis, ! pBone->GetIKLocked( pAxis ) );
+	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
 
@@ -77,5 +88,4 @@ void reUToggleBoneIKLocked::Redo(){
 //////////////////////
 
 void reUToggleBoneIKLocked::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

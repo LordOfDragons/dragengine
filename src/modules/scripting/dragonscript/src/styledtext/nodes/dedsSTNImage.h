@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEDSSTNIMAGE_H_
 #define _DEDSSTNIMAGE_H_
 
-// includes
 #include "dedsStyledTextNode.h"
 
-// predefinitions
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 
@@ -41,8 +38,12 @@ class deImage;
  * in which case this node is an empty node of 0 size.
  */
 class dedsSTNImage : public dedsStyledTextNode{
+public:
+	using Ref = deTObjectReference<dedsSTNImage>;
+	
+	
 private:
-	deImage *pImage;
+	deImage::Ref pImage;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -50,17 +51,17 @@ public:
 	/** Creates a new image node. */
 	dedsSTNImage();
 	/** Creates a new image node with the given image. */
-	dedsSTNImage( deImage *image );
+	dedsSTNImage(deImage *image);
 	/** Cleans up the image node. */
-	virtual ~dedsSTNImage();
+	~dedsSTNImage() override;
 	/*@}*/
 	
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	/** Sets the image. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 };
 

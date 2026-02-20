@@ -37,7 +37,8 @@ class deoglRenderPlan;
  */
 class deoglRenderPlanCompute : public deObject{
 public:
-	typedef deTObjectReference<deoglRenderPlanCompute> Ref;
+	using Ref = deTObjectReference<deoglRenderPlanCompute>;
+	
 	
 	/** Find config parameters. */
 	enum eFindConfigParameters{
@@ -94,11 +95,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan compute. */
-	deoglRenderPlanCompute( deoglRenderPlan &plan );
+	deoglRenderPlanCompute(deoglRenderPlan &plan);
 	
 protected:
 	/** Clean up render plan compute. */
-	~deoglRenderPlanCompute();
+	~deoglRenderPlanCompute() override;
 	/*@}*/
 	
 	
@@ -119,10 +120,10 @@ public:
 	void UpdateElementGeometries();
 	
 	/** Build occlusion render task. */
-	void BuildRTOcclusion( const deoglRenderPlanMasked *mask );
+	void BuildRTOcclusion(const deoglRenderPlanMasked *mask);
 	
 	/** Ready occlusion render task. */
-	void ReadyRTOcclusion( const deoglRenderPlanMasked *mask );
+	void ReadyRTOcclusion(const deoglRenderPlanMasked *mask);
 	
 	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
 	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
@@ -138,11 +139,11 @@ public:
 	
 protected:
 	void pPrepareFindConfig();
-	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
-	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
-	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
+	void pPrepareBuffer(deoglSPBlockSSBO &ssbo, int count);
+	void pSetFrustumPlane(deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance);
+	void pCalculateFrustumBoundaryBox(decDVector &frustumMinExtend, decDVector &frustumMaxExtend);
 	float pCalculateErrorScaling();
-	void pCullLayerMask( deoglSPBlockUBO &ubo );
+	void pCullLayerMask(deoglSPBlockUBO &ubo);
 };
 
 #endif

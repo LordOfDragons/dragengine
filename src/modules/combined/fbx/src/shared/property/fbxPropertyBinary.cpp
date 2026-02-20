@@ -44,27 +44,20 @@
 ////////////////////////////
 
 fbxPropertyBinary::fbxPropertyBinary() :
-fbxProperty( etBinary ),
-pValue( NULL ),
-pLength( 0 ){
+fbxProperty(etBinary){
 }
 
-fbxPropertyBinary::fbxPropertyBinary( decBaseFileReader &reader ) :
-fbxProperty( etBinary ),
-pValue( NULL ),
-pLength( 0 )
+fbxPropertyBinary::fbxPropertyBinary(decBaseFileReader &reader) :
+fbxProperty(etBinary)
 {
 	const int length = reader.ReadUInt();
-	if( length > 0 ){
-		pValue = new uint8_t[ length ];
-		reader.Read( pValue, length );
+	if(length > 0){
+		pValue.AddRange(length, {});
+		reader.Read(pValue.GetArrayPointer(), length);
 	}
 }
 
 fbxPropertyBinary::~fbxPropertyBinary(){
-	if( pValue ){
-		delete [] pValue;
-	}
 }
 
 
@@ -72,21 +65,16 @@ fbxPropertyBinary::~fbxPropertyBinary(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyBinary::SetValue( const uint8_t *value, int length ){
-	if( length < 0 || ( length > 0 && ! value ) ){
-		DETHROW( deeInvalidParam );
+void fbxPropertyBinary::SetValue(const uint8_t *value, int length){
+	if(length < 0 || (length > 0 && !value)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pValue ){
-		delete [] pValue;
-		pValue = NULL;
-		pLength = 0;
-	}
+	pValue.RemoveAll();
 	
-	if( length > 0 ){
-		pValue = new uint8_t[ length ];
-		memcpy( pValue, value, length );
-		pLength = length;
+	if(length > 0){
+		pValue.AddRange(length, {});
+		memcpy(pValue.GetArrayPointer(), value, length);
 	}
 }
 
@@ -96,9 +84,9 @@ fbxPropertyBinary &fbxPropertyBinary::CastBinary(){
 
 
 
-void fbxPropertyBinary::Save(decBaseFileWriter &writer ){
+void fbxPropertyBinary::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyBinary::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty Binary: length %d", prefix.GetString(), pLength );
+void fbxPropertyBinary::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty Binary: length %d", prefix.GetString(), pValue.GetCount());
 }

@@ -29,6 +29,7 @@
 #include "graphicapi/deoxrGraphicApiOpenGL.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
@@ -41,7 +42,8 @@ class deoxrSession;
 class deoxrSwapchain : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrSwapchain> Ref;
+	using Ref = deTObjectReference<deoxrSwapchain>;
+	
 	
 	/** Image. */
 	struct sImage{
@@ -66,8 +68,7 @@ private:
 	XrSwapchain pSwapchain;
 	int64_t pImageFormat;
 	
-	sImage *pImages;
-	int pImageCount;
+	decTList<sImage> pImages;
 	
 	uint32_t pAcquiredImage;
 	
@@ -78,11 +79,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create space. */
-	deoxrSwapchain( deoxrSession &session, const decPoint &size, eType type );
+	deoxrSwapchain(deoxrSession &session, const decPoint &size, eType type);
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrSwapchain();
+	~deoxrSwapchain() override;
 	/*@}*/
 	
 	
@@ -105,11 +106,8 @@ public:
 	/** Image format. */
 	inline int64_t GetImageFormat() const{ return pImageFormat; }
 	
-	/** Count of images. */
-	inline int GetImageCount() const{ return pImageCount; }
-	
-	/** Image at index. */
-	const sImage &GetImageAt( int index ) const;
+	/** Images. */
+	inline const decTList<sImage> &GetImages() const{ return pImages; }
 	
 	/** Acquire image. */
 	void AcquireImage();

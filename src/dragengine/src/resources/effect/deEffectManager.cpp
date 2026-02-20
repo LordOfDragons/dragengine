@@ -43,8 +43,8 @@
 // constructor, destructor
 ////////////////////////////
 
-deEffectManager::deEffectManager( deEngine *engine ) : deResourceManager( engine, ertEffect ){
-	SetLoggingName( "effect" );
+deEffectManager::deEffectManager(deEngine *engine) : deResourceManager(engine, ertEffect){
+	SetLoggingName("effect");
 }
 
 deEffectManager::~deEffectManager(){
@@ -61,93 +61,43 @@ int deEffectManager::GetEffectCount() const{
 }
 
 deEffect *deEffectManager::GetRootEffect() const{
-	return ( deEffect* )pEffects.GetRoot();
+	return (deEffect*)pEffects.GetRoot();
 }
 
-deEffectFilterKernel *deEffectManager::CreateEffectFilterKernel(){
-	deEffectFilterKernel *effect = NULL;
-	// create and add effect
-	try{
-		effect = new deEffectFilterKernel( this );
-		if( ! effect ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadEffect( effect );
-		//GetPhysicsSystem()->LoadEffect( effect );
-		pEffects.Add( effect );
-		
-	}catch( const deException & ){
-		if( effect ){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deEffectFilterKernel::Ref deEffectManager::CreateEffectFilterKernel(){
+	const deEffectFilterKernel::Ref effect(deEffectFilterKernel::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	//GetPhysicsSystem()->LoadEffect( effect );
+	pEffects.Add(effect);
 	return effect;
 }
 
-deEffectOverlayImage *deEffectManager::CreateEffectOverlayImage(){
-	deEffectOverlayImage *effect = NULL;
-	// create and add effect
-	try{
-		effect = new deEffectOverlayImage( this );
-		if( ! effect ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadEffect( effect );
-		pEffects.Add( effect );
-		
-	}catch( const deException & ){
-		if( effect ){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deEffectOverlayImage::Ref deEffectManager::CreateEffectOverlayImage(){
+	const deEffectOverlayImage::Ref effect(deEffectOverlayImage::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	pEffects.Add(effect);
 	return effect;
 }
 
-deEffectColorMatrix *deEffectManager::CreateEffectColorMatrix(){
-	deEffectColorMatrix *effect = NULL;
-	// create and add effect
-	try{
-		effect = new deEffectColorMatrix( this );
-		if( ! effect ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadEffect( effect );
-		pEffects.Add( effect );
-		
-	}catch( const deException & ){
-		if( effect ){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deEffectColorMatrix::Ref deEffectManager::CreateEffectColorMatrix(){
+	const deEffectColorMatrix::Ref effect(deEffectColorMatrix::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	pEffects.Add(effect);
 	return effect;
 }
 
-deEffectDistortImage *deEffectManager::CreateEffectDistortImage(){
-	deEffectDistortImage *effect = NULL;
-	
-	// create and add effect
-	try{
-		effect = new deEffectDistortImage( this );
-		if( ! effect ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadEffect( effect );
-		pEffects.Add( effect );
-		
-	}catch( const deException & ){
-		if( effect ){
-			effect->FreeReference();
-		}
-		throw;
-	}
-	
-	// finished
+deEffectDistortImage::Ref deEffectManager::CreateEffectDistortImage(){
+	const deEffectDistortImage::Ref effect(deEffectDistortImage::Ref::New(this));
+	GetGraphicSystem()->LoadEffect(effect);
+	pEffects.Add(effect);
 	return effect;
 }
 
 
 
 void deEffectManager::ReleaseLeakingResources(){
-	if( GetEffectCount() > 0 ){
-		LogWarnFormat( "%i leaking effects", GetEffectCount() );
+	if(GetEffectCount() > 0){
+		LogWarnFormat("%i leaking effects", GetEffectCount());
 		pEffects.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -158,45 +108,39 @@ void deEffectManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deEffectManager::SystemGraphicLoad(){
-	deEffect *effect = ( deEffect* )pEffects.GetRoot();
-	
-	while( effect ){
-		if( ! effect->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadEffect( effect );
+	deGraphicSystem &graSys = *GetGraphicSystem();
+	pEffects.GetResources().Visit([&](deResource *res){
+		deEffect *effect = static_cast<deEffect*>(res);
+		if(!effect->GetPeerGraphic()){
+			graSys.LoadEffect(effect);
 		}
-		
-		effect = ( deEffect* )effect->GetLLManagerNext();
-	}
+	});
 }
 
 void deEffectManager::SystemGraphicUnload(){
-	deEffect *effect = ( deEffect* )pEffects.GetRoot();
-	
-	while( effect ){
-		effect->SetPeerGraphic( NULL );
-		effect = ( deEffect* )effect->GetLLManagerNext();
-	}
+	pEffects.GetResources().Visit([&](deResource *res){
+		static_cast<deEffect*>(res)->SetPeerGraphic(nullptr);
+	});
 }
+
 /*
 void deEffectManager::SystemPhysicsLoad(){
-	deEffect *effect;
-	int i;
-	for( i=0; i<pEffects.GetResourceCount(); i++ ){
-		effect = ( deEffect* )pEffects.GetResourceAt( i );
-		if( effect->GetPhysicsEffect() ) continue;
-		GetPhysicsSystem()->LoadEffect( effect );
-	}
+	dePhysicsSystem &phySys = *GetPhysicsSystem();
+	pEffects.GetResources().Visit([&](deResource *res){
+		deEffect *effect = static_cast<deEffect*>(res);
+		if(!effect->GetPhysicsEffect()){
+			phySys.LoadEffect(effect);
+		}
+	});
 }
 
 void deEffectManager::SystemPhysicsUnload(){
-	deEffect *effect;
-	int i;
-	for( i=0; i<pEffects.GetResourceCount(); i++ ){
-		effect = ( deEffect* )pEffects.GetResourceAt( i );
-		effect->SetPhysicsEffect( NULL );
-	}
+	pEffects.GetResources().Visit([&](deResource *res){
+		static_cast<deEffect*>(res)->SetPhysicsEffect(nullptr);
+	});
 }
 */
-void deEffectManager::RemoveResource( deResource *resource ){
-	pEffects.RemoveIfPresent( resource );
+
+void deEffectManager::RemoveResource(deResource *resource){
+	pEffects.RemoveIfPresent(resource);
 }

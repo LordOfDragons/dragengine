@@ -28,11 +28,11 @@
 #include "unzip.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/utils/decDateTime.h>
-#include <dragengine/filesystem/dePathList.h>
+
 
 
 class deArchiveDelga;
@@ -48,16 +48,15 @@ class deFileSearchVisitor;
  */
 class deadArchiveDirectory : public deObject{
 public:
-	typedef deTObjectReference<deadArchiveDirectory> Ref;
-	
+	using Ref = deTObjectReference<deadArchiveDirectory>;
 	
 	
 private:
 	deArchiveDelga &pModule;
 	
 	decString pFilename;
-	decObjectOrderedSet pDirectories;
-	decObjectOrderedSet pFiles;
+	decTObjectOrderedSet<deadArchiveDirectory> pDirectories;
+	decTObjectOrderedSet<deadArchiveFile> pFiles;
 	
 	
 	
@@ -65,14 +64,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create directory entry. */
-	deadArchiveDirectory( deArchiveDelga &module, const char *filename );
+	deadArchiveDirectory(deArchiveDelga &module, const char *filename);
 	
+protected:
 	/** \brief Clean up directory entry. */
-	virtual ~deadArchiveDirectory();
+	~deadArchiveDirectory() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */
@@ -83,49 +83,43 @@ public:
 	
 	/** \name Directories */
 	/*@{*/
-	/** \brief Number of directories. */
-	int GetDirectoryCount() const;
-	
-	/** \brief Directory at index. */
-	deadArchiveDirectory *GetDirectoryAt( int index ) const;
+	/** \brief Directories. */
+	inline const decTObjectOrderedSet<deadArchiveDirectory> &GetDirectories() const{ return pDirectories; }
 	
 	/** \brief Directory with filename is present. */
-	bool HasDirectoryNamed( const char *filename ) const;
+	bool HasDirectoryNamed(const char *filename) const;
 	
 	/** \brief Directory by filename or \em NULL if absent. */
-	deadArchiveDirectory *GetDirectoryNamed( const char *filename ) const;
+	deadArchiveDirectory *GetDirectoryNamed(const char *filename) const;
 	
 	/** \brief Directory by filename adding it if absent. */
-	deadArchiveDirectory *GetOrAddDirectoryNamed( const char *filename );
+	deadArchiveDirectory *GetOrAddDirectoryNamed(const char *filename);
 	
 	/** \brief Directory by path or \em NULL if absent. */
-	deadArchiveDirectory *GetDirectoryByPath( const decPath &path );
+	deadArchiveDirectory *GetDirectoryByPath(const decPath &path);
 	
 	/** \brief Add directory. */
-	void AddDirectory( deadArchiveDirectory *directory );
+	void AddDirectory(deadArchiveDirectory *directory);
 	/*@}*/
 	
 	
 	
 	/** \name Files */
 	/*@{*/
-	/** \brief Number of files. */
-	int GetFileCount() const;
-	
-	/** \brief File at index. */
-	deadArchiveFile *GetFileAt( int index ) const;
+	/** \brief Files. */
+	inline const decTObjectOrderedSet<deadArchiveFile> &GetFiles() const{ return pFiles; }
 	
 	/** \brief File with filename is present. */
-	bool HasFileNamed( const char *filename ) const;
+	bool HasFileNamed(const char *filename) const;
 	
 	/** \brief File by filename or \em NULL if absent. */
-	deadArchiveFile *GetFileNamed( const char *filename ) const;
+	deadArchiveFile *GetFileNamed(const char *filename) const;
 	
 	/** \brief File by path or \em NULL if absent. */
-	deadArchiveFile *GetFileByPath( const decPath &path ) const;
+	deadArchiveFile *GetFileByPath(const decPath &path) const;
 	
 	/** \brief Add file. */
-	void AddFile( deadArchiveFile *file );
+	void AddFile(deadArchiveFile *file);
 	/*@}*/
 };
 

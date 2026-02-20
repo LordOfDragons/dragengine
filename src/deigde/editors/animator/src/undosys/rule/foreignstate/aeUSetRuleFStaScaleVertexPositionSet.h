@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 /**
  * Undo set rule foreign state vertex position set scaling.
  */
 class aeUSetRuleFStaScaleVertexPositionSet : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleFStaScaleVertexPositionSet>;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;
@@ -44,19 +48,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaScaleVertexPositionSet( aeRuleForeignState *rule, float newScale );
+	aeUSetRuleFStaScaleVertexPositionSet(aeRuleForeignState *rule, float newScale);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaScaleVertexPositionSet();
+	~aeUSetRuleFStaScaleVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

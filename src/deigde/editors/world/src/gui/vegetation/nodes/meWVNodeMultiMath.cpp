@@ -41,9 +41,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -60,23 +58,23 @@ protected:
 	meWVNodeMultiMath &pNode;
 	
 public:
-	cComboOperator( meWVNodeMultiMath &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cComboOperator>;
+	cComboOperator(meWVNodeMultiMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( ! pNode.GetRuleMultiMath() ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		if(!pNode.GetRuleMultiMath()){
 			return;
 		}
 		
-		const meHTVRuleMultiMath::eOperators op = ( meHTVRuleMultiMath::eOperators )( intptr_t )
+		const meHTVRuleMultiMath::eOperators op = (meHTVRuleMultiMath::eOperators)(intptr_t)
 			comboBox->GetSelectedItem()->GetData();
-		if( op == pNode.GetRuleMultiMath()->GetOperator() ){
+		if(op == pNode.GetRuleMultiMath()->GetOperator()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleMultiMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMultiMath(), op ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMultiMathSetOp::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMultiMath(), op));
 	}
 };
 
@@ -90,36 +88,36 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeMultiMath::meWVNodeMultiMath( meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleMultiMath( NULL )
+meWVNodeMultiMath::meWVNodeMultiMath(meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule) :
+meWVNode(windowVegetation, rule),
+pRuleMultiMath(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Multi-Math" );
+	SetTitle("@World.WVNodeMultiMath.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Result", "Result of the operation",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeMultiMath.Output.Result", "@World.WVNodeMultiMath.Output.Result.ToolTip",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Values", "Input values",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eisValues ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeMultiMath.Input.Value", "@World.WVNodeMultiMath.Input.Value.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eisValues));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 	
-	helper.ComboBox( pFraParameters, "Operator:", "Operator to use.", pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "Add", NULL, ( void* )( intptr_t )meHTVRuleMultiMath::eopAdd );
-	pCBOperator->AddItem( "Multiply", NULL, ( void* )( intptr_t )meHTVRuleMultiMath::eopMultiply );
-	pCBOperator->AddItem( "Minimum", NULL, ( void* )( intptr_t )meHTVRuleMultiMath::eopMinimum );
-	pCBOperator->AddItem( "Maximum", NULL, ( void* )( intptr_t )meHTVRuleMultiMath::eopMaximum );
-	pCBOperator->AddItem( "Average", NULL, ( void* )( intptr_t )meHTVRuleMultiMath::eopAverage );
+	helper.ComboBox(pFraParameters, "@World.WVNodeVectorMath.Operator", "@World.WVNodeVectorMath.Operator.ToolTip", pCBOperator, cComboOperator::Ref::New(*this));
+	pCBOperator->SetAutoTranslateItems(true);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Add", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAdd);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Multiply", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMultiply);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Minimum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMinimum);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Maximum", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopMaximum);
+	pCBOperator->AddItem("@World.WVNodeMultiMath.Operator.Average", nullptr, (void*)(intptr_t)meHTVRuleMultiMath::eopAverage);
 	
 	pRuleMultiMath = rule; // required for combo box listener to not fire while list is build
 }
@@ -133,5 +131,5 @@ meWVNodeMultiMath::~meWVNodeMultiMath(){
 ///////////////
 
 void meWVNodeMultiMath::Update(){
-	pCBOperator->SetSelectionWithData( ( void* )( intptr_t )pRuleMultiMath->GetOperator() );
+	pCBOperator->SetSelectionWithData((void*)(intptr_t)pRuleMultiMath->GetOperator());
 }

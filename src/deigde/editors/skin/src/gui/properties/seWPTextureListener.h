@@ -35,6 +35,9 @@ class seWPTexture;
  * \brief Texture panel listener.
  */
 class seWPTextureListener : public seSkinListener{
+public:
+	using Ref = deTObjectReference<seWPTextureListener>;
+	
 private:
 	seWPTexture &pPanel;
 	
@@ -44,47 +47,49 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPTextureListener( seWPTexture &panel );
+	seWPTextureListener(seWPTexture &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPTextureListener();
+protected:
+	~seWPTextureListener() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Mapped have been added or removed. */
-	virtual void MappedStructureChanged( seSkin *skin );
+	void MappedStructureChanged(seSkin *skin) override;
 	
 	/** Mapped name changed. */
-	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped );
+	void MappedNameChanged(seSkin *skin, seMapped *mapped) override;
 	
 	
 	
 	/** \brief Texture added or removed. */
-	virtual void TextureStructureChanged( seSkin *skin );
+	void TextureStructureChanged(seSkin *skin) override;
 	
 	/** \brief Texture changed. */
-	virtual void TextureChanged( seSkin *skin, seTexture *texture );
+	void TextureChanged(seSkin *skin, seTexture *texture) override;
 	
 	/** \brief Texture name changed. */
-	virtual void TextureNameChanged( seSkin *skin, seTexture *texture );
+	void TextureNameChanged(seSkin *skin, seTexture *texture) override;
 	
 	/** \brief Active texture changed. */
-	virtual void ActiveTextureChanged( seSkin *skin );
+	void ActiveTextureChanged(seSkin *skin) override;
 	
 	
 	
 	/** \brief Property added or removed. */
-	virtual void PropertyStructureChanged ( seSkin *skin, seTexture *texture );
+	void PropertyStructureChanged (seSkin *skin, seTexture *texture) override;
 	
 	/** \brief Property changed. */
-	virtual void PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	void PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property) override;
 	
 	/** \brief Active property changed. */
-	virtual void ActivePropertyChanged( seSkin *skin, seTexture *texture );
+	void ActivePropertyChanged(seSkin *skin, seTexture *texture) override;
 	
 	/** \brief Property node changed. */
-	virtual void PropertyNodeChanged( seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node );
+	void PropertyNodeChanged(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node) override;
 	/*@}*/
 };
 

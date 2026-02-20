@@ -36,14 +36,16 @@ class gdeSky;
  */
 class gdeWPSTIMSkies : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMSkies> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkies( gdeWPSTreeModel &tree );
+	gdeWPSTIMSkies(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMSkies();
+	~gdeWPSTIMSkies() override;
 	/*@}*/
 	
 	
@@ -51,8 +53,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with sky or \em NULL. */
-	gdeWPSTIMSky *GetChildWith( gdeSky *sky ) const;
+	/** \brief Model with sky or \em nullptr. */
+	gdeWPSTIMSky *GetChildWith(gdeSky *sky) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -60,13 +62,13 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

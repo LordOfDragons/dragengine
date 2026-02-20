@@ -34,15 +34,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeNullDialog::igdeNativeNullDialog( igdeDialog &owner ) :
-pOwnerDialog( owner ){
+igdeNativeNullDialog::igdeNativeNullDialog(igdeDialog &owner) :
+pOwnerDialog(owner){
 }
 
 igdeNativeNullDialog::~igdeNativeNullDialog(){
 }
 
-igdeNativeNullDialog *igdeNativeNullDialog::CreateNativeWidget( igdeDialog &owner, igdeWidget* ){
-	return new igdeNativeNullDialog( owner );
+igdeNativeNullDialog *igdeNativeNullDialog::CreateNativeWidget(igdeDialog &owner, igdeWidget*){
+	// DELint-Allow-NewWithoutRef
+	return new igdeNativeNullDialog(owner);
 }
 
 void igdeNativeNullDialog::PostCreateNativeWidget(){
@@ -72,22 +73,25 @@ void igdeNativeNullDialog::UpdateTitle(){
 void igdeNativeNullDialog::UpdateSize(){
 }
 
+void igdeNativeNullDialog::RaiseAndActivate(){
+}
+
 void igdeNativeNullDialog::ShowDialog(){
 }
 
-void igdeNativeNullDialog::CloseDialog( bool ){
-	SetIsClosed( true );
+void igdeNativeNullDialog::CloseDialog(bool){
+	isClosed = true;
 }
 
 void igdeNativeNullDialog::OnFrameUpdate(){
 	pOwnerDialog.OnFrameUpdate();
 }
 
-int igdeNativeNullDialog::DialogPadContent ( const igdeGuiTheme & ){
+int igdeNativeNullDialog::DialogPadContent (const igdeGuiTheme &){
 	return 0;
 }
 
-int igdeNativeNullDialog::DialogPadButtons( const igdeGuiTheme & ){
+int igdeNativeNullDialog::DialogPadButtons(const igdeGuiTheme &){
 	return 0;
 }
 

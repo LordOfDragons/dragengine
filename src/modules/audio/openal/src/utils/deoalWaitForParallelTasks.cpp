@@ -38,14 +38,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalWaitForParallelTasks::deoalWaitForParallelTasks( int taskCount ) :
-pWaiting( false ),
-pTaskCount( taskCount ){
+deoalWaitForParallelTasks::deoalWaitForParallelTasks(int taskCount) :
+pWaiting(false),
+pTaskCount(taskCount){
 }
 
 deoalWaitForParallelTasks::~deoalWaitForParallelTasks(){
-	deMutexGuard lock( pMutex );
-	if( pWaiting ){
+	deMutexGuard lock(pMutex);
+	if(pWaiting){
 		lock.Unlock();
 		pSemaphore.Signal();
 	}
@@ -57,11 +57,11 @@ deoalWaitForParallelTasks::~deoalWaitForParallelTasks(){
 ///////////////
 
 void deoalWaitForParallelTasks::WaitForTasks(){
-	deMutexGuard lock( pMutex );
-	if( pWaiting ){
-		DETHROW( deeInvalidParam );
+	deMutexGuard lock(pMutex);
+	if(pWaiting){
+		DETHROW(deeInvalidParam);
 	}
-	if( pTaskCount == 0 ){
+	if(pTaskCount == 0){
 		return;
 	}
 	
@@ -71,13 +71,13 @@ void deoalWaitForParallelTasks::WaitForTasks(){
 }
 
 void deoalWaitForParallelTasks::TaskFinished(){
-	deMutexGuard lock( pMutex );
-	if( pTaskCount == 0 ){
-		DETHROW( deeInvalidParam );
+	deMutexGuard lock(pMutex);
+	if(pTaskCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTaskCount--;
-	if( pTaskCount == 0 && pWaiting ){
+	if(pTaskCount == 0 && pWaiting){
 		pWaiting = false;
 		pSemaphore.Signal();
 	}

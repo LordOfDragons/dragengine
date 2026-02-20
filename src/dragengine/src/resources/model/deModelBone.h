@@ -25,6 +25,7 @@
 #ifndef _DEMODELBONE_H_
 #define _DEMODELBONE_H_
 
+#include "../../common/collection/decTUniqueList.h"
 #include "../../common/string/decString.h"
 #include "../../common/math/decMath.h"
 
@@ -33,6 +34,13 @@
  * \brief Model Bone.
  */
 class DE_DLL_EXPORT deModelBone{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deModelBone>;
+	
+	/** \brief List type. */
+	using List = decTUniqueList<deModelBone>;
+	
 private:
 	decString pName;
 	int pParent;
@@ -47,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new model bone with the given name. */
-	deModelBone( const char *name );
+	deModelBone(const char *name);
 	
 	/** \brief Clean up model bone. */
 	~deModelBone();
@@ -64,19 +72,19 @@ public:
 	inline int GetParent() const{ return pParent; }
 	
 	/** \brief Set index of the parent bone or -1 if a top level bone. */
-	void SetParent( int bone );
+	void SetParent(int bone);
 	
 	/** \brief Position relative to the parent or the model if there is no parent. */
 	inline decVector GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position relative to the parent or the model if there is no parent. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation relative to the parent or the model if there is no parent. */
 	inline decQuaternion GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation relative to the parent or the model if there is no parent. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Matrix transforming from local bone space to model space in reference pose. */
 	inline decMatrix GetMatrix() const{ return pMatrix; }
@@ -85,7 +93,7 @@ public:
 	inline decMatrix GetInverseMatrix() const{ return pInverseMatrix; }
 	
 	/** \brief Set matrix transforming from local bone space to model space in reference pose. */
-	void SetMatrix( const decMatrix &matrix );
+	void SetMatrix(const decMatrix &matrix);
 	/*@}*/
 };
 

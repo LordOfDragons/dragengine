@@ -66,25 +66,25 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set initial position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Initial rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set initial rotation. */
-	void SetRotation( const decVector &rotation );
+	void SetRotation(const decVector &rotation);
 	
 	/** \brief Scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Bend state index or -1 if not assigned. */
 	inline int GetBendState() const{ return pBendState; }
 	
 	/** \brief Set bend state index or -1 if not assigned. */
-	void SetBendState( int state );
+	void SetBendState(int state);
 	/*@}*/
 };
 

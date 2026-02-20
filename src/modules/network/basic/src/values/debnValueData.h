@@ -28,6 +28,7 @@
 #include <stdint.h>
 
 #include "debnValue.h"
+#include <dragengine/common/collection/decTList.h>
 
 class deNetworkValueData;
 
@@ -38,7 +39,7 @@ class deNetworkValueData;
 class debnValueData : public debnValue{
 private:
 	deNetworkValueData &pValueData;
-	uint8_t *pLastValue;
+	decTList<uint8_t> pLastValue;
 	int pLastValueLen;
 	
 	
@@ -47,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value. */
-	debnValueData( deNetworkValueData &valueData );
+	debnValueData(deNetworkValueData &valueData);
 	
 	/** \brief Clean up network value. */
-	virtual ~debnValueData();
+	~debnValueData() override;
 	/*@}*/
 	
 	
@@ -67,13 +68,13 @@ public:
 	 * \brief Update value.
 	 * \returns true if value needs to by synchronized otherwise false if not changed enough.
 	 */
-	virtual bool UpdateValue( bool force );
+	bool UpdateValue(bool force) override;
 	
 	/** \brief Read value from message. */
-	virtual void ReadValue( decBaseFileReader &reader );
+	void ReadValue(decBaseFileReader &reader) override;
 	
 	/** \brief Write value to message. */
-	virtual void WriteValue( decBaseFileWriter &writer );
+	void WriteValue(decBaseFileWriter &writer) override;
 	/*@}*/
 };
 

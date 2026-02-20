@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigConstraint;
  * \brief Set constraint offset undo action.
  */
 class reUConstraintSetOffset : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUConstraintSetOffset>;
+	
+	
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	decVector pOldOffset;
 	decVector pNewOffset;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetOffset( reRigConstraint *constraint, const decVector &newOffset );
+	reUConstraintSetOffset(reRigConstraint *constraint, const decVector &newOffset);
 	
 protected:
 	/** \brief Clean up the undo. */
-	virtual ~reUConstraintSetOffset();
+	~reUConstraintSetOffset() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread frame counter tracker. */
-	deoglRTFrameCounterTracker( const deoglRenderThread &renderThread );
+	deoglRTFrameCounterTracker(const deoglRenderThread &renderThread);
 	
 	/** Clean up render thread frame counter tracker. */
 	~deoglRTFrameCounterTracker();

@@ -25,11 +25,12 @@
 #ifndef _DEOGLPROPFIELD_H_
 #define _DEOGLPROPFIELD_H_
 
+#include "deoglRPropField.h"
+
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicPropField.h>
 
-class deoglRPropField;
 class deoglPropFieldType;
 
 class deGraphicOpenGl;
@@ -46,9 +47,9 @@ private:
 	deGraphicOpenGl &pOgl;
 	dePropField &pPropField;
 	
-	deoglRPropField *pRPropField;
+	deoglRPropField::Ref pRPropField;
 	
-	decPointerList pTypes;
+	decTList<deoglPropFieldType*> pTypes;
 	
 	int pLODLevel;
 	int pBestLOD;
@@ -63,10 +64,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglPropField( deGraphicOpenGl &ogl, dePropField &propField );
+	deoglPropField(deGraphicOpenGl &ogl, dePropField &propField);
 	
 	/** Clean up peer. */
-	virtual ~deoglPropField();
+	~deoglPropField() override;
 	/*@}*/
 	
 	
@@ -82,7 +83,7 @@ public:
 	
 	
 	/** Render prop field. */
-	inline deoglRPropField *GetRPropField() const{ return pRPropField; }
+	inline const deoglRPropField::Ref &GetRPropField() const{ return pRPropField; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -93,10 +94,10 @@ public:
 	inline int GetLODLevel() const{ return pLODLevel; }
 	
 	/** Set lod level not doing the updates yet. */
-	void SetLODLevel( int level );
+	void SetLODLevel(int level);
 	
 	/** Test lod level against the given camera point. */
-	void TestLODLevel( const decDVector &camera );
+	void TestLODLevel(const decDVector &camera);
 	
 	/** Update instance counts. */
 	void UpdateInstanceCounts();
@@ -112,7 +113,7 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type at index. */
-	deoglPropFieldType &GetTypeAt( int index ) const;
+	deoglPropFieldType &GetTypeAt(int index) const;
 	/*@}*/
 	
 	
@@ -120,37 +121,37 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Ground changed. */
-	virtual void GroundChanged();
+	void GroundChanged() override;
 	
 	
 	
 	/** Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	
 	
 	/** Type has been added. */
-	virtual void TypeAdded( int index, dePropFieldType *type );
+	void TypeAdded(int index, dePropFieldType *type) override;
 	
 	/** Type has been removed. */
-	virtual void TypeRemoved( int index, dePropFieldType *type );
+	void TypeRemoved(int index, dePropFieldType *type) override;
 	
 	/** All types have been removed. */
-	virtual void AllTypesRemoved();
+	void AllTypesRemoved() override;
 	
 	/** Type changed. */
-	virtual void TypeChanged( int index, dePropFieldType *type );
+	void TypeChanged(int index, dePropFieldType *type) override;
 	
 	
 	
 	/** Instances changed. */
-	virtual void InstancesChanged( int index, dePropFieldType *type );
+	void InstancesChanged(int index, dePropFieldType *type) override;
 	
 	/** Instances to Bend States assignments changed. */
-	virtual void AssignmentsChanged( int index, dePropFieldType *type );
+	void AssignmentsChanged(int index, dePropFieldType *type) override;
 	
 	/** Bend States changed. */
-	virtual void BendStatesChanged( int index, dePropFieldType *type );
+	void BendStatesChanged(int index, dePropFieldType *type) override;
 	/*@}*/
 	
 private:

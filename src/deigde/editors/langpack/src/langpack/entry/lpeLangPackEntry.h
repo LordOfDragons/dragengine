@@ -25,9 +25,10 @@
 #ifndef _LPELANGPACKENTRY_H_
 #define _LPELANGPACKENTRY_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/deObject.h>
 
 class lpeLangPack;
 
@@ -38,8 +39,8 @@ class lpeLangPack;
  */
 class lpeLangPackEntry : public deObject{
 public:
-	typedef deTObjectReference<lpeLangPackEntry> Ref;
-	
+	using Ref = deTObjectReference<lpeLangPackEntry>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<lpeLangPackEntry>,lpeLangPackEntry>;
 	
 	
 private:
@@ -60,11 +61,11 @@ public:
 	lpeLangPackEntry();
 	
 	/** Creates a new entry as a copy of another entry. */
-	lpeLangPackEntry( const lpeLangPackEntry &entry );
+	lpeLangPackEntry(const lpeLangPackEntry &entry);
 	
 protected:
 	/** Cleans up the entry. */
-	virtual ~lpeLangPackEntry() override;
+	~lpeLangPackEntry() override;
 	/*@}*/
 	
 	
@@ -72,11 +73,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent language pack or NULL if there is none. */
+	/** Retrieves the parent language pack or nullptr if there is none. */
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
-	/** Sets the parent language pack or NULL if there is none. */
-	void SetLangPack( lpeLangPack *langpack );
+	/** Sets the parent language pack or nullptr if there is none. */
+	void SetLangPack(lpeLangPack *langpack);
 	
 	
 	
@@ -84,13 +85,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Retrieves the textu. */
 	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** Sets the text. */
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	
 	
 	
@@ -98,13 +99,13 @@ public:
 	inline bool GetActive() const{ return pActive; }
 	
 	/** Sets if the entry is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Determines if the entry is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** Sets if the entry is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	

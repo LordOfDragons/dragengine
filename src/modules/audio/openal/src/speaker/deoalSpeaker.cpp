@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalSpeaker.h"
 #include "deoalASpeaker.h"
 #include "../deAudioOpenAL.h"
@@ -38,7 +34,6 @@
 #include "../video/deoalAVideoPlayer.h"
 #include "../video/deoalVideoPlayer.h"
 #include "../world/deoalWorld.h"
-#include "../world/deoalWorld.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -48,7 +43,6 @@
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
-#include <dragengine/resources/sound/deSoundDecoderReference.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/video/deVideo.h>
@@ -64,41 +58,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSpeaker::deoalSpeaker( deAudioOpenAL &oal, deSpeaker &speaker ) :
-pOal( oal ),
-pSpeaker( speaker ),
-pASpeaker( NULL ),
-pParentWorld( NULL ),
-pParentMicrophone( NULL ),
-pSound( NULL ),
-pSynthesizer( NULL ),
-pVideoPlayer( NULL ),
+deoalSpeaker::deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker) :
+pOal(oal),
+pSpeaker(speaker),
+pParentWorld(nullptr),
+pParentMicrophone(nullptr),
+pSound(nullptr),
+pSynthesizer(nullptr),
+pVideoPlayer(nullptr),
 
-pSynthesizerUpdateTracker( 0 ),
+pSynthesizerUpdateTracker(0),
 
-pDirtySpeaker( true ),
-pDirtyGeometry( true),
-pDirtyOctreeNode( true ),
-pDirtySource( true ),
-pDirtySoundDecoder( true ),
-pDirtyVelocity( true ),
-pDirtyRange( true ),
-pDirtyAttenuation( true ),
-pDirtyPlayRange( true ),
-pDirtyLayerMask( true ),
-pDirtyVideoPlayer( false ),
-pDirtyResetStreaming( false ),
+pDirtySpeaker(true),
+pDirtyGeometry(true),
+pDirtyOctreeNode(true),
+pDirtySource(true),
+pDirtySoundDecoder(true),
+pDirtyVelocity(true),
+pDirtyRange(true),
+pDirtyAttenuation(true),
+pDirtyPlayRange(true),
+pDirtyLayerMask(true),
+pDirtyVideoPlayer(false),
+pDirtyResetStreaming(false),
 
-pLLSyncWorld( this ),
-pLLSyncMic( this )
+pLLSyncWorld(this),
+pLLSyncMic(this)
 {
 	try{
-		pASpeaker = new deoalASpeaker( oal.GetAudioThread() );
-		pASpeaker->SetBackLink( this );
+		pASpeaker = deoalASpeaker::Ref::New(oal.GetAudioThread());
+		pASpeaker->SetBackLink(this);
 		
 		SourceChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -113,8 +106,8 @@ deoalSpeaker::~deoalSpeaker(){
 // Management
 ///////////////
 
-void deoalSpeaker::SetParentWorld( deoalWorld *world ){
-	if( world == pParentWorld ){
+void deoalSpeaker::SetParentWorld(deoalWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
@@ -123,57 +116,56 @@ void deoalSpeaker::SetParentWorld( deoalWorld *world ){
 	pDirtyOctreeNode = true;
 }
 
-void deoalSpeaker::SetParentMicrophone( deoalMicrophone *microphone ){
+void deoalSpeaker::SetParentMicrophone(deoalMicrophone *microphone){
 	pParentMicrophone = microphone;
 }
 
 
 
 void deoalSpeaker::Synchronize(){
-	if( pASpeaker->GetPlaying() && pASpeaker->GetPlayFinished() ){
+	if(pASpeaker->GetPlaying() && pASpeaker->GetPlayFinished()){
 		pSpeaker.Stop();
 	}
 	
 	pSyncSource();
 	
-	if( pSpeaker.GetPlaying() ){
-		if( pDirtySoundDecoder ){
-			deSoundDecoderReference soundDecoder;
-			if( pSound && pSound->GetASound()->GetStreaming() ){
-				soundDecoder.TakeOver( pOal.GetGameEngine()->GetSoundManager()
-					->CreateDecoder( &pSound->GetSound() ) );
+	if(pSpeaker.GetPlaying()){
+		if(pDirtySoundDecoder){
+			deSoundDecoder::Ref soundDecoder;
+			if(pSound && pSound->GetASound()->GetStreaming()){
+				soundDecoder = pOal.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound->GetSound());
 			}
-			pASpeaker->SetSoundDecoder( soundDecoder );
+			pASpeaker->SetSoundDecoder(soundDecoder);
 			pDirtySoundDecoder = false;
 		}
 		
 		pASpeaker->SynchronizeStreaming();
 		
-		if( pASpeaker->GetSource() && pSynthesizer ){
+		if(pASpeaker->GetSource() && pSynthesizer){
 			pSynthesizer->Synchronize();
-			if( pSynthesizer->GetUpdateTracker() != pSynthesizerUpdateTracker ){
+			if(pSynthesizer->GetUpdateTracker() != pSynthesizerUpdateTracker){
 				pSynthesizerUpdateTracker = pSynthesizer->GetUpdateTracker();
 				pDirtyResetStreaming = true;
 			}
 		}
 	}
 	
-	if( pDirtyVideoPlayer ){
-		if( pVideoPlayer ){
+	if(pDirtyVideoPlayer){
+		if(pVideoPlayer){
 			pVideoPlayer->Synchronize();
 		}
 		pDirtyVideoPlayer = false;
 		pDirtySpeaker = true;
 	}
 	
-	if( pDirtySpeaker ){
-		pASpeaker->SetSpeakerType( pSpeaker.GetType() );
-		pASpeaker->SetMuted( pSpeaker.GetMuted() );
-		pASpeaker->SetVolume( pSpeaker.GetVolume() );
-		pASpeaker->SetAttenuationRolloff( pSpeaker.GetRollOff() );
-		pASpeaker->SetAttenuationDistanceOffset( pSpeaker.GetDistanceOffset() );
+	if(pDirtySpeaker){
+		pASpeaker->SetSpeakerType(pSpeaker.GetType());
+		pASpeaker->SetMuted(pSpeaker.GetMuted());
+		pASpeaker->SetVolume(pSpeaker.GetVolume());
+		pASpeaker->SetAttenuationRolloff(pSpeaker.GetRollOff());
+		pASpeaker->SetAttenuationDistanceOffset(pSpeaker.GetDistanceOffset());
 		
-		if( pVideoPlayer ){
+		if(pVideoPlayer){
 			// this is required to allow video player to update internal states too
 			pVideoPlayer->Synchronize();
 			
@@ -182,81 +174,81 @@ void deoalSpeaker::Synchronize(){
 			// if the user tried to change the values they will be reset here
 			const deVideoPlayer &videoPlayer = pVideoPlayer->GetVideoPlayer();
 			
-			pASpeaker->SetLooping( videoPlayer.GetLooping() );
-			pASpeaker->SetPlaySpeed( videoPlayer.GetPlaySpeed() );
+			pASpeaker->SetLooping(videoPlayer.GetLooping());
+			pASpeaker->SetPlaySpeed(videoPlayer.GetPlaySpeed());
 			
-			switch( videoPlayer.GetPlayState() ){
+			switch(videoPlayer.GetPlayState()){
 			case deVideoPlayer::epsPlaying:
-				pASpeaker->SetPlayState( deSpeaker::epsPlaying );
+				pASpeaker->SetPlayState(deSpeaker::epsPlaying);
 				break;
 				
 			case deVideoPlayer::epsPaused:
-				pASpeaker->SetPlayState( deSpeaker::epsPaused );
+				pASpeaker->SetPlayState(deSpeaker::epsPaused);
 				break;
 				
 			case deVideoPlayer::epsStopped:
-				pASpeaker->SetPlayState( deSpeaker::epsStopped );
+				pASpeaker->SetPlayState(deSpeaker::epsStopped);
 				break;
 			}
 			
 		}else{
-			pASpeaker->SetLooping( pSpeaker.GetLooping() );
-			pASpeaker->SetPlaySpeed( pSpeaker.GetPlaySpeed() );
-			pASpeaker->SetPlayState( pSpeaker.GetPlayState() );
+			pASpeaker->SetLooping(pSpeaker.GetLooping());
+			pASpeaker->SetPlaySpeed(pSpeaker.GetPlaySpeed());
+			pASpeaker->SetPlayState(pSpeaker.GetPlayState());
 		}
 		
 		pDirtySpeaker = false;
 	}
 	
-	if( pDirtyPlayRange ){
-		if( pVideoPlayer && pVideoPlayer->GetVideoPlayer().GetVideo() ){
+	if(pDirtyPlayRange){
+		if(pVideoPlayer && pVideoPlayer->GetVideoPlayer().GetVideo()){
 			// ensure values are taken from video player
 			const deVideoPlayer &videoPlayer = pVideoPlayer->GetVideoPlayer();
 			const int sampleRate = videoPlayer.GetVideo()->GetSampleRate();
 			
 			pASpeaker->SetSpeakerPlayRange(
-				( int )( videoPlayer.GetPlayFrom() * sampleRate ),
-				( int )( videoPlayer.GetPlayTo() * sampleRate ) );
+				(int)(videoPlayer.GetPlayFrom() * sampleRate),
+				(int)(videoPlayer.GetPlayTo() * sampleRate));
 			
 		}else{
-			pASpeaker->SetSpeakerPlayRange( pSpeaker.GetPlayFrom(), pSpeaker.GetPlayTo() );
+			pASpeaker->SetSpeakerPlayRange(pSpeaker.GetPlayFrom(), pSpeaker.GetPlayTo());
 		}
 		
 		pDirtyPlayRange = false;
 	}
 	
-	if( pDirtyResetStreaming ){
+	if(pDirtyResetStreaming){
 		pASpeaker->ResetStreaming();
 		pDirtyResetStreaming = false;
 	}
 	
-	if( pDirtyGeometry ){
-		pASpeaker->SetGeometry( pSpeaker.GetPosition(), pSpeaker.GetOrientation() );
+	if(pDirtyGeometry){
+		pASpeaker->SetGeometry(pSpeaker.GetPosition(), pSpeaker.GetOrientation());
 		pDirtyGeometry = false;
 	}
 	
-	if( pDirtyRange ){
-		pASpeaker->SetRange( pSpeaker.GetRange() );
+	if(pDirtyRange){
+		pASpeaker->SetRange(pSpeaker.GetRange());
 		pDirtyRange = false;
 	}
 	
-	if( pDirtyAttenuation ){
-		pASpeaker->SetAttenuationRolloff( pSpeaker.GetRollOff() );
-		pASpeaker->SetAttenuationDistanceOffset( pSpeaker.GetDistanceOffset() );
+	if(pDirtyAttenuation){
+		pASpeaker->SetAttenuationRolloff(pSpeaker.GetRollOff());
+		pASpeaker->SetAttenuationDistanceOffset(pSpeaker.GetDistanceOffset());
 		pDirtyRange = false;
 	}
 	
-	if( pDirtyVelocity ){
-		pASpeaker->SetVelocity( pSpeaker.GetVelocity() );
+	if(pDirtyVelocity){
+		pASpeaker->SetVelocity(pSpeaker.GetVelocity());
 		pDirtyVelocity = false;
 	}
 	
-	if( pDirtyLayerMask ){
-		pASpeaker->SetLayerMask( pSpeaker.GetLayerMask() );
+	if(pDirtyLayerMask){
+		pASpeaker->SetLayerMask(pSpeaker.GetLayerMask());
 		pDirtyLayerMask = false;
 	}
 	
-	if( pDirtyOctreeNode ){
+	if(pDirtyOctreeNode){
 		pASpeaker->UpdateOctreeNode();
 		pDirtyOctreeNode = false;
 	}
@@ -267,12 +259,12 @@ void deoalSpeaker::Synchronize(){
 	// 
 	// NOTE extended to non-looping case otherwise moving out of range stops the sound
 	//      processing causing sound to start where it left of if entering range again
-	if( pSpeaker.GetPlaying() ){ //  && ! pSpeaker.GetLooping()
-		if( pParentWorld ){
-			pParentWorld->AddSyncSpeaker( this );
+	if(pSpeaker.GetPlaying()){ //  && !pSpeaker.GetLooping()
+		if(pParentWorld){
+			pParentWorld->AddSyncSpeaker(this);
 		}
-		if( pParentMicrophone ){
-			pParentMicrophone->AddSyncSpeaker( this );
+		if(pParentMicrophone){
+			pParentMicrophone->AddSyncSpeaker(this);
 		}
 	}
 }
@@ -399,57 +391,56 @@ void deoalSpeaker::PlayStateChanged(){
 //////////////////////
 
 void deoalSpeaker::pCleanUp(){
-	if( pVideoPlayer ){
-		pVideoPlayer->RemoveSpeaker( this );
-		pVideoPlayer = NULL;
+	if(pVideoPlayer){
+		pVideoPlayer->RemoveSpeaker(this);
+		pVideoPlayer = nullptr;
 	}
 	
-	if( pASpeaker ){
-		pASpeaker->SetBackLink( NULL );
-		pASpeaker->FreeReference();
-		pASpeaker = NULL;
+	if(pASpeaker){
+		pASpeaker->SetBackLink(nullptr);
+		pASpeaker = nullptr;
 	}
 }
 
 
 
 void deoalSpeaker::pSyncSource(){
-	if( ! pDirtySource ){
+	if(!pDirtySource){
 		return;
 	}
 	
-	pSound = NULL;
-	if( pSpeaker.GetSound() ){
-		pSound = ( deoalSound* )pSpeaker.GetSound()->GetPeerAudio();
+	pSound = nullptr;
+	if(pSpeaker.GetSound()){
+		pSound = (deoalSound*)pSpeaker.GetSound()->GetPeerAudio();
 	}
-	if( pSound ){
+	if(pSound){
 		pSound->Synchronize();
 	}
 	
-	pSynthesizer = NULL;
+	pSynthesizer = nullptr;
 	pSynthesizerUpdateTracker = 0;
-	if( pSpeaker.GetSynthesizer() ){
-		pSynthesizer = ( deoalSynthesizerInstance* )pSpeaker.GetSynthesizer()->GetPeerAudio();
+	if(pSpeaker.GetSynthesizer()){
+		pSynthesizer = (deoalSynthesizerInstance*)pSpeaker.GetSynthesizer()->GetPeerAudio();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->Synchronize();
 	}
 	
-	if( pVideoPlayer ){
-		pVideoPlayer->RemoveSpeaker( this );
-		pVideoPlayer = NULL;
+	if(pVideoPlayer){
+		pVideoPlayer->RemoveSpeaker(this);
+		pVideoPlayer = nullptr;
 	}
-	if( pSpeaker.GetVideoPlayer() ){
-		pVideoPlayer = ( deoalVideoPlayer* )pSpeaker.GetVideoPlayer()->GetPeerAudio();
-		pVideoPlayer->AddSpeaker( this );
+	if(pSpeaker.GetVideoPlayer()){
+		pVideoPlayer = (deoalVideoPlayer*)pSpeaker.GetVideoPlayer()->GetPeerAudio();
+		pVideoPlayer->AddSpeaker(this);
 	}
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->Synchronize();
 	}
 	
-	pASpeaker->SetSource( pSound ? pSound->GetASound() : NULL,
-		pSynthesizer ? pSynthesizer->GetAInstance() : NULL,
-		pVideoPlayer ? pVideoPlayer->GetAVideoPlayer() : NULL );
+	pASpeaker->SetSource(pSound ? pSound->GetASound().Pointer() : nullptr,
+		pSynthesizer ? pSynthesizer->GetAInstance().Pointer() : nullptr,
+		pVideoPlayer ? pVideoPlayer->GetAVideoPlayer().Pointer() : nullptr);
 	
 	pDirtySoundDecoder = true;
 	
@@ -458,10 +449,10 @@ void deoalSpeaker::pSyncSource(){
 
 
 void deoalSpeaker::pRequiresSync(){
-	if( ! pLLSyncWorld.GetList() && pParentWorld ){
-		pParentWorld->AddSyncSpeaker( this );
+	if(!pLLSyncWorld.GetList() && pParentWorld){
+		pParentWorld->AddSyncSpeaker(this);
 	}
-	if( ! pLLSyncMic.GetList() && pParentMicrophone ){
-		pParentMicrophone->AddSyncSpeaker( this );
+	if(!pLLSyncMic.GetList() && pParentMicrophone){
+		pParentMicrophone->AddSyncSpeaker(this);
 	}
 }

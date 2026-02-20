@@ -26,8 +26,7 @@
 #define _DESKINPROPERTYNODEGROUP_H_
 
 #include "deSkinPropertyNode.h"
-
-#include "../../../../common/collection/decPointerList.h"
+#include "../../../../common/collection/decTList.h"
 
 
 /**
@@ -36,8 +35,12 @@
  * Contains a list of nodes applied from first to last.
  */
 class DE_DLL_EXPORT deSkinPropertyNodeGroup : public deSkinPropertyNode{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deSkinPropertyNodeGroup>;
+	
 private:
-	decPointerList pNodes;
+	deSkinPropertyNode::List pNodes;
 	
 	
 	
@@ -48,21 +51,24 @@ public:
 	deSkinPropertyNodeGroup();
 	
 	/** \brief Clean up constructed property node. */
-	virtual ~deSkinPropertyNodeGroup();
+	~deSkinPropertyNodeGroup() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of nodes. */
+	/** \brief Nodes. */
+	inline const deSkinPropertyNode::List &GetNodes() const{ return pNodes; }
+	
+	/** \brief Number of child nodes. */
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
-	deSkinPropertyNode *GetNodeAt( int index ) const;
+	const deSkinPropertyNode::Ref &GetNodeAt(int index) const;
 	
 	/** \brief Add node. */
-	void AddNode( deSkinPropertyNode *node );
+	void AddNode(deSkinPropertyNode::Ref &&node);
 	/*@}*/
 	
 	
@@ -70,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit( deSkinPropertyNodeVisitor &visitor );
+	void Visit(deSkinPropertyNodeVisitor &visitor) override;
 	/*@}*/
 };
 

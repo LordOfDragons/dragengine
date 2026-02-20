@@ -37,20 +37,20 @@
 
 deModelFace::deModelFace(){
 	pTexture = 0;
-	pVertex[ 0 ] = 0;
-	pVertex[ 1 ] = 0;
-	pVertex[ 2 ] = 0;
-	pNormal[ 0 ] = 0;
-	pNormal[ 1 ] = 0;
-	pNormal[ 2 ] = 0;
-	pTangent[ 0 ] = 0;
-	pTangent[ 1 ] = 0;
-	pTangent[ 2 ] = 0;
-	pTextureCoordinates[ 0 ] = 0;
-	pTextureCoordinates[ 1 ] = 0;
-	pTextureCoordinates[ 2 ] = 0;
-	pFaceNormal.Set( 0.0f, 1.0f, 0.0f );
-	pFaceTangent.Set( 1.0f, 0.0f, 0.0f );
+	pVertex[0] = 0;
+	pVertex[1] = 0;
+	pVertex[2] = 0;
+	pNormal[0] = 0;
+	pNormal[1] = 0;
+	pNormal[2] = 0;
+	pTangent[0] = 0;
+	pTangent[1] = 0;
+	pTangent[2] = 0;
+	pTextureCoordinates[0] = 0;
+	pTextureCoordinates[1] = 0;
+	pTextureCoordinates[2] = 0;
+	pFaceNormal.Set(0.0f, 1.0f, 0.0f);
+	pFaceTangent.Set(1.0f, 0.0f, 0.0f);
 }
 
 deModelFace::~deModelFace(){
@@ -61,9 +61,9 @@ deModelFace::~deModelFace(){
 // Management
 ///////////////
 
-void deModelFace::SetTexture( int texture ){
-	if( texture < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetTexture(int texture){
+	if(texture < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexture = texture;
@@ -71,178 +71,178 @@ void deModelFace::SetTexture( int texture ){
 
 
 
-void deModelFace::SetVertex1( int vertex ){
-	if( vertex < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetVertex1(int vertex){
+	if(vertex < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pVertex[ 0 ] = vertex;
+	pVertex[0] = vertex;
 }
 
-void deModelFace::SetVertex2( int vertex ){
-	if( vertex < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetVertex2(int vertex){
+	if(vertex < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pVertex[ 1 ] = vertex;
+	pVertex[1] = vertex;
 }
 
-void deModelFace::SetVertex3( int vertex ){
-	if( vertex < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetVertex3(int vertex){
+	if(vertex < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pVertex[ 2 ] = vertex;
+	pVertex[2] = vertex;
 }
 
-int deModelFace::GetVertexAt( int corner ) const{
-	if( corner < 0 || corner > 2 ){
-		DETHROW( deeInvalidParam );
+int deModelFace::GetVertexAt(int corner) const{
+	if(corner < 0 || corner > 2){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pVertex[ corner ];
+	return pVertex[corner];
 }
 
-void deModelFace::SetVertexAt( int corner, int vertex ){
-	if( corner < 0 || corner > 2 || vertex < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetVertexAt(int corner, int vertex){
+	if(corner < 0 || corner > 2 || vertex < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pVertex[ corner ] = vertex;
-}
-
-
-
-void deModelFace::SetNormal1( int normal ){
-	if( normal < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pNormal[ 0 ] = normal;
-}
-
-void deModelFace::SetNormal2( int normal ){
-	if( normal < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pNormal[ 1 ] = normal;
-}
-
-void deModelFace::SetNormal3( int normal ){
-	if( normal < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pNormal[ 2 ] = normal;
-}
-
-int deModelFace::GetNormalAt( int corner ) const{
-	if( corner < 0 || corner > 2 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pNormal[ corner ];
-}
-
-void deModelFace::SetNormalAt( int corner, int normal ){
-	if( corner < 0 || corner > 2 || normal < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pNormal[ corner ] = normal;
+	pVertex[corner] = vertex;
 }
 
 
 
-void deModelFace::SetTangent1( int tangent ){
-	if( tangent < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetNormal1(int normal){
+	if(normal < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTangent[ 0 ] = tangent;
+	pNormal[0] = normal;
 }
 
-void deModelFace::SetTangent2( int tangent ){
-	if( tangent < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetNormal2(int normal){
+	if(normal < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTangent[ 1 ] = tangent;
+	pNormal[1] = normal;
 }
 
-void deModelFace::SetTangent3( int tangent ){
-	if( tangent < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetNormal3(int normal){
+	if(normal < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTangent[ 2 ] = tangent;
+	pNormal[2] = normal;
 }
 
-int deModelFace::GetTangentAt( int corner ) const{
-	if( corner < 0 || corner > 2 ){
-		DETHROW( deeInvalidParam );
+int deModelFace::GetNormalAt(int corner) const{
+	if(corner < 0 || corner > 2){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTangent[ corner ];
+	return pNormal[corner];
 }
 
-void deModelFace::SetTangentAt( int corner, int tangent ){
-	if( corner < 0 || corner > 2 || tangent < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelFace::SetNormalAt(int corner, int normal){
+	if(corner < 0 || corner > 2 || normal < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTangent[ corner ] = tangent;
-}
-
-
-
-void deModelFace::SetTextureCoordinates1( int textureCoordinates ){
-	if( textureCoordinates < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTextureCoordinates[ 0 ] = textureCoordinates;
-}
-
-void deModelFace::SetTextureCoordinates2( int textureCoordinates ){
-	if( textureCoordinates < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTextureCoordinates[ 1 ] = textureCoordinates;
-}
-
-void deModelFace::SetTextureCoordinates3( int textureCoordinates ){
-	if( textureCoordinates < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTextureCoordinates[ 2 ] = textureCoordinates;
-}
-
-int deModelFace::GetTextureCoordinatesAt( int corner ) const{
-	if( corner < 0 || corner > 2 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pTextureCoordinates[ corner ];
-}
-
-void deModelFace::SetTextureCoordinatesAt( int corner, int textureCoordinates ){
-	if( corner < 0 || corner > 2 || textureCoordinates < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pTextureCoordinates[ corner ] = textureCoordinates;
+	pNormal[corner] = normal;
 }
 
 
 
-void deModelFace::SetFaceNormal( const decVector &normal ){
+void deModelFace::SetTangent1(int tangent){
+	if(tangent < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTangent[0] = tangent;
+}
+
+void deModelFace::SetTangent2(int tangent){
+	if(tangent < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTangent[1] = tangent;
+}
+
+void deModelFace::SetTangent3(int tangent){
+	if(tangent < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTangent[2] = tangent;
+}
+
+int deModelFace::GetTangentAt(int corner) const{
+	if(corner < 0 || corner > 2){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return pTangent[corner];
+}
+
+void deModelFace::SetTangentAt(int corner, int tangent){
+	if(corner < 0 || corner > 2 || tangent < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTangent[corner] = tangent;
+}
+
+
+
+void deModelFace::SetTextureCoordinates1(int textureCoordinates){
+	if(textureCoordinates < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTextureCoordinates[0] = textureCoordinates;
+}
+
+void deModelFace::SetTextureCoordinates2(int textureCoordinates){
+	if(textureCoordinates < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTextureCoordinates[1] = textureCoordinates;
+}
+
+void deModelFace::SetTextureCoordinates3(int textureCoordinates){
+	if(textureCoordinates < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTextureCoordinates[2] = textureCoordinates;
+}
+
+int deModelFace::GetTextureCoordinatesAt(int corner) const{
+	if(corner < 0 || corner > 2){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return pTextureCoordinates[corner];
+}
+
+void deModelFace::SetTextureCoordinatesAt(int corner, int textureCoordinates){
+	if(corner < 0 || corner > 2 || textureCoordinates < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	pTextureCoordinates[corner] = textureCoordinates;
+}
+
+
+
+void deModelFace::SetFaceNormal(const decVector &normal){
 	pFaceNormal = normal;
 }
 
-void deModelFace::SetFaceTangent( const decVector &tangent ){
+void deModelFace::SetFaceTangent(const decVector &tangent){
 	pFaceTangent = tangent;
 }

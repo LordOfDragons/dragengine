@@ -39,7 +39,7 @@
 ////////////////////////////
 
 dedsStyledTextNode::dedsStyledTextNode(){
-	pStyle = NULL;
+	pStyle = nullptr;
 }
 
 
@@ -54,6 +54,6 @@ dedsStyledTextNode::~dedsStyledTextNode(){
 
 
 
-void dedsStyledTextNode::SetStyle( void* style ){
+void dedsStyledTextNode::SetStyle(void* style){
 	// todo
 }

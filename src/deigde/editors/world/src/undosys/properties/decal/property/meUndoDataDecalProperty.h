@@ -25,12 +25,12 @@
 #ifndef _MEUNDODATADECALPROPERTY_H_
 #define _MEUNDODATADECALPROPERTY_H_
 
+#include "../../../../world/decal/meDecal.h"
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
-
-class meDecal;
-
 
 
 /**
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUndoDataDecalProperty : public deObject{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -46,14 +46,22 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<meUndoDataDecalProperty>;
+	using List = decTObjectOrderedSet<meUndoDataDecalProperty>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data object. */
-	meUndoDataDecalProperty( meDecal *decal );
+	meUndoDataDecalProperty(meDecal *decal);
 	
 protected:
 	/** \brief Clean up undo data object. */
-	virtual ~meUndoDataDecalProperty();
+
+protected:
+	~meUndoDataDecalProperty() override;
+
+public:
 	/*@}*/
 	
 	
@@ -62,19 +70,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Decal pointer. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
 	/** \brief Old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }
 	
 	/** \brief Set old property value. */
-	void SetOldValue( const char *value );
+	void SetOldValue(const char *value);
 	
 	/** \brief Property has been present before the redo operation. */
 	inline bool GetPropertyExists() const{ return pPropertyExists; }
 	
 	/** \brief Set if property has been present before the redo operation. */
-	void SetPropertyExists( bool exists );
+	void SetPropertyExists(bool exists);
 	
 	/** \brief Old property list. */
 	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }

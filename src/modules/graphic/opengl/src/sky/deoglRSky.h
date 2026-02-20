@@ -25,6 +25,7 @@
 #ifndef _DEOGLRSKY_H_
 #define _DEOGLRSKY_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
@@ -43,28 +44,30 @@ class deoglRSky : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRSkyLink **pLinks;
-	int pLinkCount;
-	
-	deoglRSkyLayer **pLayers;
-	int pLayerCount;
+	decTUniqueList<deoglRSkyLink> pLinks;
+	decTUniqueList<deoglRSkyLayer> pLayers;
 	
 	decColor pBgColor;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRSky>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new render sky. */
-	deoglRSky( deoglRenderThread &renderThread );
+	deoglRSky(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render sky. */
-	~deoglRSky();
+	~deoglRSky() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -76,34 +79,39 @@ public:
 	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** Set background color of the sky. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	
 	
-	
-	/** Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	/** Links. */
+	inline const decTUniqueList<deoglRSkyLink> &GetLinks() const{ return pLinks; }
 	
 	/** Get link at index. */
-	const deoglRSkyLink &GetLinkAt( int index ) const;
+	const deoglRSkyLink &GetLinkAt(int index) const;
 	
 	/**
 	 * Rebuild links.
 	 * 
 	 * \note Called from main thread during synchronoization.
 	 */
-	void RebuildLinks( const deSky &sky );
+	void RebuildLinks(const deSky &sky);
 	
 	
+	
+	/** Layers. */
+	inline const decTUniqueList<deoglRSkyLayer> &GetLayers() const{ return pLayers; }
+	
+	/** Number of layers. */
+	inline int GetLayerCount() const{ return pLayers.GetCount(); }
 	
 	/** Layer at index. */
-	deoglRSkyLayer &GetLayerAt( int index ) const;
+	deoglRSkyLayer &GetLayerAt(int index) const;
 	
 	/**
 	 * Rebuild layers.
 	 * 
 	 * \note Called from main thread during synchronoization.
 	 */
-	void RebuildLayers( const deSky &sky );
+	void RebuildLayers(const deSky &sky);
 	/*@}*/
 };
 

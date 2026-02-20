@@ -25,13 +25,14 @@
 #ifndef _MEWINDOWCHANGELOG_H_
 #define _MEWINDOWCHANGELOG_H_
 
+#include "meWindowChangelogListener.h"
+#include "../../world/meWorld.h"
+
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
+#include <deigde/gui/igdeIconListBox.h>
 
 class meWindowMain;
-class meWindowChangelogListener;
 class meWCEntry;
-class meWorld;
 
 
 
@@ -39,13 +40,16 @@ class meWorld;
  * \brief Changelog Window.
  */
 class meWindowChangelog : public igdeContainerBorder{
+public:
+	using Ref = deTObjectReference<meWindowChangelog>;
+	
 private:
 	meWindowMain &pWindowMain;
-	meWindowChangelogListener *pListener;
+	meWindowChangelogListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	igdeIconListBoxReference pListChanges;
+	igdeIconListBox::Ref pListChanges;
 	
 	
 	
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	meWindowChangelog( meWindowMain &windowMain );
+	meWindowChangelog(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~meWindowChangelog();
+	~meWindowChangelog() override;
 	/*@}*/
 	
 	
@@ -69,13 +73,13 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update changelog list. */
 	void UpdateChangelog();
 	
 	/** \brief Save entry. */
-	void SaveEntry( meWCEntry *entry );
+	void SaveEntry(meWCEntry *entry);
 	
 	/** \brief Save all entries. */
 	void SaveAllEntries();

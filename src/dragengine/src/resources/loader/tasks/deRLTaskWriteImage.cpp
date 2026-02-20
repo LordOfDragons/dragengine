@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileWriter.h"
-#include "../../../common/file/decBaseFileWriterReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -48,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteImage::deRLTaskWriteImage( deEngine &engine,
+deRLTaskWriteImage::deRLTaskWriteImage(deEngine &engine,
 deResourceLoader &resourceLoader, deImage *image,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertImage ),
-pImage( image ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertImage),
+pImage(image),
+pSucceeded(false)
 {
-	if( ! image ){
-		DETHROW( deeInvalidParam );
+	if(!image){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteImage::~deRLTaskWriteImage(){
@@ -71,18 +70,16 @@ deRLTaskWriteImage::~deRLTaskWriteImage(){
 
 void deRLTaskWriteImage::Run(){
 	LogRunEnter();
-	deBaseImageModule * const module = ( deBaseImageModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtImage, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseImageModule * const module = (deBaseImageModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtImage, GetPath());
+	if(!module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
-	decBaseFileWriterReference writer;
-	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
-	module->SaveImage( writer, pImage );
+	module->SaveImage(GetVFS()->OpenFileForWriting(path), pImage);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -90,16 +87,16 @@ void deRLTaskWriteImage::Run(){
 
 void deRLTaskWriteImage::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pImage );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pImage);
+		SetState(esSucceeded);
 		
 	}else{
-		pImage = NULL;
-		SetState( esFailed );
+		pImage = nullptr;
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

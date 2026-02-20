@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetTransMax::aeURuleBTransSetTransMax( aeRuleBoneTransformator *rule, const decVector &newMax ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetTransMax::aeURuleBTransSetTransMax(aeRuleBoneTransformator *rule, const decVector &newMax){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumTranslation();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Bone transformator Set maximum translation" );
+		SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetMaximumTranslation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleBTransSetTransMax::~aeURuleBTransSetTransMax(){
 ///////////////
 
 void aeURuleBTransSetTransMax::Undo(){
-	pRule->SetMaximumTranslation( pOldMax );
+	pRule->SetMaximumTranslation(pOldMax);
 }
 
 void aeURuleBTransSetTransMax::Redo(){
-	pRule->SetMaximumTranslation( pNewMax );
+	pRule->SetMaximumTranslation(pNewMax);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleBTransSetTransMax::Redo(){
 //////////////////////
 
 void aeURuleBTransSetTransMax::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

@@ -40,12 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicActionPaste::ceUCTopicActionPaste( ceConversationTopic *topic,
-const ceConversationActionList &actions, int index ) :
-ceUCActionPaste( topic, actions, index )
+ceUCTopicActionPaste::ceUCTopicActionPaste(ceConversationTopic *topic,
+const ceConversationAction::List &actions, int index) :
+ceUCActionPaste(topic, actions, index)
 {
-	if( index < 0 || index > topic->GetActionList().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > topic->GetActions().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -55,19 +55,19 @@ ceUCActionPaste( topic, actions, index )
 ///////////////
 
 void ceUCTopicActionPaste::Undo(){
-	ceConversationAction * const activateAction = ActivateActionAfterRemove( GetTopic().GetActionList() );
+	ceConversationAction * const activateAction = ActivateActionAfterRemove(GetTopic().GetActions());
 	
-	pRemoveActions( GetTopic().GetActionList() );
-	GetTopic().NotifyActionStructureChanged( NULL );
+	pRemoveActions(GetTopic().GetActions());
+	GetTopic().NotifyActionStructureChanged(nullptr);
 	
-	if( activateAction ){
-		GetTopic().SetActive( activateAction, NULL );
+	if(activateAction){
+		GetTopic().SetActive(activateAction, nullptr);
 	}
 }
 
 void ceUCTopicActionPaste::Redo(){
-	pInsertActions( GetTopic().GetActionList() );
-	GetTopic().NotifyActionStructureChanged( NULL );
+	pInsertActions(GetTopic().GetActions());
+	GetTopic().NotifyActionStructureChanged(nullptr);
 	
 	pSelectInserted();
 }

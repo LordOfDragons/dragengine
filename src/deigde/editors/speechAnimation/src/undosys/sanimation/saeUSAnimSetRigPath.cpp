@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUSAnimSetRigPath::saeUSAnimSetRigPath( saeSAnimation *sanimation, const char *newName ){
-	if( ! sanimation || ! newName ) DETHROW( deeInvalidParam );
+saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *newName){
+	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
-	pSAnimation = NULL;
+	pSAnimation = nullptr;
 	
-	SetShortInfo( "Set Rig Path" );
+	SetShortInfo("@SpeechAnimation.Undo.SetRigPath");
 	
 	pOldPath = sanimation->GetRigPath();
 	pNewPath = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetRigPath::~saeUSAnimSetRigPath(){
-	if( pSAnimation ){
-		pSAnimation->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUSAnimSetRigPath::~saeUSAnimSetRigPath(){
 ///////////////
 
 void saeUSAnimSetRigPath::Undo(){
-	pSAnimation->SetRigPath( pOldPath.GetString() );
+	pSAnimation->SetRigPath(pOldPath.GetString());
 }
 
 void saeUSAnimSetRigPath::Redo(){
-	pSAnimation->SetRigPath( pNewPath.GetString() );
+	pSAnimation->SetRigPath(pNewPath.GetString());
 }

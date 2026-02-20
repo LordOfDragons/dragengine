@@ -26,8 +26,7 @@
 #define _DETERRAINHEIGHTMODIFIER_H_
 
 #include "../../../common/math/decMath.h"
-
-class deImage;
+#include "../../image/deImage.h"
 
 
 /**
@@ -43,7 +42,7 @@ class deImage;
  */
 class DE_DLL_EXPORT deTerrainHeightModifier{
 private:
-	deImage *pHeightImage;
+	deImage::Ref pHeightImage;
 	decPoint pPosition;
 	float pScaling;
 	
@@ -53,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new height modifier. */
-	deTerrainHeightModifier( deImage *heightImage );
+	deTerrainHeightModifier(deImage *heightImage);
 	
 	/** \brief Clean up height modifier. */
 	~deTerrainHeightModifier();
@@ -67,16 +66,16 @@ public:
 	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position of the upper left corner. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( float scaling );
+	void SetScaling(float scaling);
 	
 	/** \brief Height image. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	/*@}*/
 };
 

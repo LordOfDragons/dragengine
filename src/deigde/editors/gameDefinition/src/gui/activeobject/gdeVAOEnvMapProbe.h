@@ -26,11 +26,12 @@
 #define _GDEVAOENVMAPPROBE_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/probe/deEnvMapProbeReference.h>
+#include "../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
-class igdeWDebugDrawerShape;
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/probe/deEnvMapProbe.h>
 
 
 
@@ -38,16 +39,21 @@ class igdeWDebugDrawerShape;
  * \brief Game definition active object environment map probe for edit view.
  */
 class gdeVAOEnvMapProbe : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOEnvMapProbe> Ref;
+	
+	
 private:
-	gdeOCEnvMapProbe *pOCEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pOCEnvMapProbe;
 	
-	deEnvMapProbeReference pEnvMapProbe;
+	deEnvMapProbe::Ref pEnvMapProbe;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
-	igdeWDebugDrawerShape *pDDSReflection;
-	igdeWDebugDrawerShape *pDDSInfluence;
-	igdeWDebugDrawerShape *pDDSMask;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSReflection;
+	igdeWDebugDrawerShape::Ref pDDSInfluence;
+	igdeWDebugDrawerShape::Ref pDDSMask;
 	
 	
 	
@@ -55,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object envMapProbe. */
-	gdeVAOEnvMapProbe( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe );
+	gdeVAOEnvMapProbe(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe);
 	
 protected:
 	/**
@@ -65,7 +71,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOEnvMapProbe();
+	~gdeVAOEnvMapProbe() override;
 	/*@}*/
 	
 	
@@ -74,13 +80,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class envMapProbe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
+	inline const gdeOCEnvMapProbe::Ref &GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Update debug drawer visibility. */
 	void UpdateDDVisibility();

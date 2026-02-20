@@ -41,38 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCAddTexture::gdeUOCCAddTexture( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pTexture( NULL )
+gdeUOCCAddTexture::gdeUOCCAddTexture(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! component || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component add texture" );
+	SetShortInfo("@GameDefinition.Undo.OCCAddTexture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCAddTexture::~gdeUOCCAddTexture(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -81,11 +65,11 @@ gdeUOCCAddTexture::~gdeUOCCAddTexture(){
 ///////////////
 
 void gdeUOCCAddTexture::Undo(){
-	pComponent->GetTextures().Remove( pTexture );
+	pComponent->GetTextures().Remove(pTexture);
 	pObjectClass->NotifyComponentsChanged();
 }
 
 void gdeUOCCAddTexture::Redo(){
-	pComponent->GetTextures().Add( pTexture );
+	pComponent->GetTextures().Add(pTexture);
 	pObjectClass->NotifyComponentsChanged();
 }

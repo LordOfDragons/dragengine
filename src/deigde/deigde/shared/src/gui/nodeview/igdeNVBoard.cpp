@@ -22,26 +22,19 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeNVBoard.h"
 #include "igdeNVBoardListener.h"
 #include "igdeNVNode.h"
 #include "igdeNVSlot.h"
 #include "igdeNVLink.h"
-#include "igdeNVLinkReference.h"
 #include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
 #include "../event/igdeAction.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFontReference.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../../environment/igdeEnvironment.h"
 
@@ -57,19 +50,21 @@ class igdeNVBoardActionDeleteLink : public igdeAction {
 	igdeNVLink *pLink;
 	
 public:
-	igdeNVBoardActionDeleteLink( igdeNVBoard &board, igdeNVLink *link ) : igdeAction( "Delete Link",
-		board.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ), "Delete link" ),
-	pBoard( board ), pLink( link ){
-		if( ! link ){
-			DETHROW( deeInvalidParam );
+	using Ref = deTObjectReference<igdeNVBoardActionDeleteLink>;
+	
+	igdeNVBoardActionDeleteLink(igdeNVBoard &board, igdeNVLink *link) : igdeAction("@Igde.NVBoard.Action.DeleteLink",
+		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "@Igde.NVBoard.Action.DeleteLink.ToolTip"),
+	pBoard(board), pLink(link){
+		if(!link){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	virtual void OnAction(){
-		const igdeNVSlotReference source( pLink->GetSource() );
-		const igdeNVSlotReference target( pLink->GetTarget() );
-		pBoard.RemoveLink( pLink );
-		pBoard.NotifyLinkRemoved( source, target );
+	void OnAction() override{
+		const igdeNVSlot::Ref source(pLink->GetSource());
+		const igdeNVSlot::Ref target(pLink->GetTarget());
+		pBoard.RemoveLink(pLink);
+		pBoard.NotifyLinkRemoved(source, target);
 	}
 };
 
@@ -77,18 +72,20 @@ class igdeNVBoardActionClearLinks : public igdeAction {
 	igdeNVBoard &pBoard;
 	
 public:
-	igdeNVBoardActionClearLinks( igdeNVBoard &board ) : igdeAction( "Clear Links",
-		board.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ), "Delete all links" ),
-	pBoard( board ){
+	using Ref = deTObjectReference<igdeNVBoardActionClearLinks>;
+	
+	igdeNVBoardActionClearLinks(igdeNVBoard &board) : igdeAction("@Igde.NVBoard.Action.ClearLinks",
+		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "@Igde.NVBoard.Action.ClearLinks.ToolTip"),
+	pBoard(board){
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pBoard.RemoveAllLinks();
 		pBoard.NotifyAllLinksRemoved();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pBoard.GetLinkCount() > 0 );
+	void Update() override{
+		SetEnabled(pBoard.GetLinks().IsNotEmpty());
 	}
 };
 
@@ -100,10 +97,11 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeNVBoard::igdeNVBoard( igdeEnvironment &environment ) :
-igdeContainer( environment ),
-pBgColor( 115.0f / 255.0f, 115.0f / 255.0f, 115.0f / 255.0f ),
-pEnabled( true ){
+igdeNVBoard::igdeNVBoard(igdeEnvironment &environment) :
+igdeContainer(environment),
+pBgColor(115.0f / 255.0f, 115.0f / 255.0f, 115.0f / 255.0f),
+pEnabled(true),
+pNativeNVBoard(nullptr){
 }
 
 igdeNVBoard::~igdeNVBoard(){
@@ -117,8 +115,8 @@ igdeNVBoard::~igdeNVBoard(){
 // Management
 ///////////////
 
-void igdeNVBoard::SetBgColor( const decColor &color ){
-	if( color.IsEqualTo( pBgColor ) ){
+void igdeNVBoard::SetBgColor(const decColor &color){
+	if(color.IsEqualTo(pBgColor)){
 		return;
 	}
 	
@@ -126,8 +124,8 @@ void igdeNVBoard::SetBgColor( const decColor &color ){
 	OnColorsChanged();
 }
 
-void igdeNVBoard::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeNVBoard::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -138,15 +136,11 @@ void igdeNVBoard::SetEnabled( bool enabled ){
 
 
 decPoint igdeNVBoard::GetSize() const{
-	if( ! GetNativeWidget() ){
-		return decPoint();
-	}
-	
-	return ( ( igdeNativeNVBoard* )GetNativeWidget() )->GetSize();
+	return pNativeNVBoard ? pNativeNVBoard->GetSize() : decPoint();
 }
 
-void igdeNVBoard::SetOffset( const decPoint &offset ){
-	if( offset == pOffset ){
+void igdeNVBoard::SetOffset(const decPoint &offset){
+	if(offset == pOffset){
 		return;
 	}
 	
@@ -164,140 +158,109 @@ void igdeNVBoard::Clear(){
 }
 
 
-
-int igdeNVBoard::GetNodeCount() const{
-	return pNodes.GetCount();
-}
-
-igdeNVNode *igdeNVBoard::GetNodeAt( int index ) const{
-	return ( igdeNVNode* )pNodes.GetAt( index );
-}
-
-bool igdeNVBoard::HasNode( igdeNVNode *node ) const{
-	return pNodes.Has( node );
-}
-
-void igdeNVBoard::AddNode( igdeNVNode *node ){
-	if( ! node || HasNode( node ) || node->GetOwnerBoard() ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeNVBoard::AddNode(igdeNVNode *node){
+	DEASSERT_NOTNULL(node);
+	DEASSERT_FALSE(pNodes.Has(node));
+	DEASSERT_NULL(node->GetOwnerBoard());
 	
-	igdeContainer::AddChild( node );
-	pNodes.Add( node );
-	node->SetOwnerBoard( this );
+	igdeContainer::AddChild(node);
+	pNodes.Add(node);
+	node->SetOwnerBoard(this);
 	OnNodesChanged();
 	
-	SetActiveNode( node );
+	SetActiveNode(node);
 }
 
-void igdeNVBoard::RemoveNode( igdeNVNode *node ){
-	if( ! node || ! HasNode( node ) ){
-		DETHROW( deeInvalidParam );
+void igdeNVBoard::RemoveNode(igdeNVNode *node){
+	DEASSERT_NOTNULL(node);
+	DEASSERT_TRUE(pNodes.Has(node));
+	
+	if(GetActiveNode() == node){
+		SetActiveNode(nullptr);
 	}
 	
-	if( GetActiveNode() == node ){
-		SetActiveNode( NULL );
-	}
+	RemoveAllNodeLinks(node);
 	
-	RemoveAllNodeLinks( node );
-	
-	igdeContainer::RemoveChild( node );
-	node->SetOwnerBoard( NULL );
-	pNodes.Remove( node );
+	igdeContainer::RemoveChild(node);
+	node->SetOwnerBoard(nullptr);
+	pNodes.Remove(node);
 	OnNodesChanged();
 }
 
 void igdeNVBoard::RemoveAllNodes(){
-	if( pNodes.GetCount() == 0 ){
+	if(pNodes.IsEmpty()){
 		return;
 	}
 	
-	SetActiveNode( NULL );
+	SetActiveNode(nullptr);
 	
 	RemoveAllLinks();
 	
-	while( pNodes.GetCount() > 0 ){
-		const int index = pNodes.GetCount() - 1;
-		igdeNVNode * const node = ( igdeNVNode* )pNodes.GetAt( index );
-		node->SetOwnerBoard( NULL );
-		igdeContainer::RemoveChild( node );
-		pNodes.RemoveFrom( index );
-	}
+	pNodes.VisitReverse([&](igdeNVNode &node){
+		node.SetOwnerBoard(nullptr);
+		igdeContainer::RemoveChild(&node);
+	});
+	pNodes.RemoveAll();
 	OnNodesChanged();
 }
 
-void igdeNVBoard::SetActiveNode( igdeNVNode *node ){
+void igdeNVBoard::SetActiveNode(igdeNVNode *node){
 	igdeNVNode * const prevNode = GetActiveNode();
-	if( prevNode == node ){
+	if(prevNode == node){
 		return;
 	}
 	
-	if( prevNode ){
-		prevNode->SetActive( false );
+	if(prevNode){
+		prevNode->SetActive(false);
 		prevNode->NotifyDeactivated();
 	}
 	
 	pActiveNode = node;
 	
-	if( node ){
-		node->SetActive( true );
+	if(node){
+		node->SetActive(true);
 		node->NotifyActivated();
 	}
 }
 
 
 
-int igdeNVBoard::GetLinkCount() const{
-	return pLinks.GetCount();
-}
-
-igdeNVLink *igdeNVBoard::GetLinkAt( int index ) const{
-	return ( igdeNVLink* )pLinks.GetAt( index );
-}
-
-igdeNVLink *igdeNVBoard::GetLinkBetween( igdeNVSlot *source, igdeNVSlot *target ) const{
-	if( ! source || ! target ){
-		DETHROW( deeInvalidParam );
-	}
+igdeNVLink *igdeNVBoard::GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const{
+	DEASSERT_NOTNULL(source);
+	DEASSERT_NOTNULL(target);
 	
-	const int count = pLinks.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		igdeNVLink * const link = ( igdeNVLink* )pLinks.GetAt( i );
-		if( link->GetSource() == source && link->GetTarget() == target ){
-			return link;
+	igdeNVLink *result = nullptr;
+	pLinks.HasMatching([&](igdeNVLink *l){
+		if(l->GetSource() == source && l->GetTarget() == target){
+			result = l;
+			return true;
 		}
+		return false;
+	});
+	return result;
+}
+
+bool igdeNVBoard::HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const{
+	return GetLinkBetween(source, target) != nullptr;
+}
+
+bool igdeNVBoard::CanLink(igdeNVSlot *source, igdeNVSlot *target){
+	if(!source || !target){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return NULL;
-}
-
-bool igdeNVBoard::HasLink( igdeNVLink *link ) const{
-	return pLinks.Has( link );
-}
-
-bool igdeNVBoard::HasLinkBetween( igdeNVSlot *source, igdeNVSlot *target ) const{
-	return GetLinkBetween( source, target ) != NULL;
-}
-
-bool igdeNVBoard::CanLink( igdeNVSlot *source, igdeNVSlot *target ){
-	if( ! source || ! target ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( source->GetIsInput() || ! target->GetIsInput()
+	if(source->GetIsInput() || !target->GetIsInput()
 	|| source->GetOwnerNode() == target->GetOwnerNode()
-	|| HasLinkBetween( source, target )
-	|| ! HasNode( source->GetOwnerNode() )
-	|| ! HasNode( target->GetOwnerNode() ) ){
+	|| HasLinkBetween(source, target)
+	|| !pNodes.Has(source->GetOwnerNode())
+	|| !pNodes.Has(target->GetOwnerNode())){
 		return false;
 	}
 	
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( ! ( ( igdeNVBoardListener* )pListeners.GetAt( i ) )->CanLink( this, source, target ) ){
+	for(i=0; i<count; i++){
+		if(!((igdeNVBoardListener*)pListeners.GetAt(i))->CanLink(this, source, target)){
 			return false;
 		}
 	}
@@ -305,238 +268,203 @@ bool igdeNVBoard::CanLink( igdeNVSlot *source, igdeNVSlot *target ){
 	return true;
 }
 
-igdeNVLink *igdeNVBoard::AddLink( igdeNVSlot *source, igdeNVSlot *target ){
-	if( ! CanLink( source, target ) ){
-		DETHROW( deeInvalidParam );
-	}
+igdeNVLink::Ref igdeNVBoard::AddLink(igdeNVSlot *source, igdeNVSlot *target){
+	DEASSERT_TRUE(CanLink(source, target))
 	
-	igdeNVLinkReference link;
-	link.TakeOver( new igdeNVLink( source, target ) );
-	link->SetOwnerBoard( this );
-	pLinks.Add( ( igdeNVLink* )link );
+	const igdeNVLink::Ref link(igdeNVLink::Ref::New(source, target));
+	link->SetOwnerBoard(this);
+	pLinks.Add(link);
 	
-	source->AddLink( link );
-	target->AddLink( link );
+	source->AddLink(link);
+	target->AddLink(link);
 	
 	OnLinksChanged();
 	
 	return link;
 }
 
-void igdeNVBoard::RemoveLink( igdeNVLink *link ){
-	if( ! link || ! HasLink( link ) ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeNVBoard::RemoveLink(igdeNVLink *link){
+	DEASSERT_NOTNULL(link);
+	DEASSERT_TRUE(pLinks.Has(link))
 	
-	link->GetTarget()->RemoveLink( link );
-	link->GetSource()->RemoveLink( link );
+	link->GetTarget()->RemoveLink(link);
+	link->GetSource()->RemoveLink(link);
 	
-	link->SetOwnerBoard( NULL );
-	pLinks.Remove( link );
+	link->SetOwnerBoard(nullptr);
+	pLinks.Remove(link);
 	OnLinksChanged();
 }
 
 void igdeNVBoard::RemoveAllLinks(){
-	const int count = pLinks.GetCount();
-	if( pLinks.GetCount() == 0 ){
+	if(pLinks.IsEmpty()){
 		return;
 	}
 	
-	int i;
-	for( i=0; i<count; i++ ){
-		igdeNVLink * const link = ( igdeNVLink* )pLinks.GetAt( i );
-		link->SetOwnerBoard( NULL );
-		link->GetSource()->RemoveLink( link );
-		link->GetTarget()->RemoveLink( link );
-	}
+	pLinks.Visit([&](igdeNVLink &link){
+		link.SetOwnerBoard(nullptr);
+		link.GetSource()->RemoveLink(&link);
+		link.GetTarget()->RemoveLink(&link);
+	});
 	pLinks.RemoveAll();
 	OnLinksChanged();
 }
 
-void igdeNVBoard::RemoveAllNodeLinks( igdeNVNode *node ){
-	if( ! node ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeNVBoard::RemoveAllNodeLinks(igdeNVNode *node){
+	DEASSERT_NOTNULL(node)
 	
-	int i = pLinks.GetCount();
-	for( i=pLinks.GetCount()-1; i>=0; i-- ){
-		igdeNVLink * const link = ( igdeNVLink* )pLinks.GetAt( i );
-		if( link->GetSource()->GetOwnerNode() == node || link->GetTarget()->GetOwnerNode() == node ){
-			RemoveLink( link );
-		}
-	}
+	pLinks.RemoveIf([&](const igdeNVLink &l){
+		return l.GetSource()->GetOwnerNode() == node || l.GetTarget()->GetOwnerNode() == node;
+	});
 }
 
-igdeNVLink *igdeNVBoard::ClosestLinkNear( const decPoint &position, float range ) const{
-	if( ! GetNativeWidget() ){
-		return NULL;
-	}
-	
-	return ( ( igdeNativeNVBoard* )GetNativeWidget() )->ClosestLinkNear( position, range );
+igdeNVLink *igdeNVBoard::ClosestLinkNear(const decPoint &position, float range) const{
+	return pNativeNVBoard ? pNativeNVBoard->ClosestLinkNear(position, range) : nullptr;
 }
 
-void igdeNVBoard::ShowContextMenu( const decPoint &position ){
-	if( ! GetNativeWidget() ){
+void igdeNVBoard::ShowContextMenu(const decPoint &position){
+	if(!pNativeNVBoard){
 		return;
 	}
 	
-	const igdeNativeNVBoard &native = *( ( igdeNativeNVBoard* )GetNativeWidget() );
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	igdeMenuCascadeReference menu;
-	menu.TakeOver( new igdeMenuCascade( helper.GetEnvironment() ) );
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(helper.GetEnvironment()));
 	
 	// link
-	igdeNVLink * const link = native.GetHoverLink();
-	if( link ){
-		helper.MenuCommand( menu, new igdeNVBoardActionDeleteLink( *this, link ), true );
+	igdeNVLink * const link = pNativeNVBoard->GetHoverLink();
+	if(link){
+		helper.MenuCommand(menu, igdeNVBoardActionDeleteLink::Ref::New(*this, link));
 	}
-	helper.MenuCommand( menu, new igdeNVBoardActionClearLinks( *this ), true );
+	helper.MenuCommand(menu, igdeNVBoardActionClearLinks::Ref::New(*this));
 	
 	// listener provided
-	const int count = pListeners.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeNVBoardListener* )pListeners.GetAt( i ) )->AddContextMenuEntries( this, menu, position );
+	helper.MenuSeparator(menu);
+	const int count = menu->GetChildren().GetCount();
+	
+	pListeners.Visit([&](igdeNVBoardListener &l){
+		l.AddContextMenuEntries(this, menu, position);
+	});
+	
+	if(menu->GetChildren().GetCount() == count){
+		menu->RemoveChild(menu->GetChildren().Last());
 	}
 	
-	if( menu->GetChildCount() > 0 ){
-		menu->Popup( *this, position );
+	if(menu->GetChildren().IsNotEmpty()){
+		menu->Popup(*this, position);
 	}
 }
 
 
 
-void igdeNVBoard::AddListener( igdeNVBoardListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeNVBoard::AddListener(igdeNVBoardListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeNVBoard::RemoveListener( igdeNVBoardListener *listener ){
-	pListeners.Remove( listener );
+void igdeNVBoard::RemoveListener(igdeNVBoardListener *listener){
+	pListeners.Remove(listener);
+}
+void igdeNVBoard::NotifyLinkAdded(igdeNVLink *link){
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnLinkAdded(this, link);
+	});
 }
 
-void igdeNVBoard::NotifyLinkAdded( igdeNVLink *link ){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeNVBoardListener* )listeners.GetAt( i ) )->OnLinkAdded( this, link );
-	}
-}
-
-void igdeNVBoard::NotifyLinkRemoved( igdeNVSlot *source, igdeNVSlot *target ){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeNVBoardListener* )listeners.GetAt( i ) )->OnLinkRemoved( this, source, target );
-	}
+void igdeNVBoard::NotifyLinkRemoved(igdeNVSlot *source, igdeNVSlot *target){
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnLinkRemoved(this, source, target);
+	});
 }
 
 void igdeNVBoard::NotifyAllLinksRemoved(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeNVBoardListener* )listeners.GetAt( i ) )->OnAllLinksRemoved( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnAllLinksRemoved(this);
+	});
 }
 
 void igdeNVBoard::NotifyOffsetChanged(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeNVBoardListener* )listeners.GetAt( i ) )->OnOffsetChanged( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnOffsetChanged(this);
+	});
 }
 
 void igdeNVBoard::NotifySizeChanged(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeNVBoardListener* )listeners.GetAt( i ) )->OnSizeChanged( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeNVBoardListener &l){
+		l.OnSizeChanged(this);
+	});
 }
 
 
 
 void igdeNVBoard::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeNVBoard * const native = igdeNativeNVBoard::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeNVBoard * const native = igdeNativeNVBoard::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeNVBoard = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeNVBoard::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeNVBoard* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeNVBoard*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
+void igdeNVBoard::DropNativeWidget(){
+	pNativeNVBoard = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 void igdeNVBoard::NotifyNodesOffsetChanged(){
 	const int count = pNodes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( igdeNVNode* )pNodes.GetAt( i ) )->OnBoardOffsetChanged();
+	for(i=0; i<count; i++){
+		((igdeNVNode*)pNodes.GetAt(i))->OnBoardOffsetChanged();
 	}
 }
 
 void igdeNVBoard::OnColorsChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateColors();
 	}
-	
-	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateColors();
 }
 
 void igdeNVBoard::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateEnabled();
 	}
-	
-	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateEnabled();
 }
 
 void igdeNVBoard::OnOffsetChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateOffset();
 	}
-	
-	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateOffset();
 }
 
 void igdeNVBoard::OnNodesChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateNodes();
 	}
-	
-	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateNodes();
 }
 
 
 void igdeNVBoard::OnLinksChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if(pNativeNVBoard){
+		pNativeNVBoard->UpdateLinks();
 	}
-	
-	( ( igdeNativeNVBoard* )GetNativeWidget() )->UpdateLinks();
 }

@@ -27,21 +27,25 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 /**
  * Bone transformator rule panel.
  */
 class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleBoneTransformator>;
+	
+	
 private:
-	igdeEditVectorReference pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
-	igdeEditVectorReference pEditMinScale, pEditMaxScale, pEditAxis;
-	igdeTextFieldReference pEditMinAngle, pEditMaxAngle;
-	igdeComboBoxReference pCBCoordFrame, pCBInputSource;
-	igdeCheckBoxReference pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
-	igdeComboBoxFilterReference pCBTargetBone, pCBInputBone;
+	igdeEditVector::Ref pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
+	igdeEditVector::Ref pEditMinScale, pEditMaxScale, pEditAxis;
+	igdeTextField::Ref pEditMinAngle, pEditMaxAngle;
+	igdeComboBox::Ref pCBCoordFrame, pCBInputSource;
+	igdeCheckBox::Ref pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
+	igdeComboBoxFilter::Ref pCBTargetBone, pCBInputBone;
 	
 	
 	
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleBoneTransformator( aeWPRule &wpRule );
+	aeWPAPanelRuleBoneTransformator(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleBoneTransformator();
+	~aeWPAPanelRuleBoneTransformator() override;
 	/*@}*/
 	
 	
@@ -62,13 +66,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

@@ -27,10 +27,12 @@
 
 #include "../component/deoglComponentListener.h"
 #include "../decal/deoglDecalListener.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglGIInstances;
@@ -39,9 +41,6 @@ class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOBlock;
-class deoglDynamicTBOFloat16;
-class deoglDynamicTBOUInt32;
 class decLayerMask;
 
 
@@ -49,16 +48,22 @@ class decLayerMask;
  * Global illumination instance.
  */
 class deoglGIInstance : public deObject{
+public:
+	using Ref = deTObjectReference<deoglGIInstance>;
+	
+	
 private:
 	class cListenerLink{
 	public:
+		using Ref = deTObjectReference<cListenerLink>;
+		
 		deoglGIInstance &instance;
 		
-		cListenerLink( deoglGIInstance &instance );
-		bool LayerMaskMatchesNot( const decLayerMask &layerMask ) const;
-		bool GIImportanceMatchesNot( int importance ) const;
+		cListenerLink(deoglGIInstance &instance);
+		bool LayerMaskMatchesNot(const decLayerMask &layerMask) const;
+		bool GIImportanceMatchesNot(int importance) const;
 		void RemoveInstance() const;
-		void ChangeInstance( bool hard ) const;
+		void ChangeInstance(bool hard) const;
 		void Moved() const;
 		void TUCChanged() const;
 		void DynamicChanged() const;
@@ -69,18 +74,20 @@ private:
 		const cListenerLink pLink;
 		
 	public:
-		cComponentListener( deoglGIInstance &instance );
-		void ComponentDestroyed( deoglRComponent &component ) override;
-		void ParentWorldChanged( deoglRComponent &component ) override;
-		void LayerMaskChanged( deoglRComponent &component ) override;
-		void BoundariesChanged( deoglRComponent &component ) override;
-		void OcclusionMeshChanged( deoglRComponent &component ) override;
-		void TexturesChanged( deoglRComponent &component ) override;
-		void RenderStaticChanged( deoglRComponent &component ) override;
-		void MovementHintChanged( deoglRComponent &component ) override;
-		void VisibilityChanged( deoglRComponent &component ) override;
-		void GIImportanceChanged(deoglRComponent &component ) override;
-		void ModelChanged( deoglRComponent &component ) override;
+		using Ref = deTObjectReference<cComponentListener>;
+		
+		cComponentListener(deoglGIInstance &instance);
+		void ComponentDestroyed(deoglRComponent &component) override;
+		void ParentWorldChanged(deoglRComponent &component) override;
+		void LayerMaskChanged(deoglRComponent &component) override;
+		void BoundariesChanged(deoglRComponent &component) override;
+		void OcclusionMeshChanged(deoglRComponent &component) override;
+		void TexturesChanged(deoglRComponent &component) override;
+		void RenderStaticChanged(deoglRComponent &component) override;
+		void MovementHintChanged(deoglRComponent &component) override;
+		void VisibilityChanged(deoglRComponent &component) override;
+		void GIImportanceChanged(deoglRComponent &component) override;
+		void ModelChanged(deoglRComponent &component) override;
 	};
 	
 	class cDecalListener : public deoglDecalListener{
@@ -88,11 +95,13 @@ private:
 		const cListenerLink pLink;
 		
 	public:
-		cDecalListener( deoglGIInstance &instance );
-		virtual void DecalDestroyed( deoglRDecal &decal );
-		virtual void GeometryChanged( deoglRDecal &decal );
-		virtual void TextureChanged( deoglRDecal &decal );
-		virtual void TUCChanged( deoglRDecal &decal );
+		using Ref = deTObjectReference<cDecalListener>;
+		
+		cDecalListener(deoglGIInstance &instance);
+		void DecalDestroyed(deoglRDecal &decal) override;
+		void GeometryChanged(deoglRDecal &decal) override;
+		void TextureChanged(deoglRDecal &decal) override;
+		void TUCChanged(deoglRDecal &decal) override;
 	};
 	
 	class cDecalComponentListener : public deoglComponentListener{
@@ -100,10 +109,12 @@ private:
 		const cListenerLink pLink;
 		
 	public:
-		cDecalComponentListener( deoglGIInstance &instance );
-		virtual void BoundariesChanged( deoglRComponent &component );
-		virtual void RenderStaticChanged( deoglRComponent &component );
-		virtual void MovementHintChanged( deoglRComponent &component );
+		using Ref = deTObjectReference<cDecalComponentListener>;
+		
+		cDecalComponentListener(deoglGIInstance &instance);
+		void BoundariesChanged(deoglRComponent &component) override;
+		void RenderStaticChanged(deoglRComponent &component) override;
+		void MovementHintChanged(deoglRComponent &component) override;
 	};
 	
 	
@@ -111,11 +122,11 @@ private:
 	deoglGIInstances &pInstances;
 	
 	deoglRComponent *pComponent;
-	deObjectReference pComponentListener;
+	cComponentListener::Ref pComponentListener;
 	
 	deoglRDecal *pDecal;
-	deObjectReference pDecalListener;
-	deObjectReference pDecalComponentListener;
+	cDecalListener::Ref pDecalListener;
+	cDecalComponentListener::Ref pDecalComponentListener;
 	
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
@@ -129,11 +140,11 @@ private:
 	int pIndexVertices;
 	bool pHasBVHNodes;
 	
-	decPointerList pTUCs;
+	decTList<deoglTexUnitsConfig*> pTUCs;
 	bool pDirtyTUCs;
-	deObjectReference pBlockMaterial;
-	deoglDynamicTBOUInt32 *pTBOMaterial;
-	deoglDynamicTBOFloat16 *pTBOMaterial2;
+	deoglDynamicTBOBlock::Ref pBlockMaterial;
+	deoglDynamicTBOUInt32::Ref pTBOMaterial;
+	deoglDynamicTBOFloat16::Ref pTBOMaterial2;
 	
 	bool pDynamic;
 	bool pChanged;
@@ -147,14 +158,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination instance. */
-	deoglGIInstance( deoglGIInstances &instances );
+	deoglGIInstance(deoglGIInstances &instances);
 	
+protected:
 	/** Clean up global illumination instance. */
-	virtual ~deoglGIInstance();
+	~deoglGIInstance() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Owner instances. */
@@ -164,13 +176,13 @@ public:
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/** Set component or NULL. */
-	void SetComponent( deoglRComponent *component, bool dynamic );
+	void SetComponent(deoglRComponent *component, bool dynamic);
 	
 	/** Decal or NULL. */
 	inline deoglRDecal *GetDecal() const{ return pDecal; }
 	
 	/** Set decal or NULL. */
-	void SetDecal( deoglRDecal *decal, bool dynamic );
+	void SetDecal(deoglRDecal *decal, bool dynamic);
 	
 	
 	
@@ -181,7 +193,7 @@ public:
 	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Set tracked instance extends in world space. */
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Set extends from local BVH points. */
 	void SetExtendsFromBVHLocal();
@@ -221,19 +233,19 @@ public:
 	inline bool GetDynamic() const{ return pDynamic; }
 	
 	/** Set if slot is dynamic. */
-	void SetDynamic( bool dynamic );
+	void SetDynamic(bool dynamic);
 	
 	/** Instance changed in a way ray cast results are invalidated. */
 	inline bool GetChanged() const{ return pChanged; }
 	
 	/** Set instance changed in a way ray cast results are invalidated. */
-	void SetChanged( bool changed );
+	void SetChanged(bool changed);
 	
 	/** Instance changed in a way disabled probes have to be updated too. */
 	inline bool GetHardChanged() const{ return pHardChanged; }
 	
 	/** Set instance changed in a way disabled probes have to be updated too. */
-	void SetHardChanged( bool changed );
+	void SetHardChanged(bool changed);
 	
 	/** Clear changed flags. */
 	void ClearChanged();
@@ -242,19 +254,19 @@ public:
 	inline bool GetMoved() const{ return pMoved; }
 	
 	/** Set instance moved. */
-	void SetMoved( bool moved );
+	void SetMoved(bool moved);
 	
 	/** Slot dynamic state potentially changed. */
 	inline bool GetRecheckDynamic() const{ return pRecheckDynamic; }
 	
 	/** Set if slot dynamic state potentially changed. */
-	void SetRecheckDynamic( bool recheckDynamic );
+	void SetRecheckDynamic(bool recheckDynamic);
 	
 	/** Slot is empty. */
 	bool Empty() const;
 	
 	/** Slot is not empty. */
-	inline bool NotEmpty() const{ return ! Empty(); }
+	inline bool NotEmpty() const{ return !Empty(); }
 	
 	/** Clear instance. */
 	void Clear();
@@ -265,26 +277,26 @@ public:
 	int GetTUCCount() const;
 	
 	/** Get TUC at index. TUC can be NULL. */
-	deoglTexUnitsConfig *GetTUCAt( int index ) const;
+	deoglTexUnitsConfig *GetTUCAt(int index) const;
 	
 	/** Remove all TUCs. */
 	void RemoveAllTUCs();
 	
 	/** Add TUC. TUC can be NULL. */
-	void AddTUC( deoglTexUnitsConfig *tuc );
+	void AddTUC(deoglTexUnitsConfig *tuc);
 	
 	/** TUCs are dirty. */
 	inline bool GetDirtyTUCs() const{ return pDirtyTUCs; }
 	
 	/** Set TUCs dirty. */
-	void SetDirtyTUCs( bool dirty );
+	void SetDirtyTUCs(bool dirty);
 	
 	/** Material TBOs. */
 	inline deoglDynamicTBOUInt32 *GetTBOMaterial(){ return pTBOMaterial; }
 	inline deoglDynamicTBOFloat16 *GetTBOMaterial2(){ return pTBOMaterial2; }
 	
 	/** Get TBO block for materials. */
-	deoglDynamicTBOBlock *GetBlockMaterial();
+	const deoglDynamicTBOBlock::Ref &GetBlockMaterial();
 	
 	/** Drop TBO blocks. */
 	void DropBlockMaterial();

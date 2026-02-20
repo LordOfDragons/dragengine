@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathObjectClasses::gdeUGDSetAutoFindPathObjectClasses(
-	gdeGameDefinition *gameDefinition, const decStringList &newValue ) :
-pGameDefinition( NULL ),
-pNewValue( newValue )
+	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set auto find path object classes" );
+	SetShortInfo("@GameDefinition.Undo.GDSetAutoFindPathObjectClasses");
 	
 	pOldValue = gameDefinition->GetAutoFindPathObjectClasses();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetAutoFindPathObjectClasses::~gdeUGDSetAutoFindPathObjectClasses(){
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUGDSetAutoFindPathObjectClasses::~gdeUGDSetAutoFindPathObjectClasses(){
 ///////////////
 
 void gdeUGDSetAutoFindPathObjectClasses::Undo(){
-	pGameDefinition->SetAutoFindPathObjectClasses( pOldValue );
+	pGameDefinition->SetAutoFindPathObjectClasses(pOldValue);
 }
 
 void gdeUGDSetAutoFindPathObjectClasses::Redo(){
-	pGameDefinition->SetAutoFindPathObjectClasses( pNewValue );
+	pGameDefinition->SetAutoFindPathObjectClasses(pNewValue);
 }

@@ -32,10 +32,8 @@
 #include "deSkinPropertyVisitorLoad.h"
 #include "node/deSkinPropertyNodeGroup.h"
 #include "../../image/deImage.h"
-#include "../../image/deImageReference.h"
 #include "../../image/deImageManager.h"
 #include "../../video/deVideo.h"
-#include "../../video/deVideoReference.h"
 #include "../../video/deVideoManager.h"
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
@@ -48,12 +46,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyVisitorLoad::deSkinPropertyVisitorLoad( deEngine &engine,
-deVirtualFileSystem *vfs, const char *basePath ) :
-pEngine( engine ),
-pVirtualFileSystem( vfs ),
-pBasePath( basePath ),
-pLoadNode( engine, vfs, basePath ){
+deSkinPropertyVisitorLoad::deSkinPropertyVisitorLoad(deEngine &engine,
+deVirtualFileSystem *vfs, const char *basePath) :
+pEngine(engine),
+pVirtualFileSystem(vfs),
+pBasePath(basePath),
+pLoadNode(engine, vfs, basePath){
 }
 
 deSkinPropertyVisitorLoad::~deSkinPropertyVisitorLoad(){
@@ -64,52 +62,45 @@ deSkinPropertyVisitorLoad::~deSkinPropertyVisitorLoad(){
 // Visiting
 /////////////
 
-void deSkinPropertyVisitorLoad::VisitImage( deSkinPropertyImage &property ){
-	if( property.GetImage() ){
+void deSkinPropertyVisitorLoad::VisitImage(deSkinPropertyImage &property){
+	if(property.GetImage()){
 		return;
 	}
 	
-	deImageReference image;
-	
-	if( ! property.GetPath().IsEmpty() ){
+	if(!property.GetPath().IsEmpty()){
 		try{
-			image.TakeOver( pEngine.GetImageManager()->LoadImage(
-				pVirtualFileSystem, property.GetPath(), pBasePath ) );
-			property.SetImage( image );
+			property.SetImage(pEngine.GetImageManager()->LoadImage(
+				pVirtualFileSystem, property.GetPath(), pBasePath));
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 	}
 	
 	// TODO missing image has to be handled by graphic module
-	if( ! property.GetImage() ){
+	if(!property.GetImage()){
 		try{
-			image.TakeOver( pEngine.GetImageManager()->LoadDefault() );
-			property.SetImage( image );
+			property.SetImage(pEngine.GetImageManager()->LoadDefault());
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 	}
 }
 
-void deSkinPropertyVisitorLoad::VisitVideo( deSkinPropertyVideo &property ){
-	if( property.GetVideo() ){
+void deSkinPropertyVisitorLoad::VisitVideo(deSkinPropertyVideo &property){
+	if(property.GetVideo()){
 		return;
 	}
 	
-	deVideoReference video;
-	
-	if( ! property.GetPath().IsEmpty() ){
+	if(!property.GetPath().IsEmpty()){
 		try{
-			video.TakeOver( pEngine.GetVideoManager()->LoadVideo(
-				pVirtualFileSystem, property.GetPath(), pBasePath, false ) );
-			property.SetVideo( video );
+			property.SetVideo(pEngine.GetVideoManager()->LoadVideo(
+				pVirtualFileSystem, property.GetPath(), pBasePath, false));
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 	}
 }
 
-void deSkinPropertyVisitorLoad::VisitConstructed( deSkinPropertyConstructed &property ){
-	property.GetContent().Visit( pLoadNode );
+void deSkinPropertyVisitorLoad::VisitConstructed(deSkinPropertyConstructed &property){
+	property.GetContent()->Visit(pLoadNode);
 }

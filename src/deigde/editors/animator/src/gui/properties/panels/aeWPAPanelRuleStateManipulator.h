@@ -27,8 +27,8 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 
@@ -36,19 +36,23 @@
  * State Manipulator Rule Panel.
  */
 class aeWPAPanelRuleStateManipulator : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleStateManipulator>;
+	
+	
 private:
-	igdeEditVectorReference pEditMinPos;
-	igdeEditVectorReference pEditMaxPos;
-	igdeEditVectorReference pEditMinRot;
-	igdeEditVectorReference pEditMaxRot;
-	igdeEditVectorReference pEditMinSize;
-	igdeEditVectorReference pEditMaxSize;
-	igdeTextFieldReference pEditMinVertexPositionSet;
-	igdeTextFieldReference pEditMaxVertexPositionSet;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeEditVector::Ref pEditMinPos;
+	igdeEditVector::Ref pEditMaxPos;
+	igdeEditVector::Ref pEditMinRot;
+	igdeEditVector::Ref pEditMaxRot;
+	igdeEditVector::Ref pEditMinSize;
+	igdeEditVector::Ref pEditMaxSize;
+	igdeTextField::Ref pEditMinVertexPositionSet;
+	igdeTextField::Ref pEditMaxVertexPositionSet;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -56,11 +60,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleStateManipulator( aeWPRule &wpRule );
+	aeWPAPanelRuleStateManipulator(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleStateManipulator();
+	~aeWPAPanelRuleStateManipulator() override;
 	/*@}*/
 	
 	
@@ -69,10 +73,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

@@ -42,42 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture ){
-	if( ! topic || ! actorSpeak || ! gesture ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture){
+	if(!topic || !actorSpeak || !gesture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pGesture = NULL;
-	pIndex = actorSpeak->GetGestureList().IndexOf( gesture );
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pGesture = nullptr;
+	pIndex = actorSpeak->GetGestures().IndexOf(gesture);
 	
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove Gesture" );
+	SetShortInfo("@Conversation.Undo.RemoveGesture");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCAASpeakGestureRemove::~ceUCAASpeakGestureRemove(){
-	if( pGesture ){
-		pGesture->FreeReference();
-	}
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -86,11 +72,11 @@ ceUCAASpeakGestureRemove::~ceUCAASpeakGestureRemove(){
 ///////////////
 
 void ceUCAASpeakGestureRemove::Undo(){
-	pActorSpeak->GetGestureList().InsertAt( pGesture, pIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetGestures().InsertOrThrow(pGesture, pIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakGestureRemove::Redo(){
-	pActorSpeak->GetGestureList().Remove( pGesture );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetGestures().Remove(pGesture);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

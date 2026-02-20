@@ -43,14 +43,14 @@ igdeViewCurveBezierListener::~igdeViewCurveBezierListener(){
 // Events
 ///////////
 
-void igdeViewCurveBezierListener::OnCurveChanged( igdeViewCurveBezier* ){
+void igdeViewCurveBezierListener::OnCurveChanged(igdeViewCurveBezier*){
 }
 
-void igdeViewCurveBezierListener::OnCurveChanging( igdeViewCurveBezier* ){
+void igdeViewCurveBezierListener::OnCurveChanging(igdeViewCurveBezier*){
 }
 
-void igdeViewCurveBezierListener::OnSelectedPointChanged( igdeViewCurveBezier* ){
+void igdeViewCurveBezierListener::OnSelectedPointChanged(igdeViewCurveBezier*){
 }
 
-void igdeViewCurveBezierListener::AddContextMenuEntries( igdeViewCurveBezier*, igdeMenuCascade& ){
+void igdeViewCurveBezierListener::AddContextMenuEntries(igdeViewCurveBezier*, igdeMenuCascade&){
 }

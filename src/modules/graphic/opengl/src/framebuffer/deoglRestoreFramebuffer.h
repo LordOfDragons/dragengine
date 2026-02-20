@@ -40,7 +40,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Activate FBO. */
-	deoglRestoreFramebuffer( deoglRenderThread &renderThread );
+	deoglRestoreFramebuffer(deoglRenderThread &renderThread);
 	
 	/** Restore FBO. */
 	~deoglRestoreFramebuffer();

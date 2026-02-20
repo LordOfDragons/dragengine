@@ -31,12 +31,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deWebp3DImageInfo::deWebp3DImageInfo( const decString &filename ) :
-pFilename( filename ),
-width( 0 ),
-height( 0 ),
-hasAlpha( false ),
-isGrayscale( false ){
+deWebp3DImageInfo::deWebp3DImageInfo(const decString &filename) :
+pFilename(filename),
+width(0),
+height(0),
+hasAlpha(false),
+isGrayscale(false){
 }
 
 deWebp3DImageInfo::~deWebp3DImageInfo(){
@@ -60,7 +60,7 @@ int deWebp3DImageInfo::GetDepth(){
 }
 
 int deWebp3DImageInfo::GetComponentCount(){
-	if( hasAlpha ){
+	if(hasAlpha){
 		return isGrayscale ? 2 : 4;
 		
 	}else{

@@ -29,13 +29,17 @@
 
 #include <dragengine/common/string/decStringSet.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 /**
  * Undo action set neutral vertex position sets.
  */
 class saeUSAnimSetNeutralVertexPositionSets : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUSAnimSetNeutralVertexPositionSets>;
+	
+	
 private:
 	saeSAnimation *pSAnimation;
 	
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetNeutralVertexPositionSets( saeSAnimation *sanimation, const decStringSet &sets );
+	saeUSAnimSetNeutralVertexPositionSets(saeSAnimation *sanimation, const decStringSet &sets);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUSAnimSetNeutralVertexPositionSets();
+	~saeUSAnimSetNeutralVertexPositionSets() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

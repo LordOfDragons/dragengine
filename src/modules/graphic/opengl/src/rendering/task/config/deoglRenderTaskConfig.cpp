@@ -22,13 +22,10 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-
 #include "deoglRenderTaskConfig.h"
 #include "deoglRenderTaskConfigTexture.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoglRenderTaskConfig
@@ -37,47 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskConfig::deoglRenderTaskConfig() :
-pTextures( NULL ),
-pTextureCount( 0 ),
-pTextureSize( 0 ){
-}
-
-deoglRenderTaskConfig::~deoglRenderTaskConfig(){
-	if( pTextures ){
-		delete [] pTextures;
-	}
-}
-
+deoglRenderTaskConfig::deoglRenderTaskConfig() = default;
+deoglRenderTaskConfig::~deoglRenderTaskConfig() = default;
 
 
 // Management
 ///////////////
 
-deoglRenderTaskConfigTexture &deoglRenderTaskConfig::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pTextures[ index ];
-}
-
 deoglRenderTaskConfigTexture &deoglRenderTaskConfig::AddTexture(){
-	if( pTextureCount == pTextureSize ){
-		const int newSize = pTextureCount * 3 / 2 + 1;
-		deoglRenderTaskConfigTexture * const newArray = new deoglRenderTaskConfigTexture[ newSize ];
-		if( pTextures ){
-			memcpy( newArray, pTextures, sizeof( deoglRenderTaskConfigTexture ) * pTextureCount );
-			delete [] pTextures;
-		}
-		pTextures = newArray;
-		pTextureSize = newSize;
-	}
-	
-	deoglRenderTaskConfigTexture &texture = pTextures[ pTextureCount++ ];
-	texture.Clear();
-	return texture;
-}
-
-void deoglRenderTaskConfig::RemoveAllTextures(){
-	pTextureCount = 0;
+	pTextures.Add({});
+	return pTextures.Last();
 }

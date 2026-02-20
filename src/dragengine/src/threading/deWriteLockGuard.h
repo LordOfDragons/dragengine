@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create write-write lock guard and lock write-write lock. */
-	deWriteLockGuard( deReadWriteLock &rwlock );
+	deWriteLockGuard(deReadWriteLock &rwlock);
 	
 	/** \brief Clean write-write lock guard unlocking write-write lock. */
 	~deWriteLockGuard();

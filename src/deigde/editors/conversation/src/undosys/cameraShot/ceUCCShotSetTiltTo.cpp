@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetTiltTo::ceUCCShotSetTiltTo( ceCameraShot *cameraShot, float newTilt ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetTiltTo::ceUCCShotSetTiltTo(ceCameraShot *cameraShot, float newTilt){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set End Tilt" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetEndTilt");
 	
 	pOldTilt = cameraShot->GetTiltTo();
 	pNewTilt = newTilt;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetTiltTo::~ceUCCShotSetTiltTo(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetTiltTo::~ceUCCShotSetTiltTo(){
 ///////////////
 
 void ceUCCShotSetTiltTo::Undo(){
-	pCameraShot->SetTiltTo( pOldTilt );
+	pCameraShot->SetTiltTo(pOldTilt);
 }
 
 void ceUCCShotSetTiltTo::Redo(){
-	pCameraShot->SetTiltTo( pNewTilt );
+	pCameraShot->SetTiltTo(pNewTilt);
 }

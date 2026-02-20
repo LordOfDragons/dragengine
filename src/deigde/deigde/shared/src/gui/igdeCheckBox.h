@@ -32,24 +32,38 @@
  * \brief IGDE UI CheckBox with text and icon.
  */
 class DE_DLL_EXPORT igdeCheckBox : public igdeButton{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeCheckBox>;
+	
+	class cNativeCheckBox : public cNativeButton{
+	public:
+		virtual ~cNativeCheckBox() override = default;
+		virtual void UpdateChecked() = 0;
+	};
+	
+	
 private:
 	bool pChecked;
 	
+	
+protected:
+	cNativeCheckBox *pNativeCheckBox;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeCheckBox( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		eButtonStyle = ebsNormal );
+	igdeCheckBox(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		eButtonStyle = ebsNormal);
 	
 	/** \brief Create checkbox. */
-	igdeCheckBox( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, eButtonStyle = ebsNormal );
+	igdeCheckBox(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, eButtonStyle = ebsNormal);
 	
 	/** \brief Create checkbox. */
-	igdeCheckBox( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
+	igdeCheckBox(igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal);
 	
 	
 	
@@ -60,7 +74,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeCheckBox();
+	~igdeCheckBox() override;
 	/*@}*/
 	
 	
@@ -72,12 +86,12 @@ public:
 	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set if menu entry is checked. */
-	void SetChecked( bool checked );
+	void SetChecked(bool checked);
 	
 	
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -91,34 +105,25 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
+	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 	
 protected:
 	/** \brief Checked changed. */
 	virtual void OnCheckedChanged();
-	
-	/** \brief Style changed. */
-	virtual void OnStyleChanged();
-	
-	/** \brief Text changed. */
-	virtual void OnTextChanged();
-	
-	/** \brief Description changed. */
-	virtual void OnDescriptionChanged();
-	
-	/** \brief Icon changed. */
-	virtual void OnIconChanged();
-	
-	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
 	/*@}*/
 };
 

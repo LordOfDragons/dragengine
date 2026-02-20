@@ -38,11 +38,14 @@ class ceLoadSaveSystem;
  * \brief Undo Action Conversation Action Set Delay.
  */
 class ceUConvoSetImportConvoPath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUConvoSetImportConvoPath>;
+	
+	
 private:
 	ceLoadSaveSystem &pLSSystem;
 	ceConversation *pConversation;
-	decStringList pOldValue;
-	decStringList pNewValue;
+	decStringList pOldValue, pNewValue;
 	
 	
 	
@@ -50,12 +53,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUConvoSetImportConvoPath( ceLoadSaveSystem &lssystem,
-		ceConversation *conversation, const decStringList &newValue );
+	ceUConvoSetImportConvoPath(ceLoadSaveSystem &lssystem,
+		ceConversation *conversation, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUConvoSetImportConvoPath();
+	~ceUConvoSetImportConvoPath() override;
 	/*@}*/
 	
 	
@@ -64,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

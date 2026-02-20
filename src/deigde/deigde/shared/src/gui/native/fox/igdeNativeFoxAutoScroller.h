@@ -41,7 +41,7 @@ class igdeContainerForm;
  * scrolls the inner widget relative.
  */
 class igdeNativeFoxAutoScroller : public FXComposite{
-	FXDECLARE( igdeNativeFoxAutoScroller )
+	FXDECLARE(igdeNativeFoxAutoScroller)
 protected:
 	   igdeNativeFoxAutoScroller();
 	
@@ -60,17 +60,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeNativeFoxAutoScroller( FXComposite *parent, int opts = 0 );
+	igdeNativeFoxAutoScroller(FXComposite *parent, int opts = 0);
 	
 	/** \brief Clean up widget. */
-	virtual ~igdeNativeFoxAutoScroller();
+	~igdeNativeFoxAutoScroller() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Content window or NULL. */
+	/** \brief Content window or nullptr. */
 	FXWindow *GetContentWindow() const;
 	
 	/** \brief Content size. */
@@ -80,20 +80,20 @@ public:
 	inline int GetScrollPosition() const{ return pScrollPosition; }
 	
 	/** \brief Set scroll position. */
-	void SetScrollPosition( int position );
+	void SetScrollPosition(int position);
 	
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
-	virtual void layout();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
+	void layout() override;
 	
-	void MoveContent( int x );
+	void MoveContent(int x);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onChildMouseMoved( FXObject*, FXSelector, void* );
+	long onChildMouseMoved(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

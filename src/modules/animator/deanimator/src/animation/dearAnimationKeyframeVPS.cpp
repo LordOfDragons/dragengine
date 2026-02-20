@@ -40,10 +40,10 @@
 /////////////////////////////////
 
 dearAnimationKeyframeVPS::dearAnimationKeyframeVPS() :
-pTime( 0.0f ),
-pTimeStep( 1.0f ),
-pWeight( 0.0f ),
-pWeightStep( 1.0f ){
+pTime(0.0f),
+pTimeStep(1.0f),
+pWeight(0.0f),
+pWeightStep(1.0f){
 }
 
 dearAnimationKeyframeVPS::~dearAnimationKeyframeVPS(){
@@ -54,26 +54,26 @@ dearAnimationKeyframeVPS::~dearAnimationKeyframeVPS(){
 // Management
 ///////////////
 
-float dearAnimationKeyframeVPS::InterpolateWeight( float time ) const{
+float dearAnimationKeyframeVPS::InterpolateWeight(float time) const{
 	return pWeight + pWeightStep * time;
 }
 
-void dearAnimationKeyframeVPS::Set( const deAnimationKeyframeVertexPositionSet &keyframe ){
+void dearAnimationKeyframeVPS::Set(const deAnimationKeyframeVertexPositionSet &keyframe){
 	pTime = keyframe.GetTime();
 	pTimeStep = 1.0f;
 	pWeight = keyframe.GetWeight();
 	pWeightStep = 0.0f;
 }
 
-void dearAnimationKeyframeVPS::Set( const deAnimationKeyframeVertexPositionSet &keyframe,
-const deAnimationKeyframeVertexPositionSet &nextKeyframe ){
-	if( nextKeyframe.GetTime() <= keyframe.GetTime() ){
-		Set( keyframe );
+void dearAnimationKeyframeVPS::Set(const deAnimationKeyframeVertexPositionSet &keyframe,
+const deAnimationKeyframeVertexPositionSet &nextKeyframe){
+	if(nextKeyframe.GetTime() <= keyframe.GetTime()){
+		Set(keyframe);
 		return;
 	}
 	
 	pTime = keyframe.GetTime();
-	pTimeStep = 1.0f / ( nextKeyframe.GetTime() - keyframe.GetTime() );
+	pTimeStep = 1.0f / (nextKeyframe.GetTime() - keyframe.GetTime());
 	pWeight = keyframe.GetWeight();
-	pWeightStep = ( nextKeyframe.GetWeight() - keyframe.GetWeight() ) * pTimeStep;
+	pWeightStep = (nextKeyframe.GetWeight() - keyframe.GetWeight()) * pTimeStep;
 }

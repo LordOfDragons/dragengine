@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "igdeApplication.h"
 #include "igdeWindow.h"
 #include "igdeCommonDialogs.h"
-#include "igdeContainerReference.h"
+#include "igdeContainer.h"
 #include "igdeWidget.h"
-#include "igdeWidgetReference.h"
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "theme/igdeGuiTheme.h"
@@ -46,16 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWindow::igdeWindow( igdeEnvironment &environment, const char *title, igdeIcon *icon, bool canResize ) :
-igdeContainer( environment ),
-pTitle( title ),
-pIcon( icon ),
-pCanResize( canResize ),
-pPosition( 10, 50 ),
-pSize( 400, 300 ),
-pEnabled( true )
+igdeWindow::igdeWindow(igdeEnvironment &environment, const char *title, igdeIcon *icon, bool canResize) :
+igdeContainer(environment),
+pTitle(title),
+pIcon(icon),
+pCanResize(canResize),
+pPosition(igdeApplication::app().DisplayScaled(decPoint(10, 50))),
+pSize(igdeApplication::app().DisplayScaled(decPoint(400, 300))),
+pEnabled(true),
+pNativeWindow(nullptr)
 {
-	SetVisible( false );
+	SetVisible(false);
 }
 
 igdeWindow::~igdeWindow(){
@@ -67,8 +65,8 @@ igdeWindow::~igdeWindow(){
 // Management
 ///////////////
 
-void igdeWindow::SetTitle( const char *title ){
-	if( pTitle == title ){
+void igdeWindow::SetTitle(const char *title){
+	if(pTitle == title){
 		return;
 	}
 	
@@ -76,8 +74,8 @@ void igdeWindow::SetTitle( const char *title ){
 	OnTitleChanged();
 }
 
-void igdeWindow::SetIcon( igdeIcon* icon ){
-	if( pIcon == icon ){
+void igdeWindow::SetIcon(igdeIcon* icon){
+	if(pIcon == icon){
 		return;
 	}
 	
@@ -85,8 +83,8 @@ void igdeWindow::SetIcon( igdeIcon* icon ){
 	OnIconChanged();
 }
 
-void igdeWindow::SetSize( const decPoint &size ){
-	if( size == pSize ){
+void igdeWindow::SetSize(const decPoint &size){
+	if(size == pSize){
 		return;
 	}
 	
@@ -94,8 +92,8 @@ void igdeWindow::SetSize( const decPoint &size ){
 	OnSizeChanged();
 }
 
-void igdeWindow::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void igdeWindow::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
@@ -103,8 +101,8 @@ void igdeWindow::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeWindow::SetPosition( const decPoint &position ){
-	if( position == pPosition ){
+void igdeWindow::SetPosition(const decPoint &position){
+	if(position == pPosition){
 		return;
 	}
 	
@@ -118,11 +116,9 @@ void igdeWindow::RaiseAndActivate(){
 
 
 
-void igdeWindow::AddChild( igdeWidget *child ){
-	if( GetChildCount() > 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	igdeContainer::AddChild( child );
+void igdeWindow::AddChild(igdeWidget *child){
+	DEASSERT_TRUE(GetChildren().IsEmpty())
+	igdeContainer::AddChild(child);
 }
 
 
@@ -132,7 +128,7 @@ bool igdeWindow::CloseWindow(){
 }
 
 void igdeWindow::Close(){
-	if( GetNativeWidget() ){
+	if(pNativeWindow){
 		DestroyNativeWidget();
 	}
 }
@@ -147,70 +143,79 @@ igdeWindow *igdeWindow::GetParentWindow(){
 ///////////////////////////
 
 void igdeWindow::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	if( GetParent() ){
-		DETHROW( deeInvalidParam );
+	if(GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeNativeWindow * const native = igdeNativeWindow::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeWindow * const native = igdeNativeWindow::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeWindow = native;
 	CreateChildWidgetNativeWidgets();
 	native->PostCreateNativeWidget();
 }
 
 void igdeWindow::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeWindow* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeWindow*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
+void igdeWindow::DropNativeWidget(){
+	pNativeWindow = nullptr;
+	igdeContainer::DropNativeWidget();
+}
 
 
 void igdeWindow::OnTitleChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeWindow* )GetNativeWidget() )->UpdateTitle();
+	if(pNativeWindow){
+		pNativeWindow->UpdateTitle();
 	}
 }
 
 void igdeWindow::OnIconChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeWindow* )GetNativeWidget() )->UpdateIcon();
+	if(pNativeWindow){
+		pNativeWindow->UpdateIcon();
 	}
 }
 
 void igdeWindow::OnSizeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeWindow* )GetNativeWidget() )->UpdateSize();
+	if(pNativeWindow){
+		pNativeWindow->UpdateSize();
 	}
 }
 
 void igdeWindow::OnPositionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeWindow* )GetNativeWidget() )->UpdatePosition();
+	if(pNativeWindow){
+		pNativeWindow->UpdatePosition();
 	}
 }
 
 void igdeWindow::OnVisibleChanged(){
-	if( GetVisible() ){
+	if(GetVisible()){
 		CreateNativeWidget();
 	}
 	igdeWidget::OnVisibleChanged();
 }
 
 void igdeWindow::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeWindow* )GetNativeWidget() )->UpdateEnabled();
+	if(pNativeWindow){
+		pNativeWindow->UpdateEnabled();
 	}
 }
 
 void igdeWindow::OnRaiseAndActivate(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeWindow* )GetNativeWidget() )->RaiseAndActivate();
+	if(pNativeWindow){
+		pNativeWindow->RaiseAndActivate();
 	}
+}
+
+void igdeWindow::OnNativeWidgetLanguageChanged(){
+	OnTitleChanged();
 }

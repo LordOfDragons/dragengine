@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -36,26 +36,30 @@ class aeRuleAnimationDifference;
  * Undo rule animation difference set enable position.
  */
 class aeURuleAnimDiffToggleEnablePosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleAnimDiffToggleEnablePosition>;
+	
+	
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleAnimDiffToggleEnablePosition( aeRuleAnimationDifference *rule );
+	aeURuleAnimDiffToggleEnablePosition(aeRuleAnimationDifference *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleAnimDiffToggleEnablePosition();
+	~aeURuleAnimDiffToggleEnablePosition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

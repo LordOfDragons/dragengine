@@ -26,9 +26,9 @@
 #define _DEENVMAPPROBE_H_
 
 #include "../deResource.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 #include "../../common/math/decMath.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 #include "../../common/string/decString.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -59,8 +59,7 @@ class deWorld;
 class DE_DLL_EXPORT deEnvMapProbe : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deEnvMapProbe> Ref;
-	
+	using Ref = deTObjectReference<deEnvMapProbe>;
 	
 	
 private:
@@ -68,19 +67,18 @@ private:
 	decQuaternion pOrientation;
 	decVector pScaling;
 	
-	decShapeList pShapeListInfluence;
-	decShape *pShapeReflection;
-	decShapeList pShapeListReflectionMask;
+	decShape::List pShapeListInfluence;
+	decShape::Ref pShapeReflection;
+	decShape::List pShapeListReflectionMask;
 	float pInfluenceBorderSize;
 	int pInfluencePriority;
 	
 	decLayerMask pLayerMask;
 	
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	deWorld *pParentWorld;
-	deEnvMapProbe *pLLWorldPrev;
-	deEnvMapProbe *pLLWorldNext;
+	decTObjectLinkedList<deEnvMapProbe>::Element pLLWorld;
 	
 	deBaseGraphicEnvMapProbe *pPeerGraphic;
 	
@@ -90,7 +88,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new environment map probe. */
-	deEnvMapProbe( deEnvMapProbeManager *manager );
+	deEnvMapProbe(deEnvMapProbeManager *manager);
 	
 protected:
 	/**
@@ -99,7 +97,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deEnvMapProbe();
+	~deEnvMapProbe() override;
 	/*@}*/
 	
 	
@@ -111,36 +109,36 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
 	inline const decVector &GetScaling() const{ return pScaling; }
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	/** \brief Influence shape list. */
-	inline decShapeList &GetShapeListInfluence(){ return pShapeListInfluence; }
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline decShape::List &GetShapeListInfluence(){ return pShapeListInfluence; }
+	inline const decShape::List &GetShapeListInfluence() const{ return pShapeListInfluence; }
 	
 	/** \brief Notifies the peers that the influence shape list changed. */
 	void NotifyShapeListInfluenceChanged();
 	
 	/** \brief Reflection shape or NULL if the environment map is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	inline const decShape::Ref &GetShapeReflection() const{ return pShapeReflection; }
 	
 	/** \brief Set reflection shape or NULL if the environment map is global. */
-	void SetShapeReflection( decShape *shape );
+	void SetShapeReflection(const decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline decShapeList &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline decShape::List &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
+	inline const decShape::List &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
 	
 	/** \brief Notifies the peers that the reflection shape changed. */
 	void NotifyShapeReflectionChanged();
@@ -149,25 +147,25 @@ public:
 	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
 	
 	/** \brief Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	/** \brief Influence priority. */
 	inline int GetInfluencePriority() const{ return pInfluencePriority; }
 	
 	/** \brief Set influence priority. */
-	void SetInfluencePriority( int priority );
+	void SetInfluencePriority(int priority);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Explicit environment map image to use or NULL to auto-generate. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set explicit environment map image to use or NULL to auto-generate. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 	
 	
@@ -178,7 +176,7 @@ public:
 	inline deBaseGraphicEnvMapProbe *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphics system peer. */
-	void SetPeerGraphic( deBaseGraphicEnvMapProbe *peer );
+	void SetPeerGraphic(deBaseGraphicEnvMapProbe *peer);
 	/*@}*/
 	
 	
@@ -191,17 +189,8 @@ public:
 	/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous environment map probe in the parent world linked list. */
-	inline deEnvMapProbe *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next environment map probe in the parent world linked list. */
-	void SetLLWorldPrev( deEnvMapProbe *instance );
-	
-	/** \brief Next environment map probe in the parent world linked list. */
-	inline deEnvMapProbe *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next environment map probe in the parent world linked list. */
-	void SetLLWorldNext( deEnvMapProbe *instance );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deEnvMapProbe>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

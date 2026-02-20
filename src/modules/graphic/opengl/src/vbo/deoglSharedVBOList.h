@@ -25,14 +25,14 @@
 #ifndef _DEOGLSHAREDVBOLIST_H_
 #define _DEOGLSHAREDVBOLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-
 #include "../deoglBasics.h"
 #include "deoglVBOLayout.h"
+#include "deoglSharedVBOBlock.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRenderThread;
 class deoglSharedVBO;
-class deoglSharedVBOBlock;
 
 
 
@@ -51,14 +51,14 @@ public:
 	int pMaxPointCount;
 	int pMaxIndexSize;
 	int pMaxIndexCount;
-	decObjectList pVBOs;
+	decTObjectList<deoglSharedVBO> pVBOs;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared vbo list. */
-	deoglSharedVBOList( deoglRenderThread &renderThread, const deoglVBOLayout &layout,
-		GLenum drawType, int maxSize, int maxIndexSize );
+	deoglSharedVBOList(deoglRenderThread &renderThread, const deoglVBOLayout &layout,
+		GLenum drawType, int maxSize, int maxIndexSize);
 	
 	/** Clean up shared vbo list. */
 	~deoglSharedVBOList();
@@ -72,6 +72,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Layout. */
+	inline deoglVBOLayout &GetLayout(){ return pLayout; }
 	inline const deoglVBOLayout &GetLayout() const{ return pLayout; }
 	
 	/** Draw type. */
@@ -90,16 +91,16 @@ public:
 	inline int GetMaxIndexCount() const{ return pMaxIndexCount; }
 	
 	/** VBO list matches the layout and draw type. */
-	bool Matches( const deoglVBOLayout &layout, GLenum drawType ) const;
+	bool Matches(const deoglVBOLayout &layout, GLenum drawType) const;
 	
 	/** Count of VBOs. */
 	int GetCount() const;
 	
 	/** VBO at index. */
-	deoglSharedVBO *GetAt( int index ) const;
+	deoglSharedVBO *GetAt(int index) const;
 	
 	/** Add block of data to a matching VBO returning the resulting block. */
-	deoglSharedVBOBlock *AddData( int size, int indexCount = 0 );
+	deoglSharedVBOBlock::Ref AddData(int size, int indexCount = 0);
 	
 	/** Prepare all VBOs not yet prepared. */
 	void PrepareVBOs();

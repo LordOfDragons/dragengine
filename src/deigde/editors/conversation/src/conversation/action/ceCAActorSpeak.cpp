@@ -30,7 +30,6 @@
 #include "../strip/ceStrip.h"
 #include "../ceConversation.h"
 #include "../../langpack/ceLangPack.h"
-#include "../../langpack/ceLangPackEntry.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -53,22 +52,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAActorSpeak::ceCAActorSpeak( deEngine *engine ) : ceConversationAction( eatActorSpeak ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+ceCAActorSpeak::ceCAActorSpeak(deEngine *engine) : ceConversationAction(eatActorSpeak){
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEngine = engine;
-	pEngSound = NULL;
+	pEngSound = nullptr;
 	pLoaded = true;
 	
 	pMinSpeechTime = 0.0f;
 	pUseSpeechAnimation = true;
 }
 
-ceCAActorSpeak::ceCAActorSpeak( const ceCAActorSpeak &action ) : ceConversationAction( action ){
+ceCAActorSpeak::ceCAActorSpeak(const ceCAActorSpeak &action) : ceConversationAction(action){
 	pEngine = action.GetEngine();
-	pEngSound = NULL;
+	pEngSound = nullptr;
 	pLoaded = true;
 	
 	pActor = action.pActor;
@@ -77,26 +76,20 @@ ceCAActorSpeak::ceCAActorSpeak( const ceCAActorSpeak &action ) : ceConversationA
 	pTextBoxTextStyle = action.pTextBoxTextStyle;
 	pPathSound = action.pPathSound;
 	pMovement = action.pMovement;
-	pWords.AddCopyFrom( action.pWords );
-	pFacePoses.AddCopyFrom( action.pFacePoses );
-	pGestures.AddCopyFrom( action.pGestures );
-	pBodyLookAt.AddCopyFrom( action.pBodyLookAt );
-	pHeadLookAt.AddCopyFrom( action.pHeadLookAt );
-	pEyesLookAt.AddCopyFrom( action.pEyesLookAt );
+	action.pWords.Visit([&](const ceStrip &s){ pWords.Add(ceStrip::Ref::New(s)); });
+	action.pFacePoses.Visit([&](const ceStrip &s){ pFacePoses.Add(ceStrip::Ref::New(s)); });
+	action.pGestures.Visit([&](const ceStrip &s){ pGestures.Add(ceStrip::Ref::New(s)); });
+	action.pBodyLookAt.Visit([&](const ceStrip &s){ pBodyLookAt.Add(ceStrip::Ref::New(s)); });
+	action.pHeadLookAt.Visit([&](const ceStrip &s){ pHeadLookAt.Add(ceStrip::Ref::New(s)); });
+	action.pEyesLookAt.Visit([&](const ceStrip &s){ pEyesLookAt.Add(ceStrip::Ref::New(s)); });
 	pMinSpeechTime = action.pMinSpeechTime;
 	pUseSpeechAnimation = action.pUseSpeechAnimation;
 	
 	pEngSound = action.pEngSound;
-	if( pEngSound ){
-		pEngSound->AddReference();
-	}
 	pLoaded = action.pLoaded;
 }
 
 ceCAActorSpeak::~ceCAActorSpeak(){
-	if( pEngSound ){
-		pEngSound->FreeReference();
-	}
 }
 
 
@@ -104,8 +97,8 @@ ceCAActorSpeak::~ceCAActorSpeak(){
 // Management
 ///////////////
 
-deSound *ceCAActorSpeak::GetEngineSound(){
-	if( ! pLoaded ){
+const deSound::Ref &ceCAActorSpeak::GetEngineSound(){
+	if(!pLoaded){
 		pLoadSound();
 	}
 	
@@ -114,57 +107,53 @@ deSound *ceCAActorSpeak::GetEngineSound(){
 
 
 
-void ceCAActorSpeak::SetActor( const char *id ){
+void ceCAActorSpeak::SetActor(const char *id){
 	pActor = id;
 }
 
-void ceCAActorSpeak::SetTextBoxText( const decUnicodeString &text ){
+void ceCAActorSpeak::SetTextBoxText(const decUnicodeString &text){
 	pTextBoxText = text;
 }
 
-void ceCAActorSpeak::SetTextBoxTextTranslate( const char *text ){
+void ceCAActorSpeak::SetTextBoxTextTranslate(const char *text){
 	pTextBoxTextTranslate = text;
 }
 
-decUnicodeString ceCAActorSpeak::ResolveTextBoxText( const ceConversation &conversation ) const{
-	if( ! pTextBoxTextTranslate.IsEmpty() ){
+decUnicodeString ceCAActorSpeak::ResolveTextBoxText(const ceConversation &conversation) const{
+	if(!pTextBoxTextTranslate.IsEmpty()){
 		const ceLangPack * const langpack = conversation.GetLanguagePack();
-		if( langpack ){
-			const ceLangPackEntry * const entry = langpack->GetEntryNamed( pTextBoxTextTranslate );
-			if( entry ){
-				return entry->GetText();
+		if(langpack){
+			const decUnicodeString *text = nullptr;
+			if(langpack->GetEntries().GetAt(pTextBoxTextTranslate, text)){
+				return *text;
 			}
 		}
 	}
 	return pTextBoxText;
 }
 
-void ceCAActorSpeak::SetTextBoxTextStyle( const char *style ){
+void ceCAActorSpeak::SetTextBoxTextStyle(const char *style){
 	pTextBoxTextStyle = style;
 }
 
-void ceCAActorSpeak::SetPathSound( const char *path ){
-	if( ! pPathSound.Equals( path ) ){
+void ceCAActorSpeak::SetPathSound(const char *path){
+	if(!pPathSound.Equals(path)){
 		pPathSound = path;
-		
-		if( pEngSound ){
-			pEngSound->FreeReference();
-			pEngSound = NULL;
-		}
+		pEngSound = nullptr;
 		pLoaded = false;
 	}
 }
 
-void ceCAActorSpeak::SetMovement( const char *movement ){
-	if( ! movement ){
-		DETHROW( deeInvalidParam );
+void ceCAActorSpeak::SetMovement(const char *movement){
+	if(!movement){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMovement = movement;
 }
 
-void ceCAActorSpeak::SetMinSpeechTime( float minSpeechTime ){
-	if( minSpeechTime < 0.0f ){
+void ceCAActorSpeak::SetMinSpeechTime(float minSpeechTime){
+	if(minSpeechTime < 0.0f){
 		pMinSpeechTime = 0.0f;
 		
 	}else{
@@ -172,14 +161,14 @@ void ceCAActorSpeak::SetMinSpeechTime( float minSpeechTime ){
 	}
 }
 
-void ceCAActorSpeak::SetUseSpeechAnimation( bool useSpeechAnimation ){
+void ceCAActorSpeak::SetUseSpeechAnimation(bool useSpeechAnimation){
 	pUseSpeechAnimation = useSpeechAnimation;
 }
 
 
 
-ceConversationAction *ceCAActorSpeak::CreateCopy() const{
-	return new ceCAActorSpeak( *this );
+ceConversationAction::Ref ceCAActorSpeak::CreateCopy() const{
+	return ceCAActorSpeak::Ref::New(*this);
 }
 
 
@@ -188,30 +177,22 @@ ceConversationAction *ceCAActorSpeak::CreateCopy() const{
 //////////////////////
 
 void ceCAActorSpeak::pLoadSound(){
-	deSound *sound = NULL;
+	deSound::Ref sound;
 	
 	try{
-		if( ! pPathSound.IsEmpty() ){
-			sound = pEngine->GetSoundManager()->LoadSound( pPathSound.GetString(), "/", false );
+		if(!pPathSound.IsEmpty()){
+			sound = pEngine->GetSoundManager()->LoadSound(pPathSound.GetString(), "/", false);
 		}
 		
-		if( sound && sound->GetChannelCount() != 1 ){
-			pEngine->GetLogger()->LogWarnFormat( LOGSOURCE,
-				"Channel count %i instead of 1. Sound file not used.", sound->GetChannelCount() );
-			sound->FreeReference();
-			sound = NULL;
+		if(sound && sound->GetChannelCount() != 1){
+			pEngine->GetLogger()->LogWarnFormat(LOGSOURCE,
+				"Channel count %i instead of 1. Sound file not used.", sound->GetChannelCount());
+			sound = nullptr;
 		}
 		
-	}catch( const deException &e ){
-		if( sound ){
-			sound->FreeReference();
-			sound = NULL;
-		}
-		pEngine->GetLogger()->LogException( LOGSOURCE, e );
-	}
-	
-	if( pEngSound ){
-		pEngSound->FreeReference();
+	}catch(const deException &e){
+		sound = nullptr;
+		pEngine->GetLogger()->LogException(LOGSOURCE, e);
 	}
 	pEngSound = sound;
 	

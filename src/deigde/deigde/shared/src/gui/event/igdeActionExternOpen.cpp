@@ -87,14 +87,14 @@ void igdeActionExternOpen::OnAction(){
 	}
 	
 	if(pEnsureExists){
-		deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/"),
+		deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"),
 			decPath::CreatePathNative(pPath))->EnsureDiskDirectoryExists();
 	}
 	
 	#ifdef OS_W32
 	wchar_t widePath[MAX_PATH];
 	deOSWindows::Utf8ToWide(pPath, widePath, MAX_PATH);
-	ShellExecute(NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT);
+	ShellExecute(nullptr, L"open", widePath, nullptr, nullptr, SW_SHOWDEFAULT);
 		
 	#else
 	const char * const appname = "xdg-open";

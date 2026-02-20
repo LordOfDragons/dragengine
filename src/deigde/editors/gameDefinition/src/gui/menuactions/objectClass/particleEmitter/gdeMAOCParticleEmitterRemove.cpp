@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCParticleEmitterRemove::gdeMAOCParticleEmitterRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Particle Emitter",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class particle emitter" )
+gdeMAOCParticleEmitterRemove::gdeMAOCParticleEmitterRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterRemove",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"@GameDefinition.Menu.OCParticleEmitterRemove.ToolTip")
 {
 }
 
@@ -58,23 +58,23 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter ){
-		return NULL;
+igdeUndo::Ref gdeMAOCParticleEmitterRemove::OnActionSubObject(
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter){
+		return {};
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
-	if( ! particleEmitter ){
-		return NULL;
+	if(!particleEmitter){
+		return {};
 	}
 	
-	return new gdeUOCRemoveParticleEmitter( &objectClass, particleEmitter );
+	return gdeUOCRemoveParticleEmitter::Ref::New(&objectClass, particleEmitter);
 }
 
 void gdeMAOCParticleEmitterRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
-		&& gameDefinition->GetActiveOCParticleEmitter() != NULL );
+		&& gameDefinition->GetActiveOCParticleEmitter() != nullptr);
 }

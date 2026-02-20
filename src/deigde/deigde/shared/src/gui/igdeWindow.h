@@ -28,41 +28,53 @@
 #include <stddef.h>
 
 #include "igdeContainer.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 
-class igdeContainerReference;
 class igdeWidget;
-
-
 
 /**
  * \brief IGDE UI Window.
  */
 class DE_DLL_EXPORT igdeWindow : public igdeContainer{
+public:
+	class cNativeWindow{
+	public:
+		virtual ~cNativeWindow() = default;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdatePosition() = 0;
+		virtual void UpdateIcon() = 0;
+		virtual void UpdateTitle() = 0;
+		virtual void UpdateSize() = 0;
+		virtual void RaiseAndActivate() = 0;
+	};
+	
+	
 private:
 	decString pTitle;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pCanResize;
-	decPoint pPosition;
-	decPoint pSize;
+	decPoint pPosition, pSize;
 	bool pEnabled;
 	
+	
+protected:
+	cNativeWindow *pNativeWindow;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	igdeWindow( igdeEnvironment &environment, const char *title,
-		igdeIcon *icon = NULL, bool canResize = true );
+	igdeWindow(igdeEnvironment &environment, const char *title,
+		igdeIcon *icon = nullptr, bool canResize = true);
 	
 	
 	
 protected:
 	/** \brief Clean up window. */
-	virtual ~igdeWindow();
+	~igdeWindow() override;
 	/*@}*/
 	
 	
@@ -74,13 +86,13 @@ public:
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Window can be resized by user. */
 	inline bool GetCanResize() const{ return pCanResize; }
@@ -89,19 +101,19 @@ public:
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set window size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	/** \brief Window is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if window is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Window position. */
 	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set window position. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Raise and activate window. */
 	virtual void RaiseAndActivate();
@@ -113,7 +125,7 @@ public:
 	 * 
 	 * Windows can contain only one widget. This is usually a container.
 	 */
-	virtual void AddChild( igdeWidget *child );
+	void AddChild(igdeWidget *child) override;
 	
 	
 	
@@ -129,7 +141,7 @@ public:
 	virtual void Close();
 	
 	/** \brief Parent window. */
-	virtual igdeWindow *GetParentWindow();
+	igdeWindow *GetParentWindow() override;
 	/*@}*/
 	
 	
@@ -143,14 +155,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -179,13 +196,16 @@ protected:
 	virtual void OnPositionChanged();
 	
 	/** \brief Visible changed. */
-	virtual void OnVisibleChanged();
+	void OnVisibleChanged() override;
 	
 	/** \brief Enabled changed. */
 	virtual void OnEnabledChanged();
 	
 	/** \brief Raise and activate window. */
 	virtual void OnRaiseAndActivate();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrain;
+#include "../../../world/meWorld.h"
+#include "../../../world/terrain/meHeightTerrain.h"
 
 
 
@@ -41,9 +41,13 @@ class meHeightTerrain;
  * Undo action to set the height scaling of a height image.
  */
 class meUHTSetHeightScaling : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetHeightScaling>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrain *pHeightTerrain;
+	meHeightTerrain::Ref pHeightTerrain;
 	
 	float pOldHeightScaling;
 	float pNewHeightScaling;
@@ -52,20 +56,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetHeightScaling( meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling );
+	meUHTSetHeightScaling(meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetHeightScaling();
+
+protected:
+	~meUHTSetHeightScaling() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

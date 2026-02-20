@@ -39,35 +39,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName( gdeObjectClass *objectClass,
-gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pLight( NULL ),
-pProperty( property )
+gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass *objectClass,
+gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue) :
+
+pProperty(property)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set property name" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetPropertyName");
 	
-	pOldValue = light->GetPropertyName( property );
+	pOldValue = light->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
 ///////////////
 
 void gdeUOCLightSetPropertyName::Undo(){
-	pLight->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetPropertyName::Redo(){
-	pLight->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

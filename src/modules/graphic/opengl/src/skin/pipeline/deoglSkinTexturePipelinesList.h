@@ -27,6 +27,8 @@
 
 #include "deoglSkinTexturePipelines.h"
 
+#include <dragengine/deTUniqueReference.h>
+
 class deoglBatchedShaderLoading;
 
 
@@ -54,7 +56,7 @@ public:
 	
 	
 private:
-	deoglSkinTexturePipelines::Ref pPipelines[ PipelineTypesCount ];
+	deTUniqueReference<deoglSkinTexturePipelines> pPipelines[PipelineTypesCount];
 	
 	
 	
@@ -62,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSkinTexturePipelinesList( const deoglSkinTexture &texture );
+	deoglSkinTexturePipelinesList(const deoglSkinTexture &texture);
 	
 	/** Clean up skin texture pipeline. */
 	~deoglSkinTexturePipelinesList();
@@ -74,10 +76,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get pipelines. */
-	deoglSkinTexturePipelines &GetAt( ePipelineTypes type ) const;
+	deoglSkinTexturePipelines &GetAt(ePipelineTypes type) const;
 	
 	/** Prepare all pipelines. */
-	void Prepare( deoglBatchedShaderLoading &batched );
+	void Prepare(deoglBatchedShaderLoading &batched);
 	/*@}*/
 };
 

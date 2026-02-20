@@ -26,13 +26,13 @@
 #define _DEOGLSHAREDVBO_H_
 
 #include "deoglVBOLayout.h"
+#include "deoglSharedVBOBlock.h"
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
 
-class deoglSharedVBOBlock;
 class deoglSharedVBOList;
 class deoglVAO;
 
@@ -46,11 +46,15 @@ class deoglVAO;
  */
 class deoglSharedVBO : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglSharedVBO>;
+	
+	
 	deoglSharedVBOList *pParentList;
 	GLuint pVBO;
 	GLuint pIBO;
 	deoglVAO *pVAO;
-	decObjectList pBlocks;
+	decTObjectList<deoglSharedVBOBlock> pBlocks;
 	int pSize;
 	int pUsedSize;
 	int pIndexSize;
@@ -64,11 +68,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shared vbo. */
-	deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize );
+	deoglSharedVBO(deoglSharedVBOList *parentList, int size, int indexSize);
+	
+protected:
 	/** Cleans up the shared vbo. */
-	virtual ~deoglSharedVBO();
+	~deoglSharedVBO() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent list. */
@@ -104,18 +111,18 @@ public:
 	/** Retrieves the number of blocks. */
 	int GetBlockCount() const;
 	/** Retrieves the block at the given location. */
-	deoglSharedVBOBlock *GetBlockAt( int index ) const;
+	deoglSharedVBOBlock *GetBlockAt(int index) const;
 	
 	/**
 	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
 	 * location has been found or NULL if there is not enough space left in the VBO.
 	 */
-	deoglSharedVBOBlock *AddBlock( int size, int indexCount = 0 );
+	deoglSharedVBOBlock::Ref AddBlock(int size, int indexCount = 0);
 	/** Removes a block of data returning the space to the pool of free space. */
-	void RemoveBlock( deoglSharedVBOBlock *block );
+	void RemoveBlock(deoglSharedVBOBlock *block);
 	
 	/** Index of first empty block with minimum size and index count available or NULL if not found. */
-	int IndexOfEmptyBlockWithMinSize( int size, int indexCount );
+	int IndexOfEmptyBlockWithMinSize(int size, int indexCount);
 	/*@}*/
 	
 private:

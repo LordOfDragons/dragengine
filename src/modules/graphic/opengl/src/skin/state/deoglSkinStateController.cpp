@@ -50,14 +50,12 @@
 ////////////////////////////
 
 deoglSkinStateController::deoglSkinStateController() :
-pSharedVideoPlayers( NULL ),
-pSharedVideoPlayerCount( 0 ),
-pHasCalculatedProperties( false ),
-pHasConstructedProperties( false ){
+pHasCalculatedProperties(false),
+pHasConstructedProperties(false){
 }
 
 deoglSkinStateController::~deoglSkinStateController(){
-	SetVideoPlayerCount( 0 );
+	SetVideoPlayerCount(0);
 }
 
 
@@ -65,82 +63,66 @@ deoglSkinStateController::~deoglSkinStateController(){
 // Management
 ///////////////
 
-void deoglSkinStateController::SetVideoPlayerCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSkinStateController::SetVideoPlayerCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pSharedVideoPlayerCount ){
+	if(count == pSharedVideoPlayers.GetCount()){
 		return;
 	}
 	
 	// video players
 	pVideoPlayers.RemoveAll();
-	while( pVideoPlayers.GetCount() < count ){
-		pVideoPlayers.Add( NULL );
+	while(pVideoPlayers.GetCount() < count){
+		pVideoPlayers.Add(nullptr);
 	}
 	
 	// shared video players
-	if( pSharedVideoPlayers ){
-		while( pSharedVideoPlayerCount > 0 ){
-			pSharedVideoPlayerCount--;
-			if( pSharedVideoPlayers[ pSharedVideoPlayerCount ] ){
-				pSharedVideoPlayers[ pSharedVideoPlayerCount ]->FreeUsage();
-				pSharedVideoPlayers[ pSharedVideoPlayerCount ] = NULL;
-			}
+	pSharedVideoPlayers.Visit([](deoglSharedVideoPlayer *p){
+		if(p){
+			p->FreeUsage();
 		}
-		
-		delete [] pSharedVideoPlayers;
-		pSharedVideoPlayers = NULL;
-	}
+	});
+	pSharedVideoPlayers.RemoveAll();
 	
-	if( count > 0 ){
-		pSharedVideoPlayers = new deoglSharedVideoPlayer*[ count ];
-		
-		for( pSharedVideoPlayerCount=0; pSharedVideoPlayerCount<count; pSharedVideoPlayerCount++ ){
-			pSharedVideoPlayers[ pSharedVideoPlayerCount ] = NULL;
-		}
+	int i;
+	for(i=0; i<count; i++){
+		pSharedVideoPlayers.Add(nullptr);
 	}
 }
 
-deVideoPlayer *deoglSkinStateController::GetVideoPlayerAt( int index ) const{
-	return ( deVideoPlayer* )pVideoPlayers.GetAt( index );
+deVideoPlayer *deoglSkinStateController::GetVideoPlayerAt(int index) const{
+	return pVideoPlayers.GetAt(index);
 }
 
-deoglSharedVideoPlayer *deoglSkinStateController::GetSharedVideoPlayerAt( int index ) const{
-	if( index < 0 || index >= pSharedVideoPlayerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pSharedVideoPlayers[ index ];
+deoglSharedVideoPlayer *deoglSkinStateController::GetSharedVideoPlayerAt(int index) const{
+	return pSharedVideoPlayers.GetAt(index);
 }
 
-void deoglSkinStateController::SetVideoPlayerAt( int index, deVideoPlayer *videoPlayer ){
-	pVideoPlayers.SetAt( index, videoPlayer );
+void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer *videoPlayer){
+	pVideoPlayers.SetAt(index, videoPlayer);
 }
 
-void deoglSkinStateController::SetSharedVideoPlayerAt( int index, deoglSharedVideoPlayer *videoPlayer ){
-	if( index < 0 || index >= pSharedVideoPlayerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( videoPlayer == pSharedVideoPlayers[ index ] ){
+void deoglSkinStateController::SetSharedVideoPlayerAt(int index, deoglSharedVideoPlayer *videoPlayer){
+	if(pSharedVideoPlayers.GetAt(index) == videoPlayer){
 		return;
 	}
 	
-	if( pSharedVideoPlayers[ index ] ){
-		pSharedVideoPlayers[ index ]->FreeUsage();
+	if(pSharedVideoPlayers.GetAt(index)){
+		pSharedVideoPlayers.GetAt(index)->FreeUsage();
 	}
 	
-	pSharedVideoPlayers[ index ] = videoPlayer;
+	pSharedVideoPlayers.SetAt(index, videoPlayer);
 }
 
 
 
-void deoglSkinStateController::SetHasCalculatedProperties( bool hasCalculatedProperties ){
+void deoglSkinStateController::SetHasCalculatedProperties(bool hasCalculatedProperties){
 	pHasCalculatedProperties = hasCalculatedProperties;
 }
 
-void deoglSkinStateController::SetHasConstructedProperties( bool hasConstructedProperties ){
+void deoglSkinStateController::SetHasConstructedProperties(bool hasConstructedProperties){
 	pHasConstructedProperties = hasConstructedProperties;
 }
 
@@ -154,58 +136,58 @@ bool deoglSkinStateController::RequiresPrepareRenderables() const{
 	return pVideoPlayers.GetCount() > 0;
 }
 
-void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world ){
-	if( ! skin || ! world ){
-		skinState.SetVideoPlayerCount( 0 );
-		SetVideoPlayerCount( 0 );
+void deoglSkinStateController::Init(deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world){
+	if(!skin || !world){
+		skinState.SetVideoPlayerCount(0);
+		SetVideoPlayerCount(0);
 		pHasCalculatedProperties = false;
 		pHasConstructedProperties = false;
 		return;
 	}
 	
 	const int textureCount = skin->GetTextureCount();
-	if( textureCount == 0 ){
-		skinState.SetVideoPlayerCount( 0 );
-		SetVideoPlayerCount( 0 );
+	if(textureCount == 0){
+		skinState.SetVideoPlayerCount(0);
+		SetVideoPlayerCount(0);
 		pHasCalculatedProperties = false;
 		pHasConstructedProperties = false;
 		return;
 	}
 	
-	skinState.SetVideoPlayerCount( skin->GetVideoPlayerCount() );
-	SetVideoPlayerCount( skin->GetVideoPlayerCount() );
+	skinState.SetVideoPlayerCount(skin->GetVideoPlayerCount());
+	SetVideoPlayerCount(skin->GetVideoPlayerCount());
 	
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		pUpdateSkinVideoPlayers( skinState, skin->GetTextureAt( i ), *world );
+	for(i=0; i<textureCount; i++){
+		pUpdateSkinVideoPlayers(skinState, skin->GetTextureAt(i), *world);
 	}
 	
 	pHasCalculatedProperties = skin->GetCalculatedPropertyCount() > 0;
 	pHasConstructedProperties = skin->GetConstructedPropertyCount() > 0;
 }
 
-void deoglSkinStateController::Init( deoglSkinState &skinState, deoglRSkin *skin,
-int textureIndex, deoglWorld *world ){
-	if( ! skin || ! world ){
-		skinState.SetVideoPlayerCount( 0 );
-		SetVideoPlayerCount( 0 );
+void deoglSkinStateController::Init(deoglSkinState &skinState, deoglRSkin *skin,
+int textureIndex, deoglWorld *world){
+	if(!skin || !world){
+		skinState.SetVideoPlayerCount(0);
+		SetVideoPlayerCount(0);
 		pHasCalculatedProperties = false;
 		pHasConstructedProperties = false;
 		return;
 	}
 	
 	const int textureCount = skin->GetTextureCount();
-	if( textureCount == 0 ){
-		skinState.SetVideoPlayerCount( 0 );
-		SetVideoPlayerCount( 0 );
+	if(textureCount == 0){
+		skinState.SetVideoPlayerCount(0);
+		SetVideoPlayerCount(0);
 		pHasCalculatedProperties = false;
 		pHasConstructedProperties = false;
 		return;
 	}
 	
-	skinState.SetVideoPlayerCount( skin->GetVideoPlayerCount() );
-	SetVideoPlayerCount( skin->GetVideoPlayerCount() );
-	pUpdateSkinVideoPlayers( skinState, skin->GetTextureAt( textureIndex ), *world );
+	skinState.SetVideoPlayerCount(skin->GetVideoPlayerCount());
+	SetVideoPlayerCount(skin->GetVideoPlayerCount());
+	pUpdateSkinVideoPlayers(skinState, skin->GetTextureAt(textureIndex), *world);
 	
 	pHasCalculatedProperties = skin->GetCalculatedPropertyCount() > 0;
 	pHasConstructedProperties = skin->GetConstructedPropertyCount() > 0;
@@ -215,22 +197,22 @@ void deoglSkinStateController::ResetTime(){
 	const int count = pVideoPlayers.GetCount();
 	int i;
 	
-	for( i=0; i< count; i++ ){
-		deVideoPlayer * const videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetAt( i );
-		if( videoPlayer ){
-			videoPlayer->SetPlayPosition( 0.0f );
+	for(i=0; i< count; i++){
+		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
+		if(videoPlayer){
+			videoPlayer->SetPlayPosition(0.0f);
 		}
 	}
 }
 
-void deoglSkinStateController::AdvanceTime( float timeStep ){
+void deoglSkinStateController::AdvanceTime(float timeStep){
 	const int count = pVideoPlayers.GetCount();
 	int i;
 	
-	for( i=0; i< count; i++ ){
-		deVideoPlayer * const videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetAt( i );
-		if( videoPlayer ){
-			videoPlayer->Update( timeStep );
+	for(i=0; i< count; i++){
+		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
+		if(videoPlayer){
+			videoPlayer->Update(timeStep);
 		}
 	}
 }
@@ -239,16 +221,16 @@ void deoglSkinStateController::SyncToRender(){
 	const int count = pVideoPlayers.GetCount();
 	int i;
 	
-	for( i=0; i< count; i++ ){
-		deVideoPlayer * const videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetAt( i );
-		if( videoPlayer ){
-			( ( deoglVideoPlayer* )videoPlayer->GetPeerGraphic() )->SyncToRender();
+	for(i=0; i< count; i++){
+		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
+		if(videoPlayer){
+			((deoglVideoPlayer*)videoPlayer->GetPeerGraphic())->SyncToRender();
 		}
 	}
 }
 
 void deoglSkinStateController::Clear(){
-	SetVideoPlayerCount( 0 );
+	SetVideoPlayerCount(0);
 	pHasCalculatedProperties = false;
 	pHasConstructedProperties = false;
 }
@@ -258,95 +240,90 @@ void deoglSkinStateController::Clear(){
 // Private Functions
 //////////////////////
 
-void deoglSkinStateController::pUpdateSkinVideoPlayers( deoglSkinState &skinState,
-deoglSkinTexture &texture, deoglWorld &world ){
+void deoglSkinStateController::pUpdateSkinVideoPlayers(deoglSkinState &skinState,
+deoglSkinTexture &texture, deoglWorld &world){
 	deoglSharedVideoPlayerList &svplist = world.GetSharedVideoPlayerList();
 	int i;
 	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( ! texture.IsChannelEnabled( ( deoglSkinChannel::eChannelTypes )i ) ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(!texture.IsChannelEnabled((deoglSkinChannel::eChannelTypes)i)){
 			continue;
 		}
 		
-		const deoglSkinChannel &channel = *texture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )i );
-		deoglSharedVideoPlayer *sharedVideoPlayer = NULL;
+		const deoglSkinChannel &channel = *texture.GetChannelAt((deoglSkinChannel::eChannelTypes)i);
+		deoglSharedVideoPlayer *sharedVideoPlayer = nullptr;
 		const int vpindex = channel.GetVideoPlayer();
-		deVideoPlayer *videoPlayer = NULL;
+		deVideoPlayer::Ref videoPlayer;
 		
-		deVideo *oldVideo = NULL;
-		if( vpindex != -1 ){
-			if( channel.GetSharedVideoPlayer() ){
-				sharedVideoPlayer = GetSharedVideoPlayerAt( vpindex );
-				if( sharedVideoPlayer ){
+		deVideo *oldVideo = nullptr;
+		if(vpindex != -1){
+			if(channel.GetSharedVideoPlayer()){
+				sharedVideoPlayer = GetSharedVideoPlayerAt(vpindex);
+				if(sharedVideoPlayer){
 					oldVideo = sharedVideoPlayer->GetVideoPlayer()->GetVideo();
 				}
 				
 			}else{
-				videoPlayer = ( deVideoPlayer* )pVideoPlayers.GetAt( vpindex );
-				if( videoPlayer ){
+				videoPlayer = pVideoPlayers.GetAt(vpindex);
+				if(videoPlayer){
 					oldVideo = videoPlayer->GetVideo();
 				}
 			}
 		}
 		
-		if( oldVideo == channel.GetVideo() ){
+		if(oldVideo == channel.GetVideo()){
 			continue;
 		}
 		
-		if( channel.GetVideo() ){
-			if( channel.GetSharedVideoPlayer() ){
-				sharedVideoPlayer = NULL;
+		if(channel.GetVideo()){
+			if(channel.GetSharedVideoPlayer()){
+				sharedVideoPlayer = nullptr;
 				
 				try{
 					// TODO hosting component or other object has to provide the playback speed. until
 					//      this is done use 1.0f always.
-					sharedVideoPlayer = svplist.GetVideoPlayerFor( channel.GetVideo(), 0, 1.0f );
-					SetSharedVideoPlayerAt( vpindex, sharedVideoPlayer );
-					skinState.SetVideoPlayerAt( vpindex, ( ( deoglVideoPlayer* )sharedVideoPlayer->
-						GetVideoPlayer()->GetPeerGraphic() )->GetRVideoPlayer() );
+					sharedVideoPlayer = svplist.GetVideoPlayerFor(channel.GetVideo(), 0, 1.0f);
+					SetSharedVideoPlayerAt(vpindex, sharedVideoPlayer);
+					skinState.SetVideoPlayerAt(vpindex, ((deoglVideoPlayer*)sharedVideoPlayer->
+						GetVideoPlayer()->GetPeerGraphic())->GetRVideoPlayer());
 					
-				}catch( const deException & ){
-					if( sharedVideoPlayer ){
+				}catch(const deException &){
+					if(sharedVideoPlayer){
 						sharedVideoPlayer->FreeUsage();
 					}
 					throw;
 				}
 				
 			}else{
-				if( videoPlayer ){
-					videoPlayer->SetVideo( channel.GetVideo() );
+				if(videoPlayer){
+					videoPlayer->SetVideo(channel.GetVideo());
 					
 				}else{
 					try{
 						videoPlayer = world.GetOgl().GetGameEngine()->GetVideoPlayerManager()->CreateVideoPlayer();
-						videoPlayer->SetVideo( channel.GetVideo() );
-						videoPlayer->SetLooping( true );
-						videoPlayer->SetPlaySpeed( 1.0f );
+						videoPlayer->SetVideo(channel.GetVideo());
+						videoPlayer->SetLooping(true);
+						videoPlayer->SetPlaySpeed(1.0f);
 						videoPlayer->Play();
-						pVideoPlayers.SetAt( vpindex, videoPlayer );
-						videoPlayer->FreeReference();
-						
-					}catch( const deException & ){
-						if( videoPlayer ){
-							videoPlayer->FreeReference();
-						}
+						pVideoPlayers.SetAt(vpindex, videoPlayer);
+					}catch(const deException &){
 						throw;
 					}
 					
-					skinState.SetVideoPlayerAt( vpindex, ( ( deoglVideoPlayer* )
-						videoPlayer->GetPeerGraphic() )->GetRVideoPlayer() );
+					skinState.SetVideoPlayerAt(vpindex, ((deoglVideoPlayer*)
+						videoPlayer->GetPeerGraphic())->GetRVideoPlayer());
 				}
 			}
 			
 		}else{
-			if( channel.GetSharedVideoPlayer() ){
-				skinState.SetVideoPlayerAt( vpindex, NULL );
+			if(channel.GetSharedVideoPlayer()){
+				skinState.SetVideoPlayerAt(vpindex, nullptr);
 				
 			}else{
-				pVideoPlayers.SetAt( vpindex, NULL );
+				pVideoPlayers.SetAt(vpindex, nullptr);
 			}
 			
-			SetSharedVideoPlayerAt( vpindex, NULL );
+			SetSharedVideoPlayerAt(vpindex, nullptr);
 		}
 	}
 }

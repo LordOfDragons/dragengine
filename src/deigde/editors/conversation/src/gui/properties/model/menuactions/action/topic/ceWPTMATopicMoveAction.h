@@ -50,12 +50,13 @@ protected:
 	ceWPTMATopicMoveAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMATopicMoveAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */
-	ceWPTMATopicMoveAction( ceWindowMain &windowMain,
+	ceWPTMATopicMoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceConversationAction *action, int index, const char *text, igdeIcon *icon );
+		ceConversationAction *action, int index, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -77,7 +78,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

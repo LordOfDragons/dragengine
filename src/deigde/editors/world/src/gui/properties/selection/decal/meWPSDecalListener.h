@@ -35,6 +35,9 @@ class meWPSDecal;
  * \brief Decal panel listener.
  */
 class meWPSDecalListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWPSDecalListener>;
+	
 private:
 	meWPSDecal &pPanel;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSDecalListener( meWPSDecal &panel );
+	meWPSDecalListener(meWPSDecal &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWPSDecalListener();
+	~meWPSDecalListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,19 +61,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Decal selection changed. */
-	virtual void DecalSelectionChanged( meWorld *world );
+	void DecalSelectionChanged(meWorld *world) override;
 	
 	/** \brief Decal changed. */
-	virtual void DecalChanged( meWorld *world, meDecal *decal );
+	void DecalChanged(meWorld *world, meDecal *decal) override;
 	
 	/** \brief Decal geometry changed. */
-	virtual void DecalGeometryChanged( meWorld *world, meDecal *decal );
+	void DecalGeometryChanged(meWorld *world, meDecal *decal) override;
 	
 	/** \brief Decal properties changed. */
-	virtual void DecalPropertiesChanged( meWorld *world, meDecal *decal );
+	void DecalPropertiesChanged(meWorld *world, meDecal *decal) override;
 	
 	/** \brief Decal active property changed. */
-	virtual void DecalActivePropertyChanged( meWorld *world, meDecal *decal );
+	void DecalActivePropertyChanged(meWorld *world, meDecal *decal) override;
 	/*@}*/
 };
 

@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -47,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpaceAdd::gdeMAOCNavSpaceAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Space...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class navigation space" )
+gdeMAOCNavSpaceAdd::gdeMAOCNavSpaceAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpaceAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.OCNavSpaceAdd.ToolTip")
 {
 }
 
@@ -59,12 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Space...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpaceAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference navSpace;
-	navSpace.TakeOver( new gdeOCNavigationSpace );
-	return new gdeUOCAddNavSpace( &objectClass, ( gdeOCNavigationSpace* )( deObject* )navSpace );
+igdeUndo::Ref gdeMAOCNavSpaceAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	return gdeUOCAddNavSpace::Ref::New(&objectClass, gdeOCNavigationSpace::Ref::New());
 }
 
 void gdeMAOCNavSpaceAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != nullptr);
 }

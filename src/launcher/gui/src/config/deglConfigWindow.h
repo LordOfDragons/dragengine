@@ -56,25 +56,25 @@ public:
 	inline int GetX() const{ return pX; }
 	
 	/** Set x position. */
-	void SetX( int x );
+	void SetX(int x);
 	
 	/** Y position. */
 	inline int GetY() const{ return pY; }
 	
 	/** Set y position. */
-	void SetY( int y );
+	void SetY(int y);
 	
 	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
 	
 	/** Set widht. */
-	void SetWidth( int width );
+	void SetWidth(int width);
 	
 	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
 	
 	/** Set height. */
-	void SetHeight( int height );
+	void SetHeight(int height);
 	/*@}*/
 };
 

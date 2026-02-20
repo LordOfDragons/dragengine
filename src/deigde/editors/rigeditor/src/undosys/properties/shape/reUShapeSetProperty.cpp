@@ -37,20 +37,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUShapeSetProperty::reUShapeSetProperty( reRigShape *shape , const char *newProperty ) :
-pShape( NULL ){
+reUShapeSetProperty::reUShapeSetProperty(reRigShape *shape , const char *newProperty) :
+pShape(nullptr){
 	pShape = shape;
 	
 	pOldProperty = shape->GetProperty();
 	pNewProperty = newProperty;
 	
-	SetShortInfo( "Shape set property" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeSetProperty");
 }
 
 reUShapeSetProperty::~reUShapeSetProperty(){
-	pShape->FreeReference();
 }
 
 
@@ -59,9 +56,9 @@ reUShapeSetProperty::~reUShapeSetProperty(){
 ///////////////
 
 void reUShapeSetProperty::Undo(){
-	pShape->SetProperty( pOldProperty );
+	pShape->SetProperty(pOldProperty);
 }
 
 void reUShapeSetProperty::Redo(){
-	pShape->SetProperty( pNewProperty );
+	pShape->SetProperty(pNewProperty);
 }

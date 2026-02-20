@@ -94,7 +94,7 @@ public:
 	virtual void ParametersChanged();
 	
 	/** \brief Texture changed. */
-	virtual void TextureChanged( int index, deComponentTexture &texture );
+	virtual void TextureChanged(int index, deComponentTexture &texture);
 	
 	/** \brief Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
@@ -102,10 +102,10 @@ public:
 	
 	
 	/** \brief Decal has been added. */
-	virtual void DecalAdded( deDecal *decal );
+	virtual void DecalAdded(deDecal *decal);
 	
 	/** \brief Decal has been removed. */
-	virtual void DecalRemoved( deDecal *decal );
+	virtual void DecalRemoved(deDecal *decal);
 	
 	/** \brief All decals have been removed. */
 	virtual void AllDecalsRemoved();

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglOcclusionTest.h"
 #include "deoglOcclusionTestListener.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -45,145 +41,92 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionTest::deoglOcclusionTest( deoglRenderThread &renderThread ) :
-pInputListeners( nullptr ),
-pInputData( nullptr ),
-pInputDataCount( 0 ),
-pInputDataSize( 0 )
+deoglOcclusionTest::deoglOcclusionTest(deoglRenderThread &renderThread) :
+pInputData(256, {})
 {
-	try{
-		pSSBOInput.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
-		pSSBOInput->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		pSSBOInput->SetParameterCount( 2 );
-		pSSBOInput->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 minExtend
-		pSSBOInput->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3 maxExtend
-		pSSBOInput->MapToStd140();
-		pSSBOInput->SetBindingPoint( 0 );
-		
-		pSSBOResult.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
-		pSSBOResult->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-		pSSBOResult->SetParameterCount( 1 );
-		pSSBOResult->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtBool, 4, 1, 1 ); // bvec4 result
-		pSSBOResult->MapToStd140();
-		pSSBOResult->SetBindingPoint( 1 );
-		pSSBOResult->EnsureBuffer();
-		
-		pResizeInputData( 256 );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pSSBOInput = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
+	pSSBOInput->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
+	pSSBOInput->SetParameterCount(2);
+	pSSBOInput->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 minExtend
+	pSSBOInput->GetParameterAt(1).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 maxExtend
+	pSSBOInput->MapToStd140();
+	pSSBOInput->SetBindingPoint(0);
+	
+	pSSBOResult = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etRead);
+	pSSBOResult->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
+	pSSBOResult->SetParameterCount(1);
+	pSSBOResult->GetParameterAt(0).SetAll(deoglSPBParameter::evtBool, 4, 1, 1); // bvec4 result
+	pSSBOResult->MapToStd140();
+	pSSBOResult->SetBindingPoint(1);
+	pSSBOResult->EnsureBuffer();
 }
 
-deoglOcclusionTest::~deoglOcclusionTest(){
-	pCleanUp();
-}
+deoglOcclusionTest::~deoglOcclusionTest() = default;
 
 
 
 // Management
 ///////////////
 
-int deoglOcclusionTest::AddInputData( const decVector &minExtend, const decVector &maxExtend,
-deoglOcclusionTestListener *listener ){
-	if( pInputDataCount == pInputDataSize ){
-		pResizeInputData( pInputDataSize + 128 );
-	}
+int deoglOcclusionTest::AddInputData(const decVector &minExtend, const decVector &maxExtend,
+deoglOcclusionTestListener *listener){
+	pInputData.Add({});
+	sInputData &inputData = pInputData.Last();
+	inputData.minExtend.x = (GLfloat)minExtend.x;
+	inputData.minExtend.y = (GLfloat)minExtend.y;
+	inputData.minExtend.z = (GLfloat)minExtend.z;
+	inputData.maxExtend.x = (GLfloat)maxExtend.x;
+	inputData.maxExtend.y = (GLfloat)maxExtend.y;
+	inputData.maxExtend.z = (GLfloat)maxExtend.z;
 	
-	sInputData &inputData = pInputData[ pInputDataCount ];
-	inputData.minExtend.x = ( GLfloat )minExtend.x;
-	inputData.minExtend.y = ( GLfloat )minExtend.y;
-	inputData.minExtend.z = ( GLfloat )minExtend.z;
-	inputData.maxExtend.x = ( GLfloat )maxExtend.x;
-	inputData.maxExtend.y = ( GLfloat )maxExtend.y;
-	inputData.maxExtend.z = ( GLfloat )maxExtend.z;
+	pInputListeners.Add(listener);
 	
-	pInputListeners[ pInputDataCount ] = listener;
-	
-	return pInputDataCount++;
+	return pInputData.GetCount() - 1;
 }
 
 void deoglOcclusionTest::RemoveAllInputData(){
-	pInputDataCount = 0;
+	pInputData.RemoveAll();
+	pInputListeners.RemoveAll();
 }
 
 
 
 void deoglOcclusionTest::UpdateSSBO(){
-	const int elementCount = decMath::max( pInputDataCount, 1 );
-	if( elementCount > pSSBOInput->GetElementCount() ){
-		pSSBOInput->SetElementCount( elementCount );
+	const int elementCount = decMath::max(pInputData.GetCount(), 1);
+	if(elementCount > pSSBOInput->GetElementCount()){
+		pSSBOInput->SetElementCount(elementCount);
 		pSSBOInput->EnsureBuffer();
 	}
 	
-	if( pInputDataCount > 0 ){
+	if(pInputData.IsNotEmpty()){
 		deoglSPBlockSSBO &vbo = pSSBOInput;
-		const deoglSPBMapBuffer mapped( vbo );
-		int i;
-		
-		for( i=0; i<pInputDataCount; i++ ){
-			const sInputData &inputData = pInputData[ i ];
-			vbo.SetParameterDataVec3( 0, i, inputData.minExtend );
-			vbo.SetParameterDataVec3( 1, i, inputData.maxExtend );
-		}
+		const deoglSPBMapBuffer mapped(vbo);
+		pInputData.VisitIndexed([&](int i, const sInputData &inputData){
+			vbo.SetParameterDataVec3(0, i, inputData.minExtend);
+			vbo.SetParameterDataVec3(1, i, inputData.maxExtend);
+		});
 	}
 	
-	const int resultCount = ( elementCount - 1 ) / 4 + 1;
-	if( resultCount > pSSBOResult->GetElementCount() ){
-		pSSBOResult->SetElementCount( resultCount );
+	const int resultCount = (elementCount - 1) / 4 + 1;
+	if(resultCount > pSSBOResult->GetElementCount()){
+		pSSBOResult->SetElementCount(resultCount);
 		pSSBOResult->EnsureBuffer();
 	}
 }
 
 void deoglOcclusionTest::UpdateResults(){
-	if( pInputDataCount == 0 || ! pSSBOResult ){
+	if(pInputData.IsEmpty() || !pSSBOResult){
 		return;
 	}
 	
-	const int resultCount = ( pInputDataCount - 1 ) / 4 + 1;
-	const deoglSPBMapBufferRead mapped( pSSBOResult, 0, resultCount );
-	const uint32_t * const result = ( const uint32_t * )pSSBOResult->GetMappedBuffer();
+	const int resultCount = (pInputData.GetCount() - 1) / 4 + 1;
+	const deoglSPBMapBufferRead mapped(pSSBOResult, 0, resultCount);
+	const uint32_t * const result = (const uint32_t *)pSSBOResult->GetMappedBuffer();
 	int i;
 	
-	for( i=0; i<pInputDataCount; i++ ){
-		if( ! result[ i ] && pInputListeners[ i ] ){
-			pInputListeners[ i ]->OcclusionTestInvisible();
+	for(i=0; i<pInputData.GetCount(); i++){
+		if(!result[i] && pInputListeners.GetCount() > i && pInputListeners[i]){
+			pInputListeners[i]->OcclusionTestInvisible();
 		}
 	}
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglOcclusionTest::pCleanUp(){
-	if( pInputListeners ){
-		delete [] pInputListeners;
-	}
-	if( pInputData ){
-		delete [] pInputData;
-	}
-}
-
-void deoglOcclusionTest::pResizeInputData( int size ){
-	if( size <= pInputDataSize ){
-		return;
-	}
-	
-	sInputData * const newInputData = new sInputData[ size ];
-	if( pInputData ){
-		memcpy( newInputData, pInputData, sizeof( sInputData ) * pInputDataCount );
-		delete [] pInputData;
-	}
-	pInputDataSize = size;
-	pInputData = newInputData;
-	
-	deoglOcclusionTestListener ** const newListeners = new deoglOcclusionTestListener*[ size ];
-	if( pInputListeners ){
-		memcpy( newListeners, pInputListeners, sizeof( deoglOcclusionTestListener* ) * pInputDataCount );
-		delete [] pInputListeners;
-	}
-	pInputListeners = newListeners;
 }

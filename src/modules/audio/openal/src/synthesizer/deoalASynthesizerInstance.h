@@ -52,14 +52,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalASynthesizerInstance>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */
-	deoalASynthesizerInstance( deoalAudioThread &audioThread, deSynthesizerInstance &instance );
+	deoalASynthesizerInstance(deoalAudioThread &audioThread, deSynthesizerInstance &instance);
 	
 protected:
 	/** \brief Clean up microphone. */
-	virtual ~deoalASynthesizerInstance();
+	~deoalASynthesizerInstance() override;
 	/*@}*/
 	
 	
@@ -110,7 +114,7 @@ public:
 	 * \throws EInvalidParam \em bufferSize does not match format.
 	 * \throws EInvalidParam \em buffer is NULL.
 	 */
-	void GenerateSound( void *buffer, int bufferSize, int offset, int samples );
+	void GenerateSound(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	

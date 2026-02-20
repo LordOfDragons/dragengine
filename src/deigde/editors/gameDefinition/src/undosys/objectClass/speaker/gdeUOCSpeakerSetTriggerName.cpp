@@ -39,35 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetTriggerName::gdeUOCSpeakerSetTriggerName( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, gdeOCSpeaker::eTriggers trigger, const char *newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL ),
-pTrigger( trigger )
+gdeUOCSpeakerSetTriggerName::gdeUOCSpeakerSetTriggerName(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, gdeOCSpeaker::eTriggers trigger, const char *newValue) :
+
+
+pTrigger(trigger)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set trigger name" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerSetTriggerName");
 	
-	pOldValue = speaker->GetTriggerName( trigger );
+	pOldValue = speaker->GetTriggerName(trigger);
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetTriggerName::~gdeUOCSpeakerSetTriggerName(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCSpeakerSetTriggerName::~gdeUOCSpeakerSetTriggerName(){
 ///////////////
 
 void gdeUOCSpeakerSetTriggerName::Undo(){
-	pSpeaker->SetTriggerName( pTrigger, pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetTriggerName(pTrigger, pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetTriggerName::Redo(){
-	pSpeaker->SetTriggerName( pTrigger, pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetTriggerName(pTrigger, pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

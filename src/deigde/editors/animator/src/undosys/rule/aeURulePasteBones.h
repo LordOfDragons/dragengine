@@ -36,11 +36,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURulePasteBones( aeRule *rule, const decStringSet &newValue );
+	aeURulePasteBones(aeRule *rule, const decStringSet &newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURulePasteBones();
+	~aeURulePasteBones() override;
 	/*@}*/
 };
 

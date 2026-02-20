@@ -27,7 +27,7 @@
 
 #include "../deSynthesizerControllerTarget.h"
 #include "../../../deObject.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 class deSynthesizer;
 class deSynthesizerEffect;
@@ -40,8 +40,7 @@ class deSynthesizerSourceVisitor;
 class DE_DLL_EXPORT deSynthesizerSource : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSource> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerSource>;
 	
 	
 public:
@@ -71,7 +70,7 @@ private:
 	deSynthesizerControllerTarget pTargetVolume;
 	deSynthesizerControllerTarget pTargetPanning;
 	
-	decObjectOrderedSet pEffects;
+	decTObjectOrderedSet<deSynthesizerEffect> pEffects;
 	
 	
 	
@@ -81,6 +80,9 @@ public:
 	/** \brief Create synthesizer source. */
 	deSynthesizerSource();
 	
+	deSynthesizerSource(const deSynthesizerSource& source) = delete;
+	deSynthesizerSource& operator=(const deSynthesizerSource& source) = delete;
+
 protected:
 	/**
 	 * \brief Clean up synthesizer source.
@@ -88,7 +90,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSource();
+	~deSynthesizerSource() override;
 	/*@}*/
 	
 	
@@ -105,25 +107,25 @@ public:
 	 * This function has to be used only by the deSynthesizer class to
 	 * assign itself as a parent. Do not call this function directly.
 	 */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	/** \brief Source is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if source is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Mixing mode. */
 	inline eMixModes GetMixMode() const{ return pMixMode; }
 	
 	/** \brief Set mixing mode. */
-	void SetMixMode( eMixModes mode );
+	void SetMixMode(eMixModes mode);
 	
 	/** \brief Blend factor. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** \brief Set blend factor. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	
 	
@@ -131,25 +133,25 @@ public:
 	inline float GetMinVolume() const{ return pMinVolume; }
 	
 	/** \brief Set minimum volume relative to speaker volume in the range from 0 to 1. */
-	void SetMinVolume( float volume );
+	void SetMinVolume(float volume);
 	
 	/** \brief Maximum volume relative to speaker volume in the range from 0 to 1. */
 	inline float GetMaxVolume() const{ return pMaxVolume; }
 	
 	/** \brief Set maximum volume relative to speaker volume in the range from 0 to 1. */
-	void SetMaxVolume( float volume );
+	void SetMaxVolume(float volume);
 	
 	/** \brief Minimum panning in the range from -1(left) to 1(right). */
 	inline float GetMinPanning() const{ return pMinPanning; }
 	
 	/** \brief Set minimum panning in the range from -1(left) to 1(right). */
-	void SetMinPanning( float panning );
+	void SetMinPanning(float panning);
 	
 	/** \brief Maximum panning in the range from -1(left) to 1(right). */
 	inline float GetMaxPanning() const{ return pMaxPanning; }
 	
 	/** \brief Set maximum panning in the range from -1(left) to 1(right). */
-	void SetMaxPanning( float panning );
+	void SetMaxPanning(float panning);
 	
 	
 	
@@ -170,17 +172,14 @@ public:
 	
 	/** \name Effects */
 	/*@{*/
-	/** \brief Number of effects. */
-	int GetEffectCount() const;
-	
-	/** \brief Effect at index. */
-	deSynthesizerEffect *GetEffectAt( int index ) const;
+	/** \brief Effects. */
+	inline const decTObjectOrderedSet<deSynthesizerEffect> &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
-	void AddEffect( deSynthesizerEffect *effect );
+	void AddEffect(deSynthesizerEffect *effect);
 	
 	/** \brief Remove effect. */
-	void RemoveEffect( deSynthesizerEffect *effect );
+	void RemoveEffect(deSynthesizerEffect *effect);
 	
 	/** \brief Remove all effects. */
 	void RemoveAllEffects();
@@ -191,7 +190,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

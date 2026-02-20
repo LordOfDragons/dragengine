@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin( aeRuleLimit *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin(aeRuleLimit *rule, const decVector &newMin){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Limit Set minimum scaling" );
+		SetShortInfo("@Animator.Undo.SetRuleLimitMinimumScaling");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleLimitSetScaleMin::~aeURuleLimitSetScaleMin(){
 ///////////////
 
 void aeURuleLimitSetScaleMin::Undo(){
-	pRule->SetMinimumScaling( pOldMin );
+	pRule->SetMinimumScaling(pOldMin);
 }
 
 void aeURuleLimitSetScaleMin::Redo(){
-	pRule->SetMinimumScaling( pNewMin );
+	pRule->SetMinimumScaling(pNewMin);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleLimitSetScaleMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetScaleMin::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

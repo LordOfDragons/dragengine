@@ -27,6 +27,7 @@
 
 #include "deoglShaderParameterBlock.h"
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -37,9 +38,12 @@
  * mapping the memory is grown if not large enough but not shrunk.
  */
 class deoglSPBlockMemory : public deoglShaderParameterBlock{
+public:
+	using Ref = deTObjectReference<deoglSPBlockMemory>;
+	
+	
 private:
-	char *pBuffer;
-	int pBufferCapacity;
+	decTList<char> pBuffer;
 	
 	
 	
@@ -47,14 +51,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader parameter block. */
-	deoglSPBlockMemory( deoglRenderThread &renderThread );
+	deoglSPBlockMemory(deoglRenderThread &renderThread);
 	
 	/** Create copy of shader storage buffer object. */
-	deoglSPBlockMemory( const deoglSPBlockMemory &paramBlock );
+	deoglSPBlockMemory(const deoglSPBlockMemory &paramBlock);
 	
 protected:
 	/** Clean up shader parameter block. */
-	virtual ~deoglSPBlockMemory();
+	~deoglSPBlockMemory() override;
 	/*@}*/
 	
 	
@@ -63,22 +67,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Memory buffer. */
-	inline char *GetBuffer() const{ return pBuffer; }
+	inline char *GetBuffer(){ return pBuffer.GetArrayPointer(); }
+	inline const char *GetBuffer() const{ return pBuffer.GetArrayPointer(); }
 	
 	/** Always throws an exception. */
-	virtual void Activate() const;
+	void Activate() const override;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint ) const;
+	void Activate(int bindingPoint) const override;
 	
 	/** Always throws an exception. */
-	virtual void Deactivate() const;
+	void Deactivate() const override;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint ) const;
+	void Deactivate(int bindingPoint) const override;
 	
 	/** Map buffer discarding content. */
-	virtual void MapBuffer();
+	void MapBuffer() override;
 	
 	/**
 	 * Map buffer for specific element discarding content.
@@ -86,7 +91,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element );
+	void MapBuffer(int element) override;
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -94,13 +99,13 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element, int count );
+	void MapBuffer(int element, int count) override;
 	
 	/** Has no effect. */
-	virtual void UnmapBuffer();
+	void UnmapBuffer() override;
 	
 	/** Create copy of shader parameter block. */
-	virtual deoglShaderParameterBlock *Copy() const;
+	deoglShaderParameterBlock::Ref Copy() const override;
 	/*@}*/
 	
 	

@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-// includes
 #include <libdscript/libdscript.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "dedsXmlParser.h"
 #include <dragengine/logger/deLogger.h>
 #include <libdscript/exceptions.h>
-
 
 
 // class dedsXmlParser
@@ -39,64 +34,25 @@
 // constructor, destructor
 ////////////////////////////
 
-dedsXmlParser::dedsXmlParser( deLogger *logger ) : decXmlParser( logger ){
-	pLog = new char[ 1 ];
-	pLog[ 0 ] = '\0';
-	pLogLen = 0;
+dedsXmlParser::dedsXmlParser(deLogger *logger) : decXmlParser(logger){
 }
 
-dedsXmlParser::~dedsXmlParser(){
-	if( pLog ){
-		delete [] pLog;
-	}
-}
-
+dedsXmlParser::~dedsXmlParser() = default;
 
 
 // management
 ///////////////
 
-void dedsXmlParser::UnexpectedEOF( int line, int pos ){
-	const int newline = pLogLen == 0 ? 0 : 1;
-	char * const newLog = new char[ pLogLen + newline + 29 ];
-
-	if( pLogLen > 0 ){
-		#ifdef OS_W32_VS
-			strncpy_s( newLog, pLogLen + 1, pLog, pLogLen );
-		#else
-			strncpy( newLog, pLog, pLogLen + 1 );
-		#endif
-		newLog[ pLogLen ] = '\n';
+void dedsXmlParser::UnexpectedEOF(int line, int pos){
+	if(!pLog.IsEmpty()){
+		pLog.AppendCharacter('\n');
 	}
-
-	const char * const message = "Unexpected end-of-file found";
-
-	#ifdef OS_W32_VS
-		strcpy_s( newLog + pLogLen + newline, strlen( message ) + 1, message );
-	#else
-		strcpy( newLog + pLogLen + newline, message );
-	#endif
-
-	delete [] pLog;
-	pLog = newLog;
-	pLogLen += newline + 28;
+	pLog.AppendFormat("Unexpected end-of-file found at %d:%d", line, pos);
 }
 
-void dedsXmlParser::UnexpectedToken( int line, int pos, const char *token ){
-	const int newline = pLogLen == 0 ? 0 : 1;
-	const int newLen = 50 + ( int )strlen( token );
-	char * const newLog = new char[ pLogLen + newline + newLen ];
-
-	if( pLogLen > 0 ){
-		#ifdef OS_W32_VS
-			strncpy_s( newLog, pLogLen + 1, pLog, pLogLen );
-		#else
-			strncpy( newLog, pLog, pLogLen + 1 );
-		#endif
-		newLog[ pLogLen ] = '\n';
+void dedsXmlParser::UnexpectedToken(int line, int pos, const char *token){
+	if(!pLog.IsEmpty()){
+		pLog.AppendCharacter('\n');
 	}
-	snprintf( newLog + pLogLen + newline, newLen, "Unexpected token '%s' found at %i:%i", token, line, pos );
-	delete [] pLog;
-	pLog = newLog;
-	pLogLen += newline + newLen;
+	pLog.AppendFormat("Unexpected token '%s' found at %d:%d", token, line, pos);
 }

@@ -40,30 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows( gdeObjectClass *objectClass, gdeOCLight *light ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows(gdeObjectClass *objectClass, gdeOCLight *light) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light toggle cast shadows" );
+	SetShortInfo("@GameDefinition.Undo.OCLightToggleCastShadows");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightToggleCastShadows::~gdeUOCLightToggleCastShadows(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -72,8 +62,8 @@ gdeUOCLightToggleCastShadows::~gdeUOCLightToggleCastShadows(){
 ///////////////
 
 void gdeUOCLightToggleCastShadows::Undo(){
-	pLight->SetCastShadows( ! pLight->GetCastShadows() );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetCastShadows(!pLight->GetCastShadows());
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightToggleCastShadows::Redo(){

@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/navigation/blocker/deNavigationBlockerReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -39,11 +39,16 @@ class igdeGDCNavigationBlocker;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSONavigationBlocker : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSONavigationBlocker>;
+	
+	
 private:
 	const igdeGDCNavigationBlocker &pGDNavigationBlocker;
-	deNavigationBlockerReference pNavigationBlocker;
+	deNavigationBlocker::Ref pNavigationBlocker;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	
 	
@@ -52,10 +57,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSONavigationBlocker( igdeWObject &wrapper, const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix );
+	igdeWOSONavigationBlocker(igdeWObject &wrapper, const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSONavigationBlocker();
+	~igdeWOSONavigationBlocker() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -63,26 +71,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationBlocker resource. */
-	inline deNavigationBlocker *GetNavigationBlocker() const{ return pNavigationBlocker; }
+	inline const deNavigationBlocker::Ref &GetNavigationBlocker() const{ return pNavigationBlocker; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

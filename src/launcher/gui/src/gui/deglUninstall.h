@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create uninstaller. */
-	deglUninstall( deglWindowMain &window );
+	deglUninstall(deglWindowMain &window);
 	
 	/** Clean up uninstaller. */
 	~deglUninstall();
@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Uninstall game. */
-	bool UninstallGame( delGame &game );
+	bool UninstallGame(delGame &game);
 	
 	/** Uninstall patch. */
-	bool UninstallPatch( delPatch &patch );
+	bool UninstallPatch(delPatch &patch);
 	/*@}*/
 	
 	
 	
 private:
-	void pUninstallDelga( const decString &filename );
+	void pUninstallDelga(const decString &filename);
 };
 
 #endif

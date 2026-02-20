@@ -37,7 +37,6 @@ class decXmlElementTag;
 class igdeWindowMain;
 
 
-
 /**
  * @brief Load/Save Configuration XML.
  */
@@ -45,26 +44,29 @@ class igdeConfigurationXML : public igdeBaseXML{
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new configuration xml read/save. */
-	igdeConfigurationXML( deLogger *logger, const char *loggerSource );
-	/** Cleans up the configuration xml read/save. */
-	virtual ~igdeConfigurationXML();
+	/** Create new configuration xml read/save. */
+	igdeConfigurationXML(deLogger *logger, const char *loggerSource);
+	
+	/** Clean up configuration xml read/save. */
+	~igdeConfigurationXML() override;
 	/*@}*/
+	
 	
 	/** @name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, igdeConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, igdeConfiguration &config);
+	
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const igdeConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const igdeConfiguration &config);
 	/*@}*/
 	
 private:
-	void pReadConfig( const decXmlElementTag &root, igdeConfiguration &config );
-	void pReadWindowMain( const decXmlElementTag &root, igdeWindowMain &window );
+	void pReadConfig(const decXmlElementTag &root, igdeConfiguration &config);
+	void pReadWindowMain(const decXmlElementTag &root, igdeWindowMain &window);
 	
-	void pWriteConfig( decXmlWriter &writer, const igdeConfiguration &config );
-	void pWriteWindowMain( decXmlWriter &writer, const igdeWindowMain &window, const char *tagName );
+	void pWriteConfig(decXmlWriter &writer, const igdeConfiguration &config);
+	void pWriteWindowMain(decXmlWriter &writer, const igdeWindowMain &window);
 };
 
 #endif

@@ -197,7 +197,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui parameters. */
-	meWorldGuiParameters( meWorld &world );
+	meWorldGuiParameters(meWorld &world);
 	
 	/** \brief Clean up gui parameters. */
 	~meWorldGuiParameters();
@@ -211,19 +211,19 @@ public:
 	inline eElementModes GetElementMode() const{ return pElementMode; }
 	
 	/** \brief Set element mode. */
-	void SetElementMode( eElementModes mode );
+	void SetElementMode(eElementModes mode);
 	
 	/** \brief Work mode. */
 	inline eWorkModes GetWorkMode() const{ return pWorkMode; }
 	
 	/** \brief Set work mode. */
-	void SetWorkMode( eWorkModes mode );
+	void SetWorkMode(eWorkModes mode);
 	
 	/** \brief Rotation pivot center. */
 	inline eRotationPivotCenters GetRotationPivotCenter() const{ return pRotationPivotCenter; }
 	
 	/** \brief Set rotation pivot center. */
-	void SetRotationPivotCenter( eRotationPivotCenters pivotCenter );
+	void SetRotationPivotCenter(eRotationPivotCenters pivotCenter);
 	
 	
 	
@@ -231,31 +231,31 @@ public:
 	inline bool GetLockAxisX() const{ return pLockAxisX; }
 	
 	/** \brief Set if x axis is locked during editing. */
-	void SetLockAxisX( bool lock );
+	void SetLockAxisX(bool lock);
 	
 	/** \brief Y axis is locked during editing. */
 	inline bool GetLockAxisY() const{ return pLockAxisY; }
 	
 	/** \brief Set if y axis is locked during editing. */
-	void SetLockAxisY( bool lock );
+	void SetLockAxisY(bool lock);
 	
 	/** \brief Z axis is locked during editing. */
 	inline bool GetLockAxisZ() const{ return pLockAxisZ; }
 	
 	/** \brief Set if z axis is locked during editing. */
-	void SetLockAxisZ( bool lock );
+	void SetLockAxisZ(bool lock);
 	
 	/** \brief Object local coordinates are used during editing. */
 	inline bool GetUseLocal() const{ return pUseLocal; }
 	
 	/** \brief Set if object local coordinates are used during editing. */
-	void SetUseLocal( bool useLocal );
+	void SetUseLocal(bool useLocal);
 	
 	/** \brief Snap to snap points. */
 	inline bool GetSnapToSnapPoints() const{ return pSnapToSnapPoints; }
 	
 	/** \brief Set snap to snap points. */
-	void SetSnapToSnapPoints( bool snapToSnapPoints );
+	void SetSnapToSnapPoints(bool snapToSnapPoints);
 	
 	
 	
@@ -263,19 +263,19 @@ public:
 	inline float GetRectSelDistance() const{ return pRectSelDistance; }
 	
 	/** \brief Set rectangular selection distance. */
-	void SetRectSelDistance( float distance );
+	void SetRectSelDistance(float distance);
 	
 	/** \brief Rectangular selection distance step. */
 	inline float GetRectSelDistanceStep() const{ return pRectSelDistanceStep; }
 	
 	/** \brief Set rectangular selection distance step. */
-	void SetRectSelDistanceStep( float step );
+	void SetRectSelDistanceStep(float step);
 	
 	/** \brief Drag threshold in pixels for rectangular selection. */
 	inline int GetRectSelDragThreshold() const{ return pRectSelDragThreshold; }
 	
 	/** \brief Set drag threshold in pixels for rectangular selection. */
-	void SetRectSelDragThreshold( int threshold );
+	void SetRectSelDragThreshold(int threshold);
 	
 	
 	
@@ -283,25 +283,25 @@ public:
 	inline bool GetShowOcclusionMeshes() const{ return pShowOcclusionMeshes; }
 	
 	/** \brief Set if occlusion meshes are shown. */
-	void SetShowOcclusionMeshes( bool show );
+	void SetShowOcclusionMeshes(bool show);
 	
 	/** \brief Occlusion meshes of selected objects are shown. */
 	inline bool GetShowOcclusionMeshesSelected() const{ return pShowOcclusionMeshesSelected; }
 	
 	/** \brief Set if occlusion meshes of selected objects are shown. */
-	void SetShowOcclusionMeshesSelected( bool show );
+	void SetShowOcclusionMeshesSelected(bool show);
 	
 	/** \brief Show navigation spaces. */
 	inline bool GetShowNavigationSpaces() const{ return pShowNavigationSpaces; }
 	
 	/** \brief Set if navigation spaces are shown. */
-	void SetShowNavigationSpaces( bool show );
+	void SetShowNavigationSpaces(bool show);
 	
 	/** \brief Show navigation spaces of selected objects. */
 	inline bool GetShowNavigationSpacesSelected() const{ return pShowNavigationSpacesSelected; }
 	
 	/** \brief Set if navigation spaces of selected objects are shown. */
-	void SetShowNavigationSpacesSelected( bool show );
+	void SetShowNavigationSpacesSelected(bool show);
 	
 	/** \brief Shapes are shown. */
 	inline bool GetShowShapes() const{ return pShowShapes; }
@@ -335,31 +335,31 @@ public:
 	inline eHPDrawModes GetHPDrawMode() const{ return pHPDrawMode; }
 	
 	/** \brief Set height paint draw mode. */
-	void SetHPDrawMode( eHPDrawModes mode );
+	void SetHPDrawMode(eHPDrawModes mode);
 	
 	/** \brief Height paint radius. */
 	inline float GetHPRadius() const{ return pHPRadius; }
 	
 	/** \brief Set height paint radius. */
-	void SetHPRadius( float radius );
+	void SetHPRadius(float radius);
 	
 	/** \brief Height paint draw strength. */
 	inline float GetHPDrawStrength() const{ return pHPDrawStrength; }
 	
 	/** \brief Set height paint draw strength. */
-	void SetHPDrawStrength( float strength );
+	void SetHPDrawStrength(float strength);
 	
 	/** \brief Height paint level strength. */
 	inline float GetHPLevelStrength() const{ return pHPLevelStrength; }
 	
 	/** \brief Set height paint level strength. */
-	void SetHPLevelStrength( float strength );
+	void SetHPLevelStrength(float strength);
 	
 	/** \brief Height paint smooth strength. */
 	inline float GetHPSmoothStrength() const{ return pHPSmoothStrength; }
 	
 	/** \brief Set height paint smooth strength. */
-	void SetHPSmoothStrength( float strength );
+	void SetHPSmoothStrength(float strength);
 	
 	
 	
@@ -367,13 +367,13 @@ public:
 	inline eMPDrawModes GetMPDrawMode() const{ return pMPDrawMode; }
 	
 	/** \brief Set mask paint draw mode. */
-	void SetMPDrawMode( eMPDrawModes mode );
+	void SetMPDrawMode(eMPDrawModes mode);
 	
 	/** \brief Mask paint radius. */
 	inline float GetMPRadius() const{ return pMPRadius; }
 	
 	/** \brief Set mask paint radius. */
-	void SetMPRadius( float radius );
+	void SetMPRadius(float radius);
 	
 	
 	
@@ -381,13 +381,13 @@ public:
 	inline eVPDrawModes GetVPDrawMode() const{ return pVPDrawMode; }
 	
 	/** \brief Set visibility paint draw mode. */
-	void SetVPDrawMode( eVPDrawModes mode );
+	void SetVPDrawMode(eVPDrawModes mode);
 	
 	/** \brief Visibility paint radius. */
 	inline float GetVPRadius() const{ return pVPRadius; }
 	
 	/** \brief Set visibility paint radius. */
-	void SetVPRadius( float radius );
+	void SetVPRadius(float radius);
 	/*@}*/
 	
 	
@@ -398,7 +398,7 @@ public:
 	inline bool GetAutoUpdateVegetation() const{ return pAutoUpdateVegetation; }
 	
 	/** \brief Set if vegetation system is updated automatically. */
-	void SetAutoUpdateVegetation( bool autoUpdate );
+	void SetAutoUpdateVegetation(bool autoUpdate);
 	/*@}*/
 	
 	
@@ -409,13 +409,13 @@ public:
 	inline const decString &GetBrowseClass() const{ return pBrowseClass; }
 	
 	/** \brief Set browse object class. */
-	void SetBrowseClass( const char *name );
+	void SetBrowseClass(const char *name);
 	
 	/** \brief Browse skin. */
 	inline const decString &GetBrowseSkin() const{ return pBrowseSkin; }
 	
 	/** \brief Set browse skin. */
-	void SetBrowseSkin( const char *name );
+	void SetBrowseSkin(const char *name);
 	/*@}*/
 	
 	
@@ -426,13 +426,13 @@ public:
 	inline const decStringSet &GetAddFilterObjectSet() const{ return pAddFilterObjectSet; }
 	
 	/** \brief Set add object filter class names set. */
-	void SetAddFilterObjectSet( const decStringSet &set );
+	void SetAddFilterObjectSet(const decStringSet &set);
 	
 	/** \brief Add object filter is inclusive. */
 	inline bool GetAddFilterObjectInclusive() const{ return pAddFilterObjectInclusive; }
 	
 	/** \brief Set if add object filter is inclusive. */
-	void SetAddFilterObjectInclusive( bool inclusive );
+	void SetAddFilterObjectInclusive(bool inclusive);
 	
 	/** \brief Add object randomize Y axis. */
 	inline bool GetAddRandomizeYAxis() const { return pAddRandomizeYAxis; }

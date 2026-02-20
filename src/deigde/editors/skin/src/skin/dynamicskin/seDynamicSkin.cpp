@@ -53,21 +53,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seDynamicSkin::seDynamicSkin( seSkin *parentSkin ){
-	if( ! parentSkin ){
-		DETHROW( deeInvalidParam );
+seDynamicSkin::seDynamicSkin(seSkin *parentSkin){
+	if(!parentSkin){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pParentSkin = parentSkin;
 	
-	pEngDynamicSkin = NULL;
+	pEngDynamicSkin = nullptr;
 	
-	pActiveRenderable = NULL;
+	pActiveRenderable = nullptr;
 	
 	try{
 		pEngDynamicSkin = parentSkin->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -89,13 +89,10 @@ void seDynamicSkin::Dispose(){
 void seDynamicSkin::Reset(){
 }
 
-void seDynamicSkin::Update( float elapsed ){
-	const int count = pRenderableList.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pRenderableList.GetAt( i )->Update( elapsed );
-	}
+void seDynamicSkin::Update(float elapsed){
+	pRenderables.Visit([&](seDynamicSkinRenderable &r){
+		r.Update(elapsed);
+	});
 }
 
 
@@ -103,77 +100,62 @@ void seDynamicSkin::Update( float elapsed ){
 // Renderables
 ////////////////
 
-void seDynamicSkin::AddRenderable( seDynamicSkinRenderable *renderable ){
-	if( ! renderable || pRenderableList.HasNamed( renderable->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void seDynamicSkin::AddRenderable(seDynamicSkinRenderable *renderable){
+	if(!renderable || pRenderables.HasNamed(renderable->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRenderableList.Add( renderable );
-	renderable->SetDynamicSkin( this );
+	pRenderables.Add(renderable);
+	renderable->SetDynamicSkin(this);
 	
 	pParentSkin->NotifyDynamicSkinRenderableStructureChanged();
 	
-	if( ! pActiveRenderable ){
-		SetActiveRenderable( renderable );
+	if(!pActiveRenderable){
+		SetActiveRenderable(renderable);
 	}
 }
 
-void seDynamicSkin::RemoveRenderable( seDynamicSkinRenderable *renderable ){
-	if( ! pRenderableList.Has( renderable ) ){
-		DETHROW( deeInvalidParam );
+void seDynamicSkin::RemoveRenderable(seDynamicSkinRenderable *renderable){
+	const seDynamicSkinRenderable::Ref guard(renderable);
+	pRenderables.RemoveOrThrow(renderable);
+	
+	if(pActiveRenderable == renderable){
+		pActiveRenderable = nullptr;
 	}
 	
-	if( renderable->GetActive() ){
-		if( pRenderableList.GetCount() > 1 ){
-			seDynamicSkinRenderable *activeRenderable = pRenderableList.GetAt( 0 );
-			
-			if( activeRenderable == renderable ){
-				activeRenderable = pRenderableList.GetAt( 1 );
-			}
-			
-			SetActiveRenderable( activeRenderable );
-			
-		}else{
-			SetActiveRenderable( NULL );
-		}
-	}
-	
-	renderable->SetDynamicSkin( NULL );
-	pRenderableList.Remove( renderable );
-	
+	renderable->SetDynamicSkin(nullptr);
 	pParentSkin->NotifyDynamicSkinRenderableStructureChanged();
 }
 
 void seDynamicSkin::RemoveAllRenderables(){
-	const int count = pRenderableList.GetCount();
-	int t;
-	
-	SetActiveRenderable( NULL );
-	
-	for( t=0; t<count; t++ ){
-		pRenderableList.GetAt( t )->SetDynamicSkin( NULL );
+	if(pRenderables.IsEmpty()){
+		return;
 	}
-	pRenderableList.RemoveAll();
+	
+	SetActiveRenderable(nullptr);
+	
+	pRenderables.Visit([&](seDynamicSkinRenderable &r){
+		r.SetDynamicSkin(nullptr);
+	});
+	pRenderables.RemoveAll();
 	
 	pParentSkin->NotifyDynamicSkinRenderableStructureChanged();
 }
 
 bool seDynamicSkin::HasActiveRenderable() const{
-	return pActiveRenderable != NULL;
+	return pActiveRenderable != nullptr;
 }
 
-void seDynamicSkin::SetActiveRenderable( seDynamicSkinRenderable *renderable ){
-	if( renderable != pActiveRenderable ){
-		if( pActiveRenderable ){
-			pActiveRenderable->SetActive( false );
-			pActiveRenderable->FreeReference();
+void seDynamicSkin::SetActiveRenderable(seDynamicSkinRenderable *renderable){
+	if(renderable != pActiveRenderable){
+		if(pActiveRenderable){
+			pActiveRenderable->SetActive(false);
 		}
 		
 		pActiveRenderable = renderable;
 		
-		if( renderable ){
-			renderable->AddReference();
-			renderable->SetActive( true );
+		if(renderable){
+			renderable->SetActive(true);
 		}
 		
 		pParentSkin->NotifyDynamicSkinActiveRenderableChanged();
@@ -186,10 +168,6 @@ void seDynamicSkin::SetActiveRenderable( seDynamicSkinRenderable *renderable ){
 //////////////////////
 
 void seDynamicSkin::pCleanUp(){
-	SetActiveRenderable( NULL );
+	SetActiveRenderable(nullptr);
 	RemoveAllRenderables();
-	
-	if( pEngDynamicSkin ){
-		pEngDynamicSkin->FreeReference();
-	}
 }

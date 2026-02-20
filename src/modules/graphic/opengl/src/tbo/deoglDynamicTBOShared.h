@@ -25,14 +25,13 @@
 #ifndef _DEOGLDYNAMICTBOSHARED_H_
 #define _DEOGLDYNAMICTBOSHARED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
-
 #include "../deoglBasics.h"
+#include "../tbo/deoglDynamicTBO.h"
 
 class deoglDynamicTBO;
-class deoglDynamicTBOBlock;
+#include "deoglDynamicTBOBlock.h"
 class deoglRTLogger;
 
 
@@ -41,11 +40,15 @@ class deoglRTLogger;
  */
 class deoglDynamicTBOShared : public deObject{
 public:
-	const deObjectReference pTBO;
-	const deObjectReference pTBO2;
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglDynamicTBOShared>;
+	
+	
+	const deoglDynamicTBO::Ref pTBO;
+	const deoglDynamicTBO::Ref pTBO2;
 	const int pStride;
 	const int pStride2;
-	decObjectList pBlocks;
+	decTObjectList<deoglDynamicTBOBlock> pBlocks;
 	int pUsedSize;
 	bool pDirty;
 	
@@ -55,19 +58,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared dynamic TBO. */
-	deoglDynamicTBOShared( deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = NULL, int stride2 = 1 );
+	deoglDynamicTBOShared(deoglDynamicTBO *tbo, int stride, deoglDynamicTBO *tbo2 = nullptr, int stride2 = 1);
 	
+protected:
 	/** Cleans up shared dynamic TBO. */
-	virtual ~deoglDynamicTBOShared();
+	~deoglDynamicTBOShared() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** TBO. */
-	inline deoglDynamicTBO *GetTBO() const{ return ( deoglDynamicTBO* )( deObject* )pTBO; }
-	inline deoglDynamicTBO *GetTBO2() const{ return ( deoglDynamicTBO* )( deObject* )pTBO2; }
+	inline const deoglDynamicTBO::Ref &GetTBO() const{ return pTBO; }
+	inline const deoglDynamicTBO::Ref &GetTBO2() const{ return pTBO2; }
 	
 	/** Stride in pixel for one unit. */
 	inline int GetStride() const{ return pStride; }
@@ -91,30 +95,30 @@ public:
 	int GetBlockCount() const;
 	
 	/** Block at index. */
-	deoglDynamicTBOBlock *GetBlockAt( int index ) const;
+	deoglDynamicTBOBlock *GetBlockAt(int index) const;
 	
 	/** Add block. Returns block or NULL if not enough space. */
-	deoglDynamicTBOBlock *AddBlock( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL );
+	deoglDynamicTBOBlock::Ref AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = nullptr);
 	
 	/** Remove block returning the space to the pool of free space. */
-	void RemoveBlock( deoglDynamicTBOBlock *block );
+	void RemoveBlock(deoglDynamicTBOBlock *block);
 	
 	/**
 	 * Index of first empty block TBO fits in or NULL if not found. If the only empty block
 	 * is the last block the TBO is considered to always fit.
 	 */
-	int FirstMatchingBlock( deoglDynamicTBO *tbo );
+	int FirstMatchingBlock(deoglDynamicTBO *tbo);
 	
 	
 	
 	/** Debug print. */
-	void DebugPrint( deoglRTLogger &logger ) const;
+	void DebugPrint(deoglRTLogger &logger) const;
 	/*@}*/
 	
 	
 	
 private:
-	deoglDynamicTBOBlock *pAddEmptyBlock();
+	deoglDynamicTBOBlock::Ref pAddEmptyBlock();
 	void pEnsureTBOSize();
 };
 

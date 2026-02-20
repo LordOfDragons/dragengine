@@ -25,7 +25,10 @@
 #ifndef _DEOGLRSKYLINK_H_
 #define _DEOGLRSKYLINK_H_
 
+#include <dragengine/deTUniqueReference.h>
+
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglRSkyInstance;
 
@@ -37,12 +40,14 @@ class deSkyLink;
  * Render sky link.
  */
 class deoglRSkyLink{
+public:
+	using Ref = deTUniqueReference<deoglRSkyLink>;
+	
 private:
 	const int pController;
 	const int pRepeat;
 	
-	float *pSamples;
-	int pSampleCount;
+	decTList<float> pSamples;
 	
 	float pUpperLimit;
 	
@@ -54,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky link. */
-	deoglRSkyLink( const deSkyLink &link );
+	explicit deoglRSkyLink(const deSkyLink &link);
 	
 	/** Clean up sky link. */
 	~deoglRSkyLink();
@@ -68,13 +73,13 @@ public:
 	inline bool IsDisabled() const{ return pDisabled; }
 	
 	/** Get value of link. */
-	float GetValue( const deoglRSkyInstance &instance ) const;
+	float GetValue(const deoglRSkyInstance &instance) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pUpdateSamples( const deSkyLink &link );
+	void pUpdateSamples(const deSkyLink &link);
 };
 
 #endif

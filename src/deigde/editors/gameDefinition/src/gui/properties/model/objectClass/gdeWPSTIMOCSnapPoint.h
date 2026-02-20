@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCSnapPoint;
+#include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
 
 /**
@@ -35,21 +35,23 @@ class gdeOCSnapPoint;
  */
 class gdeWPSTIMOCSnapPoint : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	int pIndex;
 	
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCSnapPoint> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSnapPoint( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, int index );
+	gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCSnapPoint *snapPoint, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCSnapPoint();
+	~gdeWPSTIMOCSnapPoint() override;
 	/*@}*/
 	
 	
@@ -58,24 +60,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pSnapPoint; }
+	inline const gdeOCSnapPoint::Ref &GetOCSnapPoint() const{ return pSnapPoint; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Update name. */
 	void UpdateName();

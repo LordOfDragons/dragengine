@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCForceField;
+#include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCForceField;
  */
 class gdeWPSTIMOCForceField : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCForceField> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCForceField( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, int index );
+	gdeWPSTIMOCForceField(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCForceField();
+	~gdeWPSTIMOCForceField() override;
 	/*@}*/
 	
 	
@@ -56,24 +58,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{ return pForceField; }
+	inline const gdeOCForceField::Ref &GetOCForceField() const{ return pForceField; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

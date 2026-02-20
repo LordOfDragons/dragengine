@@ -40,24 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetCurve::seUPropertySetCurve( seSkyLayer *layer, seProperty *property ){
-	if( ! layer || ! property ) DETHROW( deeInvalidParam );
+seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property){
+	if(!layer || !property) DETHROW(deeInvalidParam);
 	
-	pLayer = NULL;
-	pProperty = NULL;
+	pLayer = nullptr;
+	pProperty = nullptr;
 	
-	SetShortInfo( "Property Set Curve" );
+	SetShortInfo("@Skin.Undo.PropertySetCurve");
 	
 	pOldCurve = property->GetCurve();
 	pNewCurve = pOldCurve;
 	
 	pLayer = layer;
-	layer->AddReference();
 	pProperty = property;
 }
 
 seUPropertySetCurve::~seUPropertySetCurve(){
-	if( pLayer ) pLayer->FreeReference();
 }
 
 
@@ -65,7 +63,7 @@ seUPropertySetCurve::~seUPropertySetCurve(){
 // Management
 ///////////////
 
-void seUPropertySetCurve::SetNewCurve( const decCurveBezier &curve ){
+void seUPropertySetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 

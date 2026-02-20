@@ -46,12 +46,13 @@ protected:
 	ceWPTMATopicAddAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMATopicAddAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMATopicAddAction( ceWindowMain &windowMain,
+	ceWPTMATopicAddAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceConversationAction::eActionTypes actionType, int index );
+		ceConversationAction::eActionTypes actionType, int index);
 	/*@}*/
 	
 	
@@ -65,7 +66,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationAction *action );
+	igdeUndo::Ref CreateUndo(ceConversationAction *action) override;
 	/*@}*/
 };
 

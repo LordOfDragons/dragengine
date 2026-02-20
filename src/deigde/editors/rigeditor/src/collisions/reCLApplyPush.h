@@ -25,15 +25,13 @@
 #ifndef _RECLAPPLYPUSH_H_
 #define _RECLAPPLYPUSH_H_
 
-#include "reCLHitList.h"
-
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class decLayerMask;
 class deBasePhysicsWorld;
 class reRig;
-class deCollider;
 
 
 
@@ -42,16 +40,16 @@ class deCollider;
  */
 class reCLApplyPush : public deBaseScriptingCollider{
 private:
-	reRig *pRig;
+	reRig &pRig;
 	
 	decDVector pRayPosition;
 	decDVector pRayDirection;
 	
 	decVector pPush;
 	
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	
-	deCollider *pClosestCollider;
+	deCollider::Ref pClosestCollider;
 	int pClosestBone;
 	float pClosestDistance;
 	
@@ -59,9 +57,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision listener. */
-	reCLApplyPush( reRig *rig );
+	reCLApplyPush(reRig &rig);
 	/** Cleans up the collision listener. */
-	virtual ~reCLApplyPush();
+	~reCLApplyPush() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -72,11 +70,11 @@ public:
 	inline const decDVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** Sets the ray. */
-	void SetRay( const decDVector &position, const decVector &direction );
+	void SetRay(const decDVector &position, const decVector &direction);
 	/** Sets the push. */
-	void SetPush( const decVector &push );
+	void SetPush(const decVector &push);
 	/** Sets the collider. */
-	void SetCollider( deCollider *collider );
+	void SetCollider(deCollider *collider);
 	
 	/** \brief Reset visitor. */
 	void Reset();
@@ -88,7 +86,7 @@ public:
 	 * \details Calls Reset(), then RayHits on the world with the provided
 	 *          layer maks and then ApplyPush().
 	 */
-	void ApplyPushIn( deBasePhysicsWorld &phyWorld, const decLayerMask &layerMask );
+	void ApplyPushIn(deBasePhysicsWorld &phyWorld, const decLayerMask &layerMask);
 	/*@}*/
 	
 	/** \name Notifications */
@@ -98,17 +96,17 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * Determines if this collider can be hit by the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 };
 
 #endif

@@ -98,27 +98,27 @@ public:
 	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
 	
 	/** \brief Set test ray. */
-	void SetRay( const decVector &origin, const decVector &direction );
+	void SetRay(const decVector &origin, const decVector &direction);
 	
 	/** \brief Set test ray. */
-	void SetRay( const deoalRTWorldOctree &octree, const decDVector &origin, const decDVector &direction );
+	void SetRay(const deoalRTWorldOctree &octree, const decDVector &origin, const decDVector &direction);
 	
 	
 	
 	/** \brief Visit optimized ray-trace octree node. */
-	void VisitOctree( const deoalRTWorldOctree &octree );
+	void VisitOctree(const deoalRTWorldOctree &octree);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( const deoalRTWorldOctree::sVisitComponent &rtcomponent );
+	virtual void VisitComponent(const deoalRTWorldOctree::sVisitComponent &rtcomponent);
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalRTWorldOctree &octree, const deoalRTWorldOctree::sVisitNode &node );
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends ) const;
+	void pVisitNode(const deoalRTWorldOctree &octree, const deoalRTWorldOctree::sVisitNode &node);
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends) const;
 // 	bool pRayHitsSphere( const decVector &center, float radiusSquared ) const;
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends, float &closestDistance ) const;
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends, float &closestDistance) const;
 };
 
 #endif

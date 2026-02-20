@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaBone::aeUSetRuleFStaBone( aeRuleForeignState *rule, const char *newName ){
-	if( ! rule || ! newName ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaBone::aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *newName){
+	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldName = rule->GetForeignBone();
 	pNewName = newName;
 	
-	SetShortInfo( "Set foreign state rule bone name" );
+	SetShortInfo("@Animator.Undo.SetRuleForeignStateBone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleFStaBone::~aeUSetRuleFStaBone(){
-	if( pRule ) pRule->FreeReference();
 }
 
 
@@ -62,9 +60,9 @@ aeUSetRuleFStaBone::~aeUSetRuleFStaBone(){
 ///////////////
 
 void aeUSetRuleFStaBone::Undo(){
-	pRule->SetForeignBone( pOldName );
+	pRule->SetForeignBone(pOldName);
 }
 
 void aeUSetRuleFStaBone::Redo(){
-	pRule->SetForeignBone( pNewName );
+	pRule->SetForeignBone(pNewName);
 }

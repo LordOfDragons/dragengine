@@ -22,14 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "reSelectionConstraints.h"
 #include "reRigConstraint.h"
-#include "reRigConstraintList.h"
 #include "../reRig.h"
-#include "dragengine/common/exceptions.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -39,158 +36,96 @@
 // Constructor, destructor
 ////////////////////////////
 
-reSelectionConstraints::reSelectionConstraints( reRig *rig ){
-	if( ! rig ) DETHROW( deeInvalidParam );
-	
+reSelectionConstraints::reSelectionConstraints(reRig *rig){
+	DEASSERT_NOTNULL(rig)
 	pRig = rig;
-	
-	pConstraints = NULL;
-	pConstraintCount = 0;
-	pConstraintSize = 0;
-	pActiveConstraint = NULL;
 }
 
 reSelectionConstraints::~reSelectionConstraints(){
 	Reset();
-	if( pConstraints ) delete [] pConstraints;
 }
 
 
 
 // Management
 ///////////////
-
-reRigConstraint *reSelectionConstraints::GetConstraintAt( int index ) const{
-	if( index < 0 || index >= pConstraintCount ) DETHROW( deeOutOfBoundary );
+int reSelectionConstraints::IndexOfConstraintWith(deColliderVolume *collider) const{
+	DEASSERT_NOTNULL(collider)
 	
-	return pConstraints[ index ];
+	return pConstraints.IndexOfMatching([collider](const reRigConstraint &c){
+		return c.GetCollider() == collider;
+	});
 }
 
-bool reSelectionConstraints::HasConstraint( reRigConstraint *constraint ) const{
-	if( ! constraint ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pConstraintCount; i++ ){
-		if( constraint == pConstraints[ i ] ){
-			return true;
-		}
+void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
+	if(!pConstraints.Add(constraint)){
+		return;
 	}
 	
-	return false;
-}
+	constraint->SetSelected(true);
 	
-int reSelectionConstraints::IndexOfConstraint( reRigConstraint *constraint ) const{
-	if( ! constraint ) DETHROW( deeInvalidParam );
-	int i;
+	pRig->NotifyConstraintSelectedChanged(constraint);
 	
-	for( i=0; i<pConstraintCount; i++ ){
-		if( constraint == pConstraints[ i ] ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-int reSelectionConstraints::IndexOfConstraintWith( deColliderVolume *collider ) const{
-	if( ! collider ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pConstraintCount; i++ ){
-		if( collider == pConstraints[ i ]->GetCollider() ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void reSelectionConstraints::AddConstraint( reRigConstraint *constraint ){
-	if( HasConstraint( constraint ) ) DETHROW( deeInvalidParam );
-	
-	if( pConstraintCount == pConstraintSize ){
-		int newSize = pConstraintSize * 3 / 2 + 1;
-		reRigConstraint **newArray = new reRigConstraint*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pConstraints ){
-			memcpy( newArray, pConstraints, sizeof( reRigConstraint* ) * pConstraintSize );
-			delete [] pConstraints;
-		}
-		pConstraints = newArray;
-		pConstraintSize = newSize;
-	}
-	
-	pConstraints[ pConstraintCount ] = constraint;
-	pConstraintCount++;
-	
-	constraint->AddReference();
-	
-	constraint->SetSelected( true );
-	
-	pRig->NotifyConstraintSelectedChanged( constraint );
-	
-	if( pActiveConstraint == NULL ){
-		SetActiveConstraint( constraint );
+	if(!pActiveConstraint){
+		SetActiveConstraint(constraint);
 	}
 }
 
-void reSelectionConstraints::RemoveConstraint( reRigConstraint *constraint ){
-	int i, index = IndexOfConstraint( constraint );
-	if( index == -1 ) DETHROW( deeInvalidParam );
-	
-	for( i=index+1; i<pConstraintCount; i++ ){
-		pConstraints[ i - 1 ] = pConstraints[ i ];
+void reSelectionConstraints::RemoveConstraint(reRigConstraint *constraint){
+	const reRigConstraint::Ref guard(constraint);
+	if(!pConstraints.Remove(constraint)){
+		return;
 	}
-	pConstraints[ pConstraintCount - 1 ] = NULL;
-	pConstraintCount--;
 	
-	constraint->SetSelected( false );
+	constraint->SetSelected(false);
 	
-	if( constraint == pActiveConstraint ){
-		if( pConstraintCount > 0 ){
-			SetActiveConstraint( pConstraints[ 0 ] );
+	if(constraint == pActiveConstraint){
+		if(pConstraints.IsNotEmpty()){
+			SetActiveConstraint(pConstraints.First());
 			
 		}else{
-			SetActiveConstraint( NULL );
+			SetActiveConstraint(nullptr);
 		}
 	}
 	
-	pRig->NotifyConstraintSelectedChanged( constraint );
-	
-	constraint->FreeReference();
+	pRig->NotifyConstraintSelectedChanged(constraint);
 }
 
 void reSelectionConstraints::RemoveAllConstraints(){
-	SetActiveConstraint( NULL );
+	if(pConstraints.IsEmpty()){
+		return;
+	}
+	
+	SetActiveConstraint(nullptr);
 	
 	pRig->NotifyAllConstraintsDeselected();
 	
-	while( pConstraintCount > 0 ){
-		pConstraintCount--;
-		
-		pConstraints[ pConstraintCount ]->SetSelected( false );
-		pConstraints[ pConstraintCount ]->FreeReference();
-	}
+	pConstraints.Visit([](reRigConstraint &c){
+		c.SetSelected(false);
+	});
+	pConstraints.RemoveAll();
 }
 
 
 
 bool reSelectionConstraints::HasActiveConstraint() const{
-	return pActiveConstraint != NULL;
+	return pActiveConstraint.IsNotNull();
 }
 
-void reSelectionConstraints::SetActiveConstraint( reRigConstraint *constraint ){
-	if( constraint != pActiveConstraint ){
-		if( constraint && ! HasConstraint( constraint ) ) DETHROW( deeInvalidParam );
+void reSelectionConstraints::SetActiveConstraint(reRigConstraint *constraint){
+	if(constraint != pActiveConstraint){
+		if(constraint){
+			DEASSERT_TRUE(pConstraints.Has(constraint))
+		}
 		
-		if( pActiveConstraint ){
-			pActiveConstraint->SetActive( false );
+		if(pActiveConstraint){
+			pActiveConstraint->SetActive(false);
 		}
 		
 		pActiveConstraint = constraint;
 		
-		if( constraint ){
-			constraint->SetActive( true );
+		if(constraint){
+			constraint->SetActive(true);
 		}
 		
 		pRig->NotifyActiveConstraintChanged();
@@ -200,13 +135,10 @@ void reSelectionConstraints::SetActiveConstraint( reRigConstraint *constraint ){
 void reSelectionConstraints::Reset(){
 	RemoveAllConstraints();
 }
-
-void reSelectionConstraints::AddVisibleConstraintsTo( reRigConstraintList &list ) const{
-	int c;
-	
-	for( c=0; c<pConstraintCount; c++ ){
-		if( pConstraints[ c ]->IsVisible() ){
-			list.AddConstraint( pConstraints[ c ] );
+void reSelectionConstraints::AddVisibleConstraintsTo(reRigConstraint::List &list) const{
+	pConstraints.Visit([&](reRigConstraint *c){
+		if(c->IsVisible()){
+			list.Add(c);
 		}
-	}
+	});
 }

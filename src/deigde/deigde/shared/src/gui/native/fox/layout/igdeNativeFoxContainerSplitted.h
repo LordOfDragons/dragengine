@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXCONTAINERSPLITTED_H_
 
 #include "../foxtoolkit.h"
+#include "../../../layout/igdeContainerSplitted.h"
 
 class igdeContainerSplitted;
 
@@ -33,8 +34,8 @@ class igdeContainerSplitted;
 /**
  * FOX Native button.
  */
-class igdeNativeFoxContainerSplitted : public FXSplitter{
-	FXDECLARE( igdeNativeFoxContainerSplitted )
+class igdeNativeFoxContainerSplitted : public FXSplitter, public igdeContainerSplitted::cNativeContainerSplitted {
+	FXDECLARE(igdeNativeFoxContainerSplitted)
 	
 protected:
 	igdeNativeFoxContainerSplitted();
@@ -52,13 +53,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxContainerSplitted( igdeContainerSplitted &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerSplitted(igdeContainerSplitted &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerSplitted();
+	~igdeNativeFoxContainerSplitted() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxContainerSplitted* CreateNativeWidget( igdeContainerSplitted &owner );
+	static igdeNativeFoxContainerSplitted* CreateNativeWidget(igdeContainerSplitted &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -71,21 +72,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateSplitValue();
+	void UpdateSplitValue() override;
 	
-	static int SplitterFlags( const igdeContainerSplitted &owner );
+	static int SplitterFlags(const igdeContainerSplitted &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerSplitted igdeNativeContainerSplitted;
+using igdeNativeContainerSplitted = igdeNativeFoxContainerSplitted;
 
 #endif

@@ -25,11 +25,12 @@
 #ifndef _CEPLAYBACKACTOR_H_
 #define _CEPLAYBACKACTOR_H_
 
+#include "../textbox/ceTextBoxText.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class ceTextBoxText;
 class ceTextBox;
 
 
@@ -40,12 +41,15 @@ class ceTextBox;
  * conversation actors as they hold only the state no matter what kind of actor in
  * the end has to be used.
  */
-class cePlaybackActor{
+class cePlaybackActor : public deObject{
+public:
+	using Ref = deTObjectReference<cePlaybackActor>;
+	
 private:
 	float pSpeechLength;
 	float pElapsedTime;
 	ceTextBox *pTextBox;
-	ceTextBoxText *pTextBoxText;
+	ceTextBoxText::Ref pTextBoxText;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -53,7 +57,9 @@ public:
 	/** Creates a new playback actor. */
 	cePlaybackActor();
 	/** Cleans up the playback actor. */
-	~cePlaybackActor();
+protected:
+	~cePlaybackActor() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -61,17 +67,17 @@ public:
 	/** Retrieves the length of the speech. */
 	inline float GetSpeechLength() const{ return pSpeechLength; }
 	/** Sets the speech length. */
-	void SetSpeechLength( float length );
+	void SetSpeechLength(float length);
 	/** Retrieves the elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
 	/** Sets the elapsed time. */
-	void SetElapsedTime( float elapsed );
+	void SetElapsedTime(float elapsed);
 	/** Sets the text box. Used to handle text box text. */
-	void SetTextBox( ceTextBox *textBox );
-	/** Text box text or NULL if not owning one. */
-	inline ceTextBoxText *GetTextBoxText() const{ return pTextBoxText; }
-	/** Sets the text box text or NULL if not owning one. */
-	void SetTextBoxText( ceTextBoxText *text );
+	void SetTextBox(ceTextBox *textBox);
+	/** Text box text or nullptr if not owning one. */
+	inline const ceTextBoxText::Ref &GetTextBoxText() const{ return pTextBoxText; }
+	/** Sets the text box text or nullptr if not owning one. */
+	void SetTextBoxText(ceTextBoxText *text);
 	
 	/** Determines if the speech is done. */
 	bool IsSpeechDone() const;
@@ -79,7 +85,7 @@ public:
 	/** Reset. */
 	void Reset();
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

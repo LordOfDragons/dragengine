@@ -40,6 +40,10 @@ class igdeEnvironment;
  */
 class DE_DLL_EXPORT igdeFont : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeFont>;
+	
+	
 	/** \brief Font configuration. */
 	struct DE_DLL_EXPORT sConfiguration{
 		decString name; //< Name of font
@@ -50,12 +54,20 @@ public:
 		bool strikeThrough; //< Strike through font
 		
 		sConfiguration();
-		sConfiguration( const sConfiguration &config );
+		sConfiguration(const sConfiguration &config);
 		
-		sConfiguration &operator=( const sConfiguration &config );
-		bool operator==( const sConfiguration &config ) const;
+		sConfiguration &operator=(const sConfiguration &config);
+		bool operator==(const sConfiguration &config) const;
 	};
 	
+	
+	class cNativeFont{
+	public:
+		virtual ~cNativeFont() = default;
+		virtual void DestroyNativeFont() = 0;
+		virtual deFont::Ref CreateEngineFont() = 0;
+		virtual decPoint TextSize(const char *text) const = 0;
+	};
 	
 	
 private:
@@ -67,11 +79,15 @@ private:
 	deFont::Ref pEngineFont;
 	
 	
+protected:
+	cNativeFont *pNativeFontInterface;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font. */
-	igdeFont( igdeEnvironment &environment, const sConfiguration &config );
+	igdeFont(igdeEnvironment &environment, const sConfiguration &config);
 	
 	
 	
@@ -82,7 +98,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeFont();
+	~igdeFont() override;
 	/*@}*/
 	
 	
@@ -112,12 +128,12 @@ public:
 	inline bool GetStrikeThrough() const{ return pStrikeThrough; }
 	
 	/** \brief Font configuration. */
-	void GetConfig( sConfiguration &config ) const;
+	void GetConfig(sConfiguration &config) const;
 	
 	
 	
 	/** \brief Text size. */
-	decPoint TextSize( const char *text ) const;
+	decPoint TextSize(const char *text) const;
 	
 	
 	
@@ -126,7 +142,7 @@ public:
 	 * 
 	 * Engine font is created the first time it is requested.
 	 */
-	deFont *GetEngineFont();
+	const deFont::Ref &GetEngineFont();
 	/*@}*/
 	
 	

@@ -41,26 +41,22 @@
 ////////////////////////////
 
 gdeUOCSetHideTags::gdeUOCSetHideTags(
-gdeObjectClass *objectClass, const decStringSet &newValue ) :
-pObjectClass( NULL )
+gdeObjectClass *objectClass, const decStringSet &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set hide tags" );
+	SetShortInfo("@GameDefinition.Undo.OCSetHideTags");
 	
 	pOldValue = objectClass->GetHideTags();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetHideTags::~gdeUOCSetHideTags(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -69,11 +65,11 @@ gdeUOCSetHideTags::~gdeUOCSetHideTags(){
 ///////////////
 
 void gdeUOCSetHideTags::Undo(){
-	pObjectClass->SetHideTags( pOldValue );
+	pObjectClass->SetHideTags(pOldValue);
 	pObjectClass->GetGameDefinition()->UpdateUsedTagsObjectClass();
 }
 
 void gdeUOCSetHideTags::Redo(){
-	pObjectClass->SetHideTags( pNewValue );
+	pObjectClass->SetHideTags(pNewValue);
 	pObjectClass->GetGameDefinition()->UpdateUsedTagsObjectClass();
 }

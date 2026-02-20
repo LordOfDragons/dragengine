@@ -26,11 +26,12 @@
 #define _GDEVAOSPEAKER_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCSpeaker;
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
+
 class igdeWCoordSysArrows;
 
 
@@ -39,11 +40,16 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object speaker for edit view.
  */
 class gdeVAOSpeaker : public gdeVAOSubObject{
-private:
-	gdeOCSpeaker *pOCSpeaker;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOSpeaker> Ref;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	
+private:
+	gdeOCSpeaker::Ref pOCSpeaker;
+	
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -52,8 +58,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object speaker. */
-	gdeVAOSpeaker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCSpeaker *ocspeaker );
+	gdeVAOSpeaker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSpeaker *ocspeaker);
 	
 protected:
 	/**
@@ -62,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOSpeaker();
+	~gdeVAOSpeaker() override;
 	/*@}*/
 	
 	
@@ -71,13 +77,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{ return pOCSpeaker; }
+	inline const gdeOCSpeaker::Ref &GetOCSpeaker() const{ return pOCSpeaker; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	
@@ -93,4 +99,3 @@ private:
 };
 
 #endif
- 

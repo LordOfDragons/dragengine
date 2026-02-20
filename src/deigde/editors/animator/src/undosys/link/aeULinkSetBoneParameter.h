@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -36,8 +36,12 @@ class aeLink;
  * Undo action set bone parameter..
  */
 class aeULinkSetBoneParameter : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeULinkSetBoneParameter>;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	deAnimatorLink::eBoneParameter pOldValue;
 	deAnimatorLink::eBoneParameter pNewValue;
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetBoneParameter( aeLink *link, deAnimatorLink::eBoneParameter newValue );
+	aeULinkSetBoneParameter(aeLink *link, deAnimatorLink::eBoneParameter newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkSetBoneParameter();
+	~aeULinkSetBoneParameter() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

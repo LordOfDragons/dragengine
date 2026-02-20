@@ -42,40 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
-	}
+meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures(meObject *object){
+	DEASSERT_NOTNULL(object)
+	DEASSERT_NOTNULL(object->GetWorld())
 	
-	const int count = object->GetTextureCount();
-	decStringList modelTextureNames;
-	int i;
+	SetShortInfo("@World.UObjectRemoveUnusedTextures.RemoveUnusedObjectTextures");
 	
-	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pObject = NULL;
-	
-	SetShortInfo( "Remove Unused Object Textures" );
-	
-	object->GetModelTextureNameList( modelTextureNames );
-	for( i=0; i<count; i++ ){
-		if( ! modelTextureNames.Has( object->GetTextureAt( i )->GetName() ) ){
-			pTextureList.AddTexture( object->GetTextureAt( i ) );
-		}
-	}
+	decStringList names;
+	object->GetModelTextureNameList(names);
+	pTextureList = object->GetTextures().Collect([&](const meObjectTexture &t){
+		return !names.Has(t.GetName());
+	});
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectRemoveUnusedTextures::~meUObjectRemoveUnusedTextures(){
-	pTextureList.RemoveAllTextures();
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -84,19 +66,13 @@ meUObjectRemoveUnusedTextures::~meUObjectRemoveUnusedTextures(){
 ///////////////
 
 void meUObjectRemoveUnusedTextures::Undo(){
-	const int count = pTextureList.GetTextureCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pObject->AddTexture( pTextureList.GetTextureAt( i ) );
-	}
+	pTextureList.Visit([&](meObjectTexture *t){
+		pObject->AddTexture(t);
+	});
 }
 
 void meUObjectRemoveUnusedTextures::Redo(){
-	const int count = pTextureList.GetTextureCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pObject->RemoveTexture( pTextureList.GetTextureAt( i ) );
-	}
+	pTextureList.Visit([&](meObjectTexture *t){
+		pObject->RemoveTexture(t);
+	});
 }

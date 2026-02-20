@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetCFrame::aeURuleLimitSetCFrame( aeRuleLimit *rule,
-deAnimatorRuleLimit::eCoordinateFrames newCoordFrame ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetCFrame::aeURuleLimitSetCFrame(aeRuleLimit *rule,
+deAnimatorRuleLimit::eCoordinateFrames newCoordFrame){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pOldCoordFrame = rule->GetCoordinateFrame();
 	pNewCoordFrame = newCoordFrame;
 	
-	SetShortInfo( "Limit set coordinate frame" );
+	SetShortInfo("@Animator.Undo.RuleLimitSetCoordinateFrame");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetCFrame::~aeURuleLimitSetCFrame(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ aeURuleLimitSetCFrame::~aeURuleLimitSetCFrame(){
 ///////////////
 
 void aeURuleLimitSetCFrame::Undo(){
-	pRule->SetCoordinateFrame( pOldCoordFrame );
+	pRule->SetCoordinateFrame(pOldCoordFrame);
 }
 
 void aeURuleLimitSetCFrame::Redo(){
-	pRule->SetCoordinateFrame( pNewCoordFrame );
+	pRule->SetCoordinateFrame(pNewCoordFrame);
 }

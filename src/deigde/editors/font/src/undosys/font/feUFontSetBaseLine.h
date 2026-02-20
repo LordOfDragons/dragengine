@@ -34,6 +34,10 @@ class feFont;
  * \brief Font Set Base Line Undo Action.
  */
 class feUFontSetBaseLine : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUFontSetBaseLine>;
+	
+	
 private:
 	feFont *pFont;
 	int pOldValue, pNewValue;

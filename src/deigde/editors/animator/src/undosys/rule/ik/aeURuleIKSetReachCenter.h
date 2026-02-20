@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -37,8 +37,12 @@ class aeRuleInverseKinematic;
  * Undo action rule inverse kinematic set reach center.
  */
 class aeURuleIKSetReachCenter : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleIKSetReachCenter>;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -48,23 +52,23 @@ public:
 	/*@{*/
 	/**
 	 * Create new undo action.
-	 * \throws deeInvalidParam \em rule is \em NULL.
+	 * \throws deeInvalidParam \em rule is \em nullptr.
 	 */
-	aeURuleIKSetReachCenter( aeRuleInverseKinematic *rule, const decVector &newValue );
+	aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, const decVector &newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleIKSetReachCenter();
+	~aeURuleIKSetReachCenter() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

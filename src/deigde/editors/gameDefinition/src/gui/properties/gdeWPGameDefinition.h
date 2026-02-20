@@ -25,18 +25,18 @@
 #ifndef _GDEWPGAMEDEFINITION_H_
 #define _GDEWPGAMEDEFINITION_H_
 
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 class gdeWindowProperties;
 class gdeWindowMain;
-class gdeWPGameDefinitionListener;
+#include "gdeWPGameDefinitionListener.h"
 class gdeWPPropertyList;
 class gdeProperty;
 
@@ -46,29 +46,32 @@ class gdeProperty;
  * \brief Property window game definition panel.
  */
 class gdeWPGameDefinition : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPGameDefinition> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPGameDefinitionListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPGameDefinitionListener::Ref pListener;
 	
-	igdeActionReference pActionBasePath;
+	igdeAction::Ref pActionBasePath;
 	
-	igdeTextFieldReference pEditID;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditBasePath;
-	igdeTextFieldReference pEditVFSPath;
-	igdeTextFieldReference pEditScriptModule;
-	igdeTextFieldReference pEditUseBasePath;
-	igdeCheckBoxReference pChkIsProjectGameDef;
+	igdeTextField::Ref pEditID;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditBasePath;
+	igdeTextField::Ref pEditVFSPath;
+	igdeTextField::Ref pEditScriptModule;
+	igdeTextField::Ref pEditUseBasePath;
+	igdeCheckBox::Ref pChkIsProjectGameDef;
 	
-// 	igdeWidgetReference pEditBaseGameDefIDs;
+// 	igdeWidget::Ref pEditBaseGameDefIDs;
 	
-	igdeWidgetReference pEditWorldProperties;
-	igdeWidgetReference pEditDecalProperties;
+	igdeWidget::Ref pEditWorldProperties;
+	igdeWidget::Ref pEditDecalProperties;
 	
-	igdeWidgetReference pEditAutoFindPathObjectClasses;
-	igdeWidgetReference pEditAutoFindPathSkins;
-	igdeWidgetReference pEditAutoFindPathSkies;
+	igdeWidget::Ref pEditAutoFindPathObjectClasses;
+	igdeWidget::Ref pEditAutoFindPathSkins;
+	igdeWidget::Ref pEditAutoFindPathSkies;
 	
 	
 	
@@ -76,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create property panel. */
-	gdeWPGameDefinition( gdeWindowProperties &windowProperties );
+	gdeWPGameDefinition(gdeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up property panel. */
@@ -91,11 +94,11 @@ public:
 	/** \brief Properties window. */
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Game definition or \em NULL. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Active world property. */
 	gdeProperty *GetActiveWorldProperty() const;

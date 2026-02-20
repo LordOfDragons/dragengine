@@ -46,13 +46,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceTarget::ceTarget( const char *name ) :
-pConversation( NULL ),
-pName( name ){
+ceTarget::ceTarget(const char *name) :
+pConversation(nullptr),
+pName(name){
 }
 
-ceTarget::ceTarget( const ceTarget &target ){
-	pConversation = NULL;
+ceTarget::ceTarget(const ceTarget &target){
+	pConversation = nullptr;
 	pName = target.GetName();
 	   pActor = target.GetActor();
 	   pCoordSystem = target.GetCoordSystem();
@@ -69,115 +69,115 @@ ceTarget::~ceTarget(){
 // Management
 ///////////////
 
-void ceTarget::SetConversation( ceConversation *conversation ){
+void ceTarget::SetConversation(ceConversation *conversation){
 	pConversation = conversation;
 }
 
-void ceTarget::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void ceTarget::SetName(const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pName.Equals( name ) ){
-		if( pConversation && pConversation->GetTargetList().HasNamed( name ) ){
-			DETHROW( deeInvalidParam );
+	if(!pName.Equals(name)){
+		if(pConversation){
+			DEASSERT_FALSE(pConversation->GetTargets().HasMatching( [&](const ceTarget &t){
+				return t.GetName() == name && &t != this; }))
 		}
 		
 		pName = name;
 		
-		if( pConversation ){
-			pConversation->NotifyTargetChanged( this );
+		if(pConversation){
+			pConversation->NotifyTargetChanged(this);
 		}
 	}
 }
 
-void ceTarget::SetActor( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void ceTarget::SetActor(const char *id){
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pActor.Equals( id ) ){
+	if(!pActor.Equals(id)){
 		      pActor = id;
 		
-		if( pConversation ){
-			pConversation->NotifyTargetChanged( this );
+		if(pConversation){
+			pConversation->NotifyTargetChanged(this);
 		}
 	}
 }
 
-void ceTarget::SetCoordSystem( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void ceTarget::SetCoordSystem(const char *id){
+	if(!id){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pCoordSystem.Equals( id ) ){
+	if(!pCoordSystem.Equals(id)){
 		      pCoordSystem = id;
 		
-		if( pConversation ){
-			pConversation->NotifyTargetChanged( this );
+		if(pConversation){
+			pConversation->NotifyTargetChanged(this);
 		}
 	}
 }
 
-void ceTarget::SetBone( const char *bone ){
-	if( ! bone ){
-		DETHROW( deeInvalidParam );
+void ceTarget::SetBone(const char *bone){
+	if(!bone){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pBone.Equals( bone ) ){
+	if(!pBone.Equals(bone)){
 		pBone = bone;
 		
-		if( pConversation ){
-			pConversation->NotifyTargetChanged( this );
+		if(pConversation){
+			pConversation->NotifyTargetChanged(this);
 		}
 	}
 }
 
-void ceTarget::SetPosition( const decVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void ceTarget::SetPosition(const decVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pConversation ){
-			pConversation->NotifyTargetChanged( this );
+		if(pConversation){
+			pConversation->NotifyTargetChanged(this);
 		}
 	}
 }
 
-void ceTarget::SetOrientation( const decVector &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void ceTarget::SetOrientation(const decVector &orientation){
+	if(!orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		if( pConversation ){
-			pConversation->NotifyTargetChanged( this );
+		if(pConversation){
+			pConversation->NotifyTargetChanged(this);
 		}
 	}
 }
 
 
 
-void ceTarget::GetCoordinateSystem( cePlayback &playback, decMatrix &coordinateSystem ){
-	coordinateSystem.SetRT( pOrientation * DEG2RAD, pPosition );
+void ceTarget::GetCoordinateSystem(cePlayback &playback, decMatrix &coordinateSystem){
+	coordinateSystem.SetRT(pOrientation * DEG2RAD, pPosition);
 	//coordinateSystem = decMatrix::CreateTranslation( pPosition )
 	//	* decMatrix::CreateRotation( pOrientation * DEG2RAD );
 	
-	const ceConversationActorList &actorList = playback.GetConversation().GetActorList();
-	const ceConversationActor *actor = NULL;
+	const ceConversationActor::List &actorList = playback.GetConversation().GetActorList();
 	
 	// coordinate system
-	if( ! pCoordSystem.IsEmpty() ){
-		const ceCoordSystem * const coordSystem = playback.GetConversation().GetCoordSystemList().GetWithIDOrAliasID( pCoordSystem );
-		if( coordSystem ){
-			coordinateSystem *= decMatrix::CreateRT( coordSystem->GetOrientation() * DEG2RAD, coordSystem->GetPosition() );
+	if(!pCoordSystem.IsEmpty()){
+		const ceCoordSystem * const coordSystem = playback.GetConversation().GetCoordSystemList().GetWithIDOrAliasID(pCoordSystem);
+		if(coordSystem){
+			coordinateSystem *= decMatrix::CreateRT(coordSystem->GetOrientation() * DEG2RAD, coordSystem->GetPosition());
 		}
 		
-	// actor
-	}else if( ! pActor.IsEmpty() ){
-		actor = actorList.GetWithIDOrAliasID( pActor );
-		if( actor ){
-			if( ! pBone.IsEmpty() ){
-				coordinateSystem *= actor->GetBoneMatrix( pBone );
+		// actor
+	}else if(!pActor.IsEmpty()){
+		const ceConversationActor * const actor = actorList.GetWithIDOrAliasID(pActor);
+		if(actor){
+			if(!pBone.IsEmpty()){
+				coordinateSystem *= actor->GetBoneMatrix(pBone);
 			}
-			coordinateSystem *= decMatrix::CreateRT( actor->GetOrientation() * DEG2RAD, actor->GetPosition() );
+			coordinateSystem *= decMatrix::CreateRT(actor->GetOrientation() * DEG2RAD, actor->GetPosition());
 		}
 		
 	// otherwise use current camera location

@@ -25,12 +25,12 @@
 // includes
 #include "decrbPanelErrorTrace.h"
 #include "decrbWindowMain.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/errortracing/deErrorTrace.h"
-#include "dragengine/errortracing/deErrorTracePoint.h"
-#include "dragengine/errortracing/deErrorTraceValue.h"
-#include "dragengine/systems/modules/deLoadableModule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/errortracing/deErrorTrace.h>
+#include <dragengine/errortracing/deErrorTracePoint.h>
+#include <dragengine/errortracing/deErrorTraceValue.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -46,16 +46,16 @@
 ///////////////////////////////
 	
 //FXIMPLEMENT( decrbPanelErrorTrace, FXVerticalFrame, decrbPanelErrorTraceMap, ARRAYNUMBER( decrbPanelErrorTraceMap ) )
-FXIMPLEMENT( decrbPanelErrorTrace, FXVerticalFrame, nullptr, 0 )
+FXIMPLEMENT(decrbPanelErrorTrace, FXVerticalFrame, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-decrbPanelErrorTrace::decrbPanelErrorTrace(){ }
+decrbPanelErrorTrace::decrbPanelErrorTrace(){}
 
-decrbPanelErrorTrace::decrbPanelErrorTrace( decrbWindowMain *windowMain, FXComposite *container ) :
-FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5 ){
-	if( ! windowMain ) DETHROW( deeInvalidParam );
+decrbPanelErrorTrace::decrbPanelErrorTrace(decrbWindowMain *windowMain, FXComposite *container) :
+FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
+	if(!windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
@@ -63,19 +63,19 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	pWndMain = windowMain;
 	
 	// engine status
-	FXHorizontalFrame *frameLine = new FXHorizontalFrame( this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Error:" );
-	pEditError = new FXTextField( frameLine, 10, NULL, 0, TEXTFIELD_READONLY | FRAME_SUNKEN | LAYOUT_FILL_X );
+	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Error:");
+	pEditError = new FXTextField(frameLine, 10, nullptr, 0, TEXTFIELD_READONLY | FRAME_SUNKEN | LAYOUT_FILL_X);
 	
-	FXGroupBox *groupBox = new FXGroupBox( this, "Trace:", GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X
+	FXGroupBox *groupBox = new FXGroupBox(this, "Trace:", GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X
 		| LAYOUT_FILL_Y, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	FXVerticalFrame *frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	pTreeTrace = new FXTreeList( frameBox, NULL, ID_TREETRACE, TREELIST_EXTENDEDSELECT
+		padding, padding, padding, padding);
+	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	pTreeTrace = new FXTreeList(frameBox, nullptr, ID_TREETRACE, TREELIST_EXTENDEDSELECT
 		| TREELIST_SHOWS_LINES | TREELIST_SHOWS_BOXES | TREELIST_ROOT_BOXES
-		| FRAME_SUNKEN | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+		| FRAME_SUNKEN | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
 	UpdateTrace();
 }
@@ -91,43 +91,42 @@ decrbPanelErrorTrace::~decrbPanelErrorTrace(){
 void decrbPanelErrorTrace::UpdateTrace(){
 	deErrorTrace *trace = pWndMain->GetEngine()->GetErrorTrace();
 	int i, pointCount = trace->GetPointCount();
-	deErrorTracePoint *tracePoint;
 	FXTreeItem *treeItem;
 	FXString traceText;
 	int j, valueCount;
 	
-	pEditError->setText( decrbWindowMain::GetTextForError( trace->GetError() ) );
+	pEditError->setText(decrbWindowMain::GetTextForError(trace->GetError()));
 	
-	for( i=0; i<pointCount; i++ ){
-		tracePoint = trace->GetPoint( i );
+	for(i=0; i<pointCount; i++){
+		deErrorTracePoint &tracePoint = trace->GetPoint(i);
 		
 		/*
-		if( tracePoint->GetSourceModule() ){
-			traceText.format( "%i) %s, %s at %i\n", i + 1, tracePoint->GetSourceModule()->GetName(),
-				tracePoint->GetSourceFunction(), tracePoint->GetSourceLine() );
+		if(tracePoint.GetSourceModule()){
+			traceText.format("%i) %s, %s at %i\n", i + 1, tracePoint.GetSourceModule()->GetName(),
+				tracePoint.GetSourceFunction(), tracePoint.GetSourceLine());
 		}else{
-			traceText.format( "%i) Game Engine, %s at %i\n", i + 1, tracePoint->GetSourceFunction(),
-				tracePoint->GetSourceLine() );
+			traceText.format("%i) Game Engine, %s at %i\n", i + 1, tracePoint.GetSourceFunction(),
+				tracePoint.GetSourceLine());
 		}
-		pEditTrace->appendText( traceText.text(), traceText.length() );
+		pEditTrace->appendText(traceText.text(), traceText.length());
 		*/
 		
-		if( tracePoint->GetSourceModule() ){
-			traceText.format( "%i. %s, %s at %i", i + 1,
-				tracePoint->GetSourceModule()->GetName().GetString(),
-				tracePoint->GetSourceFunction().GetString(),
-				tracePoint->GetSourceLine() );
+		if(tracePoint.GetSourceModule()){
+			traceText.format("%i. %s, %s at %i", i + 1,
+				tracePoint.GetSourceModule()->GetName().GetString(),
+				tracePoint.GetSourceFunction().GetString(),
+				tracePoint.GetSourceLine());
 			
 		}else{
-			traceText.format( "%i. Game Engine, %s at %i", i + 1,
-				tracePoint->GetSourceFunction().GetString(),
-				tracePoint->GetSourceLine() );
+			traceText.format("%i. Game Engine, %s at %i", i + 1,
+				tracePoint.GetSourceFunction().GetString(),
+				tracePoint.GetSourceLine());
 		}
 		
-		treeItem = pTreeTrace->appendItem( NULL, traceText, NULL, NULL, NULL, false );
-		valueCount = tracePoint->GetValueCount();
-		for( j=0; j<valueCount; j++ ){
-			pAddErrorTraceSubValues( 0, treeItem, tracePoint->GetValue( j ) );
+		treeItem = pTreeTrace->appendItem(nullptr, traceText, nullptr, nullptr, nullptr, false);
+		valueCount = tracePoint.GetValueCount();
+		for(j=0; j<valueCount; j++){
+			pAddErrorTraceSubValues(0, treeItem, tracePoint.GetValue(j));
 		}
 		
 		//pEditTrace->appendText( "\n", 1 );
@@ -144,27 +143,27 @@ void decrbPanelErrorTrace::UpdateTrace(){
 // Private Functions
 //////////////////////
 
-void decrbPanelErrorTrace::pAddErrorTraceSubValues( int level, FXTreeItem *treeItem, deErrorTraceValue *traceValue ){
+void decrbPanelErrorTrace::pAddErrorTraceSubValues(int level, FXTreeItem *treeItem, deErrorTraceValue *traceValue){
 	int i, valueCount = traceValue->GetSubValueCount();
 	FXTreeItem *subTreeItem;
 	FXString traceText;
 	
 	// add value
 	/*
-	if( traceValue->GetSubValueCount() > 0 ){
+	if(traceValue->GetSubValueCount() > 0){
 		boxChar = '+';
 	}else{
 		boxChar = '-';
 	}
-	traceText.format( "  %c %s = '%s'\n", boxChar, traceValue->GetName(), traceValue->GetValue() );
-	for( i=0; i<level; i++ ) traceText.prepend( "  " );
-	pEditTrace->appendText( traceText.text(), traceText.length() );
+	traceText.format("  %c %s = '%s'\n", boxChar, traceValue->GetName(), traceValue->GetValue());
+	for(i=0; i<level; i++) traceText.prepend("  ");
+	pEditTrace->appendText(traceText.text(), traceText.length());
 	*/
 	
-	traceText.format( "%s = %s", traceValue->GetName().GetString(), traceValue->GetValue().GetString() );
-	subTreeItem = pTreeTrace->appendItem( treeItem, traceText, NULL, NULL, NULL, false );
+	traceText.format("%s = %s", traceValue->GetName().GetString(), traceValue->GetValue().GetString());
+	subTreeItem = pTreeTrace->appendItem(treeItem, traceText, nullptr, nullptr, nullptr, false);
 	
-	for( i=0; i<valueCount; i++ ){
-		pAddErrorTraceSubValues( level + 1, subTreeItem, traceValue->GetSubValue( i ) );
+	for(i=0; i<valueCount; i++){
+		pAddErrorTraceSubValues(level + 1, subTreeItem, traceValue->GetSubValue(i));
 	}
 }

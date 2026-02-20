@@ -26,9 +26,9 @@
 #define _REUSETSHAPECYLINDERTOPRADIUS_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-class reRigShapeCylinder;
+#include "../../../rig/shape/reRigShapeCylinder.h"
 
 
 
@@ -36,8 +36,12 @@ class reRigShapeCylinder;
  * \brief Undo Set Shape TopRadius.
  */
 class reUSetShapeCylinderTopRadius : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUSetShapeCylinderTopRadius>;
+	
+	
 private:
-	reRigShapeCylinder *pShape;
+	reRigShapeCylinder::Ref pShape;
 	
 	float pOldTopRadius;
 	float pNewTopRadius;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeCylinderTopRadius( reRigShapeCylinder *shape, float topRadius );
+	reUSetShapeCylinderTopRadius(reRigShapeCylinder *shape, float topRadius);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetShapeCylinderTopRadius();
+	~reUSetShapeCylinderTopRadius() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

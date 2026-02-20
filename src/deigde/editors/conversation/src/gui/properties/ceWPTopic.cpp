@@ -118,7 +118,7 @@
 #include "../../undosys/topic/ceUCTopicDuplicate.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -127,17 +127,16 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -192,221 +191,240 @@ class cComboFile : public igdeComboBoxListener{
 	ceWPTopic &pPanel;
 	
 public:
-	cComboFile( ceWPTopic &panel ) : pPanel( panel ){}
+	using Ref = deTObjectReference<cComboFile>;
+	cComboFile(ceWPTopic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversation * const conversation = pPanel.GetConversation();
-		if( conversation ){
-			conversation->SetActiveFile( comboBox->GetSelectedItem()
-				? ( ceConversationFile* )comboBox->GetSelectedItem()->GetData() : NULL );
+		if(conversation){
+			conversation->SetActiveFile(comboBox->GetSelectedItem()
+				? (ceConversationFile*)comboBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 };
 
 class cActionGroupAdd : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupAdd>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupAdd( ceWPTopic &panel ) : igdeAction( "Add...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add topic group" ),
-		pPanel( panel ){}
+	cActionGroupAdd(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Add.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
-		if( ! conversation ){
+		if(!conversation){
 			return;
 		}
 		
-		decString name( "Group" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Topic Group", "Name:", name ) ){
+		decString name(pPanel.Translate("Conversation.DefaultName.Group").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.AddTopicGroup.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
-		if( conversation->GetFileList().HasWithID( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Add Topic Group", "Topic group exists" );
+		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopicGroup.Title", "@Conversation.WPTopic.TopicGroupExists.Message");
 			return;
 		}
 		
-		igdeUndoReference undo;
-		deObjectReference group;
-		group.TakeOver( new ceConversationFile( name ) );
-		undo.TakeOver( new ceUCFileAdd( conversation, ( ceConversationFile* )( deObject* )group ) );
-		conversation->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo;
+		const ceConversationFile::Ref group(ceConversationFile::Ref::New(name));
+		undo = ceUCFileAdd::Ref::New(conversation, group);
+		conversation->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetConversation() );
+	void Update() override{
+		SetEnabled(pPanel.GetConversation());
 	}
 };
 
 class cActionGroupRemove : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupRemove>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupRemove( ceWPTopic &panel ) : igdeAction( "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove topic group" ),
-		pPanel( panel ){}
+	cActionGroupRemove(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPTopic.Remove.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
-		if( pPanel.GetFile() ){
-			igdeUndoReference undo;
-			undo.TakeOver( new ceUCFileRemove( pPanel.GetFile() ) );
-			pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+	void OnAction() override{
+		if(pPanel.GetFile()){
+			pPanel.GetConversation()->GetUndoSystem()->Add(
+				ceUCFileRemove::Ref::New(pPanel.GetFile()));
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
 class cActionGroupRename : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupRename>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupRename( ceWPTopic &panel ) : igdeAction( "Rename...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Rename topic group" ),
-		pPanel( panel ){}
+	cActionGroupRename(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Rename",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Rename.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		ceConversationFile * const file = pPanel.GetFile();
-		if( ! file || ! conversation ){
+		if(!file || !conversation){
 			return;
 		}
 		
-		decString name( file->GetID() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Rename Topic Group", "Name:", name ) || name == file->GetID() ){
+		decString name(file->GetID());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.RenameTopicGroup.Title", "@Conversation.Dialog.Name", name) || name == file->GetID()){
 			return;
 		}
 		
-		if( conversation->GetFileList().HasWithID( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename Topic Group", "Topic group exists" );
+		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopicGroup.Title", "@Conversation.WPTopic.TopicGroupExists.Message");
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCFileSetID( *conversation, file, name ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(ceUCFileSetID::Ref::New(*conversation, file, name));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
 class cActionGroupCopy : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupCopy>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupCopy( ceWPTopic &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy topic group" ),
-		pPanel( panel ){}
+	cActionGroupCopy(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@Conversation.WPTopic.Copy.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationFile * const file = pPanel.GetFile();
-		if( ! file ){
+		if(!file){
 			return;
 		}
 		
-		igdeClipboardDataReference clip;
-		ceConversationFileList list;
-		list.Add( file );
-		clip.TakeOver( new ceClipboardDataFile( list ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
+		ceConversationFile::List list;
+		list.Add(file);
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(ceClipboardDataFile::Ref::New(list));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
 class cActionGroupPaste : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupPaste>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupPaste( ceWPTopic &panel ) : igdeAction( "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste topic group" ),
-		pPanel( panel ){}
+	cActionGroupPaste(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Conversation.WPTopic.Paste.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
-		ceClipboardDataFile * const clip = ( ceClipboardDataFile* )pPanel.GetWindowProperties().GetWindowMain()
-			.GetClipboard().GetWithTypeName( ceClipboardDataFile::TYPE_NAME );
-		if( ! conversation || ! clip ){
+		ceClipboardDataFile * const clip = (ceClipboardDataFile*)pPanel.GetWindowProperties().GetWindowMain()
+			.GetClipboard().GetWithTypeName(ceClipboardDataFile::TYPE_NAME);
+		if(!conversation || !clip){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCFilePaste( conversation, clip->GetFiles() ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(
+			ceUCFilePaste::Ref::New(conversation, clip->GetFiles()));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetConversation() && pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
-			.HasWithTypeName( ceClipboardDataFile::TYPE_NAME ) );
+	void Update() override{
+		SetEnabled(pPanel.GetConversation() && pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
+			.HasWithTypeName(ceClipboardDataFile::TYPE_NAME));
 	}
 };
 
 class cActionGroupDuplicate : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupDuplicate>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupDuplicate( ceWPTopic &panel ) : igdeAction( "Duplicate...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Duplicate topic group" ),
-		pPanel( panel ){}
+	cActionGroupDuplicate(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Duplicate",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Duplicate.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversation * const conversation = pPanel.GetConversation();
 		ceConversationFile * const file = pPanel.GetFile();
-		if( ! file || ! conversation ){
+		if(!file || !conversation){
 			return;
 		}
 		
-		decString name( file->GetID() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Duplicate Topic Group", "Name:", name ) ){
+		decString name(file->GetID());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.DuplicateTopicGroup.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
-		if( conversation->GetFileList().HasWithID( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Duplicate Topic Group", "Topic group exists" );
+		if(conversation->GetFiles().HasMatching([&](const ceConversationFile &f){ return f.GetID() == name; })){
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopicGroup.Title", "@Conversation.WPTopic.TopicGroupExists.Message");
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCFileDuplicate( conversation, *file, name ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(ceUCFileDuplicate::Ref::New(
+			conversation, *file, name));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
 class cActionGroupMissingWords : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionGroupMissingWords>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupMissingWords( ceWPTopic &panel ) : igdeAction( "Missing Words...",
-		nullptr, "Show missing words" ), pPanel( panel ){}
+	cActionGroupMissingWords(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.MissingWords",
+		nullptr, "@Conversation.WPTopic.MissingWords.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationFile * const group = pPanel.GetFile();
-		if( ! group ){
+		if(!group){
 			return;
 		}
 		
 		decStringSet missingWords;
-		const ceConversationTopicList &list = group->GetTopicList();
-		int i, count = list.GetCount();
-		for( i=0; i<count; i++ ){
-			list.GetAt( i )->FindMissingWords( missingWords );
-		}
-		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog( missingWords );
+		group->GetTopics().Visit([&](const ceConversationTopic &t){
+			t.FindMissingWords(missingWords);
+		});
+		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog(missingWords);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
@@ -414,28 +432,29 @@ class cActionFileMenu : public igdeActionContextMenu{
 	ceWPTopic &pPanel;
 	
 public:
-	cActionFileMenu( ceWPTopic &panel ) : igdeActionContextMenu( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Show File Menu" ),
-		pPanel( panel ){}
+	using Ref = deTObjectReference<cActionFileMenu>;
+	cActionFileMenu(ceWPTopic &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@Conversation.WPTopic.ShowFileMenu.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( contextMenu, new cActionGroupAdd( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionGroupRemove( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionGroupRename( pPanel ), true );
+		helper.MenuCommand(contextMenu, cActionGroupAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionGroupRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionGroupRename::Ref::New(pPanel));
 		
-		helper.MenuSeparator( contextMenu );
-		helper.MenuCommand( contextMenu, new cActionGroupMissingWords( pPanel ), true );
+		helper.MenuSeparator(contextMenu);
+		helper.MenuCommand(contextMenu, cActionGroupMissingWords::Ref::New(pPanel));
 		
-		helper.MenuSeparator( contextMenu );
-		helper.MenuCommand( contextMenu, new cActionGroupCopy( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionGroupPaste( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionGroupDuplicate( pPanel ), true );
+		helper.MenuSeparator(contextMenu);
+		helper.MenuCommand(contextMenu, cActionGroupCopy::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionGroupPaste::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionGroupDuplicate::Ref::New(pPanel));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetConversation() );
+	void Update() override{
+		SetEnabled(pPanel.GetConversation());
 	}
 };
 
@@ -445,218 +464,239 @@ class cComboTopic : public igdeComboBoxListener{
 	ceWPTopic &pPanel;
 	
 public:
-	cComboTopic( ceWPTopic &panel ) : pPanel( panel ){}
+	using Ref = deTObjectReference<cComboTopic>;
+	cComboTopic(ceWPTopic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		ceConversationFile * const file = pPanel.GetFile();
-		if( file ){
-			file->SetActiveTopic( comboBox->GetSelectedItem()
-				? ( ceConversationTopic* )comboBox->GetSelectedItem()->GetData() : NULL );
+		if(file){
+			file->SetActiveTopic(comboBox->GetSelectedItem()
+				? (ceConversationTopic*)comboBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 };
 
 class cActionTopicAdd : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicAdd>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicAdd( ceWPTopic &panel ) : igdeAction( "Add...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add topic" ),
-		pPanel( panel ){}
+	cActionTopicAdd(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Add",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Add.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationFile * const file = pPanel.GetFile();
-		if( ! file ){
+		if(!file){
 			return;
 		}
 		
-		decString name( "Topic" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Topic", "Name:", name ) ){
+		decString name(pPanel.Translate("Conversation.DefaultName.Topic").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.AddTopic.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
-		if( file->GetTopicList().HasWithID( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Add Topic", "Topic exists" );
+		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.AddTopic.Title", "@Conversation.WPTopic.TopicExists.Message");
 			return;
 		}
 		
-		igdeUndoReference undo;
-		deObjectReference topic;
-		topic.TakeOver( new ceConversationTopic( name ) );
-		undo.TakeOver( new ceUCTopicAdd( file, ( ceConversationTopic* )( deObject* )topic ) );
-		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo;
+		const ceConversationTopic::Ref topic(ceConversationTopic::Ref::New(name));
+		undo = ceUCTopicAdd::Ref::New(file, topic);
+		pPanel.GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
 class cActionTopicRemove : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicRemove>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicRemove( ceWPTopic &panel ) : igdeAction( "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove topic" ),
-		pPanel( panel ){}
+	cActionTopicRemove(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Remove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "@Conversation.WPTopic.Remove.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
-		if( pPanel.GetTopic() ){
-			igdeUndoReference undo;
-			undo.TakeOver( new ceUCTopicRemove( pPanel.GetTopic() ) );
-			pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+	void OnAction() override{
+		if(pPanel.GetTopic()){
+			pPanel.GetConversation()->GetUndoSystem()->Add(
+				ceUCTopicRemove::Ref::New(pPanel.GetTopic()));
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetTopic() );
+	void Update() override{
+		SetEnabled(pPanel.GetTopic());
 	}
 };
 
 class cActionTopicRename : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicRename>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicRename( ceWPTopic &panel ) : igdeAction( "Rename...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Rename topic" ),
-		pPanel( panel ){}
+	cActionTopicRename(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Rename",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Rename.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationFile * const file = pPanel.GetFile();
 		ceConversationTopic * const topic = pPanel.GetTopic();
 		ceConversation * const conversation = pPanel.GetConversation();
-		if( ! topic || ! file || ! conversation ){
+		if(!topic || !file || !conversation){
 			return;
 		}
 		
-		decString name( topic->GetID() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Rename Topic", "Name:", name ) || name == topic->GetID() ){
+		decString name(topic->GetID());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.RenameTopic.Title", "@Conversation.Dialog.Name", name) || name == topic->GetID()){
 			return;
 		}
 		
-		if( file->GetTopicList().HasWithID( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename Topic", "Topic exists" );
+		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.RenameTopic.Title", "@Conversation.WPTopic.TopicExists.Message");
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCTopicSetID( *conversation, topic, name ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(ceUCTopicSetID::Ref::New(*conversation, topic, name));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetTopic() );
+	void Update() override{
+		SetEnabled(pPanel.GetTopic());
 	}
 };
 
 class cActionTopicMissingWords : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicMissingWords>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicMissingWords( ceWPTopic &panel ) : igdeAction( "Missing Words...",
-		NULL, "Show missing words" ), pPanel( panel ){}
+	cActionTopicMissingWords(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.MissingWords",
+		nullptr, "@Conversation.WPTopic.MissingWords.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if( ! topic ){
+		if(!topic){
 			return;
 		}
 		
 		decStringSet missingWords;
-		topic->FindMissingWords( missingWords );
-		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog( missingWords );
+		topic->FindMissingWords(missingWords);
+		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog(missingWords);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetTopic() );
+	void Update() override{
+		SetEnabled(pPanel.GetTopic());
 	}
 };
 
 class cActionTopicCopy : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicCopy>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicCopy( ceWPTopic &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy topic" ),
-		pPanel( panel ){}
+	cActionTopicCopy(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Copy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "@Conversation.WPTopic.Copy.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if( ! topic ){
+		if(!topic){
 			return;
 		}
 		
-		igdeClipboardDataReference clip;
-		ceConversationTopicList list;
-		list.Add( topic );
-		clip.TakeOver( new ceClipboardDataTopic( list ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
+		ceConversationTopic::List list;
+		list.Add(topic);
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(ceClipboardDataTopic::Ref::New(list));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetTopic() );
+	void Update() override{
+		SetEnabled(pPanel.GetTopic());
 	}
 };
 
 class cActionTopicPaste : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicPaste>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicPaste( ceWPTopic &panel ) : igdeAction( "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste topic" ),
-		pPanel( panel ){}
+	cActionTopicPaste(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Paste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Conversation.WPTopic.Paste.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationFile * const file = pPanel.GetFile();
-		ceClipboardDataTopic * const clip = ( ceClipboardDataTopic* )pPanel.GetWindowProperties().GetWindowMain()
-			.GetClipboard().GetWithTypeName( ceClipboardDataTopic::TYPE_NAME );
-		if( ! file || ! clip ){
+		ceClipboardDataTopic * const clip = (ceClipboardDataTopic*)pPanel.GetWindowProperties().GetWindowMain()
+			.GetClipboard().GetWithTypeName(ceClipboardDataTopic::TYPE_NAME);
+		if(!file || !clip){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCTopicPaste( file, clip->GetTopics() ) );
-		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetConversation()->GetUndoSystem()->Add(
+			ceUCTopicPaste::Ref::New(file, clip->GetTopics()));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() && pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
-			.HasWithTypeName( ceClipboardDataTopic::TYPE_NAME ) );
+	void Update() override{
+		SetEnabled(pPanel.GetFile() && pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
+			.HasWithTypeName(ceClipboardDataTopic::TYPE_NAME));
 	}
 };
 
 class cActionTopicDuplicate : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionTopicDuplicate>;
+	
+private:
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicDuplicate( ceWPTopic &panel ) : igdeAction( "Duplicate...",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Duplicate topic" ),
-		pPanel( panel ){}
+	cActionTopicDuplicate(ceWPTopic &panel) : igdeAction("@Conversation.WPTopic.Duplicate",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "@Conversation.WPTopic.Duplicate.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationFile * const file = pPanel.GetFile();
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if( ! file || ! topic ){
+		if(!file || !topic){
 			return;
 		}
 		
-		decString name( topic->GetID() );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Duplicate Topic", "Name:", name ) ){
+		decString name(topic->GetID());
+		if(!igdeCommonDialogs::GetString(pPanel, "@Conversation.WPTopic.DuplicateTopic.Title", "@Conversation.Dialog.Name", name)){
 			return;
 		}
 		
-		if( file->GetTopicList().HasWithID( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Duplicate Topic", "Topic exists" );
+		if(file->GetTopics().HasMatching([&](const ceConversationTopic &t){ return t.GetID() == name; })){
+			igdeCommonDialogs::Error(pPanel, "@Conversation.WPTopic.DuplicateTopic.Title", "@Conversation.WPTopic.TopicExists.Message");
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCTopicDuplicate( file, *topic, name ) );
-		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetConversation()->GetUndoSystem()->Add(
+			ceUCTopicDuplicate::Ref::New(file, *topic, name));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetTopic() );
+	void Update() override{
+		SetEnabled(pPanel.GetTopic());
 	}
 };
 
@@ -664,28 +704,29 @@ class cActionTopicMenu : public igdeActionContextMenu{
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicMenu( ceWPTopic &panel ) : igdeActionContextMenu( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Show Topic Menu" ),
-		pPanel( panel ){}
+	using Ref = deTObjectReference<cActionTopicMenu>;
+	cActionTopicMenu(ceWPTopic &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@Conversation.WPTopic.ShowTopicMenu.ToolTip"),
+		pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( contextMenu, new cActionTopicAdd( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionTopicRemove( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionTopicRename( pPanel ), true );
+		helper.MenuCommand(contextMenu, cActionTopicAdd::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionTopicRemove::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionTopicRename::Ref::New(pPanel));
 		
-		helper.MenuSeparator( contextMenu );
-		helper.MenuCommand( contextMenu, new cActionTopicMissingWords( pPanel ), true );
+		helper.MenuSeparator(contextMenu);
+		helper.MenuCommand(contextMenu, cActionTopicMissingWords::Ref::New(pPanel));
 		
-		helper.MenuSeparator( contextMenu );
-		helper.MenuCommand( contextMenu, new cActionTopicCopy( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionTopicPaste( pPanel ), true );
-		helper.MenuCommand( contextMenu, new cActionTopicDuplicate( pPanel ), true );
+		helper.MenuSeparator(contextMenu);
+		helper.MenuCommand(contextMenu, cActionTopicCopy::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionTopicPaste::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionTopicDuplicate::Ref::New(pPanel));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetFile() );
+	void Update() override{
+		SetEnabled(pPanel.GetFile());
 	}
 };
 
@@ -695,35 +736,36 @@ class cTreeActionsListener : public igdeTreeListListener{
 	ceWPTopic &pPanel;
 	
 public:
-	cTreeActionsListener( ceWPTopic &panel ) : pPanel( panel ){}
+	using Ref = deTObjectReference<cTreeActionsListener>;
+	cTreeActionsListener(ceWPTopic &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeTreeList *treeList ){
+	void OnSelectionChanged(igdeTreeList *treeList) override{
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if( ! topic || pPanel.GetActionTreeModel()->GetPreventUpdate() ){
+		if(!topic || pPanel.GetActionTreeModel()->GetPreventUpdate()){
 			return;
 		}
 		
-		ceWPTTreeItem * const item = ( ceWPTTreeItem* )treeList->GetSelection();
-		if( item ){
+		ceWPTTreeItem * const item = (ceWPTTreeItem*)treeList->GetSelection().Pointer();
+		if(item){
 			item->OnSelected();
 		}
 		pPanel.SyncTopicActive();
 	}
 	
-	virtual void OnItemExpanded( igdeTreeList*, igdeTreeItem *item ){
-		( ( ceWPTTreeItem* )item )->OnExpanded();
+	void OnItemExpanded(igdeTreeList*, igdeTreeItem *item) override{
+		((ceWPTTreeItem*)item)->OnExpanded();
 	}
 	
-	virtual void OnItemCollapsed( igdeTreeList*, igdeTreeItem *item ){
-		( ( ceWPTTreeItem* )item )->OnCollapsed();
+	void OnItemCollapsed(igdeTreeList*, igdeTreeItem *item) override{
+		((ceWPTTreeItem*)item)->OnCollapsed();
 	}
 	
-	virtual void AddContextMenuEntries( igdeTreeList *treeList, igdeMenuCascade &menu ){
-		if( treeList->GetSelection() ){
-			( ( ceWPTTreeItem* )treeList->GetSelection() )->OnContextMenu( menu );
+	void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu) override{
+		if(treeList->GetSelection()){
+			((ceWPTTreeItem&)*treeList->GetSelection()).OnContextMenu(menu);
 			
 		}else{
-			pPanel.GetActionTreeModel()->OnContextMenu( menu );
+			pPanel.GetActionTreeModel()->OnContextMenu(menu);
 		}
 	}
 };
@@ -737,145 +779,137 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTopic::ceWPTopic( ceWindowProperties &windowProperties ) :
-igdeContainerFlow( windowProperties.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pConversation( NULL ),
+ceWPTopic::ceWPTopic(ceWindowProperties &windowProperties) :
+igdeContainerFlow(windowProperties.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast),
+pWindowProperties(windowProperties),
 
-pModelTreeActions( NULL ),
-pPanelACameraShot( NULL ),
-pPanelAMusic( NULL ),
-pPanelAActorSpeak( NULL ),
-pPanelAIfElse( NULL ),
-pPanelAPlayerChoice( NULL ),
-pPanelAStopConversation( NULL ),
-pPanelAStopTopic( NULL ),
-pPanelASnippet( NULL ),
-pPanelASetVariable( NULL ),
-pPanelASetAParam( NULL ),
-pPanelAActorCmd( NULL ),
-pPanelAGameCommand( NULL ),
-pPanelAWait( NULL ),
-pPanelATrigger( NULL ),
-pPanelAActorAdd( NULL ),
-pPanelAActorRemove( NULL ),
-pPanelACoordSystemAdd( NULL ),
-pPanelACoordSystemRemove( NULL ),
-pPanelAComment( NULL ),
+pPanelACameraShot(nullptr),
+pPanelAMusic(nullptr),
+pPanelAActorSpeak(nullptr),
+pPanelAIfElse(nullptr),
+pPanelAPlayerChoice(nullptr),
+pPanelAStopConversation(nullptr),
+pPanelAStopTopic(nullptr),
+pPanelASnippet(nullptr),
+pPanelASetVariable(nullptr),
+pPanelASetAParam(nullptr),
+pPanelAActorCmd(nullptr),
+pPanelAGameCommand(nullptr),
+pPanelAWait(nullptr),
+pPanelATrigger(nullptr),
+pPanelAActorAdd(nullptr),
+pPanelAActorRemove(nullptr),
+pPanelACoordSystemAdd(nullptr),
+pPanelACoordSystemRemove(nullptr),
+pPanelAComment(nullptr),
 
-pPanelCLogic( NULL ),
-pPanelCHasActor( NULL ),
-pPanelCActorInConversation( NULL ),
-pPanelCVariable( NULL ),
-pPanelCAParam( NULL ),
-pPanelCActorCommand( NULL ),
-pPanelCGameCommand( NULL ),
-pPanelCTrigger( NULL )
+pPanelCLogic(nullptr),
+pPanelCHasActor(nullptr),
+pPanelCActorInConversation(nullptr),
+pPanelCVariable(nullptr),
+pPanelCAParam(nullptr),
+pPanelCActorCommand(nullptr),
+pPanelCGameCommand(nullptr),
+pPanelCTrigger(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, formLine;
+	igdeContainer::Ref groupBox, formLine;
 	
-	pListener = new ceWPTopicListener( *this );
+	pListener = ceWPTopicListener::Ref::New(*this);
 	
 	
 	// conversation
-	helper.GroupBox( *this, groupBox, "Conversation:" );
+	helper.GroupBox(*this, groupBox, "@Conversation.WPTopic.Conversation");
 	
-	helper.FormLineStretchFirst( groupBox, "File:", "File to edit", formLine );
-	helper.ComboBoxFilter( formLine, "File to edit", pCBFile, new cComboFile( *this ) );
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.File", "@Conversation.WPTopic.File.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPTopic.File.ToolTip", pCBFile, cComboFile::Ref::New(*this));
 	pCBFile->SetDefaultSorter();
-	cActionFileMenu * const actionFileMenu = new cActionFileMenu( *this );
-	helper.Button( formLine, pBtnFile, actionFileMenu, true );
-	actionFileMenu->SetWidget( pBtnFile );
+	const cActionFileMenu::Ref actionFileMenu(cActionFileMenu::Ref::New(*this));
+	helper.Button(formLine, pBtnFile, actionFileMenu);
+	actionFileMenu->SetWidget(pBtnFile);
 	
-	helper.FormLineStretchFirst( groupBox, "Topic:", "Topic to edit", formLine );
-	helper.ComboBoxFilter( formLine, "Topic to edit", pCBTopic, new cComboTopic( *this ) );
+	helper.FormLineStretchFirst(groupBox, "@Conversation.WPTopic.Topic", "@Conversation.WPTopic.Topic.ToolTip", formLine);
+	helper.ComboBoxFilter(formLine, "@Conversation.WPTopic.Topic.ToolTip", pCBTopic, cComboTopic::Ref::New(*this));
 	pCBTopic->SetDefaultSorter();
-	cActionTopicMenu * const actionTopicMenu = new cActionTopicMenu( *this );
-	helper.Button( formLine, pBtnTopic, actionTopicMenu, true );
-	actionTopicMenu->SetWidget( pBtnTopic );
+	const cActionTopicMenu::Ref actionTopicMenu(cActionTopicMenu::Ref::New(*this));
+	helper.Button(formLine, pBtnTopic, actionTopicMenu);
+	actionTopicMenu->SetWidget(pBtnTopic);
 	
 	
 	// actions
-	igdeContainerBorderReference groupActions;
-	igdeWidgetReference panel;
+	igdeContainerBorder::Ref groupActions;
 	
-	helper.GroupBoxStaticBorder( *this, groupActions, "Actions:", true );
-	helper.TreeList( 10, "Topic Actions", pTreeActions, new cTreeActionsListener( *this ) );
-	groupActions->AddChild( pTreeActions, igdeContainerBorder::eaCenter );
+	helper.GroupBoxStaticBorder(*this, groupActions, "@Conversation.WPTopic.Actions", true);
+	helper.TreeList(10, "@Conversation.WPTopic.Actions.ToolTip", pTreeActions, cTreeActionsListener::Ref::New(*this));
+	groupActions->AddChild(pTreeActions, igdeContainerBorder::eaCenter);
 	
-	pSwitcher.TakeOver( new igdeSwitcher( env ) );
-	groupActions->AddChild( pSwitcher, igdeContainerBorder::eaBottom );
+	pSwitcher = igdeSwitcher::Ref::New(env);
+	groupActions->AddChild(pSwitcher, igdeContainerBorder::eaBottom);
 	
-	helper.Label( pSwitcher, "" ); // empty panel
+	helper.Label(pSwitcher, ""); // empty panel
 	
-	panel.TakeOver( pPanelACameraShot = new ceWPACameraShot( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAMusic = new ceWPAMusic( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAActorSpeak = new ceWPAActorSpeak( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAIfElse = new ceWPAIfElse( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAPlayerChoice = new ceWPAPlayerChoice( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAStopConversation = new ceWPAStopConversation( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAStopTopic = new ceWPAStopTopic( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelASnippet = new ceWPASnippet( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelASetVariable = new ceWPASetVariable( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelASetAParam = new ceWPASetAParam( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAActorCmd = new ceWPAActorCmd( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAGameCommand = new ceWPAGameCommand( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAWait = new ceWPAWait( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelATrigger = new ceWPATrigger( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAActorAdd = new ceWPAActorAdd( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAActorRemove = new ceWPAActorRemove( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelACoordSystemAdd = new ceWPACoordSystemAdd( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelACoordSystemRemove = new ceWPACoordSystemRemove( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelAComment = new ceWPAComment( *this ) );
-	pSwitcher->AddChild( panel );
+	pPanelACameraShot = ceWPACameraShot::Ref::New(*this);
+	pSwitcher->AddChild(pPanelACameraShot);
+	pPanelAMusic = ceWPAMusic::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAMusic);
+	pPanelAActorSpeak = ceWPAActorSpeak::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAActorSpeak);
+	pPanelAIfElse = ceWPAIfElse::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAIfElse);
+	pPanelAPlayerChoice = ceWPAPlayerChoice::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAPlayerChoice);
+	pPanelAStopConversation = ceWPAStopConversation::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAStopConversation);
+	pPanelAStopTopic = ceWPAStopTopic::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAStopTopic);
+	pPanelASnippet = ceWPASnippet::Ref::New(*this);
+	pSwitcher->AddChild(pPanelASnippet);
+	pPanelASetVariable = ceWPASetVariable::Ref::New(*this);
+	pSwitcher->AddChild(pPanelASetVariable);
+	pPanelASetAParam = ceWPASetAParam::Ref::New(*this);
+	pSwitcher->AddChild(pPanelASetAParam);
+	pPanelAActorCmd = ceWPAActorCmd::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAActorCmd);
+	pPanelAGameCommand = ceWPAGameCommand::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAGameCommand);
+	pPanelAWait = ceWPAWait::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAWait);
+	pPanelATrigger = ceWPATrigger::Ref::New(*this);
+	pSwitcher->AddChild(pPanelATrigger);
+	pPanelAActorAdd = ceWPAActorAdd::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAActorAdd);
+	pPanelAActorRemove = ceWPAActorRemove::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAActorRemove);
+	pPanelACoordSystemAdd = ceWPACoordSystemAdd::Ref::New(*this);
+	pSwitcher->AddChild(pPanelACoordSystemAdd);
+	pPanelACoordSystemRemove = ceWPACoordSystemRemove::Ref::New(*this);
+	pSwitcher->AddChild(pPanelACoordSystemRemove);
+	pPanelAComment = ceWPAComment::Ref::New(*this);
+	pSwitcher->AddChild(pPanelAComment);
 	
-	panel.TakeOver( pPanelCLogic = new ceWPCLogic( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCHasActor = new ceWPCHasActor( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCActorInConversation = new ceWPCActorInConversation( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCVariable = new ceWPCVariable( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCAParam = new ceWPCAParam( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCActorCommand = new ceWPCActorCommand( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCGameCommand = new ceWPCGameCommand( *this ) );
-	pSwitcher->AddChild( panel );
-	panel.TakeOver( pPanelCTrigger = new ceWPCTrigger( *this ) );
-	pSwitcher->AddChild( panel );
+	pPanelCLogic = ceWPCLogic::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCLogic);
+	pPanelCHasActor = ceWPCHasActor::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCHasActor);
+	pPanelCActorInConversation = ceWPCActorInConversation::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCActorInConversation);
+	pPanelCVariable = ceWPCVariable::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCVariable);
+	pPanelCAParam = ceWPCAParam::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCAParam);
+	pPanelCActorCommand = ceWPCActorCommand::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCActorCommand);
+	pPanelCGameCommand = ceWPCGameCommand::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCGameCommand);
+	pPanelCTrigger = ceWPCTrigger::Ref::New(*this);
+	pSwitcher->AddChild(pPanelCTrigger);
 	
-	pSwitcher->SetCurrent( epEmpty );
+	pSwitcher->SetCurrent(epEmpty);
 }
 
 ceWPTopic::~ceWPTopic(){
-	SetConversation( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetConversation(nullptr);
 }
 
 
@@ -883,30 +917,26 @@ ceWPTopic::~ceWPTopic(){
 // Management
 ///////////////
 
-void ceWPTopic::SetConversation( ceConversation *conversation ){
-	if( conversation == pConversation ){
+void ceWPTopic::SetConversation(ceConversation *conversation){
+	if(conversation == pConversation){
 		return;
 	}
 	
-	if( pModelTreeActions ){
-		pModelTreeActions->SetTreeList( NULL );
-		delete pModelTreeActions;
-		pModelTreeActions = NULL;
+	if(pModelTreeActions){
+		pModelTreeActions->SetTreeList(nullptr);
+		pModelTreeActions = nullptr;
 	}
 	
-	if( pConversation ){
-		pConversation->RemoveListener( pListener );
-		pConversation->FreeReference();
+	if(pConversation){
+		pConversation->RemoveListener(pListener);
 	}
 	
 	pConversation = conversation;
 	
-	if( conversation ){
-		conversation->AddListener( pListener );
-		conversation->AddReference();
-		
-		pModelTreeActions = new ceWPTTreeModel( pWindowProperties.GetWindowMain(), conversation, *pListener );
-		pModelTreeActions->SetTreeList( pTreeActions );
+	if(conversation){
+		conversation->AddListener(pListener);
+		pModelTreeActions = ceWPTTreeModel::Ref::New(pWindowProperties.GetWindowMain(), conversation, *pListener);
+		pModelTreeActions->SetTreeList(pTreeActions);
 		
 	}else{
 		pCBFile->ClearText();
@@ -914,9 +944,9 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	}
 	
 	const bool enabled = conversation;
-	pCBFile->SetEnabled( enabled );
-	pCBTopic->SetEnabled( enabled );
-	pTreeActions->SetEnabled( enabled );
+	pCBFile->SetEnabled(enabled);
+	pCBTopic->SetEnabled(enabled);
+	pTreeActions->SetEnabled(enabled);
 	
 	pBtnFile->GetAction()->Update();
 	pBtnTopic->GetAction()->Update();
@@ -932,48 +962,39 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 
 
 ceConversationFile *ceWPTopic::GetFile() const{
-	return pConversation ? pConversation->GetActiveFile() : NULL;
+	return pConversation ? pConversation->GetActiveFile().Pointer() : nullptr;
 }
 
 ceWPTTreeItemModel *ceWPTopic::GetActionTreeItem(){
-	ceWPTTreeItem * const item = ( ceWPTTreeItem* )pTreeActions->GetSelection();
-	return item ? item->GetModel() : NULL;
+	ceWPTTreeItem * const item = (ceWPTTreeItem*)pTreeActions->GetSelection().Pointer();
+	return item ? item->GetModel().Pointer() : nullptr;
 }
 
 void ceWPTopic::UpdateFileList(){
-	ceConversationFile * const file = GetFile();
-	
-	pCBFile->RemoveAllItems();
-	
-	if( pConversation ){
-		const ceConversationFileList &list = pConversation->GetFileList();
-		const int count = list.GetCount();
-		int i;
+	pCBFile->UpdateRestoreSelection([&](){
+		pCBFile->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			ceConversationFile * const file2 = list.GetAt( i );
-			pCBFile->AddItem( file2->GetID(), NULL, file2 );
+		if(pConversation){
+			pConversation->GetFiles().Visit([&](ceConversationFile *f){
+				pCBFile->AddItem(f->GetID(), nullptr, f);
+			});
+			
+			pCBFile->SortItems();
+			pCBFile->StoreFilterItems();
 		}
-		
-		pCBFile->SortItems();
-		pCBFile->StoreFilterItems();
-	}
+	}, 0);
 	
 	SelectActiveFile();
 	
 	pPanelASnippet->UpdateFileList();
-	
-	if( file ){
-		pConversation->SetActiveFile( file );
-	}
 }
 
 void ceWPTopic::SelectActiveFile(){
-	pCBFile->SetSelectionWithData( GetFile() );
+	pCBFile->SetSelectionWithData(GetFile());
 	
-	pCBTopic->SetEnabled( pCBFile->GetSelectedItem() );
+	pCBTopic->SetEnabled(pCBFile->GetSelectedItem());
 	pBtnTopic->GetAction()->Update();
-	if( ! pCBTopic->GetEnabled() ){
+	if(!pCBTopic->GetEnabled()){
 		pCBTopic->ClearText();
 	}
 	
@@ -988,40 +1009,31 @@ void ceWPTopic::UpdateFile(){
 
 ceConversationTopic *ceWPTopic::GetTopic() const{
 	ceConversationFile * const file = GetFile();
-	return file ? file->GetActiveTopic() : NULL;
+	return file ? file->GetActiveTopic().Pointer() : nullptr;
 }
 
 void ceWPTopic::UpdateTopicList(){
-	ceConversationTopic * const topic = GetTopic();
-	ceConversationFile * const file = GetFile();
-	
-	pCBTopic->RemoveAllItems();
-	
-	if( file ){
-		const ceConversationTopicList &list = file->GetTopicList();
-		const int count = list.GetCount();
-		int i;
+	pCBTopic->UpdateRestoreSelection([&](){
+		ceConversationFile * const file = GetFile();
 		
-		for( i=0; i<count; i++ ){
-			ceConversationTopic * const topic2 = list.GetAt( i );
-			pCBTopic->AddItem( topic2->GetID(), NULL, topic2 );
+		pCBTopic->RemoveAllItems();
+		
+		if(file){
+			file->GetTopics().Visit([&](ceConversationTopic *t){
+				pCBTopic->AddItem(t->GetID(), nullptr, t);
+			});
+			pCBTopic->SortItems();
+			pCBTopic->StoreFilterItems();
 		}
-		
-		pCBTopic->SortItems();
-		pCBTopic->StoreFilterItems();
-	}
+	}, 0);
 	
 	SelectActiveTopic();
 	
 	pPanelASnippet->UpdateTopicList();
-	
-	if( file && topic ){
-		file->SetActiveTopic( topic );
-	}
 }
 
 void ceWPTopic::SelectActiveTopic(){
-	pCBTopic->SetSelectionWithData( GetTopic() );
+	pCBTopic->SetSelectionWithData(GetTopic());
 	
 	UpdateTopic();
 }
@@ -1033,30 +1045,30 @@ void ceWPTopic::UpdateTopic(){
 
 ceConversationAction *ceWPTopic::GetTreeAction() const{
 	ceConversationTopic * const topic = GetTopic();
-	if( ! topic ){
-		return NULL;
+	if(!topic){
+		return nullptr;
 	}
 	
-	const ceWPTTreeItem * const item = ( const ceWPTTreeItem* )pTreeActions->GetSelection();
-	return item && item->GetModel() ? item->GetModel()->GetOwnerAction() : NULL;
+	const ceWPTTreeItem * const item = (const ceWPTTreeItem*)pTreeActions->GetSelection().Pointer();
+	return item && item->GetModel() ? item->GetModel()->GetOwnerAction() : nullptr;
 }
 
 ceConversationCondition *ceWPTopic::GetTreeCondition() const{
 	ceConversationTopic * const topic = GetTopic();
-	if( ! topic ){
-		return NULL;
+	if(!topic){
+		return nullptr;
 	}
 	
-	const ceWPTTreeItem * const item = ( ceWPTTreeItem* )pTreeActions->GetSelection();
-	return item && item->GetModel() ? item->GetModel()->GetOwnerCondition() : NULL;
+	const ceWPTTreeItem * const item = (ceWPTTreeItem*)pTreeActions->GetSelection().Pointer();
+	return item && item->GetModel() ? item->GetModel()->GetOwnerCondition() : nullptr;
 }
 
 void ceWPTopic::SyncTopicActive(){
-	if( pModelTreeActions ){
+	if(pModelTreeActions){
 		ceConversationTopic * const topic = GetTopic();
-		if( topic ){
-			const ceWPTTreeModel::PreventUpdateGuard preventUpdate( *pModelTreeActions );
-			topic->SetActive( GetTreeAction(), GetTreeCondition() );
+		if(topic){
+			const ceWPTTreeModel::PreventUpdateGuard preventUpdate(pModelTreeActions);
+			topic->SetActive(GetTreeAction(), GetTreeCondition());
 		}
 	}
 	
@@ -1067,129 +1079,129 @@ void ceWPTopic::SelectActivePanel(){
 	const ceConversationCondition * const condition = GetTreeCondition();
 	const ceConversationAction * const action = GetTreeAction();
 	
-	if( condition ){
-		switch( condition->GetType() ){
+	if(condition){
+		switch(condition->GetType()){
 		case ceConversationCondition::ectLogic:
-			pSwitcher->SetCurrent( epCLogic );
+			pSwitcher->SetCurrent(epCLogic);
 			break;
 			
 		case ceConversationCondition::ectHasActor:
-			pSwitcher->SetCurrent( epCHasActor );
+			pSwitcher->SetCurrent(epCHasActor);
 			break;
 			
 		case ceConversationCondition::ectActorInConversation:
-			pSwitcher->SetCurrent( epCActorInConversation );
+			pSwitcher->SetCurrent(epCActorInConversation);
 			break;
 			
 		case ceConversationCondition::ectVariable:
-			pSwitcher->SetCurrent( epCVariable );
+			pSwitcher->SetCurrent(epCVariable);
 			break;
 			
 		case ceConversationCondition::ectActorParameter:
-			pSwitcher->SetCurrent( epCAParam );
+			pSwitcher->SetCurrent(epCAParam);
 			break;
 			
 		case ceConversationCondition::ectActorCommand:
-			pSwitcher->SetCurrent( epCActorCommand );
+			pSwitcher->SetCurrent(epCActorCommand);
 			break;
 			
 		case ceConversationCondition::ectGameCommand:
-			pSwitcher->SetCurrent( epCGameCommand );
+			pSwitcher->SetCurrent(epCGameCommand);
 			break;
 			
 		case ceConversationCondition::ectTrigger:
-			pSwitcher->SetCurrent( epCTrigger );
+			pSwitcher->SetCurrent(epCTrigger);
 			break;
 		}
 		
-	}else if( action ){
-		switch( action->GetType() ){
+	}else if(action){
+		switch(action->GetType()){
 		case ceConversationAction::eatCameraShot:
-			pSwitcher->SetCurrent( epACameraShot );
+			pSwitcher->SetCurrent(epACameraShot);
 			break;
 			
 		case ceConversationAction::eatMusic:
-			pSwitcher->SetCurrent( epAMusic );
+			pSwitcher->SetCurrent(epAMusic);
 			break;
 			
 		case ceConversationAction::eatActorSpeak:
-			pSwitcher->SetCurrent( epAActorSpeak );
+			pSwitcher->SetCurrent(epAActorSpeak);
 			break;
 			
 		case ceConversationAction::eatIfElse:
-			pSwitcher->SetCurrent( epAIfElse );
+			pSwitcher->SetCurrent(epAIfElse);
 			break;
 			
 		case ceConversationAction::eatPlayerChoice:
-			pSwitcher->SetCurrent( epAPlayerChoice );
+			pSwitcher->SetCurrent(epAPlayerChoice);
 			break;
 			
 		case ceConversationAction::eatStopConversation:
-			pSwitcher->SetCurrent( epAStopConversation );
+			pSwitcher->SetCurrent(epAStopConversation);
 			break;
 			
 		case ceConversationAction::eatStopTopic:
-			pSwitcher->SetCurrent( epAStopTopic );
+			pSwitcher->SetCurrent(epAStopTopic);
 			break;
 			
 		case ceConversationAction::eatSnippet:
-			pSwitcher->SetCurrent( epASnippet );
+			pSwitcher->SetCurrent(epASnippet);
 			break;
 			
 		case ceConversationAction::eatSetVariable:
-			pSwitcher->SetCurrent( epASetVariable );
+			pSwitcher->SetCurrent(epASetVariable);
 			break;
 			
 		case ceConversationAction::eatSetActorParameter:
-			pSwitcher->SetCurrent( epASetAParam );
+			pSwitcher->SetCurrent(epASetAParam);
 			break;
 			
 		case ceConversationAction::eatActorCommand:
-			pSwitcher->SetCurrent( epAActorCmd );
+			pSwitcher->SetCurrent(epAActorCmd);
 			break;
 			
 		case ceConversationAction::eatGameCommand:
-			pSwitcher->SetCurrent( epAGameCommand );
+			pSwitcher->SetCurrent(epAGameCommand);
 			break;
 			
 		case ceConversationAction::eatWait:
-			pSwitcher->SetCurrent( epAWait );
+			pSwitcher->SetCurrent(epAWait);
 			break;
 			
 		case ceConversationAction::eatTrigger:
-			pSwitcher->SetCurrent( epATrigger );
+			pSwitcher->SetCurrent(epATrigger);
 			break;
 			
 		case ceConversationAction::eatActorAdd:
-			pSwitcher->SetCurrent( epAActorAdd );
+			pSwitcher->SetCurrent(epAActorAdd);
 			break;
 			
 		case ceConversationAction::eatActorRemove:
-			pSwitcher->SetCurrent( epAActorRemove );
+			pSwitcher->SetCurrent(epAActorRemove);
 			break;
 			
 		case ceConversationAction::eatCoordSystemAdd:
-			pSwitcher->SetCurrent( epACoordSystemAdd );
+			pSwitcher->SetCurrent(epACoordSystemAdd);
 			break;
 			
 		case ceConversationAction::eatCoordSystemRemove:
-			pSwitcher->SetCurrent( epACoordSystemRemove );
+			pSwitcher->SetCurrent(epACoordSystemRemove);
 			break;
 			
 		case ceConversationAction::eatComment:
-			pSwitcher->SetCurrent( epAComment );
+			pSwitcher->SetCurrent(epAComment);
 			break;
 		}
 		
 	}else{
-		pSwitcher->SetCurrent( epEmpty );
+		pSwitcher->SetCurrent(epEmpty);
 	}
 	
 	UpdateActive();
 }
 
 void ceWPTopic::UpdateActive(){
-	switch( ( ePanels )pSwitcher->GetCurrent() ){
+	switch((ePanels)pSwitcher->GetCurrent()){
 	case epACameraShot:
 		pPanelACameraShot->UpdateAction();
 		break;
@@ -1357,17 +1369,17 @@ void ceWPTopic::OnConversationPathChanged(){
 
 
 
-void ceWPTopic::LocateAction( ceConversationAction *action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+void ceWPTopic::LocateAction(ceConversationAction *action){
+	if(!action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pModelTreeActions ){
+	if(!pModelTreeActions){
 		return;
 	}
 	
-	ceWPTTIMAction *item = pModelTreeActions->DeepFindAction( action );
-	if( ! item ){
+	ceWPTTIMAction *item = pModelTreeActions->DeepFindAction(action);
+	if(!item){
 		return;
 	}
 	
@@ -1376,30 +1388,36 @@ void ceWPTopic::LocateAction( ceConversationAction *action ){
 }
 
 void ceWPTopic::PlayActionFromHere(){
-	if( ! pConversation ){
+	if(!pConversation){
 		return;
 	}
 	
 	ceConversationTopic * const topic = GetTopic();
-	if( ! topic ){
+	if(!topic){
 		return;
 	}
 	
-	ceWPTTreeItem * const item = ( ceWPTTreeItem* )pTreeActions->GetSelection();
-	if( ! item || ! item->GetModel() ){
+	ceWPTTreeItem * const item = (ceWPTTreeItem*)pTreeActions->GetSelection().Pointer();
+	if(!item || !item->GetModel()){
 		return;
 	}
 	
-	if( ! pConversation->GetPlayback()->GetMainActionStack()->GetTop().GetParentList() ){
+	if(!pConversation->GetPlayback()->GetMainActionStack()->GetTop().GetParentList()){
 		return; // this should never happen
 	}
 	
 	cePlayback &playback = *pConversation->GetPlayback();
-	playback.SetRunning( false );
-	playback.SetPaused( false );
-	playback.SetTopic( topic );
+	playback.SetRunning(false);
+	playback.SetPaused(false);
+	playback.SetTopic(topic);
 	playback.Rewind();
 	item->GetModel()->BuildPlaybackFromHere();
 	
-	playback.SetRunning( true );
+	playback.SetRunning(true);
+}
+
+void ceWPTopic::OnLanguageChanged(){
+	igdeContainerFlow::OnLanguageChanged();
+	
+	pModelTreeActions->UpdateActions();
 }

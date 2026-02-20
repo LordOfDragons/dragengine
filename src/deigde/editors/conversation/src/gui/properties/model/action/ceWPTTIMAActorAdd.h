@@ -34,15 +34,16 @@
  */
 class ceWPTTIMAActorAdd : public ceWPTTIMAction{
 public:
+	using Ref = deTObjectReference<ceWPTTIMAActorAdd>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAActorAdd( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAActorAdd *action );
+	ceWPTTIMAActorAdd(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAActorAdd *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAActorAdd();
+	~ceWPTTIMAActorAdd() override;
 	/*@}*/
 	
 	
@@ -51,10 +52,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAActorAdd *GetActionActorAdd() const{ return ( ceCAActorAdd* )GetAction(); }
+	inline ceCAActorAdd *GetActionActorAdd() const{ return GetAction().DynamicCast<ceCAActorAdd>(); }
 	
 	/** \brief Update action. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

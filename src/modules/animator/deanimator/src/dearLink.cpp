@@ -30,7 +30,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
 
@@ -41,31 +41,31 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearLink::dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
-	const decIntList &controllerMapping ) :
-pInstance( instance ),
-pLink( link ),
-pEvaluator( link.GetCurve() ),
-pBoneIndex( -1 ),
-pVPSIndex( -1 ),
-pWrapY( link.GetWrapY() )
+dearLink::dearLink(dearAnimatorInstance &instance, const deAnimatorLink &link,
+	const decTList<int> &controllerMapping) :
+pInstance(instance),
+pLink(deAnimatorLink::Ref::New(link)),
+pEvaluator(link.GetCurve()),
+pBoneIndex(-1),
+pVPSIndex(-1),
+pWrapY(link.GetWrapY())
 {
-	const int controller = pLink.GetController();
-	if( controller != -1 ){
-		if( controller < controllerMapping.GetCount() ){
-			pLink.SetController( controllerMapping.GetAt( controller ) );
+	const int controller = pLink->GetController();
+	if(controller != -1){
+		if(controller < controllerMapping.GetCount()){
+			pLink->SetController(controllerMapping.GetAt(controller));
 			
 		}else{
-			pLink.SetController( -1 );
+			pLink->SetController(-1);
 		}
 	}
 	
-	if( ! pLink.GetBone().IsEmpty() ){
-		pBoneIndex = instance.GetBoneStateList().IndexOfStateNamed( pLink.GetBone() );
+	if(!pLink->GetBone().IsEmpty()){
+		pBoneIndex = instance.GetBoneStateList().IndexOfStateNamed(pLink->GetBone());
 	}
 	
-	if( ! pLink.GetVertexPositionSet().IsEmpty() ){
-		pVPSIndex = instance.GetVPSStateList().IndexOfStateNamed( pLink.GetVertexPositionSet() );
+	if(!pLink->GetVertexPositionSet().IsEmpty()){
+		pVPSIndex = instance.GetVPSStateList().IndexOfStateNamed(pLink->GetVertexPositionSet());
 	}
 }
 
@@ -78,11 +78,11 @@ dearLink::~dearLink(){
 ///////////////
 
 bool dearLink::HasController() const{
-	return pLink.HasController();
+	return pLink->HasController();
 }
 
 int dearLink::GetController() const{
-	return pLink.GetController();
+	return pLink->GetController();
 }
 
 bool dearLink::HasBone() const{
@@ -95,16 +95,16 @@ bool dearLink::HasVPS() const{
 
 
 
-float dearLink::GetValue( float defaultValue ) const{
+float dearLink::GetValue(float defaultValue) const{
 	float value;
 	
-	if( pLink.HasController() ){
-		value = pInstance.GetControllerStates().GetValueAt( pLink.GetController() );
+	if(pLink->HasController()){
+		value = pInstance.GetControllerStates().GetValueAt(pLink->GetController());
 		
-	}else if( pBoneIndex != -1 ){
-		const dearBoneState &state = *pInstance.GetBoneStateList().GetStateAt( pBoneIndex );
+	}else if(pBoneIndex != -1){
+		const dearBoneState &state = pInstance.GetBoneStateList().GetStateAt(pBoneIndex);
 		
-		switch( pLink.GetBoneParameter() ){
+		switch(pLink->GetBoneParameter()){
 		case deAnimatorLink::ebpPositionX:
 			value = state.GetPosition().x;
 			break;
@@ -142,44 +142,44 @@ float dearLink::GetValue( float defaultValue ) const{
 			break;
 			
 		default:
-			value = pLink.GetBoneMinimumValue();
+			value = pLink->GetBoneMinimumValue();
 		}
 		
-		value = decMath::linearStep( value, pLink.GetBoneMinimumValue(),  pLink.GetBoneMaximumValue() );
+		value = decMath::linearStep(value, pLink->GetBoneMinimumValue(),  pLink->GetBoneMaximumValue());
 		
-	}else if( pVPSIndex != -1 ){
-		value = decMath::linearStep( pInstance.GetVPSStateList().GetStateAt( pVPSIndex ).GetWeight(),
-			pLink.GetVertexPositionSetMinimumValue(), pLink.GetVertexPositionSetMaximumValue() );
+	}else if(pVPSIndex != -1){
+		value = decMath::linearStep(pInstance.GetVPSStateList().GetStateAt(pVPSIndex).GetWeight(),
+			pLink->GetVertexPositionSetMinimumValue(), pLink->GetVertexPositionSetMaximumValue());
 		
 	}else{
 		return defaultValue;
 	}
 	
-	const int repeat = pLink.GetRepeat();
-	if( repeat > 1 ){
-		value *= ( float )repeat;
-		value -= floorf( value );
+	const int repeat = pLink->GetRepeat();
+	if(repeat > 1){
+		value *= (float)repeat;
+		value -= floorf(value);
 	}
 	
-	if( pEvaluator.GetCurve().GetPointCount() > 0 ){
-		value = pEvaluator.EvaluateAt( value );
+	if(pEvaluator.GetCurve().GetPointCount() > 0){
+		value = pEvaluator.EvaluateAt(value);
 	}
 	
-	if( pWrapY ){
-		value -= floorf( value );
+	if(pWrapY){
+		value -= floorf(value);
 	}
 	
 	return value;
 }
 
-void dearLink::GetVector( decVector &vector ) const{
-	if( pLink.HasController() ){
-		vector = pInstance.GetControllerStates().GetVectorAt( pLink.GetController() );
+void dearLink::GetVector(decVector &vector) const{
+	if(pLink->HasController()){
+		vector = pInstance.GetControllerStates().GetVectorAt(pLink->GetController());
 	}
 }
 
-void dearLink::GetQuaternion( decQuaternion &quaternion ) const{
-	if( pLink.HasController() ){
-		quaternion.SetFromEuler( pInstance.GetControllerStates().GetVectorAt( pLink.GetController() ) );
+void dearLink::GetQuaternion(decQuaternion &quaternion) const{
+	if(pLink->HasController()){
+		quaternion.SetFromEuler(pInstance.GetControllerStates().GetVectorAt(pLink->GetController()));
 	}
 }

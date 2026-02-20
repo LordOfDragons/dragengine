@@ -31,8 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModioPendingRequest::deModioPendingRequest( const deServiceObject::Ref &ndata ) :
-data( ndata ? ndata : deServiceObject::Ref::New( new deServiceObject ) ){
+deModioPendingRequest::deModioPendingRequest(const deServiceObject::Ref &ndata) :
+data(ndata ? ndata : deServiceObject::Ref::New()){
 }
 
 deModioPendingRequest::~deModioPendingRequest(){

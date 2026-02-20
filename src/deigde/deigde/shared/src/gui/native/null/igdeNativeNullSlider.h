@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLSLIDER_H_
 #define _IGDENATIVENULLSLIDER_H_
 
+#include "../../igdeSlider.h"
+
 class igdeSlider;
 
 
 /**
  * Null slider.
  */
-class igdeNativeNullSlider{
+class igdeNativeNullSlider : public igdeSlider::cNativeSlider{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullSlider();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSlider* CreateNativeWidget( igdeSlider &owner );
+	static igdeNativeNullSlider* CreateNativeWidget(igdeSlider &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,12 +57,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void Focus();
-	virtual void UpdateScale();
-	virtual void UpdateRange();
-	virtual void UpdateValue();
-	virtual void UpdateEnabled();
-	virtual void UpdateDescription();
+	void Focus() override;
+	void UpdateScale() override;
+	void UpdateRange() override;
+	void UpdateValue() override;
+	void UpdateEnabled() override;
+	void UpdateDescription() override;
 	/*@}*/
 };
 

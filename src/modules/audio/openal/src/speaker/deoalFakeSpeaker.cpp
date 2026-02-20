@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalFakeSpeaker::deoalFakeSpeaker( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pEnvironment( nullptr )
+deoalFakeSpeaker::deoalFakeSpeaker(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pEnvironment(nullptr)
 {
-	pEnvironment = new deoalEnvironment( pAudioThread );
+	pEnvironment = new deoalEnvironment(pAudioThread);
 	// pEnvironment->SetWorld( pParentWorld );
 	// pEnvironment->SetPosition( pPosition );
 	// pEnvironment->SetRange( pRange );
@@ -52,7 +52,7 @@ pEnvironment( nullptr )
 }
 
 deoalFakeSpeaker::~deoalFakeSpeaker(){
-	if( pEnvironment ){
+	if(pEnvironment){
 		delete pEnvironment;
 		pEnvironment = nullptr;
 	}
@@ -64,7 +64,7 @@ deoalFakeSpeaker::~deoalFakeSpeaker(){
 ///////////////
 
 void deoalFakeSpeaker::UpdateEffects(){
-	if( pEnvironment && pAudioThread.GetExtensions().GetHasEFX()
+	if(pEnvironment && pAudioThread.GetExtensions().GetHasEFX()
 	&& pAudioThread.GetConfiguration().GetEnableEFX()){
 		pEnvironment->Update();
 	}

@@ -66,74 +66,74 @@ private:
 	
 public:
 	deBApp() :
-	BApplication( "application/x-vnd.dragengine-launcher-console" ),
-	pThread( -1 ){
+	BApplication("application/x-vnd.dragengine-launcher-console"),
+	pThread(-1){
 	}
 	
-	virtual void ArgvReceived( int32 argc, char** argv ){
+	virtual void ArgvReceived(int32 argc, char** argv){
 		int i;
-		for( i=1; i<argc; i++ ){
-			printf( "[LAUNCHER] ArgvReceived: %d = '%s'\n", i, argv[ i ] );
-			pLauncher.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
+		for(i=1; i<argc; i++){
+			printf("[LAUNCHER] ArgvReceived: %d = '%s'\n", i, argv[i]);
+			pLauncher.AddArgument(decUnicodeString::NewFromUTF8(argv[i]));
 		}
 	}
 	
 	virtual void AboutRequested(){
-		printf( "[LAUNCHER] AboutRequested()\n" );
+		printf("[LAUNCHER] AboutRequested()\n");
 	}
 	
 	virtual bool QuitRequested(){
-		printf( "[LAUNCHER] QuitRequested()\n" );
+		printf("[LAUNCHER] QuitRequested()\n");
 		return true;
 	}
 	
 	virtual void ReadyToRun(){
-		printf( "[LAUNCHER] ReadyToRun()\n" );
-		if( pThread != -1 ){
+		printf("[LAUNCHER] ReadyToRun()\n");
+		if(pThread != -1){
 			return;
 		}
-		pThread = spawn_thread( ThreadHandler, "Runner", B_NORMAL_PRIORITY, this );
-		resume_thread( pThread );
+		pThread = spawn_thread(ThreadHandler, "Runner", B_NORMAL_PRIORITY, this);
+		resume_thread(pThread);
 	}
 	
-	virtual void MessageReceived( BMessage *message ){
-		if( pLauncher.runningGame && pLauncher.runningGame->GetEngineInstance() ){
-			pLauncher.runningGame->GetEngineInstance()->BeosMessageReceived( message );
+	virtual void MessageReceived(BMessage *message){
+		if(pLauncher.runningGame && pLauncher.runningGame->GetEngineInstance()){
+			pLauncher.runningGame->GetEngineInstance()->BeosMessageReceived(message);
 		}
 	}
 	
 	virtual thread_id Run(){
 		const thread_id tid = BApplication::Run();
 		
-		if( pThread != -1 ){
-			kill_thread( pThread );
+		if(pThread != -1){
+			kill_thread(pThread);
 			status_t status;
-			wait_for_thread( pThread, &status );
+			wait_for_thread(pThread, &status);
 			pThread = -1;
 		}
 		
 		return tid;
 	}
 	
-	static int32 ThreadHandler( void *userData ){
-		deBApp &app = *( ( deBApp* )userData );
+	static int32 ThreadHandler(void *userData){
+		deBApp &app = *((deBApp*)userData);
 		
 		try{
 			app.pLauncher.Run();
 			
-		}catch( const deException &e ){
+		}catch(const deException &e){
 			e.PrintError();
 		}
 		
-		app.PostMessage( B_QUIT_REQUESTED );
+		app.PostMessage(B_QUIT_REQUESTED);
 		return 0;
 	}
 };
 
-int main( int argcount, char **args ){
+int main(int argcount, char **args){
 	deBApp app;
 	app.Run();
-	printf( "Quit finished\n" );
+	printf("Quit finished\n");
 	return 0;
 }
 
@@ -144,19 +144,19 @@ int main( int argcount, char **args ){
 // unix entry point
 /////////////////////
 
-#if defined OS_UNIX && ! defined OS_BEOS && ! defined OS_MACOS
-int main( int argcount, char **args ){
+#if defined OS_UNIX && !defined OS_BEOS && !defined OS_MACOS
+int main(int argcount, char **args){
 	try{
 		dellLauncher launcher;
 		
 		int i;
-		for( i=1; i<argcount; i++ ){
-			launcher.AddArgument( decUnicodeString::NewFromUTF8( args[ i ] ) );
+		for(i=1; i<argcount; i++){
+			launcher.AddArgument(decUnicodeString::NewFromUTF8(args[i]));
 		}
 		
 		launcher.Run();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return -1;
 	}
@@ -174,17 +174,17 @@ int main( int argcount, char **args ){
 static int WINAPI RealWinMain(){
 	try{
 		decUnicodeArgumentList argsList;
-		argsList.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
+		argsList.ParseCommand(deOSWindows::WideToUnicode(GetCommandLineW()));
 		
 		dellLauncher launcher;
 		int i;
-		for( i=1; i<argsList.GetArgumentCount(); i++ ){
-			launcher.AddArgument( *argsList.GetArgumentAt( i ) );
+		for(i=1; i<argsList.GetArgumentCount(); i++){
+			launcher.AddArgument(*argsList.GetArgumentAt(i));
 		}
 		
 		launcher.Run();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return -1;
 	}
@@ -193,11 +193,11 @@ static int WINAPI RealWinMain(){
 }
 
 // MinGW does not support wWinMain
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ){
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow){
 	return RealWinMain();
 }
 
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
 	return RealWinMain();
 }
 #endif
@@ -209,18 +209,18 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLin
 
 #ifdef OS_MACOS
 // main() entry point is located in consolelauncher_macos.mm and forwards to macosMain
-int macosMain( int argcount, char **args ){
+int macosMain(int argcount, char **args){
 	try{
 		dellLauncher launcher;
 		
 		int i;
-		for( i=1; i<argcount; i++ ){
-			launcher.AddArgument( decUnicodeString::NewFromUTF8( args[ i ] ) );
+		for(i=1; i<argcount; i++){
+			launcher.AddArgument(decUnicodeString::NewFromUTF8(args[i]));
 		}
 		
 		launcher.Run();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		return -1;
 	}

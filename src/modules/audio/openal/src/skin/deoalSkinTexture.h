@@ -98,7 +98,7 @@ public:
 	
 	
 	/** \brief Process properties. */
-	void ProcessProperties( const deSkinTexture &texture );
+	void ProcessProperties(const deSkinTexture &texture);
 	/*@}*/
 };
 

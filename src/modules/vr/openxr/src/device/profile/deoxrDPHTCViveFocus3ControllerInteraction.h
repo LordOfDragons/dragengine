@@ -33,21 +33,23 @@
  */
 class deoxrDPHTCViveFocus3ControllerInteraction : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPHTCViveFocus3ControllerInteraction>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHTCViveFocus3ControllerInteraction( deoxrInstance &instance );
+	deoxrDPHTCViveFocus3ControllerInteraction(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHTCViveFocus3ControllerInteraction();
+	~deoxrDPHTCViveFocus3ControllerInteraction() override;
 	/*@}*/
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	bool pProfileEnabled() const override;
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

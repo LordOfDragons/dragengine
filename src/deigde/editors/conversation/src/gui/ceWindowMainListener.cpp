@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWindowMainListener::ceWindowMainListener( ceWindowMain &window ) :
-pWindow( window ){
+ceWindowMainListener::ceWindowMainListener(ceWindowMain &window) :
+pWindow(window){
 }
 
 ceWindowMainListener::~ceWindowMainListener(){
@@ -52,14 +52,14 @@ ceWindowMainListener::~ceWindowMainListener(){
 // Management
 ///////////////
 
-void ceWindowMainListener::StateChanged( ceConversation* ){
+void ceWindowMainListener::StateChanged(ceConversation*){
 	pWindow.UpdateAllActions();
 }
 
-void ceWindowMainListener::UndoChanged( ceConversation* ){
+void ceWindowMainListener::UndoChanged(ceConversation*){
 	pWindow.UpdateAllActions();
 }
 
-void ceWindowMainListener::ViewChanged( ceConversation* ){
+void ceWindowMainListener::ViewChanged(ceConversation*){
 	pWindow.UpdateAllActions();
 }

@@ -25,9 +25,10 @@
 #ifndef _PEEUPARAMETERSETVALUE_H_
 #define _PEEUPARAMETERSETVALUE_H_
 
+#include "../../emitter/peeType.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
 class peeParameter;
 
 
@@ -36,12 +37,15 @@ class peeParameter;
  * \brief Undo Action Set Parameter Value.
  */
 class peeUParameterSetValue : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUParameterSetValue>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	float pOldValue;
-	float pNewValue;
+	float pOldValue, pNewValue;
 	
 	
 	
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUParameterSetValue( peeType *type, peeParameter *parameter, float newValue );
+	peeUParameterSetValue(peeType *type, peeParameter *parameter, float newValue);
 	
 protected:
 	/** \brief Clean up the undo action. */
-    virtual ~peeUParameterSetValue();
+    ~peeUParameterSetValue() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

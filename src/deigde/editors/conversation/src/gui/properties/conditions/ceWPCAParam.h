@@ -25,8 +25,8 @@
 #ifndef _CEWPCAPARAM_H_
 #define _CEWPCAPARAM_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -38,12 +38,15 @@ class ceCConditionActorParameter;
  * \brief Actor Parameter Conversation Condition property window.
  */
 class ceWPCAParam : public ceWPCondition{
+public:
+	using Ref = deTObjectReference<ceWPCAParam>;
+
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditParameter;
-	igdeTextFieldReference pEditTestValue;
-	igdeTextFieldReference pEditTestVariable;
+	igdeComboBox::Ref pCBActorID;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditParameter;
+	igdeTextField::Ref pEditTestValue;
+	igdeTextField::Ref pEditTestVariable;
 	
 	
 	
@@ -51,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCAParam( ceWPTopic &parentPanel );
+	ceWPCAParam(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up view property window. */
-	virtual ~ceWPCAParam();
+	~ceWPCAParam() override;
 	/*@}*/
 	
 	

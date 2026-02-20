@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetReachRange::aeURuleIKSetReachRange( aeRuleInverseKinematic *rule, float newValue ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleIKSetReachRange::aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, float newValue){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Inverse kinematic set reach range" );
+	SetShortInfo("@Animator.Undo.RuleInverseKinematicSetReachRange");
 	
 	pOldValue = rule->GetReachRange();
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachRange::~aeURuleIKSetReachRange(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ aeURuleIKSetReachRange::~aeURuleIKSetReachRange(){
 ///////////////
 
 void aeURuleIKSetReachRange::Undo(){
-	pRule->SetReachRange( pOldValue );
+	pRule->SetReachRange(pOldValue);
 }
 
 void aeURuleIKSetReachRange::Redo(){
-	pRule->SetReachRange( pNewValue );
+	pRule->SetReachRange(pNewValue);
 }

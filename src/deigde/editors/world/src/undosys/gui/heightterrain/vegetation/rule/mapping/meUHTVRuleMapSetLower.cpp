@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMapSetLower::meUHTVRuleMapSetLower( meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nlower ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleMapSetLower::meUHTVRuleMapSetLower(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nlower){
+	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
-	SetShortInfo( "Vegetation Layer Rule Mapping Set Lower" );
-	SetMemoryConsumption( sizeof( meUHTVRuleMapSetLower ) );
+	SetShortInfo("@World.UHTVRuleMapSetLower.VegetationLayerRuleMappingSetLower");
+	SetMemoryConsumption(sizeof(meUHTVRuleMapSetLower));
 	
 	pOldLower = rule->GetLower();
 	pNewLower = nlower;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetLower::~meUHTVRuleMapSetLower(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +65,11 @@ meUHTVRuleMapSetLower::~meUHTVRuleMapSetLower(){
 ///////////////
 
 void meUHTVRuleMapSetLower::Undo(){
-	pRule->SetLower( pOldLower );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetLower(pOldLower);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleMapSetLower::Redo(){
-	pRule->SetLower( pNewLower );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetLower(pNewLower);
+	pVLayer->NotifyRuleChanged(pRule);
 }

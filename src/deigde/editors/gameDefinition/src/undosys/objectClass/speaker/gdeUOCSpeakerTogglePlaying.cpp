@@ -40,30 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerTogglePlaying::gdeUOCSpeakerTogglePlaying( gdeObjectClass *objectClass, gdeOCSpeaker *speaker ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerTogglePlaying::gdeUOCSpeakerTogglePlaying(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker toggle playing" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerTogglePlaying");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerTogglePlaying::~gdeUOCSpeakerTogglePlaying(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -72,8 +63,8 @@ gdeUOCSpeakerTogglePlaying::~gdeUOCSpeakerTogglePlaying(){
 ///////////////
 
 void gdeUOCSpeakerTogglePlaying::Undo(){
-	pSpeaker->SetPlaying( ! pSpeaker->GetPlaying() );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPlaying(!pSpeaker->GetPlaying());
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerTogglePlaying::Redo(){

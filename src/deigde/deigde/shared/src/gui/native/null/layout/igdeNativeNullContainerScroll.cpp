@@ -39,7 +39,7 @@ igdeNativeNullContainerScroll::igdeNativeNullContainerScroll(){
 igdeNativeNullContainerScroll::~igdeNativeNullContainerScroll(){
 }
 
-igdeNativeNullContainerScroll *igdeNativeNullContainerScroll::CreateNativeWidget( igdeContainerScroll& ){
+igdeNativeNullContainerScroll *igdeNativeNullContainerScroll::CreateNativeWidget(igdeContainerScroll&){
 	return new igdeNativeNullContainerScroll;
 }
 

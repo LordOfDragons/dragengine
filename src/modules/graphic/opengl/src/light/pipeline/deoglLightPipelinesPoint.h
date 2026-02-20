@@ -33,64 +33,67 @@
  */
 class deoglLightPipelinesPoint : public deoglLightPipelinesRanged{
 public:
+	using Ref = deTObjectReference<deoglLightPipelinesPoint>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelinesPoint( const deoglRLight &light );
+	deoglLightPipelinesPoint(const deoglRLight &light);
 	
 protected:
 	/** Clean up light pipeline. */
-	virtual ~deoglLightPipelinesPoint();
+	~deoglLightPipelinesPoint() override;
 	/*@}*/
 	
 	
 	
 public:
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	
 	
 	
 protected:
-	virtual void pPreparePipelines(deoglBatchedShaderLoading &batched);
+	void pPreparePipelines(deoglBatchedShaderLoading &batched) override;
 	
 	
 	
 private:
-	void pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareSolid1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareSolid1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareSolid1Transp1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareSolid1Transp1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareSolid2( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareSolid2(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareSolid2Transp1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareSolid2Transp1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareSolid2Transp2( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareSolid2Transp2(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareLumSolid1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareLumSolid1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareLumSolid2( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareLumSolid2(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareGIRayNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareGIRayNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareGIRaySolid1( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareGIRaySolid1(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pPrepareGIRaySolid2( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched );
+	void pPrepareGIRaySolid2(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pSetPoint( deoglLightShaderConfig &shaconf );
+	void pSetPoint(deoglLightShaderConfig &shaconf);
 };
 
 #endif

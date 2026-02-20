@@ -7,11 +7,11 @@
 class detPRNG : public detCase{
 public:
 	detPRNG();
-	~detPRNG();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detPRNG() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 private:
 	void TestInt();
 	void TestFloat();

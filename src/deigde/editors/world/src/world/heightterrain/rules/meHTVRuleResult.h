@@ -41,6 +41,10 @@
  */
 class meHTVRuleResult : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleResult>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Probability. */
@@ -60,10 +64,13 @@ public:
 	meHTVRuleResult();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleResult( const meHTVRuleResult &rule );
+	meHTVRuleResult(const meHTVRuleResult &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleResult();
+	~meHTVRuleResult() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -71,17 +78,17 @@ public:
 	/** Probability to use if there is no input probability. */
 	inline float GetProbability() const{ return pProbability; }
 	/** Sets the probability to use if there is no input probability. */
-	void SetProbability( float probability );
+	void SetProbability(float probability);
 	/** Variation to use if there is no input variation. */
 	inline int GetVariation() const{ return pVariation; }
 	/** Sets the variation to use if there is no input variation. */
-	void SetVariation( int variation );
+	void SetVariation(int variation);
 	
 	/** Evaluate rule. */
-	virtual void Evaluate( meHTVEvaluationEnvironment &evalEnv );
+	void Evaluate(meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

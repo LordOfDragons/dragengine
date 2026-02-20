@@ -28,9 +28,9 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "../world/deoglWorldOctreeVisitor.h"
+#include "../envmap/deoglEnvironmentMap.h"
 
-class deoglEnvironmentMap;
-class deoglEnvironmentMapList;
+class deoglWorldOctree;
 
 
 
@@ -52,7 +52,7 @@ public:
 	/** Creates a new visitor. */
 	deoglFindBestEnvMap();
 	/** Cleans up the visitor. */
-	virtual ~deoglFindBestEnvMap();
+	~deoglFindBestEnvMap() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -62,7 +62,7 @@ public:
 		return pPosition;
 	}
 	/** Sets the target position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Retrieves the found environment map or NULL if no environment map could be found. */
 	inline deoglEnvironmentMap *GetEnvMap() const{
@@ -80,10 +80,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	void VisitNode(deoglDOctree *node, int intersection) override;
 	
 	/** Test all environment maps in a list of environment maps. */
-	void VisitList( const deoglEnvironmentMapList &list );
+	void VisitList(const deoglEnvironmentMap::List &list);
 	/*@}*/
 };
 

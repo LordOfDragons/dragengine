@@ -35,6 +35,9 @@ class lpeWPLangPack;
  * \brief Language pack property panel listener.
  */
 class lpeWPLangPackListener : public lpeLangPackListener{
+public:
+	using Ref = deTObjectReference<lpeWPLangPackListener>;
+	
 private:
 	lpeWPLangPack &pPanel;
 	
@@ -44,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	lpeWPLangPackListener( lpeWPLangPack &panel );
+	lpeWPLangPackListener(lpeWPLangPack &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~lpeWPLangPackListener();
+	~lpeWPLangPackListener() override;
 	/*@}*/
 	
 	
@@ -55,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Language pack parameters changed. */
-	virtual void LangPackChanged( lpeLangPack *langpack );
+	void LangPackChanged(lpeLangPack *langpack) override;
 	/*@}*/
 };
 

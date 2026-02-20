@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deoglEnvMapSlot::deoglEnvMapSlot(){
-	pEnvMap = NULL;
+	pEnvMap = nullptr;
 	pInUse = false;
 	pLastUsed = 0;
 }
@@ -55,16 +55,16 @@ deoglEnvMapSlot::~deoglEnvMapSlot(){
 
 void deoglEnvMapSlot::Clear(){
 	pInUse = false;
-	pEnvMap = NULL;
+	pEnvMap = nullptr;
 }
 
 
 
-void deoglEnvMapSlot::SetInUse( bool inUse ){
+void deoglEnvMapSlot::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
-void deoglEnvMapSlot::SetEnvMap( deoglEnvironmentMap *envmap ){
+void deoglEnvMapSlot::SetEnvMap(deoglEnvironmentMap *envmap){
 	pEnvMap = envmap;
 }
 

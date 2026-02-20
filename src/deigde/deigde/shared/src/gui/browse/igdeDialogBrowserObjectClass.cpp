@@ -24,7 +24,7 @@
 
 #include "igdeDialogBrowserObjectClass.h"
 #include "igdeBrowseItemGDPreviewListener.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../model/igdeListItem.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/igdeGameDefinition.h"
@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogBrowserObjectClass::igdeDialogBrowserObjectClass( igdeEnvironment &environment,
-const char *title ) : igdeDialogBrowser( environment, title, true ){
+igdeDialogBrowserObjectClass::igdeDialogBrowserObjectClass(igdeEnvironment &environment,
+const char *title) : igdeDialogBrowser(environment, title, true){
 	UpdateCategoryList();
 	UpdateItemList();
 }
@@ -61,33 +61,32 @@ igdeDialogBrowserObjectClass::~igdeDialogBrowserObjectClass(){
 
 igdeGDClass *igdeDialogBrowserObjectClass::GetSelectedObjectClass() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? ( igdeGDClass* )selection->GetData() : NULL;
+	return selection ? (igdeGDClass*)selection->GetData() : nullptr;
 }
 
-void igdeDialogBrowserObjectClass::SetSelectedObjectClass( igdeGDClass *gdClass ){
-	if( ! gdClass ){
+void igdeDialogBrowserObjectClass::SetSelectedObjectClass(igdeGDClass *gdClass){
+	if(!gdClass){
 		return;
 	}
 	
-	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
-		decPath::CreatePathUnix( gdClass->GetCategory() ) );
+	igdeGDCategory * const category = GetRootCategory()->GetCategories().FindWithPath(
+		decPath::CreatePathUnix(gdClass->GetCategory()));
 	
-	SelectCategory( category );
-	SelectListItemWithData( gdClass );
+	SelectCategory(category);
+	SelectListItemWithData(gdClass);
 }
 
 
 
-bool igdeDialogBrowserObjectClass::SelectObjectClass( igdeWidget *owner, igdeGDClass* &objectClass, const char *title ){
-	igdeDialogReference refDialog;
-	refDialog.TakeOver( new igdeDialogBrowserObjectClass( owner->GetEnvironment(), title ) );
-	igdeDialogBrowserObjectClass &dialog = ( igdeDialogBrowserObjectClass& )( igdeDialog& )refDialog;
-	if( objectClass ){
-		dialog.SetSelectedObjectClass( objectClass );
+bool igdeDialogBrowserObjectClass::SelectObjectClass(igdeWidget *owner, igdeGDClass* &objectClass, const char *title){
+	igdeDialogBrowserObjectClass::Ref dialog(igdeDialogBrowserObjectClass::Ref::New(
+		owner->GetEnvironment(), title));
+	if(objectClass){
+		dialog->SetSelectedObjectClass(objectClass);
 	}
 	
-	if( dialog.Run( owner ) && dialog.GetSelectedObjectClass() ){
-		objectClass = dialog.GetSelectedObjectClass();
+	if(dialog->Run(owner) && dialog->GetSelectedObjectClass()){
+		objectClass = dialog->GetSelectedObjectClass();
 		return true;
 		
 	}else{
@@ -95,10 +94,10 @@ bool igdeDialogBrowserObjectClass::SelectObjectClass( igdeWidget *owner, igdeGDC
 	}
 }
 
-bool igdeDialogBrowserObjectClass::SelectObjectClass( igdeWidget *owner, decString &objectClass, const char *title ){
+bool igdeDialogBrowserObjectClass::SelectObjectClass(igdeWidget *owner, decString &objectClass, const char *title){
 	const igdeGDClassManager &classManager = *owner->GetGameDefinition()->GetClassManager();
-	igdeGDClass *gdClass = classManager.GetNamed( objectClass );
-	if( SelectObjectClass( owner, gdClass, title ) ){
+	igdeGDClass *gdClass = classManager.GetClasses().FindNamed(objectClass);
+	if(SelectObjectClass(owner, gdClass, title)){
 		objectClass = gdClass->GetName();
 		return true;
 		
@@ -116,28 +115,28 @@ igdeGDCategory *igdeDialogBrowserObjectClass::GetRootCategory() const{
 	return GetGameDefinition()->GetClassManager()->GetCategories();
 }
 
-void igdeDialogBrowserObjectClass::AddItemsToList( igdeGDAddToListVisitor &visitor ){
+void igdeDialogBrowserObjectClass::AddItemsToList(igdeGDAddToListVisitor &visitor){
 	const decString &filter = GetFilter();
 	
-	if( filter.IsEmpty() ){
-		GetGameDefinition()->GetClassManager()->VisitClassesMatchingCategory( visitor, GetSelectedCategory() );
+	if(filter.IsEmpty()){
+		GetGameDefinition()->GetClassManager()->VisitClassesMatchingCategory(visitor, GetSelectedCategory());
 		
 	}else{
-		GetGameDefinition()->GetClassManager()->VisitMatchingFilter( visitor, filter );
+		GetGameDefinition()->GetClassManager()->VisitMatchingFilter(visitor, filter);
 	}
 }
 
-void igdeDialogBrowserObjectClass::RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener ){
+void igdeDialogBrowserObjectClass::RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener){
 	igdeGDClass * const gdClass = GetSelectedObjectClass();
-	if( gdClass ){
-		pvmgr.ClearPreviewObjectClass( gdClass );
-		pvmgr.CreatePreviewObjectClass( gdClass, listener );
+	if(gdClass){
+		pvmgr.ClearPreviewObjectClass(gdClass);
+		pvmgr.CreatePreviewObjectClass(gdClass, listener);
 	}
 }
 
-void igdeDialogBrowserObjectClass::GetSelectedItemInfo( decString &info ){
+void igdeDialogBrowserObjectClass::GetSelectedItemInfo(decString &info){
 	const igdeGDClass * const gdClass = GetSelectedObjectClass();
-	if( gdClass ){
-		info.Format( "%s:\n%s", gdClass->GetName().GetString(), gdClass->GetDescription().GetString() );
+	if(gdClass){
+		info.Format("%s:\n%s", gdClass->GetName().GetString(), gdClass->GetDescription().GetString());
 	}
 }

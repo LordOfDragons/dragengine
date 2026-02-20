@@ -41,25 +41,27 @@ public:
 	 * Stores deoglSharedBlockSPBElement returning it to deoglSharedBlockSPB if out of scope.
 	 * This is a convenience class to avoid having to remember to call Return().
 	 */
-	class Ref{
+	class Lease{
 	private:
 		deoglSharedBlockSPBElement *pElement;
 		
-		Ref( const Ref &ref ); // disallow compiler auto-use
+		Lease(const Lease &ref); // disallow compiler auto-use
 		
 	public:
-		Ref();
-		~Ref();
+		Lease();
+		~Lease();
 		
 		operator deoglSharedBlockSPBElement*() const;
 		operator deoglSharedBlockSPBElement&() const;
 		deoglSharedBlockSPBElement* operator->() const;
 		
-		Ref &operator=( deoglSharedBlockSPBElement *element );
+		Lease &operator=(deoglSharedBlockSPBElement *element);
 		bool operator!() const;
 		operator bool() const;
 	};
 	
+	/** For use by deoglSharedBlockSPB only! */
+	using Ref = deTObjectReference<deoglSharedBlockSPBElement>;
 	
 	
 private:
@@ -74,14 +76,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block element. */
-	deoglSharedBlockSPBElement( deoglSharedBlockSPB &spb, int index, int count );
+	deoglSharedBlockSPBElement(deoglSharedBlockSPB &spb, int index, int count);
 	
+protected:
 	/** Clean up shared shader parameter block element. */
-	virtual ~deoglSharedBlockSPBElement();
+	~deoglSharedBlockSPBElement() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Shader parameter block this element belongs to. */
@@ -94,13 +97,13 @@ public:
 	inline int GetCount() const{ return pCount; }
 	
 	/** Set count of elements. */
-	void SetCount( int count );
+	void SetCount(int count);
 	
 	/** Block is empty. */
 	inline bool GetEmpty() const{ return pEmpty; }
 	
 	/** Set if block is empty. */
-	void SetEmpty( bool empty );
+	void SetEmpty(bool empty);
 	
 	/**
 	 * Map buffer for element.

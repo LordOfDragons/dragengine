@@ -25,7 +25,8 @@
 #ifndef _DEOGLSHAREDVIDEOPLAYER_H_
 #define _DEOGLSHAREDVIDEOPLAYER_H_
 
-class deVideoPlayer;
+#include <dragengine/resources/video/deVideoPlayer.h>
+
 class deGraphicOpenGl;
 class deoglSharedVideoPlayerList;
 
@@ -42,7 +43,7 @@ class deoglSharedVideoPlayer{
 public:
 	deGraphicOpenGl &pOgl;
 	deoglSharedVideoPlayerList &pList;
-	deVideoPlayer *pVideoPlayer;
+	deVideoPlayer::Ref pVideoPlayer;
 	int pUsageCount;
 	
 	
@@ -51,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared video player. */
-	deoglSharedVideoPlayer( deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer );
+	deoglSharedVideoPlayer(deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer);
 	
 	/** Clean up shared video player. */
 	~deoglSharedVideoPlayer();
@@ -66,7 +67,7 @@ public:
 	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Video player. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }
@@ -83,7 +84,7 @@ public:
 	 * Update the video player.
 	 * \details Called from the main thread.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/**
 	 * Update render thread counterparts.

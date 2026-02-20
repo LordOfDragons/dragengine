@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUDecalMove.h"
 #include "meUndoDataDecal.h"
 #include "../../../world/meWorld.h"
@@ -42,42 +38,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalMove::meUDecalMove( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUDecalMove::meUDecalMove(meWorld *world) :
+meBaseUndoMove(*world->GetEnvironment())
+{
+	if(!world) DETHROW(deeInvalidParam);
 	
-	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
-	int count = selection.GetCount();
+	SetShortInfo("@World.UDecalMove.MoveDecals");
 	
-	SetShortInfo( "Move Decals" );
+	pWorld = nullptr;
 	
-	pWorld = NULL;
-	
-	pDecals = NULL;
-	pDecalCount = 0;
-	
-	try{
-		if( count > 0 ){
-			pDecals = new meUndoDataDecal*[ count ];
-			if( ! pDecals ) DETHROW( deeOutOfMemory );
-			
-			while( pDecalCount < count ){
-				pDecals[ pDecalCount ] = new meUndoDataDecal( selection.GetAt( pDecalCount ) );
-				if( ! pDecals[ pDecalCount ] ) DETHROW( deeOutOfMemory );
-				pDecalCount++;
-			}
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	world->GetSelectionDecal().GetSelected().Visit([&](meDecal *decal){
+		pDecals.Add(meUndoDataDecal::Ref::New(decal));
+	});
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalMove::~meUDecalMove(){
-	pCleanUp();
 }
 
 
@@ -86,44 +63,21 @@ meUDecalMove::~meUDecalMove(){
 ///////////////
 
 void meUDecalMove::Undo(){
-	int d;
-	
-	for( d=0; d<pDecalCount; d++ ){
-		meDecal * const decal = pDecals[ d ]->GetDecal();
-		decal->SetPosition( pDecals[ d ]->GetOldPosition() );
-		pWorld->NotifyDecalGeometryChanged( decal );
-	}
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		data.GetDecal()->SetPosition(data.GetOldPosition());
+		pWorld->NotifyDecalGeometryChanged(data.GetDecal());
+	});
 }
 
 void meUDecalMove::Redo(){
 	const decDVector &distance = GetDistance();
-	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		meDecal * const decal = pDecals[ d ]->GetDecal();
-		decal->SetPosition( pDecals[ d ]->GetOldPosition() + distance );
-		pWorld->NotifyDecalGeometryChanged( decal );
-	}
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		data.GetDecal()->SetPosition(data.GetOldPosition() + distance);
+		pWorld->NotifyDecalGeometryChanged(data.GetDecal());
+	});
 }
 
 void meUDecalMove::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDecalMove::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
-			pDecalCount--;
-			delete pDecals[ pDecalCount ];
-		}
-		
-		delete [] pDecals;
-	}
-	
-	if( pWorld ) pWorld->FreeReference();
 }

@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsCopyActions::ceWPTMAWaitActionsCopyActions( ceWindowMain &windowMain,
-const ceCAWait &wait ) :
-ceWPTMACopyActions( windowMain, wait.GetActions() ){
+ceWPTMAWaitActionsCopyActions::ceWPTMAWaitActionsCopyActions(ceWindowMain &windowMain,
+const ceCAWait &wait) :
+ceWPTMACopyActions(windowMain, wait.GetActions()){
 }

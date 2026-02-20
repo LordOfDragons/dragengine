@@ -44,6 +44,12 @@ public:
 	/** \brief Create new model vertex. */
 	deModelVertex();
 	
+	deModelVertex(const decVector &position, int weightSet);
+	
+	/** \brief Copy model vertex. */
+	deModelVertex(const deModelVertex &copy);
+	deModelVertex &operator=(const deModelVertex &other);
+	
 	/** \brief Clean up model vertex. */
 	~deModelVertex();
 	/*@}*/
@@ -56,13 +62,13 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Index of the weight set or -1 if not used. */
 	inline int GetWeightSet() const{ return pWeightSet; }
 	
 	/** \brief Set index of the weight set or -1 if not used. */
-	void SetWeightSet( int index );
+	void SetWeightSet(int index);
 	/*@}*/
 };
 

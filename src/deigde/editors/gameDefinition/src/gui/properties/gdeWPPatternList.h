@@ -25,16 +25,16 @@
 #ifndef _GDEWPTAGLIST_H_
 #define _GDEWPTAGLIST_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/undo/igdeUndo.h>
+
+#include <dragengine/common/string/decStringSet.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;
-class igdeUndo;
-
-class decStringSet;
 
 
 /**
@@ -44,15 +44,15 @@ class decStringSet;
  */
 class gdeWPPatternList : public igdeContainerFlow{
 private:
-	igdeEditPathReference pEditPath;
-	igdeListBoxReference pListBox;
+	igdeEditPath::Ref pEditPath;
+	igdeListBox::Ref pListBox;
 	
 	const decStringSet *pPatternList;
 	igdeUndoSystem *pUndoSystem;
 	
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionClear;
 	
 	
 	
@@ -60,11 +60,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPPatternList( igdeUIHelper &helper, int rows, const char *description );
+	gdeWPPatternList(igdeUIHelper &helper, int rows, const char *description);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~gdeWPPatternList();
+	~gdeWPPatternList() override;
 	/*@}*/
 	
 	
@@ -76,13 +76,13 @@ public:
 	inline const decStringSet *GetPatternList() const{ return pPatternList; }
 	
 	/** \brief Set pattern list to edit. */
-	void SetPatternList( const decStringSet *patternList );
+	void SetPatternList(const decStringSet *patternList);
 	
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -93,31 +93,31 @@ public:
 	void UpdateList();
 	
 	/** \brief Select pattern. */
-	void SelectPattern( const decString &pattern );
+	void SelectPattern(const decString &pattern);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringSet &patterns ) = 0;
+	virtual igdeUndo::Ref UndoSet(const decStringSet &patterns) = 0;
 	/*@}*/
 	
 	
 	
 protected:
 	/** \brief Edit path. */
-	inline igdeEditPath *GetEditPath() const{ return pEditPath; }
+	inline const igdeEditPath::Ref &GetEditPath() const{ return pEditPath; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 };
 
 #endif

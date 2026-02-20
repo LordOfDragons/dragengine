@@ -25,28 +25,28 @@
 #ifndef _AEWPRULE_H_
 #define _AEWPRULE_H_
 
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
+#include "aeWPRuleListener.h"
+#include "panels/aeWPAPanelRuleAnimation.h"
+#include "panels/aeWPAPanelRuleAnimationDifference.h"
+#include "panels/aeWPAPanelRuleAnimationSelect.h"
+#include "panels/aeWPAPanelRuleBoneTransformator.h"
+#include "panels/aeWPAPanelRuleForeignState.h"
+#include "panels/aeWPAPanelRuleGroup.h"
+#include "panels/aeWPAPanelRuleInverseKinematic.h"
+#include "panels/aeWPAPanelRuleLimit.h"
+#include "panels/aeWPAPanelRuleStateManipulator.h"
+#include "panels/aeWPAPanelRuleStateSnapshot.h"
+#include "panels/aeWPAPanelRuleSubAnimator.h"
+#include "panels/aeWPAPanelRuleTrackTo.h"
+#include "panels/aeWPAPanelRuleMirror.h"
+#include "../../animator/aeAnimator.h"
+
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class aeWPAPanelRuleLimit;
-class aeAnimator;
 class aeRule;
-class aeWPAPanelRule;
-class aeWPAPanelRuleAnimation;
-class aeWPAPanelRuleAnimationDifference;
-class aeWPAPanelRuleAnimationSelect;
-class aeWPAPanelRuleBoneTransformator;
-class aeWPAPanelRuleForeignState;
-class aeWPAPanelRuleGroup;
-class aeWPAPanelRuleInverseKinematic;
-class aeWPAPanelRuleStateManipulator;
-class aeWPAPanelRuleStateSnapshot;
-class aeWPAPanelRuleSubAnimator;
-class aeWPAPanelRuleTrackTo;
-class aeWPAPanelRuleMirror;
 class aeWindowProperties;
-class aeWPRuleListener;
 
 class igdeTreeItem;
 
@@ -55,28 +55,32 @@ class igdeTreeItem;
  * Base animator rule panel.
  */
 class aeWPRule : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<aeWPRule>;
+	
+	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPRuleListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPRuleListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
-	igdeTreeListReference pTreeRule;
+	igdeTreeList::Ref pTreeRule;
 	
-	igdeSwitcherReference pSwitcher;
-	aeWPAPanelRuleAnimation *pPanelAnim;
-	aeWPAPanelRuleAnimationDifference *pPanelAnimDiff;
-	aeWPAPanelRuleAnimationSelect *pPanelAnimSelect;
-	aeWPAPanelRuleBoneTransformator *pPanelBoneRot;
-	aeWPAPanelRuleForeignState *pPanelFState;
-	aeWPAPanelRuleGroup *pPanelGroup;
-	aeWPAPanelRuleInverseKinematic *pPanelIK;
-	aeWPAPanelRuleStateManipulator *pPanelSManip;
-	aeWPAPanelRuleStateSnapshot *pPanelSSnapshot;
-	aeWPAPanelRuleSubAnimator *pPanelSubAnimator;
-	aeWPAPanelRuleTrackTo *pPanelTrackTo;
-	aeWPAPanelRuleLimit *pPanelLimit;
-	aeWPAPanelRuleMirror *pPanelMirror;
-	aeWPAPanelRule *pActivePanel;
+	igdeSwitcher::Ref pSwitcher;
+	aeWPAPanelRuleAnimation::Ref pPanelAnim;
+	aeWPAPanelRuleAnimationDifference::Ref pPanelAnimDiff;
+	aeWPAPanelRuleAnimationSelect::Ref pPanelAnimSelect;
+	aeWPAPanelRuleBoneTransformator::Ref pPanelBoneRot;
+	aeWPAPanelRuleForeignState::Ref pPanelFState;
+	aeWPAPanelRuleGroup::Ref pPanelGroup;
+	aeWPAPanelRuleInverseKinematic::Ref pPanelIK;
+	aeWPAPanelRuleStateManipulator::Ref pPanelSManip;
+	aeWPAPanelRuleStateSnapshot::Ref pPanelSSnapshot;
+	aeWPAPanelRuleSubAnimator::Ref pPanelSubAnimator;
+	aeWPAPanelRuleTrackTo::Ref pPanelTrackTo;
+	aeWPAPanelRuleLimit::Ref pPanelLimit;
+	aeWPAPanelRuleMirror::Ref pPanelMirror;
+	aeWPAPanelRule::Ref pActivePanel;
 	
 	
 	
@@ -84,11 +88,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPRule( aeWindowProperties &windowProperties );
+	aeWPRule(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPRule();
+	~aeWPRule() override;
 	/*@}*/
 	
 	
@@ -100,10 +104,10 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Active rule. */
 	aeRule *GetRule() const;
@@ -118,7 +122,7 @@ public:
 	void UpdateRuleTree();
 	
 	/** Update item in the rule tree. */
-	void UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule );
+	void UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule);
 	
 	/** Select active rule. */
 	void SelectActiveRule();

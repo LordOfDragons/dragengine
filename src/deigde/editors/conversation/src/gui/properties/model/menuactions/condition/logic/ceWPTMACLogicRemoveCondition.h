@@ -53,13 +53,14 @@ protected:
 	ceWPTMACLogicRemoveCondition();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMACLogicRemoveCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicRemoveCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicRemoveCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceConversationAction &action, ceCConditionLogic &logic,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	/*@}*/
 	
 	
@@ -84,7 +85,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

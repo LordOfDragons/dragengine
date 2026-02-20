@@ -26,12 +26,11 @@
 #define _GDEVAONAVBLOCKER_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCNavigationBlocker;
-
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 
 
@@ -39,11 +38,16 @@ class igdeWDebugDrawerShape;
  * \brief Active object view object class navigation blocker.
  */
 class gdeVAONavBlocker : public gdeVAOSubObject{
-private:
-	gdeOCNavigationBlocker *pOCNavBlocker;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAONavBlocker> Ref;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSBlocker;
+	
+private:
+	gdeOCNavigationBlocker::Ref pOCNavBlocker;
+	
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSBlocker;
 	
 	
 	
@@ -51,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavBlocker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent );
+	gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent);
 	
 protected:
 	/**
@@ -61,7 +65,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAONavBlocker();
+	~gdeVAONavBlocker() override;
 	/*@}*/
 	
 	
@@ -70,13 +74,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pOCNavBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetOCNavBlocker() const{ return pOCNavBlocker; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Update debug drawer visibility. */
 	void UpdateDDVisibility();

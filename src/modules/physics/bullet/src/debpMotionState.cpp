@@ -36,7 +36,7 @@
 ////////////////////////////
 
 debpMotionState::debpMotionState(){
-	pScaling.Set( 1.0f, 1.0f, 1.0f );
+	pScaling.Set(1.0f, 1.0f, 1.0f);
 }
 
 debpMotionState::~debpMotionState(){
@@ -47,15 +47,15 @@ debpMotionState::~debpMotionState(){
 // management
 ///////////////
 
-void debpMotionState::SetPosition( const decDVector &position ){
+void debpMotionState::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void debpMotionState::SetScaling( const decVector &scaling ){
+void debpMotionState::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
-void debpMotionState::SetOrientation( const decQuaternion &orientation ){
+void debpMotionState::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
@@ -64,22 +64,22 @@ void debpMotionState::SetOrientation( const decQuaternion &orientation ){
 // bullet management
 //////////////////////
 
-void debpMotionState::getWorldTransform( btTransform &centerOfMassWorldTrans ) const{
+void debpMotionState::getWorldTransform(btTransform &centerOfMassWorldTrans) const{
 	centerOfMassWorldTrans.setOrigin(
-		btVector3( pPosition.x, pPosition.y, pPosition.z ) );
+		btVector3(pPosition.x, pPosition.y, pPosition.z));
 	
 	centerOfMassWorldTrans.setRotation(
-		btQuaternion( pOrientation.x, pOrientation.y, pOrientation.z, pOrientation.w ) );
+		btQuaternion(pOrientation.x, pOrientation.y, pOrientation.z, pOrientation.w));
 }
 
-void debpMotionState::setWorldTransform( const btTransform &centerOfMassWorldTrans ){
+void debpMotionState::setWorldTransform(const btTransform &centerOfMassWorldTrans){
 	const btVector3 &position = centerOfMassWorldTrans.getOrigin();
-	const btQuaternion rotation( centerOfMassWorldTrans.getRotation() );
+	const btQuaternion rotation(centerOfMassWorldTrans.getRotation());
 	
-	pPosition.Set( position.getX(), position.getY(), position.getZ() );
-	pOrientation.Set( rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW() );
+	pPosition.Set(position.getX(), position.getY(), position.getZ());
+	pOrientation.Set(rotation.getX(), rotation.getY(), rotation.getZ(), rotation.getW());
 }
 
-bool debpMotionState::deactivationCallback( void *userPointer ){
+bool debpMotionState::deactivationCallback(void *userPointer){
 	return true;
 }

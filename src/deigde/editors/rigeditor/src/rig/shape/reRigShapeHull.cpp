@@ -31,7 +31,6 @@
 #include "../bone/reRigBone.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/resources/rig/deRig.h>
@@ -49,16 +48,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeHull::reRigShapeHull( deEngine *engine ) :
-reRigShape( engine, estHull ),
-pPoints( NULL ),
-pPointCount( 0 ){
+reRigShapeHull::reRigShapeHull(deEngine *engine) :
+reRigShape(engine, estHull){
 }
 
 reRigShapeHull::~reRigShapeHull(){
-	if( pPoints ){
-		delete [] pPoints;
-	}
 }
 
 
@@ -66,113 +60,45 @@ reRigShapeHull::~reRigShapeHull(){
 // Management
 ///////////////
 
-const decVector &reRigShapeHull::GetPointAt( int index ) const{
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeOutOfBoundary );
-	}
-	
-	return pPoints[ index ];
+void reRigShapeHull::AddPoint(const decVector &point){
+	InsertPoint(point, pPoints.GetCount());
 }
 
-void reRigShapeHull::AddPoint( const decVector &point ){
-	InsertPoint( point, pPointCount );
-}
-
-void reRigShapeHull::InsertPoint( const decVector &point, int index ){
-	if( index < 0 || index > pPointCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	decVector * const newArray = new decVector[ pPointCount + 1 ];
-	if( pPoints ){
-		int i;
-		for( i=0; i<index; i++ ){
-			newArray[ i ] = pPoints[ i ];
-		}
-		for( i=index; i<pPointCount; i++ ){
-			newArray[ i + 1 ] = pPoints[ i ];
-		}
-		delete [] pPoints;
-	}
-	pPoints = newArray;
-	pPointCount++;
-	
-	pPoints[ index ] = point;
-	
+void reRigShapeHull::InsertPoint(const decVector &point, int index){
+	pPoints.Insert(point, index);
 	NotifyShapeChanged();
 }
 
-void reRigShapeHull::SetPointAt( int index, const decVector &point ){
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeOutOfBoundary );
-	}
-	
-	if( pPoints[ index ].IsEqualTo( point ) ){
+void reRigShapeHull::SetPointAt(int index, const decVector &point){
+	if(pPoints.GetAt(index).IsEqualTo(point)){
 		return;
 	}
 	
-	pPoints[ index ] = point;
-	
+	pPoints.SetAt(index, point);
 	NotifyShapeChanged();
 }
 
-void reRigShapeHull::RemovePoint( int index ){
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int i;
-	for( i=index+1; i<pPointCount; i++ ){
-		pPoints[ i - 1 ] = pPoints[ i ];
-	}
-	pPointCount--;
-	
+void reRigShapeHull::RemovePoint(int index){
+	pPoints.RemoveFrom(index);
 	NotifyShapeChanged();
 }
 
-
-
-reRigShape *reRigShapeHull::Duplicate() const{
-	deObjectReference ref;
-	ref.TakeOver( new reRigShapeHull( GetEngine() ) );
-	
-	reRigShapeHull * const shape = ( reRigShapeHull* )( deObject* )ref;
-	shape->SetPosition( GetPosition() );
-	shape->SetOrientation( GetOrientation() );
-	if( pPointCount > 0 ){
-		shape->pPoints = new decVector[ pPointCount ];
-		shape->pPointCount = pPointCount;
-		memcpy( shape->pPoints, pPoints, sizeof( decVector ) * pPointCount );
-	}
-	
-	shape->AddReference(); // caller takes over reference
+reRigShape::Ref reRigShapeHull::Duplicate() const{
+	const reRigShapeHull::Ref shape(reRigShapeHull::Ref::New(GetEngine()));
+	shape->SetPosition(GetPosition());
+	shape->SetOrientation(GetOrientation());
+	shape->pPoints = pPoints;
 	return shape;
 }
 
-void reRigShapeHull::Scale( float scale ){
-	SetPosition( GetPosition() * scale );
-	int i;
-	for( i=0; i<pPointCount; i++ ){
-		pPoints[ i ] *= scale;
-	}
+void reRigShapeHull::Scale(float scale){
+	SetPosition(GetPosition() * scale);
+	pPoints.Visit([&](decVector &point){
+		point *= scale;
+	});
 }
 
-decShape *reRigShapeHull::CreateShape(){
-	decShapeHull * const shape = new decShapeHull( GetPosition(),
-		decQuaternion::CreateFromEuler( GetOrientation() * DEG2RAD ) );
-	if( pPointCount > 0 ){
-		try{
-			shape->SetPointCount( pPointCount );
-			int i;
-			for( i=0; i<pPointCount; i++ ){
-				shape->SetPointAt( i, pPoints[ i ] );
-			}
-			
-		}catch( const deException & ){
-			delete shape;
-			throw;
-		}
-	}
-	
-	return shape;
+decShape::Ref reRigShapeHull::CreateShape(){
+	return decShapeHull::Ref::New(GetPosition(),
+		decQuaternion::CreateFromEuler(GetOrientation() * DEG2RAD), pPoints);
 }

@@ -50,54 +50,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureSetName::ceUCGestureSetName( ceGesture *gesture, const char *newName ){
-	if( ! gesture || ! newName ) DETHROW( deeInvalidParam );
+ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
+	if(!gesture || !newName) DETHROW(deeInvalidParam);
 	
-	const ceConversationFileList &fileList = gesture->GetConversation()->GetFileList();
-	const int fileCount = fileList.GetCount();
-	ceConversationTopic *topic;
-	int e, t;
-	
-	pGesture = NULL;
-	
-	SetShortInfo( "Gesture Set Name" );
+	SetShortInfo("@Conversation.Undo.GestureSetName");
 	
 	pOldName = gesture->GetName();
 	pNewName = newName;
 	
-	try{
-		pGesture = gesture;
-		gesture->AddReference();
-		
-		for( e=0; e<fileCount; e++ ){
-			const ceConversationFile &file = *fileList.GetAt( e );
-			const ceConversationTopicList &topicList = file.GetTopicList();
-			const int topicCount = topicList.GetCount();
-			
-			for( t=0; t<topicCount; t++ ){
-				topic = topicList.GetAt( t );
-				
-				pAddActions( topic, topic->GetActionList() );
-			}
-		}
-		
-	}catch( const deException & ){
-		pActionList.RemoveAll();
-		
-		if( pGesture ){
-			pGesture->FreeReference();
-		}
-		
-		throw;
-	}
+	pGesture = gesture;
+	gesture->GetConversation()->GetFiles().Visit([&](const ceConversationFile &f){
+		f.GetTopics().Visit([&](ceConversationTopic *t){
+			pAddActions(t, t->GetActions());
+		});
+	});
 }
 
 ceUCGestureSetName::~ceUCGestureSetName(){
-	pActionList.RemoveAll();
-	
-	if( pGesture ){
-		pGesture->FreeReference();
-	}
 }
 
 
@@ -106,11 +75,11 @@ ceUCGestureSetName::~ceUCGestureSetName(){
 ///////////////
 
 void ceUCGestureSetName::Undo(){
-	pSetName( pNewName.GetString(), pOldName.GetString() );
+	pSetName(pNewName.GetString(), pOldName.GetString());
 }
 
 void ceUCGestureSetName::Redo(){
-	pSetName( pOldName.GetString(), pNewName.GetString() );
+	pSetName(pOldName.GetString(), pNewName.GetString());
 }
 
 
@@ -118,91 +87,44 @@ void ceUCGestureSetName::Redo(){
 // Private Functions
 //////////////////////
 
-void ceUCGestureSetName::pSetName( const char *oldName, const char *newName ){
-	const int count = pActionList.GetCount();
-	ceConversationAction *action;
-	int i, j, gestureCount;
+void ceUCGestureSetName::pSetName(const char *oldName, const char *newName){
+	pGesture->SetName(newName);
 	
-	pGesture->SetName( newName );
-	
-	for( i=0; i<count; i++ ){
-		const ceUndoCAction &undoCAction = *pActionList.GetAt( i );
-		
-		action = undoCAction.GetAction();
-		
-		const ceCAActorSpeak &actorSpeak = *( ( ceCAActorSpeak* )action );
-		const ceStripList &gestureList = actorSpeak.GetGestureList();
-		
-		gestureCount = gestureList.GetCount();
-		for( j=0; j<gestureCount; j++ ){
-			ceStrip &gesture = *gestureList.GetAt( j );
-			
-			if( gesture.GetID() == oldName ){
-				gesture.SetID( newName );
+	pActions.Visit([&](const ceUndoCAction &a){
+		((ceCAActorSpeak&)*a.GetAction()).GetGestures().Visit([&](ceStrip &s){
+			if(s.GetID() == oldName){
+				s.SetID(newName);
 			}
-		}
+		});
 		
-		undoCAction.GetTopic()->NotifyActionChanged( action );
-	}
+		a.GetTopic()->NotifyActionChanged(a.GetAction());
+	});
 }
 
-void ceUCGestureSetName::pAddActions( ceConversationTopic *topic, const ceConversationActionList &list ){
-	const int count = list.GetCount();
-	ceUndoCAction *undoCAction = NULL;
-	ceConversationAction *action;
-	int i, j, gestureCount;
-	
-	try{
-		for( i=0; i<count; i++ ){
-			action = list.GetAt( i );
-			
-			if( action->GetType() == ceConversationAction::eatActorSpeak ){
-				const ceCAActorSpeak &actorSpeak = *( ( ceCAActorSpeak* )action );
-				const ceStripList &gestureList = actorSpeak.GetGestureList();
-				
-				gestureCount = gestureList.GetCount();
-				for( j=0; j<gestureCount; j++ ){
-					if( gestureList.GetAt( j )->GetID() == pOldName ){
-						undoCAction = new ceUndoCAction( action, topic );
-						pActionList.Add( undoCAction );
-						undoCAction->FreeReference();
-						undoCAction = NULL;
-						break;
-					}
-				}
-				
-			}else if( action->GetType() == ceConversationAction::eatIfElse ){
-				const ceCAIfElse &ifElse = *( ( ceCAIfElse* )action );
-				const ceCAIfElseCaseList &caseList = ifElse.GetCases();
-				const int caseCount = caseList.GetCount();
-				
-				for( j=0; j<caseCount; j++ ){
-					pAddActions( topic, caseList.GetAt( j )->GetActions() );
-				}
-				pAddActions( topic, ifElse.GetElseActions() );
-				
-			}else if( action->GetType() == ceConversationAction::eatPlayerChoice ){
-				const ceCAPlayerChoice &playerChoice = *( ( ceCAPlayerChoice* )action );
-				const ceCAPlayerChoiceOptionList &optionList = playerChoice.GetOptions();
-				const int optionCount = optionList.GetCount();
-				
-				for( j=0; j<optionCount; j++ ){
-					pAddActions( topic, optionList.GetAt( j )->GetActions() );
-				}
-				
-				pAddActions( topic, playerChoice.GetActions() );
-				
-			}else if( action->GetType() == ceConversationAction::eatWait ){
-				const ceCAWait &wait = *( ( ceCAWait* )action );
-				
-				pAddActions( topic, wait.GetActions() );
+void ceUCGestureSetName::pAddActions(ceConversationTopic *topic, const ceConversationAction::List &list){
+	list.Visit([&](ceConversationAction *a){
+		if(a->GetType() == ceConversationAction::eatActorSpeak){
+			const ceCAActorSpeak &actorSpeak = *((ceCAActorSpeak*)a);
+			if(actorSpeak.GetGestures().HasMatching([&](const ceStrip &s){ return s.GetID() == pOldName; })){
+				pActions.Add(ceUndoCAction::Ref::New(a, topic));
 			}
+			
+		}else if(a->GetType() == ceConversationAction::eatIfElse){
+			const ceCAIfElse &ifElse = *((ceCAIfElse*)a);
+			ifElse.GetCases().Visit([&](const ceCAIfElseCase &c){
+				pAddActions(topic, c.GetActions());
+			});
+			pAddActions(topic, ifElse.GetElseActions());
+			
+		}else if(a->GetType() == ceConversationAction::eatPlayerChoice){
+			const ceCAPlayerChoice &playerChoice = *((ceCAPlayerChoice*)a);
+			playerChoice.GetOptions().Visit([&](const ceCAPlayerChoiceOption &o){
+				pAddActions(topic, o.GetActions());
+			});
+			pAddActions(topic, playerChoice.GetActions());
+			
+		}else if(a->GetType() == ceConversationAction::eatWait){
+			pAddActions(topic, ((ceCAWait*)a)->GetActions());
 		}
-		
-	}catch( const deException & ){
-		if( undoCAction ){
-			undoCAction->FreeReference();
-		}
-		throw;
-	}
+	});
 }

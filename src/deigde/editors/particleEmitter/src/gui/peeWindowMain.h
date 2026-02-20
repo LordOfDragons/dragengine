@@ -25,57 +25,61 @@
 #ifndef _PEEWINDOWMAIN_H_
 #define _PEEWINDOWMAIN_H_
 
+#include "peeWindowMainListener.h"
+#include "peeViewEmitter.h"
+#include "properties/peeWindowProperties.h"
+#include "curves/peeWindowCurves.h"
+#include "../emitter/peeEmitter.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 
-class peeWindowMainListener;
 class peeConfiguration;
 class peeLoadSaveSystem;
-class peeViewEmitter;
-class peeWindowProperties;
-class peeWindowCurves;
-class peeEmitter;
 
 
 /**
  * \brief Main Application Window.
  */
 class peeWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<peeWindowMain>;
+	
+	
 private:
-	peeWindowMainListener *pListener;
+	peeWindowMainListener::Ref pListener;
 	
-	//igdeIconReference pIconEmitterNew;
+	//igdeIcon::Ref pIconEmitterNew;
 	
-	igdeActionReference pActionEmitterNew;
-	igdeActionReference pActionEmitterOpen;
-	igdeActionReference pActionEmitterSave;
-	igdeActionReference pActionEmitterSaveAs;
+	igdeAction::Ref pActionEmitterNew;
+	igdeAction::Ref pActionEmitterOpen;
+	igdeAction::Ref pActionEmitterSave;
+	igdeAction::Ref pActionEmitterSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	peeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
 	peeLoadSaveSystem *pLoadSaveSystem;
 	
-	peeViewEmitter *pViewEmitter;
-	peeWindowProperties *pWindowProperties;
-	peeWindowCurves *pWindowCurves;
+	peeViewEmitter::Ref pViewEmitter;
+	peeWindowProperties::Ref pWindowProperties;
+	peeWindowCurves::Ref pWindowCurves;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
@@ -83,11 +87,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
-	peeWindowMain( igdeEditorModule &module );
+	peeWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up main window. */
-	virtual ~peeWindowMain();
+	~peeWindowMain() override;
 	/*@}*/
 	
 	
@@ -96,19 +100,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Icons. */
-	//inline igdeIcon* GetIconEmitterNew() const{ return pIconEmitterNew; }
+	//inline const igdeIcon::Ref &GetIconEmitterNew() const{ return pIconEmitterNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEmitterNew() const{ return pActionEmitterNew; }
-	inline igdeAction *GetActionEmitterOpen() const{ return pActionEmitterOpen; }
-	inline igdeAction *GetActionEmitterSave() const{ return pActionEmitterSave; }
-	inline igdeAction *GetActionEmitterSaveAs() const{ return pActionEmitterSaveAs; }
+	inline const igdeAction::Ref &GetActionEmitterNew() const{ return pActionEmitterNew; }
+	inline const igdeAction::Ref &GetActionEmitterOpen() const{ return pActionEmitterOpen; }
+	inline const igdeAction::Ref &GetActionEmitterSave() const{ return pActionEmitterSave; }
+	inline const igdeAction::Ref &GetActionEmitterSaveAs() const{ return pActionEmitterSaveAs; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** \brief Ask user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -128,39 +132,39 @@ public:
 	
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set Emitter. */
-	void SetEmitter( peeEmitter *Emitter );
+	void SetEmitter(peeEmitter *Emitter);
 	
 	/** \brief Create Emitter. */
 	void CreateNewEmitter();
 	
 	/** \brief Save emitter under the given file. */
-	void SaveEmitter( const char *filename );
+	void SaveEmitter(const char *filename);
 	
 	
 	
 	/** \brief Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** \brief Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** \brief Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** \brief Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** \brief Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** \brief Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -171,12 +175,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -186,12 +190,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * \brief Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * \brief The game project has changed.
@@ -201,7 +205,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * \brief Project game definition changed.
@@ -210,12 +214,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	
@@ -226,8 +230,8 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuEmitter( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
+	void pCreateMenuEmitter(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
 };
 
 #endif

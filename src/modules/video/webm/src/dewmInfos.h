@@ -80,7 +80,7 @@ public:
 	inline double GetDuration() const{ return pDuration; }
 	
 	/** Set duration in seconds. */
-	void SetDuration( double duration );
+	void SetDuration(double duration);
 	
 	
 	
@@ -88,13 +88,13 @@ public:
 	inline eVideoCodec GetVideoCodec() const{ return pVideoCodec; }
 	
 	/** Set video codec. */
-	void SetVideoCodec( eVideoCodec codec );
+	void SetVideoCodec(eVideoCodec codec);
 	
 	/** Video track id. */
 	inline uint64_t GetVideoTrackNumber() const{ return pVideoTrackNumber; }
 	
 	/** Set video track id. */
-	void SetVideoTrackNumber( uint64_t number );
+	void SetVideoTrackNumber(uint64_t number);
 	
 	
 	
@@ -102,13 +102,13 @@ public:
 	inline eAudioCodec GetAudioCodec() const{ return pAudioCodec; }
 	
 	/** Set audio codec. */
-	void SetAudioCodec( eAudioCodec codec );
+	void SetAudioCodec(eAudioCodec codec);
 	
 	/** Audio track id. */
 	inline uint64_t GetAudioTrackNumber() const{ return pAudioTrackNumber; }
 	
 	/** Set audio track id. */
-	void SetAudioTrackNumber( uint64_t number );
+	void SetAudioTrackNumber(uint64_t number);
 	/*@}*/
 };
 

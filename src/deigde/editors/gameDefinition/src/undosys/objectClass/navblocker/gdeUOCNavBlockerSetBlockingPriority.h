@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class navblocker set priority.
  */
 class gdeUOCNavBlockerSetBlockingPriority : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetBlockingPriority>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	int pOldValue;
 	int pNewValue;
@@ -50,12 +54,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetBlockingPriority( gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, int newValue );
+	gdeUOCNavBlockerSetBlockingPriority(gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navblocker, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavBlockerSetBlockingPriority();
+	~gdeUOCNavBlockerSetBlockingPriority() override;
 	/*@}*/
 	
 	
@@ -64,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

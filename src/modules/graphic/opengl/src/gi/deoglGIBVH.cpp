@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglGI.h"
 #include "deoglGIBVH.h"
 #include "deoglGIBVHLocal.h"
@@ -75,47 +71,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIBVH::deoglGIBVH( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pComponents( NULL ),
-pComponentCount( 0 ),
-pComponentSize( 0 ),
-pPrimitives( NULL ),
-pPrimitiveSize( 0 ),
-pRecalcNodes( NULL ),
-pRecalcNodeSize( 0 ),
-pIndexRootNode( 0 ),
-pTBOInstance( NULL ),
-pTBOMatrix( NULL ),
-pBVHTBONodeBox( NULL ),
-pBVHTBOIndex(  NULL ),
-pRenderTaskMaterial( renderThread ),
-pDirty( true )
-{
-	try{
-		pTBOInstance = new deoglDynamicTBOUInt32( renderThread, 4 );
-		pTBOMatrix = new deoglDynamicTBOFloat32( renderThread, 4 );
-		
-		pBVHTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
-		pBVHTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+deoglGIBVH::deoglGIBVH(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pIndexRootNode(0),
+pTBOInstance(deoglDynamicTBOUInt32::Ref::New(renderThread, 4)),
+pTBOMatrix(deoglDynamicTBOFloat32::Ref::New(renderThread, 4)),
+pBVHTBONodeBox(deoglDynamicTBOFloat32::Ref::New(renderThread, 4)),
+pBVHTBOIndex(deoglDynamicTBOUInt16::Ref::New(renderThread, 2)),
+pRenderTaskMaterial(renderThread),
+pDirty(true){
 }
 
-deoglGIBVH::~deoglGIBVH(){
-	pCleanUp();
-}
+deoglGIBVH::~deoglGIBVH() = default;
 
 
 
 // Management
 ///////////////
 
-void deoglGIBVH::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deoglGIBVH::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
@@ -133,7 +108,7 @@ void deoglGIBVH::Clear(){
 	pBVHTBOIndex->Clear();
 	
 	pBVH.Clear();
-	pComponentCount = 0;
+	pComponents.SetCountDiscard(0);
 	pIndexRootNode = -1;
 	pTBOMatrix->Clear();
 	pTBOInstance->Clear();
@@ -143,33 +118,31 @@ void deoglGIBVH::Clear(){
 #ifdef DO_TIMING_TEST
 static int vDebugTimeA = 0, vDebugTimeB = 0, vDebugTimeC = 0, vDebugTUCs = 0;
 #endif
-void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances ){
-	const decDMatrix matrix( decDMatrix::CreateTranslation( -pPosition ) );
+void deoglGIBVH::AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances){
+	const decDMatrix matrix(decDMatrix::CreateTranslation(-pPosition));
 	const int count = instances.GetInstanceCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = instances.GetInstanceAt( i );
-		if( instance.GetComponent() ){
-			deoglRComponent &component = *instance.GetComponent();
-			AddComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), instance );
+	for(i=0; i<count; i++){
+		deoglGIInstance &instance = instances.GetInstanceAt(i);
+		if(instance.GetComponent()){
+			AddComponent(plan, (instance.GetComponent()->GetMatrix() * matrix).ToMatrix(), instance);
 		}
 	}
 }
 
-void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic ){
+void deoglGIBVH::AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic){
 #ifdef DO_TIMING_TEST
 	vDebugTimeA=0; vDebugTimeB=0; vDebugTimeC=0; int vDebugCount=0; vDebugTUCs=0;
 #endif
-	const decDMatrix matrix( decDMatrix::CreateTranslation( -pPosition ) );
+	const decDMatrix matrix(decDMatrix::CreateTranslation(-pPosition));
 	const int count = instances.GetInstanceCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = instances.GetInstanceAt( i );
-		if( instance.GetComponent() && instance.GetDynamic() == dynamic ){
-			deoglRComponent &component = *instance.GetComponent();
-			AddComponent( plan, ( component.GetMatrix() * matrix ).ToMatrix(), instance );
+	for(i=0; i<count; i++){
+		deoglGIInstance &instance = instances.GetInstanceAt(i);
+		if(instance.GetComponent() && instance.GetDynamic() == dynamic){
+			AddComponent(plan, (instance.GetComponent()->GetMatrix() * matrix).ToMatrix(), instance);
 #ifdef DO_TIMING_TEST
 			vDebugCount++;
 #endif
@@ -182,8 +155,8 @@ void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const deoglGIInstances &i
 #endif
 }
 
-void deoglGIBVH::AddComponent( deoglRenderPlan&, const decMatrix &matrix, deoglGIInstance &instance ){
-	if( ! instance.GetHasBVHNodes() || ! instance.GetComponent() ){
+void deoglGIBVH::AddComponent(deoglRenderPlan&, const decMatrix &matrix, deoglGIInstance &instance){
+	if(!instance.GetHasBVHNodes() || !instance.GetComponent()){
 		return;
 	}
 	
@@ -191,15 +164,15 @@ void deoglGIBVH::AddComponent( deoglRenderPlan&, const decMatrix &matrix, deoglG
 	decTimer timer1;
 #endif
 	deoglRComponent &component = *instance.GetComponent();
-	deoglRComponentLOD &lod = component.GetLODAt( -1 );
+	deoglRComponentLOD &lod = component.GetLODAt(-1);
 	
-	if( instance.GetDynamic() ){
+	if(instance.GetDynamic()){
 		// update vertices and BVH extends if dirty
 		lod.PrepareGIDynamicBVH();
 		instance.UpdateBVHExtends();
 		
-		if( ! component.GetStaticTextures() ){
-			instance.SetDirtyTUCs( true );
+		if(!component.GetStaticTextures()){
+			instance.SetDirtyTUCs(true);
 		}
 	}
 #ifdef DO_TIMING_TEST
@@ -211,32 +184,32 @@ void deoglGIBVH::AddComponent( deoglRenderPlan&, const decMatrix &matrix, deoglG
 	const int textureCount = component.GetTextureCount();
 	int i;
 	
-	if( textureCount != instance.GetTUCCount() ){
-		instance.SetDirtyTUCs( true ); // safety check
+	if(textureCount != instance.GetTUCCount()){
+		instance.SetDirtyTUCs(true); // safety check
 	}
 	
 	deoglDynamicTBOBlock *blockMaterial;
 	
-	if( instance.GetDirtyTUCs() ){
+	if(instance.GetDirtyTUCs()){
 #ifdef DO_TIMING_TEST
 	vDebugTUCs++;
 #endif
-		deoglAddToRenderTaskGIMaterial addToRenderTask( pRenderThread, pRenderTaskMaterial );
+		deoglAddToRenderTaskGIMaterial addToRenderTask(pRenderThread, pRenderTaskMaterial);
 		
 		instance.RemoveAllTUCs();
-		instance.SetDirtyTUCs( false );
+		instance.SetDirtyTUCs(false);
 		
-		if( instance.GetTBOMaterial()->GetPixelCount() != textureCount ){
+		if(instance.GetTBOMaterial()->GetPixelCount() != textureCount){
 			instance.DropBlockMaterial();
-			instance.GetTBOMaterial()->SetPixelCount( textureCount );
-			instance.GetTBOMaterial2()->SetPixelCount( textureCount * 3 );
+			instance.GetTBOMaterial()->SetPixelCount(textureCount);
+			instance.GetTBOMaterial2()->SetPixelCount(textureCount * 3);
 		}
 		
-		for( i=0; i<textureCount; i++ ){
-			deoglRenderTaskTexture * const rttexture = addToRenderTask.AddComponentTexture( lod, i );
-			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTexture()->GetTUC() : NULL;
-			pAddMaterial( instance, i, component.GetTextureAt( i ), tuc );
-			instance.AddTUC( tuc );
+		for(i=0; i<textureCount; i++){
+			deoglRenderTaskTexture * const rttexture = addToRenderTask.AddComponentTexture(lod, i);
+			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTexture()->GetTUC() : nullptr;
+			pAddMaterial(instance, i, component.GetTextureAt(i), tuc);
+			instance.AddTUC(tuc);
 		}
 		
 		blockMaterial = instance.GetBlockMaterial();
@@ -252,7 +225,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan&, const decMatrix &matrix, deoglG
 #endif
 	
 	// add component
-	pAddComponent( instance, blockMaterial->GetOffset(), matrix );
+	pAddComponent(instance, blockMaterial->GetOffset(), matrix);
 #ifdef DO_TIMING_TEST
 	vDebugTimeC += (int)(timer1.GetElapsedTime() * 1e6f);
 // 				const int debugElapsedC = (int)(timer1.GetElapsedTime() * 1e6f);
@@ -269,69 +242,55 @@ void deoglGIBVH::BuildBVH(){
 	pDropBlockBVH(); // safety check
 	
 	// build instance bvh
-	if( pComponentCount > pPrimitiveSize ){
-		deoglBVH::sBuildPrimitive * const newArray = new deoglBVH::sBuildPrimitive[ pComponentCount ];
-		if( pPrimitives ){
-			delete [] pPrimitives;
-		}
-		pPrimitives = newArray;
-		pPrimitiveSize = pComponentCount;
-	}
+	pPrimitives.SetCountDiscard(0);
+	pPrimitives.EnlargeCapacityDiscard(pComponents.GetCount());
 	
-	int i;
-	for( i=0; i<pComponentCount; i++ ){
-		deoglBVH::sBuildPrimitive &primitive = pPrimitives[ i ];
-		const sComponent &component = pComponents[ i ];
+	pComponents.Visit([&](const sComponent &component){
 		const deoglGIInstance &instance = *component.instance;
 		const decVector &minExtend = instance.GetBVHMinimumExtend();
 		const decVector &maxExtend = instance.GetBVHMaximumExtend();
-		const decVector center( ( minExtend + maxExtend ) * 0.5f );
-		const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
-		deoglCollisionBox box( component.matrix * center,
-			component.matrix.GetScale().Multiply( halfSize ), \
-			component.matrix.Normalized().ToQuaternion() );
+		const decVector center((minExtend + maxExtend) * 0.5f);
+		const decVector halfSize((maxExtend - minExtend) * 0.5f);
+		deoglCollisionBox box(component.matrix * center,
+			component.matrix.GetScale().Multiply(halfSize),
+			component.matrix.Normalized().ToQuaternion());
 		deoglCollisionBox enclosing;
-		box.GetEnclosingBox( &enclosing );
+		box.GetEnclosingBox(&enclosing);
 		
-		primitive.center = enclosing.GetCenter();
-		primitive.minExtend = primitive.center - enclosing.GetHalfSize();
-		primitive.maxExtend = primitive.center + enclosing.GetHalfSize();
-	}
+		pPrimitives.Add({
+			.minExtend = enclosing.GetCenter() - enclosing.GetHalfSize(),
+			.maxExtend = enclosing.GetCenter() + enclosing.GetHalfSize(),
+			.center = enclosing.GetCenter()});
+	});
 	
-	pBVH.Build( pPrimitives, pComponentCount, 12 );
+	pBVH.Build(pPrimitives, pComponents.GetCount(), 12);
 	
 	// add to TBOs using primitive mapping from BVH
-	const int * const primitives = pBVH.GetPrimitives();
-	
-	for( i=0; i<pComponentCount; i++ ){
-		sComponent &component = pComponents[ primitives[ i ] ];
+	pBVH.GetPrimitives().Visit([&](int &primitive){
+		sComponent &component = pComponents[primitive];
 		const deoglGIInstance &instance = *component.instance;
 		
 		component.indexMatrix = pTBOMatrix->GetPixelCount() / 3;
-		pTBOMatrix->AddMat3x4( component.matrix.QuickInvert() );
+		pTBOMatrix->AddMat3x4(component.matrix.QuickInvert());
 		
 		component.indexInstance = pTBOInstance->GetPixelCount();
-		pTBOInstance->AddVec4( instance.GetIndexNodes(), component.indexMaterial,
-			instance.GetIndexVertices(), instance.GetIndexFaces() );
-	}
+		pTBOInstance->AddVec4(instance.GetIndexNodes(), component.indexMaterial,
+			instance.GetIndexVertices(), instance.GetIndexFaces());
+	});
 	
 	// add BVH to TBOs
 	const deoglGIBVHShared &shared = pRenderThread.GetGI().GetBVHShared();
-	const int nodeCount = pBVH.GetNodeCount();
 	
-	if( nodeCount > 0 ){
-		const deoglBVHNode * const nodes = pBVH.GetNodes();
+	if(pBVH.GetNodes().IsNotEmpty()){
+		pBVH.GetNodes().Visit([&](const deoglBVHNode &node){
+			pBVHTBONodeBox->AddVec4(node.GetMinExtend(), 0.0f);
+			pBVHTBONodeBox->AddVec4(node.GetMaxExtend(), 0.0f);
+			pBVHTBOIndex->AddVec2(node.GetFirstIndex(), node.GetPrimitiveCount());
+		});
 		
-		for( i=0; i<nodeCount; i++ ){
-			const deoglBVHNode &node = nodes[ i ];
-			pBVHTBONodeBox->AddVec4( node.GetMinExtend(), 0.0f );
-			pBVHTBONodeBox->AddVec4( node.GetMaxExtend(), 0.0f );
-			pBVHTBOIndex->AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
-		}
+		pBlockBVH = shared.GetSharedTBONode()->AddBlock(pBVHTBOIndex, pBVHTBONodeBox);
 		
-		pBlockBVH.TakeOver( shared.GetSharedTBONode()->AddBlock( pBVHTBOIndex, pBVHTBONodeBox ) );
-		
-		pIndexRootNode = ( ( deoglDynamicTBOBlock* )( deObject* )pBlockBVH )->GetOffset();
+		pIndexRootNode = pBlockBVH.DynamicCast<deoglDynamicTBOBlock>()->GetOffset();
 	}
 	
 	// update TBOs
@@ -346,18 +305,16 @@ void deoglGIBVH::BuildBVH(){
 	pDirty = false;
 }
 
-void deoglGIBVH::DebugPrint( const decDVector &position ){
+void deoglGIBVH::DebugPrint(const decDVector &position){
 	const deoglGIBVHShared &shared = pRenderThread.GetGI().GetBVHShared();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	int i;
-	logger.LogInfoFormat("GIBVH: %d Components", pComponentCount);
-	for(i=0; i<pComponentCount; i++){
-		const decDVector p(position + pComponents[i].matrix.GetPosition());
+	logger.LogInfoFormat("GIBVH: %d Components", pComponents.GetCount());
+	pComponents.VisitIndexed([&](int i, const sComponent &c){
+		const decDVector p(position + c.matrix.GetPosition());
 		logger.LogInfoFormat("- %d: indexMatrix=%d instance=%p indexInstance=%d"
-			" indexMaterial=%d position=(%g,%g,%g)", i, pComponents[i].indexMatrix,
-			pComponents[i].instance, pComponents[i].indexInstance,
-			pComponents[i].indexMaterial, p.x, p.y, p.z);
-	}
+			" indexMaterial=%d position=(%g,%g,%g)", i, c.indexMatrix, c.instance,
+			c.indexInstance, c.indexMaterial, p.x, p.y, p.z);
+	});
 	logger.LogInfoFormat("GIBVH: Root Node %d", pIndexRootNode);
 	logger.LogInfo("GIBVH: TBONodeBox");
 	shared.GetTBONodeBox()->DebugPrint();
@@ -382,18 +339,18 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 		deoglRTLogger &logger;
 		const sComponent *instances;
 		PrintBVH(deoglRTLogger &plogger, const sComponent *pinstances) :
-		logger( plogger ), instances( pinstances ){
+		logger(plogger), instances(pinstances){
 		}
 		void Print(const decString &prefix, const deoglBVH &bvh, const deoglBVHNode &node) const{
 			logger.LogInfoFormat("%sNode: (%g,%g,%g)-(%g,%g,%g)", prefix.GetString(),
 				node.GetMinExtend().x, node.GetMinExtend().y, node.GetMinExtend().z,
 				node.GetMaxExtend().x, node.GetMaxExtend().y, node.GetMaxExtend().z);
 			if(node.GetPrimitiveCount() == 0){
-				Print(prefix + "L ", bvh, bvh.GetNodeAt(node.GetFirstIndex()));
-				Print(prefix + "R ", bvh, bvh.GetNodeAt(node.GetFirstIndex()+1));
+				Print(prefix + "L ", bvh, bvh.GetNodes()[node.GetFirstIndex()]);
+				Print(prefix + "R ", bvh, bvh.GetNodes()[node.GetFirstIndex()+1]);
 			}else{
 				for(int i=0; i<node.GetPrimitiveCount(); i++){
-					const int index = bvh.GetPrimitiveAt(node.GetFirstIndex()+i);
+					const int index = bvh.GetPrimitives()[node.GetFirstIndex()+i];
 					const decVector p(instances[index].matrix.GetPosition());
 					const decVector r(instances[index].matrix.Normalized().GetEulerAngles() * RAD2DEG);
 					logger.LogInfoFormat("%sP%03d position=(%g,%g,%g) rotation=(%g,%g,%g) instance=%p",
@@ -404,7 +361,7 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 	};
 	logger.LogInfo("Component BVH");
 	if(pBVH.GetRootNode()){
-		PrintBVH(logger, pComponents).Print("", pBVH, *pBVH.GetRootNode());
+		PrintBVH(logger, pComponents.GetArrayPointer()).Print("", pBVH, *pBVH.GetRootNode());
 	}
 }
 
@@ -413,53 +370,17 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 // Private Functions
 //////////////////////
 
-void deoglGIBVH::pCleanUp(){
-	if( pBVHTBONodeBox ){
-		pBVHTBONodeBox->FreeReference();
-	}
-	if( pBVHTBOIndex ){
-		pBVHTBOIndex->FreeReference();
-	}
-	
-	if( pTBOInstance ){
-		pTBOInstance->FreeReference();
-	}
-	if( pTBOMatrix ){
-		pTBOMatrix->FreeReference();
-	}
-	
-	if( pRecalcNodes ){
-		delete [] pRecalcNodes;
-	}
-	if( pPrimitives ){
-		delete [] pPrimitives;
-	}
-	if( pComponents ){
-		delete [] pComponents;
-	}
-}
-
 void deoglGIBVH::pDropBlockBVH(){
-	if( pBlockBVH ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockBVH )->Drop();
-		pBlockBVH = NULL;
+	if(pBlockBVH){
+		pBlockBVH.DynamicCast<deoglDynamicTBOBlock>()->Drop();
+		pBlockBVH = nullptr;
 	}
 }
 
-deoglGIBVH::sComponent &deoglGIBVH::pAddComponent( const deoglGIInstance &instance,
-int indexMaterial, const decMatrix &matrix ){
-	if( pComponentCount == pComponentSize ){
-		const int newSize = pComponentCount + 10;
-		sComponent * const newArray = new sComponent[ newSize ];
-		if( pComponents ){
-			memcpy( newArray, pComponents, sizeof( sComponent ) * pComponentCount );
-			delete [] pComponents;
-		}
-		pComponents = newArray;
-		pComponentSize = newSize;
-	}
-	
-	sComponent &component = pComponents[ pComponentCount++ ];
+deoglGIBVH::sComponent &deoglGIBVH::pAddComponent(const deoglGIInstance &instance,
+int indexMaterial, const decMatrix &matrix){
+	pComponents.Add({});
+	sComponent &component = pComponents.Last();
 	component.instance = &instance;
 	component.indexMaterial = indexMaterial;
 	component.indexInstance = 0;
@@ -468,29 +389,29 @@ int indexMaterial, const decMatrix &matrix ){
 	return component;
 }
 
-void deoglGIBVH::pAddMaterial( deoglGIInstance &instance, int index,
-const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc ){
+void deoglGIBVH::pAddMaterial(deoglGIInstance &instance, int index,
+const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc){
 	deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
-	if( skinTexture ){
-		pAddMaterial( instance, index, *skinTexture, texture.GetUseSkinState(),
-			texture.GetUseDynamicSkin(), tuc, texture.CalcTexCoordMatrix() );
+	if(skinTexture){
+		pAddMaterial(instance, index, *skinTexture, texture.GetUseSkinState(),
+			texture.GetUseDynamicSkin(), tuc, texture.CalcTexCoordMatrix());
 		
 	}else{
 		// TODO we have to add the texture even if not containing maps. in this case
 		//      the materialIndex has to be 0 (aka not set)
-		instance.GetTBOMaterial()->SetVec4At( index * 4, 0, 0, 0, 0 );
+		instance.GetTBOMaterial()->SetVec4At(index * 4, 0, 0, 0, 0);
 		
 		deoglDynamicTBOFloat16 &tbo = *instance.GetTBOMaterial2();
 		int index2 = index * 12; // 4 components, 3 pixels
-		tbo.SetVec4At( index2, 0.0f, 0.0f, 0.0f, 0.0f );
-		tbo.SetVec4At( index2 + 4, 0.0f, 0.0f, 0.0f, 0.0f );
-		tbo.SetVec4At( index2 + 8, 0.0f, 0.0f, 0.0f, 0.0f );
+		tbo.SetVec4At(index2, 0.0f, 0.0f, 0.0f, 0.0f);
+		tbo.SetVec4At(index2 + 4, 0.0f, 0.0f, 0.0f, 0.0f);
+		tbo.SetVec4At(index2 + 8, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
 }
 
-void deoglGIBVH::pAddMaterial( deoglGIInstance &instance, int index,
+void deoglGIBVH::pAddMaterial(deoglGIInstance &instance, int index,
 const deoglSkinTexture &skinTexture, deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
-deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
+deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix){
 	// collect values
 	decColor colorTint(skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empColorTint)
 		.ResolveColor(skinState, dynamicSkin, skinTexture.GetColorTint()));
@@ -501,12 +422,12 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	const float colorGamma = skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empColorGamma)
 		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetColorGamma());
 	
-	const float roughnessRemapLower = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapLower )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessRemapLower() );
-	const float roughnessRemapUpper = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapUpper )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessRemapUpper() );
-	const float roughnessGamma = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessGamma )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessGamma() );
+	const float roughnessRemapLower = skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empRoughnessRemapLower)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetRoughnessRemapLower());
+	const float roughnessRemapUpper = skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empRoughnessRemapUpper)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetRoughnessRemapUpper());
+	const float roughnessGamma = skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empRoughnessGamma)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetRoughnessGamma());
 	
 	decColor envRoomTint(
 		skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomTint)
@@ -515,23 +436,26 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	envRoomTint.g = powf(decMath::max(envRoomTint.g, 0.0f), 2.2f);
 	envRoomTint.b = powf(decMath::max(envRoomTint.b, 0.0f), 2.2f);
 	
-	colorTint += envRoomTint;
+	// this is a hack but good enough for GI use. the proper solution would be to use additional
+	// TBO components but this bloats up the data for little gain since most of the time you
+	// have either color tint or env room tint set to something else than white
+	colorTint *= envRoomTint;
 	
-	decColor emissivityIntensity( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEmissivityTint )
-		.ResolveColor( skinState, dynamicSkin, skinTexture.GetEmissivityTint() ) );
-	emissivityIntensity.r = powf( decMath::max( emissivityIntensity.r, 0.0f ), 2.2f );
-	emissivityIntensity.g = powf( decMath::max( emissivityIntensity.g, 0.0f ), 2.2f );
-	emissivityIntensity.b = powf( decMath::max( emissivityIntensity.b, 0.0f ), 2.2f );
+	decColor emissivityIntensity(skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEmissivityTint)
+		.ResolveColor(skinState, dynamicSkin, skinTexture.GetEmissivityTint()));
+	emissivityIntensity.r = powf(decMath::max(emissivityIntensity.r, 0.0f), 2.2f);
+	emissivityIntensity.g = powf(decMath::max(emissivityIntensity.g, 0.0f), 2.2f);
+	emissivityIntensity.b = powf(decMath::max(emissivityIntensity.b, 0.0f), 2.2f);
 	
-	emissivityIntensity *= decMath::max( 0.0f, skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEmissivityIntensity )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetEmissivityIntensity() ) );
+	emissivityIntensity *= decMath::max(0.0f, skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEmissivityIntensity)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetEmissivityIntensity()));
 	
 	decColor envRoomEmissivityTint(
 		skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomEmissivityTint)
 		.ResolveColor(skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityTint()));
-	envRoomEmissivityTint.r = powf( decMath::max( envRoomEmissivityTint.r, 0.0f ), 2.2f );
-	envRoomEmissivityTint.g = powf( decMath::max( envRoomEmissivityTint.g, 0.0f ), 2.2f );
-	envRoomEmissivityTint.b = powf( decMath::max( envRoomEmissivityTint.b, 0.0f ), 2.2f );
+	envRoomEmissivityTint.r = powf(decMath::max(envRoomEmissivityTint.r, 0.0f), 2.2f);
+	envRoomEmissivityTint.g = powf(decMath::max(envRoomEmissivityTint.g, 0.0f), 2.2f);
+	envRoomEmissivityTint.b = powf(decMath::max(envRoomEmissivityTint.b, 0.0f), 2.2f);
 	
 	envRoomEmissivityTint *= decMath::max(0.0f,
 		skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomEmissivityIntensity)
@@ -539,15 +463,15 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	
 	emissivityIntensity += envRoomEmissivityTint;
 	
-	const float reflectivityMultiplier = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empReflectivityMultiplier )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetReflectivityMultiplier() );
+	const float reflectivityMultiplier = skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empReflectivityMultiplier)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetReflectivityMultiplier());
 	
 // 	const bool variationU = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationU )
 // 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationU() );
 // 	const bool variationV = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empVariationV )
 // 		.ResolveAsBool( skinState, dynamicSkin, skinTexture.GetVariationV() );
 	
-	const int materialIndex = tuc ? decMath::clamp( tuc->GetMaterialIndex(), 0, 16383 ) : 0;
+	const int materialIndex = tuc ? decMath::clamp(tuc->GetMaterialIndex(), 0, 16383) : 0;
 	
 	const bool ignoreMaterial = skinTexture.GetHasTransparency();
 	const bool texCoordClamp = skinTexture.GetTexCoordClamp();
@@ -562,32 +486,32 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	#define PACK_G(value, bits, shift) PACK_M(value, 0.4, 2.2, bits, shift)
 	#define PACK_B(value, bit) (uint32_t)((value) ? (1<<bit) : 0)
 	
-	const uint32_t red = PACK_I( materialIndex, 16, 16 )
-		| PACK_B( ignoreMaterial, 0 )
-		| PACK_B( texCoordClamp, 1 )
-		| PACK_B( hasSolidity, 2 )
-		| PACK_B( shadowNone, 3 );
+	const uint32_t red = PACK_I(materialIndex, 16, 16)
+		| PACK_B(ignoreMaterial, 0)
+		| PACK_B(texCoordClamp, 1)
+		| PACK_B(hasSolidity, 2)
+		| PACK_B(shadowNone, 3);
 	
-	const uint32_t green = PACK( colorTint.r, 8, 24 )
-		| PACK( colorTint.g, 8, 16 )
-		| PACK( colorTint.b, 8, 8 )
-		| PACK_G( colorGamma, 8, 0 );
+	const uint32_t green = PACK(colorTint.r, 8, 24)
+		| PACK(colorTint.g, 8, 16)
+		| PACK(colorTint.b, 8, 8)
+		| PACK_G(colorGamma, 8, 0);
 	
-	const uint32_t blue = PACK( roughnessRemapLower, 8, 24 )
-		| PACK( roughnessRemapUpper, 8, 16 )
-		| PACK_G( roughnessGamma, 8, 8 )
-		| PACK( reflectivityMultiplier, 8, 0 );
+	const uint32_t blue = PACK(roughnessRemapLower, 8, 24)
+		| PACK(roughnessRemapUpper, 8, 16)
+		| PACK_G(roughnessGamma, 8, 8)
+		| PACK(reflectivityMultiplier, 8, 0);
 	
 	const uint32_t alpha = 0;
 	//| PACK_B( variationU, 15 ) | PACK_B( variationV, 14 ) | PACK_I( materialIndex, 14, 0 ) );
 	
-	instance.GetTBOMaterial()->SetVec4At( index * 4, red, green, blue, alpha );
+	instance.GetTBOMaterial()->SetVec4At(index * 4, red, green, blue, alpha);
 	
 	deoglDynamicTBOFloat16 &tbo = *instance.GetTBOMaterial2();
 	int index2 = index * 12; // 4 components, 3 pixels
-	tbo.SetVec4At( index2, texCoordMatrix.a11, texCoordMatrix.a12, texCoordMatrix.a13, 0.0f );
-	tbo.SetVec4At( index2 + 4, texCoordMatrix.a21, texCoordMatrix.a22, texCoordMatrix.a23, 0.0f );
-	tbo.SetVec4At( index2 + 8, emissivityIntensity.r, emissivityIntensity.g, emissivityIntensity.b, 0.0f );
+	tbo.SetVec4At(index2, texCoordMatrix.a11, texCoordMatrix.a12, texCoordMatrix.a13, 0.0f);
+	tbo.SetVec4At(index2 + 4, texCoordMatrix.a21, texCoordMatrix.a22, texCoordMatrix.a23, 0.0f);
+	tbo.SetVec4At(index2 + 8, emissivityIntensity.r, emissivityIntensity.g, emissivityIntensity.b, 0.0f);
 	
 	#undef PACK_B
 	#undef PACK_G
@@ -598,21 +522,21 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 }
 
 /*
-void deoglGIBVH::pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH,
-const oglVector *positions, const deoglBVHNode &node, deoglBVHNode &target ){
+void deoglGIBVH::pUpdateLocalBVHNodeExtends(const deoglGIBVHLocal &localBVH,
+const oglVector *positions, const deoglBVHNode &node, deoglBVHNode &target){
 	const int primitiveCount = node.GetPrimitiveCount();
 	const int firstIndex = node.GetFirstIndex();
 	const deoglBVH &bvh = localBVH.GetBVH();
 	
-	if( primitiveCount == 0 ){
-		deoglBVHNode &targetLeft = pRecalcNodes[ firstIndex ];
-		deoglBVHNode &targetRight = pRecalcNodes[ firstIndex + 1 ];
+	if(primitiveCount == 0){
+		deoglBVHNode &targetLeft = pRecalcNodes[firstIndex];
+		deoglBVHNode &targetRight = pRecalcNodes[firstIndex + 1];
 		
-		pUpdateLocalBVHNodeExtends( localBVH, positions, bvh.GetNodes()[ firstIndex ], targetLeft );
-		pUpdateLocalBVHNodeExtends( localBVH, positions, bvh.GetNodes()[ firstIndex + 1 ], targetRight );
+		pUpdateLocalBVHNodeExtends(localBVH, positions, bvh.GetNodes()[firstIndex], targetLeft);
+		pUpdateLocalBVHNodeExtends(localBVH, positions, bvh.GetNodes()[firstIndex + 1], targetRight);
 		
-		target.SetExtends( targetLeft.GetMinExtend().Smallest( targetRight.GetMinExtend() ),
-			targetLeft.GetMaxExtend().Largest( targetRight.GetMaxExtend() ) );
+		target.SetExtends(targetLeft.GetMinExtend().Smallest(targetRight.GetMinExtend()),
+			targetLeft.GetMaxExtend().Largest(targetRight.GetMaxExtend()));
 		
 	}else{
 		const int * const primitives = bvh.GetPrimitives();
@@ -620,43 +544,30 @@ const oglVector *positions, const deoglBVHNode &node, deoglBVHNode &target ){
 		decVector minExtend, maxExtend;
 		int i;
 		
-		for( i=0; i<primitiveCount; i++ ){
-			const uint16_t * const face = faces + primitives[ i ] * 4;
-			const oglVector &v1 = positions[ face[ 0 ] ];
-			const decVector p1( v1.x, v1.y, v1.z );
-			if( i > 0 ){
-				minExtend.SetSmallest( p1 );
-				maxExtend.SetLargest( p1 );
+		for(i=0; i<primitiveCount; i++){
+			const uint16_t * const face = faces + primitives[i] * 4;
+			const oglVector &v1 = positions[face[0]];
+			const decVector p1(v1.x, v1.y, v1.z);
+			if(i > 0){
+				minExtend.SetSmallest(p1);
+				maxExtend.SetLargest(p1);
 				
 			}else{
 				minExtend = maxExtend = p1;
 			}
 			
-			const oglVector &v2 = positions[ face[ 1 ] ];
-			const decVector p2( v2.x, v2.y, v2.z );
-			minExtend.SetSmallest( p2 );
-			maxExtend.SetLargest( p2 );
+			const oglVector &v2 = positions[face[1]];
+			const decVector p2(v2.x, v2.y, v2.z);
+			minExtend.SetSmallest(p2);
+			maxExtend.SetLargest(p2);
 			
-			const oglVector &v3 = positions[ face[ 2 ] ];
-			const decVector p3( v3.x, v3.y, v3.z );
-			minExtend.SetSmallest( p3 );
-			maxExtend.SetLargest( p3 );
+			const oglVector &v3 = positions[face[2]];
+			const decVector p3(v3.x, v3.y, v3.z);
+			minExtend.SetSmallest(p3);
+			maxExtend.SetLargest(p3);
 		}
 		
-		target.SetExtends( minExtend, maxExtend );
+		target.SetExtends(minExtend, maxExtend);
 	}
 }
 */
-
-void deoglGIBVH::pEnsureRecalcNodeSize( int size ){
-	if( size <= pRecalcNodeSize ){
-		return;
-	}
-	
-	deoglBVHNode * const newArray = new deoglBVHNode[ size ];
-	if( pRecalcNodes ){
-		delete [] pRecalcNodes;
-	}
-	pRecalcNodes = newArray;
-	pRecalcNodeSize = size;
-}

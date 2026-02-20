@@ -42,45 +42,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCRemoveTexture::gdeUOCCRemoveTexture( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pTexture( NULL )
+gdeUOCCRemoveTexture::gdeUOCCRemoveTexture(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! component || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component || !texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetComponents().Has( component ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetComponents().Has(component)){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! component->GetTextures().Has( texture ) ){
-		DETHROW( deeInvalidParam );
+	if(!component->GetTextures().Has(texture)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component remove texture" );
+	SetShortInfo("@GameDefinition.Undo.OCCRemoveTexture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCRemoveTexture::~gdeUOCCRemoveTexture(){
-	if( pTexture ){
-		pTexture->FreeReference();
-	}
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -89,30 +73,30 @@ gdeUOCCRemoveTexture::~gdeUOCCRemoveTexture(){
 ///////////////
 
 void gdeUOCCRemoveTexture::Undo(){
-	pComponent->GetTextures().Add( pTexture );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->GetTextures().Add(pTexture);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCCRemoveTexture::Redo(){
-	gdeOCComponentTextureList &list = pComponent->GetTextures();
+	gdeOCComponentTexture::List &list = pComponent->GetTextures();
 	
-	if( pTexture == pComponent->GetActiveTexture() ){
-		if( list.GetCount() > 1 ){
-			if( list.GetAt( 0 ) == pTexture ){
-				pComponent->SetActiveTexture( list.GetAt( 1 ) );
+	if(pTexture == pComponent->GetActiveTexture()){
+		if(list.GetCount() > 1){
+			if(list.GetAt(0) == pTexture){
+				pComponent->SetActiveTexture(list.GetAt(1));
 				
 			}else{
-				pComponent->SetActiveTexture( list.GetAt( 0 ) );
+				pComponent->SetActiveTexture(list.GetAt(0));
 			}
 			
 		}else{
-			pComponent->SetActiveTexture( NULL );
+			pComponent->SetActiveTexture(nullptr);
 		}
 		
 		pObjectClass->GetGameDefinition()->NotifyOCComponentActiveTextureChanged(
-			pObjectClass, pComponent );
+			pObjectClass, pComponent);
 	}
 	
-	list.Remove( pTexture );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	list.Remove(pTexture);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

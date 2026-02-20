@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create vr system. */
-	deVRSystem( deEngine *engine );
+	deVRSystem(deEngine *engine);
 	
 	/** \brief Clean up vr system. */
-	virtual ~deVRSystem();
+	~deVRSystem() override;
 	/*@}*/
 	
 	
@@ -102,7 +102,7 @@ public:
 	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
 	 * is specified an exception is thrown.
 	 */
-	void RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level );
+	void RequestFeatureEyeGazeTracking(deBaseVRModule::eFeatureSupportLevel level);
 	
 	/**
 	 * \brief Set feature request level for facial tracking.
@@ -122,7 +122,7 @@ public:
 	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
 	 * is specified an exception is thrown.
 	 */
-	void RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level );
+	void RequestFeatureFacialTracking(deBaseVRModule::eFeatureSupportLevel level);
 	
 	/**
 	 * \brief Start VR.
@@ -151,14 +151,14 @@ public:
 	bool IsRuntimeRunning();
 	
 	/** \brief Camera to render on head mounted display or nullptr. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/**
 	 * \brief Set camera to render on head mounted display.
 	 * 
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
-	void SetCamera( deCamera *camera );
+	void SetCamera(deCamera *camera);
 	
 	/**
 	 * \brief VR Runtime supports presenting user environment inside the rendered world.
@@ -180,7 +180,7 @@ public:
 	 * 
 	 * Has no effect if SupportsPassthrough() returns false.
 	 */
-	void SetEnablePassthrough( bool enable );
+	void SetEnablePassthrough(bool enable);
 	
 	/**
 	 * \brief Transparency of user environment presented inside the rendered world.
@@ -198,7 +198,7 @@ public:
 	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
 	 * environment. A value of 1 shows the environment. Values in between blend over.
 	 */
-	void SetPassthroughTransparency( float transparency );
+	void SetPassthroughTransparency(float transparency);
 	
 	/**
 	 * \brief Center playspace with forward direction matching looking direction.
@@ -220,20 +220,20 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	void SetActiveModule(deLoadableModule *module) override;
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void ClearPermanents();
+	void ClearPermanents() override;
 	
 	/** \brief Carry out here actions right after the system started up. */
-	virtual void PostStart();
+	void PostStart() override;
 	
 	/** \brief Carry out here actions right before the system shuts down. */
-	virtual void PreStop();
+	void PreStop() override;
 	/*@}*/
 };
 

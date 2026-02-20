@@ -28,15 +28,19 @@
 #include <deigde/undo/igdeUndo.h>
 
 class decShape;
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 /**
  * \brief Object Shape replace shape undo action.
  */
 class meUObjectShapeReplace : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectShapeReplace>;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;
@@ -47,17 +51,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeReplace( meObject *object, const char *property, int shapeIndex, const decShape &shape );
+	meUObjectShapeReplace(meObject *object, const char *property, int shapeIndex, const decShape &shape);
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectShapeReplace();
+
+protected:
+	~meUObjectShapeReplace() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

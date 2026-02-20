@@ -43,25 +43,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnValueQuaternion::debnValueQuaternion( deNetworkValueQuaternion &valueQuat ) :
-pValueQuat( valueQuat ),
-pLastValue( valueQuat.GetQuaternion() )
+debnValueQuaternion::debnValueQuaternion(deNetworkValueQuaternion &valueQuat) :
+pValueQuat(valueQuat),
+pLastValue(valueQuat.GetQuaternion())
 {
-	switch( valueQuat.GetFormat() ){
+	switch(valueQuat.GetFormat()){
 	case deNetworkValue::evfFloat16:
-		SetDataType( evtQuaternionF16 );
+		SetDataType(evtQuaternionF16);
 		break;
 		
 	case deNetworkValue::evfFloat32:
-		SetDataType( evtQuaternionF32 );
+		SetDataType(evtQuaternionF32);
 		break;
 		
 	case deNetworkValue::evfFloat64:
-		SetDataType( evtQuaternionF64 );
+		SetDataType(evtQuaternionF64);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -73,8 +73,8 @@ debnValueQuaternion::~debnValueQuaternion(){
 // Management
 ///////////////
 
-bool debnValueQuaternion::UpdateValue( bool force ){
-	if( ! force && pValueQuat.GetQuaternion().IsEqualTo( pLastValue, ( float )pValueQuat.GetPrecision() ) ){
+bool debnValueQuaternion::UpdateValue(bool force){
+	if(!force && pValueQuat.GetQuaternion().IsEqualTo(pLastValue, (float)pValueQuat.GetPrecision())){
 		return false;
 	}
 	
@@ -82,13 +82,13 @@ bool debnValueQuaternion::UpdateValue( bool force ){
 	return true;
 }
 
-void debnValueQuaternion::ReadValue( decBaseFileReader &reader ){
-	switch( GetDataType() ){
+void debnValueQuaternion::ReadValue(decBaseFileReader &reader){
+	switch(GetDataType()){
 	case evtQuaternionF16:
-		pLastValue.x = halfToFloat( reader.ReadUShort() );
-		pLastValue.y = halfToFloat( reader.ReadUShort() );
-		pLastValue.z = halfToFloat( reader.ReadUShort() );
-		pLastValue.w = halfToFloat( reader.ReadUShort() );
+		pLastValue.x = halfToFloat(reader.ReadUShort());
+		pLastValue.y = halfToFloat(reader.ReadUShort());
+		pLastValue.z = halfToFloat(reader.ReadUShort());
+		pLastValue.w = halfToFloat(reader.ReadUShort());
 		break;
 		
 	case evtQuaternionF32:
@@ -99,42 +99,42 @@ void debnValueQuaternion::ReadValue( decBaseFileReader &reader ){
 		break;
 		
 	case evtQuaternionF64:
-		pLastValue.x = ( float )reader.ReadDouble();
-		pLastValue.y = ( float )reader.ReadDouble();
-		pLastValue.z = ( float )reader.ReadDouble();
-		pLastValue.w = ( float )reader.ReadDouble();
+		pLastValue.x = (float)reader.ReadDouble();
+		pLastValue.y = (float)reader.ReadDouble();
+		pLastValue.z = (float)reader.ReadDouble();
+		pLastValue.w = (float)reader.ReadDouble();
 		break;
 		
 	default:
 		return;
 	}
 	
-	pValueQuat.SetQuaternion( pLastValue );
+	pValueQuat.SetQuaternion(pLastValue);
 }
 
-void debnValueQuaternion::WriteValue( decBaseFileWriter &writer ){
+void debnValueQuaternion::WriteValue(decBaseFileWriter &writer){
 	const decQuaternion &quaternion = pValueQuat.GetQuaternion();
 	
-	switch( GetDataType() ){
+	switch(GetDataType()){
 	case evtQuaternionF16:
-		writer.WriteUShort( floatToHalf( ( float )quaternion.x ) );
-		writer.WriteUShort( floatToHalf( ( float )quaternion.y ) );
-		writer.WriteUShort( floatToHalf( ( float )quaternion.z ) );
-		writer.WriteUShort( floatToHalf( ( float )quaternion.w ) );
+		writer.WriteUShort(floatToHalf((float)quaternion.x));
+		writer.WriteUShort(floatToHalf((float)quaternion.y));
+		writer.WriteUShort(floatToHalf((float)quaternion.z));
+		writer.WriteUShort(floatToHalf((float)quaternion.w));
 		break;
 		
 	case evtQuaternionF32:
-		writer.WriteFloat( ( float )quaternion.x );
-		writer.WriteFloat( ( float )quaternion.y );
-		writer.WriteFloat( ( float )quaternion.z );
-		writer.WriteFloat( ( float )quaternion.w );
+		writer.WriteFloat((float)quaternion.x);
+		writer.WriteFloat((float)quaternion.y);
+		writer.WriteFloat((float)quaternion.z);
+		writer.WriteFloat((float)quaternion.w);
 		break;
 		
 	case evtQuaternionF64:
-		writer.WriteDouble( quaternion.x );
-		writer.WriteDouble( quaternion.y );
-		writer.WriteDouble( quaternion.z );
-		writer.WriteDouble( quaternion.w );
+		writer.WriteDouble(quaternion.x);
+		writer.WriteDouble(quaternion.y);
+		writer.WriteDouble(quaternion.z);
+		writer.WriteDouble(quaternion.w);
 		break;
 		
 	default:

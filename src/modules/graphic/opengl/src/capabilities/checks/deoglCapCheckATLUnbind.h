@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create capability check. */
-	deoglCapCheckATLUnbind( deoglCapabilities &capabilities );
+	deoglCapCheckATLUnbind(deoglCapabilities &capabilities);
 	/*@}*/
 	
 	
@@ -56,7 +56,7 @@ public:
 	inline int GetResult() const{ return pResult; }
 	
 	/** Run check. */
-	void Check( GLuint fbo );
+	void Check(GLuint fbo);
 	/*@}*/
 };
 

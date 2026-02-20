@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -37,8 +37,12 @@ class reRigBone;
  * \brief Undo Set Bone Central Mass Point.
  */
 class reUSetBoneCentralMassPoint : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUSetBoneCentralMassPoint>;
+	
+	
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldCentralMassPoint;
 	decVector pNewCentralMassPoint;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneCentralMassPoint( reRigBone *bone, const decVector &centralMassPoint );
+	reUSetBoneCentralMassPoint(reRigBone *bone, const decVector &centralMassPoint);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetBoneCentralMassPoint();
+	~reUSetBoneCentralMassPoint() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

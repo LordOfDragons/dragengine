@@ -28,6 +28,7 @@
 
 #include "deAnimatorControllerTarget.h"
 #include "../../../common/exceptions.h"
+#include "../../../common/collection/decTList.h"
 
 
 
@@ -38,12 +39,9 @@
 ////////////////////////////
 
 deAnimatorControllerTarget::deAnimatorControllerTarget(){
-	pLinks = NULL;
-	pLinkCount = 0;
 }
 
 deAnimatorControllerTarget::~deAnimatorControllerTarget(){
-	if( pLinks ) delete [] pLinks;
 }
 
 
@@ -51,62 +49,25 @@ deAnimatorControllerTarget::~deAnimatorControllerTarget(){
 // Management
 ///////////////
 
-int deAnimatorControllerTarget::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ) DETHROW( deeInvalidParam );
-	
-	return pLinks[ index ];
+int deAnimatorControllerTarget::GetLinkAt(int index) const{
+	return pLinks.GetAt(index);
 }
 
-int deAnimatorControllerTarget::IndexOfLink( int link ) const{
-	int l;
-	
-	for( l=0; l<pLinkCount; l++ ){
-		if( pLinks[ l ] == link ) return l;
-	}
-	
-	return -1;
+int deAnimatorControllerTarget::IndexOfLink(int link) const{
+	return pLinks.IndexOf(link);
 }
 
-void deAnimatorControllerTarget::AddLink( int link ){
-	int l, *newArray = new int[ pLinkCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
-	
-	if( pLinks ){
-		for( l=0; l<pLinkCount; l++ ) newArray[ l ] = pLinks[ l ];
-		delete [] pLinks;
-	}
-	
-	pLinks = newArray;
-	pLinks[ pLinkCount ] = link;
-	pLinkCount++;
+void deAnimatorControllerTarget::AddLink(int link){
+	pLinks.Add(link);
 }
 
-void deAnimatorControllerTarget::RemoveLink( int link ){
-	int l, index = IndexOfLink( link );
+void deAnimatorControllerTarget::RemoveLink(int link){
+	const int index = IndexOfLink(link);
+	DEASSERT_TRUE(index != -1)
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
-	
-	int *newArray = NULL;
-	if( pLinkCount > 0 ){
-		new int[ pLinkCount - 1 ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-	}
-	
-	if( pLinks ){
-		for( l=0; l<index; l++ ) newArray[ l ] = pLinks[ l ];
-		for( l=index+1; l<pLinkCount; l++ ) newArray[ l - 1 ] = pLinks[ l ];
-		delete [] pLinks;
-	}
-	
-	pLinks = newArray;
-	pLinkCount--;
+	pLinks.RemoveFrom(index);
 }
 
 void deAnimatorControllerTarget::RemoveAllLinks(){
-	if( pLinks ){
-		delete [] pLinks;
-		pLinks = NULL;
-	}
-	
-	pLinkCount = 0;
+	pLinks.RemoveAll();
 }

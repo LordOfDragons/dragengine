@@ -25,16 +25,17 @@
 #ifndef _DEOALSOUNDLEVELMETER_H_
 #define _DEOALSOUNDLEVELMETER_H_
 
+#include "deoalASoundLevelMeter.h"
 #include "../speaker/deoalSpeakerList.h"
 
-#include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTSet.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSoundLevelMeter.h>
 
 class deAudioOpenAL;
-class deoalASoundLevelMeter;
 class deoalWorld;
 
 class deSoundLevelMeter;
@@ -48,7 +49,7 @@ class deoalSoundLevelMeter : public deBaseAudioSoundLevelMeter{
 private:
 	deAudioOpenAL &pOal;
 	deSoundLevelMeter &pSoundLevelMeter;
-	deoalASoundLevelMeter *pASoundLevelMeter;
+	deoalASoundLevelMeter::Ref pASoundLevelMeter;
 	
 	deoalWorld *pParentWorld;
 	
@@ -57,13 +58,10 @@ private:
 	bool pDirtyLayerMask;
 	bool pDirtyEnabled;
 	
-	deSoundLevelMeter::cAudibleSpeaker *pSpeakers;
-	int pSpeakerCount;
-	int pSpeakerSize;
+	decTList<deSoundLevelMeter::cAudibleSpeaker> pSpeakers;
+	decTObjectSet<deSpeaker> pOldSpeakers;
 	
-	decObjectSet pOldSpeakers;
-	
-	decPointerLinkedList::cListEntry pLLSyncWorld;
+	decTLinkedList<deoalSoundLevelMeter>::Element pLLSyncWorld;
 	
 	
 	
@@ -71,10 +69,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound level meter. */
-	deoalSoundLevelMeter( deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter );
+	deoalSoundLevelMeter(deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter);
 	
 	/** \brief Clean up sound level meter. */
-	virtual ~deoalSoundLevelMeter();
+	~deoalSoundLevelMeter() override;
 	/*@}*/
 	
 	
@@ -88,7 +86,7 @@ public:
 	inline deSoundLevelMeter &GetSoundLevelMeter() const{ return pSoundLevelMeter; }
 	
 	/** \brief Audio sound level meter. */
-	inline deoalASoundLevelMeter *GetASoundLevelMeter() const{ return pASoundLevelMeter; }
+	inline const deoalASoundLevelMeter::Ref &GetASoundLevelMeter() const{ return pASoundLevelMeter; }
 	
 	
 	
@@ -96,18 +94,15 @@ public:
 	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	
 	
-	/** \brief Number of speakers. */
-	inline int GetSpeakerCount() const{ return pSpeakerCount; }
-	
-	/** \brief Speaker at index. */
-	const deSoundLevelMeter::cAudibleSpeaker &GetSpeakerAt( int index ) const;
+	/** \brief Speakers. */
+	inline const decTList<deSoundLevelMeter::cAudibleSpeaker> &GetSpeakers() const{ return pSpeakers; }
 	
 	/** \brief Add speaker. */
-	void AddSpeaker( deSpeaker *speaker, float volume );
+	void AddSpeaker(deSpeaker *speaker, float volume);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();
@@ -126,31 +121,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Type changed. */
-	virtual void TypeChanged();
+	void TypeChanged() override;
 	
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Cone angle changed. */
-	virtual void ConeAngleChanged();
+	void ConeAngleChanged() override;
 	
 	/** \brief Audible distance changed. */
-	virtual void AudibleDistanceChanged();
+	void AudibleDistanceChanged() override;
 	
 	/** \brief Layer mask changed. */
-	virtual void LayerMaskChanged();
+	void LayerMaskChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	
 	/** \brief Number of audible speakers. */
-	virtual int GetAudibleSpeakerCount();
+	int GetAudibleSpeakerCount() override;
 	
 	/** \brief Audible speaker at index. */
-	virtual const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt( int index );
+	const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt(int index) override;
 	/*@}*/
 	
 	
@@ -158,8 +153,8 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decTLinkedList<deoalSoundLevelMeter>::Element &GetLLSyncWorld(){ return pLLSyncWorld; }
+	inline const decTLinkedList<deoalSoundLevelMeter>::Element &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	
@@ -167,7 +162,7 @@ public:
 private:
 	void pRequiresSync();
 	void pUpdateAudibleSpeakers();
-	int pIndexOfSpeaker( deSpeaker *speaker ) const;
+	int pIndexOfSpeaker(deSpeaker *speaker) const;
 };
 
 #endif

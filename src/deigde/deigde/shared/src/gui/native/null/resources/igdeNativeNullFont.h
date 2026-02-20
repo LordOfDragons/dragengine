@@ -25,6 +25,8 @@
 #ifndef _IGDENATIVENULLFONT_H_
 #define _IGDENATIVENULLFONT_H_
 
+#include "../../../resources/igdeFont.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class igdeFont;
@@ -34,7 +36,7 @@ class deFont;
 /**
  * Null font.
  */
-class igdeNativeNullFont{
+class igdeNativeNullFont : public igdeFont::cNativeFont{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -45,20 +47,20 @@ public:
 	virtual ~igdeNativeNullFont();
 	
 	/** \brief Create native font. */
-	static igdeNativeNullFont* CreateNativeFont( igdeFont &owner );
+	static igdeNativeNullFont* CreateNativeFont(igdeFont &owner);
 	
 	/** \brief Destroy native font. */
-	virtual void DestroyNativeFont();
+	void DestroyNativeFont() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	virtual deFont *CreateEngineFont();
+	deFont::Ref CreateEngineFont() override;
 	
 	/** \brief Text size. */
-	virtual decPoint TextSize( const char *text ) const;
+	decPoint TextSize(const char *text) const override;
 	/*@}*/
 };
 

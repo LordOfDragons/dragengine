@@ -26,10 +26,10 @@
 #define _IGDEWOSOFORCEFIELD_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/forcefield/deForceFieldReference.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/forcefield/deForceField.h>
 
 
 class deColliderAttachment;
@@ -40,13 +40,18 @@ class igdeGDCForceField;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOForceField : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSOForceField>;
+	
+	
 private:
 	const igdeGDCForceField &pGDForceField;
-	deForceFieldReference pForceField;
+	deForceField::Ref pForceField;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerEnabled;
+	igdeTriggerExpression::Ref pTriggerEnabled;
 	
 	
 	
@@ -54,10 +59,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOForceField( igdeWObject &wrapper, const igdeGDCForceField &gdForceField, const decString &prefix );
+	igdeWOSOForceField(igdeWObject &wrapper, const igdeGDCForceField &gdForceField, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOForceField();
+	~igdeWOSOForceField() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -65,41 +73,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ForceField resource. */
-	inline deForceField *GetForceField() const{ return pForceField; }
+	inline const deForceField::Ref &GetForceField() const{ return pForceField; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief Init triggers. */
-	virtual void InitTriggers();
+	void InitTriggers() override;
 	
 	/** \brief Update trigger. */
-	virtual void UpdateTriggers();
+	void UpdateTriggers() override;
 	
 	/** \brief Update visibility. */
-	virtual void UpdateVisibility();
+	void UpdateVisibility() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief Collision filter changed. */
-	virtual void UpdateCollisionFilter();
+	void UpdateCollisionFilter() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

@@ -44,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new module. */
-	deBaseCrashRecoveryModule( deLoadableModule &loadableModule );
+	deBaseCrashRecoveryModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseCrashRecoveryModule();
+	~deBaseCrashRecoveryModule() override;
 	/*@}*/
 	
 	

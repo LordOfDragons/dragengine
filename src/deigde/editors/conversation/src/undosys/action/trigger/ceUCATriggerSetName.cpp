@@ -41,32 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCATriggerSetName::ceUCATriggerSetName( ceConversationTopic *topic, ceCATrigger *action, const char *newName ){
-	if( ! topic || ! action || ! newName ){
-		DETHROW( deeInvalidParam );
+ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName){
+	if(!topic || !action || !newName){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldName = action->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Action trigger set name" );
+	SetShortInfo("@Conversation.Undo.ActionTriggerSetName");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCATriggerSetName::~ceUCATriggerSetName(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ ceUCATriggerSetName::~ceUCATriggerSetName(){
 ///////////////
 
 void ceUCATriggerSetName::Undo(){
-	pAction->SetName( pOldName.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetName(pOldName.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCATriggerSetName::Redo(){
-	pAction->SetName( pNewName.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetName(pNewName.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }

@@ -34,7 +34,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *RigEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *RigEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
@@ -44,15 +44,11 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *RigEditorCreateModule( igdeEnvironment *e
 // entry point
 ////////////////
 
-igdeEditorModule *RigEditorCreateModule( igdeEnvironment *environment ){
-	reIGDEModule *module = NULL;
-	
+igdeEditorModule *RigEditorCreateModule(igdeEnvironment *environment){
 	try{
-		module = new reIGDEModule( *environment );
+		return new reIGDEModule(*environment);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
-	
-	return module;
 }

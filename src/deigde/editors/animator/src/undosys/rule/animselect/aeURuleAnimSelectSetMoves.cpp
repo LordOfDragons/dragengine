@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleAnimSelectSetMoves::aeURuleAnimSelectSetMoves( aeRuleAnimationSelect *rule,
-const decStringList &newMoves, const char *description ) :
-pRule( NULL ),
-pNewMoves( newMoves )
+aeURuleAnimSelectSetMoves::aeURuleAnimSelectSetMoves(aeRuleAnimationSelect *rule,
+const decStringList &newMoves, const char *description) :
+
+pNewMoves(newMoves)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldMoves = rule->GetMoves();
 	
-	SetShortInfo( description );
+	SetShortInfo(description);
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectSetMoves::~aeURuleAnimSelectSetMoves(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ aeURuleAnimSelectSetMoves::~aeURuleAnimSelectSetMoves(){
 ///////////////
 
 void aeURuleAnimSelectSetMoves::Undo(){
-	pRule->SetMoves( pOldMoves );
+	pRule->SetMoves(pOldMoves);
 }
 
 void aeURuleAnimSelectSetMoves::Redo(){
-	pRule->SetMoves( pNewMoves );
+	pRule->SetMoves(pNewMoves);
 }

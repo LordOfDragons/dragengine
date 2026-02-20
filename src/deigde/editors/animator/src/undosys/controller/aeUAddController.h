@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeController;
-class aeAnimator;
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -42,27 +42,31 @@ class aeAnimator;
  * Undo object for adding a controller.
  */
 class aeUAddController : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAddController>;
+	
+	
 private:
 	aeAnimator *pAnimator;
-	aeController *pController;
+	aeController::Ref pController;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAddController( aeAnimator *animator, aeController *controller );
+	aeUAddController(aeAnimator *animator, aeController *controller, const char *shortInfo = nullptr);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAddController();
+	~aeUAddController() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

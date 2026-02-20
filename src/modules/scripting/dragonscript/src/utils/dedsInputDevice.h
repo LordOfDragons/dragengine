@@ -26,6 +26,7 @@
 #define _DEDSINPUTDEVICE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDevicePose.h>
@@ -44,8 +45,7 @@ class deBaseVRModule;
 class dedsInputDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsInputDevice> Ref;
-	
+	using Ref = deTObjectReference<dedsInputDevice>;
 	
 	
 private:
@@ -57,10 +57,9 @@ private:
 	
 	deInputDevicePose pDevicePose;
 	
-	deInputDevicePose *pBonePoses;
+	decTList<deInputDevicePose> pBonePoses;
 	int pBonePoseCount;
-	
-	float *pFaceExpressions;
+	decTList<float> pFaceExpressions;
 	int pFaceExpressionCount;
 	
 	
@@ -69,14 +68,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new input device. */
-	dedsInputDevice( deScriptingDragonScript &ds, deBaseInputModule &module, int deviceIndex );
+	dedsInputDevice(deScriptingDragonScript &ds, deBaseInputModule &module, int deviceIndex);
 	
 	/** \brief Create new input device. */
-	dedsInputDevice( deScriptingDragonScript &ds, deBaseVRModule &module, int deviceIndex );
+	dedsInputDevice(deScriptingDragonScript &ds, deBaseVRModule &module, int deviceIndex);
 	
 protected:
 	/** \brief Clean up the input device. */
-	virtual ~dedsInputDevice();
+	~dedsInputDevice() override;
 	/*@}*/
 	
 	
@@ -94,7 +93,7 @@ public:
 	inline int GetDeviceIndex() const{ return pDeviceIndex; }
 	
 	/** Device. */
-	inline deInputDevice *GetDevice() const{ return pDevice; }
+	inline const deInputDevice::Ref &GetDevice() const{ return pDevice; }
 	
 	/** Device pose. */
 	inline const deInputDevicePose &GetDevicePose() const{ return pDevicePose; }
@@ -103,13 +102,13 @@ public:
 	inline int GetBonePoseCount() const{ return pBonePoseCount; }
 	
 	/** Bone pose at index. */
-	const deInputDevicePose &GetBonePoseAt( int index, bool withController ) const;
+	const deInputDevicePose &GetBonePoseAt(int index, bool withController) const;
 	
 	/** Count of face expressions. */
 	inline int GetFaceExpressionCount() const{ return pFaceExpressionCount; }
 	
 	/** Face expression at index. */
-	float GetFaceExpressionAt( int index ) const;
+	float GetFaceExpressionAt(int index) const;
 	
 	/** Update poses. */
 	void OnFrameUpdate();
@@ -118,7 +117,7 @@ public:
 	 * Update device information. Only allowed to be called if device is from the same
 	 * module and the device ID is the same.
 	 */
-	void Update( const dedsInputDevice &device );
+	void Update(const dedsInputDevice &device);
 	/*@}*/
 };
 

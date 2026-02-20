@@ -55,13 +55,13 @@ public:
 	/** @name Closest Point Routines */
 	/*@{*/
 	/** \brief Retrieves the closest point on a line to another point. */
-	static decVector ClosestPointOnLine( const decVector &lineFrom, const decVector &lineTo, const decVector &point );
+	static decVector ClosestPointOnLine(const decVector &lineFrom, const decVector &lineTo, const decVector &point);
 	
 	/**
 	 * \brief Retrieves the closest point on an infinite ray to another point.
 	 * \details rayDirection has to be normalized.
 	 */
-	static decVector ClosestPointOnRay( const decVector &rayOrigin, const decVector &rayDirection, const decVector &point );
+	static decVector ClosestPointOnRay(const decVector &rayOrigin, const decVector &rayDirection, const decVector &point);
 	
 	/**
 	 * Retrieves the closest point on a triangle edge to a given point.
@@ -70,7 +70,7 @@ public:
 	 * @param tp3 Third triangle point.
 	 * @param p Point to check.
 	 */
-	static decVector ClosestPointOnTriangleEdge( const decVector &tp1, const decVector &tp2, const decVector &tp3, const decVector &p );
+	static decVector ClosestPointOnTriangleEdge(const decVector &tp1, const decVector &tp2, const decVector &tp3, const decVector &p);
 	
 	/**
 	 * Retrieves the closest point on a triangle to a given point.
@@ -79,7 +79,7 @@ public:
 	 * @param tp3 Third triangle point.
 	 * @param p Point to check.
 	 */
-	static decVector ClosestPointOnTriangle( const decVector &tp1, const decVector &tp2, const decVector &tp3, const decVector &p );
+	static decVector ClosestPointOnTriangle(const decVector &tp1, const decVector &tp2, const decVector &tp3, const decVector &p);
 	
 	/**
 	 * Retrieves the closest point on a quad edge to a given point. The
@@ -91,8 +91,8 @@ public:
 	 * @param tp4 Fourth quad point.
 	 * @param p Point to check.
 	 */
-	static decVector ClosestPointOnQuadEdge( const decVector &tp1, const decVector &tp2,
-		const decVector &tp3, const decVector &tp4, const decVector &p );
+	static decVector ClosestPointOnQuadEdge(const decVector &tp1, const decVector &tp2,
+		const decVector &tp3, const decVector &tp4, const decVector &p);
 	
 	/**
 	 * Retrieves the closest point on a quad to a given point. The
@@ -104,8 +104,8 @@ public:
 	 * @param tp4 Fourth quad point.
 	 * @param p Point to check.
 	 */
-	static decVector ClosestPointOnQuad( const decVector &tp1, const decVector &tp2,
-		const decVector &tp3, const decVector &tp4, const decVector &p );
+	static decVector ClosestPointOnQuad(const decVector &tp1, const decVector &tp2,
+		const decVector &tp3, const decVector &tp4, const decVector &p);
 	/*@}*/
 	
 	/** @name Intersection Routines */
@@ -121,7 +121,7 @@ public:
 	 *         occures ( because the ray is parallel to the plane )
 	 *         -1 is returned.
 	 */
-	static float RayPlane( const decVector &pp, const decVector &pn, const decVector &rp, const decVector &rd );
+	static float RayPlane(const decVector &pp, const decVector &pn, const decVector &rp, const decVector &rd);
 	
 	/**
 	 * Intersections a ray with a sphere.
@@ -134,7 +134,7 @@ public:
 	 *         occures ( because the ray is parallel to the plane )
 	 *         -1 is returned.
 	 */
-	static float RaySphere( const decVector &rp, const decVector &rd, const decVector &sc, float sr );
+	static float RaySphere(const decVector &rp, const decVector &rd, const decVector &sc, float sr);
 	/*@}*/
 	
 	/** @name Distance Routines */
@@ -146,13 +146,13 @@ public:
 	 * @param bs Segment b start position.
 	 * @param be Segment b end position.
 	 */
-	static float SegmentSegmentDistance( const decVector &as, const decVector &ae, const decVector &bs, const decVector &be );
+	static float SegmentSegmentDistance(const decVector &as, const decVector &ae, const decVector &bs, const decVector &be);
 	
 	/**
 	 * \brief Retrieves the distance of a point to an infinite ray.
 	 * \details rayDirection has to be normalized.
 	 */
-	static float PointRayDistance( const decVector &rayOrigin, const decVector &rayDirection, const decVector &point );
+	static float PointRayDistance(const decVector &rayOrigin, const decVector &rayDirection, const decVector &point);
 	/*@}*/
 	
 	/** @name Collision Tests */
@@ -165,7 +165,7 @@ public:
 	 * @param tp3 Third triangle point.
 	 * @param p Point to check.
 	 */
-	static bool PointInTriangle( const decVector &tp1, const decVector &tp2, const decVector &tp3, const decVector &p );
+	static bool PointInTriangle(const decVector &tp1, const decVector &tp2, const decVector &tp3, const decVector &p);
 	
 	/**
 	 * Determines if a point is inside a triangle. The point has
@@ -176,8 +176,8 @@ public:
 	 * @param tnormal Triangle normal.
 	 * @param p Point to check.
 	 */
-	static bool PointInTriangle( const decVector &tp1, const decVector &tp2, const decVector &tp3,
-		const decVector &tnormal, const decVector &p );
+	static bool PointInTriangle(const decVector &tp1, const decVector &tp2, const decVector &tp3,
+		const decVector &tnormal, const decVector &p);
 	
 	/**
 	 * Determines if a point is inside a quad. The point and
@@ -189,8 +189,8 @@ public:
 	 * @param tp4 Fourth quad point.
 	 * @param p Point to check.
 	 */
-	static bool PointInQuad( const decVector &tp1, const decVector &tp2,
-		const decVector &tp3, const decVector &tp4, const decVector &p );
+	static bool PointInQuad(const decVector &tp1, const decVector &tp2,
+		const decVector &tp3, const decVector &tp4, const decVector &p);
 	
 	
 	
@@ -204,8 +204,8 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the sphere.
 	 */
-	static bool RayHitsSphere( const decVector &rayOrigin, const decVector &rayDirection,
-		const decVector &sphereCenter, float sphereRadius, float &hitDistance );
+	static bool RayHitsSphere(const decVector &rayOrigin, const decVector &rayDirection,
+		const decVector &sphereCenter, float sphereRadius, float &hitDistance);
 	
 	/**
 	 * Determines if a sphere collides with another sphere.
@@ -215,8 +215,8 @@ public:
 	 * @param sphere2Radius Radius of the second sphere. Has to be greater than 0.
 	 * @return True if the spheres collide.
 	 */
-	static bool SphereHitsSphere( const decVector &sphere1Center, float sphere1Radius,
-		const decVector &sphere2Center, float sphere2Radius );
+	static bool SphereHitsSphere(const decVector &sphere1Center, float sphere1Radius,
+		const decVector &sphere2Center, float sphere2Radius);
 	/*@}*/
 	
 	/**
@@ -233,9 +233,9 @@ public:
 	 * by the returned time of impact yields the displacement right up to the time
 	 * of the collision. If no collision happend -1 is returned.
 	 */
-	static float SphereMoveHitsSphere( const decVector &sphere1Center, float sphere1Radius,
+	static float SphereMoveHitsSphere(const decVector &sphere1Center, float sphere1Radius,
 		const decVector &sphere2Center, float sphere2Radius, const decVector &displacement,
-		decVector *normal );
+		decVector *normal);
 	
 	
 	
@@ -249,8 +249,8 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the box.
 	 */
-	static bool RayHitsBox( const decVector &rayOrigin, const decVector &rayDirection,
-		const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance );
+	static bool RayHitsBox(const decVector &rayOrigin, const decVector &rayDirection,
+		const decVector &boxCenter, const decVector &boxHalfExtends, float &hitDistance);
 	/*@}*/
 	
 	/**
@@ -261,8 +261,8 @@ public:
 	 * @param maxExtend2 Maximum extend of the second box.
 	 * @return True if the boxes intersect.
 	 */
-	inline static bool AABoxHitsAABox( const decVector &minExtend1, const decVector &maxExtend1,
-	const decVector &minExtend2, const decVector &maxExtend2 ){
+	inline static bool AABoxHitsAABox(const decVector &minExtend1, const decVector &maxExtend1,
+	const decVector &minExtend2, const decVector &maxExtend2){
 		return minExtend2 <= maxExtend1 && maxExtend2 >= minExtend1;
 	}
 	
@@ -274,7 +274,7 @@ public:
 	 * @param maxExtend2 Maximum extend of the second box.
 	 * @return Intersection result one of eir* .
 	 */
-	static int AABoxIntersectsAABox( const decVector &minExtend1, const decVector &maxExtend1, const decVector &minExtend2, const decVector &maxExtend2 );
+	static int AABoxIntersectsAABox(const decVector &minExtend1, const decVector &maxExtend1, const decVector &minExtend2, const decVector &maxExtend2);
 	
 	
 	
@@ -289,9 +289,9 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the cylinder.
 	 */
-	static bool RayHitsCylinder( const decVector &rayOrigin, const decVector &rayDirection,
+	static bool RayHitsCylinder(const decVector &rayOrigin, const decVector &rayDirection,
 		const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius,
-		float &hitDistance );
+		float &hitDistance);
 	
 	/**
 	 * Determines if a ray hits a tapered cylinder oriented along the Y-Axis.
@@ -305,9 +305,9 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the cylinder.
 	 */
-	static bool RayHitsTaperedCylinder( const decVector &rayOrigin, const decVector &rayDirection,
+	static bool RayHitsTaperedCylinder(const decVector &rayOrigin, const decVector &rayDirection,
 		const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderTopRadius,
-		float cylinderBottomRadius, float &hitDistance );
+		float cylinderBottomRadius, float &hitDistance);
 	
 	
 	
@@ -322,9 +322,9 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the capsule
 	 */
-	static bool RayHitsCapsule( const decVector &rayOrigin, const decVector &rayDirection,
+	static bool RayHitsCapsule(const decVector &rayOrigin, const decVector &rayDirection,
 		const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius,
-		float &hitDistance );
+		float &hitDistance);
 	
 	/**
 	 * Determines if a ray hits a tapered capsule oriented along the Y-Axis.
@@ -338,9 +338,9 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the capsule.
 	 */
-	static bool RayHitsTaperedCapsule( const decVector &rayOrigin, const decVector &rayDirection,
+	static bool RayHitsTaperedCapsule(const decVector &rayOrigin, const decVector &rayDirection,
 		const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleTopRadius,
-		float capsuleBottomRadius, float &hitDistance );
+		float capsuleBottomRadius, float &hitDistance);
 	
 	
 	
@@ -353,8 +353,8 @@ public:
 	 * @param tri3 Third point of the triangle.
 	 * @return True if the ray hits the triangle.
 	 */
-	static bool RayHitsTriangle( const decVector &rayOrigin, const decVector &rayDirection,
-		const decVector &tri1, const decVector &tri2, const decVector &tri3 );
+	static bool RayHitsTriangle(const decVector &rayOrigin, const decVector &rayDirection,
+		const decVector &tri1, const decVector &tri2, const decVector &tri3);
 	
 	/**
 	 * Determines if a ray hits a triangle using a precalculated triangle normal.
@@ -366,9 +366,9 @@ public:
 	 * @param trinormal Normal of the triangle.
 	 * @return True if the ray hits the triangle.
 	 */
-	static bool RayHitsTriangle( const decVector &rayOrigin, const decVector &rayDirection,
+	static bool RayHitsTriangle(const decVector &rayOrigin, const decVector &rayDirection,
 		const decVector &tri1, const decVector &tri2, const decVector &tri3,
-		const decVector &trinormal );
+		const decVector &trinormal);
 	/*@}*/
 	
 	/** @name Side Test Routines */
@@ -381,10 +381,10 @@ public:
 	 * @param p Point to test.
 	 * @return 1 if in front side, -1 if on back side or 0 if coplanar
 	 */
-	static inline int PointOnPlaneSide( const decVector &pp, const decVector &pn, const decVector &p ){
+	static inline int PointOnPlaneSide(const decVector &pp, const decVector &pn, const decVector &p){
 		float dot = (pp - p) * pn;
-		if( dot < -0.001f ) return 1;
-		if( dot >  0.001f ) return -1;
+		if(dot < -0.001f) return 1;
+		if(dot >  0.001f) return -1;
 		return 0;
 	}
 	/*@}*/

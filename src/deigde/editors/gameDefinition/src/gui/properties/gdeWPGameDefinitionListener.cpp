@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPGameDefinitionListener::gdeWPGameDefinitionListener( gdeWPGameDefinition &panel ) :
-pPanel( panel ){
+gdeWPGameDefinitionListener::gdeWPGameDefinitionListener(gdeWPGameDefinition &panel) :
+pPanel(panel){
 }
 
 gdeWPGameDefinitionListener::~gdeWPGameDefinitionListener(){
@@ -52,24 +52,24 @@ gdeWPGameDefinitionListener::~gdeWPGameDefinitionListener(){
 // Management
 ///////////////
 
-void gdeWPGameDefinitionListener::GameDefinitionChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition != pPanel.GetGameDefinition() ){
+void gdeWPGameDefinitionListener::GameDefinitionChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition != pPanel.GetGameDefinition()){
 		return;
 	}
 	
 	pPanel.UpdateWorld();
 }
 
-void gdeWPGameDefinitionListener::BasePathChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition != pPanel.GetGameDefinition() ){
+void gdeWPGameDefinitionListener::BasePathChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition != pPanel.GetGameDefinition()){
 		return;
 	}
 	
 	pPanel.UpdateWorld();
 }
 
-void gdeWPGameDefinitionListener::BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition != pPanel.GetGameDefinition() ){
+void gdeWPGameDefinitionListener::BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition != pPanel.GetGameDefinition()){
 		return;
 	}
 	
@@ -78,24 +78,24 @@ void gdeWPGameDefinitionListener::BaseGameDefinitionsChanged( gdeGameDefinition 
 
 
 
-void gdeWPGameDefinitionListener::WorldPropertiesChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition != pPanel.GetGameDefinition() ){
+void gdeWPGameDefinitionListener::WorldPropertiesChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition != pPanel.GetGameDefinition()){
 		return;
 	}
 	
 	pPanel.UpdateWorldProperties();
 }
 
-void gdeWPGameDefinitionListener::WorldPropertyChanged( gdeGameDefinition*, gdeProperty *property ){
-	if( pPanel.GetActiveWorldProperty() != property ){
+void gdeWPGameDefinitionListener::WorldPropertyChanged(gdeGameDefinition*, gdeProperty *property){
+	if(pPanel.GetActiveWorldProperty() != property){
 		return;
 	}
 	
 	pPanel.UpdateWorldProperty();
 }
 
-void gdeWPGameDefinitionListener::WorldPropertyNameChanged( gdeGameDefinition*, gdeProperty *property ){
-	if( pPanel.GetActiveWorldProperty() != property ){
+void gdeWPGameDefinitionListener::WorldPropertyNameChanged(gdeGameDefinition*, gdeProperty *property){
+	if(pPanel.GetActiveWorldProperty() != property){
 		return;
 	}
 	
@@ -104,24 +104,24 @@ void gdeWPGameDefinitionListener::WorldPropertyNameChanged( gdeGameDefinition*, 
 
 
 
-void gdeWPGameDefinitionListener::DecalPropertiesChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition != pPanel.GetGameDefinition() ){
+void gdeWPGameDefinitionListener::DecalPropertiesChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition != pPanel.GetGameDefinition()){
 		return;
 	}
 	
 	pPanel.UpdateDecalProperties();
 }
 
-void gdeWPGameDefinitionListener::DecalPropertyChanged( gdeGameDefinition*, gdeProperty *property ){
-	if( pPanel.GetActiveDecalProperty() != property ){
+void gdeWPGameDefinitionListener::DecalPropertyChanged(gdeGameDefinition*, gdeProperty *property){
+	if(pPanel.GetActiveDecalProperty() != property){
 		return;
 	}
 	
 	pPanel.UpdateDecalProperty();
 }
 
-void gdeWPGameDefinitionListener::DecalPropertyNameChanged( gdeGameDefinition*, gdeProperty *property ){
-	if( pPanel.GetActiveDecalProperty() != property ){
+void gdeWPGameDefinitionListener::DecalPropertyNameChanged(gdeGameDefinition*, gdeProperty *property){
+	if(pPanel.GetActiveDecalProperty() != property){
 		return;
 	}
 	
@@ -130,14 +130,14 @@ void gdeWPGameDefinitionListener::DecalPropertyNameChanged( gdeGameDefinition*, 
 
 
 
-void gdeWPGameDefinitionListener::AutoFindPathObjectClassesChanged( gdeGameDefinition* ){
+void gdeWPGameDefinitionListener::AutoFindPathObjectClassesChanged(gdeGameDefinition*){
 	pPanel.UpdateAutoFindPathObjectClasses();
 }
 
-void gdeWPGameDefinitionListener::AutoFindPathSkinsChanged( gdeGameDefinition* ){
+void gdeWPGameDefinitionListener::AutoFindPathSkinsChanged(gdeGameDefinition*){
 	pPanel.UpdateAutoFindPathSkins();
 }
 
-void gdeWPGameDefinitionListener::AutoFindPathSkiesChanged( gdeGameDefinition* ){
+void gdeWPGameDefinitionListener::AutoFindPathSkiesChanged(gdeGameDefinition*){
 	pPanel.UpdateAutoFindPathSkies();
 }

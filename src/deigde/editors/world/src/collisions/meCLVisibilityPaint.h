@@ -57,6 +57,7 @@ private:
 	float pHitDistance;
 	bool pHasHit;
 	
+	bool pInSession;
 	decPoint pSessionSector;
 	decPoint pSessionGrid;
 	
@@ -79,18 +80,22 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new listener. */
-	meCLVisibilityPaint( meWorld *world );
+	meCLVisibilityPaint(meWorld *world);
 	/** Cleans up the listener. */
-	virtual ~meCLVisibilityPaint();
+	~meCLVisibilityPaint() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Sets the paint ray. */
-	void SetRay( const decDVector &origin, const decVector &direction );
+	void SetRay(const decDVector &origin, const decVector &direction);
 	
 	/** Starts a paint session. */
 	void BeginSession();
+	
+	/** Session running. */
+	inline bool IsInSession() const{ return pInSession; }
+	
 	/** Prepares for a single paint turn. */
 	void PreparePaint();
 	/** Paint. */
@@ -106,27 +111,27 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
 	 * then the script is asked to determine if the two collider can hit each
-	 * other. If this peer is used in a ray test owner is NULL and the script
+	 * other. If this peer is used in a ray test owner is nullptr and the script
 	 * is asked to determine if the ray can hit the collider.
-	 * @param owner Collider this peer belongs to or NULL if a ray test is done.
+	 * @param owner Collider this peer belongs to or nullptr if a ray test is done.
 	 * @param collider Collider to test.
 	 * @return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 private:
-	void pUpdateOldVisibility( const decPoint &sector, const decVector2 &grid, const decVector2 &size );
+	void pUpdateOldVisibility(const decPoint &sector, const decVector2 &grid, const decVector2 &size);
 };
 
 // end of include only once

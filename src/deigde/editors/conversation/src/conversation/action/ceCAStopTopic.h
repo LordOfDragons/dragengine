@@ -39,16 +39,19 @@
  */
 class ceCAStopTopic : public ceConversationAction{
 public:
+	using Ref = deTObjectReference<ceCAStopTopic>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create stop topic conversation action. */
 	ceCAStopTopic();
 	
 	/** \brief Create copy of stop topic conversation action. */
-	ceCAStopTopic( const ceCAStopTopic &action );
+	ceCAStopTopic(const ceCAStopTopic &action);
 	
 	/** \brief Clean up stop conversation conversation action. */
-	virtual ~ceCAStopTopic();
+protected:
+	~ceCAStopTopic() override;
+public:
 	/*@}*/
 	
 	
@@ -56,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create copy action. */
-    virtual ceConversationAction *CreateCopy() const;
+	ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

@@ -26,6 +26,6 @@
 #define _DEOGLMATH_H_
 
 /** Smallest power of two larger than or equal to number. */
-unsigned int oglPotOf( unsigned int value );
+unsigned int oglPotOf(unsigned int value);
 
 #endif

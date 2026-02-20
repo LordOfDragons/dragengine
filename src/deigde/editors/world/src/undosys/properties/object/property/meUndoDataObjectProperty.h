@@ -26,10 +26,11 @@
 #define _MEUNDODATAOBJECTPROPERTY_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -38,35 +39,43 @@ class meObject;
  */
 class meUndoDataObjectProperty : public deObject{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
 	
 public:
+	using Ref = deTObjectReference<meUndoDataObjectProperty>;
+	using List = decTObjectOrderedSet<meUndoDataObjectProperty>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataObjectProperty( meObject *object );
+	meUndoDataObjectProperty(meObject *object);
 	
 protected:
 	/** \brief Clean up undo data object. */
-	virtual ~meUndoDataObjectProperty();
+
+protected:
+	~meUndoDataObjectProperty() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object pointer. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	/** Retrieves the old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }
 	/** Sets the old property value. */
-	void SetOldValue( const char *value );
+	void SetOldValue(const char *value);
 	/** Determines if the property exists already before the redo operation. */
 	inline bool GetPropertyExists() const{ return pPropertyExists; }
 	/** Sets if the property exists already before the redo operation. */
-	void SetPropertyExists( bool exists );
+	void SetPropertyExists(bool exists);
 	/** Retrieves the old property list. */
 	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }
 	inline const decStringDictionary &GetOldProperties() const{ return pOldProperties; }

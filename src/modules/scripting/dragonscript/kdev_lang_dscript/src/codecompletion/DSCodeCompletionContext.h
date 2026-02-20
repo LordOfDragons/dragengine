@@ -21,11 +21,11 @@ class DSCodeCompletionWorker;
 
 class KDEVDSCODECOMPLETION_EXPORT DSCodeCompletionContext : public CodeCompletionContext{
 public:
-	DSCodeCompletionContext( const DSCodeCompletionWorker &worker, DUContextPointer context,
+	DSCodeCompletionContext(const DSCodeCompletionWorker &worker, DUContextPointer context,
 		const QString& contextText, const QString& followingText,
-		const CursorInRevision& position, int depth );
+		const CursorInRevision& position, int depth);
 	
-	QList<CompletionTreeItemPointer> completionItems( bool &abort, bool fullCompletion = true ) override;
+	QList<CompletionTreeItemPointer> completionItems(bool &abort, bool fullCompletion = true) override;
 	
 	
 	

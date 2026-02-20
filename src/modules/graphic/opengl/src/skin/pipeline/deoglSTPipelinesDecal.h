@@ -36,16 +36,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesDecal( const deoglSkinTexture &texture );
+	explicit deoglSTPipelinesDecal(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
 	~deoglSTPipelinesDecal() override;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
@@ -55,13 +53,13 @@ public:
 	
 	
 protected:
-	void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ) override;
+	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
-	void pPipelineConfigGeometry( deoglPipelineConfiguration &config ) override;
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
 	void pPipelineConfigDepth(deoglPipelineConfiguration &config) override;
 	void pPipelineConfigCounter(deoglPipelineConfiguration &config) override;
 	
-	void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ) override;
+	void pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
 	
 	void pSetDepthOffset(deoglPipelineConfiguration &config);
 };

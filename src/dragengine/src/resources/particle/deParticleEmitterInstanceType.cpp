@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deParticleEmitterInstanceType::deParticleEmitterInstanceType(){
-	pParticleArray = NULL;
+	pParticleArray = nullptr;
 	pParticleCount = 0;
 }
 
@@ -53,19 +53,19 @@ deParticleEmitterInstanceType::~deParticleEmitterInstanceType(){
 // Management
 ///////////////
 
-void deParticleEmitterInstanceType::SetComponent( deComponent *component ){
+void deParticleEmitterInstanceType::SetComponent(deComponent *component){
 	pComponent = component;
 }
 
-void deParticleEmitterInstanceType::SetDynamicSkin( deDynamicSkin *dynamicSkin ){
+void deParticleEmitterInstanceType::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 	pDynamicSkin = dynamicSkin;
 }
 
 
 
-void deParticleEmitterInstanceType::SetParticleArray( sParticle *particleArray, int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deParticleEmitterInstanceType::SetParticleArray(sParticle *particleArray, int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pParticleArray = particleArray;

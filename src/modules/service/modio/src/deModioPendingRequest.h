@@ -35,7 +35,7 @@
  */
 class deModioPendingRequest : public deObject{
 public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+	using Ref = deTObjectReference<deModioPendingRequest>;
 	
 	
 	decUniqueID id;
@@ -46,11 +46,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
+	deModioPendingRequest(const deServiceObject::Ref &data = {});
 	
+protected:
 	/** Delete module. */
 	~deModioPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

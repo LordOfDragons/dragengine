@@ -36,9 +36,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigationSpaceFace::deNavigationSpaceFace(){
-	pCornerCount = 0;
-	pType = 0;
+deNavigationSpaceFace::deNavigationSpaceFace() :
+pCornerCount(0),
+pType(0){
+}
+
+deNavigationSpaceFace::deNavigationSpaceFace(int cornerCount, unsigned short type) :
+pCornerCount((unsigned short)cornerCount),
+pType(type){
 }
 
 deNavigationSpaceFace::~deNavigationSpaceFace(){
@@ -49,10 +54,10 @@ deNavigationSpaceFace::~deNavigationSpaceFace(){
 // Management
 ///////////////
 
-void deNavigationSpaceFace::SetCornerCount( unsigned short count ){
+void deNavigationSpaceFace::SetCornerCount(unsigned short count){
 	pCornerCount = count;
 }
 
-void deNavigationSpaceFace::SetType( unsigned short type ){
+void deNavigationSpaceFace::SetType(unsigned short type){
 	pType = type;
 }

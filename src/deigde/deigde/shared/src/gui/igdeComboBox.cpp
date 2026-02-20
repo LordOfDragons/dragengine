@@ -22,21 +22,15 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeComboBox.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeComboBoxListener.h"
 #include "model/igdeListItem.h"
-#include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -51,66 +45,74 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeComboBox::igdeComboBox( igdeEnvironment &environment, int columns, const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pSelection( -1 ),
-pColumns( columns ),
-pRows( 10 ),
-pEditable( false ),
-pDescription( description ),
-pInvalidValue( false )
+igdeComboBox::igdeComboBox(igdeEnvironment &environment, int columns, const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pSelection(-1),
+pColumns(columns),
+pRows(10),
+pEditable(false),
+pDescription(description),
+pInvalidValue(false),
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeComboBox::igdeComboBox( igdeEnvironment &environment, int columns, bool editable,
-	const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pSelection( -1 ),
-pColumns( columns ),
-pRows( 10 ),
-pEditable( editable ),
-pDescription( description ),
-pInvalidValue( false )
+igdeComboBox::igdeComboBox(igdeEnvironment &environment, int columns, bool editable,
+	const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pSelection(-1),
+pColumns(columns),
+pRows(10),
+pEditable(editable),
+pDescription(description),
+pInvalidValue(false),
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeComboBox::igdeComboBox( igdeEnvironment &environment, int columns, int rows,
-	const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pSelection( -1 ),
-pColumns( columns ),
-pRows( rows ),
-pEditable( false ),
-pDescription( description ),
-pInvalidValue( false )
+igdeComboBox::igdeComboBox(igdeEnvironment &environment, int columns, int rows,
+	const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pSelection(-1),
+pColumns(columns),
+pRows(rows),
+pEditable(false),
+pDescription(description),
+pInvalidValue(false),
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
-	if( columns < 1 || rows < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1 || rows < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeComboBox::igdeComboBox( igdeEnvironment &environment, int columns, int rows,
-	bool editable, const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pSelection( -1 ),
-pColumns( columns ),
-pRows( rows ),
-pEditable( editable ),
-pDescription( description ),
-pInvalidValue( false )
+igdeComboBox::igdeComboBox(igdeEnvironment &environment, int columns, int rows,
+	bool editable, const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pSelection(-1),
+pColumns(columns),
+pRows(rows),
+pEditable(editable),
+pDescription(description),
+pInvalidValue(false),
+pAutoTranslateItems(false),
+pNativeComboBox(nullptr)
 {
-	if( columns < 1 || rows < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1 || rows < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -123,8 +125,8 @@ igdeComboBox::~igdeComboBox(){
 // Management
 ///////////////
 
-void igdeComboBox::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeComboBox::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -132,8 +134,8 @@ void igdeComboBox::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeComboBox::SetRows( int rows ){
-	if( pRows == rows ){
+void igdeComboBox::SetRows(int rows){
+	if(pRows == rows){
 		return;
 	}
 	
@@ -141,8 +143,8 @@ void igdeComboBox::SetRows( int rows ){
 	OnRowsChanged();
 }
 
-void igdeComboBox::SetEditable( bool editable ){
-	if( pEditable == editable ){
+void igdeComboBox::SetEditable(bool editable){
+	if(pEditable == editable){
 		return;
 	}
 	
@@ -150,8 +152,8 @@ void igdeComboBox::SetEditable( bool editable ){
 	OnEditableChanged();
 }
 
-void igdeComboBox::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeComboBox::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -159,8 +161,8 @@ void igdeComboBox::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeComboBox::SetInvalidValue( bool invalidValue ){
-	if( pInvalidValue == invalidValue ){
+void igdeComboBox::SetInvalidValue(bool invalidValue){
+	if(pInvalidValue == invalidValue){
 		return;
 	}
 	
@@ -172,143 +174,134 @@ void igdeComboBox::Focus(){
 	OnRequestFocus();
 }
 
-
-
-int igdeComboBox::GetItemCount() const{
-	return pItems.GetCount();
+void igdeComboBox::SetAutoTranslateItems(bool autoTranslateItems){
+	pAutoTranslateItems = autoTranslateItems;
 }
 
-igdeListItem *igdeComboBox::GetItemAt( int index ) const{
-	return ( igdeListItem* )pItems.GetAt( index );
+
+bool igdeComboBox::HasItem(const char *item) const{
+	return IndexOfItem(item) != -1;
 }
 
-bool igdeComboBox::HasItem( igdeListItem *item ) const{
-	return pItems.Has( item );
+bool igdeComboBox::HasItemWithData(void *data) const{
+	return IndexOfItemWithData(data) != -1;
 }
 
-bool igdeComboBox::HasItem( const char *item ) const{
-	return IndexOfItem( item ) != -1;
+bool igdeComboBox::HasItemWithRefData(const deObject::Ref &refData) const{
+	return IndexOfItemWithRefData(refData) != -1;
 }
 
-bool igdeComboBox::HasItemWithData( void *data ) const{
-	return IndexOfItemWithData( data ) != -1;
-}
-
-int igdeComboBox::IndexOfItem( igdeListItem *item ) const{
-	return pItems.IndexOf( item );
-}
-
-int igdeComboBox::IndexOfItem( const char *item ) const{
-	if( ! item ){
-		DETHROW( deeInvalidParam );
-	}
+int igdeComboBox::IndexOfItem(const char *item) const{
+	DEASSERT_NOTNULL(item)
 	
-	const int count = pItems.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( const igdeListItem* )pItems.GetAt( i ) )->GetText() == item ){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetText() == item;
+	});
 }
 
-int igdeComboBox::IndexOfItemWithData( void *data ) const{
-	const int count = pItems.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( ( ( const igdeListItem* )pItems.GetAt( i ) )->GetData() == data ){
-			return i;
-		}
-	}
-	
-	return -1;
+int igdeComboBox::IndexOfItemWithData(void *data) const{
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetData() == data;
+	});
 }
 
-void igdeComboBox::AddItem( igdeListItem *item ){
-	if( ! item ){
-		DETHROW( deeInvalidParam );
-	}
-	pItems.Add( item );
-	OnItemAdded( pItems.GetCount() - 1 );
+int igdeComboBox::IndexOfItemWithRefData(const deObject::Ref &refData) const{
+	return pItems.IndexOfMatching([&](const igdeListItem &each){
+		return each.GetRefData() == refData;
+	});
+}
+
+void igdeComboBox::AddItem(igdeListItem *item){
+	DEASSERT_NOTNULL(item)
+	pItems.AddOrThrow(item);
+	OnItemAdded(pItems.GetCount() - 1);
 	
-	if( ! pEditable && pItems.GetCount() == 1 ){
-		SetSelection( 0 );
+	if(!pEditable && pItems.GetCount() == 1){
+		SetSelection(0);
 	}
 }
 
-igdeListItem *igdeComboBox::AddItem( const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
-	item.TakeOver( new igdeListItem( text, icon, data ) );
-	AddItem( item );
+igdeListItem::Ref igdeComboBox::AddItem(const char *text, igdeIcon *icon, void *data){
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, data));
+	AddItem(item);
 	return item;
 }
 
-void igdeComboBox::InsertItem( int index, igdeListItem *item ){
-	if( ! item ){
-		DETHROW( deeInvalidParam );
+igdeListItem::Ref igdeComboBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon));
+	item->SetRefData(refData);
+	AddItem(item);
+	return item;
+}
+
+void igdeComboBox::InsertItem(int index, igdeListItem *item){
+	if(!item){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pItems.Insert( item, index );
-	if( pSelection >= index ){
+	pItems.InsertOrThrow(item, index);
+	if(pSelection >= index){
 		pSelection++;
 	}
 	
-	OnItemAdded( index );
+	OnItemAdded(index);
 	
-	if( ! pEditable && pItems.GetCount() == 1 ){
-		SetSelection( 0 );
+	if(!pEditable && pItems.GetCount() == 1){
+		SetSelection(0);
 	}
 }
 
-igdeListItem *igdeComboBox::InsertItem( int index, const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
-	item.TakeOver( new igdeListItem( text, icon, data ) );
-	InsertItem( index, item );
+igdeListItem::Ref igdeComboBox::InsertItem(int index, const char *text, igdeIcon *icon, void *data){
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, data));
+	InsertItem(index, item);
 	return item;
 }
 
-void igdeComboBox::MoveItem( int fromIndex, int toIndex ){
-	pItems.Move( fromIndex, toIndex );
+igdeListItem::Ref igdeComboBox::InsertItemRef(int index, const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon));
+	item->SetRefData(refData);
+	InsertItem(index, item);
+	return item;
+}
+
+void igdeComboBox::MoveItem(int fromIndex, int toIndex){
+	pItems.MoveIndex(fromIndex, toIndex);
 	
-	if( pSelection != -1 ){
-		if( fromIndex < toIndex ){
-			if( pSelection == fromIndex ){
+	if(pSelection != -1){
+		if(fromIndex < toIndex){
+			if(pSelection == fromIndex){
 				pSelection = toIndex;
 				
-			}else if( pSelection > fromIndex && pSelection <= toIndex ){
+			}else if(pSelection > fromIndex && pSelection <= toIndex){
 				pSelection--;
 			}
 			
 		}else{
-			if( pSelection == fromIndex ){
+			if(pSelection == fromIndex){
 				pSelection = toIndex;
 				
-			}else if( pSelection >= toIndex && pSelection < fromIndex ){
+			}else if(pSelection >= toIndex && pSelection < fromIndex){
 				pSelection++;
 			}
 		}
 	}
 	
-	OnItemMoved( fromIndex, toIndex );
+	OnItemMoved(fromIndex, toIndex);
 }
 
-void igdeComboBox::RemoveItem( int index ){
-	pItems.RemoveFrom( index );
+void igdeComboBox::RemoveItem(int index){
+	pItems.RemoveFrom(index);
 	
 	bool textChanged = false;
 	
-	if( pSelection == index ){
-		if( pEditable ){
+	if(pSelection == index){
+		if(pEditable){
 			pSelection = -1;
 			
 		}else{
-			pSelection = decMath::min( pSelection, pItems.GetCount() - 1 );
-			if( pSelection != -1 ){
-				pText = ( ( igdeListItem* )pItems.GetAt( pSelection ) )->GetText();
+			pSelection = decMath::min(pSelection, pItems.GetCount() - 1);
+			if(pSelection != -1){
+				pItems.GetAt(pSelection)->GetText();
 				
 			}else{
 				pText.Empty();
@@ -316,102 +309,73 @@ void igdeComboBox::RemoveItem( int index ){
 			textChanged = true;
 		}
 		
-	}else if( pSelection > index ){
+	}else if(pSelection > index){
 		pSelection--;
 	}
 	
-	OnItemRemoved( index );
+	OnItemRemoved(index);
 	
-	if( textChanged ){
+	if(textChanged){
 		NotifyTextChanged();
 	}
 }
 
 void igdeComboBox::RemoveAllItems(){
-	if( pItems.GetCount() == 0 ){
+	if(pItems.GetCount() == 0){
 		return;
 	}
 	
 	pItems.RemoveAll();
 	pSelection = -1;
-	if( ! pEditable ){
+	if(!pEditable){
 		pText.Empty();
 	}
 	
 	OnAllItemsRemoved();
 	
-	if( ! pEditable ){
+	if(!pEditable){
 		NotifyTextChanged();
 	}
 }
 
-void igdeComboBox::ItemChangedAt( int index ){
-	if( index < 0 || index >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
+void igdeComboBox::ItemChangedAt(int index){
+	if(index < 0 || index >= pItems.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
-	OnItemChanged( index );
+	OnItemChanged(index);
 }
 
 
 
-void igdeComboBox::SetSorter( igdeListItemSorter *sorter ){
+void igdeComboBox::SetSorter(igdeListItemSorter *sorter){
 	pSorter = sorter;
 }
 
 void igdeComboBox::SetDefaultSorter(){
-	pSorter.TakeOver( new igdeListItemSorter );
-}
-
-static void igdeComboBox_Sort( decObjectList &items, igdeListItemSorter &sorter, int left, int right ){
-	igdeListItemReference pivot( ( igdeListItem* )items.GetAt( left ) );
-	const int r_hold = right;
-	const int l_hold = left;
-	
-	while( left < right ){
-		while( left < right && sorter.Precedes( pivot, *( ( igdeListItem* )items.GetAt( right ) ) ) ){
-			right--;
-		}
-		if( left != right ){
-			items.SetAt( left, items.GetAt( right ) );
-			left++;
-		}
-		while( left < right && sorter.Precedes( *( ( igdeListItem* )items.GetAt( left ) ), pivot ) ){
-			left++;
-		}
-		if( left != right ){
-			items.SetAt( right, items.GetAt( left ) );
-			right--;
-		}
-	}
-	
-	items.SetAt( left, ( igdeListItem* )pivot );
-	if( l_hold < left ){
-		igdeComboBox_Sort( items, sorter, l_hold, left - 1 );
-	}
-	if( r_hold > left ){
-		igdeComboBox_Sort( items, sorter, left + 1, r_hold );
-	}
+	pSorter = igdeListItemSorter::Ref::New();
 }
 
 void igdeComboBox::SortItems(){
-	if( ! pSorter ){
+	if(!pSorter){
 		return;
 	}
 	
 	const int count = pItems.GetCount();
-	if( count < 2 ){
+	if(count < 2){
 		return;
 	}
 	
-	deObject *selection = NULL;
-	if( pSelection != -1 ){
-		selection = pItems.GetAt( pSelection );
+	igdeListItem::Ref selection;
+	if(pSelection != -1){
+		selection = pItems.GetAt(pSelection);
 	}
 	
-	igdeComboBox_Sort( pItems, pSorter, 0, count - 1 );
+	pItems.Sort([&](const igdeListItem &a, const igdeListItem &b){
+		return pSorter->Precedes(a, b) ? -1 : 1;
+	});
 	
-	if( selection ){
-		pSelection = pItems.IndexOf( selection );
+	if(selection){
+		pSelection = pItems.IndexOf(selection);
 	}
 	
 	OnItemsSorted();
@@ -420,53 +384,95 @@ void igdeComboBox::SortItems(){
 
 
 igdeListItem *igdeComboBox::GetSelectedItem() const{
-	return pSelection != -1 ? ( igdeListItem* )pItems.GetAt( pSelection ) : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection).Pointer() : nullptr;
 }
 
 void *igdeComboBox::GetSelectedItemData() const{
-	return pSelection != -1 ? ( ( igdeListItem* )pItems.GetAt( pSelection ) )->GetData() : nullptr;
+	return pSelection != -1 ? pItems.GetAt(pSelection)->GetData() : nullptr;
 }
 
-void igdeComboBox::SetSelection( int selection ){
-	if( selection < -1 || selection >= pItems.GetCount() ){
-		DETHROW( deeInvalidParam );
+deObject::Ref igdeComboBox::GetSelectedItemRefData() const{
+	return pSelection != -1 ? pItems.GetAt(pSelection)->GetRefData() : deObject::Ref();
+}
+
+void igdeComboBox::SetSelection(int selection){
+	if(selection < -1 || selection >= pItems.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( selection == pSelection ){
+	if(selection == pSelection){
 		return;
 	}
 	
 	pSelection = selection;
 	
-	if( selection != -1 ){
-		pText = ( ( igdeListItem* )pItems.GetAt( selection ) )->GetText();
+	if(selection != -1){
+		pText = pItems.GetAt(selection)->GetText();
 		OnTextChanged();
 		NotifyTextChanged();
 		
-	}else if( ! pEditable ){
+	}else if(!pEditable){
 		pText.Empty();
 		OnTextChanged();
 		NotifyTextChanged();
 	}
 }
 
-void igdeComboBox::SetSelectionWithData( void *data ){
-	SetSelection( IndexOfItemWithData( data ) );
+void igdeComboBox::SetSelectionWithData(void *data){
+	SetSelection(IndexOfItemWithData(data));
+}
+
+void igdeComboBox::SetSelectionWithRefData(const deObject::Ref &refData){
+	SetSelection(IndexOfItemWithRefData(refData));
+}
+
+void igdeComboBox::UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection){
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1 && defaultSelection != -1){
+			index = decMath::min(defaultSelection, pItems.GetCount() - 1);
+		}
+	}
+	
+	SetSelection(index);
+}
+
+void igdeComboBox::UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection){
+	void * const selection = GetSelectedItemData();
+	const int selectedIndex = pSelection;
+	
+	block();
+	
+	int index = IndexOfItemWithData(selection);
+	if(index == -1 && pItems.IsNotEmpty()){
+		index = decMath::min(selectedIndex, pItems.GetCount() - 1);
+		if(index == -1){
+			index = IndexOfItemWithData(defaultSelection);
+		}
+	}
+	
+	SetSelection(index);
 }
 
 
 
-void igdeComboBox::SetText( const char *text, bool changing ){
-	if( pText == text ){
+void igdeComboBox::SetText(const char *text, bool changing){
+	if(pText == text){
 		return;
 	}
 	
 	pText = text;
-	pSelection = IndexOfItem( text );
+	pSelection = IndexOfItem(text);
 	
 	OnTextChanged();
 	
-	if( changing ){
+	if(changing){
 		NotifyTextChanging();
 		
 	}else{
@@ -475,170 +481,171 @@ void igdeComboBox::SetText( const char *text, bool changing ){
 }
 
 void igdeComboBox::ClearText(){
-	SetText( "", false );
+	SetText("", false);
 }
 
 
-
-void igdeComboBox::AddListener( igdeComboBoxListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeComboBox::AddListener(igdeComboBoxListener *listener){
+	if(!listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeComboBox::RemoveListener( igdeComboBoxListener *listener ){
-	pListeners.Remove( listener );
+void igdeComboBox::RemoveListener(igdeComboBoxListener *listener){
+	pListeners.Remove(listener);
 }
-
 void igdeComboBox::NotifyTextChanged(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeComboBoxListener* )listeners.GetAt( i ) )->OnTextChanged( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeComboBoxListener &l){
+		l.OnTextChanged(this);
+	});
 }
 
 void igdeComboBox::NotifyTextChanging(){
-	const decObjectOrderedSet listeners( pListeners );
-	const int count = listeners.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( igdeComboBoxListener* )listeners.GetAt( i ) )->OnTextChanging( this );
-	}
+	const auto listeners(pListeners);
+	listeners.Visit([&](igdeComboBoxListener &l){
+		l.OnTextChanging(this);
+	});
 }
 
 
 
 void igdeComboBox::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeComboBox * const native = igdeNativeComboBox::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeComboBox * const native = igdeNativeComboBox::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeComboBox = native;
 	native->PostCreateNativeWidget();
 }
 
 void igdeComboBox::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeComboBox* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeComboBox*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
-
-
-void igdeComboBox::OnItemAdded( int index ){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	const igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( index ) );
-	igdeNativeComboBox &native = *( ( igdeNativeComboBox* )GetNativeWidget() );
-	native.InsertItem( index, item );
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+void igdeComboBox::DropNativeWidget(){
+	pNativeComboBox = nullptr;
+	igdeWidget::DropNativeWidget();
 }
 
-void igdeComboBox::OnItemRemoved( int index ){
-	if( ! GetNativeWidget() ){
+
+void igdeComboBox::OnItemAdded(int index){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *( ( igdeNativeComboBox* )GetNativeWidget() );
-	native.RemoveItem( index );
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+	const igdeListItem &item = pItems.GetAt(index);
+	pNativeComboBox->InsertItem(index, item);
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
+	pNativeComboBox->UpdateRowCount();
+}
+
+void igdeComboBox::OnItemRemoved(int index){
+	if(!pNativeComboBox){
+		return;
+	}
+	
+	pNativeComboBox->RemoveItem(index);
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
+	pNativeComboBox->UpdateRowCount();
 }
 
 void igdeComboBox::OnAllItemsRemoved(){
-	if( ! GetNativeWidget() ){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *( ( igdeNativeComboBox* )GetNativeWidget() );
-	native.RemoveAllItems();
-	//native.SyncSelection( false );
-	native.UpdateText();
-	native.UpdateRowCount();
+	pNativeComboBox->RemoveAllItems();
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
+	pNativeComboBox->UpdateRowCount();
 }
 
-void igdeComboBox::OnItemChanged( int index ){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->UpdateItem( index );
+void igdeComboBox::OnItemChanged(int index){
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateItem(index);
 	}
 }
 
-void igdeComboBox::OnItemMoved( int fromIndex, int toIndex ){
-	if( ! GetNativeWidget() ){
+void igdeComboBox::OnItemMoved(int fromIndex, int toIndex){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *( ( igdeNativeComboBox* )GetNativeWidget() );
-	native.MoveItem( fromIndex, toIndex );
-	//native.SyncSelection( false );
-	native.UpdateText();
+	pNativeComboBox->MoveItem(fromIndex, toIndex);
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
 }
 
 void igdeComboBox::OnItemsSorted(){
-	if( ! GetNativeWidget() ){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	igdeNativeComboBox &native = *( ( igdeNativeComboBox* )GetNativeWidget() );
-	native.BuildList();
-	//native.SyncSelection( false );
-	native.UpdateText();
+	pNativeComboBox->BuildList();
+	//pNativeComboBox->.SyncSelection( false );
+	pNativeComboBox->UpdateText();
 }
 
 void igdeComboBox::OnTextChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->UpdateText();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateText();
 	}
 }
 
 void igdeComboBox::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
+	if(!pNativeComboBox){
 		return;
 	}
 	
-	( ( igdeNativeComboBox* )GetNativeWidget() )->UpdateEnabled();
+	pNativeComboBox->UpdateEnabled();
 }
 
 void igdeComboBox::OnRowsChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->UpdateRowCount();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateRowCount();
 	}
 }
 
 void igdeComboBox::OnEditableChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->UpdateEditable();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateEditable();
 	}
 }
 
 void igdeComboBox::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->UpdateDescription();
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateDescription();
 	}
 }
 
 void igdeComboBox::OnInvalidValueChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->OnInvalidValueChanged();
+	if(pNativeComboBox){
+		pNativeComboBox->OnInvalidValueChanged();
 	}
 }
 
 void igdeComboBox::OnRequestFocus(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeComboBox* )GetNativeWidget() )->Focus();
+	if(pNativeComboBox){
+		pNativeComboBox->Focus();
+	}
+}
+
+void igdeComboBox::OnNativeWidgetLanguageChanged(){
+	if(pNativeComboBox){
+		pNativeComboBox->UpdateDescription();
+		if(pAutoTranslateItems){
+			pNativeComboBox->BuildList();
+		}
 	}
 }

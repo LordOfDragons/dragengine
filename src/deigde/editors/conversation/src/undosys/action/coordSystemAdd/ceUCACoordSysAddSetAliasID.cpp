@@ -41,33 +41,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACoordSysAddSetAliasID::ceUCACoordSysAddSetAliasID( ceConversationTopic *topic,
-ceCACoordSystemAdd *action, const char *newAliasID ){
-	if( ! topic || ! newAliasID ){
-		DETHROW( deeInvalidParam );
+ceUCACoordSysAddSetAliasID::ceUCACoordSysAddSetAliasID(ceConversationTopic *topic,
+ceCACoordSystemAdd *action, const char *newAliasID){
+	if(!topic || !newAliasID){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldAliasID = action->GetAliasID();
 	pNewAliasID = newAliasID;
 	
-	SetShortInfo( "Coord system add set alias id" );
+	SetShortInfo("@Conversation.Undo.CoordSystemAddSetAliasID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCACoordSysAddSetAliasID::~ceUCACoordSysAddSetAliasID(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ ceUCACoordSysAddSetAliasID::~ceUCACoordSysAddSetAliasID(){
 ///////////////
 
 void ceUCACoordSysAddSetAliasID::Undo(){
-	pAction->SetAliasID( pOldAliasID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetAliasID(pOldAliasID.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCACoordSysAddSetAliasID::Redo(){
-	pAction->SetAliasID( pNewAliasID.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetAliasID(pNewAliasID.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }

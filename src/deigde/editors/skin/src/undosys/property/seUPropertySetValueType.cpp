@@ -37,24 +37,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValueType::seUPropertySetValueType( seProperty *property, seProperty::eValueTypes newType ){
-	if( ! property ) DETHROW( deeInvalidParam );
+seUPropertySetValueType::seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType){
+	if(!property) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
-	SetShortInfo( "Property Set Value Type" );
+	SetShortInfo("@Skin.Undo.PropertySetValueType");
 	
 	pOldType = property->GetValueType();
 	pNewType = newType;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetValueType::~seUPropertySetValueType(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -63,9 +59,9 @@ seUPropertySetValueType::~seUPropertySetValueType(){
 ///////////////
 
 void seUPropertySetValueType::Undo(){
-	pProperty->SetValueType( pOldType );
+	pProperty->SetValueType(pOldType);
 }
 
 void seUPropertySetValueType::Redo(){
-	pProperty->SetValueType( pNewType );
+	pProperty->SetValueType(pNewType);
 }

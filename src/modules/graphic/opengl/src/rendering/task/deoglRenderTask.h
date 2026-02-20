@@ -25,11 +25,12 @@
 #ifndef _DEOGLRENDERTASK_H_
 #define _DEOGLRENDERTASK_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
-#include "../../shaders/paramblock/deoglShaderParameterBlockList.h"
+#include "../../shaders/paramblock/deoglShaderParameterBlock.h"
 
 class deoglQuickSorter;
 class deoglRenderTaskPipeline;
@@ -79,7 +80,7 @@ private:
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
-	deoglShaderParameterBlockList pSPBInstances;
+	deoglShaderParameterBlock::List pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	int pSPBInstanceIndexCount;
 	bool pUseSPBInstanceFlags;
@@ -87,15 +88,11 @@ private:
 	GLuint pVBODrawIndirect;
 	//int pVBODrawIndirectSize;
 	
-	decPointerList pPipelines;
+	decTList<deoglRenderTaskPipeline*> pHasPipeline;
+	decTUniqueList<deoglRenderTaskPipeline> pPipelines;
 	int pPipelineCount;
-	deoglRenderTaskPipeline **pHasPipeline;
-	int pHasPipelineCount;
-	int pHasPipelineSize;
 	
-	sConfigTexture *pConfigTextures;
-	int pConfigTextureCount;
-	int pConfigTextureSize;
+	decTList<sConfigTexture> pConfigTextures;
 	
 	
 	
@@ -103,7 +100,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task. */
-	deoglRenderTask( deoglRenderThread &renderThread );
+	deoglRenderTask(deoglRenderThread &renderThread);
 	
 	/** Clean up render task. */
 	~deoglRenderTask();
@@ -123,32 +120,32 @@ public:
 	void PrepareForRender();
 	
 	/** Sort instances by distance. */
-	void SortInstancesByDistance( deoglQuickSorter &sorter,
-		const decDVector &position, const decDVector &direction );
+	void SortInstancesByDistance(deoglQuickSorter &sorter,
+		const decDVector &position, const decDVector &direction);
 	
 	/** Render parameter shader parameter block or NULL. */
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
 	/** Set render parameter shader parameter block or NULL to use none. */
-	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
+	void SetRenderParamBlock(deoglSPBlockUBO *paramBlock);
 	
 	/** Instances texture buffer object or NULL. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
 	/** Set instances texture buffer object or NULL to use none. */
-	void SetTBOInstances( GLuint tbo );
+	void SetTBOInstances(GLuint tbo);
 	
 	/** Use SPB instance flags. */
 	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
 	/** Set use instance flags. */
-	void SetUseSPBInstanceFlags( bool useFlags );
+	void SetUseSPBInstanceFlags(bool useFlags);
 	
 	/** Use vertex shader stereo rendering. */
 	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
 	/** Set use vertex shader stereo rendering. */
-	void SetRenderVSStereo( bool renderVSStereo );
+	void SetRenderVSStereo(bool renderVSStereo);
 	
 	/**
 	 * VBO draw indirect. Content is an array of oglDrawIndirectCommand. This is a union
@@ -163,16 +160,16 @@ public:
 	inline int GetPipelineCount() const{ return pPipelineCount; }
 	
 	/** Pipeline at index. */
-	deoglRenderTaskPipeline *GetPipelineAt( int index ) const;
+	deoglRenderTaskPipeline *GetPipelineAt(int index) const;
 	
 	/** Add pipeline. */
-	deoglRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
-	deoglRenderTaskPipeline *AddPipelineDirect( const deoglPipeline *pipeline );
+	deoglRenderTaskPipeline *AddPipeline(const deoglPipeline *pipeline);
+	deoglRenderTaskPipeline *AddPipelineDirect(const deoglPipeline *pipeline);
 	
 	
 	
 	/** Add configuration texture. */
-	void AddConfigTexture( const deoglRenderTaskConfigTexture &texture, int specialFlags );
+	void AddConfigTexture(const deoglRenderTaskConfigTexture &texture, int specialFlags);
 	
 	/** Remove all configuration textures. */
 	void RemoveAllConfigTextures();
@@ -203,8 +200,8 @@ public:
 	/** \name Debug */
 	/*@{*/
 	/** Debug print. */
-	void DebugPrint( deoglRTLogger &rtlogger );
-	void DebugSimple( deoglRTLogger &logger );
+	void DebugPrint(deoglRTLogger &rtlogger);
+	void DebugSimple(deoglRTLogger &logger);
 	/*@}*/
 	
 	

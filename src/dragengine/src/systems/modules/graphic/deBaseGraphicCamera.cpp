@@ -58,10 +58,10 @@ void deBaseGraphicCamera::LayerMaskChanged(){
 
 
 
-void deBaseGraphicCamera::EffectAdded( int, deEffect* ){
+void deBaseGraphicCamera::EffectAdded(int, deEffect*){
 }
 
-void deBaseGraphicCamera::EffectRemoved( int, deEffect* ){
+void deBaseGraphicCamera::EffectRemoved(int, deEffect*){
 }
 
 void deBaseGraphicCamera::AllEffectsRemoved(){

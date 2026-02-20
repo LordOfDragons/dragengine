@@ -44,24 +44,11 @@
 ////////////////////////////
 
 deoglRenderTaskVAO::deoglRenderTaskVAO() :
-pVAO( NULL ),
-pInstanceCount( 0 ),
-pHasInstance( NULL ),
-pHasInstanceCount( 0 ),
-pHasInstanceSize( 0 ){
+pVAO(nullptr),
+pInstanceCount(0){
 }
 
 deoglRenderTaskVAO::~deoglRenderTaskVAO(){
-	if( pHasInstance ){
-		delete [] pHasInstance;
-	}
-	
-	const int instanceCount = pInstances.GetCount();
-	int i;
-	for( i=0; i<instanceCount; i++ ){
-		delete ( deoglRenderTaskInstance* )pInstances.GetAt( i );
-	}
-	pInstances.RemoveAll();
 }
 
 
@@ -70,108 +57,82 @@ deoglRenderTaskVAO::~deoglRenderTaskVAO(){
 ///////////////
 
 void deoglRenderTaskVAO::Reset(){
-	pVAO = NULL;
+	pVAO = nullptr;
+	pHasInstance.RemoveAll();
 	pInstanceCount = 0;
-	pHasInstanceCount = 0;
 }
 
 
 
-void deoglRenderTaskVAO::SetVAO( const deoglRenderTaskSharedVAO *vao ){
+void deoglRenderTaskVAO::SetVAO(const deoglRenderTaskSharedVAO *vao){
 	pVAO = vao;
 }
 
 
 
 int deoglRenderTaskVAO::GetTotalPointCount() const{
-	int i, pointCount = 0;
-	for( i=0; i<pInstanceCount; i++ ){
-		const deoglRenderTaskSharedInstance &instance =
-			*( ( deoglRenderTaskInstance* )pInstances.GetAt( i ) )->GetInstance();
-		pointCount += ( instance.GetIndexCount() + instance.GetPointCount() )
-			* decMath::max( instance.GetSubInstanceCount(), 1 );
-	}
-	return pointCount;
+	return pInstances.Inject(0, 0, pInstanceCount, [](int sum, const deoglRenderTaskInstance &inst) {
+		const deoglRenderTaskSharedInstance &si = *inst.GetInstance();
+		return sum + (si.GetIndexCount() + si.GetPointCount()) * decMath::max(si.GetSubInstanceCount(), 1);
+	});
 }
 
 int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
-	int i, subInstanceCount = 0;
-	for( i=0; i<pInstanceCount; i++ ){
-		subInstanceCount += ( ( deoglRenderTaskInstance* )pInstances.GetAt( i ) )->GetSubInstanceCount();
-	}
-	return subInstanceCount;
+	return pInstances.Inject(0, 0, pInstanceCount, [](int sum, const deoglRenderTaskInstance &inst) {
+		return sum + inst.GetSubInstances().GetCount();
+	});
 }
 
 
 
-deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt( int index ) const{
-	return ( deoglRenderTaskInstance* )pInstances.GetAt( index );
+deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt(int index) const{
+	return pInstances.GetAt(index);
 }
 
-deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance( const deoglRenderTaskSharedInstance *instance ){
-	if( ! instance ){
-		DETHROW( deeInvalidParam );
-	}
+deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(const deoglRenderTaskSharedInstance *instance){
+	DEASSERT_NOTNULL(instance)
 	
 	const int index = instance->GetIndex();
 	
-	if( index >= pHasInstanceCount ){
-		if( index >= pHasInstanceSize ){
-			deoglRenderTaskInstance ** const newArray = new deoglRenderTaskInstance*[ index + 1 ];
-			
-			if( pHasInstance ){
-				if( pHasInstanceCount > 0 ){
-					memcpy( newArray, pHasInstance, sizeof( deoglRenderTaskInstance* ) * pHasInstanceCount );
-				}
-				delete [] pHasInstance;
-			}
-			
-			pHasInstance = newArray;
-			pHasInstanceSize = index + 1;
-		}
-		
-		if( pHasInstanceCount <= index ){
-			memset( pHasInstance + pHasInstanceCount, 0,
-				sizeof( deoglRenderTaskInstance* ) * ( index - pHasInstanceCount + 1 ) );
-			pHasInstanceCount = index + 1;
-		}
+	while(index >= pHasInstance.GetCount()){
+		pHasInstance.Add(nullptr);
 	}
 	
-	deoglRenderTaskInstance *rtinstance = pHasInstance[ index ];
-	if( rtinstance ){
+	deoglRenderTaskInstance *rtinstance = pHasInstance.GetAt(index);
+	if(rtinstance){
 		return rtinstance;
 	}
 	
-	if( pInstanceCount == pInstances.GetCount() ){
-		rtinstance = new deoglRenderTaskInstance;
-		pInstances.Add( rtinstance );
+	if(pInstanceCount == pInstances.GetCount()){
+		pInstances.Add(deoglRenderTaskInstance::Ref::New());
+		rtinstance = pInstances.Last();
 		
 	}else{
-		rtinstance = ( deoglRenderTaskInstance* )pInstances.GetAt( pInstanceCount );
+		rtinstance = pInstances.GetAt(pInstanceCount);
 		rtinstance->Reset();
 	}
 	pInstanceCount++;
 	
-	rtinstance->SetInstance( instance );
-	pHasInstance[ index ] = rtinstance;
+	rtinstance->SetInstance(instance);
+	pHasInstance.SetAt(index, rtinstance);
 	return rtinstance;
 }
 
 
 
-void deoglRenderTaskVAO::SortInstancesByDistance( deoglQuickSorter &sorter,
-const decDVector &position, const decDVector &direction, double posDotDir ){
+void deoglRenderTaskVAO::SortInstancesByDistance(deoglQuickSorter &sorter,
+const decDVector &position, const decDVector &direction, double posDotDir){
 	// instance has no more a matrix model view parameter. to get sorting working again it would be required
 	// to stored in the instance the sorting score directly
 #if 0
-	if( pInstanceCount > 1 ){
+	if(pInstanceCount > 1){
 		deoglRenderTaskInstance *instance = pRootInstance;
 		deoglRenderTaskInstance *newRoot, *newTail;
 		int i;
 		
 		sorter.RemoveAllElements();
-		while( instance ){
-			sorter.AddElement( instance, ( float )( instance->GetMatrixModelView().GetPosition() * direction - posDotDir ) );
+		while(instance){
+			sorter.AddElement(instance, (float)(instance->GetMatrixModelView().GetPosition() * direction - posDotDir));
 			instance = instance->GetNextInstance();
 		}
 		
@@ -179,16 +140,16 @@ const decDVector &position, const decDVector &direction, double posDotDir ){
 		
 		void ** elements = sorter.GetElements();
 		
-		newRoot = ( deoglRenderTaskInstance* )elements[ 0 ];
+		newRoot = (deoglRenderTaskInstance*)elements[0];
 		newTail = newRoot;
 		
-		for( i=1; i<pInstanceCount; i++ ){
-			instance = ( deoglRenderTaskInstance* )elements[ i ];
-			newTail->SetNextInstance( instance );
+		for(i=1; i<pInstanceCount; i++){
+			instance = (deoglRenderTaskInstance*)elements[i];
+			newTail->SetNextInstance(instance);
 			newTail = instance;
 		}
 		
-		newTail->SetNextInstance( NULL );
+		newTail->SetNextInstance(NULL);
 		
 		pRootInstance = newRoot;
 		pTailInstance = newTail;

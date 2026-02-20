@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetParameter::ceUCCShotSetParameter( ceCameraShot *cameraShot, int parameter ){
-	if( ! cameraShot || parameter < 0 || parameter >= ceCameraShot::EP_COUNT ){
-		DETHROW( deeInvalidParam );
+ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter){
+	if(!cameraShot || parameter < 0 || parameter >= ceCameraShot::EP_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	pParameter = parameter;
 	
-	SetShortInfo( "Camera Shot Set Parameter" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetParameter");
 	
-	pOldCurve = cameraShot->GetParameterCurve( parameter );
+	pOldCurve = cameraShot->GetParameterCurve(parameter);
 	pNewCurve = pOldCurve;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetParameter::~ceUCCShotSetParameter(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -67,16 +63,16 @@ ceUCCShotSetParameter::~ceUCCShotSetParameter(){
 // Management
 ///////////////
 
-void ceUCCShotSetParameter::SetNewCurve( const decCurveBezier &curve ){
+void ceUCCShotSetParameter::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 
 
 
 void ceUCCShotSetParameter::Undo(){
-	pCameraShot->SetParameterCurve( pParameter, pOldCurve );
+	pCameraShot->SetParameterCurve(pParameter, pOldCurve);
 }
 
 void ceUCCShotSetParameter::Redo(){
-	pCameraShot->SetParameterCurve( pParameter, pNewCurve );
+	pCameraShot->SetParameterCurve(pParameter, pNewCurve);
 }

@@ -45,15 +45,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create constraint. */
-	debpBPConstraintPoint2Point( debpColliderConstraint &constraint, btRigidBody &rbA,
-		btRigidBody &rbB, const btVector3 &pivotInA, const btVector3 &pivotInB );
+	debpBPConstraintPoint2Point(debpColliderConstraint &constraint, btRigidBody &rbA,
+		btRigidBody &rbB, const btVector3 &pivotInA, const btVector3 &pivotInB);
 	
 	/** \brief Create constraint. */
-	debpBPConstraintPoint2Point( debpColliderConstraint &constraint, btRigidBody &rbA,
-		const btVector3 &pivotInA, const btVector3 &pivotInB );
+	debpBPConstraintPoint2Point(debpColliderConstraint &constraint, btRigidBody &rbA,
+		const btVector3 &pivotInA, const btVector3 &pivotInB);
 	
 	/** \brief Clean up constraint. */
-	virtual ~debpBPConstraintPoint2Point();
+	~debpBPConstraintPoint2Point() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	 * \brief Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
-	virtual void getInfo2( btConstraintInfo2 *info );
+	void getInfo2(btConstraintInfo2 *info) override;
 	/*@}*/
 };
 

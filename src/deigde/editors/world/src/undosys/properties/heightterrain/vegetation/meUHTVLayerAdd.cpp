@@ -29,7 +29,6 @@
 #include "meUHTVLayerAdd.h"
 #include "../../../../world/meWorld.h"
 #include "../../../../world/terrain/meHeightTerrain.h"
-#include "../../../../world/terrain/meHeightTerrain.h"
 #include "../../../../world/heightterrain/meHTVegetationLayer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -42,23 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLayerAdd::meUHTVLayerAdd( meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer ){
-	if( ! world || ! heightTerrain || ! vlayer ) DETHROW( deeInvalidParam );
+meUHTVLayerAdd::meUHTVLayerAdd(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
+	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
-	SetShortInfo( "Add Height Terrain Vegetation Layer" );
-	
-	world->AddReference();
-	
+	SetShortInfo("@World.UHTVLayerAdd.AddHeightTerrainVegetationLayer");
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerAdd::~meUHTVLayerAdd(){
-	if( pVLayer ) pVLayer->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
 }
 
 
@@ -67,10 +60,10 @@ meUHTVLayerAdd::~meUHTVLayerAdd(){
 ///////////////
 
 void meUHTVLayerAdd::Undo(){
-	pHeightTerrain->RemoveVLayer( pVLayer );
+	pHeightTerrain->RemoveVLayer(pVLayer);
 }
 
 void meUHTVLayerAdd::Redo(){
-	pHeightTerrain->AddVLayer( pVLayer );
-	pHeightTerrain->SetActiveVLayer( pVLayer );
+	pHeightTerrain->AddVLayer(pVLayer);
+	pHeightTerrain->SetActiveVLayer(pVLayer);
 }

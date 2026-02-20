@@ -26,11 +26,11 @@
 #define _CEUCCTRIGGERSETTESTMODE_H_
 
 #include "../../../conversation/condition/ceCConditionTrigger.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,10 +38,14 @@ class ceConversationTopic;
  * \brief Undo trigger conversation condition set test mode.
  */
 class ceUCCTriggerSetTestMode : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCTriggerSetTestMode>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	ceCConditionTrigger::eTestModes pOldTestMode;
 	ceCConditionTrigger::eTestModes pNewTestMode;
 	
@@ -49,19 +53,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCTriggerSetTestMode( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode );
+	ceUCCTriggerSetTestMode(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCCTriggerSetTestMode();
+protected:
+	~ceUCCTriggerSetTestMode() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

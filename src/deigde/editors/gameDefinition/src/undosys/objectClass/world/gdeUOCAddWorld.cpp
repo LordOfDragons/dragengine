@@ -41,7 +41,7 @@ pWorld(world)
 	DEASSERT_NOTNULL(objectClass)
 	DEASSERT_NOTNULL(world)
 	
-	SetShortInfo("Add World");
+	SetShortInfo("@GameDefinition.Undo.OCAddWorld");
 }
 
 
@@ -64,4 +64,9 @@ void gdeUOCAddWorld::Undo(){
 void gdeUOCAddWorld::Redo(){
 	pObjectClass->GetWorlds().Add(pWorld);
 	pObjectClass->NotifyWorldsChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCWorld(pWorld);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCWorld);
 }

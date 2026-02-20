@@ -38,24 +38,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetImagePath::seUPropertySetImagePath( seProperty *property, const char *newPath ){
-	if( ! property || ! newPath ) DETHROW( deeInvalidParam );
+seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const char *newPath){
+	if(!property || !newPath) DETHROW(deeInvalidParam);
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
-	SetShortInfo( "Property Set Image Path" );
+	SetShortInfo("@Skin.Undo.PropertySetImagePath");
 	
 	pOldPath = property->GetImagePath();
 	pNewPath = newPath;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetImagePath::~seUPropertySetImagePath(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -64,9 +60,9 @@ seUPropertySetImagePath::~seUPropertySetImagePath(){
 ///////////////
 
 void seUPropertySetImagePath::Undo(){
-	pProperty->SetImagePath( pOldPath.GetString() );
+	pProperty->SetImagePath(pOldPath.GetString());
 }
 
 void seUPropertySetImagePath::Redo(){
-	pProperty->SetImagePath( pNewPath.GetString() );
+	pProperty->SetImagePath(pNewPath.GetString());
 }

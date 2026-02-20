@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class seSkin;
-class seWPUndoHistoryListener;
+#include "../../skin/seSkin.h"
+#include "seWPUndoHistoryListener.h"
 
 
 
@@ -36,8 +36,12 @@ class seWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class seWPUndoHistory : public igdeWPUndoHistory{
-	seWPUndoHistoryListener *pListener;
-	seSkin *pSkin;
+public:
+	using Ref = deTObjectReference<seWPUndoHistory>;
+	
+private:
+	seWPUndoHistoryListener::Ref pListener;
+	seSkin::Ref pSkin;
 	
 	
 	
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPUndoHistory( igdeEnvironment &environment );
+	seWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~seWPUndoHistory();
+	~seWPUndoHistory() override;
 	/*@}*/
 	
 	
@@ -58,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	/*@}*/
 };
 

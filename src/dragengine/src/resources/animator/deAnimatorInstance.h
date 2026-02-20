@@ -26,11 +26,12 @@
 #define _DEANIMATORINSTANCE_H_
 
 #include "rule/deAnimatorRule.h"
-#include "deAnimatorReference.h"
+#include "deAnimator.h"
 #include "../deResource.h"
-#include "../animation/deAnimationReference.h"
-#include "../component/deComponentReference.h"
+#include "../animation/deAnimation.h"
+#include "../component/deComponent.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deBaseScriptingCollider;
 class deTouchSensor;
@@ -67,23 +68,20 @@ class deBaseAnimatorAnimatorInstance;
 class DE_DLL_EXPORT deAnimatorInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deAnimatorInstance> Ref;
-	
+	using Ref = deTObjectReference<deAnimatorInstance>;
 	
 	
 private:
-	deAnimatorReference pAnimator;
-	deComponentReference pComponent;
-	deAnimationReference pAnimation;
+	deAnimator::Ref pAnimator;
+	deComponent::Ref pComponent;
+	deAnimation::Ref pAnimation;
 	
 	deAnimatorRule::eBlendModes pBlendMode;
 	float pBlendFactor;
 	bool pEnableRetargeting;
 	bool pProtectDynamicBones;
 	
-	deAnimatorController *pControllers;
-	int pControllerCount;
-	int pControllerSize;
+	decTObjectOrderedSet<deAnimatorController> pControllers;
 	
 	deBaseAnimatorAnimatorInstance *pPeerAnimator;
 	
@@ -96,7 +94,7 @@ public:
 	 * \brief Create a new animator instance.
 	 * \throws deeInvalidParam manager is NULL.
 	 */
-	deAnimatorInstance( deAnimatorInstanceManager *manager );
+	deAnimatorInstance(deAnimatorInstanceManager *manager);
 	
 protected:
 	/**
@@ -105,7 +103,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deAnimatorInstance();
+	~deAnimatorInstance() override;
 	/*@}*/
 	
 	
@@ -114,7 +112,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Animator or NULL if none is set. */
-	inline deAnimator *GetAnimator() const{ return pAnimator; }
+	inline const deAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/**
 	 * \brief Set animator or NULL to unset it.
@@ -122,19 +120,19 @@ public:
 	 * name in the old and new animator. Otherwise initializes all
 	 * controllers to the value of the new animator.
 	 */
-	void SetAnimator( deAnimator *animator, bool keepValues = false );
+	void SetAnimator(deAnimator *animator, bool keepValues = false);
 	
 	/** \brief Component or NULL if none is set. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component or NULL to unset it. */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	/** \brief Animation or NULL if none is set. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline const deAnimation::Ref &GetAnimation() const{ return pAnimation; }
 	
 	/** \brief Set animation or NULL to unset it. */
-	void SetAnimation( deAnimation *animation );
+	void SetAnimation(deAnimation *animation);
 	
 	
 	
@@ -145,44 +143,38 @@ public:
 	 * \brief Set blend mode.
 	 * \throws deeInvalidParam \em mode is not a member of deAnimatorRule::eBlendModes.
 	 */
-	void SetBlendMode( deAnimatorRule::eBlendModes mode );
+	void SetBlendMode(deAnimatorRule::eBlendModes mode);
 	
 	/** \brief Blend factor in the range of 0 to 1. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
 	
 	/** \brief Set blend factor in the range of 0 to 1. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	/** \brief Enable retargeting. */
 	inline bool GetEnableRetargeting() const{ return pEnableRetargeting; }
 	
 	/** \brief Set if retargeting is enabled. */
-	void SetEnableRetargeting( bool enableRetargeting );
+	void SetEnableRetargeting(bool enableRetargeting);
 	
 	/** \brief Protect dynamic bones from being animated. */
 	inline bool GetProtectDynamicBones() const{ return pProtectDynamicBones; }
 	
 	/** \brief Set if dynamic bones are protected from being animated. */
-	void SetProtectDynamicBones( bool protectDynamicBones );
+	void SetProtectDynamicBones(bool protectDynamicBones);
 	
 	
 	
 	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeInvalidParam \em index is less than 0.
-	 * \throws deeInvalidParam \em index is greater or equal than GetControllerCount().
-	 */
-	deAnimatorController &GetControllerAt( int index );
-	const deAnimatorController &GetControllerAt( int index ) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deAnimatorController> &GetControllers() const{ return pControllers; }
+
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Notify peer controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	
 	
 	
@@ -196,12 +188,12 @@ public:
 	 * resources take care of waiting for the result to become ready
 	 * if required.
 	 */
-	void Apply( bool direct = false );
+	void Apply(bool direct = false);
 	
 	/**
 	 * \brief Capture current state into snapshot rules matching identifier
 	 */
-	void CaptureStateInto( int identifier );
+	void CaptureStateInto(int identifier);
 	
 	/**
 	 * \brief Store animation frame from animation into into rules matching identifier.
@@ -210,7 +202,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em moveName is NULL.
 	 */
-	void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	/*@}*/
 	
 	
@@ -221,7 +213,7 @@ public:
 	inline deBaseAnimatorAnimatorInstance *GetPeerAnimator() const{ return pPeerAnimator; }
 	
 	/** \brief Set animator peer or NULL if not set. */
-	void SetPeerAnimator( deBaseAnimatorAnimatorInstance *peer );
+	void SetPeerAnimator(deBaseAnimatorAnimatorInstance *peer);
 	/*@}*/
 	
 	

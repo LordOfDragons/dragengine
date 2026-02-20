@@ -25,20 +25,20 @@
 #ifndef _REUMOVESHAPE_H_
 #define _REUMOVESHAPE_H_
 
+#include "reUndoDataShape.h"
 #include "../reBaseUndoMove.h"
-
-class reUndoDataShape;
-class reRigShapeList;
-
+#include "../../../rig/shape/reRigShape.h"
 
 
 /**
  * Undo action for moving around set of shapes.
  */
 class reUMoveShape : public reBaseUndoMove{
+public:
+	using Ref = deTObjectReference<reUMoveShape>;
+	
 private:
-	reUndoDataShape **pShapes;
-	int pShapeCount;
+	reUndoDataShape::List pShapes;
 	
 	
 	
@@ -46,11 +46,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUMoveShape( reRigShapeList &list );
+	explicit reUMoveShape(igdeEnvironment &environment, const reRigShape::List &list);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUMoveShape();
+	~reUMoveShape() override;
 	/*@}*/
 	
 	
@@ -59,19 +59,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	
 	/** \brief Progressive redo. */
-	virtual void ProgressiveRedo();
+	void ProgressiveRedo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

@@ -25,24 +25,26 @@
 #ifndef _MEWPSDECAL_H_
 #define _MEWPSDECAL_H_
 
+#include "meWPSDecalListener.h"
+#include "../../meWPPropertyList.h"
+#include "../../../../world/meWorld.h"
+
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWPSelection;
-class meWPSDecalListener;
 class meDecal;
-class meWorld;
 
 
 
@@ -50,34 +52,37 @@ class meWorld;
  * \brief Decal Selection Panel.
  */
 class meWPSDecal : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPSDecal>;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSDecalListener *pListener;
-	meWorld *pWorld;
+	meWPSDecalListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditSelCount;
-	
-	
-	igdeActionReference pActionPropCopyToSel;
-	igdeActionReference pActionPropRemoveFromSel;
-	igdeActionReference pActionPropCloneToSel;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditSelCount;
 	
 	
-	igdeTextFieldReference pEditID;
-	igdeEditDVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditSize;
-	igdeCheckBoxReference pChkVisible;
-	igdeTextFieldReference pEditOrder;
+	igdeAction::Ref pActionPropCopyToSel;
+	igdeAction::Ref pActionPropRemoveFromSel;
+	igdeAction::Ref pActionPropCloneToSel;
 	
-	igdeEditPathReference pEditSkin;
-	igdeEditVector2Reference pEditTexCoordOffset;
-	igdeEditVector2Reference pEditTexCoordScaling;
-	igdeTextFieldReference pEditTexCoordRotation;
-	igdeColorBoxReference pClrColorTint;
 	
-	igdeWidgetReference pEditProperties;
+	igdeTextField::Ref pEditID;
+	igdeEditDVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditSize;
+	igdeCheckBox::Ref pChkVisible;
+	igdeTextField::Ref pEditOrder;
+	
+	igdeEditPath::Ref pEditSkin;
+	igdeEditVector2::Ref pEditTexCoordOffset;
+	igdeEditVector2::Ref pEditTexCoordScaling;
+	igdeTextField::Ref pEditTexCoordRotation;
+	igdeColorBox::Ref pClrColorTint;
+	
+	meWPPropertyList::Ref pEditProperties;
 	
 	
 	
@@ -85,11 +90,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSDecal( meWPSelection &wpselection );
+	meWPSDecal(meWPSelection &wpselection);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSDecal();
+	~meWPSDecal() override;
 	/*@}*/
 	
 	
@@ -101,12 +106,12 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
-	/** \brief Active decal or NULL. */
+	/** \brief Active decal or nullptr. */
 	meDecal *GetActiveDecal() const;
 	
 	/** \brief Active property or an empty string. */
@@ -142,9 +147,9 @@ public:
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
-	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
-	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
-	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
+	inline const igdeAction::Ref &GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline const igdeAction::Ref &GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline const igdeAction::Ref &GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 };
 

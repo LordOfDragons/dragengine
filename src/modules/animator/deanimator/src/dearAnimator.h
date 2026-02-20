@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create animator peer. */
-	dearAnimator( deDEAnimator &module, deAnimator &animator );
+	dearAnimator(deDEAnimator &module, deAnimator &animator);
 	
 	/** Clean up animator. */
-	virtual ~dearAnimator();
+	~dearAnimator() override;
 	/*@}*/
 	
 	
@@ -77,25 +77,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Rig changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	
 	/** Animation changed. */
-	virtual void AnimationChanged();
+	void AnimationChanged() override;
 	
 	/** List of bones changed. */
-	virtual void BonesChanged();
+	void BonesChanged() override;
 	
 	/** List of vertex position sets changed. */
-	virtual void VertexPositionSetsChanged();
+	void VertexPositionSetsChanged() override;
 	
 	/** Controllers added or removed. */
-	virtual void ControllerCountChanged();
+	void ControllerCountChanged() override;
 	
 	/** Links added, removed or changed. */
-	virtual void LinksChanged();
+	void LinksChanged() override;
 	
 	/** Rules added, removed or changed. */
-	virtual void RulesChanged();
+	void RulesChanged() override;
 	/*@}*/
 	
 private:

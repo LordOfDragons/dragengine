@@ -26,28 +26,30 @@
 #define _IGDEICONLISTBOX_H_
 
 #include <stddef.h>
+#include <functional>
 
 #include "igdeWidget.h"
-#include "model/igdeListItemSorterReference.h"
+#include "event/igdeIconListBoxListener.h"
+#include "model/igdeListHeader.h"
+#include "model/igdeListItem.h"
+#include "model/igdeListItemSorter.h"
 
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
-
-class igdeIconListBoxListener;
 class igdeIcon;
-class igdeListHeader;
 class igdeListItem;
-class igdeListItemReference;
-
 
 /**
  * \brief IGDE UI IconListBox.
  */
 class DE_DLL_EXPORT igdeIconListBox : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeIconListBox>;
+	
+	
 	/** \brief Selection mode. */
 	enum eSelectionMode{
 		/** \brief Single select. */
@@ -69,31 +71,56 @@ public:
 		evmIconVertical
 	};
 	
+	class cNativeIconListBox{
+	public:
+		virtual ~cNativeIconListBox() = default;
+		virtual void BuildHeader() = 0;
+		virtual void BuildList() = 0;
+		virtual void InsertItem(int index, igdeListItem &item) = 0;
+		virtual void UpdateItem(int index) = 0;
+		virtual void MoveItem(int fromIndex, int toIndex) = 0;
+		virtual void RemoveItem(int index) = 0;
+		virtual void UpdateSelection() = 0;
+		virtual void UpdateHeader() = 0;
+		virtual void UpdateStyles() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateMinimumSize() = 0;
+		virtual void Focus() = 0;
+		virtual void MakeItemVisible(int index) = 0;
+		virtual void RemoveAllItems() = 0;
+		virtual decPoint GetContentPosition() const = 0;
+		virtual void SetContentPosition(const decPoint &position) = 0;
+	};
 	
 	
 private:
 	bool pEnabled;
-	decObjectList pItems;
+	igdeListItem::List pItems;
 	eSelectionMode pSelectionMode;
 	eViewMode pViewMode;
 	int pSelection;
-	igdeListItemSorterReference pSorter;
+	igdeListItemSorter::Ref pSorter;
 	decPoint pMinimumSize;
 	decString pDescription;
-	decObjectOrderedSet pHeaders;
+	igdeListHeader::List pHeaders;
+	bool pAutoTranslateItems;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeIconListBoxListener> pListeners;
 	
+	
+protected:
+	cNativeIconListBox *pNativeIconListBox;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listbox. */
-	igdeIconListBox( igdeEnvironment &environment, const char *description = "" );
+	igdeIconListBox(igdeEnvironment &environment, const char *description = "");
 	
 	/** \brief Create listbox. */
-	igdeIconListBox( igdeEnvironment &environment, const decPoint &minimumSize, const char *description = "" );
+	igdeIconListBox(igdeEnvironment &environment, const decPoint &minimumSize, const char *description = "");
 	
 	
 	
@@ -104,7 +131,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeIconListBox();
+	~igdeIconListBox() override;
 	/*@}*/
 	
 	
@@ -116,104 +143,100 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Minimum size. */
 	inline const decPoint &GetMiniumSize() const{ return pMinimumSize; }
 	
 	/** \brief Set minimum size. */
-	void SetMinimumSize( const decPoint &size );
+	void SetMinimumSize(const decPoint &size);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief View mode. */
 	inline eViewMode GetViewMode() const{ return pViewMode; }
 	
 	/** \brief Set view mode. */
-	void SetViewMode( eViewMode mode );
+	void SetViewMode(eViewMode mode);
 	
 	/** \brief Focus widget. */
 	void Focus();
 	
+	/** \brief Auto translate items. */
+	inline bool GetAutoTranslateItems() const{ return pAutoTranslateItems; }
+	
+	/** \brief Set auto translate items. */
+	void SetAutoTranslateItems(bool autoTranslate);
 	
 	
-	/** \brief Number of items. */
-	int GetItemCount() const;
-	
-	/** \brief Item at index. */
-	igdeListItem *GetItemAt( int index ) const;
-	
-	/** \brief Item is present. */
-	bool HasItem( igdeListItem *item ) const;
+	/** \brief List items. */
+	inline const igdeListItem::List &GetItems() const{ return pItems; }
 	
 	/** \brief Item with text is present. */
-	bool HasItem( const char *item ) const;
+	bool HasItem(const char *item) const;
 	
 	/** \brief Item with data is present. */
-	bool HasItemWithData( void *data ) const;
-	
-	/** \brief Index of item or -1 if absent. */
-	int IndexOfItem( igdeListItem *item ) const;
+	bool HasItemWithData(void *data) const;
 	
 	/** \brief Index of item with text or -1 if absent. */
-	int IndexOfItem( const char *item ) const;
+	int IndexOfItem(const char *item) const;
 	
 	/** \brief Index of item with data or -1 if absent. */
-	int IndexOfItemWithData( void *data ) const;
+	int IndexOfItemWithData(void *data) const;
 	
 	/** \brief Add item. */
-	void AddItem( igdeListItem *item );
+	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	void AddItem( const char *text, igdeIcon *icon = NULL, void *data = NULL );
+	void AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void AddItem( const char *text, const decStringList &details,
-		igdeIcon *icon = NULL, void *data = NULL );
+	void AddItem(const char *text, const decStringList &details,
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void AddItem( igdeListItemReference &item, const char *text, igdeIcon *icon = NULL,
-		void *data = NULL );
+	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = nullptr,
+		void *data = nullptr);
 	
-	void AddItem( igdeListItemReference &item, const char *text, const decStringList &details,
-		igdeIcon *icon = NULL, void *data = NULL );
+	void AddItem(igdeListItem::Ref &item, const char *text, const decStringList &details,
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Insert item at index. */
-	void InsertItem( int index, igdeListItem *item );
+	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	void InsertItem( int index, const char *text, igdeIcon *icon = NULL, void *data = NULL );
+	void InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void InsertItem( int index, const char *text, const decStringList &details,
-		igdeIcon *icon = NULL, void *data = NULL );
+	void InsertItem(int index, const char *text, const decStringList &details,
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void InsertItem( igdeListItemReference &item, int index, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL );
+	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void InsertItem( igdeListItemReference &item, int index, const char *text,
-		const decStringList &details, igdeIcon *icon = NULL, void *data = NULL );
+	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
+		const decStringList &details, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Move item. */
-	void MoveItem( int fromIndex, int toIndex );
+	void MoveItem(int fromIndex, int toIndex);
 	
 	/** \brief Remove item from index. */
-	void RemoveItem( int index );
+	void RemoveItem(int index);
 	
 	/** \brief Remove all items. */
 	void RemoveAllItems();
 	
 	/** \brief Item modified. */
-	void ItemChangedAt( int index );
+	void ItemChangedAt(int index);
 	
 	
 	
-	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
+	/** \brief Sorter or nullptr. */
+	inline const igdeListItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
-	/** \brief Set sorter or NULL. */
-	void SetSorter( igdeListItemSorter *sorter );
+	/** \brief Set sorter or nullptr. */
+	void SetSorter(igdeListItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */
 	void SetDefaultSorter();
@@ -227,95 +250,99 @@ public:
 	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
-	void SetSelectionMode( eSelectionMode mode );
+	void SetSelectionMode(eSelectionMode mode);
 	
 	/** \brief Index of selected item or -1. */
 	inline int GetSelection() const{ return pSelection; }
 	
-	/** \brief Selected item or NULL. */
+	/** \brief Selected item or nullptr. */
 	igdeListItem *GetSelectedItem() const;
+	
+	/** \brief Selected item data or nullptr. */
+	void *GetSelectedItemData() const;
 	
 	/** \brief Selected item is not -1. */
 	inline bool HasSelection() const{ return pSelection != -1; }
 	
 	/** \brief Set index of selected item or -1. */
-	void SetSelection( int selection );
+	void SetSelection(int selection);
 	
 	/**
 	 * \brief Set selected item matching data.
 	 * 
 	 * Short-cut for calling SetSelection(IndexOfItemWithData(data)).
 	 */
-	void SetSelectionWithData( void *data );
+	void SetSelectionWithData(void *data);
 	
 	/** \brief Add item to the selection range if absent. */
-	void SelectItem( int index );
+	void SelectItem(int index);
 	
 	/** \brief Select all items. */
 	void SelectAllItems();
 	
 	/** \brief Remove item from selection range if present. */
-	void DeselectItem( int index );
+	void DeselectItem(int index);
 	
 	/** \brief Deselect all items. */
 	void DeselectAllItems();
 	
+	/** \brief Update items with restoring selection as good as possible. */
+	void UpdateRestoreSelection(const std::function<void()> &block, int defaultSelection = -1);
+	void UpdateRestoreSelectionData(const std::function<void()> &block, void *defaultSelection = nullptr);
 	
 	
-	/** \brief Number of headers. */
-	int GetHeaderCount() const;
 	
-	/** \brief Header at index. */
-	igdeListHeader *GetHeaderAt( int index ) const;
+	/** \brief Headers. */
+	const igdeListHeader::List &GetHeaders() const{ return pHeaders; }
 	
 	/** \brief Header is present. */
-	bool HasHeader( igdeListHeader *header ) const;
+	bool HasHeader(igdeListHeader *header) const;
 	
 	/** \brief Add header. */
-	void AddHeader( igdeListHeader *header );
+	void AddHeader(igdeListHeader *header);
 	
 	/** \brief Remove header. */
-	void RemoveHeader( igdeListHeader *header );
+	void RemoveHeader(igdeListHeader *header);
 	
 	/** \brief Remove all headers. */
 	void RemoveAllHeaders();
 	
 	/** \brief Header modified. */
-	void HeaderChangedAt( int index );
+	void HeaderChangedAt(int index);
 	
 	/** \brief Notify listeners header clicked. */
-	virtual void NotifyHeaderClicked( int index );
+	virtual void NotifyHeaderClicked(int index);
 	
 	
 	
-	/** \brief Ensure item is visible. */
-	virtual void EnsureItemVisible( int index );
+	/** \brief Make item is visible. */
+	virtual void MakeItemVisible(int index);
 	
-	/** \brief Ensure selected item is visible if selection is present. */
-	void EnsureSelectedItemVisible();
+	/** \brief Make selected item is visible if selection is present. */
+	void MakeSelectedItemVisible();
 	
 	/** \brief Show context menu at position. */
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeIconListBoxListener *listener );
+	void AddListener(igdeIconListBoxListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeIconListBoxListener *listener );
+	void RemoveListener(igdeIconListBoxListener *listener);
 	
 	/** \brief Notify listeners selection changed. */
 	virtual void NotifySelectionChanged();
 	
 	/** \brief Notify listeners item selected. */
-	virtual void NotifyItemSelected( int index );
+	virtual void NotifyItemSelected(int index);
 	
 	/** \brief Notify listeners item deselected. */
-	virtual void NotifyItemDeselected( int index );
+	virtual void NotifyItemDeselected(int index);
 	
 	/** \brief Notify listeners double clicked on item. */
-	virtual void NotifyDoubleClickItem( int index );
+	virtual void NotifyDoubleClickItem(int index);
 	/*@}*/
 	
 	
@@ -329,31 +356,36 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
 	/** \brief Item added. */
-	virtual void OnItemAdded( int index );
+	virtual void OnItemAdded(int index);
 	
 	/** \brief Item removed. */
-	virtual void OnItemRemoved( int index );
+	virtual void OnItemRemoved(int index);
 	
 	/** \brief All items removed. */
 	virtual void OnAllItemsRemoved();
 	
 	/** \brief Item changed. */
-	virtual void OnItemChanged( int index );
+	virtual void OnItemChanged(int index);
 	
 	/** \brief Item moved. */
-	virtual void OnItemMoved( int fromIndex, int toIndex );
+	virtual void OnItemMoved(int fromIndex, int toIndex);
 	
 	/** \brief Items sorted. */
 	virtual void OnItemsSorted();
@@ -378,6 +410,9 @@ protected:
 	
 	/** \brief Minimum size changed. */
 	virtual void OnMinimumSizeChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

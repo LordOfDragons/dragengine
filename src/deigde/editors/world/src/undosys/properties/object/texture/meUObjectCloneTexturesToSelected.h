@@ -25,52 +25,54 @@
 #ifndef _MEUOBJECTCLONETEXTURESTOSELECTED_H_
 #define _MEUOBJECTCLONETEXTURESTOSELECTED_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "meUndoDataObjectTexture.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../../world/object/texture/meObjectTextureList.h"
-
-class meObjectList;
-
 
 
 /**
  * \brief Undo Action Clone Object Textures to all selected objects.
  */
 class meUObjectCloneTexturesToSelected : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectCloneTexturesToSelected>;
+	
+	
 private:
-	decObjectList pList;
-	meObjectTextureList pTextureList;
+	meUndoDataObjectTexture::List pList;
+	meObjectTexture::List pTextureList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectCloneTexturesToSelected( const meObjectList &list, const meObjectTextureList &textureList );
+	meUObjectCloneTexturesToSelected(const meObject::List &list, const meObjectTexture::List &textureList);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectCloneTexturesToSelected();
+
+protected:
+	~meUObjectCloneTexturesToSelected() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline meUndoDataObjectTexture::List &GetList(){ return pList; }
+	inline const meUndoDataObjectTexture::List &GetList() const{ return pList; }
 	/** Retrieves the list of textures to apply. */
-	inline meObjectTextureList &GetPropertyList(){ return pTextureList; }
-	inline const meObjectTextureList &GetPropertyList() const{ return pTextureList; }
+	inline meObjectTexture::List &GetPropertyList(){ return pTextureList; }
+	inline const meObjectTexture::List &GetPropertyList() const{ return pTextureList; }
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-private:
-	void pCleanUp();
 };
 
 #endif

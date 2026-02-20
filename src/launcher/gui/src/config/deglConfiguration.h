@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create configuration. */
-	deglConfiguration( deglLauncher &launcher );
+	deglConfiguration(deglLauncher &launcher);
 	
 	/** Clean up configuration. */
 	~deglConfiguration();

@@ -62,7 +62,7 @@ igdeGDClassInherit::~igdeGDClassInherit(){
 ///////////////
 
 void igdeGDClassInherit::ResolveClass(const igdeGDClassManager &classManager){
-	pClass = classManager.GetNamed(pName);
+	pClass = classManager.GetClasses().FindNamed(pName);
 	
 	if(pUseAutoPropertyPrefixId && pClass){
 		pUseAutoPropertyPrefixId = false;

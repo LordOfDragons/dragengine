@@ -28,7 +28,7 @@
 #include "deFontGlyph.h"
 #include "../image/deImage.h"
 #include "../../deObject.h"
-#include "../../parallel/deParallelTaskReference.h"
+#include "../../parallel/deParallelTask.h"
 
 
 /**
@@ -38,16 +38,17 @@
 class DE_DLL_EXPORT deFontSize : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deFontSize> Ref;
+	using Ref = deTObjectReference<deFontSize>;
 	
 	
 private:
-	deFontGlyph pUndefinedGlyph, *pGlyphs;
+	deFontGlyph pUndefinedGlyph;
+	decTList<deFontGlyph> pGlyphs;
 	const int pLineHeight;
-	int pGlyphCount, pFontWidth, pBaseLine;
+	int pFontWidth, pBaseLine;
 	decString pImagePath;
 	deImage::Ref pImage;
-	deParallelTaskReference pTaskLoad;
+	deParallelTask::Ref pTaskLoad;
 	
 	
 public:
@@ -84,12 +85,11 @@ public:
 	inline deFontGlyph &GetUndefinedGlyph(){ return pUndefinedGlyph; }
 	inline const deFontGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
-	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{ return pGlyphCount; }
+	/** \brief Glyphs. */
+	inline const decTList<deFontGlyph> &GetGlyphs() const{ return pGlyphs; }
 	
 	/** \brief Glyph at index. */
 	deFontGlyph &GetGlyphAt(int index);
-	const deFontGlyph &GetGlyphAt(int index) const;
 	
 	/** \brief Update glyphs. */
 	void UpdateGlyphs();
@@ -109,7 +109,7 @@ public:
 	
 	
 	/** \brief Load task or nullptr if finished. */
-	inline deParallelTask *GetTaskLoad() const{ return pTaskLoad; }
+	inline const deParallelTask::Ref &GetTaskLoad() const{ return pTaskLoad; }
 	
 	/** \brief Set load task or nullptr if finished. */
 	void SetTaskLoad(deParallelTask *task);

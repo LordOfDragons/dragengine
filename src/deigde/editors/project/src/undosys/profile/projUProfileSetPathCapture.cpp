@@ -40,26 +40,22 @@
 ////////////////////////////
 
 projUProfileSetPathCapture::projUProfileSetPathCapture(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(!profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set capture path" );
+	SetShortInfo("@Project.Undo.ProfileSetPathCapture");
 	
 	pOldValue = profile->GetPathCapture();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetPathCapture::~projUProfileSetPathCapture(){
-	if( pProfile ){
-		pProfile->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ projUProfileSetPathCapture::~projUProfileSetPathCapture(){
 ///////////////
 
 void projUProfileSetPathCapture::Undo(){
-	pProfile->SetPathCapture( pOldValue );
+	pProfile->SetPathCapture(pOldValue);
 }
 
 void projUProfileSetPathCapture::Redo(){
-	pProfile->SetPathCapture( pNewValue );
+	pProfile->SetPathCapture(pNewValue);
 }

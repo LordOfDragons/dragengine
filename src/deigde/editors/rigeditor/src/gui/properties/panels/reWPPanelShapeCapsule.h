@@ -27,8 +27,8 @@
 
 #include "reWPPanelShape.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 class reRigShapeCapsule;
 
@@ -38,12 +38,15 @@ class reRigShapeCapsule;
  * \brief Rig shape capsule panel.
  */
 class reWPPanelShapeCapsule : public reWPPanelShape{
+public:
+	using Ref = deTObjectReference<reWPPanelShapeCapsule>;
+	
 private:
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditHalfHeight;
-	igdeTextFieldReference pEditTopRadius;
-	igdeTextFieldReference pEditBottomRadius;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditHalfHeight;
+	igdeTextField::Ref pEditTopRadius;
+	igdeTextField::Ref pEditBottomRadius;
 	
 	
 	
@@ -51,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeCapsule( reWPShape &wpShapes );
+	reWPPanelShapeCapsule(reWPShape &wpShapes);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShapeCapsule();
+	~reWPPanelShapeCapsule() override;
 	/*@}*/
 	
 	
@@ -64,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Update . */
-	virtual void UpdateShape();
+	void UpdateShape() override;
 	/*@}*/
 };
 

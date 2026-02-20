@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionTrigger;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionTrigger.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,10 +37,14 @@ class ceConversationTopic;
  * \brief Undo trigger conversation condition set trigger.
  */
 class ceUCCTriggerSetTrigger : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCTriggerSetTrigger>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	decString pOldTrigger;
 	decString pNewTrigger;
 	
@@ -48,19 +52,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCTriggerSetTrigger( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionTrigger *condition, const char *newTrigger );
+	ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionTrigger *condition, const char *newTrigger);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCCTriggerSetTrigger();
+protected:
+	~ceUCCTriggerSetTrigger() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

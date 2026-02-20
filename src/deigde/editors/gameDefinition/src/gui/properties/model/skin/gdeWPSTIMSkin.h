@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeSkin;
+#include "../../../../gamedef/skin/gdeSkin.h"
 
 
 /**
@@ -35,18 +35,20 @@ class gdeSkin;
  */
 class gdeWPSTIMSkin : public gdeWPSTreeItemModel{
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMSkin> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkin( gdeWPSTreeModel &tree, gdeSkin *skin );
+	gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMSkin();
+	~gdeWPSTIMSkin() override;
 	/*@}*/
 	
 	
@@ -55,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline gdeSkin *GetSkin() const{ return pSkin; }
+	inline const gdeSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	
 	
@@ -67,16 +69,16 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

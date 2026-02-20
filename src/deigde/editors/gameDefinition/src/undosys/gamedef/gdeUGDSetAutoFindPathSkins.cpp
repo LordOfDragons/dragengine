@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathSkins::gdeUGDSetAutoFindPathSkins(
-	gdeGameDefinition *gameDefinition, const decStringList &newValue ) :
-pGameDefinition( NULL ),
-pNewValue( newValue )
+	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set auto find path skins" );
+	SetShortInfo("@GameDefinition.Undo.GDSetAutoFindPathSkins");
 	
 	pOldValue = gameDefinition->GetAutoFindPathSkins();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetAutoFindPathSkins::~gdeUGDSetAutoFindPathSkins(){
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUGDSetAutoFindPathSkins::~gdeUGDSetAutoFindPathSkins(){
 ///////////////
 
 void gdeUGDSetAutoFindPathSkins::Undo(){
-	pGameDefinition->SetAutoFindPathSkins( pOldValue );
+	pGameDefinition->SetAutoFindPathSkins(pOldValue);
 }
 
 void gdeUGDSetAutoFindPathSkins::Redo(){
-	pGameDefinition->SetAutoFindPathSkins( pNewValue );
+	pGameDefinition->SetAutoFindPathSkins(pNewValue);
 }

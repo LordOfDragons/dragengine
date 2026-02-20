@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglDSRenderableColor.h"
 #include "render/deoglRDSRenderableColor.h"
 #include "../deoglDynamicSkin.h"
@@ -41,17 +37,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDSRenderableColor::deoglDSRenderableColor( deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable ) :
-deoglDSRenderable( dynamicSkin, renderable ),
-pRenderableColor( renderable ),
-pRRenderableColor( NULL ),
-pColor( renderable.GetColor() ),
-pDirty( true )
+deoglDSRenderableColor::deoglDSRenderableColor(deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable) :
+deoglDSRenderable(dynamicSkin, renderable),
+pRenderableColor(renderable),
+pColor(renderable.GetColor()),
+pDirty(true)
 {
 	try{
-		pRRenderableColor = new deoglRDSRenderableColor( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableColor = deoglRDSRenderableColor::Ref::New(*dynamicSkin.GetRDynamicSkin());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -73,22 +68,22 @@ deoglRDSRenderable *deoglDSRenderableColor::GetRRenderable() const{
 void deoglDSRenderableColor::RenderableChanged(){
 	const decColor &color = pRenderableColor.GetColor();
 	
-	if( ! color.IsEqualTo( pColor ) ){
+	if(!color.IsEqualTo(pColor)){
 		pColor = color;
 		pDirty = true;
 		
-		pDynamicSkin.NotifyRenderableChanged( *this );
+		pDynamicSkin.NotifyRenderableChanged(*this);
 	}
 	
-	if( pRenderableColor.GetName() != pRRenderableColor->GetName() ){
+	if(pRenderableColor.GetName() != pRRenderableColor->GetName()){
 		pDynamicSkin.NotifyRenderablesChanged();
 	}
 }
 
 void deoglDSRenderableColor::SyncToRender(){
-	if( pDirty ){
-		pRRenderableColor->SetName( pRenderableColor.GetName() );
-		pRRenderableColor->SetColor( pRenderableColor.GetColor() );
+	if(pDirty){
+		pRRenderableColor->SetName(pRenderableColor.GetName());
+		pRRenderableColor->SetColor(pRenderableColor.GetColor());
 		pDirty = false;
 	}
 }
@@ -99,7 +94,4 @@ void deoglDSRenderableColor::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableColor::pCleanUp(){
-	if( pRRenderableColor ){
-		pRRenderableColor->FreeReference();
-	}
 }

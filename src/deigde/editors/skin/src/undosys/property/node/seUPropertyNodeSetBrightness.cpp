@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode *node, float newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set brightness" );
+	SetShortInfo("@Skin.Undo.NodeSetBrightness");
 	
 	pOldValue = node->GetBrightness();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
 ///////////////
 
 void seUPropertyNodeSetBrightness::Undo(){
-	pNode->SetBrightness( pOldValue );
+	pNode->SetBrightness(pOldValue);
 }
 
 void seUPropertyNodeSetBrightness::Redo(){
-	pNode->SetBrightness( pNewValue );
+	pNode->SetBrightness(pNewValue);
 }

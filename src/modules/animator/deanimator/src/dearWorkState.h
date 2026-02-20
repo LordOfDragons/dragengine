@@ -56,15 +56,15 @@ public:
 	/** Retrieves the linked bone state. */
 	inline dearBoneState *GetBoneState() const{ return pBoneState; }
 	/** Sets the linked bone state. */
-	void SetBoneState( dearBoneState *boneState );
+	void SetBoneState(dearBoneState *boneState);
 	/** Retrieves the global matrix. */
 	inline const decMatrix &GetGlobalMatrix() const{ return pGlobalMatrix; }
 	/** Sets the global matrix. */
-	void SetGlobalMatrix( const decMatrix &matrix );
+	void SetGlobalMatrix(const decMatrix &matrix);
 	/** Retrieves the inverse global matrix. */
 	inline const decMatrix &GetInverseGlobalMatrix() const{ return pInvGlobalMatrix; }
 	/** Sets the inverse global matrix. */
-	void SetInverseGlobalMatrix( const decMatrix &matrix );
+	void SetInverseGlobalMatrix(const decMatrix &matrix);
 	/*@}*/
 };
 

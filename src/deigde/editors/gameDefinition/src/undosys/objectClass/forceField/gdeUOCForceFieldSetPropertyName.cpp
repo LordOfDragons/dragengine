@@ -39,35 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetPropertyName::gdeUOCForceFieldSetPropertyName( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, gdeOCForceField::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL ),
-pProperty( property )
+gdeUOCForceFieldSetPropertyName::gdeUOCForceFieldSetPropertyName(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, gdeOCForceField::eProperties property, const char *newValue) :
+
+
+pProperty(property)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set property name" );
+	SetShortInfo("@GameDefinition.Undo.OCForceFieldSetPropertyName");
 	
-	pOldValue = forceField->GetPropertyName( property );
+	pOldValue = forceField->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetPropertyName::~gdeUOCForceFieldSetPropertyName(){
-	if( pForceField ){
-		pForceField->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCForceFieldSetPropertyName::~gdeUOCForceFieldSetPropertyName(){
 ///////////////
 
 void gdeUOCForceFieldSetPropertyName::Undo(){
-	pForceField->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetPropertyName::Redo(){
-	pForceField->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

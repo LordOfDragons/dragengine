@@ -25,16 +25,18 @@
 #ifndef _RERIGSHAPE_H_
 #define _RERIGSHAPE_H_
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class reRig;
 class reRigBone;
-class igdeWDebugDrawerShape;
 class decShape;
-class deDebugDrawer;
-class deColliderVolume;
 class deEngine;
 
 
@@ -44,6 +46,12 @@ class deEngine;
  */
 class reRigShape : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<reRigShape>;
+	
+	using List = decTObjectOrderedSet<reRigShape>;
+	
+	
 	/** \brief Shape type. */
 	enum eShapeTypes{
 		estSphere,
@@ -59,9 +67,9 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSShape;
+	deColliderVolume::Ref pCollider;
 	
 	eShapeTypes pShapeType;
 	
@@ -80,10 +88,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig shape. */
-	reRigShape( deEngine *engine, eShapeTypes shapeType );
+	reRigShape(deEngine *engine, eShapeTypes shapeType);
 	
 	/** \brief Clean up rig shape. */
-	virtual ~reRigShape();
+protected:
+	~reRigShape() override;
+public:
 	/*@}*/
 	
 	
@@ -97,16 +107,16 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set parent rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Parent rig bone. */
 	inline reRigBone *GetRigBone() const{ return pRigBone; }
 	
 	/** \brief Set parent rig bone. */
-	void SetRigBone( reRigBone *rigBone );
+	void SetRigBone(reRigBone *rigBone);
 	
 	/** \brief Collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Shape type. */
 	inline eShapeTypes GetShapeType() const{ return pShapeType; }
@@ -115,31 +125,31 @@ public:
 	inline decVector GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline decVector GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Property. */
 	inline const decString &GetProperty() const{ return pProperty; }
 	
 	/** \brief Set property. */
-	void SetProperty( const char *property );
+	void SetProperty(const char *property);
 	
 	/** \brief Shape is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if shape is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** \brief Shape is the active one. */
 	inline bool GetActive() const{ return pActive; }
 	
 	/** \brief Set if shape is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	
 	
@@ -164,13 +174,13 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	virtual reRigShape *Duplicate() const = 0;
+	virtual Ref Duplicate() const = 0;
 	
 	/** \brief Uniformly scale shape. */
-	virtual void Scale( float scale ) = 0;
+	virtual void Scale(float scale) = 0;
 	
 	/** \brief Create shape. */
-	virtual decShape *CreateShape() = 0;
+	virtual decShape::Ref CreateShape() = 0;
 	/*@}*/
 	
 private:

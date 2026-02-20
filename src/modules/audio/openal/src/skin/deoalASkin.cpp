@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalASkin.h"
 #include "deoalSkinTexture.h"
 #include "../audiothread/deoalAudioThread.h"
@@ -42,62 +38,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalASkin::deoalASkin( deoalAudioThread &audioThread, const deSkin &skin ) :
-pAudioThread( audioThread ),
-pFilename( skin.GetFilename() ),
-pTextures( NULL ),
-pTextureCount( 0 ),
-pAffectsSound( false )
+deoalASkin::deoalASkin(deoalAudioThread &audioThread, const deSkin &skin) :
+pAudioThread(audioThread),
+pFilename(skin.GetFilename()),
+pAffectsSound(false)
 {
-	try{
-		pCreateTextures( skin );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pCreateTextures(skin);
 	
-	LEAK_CHECK_CREATE( audioThread, Skin );
+	LEAK_CHECK_CREATE(audioThread, Skin);
 }
 
 deoalASkin::~deoalASkin(){
-	LEAK_CHECK_FREE( pAudioThread, Skin );
-	
-	pCleanUp();
+	LEAK_CHECK_FREE(pAudioThread, Skin);
 }
-
 
 
 // Management
 ///////////////
 
-const deoalSkinTexture &deoalASkin::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pTextures[ index ];
-}
-
-
 
 // Private Functions
 //////////////////////
 
-void deoalASkin::pCleanUp(){
-	if( pTextures ){
-		delete [] pTextures;
-	}
-}
-
-void deoalASkin::pCreateTextures( const deSkin &skin ){
-	const int count = skin.GetTextureCount();
-	if( count == 0 ){
-		return;
-	}
-	
-	pTextures = new deoalSkinTexture[ count ];
-	for( pTextureCount=0; pTextureCount<count; pTextureCount++ ){
-		pTextures[ pTextureCount ].ProcessProperties( *skin.GetTextureAt( pTextureCount ) );
-		pAffectsSound |= pTextures[ pTextureCount ].GetAffectsSound();
-	}
+void deoalASkin::pCreateTextures(const deSkin &skin){
+	pTextures.AddRange(skin.GetTextures().GetCount(), {});
+	skin.GetTextures().VisitIndexed([&](int i, const deSkinTexture &texture){
+		pTextures[i].ProcessProperties(texture);
+		pAffectsSound |= pTextures[i].GetAffectsSound();
+	});
 }

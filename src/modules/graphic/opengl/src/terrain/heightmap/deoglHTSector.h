@@ -42,7 +42,8 @@ class deHeightTerrainSector;
 class deoglHTSector : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglHTSector> Ref;
+	using Ref = deTObjectReference<deoglHTSector>;
+	
 	
 private:
 	deoglHeightTerrain &pHeightTerrain;
@@ -60,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain sector. */
-	deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
+	deoglHTSector(deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector);
 	
 protected:
 	/** Clean up height terrain sector. */
-	virtual ~deoglHTSector();
+	~deoglHTSector() override;
 	/*@}*/
 	
 	
@@ -82,7 +83,7 @@ public:
 	void SectorChanged();
 	
 	/** Heights changed. */
-	void HeightChanged( const decPoint &from, const decPoint &to );
+	void HeightChanged(const decPoint &from, const decPoint &to);
 	/*@}*/
 };
 

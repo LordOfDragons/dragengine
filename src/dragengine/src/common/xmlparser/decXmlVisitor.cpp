@@ -55,49 +55,49 @@ decXmlVisitor::~decXmlVisitor(){
 // Visiting
 /////////////
 
-void decXmlVisitor::VisitElement( decXmlElement &element ){
+void decXmlVisitor::VisitElement(decXmlElement &element){
 }
 
-void decXmlVisitor::VisitContainer( decXmlContainer &container ){
-	VisitElement( container );
+void decXmlVisitor::VisitContainer(decXmlContainer &container){
+	VisitElement(container);
 }
 
-void decXmlVisitor::VisitDocument( decXmlDocument &document ){
-	VisitContainer( document );
+void decXmlVisitor::VisitDocument(decXmlDocument &document){
+	VisitContainer(document);
 }
 
-void decXmlVisitor::VisitComment( decXmlComment &comment ){
-	VisitElement( comment );
+void decXmlVisitor::VisitComment(decXmlComment &comment){
+	VisitElement(comment);
 }
 
-void decXmlVisitor::VisitPI( decXmlPI &pi ){
-	VisitElement( pi );
+void decXmlVisitor::VisitPI(decXmlPI &pi){
+	VisitElement(pi);
 }
 
-void decXmlVisitor::VisitElementTag( decXmlElementTag &tag ){
-	VisitContainer( tag );
+void decXmlVisitor::VisitElementTag(decXmlElementTag &tag){
+	VisitContainer(tag);
 }
 
-void decXmlVisitor::VisitCharacterData( decXmlCharacterData &data ){
-	VisitElement( data );
+void decXmlVisitor::VisitCharacterData(decXmlCharacterData &data){
+	VisitElement(data);
 }
 
-void decXmlVisitor::VisitEntityReference( decXmlEntityReference &ref ){
-	VisitElement( ref );
+void decXmlVisitor::VisitEntityReference(decXmlEntityReference &ref){
+	VisitElement(ref);
 }
 
-void decXmlVisitor::VisitCharReference( decXmlCharReference &ref ){
-	VisitElement( ref );
+void decXmlVisitor::VisitCharReference(decXmlCharReference &ref){
+	VisitElement(ref);
 }
 
-void decXmlVisitor::VisitCDSect( decXmlCDSect &cdsect ){
-	VisitElement( cdsect );
+void decXmlVisitor::VisitCDSect(decXmlCDSect &cdsect){
+	VisitElement(cdsect);
 }
 
-void decXmlVisitor::VisitAttValue( decXmlAttValue &value ){
-	VisitElement( value );
+void decXmlVisitor::VisitAttValue(decXmlAttValue &value){
+	VisitElement(value);
 }
 
-void decXmlVisitor::VisitNamespace( decXmlNamespace &ns ){
-	VisitElement( ns );
+void decXmlVisitor::VisitNamespace(decXmlNamespace &ns){
+	VisitElement(ns);
 }

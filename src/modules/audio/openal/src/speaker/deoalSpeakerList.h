@@ -25,69 +25,37 @@
 #ifndef _DEOALSPEAKERLIST_H_
 #define _DEOALSPEAKERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoalASpeaker;
-
 
 
 /**
  * Speaker list.
  */
-class deoalSpeakerList{
-private:
-	decPointerList pSpeakers;
-	
-	
-	
+class deoalSpeakerList : public decTOrderedSet<deoalASpeaker*>{
 public:
+	using decTOrderedSet<deoalASpeaker*>::decTOrderedSet;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker list. */
-	deoalSpeakerList();
-	
-	/** Clean up speaker list. */
-	~deoalSpeakerList();
+	deoalSpeakerList(const decTOrderedSet<deoalASpeaker*> &set);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of speakers. */
-	int GetCount() const;
-	
-	/** Speaker at index. */
-	deoalASpeaker *GetAt( int index ) const;
-	
-	/** Speaker is present. */
-	bool Has( deoalASpeaker *speaker ) const;
-	
-	/** Index of speaker or -1 if absent. */
-	int IndexOf( deoalASpeaker *speaker ) const;
-	
-	/** Add speaker. */
-	void Add( deoalASpeaker *speaker );
-	
-	/** Remove speaker. */
-	void Remove( deoalASpeaker *speaker );
-	
-	/** Remove speaker if present. */
-	void RemoveIfExisting( deoalASpeaker *speaker );
-	
-	/** Remove all speakers. */
-	void RemoveAll();
-	
-	
-	
 	/** Flag all speakers. */
-	void FlagAll( bool flag );
+	void FlagAll(bool flag);
 	
 	/**
 	 * Set enabled state for all speakers.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void EnableAll( bool enabled );
+	void EnableAll(bool enabled);
 	
 	/**
 	 * Set enabled state of all speakers to match their flag state.
@@ -100,26 +68,6 @@ public:
 	
 	/** Update effects all speakers. */
 	void UpdateEffectsAll();
-	/*@}*/
-	
-	
-	
-	/** \name Operators */
-	/*@{*/
-	/** Assign list. */
-	deoalSpeakerList &operator=( const deoalSpeakerList &list );
-	
-	/** Append list. */
-	deoalSpeakerList &operator+=( const deoalSpeakerList &list );
-	
-	/** Combined list. */
-	deoalSpeakerList operator+( const deoalSpeakerList &list ) const;
-	
-	/** Lists are equal. */
-	bool operator==( const deoalSpeakerList &list ) const;
-	
-	/** Lists are not equal. */
-	bool operator!=( const deoalSpeakerList &list ) const;
 	/*@}*/
 };
 

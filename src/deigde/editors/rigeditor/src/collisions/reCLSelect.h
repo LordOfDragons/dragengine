@@ -25,10 +25,10 @@
 #ifndef _RECLSELECT_H_
 #define _RECLSELECT_H_
 
-#include "reCLHitList.h"
+#include "reCLHitListEntry.h"
 
-#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class reRig;
 class reRigBone;
@@ -48,35 +48,35 @@ class deColliderVolume;
  */
 class reCLSelect : public deBaseScriptingCollider{
 private:
-	reRig *pRig;
+	reRig &pRig;
 	bool pToggleSelection;
 	bool pCanSelectBones;
 	bool pCanSelectShapes;
 	bool pCanSelectConstraints;
 	bool pCanSelectPushes;
-	reCLHitList pHitList;
+	reCLHitListEntry::List pHitList;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new collision listener. */
-	reCLSelect( reRig *rig );
+	reCLSelect(reRig &rig);
 	/** \brief Cleans up the collision listener. */
-	virtual ~reCLSelect();
+	~reCLSelect() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets if selection is toggled instead of switched. */
-	void SetToggleSelection( bool toggle );
+	void SetToggleSelection(bool toggle);
 	/** \brief Sets if rig bones can be (un)selected. */
-	void SetCanSelectBones( bool canSelect );
+	void SetCanSelectBones(bool canSelect);
 	/** \brief Sets if rig shapes can be (un)selected. */
-	void SetCanSelectShapes( bool canSelect );
+	void SetCanSelectShapes(bool canSelect);
 	/** \brief Sets if rig constraints can be (un)selected. */
-	void SetCanSelectConstraints( bool canSelect );
+	void SetCanSelectConstraints(bool canSelect);
 	/** \brief Sets if rig pushes can be (un)selected. */
-	void SetCanSelectPushes( bool canSelect );
+	void SetCanSelectPushes(bool canSelect);
 	
 	/** \brief Resets the visitor. */
 	void Reset();
@@ -92,32 +92,32 @@ public:
 	 *          with the response to the collision. In all other cases you do
 	 *          must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	/**
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
 	 *          determine if the two collider can hit each other. If this peer is
-	 *          used in a ray test owner is NULL and the script is asked to
+	 *          used in a ray test owner is nullptr and the script is asked to
 	 *          determine if the ray can hit the collider.
-	 * \param owner Collider this peer belongs to or NULL if a ray test is done.
+	 * \param owner Collider this peer belongs to or nullptr if a ray test is done.
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	/**
 	 * \brief Notifies the scripts that the properties of this collider have changed
 	 *        and that the attached element has to update.
 	 * \details This is usually called after the collision detection but can also be
 	 *          called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 private:
-	reRigBone *pGetBoneFromCollider( deColliderVolume *collider ) const;
-	reRigShape *pGetShapeFromCollider( deColliderVolume *collider ) const;
-	reRigConstraint *pGetConstraintFromCollider( deColliderVolume *collider ) const;
-	reRigPush *pGetPushFromCollider( deColliderVolume *collider ) const;
+	reRigBone *pGetBoneFromCollider(deColliderVolume *collider) const;
+	reRigShape *pGetShapeFromCollider(deColliderVolume *collider) const;
+	reRigConstraint *pGetConstraintFromCollider(deColliderVolume *collider) const;
+	reRigPush *pGetPushFromCollider(deColliderVolume *collider) const;
 };
 
 #endif

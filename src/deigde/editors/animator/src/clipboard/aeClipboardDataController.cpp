@@ -42,23 +42,19 @@ const char * const aeClipboardDataController::TYPE_NAME = "controller";
 // Constructor, destructor
 ////////////////////////////
 
-aeClipboardDataController::aeClipboardDataController( aeController *controller ) :
-igdeClipboardData( TYPE_NAME )
+aeClipboardDataController::aeClipboardDataController(aeController *controller) :
+igdeClipboardData(TYPE_NAME)
 {
-	pControllers.Add( aeController::Ref::New( new aeController( *controller ) ) );
+	pControllers.Add(aeController::Ref::New(*controller));
 }
 
-aeClipboardDataController::aeClipboardDataController( const aeControllerList &controllers ) :
-igdeClipboardData( TYPE_NAME )
+aeClipboardDataController::aeClipboardDataController(const aeController::List &controllers) :
+igdeClipboardData(TYPE_NAME)
 {
-	const int count = controllers.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pControllers.Add( aeController::Ref::New( new aeController( *controllers.GetAt( i ) ) ) );
-	}
+	controllers.Visit([&](const aeController &controller){
+		pControllers.Add(aeController::Ref::New(controller));
+	});
 }
 
 aeClipboardDataController::~aeClipboardDataController(){
-	pControllers.RemoveAll();
 }

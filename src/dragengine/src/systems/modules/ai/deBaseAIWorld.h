@@ -52,31 +52,31 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Update world. */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/** \brief Navigation space has been added. */
-	virtual void NavigationSpaceAdded( deNavigationSpace *navspace );
+	virtual void NavigationSpaceAdded(deNavigationSpace *navspace);
 	
 	/** \brief Navigation space has been removed. */
-	virtual void NavigationSpaceRemoved( deNavigationSpace *navspace );
+	virtual void NavigationSpaceRemoved(deNavigationSpace *navspace);
 	
 	/** \brief All navigation spaces have been removed. */
 	virtual void AllNavigationSpacesRemoved();
 	
 	/** \brief Navigation blocker has been added. */
-	virtual void NavigationBlockerAdded( deNavigationBlocker *blocker );
+	virtual void NavigationBlockerAdded(deNavigationBlocker *blocker);
 	
 	/** \brief Navigation blocker has been removed. */
-	virtual void NavigationBlockerRemoved( deNavigationBlocker *blocker );
+	virtual void NavigationBlockerRemoved(deNavigationBlocker *blocker);
 	
 	/** \brief All navigation blockers have been removed. */
 	virtual void AllNavigationBlockersRemoved();
 	
 	/** \brief Navigator has been added. */
-	virtual void NavigatorAdded( deNavigator *navigator );
+	virtual void NavigatorAdded(deNavigator *navigator);
 	
 	/** \brief Navigator has been removed. */
-	virtual void NavigatorRemoved( deNavigator *navigator );
+	virtual void NavigatorRemoved(deNavigator *navigator);
 	
 	/** \brief Remove all navigators. */
 	virtual void AllNavigatorsRemoved();

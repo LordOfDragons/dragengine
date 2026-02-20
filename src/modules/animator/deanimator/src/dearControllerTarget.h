@@ -26,6 +26,7 @@
 #define _DEARCONTROLLERTARGET_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deAnimatorControllerTarget;
 class dearAnimatorInstance;
@@ -37,14 +38,13 @@ class dearControllerStates;
  */
 class dearControllerTarget{
 private:
-	int *pLinks;
-	int pLinkCount;
+	decTList<int> pLinks;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller target. */
-	dearControllerTarget( const deAnimatorControllerTarget &target, int firstLink );
+	dearControllerTarget(const deAnimatorControllerTarget &target, int firstLink);
 	
 	/** Clean up controller target. */
 	~dearControllerTarget();
@@ -52,22 +52,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
-	
-	/** Link at index. */
-	int GetLinkAt( int index ) const;
-	
+	/** Links. */
+	inline const decTList<int> &GetLinks() const{ return pLinks; }
 	
 	
 	/** Value of target. */
-	float GetValue( const dearAnimatorInstance &instance, float defaultValue ) const;
+	float GetValue(const dearAnimatorInstance &instance, float defaultValue) const;
 	
 	/** Vector of target. */
-	void GetVector( const dearAnimatorInstance &instance, decVector &vector ) const;
+	void GetVector(const dearAnimatorInstance &instance, decVector &vector) const;
 	
 	/** Quaternion of target. */
-	void GetQuaternion( const dearAnimatorInstance &instance, decQuaternion &quaternion ) const;
+	void GetQuaternion(const dearAnimatorInstance &instance, decQuaternion &quaternion) const;
 	/*@}*/
 };
 

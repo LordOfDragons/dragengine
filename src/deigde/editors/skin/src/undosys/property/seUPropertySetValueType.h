@@ -35,8 +35,12 @@
  * \brief Undo Action Property Set Value Type.
  */
 class seUPropertySetValueType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertySetValueType>;
+	
+	
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	seProperty::eValueTypes pOldType;
 	seProperty::eValueTypes pNewType;
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetValueType( seProperty *property, seProperty::eValueTypes newType );
+	seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertySetValueType();
+	~seUPropertySetValueType() override;
 	/*@}*/
 	
 	
@@ -57,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

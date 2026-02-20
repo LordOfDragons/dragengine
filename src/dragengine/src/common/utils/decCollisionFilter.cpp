@@ -40,16 +40,16 @@ decCollisionFilter::decCollisionFilter(){
 	pFilter.FillMask();
 }
 
-decCollisionFilter::decCollisionFilter( const decLayerMask &mask ) :
-pCategory( mask ), pFilter( mask ){
+decCollisionFilter::decCollisionFilter(const decLayerMask &mask) :
+pCategory(mask), pFilter(mask){
 }
 
-decCollisionFilter::decCollisionFilter( const decLayerMask &category, const decLayerMask &filter ) :
-pCategory( category ), pFilter( filter ){
+decCollisionFilter::decCollisionFilter(const decLayerMask &category, const decLayerMask &filter) :
+pCategory(category), pFilter(filter){
 }
 
-decCollisionFilter::decCollisionFilter( const decCollisionFilter &other ) :
-pCategory( other.pCategory ), pFilter( other.pFilter ){
+decCollisionFilter::decCollisionFilter(const decCollisionFilter &other) :
+pCategory(other.pCategory), pFilter(other.pFilter){
 }
 
 decCollisionFilter::~decCollisionFilter(){
@@ -60,12 +60,12 @@ decCollisionFilter::~decCollisionFilter(){
 // Management
 ///////////////
 
-bool decCollisionFilter::Collides( const decCollisionFilter &other ) const{
-	return pFilter.Matches( other.pCategory ) && other.pFilter.Matches( pCategory );
+bool decCollisionFilter::Collides(const decCollisionFilter &other) const{
+	return pFilter.Matches(other.pCategory) && other.pFilter.Matches(pCategory);
 }
 
-bool decCollisionFilter::CollidesNot( const decCollisionFilter &other ) const{
-	return pFilter.MatchesNot( other.pCategory ) || other.pFilter.MatchesNot( pCategory );
+bool decCollisionFilter::CollidesNot(const decCollisionFilter &other) const{
+	return pFilter.MatchesNot(other.pCategory) || other.pFilter.MatchesNot(pCategory);
 }
 
 bool decCollisionFilter::CanCollide() const{
@@ -81,15 +81,15 @@ bool decCollisionFilter::CanNotCollide() const{
 // Operators
 //////////////
 
-bool decCollisionFilter::operator==( const decCollisionFilter &other ) const{
+bool decCollisionFilter::operator==(const decCollisionFilter &other) const{
 	return pCategory == other.pCategory && pFilter == other.pFilter;
 }
 
-bool decCollisionFilter::operator!=( const decCollisionFilter &other ) const{
+bool decCollisionFilter::operator!=(const decCollisionFilter &other) const{
 	return pCategory != other.pCategory || pFilter != other.pFilter;
 }
 
-decCollisionFilter &decCollisionFilter::operator=( const decCollisionFilter &other ){
+decCollisionFilter &decCollisionFilter::operator=(const decCollisionFilter &other){
 	pCategory = other.pCategory;
 	pFilter = other.pFilter;
 	return *this;

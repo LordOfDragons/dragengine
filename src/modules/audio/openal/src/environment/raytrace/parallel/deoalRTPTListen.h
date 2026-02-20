@@ -68,6 +68,11 @@ class deoalRTWorldBVH;
  * - Maximum first reflection delay
  */
 class deoalRTPTListen : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoalRTPTListen>;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	
@@ -138,11 +143,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTListen( deoalRTParallelEnvProbe &owner );
+	deoalRTPTListen(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
-	virtual ~deoalRTPTListen();
+	~deoalRTPTListen() override;
 	/*@}*/
 	
 	
@@ -151,35 +156,35 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	
 	
 	
 	/** \brief Set world. */
-	void SetWorld( deoalAWorld *world, deoalRTWorldBVH *rtBVH );
+	void SetWorld(deoalAWorld *world, deoalRTWorldBVH *rtBVH);
 	
 	/** \brief Set index of first ray from probe to process. */
-	void SetFirstRay( int firstRay );
+	void SetFirstRay(int firstRay);
 	
 	/** \brief Set number of rays from probe to process. */
 	#ifndef RTPTL_ONE_TASK_PER_RAY
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	#endif
 	
 	/** \brief Listen position. */
-	void SetListenPosition( const decDVector &position );
+	void SetListenPosition(const decDVector &position);
 	
 	/** \brief Set listen probe. */
-	void SetListenProbe( const deoalEnvProbe *probe );
+	void SetListenProbe(const deoalEnvProbe *probe);
 	
 	/** \brief Set sound source probe. */
-	void SetSourceProbe( const deoalEnvProbe *probe );
+	void SetSourceProbe(const deoalEnvProbe *probe);
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 
 	
 	
@@ -309,20 +314,20 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	
 	
 private:
 	void RunLinearBeam();
-	void ClosestToRay( float &closestBeamDistance, float &closestDistSquared,
+	void ClosestToRay(float &closestBeamDistance, float &closestDistSquared,
 		int &closestSegment, int &closestBounces, const deoalSoundRayList &soundRayList,
 		const deoalSoundRay &soundRay, const decVector &targetPosition, float baseBeamRadius,
-		deoalWorldOctree &octree, const decVector &targetPositionWorld );
+		deoalWorldOctree &octree, const decVector &targetPositionWorld);
 	
 	struct sSphereReceiverParams{
 		const deoalSoundRayList &soundRayList;
@@ -334,10 +339,10 @@ private:
 		float receiverRadiusSquared;
 		float invReceiverVolume;
 		
-		sSphereReceiverParams( const deoalSoundRayList &soundRayList,
+		sSphereReceiverParams(const deoalSoundRayList &soundRayList,
 			const decVector &targetPosition, deoalWorldOctree &octree,
 			const decVector &targetPositionWorld, const decVector &gainPosition,
-			float receiverRadius, float receiverRadiusSquared, float invReceiverVolume );
+			float receiverRadius, float receiverRadiusSquared, float invReceiverVolume);
 	};
 	
 	struct sSphereReceiverImpinge {
@@ -350,8 +355,8 @@ private:
 	};
 	
 	void RunSphereReceiver();
-	void RunSphereReceiver( const sSphereReceiverParams &params,
-		const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge );
+	void RunSphereReceiver(const sSphereReceiverParams &params,
+		const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge);
 
 #if 0
 	void RunGaussBeam();
@@ -359,11 +364,11 @@ private:
 	void RunHuygens();
 #endif
 	
-	bool IsRayBlocked( deoalWorldOctree &octree, const decDVector &position,
-		const decDVector &direction );
+	bool IsRayBlocked(deoalWorldOctree &octree, const decDVector &position,
+		const decDVector &direction);
 	
-	void ApplyIndirectGains( int bounces, const decVector &direction,
-		float distance, float gainLow, float gainMedium, float gainHigh );
+	void ApplyIndirectGains(int bounces, const decVector &direction,
+		float distance, float gainLow, float gainMedium, float gainHigh);
 };
 
 #endif

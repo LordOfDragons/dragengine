@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCParticleEmitter;
+#include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCParticleEmitter;
  */
 class gdeWPSTIMOCParticleEmitter : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCParticleEmitter> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCParticleEmitter( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, int index );
+	gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCParticleEmitter();
+	~gdeWPSTIMOCParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -56,24 +58,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetOCParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

@@ -29,7 +29,6 @@
 #include "../../../igdeCommonDialogs.h"
 #include "../../../event/igdeAction.h"
 #include "../../../menu/igdeMenuCommand.h"
-#include "../../../menu/igdeMenuCommand.h"
 #include "../../../resources/igdeIcon.h"
 
 #include <dragengine/common/exceptions.h>
@@ -40,9 +39,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxMenuCommand ) igdeNativeFoxMenuCommandMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxMenuCommand::ID_SELF, igdeNativeFoxMenuCommand::onCommand ),
-	FXMAPFUNC( SEL_UPDATE, igdeNativeFoxMenuCommand::ID_SELF, igdeNativeFoxMenuCommand::onUpdate )
+FXDEFMAP(igdeNativeFoxMenuCommand) igdeNativeFoxMenuCommandMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxMenuCommand::ID_SELF, igdeNativeFoxMenuCommand::onCommand),
+	FXMAPFUNC(SEL_UPDATE, igdeNativeFoxMenuCommand::ID_SELF, igdeNativeFoxMenuCommand::onUpdate)
 };
 
 
@@ -50,20 +49,22 @@ FXDEFMAP( igdeNativeFoxMenuCommand ) igdeNativeFoxMenuCommandMap[] = {
 // Class igdeNativeFoxMenuCommand
 ///////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxMenuCommand, FXMenuCommand,
-	igdeNativeFoxMenuCommandMap, ARRAYNUMBER( igdeNativeFoxMenuCommandMap ) )
+FXIMPLEMENT(igdeNativeFoxMenuCommand, FXMenuCommand,
+	igdeNativeFoxMenuCommandMap, ARRAYNUMBER(igdeNativeFoxMenuCommandMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand(){ }
+igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand(){}
 
-igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand( igdeMenuCommand &powner, FXComposite *pparent ) :
-FXMenuCommand( pparent, BuildConstrText( powner ), powner.GetIcon()
-	? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL, this, ID_SELF ),
-pOwner( &powner )
+igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand(igdeMenuCommand &powner, FXComposite *pparent) :
+FXMenuCommand(pparent, BuildConstrText(powner), powner.GetIcon()
+	? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr, this, ID_SELF),
+pOwner(&powner)
 {
-	if( ! powner.GetEnabled() ){
+	UpdateHotKey();
+	
+	if(!powner.GetEnabled()){
 		disable();
 	}
 }
@@ -71,22 +72,22 @@ pOwner( &powner )
 igdeNativeFoxMenuCommand::~igdeNativeFoxMenuCommand(){
 }
 
-igdeNativeFoxMenuCommand *igdeNativeFoxMenuCommand::CreateNativeWidget( igdeMenuCommand &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxMenuCommand *igdeNativeFoxMenuCommand::CreateNativeWidget(igdeMenuCommand &powner){
+	if(!powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(!pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxMenuCommand( powner, pparent );
+	return new igdeNativeFoxMenuCommand(powner, pparent);
 }
 
 void igdeNativeFoxMenuCommand::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -101,17 +102,22 @@ void igdeNativeFoxMenuCommand::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxMenuCommand::UpdateText(){
-	setText( pOwner->GetText().GetString() );
+	setText(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetText().GetString()));
 }
 
 void igdeNativeFoxMenuCommand::UpdateDescription(){
-	const char * const description = pOwner->GetDescription();
-	setTipText( description );
-	setHelpText( description );
+	const FXString description(igdeUIFoxHelper::TranslateIf(*pOwner, pOwner->GetDescription().GetString()));
+	setTipText(description);
+	setHelpText(description);
 }
 
 void igdeNativeFoxMenuCommand::UpdateHotKey(){
-	setAccelText( igdeUIFoxHelper::AccelString( pOwner->GetHotKey() ), true );
+	// this here is annoying. since the accel text also sets the hotkey it has to be in English
+	// or it breaks. but for display display we want the user language. to solve this we have
+	// to set the accel text twice, once in English to set the hotkey and once in the user
+	// language to show the correct text
+	setAccelText(igdeUIFoxHelper::AccelStringSystem(pOwner->GetHotKey()), true);
+	setAccelText(igdeUIFoxHelper::AccelStringTranslated(*pOwner, pOwner->GetHotKey()), false);
 }
 
 /*
@@ -120,16 +126,16 @@ UpdateMnemonic:
 */
 
 void igdeNativeFoxMenuCommand::UpdateIcon(){
-	FXIcon *iicon = NULL;
-	if( pOwner->GetIcon() ){
-		iicon = ( FXIcon* )pOwner->GetIcon()->GetNativeIcon();
+	FXIcon *iicon = nullptr;
+	if(pOwner->GetIcon()){
+		iicon = (FXIcon*)pOwner->GetIcon()->GetNativeIcon();
 	}
 	
-	setIcon( iicon );
+	setIcon(iicon);
 }
 
 void igdeNativeFoxMenuCommand::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -138,10 +144,12 @@ void igdeNativeFoxMenuCommand::UpdateEnabled(){
 }
 
 
-FXString igdeNativeFoxMenuCommand::BuildConstrText( igdeMenuCommand &powner ){
-	return igdeUIFoxHelper::MnemonizeString( powner.GetText(), powner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( powner.GetHotKey() )
-		+ "\t" + powner.GetDescription().GetString();
+FXString igdeNativeFoxMenuCommand::BuildConstrText(igdeMenuCommand &powner){
+	const FXString text(igdeUIFoxHelper::TranslateIf(powner, powner.GetText().GetString()));
+	
+	return igdeUIFoxHelper::MnemonizeString(text.text(), powner.GetMnemonic())
+			+ "\t" + igdeUIFoxHelper::AccelStringSystem(powner.GetHotKey())
+			+ "\t" + igdeUIFoxHelper::TranslateIf(powner, powner.GetDescription().GetString());
 }
 
 
@@ -149,34 +157,34 @@ FXString igdeNativeFoxMenuCommand::BuildConstrText( igdeMenuCommand &powner ){
 // Events
 ///////////
 
-long igdeNativeFoxMenuCommand::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxMenuCommand::onCommand(FXObject*, FXSelector, void*){
+	if(!pOwner->GetEnabled()){
 		return 0;
 	}
 	
 	try{
 		pOwner->OnAction();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(*pOwner, e);
 		return 0;
 	}
 	
 	return 1;
 }
 
-long igdeNativeFoxMenuCommand::onUpdate( FXObject*, FXSelector, void* ){
+long igdeNativeFoxMenuCommand::onUpdate(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
+	if(!action){
 		return 0;
 	}
 	
 	try{
 		action->Update();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
 	}
 	
 	return 0;

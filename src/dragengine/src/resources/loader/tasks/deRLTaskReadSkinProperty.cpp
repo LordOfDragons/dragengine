@@ -31,14 +31,12 @@
 #include "../deResourceLoader.h"
 #include "../../image/deImage.h"
 #include "../../image/deImageManager.h"
-#include "../../image/deImageReference.h"
 #include "../../skin/property/deSkinPropertyConstructed.h"
 #include "../../skin/property/deSkinPropertyImage.h"
 #include "../../skin/property/deSkinPropertyVideo.h"
 #include "../../skin/property/node/deSkinPropertyNodeGroup.h"
 #include "../../video/deVideo.h"
 #include "../../video/deVideoManager.h"
-#include "../../video/deVideoReference.h"
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decPath.h"
@@ -51,14 +49,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadSkinProperty::deRLTaskReadSkinProperty( deResourceLoader &resourceLoader,
-deRLTaskReadSkinInternal &task, deEngine &engine, deVirtualFileSystem *vfs, const char *basePath ) :
-pResourceLoader( resourceLoader ),
-pTask( task ),
-pEngine( engine ),
-pVirtualFileSystem( vfs ),
-pBasePath( basePath ),
-pLoadNode( resourceLoader, task, engine, vfs, basePath ){
+deRLTaskReadSkinProperty::deRLTaskReadSkinProperty(deResourceLoader &resourceLoader,
+deRLTaskReadSkinInternal &task, deEngine &engine, deVirtualFileSystem *vfs, const char *basePath) :
+pResourceLoader(resourceLoader),
+pTask(task),
+pEngine(engine),
+pVirtualFileSystem(vfs),
+pBasePath(basePath),
+pLoadNode(resourceLoader, task, engine, vfs, basePath){
 }
 
 deRLTaskReadSkinProperty::~deRLTaskReadSkinProperty(){
@@ -69,77 +67,59 @@ deRLTaskReadSkinProperty::~deRLTaskReadSkinProperty(){
 // Visiting
 /////////////
 
-void deRLTaskReadSkinProperty::VisitImage( deSkinPropertyImage &property ){
-	if( property.GetImage() ){
+void deRLTaskReadSkinProperty::VisitImage(deSkinPropertyImage &property){
+	if(property.GetImage()){
 		return;
 	}
 	
-	decString path( property.GetPath() );
+	decString path(property.GetPath());
 	
-	if( path.IsEmpty() ){
+	if(path.IsEmpty()){
 		// TODO has to be done by the graphic module not here
-		deImageReference image;
-		
 		try{
-			image.TakeOver( pEngine.GetImageManager()->LoadDefault() );
-			property.SetImage( image );
+			property.SetImage(pEngine.GetImageManager()->LoadDefault());
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 		return;
 	}
 	
-	if( ! decPath::IsUnixPathAbsolute( path ) ){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath;
-		resourcePath.SetFromUnix( pBasePath );
-		resourcePath.AddUnixPath( path );
+		resourcePath.SetFromUnix(pBasePath);
+		resourcePath.AddUnixPath(path);
 		path = resourcePath.GetPathUnix();
 	}
 	
-	deResourceLoaderTask * const task = pResourceLoader.AddLoadRequest(
-		pVirtualFileSystem, path, deResourceLoader::ertImage );
-	deRLTaskReadSkinInternal::cInternalTask *internalTask = NULL;
-	
-	try{
-		internalTask = new deRLTaskReadSkinInternal::cInternalTask( &property, task );
-		pTask.AddInternalTask( internalTask );
-		internalTask->FreeReference();
-		
-	}catch( const deException & ){
-		if( internalTask ){
-			internalTask->FreeReference();
-		}
-		throw;
-	}
+	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::New(&property,
+		pResourceLoader.AddLoadRequest(pVirtualFileSystem, path, deResourceLoader::ertImage)));
 }
 
-void deRLTaskReadSkinProperty::VisitVideo( deSkinPropertyVideo &property ){
-	if( property.GetVideo() ){
+void deRLTaskReadSkinProperty::VisitVideo(deSkinPropertyVideo &property){
+	if(property.GetVideo()){
 		return;
 	}
 	
-	decString path( property.GetPath() );
-	if( path.IsEmpty() ){
+	decString path(property.GetPath());
+	if(path.IsEmpty()){
 		return;
 	}
 	
-	if( ! decPath::IsUnixPathAbsolute( path ) ){
+	if(!decPath::IsUnixPathAbsolute(path)){
 		decPath resourcePath;
-		resourcePath.SetFromUnix( pBasePath );
-		resourcePath.AddUnixPath( path );
+		resourcePath.SetFromUnix(pBasePath);
+		resourcePath.AddUnixPath(path);
 		path = resourcePath.GetPathUnix();
 	}
 	
 	// loaded directly since video uses decoders the responsible module create later on
-	deVideoReference video;
 	try{
-		video.TakeOver( pEngine.GetVideoManager()->LoadVideo( pVirtualFileSystem, path, pBasePath, false ) );
-		property.SetVideo( video );
+		property.SetVideo(pEngine.GetVideoManager()->LoadVideo(pVirtualFileSystem, path, pBasePath, false));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 	}
 }
 
-void deRLTaskReadSkinProperty::VisitConstructed( deSkinPropertyConstructed &property ){
-	property.GetContent().Visit( pLoadNode );
+void deRLTaskReadSkinProperty::VisitConstructed(deSkinPropertyConstructed &property){
+	property.GetContent()->Visit(pLoadNode);
 }

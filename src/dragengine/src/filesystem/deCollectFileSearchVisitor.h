@@ -25,7 +25,7 @@
 #ifndef _DECOLLECTFILESEARCHVISITOR_H_
 #define _DECOLLECTFILESEARCHVISITOR_H_
 
-#include "dePathList.h"
+#include "../common/file/decPath.h"
 #include "deFileSearchVisitor.h"
 
 
@@ -38,9 +38,9 @@
  */
 class DE_DLL_EXPORT deCollectFileSearchVisitor : public deFileSearchVisitor{
 private:
-	dePathList pPatterns;
+	decPath::List pPatterns;
 	bool pRecursive;
-	dePathList pFiles;
+	decPath::List pFiles;
 	
 	
 	
@@ -51,10 +51,10 @@ public:
 	deCollectFileSearchVisitor();
 	
 	/** \brief Create file search visitor with pattern. */
-	deCollectFileSearchVisitor( const char *pattern, bool recursive = false );
+	deCollectFileSearchVisitor(const char *pattern, bool recursive = false);
 	
 	/** \brief Clean up file search visitor. */
-	virtual ~deCollectFileSearchVisitor();
+	~deCollectFileSearchVisitor() override;
 	/*@}*/
 	
 	
@@ -62,21 +62,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of patterns to match. */
-	inline dePathList &GetPatterns(){ return pPatterns; }
-	inline const dePathList &GetPatterns() const{ return pPatterns; }
+	inline decPath::List &GetPatterns(){ return pPatterns; }
+	inline const decPath::List &GetPatterns() const{ return pPatterns; }
 	
 	/** \brief Add pattern. */
-	void AddPattern( const char *pattern );
+	void AddPattern(const char *pattern);
 	
 	/** \brief Enable recursion. */
 	inline bool GetRecursive() const{ return pRecursive; }
 	
 	/** \brief Set if recursion is enabled. */
-	void SetRecursive( bool recursive );
+	void SetRecursive(bool recursive);
 	
 	/** \brief Found files. */
-	inline dePathList &GetFiles(){ return pFiles; }
-	inline const dePathList &GetFiles() const{ return pFiles; }
+	inline decPath::List &GetFiles(){ return pFiles; }
+	inline const decPath::List &GetFiles() const{ return pFiles; }
 	/*@}*/
 	
 	
@@ -90,7 +90,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path );
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override;
 	
 	/**
 	 * \brief Visit directory.
@@ -99,7 +99,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path );
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override;
 	
 	/**
 	 * \brief Visit special.
@@ -108,7 +108,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path );
+	bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path) override;
 	/*@}*/
 };
 

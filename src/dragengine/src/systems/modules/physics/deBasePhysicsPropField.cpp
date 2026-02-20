@@ -32,20 +32,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deBasePhysicsPropField::deBasePhysicsPropField(){ }
-deBasePhysicsPropField::~deBasePhysicsPropField(){ }
+deBasePhysicsPropField::deBasePhysicsPropField(){}
+deBasePhysicsPropField::~deBasePhysicsPropField(){}
 
 
 
 // Management
 ///////////////
 
-void deBasePhysicsPropField::PositionChanged(){ }
+void deBasePhysicsPropField::PositionChanged(){}
 
-void deBasePhysicsPropField::TypeAdded( int index, dePropFieldType *type ){ }
-void deBasePhysicsPropField::TypeRemoved( int index, dePropFieldType *type ){ }
-void deBasePhysicsPropField::AllTypesRemoved(){ }
-void deBasePhysicsPropField::TypeChanged( int index, dePropFieldType *type ){ }
-void deBasePhysicsPropField::InstancesChanged( int index, dePropFieldType *type ){ }
+void deBasePhysicsPropField::TypeAdded(int index, dePropFieldType *type){}
+void deBasePhysicsPropField::TypeRemoved(int index, dePropFieldType *type){}
+void deBasePhysicsPropField::AllTypesRemoved(){}
+void deBasePhysicsPropField::TypeChanged(int index, dePropFieldType *type){}
+void deBasePhysicsPropField::InstancesChanged(int index, dePropFieldType *type){}
 
-void deBasePhysicsPropField::ProjectInstances( const dePropFieldGround &ground, const decVector &direction ){ }
+void deBasePhysicsPropField::ProjectInstances(const dePropFieldGround &ground, const decVector &direction){}

@@ -40,33 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetMaxValue::gdeUOCTPSetMaxValue( gdeObjectClass *objectClass, gdeProperty *property, float newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetMaxValue::gdeUOCTPSetMaxValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set maximum value" );
+	SetShortInfo("@GameDefinition.Undo.OCTPSetMaxValue");
 	
 	pOldValue = property->GetMaximumValue();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPSetMaxValue::~gdeUOCTPSetMaxValue(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCTPSetMaxValue::~gdeUOCTPSetMaxValue(){
 ///////////////
 
 void gdeUOCTPSetMaxValue::Undo(){
-	pProperty->SetMaximumValue( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetMaximumValue(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetMaxValue::Redo(){
-	pProperty->SetMaximumValue( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetMaximumValue(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

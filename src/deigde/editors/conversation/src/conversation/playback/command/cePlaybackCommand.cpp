@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-cePlaybackCommand::cePlaybackCommand( const char *command, bool value ){
-	if( ! command || strlen( command ) == 0 ){
-		DETHROW( deeInvalidParam );
+cePlaybackCommand::cePlaybackCommand(const char *command, bool value){
+	if(!command || strlen(command) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCommand = command;
@@ -56,6 +56,6 @@ cePlaybackCommand::~cePlaybackCommand(){
 // Management
 ///////////////
 
-void cePlaybackCommand::SetValue( bool value ){
+void cePlaybackCommand::SetValue(bool value){
 	pValue = value;
 }

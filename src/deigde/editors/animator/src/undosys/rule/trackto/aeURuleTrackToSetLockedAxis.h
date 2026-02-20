@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
-class aeRuleTrackTo;
+#include "../../../animator/rule/aeRuleTrackTo.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleTrackTo;
  * Undo Action Rule Track To Set Locked Axis.
  */
 class aeURuleTrackToSetLockedAxis : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleTrackToSetLockedAxis>;
+	
+	
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	deAnimatorRuleTrackTo::eLockedAxis pOldAxis;
 	deAnimatorRuleTrackTo::eLockedAxis pNewAxis;
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTrackToSetLockedAxis( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis );
+	aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTrackToSetLockedAxis();
+	~aeURuleTrackToSetLockedAxis() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

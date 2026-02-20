@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCATrigger::ceCATrigger() : ceConversationAction( eatTrigger ){
+ceCATrigger::ceCATrigger() : ceConversationAction(eatTrigger){
 	pName = "Trigger";
 	pAction = eaFire;
 }
 
-ceCATrigger::ceCATrigger( const ceCATrigger &action ): ceConversationAction( action ){
+ceCATrigger::ceCATrigger(const ceCATrigger &action): ceConversationAction(action){
 	pName = action.GetName();
 	pAction = action.GetAction();
 }
@@ -56,13 +56,13 @@ ceCATrigger::~ceCATrigger(){
 // Management
 ///////////////
 
-void ceCATrigger::SetName( const char *name ){
+void ceCATrigger::SetName(const char *name){
 	pName = name;
 }
 
-void ceCATrigger::SetAction( eActions action ){
-	if( action < eaFire || action >= EA_COUNT ){
-		DETHROW( deeInvalidParam );
+void ceCATrigger::SetAction(eActions action){
+	if(action < eaFire || action >= EA_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pAction = action;
@@ -70,6 +70,6 @@ void ceCATrigger::SetAction( eActions action ){
 
 
 
-ceConversationAction *ceCATrigger::CreateCopy() const{
-	return new ceCATrigger( *this );
+ceConversationAction::Ref ceCATrigger::CreateCopy() const{
+	return ceCATrigger::Ref::New(*this);
 }

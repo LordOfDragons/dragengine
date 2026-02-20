@@ -39,7 +39,8 @@ igdeNativeNullTextArea::igdeNativeNullTextArea(){
 igdeNativeNullTextArea::~igdeNativeNullTextArea(){
 }
 
-igdeNativeNullTextArea *igdeNativeNullTextArea::CreateNativeWidget( igdeTextArea& ){
+igdeNativeNullTextArea *igdeNativeNullTextArea::CreateNativeWidget(igdeTextArea&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullTextArea;
 }
 
@@ -80,7 +81,7 @@ int igdeNativeNullTextArea::GetCursorPosition() const{
 	return 0;
 }
 
-void igdeNativeNullTextArea::SetCursorPosition( int ){
+void igdeNativeNullTextArea::SetCursorPosition(int){
 }
 
 int igdeNativeNullTextArea::GetCursorColumn() const{
@@ -91,24 +92,24 @@ int igdeNativeNullTextArea::GetCursorRow() const{
 	return 0;
 }
 
-void igdeNativeNullTextArea::SetCursorColumn( int ){
+void igdeNativeNullTextArea::SetCursorColumn(int){
 }
 
-void igdeNativeNullTextArea::SetCursorRow( int ){
+void igdeNativeNullTextArea::SetCursorRow(int){
 }
 
 int igdeNativeNullTextArea::GetTopLine() const{
 	return 0;
 }
 
-void igdeNativeNullTextArea::SetTopLine( int ){
+void igdeNativeNullTextArea::SetTopLine(int){
 }
 
 int igdeNativeNullTextArea::GetBottomLine() const{
 	return 0;
 }
 
-void igdeNativeNullTextArea::SetBottomLine( int ){
+void igdeNativeNullTextArea::SetBottomLine(int){
 }
 
 int igdeNativeNullTextArea::GetLineCount() const{

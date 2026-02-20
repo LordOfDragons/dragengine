@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCComponent;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 
 
 /**
@@ -35,19 +35,21 @@ class gdeOCComponent;
  */
 class gdeWPSTIMOCComponent : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCComponent> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCComponent( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCComponent *component, int index );
+	gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCComponent *component, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCComponent();
+	~gdeWPSTIMOCComponent() override;
 	/*@}*/
 	
 	
@@ -56,27 +58,27 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pComponent; }
+	inline const gdeOCComponent::Ref &GetOCComponent() const{ return pComponent; }
 	
 	/** \brief Validate component and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if component is valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	/** \brief Validate due to change in object class names or existance. */
-	virtual void ValidateObjectClassName();
+	void ValidateObjectClassName() override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

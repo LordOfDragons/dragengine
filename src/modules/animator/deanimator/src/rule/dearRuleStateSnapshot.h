@@ -27,6 +27,8 @@
 
 #include "dearRule.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class dearAnimationState;
 class dearAnimationVPSState;
 class deAnimatorRuleStateSnapshot;
@@ -40,11 +42,8 @@ class dearRuleStateSnapshot : public dearRule{
 private:
 	//const deAnimatorRuleStateSnapshot &pStateSnapshot;
 	
-	dearAnimationState *pAnimStates;
-	int pAnimStateCount;
-	
-	dearAnimationVPSState *pAnimVPSStates;
-	int pAnimVPSStateCount;
+	decTList<dearAnimationState> pAnimStates;
+	decTList<dearAnimationVPSState> pAnimVPSStates;
 	
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
@@ -59,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleStateSnapshot( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleStateSnapshot &rule );
+	dearRuleStateSnapshot(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleStateSnapshot &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleStateSnapshot();
+	~dearRuleStateSnapshot() override;
 	/*@}*/
 	
 	
@@ -74,19 +73,19 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	void CaptureStateInto(int identifier) override;
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime) override;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	
 	/** Rule changed. */
-	virtual void RuleChanged();
+	void RuleChanged() override;
 	/*@}*/
 	
 private:

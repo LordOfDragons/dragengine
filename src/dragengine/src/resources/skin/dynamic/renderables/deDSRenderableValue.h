@@ -38,6 +38,10 @@
  * usually very small ( possibly down to 1x1 ).
  */
 class DE_DLL_EXPORT deDSRenderableValue : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableValue>;
+	
 private:
 	float pValue;
 	
@@ -47,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableValue( const char *name );
+	deDSRenderableValue(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableValue();
+	~deDSRenderableValue() override;
 	/*@}*/
 	
 	
@@ -61,7 +65,7 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 	
 	
@@ -69,7 +73,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

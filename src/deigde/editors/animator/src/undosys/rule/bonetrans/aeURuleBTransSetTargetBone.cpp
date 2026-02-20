@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone( aeRuleBoneTransformator *rule, const char *newBone ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone(aeRuleBoneTransformator *rule, const char *newBone){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	pOldBone = rule->GetTargetBone().GetString();
+	pOldBone = rule->GetTargetBone();
 	pNewBone = newBone;
 	
-	SetShortInfo( "Bone transformator set target bone" );
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetTargetBone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetTargetBone::~aeURuleBTransSetTargetBone(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ aeURuleBTransSetTargetBone::~aeURuleBTransSetTargetBone(){
 ///////////////
 
 void aeURuleBTransSetTargetBone::Undo(){
-	pRule->SetTargetBone( pOldBone.GetString() );
+	pRule->SetTargetBone(pOldBone.GetString());
 }
 
 void aeURuleBTransSetTargetBone::Redo(){
-	pRule->SetTargetBone( pNewBone.GetString() );
+	pRule->SetTargetBone(pNewBone.GetString());
 }

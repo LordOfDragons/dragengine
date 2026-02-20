@@ -25,9 +25,10 @@
 #ifndef _DEDYNAMICSKIN_H_
 #define _DEDYNAMICSKIN_H_
 
+#include "renderables/deDSRenderable.h"
 #include "../../deResource.h"
+#include "../../../common/collection/decTUniqueList.h"
 
-class deDSRenderable;
 class deDynamicSkinManager;
 class deBaseGraphicDynamicSkin;
 
@@ -40,14 +41,11 @@ class deBaseGraphicDynamicSkin;
 class DE_DLL_EXPORT deDynamicSkin : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deDynamicSkin> Ref;
-	
+	using Ref = deTObjectReference<deDynamicSkin>;
 	
 	
 private:
-	deDSRenderable **pRenderables;
-	int pRenderableCount;
-	int pRenderableSize;
+	deDSRenderable::List pRenderables;
 	
 	deBaseGraphicDynamicSkin *pPeerGraphic;
 	
@@ -57,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new resource. */
-	deDynamicSkin( deDynamicSkinManager *manager );
+	deDynamicSkin(deDynamicSkinManager *manager);
 	
 protected:
 	/**
@@ -66,7 +64,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deDynamicSkin();
+	~deDynamicSkin() override;
 	/*@}*/
 	
 	
@@ -74,41 +72,44 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Renderables. */
+	inline const deDSRenderable::List &GetRenderables() const{ return pRenderables; }
+	
 	/** \brief Number of renderables. */
-	inline int GetRenderableCount() const{ return pRenderableCount; }
+	inline int GetRenderableCount() const{ return pRenderables.GetCount(); }
 	
 	/** \brief Renderable at the given index. */
-	deDSRenderable *GetRenderableAt( int index ) const;
+	const deDSRenderable::Ref &GetRenderableAt(int index) const{ return pRenderables.GetAt(index); }
 	
 	/** \brief Renderable with the given name or NULL if not found. */
-	deDSRenderable *GetRenderableNamed( const char *name ) const;
+	deDSRenderable *GetRenderableNamed(const char *name) const;
 	
 	/** \brief Determines if a renderable exists. */
-	bool HasRenderable( deDSRenderable *renderable ) const;
+	bool HasRenderable(deDSRenderable *renderable) const;
 	
 	/** \brief Determines if a renderable with the given name exists. */
-	bool HasRenderableNamed( const char *name ) const;
+	bool HasRenderableNamed(const char *name) const;
 	
 	/** \brief Index of the renderable or -1 if not found. */
-	int IndexOfRenderable( deDSRenderable *renderable ) const;
+	int IndexOfRenderable(deDSRenderable *renderable) const;
 	
 	/** \brief Index of the renderable with the given name or -1 if not found. */
-	int IndexOfRenderableNamed( const char *name ) const;
+	int IndexOfRenderableNamed(const char *name) const;
 	
 	/** \brief Adds a renderable. */
-	void AddRenderable( deDSRenderable *renderable );
+	void AddRenderable(deDSRenderable::Ref &&renderable);
 	
 	/** \brief Removes a renderable. */
-	void RemoveRenderable( deDSRenderable *renderable );
+	void RemoveRenderable(deDSRenderable *renderable);
 	
 	/** \brief Removes a renderable with the given name if existing. */
-	void RemoveRenderableNamed( const char *name );
+	void RemoveRenderableNamed(const char *name);
 	
 	/** \brief Removes all renderables. */
 	void RemoveAllRenderables();
 	
 	/** \brief Notifies the peer that the given renderable changed. */
-	void NotifyRenderableChanged( int index );
+	void NotifyRenderableChanged(int index);
 	/*@}*/
 	
 	
@@ -119,7 +120,7 @@ public:
 	inline deBaseGraphicDynamicSkin *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicDynamicSkin *peer );
+	void SetPeerGraphic(deBaseGraphicDynamicSkin *peer);
 	/*@}*/
 };
 

@@ -27,8 +27,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/collection/decIntSet.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTSet.h>
 
 
 /**
@@ -36,6 +36,10 @@
  */
 class ceConversationAction : public deObject{
 public:
+	using Ref = deTObjectReference<ceConversationAction>;
+	using List = decTObjectOrderedSet<ceConversationAction>;
+	
+	
 	/** \brief Action types. */
 	enum eActionTypes{
 		/** \brief Change camera shot. */
@@ -88,11 +92,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new conversation action. */
-	ceConversationAction( eActionTypes type );
+	ceConversationAction(eActionTypes type);
 	/** \brief Creates a new conversation action. */
-	ceConversationAction( const ceConversationAction &action );
+	ceConversationAction(const ceConversationAction &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceConversationAction();
+protected:
+	~ceConversationAction() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -104,28 +110,28 @@ public:
 	inline bool GetWaitForActor() const{ return pWaitForActor; }
 	
 	/** \brief Set to wait for actor. */
-	void SetWaitForActor( bool wait );
+	void SetWaitForActor(bool wait);
 	
 	/** \brief Waiting considers only actor speaking not actor waiting. */
 	inline bool GetWaitSpeakOnly() const{ return pWaitSpeakOnly; }
 	
 	/** \brief Set waiting considers only actor speaking not actor waiting. */
-	void SetWaitSpeakOnly( bool speakOnly );
+	void SetWaitSpeakOnly(bool speakOnly);
 	
 	/** \brief ID of actor to wait for or empty string to wait for all actors. */
 	inline const decString &GetWaitForActorID() const{ return pWaitForActorID; }
 	
 	/** \brief Set ID of actor to wait for or empty string to wait for all actors. */
-	void SetWaitForActorID( const char *id );
+	void SetWaitForActorID(const char *id);
 	
 	/** \brief Retrieves the delay in seconds before processing this action. */
 	inline float GetDelay() const{ return pDelay; }
 	
 	/** \brief Sets the delay in seconds before processing this action. */
-	void SetDelay( float delay );
+	void SetDelay(float delay);
 	
 	/** \brief Create a copy of this action. */
-	virtual ceConversationAction *CreateCopy() const = 0;
+	virtual Ref CreateCopy() const = 0;
 	/*@}*/
 };
 

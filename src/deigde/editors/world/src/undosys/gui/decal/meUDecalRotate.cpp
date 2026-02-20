@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUDecalRotate.h"
 #include "meUndoDataDecal.h"
 #include "../../../world/meWorld.h"
@@ -42,42 +38,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRotate::meUDecalRotate( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUDecalRotate::meUDecalRotate(meWorld *world) :
+meBaseUndoRotate(*world->GetEnvironment())
+{
+	if(!world) DETHROW(deeInvalidParam);
 	
-	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
-	int count = selection.GetCount();
+	SetShortInfo("@World.UDecalRotate.RotateDecals");
 	
-	SetShortInfo( "Rotate Decals" );
+	pWorld = nullptr;
 	
-	pWorld = NULL;
-	
-	pDecals = NULL;
-	pDecalCount = 0;
-	
-	try{
-		if( count > 0 ){
-			pDecals = new meUndoDataDecal*[ count ];
-			if( ! pDecals ) DETHROW( deeOutOfMemory );
-			
-			while( pDecalCount < count ){
-				pDecals[ pDecalCount ] = new meUndoDataDecal( selection.GetAt( pDecalCount ) );
-				if( ! pDecals[ pDecalCount ] ) DETHROW( deeOutOfMemory );
-				pDecalCount++;
-			}
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	world->GetSelectionDecal().GetSelected().Visit([&](meDecal *decal){
+		pDecals.Add(meUndoDataDecal::Ref::New(decal));
+	});
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalRotate::~meUDecalRotate(){
-	pCleanUp();
 }
 
 
@@ -86,62 +63,36 @@ meUDecalRotate::~meUDecalRotate(){
 ///////////////
 
 void meUDecalRotate::Undo(){
-	meDecal *decal;
-	int i;
-	
-	for( i=0; i<pDecalCount; i++ ){
-		decal = pDecals[ i ]->GetDecal();
-		decal->SetPosition( pDecals[ i ]->GetOldPosition() );
-		decal->SetRotation( pDecals[ i ]->GetOldOrientation() );
-		pWorld->NotifyDecalGeometryChanged( decal );
-	}
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		data.GetDecal()->SetPosition(data.GetOldPosition());
+		data.GetDecal()->SetRotation(data.GetOldOrientation());
+		pWorld->NotifyDecalGeometryChanged(data.GetDecal());
+	});
 }
 
 void meUDecalRotate::Redo(){
 	bool modifyPosition = GetModifyPosition();
 	bool modifyOrientation = GetModifyOrientation();
 	decDVector position, rotation;
-	meDecal *decal;
-	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		decal = pDecals[ d ]->GetDecal();
+	pDecals.Visit([&](const meUndoDataDecal &data){
+		position = data.GetOldPosition();
+		rotation = data.GetOldOrientation();
 		
-		position = pDecals[ d ]->GetOldPosition();
-		rotation = pDecals[ d ]->GetOldOrientation();
+		TransformElement(position, rotation);
 		
-		TransformElement( position, rotation );
-		
-		if( modifyOrientation ){
-			decal->SetRotation( rotation.ToVector() );
+		if(modifyOrientation){
+			data.GetDecal()->SetRotation(rotation.ToVector());
 		}
 		
-		if( modifyPosition ){
-			decal->SetPosition( position );
+		if(modifyPosition){
+			data.GetDecal()->SetPosition(position);
 		}
 		
-		pWorld->NotifyDecalGeometryChanged( decal );
-	}
+		pWorld->NotifyDecalGeometryChanged(data.GetDecal());
+	});
 }
 
 void meUDecalRotate::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void meUDecalRotate::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
-			pDecalCount--;
-			delete pDecals[ pDecalCount ];
-		}
-		
-		delete [] pDecals;
-	}
-	
-	if( pWorld ) pWorld->FreeReference();
 }

@@ -54,26 +54,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOSnapPoint::gdeVAOSnapPoint( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCSnapPoint( ocsnapPoint ),
-pDDSCenter( NULL ),
-pDDSCoordSystem( NULL ),
-pDDSSnapDistance( NULL )
+gdeVAOSnapPoint::gdeVAOSnapPoint(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCSnapPoint(ocsnapPoint),
+pDDSCenter(nullptr),
+pDDSCoordSystem(nullptr),
+pDDSSnapDistance(nullptr)
 {
-	if( ! ocsnapPoint ){
-		DETHROW( deeInvalidParam );
+	if(!ocsnapPoint){
+		DETHROW(deeInvalidParam);
 	}
-	
-	pOCSnapPoint->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
 		pUpdateDDShapeColor();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -107,22 +104,12 @@ void gdeVAOSnapPoint::SelectedObjectChanged(){
 void gdeVAOSnapPoint::pCleanUp(){
 	pReleaseResources();
 	
-	if( pDDSSnapDistance ){
-		delete pDDSSnapDistance;
-	}
-	if( pDDSCoordSystem ){
+	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if( pDDSCenter ){
-		delete pDDSCenter;
-	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer = NULL;
-	}
-	
-	if( pOCSnapPoint ){
-		pOCSnapPoint->FreeReference();
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
+		pDebugDrawer = nullptr;
 	}
 }
 
@@ -132,63 +119,63 @@ void gdeVAOSnapPoint::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer->SetXRay(true);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
-// 	pDDSCenter = new igdeWDebugDrawerShape;
+// 	pDDSCenter = igdeWDebugDrawerShape::Ref::New();
 // 	pDDSCenter->AddSphereShape( 0.05f, decVector() );
 // 	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
 	
 	// create coordinate system shape
 	pDDSCoordSystem = new igdeWCoordSysArrows;
-	pDDSCoordSystem->SetArrowLength( 0.2f );
-	pDDSCoordSystem->SetArrowSize( 0.01f );
-	pDDSCoordSystem->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCoordSystem->SetArrowLength(0.2f);
+	pDDSCoordSystem->SetArrowSize(0.01f);
+	pDDSCoordSystem->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create snap distance
-	pDDSSnapDistance = new igdeWDebugDrawerShape;
-	pDDSSnapDistance->AddSphereShape( pOCSnapPoint->GetSnapDistance(), decVector() );
-	pDDSSnapDistance->SetParentDebugDrawer( pDebugDrawer );
+	pDDSSnapDistance = igdeWDebugDrawerShape::Ref::New();
+	pDDSSnapDistance->AddSphereShape(pOCSnapPoint->GetSnapDistance(), decVector());
+	pDDSSnapDistance->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAOSnapPoint::pUpdateDDShapes(){
 	const decVector &position = pOCSnapPoint->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCSnapPoint->GetRotation() * DEG2RAD ) );
+	const decQuaternion orientation(decQuaternion::CreateFromEuler(
+		pOCSnapPoint->GetRotation() * DEG2RAD));
 	
 // 	pDDSCenter->SetPosition( position );
 // 	pDDSCenter->SetOrientation( orientation );
 	
-	pDDSCoordSystem->SetPosition( position );
-	pDDSCoordSystem->SetOrientation( orientation );
+	pDDSCoordSystem->SetPosition(position);
+	pDDSCoordSystem->SetOrientation(orientation);
 	
-	pDDSSnapDistance->SetPosition( position );
-	pDDSSnapDistance->SetOrientation( orientation );
+	pDDSSnapDistance->SetPosition(position);
+	pDDSSnapDistance->SetOrientation(orientation);
 	
 	// change snap distance sphere size
 	pDDSSnapDistance->RemoveAllShapes();
-	pDDSSnapDistance->AddSphereShape( pOCSnapPoint->GetSnapDistance(), decVector() );
+	pDDSSnapDistance->AddSphereShape(pOCSnapPoint->GetSnapDistance(), decVector());
 }
 
 void gdeVAOSnapPoint::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
-	&& pView.GetGameDefinition()->GetActiveOCSnapPoint() == pOCSnapPoint ){
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint
+	&& pView.GetGameDefinition()->GetActiveOCSnapPoint() == pOCSnapPoint){
 // 		pDDSCenter->SetEdgeColor( decColor( config.GetColorSnapPointActive(), 1.0f ) );
 // 		pDDSCenter->SetFillColor( config.GetColorSnapPointActive() );
 		
-		pDDSSnapDistance->SetEdgeColor( decColor( config.GetColorSnapPointActive(), 1.0f ) );
-		pDDSSnapDistance->SetFillColor( config.GetColorSnapPointActive() );
+		pDDSSnapDistance->SetEdgeColor(decColor(config.GetColorSnapPointActive(), 1.0f));
+		pDDSSnapDistance->SetFillColor(config.GetColorSnapPointActive());
 		
 	}else{
 // 		pDDSCenter->SetEdgeColor( decColor( config.GetColorSnapPoint(), 0.25f ) );
 // 		pDDSCenter->SetFillColor( config.GetColorSnapPoint() );
 		
-		pDDSSnapDistance->SetEdgeColor( decColor( config.GetColorSnapPoint(), 0.25f ) );
-		pDDSSnapDistance->SetFillColor( config.GetColorSnapPoint() );
+		pDDSSnapDistance->SetEdgeColor(decColor(config.GetColorSnapPoint(), 0.25f));
+		pDDSSnapDistance->SetFillColor(config.GetColorSnapPoint());
 	}
 }
 

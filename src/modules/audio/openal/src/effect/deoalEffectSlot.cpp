@@ -46,30 +46,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalEffectSlot::deoalEffectSlot( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pSlot( 0 ),
-pEffect( 0 ),
-pOwner( nullptr ),
-pImportance( -1000.0f ),
-pEffectType( AL_EFFECT_NULL ),
-	pParametersChanged ( false ),
-pKeepAliveElapsed( 0.0f ),
-pKeepAliveTimeout( 0.0f )
+deoalEffectSlot::deoalEffectSlot(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pSlot(0),
+pEffect(0),
+pOwner(nullptr),
+pImportance(-1000.0f),
+pEffectType(AL_EFFECT_NULL),
+	pParametersChanged (false),
+pKeepAliveElapsed(0.0f),
+pKeepAliveTimeout(0.0f)
 {
 	try{
 		alGetError();
-		palGenAuxiliaryEffectSlots( 1, &pSlot );
-		if( alGetError() != AL_NO_ERROR ){
-			DETHROW( deeOutOfMemory );
+		palGenAuxiliaryEffectSlots(1, &pSlot);
+		if(alGetError() != AL_NO_ERROR){
+			DETHROW(deeOutOfMemory);
 		}
 		
-		OAL_CHECK( audioThread, palGenEffects( 1, &pEffect ) );
+		OAL_CHECK(audioThread, palGenEffects(1, &pEffect));
 		
 		// prevent reverb effects apply distance based statistics model
-		OAL_CHECK( audioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL_FALSE ) );
+		OAL_CHECK(audioThread, palAuxiliaryEffectSloti(pSlot, AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL_FALSE));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -84,11 +84,11 @@ deoalEffectSlot::~deoalEffectSlot(){
 // Management
 ///////////////
 
-void deoalEffectSlot::AssignOwner( void *owner, float importance ){
-	DEASSERT_NOTNULL( owner )
+void deoalEffectSlot::AssignOwner(void *owner, float importance){
+	DEASSERT_NOTNULL(owner)
 	
-	DEBUG( pAudioThread.GetLogger().LogInfoFormat( "EffectSlot: AssignOwner %d with %p[%g]",
-		pSlot, owner, importance ) );
+	DEBUG(pAudioThread.GetLogger().LogInfoFormat("EffectSlot: AssignOwner %d with %p[%g]",
+		pSlot, owner, importance));
 	pOwner = owner;
 	pImportance = importance;
 	pKeepAliveElapsed = 0.0f;
@@ -96,37 +96,37 @@ void deoalEffectSlot::AssignOwner( void *owner, float importance ){
 }
 
 void deoalEffectSlot::ClearOwner(){
-	if( ! pOwner ){
+	if(!pOwner){
 		return;
 	}
 	
-	DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+	DEBUG(pAudioThread.GetLogger().LogInfoFormat(
 		"EffectSlot: ClearOwner %d with %p[%g] keep-alive %g",
-		pSlot, pOwner, pImportance, pKeepAliveTimeout ) );
+		pSlot, pOwner, pImportance, pKeepAliveTimeout));
 	pOwner = nullptr;
 	pImportance = -1000.0f;
 }
 
-void deoalEffectSlot::SetImportance( float importance ){
+void deoalEffectSlot::SetImportance(float importance){
 	pImportance = importance;
 }
 
 
 
-void deoalEffectSlot::SetEffectType( ALenum type ){
-	if( type == pEffectType ){
+void deoalEffectSlot::SetEffectType(ALenum type){
+	if(type == pEffectType){
 		return;
 	}
 	
 	pEffectType = type;
 	pParametersChanged = true;
 	
-	OAL_CHECK( pAudioThread, palEffecti( pEffect, AL_EFFECT_TYPE, type ) );
+	OAL_CHECK(pAudioThread, palEffecti(pEffect, AL_EFFECT_TYPE, type));
 }
 
 
 
-void deoalEffectSlot::UpdateSlot( float timeout ){
+void deoalEffectSlot::UpdateSlot(float timeout){
 	pKeepAliveElapsed = 0.0f;
 	pKeepAliveTimeout = timeout;
 	
@@ -135,17 +135,17 @@ void deoalEffectSlot::UpdateSlot( float timeout ){
 
 
 
-void deoalEffectSlot::Update( float elapsed ){
-	if( pOwner ){
+void deoalEffectSlot::Update(float elapsed){
+	if(pOwner){
 		return;
 	}
 	
 	pKeepAliveElapsed += elapsed;
 	
-	if( pKeepAliveElapsed >= pKeepAliveTimeout && pEffectType != AL_EFFECT_NULL ){
-		DEBUG( pAudioThread.GetLogger().LogInfoFormat( "EffectSlot: Timeout %d with %p[%g]",
-			pSlot, pOwner, pImportance ) );
-		SetEffectType( AL_EFFECT_NULL );
+	if(pKeepAliveElapsed >= pKeepAliveTimeout && pEffectType != AL_EFFECT_NULL){
+		DEBUG(pAudioThread.GetLogger().LogInfoFormat("EffectSlot: Timeout %d with %p[%g]",
+			pSlot, pOwner, pImportance));
+		SetEffectType(AL_EFFECT_NULL);
 		pUpdateSlotParameters();
 	}
 }
@@ -156,20 +156,20 @@ void deoalEffectSlot::Update( float elapsed ){
 //////////////////////
 
 void deoalEffectSlot::pCleanUp(){
-	if( pSlot ){
-		palDeleteAuxiliaryEffectSlots( 1, &pSlot );
+	if(pSlot){
+		palDeleteAuxiliaryEffectSlots(1, &pSlot);
 	}
-	if( pEffect ){
-		palDeleteEffects( 1, &pEffect );
+	if(pEffect){
+		palDeleteEffects(1, &pEffect);
 	}
 }
 
 void deoalEffectSlot::pUpdateSlotParameters(){
-	if( ! pParametersChanged ){
+	if(!pParametersChanged){
 		return;
 	}
 	
-	OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( pSlot, AL_EFFECTSLOT_EFFECT, pEffect ) );
-	DEBUG( pAudioThread.GetLogger().LogInfoFormat( "EffectSlot: UpdateSlot %d with %p[%g]",
-		pSlot, pOwner, pImportance ) );
+	OAL_CHECK(pAudioThread, palAuxiliaryEffectSloti(pSlot, AL_EFFECTSLOT_EFFECT, pEffect));
+	DEBUG(pAudioThread.GetLogger().LogInfoFormat("EffectSlot: UpdateSlot %d with %p[%g]",
+		pSlot, pOwner, pImportance));
 }

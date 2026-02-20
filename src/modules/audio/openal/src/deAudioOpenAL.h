@@ -25,14 +25,14 @@
 #ifndef _DEAUDIOOPENAL_H_
 #define _DEAUDIOOPENAL_H_
 
+#include "parameters/deoalParameter.h"
+
 #include <dragengine/systems/modules/audio/deBaseAudioModule.h>
-#include <dragengine/common/collection/decObjectSet.h>
 
 class deoalAudioThread;
 class deoalCommandExecuter;
 class deoalConfiguration;
 class deoalDevMode;
-class deoalParameterList;
 class deoalMicrophone;
 class deoalWorld;
 
@@ -47,7 +47,7 @@ private:
 	
 	deoalConfiguration *pConfiguration;
 	deoalCommandExecuter *pCommandExecuter;
-	deoalParameterList *pParameters;
+	deoalParameter::List pParameters;
 	
 	deoalDevMode *pDevMode;
 	
@@ -59,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create openal audio module. */
-	deAudioOpenAL( deLoadableModule &loadableModule );
+	deAudioOpenAL(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up openal audio module. */
-	virtual ~deAudioOpenAL();
+	~deAudioOpenAL() override;
 	/*@}*/
 	
 	
@@ -92,24 +92,24 @@ public:
 	 * The active microphone is passed as parameter and can be NULL if no microphone
 	 * is active yet.
 	 */
-	virtual bool Init( deMicrophone *activeMic );
+	bool Init(deMicrophone *activeMic) override;
 	
 	/**
 	 * \brief Called to cleanup the module.
 	 * 
 	 * All resources have to be freed and running threads stopped or killed if needed.
 	 */
-	virtual void CleanUp();
+	void CleanUp() override;
 	
 	/** \brief Process audio. */
-	virtual void ProcessAudio();
+	void ProcessAudio() override;
 	
 	/**
 	 * \brief Set active microphone.
 	 * 
 	 * Can be NULL to unset the active microphone.
 	 */
-	virtual void SetActiveMicrophone( deMicrophone *microphone );
+	void SetActiveMicrophone(deMicrophone *microphone) override;
 	
 	/**
 	 * \brief Frame-per-second rate averaged over the last couple of frames.
@@ -117,7 +117,7 @@ public:
 	 * 
 	 * Returns 0 if module is not using a separate thread.
 	 */
-	virtual int GetFPSRate();
+	int GetFPSRate() override;
 	
 	
 	
@@ -130,40 +130,40 @@ public:
 	/** \name Audio Management */
 	/*@{*/
 	/** \brief Create world peer. */
-	virtual deBaseAudioWorld *CreateWorld( deWorld *world );
+	deBaseAudioWorld *CreateWorld(deWorld *world) override;
 	
 	/** \brief Create sound peer. */
-	virtual deBaseAudioSound *CreateSound( deSound *sound );
+	deBaseAudioSound *CreateSound(deSound *sound) override;
 	
 	/** \brief Create speaker peer. */
-	virtual deBaseAudioSpeaker *CreateSpeaker( deSpeaker *speaker );
+	deBaseAudioSpeaker *CreateSpeaker(deSpeaker *speaker) override;
 	
 	/** \brief Create microphone peer. */
-	virtual deBaseAudioMicrophone *CreateMicrophone( deMicrophone *microphone );
+	deBaseAudioMicrophone *CreateMicrophone(deMicrophone *microphone) override;
 	
 	/** \brief Create component peer. */
-	virtual deBaseAudioComponent *CreateComponent( deComponent *component );
+	deBaseAudioComponent *CreateComponent(deComponent *component) override;
 	
 	/** \brief Create model peer. */
-	virtual deBaseAudioModel *CreateModel( deModel *model );
+	deBaseAudioModel *CreateModel(deModel *model) override;
 	
 	/** \brief Create skin peer. */
-	virtual deBaseAudioSkin *CreateSkin( deSkin *skin );
+	deBaseAudioSkin *CreateSkin(deSkin *skin) override;
 	
 	/** \brief Create decal peer. */
-	virtual deBaseAudioDecal *CreateDecal( deDecal *decal );
+	deBaseAudioDecal *CreateDecal(deDecal *decal) override;
 	
 	/** \brief Create deSoundLevelMeter eer. */
-	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	deBaseAudioSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter) override;
 	
 	/** \brief Create deVideoPlayer peer. */
-	virtual deBaseAudioVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer );
+	deBaseAudioVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer) override;
 	
 	/** \brief Create deSynthesizerInstance peer. */
-	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance( deSynthesizerInstance *instance );
+	deBaseAudioSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance) override;
 	
 	/** \brief Create deHeightTerrain peer. */
-	virtual deBaseAudioHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain );
+	deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) override;
 	/*@}*/
 	
 	
@@ -179,23 +179,23 @@ public:
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Number of parameters. */
-	virtual int GetParameterCount() const;
+	int GetParameterCount() const override;
 	
 	/**
 	 * \brief Get information about parameter.
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
 	
 	/** \brief Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const override;
 	
 	/** \brief Value of named parameter. */
-	virtual decString GetParameterValue( const char *name ) const;
+	decString GetParameterValue(const char *name) const override;
 	
 	/** \brief Set value of named parameter. */
-	virtual void SetParameterValue( const char *name, const char *value );
+	void SetParameterValue(const char *name, const char *value) override;
 	/*@}*/
 	
 	
@@ -203,7 +203,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Send command to module. */
-	virtual void SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer) override;
 	
 	/** \brief Developer mode or \em NULL. */
 	inline deoalDevMode *GetDevMode() const{ return pDevMode; }

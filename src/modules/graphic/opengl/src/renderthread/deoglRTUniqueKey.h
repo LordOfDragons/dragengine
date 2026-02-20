@@ -25,7 +25,7 @@
 #ifndef _DEOGLRTUNIQUEKEY_H_
 #define _DEOGLRTUNIQUEKEY_H_
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 
@@ -35,7 +35,7 @@
 class deoglRTUniqueKey{
 private:
 	deMutex pMutex;
-	decIntList pFreeKeys;
+	decTList<int> pFreeKeys;
 	unsigned int pNextKey;
 	
 	
@@ -58,7 +58,7 @@ public:
 	unsigned int Get();
 	
 	/** Return key making it availabel as free. */
-	void Return( unsigned int key );
+	void Return(unsigned int key);
 	/*@}*/
 };
 

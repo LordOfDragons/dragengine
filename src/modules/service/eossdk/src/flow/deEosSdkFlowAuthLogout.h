@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create flow. */
-	deEosSdkFlowAuthLogout( deEosSdkServiceEos &service, const decUniqueID &id );
+	deEosSdkFlowAuthLogout(deEosSdkServiceEos &service, const decUniqueID &id);
 	/*@}*/
 	
 	
@@ -50,9 +50,9 @@ public:
 	void AuthLogout();
 	void DeletePersistentAuth();
 	
-	void OnConnectLogoutCallback( const EOS_Connect_LogoutCallbackInfo &data );
-	void OnAuthLogoutCallback( const EOS_Auth_LogoutCallbackInfo &data );
-	void OnDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
+	void OnConnectLogoutCallback(const EOS_Connect_LogoutCallbackInfo &data);
+	void OnAuthLogoutCallback(const EOS_Auth_LogoutCallbackInfo &data);
+	void OnDeletePersistentAuthCallback(const EOS_Auth_DeletePersistentAuthCallbackInfo &data);
 	/*@}*/
 };
 

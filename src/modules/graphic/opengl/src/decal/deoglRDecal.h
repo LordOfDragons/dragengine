@@ -25,29 +25,28 @@
 #ifndef _DEOGLRDECAL_H_
 #define _DEOGLRDECAL_H_
 
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
+#include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/state/deoglSkinState.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglWorldComputeElement.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglRenderPlan;
 class deoglRComponent;
-class deoglRDynamicSkin;
 class deoglRenderThread;
-class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
-class deoglSharedVBOBlock;
-class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
 class deoglSkinShader;
-class deoglSkinState;
 class deoglTexUnitsConfig;
 class deoglVAO;
 class deoglRenderTaskSharedInstance;
@@ -60,14 +59,20 @@ class deoglDecalListener;
  * Render decal.
  */
 class deoglRDecal : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDecal>;
+	
+	
 private:
 	/** World compute element. */
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRDecal &pDecal;
 	public:
-		WorldComputeElement( deoglRDecal &decal );
-		virtual void UpdateData( sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+		using Ref = deTObjectReference<WorldComputeElement>;
+		WorldComputeElement(deoglRDecal &decal);
+		void UpdateData(sDataElement &data) const override;
+		void UpdateDataGeometries(sDataElementGeometry *data) const override;
 	};
 	
 	
@@ -80,20 +85,20 @@ private:
 	decTexMatrix2 pTransform;
 	bool pVisible;
 	
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
-	deoglSkinState *pSkinState;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
+	deoglSkinState::Ref pSkinState;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
-	deoglRDynamicSkin *pUseDynamicSkin;
-	deoglSkinState *pUseSkinState;
+	deoglRDynamicSkin::Ref pUseDynamicSkin;
+	deoglSkinState::Ref pUseSkinState;
 	
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	int pPointCount;
 	
 	bool pDirtyVBO;
@@ -101,9 +106,9 @@ private:
 	
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	deoglTexUnitsConfig *pTUCGeometry, *pTUCDepth, *pTUCCounter, *pTUCShadow, *pTUCEnvMap;
@@ -119,7 +124,7 @@ private:
 	
 	unsigned int pUniqueKey;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<deoglDecalListener> pListeners;
 	int pListenerIndex;
 	
 	
@@ -128,14 +133,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render decal. */
-	deoglRDecal( deoglRenderThread &renderThread );
+	deoglRDecal(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render decal. */
-	virtual ~deoglRDecal();
+	~deoglRDecal() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -147,36 +153,36 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** Size. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** Set size. */
-	void SetSize( const decVector &size );
+	void SetSize(const decVector &size);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
 	/** Set texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** Decal is visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
 	/** Set decal is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	
 	
 	/** Update skin. */
-	void UpdateSkin( float elapsed );
+	void UpdateSkin(float elapsed);
 	
 	/** Set vbo dirty. */
 	void SetDirtyVBO();
@@ -184,36 +190,36 @@ public:
 	
 	
 	/** Skin or \em NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or \em NULL if not set. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not set. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Retrieves the skin state or NULL if there is none. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline const deoglSkinState::Ref &GetSkinState() const{ return pSkinState; }
 	
 	/**
-	 * Set skin state or \em NULL if there is none.
+	 * Drop skin state.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetSkinState( deoglSkinState *skinState );
+	void DropSkinState();
 	
 	/** Retrieves the actual skin to use. */
-	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
+	inline const deoglRSkin::Ref &GetUseSkin() const{ return pUseSkin; }
 	/** Retrieves the actual skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	/** Retrieves the actual skin texture to use. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	/** Retrieves the actual dynamic skin to use. */
-	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	/** Retrieves the actual skin state to use. */
-	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
+	inline const deoglSkinState::Ref &GetUseSkinState() const{ return pUseSkinState; }
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -222,7 +228,7 @@ public:
 	void UpdateSkinState();
 	
 	/** Retrieves the vbo block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	
@@ -242,7 +248,7 @@ public:
 	 * Set parent component or \em NULL.
 	 * \warning Only call from main thread during synchronization.
 	 */
-	void SetParentComponent( deoglRComponent *component );
+	void SetParentComponent(deoglRComponent *component);
 	
 	bool IsParentComponentSolid() const;
 	
@@ -256,10 +262,10 @@ public:
 	 * Set marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
 	 */
-	void SetComponentMarkedRemove( bool marked );
+	void SetComponentMarkedRemove(bool marked);
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();
@@ -270,13 +276,13 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Render task shared instance or NULL. */
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
 	/** Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/**
 	 * Texture units configuration for geometry type shaders or NULL if empty.
@@ -304,7 +310,7 @@ public:
 	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	/** Mark parameter blocks dirty. */
@@ -315,10 +321,10 @@ public:
 	
 	
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
-	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
-	void PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
@@ -351,10 +357,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglDecalListener *listener );
+	void AddListener(deoglDecalListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglDecalListener *listener );
+	void RemoveListener(deoglDecalListener *listener);
 	
 	/** Notify all geometry changed. */
 	void NotifyGeometryChanged();
@@ -377,14 +383,15 @@ private:
 	void pUpdateUseSkin();
 	void pPrepareTUCs();
 	void pPrepareParamBlocks();
-	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
-	void pRenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void pPrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
+	void pRenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
 	void pPrepareSkinStateConstructed();
 	void pUpdateRTSInstance();
-	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
-		int element, deoglSkinShader &skinShader );
+	void pUpdateInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
+		int element, deoglSkinShader &skinShader);
 	
 	void pRequiresPrepareForRender();
+	void pSetSkinState(deoglSkinState *skinState);
 };
 
 #endif

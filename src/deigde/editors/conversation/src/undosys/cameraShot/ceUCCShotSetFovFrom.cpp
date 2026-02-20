@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetFovFrom::ceUCCShotSetFovFrom( ceCameraShot *cameraShot, float newFov ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetFovFrom::ceUCCShotSetFovFrom(ceCameraShot *cameraShot, float newFov){
+	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera Shot Set Start Fov" );
+	SetShortInfo("@Conversation.Undo.CameraShotSetStartFov");
 	
 	pOldFov = cameraShot->GetFovFrom();
 	pNewFov = newFov;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetFovFrom::~ceUCCShotSetFovFrom(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ ceUCCShotSetFovFrom::~ceUCCShotSetFovFrom(){
 ///////////////
 
 void ceUCCShotSetFovFrom::Undo(){
-	pCameraShot->SetFovFrom( pOldFov );
+	pCameraShot->SetFovFrom(pOldFov);
 }
 
 void ceUCCShotSetFovFrom::Redo(){
-	pCameraShot->SetFovFrom( pNewFov );
+	pCameraShot->SetFovFrom(pNewFov);
 }

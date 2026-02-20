@@ -37,9 +37,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new module. */
-	spModuleEngine( ScriptingPython &sp );
+	spModuleEngine(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
-	virtual ~spModuleEngine();
+	~spModuleEngine() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -48,7 +48,7 @@ public:
 	
 	/** \name Functions */
 	/*@{*/
-	static PyObject *cfQuit( PyObject *myself );
+	static PyObject *cfQuit(PyObject *myself);
 	/*@}*/
 };
 

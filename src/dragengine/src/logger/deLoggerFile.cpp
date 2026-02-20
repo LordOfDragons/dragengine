@@ -42,21 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLoggerFile::deLoggerFile( decBaseFileWriter *writer ) :
-pWriter( NULL )
+deLoggerFile::deLoggerFile(decBaseFileWriter *writer) :
+pWriter(writer)
 {
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pWriter = writer;
-	writer->AddReference();
+	DEASSERT_NOTNULL(writer)
 }
 
 deLoggerFile::~deLoggerFile(){
-	if( pWriter ){
-		pWriter->FreeReference();
-	}
 }
 
 
@@ -64,34 +56,34 @@ deLoggerFile::~deLoggerFile(){
 // Management
 ///////////////
 
-void deLoggerFile::LogInfo( const char *source, const char *message ){
-	LogPrefix( source, message, "II " );
+void deLoggerFile::LogInfo(const char *source, const char *message){
+	LogPrefix(source, message, "II ");
 }
 
-void deLoggerFile::LogWarn( const char *source, const char *message ){
-	LogPrefix( source, message, "WW " );
+void deLoggerFile::LogWarn(const char *source, const char *message){
+	LogPrefix(source, message, "WW ");
 }
 
-void deLoggerFile::LogError( const char *source, const char *message ){
-	LogPrefix( source, message, "EE " );
+void deLoggerFile::LogError(const char *source, const char *message){
+	LogPrefix(source, message, "EE ");
 }
 
-void deLoggerFile::LogPrefix( const char *source, const char *message, const char *prefix ){
-	if( ! source || ! message || ! prefix ){
-		DETHROW( deeInvalidParam );
+void deLoggerFile::LogPrefix(const char *source, const char *message, const char *prefix){
+	if(!source || !message || !prefix){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len =( int )strlen( message );
+	const int len =(int)strlen(message);
 	const decDateTime timestamp;
 	decString string;
 	
-	string.Format( "%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
+	string.Format("%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
 		timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
 		timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(),
-		message, ( len == 0 || message[ len - 1 ] != '\n' ) ? "\n" : "" );
+		message, (len == 0 || message[len - 1] != '\n') ? "\n" : "");
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	
-	pWriter->Write( string.GetString(), string.GetLength() );
-	fflush( NULL );
+	pWriter->Write(string.GetString(), string.GetLength());
+	fflush(nullptr);
 }

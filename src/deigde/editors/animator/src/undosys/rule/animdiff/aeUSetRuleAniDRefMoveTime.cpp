@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAniDRefMoveTime::aeUSetRuleAniDRefMoveTime( aeRuleAnimationDifference *rule, float newTime ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleAniDRefMoveTime::aeUSetRuleAniDRefMoveTime(aeRuleAnimationDifference *rule, float newTime){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldTime = rule->GetReferenceMoveTime();
 		pNewTime = newTime;
 		
-		SetShortInfo( "Set animation difference rule reference move time" );
+		SetShortInfo("@Animator.Undo.SetRuleAnimationDifferenceReferenceMoveTime");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleAniDRefMoveTime::~aeUSetRuleAniDRefMoveTime(){
 ///////////////
 
 void aeUSetRuleAniDRefMoveTime::Undo(){
-	pRule->SetReferenceMoveTime( pOldTime );
+	pRule->SetReferenceMoveTime(pOldTime);
 }
 
 void aeUSetRuleAniDRefMoveTime::Redo(){
-	pRule->SetReferenceMoveTime( pNewTime );
+	pRule->SetReferenceMoveTime(pNewTime);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleAniDRefMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAniDRefMoveTime::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

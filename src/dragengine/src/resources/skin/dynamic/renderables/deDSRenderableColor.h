@@ -39,6 +39,10 @@
  * very small ( possibly down to 1x1 ).
  */
 class DE_DLL_EXPORT deDSRenderableColor : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableColor>;
+	
 private:
 	decColor pColor;
 	
@@ -48,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableColor( const char *name );
+	deDSRenderableColor(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableColor();
+	~deDSRenderableColor() override;
 	/*@}*/
 	
 	
@@ -62,7 +66,7 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** \brief Set static color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	/*@}*/
 	
 	
@@ -70,7 +74,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

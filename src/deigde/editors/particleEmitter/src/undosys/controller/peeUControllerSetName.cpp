@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetName::peeUControllerSetName( peeController *controller, const char *newName ){
-	if( ! controller || ! newName ) DETHROW( deeInvalidParam );
+peeUControllerSetName::peeUControllerSetName(peeController *controller, const char *newName){
+	if(!controller || !newName) DETHROW(deeInvalidParam);
 	
-	pController = NULL;
+	pController = nullptr;
 	
-	SetShortInfo( "Set Controller Name" );
+	SetShortInfo("@ParticleEmitter.Undo.Controller.SetName");
 	
 	pOldName = controller->GetName();
 	pNewName = newName;
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetName::~peeUControllerSetName(){
-	if( pController ){
-		pController->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ peeUControllerSetName::~peeUControllerSetName(){
 ///////////////
 
 void peeUControllerSetName::Undo(){
-	pController->SetName( pOldName.GetString() );
+	pController->SetName(pOldName.GetString());
 }
 
 void peeUControllerSetName::Redo(){
-	pController->SetName( pNewName.GetString() );
+	pController->SetName(pNewName.GetString());
 }

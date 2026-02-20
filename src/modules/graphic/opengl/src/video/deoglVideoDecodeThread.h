@@ -27,8 +27,8 @@
 
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
-#include <dragengine/resources/video/deVideoReference.h>
-#include <dragengine/resources/video/deVideoDecoderReference.h>
+#include <dragengine/resources/video/deVideo.h>
+#include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/threading/deThread.h>
 #include <dragengine/threading/deSemaphore.h>
 
@@ -38,8 +38,8 @@
  */
 class deoglVideoDecodeThread : public deThread{
 public:
-	const deVideoDecoderReference pDecoder;
-	const deVideoReference pVideo;
+	const deVideoDecoder::Ref pDecoder;
+	const deVideo::Ref pVideo;
 	int pFrame;
 	int pNextFrame;
 	
@@ -59,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new thread. */
-	deoglVideoDecodeThread( deVideoDecoder *decoder, deVideo *video );
+	deoglVideoDecodeThread(deVideoDecoder *decoder, deVideo *video);
 	
 	/** Clean up thread. */
-	virtual ~deoglVideoDecodeThread();
+	~deoglVideoDecodeThread() override;
 	/*@}*/
 	
 	
@@ -79,7 +79,7 @@ public:
 	 * up in an unhealthy state while guaranteeing the last set frame is always decoded and
 	 * ready to be retrieved. Intermediate results are discarded.
 	 */
-	void StartDecode( int frame );
+	void StartDecode(int frame);
 	
 	/**
 	 * Pixel buffer to upload to the texture. Waits for the decoding to finish.
@@ -92,7 +92,7 @@ public:
 	 * in which case a new one is created the next time. Allows swaping pixel buffers with
 	 * the render video player.
 	 */
-	void SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffer );
+	void SetTexturePixelBuffer(deoglPixelBuffer *pixelBuffer);
 	
 	/**
 	 * Wait for decoding to finish and clear decode parameters.
@@ -104,7 +104,7 @@ public:
 	
 	
 	/** Run function of the thread */
-	virtual void Run();
+	void Run() override;
 	
 	/** Ensure pixel buffers are ready for decoding. */
 	void PreparePixelBuffers();

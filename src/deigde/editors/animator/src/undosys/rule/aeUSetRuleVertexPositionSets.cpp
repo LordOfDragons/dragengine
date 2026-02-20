@@ -36,23 +36,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleVertexPositionSets::aeUSetRuleVertexPositionSets( aeRule *rule, const decStringSet &newValue ) :
-pRule( nullptr ),
-pNewValue( newValue )
+aeUSetRuleVertexPositionSets::aeUSetRuleVertexPositionSets(aeRule *rule, const decStringSet &newValue) :
+
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pOldValue = rule->GetListVertexPositionSets();
-	SetShortInfo( "Set rule vertex position sets" );
+	SetShortInfo("@Animator.Undo.SetRuleVertexPositionSets");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleVertexPositionSets::~aeUSetRuleVertexPositionSets(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -61,9 +57,9 @@ aeUSetRuleVertexPositionSets::~aeUSetRuleVertexPositionSets(){
 ///////////////
 
 void aeUSetRuleVertexPositionSets::Undo(){
-	pRule->SetListVertexPositionSets( pOldValue );
+	pRule->SetListVertexPositionSets(pOldValue);
 }
 
 void aeUSetRuleVertexPositionSets::Redo(){
-	pRule->SetListVertexPositionSets( pNewValue );
+	pRule->SetListVertexPositionSets(pNewValue);
 }

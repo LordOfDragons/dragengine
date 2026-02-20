@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModMinSize::aeUSetRuleSModMinSize( aeRuleStateManipulator *rule, const decVector &newMin ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModMinSize::aeUSetRuleSModMinSize(aeRuleStateManipulator *rule, const decVector &newMin){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumSize();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Set state manipulator rule minimum size" );
+		SetShortInfo("@Animator.Undo.SetRuleStateManipulatorMinimumSize");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleSModMinSize::~aeUSetRuleSModMinSize(){
 ///////////////
 
 void aeUSetRuleSModMinSize::Undo(){
-	pRule->SetMinimumSize( pOldMin );
+	pRule->SetMinimumSize(pOldMin);
 }
 
 void aeUSetRuleSModMinSize::Redo(){
-	pRule->SetMinimumSize( pNewMin );
+	pRule->SetMinimumSize(pNewMin);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleSModMinSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinSize::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

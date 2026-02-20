@@ -35,8 +35,8 @@
 ////////////////////////////
 
 deoglMemoryConsumptionDeferredRenderingUse::deoglMemoryConsumptionDeferredRenderingUse(
-	deoglMemoryConsumptionDeferredRendering &tracker ) :
-texture( tracker.texture ){
+	deoglMemoryConsumptionDeferredRendering &tracker) :
+texture(tracker.texture){
 }
 
 deoglMemoryConsumptionDeferredRenderingUse::~deoglMemoryConsumptionDeferredRenderingUse(){
@@ -52,7 +52,7 @@ unsigned long long deoglMemoryConsumptionDeferredRenderingUse::Total() const{
 }
 
 unsigned int deoglMemoryConsumptionDeferredRenderingUse::TotalMB() const{
-	return ( unsigned int )( Total() / 1024000ull );
+	return (unsigned int)(Total() / 1024000ull);
 }
 
 void deoglMemoryConsumptionDeferredRenderingUse::Clear(){

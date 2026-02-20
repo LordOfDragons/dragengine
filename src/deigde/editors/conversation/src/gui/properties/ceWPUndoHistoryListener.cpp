@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPUndoHistoryListener::ceWPUndoHistoryListener( ceWPUndoHistory &panel ) :
-pPanel( panel ){
+ceWPUndoHistoryListener::ceWPUndoHistoryListener(ceWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 ceWPUndoHistoryListener::~ceWPUndoHistoryListener(){
@@ -51,8 +51,8 @@ ceWPUndoHistoryListener::~ceWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void ceWPUndoHistoryListener::UndoChanged( ceConversation *conversation ){
-	if( conversation != pPanel.GetConversation() ){
+void ceWPUndoHistoryListener::UndoChanged(ceConversation *conversation){
+	if(conversation != pPanel.GetConversation()){
 		return;
 	}
 	

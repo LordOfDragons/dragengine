@@ -38,13 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpDebugInformation::debpDebugInformation( const char *name ) :
-pName( name ),
-pElapsedTime( 0.0f ),
-pElapsedTimeAccum( 0.0f ),
-pCounter( 0 ),
-pHasElapsedTime( false ),
-pHasCounter( false ){
+debpDebugInformation::debpDebugInformation(const char *name) :
+pName(name),
+pElapsedTime(0.0f),
+pElapsedTimeAccum(0.0f),
+pCounter(0),
+pHasElapsedTime(false),
+pHasCounter(false){
 }
 
 debpDebugInformation::~debpDebugInformation(){
@@ -55,7 +55,7 @@ debpDebugInformation::~debpDebugInformation(){
 // Management
 ///////////////
 
-void debpDebugInformation::SetName( const char *name ){
+void debpDebugInformation::SetName(const char *name){
 	pName = name;
 }
 
@@ -66,20 +66,20 @@ void debpDebugInformation::Clear(){
 
 
 
-void debpDebugInformation::SetElapsedTime( float time ){
+void debpDebugInformation::SetElapsedTime(float time){
 	pElapsedTimeAccum = time;
 	pElapsedTime = time;
 	pHasElapsedTime = true;
 }
 
-void debpDebugInformation::IncrementElapsedTime( float time ){
+void debpDebugInformation::IncrementElapsedTime(float time){
 	pElapsedTimeAccum += time;
 	pElapsedTime = pElapsedTimeAccum;
 	pHasElapsedTime = true;
 }
 
 void debpDebugInformation::ClearElapsedTime(){
-	if( ! pHasElapsedTime ){
+	if(!pHasElapsedTime){
 		return;
 	}
 	
@@ -90,7 +90,7 @@ void debpDebugInformation::ClearElapsedTime(){
 
 
 
-void debpDebugInformation::SetCounter( int counter ){
+void debpDebugInformation::SetCounter(int counter){
 	pCounter = counter;
 	pHasCounter = true;
 }
@@ -100,7 +100,7 @@ void debpDebugInformation::IncrementCounter(){
 	pHasCounter = true;
 }
 
-void debpDebugInformation::IncrementCounter( int count ){
+void debpDebugInformation::IncrementCounter(int count){
 	pCounter += count;
 	pHasCounter = true;
 }
@@ -112,6 +112,6 @@ void debpDebugInformation::ClearCounter(){
 
 
 
-void debpDebugInformation::SetText( const char* text ){
+void debpDebugInformation::SetText(const char* text){
 	pText = text;
 }

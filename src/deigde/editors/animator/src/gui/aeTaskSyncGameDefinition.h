@@ -35,6 +35,9 @@ class aeWindowMain;
  * Synchronize game definition task.
  */
 class aeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	typedef deTObjectReference<aeTaskSyncGameDefinition> Ref;
+	
 private:
 	aeWindowMain &pWindowMain;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	aeTaskSyncGameDefinition( aeWindowMain &windowMain );
+	aeTaskSyncGameDefinition(aeWindowMain &windowMain);
 	
 	/** Clean up task. */
+protected:
 	virtual ~aeTaskSyncGameDefinition();
+public:
 	/*@}*/
 	
 	

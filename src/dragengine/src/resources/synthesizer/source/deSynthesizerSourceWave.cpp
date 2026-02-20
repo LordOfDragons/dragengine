@@ -41,9 +41,9 @@
 ////////////////////////////
 
 deSynthesizerSourceWave::deSynthesizerSourceWave() :
-pType( ewtSine ),
-pMinFrequency( 440.0f ),
-pMaxFrequency( 440.0f ){
+pType(ewtSine),
+pMinFrequency(440.0f),
+pMaxFrequency(440.0f){
 }
 
 deSynthesizerSourceWave::~deSynthesizerSourceWave(){
@@ -54,20 +54,20 @@ deSynthesizerSourceWave::~deSynthesizerSourceWave(){
 // Management
 ///////////////
 
-void deSynthesizerSourceWave::SetType( eWaveType type ){
-	if( type < ewtSine || type > ewtTriangle ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerSourceWave::SetType(eWaveType type){
+	if(type < ewtSine || type > ewtTriangle){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = type;
 }
 
-void deSynthesizerSourceWave::SetMinFrequency( float frequency ){
-	pMinFrequency = decMath::max( frequency, 0.0f );
+void deSynthesizerSourceWave::SetMinFrequency(float frequency){
+	pMinFrequency = decMath::max(frequency, 0.0f);
 }
 
-void deSynthesizerSourceWave::SetMaxFrequency( float frequency ){
-	pMaxFrequency = decMath::max( frequency, 0.0f );
+void deSynthesizerSourceWave::SetMaxFrequency(float frequency){
+	pMaxFrequency = decMath::max(frequency, 0.0f);
 }
 
 
@@ -75,6 +75,6 @@ void deSynthesizerSourceWave::SetMaxFrequency( float frequency ){
 // Visiting
 /////////////
 
-void deSynthesizerSourceWave::Visit( deSynthesizerSourceVisitor &visitor ){
-	visitor.VisitWave( *this );
+void deSynthesizerSourceWave::Visit(deSynthesizerSourceVisitor &visitor){
+	visitor.VisitWave(*this);
 }

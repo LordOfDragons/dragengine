@@ -26,6 +26,7 @@
 #define _DEOGLCAPSTEXTUREFORMAT_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include "../deoglBasics.h"
 
@@ -37,26 +38,41 @@ class decUnicodeString;
  * OpenGL capabilities texture tormat.
  */
 class deoglCapsTextureFormat{
+public:
+	using List = decTList<deoglCapsTextureFormat>;
+	
+
 private:
-	const GLint pFormat;
-	const GLenum pPixelFormat;
-	const GLenum pPixelType;
-	const int pBitsPerPixel;
-	const bool pIsDepth;
-	const bool pIsDepthFloat;
-	const bool pIsStencil;
-	const bool pIsCompressed;
-	const decString pName;
+	GLint pFormat;
+	GLenum pPixelFormat;
+	GLenum pPixelType;
+	int pBitsPerPixel;
+	bool pIsDepth;
+	bool pIsDepthFloat;
+	bool pIsStencil;
+	bool pIsCompressed;
+	decString pName;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	/** Create default capabilities texture format. */
+	deoglCapsTextureFormat() = default;
+	
 	/** Create capabilities texture format. */
-	deoglCapsTextureFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
+	deoglCapsTextureFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
-		bool isCompressed, const char *name );
+		bool isCompressed, const char *name);
+	
+	/** Copy. */
+	deoglCapsTextureFormat(const deoglCapsTextureFormat &format) = default;
+	deoglCapsTextureFormat &operator=(const deoglCapsTextureFormat &format) = default;
+	
+	/** Move. */
+	deoglCapsTextureFormat(deoglCapsTextureFormat &&format) noexcept = default;
+	deoglCapsTextureFormat &operator=(deoglCapsTextureFormat &&format) noexcept = default;
 	
 	/** Clean up capabilities texture format. */
 	~deoglCapsTextureFormat();
@@ -94,7 +110,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Print format to buffer. */
-	void WriteToString( decUnicodeString &buffer ) const;
+	void WriteToString(decUnicodeString &buffer) const;
 	/*@}*/
 };
 

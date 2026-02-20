@@ -100,10 +100,10 @@ void convhull_3d_build(/* input arguments */
   #define CH_NOISE_VAL 0.0000001
 #endif
 #ifndef MIN
-  #define MIN(a,b) (( (a) < (b) ) ? (a) : (b) )
+  #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef MAX
-  #define MAX(a,b) (( (a) > (b) ) ? (a) : (b) )
+  #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 #define CH_MAX_NUM_FACES 50000
 
@@ -303,7 +303,7 @@ static void ismember
     memset(pOut, 0, nLeftElements*sizeof(int));
     for(i=0; i< nLeftElements; i++)
         for(j=0; j< nRightElements; j++)
-            if(pLeft[i] == pRight[j] )
+            if(pLeft[i] == pRight[j])
                 pOut[i] = 1;
 }
 
@@ -497,7 +497,7 @@ void convhull_3d_build
     points_s = (CH_FLOAT*)malloc(d*sizeof(CH_FLOAT));
     face_s = (int*)malloc(d*sizeof(int));
     gVec = (int*)malloc(d*sizeof(int));
-    while( (num_pleft>0) ){
+    while((num_pleft>0)){
         /* i is the first point of the points left */
         i = pleft[0];
         
@@ -665,8 +665,8 @@ void convhull_3d_build
             }
             
             /* Orient each new face properly */
-            hVec = (int*)malloc( nFaces*sizeof(int));
-            hVec_mem_face = (int*)malloc( nFaces*sizeof(int));
+            hVec = (int*)malloc(nFaces*sizeof(int));
+            hVec_mem_face = (int*)malloc(nFaces*sizeof(int));
             for(j=0; j<nFaces; j++)
                 hVec[j] = j;
             for(k=start; k<nFaces; k++){

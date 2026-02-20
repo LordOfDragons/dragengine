@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTOOLBARDOCK_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeToolBarDock;
 class igdeEnvironment;
@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native toolBarDock.
  */
 class igdeNativeFoxToolBarDock : public FXDockSite{
-	FXDECLARE( igdeNativeFoxToolBarDock )
+	FXDECLARE(igdeNativeFoxToolBarDock)
 	
 protected:
 	igdeNativeFoxToolBarDock();
@@ -55,13 +55,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxToolBarDock( igdeToolBarDock &owner, FXComposite *parent );
+	igdeNativeFoxToolBarDock(igdeToolBarDock &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxToolBarDock();
+	~igdeNativeFoxToolBarDock() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxToolBarDock* CreateNativeWidget( igdeToolBarDock &owner );
+	static igdeNativeFoxToolBarDock* CreateNativeWidget(igdeToolBarDock &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -74,17 +74,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	static int LayoutFlags( const igdeToolBarDock &owner );
+	static int LayoutFlags(const igdeToolBarDock &owner);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxToolBarDock igdeNativeToolBarDock;
+using igdeNativeToolBarDock = igdeNativeFoxToolBarDock;
 
 #endif

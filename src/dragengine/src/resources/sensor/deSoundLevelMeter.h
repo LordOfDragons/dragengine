@@ -26,7 +26,7 @@
 #define _DESOUNDLEVELMETER_H_
 
 #include "../deResource.h"
-#include "../sound/deSpeakerReference.h"
+#include "../sound/deSpeaker.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -56,8 +56,7 @@ class deWorld;
 class DE_DLL_EXPORT deSoundLevelMeter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSoundLevelMeter> Ref;
-	
+	using Ref = deTObjectReference<deSoundLevelMeter>;
 	
 	
 public:
@@ -77,28 +76,28 @@ public:
 	 */
 	class DE_DLL_EXPORT cAudibleSpeaker {
 	private:
-		deSpeakerReference pSpeaker;
+		deSpeaker::Ref pSpeaker;
 		float pVolume;
 		
 	public:
 		/** \brief Create audible speaker. */
 		cAudibleSpeaker();
-		cAudibleSpeaker( deSpeaker *speaker, float volume );
+		cAudibleSpeaker(deSpeaker *speaker, float volume);
 		
 		/** \brief Speaker. */
-		inline deSpeaker *GetSpeaker() const{ return pSpeaker; }
+		inline const deSpeaker::Ref &GetSpeaker() const{ return pSpeaker; }
 		
 		/** \brief Set speaker. */
-		void SetSpeaker( deSpeaker *speaker );
+		void SetSpeaker(deSpeaker *speaker);
 		
 		/** \brief Volume. */
 		inline float GetVolume() const{ return pVolume; }
 		
 		/** \brief Set volume. */
-		void SetVolume( float volume );
+		void SetVolume(float volume);
 		
 		/** \brief Copy audible speaker. */
-		cAudibleSpeaker &operator=( const cAudibleSpeaker &speaker );
+		cAudibleSpeaker &operator=(const cAudibleSpeaker &speaker);
 	};
 	
 	
@@ -116,8 +115,7 @@ private:
 	deBaseScriptingSoundLevelMeter *pPeerScripting;
 	
 	deWorld *pParentWorld;
-	deSoundLevelMeter *pLLWorldPrev;
-	deSoundLevelMeter *pLLWorldNext;
+	decTObjectLinkedList<deSoundLevelMeter>::Element pLLWorld;
 	
 	
 	
@@ -125,7 +123,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new lumimeter. */
-	deSoundLevelMeter( deSoundLevelMeterManager *manager );
+	deSoundLevelMeter(deSoundLevelMeterManager *manager);
 	
 protected:
 	/**
@@ -134,7 +132,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSoundLevelMeter();
+	~deSoundLevelMeter() override;
 	/*@}*/
 	
 	
@@ -146,43 +144,43 @@ public:
 	inline eMeterTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( eMeterTypes type );
+	void SetType(eMeterTypes type);
 	
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Cone angle in radians measured from cone center to outer hull. */
 	inline float GetConeAngle() const{ return pConeAngle; }
 	
 	/** \brief Set cone angle in radians measured from cone center to outer hull. */
-	void SetConeAngle( float angle );
+	void SetConeAngle(float angle);
 	
 	/** \brief Audible distance in meters.*/
 	inline float GetAudibleDistance() const{ return pAudibleDistance; }
 	
 	/** \brief Set audible distance in meters. */
-	void SetAudibleDistance( float audibleDistance );
+	void SetAudibleDistance(float audibleDistance);
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Measuring is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if measuring is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/*@}*/
 	
 	
@@ -193,17 +191,17 @@ public:
 	int GetAudibleSpeakerCount() const;
 	
 	/** \brief Audible speaker at index. */
-	const cAudibleSpeaker &GetAudibleSpeakerAt( int index ) const;
+	const cAudibleSpeaker &GetAudibleSpeakerAt(int index) const;
 	
 	/**
 	 * \brief Notify scripting module speaker became audible.
 	 */
-	void NotifySpeakerAudible( const cAudibleSpeaker &speaker );
+	void NotifySpeakerAudible(const cAudibleSpeaker &speaker);
 	
 	/**
 	 * \brief Notify scripting module speaker became inaudible.
 	 */
-	void NotifySpeakerInaudible( deSpeaker *speaker );
+	void NotifySpeakerInaudible(deSpeaker *speaker);
 	/*@}*/
 	
 	
@@ -214,13 +212,13 @@ public:
 	inline deBaseAudioSoundLevelMeter *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer. */
-	void SetPeerAudio( deBaseAudioSoundLevelMeter *peer );
+	void SetPeerAudio(deBaseAudioSoundLevelMeter *peer);
 	
 	/** \brief Scripting system peer. */
 	inline deBaseScriptingSoundLevelMeter *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer. */
-	void SetPeerScripting( deBaseScriptingSoundLevelMeter *peer );
+	void SetPeerScripting(deBaseScriptingSoundLevelMeter *peer);
 	/*@}*/
 	
 	
@@ -230,20 +228,11 @@ public:
 	/** \brief Parent world or NULL. */
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or NULL. */
+		/** \brief Set parent world or NULL. */
 	void SetParentWorld( deWorld *world );
 	
-	/** \brief Previous lumimeter in the parent world linked list. */
-	inline deSoundLevelMeter *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	
-	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldPrev( deSoundLevelMeter *lumimeter );
-	
-	/** \brief Next lumimeter in the parent world linked list. */
-	inline deSoundLevelMeter *GetLLWorldNext() const{ return pLLWorldNext; }
-	
-	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldNext( deSoundLevelMeter *lumimeter );
+	/** \brief World linked list element. */
+	inline decTObjectLinkedList<deSoundLevelMeter>::Element &GetLLWorld(){ return pLLWorld; }
 	/*@}*/
 };
 

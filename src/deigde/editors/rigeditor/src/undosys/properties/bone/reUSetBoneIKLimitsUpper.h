@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -37,8 +37,12 @@ class reRigBone;
  * \brief Undo Set Bone IKLimitsUpper.
  */
 class reUSetBoneIKLimitsUpper : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUSetBoneIKLimitsUpper>;
+	
+	
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldIKLimitsUpper;
 	decVector pNewIKLimitsUpper;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneIKLimitsUpper( reRigBone *bone, const decVector &ikLimitsUpper );
+	reUSetBoneIKLimitsUpper(reRigBone *bone, const decVector &ikLimitsUpper);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUSetBoneIKLimitsUpper();
+	~reUSetBoneIKLimitsUpper() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

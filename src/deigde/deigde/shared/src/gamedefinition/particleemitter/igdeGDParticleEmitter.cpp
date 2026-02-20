@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDParticleEmitter::igdeGDParticleEmitter( const char *path, const char *name ) :
-pPath( path ),
-pName( name ){
+igdeGDParticleEmitter::igdeGDParticleEmitter(const char *path, const char *name) :
+pPath(path),
+pName(name){
 }
 
-igdeGDParticleEmitter::igdeGDParticleEmitter( const igdeGDParticleEmitter &particleEmitter ) :
-pPath( particleEmitter.pPath ),
-pName( particleEmitter.pName ),
-pDescription( particleEmitter.pDescription ),
-pCategory( particleEmitter.pCategory ){
+igdeGDParticleEmitter::igdeGDParticleEmitter(const igdeGDParticleEmitter &particleEmitter) :
+pPath(particleEmitter.pPath),
+pName(particleEmitter.pName),
+pDescription(particleEmitter.pDescription),
+pCategory(particleEmitter.pCategory){
 }
 
 igdeGDParticleEmitter::~igdeGDParticleEmitter(){
@@ -59,32 +59,32 @@ igdeGDParticleEmitter::~igdeGDParticleEmitter(){
 // Management
 ///////////////
 
-void igdeGDParticleEmitter::SetPath( const char *path ){
+void igdeGDParticleEmitter::SetPath(const char *path){
 	pPath = path;
 }
 
-void igdeGDParticleEmitter::SetName( const char *name ){
+void igdeGDParticleEmitter::SetName(const char *name){
 	pName = name;
 }
 
-void igdeGDParticleEmitter::SetDescription( const char *description ){
+void igdeGDParticleEmitter::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeGDParticleEmitter::SetCategory( const char *category ){
+void igdeGDParticleEmitter::SetCategory(const char *category){
 	pCategory = category;
 }
 
-deImage *igdeGDParticleEmitter::GetPreviewImage( int size ) const{
-	if( size < 0 || size > 2 ){
-		DETHROW( deeInvalidParam );
+deImage *igdeGDParticleEmitter::GetPreviewImage(int size) const{
+	if(size < 0 || size > 2){
+		DETHROW(deeInvalidParam);
 	}
-	return pPreviewImages[ size ];
+	return pPreviewImages[size];
 }
 
-void igdeGDParticleEmitter::SetPreviewImage( int size, deImage *image ){
-	if( size < 0 || size > 2 ){
-		DETHROW( deeInvalidParam );
+void igdeGDParticleEmitter::SetPreviewImage(int size, deImage *image){
+	if(size < 0 || size > 2){
+		DETHROW(deeInvalidParam);
 	}
-	pPreviewImages[ size ] = image;
+	pPreviewImages[size] = image;
 }

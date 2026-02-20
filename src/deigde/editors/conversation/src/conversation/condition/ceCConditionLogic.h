@@ -26,7 +26,6 @@
 #define _CECCONDITIONLOGIC_H_
 
 #include "ceConversationCondition.h"
-#include "ceConversationConditionList.h"
 
 
 
@@ -35,6 +34,8 @@
  */
 class ceCConditionLogic : public ceConversationCondition{
 public:
+	using Ref = deTObjectReference<ceCConditionLogic>;
+	
 	/** Logic operators. */
 	enum eOperators{
 		/** None of the conditions are true. */
@@ -47,7 +48,7 @@ public:
 	
 private:
 	eOperators pOperator;
-	ceConversationConditionList pConditions;
+	ceConversationCondition::List pConditions;
 	bool pTIMExpanded;
 	
 	
@@ -58,9 +59,11 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionLogic();
 	/** Creates a new conversation condition. */
-	ceCConditionLogic( const ceCConditionLogic &condition );
+	ceCConditionLogic(const ceCConditionLogic &condition);
 	/** Cleans up the conversation condition. */
-	virtual ~ceCConditionLogic();
+protected:
+	~ceCConditionLogic() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -68,13 +71,13 @@ public:
 	/** Retrieves the operator. */
 	inline eOperators GetOperator() const{ return pOperator; }
 	/** Sets the operator. */
-	void SetOperator( eOperators aOperator );
+	void SetOperator(eOperators aOperator);
 	/** Retrieves the list of conditions. */
-	inline ceConversationConditionList &GetConditions(){ return pConditions; }
-	inline const ceConversationConditionList &GetConditions() const { return pConditions; }
+	inline ceConversationCondition::List &GetConditions(){ return pConditions; }
+	inline const ceConversationCondition::List &GetConditions() const { return pConditions; }
 	
 	/** Create a copy of this condition. */
-    virtual ceConversationCondition *CreateCopy() const;
+    ceConversationCondition::Ref CreateCopy() const override;
 	/*@}*/
 	
 	
@@ -85,7 +88,7 @@ public:
 	inline bool GetTIMExpanded() const{ return pTIMExpanded; }
 	
 	/** \brief Set tree list item expanded state. */
-	void SetTIMExpanded( bool expanded );
+	void SetTIMExpanded(bool expanded);
 	/*@}*/
 };
 

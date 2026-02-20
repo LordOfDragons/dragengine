@@ -40,33 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTexPropertyRemove::gdeUOCTexPropertyRemove( gdeObjectClass *objectClass, gdeProperty *property ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTexPropertyRemove::gdeUOCTexPropertyRemove(gdeObjectClass *objectClass, gdeProperty *property) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! objectClass->GetTextureProperties().Has( property ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetTextureProperties().Has(property)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class remove texture property" );
+	SetShortInfo("@GameDefinition.Undo.OCTexPropertyRemove");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTexPropertyRemove::~gdeUOCTexPropertyRemove(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCTexPropertyRemove::~gdeUOCTexPropertyRemove(){
 ///////////////
 
 void gdeUOCTexPropertyRemove::Undo(){
-	pObjectClass->GetTextureProperties().Add( pProperty );
+	pObjectClass->GetTextureProperties().Add(pProperty);
 	pObjectClass->NotifyTexturePropertiesChanged();
 }
 
 void gdeUOCTexPropertyRemove::Redo(){
-	pObjectClass->GetTextureProperties().Remove( pProperty );
+	pObjectClass->GetTextureProperties().Remove(pProperty);
 	pObjectClass->NotifyTexturePropertiesChanged();
 }

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 deAnimatorRuleAnimationDifference::deAnimatorRuleAnimationDifference() :
-pMove1Name( "idle " ),
-pMove1Time( 0.0f ),
-pMove2Name( "idle" ),
-pMove2Time( 0.0f ),
-pUseSameMove( false ),
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true ){
+pMove1Name("idle "),
+pMove1Time(0.0f),
+pMove2Name("idle"),
+pMove2Time(0.0f),
+pUseSameMove(false),
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true){
 }
 
 deAnimatorRuleAnimationDifference::~deAnimatorRuleAnimationDifference(){
@@ -60,39 +60,39 @@ deAnimatorRuleAnimationDifference::~deAnimatorRuleAnimationDifference(){
 // Management
 ///////////////
 
-void deAnimatorRuleAnimationDifference::SetLeadingMoveName( const char *moveName ){
+void deAnimatorRuleAnimationDifference::SetLeadingMoveName(const char *moveName){
 	pMove1Name = moveName;
 }
 
-void deAnimatorRuleAnimationDifference::SetLeadingMoveTime( float moveTime ){
+void deAnimatorRuleAnimationDifference::SetLeadingMoveTime(float moveTime){
 	pMove1Time = moveTime;
 }
 
-void deAnimatorRuleAnimationDifference::SetReferenceMoveName( const char *moveName ){
+void deAnimatorRuleAnimationDifference::SetReferenceMoveName(const char *moveName){
 	pMove2Name = moveName;
 }
 
-void deAnimatorRuleAnimationDifference::SetReferenceMoveTime( float moveTime ){
+void deAnimatorRuleAnimationDifference::SetReferenceMoveTime(float moveTime){
 	pMove2Time = moveTime;
 }
 
-void deAnimatorRuleAnimationDifference::SetUseSameMove( bool useSameMove ){
+void deAnimatorRuleAnimationDifference::SetUseSameMove(bool useSameMove){
 	pUseSameMove = useSameMove;
 }
 
-void deAnimatorRuleAnimationDifference::SetEnablePosition( bool enabled ){
+void deAnimatorRuleAnimationDifference::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleAnimationDifference::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleAnimationDifference::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleAnimationDifference::SetEnableSize( bool enabled ){
+void deAnimatorRuleAnimationDifference::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleAnimationDifference::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleAnimationDifference::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
@@ -101,6 +101,6 @@ void deAnimatorRuleAnimationDifference::SetEnableVertexPositionSet( bool enabled
 // Visiting
 /////////////
 
-void deAnimatorRuleAnimationDifference::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitAnimationDifference( *this );
+void deAnimatorRuleAnimationDifference::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitAnimationDifference(*this);
 }

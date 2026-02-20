@@ -39,26 +39,22 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetFillColor::seUPropertyNodeShapeSetFillColor(
-sePropertyNodeShape *node, const decColor &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeShape *node, const decColor &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(!node || !node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node shape set fill color" );
+	SetShortInfo("@Skin.Undo.NodeShapeSetFillColor");
 	
 	pOldValue = node->GetFillColor();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeShapeSetFillColor::~seUPropertyNodeShapeSetFillColor(){
-	if( pNode ){
-		pNode->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ seUPropertyNodeShapeSetFillColor::~seUPropertyNodeShapeSetFillColor(){
 ///////////////
 
 void seUPropertyNodeShapeSetFillColor::Undo(){
-	pNode->SetFillColor( pOldValue );
+	pNode->SetFillColor(pOldValue);
 }
 
 void seUPropertyNodeShapeSetFillColor::Redo(){
-	pNode->SetFillColor( pNewValue );
+	pNode->SetFillColor(pNewValue);
 }

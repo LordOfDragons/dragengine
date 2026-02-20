@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeCapsule::debpShapeCapsule( decShapeCapsule *shape ) : debpShape( estCapsule, shape ){
+debpShapeCapsule::debpShapeCapsule(decShapeCapsule *shape) : debpShape(estCapsule, shape){
 	pSCapsule = shape;
-	SetCollisionVolume( &pCCapsule );
+	SetCollisionVolume(&pCCapsule);
 }
 
 debpShapeCapsule::~debpShapeCapsule(){
@@ -52,22 +52,22 @@ debpShapeCapsule::~debpShapeCapsule(){
 // Management
 ///////////////
 
-void debpShapeCapsule::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
-	pCCapsule.SetPosition( transformation * pSCapsule->GetPosition() );
-	pCCapsule.SetOrientation( pSCapsule->GetOrientation() * transformation.ToQuaternion() );
+void debpShapeCapsule::UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale){
+	pCCapsule.SetPosition(transformation * pSCapsule->GetPosition());
+	pCCapsule.SetOrientation(pSCapsule->GetOrientation() * transformation.ToQuaternion());
 	
-	const float scaleRadius = ( float )( ( scale.x + scale.z ) * 0.5 );
-	pCCapsule.SetHalfHeight( pSCapsule->GetHalfHeight() * ( float )scale.y );
-	pCCapsule.SetTopRadius( pSCapsule->GetTopRadius() * scaleRadius );
-	pCCapsule.SetBottomRadius( pSCapsule->GetBottomRadius() * scaleRadius );
+	const float scaleRadius = (float)((scale.x + scale.z) * 0.5);
+	pCCapsule.SetHalfHeight(pSCapsule->GetHalfHeight() * (float)scale.y);
+	pCCapsule.SetTopRadius(pSCapsule->GetTopRadius() * scaleRadius);
+	pCCapsule.SetBottomRadius(pSCapsule->GetBottomRadius() * scaleRadius);
 }
 
-void debpShapeCapsule::PrintDebug( dePhysicsBullet &module ){
+void debpShapeCapsule::PrintDebug(dePhysicsBullet &module){
 	const decDVector &p = pCCapsule.GetPosition();
 	double h = pCCapsule.GetHalfHeight();
 	double t = pCCapsule.GetTopRadius();
 	double b = pCCapsule.GetBottomRadius();
 	const decQuaternion &o = pCCapsule.GetOrientation();
 	
-	module.LogInfoFormat( "capsule: p=(%.4g,%.4g,%.4g) h=%.4g t=%.4g b=%.4g o=(%.4g,%.4g,%.4g,%.4g)", p.x, p.y, p.z, h, t, b, o.x, o.y, o.z, o.w );
+	module.LogInfoFormat("capsule: p=(%.4g,%.4g,%.4g) h=%.4g t=%.4g b=%.4g o=(%.4g,%.4g,%.4g,%.4g)", p.x, p.y, p.z, h, t, b, o.x, o.y, o.z, o.w);
 }

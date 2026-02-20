@@ -43,32 +43,22 @@
 ////////////////////////////
 
 ceUCAASpeakEyesLAClear::ceUCAASpeakEyesLAClear(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(nullptr)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak clear eyes look-at" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearEyesLookAt");
 	
-	pOldStrips = actorSpeak->GetEyesLookAtList();
+	pOldStrips = actorSpeak->GetEyesLookAts();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakEyesLAClear::~ceUCAASpeakEyesLAClear(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -77,11 +67,11 @@ ceUCAASpeakEyesLAClear::~ceUCAASpeakEyesLAClear(){
 ///////////////
 
 void ceUCAASpeakEyesLAClear::Undo(){
-	pActorSpeak->GetEyesLookAtList() = pOldStrips;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetEyesLookAts() = pOldStrips;
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakEyesLAClear::Redo(){
-	pActorSpeak->GetEyesLookAtList().RemoveAll();
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetEyesLookAts().RemoveAll();
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

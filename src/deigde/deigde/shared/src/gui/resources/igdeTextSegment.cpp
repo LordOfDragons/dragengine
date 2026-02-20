@@ -38,33 +38,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTextSegment::igdeTextSegment( int begin, int end ) :
-pBegin( begin ),
-pEnd( end )
+igdeTextSegment::igdeTextSegment(int begin, int end) :
+pBegin(begin),
+pEnd(end)
 {
-	if( end < begin ){
-		DETHROW( deeInvalidParam );
+	if(end < begin){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeTextSegment::igdeTextSegment( int begin, int end, const char *style ) :
-pBegin( begin ),
-pEnd( end ),
-pStyle( style )
+igdeTextSegment::igdeTextSegment(int begin, int end, const char *style) :
+pBegin(begin),
+pEnd(end),
+pStyle(style)
 {
-	if( end < begin ){
-		DETHROW( deeInvalidParam );
+	if(end < begin){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeTextSegment::igdeTextSegment( int begin, int end, const char *style, igdeAction *action ) :
-pBegin( begin ),
-pEnd( end ),
-pStyle( style ),
-pAction( action )
+igdeTextSegment::igdeTextSegment(int begin, int end, const char *style, igdeAction *action) :
+pBegin(begin),
+pEnd(end),
+pStyle(style),
+pAction(action)
 {
-	if( end < begin ){
-		DETHROW( deeInvalidParam );
+	if(end < begin){
+		DETHROW(deeInvalidParam);
 	}
 }
 

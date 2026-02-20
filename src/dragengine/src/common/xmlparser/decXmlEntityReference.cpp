@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlEntityReference::decXmlEntityReference( const char *name ) :
-pName( name ){
+decXmlEntityReference::decXmlEntityReference(const char *name) :
+pName(name){
 }
 
 decXmlEntityReference::~decXmlEntityReference(){
@@ -51,14 +51,14 @@ decXmlEntityReference::~decXmlEntityReference(){
 // Management
 ///////////////
 
-void decXmlEntityReference::SetName( const char *name ){
+void decXmlEntityReference::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void decXmlEntityReference::Visit( decXmlVisitor &visitor ){
-	visitor.VisitEntityReference( *this );
+void decXmlEntityReference::Visit(decXmlVisitor &visitor){
+	visitor.VisitEntityReference(*this);
 }
 
 bool decXmlEntityReference::CanCastToEntityReference() const{

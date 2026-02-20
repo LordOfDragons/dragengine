@@ -13,7 +13,7 @@ private:
 public:
 	detRunner();
 	~detRunner();
-	void Run();
+	bool Run();
 private:
 	void pAddTest(detCase *testCase);
 };

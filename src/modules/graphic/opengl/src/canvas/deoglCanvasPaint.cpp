@@ -42,10 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasPaint::deoglCanvasPaint( deGraphicOpenGl &ogl, deCanvasPaint &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasPaint( canvas ),
-pRCanvasPaint( NULL ){
+deoglCanvasPaint::deoglCanvasPaint(deGraphicOpenGl &ogl, deCanvasPaint &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasPaint(canvas){
 }
 
 deoglCanvasPaint::~deoglCanvasPaint(){
@@ -57,30 +56,24 @@ deoglCanvasPaint::~deoglCanvasPaint(){
 ///////////////
 
 void deoglCanvasPaint::DropRCanvas(){
-	pRCanvasPaint = NULL;
+	pRCanvasPaint = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
 void deoglCanvasPaint::SyncContentToRender(){
-	pRCanvasPaint->SetShapeType( pCanvasPaint.GetShapeType() );
-	pRCanvasPaint->SetLineColor( pCanvasPaint.GetLineColor() );
-	pRCanvasPaint->SetFillColor( pCanvasPaint.GetFillColor() );
-	pRCanvasPaint->SetThickness( pCanvasPaint.GetThickness() );
-	pRCanvasPaint->SetRoundCornerX( pCanvasPaint.GetRoundCornerX() );
-	pRCanvasPaint->SetRoundCornerY( pCanvasPaint.GetRoundCornerY() );
-	pRCanvasPaint->SetStartAngle( pCanvasPaint.GetStartAngle() );
-	pRCanvasPaint->SetEndAngle( pCanvasPaint.GetEndAngle() );
+	pRCanvasPaint->SetShapeType(pCanvasPaint.GetShapeType());
+	pRCanvasPaint->SetLineColor(pCanvasPaint.GetLineColor());
+	pRCanvasPaint->SetFillColor(pCanvasPaint.GetFillColor());
+	pRCanvasPaint->SetThickness(pCanvasPaint.GetThickness());
+	pRCanvasPaint->SetRoundCornerX(pCanvasPaint.GetRoundCornerX());
+	pRCanvasPaint->SetRoundCornerY(pCanvasPaint.GetRoundCornerY());
+	pRCanvasPaint->SetStartAngle(pCanvasPaint.GetStartAngle());
+	pRCanvasPaint->SetEndAngle(pCanvasPaint.GetEndAngle());
 	
-	const int pointCount = pCanvasPaint.GetPointCount();
-	pRCanvasPaint->SetPointCount( pointCount );
-	if( pointCount > 0 ){
-		decVector2 * const points = pRCanvasPaint->GetPoints();
-		int i;
-		
-		for( i=0; i<pointCount; i++ ){
-			points[ i ] = pCanvasPaint.GetPointAt( i );
-		}
-	}
+	pRCanvasPaint->SetPointCount(pCanvasPaint.GetPointCount());
+	pCanvasPaint.GetPoints().VisitIndexed([&](int i, const decPoint &point){
+		pRCanvasPaint->GetPoints()[i] = point;
+	});
 }
 
 
@@ -89,6 +82,6 @@ void deoglCanvasPaint::SyncContentToRender(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasPaint::CreateRCanvas(){
-	pRCanvasPaint = new deoglRCanvasPaint( GetOgl().GetRenderThread() );
+	pRCanvasPaint = deoglRCanvasPaint::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasPaint;
 }

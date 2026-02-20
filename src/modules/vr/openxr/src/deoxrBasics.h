@@ -45,10 +45,10 @@
 #elif defined OS_UNIX
 // 	#include <X11/Xlib.h>
 // 	#include <X11/Xutil.h>
-	typedef struct _XDisplay Display;
-	typedef unsigned long GLXDrawable;
-	typedef void *GLXFBConfig;
-	typedef void *GLXContext;
+	using Display = struct _XDisplay;
+	using GLXDrawable = unsigned long;
+	using GLXFBConfig = void *;
+	using GLXContext = void *;
 	
 	#define XR_USE_PLATFORM_XLIB
 	#define XR_USE_GRAPHICS_API_OPENGL
@@ -65,7 +65,7 @@
 #include <openxr/openxr.h>
 #include <openxr/openxr_platform.h>
 
-void deoxrDebugCheckCommand( XrResult result, const char *file, int line );
-#define OXR_CHECK(cmd) deoxrDebugCheckCommand( cmd, __FILE__, __LINE__ )
+void deoxrDebugCheckCommand(XrResult result, const char *file, int line);
+#define OXR_CHECK(cmd) deoxrDebugCheckCommand(cmd, __FILE__, __LINE__)
 
 #endif

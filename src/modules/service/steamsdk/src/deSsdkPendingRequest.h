@@ -35,7 +35,7 @@
  */
 class deSsdkPendingRequest : public deObject{
 public:
-	typedef deTObjectReference<deSsdkPendingRequest> Ref;
+	using Ref = deTObjectReference<deSsdkPendingRequest>;
 	
 	
 	decUniqueID id;
@@ -47,11 +47,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deSsdkPendingRequest( const deServiceObject::Ref &data = nullptr );
+	deSsdkPendingRequest(const deServiceObject::Ref &data = {});
 	
+protected:
 	/** Delete module. */
 	~deSsdkPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

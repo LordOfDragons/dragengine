@@ -41,33 +41,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFPControllerRemove::ceUCFPControllerRemove( ceFacePose *facePose, ceControllerValue *controller ){
-	if( ! facePose || ! controller ){
-		DETHROW( deeInvalidParam );
-	}
-	if( ! facePose->GetControllerList().Has( controller ) ){
-		DETHROW( deeInvalidParam );
-	}
+ceUCFPControllerRemove::ceUCFPControllerRemove(ceFacePose *facePose, ceControllerValue *controller){
+	DEASSERT_NOTNULL(facePose);
+	DEASSERT_NOTNULL(controller);
+	DEASSERT_TRUE(facePose->GetControllers().Has(controller));
 	
-	pFacePose = NULL;
-	pController = NULL;
-	
-	SetShortInfo( "Remove Face Pose Controller" );
+	SetShortInfo("@Conversation.Undo.RemoveFacePoseController");
 	
 	pFacePose = facePose;
-	facePose->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 ceUCFPControllerRemove::~ceUCFPControllerRemove(){
-	if( pController ){
-		pController->FreeReference();
-	}
-	if( pFacePose ){
-		pFacePose->FreeReference();
-	}
 }
 
 
@@ -76,11 +61,11 @@ ceUCFPControllerRemove::~ceUCFPControllerRemove(){
 ///////////////
 
 void ceUCFPControllerRemove::Undo(){
-	pFacePose->GetControllerList().Add( pController );
+	pFacePose->GetControllers().Add(pController);
 	pFacePose->NotifyControllersChanged();
 }
 
 void ceUCFPControllerRemove::Redo(){
-	pFacePose->GetControllerList().Remove( pController );
+	pFacePose->GetControllers().Remove(pController);
 	pFacePose->NotifyControllersChanged();
 }

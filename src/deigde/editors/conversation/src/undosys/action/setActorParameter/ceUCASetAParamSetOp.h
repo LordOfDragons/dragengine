@@ -26,10 +26,10 @@
 #define _CEUCASETAPARAMSETOP_H_
 
 #include "../../../conversation/action/ceCASetActorParameter.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
 
 
 
@@ -37,9 +37,13 @@ class ceConversationTopic;
  * \brief Undo Action Set Actor Parameter Conversation Action Set Operator.
  */
 class ceUCASetAParamSetOp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCASetAParamSetOp>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	ceCASetActorParameter::eOperators pOldOperator;
 	ceCASetActorParameter::eOperators pNewOperator;
 	
@@ -47,20 +51,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetOp( ceConversationTopic *topic, ceCASetActorParameter *action,
-		ceCASetActorParameter::eOperators newOperator );
+	ceUCASetAParamSetOp(ceConversationTopic *topic, ceCASetActorParameter *action,
+		ceCASetActorParameter::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASetAParamSetOp();
+	~ceUCASetAParamSetOp() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

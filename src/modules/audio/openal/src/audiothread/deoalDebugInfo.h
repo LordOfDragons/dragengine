@@ -25,12 +25,11 @@
 #ifndef _DEOALDEBUGINFO_H_
 #define _DEOALDEBUGINFO_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class deoalAudioThread;
 
@@ -69,14 +68,14 @@ private:
 	decTimer pDebugTimerRenderThread3;
 	
 	deDebugBlockInfo *pDIActiveMic;
-	deDebugDrawerReference pDDActiveMicRays;
+	deDebugDrawer::Ref pDDActiveMicRays;
 	
 	deDebugBlockInfo *pDISpeakerAtPosition;
-	decPointerList pDIClosestSpeakers;
-	decObjectList pDDClosestSpeakersDirect;
+	decTList<deDebugBlockInfo*> pDIClosestSpeakers;
+	decTObjectList<deDebugDrawer> pDDClosestSpeakersDirect;
 	
 	int pModeVisAudSpeakers;
-	decObjectList pDDVisAudSpeakers;
+	decTObjectList<deDebugDrawer> pDDVisAudSpeakers;
 	
 	
 	
@@ -84,7 +83,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread debugging information. */
-	deoalDebugInfo( deoalAudioThread &audioThread );
+	deoalDebugInfo(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread debugging information. */
 	~deoalDebugInfo();
@@ -95,7 +94,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	void ResetTimersMainThread();
-	void StoreTimeThreadMain( float time );
+	void StoreTimeThreadMain(float time);
 	void StoreTimeThreadMainWaitFinish();
 	void StoreTimeThreadMainSynchronize();
 	void ResetTimersAudioThread();
@@ -106,8 +105,8 @@ public:
 	void StoreTimeAudioThreadWorldProcess();
 	void StoreTimeAudioThreadSpeakersProcess();
 	void StoreTimeAudioThreadEffectsProcess();
-	void StoreTimeFrameLimiter( const decTimeHistory &main, const decTimeHistory &audio,
-		const decTimeHistory &audioEstimated );
+	void StoreTimeFrameLimiter(const decTimeHistory &main, const decTimeHistory &audio,
+		const decTimeHistory &audioEstimated);
 	
 	
 	
@@ -127,13 +126,13 @@ public:
 	void HideDISpeakerAtPosition();
 	void UpdateDISpeakerAtPosition();
 	
-	void PrepareDIClosestSpeakers( int count );
+	void PrepareDIClosestSpeakers(int count);
 	void UpdateDIClosestSpeakers();
 	
-	void PrepareDDClosestSpeakersDirect( int count );
+	void PrepareDDClosestSpeakersDirect(int count);
 	void CaptureDDClosestSpeakersDirect();
 	
-	void VisAudSpeakers( int mode );
+	void VisAudSpeakers(int mode);
 	void UpdateVisAudSpeakers();
 	
 	void UpdateDebugInfo();

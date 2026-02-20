@@ -25,9 +25,9 @@
 #ifndef _DECAPTURECANVAS_H_
 #define _DECAPTURECANVAS_H_
 
-#include "../deCanvasViewReference.h"
+#include "../deCanvasView.h"
 #include "../../deResource.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 
 class deBaseGraphicCaptureCanvas;
 class deCaptureCanvasManager;
@@ -55,13 +55,12 @@ class deCaptureCanvasManager;
 class DE_DLL_EXPORT deCaptureCanvas : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCaptureCanvas> Ref;
-	
+	using Ref = deTObjectReference<deCaptureCanvas>;
 	
 	
 private:
-	deCanvasViewReference pCanvasView;
-	deImageReference pImage;
+	deCanvasView::Ref pCanvasView;
+	deImage::Ref pImage;
 	bool pCapture;
 	
 	deBaseGraphicCaptureCanvas *pPeerGraphic;
@@ -72,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create capture canvas. */
-	deCaptureCanvas( deCaptureCanvasManager *manager );
+	deCaptureCanvas(deCaptureCanvasManager *manager);
 	
 protected:
 	/**
@@ -81,7 +80,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCaptureCanvas();
+	~deCaptureCanvas() override;
 	/*@}*/
 	
 	
@@ -90,22 +89,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view to capture. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view to capture. */
-	void SetCanvasView( deCanvasView *canvasView );
+	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Image to capture canvas view into. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image to capture canvas view into. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Capture in progress. */
 	inline bool GetCapture() const{ return pCapture; }
 	
 	/** \brief Set if capture is in progress. */
-	void SetCapture( bool capture );
+	void SetCapture(bool capture);
 	/*@}*/
 	
 	
@@ -116,7 +115,7 @@ public:
 	inline deBaseGraphicCaptureCanvas *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not set. */
-	void SetPeerGraphic( deBaseGraphicCaptureCanvas *peer );
+	void SetPeerGraphic(deBaseGraphicCaptureCanvas *peer);
 	/*@}*/
 };
 

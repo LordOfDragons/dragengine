@@ -35,7 +35,7 @@
 	#endif
 
 	// disable warning about "class X needs to have dll-interface to be used by clients of class Y"
-	#pragma warning( disable: 4251 )
+	#pragma warning(disable: 4251)
 	
 #else
 	#define DE_DLL_EXPORT

@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMACoordSystemRemove::ceWPTTIMACoordSystemRemove( ceWindowMain &windowMain,
-ceConversation &conversation, ceCACoordSystemRemove *action ) :
-ceWPTTIMAction( windowMain, etActionCoordSystemRemove, conversation, action )
+ceWPTTIMACoordSystemRemove::ceWPTTIMACoordSystemRemove(ceWindowMain &windowMain,
+ceConversation &conversation, ceCACoordSystemRemove *action) :
+ceWPTTIMAction(windowMain, etActionCoordSystemRemove, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionCoordSysAdd() );
+	SetIcon(windowMain.GetIconActionCoordSysAdd());
 	Update();
 }
 
@@ -61,6 +61,6 @@ void ceWPTTIMACoordSystemRemove::Update(){
 	const ceCACoordSystemRemove &action = *GetActionCoordSystemRemove();
 	decString text;
 	
-	text.Format( "Coord System Remove (%s)", action.GetCoordSystemID().GetString() );
-	SetText( text );
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.CoordSystemRemove" ).ToUTF8(), action.GetCoordSystemID().GetString() );
+	SetText(text);
 }

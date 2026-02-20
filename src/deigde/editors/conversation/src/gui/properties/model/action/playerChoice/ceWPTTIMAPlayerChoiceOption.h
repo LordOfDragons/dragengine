@@ -28,22 +28,25 @@
 #include "../../ceWPTTreeItemModel.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../../../conversation/action/ceCAPlayerChoiceOption.h"
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceOptionCondition;
-class ceWPTTIMAPlayerChoiceOptionActions;
+#include "ceWPTTIMAPlayerChoiceOptionCondition.h"
+#include "ceWPTTIMAPlayerChoiceOptionActions.h"
 
 
 /**
  * \brief Action player choice option.
  */
 class ceWPTTIMAPlayerChoiceOption : public ceWPTTreeItemModel{
+public:
+	using Ref = deTObjectReference<ceWPTTIMAPlayerChoiceOption>;
+	
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
-	ceWPTTIMAPlayerChoiceOptionCondition *pCondition;
-	ceWPTTIMAPlayerChoiceOptionActions *pActions;
+	ceWPTTIMAPlayerChoiceOptionCondition::Ref pCondition;
+	ceWPTTIMAPlayerChoiceOptionActions::Ref pActions;
 	
 	
 	
@@ -51,12 +54,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoiceOption( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index );
+	ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMAPlayerChoiceOption();
+	~ceWPTTIMAPlayerChoiceOption() override;
 	/*@}*/
 	
 	
@@ -65,22 +68,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
+	inline const ceCAPlayerChoiceOption::Ref &GetOption() const{ return pOption; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Parent player choice model. */
 	ceWPTTIMAPlayerChoice *GetModelPlayerChoice() const;
 	
-	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{ return pCondition; }
+	/** \brief Model with condition or \em nullptr. */
+	inline const ceWPTTIMAPlayerChoiceOptionCondition::Ref &GetChildCondition() const{ return pCondition; }
 	
-	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{ return pActions; }
+	/** \brief Model with actions or \em nullptr. */
+	inline const ceWPTTIMAPlayerChoiceOptionActions::Ref &GetChildActions() const{ return pActions; }
 	
 	/** \brief Update if-case. */
 	void Update();
@@ -89,10 +92,10 @@ public:
 	void UpdateActionLists();
 	
 	/** \brief Expanded state changed. */
-	virtual void OnExpandedChanged();
+	void OnExpandedChanged() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 	
 	

@@ -25,13 +25,20 @@
 #ifndef _GDEWINDOWMAIN_H_
 #define _GDEWINDOWMAIN_H_
 
+#include "../gamedef/gdeGameDefinition.h"
+#include "activeobject/gdeViewActiveObject.h"
+#include "gdeWindowMainListener.h"
+#include "properties/gdeWindowProperties.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
+
+#include <dragengine/common/string/decStringList.h>
 
 class gdeMACategory;
 class gdeMAParticleEmitter;
@@ -51,15 +58,10 @@ class gdeMAOCSpeaker;
 class gdeMAOCWorld;
 
 class gdeConfiguration;
-class gdeGameDefinition;
 class gdeIGDEModule;
 class gdeLoadSaveSystem;
-class gdeViewActiveObject;
-class gdeWindowMainListener;
-class gdeWindowProperties;
 
 class igdeStepableTask;
-class decStringList;
 
 
 
@@ -67,136 +69,140 @@ class decStringList;
  * \brief Main editor window.
  */
 class gdeWindowMain : public igdeEditorWindow{
+public:
+	typedef deTObjectReference<gdeWindowMain> Ref;
+	
+	
 private:
-	gdeWindowMainListener *pListener;
+	gdeWindowMainListener::Ref pListener;
 	
-	igdeIconReference pIconShowEnvMapProbes;
-	igdeIconReference pIconShowNavBlockers;
+	igdeIcon::Ref pIconShowEnvMapProbes;
+	igdeIcon::Ref pIconShowNavBlockers;
 	
-	igdeActionReference pActionGDNew;
-	igdeActionReference pActionGDOpen;
-	igdeActionReference pActionGDOpenProject;
-	igdeActionReference pActionGDSave;
-	igdeActionReference pActionGDSaveAs;
+	igdeAction::Ref pActionGDNew;
+	igdeAction::Ref pActionGDOpen;
+	igdeAction::Ref pActionGDOpenProject;
+	igdeAction::Ref pActionGDSave;
+	igdeAction::Ref pActionGDSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
-	igdeActionReference pActionEditFind;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
+	igdeAction::Ref pActionEditFind;
 	
-	igdeActionReference pActionViewShowEnvMapProbes;
-	igdeActionReference pActionViewShowNavBlockers;
+	igdeAction::Ref pActionViewShowEnvMapProbes;
+	igdeAction::Ref pActionViewShowNavBlockers;
 	
-	igdeActionReference pActionCategoryAdd;
-	igdeActionReference pActionCategoryRemove;
-	igdeActionReference pActionCategoryObjectClassAdd;
-	igdeActionReference pActionCategoryParticleEmitterAdd;
-	igdeActionReference pActionCategorySkinAdd;
-	igdeActionReference pActionCategorySkyAdd;
+	igdeAction::Ref pActionCategoryAdd;
+	igdeAction::Ref pActionCategoryRemove;
+	igdeAction::Ref pActionCategoryObjectClassAdd;
+	igdeAction::Ref pActionCategoryParticleEmitterAdd;
+	igdeAction::Ref pActionCategorySkinAdd;
+	igdeAction::Ref pActionCategorySkyAdd;
 	
-	igdeActionReference pActionObjectClassAdd;
-	igdeActionReference pActionObjectClassRemove;
-	igdeActionReference pActionObjectClassCopy;
-	igdeActionReference pActionObjectClassCut;
-	igdeActionReference pActionObjectClassPaste;
-	igdeActionReference pActionObjectClassExportXmlEClass;
-	igdeActionReference pActionObjectClassDuplicate;
-	igdeActionReference pActionObjectClassSubclass;
+	igdeAction::Ref pActionObjectClassAdd;
+	igdeAction::Ref pActionObjectClassRemove;
+	igdeAction::Ref pActionObjectClassCopy;
+	igdeAction::Ref pActionObjectClassCut;
+	igdeAction::Ref pActionObjectClassPaste;
+	igdeAction::Ref pActionObjectClassExportXmlEClass;
+	igdeAction::Ref pActionObjectClassDuplicate;
+	igdeAction::Ref pActionObjectClassSubclass;
 	
-	igdeActionReference pActionOCBillboardAdd;
-	igdeActionReference pActionOCBillboardRemove;
-	igdeActionReference pActionOCBillboardCopy;
-	igdeActionReference pActionOCBillboardCut;
-	igdeActionReference pActionOCBillboardPaste;
+	igdeAction::Ref pActionOCBillboardAdd;
+	igdeAction::Ref pActionOCBillboardRemove;
+	igdeAction::Ref pActionOCBillboardCopy;
+	igdeAction::Ref pActionOCBillboardCut;
+	igdeAction::Ref pActionOCBillboardPaste;
 	
-	igdeActionReference pActionOCCameraAdd;
-	igdeActionReference pActionOCCameraRemove;
-	igdeActionReference pActionOCCameraCopy;
-	igdeActionReference pActionOCCameraCut;
-	igdeActionReference pActionOCCameraPaste;
+	igdeAction::Ref pActionOCCameraAdd;
+	igdeAction::Ref pActionOCCameraRemove;
+	igdeAction::Ref pActionOCCameraCopy;
+	igdeAction::Ref pActionOCCameraCut;
+	igdeAction::Ref pActionOCCameraPaste;
 	
-	igdeActionReference pActionOCComponentAdd;
-	igdeActionReference pActionOCComponentRemove;
-	igdeActionReference pActionOCComponentCopy;
-	igdeActionReference pActionOCComponentCut;
-	igdeActionReference pActionOCComponentPaste;
+	igdeAction::Ref pActionOCComponentAdd;
+	igdeAction::Ref pActionOCComponentRemove;
+	igdeAction::Ref pActionOCComponentCopy;
+	igdeAction::Ref pActionOCComponentCut;
+	igdeAction::Ref pActionOCComponentPaste;
 	
-	igdeActionReference pActionOCEnvMapProbeAdd;
-	igdeActionReference pActionOCEnvMapProbeRemove;
-	igdeActionReference pActionOCEnvMapProbeCopy;
-	igdeActionReference pActionOCEnvMapProbeCut;
-	igdeActionReference pActionOCEnvMapProbePaste;
+	igdeAction::Ref pActionOCEnvMapProbeAdd;
+	igdeAction::Ref pActionOCEnvMapProbeRemove;
+	igdeAction::Ref pActionOCEnvMapProbeCopy;
+	igdeAction::Ref pActionOCEnvMapProbeCut;
+	igdeAction::Ref pActionOCEnvMapProbePaste;
 	
-	igdeActionReference pActionOCLightAdd;
-	igdeActionReference pActionOCLightRemove;
-	igdeActionReference pActionOCLightCopy;
-	igdeActionReference pActionOCLightCut;
-	igdeActionReference pActionOCLightPaste;
+	igdeAction::Ref pActionOCLightAdd;
+	igdeAction::Ref pActionOCLightRemove;
+	igdeAction::Ref pActionOCLightCopy;
+	igdeAction::Ref pActionOCLightCut;
+	igdeAction::Ref pActionOCLightPaste;
 	
-	igdeActionReference pActionOCNavBlockerAdd;
-	igdeActionReference pActionOCNavBlockerRemove;
-	igdeActionReference pActionOCNavBlockerCopy;
-	igdeActionReference pActionOCNavBlockerCut;
-	igdeActionReference pActionOCNavBlockerPaste;
+	igdeAction::Ref pActionOCNavBlockerAdd;
+	igdeAction::Ref pActionOCNavBlockerRemove;
+	igdeAction::Ref pActionOCNavBlockerCopy;
+	igdeAction::Ref pActionOCNavBlockerCut;
+	igdeAction::Ref pActionOCNavBlockerPaste;
 	
-	igdeActionReference pActionOCNavSpaceAdd;
-	igdeActionReference pActionOCNavSpaceRemove;
-	igdeActionReference pActionOCNavSpaceCopy;
-	igdeActionReference pActionOCNavSpaceCut;
-	igdeActionReference pActionOCNavSpacePaste;
+	igdeAction::Ref pActionOCNavSpaceAdd;
+	igdeAction::Ref pActionOCNavSpaceRemove;
+	igdeAction::Ref pActionOCNavSpaceCopy;
+	igdeAction::Ref pActionOCNavSpaceCut;
+	igdeAction::Ref pActionOCNavSpacePaste;
 	
-	igdeActionReference pActionOCParticleEmitterAdd;
-	igdeActionReference pActionOCParticleEmitterRemove;
-	igdeActionReference pActionOCParticleEmitterCopy;
-	igdeActionReference pActionOCParticleEmitterCut;
-	igdeActionReference pActionOCParticleEmitterPaste;
+	igdeAction::Ref pActionOCParticleEmitterAdd;
+	igdeAction::Ref pActionOCParticleEmitterRemove;
+	igdeAction::Ref pActionOCParticleEmitterCopy;
+	igdeAction::Ref pActionOCParticleEmitterCut;
+	igdeAction::Ref pActionOCParticleEmitterPaste;
 	
-	igdeActionReference pActionOCForceFieldAdd;
-	igdeActionReference pActionOCForceFieldRemove;
-	igdeActionReference pActionOCForceFieldCopy;
-	igdeActionReference pActionOCForceFieldCut;
-	igdeActionReference pActionOCForceFieldPaste;
+	igdeAction::Ref pActionOCForceFieldAdd;
+	igdeAction::Ref pActionOCForceFieldRemove;
+	igdeAction::Ref pActionOCForceFieldCopy;
+	igdeAction::Ref pActionOCForceFieldCut;
+	igdeAction::Ref pActionOCForceFieldPaste;
 	
-	igdeActionReference pActionOCSnapPointAdd;
-	igdeActionReference pActionOCSnapPointRemove;
-	igdeActionReference pActionOCSnapPointCopy;
-	igdeActionReference pActionOCSnapPointCut;
-	igdeActionReference pActionOCSnapPointPaste;
+	igdeAction::Ref pActionOCSnapPointAdd;
+	igdeAction::Ref pActionOCSnapPointRemove;
+	igdeAction::Ref pActionOCSnapPointCopy;
+	igdeAction::Ref pActionOCSnapPointCut;
+	igdeAction::Ref pActionOCSnapPointPaste;
 	
-	igdeActionReference pActionOCSpeakerAdd;
-	igdeActionReference pActionOCSpeakerRemove;
-	igdeActionReference pActionOCSpeakerCopy;
-	igdeActionReference pActionOCSpeakerCut;
-	igdeActionReference pActionOCSpeakerPaste;
+	igdeAction::Ref pActionOCSpeakerAdd;
+	igdeAction::Ref pActionOCSpeakerRemove;
+	igdeAction::Ref pActionOCSpeakerCopy;
+	igdeAction::Ref pActionOCSpeakerCut;
+	igdeAction::Ref pActionOCSpeakerPaste;
 	
-	igdeActionReference pActionOCWorldAdd;
-	igdeActionReference pActionOCWorldRemove;
-	igdeActionReference pActionOCWorldCopy;
-	igdeActionReference pActionOCWorldCut;
-	igdeActionReference pActionOCWorldPaste;
+	igdeAction::Ref pActionOCWorldAdd;
+	igdeAction::Ref pActionOCWorldRemove;
+	igdeAction::Ref pActionOCWorldCopy;
+	igdeAction::Ref pActionOCWorldCut;
+	igdeAction::Ref pActionOCWorldPaste;
 	
-	igdeActionReference pActionParticleEmitterAdd;
-	igdeActionReference pActionParticleEmitterRemove;
+	igdeAction::Ref pActionParticleEmitterAdd;
+	igdeAction::Ref pActionParticleEmitterRemove;
 	
-	igdeActionReference pActionSkinAdd;
-	igdeActionReference pActionSkinRemove;
+	igdeAction::Ref pActionSkinAdd;
+	igdeAction::Ref pActionSkinRemove;
 	
-	igdeActionReference pActionSkyAdd;
-	igdeActionReference pActionSkyRemove;
+	igdeAction::Ref pActionSkyAdd;
+	igdeAction::Ref pActionSkyRemove;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	gdeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
 	gdeLoadSaveSystem *pLoadSaveSystem;
 	
-	gdeViewActiveObject *pViewActiveObject;
-	gdeWindowProperties *pWindowProperties;
+	gdeViewActiveObject::Ref pViewActiveObject;
+	gdeWindowProperties::Ref pWindowProperties;
 	
-	gdeGameDefinition *pActiveGameDefinition;
+	gdeGameDefinition::Ref pActiveGameDefinition;
 	
 	decString pLastPathGameDef;
 	
@@ -206,7 +212,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
-	gdeWindowMain( igdeEditorModule &module );
+	gdeWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up main window. */
@@ -219,122 +225,122 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Icons. */
-	inline igdeIcon* GetIconShowEnvMapProbes() const{ return pIconShowEnvMapProbes; }
-	inline igdeIcon* GetIconShowNavBlockers() const{ return pIconShowNavBlockers; }
+	inline const igdeIcon::Ref &GetIconShowEnvMapProbes() const{ return pIconShowEnvMapProbes; }
+	inline const igdeIcon::Ref &GetIconShowNavBlockers() const{ return pIconShowNavBlockers; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionGDNew() const{ return pActionGDNew; }
-	inline igdeAction *GetActionGDOpen() const{ return pActionGDOpen; }
-	inline igdeAction *GetActionGDOpenProject() const{ return pActionGDOpenProject; }
-	inline igdeAction *GetActionGDSave() const{ return pActionGDSave; }
-	inline igdeAction *GetActionGDSaveAs() const{ return pActionGDSaveAs; }
+	inline const igdeAction::Ref &GetActionGDNew() const{ return pActionGDNew; }
+	inline const igdeAction::Ref &GetActionGDOpen() const{ return pActionGDOpen; }
+	inline const igdeAction::Ref &GetActionGDOpenProject() const{ return pActionGDOpenProject; }
+	inline const igdeAction::Ref &GetActionGDSave() const{ return pActionGDSave; }
+	inline const igdeAction::Ref &GetActionGDSaveAs() const{ return pActionGDSaveAs; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
-	inline igdeAction *GetActionEditFind() const{ return pActionEditFind; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeAction::Ref &GetActionEditFind() const{ return pActionEditFind; }
 	
-	inline igdeAction *GetActionViewShowEnvMapProbes() const{ return pActionViewShowEnvMapProbes; }
-	inline igdeAction *GetActionViewShowNavBlockers() const{ return pActionViewShowNavBlockers; }
+	inline const igdeAction::Ref &GetActionViewShowEnvMapProbes() const{ return pActionViewShowEnvMapProbes; }
+	inline const igdeAction::Ref &GetActionViewShowNavBlockers() const{ return pActionViewShowNavBlockers; }
 	
-	inline igdeAction *GetActionCategoryAdd() const{ return pActionCategoryAdd; }
-	inline igdeAction *GetActionCategoryRemove() const{ return pActionCategoryRemove; }
-	inline igdeAction *GetActionCategoryObjectClassAdd() const{ return pActionCategoryObjectClassAdd; }
-	inline igdeAction *GetActionCategoryParticleEmitterAdd() const{ return pActionCategoryParticleEmitterAdd; }
-	inline igdeAction *GetActionCategorySkinAdd() const{ return pActionCategorySkinAdd; }
-	inline igdeAction *GetActionCategorySkyAdd() const{ return pActionCategorySkyAdd; }
+	inline const igdeAction::Ref &GetActionCategoryAdd() const{ return pActionCategoryAdd; }
+	inline const igdeAction::Ref &GetActionCategoryRemove() const{ return pActionCategoryRemove; }
+	inline const igdeAction::Ref &GetActionCategoryObjectClassAdd() const{ return pActionCategoryObjectClassAdd; }
+	inline const igdeAction::Ref &GetActionCategoryParticleEmitterAdd() const{ return pActionCategoryParticleEmitterAdd; }
+	inline const igdeAction::Ref &GetActionCategorySkinAdd() const{ return pActionCategorySkinAdd; }
+	inline const igdeAction::Ref &GetActionCategorySkyAdd() const{ return pActionCategorySkyAdd; }
 	
-	inline igdeAction *GetActionObjectClassAdd() const{ return pActionObjectClassAdd; }
-	inline igdeAction *GetActionObjectClassRemove() const{ return pActionObjectClassRemove; }
-	inline igdeAction *GetActionObjectClassCopy() const{ return pActionObjectClassCopy; }
-	inline igdeAction *GetActionObjectClassCut() const{ return pActionObjectClassCut; }
-	inline igdeAction *GetActionObjectClassPaste() const{ return pActionObjectClassPaste; }
-	inline igdeAction *GetActionObjectClassExportXmlEClass() const{ return pActionObjectClassExportXmlEClass; }
-	inline igdeAction *GetActionObjectClassDuplicate() const{ return pActionObjectClassDuplicate; }
-	inline igdeAction *GetActionObjectClassSubclass() const{ return pActionObjectClassSubclass; }
+	inline const igdeAction::Ref &GetActionObjectClassAdd() const{ return pActionObjectClassAdd; }
+	inline const igdeAction::Ref &GetActionObjectClassRemove() const{ return pActionObjectClassRemove; }
+	inline const igdeAction::Ref &GetActionObjectClassCopy() const{ return pActionObjectClassCopy; }
+	inline const igdeAction::Ref &GetActionObjectClassCut() const{ return pActionObjectClassCut; }
+	inline const igdeAction::Ref &GetActionObjectClassPaste() const{ return pActionObjectClassPaste; }
+	inline const igdeAction::Ref &GetActionObjectClassExportXmlEClass() const{ return pActionObjectClassExportXmlEClass; }
+	inline const igdeAction::Ref &GetActionObjectClassDuplicate() const{ return pActionObjectClassDuplicate; }
+	inline const igdeAction::Ref &GetActionObjectClassSubclass() const{ return pActionObjectClassSubclass; }
 	
-	inline igdeAction *GetActionOCBillboardAdd() const{ return pActionOCBillboardAdd; }
-	inline igdeAction *GetActionOCBillboardRemove() const{ return pActionOCBillboardRemove; }
-	inline igdeAction *GetActionOCBillboardCopy() const{ return pActionOCBillboardCopy; }
-	inline igdeAction *GetActionOCBillboardCut() const{ return pActionOCBillboardCut; }
-	inline igdeAction *GetActionOCBillboardPaste() const{ return pActionOCBillboardPaste; }
+	inline const igdeAction::Ref &GetActionOCBillboardAdd() const{ return pActionOCBillboardAdd; }
+	inline const igdeAction::Ref &GetActionOCBillboardRemove() const{ return pActionOCBillboardRemove; }
+	inline const igdeAction::Ref &GetActionOCBillboardCopy() const{ return pActionOCBillboardCopy; }
+	inline const igdeAction::Ref &GetActionOCBillboardCut() const{ return pActionOCBillboardCut; }
+	inline const igdeAction::Ref &GetActionOCBillboardPaste() const{ return pActionOCBillboardPaste; }
 	
-	inline igdeAction *GetActionOCCameraAdd() const{ return pActionOCCameraAdd; }
-	inline igdeAction *GetActionOCCameraRemove() const{ return pActionOCCameraRemove; }
-	inline igdeAction *GetActionOCCameraCopy() const{ return pActionOCCameraCopy; }
-	inline igdeAction *GetActionOCCameraCut() const{ return pActionOCCameraCut; }
-	inline igdeAction *GetActionOCCameraPaste() const{ return pActionOCCameraPaste; }
+	inline const igdeAction::Ref &GetActionOCCameraAdd() const{ return pActionOCCameraAdd; }
+	inline const igdeAction::Ref &GetActionOCCameraRemove() const{ return pActionOCCameraRemove; }
+	inline const igdeAction::Ref &GetActionOCCameraCopy() const{ return pActionOCCameraCopy; }
+	inline const igdeAction::Ref &GetActionOCCameraCut() const{ return pActionOCCameraCut; }
+	inline const igdeAction::Ref &GetActionOCCameraPaste() const{ return pActionOCCameraPaste; }
 	
-	inline igdeAction *GetActionOCComponentAdd() const{ return pActionOCComponentAdd; }
-	inline igdeAction *GetActionOCComponentRemove() const{ return pActionOCComponentRemove; }
-	inline igdeAction *GetActionOCComponentCopy() const{ return pActionOCComponentCopy; }
-	inline igdeAction *GetActionOCComponentCut() const{ return pActionOCComponentCut; }
-	inline igdeAction *GetActionOCComponentPaste() const{ return pActionOCComponentPaste; }
+	inline const igdeAction::Ref &GetActionOCComponentAdd() const{ return pActionOCComponentAdd; }
+	inline const igdeAction::Ref &GetActionOCComponentRemove() const{ return pActionOCComponentRemove; }
+	inline const igdeAction::Ref &GetActionOCComponentCopy() const{ return pActionOCComponentCopy; }
+	inline const igdeAction::Ref &GetActionOCComponentCut() const{ return pActionOCComponentCut; }
+	inline const igdeAction::Ref &GetActionOCComponentPaste() const{ return pActionOCComponentPaste; }
 	
-	inline igdeAction *GetActionOCEnvMapProbeAdd() const{ return pActionOCEnvMapProbeAdd; }
-	inline igdeAction *GetActionOCEnvMapProbeRemove() const{ return pActionOCEnvMapProbeRemove; }
-	inline igdeAction *GetActionOCEnvMapProbeCopy() const{ return pActionOCEnvMapProbeCopy; }
-	inline igdeAction *GetActionOCEnvMapProbeCut() const{ return pActionOCEnvMapProbeCut; }
-	inline igdeAction *GetActionOCEnvMapProbePaste() const{ return pActionOCEnvMapProbePaste; }
+	inline const igdeAction::Ref &GetActionOCEnvMapProbeAdd() const{ return pActionOCEnvMapProbeAdd; }
+	inline const igdeAction::Ref &GetActionOCEnvMapProbeRemove() const{ return pActionOCEnvMapProbeRemove; }
+	inline const igdeAction::Ref &GetActionOCEnvMapProbeCopy() const{ return pActionOCEnvMapProbeCopy; }
+	inline const igdeAction::Ref &GetActionOCEnvMapProbeCut() const{ return pActionOCEnvMapProbeCut; }
+	inline const igdeAction::Ref &GetActionOCEnvMapProbePaste() const{ return pActionOCEnvMapProbePaste; }
 	
-	inline igdeAction *GetActionOCLightAdd() const{ return pActionOCLightAdd; }
-	inline igdeAction *GetActionOCLightRemove() const{ return pActionOCLightRemove; }
-	inline igdeAction *GetActionOCLightCopy() const{ return pActionOCLightCopy; }
-	inline igdeAction *GetActionOCLightCut() const{ return pActionOCLightCut; }
-	inline igdeAction *GetActionOCLightPaste() const{ return pActionOCLightPaste; }
+	inline const igdeAction::Ref &GetActionOCLightAdd() const{ return pActionOCLightAdd; }
+	inline const igdeAction::Ref &GetActionOCLightRemove() const{ return pActionOCLightRemove; }
+	inline const igdeAction::Ref &GetActionOCLightCopy() const{ return pActionOCLightCopy; }
+	inline const igdeAction::Ref &GetActionOCLightCut() const{ return pActionOCLightCut; }
+	inline const igdeAction::Ref &GetActionOCLightPaste() const{ return pActionOCLightPaste; }
 	
-	inline igdeAction *GetActionOCNavBlockerAdd() const{ return pActionOCNavBlockerAdd; }
-	inline igdeAction *GetActionOCNavBlockerRemove() const{ return pActionOCNavBlockerRemove; }
-	inline igdeAction *GetActionOCNavBlockerCopy() const{ return pActionOCNavBlockerCopy; }
-	inline igdeAction *GetActionOCNavBlockerCut() const{ return pActionOCNavBlockerCut; }
-	inline igdeAction *GetActionOCNavBlockerPaste() const{ return pActionOCNavBlockerPaste; }
+	inline const igdeAction::Ref &GetActionOCNavBlockerAdd() const{ return pActionOCNavBlockerAdd; }
+	inline const igdeAction::Ref &GetActionOCNavBlockerRemove() const{ return pActionOCNavBlockerRemove; }
+	inline const igdeAction::Ref &GetActionOCNavBlockerCopy() const{ return pActionOCNavBlockerCopy; }
+	inline const igdeAction::Ref &GetActionOCNavBlockerCut() const{ return pActionOCNavBlockerCut; }
+	inline const igdeAction::Ref &GetActionOCNavBlockerPaste() const{ return pActionOCNavBlockerPaste; }
 	
-	inline igdeAction *GetActionOCNavSpaceAdd() const{ return pActionOCNavSpaceAdd; }
-	inline igdeAction *GetActionOCNavSpaceRemove() const{ return pActionOCNavSpaceRemove; }
-	inline igdeAction *GetActionOCNavSpaceCopy() const{ return pActionOCNavSpaceCopy; }
-	inline igdeAction *GetActionOCNavSpaceCut() const{ return pActionOCNavSpaceCut; }
-	inline igdeAction *GetActionOCNavSpacePaste() const{ return pActionOCNavSpacePaste; }
+	inline const igdeAction::Ref &GetActionOCNavSpaceAdd() const{ return pActionOCNavSpaceAdd; }
+	inline const igdeAction::Ref &GetActionOCNavSpaceRemove() const{ return pActionOCNavSpaceRemove; }
+	inline const igdeAction::Ref &GetActionOCNavSpaceCopy() const{ return pActionOCNavSpaceCopy; }
+	inline const igdeAction::Ref &GetActionOCNavSpaceCut() const{ return pActionOCNavSpaceCut; }
+	inline const igdeAction::Ref &GetActionOCNavSpacePaste() const{ return pActionOCNavSpacePaste; }
 	
-	inline igdeAction *GetActionOCParticleEmitterAdd() const{ return pActionOCParticleEmitterAdd; }
-	inline igdeAction *GetActionOCParticleEmitterRemove() const{ return pActionOCParticleEmitterRemove; }
-	inline igdeAction *GetActionOCParticleEmitterCopy() const{ return pActionOCParticleEmitterCopy; }
-	inline igdeAction *GetActionOCParticleEmitterCut() const{ return pActionOCParticleEmitterCut; }
-	inline igdeAction *GetActionOCParticleEmitterPaste() const{ return pActionOCParticleEmitterPaste; }
+	inline const igdeAction::Ref &GetActionOCParticleEmitterAdd() const{ return pActionOCParticleEmitterAdd; }
+	inline const igdeAction::Ref &GetActionOCParticleEmitterRemove() const{ return pActionOCParticleEmitterRemove; }
+	inline const igdeAction::Ref &GetActionOCParticleEmitterCopy() const{ return pActionOCParticleEmitterCopy; }
+	inline const igdeAction::Ref &GetActionOCParticleEmitterCut() const{ return pActionOCParticleEmitterCut; }
+	inline const igdeAction::Ref &GetActionOCParticleEmitterPaste() const{ return pActionOCParticleEmitterPaste; }
 	
-	inline igdeAction *GetActionOCForceFieldAdd() const{ return pActionOCForceFieldAdd; }
-	inline igdeAction *GetActionOCForceFieldRemove() const{ return pActionOCForceFieldRemove; }
-	inline igdeAction *GetActionOCForceFieldCopy() const{ return pActionOCForceFieldCopy; }
-	inline igdeAction *GetActionOCForceFieldCut() const{ return pActionOCForceFieldCut; }
-	inline igdeAction *GetActionOCForceFieldPaste() const{ return pActionOCForceFieldPaste; }
+	inline const igdeAction::Ref &GetActionOCForceFieldAdd() const{ return pActionOCForceFieldAdd; }
+	inline const igdeAction::Ref &GetActionOCForceFieldRemove() const{ return pActionOCForceFieldRemove; }
+	inline const igdeAction::Ref &GetActionOCForceFieldCopy() const{ return pActionOCForceFieldCopy; }
+	inline const igdeAction::Ref &GetActionOCForceFieldCut() const{ return pActionOCForceFieldCut; }
+	inline const igdeAction::Ref &GetActionOCForceFieldPaste() const{ return pActionOCForceFieldPaste; }
 	
-	inline igdeAction *GetActionOCSnapPointAdd() const{ return pActionOCSnapPointAdd; }
-	inline igdeAction *GetActionOCSnapPointRemove() const{ return pActionOCSnapPointRemove; }
-	inline igdeAction *GetActionOCSnapPointCopy() const{ return pActionOCSnapPointCopy; }
-	inline igdeAction *GetActionOCSnapPointCut() const{ return pActionOCSnapPointCut; }
-	inline igdeAction *GetActionOCSnapPointPaste() const{ return pActionOCSnapPointPaste; }
+	inline const igdeAction::Ref &GetActionOCSnapPointAdd() const{ return pActionOCSnapPointAdd; }
+	inline const igdeAction::Ref &GetActionOCSnapPointRemove() const{ return pActionOCSnapPointRemove; }
+	inline const igdeAction::Ref &GetActionOCSnapPointCopy() const{ return pActionOCSnapPointCopy; }
+	inline const igdeAction::Ref &GetActionOCSnapPointCut() const{ return pActionOCSnapPointCut; }
+	inline const igdeAction::Ref &GetActionOCSnapPointPaste() const{ return pActionOCSnapPointPaste; }
 	
-	inline igdeAction *GetActionOCSpeakerAdd() const{ return pActionOCSpeakerAdd; }
-	inline igdeAction *GetActionOCSpeakerRemove() const{ return pActionOCSpeakerRemove; }
-	inline igdeAction *GetActionOCSpeakerCopy() const{ return pActionOCSpeakerCopy; }
-	inline igdeAction *GetActionOCSpeakerCut() const{ return pActionOCSpeakerCut; }
-	inline igdeAction *GetActionOCSpeakerPaste() const{ return pActionOCSpeakerPaste; }
+	inline const igdeAction::Ref &GetActionOCSpeakerAdd() const{ return pActionOCSpeakerAdd; }
+	inline const igdeAction::Ref &GetActionOCSpeakerRemove() const{ return pActionOCSpeakerRemove; }
+	inline const igdeAction::Ref &GetActionOCSpeakerCopy() const{ return pActionOCSpeakerCopy; }
+	inline const igdeAction::Ref &GetActionOCSpeakerCut() const{ return pActionOCSpeakerCut; }
+	inline const igdeAction::Ref &GetActionOCSpeakerPaste() const{ return pActionOCSpeakerPaste; }
 	
-	inline igdeAction *GetActionOCWorldAdd() const{ return pActionOCWorldAdd; }
-	inline igdeAction *GetActionOCWorldRemove() const{ return pActionOCWorldRemove; }
-	inline igdeAction *GetActionOCWorldCopy() const{ return pActionOCWorldCopy; }
-	inline igdeAction *GetActionOCWorldCut() const{ return pActionOCWorldCut; }
-	inline igdeAction *GetActionOCWorldPaste() const{ return pActionOCWorldPaste; }
+	inline const igdeAction::Ref &GetActionOCWorldAdd() const{ return pActionOCWorldAdd; }
+	inline const igdeAction::Ref &GetActionOCWorldRemove() const{ return pActionOCWorldRemove; }
+	inline const igdeAction::Ref &GetActionOCWorldCopy() const{ return pActionOCWorldCopy; }
+	inline const igdeAction::Ref &GetActionOCWorldCut() const{ return pActionOCWorldCut; }
+	inline const igdeAction::Ref &GetActionOCWorldPaste() const{ return pActionOCWorldPaste; }
 	
-	inline igdeAction *GetActionParticleEmitterAdd() const{ return pActionParticleEmitterAdd; }
-	inline igdeAction *GetActionParticleEmitterRemove() const{ return pActionParticleEmitterRemove; }
+	inline const igdeAction::Ref &GetActionParticleEmitterAdd() const{ return pActionParticleEmitterAdd; }
+	inline const igdeAction::Ref &GetActionParticleEmitterRemove() const{ return pActionParticleEmitterRemove; }
 	
-	inline igdeAction *GetActionSkinAdd() const{ return pActionSkinAdd; }
-	inline igdeAction *GetActionSkinRemove() const{ return pActionSkinRemove; }
+	inline const igdeAction::Ref &GetActionSkinAdd() const{ return pActionSkinAdd; }
+	inline const igdeAction::Ref &GetActionSkinRemove() const{ return pActionSkinRemove; }
 	
-	inline igdeAction *GetActionSkyAdd() const{ return pActionSkyAdd; }
-	inline igdeAction *GetActionSkyRemove() const{ return pActionSkyRemove; }
+	inline const igdeAction::Ref &GetActionSkyAdd() const{ return pActionSkyAdd; }
+	inline const igdeAction::Ref &GetActionSkyRemove() const{ return pActionSkyRemove; }
 	
 	
 	
@@ -354,27 +360,27 @@ public:
 	inline gdeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief View active object. */
-	inline gdeViewActiveObject &GetViewActiveObject() const{ return *pViewActiveObject; }
+	inline gdeViewActiveObject &GetViewActiveObject() const{ return pViewActiveObject; }
 	
 	/** \brief Window properties. */
-	inline gdeWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
+	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	
 	
 	/** \brief Active game definition. */
-	inline gdeGameDefinition *GetActiveGameDefinition() const{ return pActiveGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetActiveGameDefinition() const{ return pActiveGameDefinition; }
 	
 	/** \brief Set active game definition. */
-	void SetActiveGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetActiveGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Create new game definition. */
 	void CreateNewGameDefinition();
 	
 	/** \brief Load game definition project. */
-	void LoadGameProject( bool silentErrors );
+	void LoadGameProject(bool silentErrors);
 	
 	/** \brief Save game definition to file. */
-	void SaveGameDefinition( const char *filename );
+	void SaveGameDefinition(const char *filename);
 	
 	
 	
@@ -382,7 +388,7 @@ public:
 	inline const decString &GetLastPathGameDef() const{ return pLastPathGameDef; }
 	
 	/** \brief Set last path game definition. */
-	void SetLastPathGameDef( const char *path );
+	void SetLastPathGameDef(const char *path);
 	
 	
 	
@@ -405,7 +411,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -416,7 +422,7 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -426,7 +432,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -450,12 +456,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	virtual igdeStepableTask::Ref OnGameDefinitionChanged();
 	/*@}*/
 	
 	
@@ -466,9 +472,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuGameDef( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuGameDef(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 };
 
 #endif

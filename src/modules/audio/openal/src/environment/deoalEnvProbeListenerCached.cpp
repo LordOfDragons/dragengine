@@ -39,7 +39,7 @@
 /////////////////////////////////
 
 deoalEnvProbeListenerCached::deoalEnvProbeListenerCached() :
-pLastUsed( 0 ){
+pLastUsed(0){
 }
 
 deoalEnvProbeListenerCached::~deoalEnvProbeListenerCached(){
@@ -50,10 +50,10 @@ deoalEnvProbeListenerCached::~deoalEnvProbeListenerCached(){
 // Manegement
 ///////////////
 
-void deoalEnvProbeListenerCached::SetPosition( const decVector &position ){
+void deoalEnvProbeListenerCached::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deoalEnvProbeListenerCached::SetLastUsed( unsigned short lastUsed ){
+void deoalEnvProbeListenerCached::SetLastUsed(unsigned short lastUsed){
 	pLastUsed = lastUsed;
 }

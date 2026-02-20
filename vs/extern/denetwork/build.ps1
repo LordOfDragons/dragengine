@@ -19,7 +19,7 @@ $ArchiveFile = "$ProjectDir\DENetworkSDK-$DERemoteLauncherVersion.zip"
 $BaseUrl = "https://github.com/LordOfDragons/denetwork/releases/download/v$DERemoteLauncherVersion"
 
 if (!(Test-Path $ArchiveFile)) {
-    Invoke-WebRequest "$BaseUrl/DENetworkSDK-$DERemoteLauncherVersion.zip" -OutFile $ArchiveFile
+    Invoke-WebRequestWithRetry -Uri "$BaseUrl/DENetworkSDK-$DERemoteLauncherVersion.zip" -OutFile $ArchiveFile
 }
 
 Expand-Archive -Path $ArchiveFile -DestinationPath $ProjectDir

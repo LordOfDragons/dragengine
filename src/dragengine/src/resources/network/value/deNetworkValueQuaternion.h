@@ -38,8 +38,7 @@
 class DE_DLL_EXPORT deNetworkValueQuaternion : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueQuaternion> Ref;
-	
+	using Ref = deTObjectReference<deNetworkValueQuaternion>;
 	
 	
 private:
@@ -53,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueQuaternion( eValueFormats format, const decQuaternion &value );
+	deNetworkValueQuaternion(eValueFormats format, const decQuaternion &value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueQuaternion();
+	~deNetworkValueQuaternion() override;
 	/*@}*/
 	
 	
@@ -70,13 +69,13 @@ public:
 	inline const decQuaternion &GetQuaternion() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetQuaternion( const decQuaternion &value );
+	void SetQuaternion(const decQuaternion &value);
 	
 	/** \brief Precision. */
 	inline double GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision. */
-	void SetPrecision( double precision );
+	void SetPrecision(double precision);
 	/*@}*/
 	
 	
@@ -84,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

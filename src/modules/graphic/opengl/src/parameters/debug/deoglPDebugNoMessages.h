@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPDebugNoMessages( deGraphicOpenGl &ogl );
+	deoglPDebugNoMessages(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
-	virtual ~deoglPDebugNoMessages();
+	~deoglPDebugNoMessages() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual bool GetParameterBool();
+	bool GetParameterBool() override;
 	
 	/** Set current value. */
-	virtual void SetParameterBool( bool value );
+	void SetParameterBool(bool value) override;
 	/*@}*/
 };
 

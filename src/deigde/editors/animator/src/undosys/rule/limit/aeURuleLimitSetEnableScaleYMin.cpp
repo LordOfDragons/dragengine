@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleYMin::aeURuleLimitSetEnableScaleYMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleYMin::aeURuleLimitSetEnableScaleYMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum y scaling" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumYScaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleYMin::~aeURuleLimitSetEnableScaleYMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableScaleYMin::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleYMin::Redo(){
-	pRule->SetEnableScalingYMin( ! pRule->GetEnableScalingYMin() );
+	pRule->SetEnableScalingYMin(!pRule->GetEnableScalingYMin());
 }

@@ -28,8 +28,14 @@ try:
 	# version goes back to 0 if the drag[en]gine release version is bumped
 	blenderVersion[2] = 0
 
-	if blenderVersion[1] == 22:
-		blenderVersion[2] = 2
+	customBlenderVersion = {
+		'1.22': 2,
+		'1.29': 1}
+
+	checkVersion = '{}.{}'.format(blenderVersion[0], blenderVersion[1])
+	for (k,v) in customBlenderVersion.items():
+		if k == checkVersion:
+			blenderVersion[2] = v
 except:
 	blenderVersion = [9999, 0, 0]
 

@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeObjectClass;
  * \brief Undo action object class navblocker set type.
  */
 class gdeUOCNavBlockerSetType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetType>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	deNavigationSpace::eSpaceTypes pOldValue;
 	deNavigationSpace::eSpaceTypes pNewValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetType( gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue );
+	gdeUOCNavBlockerSetType(gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavBlockerSetType();
+	~gdeUOCNavBlockerSetType() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

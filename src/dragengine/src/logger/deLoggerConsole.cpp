@@ -58,30 +58,30 @@ deLoggerConsole::~deLoggerConsole(){
 // Management
 ///////////////
 
-void deLoggerConsole::LogInfo( const char *source, const char *message ){
-	LogPrefix( source, message, "II " );
+void deLoggerConsole::LogInfo(const char *source, const char *message){
+	LogPrefix(source, message, "II ");
 }
 
-void deLoggerConsole::LogWarn( const char *source, const char *message ){
-	LogPrefix( source, message, "WW " );
+void deLoggerConsole::LogWarn(const char *source, const char *message){
+	LogPrefix(source, message, "WW ");
 }
 
-void deLoggerConsole::LogError( const char *source, const char *message ){
-	LogPrefix( source, message, "EE " );
+void deLoggerConsole::LogError(const char *source, const char *message){
+	LogPrefix(source, message, "EE ");
 }
 
-void deLoggerConsole::LogPrefix( const char *source, const char *message, const char *prefix ){
-	if( ! source || ! message || ! prefix ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsole::LogPrefix(const char *source, const char *message, const char *prefix){
+	if(!source || !message || !prefix){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = ( int )strlen( message );
+	const int len = (int)strlen(message);
 	const decDateTime timestamp;
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	
-	printf( "%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
+	printf("%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
 		timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
 		timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(),
-		message, ( len == 0 || message[ len - 1 ] != '\n' ) ? "\n" : "" );
+		message, (len == 0 || message[len - 1] != '\n') ? "\n" : "");
 }

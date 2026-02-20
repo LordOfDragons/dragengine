@@ -35,6 +35,9 @@ class reWPBone;
  * \brief Bone panel listenerer.
  */
 class reWPBoneListener : public reRigNotifier{
+public:
+	using Ref = deTObjectReference<reWPBoneListener>;
+	
 private:
 	reWPBone &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPBoneListener( reWPBone &panel );
+	reWPBoneListener(reWPBone &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPBoneListener();
+protected:
+	~reWPBoneListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,10 +60,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief A bone changed. */
-	void BoneChanged( reRig *rig, reRigBone *bone );
+	void BoneChanged(reRig *rig, reRigBone *bone) override;
 	
 	/** \brief The active bone changed. */
-	void ActiveBoneChanged( reRig *rig );
+	void ActiveBoneChanged(reRig *rig) override;
 	/*@}*/
 };
 

@@ -48,10 +48,10 @@ deLanguagePackEntry::~deLanguagePackEntry(){
 // Management
 ///////////////
 
-void deLanguagePackEntry::SetName( const char *name ){
+void deLanguagePackEntry::SetName(const char *name){
 	pName = name;
 }
 
-void deLanguagePackEntry::SetText( const decUnicodeString &text ){
+void deLanguagePackEntry::SetText(const decUnicodeString &text){
 	pText = text;
 }

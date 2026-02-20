@@ -41,7 +41,7 @@
 ////////////////////////////
 
 feFontGlyph::feFontGlyph(){
-	pParentFont = NULL;
+	pParentFont = nullptr;
 	
 	pCode = 0;
 	pU = 0;
@@ -64,39 +64,39 @@ feFontGlyph::~feFontGlyph(){
 // Management
 ///////////////
 
-void feFontGlyph::SetParentFont( feFont* font ){
+void feFontGlyph::SetParentFont(feFont* font){
 	pParentFont = font;
 }
 
 
 
-void feFontGlyph::SetCode( int code ){
-	if( code < 0 ) DETHROW( deeInvalidParam );
+void feFontGlyph::SetCode(int code){
+	if(code < 0) DETHROW(deeInvalidParam);
 	
-	if( code != pCode ){
+	if(code != pCode){
 		pCode = code;
 		NotifyGlyphChanged();
 	}
 }
 
-void feFontGlyph::SetU( int u ){
-	if( u != pU ){
+void feFontGlyph::SetU(int u){
+	if(u != pU){
 		pU = u;
 		NotifyGlyphChanged();
 	}
 }
 
-void feFontGlyph::SetV( int v ){
-	if( v != pV ){
+void feFontGlyph::SetV(int v){
+	if(v != pV){
 		pV = v;
 		NotifyGlyphChanged();
 	}
 }
 
-void feFontGlyph::SetWidth( int width ){
+void feFontGlyph::SetWidth(int width){
 	DEASSERT_TRUE(width >= 0)
 	
-	if( width != pWidth ){
+	if(width != pWidth){
 		pWidth = width;
 		NotifyGlyphChanged();
 	}
@@ -111,8 +111,8 @@ void feFontGlyph::SetHeight(int height){
 	}
 }
 
-void feFontGlyph::SetBearing( int bearing ){
-	if( bearing != pBearing ){
+void feFontGlyph::SetBearing(int bearing){
+	if(bearing != pBearing){
 		pBearing = bearing;
 		NotifyGlyphChanged();
 	}
@@ -125,52 +125,41 @@ void feFontGlyph::SetBearingY(int bearing){
 	}
 }
 
-void feFontGlyph::SetAdvance( int advance ){
-	if( advance < 0 ) DETHROW( deeInvalidParam );
+void feFontGlyph::SetAdvance(int advance){
+	if(advance < 0) DETHROW(deeInvalidParam);
 	
-	if( advance != pAdvance ){
+	if(advance != pAdvance){
 		pAdvance = advance;
 		NotifyGlyphChanged();
 	}
 }
 
-void feFontGlyph::SetSelected( bool selected ){
+void feFontGlyph::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void feFontGlyph::SetActive( bool active ){
+void feFontGlyph::SetActive(bool active){
 	pActive = active;
 }
 
-feFontGlyph* feFontGlyph::Copy() const{
-	feFontGlyph *glyph = NULL;
-	
-	try{
-		glyph = new feFontGlyph;
-		if( ! glyph ) DETHROW( deeOutOfMemory );
-		
-		glyph->pCode = pCode;
-		glyph->pU = pU;
-		glyph->pV = pV;
-		glyph->pWidth = pWidth;
-		glyph->pHeight = pHeight;
-		glyph->pBearing = pBearing;
-		glyph->pBearingY = pBearingY;
-		glyph->pAdvance = pAdvance;
-		
-	}catch( const deException & ){
-		if( glyph ) delete glyph;
-		throw;
-	}
-	
+feFontGlyph::Ref feFontGlyph::Copy() const{
+	const feFontGlyph::Ref glyph(feFontGlyph::Ref::New());
+	glyph->pCode = pCode;
+	glyph->pU = pU;
+	glyph->pV = pV;
+	glyph->pWidth = pWidth;
+	glyph->pHeight = pHeight;
+	glyph->pBearing = pBearing;
+	glyph->pBearingY = pBearingY;
+	glyph->pAdvance = pAdvance;
 	return glyph;
 }
 
 
 
 void feFontGlyph::NotifyGlyphChanged(){
-	if( pParentFont ){
-		pParentFont->SetChanged( true );
-		pParentFont->NotifyGlyphChanged( this );
+	if(pParentFont){
+		pParentFont->SetChanged(true);
+		pParentFont->NotifyGlyphChanged(this);
 	}
 }

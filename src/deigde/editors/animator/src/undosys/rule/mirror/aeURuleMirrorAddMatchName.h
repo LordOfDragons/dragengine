@@ -35,10 +35,14 @@
  * Undo set mirror add match name.
  */
 class aeURuleMirrorAddMatchName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorAddMatchName>;
+	
+	
 private:
 	aeRuleMirror::Ref pRule;
 	
-	aeRuleMirror::cMatchName::Ref pMatchName;
+	aeRuleMirror::MatchName::Ref pMatchName;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorAddMatchName( aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName );
+	aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleMirror::MatchName *matchName);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorAddMatchName();
+	~aeURuleMirrorAddMatchName() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

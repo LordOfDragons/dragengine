@@ -25,11 +25,12 @@
 #include "igdeDEStatus.h"
 #include "igdeDialogEngine.h"
 
+#include "../igdeApplication.h"
 #include "../igdeUIHelper.h"
 #include "../igdeTextArea.h"
 #include "../igdeButton.h"
 #include "../igdeIconListBox.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeMainWindow.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerForm.h"
@@ -38,6 +39,7 @@
 #include "../../engine/igdeEngineController.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -61,15 +63,17 @@ class igdeDEStatus_ActionStart : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
-	igdeDEStatus_ActionStart( igdeDEStatus &panel ) :
-		igdeAction( "Start Engine", NULL, "Start game engine" ), pPanel( panel ){}
+	using Ref = deTObjectReference<igdeDEStatus_ActionStart>;
 	
-	virtual void OnAction(){
+	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
+		igdeAction("@Igde.DEStatus.Action.StartEngine", nullptr, "@Igde.DEStatus.Action.StartEngine.ToolTip"), pPanel(panel){}
+	
+	void OnAction() override{
 		pPanel.StartEngine();
 	}
 	
-	virtual void Update(){
-		SetEnabled( ! pPanel.GetEngineController().GetRunning() );
+	void Update() override{
+		SetEnabled(!pPanel.GetEngineController().GetRunning());
 	}
 };
 
@@ -77,15 +81,17 @@ class igdeDEStatus_ActionStop : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
-	igdeDEStatus_ActionStop( igdeDEStatus &panel ) :
-		igdeAction( "Stop Engine", NULL, "Stop game engine" ), pPanel( panel ){}
+	using Ref = deTObjectReference<igdeDEStatus_ActionStop>;
 	
-	virtual void OnAction(){
+	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
+		igdeAction("@Igde.DEStatus.Action.StopEngine", nullptr, "@Igde.DEStatus.Action.StopEngine.ToolTip"), pPanel(panel){}
+	
+	void OnAction() override{
 		pPanel.StopEngine();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetEngineController().GetRunning() );
+	void Update() override{
+		SetEnabled(pPanel.GetEngineController().GetRunning());
 	}
 };
 
@@ -97,41 +103,43 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeDEStatus::igdeDEStatus( igdeDialogEngine &dialogEngine ) :
-igdeContainerFlow( dialogEngine.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast ),
-pDialogEngine( dialogEngine )
+igdeDEStatus::igdeDEStatus(igdeDialogEngine &dialogEngine) :
+igdeContainerFlow(dialogEngine.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast),
+pDialogEngine(dialogEngine)
 {
 	igdeEnvironment &env = dialogEngine.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference groupBox, panel;
+	igdeContainer::Ref groupBox, panel;
 	
 	
-	helper.GroupBoxStaticFlow( *this, groupBox, "Engine Status:" );
-	helper.EditString( groupBox, "Engine status", pTextStatus, 3, NULL );
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.EngineStatus");
+	helper.EditString(groupBox, "@Igde.DEStatus.EngineStatus.ToolTip", pTextStatus, 3, {});
 	
-	panel.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX ) );
-	groupBox->AddChild( panel );
-	helper.Button( panel, pBtnStart, new igdeDEStatus_ActionStart( *this ), true );
-	helper.Button( panel, pBtnStop, new igdeDEStatus_ActionStop( *this ), true );
+	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
+	groupBox->AddChild(panel);
+	helper.Button(panel, pBtnStart, igdeDEStatus_ActionStart::Ref::New(*this));
+	helper.Button(panel, pBtnStop, igdeDEStatus_ActionStop::Ref::New(*this));
 	
 	
-	helper.GroupBoxStaticFlow( *this, groupBox, "System Status:", true );
-	const igdeUIHelper::sColumnHeader columns[ 3 ] = {
-		igdeUIHelper::sColumnHeader( "System Name", NULL, 150 ),
-		igdeUIHelper::sColumnHeader( "Active Module", NULL, 200 ),
-		igdeUIHelper::sColumnHeader( "Status", NULL, 150 )
+	helper.GroupBoxStaticFlow(*this, groupBox, "@Igde.DEStatus.SystemStatus", true);
+	const igdeUIHelper::sColumnHeader columns[3] = {
+		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnSystemName", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnActiveModule", nullptr, igdeApplication::app().DisplayScaled(200)),
+		igdeUIHelper::sColumnHeader("@Igde.DEStatus.SystemStatus.ColumnStatus", nullptr, igdeApplication::app().DisplayScaled(150))
 	};
-	helper.IconListBox( groupBox, pListSystems, decPoint( 100, 150 ), columns, 3, "System Status", NULL );
+	helper.IconListBox(groupBox, pListSystems,
+		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
+		columns, 3, "@Igde.DEStatus.SystemStatus.ToolTip", {});
 	
-	pAddSystem( GetEngine()->GetGraphicSystem() );
-	pAddSystem( GetEngine()->GetAudioSystem() );
-	pAddSystem( GetEngine()->GetInputSystem() );
-	pAddSystem( GetEngine()->GetPhysicsSystem() );
-	pAddSystem( GetEngine()->GetScriptingSystem() );
-	pAddSystem( GetEngine()->GetCrashRecoverySystem() );
-	pAddSystem( GetEngine()->GetAnimatorSystem() );
-	pAddSystem( GetEngine()->GetSynthesizerSystem() );
-	pAddSystem( GetEngine()->GetVRSystem() );
+	pAddSystem(GetEngine()->GetGraphicSystem());
+	pAddSystem(GetEngine()->GetAudioSystem());
+	pAddSystem(GetEngine()->GetInputSystem());
+	pAddSystem(GetEngine()->GetPhysicsSystem());
+	pAddSystem(GetEngine()->GetScriptingSystem());
+	pAddSystem(GetEngine()->GetCrashRecoverySystem());
+	pAddSystem(GetEngine()->GetAnimatorSystem());
+	pAddSystem(GetEngine()->GetSynthesizerSystem());
+	pAddSystem(GetEngine()->GetVRSystem());
 	
 	UpdateStatus();
 }
@@ -145,37 +153,37 @@ igdeDEStatus::~igdeDEStatus(){
 ///////////////
 
 void igdeDEStatus::UpdateStatus(){
-	const int count = pListSystems->GetItemCount();
+	const int count = pListSystems->GetItems().GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		igdeListItem &item = *pListSystems->GetItemAt( i );
-		const deBaseSystem &system = *( ( deBaseSystem* )item.GetData() );
+	for(i=0; i<count; i++){
+		igdeListItem &item = *pListSystems->GetItems().GetAt(i);
+		const deBaseSystem &system = *((deBaseSystem*)item.GetData());
 		const deLoadableModule * const loadedModule = system.GetActiveLoadableModule();
 		
-		if( loadedModule ){
-			item.GetDetails().SetAt( 0, loadedModule->GetName() );
+		if(loadedModule){
+			item.GetDetails().SetAt(0, loadedModule->GetName());
 			
 		}else{
-			item.GetDetails().SetAt( 0, "<No Module Loaded>" );
+			item.GetDetails().SetAt(0, "<No Module Loaded>");
 		}
 		
-		if( system.GetIsRunning() ){
-			item.GetDetails().SetAt( 1, "Running" );
+		if(system.GetIsRunning()){
+			item.GetDetails().SetAt(1, Translate("Igde.DEStatus.Running").ToUTF8());
 			
 		}else{
-			item.GetDetails().SetAt( 1, "Stopped" );
+			item.GetDetails().SetAt(1, Translate("Igde.DEStatus.Stopped").ToUTF8());
 		}
 		
-		pListSystems->ItemChangedAt( i );
+		pListSystems->ItemChangedAt(i);
 	}
 	
-	if( pTextStatus->GetText().IsEmpty() ){
-		if( GetEngineController().GetRunning() ){
-			pTextStatus->SetText( "Engine is running" );
+	if(pTextStatus->GetText().IsEmpty()){
+		if(GetEngineController().GetRunning()){
+			pTextStatus->SetText(Translate("Igde.DEStatus.EngineRunning").ToUTF8());
 			
 		}else{
-			pTextStatus->SetText( "Engine is not running" );
+			pTextStatus->SetText(Translate("Igde.DEStatus.EngineNotRunning").ToUTF8());
 		}
 	}
 	
@@ -184,43 +192,42 @@ void igdeDEStatus::UpdateStatus(){
 }
 
 void igdeDEStatus::StartEngine(){
-	if( GetEngineController().GetRunning() ){
+	if(GetEngineController().GetRunning()){
 		return;
 	}
 	
 	pTextStatus->ClearText();
 	
-	const int count = pListSystems->GetItemCount();
+	const int count = pListSystems->GetItems().GetCount();
 	decString message;
 	int i;
 	
 	try{
 		// test if we can start all required systems
-		for( i=0; i<count; i++ ){
-			deBaseSystem &system = *( ( deBaseSystem* )pListSystems->GetItemAt( i )->GetData() );
-			if( system.CanStart() ){
+		for(i=0; i<count; i++){
+			deBaseSystem &system = *((deBaseSystem*)pListSystems->GetItems().GetAt(i)->GetData());
+			if(system.CanStart()){
 				continue;
 			}
 			
-			message.Format( "Engine can not be started because system %s is not possible to start."
-				" Verify that a module is selected and that this module is runnable on this system.",
-				system.GetSystemName().GetString() );
-			pTextStatus->SetText( message );
+			message.FormatSafe(Translate("Igde.DEStatus.EngineCanNotStart").ToUTF8(),
+				system.GetSystemName());
+			pTextStatus->SetText(message);
 			break;
 		}
 		
 		// do the rest and mark as running
 		pDialogEngine.GetMainWindow().StartEngine();
 		
-	}catch( const deException &e ){
-		pTextStatus->SetText( e.FormatOutput().Join( "\n" ) );
+	}catch(const deException &e){
+		pTextStatus->SetText(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	UpdateStatus();
 }
 
 void igdeDEStatus::StopEngine(){
-	if( ! GetEngineController().GetRunning() ){
+	if(!GetEngineController().GetRunning()){
 		return;
 	}
 	
@@ -229,8 +236,8 @@ void igdeDEStatus::StopEngine(){
 	try{
 		pDialogEngine.GetMainWindow().StopEngine();
 		
-	}catch( const deException &e ){
-		pTextStatus->SetText( e.FormatOutput().Join( "\n" ) );
+	}catch(const deException &e){
+		pTextStatus->SetText(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	UpdateStatus();
@@ -241,9 +248,9 @@ void igdeDEStatus::StopEngine(){
 // Private Functions
 //////////////////////
 
-void igdeDEStatus::pAddSystem( deBaseSystem *system ){
+void igdeDEStatus::pAddSystem(deBaseSystem *system){
 	decStringList details;
-	details.Add( "-" );
-	details.Add( "-" );
-	pListSystems->AddItem( system->GetSystemName(), details, NULL, system );
+	details.Add("-");
+	details.Add("-");
+	pListSystems->AddItem(system->GetSystemName(), details, nullptr, system);
 }

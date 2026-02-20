@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create developer mode. */
-	debpDeveloperMode( dePhysicsBullet &bullet );
+	debpDeveloperMode(dePhysicsBullet &bullet);
 	
 	/** Clean up developer mode. */
 	~debpDeveloperMode();
@@ -77,7 +77,7 @@ public:
 	 * Executes a command.
 	 * \details If the command is recognized true is returned otherwise false.
 	 */
-	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	bool ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** Developer mode is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
@@ -97,19 +97,19 @@ public:
 	 * By default this does nothing unless a snapshot has been requested beforehand in which
 	 * case the given world is written to a file using the collada exporter provided in BULLET.
 	 */
-	void TakeSnapshot( debpWorld *world );
+	void TakeSnapshot(debpWorld *world);
 	/*@}*/
 	
 	
 	
 private:
-	void pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdTakeSnapshot( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowCategory( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHighlightResponseType( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHighlightDeactivation( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdTakeSnapshot(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowCategory(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdHighlightResponseType(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdHighlightDeactivation(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
 };
 
 #endif

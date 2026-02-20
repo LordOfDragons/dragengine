@@ -40,12 +40,12 @@
 
 ceWPTMAPChoiceActionsRemoveAllActions::ceWPTMAPChoiceActionsRemoveAllActions(
 ceWindowMain &windowMain, ceConversation &conversation,
-ceConversationTopic &topic, ceCAPlayerChoice &playerChoice ) :
-ceWPTMARemoveAllActions( windowMain, conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice )
+ceConversationTopic &topic, ceCAPlayerChoice &playerChoice) :
+ceWPTMARemoveAllActions(windowMain, conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice)
 {
-	SetEnabled( playerChoice.GetActions().GetCount() > 0 );
+	SetEnabled(playerChoice.GetActions().GetCount() > 0);
 }
 
 
@@ -53,6 +53,6 @@ pPlayerChoice( &playerChoice )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceActionsRemoveAllActions::CreateUndo(){
-	return new ceUCAPChoiceActionRemoveAll( pTopic, pPlayerChoice, NULL );
+igdeUndo::Ref ceWPTMAPChoiceActionsRemoveAllActions::CreateUndo(){
+	return ceUCAPChoiceActionRemoveAll::Ref::New(pTopic, pPlayerChoice, nullptr);
 }

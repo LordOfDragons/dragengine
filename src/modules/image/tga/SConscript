@@ -10,7 +10,7 @@ internalModule = envModule['build_image_tga_internal']
 parent_report['build Targa Image Module'] = 'yes (internal)' if internalModule else 'yes'
 
 # fetch values in expanded form for later use
-versionString = '1.0'
+versionString = '1.30'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

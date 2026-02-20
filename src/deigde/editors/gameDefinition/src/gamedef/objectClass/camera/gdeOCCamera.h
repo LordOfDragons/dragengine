@@ -26,6 +26,7 @@
 #define _GDEOCCAMERA_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -43,16 +44,25 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeOCCamera>;
+
+	/** \brief Type holding list. */
+	using List = decTObjectOrderedSet<gdeOCCamera>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create camera. */
 	gdeOCCamera();
 	
 	/** \brief Create copy of camera. */
-	gdeOCCamera( const gdeOCCamera &camera );
+	gdeOCCamera(const gdeOCCamera &camera);
 	
 	/** \brief Clean up camera. */
-	virtual ~gdeOCCamera();
+protected:
+	~gdeOCCamera() override;
+public:
 	/*@}*/
 	
 	
@@ -63,37 +73,37 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
 	
 	/** \brief Set orientation. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	/** \brief Vertical field  of view in radians for the entire view. */
 	inline float GetFov() const{ return pFov; }
 	
 	/** \brief Set vertical field of view in radians of the entire view. */
-	void SetFov( float fov );
+	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
 	inline float GetFovRatio() const{ return pFovRatio; }
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
-	void SetFovRatio( float ratio );
+	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
 	inline float GetImageDistance() const{ return pImageDistance; }
 	
 	/** \brief Set distance to the image plane. */
-	void SetImageDistance( float distance );
+	void SetImageDistance(float distance);
 	
 	/** \brief Viewing distance up to which scene geometry is rendered. */
 	inline float GetViewDistance() const{ return pViewDistance; }
 	
 	/** \brief Set view distance up to which scene geometry is rendered. */
-	void SetViewDistance( float distance );
+	void SetViewDistance(float distance);
 	
 	
 	

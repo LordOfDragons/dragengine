@@ -43,111 +43,111 @@ reRigNotifier::~reRigNotifier(){
 // Notifications
 //////////////////
 
-void reRigNotifier::ModeChanged( reRig *rig ){
+void reRigNotifier::ModeChanged(reRig *rig){
 }
 
-void reRigNotifier::StateChanged( reRig *rig ){
+void reRigNotifier::StateChanged(reRig *rig){
 }
 
-void reRigNotifier::UndoChanged( reRig *rig ){
-}
-
-
-
-void reRigNotifier::StructureChanged( reRig *rig ){
-}
-
-void reRigNotifier::RigChanged( reRig *rig ){
-}
-
-void reRigNotifier::ResourceChanged( reRig *rig ){
-}
-
-void reRigNotifier::SkyChanged( reRig *rig ){
-}
-
-void reRigNotifier::EnvObjectChanged( reRig *rig ){
-}
-
-void reRigNotifier::ViewChanged( reRig *rig ){
+void reRigNotifier::UndoChanged(reRig *rig){
 }
 
 
 
-void reRigNotifier::CameraChanged( reRig *rig ){
+void reRigNotifier::StructureChanged(reRig *rig){
 }
 
-void reRigNotifier::CameraViewChanged( reRig *rig ){
+void reRigNotifier::RigChanged(reRig *rig){
 }
 
-
-
-void reRigNotifier::BoneCountChanged( reRig *rig ){
+void reRigNotifier::ResourceChanged(reRig *rig){
 }
 
-void reRigNotifier::BoneChanged( reRig *rig, reRigBone *bone ){
+void reRigNotifier::SkyChanged(reRig *rig){
 }
 
-void reRigNotifier::BoneSelectedChanged( reRig *rig, reRigBone *bone ){
+void reRigNotifier::EnvObjectChanged(reRig *rig){
 }
 
-void reRigNotifier::AllBonesDeselected( reRig *rig ){
-}
-
-void reRigNotifier::ActiveBoneChanged( reRig *rig ){
+void reRigNotifier::ViewChanged(reRig *rig){
 }
 
 
 
-void reRigNotifier::ShapeCountChanged( reRig *rig ){
+void reRigNotifier::CameraChanged(reRig *rig){
 }
 
-void reRigNotifier::ShapeChanged( reRig *rig, reRigShape *shape ){
-}
-
-void reRigNotifier::ShapeSelectedChanged( reRig *rig, reRigShape *shape ){
-}
-
-void reRigNotifier::AllShapesDeselected( reRig *rig ){
-}
-
-void reRigNotifier::ActiveShapeChanged( reRig *rig ){
+void reRigNotifier::CameraViewChanged(reRig *rig){
 }
 
 
 
-void reRigNotifier::ConstraintCountChanged( reRig *rig ){
+void reRigNotifier::BoneCountChanged(reRig *rig){
 }
 
-void reRigNotifier::ConstraintChanged( reRig *rig, reRigConstraint *constraint ){
+void reRigNotifier::BoneChanged(reRig *rig, reRigBone *bone){
 }
 
-void reRigNotifier::ConstraintDofChanged( reRig *rig, reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof ){
+void reRigNotifier::BoneSelectedChanged(reRig *rig, reRigBone *bone){
 }
 
-void reRigNotifier::ConstraintSelectedChanged( reRig *rig, reRigConstraint *constraint ){
+void reRigNotifier::AllBonesDeselected(reRig *rig){
 }
 
-void reRigNotifier::AllConstraintsDeselected( reRig *rig ){
-}
-
-void reRigNotifier::ActiveConstraintChanged( reRig *rig ){
+void reRigNotifier::ActiveBoneChanged(reRig *rig){
 }
 
 
 
-void reRigNotifier::PushCountChanged( reRig *rig ){
+void reRigNotifier::ShapeCountChanged(reRig *rig){
 }
 
-void reRigNotifier::PushChanged( reRig *rig, reRigPush *push ){
+void reRigNotifier::ShapeChanged(reRig *rig, reRigShape *shape){
 }
 
-void reRigNotifier::PushSelectedChanged( reRig *rig, reRigPush *push ){
+void reRigNotifier::ShapeSelectedChanged(reRig *rig, reRigShape *shape){
 }
 
-void reRigNotifier::AllPushesDeselected( reRig *rig ){
+void reRigNotifier::AllShapesDeselected(reRig *rig){
 }
 
-void reRigNotifier::ActivePushChanged( reRig *rig ){
+void reRigNotifier::ActiveShapeChanged(reRig *rig){
+}
+
+
+
+void reRigNotifier::ConstraintCountChanged(reRig *rig){
+}
+
+void reRigNotifier::ConstraintChanged(reRig *rig, reRigConstraint *constraint){
+}
+
+void reRigNotifier::ConstraintDofChanged(reRig *rig, reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof){
+}
+
+void reRigNotifier::ConstraintSelectedChanged(reRig *rig, reRigConstraint *constraint){
+}
+
+void reRigNotifier::AllConstraintsDeselected(reRig *rig){
+}
+
+void reRigNotifier::ActiveConstraintChanged(reRig *rig){
+}
+
+
+
+void reRigNotifier::PushCountChanged(reRig *rig){
+}
+
+void reRigNotifier::PushChanged(reRig *rig, reRigPush *push){
+}
+
+void reRigNotifier::PushSelectedChanged(reRig *rig, reRigPush *push){
+}
+
+void reRigNotifier::AllPushesDeselected(reRig *rig){
+}
+
+void reRigNotifier::ActivePushChanged(reRig *rig){
 }

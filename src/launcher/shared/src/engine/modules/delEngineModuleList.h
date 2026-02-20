@@ -25,83 +25,55 @@
 #ifndef _DELENGINEMODULELIST_H_
 #define _DELENGINEMODULELIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/string/decStringList.h>
+#include "delEngineModule.h"
 
-class delEngineModule;
-
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decStringSet.h>
 
 
 /**
  * \brief Engine Module List.
  */
-class DE_DLL_EXPORT delEngineModuleList{
-private:
-	decObjectList pModules;
-	
-	
-	
+class DE_DLL_EXPORT delEngineModuleList : public decTObjectOrderedSet<delEngineModule>{
 public:
-	/** \name Constructors and Destructors */
+	using decTObjectOrderedSet<delEngineModule>::decTObjectOrderedSet;
+	
+	
+	/** \name Constructor. */
 	/*@{*/
 	/** \brief Create list. */
-	delEngineModuleList();
-	
-	/** \brief Clean up list. */
-	~delEngineModuleList();
+	delEngineModuleList(decTObjectOrderedSet<delEngineModule> &&list);
 	/*@}*/
-	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of modules. */
-	int GetCount() const;
-	
-	/** \brief Module at index. */
-	delEngineModule *GetAt( int index ) const;
-	
 	/** \brief Highest version named module or nullptr if absent. */
-	delEngineModule *GetNamed( const char *name ) const;
+	delEngineModule *GetNamed(const char *name) const;
 	
 	/** \brief Named module with version or nullptr if absent. */
-	delEngineModule *GetNamed( const char *name, const char *version ) const;
+	delEngineModule *GetNamed(const char *name, const char *version) const;
 	
-	/** \brief Named module with at least version or nullptr if absent. */
-	delEngineModule *GetNamedAtLeast( const char *name, const char *version ) const;
+	/** Named module with at least version or nullptr if absent. */
+	delEngineModule *GetNamedAtLeast(const char *name, const char *version) const;
 	
-	/** \brief List of all versions of named module in undefined order. */
-	void GetNamed( decObjectList &list, const char *name ) const;
+	/** List of all versions of named module in undefined order. */
+	delEngineModuleList CollectNamed(const char *name) const;
 	
 	/** \brief List of all module names. */
-	void GetNames( decStringList &list ) const;
-	
-	/** \brief Module is present. */
-	bool Has( delEngineModule *module ) const;
+	decStringSet GetNames() const;
 	
 	/** \brief Named module is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Named module with version is present. */
-	bool HasNamed( const char *name, const char *version ) const;
-	
-	/** \brief Index of module or -1 if absent. */
-	int IndexOf( delEngineModule *module ) const;
+	bool HasWith(const char *name, const char *version) const;
 	
 	/** \brief Index of higtest version named module or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Index of named module with version or -1 if absent. */
-	int IndexOfNamed( const char *name, const char *version ) const;
-	
-	/** \brief Add module. */
-	void Add( delEngineModule *module );
-	
-	/** \brief Remove module. */
-	void Remove( delEngineModule *module );
-	
-	/** \brief Remove all modules. */
-	void RemoveAll();
+	int IndexOfWith(const char *name, const char *version) const;
 	/*@}*/
 };
 

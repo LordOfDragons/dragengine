@@ -25,10 +25,11 @@
 #ifndef _CEUCGESTUREREMOVE_H_
 #define _CEUCGESTUREREMOVE_H_
 
+#include "../../conversation/gesture/ceGesture.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceGesture;
 
 
 
@@ -36,27 +37,31 @@ class ceGesture;
  * \brief Undo Action Remove Gesture.
  */
 class ceUCGestureRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCGestureRemove>;
+	
+	
 private:
 	ceConversation *pConversation;
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureRemove( ceGesture *gesture );
+	ceUCGestureRemove(ceGesture *gesture);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCGestureRemove();
+	~ceUCGestureRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

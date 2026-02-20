@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load save object. */
-	igdeLoadSaveNavSpace( igdeEnvironment *environment, const char *loggingSource );
+	igdeLoadSaveNavSpace(igdeEnvironment *environment, const char *loggingSource);
 	
 	/** \brief Clean up load save object. */
 	virtual ~igdeLoadSaveNavSpace();
@@ -67,25 +67,25 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name to display in a file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in a file dialog. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern to display in a file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
 	
 	/** \brief Set default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	/** \brief Load navigation space using a file reader. */
-	virtual void Load( deNavigationSpace &navspace, decBaseFileReader &reader );
+	virtual void Load(deNavigationSpace &navspace, decBaseFileReader &reader);
 	
 	/** \brief Save navigation space using a file writer. */
-	virtual void Save( const deNavigationSpace &navspace, decBaseFileWriter &writer );
+	virtual void Save(const deNavigationSpace &navspace, decBaseFileWriter &writer);
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -36,8 +36,12 @@ class peeType;
  * \brief Undo action set type simulation type.
  */
 class peeUTypeSetSimulationType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUTypeSetSimulationType>;
+	
+	
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eSimulationTypes pOldSimType;
 	deParticleEmitterType::eSimulationTypes pNewSimType;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetSimulationType( peeType *type, deParticleEmitterType::eSimulationTypes newSimType );
+	peeUTypeSetSimulationType(peeType *type, deParticleEmitterType::eSimulationTypes newSimType);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~peeUTypeSetSimulationType();
+	~peeUTypeSetSimulationType() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

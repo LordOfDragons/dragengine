@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCTrigger::ceWPTTIMCTrigger( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionTrigger *condition ) :
-ceWPTTIMCondition( windowMain, etConditionTrigger, conversation, action, condition )
+ceWPTTIMCTrigger::ceWPTTIMCTrigger(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionTrigger *condition) :
+ceWPTTIMCondition(windowMain, etConditionTrigger, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionVariable() );
+	SetIcon(windowMain.GetIconConditionTrigger());
 	Update();
 }
 
@@ -57,22 +57,22 @@ ceWPTTIMCTrigger::~ceWPTTIMCTrigger(){
 // Management
 ///////////////
 
-const char *ceWPTTIMCTrigger::GetTestModeText( ceCConditionTrigger::eTestModes testMode ){
-	switch( testMode ){
+decString ceWPTTIMCTrigger::GetTestModeText(ceCConditionTrigger::eTestModes testMode) const{
+	switch(testMode){
 	case ceCConditionTrigger::etmFired:
-		return "fired";
+		return GetWindowMain().Translate("Conversation.TriggerTestMode.Fired").ToUTF8();
 		
 	case ceCConditionTrigger::etmNotFired:
-		return "not fired";
+		return GetWindowMain().Translate("Conversation.TriggerTestMode.NotFired").ToUTF8();
 		
 	case ceCConditionTrigger::etmEverFired:
-		return "ever fired";
+		return GetWindowMain().Translate("Conversation.TriggerTestMode.EverFired").ToUTF8();
 		
 	case ceCConditionTrigger::etmNeverFired:
-		return "never fired";
+		return GetWindowMain().Translate("Conversation.TriggerTestMode.NeverFired").ToUTF8();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -80,8 +80,8 @@ void ceWPTTIMCTrigger::Update(){
 	const ceCConditionTrigger &condition = *GetConditionTrigger();
 	decString text;
 	
-	text.Format( "Trigger '%s' %s", condition.GetTrigger().GetString(),
-		GetTestModeText( condition.GetTestMode() ) );
+	text.FormatSafe( GetWindowMain().Translate( "Conversation.Format.TriggerTest" ).ToUTF8(),
+		condition.GetTrigger(), GetTestModeText(condition.GetTestMode()) );
 	
-	SetText( text );
+	SetText(text);
 }

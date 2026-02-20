@@ -39,21 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleAnimMoveTime::aeUSetRuleAnimMoveTime( aeRuleAnimation *rule, float newTime ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleAnimMoveTime::aeUSetRuleAnimMoveTime(aeRuleAnimation *rule, float newTime){
+	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldTime = rule->GetMoveTime();
 		pNewTime = newTime;
 		
-		SetShortInfo( "Set animation rule move time" );
+		SetShortInfo("@Animator.Undo.SetRuleAnimationMoveTime");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +67,11 @@ aeUSetRuleAnimMoveTime::~aeUSetRuleAnimMoveTime(){
 ///////////////
 
 void aeUSetRuleAnimMoveTime::Undo(){
-	pRule->SetMoveTime( pOldTime );
+	pRule->SetMoveTime(pOldTime);
 }
 
 void aeUSetRuleAnimMoveTime::Redo(){
-	pRule->SetMoveTime( pNewTime );
+	pRule->SetMoveTime(pNewTime);
 }
 
 
@@ -82,5 +80,4 @@ void aeUSetRuleAnimMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAnimMoveTime::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
 }

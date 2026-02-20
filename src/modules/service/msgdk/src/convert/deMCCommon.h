@@ -40,22 +40,22 @@ private:
 	
 public:
 	/** Convert uint32. */
-	static uint32_t UInt32( const deServiceObject &so );
-	static deServiceObject::Ref UInt32( uint32_t value );
+	static uint32_t UInt32(const deServiceObject &so);
+	static deServiceObject::Ref UInt32(uint32_t value);
 	
-	static uint32_t UInt32( const decString &string );
-	static decString UInt32ToString( uint32_t value );
+	static uint32_t UInt32(const decString &string);
+	static decString UInt32ToString(uint32_t value);
 	
 	/** Convert uint64. */
-	static uint64_t UInt64( const deServiceObject &so );
-	static deServiceObject::Ref UInt64( uint64_t value );
+	static uint64_t UInt64(const deServiceObject &so);
+	static deServiceObject::Ref UInt64(uint64_t value);
 	
-	static uint64_t UInt64( const decString &string );
-	static decString UInt64ToString( uint64_t value );
+	static uint64_t UInt64(const decString &string);
+	static decString UInt64ToString(uint64_t value);
 	
 	/** Convert string list. */
-	static decStringList StringList( const deServiceObject &so );
-	static deServiceObject::Ref StringList( const decStringList &list );
+	static decStringList StringList(const deServiceObject &so);
+	static deServiceObject::Ref StringList(const decStringList &list);
 };
 
 #endif

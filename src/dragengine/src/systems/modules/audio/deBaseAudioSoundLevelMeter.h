@@ -72,7 +72,7 @@ public:
 	virtual int GetAudibleSpeakerCount() = 0;
 	
 	/** \brief Audible speaker at index. */
-	virtual const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt( int index ) = 0;
+	virtual const deSoundLevelMeter::cAudibleSpeaker &GetAudibleSpeakerAt(int index) = 0;
 	/*@}*/
 };
 

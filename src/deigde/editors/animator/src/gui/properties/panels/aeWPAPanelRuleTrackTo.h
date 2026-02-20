@@ -32,12 +32,16 @@
  * Track To Rule Panel.
  */
 class aeWPAPanelRuleTrackTo : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleTrackTo>;
+	
+	
 private:
-	igdeComboBoxFilterReference pCBTrackBone;
-	igdeComboBoxReference pCBTrackAxis;
-	igdeComboBoxReference pCBUpAxis;
-	igdeComboBoxReference pCBUpTarget;
-	igdeComboBoxReference pCBLockedAxis;
+	igdeComboBoxFilter::Ref pCBTrackBone;
+	igdeComboBox::Ref pCBTrackAxis;
+	igdeComboBox::Ref pCBUpAxis;
+	igdeComboBox::Ref pCBUpTarget;
+	igdeComboBox::Ref pCBLockedAxis;
 	
 	
 	
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleTrackTo( aeWPRule &wpRule );
+	aeWPAPanelRuleTrackTo(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleTrackTo();
+	~aeWPAPanelRuleTrackTo() override;
 	/*@}*/
 	
 	
@@ -58,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

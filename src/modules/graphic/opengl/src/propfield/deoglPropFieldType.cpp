@@ -53,19 +53,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPropFieldType::deoglPropFieldType( deoglPropField &propField, const dePropFieldType &type ) :
-pPropField( propField ),
-pType( type ),
-pRType( NULL ),
+deoglPropFieldType::deoglPropFieldType(deoglPropField &propField, const dePropFieldType &type) :
+pPropField(propField),
+pType(type),
  
-pDirtyType( true ),
-pDirtyInstances( true ),
-pDirtyBendStates( true )
+pDirtyType(true),
+pDirtyInstances(true),
+pDirtyBendStates(true)
 {
 	try{
-		pRType = new deoglRPropFieldType( *propField.GetRPropField() );
+		pRType = deoglRPropFieldType::Ref::New(*propField.GetRPropField());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -81,32 +80,32 @@ deoglPropFieldType::~deoglPropFieldType(){
 ///////////////
 
 void deoglPropFieldType::SyncToRender(){
-	if( pDirtyType ){
-		deoglRModel *model = NULL;
-		deoglRSkin *skin = NULL;
+	if(pDirtyType){
+		deoglRModel *model = nullptr;
+		deoglRSkin *skin = nullptr;
 		
-		if( pType.GetModel() ){
-			model = ( ( deoglModel* )pType.GetModel()->GetPeerGraphic() )->GetRModel();
+		if(pType.GetModel()){
+			model = ((deoglModel*)pType.GetModel()->GetPeerGraphic())->GetRModel();
 		}
-		if( pType.GetSkin() ){
-			skin = ( ( deoglSkin* )pType.GetSkin()->GetPeerGraphic() )->GetRSkin();
+		if(pType.GetSkin()){
+			skin = ((deoglSkin*)pType.GetSkin()->GetPeerGraphic())->GetRSkin();
 		}
 		
-		pRType->SetModel( model );
-		pRType->SetSkin( skin );
+		pRType->SetModel(model);
+		pRType->SetSkin(skin);
 		
 		pDirtyType = false;
 		pDirtyInstances = true; // if model or skin changes instances change too
 	}
 	
-	if( pDirtyInstances ){
-		pRType->RebuildInstances( pType );
+	if(pDirtyInstances){
+		pRType->RebuildInstances(pType);
 		pDirtyInstances = false;
 		pDirtyBendStates = true;
 	}
 	
-	if( pDirtyBendStates ){
-		pRType->PrepareBendStateData( pType );
+	if(pDirtyBendStates){
+		pRType->PrepareBendStateData(pType);
 		pDirtyBendStates = false;
 	}
 }
@@ -138,8 +137,4 @@ void deoglPropFieldType::InstanceCountChanged(){
 //////////////////////
 
 void deoglPropFieldType::pCleanUp(){
-	if( pRType ){
-		pRType->FreeReference();
-		pRType = NULL;
-	}
 }

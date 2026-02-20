@@ -35,6 +35,9 @@ class meWPSObjectShape;
  * \brief Object Shape Panel Listener.
  */
 class meWPSObjectShapeListener : public meWorldNotifier{
+public:
+	using Ref = deTObjectReference<meWPSObjectShapeListener>;
+	
 private:
 	meWPSObjectShape &pPanel;
 	
@@ -44,10 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSObjectShapeListener( meWPSObjectShape &panel );
+	meWPSObjectShapeListener(meWPSObjectShape &panel);
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~meWPSObjectShapeListener();
+	~meWPSObjectShapeListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -55,25 +61,25 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object selection changed. */
-	virtual void ObjectSelectionChanged( meWorld *world );
+	void ObjectSelectionChanged(meWorld *world) override;
 	
 	/** \brief Object class changed. */
-	virtual void ObjectClassChanged( meWorld *world, meObject *object );
+	void ObjectClassChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object geometry changed. */
-	virtual void ObjectGeometryChanged( meWorld *world, meObject *object );
+	void ObjectGeometryChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object properties changed. */
-	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
+	void ObjectPropertiesChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object active property changed. */
-	virtual void ObjectActivePropertyChanged( meWorld *world, meObject *object );
+	void ObjectActivePropertyChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object shape list changed. */
-	virtual void ObjectShapeListChanged( meWorld *world );
+	void ObjectShapeListChanged(meWorld *world) override;
 	
 	/** \brief Object shape selection changed. */
-	virtual void ObjectShapeSelectionChanged( meWorld *world );
+	void ObjectShapeSelectionChanged(meWorld *world) override;
 	/*@}*/
 };
 

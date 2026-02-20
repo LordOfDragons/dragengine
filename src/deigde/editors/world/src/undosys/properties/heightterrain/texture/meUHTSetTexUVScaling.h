@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/meWorld.h"
+#include "../../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 
@@ -44,10 +44,14 @@ class meHeightTerrainTexture;
  * Undo action to set the uv scaling of a height image texture.
  */
 class meUHTSetTexUVScaling : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTSetTexUVScaling>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
@@ -56,20 +60,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVScaling( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling );
+	meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTSetTexUVScaling();
+
+protected:
+	~meUHTSetTexUVScaling() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

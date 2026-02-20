@@ -25,55 +25,59 @@
 #ifndef _AEULINKREMOVE_H_
 #define _AEULINKREMOVE_H_
 
-#include <deigde/undo/igdeUndo.h>
-
 #include "../../animator/aeAnimator.h"
+#include "../../animator/controller/aeControllerTarget.h"
 #include "../../animator/link/aeLink.h"
 #include "../../animator/rule/aeRule.h"
 
-class aeControllerTarget;
+#include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
  * Undo Link Remove.
  */
 class aeULinkRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeULinkRemove>;
+	
+	
 private:
 	struct sTarget{
 		aeRule::Ref rule;
-		aeControllerTarget *target;
+		aeControllerTarget::Ref target;
+		
+		sTarget() = default;
+		sTarget(aeRule *r, aeControllerTarget *t) : rule(r), target(t){}
 	};
 	
-	aeAnimator::Ref pAnimator;
+	aeAnimator *pAnimator;
 	aeLink::Ref pLink;
-	
-	sTarget *pTargets;
-	int pTargetCount;
+	decTList<sTarget> pTargets;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkRemove( aeLink *link );
+	aeULinkRemove(aeLink *link);
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkRemove();
+	~aeULinkRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	void pAddTargets( int targetCount, aeLink *link, aeRule *rule );
-	void pAddTarget( int targetCount, aeRule *rule, aeControllerTarget *target );
+	void pAddTargets(int targetCount, aeLink *link, aeRule *rule);
+	void pAddTarget(int targetCount, aeRule *rule, aeControllerTarget *target);
 };
 
 #endif

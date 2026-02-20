@@ -32,24 +32,40 @@
  * \brief IGDE UI Toggle button with text and icon.
  */
 class DE_DLL_EXPORT igdeToggleButton : public igdeButton{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeToggleButton>;
+	
+	
+	class cNativeToggleButton : public cNativeButton{
+	public:
+		virtual ~cNativeToggleButton() override = default;
+		virtual void UpdateToggled() = 0;
+	};
+	
+	
 private:
 	bool pToggled;
 	
+	
+protected:
+	cNativeToggleButton *pNativeToggleButton;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create button. */
-	igdeToggleButton( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		eButtonStyle = ebsNormal );
+	igdeToggleButton(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeToggleButton( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, eButtonStyle = ebsNormal );
+	igdeToggleButton(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeToggleButton( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
+	igdeToggleButton(igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal);
 	
 	
 	
@@ -60,7 +76,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeToggleButton();
+	~igdeToggleButton() override;
 	/*@}*/
 	
 	
@@ -72,7 +88,7 @@ public:
 	inline bool GetToggled() const{ return pToggled; }
 	
 	/** \brief Set if button is toggled. */
-	void SetToggled( bool toogled );
+	void SetToggled(bool toogled);
 	
 	
 	
@@ -81,10 +97,10 @@ public:
 	 * 
 	 * Called if button is clicked by the user. Default implementation toggled button.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -98,34 +114,24 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
-	/** \brief Style changed. */
-	virtual void OnStyleChanged();
-	
-	/** \brief Text changed. */
-	virtual void OnTextChanged();
-	
-	/** \brief Description changed. */
-	virtual void OnDescriptionChanged();
-	
-	/** \brief Icon changed. */
-	virtual void OnIconChanged();
-	
-	/** \brief Enabled changed. */
-	virtual void OnEnabledChanged();
-	
 	/** \brief Default changed. */
-	virtual void OnDefaultChanged();
+	void OnDefaultChanged() override;
 	
 	/** \brief Toggled changed. */
 	virtual void OnToggledChanged();

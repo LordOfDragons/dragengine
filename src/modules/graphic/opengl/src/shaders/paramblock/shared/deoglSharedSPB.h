@@ -25,11 +25,10 @@
 #ifndef _DEOGLSHAREDSPB_H_
 #define _DEOGLSHAREDSPB_H_
 
+#include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
 
-class deoglSharedSPBElement;
-class deoglShaderParameterBlock;
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -48,14 +47,12 @@ class deoglShaderParameterBlock;
  */
 class deoglSharedSPB : public deObject{
 public:
-	typedef deTObjectReference<deoglSharedSPB> Ref;
-	
+	using Ref = deTObjectReference<deoglSharedSPB>;
 	
 	
 private:
 	const deoglShaderParameterBlock::Ref pParameterBlock;
-	deoglSharedSPBElement **pElements;
-	int pSize;
+	decTList<deoglSharedSPBElement*> pElements;
 	int pCount;
 	
 	
@@ -68,11 +65,11 @@ public:
 	 * 
 	 * \warning Do not modify the parameter block after creating the shared object.
 	 */
-	deoglSharedSPB( const deoglShaderParameterBlock::Ref &parameterBlock );
+	deoglSharedSPB(const deoglShaderParameterBlock::Ref &parameterBlock);
 	
 protected:
 	/** Clean up shared shader parameter block. */
-	virtual ~deoglSharedSPB();
+	~deoglSharedSPB() override = default;
 	/*@}*/
 	
 	
@@ -84,13 +81,13 @@ public:
 	inline const deoglShaderParameterBlock::Ref &GetParameterBlock() const{ return pParameterBlock; }
 	
 	/** Maximum number of elements. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{ return pElements.GetCount(); }
 	
 	/** Number of stored elements. */
 	inline int GetElementCount() const{ return pCount; }
 	
 	/** Element at index or \em NULL of not assigned. */
-	deoglSharedSPBElement *GetElementAt( int index ) const;
+	deoglSharedSPBElement *GetElementAt(int index) const;
 	
 	/**
 	 * Obtain element.
@@ -100,14 +97,14 @@ public:
 	 * 
 	 * \returns element or \em NULL if the shared parameter block is full.
 	 */
-	deoglSharedSPBElement *AddElement();
+	deoglSharedSPBElement::Ref AddElement();
 	
 	/**
 	 * Remove element.
 	 * 
 	 * \warning For use by deoglSharedSPBElement only.
 	 */
-	void RemoveElement( int index );
+	void RemoveElement(int index);
 	/*@}*/
 	
 private:

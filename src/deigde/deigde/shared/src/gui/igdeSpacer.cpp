@@ -22,14 +22,9 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeSpacer.h"
 #include "native/toolkit.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,12 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeSpacer::igdeSpacer( igdeEnvironment &environment, const decPoint &size ) :
-igdeWidget( environment ),
-pSize( size )
+igdeSpacer::igdeSpacer(igdeEnvironment &environment, const decPoint &size) :
+igdeWidget(environment),
+pSize(size),
+pNativeSpacer(nullptr)
 {
-	if( ! ( size >= decPoint() ) ){
-		DETHROW( deeInvalidParam );
+	if(!(size >= decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -61,13 +57,13 @@ igdeSpacer::~igdeSpacer(){
 // Management
 ///////////////
 
-void igdeSpacer::SetSize( const decPoint &size ){
-	if( size == pSize ){
+void igdeSpacer::SetSize(const decPoint &size){
+	if(size == pSize){
 		return;
 	}
 	
-	if( ! ( size >= decPoint() ) ){
-		DETHROW( deeInvalidParam );
+	if(!(size >= decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSize = size;
@@ -77,28 +73,33 @@ void igdeSpacer::SetSize( const decPoint &size ){
 
 
 void igdeSpacer::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeSpacer * const native = igdeNativeSpacer::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeSpacer * const native = igdeNativeSpacer::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeSpacer = native;
 	native->PostCreateNativeWidget();
 }
 
 void igdeSpacer::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeSpacer* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeSpacer*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
+void igdeSpacer::DropNativeWidget(){
+	pNativeSpacer = nullptr;
+	igdeWidget::DropNativeWidget();
+}
 
 
 void igdeSpacer::OnSizeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpacer* )GetNativeWidget() )->SetSize( pSize.x, pSize.y );
+	if(pNativeSpacer){
+		pNativeSpacer->SetSize(pSize.x, pSize.y);
 	}
 }

@@ -38,7 +38,7 @@ public:
 	
 	#ifdef OS_W32
 	/** \brief Run process from main(). */
-	int RunMain( int argc, char **args );
+	int RunMain(int argc, char **args);
 	#endif
 };
 

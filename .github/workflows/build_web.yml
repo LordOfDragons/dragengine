@@ -20,6 +20,11 @@ on:
         required: false
         default: true
         type: boolean
+      sconscache:
+        required: false
+        default: true
+        type: boolean
+  
   workflow_dispatch:
     inputs:
       branch:
@@ -43,6 +48,10 @@ on:
         type: string
         default: 'archives-web'
       lfscache:
+        required: false
+        default: true
+        type: boolean
+      sconscache:
         required: false
         default: true
         type: boolean
@@ -116,12 +125,29 @@ jobs:
           version: ${{ env.EM_VERSION }}
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
       
+      - name: Cache external
+        uses: actions/cache@v4
+        id: external-cache
+        with:
+          path: ./extern
+          key: external-cache-web-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          restore-keys: external-cache-web-
+      
+      # - name: Cache SCons
+      #   uses: actions/cache@v4
+      #   id: scons-cache
+      #   if: ${{ inputs.sconscache }}
+      #   with:
+      #     path: .scons_cache
+      #     key: ${{ runner.os }}-scons-cache-web-${{ hashFiles('./SConstruct', './*.py', './site_scons/**', '**/SConscript') }}
+      #     restore-keys: ${{ runner.os }}-scons-cache-web-
+      
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         #emscons scons -j 1 lib_openxr lib_libjpeg lib_libwebm
         run: |
-          emscons scons -j 1 lib_libjpeg lib_libwebm
+          emscons scons --config=force -j 1 lib_libjpeg lib_libwebm
           emscons scons -j 14 archive launcher_web_build
           cd src/launcher/web/build
           7z a deweblauncher-${{ inputs.releaseVersion }}.7z delauncher-web.{js,wasm,data}
@@ -139,3 +165,10 @@ jobs:
             archive/build/dragengine-dev-${{ inputs.releaseVersion }}-web.tar.bz2
             src/launcher/web/build/deweblauncher-${{ inputs.releaseVersion }}.7z
           if-no-files-found: error
+      
+      # - name: Prune Cache
+      #   if: success()
+      #   run: |
+      #     if [ -d ".scons_cache" ]; then
+      #       find .scons_cache -type f -atime +7 -delete
+      #     fi

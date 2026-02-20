@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontImage;
+#include "../../font/image/feFontImage.h"
 
 
 
@@ -35,8 +35,12 @@ class feFontImage;
  * \brief Font Set Image Path Undo Action.
  */
 class feUFontSetImagePath : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUFontSetImagePath>;
+	
+	
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	decString pOldPath;
 	decString pNewPath;
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontSetImagePath( feFontImage *image, const char *newPath );
+	feUFontSetImagePath(feFontImage *image, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUFontSetImagePath();
+	~feUFontSetImagePath() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

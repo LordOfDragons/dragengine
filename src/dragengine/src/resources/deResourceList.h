@@ -26,6 +26,7 @@
 #define _DERESOURCELIST_H_
 
 #include "../dragengine_export.h"
+#include "../common/collection/decTLinkedList.h"
 
 class deResource;
 
@@ -46,9 +47,7 @@ class deResource;
  */
 class DE_DLL_EXPORT deResourceList{
 private:
-	deResource *pRoot;
-	deResource *pTail;
-	int pCount;
+	decTLinkedList<deResource> pResources;
 	
 	
 	
@@ -66,35 +65,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Resources. */
+	inline const decTLinkedList<deResource> &GetResources() const{ return pResources; }
+	
 	/** \brief Number of resources. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{ return pResources.GetCount(); }
 	
 	/** \brief Root resource. */
-	inline deResource *GetRoot() const{ return pRoot; }
+	inline deResource *GetRoot() const{ return pResources.GetRootOwner(); }
 	
 	/** \brief Tail resource. */
-	inline deResource *GetTail() const{ return pTail; }
+	inline deResource *GetTail() const{ return pResources.GetTailOwner(); }
 	
 	/** \brief Resource is present. */
-	bool Has( deResource *resource ) const;
+	bool Has(deResource *resource) const;
 	
 	/** \brief Add resource. */
-	void Add( deResource *resource );
+	void Add(deResource *resource);
 	
 	/** \brief Remove resource. */
-	void Remove( deResource *resource );
+	void Remove(deResource *resource);
 	
 	/** \brief Remove resource if present. */
-	void RemoveIfPresent( deResource *resource );
+	void RemoveIfPresent(deResource *resource);
 	
 	/** \brief Remove all resources. */
 	void RemoveAll();
 	/*@}*/
-	
-	
-	
-private:
-	void pBareRemove( deResource *resource );
 };
 
 #endif

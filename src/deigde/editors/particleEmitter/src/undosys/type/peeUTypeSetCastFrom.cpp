@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetCastFrom::peeUTypeSetCastFrom( peeType *type, deParticleEmitterType::eCastFrom newCastFrom ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::eCastFrom newCastFrom){
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pType = NULL;
+	pType = nullptr;
 	
-	SetShortInfo( "Set Type Cast From" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetCastFrom");
 	
 	pOldCastFrom = type->GetCastFrom();
 	pNewCastFrom = newCastFrom;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetCastFrom::~peeUTypeSetCastFrom(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ peeUTypeSetCastFrom::~peeUTypeSetCastFrom(){
 ///////////////
 
 void peeUTypeSetCastFrom::Undo(){
-	pType->SetCastFrom( pOldCastFrom );
+	pType->SetCastFrom(pOldCastFrom);
 }
 
 void peeUTypeSetCastFrom::Redo(){
-	pType->SetCastFrom( pNewCastFrom );
+	pType->SetCastFrom(pNewCastFrom);
 }

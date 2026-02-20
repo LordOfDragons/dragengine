@@ -36,24 +36,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetVertexPositionSetMaximum::aeULinkSetVertexPositionSetMaximum( aeLink *link, float newValue ){
-	DEASSERT_NOTNULL( link )
+aeULinkSetVertexPositionSetMaximum::aeULinkSetVertexPositionSetMaximum(aeLink *link, float newValue){
+	DEASSERT_NOTNULL(link)
 	
 	pLink = nullptr;
 	
-	SetShortInfo( "Link set vertex position set maximum" );
+	SetShortInfo("@Animator.Undo.LinkSetVertexPositionSetMaximum");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetVertexPositionSetMaximum();
 	pNewValue = newValue;
 }
 
 aeULinkSetVertexPositionSetMaximum::~aeULinkSetVertexPositionSetMaximum(){
-	if( pLink ){
-		pLink->FreeReference();
-	}
 }
 
 
@@ -62,9 +57,9 @@ aeULinkSetVertexPositionSetMaximum::~aeULinkSetVertexPositionSetMaximum(){
 ///////////////
 
 void aeULinkSetVertexPositionSetMaximum::Undo(){
-	pLink->SetVertexPositionSetMaximum( pOldValue );
+	pLink->SetVertexPositionSetMaximum(pOldValue);
 }
 
 void aeULinkSetVertexPositionSetMaximum::Redo(){
-	pLink->SetVertexPositionSetMaximum( pNewValue );
+	pLink->SetVertexPositionSetMaximum(pNewValue);
 }

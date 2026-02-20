@@ -25,10 +25,12 @@
 #ifndef _DEOALDELAYEDOPERATIONS_H_
 #define _DEOALDELAYEDOPERATIONS_H_
 
+#include "deoalDelayedDeletion.h"
+
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 class deoalAudioThread;
-class deoalDelayedDeletion;
 
 
 
@@ -41,9 +43,7 @@ private:
 	
 	deMutex pMutexFree;
 	bool pHasFreeOperations;
-	deoalDelayedDeletion *pRootDeletion;
-	deoalDelayedDeletion *pTailDeletion;
-	int pDeletionCount;
+	decTUniqueLinkedList<deoalDelayedDeletion> pDeletions;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create delayed operations object. */
-	deoalATDelayed( deoalAudioThread &audioThread );
+	deoalATDelayed(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up delayed operations object. */
 	~deoalATDelayed();
@@ -76,12 +76,12 @@ public:
 	 *                  a maximum number of objects is deleted to avoid hickups if a large
 	 *                  amount of delete task piled up.
 	 */
-	void ProcessFreeOperations( bool deleteAll );
+	void ProcessFreeOperations(bool deleteAll);
 	
 	
 	
 	/** \brief Add deletion (thread-safe). */
-	void AddDeletion( deoalDelayedDeletion *deletion );
+	void AddDeletion(deoalDelayedDeletion::Ref &&deletion);
 	/*@}*/
 };
 

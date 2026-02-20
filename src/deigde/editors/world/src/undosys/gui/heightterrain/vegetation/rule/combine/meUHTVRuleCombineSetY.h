@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleCombine;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleCombine.h"
 
 
 
@@ -41,9 +41,15 @@ class meHTVRuleCombine;
  * Undo action to set the y component of a height terrain vegetation rule combine.
  */
 class meUHTVRuleCombineSetY : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleCombineSetY>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCombine *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCombine::Ref pRule;
 	
 	float pOldY;
 	float pNewY;
@@ -52,17 +58,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCombineSetY( meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float ny );
+	meUHTVRuleCombineSetY(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float ny);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleCombineSetY();
+
+protected:
+	~meUHTVRuleCombineSetY() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

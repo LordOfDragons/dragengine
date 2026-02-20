@@ -36,18 +36,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSRStepCount( deGraphicOpenGl &ogl );
+	deoglPSSRStepCount(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
-	virtual ~deoglPSSRStepCount();
+	~deoglPSSRStepCount() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

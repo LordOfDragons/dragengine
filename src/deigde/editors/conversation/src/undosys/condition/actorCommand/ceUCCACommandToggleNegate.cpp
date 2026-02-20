@@ -42,38 +42,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCACommandToggleNegate::ceUCCACommandToggleNegate( ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorCommand *actorCommand ){
-	if( ! topic || ! action || ! actorCommand ){
-		DETHROW( deeInvalidParam );
+ceUCCACommandToggleNegate::ceUCCACommandToggleNegate(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorCommand *actorCommand){
+	if(!topic || !action || !actorCommand){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pActorCommand = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pActorCommand = nullptr;
 	
-	SetShortInfo( "Condition actor command negate" );
+	SetShortInfo("@Conversation.Undo.ConditionActorCommandNegate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pActorCommand = actorCommand;
-	actorCommand->AddReference();
 }
 
 ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
-	if( pActorCommand ){
-		pActorCommand->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -82,11 +68,11 @@ ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
 ///////////////
 
 void ceUCCACommandToggleNegate::Undo(){
-	pActorCommand->SetNegate( ! pActorCommand->GetNegate() );
-	pTopic->NotifyConditionChanged( pAction, pActorCommand );
+	pActorCommand->SetNegate(!pActorCommand->GetNegate());
+	pTopic->NotifyConditionChanged(pAction, pActorCommand);
 }
 
 void ceUCCACommandToggleNegate::Redo(){
-	pActorCommand->SetNegate( ! pActorCommand->GetNegate() );
-	pTopic->NotifyConditionChanged( pAction, pActorCommand );
+	pActorCommand->SetNegate(!pActorCommand->GetNegate());
+	pTopic->NotifyConditionChanged(pAction, pActorCommand);
 }

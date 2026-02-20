@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deDebugDrawer.h"
 #include "deDebugDrawerShape.h"
 #include "deDebugDrawerManager.h"
@@ -40,17 +36,17 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deDebugDrawer::deDebugDrawer( deDebugDrawerManager *manager ) : deResource( manager ){
-	pScale.Set( 1.0f, 1.0f, 1.0f );
+deDebugDrawer::deDebugDrawer(deDebugDrawerManager *manager) : deResource(manager),
+pLLWorld(this)
+{
+	pScale.Set(1.0f, 1.0f, 1.0f);
 	
 	pVisible = true;
 	pXRay = false;
 	
-	pPeerGraphic = NULL;
+	pPeerGraphic = nullptr;
 	
-	pParentWorld = NULL;
-	pLLWorldPrev = NULL;
-	pLLWorldNext = NULL;
+	pParentWorld = nullptr;
 }
 
 deDebugDrawer::~deDebugDrawer(){
@@ -62,28 +58,28 @@ deDebugDrawer::~deDebugDrawer(){
 // Management
 ///////////////
 
-void deDebugDrawer::SetPosition( const decDVector &position ){
-	if( ! pPosition.IsEqualTo( position ) ){
+void deDebugDrawer::SetPosition(const decDVector &position){
+	if(!pPosition.IsEqualTo(position)){
 		pPosition = position;
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->PositionChanged();
 		}
 	}
 }
 
-void deDebugDrawer::SetOrientation( const decQuaternion &orientation ){
-	if( ! pOrientation.IsEqualTo( orientation ) ){
+void deDebugDrawer::SetOrientation(const decQuaternion &orientation){
+	if(!pOrientation.IsEqualTo(orientation)){
 		pOrientation = orientation;
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->OrientationChanged();
 		}
 	}
 }
 
-void deDebugDrawer::SetScale( const decVector &scale ){
-	if( ! pScale.IsEqualTo( scale ) ){
+void deDebugDrawer::SetScale(const decVector &scale){
+	if(!pScale.IsEqualTo(scale)){
 		pScale = scale;
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->ScalingChanged();
 		}
 	}
@@ -91,19 +87,19 @@ void deDebugDrawer::SetScale( const decVector &scale ){
 
 
 
-void deDebugDrawer::SetVisible( bool visible ){
-	if( pVisible != visible ){
+void deDebugDrawer::SetVisible(bool visible){
+	if(pVisible != visible){
 		pVisible = visible;
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->VisibleChanged();
 		}
 	}
 }
 
-void deDebugDrawer::SetXRay( bool xray ){
-	if( pXRay != xray ){
+void deDebugDrawer::SetXRay(bool xray){
+	if(pXRay != xray){
 		pXRay = xray;
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->XRayChanged();
 		}
 	}
@@ -114,77 +110,52 @@ void deDebugDrawer::SetXRay( bool xray ){
 // Shape Management
 //////////////////////
 
-int deDebugDrawer::GetShapeCount() const{
-	return pShapes.GetCount();
-}
-
-deDebugDrawerShape *deDebugDrawer::GetShapeAt( int index ) const{
-	return ( deDebugDrawerShape* )pShapes.GetAt( index );
-}
-
-int deDebugDrawer::IndexOfShape( deDebugDrawerShape *shape ) const{
-	return pShapes.IndexOf( shape );
-}
-
-bool deDebugDrawer::HasShape( deDebugDrawerShape *shape ) const{
-	return pShapes.Has( shape );
-}
-
-void deDebugDrawer::AddShape( deDebugDrawerShape *shape ){
-	if( ! shape || HasShape( shape ) ){
-		DETHROW( deeInvalidParam );
-	}
-	pShapes.Add( shape );
+void deDebugDrawer::AddShape(deDebugDrawerShape::Ref &&shape){
+	DEASSERT_NOTNULL(shape)
+	
+	pShapes.Add(std::move(shape));
 	NotifyShapeLayoutChanged();
 }
 
-void deDebugDrawer::RemoveShape( deDebugDrawerShape *shape ){
-	RemoveShapeFrom( IndexOfShape( shape ) );
+void deDebugDrawer::RemoveShape(deDebugDrawerShape *shape){
+	pShapes.Remove(shape);
+	NotifyShapeLayoutChanged();
 }
 
-void deDebugDrawer::RemoveShapeFrom( int index ){
-	deDebugDrawerShape * const shape = GetShapeAt( index );
-	pShapes.RemoveFrom( index );
-	delete shape;
+void deDebugDrawer::RemoveShapeFrom(int index){
+	pShapes.RemoveFrom(index);
 	NotifyShapeLayoutChanged();
 }
 
 void deDebugDrawer::RemoveAllShapes(){
-	if( pShapes.GetCount() == 0 ){
+	if(pShapes.IsEmpty()){
 		return;
 	}
 	
-	const int count = pShapes.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		delete ( deDebugDrawerShape* )pShapes.GetAt( i );
-	}
 	pShapes.RemoveAll();
-	
 	NotifyShapeLayoutChanged();
 }
 
 void deDebugDrawer::NotifyShapeColorChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ShapeColorChanged();
 	}
 }
 
 void deDebugDrawer::NotifyShapeGeometryChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ShapeGeometryChanged();
 	}
 }
 
 void deDebugDrawer::NotifyShapeContentChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ShapeContentChanged();
 	}
 }
 
 void deDebugDrawer::NotifyShapeLayoutChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ShapeLayoutChanged();
 	}
 }
@@ -194,9 +165,9 @@ void deDebugDrawer::NotifyShapeLayoutChanged(){
 // System Peers
 /////////////////
 
-void deDebugDrawer::SetPeerGraphic( deBaseGraphicDebugDrawer *peer ){
-	if( peer != pPeerGraphic ){
-		if( pPeerGraphic ){
+void deDebugDrawer::SetPeerGraphic(deBaseGraphicDebugDrawer *peer){
+	if(peer != pPeerGraphic){
+		if(pPeerGraphic){
 			delete pPeerGraphic;
 		}
 		pPeerGraphic = peer;
@@ -208,16 +179,8 @@ void deDebugDrawer::SetPeerGraphic( deBaseGraphicDebugDrawer *peer ){
 // Linked List
 ////////////////
 
-void deDebugDrawer::SetParentWorld( deWorld *world ){
+void deDebugDrawer::SetParentWorld(deWorld *world){
 	pParentWorld = world;
-}
-
-void deDebugDrawer::SetLLWorldPrev( deDebugDrawer *debugDrawer ){
-	pLLWorldPrev = debugDrawer;
-}
-
-void deDebugDrawer::SetLLWorldNext( deDebugDrawer *debugDrawer ){
-	pLLWorldNext = debugDrawer;
 }
 
 
@@ -226,10 +189,8 @@ void deDebugDrawer::SetLLWorldNext( deDebugDrawer *debugDrawer ){
 //////////////////////
 
 void deDebugDrawer::pCleanUp(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
-	
-	RemoveAllShapes();
 }

@@ -36,16 +36,18 @@ class sePropertyNodeImage;
  */
 class seUPropertyNodeImageSizeFromImage : public seUPropertyNodeSetSize{
 public:
+	using Ref = deTObjectReference<seUPropertyNodeImageSizeFromImage>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeImageSizeFromImage( sePropertyNodeImage *node );
+	seUPropertyNodeImageSizeFromImage(sePropertyNodeImage *node);
 	/*@}*/
 	
 	
 	
 private:
-	static decPoint3 GetSizeFromImage( const sePropertyNodeImage *node );
+	static decPoint3 GetSizeFromImage(const sePropertyNodeImage *node);
 };
 
 #endif

@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 
@@ -48,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAParticleEmitterAdd::gdeMAParticleEmitterAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Particle Emitter...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add particle emitter" )
+gdeMAParticleEmitterAdd::gdeMAParticleEmitterAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ParticleEmitterAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.ParticleEmitterAdd.ToolTip")
 {
 }
 
@@ -60,31 +59,30 @@ gdeBaseAction( windowMain, "Add Particle Emitter...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAParticleEmitterAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last particleEmitter? what directory? );
 	
-	if( ! igdeCommonDialogs::GetFileOpen( &pWindowMain,
-	"Select particle emitter", *gameDefinition.GetPreviewVFS(),
+	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
+	"@GameDefinition.Dialog.ParticleEmitterSelect.Title", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltParticleEmitter ), filename ) ){
-		return NULL;
+		return {};
 	}
 	
-	if( gameDefinition.GetParticleEmitters().HasWithPath( filename ) ){
-		igdeCommonDialogs::Information( &pWindowMain, "Add Particle Emitter",
-			"Particle emitter with path exists already." );
-		return NULL;
+	if(gameDefinition.GetParticleEmitters().HasWithPath(filename)){
+		igdeCommonDialogs::Information(pWindowMain, "@GameDefinition.Dialog.ParticleEmitterAdd.Title",
+			"@GameDefinition.Dialog.ParticleEmitterAdd.ErrorExists");
+		return {};
 	}
 	
-	decString filetitle( decPath::CreatePathUnix( filename ).GetLastComponent() );
-	const int delimiter = filetitle.FindReverse( '.' );
-	if( delimiter != -1 ){
-		filetitle = filetitle.GetLeft( delimiter );
+	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
+	const int delimiter = filetitle.FindReverse('.');
+	if(delimiter != -1){
+		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
-	deObjectReference particleEmitter;
-	particleEmitter.TakeOver( new gdeParticleEmitter( filename, filetitle ) );
-	return new gdeUAddParticleEmitter( &gameDefinition,
-		( gdeParticleEmitter* )( deObject* )particleEmitter );
+	const gdeParticleEmitter::Ref particleEmitter(gdeParticleEmitter::Ref::New(filename, filetitle));
+	return gdeUAddParticleEmitter::Ref::New(&gameDefinition,
+		particleEmitter);
 }

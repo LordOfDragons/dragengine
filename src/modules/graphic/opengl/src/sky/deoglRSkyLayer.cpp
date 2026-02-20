@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRSky.h"
 #include "deoglRSkyLayer.h"
 #include "deoglRSkyControllerTarget.h"
@@ -47,77 +43,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRSkyLayer::deoglRSkyLayer( const deSkyLayer &layer ) :
-pLayerType( eltUnknown ),
+deoglRSkyLayer::deoglRSkyLayer(const deSkyLayer &layer) :
+pLayerType(eltUnknown),
 
-pSkin( NULL ),
+pOffset(layer.GetOffset()),
+pOrientation(layer.GetOrientation()),
 
-pBodies( NULL ),
-pBodyCount( 0 ),
+pColor(layer.GetColor()),
+pIntensity(layer.GetIntensity()),
+pTransparency(layer.GetTransparency()),
 
-pOffset( layer.GetOffset() ),
-pOrientation( layer.GetOrientation() ),
+pLightOrientation(layer.GetLightOrientation()),
+pLightColor(layer.GetLightColor()),
+pLightIntensity(layer.GetLightIntensity()),
+pAmbientIntensity(layer.GetAmbientIntensity()),
 
-pColor( layer.GetColor() ),
-pIntensity( layer.GetIntensity() ),
-pTransparency( layer.GetTransparency() ),
-
-pLightOrientation( layer.GetLightOrientation() ),
-pLightColor( layer.GetLightColor() ),
-pLightIntensity( layer.GetLightIntensity() ),
-pAmbientIntensity( layer.GetAmbientIntensity() ),
-
-pMulBySkyLight( layer.GetMuliplyBySkyLight() ),
-pMulBySkyColor( layer.GetMuliplyBySkyColor() )
+pMulBySkyLight(layer.GetMuliplyBySkyLight()),
+pMulBySkyColor(layer.GetMuliplyBySkyColor())
 {
 	int i;
-	for( i=0; i<6; i++ ){
-		pTextures[ i ] = -1;
+	for(i=0; i<6; i++){
+		pTextures[i] = -1;
 	}
 	
-	for( i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++ ){
-		pTargets[ i ] = NULL;
-	}
-	
-	if( layer.GetSkin() ){
-		pSkin = ( ( deoglSkin* )layer.GetSkin()->GetPeerGraphic() )->GetRSkin();
-		pSkin->AddReference();
+	if(layer.GetSkin()){
+		pSkin = ((deoglSkin*)layer.GetSkin()->GetPeerGraphic())->GetRSkin();
 	}
 	
 	pUpdateSkins();
-	pInitBodies( layer );
+	pInitBodies(layer);
 	
-	for( i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++ ){
-		const deSkyControllerTarget &target = layer.GetTarget( ( deSkyLayer::eTargets )i );
-		const int linkCount = target.GetLinkCount();
-		if( linkCount > 0 ){
-			pTargets[ i ] = new deoglRSkyControllerTarget( target );
+	for(i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++){
+		const deSkyControllerTarget &target = layer.GetTarget((deSkyLayer::eTargets)i);
+		if(target.GetLinks().IsNotEmpty()){
+			pTargets[i] = deTUniqueReference<deoglRSkyControllerTarget>::New(target);
 		}
 	}
 }
 
-deoglRSkyLayer::~deoglRSkyLayer(){
-	int i;
-	
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
-	
-	if( pBodies ){
-		for( i=0; i<pBodyCount; i++ ){
-			if( pBodies[ i ].skin ){
-				pBodies[ i ].skin->FreeReference();
-			}
-		}
-		delete [] pBodies;
-	}
-	
-	for( i=deSkyLayer::etOffsetX; i<=deSkyLayer::etAmbientIntensity; i++ ){
-		if( pTargets[ i ] ){
-			delete pTargets[ i ];
-		}
-	}
-}
+deoglRSkyLayer::~deoglRSkyLayer() = default;
 
 
 
@@ -128,62 +92,60 @@ void deoglRSkyLayer::pUpdateSkins(){
 	pLayerType = eltUnknown;
 	
 	int i;
-	for( i=0; i<6; i++ ){
-		pTextures[ i ] = -1;
+	for(i=0; i<6; i++){
+		pTextures[i] = -1;
 	}
 	
-	if( ! pSkin ){
+	if(!pSkin){
 		return;
 	}
 	
-	const int textureCount = pSkin->GetTextureCount();
-	
-	for( i=0; i<textureCount; i++ ){
-		const char * const textureName = pSkin->GetTextureAt( i ).GetName();
+	pSkin->GetTextures().VisitIndexed([&](int ti, deoglSkinTexture &texture){
+		const char * const textureName = texture.GetName();
 		
-		if( strcmp( textureName, "sky.box.left" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkyBox ){
+		if(strcmp(textureName, "sky.box.left") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkyBox){
 				pLayerType = eltSkyBox;
-				pTextures[ eiBoxLeft ] = i;
+				pTextures[eiBoxLeft] = ti;
 			}
 			
-		}else if( strcmp( textureName, "sky.box.right" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkyBox ){
+		}else if(strcmp(textureName, "sky.box.right") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkyBox){
 				pLayerType = eltSkyBox;
-				pTextures[ eiBoxRight ] = i;
+				pTextures[eiBoxRight] = ti;
 			}
 			
-		}else if( strcmp( textureName, "sky.box.top" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkyBox ){
+		}else if(strcmp(textureName, "sky.box.top") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkyBox){
 				pLayerType = eltSkyBox;
-				pTextures[ eiBoxTop ] = i;
+				pTextures[eiBoxTop] = ti;
 			}
 			
-		}else if( strcmp( textureName, "sky.box.bottom" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkyBox ){
+		}else if(strcmp(textureName, "sky.box.bottom") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkyBox){
 				pLayerType = eltSkyBox;
-				pTextures[ eiBoxBottom ] = i;
+				pTextures[eiBoxBottom] = ti;
 			}
 			
-		}else if( strcmp( textureName, "sky.box.front" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkyBox ){
+		}else if(strcmp(textureName, "sky.box.front") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkyBox){
 				pLayerType = eltSkyBox;
-				pTextures[ eiBoxFront ] = i;
+				pTextures[eiBoxFront] = ti;
 			}
 			
-		}else if( strcmp( textureName, "sky.box.back" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkyBox ){
+		}else if(strcmp(textureName, "sky.box.back") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkyBox){
 				pLayerType = eltSkyBox;
-				pTextures[ eiBoxBack ] = i;
+				pTextures[eiBoxBack] = ti;
 			}
 			
-		}else if( strcmp( textureName, "sky.sphere" ) == 0 ){
-			if( pLayerType == eltUnknown || pLayerType == eltSkySphere ){
+		}else if(strcmp(textureName, "sky.sphere") == 0){
+			if(pLayerType == eltUnknown || pLayerType == eltSkySphere){
 				pLayerType = eltSkySphere;
-				pTextures[ eiSphere ] = i;
+				pTextures[eiSphere] = ti;
 			}
 		}
-	}
+	});
 }
 
 
@@ -191,52 +153,49 @@ void deoglRSkyLayer::pUpdateSkins(){
 // Private Functions
 //////////////////////
 
-void deoglRSkyLayer::pInitBodies( const deSkyLayer &layer ){
-	const int bodyCount = layer.GetBodyCount();
-	if( bodyCount == 0 ){
+void deoglRSkyLayer::pInitBodies(const deSkyLayer &layer){
+	if(layer.GetBodies().IsEmpty()){
 		return;
 	}
 	
-	pBodies = new sBody[ bodyCount ];
+	pBodies.SetCountDiscard(layer.GetBodies().GetCount());
 	
-	for( pBodyCount=0; pBodyCount<bodyCount; pBodyCount++ ){
-		const deSkyLayerBody &engBody = layer.GetBodyAt( pBodyCount );
-		sBody &body = pBodies[ pBodyCount ];
+	layer.GetBodies().VisitIndexed([&](int i, const deSkyLayerBody &engBody){
+		sBody &body = pBodies[i];
 		
 		body.color = engBody.GetColor();
 		body.size = engBody.GetSize();
 		body.orientation = engBody.GetOrientation();
 		
-		body.skin = NULL;
-		if( engBody.GetSkin() ){
-			body.skin = ( ( deoglSkin* )engBody.GetSkin()->GetPeerGraphic() )->GetRSkin();
-			body.skin->AddReference();
+		body.skin = nullptr;
+		if(engBody.GetSkin()){
+			body.skin = ((deoglSkin*)engBody.GetSkin()->GetPeerGraphic())->GetRSkin();
 		}
 		
 		float scaleU = 1.0f;
 		float scaleV = 1.0f;
 		
-		if( body.skin && body.skin->GetTextureCount() > 0 ){
+		if(body.skin && body.skin->GetTextureCount() > 0){
 			const deoglSkinChannel * const oglChannel =
-				body.skin->GetTextureAt( 0 ).GetChannelAt( deoglSkinChannel::ectColor );
+				body.skin->GetTextureAt(0).GetChannelAt(deoglSkinChannel::ectColor);
 			
-			if( oglChannel ){
+			if(oglChannel){
 				scaleU = oglChannel->GetFactorU();
 				scaleV = oglChannel->GetFactorV();
 			}
 		}
 		
-		body.texCoords[ 0 ].Set( 0.0f, 0.0f );
-		body.texCoords[ 1 ].Set( 0.0f, scaleV );
-		body.texCoords[ 2 ].Set( scaleU, scaleV );
-		body.texCoords[ 3 ].Set( scaleU, 0.0f );
+		body.texCoords[0].Set(0.0f, 0.0f);
+		body.texCoords[1].Set(0.0f, scaleV);
+		body.texCoords[2].Set(scaleU, scaleV);
+		body.texCoords[3].Set(scaleU, 0.0f);
 		
-		const decMatrix matrix( decMatrix::CreateFromQuaternion( engBody.GetOrientation() ) );
+		const decMatrix matrix(decMatrix::CreateFromQuaternion(engBody.GetOrientation()));
 		const decVector2 &size = engBody.GetSize();
 		
-		body.vertex[ 0 ] = matrix.Transform( -size.x, size.y, 1.0f );
-		body.vertex[ 1 ] = matrix.Transform( -size.x, -size.y, 1.0f );
-		body.vertex[ 2 ] = matrix.Transform( size.x, -size.y, 1.0f );
-		body.vertex[ 3 ] = matrix.Transform( size.x, size.y, 1.0f );
-	}
+		body.vertex[0] = matrix.Transform(-size.x, size.y, 1.0f);
+		body.vertex[1] = matrix.Transform(-size.x, -size.y, 1.0f);
+		body.vertex[2] = matrix.Transform(size.x, -size.y, 1.0f);
+		body.vertex[3] = matrix.Transform(size.x, size.y, 1.0f);
+	});
 }

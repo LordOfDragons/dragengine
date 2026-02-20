@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetBoneName::gdeUOCComponentSetBoneName( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetBoneName::gdeUOCComponentSetBoneName(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set bone name" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetBoneName");
 	
 	pOldValue = component->GetBoneName();
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetBoneName::~gdeUOCComponentSetBoneName(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCComponentSetBoneName::~gdeUOCComponentSetBoneName(){
 ///////////////
 
 void gdeUOCComponentSetBoneName::Undo(){
-	pComponent->SetBoneName( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetBoneName(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetBoneName::Redo(){
-	pComponent->SetBoneName( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetBoneName(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

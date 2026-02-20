@@ -36,8 +36,7 @@
  */
 class seUMappedSetCurve : public igdeUndo{
 public:
-	typedef deTObjectReference<seUMappedSetCurve> Ref;
-	
+	using Ref = deTObjectReference<seUMappedSetCurve>;
 	
 	
 private:
@@ -52,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetCurve( seMapped *mapped, const decCurveBezier &newCurve );
+	seUMappedSetCurve(seMapped *mapped, const decCurveBezier &newCurve);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetCurve();
+	~seUMappedSetCurve() override;
 	/*@}*/
 	
 	
@@ -65,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

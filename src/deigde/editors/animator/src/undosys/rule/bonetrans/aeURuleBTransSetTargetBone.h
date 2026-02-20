@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleBoneTransformator;
  * Undo action rule bone set target bone.
  */
 class aeURuleBTransSetTargetBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleBTransSetTargetBone>;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decString pOldBone;
 	decString pNewBone;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetTargetBone( aeRuleBoneTransformator *rule, const char *newBone );
+	aeURuleBTransSetTargetBone(aeRuleBoneTransformator *rule, const char *newBone);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetTargetBone();
+	~aeURuleBTransSetTargetBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

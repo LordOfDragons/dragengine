@@ -26,7 +26,7 @@
 #define _DEARRULESTATEMANIPULATOR_H_
 
 #include "dearRule.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 class deAnimatorRuleStateManipulator;
 
@@ -62,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleStateManipulator( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleStateManipulator &rule );
+	dearRuleStateManipulator(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleStateManipulator &rule);
 	
 	/** Clean up animator. */
-	virtual ~dearRuleStateManipulator();
+	~dearRuleStateManipulator() override;
 	/*@}*/
 	
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) override;
 	/*@}*/
 };
 

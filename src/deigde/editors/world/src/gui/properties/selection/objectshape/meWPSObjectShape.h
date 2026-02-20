@@ -25,19 +25,20 @@
 #ifndef _MEWPSOBJECTSHAPE_H_
 #define _MEWPSOBJECTSHAPE_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include "meWPSObjectShapeListener.h"
+#include "../../../../world/meWorld.h"
+
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meObject;
 class meWindowProperties;
-class meWorld;
 class meWPSelection;
-class meWPSObjectShapeListener;
 
 class igdeGDProperty;
 
@@ -52,41 +53,44 @@ class decShapeCapsule;
  * \brief Object Shape Selection Panel.
  */
 class meWPSObjectShape : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPSObjectShape>;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectShapeListener *pListener;
+	meWPSObjectShapeListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	bool pPreventUpdate;
 	
-	igdeTextFieldReference pEditObjectClass;
+	igdeTextField::Ref pEditObjectClass;
 	
-	igdeComboBoxReference pCBProperties;
-	igdeTextAreaReference pTextInfos;
+	igdeComboBox::Ref pCBProperties;
+	igdeTextArea::Ref pTextInfos;
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditShapeCount;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditShapeCount;
 	
-	igdeSwitcherReference pSwitcherShapeType;
+	igdeSwitcher::Ref pSwitcherShapeType;
 	
-	igdeEditVectorReference pEditSpherePosition;
-	igdeTextFieldReference pEditSphereRadius;
+	igdeEditVector::Ref pEditSpherePosition;
+	igdeTextField::Ref pEditSphereRadius;
 	
-	igdeEditVectorReference pEditBoxPosition;
-	igdeEditVectorReference pEditBoxRotation;
-	igdeEditVectorReference pEditBoxExtends;
+	igdeEditVector::Ref pEditBoxPosition;
+	igdeEditVector::Ref pEditBoxRotation;
+	igdeEditVector::Ref pEditBoxExtends;
 	
-	igdeEditVectorReference pEditCylinderPosition;
-	igdeEditVectorReference pEditCylinderRotation;
-	igdeTextFieldReference pEditCylinderHeight;
-	igdeTextFieldReference pEditCylinderRadiusTop;
-	igdeTextFieldReference pEditCylinderRadiusBottom;
+	igdeEditVector::Ref pEditCylinderPosition;
+	igdeEditVector::Ref pEditCylinderRotation;
+	igdeTextField::Ref pEditCylinderHeight;
+	igdeTextField::Ref pEditCylinderRadiusTop;
+	igdeTextField::Ref pEditCylinderRadiusBottom;
 	
-	igdeEditVectorReference pEditCapsulePosition;
-	igdeEditVectorReference pEditCapsuleRotation;
-	igdeTextFieldReference pEditCapsuleHeight;
-	igdeTextFieldReference pEditCapsuleRadiusTop;
-	igdeTextFieldReference pEditCapsuleRadiusBottom;
+	igdeEditVector::Ref pEditCapsulePosition;
+	igdeEditVector::Ref pEditCapsuleRotation;
+	igdeTextField::Ref pEditCapsuleHeight;
+	igdeTextField::Ref pEditCapsuleRadiusTop;
+	igdeTextField::Ref pEditCapsuleRadiusBottom;
 	
 	
 	
@@ -94,11 +98,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSObjectShape( meWPSelection &wpselection );
+	meWPSObjectShape(meWPSelection &wpselection);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSObjectShape();
+	~meWPSObjectShape() override;
 	/*@}*/
 	
 	
@@ -110,10 +114,10 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Active object. */
 	meObject *GetActiveObject() const;
@@ -125,7 +129,7 @@ public:
 	bool IsActivePropertyShape() const;
 	
 	/** \brief Update properties list. */
-	void UpdateListProperties( bool retainSelection );
+	void UpdateListProperties(bool retainSelection);
 	
 	/** \brief Update selection. */
 	void UpdateSelection();
@@ -140,16 +144,16 @@ public:
 	void UpdateShapeNone();
 	
 	/** \brief Switch panel to sphere and update using a sphere. */
-	void UpdateShapeSphere( const decShapeSphere &sphere );
+	void UpdateShapeSphere(const decShapeSphere &sphere);
 	
 	/** \brief Switch panel to sphere and update using a box. */
-	void UpdateShapeBox( const decShapeBox &box );
+	void UpdateShapeBox(const decShapeBox &box);
 	
 	/** \brief Switch panel to sphere and update using a cylinder. */
-	void UpdateShapeCylinder( const decShapeCylinder &cylinder );
+	void UpdateShapeCylinder(const decShapeCylinder &cylinder);
 	
 	/** \brief Switch panel to sphere and update using a capsule. */
-	void UpdateShapeCapsule( const decShapeCapsule &capsule );
+	void UpdateShapeCapsule(const decShapeCapsule &capsule);
 	
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();

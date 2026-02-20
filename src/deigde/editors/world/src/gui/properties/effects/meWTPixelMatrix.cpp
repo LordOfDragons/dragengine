@@ -24,13 +24,9 @@
 
 #if 0
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "meWTPixelMatrix.h"
-#include "dragengine/common/exceptions.h"
 
+#include <dragengine/common/exceptions.h>
 
 
 // Class meWTPixelMatrix
@@ -39,11 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWTPixelMatrix::meWTPixelMatrix( const char *name, const decTexMatrix &matrix ){
-	pName = new char[ strlen( name ) + 1 ];
-	if( ! pName ) DETHROW( deeOutOfMemory );
-	strcpy( pName, name );
-	
+meWTPixelMatrix::meWTPixelMatrix(const char *name, const decTexMatrix &matrix){
+	pName = name;
 	pPixelMatrix = matrix;
 }
 
@@ -56,7 +49,7 @@ meWTPixelMatrix::~meWTPixelMatrix(){
 ///////////////
 
 
-void meWTPixelMatrix::SetPixelMatrix( const decTexMatrix &matrix ){
+void meWTPixelMatrix::SetPixelMatrix(const decTexMatrix &matrix){
 	pPixelMatrix = matrix;
 }
 

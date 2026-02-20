@@ -28,9 +28,10 @@
 #include "../ceWPTMenuAction.h"
 #include "../../../../../conversation/action/ceConversationAction.h"
 
+#include <deigde/undo/igdeUndo.h>
+
 class ceWindowMain;
 class ceConversation;
-class igdeUndo;
 
 
 
@@ -49,11 +50,12 @@ protected:
 	ceWPTMACreateAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMACreateAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACreateAction( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationAction::eActionTypes actionType );
+	ceWPTMACreateAction(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationAction::eActionTypes actionType);
 	/*@}*/
 	
 	
@@ -69,23 +71,21 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationAction *action );
+	virtual igdeUndo::Ref CreateUndo(ceConversationAction *action);
 	
 	
 	
 	/** \brief Create action. */
-	ceConversationAction *CreateAction();
+	ceConversationAction::Ref CreateAction();
 	
 	/** \brief Text for action type. */
-	static const char *ActionTypeText( ceWindowMain &windowMain,
-		ceConversationAction::eActionTypes actionType );
+	decString ActionTypeText(ceWindowMain &windowMain, ceConversationAction::eActionTypes actionType);
 	
 	/** \brief Icon for action type. */
-	static igdeIcon *ActionTypeIcon( ceWindowMain &windowMain,
-		ceConversationAction::eActionTypes actionType );
+	static igdeIcon *ActionTypeIcon(ceWindowMain &windowMain, ceConversationAction::eActionTypes actionType);
 	/*@}*/
 };
 

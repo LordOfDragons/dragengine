@@ -42,32 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureClear::ceUCAASpeakGestureClear( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceUCAASpeakGestureClear::ceUCAASpeakGestureClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(nullptr)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak clear gestures" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakClearGestures");
 	
-	pOldGestures = actorSpeak->GetGestureList();
+	pOldGestures = actorSpeak->GetGestures();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakGestureClear::~ceUCAASpeakGestureClear(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ ceUCAASpeakGestureClear::~ceUCAASpeakGestureClear(){
 ///////////////
 
 void ceUCAASpeakGestureClear::Undo(){
-	pActorSpeak->GetGestureList() = pOldGestures;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetGestures() = pOldGestures;
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakGestureClear::Redo(){
-	pActorSpeak->GetGestureList().RemoveAll();
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetGestures().RemoveAll();
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

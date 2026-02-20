@@ -22,18 +22,15 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RERIGTEXTURE_H_
 #define _RERIGTEXTURE_H_
 
-// includes
-#include <dragengine/common/string/decString.h>
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/resources/skin/deSkin.h>
 
-// predefinitions
 class deEngine;
-class deSkin;
 class reRig;
 
 
@@ -42,23 +39,31 @@ class reRig;
  * @brief Rig Texture.
  * Defines a texture for use with the loaded component.
  */
-class reRigTexture{
+class reRigTexture : public deObject{
+public:
+	using Ref = deTObjectReference<reRigTexture>;
+	using List = decTObjectOrderedSet<reRigTexture>;
+	
+	
 private:
 	deEngine *pEngine;
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig texture. */
-	reRigTexture( deEngine *engine, const char *name );
+	reRigTexture(deEngine *engine, const char *name);
+	
+protected:
 	/** Cleans up the rig texture. */
-	~reRigTexture();
+	~reRigTexture() override;
 	/*@}*/
 	
+public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the game engine. */
@@ -69,11 +74,11 @@ public:
 	/** Retrieves the skin file path. */
 	inline const decString &GetSkinPath() const{ return pSkinPath; }
 	/** Sets the skin file path. */
-	void SetSkinPath( const char *skinPath );
+	void SetSkinPath(const char *skinPath);
 	/** Loads the skin. */
 	void LoadSkin();
-	/** Retrieves the engine skin or NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	/** Retrieves the engine skin or nullptr if not found. */
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	/*@}*/
 	
 private:

@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -40,8 +40,12 @@ class aeLink;
  * Sets the name of a link.
  */
 class aeULinkSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeULinkSetName>;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldName;
 	decString pNewName;
@@ -50,19 +54,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkSetName( aeLink *link, const char *newName );
+	aeULinkSetName(aeLink *link, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeULinkSetName();
+	~aeULinkSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

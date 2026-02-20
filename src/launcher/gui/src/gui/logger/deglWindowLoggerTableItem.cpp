@@ -33,17 +33,17 @@
 // Class deglWindowLoggerTableItem
 ////////////////////////////////////
 
-FXIMPLEMENT( deglWindowLoggerTableItem, FXTableItem, nullptr, 0 )
+FXIMPLEMENT(deglWindowLoggerTableItem, FXTableItem, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-deglWindowLoggerTableItem::deglWindowLoggerTableItem(){ }
+deglWindowLoggerTableItem::deglWindowLoggerTableItem(){}
 
-deglWindowLoggerTableItem::deglWindowLoggerTableItem( const FXString &text, FXIcon *ic, void *ptr ) :
-FXTableItem( text, ic, ptr ),
-pTextColor( 0 ),
-pFont( nullptr ){
+deglWindowLoggerTableItem::deglWindowLoggerTableItem(const FXString &text, FXIcon *ic, void *ptr) :
+FXTableItem(text, ic, ptr),
+pTextColor(0),
+pFont(nullptr){
 }
 
 deglWindowLoggerTableItem::~deglWindowLoggerTableItem(){
@@ -54,17 +54,17 @@ deglWindowLoggerTableItem::~deglWindowLoggerTableItem(){
 // Management
 ///////////////
 
-void deglWindowLoggerTableItem::SetTextColor( FXColor color ){
+void deglWindowLoggerTableItem::SetTextColor(FXColor color){
 	pTextColor = color;
 }
 
-void deglWindowLoggerTableItem::SetFont( FXFont *font ){
+void deglWindowLoggerTableItem::SetFont(FXFont *font){
 	pFont = font;
 }
 
 
 
-FXint deglWindowLoggerTableItem::getWidth( const FXTable *table ) const{
+FXint deglWindowLoggerTableItem::getWidth(const FXTable *table) const{
 	FXFont *font = table->getFont();
 	FXint beg, end, tw, iw, s, w, t;
 	FXint ml = table->getMarginLeft();
@@ -72,41 +72,41 @@ FXint deglWindowLoggerTableItem::getWidth( const FXTable *table ) const{
 	FXString lbl = getText();
 	FXIcon *icn = getIcon();
 	
-	if( pFont ){
+	if(pFont){
 		font = pFont;
 	}
 	
 	tw = iw = beg = s = 0;
-	if( icn ){
+	if(icn){
 		iw = icn->getWidth();
 	}
 	
 	do{
 		end = beg;
-		while( end < lbl.length() && lbl[ end ] != '\n' ){
+		while(end < lbl.length() && lbl[end] != '\n'){
 			end++;
 		}
-		if( ( t = font->getTextWidth( &lbl[ beg ], end - beg ) ) > tw ){
+		if((t = font->getTextWidth(&lbl[beg], end - beg)) > tw){
 			tw = t;
 		}
 		beg = end + 1;
-	}while( end < lbl.length() );
+	}while(end < lbl.length());
 	
-	if( iw && tw ){
+	if(iw && tw){
 		s = 4;
 	}
 	
-	if( state & ( BEFORE | AFTER ) ){
+	if(state & (BEFORE | AFTER)){
 		w = iw + tw + s;
 		
 	}else{
-		w = FXMAX( iw, tw );
+		w = FXMAX(iw, tw);
 	}
 	
 	return ml + mr + w;
 }
 
-FXint deglWindowLoggerTableItem::getHeight( const FXTable *table ) const{
+FXint deglWindowLoggerTableItem::getHeight(const FXTable *table) const{
 	FXFont *font = table->getFont();
 	FXint beg, end, th, ih, h;
 	FXint mt = table->getMarginTop();
@@ -115,49 +115,49 @@ FXint deglWindowLoggerTableItem::getHeight( const FXTable *table ) const{
 	FXIcon *icn = getIcon();
 	th = ih = beg = 0;
 	
-	if( icn ){
+	if(icn){
 		ih = icn->getHeight();
 	}
 	
 	do{
 		end = beg;
-		while( end < lbl.length() && lbl[ end ] != '\n' ){
+		while(end < lbl.length() && lbl[end] != '\n'){
 			end++;
 		}
 		th += font->getFontHeight();
 		beg = end + 1;
-	}while( end < lbl.length() );
+	}while(end < lbl.length());
 	
-	if( state & ( ABOVE | BELOW ) ){
+	if(state & (ABOVE | BELOW)){
 		h = ih + th;
 		
 	}else{
-		h = FXMAX( ih, th );
+		h = FXMAX(ih, th);
 	}
 	
 	return h + mt + mb;
 }
 
-void deglWindowLoggerTableItem::drawBackground( const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h ) const{
+void deglWindowLoggerTableItem::drawBackground(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const{
 	FXint hg = table->isHorzGridShown() ? 1 : 0;
 	FXint vg = table->isVertGridShown() ? 1 : 0;
 	
-	if( isSelected() ){
-		if( pTextColor == 0 ){
-			dc.setForeground( table->getSelBackColor() );
+	if(isSelected()){
+		if(pTextColor == 0){
+			dc.setForeground(table->getSelBackColor());
 			
 		}else{
-			dc.setForeground( table->getSelBackColor() ); //pTextColor );
+			dc.setForeground(table->getSelBackColor()); //pTextColor);
 		}
 		
 	}else{
-		dc.setForeground( table->getBackColor() );
+		dc.setForeground(table->getBackColor());
 	}
 	
-	dc.fillRectangle( x + vg, y + hg, w - vg, h - hg );
+	dc.fillRectangle(x + vg, y + hg, w - vg, h - hg);
 }
 
-void deglWindowLoggerTableItem::drawContent( const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h ) const{
+void deglWindowLoggerTableItem::drawContent(const FXTable *table, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const{
 	FXint tx,ty,tw,th,ix,iy,iw,ih,s,beg,end,t,xx,yy;
 	FXbool hg=table->isHorzGridShown();
 	FXbool vg=table->isVertGridShown();
@@ -169,11 +169,11 @@ void deglWindowLoggerTableItem::drawContent( const FXTable *table, FXDC &dc, FXi
 	FXString lbl=getText();
 	FXIcon  *icn=getIcon();
 	
-	if( pFont ){
+	if(pFont){
 		font = pFont;
 	}
 	
-	dc.setFont( font );
+	dc.setFont(font);
 	
 	// Text width and height
 	beg=tw=th=0;
@@ -256,20 +256,20 @@ void deglWindowLoggerTableItem::drawContent( const FXTable *table, FXDC &dc, FXi
 	}
 
 	// Text color
-	if( state & SELECTED ){
-		if( pTextColor == 0 ){
-			dc.setForeground( table->getSelTextColor() );
+	if(state & SELECTED){
+		if(pTextColor == 0){
+			dc.setForeground(table->getSelTextColor());
 			
 		}else{
-			dc.setForeground( table->getSelTextColor() ); //table->getSelBackColor() );
+			dc.setForeground(table->getSelTextColor()); //table->getSelBackColor());
 		}
 		
 	}else{
-		if( pTextColor == 0 ){
-			dc.setForeground( table->getTextColor() );
+		if(pTextColor == 0){
+			dc.setForeground(table->getTextColor());
 			
 		}else{
-			dc.setForeground( pTextColor );
+			dc.setForeground(pTextColor);
 		}
 	}
 	

@@ -51,77 +51,44 @@ projTRPParameterList::~projTRPParameterList(){
 // Management
 ///////////////
 
-int projTRPParameterList::GetCount() const{
-	return pParameters.GetCount();
+projTRPParameter *projTRPParameterList::GetWith(const char *module, const char *name) const{
+	DEASSERT_NOTNULL(module)
+	DEASSERT_NOTNULL(name)
+	
+	return pParameters.FindOrDefault([&](const projTRPParameter &p){
+		return p.GetModule() == module && p.GetName() == name;
+	});
 }
 
-projTRPParameter *projTRPParameterList::GetAt( int index ) const{
-	return ( projTRPParameter* )pParameters.GetAt( index );
+bool projTRPParameterList::HasWith(const char *module, const char *name) const{
+	return GetWith(module, name) != nullptr;
 }
 
-projTRPParameter *projTRPParameterList::GetWith( const char *module, const char *name ) const{
-	if( ! module || ! name ){
-		DETHROW( deeInvalidParam );
+int projTRPParameterList::IndexOfWith(const char *module, const char *name) const{
+	if(!module || !name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int count = pParameters.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		projTRPParameter * const parameter = ( projTRPParameter* )pParameters.GetAt( i );
-		if( parameter->GetModule() == module && parameter->GetName() == name ){
-			return parameter;
-		}
+	return pParameters.IndexOfMatching([&](const projTRPParameter &p){
+		return p.GetModule() == module && p.GetName() == name;
+	});
+}
+
+void projTRPParameterList::Add(projTRPParameter *parameter){
+	if(!parameter || HasWith(parameter->GetModule(), parameter->GetName())){
+		DETHROW(deeInvalidParam);
 	}
-	
-	return NULL;
+	pParameters.Add(parameter);
 }
 
-bool projTRPParameterList::Has( projTRPParameter *parameter ) const{
-	return pParameters.Has( parameter );
+void projTRPParameterList::Remove(projTRPParameter *parameter){
+	pParameters.Remove(parameter);
 }
 
-bool projTRPParameterList::HasWith( const char *module, const char *name ) const{
-	return GetWith( module, name ) != NULL;
-}
-
-int projTRPParameterList::IndexOf( projTRPParameter *parameter ) const{
-	return pParameters.IndexOf( parameter );
-}
-
-int projTRPParameterList::IndexOfWith( const char *module, const char *name ) const{
-	if( ! module || ! name ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int count = pParameters.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const projTRPParameter &parameter = *( ( projTRPParameter* )pParameters.GetAt( i ) );
-		if( parameter.GetModule() == module && parameter.GetName() == name ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void projTRPParameterList::Add( projTRPParameter *parameter ){
-	if( ! parameter || HasWith( parameter->GetModule(), parameter->GetName() ) ){
-		DETHROW( deeInvalidParam );
-	}
-	pParameters.Add( parameter );
-}
-
-void projTRPParameterList::Remove( projTRPParameter *parameter ){
-	pParameters.Remove( parameter );
-}
-
-void projTRPParameterList::RemoveWith( const char *module, const char *name ){
-	projTRPParameter * const parameter = GetWith( module, name );
-	if( parameter ){
-		pParameters.Remove( parameter );
+void projTRPParameterList::RemoveWith(const char *module, const char *name){
+	projTRPParameter * const parameter = GetWith(module, name);
+	if(parameter){
+		pParameters.Remove(parameter);
 	}
 }
 
@@ -131,30 +98,20 @@ void projTRPParameterList::RemoveAll(){
 
 
 
-void projTRPParameterList::Set( const char *module, const char *name, const char *value ){
-	projTRPParameter *parameter = GetWith( module, name );
-	if( parameter ){
-		parameter->SetValue( value );
+void projTRPParameterList::Set(const char *module, const char *name, const char *value){
+	projTRPParameter * const findParameter = GetWith(module, name);
+	if(findParameter){
+		findParameter->SetValue(value);
 		return;
 	}
 	
-	parameter = new projTRPParameter;
-	
-	try{
-		parameter->SetModule( module );
-		parameter->SetName( name );
-		parameter->SetValue( value );
-		pParameters.Add( parameter );
-		parameter->FreeReference();
-		
-	}catch( const deException & ){
-		if( parameter ){
-			parameter->FreeReference();
-		}
-		throw;
-	}
+	const projTRPParameter::Ref parameter(projTRPParameter::Ref::New());
+	parameter->SetModule(module);
+	parameter->SetName(name);
+	parameter->SetValue(value);
+	pParameters.Add(parameter);
 }
 
-void projTRPParameterList::Set( const projTRPParameter &parameter ){
-	Set( parameter.GetModule(), parameter.GetName(), parameter.GetValue() );
+void projTRPParameterList::Set(const projTRPParameter &parameter){
+	Set(parameter.GetModule(), parameter.GetName(), parameter.GetValue());
 }

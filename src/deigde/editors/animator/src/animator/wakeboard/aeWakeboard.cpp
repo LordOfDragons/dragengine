@@ -61,30 +61,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWakeboard::aeWakeboard( aeAnimator *animator ){
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+aeWakeboard::aeWakeboard(aeAnimator *animator){
+	if(!animator){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deEngine * const engine = animator->GetEngine();
 	deWorld &engWorld = *animator->GetEngineWorld();
-	decVector boxHalfSize( 5.0f, 0.05f, 5.0f );
-	decVector boxPosition( 0.0f, -boxHalfSize.y, 0.0f );
+	decVector boxHalfSize(5.0f, 0.05f, 5.0f);
+	decVector boxPosition(0.0f, -boxHalfSize.y, 0.0f);
 	decLayerMask layermask;
-	deSkin *engSkin = NULL;
-	deModel *engModel = NULL;
-	decShape *shapeBox = NULL;
-	decShapeList shapeList;
+	deSkin::Ref engSkin;
+	deModel::Ref engModel;
 	
 	//layermask.SetBit( aeAnimator::eclTerrain );
 	//layermask.SetBit( aeAnimator::eclElements );
-	layermask.SetBit( aeAnimator::eclAI );
-	layermask.SetBit( aeAnimator::eclGround );
+	layermask.SetBit(aeAnimator::eclAI);
+	layermask.SetBit(aeAnimator::eclGround);
 	
 	pAnimator = animator;
 	
-	pEngComponent = NULL;
-	pEngCollider = NULL;
+	pEngComponent = nullptr;
+	pEngCollider = nullptr;
 	
 	pEnabled = false;
 	
@@ -95,47 +93,35 @@ aeWakeboard::aeWakeboard( aeAnimator *animator ){
 	
 	deVirtualFileSystem * const vfsData = animator->GetEnvironment()->GetFileSystemIGDE();
 	decString pathData;
-	pathData.Format( "/data/modules/%s/",
-		animator->GetWindowMain().GetEditorModule().GetEditorDirectory().GetString() );
+	pathData.Format("/data/modules/%s/",
+		animator->GetWindowMain().GetEditorModule().GetEditorDirectory().GetString());
 	
 	try{
-		engModel = engine->GetModelManager()->LoadModel( vfsData,
-			pathData + "models/wakeboard/wakeboard.demodel", "/" );
-		engSkin = engine->GetSkinManager()->LoadSkin( vfsData,
-			pathData + "models/wakeboard/wakeboard.deskin", "/" );
+		engModel = engine->GetModelManager()->LoadModel(vfsData,
+			pathData + "models/wakeboard/wakeboard.demodel", "/");
+		engSkin = engine->GetSkinManager()->LoadSkin(vfsData,
+			pathData + "models/wakeboard/wakeboard.deskin", "/");
 		
-		pEngComponent = engine->GetComponentManager()->CreateComponent( engModel, engSkin );
-		pEngComponent->SetVisible( pEnabled );
-		engModel->FreeReference();
-		engModel = NULL;
-		engSkin->FreeReference();
-		engSkin = NULL;
-		engWorld.AddComponent( pEngComponent );
+		pEngComponent = engine->GetComponentManager()->CreateComponent(engModel, engSkin);
+		pEngComponent->SetVisible(pEnabled);
+		engModel = nullptr;
+		engSkin = nullptr;
+		engWorld.AddComponent(pEngComponent);
 		
 		pEngCollider = engine->GetColliderManager()->CreateColliderVolume();
-		pEngCollider->SetResponseType( deCollider::ertKinematic );
-		pEngCollider->SetUseLocalGravity( true );
-		pEngCollider->SetEnabled( true );
-		pEngCollider->SetCollisionFilter( decCollisionFilter( layermask ) );
-		pEngCollider->SetEnabled( pEnabled );
+		pEngCollider->SetResponseType(deCollider::ertKinematic);
+		pEngCollider->SetUseLocalGravity(true);
+		pEngCollider->SetEnabled(true);
+		pEngCollider->SetCollisionFilter(decCollisionFilter(layermask));
+		pEngCollider->SetEnabled(pEnabled);
 		
-		shapeBox = new decShapeBox( boxHalfSize, boxPosition );
-		shapeList.Add( shapeBox );
-		shapeBox = NULL;
-		pEngCollider->SetShapes( shapeList );
+		decShape::List shapeList;
+		shapeList.Add(decShapeBox::Ref::New(boxHalfSize, boxPosition));
+		pEngCollider->SetShapes(shapeList);
 		
-		engWorld.AddCollider( pEngCollider );
+		engWorld.AddCollider(pEngCollider);
 		
-	}catch( const deException & ){
-		if( shapeBox ){
-			delete shapeBox;
-		}
-		if( engSkin ){
-			engSkin->FreeReference();
-		}
-		if( engModel ){
-			engModel->FreeReference();
-		}
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -150,81 +136,81 @@ aeWakeboard::~aeWakeboard(){
 // Management
 ///////////////
 
-void aeWakeboard::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void aeWakeboard::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
 	
-	pEngComponent->SetVisible( enabled );
-	pEngCollider->SetEnabled( enabled );
+	pEngComponent->SetVisible(enabled);
+	pEngCollider->SetEnabled(enabled);
 }
 
 
 
-void aeWakeboard::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void aeWakeboard::SetPosition(const decDVector &position){
+	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		pEngComponent->SetPosition( position );
-		pEngCollider->SetPosition( position );
+		pEngComponent->SetPosition(position);
+		pEngCollider->SetPosition(position);
 	}
 }
 
 
 
-void aeWakeboard::SetTiltUpDown( float tilt ){
-	if( tilt > pMaxTiltUpDown ){
+void aeWakeboard::SetTiltUpDown(float tilt){
+	if(tilt > pMaxTiltUpDown){
 		tilt = pMaxTiltUpDown;
 		
-	}else if( tilt < -pMaxTiltUpDown ){
+	}else if(tilt < -pMaxTiltUpDown){
 		tilt = -pMaxTiltUpDown;
 	}
 	
-	if( fabsf( tilt - pTiltUpDown ) > 1e-5f ){
+	if(fabsf(tilt - pTiltUpDown) > 1e-5f){
 		pTiltUpDown = tilt;
 		UpdateOrientation();
 	}
 }
 
-void aeWakeboard::SetMaximumTiltUpDown( float tilt ){
-	if( tilt < 0.0f ){
+void aeWakeboard::SetMaximumTiltUpDown(float tilt){
+	if(tilt < 0.0f){
 		tilt = 0.0f;
 	}
 	
 	pMaxTiltUpDown = tilt;
-	SetTiltUpDown( pTiltUpDown );
+	SetTiltUpDown(pTiltUpDown);
 }
 
-void aeWakeboard::SetTiltLeftRight( float tilt ){
-	if( tilt > pMaxTiltLeftRight ){
+void aeWakeboard::SetTiltLeftRight(float tilt){
+	if(tilt > pMaxTiltLeftRight){
 		tilt = pMaxTiltLeftRight;
 		
-	}else if( tilt < -pMaxTiltLeftRight ){
+	}else if(tilt < -pMaxTiltLeftRight){
 		tilt = -pMaxTiltLeftRight;
 	}
 	
-	if( fabsf( tilt - pTiltLeftRight ) > 1e-5f ){
+	if(fabsf(tilt - pTiltLeftRight) > 1e-5f){
 		pTiltLeftRight = tilt;
 		UpdateOrientation();
 	}
 }
 
-void aeWakeboard::SetMaximumTiltLeftRight( float tilt ){
-	if( tilt < 0.0f ){
+void aeWakeboard::SetMaximumTiltLeftRight(float tilt){
+	if(tilt < 0.0f){
 		tilt = 0.0f;
 	}
 	
 	pMaxTiltLeftRight = tilt;
-	SetTiltLeftRight( pTiltLeftRight );
+	SetTiltLeftRight(pTiltLeftRight);
 }
 
 void aeWakeboard::UpdateOrientation(){
-	decQuaternion orientation = decDMatrix::CreateRotation( pTiltUpDown * DEG2RAD, 0.0f, pTiltLeftRight * DEG2RAD ).ToQuaternion();
+	decQuaternion orientation = decDMatrix::CreateRotation(pTiltUpDown * DEG2RAD, 0.0f, pTiltLeftRight * DEG2RAD).ToQuaternion();
 	
-	pEngComponent->SetOrientation( orientation );
-	pEngCollider->SetOrientation( orientation );
+	pEngComponent->SetOrientation(orientation);
+	pEngCollider->SetOrientation(orientation);
 }
 
 
@@ -233,17 +219,15 @@ void aeWakeboard::UpdateOrientation(){
 //////////////////////
 
 void aeWakeboard::pCleanUp(){
-	if( pAnimator ){
+	if(pAnimator){
 		deWorld &engWorld = *pAnimator->GetEngineWorld();
 		
-		if( pEngCollider ){
-			engWorld.RemoveCollider( pEngCollider );
-			pEngCollider->FreeReference();
+		if(pEngCollider){
+			engWorld.RemoveCollider(pEngCollider);
 		}
 		
-		if( pEngComponent ){
-			engWorld.RemoveComponent( pEngComponent );
-			pEngComponent->FreeReference();
+		if(pEngComponent){
+			engWorld.RemoveComponent(pEngComponent);
 		}
 	}
 }

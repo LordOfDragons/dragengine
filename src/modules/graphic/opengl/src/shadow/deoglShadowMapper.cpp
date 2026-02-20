@@ -77,48 +77,48 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShadowMapper::deoglShadowMapper( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglShadowMapper::deoglShadowMapper(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pTextureDepthSolid( NULL ),
-pTextureDepthTransp( NULL ),
-pTextureColorTransp( NULL ),
-pForeignTexDepthSolid( NULL ),
-pForeignTexDepthTransp( NULL ),
-pForeignTexColorTransp( NULL ),
-pUseTexDepthSolid( NULL ),
-pUseTexDepthTransp( NULL ),
-pUseTexColorTransp( NULL ),
+pTextureDepthSolid(nullptr),
+pTextureDepthTransp(nullptr),
+pTextureColorTransp(nullptr),
+pForeignTexDepthSolid(nullptr),
+pForeignTexDepthTransp(nullptr),
+pForeignTexColorTransp(nullptr),
+pUseTexDepthSolid(nullptr),
+pUseTexDepthTransp(nullptr),
+pUseTexColorTransp(nullptr),
 
-pCubeMapDepthSolid( NULL ),
-pCubeMapDepthTransp( NULL ),
-pCubeMapColorTransp( NULL ),
-pForeignCubeMapDepthSolid( NULL ),
-pForeignCubeMapDepthTransp( NULL ),
-pForeignCubeMapColorTransp( NULL ),
-pUseCubeMapDepthSolid( NULL ),
-pUseCubeMapDepthTransp( NULL ),
-pUseCubeMapColorTransp( NULL ),
+pCubeMapDepthSolid(nullptr),
+pCubeMapDepthTransp(nullptr),
+pCubeMapColorTransp(nullptr),
+pForeignCubeMapDepthSolid(nullptr),
+pForeignCubeMapDepthTransp(nullptr),
+pForeignCubeMapColorTransp(nullptr),
+pUseCubeMapDepthSolid(nullptr),
+pUseCubeMapDepthTransp(nullptr),
+pUseCubeMapColorTransp(nullptr),
 
-pArrTexSolidDepth( NULL ),
-pArrTexTranspDepth( NULL ),
-pArrTexTranspColor( NULL ),
-pForeignArrTexSolidDepth( NULL ),
-pForeignArrTexTranspDepth( NULL ),
-pForeignArrTexTranspColor( NULL ),
-pUseArrTexSolidDepth( NULL ),
-pUseArrTexTranspDepth( NULL ),
-pUseArrTexTranspColor( NULL ),
+pArrTexSolidDepth(nullptr),
+pArrTexTranspDepth(nullptr),
+pArrTexTranspColor(nullptr),
+pForeignArrTexSolidDepth(nullptr),
+pForeignArrTexTranspDepth(nullptr),
+pForeignArrTexTranspColor(nullptr),
+pUseArrTexSolidDepth(nullptr),
+pUseArrTexTranspDepth(nullptr),
+pUseArrTexTranspColor(nullptr),
 
-pTextureOcclusion( NULL ),
+pTextureOcclusion(nullptr),
 
-pTextureAmbient( NULL ),
-pForeignTexAmbient( NULL ),
-pUseTexAmbient( NULL ),
+pTextureAmbient(nullptr),
+pForeignTexAmbient(nullptr),
+pUseTexAmbient(nullptr),
 
-pCubeMapAmbient( NULL ),
-pForeignCubeMapAmbient( NULL ),
-pUseCubeMapAmbient( NULL ){
+pCubeMapAmbient(nullptr),
+pForeignCubeMapAmbient(nullptr),
+pUseCubeMapAmbient(nullptr){
 }
 
 deoglShadowMapper::~deoglShadowMapper(){
@@ -131,17 +131,17 @@ deoglShadowMapper::~deoglShadowMapper(){
 ///////////////
 
 deoglTexture *deoglShadowMapper::GetSolidDepthTexture() const{
-	if( ! pTextureDepthSolid ){
-		DETHROW( deeInvalidParam );
+	if(!pTextureDepthSolid){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pTextureDepthSolid->GetTexture();
 }
 
-void deoglShadowMapper::SetForeignSolidDepthTexture( deoglTexture *texture ){
-	if( pTextureDepthSolid ){
-		pTextureDepthSolid->SetInUse( false );
-		pTextureDepthSolid = NULL;
+void deoglShadowMapper::SetForeignSolidDepthTexture(deoglTexture *texture){
+	if(pTextureDepthSolid){
+		pTextureDepthSolid->SetInUse(false);
+		pTextureDepthSolid = nullptr;
 	}
 	
 	pForeignTexDepthSolid = texture;
@@ -149,17 +149,17 @@ void deoglShadowMapper::SetForeignSolidDepthTexture( deoglTexture *texture ){
 }
 
 deoglTexture *deoglShadowMapper::GetTransparentDepthTexture() const{
-	if( ! pTextureDepthTransp ){
-		DETHROW( deeInvalidParam );
+	if(!pTextureDepthTransp){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pTextureDepthTransp->GetTexture();
 }
 
-void deoglShadowMapper::SetForeignTransparentDepthTexture( deoglTexture *texture ){
-	if( pTextureDepthTransp ){
-		pTextureDepthTransp->SetInUse( false );
-		pTextureDepthTransp = NULL;
+void deoglShadowMapper::SetForeignTransparentDepthTexture(deoglTexture *texture){
+	if(pTextureDepthTransp){
+		pTextureDepthTransp->SetInUse(false);
+		pTextureDepthTransp = nullptr;
 	}
 	
 	pForeignTexDepthTransp = texture;
@@ -167,17 +167,17 @@ void deoglShadowMapper::SetForeignTransparentDepthTexture( deoglTexture *texture
 }
 
 deoglTexture *deoglShadowMapper::GetTransparentColorTexture() const{
-	if( ! pTextureColorTransp ){
-		DETHROW( deeInvalidParam );
+	if(!pTextureColorTransp){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pTextureColorTransp->GetTexture();
 }
 
-void deoglShadowMapper::SetForeignTransparentColorTexture( deoglTexture *texture ){
-	if( pTextureColorTransp ){
-		pTextureColorTransp->SetInUse( false );
-		pTextureColorTransp = NULL;
+void deoglShadowMapper::SetForeignTransparentColorTexture(deoglTexture *texture){
+	if(pTextureColorTransp){
+		pTextureColorTransp->SetInUse(false);
+		pTextureColorTransp = nullptr;
 	}
 	
 	pForeignTexColorTransp = texture;
@@ -192,60 +192,60 @@ void deoglShadowMapper::DropTextures(){
 void deoglShadowMapper::DropTexturesSolid(){
 	pFBOTextureSolid.Clear();
 	
-	pUseTexDepthSolid = NULL;
-	pForeignTexDepthSolid = NULL;
-	if( pTextureDepthSolid ){
-		pTextureDepthSolid->SetInUse( false );
-		pTextureDepthSolid = NULL;
+	pUseTexDepthSolid = nullptr;
+	pForeignTexDepthSolid = nullptr;
+	if(pTextureDepthSolid){
+		pTextureDepthSolid->SetInUse(false);
+		pTextureDepthSolid = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropTexturesTransparent(){
 	pFBOTextureTransp.Clear();
 	
-	pUseTexDepthTransp = NULL;
-	pForeignTexDepthTransp = NULL;
-	if( pTextureDepthTransp ){
-		pTextureDepthTransp->SetInUse( false );
-		pTextureDepthTransp = NULL;
+	pUseTexDepthTransp = nullptr;
+	pForeignTexDepthTransp = nullptr;
+	if(pTextureDepthTransp){
+		pTextureDepthTransp->SetInUse(false);
+		pTextureDepthTransp = nullptr;
 	}
 	
-	pUseTexColorTransp = NULL;
-	pForeignTexColorTransp = NULL;
-	if( pTextureColorTransp ){
-		pTextureColorTransp->SetInUse( false );
-		pTextureColorTransp = NULL;
+	pUseTexColorTransp = nullptr;
+	pForeignTexColorTransp = nullptr;
+	if(pTextureColorTransp){
+		pTextureColorTransp->SetInUse(false);
+		pTextureColorTransp = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropForeignTextures(){
-	if( pForeignTexDepthSolid ){
-		pForeignTexDepthSolid = NULL;
-		pUseTexDepthSolid = NULL;
+	if(pForeignTexDepthSolid){
+		pForeignTexDepthSolid = nullptr;
+		pUseTexDepthSolid = nullptr;
 	}
 	
-	if( pForeignTexDepthTransp ){
-		pForeignTexDepthTransp = NULL;
-		pUseTexDepthTransp = NULL;
+	if(pForeignTexDepthTransp){
+		pForeignTexDepthTransp = nullptr;
+		pUseTexDepthTransp = nullptr;
 	}
 	
-	if( pForeignTexColorTransp ){
-		pForeignTexColorTransp = NULL;
-		pUseTexColorTransp = NULL;
+	if(pForeignTexColorTransp){
+		pForeignTexColorTransp = nullptr;
+		pUseTexColorTransp = nullptr;
 	}
 }
 
-void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool withStencil ){
+void deoglShadowMapper::ActivateSolidTexture(int size, bool useFloatDepth, bool withStencil){
 	// drop the textures including the fbo if the size differs
-	if( pForeignTexDepthSolid ){
-		if( pForeignTexDepthSolid->GetWidth() != size
-		|| pForeignTexDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignTexDepthSolid){
+		if(pForeignTexDepthSolid->GetWidth() != size
+		|| pForeignTexDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropTexturesSolid();
 		}
 	}
-	if( pTextureDepthSolid ){
-		if( pTextureDepthSolid->GetWidth() != size 
-		|| pTextureDepthSolid->GetUseFloat() != useFloatDepth ){
+	if(pTextureDepthSolid){
+		if(pTextureDepthSolid->GetWidth() != size 
+		|| pTextureDepthSolid->GetUseFloat() != useFloatDepth){
 			DropTexturesSolid();
 		}
 	}
@@ -256,9 +256,9 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool
 	}
 	
 	// obtain solid depth texture if not existing already
-	if( ! pTextureDepthSolid && ! pForeignTexDepthSolid ){
+	if(!pTextureDepthSolid && !pForeignTexDepthSolid){
 		pTextureDepthSolid = pRenderThread.GetTexture().GetRenderableDepthTexture()
-			.GetTextureWith( size, size, false, useFloatDepth );
+			.GetTextureWith(size, size, false, useFloatDepth);
 		pUseTexDepthSolid = pTextureDepthSolid->GetTexture();
 	}
 	
@@ -266,31 +266,31 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool
 	pRenderThread.GetFramebuffer().Activate(pFBOTextureSolid);
 	
 	pFBOTextureSolid->DetachAllImages();
-	pFBOTextureSolid->AttachDepthTexture( pUseTexDepthSolid );
-	if( withStencil ){
-		pFBOTextureSolid->AttachStencilTexture( pUseTexDepthSolid );
+	pFBOTextureSolid->AttachDepthTexture(pUseTexDepthSolid);
+	if(withStencil){
+		pFBOTextureSolid->AttachStencilTexture(pUseTexDepthSolid);
 	}
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOTextureSolid->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateTransparentTexture(int size, bool useFloatDepth){
 	// drop the textures including the fbo if the size differs
-	if( pForeignTexDepthTransp ){
-		if( pForeignTexDepthTransp->GetWidth() != size
-		|| pForeignTexDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignTexDepthTransp){
+		if(pForeignTexDepthTransp->GetWidth() != size
+		|| pForeignTexDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropTexturesTransparent();
 		}
 	}
-	if( pTextureDepthTransp ){
-		if( pTextureDepthTransp->GetWidth() != size
-		|| pTextureDepthTransp->GetUseFloat() != useFloatDepth ){
+	if(pTextureDepthTransp){
+		if(pTextureDepthTransp->GetWidth() != size
+		|| pTextureDepthTransp->GetUseFloat() != useFloatDepth){
 			DropTexturesTransparent();
 		}
 	}
@@ -301,16 +301,16 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	}
 	
 	// obtain transparent depth texture if not existing already
-	if( ! pTextureDepthTransp && ! pForeignTexDepthTransp ){
+	if(!pTextureDepthTransp && !pForeignTexDepthTransp){
 		pTextureDepthTransp = pRenderThread.GetTexture().GetRenderableDepthTexture()
-			.GetTextureWith( size, size, false, useFloatDepth );
+			.GetTextureWith(size, size, false, useFloatDepth);
 		pUseTexDepthTransp = pTextureDepthTransp->GetTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
-	if( ! pTextureColorTransp && ! pForeignTexColorTransp ){
+	if(!pTextureColorTransp && !pForeignTexColorTransp){
 		pTextureColorTransp = pRenderThread.GetTexture().GetRenderableColorTexture()
-			.GetTextureWith( size, size, 4, false );
+			.GetTextureWith(size, size, 4, false);
 		pUseTexColorTransp = pTextureColorTransp->GetTexture();
 	}
 	
@@ -318,32 +318,32 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	pRenderThread.GetFramebuffer().Activate(pFBOTextureTransp);
 	
 	pFBOTextureTransp->DetachAllImages();
-	pFBOTextureTransp->AttachDepthTexture( pUseTexDepthTransp );
-	pFBOTextureTransp->AttachColorTexture( 0, pUseTexColorTransp );
+	pFBOTextureTransp->AttachDepthTexture(pUseTexDepthTransp);
+	pFBOTextureTransp->AttachColorTexture(0, pUseTexColorTransp);
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	
 	pFBOTextureTransp->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
 
 
 deoglCubeMap *deoglShadowMapper::GetSolidDepthCubeMap() const{
-	if( ! pCubeMapDepthSolid ){
-		DETHROW( deeInvalidParam );
+	if(!pCubeMapDepthSolid){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pCubeMapDepthSolid->GetCubeMap();
 }
 
-void deoglShadowMapper::SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap ){
-	if( pCubeMapDepthSolid ){
-		pCubeMapDepthSolid->SetInUse( false );
-		pCubeMapDepthSolid = NULL;
+void deoglShadowMapper::SetForeignSolidDepthCubeMap(deoglCubeMap *cubemap){
+	if(pCubeMapDepthSolid){
+		pCubeMapDepthSolid->SetInUse(false);
+		pCubeMapDepthSolid = nullptr;
 	}
 	
 	pForeignCubeMapDepthSolid = cubemap;
@@ -352,17 +352,17 @@ void deoglShadowMapper::SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap ){
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
-	if( ! pCubeMapDepthTransp ){
-		DETHROW( deeInvalidParam );
+	if(!pCubeMapDepthTransp){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pCubeMapDepthTransp->GetCubeMap();
 }
 
-void deoglShadowMapper::SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap ){
-	if( pCubeMapDepthTransp ){
-		pCubeMapDepthTransp->SetInUse( false );
-		pCubeMapDepthTransp = NULL;
+void deoglShadowMapper::SetForeignTransparentDepthCubeMap(deoglCubeMap *cubemap){
+	if(pCubeMapDepthTransp){
+		pCubeMapDepthTransp->SetInUse(false);
+		pCubeMapDepthTransp = nullptr;
 	}
 	
 	pForeignCubeMapDepthTransp = cubemap;
@@ -371,17 +371,17 @@ void deoglShadowMapper::SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentColorCubeMap() const{
-	if( ! pCubeMapColorTransp ){
-		DETHROW( deeInvalidParam );
+	if(!pCubeMapColorTransp){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pCubeMapColorTransp->GetCubeMap();
 }
 
-void deoglShadowMapper::SetForeignTransparentColorCubeMap( deoglCubeMap *cubemap ){
-	if( pCubeMapColorTransp ){
-		pCubeMapColorTransp->SetInUse( false );
-		pCubeMapColorTransp = NULL;
+void deoglShadowMapper::SetForeignTransparentColorCubeMap(deoglCubeMap *cubemap){
+	if(pCubeMapColorTransp){
+		pCubeMapColorTransp->SetInUse(false);
+		pCubeMapColorTransp = nullptr;
 	}
 	
 	pForeignCubeMapColorTransp = cubemap;
@@ -397,11 +397,11 @@ void deoglShadowMapper::DropCubeMaps(){
 void deoglShadowMapper::DropCubeMapsSolid(){
 	pFBOCube.Clear();
 	
-	pUseCubeMapDepthSolid = NULL;
-	pForeignCubeMapDepthSolid = NULL;
-	if( pCubeMapDepthSolid ){
-		pCubeMapDepthSolid->SetInUse( false );
-		pCubeMapDepthSolid = NULL;
+	pUseCubeMapDepthSolid = nullptr;
+	pForeignCubeMapDepthSolid = nullptr;
+	if(pCubeMapDepthSolid){
+		pCubeMapDepthSolid->SetInUse(false);
+		pCubeMapDepthSolid = nullptr;
 	}
 	DBGCALL("DropSolidCubeMaps", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 }
@@ -409,55 +409,55 @@ void deoglShadowMapper::DropCubeMapsSolid(){
 void deoglShadowMapper::DropCubeMapsTransparent(){
 	pFBOCube.Clear();
 	
-	pUseCubeMapDepthTransp = NULL;
-	pForeignCubeMapDepthTransp = NULL;
-	if( pCubeMapDepthTransp ){
-		pCubeMapDepthTransp->SetInUse( false );
-		pCubeMapDepthTransp = NULL;
+	pUseCubeMapDepthTransp = nullptr;
+	pForeignCubeMapDepthTransp = nullptr;
+	if(pCubeMapDepthTransp){
+		pCubeMapDepthTransp->SetInUse(false);
+		pCubeMapDepthTransp = nullptr;
 	}
 	DBGCALL("DropTransparentCubeMaps1", pUseCubeMapDepthTransp, pForeignCubeMapDepthTransp, 0)
 	
-	pUseCubeMapColorTransp = NULL;
-	pForeignCubeMapColorTransp = NULL;
-	if( pCubeMapColorTransp ){
-		pCubeMapColorTransp->SetInUse( false );
-		pCubeMapColorTransp = NULL;
+	pUseCubeMapColorTransp = nullptr;
+	pForeignCubeMapColorTransp = nullptr;
+	if(pCubeMapColorTransp){
+		pCubeMapColorTransp->SetInUse(false);
+		pCubeMapColorTransp = nullptr;
 	}
 	DBGCALL("DropTransparentCubeMaps2", pUseCubeMapColorTransp, pForeignCubeMapColorTransp, pCubeMapColorTransp)
 }
 
 void deoglShadowMapper::DropForeignCubeMaps(){
-	if( pForeignCubeMapDepthSolid ){
-		pForeignCubeMapDepthSolid = NULL;
-		pUseCubeMapDepthSolid = NULL;
+	if(pForeignCubeMapDepthSolid){
+		pForeignCubeMapDepthSolid = nullptr;
+		pUseCubeMapDepthSolid = nullptr;
 	}
 	DBGCALL3("DropForeignCubeMaps1", pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 	
-	if( pForeignCubeMapDepthTransp ){
-		pForeignCubeMapDepthTransp = NULL;
-		pUseCubeMapDepthTransp = NULL;
+	if(pForeignCubeMapDepthTransp){
+		pForeignCubeMapDepthTransp = nullptr;
+		pUseCubeMapDepthTransp = nullptr;
 	}
 	DBGCALL3("DropForeignCubeMaps2", pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 	
-	if( pForeignCubeMapColorTransp ){
-		pForeignCubeMapColorTransp = NULL;
-		pUseCubeMapColorTransp = NULL;
+	if(pForeignCubeMapColorTransp){
+		pForeignCubeMapColorTransp = nullptr;
+		pUseCubeMapColorTransp = nullptr;
 	}
 	DBGCALL3("DropForeignCubeMaps3", pForeignCubeMapColorTransp, pUseCubeMapColorTransp)
 }
 
-void deoglShadowMapper::ActivateSolidCubeMap( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateSolidCubeMap(int size, bool useFloatDepth){
 	DBGCALL("ActivateSolidCubeMap", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 	// drop the cubemaps including the fbo if the size differs
-	if( pForeignCubeMapDepthSolid ){
-		if( pForeignCubeMapDepthSolid->GetSize() != size
-		|| pForeignCubeMapDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignCubeMapDepthSolid){
+		if(pForeignCubeMapDepthSolid->GetSize() != size
+		|| pForeignCubeMapDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropCubeMapsSolid();
 		}
 	}
-	if( pCubeMapDepthSolid ){
-		if( pCubeMapDepthSolid->GetSize() != size
-		|| pCubeMapDepthSolid->GetUseFloat() != useFloatDepth ){
+	if(pCubeMapDepthSolid){
+		if(pCubeMapDepthSolid->GetSize() != size
+		|| pCubeMapDepthSolid->GetUseFloat() != useFloatDepth){
 			DropCubeMapsSolid();
 		}
 	}
@@ -468,9 +468,9 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size, bool useFloatDepth ){
 	}
 	
 	// obtain solid depth cubemap if not existing already
-	if( ! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid ){
+	if(!pCubeMapDepthSolid && !pForeignCubeMapDepthSolid){
 		pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
-			GetCubeMapWith( size, useFloatDepth );
+			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
 	}
 	
@@ -478,29 +478,29 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size, bool useFloatDepth ){
 	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
-	pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthSolid );
+	pFBOCube->AttachDepthCubeMap(pUseCubeMapDepthSolid);
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOCube->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateSolidCubeMapFace( int size, bool useFloatDepth, int face ){
+void deoglShadowMapper::ActivateSolidCubeMapFace(int size, bool useFloatDepth, int face){
 	DBGCALL("ActivateSolidCubeMapFace", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 	// drop the cubemaps including the fbo if the size differs
-	if( pForeignCubeMapDepthSolid ){
-		if( pForeignCubeMapDepthSolid->GetSize() != size
-		|| pForeignCubeMapDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignCubeMapDepthSolid){
+		if(pForeignCubeMapDepthSolid->GetSize() != size
+		|| pForeignCubeMapDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropCubeMapsSolid();
 		}
 	}
-	if( pCubeMapDepthSolid ){
-		if( pCubeMapDepthSolid->GetSize() != size
-		|| pCubeMapDepthSolid->GetUseFloat() != useFloatDepth ){
+	if(pCubeMapDepthSolid){
+		if(pCubeMapDepthSolid->GetSize() != size
+		|| pCubeMapDepthSolid->GetUseFloat() != useFloatDepth){
 			DropCubeMapsSolid();
 		}
 	}
@@ -511,9 +511,9 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, bool useFloatDepth, 
 	}
 	
 	// obtain solid depth cubemap if not existing already
-	if( ! pCubeMapDepthSolid && ! pForeignCubeMapDepthSolid ){
+	if(!pCubeMapDepthSolid && !pForeignCubeMapDepthSolid){
 		pCubeMapDepthSolid = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
-			GetCubeMapWith( size, useFloatDepth );
+			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthSolid = pCubeMapDepthSolid->GetCubeMap();
 	}
 	
@@ -521,43 +521,43 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, bool useFloatDepth, 
 	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
-	pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthSolid, face );
+	pFBOCube->AttachDepthCubeMapFace(pUseCubeMapDepthSolid, face);
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOCube->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateTransparentCubeMap( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateTransparentCubeMap(int size, bool useFloatDepth){
 	DBGCALL("ActivateTransparentCubeMap", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 	// drop the cubemaps including the fbo if the size differs
-	if( pForeignCubeMapDepthTransp ){
-		if( pForeignCubeMapDepthTransp->GetSize() != size
-		|| pForeignCubeMapDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignCubeMapDepthTransp){
+		if(pForeignCubeMapDepthTransp->GetSize() != size
+		|| pForeignCubeMapDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropCubeMapsTransparent();
 		}
 	}
-	if( pCubeMapDepthTransp ){
-		if( pCubeMapDepthTransp->GetSize() != size
-		|| pTextureDepthTransp->GetUseFloat() != useFloatDepth ){
+	if(pCubeMapDepthTransp){
+		if(pCubeMapDepthTransp->GetSize() != size
+		|| pTextureDepthTransp->GetUseFloat() != useFloatDepth){
 			DropCubeMapsTransparent();
 		}
 	}
 	
 	// obtain transparent depth cubemap if not existing already
-	if( ! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp ){
+	if(!pCubeMapDepthTransp && !pForeignCubeMapDepthTransp){
 		pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
-			GetCubeMapWith( size, useFloatDepth );
+			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
 	}
 	
 	// obtain transparent color cubemap if not existing already
-	if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
-		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith( size, 4, false );
+	if(!pCubeMapColorTransp && !pForeignCubeMapColorTransp){
+		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith(size, 4, false);
 		pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
 	}
 	
@@ -570,44 +570,44 @@ void deoglShadowMapper::ActivateTransparentCubeMap( int size, bool useFloatDepth
 	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
-	pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthTransp );
-	pFBOCube->AttachColorCubeMap( 0, pUseCubeMapColorTransp );
+	pFBOCube->AttachDepthCubeMap(pUseCubeMapDepthTransp);
+	pFBOCube->AttachColorCubeMap(0, pUseCubeMapColorTransp);
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	
 	pFBOCube->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, bool useFloatDepth, int face ){
+void deoglShadowMapper::ActivateTransparentCubeMapFace(int size, bool useFloatDepth, int face){
 	DBGCALL("ActivateTransparentCubeMapFace", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 	// drop the cubemaps including the fbo if the size differs
-	if( pForeignCubeMapDepthTransp ){
-		if( pForeignCubeMapDepthTransp->GetSize() != size 
-		|| pForeignCubeMapDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignCubeMapDepthTransp){
+		if(pForeignCubeMapDepthTransp->GetSize() != size 
+		|| pForeignCubeMapDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropCubeMapsTransparent();
 		}
 	}
-	if( pCubeMapDepthTransp ){
-		if( pCubeMapDepthTransp->GetSize() != size
-		|| pCubeMapDepthTransp->GetUseFloat() != useFloatDepth ){
+	if(pCubeMapDepthTransp){
+		if(pCubeMapDepthTransp->GetSize() != size
+		|| pCubeMapDepthTransp->GetUseFloat() != useFloatDepth){
 			DropCubeMapsTransparent();
 		}
 	}
 	
 	// obtain transparent depth cubemap if not existing already
-	if( ! pCubeMapDepthTransp && ! pForeignCubeMapDepthTransp ){
+	if(!pCubeMapDepthTransp && !pForeignCubeMapDepthTransp){
 		pCubeMapDepthTransp = pRenderThread.GetTexture().GetRenderableDepthCubeMap().
-			GetCubeMapWith( size, useFloatDepth );
+			GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapDepthTransp = pCubeMapDepthTransp->GetCubeMap();
 	}
 	
 	// obtain transparent color cubemap if not existing already
-	if( ! pCubeMapColorTransp && ! pForeignCubeMapColorTransp ){
-		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith( size, 4, false );
+	if(!pCubeMapColorTransp && !pForeignCubeMapColorTransp){
+		pCubeMapColorTransp = pRenderThread.GetTexture().GetRenderableColorCubeMap().GetCubeMapWith(size, 4, false);
 		pUseCubeMapColorTransp = pCubeMapColorTransp->GetCubeMap();
 	}
 	
@@ -620,32 +620,32 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, bool useFloatD
 	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
-	pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthTransp, face );
-	pFBOCube->AttachColorCubeMapFace( 0, pUseCubeMapColorTransp, face );
+	pFBOCube->AttachDepthCubeMapFace(pUseCubeMapDepthTransp, face);
+	pFBOCube->AttachColorCubeMapFace(0, pUseCubeMapColorTransp, face);
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	
 	pFBOCube->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
 
 
 deoglArrayTexture *deoglShadowMapper::GetSolidDepthArrayTexture() const{
-	if( ! pArrTexSolidDepth ){
-		DETHROW( deeInvalidParam );
+	if(!pArrTexSolidDepth){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pArrTexSolidDepth->GetArrayTexture();
 }
 
-void deoglShadowMapper::SetForeignSolidDepthArrayTexture( deoglArrayTexture *texture ){
-	if( pArrTexSolidDepth ){
-		pArrTexSolidDepth->SetInUse( false );
-		pArrTexSolidDepth = NULL;
+void deoglShadowMapper::SetForeignSolidDepthArrayTexture(deoglArrayTexture *texture){
+	if(pArrTexSolidDepth){
+		pArrTexSolidDepth->SetInUse(false);
+		pArrTexSolidDepth = nullptr;
 	}
 	
 	pForeignArrTexSolidDepth = texture;
@@ -653,17 +653,17 @@ void deoglShadowMapper::SetForeignSolidDepthArrayTexture( deoglArrayTexture *tex
 }
 
 deoglArrayTexture *deoglShadowMapper::GetTransparentDepthArrayTexture() const{
-	if( ! pArrTexTranspDepth ){
-		DETHROW( deeInvalidParam );
+	if(!pArrTexTranspDepth){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pArrTexTranspDepth->GetArrayTexture();
 }
 
-void deoglShadowMapper::SetForeignTransparentDepthArrayTexture( deoglArrayTexture *texture ){
-	if( pArrTexTranspDepth ){
-		pArrTexTranspDepth->SetInUse( false );
-		pArrTexTranspDepth = NULL;
+void deoglShadowMapper::SetForeignTransparentDepthArrayTexture(deoglArrayTexture *texture){
+	if(pArrTexTranspDepth){
+		pArrTexTranspDepth->SetInUse(false);
+		pArrTexTranspDepth = nullptr;
 	}
 	
 	pForeignArrTexTranspDepth = texture;
@@ -671,17 +671,17 @@ void deoglShadowMapper::SetForeignTransparentDepthArrayTexture( deoglArrayTextur
 }
 
 deoglArrayTexture *deoglShadowMapper::GetTransparentColorArrayTexture() const{
-	if( ! pArrTexTranspColor ){
-		DETHROW( deeInvalidParam );
+	if(!pArrTexTranspColor){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pArrTexTranspColor->GetArrayTexture();
 }
 
-void deoglShadowMapper::SetForeignTransparentColorArrayTexture( deoglArrayTexture *texture ){
-	if( pArrTexTranspColor ){
-		pArrTexTranspColor->SetInUse( false );
-		pArrTexTranspColor = NULL;
+void deoglShadowMapper::SetForeignTransparentColorArrayTexture(deoglArrayTexture *texture){
+	if(pArrTexTranspColor){
+		pArrTexTranspColor->SetInUse(false);
+		pArrTexTranspColor = nullptr;
 	}
 	
 	pForeignArrTexTranspColor = texture;
@@ -691,53 +691,53 @@ void deoglShadowMapper::SetForeignTransparentColorArrayTexture( deoglArrayTextur
 void deoglShadowMapper::DropArrayTextures(){
 	pFBOArrTex.Clear();
 	
-	pUseArrTexSolidDepth = NULL;
-	pForeignArrTexSolidDepth = NULL;
-	if( pArrTexSolidDepth ){
-		pArrTexSolidDepth->SetInUse( false );
-		pArrTexSolidDepth = NULL;
+	pUseArrTexSolidDepth = nullptr;
+	pForeignArrTexSolidDepth = nullptr;
+	if(pArrTexSolidDepth){
+		pArrTexSolidDepth->SetInUse(false);
+		pArrTexSolidDepth = nullptr;
 	}
 	
-	pUseArrTexTranspDepth = NULL;
-	pForeignArrTexTranspDepth = NULL;
-	if( pArrTexTranspDepth ){
-		pArrTexTranspDepth->SetInUse( false );
-		pArrTexTranspDepth = NULL;
+	pUseArrTexTranspDepth = nullptr;
+	pForeignArrTexTranspDepth = nullptr;
+	if(pArrTexTranspDepth){
+		pArrTexTranspDepth->SetInUse(false);
+		pArrTexTranspDepth = nullptr;
 	}
 	
-	pUseArrTexTranspColor = NULL;
-	pForeignArrTexTranspColor = NULL;
-	if( pArrTexTranspColor ){
-		pArrTexTranspColor->SetInUse( false );
-		pArrTexTranspColor = NULL;
+	pUseArrTexTranspColor = nullptr;
+	pForeignArrTexTranspColor = nullptr;
+	if(pArrTexTranspColor){
+		pArrTexTranspColor->SetInUse(false);
+		pArrTexTranspColor = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropForeignArrayTextures(){
-	if( pForeignArrTexSolidDepth ){
-		pForeignArrTexSolidDepth = NULL;
-		pUseArrTexSolidDepth = NULL;
+	if(pForeignArrTexSolidDepth){
+		pForeignArrTexSolidDepth = nullptr;
+		pUseArrTexSolidDepth = nullptr;
 	}
 	
-	if( pForeignArrTexTranspDepth ){
-		pForeignArrTexTranspDepth = NULL;
-		pUseArrTexTranspDepth = NULL;
+	if(pForeignArrTexTranspDepth){
+		pForeignArrTexTranspDepth = nullptr;
+		pUseArrTexTranspDepth = nullptr;
 	}
 	
-	if( pForeignArrTexTranspColor ){
-		pForeignArrTexTranspColor = NULL;
-		pUseArrTexTranspColor = NULL;
+	if(pForeignArrTexTranspColor){
+		pForeignArrTexTranspColor = nullptr;
+		pUseArrTexTranspColor = nullptr;
 	}
 }
 
-void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, bool withStencil ){
+void deoglShadowMapper::ActivateSolidArrayTexture(int size, int layerCount, bool withStencil){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size
-	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if(pForeignArrTexSolidDepth && (pForeignArrTexSolidDepth->GetWidth() != size
+	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount)){
 		DropArrayTextures();
 	}
-	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size
-	|| pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if(pArrTexSolidDepth && (pArrTexSolidDepth->GetWidth() != size
+	|| pArrTexSolidDepth->GetLayerCount() != layerCount)){
 		DropArrayTextures();
 	}
 	
@@ -747,9 +747,9 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, boo
 	}
 	
 	// obtain solid depth texture if not existing already
-	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
+	if(!pArrTexSolidDepth && !pForeignArrTexSolidDepth){
 		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
-			.GetWith( size, size, layerCount, withStencil, false );
+			.GetWith(size, size, layerCount, withStencil, false);
 		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
@@ -757,28 +757,28 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, boo
 	pRenderThread.GetFramebuffer().Activate(pFBOArrTex);
 	
 	pFBOArrTex->DetachAllImages();
-	pFBOArrTex->AttachDepthArrayTexture( pUseArrTexSolidDepth );
-	if( withStencil ){
-		pFBOArrTex->AttachStencilArrayTexture( pUseArrTexSolidDepth );
+	pFBOArrTex->AttachDepthArrayTexture(pUseArrTexSolidDepth);
+	if(withStencil){
+		pFBOArrTex->AttachStencilArrayTexture(pUseArrTexSolidDepth);
 	}
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOArrTex->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount, int layer, bool withStencil ){
+void deoglShadowMapper::ActivateSolidArrayTextureLayer(int size, int layerCount, int layer, bool withStencil){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size
-	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if(pForeignArrTexSolidDepth && (pForeignArrTexSolidDepth->GetWidth() != size
+	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount)){
 		DropArrayTextures();
 	}
-	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size
-	|| pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if(pArrTexSolidDepth && (pArrTexSolidDepth->GetWidth() != size
+	|| pArrTexSolidDepth->GetLayerCount() != layerCount)){
 		DropArrayTextures();
 	}
 	
@@ -788,9 +788,9 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	}
 	
 	// obtain solid depth texture if not existing already
-	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
+	if(!pArrTexSolidDepth && !pForeignArrTexSolidDepth){
 		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
-			.GetWith( size, size, layerCount, withStencil, false );
+			.GetWith(size, size, layerCount, withStencil, false);
 		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
@@ -798,26 +798,26 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	pRenderThread.GetFramebuffer().Activate(pFBOArrTex);
 	
 	pFBOArrTex->DetachAllImages();
-	pFBOArrTex->AttachDepthArrayTextureLayer( pUseArrTexSolidDepth, layer );
-	if( withStencil ){
-		pFBOArrTex->AttachStencilArrayTextureLayer( pUseArrTexSolidDepth, layer );
+	pFBOArrTex->AttachDepthArrayTextureLayer(pUseArrTexSolidDepth, layer);
+	if(withStencil){
+		pFBOArrTex->AttachStencilArrayTextureLayer(pUseArrTexSolidDepth, layer);
 	}
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOArrTex->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCount ){
+void deoglShadowMapper::ActivateTransparentArrayTexture(int size, int layerCount){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexTranspDepth && ( pForeignArrTexTranspDepth->GetWidth() != size || pForeignArrTexTranspDepth->GetLayerCount() != layerCount ) ){
+	if(pForeignArrTexTranspDepth && (pForeignArrTexTranspDepth->GetWidth() != size || pForeignArrTexTranspDepth->GetLayerCount() != layerCount)){
 		DropArrayTextures();
 	}
-	if( pArrTexTranspDepth && ( pArrTexTranspDepth->GetWidth() != size || pArrTexTranspDepth->GetLayerCount() != layerCount ) ){
+	if(pArrTexTranspDepth && (pArrTexTranspDepth->GetWidth() != size || pArrTexTranspDepth->GetLayerCount() != layerCount)){
 		DropArrayTextures();
 	}
 	
@@ -827,16 +827,16 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	}
 	
 	// obtain transparent depth texture if not existing already
-	if( ! pArrTexTranspDepth && ! pForeignArrTexTranspDepth ){
+	if(!pArrTexTranspDepth && !pForeignArrTexTranspDepth){
 		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture().
-			GetWith( size, size, layerCount, false, false );
+			GetWith(size, size, layerCount, false, false);
 		pUseArrTexTranspDepth = pArrTexTranspDepth->GetArrayTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
-	if( ! pArrTexTranspColor && ! pForeignArrTexTranspColor ){
+	if(!pArrTexTranspColor && !pForeignArrTexTranspColor){
 		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableColorArrayTexture().
-			GetWith( size, size, layerCount, 4, false );
+			GetWith(size, size, layerCount, 4, false);
 		pUseArrTexTranspColor = pArrTexTranspColor->GetArrayTexture();
 	}
 	
@@ -844,23 +844,23 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	pRenderThread.GetFramebuffer().Activate(pFBOArrTex);
 	
 	pFBOArrTex->DetachAllImages();
-	pFBOArrTex->AttachDepthArrayTexture( pUseArrTexTranspDepth );
-	pFBOArrTex->AttachColorArrayTexture( 0, pForeignArrTexTranspColor );
+	pFBOArrTex->AttachDepthArrayTexture(pUseArrTexTranspDepth);
+	pFBOArrTex->AttachColorArrayTexture(0, pForeignArrTexTranspColor);
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	
 	pFBOArrTex->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
 
 
 deoglTexture *deoglShadowMapper::GetOcclusionTexture() const{
-	if( ! pTextureOcclusion ){
-		DETHROW( deeInvalidParam );
+	if(!pTextureOcclusion){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pTextureOcclusion->GetTexture();
@@ -869,15 +869,15 @@ deoglTexture *deoglShadowMapper::GetOcclusionTexture() const{
 void deoglShadowMapper::DropOcclusionTextures(){
 	pFBOOcclusion.Clear();
 	
-	if( pTextureOcclusion ){
-		pTextureOcclusion->SetInUse( false );
-		pTextureOcclusion = NULL;
+	if(pTextureOcclusion){
+		pTextureOcclusion->SetInUse(false);
+		pTextureOcclusion = nullptr;
 	}
 }
 
-void deoglShadowMapper::ActivateOcclusionTexture( int width, int height ){
+void deoglShadowMapper::ActivateOcclusionTexture(int width, int height){
 	// drop the textures including the fbo if the size differs
-	if( pTextureOcclusion && ( pTextureOcclusion->GetWidth() != width || pTextureOcclusion->GetHeight() != height ) ){
+	if(pTextureOcclusion && (pTextureOcclusion->GetWidth() != width || pTextureOcclusion->GetHeight() != height)){
 		DropOcclusionTextures();
 	}
 	
@@ -887,39 +887,39 @@ void deoglShadowMapper::ActivateOcclusionTexture( int width, int height ){
 	}
 	
 	// obtain occlusion texture if not existing already
-	if( ! pTextureOcclusion ){
-		pTextureOcclusion = pRenderThread.GetTexture().GetRenderableColorTexture().GetTextureWith( width, height, 4, false );
+	if(!pTextureOcclusion){
+		pTextureOcclusion = pRenderThread.GetTexture().GetRenderableColorTexture().GetTextureWith(width, height, 4, false);
 	}
 	
 	// switch to the framebuffer required by this occlusion map
 	pRenderThread.GetFramebuffer().Activate(pFBOOcclusion);
 	
 	pFBOOcclusion->DetachAllImages();
-	pFBOOcclusion->AttachColorTexture( 0, pTextureOcclusion->GetTexture() );
+	pFBOOcclusion->AttachColorTexture(0, pTextureOcclusion->GetTexture());
 	
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	
 	pFBOOcclusion->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, width, height ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, width, height));
 }
 
 
 
 deoglTexture *deoglShadowMapper::GetAmbientTexture() const{
-	if( ! pTextureAmbient ){
-		DETHROW( deeInvalidParam );
+	if(!pTextureAmbient){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pTextureAmbient->GetTexture();
 }
 
-void deoglShadowMapper::SetForeignAmbientTexture( deoglTexture *texture ){
-	if( pTextureAmbient ){
-		pTextureAmbient->SetInUse( false );
-		pTextureAmbient = NULL;
+void deoglShadowMapper::SetForeignAmbientTexture(deoglTexture *texture){
+	if(pTextureAmbient){
+		pTextureAmbient->SetInUse(false);
+		pTextureAmbient = nullptr;
 	}
 	
 	pForeignTexAmbient = texture;
@@ -929,31 +929,31 @@ void deoglShadowMapper::SetForeignAmbientTexture( deoglTexture *texture ){
 void deoglShadowMapper::DropAmbientTextures(){
 	pFBOAmbient.Clear();
 	
-	pUseTexAmbient = NULL;
-	pForeignTexAmbient = NULL;
-	if( pTextureAmbient ){
-		pTextureAmbient->SetInUse( false );
-		pTextureAmbient = NULL;
+	pUseTexAmbient = nullptr;
+	pForeignTexAmbient = nullptr;
+	if(pTextureAmbient){
+		pTextureAmbient->SetInUse(false);
+		pTextureAmbient = nullptr;
 	}
 }
 
 void deoglShadowMapper::DropForeignAmbientTextures(){
-	if( pForeignTexAmbient ){
-		pForeignTexAmbient = NULL;
-		pUseTexAmbient = NULL;
+	if(pForeignTexAmbient){
+		pForeignTexAmbient = nullptr;
+		pUseTexAmbient = nullptr;
 	}
 }
 
-void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateAmbientTexture(int size, bool useFloatDepth){
 	// drop the textures including the fbo if the size differs
-	if( pForeignTexAmbient ){
-		if( pForeignTexAmbient->GetWidth() != size
-		|| pForeignTexAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignTexAmbient){
+		if(pForeignTexAmbient->GetWidth() != size
+		|| pForeignTexAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropAmbientTextures();
 		}
 	}
-	if( pTextureAmbient ){
-		if( pTextureAmbient->GetWidth() != size || pTextureAmbient->GetUseFloat() != useFloatDepth ){
+	if(pTextureAmbient){
+		if(pTextureAmbient->GetWidth() != size || pTextureAmbient->GetUseFloat() != useFloatDepth){
 			DropAmbientTextures();
 		}
 	}
@@ -964,9 +964,9 @@ void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	}
 	
 	// obtain ambient texture if not existing already
-	if( ! pTextureAmbient && ! pForeignTexAmbient ){
+	if(!pTextureAmbient && !pForeignTexAmbient){
 		pTextureAmbient = pRenderThread.GetTexture().GetRenderableDepthTexture()
-			.GetTextureWith( size, size, false, useFloatDepth );
+			.GetTextureWith(size, size, false, useFloatDepth);
 		pUseTexAmbient = pTextureAmbient->GetTexture();
 	}
 	
@@ -974,30 +974,30 @@ void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	pRenderThread.GetFramebuffer().Activate(pFBOAmbient);
 	
 	pFBOAmbient->DetachAllImages();
-	pFBOAmbient->AttachDepthTexture( pUseTexAmbient );
+	pFBOAmbient->AttachDepthTexture(pUseTexAmbient);
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOAmbient->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
 
 
 deoglCubeMap *deoglShadowMapper::GetAmbientCubeMap() const{
-	if( ! pCubeMapAmbient ){
-		DETHROW( deeInvalidParam );
+	if(!pCubeMapAmbient){
+		DETHROW(deeInvalidParam);
 	}
 	return pCubeMapAmbient->GetCubeMap();
 }
 
-void deoglShadowMapper::SetForeignAmbientCubeMap( deoglCubeMap *cubemap ){
-	if( pCubeMapAmbient ){
-		pCubeMapAmbient->SetInUse( false );
-		pCubeMapAmbient = NULL;
+void deoglShadowMapper::SetForeignAmbientCubeMap(deoglCubeMap *cubemap){
+	if(pCubeMapAmbient){
+		pCubeMapAmbient->SetInUse(false);
+		pCubeMapAmbient = nullptr;
 	}
 	
 	pForeignCubeMapAmbient = cubemap;
@@ -1008,34 +1008,34 @@ void deoglShadowMapper::SetForeignAmbientCubeMap( deoglCubeMap *cubemap ){
 void deoglShadowMapper::DropAmbientCubeMaps(){
 	pFBOCubeAmbient.Clear();
 	
-	pUseCubeMapAmbient = NULL;
-	pForeignCubeMapAmbient = NULL;
-	if( pCubeMapAmbient ){
-		pCubeMapAmbient->SetInUse( false );
-		pCubeMapAmbient = NULL;
+	pUseCubeMapAmbient = nullptr;
+	pForeignCubeMapAmbient = nullptr;
+	if(pCubeMapAmbient){
+		pCubeMapAmbient->SetInUse(false);
+		pCubeMapAmbient = nullptr;
 	}
 	DBGCALL("DropAmbientCubeMaps", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
 void deoglShadowMapper::DropForeignAmbientCubeMaps(){
-	if( pForeignCubeMapAmbient ){
-		pForeignCubeMapAmbient = NULL;
-		pUseCubeMapAmbient = NULL;
+	if(pForeignCubeMapAmbient){
+		pForeignCubeMapAmbient = nullptr;
+		pUseCubeMapAmbient = nullptr;
 	}
 	DBGCALL3("DropForeignAmbientCubeMaps", pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
-void deoglShadowMapper::ActivateAmbientCubeMap( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateAmbientCubeMap(int size, bool useFloatDepth){
 	DBGCALL("ActivateAmbientCubeMap", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
-	if( pForeignCubeMapAmbient ){
-		if( pForeignCubeMapAmbient->GetSize() != size
-		|| pForeignCubeMapAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignCubeMapAmbient){
+		if(pForeignCubeMapAmbient->GetSize() != size
+		|| pForeignCubeMapAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropAmbientCubeMaps();
 		}
 	}
-	if( pCubeMapAmbient ){
-		if( pCubeMapAmbient->GetSize() != size || pCubeMapAmbient->GetUseFloat() != useFloatDepth ){
+	if(pCubeMapAmbient){
+		if(pCubeMapAmbient->GetSize() != size || pCubeMapAmbient->GetUseFloat() != useFloatDepth){
 			DropAmbientCubeMaps();
 		}
 	}
@@ -1046,8 +1046,8 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size, bool useFloatDepth ){
 	}
 	
 	// obtain solid depth cubemap if not existing already
-	if( ! pCubeMapAmbient && ! pForeignCubeMapAmbient ){
-		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size, useFloatDepth );
+	if(!pCubeMapAmbient && !pForeignCubeMapAmbient){
+		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapAmbient = pCubeMapAmbient->GetCubeMap();
 	}
 	
@@ -1057,26 +1057,26 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size, bool useFloatDepth ){
 	pFBOCubeAmbient->DetachAllImages();
 	pFBOCubeAmbient->AttachDepthCubeMap(pUseCubeMapAmbient);
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOCubeAmbient->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
-void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, bool useFloatDepth, int face ){
+void deoglShadowMapper::ActivateAmbientCubeMapFace(int size, bool useFloatDepth, int face){
 	DBGCALL("ActivateAmbientCubeMapFace", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
-	if( pForeignCubeMapAmbient ){
-		if( pForeignCubeMapAmbient->GetSize() != size
-		|| pForeignCubeMapAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+	if(pForeignCubeMapAmbient){
+		if(pForeignCubeMapAmbient->GetSize() != size
+		|| pForeignCubeMapAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth){
 			DropAmbientCubeMaps();
 		}
 	}
-	if( pCubeMapAmbient ){
-		if( pCubeMapAmbient->GetSize() != size || pCubeMapAmbient->GetUseFloat() != useFloatDepth ){
+	if(pCubeMapAmbient){
+		if(pCubeMapAmbient->GetSize() != size || pCubeMapAmbient->GetUseFloat() != useFloatDepth){
 			DropAmbientCubeMaps();
 		}
 	}
@@ -1087,8 +1087,8 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, bool useFloatDepth
 	}
 	
 	// obtain depth cubemap if not existing already
-	if( ! pCubeMapAmbient && ! pForeignCubeMapAmbient ){
-		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size, useFloatDepth );
+	if(!pCubeMapAmbient && !pForeignCubeMapAmbient){
+		pCubeMapAmbient = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith(size, useFloatDepth);
 		pUseCubeMapAmbient = pCubeMapAmbient->GetCubeMap();
 	}
 	
@@ -1096,21 +1096,21 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, bool useFloatDepth
 	pRenderThread.GetFramebuffer().Activate(pFBOCubeAmbient);
 	
 	pFBOCubeAmbient->DetachAllImages();
-	pFBOCubeAmbient->AttachDepthCubeMapFace( pUseCubeMapAmbient, face );
+	pFBOCubeAmbient->AttachDepthCubeMapFace(pUseCubeMapAmbient, face);
 	
-	const GLenum buffers[ 1 ] = { GL_NONE };
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+	const GLenum buffers[1] = {GL_NONE};
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 	
 	pFBOCubeAmbient->Verify();
 	
-	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
+	OGL_CHECK(pRenderThread, glViewport(0, 0, size, size));
 }
 
 
 
-int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
-	switch( config.GetShadowQuality() ){
+int deoglShadowMapper::ShadowMapSize (const deoglConfiguration &config){
+	switch(config.GetShadowQuality()){
 	case deoglConfiguration::esqVeryHigh:
 		return 4096;
 		
@@ -1129,7 +1129,7 @@ int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
 	}
 }
 
-int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
+int deoglShadowMapper::ShadowCubeSize(const deoglConfiguration& config){
 	// cube map sizes above 1024 are brutal on the memory consumption especially if many
 	// point lights are close to the cameras. later on this can be modified to use higher
 	// resolution if the count of active point light shadow cubes is low
@@ -1139,7 +1139,7 @@ int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
 	// consumption of the cube map is 1.5x the memory consumption of the shadow map
 	// 
 	// for the time being half the shadow map size is used.
-	switch( config.GetShadowQuality() ){
+	switch(config.GetShadowQuality()){
 	case deoglConfiguration::esqVeryHigh:
 		return 2048; //4096;
 		
@@ -1172,26 +1172,26 @@ void deoglShadowMapper::pCleanUp(){
 	DropTextures();
 }
 /*
-GLenum deoglShadowMapper::pGetCubeFaceTarget( int face ){
-	if( face == deoglCubeMap::efPositiveX ){
+GLenum deoglShadowMapper::pGetCubeFaceTarget(int face){
+	if(face == deoglCubeMap::efPositiveX){
 		return GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 		
-	}else if( face == deoglCubeMap::efNegativeX ){
+	}else if(face == deoglCubeMap::efNegativeX){
 		return GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
 		
-	}else if( face == deoglCubeMap::efPositiveY ){
+	}else if(face == deoglCubeMap::efPositiveY){
 		return GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
 		
-	}else if( face == deoglCubeMap::efNegativeY ){
+	}else if(face == deoglCubeMap::efNegativeY){
 		return GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
 		
-	}else if( face == deoglCubeMap::efPositiveZ ){
+	}else if(face == deoglCubeMap::efPositiveZ){
 		return GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
 		
-	}else if( face == deoglCubeMap::efNegativeZ ){
+	}else if(face == deoglCubeMap::efNegativeZ){
 		return GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 */

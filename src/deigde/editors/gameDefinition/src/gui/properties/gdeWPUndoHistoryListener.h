@@ -41,13 +41,16 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<gdeWPUndoHistoryListener> Ref;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPUndoHistoryListener( gdeWPUndoHistory &panel );
+	gdeWPUndoHistoryListener(gdeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~gdeWPUndoHistoryListener();
+protected:
+	~gdeWPUndoHistoryListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( gdeGameDefinition *gameDefinition );
+	void UndoChanged(gdeGameDefinition *gameDefinition) override;
 	/*@}*/
 };
 

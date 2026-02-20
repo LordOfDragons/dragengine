@@ -25,19 +25,20 @@
 #ifndef _MEWPBROWSER_H_
 #define _MEWPBROWSER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include "meWPBrowserListener.h"
+#include "../../world/meWorld.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 
-class meWorld;
-class meWPBrowserListener;
 class meWindowProperties;
 
 class igdeGDCategory;
@@ -54,6 +55,8 @@ class igdeTreeItem;
  */
 class meWPBrowser : public igdeContainerBox{
 public:
+	using Ref = deTObjectReference<meWPBrowser>;
+	
 	enum ePreviewSize{
 		epsLarge,
 		epsMedium,
@@ -80,36 +83,36 @@ public:
 	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPBrowserListener *pListener;
+	meWPBrowserListener::Ref pListener;
 	
-	meWorld *pWorld;
-	
-	
-	igdeActionReference pActionSetClass;
-	igdeActionReference pActionSetSkin;
-	igdeActionReference pActionSetDecal;
-	igdeActionReference pActionSetSky;
-	
-	igdeActionReference pActionPISizeSmall;
-	igdeActionReference pActionPISizeMedium;
-	igdeActionReference pActionPISizeLarge;
-	
-	igdeActionReference pActionPIViewList;
-	igdeActionReference pActionPIViewPreview;
-	
-	igdeActionReference pActionPIRebuild;
+	meWorld::Ref pWorld;
 	
 	
-	igdeComboBoxReference pCBTypes;
-	igdeButtonReference pBtnSelByCat;
-	igdeButtonReference pBtnSelByFilter;
+	igdeAction::Ref pActionSetClass;
+	igdeAction::Ref pActionSetSkin;
+	igdeAction::Ref pActionSetDecal;
+	igdeAction::Ref pActionSetSky;
 	
-	igdeSwitcherReference pSwitcherSelBy;
-	igdeTreeListReference pTreeCategories;
-	igdeIconListBoxReference pListItems;
-	igdeTextFieldReference pEditFilter;
+	igdeAction::Ref pActionPISizeSmall;
+	igdeAction::Ref pActionPISizeMedium;
+	igdeAction::Ref pActionPISizeLarge;
 	
-	igdeTextAreaReference pEditInfos;
+	igdeAction::Ref pActionPIViewList;
+	igdeAction::Ref pActionPIViewPreview;
+	
+	igdeAction::Ref pActionPIRebuild;
+	
+	
+	igdeComboBox::Ref pCBTypes;
+	igdeButton::Ref pBtnSelByCat;
+	igdeButton::Ref pBtnSelByFilter;
+	
+	igdeSwitcher::Ref pSwitcherSelBy;
+	igdeTreeList::Ref pTreeCategories;
+	igdeIconListBox::Ref pListItems;
+	igdeTextField::Ref pEditFilter;
+	
+	igdeTextArea::Ref pEditInfos;
 	
 	ePreviewSize pPreviewSize;
 	eSelectionMode pSelectionMode;
@@ -121,11 +124,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPBrowser( meWindowProperties &windowProperties );
+	meWPBrowser(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPBrowser();
+	~meWPBrowser() override;
 	/*@}*/
 	
 	
@@ -137,19 +140,19 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update category list. */
 	void UpdateCategoryList();
 	
 	/** \brief Update category list starting at category. */
-	void UpdateCategoryListWith( igdeGDCategory *category );
+	void UpdateCategoryListWith(igdeGDCategory *category);
 	
 	/** \brief Update category list starting at category and tree item. */
-	void AddCategoryToList( igdeGDCategory *category, igdeTreeItem *parent );
+	void AddCategoryToList(igdeGDCategory *category, igdeTreeItem *parent);
 	
 	/** \brief Update item list. */
 	void UpdateItemList();
@@ -170,19 +173,19 @@ public:
 	ePreviewItemType GetPreviewItemType() const;
 	
 	/** \brief Set preview item type. */
-	void SetPreviewItemType( ePreviewItemType type );
+	void SetPreviewItemType(ePreviewItemType type);
 	
 	/** \brief Selected category. */
 	igdeGDCategory *GetSelectedCategory() const;
 	
 	/** \brief Select category. */
-	void SelectCategory( igdeGDCategory *category );
+	void SelectCategory(igdeGDCategory *category);
 	
 	/** \brief Selection mode. */
 	inline eSelectionMode GetSelectionMode() const{ return pSelectionMode; }
 	
 	/** \brief Set selection mode. */
-	void SetSelectionMode( eSelectionMode mode );
+	void SetSelectionMode(eSelectionMode mode);
 	
 	/** \brief Selected list item. */
 	igdeListItem *GetSelectedListItem() const;
@@ -200,13 +203,13 @@ public:
 	inline ePreviewSize GetPreviewSize() const{ return pPreviewSize; }
 	
 	/** \brief Set preview size. */
-	void SetPreviewSize( ePreviewSize size );
+	void SetPreviewSize(ePreviewSize size);
 	
 	/** \brief View mode. */
 	inline eViewModes GetViewMode() const{ return pViewMode; }
 	
 	/** \brief Set view mode. */
-	void SetViewMode( eViewModes viewMode );
+	void SetViewMode(eViewModes viewMode);
 	
 	/** \brief Preview icon size. */
 	int GetPreviewIconSize() const;
@@ -214,28 +217,28 @@ public:
 	
 	
 	/** \brief Select object class. */
-	void SelectObjectClass( igdeGDClass *gdclass );
+	void SelectObjectClass(igdeGDClass *gdclass);
 	
 	/** \brief Select skin. */
-	void SelectSkin( igdeGDSkin *gdskin );
+	void SelectSkin(igdeGDSkin *gdskin);
 	
 	/** \brief Select sky. */
-	void SelectSky( igdeGDSky *gdsky );
+	void SelectSky(igdeGDSky *gdsky);
 	
 	
-	inline igdeAction *GetActionSetClass() const{ return pActionSetClass; }
-	inline igdeAction *GetActionSetSkin() const{ return pActionSetSkin; }
-	inline igdeAction *GetActionSetDecal() const{ return pActionSetDecal; }
-	inline igdeAction *GetActionSetSky() const{ return pActionSetSky; }
+	inline const igdeAction::Ref &GetActionSetClass() const{ return pActionSetClass; }
+	inline const igdeAction::Ref &GetActionSetSkin() const{ return pActionSetSkin; }
+	inline const igdeAction::Ref &GetActionSetDecal() const{ return pActionSetDecal; }
+	inline const igdeAction::Ref &GetActionSetSky() const{ return pActionSetSky; }
 	
-	inline igdeAction *GetActionPISizeSmall() const{ return pActionPISizeSmall; }
-	inline igdeAction *GetActionPISizeMedium() const{ return pActionPISizeMedium; }
-	inline igdeAction *GetActionPISizeLarge() const{ return pActionPISizeLarge; }
+	inline const igdeAction::Ref &GetActionPISizeSmall() const{ return pActionPISizeSmall; }
+	inline const igdeAction::Ref &GetActionPISizeMedium() const{ return pActionPISizeMedium; }
+	inline const igdeAction::Ref &GetActionPISizeLarge() const{ return pActionPISizeLarge; }
 	
-	inline igdeAction *GetActionPIViewList() const{ return pActionPIViewList; }
-	inline igdeAction *GetActionPIViewPreview() const{ return pActionPIViewPreview; }
+	inline const igdeAction::Ref &GetActionPIViewList() const{ return pActionPIViewList; }
+	inline const igdeAction::Ref &GetActionPIViewPreview() const{ return pActionPIViewPreview; }
 	
-	inline igdeAction *GetActionPIRebuild() const{ return pActionPIRebuild; }
+	inline const igdeAction::Ref &GetActionPIRebuild() const{ return pActionPIRebuild; }
 	/*@}*/
 	
 	

@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCSpeaker;
+#include "../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCSpeaker;
  */
 class gdeClipboardDataOCSpeaker : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCSpeaker>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCSpeaker *pSpeaker;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSpeaker( gdeOCSpeaker *speaker );
+	gdeClipboardDataOCSpeaker(gdeOCSpeaker *speaker);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCSpeaker();
+	~gdeClipboardDataOCSpeaker() override;
 	/*@}*/
 	
 	

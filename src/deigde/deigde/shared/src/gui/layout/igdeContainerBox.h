@@ -38,6 +38,10 @@
  */
 class DE_DLL_EXPORT igdeContainerBox : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeContainerBox>;
+	
+	
 	/** \brief Layout axis for subclasses. */
 	enum eAxis{
 		/** \brief Layout along the X axis. */
@@ -59,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerBox( igdeEnvironment &environment, eAxis axis, int spacing = 0 );
+	igdeContainerBox(igdeEnvironment &environment, eAxis axis, int spacing = 0);
 	
 	
 	
@@ -70,7 +74,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeContainerBox();
+	~igdeContainerBox() override;
 	/*@}*/
 	
 	
@@ -96,13 +100,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	/*@}*/
 };
 

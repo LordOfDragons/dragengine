@@ -38,7 +38,6 @@
 #include "../devmode/dedaiDeveloperMode.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/navigation/navigator/deNavigator.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
@@ -54,34 +53,28 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiWorld::dedaiWorld( deDEAIModule &deai, deWorld &world ) :
-pDEAI( deai ),
-pWorld( world ),
-pHeightTerrain( NULL ),
-pDevModeUpdateTracker( 0 )
+dedaiWorld::dedaiWorld(deDEAIModule &deai, deWorld &world) :
+pDEAI(deai),
+pWorld(world),
+pHeightTerrain(nullptr),
+pDevModeUpdateTracker(0)
 {
 	try{
 		HeightTerrainChanged();
 		
-		deNavigationSpace *navspace = world.GetRootNavigationSpace();
-		while( navspace ){
-			NavigationSpaceAdded( navspace );
-			navspace = navspace->GetLLWorldNext();
-		}
+		world.GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
+			NavigationSpaceAdded(navspace);
+		});
 		
-		deNavigationBlocker *blocker = world.GetRootNavigationBlocker();
-		while( blocker ){
-			NavigationBlockerAdded( blocker );
-			blocker = blocker->GetLLWorldNext();
-		}
+		world.GetNavigationBlockers().Visit([&](deNavigationBlocker *blocker){
+			NavigationBlockerAdded(blocker);
+		});
 		
-		deNavigator *navigator = world.GetRootNavigator();
-		while( navigator ){
-			NavigatorAdded( navigator );
-			navigator = navigator->GetLLWorldNext();
-		}
+		world.GetNavigators().Visit([&](deNavigator *navigator){
+			NavigatorAdded(navigator);
+		});
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -96,21 +89,20 @@ dedaiWorld::~dedaiWorld(){
 // Management
 ///////////////
 
-dedaiLayer *dedaiWorld::GetLayer( int layer ){
+dedaiLayer *dedaiWorld::GetLayer(int layer){
 	const int count = pLayers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dedaiLayer * const objLayer = ( dedaiLayer* )pLayers.GetAt( i );
-		if( objLayer->GetLayer() == layer ){
+	for(i=0; i<count; i++){
+		dedaiLayer * const objLayer = pLayers.GetAt(i);
+		if(objLayer->GetLayer() == layer){
 			return objLayer;
 		}
 	}
 	
-	deObjectReference newLayer;
-	newLayer.TakeOver( new dedaiLayer( *this, layer ) );
-	pLayers.Add( newLayer );
-	return ( dedaiLayer* )( deObject* )newLayer; // pLayers keeps reference
+	const dedaiLayer::Ref newLayer(dedaiLayer::Ref::New(*this, layer));
+	pLayers.Add(newLayer);
+	return newLayer; // pLayers keeps reference
 }
 
 
@@ -118,93 +110,79 @@ dedaiLayer *dedaiWorld::GetLayer( int layer ){
 void dedaiWorld::CheckDeveloperMode(){
 	const dedaiDeveloperMode &devmode = pDEAI.GetDeveloperMode();
 	
-	if( ! devmode.GetEnabled() ){
+	if(!devmode.GetEnabled()){
 		return;
 	}
 	
 	// check if an update is forced
-	const bool trackerChanged = ( pDEAI.GetDeveloperMode().GetUpdateTracker() != pDevModeUpdateTracker );
+	const bool trackerChanged = (pDEAI.GetDeveloperMode().GetUpdateTracker() != pDevModeUpdateTracker);
 	pDevModeUpdateTracker = pDEAI.GetDeveloperMode().GetUpdateTracker();
 	
 	// invalidate blocking
-	if( trackerChanged && pDEAI.GetDeveloperMode().GetQuickDebug() >= 8 && pDEAI.GetDeveloperMode().GetQuickDebug() <= 10 ){
-		const int count = pLayers.GetCount();
-		int i;
-		for( i=0; i<count; i++ ){
-			( ( dedaiLayer* )pLayers.GetAt( i ) )->InvalidateBlocking();
-		}
+	if(trackerChanged && pDEAI.GetDeveloperMode().GetQuickDebug() >= 8 && pDEAI.GetDeveloperMode().GetQuickDebug() <= 10){
+		pLayers.Visit([](dedaiLayer &layer){
+			layer.InvalidateBlocking();
+		});
 	}
 	
 	// height terrain navspace debug drawing
-	if( pHeightTerrain ){
-		const int sectorCount = pHeightTerrain->GetSectorCount();
+	if(pHeightTerrain){
+		const int sectorCount = pHeightTerrain->GetSectors().GetCount();
 		int i, j;
-		for( i=0; i<sectorCount; i++ ){
-			dedaiHeightTerrainSector &sector = *pHeightTerrain->GetSectorAt( i );
-			const int navSpaceCount = sector.GetNavSpaceCount();
-			for( j=0; j<navSpaceCount; j++ ){
-				sector.GetNavSpaceAt( j )->GetSpace()->UpdateDDSSpace();
+		for(i=0; i<sectorCount; i++){
+			dedaiHeightTerrainSector &sector = *pHeightTerrain->GetSectors().GetAt(i);
+			const int navSpaceCount = sector.GetNavSpaces().GetCount();
+			for(j=0; j<navSpaceCount; j++){
+				sector.GetNavSpaces().GetAt(j)->GetSpace()->UpdateDDSSpace();
 			}
 		}
 	}
 	
 	// navigation spaces debug drawing
-	if( devmode.GetShowSpaces() ){
-		if( trackerChanged ){
-			deNavigationSpace *engNavSpace = pWorld.GetRootNavigationSpace();
-			while( engNavSpace ){
-				( ( dedaiNavSpace* )engNavSpace->GetPeerAI() )->GetSpace()->UpdateDDSSpace();
-				engNavSpace = engNavSpace->GetLLWorldNext();
-			}
+	if(devmode.GetShowSpaces()){
+		if(trackerChanged){
+			pWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+				((dedaiNavSpace*)engNavSpace->GetPeerAI())->GetSpace()->UpdateDDSSpace();
+			});
 		}
 		
 	}else{
-		if( trackerChanged ){
-			deNavigationSpace *engNavSpace = pWorld.GetRootNavigationSpace();
-			while( engNavSpace ){
-				( ( dedaiNavSpace* )engNavSpace->GetPeerAI() )->GetSpace()->UpdateDDSSpace();
-				engNavSpace = engNavSpace->GetLLWorldNext();
-			}
+		if(trackerChanged){
+			pWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *engNavSpace){
+				((dedaiNavSpace*)engNavSpace->GetPeerAI())->GetSpace()->UpdateDDSSpace();
+			});
 		}
 	}
 	
 	// navigation blockers debug drawing
-	if( devmode.GetShowBlockers() ){
-		if( trackerChanged ){
-			deNavigationBlocker *engBlocker = pWorld.GetRootNavigationBlocker();
-			while( engBlocker ){
-				( ( dedaiNavBlocker* )engBlocker->GetPeerAI() )->UpdateDDSBlocker();
-				engBlocker = engBlocker->GetLLWorldNext();
-			}
+	if(devmode.GetShowBlockers()){
+		if(trackerChanged){
+			pWorld.GetNavigationBlockers().Visit([&](deNavigationBlocker *engBlocker){
+				((dedaiNavBlocker*)engBlocker->GetPeerAI())->UpdateDDSBlocker();
+			});
 		}
 		
 	}else{
-		if( trackerChanged ){
-			deNavigationBlocker *engBlocker = pWorld.GetRootNavigationBlocker();
-			while( engBlocker ){
-				( ( dedaiNavBlocker* )engBlocker->GetPeerAI() )->UpdateDDSBlocker();
-				engBlocker = engBlocker->GetLLWorldNext();
-			}
+		if(trackerChanged){
+			pWorld.GetNavigationBlockers().Visit([&](deNavigationBlocker *engBlocker){
+				((dedaiNavBlocker*)engBlocker->GetPeerAI())->UpdateDDSBlocker();
+			});
 		}
 	}
 	
 	// navigator path debug drawing
-	if( devmode.GetShowPath() || devmode.GetShowPathFaces() ){
-		if( trackerChanged ){
-			deNavigator *engNav = pWorld.GetRootNavigator();
-			while( engNav ){
-				( ( dedaiNavigator* )engNav->GetPeerAI() )->UpdateDDSPath();
-				engNav = engNav->GetLLWorldNext();
-			}
+	if(devmode.GetShowPath() || devmode.GetShowPathFaces()){
+		if(trackerChanged){
+			pWorld.GetNavigators().Visit([&](deNavigator *engNav){
+				((dedaiNavigator*)engNav->GetPeerAI())->UpdateDDSPath();
+			});
 		}
 		
 	}else{
-		if( trackerChanged ){
-			deNavigator *engNav = pWorld.GetRootNavigator();
-			while( engNav ){
-				( ( dedaiNavigator* )engNav->GetPeerAI() )->UpdateDDSPath();
-				engNav = engNav->GetLLWorldNext();
-			}
+		if(trackerChanged){
+			pWorld.GetNavigators().Visit([&](deNavigator *engNav){
+				((dedaiNavigator*)engNav->GetPeerAI())->UpdateDDSPath();
+			});
 		}
 	}
 }
@@ -214,113 +192,100 @@ void dedaiWorld::CheckDeveloperMode(){
 // Notifications
 //////////////////
 
-void dedaiWorld::Update( float elapsed ){
+void dedaiWorld::Update(float elapsed){
 	CheckDeveloperMode();
 	
 	const int count = pLayers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( dedaiLayer* )pLayers.GetAt( i ) )->Update( elapsed );
+	for(i=0; i<count; i++){
+		pLayers.GetAt(i)->Update(elapsed);
 	}
 }
 
 
 
-void dedaiWorld::NavigationSpaceAdded( deNavigationSpace *navspace ){
-	dedaiNavSpace * const peer = ( dedaiNavSpace* )navspace->GetPeerAI();
-	if( peer ){
-		peer->SetParentWorld( this );
+void dedaiWorld::NavigationSpaceAdded(deNavigationSpace *navspace){
+	dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
+	if(peer){
+		peer->SetParentWorld(this);
 	}
 }
 
-void dedaiWorld::NavigationSpaceRemoved( deNavigationSpace *navspace ){
-	dedaiNavSpace * const peer = ( dedaiNavSpace* )navspace->GetPeerAI();
-	if( peer ){
-		peer->SetParentWorld( NULL );
+void dedaiWorld::NavigationSpaceRemoved(deNavigationSpace *navspace){
+	dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
+	if(peer){
+		peer->SetParentWorld(nullptr);
 	}
 }
 
 void dedaiWorld::AllNavigationSpacesRemoved(){
-	deNavigationSpace *navspace = pWorld.GetRootNavigationSpace();
-	
-	while( navspace ){
-		dedaiNavSpace * const peer = ( dedaiNavSpace* )navspace->GetPeerAI();
-		navspace = navspace->GetLLWorldNext();
-		if( peer ){
-			peer->SetParentWorld( NULL );
+	pWorld.GetNavigationSpaces().Visit([&](deNavigationSpace *navspace){
+		dedaiNavSpace * const peer = (dedaiNavSpace*)navspace->GetPeerAI();
+		if(peer){
+			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 
 
-void dedaiWorld::NavigationBlockerAdded( deNavigationBlocker *blocker ){
-	( ( dedaiNavBlocker* )blocker->GetPeerAI() )->SetParentWorld( this );
+void dedaiWorld::NavigationBlockerAdded(deNavigationBlocker *blocker){
+	((dedaiNavBlocker*)blocker->GetPeerAI())->SetParentWorld(this);
 }
 
-void dedaiWorld::NavigationBlockerRemoved( deNavigationBlocker *blocker ){
-	dedaiNavBlocker * const peer = ( dedaiNavBlocker* )blocker->GetPeerAI();
+void dedaiWorld::NavigationBlockerRemoved(deNavigationBlocker *blocker){
+	dedaiNavBlocker * const peer = (dedaiNavBlocker*)blocker->GetPeerAI();
 	
-	if( peer ){
-		peer->SetParentWorld( NULL );
+	if(peer){
+		peer->SetParentWorld(nullptr);
 	}
 }
 
 void dedaiWorld::AllNavigationBlockersRemoved(){
-	deNavigationBlocker *blocker = pWorld.GetRootNavigationBlocker();
-	dedaiNavBlocker *peer;
-	
-	while( blocker ){
-		peer = ( dedaiNavBlocker* )blocker->GetPeerAI();
-		blocker = blocker->GetLLWorldNext();
-		
-		if( peer ){
-			peer->SetParentWorld( NULL );
+	pWorld.GetNavigationBlockers().Visit([&](deNavigationBlocker *blocker){
+		dedaiNavBlocker * const peer = (dedaiNavBlocker*)blocker->GetPeerAI();
+		if(peer){
+			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 
 
-void dedaiWorld::NavigatorAdded( deNavigator *navigator ){
-	( ( dedaiNavigator* )navigator->GetPeerAI() )->SetParentWorld( this );
+void dedaiWorld::NavigatorAdded(deNavigator *navigator){
+	((dedaiNavigator*)navigator->GetPeerAI())->SetParentWorld(this);
 }
 
-void dedaiWorld::NavigatorRemoved( deNavigator *navigator ){
-	dedaiNavigator * const peer = ( dedaiNavigator* )navigator->GetPeerAI();
+void dedaiWorld::NavigatorRemoved(deNavigator *navigator){
+	dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
 	
-	if( peer ){
-		peer->SetParentWorld( NULL );
+	if(peer){
+		peer->SetParentWorld(nullptr);
 	}
 }
 
 void dedaiWorld::AllNavigatorsRemoved(){
-	deNavigator *navigator = pWorld.GetRootNavigator();
-	dedaiNavigator *peer;
-	
-	while( navigator ){
-		peer = ( dedaiNavigator* )navigator->GetPeerAI();
-		navigator = navigator->GetLLWorldNext();
-		
-		if( peer ){
-			peer->SetParentWorld( NULL );
+	pWorld.GetNavigators().Visit([&](deNavigator *navigator){
+		dedaiNavigator * const peer = (dedaiNavigator*)navigator->GetPeerAI();
+		if(peer){
+			peer->SetParentWorld(nullptr);
 		}
-	}
+	});
 }
 
 
 
 void dedaiWorld::HeightTerrainChanged(){
-	if( pHeightTerrain ){
-		pHeightTerrain->SetParentWorld( NULL );
-		pHeightTerrain = NULL;
+	if(pHeightTerrain){
+		pHeightTerrain->SetParentWorld(nullptr);
+		pHeightTerrain = nullptr;
 	}
 	
-	if( pWorld.GetHeightTerrain() ){
-		pHeightTerrain = ( ( dedaiHeightTerrain* )pWorld.GetHeightTerrain()->GetPeerAI() );
-		if( pHeightTerrain ){
-			pHeightTerrain->SetParentWorld( this );
+	if(pWorld.GetHeightTerrain()){
+		pHeightTerrain = ((dedaiHeightTerrain*)pWorld.GetHeightTerrain()->GetPeerAI());
+		if(pHeightTerrain){
+			pHeightTerrain->SetParentWorld(this);
 		}
 	}
 }
@@ -335,7 +300,7 @@ void dedaiWorld::pCleanUp(){
 	AllNavigationBlockersRemoved();
 	AllNavigationSpacesRemoved();
 	
-	if( pHeightTerrain ){
-		pHeightTerrain->SetParentWorld( NULL );
+	if(pHeightTerrain){
+		pHeightTerrain->SetParentWorld(nullptr);
 	}
 }

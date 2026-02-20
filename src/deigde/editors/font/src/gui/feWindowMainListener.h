@@ -35,6 +35,9 @@ class feWindowMain;
  * \brief Window editor listener.
  */
 class feWindowMainListener : public feFontNotifier{
+public:
+	using Ref = deTObjectReference<feWindowMainListener>;
+	
 private:
 	feWindowMain &pWindow;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWindowMainListener( feWindowMain &window );
+	feWindowMainListener(feWindowMain &window);
 	
 	/** \brief Clean up listener. */
-	virtual ~feWindowMainListener();
+protected:
+	~feWindowMainListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( feFont *font );
+	void ModeChanged(feFont *font) override;
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( feFont *font );
+	void StateChanged(feFont *font) override;
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( feFont *font );
+	void UndoChanged(feFont *font) override;
 	/*@}*/
 };
 

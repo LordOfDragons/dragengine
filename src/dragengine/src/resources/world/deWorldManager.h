@@ -25,11 +25,11 @@
 #ifndef _DEWORLDMANAGER_H_
 #define _DEWORLDMANAGER_H_ 
 
+#include "deWorld.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deWorld;
 
 
 /**
@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene resource manager linked to the given engine. */
-	deWorldManager( deEngine *engine );
+	deWorldManager(deEngine *engine);
 	
 	/** \brief Clean up scene resource manager and reports leaking resources. */
-	~deWorldManager();
+	~deWorldManager() override;
 	/*@}*/
 	
 	
@@ -63,10 +63,10 @@ public:
 	deWorld *GetRootWorld() const;
 	
 	/** \brief Create new scene. */
-	deWorld *CreateWorld();
+	deWorld::Ref CreateWorld();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -74,34 +74,34 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be created. */
-	virtual void SystemPhysicsLoad();
+	void SystemPhysicsLoad() override;
 	
 	/** \brief Physics System Peers of all stored resources have to be freed. */
-	virtual void SystemPhysicsUnload();
+	void SystemPhysicsUnload() override;
 	
 	/** \brief Audio System Peers of all stored resources have to be created. */
-	virtual void SystemAudioLoad();
+	void SystemAudioLoad() override;
 	
 	/** \brief Audio System Peers of all stored resources have to be freed. */
-	virtual void SystemAudioUnload();
+	void SystemAudioUnload() override;
 	
 	/** \brief Network System Peers of all stored resources have to be created. */
-	virtual void SystemNetworkLoad();
+	void SystemNetworkLoad() override;
 	
 	/** \brief Network System Peers of all stored resources have to be freed. */
-	virtual void SystemNetworkUnload();
+	void SystemNetworkUnload() override;
 	
 	/** \brief AI System Peers of all stored resources have to be created. */
-	virtual void SystemAILoad();
+	void SystemAILoad() override;
 	
 	/** \brief AI System Peers of all stored resources have to be freed. */
-	virtual void SystemAIUnload();
+	void SystemAIUnload() override;
 	/*@}*/
 	
 	
@@ -112,7 +112,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

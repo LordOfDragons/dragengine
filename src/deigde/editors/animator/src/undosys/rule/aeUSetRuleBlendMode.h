@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -37,8 +37,12 @@ class aeRule;
  * Undo action rule set blend mode.
  */
 class aeUSetRuleBlendMode : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleBlendMode>;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	deAnimatorRule::eBlendModes pOldMode;
 	deAnimatorRule::eBlendModes pNewMode;
@@ -47,19 +51,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleBlendMode( aeRule *rule, deAnimatorRule::eBlendModes newMode );
+	aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendModes newMode);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleBlendMode();
+	~aeUSetRuleBlendMode() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

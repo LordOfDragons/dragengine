@@ -41,34 +41,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainerSplitted::igdeContainerSplitted( igdeEnvironment &environment,
-	eSidePlacement sidePlacement ) :
-igdeContainer( environment ),
-pSidePlacement( sidePlacement ),
-pSplitPosition( -1 ),
-pSplitPositionRelative( 0.5f ),
-pWidgetSide( NULL ),
-pWidgetCenter( NULL ){
+igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
+	eSidePlacement sidePlacement) :
+igdeContainer(environment),
+pSidePlacement(sidePlacement),
+pSplitPosition(-1),
+pSplitPositionRelative(0.5f),
+pWidgetSide(nullptr),
+pWidgetCenter(nullptr),
+pNativeContainerSplitted(nullptr){
 }
 
-igdeContainerSplitted::igdeContainerSplitted( igdeEnvironment &environment,
-	eSidePlacement sidePlacement, int splitPosition ) :
-igdeContainer( environment ),
-pSidePlacement( sidePlacement ),
-pSplitPosition( splitPosition ),
-pSplitPositionRelative( 0.0f ),
-pWidgetSide( NULL ),
-pWidgetCenter( NULL ){
+igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
+	eSidePlacement sidePlacement, int splitPosition) :
+igdeContainer(environment),
+pSidePlacement(sidePlacement),
+pSplitPosition(splitPosition),
+pSplitPositionRelative(0.0f),
+pWidgetSide(nullptr),
+pWidgetCenter(nullptr),
+pNativeContainerSplitted(nullptr){
 }
 
-igdeContainerSplitted::igdeContainerSplitted( igdeEnvironment &environment,
-	eSidePlacement sidePlacement, float splitPosition ) :
-igdeContainer( environment ),
-pSidePlacement( sidePlacement ),
-pSplitPosition( -1 ),
-pSplitPositionRelative( decMath::clamp( splitPosition, 0.0f, 1.0f ) ),
-pWidgetSide( NULL ),
-pWidgetCenter( NULL ){
+igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
+	eSidePlacement sidePlacement, float splitPosition) :
+igdeContainer(environment),
+pSidePlacement(sidePlacement),
+pSplitPosition(-1),
+pSplitPositionRelative(decMath::clamp(splitPosition, 0.0f, 1.0f)),
+pWidgetSide(nullptr),
+pWidgetCenter(nullptr),
+pNativeContainerSplitted(nullptr){
 }
 
 igdeContainerSplitted::~igdeContainerSplitted(){
@@ -79,106 +82,106 @@ igdeContainerSplitted::~igdeContainerSplitted(){
 // Management
 ///////////////
 
-void igdeContainerSplitted::SetSplitPosition( int splitPosition ){
-	if( splitPosition == pSplitPosition ){
+void igdeContainerSplitted::SetSplitPosition(int splitPosition){
+	if(splitPosition == pSplitPosition){
 		return;
 	}
 	
 	pSplitPosition = splitPosition;
 	
-	if( GetNativeWidget() ){
-		( ( igdeNativeContainerSplitted* )GetNativeWidget() )->UpdateSplitValue();
+	if(pNativeContainerSplitted){
+		pNativeContainerSplitted->UpdateSplitValue();
 	}
 }
 
-void igdeContainerSplitted::SetSplitPositionRelative( float splitPosition ){
-	if( fabsf( splitPosition - pSplitPositionRelative ) < FLOAT_SAFE_EPSILON ){
+void igdeContainerSplitted::SetSplitPositionRelative(float splitPosition){
+	if(fabsf(splitPosition - pSplitPositionRelative) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pSplitPositionRelative = splitPosition;
 	pSplitPosition = -1;
 	
-	if( GetNativeWidget() ){
-		( ( igdeNativeContainerSplitted* )GetNativeWidget() )->UpdateSplitValue();
+	if(pNativeContainerSplitted){
+		pNativeContainerSplitted->UpdateSplitValue();
 	}
 }
 
 
 
-void igdeContainerSplitted::AddChild( igdeWidget *child, eArea area ){
-	if( ! child || child->GetParent() ){
-		DETHROW( deeInvalidParam );
+void igdeContainerSplitted::AddChild(igdeWidget *child, eArea area){
+	if(!child || child->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( child == pWidgetSide || child == pWidgetCenter ){
-		DETHROW( deeInvalidParam );
+	if(child == pWidgetSide || child == pWidgetCenter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	switch( area ){
+	switch(area){
 	case eaSide:
-		if( pWidgetSide ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetSide){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetSide = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
-			pWidgetSide = NULL;
+		}catch(const deException &){
+			pWidgetSide = nullptr;
 			throw;
 		}
 		break;
 		
 	case eaCenter:
-		if( pWidgetCenter ){
-			DETHROW( deeInvalidParam );
+		if(pWidgetCenter){
+			DETHROW(deeInvalidParam);
 		}
 		pWidgetCenter = child;
 		
 		try{
-			igdeContainer::AddChild( child );
+			igdeContainer::AddChild(child);
 			
-		}catch( const deException & ){
-			pWidgetCenter = NULL;
+		}catch(const deException &){
+			pWidgetCenter = nullptr;
 			throw;
 		}
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( GetNativeWidget() ){
-		( ( igdeNativeContainerSplitted* )GetNativeWidget() )->UpdateSplitValue();
+	if(pNativeContainerSplitted){
+		pNativeContainerSplitted->UpdateSplitValue();
 	}
 }
 
-void igdeContainerSplitted::AddChild( igdeWidget* ){
-	DETHROW( deeInvalidParam );
+void igdeContainerSplitted::AddChild(igdeWidget*){
+	DETHROW(deeInvalidParam);
 }
 
-void igdeContainerSplitted::RemoveChild( igdeWidget *child ){
-	igdeContainer::RemoveChild( child );
+void igdeContainerSplitted::RemoveChild(igdeWidget *child){
+	igdeContainer::RemoveChild(child);
 	
-	if( child == pWidgetSide ){
-		pWidgetSide = NULL;
+	if(child == pWidgetSide){
+		pWidgetSide = nullptr;
 		
-	}else if( child == pWidgetCenter ){
-		pWidgetCenter = NULL;
+	}else if(child == pWidgetCenter){
+		pWidgetCenter = nullptr;
 	}
 }
 
 void igdeContainerSplitted::RemoveAllChildren(){
 	igdeContainer::RemoveAllChildren();
 	
-	pWidgetSide = NULL;
-	pWidgetCenter = NULL;
+	pWidgetSide = nullptr;
+	pWidgetCenter = nullptr;
 }
 
-igdeWidget *igdeContainerSplitted::GetWidgetIn( eArea area ) const{
-	switch( area ){
+igdeWidget *igdeContainerSplitted::GetWidgetIn(eArea area) const{
+	switch(area){
 	case eaSide:
 		return pWidgetSide;
 		
@@ -186,19 +189,20 @@ igdeWidget *igdeContainerSplitted::GetWidgetIn( eArea area ) const{
 		return pWidgetCenter;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
 void igdeContainerSplitted::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerSplitted * const native = igdeNativeContainerSplitted::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeContainerSplitted * const native = igdeNativeContainerSplitted::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeContainerSplitted = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
@@ -207,23 +211,28 @@ void igdeContainerSplitted::CreateNativeWidget(){
 }
 
 void igdeContainerSplitted::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerSplitted * const native = ( igdeNativeContainerSplitted* )GetNativeWidget();
+	igdeNativeContainerSplitted * const native = (igdeNativeContainerSplitted*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
 }
 
+void igdeContainerSplitted::DropNativeWidget(){
+	pNativeContainerSplitted = nullptr;
+	igdeContainer::DropNativeWidget();
+}
+
 void igdeContainerSplitted::CreateChildWidgetNativeWidgets(){
-	switch( pSidePlacement ){
+	switch(pSidePlacement){
 	case igdeContainerSplitted::espBottom:
 	case igdeContainerSplitted::espRight:
-		if( pWidgetCenter ){
+		if(pWidgetCenter){
 			pWidgetCenter->CreateNativeWidget();
 		}
-		if( pWidgetSide ){
+		if(pWidgetSide){
 			pWidgetSide->CreateNativeWidget();
 		}
 		break;
@@ -231,10 +240,10 @@ void igdeContainerSplitted::CreateChildWidgetNativeWidgets(){
 	case igdeContainerSplitted::espTop:
 	case igdeContainerSplitted::espLeft:
 	default:
-		if( pWidgetSide ){
+		if(pWidgetSide){
 			pWidgetSide->CreateNativeWidget();
 		}
-		if( pWidgetCenter ){
+		if(pWidgetCenter){
 			pWidgetCenter->CreateNativeWidget();
 		}
 		break;

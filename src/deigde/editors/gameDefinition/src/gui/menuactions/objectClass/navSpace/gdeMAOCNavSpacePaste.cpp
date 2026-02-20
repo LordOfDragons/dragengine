@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 #include "../../../../undosys/objectClass/navspace/gdeUOCAddNavSpace.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpacePaste::gdeMAOCNavSpacePaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Space",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class navigation space" )
+gdeMAOCNavSpacePaste::gdeMAOCNavSpacePaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCNavSpacePaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCNavSpacePaste.ToolTip")
 {
 }
 
@@ -61,26 +61,21 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Space",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCNavSpace::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCNavSpacePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCNavSpace::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCNavSpace &clipOCNavigationSpace =
-		( const gdeClipboardDataOCNavSpace & )( igdeClipboardData& )clip;
+	const igdeUndo::Ref undo = gdeUOCAddNavSpace::Ref::New(&objectClass, 
+		gdeOCNavigationSpace::Ref::New(*clip.DynamicCast<gdeClipboardDataOCNavSpace>()->GetNavSpace()));
 	
-	deObjectReference navSpace;
-	navSpace.TakeOver( new gdeOCNavigationSpace( *clipOCNavigationSpace.GetNavSpace() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddNavSpace( &objectClass,
-		( gdeOCNavigationSpace* )( deObject* )navSpace );
-	undo->SetShortInfo( "Paste object class navigation space" );
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCNavSpace");
 	return undo;
 }
 
 void gdeMAOCNavSpacePaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCNavSpace::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCNavSpace::TYPE_NAME));
 }

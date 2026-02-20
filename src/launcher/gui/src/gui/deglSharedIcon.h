@@ -36,8 +36,7 @@
 class deglSharedIcon : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<deglSharedIcon> Ref;
-	
+	using Ref = deTObjectReference<deglSharedIcon>;
 	
 	
 private:
@@ -49,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared icon. */
-	deglSharedIcon( FXIcon *icon );
+	deglSharedIcon(FXIcon *icon);
 	
 protected:
 	/** Clean up shared icon. */
-	virtual ~deglSharedIcon();
+	~deglSharedIcon() override;
 	/*@}*/
 	
 	

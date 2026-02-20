@@ -34,9 +34,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedDuplicate::seUMappedDuplicate( seSkin *skin, const seMapped &mapped ) :
-seUMappedAdd( skin, seMapped::Ref::New( new seMapped( mapped ) ) )
+seUMappedDuplicate::seUMappedDuplicate(seSkin *skin, const seMapped &mapped) :
+seUMappedAdd(skin, seMapped::Ref::New(mapped))
 {
-	pMapped->MakeNameUnique( skin->GetMappedList() );
-	SetShortInfo( "Duplicate Mapped" );
+	pMapped->MakeNameUnique(skin->GetMapped());
+	SetShortInfo("@Skin.Undo.DuplicateMapped");
 }

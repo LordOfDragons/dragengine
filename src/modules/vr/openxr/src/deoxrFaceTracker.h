@@ -28,6 +28,7 @@
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputDevice.h>
 
@@ -40,8 +41,7 @@ class deoxrSession;
 class deoxrFaceTracker : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrFaceTracker> Ref;
-	
+	using Ref = deTObjectReference<deoxrFaceTracker>;
 	
 	
 private:
@@ -52,23 +52,12 @@ private:
 	
 	deoxrSession &pSession;
 	
-	XrFacialTrackerHTC pEyeTracker;
-	XrFacialTrackerHTC pLipTracker;
-	
-	float *pEyeWeights;
-	float *pLipWeights;
-	
-	XrFacialExpressionsHTC pEyeExpressionInfo;
-	XrFacialExpressionsHTC pLipExpressionInfo;
-	
-	float *pFaceExpressions;
-	int pFaceExpressionCount;
-	
-	sMapping *pMapEyeXrToDe;
-	int pMapEyeXrToDeCount;
-	
-	sMapping *pMapLipXrToDe;
-	int pMapLipXrToDeCount;
+	XrFacialTrackerHTC pEyeTracker, pLipTracker;
+	decTList<float> pEyeWeights, pLipWeights;
+	XrFacialExpressionsHTC pEyeExpressionInfo, pLipExpressionInfo;
+	decTList<float> pFaceExpressions;
+	decTList<sMapping> pMapEyeXrToDe;
+	decTList<sMapping> pMapLipXrToDe;
 	
 	
 	
@@ -76,11 +65,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create face tracker. */
-	deoxrFaceTracker( deoxrSession &session );
+	deoxrFaceTracker(deoxrSession &session);
 	
 protected:
 	/** Clean up face tracker. */
-	virtual ~deoxrFaceTracker();
+	~deoxrFaceTracker() override;
 	/*@}*/
 	
 	
@@ -100,19 +89,16 @@ public:
 	/** Update weights. */
 	void Update();
 	
-	/** Count of face expressions. */
-	inline int GetFaceExpressionCount() const{ return pFaceExpressionCount; }
-	
-	/** Face expression at index. */
-	float GetFaceExpressionAt( int index );
+	/** Face expressions. */
+	inline const decTList<float> &GetFaceExpressions() const{ return pFaceExpressions; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pSetEyeMapping( int index, deInputDevice::eFaceExpressions to, XrEyeExpressionHTC from );
-	void pSetLipMapping( int index, deInputDevice::eFaceExpressions to, XrLipExpressionHTC from );
+	void pSetEyeMapping(int index, deInputDevice::eFaceExpressions to, XrEyeExpressionHTC from);
+	void pSetLipMapping(int index, deInputDevice::eFaceExpressions to, XrLipExpressionHTC from);
 };
 
 #endif

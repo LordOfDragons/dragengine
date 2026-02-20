@@ -26,10 +26,10 @@
 #define _CEUCASETVARSETOP_H_
 
 #include "../../../conversation/action/ceCASetVariable.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
 
 
 
@@ -37,9 +37,13 @@ class ceConversationTopic;
  * \brief Undo Action Set Variable Conversation Action Set Operator.
  */
 class ceUCASetVarSetOp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCASetVarSetOp>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCASetVariable *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetVariable::Ref pAction;
 	ceCASetVariable::eOperators pOldOperator;
 	ceCASetVariable::eOperators pNewOperator;
 	
@@ -47,20 +51,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetVarSetOp( ceConversationTopic *topic, ceCASetVariable *action,
-		ceCASetVariable::eOperators newOperator );
+	ceUCASetVarSetOp(ceConversationTopic *topic, ceCASetVariable *action,
+		ceCASetVariable::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCASetVarSetOp();
+	~ceUCASetVarSetOp() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -42,22 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewmVideoAudioDecoder::dewmVideoAudioDecoder( deVideoWebm &module, decBaseFileReader *file ) :
-deBaseVideoAudioDecoder( file ),
-pModule( module ),
-pCallback( nullptr ),
-pReader( nullptr ),
-pParser( nullptr ),
-pCurSample( 0 )
+dewmVideoAudioDecoder::dewmVideoAudioDecoder(deVideoWebm &module, decBaseFileReader *file) :
+deBaseVideoAudioDecoder(file),
+pModule(module),
+pCallback(nullptr),
+pReader(nullptr),
+pParser(nullptr),
+pCurSample(0)
 {
 	try{
-		pCallback = new dewmAudioTrackCallback( module );
-		pReader = new dewmWebmReader( *file );
+		pCallback = new dewmAudioTrackCallback(module);
+		pReader = new dewmWebmReader(*file);
 		pParser = new webm::WebmParser;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pCleanUp();
-		pModule.LogException( e );
+		pModule.LogException(e);
 		throw;
 	}
 }
@@ -75,31 +75,31 @@ int dewmVideoAudioDecoder::GetPosition(){
 	return pCurSample;
 }
 
-void dewmVideoAudioDecoder::SetPosition( int position ){
+void dewmVideoAudioDecoder::SetPosition(int position){
 	pEnsureStreamOpen();
 	
-	if( position < pCurSample ){
-		pReader->SetPosition( 0 );
+	if(position < pCurSample){
+		pReader->SetPosition(0);
 		pCallback->Rewind();
 		pParser->DidSeek();
 		pCurSample = 0;
 	}
 	
-	if( position == pCurSample ){
+	if(position == pCurSample){
 		return;
 	}
 	
 	// read audio until the right time is found
-	pCallback->SetResBuffer( nullptr, position - pCurSample );
-	DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
+	pCallback->SetResBuffer(nullptr, position - pCurSample);
+	DEASSERT_TRUE(pParser->Feed(pCallback, pReader).ok())
 	pCurSample = position;
 }
 
-int dewmVideoAudioDecoder::ReadSamples( void *buffer, int size ){
+int dewmVideoAudioDecoder::ReadSamples(void *buffer, int size){
 	pEnsureStreamOpen();
 	
-	pCallback->SetResBuffer( buffer, size / pCallback->GetSampleSize() );
-	DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
+	pCallback->SetResBuffer(buffer, size / pCallback->GetSampleSize());
+	DEASSERT_TRUE(pParser->Feed(pCallback, pReader).ok())
 	
 	pCurSample += pCallback->GetResPosition();
 	return pCallback->GetResPosition() * pCallback->GetSampleSize();
@@ -111,13 +111,13 @@ int dewmVideoAudioDecoder::ReadSamples( void *buffer, int size ){
 //////////////////////
 
 void dewmVideoAudioDecoder::pCleanUp(){
-	if( pParser ){
+	if(pParser){
 		delete pParser;
 	}
-	if( pReader ){
+	if(pReader){
 		delete pReader;
 	}
-	if( pCallback ){
+	if(pCallback){
 		delete pCallback;
 	}
 }
@@ -125,12 +125,12 @@ void dewmVideoAudioDecoder::pCleanUp(){
 void dewmVideoAudioDecoder::pEnsureStreamOpen(){
 	// this is unfortunately required since we do not know
 	// sample size until the stream is open
-	if( pCallback->IsStreamOpen() ){
+	if(pCallback->IsStreamOpen()){
 		return;
 	}
 	
 	// open is done by using a 0 read buffer. this will open
 	// the stream and stop at the first sample
-	pCallback->SetResBuffer( nullptr, 0 );
-	DEASSERT_TRUE( pParser->Feed( pCallback, pReader ).ok() )
+	pCallback->SetResBuffer(nullptr, 0);
+	DEASSERT_TRUE(pParser->Feed(pCallback, pReader).ok())
 }

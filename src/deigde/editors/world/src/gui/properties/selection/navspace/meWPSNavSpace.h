@@ -25,17 +25,18 @@
 #ifndef _MEWPSNAVSPACE_H_
 #define _MEWPSNAVSPACE_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include "meWPSNavSpaceListener.h"
+#include "../../../../world/meWorld.h"
+
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class meWPSNavSpaceListener;
 class meWPSelection;
-class meWorld;
 class meNavigationSpace;
 
 
@@ -44,18 +45,21 @@ class meNavigationSpace;
  * \brief Navigation space selection panel.
  */
 class meWPSNavSpace : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<meWPSNavSpace>;
+	
 private:
 	meWPSelection &pWPSelection;
-	meWPSNavSpaceListener *pListener;
+	meWPSNavSpaceListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditSelCount;
-	igdeEditDVectorReference pEditPositon;
-	igdeEditVectorReference pEditOrientation;
-	igdeEditPathReference pEditPath;
-	igdeListBoxReference pListUsedCostTypes;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditSelCount;
+	igdeEditDVector::Ref pEditPositon;
+	igdeEditVector::Ref pEditOrientation;
+	igdeEditPath::Ref pEditPath;
+	igdeListBox::Ref pListUsedCostTypes;
 	
 	
 	
@@ -63,11 +67,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSNavSpace( meWPSelection &wpselection );
+	meWPSNavSpace(meWPSelection &wpselection);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~meWPSNavSpace();
+	~meWPSNavSpace() override;
 	/*@}*/
 	
 	
@@ -79,10 +83,10 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Active navigation space. */
 	meNavigationSpace *GetNavigationSpace() const;

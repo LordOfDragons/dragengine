@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game config xml read/save. */
-	delGameConfigXML( delLauncher &launcher );
+	delGameConfigXML(delLauncher &launcher);
 	
 	/** \brief Clean up game config xml read/save. */
-	virtual ~delGameConfigXML();
+	~delGameConfigXML() override;
 	/*@}*/
 	
 	
@@ -57,18 +57,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, delGame &game );
+	void ReadFromFile(decBaseFileReader &reader, delGame &game);
 	
 	/** \brief Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const delGame &game );
+	void WriteToFile(decBaseFileWriter &writer, const delGame &game);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const delGame &game );
+	void pWriteConfig(decXmlWriter &writer, const delGame &game);
 	
-	void pReadConfig( const decXmlElementTag &root, delGame &game );
+	void pReadConfig(const decXmlElementTag &root, delGame &game);
 };
 
 #endif

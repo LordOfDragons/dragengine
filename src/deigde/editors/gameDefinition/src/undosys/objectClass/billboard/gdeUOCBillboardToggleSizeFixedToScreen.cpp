@@ -41,30 +41,21 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleSizeFixedToScreen::gdeUOCBillboardToggleSizeFixedToScreen(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+
+pBillboard(nullptr)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle size fixed to screen" );
+	SetShortInfo("@GameDefinition.Undo.OCBillboardToggleSizeFixedToScreen");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardToggleSizeFixedToScreen::~gdeUOCBillboardToggleSizeFixedToScreen(){
-	if( pBillboard ){
-		pBillboard->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,8 +64,8 @@ gdeUOCBillboardToggleSizeFixedToScreen::~gdeUOCBillboardToggleSizeFixedToScreen(
 ///////////////
 
 void gdeUOCBillboardToggleSizeFixedToScreen::Undo(){
-	pBillboard->SetSizeFixedToScreen( ! pBillboard->GetSizeFixedToScreen() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetSizeFixedToScreen(!pBillboard->GetSizeFixedToScreen());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardToggleSizeFixedToScreen::Redo(){

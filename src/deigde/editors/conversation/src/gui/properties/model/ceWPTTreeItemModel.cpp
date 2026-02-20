@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTreeItemModel::ceWPTTreeItemModel( ceWindowMain &windowMain,
-ceConversation &conversation, eTypes type ) :
-pWindowMain( windowMain ),
-pConversation( conversation ),
-pType( type ),
-pExpanded( false ),
-pTree( NULL ),
-pParent( NULL ),
-pTreeItem( NULL ){
+ceWPTTreeItemModel::ceWPTTreeItemModel(ceWindowMain &windowMain,
+ceConversation &conversation, eTypes type) :
+pWindowMain(windowMain),
+pConversation(conversation),
+pType(type),
+pExpanded(false),
+pTree(nullptr),
+pParent(nullptr),
+pTreeItem(nullptr){
 }
 
 ceWPTTreeItemModel::~ceWPTTreeItemModel(){
@@ -61,229 +61,214 @@ ceWPTTreeItemModel::~ceWPTTreeItemModel(){
 // Management
 ///////////////
 
-void ceWPTTreeItemModel::SetText( const char *text ){
+void ceWPTTreeItemModel::SetText(const char *text){
 	pText = text;
 	
-	if( pTreeItem && pTreeItem->GetText() != text ){
-		pTreeItem->SetText( text );
+	if(pTreeItem && pTreeItem->GetText() != text){
+		pTreeItem->SetText(text);
 		
-		if( pTree && pTree->GetTreeList() ){
-			pTree->GetTreeList()->ItemChanged( pTreeItem );
+		if(pTree && pTree->GetTreeList()){
+			pTree->GetTreeList()->ItemChanged(pTreeItem);
 		}
 	}
 }
 
-void ceWPTTreeItemModel::SetDescription( const char *description ){
+void ceWPTTreeItemModel::SetDescription(const char *description){
 	pDescription = description;
 	
-	if( pTreeItem && pTreeItem->GetDescription() != description ){
-		pTreeItem->SetDescription( description );
+	if(pTreeItem && pTreeItem->GetDescription() != description){
+		pTreeItem->SetDescription(description);
 		
-		if( pTree && pTree->GetTreeList() ){
-			pTree->GetTreeList()->ItemChanged( pTreeItem );
+		if(pTree && pTree->GetTreeList()){
+			pTree->GetTreeList()->ItemChanged(pTreeItem);
 		}
 	}
 }
 
-void ceWPTTreeItemModel::SetIcon( igdeIcon *icon ){
+void ceWPTTreeItemModel::SetIcon(igdeIcon *icon){
 	pIcon = icon;
 	
-	if( pTreeItem && pTreeItem->GetIcon() != icon ){
-		pTreeItem->SetIcon( icon );
+	if(pTreeItem && pTreeItem->GetIcon() != icon){
+		pTreeItem->SetIcon(icon);
 		
-		if( pTree && pTree->GetTreeList() ){
-			pTree->GetTreeList()->ItemChanged( pTreeItem );
+		if(pTree && pTree->GetTreeList()){
+			pTree->GetTreeList()->ItemChanged(pTreeItem);
 		}
 	}
 }
 
-void ceWPTTreeItemModel::SetExpanded( bool expanded ){
+void ceWPTTreeItemModel::SetExpanded(bool expanded){
 	pExpanded = expanded;
 	
-	if( pTreeItem && pTreeItem->GetExpanded() != expanded ){
-		pTreeItem->SetExpanded( expanded );
+	if(pTreeItem && pTreeItem->GetExpanded() != expanded){
+		pTreeItem->SetExpanded(expanded);
 		
-		if( pTree && pTree->GetTreeList() ){
-			pTree->GetTreeList()->ItemChanged( pTreeItem );
+		if(pTree && pTree->GetTreeList()){
+			pTree->GetTreeList()->ItemChanged(pTreeItem);
 		}
 	}
 }
 
 
 
-int ceWPTTreeItemModel::GetChildCount() const{
-	return pChildren.GetCount();
-}
-
-ceWPTTreeItemModel *ceWPTTreeItemModel::GetChildAt( int index ) const{
-	return ( ceWPTTreeItemModel* )pChildren.GetAt( index );
-}
-
-void ceWPTTreeItemModel::AddChild( ceWPTTreeItemModel *child ){
-	if( ! child || child->GetParent() ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItemModel::AddChild(ceWPTTreeItemModel *child){
+	if(!child || child->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Add( child );
-	child->SetParent( this );
+	pChildren.AddOrThrow(child);
+	child->SetParent(this);
 	
-	if( pTreeItem ){
-		child->SetTree( pTree );
-		pTreeItem->AddItem( child );
+	if(pTreeItem){
+		child->SetTree(pTree);
+		pTreeItem->AddItem(child);
 	}
 }
 
-void ceWPTTreeItemModel::InsertChild( ceWPTTreeItemModel *child, int position ){
-	if( ! child || child->GetParent() || position < 0 || position > pChildren.GetCount() ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItemModel::InsertChild(ceWPTTreeItemModel *child, int position){
+	if(!child || child->GetParent() || position < 0 || position > pChildren.GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pChildren.Insert( child, position );
-	child->SetParent( this );
+	pChildren.InsertOrThrow(child, position);
+	child->SetParent(this);
 	
-	if( pTreeItem ){
-		child->SetTree( pTree );
-		pTreeItem->InsertItem( child, position );
+	if(pTreeItem){
+		child->SetTree(pTree);
+		pTreeItem->InsertItem(child, position);
 	}
 }
 
-void ceWPTTreeItemModel::RemoveChild( ceWPTTreeItemModel *child ){
-	if( ! child || child->GetParent() != this ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItemModel::RemoveChild(ceWPTTreeItemModel *child){
+	if(!child || child->GetParent() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTreeItem && child->GetTreeItem() ){
-		pTreeItem->RemoveItem( child );
-		child->SetTree( NULL );
+	if(pTreeItem && child->GetTreeItem()){
+		pTreeItem->RemoveItem(child);
+		child->SetTree(nullptr);
 	}
 	
-	child->SetParent( NULL );
-	pChildren.Remove( child );
+	child->SetParent(nullptr);
+	pChildren.Remove(child);
 }
 
 void ceWPTTreeItemModel::RemoveAllChildren(){
-	if( pTreeItem ){
+	if(pTreeItem){
 		pTreeItem->RemoveAllItems();
 	}
 	
-	const int count = pChildren.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		ceWPTTreeItemModel &child = *( ( ceWPTTreeItemModel* )pChildren.GetAt( i ) );
-		child.SetTree( NULL );
-		child.SetParent( NULL );
-	}
-	
+	pChildren.Visit([](ceWPTTreeItemModel &c){
+		c.SetTree(nullptr);
+		c.SetParent(nullptr);
+	});
 	pChildren.RemoveAll();
 }
 
-void ceWPTTreeItemModel::MoveChild( ceWPTTreeItemModel *child, int to ){
-	if( ! child ){
-		DETHROW( deeInvalidParam );
+void ceWPTTreeItemModel::MoveChild(ceWPTTreeItemModel *child, int to){
+	if(!child){
+		DETHROW(deeInvalidParam);
 	}
 	
-	MoveChild( pChildren.IndexOf( child ), to );
+	MoveChild(pChildren.IndexOf(child), to);
 }
 
-void ceWPTTreeItemModel::MoveChild( int from, int to ){
+void ceWPTTreeItemModel::MoveChild(int from, int to){
 	const int count = pChildren.GetCount();
-	if( from < 0 || from >= count || to < 0 || to > count ){
-		DETHROW( deeInvalidParam );
+	if(from < 0 || from >= count || to < 0 || to > count){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( from == to ){
+	if(from == to){
 		return;
 	}
 	
-	ceWPTTreeItemModel * const child = ( ceWPTTreeItemModel* )pChildren.GetAt( from );
+	ceWPTTreeItemModel * const child = pChildren.GetAt(from);
 	
-	ceWPTTreeItemModel *otherChild = NULL;
-	if( to < count ){
-		otherChild = ( ceWPTTreeItemModel* )pChildren.GetAt( to );
+	ceWPTTreeItemModel *otherChild = nullptr;
+	if(to < count){
+		otherChild = pChildren.GetAt(to);
 	}
 	
-	pChildren.Move( child, to );
+	pChildren.Move(child, to);
 	
-	if( pTreeItem && child->GetTreeItem() && ( ! otherChild || otherChild->GetTreeItem() ) ){
-		igdeTreeItem *otherItem = NULL;
-		if( otherChild ){
+	if(pTreeItem && child->GetTreeItem() && (!otherChild || otherChild->GetTreeItem())){
+		igdeTreeItem *otherItem = nullptr;
+		if(otherChild){
 			otherItem = otherChild->GetTreeItem();
 		}
 		
-		pTreeItem->GetTreeList().MoveItemBefore( child->GetTreeItem(), otherItem );
+		pTreeItem->GetTreeList().MoveItemBefore(child->GetTreeItem(), otherItem);
 	}
 }
 
 
 
-void ceWPTTreeItemModel::SetTree( ceWPTTreeModel *tree ){
+void ceWPTTreeItemModel::SetTree(ceWPTTreeModel *tree){
 	pTree = tree;
 }
 
 ceWPTTreeModel *ceWPTTreeItemModel::GetFirstTree() const{
 	const ceWPTTreeItemModel *model = this;
 	
-	while( model ){
-		if( model->pTree ){
+	while(model){
+		if(model->pTree){
 			return model->pTree;
 		}
 		model = model->pParent;
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
-void ceWPTTreeItemModel::SetParent( ceWPTTreeItemModel *parent ){
+void ceWPTTreeItemModel::SetParent(ceWPTTreeItemModel *parent){
 	pParent = parent;
 }
 
-void ceWPTTreeItemModel::SetTreeItem( ceWPTTreeItem *treeItem ){
-	if( pTreeItem == treeItem ){
+void ceWPTTreeItemModel::SetTreeItem(ceWPTTreeItem *treeItem){
+	if(pTreeItem == treeItem){
 		return;
 	}
 	
-	if( pTreeItem ){
+	if(pTreeItem){
 		pTreeItem->RemoveAllItems();
 	}
 	
 	pTreeItem = treeItem;
 	
-	if( treeItem ){
-		treeItem->SetText( pText );
-		treeItem->SetDescription( pDescription );
-		treeItem->SetIcon( pIcon );
-		treeItem->SetExpanded( pExpanded );
+	if(treeItem){
+		treeItem->SetText(pText);
+		treeItem->SetDescription(pDescription);
+		treeItem->SetIcon(pIcon);
+		treeItem->SetExpanded(pExpanded);
 		
-		if( pTree && pTree->GetTreeList() ){
-			pTree->GetTreeList()->ItemChanged( treeItem );
+		if(pTree && pTree->GetTreeList()){
+			pTree->GetTreeList()->ItemChanged(treeItem);
 		}
 		
-		const int count = pChildren.GetCount();
-		int i;
-		for( i=0; i<count; i++ ){
-			ceWPTTreeItemModel * const childModel = ( ceWPTTreeItemModel* )pChildren.GetAt( i );
-			childModel->SetTree( pTree );
-			treeItem->AddItem( childModel );
-		}
+		pChildren.Visit([&](ceWPTTreeItemModel *c){
+			c->SetTree(pTree);
+			treeItem->AddItem(c);
+		});
 		
 		treeItem->SortItems();
 	}
 }
 
 void ceWPTTreeItemModel::SortChildren(){
-	if( pTreeItem ){
+	if(pTreeItem){
 		pTreeItem->SortItems();
 	}
 }
 
 void ceWPTTreeItemModel::ParentSortItems(){
-	if( pTreeItem && pTreeItem->GetParent() ){
-		( ( ceWPTTreeItem* )pTreeItem->GetParent() )->SortItems();
+	if(pTreeItem && pTreeItem->GetParent()){
+		((ceWPTTreeItem*)pTreeItem->GetParent())->SortItems();
 	}
 }
 
 void ceWPTTreeItemModel::SetAsCurrentItem(){
-	if( pTreeItem ){
+	if(pTreeItem){
 		pTreeItem->SetAsCurrentItem();
 	}
 }
@@ -293,71 +278,61 @@ void ceWPTTreeItemModel::SetAsCurrentItem(){
 void ceWPTTreeItemModel::OnSelected(){
 }
 
-void ceWPTTreeItemModel::OnContextMenu( igdeMenuCascade& ){
+void ceWPTTreeItemModel::OnContextMenu(igdeMenuCascade&){
 }
 
-void ceWPTTreeItemModel::ContextMenuAction( igdeMenuCascade&, ceConversationAction* ){
+void ceWPTTreeItemModel::ContextMenuAction(igdeMenuCascade&, ceConversationAction*){
 }
 
-void ceWPTTreeItemModel::ContextMenuCondition( igdeMenuCascade&, ceConversationCondition* ){
+void ceWPTTreeItemModel::ContextMenuCondition(igdeMenuCascade&, ceConversationCondition*){
 }
 
-ceWPTTIMAction *ceWPTTreeItemModel::DeepFindAction( ceConversationAction *action ){
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTIMAction * const child = ( ( ceWPTTreeItemModel* )
-			pChildren.GetAt( i ) )->DeepFindAction( action );
-		if( child ){
+ceWPTTIMAction *ceWPTTreeItemModel::DeepFindAction(ceConversationAction *action){
+	for(const auto &c : pChildren){
+		ceWPTTIMAction * const child = c->DeepFindAction(action);
+		if(child){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
-ceWPTTIMCondition *ceWPTTreeItemModel::DeepFindCondition( ceConversationCondition *condition ){
-	const int count = pChildren.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		ceWPTTIMCondition * const child = ( ( ceWPTTreeItemModel* )
-			pChildren.GetAt( i ) )->DeepFindCondition( condition );
-		if( child ){
+ceWPTTIMCondition *ceWPTTreeItemModel::DeepFindCondition(ceConversationCondition *condition){
+	for(const auto &c : pChildren){
+		ceWPTTIMCondition * const child = c->DeepFindCondition(condition);
+		if(child){
 			return child;
 		}
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 void ceWPTTreeItemModel::OnExpandedChanged(){
-	if( pTreeItem ){
+	if(pTreeItem){
 		pExpanded = pTreeItem->GetExpanded();
 	}
 }
 
 ceConversationAction *ceWPTTreeItemModel::GetOwnerAction() const{
-	if( pParent ){
+	if(pParent){
 		return pParent->GetOwnerAction();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 ceConversationCondition *ceWPTTreeItemModel::GetOwnerCondition() const{
-	if( pParent ){
+	if(pParent){
 		return pParent->GetOwnerCondition();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 void ceWPTTreeItemModel::BuildPlaybackFromHere() const{
-	if( pParent ){
+	if(pParent){
 		pParent->BuildPlaybackFromHere();
 	}
 }

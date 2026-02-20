@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create terrain mask image wrapper. */
-	deoglTerrainMaskImage( deImage &image );
+	deoglTerrainMaskImage(deImage &image);
 	
 	/** Clean up terrain mask image wrapper. */
 	~deoglTerrainMaskImage();
@@ -74,14 +74,14 @@ public:
 	 * 
 	 * No checking is done on the parameters so make sure they are inside the boundaries.
 	 */
-	float GetMaskValueAt( int x, int y ) const;
+	float GetMaskValueAt(int x, int y) const;
 	
 	/**
 	 * Mask value at position.
 	 * 
 	 * No checking is done on the parameters so make sure they are inside the boundaries.
 	 */
-	float GetMaskValueAt( int index ) const;
+	float GetMaskValueAt(int index) const;
 	/*@}*/
 };
 

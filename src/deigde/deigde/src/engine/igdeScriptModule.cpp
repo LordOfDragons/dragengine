@@ -33,7 +33,7 @@
 #include "../gui/igdeWindowMain.h"
 
 #include <dragengine/deEngine.h>
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>
@@ -45,23 +45,23 @@
 // TODO: Make these proper classes
 
 // cModule
-igdeScriptModule::cModule::cModule( deModuleSystem *system, igdeWindowMain &windowMain ) :
-deInternalModule( system ),
-pWindowMain( windowMain ){
-	SetName( "IGDEScript" );
-	SetType( deModuleSystem::emtScript );
-	SetDescription( "IGDE Scripting Module" );
-	SetAuthor( "Plüss Roland" );
-	SetVersion( "1.0" );
-	SetDirectoryName( "IGDEScript" );
-	SetPriority( 1000 );
+igdeScriptModule::cModule::cModule(deModuleSystem *system, igdeWindowMain &windowMain) :
+deInternalModule(system),
+pWindowMain(windowMain){
+	SetName("IGDEScript");
+	SetType(deModuleSystem::emtScript);
+	SetDescription("IGDE Scripting Module");
+	SetAuthor("Plüss Roland");
+	SetVersion("1.0");
+	SetDirectoryName("IGDEScript");
+	SetPriority(1000);
 	SetDefaultLoggingName();
 }
-igdeScriptModule::cModule::~cModule(){ }
+igdeScriptModule::cModule::~cModule(){}
 void igdeScriptModule::cModule::CreateModule(){
-	SetModule( new igdeScriptModule( *this, pWindowMain ) );
-	if( ! GetModule() ){
-		SetErrorCode( eecCreateModuleFailed );
+	SetModule(new igdeScriptModule(*this, pWindowMain));
+	if(!GetModule()){
+		SetErrorCode(eecCreateModuleFailed);
 	}
 }
 
@@ -73,9 +73,9 @@ void igdeScriptModule::cModule::CreateModule(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeScriptModule::igdeScriptModule( deLoadableModule &loadableModule, igdeWindowMain &windowMain ) :
-deBaseScriptingModule( loadableModule ),
-pWindowMain( windowMain ){
+igdeScriptModule::igdeScriptModule(deLoadableModule &loadableModule, igdeWindowMain &windowMain) :
+deBaseScriptingModule(loadableModule),
+pWindowMain(windowMain){
 }
 
 igdeScriptModule::~igdeScriptModule(){
@@ -86,58 +86,58 @@ igdeScriptModule::~igdeScriptModule(){
 // Management
 ///////////////
 
-bool igdeScriptModule::Init( const char *scriptDirectory, const char *gameObject ){
+bool igdeScriptModule::Init(const char *scriptDirectory, const char *gameObject){
 	return true;
 }
 
-void igdeScriptModule::ShutDown( ){
+void igdeScriptModule::ShutDown(){
 }
 
 const char *igdeScriptModule::GetSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 const char *igdeScriptModule::GetVFSSharedDataDir() const{
-	return NULL;
+	return nullptr;
 }
 
 
 
-deBaseScriptingCollider *igdeScriptModule::CreateCollider( deCollider *collider ){
+deBaseScriptingCollider *igdeScriptModule::CreateCollider(deCollider *collider){
 	return new igdeSMCollider;
 }
 
-deBaseScriptingConnection *igdeScriptModule::CreateConnection( deConnection *connection ){
+deBaseScriptingConnection *igdeScriptModule::CreateConnection(deConnection *connection){
 	return new deBaseScriptingConnection;
 }
 
-deBaseScriptingNetworkState *igdeScriptModule::CreateNetworkState( deNetworkState *state ){
+deBaseScriptingNetworkState *igdeScriptModule::CreateNetworkState(deNetworkState *state){
 	return new deBaseScriptingNetworkState;
 }
 
-deBaseScriptingServer *igdeScriptModule::CreateServer( deServer *server ){
+deBaseScriptingServer *igdeScriptModule::CreateServer(deServer *server){
 	return new deBaseScriptingServer;
 }
 
-deBaseScriptingTouchSensor *igdeScriptModule::CreateTouchSensor( deTouchSensor *touchSensor ){
+deBaseScriptingTouchSensor *igdeScriptModule::CreateTouchSensor(deTouchSensor *touchSensor){
 	return new igdeSMTouchSensor;
 }
 
-deBaseScriptingPropField *igdeScriptModule::CreatePropField( dePropField *propField ){
+deBaseScriptingPropField *igdeScriptModule::CreatePropField(dePropField *propField){
 	return new igdeSMPropField;
 }
 
 deBaseScriptingParticleEmitterInstance *igdeScriptModule::CreateParticleEmitterInstance(
-deParticleEmitterInstance *instance ){
-	return NULL;
+deParticleEmitterInstance *instance){
+	return nullptr;
 }
 
-deBaseScriptingSoundLevelMeter *igdeScriptModule::CreateSoundLevelMeter( deSoundLevelMeter *meter ){
-	return NULL;
+deBaseScriptingSoundLevelMeter *igdeScriptModule::CreateSoundLevelMeter(deSoundLevelMeter *meter){
+	return nullptr;
 }
 
-deBaseScriptingSpeaker *igdeScriptModule::CreateSpeaker( deSpeaker *speaker ){
-	return NULL;
+deBaseScriptingSpeaker *igdeScriptModule::CreateSpeaker(deSpeaker *speaker){
+	return nullptr;
 }
 
 
@@ -162,7 +162,7 @@ bool igdeScriptModule::OnResizeRenderWindow(){
 	return true;
 }
 
-bool igdeScriptModule::SendEvent( deInputEvent* ){
+bool igdeScriptModule::SendEvent(deInputEvent*){
 	return true;
 }
 

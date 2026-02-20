@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 
@@ -35,8 +35,12 @@ class feFontGlyph;
  * \brief Glyph Set Width Undo Action.
  */
 class feUGlyphSetWidth : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUGlyphSetWidth>;
+	
+	
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldWidth;
 	int pNewWidth;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetWidth( feFontGlyph *glyph, int newWidth );
+	feUGlyphSetWidth(feFontGlyph *glyph, int newWidth);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUGlyphSetWidth();
+	~feUGlyphSetWidth() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

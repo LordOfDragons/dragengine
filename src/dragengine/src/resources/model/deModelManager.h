@@ -46,16 +46,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new model resource manager linked to the given engine. */
-	deModelManager( deEngine *engine );
+	deModelManager(deEngine *engine);
 	
 	/** \brief Clean up model resource manager and reports leaking resources. */
-	~deModelManager();
+	~deModelManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Models. */
+	inline const deFileResourceList &GetModels() const{ return pModels; }
+	
 	/** \brief Count of models. */
 	int GetModelCount() const;
 	
@@ -63,22 +66,22 @@ public:
 	deModel *GetRootModel() const;
 	
 	/** \brief Model with the given filename or NULL if not loaded yet. */
-	deModel *GetModelWith( const char *filename ) const;
+	deModel *GetModelWith(const char *filename) const;
 	
 	/** \brief Model with the given filename or NULL if not loaded yet. */
-	deModel *GetModelWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deModel *GetModelWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new and empty model. */
-	deModel *CreateModel( const char *filename, deModelBuilder &builder );
+	deModel::Ref CreateModel(const char *filename, deModelBuilder &builder);
 	
 	/** \brief Create new and empty model. */
-	deModel *CreateModel( deVirtualFileSystem *vfs, const char *filename, deModelBuilder &builder );
+	deModel::Ref CreateModel(deVirtualFileSystem *vfs, const char *filename, deModelBuilder &builder);
 	
 	/** \brief Loads a model from the given file relative to the given base path. */
-	deModel *LoadModel( const char *filename, const char *basePath );
+	deModel::Ref LoadModel(const char *filename, const char *basePath);
 	
 	/** \brief Loads a model from the given file relative to the given base path. */
-	deModel *LoadModel( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deModel::Ref LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Add loaded and fully prepared model.
@@ -86,22 +89,22 @@ public:
 	 * This method is to be used only by the resource loader to add an model that has
 	 * been loaded asynchronously.
 	 */
-	void AddLoadedModel( deModel *model );
+	void AddLoadedModel(deModel *model);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
-	void SystemAudioLoad();
-	void SystemAudioUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
 	/*@}*/
 	
 	
@@ -112,7 +115,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

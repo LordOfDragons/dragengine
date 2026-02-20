@@ -41,25 +41,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddDecal::meUAddDecal( meWorld *world, meDecal *decal ){
-	if( ! world || ! decal ) DETHROW( deeInvalidParam );
+meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
+	if(!world || !decal) DETHROW(deeInvalidParam);
 	
-	pWorld = NULL;
-	pDecal = NULL;
+	pWorld = nullptr;
+	pDecal = nullptr;
 	
-	SetShortInfo( "Add Decal" );
-	SetLongInfo( "" );
+	SetShortInfo("@World.UAddDecal.AddDecal");
+	SetLongInfo("");
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUAddDecal::~meUAddDecal(){
-	if( pDecal ) pDecal->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
 }
 
 
@@ -70,12 +65,9 @@ meUAddDecal::~meUAddDecal(){
 void meUAddDecal::Undo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
-	selection.Remove( pDecal );
-	if( pDecal->GetActive() ){
-		selection.ActivateNext();
-	}
+	selection.Remove(pDecal);
 	
-	pWorld->RemoveDecal( pDecal );
+	pWorld->RemoveDecal(pDecal);
 	
 	pWorld->NotifyDecalCountChanged();
 	pWorld->NotifyDecalSelectionChanged();
@@ -84,11 +76,11 @@ void meUAddDecal::Undo(){
 void meUAddDecal::Redo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
-	pWorld->AddDecal( pDecal );
+	pWorld->AddDecal(pDecal);
 	
 	selection.Reset();
-	selection.Add( pDecal );
-	selection.SetActive( pDecal );
+	selection.Add(pDecal);
+	selection.SetActive(pDecal);
 	
 	pWorld->NotifyDecalCountChanged();
 	pWorld->NotifyDecalSelectionChanged();

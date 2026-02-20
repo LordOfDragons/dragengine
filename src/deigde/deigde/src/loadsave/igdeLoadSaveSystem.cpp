@@ -37,11 +37,10 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
-#include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/exceptions.h>
@@ -58,17 +57,17 @@ struct sFPLMapping{
 
 #define FPL_MAPPING_COUNT 10
 
-static sFPLMapping vFPLMappings[ FPL_MAPPING_COUNT ] = {
-	{ igdeLoadSaveSystem::efplModel, deModuleSystem::emtModel },
-	{ igdeLoadSaveSystem::efplSkin, deModuleSystem::emtSkin },
-	{ igdeLoadSaveSystem::efplRig, deModuleSystem::emtRig },
-	{ igdeLoadSaveSystem::efplAnimation, deModuleSystem::emtAnimation },
-	{ igdeLoadSaveSystem::efplImage, deModuleSystem::emtImage },
-	{ igdeLoadSaveSystem::efplSound, deModuleSystem::emtSound },
-	{ igdeLoadSaveSystem::efplOcclusionMesh, deModuleSystem::emtOcclusionMesh },
-	{ igdeLoadSaveSystem::efplVideo, deModuleSystem::emtVideo },
-	{ igdeLoadSaveSystem::efplLanguagePack, deModuleSystem::emtLanguagePack },
-	{ igdeLoadSaveSystem::efplFont, deModuleSystem::emtFont }
+static sFPLMapping vFPLMappings[FPL_MAPPING_COUNT] = {
+	{igdeLoadSaveSystem::efplModel, deModuleSystem::emtModel},
+	{igdeLoadSaveSystem::efplSkin, deModuleSystem::emtSkin},
+	{igdeLoadSaveSystem::efplRig, deModuleSystem::emtRig},
+	{igdeLoadSaveSystem::efplAnimation, deModuleSystem::emtAnimation},
+	{igdeLoadSaveSystem::efplImage, deModuleSystem::emtImage},
+	{igdeLoadSaveSystem::efplSound, deModuleSystem::emtSound},
+	{igdeLoadSaveSystem::efplOcclusionMesh, deModuleSystem::emtOcclusionMesh},
+	{igdeLoadSaveSystem::efplVideo, deModuleSystem::emtVideo},
+	{igdeLoadSaveSystem::efplLanguagePack, deModuleSystem::emtLanguagePack},
+	{igdeLoadSaveSystem::efplFont, deModuleSystem::emtFont}
 };
 
 
@@ -79,18 +78,18 @@ static sFPLMapping vFPLMappings[ FPL_MAPPING_COUNT ] = {
 // Constructor, destructor
 ////////////////////////////
 
-igdeLoadSaveSystem::igdeLoadSaveSystem( igdeWindowMain *windowMain ){
-	if( ! windowMain ){
-		DETHROW( deeInvalidParam );
+igdeLoadSaveSystem::igdeLoadSaveSystem(igdeWindowMain *windowMain){
+	if(!windowMain){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWindowMain = windowMain;
-	pLSGameProject = NULL;
+	pLSGameProject = nullptr;
 	
 	try{
-		pLSGameProject = new igdeLSGameProject( this );
+		pLSGameProject = new igdeLSGameProject(this);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -105,183 +104,148 @@ igdeLoadSaveSystem::~igdeLoadSaveSystem(){
 // Management
 ///////////////
 
-igdeGameProject *igdeLoadSaveSystem::LoadGameProject( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
-	}
+igdeGameProject::Ref igdeLoadSaveSystem::LoadGameProject(const char *filename){
+	DEASSERT_NOTNULL(filename)
 	
-	decBaseFileReaderReference fileReader;
-	igdeGameProject *project = NULL;
+	const igdeGameProject::Ref project(igdeGameProject::Ref::New(pWindowMain->GetEnvironment()));
+	project->SetFilePath(filename);
 	
-	try{
-		project = new igdeGameProject( pWindowMain->GetEnvironment() );
-		project->SetFilePath( filename );
-		
-		fileReader.TakeOver( new decDiskFileReader( filename ) );
-		pLSGameProject->Load( filename, project, fileReader );
-		
-	}catch( const deException & ){
-		if( project ){
-			project->FreeReference();
-		}
-		throw;
-	}
+	pLSGameProject->Load(filename, project, decDiskFileReader::Ref::New(filename));
 	
 	return project;
 }
 
-void igdeLoadSaveSystem::SaveGameProject( igdeGameProject *project, const char *filename ){
-	if( ! project || ! filename ){
-		DETHROW( deeInvalidParam );
-	}
+void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *filename){
+	DEASSERT_NOTNULL(project)
+	DEASSERT_NOTNULL(filename)
 	
-	decDiskFileWriter *fileWriter = NULL;
-	
-	try{
-		fileWriter = new decDiskFileWriter( filename, false );
-		pLSGameProject->Save( project, fileWriter );
-		fileWriter->FreeReference();
-		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSGameProject->Save(project, decDiskFileWriter::Ref::New(filename, false));
 }
-
-
 
 void igdeLoadSaveSystem::UpdatePatternLists(){
 	const deEngine &engine = *pWindowMain->GetEngine();
 	const deModuleSystem &modSys = *engine.GetModuleSystem();
-	const int moduleCount = modSys.GetModuleCount();
-	int i, j, k;
+	int i;
 	
 	// reset the file pattern lists
 	for(i=0; i<FilePatternListCount; i++){
-		pFPLOpen[i].RemoveAllFilePatterns();
-		pFPLSave[i].RemoveAllFilePatterns();
+		pFPLOpen[i].RemoveAll();
+		pFPLSave[i].RemoveAll();
 	}
 	
 	// add show-all file patterns to the file pattern lists. these have to come first
 	// in the load file pattern lists. save lists do not have them
-	decString showAllFormat[ FPL_MAPPING_COUNT ];
-	decString showAllDefaultExtension[ FPL_MAPPING_COUNT ];
+	decString showAllFormat[FPL_MAPPING_COUNT];
+	decString showAllDefaultExtension[FPL_MAPPING_COUNT];
 	
-	for( i=0; i<FPL_MAPPING_COUNT; i++ ){
-		for( j=0; j<moduleCount; j++ ){
-			const deLoadableModule &loadableModule = *modSys.GetModuleAt( j );
-			
-			if( loadableModule.GetType() == vFPLMappings[ i ].moduleType ){
+	// iterate modules via Visitor and collect patterns per mapping
+	modSys.GetModules().Visit([&](const deLoadableModule &loadableModule){
+		for(i=0; i<FPL_MAPPING_COUNT; i++){
+			if(loadableModule.GetType() == vFPLMappings[i].moduleType){
 				const decStringList &patternList = loadableModule.GetPatternList();
-				const int patternCount = patternList.GetCount();
-				
-				for( k=0; k<patternCount; k++ ){
-					if( ! showAllFormat[ i ].IsEmpty() ){
-						showAllFormat[ i ].AppendCharacter( ',' );
+				patternList.Visit([&](const decString &p){
+					if(!showAllFormat[i].IsEmpty()){
+						showAllFormat[i].AppendCharacter(',');
 					}
-					showAllFormat[ i ].AppendCharacter( '*' );
-					showAllFormat[ i ].Append( patternList.GetAt( k ) );
-				}
+					showAllFormat[i].AppendCharacter('*');
+					showAllFormat[i].Append(p);
+				});
 				
-				if( showAllDefaultExtension[ i ].IsEmpty() && ! loadableModule.GetNoSaving() ){
-					showAllDefaultExtension[ i ] = loadableModule.GetDefaultExtension();
+				if(showAllDefaultExtension[i].IsEmpty() && !loadableModule.GetNoSaving()){
+					showAllDefaultExtension[i] = loadableModule.GetDefaultExtension();
 				}
 			}
 		}
-	}
+	});
 	
-	for( i=0; i<FPL_MAPPING_COUNT; i++ ){
-		pAddPattern( pFPLOpen[ vFPLMappings[ i ].list ], "All formats",
-			showAllFormat[ i ].GetString(), showAllDefaultExtension[ i ].GetString() );
+	for(i=0; i<FPL_MAPPING_COUNT; i++){
+		pAddPattern(pFPLOpen[vFPLMappings[i].list], "@Igde.LoadSaveSystem.FilePattern.AllFormats",
+			showAllFormat[i].GetString(), showAllDefaultExtension[i].GetString());
 	}
 	
 	// fill the file pattern lists. these are added to both load and save lists
-	for( i=0; i<FPL_MAPPING_COUNT; i++ ){
-		for( j=0; j<moduleCount; j++ ){
-			const deLoadableModule &loadableModule = *modSys.GetModuleAt( j );
-			
-			if( loadableModule.GetType() == vFPLMappings[ i ].moduleType ){
-				pAddPattern( pFPLOpen[ vFPLMappings[ i ].list ], loadableModule );
+	for(i=0; i<FPL_MAPPING_COUNT; i++){
+		modSys.GetModules().Visit([&](const deLoadableModule &loadableModule){
+			if(loadableModule.GetType() == vFPLMappings[i].moduleType){
+				pAddPattern(pFPLOpen[vFPLMappings[i].list], loadableModule);
 				
-				if( ! loadableModule.GetNoSaving() ){
-					pAddPattern( pFPLSave[ vFPLMappings[ i ].list ], loadableModule );
+				if(!loadableModule.GetNoSaving()){
+					pAddPattern(pFPLSave[vFPLMappings[i].list], loadableModule);
 				}
 			}
-		}
+		});
 	}
 	
 	// some lists are special for the time being
-	pAddPattern( pFPLOpen[ efplAnimator ], "All formats", "*.deanimator", ".deanimator" );
-	pAddPattern( pFPLOpen[ efplAnimator ], "Animator", "*.deanimator", ".deanimator" );
+	pAddPattern(pFPLOpen[efplAnimator], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.deanimator", ".deanimator");
+	pAddPattern(pFPLOpen[efplAnimator], "@Igde.LoadSaveSystem.FilePattern.Animator", "*.deanimator", ".deanimator");
 	
-	pAddPattern( pFPLSave[ efplAnimator ], "Animator", "*.deanimator", ".deanimator" );
+	pAddPattern(pFPLSave[efplAnimator], "@Igde.LoadSaveSystem.FilePattern.Animator", "*.deanimator", ".deanimator");
 	
-	pAddPattern( pFPLOpen[ efplNavigationSpace ], "All formats", "*.denavspace", ".denavspace" );
-	pAddPattern( pFPLOpen[ efplNavigationSpace ], "Navigation Space", "*.denavspace", ".denavspace" );
+	pAddPattern(pFPLOpen[efplNavigationSpace], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.denavspace", ".denavspace");
+	pAddPattern(pFPLOpen[efplNavigationSpace], "@Igde.LoadSaveSystem.FilePattern.NavigationSpace", "*.denavspace", ".denavspace");
 	
-	pAddPattern( pFPLSave[ efplNavigationSpace ], "Navigation Space", "*.denavspace", ".denavspace" );
+	pAddPattern(pFPLSave[efplNavigationSpace], "@Igde.LoadSaveSystem.FilePattern.NavigationSpace", "*.denavspace", ".denavspace");
 	
-	pAddPattern( pFPLOpen[ efplParticleEmitter ], "All formats", "*.depemit", ".depemit" );
-	pAddPattern( pFPLOpen[ efplParticleEmitter ], "Particle Emitter", "*.depemit", ".depemit" );
+	pAddPattern(pFPLOpen[efplParticleEmitter], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.depemit", ".depemit");
+	pAddPattern(pFPLOpen[efplParticleEmitter], "@Igde.LoadSaveSystem.FilePattern.ParticleEmitter", "*.depemit", ".depemit");
 	
-	pAddPattern( pFPLSave[ efplParticleEmitter ], "Particle Emitter", "*.depemit", ".depemit" );
+	pAddPattern(pFPLSave[efplParticleEmitter], "@Igde.LoadSaveSystem.FilePattern.ParticleEmitter", "*.depemit", ".depemit");
 	
-	pAddPattern( pFPLOpen[ efplSky ], "All formats", "*.desky", ".desky" );
-	pAddPattern( pFPLOpen[ efplSky ], "Sky", "*.desky", ".desky" );
+	pAddPattern(pFPLOpen[efplSky], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desky", ".desky");
+	pAddPattern(pFPLOpen[efplSky], "@Igde.LoadSaveSystem.FilePattern.Sky", "*.desky", ".desky");
 	
-	pAddPattern( pFPLSave[ efplSky ], "Sky", "*.desky", ".desky" );
+	pAddPattern(pFPLSave[efplSky], "@Igde.LoadSaveSystem.FilePattern.Sky", "*.desky", ".desky");
 	
-	pAddPattern( pFPLOpen[ efplSynthesizer ], "All formats", "*.desynth", ".desynth" );
-	pAddPattern( pFPLOpen[ efplSynthesizer ], "Synthesizer", "*.desynth", ".desynth" );
+	pAddPattern(pFPLOpen[efplSynthesizer], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desynth", ".desynth");
+	pAddPattern(pFPLOpen[efplSynthesizer], "@Igde.LoadSaveSystem.FilePattern.Synthesizer", "*.desynth", ".desynth");
 	
-	pAddPattern( pFPLSave[ efplSynthesizer ], "Synthesizer", "*.desynth", ".desynth" );
+	pAddPattern(pFPLSave[efplSynthesizer], "@Igde.LoadSaveSystem.FilePattern.Synthesizer", "*.desynth", ".desynth");
 	
-	pAddPattern( pFPLOpen[ efplSpeechAnimation ], "All formats", "*.desanim", ".desanim" );
-	pAddPattern( pFPLOpen[ efplSpeechAnimation ], "Speech Animation", "*.desanim", ".desanim" );
+	pAddPattern(pFPLOpen[efplSpeechAnimation], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.desanim", ".desanim");
+	pAddPattern(pFPLOpen[efplSpeechAnimation], "@Igde.LoadSaveSystem.FilePattern.SpeechAnimation", "*.desanim", ".desanim");
 	
-	pAddPattern( pFPLSave[ efplSpeechAnimation ], "Speech Animation", "*.desanim", ".desanim" );
+	pAddPattern(pFPLSave[efplSpeechAnimation], "@Igde.LoadSaveSystem.FilePattern.SpeechAnimation", "*.desanim", ".desanim");
 	
-	pAddPattern( pFPLOpen[ efplCamera ], "All formats", "*.decamera", ".decamera" );
-	pAddPattern( pFPLOpen[ efplCamera ], "Camera", "*.decamera", ".decamera" );
+	pAddPattern(pFPLOpen[efplCamera], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.decamera", ".decamera");
+	pAddPattern(pFPLOpen[efplCamera], "@Igde.LoadSaveSystem.FilePattern.Camera", "*.decamera", ".decamera");
 	
-	pAddPattern( pFPLSave[ efplCamera ], "Camera", "*.decamera", ".decamera" );
+	pAddPattern(pFPLSave[efplCamera], "@Igde.LoadSaveSystem.FilePattern.Camera", "*.decamera", ".decamera");
 	
-	pAddPattern(pFPLOpen[efplWorld], "All formats", "*.deworld", ".deworld");
-	pAddPattern(pFPLOpen[efplWorld], "World", "*.deworld", ".deworld");
+	pAddPattern(pFPLOpen[efplWorld], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.deworld", ".deworld");
+	pAddPattern(pFPLOpen[efplWorld], "@Igde.LoadSaveSystem.FilePattern.World", "*.deworld", ".deworld");
 	
-	pAddPattern(pFPLSave[efplWorld], "World", "*.deworld", ".deworld");
+	pAddPattern(pFPLSave[efplWorld], "@Igde.LoadSaveSystem.FilePattern.World", "*.deworld", ".deworld");
 	
 	// game project file list
-	pAddPattern( pFPLOpen[ efplGameProject ], "All formats", "*.degp", "degp" );
-	pAddPattern( pFPLOpen[ efplGameProject ], pLSGameProject->GetName().GetString(),
-		pLSGameProject->GetPattern().GetString(), pLSGameProject->GetDefaultExtension().GetString() );
+	pAddPattern(pFPLOpen[efplGameProject], "@Igde.LoadSaveSystem.FilePattern.AllFormats", "*.degp", "degp");
+	pAddPattern(pFPLOpen[efplGameProject], pLSGameProject->GetName().GetString(),
+		pLSGameProject->GetPattern().GetString(), pLSGameProject->GetDefaultExtension().GetString());
 	
-	pAddPattern( pFPLSave[ efplGameProject ], pLSGameProject->GetName().GetString(),
-		pLSGameProject->GetPattern().GetString(), pLSGameProject->GetDefaultExtension().GetString() );
+	pAddPattern(pFPLSave[efplGameProject], pLSGameProject->GetName().GetString(),
+		pLSGameProject->GetPattern().GetString(), pLSGameProject->GetDefaultExtension().GetString());
 	
 	// convert file pattern lists to fox ones
-	pConvertToFOX( pFPLOpen[ efplGameProject ], pFoxFPLOpen[ effplGameProject ] );
-	pConvertToFOX( pFPLSave[ efplGameProject ], pFoxFPLSave[ effplGameProject ] );
+	pConvertToFOX(pFPLOpen[efplGameProject], pFoxFPLOpen[effplGameProject]);
+	pConvertToFOX(pFPLSave[efplGameProject], pFoxFPLSave[effplGameProject]);
 }
 
 
 
-const igdeFilePatternList &igdeLoadSaveSystem::GetOpenFilePatternList( eFilePatternLists list ) const{
-	return pFPLOpen[ list ];
+const igdeFilePattern::List &igdeLoadSaveSystem::GetOpenFilePatternList(eFilePatternLists list) const{
+	return pFPLOpen[list];
 }
 
-const igdeFilePatternList &igdeLoadSaveSystem::GetSaveFilePatternList( eFilePatternLists list ) const{
-	return pFPLSave[ list ];
+const igdeFilePattern::List &igdeLoadSaveSystem::GetSaveFilePatternList(eFilePatternLists list) const{
+	return pFPLSave[list];
 }
 
-const decString &igdeLoadSaveSystem::GetFOXOpenFilePatternList( eFOXFilePatternLists list ) const{
-	return pFoxFPLOpen[ list ];
+const decString &igdeLoadSaveSystem::GetFOXOpenFilePatternList(eFOXFilePatternLists list) const{
+	return pFoxFPLOpen[list];
 }
 
-const decString &igdeLoadSaveSystem::GetFOXSaveFilePatternList( eFOXFilePatternLists list ) const{
-	return pFoxFPLSave[ list ];
+const decString &igdeLoadSaveSystem::GetFOXSaveFilePatternList(eFOXFilePatternLists list) const{
+	return pFoxFPLSave[list];
 }
 
 
@@ -290,66 +254,35 @@ const decString &igdeLoadSaveSystem::GetFOXSaveFilePatternList( eFOXFilePatternL
 //////////////////////
 
 void igdeLoadSaveSystem::pCleanUp(){
-	if( pLSGameProject ){
+	if(pLSGameProject){
 		delete pLSGameProject;
 	}
 }
 
-void igdeLoadSaveSystem::pAddPattern( igdeFilePatternList &fpl, const deLoadableModule &module ){
-	const decStringList &patternList = module.GetPatternList();
-	const int patternCount = patternList.GetCount();
-	igdeFilePattern *filePattern = NULL;
+void igdeLoadSaveSystem::pAddPattern(igdeFilePattern::List &fpl, const deLoadableModule &module){
 	decString patterns;
-	int i;
 	
-	for( i=0; i<patternCount; i++ ){
-		if( i > 0 ){
-			patterns.AppendCharacter( ',' );
+	module.GetPatternList().Visit([&](const decString &p){
+		if(!patterns.IsEmpty()){
+			patterns.AppendCharacter(',');
 		}
-		patterns.AppendCharacter( '*' );
-		patterns.Append( patternList.GetAt( i ) );
-	}
+		patterns.AppendCharacter('*');
+		patterns.Append(p);
+	});
 	
-	try{
-		filePattern = new igdeFilePattern( module.GetName(), patterns.GetString(), module.GetDefaultExtension().GetString() );
-		fpl.AddFilePattern( filePattern );
-		
-	}catch( const deException & ){
-		if( filePattern ){
-			delete filePattern;
-		}
-		throw;
-	}
+	fpl.Add(igdeFilePattern::Ref::New(module.GetName(), patterns, module.GetDefaultExtension()));
 }
 
-void igdeLoadSaveSystem::pAddPattern( igdeFilePatternList &fpl, const char *name, const char *pattern, const char *defaultExtension ){
-	igdeFilePattern *filePattern = NULL;
-	
-	try{
-		filePattern = new igdeFilePattern( name, pattern, defaultExtension );
-		fpl.AddFilePattern( filePattern );
-		
-	}catch( const deException & ){
-		if( filePattern ){
-			delete filePattern;
-		}
-		throw;
-	}
+void igdeLoadSaveSystem::pAddPattern(igdeFilePattern::List &fpl, const char *name, const char *pattern, const char *defaultExtension){
+	fpl.Add(igdeFilePattern::Ref::New(name, pattern, defaultExtension));
 }
 
-void igdeLoadSaveSystem::pConvertToFOX( const igdeFilePatternList &fpl, decString &foxfpl ){
-	const int count = fpl.GetFilePatternCount();
-	int i;
-	
+void igdeLoadSaveSystem::pConvertToFOX(const igdeFilePattern::List &fpl, decString &foxfpl){
 	foxfpl.Empty();
-	
-	for( i=0; i<count; i++ ){
-		const igdeFilePattern &pattern = *fpl.GetFilePatternAt( i );
-		
-		if( i > 0 ){
-			foxfpl.AppendCharacter( '\n' );
+	fpl.Visit([&](const igdeFilePattern &p){
+		if(!foxfpl.IsEmpty()){
+			foxfpl.AppendCharacter('\n');
 		}
-		
-		foxfpl.AppendFormat( "%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString() );
-	}
+		foxfpl.AppendFormat("%s (%s)", p.GetName().GetString(), p.GetPattern().GetString());
+	});
 }

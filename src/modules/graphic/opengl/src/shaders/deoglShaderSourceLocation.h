@@ -42,17 +42,25 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglShaderSourceLocation>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader source location. */
-	deoglShaderSourceLocation( const char *inputFile, int inputLine, int outputLine );
+	deoglShaderSourceLocation(const char *inputFile, int inputLine, int outputLine);
 	
+	deoglShaderSourceLocation(const deoglShaderSourceLocation&);
+	deoglShaderSourceLocation& operator=(const deoglShaderSourceLocation&);
+	
+protected:
 	/** Clean up shader source location. */
-	virtual ~deoglShaderSourceLocation();
+	~deoglShaderSourceLocation() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Input file. */

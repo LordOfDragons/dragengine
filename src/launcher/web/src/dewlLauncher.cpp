@@ -36,7 +36,6 @@
 #include <delauncher/engine/modules/delEngineModule.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
 #include <delauncher/game/profile/delGPModule.h>
-#include <delauncher/game/profile/delGPMParameter.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
@@ -77,7 +76,7 @@ pConditionLauncher(PTHREAD_COND_INITIALIZER)
 		pCanvasId.GetString(), pCanvasSize.x, pCanvasSize.y);
 	
 	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::New(new delEngineInstanceDirect::Factory));
+		delEngineInstanceDirect::Factory::Ref::New());
 	{
 	deOSWebWasm::sConfig config{};
 	config.canvasId = pCanvasId;
@@ -107,23 +106,16 @@ void dewlLauncher::RemoveAllModuleParameters(){
 void dewlLauncher::AddModuleParameter(const std::string &module,
 const std::string &parameter, const std::string &value){
 	if(!pModuleParameters){
-		pModuleParameters = new delGPModuleList;
+		pModuleParameters = new delGPModule::List;
 	}
 	
-	delGPModule::Ref gpmodule(pModuleParameters->GetNamed(module.c_str()));
+	delGPModule::Ref gpmodule(pModuleParameters->FindNamed(module.c_str()));
 	if(!gpmodule){
-		gpmodule.TakeOver(new delGPModule(module.c_str()));
+		gpmodule = delGPModule::Ref::New(module.c_str());
 		pModuleParameters->Add(gpmodule);
 	}
 	
-	delGPMParameter::Ref gpparam(gpmodule->GetParameters().GetNamed(parameter.c_str()));
-	if(gpparam){
-		gpparam->SetValue(value.c_str());
-		
-	}else{
-		gpparam.TakeOver(new delGPMParameter(parameter.c_str(), value.c_str()));
-		gpmodule->GetParameters().Add(gpparam);
-	}
+	gpmodule->GetParameters().SetAt(parameter.c_str(), value.c_str());
 }
 
 
@@ -230,12 +222,12 @@ void dewlLauncher::pInitLogger(){
 	
 	AddFileLogger("delauncher-web");
 	
-	pLoggerJS.TakeOver(new dewlLoggerJS);
+	pLoggerJS = dewlLoggerJS::Ref::New();
 	GetLogger()->AddLogger(pLoggerJS);
 }
 
 void dewlLauncher::pGameProblems(std::vector<std::string> &problems){
-	const delFileFormatList &fileFormatList = pGame->GetFileFormats();
+	const delFileFormat::List &fileFormatList = pGame->GetFileFormats();
 	const int fileFormatCount = fileFormatList.GetCount();
 	deLogger &logger = *GetLogger();
 	decString problem;
@@ -246,7 +238,7 @@ void dewlLauncher::pGameProblems(std::vector<std::string> &problems){
 		pGame->GetIdentifier().ToHexString(false).GetString());
 	
 	for(i=0; i<fileFormatCount; i++){
-		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
+		const delFileFormat &fileFormat = fileFormatList.GetAt(i);
 		
 		if(!fileFormat.GetSupported()){
 			if(deModuleSystem::IsSingleType(fileFormat.GetType())){
@@ -389,7 +381,7 @@ void dewlLauncher::pApplyCustomModuleParameters(){
 	delGameProfile::Ref profile(pGame->GetCustomProfile());
 	
 	if(!profile){
-		profile.TakeOver(CreateGameProfile());
+		profile = CreateGameProfile();
 		*profile = *pRunParams.GetGameProfile(); // copy content not pointer
 		pGame->SetCustomProfile(profile);
 	}
@@ -464,7 +456,7 @@ void dewlLauncher::pLauncherThreadMain(){
 		
 	}catch(const deException &e){
 		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::error,
-			LOGSOURCE, e.FormatOutput().Join("/"));
+			LOGSOURCE, DEJoin(e.FormatOutput(), "/"));
 		pDispatchEvent(EventInitialized, e);
 		return;
 	}
@@ -548,11 +540,11 @@ void dewlLauncher::pLocateGame(){
 	delGameManager &gameManager = GetGameManager();
 	deLogger &logger = *GetLogger();
 	
-	delGameList list;
+	delGame::List list;
 	
 	{
-	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-		GetEngineInstanceFactory().CreateEngineInstance(*this, GetEngine().GetLogFile())));
+	const delEngineInstance::Ref instance(GetEngineInstanceFactory().
+		CreateEngineInstance(*this, GetEngine().GetLogFile()));
 	
 	instance->StartEngine();
 	instance->LoadModules();
@@ -569,7 +561,7 @@ void dewlLauncher::pLocateGame(){
 	
 	// load configuration if the game is not installed. this allows to keep the parameter
 	// changes alive done by the player inside the game
-	if(!gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
+	if(!gameManager.GetGames().FindWithId(pGame->GetIdentifier())){
 		pGame->LoadConfig();
 	}
 	
@@ -584,7 +576,7 @@ void dewlLauncher::pLocateProfile(){
 		pProfile = pGame->GetProfileToUse();
 		
 	}else{
-		pProfile = gameManager.GetProfiles().GetNamed(pProfileName);
+		pProfile = gameManager.GetProfiles().FindNamed(pProfileName);
 		if(!pProfile){
 			decString message;
 			message.Format("No profile found with name '%s'", pProfileName.GetString());
@@ -654,5 +646,5 @@ void dewlLauncher::pDispatchEvent(const std::string &event, eResultCodes resultC
 }
 
 void dewlLauncher::pDispatchEvent(const std::string &event, const deException &exception){
-	pDispatchEvent(event, eResultCodes::Exception, exception.FormatOutput().Join("\n"));
+	pDispatchEvent(event, eResultCodes::Exception, DEJoin(exception.FormatOutput(), "\n"));
 }

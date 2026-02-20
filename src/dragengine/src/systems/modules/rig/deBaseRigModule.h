@@ -40,10 +40,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseRigModule( deLoadableModule &loadableModule );
+	deBaseRigModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseRigModule();
+	~deBaseRigModule() override;
 	/*@}*/
 	
 	
@@ -51,10 +51,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load rig. */
-	virtual void LoadRig( decBaseFileReader &reader, deRig &rig ) = 0;
+	virtual void LoadRig(decBaseFileReader &reader, deRig &rig) = 0;
 	
 	/** \brief Save rig. */
-	virtual void SaveRig( decBaseFileWriter &writer, const deRig &rig ) = 0;
+	virtual void SaveRig(decBaseFileWriter &writer, const deRig &rig) = 0;
 	/*@}*/
 };
 

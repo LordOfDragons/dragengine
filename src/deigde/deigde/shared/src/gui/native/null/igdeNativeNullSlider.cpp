@@ -39,7 +39,8 @@ igdeNativeNullSlider::igdeNativeNullSlider(){
 igdeNativeNullSlider::~igdeNativeNullSlider(){
 }
 
-igdeNativeNullSlider *igdeNativeNullSlider::CreateNativeWidget( igdeSlider& ){
+igdeNativeNullSlider *igdeNativeNullSlider::CreateNativeWidget(igdeSlider&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullSlider;
 }
 

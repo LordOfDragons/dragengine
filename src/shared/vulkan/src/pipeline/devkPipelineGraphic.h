@@ -34,19 +34,18 @@
 class devkPipelineGraphic : public devkPipeline{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkPipelineGraphic> Ref;
-	
+	using Ref = deTObjectReference<devkPipelineGraphic>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkPipelineGraphic( devkDevice &device, const devkPipelineConfiguration &configuration );
+	devkPipelineGraphic(devkDevice &device, const devkPipelineConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
-	virtual ~devkPipelineGraphic();
+	~devkPipelineGraphic() override;
 	/*@}*/
 	
 	

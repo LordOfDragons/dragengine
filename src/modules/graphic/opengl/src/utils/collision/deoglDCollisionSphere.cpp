@@ -45,11 +45,11 @@
 //////////////////////////////
 
 deoglDCollisionSphere::deoglDCollisionSphere(){
-	SetAll( decDVector( 0, 0, 0 ), 1 );
+	SetAll(decDVector(0, 0, 0), 1);
 }
 
-deoglDCollisionSphere::deoglDCollisionSphere( const decDVector &center, double radius ){
-	SetAll( center, radius );
+deoglDCollisionSphere::deoglDCollisionSphere(const decDVector &center, double radius){
+	SetAll(center, radius);
 }
 
 deoglDCollisionSphere::~deoglDCollisionSphere(){
@@ -60,12 +60,12 @@ deoglDCollisionSphere::~deoglDCollisionSphere(){
 // double dispatching calls
 /////////////////////////////
 
-bool deoglDCollisionSphere::VolumeHitsVolume( deoglDCollisionVolume *volume ){
-	return volume->SphereHitsVolume( this );
+bool deoglDCollisionSphere::VolumeHitsVolume(deoglDCollisionVolume *volume){
+	return volume->SphereHitsVolume(this);
 }
 
-double deoglDCollisionSphere::VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal ){
-	return volume->SphereMoveHitsVolume( this, displacement, normal );
+double deoglDCollisionSphere::VolumeMoveHitsVolume(deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal){
+	return volume->SphereMoveHitsVolume(this, displacement, normal);
 }
 
 
@@ -73,72 +73,72 @@ double deoglDCollisionSphere::VolumeMoveHitsVolume( deoglDCollisionVolume *volum
 // first stage calls
 //////////////////////
 
-bool deoglDCollisionSphere::SphereHitsVolume( deoglDCollisionSphere *sphere ){
-	return SphereHitsSphere( sphere );
+bool deoglDCollisionSphere::SphereHitsVolume(deoglDCollisionSphere *sphere){
+	return SphereHitsSphere(sphere);
 }
 
-bool deoglDCollisionSphere::CylinderHitsVolume( deoglDCollisionCylinder *cylinder ){
-	return cylinder->SphereHitsCylinder( this );
+bool deoglDCollisionSphere::CylinderHitsVolume(deoglDCollisionCylinder *cylinder){
+	return cylinder->SphereHitsCylinder(this);
 }
 
-bool deoglDCollisionSphere::CapsuleHitsVolume( deoglDCollisionCapsule *capsule ){
-	return capsule->SphereHitsCapsule( this );
+bool deoglDCollisionSphere::CapsuleHitsVolume(deoglDCollisionCapsule *capsule){
+	return capsule->SphereHitsCapsule(this);
 }
 
-bool deoglDCollisionSphere::BoxHitsVolume( deoglDCollisionBox *box ){
-	return box->SphereHitsBox( this );
+bool deoglDCollisionSphere::BoxHitsVolume(deoglDCollisionBox *box){
+	return box->SphereHitsBox(this);
 }
 
-bool deoglDCollisionSphere::TriangleHitsVolume( deoglDCollisionTriangle *triangle ){
-	return triangle->SphereHitsTriangle( this );
+bool deoglDCollisionSphere::TriangleHitsVolume(deoglDCollisionTriangle *triangle){
+	return triangle->SphereHitsTriangle(this);
 }
 
-bool deoglDCollisionSphere::FrustumHitsVolume( deoglDCollisionFrustum *frustum ){
-	return frustum->SphereHitsFrustum( this );
+bool deoglDCollisionSphere::FrustumHitsVolume(deoglDCollisionFrustum *frustum){
+	return frustum->SphereHitsFrustum(this);
 }
 
 
 
-double deoglDCollisionSphere::SphereMoveHitsVolume( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
-	return SphereMoveHitsSphere( sphere, displacement, normal );
+double deoglDCollisionSphere::SphereMoveHitsVolume(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
+	return SphereMoveHitsSphere(sphere, displacement, normal);
 }
 
-double deoglDCollisionSphere::CylinderMoveHitsVolume( deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
-	double distance = cylinder->SphereMoveHitsCylinder( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionSphere::CylinderMoveHitsVolume(deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
+	double distance = cylinder->SphereMoveHitsCylinder(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionSphere::CapsuleMoveHitsVolume( deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
-	double distance = capsule->SphereMoveHitsCapsule( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionSphere::CapsuleMoveHitsVolume(deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
+	double distance = capsule->SphereMoveHitsCapsule(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionSphere::BoxMoveHitsVolume( deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
-	double distance = box->SphereMoveHitsBox( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionSphere::BoxMoveHitsVolume(deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal){
+	double distance = box->SphereMoveHitsBox(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionSphere::TriangleMoveHitsVolume( deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal ){
-	double distance = triangle->SphereMoveHitsTriangle( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionSphere::TriangleMoveHitsVolume(deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal){
+	double distance = triangle->SphereMoveHitsTriangle(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionSphere::FrustumMoveHitsVolume( deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal ){
-	double distance = frustum->SphereMoveHitsFrustum( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionSphere::FrustumMoveHitsVolume(deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal){
+	double distance = frustum->SphereMoveHitsFrustum(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionSphere::PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal ){
-	double lambda = ( ( pCenter - point ) * displacement ) / ( displacement * displacement );
-	if( lambda < 0 || lambda > 1 ){
+double deoglDCollisionSphere::PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal){
+	double lambda = ((pCenter - point) * displacement) / (displacement * displacement);
+	if(lambda < 0 || lambda > 1){
 		return 1;
 	}else{
-		if( normal ){
+		if(normal){
 			*normal = point - pCenter;
 			normal->Normalize();
 		}
@@ -151,15 +151,15 @@ double deoglDCollisionSphere::PointMoveHitsVolume( const decDVector &point, cons
 // Enclosing Volumes
 //////////////////////
 
-void deoglDCollisionSphere::GetEnclosingSphere( deoglDCollisionSphere *sphere ){
-	if( ! sphere ) DETHROW( deeInvalidParam );
-	sphere->SetAll( pCenter, pRadius );
+void deoglDCollisionSphere::GetEnclosingSphere(deoglDCollisionSphere *sphere){
+	if(!sphere) DETHROW(deeInvalidParam);
+	sphere->SetAll(pCenter, pRadius);
 }
 
-void deoglDCollisionSphere::GetEnclosingBox( deoglDCollisionBox *box ){
-	if( ! box ) DETHROW( deeInvalidParam );
-	box->SetCenter( pCenter );
-	box->SetHalfSize( decDVector( pRadius, pRadius, pRadius ) );
+void deoglDCollisionSphere::GetEnclosingBox(deoglDCollisionBox *box){
+	if(!box) DETHROW(deeInvalidParam);
+	box->SetCenter(pCenter);
+	box->SetHalfSize(decDVector(pRadius, pRadius, pRadius));
 }
 
 
@@ -167,34 +167,34 @@ void deoglDCollisionSphere::GetEnclosingBox( deoglDCollisionBox *box ){
 // Miscelanous Functions
 //////////////////////////
 
-bool deoglDCollisionSphere::IsPointInside( const decDVector &point ){
-	return ( point - pCenter ).Length() <= pRadius;
+bool deoglDCollisionSphere::IsPointInside(const decDVector &point){
+	return (point - pCenter).Length() <= pRadius;
 }
 
-decDVector deoglDCollisionSphere::ClosestPointTo( const decDVector &point ){
+decDVector deoglDCollisionSphere::ClosestPointTo(const decDVector &point){
 	decDVector result = point - pCenter;
 	double length = result.Length();
-	if( length <= pRadius ){
+	if(length <= pRadius){
 		return point;
 	}else{
-		return ( result / length ) * pRadius;
+		return (result / length) * pRadius;
 	}
 }
 
-decDVector deoglDCollisionSphere::NormalAtPoint( const decDVector &point ){
+decDVector deoglDCollisionSphere::NormalAtPoint(const decDVector &point){
 	decDVector normal = point - pCenter;
 	double length = normal.Length();
 	
-	if( length < 1e-5 ){
-		return decDVector( 1.0, 0.0, 0.0 );
+	if(length < 1e-5){
+		return decDVector(1.0, 0.0, 0.0);
 	}
 	
 	normal.Normalize();
 	return normal;
 }
 
-bool deoglDCollisionSphere::RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance ){
-	return deoglDCollisionDetection::RayHitsSphere( rayOrigin, rayDirection, pCenter, pRadius, hitDistance );
+bool deoglDCollisionSphere::RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance){
+	return deoglDCollisionDetection::RayHitsSphere(rayOrigin, rayDirection, pCenter, pRadius, hitDistance);
 }
 
 
@@ -202,9 +202,9 @@ bool deoglDCollisionSphere::RayHitsVolume( const decDVector &rayOrigin, const de
 // Visiting
 /////////////
 
-void deoglDCollisionSphere::Visit( deoglDCollisionVolumeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
-	visitor->VisitSphere( this );
+void deoglDCollisionSphere::Visit(deoglDCollisionVolumeVisitor *visitor){
+	if(!visitor) DETHROW(deeInvalidParam);
+	visitor->VisitSphere(this);
 }
 
 
@@ -212,28 +212,28 @@ void deoglDCollisionSphere::Visit( deoglDCollisionVolumeVisitor *visitor ){
 // collision routines
 ///////////////////////
 
-bool deoglDCollisionSphere::SphereHitsSphere( deoglDCollisionSphere *sphere ){
+bool deoglDCollisionSphere::SphereHitsSphere(deoglDCollisionSphere *sphere){
 	decDVector centerDist = pCenter - sphere->GetCenter();
 	double radiusDist = pRadius + sphere->GetRadius();
-	return ( centerDist * centerDist ) <= radiusDist * radiusDist;
+	return (centerDist * centerDist) <= radiusDist * radiusDist;
 }
 
-double deoglDCollisionSphere::SphereMoveHitsSphere( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
+double deoglDCollisionSphere::SphereMoveHitsSphere(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
 	const decDVector &sc1 = sphere->GetCenter();
-	decDVector diff( sc1 - pCenter );
+	decDVector diff(sc1 - pCenter);
 	double a, b, r, rr, disc, lambda, factor;
 	// check for a collision at the beginning
 	r = sphere->GetRadius() + pRadius;
 	factor = diff * diff;
 	rr = r * r;
-	if( factor <= rr ){
+	if(factor <= rr){
 		//printf( "[DEBUG] %i\n", __LINE__ );
-		if( normal ){
+		if(normal){
 			factor = diff.Length();
-			if( factor <= 0.000001 ){
-				normal->Set( -displacement );
+			if(factor <= 0.000001){
+				normal->Set(-displacement);
 			}else{
-				normal->Set( diff );
+				normal->Set(diff);
 			}
 			normal->Normalize();
 		}
@@ -241,18 +241,18 @@ double deoglDCollisionSphere::SphereMoveHitsSphere( deoglDCollisionSphere *spher
 	}
 	// check if there exist one or more points on the line with the needed distance
 	a = displacement * displacement;
-	b = ( diff * displacement ) * 2.0;
-	disc = b * b - a * ( factor - rr ) * 4.0;
-	if( disc < 0.0 ) return 1.0;
+	b = (diff * displacement) * 2.0;
+	disc = b * b - a * (factor - rr) * 4.0;
+	if(disc < 0.0) return 1.0;
 	// determine the closer of the two points
-	disc = sqrt( disc );
-	factor = 1.0 / ( a * 2.0 );
-	lambda = ( -b - disc ) * factor;
-	if( lambda < 0 ) lambda = ( -b + disc ) * factor;
+	disc = sqrt(disc);
+	factor = 1.0 / (a * 2.0);
+	lambda = (-b - disc) * factor;
+	if(lambda < 0) lambda = (-b + disc) * factor;
 	// check if the point is inside the movement range
-	if( lambda <= 0.0 || lambda >= 1.0 ) return 1.0;
-	if( normal ){
-		normal->Set( sc1 + displacement * lambda - pCenter );
+	if(lambda <= 0.0 || lambda >= 1.0) return 1.0;
+	if(normal){
+		normal->Set(sc1 + displacement * lambda - pCenter);
 		normal->Normalize();
 	}
 	//printf( "[DEBUG] %i, %f\n", __LINE__, lambda );
@@ -264,17 +264,17 @@ double deoglDCollisionSphere::SphereMoveHitsSphere( deoglDCollisionSphere *spher
 // management
 ///////////////
 
-void deoglDCollisionSphere::SetCenter( const decDVector &center ){
+void deoglDCollisionSphere::SetCenter(const decDVector &center){
 	pCenter = center;
 }
 
-void deoglDCollisionSphere::SetRadius( double radius ){
-	pRadius = decMath::max( radius, 0.0 );
+void deoglDCollisionSphere::SetRadius(double radius){
+	pRadius = decMath::max(radius, 0.0);
 	pSquareRadius = radius * radius;
 }
 
-void deoglDCollisionSphere::SetAll( const decDVector &center, double radius ){
+void deoglDCollisionSphere::SetAll(const decDVector &center, double radius){
 	pCenter = center;
-	pRadius = decMath::max( radius, 0.0 );
+	pRadius = decMath::max(radius, 0.0);
 	pSquareRadius = radius * radius;
 }

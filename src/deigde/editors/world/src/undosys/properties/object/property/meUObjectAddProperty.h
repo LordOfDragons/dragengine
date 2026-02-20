@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -37,8 +37,12 @@ class meObject;
  * \brief Undo Action Add Object Property.
  */
 class meUObjectAddProperty : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUObjectAddProperty>;
+	
+	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pValue;
@@ -47,23 +51,27 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectAddProperty( meObject *object, const char *key, const char *value );
+	meUObjectAddProperty(meObject *object, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */
-	virtual ~meUObjectAddProperty();
+
+protected:
+	~meUObjectAddProperty() override;
+
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Sets the value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/** Progressive redo. */
 	void ProgressiveRedo();
 	/*@}*/

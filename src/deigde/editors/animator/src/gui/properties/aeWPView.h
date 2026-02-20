@@ -25,24 +25,24 @@
 #ifndef _AEWPVIEW_H_
 #define _AEWPVIEW_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
 
 #include <dragengine/common/math/decMath.h>
 
 class aeWindowProperties;
 class aeGameDefinition;
-class aeWPViewListener;
-class aeAnimator;
+#include "aeWPViewListener.h"
+#include "../../animator/aeAnimator.h"
 class aeAttachment;
 
 
@@ -51,40 +51,44 @@ class aeAttachment;
  * View property window.
  */
 class aeWPView : public igdeContainerScroll{
+public:
+	using Ref = deTObjectReference<aeWPView>;
+	
+	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPViewListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPViewListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
-	igdeEditPathReference pEditDisplayModelPath;
-	igdeEditPathReference pEditDisplaySkinPath;
-	igdeEditPathReference pEditDisplayRigPath;
+	igdeEditPath::Ref pEditDisplayModelPath;
+	igdeEditPath::Ref pEditDisplaySkinPath;
+	igdeEditPath::Ref pEditDisplayRigPath;
 	
-	igdeEditPathReference pEditTestingAnimatorPath;
-	igdeCheckBoxReference pChkResetState;
+	igdeEditPath::Ref pEditTestingAnimatorPath;
+	igdeCheckBox::Ref pChkResetState;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPEnvObject;
-	igdeWPCameraReference pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPEnvObject;
+	igdeWPCamera::Ref pWPCamera;
 	
-	igdeCheckBoxReference pChkCamAttach;
-	igdeComboBoxFilterReference pCBCamBone;
-	igdeEditVectorReference pEditCamRelPos;
-	igdeEditVectorReference pEditCamRelRot;
+	igdeCheckBox::Ref pChkCamAttach;
+	igdeComboBoxFilter::Ref pCBCamBone;
+	igdeEditVector::Ref pEditCamRelPos;
+	igdeEditVector::Ref pEditCamRelRot;
 	
-	igdeTextFieldReference pEditPlaySpeed;
-	igdeTextFieldReference pEditTimeStep;
-	igdeButtonReference pBtnFramePrev;
-	igdeButtonReference pBtnResetAnimation;
-	igdeButtonReference pBtnFrameNext;
-	igdeButtonReference pBtnPauseAnimation;
+	igdeTextField::Ref pEditPlaySpeed;
+	igdeTextField::Ref pEditTimeStep;
+	igdeButton::Ref pBtnFramePrev;
+	igdeButton::Ref pBtnResetAnimation;
+	igdeButton::Ref pBtnFrameNext;
+	igdeButton::Ref pBtnPauseAnimation;
 	
-	igdeComboBoxReference pCBAttachments;
-	igdeButtonReference pBtnAttMenu;
-	igdeTextFieldReference pEditAttName;
-	igdeWPWObjectReference pWPAttachment;
-	igdeComboBoxReference pCBAttAttachType;
-	igdeComboBoxFilterReference pCBAttBoneName;
+	igdeComboBox::Ref pCBAttachments;
+	igdeButton::Ref pBtnAttMenu;
+	igdeTextField::Ref pEditAttName;
+	igdeWPWObject::Ref pWPAttachment;
+	igdeComboBox::Ref pCBAttAttachType;
+	igdeComboBoxFilter::Ref pCBAttBoneName;
 	
 	
 	
@@ -92,11 +96,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPView( aeWindowProperties &windowProperties );
+	aeWPView(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPView();
+	~aeWPView() override;
 	/*@}*/
 	
 	
@@ -108,10 +112,10 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Attachment. */
 	aeAttachment *GetAttachment() const;

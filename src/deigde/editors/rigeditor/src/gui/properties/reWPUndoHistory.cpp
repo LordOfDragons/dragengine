@@ -40,18 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPUndoHistory::reWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pRig( NULL ),
-pListener( new reWPUndoHistoryListener( *this ) ){
+reWPUndoHistory::reWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(reWPUndoHistoryListener::Ref::New(*this)){
 }
 
 reWPUndoHistory::~reWPUndoHistory(){
-	SetRig( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetRig(nullptr);
 }
 
 
@@ -59,24 +54,21 @@ reWPUndoHistory::~reWPUndoHistory(){
 // Management
 ///////////////
 
-void reWPUndoHistory::SetRig( reRig *rig ){
-	if( rig == pRig ){
+void reWPUndoHistory::SetRig(reRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(nullptr);
 	
-	if( pRig ){
-		pRig->RemoveNotifier( pListener );
-		pRig->FreeReference();
+	if(pRig){
+		pRig->RemoveNotifier(pListener);
 	}
 	
 	pRig = rig;
 	
-	if( rig ){
-		rig->AddNotifier( pListener );
-		rig->AddReference();
-		
-		SetUndoSystem( rig->GetUndoSystem() );
+	if(rig){
+		rig->AddNotifier(pListener);
+		SetUndoSystem(rig->GetUndoSystem());
 	}
 }

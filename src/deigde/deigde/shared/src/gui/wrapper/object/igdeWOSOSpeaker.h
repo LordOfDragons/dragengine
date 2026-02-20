@@ -26,11 +26,11 @@
 #define _IGDEWOSOSPEAKER_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/sound/deSpeakerReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -41,25 +41,33 @@ class igdeGDCSpeaker;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOSpeaker : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSOSpeaker>;
+	
+	
 private:
 	const igdeGDCSpeaker &pGDSpeaker;
-	deSpeakerReference pSpeaker;
-	igdeResourceLoaderListenerReference pResLoad;
+	deSpeaker::Ref pSpeaker;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerPlaying;
-	igdeTriggerExpressionReference pTriggerMuted;
+	igdeTriggerExpression::Ref pTriggerPlaying;
+	igdeTriggerExpression::Ref pTriggerMuted;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOSpeaker( igdeWObject &wrapper, const igdeGDCSpeaker &gdSpeaker, const decString &prefix );
+	igdeWOSOSpeaker(igdeWObject &wrapper, const igdeGDCSpeaker &gdSpeaker, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOSpeaker();
+	~igdeWOSOSpeaker() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -67,38 +75,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker resource. */
-	inline deSpeaker *GetSpeaker() const{ return pSpeaker; }
+	inline const deSpeaker::Ref &GetSpeaker() const{ return pSpeaker; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief Init triggers. */
-	virtual void InitTriggers();
+	void InitTriggers() override;
 	
 	/** \brief Update trigger. */
-	virtual void UpdateTriggers();
+	void UpdateTriggers() override;
 	
 	/** \brief Update visibility. */
-	virtual void UpdateVisibility();
+	void UpdateVisibility() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

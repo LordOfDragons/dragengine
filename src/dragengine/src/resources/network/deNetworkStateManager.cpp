@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkStateManager::deNetworkStateManager( deEngine *engine ) :
-deResourceManager( engine, ertNetworkState )
+deNetworkStateManager::deNetworkStateManager(deEngine *engine) :
+deResourceManager(engine, ertNetworkState)
 {
-	SetLoggingName( "network state" );
+	SetLoggingName("network state");
 }
 
 deNetworkStateManager::~deNetworkStateManager(){
@@ -65,27 +65,14 @@ int deNetworkStateManager::GetNetworkStateCount() const{
 }
 
 deNetworkState *deNetworkStateManager::GetRootNetworkState() const{
-	return ( deNetworkState* )pStates.GetRoot();
+	return (deNetworkState*)pStates.GetRoot();
 }
 
-deNetworkState *deNetworkStateManager::CreateState( bool readOnly ){
-	deNetworkState *state = NULL;
-	
-	try{
-		state = new deNetworkState( this, readOnly );
-		
-		GetNetworkSystem()->LoadState( state );
-		GetScriptingSystem()->LoadNetworkState( state );
-		
-		pStates.Add( state );
-		
-	}catch( const deException & ){
-		if( state ){
-			state->FreeReference();
-		}
-		throw;
-	}
-	
+deNetworkState::Ref deNetworkStateManager::CreateState(bool readOnly){
+	const deNetworkState::Ref state(deNetworkState::Ref::New(this, readOnly));
+	GetNetworkSystem()->LoadState(state);
+	GetScriptingSystem()->LoadNetworkState(state);
+	pStates.Add(state);
 	return state;
 }
 
@@ -93,8 +80,8 @@ deNetworkState *deNetworkStateManager::CreateState( bool readOnly ){
 
 void deNetworkStateManager::ReleaseLeakingResources(){
 	const int count = GetNetworkStateCount();
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking network states", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking network states", count);
 		pStates.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -103,51 +90,38 @@ void deNetworkStateManager::ReleaseLeakingResources(){
 
 // Systems Support
 ////////////////////
-
 void deNetworkStateManager::SystemNetworkLoad(){
-	deNetworkState *state = ( deNetworkState* )pStates.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
-	
-	while( state ){
-		if( ! state->GetPeerNetwork() ){
-			netSys.LoadState( state );
+	pStates.GetResources().Visit([&](deResource *resource){
+		deNetworkState *state = static_cast<deNetworkState*>(resource);
+		if(!state->GetPeerNetwork()){
+			netSys.LoadState(state);
 		}
-		
-		state = ( deNetworkState* )state->GetLLManagerNext();
-	}
+	});
 }
 
 void deNetworkStateManager::SystemNetworkUnload(){
-	deNetworkState *state = ( deNetworkState* )pStates.GetRoot();
-	
-	while( state ){
-		state->SetPeerNetwork ( NULL );
-		state = ( deNetworkState* )state->GetLLManagerNext();
-	}
+	pStates.GetResources().Visit([](deResource *resource){
+		static_cast<deNetworkState*>(resource)->SetPeerNetwork(nullptr);
+	});
 }
 
 void deNetworkStateManager::SystemScriptingLoad(){
-	deNetworkState *state = ( deNetworkState* )pStates.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
-	
-	while( state ){
-		if( ! state->GetPeerScripting() ){
-			scrSys.LoadNetworkState( state );
+	pStates.GetResources().Visit([&](deResource *resource){
+		deNetworkState *state = static_cast<deNetworkState*>(resource);
+		if(!state->GetPeerScripting()){
+			scrSys.LoadNetworkState(state);
 		}
-		
-		state = ( deNetworkState* )state->GetLLManagerNext();
-	}
+	});
 }
 
 void deNetworkStateManager::SystemScriptingUnload(){
-	deNetworkState *state = ( deNetworkState* )pStates.GetRoot();
-	
-	while( state ){
-		state->SetPeerScripting( NULL );
-		state = ( deNetworkState* )state->GetLLManagerNext();
-	}
+	pStates.GetResources().Visit([](deResource *resource){
+		static_cast<deNetworkState*>(resource)->SetPeerScripting(nullptr);
+	});
 }
 
-void deNetworkStateManager::RemoveResource( deResource *resource ){
-	pStates.RemoveIfPresent( resource );
+void deNetworkStateManager::RemoveResource(deResource *resource){
+	pStates.RemoveIfPresent(resource);
 }

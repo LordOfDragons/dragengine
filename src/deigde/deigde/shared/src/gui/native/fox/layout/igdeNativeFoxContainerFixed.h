@@ -34,7 +34,7 @@ class igdeContainerFixed;
  * FOX Native button.
  */
 class igdeNativeFoxContainerFixed : public FXPacker{
-	FXDECLARE( igdeNativeFoxContainerFixed )
+	FXDECLARE(igdeNativeFoxContainerFixed)
 	
 protected:
 	igdeNativeFoxContainerFixed();
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxContainerFixed( igdeContainerFixed &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerFixed(igdeContainerFixed &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerFixed();
+	~igdeNativeFoxContainerFixed() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxContainerFixed* CreateNativeWidget( igdeContainerFixed &owner );
+	static igdeNativeFoxContainerFixed* CreateNativeWidget(igdeContainerFixed &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -65,10 +65,10 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerFixed igdeNativeContainerFixed;
+using igdeNativeContainerFixed = igdeNativeFoxContainerFixed;
 
 #endif

@@ -42,21 +42,21 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
 
-deBaseModule *DELGACreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
+deBaseModule *DELGACreateModule(deLoadableModule *loadableModule){
+	deBaseModule *module = nullptr;
 	
 	try{
-		module = new deArchiveDelga( *loadableModule );
+		module = new deArchiveDelga(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
 	
 	return module;
@@ -70,8 +70,8 @@ deBaseModule *DELGACreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deArchiveDelga::deArchiveDelga( deLoadableModule &loadableModule ) :
-deBaseArchiveModule( loadableModule ){
+deArchiveDelga::deArchiveDelga(deLoadableModule &loadableModule) :
+deBaseArchiveModule(loadableModule){
 }
 
 deArchiveDelga::~deArchiveDelga(){
@@ -82,9 +82,9 @@ deArchiveDelga::~deArchiveDelga(){
 // Management
 ///////////////
 
-deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *reader ){
-	DEASSERT_NOTNULL( reader )
-	return new deadContainer( *this, *reader );
+deBaseArchiveContainer *deArchiveDelga::CreateContainer(decBaseFileReader *reader){
+	DEASSERT_NOTNULL(reader)
+	return new deadContainer(*this, *reader);
 }
 
 #ifdef WITH_INTERNAL_MODULE
@@ -96,6 +96,8 @@ deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *read
 
 class deadModuleInternal : public deInternalModule{
 public:
+	using Ref = deTObjectReference<deadModuleInternal>;
+	
 	deadModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DELGA");
 		SetDescription("Handles archive in the DELGA format.");
@@ -119,7 +121,7 @@ public:
 	}
 };
 
-deInternalModule *deadRegisterInternalModule(deModuleSystem *system){
-	return new deadModuleInternal(system);
+deTObjectReference<deInternalModule> deadRegisterInternalModule(deModuleSystem *system){
+	return deadModuleInternal::Ref::New(system);
 }
 #endif

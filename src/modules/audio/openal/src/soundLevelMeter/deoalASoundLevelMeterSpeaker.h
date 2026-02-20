@@ -39,6 +39,11 @@ class deoalRayTraceResult;
  * \brief Sound level meter tracked speaker.
  */
 class deoalASoundLevelMeterSpeaker : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalASoundLevelMeterSpeaker>;
+	
+	
 private:
 	deoalASoundLevelMeter &pSoundLevelMeter;
 	deoalASpeaker *pSpeaker;
@@ -57,11 +62,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create copy of sound level meter speaker. */
-	deoalASoundLevelMeterSpeaker( deoalASoundLevelMeter &soundLevelMeter, deoalASpeaker *speaker );
+	deoalASoundLevelMeterSpeaker(deoalASoundLevelMeter &soundLevelMeter, deoalASpeaker *speaker);
 	
 protected:
 	/** \brief Clean up sound level meter speaker. */
-	virtual ~deoalASoundLevelMeterSpeaker();
+	~deoalASoundLevelMeterSpeaker() override;
 	/*@}*/
 	
 	
@@ -79,7 +84,7 @@ public:
 	inline float GetVolume() const{ return pVolume; }
 	
 	/** \brief Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** \brief Env probe of \em NULL if not present. */
 	inline deoalEnvProbe *GetEnvProbe() const{ return pEnvProbe; }
@@ -120,8 +125,8 @@ public:
 private:
 	void pListenDirect();
 	void pListenReflected();
-	const deoalRayTraceHitElement *pNextHitElement( const deoalRayTraceResult &rtresult,
-		int &index, bool forwardFacing ) const;
+	const deoalRayTraceHitElement *pNextHitElement(const deoalRayTraceResult &rtresult,
+		int &index, bool forwardFacing) const;
 };
 
 #endif

@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 
@@ -48,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMASkinAdd::gdeMASkinAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Skin...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add skin" )
+gdeMASkinAdd::gdeMASkinAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.SkinAdd",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@GameDefinition.Menu.SkinAdd.ToolTip")
 {
 }
 
@@ -60,29 +59,28 @@ gdeBaseAction( windowMain, "Add Skin...",
 // Management
 ///////////////
 
-igdeUndo *gdeMASkinAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMASkinAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last skin? what directory? );
 	
-	if( ! igdeCommonDialogs::GetFileOpen( &pWindowMain,
-	"Select skin material", *gameDefinition.GetPreviewVFS(),
+	if(!igdeCommonDialogs::GetFileOpen(pWindowMain,
+	"@GameDefinition.Dialog.SkinMaterialSelect.Title", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
-		return NULL;
+		return {};
 	}
 	
-	if( gameDefinition.GetSkins().HasWithPath( filename ) ){
-		igdeCommonDialogs::Information( &pWindowMain, "Add Skin", "Skin with path exists already." );
-		return NULL;
+	if(gameDefinition.GetSkins().HasWithPath(filename)){
+		igdeCommonDialogs::Information(pWindowMain, "@GameDefinition.Dialog.SkinAdd.Title", "@GameDefinition.Dialog.SkinAdd.ErrorExists");
+		return {};
 	}
 	
-	decString filetitle( decPath::CreatePathUnix( filename ).GetLastComponent() );
-	const int delimiter = filetitle.FindReverse( '.' );
-	if( delimiter != -1 ){
-		filetitle = filetitle.GetLeft( delimiter );
+	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
+	const int delimiter = filetitle.FindReverse('.');
+	if(delimiter != -1){
+		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
-	deObjectReference skin;
-	skin.TakeOver( new gdeSkin( filename, filetitle ) );
-	return new gdeUAddSkin( &gameDefinition, ( gdeSkin* )( deObject* )skin );
+	const gdeSkin::Ref skin(gdeSkin::Ref::New(filename, filetitle));
+	return gdeUAddSkin::Ref::New(&gameDefinition, skin);
 }

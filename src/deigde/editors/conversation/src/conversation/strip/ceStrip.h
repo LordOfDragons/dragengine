@@ -25,8 +25,9 @@
 #ifndef _CESTRIP_H_
 #define _CESTRIP_H_
 
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 
 
@@ -40,16 +41,22 @@ private:
 	float pDuration;
 	
 public:
+	using Ref = deTObjectReference<ceStrip>;
+	using List = decTObjectOrderedSet<ceStrip>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new empty strip. */
 	ceStrip();
 	/** \brief Creates a new strip. */
-	ceStrip( const char *id, float duration, float pause );
+	ceStrip(const char *id, float duration, float pause);
 	/** \brief Creates a new strip. */
-	ceStrip( const ceStrip &strip );
+	ceStrip(const ceStrip &strip);
 	/** \brief Cleans up the strip. */
-	virtual ~ceStrip();
+protected:
+	~ceStrip() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -57,25 +64,25 @@ public:
 	/** \brief Retrieves the identifier. */
 	inline const decString &GetID() const{ return pID; }
 	/** \brief Sets the identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	/** \brief Retrieves the pause in seconds. */
 	inline float GetPause() const{ return pPause; }
 	/** \brief Sets the pause in seconds. */
-	void SetPause( float pause );
+	void SetPause(float pause);
 	/** \brief Retrieves the duration in seconds. */
 	inline float GetDuration() const{ return pDuration; }
 	/** \brief Sets the duration in seconds. */
-	void SetDuration( float duration );
+	void SetDuration(float duration);
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set strip from another strip. */
-	ceStrip &operator=( const ceStrip &strip );
+	ceStrip &operator=(const ceStrip &strip);
 	/** \brief Determines if two strips are equal. */
-	bool operator==( const ceStrip &strip ) const;
+	bool operator==(const ceStrip &strip) const;
 	/** \brief Determines if two strips are not equal. */
-	bool operator!=( const ceStrip &strip ) const;
+	bool operator!=(const ceStrip &strip) const;
 	/*@}*/
 };
 

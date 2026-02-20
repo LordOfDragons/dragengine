@@ -47,32 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRSky::deoglRSky( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pLinks( NULL ),
-pLinkCount( 0 ),
-pLayers( NULL ),
-pLayerCount( 0 )
+deoglRSky::deoglRSky(deoglRenderThread &renderThread) :
+pRenderThread(renderThread)
 {
-	LEAK_CHECK_CREATE( renderThread, Sky );
+	LEAK_CHECK_CREATE(renderThread, Sky);
 }
 
 deoglRSky::~deoglRSky(){
-	if( pLayers ){
-		while( pLayerCount > 0 ){
-			delete pLayers[ --pLayerCount ];
-		}
-		delete [] pLayers;
-	}
+	pLayers.RemoveAll();
+	pLinks.RemoveAll();
 	
-	if( pLinks ){
-		while( pLinkCount > 0 ){
-			delete pLinks[ --pLinkCount ];
-		}
-		delete [] pLinks;
-	}
-	
-	LEAK_CHECK_FREE( pRenderThread, Sky );
+	LEAK_CHECK_FREE(pRenderThread, Sky);
 }
 
 
@@ -80,64 +65,34 @@ deoglRSky::~deoglRSky(){
 // Management
 ///////////////
 
-void deoglRSky::SetBgColor( const decColor &color ){
+void deoglRSky::SetBgColor(const decColor &color){
 	pBgColor = color;
 }
 
 
 
-const deoglRSkyLink &deoglRSky::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return *pLinks[ index ];
+const deoglRSkyLink &deoglRSky::GetLinkAt(int index) const{
+	return pLinks.GetAt(index);
 }
 
-void deoglRSky::RebuildLinks( const deSky &sky ){
-	if( pLinks ){
-		while( pLinkCount > 0 ){
-			delete pLinks[ --pLinkCount ];
-		}
-		delete [] pLinks;
-		pLinks = NULL;
-	}
+void deoglRSky::RebuildLinks(const deSky &sky){
+	pLinks.RemoveAll();
 	
-	const int linkCount = sky.GetLinkCount();
-	if( linkCount == 0 ){
-		return;
-	}
-	
-	pLinks = new deoglRSkyLink*[ linkCount ];
-	for( pLinkCount=0; pLinkCount<linkCount; pLinkCount++ ){
-		pLinks[ pLinkCount ] = new deoglRSkyLink( sky.GetLinkAt( pLinkCount ) );
-	}
+	sky.GetLinks().Visit([&](const deSkyLink &l){
+		pLinks.Add(deoglRSkyLink::Ref::New(l));
+	});
 }
 
 
 
-deoglRSkyLayer &deoglRSky::GetLayerAt( int index ) const{
-	if( index < 0 || index >= pLayerCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return *pLayers[ index ];
+deoglRSkyLayer &deoglRSky::GetLayerAt(int index) const{
+	return pLayers.GetAt(index);
 }
 
-void deoglRSky::RebuildLayers( const deSky &sky ){
-	if( pLayers ){
-		while( pLayerCount > 0 ){
-			delete pLayers[ --pLayerCount ];
-		}
-		delete [] pLayers;
-		pLayers = NULL;
-	}
+void deoglRSky::RebuildLayers(const deSky &sky){
+	pLayers.RemoveAll();
 	
-	const int layerCount = sky.GetLayerCount();
-	if( layerCount == 0 ){
-		return;
-	}
-	
-	pLayers = new deoglRSkyLayer*[ layerCount ];
-	for( pLayerCount=0; pLayerCount<layerCount; pLayerCount++ ){
-		pLayers[ pLayerCount ] = new deoglRSkyLayer( sky.GetLayerAt( pLayerCount ) );
-	}
+	sky.GetLayers().Visit([&](const deSkyLayer &l){
+		pLayers.Add(deoglRSkyLayer::Ref::New(l));
+	});
 }

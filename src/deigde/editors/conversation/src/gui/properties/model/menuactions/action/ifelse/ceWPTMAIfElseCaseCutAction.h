@@ -51,12 +51,13 @@ protected:
 	ceWPTMAIfElseCaseCutAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseCutAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseCutAction( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseCutAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-		ceCAIfElseCase &ifCase, ceConversationAction *action );
+		ceCAIfElseCase &ifCase, ceConversationAction *action);
 	/*@}*/
 	
 	
@@ -78,7 +79,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

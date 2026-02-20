@@ -52,13 +52,15 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	peeViewEmitter &pView;
 	
 public:
-	cCameraInteraction( peeViewEmitter &view ) : pView( view ){
-		SetEnabledAll( false );
+	using Ref = deTObjectReference<cCameraInteraction>;
+	
+	cCameraInteraction(peeViewEmitter &view) : pView(view){
+		SetEnabledAll(false);
 	}
 	
 public:
-	virtual void OnCameraChanged(){
-		if( pView.GetEmitter() ){
+	void OnCameraChanged() override{
+		if(pView.GetEmitter()){
 			pView.GetEmitter()->NotifyCameraChanged();
 		}
 	}
@@ -74,18 +76,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-peeViewEmitter::peeViewEmitter( peeWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pEmitter( NULL )
+peeViewEmitter::peeViewEmitter(peeWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
 	
-	AddListener( pCameraInteraction );
+	AddListener(pCameraInteraction);
 }
 
 peeViewEmitter::~peeViewEmitter(){
-	SetEmitter( NULL );
+	SetEmitter(nullptr);
 }
 
 
@@ -96,41 +97,35 @@ peeViewEmitter::~peeViewEmitter(){
 void peeViewEmitter::ResetView(){
 }
 
-void peeViewEmitter::SetEmitter( peeEmitter *emitter ){
-	if( emitter == pEmitter ){
+void peeViewEmitter::SetEmitter(peeEmitter *emitter){
+	if(emitter == pEmitter){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera( NULL );
-	SetRenderWorld( NULL );
-	
-	if( pEmitter ){
-		pEmitter->FreeReference();
-	}
-	
+	pCameraInteraction->SetCamera(nullptr);
+	SetRenderWorld(nullptr);
 	pEmitter = emitter;
 	
-	if( emitter ){
-		emitter->AddReference();
-		SetRenderWorld( emitter->GetCamera()->GetEngineCamera() );
-		pCameraInteraction->SetCamera( emitter->GetCamera() );
+	if(emitter){
+		SetRenderWorld(emitter->GetCamera()->GetEngineCamera());
+		pCameraInteraction->SetCamera(emitter->GetCamera());
 	}
 }
 
 
 
-void peeViewEmitter::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void peeViewEmitter::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pEmitter ){
-		pEmitter->Update( elapsed );
+	if(pEmitter){
+		pEmitter->Update(elapsed);
 	}
 }
 
 void peeViewEmitter::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( pEmitter ){
-		SetRenderWorld( pEmitter->GetCamera()->GetEngineCamera() );
+	if(pEmitter){
+		SetRenderWorld(pEmitter->GetCamera()->GetEngineCamera());
 	}
 }

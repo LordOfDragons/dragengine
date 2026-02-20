@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCNavigationSpace;
+#include "../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
 
 
@@ -36,13 +36,16 @@ class gdeOCNavigationSpace;
  */
 class gdeClipboardDataOCNavSpace : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<gdeClipboardDataOCNavSpace>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCNavSpace( gdeOCNavigationSpace *navSpace );
+	gdeClipboardDataOCNavSpace(gdeOCNavigationSpace *navSpace);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeClipboardDataOCNavSpace();
+	~gdeClipboardDataOCNavSpace() override;
 	/*@}*/
 	
 	

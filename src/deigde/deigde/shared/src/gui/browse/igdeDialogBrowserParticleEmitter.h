@@ -36,10 +36,13 @@ class igdeGDParticleEmitter;
  */
 class DE_DLL_EXPORT igdeDialogBrowserParticleEmitter : public igdeDialogBrowser{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogBrowserParticleEmitter> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogBrowserParticleEmitter( igdeEnvironment &environment, const char *title = "Select ParticleEmitter" );
+	igdeDialogBrowserParticleEmitter(igdeEnvironment &environment, const char *title = "@Igde.DialogBrowser.ParticleEmitter.DefaultTitle");
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -55,26 +58,26 @@ public:
 	igdeGDParticleEmitter *GetSelectedParticleEmitter() const;
 	
 	/** \brief Set selected particle emitter. */
-	void SetSelectedParticleEmitter( igdeGDParticleEmitter *gdParticleEmitter );
+	void SetSelectedParticleEmitter(igdeGDParticleEmitter *gdParticleEmitter);
 	
 	
 	
 	/** \brief Convenience method to select particle emitter. */
-	static bool SelectParticleEmitter( igdeWidget *owner, igdeGDParticleEmitter* &particleEmitter,
-		const char *title = "Select ParticleEmitter" );
+	static bool SelectParticleEmitter(igdeWidget *owner, igdeGDParticleEmitter* &particleEmitter,
+		const char *title = "@Igde.DialogBrowser.ParticleEmitter.DefaultTitle");
 	
 	/** \brief Convenience method to select particle emitter. */
-	static bool SelectParticleEmitter( igdeWidget *owner, decString &particleEmitter,
-		const char *title = "Select ParticleEmitter" );
+	static bool SelectParticleEmitter(igdeWidget *owner, decString &particleEmitter,
+		const char *title = "@Igde.DialogBrowser.ParticleEmitter.DefaultTitle");
 	/*@}*/
 	
 	
 	
 protected:
 	virtual igdeGDCategory *GetRootCategory() const;
-	virtual void AddItemsToList( igdeGDAddToListVisitor &visitor );
-	virtual void RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener );
-	virtual void GetSelectedItemInfo( decString &info );
+	virtual void AddItemsToList(igdeGDAddToListVisitor &visitor);
+	virtual void RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener);
+	virtual void GetSelectedItemInfo(decString &info);
 };
 
 #endif

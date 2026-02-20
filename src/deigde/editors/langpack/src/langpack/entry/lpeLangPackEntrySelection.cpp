@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "lpeLangPackEntry.h"
-#include "lpeLangPackEntryList.h"
 #include "lpeLangPackEntrySelection.h"
 
 #include <dragengine/common/exceptions.h>
@@ -41,7 +40,6 @@
 ////////////////////////////
 
 lpeLangPackEntrySelection::lpeLangPackEntrySelection(){
-	pActive = NULL;
 }
 
 lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
@@ -53,82 +51,80 @@ lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
 // Management
 ///////////////
 
-void lpeLangPackEntrySelection::Add( lpeLangPackEntry *entry ){
-	DEASSERT_NOTNULL( entry )
+void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
+	DEASSERT_NOTNULL(entry)
 	
-	entry->SetSelected( true );
+	if(!pSelection.Add(entry)){
+		return;
+	}
 	
-	if( ! pSelection.Has( entry ) ){
-		pSelection.Add( entry );
+	entry->SetSelected(true);
+	
+	if(!pActive){
+		SetActive(entry);
 	}
 }
 
-void lpeLangPackEntrySelection::Remove( lpeLangPackEntry *entry ){
-	DEASSERT_NOTNULL( entry )
+void lpeLangPackEntrySelection::Remove(lpeLangPackEntry *entry){
+	const lpeLangPackEntry::Ref guard(entry);
+	if(!pSelection.Remove(entry)){
+		return;
+	}
 	
-	entry->SetSelected( false );
+	entry->SetSelected(false);
 	
-	if( pSelection.Has( entry ) ){
-		pSelection.Remove( entry );
+	if(pActive == entry){
+		ActivateNext();
 	}
 }
 
 void lpeLangPackEntrySelection::RemoveAll(){
-	const int count = pSelection.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
-	}
-	
+	pSelection.Visit([](lpeLangPackEntry *entry){
+		entry->SetSelected(false);
+	});
 	pSelection.RemoveAll();
 }
 
 
 
 bool lpeLangPackEntrySelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
-void lpeLangPackEntrySelection::SetActive( lpeLangPackEntry *entry ){
-	if( entry == pActive ){
+void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
+	if(entry == pActive){
 		return;
 	}
 	
-	if( entry ){
-		DEASSERT_TRUE( pSelection.Has( entry ) )
-		DEASSERT_TRUE( entry->GetSelected() )
+	if(entry){
+		DEASSERT_TRUE(pSelection.Has(entry))
+		DEASSERT_TRUE(entry->GetSelected())
 	}
 	
-	if( pActive ){
-		pActive->SetActive( false );
-		pActive->FreeReference();
+	if(pActive){
+		pActive->SetActive(false);
 	}
 	
 	pActive = entry;
 	
-	if( entry ){
-		entry->AddReference();
-		entry->SetActive( true );
+	if(entry){
+		entry->SetActive(true);
 	}
 }
 
 void lpeLangPackEntrySelection::ActivateNext(){
-	const int count = pSelection.GetCount();
-	lpeLangPackEntry *next = NULL;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
-			break;
-		}
+	if(pSelection.IsNotEmpty() && pActive != pSelection.First()){
+		SetActive(pSelection.First());
+		
+	}else if(pSelection.GetCount() > 1){
+		SetActive(pSelection.GetAt(1));
+		
+	}else{
+		SetActive(nullptr);
 	}
-	
-	SetActive( next );
 }
 
 void lpeLangPackEntrySelection::Reset(){
-	SetActive( nullptr );
+	SetActive(nullptr);
 	RemoveAll();
 }

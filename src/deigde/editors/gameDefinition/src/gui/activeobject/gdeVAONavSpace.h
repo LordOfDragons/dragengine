@@ -26,12 +26,11 @@
 #define _GDEVAONAVSPACE_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCNavigationSpace;
-
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 
 
@@ -39,13 +38,18 @@ class igdeWDebugDrawerShape;
  * \brief Active object view object class navigation space.
  */
 class gdeVAONavSpace : public gdeVAOSubObject{
-private:
-	gdeOCNavigationSpace *pOCNavSpace;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAONavSpace> Ref;
 	
-	deDebugDrawerReference pDDSpace;
-	deDebugDrawerReference pDDBlocker;
-	igdeWDebugDrawerShape *pDDSSpace;
-	igdeWDebugDrawerShape *pDDSBlocker;
+	
+private:
+	gdeOCNavigationSpace::Ref pOCNavSpace;
+	
+	deDebugDrawer::Ref pDDSpace;
+	deDebugDrawer::Ref pDDBlocker;
+	igdeWDebugDrawerShape::Ref pDDSSpace;
+	igdeWDebugDrawerShape::Ref pDDSBlocker;
 	
 	
 	
@@ -53,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavSpace( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCNavigationSpace *occomponent );
+	gdeVAONavSpace(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationSpace *occomponent);
 	
 protected:
 	/**
@@ -63,7 +67,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAONavSpace();
+	~gdeVAONavSpace() override;
 	/*@}*/
 	
 	
@@ -72,13 +76,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pOCNavSpace; }
+	inline const gdeOCNavigationSpace::Ref &GetOCNavSpace() const{ return pOCNavSpace; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	
 	/** \brief Update debug drawer visibility. */
 	void UpdateDDVisibility();

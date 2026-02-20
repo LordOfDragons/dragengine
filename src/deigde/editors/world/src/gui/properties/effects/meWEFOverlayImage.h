@@ -45,7 +45,7 @@ class deEngine;
  * Panel for editing an overlay image effect.
  */
 class meWEFOverlayImage : public FXVerticalFrame{
-	FXDECLARE( meWEFOverlayImage )
+	FXDECLARE(meWEFOverlayImage)
 protected:
 	meWEFOverlayImage();
 	
@@ -85,23 +85,23 @@ private:
 	
 public:
 	// constructor, destructor
-	meWEFOverlayImage( deEffectOverlayImage *effectOverlay, meWindowEffects *windowEffects, FXComposite *container );
+	meWEFOverlayImage(deEffectOverlayImage *effectOverlay, meWindowEffects *windowEffects, FXComposite *container);
 	virtual ~meWEFOverlayImage();
 	
 	// management
 	
 	// events
-	long onEditImageCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditTransparencyCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner1XCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner1YCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner2XCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner2YCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner3XCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner3YCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner4XCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditCorner4YCommand( FXObject *sender, FXSelector selector, void *data );
-	long onCheckEnableCommand( FXObject *sender, FXSelector selector, void *data );
+	long onEditImageCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditTransparencyCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner1XCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner1YCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner2XCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner2YCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner3XCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner3YCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner4XCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditCorner4YCommand(FXObject *sender, FXSelector selector, void *data);
+	long onCheckEnableCommand(FXObject *sender, FXSelector selector, void *data);
 };
 
 // end of include only once

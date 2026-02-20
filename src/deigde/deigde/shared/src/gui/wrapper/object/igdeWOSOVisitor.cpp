@@ -56,43 +56,43 @@ igdeWOSOVisitor::~igdeWOSOVisitor(){
 // Visiting
 /////////////
 
-void igdeWOSOVisitor::VisitSubObject( igdeWOSubObject& ){
+void igdeWOSOVisitor::VisitSubObject(igdeWOSubObject&){
 }
 
-void igdeWOSOVisitor::VisitBillboard( igdeWOSOBillboard &billboard ){
-	VisitSubObject( billboard );
+void igdeWOSOVisitor::VisitBillboard(igdeWOSOBillboard &billboard){
+	VisitSubObject(billboard);
 }
 
-void igdeWOSOVisitor::VisitLight( igdeWOSOLight &light ){
-	VisitSubObject( light );
+void igdeWOSOVisitor::VisitLight(igdeWOSOLight &light){
+	VisitSubObject(light);
 }
 
-void igdeWOSOVisitor::VisitSpeaker( igdeWOSOSpeaker &speaker ){
-	VisitSubObject( speaker );
+void igdeWOSOVisitor::VisitSpeaker(igdeWOSOSpeaker &speaker){
+	VisitSubObject(speaker);
 }
 
-void igdeWOSOVisitor::VisitParticleEmitter( igdeWOSOParticleEmitter &particleEmitter ){
-	VisitSubObject( particleEmitter );
+void igdeWOSOVisitor::VisitParticleEmitter(igdeWOSOParticleEmitter &particleEmitter){
+	VisitSubObject(particleEmitter);
 }
 
-void igdeWOSOVisitor::VisitForceField( igdeWOSOForceField &forceField ){
-	VisitSubObject( forceField );
+void igdeWOSOVisitor::VisitForceField(igdeWOSOForceField &forceField){
+	VisitSubObject(forceField);
 }
 
-void igdeWOSOVisitor::VisitEnvMapProbe( igdeWOSOEnvMapProbe &envMapProbe ){
-	VisitSubObject( envMapProbe );
+void igdeWOSOVisitor::VisitEnvMapProbe(igdeWOSOEnvMapProbe &envMapProbe){
+	VisitSubObject(envMapProbe);
 }
 
-void igdeWOSOVisitor::VisitNavigationSpace( igdeWOSONavigationSpace &navigationSpace ){
-	VisitSubObject( navigationSpace );
+void igdeWOSOVisitor::VisitNavigationSpace(igdeWOSONavigationSpace &navigationSpace){
+	VisitSubObject(navigationSpace);
 }
 
-void igdeWOSOVisitor::VisitNavigationBlocker( igdeWOSONavigationBlocker &navigationBlocker ){
-	VisitSubObject( navigationBlocker );
+void igdeWOSOVisitor::VisitNavigationBlocker(igdeWOSONavigationBlocker &navigationBlocker){
+	VisitSubObject(navigationBlocker);
 }
 
-void igdeWOSOVisitor::VisitComponent( igdeWOSOComponent &component ){
-	VisitSubObject( component );
+void igdeWOSOVisitor::VisitComponent(igdeWOSOComponent &component){
+	VisitSubObject(component);
 }
 
 void igdeWOSOVisitor::VisitWorld(igdeWOSOWorld &world){

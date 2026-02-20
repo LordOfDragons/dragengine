@@ -52,10 +52,10 @@
 // Constructors
 /////////////////
 
-debpTSRayResultCallback::debpTSRayResultCallback( deCollisionInfo *colinfo,
-const debpTouchSensor &touchSensor ) :
-debpRayResultCallback( colinfo ),
-pTouchSensor( touchSensor ){
+debpTSRayResultCallback::debpTSRayResultCallback(deCollisionInfo *colinfo,
+const debpTouchSensor &touchSensor) :
+debpRayResultCallback(colinfo),
+pTouchSensor(touchSensor){
 }
 
 
@@ -63,21 +63,21 @@ pTouchSensor( touchSensor ){
 // Bullet
 ///////////
 
-bool debpTSRayResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const{
-	const btCollisionObject &collisionObject = *( ( btCollisionObject* )proxy0->m_clientObject );
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )collisionObject.getUserPointer() );
+bool debpTSRayResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
+	const btCollisionObject &collisionObject = *((btCollisionObject*)proxy0->m_clientObject);
+	const debpCollisionObject &colObj = *((debpCollisionObject*)collisionObject.getUserPointer());
 	
-	if( colObj.IsOwnerCollider() ){
-		if( pTouchSensor.CollidesNot( *colObj.GetOwnerCollider() ) ){
+	if(colObj.IsOwnerCollider()){
+		if(pTouchSensor.CollidesNot(*colObj.GetOwnerCollider())){
 			return false;
 		}
 		
-	}else if( colObj.IsOwnerHTSector() ){
-		if( pTouchSensor.GetTouchSensor().GetCollisionFilter().CollidesNot(
-		colObj.GetOwnerHTSector()->GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter() ) ){
+	}else if(colObj.IsOwnerHTSector()){
+		if(pTouchSensor.GetTouchSensor().GetCollisionFilter().CollidesNot(
+		colObj.GetOwnerHTSector()->GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter())){
 			return false;
 		}
 	}
 	
-	return debpRayResultCallback::needsCollision( proxy0 );
+	return debpRayResultCallback::needsCollision(proxy0);
 }

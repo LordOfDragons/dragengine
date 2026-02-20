@@ -35,6 +35,9 @@ class reWPRig;
  * \brief Rig panel listener.
  */
 class reWPRigListener : public reRigNotifier{
+public:
+	using Ref = deTObjectReference<reWPRigListener>;
+	
 private:
 	reWPRig &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPRigListener( reWPRig &panel );
+	reWPRigListener(reWPRig &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPRigListener();
+protected:
+	~reWPRigListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig parameters changed. */
-	virtual void RigChanged( reRig *rig );
+	void RigChanged(reRig *rig) override;
 	
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged( reRig *rig );
+	void BoneCountChanged(reRig *rig) override;
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged( reRig *rig, reRigBone *bone );
+	void BoneChanged(reRig *rig, reRigBone *bone) override;
 	/*@}*/
 };
 

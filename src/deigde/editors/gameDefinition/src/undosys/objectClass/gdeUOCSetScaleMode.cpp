@@ -38,27 +38,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetScaleMode::gdeUOCSetScaleMode( gdeObjectClass *objectClass,
-gdeObjectClass::eScaleModes newValue ) :
-pObjectClass( NULL )
+gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass *objectClass,
+gdeObjectClass::eScaleModes newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set scale mode" );
+	SetShortInfo("@GameDefinition.Undo.OCSetScaleMode");
 	
 	pOldValue = objectClass->GetScaleMode();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetScaleMode::~gdeUOCSetScaleMode(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ gdeUOCSetScaleMode::~gdeUOCSetScaleMode(){
 ///////////////
 
 void gdeUOCSetScaleMode::Undo(){
-	pObjectClass->SetScaleMode( pOldValue );
+	pObjectClass->SetScaleMode(pOldValue);
 }
 
 void gdeUOCSetScaleMode::Redo(){
-	pObjectClass->SetScaleMode( pNewValue );
+	pObjectClass->SetScaleMode(pNewValue);
 }

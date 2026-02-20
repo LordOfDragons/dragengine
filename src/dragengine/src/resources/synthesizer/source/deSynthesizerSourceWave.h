@@ -34,8 +34,7 @@
 class DE_DLL_EXPORT deSynthesizerSourceWave : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceWave> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerSourceWave>;
 	
 	
 public:
@@ -79,7 +78,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSourceWave();
+	~deSynthesizerSourceWave() override;
 	/*@}*/
 	
 	
@@ -91,7 +90,7 @@ public:
 	inline eWaveType GetType() const{ return pType; }
 	
 	/** \brief Set wave type. */
-	void SetType( eWaveType type );
+	void SetType(eWaveType type);
 	
 	
 	
@@ -99,13 +98,13 @@ public:
 	inline float GetMinFrequency() const{ return pMinFrequency; }
 	
 	/** \brief Set minimum frequency in Hz. */
-	void SetMinFrequency( float frequency );
+	void SetMinFrequency(float frequency);
 	
 	/** \brief Maximum frequency in Hz. */
 	inline float GetMaxFrequency() const{ return pMaxFrequency; }
 	
 	/** \brief Set maximum frequency in Hz. */
-	void SetMaxFrequency( float frequency );
+	void SetMaxFrequency(float frequency);
 	
 	
 	
@@ -119,7 +118,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	void Visit(deSynthesizerSourceVisitor &visitor) override;
 	/*@}*/
 };
 

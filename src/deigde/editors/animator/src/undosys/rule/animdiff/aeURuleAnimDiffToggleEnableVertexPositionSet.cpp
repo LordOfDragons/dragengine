@@ -40,19 +40,17 @@
 ////////////////////////////
 
 aeURuleAnimDiffToggleEnableVertexPositionSet::aeURuleAnimDiffToggleEnableVertexPositionSet(
-	aeRuleAnimationDifference *rule )
+	aeRuleAnimationDifference *rule)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.RuleAnimationDifferenceToggleEnableVertexPositionSet");
 		
-		SetShortInfo( "Rule animation toggle enable vertex position set" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +66,11 @@ aeURuleAnimDiffToggleEnableVertexPositionSet::~aeURuleAnimDiffToggleEnableVertex
 ///////////////
 
 void aeURuleAnimDiffToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleAnimDiffToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
 
@@ -81,7 +79,4 @@ void aeURuleAnimDiffToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnableVertexPositionSet::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

@@ -47,10 +47,10 @@ public:
 	decDMatrix();
 	
 	/** \brief Create copy of a matrix. */
-	decDMatrix( const decDMatrix &m );
+	decDMatrix(const decDMatrix &m);
 	
 	/** \brief Create copy of a float matrix. */
-	decDMatrix( const decMatrix &m );
+	decDMatrix(const decMatrix &m);
 	/*@}*/
 	
 	
@@ -61,25 +61,25 @@ public:
 	static decDMatrix CreateIdentity();
 	
 	/** \brief Create new translation matrix. */
-	static decDMatrix CreateTranslation( double x, double y, double z );
+	static decDMatrix CreateTranslation(double x, double y, double z);
 	
 	/** \brief Create new translation matrix. */
-	static decDMatrix CreateTranslation( const decDVector &t );
+	static decDMatrix CreateTranslation(const decDVector &t);
 	
 	/** \brief Create new scaling matrix. */
-	static decDMatrix CreateScale( double sx, double sy, double sz );
+	static decDMatrix CreateScale(double sx, double sy, double sz);
 	
 	/** \brief Create new scaling matrix. */
-	static decDMatrix CreateScale( const decDVector &s );
+	static decDMatrix CreateScale(const decDVector &s);
 	
 	/** \brief Create new rotation around the x axis matrix. */
-	static decDMatrix CreateRotationX( double arc );
+	static decDMatrix CreateRotationX(double arc);
 	
 	/** \brief Create new rotation around the y axis matrix. */
-	static decDMatrix CreateRotationY( double arc );
+	static decDMatrix CreateRotationY(double arc);
 	
 	/** \brief Create new rotation around the z axis matrix. */
-	static decDMatrix CreateRotationZ( double arc );
+	static decDMatrix CreateRotationZ(double arc);
 	
 	/**
 	 * \brief Create new rotation around the all three axes matrix.
@@ -87,7 +87,7 @@ public:
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	static decDMatrix CreateRotation( double rx, double ry, double rz );
+	static decDMatrix CreateRotation(double rx, double ry, double rz);
 	
 	/**
 	 * \brief Create new rotation around the all three axes matrix.
@@ -95,10 +95,10 @@ public:
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	static decDMatrix CreateRotation( const decDVector &r );
+	static decDMatrix CreateRotation(const decDVector &r);
 	
 	/** \brief Create new rotation around an arbitrary axis matrix. */
-	static decDMatrix CreateRotationAxis( const decDVector &axis, double angle );
+	static decDMatrix CreateRotationAxis(const decDVector &axis, double angle);
 	
 	/**
 	 * \brief Create new world space matrix.
@@ -110,8 +110,8 @@ public:
 	 * \param view View vector of object not necessary normalized
 	 * \param up Up vector of object not necessary normalized
 	 */
-	static decDMatrix CreateWorld( const decDVector &pos, const decDVector &view,
-		const decDVector &up );
+	static decDMatrix CreateWorld(const decDVector &pos, const decDVector &view,
+		const decDVector &up);
 	
 	/**
 	 * \brief Create new world space matrix.
@@ -122,7 +122,7 @@ public:
 	 * \param pos Position of object
 	 * \param orientation Orientation
 	 */
-	static decDMatrix CreateWorld( const decDVector &pos, const decQuaternion &orientation );
+	static decDMatrix CreateWorld(const decDVector &pos, const decQuaternion &orientation);
 	
 	/**
 	 * \brief Create world space matrix.
@@ -130,8 +130,8 @@ public:
 	 * A world matrix is used to transform coordinates from the object local
 	 * coordinate system to the world coordinate system.
 	 */
-	static decDMatrix CreateWorld( const decDVector &pos, const decQuaternion &orientation,
-		const decDVector &scale );
+	static decDMatrix CreateWorld(const decDVector &pos, const decQuaternion &orientation,
+		const decDVector &scale);
 	
 	/**
 	 * \brief Create new camera space matrix.
@@ -152,8 +152,8 @@ public:
 	 * \param view View vector of camera not necessary normalized
 	 * \param up Up vector of camera not necessary normalized
 	 */
-	static decDMatrix CreateCamera( const decDVector &pos, const decDVector &view,
-		const decDVector &up );
+	static decDMatrix CreateCamera(const decDVector &pos, const decDVector &view,
+		const decDVector &up);
 	
 	/**
 	 * \brief Create projection matrix based on a finite view frustum.
@@ -168,8 +168,8 @@ public:
 	 * \param znear Distance to near cliping plane
 	 * \param zfar Distance to far cliping plane
 	 */
-	static decDMatrix CreateProjection( int width, int height, double fov, double fovRatio,
-		double znear, double zfar );
+	static decDMatrix CreateProjection(int width, int height, double fov, double fovRatio,
+		double znear, double zfar);
 	
 	/**
 	 * \brief Create projection matrix based on a infinite view frustum.
@@ -183,8 +183,8 @@ public:
 	 * \param fovRatio Aspect ratio of the horizontal to the vertical field of view.
 	 * \param znear Distance to near cliping plane
 	 */
-	static decDMatrix CreateProjectionInfinite( int width, int height, double fov,
-		double fovRatio, double znear );
+	static decDMatrix CreateProjectionInfinite(int width, int height, double fov,
+		double fovRatio, double znear);
 	
 	/**
 	 * \brief Create orthogonal projection matrix.
@@ -195,7 +195,7 @@ public:
 	 * \param znear Distance to near cliping plane
 	 * \param zfar Distance to far cliping plane
 	 */
-	static decDMatrix CreateOrtho( int left, int right, int top, int bottom, int znear, int zfar );
+	static decDMatrix CreateOrtho(int left, int right, int top, int bottom, int znear, int zfar);
 	
 	/**
 	 * \brief Create matrix to transform a projection matrix into cliping space.
@@ -217,14 +217,14 @@ public:
 	 * \param rot Rotation vector
 	 * \param pos Translation vector
 	 */
-	static decDMatrix CreateRT( const decDVector &rot, const decDVector &pos );
+	static decDMatrix CreateRT(const decDVector &rot, const decDVector &pos);
 	
 	/**
 	 * \brief Create scale-translation matrix.
 	 * 
 	 * This is the same as first doing a scaling and then a translation.
 	 */
-	static decDMatrix CreateST( const decDVector &scale, const decDVector &translate );
+	static decDMatrix CreateST(const decDVector &scale, const decDVector &translate);
 	
 	/**
 	 * \brief Create scale-rotation-translation matrix.
@@ -235,8 +235,8 @@ public:
 	 * \param rot Rotation vector
 	 * \param pos Translation vector
 	 */
-	static decDMatrix CreateSRT( const decDVector &scale, const decDVector &rot,
-		const decDVector &pos );
+	static decDMatrix CreateSRT(const decDVector &scale, const decDVector &rot,
+		const decDVector &pos);
 	
 	/**
 	 * \brief Create scale-view-up-translation matrix.
@@ -248,8 +248,8 @@ public:
 	 * \param up Up vector
 	 * \param pos Translation vector
 	 */
-	static decDMatrix CreateSVUT( const decDVector &scale, const decDVector &view,
-		const decDVector &up, const decDVector &pos );
+	static decDMatrix CreateSVUT(const decDVector &scale, const decDVector &view,
+		const decDVector &up, const decDVector &pos);
 	
 	/**
 	 * \brief Create view-up matrix.
@@ -259,18 +259,18 @@ public:
 	 * \param view View vector
 	 * \param up Up vector
 	 */
-	static decDMatrix CreateVU( const decDVector &view, const decDVector &up );
+	static decDMatrix CreateVU(const decDVector &view, const decDVector &up);
 	
 	/**
 	 * \brief Create rotation matrix from a quaternion.
 	 * \param q Rotation quaternion
 	 */
-	static decDMatrix CreateFromQuaternion( const decQuaternion &q );
+	static decDMatrix CreateFromQuaternion(const decQuaternion &q);
 	
 	/**
 	 * \brief Create rotation matrix from a quaternion.
 	 */
-	static decDMatrix CreateFromQuaternion( const decQuaternion &q, const decDVector &pivot );
+	static decDMatrix CreateFromQuaternion(const decQuaternion &q, const decDVector &pivot);
 	/*@}*/
 	
 	
@@ -281,25 +281,25 @@ public:
 	void SetIdentity();
 	
 	/** \brief Sets translation matrix. */
-	void SetTranslation( double x, double y, double z );
+	void SetTranslation(double x, double y, double z);
 	
 	/** \brief Sets translation matrix. */
-	void SetTranslation( const decDVector &t );
+	void SetTranslation(const decDVector &t);
 	
 	/** \brief Sets scaling matrix. */
-	void SetScale( double sx, double sy, double sz );
+	void SetScale(double sx, double sy, double sz);
 	
 	/** \brief Sets scaling matrix. */
-	void SetScale( const decDVector &s );
+	void SetScale(const decDVector &s);
 	
 	/** \brief Sets rotation around the x axis matrix. */
-	void SetRotationX( double arc );
+	void SetRotationX(double arc);
 	
 	/** \brief Sets rotation around the y axis matrix. */
-	void SetRotationY( double arc );
+	void SetRotationY(double arc);
 	
 	/** \brief Sets rotation around the z axis matrix. */
-	void SetRotationZ( double arc );
+	void SetRotationZ(double arc);
 	
 	/**
 	 * \brief Set rotation around the all three axes matrix.
@@ -307,7 +307,7 @@ public:
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	void SetRotation( double rx, double ry, double rz );
+	void SetRotation(double rx, double ry, double rz);
 	
 	/**
 	 * \brief Set rotation around the all three axes matrix.
@@ -315,10 +315,10 @@ public:
 	 * This matrix is the same as first applying a z axis roation,
 	 * then an x axis rotation and then an y axis rotation.
 	 */
-	void SetRotation( const decDVector &r );
+	void SetRotation(const decDVector &r);
 	
 	/** \brief Sets rotation around an arbitrary axis matrix. */
-	void SetRotationAxis( const decDVector &axis, double angle );
+	void SetRotationAxis(const decDVector &axis, double angle);
 	
 	/**
 	 * \brief Set world space matrix.
@@ -330,7 +330,7 @@ public:
 	 * \param view View vector of object not necessary normalized
 	 * \param up Up vector of object not necessary normalized
 	 */
-	void SetWorld( const decDVector &pos, const decDVector &view, const decDVector &up );
+	void SetWorld(const decDVector &pos, const decDVector &view, const decDVector &up);
 	
 	/**
 	 * \brief Set world space matrix.
@@ -341,7 +341,7 @@ public:
 	 * \param pos Position of object
 	 * \param orientation Orientation
 	 */
-	void SetWorld( const decDVector &pos, const decQuaternion &orientation );
+	void SetWorld(const decDVector &pos, const decQuaternion &orientation);
 	
 	/**
 	 * \brief Set world space matrix.
@@ -349,7 +349,7 @@ public:
 	 * A world matrix is used to transform coordinates from the object local
 	 * coordinate system to the world coordinate system.
 	 */
-	void SetWorld( const decDVector &pos, const decQuaternion &orientation, const decDVector &scale );
+	void SetWorld(const decDVector &pos, const decQuaternion &orientation, const decDVector &scale);
 	
 	/**
 	 * \brief Set camera space matrix.
@@ -370,7 +370,7 @@ public:
 	 * \param view View vector of camera not necessary normalized
 	 * \param up Up vector of camera not necessary normalized
 	 */
-	void SetCamera( const decDVector &pos, const decDVector &view, const decDVector &up );
+	void SetCamera(const decDVector &pos, const decDVector &view, const decDVector &up);
 	
 	/**
 	 * \brief Set projection matrix based on a finite view frustum.
@@ -385,7 +385,7 @@ public:
 	 * \param znear Distance to near cliping plane
 	 * \param zfar Distance to far cliping plane
 	 */
-	void SetProjection( int width, int height, double fov, double fovRatio, double znear, double zfar );
+	void SetProjection(int width, int height, double fov, double fovRatio, double znear, double zfar);
 	
 	/**
 	 * \brief Set projection matrix based on a infinite view frustum.
@@ -399,7 +399,7 @@ public:
 	 * \param fovRatio Aspect ratio of the horizontal to the vertical field of view.
 	 * \param znear Distance to near cliping plane
 	 */
-	void SetProjectionInfinite( int width, int height, double fov, double fovRatio, double znear );
+	void SetProjectionInfinite(int width, int height, double fov, double fovRatio, double znear);
 	
 	/**
 	 * \brief Set orthogonal projection matrix.
@@ -410,7 +410,7 @@ public:
 	 * \param znear Distance to near cliping plane
 	 * \param zfar Distance to far cliping plane
 	 */
-	void SetOrtho( int left, int right, int top, int bottom, int znear, int zfar );
+	void SetOrtho(int left, int right, int top, int bottom, int znear, int zfar);
 	
 	/**
 	 * \brief Set matrix to transform a projection matrix into cliping space.
@@ -432,14 +432,14 @@ public:
 	 * \param rot Rotation vector
 	 * \param pos Translation vector
 	 */
-	void SetRT( const decDVector &rot, const decDVector &pos );
+	void SetRT(const decDVector &rot, const decDVector &pos);
 	
 	/**
 	 * \brief Set scale-translation matrix.
 	 * 
 	 * This is the same as first doing a scaling and then a translation.
 	 */
-	void SetST( const decDVector &scale, const decDVector &translate );
+	void SetST(const decDVector &scale, const decDVector &translate);
 	
 	/**
 	 * \brief Set scale-rotation-translation matrix.
@@ -450,7 +450,7 @@ public:
 	 * \param rot Rotation vector
 	 * \param pos Translation vector
 	 */
-	void SetSRT( const decDVector &scale, const decDVector &rot, const decDVector &pos );
+	void SetSRT(const decDVector &scale, const decDVector &rot, const decDVector &pos);
 	
 	/**
 	 * \brief Set scale-view-up-translation matrix.
@@ -462,8 +462,8 @@ public:
 	 * \param up Up vector
 	 * \param pos Translation vector
 	 */
-	void SetSVUT( const decDVector &scale, const decDVector &view, const decDVector &up,
-		const decDVector &pos );
+	void SetSVUT(const decDVector &scale, const decDVector &view, const decDVector &up,
+		const decDVector &pos);
 	
 	/**
 	 * \brief Set view-up matrix.
@@ -473,19 +473,19 @@ public:
 	 * \param view View vector
 	 * \param up Up vector
 	 */
-	void SetVU( const decDVector &view, const decDVector &up );
+	void SetVU(const decDVector &view, const decDVector &up);
 	
 	/**
 	 * \brief Set rotation matrix from a quaternion.
 	 * \param q Rotation quaternion
 	 */
-	void SetFromQuaternion( const decQuaternion &q );
+	void SetFromQuaternion(const decQuaternion &q);
 	
 	/** \brief Set rotation matrix from a quaternion. */
-	void SetFromQuaternion( const decQuaternion &q, const decDVector &pivot );
+	void SetFromQuaternion(const decQuaternion &q, const decDVector &pivot);
 	
 	/** \brief Set matrix from a single precision matrix. */
-	void Set( const decMatrix &matrix );
+	void Set(const decMatrix &matrix);
 	
 	/** \brief Calculates the determinant of the matrix. */
 	double Determinant() const;
@@ -557,19 +557,19 @@ public:
 	 * 
 	 * This is the same as transforming the normal by only the rotation part of it.
 	 */
-	decDVector TransformNormal( const decDVector &normal ) const;
+	decDVector TransformNormal(const decDVector &normal) const;
 	
 	/** \brief Transforms a vector. */
-	decDVector Transform( double x, double y, double z ) const;
+	decDVector Transform(double x, double y, double z) const;
 	
 	/** \brief Transforms a vector. */
-	decDVector4 Transform( double x, double y, double z, double w ) const;
+	decDVector4 Transform(double x, double y, double z, double w) const;
 	
 	/** \brief Transforms a vector. */
-	void Transform( decDVector &result, double x, double y, double z ) const;
+	void Transform(decDVector &result, double x, double y, double z) const;
 	
 	/** \brief Transforms a vector. */
-	void Transform( decDVector4 &result, double x, double y, double z, double w ) const;
+	void Transform(decDVector4 &result, double x, double y, double z, double w) const;
 	
 	/**
 	 * \brief Rotation part of the matrix.
@@ -613,7 +613,7 @@ public:
 	/**
 	 * \brief Matrix is cell wise equal to anither one in respect to a threshold.
 	 */
-	bool IsEqualTo( const decDMatrix &matrix, double threshold = DVECTOR_THRESHOLD ) const;
+	bool IsEqualTo(const decDMatrix &matrix, double threshold = DVECTOR_THRESHOLD) const;
 	/*@}*/
 	
 	
@@ -633,13 +633,13 @@ public:
 	 */
 	/*@{*/
 	/** \brief Quick multiplies this matrix with another one. */
-	decDMatrix QuickMultiply( const decDMatrix &matrix ) const;
+	decDMatrix QuickMultiply(const decDMatrix &matrix) const;
 	
 	/** \brief Quick multiplies this matrix rotation part with another one. */
-	decDMatrix QuickMultiplyRotation( const decDMatrix &matrix ) const;
+	decDMatrix QuickMultiplyRotation(const decDMatrix &matrix) const;
 	
 	/** \brief Quick multiplies this matrix with a value k. */
-	decDMatrix QuickMultiply( double k ) const;
+	decDMatrix QuickMultiply(double k) const;
 	
 	/** \brief Quick calculates the determinant of this matrix. */
 	double QuickDeterminant() const;
@@ -648,7 +648,7 @@ public:
 	decDMatrix QuickInvert() const;
 	
 	/** \brief Quick cell wise adds another matrix to this matrix. */
-	decDMatrix &QuickAddTo( const decDMatrix &m );
+	decDMatrix &QuickAddTo(const decDMatrix &m);
 	
 	/** \brief Converts to a single precision matrix with possible loss of precision. */
 	decMatrix ToMatrix() const;
@@ -659,46 +659,46 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set cells of this matrix to the values of another one. */
-	decDMatrix &operator=( const decDMatrix &m );
+	decDMatrix &operator=(const decDMatrix &m);
 	
 	/** \brief Adds the cells of another matrix to this one. */
-	decDMatrix &operator+=( const decDMatrix &m );
+	decDMatrix &operator+=(const decDMatrix &m);
 	
 	/** \brief Subtracts the cells of another matrix from this vector. */
-	decDMatrix &operator-=( const decDMatrix &m );
+	decDMatrix &operator-=(const decDMatrix &m);
 	
 	/** \brief Multiplies the cells of this matrix with a value k. */
-	decDMatrix &operator*=( double k );
+	decDMatrix &operator*=(double k);
 	
 	/**
 	 * \brief Divide cells of this matrix by a value k.
 	 * 
 	 * If the value k is 0 an exception is thrown.
 	 */
-	decDMatrix &operator/=( double k );
+	decDMatrix &operator/=(double k);
 	
 	/** \brief Multiplies this matrix with another one. */
-	decDMatrix &operator*=( const decDMatrix &m );
+	decDMatrix &operator*=(const decDMatrix &m);
 	
 	/** \brief Retrieves a new matrix with the sum of this matrix with another one. */
-	decDMatrix operator+( const decDMatrix &m ) const;
+	decDMatrix operator+(const decDMatrix &m) const;
 	
 	/** \brief Retrieves a new matrix with the difference of this matrix to another one. */
-	decDMatrix operator-( const decDMatrix &m ) const;
+	decDMatrix operator-(const decDMatrix &m) const;
 	
 	/** \brief Retrieves a new matrix with this matrix scaled by k. */
-	decDMatrix operator*( double k ) const;
+	decDMatrix operator*(double k) const;
 	
 	/** \brief Retrieves a new matrix with this matrix divided by k. If k is 0 an exception is thrown. */
-	decDMatrix operator/( double k ) const;
+	decDMatrix operator/(double k) const;
 	
 	/** \brief Retrieves a new matrix with this matrix multiplied with another one. */
-	decDMatrix operator*( const decDMatrix &m ) const;
+	decDMatrix operator*(const decDMatrix &m) const;
 	
 	/** \brief Transforms vector by this matrix. */
-	decDVector operator*( const decDVector &v ) const;
+	decDVector operator*(const decDVector &v) const;
 	
 	/** \brief Transforms 4 component vector by this matrix. */
-	decDVector4 operator*( const decDVector4 &v ) const;
+	decDVector4 operator*(const decDVector4 &v) const;
 	/*@}*/
 };

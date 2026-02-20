@@ -30,7 +30,6 @@
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decPointerList.h>
 
 class decCollisionFilter;
 class deCollisionInfo;
@@ -59,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new result callback. */
-	debpConvexResultCallback( deCollisionInfo *colinfo );
+	debpConvexResultCallback(deCollisionInfo *colinfo);
 	/*@}*/
 	
 	/** \name Management */
@@ -68,19 +67,19 @@ public:
 	void Reset();
 	
 	/** \brief Sets the ray to test with. */
-	void SetTestRay( const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener );
+	void SetTestRay(const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener);
 	/** \brief Set the shape to test with. */
-	void SetTestShape( debpShape *shape, deBaseScriptingCollider *listener );
+	void SetTestShape(debpShape *shape, deBaseScriptingCollider *listener);
 	/** \brief Sets the collider to test with. */
-	void SetTestCollider( debpCollider *collider, deBaseScriptingCollider *listener );
+	void SetTestCollider(debpCollider *collider, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Determines if a collision is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	/** \brief Adds a result. This fills in the parameters for later delivery to the collision info. */
-	virtual btScalar addSingleResult( btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace );
+	virtual btScalar addSingleResult(btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace);
 	/*@}*/
 };
 

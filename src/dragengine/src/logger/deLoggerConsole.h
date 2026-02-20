@@ -37,8 +37,7 @@
 class DE_DLL_EXPORT deLoggerConsole : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deLoggerConsole> Ref;
-	
+	using Ref = deTObjectReference<deLoggerConsole>;
 	
 	
 private:
@@ -59,7 +58,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deLoggerConsole();
+	~deLoggerConsole() override;
 	/*@}*/
 	
 	
@@ -68,20 +67,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	void LogInfo(const char *source, const char *message) override;
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	void LogWarn(const char *source, const char *message) override;
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	void LogError(const char *source, const char *message) override;
 	/*@}*/
 	
 	
 	
 protected:
 	inline deMutex &GetMutex(){ return pMutex; }
-	void LogPrefix( const char *source, const char *message, const char *prefix );
+	void LogPrefix(const char *source, const char *message, const char *prefix);
 };
 
 #endif

@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <termios.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
@@ -44,15 +45,15 @@ class deConsoleInput : public deBaseInputModule{
 private:
 	termios pOldTermSettings;
 	
-	deInputEvent::eKeyCodes *pKeyCodeMap;
+	decTList<deInputEvent::eKeyCodes> pKeyCodeMap;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new console input object. */
-	deConsoleInput( deLoadableModule &loadableModule );
+	deConsoleInput(deLoadableModule &loadableModule);
 	/** Cleans up the console input object. */
-	virtual ~deConsoleInput();
+	~deConsoleInput() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -62,9 +63,9 @@ public:
 	 * Called to init the module. Returns true on success. To access the os
 	 * object of the engine use the GetOS function.
 	 */
-	virtual bool Init();
+	bool Init() override;
 	/** Called to cleanup the module. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -72,34 +73,34 @@ public:
 	/** \name Devices */
 	/*@{*/
 	/** \brief Number of input devices. */
-	virtual int GetDeviceCount();
+	int GetDeviceCount() override;
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** \brief Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** \brief Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	float GetAxisValue(int device, int axis) override;
 	
 	/** \brief Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** \brief Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -112,7 +113,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode );
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode) override;
 	
 	/**
 	 * \brief Index of button best matching character or -1 if not found.
@@ -131,7 +132,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character );
+	int ButtonMatchingKeyChar(int device, int character) override;
 	/*@}*/
 	
 	
@@ -145,16 +146,16 @@ public:
 	 * deliver system notification ( like quitting the game )
 	 * to the game engine.
 	 */
-	virtual void ProcessEvents();
+	void ProcessEvents() override;
 	/*@}*/
 	
 private:
 	void pInitKeyCodeMap();
 	
-	void pAddKeyPress( int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
-		const timeval &eventTime );
-	void pAddKeyRelease( int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
-		const timeval &eventTime );
+	void pAddKeyPress(int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
+		const timeval &eventTime);
+	void pAddKeyRelease(int device, int button, int keyChar, deInputEvent::eKeyCodes keyCode,
+		const timeval &eventTime);
 	void pProcessEventQueue();
 };
 

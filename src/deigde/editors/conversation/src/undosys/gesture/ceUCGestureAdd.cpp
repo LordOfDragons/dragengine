@@ -40,28 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureAdd::ceUCGestureAdd( ceConversation *conversation, ceGesture *gesture ){
-	if( ! conversation || ! gesture ) DETHROW( deeInvalidParam );
+ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture){
+	if(!conversation || !gesture) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pGesture = NULL;
+	pConversation = nullptr;
+	pGesture = nullptr;
 	
-	SetShortInfo( "Add Gesture" );
+	SetShortInfo("@Conversation.Undo.AddGesture");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureAdd::~ceUCGestureAdd(){
-	if( pGesture ){
-		pGesture->FreeReference();
-	}
-	if( pConversation ){
-		pConversation->FreeReference();
-	}
 }
 
 
@@ -70,10 +61,10 @@ ceUCGestureAdd::~ceUCGestureAdd(){
 ///////////////
 
 void ceUCGestureAdd::Undo(){
-	pConversation->RemoveGesture( pGesture );
+	pConversation->RemoveGesture(pGesture);
 }
 
 void ceUCGestureAdd::Redo(){
-	pConversation->AddGesture( pGesture );
-	pConversation->SetActiveGesture( pGesture );
+	pConversation->AddGesture(pGesture);
+	pConversation->SetActiveGesture(pGesture);
 }

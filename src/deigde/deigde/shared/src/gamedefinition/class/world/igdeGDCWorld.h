@@ -27,6 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/collider/deCollider.h>
 
 
@@ -38,7 +39,10 @@
 class DE_DLL_EXPORT igdeGDCWorld : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDCWorld> Ref;
+	using Ref = deTObjectReference<igdeGDCWorld>;
+	
+	/** \brief Type holding list of objects. */
+	using List = decTObjectOrderedSet<igdeGDCWorld>;
 	
 	
 public:
@@ -62,17 +66,18 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create game definition world. */
+	/** \brief Create world property. */
 	igdeGDCWorld();
 	
-	/** \brief Create copy of a game definition world. */
+	/** \brief Create copy of world property. */
 	igdeGDCWorld(const igdeGDCWorld &world);
 	
-	/** \brief Clean up game definition world. */
+protected:
+	/** \brief Clean up world property. */
 	~igdeGDCWorld() override;
-	/*@}*/
 	
-	
+public:
+	/*@}*/	
 	/** \name Management */
 	/*@{*/
 	/** \brief Path. */

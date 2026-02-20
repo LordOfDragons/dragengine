@@ -41,23 +41,23 @@ private:
 	
 public:
 	/** Convert identifier list. */
-	static std::vector<Modio::ModID> ModIDList( const deServiceObject &so );
+	static std::vector<Modio::ModID> ModIDList(const deServiceObject &so);
 	
 	/** Convert ModServerSideStatus. */
-	static deServiceObject::Ref ModServerSideStatus( Modio::ModServerSideStatus status );
+	static deServiceObject::Ref ModServerSideStatus(Modio::ModServerSideStatus status);
 	
 	/** Convert mod info. */
-	static deServiceObject::Ref ModInfo( const Modio::ModInfo &info, const deModioUserConfig &config );
+	static deServiceObject::Ref ModInfo(const Modio::ModInfo &info, const deModioUserConfig &config);
 	
 	/** Convert mod stats. */
-	static deServiceObject::Ref ModStats( const Modio::ModStats &stats );
+	static deServiceObject::Ref ModStats(const Modio::ModStats &stats);
 	
 	/** Convert mod stats. */
 	static deServiceObject::Ref ModCollectionEntry(
-		const Modio::ModCollectionEntry &status, const deModioUserConfig &config );
+		const Modio::ModCollectionEntry &status, const deModioUserConfig &config);
 	
 	/** Convert ModServerSideStatus. */
-	static deServiceObject::Ref ModState( Modio::ModState state );
+	static deServiceObject::Ref ModState(Modio::ModState state);
 	/*@}*/
 };
 

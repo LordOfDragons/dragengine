@@ -28,18 +28,39 @@
 #include <stdlib.h>
 
 #include "igdeWidget.h"
+#include "event/igdeTextFieldListener.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-
-
-class igdeTextFieldListener;
 
 
 /**
  * \brief IGDE UI TextField.
  */
 class DE_DLL_EXPORT igdeTextField : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTextField>;
+	
+	/** \brief Type holding weak reference. */
+	using WeakRef = deTWeakObjectReference<igdeTextField>;
+	
+	
+	class cNativeTextField{
+	public:
+		virtual ~cNativeTextField() = default;
+		virtual void Focus() = 0;
+		virtual void OnInvalidValueChanged() = 0;
+		virtual void UpdateText() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateEditable() = 0;
+		virtual int GetCursorPosition() const = 0;
+		virtual void SetCursorPosition(int position) = 0;
+	};
+	
+	
 private:
 	bool pEnabled;
 	decString pText;
@@ -49,18 +70,21 @@ private:
 	int pPrecision;
 	bool pInvalidValue;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeTextFieldListener> pListeners;
 	
+	
+protected:
+	cNativeTextField *pNativeTextField;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeTextField( igdeEnvironment &environment, int columns, const char *description = "" );
+	igdeTextField(igdeEnvironment &environment, int columns, const char *description = "");
 	
-	igdeTextField( igdeEnvironment &environment, int columns, bool editable,
-		const char *description = "" );
+	igdeTextField(igdeEnvironment &environment, int columns, bool editable,
+		const char *description = "");
 	
 	
 	
@@ -71,7 +95,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTextField();
+	~igdeTextField() override;
 	/*@}*/
 	
 	
@@ -83,7 +107,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
 	inline int GetColumns() const{ return pColumns; }
@@ -92,25 +116,25 @@ public:
 	inline bool GetEditable() const{ return pEditable; }
 	
 	/** \brief Set if text is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Precision for floating point values as digits after period. */
 	inline int GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision for floating point values as digits after period. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Mark widget as having an invalue value. */
 	inline bool GetInvalidValue() const{ return pInvalidValue; }
 	
 	/** \brief Set to mark widget as having an invalid value. */
-	void SetInvalidValue( bool invalidValue );
+	void SetInvalidValue(bool invalidValue);
 	
 	
 	
@@ -118,7 +142,7 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text, bool changing = false, bool forceNotify = false );
+	void SetText(const char *text, bool changing = false, bool forceNotify = false);
 	
 	/** \brief Clear text. */
 	void ClearText();
@@ -127,19 +151,19 @@ public:
 	int GetInteger() const;
 	
 	/** \brief Set integer text. */
-	void SetInteger( int value, bool changing = false );
+	void SetInteger(int value, bool changing = false);
 	
 	/** \brief Get floating point text. */
 	float GetFloat() const;
 	
 	/** \brief Set floating point text. */
-	void SetFloat( float value, bool changing = false );
+	void SetFloat(float value, bool changing = false);
 	
 	/** \brief Get double precision floating point text. */
 	double GetDouble() const;
 	
 	/** \brief Set double precision floating point text. */
-	void SetDouble( double value, bool changing = false );
+	void SetDouble(double value, bool changing = false);
 	
 	
 	
@@ -147,7 +171,7 @@ public:
 	int GetCursorPosition() const;
 	
 	/** \brief Set cursor position as offset from start of text. */
-	void SetCursorPosition( int position );
+	void SetCursorPosition(int position);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -155,10 +179,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeTextFieldListener *listener );
+	void AddListener(igdeTextFieldListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeTextFieldListener *listener );
+	void RemoveListener(igdeTextFieldListener *listener);
 	
 	/** \brief Notify listeners text changed. */
 	virtual void NotifyTextChanged();
@@ -181,14 +205,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -206,6 +235,9 @@ protected:
 	
 	/** \brief Invalid value changed. */
 	virtual void OnInvalidValueChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

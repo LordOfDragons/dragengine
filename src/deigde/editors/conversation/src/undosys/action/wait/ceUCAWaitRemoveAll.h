@@ -26,10 +26,10 @@
 #define _CEUCAWAITREMOVEALL_H_
 
 #include <deigde/undo/igdeUndo.h>
-#include "../../../conversation/action/ceConversationActionList.h"
+#include "../../../conversation/action/ceConversationAction.h"
 
-class ceConversationTopic;
-class ceCAWait;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAWait.h"
 
 
 
@@ -37,28 +37,32 @@ class ceCAWait;
  * \brief Undo Action Wait Remove All Conversation Actions.
  */
 class ceUCAWaitRemoveAll : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAWaitRemoveAll>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationActionList pActionList;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationAction::List pActions;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitRemoveAll( ceConversationTopic *topic, ceCAWait *wait );
+	ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wait);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAWaitRemoveAll();
+	~ceUCAWaitRemoveAll() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

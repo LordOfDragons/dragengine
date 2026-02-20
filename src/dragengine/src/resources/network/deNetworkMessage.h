@@ -28,6 +28,7 @@
 #include <stdint.h>
 
 #include "../../deObject.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/utils/decDateTime.h"
 
 
@@ -49,13 +50,11 @@
 class DE_DLL_EXPORT deNetworkMessage : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkMessage> Ref;
-	
+	using Ref = deTObjectReference<deNetworkMessage>;
 	
 	
 private:
-	uint8_t *pBuffer;
-	int pBufferSize;
+	decTList<uint8_t> pBuffer;
 	int pDataLength;
 	TIME_SYSTEM pTimeStamp;
 	
@@ -74,7 +73,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deNetworkMessage();
+	~deNetworkMessage() override;
 	/*@}*/
 	
 	
@@ -83,13 +82,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer data. */
-	inline uint8_t *GetBuffer() const{ return pBuffer; }
+	inline uint8_t *GetBuffer(){ return pBuffer.GetArrayPointer(); }
+	inline const uint8_t *GetBuffer() const{ return pBuffer.GetArrayPointer(); }
 	
 	/** \brief Length of the message data. */
 	inline int GetDataLength() const{ return pDataLength; }
 	
 	/** \brief Set length of the message data. */
-	void SetDataLength( int dataLength );
+	void SetDataLength(int dataLength);
 	
 	/** \brief Clear message data. */
 	void Clear();
@@ -98,7 +98,7 @@ public:
 	inline TIME_SYSTEM GetTimeStamp() const{ return pTimeStamp; }
 	
 	/** \brief Set time stamp. */
-	void SetTimeStamp( TIME_SYSTEM timeStamp );
+	void SetTimeStamp(TIME_SYSTEM timeStamp);
 	/*@}*/
 };
 

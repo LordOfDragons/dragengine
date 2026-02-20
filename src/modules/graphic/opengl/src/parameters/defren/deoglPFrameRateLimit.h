@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPFrameRateLimit( deGraphicOpenGl &ogl );
+	deoglPFrameRateLimit(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
-	virtual ~deoglPFrameRateLimit();
+	~deoglPFrameRateLimit() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual int GetParameterInt();
+	int GetParameterInt() override;
 	
 	/** Set current value. */
-	virtual void SetParameterInt( int value );
+	void SetParameterInt(int value) override;
 	/*@}*/
 };
 

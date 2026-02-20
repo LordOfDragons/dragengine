@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 
+#include "../../../common/collection/decTList.h"
 #include "deNetworkValue.h"
 
 
@@ -41,13 +42,11 @@
 class DE_DLL_EXPORT deNetworkValueData : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueData> Ref;
-	
+	using Ref = deTObjectReference<deNetworkValueData>;
 	
 	
 private:
-	uint8_t *pData;
-	int pLength;
+	decTList<uint8_t> pData;
 	
 	
 	
@@ -55,28 +54,29 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueData( int length );
+	deNetworkValueData(int length);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueData();
+	~deNetworkValueData() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Data pointer. */
-	inline uint8_t *GetData() const{ return pData; }
+	/** \brief Pointer to the data. */
+	inline uint8_t *GetData(){ return pData.GetArrayPointer(); }
+	inline const uint8_t *GetData() const{ return pData.GetArrayPointer(); }
 	
 	/** \brief Length of the data. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{ return pData.GetCount(); }
 	
 	/**
 	 * \brief Set length of data.
 	 * 
 	 * After changing the size the data is undefined. Only values greater than 0 are allowed.
 	 */
-	void SetLength( int length );
+	void SetLength(int length);
 	/*@}*/
 	
 	
@@ -84,7 +84,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

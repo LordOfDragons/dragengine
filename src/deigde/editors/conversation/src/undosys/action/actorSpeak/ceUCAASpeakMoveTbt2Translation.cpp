@@ -35,25 +35,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakMoveTbt2Translation::ceUCAASpeakMoveTbt2Translation( ceConversationTopic *topic,
-	ceCAActorSpeak *actorSpeak, ceLangPackEntry *entry, bool addEntry, const decUnicodeString &text ) :
-pTopic( topic ),
-pConversation( topic && topic->GetFile() ? topic->GetFile()->GetConversation() : nullptr ),
-pActorSpeak( actorSpeak ),
-pLangPack( pConversation ? pConversation->GetLanguagePack() : nullptr ),
-pEntry( entry ),
-pAddEntry( addEntry ),
-pTextBoxText( actorSpeak ? actorSpeak->GetTextBoxText() : decUnicodeString() ),
-pOldEntryText( entry ? entry->GetText() : decUnicodeString() ),
-pOldTranslationName( actorSpeak ? actorSpeak->GetTextBoxTextTranslate() : decString() )
+ceUCAASpeakMoveTbt2Translation::ceUCAASpeakMoveTbt2Translation(ceConversationTopic *topic,
+	ceCAActorSpeak *actorSpeak, const decString &translationName,
+	const decUnicodeString *oldEntryText, const decUnicodeString &text) :
+pTopic(topic),
+pConversation(topic && topic->GetFile() ? topic->GetFile()->GetConversation() : nullptr),
+pActorSpeak(actorSpeak),
+pLangPack(pConversation ? pConversation->GetLanguagePack().Pointer() : nullptr),
+pTextBoxText(actorSpeak ? actorSpeak->GetTextBoxText() : decUnicodeString()),
+pOldEntryText(oldEntryText ? *oldEntryText : decUnicodeString()),
+pTranslationName(translationName),
+pOldTranslationName(actorSpeak ? actorSpeak->GetTextBoxTextTranslate() : decString()),
+pAddEntry(oldEntryText == nullptr)
 {
-	DEASSERT_NOTNULL( pConversation )
-	DEASSERT_NOTNULL( pTopic )
-	DEASSERT_NOTNULL( pLangPack )
-	DEASSERT_NOTNULL( pActorSpeak )
-	DEASSERT_NOTNULL( pEntry )
+	DEASSERT_NOTNULL(pConversation)
+	DEASSERT_NOTNULL(pTopic)
+	DEASSERT_NOTNULL(pLangPack)
+	DEASSERT_NOTNULL(pActorSpeak)
 	
-	SetShortInfo( "Move actor speak text box text to translation" );
+	SetShortInfo("@Conversation.Undo.MoveActorSpeakTextBoxTextToTranslation");
 }
 
 ceUCAASpeakMoveTbt2Translation::~ceUCAASpeakMoveTbt2Translation(){
@@ -65,35 +65,28 @@ ceUCAASpeakMoveTbt2Translation::~ceUCAASpeakMoveTbt2Translation(){
 ///////////////
 
 void ceUCAASpeakMoveTbt2Translation::Undo(){
-	if( pAddEntry ){
-		pLangPack->RemoveEntry( pEntry );
+	if(pAddEntry){
+		pLangPack->GetEntries().Remove(pTranslationName);
 		
 	}else{
-		pEntry->SetText( pOldEntryText );
+		pLangPack->GetEntries().SetAt(pTranslationName, pOldEntryText);
 	}
+	pLangPack->SetChanged(true);
 	
-	pLangPack->SetChanged( true );
+	pActorSpeak->SetTextBoxText(pTextBoxText);
+	pActorSpeak->SetTextBoxTextTranslate(pOldTranslationName);
 	
-	pActorSpeak->SetTextBoxText( pTextBoxText );
-	pActorSpeak->SetTextBoxTextTranslate( pOldTranslationName );
-	
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 	pConversation->NotifyLanguagePackChanged();
 }
 
 void ceUCAASpeakMoveTbt2Translation::Redo(){
-	if( pAddEntry ){
-		pLangPack->AddEntry( pEntry );
-		
-	}else{
-		pEntry->SetText( pTextBoxText );
-	}
+	pLangPack->GetEntries().SetAt(pTranslationName, pTextBoxText);
+	pLangPack->SetChanged(true);
 	
-	pLangPack->SetChanged( true );
+	pActorSpeak->SetTextBoxText(decUnicodeString());
+	pActorSpeak->SetTextBoxTextTranslate(pTranslationName);
 	
-	pActorSpeak->SetTextBoxText( decUnicodeString() );
-	pActorSpeak->SetTextBoxTextTranslate( pEntry->GetName() );
-	
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 	pConversation->NotifyLanguagePackChanged();
 }

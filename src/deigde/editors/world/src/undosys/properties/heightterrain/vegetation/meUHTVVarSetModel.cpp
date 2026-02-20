@@ -39,21 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetModel::meUHTVVarSetModel( meHTVVariation *variation, const char *newPath ){
-	if( ! variation || ! newPath ) DETHROW( deeInvalidParam );
+meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newPath){
+	if(!variation || !newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	
 	pOldPath = variation->GetPathModel();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Vegetation Layer Variation Set Model" );
-	
-	variation->AddReference();
+	SetShortInfo("@World.UHTVVarSetModel.VegetationLayerVariationSetModel");
 }
 
 meUHTVVarSetModel::~meUHTVVarSetModel(){
-	if( pVariation ) pVariation->FreeReference();
 }
 
 
@@ -62,9 +59,9 @@ meUHTVVarSetModel::~meUHTVVarSetModel(){
 ///////////////
 
 void meUHTVVarSetModel::Undo(){
-	pVariation->SetPathModel( pOldPath.GetString() );
+	pVariation->SetPathModel(pOldPath.GetString());
 }
 
 void meUHTVVarSetModel::Redo(){
-	pVariation->SetPathModel( pNewPath.GetString() );
+	pVariation->SetPathModel(pNewPath.GetString());
 }

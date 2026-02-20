@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglOcclusionQuery.h"
 #include "deoglOcclusionQueryManager.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoglOcclusionQueryManager
@@ -39,83 +34,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionQueryManager::deoglOcclusionQueryManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
-	pQueries = NULL;
-	pQueryCount = 0;
-	pQuerySize = 0;
-	
-	pFreeQueryCount = 0;
-	
-	pActiveQuery = NULL;
+deoglOcclusionQueryManager::deoglOcclusionQueryManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pFreeQueryCount(0),
+pActiveQuery(nullptr){
 }
-
-deoglOcclusionQueryManager::~deoglOcclusionQueryManager(){
-	if( pQueries ){
-		while( pQueryCount > 0 ){
-			pQueryCount--;
-			delete pQueries[ pQueryCount ];
-		}
-		
-		delete [] pQueries;
-	}
-}
-
 
 
 // Management
 ///////////////
 
 deoglOcclusionQuery *deoglOcclusionQueryManager::ClaimQuery(){
-	if( pFreeQueryCount == 0 ){
-		if( pQueryCount == pQuerySize ){
-			int newSize = pQuerySize + 10;
-			deoglOcclusionQuery **newArray = new deoglOcclusionQuery*[ newSize ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
-			if( pQueries ){
-				memcpy( newArray, pQueries, sizeof( deoglOcclusionQuery* ) * pQuerySize );
-				delete [] pQueries;
-			}
-			memset( newArray + pQuerySize, '\0', sizeof( deoglOcclusionQuery* ) * ( newSize - pQuerySize ) );
-			pQueries = newArray;
-			pQuerySize = newSize;
-		}
-		
-		if( ! pQueries[ pQueryCount ] ){
-			pQueries[ pQueryCount ] = new deoglOcclusionQuery( pRenderThread );
-			if( ! pQueries[ pQueryCount ] ) DETHROW( deeOutOfMemory );
-		}
-		
-		return pQueries[ pQueryCount++ ];
+	if(pFreeQueryCount == 0){
+		pQueries.Add(deTUniqueReference<deoglOcclusionQuery>::New(pRenderThread));
+		return pQueries.Last();
 		
 	}else{
 		pFreeQueryCount--;
-		return pQueries[ pFreeQueryCount ];
+		return pQueries.GetAt(pFreeQueryCount);
 	}
 }
 
-void deoglOcclusionQueryManager::ReleaseQuery( deoglOcclusionQuery *query ){
-	if( ! query ) DETHROW( deeInvalidParam );
+void deoglOcclusionQueryManager::ReleaseQuery(deoglOcclusionQuery *query){
+	DEASSERT_NOTNULL(query)
 	
-	int index = IndexOfQuery( query, pFreeQueryCount, pQueryCount );
+	const int index = IndexOfQuery(query, pFreeQueryCount, pQueries.GetCount());
+	DEASSERT_TRUE(index != -1)
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
-	
-	if( index > pFreeQueryCount ){
-		deoglOcclusionQuery *exchange = pQueries[ index ];
-		pQueries[ index ] = pQueries[ pFreeQueryCount ];
-		pQueries[ pFreeQueryCount ] = exchange;
+	if(index > pFreeQueryCount){
+		pQueries.Swap(index, pFreeQueryCount);
 	}
 	
 	pFreeQueryCount++;
 }
 
-void deoglOcclusionQueryManager::SetActiveQuery( deoglOcclusionQuery *query ){
+void deoglOcclusionQueryManager::SetActiveQuery(deoglOcclusionQuery *query){
 	pActiveQuery = query;
 }
 
 void deoglOcclusionQueryManager::EndActiveQuery(){
-	if( pActiveQuery ){
+	if(pActiveQuery){
 		pActiveQuery->EndQuery();
 	}
 }
@@ -125,14 +83,6 @@ void deoglOcclusionQueryManager::EndActiveQuery(){
 // Private Functions
 //////////////////////
 
-int deoglOcclusionQueryManager::IndexOfQuery( deoglOcclusionQuery *query, int from, int to ) const{
-	int i;
-	
-	for( i=from; i<to; i++ ){
-		if( pQueries[ i ] == query ){
-			return i;
-		}
-	}
-	
-	return -1;
+int deoglOcclusionQueryManager::IndexOfQuery(deoglOcclusionQuery *query, int from, int to) const{
+	return pQueries.IndexOf(query);
 }

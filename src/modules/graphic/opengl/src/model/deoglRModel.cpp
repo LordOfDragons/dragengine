@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRModel.h"
 #include "deoglModelLOD.h"
 #include "face/deoglModelFace.h"
@@ -73,34 +69,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRModel::deoglRModel( deoglRenderThread &renderThread, const deModel &model ) :
-pRenderThread( renderThread ),
-pFilename( model.GetFilename() ),
-pHasWeightlessExtends( false ),
-pBoneExtends( NULL ),
-pBoneCount( 0 ),
-pLODs( NULL ),
-pLODCount( 0 ),
-pDoubleSided( false ),
-pIsCached( false ),
-pImposterBillboard( NULL ),
-pSharedSPBListUBO( NULL )
+deoglRModel::deoglRModel(deoglRenderThread &renderThread, const deModel &model) :
+pRenderThread(renderThread),
+pFilename(model.GetFilename()),
+pHasWeightlessExtends(false),
+pDoubleSided(false),
+pIsCached(false),
+pImposterBillboard(nullptr),
+pSharedSPBListUBO(nullptr)
 {
 // 	decTimer timer;
 	// try loading from cache if present
 	try{
-		pLoadCached( model.GetLODCount(), model.GetBoneCount() );
+		pLoadCached(model.GetLODCount(), model.GetBoneCount());
 		
-	}catch( const deException & ){
-		if( pLODs ){
-			int i;
-			for( i=0; i<pLODCount; i++ ){
-				delete pLODs[ i ];
-			}
-			delete [] pLODs;
-			pLODs = NULL;
-			pLODCount = 0;
-		}
+	}catch(const deException &){
+		pLODs.RemoveAll();
 		
 		pDoubleSided = false;
 		pIsCached = false;
@@ -108,38 +92,38 @@ pSharedSPBListUBO( NULL )
 	
 	// if cache is not present or loading the cache failed go on without
 	try{
-		if( ! pIsCached ){
-			pInitLODs( model );
+		if(!pIsCached){
+			pInitLODs(model);
 			pSaveCached();
 		}
 		
 		// debug
 		/*
-		for( int i=0; i<pLODCount; i++ ){
-			const deoglModelLOD &lod = *pLODs[ i ];
-			renderThread.GetOgl().LogInfoFormat( "Model '%s' LOD %i: faces=%i double=%d decal=%d error(%g,%g)",
+		for(int i=0; i<pLODCount; i++){
+			const deoglModelLOD &lod = pLODs.GetAt(i);
+			renderThread.GetOgl().LogInfoFormat("Model '%s' LOD %i: faces=%i double=%d decal=%d error(%g,%g)",
 				pFilename.GetString(), i, lod.GetFaceCount(), lod.GetDoubleSided(), lod.GetDecal(),
-				lod.GetAvgError(), lod.GetMaxError() );
+				lod.GetAvgError(), lod.GetMaxError());
 		}
 		*/
 		// debug
 		
-		pInitBoneNames( model );
-		pInitTextureNames( model );
-		pInitVPSNames( model );
+		pInitBoneNames(model);
+		pInitTextureNames(model);
+		pInitVPSNames(model);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	//ogl->LogInfoFormat( "model %s: constructor %ims", pFilename.GetString(), ( int )( timer.GetElapsedTime() * 1000.0f ) );
 	
 // 	pOgl->LogInfoFormat( "Loaded '%s' in %fs", pFilename.GetString(), timer.GetElapsedTime() );
-	LEAK_CHECK_CREATE( renderThread, Model );
+	LEAK_CHECK_CREATE(renderThread, Model);
 }
 
 deoglRModel::~deoglRModel(){
-	LEAK_CHECK_FREE( pRenderThread, Model );
+	LEAK_CHECK_FREE(pRenderThread, Model);
 	pCleanUp();
 }
 
@@ -148,26 +132,23 @@ deoglRModel::~deoglRModel(){
 // Management
 ///////////////
 
-deoglModelLOD &deoglRModel::GetLODAt( int index ) const{
-	if( index < 0 ){
-		index += pLODCount;
+deoglModelLOD &deoglRModel::GetLODAt(int index) const{
+	if(index < 0){
+		index += pLODs.GetCount();
 	}
-	if( index < 0 || index >= pLODCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return *pLODs[ index ];
+	return pLODs.GetAt(index);
 }
 
 void deoglRModel::PrepareImposterBillboard(){
-	if( ! pImposterBillboard ){
+	if(!pImposterBillboard){
 		pCreateImposterBillboard();
 	}
 }
 
 deoglSharedSPBListUBO &deoglRModel::GetSharedSPBListUBO(){
-	if( ! pSharedSPBListUBO ){
-		pSharedSPBListUBO = new deoglSharedSPBListUBO( pRenderThread,
-			pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
+	if(!pSharedSPBListUBO){
+		pSharedSPBListUBO = new deoglSharedSPBListUBO(pRenderThread,
+			pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO());
 	}
 	return *pSharedSPBListUBO;
 }
@@ -175,48 +156,46 @@ deoglSharedSPBListUBO &deoglRModel::GetSharedSPBListUBO(){
 
 
 void deoglRModel::PrepareOctrees(){
-	int i;
-	for( i=0; i<pLODCount; i++ ){
-		pLODs[ i ]->PrepareOctree();
-	}
+	pLODs.Visit([&](deoglModelLOD &lod){
+		lod.PrepareOctree();
+	});
 }
 
 void deoglRModel::PrintDebugInfo(){
-	if( pLODCount < 2 ){
+	if(pLODs.GetCount() < 2){
 		return;
 	}
 	
-	pRenderThread.GetLogger().LogInfoFormat( "model '%s' lod information:", pFilename.GetString() );
+	pRenderThread.GetLogger().LogInfoFormat("model '%s' lod information:", pFilename.GetString());
 	
-	int i;
-	for( i=1; i<pLODCount; i++ ){
-		pRenderThread.GetLogger().LogInfoFormat( "- lod %i: maxError=%g avgError=%f", i,
-			pLODs[ i ]->GetMaxError(), pLODs[ i ]->GetAvgError() );
-	}
+	pLODs.VisitIndexed([&](int i, const deoglModelLOD &lod){
+		pRenderThread.GetLogger().LogInfoFormat("- lod %i: maxError=%g avgError=%f", i,
+			lod.GetMaxError(), lod.GetAvgError());
+	});
 }
 
 void deoglRModel::DebugVCOptimize(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	decTimer timer;
 	
-	const deoglModelLOD &lod = *pLODs[ 0 ];
-	const deoglModelFace * const lodFaces = lod.GetFaces();
+	const deoglModelLOD &lod = pLODs.First();
+	const deoglModelFace * const lodFaces = lod.GetFaces().GetArrayPointer();
 	deoglVCOptimizer optimizer;
 	int i, count;
 	
 	// optimize
 	timer.Reset();
 	
-	optimizer.SetVertexCount( lod.GetVertexCount() );
-	count = lod.GetFaceCount();
-	optimizer.SetFaceCount( count );
-	for( i=0; i<count; i++ ){
-		optimizer.SetFaceAt( i , lodFaces[ i ].GetVertex1(), lodFaces[ i ].GetVertex2(), lodFaces[ i ].GetVertex3() );
+	optimizer.SetVertexCount(lod.GetVertices().GetCount());
+	count = lod.GetFaces().GetCount();
+	optimizer.SetFaceCount(count);
+	for(i=0; i<count; i++){
+		optimizer.SetFaceAt(i , lodFaces[i].GetVertex1(), lodFaces[i].GetVertex2(), lodFaces[i].GetVertex3());
 	}
 	count = lod.GetTextureCount();
-	optimizer.SetGroupCount( count );
-	for( i=0; i<count; i++ ){
-		optimizer.SetGroupAt( i, lod.GetTextureAt( i ).GetFirstFace(), lod.GetTextureAt( i ).GetFaceCount() );
+	optimizer.SetGroupCount(count);
+	for(i=0; i<count; i++){
+		optimizer.SetGroupAt(i, lod.GetTextureAt(i).GetFirstFace(), lod.GetTextureAt(i).GetFaceCount());
 	}
 	
 	optimizer.Optimize();
@@ -225,31 +204,31 @@ void deoglRModel::DebugVCOptimize(){
 	const float elapsedOptimize = timer.GetElapsedTime();
 	
 	// simulate
-	const int * const reorderedFaces = optimizer.GetReorderedFaces();
+	const int * const reorderedFaces = optimizer.GetReorderedFaces().GetArrayPointer();
 	int orgCacheMissCount, newCacheMissCount;
 	int orgCacheHitCount, newCacheHitCount;
 	deoglVCSimulator simulator;
 	float orgAcmr, newAcmr;
 	int j;
 	
-	simulator.SetCacheSize( 32 );
+	simulator.SetCacheSize(32);
 	
-	logger.LogInfoFormat( "simulate model %s", pFilename.GetString() );
-	count = lod.GetFaceCount();
+	logger.LogInfoFormat("simulate model %s", pFilename.GetString());
+	count = lod.GetFaces().GetCount();
 	
-	for( i=0; i<lod.GetTextureCount(); i++ ){
+	for(i=0; i<lod.GetTextureCount(); i++){
 		// simulate original face order
 		simulator.Reset();
 		
-		for( j=0; j<count; j++ ){
-			const deoglModelFace &lodFace = lodFaces[ j ];
+		for(j=0; j<count; j++){
+			const deoglModelFace &lodFace = lodFaces[j];
 			
-			if( lodFace.GetTexture() == i ){
-				simulator.ProcessFace( lodFace.GetVertex1(), lodFace.GetVertex2(), lodFace.GetVertex3() );
+			if(lodFace.GetTexture() == i){
+				simulator.ProcessFace(lodFace.GetVertex1(), lodFace.GetVertex2(), lodFace.GetVertex3());
 			}
 		}
 		
-		if( simulator.GetFaceCount() > 0 ){
+		if(simulator.GetFaceCount() > 0){
 			orgCacheHitCount = simulator.GetCacheHitCount();
 			orgCacheMissCount = simulator.GetCacheMissCount();
 			orgAcmr = simulator.GetAvgCacheMissRatio();
@@ -257,11 +236,11 @@ void deoglRModel::DebugVCOptimize(){
 			// simulate new face order
 			simulator.Reset();
 			
-			for( j=0; j<count; j++ ){
-				const deoglModelFace &lodFace = lodFaces[ reorderedFaces[ j ] ];
+			for(j=0; j<count; j++){
+				const deoglModelFace &lodFace = lodFaces[reorderedFaces[j]];
 				
-				if( lodFace.GetTexture() == i ){
-					simulator.ProcessFace( lodFace.GetVertex1(), lodFace.GetVertex2(), lodFace.GetVertex3() );
+				if(lodFace.GetTexture() == i){
+					simulator.ProcessFace(lodFace.GetVertex1(), lodFace.GetVertex2(), lodFace.GetVertex3());
 				}
 			}
 			
@@ -270,21 +249,21 @@ void deoglRModel::DebugVCOptimize(){
 			newAcmr = simulator.GetAvgCacheMissRatio();
 			
 			// results
-			logger.LogInfoFormat( "- texture %i: %i faces", i, simulator.GetFaceCount() );
-			logger.LogInfoFormat( "  - original order: cacheHitCount=%i cacheMissCount=%i acmr=%.2f",
-				orgCacheHitCount, orgCacheMissCount, orgAcmr );
-			logger.LogInfoFormat( "  - new order: cacheHitCount=%i cacheMissCount=%i acmr=%.2f",
-				newCacheHitCount, newCacheMissCount, newAcmr );
-			logger.LogInfoFormat( "  - result: cacheHitCount=%i%% cacheMissCount=%i%% acmr=%i%%",
-				( int )( ( float )newCacheHitCount / ( float )orgCacheHitCount * 100.0f ),
-				( int )( ( float )newCacheMissCount / ( float )orgCacheMissCount * 100.0f ),
-				( int )( newAcmr / orgAcmr * 100.0f ) );
+			logger.LogInfoFormat("- texture %i: %i faces", i, simulator.GetFaceCount());
+			logger.LogInfoFormat("  - original order: cacheHitCount=%i cacheMissCount=%i acmr=%.2f",
+				orgCacheHitCount, orgCacheMissCount, orgAcmr);
+			logger.LogInfoFormat("  - new order: cacheHitCount=%i cacheMissCount=%i acmr=%.2f",
+				newCacheHitCount, newCacheMissCount, newAcmr);
+			logger.LogInfoFormat("  - result: cacheHitCount=%i%% cacheMissCount=%i%% acmr=%i%%",
+				(int)((float)newCacheHitCount / (float)orgCacheHitCount * 100.0f),
+				(int)((float)newCacheMissCount / (float)orgCacheMissCount * 100.0f),
+				(int)(newAcmr / orgAcmr * 100.0f));
 		}
 	}
 	
 	const float elapsedSimulate = timer.GetElapsedTime();
-	logger.LogInfoFormat( "  - elapsed: optimize=%ims simulate=%ims",
-		( int )( elapsedOptimize * 1e3f ), ( int )( elapsedSimulate * 1e3f ) );
+	logger.LogInfoFormat("  - elapsed: optimize=%ims simulate=%ims",
+		(int)(elapsedOptimize * 1e3f), (int)(elapsedSimulate * 1e3f));
 }
 
 
@@ -293,92 +272,73 @@ void deoglRModel::DebugVCOptimize(){
 //////////////////////
 
 void deoglRModel::pCleanUp(){
-	if( pBoneExtends ){
-		delete [] pBoneExtends;
-		pBoneExtends = NULL;
-	}
-	if( pSharedSPBListUBO ){
+	if(pSharedSPBListUBO){
 		delete pSharedSPBListUBO;
 	}
-	if( pImposterBillboard ){
+	if(pImposterBillboard){
 		delete pImposterBillboard;
 	}
-	if( pLODs ){
-		int i;
-		for( i=0; i<pLODCount; i++ ){
-			delete pLODs[ i ];
-		}
-		delete [] pLODs;
-	}
 }
 
 
 
-void deoglRModel::pInitBoneNames( const deModel &engModel ){
-	const int count = engModel.GetBoneCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pBoneNames.Add( engModel.GetBoneAt( i )->GetName() );
-	}
+void deoglRModel::pInitBoneNames(const deModel &engModel){
+	engModel.GetBones().Visit([&](const deModelBone &bone){
+		pBoneNames.Add(bone.GetName());
+	});
 }
 
-void deoglRModel::pInitTextureNames( const deModel &engModel ){
-	const int count = engModel.GetTextureCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pTextureNames.Add( engModel.GetTextureAt( i )->GetName() );
-	}
+void deoglRModel::pInitTextureNames(const deModel &engModel){
+	engModel.GetTextures().Visit([&](const deModelTexture &texture){
+		pTextureNames.Add(texture.GetName());
+	});
 }
 
-void deoglRModel::pInitVPSNames( const deModel &engModel ){
-	const int count = engModel.GetVertexPositionSetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		pVPSNames.Add( engModel.GetVertexPositionSetAt( i )->GetName() );
-	}
+void deoglRModel::pInitVPSNames(const deModel &engModel){
+	engModel.GetVertexPositionSets().Visit([&](const deModelVertexPositionSet &vps){
+		pVPSNames.Add(vps.GetName());
+	});
 }
 
-void deoglRModel::pInitLODs( const deModel &engModel ){
+void deoglRModel::pInitLODs(const deModel &engModel){
 	const int lodCount = engModel.GetLODCount();
 	
 	//pRenderThread.GetOgl().LogInfoFormat( "Model '%s': Init without cache", pFilename .GetString());
 	
-	pLODs = new deoglModelLOD*[ lodCount ];
-	
-	if( lodCount == 0 ){
+	if(lodCount == 0){
 		return;
 	}
 	
 	// init base lod
-	pLODs[ 0 ] = new deoglModelLOD( *this, pLODCount, engModel );
-	pDoubleSided = pLODs[ 0 ]->GetDoubleSided();
-	pLODCount = 1;
+	pLODs.Add(deoglModelLOD::Ref::New(*this, pLODs.GetCount(), engModel));
 	
 	// init extends. this has to come now and not after higher lods since error calculation
 	// requires creating octrees which in turn require the base lod extends
-	pInitExtends( engModel, *pLODs[ 0 ] );
+	pInitExtends(engModel, pLODs.First());
 	
 	// init higher lod levels
-	for( ; pLODCount<lodCount; pLODCount++ ){
-		pLODs[ pLODCount ] = new deoglModelLOD( *this, pLODCount, engModel );
-		if( pLODs[ pLODCount ]->GetDoubleSided() ){
-			pDoubleSided = true;
-		}
+	int i;
+	for(i=1; i<lodCount; i++){
+		pLODs.Add(deoglModelLOD::Ref::New(*this, i, engModel));
 	}
+	
+	pDoubleSided = pLODs.HasMatching([](const deoglModelLOD &lod){
+		return lod.GetDoubleSided();
+	});
 }
 
-void deoglRModel::pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod ){
+void deoglRModel::pInitExtends(const deModel &engModel, const deoglModelLOD &baseLod){
 	// extends of all points
-	const oglModelPosition * const positions = baseLod.GetPositions();
-	const int positionCount = baseLod.GetPositionCount();
+	const oglModelPosition * const positions = baseLod.GetPositions().GetArrayPointer();
+	const int positionCount = baseLod.GetPositions().GetCount();
 	int i;
 	
-	if( positionCount > 0 ){
-		pExtends.minimum = pExtends.maximum = positions[ 0 ].position;
-		for( i=1; i<positionCount; i++ ){
-			const decVector &position = positions[ i ].position;
-			pExtends.minimum.SetSmallest( position );
-			pExtends.maximum.SetLargest( position );
+	if(positionCount > 0){
+		pExtends.minimum = pExtends.maximum = positions[0].position;
+		for(i=1; i<positionCount; i++){
+			const decVector &position = positions[i].position;
+			pExtends.minimum.SetSmallest(position);
+			pExtends.maximum.SetLargest(position);
 		}
 		
 	}else{
@@ -388,7 +348,7 @@ void deoglRModel::pInitExtends( const deModel &engModel, const deoglModelLOD &ba
 	
 	// extends of all points without weights and bone extends
 	const int boneCount = engModel.GetBoneCount();
-	if( boneCount == 0 ){
+	if(boneCount == 0){
 		pWeightlessExtends.minimum = pExtends.minimum;
 		pWeightlessExtends.maximum = pExtends.maximum;
 		pHasWeightlessExtends = true;
@@ -398,59 +358,52 @@ void deoglRModel::pInitExtends( const deModel &engModel, const deoglModelLOD &ba
 	pWeightlessExtends.minimum.SetZero();
 	pWeightlessExtends.maximum.SetZero();
 	
-	pBoneExtends = new sExtends[ boneCount ];
-	pBoneCount = boneCount;
+	pBoneExtends.SetCountDiscard(boneCount);
 	
-	const int weightsCount = baseLod.GetWeightsCount();
-	if( weightsCount > 0 ){
-		const int * const weightsCounts = baseLod.GetWeightsCounts();
-		const oglModelWeight *weightEntries = baseLod.GetWeightsEntries();
-		int * const dominatingBones = new int[ weightsCount ];
-		bool * const boneHasExtends = new bool[ boneCount ];
+	const int weightsCount = baseLod.GetWeightsCounts().GetCount();
+	if(weightsCount > 0){
+		const int * const weightsCounts = baseLod.GetWeightsCounts().GetArrayPointer();
+		const oglModelWeight *weightEntries = baseLod.GetWeightsEntries().GetArrayPointer();
+		decTList<int> dominatingBones(weightsCount, -1);
+		decTList<bool> boneHasExtends(boneCount, false);
 		
-		for( i=0; i<boneCount; i++ ){
-			boneHasExtends[ i ] = false;
-		}
-		
-		for( i=0; i<weightsCount; i++ ){
-			dominatingBones[ i ] = -1;
-			
-			const int weightEntryCount = weightsCounts[ i ];
-			if( weightEntryCount == 0 ){
+		for(i=0; i<weightsCount; i++){
+			const int weightEntryCount = weightsCounts[i];
+			if(weightEntryCount == 0){
 				continue;
 			}
 			
-			if( weightEntries->weight > 0.001f ){ // 0.499f ){
-				dominatingBones[ i ] = weightEntries->bone;
+			if(weightEntries->weight > 0.001f){ // 0.499f){
+				dominatingBones[i] = weightEntries->bone;
 			}
 			weightEntries += weightEntryCount;
 		}
 		
-		for( i=0; i<positionCount; i++ ){
-			const decVector &position = positions[ i ].position;
+		for(i=0; i<positionCount; i++){
+			const decVector &position = positions[i].position;
 			
 			int dominatingBone = -1;
-			if( positions[ i ].weights != -1 ){
-				dominatingBone = dominatingBones[ positions[ i ].weights ];
+			if(positions[i].weights != -1){
+				dominatingBone = dominatingBones[positions[i].weights];
 			}
 			
-			if( dominatingBone != -1 ){
-				sExtends &boneExtends = pBoneExtends[ dominatingBone ];
-				const decVector p( engModel.GetBoneAt( dominatingBone )->GetInverseMatrix() * position );
+			if(dominatingBone != -1){
+				sExtends &boneExtends = pBoneExtends[dominatingBone];
+				const decVector p(engModel.GetBoneAt(dominatingBone)->GetInverseMatrix() * position);
 				
-				if( boneHasExtends[ dominatingBone ] ){
-					boneExtends.minimum.SetSmallest( p );
-					boneExtends.maximum.SetLargest( p );
+				if(boneHasExtends[dominatingBone]){
+					boneExtends.minimum.SetSmallest(p);
+					boneExtends.maximum.SetLargest(p);
 					
 				}else{
 					boneExtends.minimum = boneExtends.maximum = p;
-					boneHasExtends[ dominatingBone ] = true;
+					boneHasExtends[dominatingBone] = true;
 				}
 				
 			}else{
-				if( pHasWeightlessExtends ){
-					pWeightlessExtends.minimum.SetSmallest( position );
-					pWeightlessExtends.maximum.SetLargest( position );
+				if(pHasWeightlessExtends){
+					pWeightlessExtends.minimum.SetSmallest(position);
+					pWeightlessExtends.maximum.SetLargest(position);
 					
 				}else{
 					pWeightlessExtends.minimum = pWeightlessExtends.maximum = position;
@@ -458,13 +411,10 @@ void deoglRModel::pInitExtends( const deModel &engModel, const deoglModelLOD &ba
 				}
 			}
 		}
-		
-		delete [] boneHasExtends;
-		delete [] dominatingBones;
 	}
 }
 
-void deoglRModel::pLoadCached( int lodCount, int boneCount ){
+void deoglRModel::pLoadCached(int lodCount, int boneCount){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	deVirtualFileSystem &vfs = *ogl.GetGameEngine()->GetVirtualFileSystem();
 	deoglCaches &caches = ogl.GetCaches();
@@ -480,7 +430,7 @@ void deoglRModel::pLoadCached( int lodCount, int boneCount ){
 		decBaseFileReader::Ref reader;
 		{
 		const deMutexGuard guard(caches.GetMutex());
-		reader.TakeOver(cacheModels.Read(pFilename));
+		reader = cacheModels.Read(pFilename);
 		}
 		
 		if(reader){
@@ -514,15 +464,14 @@ void deoglRModel::pLoadCached( int lodCount, int boneCount ){
 			}
 			
 			// create lods
-			pLODs = new deoglModelLOD*[lodCount];
-			
-			for(pLODCount=0; pLODCount<lodCount; pLODCount++){
-				pLODs[pLODCount] = new deoglModelLOD(*this, pLODCount, *reader);
-				
-				if(pLODs[pLODCount]->GetDoubleSided()){
-					pDoubleSided = true;
-				}
+			int i;
+			for(i=0; i<lodCount; i++){
+				pLODs.Add(deoglModelLOD::Ref::New(*this, i, *reader));
 			}
+			
+			pDoubleSided = pLODs.HasMatching([](const deoglModelLOD &lod){
+				return lod.GetDoubleSided();
+			});
 			
 			// read extends
 			pExtends.minimum = reader->ReadVector();
@@ -531,11 +480,11 @@ void deoglRModel::pLoadCached( int lodCount, int boneCount ){
 			pWeightlessExtends.maximum = reader->ReadVector();
 			pHasWeightlessExtends = reader->ReadByte() != 0;
 			if(boneCount > 0){
-				pBoneExtends = new sExtends[boneCount];
-				for(pBoneCount=0; pBoneCount<boneCount; pBoneCount++){
-					pBoneExtends[pBoneCount].minimum = reader->ReadVector();
-					pBoneExtends[pBoneCount].maximum = reader->ReadVector();
-				}
+				pBoneExtends.SetCountDiscard(boneCount);
+				pBoneExtends.Visit([&](sExtends &b){
+					b.minimum = reader->ReadVector();
+					b.maximum = reader->ReadVector();
+				});
 			}
 			
 			// done
@@ -564,9 +513,7 @@ void deoglRModel::pLoadCached( int lodCount, int boneCount ){
 		DETHROW(deeInvalidAction);
 	}
 	
-	if(pLODCount == 0){ // sanity check
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_TRUE(pLODs.IsNotEmpty()) // sanity check
 }
 
 void deoglRModel::pSaveCached(){
@@ -575,7 +522,6 @@ void deoglRModel::pSaveCached(){
 	deoglCaches &caches = ogl.GetCaches();
 	deCacheHelper &cacheModels = caches.GetModels();
 	decPath path;
-	int i;
 	
 	path.SetFromUnix(pFilename);
 	if(!vfs.CanReadFile(path)){
@@ -585,7 +531,7 @@ void deoglRModel::pSaveCached(){
 	decBaseFileWriter::Ref writer;
 	{
 	const deMutexGuard guard(caches.GetMutex());
-	writer.TakeOver(cacheModels.Write(pFilename));
+	writer = cacheModels.Write(pFilename);
 	}
 	
 	// write cache version
@@ -595,9 +541,9 @@ void deoglRModel::pSaveCached(){
 	writer->WriteUInt((unsigned int)vfs.GetFileModificationTime(path));
 	
 	// write lods
-	for(i=0; i<pLODCount; i++){
-		pLODs[i]->SaveToCache(*writer);
-	}
+	pLODs.Visit([&](deoglModelLOD &lod){
+		lod.SaveToCache(*writer);
+	});
 	
 	// write extends
 	writer->WriteVector(pExtends.minimum);
@@ -605,58 +551,54 @@ void deoglRModel::pSaveCached(){
 	writer->WriteVector(pWeightlessExtends.minimum);
 	writer->WriteVector(pWeightlessExtends.maximum);
 	writer->WriteByte(pHasWeightlessExtends ? 1 : 0);
-	for(i=0; i<pBoneCount; i++){
-		writer->WriteVector(pBoneExtends[i].minimum);
-		writer->WriteVector(pBoneExtends[i].maximum);
-	}
+	pBoneExtends.Visit([&](const sExtends &b){
+		writer->WriteVector(b.minimum);
+		writer->WriteVector(b.maximum);
+	});
 	
 	// pRenderThread.GetOgl().LogInfoFormat("Model: '%s' written to cache", pFilename.GetString());
 }
 
 void deoglRModel::pCreateImposterBillboard(){
-	if( pLODCount < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pImposterBillboard = new deoglImposterBillboard( pRenderThread );
-	
 	// calculate the extends from the first lod mesh
-	const oglModelPosition * const positions = pLODs[ 0 ]->GetPositions();
-	const int positionCount = pLODs[ 0 ]->GetPositionCount();
+	const oglModelPosition * const positions = pLODs.First()->GetPositions().GetArrayPointer();
+	const int positionCount = pLODs.First()->GetPositions().GetCount();
 	decVector axisView, axisUp, position;
 	decVector2 minExtend, maxExtend;
 	decMatrix matrix;
 	int i;
 	
-	axisUp.Set( 0.0f, 1.0f, 0.0f );
-	axisView.Set( 0.0f, 0.0f, -1.0f );
-	matrix.SetCamera( decVector(), axisView, axisUp );
+	pImposterBillboard = new deoglImposterBillboard(pRenderThread);
 	
-	for( i=0; i<positionCount; i++ ){
-		position = matrix * positions[ i ].position;
+	axisUp.Set(0.0f, 1.0f, 0.0f);
+	axisView.Set(0.0f, 0.0f, -1.0f);
+	matrix.SetCamera(decVector(), axisView, axisUp);
+	
+	for(i=0; i<positionCount; i++){
+		position = matrix * positions[i].position;
 		
-		if( i == 0 ){
-			minExtend.Set( position.x, position.y );
+		if(i == 0){
+			minExtend.Set(position.x, position.y);
 			maxExtend = minExtend;
 			
 		}else{
-			if( position.x < minExtend.x ){
+			if(position.x < minExtend.x){
 				minExtend.x = position.x;
 				
-			}else if( position.x > maxExtend.x ){
+			}else if(position.x > maxExtend.x){
 				maxExtend.x = position.x;
 			}
 			
-			if( position.y < minExtend.y ){
+			if(position.y < minExtend.y){
 				minExtend.y = position.y;
 				
-			}else if( position.y > maxExtend.y ){
+			}else if(position.y > maxExtend.y){
 				maxExtend.y = position.y;
 			}
 		}
 	}
 	
-	pImposterBillboard->SetExtends( minExtend, maxExtend );
+	pImposterBillboard->SetExtends(minExtend, maxExtend);
 	
 	// render the billboard from the first lod mesh
 }

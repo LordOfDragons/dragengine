@@ -41,17 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalATDelayed::deoalATDelayed( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
+deoalATDelayed::deoalATDelayed(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
 
-pHasFreeOperations( false ),
-pRootDeletion( NULL ),
-pTailDeletion( NULL ),
-pDeletionCount( 0 ){
+pHasFreeOperations(false){
 }
 
 deoalATDelayed::~deoalATDelayed(){
-	ProcessFreeOperations( true );
+	ProcessFreeOperations(true);
 }
 
 
@@ -59,50 +56,23 @@ deoalATDelayed::~deoalATDelayed(){
 // Management
 //////////////
 
-void deoalATDelayed::ProcessFreeOperations( bool deleteAll ){
-	deMutexGuard lock( pMutexFree );
+void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
+	deMutexGuard lock(pMutexFree);
 	
-	if( pHasFreeOperations ){
+	if(pHasFreeOperations){
 		int countThreshold = 1000;
+		pDeletions.RemoveIf([&](deoalDelayedDeletion *deletion){
+			return deleteAll || countThreshold-- > 0;
+		});
 		
-		while( pRootDeletion && ( deleteAll || countThreshold-- > 0 ) ){
-			deoalDelayedDeletion * const deletion = pRootDeletion;
-			pRootDeletion = pRootDeletion->GetLLNext();
-			if( pRootDeletion ){
-				pRootDeletion->SetLLPrev( NULL );
-			}
-			pDeletionCount--;
-			
-			deletion->DeleteObjects( pAudioThread );
-			delete deletion;
-		}
-		
-		if( pDeletionCount == 0 ){
-			pTailDeletion = NULL;
-		}
-		
-		pHasFreeOperations = pDeletionCount > 0;
+		pHasFreeOperations = pDeletions.IsNotEmpty();
 	}
 }
 
-void deoalATDelayed::AddDeletion( deoalDelayedDeletion *deletion ){
-	if( ! deletion ){
-		DETHROW( deeInvalidParam );
-	}
+void deoalATDelayed::AddDeletion(deoalDelayedDeletion::Ref &&deletion){
+	DEASSERT_NOTNULL(deletion)
 	
-	deMutexGuard lock( pMutexFree );
-	
-	if( pTailDeletion ){
-		pTailDeletion->SetLLNext( deletion );
-		deletion->SetLLPrev( pTailDeletion );
-		pTailDeletion = deletion;
-		
-	}else{
-		pRootDeletion = deletion;
-		pTailDeletion = deletion;
-	}
-	
-	pDeletionCount++;
-	
+	deMutexGuard lock(pMutexFree);
+	pDeletions.Add(&deletion->GetLLDeletions(), std::move(deletion));
 	pHasFreeOperations = true;
 }

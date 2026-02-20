@@ -41,24 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkAdd::aeULinkAdd( aeAnimator *animator, aeLink *link ){
-	if( ! link || ! animator ) DETHROW( deeInvalidParam );
+aeULinkAdd::aeULinkAdd(aeAnimator *animator, aeLink *link){
+	if(!link || !animator) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pLink = NULL;
+	pAnimator = nullptr;
+	pLink = nullptr;
 	
-	SetShortInfo( "Add Link" );
+	SetShortInfo("@Animator.Undo.LinkAdd");
 	
 	pAnimator = animator;
-	pAnimator->AddReference();
-	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeULinkAdd::~aeULinkAdd(){
-	if( pLink ) pLink->FreeReference();
-	if( pAnimator ) pAnimator->FreeReference();
 }
 
 
@@ -67,10 +62,10 @@ aeULinkAdd::~aeULinkAdd(){
 ///////////////
 
 void aeULinkAdd::Undo(){
-	pAnimator->RemoveLink( pLink );
+	pAnimator->RemoveLink(pLink);
 }
 
 void aeULinkAdd::Redo(){
-	pAnimator->AddLink( pLink );
-	pAnimator->SetActiveLink( pLink );
+	pAnimator->AddLink(pLink);
+	pAnimator->SetActiveLink(pLink);
 }

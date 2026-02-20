@@ -38,17 +38,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deTerrainHeightModifier::deTerrainHeightModifier( deImage *heightImage ){
-	if( ! heightImage ) DETHROW( deeInvalidParam );
-	
-	pScaling = 1.0f;
-	
-	pHeightImage = heightImage;
-	heightImage->AddReference();
+deTerrainHeightModifier::deTerrainHeightModifier(deImage *heightImage) :
+pHeightImage(heightImage),
+pScaling(1.0f)
+{
+	DEASSERT_NOTNULL(heightImage)
 }
 
 deTerrainHeightModifier::~deTerrainHeightModifier(){
-	if( pHeightImage ) pHeightImage->FreeReference();
 }
 
 
@@ -56,12 +53,10 @@ deTerrainHeightModifier::~deTerrainHeightModifier(){
 // Management
 ///////////////
 
-void deTerrainHeightModifier::SetPosition( const decPoint &position ){
+void deTerrainHeightModifier::SetPosition(const decPoint &position){
 	pPosition = position;
 }
 
-void deTerrainHeightModifier::SetScaling( float scaling ){
-	if( scaling < 0.0f ) scaling = 0.0f;
-	
-	pScaling = scaling;
+void deTerrainHeightModifier::SetScaling(float scaling){
+	pScaling = decMath::max(scaling, 0.0f);
 }

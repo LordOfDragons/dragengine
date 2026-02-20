@@ -26,8 +26,7 @@
 #define _DESYNTHESIZERSOURCESYNTHESIZER_H_
 
 #include "deSynthesizerSource.h"
-
-class deSound;
+#include "../deSynthesizer.h"
 
 
 /**
@@ -36,15 +35,12 @@ class deSound;
 class DE_DLL_EXPORT deSynthesizerSourceSynthesizer : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceSynthesizer> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerSourceSynthesizer>;
 	
 	
 private:
-	deSynthesizer *pSynthesizer;
-	
-	int *pConnections;
-	int pConnectionCount;
+	deSynthesizer::Ref pSynthesizer;
+	decTList<int> pConnections;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -59,7 +55,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSourceSynthesizer();
+	~deSynthesizerSourceSynthesizer() override;
 	/*@}*/
 	
 	
@@ -68,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if silent. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if silent. */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	
 	
@@ -83,18 +79,11 @@ public:
 	 */
 	void UpdateConnectionCount();
 	
-	/**
-	 * \brief Number of connections.
-	 * 
-	 * This is the number of controllers in the child synthesizer if present or 0 if absent.
-	 */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
-	
-	/** \brief Index of local controller for child controller. */
-	int GetConnectionAt( int childController ) const;
+	/** \brief Connections. */
+	inline const decTList<int> &GetConnections() const{ return pConnections; }
 	
 	/** \brief Set index of local controller for child controller. */
-	void SetConnectionAt( int childController, int localController );
+	void SetConnectionAt(int childController, int localController);
 	/*@}*/
 	
 	
@@ -102,7 +91,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	void Visit(deSynthesizerSourceVisitor &visitor) override;
 	/*@}*/
 };
 

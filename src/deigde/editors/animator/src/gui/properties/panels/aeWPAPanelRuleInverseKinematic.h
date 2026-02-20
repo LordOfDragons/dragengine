@@ -27,25 +27,29 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 /**
  * Inverse kinematic rule panel.
  */
 class aeWPAPanelRuleInverseKinematic : public aeWPAPanelRule{
-private:
-	igdeEditVectorReference pEditGoalPos;
-	igdeEditVectorReference pEditGoalRot;
-	igdeEditVectorReference pEditLocalPos;
-	igdeEditVectorReference pEditLocalRot;
-	igdeCheckBoxReference pChkAdjustRotation;
-	igdeComboBoxFilterReference pCBSolverBone;
-	igdeCheckBoxReference pChkUseSolverBone;
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleInverseKinematic>;
 	
-	igdeTextFieldReference pEditReachRange;
-	igdeComboBoxFilterReference pCBReachBone;
-	igdeEditVectorReference pEditReachCenter;
+	
+private:
+	igdeEditVector::Ref pEditGoalPos;
+	igdeEditVector::Ref pEditGoalRot;
+	igdeEditVector::Ref pEditLocalPos;
+	igdeEditVector::Ref pEditLocalRot;
+	igdeCheckBox::Ref pChkAdjustRotation;
+	igdeComboBoxFilter::Ref pCBSolverBone;
+	igdeCheckBox::Ref pChkUseSolverBone;
+	
+	igdeTextField::Ref pEditReachRange;
+	igdeComboBoxFilter::Ref pCBReachBone;
+	igdeEditVector::Ref pEditReachCenter;
 	
 	
 	
@@ -53,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleInverseKinematic( aeWPRule &wpRule );
+	aeWPAPanelRuleInverseKinematic(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleInverseKinematic();
+	~aeWPAPanelRuleInverseKinematic() override;
 	/*@}*/
 	
 	
@@ -66,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	void UpdateRigBoneList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

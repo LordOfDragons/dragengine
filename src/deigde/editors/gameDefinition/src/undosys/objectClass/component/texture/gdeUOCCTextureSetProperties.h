@@ -30,9 +30,9 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -40,10 +40,14 @@ class gdeObjectClass;
  * \brief Undo action object class component texture set properties.
  */
 class gdeUOCCTextureSetProperties : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCCTextureSetProperties>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decStringDictionary pOldValue;
 	decStringDictionary pNewValue;
@@ -54,12 +58,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetProperties( gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, const decStringDictionary &newValue );
+	gdeUOCCTextureSetProperties(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, const decStringDictionary &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCCTextureSetProperties();
+	~gdeUOCCTextureSetProperties() override;
 	/*@}*/
 	
 	
@@ -68,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

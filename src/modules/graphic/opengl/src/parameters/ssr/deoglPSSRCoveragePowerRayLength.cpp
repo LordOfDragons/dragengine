@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRCoveragePowerRayLength::deoglPSSRCoveragePowerRayLength( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPSSRCoveragePowerRayLength::deoglPSSRCoveragePowerRayLength(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "ssrCoveragePowerRayLength" );
-	SetDescription( "Sets the power for ray length coverage calculation in screen space reflection."
+	SetName("ssrCoveragePowerRayLength");
+	SetDescription("Sets the power for ray length coverage calculation in screen space reflection."
 		" Many reflections can not be calculated properly in screen space."
 		" Using ray length coverage the found results are faded out gradually the longer a ray is until it hits geometry."
 		" This parameter sets the power to which the ray length coverage is raised."
@@ -53,10 +53,10 @@ deoglParameterFloat( ogl )
 		" Values larger than 2 result in fading function using x-raisedto-N keeping the coverage longer"
 		" near full coverage before falling down to no coverage."
 		" The default value is 8 which results fading out results rather close to the maximum ray length."
-		" This can be used to adjust the fading function to your personal liking." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSR Coverage Power Ray Length" );
-	SetDefaultValue( "8" );
+		" This can be used to adjust the fading function to your personal liking.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSR Coverage Power Ray Length");
+	SetDefaultValue("8");
 }
 
 deoglPSSRCoveragePowerRayLength::~deoglPSSRCoveragePowerRayLength(){
@@ -71,6 +71,6 @@ float deoglPSSRCoveragePowerRayLength::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSRCoveragePowerRayLength();
 }
 
-void deoglPSSRCoveragePowerRayLength::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSRCoveragePowerRayLength( value );
+void deoglPSSRCoveragePowerRayLength::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSRCoveragePowerRayLength(value);
 }

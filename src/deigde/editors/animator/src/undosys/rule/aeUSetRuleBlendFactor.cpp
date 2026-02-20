@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleBlendFactor::aeUSetRuleBlendFactor( aeRule *rule, float newFactor ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeUSetRuleBlendFactor::aeUSetRuleBlendFactor(aeRule *rule, float newFactor){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pOldFactor = rule->GetBlendFactor();
 	pNewFactor = newFactor;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
+		SetShortInfo("@Animator.Undo.SetRuleBlendFactor");
 		
-		SetShortInfo( "Rule set blend factor" );
-		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeUSetRuleBlendFactor::~aeUSetRuleBlendFactor(){
 ///////////////
 
 void aeUSetRuleBlendFactor::Undo(){
-	pRule->SetBlendFactor( pOldFactor );
+	pRule->SetBlendFactor(pOldFactor);
 }
 
 void aeUSetRuleBlendFactor::Redo(){
-	pRule->SetBlendFactor( pNewFactor );
+	pRule->SetBlendFactor(pNewFactor);
 }
 
 
@@ -84,7 +82,4 @@ void aeUSetRuleBlendFactor::Redo(){
 //////////////////////
 
 void aeUSetRuleBlendFactor::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

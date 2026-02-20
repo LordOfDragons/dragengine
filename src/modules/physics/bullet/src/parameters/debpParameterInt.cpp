@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpParameterInt::debpParameterInt( dePhysicsBullet &bullet ) : debpParameter( bullet )
+debpParameterInt::debpParameterInt(dePhysicsBullet &bullet) : debpParameter(bullet)
 {
-	SetType( deModuleParameter::eptNumeric );
+	SetType(deModuleParameter::eptNumeric);
 }
 
 debpParameterInt::~debpParameterInt(){
@@ -53,10 +53,10 @@ debpParameterInt::~debpParameterInt(){
 
 decString debpParameterInt::GetParameterValue(){
 	decString value;
-	value.Format( "%d", GetParameterInt() );
+	value.Format("%d", GetParameterInt());
 	return value;
 }
 
-void debpParameterInt::SetParameterValue( const char *value ){
-	SetParameterInt( decString( value ).ToInt() );
+void debpParameterInt::SetParameterValue(const char *value){
+	SetParameterInt(decString(value).ToInt());
 }

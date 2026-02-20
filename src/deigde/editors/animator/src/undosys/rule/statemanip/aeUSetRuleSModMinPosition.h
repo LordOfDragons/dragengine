@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -42,8 +42,12 @@ class aeRuleStateManipulator;
  * Undo to set the minimum position of a state modifier rule.
  */
 class aeUSetRuleSModMinPosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleSModMinPosition>;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;
@@ -52,19 +56,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMinPosition( aeRuleStateManipulator *rule, const decVector &newMin );
+	aeUSetRuleSModMinPosition(aeRuleStateManipulator *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleSModMinPosition();
+	~aeUSetRuleSModMinPosition() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

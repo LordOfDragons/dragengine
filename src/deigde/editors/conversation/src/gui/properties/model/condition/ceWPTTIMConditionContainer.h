@@ -26,7 +26,7 @@
 #define _CEWPTTIMCONDITIONCONTANIER_H_
 
 #include "../ceWPTTreeItemModel.h"
-#include "../../../../conversation/condition/ceConversationConditionReference.h"
+#include "../../../../conversation/condition/ceConversationCondition.h"
 
 class ceWPTTIMCondition;
 class ceConversationAction;
@@ -40,9 +40,12 @@ class ceConversationAction;
  * content while this class handles the rest.
  */
 class ceWPTTIMConditionContainer : public ceWPTTreeItemModel{
+public:
+	using Ref = deTObjectReference<ceWPTTIMConditionContainer>;
+	
 private:
 	ceConversationAction *pAction;
-	ceConversationConditionReference pCondition;
+	ceConversationCondition::Ref pCondition;
 	ceWPTTIMCondition *pChildCondition;
 	
 	
@@ -51,12 +54,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMConditionContainer( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, eTypes type );
+	ceWPTTIMConditionContainer(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, eTypes type);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMConditionContainer();
+	~ceWPTTIMConditionContainer() override;
 	/*@}*/
 	
 	
@@ -67,15 +70,15 @@ public:
 	/** \brief Action. */
 	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
-	/** \brief Condition in container or \em NULL. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	/** \brief Condition in container or \em nullptr. */
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
 	/**
-	 * \brief Set condition in container or \em NULL.
+	 * \brief Set condition in container or \em nullptr.
 	 * 
 	 * Updates the child not if condition changed.
 	 */
-	void SetCondition( ceConversationCondition *condition );
+	void SetCondition(ceConversationCondition *condition);
 	
 	/**
 	 * \brief Set condition in container or updat it.
@@ -83,15 +86,15 @@ public:
 	 * Convenience call for container subclass. If \em condition is the same as the condition
 	 * currently set this calls Update() on child condition. Otherwise this calls SetCondition().
 	 */
-	void SetOrUpdateCondition( ceConversationCondition *condition );
+	void SetOrUpdateCondition(ceConversationCondition *condition);
 	
-	/** \brief Model with child condition or \em NULL. */
+	/** \brief Model with child condition or \em nullptr. */
 	inline ceWPTTIMCondition *GetChildCondition() const{ return pChildCondition; }
 	
 	
 	
 	/** \brief Deep find action. */
-	virtual ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition );
+	ceWPTTIMCondition *DeepFindCondition(ceConversationCondition *condition) override;
 	/*@}*/
 };
 

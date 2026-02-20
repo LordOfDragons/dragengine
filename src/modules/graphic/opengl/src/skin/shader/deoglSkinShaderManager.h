@@ -27,8 +27,8 @@
 
 #include "deoglSkinShader.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -83,7 +83,7 @@ private:
 	private:
 		deoglSkinShaderManager &pManager;
 		deoglSkinShader::Ref pShader;
-		decPointerList pListeners;
+		decTList<cGetShaderListener*> pListeners;
 		
 	public:
 		cPrepareShader(deoglSkinShaderManager &manager, const deoglSkinShader::Ref &shader);
@@ -100,17 +100,17 @@ private:
 	
 	
 	deoglRenderThread &pRenderThread;
-	decObjectOrderedSet pShaderList;
+	decTObjectOrderedSet<deoglSkinShader> pShaderList;
 	int pMaintananceInterval;
 	deMutex pMutex;
-	decPointerList pPrepareShaders;
+	decTList<cPrepareShader*> pPrepareShaders;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglSkinShaderManager( deoglRenderThread &renderThread );
+	deoglSkinShaderManager(deoglRenderThread &renderThread);
 	/** Cleans up the shader manager object. */
 	~deoglSkinShaderManager();
 	/*@}*/
@@ -121,10 +121,10 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Unit source code path. */
-	const char *GetUnitSourceCodePath( eUnitSourceCodePath unitSourceCodePath ) const;
+	const char *GetUnitSourceCodePath(eUnitSourceCodePath unitSourceCodePath) const;
 	
 	/** Shader with configuration creating it if absent. */
-	deoglSkinShader *GetShaderWith( deoglSkinShaderConfig &configuration );
+	deoglSkinShader *GetShaderWith(deoglSkinShaderConfig &configuration);
 	
 	/** Asynchonous shader with configuration creating it if absent. */
 	void GetShaderWithAsync(deoglSkinShaderConfig &configuration, cGetShaderListener *listener);
@@ -133,7 +133,7 @@ public:
 	int GetShaderCount();
 	
 	/** Retrieves shader by index. */
-	const deoglSkinShader &GetShaderAt( int index );
+	const deoglSkinShader &GetShaderAt(int index);
 	/*@}*/
 	
 	

@@ -57,62 +57,57 @@ bool decXmlContainer::IsEmpty() const{
 	return pElements.GetCount() == 0;
 }
 
-decXmlElement *decXmlContainer::GetElementAt( int index ) const{
-	return ( decXmlElement* )pElements.GetAt( index );
+decXmlElement *decXmlContainer::GetElementAt(int index) const{
+	return pElements.GetAt(index);
 }
 
-void decXmlContainer::AddElement( decXmlElement *element ){
+void decXmlContainer::AddElement(decXmlElement *element){
 	DEASSERT_NOTNULL(element)
+	DEASSERT_NULL(element->GetParent())
 	
-	pElements.Add( element );
-	element->SetParent( this );
+	pElements.AddOrThrow(element);
+	element->SetParent(this);
 }
 
 void decXmlContainer::InsertElement(decXmlElement *element, int beforeIndex){
 	DEASSERT_NOTNULL(element)
+	DEASSERT_NULL(element->GetParent())
 	
-	pElements.Insert(element, beforeIndex);
+	pElements.InsertOrThrow(element, beforeIndex);
 	element->SetParent(this);
 }
 
-void decXmlContainer::RemoveElement( decXmlElement *element ){
-	if( ! pElements.Has( element ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	element->SetParent( NULL );
-	pElements.Remove( element );
+void decXmlContainer::RemoveElement(decXmlElement *element){
+	const decXmlElement::Ref guard(element);
+	pElements.RemoveOrThrow(element);
+	element->SetParent(nullptr);
 }
 
 void decXmlContainer::RemoveAllElements(){
-	const int count = pElements.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( decXmlElement* )pElements.GetAt( i ) )->SetParent( NULL );
-	}
+	pElements.Visit([](decXmlElement &element){
+		element.SetParent(nullptr);
+	});
 	pElements.RemoveAll();
 }
 
-int decXmlContainer::IndexOfElement( decXmlElement *element ){
-	return pElements.IndexOf( element );
+int decXmlContainer::IndexOfElement(decXmlElement *element){
+	return pElements.IndexOf(element);
 }
 
-bool decXmlContainer::HasElement( decXmlElement *element ){
-	return pElements.Has( element );
+bool decXmlContainer::HasElement(decXmlElement *element){
+	return pElements.Has(element);
 }
 
-void decXmlContainer::VisitElements( decXmlVisitor &visitor ){
-	const int count = pElements.GetCount();
-	int i;
-	for( i=0; i<count; i++ ){
-		( ( decXmlElement* )pElements.GetAt( i ) )->Visit( visitor );
-	}
+void decXmlContainer::VisitElements(decXmlVisitor &visitor){
+	pElements.Visit([&](decXmlElement &element){
+		element.Visit(visitor);
+	});
 }
 
 
 
-void decXmlContainer::Visit( decXmlVisitor &visitor ){
-	visitor.VisitContainer( *this );
+void decXmlContainer::Visit(decXmlVisitor &visitor){
+	visitor.VisitContainer(*this);
 }
 
 

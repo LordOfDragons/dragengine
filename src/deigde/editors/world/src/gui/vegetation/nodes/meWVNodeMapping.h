@@ -27,9 +27,9 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 class meHTVRuleMapping;
 
@@ -39,14 +39,17 @@ class meHTVRuleMapping;
  * \brief Vegetation Editing Window Node Closest Prop.
  */
 class meWVNodeMapping : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeMapping>;
+	
 private:
 	meHTVRuleMapping *pRuleMapping;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditLower;
-	igdeTextFieldReference pEditUpper;
-	igdeTextFieldReference pEditValue;
-	igdeCheckBoxReference pChkInversed;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditLower;
+	igdeTextField::Ref pEditUpper;
+	igdeTextField::Ref pEditValue;
+	igdeCheckBox::Ref pChkInversed;
 	
 	
 	
@@ -54,11 +57,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMapping( meWindowVegetation &windowVegetation, meHTVRuleMapping *rule );
+	meWVNodeMapping(meWindowVegetation &windowVegetation, meHTVRuleMapping *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeMapping();
+	~meWVNodeMapping() override;
 	/*@}*/
 	
 	
@@ -70,7 +73,7 @@ public:
 	inline meHTVRuleMapping *GetRuleMapping() const{ return pRuleMapping; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

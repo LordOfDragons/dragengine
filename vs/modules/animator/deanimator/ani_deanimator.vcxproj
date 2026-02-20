@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -41,94 +41,6 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimation.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframe.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationMove.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponent.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentBoneState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimator.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimatorInstance.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneStateList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerStates.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerTarget.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearIKWorkState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearLink.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearWorkState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\deDEAnimator.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearCreateRuleVisitor.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRule.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimation.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationDifference.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationSelect.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleBoneTransformator.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleForeignState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleGroup.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleInverseKinematic.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateSnapshot.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleSubAnimator.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleTrackTo.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\task\dearTaskApplyRules.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimation.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframe.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationMove.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponent.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentBoneState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimator.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimatorInstance.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneStateList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerStates.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerTarget.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearIKWorkState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearLink.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearWorkState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\deDEAnimator.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearCreateRuleVisitor.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRule.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimation.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationDifference.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationSelect.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleBoneTransformator.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleForeignState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleGroup.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleInverseKinematic.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateSnapshot.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleSubAnimator.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleTrackTo.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\task\dearTaskApplyRules.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.h" />
-    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
@@ -518,4 +430,92 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframe.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationMove.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentBoneState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\deDEAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimatorInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneStateList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerStates.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearIKWorkState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\dearWorkState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearCreateRuleVisitor.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRule.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationDifference.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationSelect.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleBoneTransformator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleForeignState.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleInverseKinematic.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateSnapshot.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleSubAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleTrackTo.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\task\dearTaskApplyRules.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframe.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPS.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationKeyframeVPSList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\animation\dearAnimationMove.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponent.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentBoneState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\component\dearComponentVPSState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\deDEAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimationVPSState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearAnimatorInstance.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearBoneStateList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerStates.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearControllerTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearIKWorkState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearLink.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationBones.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearMapAnimationVPS.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearVPSStateList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\dearWorkState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearCreateRuleVisitor.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRule.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationDifference.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleAnimationSelect.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleBoneTransformator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleForeignState.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleGroup.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleInverseKinematic.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleMirror.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateManipulator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleStateSnapshot.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleSubAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\rule\dearRuleTrackTo.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\task\dearTaskApplyRules.h" />
+    <ClInclude Include="..\..\..\..\src\modules\animator\deanimator\src\visitors\dearClosestHit.h" />
+  </ItemGroup>
 </Project>

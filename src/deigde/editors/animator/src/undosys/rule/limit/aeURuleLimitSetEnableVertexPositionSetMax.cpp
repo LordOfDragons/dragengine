@@ -39,21 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableVertexPositionSetMax::aeURuleLimitSetEnableVertexPositionSetMax( aeRuleLimit *rule ){
-	DEASSERT_NOTNULL( rule )
+aeURuleLimitSetEnableVertexPositionSetMax::aeURuleLimitSetEnableVertexPositionSetMax(aeRuleLimit *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum vertex position set" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumVertexPositionSet");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableVertexPositionSetMax::~aeURuleLimitSetEnableVertexPositionSetMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -66,5 +62,5 @@ void aeURuleLimitSetEnableVertexPositionSetMax::Undo(){
 }
 
 void aeURuleLimitSetEnableVertexPositionSetMax::Redo(){
-	pRule->SetEnableVertexPositionSetMax( ! pRule->GetEnableVertexPositionSetMax() );
+	pRule->SetEnableVertexPositionSetMax(!pRule->GetEnableVertexPositionSetMax());
 }

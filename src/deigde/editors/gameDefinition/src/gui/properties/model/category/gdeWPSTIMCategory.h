@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeCategory;
+#include "../../../../gamedef/category/gdeCategory.h"
 
 
 /**
@@ -35,7 +35,7 @@ class gdeCategory;
  */
 class gdeWPSTIMCategory : public gdeWPSTreeItemModel{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -43,29 +43,31 @@ protected:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategory( gdeWPSTreeModel &tree, eTypes type, gdeCategory *category );
+	gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMCategory();
+	~gdeWPSTIMCategory() override;
 	/*@}*/
 	
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMCategory> Ref;
+
 	/** \brief Management */
 	/*@{*/
 	/** \brief Category. */
-	inline gdeCategory *GetCategory() const{ return pCategory; }
+	inline const gdeCategory::Ref &GetCategory() const{ return pCategory; }
 	
 	
 	
 	/** \brief Compare this item with another for sorting.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	int Compare(const gdeWPSTreeItemModel &item) const override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

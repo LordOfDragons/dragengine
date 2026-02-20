@@ -26,12 +26,12 @@
 #define _IGDETASKSYNCGAMEDEFINITION_H_
 
 #include <deigde/gui/igdeStepableTask.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 class igdeWindowMain;
-class igdeGameDefinition;
 
 
 
@@ -41,6 +41,11 @@ class igdeGameDefinition;
  * Synchronizes game definition for all editor modules.
  */
 class igdeTaskSyncGameDefinition : public igdeStepableTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTaskSyncGameDefinition>;
+	
+	
 protected:
 	/** \brief States. */
 	enum eStates{
@@ -58,10 +63,10 @@ protected:
 	
 private:
 	igdeWindowMain &pWindowMain;
-	decPointerList pEditorTasks;
+	decTObjectList<igdeStepableTask> pEditorTasks;
 	
-	igdeGameDefinition *pOldProjectGameDef;
-	igdeGameDefinition *pOldGameDef;
+	igdeGameDefinition::Ref pOldProjectGameDef;
+	igdeGameDefinition::Ref pOldGameDef;
 	eStates pState;
 	int pTaskIndex;
 	
@@ -79,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	igdeTaskSyncGameDefinition( igdeWindowMain &windowMain );
+	explicit igdeTaskSyncGameDefinition(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up task. */
 	virtual ~igdeTaskSyncGameDefinition();
@@ -90,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reload XML Element Classes only. */
-	void SetReloadXMLElementClasses( bool reloadXMLElementClasses );
+	void SetReloadXMLElementClasses(bool reloadXMLElementClasses);
 	
 	/**
 	 * \brief Run next step of task.
@@ -108,7 +113,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pUpdateProgress( bool force );
+	void pUpdateProgress(bool force);
 	void pLoadProjectGameDefinition();
 	void pCreateEditorTasks();
 };

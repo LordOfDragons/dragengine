@@ -105,6 +105,33 @@ pin Dragengine.Utils
  * </action>
  * \endcode
  * 
+ * \par Action "timer.running"
+ * 
+ * Determines if timer is running and has not elapsed yet. Optionally as parameter use "timer"
+ * to select the timer matching an identifier used in a previous action "timer.start".
+ * The action immediately returns with the result. This can be used as first action in a
+ * sequence as entrance guard.
+ * 
+ * This is an example of using this action:
+ * \code{.xml}
+ * <action name='timer.running' id='waiting'>
+ *    <parameter name='timer'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
+ * \par Action "timer.finished"
+ * 
+ * Determines if a timer has finished. Optionally as parameter use "timer" to select the timer matching
+ * an identifier used in a previous action "timer.start". The action immediately returns with the result.
+ * This can be used as first action in a sequence as entrance guard.
+ * 
+ * This is an example of using this action:
+ * \code{.xml}
+ * <action name='timer.finished' id='waiting'>
+ *    <parameter name='timer'>myTimer</parameter>
+ * </action>
+ * \endcode
+ * 
  * \par Condition "timer.running"
  * 
  * Determines if timer is running and has not elapsed yet. Optionally as parameter use "timer"
@@ -305,6 +332,34 @@ class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Behavior tree action "timer.running". */
+		class ActionTimerRunning implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return pInstance.isTimerRunning(pInstance.getTimerParameter(parameters))\
+					if BTResult.success else BTResult.failure
+			end
+		end
+		
+		/** \brief Behavior tree action "timer.finished". */
+		class ActionTimerFinished implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return pInstance.isTimerRunning(pInstance.getTimerParameter(parameters))\
+					if BTResult.failure else BTResult.success
+			end
+		end
+		
 		/** \brief Behavior tree condition "timer.running". */
 		class ConditionTimerRunning implements BTCondition
 			var Instance pInstance
@@ -365,6 +420,8 @@ class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 			context.setAction("timer.start", ActionTimerStart.new(this))
 			context.setAction("timer.stop", ActionTimerStop.new(this))
 			context.setAction("timer.wait", ActionTimerWait.new(this))
+			context.setAction("timer.running", ActionTimerRunning.new(this))
+			context.setAction("timer.finished", ActionTimerFinished.new(this))
 			
 			context.setCondition("timer.running", ConditionTimerRunning.new(this))
 			context.setCondition("timer.finished", ConditionTimerFinished.new(this))

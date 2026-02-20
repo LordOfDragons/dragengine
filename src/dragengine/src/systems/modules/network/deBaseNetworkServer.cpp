@@ -43,7 +43,7 @@ deBaseNetworkServer::~deBaseNetworkServer(){
 // Management
 ///////////////
 
-bool deBaseNetworkServer::ListenOn( const char *address ){
+bool deBaseNetworkServer::ListenOn(const char *address){
 	return false;
 }
 

@@ -33,6 +33,7 @@
 #include "../world/terrain/meHeightTerrainSector.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -41,7 +42,10 @@
 class meCLHitListEntry : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meCLHitListEntry> Ref;
+	using Ref = deTObjectReference<meCLHitListEntry>;
+	
+	/** \brief List type. */
+	using List = decTObjectOrderedSet<meCLHitListEntry>;
 	
 	
 private:
@@ -128,7 +132,7 @@ public:
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	
 	/** \brief Sort decals. */
@@ -138,7 +142,7 @@ public:
 	 * \brief Compare entry to another one.
 	 * \returns 1 if entry is ordinally larger, -1 if smaller or 0 if equal.
 	 */
-	int CompareTo(const meCLHitListEntry &entry) const;
+	int Compare(const meCLHitListEntry &entry) const;
 	
 	/** Same element. */
 	bool IsSame(const meCLHitListEntry &entry) const;

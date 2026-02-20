@@ -38,8 +38,7 @@
 class DE_DLL_EXPORT delGameIcon : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delGameIcon> Ref;
-	
+	using Ref = deTObjectReference<delGameIcon>;
 	
 	
 private:
@@ -53,10 +52,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create icon. */
-	delGameIcon( int size, const char *path );
+	delGameIcon(int size, const char *path);
 	
+protected:
 	/** \brief Clean up icon. */
-	virtual ~delGameIcon();
+	~delGameIcon() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -70,10 +72,10 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Content or nullptr if not loaded. */
-	inline decMemoryFile *GetContent() const{ return pContent; }
+	inline const decMemoryFile::Ref &GetContent() const{ return pContent; }
 	
 	/** \brief Set content or nullptr if not loaded. */
-	void SetContent( decMemoryFile *content );
+	void SetContent(decMemoryFile *content);
 	/*@}*/
 	
 	

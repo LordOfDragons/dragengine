@@ -27,7 +27,7 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 
 class meHTVRuleRandom;
 
@@ -37,10 +37,13 @@ class meHTVRuleRandom;
  * \brief Vegetation Editing Window Node Random.
  */
 class meWVNodeRandom : public meWVNode{
+public:
+	using Ref = deTObjectReference<meWVNodeRandom>;
+	
 private:
 	meHTVRuleRandom *pRuleRandom;
 	
-	igdeContainerReference pFraParameters;
+	igdeContainer::Ref pFraParameters;
 	
 	
 	
@@ -48,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeRandom( meWindowVegetation &windowVegetation, meHTVRuleRandom *rule );
+	meWVNodeRandom(meWindowVegetation &windowVegetation, meHTVRuleRandom *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meWVNodeRandom();
+	~meWVNodeRandom() override;
 	/*@}*/
 	
 	
@@ -63,7 +66,7 @@ protected:
 	inline meHTVRuleRandom *GetRuleRandom() const{ return pRuleRandom; }
 	
 	/** \brief Update node. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

@@ -26,19 +26,19 @@
 #define _GDEWPSOCPARTICLEEMITTER_H_
 
 #include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "gdeWPSOCParticleEmitterListener.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCParticleEmitterListener;
 
 
 
@@ -46,23 +46,26 @@ class gdeWPSOCParticleEmitterListener;
  * \brief Object class particle emitter property panel.
  */
 class gdeWPSOCParticleEmitter : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCParticleEmitter> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCParticleEmitterListener *pListener;
+	gdeWPSOCParticleEmitterListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPath;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeCheckBoxReference pChkCasting;
+	igdeEditPath::Ref pEditPath;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeCheckBox::Ref pChkCasting;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTriggerNames;
-	igdeComboBoxFilterReference pCBTriggerNameTarget;
+	igdeComboBox::Ref pCBTriggerNames;
+	igdeComboBoxFilter::Ref pCBTriggerNameTarget;
 	
 	
 	
@@ -70,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCParticleEmitter( gdeWindowProperties &windowMain );
+	gdeWPSOCParticleEmitter(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -82,25 +85,25 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class particle emitter or \em NULL if not set. */
+	/** \brief Active object class particle emitter or \em nullptr if not set. */
 	gdeOCParticleEmitter *GetParticleEmitter() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCParticleEmitter::eProperties GetPropertyName() const;
+	gdeOCParticleEmitter::eProperties GetPropertyName() const;
 	
 	/** \brief Selected property name. */
-	const gdeOCParticleEmitter::eTriggers GetTriggerName() const;
+	gdeOCParticleEmitter::eTriggers GetTriggerName() const;
 	
 	
 	

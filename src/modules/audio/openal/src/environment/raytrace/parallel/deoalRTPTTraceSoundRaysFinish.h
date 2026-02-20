@@ -27,22 +27,26 @@
 
 #include "deoalRTParallelEnvProbe.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
 class deoalRayTraceConfig;
 class deoalSoundRayList;
-
-class decPointerList;
 
 
 /**
  * \brief Ray tracing parallel task pre-calculating environment probe information.
  */
 class deoalRTPTTraceSoundRaysFinish : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoalRTPTTraceSoundRaysFinish>;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	
-	decPointerList pTasks;
+	decTOrderedSet<deoalRTPTTraceSoundRays*> pTasks;
 	float pRange;
 	const deoalRayTraceConfig *pProbeConfig;
 	
@@ -55,11 +59,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace finish parallel task. */
-	deoalRTPTTraceSoundRaysFinish( deoalRTParallelEnvProbe &owner );
+	deoalRTPTTraceSoundRaysFinish(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace finish parallel task. */
-	virtual ~deoalRTPTTraceSoundRaysFinish();
+	~deoalRTPTTraceSoundRaysFinish() override;
 	/*@}*/
 	
 	
@@ -68,30 +72,30 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies( const decPointerList &tasks );
+	void AddDependencies(const decTOrderedSet<deoalRTPTTraceSoundRays*> &tasks);
 	
 	/** \brief Set range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set sound ray list to update. */
-	void SetSoundRayList( deoalSoundRayList *soundRayList );
+	void SetSoundRayList(deoalSoundRayList *soundRayList);
 	
 	/** \brief Set room parameters to update. */
-	void SetRoomParameters( deoalRTParallelEnvProbe::sRoomParameters *roomParameters );
+	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
 	/** \brief Trace tasks (deoalRTPTTraceSoundRays*). */
-	inline decPointerList GetTraceTasks(){ return pTasks; }
+	inline decTOrderedSet<deoalRTPTTraceSoundRays*> GetTraceTasks(){ return pTasks; }
 	
 	
 	
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -99,10 +103,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	

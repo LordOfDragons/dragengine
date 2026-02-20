@@ -27,7 +27,7 @@
 
 #include "../../../rig/shape/reRigShape.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
@@ -45,15 +45,17 @@ protected:
 	class cEditPosition : public igdeEditVectorListener{
 		reWPPanelShape &pPanel;
 	public:
-		cEditPosition( reWPPanelShape &panel );
-		virtual void OnVectorChanged( igdeEditVector *editVector );
+		using Ref = deTObjectReference<cEditPosition>;
+		cEditPosition(reWPPanelShape &panel);
+		void OnVectorChanged(igdeEditVector *editVector) override;
 	};
 	
 	class cEditRotation : public igdeEditVectorListener{
 		reWPPanelShape &pPanel;
 	public:
-		cEditRotation( reWPPanelShape &panel );
-		virtual void OnVectorChanged( igdeEditVector *editVector );
+		using Ref = deTObjectReference<cEditRotation>;
+		cEditRotation(reWPPanelShape &panel);
+		void OnVectorChanged(igdeEditVector *editVector) override;
 	};
 	
 	
@@ -65,8 +67,8 @@ private:
 	reRig *pRig;
 	reRigShape *pShape;
 	
-	igdeTextFieldReference pEditBone;
-	igdeTextFieldReference pEditProperty;
+	igdeTextField::Ref pEditBone;
+	igdeTextField::Ref pEditProperty;
 	
 	
 	
@@ -74,11 +76,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShape( reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType );
+	reWPPanelShape(reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPPanelShape();
+	~reWPPanelShape() override;
 	/*@}*/
 	
 	
@@ -100,7 +102,7 @@ public:
 	inline reRigShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape( reRig *rig, reRigShape *shape );
+	void SetShape(reRig *rig, reRigShape *shape);
 	
 	
 	

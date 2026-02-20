@@ -26,6 +26,7 @@
 #define DEMSGDKPENDINGREQUEST_H
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
@@ -35,9 +36,10 @@
  */
 class deMsgdkPendingRequest : public deObject{
 public:
-	typedef deTObjectReference<deMsgdkPendingRequest> Ref;
+	using Ref = deTObjectReference<deMsgdkPendingRequest>;
+	using List = decTObjectOrderedSet<deMsgdkPendingRequest>;
 	
-	
+
 	decUniqueID id;
 	decString function;
 	deServiceObject::Ref data;
@@ -46,11 +48,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deMsgdkPendingRequest( const deServiceObject::Ref &data = nullptr );
+	deMsgdkPendingRequest(const deServiceObject::Ref& data = {});
 	
+protected:
 	/** Delete module. */
 	~deMsgdkPendingRequest() override;
 	/*@}*/
+	
+public:
 };
 
 #endif

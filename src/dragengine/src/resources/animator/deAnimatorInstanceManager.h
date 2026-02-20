@@ -25,11 +25,11 @@
 #ifndef _DEANIMATORINSTANCEMANAGER_H_
 #define _DEANIMATORINSTANCEMANAGER_H_
 
+#include "deAnimatorInstance.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deAnimatorInstance;
 
 
 /**
@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new animator instance resource manager linked to the given engine. */
-	deAnimatorInstanceManager( deEngine *engine );
+	deAnimatorInstanceManager(deEngine *engine);
 	
 	/** \brief Clean up animator instance resource manager and reports leaking resources. */
-	virtual ~deAnimatorInstanceManager();
+	~deAnimatorInstanceManager() override;
 	/*@}*/
 	
 	
@@ -62,10 +62,10 @@ public:
 	deAnimatorInstance *GetRootAnimatorInstance() const;
 	
 	/** \brief Create new animator instance object. */
-	deAnimatorInstance *CreateAnimatorInstance();
+	deAnimatorInstance::Ref CreateAnimatorInstance();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,10 +73,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Animator System Peers of all stored resources have to be created. */
-	virtual void SystemAnimatorLoad();
+	void SystemAnimatorLoad() override;
 	
 	/** \brief Animator System Peers of all stored resources have to be freed. */
-	virtual void SystemAnimatorUnload();
+	void SystemAnimatorUnload() override;
 	/*@}*/
 	
 	
@@ -87,7 +87,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

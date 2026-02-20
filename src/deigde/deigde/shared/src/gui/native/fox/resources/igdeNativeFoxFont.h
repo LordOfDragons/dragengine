@@ -26,16 +26,18 @@
 #define _IGDENATIVEFOXFONT_H_
 
 #include "../foxtoolkit.h"
+#include "../../../resources/igdeFont.h"
+
+#include <dragengine/resources/font/deFont.h>
 
 class igdeFont;
-class deFont;
 
 
 /**
  * FOX Native font.
  */
-class igdeNativeFoxFont : public FXFont{
-	FXDECLARE( igdeNativeFoxFont )
+class igdeNativeFoxFont : public FXFont, public igdeFont::cNativeFont{
+	FXDECLARE(igdeNativeFoxFont)
 	
 protected:
 	igdeNativeFoxFont();
@@ -47,29 +49,29 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native font. */
-	igdeNativeFoxFont( igdeFont &owner );
+	igdeNativeFoxFont(igdeFont &owner);
 	
 	/** \brief Clean up native font. */
-	virtual ~igdeNativeFoxFont();
+	~igdeNativeFoxFont() override;
 	
 	/** \brief Create native font. */
-	static igdeNativeFoxFont* CreateNativeFont( igdeFont &owner );
+	static igdeNativeFoxFont* CreateNativeFont(igdeFont &owner);
 	
 	/** \brief Destroy native font. */
-	virtual void DestroyNativeFont();
+	void DestroyNativeFont() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	virtual deFont *CreateEngineFont();
+	deFont::Ref CreateEngineFont() override;
 	
 	/** \brief Text size. */
-	virtual decPoint TextSize( const char *text ) const;
+	decPoint TextSize(const char *text) const override;
 	/*@}*/
 };
 
-typedef igdeNativeFoxFont igdeNativeFont;
+using igdeNativeFont = igdeNativeFoxFont;
 
 #endif

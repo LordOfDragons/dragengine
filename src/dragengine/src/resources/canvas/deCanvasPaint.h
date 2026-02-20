@@ -26,6 +26,7 @@
 #define _DECANVASPAINT_H_
 
 #include "deCanvas.h"
+#include "../../common/collection/decTList.h"
 
 
 /**
@@ -34,8 +35,7 @@
 class DE_DLL_EXPORT deCanvasPaint : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deCanvasPaint> Ref;
-	
+	using Ref = deTObjectReference<deCanvasPaint>;
 	
 	
 public:
@@ -109,8 +109,7 @@ private:
 	float pStartAngle;
 	float pEndAngle;
 	
-	decPoint *pPoints;
-	int pPointCount;
+	decTList<decPoint> pPoints;
 	
 	
 	
@@ -126,7 +125,7 @@ public:
 	 * - Line color is black.
 	 * - Fill color is transparent.
 	 */
-	deCanvasPaint( deCanvasManager *manager );
+	deCanvasPaint(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -135,7 +134,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deCanvasPaint();
+	~deCanvasPaint() override;
 	/*@}*/
 	
 	
@@ -150,19 +149,19 @@ public:
 	 * \brief Set shape type.
 	 * \throws deeInvalidParam \em shapeType is not a member of deCanvasPaint::eShapeTypes.
 	 */
-	void SetShapeType( eShapeTypes shapeType );
+	void SetShapeType(eShapeTypes shapeType);
 	
 	/** \brief Line color. */
 	inline const decColor &GetLineColor() const{ return pLineColor; }
 	
 	/** \brief Set line color. */
-	void SetLineColor( const decColor &color );
+	void SetLineColor(const decColor &color);
 	
 	/** \brief Fill color. */
 	inline const decColor &GetFillColor() const{ return pFillColor; }
 	
 	/** \brief Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** \brief Line thickness in units. */
 	inline float GetThickness() const{ return pThickness; }
@@ -172,7 +171,7 @@ public:
 	 * 
 	 * \em thickness is clamped to 0 or larger.
 	 */
-	void SetThickness( float thickness );
+	void SetThickness(float thickness);
 	
 	/**
 	 * \brief Round corner in X direction as percentage.
@@ -188,7 +187,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerX( float roundCorner );
+	void SetRoundCornerX(float roundCorner);
 	
 	/**
 	 * \brief Round corner in Y direction as percentage.
@@ -204,7 +203,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerY( float roundCorner );
+	void SetRoundCornerY(float roundCorner);
 	
 	/**
 	 * \brief Start angle in degrees radians from 0 to 2PI.
@@ -218,7 +217,7 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetStartAngle( float angle );
+	void SetStartAngle(float angle);
 	
 	/**
 	 * \brief End angle in radians from 0 to 2PI.
@@ -232,32 +231,35 @@ public:
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetEndAngle( float angle );
+	void SetEndAngle(float angle);
 	/*@}*/
 	
 	
 	
 	/** \name Points */
 	/*@{*/
+	/** \brief Points. */
+	inline const decTList<decPoint> &GetPoints() const{ return pPoints; }
+	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{ return pPoints.GetCount(); }
 	
 	/**
 	 * \brief Point at position.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount().
 	 */
-	const decPoint &GetPointAt( int position ) const;
+	const decPoint &GetPointAt(int position) const;
 	
 	/** \brief Add a point. */
-	void AddPoint( const decPoint &point );
+	void AddPoint(const decPoint &point);
 	
 	/**
 	 * \brief Remove a point.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount().
 	 */
-	void RemovePointFrom( int position );
+	void RemovePointFrom(int position);
 	
 	/** \brief Remove all points. */
 	void RemoveAllPoints();
@@ -268,7 +270,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	void Visit(deCanvasVisitor &visitor) override;
 	/*@}*/
 };
 

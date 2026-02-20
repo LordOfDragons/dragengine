@@ -25,20 +25,20 @@
 #ifndef _GDEWPSSKIN_H_
 #define _GDEWPSSKIN_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include "gdeWPSSkinListener.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
 class gdeSkin;
-class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkinListener;
 
 
 
@@ -46,18 +46,21 @@ class gdeWPSSkinListener;
  * \brief Skin property panel.
  */
 class gdeWPSSkin : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSSkin> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSSkinListener *pListener;
+	gdeWPSSkinListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeEditPathReference pEditPath;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
+	igdeEditPath::Ref pEditPath;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
 	
-	igdeComboBoxFilterReference pCBCategory;
-	igdeButtonReference pBtnJumpToCategory;
+	igdeComboBoxFilter::Ref pCBCategory;
+	igdeButton::Ref pBtnJumpToCategory;
 	
 	
 	
@@ -65,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSSkin( gdeWindowProperties &windowMain );
+	gdeWPSSkin(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -77,15 +80,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active skin or \em NULL if absent. */
+	/** \brief Active skin or \em nullptr if absent. */
 	gdeSkin *GetSkin() const;
 	
 	
@@ -94,7 +97,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void UpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 	
 	
 	

@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "deoglOptimizer.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -38,11 +38,8 @@
 ////////////////////////////
 
 deoglOptimizer::deoglOptimizer(){
-	SetPriority( epNormal );
+	SetPriority(epNormal);
 	ResetRemainingTime();
-}
-
-deoglOptimizer::~deoglOptimizer(){
 }
 
 
@@ -50,7 +47,7 @@ deoglOptimizer::~deoglOptimizer(){
 // Management
 ///////////////
 
-void deoglOptimizer::DecreaseRemainingTime( int microSeconds ){
+void deoglOptimizer::DecreaseRemainingTime(int microSeconds){
 	pRemainingTime -= microSeconds;
 }
 
@@ -58,29 +55,29 @@ void deoglOptimizer::ResetRemainingTime(){
 	pRemainingTime = pMaxTime;
 }
 
-void deoglOptimizer::SetPriority( int priority ){
-	if( priority == epLowest ){
+void deoglOptimizer::SetPriority(int priority){
+	if(priority == epLowest){
 		pMaxTime = 1000;
 		
-	}else if( priority == epLower ){
+	}else if(priority == epLower){
 		pMaxTime = 5000;
 		
-	}else if( priority == epNormal ){
+	}else if(priority == epNormal){
 		pMaxTime = 10000;
 		
-	}else if( priority == epHigher ){
+	}else if(priority == epHigher){
 		pMaxTime = 50000;
 		
-	}else if( priority == epHighest ){
+	}else if(priority == epHighest){
 		pMaxTime = 100000;
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPriority = priority;
 }
 
-bool deoglOptimizer::Run( int timeSlice ){
+bool deoglOptimizer::Run(int timeSlice){
 	return false;
 }

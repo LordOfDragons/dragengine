@@ -36,16 +36,16 @@ class igdeSeparator;
 class igdeNativeFoxSeparator{
 public:
 	/** \brief Create native widget. */
-	static void* CreateNativeWidget( igdeSeparator &owner );
+	static void* CreateNativeWidget(igdeSeparator &owner);
 	
 	/** \brief Post create native widget. */
-	static void PostCreateNativeWidget( igdeSeparator &owner, void *native );
+	static void PostCreateNativeWidget(igdeSeparator &owner, void *native);
 	
 	/** \brief Destroy native widget. */
-	static void DestroyNativeWidget( igdeSeparator &owner, void *native );
+	static void DestroyNativeWidget(igdeSeparator &owner, void *native);
 	/*@}*/
 };
 
-typedef igdeNativeFoxSeparator igdeNativeSeparator;
+using igdeNativeSeparator = igdeNativeFoxSeparator;
 
 #endif

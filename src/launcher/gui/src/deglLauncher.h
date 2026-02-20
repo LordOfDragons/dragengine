@@ -30,6 +30,7 @@
 
 #include <delauncher/delLauncher.h>
 #include <delauncher/game/delGame.h>
+#include <delauncher/game/icon/delGameIcon.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 
@@ -63,10 +64,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create launcher. */
-	deglLauncher( deglWindowMain *windowMain, int argc, char **argv );
+	deglLauncher(deglWindowMain *windowMain, int argc, char **argv);
 	
 	/** Clean up launcher. */
-	virtual ~deglLauncher();
+	~deglLauncher() override;
 	/*@}*/
 	
 	
@@ -104,7 +105,7 @@ public:
 	
 	
 	/** Create game icon instance. */
-	virtual delGameIcon *CreateGameIcon( int size, const char *path );
+	delGameIcon::Ref CreateGameIcon(int size, const char *path) override;
 	/*@}*/
 	
 	
@@ -113,7 +114,7 @@ private:
 	void pParseArguments();
 	bool pParseWindowsURIScheme();
 	void pInitLogger();
-	static decString pUrlDecode( const char *url );
+	static decString pUrlDecode(const char *url);
 };
 
 #endif

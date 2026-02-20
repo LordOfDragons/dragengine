@@ -34,11 +34,13 @@
  */
 class ceUCAIfElseCasePasteCondition : public ceUCAIfElseCaseSetCondition{
 public:
+	using Ref = deTObjectReference<ceUCAIfElseCasePasteCondition>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseCasePasteCondition( ceConversationTopic *topic, ceCAIfElse *ifElse,
-	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition );
+	ceUCAIfElseCasePasteCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
 	/*@}*/
 };
 

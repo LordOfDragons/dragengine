@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAStopConversation::ceCAStopConversation() : ceConversationAction( eatStopConversation ){
+ceCAStopConversation::ceCAStopConversation() : ceConversationAction(eatStopConversation){
 }
 
-ceCAStopConversation::ceCAStopConversation( const ceCAStopConversation &action ) : ceConversationAction( action ){
+ceCAStopConversation::ceCAStopConversation(const ceCAStopConversation &action) : ceConversationAction(action){
 }
 
 ceCAStopConversation::~ceCAStopConversation(){
@@ -52,6 +52,6 @@ ceCAStopConversation::~ceCAStopConversation(){
 // Management
 ///////////////
 
-ceConversationAction *ceCAStopConversation::CreateCopy() const{
-	return new ceCAStopConversation( *this );
+ceConversationAction::Ref ceCAStopConversation::CreateCopy() const{
+	return ceCAStopConversation::Ref::New(*this);
 }

@@ -54,11 +54,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -75,18 +75,18 @@ class cTextVarName : public igdeTextFieldListener {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
-	cTextVarName( ceWPAPlayerChoice &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextVarName>;
+	cTextVarName(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetVariableName() ){
+		if(!topic || !action || textField->GetText() == action->GetVariableName()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAPChoiceSetVarName( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAPChoiceSetVarName::Ref::New(topic, action, textField->GetText()));
 	}
 };
 
@@ -94,20 +94,20 @@ class cTextOptionText : public igdeTextFieldListener {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
-	cTextOptionText( ceWPAPlayerChoice &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextOptionText>;
+	cTextOptionText(ceWPAPlayerChoice &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		ceCAPlayerChoiceOption * const option = pPanel.GetActiveOption();
-		if( ! topic || ! action || ! option || textField->GetText() == option->GetText().ToUTF8() ){
+		if(!topic || !action || !option || textField->GetText() == option->GetText().ToUTF8()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAPChoiceOptionSetText( topic, action, option,
-			decUnicodeString::NewFromUTF8( textField->GetText() ) ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAPChoiceOptionSetText::Ref::New(topic, action, option,
+				decUnicodeString::NewFromUTF8(textField->GetText())));
 	}
 };
 
@@ -115,30 +115,30 @@ class cActionEditOptionText : public igdeAction {
 	ceWPAPlayerChoice &pPanel;
 	
 public:
-	cActionEditOptionText( ceWPAPlayerChoice &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionEditOptionText>;
+	cActionEditOptionText(ceWPAPlayerChoice &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAPlayerChoice * const action = pPanel.GetAction();
 		ceCAPlayerChoiceOption * const option = pPanel.GetActiveOption();
-		if( ! topic || ! action || ! option ){
+		if(!topic || !action || !option){
 			return;
 		}
 		
-		decString text( option->GetText().ToUTF8() );
-		if( ! igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Option Text", "Text:", text )
-		|| text == option->GetText().ToUTF8() ){
+		decString text(option->GetText().ToUTF8());
+		if(!igdeCommonDialogs::GetMultilineString(
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"@Conversation.Dialog.EditOptionText.Title", "@Conversation.Dialog.Text", text)
+		|| text == option->GetText().ToUTF8()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAPChoiceOptionSetText( topic, action, option,
-			decUnicodeString::NewFromUTF8( text ) ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAPChoiceOptionSetText::Ref::New(topic, action, option,
+				decUnicodeString::NewFromUTF8(text)));
 	}
 };
 
@@ -152,19 +152,19 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAPlayerChoice::ceWPAPlayerChoice( ceWPTopic &parentPanel ) :
-ceWPAction( parentPanel ){
+ceWPAPlayerChoice::ceWPAPlayerChoice(ceWPTopic &parentPanel) :
+ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.EditString( *this, "Variable:", "Name of the variable to store the choice in or empty to use none",
-		pEditVarName, new cTextVarName( *this ) );
+	helper.EditString(*this, "@Conversation.WPActionPlayerChoice.Variable", "@Conversation.VariableForChoice.ToolTip",
+		pEditVarName, cTextVarName::Ref::New(*this));
 	
-	helper.FormLineStretchFirst( *this, "Option Text:", "Text to display for option", formLine );
-	helper.EditString( formLine, "Text to display for option", pEditOptionText, new cTextOptionText( *this ) );
-	helper.Button( formLine, pBtnOptionText, new cActionEditOptionText( *this ), true );
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.OptionText", "@Conversation.WPActionPlayerChoice.DisplayText", formLine);
+	helper.EditString(formLine, "@Conversation.WPActionPlayerChoice.DisplayText", pEditOptionText, cTextOptionText::Ref::New(*this));
+	helper.Button(formLine, pBtnOptionText, cActionEditOptionText::Ref::New(*this));
 }
 
 ceWPAPlayerChoice::~ceWPAPlayerChoice(){
@@ -177,75 +177,75 @@ ceWPAPlayerChoice::~ceWPAPlayerChoice(){
 
 ceCAPlayerChoice *ceWPAPlayerChoice::GetAction() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if( ! selected ){
-		return NULL;
+	if(!selected){
+		return nullptr;
 	}
 	
-	ceWPTTIMAPlayerChoice *modelPlayerChoice = NULL;
+	ceWPTTIMAPlayerChoice *modelPlayerChoice = nullptr;
 	
-	switch( selected->GetType() ){
+	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionPlayerChoice:
-		modelPlayerChoice = ( ceWPTTIMAPlayerChoice* )selected;
+		modelPlayerChoice = (ceWPTTIMAPlayerChoice*)selected;
 		break;
 		
 	case ceWPTTreeItemModel::etActionPlayerChoiceOption:
-		modelPlayerChoice = ( ( ceWPTTIMAPlayerChoiceOption* )selected )->GetModelPlayerChoice();
+		modelPlayerChoice = ((ceWPTTIMAPlayerChoiceOption*)selected)->GetModelPlayerChoice();
 		break;
 		
 	case ceWPTTreeItemModel::etActionPlayerChoiceOptionCondition:
-		modelPlayerChoice = ( ( ceWPTTIMAPlayerChoiceOptionCondition* )selected )->GetModelPlayerChoice();
+		modelPlayerChoice = ((ceWPTTIMAPlayerChoiceOptionCondition*)selected)->GetModelPlayerChoice();
 		break;
 		
 	case ceWPTTreeItemModel::etActionPlayerChoiceOptionActions:
-		modelPlayerChoice = ( ( ceWPTTIMAPlayerChoiceOptionActions* )selected )->GetModelPlayerChoice();
+		modelPlayerChoice = ((ceWPTTIMAPlayerChoiceOptionActions*)selected)->GetModelPlayerChoice();
 		break;
 		
 	case ceWPTTreeItemModel::etActionPlayerChoiceActions:
-		modelPlayerChoice = ( ( ceWPTTIMAPlayerChoiceActions* )selected )->GetModelPlayerChoice();
+		modelPlayerChoice = ((ceWPTTIMAPlayerChoiceActions*)selected)->GetModelPlayerChoice();
 		break;
 		
 	default:
 		break;
 	}
 	
-	if( modelPlayerChoice ){
+	if(modelPlayerChoice){
 		return modelPlayerChoice->GetActionPlayerChoice();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 ceCAPlayerChoiceOption *ceWPAPlayerChoice::GetActiveOption() const{
 	ceWPTTreeItemModel * const selected = GetParentPanel().GetActionTreeItem();
-	if( ! selected ){
-		return NULL;
+	if(!selected){
+		return nullptr;
 	}
 	
-	ceWPTTIMAPlayerChoiceOption *modelOption = NULL;
+	ceWPTTIMAPlayerChoiceOption *modelOption = nullptr;
 	
-	switch( selected->GetType() ){
+	switch(selected->GetType()){
 	case ceWPTTreeItemModel::etActionPlayerChoiceOption:
-		modelOption = ( ceWPTTIMAPlayerChoiceOption* )selected;
+		modelOption = (ceWPTTIMAPlayerChoiceOption*)selected;
 		break;
 		
 	case ceWPTTreeItemModel::etActionPlayerChoiceOptionCondition:
-		modelOption = ( ( ceWPTTIMAPlayerChoiceOptionCondition* )selected )->GetModelOption();
+		modelOption = ((ceWPTTIMAPlayerChoiceOptionCondition*)selected)->GetModelOption();
 		break;
 		
 	case ceWPTTreeItemModel::etActionPlayerChoiceOptionActions:
-		modelOption = ( ( ceWPTTIMAPlayerChoiceOptionActions* )selected )->GetModelOption();
+		modelOption = ((ceWPTTIMAPlayerChoiceOptionActions*)selected)->GetModelOption();
 		break;
 		
 	default:
 		break;
 	}
 	
-	if( modelOption ){
+	if(modelOption){
 		return modelOption->GetOption();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -255,19 +255,19 @@ void ceWPAPlayerChoice::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditVarName->SetText( action->GetVariableName() );
+	if(action){
+		pEditVarName->SetText(action->GetVariableName());
 		
 	}else{
 		pEditVarName->ClearText();
 	}
 	
-	if( option ){
-		pEditOptionText->SetText( option->GetText().ToUTF8() );
+	if(option){
+		pEditOptionText->SetText(option->GetText().ToUTF8());
 		
 	}else{
 		pEditOptionText->ClearText();
 	}
 	
-	pEditOptionText->SetEnabled( option );
+	pEditOptionText->SetEnabled(option);
 }

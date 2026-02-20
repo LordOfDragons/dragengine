@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSpeaker::gdeUOCAddSpeaker( gdeObjectClass *objectClass, gdeOCSpeaker *speaker ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add speaker" );
+	SetShortInfo("@GameDefinition.Undo.OCAddSpeaker");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddSpeaker::~gdeUOCAddSpeaker(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -74,18 +65,23 @@ gdeUOCAddSpeaker::~gdeUOCAddSpeaker(){
 
 void gdeUOCAddSpeaker::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCSpeaker() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCSpeaker()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSpeaker( NULL );
+		gameDefinition->SetActiveOCSpeaker(nullptr);
 	}
 	
-	pObjectClass->GetSpeakers().Remove( pSpeaker );
+	pObjectClass->GetSpeakers().Remove(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
 }
 
 void gdeUOCAddSpeaker::Redo(){
-	pObjectClass->GetSpeakers().Add( pSpeaker );
+	pObjectClass->GetSpeakers().Add(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
+	
+	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
+	gameDefinition->SetActiveObjectClass(pObjectClass);
+	gameDefinition->SetActiveOCSpeaker(pSpeaker);
+	gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotOCSpeaker);
 }

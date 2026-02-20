@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCLight;
+#include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 
 
 /**
@@ -35,18 +35,20 @@ class gdeOCLight;
  */
 class gdeWPSTIMOCLight : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCLight *pLight;
+	gdeOCLight::Ref pLight;
 	
 	
 public:
+	typedef deTObjectReference<gdeWPSTIMOCLight> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCLight( gdeWPSTreeModel &tree, gdeObjectClass *objectClass, gdeOCLight *light, int index );
+	gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass, gdeOCLight *light, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMOCLight();
+	~gdeWPSTIMOCLight() override;
 	/*@}*/
 	
 	
@@ -55,24 +57,24 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Light. */
-	inline gdeOCLight *GetOCLight() const{ return pLight; }
+	inline const gdeOCLight::Ref &GetOCLight() const{ return pLight; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
 	
 	/** \brief Verify if valid. */
-	virtual bool IsValid() const;
+	bool IsValid() const override;
 	
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User selected item. */
-	virtual void OnSelected();
+	void OnSelected() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 };
 

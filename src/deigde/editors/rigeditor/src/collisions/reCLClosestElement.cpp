@@ -47,23 +47,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLClosestElement::reCLClosestElement( reRig &rig ) :
-pRig( rig ),
+reCLClosestElement::reCLClosestElement(reRig &rig) :
+pRig(rig),
 
-pTestSimRig( false ),
-pTestBones( false ),
-pTestShapes( false ),
-pTestConstraints( false ),
-pTestPushes( false ),
+pTestSimRig(false),
+pTestBones(false),
+pTestShapes(false),
+pTestConstraints(false),
+pTestPushes(false),
 
-pHitDistance( 0.0f ),
-pHitSimRig( false ),
-pHitSimBone( NULL ),
-pHitBone( NULL ),
-pHitShape( NULL ),
-pHitConstraint( NULL ),
-pHitPush( NULL ),
-pHasHit( false ){
+pHitDistance(0.0f),
+pHitSimRig(false),
+pHasHit(false){
 }
 
 reCLClosestElement::~reCLClosestElement(){
@@ -74,23 +69,23 @@ reCLClosestElement::~reCLClosestElement(){
 // Management
 ///////////////
 
-void reCLClosestElement::SetTestSimRig( bool test ){
+void reCLClosestElement::SetTestSimRig(bool test){
 	pTestSimRig = test;
 }
 
-void reCLClosestElement::SetTestBones( bool test ){
+void reCLClosestElement::SetTestBones(bool test){
 	pTestBones = test;
 }
 
-void reCLClosestElement::SetTestShapes( bool test ){
+void reCLClosestElement::SetTestShapes(bool test){
 	pTestShapes = test;
 }
 
-void reCLClosestElement::SetTestConstraints( bool test ){
+void reCLClosestElement::SetTestConstraints(bool test){
 	pTestConstraints = test;
 }
 
-void reCLClosestElement::SetTestPushes( bool test ){
+void reCLClosestElement::SetTestPushes(bool test){
 	pTestPushes = test;
 }
 
@@ -101,11 +96,11 @@ void reCLClosestElement::Reset(){
 	pHitNormal.SetZero();
 	
 	pHitSimRig = false;
-	pHitSimBone = NULL;
-	pHitBone = NULL;
-	pHitShape = NULL;
-	pHitConstraint = NULL;
-	pHitPush = NULL;
+	pHitSimBone = nullptr;
+	pHitBone = nullptr;
+	pHitShape = nullptr;
+	pHitConstraint = nullptr;
+	pHitPush = nullptr;
 	
 	pHasHit = false;
 }
@@ -115,25 +110,24 @@ void reCLClosestElement::Reset(){
 // Notifications
 //////////////////
 
-void reCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( ! info->IsCollider() ){
+void reCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(!info->IsCollider()){
 		return;
 	}
-	if( pHasHit && info->GetDistance() >= pHitDistance ){
+	if(pHasHit && info->GetDistance() >= pHitDistance){
 		return;
 	}
 	
 	deCollider * const collider = info->GetCollider();
 	
-	if( pTestSimRig ){
-		if( collider == ( deCollider* )pRig.GetEngineSimulationCollider() ){
-			const int boneCount = pRig.GetBoneCount();
+	if(pTestSimRig){
+		if(collider == (deCollider*)pRig.GetEngineSimulationCollider()){
 			const int bone = info->GetBone();
 			
-			pInitResult( info );
+			pInitResult(info);
 			
-			if( bone >= 0 && bone < boneCount ){
-				pHitSimBone = pRig.GetBoneAt( bone );
+			if(bone >= 0 && bone < pRig.GetBones().GetCount()){
+				pHitSimBone = pRig.GetBones().GetAt(bone);
 				
 			}else{
 				pHitSimRig = true;
@@ -143,110 +137,110 @@ void reCLClosestElement::CollisionResponse( deCollider *owner, deCollisionInfo *
 		}
 	}
 	
-	if( pTestBones ){
-		const int boneCount = pRig.GetBoneCount();
+	if(pTestBones){
+		const int boneCount = pRig.GetBones().GetCount();
 		int i;
 		
-		for( i=0; i<boneCount; i++ ){
-			reRigBone * const bone = pRig.GetBoneAt( i );
-			if( collider != ( deCollider* )bone->GetCollider() ){
+		for(i=0; i<boneCount; i++){
+			reRigBone * const bone = pRig.GetBones().GetAt(i);
+			if(collider != (deCollider*)bone->GetCollider()){
 				continue;
 			}
 			
-			pInitResult( info );
+			pInitResult(info);
 			pHitBone = bone;
 			return;
 		}
 	}
 	
-	if( pTestShapes ){
-		const int rigShapeCount = pRig.GetShapeCount();
-		const int boneCount = pRig.GetBoneCount();
+	if(pTestShapes){
+		const int rigShapeCount = pRig.GetShapes().GetCount();
+		const int boneCount = pRig.GetBones().GetCount();
 		int i, j;
 		
-		for( i=0; i< rigShapeCount; i++ ){
-			reRigShape * const shape = pRig.GetShapeAt( i );
-			if( collider != ( deCollider* )shape->GetCollider() ){
+		for(i=0; i< rigShapeCount; i++){
+			reRigShape * const shape = pRig.GetShapes().GetAt(i);
+			if(collider != (deCollider*)shape->GetCollider()){
 				continue;
 			}
 			
-			pInitResult( info );
+			pInitResult(info);
 			pHitShape = shape;
 			return;
 		}
 		
-		for( i=0; i<boneCount; i++ ){
-			reRigBone * const bone = pRig.GetBoneAt( i );
-			const int boneShapeCount = bone->GetShapeCount();
+		for(i=0; i<boneCount; i++){
+			reRigBone * const bone = pRig.GetBones().GetAt(i);
+			const int boneShapeCount = bone->GetShapes().GetCount();
 			
-			for( j=0; j<boneShapeCount; j++ ){
-				reRigShape * const shape = bone->GetShapeAt( j );
-				if( collider != ( deCollider* )shape->GetCollider() ){
+			for(j=0; j<boneShapeCount; j++){
+				reRigShape * const shape = bone->GetShapes().GetAt(j);
+				if(collider != (deCollider*)shape->GetCollider()){
 					continue;
 				}
 				
-				pInitResult( info );
+				pInitResult(info);
 				pHitShape = shape;
 				return;
 			}
 		}
 	}
 	
-	if( pTestConstraints ){
-		const int rigConstraintCount = pRig.GetConstraintCount();
-		const int boneCount = pRig.GetBoneCount();
+	if(pTestConstraints){
+		const int rigConstraintCount = pRig.GetConstraints().GetCount();
+		const int boneCount = pRig.GetBones().GetCount();
 		int i, j;
 		
-		for( i=0; i<rigConstraintCount; i++ ){
-			reRigConstraint * const constraint = pRig.GetConstraintAt( i );
-			if( collider != ( deCollider* )constraint->GetCollider() ){
+		for(i=0; i<rigConstraintCount; i++){
+			reRigConstraint * const constraint = pRig.GetConstraints().GetAt(i);
+			if(collider != (deCollider*)constraint->GetCollider()){
 				continue;
 			}
 			
-			pInitResult( info );
+			pInitResult(info);
 			pHitConstraint = constraint;
 			return;
 		}
 		
-		for( i=0; i<boneCount; i++ ){
-			reRigBone * const bone = pRig.GetBoneAt( i );
-			const int boneConstraintCount = bone->GetConstraintCount();
+		for(i=0; i<boneCount; i++){
+			reRigBone * const bone = pRig.GetBones().GetAt(i);
+			const int boneConstraintCount = bone->GetConstraints().GetCount();
 			
-			for( j=0; j<boneConstraintCount; j++ ){
-				reRigConstraint * const constraint = bone->GetConstraintAt( j );
-				if( collider != ( deCollider* )constraint->GetCollider() ){
+			for(j=0; j<boneConstraintCount; j++){
+				reRigConstraint * const constraint = bone->GetConstraints().GetAt(j);
+				if(collider != (deCollider*)constraint->GetCollider()){
 					continue;
 				}
 				
-				pInitResult( info );
+				pInitResult(info);
 				pHitConstraint = constraint;
 				return;
 			}
 		}
 	}
 	
-	if( pTestPushes ){
-		const int pushCount = pRig.GetPushCount();
+	if(pTestPushes){
+		const int pushCount = pRig.GetPushes().GetCount();
 		int i;
 		
-		for( i=0; i<pushCount; i++ ){
-			reRigPush * const push = pRig.GetPushAt( i );
-			if( collider != ( deCollider* )push->GetCollider() ){
+		for(i=0; i<pushCount; i++){
+			reRigPush * const push = pRig.GetPushes().GetAt(i);
+			if(collider != (deCollider*)push->GetCollider()){
 				continue;
 			}
 			
-			pInitResult( info );
+			pInitResult(info);
 			pHitPush = push;
 			return;
 		}
 	}
 }
 
-bool reCLClosestElement::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool reCLClosestElement::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }
 
-void reCLClosestElement::ColliderChanged( deCollider *owner ){
+void reCLClosestElement::ColliderChanged(deCollider *owner){
 }
 
 
@@ -254,7 +248,7 @@ void reCLClosestElement::ColliderChanged( deCollider *owner ){
 // Private Functions
 //////////////////////
 
-void reCLClosestElement::pInitResult( deCollisionInfo *info ){
+void reCLClosestElement::pInitResult(deCollisionInfo *info){
 	Reset();
 	
 	pHitDistance = info->GetDistance();

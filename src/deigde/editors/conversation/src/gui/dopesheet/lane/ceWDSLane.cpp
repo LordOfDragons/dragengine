@@ -45,24 +45,22 @@
 #include "../../../undosys/action/actorSpeak/strip/ceUCAASpeakStripsScale.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/font/deFont.h>
@@ -79,170 +77,187 @@ class cListenerResetDuration : public ceDialogEditStrip::Listener{
 	ceWDSLane &pLane;
 	
 public:
-	cListenerResetDuration( ceWDSLane &lane ) : pLane( lane ){}
+	using Ref = deTObjectReference<cListenerResetDuration>;
 	
-	virtual float DefaultDuration ( const decString &id ){
-		return pLane.DefaultDuration( id );
+	cListenerResetDuration(ceWDSLane &lane) : pLane(lane){}
+	
+	float DefaultDuration (const decString &id) override{
+		return pLane.DefaultDuration(id);
 	}
 };
 
 class cActionStripAdd : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionStripAdd>;
+	
+private:
 	ceWDSLane &pLane;
 	const int pIndex;
 	
 public:
-	cActionStripAdd( ceWDSLane &lane, int index ) : igdeAction( "Add...",
-		lane.GetWindow().GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add element" ), pLane( lane ), pIndex( index ){}
+	cActionStripAdd(ceWDSLane &lane, int index) : igdeAction("@Conversation.DopeSheetLane.Add",
+		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Conversation.Action.LaneAdd.ToolTip"), pLane(lane), pIndex(index){}
 	
-	virtual void OnAction(){
-		if( ! pLane.GetWindow().GetActionASpeak() ){
+	void OnAction() override{
+		if(!pLane.GetWindow().GetActionASpeak()){
 			return;
 		}
 		
-		igdeDialogReference refDialog;
 		decString title, text;
-		title.Format( "Add %s", pLane.GetLabel().GetString() );
-		text.Format( "%s: ", pLane.GetLabel().GetString() );
-		refDialog.TakeOver( new ceDialogEditStrip( pLane.GetWindow().GetEnvironment(), title, text ) );
-		ceDialogEditStrip &dialog = ( ceDialogEditStrip& )( igdeDialog& )refDialog;
+		title.FormatSafe(pLane.GetWindow().Translate("Conversation.Format.Add").ToUTF8(), pLane.GetLabel().GetString());
+		text.FormatSafe(pLane.GetWindow().Translate("Conversation.Format.LabelColon").ToUTF8(), pLane.GetLabel().GetString());
+		const ceDialogEditStrip::Ref dialog(ceDialogEditStrip::Ref::New(
+			pLane.GetWindow().GetEnvironment(), title, text));
 		
 		decStringList idList;
-		pLane.FillIDList( idList );
-		dialog.SetIDList( idList );
-		dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
-		dialog.ResetDuration();
-		dialog.SetAutoResetDuration( true );
+		pLane.FillIDList(idList);
+		dialog->SetIDList(idList);
+		dialog->SetListener(cListenerResetDuration::Ref::New(pLane));
+		dialog->ResetDuration();
+		dialog->SetAutoResetDuration(true);
 		
-		if( ! dialog.Run( &pLane.GetWindow().GetWindowMain() ) ){
+		if(!dialog->Run(&pLane.GetWindow().GetWindowMain())){
 			return;
 		}
 		
-		deObjectReference strip;
-		strip.TakeOver( dialog.CreateStrip() );
-		
-		igdeUndoReference undo;
-		undo.TakeOver( pLane.UndoStripAdd( ( ceStrip* )( deObject* )strip, decMath::max( pIndex, 0 ) ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(
+			pLane.UndoStripAdd(dialog->CreateStrip(), decMath::max(pIndex, 0)));
 	}
 	
-	virtual void Update(){
-		SetEnabled( pLane.GetWindow().GetActionASpeak() );
+	void Update() override{
+		SetEnabled(pLane.GetWindow().GetActionASpeak());
 	}
 };
 
 class cActionStripRemove : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionStripRemove>;
+	
+private:
 	ceWDSLane &pLane;
 	ceStrip *pStrip;
 	
 public:
-	cActionStripRemove( ceWDSLane &lane, ceStrip *strip ) : igdeAction( "Remove",
-		lane.GetWindow().GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove element" ), pLane( lane ), pStrip( strip ){}
+	cActionStripRemove(ceWDSLane &lane, ceStrip *strip) : igdeAction("@Conversation.DopeSheetLane.Remove",
+		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Conversation.Action.LaneRemove.ToolTip"), pLane(lane), pStrip(strip){}
 	
-	virtual void OnAction(){
-		if( ! pStrip ){
+	void OnAction() override{
+		if(!pStrip){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( pLane.UndoStripRemove( pStrip ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(pLane.UndoStripRemove(pStrip));
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pStrip );
+	void Update() override{
+		SetEnabled(pStrip);
 	}
 };
 
 class cActionStripRemoveAll : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionStripRemoveAll>;
+	
+private:
 	ceWDSLane &pLane;
 	
 public:
-	cActionStripRemoveAll( ceWDSLane &lane ) : igdeAction( "Remove All",
-		lane.GetWindow().GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove all elements" ), pLane( lane ){}
+	cActionStripRemoveAll(ceWDSLane &lane) : igdeAction("@Conversation.DopeSheetLane.RemoveAll",
+		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Conversation.Action.LaneRemoveAll.ToolTip"), pLane(lane){}
 	
-	virtual void OnAction(){
-		if( ! pLane.GetWindow().GetActionASpeak() ){
+	void OnAction() override{
+		if(!pLane.GetWindow().GetActionASpeak()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( pLane.UndoStripRemoveAll() );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(pLane.UndoStripRemoveAll());
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pLane.GetWindow().GetActionASpeak() );
+	void Update() override{
+		SetEnabled(pLane.GetWindow().GetActionASpeak());
 	}
 };
 
 class cActionStripMoveLeft : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionStripMoveLeft>;
+	
+private:
 	ceWDSLane &pLane;
 	int pIndex;
 	
 public:
-	cActionStripMoveLeft( ceWDSLane &lane, int index ) : igdeAction( "Move Left",
-		lane.GetWindow().GetEnvironment().GetStockIcon( igdeEnvironment::esiLeft ),
-		"Switch element with element on the left" ), pLane( lane ), pIndex( index ){}
+	cActionStripMoveLeft(ceWDSLane &lane, int index) : igdeAction("@Conversation.DopeSheetLane.MoveLeft",
+		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiLeft),
+		"@Conversation.Action.LaneMoveLeft.ToolTip"), pLane(lane), pIndex(index){}
 	
-	virtual void OnAction(){
-		if( ! pLane.GetWindow().GetActionASpeak() || pIndex < 1 ){
+	void OnAction() override{
+		if(!pLane.GetWindow().GetActionASpeak() || pIndex < 1){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(pLane.UndoStripMove(pLane.GetStripList().GetAt(pIndex), pIndex - 1));
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pLane.GetWindow().GetActionASpeak() && pIndex > 0 );
+	void Update() override{
+		SetEnabled(pLane.GetWindow().GetActionASpeak() && pIndex > 0);
 	}
 };
 
 class cActionStripMoveRight : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionStripMoveRight>;
+	
+private:
 	ceWDSLane &pLane;
 	int pIndex;
 	
 public:
-	cActionStripMoveRight( ceWDSLane &lane, int index ) : igdeAction( "Move Right",
-		lane.GetWindow().GetEnvironment().GetStockIcon( igdeEnvironment::esiRight ),
-		"Switch element with element on the right" ), pLane( lane ), pIndex( index ){}
+	cActionStripMoveRight(ceWDSLane &lane, int index) : igdeAction("@Conversation.DopeSheetLane.MoveRight",
+		lane.GetWindow().GetEnvironment().GetStockIcon(igdeEnvironment::esiRight),
+		"@Conversation.Action.LaneMoveRight.ToolTip"), pLane(lane), pIndex(index){}
 	
-	virtual void OnAction(){
-		if( ! pLane.GetWindow().GetActionASpeak() || pIndex > pLane.GetStripList().GetCount() - 2 ){
+	void OnAction() override{
+		if(!pLane.GetWindow().GetActionASpeak() || pIndex > pLane.GetStripList().GetCount() - 2){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(pLane.UndoStripMove(pLane.GetStripList().GetAt(pIndex), pIndex + 1));
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void Update(){
-		SetEnabled( pLane.GetWindow().GetActionASpeak() && pIndex >= 0
-			&& pIndex < pLane.GetStripList().GetCount() - 1 );
+	void Update() override{
+		SetEnabled(pLane.GetWindow().GetActionASpeak() && pIndex >= 0
+			&& pIndex < pLane.GetStripList().GetCount() - 1);
 	}
 };
 
 class cActionStripEdit : public igdeAction{
+public:
+	using Ref = deTObjectReference<cActionStripEdit>;
+	
+private:
 	ceWDSLane &pLane;
 	ceStrip *pStrip;
 	
 public:
-	cActionStripEdit( ceWDSLane &lane, ceStrip *strip ) : igdeAction( "Edit...", NULL,
-		"Edit element" ), pLane( lane ), pStrip( strip ){}
+	cActionStripEdit(ceWDSLane &lane, ceStrip *strip) : igdeAction("@Conversation.DopeSheetLane.Edit", nullptr,
+		"@Conversation.Action.LaneEdit.ToolTip"), pLane(lane), pStrip(strip){}
 	
-	virtual void OnAction(){
-		if( pStrip ){
-			pLane.EditStrip( pStrip );
+	void OnAction() override{
+		if(pStrip){
+			pLane.EditStrip(pStrip);
 		}
 	}
 	
-	virtual void Update(){
-		SetEnabled( pStrip );
+	void Update() override{
+		SetEnabled(pStrip);
 	}
 };
 
@@ -262,95 +277,97 @@ class cMouseListener : public igdeMouseDragListener {
 	int pScaleCount;
 	float pScaleAnchor;
 	float pScaleLength;
-	igdeUndoReference pUndoDuration;
-	igdeUndoReference pUndoPause;
-	igdeUndoReference pUndoScale;
+	igdeUndo::Ref pUndoDuration;
+	igdeUndo::Ref pUndoPause;
+	igdeUndo::Ref pUndoScale;
 	
 public:
-	cMouseListener( ceWDSLane &lane ) : pLane( lane ), pDragMode( edmNone ){ }
+	using Ref = deTObjectReference<cMouseListener>;
 	
-	virtual bool OnDragBegin(){
+	cMouseListener(ceWDSLane &lane) : pLane(lane), pDragMode(edmNone){}
+	
+	bool OnDragBegin() override{
 		const ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if( ! action ){
+		if(!action){
 			return false;
 		}
 		
-		const ceStripList &strips = pLane.GetStripList();
+		const ceStrip::List &strips = pLane.GetStripList();
 		pDragMode = edmNone;
-		pUndoDuration = NULL;
-		pUndoPause = NULL;
-		pUndoScale = NULL;
+		pUndoDuration = nullptr;
+		pUndoPause = nullptr;
+		pUndoScale = nullptr;
 		pScaleCount = 0;
 		
-		pDragHandle = pLane.GetStripPauseAt( GetDragOrigin().x );
-		if( pDragHandle != -1 ){
-			pOldEntryValue = strips.GetAt( pDragHandle )->GetPause();
-			if( pOldEntryValue > FLOAT_SAFE_EPSILON || GetShiftOrigin() ){
+		pDragHandle = pLane.GetStripPauseAt(GetDragOrigin().x);
+		if(pDragHandle != -1){
+			pOldEntryValue = strips.GetAt(pDragHandle)->GetPause();
+			if(pOldEntryValue > FLOAT_SAFE_EPSILON || GetShiftOrigin()){
 				pDragMode = edmPause;
-				pLane.SetSelection( pDragHandle, pDragHandle );
+				pLane.SetSelection(pDragHandle, pDragHandle);
 				return true;
 			}
 		}
 		
-		pDragHandle = pLane.GetStripDurationAt( GetDragOrigin().x );
-		if( pDragHandle != -1 ){
-			pOldEntryValue = strips.GetAt( pDragHandle )->GetDuration();
+		pDragHandle = pLane.GetStripDurationAt(GetDragOrigin().x);
+		if(pDragHandle != -1){
+			pOldEntryValue = strips.GetAt(pDragHandle)->GetDuration();
 			pDragMode = edmDuration;
-			pLane.SetSelection( pDragHandle, pDragHandle );
+			pLane.SetSelection(pDragHandle, pDragHandle);
 			return true;
 		}
 		
-		pLane.SetSelection( -1, -1 );
+		pLane.SetSelection(-1, -1);
 		return false;
 	}
 	
-	virtual void OnDragUpdate(){
+	void OnDragUpdate() override{
 		const ceCAActorSpeak * const action = pLane.GetWindow().GetActionASpeak();
-		if( ! action ){
+		if(!action){
 			return;
 		}
 		
-		const float time = pLane.GetWindow().GetTimeForX( GetDragPosition().x );
+		const float time = pLane.GetWindow().GetTimeForX(GetDragPosition().x);
 		
-		if( pUndoScale ){
+		if(pUndoScale){
 			pUndoScale->Undo();
-			( ( ceUCAASpeakStripsScale& )( igdeUndo& )pUndoScale ).SetScaling(
-				( time - pScaleAnchor ) / pScaleLength );
+			pUndoScale.DynamicCast<ceUCAASpeakStripsScale>()->SetScaling(
+				(time - pScaleAnchor) / pScaleLength);
 			pUndoScale->Redo();
 			return;
 		}
 		
-		const ceStripList &strips = pLane.GetStripList();
+		const ceStrip::List &strips = pLane.GetStripList();
 		
-		switch( pDragMode ){
+		switch(pDragMode){
 		case edmPause:{
-			float newPause = time - pLane.GetStripStartFor( pDragHandle );
-			if( newPause < 0.01f ){
+			float newPause = time - pLane.GetStripStartFor(pDragHandle);
+			if(newPause < 0.01f){
 				newPause = 0.0f;
 			}
 			
-			if( pUndoPause ){
-				( ( ceUCAASpeakStripSetPause& )( igdeUndo& )pUndoPause ).SetNewPause( newPause );
-				( ( ceUCAASpeakStripSetPause& )( igdeUndo& )pUndoPause ).ProgressiveRedo();
+			if(pUndoPause){
+				pUndoPause.DynamicCast<ceUCAASpeakStripSetPause>()->SetNewPause(newPause);
+				pUndoPause.DynamicCast<ceUCAASpeakStripSetPause>()->ProgressiveRedo();
 				
 			}else{
-				pUndoPause.TakeOver( pLane.UndoStripSetPause( strips.GetAt( pDragHandle ), newPause ) );
+				pUndoPause = pLane.UndoStripSetPause(strips.GetAt(pDragHandle), newPause);
 				pUndoPause->Redo();
 			}
 			}break;
 			
 		case edmDuration:{
-			float newDuration = time - pLane.GetStripPauseFor( pDragHandle );
-			if( newDuration < 0.01f ){
+			float newDuration = time - pLane.GetStripPauseFor(pDragHandle);
+			if(newDuration < 0.01f){
 				newDuration = 0.01f;
 			}
 			
-			if( pUndoDuration ){
-				( ( ceUCAASpeakStripSetDuration& )( igdeUndo& )pUndoDuration ).SetNewDuration( newDuration );
-				( ( ceUCAASpeakStripSetDuration& )( igdeUndo& )pUndoDuration ).ProgressiveRedo();
+			if(pUndoDuration){
+				pUndoDuration.DynamicCast<ceUCAASpeakStripSetDuration>()->SetNewDuration(newDuration);
+				pUndoDuration.DynamicCast<ceUCAASpeakStripSetDuration>()->ProgressiveRedo();
 				
 			}else{
-				pUndoDuration.TakeOver( pLane.UndoStripSetDuration( strips.GetAt( pDragHandle ), newDuration ) );
+				pUndoDuration = pLane.UndoStripSetDuration(strips.GetAt(pDragHandle), newDuration);
 				pUndoDuration->Redo();
 			}
 			}break;
@@ -360,28 +377,28 @@ public:
 		}
 	}
 	
-	virtual void OnDragFinish( bool ){
-		if( pUndoPause ){
-			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( pUndoPause, false );
-			pUndoPause = NULL;
+	void OnDragFinish(bool) override{
+		if(pUndoPause){
+			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(pUndoPause, false);
+			pUndoPause = nullptr;
 		}
 		
-		if( pUndoDuration ){
-			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( pUndoDuration, false );
-			pUndoDuration = NULL;
+		if(pUndoDuration){
+			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(pUndoDuration, false);
+			pUndoDuration = nullptr;
 		}
 		
-		if( pUndoScale ){
-			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( pUndoScale, false );
-			pUndoScale = NULL;
+		if(pUndoScale){
+			pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(pUndoScale, false);
+			pUndoScale = nullptr;
 		}
 		
 		pDragMode = edmNone;
-		pLane.SetSelection( -1, -1 );
+		pLane.SetSelection(-1, -1);
 	}
 	
-	virtual void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int ){
-		switch( pDragMode ){
+	void OnMouseWheeled(igdeWidget*, const decPoint &, const decPoint &change, int) override{
+		switch(pDragMode){
 		case edmDuration:
 		case edmScale:
 			break;
@@ -391,14 +408,14 @@ public:
 		}
 		
 		// adjust list of strips to scale if it changed
-		if( change.y > 0 ){ // up
-			if( pScaleCount == pDragHandle ){
+		if(change.y > 0){ // up
+			if(pScaleCount == pDragHandle){
 				return;
 			}
 			pScaleCount++;
 			
-		}else if( change.y < 0 ){ // down
-			if( pScaleCount == 0 ){
+		}else if(change.y < 0){ // down
+			if(pScaleCount == 0){
 				return;
 			}
 			pScaleCount--;
@@ -408,15 +425,15 @@ public:
 		}
 		
 		// if there is an undo duration undo and delete it
-		if( pUndoDuration ){
+		if(pUndoDuration){
 			pUndoDuration->Undo();
-			pUndoDuration = NULL;
+			pUndoDuration = nullptr;
 		}
 		
 		// if undo scaling does not exist yet create it if we had been in a duration drag mode
-		if( ! pUndoScale ){
-			if( pDragMode == edmDuration ){
-				pUndoScale.TakeOver( pLane.UndoScaleStrips() );
+		if(!pUndoScale){
+			if(pDragMode == edmDuration){
+				pUndoScale = pLane.UndoScaleStrips();
 				pDragMode = edmScale;
 				
 			}else{
@@ -425,58 +442,57 @@ public:
 		}
 		
 		// update undo
-		const ceStripList &list = pLane.GetStripList();
-		ceStripList applyList;
+		const ceStrip::List &list = pLane.GetStripList();
+		ceStrip::List applyList;
 		int i;
 		
 		pUndoScale->Undo();
 		
 		pScaleAnchor = 0.0f;
-		for( i=0; i<pDragHandle - pScaleCount; i++ ){
-			const ceStrip &strip = *list.GetAt( i );
+		for(i=0; i<pDragHandle - pScaleCount; i++){
+			const ceStrip &strip = list.GetAt(i);
 			pScaleAnchor += strip.GetPause() + strip.GetDuration();
 		}
 		
 		pScaleLength = 0.0f;
-		for( i=pDragHandle - pScaleCount; i<=pDragHandle; i++ ){
-			ceStrip * const strip = list.GetAt( i );
-			applyList.Add( strip );
+		for(i=pDragHandle - pScaleCount; i<=pDragHandle; i++){
+			ceStrip * const strip = list.GetAt(i);
+			applyList.Add(strip);
 			pScaleLength += strip->GetPause() + strip->GetDuration();
 		}
-		if( pScaleLength < FLOAT_SAFE_EPSILON ){
+		if(pScaleLength < FLOAT_SAFE_EPSILON){
 			pScaleLength = 1.0f;
 		}
 		
-		( ( ceUCAASpeakStripsScale& )( igdeUndo& )pUndoScale ).SetStrips( applyList );
-		( ( ceUCAASpeakStripsScale& )( igdeUndo& )pUndoScale ).SetScaling(
-			( pLane.GetWindow().GetTimeForX( GetDragPosition().x ) - pScaleAnchor ) / pScaleLength );
+		pUndoScale.DynamicCast<ceUCAASpeakStripsScale>()->SetStrips(applyList);
+		pUndoScale.DynamicCast<ceUCAASpeakStripsScale>()->SetScaling(
+			(pLane.GetWindow().GetTimeForX(GetDragPosition().x) - pScaleAnchor) / pScaleLength);
 		
 		pUndoScale->Redo();
 		
-		pLane.SetSelection( pDragHandle - pScaleCount, pDragHandle );
+		pLane.SetSelection(pDragHandle - pScaleCount, pDragHandle);
 	}
 	
-	virtual void OnDoubleClicked( igdeWidget*, int button, const decPoint &position, int ){
-		if( button == deInputEvent::embcLeft ){
-			const int index = pLane.GetStripAt( position.x );
-			if( index >= 0 && index < pLane.GetStripList().GetCount() ){
-				pLane.EditStrip( pLane.GetStripList().GetAt( index ) );
+	void OnDoubleClicked(igdeWidget*, int button, const decPoint &position, int) override{
+		if(button == deInputEvent::embcLeft){
+			const int index = pLane.GetStripAt(position.x);
+			if(index >= 0 && index < pLane.GetStripList().GetCount()){
+				pLane.EditStrip(pLane.GetStripList().GetAt(index));
 			}
 		}
 	}
 	
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers ){
-		if( button != deInputEvent::embcRight ){
-			igdeMouseDragListener::OnButtonPress( widget, button, position, modifiers );
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override{
+		if(button != deInputEvent::embcRight){
+			igdeMouseDragListener::OnButtonPress(widget, button, position, modifiers);
 			return;
 		}
 		
-		igdeMenuCascadeReference contextMenu;
-		contextMenu.TakeOver( new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) );
+		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::New(pLane.GetWindow().GetEnvironment()));
 		
-		pLane.OnContextMenu( contextMenu, position );
+		pLane.OnContextMenu(contextMenu, position);
 		
-		contextMenu->Popup( pLane.GetWindow().GetDopeSheet(), position );
+		contextMenu->Popup(pLane.GetWindow().GetDopeSheet(), position);
 	}
 };
 
@@ -498,17 +514,17 @@ ceWDSLane::cStrip::~cStrip(){}
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSLane::ceWDSLane( ceWindowDopeSheet &dopeSheet, int index, const char *label, const char *description ) :
-pWindow( dopeSheet ),
-pIndex( index ),
-pLabel( label ),
-pDescription( description ),
+ceWDSLane::ceWDSLane(ceWindowDopeSheet &dopeSheet, int index, const char *label, const char *description) :
+pWindow(dopeSheet),
+pIndex(index),
+pLabel(label),
+pDescription(description),
 
-pBarHeight( 8 ),
-pSelectionFrom( -1 ),
-pSelectionTo( -1 )
+pBarHeight(8),
+pSelectionFrom(-1),
+pSelectionTo(-1)
 {
-	pMouseKeyListener.TakeOver( new cMouseListener( *this ) );
+	pMouseKeyListener = cMouseListener::Ref::New(*this);
 }
 
 ceWDSLane::~ceWDSLane(){
@@ -519,38 +535,27 @@ ceWDSLane::~ceWDSLane(){
 // Management
 ///////////////
 
-int ceWDSLane::GetStripAt( int x ) const{
-	const ceStripList &list = GetStripList();
+int ceWDSLane::GetStripAt(int x) const{
 	const int left = -pWindow.GetScrollTime();
-	const int count = list.GetCount();
-	float entryTime = 0.0f;
-	int i;
-	
-	if( x < left ){
+	if(x < left){
 		return -1;
 	}
 	
-	for( i=0; i<count; i++ ){
-		const ceStrip &strip = *list.GetAt( i );
-		
-		const int fromX = left + ( int )( entryTime * pWindow.GetPixelPerSecond() );
-		entryTime += strip.GetPause() + strip.GetDuration();
-		const int toX = left + ( int )( entryTime * pWindow.GetPixelPerSecond() );
-		
-		if( x >= fromX && x < toX ){
-			return i;
-		}
-	}
-	
-	return -1;
+	float entryTime = 0.0f;
+	return GetStripList().IndexOfMatching([&](const ceStrip &s){
+		const int fromX = left + (int)(entryTime * pWindow.GetPixelPerSecond());
+		entryTime += s.GetPause() + s.GetDuration();
+		const int toX = left + (int)(entryTime * pWindow.GetPixelPerSecond());
+		return x >= fromX && x < toX;
+	});
 }
 
-int ceWDSLane::GetInsertStripAt( int x ) const{
-	const int index = GetStripAt( x );
-	if( index != -1 ){
+int ceWDSLane::GetInsertStripAt(int x) const{
+	const int index = GetStripAt(x);
+	if(index != -1){
 		return index;
 		
-	}else if( x < -pWindow.GetScrollTime() ){
+	}else if(x < -pWindow.GetScrollTime()){
 		return 0;
 		
 	}else{
@@ -558,103 +563,65 @@ int ceWDSLane::GetInsertStripAt( int x ) const{
 	}
 }
 
-int ceWDSLane::GetStripPauseAt( int x ) const{
-	const ceStripList &list = GetStripList();
+int ceWDSLane::GetStripPauseAt(int x) const{
 	const int left = -pWindow.GetScrollTime();
-	const int count = list.GetCount();
 	float entryTime = 0.0f;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceStrip &strip = *list.GetAt( i );
+	return GetStripList().IndexOfMatching([&](const ceStrip &s){
+		entryTime += s.GetPause();
+		const int ex = left + (int)(entryTime * pWindow.GetPixelPerSecond());
 		
-		entryTime += strip.GetPause();
-		const int ex = left + ( int )( entryTime * pWindow.GetPixelPerSecond() );
-		
-		if( x >= ex - 4 && x < ex + 4 ){
-			return i;
+		if(x >= ex - 4 && x < ex + 4){
+			return true;
+			
+		}else{
+			entryTime += s.GetDuration();
+			return false;
 		}
-		
-		entryTime += strip.GetDuration();
-	}
-	
-	return -1;
+	});
 }
 
-int ceWDSLane::GetStripDurationAt( int x ) const{
-	const ceStripList &list = GetStripList();
+int ceWDSLane::GetStripDurationAt(int x) const{
 	const int left = -pWindow.GetScrollTime();
-	const int count = list.GetCount();
 	float entryTime = 0.0f;
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		const ceStrip &strip = *list.GetAt( i );
-		
-		entryTime += strip.GetPause() + strip.GetDuration();
-		const int ex = left + ( int )( entryTime * pWindow.GetPixelPerSecond() );
-		
-		if( x >= ex - 4 && x < ex + 4 ){
-			return i;
-		}
-	}
-	
-	return -1;
+	return GetStripList().IndexOfMatching([&](const ceStrip &s){
+		entryTime += s.GetPause() + s.GetDuration();
+		const int ex = left + (int)(entryTime * pWindow.GetPixelPerSecond());
+		return x >= ex - 4 && x < ex + 4;
+	});
 }
 
-float ceWDSLane::GetStripStartFor( int index ) const{
-	const ceStripList &list = GetStripList();
-	const int count = list.GetCount();
-	float entryTime = 0.0f;
-	int i;
-	
-	if( index >= count ){
-		index = count - 1;
+float ceWDSLane::GetStripStartFor(int index) const{
+	const ceStrip::List &list = GetStripList();
+	if(index >= list.GetCount()){
+		index = list.GetCount() - 1;
 	}
 	
-	for( i=0; i<index; i++ ){
-		const ceStrip &strip = *list.GetAt( i );
-		entryTime += strip.GetPause() + strip.GetDuration();
-	}
-	
-	return entryTime;
+	return list.Inject(0.0f, 0, index, [](float t, const ceStrip &s){
+		return t + s.GetPause() + s.GetDuration();
+	});
 }
 
-float ceWDSLane::GetStripPauseFor( int index ) const{
-	const ceStripList &list = GetStripList();
-	const int count = list.GetCount();
-	float entryTime = 0.0f;
-	int i;
-	
-	if( index >= count ){
-		index = count - 1;
+float ceWDSLane::GetStripPauseFor(int index) const{
+	const ceStrip::List &list = GetStripList();
+	if(index >= list.GetCount()){
+		index = list.GetCount() - 1;
 	}
 	
-	for( i=0; i<index; i++ ){
-		const ceStrip &strip = *list.GetAt( i );
-		entryTime += strip.GetPause() + strip.GetDuration();
-	}
-	
-	return entryTime + list.GetAt( index )->GetPause();
+	return GetStripList().Inject(0.0f, 0, index, [](float t, const ceStrip &s){
+		return t + s.GetPause() + s.GetDuration();
+	}) + list.GetAt(index)->GetPause();
 }
 
 float ceWDSLane::GetMaximumLineTime() const{
-	const ceStripList &list = GetStripList();
-	const int count = list.GetCount();
-	float time = 0.0f;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const ceStrip &strip = *list.GetAt( i );
-		time += strip.GetPause();
-		time += strip.GetDuration();
-	}
-	
-	return time;
+	return GetStripList().Inject(0.0f, [](float t, const ceStrip &s){
+		return t + s.GetPause() + s.GetDuration();
+	});
 }
 
-void ceWDSLane::SetSelection( int from, int to ){
-	if( from == pSelectionFrom && to == pSelectionTo ){
+void ceWDSLane::SetSelection(int from, int to){
+	if(from == pSelectionFrom && to == pSelectionTo){
 		return;
 	}
 	
@@ -684,51 +651,51 @@ void ceWDSLane::OnTimeChanged(){
 
 void ceWDSLane::CreateCanvas(){
 	igdeEnvironment &env = pWindow.GetEnvironment();
-	const decColor colorBarFill( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
-	const decColor colorBarLine( 0.0f, 0.0f, 0.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetShadow ) );
-	const decColor colorBarSelectionFill( 0.65f, 0.65f, 1.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetSelectedBackground ) );
+	const decColor colorBarFill(env.GetSystemColor(igdeEnvironment::escWidgetBackground));
+	const decColor colorBarLine(0.0f, 0.0f, 0.0f); //env.GetSystemColor(igdeEnvironment::escWidgetShadow));
+	const decColor colorBarSelectionFill(0.65f, 0.65f, 1.0f); //env.GetSystemColor(igdeEnvironment::escWidgetSelectedBackground));
 	
 	deCanvasManager &canvasManager = *pWindow.GetEngine()->GetCanvasManager();
-	pCanvas.TakeOver( canvasManager.CreateCanvasView() );
+	pCanvas = canvasManager.CreateCanvasView();
 	
-	pCanvasPanelSheet.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasPanelSheet->SetOrder( ( float )pCanvas->GetCanvasCount() );
-	pCanvas->AddCanvas( pCanvasPanelSheet );
+	pCanvasPanelSheet = canvasManager.CreateCanvasView();
+	pCanvasPanelSheet->SetOrder((float)pCanvas->GetCanvasCount());
+	pCanvas->AddCanvas(pCanvasPanelSheet);
 	
-	pCanvasBar.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasBar->SetFillColor( colorBarFill );
-	pCanvasBar->SetLineColor( colorBarLine );
-	pCanvasBar->SetThickness( 1 );
-	pCanvasBar->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
-	pCanvasPanelSheet->AddCanvas( pCanvasBar );
+	pCanvasBar = canvasManager.CreateCanvasPaint();
+	pCanvasBar->SetFillColor(colorBarFill);
+	pCanvasBar->SetLineColor(colorBarLine);
+	pCanvasBar->SetThickness(1);
+	pCanvasBar->SetOrder((float)pCanvasPanelSheet->GetCanvasCount());
+	pCanvasPanelSheet->AddCanvas(pCanvasBar);
 	
-	pCanvasBarSelection.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasBarSelection->SetFillColor( colorBarSelectionFill );
-	pCanvasBarSelection->SetThickness( 0 );
-	pCanvasBarSelection->SetVisible( false );
-	pCanvasBarSelection->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
-	pCanvasPanelSheet->AddCanvas( pCanvasBarSelection );
+	pCanvasBarSelection = canvasManager.CreateCanvasPaint();
+	pCanvasBarSelection->SetFillColor(colorBarSelectionFill);
+	pCanvasBarSelection->SetThickness(0);
+	pCanvasBarSelection->SetVisible(false);
+	pCanvasBarSelection->SetOrder((float)pCanvasPanelSheet->GetCanvasCount());
+	pCanvasPanelSheet->AddCanvas(pCanvasBarSelection);
 	
-	pCanvasHandles.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasHandles->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
-	pCanvasPanelSheet->AddCanvas( pCanvasHandles );
+	pCanvasHandles = canvasManager.CreateCanvasView();
+	pCanvasHandles->SetOrder((float)pCanvasPanelSheet->GetCanvasCount());
+	pCanvasPanelSheet->AddCanvas(pCanvasHandles);
 }
 
 void ceWDSLane::UpdateCanvas(){
-	if( ! pCanvas ){
+	if(!pCanvas){
 		return;
 	}
 	
 	igdeEnvironment &env = pWindow.GetEnvironment();
-	const decColor colorHandleBg( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
-	const decColor colorHandleFg( env.GetSystemColor( igdeEnvironment::escWidgetForeground ) );
-	const decColor colorHandleSelectedBg( 0.65f, 0.65f, 1.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetSelectedBackground ) );
-	const decColor colorHandleSelectedFg( 0.0f, 0.0f, 0.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetSelectedForeground ) );
-	const decColor colorTextBg( 0.75f, 0.75f, 0.75f );
-	const decColor colorTextSelectedBg( colorHandleSelectedBg );
+	const decColor colorHandleBg(env.GetSystemColor(igdeEnvironment::escWidgetBackground));
+	const decColor colorHandleFg(env.GetSystemColor(igdeEnvironment::escWidgetForeground));
+	const decColor colorHandleSelectedBg(0.65f, 0.65f, 1.0f); //env.GetSystemColor(igdeEnvironment::escWidgetSelectedBackground));
+	const decColor colorHandleSelectedFg(0.0f, 0.0f, 0.0f); //env.GetSystemColor(igdeEnvironment::escWidgetSelectedForeground));
+	const decColor colorTextBg(0.75f, 0.75f, 0.75f);
+	const decColor colorTextSelectedBg(colorHandleSelectedBg);
 	
 	const int center = pCanvas->GetSize().y / 2;
-	const ceStripList &list = GetStripList();
+	const ceStrip::List &list = GetStripList();
 	const int count = list.GetCount();
 	int selectionTimeFrom = 0;
 	int selectionTimeTo = 0;
@@ -736,193 +703,187 @@ void ceWDSLane::UpdateCanvas(){
 	int i, x;
 	
 	// handles. this also finds the selection parameters for the bar selection below
-	for( i=0; i<count; i++ ){
-		const ceStrip &listStrip = *list.GetAt( i );
-		const cStrip &strip = *( ( cStrip* )pStrips.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const ceStrip &listStrip = list.GetAt(i);
+		const cStrip &strip = pStrips.GetAt(i);
 		
-		const int left = pWindow.GetXForTime( time );
+		const int left = pWindow.GetXForTime(time);
 		const int top = center - strip.handleDuration->GetSize().y / 2;
 		
-		const int left2 = pWindow.GetXForTime( time + listStrip.GetPause() );
+		const int left2 = pWindow.GetXForTime(time + listStrip.GetPause());
 		x = left2;
-		strip.handlePause->SetPosition( decPoint( x - strip.handlePause->GetSize().x / 2, top ) );
+		strip.handlePause->SetPosition(decPoint(x - strip.handlePause->GetSize().x / 2, top));
 		time += listStrip.GetPause();
 		
-		x = pWindow.GetXForTime( time + listStrip.GetDuration() );
-		strip.handleDuration->SetPosition( decPoint( x - strip.handleDuration->GetSize().x / 2, top ) );
+		x = pWindow.GetXForTime(time + listStrip.GetDuration());
+		strip.handleDuration->SetPosition(decPoint(x - strip.handleDuration->GetSize().x / 2, top));
 		time += listStrip.GetDuration();
 		
 		const int right = x;
 		
-		strip.stripId->SetText( listStrip.GetID() );
-		strip.stripId->SetSize( strip.stripId->GetFont()->TextSize( strip.stripId->GetText() ) );
-		strip.stripId->SetPosition( decPoint( ( left2 + right) / 2, center ) - strip.stripId->GetSize() / 2 );
+		strip.stripId->SetText(listStrip.GetID());
+		strip.stripId->SetSize(strip.stripId->GetFont()->TextSize(strip.stripId->GetText()));
+		strip.stripId->SetPosition(decPoint((left2 + right) / 2, center) - strip.stripId->GetSize() / 2);
 		
-		strip.stripIdBg->SetPosition( strip.stripId->GetPosition() - decPoint( 1, 1 ) );
-		strip.stripIdBg->SetSize( strip.stripId->GetSize() + decPoint( 3, 2 ) );
+		strip.stripIdBg->SetPosition(strip.stripId->GetPosition() - decPoint(1, 1));
+		strip.stripIdBg->SetSize(strip.stripId->GetSize() + decPoint(3, 2));
 		
-		if( i == pSelectionFrom ){
+		if(i == pSelectionFrom){
 			selectionTimeFrom = left;
 		}
-		if( i == pSelectionTo ){
+		if(i == pSelectionTo){
 			selectionTimeTo = right;
 		}
 		
 		// update colors
-		if( i >= pSelectionFrom && i <= pSelectionTo ){
-			strip.handlePauseBg->SetFillColor( colorHandleSelectedBg );
-			strip.handleDurationBg->SetFillColor( colorHandleSelectedBg );
-			strip.stripId->SetColor( colorHandleSelectedFg );
-			strip.stripIdBg->SetFillColor( colorTextSelectedBg );
+		if(i >= pSelectionFrom && i <= pSelectionTo){
+			strip.handlePauseBg->SetFillColor(colorHandleSelectedBg);
+			strip.handleDurationBg->SetFillColor(colorHandleSelectedBg);
+			strip.stripId->SetColor(colorHandleSelectedFg);
+			strip.stripIdBg->SetFillColor(colorTextSelectedBg);
 			
 		}else{
-			strip.handlePauseBg->SetFillColor( colorHandleBg );
-			strip.handleDurationBg->SetFillColor( colorHandleBg );
-			strip.stripId->SetColor( colorHandleFg );
-			strip.stripIdBg->SetFillColor( colorTextBg );
+			strip.handlePauseBg->SetFillColor(colorHandleBg);
+			strip.handleDurationBg->SetFillColor(colorHandleBg);
+			strip.stripId->SetColor(colorHandleFg);
+			strip.stripIdBg->SetFillColor(colorTextBg);
 		}
 	}
 	
 	// bar selection
-	if( selectionTimeTo > selectionTimeFrom ){
-		pCanvasBarSelection->SetPosition( pCanvasBar->GetPosition() + decPoint( selectionTimeFrom, 1 ) );
-		pCanvasBarSelection->SetSize( decPoint( selectionTimeTo - selectionTimeFrom, pCanvasBar->GetSize().y - 2 ) );
-		pCanvasBarSelection->SetVisible( true );
+	if(selectionTimeTo > selectionTimeFrom){
+		pCanvasBarSelection->SetPosition(pCanvasBar->GetPosition() + decPoint(selectionTimeFrom, 1));
+		pCanvasBarSelection->SetSize(decPoint(selectionTimeTo - selectionTimeFrom, pCanvasBar->GetSize().y - 2));
+		pCanvasBarSelection->SetVisible(true);
 		
 	}else{
-		pCanvasBarSelection->SetVisible( false );
+		pCanvasBarSelection->SetVisible(false);
 	}
 }
 
 void ceWDSLane::RebuildCanvas(){
-	if( ! pCanvas ){
+	if(!pCanvas){
 		return;
 	}
 	
-	decPoint sizeDopeSheet( pWindow.GetSizeDopeSheet() );
+	decPoint sizeDopeSheet(pWindow.GetSizeDopeSheet());
 	const int laneHeight = pWindow.GetLaneHeight();
 	
-	pCanvas->SetPosition( decPoint( 0, pWindow.GetVAPreviewHeight() + laneHeight * pIndex ) );
-	pCanvas->SetSize( decPoint( sizeDopeSheet.x, laneHeight ) );
+	pCanvas->SetPosition(decPoint(0, pWindow.GetVAPreviewHeight() + laneHeight * pIndex));
+	pCanvas->SetSize(decPoint(sizeDopeSheet.x, laneHeight));
 	
-	pCanvasPanelSheet->SetPosition( decPoint( 0, 0 ) );
-	pCanvasPanelSheet->SetSize( decPoint( sizeDopeSheet.x, laneHeight ) );
+	pCanvasPanelSheet->SetPosition(decPoint(0, 0));
+	pCanvasPanelSheet->SetSize(decPoint(sizeDopeSheet.x, laneHeight));
 	
-	pCanvasBar->SetPosition( decPoint( -2, ( laneHeight - pBarHeight ) / 2 ) );
-	pCanvasBar->SetSize( decPoint( pCanvasPanelSheet->GetSize().x + 4, pBarHeight ) );
+	pCanvasBar->SetPosition(decPoint(-2, (laneHeight - pBarHeight) / 2));
+	pCanvasBar->SetSize(decPoint(pCanvasPanelSheet->GetSize().x + 4, pBarHeight));
 	
 	// handles
 	pCanvasHandles->RemoveAllCanvas();
-	pCanvasHandles->SetSize( pCanvasPanelSheet->GetSize() );
+	pCanvasHandles->SetSize(pCanvasPanelSheet->GetSize());
 	
-	const ceStripList &list = GetStripList();
+	const ceStrip::List &list = GetStripList();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( i == pStrips.GetCount() ){
+	for(i=0; i<count; i++){
+		if(i == pStrips.GetCount()){
 			deFont * const font = pWindow.GetFontText()->GetEngineFont();
 			
 			deCanvasManager &canvasManager = *pWindow.GetEngine()->GetCanvasManager();
-			const decPoint handleSize( 5, pBarHeight + 4 );
-			const decPoint handleSizeHalf( handleSize.x, handleSize.y / 2 );
+			const decPoint handleSize(5, pBarHeight + 4);
+			const decPoint handleSizeHalf(handleSize.x, handleSize.y / 2);
 			
-			const decColor colorText( pWindow.GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetForeground ) );
-			const decColor colorTextBg( 0.75f, 0.75f, 0.75f );
-			const decColor colorTextLine( 0.25f, 0.25f, 0.25f );
+			const decColor colorText(pWindow.GetEnvironment().GetSystemColor(igdeEnvironment::escWidgetForeground));
+			const decColor colorTextBg(0.75f, 0.75f, 0.75f);
+			const decColor colorTextLine(0.25f, 0.25f, 0.25f);
 			
-			deObjectReference refStrip;
-			refStrip.TakeOver( new cStrip );
-			cStrip &strip = ( cStrip& )( deObject& )refStrip;
+			const cStrip::Ref strip(cStrip::Ref::New());
 			
-			CreateHandle( strip.handlePause, strip.handlePauseBg, handleSizeHalf );
-			CreateHandle( strip.handleDuration, strip.handleDurationBg, handleSize );
+			CreateHandle(strip->handlePause, strip->handlePauseBg, handleSizeHalf);
+			CreateHandle(strip->handleDuration, strip->handleDurationBg, handleSize);
 			
-			strip.stripIdBg.TakeOver( canvasManager.CreateCanvasPaint() );
-			strip.stripIdBg->SetFillColor( colorTextBg );
-			strip.stripIdBg->SetLineColor( colorTextLine );
-			strip.stripIdBg->SetThickness( 1 );
-			strip.stripIdBg->SetOrder( 0 );
+			strip->stripIdBg = canvasManager.CreateCanvasPaint();
+			strip->stripIdBg->SetFillColor(colorTextBg);
+			strip->stripIdBg->SetLineColor(colorTextLine);
+			strip->stripIdBg->SetThickness(1);
+			strip->stripIdBg->SetOrder(0);
 			
-			strip.stripId.TakeOver( canvasManager.CreateCanvasText() );
-			strip.stripId->SetFont( font );
-			strip.stripId->SetFontSize( ( float )font->GetLineHeight() );
-			strip.stripId->SetColor( colorText );
+			strip->stripId = canvasManager.CreateCanvasText();
+			strip->stripId->SetFont(font);
+			strip->stripId->SetFontSize((float)font->GetLineHeight());
+			strip->stripId->SetColor(colorText);
 			
-			pStrips.Add( refStrip );
+			pStrips.Add(strip);
 		}
 		
-		cStrip &strip = *( ( cStrip* )pStrips.GetAt( i ) );
+		cStrip &strip = pStrips.GetAt(i);
 		
-		strip.handlePause->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
-		pCanvasHandles->AddCanvas( strip.handlePause );
+		strip.handlePause->SetOrder((float)pCanvasHandles->GetCanvasCount());
+		pCanvasHandles->AddCanvas(strip.handlePause);
 		
-		strip.handleDuration->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
-		pCanvasHandles->AddCanvas( strip.handleDuration );
+		strip.handleDuration->SetOrder((float)pCanvasHandles->GetCanvasCount());
+		pCanvasHandles->AddCanvas(strip.handleDuration);
 		
-		strip.stripIdBg->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
-		pCanvasHandles->AddCanvas( strip.stripIdBg );
+		strip.stripIdBg->SetOrder((float)pCanvasHandles->GetCanvasCount());
+		pCanvasHandles->AddCanvas(strip.stripIdBg);
 		
-		strip.stripId->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
-		pCanvasHandles->AddCanvas( strip.stripId );
+		strip.stripId->SetOrder((float)pCanvasHandles->GetCanvasCount());
+		pCanvasHandles->AddCanvas(strip.stripId);
 	}
 }
 
-void ceWDSLane::EditStrip( ceStrip *strip ){
+void ceWDSLane::EditStrip(ceStrip *strip){
 	ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-	if( ! action || ! strip ){
-		DETHROW( deeInvalidParam );
+	if(!action || !strip){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeDialogReference refDialog;
+	const decString label(pWindow.TranslateIf(pLabel).ToUTF8());
 	decString title, text;
-	title.Format( "Edit %s", pLabel.GetString() );
-	text.Format( "%s: ", pLabel.GetString() );
-	refDialog.TakeOver( new ceDialogEditStrip( pWindow.GetEnvironment(), title, text ) );
-	ceDialogEditStrip &dialog = ( ceDialogEditStrip& )( igdeDialog& )refDialog;
+	title.FormatSafe(pWindow.Translate("Conversation.Format.Edit").ToUTF8(), label);
+	text.FormatSafe(pWindow.Translate("Conversation.Format.LabelColon").ToUTF8(), label);
+	auto dialog = ceDialogEditStrip::Ref::New(pWindow.GetEnvironment(), title, text);
 	
 	decStringList idList;
-	FillIDList( idList );
-	dialog.SetIDList( idList );
-	dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( *this ) ) );
-	dialog.SetAutoResetDuration( false );
+	FillIDList(idList);
+	dialog->SetIDList(idList);
+	dialog->SetListener(cListenerResetDuration::Ref::New(*this));
+	dialog->SetAutoResetDuration(false);
 	
-	dialog.SetFromStrip( *strip );
+	dialog->SetFromStrip(*strip);
 	
-	if( ! dialog.Run( &pWindow.GetWindowMain() ) ){
+	if(!dialog->Run(&pWindow.GetWindowMain())){
 		return;
 	}
 	
-	deObjectReference newStrip;
-	newStrip.TakeOver( dialog.CreateStrip() );
-	if( ( ceStrip& )( deObject& )newStrip == *strip ){
+	const ceStrip::Ref newStrip(dialog->CreateStrip());
+	if(*newStrip == *strip){
 		return;
 	}
 	
-	igdeUndoReference undo;
-	undo.TakeOver( UndoStripReplace( strip, ( ceStrip* )( deObject* )newStrip ) );
-	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
+	pWindow.GetConversation()->GetUndoSystem()->Add(UndoStripReplace(strip, newStrip));
 }
 
-float ceWDSLane::DefaultDuration( const decString & ) {
+float ceWDSLane::DefaultDuration(const decString &) {
 	return 0.5f;
 }
 
 
 
-void ceWDSLane::OnContextMenu( igdeMenuCascade &menu, const decPoint &position ){
+void ceWDSLane::OnContextMenu(igdeMenuCascade &menu, const decPoint &position){
 	igdeUIHelper &helper = pWindow.GetEnvironment().GetUIHelper();
 	
-	const int index = GetStripAt( position.x );
-	ceStrip * const strip = index != -1 ? GetStripList().GetAt( index ) : NULL;
-	const int indexInsert = GetInsertStripAt( position.x );
+	const int index = GetStripAt(position.x);
+	ceStrip * const strip = index != -1 ? GetStripList().GetAt(index).Pointer() : nullptr;
+	const int indexInsert = GetInsertStripAt(position.x);
 	
-	helper.MenuCommand( menu, new cActionStripAdd( *this, indexInsert ), true );
-	helper.MenuCommand( menu, new cActionStripRemove( *this, strip ), true );
-	helper.MenuCommand( menu, new cActionStripRemoveAll( *this ), true );
-	helper.MenuCommand( menu, new cActionStripMoveLeft( *this, index ), true );
-	helper.MenuCommand( menu, new cActionStripMoveRight( *this, index ), true );
-	helper.MenuCommand( menu, new cActionStripEdit( *this, strip ), true );
+	helper.MenuCommand(menu, cActionStripAdd::Ref::New(*this, indexInsert));
+	helper.MenuCommand(menu, cActionStripRemove::Ref::New(*this, strip));
+	helper.MenuCommand(menu, cActionStripRemoveAll::Ref::New(*this));
+	helper.MenuCommand(menu, cActionStripMoveLeft::Ref::New(*this, index));
+	helper.MenuCommand(menu, cActionStripMoveRight::Ref::New(*this, index));
+	helper.MenuCommand(menu, cActionStripEdit::Ref::New(*this, strip));
 }
 
 
@@ -930,43 +891,39 @@ void ceWDSLane::OnContextMenu( igdeMenuCascade &menu, const decPoint &position )
 // Protected Functions
 ////////////////////////
 
-void ceWDSLane::FillIDListLookAt( decStringList &list ){
+void ceWDSLane::FillIDListLookAt(decStringList &list){
 	const ceCAActorSpeak * const action = pWindow.GetActionASpeak();
-	if( ! action ){
+	if(!action){
 		return;
 	}
 	
-	const ceTargetList lookAtList( pWindow.GetConversation()->AllTargets() );
-	const int lookAtCount = lookAtList.GetCount();
-	int i;
-	for( i=0; i<lookAtCount; i++ ){
-		list.Add( lookAtList.GetAt( i )->GetName() );
-	}
+	pWindow.GetConversation()->AllTargets().Visit([&](const ceTarget &t){
+		list.Add(t.GetName());
+	});
 }
 
-void ceWDSLane::CreateHandle( deCanvasViewReference &canvas, deCanvasPaintReference &canvasBg, const decPoint &size ){
+void ceWDSLane::CreateHandle(deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size){
 	igdeEnvironment &env = pWindow.GetEnvironment();
-	const decColor colorBackground( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
-	const decColor colorBorder( 0.0f, 0.0f, 0.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetShadow ) );
+	const decColor colorBackground(env.GetSystemColor(igdeEnvironment::escWidgetBackground));
+	const decColor colorBorder(0.0f, 0.0f, 0.0f); //env.GetSystemColor(igdeEnvironment::escWidgetShadow));
 	deCanvasManager &canvasManager = *pWindow.GetEngine()->GetCanvasManager();
 	
-	canvas.TakeOver( canvasManager.CreateCanvasView() );
-	canvas->SetSize( size );
+	canvas = canvasManager.CreateCanvasView();
+	canvas->SetSize(size);
 	
-	canvasBg.TakeOver( canvasManager.CreateCanvasPaint() );
-	canvasBg->SetFillColor( colorBackground );
-	canvasBg->SetLineColor( colorBorder );
-	canvasBg->SetThickness( 1 );
-	canvasBg->SetOrder( 0 );
-	canvasBg->SetSize( size );
-	canvas->AddCanvas( canvasBg );
+	canvasBg = canvasManager.CreateCanvasPaint();
+	canvasBg->SetFillColor(colorBackground);
+	canvasBg->SetLineColor(colorBorder);
+	canvasBg->SetThickness(1);
+	canvasBg->SetOrder(0);
+	canvasBg->SetSize(size);
+	canvas->AddCanvas(canvasBg);
 	
-	deCanvasPaintReference canvasKnob;
-	canvasKnob.TakeOver( canvasManager.CreateCanvasPaint() );
-	canvasKnob->SetFillColor( colorBorder );
-	canvasKnob->SetThickness( 0 );
-	canvasKnob->SetOrder( 1 );
-	canvasKnob->SetPosition( decPoint( 2, 2 ) );
-	canvasKnob->SetSize( size - decPoint( 4, 4 ) );
-	canvas->AddCanvas( canvasKnob );
+	deCanvasPaint::Ref canvasKnob(canvasManager.CreateCanvasPaint());
+	canvasKnob->SetFillColor(colorBorder);
+	canvasKnob->SetThickness(0);
+	canvasKnob->SetOrder(1);
+	canvasKnob->SetPosition(decPoint(2, 2));
+	canvasKnob->SetSize(size - decPoint(4, 4));
+	canvas->AddCanvas(canvasKnob);
 }

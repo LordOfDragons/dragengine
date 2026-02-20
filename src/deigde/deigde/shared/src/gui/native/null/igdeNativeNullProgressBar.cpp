@@ -39,7 +39,8 @@ igdeNativeNullProgressBar::igdeNativeNullProgressBar(){
 igdeNativeNullProgressBar::~igdeNativeNullProgressBar(){
 }
 
-igdeNativeNullProgressBar *igdeNativeNullProgressBar::CreateNativeWidget( igdeProgressBar& ){
+igdeNativeNullProgressBar *igdeNativeNullProgressBar::CreateNativeWidget(igdeProgressBar&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullProgressBar;
 }
 

@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCParticleEmitterListener::gdeWPSOCParticleEmitterListener( gdeWPSOCParticleEmitter &panel ) :
-pPanel( panel ){
+gdeWPSOCParticleEmitterListener::gdeWPSOCParticleEmitterListener(gdeWPSOCParticleEmitter &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCParticleEmitterListener::~gdeWPSOCParticleEmitterListener(){
@@ -53,46 +53,46 @@ gdeWPSOCParticleEmitterListener::~gdeWPSOCParticleEmitterListener(){
 // Management
 ///////////////
 
-void gdeWPSOCParticleEmitterListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCParticleEmitterListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCParticleEmitterListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCParticleEmitterListener::OCPropertiesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCParticleEmitterListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCParticleEmitterListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCParticleEmitterListener::OCParticleEmittersChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCParticleEmitterListener::OCParticleEmittersChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateParticleEmitter();
 }
 
-void gdeWPSOCParticleEmitterListener::OCParticleEmitterChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCParticleEmitterListener::OCParticleEmitterChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetParticleEmitter() != emitter ){
+	if(pPanel.GetParticleEmitter() != emitter){
 		return;
 	}
 	pPanel.UpdateParticleEmitter();
 }
 
-void gdeWPSOCParticleEmitterListener::ActiveOCParticleEmitterChanged( gdeGameDefinition* ){
+void gdeWPSOCParticleEmitterListener::ActiveOCParticleEmitterChanged(gdeGameDefinition*){
 	pPanel.UpdateParticleEmitter();
 }

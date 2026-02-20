@@ -46,6 +46,10 @@
  */
 class meHTVRuleClosestVegetation : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleClosestVegetation>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Distance. */
@@ -69,10 +73,13 @@ public:
 	meHTVRuleClosestVegetation();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleClosestVegetation( const meHTVRuleClosestVegetation &rule );
+	meHTVRuleClosestVegetation(const meHTVRuleClosestVegetation &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleClosestVegetation();
+	~meHTVRuleClosestVegetation() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -80,24 +87,24 @@ public:
 	/** Retrieves the vegetation type to search for. */
 	inline const decString &GetVegetationType() const{ return pVegetationType; }
 	/** Sets the vegetation type to search for. */
-	void SetVegetationType( const char *vegetationType );
+	void SetVegetationType(const char *vegetationType);
 	/** Retrieves the search radius. */
 	inline float GetSearchRadius() const{ return pSearchRadius; }
 	/** Sets the search radius. */
-	void SetSearchRadius( float searchRadius );
+	void SetSearchRadius(float searchRadius);
 	
 	/** Update the result if required. */
-	void UpdateResult( meHTVEvaluationEnvironment &evalEnv );
+	void UpdateResult(meHTVEvaluationEnvironment &evalEnv);
 	
 	/** Resets the rule state. */
-	virtual void Reset();
+	void Reset() override;
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

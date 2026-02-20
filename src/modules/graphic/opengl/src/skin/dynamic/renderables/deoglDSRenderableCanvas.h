@@ -26,10 +26,10 @@
 #define _DEOGLDSRENDERABLECANVAS_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableCanvas.h"
 #include "../../../canvas/deoglCanvasViewListener.h"
 
 class deoglCanvasView;
-class deoglRDSRenderableCanvas;
 
 class deDSRenderableCanvas;
 
@@ -41,7 +41,7 @@ class deDSRenderableCanvas;
 class deoglDSRenderableCanvas : public deoglDSRenderable, deoglCanvasViewListener{
 public:
 	const deDSRenderableCanvas &pRenderableCanvas;
-	deoglRDSRenderableCanvas *pRRenderableCanvas;
+	deoglRDSRenderableCanvas::Ref pRRenderableCanvas;
 	deoglCanvasView *pCanvasView;
 	bool pDirty;
 	
@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableCanvas( deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
+	deoglDSRenderableCanvas(deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableCanvas();
+	~deoglDSRenderableCanvas() override;
 	/*@}*/
 	
 	
@@ -65,21 +65,21 @@ public:
 	inline const deDSRenderableCanvas &GetRenderableCanvas() const{ return pRenderableCanvas; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	
 	
 	/** \name Canvas view listener */
 	/*@{*/
-	virtual void CanvasViewDestroyed();
-	virtual void CanvasViewRequiresSync();
+	void CanvasViewDestroyed() override;
+	void CanvasViewRequiresSync() override;
 	/*@}*/
 	
 	

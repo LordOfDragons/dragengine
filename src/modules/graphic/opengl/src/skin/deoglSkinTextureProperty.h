@@ -63,19 +63,19 @@ public:
 	inline int GetRenderable() const{ return pRenderable; }
 	
 	/** Set renderable index or -1. */
-	void SetRenderable( int index );
+	void SetRenderable(int index);
 	
 	/** Calculated property index or -1. */
 	inline int GetCalculatedProperty() const{ return pCalculatedProperty; }
 	
 	/** Set calculated property index or -1. */
-	void SetCalculatedProperty( int index );
+	void SetCalculatedProperty(int index);
 	
 	/** Bone index or -1. */
 	inline int GetBone() const{ return pBone; }
 	
 	/** Set bone index or -1. */
-	void SetBone( int index );
+	void SetBone(int index);
 	
 	/** Property is dynamic. */
 	bool IsDynamic() const;
@@ -86,8 +86,8 @@ public:
 	 * If the renderable in the dynamic skin is not a value renderable the defaultValue
 	 * is returned.
 	 */
-	float ResolveAsFloat( const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, float defaultValue ) const;
+	float ResolveAsFloat(const deoglSkinState *skinState,
+		const deoglRDynamicSkin *dynamicSkin, float defaultValue) const;
 	
 	/**
 	 * Resolve as boolean value.
@@ -95,8 +95,8 @@ public:
 	 * If the renderable in the dynamic skin is not a value renderable the defaultValue
 	 * is returned. True is returned if the value is larger than 0.5 and false otherwise.
 	 */
-	bool ResolveAsBool( const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, bool defaultValue ) const;
+	bool ResolveAsBool(const deoglSkinState *skinState,
+		const deoglRDynamicSkin *dynamicSkin, bool defaultValue) const;
 	
 	/**
 	 * Resolve as color.
@@ -105,8 +105,8 @@ public:
 	 * defaultValue is returned. If renderable is a value renderable the returned
 	 * color is (value,value,value,1).
 	 */
-	decColor ResolveColor( const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, const decColor &defaultValue ) const;
+	decColor ResolveColor(const deoglSkinState *skinState,
+		const deoglRDynamicSkin *dynamicSkin, const decColor &defaultValue) const;
 	
 	/**
 	 * Resolve as vector2.
@@ -116,8 +116,8 @@ public:
 	 * vector is (value,value). If renderable is a color renderable the return vector
 	 * is (red,green).
 	 */
-	decVector2 ResolveVector2( const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue ) const;
+	decVector2 ResolveVector2(const deoglSkinState *skinState,
+		const deoglRDynamicSkin *dynamicSkin, const decVector2 &defaultValue) const;
 	
 	/**
 	 * Resolve as vector.
@@ -127,11 +127,11 @@ public:
 	 * vector is (value,value). If renderable is a color renderable the return vector
 	 * is (red,green).
 	 */
-	decVector ResolveVector( const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue ) const;
+	decVector ResolveVector(const deoglSkinState *skinState,
+		const deoglRDynamicSkin *dynamicSkin, const decVector &defaultValue) const;
 	
 	/** Resolve as matrix. */
-	decMatrix ResolveMatrix( const deoglSkinState *skinState, const decMatrix &defaultValue ) const;
+	decMatrix ResolveMatrix(const deoglSkinState *skinState, const decMatrix &defaultValue) const;
 	/*@}*/
 };
 

@@ -26,7 +26,7 @@
 #define _DESKINPROPERTYIMAGE_H_
 
 #include "deSkinProperty.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 #include "../../../common/string/decString.h"
 
 
@@ -34,9 +34,12 @@
  * \brief Skin texture image property.
  */
 class DE_DLL_EXPORT deSkinPropertyImage : public deSkinProperty{
+public:
+	using Ref = deTUniqueReference<deSkinPropertyImage>;
+	
 private:
 	decString pPath;
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	
 	
@@ -44,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin image property. */
-	deSkinPropertyImage( const char *type );
+	deSkinPropertyImage(const char *type);
 	
 	/** \brief Clean up skin property. */
-	virtual ~deSkinPropertyImage();
+	~deSkinPropertyImage() override;
 	/*@}*/
 	
 	
@@ -58,13 +61,13 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set image path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Image. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 	
 	
@@ -72,7 +75,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	void Visit(deSkinPropertyVisitor &visitor) override;
 	/*@}*/
 };
 

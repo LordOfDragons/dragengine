@@ -9,11 +9,11 @@
 class detMath : public detCase{
 public:
 	detMath();
-	~detMath();
-	void Prepare();
-	void Run();
-	void CleanUp();
-	const char *GetTestName();
+	~detMath() override;
+	void Prepare() override;
+	void Run() override;
+	void CleanUp() override;
+	const char *GetTestName() override;
 	
 	void TestQuaternion();
 };

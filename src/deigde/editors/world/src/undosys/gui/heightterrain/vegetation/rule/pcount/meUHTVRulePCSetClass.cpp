@@ -40,27 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRulePCSetClass::meUHTVRulePCSetClass( meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass ){
-	if( ! vlayer || ! rule || ! nclass ) DETHROW( deeInvalidParam );
+meUHTVRulePCSetClass::meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass){
+	if(!vlayer || !rule || !nclass) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pRule = NULL;
+	pVLayer = nullptr;
+	pRule = nullptr;
 	
-	SetShortInfo( "Vegetation Layer Rule Prop Count Set Class" );
-	SetMemoryConsumption( sizeof( meUHTVRulePCSetClass ) );
+	SetShortInfo("@World.UHTVRulePCSetRadius.VegetationLayerRulePropCountSetClass");
+	SetMemoryConsumption(sizeof(meUHTVRulePCSetClass));
 	
 	pOldPropClass = rule->GetPropClass();
 	pNewPropClass = nclass;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRulePCSetClass::~meUHTVRulePCSetClass(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +65,11 @@ meUHTVRulePCSetClass::~meUHTVRulePCSetClass(){
 ///////////////
 
 void meUHTVRulePCSetClass::Undo(){
-	pRule->SetPropClass( pOldPropClass.GetString() );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetPropClass(pOldPropClass.GetString());
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRulePCSetClass::Redo(){
-	pRule->SetPropClass( pNewPropClass.GetString() );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetPropClass(pNewPropClass.GetString());
+	pVLayer->NotifyRuleChanged(pRule);
 }

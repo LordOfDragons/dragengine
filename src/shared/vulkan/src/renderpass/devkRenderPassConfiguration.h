@@ -27,6 +27,7 @@
 
 #include "../devkBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -53,18 +54,18 @@ public:
 	
 	/** Sub pass configuration. */
 	struct sSubPass{
-		int colorAttachments[ 8 ];
+		int colorAttachments[8];
 		int depthStencilAttachment;
+		
+		bool operator==(const sSubPass &other) const;
 	};
 	
 	
 	
 private:
-	int pAttachmentCount;
-	VkAttachmentDescription *pAttachments;
-	VkClearValue *pClearValues;
-	int pSubPassCount;
-	sSubPass *pSubPasses;
+	decTList<VkAttachmentDescription> pAttachments;
+	decTList<VkClearValue> pClearValues;
+	decTList<sSubPass> pSubPasses;
 	
 	
 	
@@ -75,7 +76,7 @@ public:
 	devkRenderPassConfiguration();
 	
 	/** Create copy of render pass configuration. */
-	devkRenderPassConfiguration( const devkRenderPassConfiguration &configuration );
+	devkRenderPassConfiguration(const devkRenderPassConfiguration &configuration);
 	
 	/** Clean up render pass configuration. */
 	~devkRenderPassConfiguration();
@@ -85,57 +86,47 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Attachment count. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	/** Attachments. */
+	inline const decTList<VkAttachmentDescription> &GetAttachments() const{ return pAttachments; }
 	
 	/** Set attachment count. */
-	void SetAttachmentCount( int count );
-	
-	/** Attachment at index. */
-	const VkAttachmentDescription &GetAttachmentAt( int index ) const;
+	void SetAttachmentCount(int count);
 	
 	/** Set attachment at index. */
-	void SetAttachmentAt( int index, const VkAttachmentDescription &attachment );
+	void SetAttachmentAt(int index, const VkAttachmentDescription &attachment);
 	
 	/** Set color attachment at index. */
-	void SetColorAttachmentAt( int index, VkFormat format, pInType in, eOutType out );
+	void SetColorAttachmentAt(int index, VkFormat format, pInType in, eOutType out);
 	
-	/** Clear value at index. */
-	const VkClearValue &GetClearValueAt( int index ) const;
+	
+	/** Clear values. */
+	inline const decTList<VkClearValue> &GetClearValues() const{ return pClearValues; }
 	
 	/** Set clear value at index. */
-	void SetClearValueAt( int index, const VkClearValue &clearValue );
+	void SetClearValueAt(int index, const VkClearValue &clearValue);
 	
 	/** Set color clear value at index. */
-	void SetClearValueColorFloatAt( int index, float red, float green, float blue, float alpha );
-	void SetClearValueColorIntAt( int index, int red, int green, int blue, int alpha );
-	void SetClearValueColorUIntAt( int index, int red, int green, int blue, int alpha );
+	void SetClearValueColorFloatAt(int index, float red, float green, float blue, float alpha);
+	void SetClearValueColorIntAt(int index, int red, int green, int blue, int alpha);
+	void SetClearValueColorUIntAt(int index, int red, int green, int blue, int alpha);
 	
 	/** Set depth/stencil clear value at index. */
-	void SetClearValueDepthAt( int index, float depth, int stencil );
-	
-	/** Internal use only. */
-	inline const VkAttachmentDescription *GetAttachments() const{ return pAttachments; }
-	inline const VkClearValue *GetClearValues() const{ return pClearValues; }
+	void SetClearValueDepthAt(int index, float depth, int stencil);
 	
 	
-	
-	/** Sub pass count. */
-	inline int GetSubPassCount() const{ return pSubPassCount; }
+	/** Sub passses. */
+	inline const decTList<sSubPass> &GetSubPasses() const{ return pSubPasses; }
 	
 	/** Set sub pass count. */
-	void SetSubPassCount( int count );
-	
-	/** Sub pass at index. */
-	const sSubPass &GetSubPassAt( int index ) const;
+	void SetSubPassCount(int count);
 	
 	/** Set sub pass at index. */
-	void SetSubPassAt( int index, const sSubPass &subpass );
+	void SetSubPassAt(int index, const sSubPass &subpass);
 	
 	/** Set sub pass at index. */
-	void SetSubPassAt( int index, int depthStencil, int color1 = -1, int color2 = -1,
+	void SetSubPassAt(int index, int depthStencil, int color1 = -1, int color2 = -1,
 		int color3 = -1, int color4 = -1, int color5 = -1, int color6 = -1,
-		int color7 = -1, int color8 = -1 );
+		int color7 = -1, int color8 = -1);
 	/*@}*/
 	
 	
@@ -143,10 +134,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Configurations are equal. */
-	bool operator==( const devkRenderPassConfiguration &configuration ) const;
+	bool operator==(const devkRenderPassConfiguration &configuration) const;
 	
 	/** Copy configuration. */
-	devkRenderPassConfiguration &operator=( const devkRenderPassConfiguration &configuration );
+	devkRenderPassConfiguration &operator=(const devkRenderPassConfiguration &configuration);
 	/*@}*/
 };
 

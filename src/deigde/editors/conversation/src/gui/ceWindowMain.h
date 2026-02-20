@@ -25,25 +25,26 @@
 #ifndef _CEWINDOWMAIN_H_
 #define _CEWINDOWMAIN_H_
 
+#include "ceWindowMainListener.h"
+#include "ceViewConversation.h"
+#include "properties/ceWindowProperties.h"
+#include "dopesheet/ceWindowDopeSheet.h"
+#include "../configuration/ceConfiguration.h"
+#include "../conversation/ceConversation.h"
+#include "../loadsave/ceLoadSaveSystem.h"
+
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/decStringSet.h>
 
-class decStringList;
-class decStringSet;
-class ceWindowMainListener;
-class ceViewConversation;
-class ceConfiguration;
-class ceConversation;
-class ceWindowProperties;
-class ceWindowDopeSheet;
-class ceLoadSaveSystem;
 class ceIGDEModule;
 class igdeStepableTask;
 
@@ -53,13 +54,17 @@ class igdeStepableTask;
  * Main Editor Window.
  */
 class ceWindowMain : public igdeEditorWindow{
+public:
+	using Ref = deTObjectReference<ceWindowMain>;
+	
+	
 private:
 	class cRecentFilesCTS : public igdeRecentFiles{
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTS( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTS(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -67,8 +72,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTA( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTA(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -76,8 +81,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTGS( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTGS(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -85,82 +90,82 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesLangPack( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesLangPack(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
-	ceWindowMainListener *pListener;
+	ceWindowMainListener::Ref pListener;
 	
-	igdeIconReference pIconActionCameraShot;
-	igdeIconReference pIconActionMusic;
-	igdeIconReference pIconActionActorSpeak;
-	igdeIconReference pIconActionIfElse;
-	igdeIconReference pIconActionIfElseCaseIf;
-	igdeIconReference pIconActionIfElseCaseElse;
-	igdeIconReference pIconActionPlayerChoice;
-	igdeIconReference pIconActionOption;
-	igdeIconReference pIconActionSnippet;
-	igdeIconReference pIconActionStop;
-	igdeIconReference pIconActionActorCommand;
-	igdeIconReference pIconActionCommand;
-	igdeIconReference pIconActionVariable;
-	igdeIconReference pIconActionWait;
-	igdeIconReference pIconActionTrigger;
-	igdeIconReference pIconActionActorAdd;
-	igdeIconReference pIconActionActorRemove;
-	igdeIconReference pIconActionCoordSysAdd;
-	igdeIconReference pIconActionCoordSysRemove;
-	igdeIconReference pIconActionComment;
+	igdeIcon::Ref pIconActionCameraShot;
+	igdeIcon::Ref pIconActionMusic;
+	igdeIcon::Ref pIconActionActorSpeak;
+	igdeIcon::Ref pIconActionIfElse;
+	igdeIcon::Ref pIconActionIfElseCaseIf;
+	igdeIcon::Ref pIconActionIfElseCaseElse;
+	igdeIcon::Ref pIconActionPlayerChoice;
+	igdeIcon::Ref pIconActionOption;
+	igdeIcon::Ref pIconActionSnippet;
+	igdeIcon::Ref pIconActionStop;
+	igdeIcon::Ref pIconActionActorCommand;
+	igdeIcon::Ref pIconActionCommand;
+	igdeIcon::Ref pIconActionVariable;
+	igdeIcon::Ref pIconActionWait;
+	igdeIcon::Ref pIconActionTrigger;
+	igdeIcon::Ref pIconActionActorAdd;
+	igdeIcon::Ref pIconActionActorRemove;
+	igdeIcon::Ref pIconActionCoordSysAdd;
+	igdeIcon::Ref pIconActionCoordSysRemove;
+	igdeIcon::Ref pIconActionComment;
 	
-	igdeIconReference pIconConditionLogic;
-	igdeIconReference pIconConditionActorCommand;
-	igdeIconReference pIconConditionCommand;
-	igdeIconReference pIconConditionVariable;
-	igdeIconReference pIconConditionHasActor;
-	igdeIconReference pIconConditionActorInConversation;
-	igdeIconReference pIconConditionTrigger;
+	igdeIcon::Ref pIconConditionLogic;
+	igdeIcon::Ref pIconConditionActorCommand;
+	igdeIcon::Ref pIconConditionCommand;
+	igdeIcon::Ref pIconConditionVariable;
+	igdeIcon::Ref pIconConditionHasActor;
+	igdeIcon::Ref pIconConditionActorInConversation;
+	igdeIcon::Ref pIconConditionTrigger;
 	
-	igdeIconReference pIconPlayAction;
-	igdeIconReference pIconPlayFromHere;
-	igdeIconReference pIconPlayPause;
-	igdeIconReference pIconPlaySelectCurAction;
+	igdeIcon::Ref pIconPlayAction;
+	igdeIcon::Ref pIconPlayFromHere;
+	igdeIcon::Ref pIconPlayPause;
+	igdeIcon::Ref pIconPlaySelectCurAction;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
 	
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionViewCTSLoad;
-	igdeActionReference pActionViewCTSSave;
-	igdeActionReference pActionViewCTALoad;
-	igdeActionReference pActionViewCTASave;
-	igdeActionReference pActionViewCTGSLoad;
-	igdeActionReference pActionViewCTGSSave;
-	igdeActionReference pActionViewShowRuleOfThirdsAid;
-	igdeActionReference pActionViewAttachLangPack;
-	igdeActionReference pActionViewDetachLangPack;
-	igdeActionReference pActionViewMissingWords;
+	igdeAction::Ref pActionViewCTSLoad;
+	igdeAction::Ref pActionViewCTSSave;
+	igdeAction::Ref pActionViewCTALoad;
+	igdeAction::Ref pActionViewCTASave;
+	igdeAction::Ref pActionViewCTGSLoad;
+	igdeAction::Ref pActionViewCTGSSave;
+	igdeAction::Ref pActionViewShowRuleOfThirdsAid;
+	igdeAction::Ref pActionViewAttachLangPack;
+	igdeAction::Ref pActionViewDetachLangPack;
+	igdeAction::Ref pActionViewMissingWords;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
-	ceConfiguration *pConfiguration;
+	ceConfiguration::Ref pConfiguration;
 	igdeClipboard pClipboard;
-	ceLoadSaveSystem *pLoadSaveSystem;
+	ceLoadSaveSystem::Ref pLoadSaveSystem;
 	
-	ceViewConversation *pViewConversation;
-	ceWindowProperties *pWindowProperties;
-	ceWindowDopeSheet *pWindowDopeSheet;
+	ceViewConversation::Ref pViewConversation;
+	ceWindowProperties::Ref pWindowProperties;
+	ceWindowDopeSheet::Ref pWindowDopeSheet;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
 	cRecentFilesCTS pRecentFilesCTS;
 	cRecentFilesCTA pRecentFilesCTA;
@@ -173,11 +178,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	ceWindowMain( ceIGDEModule &module );
+	ceWindowMain(ceIGDEModule &module);
 	
 protected:
 	/** Clean up main window. */
-	virtual ~ceWindowMain();
+	~ceWindowMain() override;
 	/*@}*/
 	
 	
@@ -192,32 +197,32 @@ public:
 	void ResetViews();
 	
 	/** Configuration. */
-	inline ceConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline const ceConfiguration::Ref &GetConfiguration() const{ return pConfiguration; }
 	
 	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
 	
 	/** Load save system. */
-	inline ceLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline const ceLoadSaveSystem::Ref &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Create new conversation. */
 	void CreateNewConversation();
 	
 	/** Save conversation to file. */
-	void SaveConversation( const char *filename );
+	void SaveConversation(const char *filename);
 	
 	/** Properties window. */
 	inline ceWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
 	
 	/** Show found missing words dialog. */
-	void ShowFoundMissingWordsDialog( decStringSet &missingWords );
+	void ShowFoundMissingWordsDialog(decStringSet &missingWords);
 	
 	/** Recent files. */
 	inline cRecentFilesCTS &GetRecentFilesCTS(){ return pRecentFilesCTS; }
@@ -226,46 +231,46 @@ public:
 	inline cRecentFilesLangPack &GetRecentFilesLangPack(){ return pRecentFilesLangPack; }
 	
 	/** Open conversation test actor. */
-	void LoadCTA( const char *filename );
+	void LoadCTA(const char *filename);
 	
 	/** Attach language pack. */
-	void AttachLangPack( const char *filename );
+	void AttachLangPack(const char *filename);
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconActionCameraShot() const{ return pIconActionCameraShot; }
-	inline igdeIcon *GetIconActionMusic() const{ return pIconActionMusic; }
-	inline igdeIcon *GetIconActionActorSpeak() const{ return pIconActionActorSpeak; }
-	inline igdeIcon *GetIconActionIfElse() const{ return pIconActionIfElse; }
-	inline igdeIcon *GetIconActionIfElseCaseIf() const{ return pIconActionIfElseCaseIf; }
-	inline igdeIcon *GetIconActionIfElseCaseElse() const{ return pIconActionIfElseCaseElse; }
-	inline igdeIcon *GetIconActionPlayerChoice() const{ return pIconActionPlayerChoice; }
-	inline igdeIcon *GetIconActionOption() const{ return pIconActionOption; }
-	inline igdeIcon *GetIconActionSnippet() const{ return pIconActionSnippet; }
-	inline igdeIcon *GetIconActionStop() const{ return pIconActionStop; }
-	inline igdeIcon *GetIconActionActorCommand() const{ return pIconActionActorCommand; }
-	inline igdeIcon *GetIconActionCommand() const{ return pIconActionCommand; }
-	inline igdeIcon *GetIconActionVariable() const{ return pIconActionVariable; }
-	inline igdeIcon *GetIconActionWait() const{ return pIconActionWait; }
-	inline igdeIcon *GetIconActionTrigger() const{ return pIconActionTrigger; }
-	inline igdeIcon *GetIconActionActorAdd() const{ return pIconActionActorAdd; }
-	inline igdeIcon *GetIconActionActorRemove() const{ return pIconActionActorRemove; }
-	inline igdeIcon *GetIconActionCoordSysAdd() const{ return pIconActionCoordSysAdd; }
-	inline igdeIcon *GetIconActionCoordSysRemove() const{ return pIconActionCoordSysRemove; }
-	inline igdeIcon *GetIconActionComment() const{ return pIconActionComment; }
+	inline const igdeIcon::Ref &GetIconActionCameraShot() const{ return pIconActionCameraShot; }
+	inline const igdeIcon::Ref &GetIconActionMusic() const{ return pIconActionMusic; }
+	inline const igdeIcon::Ref &GetIconActionActorSpeak() const{ return pIconActionActorSpeak; }
+	inline const igdeIcon::Ref &GetIconActionIfElse() const{ return pIconActionIfElse; }
+	inline const igdeIcon::Ref &GetIconActionIfElseCaseIf() const{ return pIconActionIfElseCaseIf; }
+	inline const igdeIcon::Ref &GetIconActionIfElseCaseElse() const{ return pIconActionIfElseCaseElse; }
+	inline const igdeIcon::Ref &GetIconActionPlayerChoice() const{ return pIconActionPlayerChoice; }
+	inline const igdeIcon::Ref &GetIconActionOption() const{ return pIconActionOption; }
+	inline const igdeIcon::Ref &GetIconActionSnippet() const{ return pIconActionSnippet; }
+	inline const igdeIcon::Ref &GetIconActionStop() const{ return pIconActionStop; }
+	inline const igdeIcon::Ref &GetIconActionActorCommand() const{ return pIconActionActorCommand; }
+	inline const igdeIcon::Ref &GetIconActionCommand() const{ return pIconActionCommand; }
+	inline const igdeIcon::Ref &GetIconActionVariable() const{ return pIconActionVariable; }
+	inline const igdeIcon::Ref &GetIconActionWait() const{ return pIconActionWait; }
+	inline const igdeIcon::Ref &GetIconActionTrigger() const{ return pIconActionTrigger; }
+	inline const igdeIcon::Ref &GetIconActionActorAdd() const{ return pIconActionActorAdd; }
+	inline const igdeIcon::Ref &GetIconActionActorRemove() const{ return pIconActionActorRemove; }
+	inline const igdeIcon::Ref &GetIconActionCoordSysAdd() const{ return pIconActionCoordSysAdd; }
+	inline const igdeIcon::Ref &GetIconActionCoordSysRemove() const{ return pIconActionCoordSysRemove; }
+	inline const igdeIcon::Ref &GetIconActionComment() const{ return pIconActionComment; }
 	
-	inline igdeIcon *GetIconConditionLogic() const{ return pIconConditionLogic; }
-	inline igdeIcon *GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
-	inline igdeIcon *GetIconConditionCommand() const{ return pIconConditionCommand; }
-	inline igdeIcon *GetIconConditionVariable() const{ return pIconConditionVariable; }
-	inline igdeIcon *GetIconConditionHasActor() const{ return pIconConditionHasActor; }
-	inline igdeIcon *GetIconConditionActorInConversation() const{ return pIconConditionActorInConversation; }
-	inline igdeIcon *GetIconConditionTrigger() const{ return pIconConditionTrigger; }
+	inline const igdeIcon::Ref &GetIconConditionLogic() const{ return pIconConditionLogic; }
+	inline const igdeIcon::Ref &GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
+	inline const igdeIcon::Ref &GetIconConditionCommand() const{ return pIconConditionCommand; }
+	inline const igdeIcon::Ref &GetIconConditionVariable() const{ return pIconConditionVariable; }
+	inline const igdeIcon::Ref &GetIconConditionHasActor() const{ return pIconConditionHasActor; }
+	inline const igdeIcon::Ref &GetIconConditionActorInConversation() const{ return pIconConditionActorInConversation; }
+	inline const igdeIcon::Ref &GetIconConditionTrigger() const{ return pIconConditionTrigger; }
 	
-	inline igdeIcon *GetIconPlayAction() const{ return pIconPlayAction; }
-	inline igdeIcon *GetIconPlayFromHere() const{ return pIconPlayFromHere; }
-	inline igdeIcon *GetIconPlayPause() const{ return pIconPlayPause; }
-	inline igdeIcon *GetIconPlaySelectCurAction() const{ return pIconPlaySelectCurAction; }
+	inline const igdeIcon::Ref &GetIconPlayAction() const{ return pIconPlayAction; }
+	inline const igdeIcon::Ref &GetIconPlayFromHere() const{ return pIconPlayFromHere; }
+	inline const igdeIcon::Ref &GetIconPlayPause() const{ return pIconPlayPause; }
+	inline const igdeIcon::Ref &GetIconPlaySelectCurAction() const{ return pIconPlaySelectCurAction; }
 	
 	
 	
@@ -274,25 +279,25 @@ public:
 	
 	
 	/** Game engine is about to be started. */
-	virtual void OnBeforeEngineStart();
+	void OnBeforeEngineStart() override;
 	
 	/** Game engine has been started. */
-	virtual void OnAfterEngineStart();
+	void OnAfterEngineStart() override;
 	
 	/** Game engine is about to be stopped. */
-	virtual void OnBeforeEngineStop();
+	void OnBeforeEngineStop() override;
 	
 	/** Game engine has been stopped. */
-	virtual void OnAfterEngineStop();
+	void OnAfterEngineStop() override;
 	
 	/** Module has been activated. */
-	virtual void OnActivate();
+	void OnActivate() override;
 	
 	/** Module has been deactivated. */
-	virtual void OnDeactivate();
+	void OnDeactivate() override;
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -303,12 +308,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list) override;
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	void LoadDocument(const char *filename) override;
 	
 	/**
 	 * Requests a document to be saved.
@@ -318,12 +323,12 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename) override;
 	
 	/**
 	 * Recent files changed.
 	 */
-	virtual void RecentFilesChanged();
+	void RecentFilesChanged() override;
 	
 	/**
 	 * The game project has changed.
@@ -333,7 +338,7 @@ public:
 	 * objects related to the previous game project. The old game project is kept
 	 * alive until all editor modules have processed the OnGameProjectChanged().
 	 */
-	virtual void OnGameProjectChanged();
+	void OnGameProjectChanged() override;
 	
 	/**
 	 * Project game definition changed.
@@ -342,12 +347,12 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update \em NULL can be returned. The caller delets the task once
+	 * does not need any update \em nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns \em NULL.
+	 * The default implementation returns \em nullptr.
 	 */
-	virtual igdeStepableTask *OnGameDefinitionChanged();
+	igdeStepableTask::Ref OnGameDefinitionChanged() override;
 	/*@}*/
 	
 	
@@ -358,9 +363,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 };
 
 #endif

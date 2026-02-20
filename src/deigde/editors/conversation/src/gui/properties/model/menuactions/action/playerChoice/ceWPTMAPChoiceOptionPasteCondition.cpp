@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionPasteCondition::ceWPTMAPChoiceOptionPasteCondition( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionPasteCondition::ceWPTMAPChoiceOptionPasteCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option ) :
-ceWPTMAPasteCondition( windowMain, conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ){
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option) :
+ceWPTMAPasteCondition(windowMain, conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option){
 }
 
 
@@ -54,11 +54,11 @@ pOption( &option ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceOptionPasteCondition::CreateUndo(
-const ceConversationConditionList &conditions ){
-	if( conditions.GetCount() != 1 ){
+igdeUndo::Ref ceWPTMAPChoiceOptionPasteCondition::CreateUndo(
+const ceConversationCondition::List &conditions){
+	if(conditions.GetCount() != 1){
 		//DETHROW( deeInvalidParam );
 	}
 	
-	return new ceUCAPChoiceOptionPasteCondition( pTopic, pPlayerChoice, pOption, conditions.GetAt( 0 ) );
+	return ceUCAPChoiceOptionPasteCondition::Ref::New(pTopic, pPlayerChoice, pOption, conditions.First());
 }

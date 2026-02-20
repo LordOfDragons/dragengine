@@ -25,42 +25,52 @@
 #ifndef _REUREMOVESHAPE_H_
 #define _REUREMOVESHAPE_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/shape/reRigShape.h"
+#include "../../../rig/bone/reRigBone.h"
+
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigShape;
-class reRigBone;
-class reRigShapeList;
-
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
  * \brief Undo Remove Shape.
  */
 class reURemoveShape : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reURemoveShape>;
+	
+	
 private:
-	struct sEntry{
-		reRigShape *shape;
-		reRigBone *bone;
+	class cEntry : public deObject{
+	public:
+		using Ref = deTObjectReference<cEntry>;
+		
+		reRigShape::Ref shape;
+		reRigBone::Ref bone;
+		
+		cEntry() = default;
+	protected:
+		~cEntry() override = default;
 	};
+	
 	
 private:
 	reRig *pRig;
 	
-	sEntry *pEntries;
-	int pEntryCount;
-	
+	decTObjectList<cEntry> pEntries;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURemoveShape( reRigShapeList &list );
+	reURemoveShape(const reRigShape::List &list);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reURemoveShape();
+	~reURemoveShape() override;
 	/*@}*/
 	
 	
@@ -69,16 +79,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

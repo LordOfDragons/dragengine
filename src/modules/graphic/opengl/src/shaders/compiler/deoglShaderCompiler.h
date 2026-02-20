@@ -29,18 +29,17 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/deTObjectReference.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/parallel/deParallelTask.h>
 
 class deoglShaderLanguage;
 
 class deoglShaderDefines;
-class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglShaderProgramUnit;
 class deoglRenderThread;
-class deoglShaderBindingList;
 
 
 
@@ -72,8 +71,9 @@ private:
 	
 	class cCacheShaderTask : public deParallelTask{
 	public:
-		typedef deTObjectReference<cCacheShaderTask> Ref;
-		
+		using Ref = deTObjectReference<cCacheShaderTask>;
+	
+	
 	private:
 		cCacheShader pCacheShader;
 		deMutex &pMutexLogging;
@@ -92,7 +92,7 @@ private:
 	
 	deoglShaderLanguage &pLanguage;
 	int pContextIndex;
-	char *pErrorLog;
+	decTList<char> pErrorLog;
 	deoglShaderPreprocessor pPreprocessor;
 	deMutex pMutexCompile;
 	
@@ -139,8 +139,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
-	
 	void pCompileShaderUnit(deoglShaderProgramUnit &unit);
 	void pFinishCompileShaderUnit(deoglShaderProgramUnit &unit);
 	void pCompileShader(deoglShaderProgram &program);

@@ -26,10 +26,10 @@
 #define _DEOGLPIPELINEMANAGER_H_
 
 #include "deoglPipelineState.h"
+#include "../deoglBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -42,16 +42,15 @@ class deoglPipelineConfiguration;
  */
 class deoglPipelineManager : public deObject{
 public:
-	typedef deTObjectReference<deoglPipelineManager> Ref;
-	
+	using Ref = deTObjectReference<deoglPipelineManager>;
 	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	deoglPipelineState pState;
-	decObjectList pPipelines;
+	decTObjectList<deoglPipeline> pPipelines;
 	
-	decPointerList pRTSPipelines;
+	decTList<deoglPipeline*> pRTSPipelines;
 	deMutex pMutex;
 	
 	
@@ -60,11 +59,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline manager. */
-	deoglPipelineManager( deoglRenderThread &renderThread );
+	deoglPipelineManager(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up pipelines manager. */
-	virtual ~deoglPipelineManager();
+	~deoglPipelineManager() override;
 	/*@}*/
 	
 	
@@ -79,11 +78,11 @@ public:
 	inline deoglPipelineState &GetState(){ return pState; }
 	
 	/** Pipeline with RTS index or nullptr. Caller does not hold reference. */
-	const deoglPipeline *GetWithRTSIndex( int index );
+	const deoglPipeline *GetWithRTSIndex(int index);
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
-	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration,
-		bool assignRTSIndex = false );
+	const deoglPipeline *GetWith(const deoglPipelineConfiguration &configuration,
+		bool assignRTSIndex = false);
 	/*@}*/
 };
 

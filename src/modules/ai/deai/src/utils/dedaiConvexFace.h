@@ -25,6 +25,8 @@
 #ifndef _DEDAICONVEXFACE_H_
 #define _DEDAICONVEXFACE_H_
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 class dedaiConvexFaceList;
@@ -41,10 +43,12 @@ class dedaiConvexFaceList;
  * prevent having to create subclasses faces for this common task a marker
  * value is included which can be set to an integer value.
  */
-class dedaiConvexFace{
+class dedaiConvexFace : public deObject{
+public:
+	using Ref = deTObjectReference<dedaiConvexFace>;
+	
 private:
-	int *pVertices;
-	int pVertexCount;
+	decTList<int> pVertices;
 	decVector pNormal;
 	int pMarker;
 	
@@ -57,53 +61,57 @@ public:
 	dedaiConvexFace();
 	
 	/** \brief Create copy of convex face. */
-	dedaiConvexFace( const dedaiConvexFace &face );
+	dedaiConvexFace(const dedaiConvexFace &face);
 	
+	/** \brief Create copy of convex face. */
+	explicit dedaiConvexFace(int marker);
+	
+protected:
 	/** \brief Clean up convex face. */
-	virtual ~dedaiConvexFace();
+	~dedaiConvexFace() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Face normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/** \brief Marker. */
 	inline int GetMarker() const{ return pMarker; }
 	
 	/** \brief Set marker. */
-	void SetMarker( int marker );
+	void SetMarker(int marker);
 	
 	
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** \brief Vertex at index. */
-	int GetVertexAt( int index ) const;
+	int GetVertexAt(int index) const;
 	
 	/** \brief Set vertex at index. */
-	void SetVertexAt( int index, int vertex );
+	void SetVertexAt(int index, int vertex);
 	
 	/** \brief Vertex is present. */
-	bool HasVertex( int vertex ) const;
+	bool HasVertex(int vertex) const;
 	
 	/** \brief Index of vertex or -1 if absent. */
-	int IndexOfVertex( int vertex ) const;
+	int IndexOfVertex(int vertex) const;
 	
 	/** \brief Add vertex. */
-	void AddVertex( int vertex );
+	void AddVertex(int vertex);
 	
 	/** \brief Insert vertex at index. */
-	void InsertVertex( int index, int vertex );
+	void InsertVertex(int index, int vertex);
 	
 	/** \brief Remove vertex from index. */
-	void RemoveVertexFrom( int index );
+	void RemoveVertexFrom(int index);
 	
 	/** \brief Remove all vertices. */
 	void RemoveAllVertices();
@@ -111,13 +119,13 @@ public:
 	
 	
 	/** \brief Calculate the center of the face. */
-	decVector CalculateCenter( const dedaiConvexFaceList &convexFaceList ) const;
+	decVector CalculateCenter(const dedaiConvexFaceList &convexFaceList) const;
 	
 	/** \brief Sort vertices in clockwise order around the face normal. */
-	void SortVertices( const dedaiConvexFaceList &convexFaceList );
+	void SortVertices(const dedaiConvexFaceList &convexFaceList);
 	
 	/** \brief Triangle is too small. */
-	bool IsTooSmall( const dedaiConvexFaceList &convexFaceList ) const;
+	bool IsTooSmall(const dedaiConvexFaceList &convexFaceList) const;
 	/*@}*/
 	
 	
@@ -125,7 +133,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy face. */
-	virtual dedaiConvexFace &operator=( const dedaiConvexFace &face );
+	virtual dedaiConvexFace &operator=(const dedaiConvexFace &face);
 	/*@}*/
 };
 

@@ -35,6 +35,10 @@
  * Undo action set mapped bone.
  */
 class seUMappedSetBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedSetBone>;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetBone( seMapped *mapped, const char *newBone );
+	seUMappedSetBone(seMapped *mapped, const char *newBone);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetBone();
+	~seUMappedSetBone() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

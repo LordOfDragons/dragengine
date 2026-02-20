@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include "ceSpeechAnimation.h"
-#include "ceSAPhoneme.h"
 #include "ceSAWord.h"
 
 #include <dragengine/deEngine.h>
@@ -56,17 +55,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceSpeechAnimation::ceSpeechAnimation( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+ceSpeechAnimation::ceSpeechAnimation(deEngine *engine){
+	if(!engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	
 	pEngAnimator = nullptr;
 	pEngAnimatorInstance = nullptr;
 	
-	pSpeakPhonemes = nullptr;
-	pSpeakPhonemeCount = 0;
-	pSpeakPhonemeSize = 0;
 	pSpeakLength = 0.0f;
 	pSpeakPos = -1;
 	pSpeakElapsed = 0.0f;
@@ -76,9 +72,9 @@ ceSpeechAnimation::ceSpeechAnimation( deEngine *engine ){
 		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
-		pEngAnimatorInstance->SetAnimator( pEngAnimator );
+		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -93,37 +89,22 @@ ceSpeechAnimation::~ceSpeechAnimation(){
 // Management
 ///////////////
 
-void ceSpeechAnimation::SetNeutralMoveName( const char *name ){
+void ceSpeechAnimation::SetNeutralMoveName(const char *name){
 	pNeutralMoveName = name;
 }
 
 void ceSpeechAnimation::RemoveAllSpeakPhonemes(){
-	pSpeakPhonemeCount = 0;
-	
+	pSpeakPhonemes.RemoveAll();
 	pSpeakLength = 0.0f;
 	pSpeakPos = -1;
 	pSpeakElapsed = 0.0f;
 	pSpeaking = false;
 }
 
-void ceSpeechAnimation::AddSpeakPhoneme( int phoneme, float length ){
-	DEASSERT_TRUE( phoneme >= -1 )
-	DEASSERT_TRUE( phoneme < pPhonemeList.GetCount() )
+void ceSpeechAnimation::AddSpeakPhoneme(int ipa, float length){
+	DEASSERT_TRUE(ipa >= -1)
 	
-	if( pSpeakPhonemeCount == pSpeakPhonemeSize ){
-		int newSize = pSpeakPhonemeSize + 20;
-		sSpeakPhoneme *newArray = new sSpeakPhoneme[ newSize ];
-		if( pSpeakPhonemes ){
-			memcpy( newArray, pSpeakPhonemes, sizeof( sSpeakPhoneme ) * pSpeakPhonemeCount );
-			delete [] pSpeakPhonemes;
-		}
-		pSpeakPhonemes = newArray;
-		pSpeakPhonemeSize = newSize;
-	}
-	
-	pSpeakPhonemes[ pSpeakPhonemeCount ].phoneme = phoneme;
-	pSpeakPhonemes[ pSpeakPhonemeCount ].length = length;
-	pSpeakPhonemeCount++;
+	pSpeakPhonemes.Add(cSpeakPhoneme::Ref::New(ipa, length));
 	
 	pSpeakLength += length;
 	pSpeakPos = -1;
@@ -134,19 +115,13 @@ void ceSpeechAnimation::AddSpeakPhoneme( int phoneme, float length ){
 
 
 void ceSpeechAnimation::CreateAnimator(){
-	const int phonemeCount = pPhonemeList.GetCount();
-	deAnimatorLink *engLink = nullptr;
-	int controllerIndex;
-	int linkIndex;
-	int i, j;
-	
 	// clear the engine controllers of all phonemes
-	for( i=0; i<phonemeCount; i++ ){
-		pPhonemeList.GetAt( i )->SetEngineController( -1 );
-	}
+	pPhonemes.Visit([](int, ceSAPhoneme &phoneme){
+		phoneme.SetEngineController(-1);
+	});
 	
 	// remove the animator from the instance just for safety
-	pEngAnimatorInstance->SetAnimator( nullptr );
+	pEngAnimatorInstance->SetAnimator(nullptr);
 	
 	// rebuild the animator. for each animation move used in all phonemes
 	// one controller and one animation rule is added. these are considered
@@ -159,80 +134,70 @@ void ceSpeechAnimation::CreateAnimator(){
 	pEngAnimator->RemoveAllControllers();
 	
 	// use the existing animation state
-	const deAnimatorRuleStateSnapshot::Ref ruleReset(
-		deAnimatorRuleStateSnapshot::Ref::New( new deAnimatorRuleStateSnapshot ) );
-	ruleReset->SetUseLastState( true );
-	pEngAnimator->AddRule( ruleReset );
+	const deAnimatorRuleStateSnapshot::Ref ruleReset(deAnimatorRuleStateSnapshot::Ref::New());
+	ruleReset->SetUseLastState(true);
+	pEngAnimator->AddRule(ruleReset);
 	
 	// add rule for neutral vertex position sets
-	if( pNeutralVertexPositionSets.GetCount() > 0 ){
-		const deAnimatorRuleStateManipulator::Ref rule(
-			deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
-		rule->SetEnableRotation( false );
+	if(pNeutralVertexPositionSets.GetCount() > 0){
+		const deAnimatorRuleStateManipulator::Ref rule(deAnimatorRuleStateManipulator::Ref::New());
+		rule->SetEnableRotation(false);
 		rule->GetListVertexPositionSets() = pNeutralVertexPositionSets;
-		pEngAnimator->AddRule( rule );
+		pEngAnimator->AddRule(rule);
 	}
 	
 	// add all unique visemes used by all phonemes
-	for( i=0; i<phonemeCount; i++ ){
-		ceSAPhoneme &phoneme = *pPhonemeList.GetAt( i );
-		
-		if( phoneme.GetEngineController() == -1 ){
-			const decString &moveName = pPhonemeList.GetAt( i )->GetMoveName();
-			
-			// add a controller for the new viseme
-			controllerIndex = pEngAnimator->GetControllerCount();
-			pEngAnimator->AddController( new deAnimatorController );
-			
-			// add a link for the new viseme
-			linkIndex = pEngAnimator->GetLinkCount();
-			engLink = new deAnimatorLink;
-			engLink->SetController( controllerIndex );
-			pEngAnimator->AddLink( engLink );
-			engLink = nullptr;
-			
-			// add an animation rule for the new viseme
-			if( ! phoneme.GetVertexPositionSet().IsEmpty() ){
-				const deAnimatorRuleStateManipulator::Ref rule(
-					deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
-				rule->GetListVertexPositionSets().Add( phoneme.GetVertexPositionSet() );
-				rule->SetEnableRotation( false );
-				rule->SetMaximumVertexPositionSet( 1.0f );
-				rule->GetTargetVertexPositionSet().AddLink( linkIndex );
-				pEngAnimator->AddRule( rule );
-				
-			}else if( ! phoneme.GetMoveName().IsEmpty() ){
-				const deAnimatorRuleAnimation::Ref rule(
-					deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
-				rule->SetMoveName( phoneme.GetMoveName() );
-				rule->SetBlendMode( deAnimatorRule::ebmOverlay );
-				rule->GetTargetBlendFactor().AddLink( linkIndex );
-				pEngAnimator->AddRule( rule );
-			}
-			
-			// assign the controller to this phoneme and all other phonemes
-			// using the same move name
-			phoneme.SetEngineController( controllerIndex );
-			
-			for( j=i+1; j<phonemeCount; j++ ){
-				ceSAPhoneme &phoneme2 = *pPhonemeList.GetAt( j );
-				
-				if( moveName.Equals( phoneme2.GetMoveName() ) ){
-					phoneme2.SetEngineController( controllerIndex );
-				}
-			}
+	pPhonemes.Visit([this](int, const ceSAPhoneme &phoneme){
+		if(phoneme.GetEngineController() != -1){
+			return;
 		}
-	}
+		
+		const decString &moveName = phoneme.GetMoveName();
+		
+		// add a controller for the new viseme
+		const int controllerIndex = pEngAnimator->GetControllers().GetCount();
+		const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
+		controller->SetName(moveName);
+		pEngAnimator->AddController(controller);
+		
+		// add a link for the new viseme
+		const int linkIndex = pEngAnimator->GetLinks().GetCount();
+		const deAnimatorLink::Ref engLink(deAnimatorLink::Ref::New());
+		engLink->SetController(controllerIndex);
+		pEngAnimator->AddLink(engLink);
+		
+		// add an animation rule for the new viseme
+		if(!phoneme.GetVertexPositionSet().IsEmpty()){
+			const deAnimatorRuleStateManipulator::Ref rule(deAnimatorRuleStateManipulator::Ref::New());
+			rule->GetListVertexPositionSets().Add(phoneme.GetVertexPositionSet());
+			rule->SetEnableRotation(false);
+			rule->SetMaximumVertexPositionSet(1.0f);
+			rule->GetTargetVertexPositionSet().AddLink(linkIndex);
+			pEngAnimator->AddRule(rule);
+			
+		}else if(!phoneme.GetMoveName().IsEmpty()){
+			const deAnimatorRuleAnimation::Ref rule(deAnimatorRuleAnimation::Ref::New());
+			rule->SetMoveName(phoneme.GetMoveName());
+			rule->SetBlendMode(deAnimatorRule::ebmOverlay);
+			rule->GetTargetBlendFactor().AddLink(linkIndex);
+			pEngAnimator->AddRule(rule);
+		}
+		
+		// assign the controller to all phonemes using the same move name
+		pPhonemes.Visit([&moveName, controllerIndex](int, ceSAPhoneme &phoneme2){
+			if(phoneme2.GetMoveName() == moveName){
+				phoneme2.SetEngineController(controllerIndex);
+			}
+		});
+	});
 	
 	// reassign the animator
-	pEngAnimatorInstance->SetAnimator( pEngAnimator );
+	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 }
 
-void ceSpeechAnimation::Update( float elapsed ){
-	if( pSpeaking ){
-		const int controllerCount = pEngAnimatorInstance->GetControllerCount();
-		ceSAPhoneme *phoneme1 = nullptr;
-		ceSAPhoneme *phoneme2 = nullptr;
+void ceSpeechAnimation::Update(float elapsed){
+	if(pSpeaking){
+		const int controllerCount = pEngAnimatorInstance->GetControllers().GetCount();
 		const float wordGapTime = 2.0f;
 		const float windUpTime = 0.1f;
 		float blendFactor = 1.0f;
@@ -244,47 +209,47 @@ void ceSpeechAnimation::Update( float elapsed ){
 		// determine which phoneme to display and the blending
 		pSpeakElapsed += elapsed;
 		
-		while( true ){
-			phoneme1 = nullptr;
-			phoneme2 = nullptr;
+		while(true){
+			const ceSAPhoneme *phoneme1 = nullptr;
+			const ceSAPhoneme *phoneme2 = nullptr;
 			
-			if( pSpeakPos >= 0 && pSpeakPos < pSpeakPhonemeCount && pSpeakPhonemes[ pSpeakPos ].phoneme != -1 ){
-				phoneme1 = pPhonemeList.GetAt( pSpeakPhonemes[ pSpeakPos ].phoneme );
+			if(pSpeakPos >= 0 && pSpeakPos < pSpeakPhonemes.GetCount() && pSpeakPhonemes.GetAt(pSpeakPos)->ipa != -1){
+				phoneme1 = pPhonemes.GetAtOrDefault(pSpeakPhonemes.GetAt(pSpeakPos)->ipa);
 			}
 			
-			if( pSpeakPos + 1 < pSpeakPhonemeCount && pSpeakPhonemes[ pSpeakPos + 1 ].phoneme != -1 ){
-				phoneme2 = pPhonemeList.GetAt( pSpeakPhonemes[ pSpeakPos + 1 ].phoneme );
+			if(pSpeakPos + 1 < pSpeakPhonemes.GetCount() && pSpeakPhonemes.GetAt(pSpeakPos + 1)->ipa != -1){
+				phoneme2 = pPhonemes.GetAtOrDefault(pSpeakPhonemes.GetAt(pSpeakPos + 1)->ipa);
 			}
 			
-			if( pSpeakPos == -1 ){
+			if(pSpeakPos == -1){
 				phonemeLen = windUpTime;
 				
-			}else if( pSpeakPos == pSpeakPhonemeCount ){
+			}else if(pSpeakPos == pSpeakPhonemes.GetCount()){
 				phonemeLen = wordGapTime;
 				
 			}else{
-				phonemeLen = pSpeakPhonemes[ pSpeakPos ].length;
+				phonemeLen = pSpeakPhonemes.GetAt(pSpeakPos)->length;
 			}
 			
-			if( pSpeakElapsed < phonemeLen ){
+			if(pSpeakElapsed < phonemeLen){
 				//if( pSpeakElapsed < phonemeLen - windUpTime ){
 				//	blendFactor = 1.0f;
 				//	
 				//}else{
 					//blendFactor = ( phonemeLen - pSpeakElapsed ) / windUpTime;
 					//blendFactor = 1.0f - pSpeakElapsed / phonemeLen;
-					blendFactor = 0.5f + cosf( ( pSpeakElapsed / phonemeLen ) * PI ) * 0.5f;
+					blendFactor = 0.5f + cosf((pSpeakElapsed / phonemeLen) * PI) * 0.5f;
 				//}
 				
-				if( phoneme1 ){
+				if(phoneme1){
 					controller1 = phoneme1->GetEngineController();
 				}
 				
-				if( phoneme2 ){
+				if(phoneme2){
 					controller2 = phoneme2->GetEngineController();
 				}
 				
-				if( controller1 == controller2 ){
+				if(controller1 == controller2){
 					controller2 = -1;
 					blendFactor = 1.0f;
 				}
@@ -292,7 +257,7 @@ void ceSpeechAnimation::Update( float elapsed ){
 				break;
 			}
 			
-			if( pSpeakPos < pSpeakPhonemeCount ){
+			if(pSpeakPos < pSpeakPhonemes.GetCount()){
 				pSpeakPos++;
 				
 			}else{
@@ -307,47 +272,47 @@ void ceSpeechAnimation::Update( float elapsed ){
 		}
 		
 		// update the controllers
-		if( controller1 != -1 && controller2 != -1 ){
-			pEngAnimatorInstance->SetBlendFactor( 1.0f );
+		if(controller1 != -1 && controller2 != -1){
+			pEngAnimatorInstance->SetBlendFactor(1.0f);
 			
-		}else if( controller1 != -1 ){
-			pEngAnimatorInstance->SetBlendFactor( blendFactor );
+		}else if(controller1 != -1){
+			pEngAnimatorInstance->SetBlendFactor(blendFactor);
 			blendFactor = 1.0f;
 			
-		}else if( controller2 != -1 ){
-			pEngAnimatorInstance->SetBlendFactor( 1.0f - blendFactor );
+		}else if(controller2 != -1){
+			pEngAnimatorInstance->SetBlendFactor(1.0f - blendFactor);
 			blendFactor = 1.0f;
 			
 		}else{
-			pEngAnimatorInstance->SetBlendFactor( 0.0f );
+			pEngAnimatorInstance->SetBlendFactor(0.0f);
 		}
 		
-		for( i=0; i<controllerCount; i++ ){
-			if( i == controller1 ){
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( blendFactor );
+		for(i=0; i<controllerCount; i++){
+			if(i == controller1){
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(blendFactor);
 				
-			}else if( i == controller2 ){
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 1.0f - blendFactor );
+			}else if(i == controller2){
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(1.0f - blendFactor);
 				
 			}else{
-				pEngAnimatorInstance->GetControllerAt( i ).SetCurrentValue( 0.0f );
+				pEngAnimatorInstance->GetControllers().GetAt(i)->SetCurrentValue(0.0f);
 			}
 			
-			pEngAnimatorInstance->NotifyControllerChangedAt( i );
+			pEngAnimatorInstance->NotifyControllerChangedAt(i);
 		}
 	}
 }
 
 void ceSpeechAnimation::Clear(){
-	pEngAnimatorInstance->SetAnimator( nullptr );
+	pEngAnimatorInstance->SetAnimator(nullptr);
 	pEngAnimator->RemoveAllRules();
 	pEngAnimator->RemoveAllLinks();
 	pEngAnimator->RemoveAllControllers();
-	pEngAnimatorInstance->SetAnimator( pEngAnimator );
+	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 	
 	RemoveAllSpeakPhonemes();
-	pWordList.RemoveAll();
-	pPhonemeList.RemoveAll();
+	pWords.RemoveAll();
+	pPhonemes.RemoveAll();
 	pNeutralMoveName = "";
 	pNeutralVertexPositionSets.RemoveAll();
 }
@@ -358,20 +323,11 @@ void ceSpeechAnimation::Clear(){
 //////////////////////
 
 void ceSpeechAnimation::pCleanUp(){
-	if( pSpeakPhonemes ){
-		delete [] pSpeakPhonemes;
+	if(pEngAnimatorInstance){
+		pEngAnimatorInstance->SetAnimator(nullptr);
+		pEngAnimatorInstance->SetComponent(nullptr);
 	}
-	
-	pWordList.RemoveAll();
-	pPhonemeList.RemoveAll();
-	
-	if( pEngAnimatorInstance ){
-		pEngAnimatorInstance->SetAnimator( nullptr );
-		pEngAnimatorInstance->SetComponent( nullptr );
-		pEngAnimatorInstance->FreeReference();
-	}
-	if( pEngAnimator ){
-		pEngAnimator->SetRig( nullptr );
-		pEngAnimator->FreeReference();
+	if(pEngAnimator){
+		pEngAnimator->SetRig(nullptr);
 	}
 }

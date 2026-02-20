@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -35,8 +35,12 @@ class reRigBone;
  * \brief Undo Toggle Bone IKLocked.
  */
 class reUToggleBoneIKLocked : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUToggleBoneIKLocked>;
+	
+	
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	int pAxis;
 	
 	
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUToggleBoneIKLocked( reRigBone *bone, int axis );
+	reUToggleBoneIKLocked(reRigBone *bone, int axis);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUToggleBoneIKLocked();
+	~reUToggleBoneIKLocked() override;
 	/*@}*/
 	
 	
@@ -58,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	

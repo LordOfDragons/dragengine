@@ -25,14 +25,16 @@
 #ifndef _RERIGPUSH_H_
 #define _RERIGPUSH_H_
 
-#include <dragengine/common/math/decMath.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class reRig;
-class igdeWDebugDrawerShape;
 class deCollider;
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 
 
@@ -41,7 +43,13 @@ class deEngine;
  * \brief Rig Push.
  */
 class reRigPush : public deObject{
-public:
+	public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<reRigPush>;
+	
+	using List = decTObjectOrderedSet<reRigPush>;
+	
+	
 	/** \brief Push type. */
 	enum ePushTypes{
 		/** \brief Apply a simple push. */
@@ -57,9 +65,9 @@ private:
 	
 	reRig *pRig;
 	
-	deDebugDrawer *pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSPush;
-	deColliderVolume *pCollider;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSPush;
+	deColliderVolume::Ref pCollider;
 	
 	ePushTypes pType;
 	decVector pPosition;
@@ -75,11 +83,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new rig push. */
-	reRigPush( deEngine *engine );
+	reRigPush(deEngine *engine);
 	/** \brief Creates a copy of a rig push. */
-	reRigPush( const reRigPush &push );
+	reRigPush(const reRigPush &push);
 	/** \brief Cleans up the rig push. */
-	virtual ~reRigPush();
+protected:
+	~reRigPush() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -87,44 +97,44 @@ public:
 	/** \brief Retrieves the parent rig. */
 	inline reRig *GetRig() const{ return pRig; }
 	/** \brief Sets the parent rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the push type. */
 	inline ePushTypes GetType() const{ return pType; }
 	/** \brief Sets the push type. */
-	void SetType( ePushTypes type );
+	void SetType(ePushTypes type);
 	/** \brief Retrieves the push position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the push position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** \brief Retrieves the push orientation. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	/** \brief Sets the push orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	/** \brief Retrieves the push impuls. */
 	inline float GetImpuls() const{ return pImpuls; }
 	/** \brief Sets the push impuls. */
-	void SetImpuls( float impuls );
+	void SetImpuls(float impuls);
 	/** \brief Retrieves the number of rays to shoot. */
 	inline int GetRayCount() const{ return pRayCount; }
 	/** \brief Sets the number of rays to shoot. */
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	/** \brief Retrieves the cone angle. */
 	inline float GetConeAngle() const{ return pConeAngle; }
 	/** \brief Sets the cone angle. */
-	void SetConeAngle( float angle );
+	void SetConeAngle(float angle);
 	
 	/** \brief Determines if the push is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	/** \brief Sets if the push is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	/** \brief Determines if the push is the active one. */
 	inline bool GetActive() const{ return pActive; }
 	/** \brief Sets if the push is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Show state changed. */
 	void ShowStateChanged();

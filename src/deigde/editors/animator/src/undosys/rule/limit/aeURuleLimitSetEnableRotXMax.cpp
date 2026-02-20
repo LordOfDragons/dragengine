@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableRotXMax::aeURuleLimitSetEnableRotXMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableRotXMax::aeURuleLimitSetEnableRotXMax(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable maximum x rotation" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMaximumXRotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotXMax::~aeURuleLimitSetEnableRotXMax(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableRotXMax::Undo(){
 }
 
 void aeURuleLimitSetEnableRotXMax::Redo(){
-	pRule->SetEnableRotationXMax( ! pRule->GetEnableRotationXMax() );
+	pRule->SetEnableRotationXMax(!pRule->GetEnableRotationXMax());
 }

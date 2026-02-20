@@ -44,91 +44,91 @@
 /////////////////////
 
 // public static func int getParameterCount()
-deClassAISystem::nfGetParameterCount::nfGetParameterCount( const sInitData &init ) : dsFunction( init.clsAISys,
-"getParameterCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt ){
+deClassAISystem::nfGetParameterCount::nfGetParameterCount(const sInitData &init) : dsFunction(init.clsAISys,
+"getParameterCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
 }
-void deClassAISystem::nfGetParameterCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deAISystem &aiSys = *( ( ( deClassAISystem* )GetOwnerClass() )->GetDS().GetGameEngine()->GetAISystem() );
-	rt->PushInt( aiSys.GetActiveModule()->GetParameterCount() );
+void deClassAISystem::nfGetParameterCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAISystem &aiSys = *(((deClassAISystem*)GetOwnerClass())->GetDS().GetGameEngine()->GetAISystem());
+	rt->PushInt(aiSys.GetActiveModule()->GetParameterCount());
 }
 
 // public static func ModuleParameter getParameterInfo(int index)
-deClassAISystem::nfGetParameterInfo::nfGetParameterInfo( const sInitData &init ) : dsFunction(init.clsAISys,
-"getParameterInfo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar ){
-	p_AddParameter( init.clsInt ); // index
+deClassAISystem::nfGetParameterInfo::nfGetParameterInfo(const sInitData &init) : dsFunction(init.clsAISys,
+"getParameterInfo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
+	p_AddParameter(init.clsInt); // index
 }
-void deClassAISystem::nfGetParameterInfo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAISystem* )GetOwnerClass() )->GetDS();
-	const deAISystem &aiSys = *( ds.GetGameEngine()->GetAISystem() );
+void deClassAISystem::nfGetParameterInfo::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAISystem*)GetOwnerClass())->GetDS();
+	const deAISystem &aiSys = *(ds.GetGameEngine()->GetAISystem());
 	deBaseAIModule * const module = aiSys.GetActiveModule();
 	
-	const int index = rt->GetValue( 0 )->GetInt();
-	if( index < 0 || index >= module->GetParameterCount() ){
-		DSTHROW( dueInvalidParam );
+	const int index = rt->GetValue(0)->GetInt();
+	if(index < 0 || index >= module->GetParameterCount()){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	ds.GetClassModuleParameter()->PushParameter( rt, module, index );
+	ds.GetClassModuleParameter()->PushParameter(rt, module, index);
 }
 
 // public static func ModuleParameter getParameterInfo( String name )
-deClassAISystem::nfGetParameterInfo2::nfGetParameterInfo2( const sInitData &init ) :
-dsFunction( init.clsAISys, "getParameterInfo", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar ){
-	p_AddParameter( init.clsStr ); // name
+deClassAISystem::nfGetParameterInfo2::nfGetParameterInfo2(const sInitData &init) :
+dsFunction(init.clsAISys, "getParameterInfo", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
+	p_AddParameter(init.clsStr); // name
 }
-void deClassAISystem::nfGetParameterInfo2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAISystem* )GetOwnerClass() )->GetDS();
+void deClassAISystem::nfGetParameterInfo2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAISystem*)GetOwnerClass())->GetDS();
 	const deAISystem &aiSys = *ds.GetGameEngine()->GetAISystem();
 	deBaseAIModule * const module = aiSys.GetActiveModule();
 	
-	ds.GetClassModuleParameter()->PushParameter( rt, module,
-		module->IndexOfParameterNamed( rt->GetValue( 0 )->GetString() ) );
+	ds.GetClassModuleParameter()->PushParameter(rt, module,
+		module->IndexOfParameterNamed(rt->GetValue(0)->GetString()));
 }
 
 // public static func String getParameterValue( String name )
-deClassAISystem::nfGetParameterValue::nfGetParameterValue( const sInitData &init ) : dsFunction( init.clsAISys,
-"getParameterValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsStr ){
-	p_AddParameter( init.clsStr ); // name
+deClassAISystem::nfGetParameterValue::nfGetParameterValue(const sInitData &init) : dsFunction(init.clsAISys,
+"getParameterValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsStr){
+	p_AddParameter(init.clsStr); // name
 }
-void deClassAISystem::nfGetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deAISystem &aiSys = *( ( ( deClassAISystem* )GetOwnerClass() )->GetDS().GetGameEngine()->GetAISystem() );
+void deClassAISystem::nfGetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAISystem &aiSys = *(((deClassAISystem*)GetOwnerClass())->GetDS().GetGameEngine()->GetAISystem());
 	const deBaseAIModule &module = *aiSys.GetActiveModule();
 	
-	rt->PushString( module.GetParameterValue( rt->GetValue( 0 )->GetString() ) );
+	rt->PushString(module.GetParameterValue(rt->GetValue(0)->GetString()));
 }
 
 // public static func void setParameterValue( String name, String value )
-deClassAISystem::nfSetParameterValue::nfSetParameterValue( const sInitData &init ) : dsFunction( init.clsAISys,
-"setParameterValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // name
-	p_AddParameter( init.clsStr ); // value
+deClassAISystem::nfSetParameterValue::nfSetParameterValue(const sInitData &init) : dsFunction(init.clsAISys,
+"setParameterValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsStr); // name
+	p_AddParameter(init.clsStr); // value
 }
-void deClassAISystem::nfSetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deAISystem &aiSys = *( ( ( deClassAISystem* )GetOwnerClass() )->GetDS().GetGameEngine()->GetAISystem() );
+void deClassAISystem::nfSetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAISystem &aiSys = *(((deClassAISystem*)GetOwnerClass())->GetDS().GetGameEngine()->GetAISystem());
 	deBaseAIModule &module = *aiSys.GetActiveModule();
 	
-	module.SetParameterValue( rt->GetValue( 0 )->GetString(), rt->GetValue( 1 )->GetString() );
+	module.SetParameterValue(rt->GetValue(0)->GetString(), rt->GetValue(1)->GetString());
 }
 
 
 
 // public static func String sendCommand( String command )
-deClassAISystem::nfSendCommand::nfSendCommand( const sInitData &init ) : dsFunction( init.clsAISys,
-"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsStr ){
-	p_AddParameter( init.clsStr ); // command
+deClassAISystem::nfSendCommand::nfSendCommand(const sInitData &init) : dsFunction(init.clsAISys,
+"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsStr){
+	p_AddParameter(init.clsStr); // command
 }
-void deClassAISystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAISystem* )GetOwnerClass() )->GetDS();
+void deClassAISystem::nfSendCommand::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAISystem*)GetOwnerClass())->GetDS();
 	const deAISystem &aiSys = *ds.GetGameEngine()->GetAISystem();
 	deBaseAIModule &module = *aiSys.GetActiveModule();
 	decUnicodeArgumentList argList;
 	decUnicodeString command;
 	decUnicodeString answer;
 	
-	command.SetFromUTF8( rt->GetValue( 0 )->GetString() );
-	argList.ParseCommand( command );
-	module.SendCommand( argList, answer );
-	rt->PushString( answer.ToUTF8().GetString() );
+	command.SetFromUTF8(rt->GetValue(0)->GetString());
+	argList.ParseCommand(command);
+	module.SendCommand(argList, answer);
+	rt->PushString(answer.ToUTF8().GetString());
 }
 
 
@@ -139,14 +139,14 @@ void deClassAISystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *myself
 // Constructor, Destructor
 ////////////////////////////
 
-deClassAISystem::deClassAISystem( deScriptingDragonScript &ds ) :
-dsClass( "AISystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds )
+deClassAISystem::deClassAISystem(deScriptingDragonScript &ds) :
+dsClass("AISystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassAISystem::~deClassAISystem(){
@@ -157,7 +157,7 @@ deClassAISystem::~deClassAISystem(){
 // Management
 ///////////////
 
-void deClassAISystem::CreateClassMembers( dsEngine *engine ){
+void deClassAISystem::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -170,11 +170,11 @@ void deClassAISystem::CreateClassMembers( dsEngine *engine ){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	
 	// add functions
-	AddFunction( new nfGetParameterCount( init ) );
-	AddFunction( new nfGetParameterInfo( init ) );
-	AddFunction( new nfGetParameterInfo2( init ) );
-	AddFunction( new nfGetParameterValue( init ) );
-	AddFunction( new nfSetParameterValue( init ) );
+	AddFunction(new nfGetParameterCount(init));
+	AddFunction(new nfGetParameterInfo(init));
+	AddFunction(new nfGetParameterInfo2(init));
+	AddFunction(new nfGetParameterValue(init));
+	AddFunction(new nfSetParameterValue(init));
 	
-	AddFunction( new nfSendCommand( init ) );
+	AddFunction(new nfSendCommand(init));
 }

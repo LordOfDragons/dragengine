@@ -68,23 +68,23 @@ public:
 	/*@{*/
 	/** Log level. */
 	inline eLogLevels GetLogLevel() const{ return pLogLevel; }
-	void SetLogLevel( eLogLevels level );
+	void SetLogLevel(eLogLevels level);
 	
 	/** Connect resent interval in seconds. */
 	inline float GetConnectResendInterval() const{ return pConnectResendInterval; }
-	void SetConnectResendInterval( float interval );
+	void SetConnectResendInterval(float interval);
 	
 	/** Connect timeout in seconds. */
 	inline float GetConnectTimeout() const{ return pConnectTimeout; }
-	void SetConnectTimeout( float timeout );
+	void SetConnectTimeout(float timeout);
 	
 	/** Reliable message resend interval in seconds. */
 	inline float GetReliableResendInterval() const{ return pReliableResendInterval; }
-	void SetReliableResendInterval( float interval );
+	void SetReliableResendInterval(float interval);
 	
 	/** Reliable message timeout in seconds. */
 	inline float GetReliableTimeout() const{ return pReliableTimeout; }
-	void SetReliableTimeout( float timeout );
+	void SetReliableTimeout(float timeout);
 	/*@}*/
 };
 

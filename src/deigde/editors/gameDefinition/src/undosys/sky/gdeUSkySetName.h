@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeSky;
+#include "../../gamedef/sky/gdeSky.h"
 
 
 
@@ -36,8 +36,12 @@ class gdeSky;
  * \brief Undo action sky set name.
  */
 class gdeUSkySetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUSkySetName>;
+	
+	
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkySetName( gdeSky *sky, const char *newValue );
+	gdeUSkySetName(gdeSky *sky, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUSkySetName();
+	~gdeUSkySetName() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

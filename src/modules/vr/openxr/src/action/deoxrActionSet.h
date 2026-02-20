@@ -29,7 +29,7 @@
 #include "../deoxrBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deoxrInstance;
@@ -41,8 +41,7 @@ class deoxrInstance;
 class deoxrActionSet : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrActionSet> Ref;
-	
+	using Ref = deTObjectReference<deoxrActionSet>;
 	
 	
 private:
@@ -51,7 +50,7 @@ private:
 	const decString pName;
 	const decString pLocalizedName;
 	XrActionSet pActionSet;
-	decObjectOrderedSet pActions;
+	deoxrAction::List pActions;
 	
 	
 	
@@ -59,12 +58,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create action set. */
-	deoxrActionSet( deoxrInstance &instance, const char *name = "dragengine",
-		const char *localizedName = "Drag[en]gine" );
+	deoxrActionSet(deoxrInstance &instance, const char *name = "dragengine",
+		const char *localizedName = "Drag[en]gine");
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrActionSet();
+	~deoxrActionSet() override;
 	/*@}*/
 	
 	
@@ -84,39 +83,33 @@ public:
 	/** ActionSet. */
 	inline XrActionSet GetActionSet() const{ return pActionSet; }
 	
-	/** Count of actions. */
-	int GetActionCount() const;
-	
-	/** Action at index. */
-	deoxrAction *GetActionAt( int index ) const;
-	
-	/** Named action or nullptr. */
-	deoxrAction *GetActionNamed( const char *name ) const;
+	/** Actions. */
+	inline const deoxrAction::List &GetActions() const{ return pActions; }
 	
 	/** Add action. */
-	void AddAction( deoxrAction *action );
+	void AddAction(deoxrAction *action);
 	
 	/** Add action. */
-	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName );
+	deoxrAction *AddAction(deoxrAction::eType, const char *name, const char *localizedName);
 	
 	/** Add action. */
-	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName,
-		const XrPath *subactionPath, int subactionPathCount );
+	deoxrAction *AddAction(deoxrAction::eType, const char *name, const char *localizedName,
+		const XrPath *subactionPath, int subactionPathCount);
 	
 	/** Add boolean action. */
-	deoxrAction *AddBoolAction( const char *name, const char *localizedName );
+	deoxrAction *AddBoolAction(const char *name, const char *localizedName);
 	
 	/** Add float action. */
-	deoxrAction *AddFloatAction( const char *name, const char *localizedName );
+	deoxrAction *AddFloatAction(const char *name, const char *localizedName);
 	
 	/** Add vector2 action. */
-	deoxrAction *AddVector2Action( const char *name, const char *localizedName );
+	deoxrAction *AddVector2Action(const char *name, const char *localizedName);
 	
 	/** Add pose action. */
-	deoxrAction *AddPoseAction( const char *name, const char *localizedName );
+	deoxrAction *AddPoseAction(const char *name, const char *localizedName);
 	
 	/** Add vibration action. */
-	deoxrAction *AddVibrationAction( const char *name, const char *localizedName );
+	deoxrAction *AddVibrationAction(const char *name, const char *localizedName);
 	/*@}*/
 	
 	

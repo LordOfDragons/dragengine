@@ -35,6 +35,10 @@
  * Undo set rule mirror enable size.
  */
 class aeURuleMirrorSetEnableVertexPositionSet : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorSetEnableVertexPositionSet>;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetEnableVertexPositionSet( aeRuleMirror *rule );
+	aeURuleMirrorSetEnableVertexPositionSet(aeRuleMirror *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorSetEnableVertexPositionSet();
+	~aeURuleMirrorSetEnableVertexPositionSet() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

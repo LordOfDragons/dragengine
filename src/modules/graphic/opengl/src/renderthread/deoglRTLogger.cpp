@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTLogger::deoglRTLogger( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglRTLogger::deoglRTLogger(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglRTLogger::~deoglRTLogger(){
@@ -69,107 +69,107 @@ void deoglRTLogger::Synchronize(){
 
 
 
-void deoglRTLogger::LogInfo( const char *message ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogInfo( LOGGING_SOURCE, message );
+void deoglRTLogger::LogInfo(const char *message){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogInfo(LOGGING_SOURCE, message);
 		
 	}else{
-		pRenderThread.GetOgl().LogInfo( message );
+		pRenderThread.GetOgl().LogInfo(message);
 	}
 }
 
-void deoglRTLogger::LogInfoFormat( const char *message, ... ){
+void deoglRTLogger::LogInfoFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
+	va_start(list, message);
 	
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogInfoFormatUsing( LOGGING_SOURCE, message, list );
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogInfoFormatUsing(LOGGING_SOURCE, message, list);
 		
 	}else{
-		pRenderThread.GetOgl().LogInfoFormatUsing( message, list );
+		pRenderThread.GetOgl().LogInfoFormatUsing(message, list);
 	}
 	
-	va_end( list );
+	va_end(list);
 }
 
-void deoglRTLogger::LogInfoFormatUsing( const char *message, va_list args ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogInfoFormatUsing( LOGGING_SOURCE, message, args );
+void deoglRTLogger::LogInfoFormatUsing(const char *message, va_list args){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogInfoFormatUsing(LOGGING_SOURCE, message, args);
 		
 	}else{
-		pRenderThread.GetOgl().LogInfoFormatUsing( message, args );
+		pRenderThread.GetOgl().LogInfoFormatUsing(message, args);
 	}
 }
 
-void deoglRTLogger::LogWarn( const char *message ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogWarn( LOGGING_SOURCE, message );
+void deoglRTLogger::LogWarn(const char *message){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogWarn(LOGGING_SOURCE, message);
 		
 	}else{
-		pRenderThread.GetOgl().LogWarn( message );
+		pRenderThread.GetOgl().LogWarn(message);
 	}
 }
 
-void deoglRTLogger::LogWarnFormat( const char *message, ... ){
+void deoglRTLogger::LogWarnFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
+	va_start(list, message);
 	
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogWarnFormatUsing( LOGGING_SOURCE, message, list );
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogWarnFormatUsing(LOGGING_SOURCE, message, list);
 		
 	}else{
-		pRenderThread.GetOgl().LogWarnFormatUsing( message, list );
+		pRenderThread.GetOgl().LogWarnFormatUsing(message, list);
 	}
 	
-	va_end( list );
+	va_end(list);
 }
 
-void deoglRTLogger::LogWarnFormatUsing( const char *message, va_list args ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogWarnFormatUsing( LOGGING_SOURCE, message, args );
+void deoglRTLogger::LogWarnFormatUsing(const char *message, va_list args){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogWarnFormatUsing(LOGGING_SOURCE, message, args);
 		
 	}else{
-		pRenderThread.GetOgl().LogWarnFormatUsing( message, args );
+		pRenderThread.GetOgl().LogWarnFormatUsing(message, args);
 	}
 }
 
-void deoglRTLogger::LogError( const char *message ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogError( LOGGING_SOURCE, message );
+void deoglRTLogger::LogError(const char *message){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogError(LOGGING_SOURCE, message);
 		
 	}else{
-		pRenderThread.GetOgl().LogError( message );
+		pRenderThread.GetOgl().LogError(message);
 	}
 }
 
-void deoglRTLogger::LogErrorFormat( const char *message, ... ){
+void deoglRTLogger::LogErrorFormat(const char *message, ...){
 	va_list list;
-	va_start( list, message );
+	va_start(list, message);
 	
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogErrorFormatUsing( LOGGING_SOURCE, message, list );
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogErrorFormatUsing(LOGGING_SOURCE, message, list);
 		
 	}else{
-		pRenderThread.GetOgl().LogErrorFormatUsing( message, list );
+		pRenderThread.GetOgl().LogErrorFormatUsing(message, list);
 	}
 	
-	va_end( list );
+	va_end(list);
 }
 
-void deoglRTLogger::LogErrorFormatUsing( const char *message, va_list args ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogErrorFormatUsing( LOGGING_SOURCE, message, args );
+void deoglRTLogger::LogErrorFormatUsing(const char *message, va_list args){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogErrorFormatUsing(LOGGING_SOURCE, message, args);
 		
 	}else{
-		pRenderThread.GetOgl().LogErrorFormatUsing( message, args );
+		pRenderThread.GetOgl().LogErrorFormatUsing(message, args);
 	}
 }
 
-void deoglRTLogger::LogException( const deException &exception ){
-	if( pRenderThread.GetAsyncRendering() ){
-		GetLogger().LogException( LOGGING_SOURCE, exception );
+void deoglRTLogger::LogException(const deException &exception){
+	if(pRenderThread.GetAsyncRendering()){
+		GetLogger().LogException(LOGGING_SOURCE, exception);
 		
 	}else{
-		pRenderThread.GetOgl().LogException( exception );
+		pRenderThread.GetOgl().LogException(exception);
 	}
 }

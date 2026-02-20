@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglComponentTestForTouch::deoglComponentTestForTouch( deoglRComponent *component ) :
-pComponent( component ){
+deoglComponentTestForTouch::deoglComponentTestForTouch(deoglRComponent *component) :
+pComponent(component){
 }
 
 deoglComponentTestForTouch::~deoglComponentTestForTouch(){
@@ -58,19 +58,19 @@ deoglComponentTestForTouch::~deoglComponentTestForTouch(){
 // extern int hackCSSpecialCount;
 // extern float hackCSSpecialTime;
 
-void deoglComponentTestForTouch::VisitNode( deoglDOctree *node, int intersection ){
-	const deoglWorldOctree &soNode = *( ( deoglWorldOctree* )node );
+void deoglComponentTestForTouch::VisitNode(deoglDOctree *node, int intersection){
+	const deoglWorldOctree &soNode = *((deoglWorldOctree*)node);
 	const decDVector &compMinExt = pComponent->GetMinimumExtend();
 	const decDVector &compMaxExt = pComponent->GetMaximumExtend();
 	const int count = soNode.GetLightCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 // 			decTimer timer;
-		deoglRLight &light = *soNode.GetLightAt( i );
+		deoglRLight &light = *soNode.GetLightAt(i);
 		
-		if( light.GetFullMinExtend() < compMaxExt && light.GetFullMaxExtend() > compMinExt ){
-			light.TestComponent( pComponent );
+		if(light.GetFullMinExtend() < compMaxExt && light.GetFullMaxExtend() > compMinExt){
+			light.TestComponent(pComponent);
 		}
 // 			hackCSSpecialCount++;
 // 			hackCSSpecialTime += timer.GetElapsedTime();

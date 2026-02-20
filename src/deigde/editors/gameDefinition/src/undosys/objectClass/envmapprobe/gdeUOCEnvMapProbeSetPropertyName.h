@@ -27,10 +27,10 @@
 #define _GDEUOCENVMAPPROBESETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class environment map probe set property name.
  */
 class gdeUOCEnvMapProbeSetPropertyName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCEnvMapProbeSetPropertyName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	gdeOCEnvMapProbe::eProperties pProperty;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetPropertyName( gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe,
-		gdeOCEnvMapProbe::eProperties property, const char *newValue );
+	gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe,
+		gdeOCEnvMapProbe::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCEnvMapProbeSetPropertyName();
+	~gdeUOCEnvMapProbeSetPropertyName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

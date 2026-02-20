@@ -37,7 +37,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,29 +46,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCCamera::gdeWPSTIMOCCamera( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCCamera *camera, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassCamera, objectClass, index ),
-pCamera( NULL )
+gdeWPSTIMOCCamera::gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCCamera *camera, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassCamera, objectClass, index)
 {
-	if( ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!camera){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Camera #%d", index + 1 );
-	SetText( text );
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.CameraNumber").ToUTF8(), index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pCamera = camera;
-	camera->AddReference();
 }
 
 gdeWPSTIMOCCamera::~gdeWPSTIMOCCamera(){
-	if( pCamera ){
-		pCamera->FreeReference();
-	}
 }
 
 
@@ -77,8 +72,8 @@ gdeWPSTIMOCCamera::~gdeWPSTIMOCCamera(){
 ///////////////
 
 void gdeWPSTIMOCCamera::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
@@ -93,20 +88,20 @@ void gdeWPSTIMOCCamera::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCCamera::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCCamera( pCamera );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCCamera );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCCamera(pCamera);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCCamera);
 }
 
-void gdeWPSTIMOCCamera::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCCamera::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCCameraAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCCameraRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCCameraAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCCameraRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCCameraCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCCameraCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCCameraPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCCameraCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCCameraCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCCameraPaste());
 }

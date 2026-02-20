@@ -25,11 +25,11 @@
 #ifndef _DESKYINSTANCEMANAGER_H_
 #define _DESKYINSTANCEMANAGER_H_
 
+#include "deSkyInstance.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deSkyInstance;
 
 
 /**
@@ -45,10 +45,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky instance resource manager. */
-	deSkyInstanceManager( deEngine *engine );
+	deSkyInstanceManager(deEngine *engine);
 	
 	/** \brief Clean up sky instance resource manager and report leaking resources. */
-	virtual ~deSkyInstanceManager();
+	~deSkyInstanceManager() override;
 	/*@}*/
 	
 	
@@ -62,10 +62,10 @@ public:
 	deSkyInstance *GetRootSkyInstance() const;
 	
 	/** \brief Create sky instance. */
-	deSkyInstance *CreateSkyInstance();
+	deSkyInstance::Ref CreateSkyInstance();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -73,10 +73,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic system peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic system peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	/*@}*/
 	
 	
@@ -88,7 +88,7 @@ public:
 	 */
 	/*@{*/
 	/** \warning For internal use only. Never call this function on your own. */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

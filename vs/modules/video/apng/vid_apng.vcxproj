@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -56,16 +56,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\video\apng\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngReader.h" />
-    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngReader.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\video\apng\src\module.xml" />
@@ -424,4 +414,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\apng\src\deapngReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deVideoApng.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngDecoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\apng\src\deapngReader.h" />
+  </ItemGroup>
 </Project>

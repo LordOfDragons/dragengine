@@ -53,7 +53,7 @@ void RemoteLauncherClient::EngineLogger::LogWarn(const char *source, const char 
     pOwner.SendLog(denLogger::LogSeverity::warning, source, message);
 }
 
-void RemoteLauncherClient::EngineLogger::LogError( const char *source, const char *message ){
+void RemoteLauncherClient::EngineLogger::LogError(const char *source, const char *message){
     std::stringstream ss;
     ss << "[" << source << "] " << message;
     pClientLogger.Log(denLogger::LogSeverity::error, ss.str());
@@ -96,7 +96,7 @@ pLauncher(nullptr)
     pLogger = std::make_shared<ClientLogger>(*this);
     SetLogger(pLogger);
 
-    pEngineLogger.TakeOver(new EngineLogger(*this, *pLogger));
+    pEngineLogger = EngineLogger::Ref::New(*this, *pLogger);
 
     pThreadUpdater = std::make_shared<std::thread>([&](){
         while(!pExitUpdaterThread){

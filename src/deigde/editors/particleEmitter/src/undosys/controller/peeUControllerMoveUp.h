@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 
@@ -35,8 +35,12 @@ class peeController;
  * \brief Undo Action Move Controller Up.
  */
 class peeUControllerMoveUp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUControllerMoveUp>;
+	
+	
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	int pIndex;
 	
 	
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerMoveUp( peeController *controller );
+	peeUControllerMoveUp(peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUControllerMoveUp();
+	~peeUControllerMoveUp() override;
 	/*@}*/
 	
 	
@@ -58,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

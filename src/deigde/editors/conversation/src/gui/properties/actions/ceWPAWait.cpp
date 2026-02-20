@@ -45,11 +45,11 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -66,23 +66,23 @@ class cTextInterval : public igdeTextFieldListener {
 	ceWPAWait &pPanel;
 	
 public:
-	cTextInterval( ceWPAWait &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextInterval>;
+	cTextInterval(ceWPAWait &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAWait * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(!topic || !action){
 			return;
 		}
 		
 		const float interval = textField->GetFloat();
-		if( fabsf( interval - action->GetInterval() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(interval - action->GetInterval()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCAWaitSetInterval( topic, action, interval ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAWaitSetInterval::Ref::New(topic, action, interval));
 	}
 };
 
@@ -96,13 +96,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAWait::ceWPAWait( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAWait::ceWPAWait(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.EditFloat( *this, "Interval:", "Interval in seconds to test condition",
-		pEditInterval, new cTextInterval( *this ) );
+	helper.EditFloat(*this, "@Conversation.WPActionWait.Interval", "@Conversation.WPActionWait.Interval.ToolTip",
+		pEditInterval, cTextInterval::Ref::New(*this));
 }
 
 ceWPAWait::~ceWPAWait(){
@@ -116,11 +116,11 @@ ceWPAWait::~ceWPAWait(){
 ceCAWait *ceWPAWait::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatWait ){
-		return ( ceCAWait* )action;
+	if(action && action->GetType() == ceConversationAction::eatWait){
+		return (ceCAWait*)action;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -129,8 +129,8 @@ void ceWPAWait::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditInterval->SetFloat( action->GetInterval() );
+	if(action){
+		pEditInterval->SetFloat(action->GetInterval());
 		
 	}else{
 		pEditInterval->ClearText();

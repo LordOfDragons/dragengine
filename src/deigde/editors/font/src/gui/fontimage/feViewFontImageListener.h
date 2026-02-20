@@ -35,6 +35,10 @@ class feViewFontImage;
  * \brief View font image listener.
  */
 class feViewFontImageListener : public feFontNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<feViewFontImageListener>;
+	
 private:
 	feViewFontImage &pPanel;
 	
@@ -42,10 +46,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feViewFontImageListener( feViewFontImage &panel );
+	feViewFontImageListener(feViewFontImage &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~feViewFontImageListener();
+protected:
+	~feViewFontImageListener() override;
+public:
 	/*@}*/
 	
 	
@@ -53,22 +59,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font parameters changed. */
-	virtual void FontChanged( feFont *font );
+	void FontChanged(feFont *font) override;
 	
 	/** \brief An image changed. */
-    virtual void ImageChanged( feFont *font, feFontImage *image );
+    void ImageChanged(feFont *font, feFontImage *image) override;
 	
 	/** \brief Glyphs have been added or removed. */
-	virtual void GlyphStructureChanged ( feFont *font );
+	void GlyphStructureChanged (feFont *font) override;
 	
 	/** \brief A glyph changed. */
-	virtual void GlyphChanged( feFont *font, feFontGlyph *glyph );
+	void GlyphChanged(feFont *font, feFontGlyph *glyph) override;
 	
 	/** \brief Glyph selection changed. */
-	virtual void GlyphSelectionChanged( feFont *font );
+	void GlyphSelectionChanged(feFont *font) override;
 	
 	/** \brief Active glyph changed. */
-	virtual void ActiveGlyphChanged( feFont *font );
+	void ActiveGlyphChanged(feFont *font) override;
 	/*@}*/
 };
 

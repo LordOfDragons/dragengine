@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetBoneName::gdeUOCParticleEmitterSetBoneName( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const char *newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCParticleEmitterSetBoneName::gdeUOCParticleEmitterSetBoneName(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const char *newValue) :
+
+pParticleEmitter(nullptr)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "ParticleEmitter set bone name" );
+	SetShortInfo("@GameDefinition.Undo.OCParticleEmitterSetBoneName");
 	
 	pOldValue = particleEmitter->GetBoneName();
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetBoneName::~gdeUOCParticleEmitterSetBoneName(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCParticleEmitterSetBoneName::~gdeUOCParticleEmitterSetBoneName(){
 ///////////////
 
 void gdeUOCParticleEmitterSetBoneName::Undo(){
-	pParticleEmitter->SetBoneName( pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetBoneName(pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetBoneName::Redo(){
-	pParticleEmitter->SetBoneName( pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetBoneName(pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

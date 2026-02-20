@@ -28,13 +28,19 @@
 #include "deoglREffect.h"
 #include "../../pipeline/deoglPipeline.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * Render effect filter kernel.
  */
 class deoglREffectFilterKernel : public deoglREffect{
+public:
+	using Ref = deTObjectReference<deoglREffectFilterKernel>;
+	
+	
 private:
-	float *pKernel;
+	decTList<float> pKernel;
 	int pKernelRows;
 	int pKernelCols;
 	float pScale;
@@ -48,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffectFilterKernel( deoglRenderThread &renderThread );
+	deoglREffectFilterKernel(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
-	virtual ~deoglREffectFilterKernel();
+	~deoglREffectFilterKernel() override;
 	/*@}*/
 	
 	
@@ -65,19 +71,19 @@ public:
 	inline int GetKernelCols() const{ return pKernelCols; }
 	
 	/** Set kernel size. */
-	void SetKernelSize( int rows, int cols );
+	void SetKernelSize(int rows, int cols);
 	
 	/** Kernel value. */
-	float GetKernelValueAt( int row, int col ) const;
+	float GetKernelValueAt(int row, int col) const;
 	
 	/** Set kernel value. */
-	void SetKernelValueAt( int row, int col, float value );
+	void SetKernelValueAt(int row, int col, float value);
 	
 	/** Kernel scale. */
 	inline float GetScale() const{ return pScale; }
 	
 	/** Set kernel scale. */
-	void SetScale( float scale );
+	void SetScale(float scale);
 	
 	
 	
@@ -90,7 +96,7 @@ public:
 	const deoglPipeline *GetPipelineDownsampleStereo();
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan );
+	void Render(deoglRenderPlan &plan) override;
 };
 
 #endif

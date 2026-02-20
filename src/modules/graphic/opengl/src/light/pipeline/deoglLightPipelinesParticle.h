@@ -35,6 +35,10 @@ class deoglLightShaderConfig;
  * Light source specific light pipelines.
  */
 class deoglLightPipelinesParticle : public deoglLightPipelines{
+public:
+	using Ref = deTObjectReference<deoglLightPipelinesParticle>;
+	
+	
 private:
 	const deoglRParticleEmitterType &pEmitter;
 	
@@ -44,22 +48,22 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelinesParticle( const deoglRParticleEmitterType &emitter );
+	deoglLightPipelinesParticle(const deoglRParticleEmitterType &emitter);
 	
 	/** Clean up light pipeline. */
-	virtual ~deoglLightPipelinesParticle();
+	~deoglLightPipelinesParticle() override;
 	/*@}*/
 	
 	
 	
 public:
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	
 	
 	
 protected:
-	virtual void pPreparePipelines(deoglBatchedShaderLoading &batched);
+	void pPreparePipelines(deoglBatchedShaderLoading &batched) override;
 	
 	
 	
@@ -67,7 +71,7 @@ private:
 	void pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
 		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
-	void pSetNonGI( deoglLightShaderConfig &shaconf );
+	void pSetNonGI(deoglLightShaderConfig &shaconf);
 };
 
 #endif

@@ -25,19 +25,20 @@
 #ifndef _AEUCONTROLLERSETNAME_H_
 #define _AEUCONTROLLERSETNAME_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
  * Undo action controller set name.
  */
 class aeUControllerSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerSetName>;
+	
+	
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	decString pOldValue;
 	decString pNewValue;
 	
@@ -47,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetName( aeController *controller, const char *newValue );
+	aeUControllerSetName(aeController *controller, const char *newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerSetName();
+	~aeUControllerSetName() override;
 	/*@}*/
 	
 	
@@ -60,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

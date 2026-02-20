@@ -25,8 +25,8 @@
 #ifndef _DELFILEFORMAT_H_
 #define _DELFILEFORMAT_H_
 
-#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTList.h>
 
 #include <dragengine/systems/deModuleSystem.h>
 
@@ -34,11 +34,10 @@
 /**
  * \brief File Format.
  */
-class DE_DLL_EXPORT delFileFormat : public deObject{
+class DE_DLL_EXPORT delFileFormat{
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delFileFormat> Ref;
-	
+	/** \brief List type. */
+	using List = decTList<delFileFormat>;
 	
 	
 private:
@@ -55,35 +54,38 @@ public:
 	delFileFormat();
 	
 	/** \brief Create file format. */
-	delFileFormat( deModuleSystem::eModuleTypes type, const char *pattern );
+	delFileFormat(deModuleSystem::eModuleTypes type, const char *pattern);
 	
-protected:
-	/** \brief Clean up file format. */
-	virtual ~delFileFormat();
+	/** \brief Copy file format. */
+	delFileFormat(const delFileFormat &other);
+	delFileFormat& operator=(const delFileFormat &other);
+	
+	/** \brief Move file format. */
+	delFileFormat(delFileFormat &&other) noexcept;
+	delFileFormat& operator=(delFileFormat &&other) noexcept;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File type. */
 	inline deModuleSystem::eModuleTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( deModuleSystem::eModuleTypes type );
+	void SetType(deModuleSystem::eModuleTypes type);
 	
 	/** \brief Pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief File format is supported. */
 	inline bool GetSupported() const{ return pSupported; }
 	
 	/** \brief Set if file format is supported. */
-	void SetSupported( bool supported );
+	void SetSupported(bool supported);
 	/*@}*/
 };
 

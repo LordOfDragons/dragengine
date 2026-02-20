@@ -36,6 +36,9 @@ class ceCAWait;
  * \brief Menu action paste all topic actions.
  */
 class ceWPTMAWaitActionsPasteActions : public ceWPTMAPasteActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAWaitActionsPasteActions>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAWait *pWait;
@@ -51,14 +54,14 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsPasteActions( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, int index );
+		ceCAWait &wait, int index);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsPasteActions( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, int index, const char *text );
+		ceCAWait &wait, int index, const char *text);
 	/*@}*/
 	
 	
@@ -75,7 +78,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions) override;
 	/*@}*/
 };
 

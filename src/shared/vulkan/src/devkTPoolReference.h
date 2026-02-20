@@ -36,19 +36,37 @@ private:
 	T *pSlot;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	devkTPoolReference() : pSlot( nullptr ){
+	devkTPoolReference() : pSlot(nullptr){
 	}
 	
-	devkTPoolReference( T *slot ) : pSlot( nullptr ){
+	explicit devkTPoolReference(T *slot) : pSlot(nullptr){
 		*this = slot;
+	}
+	
+	/** Move reference. */
+	devkTPoolReference(devkTPoolReference<T> &slot) : pSlot(slot.pSlot){
+		slot.pSlot = nullptr;
+	}
+	
+	/** Move reference. */
+	devkTPoolReference(devkTPoolReference<T> &&slot) : pSlot(slot.pSlot){
+		slot.pSlot = nullptr;
 	}
 	
 	~devkTPoolReference(){
 		*this = nullptr;
+	}
+	
+	/**
+	 * \brief Create instance taking over reference.
+	 */
+	template<typename... A> static devkTPoolReference New(A&&... args){
+		devkTPoolReference reference;
+		reference.pSlot = new T(static_cast<A>(args)...);
+		return reference;
 	}
 	/*@}*/
 	
@@ -72,8 +90,8 @@ public:
 	 * \throws deeNullPointer if slot is nullptr.
 	 */
 	operator T&() const{
-		if( ! pSlot ){
-			DETHROW( deeNullPointer );
+		if(!pSlot){
+			DETHROW(deeNullPointer);
 		}
 		return *pSlot;
 	}
@@ -82,25 +100,32 @@ public:
 	 * \throws deeNullPointer if slot is nullptr.
 	 */
 	T* operator->() const{
-		if( ! pSlot ){
-			DETHROW( deeNullPointer );
+		if(!pSlot){
+			DETHROW(deeNullPointer);
 		}
 		return pSlot;
 	}
 	
-	devkTPoolReference &operator=( T *slot ){
-		if( pSlot ){
+	devkTPoolReference &operator=(T *slot){
+		if(pSlot){
 			pSlot->ReturnToPool();
 		}
 		pSlot = slot;
 		return *this;
 	}
 	
-	inline bool operator==( T *slot ) const{
+	/** Move reference. */
+	devkTPoolReference &operator=(devkTPoolReference<T> &slot){
+		*this = slot.pSlot;
+		slot.pSlot = nullptr;
+		return *this;
+	}
+	
+	inline bool operator==(const T *slot) const{
 		return pSlot == slot;
 	}
 	
-	inline bool operator!=( T *slot ) const{
+	inline bool operator!=(T *slot) const{
 		return pSlot != slot;
 	}
 	/*@}*/
@@ -108,12 +133,8 @@ public:
 	
 	
 private:
-	devkTPoolReference( const devkTPoolReference & ){
-		DETHROW( deeInvalidAction );
-	}
-	
-	devkTPoolReference &operator=( const devkTPoolReference & ){
-		DETHROW( deeInvalidAction );
+	devkTPoolReference(const devkTPoolReference &) : pSlot(nullptr){
+		DETHROW(deeInvalidAction);
 	}
 };
 

@@ -25,12 +25,14 @@
 #ifndef _REUBONEMASSFROMVOLUME_H_
 #define _REUBONEMASSFROMVOLUME_H_
 
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
+
 #include <deigde/undo/igdeUndo.h>
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-class decObjectOrderedSet;
-class reRig;
 class reRigBone;
 
 
@@ -39,11 +41,24 @@ class reRigBone;
  * \brief Undo action setting the mass of bones to the volume of their shapes times density.
  */
 class reUBoneMassFromVolume : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUBoneMassFromVolume>;
+	
+	
+public:
+
 private:
-	struct sBone{
-		reRigBone *bone;
-		float oldMass;
-		float newMass;
+	class cBone : public deObject{
+	public:
+		using Ref = deTObjectReference<cBone>;
+		
+		reRigBone::Ref bone;
+		float oldMass = 0.0f;
+		float newMass = 0.0f;
+		
+		cBone() = default;
+	protected:
+		~cBone() override = default;
 	};
 	
 	
@@ -53,8 +68,7 @@ private:
 	
 	float pDensity;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTObjectList<cBone> pBones;
 	
 	
 	
@@ -62,11 +76,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUBoneMassFromVolume( reRig *rig, const decObjectOrderedSet &bones, float density );
+	reUBoneMassFromVolume(reRig *rig, const reRigBone::List &bones, float density);
 	
 protected:
 	/** \brief Clean up the undo. */
-	virtual ~reUBoneMassFromVolume();
+	~reUBoneMassFromVolume() override;
 	/*@}*/
 	
 	
@@ -75,17 +89,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
-	float pCalcVolume( const reRigBone &bone ) const;
+	float pCalcVolume(const reRigBone &bone) const;
 };
 
 #endif

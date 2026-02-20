@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
-#include <dragengine/resources/video/deVideoAudioDecoderReference.h>
+#include <dragengine/resources/video/deVideoAudioDecoder.h>
 
 class deoalAudioThread;
 class deVideo;
@@ -41,7 +41,7 @@ class deoalAVideoPlayer : public deObject{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	deVideoAudioDecoderReference pDecoder;
+	deVideoAudioDecoder::Ref pDecoder;
 	deVideoPlayer::ePlayState pPlayState;
 	float pPlayPosition;
 	float pPlayFrom;
@@ -62,14 +62,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalAVideoPlayer>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */
-	deoalAVideoPlayer( deoalAudioThread &audioThread );
+	deoalAVideoPlayer(deoalAudioThread &audioThread);
 	
 protected:
 	/** \brief Clean up microphone. */
-	virtual ~deoalAVideoPlayer();
+	~deoalAVideoPlayer() override;
 	/*@}*/
 	
 	
@@ -84,25 +88,25 @@ public:
 	 * \brief Video changed.
 	 * \warning Called during synchronization time by main thread.
 	 */
-	void SetVideo( deVideo *video );
+	void SetVideo(deVideo *video);
 	
 	/** \brief Play state. */
 	inline deVideoPlayer::ePlayState GetPlayState() const{ return pPlayState; }
 	
 	/** \brief Set play state. */
-	void SetPlayState( deVideoPlayer::ePlayState playState );
+	void SetPlayState(deVideoPlayer::ePlayState playState);
 	
 	/** \brief Play speed. */
 	inline float GetPlaySpeed() const{ return pPlaySpeed; }
 	
 	/** \brief Set to play speed. */
-	void SetPlaySpeed( float playSpeed );
+	void SetPlaySpeed(float playSpeed);
 	
 	/** \brief Play looped. */
 	inline bool GetLooping() const{ return pLooping; }
 	
 	/** \brief Set to play looped. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** \brief Play from position. */
 	inline float GetPlayFrom() const{ return pPlayFrom; }
@@ -111,13 +115,13 @@ public:
 	inline float GetPlayTo() const{ return pPlayTo; }
 	
 	/** \brief Set play range. */
-	void SetPlayRange( float from, float to );
+	void SetPlayRange(float from, float to);
 	
 	/** \brief Play position. */
 	inline float GetPlayPosition() const{ return pPlayPosition; }
 	
 	/** \brief Set play position. */
-	void SetPlayPosition( float position, bool seeking );
+	void SetPlayPosition(float position, bool seeking);
 	
 	
 	
@@ -150,7 +154,7 @@ public:
 	 * \throws EInvalidParam \em bufferSize does not match format.
 	 * \throws EInvalidParam \em buffer is NULL.
 	 */
-	void ReadSamples( void *buffer, int bufferSize, int offset, int samples );
+	void ReadSamples(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	

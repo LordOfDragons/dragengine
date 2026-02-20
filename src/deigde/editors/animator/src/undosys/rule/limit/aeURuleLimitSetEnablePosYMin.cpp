@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnablePosYMin::aeURuleLimitSetEnablePosYMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnablePosYMin::aeURuleLimitSetEnablePosYMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum y position" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumYPosition");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosYMin::~aeURuleLimitSetEnablePosYMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnablePosYMin::Undo(){
 }
 
 void aeURuleLimitSetEnablePosYMin::Redo(){
-	pRule->SetEnablePositionYMin( ! pRule->GetEnablePositionYMin() );
+	pRule->SetEnablePositionYMin(!pRule->GetEnablePositionYMin());
 }

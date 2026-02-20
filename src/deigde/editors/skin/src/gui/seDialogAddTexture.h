@@ -25,8 +25,8 @@
 #ifndef _SEDIALOGADDTEXTURE_H_
 #define _SEDIALOGADDTEXTURE_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class seWindowMain;
@@ -39,20 +39,23 @@ class seWindowMain;
 class seDialogAddTexture : public igdeDialog{
 private:
 	seWindowMain &pWindowMain;
-	igdeListBoxReference pListModelTextureNames;
-	igdeTextFieldReference pEditTextureName;
+	igdeListBox::Ref pListModelTextureNames;
+	igdeTextField::Ref pEditTextureName;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<seDialogAddTexture>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	seDialogAddTexture( seWindowMain &windowMain );
+	seDialogAddTexture(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~seDialogAddTexture();
+	~seDialogAddTexture() override;
 	/*@}*/
 	
 	
@@ -64,7 +67,7 @@ public:
 	const decString &GetTextureName() const;
 	
 	/** \brief Set texture name. */
-	void SetTextureName( const char *name );
+	void SetTextureName(const char *name);
 	/*@}*/
 	
 	

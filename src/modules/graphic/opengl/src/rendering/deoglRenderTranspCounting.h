@@ -54,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderTranspCounting( deoglRenderThread &renderThread );
+	deoglRenderTranspCounting(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderTranspCounting();
+	~deoglRenderTranspCounting() override;
 	/*@}*/
 	
 	
@@ -77,7 +77,7 @@ public:
 	 * Using last used Diffuse/Reflectivity buffer. Clears nothing. Invalidates buffer
 	 * since result is written to render plan.
 	 */
-	void CountTransparency( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void CountTransparency(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/**
 	 * Last found transparency count.

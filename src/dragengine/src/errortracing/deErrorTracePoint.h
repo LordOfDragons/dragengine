@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAERRORTRACEPOINT_H_
-#define _DEAERRORTRACEPOINT_H_
+#ifndef _DEERRORTRACEPOINT_H_
+#define _DEERRORTRACEPOINT_H_
 
+#include "deErrorTraceValue.h"
+#include "../dragengine_export.h"
 #include "../common/string/decString.h"
-
-class deErrorTraceValue;
-class deLoadableModule;
+#include "../common/collection/decTUniqueList.h"
+#include "../systems/modules/deLoadableModule.h"
 
 
 /**
@@ -38,12 +39,18 @@ class deLoadableModule;
  * describing the path of an error that occurred in the engine.
  */
 class DE_DLL_EXPORT deErrorTracePoint{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<deErrorTracePoint>;
+	
+	/** \brief List. */
+	using List = decTUniqueList<deErrorTracePoint>;
+	
 private:
-	deLoadableModule * const pSourceModule;
+	const deLoadableModule::Ref pSourceModule;
 	const decString pSourceFunc;
 	const int pSourceLine;
-	deErrorTraceValue **pValues;
-	int pValueCount, pValueSize;
+	deErrorTraceValue::List pValues;
 	
 	
 	
@@ -51,10 +58,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new error trace point object. */
-	deErrorTracePoint( const char *sourceFunc, int sourceLine );
+	deErrorTracePoint(const char *sourceFunc, int sourceLine);
 	
 	/** \brief Create new error trace point object. */
-	deErrorTracePoint( deLoadableModule *module, const char *sourceFunc, int sourceLine );
+	deErrorTracePoint(deLoadableModule *module, const char *sourceFunc, int sourceLine);
 	
 	/** \brief Clean up error trace object. */
 	~deErrorTracePoint();
@@ -65,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source module or NULL if the error occurred in the engine itself. */
-	inline deLoadableModule *GetSourceModule() const{ return pSourceModule; }
+	inline const deLoadableModule::Ref &GetSourceModule() const{ return pSourceModule; }
 	
 	/** \brief Source function. */
 	inline const decString &GetSourceFunction() const{ return pSourceFunc; }
@@ -76,20 +83,25 @@ public:
 
 	/** \name Trace Value Management */
 	/*@{*/
+	/** \brief Values. */
+	inline const deErrorTraceValue::List &GetValues() const{ return pValues; }
+	
 	/** \brief Determines if there exist trace values. */
-	inline bool HasValues() const{ return pValueCount > 0; }
+	inline bool HasValues() const{ return pValues.IsNotEmpty(); }
 	
 	/** \brief Count of trace values. */
-	inline int GetValueCount() const{ return pValueCount; }
+	inline int GetValueCount() const{ return pValues.GetCount(); }
 	
 	/** \brief Indexed trace value. */
-	deErrorTraceValue *GetValue( int index ) const;
+	const deErrorTraceValue::Ref &GetValue(int index) const;
 	
 	/** \brief Named trace value or NULL if not found. */
-	deErrorTraceValue *FindValue( const char *name ) const;
+	deErrorTraceValue *FindValue(const char *name) const;
 	
 	/** \brief Adds a new trace value. */
-	void AddValue( deErrorTraceValue *value );
+	void AddValue(deErrorTraceValue::Ref 
+
+&&value);
 	
 	/** \brief Removes all trace values. */
 	void RemoveAllValues();
@@ -100,16 +112,16 @@ public:
 	/** \name Convenience Functions */
 	/*@{*/
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValue( const char *name, const char *value );
+	const deErrorTraceValue::Ref &AddValue(const char *name, const char *value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueInt( const char *name, int value );
+	const deErrorTraceValue::Ref &AddValueInt(const char *name, int value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueFloat( const char *name, float );
+	const deErrorTraceValue::Ref &AddValueFloat(const char *name, float);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueBool( const char *name, bool value );
+	const deErrorTraceValue::Ref &AddValueBool(const char *name, bool value);
 	/*@}*/
 };
 

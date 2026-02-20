@@ -25,6 +25,7 @@
 #ifndef _DEDSRESOURCELOADER_H_
 #define _DEDSRESOURCELOADER_H_
 
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 
 class deScriptingDragonScript;
@@ -41,17 +42,14 @@ class dedsResourceLoader{
 private:
 	deScriptingDragonScript *pDS;
 	
-	dedsResourceLoaderTask **pTasks;
-	int pTaskCount;
-	int pTaskSize;
-	
+	decTUniqueList<dedsResourceLoaderTask> pTasks;
 	
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new wrapper. */
-	dedsResourceLoader( deScriptingDragonScript *ds );
+	dedsResourceLoader(deScriptingDragonScript *ds);
 	/** Cleans up the wrapper. */
 	~dedsResourceLoader();
 	/*@}*/
@@ -59,25 +57,25 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of tasks. */
-	inline int GetTaskCount() const{ return pTaskCount; }
+	inline int GetTaskCount() const{ return pTasks.GetCount(); }
 	
 	/** Determines if there are still some resources left to load. */
-	inline bool HasResourcesLeft() const{ return pTaskCount > 0; }
+	inline bool HasResourcesLeft() const{ return pTasks.IsNotEmpty(); }
 	/** Update. */
 	void OnFrameUpdate();
 	
 	/** Adds a request. */
-	void AddRequest( const char *filename, deResourceLoader::eResourceType resourceType,
-		dsRealObject *listener );
+	void AddRequest(const char *filename, deResourceLoader::eResourceType resourceType,
+		dsRealObject *listener);
 	/** Cancel a request. */
-	void CancelRequest( const char *filename, deResourceLoader::eResourceType resourceType,
-		dsRealObject *listener );
+	void CancelRequest(const char *filename, deResourceLoader::eResourceType resourceType,
+		dsRealObject *listener);
 	/** CancelAllRequests. */
 	void CancelAllRequests();
 	
 private:
-	int pIndexOfTaskWith( const char *filename, deResourceLoader::eResourceType resourceType ) const;
-	void pRemoveTaskFrom( int index );
+	int pIndexOfTaskWith(const char *filename, deResourceLoader::eResourceType resourceType) const;
+	void pRemoveTaskFrom(int index);
 };
 
 // end of include only once

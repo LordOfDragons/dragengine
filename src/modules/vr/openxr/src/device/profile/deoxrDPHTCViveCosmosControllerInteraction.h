@@ -33,21 +33,23 @@
  */
 class deoxrDPHTCViveCosmosControllerInteraction : public deoxrDPBaseTwoHandController{
 public:
+	using Ref = deTObjectReference<deoxrDPHTCViveCosmosControllerInteraction>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHTCViveCosmosControllerInteraction( deoxrInstance &instance );
+	deoxrDPHTCViveCosmosControllerInteraction(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPHTCViveCosmosControllerInteraction();
+	~deoxrDPHTCViveCosmosControllerInteraction() override;
 	/*@}*/
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	bool pProfileEnabled() const override;
+	void pSuggestBindings() override;
+	void pAddDevice(bool left) override;
 };
 
 #endif

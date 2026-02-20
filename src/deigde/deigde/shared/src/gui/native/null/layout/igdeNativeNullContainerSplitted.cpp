@@ -39,7 +39,8 @@ igdeNativeNullContainerSplitted::igdeNativeNullContainerSplitted(){
 igdeNativeNullContainerSplitted::~igdeNativeNullContainerSplitted(){
 }
 
-igdeNativeNullContainerSplitted *igdeNativeNullContainerSplitted::CreateNativeWidget( igdeContainerSplitted& ){
+igdeNativeNullContainerSplitted *igdeNativeNullContainerSplitted::CreateNativeWidget(igdeContainerSplitted&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullContainerSplitted;
 }
 

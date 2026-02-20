@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpUnstuckCollider.h"
 #include "../../collider/debpCollider.h"
 #include "../../world/debpWorld.h"
@@ -41,58 +37,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpUnstuckCollider::debpUnstuckCollider( debpWorld &world ) :
-pWorld( world ),
+debpUnstuckCollider::debpUnstuckCollider(debpWorld &world) :
+pWorld(world),
 
-pStuckCollider( NULL ),
-
-pNearbyColliders( NULL ),
-pNearbyColliderCount( 0 ),
-pNearbyColliderSize( 0 ),
-
-pBlockerNormals( NULL ),
-pBlockerNormalCount( 0 ),
-pBlockerNormalSize( 0 )
+pStuckCollider(nullptr)
 {
 	(void)pWorld; // will be used in the future
 }
-
-debpUnstuckCollider::~debpUnstuckCollider(){
-	if( pBlockerNormals ){
-		delete [] pBlockerNormals;
-	}
-	if( pNearbyColliders ){
-		delete [] pNearbyColliders;
-	}
-}
-
 
 
 // Management
 ///////////////
 
-void debpUnstuckCollider::SetStuckCollider( debpCollider *collider ){
+void debpUnstuckCollider::SetStuckCollider(debpCollider *collider){
 	pStuckCollider = collider;
 }
 
-void debpUnstuckCollider::SetDisplacement( const decDVector &displacement ){
+void debpUnstuckCollider::SetDisplacement(const decDVector &displacement){
 	pDisplacement = displacement;
 }
 
 void debpUnstuckCollider::Reset(){
-	pStuckCollider = NULL;
-	pNearbyColliderCount = 0;
-	pBlockerNormalCount = 0;
+	pStuckCollider = nullptr;
+	pNearbyColliders.RemoveAll();
+	pBlockerNormals.RemoveAll();
 }
 
 void debpUnstuckCollider::FindNearbyColliders(){
-	pNearbyColliderCount = 0;
+	pNearbyColliders.RemoveAll();
 	
 	// TODO visit world to find colliders
 }
 
 void debpUnstuckCollider::FindBlockerNormals(){
-	pBlockerNormalCount = 0;
+	pBlockerNormals.RemoveAll();
 	
 	// TODO test nearby colliders for collision with the stuck collider and
 	// store the normals for them
@@ -104,56 +82,30 @@ bool debpUnstuckCollider::UnstuckCollider(){
 
 
 
-debpCollider *debpUnstuckCollider::GetNearbyColliderAt( int index ) const{
-	if( index < 0 || index >= pNearbyColliderCount ) DETHROW( deeInvalidParam );
-	
-	return pNearbyColliders[ index ];
+debpCollider *debpUnstuckCollider::GetNearbyColliderAt(int index) const{
+	return pNearbyColliders.GetAt(index);
 }
 
-void debpUnstuckCollider::AddNearbyCollider( debpCollider *collider ){
-	if( ! collider ) DETHROW( deeInvalidParam );
+void debpUnstuckCollider::AddNearbyCollider(debpCollider *collider){
+	DEASSERT_NOTNULL(collider)
 	
-	if( pNearbyColliderCount == pNearbyColliderSize ){
-		debpCollider **newArray = new debpCollider*[ pNearbyColliderSize + 1 ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pNearbyColliders ){
-			memcpy( newArray, pNearbyColliders, sizeof( debpCollider* ) * pNearbyColliderSize );
-			delete [] pNearbyColliders;
-		}
-		pNearbyColliders = newArray;
-		pNearbyColliderSize++;
-	}
-	
-	pNearbyColliders[ pNearbyColliderCount++ ] = collider;
+	pNearbyColliders.Add(collider);
 }
 
 void debpUnstuckCollider::RemoveAllNearbyColliders(){
-	pNearbyColliderCount = 0;
+	pNearbyColliders.RemoveAll();
 }
 
 
 
-const decDVector& debpUnstuckCollider::GetBlockerNormalAt( int index ) const{
-	if( index < 0 || index >= pBlockerNormalCount ) DETHROW( deeInvalidParam );
-	
-	return pBlockerNormals[ index ];
+const decDVector& debpUnstuckCollider::GetBlockerNormalAt(int index) const{
+	return pBlockerNormals.GetAt(index);
 }
 
-void debpUnstuckCollider::AddBlockerNormal( const decDVector &normal ){
-	if( pBlockerNormalCount == pBlockerNormalSize ){
-		decDVector *newArray = new decDVector[ pBlockerNormalSize + 1 ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pBlockerNormals ){
-			memcpy( newArray, pBlockerNormals, sizeof( decDVector ) * pBlockerNormalSize );
-			delete [] pBlockerNormals;
-		}
-		pBlockerNormals = newArray;
-		pBlockerNormalSize++;
-	}
-	
-	pBlockerNormals[ pBlockerNormalCount++ ] = normal;
+void debpUnstuckCollider::AddBlockerNormal(const decDVector &normal){
+	pBlockerNormals.Add(normal);
 }
 
 void debpUnstuckCollider::RemoveAllBlockerNormals(){
-	pBlockerNormalCount = 0;
+	pBlockerNormals.RemoveAll();
 }

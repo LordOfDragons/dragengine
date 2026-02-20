@@ -47,26 +47,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskParticles::deoglRenderTaskParticles(){
-	pRenderParamBlock = nullptr;
-	pRenderVSStereo = false;
-	
-	pSteps = NULL;
-	pStepCount = 0;
-	pStepSize = 0;
+deoglRenderTaskParticles::deoglRenderTaskParticles() :
+pRenderParamBlock(nullptr),
+pStepCount(0),
+pRenderVSStereo(false){
 }
-
-deoglRenderTaskParticles::~deoglRenderTaskParticles(){
-	if( pSteps ){
-		while( pStepSize > 0 ){
-			pStepSize--;
-			if( pSteps[ pStepSize ] ) delete pSteps[ pStepSize ];
-		}
-		
-		delete [] pSteps;
-	}
-}
-
 
 
 // Management
@@ -78,110 +63,89 @@ void deoglRenderTaskParticles::Clear(){
 	pRenderVSStereo = false;
 }
 
-void deoglRenderTaskParticles::SetRenderParamBlock( deoglSPBlockUBO *paramBlock ){
+void deoglRenderTaskParticles::SetRenderParamBlock(deoglSPBlockUBO *paramBlock){
 	pRenderParamBlock = paramBlock;
 }
 
-void deoglRenderTaskParticles::SetRenderVSStereo( bool renderVSStereo ){
+void deoglRenderTaskParticles::SetRenderVSStereo(bool renderVSStereo){
 	pRenderVSStereo = renderVSStereo;
 }
 
 
 
-deoglRenderTaskParticlesStep *deoglRenderTaskParticles::GetStepAt( int index ) const{
-	if( index < 0 || index >= pStepCount ) DETHROW( deeInvalidParam );
-	
-	return pSteps[ index ];
+deoglRenderTaskParticlesStep *deoglRenderTaskParticles::GetStepAt(int index) const{
+	return pSteps.GetAt(index);
 }
 
 deoglRenderTaskParticlesStep *deoglRenderTaskParticles::AddStep(){
-	if( pStepCount == pStepSize ){
-		int newSize = pStepSize + 10;
-		deoglRenderTaskParticlesStep **newArray = new deoglRenderTaskParticlesStep*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pSteps ){
-			memcpy( newArray, pSteps, sizeof( deoglRenderTaskParticlesStep* ) * pStepSize );
-			delete [] pSteps;
-		}
-		memset( newArray + pStepSize, '\0', sizeof( deoglRenderTaskParticlesStep* ) * ( newSize - pStepSize ) );
-		pSteps = newArray;
-		pStepSize = newSize;
+	if(pStepCount == pSteps.GetCount()){
+		pSteps.Add(deTUniqueReference<deoglRenderTaskParticlesStep>::New());
 	}
 	
-	if( ! pSteps[ pStepCount ] ){
-		pSteps[ pStepCount ] = new deoglRenderTaskParticlesStep;
-		if( ! pSteps[ pStepCount ] ) DETHROW( deeOutOfMemory );
-		
-	}else{
-		pSteps[ pStepCount ]->Reset();
-	}
-	
-	pStepCount++;
-	return pSteps[ pStepCount - 1 ];
+	auto &s = pSteps.GetAt(pStepCount++);
+	s->Reset();
+	return s;
 }
 
 void deoglRenderTaskParticles::RemoveAllSteps(){
 	pStepCount = 0;
 }
 
-void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
+void deoglRenderTaskParticles::DebugPrint(deoglRTLogger &rtlogger){
 	decString text;
 	int i, j;
 	
-	rtlogger.LogInfoFormat( "RenderTaskParticle %p: particles=%d", this, pStepCount );
+	rtlogger.LogInfoFormat("RenderTaskParticle %p: particles=%d", this, pStepCount);
 	
 	const deoglPipeline *pipeline = nullptr;
 	
-	for( i=0; i<pStepCount; i++ ){
-		const deoglRenderTaskParticlesStep &step = *pSteps[ i ];
-		if( step.GetPipeline() == pipeline ){
+	for(i=0; i<pStepCount; i++){
+		const deoglRenderTaskParticlesStep &step = pSteps[i];
+		if(step.GetPipeline() == pipeline){
 			continue;
 		}
 		
 		pipeline = step.GetPipeline();
-		rtlogger.LogInfo( "  - configuration:" );
+		rtlogger.LogInfo("  - configuration:");
 		const deoglShaderProgram &shader = pipeline->GetConfiguration().GetShaderRef();
-		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetUnitVertex()
-			? shader.GetUnitVertex()->GetSources()->GetName().GetString() : "-" );
-		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetUnitGeometry()
-			? shader.GetUnitGeometry()->GetSources()->GetName().GetString() : "-" );
-		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetUnitFragment()
-			? shader.GetUnitFragment()->GetSources()->GetName().GetString() : "-" );
+		rtlogger.LogInfoFormat("    - vertex %s", shader.GetUnitVertex()
+			? shader.GetUnitVertex()->GetSources()->GetName().GetString() : "-");
+		rtlogger.LogInfoFormat("    - geometry %s", shader.GetUnitGeometry()
+			? shader.GetUnitGeometry()->GetSources()->GetName().GetString() : "-");
+		rtlogger.LogInfoFormat("    - fragment %s", shader.GetUnitFragment()
+			? shader.GetUnitFragment()->GetSources()->GetName().GetString() : "-");
 		
 		text = "    - defines: ";
-		const deoglShaderDefines &defines = shader.GetDefines();
-		const int defineCount = defines.GetDefineCount();
-		for( j=0; j<defineCount; j++ ){
-			const char *defineName = defines.GetDefineNameAt( j );
-			const char *defineValue = defines.GetDefineValueAt( j );
-			
-			if( strlen( defineValue ) > 10 ){
-				text.AppendFormat( "%s %s=%.10s...", j == 0 ? "" : ",", defineName, defineValue );
+		bool first = true;
+		shader.GetDefines().GetDefines().Visit([&](const char *name, const char *value){
+			if(strlen(value) > 10){
+				text.AppendFormat("%s %s=%.10s...", first ? "" : ",", name, value);
 				
 			}else{
-				text.AppendFormat( "%s %s=%s", j == 0 ? "" : ",", defineName, defineValue );
+				text.AppendFormat("%s %s=%s", first ? "" : ",", name, value);
 			}
-		}
-		rtlogger.LogInfo( text.GetString() );
+			first = false;
+		});
+		rtlogger.LogInfo(text.GetString());
 		
 		const int unitCount = step.GetTUC()->GetUnitCount();
-		text.Format( "    units(" );
-		for( j=0; j<unitCount; j++ ){
-			const deoglTexUnitConfig &unit = step.GetTUC()->GetUnitAt( j );
-			if( unit.GetTexture() ){
-				text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
+		text.Format("    units(");
+		for(j=0; j<unitCount; j++){
+			const deoglTexUnitConfig &unit = step.GetTUC()->GetUnits()[j];
+			if(unit.GetTexture()){
+				text.AppendFormat(" T%i", unit.GetTexture()->GetTexture());
 				
-			}else if( unit.GetCubeMap() ){
-				text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );
+			}else if(unit.GetCubeMap()){
+				text.AppendFormat(" C%i", unit.GetCubeMap()->GetTexture());
 				
-			}else if( unit.GetSpecial() != deoglTexUnitConfig::estNone ){
-				text.AppendFormat( " S%i", unit.GetSpecial() );
+			}else if(unit.GetSpecial() != deoglTexUnitConfig::estNone){
+				text.AppendFormat(" S%i", unit.GetSpecial());
 				
 			}else{
-				text.AppendFormat( " -" );
+				text.AppendFormat(" -");
 			}
 		}
-		text.AppendFormat( " )" );
-		rtlogger.LogInfo( text.GetString() );
+		text.AppendFormat(")");
+		rtlogger.LogInfo(text.GetString());
 	}
 }

@@ -40,26 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetBoneMinimum::aeULinkSetBoneMinimum( aeLink *link, float newBoneMinimum ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+aeULinkSetBoneMinimum::aeULinkSetBoneMinimum(aeLink *link, float newBoneMinimum){
+	if(!link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
-	SetShortInfo( "Link set bone minimum" );
+	SetShortInfo("@Animator.Undo.LinkSetBoneMinimum");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetBoneMinimum();
 	pNewValue = newBoneMinimum;
 }
 
 aeULinkSetBoneMinimum::~aeULinkSetBoneMinimum(){
-	if( pLink ){
-		pLink->FreeReference();
-	}
 }
 
 
@@ -68,9 +63,9 @@ aeULinkSetBoneMinimum::~aeULinkSetBoneMinimum(){
 ///////////////
 
 void aeULinkSetBoneMinimum::Undo(){
-	pLink->SetBoneMinimum( pOldValue );
+	pLink->SetBoneMinimum(pOldValue);
 }
 
 void aeULinkSetBoneMinimum::Redo(){
-	pLink->SetBoneMinimum( pNewValue );
+	pLink->SetBoneMinimum(pNewValue);
 }

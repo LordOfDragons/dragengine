@@ -2,7 +2,6 @@
 
 #include <delauncher/game/profile/delGameProfile.h>
 #include <delauncher/game/profile/delGPDisableModuleVersion.h>
-#include <delauncher/game/profile/delGPMParameter.h>
 #include <delauncher/game/profile/delGPModule.h>
 
 // GameProfileConfig
@@ -57,7 +56,7 @@ pFldProfileReplaceRunArgs(pClsProfile.GetFieldBool("replaceRunArgs")){
 }
 
 jobject GameProfileConfig::Convert(const delGameProfile &profile) {
-    const delGPModuleList &modules = profile.GetModules();
+    const delGPModule::List &modules = profile.GetModules();
     const int moduleCount = modules.GetCount();
     const JniObjectArray objModules(pEnv, pClsModule, moduleCount);
     int i;
@@ -66,32 +65,27 @@ jobject GameProfileConfig::Convert(const delGameProfile &profile) {
         const JniObject objModule(pClsModule.New());
         pFldModuleName.Set(objModule, module.GetName());
 
-        const delGPMParameterList &params = module.GetParameters();
-        const int paramCount = params.GetCount();
-        const JniObjectArray objParams(pEnv, pClsParameter, paramCount);
-        int j;
-        for(j=0; j<paramCount; j++){
-            const delGPMParameter &param = *params.GetAt(j);
+        const JniObjectArray objParams(pEnv, pClsParameter, module.GetParameters().GetCount());
+        int j = 0;
+        module.GetParameters().Visit([&](const decString &name, const decString &value){
             const JniObject objParam(pClsParameter.New());
-            pFldParamName.Set(objParam, param.GetName());
-            pFldParamValue.Set(objParam, param.GetValue());
-            objParams.SetAt(j, objParam);
-        }
+            pFldParamName.Set(objParam, name);
+            pFldParamValue.Set(objParam, value);
+            objParams.SetAt(j++, objParam);
+        });
         pFldModuleParameters.Set(objModule, objParams);
 
         objModules.SetAt(i, objModule);
     }
 
-    const delGPDisableModuleVersionList &disModVers = profile.GetDisableModuleVersions();
-    const int disModVerCount = disModVers.GetCount();
-    const JniObjectArray objDisModVers(pEnv, pClsModuleVersion, disModVerCount);
-    for(i=0; i<disModVerCount; i++){
-        const delGPDisableModuleVersion &disModVer = *disModVers.GetAt(i);
+    const delGPDisableModuleVersion::List &disModVers = profile.GetDisableModuleVersions();
+    const JniObjectArray objDisModVers(pEnv, pClsModuleVersion, disModVers.GetCount());
+    disModVers.VisitIndexed([&](int j, const delGPDisableModuleVersion &disModVer){
         const JniObject objVer(pClsModuleVersion.New());
         pFldModVerName.Set(objVer, disModVer.GetName());
         pFldModVerVersion.Set(objVer, disModVer.GetVersion());
-        objDisModVers.SetAt(i, objVer);
-    }
+        objDisModVers.SetAt(j, objVer);
+    });
 
     JniObject objProfile(pClsProfile.New());
     pFldProfileName.Set(objProfile, profile.GetName());
@@ -155,9 +149,9 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
     int i;
     for(i=0; i<disObjVersCount; i++){
         jobject objVer = objDisModVers.GetAt(i);
-        auto * const ver = new delGPDisableModuleVersion;
-        ver->SetName(pFldModVerName.Get(objVer));
-        ver->SetVersion(pFldModVerVersion.Get(objVer));
+        delGPDisableModuleVersion ver;
+        ver.SetName(pFldModVerName.Get(objVer));
+        ver.SetVersion(pFldModVerVersion.Get(objVer));
         profile.GetDisableModuleVersions().Add(ver);
     }
 
@@ -165,7 +159,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
     const int modCount = objMods.GetCount();
     for(i=0; i<modCount; i++) {
         jobject objMod = objMods.GetAt(i);
-        auto * const mod = new delGPModule;
+        const delGPModule::Ref mod(delGPModule::Ref::New());
         mod->SetName(pFldModuleName.Get(objMod));
 
         JniObjectArray objParams(pEnv, pFldModuleParameters.Get(objMod));
@@ -173,10 +167,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
         int j;
         for(j=0; j<paramCount; j++){
             jobject objParam = objParams.GetAt(j);
-            auto * const param = new delGPMParameter;
-            param->SetName(pFldParamName.Get(objParam));
-            param->SetValue(pFldParamValue.Get(objParam));
-            mod->GetParameters().Add(param);
+            mod->GetParameters().SetAt(pFldParamName.Get(objParam), pFldParamValue.Get(objParam));
         }
 
         profile.GetModules().Add(mod);
@@ -206,7 +197,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileRelease(
 JNIEnv *env, jobject thiz, jlong pprofile){
-    ((delGameProfile*)pprofile)->FreeReference();
+    reinterpret_cast<delGameProfile*>(pprofile)->FreeReference();
 }
 
 extern "C"
@@ -215,7 +206,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetConf
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *((delGameProfile*)pprofile);
+        const delGameProfile &profile = *reinterpret_cast<delGameProfile*>(pprofile);
         return GameProfileConfig(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
@@ -229,7 +220,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileSetConf
 JNIEnv *env, jobject thiz, jlong pprofile, jobject pconfig) {
     JniHelpers h(env);
     try {
-        GameProfileConfig(env).Store(pconfig, *((delGameProfile*)pprofile));
+        GameProfileConfig(env).Store(pconfig, *reinterpret_cast<delGameProfile*>(pprofile));
     }catch(const deException &e){
         h.throwException(e);
     }
@@ -241,7 +232,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetStat
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *((delGameProfile*)pprofile);
+        const delGameProfile &profile = *reinterpret_cast<delGameProfile*>(pprofile);
         return GameProfileStatus(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
@@ -255,6 +246,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_00024Companion_gam
 JNIEnv *env, jobject thiz){
     JniHelpers h(env);
     try {
+        // DELint-Allow-NewWithoutRef: created object is passed through JNI
         return (jlong)(intptr_t)new delGameProfile;
     }catch(const deException &e){
         h.throwException(e);
@@ -268,7 +260,8 @@ Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_00024Companion_gam
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
-        const delGameProfile &profile = *((delGameProfile*)pprofile);
+        const delGameProfile &profile = *reinterpret_cast<delGameProfile*>(pprofile);
+        // DELint-Allow-NewWithoutRef: created object is passed through JNI
         return (jlong)(intptr_t)new delGameProfile(profile);
     }catch(const deException &e){
         h.throwException(e);

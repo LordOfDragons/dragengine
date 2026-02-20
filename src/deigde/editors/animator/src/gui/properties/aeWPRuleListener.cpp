@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPRuleListener::aeWPRuleListener( aeWPRule &panel ) :
-pPanel( panel ){
+aeWPRuleListener::aeWPRuleListener(aeWPRule &panel) :
+pPanel(panel){
 }
 
 aeWPRuleListener::~aeWPRuleListener(){
@@ -51,24 +51,24 @@ aeWPRuleListener::~aeWPRuleListener(){
 // Notifications
 //////////////////
 
-void aeWPRuleListener::ModelChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::ModelChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateRuleVertexPositionSetList();
 }
 
-void aeWPRuleListener::RigChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::RigChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateRuleBoneList();
 }
 
-void aeWPRuleListener::AnimationChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::AnimationChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -77,16 +77,16 @@ void aeWPRuleListener::AnimationChanged( aeAnimator *animator ){
 
 
 
-void aeWPRuleListener::ControllerNameChanged( aeAnimator *animator, aeController* ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::ControllerNameChanged(aeAnimator *animator, aeController*){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void aeWPRuleListener::ControllerStructureChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::ControllerStructureChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -95,16 +95,16 @@ void aeWPRuleListener::ControllerStructureChanged( aeAnimator *animator ){
 
 
 
-void aeWPRuleListener::LinkNameChanged( aeAnimator *animator, aeLink* ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::LinkNameChanged(aeAnimator *animator, aeLink*){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateLinkList();
 }
 
-void aeWPRuleListener::LinkStructureChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::LinkStructureChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -113,8 +113,8 @@ void aeWPRuleListener::LinkStructureChanged( aeAnimator *animator ){
 
 
 
-void aeWPRuleListener::ActiveRuleChanged( aeAnimator *animator, aeRule* ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::ActiveRuleChanged(aeAnimator *animator, aeRule*){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -123,16 +123,16 @@ void aeWPRuleListener::ActiveRuleChanged( aeAnimator *animator, aeRule* ){
 	pPanel.UpdateRule();
 }
 
-void aeWPRuleListener::RuleChanged( aeAnimator*, aeRule *rule ){
-	if( pPanel.GetRule() != rule ){
+void aeWPRuleListener::RuleChanged(aeAnimator*, aeRule *rule){
+	if(pPanel.GetRule() != rule){
 		return;
 	}
 	
 	pPanel.UpdateRule();
 }
 
-void aeWPRuleListener::RuleNameChanged( aeAnimator *animator, aeRule* ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::RuleNameChanged(aeAnimator *animator, aeRule*){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -140,8 +140,8 @@ void aeWPRuleListener::RuleNameChanged( aeAnimator *animator, aeRule* ){
 	pPanel.UpdateRule();
 }
 
-void aeWPRuleListener::RuleStructureChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPRuleListener::RuleStructureChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	

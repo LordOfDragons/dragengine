@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAIfElse;
-class ceCAIfElseCase;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAIfElse.h"
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 
@@ -38,22 +38,27 @@ class ceConversationCondition;
  * \brief Undo action if-else conversation action set case condition.
  */
 class ceUCAIfElseCaseSetCondition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAIfElseCaseSetCondition>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseCaseSetCondition( ceConversationTopic *topic, ceCAIfElse *ifElse,
-	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition );
+	ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+		ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
 	
+protected:
 	/** \brief Clean up undo object. */
-	virtual ~ceUCAIfElseCaseSetCondition();
+	~ceUCAIfElseCaseSetCondition() override;
 	/*@}*/
 	
 	
@@ -62,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -55,7 +55,7 @@ public:
 	debpShapeSurface();
 	
 	/** \brief Clean up visitor. */
-	virtual ~debpShapeSurface();
+	~debpShapeSurface() override;
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline const decVector &GetDirection() const{ return pDirection; }
 	
 	/** \brief Set direction or zero vector to disable. */
-	void SetDirection( const decVector &direction );
+	void SetDirection(const decVector &direction);
 	
 	
 	
@@ -84,22 +84,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

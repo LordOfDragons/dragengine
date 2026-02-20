@@ -25,11 +25,11 @@
 #ifndef _DEFORCEFIELDMANAGER_H_
 #define _DEFORCEFIELDMANAGER_H_
 
+#include "deForceField.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deForceField;
 
 
 /**
@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new resource manager. */
-	deForceFieldManager( deEngine *engine );
+	deForceFieldManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
-	virtual ~deForceFieldManager();
+	~deForceFieldManager() override;
 	/*@}*/
 	
 	
@@ -64,18 +64,18 @@ public:
 	deForceField *GetRootForceField() const;
 	
 	/** \brief Create new force field. */
-	deForceField *CreateForceField();
+	deForceField::Ref CreateForceField();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

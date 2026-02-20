@@ -39,21 +39,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	deoglShapeCylinder( deoglRenderThread &renderThread );
+	deoglShapeCylinder(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
-	virtual ~deoglShapeCylinder();
+	~deoglShapeCylinder() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Calculate matrices for cylinder parameters. */
-	void CalcMatrices( decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
-	const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius );
+	void CalcMatrices(decMatrix &matrix1, decMatrix &matrix2, const decVector &position,
+	const decQuaternion &orientation, float halfHeight, float topRadius, float bottomRadius);
 	
 	/** Add lines data. */
-	virtual void AddVBOLines( sVBOData *data );
+	void AddVBOLines(sVBOData *data) override;
 	/** Add faces data. */
-	virtual void AddVBOFaces( sVBOData *data );
+	void AddVBOFaces(sVBOData *data) override;
 	/*@}*/
 };
 

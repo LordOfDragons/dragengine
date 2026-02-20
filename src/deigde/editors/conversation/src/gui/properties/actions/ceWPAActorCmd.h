@@ -25,9 +25,9 @@
 #ifndef _CEWPAACTORCMD_H_
 #define _CEWPAACTORCMD_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeButton.h>
 
 #include "ceWPAction.h"
 
@@ -40,21 +40,22 @@ class ceCAActorCommand;
  */
 class ceWPAActorCmd : public ceWPAction{
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeTextFieldReference pEditCommand;
-	igdeButtonReference pBtnCommand;
+	igdeComboBox::Ref pCBActorID;
+	igdeTextField::Ref pEditCommand;
+	igdeButton::Ref pBtnCommand;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPAActorCmd>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAActorCmd( ceWPTopic &parentPanel );
+	ceWPAActorCmd(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPAActorCmd();
+	~ceWPAActorCmd() override;
 	/*@}*/
 	
 	
@@ -69,7 +70,7 @@ public:
 	void UpdateAction();
 	
 	/** \brief Update actor id lists. */
-	virtual void UpdateActorIDLists();
+	void UpdateActorIDLists() override;
 	/*@}*/
 };
 

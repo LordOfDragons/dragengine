@@ -27,7 +27,7 @@
 #include <string.h>
 #include "reUndoDataShape.h"
 #include "../../../rig/shape/reRigShape.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -37,22 +37,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUndoDataShape::reUndoDataShape( reRigShape *shape ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUndoDataShape::reUndoDataShape(reRigShape *shape){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
-	shape->AddReference();
-	
 	pOldPosition = shape->GetPosition();
 	pOldOrientation = shape->GetOrientation();
 	//pOldSize = object->GetSize();
 }
 
 reUndoDataShape::~reUndoDataShape(){
-	pShape->FreeReference();
 }
-
-
-
-// Management
-///////////////

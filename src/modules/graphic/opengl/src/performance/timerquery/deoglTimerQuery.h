@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create timer query. */
-	deoglTimerQuery( deoglRenderThread &renderThread );
+	deoglTimerQuery(deoglRenderThread &renderThread);
 	
 	/** Clean up timer query. */
 	~deoglTimerQuery();

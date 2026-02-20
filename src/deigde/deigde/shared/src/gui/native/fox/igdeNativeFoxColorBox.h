@@ -26,7 +26,8 @@
 #define _IGDENATIVEFOXCOLORBOX_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
+#include "../../igdeColorBox.h"
 
 class igdeColorBox;
 class igdeEnvironment;
@@ -37,8 +38,8 @@ class igdeWidget;
 /**
  * FOX Native colorBox.
  */
-class igdeNativeFoxColorBox : public FXFrame{
-	FXDECLARE( igdeNativeFoxColorBox )
+class igdeNativeFoxColorBox : public FXFrame, public igdeColorBox::cNativeColorBox{
+	FXDECLARE(igdeNativeFoxColorBox)
 	
 protected:
 	igdeNativeFoxColorBox();
@@ -61,14 +62,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxColorBox( igdeColorBox &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxColorBox(igdeColorBox &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxColorBox();
+	~igdeNativeFoxColorBox() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxColorBox* CreateNativeWidget( igdeColorBox &owner );
+	static igdeNativeFoxColorBox* CreateNativeWidget(igdeColorBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -81,32 +82,32 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual FXint getDefaultWidth();
-	virtual FXint getDefaultHeight();
+	FXint getDefaultWidth() override;
+	FXint getDefaultHeight() override;
 	
-	virtual void UpdateColor();
-	virtual void UpdateDescription();
-	virtual void UpdateEnabled();
+	void UpdateColor() override;
+	void UpdateDescription() override;
+	void UpdateEnabled() override;
 	
-	virtual void ClipboardPutColor( const decColor &color );
-	virtual decColor ClipboardGetColor();
+	void ClipboardPutColor(const decColor &color) override;
+	decColor ClipboardGetColor() override;
 	
-	static FXColor ColorIgdeToFx( const decColor &color );
-	static decColor ColorFxToIgde( FXColor color );
-	static int ColorBoxFlags( const igdeColorBox &owner );
-	static int ColorBoxHeight( const igdeGuiTheme &guitheme );
+	static FXColor ColorIgdeToFx(const decColor &color);
+	static decColor ColorFxToIgde(FXColor color);
+	static int ColorBoxFlags(const igdeColorBox &owner);
+	static int ColorBoxHeight(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject*, FXSelector, void* );
-	long onClicked( FXObject*, FXSelector, void* );
-	long onRClicked( FXObject*, FXSelector, void* );
+	long onPaint(FXObject*, FXSelector, void*);
+	long onClicked(FXObject*, FXSelector, void*);
+	long onRClicked(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxColorBox igdeNativeColorBox;
+using igdeNativeColorBox = igdeNativeFoxColorBox;
 
 #endif

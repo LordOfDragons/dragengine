@@ -35,6 +35,10 @@
  * \brief Comment conversation action ignored during game play.
  */
 class ceCAComment : public ceConversationAction{
+public:
+	using Ref = deTObjectReference<ceCAComment>;
+	
+	
 private:
 	decString pComment;
 	
@@ -44,9 +48,11 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAComment();
 	/** \brief Creates a copy of a conversation action. */
-	ceCAComment( const ceCAComment &action );
+	ceCAComment(const ceCAComment &action);
 	/** \brief Cleans up the conversation action. */
-	virtual ~ceCAComment();
+protected:
+	~ceCAComment() override;
+public:
 	/*@}*/
 	
 	/** \name Management */
@@ -54,10 +60,10 @@ public:
 	/** \brief Retrieves the comment. */
 	inline const decString &GetComment() const{ return pComment; }
 	/** \brief Sets the comment. */
-	void SetComment( const char *comment );
+	void SetComment(const char *comment);
 	
 	/** \brief Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+    ceConversationAction::Ref CreateCopy() const override;
 	/*@}*/
 };
 

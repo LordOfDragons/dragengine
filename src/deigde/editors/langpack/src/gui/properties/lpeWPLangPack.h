@@ -25,30 +25,34 @@
 #ifndef _LPEWPLANGPACK_H_
 #define _LPEWPLANGPACK_H_
 
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include "lpeWPLangPackListener.h"
+#include "../../langpack/lpeLangPack.h"
+
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class lpeLangPack;
 class lpeWindowProperties;
-class lpeWPLangPackListener;
-
 
 
 /**
  * \brief Language pack properties panel.
  */
 class lpeWPLangPack : public igdeContainerScroll{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<lpeWPLangPack>;
+	
 private:
 	lpeWindowProperties &pWindowProperties;
-	lpeWPLangPackListener *pListener;
+	lpeWPLangPackListener::Ref pListener;
 	
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
-	igdeTextFieldReference pEditIdentifier;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditMissingText;
+	igdeTextField::Ref pEditIdentifier;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditMissingText;
 	
 	
 	
@@ -56,11 +60,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	lpeWPLangPack( lpeWindowProperties &windowProperties );
+	lpeWPLangPack(lpeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~lpeWPLangPack();
+	~lpeWPLangPack() override;
 	/*@}*/
 	
 	
@@ -71,11 +75,11 @@ public:
 	/** \brief Properties window. */
 	inline lpeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	/** \brief Language pack or nullptr. */
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
-	/** \brief Set language pack or NULL. */
-	void SetLangPack( lpeLangPack *langpack );
+	/** \brief Set language pack or nullptr. */
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** \brief Update language pack. */
 	void UpdateLangPack();

@@ -19,480 +19,472 @@
     <None Include="..\..\..\..\src\deigde\editors\sky\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\configuration\seConfiguration.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\configuration\skyeConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\configuration\seConfigurationXML.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\configuration\skyeConfigurationXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\seWindowCurves.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\skyeWindowCurves.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\seWindowCurvesListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\skyeWindowCurvesListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWindowProperties.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWindowProperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPControllerListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPControllerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLayer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLayerListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLayerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLinkListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLinkListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPSky.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPSky.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPSkyListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPSkyListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPUndoHistory.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPUndoHistory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPUndoHistoryListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPUndoHistoryListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPView.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPViewListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPViewListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\seTaskSyncGameDefinition.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeTaskSyncGameDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\seViewSky.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeViewSky.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\seWindowMain.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeWindowMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\seWindowMainListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeWindowMainListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\seLoadSaveSky.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\skyeLoadSaveSky.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\seLoadSaveSystem.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\skyeLoadSaveSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\seIGDEModule.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\skyeIGDEModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\body\seBody.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\body\skyeBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\body\seBodyList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\seController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\skyeController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\seControllerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\seControllerTarget.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\skyeControllerTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\layer\seLayer.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\layer\skyeLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\layer\seLayerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\link\seLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\link\skyeLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\link\seLinkList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\seSky.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\skyeSky.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\seSkyListener.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\sky\skyeSkyListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\skyeditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyAdd.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyMoveDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyMoveDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyMoveUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyMoveUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyRemove.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetColor.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetOrientation.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetOrientation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetSize.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetSize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetSkin.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerAdd.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerMoveDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerMoveDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerMoveUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerMoveUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerRemove.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerSetMaximum.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerSetMaximum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerSetMinimum.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerSetMinimum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerSetName.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerToggleClamp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerToggleClamp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerToggleFrozen.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerToggleFrozen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerAdd.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerMoveDown.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerMoveDown.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerMoveUp.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerMoveUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerRemove.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetAmbientIntensity.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetAmbientIntensity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetColor.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetIntensity.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetIntensity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetLightColor.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetLightColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetLightIntensity.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetLightIntensity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetLightOrientation.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetLightOrientation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetName.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetOffset.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetOffset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetOrientation.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetOrientation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetSkin.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetTransparency.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetTransparency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerToggleMulBySkyColor.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerToggleMulBySkyColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerToggleMulBySkyLight.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerToggleMulBySkyLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkAdd.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkRemove.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetController.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetCurve.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetCurve.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetName.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetName.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetRepeat.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetRepeat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\sky\seUSkySetBgColor.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\sky\skyeUSkySetBgColor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\seUTargetAddLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\skyeUTargetAddLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\seUTargetRemoveLink.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\skyeUTargetRemoveLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\configuration\seConfiguration.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\configuration\skyeConfiguration.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\configuration\seConfigurationXML.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\configuration\skyeConfigurationXML.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\seWindowCurves.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\skyeWindowCurves.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\seWindowCurvesListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\curves\skyeWindowCurvesListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWindowProperties.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWindowProperties.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPControllerListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPControllerListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLayer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLayer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLayerListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLayerListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPLinkListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPLinkListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPSky.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPSky.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPSkyListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPSkyListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPUndoHistory.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPUndoHistory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPUndoHistoryListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPUndoHistoryListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPView.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPView.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\seWPViewListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\properties\skyeWPViewListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\seTaskSyncGameDefinition.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeTaskSyncGameDefinition.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\seViewSky.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeViewSky.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\seWindowMain.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeWindowMain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\seWindowMainListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\gui\skyeWindowMainListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\seLoadSaveSky.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\skyeLoadSaveSky.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\seLoadSaveSystem.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\loadsave\skyeLoadSaveSystem.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\seIGDEModule.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\skyeIGDEModule.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\body\seBody.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\body\skyeBody.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\body\seBodyList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\seController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\skyeController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\seControllerList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\seControllerTarget.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\controller\skyeControllerTarget.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\layer\seLayer.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\layer\skyeLayer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\layer\seLayerList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\link\seLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\link\skyeLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\link\seLinkList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\seSky.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\skyeSky.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\seSkyListener.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\sky\skyeSkyListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\skyeditor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyAdd.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyMoveDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyMoveDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyMoveUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyMoveUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodyRemove.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodyRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetColor.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetColor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetOrientation.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetOrientation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetSize.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetSize.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\seUBodySetSkin.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\body\skyeUBodySetSkin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerAdd.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerMoveDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerMoveDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerMoveUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerMoveUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerRemove.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerSetMaximum.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerSetMaximum.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerSetMinimum.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerSetMinimum.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerSetName.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerSetName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerToggleClamp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerToggleClamp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\seUControllerToggleFrozen.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\controller\skyeUControllerToggleFrozen.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerAdd.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerMoveDown.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerMoveDown.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerMoveUp.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerMoveUp.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerRemove.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetAmbientIntensity.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetAmbientIntensity.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetColor.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetColor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetIntensity.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetIntensity.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetLightColor.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetLightColor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetLightIntensity.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetLightIntensity.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetLightOrientation.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetLightOrientation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetName.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetOffset.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetOffset.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetOrientation.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetOrientation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetSkin.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetSkin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerSetTransparency.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerSetTransparency.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerToggleMulBySkyColor.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerToggleMulBySkyColor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\seULayerToggleMulBySkyLight.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\layer\skyeULayerToggleMulBySkyLight.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkAdd.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkRemove.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetController.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetCurve.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetCurve.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetName.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetName.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\seULinkSetRepeat.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\link\skyeULinkSetRepeat.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\sky\seUSkySetBgColor.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\sky\skyeUSkySetBgColor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\seUTargetAddLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\skyeUTargetAddLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\seUTargetRemoveLink.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\sky\src\undosys\target\skyeUTargetRemoveLink.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

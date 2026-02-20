@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLEVIDEOFRAME_H_
 
 #include "deDSRenderable.h"
-#include "../../../video/deVideoPlayerReference.h"
+#include "../../../video/deVideoPlayer.h"
 
 
 /**
@@ -35,8 +35,12 @@
  * The texture is defined by a frame of a video.
  */
 class DE_DLL_EXPORT deDSRenderableVideoFrame : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableVideoFrame>;
+	
 private:
-	deVideoPlayerReference pVideoPlayer;
+	deVideoPlayer::Ref pVideoPlayer;
 	
 	
 	
@@ -44,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableVideoFrame( const char *name );
+	deDSRenderableVideoFrame(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableVideoFrame();
+	~deDSRenderableVideoFrame() override;
 	/*@}*/
 	
 	
@@ -55,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Set video player or NULL if not set. */
-	void SetVideoPlayer( deVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deVideoPlayer *videoPlayer);
 	/*@}*/
 	
 	
@@ -66,7 +70,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

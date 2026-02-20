@@ -23,11 +23,15 @@
  */
 
 #include "meWCEntry.h"
+#include "../meWindowMain.h"
 #include "../../world/meWorld.h"
 #include "../../world/terrain/meHeightTerrain.h"
 #include "../../world/terrain/meHeightTerrainSector.h"
 #include "../../world/terrain/meHeightTerrainTexture.h"
 #include "../../world/terrain/meHeightTerrainNavSpace.h"
+
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/localization/igdeTranslationManager.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -39,23 +43,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWCEntry::meWCEntry( meWindowChangelog &windowChangelog, eElementTypes type ) :
-igdeListItem( "" ),
-pWindowChangelog( windowChangelog ),
-pType( type ),
-pWorld( NULL ),
-pHTTexture( NULL ),
-pHTNavSpace( NULL )
+meWCEntry::meWCEntry(meWindowChangelog &windowChangelog, eElementTypes type) :
+igdeListItem(""),
+pWindowChangelog(windowChangelog),
+pType(type)
 {
-	if( type < eetWorld || type > eetHTPFCache ){
-		DETHROW( deeInvalidParam );
+	if(type < eetWorld || type > eetHTPFCache){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 meWCEntry::~meWCEntry(){
-	SetHTNavSpace( NULL );
-	SetHTTexture( NULL );
-	SetWorld( NULL );
+	SetHTNavSpace(nullptr);
+	SetHTTexture(nullptr);
+	SetWorld(nullptr);
 }
 
 
@@ -63,56 +64,20 @@ meWCEntry::~meWCEntry(){
 // Management
 ///////////////
 
-void meWCEntry::SetSector( const decPoint3 &sector ){
+void meWCEntry::SetSector(const decPoint3 &sector){
 	pSector = sector;
 }
 
-void meWCEntry::SetWorld( meWorld *world ){
-	if( world == pWorld ){
-		return;
-	}
-	
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
-	
+void meWCEntry::SetWorld(meWorld *world){
 	pWorld = world;
-	
-	if( world ){
-		world->AddReference();
-	}
 }
 
-void meWCEntry::SetHTTexture( meHeightTerrainTexture *texture ){
-	if( texture == pHTTexture ){
-		return;
-	}
-	
-	if( pHTTexture ){
-		pHTTexture->FreeReference();
-	}
-	
+void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
 	pHTTexture = texture;
-	
-	if( texture ){
-		texture->AddReference();
-	}
 }
 
-void meWCEntry::SetHTNavSpace( meHeightTerrainNavSpace *navspace ){
-	if( navspace == pHTNavSpace ){
-		return;
-	}
-	
-	if( pHTNavSpace ){
-		pHTNavSpace->FreeReference();
-	}
-	
+void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
 	pHTNavSpace = navspace;
-	
-	if( navspace ){
-		navspace->AddReference();
-	}
 }
 
 
@@ -125,130 +90,130 @@ void meWCEntry::UpdateText(){
 	
 	details.RemoveAll();
 	
-	switch( pType ){
+	switch(pType){
 	case eetWorld:
 		text = "-";
-		details.Add( "World" );
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.World").ToUTF8());
 		
-		if( pWorld->GetSaved() ){
-			details.Add( pWorld->GetFilePath() );
+		if(pWorld->GetSaved()){
+			details.Add(pWorld->GetFilePath());
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		break;
 		
 	case eetHeightTerrain: {
 		text = "-";
-		details.Add( "Height Terrain" );
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.HeightTerrain").ToUTF8());
 		
-		if( pWorld->GetHeightTerrain()->GetSaved() ){
-			if( pWorld->GetHeightTerrain()->GetPathHT().IsEmpty() ){
-				details.Add( textRemoved );
+		if(pWorld->GetHeightTerrain()->GetSaved()){
+			if(pWorld->GetHeightTerrain()->GetPathHT().IsEmpty()){
+				details.Add(textRemoved);
 				
 			}else{
-				details.Add( pWorld->GetHeightTerrain()->GetPathHT() );
+				details.Add(pWorld->GetHeightTerrain()->GetPathHT());
 			}
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		} break;
 		
 	case eetHTHeight: {
 		const meHeightTerrainSector * const htsector =
-			pWorld->GetHeightTerrain()->GetSectorWith( decPoint( pSector.x, pSector.z ) );
+			pWorld->GetHeightTerrain()->GetSectorWith(decPoint(pSector.x, pSector.z));
 		
-		text.Format( "(%d,%d)", pSector.x, pSector.z );
-		details.Add( "Height Image" );
+		text.Format("(%d,%d)", pSector.x, pSector.z);
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.HeightImage").ToUTF8());
 		
-		if( htsector && htsector->GetHeightImageSaved() ){
-			if( htsector->GetPathHeightImage().IsEmpty() ){
-				details.Add( textRemoved );
+		if(htsector && htsector->GetHeightImageSaved()){
+			if(htsector->GetPathHeightImage().IsEmpty()){
+				details.Add(textRemoved);
 				
 			}else{
-				details.Add( htsector->GetPathHeightImage() );
+				details.Add(htsector->GetPathHeightImage());
 			}
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		} break;
 		
 	case eetHTVisibility: {
 		const meHeightTerrainSector * const htsector =
-			pWorld->GetHeightTerrain()->GetSectorWith( decPoint( pSector.x, pSector.z ) );
+			pWorld->GetHeightTerrain()->GetSectorWith(decPoint(pSector.x, pSector.z));
 		
-		text.Format( "(%d,%d)", pSector.x, pSector.z );
-		details.Add( "Visibility Image" );
+		text.Format("(%d,%d)", pSector.x, pSector.z);
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.VisibilityImage").ToUTF8());
 		
-		if( htsector && htsector->GetVisibilitySaved() ){
-			if( htsector->GetPathVisibilityImage().IsEmpty() ){
-				details.Add( textRemoved );
+		if(htsector && htsector->GetVisibilitySaved()){
+			if(htsector->GetPathVisibilityImage().IsEmpty()){
+				details.Add(textRemoved);
 				
 			}else{
-				details.Add( htsector->GetPathVisibilityImage() );
+				details.Add(htsector->GetPathVisibilityImage());
 			}
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		} break;
 		
 	case eetHTTextureMask:
-		text.Format( "(%d,%d)", pSector.x, pSector.z );
-		details.Add( "Texture Mask" );
+		text.Format("(%d,%d)", pSector.x, pSector.z);
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.TextureMask").ToUTF8());
 		
-		if( pHTTexture->GetMaskSaved() ){
-			if( pHTTexture->GetPathMask().IsEmpty() ){
-				details.Add( textRemoved );
+		if(pHTTexture->GetMaskSaved()){
+			if(pHTTexture->GetPathMask().IsEmpty()){
+				details.Add(textRemoved);
 				
 			}else{
-				details.Add( pHTTexture->GetPathMask() );
+				details.Add(pHTTexture->GetPathMask());
 			}
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		break;
 		
 	case meWCEntry::eetHTNavSpace:
 		text = "-";
-		details.Add( "Navigation Space" );
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.NavigationSpace").ToUTF8());
 		
-		if( pHTNavSpace->GetNavSpaceSaved() ){
-			if( pHTNavSpace->GetPathNavSpace().IsEmpty() ){
-				details.Add( textRemoved );
+		if(pHTNavSpace->GetNavSpaceSaved()){
+			if(pHTNavSpace->GetPathNavSpace().IsEmpty()){
+				details.Add(textRemoved);
 				
 			}else{
-				details.Add( pHTNavSpace->GetPathNavSpace() );
+				details.Add(pHTNavSpace->GetPathNavSpace());
 			}
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		break;
 		
 	case eetHTPFCache: {
 		const meHeightTerrainSector * const htsector =
-			pWorld->GetHeightTerrain()->GetSectorWith( decPoint( pSector.x, pSector.z ) );
+			pWorld->GetHeightTerrain()->GetSectorWith(decPoint(pSector.x, pSector.z));
 		
-		text.Format( "(%d,%d)", pSector.x, pSector.z );
-		details.Add( "Prop Field Cache" );
+		text.Format("(%d,%d)", pSector.x, pSector.z);
+		details.Add(pWorld->GetWindowMain().Translate("World.WCEntry.PropFieldCache").ToUTF8());
 		
-		if( htsector && htsector->GetPFCacheSaved() ){
-			if( htsector->GetPathPFCacheImage().IsEmpty() ){
-				details.Add( textRemoved );
+		if(htsector && htsector->GetPFCacheSaved()){
+			if(htsector->GetPathPFCacheImage().IsEmpty()){
+				details.Add(textRemoved);
 				
 			}else{
-				details.Add( htsector->GetPathPFCacheImage() );
+				details.Add(htsector->GetPathPFCacheImage());
 			}
 			
 		}else{
-			details.Add( textUnsaved );
+			details.Add(textUnsaved);
 		}
 		} break;
 	}
 	
-	SetText( text );
+	SetText(text);
 }

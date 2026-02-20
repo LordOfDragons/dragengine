@@ -66,8 +66,8 @@ public:
 		bool solid;
 		bool transparentStaticShadow;
 		bool transparentDynamicShadow;
-		const deoglCollideList *collideList1;
-		const deoglCollideList *collideList2;
+		deoglCollideList *collideList1;
+		deoglCollideList *collideList2;
 		int solidShadowMapSize;
 		int transpShadowMapSize;
 		int ambientMapSize;
@@ -132,10 +132,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderLightSpot( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
+	deoglRenderLightSpot(deoglRenderThread &renderThread, deoglRTRenderers &renderers);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderLightSpot();
+	~deoglRenderLightSpot() override;
 	/*@}*/
 	
 	
@@ -143,45 +143,45 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Calculate box boundary for a spot light. */
-	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
+	void CalculateBoxBoundary(deoglRenderPlanLight &planLight);
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask);
 	
 	/** Render light. */
-	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLight(deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask);
 	
 	/** Activate textures for lighting. */
-	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
-		const sShadowDepthMaps &shadowDepthMaps );
+	void ActivateTextures(deoglRenderPlanLight &planLight, deoglLightShader &shader,
+		const sShadowDepthMaps &shadowDepthMaps);
 	
 	/** Render shadow maps. */
-	void RenderShadows( deoglRenderPlanLight &planLight, sShadowParams &shadowParams );
+	void RenderShadows(deoglRenderPlanLight &planLight, sShadowParams &shadowParams);
 	
 	/** Render shadow map. */
-	void RenderShadowMap( deoglRenderPlanLight &planLight,
-		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
+	void RenderShadowMap(deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams);
 	
 	/** Render ambient map. */
-	void RenderAmbientMap( deoglRenderPlanLight &planLight,
-		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
+	void RenderAmbientMap(deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams);
 	
 	/** Update light shader parameter block. */
-	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlanLight &planLight );
+	void UpdateLightParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanLight &planLight);
 	
 	/** Update instance shader parameter block. */
-	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+	void UpdateInstanceParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
 		deoglRenderPlan &plan, const deoglCollideListLight &cllight,
-		sShadowDepthMaps &shadowDepthmaps, const decDMatrix &matrixLP );
+		sShadowDepthMaps &shadowDepthmaps, const decDMatrix &matrixLP);
 	
 	
 	
 	/** Debug information solid lighting. */
-	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
+	inline const deoglDebugInformation::Ref &GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
 	/** Debug information transparent lighting. */
-	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
+	inline const deoglDebugInformation::Ref &GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	
@@ -189,13 +189,13 @@ public:
 	void ResetDebugInfo();
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfoSolid();
+	void AddTopLevelDebugInfoSolid() override;
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfoTransparent();
+	void AddTopLevelDebugInfoTransparent() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	

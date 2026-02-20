@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglModelLODTexCoordSet.h"
 
 #include <dragengine/common/exceptions.h>
@@ -38,92 +34,5 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglModelLODTexCoordSet::deoglModelLODTexCoordSet(){
-	pTexCoords = NULL;
-	pTexCoordCount = 0;
-	
-	pTangents = NULL;
-	pNegateTangents = NULL;
-	pTangentCount = 0;
-}
-
-deoglModelLODTexCoordSet::~deoglModelLODTexCoordSet(){
-	pCleanUp();
-}
-
-
-
-// Management
-///////////////
-
-void deoglModelLODTexCoordSet::SetTextureCoordinateCount( int count, bool copyContent ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	decVector2 *texCoords = NULL;
-	
-	if( count > 0 ){
-		texCoords = new decVector2[ count ];
-		
-		if( copyContent && pTexCoords ){
-			int copyCount = count;
-			
-			if( copyCount > pTexCoordCount ){
-				copyCount = pTexCoordCount;
-			}
-			
-			memcpy( texCoords, pTexCoords, sizeof( decVector2 ) * copyCount );
-		}
-	}
-	
-	if( pTexCoords ){
-		delete [] pTexCoords;
-	}
-	
-	pTexCoords = texCoords;
-	pTexCoordCount = count;
-}
-
-void deoglModelLODTexCoordSet::SetTangentCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	decVector *tangents = NULL;
-	bool *negateTangent = NULL;
-	
-	if( count > 0 ){
-		tangents = new decVector[ count ];
-		negateTangent = new bool[ count ];
-	}
-	
-	if( pTangents ){
-		delete [] pTangents;
-	}
-	if( pNegateTangents ){
-		delete [] pNegateTangents;
-	}
-	
-	pTangents = tangents;
-	pNegateTangents = negateTangent;
-	
-	pTangentCount = count;
-}
-
-
-
-// Private functions
-//////////////////////
-
-void deoglModelLODTexCoordSet::pCleanUp(){
-	if( pNegateTangents ){
-		delete [] pNegateTangents;
-	}
-	if( pTangents ){
-		delete [] pTangents;
-	}
-	if( pTexCoords ){
-		delete [] pTexCoords;
-	}
-}
+deoglModelLODTexCoordSet::deoglModelLODTexCoordSet() = default;
+deoglModelLODTexCoordSet::~deoglModelLODTexCoordSet() = default;

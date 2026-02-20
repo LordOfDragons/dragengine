@@ -29,7 +29,7 @@
 #include "deoglPShowLightCB.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../configuration/deoglConfiguration.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPShowLightCB::deoglPShowLightCB( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "showLightCB" );
-	SetDescription( "Shows light collision boxes" );
-	SetCategory( ecExpert );
+deoglPShowLightCB::deoglPShowLightCB(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("showLightCB");
+	SetDescription("Shows light collision boxes");
+	SetCategory(ecExpert);
 }
 
 deoglPShowLightCB::~deoglPShowLightCB(){
@@ -57,6 +57,6 @@ bool deoglPShowLightCB::GetParameterBool(){
 	return pOgl.GetConfiguration().GetShowLightCB();
 }
 
-void deoglPShowLightCB::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetShowLightCB( value );
+void deoglPShowLightCB::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetShowLightCB(value);
 }

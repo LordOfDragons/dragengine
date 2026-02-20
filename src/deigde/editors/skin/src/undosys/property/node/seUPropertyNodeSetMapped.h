@@ -33,12 +33,15 @@
 
 /** Undo action property node set mapped. */
 class seUPropertyNodeSetMapped : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertyNodeSetMapped>;
+	
+	
 private:
 	const sePropertyNode::Ref pNode;
 	const int pType;
 	
-	const seMapped::Ref pOldValue;
-	const seMapped::Ref pNewValue;
+	seMapped::Ref pOldValue, pNewValue;
 	
 	
 	
@@ -46,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUPropertyNodeSetMapped( sePropertyNode *node, int type, seMapped *newValue );
+	seUPropertyNodeSetMapped(sePropertyNode *node, int type, seMapped *newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUPropertyNodeSetMapped() override;
+	~seUPropertyNodeSetMapped() override;
 	/*@}*/
 	
 	
@@ -59,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

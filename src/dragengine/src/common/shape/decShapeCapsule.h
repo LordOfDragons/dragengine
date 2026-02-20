@@ -37,6 +37,11 @@
  * to the top and bottom radius along the x and z direction.
  */
 class DE_DLL_EXPORT decShapeCapsule : public decShape{
+public:
+	/** \brief Reference. */
+	using Ref = deTUniqueReference<decShapeCapsule>;
+	
+	
 private:
 	float pTopRadius;
 	float pBottomRadius;
@@ -50,42 +55,39 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create capsule shape. */
-	decShapeCapsule( float halfHeight, float radius );
+	decShapeCapsule(float halfHeight, float radius);
 	
 	/** \brief Create capsule shape. */
-	decShapeCapsule( float halfHeight, float radius, const decVector &position );
+	decShapeCapsule(float halfHeight, float radius, const decVector &position);
 	
 	/** \brief Create capsule shape. */
-	decShapeCapsule( float halfHeight, float radius, const decVector &position,
-		const decQuaternion &orientation );
+	decShapeCapsule(float halfHeight, float radius, const decVector &position,
+		const decQuaternion &orientation);
 	
 	/** \brief Create tapered capsule shape. */
-	decShapeCapsule( float halfHeight, float topRadius, float bottomRadius );
+	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius);
 	
 	/** \brief Create tapered capsule shape. */
-	decShapeCapsule( float halfHeight, float topRadius, float bottomRadius,
-		const decVector &position );
+	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
+		const decVector &position);
 	
 	/** \brief Create tapered capsule shape. */
-	decShapeCapsule( float halfHeight, float topRadius, float bottomRadius,
-		const decVector &position, const decQuaternion &orientation );
+	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
+		const decVector &position, const decQuaternion &orientation);
 	
 	/** \brief Create tapered capsule shape. */
-	decShapeCapsule( float halfHeight, float topRadius, float bottomRadius,
-		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling );
+	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
+		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling);
 	
 	/** \brief Create tapered capsule shape. */
-	decShapeCapsule( float halfHeight, float topRadius, float bottomRadius,
+	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
-		const decVector &position );
+		const decVector &position);
 	
 	/** \brief Create tapered capsule shape. */
-	decShapeCapsule( float halfHeight, float topRadius, float bottomRadius,
+	decShapeCapsule(float halfHeight, float topRadius, float bottomRadius,
 		const decVector2 &topAxisScaling, const decVector2 &bottomAxisScaling,
-		const decVector &position, const decQuaternion &orientation );
-	
-	/** \brief Clean up capsule shape. */
-	virtual ~decShapeCapsule();
+		const decVector &position, const decQuaternion &orientation);
 	/*@}*/
 	
 	
@@ -96,39 +98,39 @@ public:
 	inline float GetHalfHeight() const{ return pHalfHeight; }
 	
 	/** \brief Set half height. */
-	void SetHalfHeight( float halfHeight );
+	void SetHalfHeight(float halfHeight);
 	
 	/** \brief Top radius. */
 	inline float GetTopRadius() const{ return pTopRadius; }
 	
 	/** \brief Set top radius. */
-	void SetTopRadius( float radius );
+	void SetTopRadius(float radius);
 	
 	/** \brief Bottom radius. */
 	inline float GetBottomRadius() const{ return pBottomRadius; }
 	
 	/** \brief Set bottom radius. */
-	void SetBottomRadius( float radius );
+	void SetBottomRadius(float radius);
 	
 	/** \brief Set top and bottom radius to the same value. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** \brief Top axis scaling. */
 	inline const decVector2 &GetTopAxisScaling() const{ return pTopAxisScaling; }
 	
 	/** \brief Set top axis scaling. */
-	void SetTopAxisScaling( const decVector2 &axisScaling );
+	void SetTopAxisScaling(const decVector2 &axisScaling);
 	
 	/** \brief Bottom axis scaling. */
 	inline const decVector2 &GetBottomAxisScaling() const{ return pBottomAxisScaling; }
 	
 	/** \brief Set the bottom axis scaling. */
-	void SetBottomAxisScaling( const decVector2 &axisScaling );
+	void SetBottomAxisScaling(const decVector2 &axisScaling);
 	
 	
 	
 	/** \brief Create copy of shape. */
-	virtual decShape *Copy() const;
+	decShape::Ref Copy() const override;
 	/*@}*/
 	
 	
@@ -136,7 +138,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	void Visit(decShapeVisitor &visitor) override;
 	/*@}*/
 };
 

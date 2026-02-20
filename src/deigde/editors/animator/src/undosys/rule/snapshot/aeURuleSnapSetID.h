@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleStateSnapshot;
  * Undo action rule state snapshot set identifier.
  */
 class aeURuleSnapSetID : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleSnapSetID>;
+	
+	
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 	int pOldID;
 	int pNewID;
@@ -48,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeURuleSnapSetID( aeRuleStateSnapshot *rule, int newID );
+	aeURuleSnapSetID(aeRuleStateSnapshot *rule, int newID);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleSnapSetID();
+	~aeURuleSnapSetID() override;
 	/*@}*/
 	
 	
@@ -61,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -47,7 +47,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit element. */
-	virtual void VisitElement( aeElementVisitor &visitor );
+	virtual void VisitElement(aeElementVisitor &visitor);
 	/*@}*/
 };
 

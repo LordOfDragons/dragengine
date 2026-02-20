@@ -41,34 +41,24 @@
 ////////////////////////////
 
 gdeURemoveSky::gdeURemoveSky(
-gdeGameDefinition *gameDefinition, gdeSky *sky ) :
-pGameDefinition( NULL ),
-pSky( NULL )
+gdeGameDefinition *gameDefinition, gdeSky *sky) :
+pGameDefinition(nullptr)
 {
-	if( ! gameDefinition || ! sky ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition || !sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! gameDefinition->GetSkies().Has( sky ) ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition->GetSkies().Has(sky)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove sky" );
+	SetShortInfo("@GameDefinition.Undo.RemoveSky");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveSky::~gdeURemoveSky(){
-	if( pSky ){
-		pSky->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -77,9 +67,9 @@ gdeURemoveSky::~gdeURemoveSky(){
 ///////////////
 
 void gdeURemoveSky::Undo(){
-	pGameDefinition->AddSky( pSky );
+	pGameDefinition->AddSky(pSky);
 }
 
 void gdeURemoveSky::Redo(){
-	pGameDefinition->RemoveSky( pSky );
+	pGameDefinition->RemoveSky(pSky);
 }

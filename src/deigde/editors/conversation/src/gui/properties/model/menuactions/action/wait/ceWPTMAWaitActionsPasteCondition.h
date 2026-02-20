@@ -35,6 +35,9 @@ class ceCAWait;
  * \brief Menu action paste condition to wait.
  */
 class ceWPTMAWaitActionsPasteCondition : public ceWPTMAPasteCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMAWaitActionsPasteCondition>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAWait *pWait;
@@ -49,8 +52,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsPasteCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait );
+	ceWPTMAWaitActionsPasteCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait);
 	/*@}*/
 	
 	
@@ -64,7 +67,7 @@ public:
 	inline ceCAWait *GetWait() const{ return pWait; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions) override;
 	/*@}*/
 };
 

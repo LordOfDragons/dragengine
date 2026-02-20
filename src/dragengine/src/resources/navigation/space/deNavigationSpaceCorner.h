@@ -56,13 +56,13 @@ public:
 	inline unsigned short GetVertex() const{ return pVertex; }
 	
 	/** \brief Set index of the vertex. */
-	void SetVertex( unsigned short vertex );
+	void SetVertex(unsigned short vertex);
 	
 	/** \brief Type to use for crossing the face edge starting with this corner. */
 	inline unsigned short GetType() const{ return pType; }
 	
 	/** \brief Set type to use for crossing the face edge starting with this corner. */
-	void SetType( unsigned short type );
+	void SetType(unsigned short type);
 	/*@}*/
 };
 

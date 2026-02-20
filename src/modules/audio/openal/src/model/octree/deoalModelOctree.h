@@ -27,7 +27,7 @@
 
 #include "../../utils/octree/deoalOctree.h"
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoalModelOctreeVisitor;
 class deoalModelFace;
@@ -44,7 +44,7 @@ class deoalCollisionTriangle;
  */
 class deoalModelOctree : public deoalOctree{
 private:
-	decPointerList pFaces;
+	decTList<deoalModelFace*> pFaces;
 	
 	
 	
@@ -52,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create octree. */
-	deoalModelOctree( const decVector &center, const decVector &halfExtend );
+	deoalModelOctree(const decVector &center, const decVector &halfExtend);
 	
 	/** \brief Clean up octree. */
-	virtual ~deoalModelOctree();
+	~deoalModelOctree() override;
 	/*@}*/
 	
 	
@@ -63,33 +63,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create octree for octant. */
-	virtual deoalOctree *CreateOctree( int octant ) const;
+	deoalOctree *CreateOctree(int octant) const override;
 	
 	/** \brief Clear content of node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** \brief Clear all faces from tree. */
 	void ClearFaces();
 	
 	/** \brief Add face into octree. */
-	void InsertFaceIntoTree( deoalModelFace *face, int maxDepth );
+	void InsertFaceIntoTree(deoalModelFace *face, int maxDepth);
 	
 	/** \brief Add face into octree. */
-	void InsertFaceOverlap( deoalModelFace *face, int depth );
+	void InsertFaceOverlap(deoalModelFace *face, int depth);
 	
 	/** \brief Number of faces. */
 	int GetFaceCount() const;
 	
 	/** \brief Face at index. */
-	deoalModelFace *GetFaceAt( int index ) const;
+	deoalModelFace *GetFaceAt(int index) const;
 	/*@}*/
 	
 	
 	
 private:
-	deoalModelOctree *pGetNodeFor( const decVector &center, const decVector &halfExtend, int maxDepth );
-	deoalModelOctree *pGetNodeFor( const decVector &position, int maxDepth );
-	void pInsertFaceOverlap( deoalModelFace *face, deoalCollisionTriangle &triangle, int depth );
+	deoalModelOctree *pGetNodeFor(const decVector &center, const decVector &halfExtend, int maxDepth);
+	deoalModelOctree *pGetNodeFor(const decVector &position, int maxDepth);
+	void pInsertFaceOverlap(deoalModelFace *face, deoalCollisionTriangle &triangle, int depth);
 };
 
 #endif

@@ -25,17 +25,18 @@
 #ifndef _DEOALDELAYEDDELETION_H_
 #define _DEOALDELAYEDDELETION_H_
 
+#include <dragengine/common/collection/decTLinkedList.h>
+
 class deoalAudioThread;
 
 
 /** \brief Delete OpenAL objects properly after audioing is done in the audio thread. */
 class deoalDelayedDeletion{
-private:
-	/** \brief Previous entry in the linked list or \em NULL. */
-	deoalDelayedDeletion *pLLPrev;
+public:
+	using Ref = deTUniqueReference<deoalDelayedDeletion>;
 	
-	/** \brief Next entry in the linked list or \em NULL. */
-	deoalDelayedDeletion *pLLNext;
+private:
+	decTUniqueLinkedList<deoalDelayedDeletion>::Element pLLDeletions;
 	
 	
 	
@@ -54,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Delete objects. */
-	virtual void DeleteObjects( deoalAudioThread &audioThread ) = 0;
+	virtual void DeleteObjects(deoalAudioThread &audioThread) = 0;
 	/*@}*/
 	
 	
@@ -64,17 +65,9 @@ public:
 	 * \warning For use by deoalDelayedOperations only.
 	 */
 	/*@{*/
-	/** \brief Previous entry in the linked list or \em NULL. */
-	inline deoalDelayedDeletion *GetLLPrev() const{ return pLLPrev; }
-	
-	/** \brief Set previous entry in the linked list or \em NULL. */
-	void SetLLPrev( deoalDelayedDeletion *prev );
-	
-	/** \brief Next entry in the linked list or \em NULL. */
-	inline deoalDelayedDeletion *GetLLNext() const{ return pLLNext; }
-	
-	/** \brief Set next entry in the linked list or \em NULL. */
-	void SetLLNext( deoalDelayedDeletion *next );
+	/** \brief Linked list element. */
+	inline decTUniqueLinkedList<deoalDelayedDeletion>::Element &GetLLDeletions(){ return pLLDeletions; }
+	inline const decTUniqueLinkedList<deoalDelayedDeletion>::Element &GetLLDeletions() const{ return pLLDeletions; }
 	/*@}*/
 };
 

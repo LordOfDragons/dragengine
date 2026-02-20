@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _RECREATERIGSHAPE_H_
 #define _RECREATERIGSHAPE_H_
 
-// includes
-#include "dragengine/common/shape/decShapeVisitor.h"
-#include "dragengine/common/math/decMath.h"
+#include "../rig/shape/reRigShape.h"
 
-// predefintions
-class reRigShape;
+#include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/math/decMath.h>
+
 class deEngine;
 
 
@@ -43,15 +41,15 @@ class deEngine;
 class reCreateRigShape : public decShapeVisitor{
 private:
 	deEngine *pEngine;
-	reRigShape *pRigShape;
+	reRigShape::Ref pRigShape;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	reCreateRigShape( deEngine *engine );
+	reCreateRigShape(deEngine *engine);
 	/** Cleans up the visitor. */
-	virtual ~reCreateRigShape();
+	~reCreateRigShape() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -59,28 +57,28 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Retrieves the editor shape. */
-	inline reRigShape *GetRigShape() const{ return pRigShape; }
+	inline const reRigShape::Ref &GetRigShape() const{ return pRigShape; }
 	/*@}*/
 	
 	/** @name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	void VisitShape(decShape &shape) override;
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	void VisitShapeSphere(decShapeSphere &sphere) override;
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	void VisitShapeBox(decShapeBox &box) override;
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	void VisitShapeCylinder(decShapeCylinder &cylinder) override;
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	void VisitShapeCapsule(decShapeCapsule &capsule) override;
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	void VisitShapeHull(decShapeHull &hull) override;
 	/*@}*/
 };
 

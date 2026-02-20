@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+
+pComponent(nullptr)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set audio model path" );
+	SetShortInfo("@GameDefinition.Undo.OCComponentSetAudioModelPath");
 	
 	pOldValue = component->GetAudioModelPath();
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetAudioModelPath::~gdeUOCComponentSetAudioModelPath(){
-	if( pComponent ){
-		pComponent->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCComponentSetAudioModelPath::~gdeUOCComponentSetAudioModelPath(){
 ///////////////
 
 void gdeUOCComponentSetAudioModelPath::Undo(){
-	pComponent->SetAudioModelPath( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAudioModelPath(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetAudioModelPath::Redo(){
-	pComponent->SetAudioModelPath( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAudioModelPath(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

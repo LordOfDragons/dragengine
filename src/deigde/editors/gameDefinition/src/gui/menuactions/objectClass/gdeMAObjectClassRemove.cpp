@@ -44,10 +44,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassRemove::gdeMAObjectClassRemove( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Remove Object Class",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class" )
+gdeMAObjectClassRemove::gdeMAObjectClassRemove(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "@GameDefinition.Menu.ObjectClassRemove",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"@GameDefinition.Menu.ObjectClassRemove.ToolTip")
 {
 }
 
@@ -56,27 +56,27 @@ gdeBaseAction( windowMain, "Remove Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassRemove::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo::Ref gdeMAObjectClassRemove::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
-		return NULL;
+	if(!category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
+		return {};
 	}
 	
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
-		return NULL;
+	if(!objectClass){
+		return {};
 	}
 	
-	return new gdeURemoveObjectClass( &gameDefinition, objectClass );
+	return gdeURemoveObjectClass::Ref::New(&gameDefinition, objectClass);
 }
 
 void gdeMAObjectClassRemove::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(!gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != nullptr);
 }

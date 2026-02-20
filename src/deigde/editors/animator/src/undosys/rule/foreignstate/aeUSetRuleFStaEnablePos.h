@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -41,26 +41,30 @@ class aeRuleForeignState;
  * Undo to set enable position of a foreign state rule.
  */
 class aeUSetRuleFStaEnablePos : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleFStaEnablePos>;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaEnablePos( aeRuleForeignState *rule );
+	aeUSetRuleFStaEnablePos(aeRuleForeignState *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaEnablePos();
+	~aeUSetRuleFStaEnablePos() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

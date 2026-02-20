@@ -25,9 +25,10 @@
 #ifndef _IGDETEMPLATEFILE_H_
 #define _IGDETEMPLATEFILE_H_
 
-#include "igdeTemplateReplaceList.h"
+#include "igdeTemplateReplace.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -37,6 +38,13 @@
  */
 class igdeTemplateFile : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTemplateFile>;
+
+	/** \brief List of template files. */
+	using List = decTObjectOrderedSet<igdeTemplateFile>;
+
+
 	/** \brief Directories. */
 	enum eDirectories{
 		/** \brief Project data directory. */
@@ -53,7 +61,7 @@ private:
 	decString pPathRename;
 	decString pPattern;
 	eDirectories pDirectory;
-	igdeTemplateReplaceList pReplacements;
+	igdeTemplateReplace::List pReplacements;
 	
 	
 	
@@ -64,11 +72,11 @@ public:
 	igdeTemplateFile();
 	
 	/** \brief Create template. */
-	igdeTemplateFile( const igdeTemplateFile &file );
+	igdeTemplateFile(const igdeTemplateFile &file);
 	
 protected:
 	/** \brief Clean up template. */
-	virtual ~igdeTemplateFile();
+	~igdeTemplateFile() override;
 	/*@}*/
 	
 	
@@ -80,29 +88,29 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set file path relative to template base path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief File path rename relative to template base path. */
 	inline const decString &GetPathRename() const{ return pPathRename; }
 	
 	/** \brief Set file path rename relative to template base path. */
-	void SetPathRename( const char *path );
+	void SetPathRename(const char *path);
 	
 	/** \brief File pattern relative to template base path. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern relative to template base path. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Driectory. */
 	inline eDirectories GetDirectory() const{ return pDirectory; }
 	
 	/** \brief Set directory. */
-	void SetDirectory( eDirectories directory );
+	void SetDirectory(eDirectories directory);
 	
 	/** \brief Replacements. */
-	inline igdeTemplateReplaceList &GetReplacements(){ return pReplacements; }
-	inline const igdeTemplateReplaceList &GetReplacements() const{ return pReplacements; }
+	inline igdeTemplateReplace::List &GetReplacements(){ return pReplacements; }
+	inline const igdeTemplateReplace::List &GetReplacements() const{ return pReplacements; }
 	/*@}*/
 };
 

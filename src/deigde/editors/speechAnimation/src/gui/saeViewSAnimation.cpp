@@ -53,18 +53,18 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	saeViewSAnimation &pView;
 	
 public:
-	cCameraInteraction( saeViewSAnimation &view ) : pView( view ){ }
+	typedef deTObjectReference<cCameraInteraction> Ref;
+	cCameraInteraction(saeViewSAnimation &view) : pView(view){}
 	
-public:
 	virtual igdeMouseCameraListener::eInteraction ChooseInteraction(){
-		if( ! pView.GetSAnimation() ){
+		if(!pView.GetSAnimation()){
 			return eiNone;
 		}
 		return igdeMouseCameraListener::ChooseInteraction();
 	}
 	
 	virtual void OnCameraChanged(){
-		if( pView.GetSAnimation() ){
+		if(pView.GetSAnimation()){
 			pView.GetSAnimation()->NotifyCameraChanged();
 		}
 	}
@@ -80,21 +80,19 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-saeViewSAnimation::saeViewSAnimation( saeWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pSAnimation( NULL )
+saeViewSAnimation::saeViewSAnimation(saeWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	pFontStats.TakeOver( windowMain.GetEngine()->GetFontManager()->
-		LoadFont( "/igde/fonts/sans_10.defont", "/" ) );
+	pFontStats = windowMain.GetEngine()->GetFontManager()->LoadFont("/igde/fonts/sans_10.defont", "/");
 	
-	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
 	
-	AddListener( pCameraInteraction );
+	AddListener(pCameraInteraction);
 }
 
 saeViewSAnimation::~saeViewSAnimation(){
-	SetSAnimation( NULL );
+	SetSAnimation(nullptr);
 }
 
 
@@ -105,42 +103,36 @@ saeViewSAnimation::~saeViewSAnimation(){
 void saeViewSAnimation::ResetView(){
 }
 
-void saeViewSAnimation::SetSAnimation( saeSAnimation *sanimation ){
-	if( sanimation == pSAnimation ){
+void saeViewSAnimation::SetSAnimation(saeSAnimation *sanimation){
+	if(sanimation == pSAnimation){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera( NULL );
+	pCameraInteraction->SetCamera(nullptr);
 	
-	SetRenderWorld( NULL );
-	
-	if( pSAnimation ){
-		pSAnimation->FreeReference();
-	}
-	
+	SetRenderWorld(nullptr);
 	pSAnimation = sanimation;
 	
-	if( sanimation ){
-		sanimation->AddReference();
-		SetRenderWorld( sanimation->GetCamera()->GetEngineCamera() );
-		pCameraInteraction->SetCamera( sanimation->GetCamera() );
+	if(sanimation){
+		SetRenderWorld(sanimation->GetCamera()->GetEngineCamera());
+		pCameraInteraction->SetCamera(sanimation->GetCamera());
 	}
 }
 
 
 
-void saeViewSAnimation::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void saeViewSAnimation::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pSAnimation ){
-		pSAnimation->Update( elapsed );
+	if(pSAnimation){
+		pSAnimation->Update(elapsed);
 	}
 }
 
 void saeViewSAnimation::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( pSAnimation ){
-		SetRenderWorld( pSAnimation->GetCamera()->GetEngineCamera() );
+	if(pSAnimation){
+		SetRenderWorld(pSAnimation->GetCamera()->GetEngineCamera());
 	}
 }

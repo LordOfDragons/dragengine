@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURigSetCentralMassPoint::reURigSetCentralMassPoint( reRig *rig, const decVector &newCMP ) :
-pRig( NULL )
+reURigSetCentralMassPoint::reURigSetCentralMassPoint(reRig *rig, const decVector &newCMP) :
+pRig(nullptr)
 {
-	if( ! rig ){
-		DETHROW( deeInvalidParam );
+	if(!rig){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Rig set central mass point" );
+	SetShortInfo("@Rig.Undo.RigSetCmp");
 	
 	pOldCMP = rig->GetCentralMassPoint();
 	pNewCmp = newCMP;
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigSetCentralMassPoint::~reURigSetCentralMassPoint(){
-	if( pRig ){
-		pRig->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ reURigSetCentralMassPoint::~reURigSetCentralMassPoint(){
 ///////////////
 
 void reURigSetCentralMassPoint::Undo(){
-	pRig->SetCentralMassPoint( pOldCMP );
+	pRig->SetCentralMassPoint(pOldCMP);
 }
 
 void reURigSetCentralMassPoint::Redo(){
-	pRig->SetCentralMassPoint( pNewCmp );
+	pRig->SetCentralMassPoint(pNewCmp);
 }

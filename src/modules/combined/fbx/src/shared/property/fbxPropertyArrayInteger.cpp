@@ -44,43 +44,29 @@
 ////////////////////////////
 
 fbxPropertyArrayInteger::fbxPropertyArrayInteger() :
-fbxProperty( etArrayInteger ),
-pValues( NULL ),
-pCount( 0 ){
+fbxProperty(etArrayInteger){
 }
 
-fbxPropertyArrayInteger::fbxPropertyArrayInteger( decBaseFileReader &reader ) :
-fbxProperty( etArrayInteger ),
-pValues( NULL ),
-pCount( 0 )
+fbxPropertyArrayInteger::fbxPropertyArrayInteger(decBaseFileReader &reader) :
+fbxProperty(etArrayInteger)
 {
 	const int count = reader.ReadUInt();
 	
-	decBaseFileReaderReference valueReader;
-	pGetValueReader( reader, valueReader );
+	decBaseFileReader::Ref valueReader;
+	pGetValueReader(reader, valueReader);
 	
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	try{
-		pValues = new int[ count ];
-		for( pCount=0; pCount<count; pCount++ ){
-			pValues[ pCount ] = valueReader->ReadInt();
-		}
-		
-	}catch( const deException & ){
-		if( pValues ){
-			delete [] pValues;
-		}
-		throw;
+	pValues.EnlargeCapacity(count);
+	int i;
+	for(i=0; i<count; i++){
+		pValues.Add(valueReader->ReadInt());
 	}
 }
 
 fbxPropertyArrayInteger::~fbxPropertyArrayInteger(){
-	if( pValues ){
-		delete [] pValues;
-	}
 }
 
 
@@ -88,56 +74,39 @@ fbxPropertyArrayInteger::~fbxPropertyArrayInteger(){
 // Loading and Saving
 ///////////////////////
 
-int fbxPropertyArrayInteger::GetValueAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pValues[ index ];
-}
-
-void fbxPropertyArrayInteger::AddValue( int value ){
-	int * const newArray = new int[ pCount + 1 ];
-	if( pValues ){
-		memcpy( newArray, pValues, sizeof( int ) * pCount );
-		delete [] pValues;
-	}
-	pValues = newArray;
-	pValues[ pCount++ ] = value;
-}
-
 fbxPropertyArrayInteger &fbxPropertyArrayInteger::CastArrayInteger(){
 	return *this;
 }
 
 int fbxPropertyArrayInteger::GetValueCount() const{
-	return GetCount();
+	return pValues.GetCount();
 }
 
-bool fbxPropertyArrayInteger::GetValueAtAsBool( int index ) const{
-	return GetValueAt( index );
+bool fbxPropertyArrayInteger::GetValueAtAsBool(int index) const{
+	return pValues[index];
 }
 
-int fbxPropertyArrayInteger::GetValueAtAsInt( int index ) const{
-	return GetValueAt( index );
+int fbxPropertyArrayInteger::GetValueAtAsInt(int index) const{
+	return pValues[index];
 }
 
-int64_t fbxPropertyArrayInteger::GetValueAtAsLong( int index ) const{
-	return GetValueAt( index );
+int64_t fbxPropertyArrayInteger::GetValueAtAsLong(int index) const{
+	return pValues[index];
 }
 
-float fbxPropertyArrayInteger::GetValueAtAsFloat( int index ) const{
-	return ( float )GetValueAt( index );
+float fbxPropertyArrayInteger::GetValueAtAsFloat(int index) const{
+	return (float)pValues[index];
 }
 
-double fbxPropertyArrayInteger::GetValueAtAsDouble( int index ) const{
-	return GetValueAt( index );
+double fbxPropertyArrayInteger::GetValueAtAsDouble(int index) const{
+	return pValues[index];
 }
 
 
 
-void fbxPropertyArrayInteger::Save(decBaseFileWriter &writer ){
+void fbxPropertyArrayInteger::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyArrayInteger::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty Integer[%d]", prefix.GetString(), pCount );
+void fbxPropertyArrayInteger::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty Int[%d]", prefix.GetString(), pValues.GetCount());
 }

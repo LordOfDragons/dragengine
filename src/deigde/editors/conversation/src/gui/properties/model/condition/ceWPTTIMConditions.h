@@ -27,15 +27,18 @@
 
 #include "ceWPTTIMCondition.h"
 
-class ceConversationConditionList;
+#include "../../../../conversation/condition/ceConversationCondition.h"
 
 
 /**
  * \brief Conditions tree model.
  */
 class ceWPTTIMConditions : public ceWPTTIMCondition{
+public:
+	using Ref = deTObjectReference<ceWPTTIMConditions>;
+
 private:
-	const ceConversationConditionList &pConditions;
+	const ceConversationCondition::List &pConditions;
 	
 	
 	
@@ -43,13 +46,13 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMConditions( ceWindowMain &windowMain, eTypes type, ceConversation &conversation,
+	ceWPTTIMConditions(ceWindowMain &windowMain, eTypes type, ceConversation &conversation,
 		ceConversationAction &action, ceConversationCondition *condition,
-		const ceConversationConditionList &conditions );
+		const ceConversationCondition::List &conditions);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~ceWPTTIMConditions();
+	~ceWPTTIMConditions() override;
 	/*@}*/
 	
 	
@@ -57,8 +60,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with condition or \em NULL. */
-	ceWPTTIMCondition *GetChildWith( ceConversationCondition *condition ) const;
+	/** \brief Model with condition or \em nullptr. */
+	ceWPTTIMCondition *GetChildWith(ceConversationCondition *condition) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -66,20 +69,20 @@ public:
 	
 	
 	/** \brief Update condition. */
-	virtual void Update();
+	void Update() override;
 	
 	/** \brief Update conditions. */
 	virtual void UpdateConditions();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	
 	
 	/** \brief Create condition model. */
-	static ceWPTTIMCondition *CreateConditionModel( ceWindowMain &windowMain,
+	static ceWPTTIMCondition::Ref CreateConditionModel(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationAction &action,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	/*@}*/
 };
 

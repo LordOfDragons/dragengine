@@ -25,7 +25,7 @@
 #ifndef _DEBPCOMPONENT_H_
 #define _DEBPCOMPONENT_H_
 
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsComponent.h>
 
@@ -63,16 +63,12 @@ private:
 	bool pDirtyWeights;
 	bool pEnabled;
 	
-	sBone *pBones;
-	int pBoneCount;
+	decTList<sBone> pBones;
 	debpModel *pModel;
 	
-	decIntList pModelRigMappings;
-	bool pDirtyModelRigMappings;
-	decVector *pVertices;
-	decMatrix *pWeights;
-	int pVertexCount;
-	int pWeightsCount;
+	decTList<int> pModelRigMappings;
+	decTList<decVector> pVertices;
+	decTList<decMatrix> pWeights;
 	
 	debpColliderComponent *pLinkedCollider;
 	
@@ -82,10 +78,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	debpComponent( dePhysicsBullet &bullet, deComponent *comp );
+	debpComponent(dePhysicsBullet &bullet, deComponent *comp);
 	
 	/** \brief Clean up peer. */
-	~debpComponent();
+	~debpComponent() override;
 	/*@}*/
 	
 	
@@ -102,7 +98,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if component is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Minimum extends. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
@@ -111,7 +107,7 @@ public:
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	inline int GetIndex() const{ return pIndex; }
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Model or NULL. */
 	inline debpModel *GetModel() const{ return pModel; }
@@ -129,24 +125,25 @@ public:
 	void PrepareWeights();
 	
 	/** \brief Weights at index. */
-	const decMatrix &GetWeights( int index ) const;
+	const decMatrix &GetWeights(int index) const;
 	
 	/** \brief Vertex at index. */
-	const decVector &GetVertex( int index ) const;
+	const decVector &GetVertex(int index) const;
 	
 	/** Retrieves the linked collider or NULL if not linked. */
 	inline debpColliderComponent *GetLinkedCollider() const{ return pLinkedCollider; }
 	
 	/** Sets the linked collider or NULL if not linked. */
-	void SetLinkedCollider( debpColliderComponent *collider );
+	void SetLinkedCollider(debpColliderComponent *collider);
 	
 	
 	
 	/** \brief Bone. */
-	sBone &GetBoneAt( int index ) const;
+	sBone &GetBoneAt(int index);
+	const sBone &GetBoneAt(int index) const;
 	
 	/** \brief Prepare bone. */
-	void PrepareBone( int index );
+	void PrepareBone(int index);
 	
 	/** \brief Set dirty flag of all bones. */
 	void SetAllBoneDirty();
@@ -155,7 +152,7 @@ public:
 	void ClearAllBoneDirty();
 	
 	/** \brief Model to rig mapping for bone. */
-	int GetModelRigMapping( int bone ) const;
+	int GetModelRigMapping(int bone) const;
 	/*@}*/
 	
 	
@@ -163,32 +160,32 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Model object changed. */
-	virtual void ModelChanged();
+	void ModelChanged() override;
 	
 	/** \brief Rig object changed. */
-	virtual void RigChanged();
+	void RigChanged() override;
 	
 	/** \brief Visitility changed. */
-	virtual void VisibilityChanged();
+	void VisibilityChanged() override;
 	
 	/** \brief Extends changed. */
-	virtual void ExtendsChanged();
+	void ExtendsChanged() override;
 	
 	/**
 	 * \brief Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
-	virtual void MeshDirty();
+	void MeshDirty() override;
 	/*@}*/
 	
 	
@@ -204,7 +201,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsAt( const decVector &point, deDecalList &list );
+	void FindDecalsAt(const decVector &point, deDecal::List &list) override;
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -214,7 +211,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsTouching( decShape *shape, deDecalList &list );
+	void FindDecalsTouching(decShape *shape, deDecal::List &list) override;
 	/*@}*/
 	
 	
@@ -224,7 +221,7 @@ private:
 	void pRebuildBoneArrays();
 	void pChangeModel();
 	void pUpdateModelRigMappings();
-	void pPrepareBone( int index );
+	void pPrepareBone(int index);
 };
 
 #endif

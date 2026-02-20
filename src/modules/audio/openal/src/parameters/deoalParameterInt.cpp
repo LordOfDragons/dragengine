@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalParameterInt::deoalParameterInt( deAudioOpenAL &oal ) : deoalParameter( oal )
+deoalParameterInt::deoalParameterInt(deAudioOpenAL &oal) : deoalParameter(oal)
 {
-	SetType( deModuleParameter::eptNumeric );
+	SetType(deModuleParameter::eptNumeric);
 }
 
 deoalParameterInt::~deoalParameterInt(){
@@ -53,10 +53,10 @@ deoalParameterInt::~deoalParameterInt(){
 
 decString deoalParameterInt::GetParameterValue(){
 	decString value;
-	value.Format( "%d", GetParameterInt() );
+	value.Format("%d", GetParameterInt());
 	return value;
 }
 
-void deoalParameterInt::SetParameterValue( const char *value ){
-	SetParameterInt( decString( value ).ToInt() );
+void deoalParameterInt::SetParameterValue(const char *value){
+	SetParameterInt(decString(value).ToInt());
 }

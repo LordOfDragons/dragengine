@@ -42,24 +42,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLinkAdd::meUHTVLinkAdd( meHTVegetationLayer *vlayer, meHTVRLink *link ){
-	if( ! vlayer || ! link ) DETHROW( deeInvalidParam );
+meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
+	if(!vlayer || !link) DETHROW(deeInvalidParam);
 	
-	pVLayer = NULL;
-	pLink = NULL;
+	pVLayer = nullptr;
+	pLink = nullptr;
 	
-	SetShortInfo( "Add Vegetation Layer Link" );
-	SetMemoryConsumption( sizeof( meUHTVLinkAdd ) );
+	SetShortInfo("@World.UHTVLinkAdd.AddVegetationLayerLink");
+	SetMemoryConsumption(sizeof(meUHTVLinkAdd));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pLink = link;
-	link->AddReference();
 }
 
 meUHTVLinkAdd::~meUHTVLinkAdd(){
-	if( pLink ) pLink->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
 }
 
 
@@ -68,25 +64,15 @@ meUHTVLinkAdd::~meUHTVLinkAdd(){
 ///////////////
 
 void meUHTVLinkAdd::Undo(){
-	meHTVRule *ruleSource = pLink->GetSourceRule();
-	meHTVRule *ruleDestination = pLink->GetDestinationRule();
-	int slotSource = pLink->GetSourceSlot();
-	int slotDestination = pLink->GetDestinationSlot();
+	pLink->GetSourceRule()->GetSlots().GetAt(pLink->GetSourceSlot())->RemoveLink(pLink);
+	pLink->GetDestinationRule()->GetSlots().GetAt(pLink->GetDestinationSlot())->RemoveLink(pLink);
 	
-	ruleSource->GetSlotAt( slotSource ).RemoveLink( pLink );
-	ruleDestination->GetSlotAt( slotDestination ).RemoveLink( pLink );
-	
-	pVLayer->RemoveLink( pLink );
+	pVLayer->RemoveLink(pLink);
 }
 
 void meUHTVLinkAdd::Redo(){
-	meHTVRule *ruleSource = pLink->GetSourceRule();
-	meHTVRule *ruleDestination = pLink->GetDestinationRule();
-	int slotSource = pLink->GetSourceSlot();
-	int slotDestination = pLink->GetDestinationSlot();
+	pLink->GetSourceRule()->GetSlots().GetAt(pLink->GetSourceSlot())->AddLink(pLink);
+	pLink->GetDestinationRule()->GetSlots().GetAt(pLink->GetDestinationSlot())->AddLink(pLink);
 	
-	ruleSource->GetSlotAt( slotSource ).AddLink( pLink );
-	ruleDestination->GetSlotAt( slotDestination ).AddLink( pLink );
-	
-	pVLayer->AddLink( pLink );
+	pVLayer->AddLink(pLink);
 }

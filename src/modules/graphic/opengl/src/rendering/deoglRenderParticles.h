@@ -42,15 +42,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderParticles( deoglRenderThread &renderThread );
+	deoglRenderParticles(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
-	virtual ~deoglRenderParticles();
+	~deoglRenderParticles() override;
 	/*@}*/
 	
 	/** \name Rendering */
 	/*@{*/
 	/** Render a render task particles. */
-	void RenderTaskParticles( const deoglRenderTaskParticles &renderTask );
+	void RenderTaskParticles(const deoglRenderTaskParticles &renderTask);
 	/*@}*/
 };
 

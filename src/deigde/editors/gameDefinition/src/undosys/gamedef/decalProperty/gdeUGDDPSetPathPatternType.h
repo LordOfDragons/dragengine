@@ -27,12 +27,12 @@
 #define _GDEGDDPSETPATHPATTERNTYPE_H_
 
 #include "../../../gamedef/property/gdeProperty.h"
+#include "../../../gamedef/gdeGameDefinition.h"
 
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
 
 
 
@@ -40,9 +40,13 @@ class gdeGameDefinition;
  * \brief Undo action object class property set path pattern type.
  */
 class gdeUGDDPSetPathPatternType : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDDPSetPathPatternType> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePathPatternTypes pOldValue;
 	gdeProperty::ePathPatternTypes pNewValue;
@@ -53,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetPathPatternType( gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePathPatternTypes newValue );
+	gdeUGDDPSetPathPatternType(gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePathPatternTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

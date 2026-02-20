@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeWidget.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
 #include "../environment/igdeEnvironment.h"
 #include "../gameproject/igdeGameProject.h"
+#include "../localization/igdeTranslationManager.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -43,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWidget::igdeWidget( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pNativeWidget( NULL ),
-pParent( NULL ),
-pVisible( true ){
+igdeWidget::igdeWidget(igdeEnvironment &environment) :
+pEnvironment(environment),
+pNativeWidget(nullptr),
+pParent(nullptr),
+pVisible(true){
 }
 
 igdeWidget::~igdeWidget(){
@@ -58,8 +55,8 @@ igdeWidget::~igdeWidget(){
 // Management
 ///////////////
 
-void igdeWidget::SetVisible( bool visible ){
-	if( pVisible == visible ){
+void igdeWidget::SetVisible(bool visible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -89,8 +86,8 @@ deLogger *igdeWidget::GetLogger() const{
 
 
 
-void igdeWidget::SetWidgetGuiTheme( igdeGuiTheme *guitheme ){
-	if( pGuiTheme == guitheme ){
+void igdeWidget::SetWidgetGuiTheme(igdeGuiTheme *guitheme){
+	if(pGuiTheme == guitheme){
 		return;
 	}
 	
@@ -98,8 +95,8 @@ void igdeWidget::SetWidgetGuiTheme( igdeGuiTheme *guitheme ){
 	OnGuiThemeChanged();
 }
 
-void igdeWidget::SetWidgetGuiThemeName( const char *guitheme ){
-	if( pGuiThemeName == guitheme ){
+void igdeWidget::SetWidgetGuiThemeName(const char *guitheme){
+	if(pGuiThemeName == guitheme){
 		return;
 	}
 	
@@ -108,13 +105,13 @@ void igdeWidget::SetWidgetGuiThemeName( const char *guitheme ){
 }
 
 igdeGuiTheme *igdeWidget::GetGuiTheme() const{
-	if( pGuiTheme ){
+	if(pGuiTheme){
 		return pGuiTheme;
 		
-	}else if( ! pGuiThemeName.IsEmpty() ){
-		return pEnvironment.GetGuiThemeNamed( pGuiThemeName );
+	}else if(!pGuiThemeName.IsEmpty()){
+		return pEnvironment.GetGuiThemeNamed(pGuiThemeName);
 		
-	}else if( pParent ){
+	}else if(pParent){
 		return pParent->GetGuiTheme();
 		
 	}else{
@@ -124,7 +121,7 @@ igdeGuiTheme *igdeWidget::GetGuiTheme() const{
 
 
 
-void igdeWidget::SetParent( igdeContainer *parent ){
+void igdeWidget::SetParent(igdeContainer *parent){
 	pParent = parent;
 }
 
@@ -133,32 +130,57 @@ void igdeWidget::OnResize(){
 
 
 
-decPoint igdeWidget::WidgetToScreen( const decPoint &position ) const{
-	return igdeNativeWidget::WidgetToScreen( *this, position );
+decPoint igdeWidget::WidgetToScreen(const decPoint &position) const{
+	return igdeNativeWidget::WidgetToScreen(*this, position);
 }
 
 igdeWindow *igdeWidget::GetParentWindow(){
-	if( pParent ){
+	if(pParent){
 		return pParent->GetParentWindow();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 
 
+decUnicodeString igdeWidget::Translate(const decString &entryName) const{
+	return pEnvironment.GetTranslationManager().Translate(entryName);
+}
+
+decUnicodeString igdeWidget::Translate(const char *entryName) const{
+	return pEnvironment.GetTranslationManager().Translate(entryName);
+}
+
+decUnicodeString igdeWidget::TranslateIf(const decString &text) const{
+	return pEnvironment.GetTranslationManager().TranslateIf(text);
+}
+
+decUnicodeString igdeWidget::TranslateIf(const char *text) const{
+	return pEnvironment.GetTranslationManager().TranslateIf(text);
+}
+
+
+
 void igdeWidget::OnVisibleChanged(){
-	igdeNativeWidget::UpdateVisible( *this );
+	igdeNativeWidget::UpdateVisible(*this);
 }
 
 void igdeWidget::OnGuiThemeChanged(){
 }
 
-void igdeWidget::SetNativeWidget( void *nativeWidget ){
+void igdeWidget::OnLanguageChanged(){
+	OnNativeWidgetLanguageChanged();
+}
+
+void igdeWidget::SetNativeWidget(void *nativeWidget){
 	pNativeWidget = nativeWidget;
 }
 
 void igdeWidget::DropNativeWidget(){
-	pNativeWidget = NULL;
+	pNativeWidget = nullptr;
+}
+
+void igdeWidget::OnNativeWidgetLanguageChanged(){
 }

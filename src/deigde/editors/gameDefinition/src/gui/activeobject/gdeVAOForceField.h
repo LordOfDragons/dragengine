@@ -26,12 +26,13 @@
 #define _GDEVAOFORCEFIELD_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/forcefield/deForceFieldReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCForceField;
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/forcefield/deForceField.h>
+
 class igdeWCoordSysArrows;
 
 
@@ -39,13 +40,18 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object force field for edit view.
  */
 class gdeVAOForceField : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOForceField> Ref;
+	
+	
 private:
-	gdeOCForceField *pOCForceField;
+	gdeOCForceField::Ref pOCForceField;
 	
-	deForceFieldReference pForceField;
+	deForceField::Ref pForceField;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -54,8 +60,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object forceField. */
-	gdeVAOForceField( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCForceField *ocfield );
+	gdeVAOForceField(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCForceField *ocfield);
 	
 protected:
 	/**
@@ -64,7 +70,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOForceField();
+	~gdeVAOForceField() override;
 	/*@}*/
 	
 	
@@ -73,10 +79,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{ return pOCForceField; }
+	inline const gdeOCForceField::Ref &GetOCForceField() const{ return pOCForceField; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Reattach resources. */
 	void AttachResources();
@@ -85,7 +91,7 @@ public:
 	void DetachResources();
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

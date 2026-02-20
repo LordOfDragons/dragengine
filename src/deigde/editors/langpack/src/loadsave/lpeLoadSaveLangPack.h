@@ -25,6 +25,7 @@
 #ifndef _LPELOADSAVELANGPACK_H_
 #define _LPELOADSAVELANGPACK_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 class lpeLangPack;
@@ -37,7 +38,11 @@ class decBaseFileWriter;
 /**
  * @brief Load/Saves langpacks using an engine module.
  */
-class lpeLoadSaveLangPack{
+class lpeLoadSaveLangPack : public deObject{
+public:
+	using Ref = deTObjectReference<lpeLoadSaveLangPack>;
+	
+	
 private:
 	deBaseLanguagePackModule *pModule;
 	
@@ -48,9 +53,13 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save object. */
-	lpeLoadSaveLangPack( deBaseLanguagePackModule *module );
+	explicit lpeLoadSaveLangPack(deBaseLanguagePackModule *module);
+	
+protected:
 	/** Cleans up the load/save object. */
-	~lpeLoadSaveLangPack();
+	~lpeLoadSaveLangPack() override;
+	
+public:
 	/*@}*/
 	
 	/** @name Management */
@@ -58,16 +67,16 @@ public:
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the pattern. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	/** Sets the pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** Loads a langpack. */
-	void LoadLangPack( lpeLangPack *langpack, decBaseFileReader *file );
+	void LoadLangPack(lpeLangPack *langpack, decBaseFileReader *file);
 	/** Saves a langpack. */
-	void SaveLangPack( lpeLangPack *langpack, decBaseFileWriter *file );
+	void SaveLangPack(lpeLangPack *langpack, decBaseFileWriter *file);
 	/*@}*/
 };
 

@@ -25,15 +25,14 @@
 #ifndef _FBXANIMATIONMOVE_H_
 #define _FBXANIMATIONMOVE_H_
 
-
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
-
+class fbxRig;
 class fbxAnimation;
 class fbxAnimationMoveCurves;
 class fbxNode;
@@ -48,8 +47,10 @@ class deBaseModule;
 class fbxAnimationMove : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimationMove> Ref;
+	using Ref = deTObjectReference<fbxAnimationMove>;
 	
+	/** \brief List of animation move nodes. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<fbxAnimationMove>,fbxAnimationMove>;
 	
 	
 private:
@@ -58,7 +59,7 @@ private:
 	int64_t pNodeStackID;
 	fbxNode *pNodeLayer;
 	int64_t pNodeLayerID;
-	decObjectOrderedSet pCurveNodes;
+	decTObjectOrderedSet<fbxAnimationMoveCurves> pCurveNodes;
 	
 	decString pName;
 	int pFrameRate;
@@ -69,11 +70,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationMove( fbxAnimation &animation, fbxNode &nodeStack );
+	fbxAnimationMove(fbxAnimation &animation, fbxNode &nodeStack);
 	
 protected:
 	/** \brief Clean up move. */
-	virtual ~fbxAnimationMove();
+	~fbxAnimationMove() override;
 	/*@}*/
 	
 	
@@ -100,33 +101,30 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
-	/** \brief Count of curve nodes. */
-	int GetCurvesCount() const;
-	
-	/** \brief Curves at index. */
-	fbxAnimationMoveCurves *GetCurvesAt( int index ) const;
+	/** \brief Curves. */
+	inline const decTObjectOrderedSet<fbxAnimationMoveCurves> &GetCurveNodes() const{ return pCurveNodes; }
 	
 	/** \brief Match curves against rig. */
-	void MatchRig( const fbxRig &rig );
+	void MatchRig(const fbxRig &rig);
 	
 	/** \brief Frame rate. */
 	inline int GetFrameRate() const{ return pFrameRate; }
 	
 	/** \brief Set frame rate. */
-	void SetFrameRate( int frameRate );
+	void SetFrameRate(int frameRate);
 	
 	/** \brief Convert time to frame number. */
-	int TimeToFrame( float time ) const;
+	int TimeToFrame(float time) const;
 	
 	/** \brief Convert frame number to time. */
-	float FrameToTime( int frame ) const;
+	float FrameToTime(int frame) const;
 	
 	/** \brief Quantize time. */
-	float QuantizeTime( float time ) const;
+	float QuantizeTime(float time) const;
 	
 	
 	
@@ -134,7 +132,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread default textures. */
-	deoglRTDefaultTextures( deoglRenderThread &renderThread );
+	deoglRTDefaultTextures(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread default textures. */
 	~deoglRTDefaultTextures();
@@ -188,12 +188,12 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateDefaultTextures( deoglRenderThread &renderThread );
-	void pCreateDefaultTexturesArray( deoglRenderThread &renderThread );
-	void pCreateWeightsTexture( deoglRenderThread &renderThread );
-	void pCreateTextureMaskOpaque( deoglRenderThread &renderThread );
-	void pCreateTextureNoise2D( deoglRenderThread &renderThread );
-	void pCreateShadowTextures( deoglRenderThread &renderThread );
+	void pCreateDefaultTextures(deoglRenderThread &renderThread);
+	void pCreateDefaultTexturesArray(deoglRenderThread &renderThread);
+	void pCreateWeightsTexture(deoglRenderThread &renderThread);
+	void pCreateTextureMaskOpaque(deoglRenderThread &renderThread);
+	void pCreateTextureNoise2D(deoglRenderThread &renderThread);
+	void pCreateShadowTextures(deoglRenderThread &renderThread);
 };
 
 #endif

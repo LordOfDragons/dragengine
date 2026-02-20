@@ -32,7 +32,6 @@
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -136,7 +135,7 @@ cNativeIgdeTabBook::~cNativeIgdeTabBook(){
 }
 
 void cNativeIgdeTabBook::AddHeader( const igdeTabBook::cHeader &header ){
-	FXIcon * const icon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : NULL;
+	FXIcon * const icon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : nullptr;
 	
 	cNativeIgdeTabBookHeader * const widget = new cNativeIgdeTabBookHeader( this,
 		header.text, icon, this, ID_HEADER, pPadLeft, pPadRight, pPadTop, pPadBottom );
@@ -296,7 +295,7 @@ void igdeTabBook::SetActivePanel( int index ){
 
 
 void igdeTabBook::AddChild( igdeWidget *child, const char *text ){
-	AddChild( child, text, NULL, "" );
+	AddChild( child, text, nullptr, "" );
 }
 
 void igdeTabBook::AddChild( igdeWidget *child, const char *text, igdeIcon *icon ){
@@ -309,8 +308,7 @@ const char *description ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deObjectReference header;
-	header.TakeOver( new cHeader( text, icon, description ) );
+	const cHeader::Ref header(cHeader::Ref::New(text, icon, description));
 	pHeaders.Add( header );
 	
 	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
@@ -320,7 +318,7 @@ const char *description ){
 	}
 	
 	try{
-		native->AddHeader( ( cHeader& )( deObject& )header );
+		native->AddHeader(header);
 		
 	}catch( const deException & ){
 		pHeaders.RemoveFrom( pHeaders.GetCount() - 1 );

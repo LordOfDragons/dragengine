@@ -75,15 +75,6 @@ pState(State::prepare)
 	
 	language.GetRenderThread().GetLogger().LogInfoFormat(
 		"Create shader compiler thread: %d (%s)", contextIndex, typeName);
-	
-	try{
-		pCompiler = new deoglShaderCompiler(language, contextIndex);
-		
-	}catch(const deException &e){
-		language.GetRenderThread().GetLogger().LogException(e);
-		pExitThread = false;
-		pState = State::failed;
-	}
 }
 
 deoglShaderCompilerThread::~deoglShaderCompilerThread(){
@@ -98,6 +89,7 @@ deoglShaderCompilerThread::~deoglShaderCompilerThread(){
 void deoglShaderCompilerThread::Run(){
 	try{
 		pActivateContext();
+		pCompiler = new deoglShaderCompiler(pLanguage, pContextIndex);
 		
 	}catch(const deException &e){
 		pLanguage.GetRenderThread().GetLogger().LogException(e);
@@ -166,8 +158,10 @@ void deoglShaderCompilerThread::pCleanUp(){
 
 void deoglShaderCompilerThread::pActivateContext(){
 	if(pContextIndex > -1){
-#ifndef OS_BEOS
+#ifdef OS_WEBWASM
 		deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
+#elif ! defined OS_BEOS
+		const deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
 #endif
 		
 #ifdef OS_ANDROID
@@ -248,8 +242,6 @@ void deoglShaderCompilerThread::pActivateContext(){
 	}
 	SetName(threadName);
 #endif
-	
-	pCompiler = new deoglShaderCompiler(pLanguage, pContextIndex);
 }
 
 bool deoglShaderCompilerThread::pExitThreadRequested(){
@@ -328,7 +320,8 @@ void deoglShaderCompilerThread::pRunSingle(){
 }
 
 void deoglShaderCompilerThread::pRunGLParallel(){
-	decObjectList tasks, unitTasks;
+	decTObjectList<deoglShaderCompileTask> tasks;
+	decTObjectList<deoglShaderCompileUnitTask> unitTasks;
 	int i, count;
 	
 	while(true){
@@ -400,13 +393,11 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 			continue;
 		}
 		
-		// process all finished unit tasks
-		count = unitTasks.GetCount();
-		for(i=0; i<count; i++){
-			deoglShaderCompileUnitTask * const unitTask = (deoglShaderCompileUnitTask*)unitTasks.GetAt(i);
-			deoglShaderProgramUnit &unit = *unitTask->GetUnit();
-			
-			try{
+	// process all finished unit tasks
+	count = unitTasks.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderCompileUnitTask * const unitTask = unitTasks.GetAt(i);
+		deoglShaderProgramUnit &unit = *unitTask->GetUnit();			try{
 				if(!pCompiler->HasCompileShaderUnitFinished(unit)){
 					continue;
 				}
@@ -428,13 +419,11 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 			pLanguage.FinishTask(guardUnitTask);
 		}
 		
-		// process all finished tasks
-		count = tasks.GetCount();
-		for(i=0; i<count; i++){
-			deoglShaderCompileTask * const task = (deoglShaderCompileTask*)tasks.GetAt(i);
-			deoglShaderProgram &program = *task->GetProgram();
-			
-			try{
+	// process all finished tasks
+	count = tasks.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderCompileTask * const task = tasks.GetAt(i);
+		deoglShaderProgram &program = *task->GetProgram();			try{
 				if(!pCompiler->HasCompileShaderFinished(program)){
 					continue;
 				}
@@ -459,7 +448,7 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 	// fail all unit tasks we are still holding to
 	count = unitTasks.GetCount();
 	for(i=0; i<count; i++){
-		deoglShaderCompileUnitTask::Ref unitTask((deoglShaderCompileUnitTask*)unitTasks.GetAt(i));
+		deoglShaderCompileUnitTask::Ref unitTask(unitTasks.GetAt(i));
 		deoglShaderProgramUnit &unit = *unitTask->GetUnit();
 		unit.compilingFailed = true;
 		unit.DropHandle();
@@ -470,7 +459,7 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 	// fail all tasks we are still holding to
 	count = tasks.GetCount();
 	for(i=0; i<count; i++){
-		deoglShaderCompileTask::Ref task((deoglShaderCompileTask*)tasks.GetAt(i));
+		deoglShaderCompileTask::Ref task(tasks.GetAt(i));
 		deoglShaderProgram &program = *task->GetProgram();
 		program.SetCompiled(nullptr);
 		program.ready = false;

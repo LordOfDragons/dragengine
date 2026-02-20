@@ -41,34 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe( gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) :
+
+pEnvMapProbe(nullptr)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetEnvMapProbes().Has( envMapProbe ) ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass->GetEnvMapProbes().Has(envMapProbe)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove environment map probe" );
+	SetShortInfo("@GameDefinition.Undo.OCRemoveEnvMapProbe");
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveEnvMapProbe::~gdeUOCRemoveEnvMapProbe(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -77,19 +68,19 @@ gdeUOCRemoveEnvMapProbe::~gdeUOCRemoveEnvMapProbe(){
 ///////////////
 
 void gdeUOCRemoveEnvMapProbe::Undo(){
-	pObjectClass->GetEnvMapProbes().Add( pEnvMapProbe );
+	pObjectClass->GetEnvMapProbes().Add(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
 }
 
 void gdeUOCRemoveEnvMapProbe::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCEnvMapProbe() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCEnvMapProbe()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCEnvMapProbe( NULL );
+		gameDefinition->SetActiveOCEnvMapProbe(nullptr);
 	}
 	
-	pObjectClass->GetEnvMapProbes().Remove( pEnvMapProbe );
+	pObjectClass->GetEnvMapProbes().Remove(pEnvMapProbe);
 	pObjectClass->NotifyEnvMapProbesChanged();
 }

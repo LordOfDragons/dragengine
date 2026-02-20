@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleClosestProp;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleClosestProp.h"
 
 
 
@@ -41,9 +41,15 @@ class meHTVRuleClosestProp;
  * Undo action to set the search radius of a height terrain vegetation rule closest prop.
  */
 class meUHTVRuleCPSetRadius : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleCPSetRadius>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleClosestProp *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleClosestProp::Ref pRule;
 	
 	float pOldRadius;
 	float pNewRadius;
@@ -52,17 +58,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCPSetRadius( meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius );
+	meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleCPSetRadius();
+
+protected:
+	~meUHTVRuleCPSetRadius() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

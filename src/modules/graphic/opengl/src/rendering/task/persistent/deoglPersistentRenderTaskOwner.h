@@ -25,8 +25,8 @@
 #ifndef _DEOGLPERSISTENTRENDERTASKOWNER_H_
 #define _DEOGLPERSISTENTRENDERTASKOWNER_H_
 
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
@@ -40,10 +40,10 @@ class deoglPersistentRenderTaskSubInstance;
  */
 class deoglPersistentRenderTaskOwner{
 private:
-	decPointerLinkedList::cListEntry pLLTask;
+	decTLinkedList<deoglPersistentRenderTaskOwner>::Element pLLTask;
 	
 	void *pOwner;
-	unsigned int pHash;
+	unsigned int pUniqueKey;
 	bool pUpdateMarker;
 	
 	deoglRComponent *pComponent;
@@ -51,8 +51,8 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	decPointerList pInstances;
-	decPointerList pSubInstances;
+	decTList<deoglPersistentRenderTaskInstance*> pInstances;
+	decTList<deoglPersistentRenderTaskSubInstance*> pSubInstances;
 	
 	
 	
@@ -73,17 +73,17 @@ public:
 	/** Owner object or NULL. */
 	inline void *GetOwner() const{ return pOwner; }
 	
-	/** Hash. */
-	inline unsigned int GetHash() const{ return pHash; }
+	/** Unique key. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	
 	/** Set owner object or NULL. */
-	void SetOwner( void *owner, unsigned int hash );
+	void SetOwner(void *owner, unsigned int uniqueKey);
 	
 	/** Update marker. */
 	inline bool GetUpdateMarker() const{ return pUpdateMarker; }
 	
 	/** Set update marker. */
-	inline void SetUpdateMarker( bool marker ){ pUpdateMarker = marker; }
+	inline void SetUpdateMarker(bool marker){pUpdateMarker = marker;}
 	
 	/** Minimum extend. */
 	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
@@ -92,7 +92,7 @@ public:
 	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
 	/** Set extends. */
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
 	/** Set owner component or NULL. */
-	void SetComponent( deoglRComponent *component );
+	void SetComponent(deoglRComponent *component);
 	
 	
 	
@@ -108,10 +108,10 @@ public:
 	int GetInstanceCount() const;
 	
 	/** Instance at index. */
-	deoglPersistentRenderTaskInstance *GetInstanceAt( int index ) const;
+	deoglPersistentRenderTaskInstance *GetInstanceAt(int index) const;
 	
 	/** Add instance. */
-	void AddInstance( deoglPersistentRenderTaskInstance *instance );
+	void AddInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();
@@ -122,10 +122,10 @@ public:
 	int GetSubInstanceCount() const;
 	
 	/** Sub instance at index. */
-	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt( int index ) const;
+	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt(int index) const;
 	
 	/** Add sub instance. */
-	void AddSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
+	void AddSubInstance(deoglPersistentRenderTaskSubInstance *subInstance);
 	
 	/** Remove all sub instances. */
 	void RemoveAllSubInstances();
@@ -138,8 +138,9 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
+	/** Linked list. */
+	inline decTLinkedList<deoglPersistentRenderTaskOwner>::Element &GetLLTask(){ return pLLTask; }
+	inline const decTLinkedList<deoglPersistentRenderTaskOwner>::Element &GetLLTask() const{ return pLLTask; }
 	/*@}*/
 };
 

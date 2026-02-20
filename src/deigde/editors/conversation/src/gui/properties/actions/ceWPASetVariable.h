@@ -25,7 +25,7 @@
 #ifndef _CEWPASETVARIABLE_H_
 #define _CEWPASETVARIABLE_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,22 +38,23 @@ class ceCASetVariable;
  */
 class ceWPASetVariable : public ceWPAction{
 private:
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditValue;
-	igdeTextFieldReference pEditValueVariable;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditValue;
+	igdeTextField::Ref pEditValueVariable;
 	
 	
 	
 public:
+	using Ref = deTObjectReference<ceWPASetVariable>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPASetVariable( ceWPTopic &parentPanel );
+	ceWPASetVariable(ceWPTopic &parentPanel);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~ceWPASetVariable();
+	~ceWPASetVariable() override;
 	/*@}*/
 	
 	

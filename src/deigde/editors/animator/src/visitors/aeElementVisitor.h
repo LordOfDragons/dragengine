@@ -47,7 +47,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit gizmo. */
-	virtual void VisitGizmo( igdeGizmo *gizmo );
+	virtual void VisitGizmo(igdeGizmo *gizmo);
 	/*@}*/
 };
 

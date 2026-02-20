@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWPUndoHistoryListener::peeWPUndoHistoryListener( peeWPUndoHistory &panel ) :
-pPanel( panel ){
+peeWPUndoHistoryListener::peeWPUndoHistoryListener(peeWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 peeWPUndoHistoryListener::~peeWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ peeWPUndoHistoryListener::~peeWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void peeWPUndoHistoryListener::UndoChanged( peeEmitter* ){
+void peeWPUndoHistoryListener::UndoChanged(peeEmitter*){
 	pPanel.UpdateUndo();
 }

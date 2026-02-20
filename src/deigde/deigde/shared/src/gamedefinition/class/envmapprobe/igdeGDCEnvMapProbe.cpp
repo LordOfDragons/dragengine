@@ -40,16 +40,13 @@
 ////////////////////////////
 
 igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(){
-	pScaling.Set( 1.0f, 1.0f, 1.0f );
-	pShapeReflection = NULL;
+	pScaling.Set(1.0f, 1.0f, 1.0f);
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
 }
 
-igdeGDCEnvMapProbe::igdeGDCEnvMapProbe( const igdeGDCEnvMapProbe &probe ){
+igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(const igdeGDCEnvMapProbe &probe){
 	int i;
-	
-	pShapeReflection = NULL;
 	
 	try{
 		pPosition = probe.GetPosition();
@@ -57,18 +54,18 @@ igdeGDCEnvMapProbe::igdeGDCEnvMapProbe( const igdeGDCEnvMapProbe &probe ){
 		pScaling = probe.GetScaling();
 		
 		pShapeListInfluence = probe.GetShapeListInfluence();
-		if( probe.GetShapeReflection() ){
+		if(probe.GetShapeReflection()){
 			pShapeReflection = probe.GetShapeReflection()->Copy();
 		}
 		pShapeListReflectionMask = probe.GetShapeListReflectionMask();
 		pInfluenceBorderSize = probe.pInfluenceBorderSize;
 		pInfluencePriority = probe.pInfluencePriority;
 		
-		for( i=0; i<=epAttachRotation; i++ ){
-			pPropertyNames[ i ] = probe.pPropertyNames[ i ];
+		for(i=0; i<=epAttachRotation; i++){
+			pPropertyNames[i] = probe.pPropertyNames[i];
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -83,48 +80,47 @@ igdeGDCEnvMapProbe::~igdeGDCEnvMapProbe(){
 // Management
 ///////////////
 
-void igdeGDCEnvMapProbe::SetPosition( const decVector &position ){
+void igdeGDCEnvMapProbe::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void igdeGDCEnvMapProbe::SetOrientation( const decQuaternion &orientation ){
+void igdeGDCEnvMapProbe::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void igdeGDCEnvMapProbe::SetScaling( const decVector &scaling ){
+void igdeGDCEnvMapProbe::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
 
 
-void igdeGDCEnvMapProbe::SetShapeListInfluence( const decShapeList &shapeList ){
+void igdeGDCEnvMapProbe::SetShapeListInfluence(const decShape::List &shapeList){
 	pShapeListInfluence = shapeList;
 }
 
-void igdeGDCEnvMapProbe::SetShapeReflection( decShape *shape ){
-	if( shape != pShapeReflection ){
-		if( pShapeReflection ){
-			delete pShapeReflection;
-		}
+void igdeGDCEnvMapProbe::SetShapeReflection(const decShape *shape){
+	if(shape){
+		pShapeReflection = shape->Copy();
 		
-		pShapeReflection = shape;
+	}else{
+		pShapeReflection.Clear();
 	}
 }
 
-void igdeGDCEnvMapProbe::SetShapeListReflectionMask( const decShapeList &shapeList ){
+void igdeGDCEnvMapProbe::SetShapeListReflectionMask(const decShape::List &shapeList){
 	pShapeListReflectionMask = shapeList;
 }
 
-void igdeGDCEnvMapProbe::SetInfluenceBorderSize( float borderSize ){
-	if( borderSize < 0.0f ){
+void igdeGDCEnvMapProbe::SetInfluenceBorderSize(float borderSize){
+	if(borderSize < 0.0f){
 		borderSize = 0.0f;
 	}
 	
 	pInfluenceBorderSize = borderSize;
 }
 
-void igdeGDCEnvMapProbe::SetInfluencePriority( int priority ){
-	if( priority < 0 ){
+void igdeGDCEnvMapProbe::SetInfluencePriority(int priority){
+	if(priority < 0){
 		priority = 0;
 	}
 	
@@ -133,27 +129,27 @@ void igdeGDCEnvMapProbe::SetInfluencePriority( int priority ){
 
 
 
-bool igdeGDCEnvMapProbe::IsPropertySet( int property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool igdeGDCEnvMapProbe::IsPropertySet(int property) const{
+	return !pPropertyNames[property].IsEmpty();
 }
 
-const decString& igdeGDCEnvMapProbe::GetPropertyName( int property ) const{
-	return pPropertyNames[ property ];
+const decString& igdeGDCEnvMapProbe::GetPropertyName(int property) const{
+	return pPropertyNames[property];
 }
 
-void igdeGDCEnvMapProbe::SetPropertyName( int property, const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void igdeGDCEnvMapProbe::SetPropertyName(int property, const char *name){
+	if(!name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPropertyNames[ property ] = name;
+	pPropertyNames[property] = name;
 }
 
-bool igdeGDCEnvMapProbe::HasPropertyWithName( const char *name ) const{
+bool igdeGDCEnvMapProbe::HasPropertyWithName(const char *name) const{
 	int j;
 	
-	for( j=0; j<=epAttachRotation; j++ ){
-		if( pPropertyNames[ j ] == name ){
+	for(j=0; j<=epAttachRotation; j++){
+		if(pPropertyNames[j] == name){
 			return true;
 		}
 	}
@@ -167,7 +163,4 @@ bool igdeGDCEnvMapProbe::HasPropertyWithName( const char *name ) const{
 //////////////////////
 
 void igdeGDCEnvMapProbe::pCleanUp(){
-	if( pShapeReflection ){
-		delete pShapeReflection;
-	}
 }

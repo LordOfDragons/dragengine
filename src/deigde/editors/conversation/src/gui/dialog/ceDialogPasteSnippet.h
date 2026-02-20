@@ -25,19 +25,19 @@
 #ifndef _CEDIALOGPASTESNIPPET_H_
 #define _CEDIALOGPASTESNIPPET_H_
 
-#include "../../conversation/action/ceConversationActionList.h"
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/strip/ceStrip.h"
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
-class ceStripList;
 class decUnicodeString;
 class ceConversationAction;
 class ceConversationFile;
 class ceConversationTopic;
-class ceConversation;
 
 
 
@@ -46,30 +46,33 @@ class ceConversation;
  */
 class ceDialogPasteSnippet : public igdeDialog{
 private:
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
-	ceConversationActionList pActions;
+	ceConversationAction::List pActions;
 	
-	igdeTextAreaReference pEditSnippet;
-	igdeComboBoxFilterReference pCBCameraShot1;
-	igdeComboBoxFilterReference pCBCameraShot2;
-	igdeComboBoxFilterReference pCBTarget1;
-	igdeComboBoxFilterReference pCBTarget2;
-	igdeTextFieldReference pEditDelayCameraShot;
-	igdeTextFieldReference pEditDelayActorSpeak;
-	igdeTextFieldReference pEditScaleActorSpeak;
+	igdeTextArea::Ref pEditSnippet;
+	igdeComboBoxFilter::Ref pCBCameraShot1;
+	igdeComboBoxFilter::Ref pCBCameraShot2;
+	igdeComboBoxFilter::Ref pCBTarget1;
+	igdeComboBoxFilter::Ref pCBTarget2;
+	igdeTextField::Ref pEditDelayCameraShot;
+	igdeTextField::Ref pEditDelayActorSpeak;
+	igdeTextField::Ref pEditScaleActorSpeak;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceDialogPasteSnippet>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	ceDialogPasteSnippet( igdeEnvironment &environment, ceConversation *conversation );
+	ceDialogPasteSnippet(igdeEnvironment &environment, ceConversation *conversation);
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~ceDialogPasteSnippet();
+	~ceDialogPasteSnippet() override;
 	/*@}*/
 	
 	
@@ -87,19 +90,19 @@ public:
 	void GenerateActions();
 	
 	/** \brief Words from text. */
-	void WordsFromText( ceStripList &wordList, const decUnicodeString &text, float scale );
+	void WordsFromText(ceStrip::List &wordList, const decUnicodeString &text, float scale);
 	
 	/**
 	 * \brief List of action snippet.
 	 * 
 	 * Present after dialog returned successfully.
 	 */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	
 	
 	
 	/** \brief Accept dialog. */
-	virtual bool Accept();
+	bool Accept() override;
 	
 	
 	
@@ -109,7 +112,7 @@ public:
 	 * Called by Run() after dialog is created. Subclass can implement to init controls
 	 * after the dialog is visible on screen.
 	 */
-	virtual void OnDialogShown();
+	void OnDialogShown() override;
 	/*@}*/
 };
 

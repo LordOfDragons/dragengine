@@ -36,6 +36,12 @@ class igdeSlider;
  * \brief IGDE UI Slider Listener.
  */
 class DE_DLL_EXPORT igdeSliderListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeSliderListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeSliderListener();
+	~igdeSliderListener() override;
 	/*@}*/
 	
 	
@@ -62,7 +68,7 @@ public:
 	/**
 	 * \brief Slider value changed and has been accepted by user.
 	 */
-	virtual void OnValueChanged( igdeSlider *slider );
+	virtual void OnValueChanged(igdeSlider *slider);
 	
 	/**
 	 * \brief Slider value is changing but user has not yet accepted the value.
@@ -70,7 +76,7 @@ public:
 	 * Used while slider is being dragged to allow tracking. If the user finishe
 	 * dragging OnValueChanged() will be called.
 	 */
-	virtual void OnValueChanging( igdeSlider *slider );
+	virtual void OnValueChanging(igdeSlider *slider);
 	/*@}*/
 };
 

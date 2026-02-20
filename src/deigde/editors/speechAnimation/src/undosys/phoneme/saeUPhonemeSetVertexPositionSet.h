@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 /**
  * Undo phoneme set vertex position set.
  */
 class saeUPhonemeSetVertexPositionSet : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUPhonemeSetVertexPositionSet>;
+	
+	
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetVertexPositionSet( saePhoneme *phoneme, const char *newName );
+	saeUPhonemeSetVertexPositionSet(saePhoneme *phoneme, const char *newName);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUPhonemeSetVertexPositionSet();
+	~saeUPhonemeSetVertexPositionSet() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

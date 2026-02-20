@@ -22,15 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeStatusBar.h"
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
-#include "native/toolkit.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -45,8 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeStatusBar::igdeStatusBar( igdeEnvironment &environment ) :
-igdeContainer( environment ){
+igdeStatusBar::igdeStatusBar(igdeEnvironment &environment) :
+igdeContainer(environment),
+pNativeStatusBar(nullptr){
 }
 
 igdeStatusBar::~igdeStatusBar(){
@@ -58,8 +54,8 @@ igdeStatusBar::~igdeStatusBar(){
 // Management
 ///////////////
 
-void igdeStatusBar::SetText( const char *text ){
-	if( pText == text ){
+void igdeStatusBar::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -68,7 +64,7 @@ void igdeStatusBar::SetText( const char *text ){
 }
 
 void igdeStatusBar::ClearText(){
-	if( pText.IsEmpty() ){
+	if(pText.IsEmpty()){
 		return;
 	}
 	
@@ -77,30 +73,40 @@ void igdeStatusBar::ClearText(){
 }
 
 
-
 void igdeStatusBar::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeStatusBar * const native = igdeNativeStatusBar::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeStatusBar * const native = igdeNativeStatusBar::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	pNativeStatusBar = native;
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeStatusBar::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(!GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeStatusBar* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeStatusBar*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
+void igdeStatusBar::DropNativeWidget(){
+	pNativeStatusBar = nullptr;
+	igdeContainer::DropNativeWidget();
+}
+
+
 void igdeStatusBar::OnTextChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeStatusBar* )GetNativeWidget() )->UpdateText();
+	if(pNativeStatusBar){
+		pNativeStatusBar->UpdateText();
 	}
+}
+
+void igdeStatusBar::OnNativeWidgetLanguageChanged(){
+	OnTextChanged();
 }

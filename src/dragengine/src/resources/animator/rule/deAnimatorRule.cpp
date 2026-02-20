@@ -42,11 +42,11 @@
 ////////////////////////////
 
 deAnimatorRule::deAnimatorRule() :
-pAnimator( nullptr ),
-pBlendMode( ebmBlend ),
-pBlendFactor( 1.0f ),
-pInvertBlendFactor( false ),
-pEnabled( true ){
+pAnimator(nullptr),
+pBlendMode(ebmBlend),
+pBlendFactor(1.0f),
+pInvertBlendFactor(false),
+pEnabled(true){
 }
 
 deAnimatorRule::~deAnimatorRule(){
@@ -57,23 +57,23 @@ deAnimatorRule::~deAnimatorRule(){
 // Management
 ///////////////
 
-void deAnimatorRule::SetAnimator( deAnimator *animator ){
+void deAnimatorRule::SetAnimator(deAnimator *animator){
 	pAnimator = animator;
 }
 
-void deAnimatorRule::SetEnabled( bool enabled ){
+void deAnimatorRule::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
-void deAnimatorRule::SetBlendMode( eBlendModes mode ){
+void deAnimatorRule::SetBlendMode(eBlendModes mode){
 	pBlendMode = mode;
 }
 
-void deAnimatorRule::SetBlendFactor( float factor ){
+void deAnimatorRule::SetBlendFactor(float factor){
 	pBlendFactor = factor;
 }
 
-void deAnimatorRule::SetInvertBlendFactor( bool invert ){
+void deAnimatorRule::SetInvertBlendFactor(bool invert){
 	pInvertBlendFactor = invert;
 }
 
@@ -82,6 +82,6 @@ void deAnimatorRule::SetInvertBlendFactor( bool invert ){
 // Visiting
 /////////////
 
-void deAnimatorRule::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitRule( *this );
+void deAnimatorRule::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitRule(*this);
 }

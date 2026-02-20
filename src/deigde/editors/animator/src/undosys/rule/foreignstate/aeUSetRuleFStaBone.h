@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleForeignState;
  * Undo to set the bone name of a foreign state rule.
  */
 class aeUSetRuleFStaBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleFStaBone>;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;
@@ -51,19 +55,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaBone( aeRuleForeignState *rule, const char *newName );
+	aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *newName);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleFStaBone();
+	~aeUSetRuleFStaBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

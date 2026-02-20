@@ -33,15 +33,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorAddMatchName::aeURuleMirrorAddMatchName( aeRuleMirror *rule, aeRuleMirror::cMatchName *matchName ) :
-pRule( rule ),
-pMatchName( matchName )
+aeURuleMirrorAddMatchName::aeURuleMirrorAddMatchName(aeRuleMirror *rule, aeRuleMirror::MatchName *matchName) :
+pRule(rule),
+pMatchName(matchName)
 {
-	if( ! rule || ! matchName || rule->HasMatchName( matchName ) ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(matchName)
+	DEASSERT_FALSE(rule->GetMatchNames().Has(matchName))
 	
-	SetShortInfo( "Mirror rule add match name" );
+	SetShortInfo("@Animator.Undo.RuleMirrorAddMatchName");
 }
 
 aeURuleMirrorAddMatchName::~aeURuleMirrorAddMatchName(){
@@ -53,9 +53,9 @@ aeURuleMirrorAddMatchName::~aeURuleMirrorAddMatchName(){
 ///////////////
 
 void aeURuleMirrorAddMatchName::Undo(){
-	pRule->RemoveMatchName( pMatchName );
+	pRule->RemoveMatchName(pMatchName);
 }
 
 void aeURuleMirrorAddMatchName::Redo(){
-	pRule->AddMatchName( pMatchName );
+	pRule->AddMatchName(pMatchName);
 }

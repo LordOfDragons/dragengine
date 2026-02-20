@@ -37,14 +37,14 @@
 // Class devkDebug
 ////////////////////
 
-devkDebug::devkDebug( devkInstance &instance ) :
-pInstance( instance ),
-pEnabled( false ),
-pReportCallback( VK_NULL_HANDLE ){
+devkDebug::devkDebug(devkInstance &instance) :
+pInstance(instance),
+pEnabled(false),
+pReportCallback(VK_NULL_HANDLE){
 }
 
 devkDebug::~devkDebug(){
-	SetEnabled( false );
+	SetEnabled(false);
 }
 
 
@@ -52,22 +52,22 @@ devkDebug::~devkDebug(){
 // Management
 ///////////////
 
-void devkDebug::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void devkDebug::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
-	if( pEnabled ){
+	if(pEnabled){
 		pUnregisterReportCallback();
 		pEnabled = false;
 	}
 	
-	if( enabled ){
-		if( ! pInstance.SupportsExtension( devkInstance::extEXTDebugReport ) ){
+	if(enabled){
+		if(!pInstance.SupportsExtension(devkInstance::extEXTDebugReport)){
 			return;
 		}
-		if( ! pInstance.SupportsLayer( devkInstance::layerKhronosValidation)
-		&& ! pInstance.SupportsLayer( devkInstance::layerLunargStandardValidation ) ){
+		if(!pInstance.SupportsLayer(devkInstance::layerKhronosValidation)
+		&& !pInstance.SupportsLayer(devkInstance::layerLunargStandardValidation)){
 			return;
 		}
 		
@@ -82,42 +82,42 @@ void devkDebug::SetEnabled( bool enabled ){
 //////////////////////
 
 void devkDebug::pRegisterReportCallback(){
-	if( ! pInstance.vkCreateDebugReportCallbackEXT
-	|| ! pInstance.vkDestroyDebugReportCallbackEXT ){
+	if(!pInstance.vkCreateDebugReportCallbackEXT
+	|| !pInstance.vkDestroyDebugReportCallbackEXT){
 		return;
 	}
 	
 	VkDebugReportCallbackCreateInfoEXT info{VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT};
 	info.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-	info.pfnCallback = ( PFN_vkDebugReportCallbackEXT )DebugMessageCallback;
+	info.pfnCallback = (PFN_vkDebugReportCallbackEXT)DebugMessageCallback;
 	info.pUserData = this;
 	
-	VK_CHECK( pInstance.GetVulkan(), pInstance.vkCreateDebugReportCallbackEXT(
-		pInstance.GetInstance(), &info, VK_NULL_HANDLE, &pReportCallback ) );
+	VK_CHECK(pInstance.GetVulkan(), pInstance.vkCreateDebugReportCallbackEXT(
+		pInstance.GetInstance(), &info, VK_NULL_HANDLE, &pReportCallback));
 	
-	pInstance.GetVulkan().GetModule().LogInfo( "Debug: Message Callback Registered" );
+	pInstance.GetVulkan().GetModule().LogInfo("Debug: Message Callback Registered");
 }
 
 void devkDebug::pUnregisterReportCallback(){
-	if( ! pReportCallback ){
+	if(!pReportCallback){
 		return;
 	}
 	
-	if( pInstance.vkDestroyDebugReportCallbackEXT ){
-		pInstance.vkDestroyDebugReportCallbackEXT( pInstance.GetInstance(), pReportCallback, VK_NULL_HANDLE );
+	if(pInstance.vkDestroyDebugReportCallbackEXT){
+		pInstance.vkDestroyDebugReportCallbackEXT(pInstance.GetInstance(), pReportCallback, VK_NULL_HANDLE);
 	}
 	
 	pReportCallback = VK_NULL_HANDLE;
-	pInstance.GetVulkan().GetModule().LogInfo( "Debug: Message Callback Unregistered" );
+	pInstance.GetVulkan().GetModule().LogInfo("Debug: Message Callback Unregistered");
 }
 
-void devkDebug::DebugMessage( const char *layerPrefix, const char *message ){
-	pInstance.GetVulkan().GetModule().LogInfoFormat( "Debug: Validation: %s - %s", layerPrefix, message );
+void devkDebug::DebugMessage(const char *layerPrefix, const char *message){
+	pInstance.GetVulkan().GetModule().LogInfoFormat("Debug: Validation: %s - %s", layerPrefix, message);
 }
 
-VkBool32 devkDebug::DebugMessageCallback( VkDebugReportFlagsEXT /*flags*/,
+VkBool32 devkDebug::DebugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
 VkDebugReportObjectTypeEXT /*objectType*/, uint64_t /*object*/, size_t /*location*/,
-int32_t /*messageCode*/, const char* pLayerPrefix, const char* pMessage, void* pUserData ){
-	( ( devkDebug* )pUserData )->DebugMessage( pLayerPrefix, pMessage );
+int32_t /*messageCode*/, const char* pLayerPrefix, const char* pMessage, void* pUserData){
+	((devkDebug*)pUserData)->DebugMessage(pLayerPrefix, pMessage);
 	return VK_FALSE;
 }

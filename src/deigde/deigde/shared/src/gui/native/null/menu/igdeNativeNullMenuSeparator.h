@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullMenuSeparator();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullMenuSeparator* CreateNativeWidget( igdeMenuSeparator &owner );
+	static igdeNativeNullMenuSeparator* CreateNativeWidget(igdeMenuSeparator &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

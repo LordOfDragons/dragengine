@@ -35,6 +35,10 @@
  * Undo action toggle rule invert blend factor.
  */
 class aeUToggleRuleInvertBlendFactor : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUToggleRuleInvertBlendFactor>;
+	
+	
 private:
 	const aeRule::Ref pRule;
 	
@@ -42,21 +46,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	aeUToggleRuleInvertBlendFactor( aeRule *rule );
+	aeUToggleRuleInvertBlendFactor(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUToggleRuleInvertBlendFactor();
+	~aeUToggleRuleInvertBlendFactor() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

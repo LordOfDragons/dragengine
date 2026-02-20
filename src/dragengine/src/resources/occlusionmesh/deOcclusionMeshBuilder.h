@@ -49,7 +49,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build occlusion mesh into the provided object. */
-	virtual void BuildOcclusionMesh( deOcclusionMesh *occmesh ) = 0;
+	virtual void BuildOcclusionMesh(deOcclusionMesh *occmesh) = 0;
 	/*@}*/
 };
 

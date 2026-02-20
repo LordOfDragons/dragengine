@@ -28,13 +28,19 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeEnvironment;
 
 
 /**
  * \brief Base class for undo actions scaling things.
  */
 class reBaseUndoScale : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reBaseUndoScale>;
+	
+	
 private:
+	igdeEnvironment &pEnvironment;
 	bool pModifyPosition;
 	bool pModifySize;
 	decVector pFactors;
@@ -46,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reBaseUndoScale();
+	explicit reBaseUndoScale(igdeEnvironment &environment);
 	
 protected:
-	virtual ~reBaseUndoScale();
+	~reBaseUndoScale() override;
 	/*@}*/
 	
 	
@@ -58,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	inline bool GetModifyPosition() const{ return pModifyPosition; }
-	void SetModifyPosition( bool modifyPosition );
+	void SetModifyPosition(bool modifyPosition);
 	inline bool GetModifySize() const{ return pModifySize; }
-	void SetModifySize( bool modifySize );
+	void SetModifySize(bool modifySize);
 	inline const decVector &GetFactors() const{ return pFactors; }
-	void SetFactors( const decVector &factors );
+	void SetFactors(const decVector &factors);
 	inline const decVector &GetCenter() const{ return pCenter; }
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	
 	void Update();
 	

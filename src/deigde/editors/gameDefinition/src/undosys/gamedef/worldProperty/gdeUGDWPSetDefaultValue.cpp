@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetDefaultValue::gdeUGDWPSetDefaultValue( gdeGameDefinition *gamedef,
-	gdeProperty *property, const char *newValue, const char *oldValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDWPSetDefaultValue::gdeUGDWPSetDefaultValue(gdeGameDefinition *gamedef,
+	gdeProperty *property, const char *newValue, const char *oldValue) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set default value" );
+	SetShortInfo("@GameDefinition.Undo.GDWPSetDefaultValue");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetDefaultValue::~gdeUGDWPSetDefaultValue(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUGDWPSetDefaultValue::~gdeUGDWPSetDefaultValue(){
 ///////////////
 
 void gdeUGDWPSetDefaultValue::Undo(){
-	pProperty->SetDefaultValue( pOldValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pOldValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPSetDefaultValue::Redo(){
-	pProperty->SetDefaultValue( pNewValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pNewValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

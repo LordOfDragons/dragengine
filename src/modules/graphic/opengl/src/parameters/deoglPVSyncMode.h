@@ -33,14 +33,14 @@ class deoglPVSyncMode : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	deoglPVSyncMode( deGraphicOpenGl &ogl );
-	virtual ~deoglPVSyncMode();
+	deoglPVSyncMode(deGraphicOpenGl &ogl);
+	~deoglPVSyncMode() override;
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
-	virtual decString GetParameterValue();
-	virtual void SetParameterValue( const char *value );
+	decString GetParameterValue() override;
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

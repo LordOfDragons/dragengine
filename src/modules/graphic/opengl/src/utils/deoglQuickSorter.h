@@ -25,39 +25,44 @@
 #ifndef _DEOGLQUICKSORTER_H_
 #define _DEOGLQUICKSORTER_H_
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
  * Quick Sorter.
  */
 class deoglQuickSorter{
+public:
+	struct Element{
+		void *element;
+		float score;
+		
+		inline Element() : element(nullptr), score(0.0f){}
+		inline Element(void *aelement, float ascore) : element(aelement), score(ascore){}
+	};
+	
 private:
-	void **pElements;
-	float *pScores;
-	int pCount;
-	int pSize;
+	decTList<Element> pElements;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new quick sorter. */
-	deoglQuickSorter();
-	/** Cleans up the quick sorter. */
-	~deoglQuickSorter();
+	deoglQuickSorter() = default;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of elements. */
-	inline int GetElementCount() const{ return pCount; }
+	inline int GetElementCount() const{ return pElements.GetCount(); }
 	/** Retrieves the list of elements. */
-	inline void **GetElements() const{ return pElements; }
+	inline const decTList<Element> &GetElements() const{ return pElements; }
 	/** Retrieves an element by index. */
-	void *GetElementAt( int index ) const;
+	void *GetElementAt(int index) const;
 	/** Removes all elements. */
 	void RemoveAllElements();
 	/** Adds an element. */
-	void AddElement( void *element, float score );
+	void AddElement(void *element, float score);
 	/** Sort elements in ascending order. */
 	void SortAscending();
 	/** Sort elements in descending order. */
@@ -66,10 +71,6 @@ public:
 	/** Test the implementation. Throws an exception if the implementation fails. */
 	static void TestImplementation();
 	/*@}*/
-	
-private:
-	void pSortAscendingStep( int left, int right );
-	void pSortDescendingStep( int left, int right );
 };
 
 #endif

@@ -40,30 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddObjectClass::gdeUAddObjectClass( gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass ) :
-pGameDefinition( NULL ),
-pObjectClass( NULL )
+gdeUAddObjectClass::gdeUAddObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) :
+pGameDefinition(nullptr)
 {
-	if( ! gameDefinition || ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition || !objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add object class" );
+	SetShortInfo("@GameDefinition.Undo.AddObjectClass");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUAddObjectClass::~gdeUAddObjectClass(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -72,12 +62,12 @@ gdeUAddObjectClass::~gdeUAddObjectClass(){
 ///////////////
 
 void gdeUAddObjectClass::Undo(){
-	pGameDefinition->RemoveObjectClass( pObjectClass );
+	pGameDefinition->RemoveObjectClass(pObjectClass);
 }
 
 void gdeUAddObjectClass::Redo(){
-	pGameDefinition->AddObjectClass( pObjectClass );
+	pGameDefinition->AddObjectClass(pObjectClass);
 	
-	pGameDefinition->SetActiveObjectClass( pObjectClass );
-	pGameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	pGameDefinition->SetActiveObjectClass(pObjectClass);
+	pGameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 }

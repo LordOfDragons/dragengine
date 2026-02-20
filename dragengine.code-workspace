@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"name": "Drag[en]gine",
+			"name": "Dragengine",
 			"path": "src/dragengine"
 		},
 		{
@@ -97,6 +97,10 @@
 			"path": "src/modules/input/xsystem"
 		},
 		{
+			"name": "Module Input: Windows",
+			"path": "src/modules/input/w32input"
+		},
+		{
 			"name": "Module Language-Pack: DELangPack",
 			"path": "src/modules/langpack/delangpack"
 		},
@@ -127,6 +131,10 @@
 		{
 			"name": "Module Service: Modio",
 			"path": "src/modules/service/modio"
+		},
+		{
+			"name": "Module Service: Microsoft GDK",
+			"path": "src/modules/service/msgdk"
 		},
 		{
 			"name": "Module Service: Steam SDK",
@@ -271,6 +279,10 @@
 		{
 			"name": "GitHub",
 			"path": ".github"
+		},
+		{
+			"name": "Low level testing",
+			"path": "src/tests"
 		},
 		{
 			"name": "Testing",
@@ -469,6 +481,18 @@
 				"pattern": "**/*.dedm",
 				"systemId": "${workspaceFolder}/doc/xmlschema/dynamicMusic.xsd"
 			}
+		],
+		"c-cpp-flylint.excludeFromWorkspacePaths": [
+			"extern/**",
+			"ghdocs/**",
+			"vs/**",
+			"archive/**",
+			"installer/**",
+			"site_scons/**",
+			"uwp/**"
+		],
+		"c-cpp-flylint.cppcheck.extraArgs": [
+			//"--check-level=exhaustive"
 		]
 	}
 }

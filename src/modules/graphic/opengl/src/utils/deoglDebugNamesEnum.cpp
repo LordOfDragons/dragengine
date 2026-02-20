@@ -28,14 +28,14 @@
 // Class deoglDebugNamesEnum
 //////////////////////////////
 
-const deoglDebugNamesEnum::sEntry deoglDebugNamesEnum::EndOfList = { 0, "" };
+const deoglDebugNamesEnum::sEntry deoglDebugNamesEnum::EndOfList = {0, ""};
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugNamesEnum::deoglDebugNamesEnum( const char *name, const sEntry *entries ) :
-pName( name ),
-pEntries( entries ){
+deoglDebugNamesEnum::deoglDebugNamesEnum(const char *name, const sEntry *entries) :
+pName(name),
+pEntries(entries){
 }
 
 
@@ -43,14 +43,14 @@ pEntries( entries ){
 // Management
 ///////////////
 
-decString deoglDebugNamesEnum::EntryName( int value, bool full ) const{
+decString deoglDebugNamesEnum::EntryName(int value, bool full) const{
 	const sEntry *entry = pEntries;
 	
-	while( entry->name ){
-		if( entry->value == value ){
-			if( full ){
+	while(entry->name){
+		if(entry->value == value){
+			if(full){
 				decString name;
-				name.Format( "%s::%s", pName, entry->name );
+				name.Format("%s::%s", pName, entry->name);
 				return name;
 				
 			}else{
@@ -61,11 +61,11 @@ decString deoglDebugNamesEnum::EntryName( int value, bool full ) const{
 	}
 	
 	decString name;
-	if( full ){
-		name.Format( "%s::%d", pName, value );
+	if(full){
+		name.Format("%s::%d", pName, value);
 		
 	}else{
-		name.Format( "%d", value );
+		name.Format("%d", value);
 	}
 	return name;
 }

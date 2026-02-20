@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUOCSetTextureProperties::gdeUOCSetTextureProperties(
-gdeObjectClass *objectClass, const gdePropertyList &newValue ) :
-pObjectClass( NULL )
+gdeObjectClass *objectClass, const gdeProperty::List &newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set texture properties" );
+	SetShortInfo("@GameDefinition.Undo.OCSetTextureProperties");
 	
 	pOldValue = objectClass->GetTextureProperties();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetTextureProperties::~gdeUOCSetTextureProperties(){
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 

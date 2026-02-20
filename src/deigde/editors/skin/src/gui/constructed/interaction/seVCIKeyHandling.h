@@ -44,13 +44,16 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<seVCIKeyHandling>;
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seVCIKeyHandling( seViewConstructedView &view );
+	seVCIKeyHandling(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
-	virtual ~seVCIKeyHandling();
+protected:
+	~seVCIKeyHandling() override;
+public:
 	/*@}*/
 	
 	
@@ -60,38 +63,38 @@ public:
 	/**
 	 * \brief User pressed down key while view is focused.
 	 */
-	virtual void OnKeyPress( igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key );
+	void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	
 	/**
 	 * \brief User released down key while view is focused.
 	 */
-	virtual void OnKeyRelease( igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key );
+	void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key) override;
 	
 	/**
 	 * \brief User pressed down mouse button.
 	 */
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User released down mouse button.
 	 */
-	virtual void OnButtonRelease( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	
 	/**
 	 * \brief User wheeled mouse.
 	 */
-	virtual void OnMouseWheeled( igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers );
+	void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers) override;
 	
 	/**
 	 * \brief User double clicked mouse button.
 	 */
-	virtual void OnDoubleClicked( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	void OnDoubleClicked(igdeWidget *widget, int button, const decPoint &position, int modifiers) override;
 	/*@}*/
 	
 	
 	
 protected:
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 };
 
 #endif

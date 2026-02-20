@@ -36,6 +36,12 @@ class igdeEditPropertyValue;
  * \brief IGDE UI EditPropertyValue Listener.
  */
 class DE_DLL_EXPORT igdeEditPropertyValueListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditPropertyValueListener>;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditPropertyValueListener();
+	~igdeEditPropertyValueListener() override;
 	/*@}*/
 	
 	
@@ -64,7 +70,7 @@ public:
 	 * 
 	 * User entered value and accepted it.
 	 */
-	virtual void OnPropertyValueChanged( igdeEditPropertyValue *editPropertyValue );
+	virtual void OnPropertyValueChanged(igdeEditPropertyValue *editPropertyValue);
 	
 	/**
 	 * \brief EditPropertyValue value is changing.
@@ -72,7 +78,7 @@ public:
 	 * User is actively changing the value (for example slide changing) but has not
 	 * yet accepted the value. OnPropertyValueChanged() will be called once finished.
 	 */
-	virtual void OnPropertyValueChanging( igdeEditPropertyValue *editPropertyValue );
+	virtual void OnPropertyValueChanging(igdeEditPropertyValue *editPropertyValue);
 	/*@}*/
 };
 

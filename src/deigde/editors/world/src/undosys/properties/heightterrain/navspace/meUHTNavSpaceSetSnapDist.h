@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpace;
+#include "../../../../world/terrain/meHeightTerrainNavSpace.h"
 
 
 
@@ -35,8 +35,12 @@ class meHeightTerrainNavSpace;
  * \brief Undo action height terrain navigation space set snap distance.
  */
 class meUHTNavSpaceSetSnapDist : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTNavSpaceSetSnapDist>;
+	
+	
 private:
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	float pOldSnapDist;
 	float pNewSnapDist;
 	
@@ -46,11 +50,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceSetSnapDist( meHeightTerrainNavSpace *navspace, float newSnapDist );
+	meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace *navspace, float newSnapDist);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~meUHTNavSpaceSetSnapDist();
+
+protected:
+	~meUHTNavSpaceSetSnapDist() override;
+
+public:
 	/*@}*/
 	
 	
@@ -59,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

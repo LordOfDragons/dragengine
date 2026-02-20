@@ -25,9 +25,10 @@
 #ifndef _IGDELISTITEM_H_
 #define _IGDELISTITEM_H_
 
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -40,11 +41,21 @@
  * Optionally a data pointer can be assigned.
  */
 class DE_DLL_EXPORT igdeListItem : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeListItem>;
+	
+	/** \brief List item list. */
+	using List = decTObjectOrderedSet<igdeListItem>;
+	
+	
 private:
 	decString pText;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	void *pData;
+	deObject::Ref pRefData;
 	decStringList pDetails;
 	bool pSelected;
 	
@@ -54,21 +65,21 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list item. */
-	igdeListItem( const char *text );
+	igdeListItem(const char *text);
 	
-	igdeListItem( const char *text, igdeIcon *icon );
+	igdeListItem(const char *text, igdeIcon *icon);
 	
-	igdeListItem( const char *text, igdeIcon *icon, const char *description );
+	igdeListItem(const char *text, igdeIcon *icon, const char *description);
 	
 	/** \brief Create list item. */
-	igdeListItem( const char *text, void *data );
+	igdeListItem(const char *text, void *data);
 	
-	igdeListItem( const char *text, igdeIcon *icon, void *data );
+	igdeListItem(const char *text, igdeIcon *icon, void *data);
 	
-	igdeListItem( const char *text, igdeIcon *icon, const char *description, void *data );
+	igdeListItem(const char *text, igdeIcon *icon, const char *description, void *data);
 	
 	/** \brief Create copy of list item. */
-	igdeListItem( const igdeListItem &listItem );
+	igdeListItem(const igdeListItem &listItem);
 	
 	
 	
@@ -79,7 +90,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeListItem();
+	~igdeListItem() override;
 	/*@}*/
 	
 	
@@ -91,25 +102,31 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */
 	inline void *GetData() const{ return pData; }
 	
 	/** \brief Set user data pointer. */
-	void SetData( void *data );
+	void SetData(void *data);
+	
+	/** \brief User reference data. */
+	inline const deObject::Ref &GetRefData() const{ return pRefData; }
+	
+	/** \brief Set user reference data. */
+	void SetRefData(const deObject::Ref &refData);
 	
 	/**
 	 * \brief Details used for igdeListBox only in detail mode.
@@ -119,19 +136,19 @@ public:
 	 * the column count are ignored. If less details are present than the column count
 	 * requires the missing details are considered empty strings.
 	 */
-	decStringList &GetDetails(){ return pDetails; }
+	decStringList &GetDetails(){return pDetails;}
 	inline const decStringList &GetDetails() const{ return pDetails; }
 	
 	/** \brief Item is selected. */
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if item is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	
 	/** \brief Set from another item. */
-	igdeListItem &operator=( const igdeListItem &listItem );
+	igdeListItem &operator=(const igdeListItem &listItem);
 	/*@}*/
 };
 

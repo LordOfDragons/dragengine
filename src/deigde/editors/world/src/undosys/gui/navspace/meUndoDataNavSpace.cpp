@@ -39,24 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataNavSpace::meUndoDataNavSpace( meNavigationSpace *navspace ) :
-pNavSpace( NULL )
+meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace *navspace) :
+pNavSpace(navspace)
 {
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pNavSpace = NULL;
+	DEASSERT_NOTNULL(navspace)
 	
 	pOldPosition = navspace->GetPosition();
 	pOldOrientation = navspace->GetOrientation();
-	
-	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUndoDataNavSpace::~meUndoDataNavSpace(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
 }

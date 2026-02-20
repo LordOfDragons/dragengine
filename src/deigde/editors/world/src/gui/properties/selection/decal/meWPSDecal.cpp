@@ -66,7 +66,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
@@ -83,7 +83,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -99,22 +99,21 @@ protected:
 	meWPSDecal &pPanel;
 	
 public:
-	cBaseTextFieldListener( meWPSDecal &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal ){
+		if(!decal){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, decal ) );
-		if( undo ){
-			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, decal));
+		if(undo){
+			decal->GetWorld()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meDecal *decal ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, meDecal *decal) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -122,24 +121,23 @@ protected:
 	meWPSDecal &pPanel;
 	
 public:
-	cBaseAction( meWPSDecal &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(meWPSDecal &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal ){
+		if(!decal){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( decal ) );
-		if( undo ){
-			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(decal));
+		if(undo){
+			decal->GetWorld()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( meDecal *decal ) = 0;
+	virtual igdeUndo::Ref OnAction(meDecal *decal) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -147,22 +145,21 @@ protected:
 	meWPSDecal &pPanel;
 	
 public:
-	cBaseEditVectorListener( meWPSDecal &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal ){
+		if(!decal){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), decal ) );
-		if( undo ){
-			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editVector->GetVector(), decal));
+		if(undo){
+			decal->GetWorld()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector &vector, meDecal *decal) = 0;
 };
 
 class cBaseEditDVectorListener : public igdeEditDVectorListener{
@@ -170,22 +167,21 @@ protected:
 	meWPSDecal &pPanel;
 	
 public:
-	cBaseEditDVectorListener( meWPSDecal &panel ) : pPanel( panel ){ }
+	cBaseEditDVectorListener(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+	virtual void OnDVectorChanged(igdeEditDVector *editDVector){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal ){
+		if(!decal){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editDVector->GetDVector(), decal ) );
-		if( undo ){
-			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editDVector->GetDVector(), decal));
+		if(undo){
+			decal->GetWorld()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decDVector &vector, meDecal *decal ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decDVector &vector, meDecal *decal) = 0;
 };
 
 class cBaseEditVector2Listener : public igdeEditVector2Listener{
@@ -193,22 +189,21 @@ protected:
 	meWPSDecal &pPanel;
 	
 public:
-	cBaseEditVector2Listener( meWPSDecal &panel ) : pPanel( panel ){ }
+	cBaseEditVector2Listener(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal ){
+		if(!decal){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( editVector2->GetVector2(), decal ) );
-		if( undo ){
-			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(editVector2->GetVector2(), decal));
+		if(undo){
+			decal->GetWorld()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector2 &vector, meDecal *decal ) = 0;
+	virtual igdeUndo::Ref OnChanged(const decVector2 &vector, meDecal *decal) = 0;
 };
 
 
@@ -217,18 +212,19 @@ class cSpinActive : public igdeSpinTextFieldListener{
 	meWPSDecal &pPanel;
 	
 public:
-	cSpinActive( meWPSDecal &panel ) : pPanel( panel ){ }
+	typedef deTObjectReference<cSpinActive> Ref;
+	cSpinActive(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnValueChanged( igdeSpinTextField *textField ){
-		if( ! pPanel.GetWorld() ){
+	virtual void OnValueChanged(igdeSpinTextField *textField){
+		if(!pPanel.GetWorld()){
 			return;
 		}
 		
 		meDecalSelection &selection = pPanel.GetWorld()->GetSelectionDecal();
 		const int index = textField->GetValue();
 		
-		selection.SetActive( index >= 0 && index <= selection.GetSelected().GetCount()
-			? selection.GetSelected().GetAt( index ) : NULL );
+		selection.SetActive(index >= 0 && index <= selection.GetSelected().GetCount()
+			? selection.GetSelected().GetAt(index).Pointer() : nullptr);
 		
 		pPanel.GetWorld()->NotifyDecalSelectionChanged();
 	}
@@ -236,47 +232,52 @@ public:
 
 class cEditPosition : public cBaseEditDVectorListener{
 public:
-	cEditPosition( meWPSDecal &panel ) : cBaseEditDVectorListener( panel ){}
+	typedef deTObjectReference<cEditPosition> Ref;
+	cEditPosition(meWPSDecal &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decDVector &vector, meDecal *decal ){
-		return ! decal->GetPosition().IsEqualTo( vector ) ? new meUDecalPosition( decal, vector ) : NULL;
+	igdeUndo::Ref OnChanged(const decDVector &vector, meDecal *decal) override{
+		return !decal->GetPosition().IsEqualTo(vector) ? meUDecalPosition::Ref::New(decal, vector) : meUDecalPosition::Ref();
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener{
 public:
-	cEditRotation( meWPSDecal &panel ) : cBaseEditVectorListener( panel ){}
+	typedef deTObjectReference<cEditRotation> Ref;
+	cEditRotation(meWPSDecal &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ){
-		return ! decal->GetRotation().IsEqualTo( vector ) ? new meUDecalRotation( decal, vector ) : NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, meDecal *decal) override{
+		return !decal->GetRotation().IsEqualTo(vector) ? meUDecalRotation::Ref::New(decal, vector) : meUDecalRotation::Ref();
 	}
 };
 
 class cEditSize : public cBaseEditVectorListener{
 public:
-	cEditSize( meWPSDecal &panel ) : cBaseEditVectorListener( panel ){}
+	typedef deTObjectReference<cEditSize> Ref;
+	cEditSize(meWPSDecal &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ){
-		return ! decal->GetSize().IsEqualTo( vector ) ? new meUDecalSize( decal, vector ) : NULL;
+	igdeUndo::Ref OnChanged(const decVector &vector, meDecal *decal) override{
+		return !decal->GetSize().IsEqualTo(vector) ? meUDecalSize::Ref::New(decal, vector) : meUDecalSize::Ref();
 	}
 };
 
 class cActionVisible : public cBaseAction{
 public:
-	cActionVisible( meWPSDecal &panel ) : cBaseAction( panel, "Visible", NULL, "Decal is initially visible" ){}
+	typedef deTObjectReference<cActionVisible> Ref;
+	cActionVisible(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.Visible", nullptr, "@World.WPSDecal.Action.Visible"){}
 	
-	virtual igdeUndo *OnAction( meDecal *decal ){
-		return new meUDecalVisible( decal );
+	igdeUndo::Ref OnAction(meDecal *decal) override{
+		return meUDecalVisible::Ref::New(decal);
 	}
 };
 
 class cEditOrder : public cBaseTextFieldListener{
 public:
-	cEditOrder( meWPSDecal &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditOrder> Ref;
+	cEditOrder(meWPSDecal &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meDecal *decal ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meDecal *decal) override{
 		// TODO
-		return NULL; //decal->GetOrder() != textField->GetInteger() ? new meUDecalOrder( decal, textField->GetInteger() ) : NULL;
+		return {}; //decal->GetOrder() != textField->GetInteger() ? meUDecalOrder::Ref::New(decal, textField->GetInteger()) : meUDecalOrder::Ref();
 	}
 };
 
@@ -284,48 +285,51 @@ class cEditSkin : public igdeEditPathListener{
 	meWPSDecal &pPanel;
 	
 public:
-	cEditSkin( meWPSDecal &panel ) : pPanel( panel ){}
+	typedef deTObjectReference<cEditSkin> Ref;
+	cEditSkin(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal || decal->GetSkinPath() == editPath->GetPath() ){
+		if(!decal || decal->GetSkinPath() == editPath->GetPath()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUDecalSkin( decal, editPath->GetPath() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUDecalSkin::Ref::New(decal, editPath->GetPath()));
 	}
 };
 
 class cEditTexCoordOffset : public cBaseEditVector2Listener{
 public:
-	cEditTexCoordOffset( meWPSDecal &panel ) : cBaseEditVector2Listener( panel ){}
+	typedef deTObjectReference<cEditTexCoordOffset> Ref;
+	cEditTexCoordOffset(meWPSDecal &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector2 &vector, meDecal *decal ){
-		return ! decal->GetTexCoordOffset().IsEqualTo( vector )
-			? new meUDecalTCOffset( decal, vector ) : NULL;
+	igdeUndo::Ref OnChanged(const decVector2 &vector, meDecal *decal) override{
+		return !decal->GetTexCoordOffset().IsEqualTo(vector)
+			? meUDecalTCOffset::Ref::New(decal, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditTexCoordScaling : public cBaseEditVector2Listener{
 public:
-	cEditTexCoordScaling( meWPSDecal &panel ) : cBaseEditVector2Listener( panel ){}
+	typedef deTObjectReference<cEditTexCoordScaling> Ref;
+	cEditTexCoordScaling(meWPSDecal &panel) : cBaseEditVector2Listener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector2 &vector, meDecal *decal ){
-		return ! decal->GetTexCoordScaling().IsEqualTo( vector )
-			? new meUDecalTCScaling( decal, vector ) : NULL;
+	igdeUndo::Ref OnChanged(const decVector2 &vector, meDecal *decal) override{
+		return !decal->GetTexCoordScaling().IsEqualTo(vector)
+			? meUDecalTCScaling::Ref::New(decal, vector) : igdeUndo::Ref();
 	}
 };
 
 class cEditTexCoordRotation : public cBaseTextFieldListener{
 public:
-	cEditTexCoordRotation( meWPSDecal &panel ) : cBaseTextFieldListener( panel ){}
+	typedef deTObjectReference<cEditTexCoordRotation> Ref;
+	cEditTexCoordRotation(meWPSDecal &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, meDecal *decal ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, meDecal *decal) override{
 		const float value = textField->GetFloat();
-		return fabsf( decal->GetTexCoordRotation() - value ) > FLOAT_SAFE_EPSILON
-			? new meUDecalTCRotation( decal, value ) : NULL;
+		return fabsf(decal->GetTexCoordRotation() - value) > FLOAT_SAFE_EPSILON
+			? meUDecalTCRotation::Ref::New(decal, value) : igdeUndo::Ref();
 	}
 };
 
@@ -333,17 +337,17 @@ class cEditColorTint : public igdeColorBoxListener{
 	meWPSDecal &pPanel;
 	
 public:
-	cEditColorTint( meWPSDecal &panel ) : pPanel( panel ){}
+	typedef deTObjectReference<cEditColorTint> Ref;
+	cEditColorTint(meWPSDecal &panel) : pPanel(panel){}
 	
-	virtual void OnColorChanged( igdeColorBox *colorBox ){
+	virtual void OnColorChanged(igdeColorBox *colorBox){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		if( ! decal || decal->GetColorTint().IsEqualTo( colorBox->GetColor() ) ){
+		if(!decal || decal->GetColorTint().IsEqualTo(colorBox->GetColor())){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUDecalColorTint( decal, colorBox->GetColor() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUDecalColorTint::Ref::New(decal, colorBox->GetColor()));
 	}
 };
 
@@ -352,111 +356,112 @@ class cEditProperties : public meWPPropertyList {
 	meWPSDecal &pPanel;
 	
 public:
-	cEditProperties( meWPSDecal &panel ) : meWPPropertyList( panel.GetEnvironment() ), pPanel( panel ){ }
+	typedef deTObjectReference<cEditProperties> Ref;
+	cEditProperties(meWPSDecal &panel) : meWPPropertyList(panel.GetEnvironment()), pPanel(panel){}
 	
-	virtual decString GetGDDefaultValue( const char *key ) const{
-		const igdeGDProperty * const gdProperty = GetGDProperty( key );
+	virtual decString GetGDDefaultValue(const char *key) const{
+		const igdeGDProperty * const gdProperty = GetGDProperty(key);
 		return gdProperty ? gdProperty->GetDefaultValue() : vEmptyString;
 	}
 	
-	virtual const igdeGDProperty *GetGDProperty( const char *key ) const{
-		return pPanel.GetWorld() ? pPanel.GetWorld()->GetGameDefinition()->GetListDecalProperties().GetNamed( key ) : NULL;
+	const igdeGDProperty *GetGDProperty(const char *key) const override{
+		return pPanel.GetWorld() ? pPanel.GetWorld()->GetGameDefinition()->
+			GetListDecalProperties().FindNamed(key) : nullptr;
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{
 		decStringSet keys;
-		if( pPanel.GetWorld() ){
-			const igdeGDPropertyList &list = pPanel.GetWorld()->GetGameDefinition()->GetListDecalProperties();
-			const int count = list.GetCount();
-			int i;
-			for( i=0; i<count; i++ ){
-				keys.Add( list.GetAt( i )->GetName() );
-			}
+		if(pPanel.GetWorld()){
+			pPanel.GetWorld()->GetGameDefinition()->GetListDecalProperties().Visit([&](igdeGDProperty::Ref &prop){
+				keys.Add(prop->GetName());
+			});
 		}
 		return keys;
 	}
 	
-	virtual void AddContextMenuEntries( igdeUIHelper &helper, igdeMenuCascade &menu ){
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, pPanel.GetActionPropCopyToSel() );
-		helper.MenuCommand( menu, pPanel.GetActionPropCloneToSel() );
-		helper.MenuCommand( menu, pPanel.GetActionPropRemoveFromSel() );
+	void AddContextMenuEntries(igdeUIHelper &helper, igdeMenuCascade &menu) override{
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, pPanel.GetActionPropCopyToSel());
+		helper.MenuCommand(menu, pPanel.GetActionPropCloneToSel());
+		helper.MenuCommand(menu, pPanel.GetActionPropRemoveFromSel());
 	}
 	
-	virtual igdeUndo *UndoAddProperty( const decString &key, const decString &value ){
+	virtual igdeUndo::Ref UndoAddProperty(const decString &key, const decString &value){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		return decal ? new meUDecalAddProperty( decal, key, value ) : NULL;
+		return decal ? meUDecalAddProperty::Ref::New(decal, key, value) : meUDecalAddProperty::Ref();
 	}
 	
-	virtual igdeUndo *UndoRemoveProperty( const decString &key ){
+	virtual igdeUndo::Ref UndoRemoveProperty(const decString &key){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		return decal ? new meUDecalRemoveProperty( decal, key, decal->GetProperties().GetAt( key ) ) : NULL;
+		return decal ? meUDecalRemoveProperty::Ref::New(decal, key, decal->GetProperties().GetAt(key)) : meUDecalRemoveProperty::Ref();
 	}
 	
-	virtual igdeUndo *UndoSetProperty( const decString &key, const decString &oldValue, const decString &newValue ){
+	virtual igdeUndo::Ref UndoSetProperty(const decString &key, const decString &oldValue, const decString &newValue){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		return decal ? new meUDecalSetProperty( decal, key, oldValue, newValue ) : NULL;
+		return decal ? meUDecalSetProperty::Ref::New(decal, key, oldValue, newValue) : meUDecalSetProperty::Ref();
 	}
 	
-	virtual igdeUndo *UndoSetProperties( const decStringDictionary &properties ){
+	virtual igdeUndo::Ref UndoSetProperties(const decStringDictionary &properties){
 		meDecal * const decal = pPanel.GetActiveDecal();
-		return decal ? new meUDecalSetProperties( decal, properties ) : NULL;
+		return decal ? meUDecalSetProperties::Ref::New(decal, properties) : meUDecalSetProperties::Ref();
 	}
 };
 
 class cActionPropCopyToSel : public cBaseAction{
 public:
-	cActionPropCopyToSel( meWPSDecal &panel ) : cBaseAction( panel, "Copy To Selected",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-			"Copy property from active decal to all selected decals" ){}
+	typedef deTObjectReference<cActionPropCopyToSel> Ref;
+	cActionPropCopyToSel(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.PropertyCopyToSelected",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+			"@World.WPSDecal.Action.PropCopyToSel"){}
 	
-	virtual igdeUndo *OnAction( meDecal *decal ){
-		meDecalList list( pPanel.GetWorld()->GetSelectionDecal().GetSelected() );
+	igdeUndo::Ref OnAction(meDecal *decal) override{
+		meDecal::List list(pPanel.GetWorld()->GetSelectionDecal().GetSelected());
 		const decString &property = pPanel.GetActiveProperty();
-		list.RemoveIfPresent( decal );
-		return ! property.IsEmpty() && list.GetCount() > 0 ? new meUDecalPropertyCopyToSelected(
-			list, property, decal->GetProperties().GetAt( property ) ) : NULL;
+		list.Remove(decal);
+		return !property.IsEmpty() && list.IsNotEmpty() ? meUDecalPropertyCopyToSelected::Ref::New(
+			list, property, decal->GetProperties().GetAt(property)) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetActiveDecal() && ! pPanel.GetActiveProperty().IsEmpty()
-			&& pPanel.GetWorld()->GetSelectionDecal().GetSelected().GetCount() > 1 );
+	void Update() override{
+		SetEnabled(pPanel.GetActiveDecal() && !pPanel.GetActiveProperty().IsEmpty()
+			&& pPanel.GetWorld()->GetSelectionDecal().GetSelected().GetCount() > 1);
 	}
 };
 
 class cActionPropRemoveFromSel : public cBaseAction{
 public:
-	cActionPropRemoveFromSel( meWPSDecal &panel ) : cBaseAction( panel, "Remove From Selected",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-			"Remove property from all selected decals" ){}
+	typedef deTObjectReference<cActionPropRemoveFromSel> Ref;
+	cActionPropRemoveFromSel(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.PropertyRemoveFromSelected",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+			"@World.WPSDecal.Action.PropertyRemoveFromSelected"){}
 	
-	virtual igdeUndo *OnAction( meDecal* ){
-		const meDecalList &list = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
+	igdeUndo::Ref OnAction(meDecal*) override{
+		const meDecal::List &list = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
-		return ! property.IsEmpty() && list.GetCount() > 0 ?
-			new meUDecalPropertyRemoveFromSelected( list, property ) : NULL;
+		return !property.IsEmpty() && list.IsNotEmpty() ? meUDecalPropertyRemoveFromSelected::Ref::New(list, property) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetActiveDecal() && ! pPanel.GetActiveProperty().IsEmpty()
-			&& pPanel.GetWorld()->GetSelectionDecal().GetSelected().GetCount() > 0 );
+	void Update() override{
+		SetEnabled(pPanel.GetActiveDecal() && !pPanel.GetActiveProperty().IsEmpty()
+			&& pPanel.GetWorld()->GetSelectionDecal().GetSelected().IsNotEmpty());
 	}
 };
 
 class cActionPropCloneToSel : public cBaseAction{
 public:
-	cActionPropCloneToSel( meWPSDecal &panel ) : cBaseAction( panel, "Clone To Selected",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-			"Clone all properties from active decal to all selected decals" ){}
+	typedef deTObjectReference<cActionPropCloneToSel> Ref;
+	cActionPropCloneToSel(meWPSDecal &panel) : cBaseAction(panel, "@World.WPSDecal.Action.PropertyCloneToSelected",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+			"@World.WPSDecal.Action.PropertyCloneToSelected"){}
 	
-	virtual igdeUndo *OnAction( meDecal *decal ){
-		meDecalList list( pPanel.GetWorld()->GetSelectionDecal().GetSelected() );
-		list.RemoveIfPresent( decal );
-		return list.GetCount() > 0 ? new meUDecalClonePropertiesToSelected( list, decal->GetProperties() ) : NULL;
+	igdeUndo::Ref OnAction(meDecal *decal) override{
+		meDecal::List list(pPanel.GetWorld()->GetSelectionDecal().GetSelected());
+		list.Remove(decal);
+		return list.IsNotEmpty() ? meUDecalClonePropertiesToSelected::Ref::New(list, decal->GetProperties()) : meUDecalClonePropertiesToSelected::Ref();
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetActiveDecal() && pPanel.GetWorld()->GetSelectionDecal().GetSelected().GetCount() > 1 );
+	void Update() override{
+		SetEnabled(pPanel.GetActiveDecal() && pPanel.GetWorld()->GetSelectionDecal().GetSelected().GetCount() > 1);
 	}
 };
 
@@ -470,79 +475,74 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPSDecal::meWPSDecal( meWPSelection &wpselection ) :
-igdeContainerScroll( wpselection.GetEnvironment(), false, true ),
-pWPSelection( wpselection ),
-pListener( NULL ),
-pWorld( NULL )
+meWPSDecal::meWPSDecal(meWPSelection &wpselection) :
+igdeContainerScroll(wpselection.GetEnvironment(), false, true),
+pWPSelection(wpselection)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPSDecalListener( *this );
+	pListener = meWPSDecalListener::Ref::New(*this);
 	
-	pActionPropCopyToSel.TakeOver( new cActionPropCopyToSel( *this ) );
-	pActionPropRemoveFromSel.TakeOver( new cActionPropRemoveFromSel( *this ) );
-	pActionPropCloneToSel.TakeOver( new cActionPropCloneToSel( *this ) );
+	pActionPropCopyToSel = cActionPropCopyToSel::Ref::New(*this);
+	pActionPropRemoveFromSel = cActionPropRemoveFromSel::Ref::New(*this);
+	pActionPropCloneToSel = cActionPropCloneToSel::Ref::New(*this);
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
-	groupBox.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10 ) );
-	content->AddChild( groupBox );
-	helper.Label( groupBox, "Selected:" );
-	helper.EditInteger( groupBox, "Number of selected decals", 3, pEditSelCount, NULL );
-	pEditSelCount->SetEditable( false );
-	helper.Label( groupBox, "Active:" );
-	helper.EditSpinInteger( groupBox, "Active decal to edit", 0, 0, pSpinActive, new cSpinActive( *this ) );
+	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
+	content->AddChild(groupBox);
+	helper.Label(groupBox, "@World.WPSObject.Selected");
+	helper.EditInteger(groupBox, "@World.WPSDecal.NumberOfSelectedDecals", 3, pEditSelCount, {});
+	pEditSelCount->SetEditable(false);
+	helper.Label(groupBox, "@World.WPView.Active");
+	helper.EditSpinInteger(groupBox, "@World.WPSDecal.ActiveDecalToEdit", 0, 0, pSpinActive, cSpinActive::Ref::New(*this));
 	
 	
 	// geometry
-	helper.GroupBox( content, groupBox, "Geometry:" );
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Geometry");
 	
-	helper.EditString( groupBox, "ID:", "Unique decal ID", pEditID, NULL );
-	pEditID->SetEditable( false );
+	helper.EditString(groupBox, "@World.WPSObject.Id", "@World.WPSDecal.UniqueDecalId.ToolTip", pEditID, {});
+	pEditID->SetEditable(false);
 	
-	helper.EditDVector( groupBox, "Position:", "Position of decal.", pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation of decal.", pEditRotation, new cEditRotation( *this ) );
-	helper.EditVector( groupBox, "Size:", "Size of decal.", pEditSize, new cEditSize( *this ) );
-	helper.EditInteger( groupBox, "Order:", "Drawing order of decal.", pEditOrder, new cEditOrder( *this ) );
-	helper.CheckBox( groupBox, pChkVisible, new cActionVisible( *this ), true );
+	helper.EditDVector(groupBox, "@World.WPSDecal.Label.Position", "@World.WPSDecal.PositionOfDecal.ToolTip", pEditPosition, cEditPosition::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSDecal.Label.Rotation", "@World.WPSDecal.RotationOfDecal.ToolTip", pEditRotation, cEditRotation::Ref::New(*this));
+	helper.EditVector(groupBox, "@World.WPSDecal.Label.Size", "@World.WPSDecal.SizeOfDecal.ToolTip", pEditSize, cEditSize::Ref::New(*this));
+	helper.EditInteger(groupBox, "@World.WPSDecal.Order", "@World.WPSDecal.DrawingOrderOfDecal.ToolTip", pEditOrder, cEditOrder::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkVisible, cActionVisible::Ref::New(*this));
 	
 	
 	// texture
-	helper.GroupBox( content, groupBox, "Texture:" );
+	helper.GroupBox(content, groupBox, "@World.WPSObject.Texture");
 	
-	helper.EditPath( groupBox, "Skin:", "Skin to use for decal",
-		igdeEnvironment::efpltSkin, pEditSkin, new cEditSkin( *this ) );
+	helper.EditPath(groupBox, "@World.WPSObject.Skin", "@World.WPSDecal.SkinToUseForDecal.ToolTip",
+		igdeEnvironment::efpltSkin, pEditSkin, cEditSkin::Ref::New(*this));
 	
 	
 	// texture transform
-	helper.GroupBox( content, groupBox, "Texture Transformation:", true );
+	helper.GroupBox(content, groupBox, "@World.WPSObject.TextureTransformation", true);
 	
-	helper.EditVector2( groupBox, "Translation:", "Texture coordinates translation.",
-		pEditTexCoordOffset, new cEditTexCoordOffset( *this ) );
-	helper.EditVector2( groupBox, "Scaling:", "Texture coordinates scaling.",
-		pEditTexCoordScaling, new cEditTexCoordScaling( *this ) );
-	helper.EditFloat( groupBox, "Rotation:", "Texture coordinates rotation.",
-		pEditTexCoordRotation, new cEditTexCoordRotation( *this ) );
-	helper.ColorBox( groupBox, "Tint:", "Color tint.", pClrColorTint, new cEditColorTint( *this ) );
+	helper.EditVector2(groupBox, "@World.WPSObject.Translation", "@World.WPSObject.TextureCoordinatesTranslation.ToolTip",
+		pEditTexCoordOffset, cEditTexCoordOffset::Ref::New(*this));
+	helper.EditVector2(groupBox, "@World.WPSDecal.Label.Scaling", "@World.WPSObject.TextureCoordinatesScaling.ToolTip",
+		pEditTexCoordScaling, cEditTexCoordScaling::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPSDecal.TextureCoordinatesRotation", "@World.WPSDecal.TextureCoordinatesRotation.ToolTip",
+		pEditTexCoordRotation, cEditTexCoordRotation::Ref::New(*this));
+	helper.ColorBox(groupBox, "@World.WPSObject.Tint", "@World.WPSDecal.ColorTint.ToolTip", pClrColorTint, cEditColorTint::Ref::New(*this));
 	
 	
 	// properties
-	helper.GroupBoxFlow( content, groupBox, "Properties:" );
+	helper.GroupBoxFlow(content, groupBox, "@World.WPSObject.Properties");
 	
-	pEditProperties.TakeOver( new cEditProperties( *this ) );
-	groupBox->AddChild( pEditProperties );
+	pEditProperties = cEditProperties::Ref::New(*this);
+	groupBox->AddChild(pEditProperties);
 }
 
 meWPSDecal::~meWPSDecal(){
-	SetWorld( NULL );
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -550,32 +550,27 @@ meWPSDecal::~meWPSDecal(){
 // Management
 ///////////////
 
-void meWPSDecal::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPSDecal::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	meWPPropertyList &editProperties = ( meWPPropertyList& )( igdeWidget& )pEditProperties;
-	
-	if( pWorld ){
-		editProperties.SetClipboard( NULL );
-		editProperties.SetUndoSystem( NULL );
-		editProperties.SetTriggerTargetList( NULL );
-		editProperties.SetIdentifiers( decStringSet() );
+	if(pWorld){
+		pEditProperties->SetClipboard(nullptr);
+		pEditProperties->SetUndoSystem(nullptr);
+		pEditProperties->SetTriggerTargetList(nullptr);
+		pEditProperties->SetIdentifiers(decStringSet());
 		
-		pWorld->RemoveNotifier( pListener );
-		pWorld->FreeReference();
+		pWorld->RemoveNotifier(pListener);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
-		world->AddReference();
-		
-		editProperties.SetClipboard( &pWPSelection.GetWindowProperties().GetWindowMain().GetClipboard() );
-		editProperties.SetUndoSystem( world->GetUndoSystem() );
-		editProperties.SetTriggerTargetList( &world->GetTriggerTable() );
+	if(world){
+		world->AddNotifier(pListener);
+		pEditProperties->SetClipboard(&pWPSelection.GetWindowProperties().GetWindowMain().GetClipboard());
+		pEditProperties->SetUndoSystem(world->GetUndoSystem());
+		pEditProperties->SetTriggerTargetList(&world->GetTriggerTable());
 	}
 	
 	UpdateSelection();
@@ -590,7 +585,7 @@ void meWPSDecal::SetWorld( meWorld *world ){
 
 
 meDecal *meWPSDecal::GetActiveDecal() const{
-	return pWorld ? pWorld->GetSelectionDecal().GetActive() : NULL;
+	return pWorld ? pWorld->GetSelectionDecal().GetActive().Pointer() : nullptr;
 }
 
 const decString &meWPSDecal::GetActiveProperty() const{
@@ -604,123 +599,121 @@ void meWPSDecal::UpdateSelection(){
 	int active = 0;
 	int count = 0;
 	
-	if( pWorld ){
+	if(pWorld){
 		const meDecalSelection &selection = pWorld->GetSelectionDecal();
 		count = selection.GetSelected().GetCount();
-		if( selection.HasActive() ){
-			active = selection.GetSelected().IndexOf( selection.GetActive() );
+		if(selection.HasActive()){
+			active = selection.GetSelected().IndexOf(selection.GetActive());
 		}
 	}
 	
-	pEditSelCount->SetInteger( count );
-	pSpinActive->SetRange( 0, count - 1 );
-	pSpinActive->SetValue( active );
-	pSpinActive->SetEnabled( count > 0 );
+	pEditSelCount->SetInteger(count);
+	pSpinActive->SetRange(0, count - 1);
+	pSpinActive->SetValue(active);
+	pSpinActive->SetEnabled(count > 0);
 }
 
 void meWPSDecal::UpdateEnabled(){
-	const bool enabled = GetActiveDecal() != NULL;
+	const bool enabled = GetActiveDecal() != nullptr;
 	
-	pEditPosition->SetEnabled( enabled );
-	pEditSize->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditOrder->SetEnabled( enabled );
-	pChkVisible->SetEnabled( enabled );
+	pEditPosition->SetEnabled(enabled);
+	pEditSize->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditOrder->SetEnabled(enabled);
+	pChkVisible->SetEnabled(enabled);
 		
-	pEditSkin->SetEnabled( enabled );
-	pEditTexCoordOffset->SetEnabled( enabled );
-	pEditTexCoordScaling->SetEnabled( enabled );
-	pEditTexCoordRotation->SetEnabled( enabled );
-	pClrColorTint->SetEnabled( enabled );
+	pEditSkin->SetEnabled(enabled);
+	pEditTexCoordOffset->SetEnabled(enabled);
+	pEditTexCoordScaling->SetEnabled(enabled);
+	pEditTexCoordRotation->SetEnabled(enabled);
+	pClrColorTint->SetEnabled(enabled);
 }
 
 void meWPSDecal::UpdateDecal(){
 	const meDecal * const decal = GetActiveDecal();
 	
-	if( decal ){
+	if(decal){
 		//pEditOrder->SetInteger( decal->GetOrder() );
-		pEditOrder->SetInteger( 0 );
-		pChkVisible->SetChecked( decal->GetVisible() );
+		pEditOrder->SetInteger(0);
+		pChkVisible->SetChecked(decal->GetVisible());
 		
 	}else{
 		pEditOrder->ClearText();
-		pChkVisible->SetChecked( false );
+		pChkVisible->SetChecked(false);
 	}
 }
 
 void meWPSDecal::UpdateGeometry(){
 	const meDecal * const decal = GetActiveDecal();
 	
-	if( decal ){
+	if(decal){
 		//pEditID->SetText( decal->GetID() ); // not created
 		
-		pEditPosition->SetDVector( decal->GetPosition() );
-		pEditSize->SetVector( decal->GetSize() );
-		pEditRotation->SetVector( decal->GetRotation() );
+		pEditPosition->SetDVector(decal->GetPosition());
+		pEditSize->SetVector(decal->GetSize());
+		pEditRotation->SetVector(decal->GetRotation());
 		
 	}else{
-		pEditPosition->SetDVector( decDVector() );
-		pEditSize->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pEditPosition->SetDVector(decDVector());
+		pEditSize->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 	}
 }
 
 void meWPSDecal::UpdateTexture(){
 	const meDecal * const decal = GetActiveDecal();
 	
-	if( decal ){
-		pEditSkin->SetPath( decal->GetSkinPath() );
-		pEditTexCoordOffset->SetVector2( decal->GetTexCoordOffset() );
-		pEditTexCoordScaling->SetVector2( decal->GetTexCoordScaling() );
-		pEditTexCoordRotation->SetFloat( decal->GetTexCoordRotation() );
-		pClrColorTint->SetColor( decal->GetColorTint() );
+	if(decal){
+		pEditSkin->SetPath(decal->GetSkinPath());
+		pEditTexCoordOffset->SetVector2(decal->GetTexCoordOffset());
+		pEditTexCoordScaling->SetVector2(decal->GetTexCoordScaling());
+		pEditTexCoordRotation->SetFloat(decal->GetTexCoordRotation());
+		pClrColorTint->SetColor(decal->GetColorTint());
 		
 	}else{
 		pEditSkin->ClearPath();
-		pEditTexCoordOffset->SetVector2( decVector2() );
-		pEditTexCoordScaling->SetVector2( decVector2( 1.0f, 1.0f ) );
+		pEditTexCoordOffset->SetVector2(decVector2());
+		pEditTexCoordScaling->SetVector2(decVector2(1.0f, 1.0f));
 		pEditTexCoordRotation->ClearText();
-		pClrColorTint->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+		pClrColorTint->SetColor(decColor(1.0f, 1.0f, 1.0f));
 	}
 }
 
 void meWPSDecal::SelectActiveProperty(){
-	if( ! GetActiveProperty().IsEmpty() ){
-		( ( meWPPropertyList& )( igdeWidget& )pEditProperties ).SelectProperty( GetActiveProperty() );
+	if(!GetActiveProperty().IsEmpty()){
+		pEditProperties->SelectProperty(GetActiveProperty());
 	}
 }
 
 void meWPSDecal::UpdatePropertyKeys(){
-	( ( meWPPropertyList& )( igdeWidget& )pEditProperties ).UpdateKeys();
+	pEditProperties->UpdateKeys();
 }
 
 void meWPSDecal::UpdateProperties(){
-	( ( meWPPropertyList& )( igdeWidget& )pEditProperties ).SetProperties(
-		GetActiveDecal() ? GetActiveDecal()->GetProperties() : decStringDictionary() );
+	pEditProperties->SetProperties(GetActiveDecal() ? GetActiveDecal()->GetProperties() : decStringDictionary());
 	SelectActiveProperty();
 }
 
 void meWPSDecal::UpdateIdentifierLists(){
-	meWPPropertyList &editProperties = ( meWPPropertyList& )( igdeWidget& )pEditProperties;
 	const decString &property = GetActiveProperty();
 	decStringSet identifiers;
 	
-	if( pWorld && ! property.IsEmpty() ){
-		const igdeGDProperty * const gdProperty = editProperties.GetGDProperty( property );
-		if( gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier ){
-			const meIDGroup * const idgroup = pWorld->GetIDGroupList().GetNamed( gdProperty->GetIdentifierGroup() );
-			if( idgroup ){
+	if(pWorld && !property.IsEmpty()){
+		const igdeGDProperty * const gdProperty = pEditProperties->GetGDProperty(property);
+		if(gdProperty && gdProperty->GetType() == igdeGDProperty::eptIdentifier){
+			const meIDGroup * const idgroup = pWorld->GetIDGroupList().FindNamed(gdProperty->GetIdentifierGroup());
+			if(idgroup){
 				const decStringList &list = idgroup->GetIDList();
 				const int count = list.GetCount();
 				int i;
 				
-				for( i=0; i<count; i++ ){
-					identifiers.Add( list.GetAt( i ) );
+				for(i=0; i<count; i++){
+					identifiers.Add(list.GetAt(i));
 				}
 			}
 		}
 	}
-	editProperties.SetIdentifiers( identifiers );
+	pEditProperties->SetIdentifiers(identifiers);
 }
 
 

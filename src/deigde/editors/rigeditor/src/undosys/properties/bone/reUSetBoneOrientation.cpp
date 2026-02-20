@@ -35,19 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneOrientation::reUSetBoneOrientation( reRigBone *bone, const decVector &orientation ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneOrientation::reUSetBoneOrientation(reRigBone *bone, const decVector &orientation){
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldOrientation = bone->GetOrientation();
 	pNewOrientation = orientation;
 	
 	try{
-		SetShortInfo( "Set Bone Orientation" );
+		SetShortInfo("@Rig.Undo.BoneSetOrientation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +61,11 @@ reUSetBoneOrientation::~reUSetBoneOrientation(){
 ///////////////
 
 void reUSetBoneOrientation::Undo(){
-	pBone->SetOrientation( pOldOrientation );
+	pBone->SetOrientation(pOldOrientation);
 }
 
 void reUSetBoneOrientation::Redo(){
-	pBone->SetOrientation( pNewOrientation );
+	pBone->SetOrientation(pNewOrientation);
 }
 
 
@@ -76,5 +74,4 @@ void reUSetBoneOrientation::Redo(){
 //////////////////////
 
 void reUSetBoneOrientation::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

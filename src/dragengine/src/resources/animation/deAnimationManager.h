@@ -25,11 +25,11 @@
 #ifndef _DEANIMATIONMANAGER_H_
 #define _DEANIMATIONMANAGER_H_
 
+#include "deAnimation.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 
 class deEngine;
-class deAnimation;
 class deAnimationBuilder;
 
 
@@ -47,16 +47,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new animation resource manager linked to the given engine. */
-	deAnimationManager( deEngine *engine );
+	deAnimationManager(deEngine *engine);
 	
 	/** \brief Clean up animation resource manager and reports leaking resources. */
-	virtual ~deAnimationManager();
+	~deAnimationManager() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Animations. */
+	inline const deFileResourceList &GetAnimations() const{ return pAnimations; }
+	
 	/** \brief Count of animation resource. */
 	int GetAnimationCount() const;
 	
@@ -64,34 +67,34 @@ public:
 	deAnimation *GetRootAnimation() const;
 	
 	/** \brief Animation with the given filename or NULL if not loaded yet. */
-	deAnimation *GetAnimationWith( const char *filename ) const;
+	deAnimation *GetAnimationWith(const char *filename) const;
 	
 	/** \brief Animation with the given filename or NULL if not loaded yet. */
-	deAnimation *GetAnimationWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deAnimation *GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new animation object using a builder. */
-	deAnimation *CreateAnimation( const char *filename, deAnimationBuilder &builder );
+	deAnimation::Ref CreateAnimation(const char *filename, deAnimationBuilder &builder);
 	
 	/** \brief Create new animation object using a builder. */
-	deAnimation *CreateAnimation( deVirtualFileSystem *vfs, const char *filename, deAnimationBuilder &builder );
+	deAnimation::Ref CreateAnimation(deVirtualFileSystem *vfs, const char *filename, deAnimationBuilder &builder);
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
-	deAnimation *LoadAnimation( const char *filename, const char *basePath );
+	deAnimation::Ref LoadAnimation(const char *filename, const char *basePath);
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
-	deAnimation *LoadAnimation( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deAnimation::Ref LoadAnimation(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Save animation to file.
 	 * \version 1.6
 	 */
-	void SaveAnimation( const deAnimation &animation, const char *filename );
+	void SaveAnimation(const deAnimation &animation, const char *filename);
 	
 	/**
 	 * \brief Save animation to file.
 	 * \version 1.6
 	 */
-	void SaveAnimation( const deAnimation &animation, deVirtualFileSystem &vfs, const char *filename );
+	void SaveAnimation(const deAnimation &animation, deVirtualFileSystem &vfs, const char *filename);
 	
 	/**
 	 * \brief Add loaded and fully prepared animation.
@@ -99,10 +102,10 @@ public:
 	 * This method is to be used only by the resource loader to add an animation that
 	 * has been loaded asynchronously.
 	 */
-	void AddLoadedAnimation( deAnimation *animation );
+	void AddLoadedAnimation(deAnimation *animation);
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -110,16 +113,16 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief Graphic System Peers of all stored resources have to be created. */
-	virtual void SystemGraphicLoad();
+	void SystemGraphicLoad() override;
 	
 	/** \brief Graphic System Peers of all stored resources have to be freed. */
-	virtual void SystemGraphicUnload();
+	void SystemGraphicUnload() override;
 	
 	/** \brief Animator System Peers of all stored resources have to be created. */
-	virtual void SystemAnimatorLoad();
+	void SystemAnimatorLoad() override;
 	
 	/** \brief Animator System Peers of all stored resources have to be freed. */
-	virtual void SystemAnimatorUnload();
+	void SystemAnimatorUnload() override;
 	/*@}*/
 	/*@}*/
 	
@@ -131,7 +134,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource(deResource *resource);
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

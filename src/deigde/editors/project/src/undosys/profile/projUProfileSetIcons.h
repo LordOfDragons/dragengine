@@ -28,9 +28,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/string/decStringSet.h>
+#include "../../project/profile/projProfile.h"
 
-class projProfile;
+#include <dragengine/common/string/decStringSet.h>
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetIcons : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -47,13 +47,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<projUProfileSetIcons>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetIcons( projProfile *profile, const decStringSet &newValue );
+	projUProfileSetIcons(projProfile *profile, const decStringSet &newValue);
 	
 	/** \brief Clean up undo action. */
-	virtual ~projUProfileSetIcons();
+protected:
+	~projUProfileSetIcons() override;
+public:
 	/*@}*/
 	
 	
@@ -61,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -27,7 +27,7 @@
 
 #include "debpBulletShape.h"
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class btCompoundShape;
 
@@ -39,8 +39,13 @@ class btCompoundShape;
  * All child shapes are also stored in addition to the root shape.
  */
 class debpBulletCompoundShape : public debpBulletShape {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpBulletCompoundShape> Ref;
+	
+	
 private:
-	decObjectList pChildShapes;
+	decTObjectList<debpBulletShape> pChildShapes;
 	
 	
 	
@@ -48,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletCompoundShape( btCompoundShape *shape );
+	debpBulletCompoundShape(btCompoundShape *shape);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
-	virtual ~debpBulletCompoundShape();
+	~debpBulletCompoundShape() override;
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */
-	inline btCompoundShape *GetCompoundShape() const{ return ( btCompoundShape* )GetShape(); }
+	inline btCompoundShape *GetCompoundShape() const{ return (btCompoundShape*)GetShape(); }
 	
 	/** \brief Add child shape to clean up once the parent shape is finished. */
-	void AddChildShape( debpBulletShape *shape );
+	void AddChildShape(debpBulletShape *shape);
 	/*@}*/
 };
 

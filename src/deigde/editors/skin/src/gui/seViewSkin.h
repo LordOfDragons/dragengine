@@ -25,24 +25,27 @@
 #ifndef _SEVIEWSKIN_H_
 #define _SEVIEWSKIN_H_
 
-#include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include "../skin/seSkin.h"
 
+#include <deigde/gui/igdeViewRenderWindow.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 class seWindowMain;
-class seSkin;
 
 
 /**
  * \brief Skin preview.
  */
 class seViewSkin : public igdeViewRenderWindow{
+public:
+	using Ref = deTObjectReference<seViewSkin>;
+	
 private:
 	seWindowMain &pWindowMain;
-	seSkin *pSkin;
-	igdeMouseCameraListenerReference pCameraInteraction;
+	seSkin::Ref pSkin;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	
@@ -50,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	seViewSkin( seWindowMain &windowMain );
+	seViewSkin(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
-	virtual ~seViewSkin();
+	~seViewSkin() override;
 	/*@}*/
 	
 	
@@ -66,16 +69,16 @@ public:
 	void ResetView();
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** \brief Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

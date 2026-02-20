@@ -22,21 +22,15 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
 #include "decConvexVolume.h"
 #include "decConvexVolumeFace.h"
 #include "../exceptions.h"
 
 
-
 // Definitions
 ////////////////
 
-
 #define EQUALITY_THRESHOLD	1e-3f
-
 
 
 // Class decConvexVolumeFace
@@ -45,78 +39,48 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-decConvexVolumeFace::decConvexVolumeFace(){
-	pVertices = NULL;
-	pVertexCount = 0;
-	pMarker = 0;
+decConvexVolumeFace::decConvexVolumeFace() :
+pMarker(0){
 }
 
-decConvexVolumeFace::~decConvexVolumeFace(){
-	if( pVertices ) delete [] pVertices;
+decConvexVolumeFace::decConvexVolumeFace(int marker) :
+pMarker(marker){
 }
-
 
 
 // Management
 ///////////////
 
-void decConvexVolumeFace::SetNormal( const decVector &normal ){
+void decConvexVolumeFace::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-void decConvexVolumeFace::SetMarker( int marker ){
+void decConvexVolumeFace::SetMarker(int marker){
 	pMarker = marker;
 }
 
-int decConvexVolumeFace::GetVertexAt( int position ) const{
-	if( position < 0 || position >= pVertexCount ) DETHROW( deeInvalidParam );
-	return pVertices[ position ];
+int decConvexVolumeFace::GetVertexAt(int position) const{
+	return pVertices.GetAt(position);
 }
 
-bool decConvexVolumeFace::HasVertex( int vertex ) const{
-	int i;
-	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex == pVertices[ i ] ) return true;
-	}
-	
-	return false;
+bool decConvexVolumeFace::HasVertex(int vertex) const{
+	return pVertices.Has(vertex);
 }
 
-int decConvexVolumeFace::IndexOfVertex( int vertex ) const{
-	int i;
-	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex == pVertices[ i ] ) return i;
-	}
-	
-	return -1;
+int decConvexVolumeFace::IndexOfVertex(int vertex) const{
+	return pVertices.IndexOf(vertex);
 }
 
-void decConvexVolumeFace::AddVertex( int vertex ){
-	int *newArray = new int[ pVertexCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
-	if( pVertices ){
-		int i;
-		for( i=0; i<pVertexCount; i++ ) newArray[ i ] = pVertices[ i ];
-		delete [] pVertices;
-	}
-	pVertices = newArray;
-	pVertices[ pVertexCount ] = vertex;
-	pVertexCount++;
+void decConvexVolumeFace::AddVertex(int vertex){
+	pVertices.Add(vertex);
 }
 
 void decConvexVolumeFace::RemoveAllVertices(){
-	if( pVertices ){
-		delete [] pVertices;
-		pVertices = NULL;
-	}
-	pVertexCount = 0;
+	pVertices.RemoveAll();
 }
 
 
-
-void decConvexVolumeFace::SortVertices( const decConvexVolume &volume ){
+void decConvexVolumeFace::SortVertices(const decConvexVolume &volume){
 #if 1
 	// sort vertices clockwise around the face normal. for this the dot product of all vertices is
 	// calculated with the direction from the center to the first vertex. the vertex with the
@@ -129,55 +93,35 @@ void decConvexVolumeFace::SortVertices( const decConvexVolume &volume ){
 	// it is important to normalize the vectors. this is unfortunately required since otherwise
 	// the result can be falsified by vertices located nearly at the same location in space
 	// causing an additional loop around the face resulting in an incorrect ordering.
-	if( pVertexCount > 2 ){
-		decVector center, referenceDirection, windingDirection;
-		float windingDot, nextDot, testDot;
-		int i, j, nextVertex, exchange;
-		//printf( "sort vertices in %p\n", this );
-		
-		for( i=0; i<pVertexCount; i++ ){
-			//printf( "vertex %i (%+f,%+f,%+f)\n", pVertices[ i ], volume.GetVertexAt( pVertices[ i ] ).x, volume.GetVertexAt( pVertices[ i ] ).y, volume.GetVertexAt( pVertices[ i ] ).z );
-			center += volume.GetVertexAt( pVertices[ i ] );
-		}
-		center /= ( float )pVertexCount;
-		
-		//printf( "normal (%+g,%+g,%+g)\n", pNormal.x, pNormal.y, pNormal.z );
-		//printf( "center (%+f,%+f,%+f)\n", center.x, center.y, center.z );
-		
-		referenceDirection = ( volume.GetVertexAt( pVertices[ 0 ] ) - center ).Normalized();
-		windingDirection = pNormal % referenceDirection;
-		windingDot = windingDirection * center - FLOAT_SAFE_EPSILON;
-		
-		for( i=1; i<pVertexCount-1; i++ ){
-			nextVertex = -1;
-			nextDot = 0.0f;
-			
-			for( j=i; j<pVertexCount; j++ ){
-				const decVector &testVertex = volume.GetVertexAt( pVertices[ j ] );
-				
-				testDot = ( testVertex - center ).Normalized() * referenceDirection;
-				if( testVertex * windingDirection < windingDot ){
-					testDot = -2.0f - testDot;
-				}
-				
-				if( nextVertex == -1 || testDot > nextDot ){
-					nextVertex = j;
-					nextDot = testDot;
-				}
-			}
-			
-			if( nextVertex != -1 ){
-				exchange = pVertices[ i ];
-				pVertices[ i ] = pVertices[ nextVertex ];
-				pVertices[ nextVertex ] = exchange;
-			}
-		}
-		
-		//for( i=0; i<pVertexCount; i++ ){
-		//	printf( "sorted vertex %i (%+f,%+f,%+f)\n", pVertices[ i ], volume.GetVertexAt( pVertices[ i ] ).x, volume.GetVertexAt( pVertices[ i ] ).y, volume.GetVertexAt( pVertices[ i ] ).z );
-		//}
+	if(pVertices.GetCount() < 3){
+		return;
 	}
+	
+	const decVector center(pVertices.Inject(decVector(), [&](const decVector &c, int v){
+		return c + volume.GetVertexAt(v);
+	}) / (float)pVertices.GetCount());
+	
+	const decVector referenceDirection((volume.GetVertexAt(pVertices[0]) - center).Normalized());
+	const decVector windingDirection(pNormal % referenceDirection);
+	const float windingDot = windingDirection * center - FLOAT_SAFE_EPSILON;
+	
+	pVertices.Sort([&](int a, int b){
+		const decVector &va = volume.GetVertexAt(a);
+		float da = (va - center).Normalized() * referenceDirection;
+		if(va * windingDirection < windingDot){
+			da = -2.0f - da;
+		}
+		
+		const decVector &vb = volume.GetVertexAt(b);
+		float db = (vb - center).Normalized() * referenceDirection;
+		if(vb * windingDirection < windingDot){
+			db = -2.0f - db;
+		}
+		
+		return DECompare(db, da); // sort by descending angle (clock wise)
+	});
 #endif
+	
 #if 0
 	// sort vertices clockwise around the face normal. for this the dot product of all vertices is
 	// calculated with the direction from the center to the first vertex. the vertex with the
@@ -190,51 +134,51 @@ void decConvexVolumeFace::SortVertices( const decConvexVolume &volume ){
 	// it is important to normalize the vectors. this is unfortunately required since otherwise
 	// the result can be falsified by vertices located nearly at the same location in space
 	// causing an additional loop around the face resulting in an incorrect ordering.
-	if( pVertexCount > 2 ){
+	if(pVertexCount > 2){
 		decVector center, referenceDirection, windingDirection, testDirection;
 		float windingDot, nextDot, testDot;
 		int i, j, nextVertex, exchange;
-		printf( "sort vertices in %p\n", this );
+		printf("sort vertices in %p\n", this);
 		
-		for( i=0; i<pVertexCount; i++ ){
-			printf( "vertex %i (%+f,%+f,%+f)\n", pVertices[ i ], volume.GetVertexAt( pVertices[ i ] ).x, volume.GetVertexAt( pVertices[ i ] ).y, volume.GetVertexAt( pVertices[ i ] ).z );
-			center += volume.GetVertexAt( pVertices[ i ] );
+		for(i=0; i<pVertexCount; i++){
+			printf("vertex %i (%+f,%+f,%+f)\n", pVertices[i], volume.GetVertexAt(pVertices[i]).x, volume.GetVertexAt(pVertices[i]).y, volume.GetVertexAt(pVertices[i]).z);
+			center += volume.GetVertexAt(pVertices[i]);
 		}
-		center /= ( float )pVertexCount;
+		center /= (float)pVertexCount;
 		
-		printf( "normal (%+g,%+g,%+g)\n", pNormal.x, pNormal.y, pNormal.z );
-		printf( "center (%+f,%+f,%+f)\n", center.x, center.y, center.z );
+		printf("normal (%+g,%+g,%+g)\n", pNormal.x, pNormal.y, pNormal.z);
+		printf("center (%+f,%+f,%+f)\n", center.x, center.y, center.z);
 		
-		for( i=1; i<pVertexCount-1; i++ ){
-			referenceDirection = ( volume.GetVertexAt( pVertices[ i - 1 ] ) - center ).Normalized();
+		for(i=1; i<pVertexCount-1; i++){
+			referenceDirection = (volume.GetVertexAt(pVertices[i - 1]) - center).Normalized();
 			windingDirection = pNormal % referenceDirection;
 			windingDot = windingDirection * center - FLOAT_SAFE_EPSILON;
 			
 			nextVertex = -1;
 			nextDot = -1.0f;
 			
-			for( j=i; j<pVertexCount; j++ ){
-				const decVector &testVertex = volume.GetVertexAt( pVertices[ j ] );
+			for(j=i; j<pVertexCount; j++){
+				const decVector &testVertex = volume.GetVertexAt(pVertices[j]);
 				
-				if( testVertex * windingDirection >= windingDot ){
-					testDot = ( testVertex - center ).Normalized() * referenceDirection;
+				if(testVertex * windingDirection >= windingDot){
+					testDot = (testVertex - center).Normalized() * referenceDirection;
 					
-					if( nextVertex == -1 || testDot > nextDot ){
+					if(nextVertex == -1 || testDot > nextDot){
 						nextVertex = j;
 						nextDot = testDot;
 					}
 				}
 			}
 			
-			if( nextVertex != -1 ){
-				exchange = pVertices[ i ];
-				pVertices[ i ] = pVertices[ nextVertex ];
-				pVertices[ nextVertex ] = exchange;
+			if(nextVertex != -1){
+				exchange = pVertices[i];
+				pVertices[i] = pVertices[nextVertex];
+				pVertices[nextVertex] = exchange;
 			}
 		}
 		
-		for( i=0; i<pVertexCount; i++ ){
-			printf( "sorted vertex %i (%+f,%+f,%+f)\n", pVertices[ i ], volume.GetVertexAt( pVertices[ i ] ).x, volume.GetVertexAt( pVertices[ i ] ).y, volume.GetVertexAt( pVertices[ i ] ).z );
+		for(i=0; i<pVertexCount; i++){
+			printf("sorted vertex %i (%+f,%+f,%+f)\n", pVertices[i], volume.GetVertexAt(pVertices[i]).x, volume.GetVertexAt(pVertices[i]).y, volume.GetVertexAt(pVertices[i]).z);
 		}
 	}
 #endif
@@ -243,70 +187,61 @@ void decConvexVolumeFace::SortVertices( const decConvexVolume &volume ){
 	int i, j, testIndex, temporary;
 	
 	// sorting is only required with 3 or more vertices
-	if( pVertexCount < 3 ) return;
+	if(pVertexCount < 3) return;
 	
 	// sort vertices using an inside-outside test
-	for( i=1; i<pVertexCount-1; i++ ){
+	for(i=1; i<pVertexCount-1; i++){
 		// we use this vertex as the test vertex to start with
-		pivotVertex = volume.GetVertexAt( pVertices[ i - 1 ] );
+		pivotVertex = volume.GetVertexAt(pVertices[i - 1]);
 		testIndex = i;
-		testNormal = pNormal % ( volume.GetVertexAt( pVertices[ i ] ) - pivotVertex );
+		testNormal = pNormal % (volume.GetVertexAt(pVertices[i]) - pivotVertex);
 		
 		// test against all the remaining vertices if one is outside
-		for( j=i+1; j<pVertexCount; j++ ){
+		for(j=i+1; j<pVertexCount; j++){
 			// if the vertex is outside it is a better vertex and is promoted
 			// to be the test vertex for the remaining tests
-			curVertex = volume.GetVertexAt( pVertices[ j ] );
-			if( testNormal * ( curVertex - pivotVertex ) < 0.0f ){
+			curVertex = volume.GetVertexAt(pVertices[j]);
+			if(testNormal * (curVertex - pivotVertex) < 0.0f){
 				testIndex = j;
-				testNormal = pNormal % ( curVertex - pivotVertex );
+				testNormal = pNormal % (curVertex - pivotVertex);
 			}
 		}
 		
 		// if the test vertex is not this vertex then a better one has been found.
 		// in this case the two vertices are exchanged
-		if( testIndex != i ){
-			temporary = pVertices[ i ];
-			pVertices[ i ] = pVertices[ testIndex ];
-			pVertices[ testIndex ] = temporary;
+		if(testIndex != i){
+			temporary = pVertices[i];
+			pVertices[i] = pVertices[testIndex];
+			pVertices[testIndex] = temporary;
 		}
 	}
 #endif
 }
 
-bool decConvexVolumeFace::IsTooSmall( const decConvexVolume &volume ) const{
-	if( pVertexCount > 2 ){
-		decVector center;
-		int i;
-		
-		for( i=0; i<pVertexCount; i++ ){
-			center += volume.GetVertexAt( pVertices[ i ] );
-		}
-		center /= ( float )pVertexCount;
-		
-		for( i=0; i<pVertexCount; i++ ){
-			if( ( volume.GetVertexAt( pVertices[ i ] ) - center ).Length() < FLOAT_SAFE_EPSILON ){
-				return true;
-			}
-		}
-		
-		/*
-		int i;
-		
-		for( i=0; i<pVertexCount; i++ ){
-			const decVector &p1 = volume.GetVertexAt( pVertices[ i ] );
-			const decVector &p2 = volume.GetVertexAt( pVertices[ ( i + 1 ) % pVertexCount ] );
-			
-			if( ( p2 - p1 ).Length() < FLOAT_SAFE_EPSILON ){
-				return true;
-			}
-		}
-		*/
-		
-		return false;
+bool decConvexVolumeFace::IsTooSmall(const decConvexVolume &volume) const{
+	if(pVertices.GetCount() < 3){
+		return true;
 	}
 	
-	return true;
+	const decVector center(pVertices.Inject(decVector(), [&](const decVector &c, int v){
+		return c + volume.GetVertexAt(v);
+	}) / (float)pVertices.GetCount());
+	
+	return pVertices.HasMatching([&](int v){
+		return (volume.GetVertexAt(v) - center).Length() < FLOAT_SAFE_EPSILON;
+	});
+	
+	/*
+	int i;
+	for(i=0; i<pVertexCount; i++){
+		const decVector &p1 = volume.GetVertexAt(pVertices[i]);
+		const decVector &p2 = volume.GetVertexAt(pVertices[(i + 1) % pVertexCount]);
+		if((p2 - p1).Length() < FLOAT_SAFE_EPSILON){
+			return true;
+		}
+	}
+	return false;
+	*/
 }
 
 /*
@@ -315,18 +250,18 @@ bool decConvexVolumeFace::IsValid() const{
 	int i, v1, v2, v3;
 	
 	// normal has to be non-null
-	if( pNormal.Length() < 1e-5f ) return false;
+	if(pNormal.Length() < 1e-5f) return false;
 	
 	// there have to be 3 or more vertices
-	if( pVertexCount < 3 ) return false;
+	if(pVertexCount < 3) return false;
 	
 	// vertices have to be in clockwise order
-	for( i=0; i<pVertexCount; i++ ){
+	for(i=0; i<pVertexCount; i++){
 		v1 = i;
-		v2 = ( i + 1 ) % pVertexCount;
-		v3 = ( i + 2 ) % pVertexCount;
-		testNormal = pNormal % ( pVertices[ v2 ] - pVertices[ v1 ] );
-		if( testNormal * ( pVertices[ v3 ] - pVertices[ v1 ] ) < 0.0f ) return false;
+		v2 = (i + 1) % pVertexCount;
+		v3 = (i + 2) % pVertexCount;
+		testNormal = pNormal % (pVertices[v2] - pVertices[v1]);
+		if(testNormal * (pVertices[v3] - pVertices[v1]) < 0.0f) return false;
 	}
 	
 	// all tests passes

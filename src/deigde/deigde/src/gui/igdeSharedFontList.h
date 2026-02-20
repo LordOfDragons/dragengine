@@ -26,10 +26,9 @@
 #define _IGDESHAREDFONTSLIST_H_
 
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeFontReference.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 class igdeEnvironment;
 
@@ -41,20 +40,20 @@ class igdeEnvironment;
 class igdeSharedFontList{
 private:
 	class cFont : public deObject{
-	private:
-		igdeFont::sConfiguration pConfig;
-		igdeFontReference pFont;
-		
 	public:
-		cFont( const igdeFont::sConfiguration &config, igdeFont *font );
-		virtual ~cFont();
+		using Ref = deTObjectReference<cFont>;
 		
-		inline igdeFont *GetFont() const{ return pFont; }
-		inline const igdeFont::sConfiguration &GetConfig() const{ return pConfig; }
+		const igdeFont::sConfiguration config;
+		const igdeFont::Ref font;
+		
+		cFont(const igdeFont::sConfiguration &config, igdeFont *font);
+		
+	protected:
+		~cFont() override = default;
 	};
 	
 	igdeEnvironment &pEnvironment;
-	decObjectList pFonts;
+	decTObjectOrderedSet<cFont> pFonts;
 	
 	
 	
@@ -62,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shared font list. */
-	igdeSharedFontList( igdeEnvironment &environment );
+	igdeSharedFontList(igdeEnvironment &environment);
 	
 	/** \brief Clean up shared font list. */
 	~igdeSharedFontList();
@@ -73,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get font matching configuration. */
-	igdeFont *GetFontWith( const igdeFont::sConfiguration &configuration );
+	const igdeFont::Ref &GetFontWith(const igdeFont::sConfiguration &configuration);
 	/*@}*/
 };
 

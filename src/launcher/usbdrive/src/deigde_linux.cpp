@@ -27,88 +27,88 @@
 
 #define PLATFORM_DIR "linux64"
 
-int main( int argc, char **argv ){
+int main(int argc, char **argv){
 	try{
 		// find the base directory
-		std::string workDir( GetWorkingDirectory() );
+		std::string workDir(GetWorkingDirectory());
 		
-		if( argc > 1 ){
-			const std::string path( argv[ 1 ] );
-			if( path.substr( 0, 2 ) == ".." ){
-				workDir = RealPath( PathJoin( { workDir, path } ) );
+		if(argc > 1){
+			const std::string path(argv[1]);
+			if(path.substr(0, 2) == ".."){
+				workDir = RealPath(PathJoin({workDir, path}));
 				
 			}else{
 				workDir = path;
 			}
 		}
 		
-		if( *( workDir.cend() - 1 ) == '\\' ){
-			workDir.erase( workDir.end() - 1 );
+		if(*(workDir.cend() - 1) == '\\'){
+			workDir.erase(workDir.end() - 1);
 		}
 		std::cout << "Working Directory = " << workDir << std::endl;
 		
 		// find launcher binary
-		const std::string pathLauncherBin( PathJoin( { workDir, PLATFORM_DIR, "bin", "deigde" } ) );
+		const std::string pathLauncherBin(PathJoin({workDir, PLATFORM_DIR, "bin", "deigde"}));
 		
-		AssertPathExists( pathLauncherBin );
+		AssertPathExists(pathLauncherBin);
 		
 		// build environment variables to run
 		Environment env;
 		
 		//env.Append( "PATH", PathJoin( { workDir, PLATFORM_DIR, "bin" } ) );
-		env.Append( "PATH", "bin" );
-		env.Append( "LD_LIBRARY_PATH", PathJoin( { workDir, PLATFORM_DIR, "bin" } ) );
-		env.Append( "LD_LIBRARY_PATH", PathJoin( { workDir, PLATFORM_DIR, "lib" } ) );
+		env.Append("PATH", "bin");
+		env.Append("LD_LIBRARY_PATH", PathJoin({workDir, PLATFORM_DIR, "bin"}));
+		env.Append("LD_LIBRARY_PATH", PathJoin({workDir, PLATFORM_DIR, "lib"}));
 		
-		const std::string cacheDir( PathJoin( { workDir, "user", "cache" } ) );
-		const std::string captureDir( PathJoin( { workDir, "user", "capture" } ) );
-		const std::string userConfigDir( PathJoin( { workDir, "user", "config", "linux", "deigde" } ) );
-		const std::string projectDir( PathJoin( { workDir, "user", "projects" } ) );
-		const std::string logDir( PathJoin( { workDir, "logs", "deigde" } ) );
+		const std::string cacheDir(PathJoin({workDir, "user", "cache"}));
+		const std::string captureDir(PathJoin({workDir, "user", "capture"}));
+		const std::string userConfigDir(PathJoin({workDir, "user", "config", "linux", "deigde"}));
+		const std::string projectDir(PathJoin({workDir, "user", "projects"}));
+		const std::string logDir(PathJoin({workDir, "logs", "deigde"}));
 		
-		env.Set( "DE_ENGINE_PATH", PathJoin( { workDir, PLATFORM_DIR, "lib", "dragengine" } ) );
-		env.Set( "DE_SHARE_PATH", PathJoin( { workDir, PLATFORM_DIR, "share", "dragengine" } ) );
-		env.Set( "DE_CONFIG_PATH", PathJoin( { workDir, PLATFORM_DIR, "etc", "dragengine" } ) );
-		env.Set( "DE_CACHE_PATH", cacheDir );
-		env.Set( "DE_CAPTURE_PATH" , captureDir );
+		env.Set("DE_ENGINE_PATH", PathJoin({workDir, PLATFORM_DIR, "lib", "dragengine"}));
+		env.Set("DE_SHARE_PATH", PathJoin({workDir, PLATFORM_DIR, "share", "dragengine"}));
+		env.Set("DE_CONFIG_PATH", PathJoin({workDir, PLATFORM_DIR, "etc", "dragengine"}));
+		env.Set("DE_CACHE_PATH", cacheDir);
+		env.Set("DE_CAPTURE_PATH" , captureDir);
 		
-		env.Set( "DEIGDE_SYS_CONFIG", PathJoin( { workDir, PLATFORM_DIR, "etc", "deigde" } ) );
-		env.Set( "DEIGDE_USER_CONFIG", userConfigDir );
-		env.Set( "DEIGDE_PROJECTS", projectDir );
-		env.Set( "DEIGDE_SHARES", PathJoin( { workDir, PLATFORM_DIR, "share", "deigde" } ) );
-		env.Set( "DEIGDE_LIB", PathJoin( { workDir, PLATFORM_DIR, "lib", "deigde" } ) );
-		env.Set( "DEIGDE_LOGS", logDir );
+		env.Set("DEIGDE_SYS_CONFIG", PathJoin({workDir, PLATFORM_DIR, "etc", "deigde"}));
+		env.Set("DEIGDE_USER_CONFIG", userConfigDir);
+		env.Set("DEIGDE_PROJECTS", projectDir);
+		env.Set("DEIGDE_SHARES", PathJoin({workDir, PLATFORM_DIR, "share", "deigde"}));
+		env.Set("DEIGDE_LIB", PathJoin({workDir, PLATFORM_DIR, "lib", "deigde"}));
+		env.Set("DEIGDE_LOGS", logDir);
 		
 		char ** const exexenv = env.BuildEnv();
 		
 		// make sure directories exist
-		MakeDirs( cacheDir );
-		MakeDirs( captureDir );
-		MakeDirs( userConfigDir );
-		MakeDirs( logDir );
+		MakeDirs(cacheDir);
+		MakeDirs(captureDir);
+		MakeDirs(userConfigDir);
+		MakeDirs(logDir);
 		
 		// run launcher
 		std::string ldrunner;
 		
-		if( PathExists( "/lib64/ld-linux-x86-64.so.2" ) ){
+		if(PathExists("/lib64/ld-linux-x86-64.so.2")){
 			ldrunner = "/lib64/ld-linux-x86-64.so.2";
 			
-		}else if( PathExists( "/lib/ld-linux-x86-64.so.2" ) ){
+		}else if(PathExists("/lib/ld-linux-x86-64.so.2")){
 			ldrunner = "/lib/ld-linux-x86-64.so.2";
 		}
 		
-		if( ldrunner.empty() ){
+		if(ldrunner.empty()){
 			std::cerr << "Can not find 64-bit ld binary to run application without exec-bit set." << std::endl;
-			throw std::runtime_error( "Can not find 64-bit ld binary to run application without exec-bit set." );
+			throw std::runtime_error("Can not find 64-bit ld binary to run application without exec-bit set.");
 		}
 		
-		const std::string ldrunnerFilename( PathFilename( ldrunner ) );
-		if( execle( ldrunner.c_str(), ldrunnerFilename.c_str(), pathLauncherBin.c_str(), ( char* )nullptr, exexenv ) == -1 ){
+		const std::string ldrunnerFilename(PathFilename(ldrunner));
+		if(execle(ldrunner.c_str(), ldrunnerFilename.c_str(), pathLauncherBin.c_str(), (char*)nullptr, exexenv) == -1){
 			std::cerr << "Failed running deigde." << std::endl;
-			throw std::runtime_error( "Failed running deigde." );
+			throw std::runtime_error("Failed running deigde.");
 		}
 		
-	}catch( const std::exception &e ){
+	}catch(const std::exception &e){
 		std::cout << e.what() << std::endl;
 		return 1;
 	}

@@ -25,15 +25,17 @@
 #ifndef _IGDEENVIRONMENT_H_
 #define _IGDEENVIRONMENT_H_
 
+#include "../gui/filedialog/igdeFilePattern.h"
 #include "../gui/resources/igdeFont.h"
+#include "../engine/textureProperties/igdeTextureProperty.h"
 
+#include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/model/deModel.h>
 
 class igdeEngineController;
-class igdeFilePatternList;
 class igdeGameDefinition;
 class igdeContainer;
 class igdeWindow;
@@ -41,11 +43,11 @@ class igdeGDPreviewManager;
 class igdeGameProject;
 class igdeGuiTheme;
 class igdeIcon;
-class igdeTexturePropertyList;
 class igdeToolBarDock;
 class igdeUIHelper;
 class igdeResourceLoaderListener;
 class igdeEditorModule;
+class igdeTranslationManager;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -56,7 +58,6 @@ class dePropField;
 class deTouchSensor;
 class deVirtualFileSystem;
 class deRig;
-class decStringList;
 
 
 
@@ -69,25 +70,25 @@ class DE_DLL_EXPORT igdeEnvironment{
 public:
 	/** \brief File Pattern List Types. */
 	enum eFilePatternListTypes{
-		efpltAll, //<! All files.
-		efpltAnimation, //<! Animation.
-		efpltAnimator, //<! Animator.
-		efpltFont, //<! Font.
-		efpltImage, //<! Image.
-		efpltLanguagePack, //<! Language pack.
-		efpltModel, //<! Model.
-		efpltNavigationSpace, //<! Navigation space.
-		efpltOcclusionMesh, //<! Occlusion mesh.
-		efpltParticleEmitter, //<! Particle Emitter.
-		efpltRig, //<! Rig.
-		efpltSkin, //<! Skin.
-		efpltSky, //<! Sky.
-		efpltSynthesizer, //<! Synthesizer.
-		efpltSound, //<! Sound.
-		efpltVideo, //<! Video.
-		efpltSpeechAnimation, //<! Speech animation.
-		efpltCamera, //<! Camera file.
-		efpltWorld //<! World file.
+		efpltAll, //!< All files.
+		efpltAnimation, //!< Animation.
+		efpltAnimator, //!< Animator.
+		efpltFont, //!< Font.
+		efpltImage, //!< Image.
+		efpltLanguagePack, //!< Language pack.
+		efpltModel, //!< Model.
+		efpltNavigationSpace, //!< Navigation space.
+		efpltOcclusionMesh, //!< Occlusion mesh.
+		efpltParticleEmitter, //!< Particle Emitter.
+		efpltRig, //!< Rig.
+		efpltSkin, //!< Skin.
+		efpltSky, //!< Sky.
+		efpltSynthesizer, //!< Synthesizer.
+		efpltSound, //!< Sound.
+		efpltVideo, //!< Video.
+		efpltSpeechAnimation, //!< Speech animation.
+		efpltCamera, //!< Camera file.
+		efpltWorld //!< World file.
 	};
 	
 	/** \brief Stock icons. */
@@ -137,14 +138,14 @@ public:
 	
 	/** \brief System colors. */
 	enum eSystemColors{
-		escWindowBackground, //<! Window background color.
-		escWindowForeground, //<! Window foreground color.
-		escWidgetBackground, //<! Widget background color.
-		escWidgetForeground, //<! Widget foreground color.
-		escWidgetHighlight, //<! Widget highlight color.
-		escWidgetShadow, //<! Widget shadow color.
-		escWidgetSelectedBackground, //<! Widget selected background color.
-		escWidgetSelectedForeground //<! Widget selected foreground color.
+		escWindowBackground, //!< Window background color.
+		escWindowForeground, //!< Window foreground color.
+		escWidgetBackground, //!< Widget background color.
+		escWidgetForeground, //!< Widget foreground color.
+		escWidgetHighlight, //!< Widget highlight color.
+		escWidgetShadow, //!< Widget shadow color.
+		escWidgetSelectedBackground, //!< Widget selected background color.
+		escWidgetSelectedForeground //!< Widget selected foreground color.
 	};
 	
 	/** \brief Stock skins. */
@@ -255,7 +256,7 @@ public:
 	virtual igdeContainer *GetUIContainer() = 0;
 	
 	/** \brief Stock icon. */
-	virtual igdeIcon *GetStockIcon( eStockIcons icon ) = 0;
+	virtual igdeIcon *GetStockIcon(eStockIcons icon) = 0;
 	
 	/**
 	 * \brief Stock skin.
@@ -263,7 +264,7 @@ public:
 	 * Stock skins are only available after the engine controller has been started for the
 	 * first time. If not available nullptr is returned.
 	 */
-	virtual deSkin::Ref GetStockSkin( eStockSkins skin ) = 0;
+	virtual deSkin::Ref GetStockSkin(eStockSkins skin) = 0;
 	
 	/**
 	 * \brief Stock rig.
@@ -271,7 +272,7 @@ public:
 	 * Stock rigs are only available after the engine controller has been started for the
 	 * first time. If not available nullptr is returned.
 	 */
-	virtual deRig::Ref GetStockRig( eStockRigs rig ) = 0;
+	virtual deRig::Ref GetStockRig(eStockRigs rig) = 0;
 	
 	/**
 	 * \brief Stock model.
@@ -279,7 +280,7 @@ public:
 	 * Stock models are only available after the engine controller has been started for the
 	 * first time. If not available nullptr is returned.
 	 */
-	virtual deModel::Ref GetStockModel( eStockModels model ) = 0;
+	virtual deModel::Ref GetStockModel(eStockModels model) = 0;
 	
 	/** \brief Engine controller. */
 	virtual igdeEngineController *GetEngineController() = 0;
@@ -287,14 +288,14 @@ public:
 	/** \brief Game definition. */
 	virtual igdeGameDefinition *GetGameDefinition() = 0;
 	
-	/** \brief Shared game definition with identifier or NULL if not found. */
-	virtual igdeGameDefinition *GetSharedGameDefinition( const char *id ) = 0;
+	/** \brief Shared game definition with identifier or nullptr if not found. */
+	virtual igdeGameDefinition *GetSharedGameDefinition(const char *id) = 0;
 	
 	/** \brief Game definition preview manager. */
 	virtual igdeGDPreviewManager *GetGDPreviewManager() = 0;
 	
 	/** \brief Texture property list. */
-	virtual const igdeTexturePropertyList *GetTexturePropertyList() = 0;
+	virtual const igdeTextureProperty::List &GetTexturePropertyList() = 0;
 	
 	/** \brief The active game project. */
 	virtual igdeGameProject *GetGameProject() = 0;
@@ -309,7 +310,7 @@ public:
 	virtual deVirtualFileSystem *GetFileSystemIGDE() = 0;
 	
 	/** \brief Default application font configuration from host platform. */
-	virtual void GetApplicationFont( igdeFont::sConfiguration &config ) = 0;
+	virtual void GetApplicationFont(igdeFont::sConfiguration &config) = 0;
 	
 	/**
 	 * \brief Shared font with configuration.
@@ -319,18 +320,18 @@ public:
 	 * of being shared by different parties. Shared fonts stay in memory until the IGDE
 	 * is shut down.
 	 */
-	virtual igdeFont *GetSharedFont( const igdeFont::sConfiguration &configuration ) = 0;
+	virtual igdeFont *GetSharedFont(const igdeFont::sConfiguration &configuration) = 0;
 	
 	/** \brief System color. */
-	virtual decColor GetSystemColor( eSystemColors color ) = 0;
+	virtual decColor GetSystemColor(eSystemColors color) = 0;
 	
 	/** \brief Shared model collision rig. */
 	virtual deRig *GetSharedModelCollisionRig() = 0;
 	
 	/** \brief Request asynchronous loading of resource calling listener once finished. */
-	virtual void AsyncLoadResource( const char *filename,
+	virtual void AsyncLoadResource(const char *filename,
 		deResourceLoader::eResourceType resourceType,
-		igdeResourceLoaderListener *listener ) = 0;
+		igdeResourceLoaderListener *listener) = 0;
 	
 	/** \brief UI Helper. */
 	virtual igdeUIHelper &GetUIHelper() = 0;
@@ -339,23 +340,25 @@ public:
 	virtual igdeUIHelper &GetUIHelperProperties() = 0;
 	
 	
-	
 	/** \brief Named GuiTheme or default if not found. */
-	virtual igdeGuiTheme *GetGuiThemeNamed( const char *name ) = 0;
+	virtual igdeGuiTheme *GetGuiThemeNamed(const char *name) = 0;
 	
 	/** \brief Default GuiTheme. */
 	virtual igdeGuiTheme *GetDefaultGuiTheme() = 0;
 	
+	/** \brief Translation manager. */
+	virtual igdeTranslationManager &GetTranslationManager() = 0;
+	
 	
 	
 	/** \brief Set visibility of the progress bar in the status bar. */
-	virtual void SetProgressVisible( bool visible ) = 0;
+	virtual void SetProgressVisible(bool visible) = 0;
 	
 	/** \brief Set progress bar progress. */
-	virtual void SetProgress( float progress ) = 0;
+	virtual void SetProgress(float progress) = 0;
 	
 	/** \brief Set progress text. */
-	virtual void SetProgressText( const char *text ) = 0;
+	virtual void SetProgressText(const char *text) = 0;
 	
 	
 	
@@ -366,7 +369,7 @@ public:
 	virtual void ActiveModuleSharedToolBarsChanged() = 0;
 	
 	/** \brief Activate editor and bring it to the front. */
-	virtual void ActivateEditor( igdeEditorModule *editor ) = 0;
+	virtual void ActivateEditor(igdeEditorModule *editor) = 0;
 	
 	
 	
@@ -375,14 +378,14 @@ public:
 	 * 
 	 * The pattern list is build from the available engine modules.
 	 */
-	virtual const igdeFilePatternList *GetOpenFilePatternList( eFilePatternListTypes type ) = 0;
+	virtual const igdeFilePattern::List *GetOpenFilePatternList(eFilePatternListTypes type) = 0;
 	
 	/**
 	 * \brief List of file patterns for save resource file dialogs.
 	 * 
 	 * The pattern list is build from the available engine modules.
 	 */
-	virtual const igdeFilePatternList *GetSaveFilePatternList( eFilePatternListTypes type ) = 0;
+	virtual const igdeFilePattern::List *GetSaveFilePatternList(eFilePatternListTypes type) = 0;
 	
 	
 	
@@ -390,40 +393,40 @@ public:
 	 * \brief Set collider delegee.
 	 * 
 	 * Events generated by the game engine for collider will be send to the delegee.
-	 * Set to NULL to stop receiving events.
+	 * Set to nullptr to stop receiving events.
 	 */
-	virtual void SetColliderDelegee( deCollider *collider, deBaseScriptingCollider *delegee ) = 0;
+	virtual void SetColliderDelegee(deCollider *collider, deBaseScriptingCollider *delegee) = 0;
 	
 	/** \brief Get collider user pointer. */
-	virtual void *GetColliderUserPointer( deCollider *collider ) = 0;
+	virtual void *GetColliderUserPointer(deCollider *collider) = 0;
 	
 	/** \brief Set user pointer for collider. */
-	virtual void SetColliderUserPointer( deCollider *collider, void *userPointer ) = 0;
+	virtual void SetColliderUserPointer(deCollider *collider, void *userPointer) = 0;
 	
 	/**
 	 * \brief Set delegee for touch sensor.
 	 * 
 	 * Events generated by the game engine for touch sensor will be send to delegee.
-	 * Set to NULL to stop receiving events.
+	 * Set to nullptr to stop receiving events.
 	 */
-	virtual void SetTouchSensorDelegee( deTouchSensor *touchSensor,
-		deBaseScriptingTouchSensor *delegee ) = 0;
+	virtual void SetTouchSensorDelegee(deTouchSensor *touchSensor,
+		deBaseScriptingTouchSensor *delegee) = 0;
 	
 	/**
 	 * \brief Set delegee for prop field.
 	 * 
 	 * Events generated by the game engine for prop field will be send to delegee.
-	 * Set to NULL to stop receiving events.
+	 * Set to nullptr to stop receiving events.
 	 */
-	virtual void SetPropFieldDelegee( dePropField *propField,
-		deBaseScriptingPropField *delegee ) = 0;
+	virtual void SetPropFieldDelegee(dePropField *propField,
+		deBaseScriptingPropField *delegee) = 0;
 	
 	
 	
 	/**
 	 * \brief Show window modal while keeping engine properly updating.
 	 */
-	virtual void RunModalWhileShown( igdeWindow &window ) = 0;
+	virtual void RunModalWhileShown(igdeWindow &window) = 0;
 	
 	
 	
@@ -459,7 +462,7 @@ public:
 	 * \param[in] filename Filename in game data virtual file system.
 	 * \returns \em true if the object has been opened or \em false otherwise.
 	 */
-	virtual bool OpenFileInEditor( const char *filename ) = 0;
+	virtual bool OpenFileInEditor(const char *filename) = 0;
 	
 	/**
 	 * \brief Request saving unsaved documents.
@@ -469,10 +472,10 @@ public:
 	 * 
 	 * \param[in] title Title of the unsaved documents dialog if shown.
 	 * \param[in] message Message of the unsaved documents dialog if shown.
-	 *                    Message is optional and can be NULL.
+	 *                    Message is optional and can be nullptr.
 	 * \returns \em true if user wants to continue the action or \em false to abort.
 	 */
-	virtual bool RequestSaveDocuments( const char *title, const char* message ) = 0;
+	virtual bool RequestSaveDocuments(const char *title, const char* message) = 0;
 	
 	/**
 	 * \brief List of recently opened editor files.
@@ -482,7 +485,7 @@ public:
 	/**
 	 * \brief Add a file to the recent editor files list.
 	 */
-	virtual void AddRecentEditorFile( const char *filename ) = 0;
+	virtual void AddRecentEditorFile(const char *filename) = 0;
 	
 	/** \brief Close application. */
 	virtual void CloseApplication() = 0;

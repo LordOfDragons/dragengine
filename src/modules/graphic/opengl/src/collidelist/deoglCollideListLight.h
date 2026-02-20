@@ -25,14 +25,15 @@
 #ifndef _DEOGLCOLLIDELISTLIGHT_H_
 #define _DEOGLCOLLIDELISTLIGHT_H_
 
+#include "../occquery/deoglOcclusionQuery.h"
 #include "../occlusiontest/deoglOcclusionTestListener.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRLight;
 class deoglOcclusionTest;
 class deoglRenderPlan;
-class deoglOcclusionQuery;
 
 
 
@@ -46,7 +47,7 @@ private:
 	bool pCameraInside;
 	bool pCameraInsideOccQueryBox;
 	
-	deoglOcclusionQuery *pOcclusionQuery;
+	deTUniqueReference<deoglOcclusionQuery> pOcclusionQuery;
 	bool pOccQueryValid;
 	
 	
@@ -57,8 +58,18 @@ public:
 	/** Create collide list light. */
 	deoglCollideListLight();
 	
+	deoglCollideListLight(deoglRLight *light);
+	
+	/** Copy. */
+	deoglCollideListLight(const deoglCollideListLight &other) = delete;
+	deoglCollideListLight &operator=(const deoglCollideListLight &other) = delete;
+	
+	/** Move. */
+	deoglCollideListLight(deoglCollideListLight &&other) noexcept;
+	deoglCollideListLight &operator=(deoglCollideListLight &&other) noexcept;
+	
 	/** Clean up collide list light. */
-	~deoglCollideListLight();
+	~deoglCollideListLight() override = default;
 	/*@}*/
 	
 	
@@ -72,7 +83,7 @@ public:
 	inline deoglRLight *GetLight() const{ return pLight; }
 	
 	/** Set light. */
-	void SetLight( deoglRLight *light );
+	void SetLight(deoglRLight *light);
 	
 	
 	
@@ -80,7 +91,7 @@ public:
 	inline bool GetCulled() const{ return pCulled; }
 	
 	/** Set light is culled. */
-	void SetCulled( bool visible );
+	void SetCulled(bool visible);
 	
 	/** Camera is inside light volume. */
 	inline bool GetCameraInside() const{ return pCameraInside; }
@@ -89,16 +100,16 @@ public:
 	inline bool GetCameraInsideOccQueryBox() const{ return pCameraInsideOccQueryBox; }
 	
 	/** Test if camera is inside light volume and occlusion query box. */
-	void TestInside( const deoglRenderPlan &plan );
+	void TestInside(const deoglRenderPlan &plan);
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
-	virtual void OcclusionTestInvisible();
+	void OcclusionTestInvisible() override;
 	
 	/** Has occlusion query. */
-	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != nullptr; }
+	inline bool HasOcclusionQuery() const{ return pOcclusionQuery.IsNotNull(); }
 	
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();
@@ -110,7 +121,7 @@ public:
 	bool IsHiddenByOccQuery() const;
 	
 	/** Set if occlusion query is valid. */
-	void SetOcclusionQueryValid( bool valid );
+	void SetOcclusionQueryValid(bool valid);
 	/*@}*/
 };
 

@@ -35,10 +35,13 @@ class feFont;
  * \brief Font Set Line Height Undo Action.
  */
 class feUFontSetLineHeight : public igdeUndo{
+public:
+	using Ref = deTObjectReference<feUFontSetLineHeight>;
+	
+	
 private:
 	feFont *pFont;
-	int pOldHeight;
-	int pNewHeight;
+	int pOldHeight, pNewHeight;
 	
 	
 	
@@ -46,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontSetLineHeight( feFont *font, int newLineHeight );
+	feUFontSetLineHeight(feFont *font, int newLineHeight);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~feUFontSetLineHeight();
+	~feUFontSetLineHeight() override;
 	/*@}*/
 	
 	
@@ -59,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

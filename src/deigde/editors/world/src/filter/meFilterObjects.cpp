@@ -22,12 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meFilterObjects.h"
-
 
 
 // Class meFilterObjects
@@ -47,6 +42,6 @@ meFilterObjects::~meFilterObjects(){
 // Management
 ///////////////
 
-bool meFilterObjects::AcceptObject( meObject *object ) const{
+bool meFilterObjects::AcceptObject(meObject *object) const{
 	return true;
 }

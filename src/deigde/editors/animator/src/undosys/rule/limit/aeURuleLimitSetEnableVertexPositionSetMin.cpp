@@ -39,21 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableVertexPositionSetMin::aeURuleLimitSetEnableVertexPositionSetMin( aeRuleLimit *rule ){
-	DEASSERT_NOTNULL( rule )
+aeURuleLimitSetEnableVertexPositionSetMin::aeURuleLimitSetEnableVertexPositionSetMin(aeRuleLimit *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum vertex position set" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumVertexPositionSet");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableVertexPositionSetMin::~aeURuleLimitSetEnableVertexPositionSetMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -66,5 +62,5 @@ void aeURuleLimitSetEnableVertexPositionSetMin::Undo(){
 }
 
 void aeURuleLimitSetEnableVertexPositionSetMin::Redo(){
-	pRule->SetEnableVertexPositionSetMin( ! pRule->GetEnableVertexPositionSetMin() );
+	pRule->SetEnableVertexPositionSetMin(!pRule->GetEnableVertexPositionSetMin());
 }

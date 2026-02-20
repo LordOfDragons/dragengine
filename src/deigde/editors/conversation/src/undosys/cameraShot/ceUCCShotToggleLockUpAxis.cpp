@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis( ceCameraShot *cameraShot ){
-	if( ! cameraShot ){
-		DETHROW( deeInvalidParam );
+ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot){
+	if(!cameraShot){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCameraShot = NULL;
+	pCameraShot = nullptr;
 	
-	SetShortInfo( "Camera shot lock up axis" );
+	SetShortInfo("@Conversation.Undo.CameraShotLockUpAxis");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockUpAxis::~ceUCCShotToggleLockUpAxis(){
-	if( pCameraShot ){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -64,9 +60,9 @@ ceUCCShotToggleLockUpAxis::~ceUCCShotToggleLockUpAxis(){
 ///////////////
 
 void ceUCCShotToggleLockUpAxis::Undo(){
-	pCameraShot->SetLockUpAxis( ! pCameraShot->GetLockUpAxis() );
+	pCameraShot->SetLockUpAxis(!pCameraShot->GetLockUpAxis());
 }
 
 void ceUCCShotToggleLockUpAxis::Redo(){
-	pCameraShot->SetLockUpAxis( ! pCameraShot->GetLockUpAxis() );
+	pCameraShot->SetLockUpAxis(!pCameraShot->GetLockUpAxis());
 }

@@ -37,6 +37,12 @@ class igdeMenuCascade;
  * \brief IGDE UI ListBox Listener.
  */
 class DE_DLL_EXPORT igdeListBoxListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeListBoxListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -52,7 +58,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeListBoxListener();
+	~igdeListBoxListener() override;
 	/*@}*/
 	
 	
@@ -61,16 +67,16 @@ public:
 	/** \text Events */
 	/*@{*/
 	/** \brief ListBox selection changed. */
-	virtual void OnSelectionChanged( igdeListBox *listBox );
+	virtual void OnSelectionChanged(igdeListBox *listBox);
 	
 	/** \brief Item selected. */
-	virtual void OnItemSelected( igdeListBox *listBox, int index );
+	virtual void OnItemSelected(igdeListBox *listBox, int index);
 	
 	/** \brief Item deselected. */
-	virtual void OnItemDeselected( igdeListBox *listBox, int index );
+	virtual void OnItemDeselected(igdeListBox *listBox, int index);
 	
 	/** \brief Double click on item. */
-	virtual void OnDoubleClickItem( igdeListBox *listBox, int index );
+	virtual void OnDoubleClickItem(igdeListBox *listBox, int index);
 	
 	/**
 	 * \brief Create context menu for selected item.
@@ -79,7 +85,7 @@ public:
 	 * to add entries to the context menu without affecting others. If entries are already
 	 * present the listener should also add a separator first.
 	 */
-	virtual void AddContextMenuEntries( igdeListBox *listBox, igdeMenuCascade &menu );
+	virtual void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu);
 	/*@}*/
 };
 

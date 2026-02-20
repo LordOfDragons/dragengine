@@ -42,11 +42,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPBaseTwoHandController( deoxrInstance &instance, const deoxrPath &path, const char *name );
+	deoxrDPBaseTwoHandController(deoxrInstance &instance, const deoxrPath &path, const char *name);
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPBaseTwoHandController();
+	~deoxrDPBaseTwoHandController() override;
 	/*@}*/
 	
 	
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Check attached. */
-	virtual void CheckAttached();
+	void CheckAttached() override;
 	
 	/** Suggest bindings. */
-	virtual void SuggestBindings();
+	void SuggestBindings() override;
 	
 	/** Clear actions. */
-	virtual void ClearActions();
+	void ClearActions() override;
 	
 	/** Remove device if matching type. */
-	virtual void RemoveDevice( deInputDevice::eDeviceTypes type );
+	void RemoveDevice(deInputDevice::eDeviceTypes type) override;
 	/*@}*/
 	
 	
@@ -73,9 +73,9 @@ protected:
 	virtual bool pProfileEnabled() const;
 	virtual void pSuggestBindings() = 0;
 	
-	virtual void pAddDevice( bool left ) = 0;
+	virtual void pAddDevice(bool left) = 0;
 	
-	void pRemoveDevice( bool left );
+	void pRemoveDevice(bool left);
 };
 
 #endif

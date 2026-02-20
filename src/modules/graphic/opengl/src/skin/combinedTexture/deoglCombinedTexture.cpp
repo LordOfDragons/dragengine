@@ -42,24 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCombinedTexture::deoglCombinedTexture( deoglRenderThread &renderThread,
-const decColor &color, deoglRImage *images[ 4 ] ) :
-pRenderThread( renderThread ),
-pColor( color ),
-pTexture( NULL ),
-pUsageCount( 1 ),
-pHashCode( 0 ),
-pLLPrev( NULL ),
-pLLNext( NULL )
+deoglCombinedTexture::deoglCombinedTexture(deoglRenderThread &renderThread,
+const decColor &color, deoglRImage *images[4]) :
+pRenderThread(renderThread),
+pColor(color),
+pTexture(nullptr),
+pUsageCount(1),
+pHashCode(0),
+pLLTextures(this)
 {
 	int i;
-	for( i=0; i<4; i++ ){
-		pImages[ i ] = images[ i ];
+	for(i=0; i<4; i++){
+		pImages[i] = images[i];
 	}
 }
 
 deoglCombinedTexture::~deoglCombinedTexture(){
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -69,20 +68,20 @@ deoglCombinedTexture::~deoglCombinedTexture(){
 // Management
 ///////////////
 
-const deoglRImage::Ref &deoglCombinedTexture::GetImageAt( int component ) const{
-	DEASSERT_TRUE( component >= 0 )
-	DEASSERT_TRUE( component <= 3 )
-	return pImages[ component ];
+const deoglRImage::Ref &deoglCombinedTexture::GetImageAt(int component) const{
+	DEASSERT_TRUE(component >= 0)
+	DEASSERT_TRUE(component <= 3)
+	return pImages[component];
 }
 
 
 
-void deoglCombinedTexture::SetTexture( deoglTexture *texture ){
-	if( texture == pTexture ){
+void deoglCombinedTexture::SetTexture(deoglTexture *texture){
+	if(texture == pTexture){
 		return;
 	}
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 	
@@ -91,41 +90,41 @@ void deoglCombinedTexture::SetTexture( deoglTexture *texture ){
 
 
 
-bool deoglCombinedTexture::Equals( const deoglCombinedTexture &combinedTexture ) const{
+bool deoglCombinedTexture::Equals(const deoglCombinedTexture &combinedTexture) const{
 	return pHashCode == combinedTexture.pHashCode
-		&& pColor.IsEqualTo( combinedTexture.pColor )
-		&& pImages[ 0 ] == combinedTexture.pImages[ 0 ]
-		&& pImages[ 1 ] == combinedTexture.pImages[ 1 ]
-		&& pImages[ 2 ] == combinedTexture.pImages[ 2 ]
-		&& pImages[ 3 ] == combinedTexture.pImages[ 3 ];
+		&& pColor.IsEqualTo(combinedTexture.pColor)
+		&& pImages[0] == combinedTexture.pImages[0]
+		&& pImages[1] == combinedTexture.pImages[1]
+		&& pImages[2] == combinedTexture.pImages[2]
+		&& pImages[3] == combinedTexture.pImages[3];
 }
 
-bool deoglCombinedTexture::Equals( const decColor &color, deoglRImage *images[ 4 ] ) const{
-	return pColor.IsEqualTo( color )
-		&& pImages[ 0 ] == images[ 0 ]
-		&& pImages[ 1 ] == images[ 1 ]
-		&& pImages[ 2 ] == images[ 2 ]
-		&& pImages[ 3 ] == images[ 3 ];
+bool deoglCombinedTexture::Equals(const decColor &color, deoglRImage *images[4]) const{
+	return pColor.IsEqualTo(color)
+		&& pImages[0] == images[0]
+		&& pImages[1] == images[1]
+		&& pImages[2] == images[2]
+		&& pImages[3] == images[3];
 }
 
 
 
 void deoglCombinedTexture::CalcHashCode(){
-	pHashCode = CalcHashCodeFor( pColor, pImages );
+	pHashCode = CalcHashCodeFor(pColor, pImages);
 }
 
-unsigned int deoglCombinedTexture::CalcHashCodeFor( const decColor &color, const deoglRImage::Ref *images ){
+unsigned int deoglCombinedTexture::CalcHashCodeFor(const decColor &color, const deoglRImage::Ref *images){
 	unsigned int hashCode = 0;
 	
-	hashCode += ( unsigned int )( color.r * 255.0 );
-	hashCode += ( unsigned int )( color.g * 255.0 );
-	hashCode += ( unsigned int )( color.b * 255.0 );
-	hashCode += ( unsigned int )( color.a * 255.0 );
+	hashCode += (unsigned int)(color.r * 255.0);
+	hashCode += (unsigned int)(color.g * 255.0);
+	hashCode += (unsigned int)(color.b * 255.0);
+	hashCode += (unsigned int)(color.a * 255.0);
 	
-	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 0 ] & 0xffff );
-	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 1 ] & 0xffff );
-	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 2 ] & 0xffff );
-	hashCode += ( unsigned int )( ( intptr_t )( deoglRImage* )images[ 3 ] & 0xffff );
+	hashCode += (unsigned int)((intptr_t)images[0].Pointer() & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[1].Pointer() & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[2].Pointer() & 0xffff);
+	hashCode += (unsigned int)((intptr_t)images[3].Pointer() & 0xffff);
 	
 	return hashCode;
 }
@@ -137,10 +136,10 @@ void deoglCombinedTexture::AddUsage(){
 void deoglCombinedTexture::RemoveUsage(){
 	pUsageCount--;
 	
-	if( pUsageCount == 0 ){
+	if(pUsageCount == 0){
 		int i;
-		for( i=0; i<4; i++ ){
-			pImages[ i ] = nullptr;
+		for(i=0; i<4; i++){
+			pImages[i] = nullptr;
 		}
 		
 		// WARNING remove usage typically happens during main thread. if the combined texture
@@ -152,12 +151,4 @@ void deoglCombinedTexture::RemoveUsage(){
 		//         until a later time. this makes this call main thread safe
 		//pRenderThread.GetTexture().GetCombinedTexture().Remove( this );
 	}
-}
-
-void deoglCombinedTexture::SetLLPrev( deoglCombinedTexture *entry ){
-	pLLPrev = entry;
-}
-
-void deoglCombinedTexture::SetLLNext( deoglCombinedTexture *entry ){
-	pLLNext = entry;
 }

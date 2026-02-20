@@ -25,6 +25,7 @@
 #ifndef _MEBYTEARRAY_H_
 #define _MEBYTEARRAY_H_
 
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -34,7 +35,7 @@ class meByteArray{
 private:
 	int pColons;
 	int pRows;
-	unsigned char *pValues;
+	decTList<unsigned char> pValues;
 	
 	
 	
@@ -42,10 +43,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create byte array. */
-	meByteArray( int colons, int rows );
+	meByteArray(int colons, int rows);
 	
 	/** \brief Create copy of byte array. */
-	meByteArray( const meByteArray &array );
+	meByteArray(const meByteArray &array);
 	
 	/** \brief Clean up array. */
 	~meByteArray();
@@ -62,13 +63,13 @@ public:
 	inline int GetRows() const{ return pRows; }
 	
 	/** \brief Value at coordinate. */
-	int GetValueAt( int x, int y ) const;
+	int GetValueAt(int x, int y) const;
 	
 	/** \brief Set value at coordinate. */
-	void SetValueAt( int x, int y, int value );
+	void SetValueAt(int x, int y, int value);
 	
 	/** \brief Set all values. */
-	void SetAll( int value );
+	void SetAll(int value);
 	/*@}*/
 	
 	
@@ -76,10 +77,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Arrays are equal. */
-	bool operator==( const meByteArray &array ) const;
+	bool operator==(const meByteArray &array) const;
 	
 	/** \brief Copy operator. */
-	meByteArray &operator=( const meByteArray &array );
+	meByteArray &operator=(const meByteArray &array);
 	/*@}*/
 };
 

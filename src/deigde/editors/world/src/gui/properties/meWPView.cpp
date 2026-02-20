@@ -31,7 +31,6 @@
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
 #include "../../world/object/meObject.h"
-#include "../../world/terrain/meTerrainGroup.h"
 #include "../../undosys/properties/view/meUViewSetLimitBoxExtends.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -42,17 +41,16 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/composed/igdeToggleTags.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -78,16 +76,16 @@ protected:
 	meWPView &pPanel;
 	
 public:
-	cBaseTextFieldListener( meWPView &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(meWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		meWorld * const world = pPanel.GetWorld();
-		if( world ){
-			OnChanged( textField, *world );
+		if(world){
+			OnChanged(textField, *world);
 		}
 	}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ) = 0;
+	virtual void OnChanged(igdeTextField *textField, meWorld &world) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -99,14 +97,14 @@ public:
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		meWorld * const world = pPanel.GetWorld();
-		if( world ){
-			OnAction( *world );
+		if(world){
+			OnAction(*world);
 		}
 	}
 	
-	virtual void OnAction( meWorld &world ) = 0;
+	virtual void OnAction(meWorld &world) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -114,107 +112,114 @@ protected:
 	meWPView &pPanel;
 	
 public:
-	cBaseComboBoxListener( meWPView &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(meWPView &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		meWorld * const world = pPanel.GetWorld();
-		if( world ){
-			OnTextChanged( comboBox, *world );
+		if(world){
+			OnTextChanged(comboBox, *world);
 		}
 	}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox, meWorld &world ) = 0;
+	virtual void OnTextChanged(igdeComboBox *comboBox, meWorld &world) = 0;
 };
 
 
 class cActionMoveSnap : public cBaseAction{
 public:
-	cActionMoveSnap( meWPView &panel ) :
-	cBaseAction(panel, "Snap Move", nullptr, "Snap moving distance" ){ }
+	typedef deTObjectReference<cActionMoveSnap> Ref;
+	cActionMoveSnap(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.SnapMove", nullptr, "@World.WPView.Action.SnapMove.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetMoveSnap( ! configuration.GetMoveSnap() );
+		configuration.SetMoveSnap(!configuration.GetMoveSnap());
 		world.NotifyEditingChanged();
 	}
 };
 
 class cTextMoveStep : public cBaseTextFieldListener{
 public:
-	cTextMoveStep( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextMoveStep> Ref;
+	cTextMoveStep(meWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ){
+	virtual void OnChanged(igdeTextField *textField, meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		if( fabsf( textField->GetFloat() - configuration.GetMoveStep() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(textField->GetFloat() - configuration.GetMoveStep()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
-		configuration.SetMoveStep( textField->GetFloat() );
+		configuration.SetMoveStep(textField->GetFloat());
 		world.NotifyEditingChanged();
 	}
 };
 
 class cActionRotateSnap : public cBaseAction{
 public:
-	cActionRotateSnap( meWPView &panel ) :
-	cBaseAction(panel, "Snap Rotate", nullptr, "Snap rotation angle"){}
+	typedef deTObjectReference<cActionRotateSnap> Ref;
+	cActionRotateSnap(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.SnapRotate", nullptr, "@World.WPView.Action.SnapRotate.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetRotateSnap( ! configuration.GetRotateSnap() );
+		configuration.SetRotateSnap(!configuration.GetRotateSnap());
 		world.NotifyEditingChanged();
 	}
 };
 
 class cTextRotateStep : public cBaseTextFieldListener{
 public:
-	cTextRotateStep( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextRotateStep> Ref;
+	cTextRotateStep(meWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ){
+	virtual void OnChanged(igdeTextField *textField, meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		if( fabsf( textField->GetFloat() - configuration.GetRotateStep() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(textField->GetFloat() - configuration.GetRotateStep()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
-		configuration.SetRotateStep( textField->GetFloat() );
+		configuration.SetRotateStep(textField->GetFloat());
 		world.NotifyEditingChanged();
 	}
 };
 
 class cActionScaleSnap : public cBaseAction{
 public:
-	cActionScaleSnap( meWPView &panel ) :
-	cBaseAction(panel, "Snap Scale", nullptr, "Snap scaling factor"){ }
+	typedef deTObjectReference<cActionScaleSnap> Ref;
+	cActionScaleSnap(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.SnapScale", nullptr, "@World.WPView.Action.SnapScale.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetScaleSnap( ! configuration.GetScaleSnap() );
+		configuration.SetScaleSnap(!configuration.GetScaleSnap());
 		world.NotifyEditingChanged();
 	}
 };
 
 class cTextScaleStep : public cBaseTextFieldListener{
 public:
-	cTextScaleStep( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextScaleStep> Ref;
+	cTextScaleStep(meWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ){
+	virtual void OnChanged(igdeTextField *textField, meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		if( fabsf( textField->GetFloat() - configuration.GetScaleStep() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(textField->GetFloat() - configuration.GetScaleStep()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
-		configuration.SetScaleStep( textField->GetFloat() );
+		configuration.SetScaleStep(textField->GetFloat());
 		world.NotifyEditingChanged();
 	}
 };
 
 class cTextSensitivity : public cBaseTextFieldListener{
 public:
-	cTextSensitivity( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextSensitivity> Ref;
+	cTextSensitivity(meWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ){
+	virtual void OnChanged(igdeTextField *textField, meWorld &world){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		if( fabsf( textField->GetFloat() - configuration.GetSensitivity() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(textField->GetFloat() - configuration.GetSensitivity()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
-		configuration.SetSensitivity( textField->GetFloat() );
+		configuration.SetSensitivity(textField->GetFloat());
 		world.NotifyEditingChanged();
 	}
 };
@@ -223,8 +228,9 @@ class cActionSetSensitivity : public cBaseAction{
 	float pSensitivity;
 	
 public:
+	typedef deTObjectReference<cActionSetSensitivity> Ref;
 	cActionSetSensitivity(meWPView &panel, float sensitivity, const char *text) :
-	cBaseAction(panel, text, nullptr, "Set sensitivity"), pSensitivity(sensitivity){}
+	cBaseAction(panel, text, nullptr, "@World.WPView.Action.SetSensitivity.ToolTip"), pSensitivity(sensitivity){}
 	
 	void OnAction(meWorld &world) override{
 		meConfiguration &conf = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -240,8 +246,9 @@ class cActionMenuSensitivity : public igdeActionContextMenu{
 	meWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuSensitivity> Ref;
 	cActionMenuSensitivity(meWPView &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Sensitivity menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPView.Action.SensitivityMenu"),
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -251,73 +258,79 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 1.0f, "Set to 1")));
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.1f, "Set to 0.1")));
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.01f, "Set to 0.01")));
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 10.0f, "Set to 10")));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 1.0f, "@World.WPView.SetTo1"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 0.1f, "@World.WPView.SetTo01"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 0.01f, "@World.WPView.SetTo001"));
+		helper.MenuCommand(contextMenu, cActionSetSensitivity::Ref::New(pPanel, 10.0f, "@World.WPView.SetTo10"));
 	}
 };
 
 class cTextRectSelDist : public cBaseTextFieldListener{
 public:
-	cTextRectSelDist( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextRectSelDist> Ref;
+	cTextRectSelDist(meWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ){
-		if( fabsf( textField->GetFloat() - world.GetGuiParameters().GetRectSelDistance() ) < FLOAT_SAFE_EPSILON ){
+	virtual void OnChanged(igdeTextField *textField, meWorld &world){
+		if(fabsf(textField->GetFloat() - world.GetGuiParameters().GetRectSelDistance()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
-		world.GetGuiParameters().SetRectSelDistance( textField->GetFloat() );
+		world.GetGuiParameters().SetRectSelDistance(textField->GetFloat());
 	}
 };
 
 class cTextRectSelDistStep : public cBaseTextFieldListener{
 public:
-	cTextRectSelDistStep( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
+	typedef deTObjectReference<cTextRectSelDistStep> Ref;
+	cTextRectSelDistStep(meWPView &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged( igdeTextField *textField, meWorld &world ){
-		if( fabsf( textField->GetFloat() - world.GetGuiParameters().GetRectSelDistanceStep() ) < FLOAT_SAFE_EPSILON ){
+	virtual void OnChanged(igdeTextField *textField, meWorld &world){
+		if(fabsf(textField->GetFloat() - world.GetGuiParameters().GetRectSelDistanceStep()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
-		world.GetGuiParameters().SetRectSelDistanceStep( textField->GetFloat() );
+		world.GetGuiParameters().SetRectSelDistanceStep(textField->GetFloat());
 	}
 };
 
 class cActionAutoUpdate : public cBaseAction{
 public:
-	cActionAutoUpdate( meWPView &panel ) :
-	cBaseAction(panel, "Enable Auto Updating", nullptr, "Automatically update the screen"){ }
+	typedef deTObjectReference<cActionAutoUpdate> Ref;
+	cActionAutoUpdate(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.EnableAutoUpdating", nullptr,
+		"@World.WPView.Action.EnableAutoUpdating.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetAutoUpdate( ! configuration.GetAutoUpdate() );
+		configuration.SetAutoUpdate(!configuration.GetAutoUpdate());
 		world.NotifyEditingChanged();
 	}
 };
 
 
 class cActionClassHideTags : public cBaseAction {
-	igdeToggleTagsReference &pToggleTags;
+	igdeToggleTags::Ref &pToggleTags;
 	
 public:
-	cActionClassHideTags( meWPView &panel, igdeToggleTagsReference &toggleTags ) :
-	cBaseAction(panel, "", nullptr, "Hide classes matching one or more tags" ),
-	pToggleTags( toggleTags ){}
+	typedef deTObjectReference<cActionClassHideTags> Ref;
+	cActionClassHideTags(meWPView &panel, igdeToggleTags::Ref &toggleTags) :
+	cBaseAction(panel, "", nullptr, "@World.WPView.Action.HideClassesMatchingTags"),
+	pToggleTags(toggleTags){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		world.GetGuiParameters().GetTagsHideClass() = pToggleTags->GetEnabledTags();
 		world.NotifyClassHideTagsChanged();
 	}
 };
 
 class cActionClassPartialHideTags : public cBaseAction {
-	igdeToggleTagsReference &pToggleTags;
+	igdeToggleTags::Ref &pToggleTags;
 	
 public:
-	cActionClassPartialHideTags( meWPView &panel, igdeToggleTagsReference &toggleTags ) :
-	cBaseAction(panel, "", nullptr, "Partially hide classes matching one or more tags"),
-	pToggleTags( toggleTags ){}
+	typedef deTObjectReference<cActionClassPartialHideTags> Ref;
+	cActionClassPartialHideTags(meWPView &panel, igdeToggleTags::Ref &toggleTags) :
+	cBaseAction(panel, "", nullptr, "@World.WPView.Action.PartiallyHideClassesMatchingTags"),
+	pToggleTags(toggleTags){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		world.GetGuiParameters().GetTagsPartialHideClass() = pToggleTags->GetEnabledTags();
 		world.NotifyClassHideTagsChanged();
 	}
@@ -326,33 +339,36 @@ public:
 
 class cActionCameraFreeRoaming : public cBaseAction{
 public:
-	cActionCameraFreeRoaming( meWPView &panel ) :
-	cBaseAction(panel, "Free Roaming", nullptr, "Select free roaming camera"){}
+	typedef deTObjectReference<cActionCameraFreeRoaming> Ref;
+	cActionCameraFreeRoaming(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.FreeRoaming", nullptr, "@World.WPView.Action.FreeRoaming.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
-		world.SetActiveCamera( world.GetFreeRoamingCamera() );
+	void OnAction(meWorld &world) override{
+		world.SetActiveCamera(world.GetFreeRoamingCamera());
 	}
 };
 
 class cActionCameraPlayer : public cBaseAction{
 public:
-	cActionCameraPlayer( meWPView &panel ) :
-	cBaseAction(panel, "Player", nullptr, "Select player camera"){ }
+	typedef deTObjectReference<cActionCameraPlayer> Ref;
+	cActionCameraPlayer(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.Player", nullptr, "@World.WPView.Action.Player.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
-		world.SetActiveCamera( world.GetPlayerCamera() );
+	void OnAction(meWorld &world) override{
+		world.SetActiveCamera(world.GetPlayerCamera());
 	}
 };
 
 class cActionCameraObject : public cBaseAction{
 public:
-	cActionCameraObject( meWPView &panel ) :
-	cBaseAction(panel, "Object", nullptr, "Select object camera"){}
+	typedef deTObjectReference<cActionCameraObject> Ref;
+	cActionCameraObject(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.Object", nullptr, "@World.WPView.Action.Object.ToolTip"){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meCamera * const camera = pPanel.GetSelectedCameraObject();
-		if( camera ){
-			world.SetActiveCamera( camera );
+		if(camera){
+			world.SetActiveCamera(camera);
 		}
 	}
 };
@@ -360,35 +376,37 @@ public:
 class cComboCamera: public igdeComboBoxListener{
 	meWPView &pPanel;
 public:
-	cComboCamera( meWPView &panel ) : igdeComboBoxListener(), pPanel( panel ){}
+	typedef deTObjectReference<cComboCamera> Ref;
+	cComboCamera(meWPView &panel) : igdeComboBoxListener(), pPanel(panel){}
 	
-	void OnTextChanged( igdeComboBox *comboBox ) override{
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(!world){
 			return;
 		}
 		
-		meCamera * const camera = ( meCamera* )comboBox->GetSelectedItemData();
-		if( camera == world->GetActiveCamera()
+		meCamera * const camera = (meCamera*)comboBox->GetSelectedItemData();
+		if(camera == world->GetActiveCamera()
 		|| camera == world->GetFreeRoamingCamera()
-		|| camera == world->GetPlayerCamera() ){
+		|| camera == world->GetPlayerCamera()){
 			return;
 		}
 		
-		world->SetActiveCamera( camera );
+		world->SetActiveCamera(camera);
 	}
 };
 
 
 class cActionEnableAuralization : public cBaseAction{
 public:
-	cActionEnableAuralization( meWPView &panel ) :
-	cBaseAction(panel, "Enable Auralization", nullptr,
-		"Enable auralization if supported by audio module"){ }
+	typedef deTObjectReference<cActionEnableAuralization> Ref;
+	cActionEnableAuralization(meWPView &panel) :
+	cBaseAction(panel, "@World.WPView.Action.EnableAuralization", nullptr,
+		"@World.WPView.Action.EnableAuralization.ToolTip"){ }
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
-		configuration.SetEnableAuralization( ! configuration.GetEnableAuralization() );
+		configuration.SetEnableAuralization(!configuration.GetEnableAuralization());
 		world.NotifyEditingChanged();
 	}
 };
@@ -396,18 +414,20 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	cActionSkyChanged( meWPView &panel ) : cBaseAction(panel, "", nullptr, ""){ }
+	typedef deTObjectReference<cActionSkyChanged> Ref;
+	cActionSkyChanged(meWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		world.NotifySkyChanged();
 	}
 };
 
 class cEditBgObject : public cBaseAction{
 public:
-	cEditBgObject( meWPView &panel ) : cBaseAction(panel, "", nullptr, ""){ }
+	typedef deTObjectReference<cEditBgObject> Ref;
+	cEditBgObject(meWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		world.NotifyBgObjectChanged();
 	}
 };
@@ -415,14 +435,15 @@ public:
 class cEditLimitBoxMinExtend : public igdeEditVectorListener{
 	meWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditLimitBoxMinExtend> Ref;
 	cEditLimitBoxMinExtend(meWPView &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
 		meWorld * const world = pPanel.GetWorld();
 		const decVector &vector = editVector->GetVector();
 		if(world && !world->GetLimitBoxMinExtend().IsEqualTo(vector)){
-			world->GetUndoSystem()->Add(igdeUndo::Ref::New(
-				new meUViewSetLimitBoxExtends(world, vector, world->GetLimitBoxMaxExtend())));
+			world->GetUndoSystem()->Add(meUViewSetLimitBoxExtends::Ref::New(
+				world, vector, world->GetLimitBoxMaxExtend()));
 		}
 	}
 };
@@ -430,57 +451,64 @@ public:
 class cEditLimitBoxMaxExtend : public igdeEditVectorListener{
 	meWPView &pPanel;
 public:
+	typedef deTObjectReference<cEditLimitBoxMaxExtend> Ref;
 	cEditLimitBoxMaxExtend(meWPView &panel) : pPanel(panel){}
 	
 	void OnVectorChanged(igdeEditVector *editVector) override{
 		meWorld * const world = pPanel.GetWorld();
 		const decVector &vector = editVector->GetVector();
 		if(world && !world->GetLimitBoxMaxExtend().IsEqualTo(vector)){
-			world->GetUndoSystem()->Add(igdeUndo::Ref::New(
-				new meUViewSetLimitBoxExtends(world, world->GetLimitBoxMinExtend(), vector)));
+			world->GetUndoSystem()->Add(meUViewSetLimitBoxExtends::Ref::New(
+				world, world->GetLimitBoxMinExtend(), vector));
 		}
 	}
 };
 
 class cActionLimitBoxClear : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLimitBoxClear> Ref;
 	cActionLimitBoxClear(meWPView &panel) :
-	cBaseAction(panel, "Clear", nullptr, "Clear limit box"){}
+	cBaseAction(panel, "@World.WPView.Action.LimitBoxClear", nullptr,
+		"@World.WPView.Action.LimitBoxClear.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		if(!world.GetLimitBoxMinExtend().IsZero() || !world.GetLimitBoxMaxExtend().IsZero()){
-			world.GetUndoSystem()->Add(igdeUndo::Ref::New(
-				new meUViewSetLimitBoxExtends(&world, decVector(), decVector())));
+			world.GetUndoSystem()->Add(meUViewSetLimitBoxExtends::Ref::New(
+				&world, decVector(), decVector()));
 		}
 	}
 };
 
 class cActionLimitBoxDefault : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLimitBoxDefault> Ref;
 	cActionLimitBoxDefault(meWPView &panel) :
-	cBaseAction(panel, "Default", nullptr, "Set limit box to 1m cube"){}
+	cBaseAction(panel, "@World.WPView.Action.LimitBoxDefault", nullptr,
+		"@World.WPView.Action.LimitBoxDefault.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		const decVector minExtend(-0.5f, -0.5f, -0.5f), maxExtend(0.5f, 0.5f, 0.5f);
 		if(!world.GetLimitBoxMinExtend().IsEqualTo(minExtend)
 		|| !world.GetLimitBoxMaxExtend().IsEqualTo(maxExtend)){
-			world.GetUndoSystem()->Add(igdeUndo::Ref::New(
-				new meUViewSetLimitBoxExtends(&world, minExtend, maxExtend)));
+			world.GetUndoSystem()->Add(meUViewSetLimitBoxExtends::Ref::New(
+				&world, minExtend, maxExtend));
 		}
 	}
 };
 
 class cActionLimitBoxDefaultGround : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionLimitBoxDefaultGround> Ref;
 	cActionLimitBoxDefaultGround(meWPView &panel) :
-	cBaseAction(panel, "Default Ground", nullptr, "Set limit box to 1m cube sitting on ground"){}
+	cBaseAction(panel, "@World.WPView.Action.LimitBoxDefaultGround", nullptr,
+		"@World.WPView.Action.LimitBoxDefaultGround.ToolTip"){}
 	
 	void OnAction(meWorld &world) override{
 		const decVector minExtend(-0.5f, 0.0f, -0.5f), maxExtend(0.5f, 1.0f, 0.5f);
 		if(!world.GetLimitBoxMinExtend().IsEqualTo(minExtend)
 		|| !world.GetLimitBoxMaxExtend().IsEqualTo(maxExtend)){
-			world.GetUndoSystem()->Add(igdeUndo::Ref::New(
-				new meUViewSetLimitBoxExtends(&world, minExtend, maxExtend)));
+			world.GetUndoSystem()->Add(meUViewSetLimitBoxExtends::Ref::New(
+				&world, minExtend, maxExtend));
 		}
 	}
 };
@@ -489,8 +517,9 @@ class cActionMenuLimitBox : public igdeActionContextMenu{
 	meWPView &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionMenuLimitBox> Ref;
 	cActionMenuLimitBox(meWPView &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Limit box menu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPView.Action.LimitBoxMenu"),
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
@@ -500,31 +529,33 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionLimitBoxClear(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionLimitBoxClear::Ref::New(pPanel));
 		helper.Separator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionLimitBoxDefault(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionLimitBoxDefaultGround(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionLimitBoxDefault::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionLimitBoxDefaultGround::Ref::New(pPanel));
 	}
 };
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged( meWPView &panel ) : cBaseAction(panel, "", nullptr, ""){}
+	typedef deTObjectReference<cActionCameraChanged> Ref;
+	cActionCameraChanged(meWPView &panel) : cBaseAction(panel, "", nullptr, ""){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		meCamera * const camera = world.GetActiveCamera();
-		if( camera ){
-			pPanel.GetWindowProperties().GetWindowMain().GetConfiguration().SetEnableGI( camera->GetEnableGI() );
-			world.NotifyCameraChanged( camera );
+		if(camera){
+			pPanel.GetWindowProperties().GetWindowMain().GetConfiguration().SetEnableGI(camera->GetEnableGI());
+			world.NotifyCameraChanged(camera);
 		}
 	}
 };
 
 class cActionTriggerTable : public cBaseAction{
 public:
-	cActionTriggerTable( meWPView &panel ) : cBaseAction(panel, "", nullptr, "Trigger table"){}
+	typedef deTObjectReference<cActionTriggerTable> Ref;
+	cActionTriggerTable(meWPView &panel) : cBaseAction(panel, "", nullptr, "@World.WPView.Action.TriggerTable"){}
 	
-	virtual void OnAction( meWorld &world ){
+	void OnAction(meWorld &world) override{
 		world.NotifyTriggerTableChanged();
 	}
 };
@@ -539,122 +570,114 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPView::meWPView( meWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( nullptr ),
-pWorld( nullptr ),
+meWPView::meWPView(meWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
 pPreventUpdateCamera(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, form, formLine;
+	igdeContainer::Ref content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
-	pListener = new meWPViewListener( *this );
+	pListener = meWPViewListener::Ref::New(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// grid snapping and alignment
-	helper.GroupBox( content, groupBox, "Grid/Snapping:" );
+	helper.GroupBox(content, groupBox, "@World.WPView.GridSnapping");
 	
-	helper.CheckBoxOnly( groupBox, pChkMoveSnap, new cActionMoveSnap( *this ) );
-	helper.EditFloat( groupBox, "Snap moving distance", pEditMoveStep, new cTextMoveStep( *this ) );
+	helper.CheckBoxOnly(groupBox, pChkMoveSnap, cActionMoveSnap::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapMovingDistance.ToolTip", pEditMoveStep, cTextMoveStep::Ref::New(*this));
 	
-	helper.CheckBoxOnly( groupBox, pChkRotSnap, new cActionRotateSnap( *this ) );
-	helper.EditFloat( groupBox, "Snap rotation angle", pEditRotStep, new cTextRotateStep( *this ) );
+	helper.CheckBoxOnly(groupBox, pChkRotSnap, cActionRotateSnap::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapRotationAngle.ToolTip", pEditRotStep, cTextRotateStep::Ref::New(*this));
 	
-	helper.CheckBoxOnly( groupBox, pChkScaleSnap, new cActionScaleSnap( *this ) );
-	helper.EditFloat( groupBox, "Snap scaling factor", pEditScaleStep, new cTextScaleStep( *this ) );
+	helper.CheckBoxOnly(groupBox, pChkScaleSnap, cActionScaleSnap::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.SnapScalingFactor.ToolTip", pEditScaleStep, cTextScaleStep::Ref::New(*this));
 	
-	helper.FormLineStretchFirst(groupBox, "Sensitivity:", "Sensitivity of mouse input", formLine);
-	helper.EditFloat(formLine, "Sensitivity of mouse input", pEditSensitivity, new cTextSensitivity(*this));
-	actionMenu.TakeOver(new cActionMenuSensitivity(*this));
-	helper.Button(formLine, pBtnSensitivity, actionMenu.Pointer());
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.Sensitivity", "@World.WPView.Sensitivity.ToolTip", formLine);
+	helper.EditFloat(formLine, "@World.WPView.Sensitivity.ToolTip", pEditSensitivity, cTextSensitivity::Ref::New(*this));
+	actionMenu = cActionMenuSensitivity::Ref::New(*this);
+	helper.Button(formLine, pBtnSensitivity, actionMenu);
 	actionMenu->SetWidget(pBtnSensitivity);
 	
 	
 	// selection
-	helper.GroupBox( content, groupBox, "Selection:" );
+	helper.GroupBox(content, groupBox, "@World.WPView.Selection");
 	
-	helper.EditFloat( groupBox, "Distance:", "Distance for rectangular selection",
-		pEditRectSelDist, new cTextRectSelDist( *this ) );
-	helper.EditFloat( groupBox, "Distance Step:",
-		"Mouse wheel adjustment step for distance for rectangular selection",
-		pEditRectSelDistStep, new cTextRectSelDistStep( *this ) );
+	helper.EditFloat(groupBox, "@World.WPView.Distance", "@World.WPView.DistanceRectSelect.ToolTip",
+		pEditRectSelDist, cTextRectSelDist::Ref::New(*this));
+	helper.EditFloat(groupBox, "@World.WPView.DistanceStep",
+		"@World.WPView.MouseWheelAdjustmentStep.ToolTip",
+		pEditRectSelDistStep, cTextRectSelDistStep::Ref::New(*this));
 	
 	
 	// auto updating
-	helper.GroupBox( content, groupBox, "Auto Updating:" );
-	helper.CheckBox( groupBox, pChkAutoUpdate, new cActionAutoUpdate( *this ) );
+	helper.GroupBox(content, groupBox, "@World.WPView.AutoUpdating");
+	helper.CheckBox(groupBox, pChkAutoUpdate, cActionAutoUpdate::Ref::New(*this));
 	
 	
 	// class hiding
-	helper.GroupBoxFlow( content, groupBox, "Class Hide Tags:", false, true );
-	helper.ToggleTags( groupBox, pEditClassHideTags,
-		new cActionClassHideTags( *this, pEditClassHideTags ), true );
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.ClassHideTags", false, true);
+	helper.ToggleTags(groupBox, pEditClassHideTags, cActionClassHideTags::Ref::New(*this, pEditClassHideTags));
 	
-	helper.GroupBoxFlow( content, groupBox, "Class Partial Hide Tags:", false, true );
-	helper.ToggleTags( groupBox, pEditClassPartialHideTags,
-		new cActionClassPartialHideTags( *this, pEditClassPartialHideTags ), true );
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.ClassPartialHideTags", false, true);
+	helper.ToggleTags(groupBox, pEditClassPartialHideTags, cActionClassPartialHideTags::Ref::New(*this, pEditClassPartialHideTags));
 	
 	
 	// camera
-	helper.GroupBoxFlow( content, groupBox, "Camera:" );
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.Camera");
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
+	form = igdeContainerForm::Ref::New(env);
+	groupBox->AddChild(form);
 	
-	helper.EditString( form, "Active:", "Active camera", pEditActiveCamera, nullptr );
-	pEditActiveCamera->SetEditable( false );
+	helper.EditString(form, "@World.WPView.Active", "@World.WPView.ActiveCamera.ToolTip", pEditActiveCamera, {});
+	pEditActiveCamera->SetEditable(false);
 	
-	helper.FormLine( form, "", "", formLine );
-	pActionCameraFreeRoaming.TakeOver( new cActionCameraFreeRoaming( *this ) );
-	helper.Button( formLine, pActionCameraFreeRoaming );
-	pActionCameraPlayer.TakeOver( new cActionCameraPlayer( *this ) );
-	helper.Button( formLine, pActionCameraPlayer );
-	pActionCameraObject.TakeOver( new cActionCameraObject( *this ) );
-	helper.Button( formLine, pActionCameraObject );
+	helper.FormLine(form, "", "", formLine);
+	pActionCameraFreeRoaming = cActionCameraFreeRoaming::Ref::New(*this);
+	helper.Button(formLine, pActionCameraFreeRoaming);
+	pActionCameraPlayer = cActionCameraPlayer::Ref::New(*this);
+	helper.Button(formLine, pActionCameraPlayer);
+	pActionCameraObject = cActionCameraObject::Ref::New(*this);
+	helper.Button(formLine, pActionCameraObject);
 	
-	helper.ComboBox( form, "Object Camera:", "Object camera", pCBCameraObjects, nullptr );
+	helper.ComboBox(form, "@World.WPView.ObjectCamera", "@World.WPView.ObjectCamera.ToolTip", pCBCameraObjects, {});
 	pCBCameraObjects->SetDefaultSorter();
 	
-	helper.WPCamera( groupBox, pWPCamera, new cActionCameraChanged( *this ),
-		"Camera Parameters:", false, false, true );
+	helper.WPCamera(groupBox, pWPCamera, cActionCameraChanged::Ref::New(*this),
+		"@World.WPView.CameraParameters", false, false);
 	
 	
 	// microphone
-	helper.GroupBoxFlow( content, groupBox, "Microphone:" );
-	helper.CheckBox( groupBox, pChkEnableAuralization, new cActionEnableAuralization( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "@World.WPView.Microphone");
+	helper.CheckBox(groupBox, pChkEnableAuralization, cActionEnableAuralization::Ref::New(*this));
 	
 	
 	// property panels
-	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:", false, false, true );
-	helper.WPWObject(content, pWPBgObject, new cEditBgObject(*this), "Background Object:", false, true, true);
-	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
-		"Trigger Table:", false, true, true );
+	helper.WPSky(content, pWPSky, cActionSkyChanged::Ref::New(*this), "@World.WPView.Sky.Label2", false, false);
+	helper.WPWObject(content, pWPBgObject, cEditBgObject::Ref::New(*this), "@World.WPView.BackgroundObject", false, true);
+	helper.WPTriggerTable(content, pWPTriggerTable, cActionTriggerTable::Ref::New(*this),
+		"@World.WPView.TriggerTable.Label2", false, true);
 	
 	// limit box
-	helper.GroupBox(content, groupBox, "Limit Box:");
+	helper.GroupBox(content, groupBox, "@World.WPView.LimitBox");
 	
-	helper.FormLineStretchFirst(groupBox, "Minimum Extend:", "Minimum extend of limit box", formLine);
-	helper.EditVector(formLine, "Minimum extend of limit box", pEditLimitBoxMinExtend,
-		new cEditLimitBoxMinExtend(*this));
-	actionMenu.TakeOver(new cActionMenuLimitBox(*this));
-	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu.Pointer());
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.MinimumExtend", "@World.WPView.MinimumExtendLimitBox.ToolTip", formLine);
+	helper.EditVector(formLine, "@World.WPView.MinimumExtendLimitBox.ToolTip", pEditLimitBoxMinExtend, cEditLimitBoxMinExtend::Ref::New(*this));
+	actionMenu = cActionMenuLimitBox::Ref::New(*this);
+	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu);
 	actionMenu->SetWidget(pBtnLimitBoxMenu);
 	
-	helper.EditVector(groupBox, "Maximum Extend:", "Maximum extend of limit box",
-		pEditLimitBoxMaxExtend, new cEditLimitBoxMaxExtend(*this));
+	helper.EditVector(groupBox, "@World.WPView.MaximumExtend", "@World.WPView.MaximumExtendLimitBox.ToolTip",
+		pEditLimitBoxMaxExtend, cEditLimitBoxMaxExtend::Ref::New(*this));
 }
 
 meWPView::~meWPView(){
-	SetWorld( nullptr );
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -662,39 +685,36 @@ meWPView::~meWPView(){
 // Management
 ///////////////
 
-void meWPView::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPView::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	pWPSky->SetSky( nullptr );
+	pWPSky->SetSky(nullptr);
 	pWPBgObject->SetObject(nullptr);
 	pWPBgObject->SetUndoSystem(nullptr);
-	pWPCamera->SetCamera( nullptr );
-	pWPTriggerTable->SetTriggerTargetList( nullptr );
-	pEditClassHideTags->SetTags( decStringSet() );
+	pWPCamera->SetCamera(nullptr);
+	pWPTriggerTable->SetTriggerTargetList(nullptr);
+	pEditClassHideTags->SetTags(decStringSet());
 	pEditClassPartialHideTags->Clear();
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
-		pWorld->FreeReference();
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
-		world->AddReference();
-		
-		pWPSky->SetSky( world->GetSky() );
+	if(world){
+		world->AddNotifier(pListener);
+		pWPSky->SetSky(world->GetSky());
 		pWPBgObject->SetObject(world->GetBgObject());
 		pWPBgObject->SetUndoSystem(world->GetUndoSystem());
-		pWPTriggerTable->SetTriggerTargetList( &world->GetTriggerTable() );
+		pWPTriggerTable->SetTriggerTargetList(&world->GetTriggerTable());
 		
-		if( world->GetGameDefinition() ){
+		if(world->GetGameDefinition()){
 			const igdeGDClassManager &gdClasses = *pWorld->GetGameDefinition()->GetClassManager();
-			pEditClassHideTags->SetTags( gdClasses.GetHideTags() );
-			pEditClassPartialHideTags->SetTags( gdClasses.GetPartialHideTags() );
+			pEditClassHideTags->SetTags(gdClasses.GetHideTags());
+			pEditClassPartialHideTags->SetTags(gdClasses.GetPartialHideTags());
 		}
 	}
 	
@@ -712,26 +732,26 @@ void meWPView::SetWorld( meWorld *world ){
 
 meCamera *meWPView::GetSelectedCameraObject() const{
 	return pCBCameraObjects->GetSelectedItem() ?
-		( meCamera* )pCBCameraObjects->GetSelectedItem()->GetData() : nullptr;
+		(meCamera*)pCBCameraObjects->GetSelectedItem()->GetData() : nullptr;
 }
 
 void meWPView::UpdateView(){
 	const meConfiguration &configuration = pWindowProperties.GetWindowMain().GetConfiguration();
 	
-	pChkMoveSnap->SetChecked( configuration.GetMoveSnap() );
-	pEditMoveStep->SetFloat( configuration.GetMoveStep() );
-	pChkRotSnap->SetChecked( configuration.GetRotateSnap() );
-	pEditRotStep->SetFloat( configuration.GetRotateStep() );
-	pChkScaleSnap->SetChecked( configuration.GetScaleSnap() );
-	pEditScaleStep->SetFloat( configuration.GetScaleStep() );
-	pEditSensitivity->SetFloat( configuration.GetSensitivity() );
-	pChkAutoUpdate->SetChecked( configuration.GetAutoUpdate() );
-	pChkEnableAuralization->SetChecked( configuration.GetEnableAuralization() );
+	pChkMoveSnap->SetChecked(configuration.GetMoveSnap());
+	pEditMoveStep->SetFloat(configuration.GetMoveStep());
+	pChkRotSnap->SetChecked(configuration.GetRotateSnap());
+	pEditRotStep->SetFloat(configuration.GetRotateStep());
+	pChkScaleSnap->SetChecked(configuration.GetScaleSnap());
+	pEditScaleStep->SetFloat(configuration.GetScaleStep());
+	pEditSensitivity->SetFloat(configuration.GetSensitivity());
+	pChkAutoUpdate->SetChecked(configuration.GetAutoUpdate());
+	pChkEnableAuralization->SetChecked(configuration.GetEnableAuralization());
 	
-	if( pWorld ){
+	if(pWorld){
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
-		pEditRectSelDist->SetFloat( guiParams.GetRectSelDistance() );
-		pEditRectSelDistStep->SetFloat( guiParams.GetRectSelDistanceStep() );
+		pEditRectSelDist->SetFloat(guiParams.GetRectSelDistance());
+		pEditRectSelDistStep->SetFloat(guiParams.GetRectSelDistanceStep());
 		
 	}else{
 		pEditRectSelDist->ClearText();
@@ -739,34 +759,25 @@ void meWPView::UpdateView(){
 	}
 	
 	const bool enable = pWorld;
-	pEditRectSelDist->SetEnabled( enable );
-	pEditRectSelDistStep->SetEnabled( enable );
+	pEditRectSelDist->SetEnabled(enable);
+	pEditRectSelDistStep->SetEnabled(enable);
 }
 
 void meWPView::UpdateCameraList(){
-	meCamera * const selectedCamera = ( meCamera* )pCBCameraObjects->GetSelectedItemData();
-	
-	pCBCameraObjects->RemoveAllItems();
-	
-	if( pWorld ){
-		const meObjectList &objects = pWorld->GetObjects();
-		const int count = objects.GetCount();
-		int i;
+	pCBCameraObjects->UpdateRestoreSelection([&](){
+		pCBCameraObjects->RemoveAllItems();
 		
-		for( i=0; i<count; i++ ){
-			meCamera * const camera = objects.GetAt( i )->GetCamera();
-			if( camera ){
-				pCBCameraObjects->AddItem( camera->GetName(), nullptr, camera );
-			}
+		if(pWorld){
+			pWorld->GetObjects().Visit([&](const meObject &object){
+				meCamera * const camera = object.GetCamera();
+				if(camera){
+					pCBCameraObjects->AddItem(camera->GetName(), nullptr, camera);
+				}
+			});
+			
+			pCBCameraObjects->SortItems();
 		}
-	}
-	
-	pCBCameraObjects->SortItems();
-	
-	pCBCameraObjects->SetSelectionWithData( selectedCamera );
-	if( ! pCBCameraObjects->GetSelectedItem() && pCBCameraObjects->GetItemCount() > 0 ){
-		pCBCameraObjects->SetSelection( 0 );
-	}
+	}, 0);
 	
 	UpdateCamera();
 }
@@ -780,14 +791,14 @@ void meWPView::UpdateCamera(){
 	try{
 		meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : nullptr;
 		
-		if( camera ){
-			pEditActiveCamera->SetText( camera->GetName() );
+		if(camera){
+			pEditActiveCamera->SetText(camera->GetName());
 			
 		}else{
 			pEditActiveCamera->ClearText();
 		}
 		
-		pWPCamera->SetCamera( camera );
+		pWPCamera->SetCamera(camera);
 		pWPCamera->UpdateCamera();
 		pWPCamera->UpdateViewDirection();
 		
@@ -818,13 +829,13 @@ void meWPView::UpdateLimitBox(){
 }
 
 void meWPView::UpdateClassHideTagLists(){
-	if( pWorld ){
-		pEditClassHideTags->EnableTags( pWorld->GetGuiParameters().GetTagsHideClass() );
-		pEditClassPartialHideTags->EnableTags( pWorld->GetGuiParameters().GetTagsPartialHideClass() );
+	if(pWorld){
+		pEditClassHideTags->EnableTags(pWorld->GetGuiParameters().GetTagsHideClass());
+		pEditClassPartialHideTags->EnableTags(pWorld->GetGuiParameters().GetTagsPartialHideClass());
 		
 	}else{
-		pEditClassHideTags->EnableTags( decStringSet() );
-		pEditClassPartialHideTags->EnableTags( decStringSet() );
+		pEditClassHideTags->EnableTags(decStringSet());
+		pEditClassPartialHideTags->EnableTags(decStringSet());
 	}
 }
 

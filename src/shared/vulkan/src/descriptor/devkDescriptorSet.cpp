@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkDescriptorSet.h"
 #include "devkDescriptorPool.h"
 #include "devkDescriptorPoolSlot.h"
@@ -38,130 +35,103 @@
 // class devkDescriptorSet
 ////////////////////////////
 
-devkDescriptorSet::devkDescriptorSet( devkDescriptorPool &pool ) :
-pPool( pool ),
-pSlot( pool.Get() ),
-pLayout( VK_NULL_HANDLE ),
-pSet( pSlot->GetSet() ),
-pBindings( nullptr ),
-pWriteSets( nullptr ),
-pBuffers( nullptr ),
-pBindingCount( 0 )
+devkDescriptorSet::devkDescriptorSet(devkDescriptorPool &pool) :
+pPool(pool),
+pSlot(pool.Get()),
+pLayout(VK_NULL_HANDLE),
+pSet(pSlot->GetSet()),
+pBindingCount(0)
 {
-	try{
-		const devkDescriptorSetLayoutConfiguration &configuration = pool.GetLayout()->GetConfiguration();
-		const int count = configuration.GetLayoutBindingCount();
-		if( count > 0 ){
-			pBindings = new VkDescriptorBufferInfo[ count ]{};
-			pWriteSets = new VkWriteDescriptorSet[ count ]{};
+	const devkDescriptorSetLayoutConfiguration &configuration = pool.GetLayout()->GetConfiguration();
+	const int count = configuration.GetLayoutBindings().GetCount();
+	if(count > 0){
+		pBindings.SetAll(count, {});
+		pWriteSets.SetAll(count, {});
+		
+		int i;
+		for(i=0; i<count; i++){
+			const VkDescriptorSetLayoutBinding &binding = configuration.GetLayoutBindings()[i];
 			
-			int i;
-			for( i=0; i<count; i++ ){
-				const VkDescriptorSetLayoutBinding &binding = configuration.GetLayoutBindingAt( i );
-				
-				pBindings[ i ].buffer = VK_NULL_HANDLE;
-				pBindings[ i ].offset = 0;
-				pBindings[ i ].range = VK_WHOLE_SIZE;
-				
-				pWriteSets[ i ].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-				pWriteSets[ i ].dstSet = pSet;
-				pWriteSets[ i ].dstBinding = binding.binding;
-				pWriteSets[ i ].descriptorCount = 1;
-				pWriteSets[ i ].descriptorType = binding.descriptorType;
-				pWriteSets[ i ].pBufferInfo = pBindings + i;
-			}
+			pBindings[i].buffer = VK_NULL_HANDLE;
+			pBindings[i].offset = 0;
+			pBindings[i].range = VK_WHOLE_SIZE;
 			
-			pBuffers = new devkBuffer::Ref[ count ];
-			
-			pBindingCount = count;
+			pWriteSets[i].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			pWriteSets[i].dstSet = pSet;
+			pWriteSets[i].dstBinding = binding.binding;
+			pWriteSets[i].descriptorCount = 1;
+			pWriteSets[i].descriptorType = binding.descriptorType;
+			pWriteSets[i].pBufferInfo = &pBindings[i];
 		}
 		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+		pBuffers.SetAll(count, {});
+		
+		pBindingCount = count;
 	}
 }
 
-devkDescriptorSet::~devkDescriptorSet(){
-	pCleanUp();
-}
+devkDescriptorSet::~devkDescriptorSet() = default;
 
 
 
 // Management
 ///////////////
 
-void devkDescriptorSet::SetBinding( int index, devkBuffer *buffer,
-VkDeviceSize offset, VkDeviceSize range ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
+void devkDescriptorSet::SetBinding(int index, devkBuffer *buffer,
+VkDeviceSize offset, VkDeviceSize range){
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
 	}
-	if( index >= pBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= bindingCount" );
+	if(index >= pBindingCount){
+		DETHROW_INFO(deeInvalidParam, "index >= bindingCount");
 	}
 	
-	pBuffers[ index ] = buffer;
+	pBuffers[index] = buffer;
 	
-	if( buffer ){
-		pBindings[ index ].buffer = buffer->GetBuffer();
-		pBindings[ index ].offset = offset;
-		pBindings[ index ].range = range;
+	if(buffer){
+		pBindings[index].buffer = buffer->GetBuffer();
+		pBindings[index].offset = offset;
+		pBindings[index].range = range;
 		
 	}else{
-		pBindings[ index ].buffer = VK_NULL_HANDLE;
-		pBindings[ index ].offset = 0;
-		pBindings[ index ].range = VK_WHOLE_SIZE;
+		pBindings[index].buffer = VK_NULL_HANDLE;
+		pBindings[index].offset = 0;
+		pBindings[index].range = VK_WHOLE_SIZE;
 	}
 }
 
-void devkDescriptorSet::ClearBinding( int index ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
+void devkDescriptorSet::ClearBinding(int index){
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
 	}
-	if( index >= pBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= bindingCount" );
+	if(index >= pBindingCount){
+		DETHROW_INFO(deeInvalidParam, "index >= bindingCount");
 	}
 	
-	pBuffers[ index ] = nullptr;
+	pBuffers[index] = nullptr;
 	
-	pBindings[ index ].buffer = VK_NULL_HANDLE;
-	pBindings[ index ].offset = 0;
-	pBindings[ index ].range = VK_WHOLE_SIZE;
+	pBindings[index].buffer = VK_NULL_HANDLE;
+	pBindings[index].offset = 0;
+	pBindings[index].range = VK_WHOLE_SIZE;
 }
 
 void devkDescriptorSet::ClearAllBindings(){
 	int i;
-	for( i=0; i<pBindingCount; i++ ){
-		pBuffers[ i ] = nullptr;
+	for(i=0; i<pBindingCount; i++){
+		pBuffers[i] = nullptr;
 		
-		pBindings[ i ].buffer = VK_NULL_HANDLE;
-		pBindings[ i ].offset = 0;
-		pBindings[ i ].range = VK_WHOLE_SIZE;
+		pBindings[i].buffer = VK_NULL_HANDLE;
+		pBindings[i].offset = 0;
+		pBindings[i].range = VK_WHOLE_SIZE;
 	}
 }
 
 void devkDescriptorSet::Update(){
-	if( pBindingCount == 0 ){
+	if(pBindingCount == 0){
 		return;
 	}
 	
 	devkDevice &device = pPool.GetDevice();
-	device.vkUpdateDescriptorSets( device.GetDevice(), pBindingCount, pWriteSets, 0, VK_NULL_HANDLE );
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void devkDescriptorSet::pCleanUp(){
-	if( pBuffers ){
-		delete [] pBuffers;
-	}
-	if( pWriteSets ){
-		delete [] pWriteSets;
-	}
-	if( pBindings ){
-		delete [] pBindings;
-	}
+	device.vkUpdateDescriptorSets(device.GetDevice(), pBindingCount,
+		pWriteSets.GetArrayPointer(), 0, VK_NULL_HANDLE);
 }

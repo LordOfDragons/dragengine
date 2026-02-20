@@ -29,8 +29,8 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -50,13 +50,12 @@ class deModelWeight;
 class fbxModel : public deObject{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<fbxModel> Ref;
-	
+	using Ref = deTObjectReference<fbxModel>;
 	
 	
 private:
 	struct sVertex {
-		decIntList weights;
+		decTList<int> weights;
 		decVector position;
 		int weightSet;
 	};
@@ -69,26 +68,21 @@ private:
 	int64_t pGeometryID;
 	int64_t pModelID;
 	int64_t pDeformerID;
-	decObjectOrderedSet pClusters;
+	decTObjectOrderedSet<fbxModelCluster> pClusters;
 	decMatrix pMatrix;
 	
-	deModelWeight *pVertexWeights;
-	int pVertexWeightCount;
-	int pVertexWeightSize;
+	decTList<deModelWeight> pVertexWeights;
 	
-	deModelWeight *pWeights;
-	int pWeightCount;
-	int pWeightSize;
+	decTList<deModelWeight> pWeights;
 	
-	decIntList pWeightSetWeights;
-	decIntList pWeightSetsFirstWeight;
-	decIntList pWeightSetsWeightsCount;
-	decIntList pWeightGroupsSetCount;
+	decTList<int> pWeightSetWeights;
+	decTList<int> pWeightSetsFirstWeight;
+	decTList<int> pWeightSetsWeightsCount;
+	decTList<int> pWeightGroupsSetCount;
 	
 	float pWeightMatchThreshold;
 	
-	sVertex *pVertices;
-	int pVertexCount;
+	decTList<sVertex> pVertices;
 	
 	bool pCulling;
 	
@@ -98,11 +92,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create connection. */
-	fbxModel( fbxScene &scene, fbxNode &nodeGeometry );
+	fbxModel(fbxScene &scene, fbxNode &nodeGeometry);
 	
 protected:
 	/** Clean up connection. */
-	virtual ~fbxModel();
+	~fbxModel() override;
 	/*@}*/
 	
 	
@@ -133,38 +127,35 @@ public:
 	
 	
 	
-	/** Count of clusters. */
-	int GetClusterCount() const;
-	
-	/** Cluster at index. */
-	fbxModelCluster *GetClusterAt( int index ) const;
+	/** Clusters. */
+	inline const decTObjectOrderedSet<fbxModelCluster> &GetClusters() const{ return pClusters; }
 	
 	/** Named cluster or NULL if absent. */
-	fbxModelCluster *GetClusterNamed( const char *name ) const;
+	fbxModelCluster *GetClusterNamed(const char *name) const;
 	
 	/** Match clusters against rig. */
-	void MatchClusters( const fbxRig &rig );
+	void MatchClusters(const fbxRig &rig);
 	
 	/** Build weights. */
 	void BuildWeights();
 	
-	/** Count of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	/** Vertices. */
+	inline int GetVertexCount() const{ return pVertices.GetCount(); }
 	
 	/** Vertex position. */
-	inline const decVector &GetVertexPositionAt( int index ) const{ return pVertices[ index ].position; }
+	inline const decVector &GetVertexPositionAt(int index) const{ return pVertices[index].position; }
 	
 	/** Vertex weight set. */
-	inline int GetVertexWeightSetAt( int index ) const{ return pVertices[ index ].weightSet; }
+	inline int GetVertexWeightSetAt(int index) const{ return pVertices[index].weightSet; }
 	
 	/** Get weight. */
-	const deModelWeight &GetWeightAt( int index ) const;
+	const deModelWeight &GetWeightAt(int index) const;
 	
 	/** Weight sets. */
-	inline const decIntList &GetWeightSetWeights() const{ return pWeightSetWeights; }
-	inline const decIntList &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
-	inline const decIntList &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
-	inline const decIntList &GetWeightGroupsSetCount() const{ return pWeightGroupsSetCount; }
+	inline const decTList<int> &GetWeightSetWeights() const{ return pWeightSetWeights; }
+	inline const decTList<int> &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
+	inline const decTList<int> &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
+	inline const decTList<int> &GetWeightGroupsSetCount() const{ return pWeightGroupsSetCount; }
 	
 	
 	
@@ -177,15 +168,15 @@ public:
 	
 	
 	/** Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	int pAddVertexWeight( int bone, float weight );
-	int pAddWeight( int bone, float weight );
-	int pAddWeightSet( const decIntList &weights );
+	int pAddVertexWeight(int bone, float weight);
+	int pAddWeight(int bone, float weight);
+	int pAddWeightSet(const decTList<int> &weights);
 };
 
 #endif

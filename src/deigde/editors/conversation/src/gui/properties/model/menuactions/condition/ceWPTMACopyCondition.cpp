@@ -32,10 +32,10 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataCondition.h"
-#include "../../../../../conversation/condition/ceConversationConditionList.h"
+#include "../../../../../conversation/condition/ceConversationCondition.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -44,21 +44,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACopyCondition::ceWPTMACopyCondition( ceWindowMain &windowMain,
-ceConversationCondition *condition ) :
-ceWPTMenuAction( windowMain, "Copy Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ) ),
-pCondition( condition )
+ceWPTMACopyCondition::ceWPTMACopyCondition(ceWindowMain &windowMain,
+ceConversationCondition *condition) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.CopyCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
+pCondition(condition)
 {
-	SetEnabled( condition != NULL );
+	SetEnabled(condition != nullptr);
 }
 
-ceWPTMACopyCondition::ceWPTMACopyCondition( ceWindowMain &windowMain,
-ceConversationCondition *condition, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pCondition( condition )
+ceWPTMACopyCondition::ceWPTMACopyCondition(ceWindowMain &windowMain,
+ceConversationCondition *condition, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pCondition(condition)
 {
-	SetEnabled( condition != NULL );
+	SetEnabled(condition != nullptr);
 }
 
 
@@ -67,14 +67,12 @@ pCondition( condition )
 ///////////////
 
 void ceWPTMACopyCondition::OnAction(){
-	if( ! pCondition ){
+	if(!pCondition){
 		return;
 	}
 	
-	ceConversationConditionList conditions;
-	conditions.Add( pCondition );
+	ceConversationCondition::List conditions;
+	conditions.Add(pCondition);
 	
-	igdeClipboardDataReference cdata;
-	cdata.TakeOver( new ceClipboardDataCondition( conditions ) );
-	GetWindowMain().GetClipboard().Set( cdata );
+	GetWindowMain().GetClipboard().Set(ceClipboardDataCondition::Ref::New(conditions));
 }

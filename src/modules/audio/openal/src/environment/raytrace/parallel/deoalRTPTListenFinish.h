@@ -26,20 +26,26 @@
 #define _DEOALRTPTLISTENFINISH_H_
 
 #include "deoalRTParallelEnvProbe.h"
+#include "../deoalImpulseResponse.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
-class decPointerList;
 
 
 /**
  * \brief Finish listen parallel task estimating room parameters.
  */
 class deoalRTPTListenFinish : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deoalRTPTListenFinish>;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	
-	decPointerList pTasks;
+	decTOrderedSet<deoalRTPTListen*> pTasks;
 	const deoalEnvProbe *pSourceProbe;
 	const deoalEnvProbe *pListenProbe;
 	decDVector pPosition;
@@ -54,11 +60,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create finish listen parallel task. */
-	deoalRTPTListenFinish( deoalRTParallelEnvProbe &owner );
+	deoalRTPTListenFinish(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up finish listen parallel task. */
-	virtual ~deoalRTPTListenFinish();
+	~deoalRTPTListenFinish() override;
 	/*@}*/
 	
 	
@@ -67,27 +73,27 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies( const decPointerList &tasks );
+	void AddDependencies(const decTOrderedSet<deoalRTPTListen*> &tasks);
 	
 	/** \brief Set probes. */
-	void SetProbes( const deoalEnvProbe *source, const deoalEnvProbe *listen );
+	void SetProbes(const deoalEnvProbe *source, const deoalEnvProbe *listen);
 	
 	/** \brief Set listen position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Set listener to update. */
-	void SetListener( deoalEnvProbeListener *listener );
+	void SetListener(deoalEnvProbeListener *listener);
 	
 	/** \brief Listen tasks (deoalRTPTListen*). */
-	inline decPointerList GetListenTasks(){ return pTasks; }
+	inline decTOrderedSet<deoalRTPTListen*> GetListenTasks(){ return pTasks; }
 	
 	
 	
 	/** \brief Parallel task implementation. */
-	virtual void Run();
+	void Run() override;
 	
 	/** \brief Processing of task Run() finished. */
-	virtual void Finished();
+	void Finished() override;
 	/*@}*/
 	
 	
@@ -95,10 +101,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Short task name for debugging. */
-	virtual decString GetDebugName() const;
+	decString GetDebugName() const override;
 	
 	/** \brief Task details for debugging. */
-	virtual decString GetDebugDetails() const;
+	decString GetDebugDetails() const override;
 	/*@}*/
 	
 	

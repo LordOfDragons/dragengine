@@ -29,7 +29,6 @@
 #include "meUHTSetBaseHeight.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/terrain/meHeightTerrain.h"
-#include "../../../world/terrain/meHeightTerrain.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetBaseHeight::meUHTSetBaseHeight( meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight ){
-	if( ! world || ! heightTerrain ){
-		DETHROW( deeInvalidParam );
+meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight){
+	if(!world || !heightTerrain){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWorld = world;
@@ -52,13 +51,10 @@ meUHTSetBaseHeight::meUHTSetBaseHeight( meWorld *world, meHeightTerrain *heightT
 	pOldBaseHeight = heightTerrain->GetBaseHeight();
 	pNewBaseHeight = newBaseHeight;
 	
-	SetShortInfo( "Set Height Terrain Base Height" );
-	
-	world->AddReference();
+	SetShortInfo("@World.UHTSetBaseHeight.SetHeightTerrainBaseHeight");
 }
 
 meUHTSetBaseHeight::~meUHTSetBaseHeight(){
-	if( pWorld ) pWorld->FreeReference();
 }
 
 
@@ -68,9 +64,9 @@ meUHTSetBaseHeight::~meUHTSetBaseHeight(){
 
 
 void meUHTSetBaseHeight::Undo(){
-	pHeightTerrain->SetBaseHeight( pOldBaseHeight );
+	pHeightTerrain->SetBaseHeight(pOldBaseHeight);
 }
 
 void meUHTSetBaseHeight::Redo(){
-	pHeightTerrain->SetBaseHeight( pNewBaseHeight );
+	pHeightTerrain->SetBaseHeight(pNewBaseHeight);
 }

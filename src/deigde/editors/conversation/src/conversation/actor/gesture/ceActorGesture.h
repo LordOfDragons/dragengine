@@ -26,11 +26,11 @@
 #define _CEACTORGESTURE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/animator/deAnimator.h>
 
 class igdeEnvironment;
-class deAnimator;
-
 
 
 /**
@@ -39,7 +39,7 @@ class deAnimator;
 class ceActorGesture : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
-	deAnimator *pEngAnimator;
+	deAnimator::Ref pEngAnimator;
 	
 	decString pName;
 	decString pPathAnimator;
@@ -47,17 +47,23 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceActorGesture>;
+	
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<ceActorGesture>,ceActorGesture>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create actor gesture. */
-	ceActorGesture( igdeEnvironment &environment, const char *name );
+	ceActorGesture(igdeEnvironment &environment, const char *name);
 	
 	/** \brief Create copy of actor gesture. */
-	ceActorGesture( const ceActorGesture &gesture );
+	ceActorGesture(const ceActorGesture &gesture);
 	
 protected:
 	/** \brief Clean up actor gesture. */
-	virtual ~ceActorGesture();
+	~ceActorGesture() override;
 	/*@}*/
 	
 	
@@ -68,8 +74,8 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Engine animator or \em NULL. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	/** \brief Engine animator or \em nullptr. */
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	
 	
@@ -77,13 +83,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Animator path. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
 	
 	/** \brief Set animator path. */
-	void SetPathAnimator( const char *path );
+	void SetPathAnimator(const char *path);
 	/*@}*/
 	
 	

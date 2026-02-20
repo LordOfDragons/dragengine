@@ -25,13 +25,14 @@
 #ifndef _DEPARALLELPROCESSING_H_
 #define _DEPARALLELPROCESSING_H_
 
+#include "deParallelTask.h"
 #include "../common/string/decStringList.h"
-#include "../common/collection/decPointerList.h"
-#include "../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../dragengine_export.h"
+#include "../common/collection/decTUniqueList.h"
 #include "../threading/deMutex.h"
+#include "../threading/deMutexGuard.h"
 #include "../threading/deSemaphore.h"
 
-class deParallelTask;
 class deParallelThread;
 class deEngine;
 class deBaseModule;
@@ -45,15 +46,14 @@ private:
 	deEngine &pEngine;
 	int pCoreCount;
 	
-	deParallelThread **pThreads;
-	int pThreadCount;
+	decTUniqueList<deParallelThread> pThreads;
 	bool pPaused;
 	
-	decThreadSafeObjectOrderedSet pTasks;
-	decPointerList pListPendingTasks;
-	decPointerList pListPendingTasksLowPriority;
-	decPointerList pListFinishedTasks;
-	deMutex pMutexTasks;
+	deParallelTask::TaskList pTasks;
+	deParallelTask::TaskPointerList pListPendingTasks;
+	deParallelTask::TaskPointerList pListPendingTasksLowPriority;
+	deParallelTask::TaskPointerList pListFinishedTasks;
+	deMutex pMutexTasks, pMutexTaskDependency;
 	deSemaphore pSemaphoreNewTasks;
 	
 	bool pOutputDebugMessages;
@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parallel task processor. */
-	deParallelProcessing( deEngine &engine );
+	deParallelProcessing(deEngine &engine);
 	
 	/** \brief Clean up parallel task processor. */
 	~deParallelProcessing();
@@ -80,8 +80,8 @@ public:
 	/** \brief Count of detected CPU cores. */
 	inline int GetCoreCount() const{ return pCoreCount; }
 	
-	/** \brief Count of threads. */
-	inline int GetThreadCount() const{ return pThreadCount; }
+		/** \brief Number of threads. */
+	inline int GetThreadCount() const{ return pThreads.GetCount(); }
 	
 	/**
 	 * \brief Update task processing.
@@ -123,7 +123,7 @@ public:
 	 * \throws deeInvalidAction Parallel processing is paused.
 	 * \throws deeInvalidParam \em task is NULL.
 	 */
-	void WaitForTask( deParallelTask *task );
+	void WaitForTask(deParallelTask *task);
 	
 	/**
 	 * \brief Wait for multiple tasks to finish.
@@ -148,7 +148,7 @@ public:
 	 * \warning Call only from the <em>main thread</em>! Never call from other threads!
 	 * \throws deeInvalidParam \em task is NULL.
 	 */
-	void AddTask( deParallelTask *task );
+	void AddTask(deParallelTask *task);
 	
 	/**
 	 * \brief Add task to run the next time possible.
@@ -163,7 +163,7 @@ public:
 	 *       being queued. This avoids synchronization issues.
 	 * \throws deeInvalidParam \em task is NULL.
 	 */
-	void AddTaskAsync( deParallelTask *task );
+	void AddTaskAsync(deParallelTask *task);
 	
 	/**
 	 * \brief Finish threads owned by module removing them from parallel processing.
@@ -175,7 +175,7 @@ public:
 	 * are unloaded for which tasks still exist. Cancelling the task is not enough
 	 * since it stays in the list of finished tasks until finished.
 	 */
-	void FinishAndRemoveTasksOwnedBy( deBaseModule *module );
+	void FinishAndRemoveTasksOwnedBy(deBaseModule *module);
 	
 	/**
 	 * \brief Finish all threads removing them from parallel processing.
@@ -188,6 +188,17 @@ public:
 	 * since it stays in the list of finished tasks until finished.
 	 */
 	void FinishAndRemoveAllTasks();
+	
+	
+	/** \brief Mutex for task dependency management. */
+	inline deMutex &GetTaskDependencyMutex(){ return pMutexTaskDependency; }
+	
+	/** \brief Run function while holding the task dependency mutex. */
+	template<typename FuncType>
+	inline auto RunWithTaskDependencyMutex(FuncType func) -> decltype(func()){
+		const deMutexGuard lock(pMutexTaskDependency);
+		return func();
+	}
 	/*@}*/
 	
 	
@@ -198,7 +209,7 @@ public:
 	 * \brief Next pending task or NULL if there is none.
 	 * \warning For use by deParallelTask only.
 	 */
-	deParallelTask *NextPendingTask( bool takeLowPriorityTasks );
+	deParallelTask *NextPendingTask(bool takeLowPriorityTasks);
 	
 	/**
 	 * \brief Wait on the new tasks semaphore.
@@ -210,7 +221,7 @@ public:
 	 * \brief Add task to the list of finished tasks.
 	 * \warning For use by deParallelTask only.
 	 */
-	void AddFinishedTask( deParallelTask *task );
+	void AddFinishedTask(deParallelTask *task);
 	/*@}*/
 	
 	
@@ -229,14 +240,14 @@ public:
 private:
 	void pCleanUp();
 	void pDetectCoreCount();
-	void pCreateThreads( int count );
+	void pCreateThreads(int count);
 	void pDestroyThreads();
 	void pStopAllThreads();
 	
-	bool pProcessOneTaskDirect( bool takeLowPriorityTasks );
-	void pEnsureRunTaskNow( deParallelTask *task );
+	bool pProcessOneTaskDirect(bool takeLowPriorityTasks);
+	void pEnsureRunTaskNow(deParallelTask *task);
 	
-	void pLogTask( const char *prefix, const char *contPrefix, const deParallelTask &task );
+	void pLogTask(const char *prefix, const char *contPrefix, const deParallelTask &task);
 };
 
 #endif

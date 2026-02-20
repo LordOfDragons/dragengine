@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "aeWPUndoHistory.h"
-#include "aeWPUndoHistoryListener.h"
 #include "../../animator/aeAnimator.h"
 
 #include <dragengine/common/exceptions.h>
@@ -40,18 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPUndoHistory::aeWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pWorld( NULL ),
-pListener( new aeWPUndoHistoryListener( *this ) ){
+aeWPUndoHistory::aeWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(aeWPUndoHistoryListener::Ref::New(*this)){
 }
 
 aeWPUndoHistory::~aeWPUndoHistory(){
-	SetAnimator( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetAnimator(nullptr);
 }
 
 
@@ -59,24 +53,21 @@ aeWPUndoHistory::~aeWPUndoHistory(){
 // Management
 ///////////////
 
-void aeWPUndoHistory::SetAnimator( aeAnimator *animator ){
-	if( animator == pWorld ){
+void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
+	if(animator == pAnimator){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(nullptr);
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
-		pWorld->FreeReference();
+	if(pAnimator){
+		pAnimator->RemoveNotifier(pListener);
 	}
 	
-	pWorld = animator;
+	pAnimator = animator;
 	
-	if( animator ){
-		animator->AddNotifier( pListener );
-		animator->AddReference();
-		
-		SetUndoSystem( animator->GetUndoSystem() );
+	if(animator){
+		animator->AddNotifier(pListener);
+		SetUndoSystem(animator->GetUndoSystem());
 	}
 }

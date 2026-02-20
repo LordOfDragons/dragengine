@@ -50,52 +50,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-seTexture::seTexture( deEngine *engine, const char *name ) :
-pEngine( engine ),
-pEngSkin( NULL ),
-pSkin( NULL ),
-pName( name ),
-pActiveProperty( NULL ),
-pTexCoordScaling( 1.0f, 1.0f ),
-pTexCoordRotation( 0.0f ),
-pSelected( false ),
-pActive( false ),
-pDirtySkin( true )
+seTexture::seTexture(deEngine *engine, const char *name) :
+pEngine(engine),
+pSkin(nullptr),
+pName(name),
+pTexCoordScaling(1.0f, 1.0f),
+pTexCoordRotation(0.0f),
+pSelected(false),
+pActive(false),
+pDirtySkin(true)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(!engine){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-seTexture::seTexture( const seTexture &texture ) :
-pEngine( texture.pEngine ),
-pEngSkin( NULL ),
-pSkin( NULL ),
-pName( texture.pName ),
-pActiveProperty( NULL ),
-pTexCoordOffset( texture.pTexCoordOffset ),
-pTexCoordScaling( texture.pTexCoordScaling ),
-pTexCoordRotation( texture.pTexCoordRotation ),
-pSelected( false ),
-pActive( false ),
-pDirtySkin( true )
+seTexture::seTexture(const seTexture &texture) :
+pEngine(texture.pEngine),
+pSkin(nullptr),
+pName(texture.pName),
+pTexCoordOffset(texture.pTexCoordOffset),
+pTexCoordScaling(texture.pTexCoordScaling),
+pTexCoordRotation(texture.pTexCoordRotation),
+pSelected(false),
+pActive(false),
+pDirtySkin(true)
 {
-	const int propertyCount = texture.pPropertyList.GetCount();
-	seProperty *property = NULL;
-	int i;
-	
-	try{
-		for( i=0; i<propertyCount; i++ ){
-			property = new seProperty( *texture.pPropertyList.GetAt( i ) );
-			AddProperty( property );
-			property->FreeReference();
-			property = NULL;
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	texture.pProperties.Visit([&](const seProperty &p){
+		AddProperty(seProperty::Ref::New(p));
+	});
 }
 
 seTexture::~seTexture(){
@@ -107,8 +90,8 @@ seTexture::~seTexture(){
 // Management
 ///////////////
 
-void seTexture::SetSkin( seSkin *skin ){
-	if( skin == pSkin ){
+void seTexture::SetSkin(seSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
@@ -118,20 +101,18 @@ void seTexture::SetSkin( seSkin *skin ){
 
 
 
-void seTexture::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
-	if( ! pName.Equals( name ) ){
+void seTexture::SetName(const char *name){
+	if(!pName.Equals(name)){
 		pName = name;
 		NotifyNameChanged();
 	}
 }
 
-void seTexture::SetSelected( bool selected ){
+void seTexture::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seTexture::SetActive( bool active ){
+void seTexture::SetActive(bool active){
 	pActive = active;
 }
 
@@ -139,15 +120,15 @@ void seTexture::SetActive( bool active ){
 
 void seTexture::NotifyChanged(){
 	InvalidateEngineSkin();
-	if( pSkin ){
-		pSkin->NotifyTextureChanged( this );
+	if(pSkin){
+		pSkin->NotifyTextureChanged(this);
 	}
 }
 
 void seTexture::NotifyNameChanged(){
 	InvalidateEngineSkin();
-	if( pSkin ){
-		pSkin->NotifyTextureNameChanged( this );
+	if(pSkin){
+		pSkin->NotifyTextureNameChanged(this);
 	}
 }
 
@@ -158,21 +139,18 @@ void seTexture::InvalidateEngineSkin(){
 }
 
 void seTexture::UpdateEngineSkin(){
-	if( ! pDirtySkin || ! pSkin->GetEnableSkinUpdate() ){
+	if(!pDirtySkin || !pSkin->GetEnableSkinUpdate()){
 		return;
 	}
 	
 	// free the old skin
-	if( pEngSkin ){
-		pEngSkin->FreeReference();
-		pEngSkin = NULL;
-	}
+	pEngSkin = nullptr;
 	
 	// build new skin. for this we use an empty name which creates an unnamed skin.
 	// named skins can only exist once but unnamed skins can exist multiple times.
-	seTextureSkinBuilder builder( *pSkin, *this );
+	seTextureSkinBuilder builder(*pSkin, *this);
 	
-	pEngSkin = GetEngine()->GetSkinManager()->CreateSkin( "", builder );
+	pEngSkin = GetEngine()->GetSkinManager()->CreateSkin("", builder);
 	
 	// update component and light with the new skin
 	AssignSkinToComponentTexture();
@@ -183,50 +161,47 @@ void seTexture::UpdateEngineSkin(){
 }
 
 void seTexture::AssignSkinToComponentTexture(){
-	if( ! pSkin || ! pSkin->GetEngineComponent() ){
+	if(!pSkin || !pSkin->GetEngineComponent()){
 		return;
 	}
 	
 	deComponent &engComponent = *pSkin->GetEngineComponent();
-	if( ! engComponent.GetModel() ){
+	if(!engComponent.GetModel()){
 		return;
 	}
 	
-	const int index = engComponent.GetModel()->IndexOfTextureNamed( pName );
-	if( index == -1 ){
+	const int index = engComponent.GetModel()->IndexOfTextureNamed(pName);
+	if(index == -1){
 		return;
 	}
 	
-	deComponentTexture &engComponentTexture = engComponent.GetTextureAt( index );
-	engComponentTexture.SetSkin( pEngSkin );
-	engComponentTexture.SetTexture( 0 );
-	engComponentTexture.SetTransform( pCalcTexCoordTransform() );
-	engComponentTexture.SetDynamicSkin( pSkin->GetDynamicSkin().GetEngineDynamicSkin() );
-	engComponent.NotifyTextureChanged( index );
+	deComponentTexture &engComponentTexture = engComponent.GetTextureAt(index);
+	engComponentTexture.SetSkin(pEngSkin);
+	engComponentTexture.SetTexture(0);
+	engComponentTexture.SetTransform(pCalcTexCoordTransform());
+	engComponentTexture.SetDynamicSkin(pSkin->GetDynamicSkin().GetEngineDynamicSkin());
+	engComponent.NotifyTextureChanged(index);
 	
 	pUpdateTexCoordTransform();
 }
 
 void seTexture::AssignSkinToLight(){
-	if( ! pSkin || ! pSkin->GetEngineComponent() ){
+	if(!pSkin || !pSkin->GetEngineComponent()){
 		return;
 	}
-	if( pSkin->GetTextureList().GetAt( 0 ) != this ){
+	if(pSkin->GetTextures().First() != this){
 		return;
 	}
 	
-	pSkin->GetEngineLight()->SetLightSkin( pEngSkin );
+	pSkin->GetEngineLight()->SetLightSkin(pEngSkin);
 }
 
 
 
 void seTexture::UpdateResources(){
-	const int count = pPropertyList.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		pPropertyList.GetAt( i )->UpdateResources();
-	}
+	pProperties.Visit([](seProperty &p){
+		p.UpdateResources();
+	});
 }
 
 
@@ -234,89 +209,77 @@ void seTexture::UpdateResources(){
 // Properties
 ///////////////
 
-void seTexture::AddProperty( seProperty *property ){
-	pPropertyList.Add( property );
-	property->SetTexture( this );
+void seTexture::AddProperty(seProperty *property){
+	DEASSERT_NOTNULL(property)
+	pProperties.AddOrThrow(property);
+	
+	property->SetTexture(this);
 	
 	InvalidateEngineSkin();
-	if( pSkin ){
-		pSkin->NotifyPropertyStructureChanged( this );
+	if(pSkin){
+		pSkin->NotifyPropertyStructureChanged(this);
 	}
 	
-	if( ! pActiveProperty ){
-		SetActiveProperty( property );
+	if(!pActiveProperty){
+		SetActiveProperty(property);
 	}
 }
 
-void seTexture::RemoveProperty( seProperty *property ){
-	if( ! property || property->GetTexture() != this ){
-		DETHROW( deeInvalidParam );
+void seTexture::RemoveProperty(seProperty *property){
+	const seProperty::Ref guard(property);
+	pProperties.RemoveOrThrow(property);
+	
+	if(pActiveProperty == property){
+		pActiveProperty = nullptr;
 	}
 	
-	if( property->GetActive() ){
-		if( pPropertyList.GetCount() > 1 ){
-			seProperty *activeProperty = pPropertyList.GetAt( 0 );
-			
-			if( activeProperty == property ){
-				activeProperty = pPropertyList.GetAt( 1 );
-			}
-			
-			SetActiveProperty( activeProperty );
-			
-		}else{
-			SetActiveProperty( NULL );
-		}
-	}
-	
-	property->SetTexture( NULL );
-	pPropertyList.Remove( property );
+	property->SetTexture(nullptr);
 	
 	InvalidateEngineSkin();
-	if( pSkin ){
-		pSkin->NotifyPropertyStructureChanged( this );
+	if(pSkin){
+		pSkin->NotifyPropertyStructureChanged(this);
 	}
 }
 
 void seTexture::RemoveAllProperties(){
-	const int count = pPropertyList.GetCount();
-	int p;
-	
-	SetActiveProperty( NULL );
-	
-	for( p=0; p<count; p++ ){
-		pPropertyList.GetAt( p )->SetTexture( NULL );
+	if(pProperties.IsEmpty()){
+		return;
 	}
-	pPropertyList.RemoveAll();
+	
+	SetActiveProperty(nullptr);
+	
+	pProperties.Visit([](seProperty &p){
+		p.SetTexture(nullptr);
+	});
+	pProperties.RemoveAll();
 	
 	InvalidateEngineSkin();
-	if( pSkin ){
-		pSkin->NotifyPropertyStructureChanged( this );
+	if(pSkin){
+		pSkin->NotifyPropertyStructureChanged(this);
 	}
 }
 
 bool seTexture::HasActiveProperty() const{
-	return pActiveProperty != NULL;
+	return pActiveProperty.IsNotNull();
 }
 
-void seTexture::SetActiveProperty( seProperty *property ){
-	if( property == pActiveProperty ){
+void seTexture::SetActiveProperty(seProperty *property){
+	if(property == pActiveProperty){
 		return;
 	}
 	
-	if( pActiveProperty ){
-		pActiveProperty->SetActive( false );
-		pActiveProperty->FreeReference();
+	if(pActiveProperty){
+		pActiveProperty->SetActive(false);
 	}
 	
 	pActiveProperty = property;
 	
-	if( property ){
-		property->AddReference();
-		property->SetActive( true );
+	if(property){
+		property->SetActive(true);
 	}
 	
-	if( pSkin ){
-		pSkin->NotifyActivePropertyChanged( this );
+	if(pSkin){
+		pSkin->NotifyActivePropertyChanged(this);
 	}
 }
 
@@ -325,8 +288,8 @@ void seTexture::SetActiveProperty( seProperty *property ){
 // Preview Parameters
 ///////////////////////
 
-void seTexture::SetTexCoordOffset( const decVector2 &offset ){
-	if( offset.IsEqualTo( pTexCoordOffset ) ){
+void seTexture::SetTexCoordOffset(const decVector2 &offset){
+	if(offset.IsEqualTo(pTexCoordOffset)){
 		return;
 	}
 	
@@ -334,8 +297,8 @@ void seTexture::SetTexCoordOffset( const decVector2 &offset ){
 	pUpdateTexCoordTransform();
 }
 
-void seTexture::SetTexCoordScaling( const decVector2 &scaling ){
-	if( scaling.IsEqualTo( pTexCoordScaling ) ){
+void seTexture::SetTexCoordScaling(const decVector2 &scaling){
+	if(scaling.IsEqualTo(pTexCoordScaling)){
 		return;
 	}
 	
@@ -343,8 +306,8 @@ void seTexture::SetTexCoordScaling( const decVector2 &scaling ){
 	pUpdateTexCoordTransform();
 }
 
-void seTexture::SetTexCoordRotation( float rotation ){
-	if( fabsf( rotation - pTexCoordRotation ) <= FLOAT_SAFE_EPSILON ){
+void seTexture::SetTexCoordRotation(float rotation){
+	if(fabsf(rotation - pTexCoordRotation) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -358,46 +321,41 @@ void seTexture::SetTexCoordRotation( float rotation ){
 //////////////////////
 
 void seTexture::pCleanUp(){
-	RemoveAllProperties();
-	
-	if( pEngSkin ){
-		pEngSkin->FreeReference();
-	}
 }
 
 void seTexture::pUpdateTexCoordTransform(){
-	if( ! pSkin ){
+	if(!pSkin){
 		return;
 	}
-	if( ! pSkin->GetEngineComponent() ){
+	if(!pSkin->GetEngineComponent()){
 		return;
 	}
 	
 	deComponent &engComponent = *pSkin->GetEngineComponent();
-	if( ! engComponent.GetModel() ){
+	if(!engComponent.GetModel()){
 		return;
 	}
 	
-	const int index = engComponent.GetModel()->IndexOfTextureNamed( pName );
-	if( index == -1 ){
+	const int index = engComponent.GetModel()->IndexOfTextureNamed(pName);
+	if(index == -1){
 		return;
 	}
 	
-	deComponentTexture &engComponentTexture = engComponent.GetTextureAt( index );
-	engComponentTexture.SetTransform( pCalcTexCoordTransform() );
-	engComponent.NotifyTextureChanged( index );
+	deComponentTexture &engComponentTexture = engComponent.GetTextureAt(index);
+	engComponentTexture.SetTransform(pCalcTexCoordTransform());
+	engComponent.NotifyTextureChanged(index);
 }
 
 decTexMatrix2 seTexture::pCalcTexCoordTransform() const{
-	decVector2 scaling( pTexCoordScaling );
-	if( scaling.x == 0.0f ){
+	decVector2 scaling(pTexCoordScaling);
+	if(scaling.x == 0.0f){
 		scaling.x = 1.0f;
 	}
-	if( scaling.y == 0.0f ){
+	if(scaling.y == 0.0f){
 		scaling.y = 1.0f;
 	}
 	
-	return decTexMatrix2::CreateScale( scaling ) *
-		decTexMatrix2::CreateRotation( pTexCoordRotation * DEG2RAD ) *
-		decTexMatrix2::CreateTranslation( pTexCoordOffset );
+	return decTexMatrix2::CreateScale(scaling) *
+		decTexMatrix2::CreateRotation(pTexCoordRotation * DEG2RAD) *
+		decTexMatrix2::CreateTranslation(pTexCoordOffset);
 }

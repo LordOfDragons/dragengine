@@ -44,6 +44,10 @@ class aeAnimator;
  * - ' left' with ' right'
  */
 class aeUAnimatorMirrorVertexPositionSets : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAnimatorMirrorVertexPositionSets>;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringList pPatterns;
@@ -54,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeUAnimatorMirrorVertexPositionSets( aeAnimator *animator );
+	aeUAnimatorMirrorVertexPositionSets(aeAnimator *animator);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorMirrorVertexPositionSets();
+	~aeUAnimatorMirrorVertexPositionSets() override;
 	/*@}*/
 	
 	
@@ -72,10 +76,10 @@ public:
 	
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -38,7 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -47,22 +47,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPasteActions::ceWPTMAPasteActions( ceWindowMain &windowMain,
-ceConversation &conversation ) :
-ceWPTMenuAction( windowMain, "Paste Actions",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation )
+ceWPTMAPasteActions::ceWPTMAPasteActions(ceWindowMain &windowMain,
+ceConversation &conversation) :
+ceWPTMenuAction(windowMain, "@Conversation.MenuAction.PasteActions",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation)
 {
-	SetEnabled( windowMain.GetClipboard().HasWithTypeName( ceClipboardDataAction::TYPE_NAME ) );
+	SetEnabled(windowMain.GetClipboard().HasWithTypeName(ceClipboardDataAction::TYPE_NAME));
 }
 
-ceWPTMAPasteActions::ceWPTMAPasteActions( ceWindowMain &windowMain,
-ceConversation &conversation, const char *text ) :
-ceWPTMenuAction( windowMain, text,
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ) ),
-pConversation( &conversation )
+ceWPTMAPasteActions::ceWPTMAPasteActions(ceWindowMain &windowMain,
+ceConversation &conversation, const char *text) :
+ceWPTMenuAction(windowMain, text,
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste)),
+pConversation(&conversation)
 {
-	SetEnabled( windowMain.GetClipboard().HasWithTypeName( ceClipboardDataAction::TYPE_NAME ) );
+	SetEnabled(windowMain.GetClipboard().HasWithTypeName(ceClipboardDataAction::TYPE_NAME));
 }
 
 
@@ -71,19 +71,17 @@ pConversation( &conversation )
 ///////////////
 
 void ceWPTMAPasteActions::OnAction(){
-	ceClipboardDataAction * const cdata = ( ceClipboardDataAction* )GetWindowMain().
-		GetClipboard().GetWithTypeName( ceClipboardDataAction::TYPE_NAME );
-	if( ! cdata ){
+	ceClipboardDataAction * const cdata = (ceClipboardDataAction*)GetWindowMain().
+		GetClipboard().GetWithTypeName(ceClipboardDataAction::TYPE_NAME);
+	if(!cdata){
 		return;
 	}
 	
-	igdeUndoReference undo;
-	undo.TakeOver( CreateUndo( cdata->GetActions() ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(CreateUndo(cdata->GetActions()));
 }
 
-ceUCActionPaste *ceWPTMAPasteActions::CreateUndo( const ceConversationActionList &actions ){
+ceUCActionPaste::Ref ceWPTMAPasteActions::CreateUndo(const ceConversationAction::List &actions){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

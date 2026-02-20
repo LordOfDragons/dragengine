@@ -41,13 +41,18 @@ private:
 	
 	
 public:
+	using Ref = deTObjectReference<projPanelProfilesListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	projPanelProfilesListener( projPanelProfiles &panel );
+	projPanelProfilesListener(projPanelProfiles &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~projPanelProfilesListener();
+protected:
+	~projPanelProfilesListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,21 +60,21 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Project changed. */
-	virtual void ProjectChanged( projProject *project );
+	void ProjectChanged(projProject *project) override;
 	
 	
 	
 	/** \brief Profile count or order changed. */
-	virtual void ProfileStructureChanged( projProject *project );
+	void ProfileStructureChanged(projProject *project) override;
 	
 	/** \brief Profile changed. */
-	virtual void ProfileChanged( projProject *project, projProfile *profile );
+	void ProfileChanged(projProject *project, projProfile *profile) override;
 	
 	/** \brief Profile name changed. */
-	virtual void ProfileNameChanged( projProject *project, projProfile *profile );
+	void ProfileNameChanged(projProject *project, projProfile *profile) override;
 	
 	/** \brief Active profile changed. */
-	virtual void ActiveProfileChanged( projProject *project );
+	void ActiveProfileChanged(projProject *project) override;
 	/*@}*/
 };
 

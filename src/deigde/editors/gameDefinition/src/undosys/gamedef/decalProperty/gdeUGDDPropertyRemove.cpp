@@ -40,33 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPropertyRemove::gdeUGDDPropertyRemove( gdeGameDefinition *gamedef, gdeProperty *property ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPropertyRemove::gdeUGDDPropertyRemove(gdeGameDefinition *gamedef, gdeProperty *property) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! gamedef->GetDecalProperties().Has( property ) ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef->GetDecalProperties().Has(property)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition remove property" );
+	SetShortInfo("@GameDefinition.Undo.GDDPropertyRemove");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPropertyRemove::~gdeUGDDPropertyRemove(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ gdeUGDDPropertyRemove::~gdeUGDDPropertyRemove(){
 ///////////////
 
 void gdeUGDDPropertyRemove::Undo(){
-	pGameDefinition->GetDecalProperties().Add( pProperty );
+	pGameDefinition->GetDecalProperties().Add(pProperty);
 	pGameDefinition->NotifyDecalPropertiesChanged();
 }
 
 void gdeUGDDPropertyRemove::Redo(){
-	pGameDefinition->GetDecalProperties().Remove( pProperty );
+	pGameDefinition->GetDecalProperties().Remove(pProperty);
 	pGameDefinition->NotifyDecalPropertiesChanged();
 }

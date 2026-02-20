@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAGameCommand;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAGameCommand.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo action game command conversation action set command.
  */
 class ceUCAGameCmdSetCommand : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAGameCmdSetCommand>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAGameCommand *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAGameCommand::Ref pAction;
 	decString pOldCommand;
 	decString pNewCommand;
 	
@@ -46,18 +50,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAGameCmdSetCommand( ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand );
+	ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand);
 	/** \brief Cleans up the undo object. */
-	virtual ~ceUCAGameCmdSetCommand();
+protected:
+	~ceUCAGameCmdSetCommand() override;
+public:
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -38,25 +38,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectCopyPosition::meUObjectCopyPosition( meWorld *world, bool copyX, bool copyY, bool copyZ ) :
-pCopyX( copyX ),
-pCopyY( copyY ),
-pCopyZ( copyZ )
+meUObjectCopyPosition::meUObjectCopyPosition(meWorld *world, bool copyX, bool copyY, bool copyZ) :
+pCopyX(copyX),
+pCopyY(copyY),
+pCopyZ(copyZ)
 {
-	if( ! world || ! world->GetSelectionObject().GetActive() ){
-		DETHROW( deeInvalidParam );
+	if(!world || !world->GetSelectionObject().GetActive()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meObjectList &list = world->GetSelectionObject().GetSelected();
-	const int count = list.GetCount();
-	int i;
+	SetShortInfo("@World.UObjectCopyPosition.CopyObjectPosition");
+	SetLongInfo("@World.UObjectCopyPosition.CopyObjectPosition");
 	
-	SetShortInfo( "Copy Object Position" );
-	SetLongInfo( "Copy Object Position" );
-	
-	for( i=0; i<count; i++ ){
-		pObjects.Add( meUndoDataObject::Ref::New( new meUndoDataObject( list.GetAt( i ) ) ) );
-	}
+	world->GetSelectionObject().GetSelected().Visit([&](meObject *o){
+		pObjects.Add(meUndoDataObject::Ref::New(o));
+	});
 	
 	pNewPosition = world->GetSelectionObject().GetActive()->GetPosition();
 }
@@ -70,39 +66,31 @@ meUObjectCopyPosition::~meUObjectCopyPosition(){
 ///////////////
 
 void meUObjectCopyPosition::Undo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		object->SetPosition( data.GetOldPosition() );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
-	}
+		object->SetPosition(data.GetOldPosition());
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
+	});
 }
 
 void meUObjectCopyPosition::Redo(){
-	const int count = pObjects.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	pObjects.Visit([&](const meUndoDataObject &data){
 		meObject * const object = data.GetObject();
 		
-		decDVector position( data.GetOldPosition() );
+		decDVector position(data.GetOldPosition());
 		
-		if( pCopyX ){
+		if(pCopyX){
 			position.x = pNewPosition.x;
 		}
-		if( pCopyY ){
+		if(pCopyY){
 			position.y = pNewPosition.y;
 		}
-		if( pCopyZ ){
+		if(pCopyZ){
 			position.z = pNewPosition.z;
 		}
 		
-		object->SetPosition( position );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
-	}
+		object->SetPosition(position);
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
+	});
 }

@@ -27,6 +27,8 @@
 
 #include "../../texture/deoglRImage.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglPixelBuffer;
@@ -41,24 +43,26 @@ class deoglTexture;
  * Stores a texture composed of 2 or more static colors or images.
  */
 class deoglCombinedTexture{
+public:
+	using Ref = deTUniqueReference<deoglCombinedTexture>;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
 	decColor pColor;
-	deoglRImage::Ref pImages[ 4 ];
+	deoglRImage::Ref pImages[4];
 	
 	deoglTexture *pTexture;
 	
 	int pUsageCount;
 	unsigned int pHashCode;
-	deoglCombinedTexture *pLLPrev;
-	deoglCombinedTexture *pLLNext;
+	decTUniqueLinkedList<deoglCombinedTexture>::Element pLLTextures;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create combined texture. */
-	deoglCombinedTexture( deoglRenderThread &renderThread, const decColor &color, deoglRImage *images[ 4 ] );
+	deoglCombinedTexture(deoglRenderThread &renderThread, const decColor &color, deoglRImage *images[4]);
 	
 	/** Clean up combined texture. */
 	~deoglCombinedTexture();
@@ -77,7 +81,7 @@ public:
 	inline const decColor &GetColor() const{ return pColor; }
 	
 	/** Image for component or nullptr to use the static color component. */
-	const deoglRImage::Ref &GetImageAt( int component ) const;
+	const deoglRImage::Ref &GetImageAt(int component) const;
 	
 	
 	
@@ -85,15 +89,15 @@ public:
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set texture or nullptr if not existing. */
-	void SetTexture( deoglTexture *texture );
+	void SetTexture(deoglTexture *texture);
 	
 	
 	
 	/** Combined texture matches another combined texture. */
-	bool Equals( const deoglCombinedTexture &combinedTexture ) const;
+	bool Equals(const deoglCombinedTexture &combinedTexture) const;
 	
 	/** Combined texture matches another combined texture. */
-	bool Equals( const decColor &color, deoglRImage *images[ 4 ] ) const;
+	bool Equals(const decColor &color, deoglRImage *images[4]) const;
 	
 	
 	
@@ -119,21 +123,13 @@ public:
 	void CalcHashCode();
 	
 	/** Calculate hash code for combination. */
-	static unsigned int CalcHashCodeFor( const decColor &color, const deoglRImage::Ref *images );
+	static unsigned int CalcHashCodeFor(const decColor &color, const deoglRImage::Ref *images);
 	
 	
 	
-	/** Previous entry in the linked list. */
-	inline deoglCombinedTexture *GetLLPrev() const{ return pLLPrev; }
-	
-	/** Set previous entry in the linked list. */
-	void SetLLPrev( deoglCombinedTexture *entry );
-	
-	/** Next entry in the linked list. */
-	inline deoglCombinedTexture *GetLLNext() const{ return pLLNext; }
-	
-	/** Set next entry in the linked list. */
-	void SetLLNext( deoglCombinedTexture *entry );
+	/** Linked list element. */
+	inline decTUniqueLinkedList<deoglCombinedTexture>::Element &GetLLTextures(){ return pLLTextures; }
+	inline const decTUniqueLinkedList<deoglCombinedTexture>::Element &GetLLTextures() const{ return pLLTextures; }
 	/*@}*/
 };
 

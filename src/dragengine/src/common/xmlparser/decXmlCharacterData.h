@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT decXmlCharacterData : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<decXmlCharacterData> Ref;
-	
+	using Ref = deTObjectReference<decXmlCharacterData>;
 	
 	
 private:
@@ -48,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml character data. */
-	decXmlCharacterData( const char *data );
+	decXmlCharacterData(const char *data);
 	
 protected:
 	/** \brief Clean up xml character data. */
-	virtual ~decXmlCharacterData();
+	~decXmlCharacterData() override;
 	/*@}*/
 	
 	
@@ -64,28 +63,28 @@ public:
 	inline const decString &GetData() const{ return pData; }
 	
 	/** \brief Set data. */
-	void SetData( const char *data );
+	void SetData(const char *data);
 	
 	/** \brief Append data. */
-	void AppendData( const char *data );
+	void AppendData(const char *data);
 	
 	/** \brief Append character. */
-	void AppendCharacter( char character );
+	void AppendCharacter(char character);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 	/** \name Casting */
 	/*@{*/
-	virtual bool CanCastToCharacterData() const;
-	virtual decXmlCharacterData *CastToCharacterData();
+	bool CanCastToCharacterData() const override;
+	decXmlCharacterData *CastToCharacterData() override;
 	/*@}*/
 };
 

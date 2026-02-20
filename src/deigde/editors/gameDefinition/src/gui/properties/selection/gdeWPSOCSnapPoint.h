@@ -27,16 +27,16 @@
 
 #include <dragengine/common/string/decString.h>
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCSnapPoint;
 class gdeWindowProperties;
-class gdeWPSOCSnapPointListener;
+#include "gdeWPSOCSnapPointListener.h"
 
 
 
@@ -44,17 +44,20 @@ class gdeWPSOCSnapPointListener;
  * \brief Object class snap point property panel.
  */
 class gdeWPSOCSnapPoint : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSOCSnapPoint> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSnapPointListener *pListener;
+	gdeWPSOCSnapPointListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeTextFieldReference pEditName;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditSnapDistance;
-	igdeCheckBoxReference pChkSnapToRotation;
+	igdeTextField::Ref pEditName;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditSnapDistance;
+	igdeCheckBox::Ref pChkSnapToRotation;
 	
 	
 	
@@ -62,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCSnapPoint( gdeWindowProperties &windowMain );
+	gdeWPSOCSnapPoint(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -74,18 +77,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active object class snap point or \em NULL if not set. */
+	/** \brief Active object class snap point or \em nullptr if not set. */
 	gdeOCSnapPoint *GetSnapPoint() const;
 	
 	

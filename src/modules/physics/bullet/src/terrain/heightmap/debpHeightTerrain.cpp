@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "debpHTSector.h"
 #include "debpHeightTerrain.h"
 
@@ -43,33 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpHeightTerrain::debpHeightTerrain( dePhysicsBullet *bullet, deHeightTerrain *heightTerrain ){
-	if( ! bullet || ! heightTerrain ) DETHROW( deeInvalidParam );
+debpHeightTerrain::debpHeightTerrain(dePhysicsBullet *bullet, deHeightTerrain *heightTerrain) :
+pBullet(bullet),
+pHeightTerrain(heightTerrain),
+pParentWorld(NULL){
+	DEASSERT_NOTNULL(bullet);
+	DEASSERT_NOTNULL(heightTerrain);
 	
-	int s, sectorCount = heightTerrain->GetSectorCount();
-	
-	pBullet = bullet;
-	pHeightTerrain = heightTerrain;
-	
-	pParentWorld = NULL;
-	
-	pSectors = NULL;
-	pSectorCount = 0;
-	pSectorSize = 0;
-	
-	try{
-		for( s=0; s<sectorCount; s++ ){
-			SectorAdded( heightTerrain->GetSectorAt( s ) );
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	heightTerrain->GetSectors().Visit([&](deHeightTerrainSector *sector){
+		SectorAdded(sector);
+	});
 }
 
 debpHeightTerrain::~debpHeightTerrain(){
-	pCleanUp();
 }
 
 
@@ -77,46 +59,31 @@ debpHeightTerrain::~debpHeightTerrain(){
 // Management
 ///////////////
 
-void debpHeightTerrain::SetParentWorld( debpWorld *parentWorld ){
-	int s;
-	
+void debpHeightTerrain::SetParentWorld(debpWorld *parentWorld){
 	pParentWorld = parentWorld;
-	
-	for( s=0; s<pSectorCount; s++ ){
-		pSectors[ s ]->ParentWorldChanged();
-	}
+	pSectors.Visit([&](debpHTSector &s){
+		s.ParentWorldChanged();
+	});
 }
 
 
 
-debpHTSector *debpHeightTerrain::GetSectorAt( int index ) const{
-	if( index < 0 || index >= pSectorCount ) DETHROW( deeInvalidParam );
-	
-	return pSectors[ index ];
+debpHTSector *debpHeightTerrain::GetSectorAt(int index) const{
+	return pSectors.GetAt(index);
 }
 
-debpHTSector *debpHeightTerrain::GetSectorWith( int x, int z ) const{
-	int s;
-	
-	for( s=0; s<pSectorCount; s++ ){
-		const decPoint &scoord = pSectors[ s ]->GetSector()->GetSector();
-		
-		if( x == scoord.x && z == scoord.y ){
-			return pSectors[ s ];
-		}
-	}
-	
-	return NULL;
+debpHTSector *debpHeightTerrain::GetSectorWith(int x, int y) const{
+	return pSectors.FindOrNull([&](const debpHTSector &s){
+		const decPoint &c = s.GetSector()->GetSector();
+		return c.x == x && c.y == y;
+	});
 }
-
 
 
 void debpHeightTerrain::Update(){
-	int s;
-	
-	for( s=0; s<pSectorCount; s++ ){
-		pSectors[ s ]->Update();
-	}
+	pSectors.Visit([&](debpHTSector &s){
+		s.Update();
+	});
 }
 
 
@@ -131,93 +98,54 @@ void debpHeightTerrain::CollisionFilterChanged(){
 	/*
 	int s;
 	
-	for( s=0; s<pTouchSensorCount; s++ ){
-		pTouchSensors[ s ]->TestTerrain( this );
+	for(s=0; s<pTouchSensorCount; s++){
+		pTouchSensors[s]->TestTerrain(this);
 	}
 	*/
 }
 
-void debpHeightTerrain::HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-const decPoint &toSector, const decPoint &toCoordinates ){
+void debpHeightTerrain::HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+const decPoint &toSector, const decPoint &toCoordinates){
 	int imageDim = pHeightTerrain->GetSectorResolution();
-	int s;
-	
-	for( s=0; s<pSectorCount; s++ ){
-//		const decPoint &scoord = pSectors[ s ]->GetSector()->GetSector();
-		
-//		if( scoord.x >= fromSector.x && scoord.y >= fromSector.y && scoord.x <= toSector.x && scoord.y <= toSector.y ){
+	pSectors.Visit([&](debpHTSector &s){
+//		const decPoint &c = s.GetSector()->GetSector();
+//		if(c.x >= fromSector.x && c.y >= fromSector.y && c.x <= toSector.x && c.y <= toSector.y){
 			// TODO determine the area to update
-			pSectors[ s ]->UpdateHeights( 0, 0, imageDim, imageDim );
+			s.UpdateHeights(0, 0, imageDim, imageDim);
 //		}
-	}
+	});
 }
 
 
 
-void debpHeightTerrain::SectorAdded( deHeightTerrainSector *sector )
-{
-	debpHTSector *bpsector = NULL;
-	
-	try{
-		if( pSectorCount == pSectorSize ){
-			int newSize = pSectorSize * 3 / 2 + 1;
-			debpHTSector **newArray = new debpHTSector*[ newSize ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
-			if( pSectors ){
-				memcpy( newArray, pSectors, sizeof( debpHTSector* ) * pSectorSize );
-				delete [] pSectors;
-			}
-			pSectors = newArray;
-			pSectorSize = newSize;
-		}
-		
-		bpsector = new debpHTSector( this, sector );
-		if( ! bpsector ) DETHROW( deeOutOfMemory );
-		
-		pSectors[ pSectorCount++ ] = bpsector;
-		
-	}catch( const deException & ){
-		if( bpsector ) delete bpsector;
-		throw;
+void debpHeightTerrain::SectorAdded(deHeightTerrainSector *sector){
+	pSectors.Add(deTUniqueReference<debpHTSector>::New(this, sector));
+	if(pParentWorld){
+		pSectors.Last()->ParentWorldChanged();
 	}
 }
 
-void debpHeightTerrain::SectorRemoved( int index ){
-	if( index < 0 || index >= pSectorCount ) DETHROW( deeInvalidParam );
-	
-	debpHTSector *bpsector = pSectors[ index ];
-	int i;
-	
-	for( i=index+1; i<pSectorCount; i++ ){
-		pSectors[ i - 1 ] = pSectors[ i ];
-	}
-	pSectorCount--;
-	
-	delete bpsector;
+void debpHeightTerrain::SectorRemoved(int index){
+	pSectors.RemoveFrom(index);
 }
 
 void debpHeightTerrain::AllSectorsRemoved(){
-	while( pSectorCount > 0 ){
-		pSectorCount--;
-		delete pSectors[ pSectorCount ];
-	}
+	pSectors.RemoveAll();
 }
 
-void debpHeightTerrain::SectorChanged( int index ){
-	if( index < 0 || index >= pSectorCount ) DETHROW( deeInvalidParam );
-	
-	pSectors[ index ]->SectorChanged();
+void debpHeightTerrain::SectorChanged(int index){
+	pSectors.GetAt(index)->SectorChanged();
 }
 
 
 
-void debpHeightTerrain::DecalAdded( int sector, deDecal *decal ){
+void debpHeightTerrain::DecalAdded(int sector, deDecal *decal){
 }
 
-void debpHeightTerrain::DecalRemoved( int sector, deDecal *decal ){
+void debpHeightTerrain::DecalRemoved(int sector, deDecal *decal){
 }
 
-void debpHeightTerrain::AllDecalsRemoved( int sector ){
+void debpHeightTerrain::AllDecalsRemoved(int sector){
 }
 
 
@@ -225,18 +153,8 @@ void debpHeightTerrain::AllDecalsRemoved( int sector ){
 // Collision Detection
 ////////////////////////
 
-void debpHeightTerrain::FindDecalsAt( const decDVector &point, deDecalList &list ){
+void debpHeightTerrain::FindDecalsAt(const decDVector &point, deDecal::List &list){
 }
 
-void debpHeightTerrain::FindDecalsTouching( const decShape &shape, deDecalList &list ){
-}
-
-
-
-// Private functions
-//////////////////////
-
-void debpHeightTerrain::pCleanUp(){
-	AllSectorsRemoved();
-	if( pSectors ) delete [] pSectors;
+void debpHeightTerrain::FindDecalsTouching(const decShape &shape, deDecal::List &list){
 }

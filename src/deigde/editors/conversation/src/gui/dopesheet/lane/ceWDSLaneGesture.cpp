@@ -45,7 +45,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -59,9 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWDSLaneGesture::ceWDSLaneGesture( ceWindowDopeSheet &dopeSheet, int index,
-	const char *label, const char *description ) :
-ceWDSLane( dopeSheet, index, label, description ){
+ceWDSLaneGesture::ceWDSLaneGesture(ceWindowDopeSheet &dopeSheet, int index,
+	const char *label, const char *description) :
+ceWDSLane(dopeSheet, index, label, description){
 }
 
 ceWDSLaneGesture::~ceWDSLaneGesture(){
@@ -72,66 +71,63 @@ ceWDSLaneGesture::~ceWDSLaneGesture(){
 // Management
 ///////////////
 
-const ceStripList &ceWDSLaneGesture::GetStripList() const{
+const ceStrip::List &ceWDSLaneGesture::GetStripList() const{
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? action->GetGestureList() : GetEmptyList();
+	return action ? action->GetGestures() : GetEmptyList();
 }
 
-void ceWDSLaneGesture::FillIDList( decStringList &list ){
+void ceWDSLaneGesture::FillIDList(decStringList &list){
 	const ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	if( ! action ){
+	if(!action){
 		return;
 	}
 	
-	const ceGestureList gestureList( GetWindow().GetConversation()->AllGestures() );
-	const int gestureCount = gestureList.GetCount();
-	int i;
-	for( i=0; i<gestureCount; i++ ){
-		list.Add( gestureList.GetAt( i )->GetName() );
-	}
+	GetWindow().GetConversation()->AllGestures().Visit([&](const ceGesture &g){
+		list.Add(g.GetName());
+	});
 }
 
-float ceWDSLaneGesture::DefaultDuration( const decString &id ){
-	const ceGesture * const gesture = GetWindow().GetConversation()->GetGestureNamed( id );
-	return gesture ? gesture->GetDuration() : ceWDSLane::DefaultDuration( id );
+float ceWDSLaneGesture::DefaultDuration(const decString &id){
+	const ceGesture * const gesture = GetWindow().GetConversation()->GetGestureNamed(id);
+	return gesture ? gesture->GetDuration() : ceWDSLane::DefaultDuration(id);
 }
 
-igdeUndo *ceWDSLaneGesture::UndoStripAdd( ceStrip *strip, int index ){
+igdeUndo::Ref ceWDSLaneGesture::UndoStripAdd(ceStrip *strip, int index){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureAdd( GetWindow().GetTopic(), action, strip, index ) : nullptr;
+	return action ? ceUCAASpeakGestureAdd::Ref::New(GetWindow().GetTopic(), action, strip, index) : ceUCAASpeakGestureAdd::Ref();
 }
 
-igdeUndo *ceWDSLaneGesture::UndoStripRemove( ceStrip *strip ){
+igdeUndo::Ref ceWDSLaneGesture::UndoStripRemove(ceStrip *strip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureRemove( GetWindow().GetTopic(), action, strip ) : NULL;
+	return action ? ceUCAASpeakGestureRemove::Ref::New(GetWindow().GetTopic(), action, strip) : ceUCAASpeakGestureRemove::Ref();
 }
 
-igdeUndo *ceWDSLaneGesture::UndoStripRemoveAll(){
+igdeUndo::Ref ceWDSLaneGesture::UndoStripRemoveAll(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureClear( GetWindow().GetTopic(), action ) : NULL;
+	return action ? ceUCAASpeakGestureClear::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakGestureClear::Ref();
 }
 
-igdeUndo *ceWDSLaneGesture::UndoStripReplace( ceStrip *strip, ceStrip *withStrip ){
+igdeUndo::Ref ceWDSLaneGesture::UndoStripReplace(ceStrip *strip, ceStrip *withStrip){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureSet( GetWindow().GetTopic(), action, strip, withStrip ) : NULL;
+	return action ? ceUCAASpeakGestureSet::Ref::New(GetWindow().GetTopic(), action, strip, withStrip) : ceUCAASpeakGestureSet::Ref();
 }
 
-igdeUndo *ceWDSLaneGesture::UndoStripMove( ceStrip *strip, int toIndex ){
+igdeUndo::Ref ceWDSLaneGesture::UndoStripMove(ceStrip *strip, int toIndex){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureMove( GetWindow().GetTopic(), action, strip, toIndex ) : NULL;
+	return action ? ceUCAASpeakGestureMove::Ref::New(GetWindow().GetTopic(), action, strip, toIndex) : ceUCAASpeakGestureMove::Ref();
 }
 
-ceUCAASpeakStripSetPause *ceWDSLaneGesture::UndoStripSetPause( ceStrip *strip, float pause ){
+ceUCAASpeakStripSetPause::Ref ceWDSLaneGesture::UndoStripSetPause(ceStrip *strip, float pause){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureSetPause( GetWindow().GetTopic(), action, strip, pause ) : NULL;
+	return action ? ceUCAASpeakGestureSetPause::Ref::New(GetWindow().GetTopic(), action, strip, pause) : ceUCAASpeakGestureSetPause::Ref();
 }
 
-ceUCAASpeakStripSetDuration *ceWDSLaneGesture::UndoStripSetDuration( ceStrip *strip, float duration ){
+ceUCAASpeakStripSetDuration::Ref ceWDSLaneGesture::UndoStripSetDuration(ceStrip *strip, float duration){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureSetDuration( GetWindow().GetTopic(), action, strip, duration ) : NULL;
+	return action ? ceUCAASpeakGestureSetDuration::Ref::New(GetWindow().GetTopic(), action, strip, duration) : ceUCAASpeakGestureSetDuration::Ref();
 }
 
-ceUCAASpeakStripsScale *ceWDSLaneGesture::UndoScaleStrips(){
+ceUCAASpeakStripsScale::Ref ceWDSLaneGesture::UndoScaleStrips(){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGesturesScale( GetWindow().GetTopic(), action ) : NULL;
+	return action ? ceUCAASpeakGesturesScale::Ref::New(GetWindow().GetTopic(), action) : ceUCAASpeakGesturesScale::Ref();
 }

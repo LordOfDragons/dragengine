@@ -26,11 +26,11 @@
 #define _DEOGLDSRENDERABLECOLOR_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableColor.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deDSRenderableColor;
-class deoglRDSRenderableColor;
 
 
 
@@ -40,7 +40,7 @@ class deoglRDSRenderableColor;
 class deoglDSRenderableColor : public deoglDSRenderable{
 public:
 	const deDSRenderableColor &pRenderableColor;
-	deoglRDSRenderableColor *pRRenderableColor;
+	deoglRDSRenderableColor::Ref pRRenderableColor;
 	decColor pColor;
 	bool pDirty;
 	
@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableColor( deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable );
+	deoglDSRenderableColor(deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable);
 	
 	/** Clean up peer. */
-	virtual ~deoglDSRenderableColor();
+	~deoglDSRenderableColor() override;
 	/*@}*/
 	
 	
@@ -62,13 +62,13 @@ public:
 	inline const deDSRenderableColor &GetRenderableColor() const{ return pRenderableColor; }
 	
 	/** Render renderable. */
-	virtual deoglRDSRenderable *GetRRenderable() const;
+	deoglRDSRenderable *GetRRenderable() const override;
 	
 	/** Renderable changed. */
-	virtual void RenderableChanged();
+	void RenderableChanged() override;
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 private:

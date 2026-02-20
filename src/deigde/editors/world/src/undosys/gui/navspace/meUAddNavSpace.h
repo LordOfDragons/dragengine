@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
-class meNavigationSpace;
+#include "../../../world/meWorld.h"
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 
@@ -37,18 +37,26 @@ class meNavigationSpace;
  * \brief Undo action add navigation space.
  */
 class meUAddNavSpace : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUAddNavSpace>;
+	
+	
 private:
 	meWorld *pWorld;
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUAddNavSpace( meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace );
+	meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace);
 	
 	/** \brief Clean up undo object. */
-	virtual ~meUAddNavSpace();
+
+protected:
+	~meUAddNavSpace() override;
+
+public:
 	/*@}*/
 	
 	
@@ -56,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space to add. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline const meNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Undo the action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo the action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

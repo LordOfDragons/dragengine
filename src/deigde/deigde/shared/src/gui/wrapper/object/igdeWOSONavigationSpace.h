@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/navigation/space/deNavigationSpaceReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -39,11 +39,16 @@ class igdeGDCNavigationSpace;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSONavigationSpace : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeWOSONavigationSpace>;
+	
+	
 private:
 	const igdeGDCNavigationSpace &pGDNavigationSpace;
-	deNavigationSpaceReference pNavigationSpace;
+	deNavigationSpace::Ref pNavigationSpace;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	decString pPathNavigationSpace;
 	
@@ -53,10 +58,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSONavigationSpace( igdeWObject &wrapper, const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix );
+	igdeWOSONavigationSpace(igdeWObject &wrapper, const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix);
 	
+protected:
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSONavigationSpace();
+	~igdeWOSONavigationSpace() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -64,23 +72,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationSpace resource. */
-	inline deNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
+	inline const deNavigationSpace::Ref &GetNavigationSpace() const{ return pNavigationSpace; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	void Visit(igdeWOSOVisitor &visitor) override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void AttachToCollider();
-	virtual void DetachFromCollider();
+	void AttachToCollider() override;
+	void DetachFromCollider() override;
 	
 	
 	

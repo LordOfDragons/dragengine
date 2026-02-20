@@ -26,6 +26,7 @@
 #define _DEOALDEFAULTOCTREE_H_
 
 #include "deoalOctree.h"
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #define DEOALDO_MAX_DEPTH 8
 
@@ -38,17 +39,15 @@
  */
 class deoalDefaultOctree : public deoalOctree{
 private:
-	void **pElements;
-	int pElementCount;
-	int pElementSize;
+	decTOrderedSet<void*> pElements;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
-	deoalDefaultOctree( const decVector &center, const decVector &halfSize );
+	deoalDefaultOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the generic octree object. */
-	virtual ~deoalDefaultOctree();
+	~deoalDefaultOctree() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -58,29 +57,29 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual deoalOctree *CreateOctree( int octant ) const;
+	deoalOctree *CreateOctree(int octant) const override;
 	/** Clears the content of this node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	/**
 	 * Adds a new object to the octree. The object is placed in the node
 	 * which hosts the specified box. Returns the node where the element
 	 * has been placed into.
 	 */
-	deoalDefaultOctree *InsertIntoTree( void *element, const decVector &boxCenter, const decVector &boxHalfSize, int maxDepth = DEOALDO_MAX_DEPTH );
+	deoalDefaultOctree *InsertIntoTree(void *element, const decVector &boxCenter, const decVector &boxHalfSize, int maxDepth = DEOALDO_MAX_DEPTH);
 	/*@}*/
 	
 	/** @name Elements */
 	/*@{*/
 	/** Retrieves the number of elements. */
-	inline int GetElementCount() const{ return pElementCount; }
+	inline int GetElementCount() const{ return pElements.GetCount(); }
 	/** Retrieves the element at the given index. */
-	void *GetElementAt( int index ) const;
+	void *GetElementAt(int index) const;
 	/** Retrieves the index of the given element or -1 if not found. */
-	int IndexOfElement( void *element ) const;
+	int IndexOfElement(void *element) const;
 	/** Adds a element. */
-	void AddElement( void *element );
+	void AddElement(void *element);
 	/** Removes a element. */
-	void RemoveElement( void *element );
+	void RemoveElement(void *element);
 	/** Removes all elements. */
 	void RemoveAllElements();
 	/*@}*/

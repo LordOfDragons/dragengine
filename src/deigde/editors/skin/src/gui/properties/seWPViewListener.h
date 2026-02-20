@@ -35,6 +35,9 @@ class seWPView;
  * \brief View panel listener.
  */
 class seWPViewListener : public seSkinListener{
+public:
+	using Ref = deTObjectReference<seWPViewListener>;
+	
 private:
 	seWPView &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPViewListener( seWPView &panel );
+	seWPViewListener(seWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~seWPViewListener();
+protected:
+	~seWPViewListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin parameters changed. */
-	virtual void SkinChanged( seSkin *skin );
+	void SkinChanged(seSkin *skin) override;
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged( seSkin *skin );
+	void SkyChanged(seSkin *skin) override;
 	
 	/** \brief The environment component changed. */
-	virtual void EnvObjectChanged( seSkin *skin );
+	void EnvObjectChanged(seSkin *skin) override;
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( seSkin *skin );
+	void ViewChanged(seSkin *skin) override;
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( seSkin *skin );
+	void CameraChanged(seSkin *skin) override;
 	/*@}*/
 };
 

@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringList.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -44,19 +44,23 @@ class aeRule;
  * - ' left' with ' right'
  */
 class aeURuleMirrorBones : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorBones>;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringList pPatterns;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeURuleMirrorBones( aeRule *rule );
+	aeURuleMirrorBones(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorBones();
+	~aeURuleMirrorBones() override;
 	/*@}*/
 	
 	
@@ -70,10 +74,10 @@ public:
 	
 	
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

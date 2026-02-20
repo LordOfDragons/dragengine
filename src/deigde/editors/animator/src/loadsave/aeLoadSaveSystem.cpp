@@ -41,12 +41,11 @@
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
-#include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
@@ -65,21 +64,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeLoadSaveSystem::aeLoadSaveSystem( aeWindowMain *wndMain ){
-	if( ! wndMain ) DETHROW( deeInvalidParam );
+aeLoadSaveSystem::aeLoadSaveSystem(aeWindowMain *wndMain){
+	if(!wndMain) DETHROW(deeInvalidParam);
 	
 	pWndMain = wndMain;
-	pLSAnimator = NULL;
+	pLSAnimator = nullptr;
 	
-	pLSAttConfig = NULL;
+	pLSAttConfig = nullptr;
 	
 	try{
-		pLSAnimator = new aeLSAnimator( this );
-		pLSAttConfig = new aeLoadSaveAttachmentConfig( wndMain->GetEnvironment().GetLogger(), LOGSOURCE );
+		pLSAnimator = new aeLSAnimator(this);
+		pLSAttConfig = new aeLoadSaveAttachmentConfig(wndMain->GetEnvironment().GetLogger(), LOGSOURCE);
 		
 		pBuildFilePattern();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -94,48 +93,40 @@ aeLoadSaveSystem::~aeLoadSaveSystem(){
 // Management
 ///////////////
 
-aeAnimator *aeLoadSaveSystem::LoadAnimator( const char* filename ){
-	const decBaseFileReader::Ref fileReader( decBaseFileReader::Ref::New(
-		pWndMain->GetEnvironment().GetFileSystemGame()
-			->OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) );
+aeAnimator::Ref aeLoadSaveSystem::LoadAnimator(const char* filename){
+	const decBaseFileReader::Ref fileReader(pWndMain->GetEnvironment().GetFileSystemGame()->
+		OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
-	const aeAnimator::Ref animator( aeAnimator::Ref::New( new aeAnimator( *pWndMain ) ) );
+	const aeAnimator::Ref animator(aeAnimator::Ref::New(*pWndMain));
 	
-	animator->SetFilePath( filename );  // required for relative loading
+	animator->SetFilePath(filename);  // required for relative loading
 	
-	pLSAnimator->LoadAnimator( animator, fileReader );
-	animator->SetChanged( false );
-	animator->SetSaved( true );
+	pLSAnimator->LoadAnimator(animator, fileReader);
+	animator->SetChanged(false);
+	animator->SetSaved(true);
 	
-	animator->AddReference(); // required to hand over reference to caller
 	return animator;
 }
 
-void aeLoadSaveSystem::SaveAnimator( aeAnimator *animator, const char *filename ){
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+void aeLoadSaveSystem::SaveAnimator(aeAnimator *animator, const char *filename){
+	if(!animator){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriterReference fileWriter;
-	fileWriter.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
-	pLSAnimator->SaveAnimator( animator, fileWriter );
+	pLSAnimator->SaveAnimator(animator, pWndMain->GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }
 
 
 
-void aeLoadSaveSystem::LoadAttConfig( const char *filename, aeAnimator &animator ){
-	decBaseFileReaderReference fileReader;
-	fileReader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-		decPath::CreatePathUnix( filename ) ) );
-	pLSAttConfig->LoadAttachmentConfig( animator, fileReader );
+void aeLoadSaveSystem::LoadAttConfig(const char *filename, aeAnimator &animator){
+	pLSAttConfig->LoadAttachmentConfig(animator, pWndMain->GetEnvironment().GetFileSystemGame()->
+		OpenFileForReading(decPath::CreatePathUnix(filename)));
 }
 
-void aeLoadSaveSystem::SaveAttConfig( const char *filename, const aeAnimator &animator ){
-	decBaseFileWriterReference fileWriter;
-	fileWriter.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
-	pLSAttConfig->SaveAttachmentConfig( animator, fileWriter );
+void aeLoadSaveSystem::SaveAttConfig(const char *filename, const aeAnimator &animator){
+	pLSAttConfig->SaveAttachmentConfig(animator, pWndMain->GetEnvironment().GetFileSystemGame()->
+		OpenFileForWriting(decPath::CreatePathUnix(filename)));
 }
 
 
@@ -144,27 +135,17 @@ void aeLoadSaveSystem::SaveAttConfig( const char *filename, const aeAnimator &an
 //////////////////////	
 
 void aeLoadSaveSystem::pCleanUp(){
-	if( pLSAttConfig ){
+	if(pLSAttConfig){
 		delete pLSAttConfig;
 	}
-	if( pLSAnimator ){
+	if(pLSAnimator){
 		delete pLSAnimator;
 	}
 }
 
 void aeLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
 	decString pattern;
+	pattern.Format("*%s", pLSAttConfig->GetPattern().GetString());
 	
-	try{
-		pattern.Format( "*%s", pLSAttConfig->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSAttConfig->GetName(), pattern, pLSAttConfig->GetPattern() );
-		pFPAttConfig.AddFilePattern( filePattern );
-		
-	}catch( const deException & ){
-		if( filePattern ){
-			delete filePattern;
-		}
-		throw;
-	}
+	pFPAttConfig.Add(igdeFilePattern::Ref::New(pLSAttConfig->GetName(), pattern, pLSAttConfig->GetPattern()));
 }

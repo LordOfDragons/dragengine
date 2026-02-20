@@ -39,24 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetIPA::saeUPhonemeSetIPA( saePhoneme *phoneme, int newIPA ){
-	if( ! phoneme ) DETHROW( deeInvalidParam );
+saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
+	if(!phoneme) DETHROW(deeInvalidParam);
 	
-	pPhoneme = NULL;
+	pPhoneme = nullptr;
 	
-	SetShortInfo( "Phoneme Set IPA" );
+	SetShortInfo("@SpeechAnimation.Undo.PhonemeSetIPA");
 	
 	pOldIPA = phoneme->GetIPA();
 	pNewIPA = newIPA;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
-	if( pPhoneme ){
-		pPhoneme->FreeReference();
-	}
 }
 
 
@@ -65,9 +61,9 @@ saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
 ///////////////
 
 void saeUPhonemeSetIPA::Undo(){
-	pPhoneme->SetIPA( pOldIPA );
+	pPhoneme->SetIPA(pOldIPA);
 }
 
 void saeUPhonemeSetIPA::Redo(){
-	pPhoneme->SetIPA( pNewIPA );
+	pPhoneme->SetIPA(pNewIPA);
 }

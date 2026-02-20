@@ -49,12 +49,13 @@ protected:
 	ceWPTMAPChoiceActionsCutAction();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceActionsCutAction>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsCutAction( ceWindowMain &windowMain,
+	ceWPTMAPChoiceActionsCutAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, ceConversationAction *action );
+		ceCAPlayerChoice &playerChoice, ceConversationAction *action);
 	/*@}*/
 	
 	
@@ -73,7 +74,7 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

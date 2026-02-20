@@ -36,9 +36,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 
@@ -60,9 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeConfiguration::aeConfiguration( aeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false )
+aeConfiguration::aeConfiguration(aeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false)
 {
 	pReset();
 }
@@ -76,33 +74,33 @@ aeConfiguration::~aeConfiguration(){
 // Management
 ///////////////
 
-void aeConfiguration::SetLocoKeyForward( deInputEvent::eKeyCodes key ){
+void aeConfiguration::SetLocoKeyForward(deInputEvent::eKeyCodes key){
 	pLocoKeyForward = key;
 }
 
-void aeConfiguration::SetLocoKeyBackwards( deInputEvent::eKeyCodes key ){
+void aeConfiguration::SetLocoKeyBackwards(deInputEvent::eKeyCodes key){
 	pLocoKeyBackwards = key;
 }
 
-void aeConfiguration::SetLocoKeyLeft( deInputEvent::eKeyCodes key ){
+void aeConfiguration::SetLocoKeyLeft(deInputEvent::eKeyCodes key){
 	pLocoKeyLeft = key;
 }
 
-void aeConfiguration::SetLocoKeyRight( deInputEvent::eKeyCodes key ){
+void aeConfiguration::SetLocoKeyRight(deInputEvent::eKeyCodes key){
 	pLocoKeyRight = key;
 }
 
-void aeConfiguration::SetLocoKeyCrouch( deInputEvent::eKeyCodes key ){
+void aeConfiguration::SetLocoKeyCrouch(deInputEvent::eKeyCodes key){
 	pLocoKeyCrouch = key;
 }
 
-void aeConfiguration::SetLocoKeyRun( deInputEvent::eKeyCodes key ){
+void aeConfiguration::SetLocoKeyRun(deInputEvent::eKeyCodes key){
 	pLocoKeyRun = key;
 }
 
 
 
-void aeConfiguration::SetPreventSaving( bool preventSaving ){
+void aeConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -116,42 +114,40 @@ void aeConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/animatorEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/animatorEditor.xml"));
+		if(!vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
 		
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
-		aeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).
+			ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void aeConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/animatorEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/animatorEditor.xml"));
+	if(!vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
-	decBaseFileWriterReference writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		aeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
+			vfs.OpenFileForWriting(pathFile), *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 

@@ -26,8 +26,8 @@
 #define _INPUTDEVICECOMPONENT_H_
 
 #include "../common/string/decString.h"
-#include "../common/collection/decObjectOrderedSet.h"
-#include "../resources/image/deImageReference.h"
+#include "../common/collection/decTOrderedSet.h"
+#include "../resources/image/deImage.h"
 
 
 /**
@@ -79,10 +79,10 @@ private:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	
 	/** \brief List of small icons of different size for use in binding displays. */
-	decObjectOrderedSet pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	
 	/** \brief Text to display centered across display image or icon. */
 	decString pDisplayText;
@@ -96,7 +96,7 @@ public:
 	deInputDeviceComponent();
 	
 	/** \brief Create input device component. */
-	deInputDeviceComponent( const deInputDeviceComponent &component );
+	deInputDeviceComponent(const deInputDeviceComponent &component);
 	
 	/** \brief Clean up input device component. */
 	~deInputDeviceComponent();
@@ -117,7 +117,7 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/**
 	 * \brief Display name.
@@ -128,50 +128,43 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set Display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Component type. */
 	inline eComponentTypes GetType() const{ return pType; }
 	
 	/** \brief Component type. */
-	void SetType( eComponentTypes type );
+	void SetType(eComponentTypes type);
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/**
 	 * \brief Set image to represent the component in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	void SetDisplayImage( deImage *image );
+	void SetDisplayImage(deImage *image);
 	
-	/** \brief Count of icons representing the component in bindings. */
-	int GetDisplayIconCount() const;
-	
-	/**
-	 * \brief Icon at index representing the component in bindings.
-	 * 
-	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
-	 */
-	deImage *GetDisplayIconAt( int index ) const;
+	/** Display icons list. */
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/**
 	 * \brief Add icon representing the component in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	void AddDisplayIcon( deImage *image );
+	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set text to display centered across display image or icon. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	/*@}*/
 	
 	
@@ -179,7 +172,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy input device component. */
-	deInputDeviceComponent &operator=( const deInputDeviceComponent &component );
+	deInputDeviceComponent &operator=(const deInputDeviceComponent &component);
 	/*@}*/
 };
 

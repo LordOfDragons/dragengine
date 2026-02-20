@@ -46,8 +46,7 @@
 class DE_DLL_EXPORT deSynthesizerLink : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerLink> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerLink>;
 	
 	
 private:
@@ -64,7 +63,7 @@ public:
 	deSynthesizerLink();
 	
 	/** \brief Create copy of link. */
-	deSynthesizerLink( const deSynthesizerLink &copy );
+	deSynthesizerLink(const deSynthesizerLink &copy);
 	
 protected:
 	/**
@@ -73,7 +72,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerLink();
+	~deSynthesizerLink() override;
 	/*@}*/
 	
 	
@@ -91,7 +90,7 @@ public:
 	 * \brief Set controller or -1 to not set.
 	 * \throws deeInvalidParam \em controller is less than -1.
 	 */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Curve. */
 	inline decCurveBezier &GetCurve(){ return pCurve; }
@@ -104,7 +103,7 @@ public:
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	/*@}*/
 	
 	
@@ -112,7 +111,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	deSynthesizerLink &operator=( const deSynthesizerLink &copy );
+	deSynthesizerLink &operator=(const deSynthesizerLink &copy);
 	/*@}*/
 };
 

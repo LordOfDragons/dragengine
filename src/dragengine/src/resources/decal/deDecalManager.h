@@ -25,11 +25,11 @@
 #ifndef _DEDECALMANAGER_H_
 #define _DEDECALMANAGER_H_
 
+#include "deDecal.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deDecal;
 
 
 /**
@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new decal resource manager linked to the given engine. */
-	deDecalManager( deEngine *engine );
+	deDecalManager(deEngine *engine);
 	
 	/** \brief Clean up decal resource manager and reports leaking resources. */
-	virtual ~deDecalManager();
+	~deDecalManager() override;
 	/*@}*/
 	
 	
@@ -63,22 +63,22 @@ public:
 	deDecal *GetRootDecal() const;
 	
 	/** \brief Create new and empty decal. */
-	deDecal *CreateDecal();
+	deDecal::Ref CreateDecal();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemGraphicLoad();
-	void SystemGraphicUnload();
-	void SystemPhysicsLoad();
-	void SystemPhysicsUnload();
-	void SystemAudioLoad();
-	void SystemAudioUnload();
+	void SystemGraphicLoad() override;
+	void SystemGraphicUnload() override;
+	void SystemPhysicsLoad() override;
+	void SystemPhysicsUnload() override;
+	void SystemAudioLoad() override;
+	void SystemAudioUnload() override;
 	/*@}*/
 	
 	
@@ -89,7 +89,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

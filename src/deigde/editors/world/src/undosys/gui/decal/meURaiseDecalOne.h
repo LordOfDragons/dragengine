@@ -28,11 +28,11 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 class meWorld;
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -40,18 +40,25 @@ class meDecal;
  * Raises a decal one level higher in the decal stack.
  */
 class meURaiseDecalOne : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meURaiseDecalOne>;
+	
+	
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 public:
 	// constructor, destructor
-	meURaiseDecalOne( meWorld *world, meDecal *decal );
-	virtual ~meURaiseDecalOne();
+	meURaiseDecalOne(meWorld *world, meDecal *decal);
 	
+protected:
+	~meURaiseDecalOne() override;
+	
+public:
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 // end of include only once

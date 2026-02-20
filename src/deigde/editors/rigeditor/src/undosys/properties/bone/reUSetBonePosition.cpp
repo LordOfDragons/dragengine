@@ -35,19 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBonePosition::reUSetBonePosition( reRigBone *bone, const decVector &position ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBonePosition::reUSetBonePosition(reRigBone *bone, const decVector &position){
+	DEASSERT_NOTNULL(bone)
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldPosition = bone->GetPosition();
 	pNewPosition = position;
 	
 	try{
-		SetShortInfo( "Set Bone Position" );
+		SetShortInfo("@Rig.Undo.BoneSetPosition");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +61,11 @@ reUSetBonePosition::~reUSetBonePosition(){
 ///////////////
 
 void reUSetBonePosition::Undo(){
-	pBone->SetPosition( pOldPosition );
+	pBone->SetPosition(pOldPosition);
 }
 
 void reUSetBonePosition::Redo(){
-	pBone->SetPosition( pNewPosition );
+	pBone->SetPosition(pNewPosition);
 }
 
 
@@ -76,5 +74,4 @@ void reUSetBonePosition::Redo(){
 //////////////////////
 
 void reUSetBonePosition::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
 }

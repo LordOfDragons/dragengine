@@ -33,6 +33,7 @@
 
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
+#include "../../../common/collection/decTList.h"
 
 
 
@@ -43,20 +44,14 @@
 ////////////////////////////
 
 deAnimatorRuleSubAnimator::deAnimatorRuleSubAnimator() :
-pEnableVertexPositionSet( true )
+pEnableVertexPositionSet(true)
 {
-	pConnections = NULL;
-	pConnectionCount = 0;
-	
 	pEnablePosition = true;
 	pEnableOrientation = true;
 	pEnableSize = true;
 }
 
 deAnimatorRuleSubAnimator::~deAnimatorRuleSubAnimator(){
-	if( pConnections ){
-		delete [] pConnections;
-	}
 }
 
 
@@ -64,8 +59,8 @@ deAnimatorRuleSubAnimator::~deAnimatorRuleSubAnimator(){
 // Management
 ///////////////
 
-void deAnimatorRuleSubAnimator::SetSubAnimator( deAnimator *animator ){
-	if( animator == pSubAnimator ){
+void deAnimatorRuleSubAnimator::SetSubAnimator(deAnimator *animator){
+	if(animator == pSubAnimator){
 		return;
 	}
 	
@@ -73,76 +68,59 @@ void deAnimatorRuleSubAnimator::SetSubAnimator( deAnimator *animator ){
 	UpdateConnectionCount();
 }
 
-void deAnimatorRuleSubAnimator::SetEnablePosition( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleSubAnimator::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleSubAnimator::SetEnableSize( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleSubAnimator::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
 
 
 void deAnimatorRuleSubAnimator::UpdateConnectionCount(){
-	if( pConnections ){
-		delete [] pConnections;
-		pConnections = NULL;
-		pConnectionCount = 0;
-	}
+	pConnections.RemoveAll();
 	
-	if( ! pSubAnimator ){
+	if(!pSubAnimator){
 		return;
 	}
 	
-	int controllerCount = pSubAnimator->GetControllerCount();
-	if( controllerCount == 0 ){
-		return;
-	}
-	
-	pConnections = new int[ controllerCount ];
-	for( pConnectionCount=0; pConnectionCount<controllerCount; pConnectionCount++ ){
-		pConnections[ pConnectionCount ] = -1;
-	}
+	pConnections.AddRange(pSubAnimator->GetControllers().GetCount(), -1);
 }
 
-int deAnimatorRuleSubAnimator::GetConnectionAt( int targetController ) const{
-	if( targetController < 0 || targetController >= pConnectionCount ) DETHROW( deeInvalidParam );
-	
-	return pConnections[ targetController ];
+int deAnimatorRuleSubAnimator::GetConnectionAt(int targetController) const{
+	return pConnections.GetAt(targetController);
 }
 
-void deAnimatorRuleSubAnimator::SetConnectionAt( int targetController, int localController ){
-	if( targetController < 0 || targetController >= pConnectionCount ) DETHROW( deeInvalidParam );
-	if( localController < -1 ) DETHROW( deeInvalidParam );
+void deAnimatorRuleSubAnimator::SetConnectionAt(int targetController, int localController){
+	DEASSERT_TRUE(localController >= -1)
 	
-	pConnections[ targetController ] = localController;
+	pConnections.GetAt(targetController) = localController;
 }
 
-void deAnimatorRuleSubAnimator::SetMatchingConnections( const deAnimator &animator ){
-	if( ! pSubAnimator ){
+void deAnimatorRuleSubAnimator::SetMatchingConnections(const deAnimator &animator){
+	if(!pSubAnimator){
 		ClearConnections();
 		return;
 	}
 	
 	int i;
-	for( i=0; i<pConnectionCount; i++ ){
-		pConnections[ i ] = animator.IndexOfControllerNamed( pSubAnimator->GetControllerAt( i )->GetName() );
+	for(i=0; i<pConnections.GetCount(); i++){
+		pConnections.SetAt(i, animator.GetControllers().IndexOfNamed(
+			pSubAnimator->GetControllers().GetAt(i)->GetName()));
 	}
 }
 
 void deAnimatorRuleSubAnimator::ClearConnections(){
-	int i;
-	for( i=0; i<pConnectionCount; i++ ){
-		pConnections[ i ] = -1;
-	}
+	pConnections.SetRangeAt(0, pConnections.GetCount(), -1);
 }
 
 
@@ -150,6 +128,6 @@ void deAnimatorRuleSubAnimator::ClearConnections(){
 // Visiting
 /////////////
 
-void deAnimatorRuleSubAnimator::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitSubAnimator( *this );
+void deAnimatorRuleSubAnimator::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitSubAnimator(*this);
 }

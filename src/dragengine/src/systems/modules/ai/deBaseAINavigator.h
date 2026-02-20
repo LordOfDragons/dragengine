@@ -80,7 +80,7 @@ public:
 	 * \retval false No nearest point found inside \em radius around \em point.
 	 * \retval false There are no matching navigation spaces.
 	 */
-	virtual bool NearestPoint( const decDVector &point, float radius, decDVector &nearestPoint, int &nearestType );
+	virtual bool NearestPoint(const decDVector &point, float radius, decDVector &nearestPoint, int &nearestType);
 	
 	/**
 	 * \brief Distance moving from point along direction before crossing navigation space boundaries.
@@ -96,7 +96,7 @@ public:
 	 * \retval false \em origin is not located in the navigation space.
 	 * \retval false No navigation space boundary is hit moving along line.
 	 */
-	virtual bool LineCollide( const decDVector &origin, const decVector &direction, float &distance );
+	virtual bool LineCollide(const decDVector &origin, const decVector &direction, float &distance);
 	
 	/**
 	 * \brief Find path.
@@ -107,7 +107,7 @@ public:
 	 * \param[in] start Start position of path.
 	 * \param[in] goal Goal position of path.
 	 */
-	virtual void FindPath( deNavigatorPath &path, const decDVector &start, const decDVector &goal );
+	virtual void FindPath(deNavigatorPath &path, const decDVector &start, const decDVector &goal);
 	
 	/**
 	 * \brief Test path for collision using ray test.
@@ -120,8 +120,8 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideRay( const deNavigatorPath &path, deCollider &collider,
-		int &hitAfterPoint, float &hitDistance );
+	virtual bool PathCollideRay(const deNavigatorPath &path, deCollider &collider,
+		int &hitAfterPoint, float &hitDistance);
 	
 	/**
 	 * \brief Test path for collision using ray test in range.
@@ -134,9 +134,9 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideRay( const deNavigatorPath &path, deCollider &collider,
+	virtual bool PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 		const decDVector &startPosition, int nextPoint, float maxDistance,
-		int &hitAfterPoint, float &hitDistance );
+		int &hitAfterPoint, float &hitDistance);
 	
 	/**
 	 * \brief Test path for collision using a collider moved along the path.
@@ -149,8 +149,8 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideShape( const deNavigatorPath &path, deCollider &collider,
-		deCollider &agent, int &hitAfterPoint, float &hitDistance );
+	virtual bool PathCollideShape(const deNavigatorPath &path, deCollider &collider,
+		deCollider &agent, int &hitAfterPoint, float &hitDistance);
 	
 	/**
 	 * \brief Test path for collision using a collider moved along the path in range.
@@ -163,9 +163,9 @@ public:
 	 * \retval true if a collision is found and \em hitAfterPoint and \em hitDistance are set.
 	 * \retval false No collision found.
 	 */
-	virtual bool PathCollideShape( const deNavigatorPath &path, deCollider &collider,
+	virtual bool PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 		deCollider &agent, const decDVector &startPosition, int nextPoint,
-		float maxDistance, int &hitAfterPoint, float &hitDistance );
+		float maxDistance, int &hitAfterPoint, float &hitDistance);
 	/*@}*/
 };
 

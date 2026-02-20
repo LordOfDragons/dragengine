@@ -35,26 +35,26 @@
 #include "../../world/meWorld.h"
 #include "../../world/meCamera.h"
 #include "../../worldedit.h"
-#include "dragengine/resources/world/deWorld.h"
-#include "dragengine/resources/camera/deCamera.h"
-#include "dragengine/resources/effect/deEffect.h"
-#include "dragengine/resources/effect/deEffectFilterKernel.h"
-#include "dragengine/resources/effect/deEffectOverlayImage.h"
-#include "dragengine/resources/effect/deEffectColorMatrix.h"
-#include "dragengine/resources/effect/deEffectDistortImage.h"
-#include "dragengine/resources/effect/deEffectManager.h"
-#include "dragengine/resources/effect/deEffectVisitorIdentify.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/effect/deEffect.h>
+#include <dragengine/resources/effect/deEffectFilterKernel.h>
+#include <dragengine/resources/effect/deEffectOverlayImage.h>
+#include <dragengine/resources/effect/deEffectColorMatrix.h>
+#include <dragengine/resources/effect/deEffectDistortImage.h>
+#include <dragengine/resources/effect/deEffectManager.h>
+#include <dragengine/resources/effect/deEffectVisitorIdentify.h>
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 
 
 
 // events
 ///////////
-FXDEFMAP( meWindowEffects ) meWindowEffectsMap[]={
-	FXMAPFUNC( SEL_CLOSE, 0, meWindowEffects::onClose ),
-	FXMAPFUNC( SEL_COMMAND, meWindowEffects::ID_BTNADDEFFECT, meWindowEffects::onBtnAddEffectCommand ),
-	FXMAPFUNC( SEL_COMMAND, meWindowEffects::ID_LISTEFFECTS, meWindowEffects::onListEffectsChanged ),
+FXDEFMAP(meWindowEffects) meWindowEffectsMap[]={
+	FXMAPFUNC(SEL_CLOSE, 0, meWindowEffects::onClose),
+	FXMAPFUNC(SEL_COMMAND, meWindowEffects::ID_BTNADDEFFECT, meWindowEffects::onBtnAddEffectCommand),
+	FXMAPFUNC(SEL_COMMAND, meWindowEffects::ID_LISTEFFECTS, meWindowEffects::onListEffectsChanged),
 };
 
 	
@@ -62,52 +62,52 @@ FXDEFMAP( meWindowEffects ) meWindowEffectsMap[]={
 // class meWindowEffects
 /////////////////////////
 
-FXIMPLEMENT( meWindowEffects, FXTopWindow, meWindowEffectsMap, ARRAYNUMBER( meWindowEffectsMap ) )
+FXIMPLEMENT(meWindowEffects, FXTopWindow, meWindowEffectsMap, ARRAYNUMBER(meWindowEffectsMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-meWindowEffects::meWindowEffects(){ }
+meWindowEffects::meWindowEffects(){}
 
-meWindowEffects::meWindowEffects( FXApp *app, meWindowMain *wndMain ) :
-FXTopWindow( app, "Effects Manager", NULL, NULL, DECOR_ALL, 0, 0, 300, 400, 0, 0, 0, 0, 0, 0 ){
-	if( ! wndMain ) DETHROW( deeInvalidParam );
+meWindowEffects::meWindowEffects(FXApp *app, meWindowMain *wndMain) :
+FXTopWindow(app, "Effects Manager", nullptr, nullptr, DECOR_ALL, 0, 0, 300, 400, 0, 0, 0, 0, 0, 0){
+	if(!wndMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
 	pWndMain = wndMain;
-	pWorld = NULL;
-	pPanel = NULL;
+	pWorld = nullptr;
+	pPanel = nullptr;
 	
 	// create window
-	FXScrollWindow *scroll = new FXScrollWindow( this, LAYOUT_FILL_X | LAYOUT_FILL_Y
-		| SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
-	pFrameContent = new FXVerticalFrame( scroll, LAYOUT_FILL_X | LAYOUT_FILL_Y
-		| LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 10, 10, 10, 10 );
+	FXScrollWindow *scroll = new FXScrollWindow(this, LAYOUT_FILL_X | LAYOUT_FILL_Y
+		| SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK);
+	pFrameContent = new FXVerticalFrame(scroll, LAYOUT_FILL_X | LAYOUT_FILL_Y
+		| LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 10, 10, 10, 10);
 	
 	// effect types list
-	FXGroupBox *groupBox = new FXGroupBox( pFrameContent, "Effects:",
+	FXGroupBox *groupBox = new FXGroupBox(pFrameContent, "Effects:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	FXVerticalFrame *frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	FXHorizontalFrame *frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	pCBEffectTypes = new FXComboBox( frameLine, 10, this, ID_CBEFFECTTYPES, FRAME_SUNKEN | LAYOUT_FILL_X );
-	pCBEffectTypes->setEditable( false );
-	pCBEffectTypes->setNumVisible( 6 );
- 	new FXButton( frameLine, "Add Effect", NULL, this, ID_BTNADDEFFECT, BUTTON_NORMAL );
+	FXHorizontalFrame *frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	pCBEffectTypes = new FXComboBox(frameLine, 10, this, ID_CBEFFECTTYPES, FRAME_SUNKEN | LAYOUT_FILL_X);
+	pCBEffectTypes->setEditable(false);
+	pCBEffectTypes->setNumVisible(6);
+ 	new FXButton(frameLine, "Add Effect", nullptr, this, ID_BTNADDEFFECT, BUTTON_NORMAL);
 	
-	pCBEffectTypes->appendItem( GetEffectTypeNameFor( deEffectVisitorIdentify::eetOverlayImage ), ( void* )deEffectVisitorIdentify::eetOverlayImage );
-	pCBEffectTypes->appendItem( GetEffectTypeNameFor( deEffectVisitorIdentify::eetFilterKernel ), ( void* )deEffectVisitorIdentify::eetFilterKernel );
-	pCBEffectTypes->appendItem( GetEffectTypeNameFor( deEffectVisitorIdentify::eetColorMatrix ), ( void* )deEffectVisitorIdentify::eetColorMatrix );
-	pCBEffectTypes->appendItem( GetEffectTypeNameFor( deEffectVisitorIdentify::eetDistortImage ), ( void* )deEffectVisitorIdentify::eetDistortImage );
+	pCBEffectTypes->appendItem(GetEffectTypeNameFor(deEffectVisitorIdentify::eetOverlayImage), (void*)deEffectVisitorIdentify::eetOverlayImage);
+	pCBEffectTypes->appendItem(GetEffectTypeNameFor(deEffectVisitorIdentify::eetFilterKernel), (void*)deEffectVisitorIdentify::eetFilterKernel);
+	pCBEffectTypes->appendItem(GetEffectTypeNameFor(deEffectVisitorIdentify::eetColorMatrix), (void*)deEffectVisitorIdentify::eetColorMatrix);
+	pCBEffectTypes->appendItem(GetEffectTypeNameFor(deEffectVisitorIdentify::eetDistortImage), (void*)deEffectVisitorIdentify::eetDistortImage);
 	
 	// effects list
-	pListEffects = new FXList( frameBox, this, ID_LISTEFFECTS, FX::LIST_BROWSESELECT |
-		LAYOUT_FILL_X | LAYOUT_FILL_Y | FRAME_SUNKEN );
-	pListEffects->setNumVisible( 5 );
+	pListEffects = new FXList(frameBox, this, ID_LISTEFFECTS, FX::LIST_BROWSESELECT |
+		LAYOUT_FILL_X | LAYOUT_FILL_Y | FRAME_SUNKEN);
+	pListEffects->setNumVisible(5);
 	
 	// realize window
 	create();
@@ -125,12 +125,12 @@ void meWindowEffects::UpdateWorld(){
 	meWorld *world = pWndMain->GetWorld();
 	
 	// check if the world changed
-	if( world == pWorld ) return;
+	if(world == pWorld) return;
 	
 	// clear panel and lists
-	if( pPanel ){
+	if(pPanel){
 		delete pPanel;
-		pPanel = NULL;
+		pPanel = nullptr;
 	}
 	pListEffects->clearItems();
 	
@@ -140,8 +140,8 @@ void meWindowEffects::UpdateWorld(){
 	update();
 }
 
-const char *meWindowEffects::GetEffectTypeNameFor( int type ) const{
-	switch( type ){
+const char *meWindowEffects::GetEffectTypeNameFor(int type) const{
+	switch(type){
 	case deEffectVisitorIdentify::eetFilterKernel:
 		return "Filter Kernel";
 		
@@ -161,8 +161,8 @@ const char *meWindowEffects::GetEffectTypeNameFor( int type ) const{
 
 void meWindowEffects::UpdateEffectsList(){
 	deEffectVisitorIdentify identify;
-	deCamera *engCamera = NULL;
-	deEffect *engEffect;
+	deCamera *engCamera = nullptr;
+	deEffect::Ref engEffect;
 	int e, effectCount;
 	meCamera *camera;
 	
@@ -170,49 +170,38 @@ void meWindowEffects::UpdateEffectsList(){
 	pListEffects->clearItems();
 	
 	// add effects if there is a camera
-	if( pWorld ){
+	if(pWorld){
 		camera = pWorld->GetActiveCamera();
-		if( camera ) engCamera = camera->GetEngineCamera();
+		if(camera) engCamera = camera->GetEngineCamera();
 	}
 	
-	if( engCamera ){
+	if(engCamera){
 		effectCount = engCamera->GetEffectCount();
-		for( e=0; e<effectCount; e++ ){
-			engEffect = engCamera->GetEffectAt( e );
-			engEffect->Visit( identify );
-			pListEffects->appendItem( GetEffectTypeNameFor( identify.GetType() ), NULL, engEffect );
+		for(e=0; e<effectCount; e++){
+			engEffect = engCamera->GetEffectAt(e);
+			engEffect->Visit(identify);
+			pListEffects->appendItem(GetEffectTypeNameFor(identify.GetType()), nullptr, engEffect);
 		}
 	}
 }
 
-void meWindowEffects::DisplayPanelFor( deEffect *engEffect ){
+void meWindowEffects::DisplayPanelFor(deEffect *engEffect){
 	deEffectVisitorIdentify identify;
 	
 	// remove the old panel if existing
-	if( pPanel ){
+	if(pPanel){
 		delete pPanel;
-		pPanel = NULL;
+		pPanel = nullptr;
 	}
 	
 	// create new panel if there is an effect
-	if( engEffect ){
-		engEffect->Visit( &identify );
-		if( identify.IsFilterKernel() ){
-			pPanel = new meWEFFilterKernel( identify.CastToFilterKernel(), this, pFrameContent );
-			if( ! pPanel ) DETHROW( deeOutOfMemory );
-			
-		}else if( identify.IsOverlayImage() ){
-			pPanel = new meWEFOverlayImage( identify.CastToOverlayImage(), this, pFrameContent );
-			if( ! pPanel ) DETHROW( deeOutOfMemory );
-			
-		}else if( identify.IsColorMatrix() ){
-			pPanel = new meWEFColorMatrix( identify.CastToColorMatrix(), this, pFrameContent );
-			if( ! pPanel ) DETHROW( deeOutOfMemory );
-			
-		}else if( identify.IsDistortImage() ){
-			pPanel = new meWEFDistortImage( identify.CastToDistortImage(), this, pFrameContent );
-			if( ! pPanel ) DETHROW( deeOutOfMemory );
-		}
+	if(engEffect){
+		engEffect->Visit(&identify);
+		if(identify.IsFilterKernel()){
+			pPanel = new meWEFFilterKernel(identify.CastToFilterKernel(), this, pFrameContent)		}else if(identify.IsOverlayImage()){
+			pPanel = new meWEFOverlayImage(identify.CastToOverlayImage(), this, pFrameContent)		}else if(identify.IsColorMatrix()){
+			pPanel = new meWEFColorMatrix(identify.CastToColorMatrix(), this, pFrameContent)		}else if(identify.IsDistortImage()){
+			pPanel = new meWEFDistortImage(identify.CastToDistortImage(), this, pFrameContent);		}
 	}
 }
 
@@ -221,89 +210,82 @@ void meWindowEffects::DisplayPanelFor( deEffect *engEffect ){
 // Events
 ///////////
 
-long meWindowEffects::onClose( FXObject *sender, FXSelector selector, void *data ){
+long meWindowEffects::onClose(FXObject *sender, FXSelector selector, void *data){
 	hide();
 	return 1; // 1 = do not close window
 }
 
-long meWindowEffects::onBtnAddEffectCommand( FXObject *sender, FXSelector selector, void *data ){
+long meWindowEffects::onBtnAddEffectCommand(FXObject *sender, FXSelector selector, void *data){
 	int selection = pCBEffectTypes->getCurrentItem();
 	deEffectManager *engEffectManager;
-	deCamera *engCamera = NULL;
-	deEffect *engEffect = NULL;
+	deCamera *engCamera = nullptr;
+	deEffect::Ref engEffect;
 	deEngine *engine;
 	meCamera *camera;
 	int type;
 	
 	// nothing select means nothing to do
-	if( selection == -1 ) return 1;
+	if(selection == -1) return 1;
 	
 	// determine the type of the effect to add
-	type = ( intptr_t )pCBEffectTypes->getItemData( selection );
-	if( type == deEffectVisitorIdentify::eetUnknown ) return 1;
+	type = (intptr_t)pCBEffectTypes->getItemData(selection);
+	if(type == deEffectVisitorIdentify::eetUnknown) return 1;
 	
 	// if there is no usable camera we go home
-	if( pWorld ){
+	if(pWorld){
 		engine = pWorld->GetEngine();
 		
 		camera = pWorld->GetActiveCamera();
-		if( camera ) engCamera = camera->GetEngineCamera();
+		if(camera) engCamera = camera->GetEngineCamera();
 	}
 	
-	if( ! engCamera ) return 1;
+	if(!engCamera) return 1;
 	engEffectManager = engine->GetEffectManager();
 	
-	try{
-		// create effect
-		switch( type ){
-		case deEffectVisitorIdentify::eetFilterKernel:
-			engEffect = engEffectManager->CreateEffectFilterKernel();
-			break;
-			
-		case deEffectVisitorIdentify::eetOverlayImage:
-			engEffect = engEffectManager->CreateEffectOverlayImage();
-			break;
-			
-		case deEffectVisitorIdentify::eetColorMatrix:
-			engEffect = engEffectManager->CreateEffectColorMatrix();
-			break;
-			
-		case deEffectVisitorIdentify::eetDistortImage:
-			engEffect = engEffectManager->CreateEffectDistortImage();
-			break;
-			
-		default:
-			DETHROW( deeInvalidParam );
-		}
+	// create effect
+	switch(type){
+	case deEffectVisitorIdentify::eetFilterKernel:
+		engEffect = engEffectManager->CreateEffectFilterKernel();
+		break;
 		
-		// add effect to world
-		engCamera->AddEffect( engEffect );
-		engEffect->FreeReference();
+	case deEffectVisitorIdentify::eetOverlayImage:
+		engEffect = engEffectManager->CreateEffectOverlayImage();
+		break;
 		
-	}catch( const deException & ){
-		if( engEffect ) engEffect->FreeReference();
-		throw;
+	case deEffectVisitorIdentify::eetColorMatrix:
+		engEffect = engEffectManager->CreateEffectColorMatrix();
+		break;
+		
+	case deEffectVisitorIdentify::eetDistortImage:
+		engEffect = engEffectManager->CreateEffectDistortImage();
+		break;
+		
+	default:
+		DETHROW(deeInvalidParam);
 	}
 	
+	// add effect to world
+	engCamera->AddEffect(engEffect);
+	
 	// add to list
-	pListEffects->appendItem( GetEffectTypeNameFor( type ), NULL, engEffect );
-	pListEffects->setCurrentItem( pListEffects->getNumItems() - 1 );
+	pListEffects->appendItem(GetEffectTypeNameFor(type), nullptr, engEffect);
+	pListEffects->setCurrentItem(pListEffects->getNumItems() - 1);
 	
 	// add panel
-	DisplayPanelFor( engEffect );
+	DisplayPanelFor(engEffect);
 	
 	return 1;
 }
 
-long meWindowEffects::onListEffectsChanged( FXObject *sender, FXSelector selector, void *data ){
+long meWindowEffects::onListEffectsChanged(FXObject *sender, FXSelector selector, void *data){
 	int selection = pListEffects->getCurrentItem();
-	deEffect *engEffect = NULL;
+	deEffect::Ref engEffect;
 	
-	if( selection > -1 ){
-		engEffect = ( deEffect* )pListEffects->getItemData( selection );
+	if(selection > -1){
+		engEffect = (deEffect*)pListEffects->getItemData(selection);
 	}
 	
-	DisplayPanelFor( engEffect );
+	DisplayPanelFor(engEffect);
 	
 	return 1;
 }

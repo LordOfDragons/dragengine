@@ -34,6 +34,10 @@
  * Undo action set mapped toggle input clamped.
  */
 class seUMappedToggleInputClamped : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedToggleInputClamped>;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -43,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedToggleInputClamped( seMapped *mapped );
+	seUMappedToggleInputClamped(seMapped *mapped);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedToggleInputClamped();
+	~seUMappedToggleInputClamped() override;
 	/*@}*/
 	
 	
@@ -56,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

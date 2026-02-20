@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	stClassPoint( ScriptingSmalltalk &st );
+	stClassPoint(ScriptingSmalltalk &st);
 	
 	/** \brief Clean up class. */
 	virtual ~stClassPoint();
@@ -64,10 +64,10 @@ public:
 	void SetUpLinks();
 	
 	/** \brief Point from object. */
-	const decPoint &OOPToPoint( OOP object ) const;
+	const decPoint &OOPToPoint(OOP object) const;
 	
 	/** \brief Push vector2. */
-	OOP PointToOOP( const decPoint &vector );
+	OOP PointToOOP(const decPoint &vector);
 	/*@}*/
 	
 	
@@ -75,26 +75,26 @@ public:
 	/** \name cCall Methods */
 	/*@{*/
 	/** \brief Create zero vector2 object. */
-	static OOP ccNew( OOP self );
+	static OOP ccNew(OOP self);
 	
 	/** \brief Create vector2 object. */
-	static OOP ccNewXY( OOP self, int x, int y );
+	static OOP ccNewXY(OOP self, int x, int y);
 	
 	
 	
 	/** \brief X component. */
-	static int ccX( OOP self );
+	static int ccX(OOP self);
 	
 	/** \brief Y component. */
-	static int ccY( OOP self );
+	static int ccY(OOP self);
 	
 	
 	
 	/** \brief Hash code. */
-	static int ccHash( OOP self );
+	static int ccHash(OOP self);
 	
 	/** \brief String representation. */
-	static OOP ccAsString( OOP self );
+	static OOP ccAsString(OOP self);
 	/*@}*/
 };
 

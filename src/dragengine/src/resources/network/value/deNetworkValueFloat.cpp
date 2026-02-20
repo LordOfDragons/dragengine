@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValueFloat::deNetworkValueFloat( eValueFormats format, double value ) :
-pFormat( format ),
-pValue( value ),
-pPrecision( 0.001f )
+deNetworkValueFloat::deNetworkValueFloat(eValueFormats format, double value) :
+pFormat(format),
+pValue(value),
+pPrecision(0.001f)
 {
-	switch( format ){
+	switch(format){
 	case evfFloat16:
 	case evfFloat32:
 	case evfFloat64:
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -63,12 +63,12 @@ deNetworkValueFloat::~deNetworkValueFloat(){
 // Management
 ///////////////
 
-void deNetworkValueFloat::SetFloat( double value ){
+void deNetworkValueFloat::SetFloat(double value){
 	pValue = value;
 }
 
-void deNetworkValueFloat::SetPrecision( double precision ){
-	pPrecision = decMath::max( precision, DOUBLE_SAFE_EPSILON );
+void deNetworkValueFloat::SetPrecision(double precision){
+	pPrecision = decMath::max(precision, DOUBLE_SAFE_EPSILON);
 }
 
 
@@ -76,6 +76,6 @@ void deNetworkValueFloat::SetPrecision( double precision ){
 // Visiting
 /////////////
 
-void deNetworkValueFloat::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitFloat( this );
+void deNetworkValueFloat::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitFloat(this);
 }

@@ -40,34 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling( gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decVector &newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
+
+pEnvMapProbe(nullptr)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set scaling" );
+	SetShortInfo("@GameDefinition.Undo.OCEnvMapProbeSetScaling");
 	
 	pOldValue = envMapProbe->GetScaling();
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetScaling::~gdeUOCEnvMapProbeSetScaling(){
-	if( pEnvMapProbe ){
-		pEnvMapProbe->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +67,11 @@ gdeUOCEnvMapProbeSetScaling::~gdeUOCEnvMapProbeSetScaling(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetScaling::Undo(){
-	pEnvMapProbe->SetScaling( pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetScaling(pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetScaling::Redo(){
-	pEnvMapProbe->SetScaling( pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetScaling(pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

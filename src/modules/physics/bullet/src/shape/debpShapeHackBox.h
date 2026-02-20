@@ -27,6 +27,7 @@
 
 #include "debpShapeBox.h"
 
+#include <dragengine/common/shape/decShapeBox.h>
 
 
 /**
@@ -36,14 +37,18 @@
  */
 class debpShapeHackBox : public debpShapeBox{
 public:
+	using Ref = deTObjectReference<debpShapeHackBox>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shape. */
-	debpShapeHackBox( decShapeBox *shape );
-	
-	/** \brief Clean up shape. */
-	virtual ~debpShapeHackBox();
+	debpShapeHackBox(decShapeBox::Ref &&shape);
 	/*@}*/
+	
+	
+private:
+	decShapeBox::Ref pHackBox;
 };
 
 #endif

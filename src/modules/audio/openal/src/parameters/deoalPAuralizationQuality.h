@@ -36,10 +36,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoalPAuralizationQuality( deAudioOpenAL &oal );
+	deoalPAuralizationQuality(deAudioOpenAL &oal);
 	
 	/** Clean up parameter. */
-	virtual ~deoalPAuralizationQuality();
+	~deoalPAuralizationQuality() override;
 	/*@}*/
 	
 	
@@ -47,10 +47,10 @@ public:
 	/** \name Parameter Value */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	void SetParameterValue(const char *value) override;
 	/*@}*/
 };
 

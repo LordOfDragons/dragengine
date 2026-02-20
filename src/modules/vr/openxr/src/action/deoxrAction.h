@@ -28,6 +28,7 @@
 #include "../deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deoxrActionSet;
@@ -38,8 +39,9 @@ class deoxrActionSet;
  */
 class deoxrAction : public deObject{
 public:
-	/** Reference. */
-	typedef deTObjectReference<deoxrAction> Ref;
+	using Ref = deTObjectReference<deoxrAction>;
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<deoxrAction>,deoxrAction>;
+	
 	
 	/** Type. */
 	enum eType{
@@ -66,15 +68,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create session. */
-	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName );
+	deoxrAction(deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName);
 	
 	/** Create session. */
-	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name,
-		const char *localizedName, const XrPath *subactionPath, int subactionPathCount );
+	deoxrAction(deoxrActionSet &actionSet, eType type, const char *name,
+		const char *localizedName, const XrPath *subactionPath, int subactionPathCount);
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrAction();
+	~deoxrAction() override;
 	/*@}*/
 	
 	

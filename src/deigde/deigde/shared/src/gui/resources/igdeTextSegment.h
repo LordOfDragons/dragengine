@@ -25,9 +25,10 @@
 #ifndef _IGDETEXTSEGMENT_H_
 #define _IGDETEXTSEGMENT_H_
 
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 
@@ -39,11 +40,20 @@
  * segment is "end - start + 1". Thus text segments can not be empty.
  */
 class DE_DLL_EXPORT igdeTextSegment : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTextSegment>;
+	
+	/** \brief Text segment list. */
+	using List = decTObjectOrderedSet<igdeTextSegment>;
+	
+	
 private:
 	int pBegin;
 	int pEnd;
 	decString pStyle;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	
@@ -51,11 +61,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text segment. */
-	igdeTextSegment( int begin, int end );
+	igdeTextSegment(int begin, int end);
 	
-	igdeTextSegment( int begin, int end, const char *style );
+	igdeTextSegment(int begin, int end, const char *style);
 	
-	igdeTextSegment( int begin, int end, const char *style, igdeAction *action );
+	igdeTextSegment(int begin, int end, const char *style, igdeAction *action);
 	
 	
 	
@@ -66,7 +76,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTextSegment();
+	~igdeTextSegment() override;
 	/*@}*/
 	
 	
@@ -86,8 +96,8 @@ public:
 	/** \brief Style. */
 	inline const decString &GetStyle() const{ return pStyle; }
 	
-	/** \brief Action or NULL if not used. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr if not used. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	/*@}*/
 };
 

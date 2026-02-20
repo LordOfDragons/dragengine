@@ -26,14 +26,14 @@
 #ifndef _MEUHTPAINTMASK_H_
 #define _MEUHTPAINTMASK_H_
 
-// includes
+#include "../../../world/terrain/meHeightTerrainSector.h"
+#include "../../../world/terrain/meHeightTerrainTexture.h"
+
 #include <deigde/undo/igdeUndo.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class meWorld;
-class meHeightTerrainSector;
-class meHeightTerrainTexture;
 
 
 
@@ -43,39 +43,45 @@ class meHeightTerrainTexture;
  * Undo action to undo and redo mask painting on a height terrain.
  */
 class meUHTPaintMask : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTPaintMask>;
+	
+	
 private:
 	meWorld *pWorld;
-	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decBoundary pGrid;
 	decPoint pSize;
 	
-	unsigned char *pOldValues;
-	unsigned char *pNewValues;
+	decTList<unsigned char> pOldValues, pNewValues;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTPaintMask( int drawMode, meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture,
-		const decPoint &grid, const decPoint &size, unsigned char *oldValues );
+	meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture,
+		const decPoint &grid, const decPoint &size, decTList<unsigned char> &&oldValues);
 	/** \brief Clean up object. */
-	virtual ~meUHTPaintMask();
+
+protected:
+	~meUHTPaintMask() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:
-	void pCleanUp();
 	void pSaveValues();
-	void pRestoreValues( unsigned char *values );
+	void pRestoreValues(const decTList<unsigned char> &values);
 };
 
 // end of include only once

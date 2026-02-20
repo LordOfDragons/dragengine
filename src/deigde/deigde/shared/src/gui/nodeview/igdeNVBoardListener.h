@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDENVNODELISTENER_H_
-#define _IGDENVNODELISTENER_H_
+#ifndef _IGDENVBOARDLISTENER_H_
+#define _IGDENVBOARDLISTENER_H_
 
 
 #include <dragengine/deObject.h>
@@ -40,6 +40,12 @@ class igdeMenuCascade;
  * \brief IGDE UI NVBoard Listener.
  */
 class DE_DLL_EXPORT igdeNVBoardListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeNVBoardListener>;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/
@@ -55,7 +61,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeNVBoardListener();
+	~igdeNVBoardListener() override;
 	/*@}*/
 	
 	
@@ -70,39 +76,39 @@ public:
 	 * to add entries to the context menu without affecting others. If entries are already
 	 * present the listener should also add a separator first.
 	 */
-	virtual void AddContextMenuEntries( igdeNVBoard *board, igdeMenuCascade &menu, const decPoint &position );
+	virtual void AddContextMenuEntries(igdeNVBoard *board, igdeMenuCascade &menu, const decPoint &position);
 	
 	/**
 	 * \brief Link between slots can be created.
 	 * 
 	 * Default implementation returns true.
 	 */
-	virtual bool CanLink( igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target );
+	virtual bool CanLink(igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target);
 	
 	/**
 	 * \brief Link added.
 	 */
-	virtual void OnLinkAdded( igdeNVBoard *board, igdeNVLink *link );
+	virtual void OnLinkAdded(igdeNVBoard *board, igdeNVLink *link);
 	
 	/**
 	 * \brief Link removed.
 	 */
-	virtual void OnLinkRemoved( igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target );
+	virtual void OnLinkRemoved(igdeNVBoard *board, igdeNVSlot *source, igdeNVSlot *target);
 	
 	/**
 	 * \brief All links removed.
 	 */
-	virtual void OnAllLinksRemoved( igdeNVBoard *board );
+	virtual void OnAllLinksRemoved(igdeNVBoard *board);
 	
 	/**
 	 * \brief Offset changed.
 	 */
-	virtual void OnOffsetChanged( igdeNVBoard *board );
+	virtual void OnOffsetChanged(igdeNVBoard *board);
 	
 	/**
 	 * \brief Size changed.
 	 */
-	virtual void OnSizeChanged( igdeNVBoard *board );
+	virtual void OnSizeChanged(igdeNVBoard *board);
 	/*@}*/
 };
 

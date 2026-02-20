@@ -74,10 +74,10 @@ void deBaseAudioMicrophone::EnableAuralizationChanged(){
 
 
 
-void deBaseAudioMicrophone::SpeakerAdded( deSpeaker* ){
+void deBaseAudioMicrophone::SpeakerAdded(deSpeaker*){
 }
 
-void deBaseAudioMicrophone::SpeakerRemoved( deSpeaker* ){
+void deBaseAudioMicrophone::SpeakerRemoved(deSpeaker*){
 }
 
 void deBaseAudioMicrophone::AllSpeakersRemoved(){

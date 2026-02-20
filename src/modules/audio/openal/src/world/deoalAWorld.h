@@ -26,6 +26,7 @@
 #define _DEOALAWORLD_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
@@ -45,21 +46,10 @@ class deoalAWorld : public deObject{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	deoalAComponent *pRootComponent;
-	deoalAComponent *pTailComponent;
-	int pComponentCount;
-	
-	deoalASpeaker *pRootSpeaker;
-	deoalASpeaker *pTailSpeaker;
-	int pSpeakerCount;
-	
-	deoalAMicrophone *pRootMicrophone;
-	deoalAMicrophone *pTailMicrophone;
-	int pMicrophoneCount;
-	
-	deoalASoundLevelMeter *pRootSoundLevelMeter;
-	deoalASoundLevelMeter *pTailSoundLevelMeter;
-	int pSoundLevelMeterCount;
+	decTObjectLinkedList<deoalAComponent> pComponents;
+	decTObjectLinkedList<deoalASpeaker> pSpeakers;
+	decTObjectLinkedList<deoalAMicrophone> pMicrophones;
+	decTObjectLinkedList<deoalASoundLevelMeter> pSoundLevelMeters;
 	
 	deoalWorldOctree *pOctree;
 	decLayerMask pAllMicLayerMask;
@@ -68,14 +58,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoalAWorld>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world peer. */
-	deoalAWorld( deoalAudioThread &audioThread, const decDVector &size );
+	deoalAWorld(deoalAudioThread &audioThread, const decDVector &size);
 	
 protected:
 	/** Clean up world peer. */
-	virtual ~deoalAWorld();
+	~deoalAWorld() override;
 	/*@}*/
 	
 	
@@ -92,8 +86,8 @@ public:
 	inline deoalWorldOctree *GetOctree() const{ return pOctree; }
 	
 	/** Visit content of world. */
-	void VisitRegion( const decDVector &center, const decDVector &halfSize,
-		deoalWorldOctreeVisitor &visitor );
+	void VisitRegion(const decDVector &center, const decDVector &halfSize,
+		deoalWorldOctreeVisitor &visitor);
 	
 	/** Layer mask containing all bits of all microphones. */
 	inline const decLayerMask &GetAllMicLayerMask() const{ return pAllMicLayerMask; }
@@ -102,13 +96,13 @@ public:
 	inline float GetSpeakerGain() const{ return pSpeakerGain; }
 	
 	/** Set speaker gain. */
-	void SetSpeakerGain( float gain );
+	void SetSpeakerGain(float gain);
 	
 	
 	
 	/** Invalidate environment probes. */
-	void InvalidateEnvProbes( const decDVector &minExtend, const decDVector &maxExtend,
-		const decLayerMask &layerMask );
+	void InvalidateEnvProbes(const decDVector &minExtend, const decDVector &maxExtend,
+		const decLayerMask &layerMask);
 	
 	
 	
@@ -119,13 +113,13 @@ public:
 	 * Enable or disable all speakers in the world.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetAllSpeakersEnabled( bool enabled );
+	void SetAllSpeakersEnabled(bool enabled);
 	
 	/**
 	 * Set all microphone layer mask.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetAllMicLayerMask( const decLayerMask &layerMask );
+	void SetAllMicLayerMask(const decLayerMask &layerMask);
 	
 	/** Update all speakers. */
 	void UpdateAllSpeakers();
@@ -145,16 +139,16 @@ public:
 	/** \name Components. */
 	/*@{*/
 	/** Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{ return pComponents.GetCount(); }
 	
 	/** Root component. */
-	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
+	inline deoalAComponent *GetRootComponent() const{ return pComponents.GetRootOwner(); }
 	
 	/** Add component. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/** Remove component. */
-	void RemoveComponent( deoalAComponent *component );
+	void RemoveComponent(deoalAComponent *component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -168,22 +162,22 @@ public:
 	/** \name Speakers. */
 	/*@{*/
 	/** Number of speakers. */
-	inline int GetSpeakerCount() const{ return pSpeakerCount; }
+	inline int GetSpeakerCount() const{ return pSpeakers.GetCount(); }
 	
 	/** Root speaker. */
-	inline deoalASpeaker *GetRootSpeaker() const{ return pRootSpeaker; }
+	inline deoalASpeaker *GetRootSpeaker() const{ return pSpeakers.GetRootOwner(); }
 	
 	/**
 	 * Add speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSpeaker( deoalASpeaker *speaker );
+	void AddSpeaker(deoalASpeaker *speaker);
 	
 	/**
 	 * Remove speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSpeaker( deoalASpeaker *speaker );
+	void RemoveSpeaker(deoalASpeaker *speaker);
 	
 	/**
 	 * Remove all speaker.
@@ -203,16 +197,16 @@ public:
 	/** \name Microphones. */
 	/*@{*/
 	/** Number of microphones. */
-	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
+	inline int GetMicrophoneCount() const{ return pMicrophones.GetCount(); }
 	
 	/** Root microphone. */
-	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
+	inline deoalAMicrophone *GetRootMicrophone() const{ return pMicrophones.GetRootOwner(); }
 	
 	/** Add microphone. */
-	void AddMicrophone( deoalAMicrophone *microphone );
+	void AddMicrophone(deoalAMicrophone *microphone);
 	
 	/** Remove microphone. */
-	void RemoveMicrophone( deoalAMicrophone *microphone );
+	void RemoveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Remove all microphone. */
 	void RemoveAllMicrophones();
@@ -223,25 +217,25 @@ public:
 	
 	
 	
-	/** \name Sound level meters. */
+	/** \name Sound Level Meters. */
 	/*@{*/
 	/** Number of sound level meters. */
-	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
+	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeters.GetCount(); }
 	
 	/** Root sound level meter. */
-	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pRootSoundLevelMeter; }
+	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pSoundLevelMeters.GetRootOwner(); }
 	
 	/**
 	 * Add sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	void AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * Remove sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	void RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * Remove all sound level meter.

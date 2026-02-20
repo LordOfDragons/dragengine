@@ -32,7 +32,7 @@
 #include "aeWPUndoHistory.h"
 #include "../aeWindowMain.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -45,41 +45,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWindowProperties::aeWindowProperties( aeWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-
-pPropAnimator( NULL ),
-pPropRule( NULL ),
-pPropLink( NULL ),
-pPropController( NULL ),
-pPropView( NULL ),
-pPropPlayground( NULL )
+aeWindowProperties::aeWindowProperties(aeWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPropAnimator = new aeWPAnimator( *this );
-	AddChild( pPropAnimator, "Animator" );
+	pPropAnimator = aeWPAnimator::Ref::New(*this);
+	AddChild(pPropAnimator, "@Animator.WindowProperties.Animator");
 	
-	pPropController = new aeWPController( *this );
-	AddChild( pPropController, "Controller" );
+	pPropController = aeWPController::Ref::New(*this);
+	AddChild(pPropController, "@Animator.WindowProperties.Controller");
 	
-	pPropLink = new aeWPLink( *this );
-	AddChild( pPropLink, "Link" );
+	pPropLink = aeWPLink::Ref::New(*this);
+	AddChild(pPropLink, "@Animator.WindowProperties.Link");
 	
-	pPropRule = new aeWPRule( *this );
-	AddChild( pPropRule, "Rule" );
+	pPropRule = aeWPRule::Ref::New(*this);
+	AddChild(pPropRule, "@Animator.WindowProperties.Rule");
 	
-	pPropPlayground = new aeWPPlayground( *this );
-	AddChild( pPropPlayground, "Playground" );
+	pPropPlayground = aeWPPlayground::Ref::New(*this);
+	AddChild(pPropPlayground, "@Animator.WindowProperties.Playground");
 	
-	pPropView = new aeWPView( *this );
-	AddChild( pPropView, "View" );
+	pPropView = aeWPView::Ref::New(*this);
+	AddChild(pPropView, "@Animator.WindowProperties.View");
 	
-	pPanelUndoHistory.TakeOver( new aeWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "History" );
+	pPanelUndoHistory = aeWPUndoHistory::Ref::New(GetEnvironment());
+	AddChild(pPanelUndoHistory, "@Animator.WindowProperties.History");
 	
-	SetActivePanel( 1 ); // controller
+	SetActivePanel(1); // controller
 }
 
 aeWindowProperties::~aeWindowProperties(){
@@ -90,14 +83,14 @@ aeWindowProperties::~aeWindowProperties(){
 // Management
 ///////////////
 
-void aeWindowProperties::SetAnimator( aeAnimator *animator ){
-	pPropAnimator->SetAnimator( animator );
-	pPropController->SetAnimator( animator );
-	pPropLink->SetAnimator( animator );
-	pPropRule->SetAnimator( animator );
-	pPropView->SetAnimator( animator );
-	pPropPlayground->SetAnimator( animator );
-	( ( aeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetAnimator( animator );
+void aeWindowProperties::SetAnimator(aeAnimator *animator){
+	pPropAnimator->SetAnimator(animator);
+	pPropController->SetAnimator(animator);
+	pPropLink->SetAnimator(animator);
+	pPropRule->SetAnimator(animator);
+	pPropView->SetAnimator(animator);
+	pPropPlayground->SetAnimator(animator);
+	((aeWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetAnimator(animator);
 }
 
 void aeWindowProperties::OnAnimatorPathChanged(){

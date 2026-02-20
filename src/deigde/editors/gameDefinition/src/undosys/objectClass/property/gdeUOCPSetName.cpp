@@ -40,33 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetName::gdeUOCPSetName( gdeObjectClass *objectClass, gdeProperty *property, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetName::gdeUOCPSetName(gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set name" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetName");
 	
 	pOldValue = property->GetName();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetName::~gdeUOCPSetName(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCPSetName::~gdeUOCPSetName(){
 ///////////////
 
 void gdeUOCPSetName::Undo(){
-	pProperty->SetName( pOldValue );
-	pObjectClass->NotifyPropertyNameChanged( pProperty );
+	pProperty->SetName(pOldValue);
+	pObjectClass->NotifyPropertyNameChanged(pProperty);
 }
 
 void gdeUOCPSetName::Redo(){
-	pProperty->SetName( pNewValue );
-	pObjectClass->NotifyPropertyNameChanged( pProperty );
+	pProperty->SetName(pNewValue);
+	pObjectClass->NotifyPropertyNameChanged(pProperty);
 }

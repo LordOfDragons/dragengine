@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglWindowLoggerListener::deglWindowLoggerListener( deglWindowLogger &window ) :
-pWindow( window ){
+deglWindowLoggerListener::deglWindowLoggerListener(deglWindowLogger &window) :
+pWindow(window){
 }
 
 deglWindowLoggerListener::~deglWindowLoggerListener(){
@@ -52,10 +52,10 @@ deglWindowLoggerListener::~deglWindowLoggerListener(){
 // Management
 ///////////////
 
-void deglWindowLoggerListener::MessageAdded( const delLoggerHistory &, const delLoggerHistoryEntry &entry ){
-	pWindow.AddLogToTable( entry ); // safe since we are here inside a locked mutex
+void deglWindowLoggerListener::MessageAdded(const delLoggerHistory &, const delLoggerHistoryEntry &entry){
+	pWindow.AddLogToTable(entry); // safe since we are here inside a locked mutex
 }
 
-void deglWindowLoggerListener::HistoryCleared( const delLoggerHistory & ){
+void deglWindowLoggerListener::HistoryCleared(const delLoggerHistory &){
 	pWindow.ClearLogsTable(); // safe since we are here inside a locked mutex
 }

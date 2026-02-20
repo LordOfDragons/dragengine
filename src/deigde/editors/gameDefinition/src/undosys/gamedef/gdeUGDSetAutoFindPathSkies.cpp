@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathSkies::gdeUGDSetAutoFindPathSkies(
-	gdeGameDefinition *gameDefinition, const decStringList &newValue ) :
-pGameDefinition( NULL ),
-pNewValue( newValue )
+	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
+
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set auto find path skies" );
+	SetShortInfo("@GameDefinition.Undo.GDSetAutoFindPathSkies");
 	
 	pOldValue = gameDefinition->GetAutoFindPathSkies();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetAutoFindPathSkies::~gdeUGDSetAutoFindPathSkies(){
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUGDSetAutoFindPathSkies::~gdeUGDSetAutoFindPathSkies(){
 ///////////////
 
 void gdeUGDSetAutoFindPathSkies::Undo(){
-	pGameDefinition->SetAutoFindPathSkies( pOldValue );
+	pGameDefinition->SetAutoFindPathSkies(pOldValue);
 }
 
 void gdeUGDSetAutoFindPathSkies::Redo(){
-	pGameDefinition->SetAutoFindPathSkies( pNewValue );
+	pGameDefinition->SetAutoFindPathSkies(pNewValue);
 }

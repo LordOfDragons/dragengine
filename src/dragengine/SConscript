@@ -103,6 +103,8 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	#hasUtimensat = conf.CheckFunc('utimensat', 'sys/stat.h')
 	hasPthreadCancel = conf.CheckFunc('pthread_cancel')
 
+hasFormat = conf.CheckCXXHeader('format')
+
 conf.Finish()
 
 # fetch values in expanded form for later use
@@ -151,6 +153,7 @@ def buildWriteConfig(source, target, env):
 		# android specific problems
 		#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
 		configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
+	configFileDefines['USE_STD_FORMAT_FALLBACK'] = not hasFormat
 	
 	if WriteConfigFile(configFilePath, configFileDefines, env):
 		raise Exception('Writing configuration file failed')
@@ -222,6 +225,10 @@ if envDragengine['OSMacOS']:
 sources.append('base64/base64.cpp')
 envDragengine.Append(CPPPATH = ['base64'])
 
+if not hasFormat:
+	sources.append('fmt/format.cc')
+	envDragengine.Append(CPPPATH = ['fmt'])
+
 ignoreHeaders = []
 ignoreHeaders.append('src/doxy_main.h')
 
@@ -238,9 +245,9 @@ if envDragengine['with_static_internalmodules']:
 		with open(target[0].abspath, 'w') as f:
 			f.write('/* Generated File. Do not edit */\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			for cf in env['InternalModuleCreateFunctions']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			f.write('\n')
 			f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
@@ -375,6 +382,9 @@ if not 'mingw' in envDragengine['TOOLS']:
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
 
+if not hasFormat:
+	cpppath.append(envDragengine.Dir('fmt').srcnode())
+
 if envDragengine['platform_webwasm']:
 	linklibs = library
 
@@ -417,9 +427,9 @@ if not envDragengine['with_static_internalmodules']:
 			f.write('#include <dragengine/systems/deModuleSystem.h>\n')
 			f.write('\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			for cf in env['InternalModuleCreateFunctions']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			f.write('\n')
 			f.write('static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
@@ -561,11 +571,7 @@ if not envDragengine['with_static_internalmodules']:
 
 # report
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
-	if hasDL:
-		parent_report['use dynamic libraries'] = 'yes'
-	else:
-		parent_report['use dynamic libraries'] = 'no'
-	if hasX11:
-		parent_report['use X Window System'] = 'yes'
-	else:
-		parent_report['use dynamic libraries'] = 'no'
+	parent_report['use dynamic libraries'] = 'yes' if hasDL else 'no'
+	parent_report['use X Window System'] = 'yes' if hasX11 else 'no'
+
+parent_report['use std::format'] = 'yes' if hasFormat else 'no'

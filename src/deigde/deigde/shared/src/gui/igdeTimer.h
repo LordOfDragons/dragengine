@@ -35,6 +35,21 @@ class igdeEnvironment;
  * \brief IGDE UI Timer.
  */
 class DE_DLL_EXPORT igdeTimer : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTimer>;
+	
+	
+	class cNativeTimer{
+	public:
+		virtual ~cNativeTimer() = default;
+		virtual void DestroyNativeTimer() = 0;
+		virtual void StartTimer() = 0;
+		virtual void StopTimer() = 0;
+	};
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeTimer;
@@ -43,12 +58,15 @@ private:
 	bool pRunning;
 	
 	
+protected:
+	cNativeTimer *pNativeTimerInterface;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeTimer( igdeEnvironment &environment );
+	igdeTimer(igdeEnvironment &environment);
 	
 	
 	
@@ -59,7 +77,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeTimer();
+	~igdeTimer() override;
 	/*@}*/
 	
 	
@@ -74,7 +92,7 @@ public:
 	inline int GetTimeout() const{ return pTimeout; }
 	
 	/** \brief Timeout in seconds. */
-	inline double GetTimeoutSeconds() const{ return ( double )pTimeout * 1000.0; }
+	inline double GetTimeoutSeconds() const{ return (double)pTimeout * 1000.0; }
 	
 	/** \brief Repeating. */
 	inline bool GetRepeating() const{ return pRepeating; }
@@ -89,14 +107,14 @@ public:
 	 * 
 	 * If timer is running it is restarted.
 	 */
-	void Start( int timeoutMS, bool repeating );
+	void Start(int timeoutMS, bool repeating);
 	
 	/**
 	 * \brief Start timer in seconds.
 	 * 
 	 * If timer is running it is restarted.
 	 */
-	void Start( double timeout, bool repeating );
+	void Start(double timeout, bool repeating);
 	
 	/** \brief Stop timer. */
 	void Stop();
@@ -125,7 +143,8 @@ protected:
 	 * \brief Set native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetNativeTimer( void *nativeTimer );
+	void SetNativeTimer(void *nativeTimer);
+	
 	/*@}*/
 };
 

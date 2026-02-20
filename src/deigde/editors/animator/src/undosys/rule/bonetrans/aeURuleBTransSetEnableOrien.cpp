@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetEnableOrien::aeURuleBTransSetEnableOrien( aeRuleBoneTransformator *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetEnableOrien::aeURuleBTransSetEnableOrien(aeRuleBoneTransformator *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Bone transformator toggle enable orientation" );
+	SetShortInfo("@Animator.Undo.RuleBoneTransformatorSetEnableOrientation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetEnableOrien::~aeURuleBTransSetEnableOrien(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleBTransSetEnableOrien::Undo(){
 }
 
 void aeURuleBTransSetEnableOrien::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }

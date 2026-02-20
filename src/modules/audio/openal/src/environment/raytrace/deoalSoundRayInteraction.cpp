@@ -42,33 +42,33 @@
 /////////////////////////////////
 
 deoalSoundRayInteraction::deoalSoundRayInteraction() :
-pDistance( 1.0f ),
-pRayEnds( false ),
-pAbsorptionLow( 0.0f ),
-pAbsorptionMedium( 0.0f ),
-pAbsorptionHigh( 0.0f ),
-pTransmissionLow( 1.0f ),
-pTransmissionMedium( 1.0f ),
-pTransmissionHigh( 1.0f ),
-pReflectedLow( 0.0f ),
-pReflectedMedium( 0.0f ),
-pReflectedHigh( 0.0f ){
+pDistance(1.0f),
+pRayEnds(false),
+pAbsorptionLow(0.0f),
+pAbsorptionMedium(0.0f),
+pAbsorptionHigh(0.0f),
+pTransmissionLow(1.0f),
+pTransmissionMedium(1.0f),
+pTransmissionHigh(1.0f),
+pReflectedLow(0.0f),
+pReflectedMedium(0.0f),
+pReflectedHigh(0.0f){
 }
 
-deoalSoundRayInteraction::deoalSoundRayInteraction( const deoalSoundRayInteraction &element ) :
-pDistance( element.pDistance ),
-pPoint( element.pPoint ),
-pNormal( element.pNormal ),
-pRayEnds( element.pRayEnds ),
-pAbsorptionLow( element.pAbsorptionLow ),
-pAbsorptionMedium( element.pAbsorptionMedium ),
-pAbsorptionHigh( element.pAbsorptionHigh ),
-pTransmissionLow( element.pTransmissionLow ),
-pTransmissionMedium( element.pTransmissionMedium ),
-pTransmissionHigh( element.pTransmissionHigh ),
-pReflectedLow( element.pReflectedLow ),
-pReflectedMedium( element.pReflectedMedium ),
-pReflectedHigh( element.pReflectedHigh ){
+deoalSoundRayInteraction::deoalSoundRayInteraction(const deoalSoundRayInteraction &element) :
+pDistance(element.pDistance),
+pPoint(element.pPoint),
+pNormal(element.pNormal),
+pRayEnds(element.pRayEnds),
+pAbsorptionLow(element.pAbsorptionLow),
+pAbsorptionMedium(element.pAbsorptionMedium),
+pAbsorptionHigh(element.pAbsorptionHigh),
+pTransmissionLow(element.pTransmissionLow),
+pTransmissionMedium(element.pTransmissionMedium),
+pTransmissionHigh(element.pTransmissionHigh),
+pReflectedLow(element.pReflectedLow),
+pReflectedMedium(element.pReflectedMedium),
+pReflectedHigh(element.pReflectedHigh){
 }
 
 
@@ -76,23 +76,23 @@ pReflectedHigh( element.pReflectedHigh ){
 // Manegement
 /////////////
 
-void deoalSoundRayInteraction::SetDistance( float distance ){
+void deoalSoundRayInteraction::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void deoalSoundRayInteraction::SetPoint( const decDVector &point ){
+void deoalSoundRayInteraction::SetPoint(const decDVector &point){
 	pPoint = point;
 }
 
-void deoalSoundRayInteraction::SetNormal( const decDVector &normal ){
+void deoalSoundRayInteraction::SetNormal(const decDVector &normal){
 	pNormal = normal;
 }
 
-void deoalSoundRayInteraction::SetRayEnds( bool rayEnds ){
+void deoalSoundRayInteraction::SetRayEnds(bool rayEnds){
 	pRayEnds = rayEnds;
 }
 
-void deoalSoundRayInteraction::SetParameters( const deoalAComponentTexture &texture, float distance ){
+void deoalSoundRayInteraction::SetParameters(const deoalAComponentTexture &texture, float distance){
 	pAbsorptionLow = texture.GetAbsorptionLow();
 	pAbsorptionMedium = texture.GetAbsorptionMedium();
 	pAbsorptionHigh = texture.GetAbsorptionHigh();
@@ -101,9 +101,9 @@ void deoalSoundRayInteraction::SetParameters( const deoalAComponentTexture &text
 	const float nonAbsMedium = 1.0f - pAbsorptionMedium;
 	const float nonAbsHigh = 1.0f - pAbsorptionHigh;
 	
-	pTransmissionLow = decMath::linearStep( distance, 0.0f, texture.GetTransmissionLow(), nonAbsLow, 0.0f );
-	pTransmissionMedium = decMath::linearStep( distance, 0.0f, texture.GetTransmissionMedium(), nonAbsMedium, 0.0f );
-	pTransmissionHigh = decMath::linearStep( distance, 0.0f, texture.GetTransmissionHigh(), nonAbsHigh, 0.0f );
+	pTransmissionLow = decMath::linearStep(distance, 0.0f, texture.GetTransmissionLow(), nonAbsLow, 0.0f);
+	pTransmissionMedium = decMath::linearStep(distance, 0.0f, texture.GetTransmissionMedium(), nonAbsMedium, 0.0f);
+	pTransmissionHigh = decMath::linearStep(distance, 0.0f, texture.GetTransmissionHigh(), nonAbsHigh, 0.0f);
 	
 	pReflectedLow = nonAbsLow - pTransmissionLow;
 	pReflectedMedium = nonAbsMedium - pTransmissionMedium;
@@ -113,7 +113,7 @@ void deoalSoundRayInteraction::SetParameters( const deoalAComponentTexture &text
 		&& pTransmissionHigh < FLOAT_SAFE_EPSILON;
 }
 
-void deoalSoundRayInteraction::SetParameters( const deoalAComponentTexture &texture ){
+void deoalSoundRayInteraction::SetParameters(const deoalAComponentTexture &texture){
 	pAbsorptionLow = texture.GetAbsorptionLow();
 	pAbsorptionMedium = texture.GetAbsorptionMedium();
 	pAbsorptionHigh = texture.GetAbsorptionHigh();
@@ -131,19 +131,19 @@ void deoalSoundRayInteraction::SetParameters( const deoalAComponentTexture &text
 
 
 
-void deoalSoundRayInteraction::DebugPrint( deoalAudioThread &audioThread, const char *prefix ){
+void deoalSoundRayInteraction::DebugPrint(deoalAudioThread &audioThread, const char *prefix){
 	audioThread.GetLogger().LogInfoFormat(
 		"%sSRI: distance=%.3f point=(%.3f,%.3f,%.3f) normal(%.3f,%.3f,%.3f) "
 		"rayEnds=%d abs(%.3f,%.3f,%.3f) trans(%.3f,%.3f,%.3f) refl(%.3f,%.3f,%.3f)", prefix,
 		pDistance, pPoint.x, pPoint.y, pPoint.z, pNormal.x, pNormal.y, pNormal.z, pRayEnds,
 		pAbsorptionLow, pAbsorptionMedium, pAbsorptionHigh,
 		pTransmissionLow, pTransmissionMedium, pTransmissionHigh,
-		pReflectedLow, pReflectedMedium, pReflectedHigh );
+		pReflectedLow, pReflectedMedium, pReflectedHigh);
 }
 
 
 
-deoalSoundRayInteraction &deoalSoundRayInteraction::operator=( const deoalSoundRayInteraction &element ){
+deoalSoundRayInteraction &deoalSoundRayInteraction::operator=(const deoalSoundRayInteraction &element){
 	pDistance = element.pDistance;
 	pPoint = element.pPoint;
 	pNormal = element.pNormal;

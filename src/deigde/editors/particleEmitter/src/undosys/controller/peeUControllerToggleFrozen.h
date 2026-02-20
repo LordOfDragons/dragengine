@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 
@@ -35,8 +35,12 @@ class peeController;
  * \brief Undo Action Toggle Controller Frozen.
  */
 class peeUControllerToggleFrozen : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUControllerToggleFrozen>;
+	
+	
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerToggleFrozen( peeController *controller );
+	peeUControllerToggleFrozen(peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo action. */
-    virtual ~peeUControllerToggleFrozen();
+    ~peeUControllerToggleFrozen() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

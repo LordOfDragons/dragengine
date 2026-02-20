@@ -34,8 +34,13 @@
  * \brief Undo action category set description.
  */
 class gdeUCategorySetDescription : public gdeUCategoryBase{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUCategorySetDescription> Ref;
+	
+	
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -46,12 +51,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategorySetDescription( gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type, const char *newValue );
+	gdeUCategorySetDescription(gdeGameDefinition *gameDefintiion,
+		gdeCategory *category, eCategoryType type, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategorySetDescription();
+	~gdeUCategorySetDescription() override;
 	/*@}*/
 	
 	

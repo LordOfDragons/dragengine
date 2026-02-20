@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUHTPaintHeight.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/meWorldGuiParameters.h"
@@ -44,32 +40,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTPaintHeight::meUHTPaintHeight( int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid,
-const decPoint &size, float *oldHeights ){
-	if( ! world || ! oldHeights ) DETHROW( deeInvalidParam );
+meUHTPaintHeight::meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector,
+const decPoint &grid, const decPoint &size, decTList<float> &&oldHeights){
+	DEASSERT_NOTNULL(world)
 	
 	meHeightTerrain *hterrain = world->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
 	int pixelCount = size.x * size.y;
 	int adjustX, adjustY;
 	
-	if( drawMode == meWorldGuiParameters::ehpdmRaise ){
-		SetShortInfo( "Raise Terrain" );
+	if(drawMode == meWorldGuiParameters::ehpdmRaise){
+		SetShortInfo("@World.UHTPaintHeight.RaiseTerrain");
 		
-	}else if( drawMode == meWorldGuiParameters::ehpdmLower ){
-		SetShortInfo( "Lower Terrain" );
+	}else if(drawMode == meWorldGuiParameters::ehpdmLower){
+		SetShortInfo("@World.UHTPaintHeight.LowerTerrain");
 		
-	}else if( drawMode == meWorldGuiParameters::ehpdmLevel ){
-		SetShortInfo( "Level Terrain" );
+	}else if(drawMode == meWorldGuiParameters::ehpdmLevel){
+		SetShortInfo("@World.UHTPaintHeight.LevelTerrain");
 		
 	}else{
-		SetShortInfo( "Smooth Terrain" );
+		SetShortInfo("@World.UHTPaintHeight.SmoothTerrain");
 	}
 	
 	pWorld = world;
 	pSize = size;
-	pOldHeights = NULL;
-	pNewHeights = NULL;
 	
 	pSector.x1 = sector.x;
 	pSector.y1 = sector.y;
@@ -85,30 +79,17 @@ const decPoint &size, float *oldHeights ){
 	pSector.y2 = sector.y + adjustY;
 	pGrid.x2 -= adjustX * imageDim;
 	pGrid.y2 -= adjustY * imageDim;
-	pWorld->GetLogger()->LogInfoFormat( "World Editor", "UHTPaintHeight: s=(%i,%i,%i,%i) g=(%i,%i,%i,%i)", pSector.x1, pSector.y1, pSector.x2, pSector.y2, pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2 );
+	pWorld->GetLogger()->LogInfoFormat("World Editor", "UHTPaintHeight: s=(%i,%i,%i,%i) g=(%i,%i,%i,%i)", pSector.x1, pSector.y1, pSector.x2, pSector.y2, pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2);
 	
-	SetMemoryConsumption( sizeof( meUHTPaintHeight ) + sizeof( float ) * pixelCount );
+	SetMemoryConsumption(sizeof(meUHTPaintHeight) + sizeof(float) * pixelCount);
 	
-	try{
-		pOldHeights = new float[ pixelCount ];
-		if( ! pOldHeights ) DETHROW( deeOutOfMemory );
-		
-		pNewHeights = new float[ pixelCount ];
-		if( ! pNewHeights ) DETHROW( deeOutOfMemory );
-		
-		pSaveHeights();
-		
-		memcpy( pOldHeights, oldHeights, sizeof( float ) * pixelCount );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pOldHeights = std::move(oldHeights);
+	
+	pNewHeights.SetCountDiscard(pixelCount);
+	pSaveHeights();
 }
 
-meUHTPaintHeight::~meUHTPaintHeight(){
-	pCleanUp();
-}
+meUHTPaintHeight::~meUHTPaintHeight() = default;
 
 
 
@@ -116,11 +97,11 @@ meUHTPaintHeight::~meUHTPaintHeight(){
 ///////////////
 
 void meUHTPaintHeight::Undo(){
-	pRestoreHeights( pOldHeights );
+	pRestoreHeights(pOldHeights.GetArrayPointer());
 }
 
 void meUHTPaintHeight::Redo(){
-	pRestoreHeights( pNewHeights );
+	pRestoreHeights(pNewHeights.GetArrayPointer());
 }
 
 
@@ -128,12 +109,8 @@ void meUHTPaintHeight::Redo(){
 // Private Functions
 //////////////////////
 
-void meUHTPaintHeight::pCleanUp(){
-	if( pNewHeights ) delete [] pNewHeights;
-	if( pOldHeights ) delete [] pOldHeights;
-}
-
 void meUHTPaintHeight::pSaveHeights(){
+	float * const newHeightsData = pNewHeights.GetArrayPointer();
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
 	int imageDim = hterrain->GetSectorResolution();
 	meHeightTerrainSector *htsector;
@@ -143,8 +120,8 @@ void meUHTPaintHeight::pSaveHeights(){
 	int adjust;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			adjust = sgx / imageDim;
 			scoord.x = pSector.x1 + adjust;
@@ -155,31 +132,29 @@ void meUHTPaintHeight::pSaveHeights(){
 			scoord.y = pSector.y1 + adjust;
 			sgy -= adjust * imageDim;
 			
-			htsector = hterrain->GetSectorWith( scoord );
-			if( htsector ){
+			htsector = hterrain->GetSectorWith(scoord);
+			if(htsector){
 				pixels = htsector->GetHeightImage()->GetDataGrayscale32();
-				pNewHeights[ y * pSize.x + x ] = pixels[ sgy * imageDim + sgx ].value;
+				newHeightsData[y * pSize.x + x] = pixels[sgy * imageDim + sgx].value;
 				
 			}else{
-				pNewHeights[ y * pSize.x + x ] = 0.0f;
+				newHeightsData[y * pSize.x + x] = 0.0f;
 			}
 		}
 	}
 }
 
-void meUHTPaintHeight::pRestoreHeights( float *heights ){
+void meUHTPaintHeight::pRestoreHeights(const float *heights){
 	meHeightTerrain *hterrain = pWorld->GetHeightTerrain();
-	int s, sectorCount = hterrain->GetSectorCount();
 	int imageDim = hterrain->GetSectorResolution();
-	meHeightTerrainSector *htsector;
 	sGrayscale32 *pixels;
 	decPoint scoord;
 	int sgx, sgy;
 	int adjust;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			adjust = sgx / imageDim;
 			scoord.x = pSector.x1 + adjust;
@@ -190,23 +165,22 @@ void meUHTPaintHeight::pRestoreHeights( float *heights ){
 			scoord.y = pSector.y1 + adjust;
 			sgy -= adjust * imageDim;
 			
-			htsector = hterrain->GetSectorWith( scoord );
-			if( htsector ){
+			meHeightTerrainSector * const htsector = hterrain->GetSectorWith(scoord);
+			if(htsector){
 				pixels = htsector->GetHeightImage()->GetDataGrayscale32();
-				pixels[ sgy * imageDim + sgx ].value = heights[ y * pSize.x + x ];
+				pixels[sgy * imageDim + sgx].value = heights[y * pSize.x + x];
 			}
 		}
 	}
 	
-	hterrain->NotifyHeightsChanged( pSector, pGrid );
+	hterrain->NotifyHeightsChanged(pSector, pGrid);
 	
-	for( s=0; s<sectorCount; s++ ){
-		htsector = hterrain->GetSectorAt( s );
+	hterrain->GetSectors().Visit([&](meHeightTerrainSector *htsector){
 		const decPoint &scoord2 = htsector->GetCoordinates();
 		
-		if( scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2 ){
-			htsector->SetHeightImageChanged( true );
-			pWorld->NotifyHTSHeightChanged( htsector );
+		if(scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2){
+			htsector->SetHeightImageChanged(true);
+			pWorld->NotifyHTSHeightChanged(htsector);
 		}
-	}
+	});
 }

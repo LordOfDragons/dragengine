@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeSkin;
+#include "../../gamedef/skin/gdeSkin.h"
 
 
 
@@ -37,8 +37,12 @@ class gdeSkin;
  * \brief Undo action skin set name.
  */
 class gdeUSkinSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUSkinSetName>;
+	
+	
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -49,11 +53,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkinSetName( gdeSkin *skin, const char *newValue );
+	gdeUSkinSetName(gdeSkin *skin, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUSkinSetName();
+	~gdeUSkinSetName() override;
 	/*@}*/
 	
 	
@@ -62,10 +66,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

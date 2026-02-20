@@ -26,6 +26,7 @@
 #define _DERESOURCE_H_
 
 #include "../deObject.h"
+#include "../common/collection/decTLinkedList.h"
 
 class deResourceManager;
 class deEngine;
@@ -46,14 +47,12 @@ class decBaseFileReader;
 class DE_DLL_EXPORT deResource : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deResource> Ref;
-	
+	using Ref = deTObjectReference<deResource>;
 	
 	
 private:
 	deResourceManager *pResourceManager;
-	deResource *pLLManagerPrev;
-	deResource *pLLManagerNext;
+	decTLinkedList<deResource>::Element pLLManager;
 	
 	
 	
@@ -61,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource. */
-	deResource( deResourceManager *resourceManager );
+	deResource(deResourceManager *resourceManager);
 	
 protected:
 	/**
@@ -70,7 +69,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deResource();
+	~deResource() override;
 	/*@}*/
 	
 	
@@ -92,23 +91,9 @@ public:
 	
 	/** \name Resource manager linked list */
 	/*@{*/
-	/** \brief Previous resource in the resource manager linked list. */
-	inline deResource *GetLLManagerPrev() const{ return pLLManagerPrev; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For use by resource managers only.
-	 */
-	void SetLLManagerPrev( deResource *resource );
-	
-	/** \brief Next resource in the resource manager linked list. */
-	inline deResource *GetLLManagerNext() const{ return pLLManagerNext; }
-	
-	/**
-	 * \brief Set next resource in the resource manager linked list.
-	 * \warning For use by resource managers only.
-	 */
-	void SetLLManagerNext( deResource *resource );
+	/** \brief Resource manager linked list. */
+	inline decTLinkedList<deResource>::Element &GetLLManager(){ return pLLManager; }
+	inline const decTLinkedList<deResource>::Element &GetLLManager() const{ return pLLManager; }
 	
 	/**
 	 * \brief Marks the resource leaking.

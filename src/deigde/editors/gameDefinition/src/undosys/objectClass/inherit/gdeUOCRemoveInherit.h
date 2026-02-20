@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCInherit;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/inherit/gdeOCInherit.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class remove inherit.
  */
 class gdeUOCRemoveInherit : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCRemoveInherit>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCInherit *pInherit;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCInherit::Ref pInherit;
 	
 	
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveInherit( gdeObjectClass *objectClass, gdeOCInherit *inherit );
+	gdeUOCRemoveInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCRemoveInherit();
+	~gdeUOCRemoveInherit() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

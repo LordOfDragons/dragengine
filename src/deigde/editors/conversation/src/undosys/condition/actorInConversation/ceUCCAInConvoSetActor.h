@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionActorInConversation;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionActorInConversation.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,10 +37,14 @@ class ceConversationTopic;
  * \brief Undo action actor in conversation set actor id.
  */
 class ceUCCAInConvoSetActor : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCAInConvoSetActor>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorInConversation *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorInConversation::Ref pCondition;
 	decString pOldID;
 	decString pNewID;
 	
@@ -50,11 +54,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCAInConvoSetActor( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorInConversation *condition, const char *newID );
+	ceUCCAInConvoSetActor(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorInConversation *condition, const char *newID);
 	
 	/** \brief Clean up undo object. */
-	virtual ~ceUCCAInConvoSetActor();
+protected:
+	~ceUCCAInConvoSetActor() override;
+public:
 	/*@}*/
 	
 	
@@ -63,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

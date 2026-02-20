@@ -34,7 +34,7 @@ class igdeContainerScroll;
  * FOX Native button.
  */
 class igdeNativeFoxContainerScroll : public FXScrollWindow{
-	FXDECLARE( igdeNativeFoxContainerScroll )
+	FXDECLARE(igdeNativeFoxContainerScroll)
 	
 protected:
 	igdeNativeFoxContainerScroll();
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxContainerScroll( igdeContainerScroll &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerScroll(igdeContainerScroll &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxContainerScroll();
+	~igdeNativeFoxContainerScroll() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxContainerScroll* CreateNativeWidget( igdeContainerScroll &owner );
+	static igdeNativeFoxContainerScroll* CreateNativeWidget(igdeContainerScroll &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -65,11 +65,11 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerScroll igdeNativeContainerScroll;
+using igdeNativeContainerScroll = igdeNativeFoxContainerScroll;
 
 #endif

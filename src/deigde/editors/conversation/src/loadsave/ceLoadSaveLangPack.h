@@ -26,6 +26,7 @@
 #define _CELOADSAVELANGPACK_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
 class deBaseLanguagePackModule;
@@ -40,8 +41,8 @@ class decBaseFileWriter;
  */
 class ceLoadSaveLangPack : public deObject{
 public:
-	typedef deTObjectReference<ceLoadSaveLangPack> Ref;
-	
+	using Ref = deTObjectReference<ceLoadSaveLangPack>;
+	using List = decTObjectOrderedSet<ceLoadSaveLangPack>;
 	
 	
 private:
@@ -55,11 +56,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load/save object. */
-	ceLoadSaveLangPack( deBaseLanguagePackModule &module );
+	ceLoadSaveLangPack(deBaseLanguagePackModule &module);
 	
 protected:
 	/** Clean up load/save object. */
-	virtual ~ceLoadSaveLangPack() override;
+	~ceLoadSaveLangPack() override;
 	/*@}*/
 	
 	
@@ -74,10 +75,10 @@ public:
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** Load langpack. */
-	void LoadLangPack( ceLangPack &langpack, decBaseFileReader &file );
+	void LoadLangPack(ceLangPack &langpack, decBaseFileReader &file);
 	
 	/** Save langpack. */
-	void SaveLangPack( const ceLangPack &langpack, decBaseFileWriter &file );
+	void SaveLangPack(const ceLangPack &langpack, decBaseFileWriter &file);
 	/*@}*/
 };
 

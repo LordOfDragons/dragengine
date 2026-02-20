@@ -25,9 +25,7 @@
 #ifndef _DEOGLRENDERTASKSHAREDPOOL_H_
 #define _DEOGLRENDERTASKSHAREDPOOL_H_
 
-#include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -45,15 +43,15 @@ class deoglRenderTaskSharedPool{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decObjectList pTextures;
-	decObjectList pVAOs;
-	decObjectList pInstances;
-	decPointerList pSkinTextures;
+	decTObjectList<deoglRenderTaskSharedTexture> pTextures;
+	decTObjectList<deoglRenderTaskSharedVAO> pVAOs;
+	decTObjectList<deoglRenderTaskSharedInstance> pInstances;
+	decTList<deoglSkinTexture*> pSkinTextures;
 	
-	decPointerList pFreeTextures;
-	decPointerList pFreeVAOs;
-	decPointerList pFreeInstances;
-	decIntList pFreeSkinTextures;
+	decTList<deoglRenderTaskSharedTexture*> pFreeTextures;
+	decTList<deoglRenderTaskSharedVAO*> pFreeVAOs;
+	decTList<deoglRenderTaskSharedInstance*> pFreeInstances;
+	decTList<int> pFreeSkinTextures;
 	
 	deMutex pMutexSkinTextures;
 	
@@ -63,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task shared pool. */
-	deoglRenderTaskSharedPool( deoglRenderThread &renderThread );
+	deoglRenderTaskSharedPool(deoglRenderThread &renderThread);
 	
 	/** Clean up render task shared pool. */
 	~deoglRenderTaskSharedPool();
@@ -83,21 +81,21 @@ public:
 	deoglRenderTaskSharedInstance *GetInstance();
 	
 	/** Assign skin texture. */
-	int AssignSkinTexture( deoglSkinTexture *skinTexture );
+	int AssignSkinTexture(deoglSkinTexture *skinTexture);
 	
 	
 	
 	/** Get texture at index. */
-	deoglRenderTaskSharedTexture &GetTextureAt( int index ) const;
+	deoglRenderTaskSharedTexture &GetTextureAt(int index) const;
 	
 	/** Get VAO at index. */
-	deoglRenderTaskSharedVAO &GetVAOAt( int index ) const;
+	deoglRenderTaskSharedVAO &GetVAOAt(int index) const;
 	
 	/** Get instance at index. */
-	deoglRenderTaskSharedInstance &GetInstanceAt( int index ) const;
+	deoglRenderTaskSharedInstance &GetInstanceAt(int index) const;
 	
 	/** Get skin texture at index. Manually lock GetMutexSkinTextures(). */
-	deoglSkinTexture *GetSkinTextureAt( int index ) const;
+	deoglSkinTexture *GetSkinTextureAt(int index) const;
 	
 	/** Get skin texture count. Manually lock GetMutexSkinTextures(). */
 	int GetSkinTextureCount() const;
@@ -105,16 +103,16 @@ public:
 	
 	
 	/** Return texture. */
-	void ReturnTexture( deoglRenderTaskSharedTexture *texture );
+	void ReturnTexture(deoglRenderTaskSharedTexture *texture);
 	
 	/** Return VAO. */
-	void ReturnVAO( deoglRenderTaskSharedVAO *vao );
+	void ReturnVAO(deoglRenderTaskSharedVAO *vao);
 	
 	/** Return instance. */
-	void ReturnInstance( deoglRenderTaskSharedInstance *instance );
+	void ReturnInstance(deoglRenderTaskSharedInstance *instance);
 	
 	/** Return skin texture. */
-	void ReturnSkinTexture( int slot );
+	void ReturnSkinTexture(int slot);
 	
 	
 	

@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/camera/gdeOCCamera.h"
 #include "../../../../undosys/objectClass/camera/gdeUOCAddCamera.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCCameraPaste::gdeMAOCCameraPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Camera",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class camera" )
+gdeMAOCCameraPaste::gdeMAOCCameraPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCCameraPaste",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@GameDefinition.Menu.OCCameraPaste.ToolTip")
 {
 }
 
@@ -61,26 +61,20 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Camera",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCCameraPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCCamera::TYPE_NAME ) );
-	if( ! clip ){
-		return NULL;
+igdeUndo::Ref gdeMAOCCameraPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCCamera::TYPE_NAME));
+	if(!clip){
+		return {};
 	}
 	
-	const gdeClipboardDataOCCamera &clipOCCamera =
-		( const gdeClipboardDataOCCamera & )( igdeClipboardData& )clip;
-	
-	deObjectReference camera;
-	camera.TakeOver( new gdeOCCamera( *clipOCCamera.GetCamera() ) );
-	
-	igdeUndo * const undo = new gdeUOCAddCamera( &objectClass,
-		( gdeOCCamera* )( deObject* )camera );
-	undo->SetShortInfo( "Paste object class camera" );
+	const igdeUndo::Ref undo = gdeUOCAddCamera::Ref::New(&objectClass,
+		gdeOCCamera::Ref::New(*clip.DynamicCast<gdeClipboardDataOCCamera>()->GetCamera()));
+	undo->SetShortInfo("@GameDefinition.Undo.PasteOCCamera");
 	return undo;
 }
 
 void gdeMAOCCameraPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCCamera::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != nullptr
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCCamera::TYPE_NAME));
 }

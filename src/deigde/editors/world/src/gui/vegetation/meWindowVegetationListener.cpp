@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWindowVegetationListener::meWindowVegetationListener( meWindowVegetation &window ) :
-pWindow( window ){
+meWindowVegetationListener::meWindowVegetationListener(meWindowVegetation &window) :
+pWindow(window){
 }
 
 meWindowVegetationListener::~meWindowVegetationListener(){
@@ -54,22 +54,22 @@ meWindowVegetationListener::~meWindowVegetationListener(){
 // Notifications
 //////////////////
 
-void meWindowVegetationListener::ActiveSectorChanged( meWorld *world ){
+void meWindowVegetationListener::ActiveSectorChanged(meWorld *world){
 	meHeightTerrainSector * const sector = world->GetHeightTerrain()->GetActiveSector();
-	pWindow.SetSector( sector ? sector->GetCoordinates() : decPoint() );
+	pWindow.SetSector(sector ? sector->GetCoordinates() : decPoint());
 }
 
 
 
-void meWindowVegetationListener::HTVLayerCountChanged( meWorld* ){
+void meWindowVegetationListener::HTVLayerCountChanged(meWorld*){
 }
 
-void meWindowVegetationListener::HTActiveVLayerChanged( meWorld *world ){
-	pWindow.SetVLayer( world->GetHeightTerrain()->GetActiveVLayer() );
+void meWindowVegetationListener::HTActiveVLayerChanged(meWorld *world){
+	pWindow.SetVLayer(world->GetHeightTerrain()->GetActiveVLayer());
 }
 
-void meWindowVegetationListener::HTVLayerChanged( meWorld*, meHTVegetationLayer *vlayer ){
-	if( pWindow.GetVLayer() != vlayer ){
+void meWindowVegetationListener::HTVLayerChanged(meWorld*, meHTVegetationLayer *vlayer){
+	if(pWindow.GetVLayer() != vlayer){
 		return;
 	}
 	pWindow.UpdateNodesFromVLayer();
@@ -77,55 +77,55 @@ void meWindowVegetationListener::HTVLayerChanged( meWorld*, meHTVegetationLayer 
 
 
 
-void meWindowVegetationListener::HTVLVariationCountChanged( meWorld*, meHTVegetationLayer* ){
+void meWindowVegetationListener::HTVLVariationCountChanged(meWorld*, meHTVegetationLayer*){
 }
 
-void meWindowVegetationListener::HTVLActiveVariationChanged( meWorld*, meHTVegetationLayer* ){
+void meWindowVegetationListener::HTVLActiveVariationChanged(meWorld*, meHTVegetationLayer*){
 }
 
-void meWindowVegetationListener::HTVLVariationChanged( meWorld*, meHTVegetationLayer*, meHTVVariation* ){
+void meWindowVegetationListener::HTVLVariationChanged(meWorld*, meHTVegetationLayer*, meHTVVariation*){
 }
 
 
 
-void meWindowVegetationListener::HTVLRuleCountChanged( meWorld*, meHTVegetationLayer *vlayer ){
-	if( pWindow.GetVLayer() != vlayer ){
+void meWindowVegetationListener::HTVLRuleCountChanged(meWorld*, meHTVegetationLayer *vlayer){
+	if(pWindow.GetVLayer() != vlayer){
 		return;
 	}
 	pWindow.UpdateNodesFromVLayer();
 }
 
-void meWindowVegetationListener::HTVLActiveRuleChanged( meWorld*, meHTVegetationLayer *vlayer ){
-	if( pWindow.GetVLayer() != vlayer ){
+void meWindowVegetationListener::HTVLActiveRuleChanged(meWorld*, meHTVegetationLayer *vlayer){
+	if(pWindow.GetVLayer() != vlayer){
 		return;
 	}
 	
 	pWindow.SelectNodeOfActiveRule();
 }
 
-void meWindowVegetationListener::HTVLRuleChanged( meWorld*,
-meHTVegetationLayer *vlayer, meHTVRule *rule ){
-	if( pWindow.GetVLayer() != vlayer ){
+void meWindowVegetationListener::HTVLRuleChanged(meWorld*,
+meHTVegetationLayer *vlayer, meHTVRule *rule){
+	if(pWindow.GetVLayer() != vlayer){
 		return;
 	}
 	
-	pWindow.UpdateNodeWithRule( rule );
+	pWindow.UpdateNodeWithRule(rule);
 }
 
-void meWindowVegetationListener::HTVLRuleMoved( meWorld*,
-meHTVegetationLayer *vlayer, meHTVRule *rule ){
-	if( pWindow.GetVLayer() != vlayer ){
+void meWindowVegetationListener::HTVLRuleMoved(meWorld*,
+meHTVegetationLayer *vlayer, meHTVRule *rule){
+	if(pWindow.GetVLayer() != vlayer){
 		return;
 	}
 	
-	pWindow.NodeWithRuleMoved( rule );
+	pWindow.NodeWithRuleMoved(rule);
 }
 
 
 
-void meWindowVegetationListener::HTVLLinkCountChanged( meWorld*,
-meHTVegetationLayer *vlayer ){
-	if( pWindow.GetVLayer() != vlayer ){
+void meWindowVegetationListener::HTVLLinkCountChanged(meWorld*,
+meHTVegetationLayer *vlayer){
+	if(pWindow.GetVLayer() != vlayer){
 		return;
 	}
 	

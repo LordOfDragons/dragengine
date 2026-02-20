@@ -42,40 +42,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitRemove::ceUCAWaitRemove( ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action ){
-	if( ! topic || ! wait || ! action ) DETHROW( deeInvalidParam );
+ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action){
+	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pWait = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pWait = nullptr;
+	pAction = nullptr;
 	pIndex = -1;
 	
-	pIndex = wait->GetActions().IndexOf( action );
+	pIndex = wait->GetActions().IndexOf(action);
 	
-	if( pIndex == -1 ) DETHROW( deeInvalidParam );
+	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Action Wait Remove Action" );
+	SetShortInfo("@Conversation.Undo.ActionWaitRemoveAction");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitRemove::~ceUCAWaitRemove(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pWait ){
-		pWait->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -84,18 +70,18 @@ ceUCAWaitRemove::~ceUCAWaitRemove(){
 ///////////////
 
 void ceUCAWaitRemove::Undo(){
-	pWait->GetActions().InsertAt( pAction, pIndex );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().InsertOrThrow(pAction, pIndex);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( pAction, NULL );
+	pTopic->SetActive(pAction, nullptr);
 }
 
 void ceUCAWaitRemove::Redo(){
 	ceConversationAction * const activateAction =
-		ceUActionHelpers::ActivateActionAfterRemove( pWait->GetActions(), pAction );
+		ceUActionHelpers::ActivateActionAfterRemove(pWait->GetActions(), pAction);
 	
-	pWait->GetActions().Remove( pAction );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().Remove(pAction);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( activateAction ? activateAction : pWait, NULL );
+	pTopic->SetActive(activateAction ? activateAction : pWait, nullptr);
 }

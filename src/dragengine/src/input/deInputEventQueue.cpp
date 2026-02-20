@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "deInputEvent.h"
 #include "deInputEventQueue.h"
 #include "../common/exceptions.h"
+#include "../common/collection/decTList.h"
 
 
 
@@ -36,23 +35,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deInputEventQueue::deInputEventQueue( int queueSize ){
-	if( queueSize < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pEvents = NULL;
-	pEventCount = 0;
-	pEventSize = 0;
-	
-	pEvents = new deInputEvent[ queueSize ];
-	pEventSize = queueSize;
+deInputEventQueue::deInputEventQueue(int queueSize):
+pEvents(queueSize, deInputEvent{}),
+pEventCount(0){
 }
 
 deInputEventQueue::~deInputEventQueue(){
-	if( pEvents ){
-		delete [] pEvents;
-	}
 }
 
 
@@ -60,20 +48,17 @@ deInputEventQueue::~deInputEventQueue(){
 // Management
 ///////////////
 
-const deInputEvent &deInputEventQueue::GetEventAt( int index ) const{
-	if( index < 0 || index >= pEventCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pEvents[ index ];
+const deInputEvent &deInputEventQueue::GetEventAt(int index) const{
+	DEASSERT_TRUE(index < pEventCount)
+	return pEvents[index];
 }
 
-bool deInputEventQueue::AddEvent( const deInputEvent &event ){
-	if( pEventCount == pEventSize ){
+bool deInputEventQueue::AddEvent(const deInputEvent &event){
+	if(pEventCount == pEvents.GetCount()){
 		return false;
 	}
 	
-	pEvents[ pEventCount ].SetFrom( event );
+	pEvents[pEventCount] = event;
 	pEventCount++;
 	return true;
 }

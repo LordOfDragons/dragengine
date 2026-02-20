@@ -27,8 +27,6 @@
 
 #include "deoglRenderLightBase.h"
 
-#include <dragengine/deObjectReference.h>
-
 class deoglGIState;
 class deoglGIBVH;
 class deoglRenderTask;
@@ -90,10 +88,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderGI( deoglRenderThread &renderThread );
+	deoglRenderGI(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
-	virtual ~deoglRenderGI();
+	~deoglRenderGI() override;
 	/*@}*/
 	
 	
@@ -106,39 +104,39 @@ public:
 	
 	
 	/** Trace rays. */
-	void TraceRays( deoglRenderPlan &plan );
+	void TraceRays(deoglRenderPlan &plan);
 	
 	/** Prepare render light UBO. */
-	void PrepareUBORenderLight( deoglRenderPlan &plan );
-	void PrepareUBORenderLight( const deoglGIState &giState, const decDVector &position );
+	void PrepareUBORenderLight(deoglRenderPlan &plan);
+	void PrepareUBORenderLight(const deoglGIState &giState, const decDVector &position);
 	
 	/** Render materials. */
-	void RenderMaterials( deoglRenderPlan &plan, const deoglRenderTask &renderTask );
+	void RenderMaterials(deoglRenderPlan &plan, const deoglRenderTask &renderTask);
 	
 	/** Resize materials. */
-	void ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
-		deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage );
+	void ResizeMaterials(deoglTexture &texDiffuse, deoglTexture &texReflectivity,
+		deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage);
 	
 	/** Clear probes. */
-	void ClearProbes( deoglRenderPlan &plan );
+	void ClearProbes(deoglRenderPlan &plan);
 	
 	/** Update probes. */
-	void UpdateProbes( deoglRenderPlan &plan );
+	void UpdateProbes(deoglRenderPlan &plan);
 	
 	/** Probe offset. */
-	void ProbeOffset( deoglRenderPlan &plan );
+	void ProbeOffset(deoglRenderPlan &plan);
 	
 	/** Probe extends. */
-	void ProbeExtends( deoglRenderPlan &plan );
+	void ProbeExtends(deoglRenderPlan &plan);
 	
 	/** Render light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid );
+	void RenderLight(deoglRenderPlan &plan, bool solid);
 	
 	/** Render light. */
-	void RenderLightGIRay( deoglRenderPlan &plan );
+	void RenderLightGIRay(deoglRenderPlan &plan);
 	
 	/** Debug overlay. */
-	void RenderDebugOverlay( deoglRenderPlan &plan );
+	void RenderDebugOverlay(deoglRenderPlan &plan);
 	
 	
 	
@@ -146,10 +144,10 @@ public:
 	void ResetDebugInfo();
 	
 	/** Add top level debug information in the right order. */
-	virtual void AddTopLevelDebugInfo();
+	void AddTopLevelDebugInfo() override;
 	
 	/** Developer mode debug information changed. */
-	virtual void DevModeDebugInfoChanged();
+	void DevModeDebugInfoChanged() override;
 	/*@}*/
 	
 	
@@ -157,8 +155,8 @@ public:
 private:
 	void pCleanUp();
 	void pCreateUBORenderLight();
-	void pClearTraceRays( const decPoint &size );
-	void pInitTraceTextures( deoglGIBVH &bvh);
+	void pClearTraceRays(const decPoint &size);
+	void pInitTraceTextures(deoglGIBVH &bvh);
 	void pActivateGIUBOs();
 };
 

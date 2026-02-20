@@ -25,7 +25,7 @@
 #ifndef _CECLIPBOARDDATAACTION_H_
 #define _CECLIPBOARDDATAACTION_H_
 
-#include "../conversation/action/ceConversationActionList.h"
+#include "../conversation/action/ceConversationAction.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
@@ -36,13 +36,16 @@
  */
 class ceClipboardDataAction : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<ceClipboardDataAction>;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	ceConversationActionList pActions;
+	ceConversationAction::List pActions;
 	
 	
 	
@@ -50,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataAction( const ceConversationActionList &actions );
+	ceClipboardDataAction(const ceConversationAction::List &actions);
 	
 protected:
 	/**
@@ -59,7 +62,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~ceClipboardDataAction();
+	~ceClipboardDataAction() override;
 	/*@}*/
 	
 	
@@ -68,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the action. */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationAction::List &GetActions() const{ return pActions; }
 	/*@}*/
 };
 

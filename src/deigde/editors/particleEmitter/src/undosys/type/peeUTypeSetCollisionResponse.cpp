@@ -39,27 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetCollisionResponse::peeUTypeSetCollisionResponse( peeType *type,
-deParticleEmitterType::eCollisionResponses newResponse ) :
-pType( NULL ),
-pNewResponse( newResponse )
+peeUTypeSetCollisionResponse::peeUTypeSetCollisionResponse(peeType *type,
+deParticleEmitterType::eCollisionResponses newResponse) :
+
+pNewResponse(newResponse)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Type Collision Response" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetCollisionResponse");
 	
 	pOldResponse = type->GetCollisionResponse();
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetCollisionResponse::~peeUTypeSetCollisionResponse(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ peeUTypeSetCollisionResponse::~peeUTypeSetCollisionResponse(){
 ///////////////
 
 void peeUTypeSetCollisionResponse::Undo(){
-	pType->SetCollisionResponse( pOldResponse );
+	pType->SetCollisionResponse(pOldResponse);
 }
 
 void peeUTypeSetCollisionResponse::Redo(){
-	pType->SetCollisionResponse( pNewResponse );
+	pType->SetCollisionResponse(pNewResponse);
 }

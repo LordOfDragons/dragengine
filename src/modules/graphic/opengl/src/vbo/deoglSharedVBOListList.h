@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHAREDVBOLISTLIST_H_
 #define _DEOGLSHAREDVBOLISTLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deoglVBOLayout;
 class deoglRenderThread;
@@ -43,7 +43,7 @@ public:
 	deoglRenderThread &pRenderThread;
 	int pMaxSize;
 	int pMaxIndexSize;
-	decPointerList pLists;
+	decTList<deoglSharedVBOList*> pLists;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared vbo list list. */
-	deoglSharedVBOListList( deoglRenderThread &renderThread, int maxSize, int maxIndexSize );
+	deoglSharedVBOListList(deoglRenderThread &renderThread, int maxSize, int maxIndexSize);
 	
 	/** Clean up shared vbo list list. */
 	~deoglSharedVBOListList();
@@ -74,13 +74,13 @@ public:
 	int GetCount() const;
 	
 	/** List at index. */
-	deoglSharedVBOList *GetAt( int index ) const;
+	deoglSharedVBOList *GetAt(int index) const;
 	
 	/** Matching list is present. */
-	bool HasWith( const deoglVBOLayout &layout, GLenum drawType ) const;
+	bool HasWith(const deoglVBOLayout &layout, GLenum drawType) const;
 	
 	/** Matching list creating it if absent. */
-	deoglSharedVBOList *GetWith( const deoglVBOLayout &layout, GLenum drawType );
+	deoglSharedVBOList *GetWith(const deoglVBOLayout &layout, GLenum drawType);
 	
 	/** Prepare all lists. */
 	void PrepareAllLists();

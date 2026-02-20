@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceControllerValue::ceControllerValue( int controller, float value ) :
-pControllerIndex( controller ),
-pValue( value ){
+ceControllerValue::ceControllerValue(int controller, float value) :
+pControllerIndex(controller),
+pValue(value){
 }
 
-ceControllerValue::ceControllerValue( const char *controller, float value ) :
-pControllerIndex( -1 ),
-pController( controller ),
-pValue( value ){
+ceControllerValue::ceControllerValue(const char *controller, float value) :
+pControllerIndex(-1),
+pController(controller),
+pValue(value){
 }
 
 ceControllerValue::~ceControllerValue(){
@@ -57,14 +57,14 @@ ceControllerValue::~ceControllerValue(){
 // Management
 ///////////////
 
-void ceControllerValue::SetControllerIndex( int controller ){
+void ceControllerValue::SetControllerIndex(int controller){
 	pControllerIndex = controller;
 }
 
-void ceControllerValue::SetController( const char *controller ){
+void ceControllerValue::SetController(const char *controller){
 	pController = controller;
 }
 
-void ceControllerValue::SetValue( float value ){
+void ceControllerValue::SetValue(float value){
 	pValue = value;
 }

@@ -28,9 +28,10 @@
 #include "gdeVAOSubObject.h"
 #include "../../gamedef/objectClass/world/gdeOCWorld.h"
 
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 
 
@@ -38,11 +39,16 @@ class igdeWCoordSysArrows;
  * \brief Active object view object class navigation space.
  */
 class gdeVAOWorld : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOWorld> Ref;
+	
+	
 private:
 	const gdeOCWorld::Ref pOCWorld;
 	
 	deDebugDrawer::Ref pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -65,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class world. */
-	inline gdeOCWorld *GetOCWorld() const{ return pOCWorld; }
+	inline const gdeOCWorld::Ref &GetOCWorld() const{ return pOCWorld; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

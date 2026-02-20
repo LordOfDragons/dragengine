@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglVBOWriterCanvasPaint::deoglVBOWriterCanvasPaint( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pDataPoints( NULL ){
+deoglVBOWriterCanvasPaint::deoglVBOWriterCanvasPaint(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pDataPoints(nullptr){
 }
 
 deoglVBOWriterCanvasPaint::~deoglVBOWriterCanvasPaint(){
@@ -52,25 +52,25 @@ deoglVBOWriterCanvasPaint::~deoglVBOWriterCanvasPaint(){
 // Management
 ///////////////
 
-void deoglVBOWriterCanvasPaint::Reset( deoglSharedVBOBlock *vboBlock ){
-	if( vboBlock ){
-		pDataPoints = ( char* )vboBlock->GetData();
+void deoglVBOWriterCanvasPaint::Reset(deoglSharedVBOBlock *vboBlock){
+	if(vboBlock){
+		pDataPoints = reinterpret_cast<char*>(vboBlock->GetData());
 		
 	}else{
-		pDataPoints = NULL;
+		pDataPoints = nullptr;
 	}
 }
 
 
 
-void deoglVBOWriterCanvasPaint::WritePoint( const decVector2 &position ){
-	if( ! pDataPoints ){
-		DETHROW( deeInvalidParam );
+void deoglVBOWriterCanvasPaint::WritePoint(const decVector2 &position){
+	if(!pDataPoints){
+		DETHROW(deeInvalidParam);
 	}
 	
-	GLfloat * const ptrPosition = ( GLfloat* )pDataPoints;
-	ptrPosition[ 0 ] = ( GLfloat )position.x;
-	ptrPosition[ 1 ] = ( GLfloat )position.y;
+	GLfloat * const ptrPosition = (GLfloat*)pDataPoints;
+	ptrPosition[0] = (GLfloat)position.x;
+	ptrPosition[1] = (GLfloat)position.y;
 	
 	pDataPoints += 8;
 }

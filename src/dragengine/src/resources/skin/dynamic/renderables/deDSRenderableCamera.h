@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLECAMERA_H_
 
 #include "deDSRenderable.h"
-#include "../../../camera/deCameraReference.h"
+#include "../../../camera/deCamera.h"
 
 
 /**
@@ -37,8 +37,12 @@
  * screen space which is not given here.
  */
 class DE_DLL_EXPORT deDSRenderableCamera : public deDSRenderable{
+public:
+	/** \brief Reference type. */
+	using Ref = deTUniqueReference<deDSRenderableCamera>;
+	
 private:
-	deCameraReference pCamera;
+	deCamera::Ref pCamera;
 	
 	
 	
@@ -46,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableCamera( const char *name );
+	deDSRenderableCamera(const char *name);
 	
 	/** \brief Clean up renderable. */
-	virtual ~deDSRenderableCamera();
+	~deDSRenderableCamera() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera or NULL if not set. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or NULL if not set. */
-	void SetCamera( deCamera *camera );
+	void SetCamera(deCamera *camera);
 	/*@}*/
 	
 	
@@ -68,7 +72,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	void Visit(deDSRenderableVisitor &visitor) override;
 };
 
 #endif

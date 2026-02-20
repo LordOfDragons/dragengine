@@ -37,7 +37,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -47,29 +47,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCParticleEmitter::gdeWPSTIMOCParticleEmitter( gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassParticleEmitter, objectClass, index ),
-pParticleEmitter( NULL )
+gdeWPSTIMOCParticleEmitter::gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree,
+	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassParticleEmitter, objectClass, index)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Particle Emitter #%d", index + 1 );
-	SetText( text );
+	text.FormatSafe(GetWindowMain().Translate("GameDefinition.TreeModel.ParticleEmitterNumber").ToUTF8(), index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeWPSTIMOCParticleEmitter::~gdeWPSTIMOCParticleEmitter(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 
@@ -78,16 +73,16 @@ gdeWPSTIMOCParticleEmitter::~gdeWPSTIMOCParticleEmitter(){
 ///////////////
 
 void gdeWPSTIMOCParticleEmitter::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
 bool gdeWPSTIMOCParticleEmitter::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if( ! pParticleEmitter->GetPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pParticleEmitter->GetPath() ) ) ){
+	if(!pParticleEmitter->GetPath().IsEmpty()
+	&& !vfs.ExistsFile(decPath::CreatePathUnix(pParticleEmitter->GetPath()))){
 		return false;
 	}
 	
@@ -101,20 +96,20 @@ void gdeWPSTIMOCParticleEmitter::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCParticleEmitter::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCParticleEmitter( pParticleEmitter );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCParticleEmitter );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCParticleEmitter(pParticleEmitter);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCParticleEmitter);
 }
 
-void gdeWPSTIMOCParticleEmitter::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCParticleEmitter::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCParticleEmitterAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCParticleEmitterRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCParticleEmitterAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCParticleEmitterRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCParticleEmitterCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCParticleEmitterCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCParticleEmitterPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCParticleEmitterCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCParticleEmitterCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCParticleEmitterPaste());
 }

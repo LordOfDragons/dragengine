@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLGROUPBOX_H_
 #define _IGDENATIVENULLGROUPBOX_H_
 
+#include "../../igdeGroupBox.h"
+
 class igdeGroupBox;
 
 
 /**
  * Null groupBox.
  */
-class igdeNativeNullGroupBox{
+class igdeNativeNullGroupBox : public igdeGroupBox::cNativeGroupBox{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullGroupBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullGroupBox* CreateNativeWidget( igdeGroupBox &owner );
+	static igdeNativeNullGroupBox* CreateNativeWidget(igdeGroupBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,10 +57,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateCollapsed();
-	virtual void UpdateTitle();
-	virtual void UpdateTitleAlignment();
-	virtual void UpdateStretchLast();
+	void UpdateCollapsed() override;
+	void UpdateTitle() override;
+	void UpdateTitleAlignment() override;
+	void UpdateStretchLast() override;
 	/*@}*/
 };
 

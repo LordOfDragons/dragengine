@@ -41,7 +41,7 @@ class decrbWindowMain;
  * Panel showing the status of a module in the game engine.
  */
 class decrbPanelModuleStatus : public FXVerticalFrame{
-	FXDECLARE( decrbPanelModuleStatus )
+	FXDECLARE(decrbPanelModuleStatus)
 	
 protected:
 	decrbPanelModuleStatus();
@@ -73,15 +73,15 @@ private:
 	
 public:
 	// constructor, destructor
-	decrbPanelModuleStatus( decrbWindowMain *windowMain, FXComposite *container );
-	virtual ~decrbPanelModuleStatus();
+	decrbPanelModuleStatus(decrbWindowMain *windowMain, FXComposite *container);
+	~decrbPanelModuleStatus() override;
 	
 	// management
 	void UpdateModuleStatus();
 	void UpdateModulesList();
 	
 	// events
-	long onCBModuleChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModuleChanged(FXObject *sender, FXSelector selector, void *data);
 	
 private:
 };

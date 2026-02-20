@@ -34,9 +34,12 @@
  * \brief Undo action remove category.
  */
 class gdeUCategoryRemove : public gdeUCategoryBase{
+public:
+	typedef deTObjectReference<gdeUCategoryRemove> Ref;
+	
 private:
-	gdeCategory *pParent;
-	gdeCategory *pCategory;
+	gdeCategory::Ref pParent;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -44,12 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategoryRemove( gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type );
+	gdeUCategoryRemove(gdeGameDefinition *gameDefintiion,
+		gdeCategory *category, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUCategoryRemove();
+	~gdeUCategoryRemove() override;
 	/*@}*/
 	
 	

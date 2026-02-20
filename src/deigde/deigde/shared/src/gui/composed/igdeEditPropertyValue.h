@@ -25,22 +25,24 @@
 #ifndef _IGDEEDITPROPERTYVALUE_H_
 #define _IGDEEDITPROPERTYVALUE_H_
 
-#include "../igdeSwitcherReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeComboBoxReference.h"
-#include "../igdeComboBoxFilterReference.h"
-#include "../igdeColorBoxReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../composed/igdeEditSliderTextReference.h"
-#include "../composed/igdeEditPointReference.h"
-#include "../composed/igdeEditPoint3Reference.h"
-#include "../composed/igdeEditVectorReference.h"
-#include "../composed/igdeEditVector2Reference.h"
-#include "../composed/igdeEditPathReference.h"
-#include "../event/igdeActionReference.h"
+#include "../igdeSwitcher.h"
+#include "../igdeTextField.h"
+#include "../igdeComboBox.h"
+#include "../igdeComboBoxFilter.h"
+#include "../igdeColorBox.h"
+#include "../igdeCheckBox.h"
+#include "../composed/igdeEditSliderText.h"
+#include "../composed/igdeEditPoint.h"
+#include "../composed/igdeEditPoint3.h"
+#include "../composed/igdeEditVector.h"
+#include "../composed/igdeEditVector2.h"
+#include "../composed/igdeEditPath.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
+
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 #include <dragengine/common/string/decStringSet.h>
 
@@ -57,41 +59,47 @@ class igdeEditPropertyValueListener;
  * setting the value and is kept until a new value is set.
  */
 class DE_DLL_EXPORT igdeEditPropertyValue : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditPropertyValue>;
+	
+	
 private:
 	decString pValue;
 	const igdeGDProperty *pGDProperty;
 	bool pEnabled;
 	bool pPreventEditing;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	
-	igdeTextFieldReference pString;
-	igdeTextFieldReference pInteger;
-	igdeEditPointReference pPoint;
-	igdeEditPoint3Reference pPoint3;
-	igdeTextFieldReference pFloat;
-	igdeEditVectorReference pVector;
-	igdeEditVector2Reference pVector2;
-	igdeColorBoxReference pColor;
-	igdeCheckBoxReference pBoolean;
-	igdeEditPathReference pPath;
-	igdeEditSliderTextReference pRange;
-	igdeComboBoxReference pSelect;
-	igdeTextFieldReference pList;
-	igdeTextFieldReference pTriggerExpression;
-	igdeComboBoxFilterReference pTriggerTarget;
-	igdeTextFieldReference pShape;
-	igdeTextFieldReference pShapeList;
-	igdeComboBoxFilterReference pIdentifier;
+	igdeTextField::Ref pString;
+	igdeTextField::Ref pInteger;
+	igdeEditPoint::Ref pPoint;
+	igdeEditPoint3::Ref pPoint3;
+	igdeTextField::Ref pFloat;
+	igdeEditVector::Ref pVector;
+	igdeEditVector2::Ref pVector2;
+	igdeColorBox::Ref pColor;
+	igdeCheckBox::Ref pBoolean;
+	igdeEditPath::Ref pPath;
+	igdeEditSliderText::Ref pRange;
+	igdeComboBox::Ref pSelect;
+	igdeTextField::Ref pList;
+	igdeTextField::Ref pTriggerExpression;
+	igdeComboBoxFilter::Ref pTriggerTarget;
+	igdeTextField::Ref pShape;
+	igdeTextField::Ref pShapeList;
+	igdeComboBoxFilter::Ref pIdentifier;
 	
-	decObjectOrderedSet pListeners;
+	decTObjectOrderedSet<igdeEditPropertyValueListener> pListeners;
 	
-	igdeActionReference pActionEditRawValue;
-	igdeActionReference pActionBooleanValue;
-	igdeActionReference pActionEditList;
-	igdeActionReference pActionEditTriggerExpression;
-	igdeActionReference pActionEditShape;
-	igdeActionReference pActionEditShapeList;
+	igdeAction::Ref pActionEditRawValue;
+	igdeAction::Ref pActionBooleanValue;
+	igdeAction::Ref pActionEditList;
+	igdeAction::Ref pActionEditTriggerExpression;
+	igdeAction::Ref pActionEditShape;
+	igdeAction::Ref pActionEditShapeList;
 	
 	igdeCodecPropertyString pCodec;
 	igdeTriggerExpressionParser pTriggerExpressionParser;
@@ -103,13 +111,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeEditPropertyValue( igdeUIHelper &helper );
+	igdeEditPropertyValue(igdeUIHelper &helper);
 	
 	
 	
 protected:
 	/** \brief Clean up widget. */
-	virtual ~igdeEditPropertyValue();
+	~igdeEditPropertyValue() override;
 	/*@}*/
 	
 	
@@ -124,7 +132,7 @@ public:
 	inline const igdeGDProperty *GetGDProperty() const{ return pGDProperty; }
 	
 	/** \brief Set value. */
-	void SetValue( const char *value, const igdeGDProperty *gdProperty );
+	void SetValue(const char *value, const igdeGDProperty *gdProperty);
 	
 	/** \brief Clear value. */
 	void ClearValue();
@@ -135,7 +143,7 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -154,31 +162,31 @@ public:
 	inline const decStringSet &GetIdentifiers() const{ return pIdentifiers; }
 	
 	/** \brief Set identifiers. */
-	void SetIdentifiers( const decStringSet &identifiers );
+	void SetIdentifiers(const decStringSet &identifiers);
 	
 	/** \brief Trigger targets. */
 	inline igdeTriggerTargetList *GetTriggerTargets() const{ return pTriggerTargets; }
 	
 	/** \brief Set trigger targets. */
-	void SetTriggerTargets( igdeTriggerTargetList *triggerTargets );
+	void SetTriggerTargets(igdeTriggerTargetList *triggerTargets);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEditRawValue() const{ return pActionEditRawValue; }
-	inline igdeAction *GetActionBooleanValue() const{ return pActionBooleanValue; }
-	inline igdeAction *GetActionEditList() const{ return pActionEditList; }
-	inline igdeAction *GetActionEditTriggerExpression() const{ return pActionEditTriggerExpression; }
-	inline igdeAction *GetActionEditShape() const{ return pActionEditShape; }
-	inline igdeAction *GetActionEditShapeList() const{ return pActionEditShapeList; }
+	inline const igdeAction::Ref &GetActionEditRawValue() const{ return pActionEditRawValue; }
+	inline const igdeAction::Ref &GetActionBooleanValue() const{ return pActionBooleanValue; }
+	inline const igdeAction::Ref &GetActionEditList() const{ return pActionEditList; }
+	inline const igdeAction::Ref &GetActionEditTriggerExpression() const{ return pActionEditTriggerExpression; }
+	inline const igdeAction::Ref &GetActionEditShape() const{ return pActionEditShape; }
+	inline const igdeAction::Ref &GetActionEditShapeList() const{ return pActionEditShapeList; }
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditPropertyValueListener *listener );
+	void AddListener(igdeEditPropertyValueListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditPropertyValueListener *listener );
+	void RemoveListener(igdeEditPropertyValueListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	virtual void NotifyPropertyValueChanged();
@@ -196,13 +204,13 @@ public:
 	 * 
 	 * Called by internal widgets only to update the value. Do not call yourself.
 	 */
-	void EditWidgetValueChanged( bool changing );
+	void EditWidgetValueChanged(bool changing);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper );
+	void pCreateContent(igdeUIHelper &helper);
 	void pUpdateEditWidgets();
 // 	void pMinifyFloat( decString &value ) const;
 };

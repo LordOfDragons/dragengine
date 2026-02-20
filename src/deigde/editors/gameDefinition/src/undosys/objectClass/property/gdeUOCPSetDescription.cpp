@@ -40,33 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetDescription::gdeUOCPSetDescription( gdeObjectClass *objectClass, gdeProperty *property, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetDescription::gdeUOCPSetDescription(gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set description" );
+	SetShortInfo("@GameDefinition.Undo.OCPSetDescription");
 	
 	pOldValue = property->GetDescription();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetDescription::~gdeUOCPSetDescription(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +65,11 @@ gdeUOCPSetDescription::~gdeUOCPSetDescription(){
 ///////////////
 
 void gdeUOCPSetDescription::Undo(){
-	pProperty->SetDescription( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetDescription(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetDescription::Redo(){
-	pProperty->SetDescription( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetDescription(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

@@ -36,36 +36,34 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesOutline( const deoglSkinTexture &texture );
+	explicit deoglSTPipelinesOutline(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesOutline();
+	~deoglSTPipelinesOutline() override;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	void pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched) override;
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigDepth( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigDepthReversed( deoglPipelineConfiguration &config );
-	virtual void pPipelineConfigCounter( deoglPipelineConfiguration &config );
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigDepth(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigDepthReversed(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigCounter(deoglPipelineConfiguration &config) override;
 	
-	virtual void pSetBase( deoglSkinShaderConfig &config );
-	virtual void pSetGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
-	virtual void pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	void pSetBase(deoglSkinShaderConfig &config) override;
+	void pSetGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
+	void pSetDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
+	void pSetCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo) override;
 };
 
 #endif

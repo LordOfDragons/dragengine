@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotExponent::gdeUOCLightSetSpotExponent( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetSpotExponent::gdeUOCLightSetSpotExponent(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set spot exponent" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotExponent");
 	
 	pOldValue = light->GetSpotExponent();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetSpotExponent::~gdeUOCLightSetSpotExponent(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetSpotExponent::~gdeUOCLightSetSpotExponent(){
 ///////////////
 
 void gdeUOCLightSetSpotExponent::Undo(){
-	pLight->SetSpotExponent( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotExponent(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetSpotExponent::Redo(){
-	pLight->SetSpotExponent( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotExponent(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

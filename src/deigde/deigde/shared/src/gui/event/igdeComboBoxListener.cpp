@@ -43,8 +43,8 @@ igdeComboBoxListener::~igdeComboBoxListener(){
 // Events
 ///////////
 
-void igdeComboBoxListener::OnTextChanged( igdeComboBox *comboBox ){
+void igdeComboBoxListener::OnTextChanged(igdeComboBox *comboBox){
 }
 
-void igdeComboBoxListener::OnTextChanging( igdeComboBox *comboBox ){
+void igdeComboBoxListener::OnTextChanging(igdeComboBox *comboBox){
 }

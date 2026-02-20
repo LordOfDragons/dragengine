@@ -43,11 +43,11 @@ igdeTextFieldListener::~igdeTextFieldListener(){
 // Events
 ///////////
 
-void igdeTextFieldListener::OnTextChanged( igdeTextField *textField ){
+void igdeTextFieldListener::OnTextChanged(igdeTextField *textField){
 }
 
-void igdeTextFieldListener::OnTextChanging( igdeTextField *textField ){
+void igdeTextFieldListener::OnTextChanging(igdeTextField *textField){
 }
 
-void igdeTextFieldListener::OnEnterKey( igdeTextField *textField ){
+void igdeTextFieldListener::OnEnterKey(igdeTextField *textField){
 }

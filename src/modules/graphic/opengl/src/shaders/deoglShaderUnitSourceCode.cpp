@@ -37,7 +37,6 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -53,13 +52,13 @@
 deoglShaderUnitSourceCode::deoglShaderUnitSourceCode(deGraphicOpenGl &ogl, const decPath &path) :
 pStage(0)
 {
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver(new decXmlDocument);
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	deVirtualFileSystem &vfs = ogl.GetVFS();
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
+	decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 	decXmlParser(ogl.GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
 	const uint64_t modTime = (uint64_t)reader->GetModificationTime();
+	uint64_t sourceModTime = 0;
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
@@ -87,12 +86,13 @@ pStage(0)
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			DEASSERT_NOTNULL(cdata)
 			
-			reader.TakeOver(vfs.OpenFileForReading(decPath::AbsolutePathUnix(
-				cdata->GetData(), path.GetParent().GetPathUnix())));
+			reader = vfs.OpenFileForReading(decPath::AbsolutePathUnix(
+				cdata->GetData(), path.GetParent().GetPathUnix()));
 			
 			const int length = reader->GetLength();
 			pSourceCode.Set(' ', length);
-			reader->Read((char*)pSourceCode.GetString(), length);
+			reader->Read(pSourceCode.GetMutableString(), length);
+			sourceModTime = (uint64_t)reader->GetModificationTime();
 			
 		}else if(tagName == "define"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
@@ -146,7 +146,7 @@ pStage(0)
 	DEASSERT_FALSE(pSourceCode.IsEmpty())
 	DEASSERT_FALSE(pStage == 0)
 	
-	pValidationString.Format("%s: %" PRIu64, pName.GetString(), modTime);
+	pValidationString.Format("%s: %" PRIu64 " %" PRIu64, pName.GetString(), modTime, sourceModTime);
 }
 
 const char *deoglShaderUnitSourceCode::GetLogStageName() const{

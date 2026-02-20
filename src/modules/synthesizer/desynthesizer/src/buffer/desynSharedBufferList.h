@@ -25,10 +25,9 @@
 #ifndef _DESYNSHAREDBUFFERLIST_H_
 #define _DESYNSHAREDBUFFERLIST_H_
 
-#include <dragengine/common/collection/decPointerList.h>
+#include "desynSharedBuffer.h"
 
-class desynSharedBuffer;
-
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
@@ -36,20 +35,15 @@ class desynSharedBuffer;
  */
 class desynSharedBufferList{
 private:
-	decPointerList pBuffers;
-	
+	decTObjectOrderedSet<desynSharedBuffer> pBuffers;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shared buffer list. */
-	desynSharedBufferList();
-	
-	/** \brief Clean up buffer list. */
-	~desynSharedBufferList();
+	desynSharedBufferList() = default;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
@@ -59,12 +53,12 @@ public:
 	 * \details Claims next free buffer or creates a new one. Claimed buffer is marked
 	 *          as in use and resized to \em size floats if not large enough.
 	 */
-	desynSharedBuffer *ClaimBuffer( int size );
+	desynSharedBuffer *ClaimBuffer(int size);
 	
 	/**
 	 * \brief Release buffer.
 	 */
-	void ReleaseBuffer( desynSharedBuffer *buffer );
+	void ReleaseBuffer(desynSharedBuffer *buffer);
 	/*@}*/
 };
 

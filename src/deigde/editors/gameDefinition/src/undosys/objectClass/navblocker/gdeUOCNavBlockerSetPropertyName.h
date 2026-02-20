@@ -27,10 +27,10 @@
 #define _GDEUOCNAVBLOCKERSETPROPERTYNAME_H_
 
 #include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class navblocker set property name.
  */
 class gdeUOCNavBlockerSetPropertyName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCNavBlockerSetPropertyName>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	gdeOCNavigationBlocker::eProperties pProperty;
 	decString pOldValue;
@@ -52,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetPropertyName( gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker,
-		gdeOCNavigationBlocker::eProperties property, const char *newValue );
+	gdeUOCNavBlockerSetPropertyName(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker,
+		gdeOCNavigationBlocker::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCNavBlockerSetPropertyName();
+	~gdeUOCNavBlockerSetPropertyName() override;
 	/*@}*/
 	
 	
@@ -66,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

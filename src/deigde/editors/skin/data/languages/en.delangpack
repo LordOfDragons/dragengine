@@ -1,0 +1,580 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<languagePack>
+	<identifier>en</identifier>
+	<name>English</name>
+	<description>English</description>
+	
+	<!-- Window Main -->
+	<translation name="Skin.WindowMain.ViewSkin">Skin Preview</translation>
+	<translation name="Skin.WindowMain.ViewConstructed">Constructed Channel</translation>
+	
+	<translation name="Skin.WindowMain.OpenSkin.Title">Open Skin</translation>
+	<translation name="Skin.WindowMain.OpenSkin.Message">Open skin discards changes. Is this ok?</translation>
+	
+	
+	<translation name="Skin.WindowMain.NewFromModel.Title">New From Model</translation>
+	
+	<translation name="Skin.WindowMain.FileOpen.Title">Open Skin</translation>
+	<translation name="Skin.WindowMain.FileSave.Title">Save Skin</translation>
+	
+	<translation name="Skin.WindowMain.Action.FileNew">New</translation>
+	<translation name="Skin.WindowMain.Action.FileNew.ToolTip">Create new skin</translation>
+	
+	<translation name="Skin.WindowMain.Action.FileNewFromModel">New from Model</translation>
+	<translation name="Skin.WindowMain.Action.FileNewFromModel.ToolTip">Create new skin for model file</translation>
+	
+	<translation name="Skin.WindowMain.Action.FileOpen">Open...</translation>
+	<translation name="Skin.WindowMain.Action.FileOpen.ToolTip">Open skin from file</translation>
+	
+	<translation name="Skin.WindowMain.Action.FileSave">Save</translation>
+	<translation name="Skin.WindowMain.Action.FileSave.ToolTip">Saves skin to file</translation>
+	
+	<translation name="Skin.WindowMain.Action.FileSaveAs">Save As...</translation>
+	<translation name="Skin.WindowMain.Action.FileSaveAs.ToolTip">Saves skin under a differen file</translation>
+	
+	<translation name="Skin.WindowMain.Action.MappedAdd">Add...</translation>
+	<translation name="Skin.WindowMain.Action.MappedAdd.ToolTip">Add mapped</translation>
+	
+	<translation name="Skin.WindowMain.AddMapped.Title">Add Mapped</translation>
+	<translation name="Skin.WindowMain.AddMapped.Name">Name:</translation>
+	<translation name="Skin.WindowMain.AddMapped.Exists">A mapped with this name exists already.</translation>
+	
+	<translation name="Skin.WindowMain.Action.MappedRemove">Remove</translation>
+	<translation name="Skin.WindowMain.Action.MappedRemove.ToolTip">Remove mapped</translation>
+	
+	<translation name="Skin.WindowMain.RemoveMapped.Title">Remove Mapped</translation>
+	<translation name="Skin.WindowMain.RemoveMapped.Message">Mapped is used by {0} dependencies. Removing the mapped will also unset it from all dependencies.</translation>
+	
+	<translation name="Skin.WindowMain.Action.TextureAdd">Add...</translation>
+	<translation name="Skin.WindowMain.Action.TextureAdd.ToolTip">Add texture</translation>
+	
+	<translation name="Skin.WindowMain.AddTexture.Title">Add Texture</translation>
+	<translation name="Skin.WindowMain.AddTexture.Exists">A texture with this name exists already.</translation>
+	
+	<translation name="Skin.WindowMain.Action.TextureRemove">Remove</translation>
+	<translation name="Skin.WindowMain.Action.TextureRemove.ToolTip">Remove texture</translation>
+	
+	<translation name="Skin.WindowMain.ImportTexture.Title">Import skin texture</translation>
+	<translation name="Skin.WindowMain.ImportTexture.NoTextures">The skin has no textures</translation>
+	<translation name="Skin.WindowMain.ImportTexture.Select">Select texture to use</translation>
+	
+	<translation name="Skin.WindowMain.Action.TextureImportFromGDef">Import Texture from Game Definition</translation>
+	<translation name="Skin.WindowMain.Action.TextureImportFromGDef.ToolTip">Import Texture from a game definition skin</translation>
+	
+	<translation name="Skin.WindowMain.Action.TextureImportFromFile">Import Texture from File</translation>
+	<translation name="Skin.WindowMain.Action.TextureImportFromFile.ToolTip">Import Texture from a skin file into the active texture</translation>
+	
+	<translation name="Skin.WindowMain.ImportSkinTexture.Title">Import Skin Texture</translation>
+	
+	<translation name="Skin.WindowMain.Action.PropertyAdd">Add...</translation>
+	<translation name="Skin.WindowMain.Action.PropertyAdd.ToolTip">Add property</translation>
+	
+	<translation name="Skin.WindowMain.Action.PropertyRemove">Remove</translation>
+	<translation name="Skin.WindowMain.Action.PropertyRemove.ToolTip">Remove property</translation>
+	
+	<translation name="Skin.WindowMain.Menu.Skin">Skin</translation>
+	<translation name="Skin.WindowMain.Menu.Mapped">Mapped</translation>
+	<translation name="Skin.WindowMain.Menu.Texture">Texture</translation>
+	<translation name="Skin.WindowMain.Menu.Edit">Edit</translation>
+	
+	<!-- Dialog Add Texture -->
+	<translation name="Skin.DialogAddTexture.Title">Add Texture</translation>
+	<translation name="Skin.DialogAddTexture.Header">Enter texture name or choose from model textures.</translation>
+	<translation name="Skin.DialogAddTexture.TextureNames">Textures names in model</translation>
+	<translation name="Skin.DialogAddTexture.Name">Name:</translation>
+	<translation name="Skin.DialogAddTexture.Name.ToolTip">Name of texture to add</translation>
+	<translation name="Skin.DialogAddTexture.Button.Create">Create Texture</translation>
+	
+	<!-- Dialog Add Property -->
+	<translation name="Skin.DialogAddProperty.Title">Add Property</translation>
+	<translation name="Skin.DialogAddProperty.Header">Multi-Select properties or enter custom name.</translation>
+	<translation name="Skin.DialogAddProperty.PropertyNames">Property names</translation>
+	<translation name="Skin.DialogAddProperty.CustomName">Custom Name:</translation>
+	<translation name="Skin.DialogAddProperty.CustomName.ToolTip">Custom name (for special uses only)</translation>
+	<translation name="Skin.DialogAddProperty.Button.AddProperties">Add Properties</translation>
+	<translation name="Skin.DialogAddProperty.Action.Details">Texture Property Details</translation>
+	
+	<!-- Window Properties -->
+	<translation name="Skin.WindowProperties.Tab.Mapped">Mapped</translation>
+	<translation name="Skin.WindowProperties.Tab.Texture">Texture</translation>
+	<translation name="Skin.WindowProperties.Tab.Node">Node</translation>
+	<translation name="Skin.WindowProperties.Tab.DynamicSkin">Dynamic Skin</translation>
+	<translation name="Skin.WindowProperties.Tab.View">View</translation>
+	
+	<!-- WPView -->
+	<translation name="Skin.WPView.Preview">Preview:</translation>
+	<translation name="Skin.WPView.Mode">Mode:</translation>
+	<translation name="Skin.WPView.Mode.ToolTip">Preview mode.</translation>
+	<translation name="Skin.WPView.Mode.Model">Model</translation>
+	<translation name="Skin.WPView.Mode.Light">Light</translation>
+	<translation name="Skin.WPView.Model">Model:</translation>
+	<translation name="Skin.WPView.Model.ToolTip">Path to the model resource to use.</translation>
+	<translation name="Skin.WPView.Rig">Rig:</translation>
+	<translation name="Skin.WPView.Rig.ToolTip">Path to the rig resource to use.</translation>
+	<translation name="Skin.WPView.Animation">Animation:</translation>
+	<translation name="Skin.WPView.Animation.ToolTip">Path to the animation resource to use.</translation>
+	<translation name="Skin.WPView.Move">Move:</translation>
+	<translation name="Skin.WPView.Move.ToolTip">Name of the animation move to play.</translation>
+	<translation name="Skin.WPView.Sky">Sky:</translation>
+	<translation name="Skin.WPView.EnvironmentObject">Environment Object:</translation>
+	<translation name="Skin.WPView.Camera">Camera:</translation>
+	<translation name="Skin.WPView.Action.Playback">Play back animation</translation>
+	<translation name="Skin.WPView.Action.Playback.ToolTip">Animation is played back</translation>
+	<translation name="Skin.WPView.Action.Rewind">Rewind Textures</translation>
+	<translation name="Skin.WPView.Action.Rewind.ToolTip">Rewind all textures to the initial state as if added to the game world</translation>
+	
+	<!-- View Constructed -->
+	<translation name="Skin.ViewConstructed.Layer.ToolTip">Select layer to edit</translation>
+	<translation name="Skin.ViewConstructed.Zoom.ToolTip">Select zoom factor</translation>
+	
+	<!-- WPMapped -->
+	<translation name="Skin.WPMapped.GroupMapped">Mapped:</translation>
+	<translation name="Skin.WPMapped.Mapped">Mapped</translation>
+	
+	<translation name="Skin.WPMapped.Name">Name:</translation>
+	<translation name="Skin.WPMapped.Name.ToolTip">Name of mapped</translation>
+	
+	<translation name="Skin.WPMapped.InputType">Input Type:</translation>
+	<translation name="Skin.WPMapped.InputType.ToolTip">Type of input to use for curve</translation>
+	<translation name="Skin.WPMapped.InputType.Time">Time</translation>
+	<translation name="Skin.WPMapped.InputType.BonePositionX">BonePositionX</translation>
+	<translation name="Skin.WPMapped.InputType.BonePositionY">BonePositionY</translation>
+	<translation name="Skin.WPMapped.InputType.BonePositionZ">BonePositionZ</translation>
+	<translation name="Skin.WPMapped.InputType.BoneRotationX">BoneRotationX</translation>
+	<translation name="Skin.WPMapped.InputType.BoneRotationY">BoneRotationY</translation>
+	<translation name="Skin.WPMapped.InputType.BoneRotationZ">BoneRotationZ</translation>
+	<translation name="Skin.WPMapped.InputType.BoneScaleX">BoneScaleX</translation>
+	<translation name="Skin.WPMapped.InputType.BoneScaleY">BoneScaleY</translation>
+	<translation name="Skin.WPMapped.InputType.BoneScaleZ">BoneScaleZ</translation>
+	<translation name="Skin.WPMapped.InputType.Renderable">Renderable</translation>
+	
+	<translation name="Skin.WPMapped.InputLower">Input Lower:</translation>
+	<translation name="Skin.WPMapped.InputLower.ToolTip">Lower input range</translation>
+	<translation name="Skin.WPMapped.InputUpper">Input Upper:</translation>
+	<translation name="Skin.WPMapped.InputUpper.ToolTip">Upper input range</translation>
+	
+	<translation name="Skin.WPMapped.InputClamped">Input Clamped:</translation>
+	<translation name="Skin.WPMapped.InputClamped.ToolTip">Input value is clamperd to input range instead od wrapping around</translation>
+	
+	<translation name="Skin.WPMapped.OutputLower">Output Lower:</translation>
+	<translation name="Skin.WPMapped.OutputLower.ToolTip">Lower output range. 0 Y-curve value maps to lower value. Values outside range are extrapolated</translation>
+	<translation name="Skin.WPMapped.OutputUpper">Output Upper:</translation>
+	<translation name="Skin.WPMapped.OutputUpper.ToolTip">Upper output range. 1 Y-curve value maps to upper value. Values outside range are extrapolated</translation>
+	
+	<translation name="Skin.WPMapped.Bone">Bone:</translation>
+	<translation name="Skin.WPMapped.Bone.ToolTip">Name of the bone to use if bone related input type is used</translation>
+	
+	<translation name="Skin.WPMapped.Renderable">Renderable:</translation>
+	<translation name="Skin.WPMapped.Renderable.ToolTip">Name of the renderable to use if renderable input type is used</translation>
+	
+	<translation name="Skin.WPMapped.RenderableComponent">Component:</translation>
+	<translation name="Skin.WPMapped.RenderableComponent.ToolTip">Color component to use if renderable is used and is of color type</translation>
+	<translation name="Skin.WPMapped.RenderableComponent.Red">Red</translation>
+	<translation name="Skin.WPMapped.RenderableComponent.Green">Green</translation>
+	<translation name="Skin.WPMapped.RenderableComponent.Blue">Blue</translation>
+	<translation name="Skin.WPMapped.RenderableComponent.Alpha">Alpha</translation>
+	
+	<translation name="Skin.WPMapped.CutMapped.Title">Cut Mapped</translation>
+	<translation name="Skin.WPMapped.CutMapped.Message">Mapped is used by {0} dependencies. Cutting mapped will also unset it from all dependencies.</translation>
+	
+	<translation name="Skin.WPMapped.SetName.Title">Set Mapped Name</translation>
+	<translation name="Skin.WPMapped.SetName.Exists">Mapped name exists already</translation>
+	
+	<!-- WPNode -->
+	<translation name="Skin.WPNode.Outliner">Outliner</translation>
+	
+	<translation name="Skin.WPNode.GroupNode">Node:</translation>
+	<translation name="Skin.WPNode.Position">Position:</translation>
+	<translation name="Skin.WPNode.Position.ToolTip">Position of node center</translation>
+	<translation name="Skin.WPNode.Size">Size:</translation>
+	<translation name="Skin.WPNode.Size.ToolTip">Size of node center</translation>
+	<translation name="Skin.WPNode.Rotation">Rotation:</translation>
+	<translation name="Skin.WPNode.Rotation.ToolTip">Counter clock-wise rotation of node</translation>
+	<translation name="Skin.WPNode.Shear">Shear:</translation>
+	<translation name="Skin.WPNode.Shear.ToolTip">Shearing of node in degrees along X direction</translation>
+	<translation name="Skin.WPNode.Brightness">Brightness:</translation>
+	<translation name="Skin.WPNode.Brightness.ToolTip">Brightness</translation>
+	<translation name="Skin.WPNode.Contrast">Contrast:</translation>
+	<translation name="Skin.WPNode.Contrast.ToolTip">Contrast</translation>
+	<translation name="Skin.WPNode.Gamma">Gamma:</translation>
+	<translation name="Skin.WPNode.Gamma.ToolTip">Gamma</translation>
+	<translation name="Skin.WPNode.Colorize">Colorize:</translation>
+	<translation name="Skin.WPNode.Colorize.ToolTip">Colorize</translation>
+	<translation name="Skin.WPNode.Transparency">Transparency:</translation>
+	<translation name="Skin.WPNode.Transparency.ToolTip">Transparency of node</translation>
+	<translation name="Skin.WPNode.CombineMode">Combine Mode:</translation>
+	<translation name="Skin.WPNode.CombineMode.ToolTip">Combine mode</translation>
+	<translation name="Skin.WPNode.CombineMode.Blend">Blend</translation>
+	<translation name="Skin.WPNode.CombineMode.Overlay">Overlay</translation>
+	
+	<translation name="Skin.WPNode.MaskGroup">Maske: Group</translation>
+	<translation name="Skin.WPNode.MaskImage">Maske: Image</translation>
+	<translation name="Skin.WPNode.MaskShape">Maske: Shape</translation>
+	<translation name="Skin.WPNode.MaskText">Maske: Text</translation>
+	<translation name="Skin.WPNode.NoMask">No Mask</translation>
+	
+	<translation name="Skin.WPNode.GroupDynamic">Dynamic:</translation>
+	<translation name="Skin.WPNode.MappedProperty">Property:</translation>
+	<translation name="Skin.WPNode.MappedProperty.ToolTip">Property to set mapped value for</translation>
+	<translation name="Skin.WPNode.Mapped">Mapped:</translation>
+	<translation name="Skin.WPNode.Mapped.ToolTip">Mapped value to use for property</translation>
+	
+	<translation name="Skin.WPNode.MappedType.PositionX">Position X</translation>
+	<translation name="Skin.WPNode.MappedType.PositionY">Position Y</translation>
+	<translation name="Skin.WPNode.MappedType.PositionZ">Position Z</translation>
+	<translation name="Skin.WPNode.MappedType.SizeX">Size X</translation>
+	<translation name="Skin.WPNode.MappedType.SizeY">Size Y</translation>
+	<translation name="Skin.WPNode.MappedType.SizeZ">Size Z</translation>
+	<translation name="Skin.WPNode.MappedType.Rotation">Rotation</translation>
+	<translation name="Skin.WPNode.MappedType.Shear">Shear</translation>
+	<translation name="Skin.WPNode.MappedType.Brightness">Brightness</translation>
+	<translation name="Skin.WPNode.MappedType.Contrast">Contrast</translation>
+	<translation name="Skin.WPNode.MappedType.Gamma">Gamma</translation>
+	<translation name="Skin.WPNode.MappedType.ColorizeRed">Colorize Red</translation>
+	<translation name="Skin.WPNode.MappedType.ColorizeGreen">Colorize Green</translation>
+	<translation name="Skin.WPNode.MappedType.ColorizeBlue">Colorize Blue</translation>
+	<translation name="Skin.WPNode.MappedType.Transparency">Transparency</translation>
+	<translation name="Skin.WPNode.MappedType.FillColorRed">Fill Color Red</translation>
+	<translation name="Skin.WPNode.MappedType.FillColorGreen">Fill Color Green</translation>
+	<translation name="Skin.WPNode.MappedType.FillColorBlue">Fill Color Blue</translation>
+	<translation name="Skin.WPNode.MappedType.FillColorAlpha">Fill Color Alpha</translation>
+	<translation name="Skin.WPNode.MappedType.LineColorRed">Line Color Red</translation>
+	<translation name="Skin.WPNode.MappedType.LineColorGreen">Line Color Green</translation>
+	<translation name="Skin.WPNode.MappedType.LineColorBlue">Line Color Blue</translation>
+	<translation name="Skin.WPNode.MappedType.LineColorAlpha">Line Color Alpha</translation>
+	<translation name="Skin.WPNode.MappedType.Thickness">Thickness</translation>
+	<translation name="Skin.WPNode.MappedType.FontSize">Font Size</translation>
+	<translation name="Skin.WPNode.MappedType.ColorRed">Color Red</translation>
+	<translation name="Skin.WPNode.MappedType.ColorGreen">Color Green</translation>
+	<translation name="Skin.WPNode.MappedType.ColorBlue">Color Blue</translation>
+	
+	<translation name="Skin.WPNode.GroupImage">Image:</translation>
+	<translation name="Skin.WPNode.Image">Image:</translation>
+	<translation name="Skin.WPNode.Image.ToolTip">Image resource to display</translation>
+	<translation name="Skin.WPNode.ImageInfo">{0}x{1}x{2}, {3}, {4}-Bit</translation>
+	<translation name="Skin.WPNode.ImageInfo.ToolTip">Image information</translation>
+	<translation name="Skin.WPNode.Repeat">Repeat:</translation>
+	<translation name="Skin.WPNode.Repeat.ToolTip">Repetition of image inside node size</translation>
+	
+	<translation name="Skin.WPNode.GroupShape">Shape:</translation>
+	<translation name="Skin.WPNode.ShapeType">Type:</translation>
+	<translation name="Skin.WPNode.ShapeType.ToolTip">Shape type</translation>
+	<translation name="Skin.WPNode.ShapeType.Rectangle">Rectangle</translation>
+	<translation name="Skin.WPNode.ShapeType.Ellipse">Ellipse</translation>
+	<translation name="Skin.WPNode.LineColor">Line Color:</translation>
+	<translation name="Skin.WPNode.LineColor.ToolTip">Line color</translation>
+	<translation name="Skin.WPNode.FillColor">Fill Color:</translation>
+	<translation name="Skin.WPNode.FillColor.ToolTip">Fill color</translation>
+	<translation name="Skin.WPNode.Thickness">Thickness:</translation>
+	<translation name="Skin.WPNode.Thickness.ToolTip">Thickness of line in pixels</translation>
+	
+	<translation name="Skin.WPNode.GroupText">Text:</translation>
+	<translation name="Skin.WPNode.Font">Font:</translation>
+	<translation name="Skin.WPNode.Font.ToolTip">Font resource to use for text</translation>
+	<translation name="Skin.WPNode.FontInfo.ToolTip">Font information</translation>
+	<translation name="Skin.WPNode.FontSize">Font size:</translation>
+	<translation name="Skin.WPNode.FontSize.ToolTip">Font size in pixels (equals height of text line)</translation>
+	<translation name="Skin.WPNode.Text">Text:</translation>
+	<translation name="Skin.WPNode.Text.ToolTip">Text</translation>
+	<translation name="Skin.WPNode.TextColor">Color:</translation>
+	<translation name="Skin.WPNode.TextColor.ToolTip">Text color</translation>
+	
+	<translation name="Skin.WPNode.GroupGroup">Group:</translation>
+	
+	<translation name="Skin.WPNode.Outline.Group">Group</translation>
+	<translation name="Skin.WPNode.Outline.Image">Image</translation>
+	<translation name="Skin.WPNode.Outline.Shape">Shape</translation>
+	<translation name="Skin.WPNode.Outline.ShapeRectangle">Shape: Rectangle</translation>
+	<translation name="Skin.WPNode.Outline.ShapeEllipse">Shape: Ellipse</translation>
+	<translation name="Skin.WPNode.Outline.Text">Text</translation>
+	
+	<translation name="Skin.WPNode.VideoInfo">{0}x{1} {2}, FPS {3:.1f}, Frames {4}, Playtime {5:.1f}s</translation>
+	
+	<!-- WPTexture -->
+	<translation name="Skin.WPTexture.GroupTexture">Texture:</translation>
+	<translation name="Skin.WPTexture.Textures">Textures</translation>
+	<translation name="Skin.WPTexture.Name">Name:</translation>
+	<translation name="Skin.WPTexture.Name.ToolTip">Name of texture</translation>
+	
+	<translation name="Skin.WPTexture.GroupPreview">Texture Preview:</translation>
+	<translation name="Skin.WPTexture.Translation">Translation:</translation>
+	<translation name="Skin.WPTexture.Translation.ToolTip">Texture coordinates translation.</translation>
+	<translation name="Skin.WPTexture.Scaling">Scaling:</translation>
+	<translation name="Skin.WPTexture.Scaling.ToolTip">Texture coordinates scaling.</translation>
+	<translation name="Skin.WPTexture.Rotation">Rotation:</translation>
+	<translation name="Skin.WPTexture.Rotation.ToolTip">Texture coordinates rotation.</translation>
+	
+	<translation name="Skin.WPTexture.GroupProperty">Property:</translation>
+	<translation name="Skin.WPTexture.Property">Property</translation>
+	<translation name="Skin.WPTexture.PropertyName">Name:</translation>
+	<translation name="Skin.WPTexture.PropertyName.ToolTip">Name of property</translation>
+	<translation name="Skin.WPTexture.Renderable">Renderable:</translation>
+	<translation name="Skin.WPTexture.Renderable.ToolTip">Name of renderable to use or empty string to use none</translation>
+	<translation name="Skin.WPTexture.Bone">Bone:</translation>
+	<translation name="Skin.WPTexture.Bone.ToolTip">Name of bone to use or empty string. Used by properties using vertex position instead of texture coordinates.</translation>
+	
+	<translation name="Skin.WPTexture.ValueType">Value Type:</translation>
+	<translation name="Skin.WPTexture.ValueType.ToolTip">Type of value to use for the property</translation>
+	<translation name="Skin.WPTexture.ValueType.Value">Value</translation>
+	<translation name="Skin.WPTexture.ValueType.Color">Color</translation>
+	<translation name="Skin.WPTexture.ValueType.Image">Image</translation>
+	<translation name="Skin.WPTexture.ValueType.Video">Video</translation>
+	<translation name="Skin.WPTexture.ValueType.Constructed">Constructed</translation>
+	<translation name="Skin.WPTexture.ValueType.Mapped">Mapped</translation>
+	
+	<translation name="Skin.WPTexture.GroupValue">Value:</translation>
+	<translation name="Skin.WPTexture.Value">Value:</translation>
+	<translation name="Skin.WPTexture.Value.ToolTip">Value to use</translation>
+	
+	<translation name="Skin.WPTexture.GroupColor">Color:</translation>
+	<translation name="Skin.WPTexture.Color">Color:</translation>
+	<translation name="Skin.WPTexture.Color.ToolTip">Color to use</translation>
+	
+	<translation name="Skin.WPTexture.GroupImage">Image:</translation>
+	<translation name="Skin.WPTexture.ImagePath">Path:</translation>
+	<translation name="Skin.WPTexture.ImagePath.ToolTip">Path to the image to use</translation>
+	<translation name="Skin.WPTexture.ImageInfo.ToolTip">Image information</translation>
+	
+	<translation name="Skin.WPTexture.GroupVideo">Video:</translation>
+	<translation name="Skin.WPTexture.VideoPath">Path:</translation>
+	<translation name="Skin.WPTexture.VideoPath.ToolTip">Path to the video to use</translation>
+	<translation name="Skin.WPTexture.VideoInfo.ToolTip">Video information</translation>
+	
+	<translation name="Skin.WPTexture.GroupConstructed">Constructed:</translation>
+	<translation name="Skin.WPTexture.ConstructedColor">Color:</translation>
+	<translation name="Skin.WPTexture.ConstructedColor.ToolTip">Color to use</translation>
+	<translation name="Skin.WPTexture.ConstructedSize">Size:</translation>
+	<translation name="Skin.WPTexture.ConstructedSize.ToolTip">Size of constructed image</translation>
+	<translation name="Skin.WPTexture.Tile">Tile:</translation>
+	<translation name="Skin.WPTexture.Tile.ToolTip">Tile nodes</translation>
+	<translation name="Skin.WPTexture.BitCount">Bit Count:</translation>
+	<translation name="Skin.WPTexture.BitCount.ToolTip">Bit count of constructed image</translation>
+	<translation name="Skin.WPTexture.BitCount.8Bit">8-Bit</translation>
+	<translation name="Skin.WPTexture.BitCount.16Bit">16-Bit</translation>
+	<translation name="Skin.WPTexture.BitCount.32Bit">32-Bit</translation>
+	
+	<translation name="Skin.WPTexture.GroupMapped">Mapped:</translation>
+	<translation name="Skin.WPTexture.Component">Component:</translation>
+	<translation name="Skin.WPTexture.Component.ToolTip">Component to edit (0=red, 1=green, 2=blue, 3=alpha)</translation>
+	<translation name="Skin.WPTexture.Target">Target:</translation>
+	<translation name="Skin.WPTexture.Target.ToolTip">Target mapped to use for this component</translation>
+	
+	<!-- Undo Actions -->
+	<translation name="Skin.Undo.AddTexture">Add Texture</translation>
+	<translation name="Skin.Undo.TextureImport">Texture import</translation>
+	<translation name="Skin.Undo.RemoveTexture">Remove Texture</translation>
+	<translation name="Skin.Undo.SetTextureName">Set Texture Name</translation>
+	
+	<translation name="Skin.Undo.AddMapped">Add Mapped</translation>
+	<translation name="Skin.Undo.DuplicateMapped">Duplicate Mapped</translation>
+	<translation name="Skin.Undo.PasteMapped">Paste Mapped</translation>
+	<translation name="Skin.Undo.RemoveMapped">Remove Mapped</translation>
+	<translation name="Skin.Undo.SetMappedBone">Set Mapped Bone</translation>
+	<translation name="Skin.Undo.SetMappedCurve">Set Mapped Curve</translation>
+	<translation name="Skin.Undo.SetMappedInputLower">Set Mapped Input Lower</translation>
+	<translation name="Skin.Undo.SetMappedInputType">Set Mapped Input Type</translation>
+	<translation name="Skin.Undo.SetMappedInputUpper">Set Mapped Input Upper</translation>
+	<translation name="Skin.Undo.SetMappedName">Set Mapped Name</translation>
+	<translation name="Skin.Undo.SetMappedOutputLower">Set Mapped Output Lower</translation>
+	<translation name="Skin.Undo.SetMappedOutputUpper">Set Mapped Output Upper</translation>
+	<translation name="Skin.Undo.SetMappedRenderableComponent">Set Mapped Renderable Component</translation>
+	<translation name="Skin.Undo.SetMappedRenderable">Set Mapped Renderable</translation>
+	<translation name="Skin.Undo.SetMappedInputClamped">Set Mapped Input Clamped</translation>
+	
+	<translation name="Skin.Undo.AddProperty">Add Property</translation>
+	<translation name="Skin.Undo.AddProperties">Add Properties</translation>
+	<translation name="Skin.Undo.RemoveProperty">Remove Property</translation>
+	<translation name="Skin.Undo.PropertySetBone">Property Set Bone</translation>
+	<translation name="Skin.Undo.PropertySetColor">Property Set Color</translation>
+	<translation name="Skin.Undo.PropertySetCurve">Property Set Curve</translation>
+	<translation name="Skin.Undo.PropertySetImagePath">Property Set Image Path</translation>
+	<translation name="Skin.Undo.PropertySetMappedComponent">Property Set Mapped Component</translation>
+	<translation name="Skin.Undo.PropertySetRenderable">Property Set Renderable</translation>
+	<translation name="Skin.Undo.PropertySetValue">Property Set Value</translation>
+	<translation name="Skin.Undo.PropertySetValueType">Property Set Value Type</translation>
+	<translation name="Skin.Undo.PropertySetVideoPath">Property Set Video Path</translation>
+	<translation name="Skin.Undo.PropertyConstructedFromImage">Property constructed from image</translation>
+	<translation name="Skin.Undo.PropertyConstructedBitCount">Property constructed bit count</translation>
+	<translation name="Skin.Undo.PropertyConstructedTileX">Property constructed tile X</translation>
+	<translation name="Skin.Undo.PropertyConstructedTileY">Property constructed tile Y</translation>
+	<translation name="Skin.Undo.PropertyConstructedSetColor">Property constructed set color</translation>
+	<translation name="Skin.Undo.PropertyConstructedSetSize">Property constructed set size</translation>
+	<translation name="Skin.Undo.PropertyToggleVideoSharedTime">Property toggle video shared time</translation>
+	
+	<translation name="Skin.Undo.NodeSetBrightness">Node set brightness</translation>
+	<translation name="Skin.Undo.NodeSetColorize">Node set colorize</translation>
+	<translation name="Skin.Undo.NodeSetCombineMode">Node set combine mode</translation>
+	<translation name="Skin.Undo.NodeSetContrast">Node set contrast</translation>
+	<translation name="Skin.Undo.NodeSetGamma">Node set gamma</translation>
+	<translation name="Skin.Undo.NodeSetMapped">Node set mapped</translation>
+	<translation name="Skin.Undo.NodeSetMask">Node set mask</translation>
+	<translation name="Skin.Undo.NodeRemoveMask">Node remove mask</translation>
+	<translation name="Skin.Undo.NodeSetPosition">Node set position</translation>
+	<translation name="Skin.Undo.NodeSetRotation">Node set rotation</translation>
+	<translation name="Skin.Undo.NodeSetShear">Node set shear</translation>
+	<translation name="Skin.Undo.NodeSetSize">Node set size</translation>
+	<translation name="Skin.Undo.NodeSetTransparency">Node set transparency</translation>
+	
+	<translation name="Skin.Undo.NodeImageSetPath">Node image set path</translation>
+	<translation name="Skin.Undo.NodeImageSetRepeat">Node image set repeat</translation>
+	<translation name="Skin.Undo.NodeImageSizeFromImage">Node size from image size</translation>
+	
+	<translation name="Skin.Undo.NodeShapeSetFillColor">Node shape set fill color</translation>
+	<translation name="Skin.Undo.NodeShapeSetLineColor">Node shape set line color</translation>
+	<translation name="Skin.Undo.NodeShapeSetThickness">Node shape set thickness</translation>
+	<translation name="Skin.Undo.NodeShapeSetType">Node shape set type</translation>
+	
+	<translation name="Skin.Undo.NodeTextSetColor">Node text set color</translation>
+	<translation name="Skin.Undo.NodeTextSetFontSize">Node text set font size</translation>
+	<translation name="Skin.Undo.NodeTextSetPath">Node text set path</translation>
+	<translation name="Skin.Undo.NodeTextSetText">Node text set text</translation>
+	
+	<translation name="Skin.Undo.NodeGroupAddNode">Node group add node</translation>
+	<translation name="Skin.Undo.NodeGroupPasteNodes">Node group paste nodes</translation>
+	<translation name="Skin.Undo.NodeGroupRemoveNodes">Node group remove nodes</translation>
+	<translation name="Skin.Undo.GroupNodes">Group nodes</translation>
+	<translation name="Skin.Undo.UngroupNodes">Ungroup nodes</translation>
+	<translation name="Skin.Undo.MoveNodesUp">Move nodes up</translation>
+	<translation name="Skin.Undo.MoveNodesDown">Move nodes down</translation>
+	<translation name="Skin.Undo.MoveNodesToTop">Move nodes to top</translation>
+	<translation name="Skin.Undo.MoveNodesToBottom">Move nodes to bottom</translation>
+	
+	<translation name="Skin.Undo.DragNodes">Drag nodes</translation>
+	<translation name="Skin.Undo.ResizeNodes">Resize nodes</translation>
+	<translation name="Skin.Undo.RotateNodes">Rotate nodes</translation>
+	<translation name="Skin.Undo.ShearNodes">Shear nodes</translation>
+	
+	<!-- WPDynamicSkin: Dynamic Skin Property Panel -->
+	<translation name="Skin.WPDynamicSkin.GroupRenderable">Renderable:</translation>
+	<translation name="Skin.WPDynamicSkin.Renderable.ToolTip">Select renderable to edit</translation>
+	<translation name="Skin.WPDynamicSkin.Name">Name:</translation>
+	<translation name="Skin.WPDynamicSkin.Name.ToolTip">Unique name of the renderable</translation>
+	<translation name="Skin.WPDynamicSkin.Type">Type:</translation>
+	<translation name="Skin.WPDynamicSkin.Type.ToolTip">Type of renderable</translation>
+	<translation name="Skin.WPDynamicSkin.Type.Value">Value</translation>
+	<translation name="Skin.WPDynamicSkin.Type.Color">Color</translation>
+	<translation name="Skin.WPDynamicSkin.Type.Image">Image</translation>
+	<translation name="Skin.WPDynamicSkin.Type.VideoFrame">Video Frame</translation>
+	<translation name="Skin.WPDynamicSkin.Type.Canvas">Canvas</translation>
+	<translation name="Skin.WPDynamicSkin.Type.Camera">Camera</translation>
+	<translation name="Skin.WPDynamicSkin.GroupValue">Value:</translation>
+	<translation name="Skin.WPDynamicSkin.Value">Value:</translation>
+	<translation name="Skin.WPDynamicSkin.Value.ToolTip">Value</translation>
+	<translation name="Skin.WPDynamicSkin.Lower">Lower:</translation>
+	<translation name="Skin.WPDynamicSkin.Lower.ToolTip">Lower range</translation>
+	<translation name="Skin.WPDynamicSkin.Upper">Upper:</translation>
+	<translation name="Skin.WPDynamicSkin.Upper.ToolTip">Upper range</translation>
+	<translation name="Skin.WPDynamicSkin.GroupColor">Color:</translation>
+	<translation name="Skin.WPDynamicSkin.Color">Color:</translation>
+	<translation name="Skin.WPDynamicSkin.Color.ToolTip">Color</translation>
+	<translation name="Skin.WPDynamicSkin.Red">Red:</translation>
+	<translation name="Skin.WPDynamicSkin.Red.ToolTip">Red color value</translation>
+	<translation name="Skin.WPDynamicSkin.Green">Green:</translation>
+	<translation name="Skin.WPDynamicSkin.Green.ToolTip">Green color value</translation>
+	<translation name="Skin.WPDynamicSkin.Blue">Blue:</translation>
+	<translation name="Skin.WPDynamicSkin.Blue.ToolTip">Blue color value</translation>
+	<translation name="Skin.WPDynamicSkin.Alpha">Alpha:</translation>
+	<translation name="Skin.WPDynamicSkin.Alpha.ToolTip">Alpha color value</translation>
+	<translation name="Skin.WPDynamicSkin.GroupImage">Image:</translation>
+	<translation name="Skin.WPDynamicSkin.ImagePath">Path:</translation>
+	<translation name="Skin.WPDynamicSkin.ImagePath.ToolTip">Path to image</translation>
+	<translation name="Skin.WPDynamicSkin.GroupVideo">Video:</translation>
+	<translation name="Skin.WPDynamicSkin.VideoPath">Path:</translation>
+	<translation name="Skin.WPDynamicSkin.VideoPath.ToolTip">Path to video</translation>
+	
+	<!-- Window Main -->
+	<translation name="Skin.WindowMain.Dialog.NewSkin.Title">New Skin</translation>
+	<translation name="Skin.WindowMain.Dialog.NewSkin.Message">Creating a new skin discarding the current one is that ok?</translation>
+	
+	<!-- View Constructed -->
+	<translation name="Skin.ViewConstructed.Action.ConstructedFromImage">Constructed from Image</translation>
+	<translation name="Skin.ViewConstructed.Action.ConstructedFromImage.ToolTip">Create constructed from image</translation>
+	<translation name="Skin.ViewConstructed.Action.AddShape">Add Shape</translation>
+	<translation name="Skin.ViewConstructed.Action.AddShape.ToolTip">Add shape node</translation>
+	<translation name="Skin.ViewConstructed.Action.AddImage">Add Image...</translation>
+	<translation name="Skin.ViewConstructed.Action.AddImage.ToolTip">Add image node</translation>
+	<translation name="Skin.ViewConstructed.Dialog.SelectImage">Select Image</translation>
+	<translation name="Skin.ViewConstructed.Action.AddText">Add Text</translation>
+	<translation name="Skin.ViewConstructed.Action.AddText.ToolTip">Add text node</translation>
+	<translation name="Skin.ViewConstructed.Action.RemoveNodes">Remove Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.RemoveNodes.ToolTip">Remove nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.CopyNodes">Copy Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.CopyNodes.ToolTip">Copy nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.CutNodes">Cut Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.CutNodes.ToolTip">Cut nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.PasteNodes">Paste Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.PasteNodes.ToolTip">Paste nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.EnterGroup">Enter Group</translation>
+	<translation name="Skin.ViewConstructed.Action.EnterGroup.ToolTip">Enter group</translation>
+	<translation name="Skin.ViewConstructed.Action.ExitGroup">Exit Group</translation>
+	<translation name="Skin.ViewConstructed.Action.ExitGroup.ToolTip">Exit group</translation>
+	<translation name="Skin.ViewConstructed.Action.GroupNodes">Group Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.GroupNodes.ToolTip">Group Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.UngroupNodes">Ungroup Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.UngroupNodes.ToolTip">Ungroup Nodes</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeTop">Move Node Top</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeTop.ToolTip">Move node to top</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeUp">Move Node Up</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeUp.ToolTip">Move node up</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeDown">Move Node Down</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeDown.ToolTip">Move node down</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeBottom">Move Node Bottom</translation>
+	<translation name="Skin.ViewConstructed.Action.MoveNodeBottom.ToolTip">Move node to bottom</translation>
+	<translation name="Skin.ViewConstructed.Action.SetMask">Set Mask</translation>
+	<translation name="Skin.ViewConstructed.Action.SetMask.ToolTip">Set Mask</translation>
+	<translation name="Skin.ViewConstructed.Action.RemoveMask">Remove Mask</translation>
+	<translation name="Skin.ViewConstructed.Action.RemoveMask.ToolTip">Remove Mask</translation>
+	<translation name="Skin.ViewConstructed.Action.SizeFromImage">Size from image size</translation>
+	<translation name="Skin.ViewConstructed.Action.SizeFromImage.ToolTip">Set image size to constructed size</translation>
+	
+	<!-- WP Texture -->
+	<translation name="Skin.WPTexture.Dialog.SetTextureName.Title">Set Texture Name</translation>
+	<translation name="Skin.WPTexture.Dialog.SetTextureName.Error">Texture name exists already</translation>
+	<translation name="Skin.WPTexture.Action.UseSharedTime">Use shared time</translation>
+	<translation name="Skin.WPTexture.Action.UseSharedTime.ToolTip">Playback time is shared across instances</translation>
+	<translation name="Skin.WPTexture.Action.TileXAxis">X-Axis</translation>
+	<translation name="Skin.WPTexture.Action.TileXAxis.ToolTip">Tile nodes along X axis</translation>
+	<translation name="Skin.WPTexture.Action.TileYAxis">Y-Axis</translation>
+	<translation name="Skin.WPTexture.Action.TileYAxis.ToolTip">Tile nodes along Y axis</translation>
+	
+	<!-- WP Dynamic Skin -->
+	<translation name="Skin.WPDynamicSkin.Action.AddRenderable">Add...</translation>
+	<translation name="Skin.WPDynamicSkin.Action.AddRenderable.ToolTip">Add Renderable</translation>
+	<translation name="Skin.WPDynamicSkin.Dialog.AddRenderable.Title">Add Renderable</translation>
+	<translation name="Skin.WPDynamicSkin.Dialog.AddRenderable.Name">Name:</translation>
+	<translation name="Skin.WPDynamicSkin.Dialog.AddRenderable.Error">A renderable with this name exists already.</translation>
+	<translation name="Skin.WPDynamicSkin.Action.RemoveRenderable">Remove</translation>
+	<translation name="Skin.WPDynamicSkin.Action.RemoveRenderable.ToolTip">Remove renderable</translation>
+	<translation name="Skin.WPDynamicSkin.Dialog.RenameRenderable.Title">Rename Renderable</translation>
+	<translation name="Skin.WPDynamicSkin.Dialog.RenameRenderable.Error">A renderable with this name exists already.</translation>
+	
+	<!-- Dialog Add Texture -->
+	<translation name="Skin.DialogAddTexture.DefaultTextureName">Texture</translation>
+	
+	<!-- Task Sync Game Definition -->
+	<translation name="Skin.TaskSyncGameDefinition.Message">Skin Editor: Synchronize Game Definition</translation>
+	
+	<!-- Window Main -->
+	<translation name="Skin.WindowMain.DefaultMappedName">Mapped</translation>
+	
+	<!-- View Constructed -->
+	<translation name="Skin.ViewConstructed.DefaultText">Text</translation>
+	
+	<!-- WP Node -->
+	<translation name="Skin.WPNode.SelectedNodes">Selected Nodes: {0}</translation>
+	<translation name="Skin.WPNode.ImageType.Gray">Gray</translation>
+	<translation name="Skin.WPNode.ImageType.GrayAlpha">Gray-Alpha</translation>
+	<translation name="Skin.WPNode.ImageType.RGB">RGB</translation>
+	<translation name="Skin.WPNode.ImageType.RGBA">RGBA</translation>
+	<translation name="Skin.WPNode.FontType.Color">Color</translation>
+	<translation name="Skin.WPNode.FontType.Grayscale">Grayscale</translation>
+	<translation name="Skin.WPNode.FontInfo">{0}, Line height {1}</translation>
+	<translation name="Skin.WPNode.MaskPrefix">Mask: </translation>
+	
+	<!-- WP Texture -->
+	<translation name="Skin.WPTexture.VideoType.Grayscale">Grayscale</translation>
+	<translation name="Skin.WPTexture.VideoType.GrayscaleAlpha">GrayscaleAlpha</translation>
+	
+	<!-- WP Dynamic Skin -->
+	<translation name="Skin.WPDynamicSkin.DefaultRenderableName">Renderable</translation>
+</languagePack>

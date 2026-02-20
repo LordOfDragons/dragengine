@@ -28,33 +28,37 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 /**
  * Undo rule group set enable vertex position set.
  */
 class aeURuleGroupToggleEnableVertexPositionSet : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleGroupToggleEnableVertexPositionSet>;
+	
+	
 private:
-	aeRuleGroup *pRule;
+	aeRuleGroup::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupToggleEnableVertexPositionSet( aeRuleGroup *rule );
+	aeURuleGroupToggleEnableVertexPositionSet(aeRuleGroup *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleGroupToggleEnableVertexPositionSet();
+	~aeURuleGroupToggleEnableVertexPositionSet() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** <brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

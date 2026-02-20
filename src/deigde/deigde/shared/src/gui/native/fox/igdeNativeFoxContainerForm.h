@@ -34,7 +34,7 @@ class igdeContainerForm;
  * \brief FOX toolkit Native Form Container.
  */
 class igdeNativeFoxContainerForm : public FXMatrix{
-	FXDECLARE( igdeNativeFoxContainerForm )
+	FXDECLARE(igdeNativeFoxContainerForm)
 protected:
 	   igdeNativeFoxContainerForm();
 	
@@ -47,13 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeFoxContainerForm( igdeContainerForm &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerForm(igdeContainerForm &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up container. */
-	virtual ~igdeNativeFoxContainerForm();
+	~igdeNativeFoxContainerForm() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxContainerForm* CreateNativeWidget( igdeContainerForm &owner );
+	static igdeNativeFoxContainerForm* CreateNativeWidget(igdeContainerForm &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -73,11 +73,11 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxContainerForm igdeNativeContainerForm;
+using igdeNativeContainerForm = igdeNativeFoxContainerForm;
 
 #endif

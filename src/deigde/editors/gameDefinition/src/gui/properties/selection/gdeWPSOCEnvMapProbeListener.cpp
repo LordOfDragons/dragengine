@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCEnvMapProbeListener::gdeWPSOCEnvMapProbeListener( gdeWPSOCEnvMapProbe &panel ) :
-pPanel( panel ){
+gdeWPSOCEnvMapProbeListener::gdeWPSOCEnvMapProbeListener(gdeWPSOCEnvMapProbe &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCEnvMapProbeListener::~gdeWPSOCEnvMapProbeListener(){
@@ -53,48 +53,48 @@ gdeWPSOCEnvMapProbeListener::~gdeWPSOCEnvMapProbeListener(){
 // Management
 ///////////////
 
-void gdeWPSOCEnvMapProbeListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCEnvMapProbeListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCEnvMapProbeListener::OCPropertiesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCEnvMapProbeListener::OCPropertiesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCEnvMapProbeListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCEnvMapProbeListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 	pPanel.UpdateEnvMapProbe();
 }
 
 
 
-void gdeWPSOCEnvMapProbeListener::OCEnvMapProbesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCEnvMapProbeListener::OCEnvMapProbesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateEnvMapProbe();
 }
 
-void gdeWPSOCEnvMapProbeListener::OCEnvMapProbeChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCEnvMapProbeListener::OCEnvMapProbeChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetEnvMapProbe() != envMapProbe ){
+	if(pPanel.GetEnvMapProbe() != envMapProbe){
 		return;
 	}
 	pPanel.UpdateEnvMapProbe();
 }
 
-void gdeWPSOCEnvMapProbeListener::ActiveOCEnvMapProbeChanged( gdeGameDefinition* ){
+void gdeWPSOCEnvMapProbeListener::ActiveOCEnvMapProbeChanged(gdeGameDefinition*){
 	pPanel.UpdateEnvMapProbe();
 }

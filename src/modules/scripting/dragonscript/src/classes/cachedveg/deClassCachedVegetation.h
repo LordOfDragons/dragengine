@@ -48,9 +48,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new CLASS. */
-	deClassCachedVegetation( deScriptingDragonScript *ds );
+	deClassCachedVegetation(deScriptingDragonScript *ds);
 	/** Cleans up the CLASS. */
-	virtual ~deClassCachedVegetation();
+	~deClassCachedVegetation() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -58,7 +58,7 @@ public:
 	/** Retrieves the module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine) override;
 	/*@}*/
 	
 private:
@@ -67,25 +67,25 @@ private:
 		dsClass *clsCF, *clsPt, *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetCollisionFilter );
+	DEF_NATFUNC(nfSetCollisionFilter);
 	
-	DEF_NATFUNC( nfHasSector );
-	DEF_NATFUNC( nfAddSector );
-	DEF_NATFUNC( nfRemoveSector );
-	DEF_NATFUNC( nfRemoveAllSectors );
+	DEF_NATFUNC(nfHasSector);
+	DEF_NATFUNC(nfAddSector);
+	DEF_NATFUNC(nfRemoveSector);
+	DEF_NATFUNC(nfRemoveAllSectors);
 	
-	DEF_NATFUNC( nfSetWorld );
+	DEF_NATFUNC(nfSetWorld);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug names enumeration. */
-	deoglDebugNamesEnumSet( const char *name, const sEntry *entries );
+	deoglDebugNamesEnumSet(const char *name, const sEntry *entries);
 	/*@}*/
 	
 	
@@ -44,7 +44,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Names of enumeration constants. */
-	decString SetName( int value, bool full = false ) const;
+	decString SetName(int value, bool full = false) const;
 	/*@}*/
 };
 

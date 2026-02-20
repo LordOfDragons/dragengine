@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 #include <webm/callback.h>
+#include <dragengine/common/collection/decTList.h>
 
 class deVideoWebm;
 
@@ -39,8 +40,7 @@ private:
 	deVideoWebm &pModule;
 	bool pTrackOpen;
 	std::uint64_t pTrackNumber;
-	std::uint8_t *pBuffer;
-	std::uint64_t pBufferSize;
+	decTList<std::uint8_t> pBuffer;
 	bool pStopParsing;
 	bool pNeedMoreFrames;
 	
@@ -50,10 +50,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create callback. */
-	dewmTrackCallback( deVideoWebm &module );
+	dewmTrackCallback(deVideoWebm &module);
 	
 	/** Clean up callback. */
-	virtual ~dewmTrackCallback();
+	~dewmTrackCallback() override;
 	/*@}*/
 	
 	
@@ -64,50 +64,50 @@ public:
 	inline deVideoWebm &GetModule(){ return pModule; }
 	
 	/** End parsing segment. */
-	virtual webm::Status OnSegmentEnd( const webm::ElementMetadata &metadata );
+	webm::Status OnSegmentEnd(const webm::ElementMetadata &metadata) override;
 	
 	/** Track entry. */
-	virtual webm::Status OnTrackEntry( const webm::ElementMetadata &metadata,
-		const webm::TrackEntry &track_entry );
+	webm::Status OnTrackEntry(const webm::ElementMetadata &metadata,
+		const webm::TrackEntry &track_entry) override;
 	
 	/** Blocks. */
-	virtual webm::Status OnSimpleBlockBegin( const webm::ElementMetadata &metadata,
-		const webm::SimpleBlock &simple_block, webm::Action *action );
+	webm::Status OnSimpleBlockBegin(const webm::ElementMetadata &metadata,
+		const webm::SimpleBlock &simple_block, webm::Action *action) override;
 	
-	virtual webm::Status OnBlockGroupBegin( const webm::ElementMetadata &metadata,
-		webm::Action *action );
+	webm::Status OnBlockGroupBegin(const webm::ElementMetadata &metadata,
+		webm::Action *action) override;
 	
-	virtual webm::Status OnBlockGroupEnd( const webm::ElementMetadata &metadata,
-		const webm::BlockGroup &block_group );
+	webm::Status OnBlockGroupEnd(const webm::ElementMetadata &metadata,
+		const webm::BlockGroup &block_group) override;
 	
-	virtual webm::Status OnBlockBegin( const webm::ElementMetadata &metadata,
-		const webm::Block &block, webm::Action *action );
+	webm::Status OnBlockBegin(const webm::ElementMetadata &metadata,
+		const webm::Block &block, webm::Action *action) override;
 	
 	/** Frame. */
-	virtual webm::Status OnFrame( const webm::FrameMetadata &metadata, webm::Reader *reader,
-		std::uint64_t *bytes_remaining );
+	webm::Status OnFrame(const webm::FrameMetadata &metadata, webm::Reader *reader,
+		std::uint64_t *bytes_remaining) override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual bool pOpenTrack( const webm::TrackEntry &track ) = 0;
+	virtual bool pOpenTrack(const webm::TrackEntry &track) = 0;
 	
-	virtual void pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining );
-	virtual void pProcessAdditional( const std::vector<unsigned char> &data );
+	virtual void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining);
+	virtual void pProcessAdditional(const std::vector<unsigned char> &data);
 	
-	inline const std::uint8_t *pGetBuffer() const{ return pBuffer; }
+	inline const decTList<std::uint8_t> &pGetBuffer() const{ return pBuffer; }
 	
-	void pReadFrameData( webm::Reader &reader, std::uint64_t &bytes_remaining );
+	void pReadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	
-	void SetNeedMoreFrames( bool needMoreFrames );
+	void SetNeedMoreFrames(bool needMoreFrames);
 	
 	virtual void pEndSegment();
 	
 	
 	
 private:
-	webm::Status pProcessBlock( const webm::Block &block, webm::Action *action );
+	webm::Status pProcessBlock(const webm::Block &block, webm::Action *action);
 };
 
 #endif

@@ -25,11 +25,10 @@
 #ifndef _DEOGLRRDSRENDERABLEVIDEOFRAME_H_
 #define _DEOGLRRDSRENDERABLEVIDEOFRAME_H_
 
-#include <dragengine/deObject.h>
-
 #include "deoglRDSRenderable.h"
+#include "../../../../video/deoglRVideoPlayer.h"
 
-class deoglRVideoPlayer;
+#include <dragengine/deObject.h>
 
 
 
@@ -37,17 +36,22 @@ class deoglRVideoPlayer;
  * Render dynamic skin image renderable.
  */
 class deoglRDSRenderableVideoFrame : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDSRenderableVideoFrame>;
+	
+	
 private:
-	deoglRVideoPlayer *pVideoPlayer;
+	deoglRVideoPlayer::Ref pVideoPlayer;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin image renderable. */
-	deoglRDSRenderableVideoFrame( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableVideoFrame(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin image renderable. */
-	virtual ~deoglRDSRenderableVideoFrame();
+	~deoglRDSRenderableVideoFrame() override;
 	/*@}*/
 	
 	
@@ -55,19 +59,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Video player. */
-	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player. */
-	void SetVideoPlayer( deoglRVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 	
 private:

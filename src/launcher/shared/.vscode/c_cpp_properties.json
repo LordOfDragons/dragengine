@@ -14,7 +14,7 @@
                 "LAUNCHER_GAMES_PATH=\"/path/launcher/games\""
             ],
             "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cppStandard": "c++20",
             "intelliSenseMode": "linux-clang-x64"
         }
     ],

@@ -39,28 +39,28 @@
 ////////////////////////////
 
 gdeOCNavigationBlocker::gdeOCNavigationBlocker() :
-pScaling( 1.0f, 1.0f, 1.0f ),
-pEnabled( true ),
-pLayer( 0 ),
-pType( deNavigationSpace::estMesh ),
-pBlockingPriority( 0 ){
+pScaling(1.0f, 1.0f, 1.0f),
+pEnabled(true),
+pLayer(0),
+pType(deNavigationSpace::estMesh),
+pBlockingPriority(0){
 }
 
-gdeOCNavigationBlocker::gdeOCNavigationBlocker( const gdeOCNavigationBlocker &blocker ) :
-pPosition( blocker.pPosition ),
-pRotation( blocker.pRotation ),
-pScaling( blocker.pScaling ),
-pBoneName( blocker.pBoneName ),
-pEnabled( blocker.pEnabled ),
-pLayer( blocker.pLayer ),
-pType( blocker.pType ),
-pBlockingPriority( blocker.pBlockingPriority ),
-pShapeList( blocker.pShapeList )
+gdeOCNavigationBlocker::gdeOCNavigationBlocker(const gdeOCNavigationBlocker &blocker) :
+pPosition(blocker.pPosition),
+pRotation(blocker.pRotation),
+pScaling(blocker.pScaling),
+pBoneName(blocker.pBoneName),
+pEnabled(blocker.pEnabled),
+pLayer(blocker.pLayer),
+pType(blocker.pType),
+pBlockingPriority(blocker.pBlockingPriority),
+pShapeList(blocker.pShapeList)
 {
 	int i;
 	
-	for( i=0; i<=epAttachRotation; i++ ){
-		pPropertyNames[ i ] = blocker.pPropertyNames[ i ];
+	for(i=0; i<=epAttachRotation; i++){
+		pPropertyNames[i] = blocker.pPropertyNames[i];
 	}
 }
 
@@ -72,56 +72,56 @@ gdeOCNavigationBlocker::~gdeOCNavigationBlocker(){
 // Management
 ///////////////
 
-void gdeOCNavigationBlocker::SetPosition( const decVector &position ){
+void gdeOCNavigationBlocker::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void gdeOCNavigationBlocker::SetRotation( const decVector &orientation ){
+void gdeOCNavigationBlocker::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
-void gdeOCNavigationBlocker::SetScaling( const decVector &scaling ){
+void gdeOCNavigationBlocker::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
-void gdeOCNavigationBlocker::SetBoneName( const char *boneName ){
+void gdeOCNavigationBlocker::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
-void gdeOCNavigationBlocker::SetEnabled( bool enabled ){
+void gdeOCNavigationBlocker::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
-void gdeOCNavigationBlocker::SetLayer( int layer ){
+void gdeOCNavigationBlocker::SetLayer(int layer){
 	pLayer = layer;
 }
 
-void gdeOCNavigationBlocker::SetType( deNavigationSpace::eSpaceTypes type ){
+void gdeOCNavigationBlocker::SetType(deNavigationSpace::eSpaceTypes type){
 	pType = type;
 }
 
-void gdeOCNavigationBlocker::SetBlockingPriority( int priority ){
+void gdeOCNavigationBlocker::SetBlockingPriority(int priority){
 	pBlockingPriority = priority;
 }
 
 
 
-bool gdeOCNavigationBlocker::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool gdeOCNavigationBlocker::IsPropertySet(eProperties property) const{
+	return !pPropertyNames[property].IsEmpty();
 }
 
-const decString &gdeOCNavigationBlocker::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &gdeOCNavigationBlocker::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void gdeOCNavigationBlocker::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void gdeOCNavigationBlocker::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool gdeOCNavigationBlocker::HasPropertyWithName( const char *name ) const{
+bool gdeOCNavigationBlocker::HasPropertyWithName(const char *name) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epAttachRotation; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}

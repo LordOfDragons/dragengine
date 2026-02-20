@@ -27,6 +27,7 @@
 
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deBaseGraphicSky;
 class deSkyLayer;
@@ -53,21 +54,15 @@ class deSkyManager;
 class DE_DLL_EXPORT deSky : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSky> Ref;
-	
+	using Ref = deTObjectReference<deSky>;
 	
 	
 private:
 	decColor pBgColor;
 	
-	deSkyController *pControllers;
-	int pControllerCount;
-	
-	deSkyLink *pLinks;
-	int pLinkCount;
-	
-	deSkyLayer *pLayers;
-	int pLayerCount;
+	decTObjectOrderedSet<deSkyController> pControllers;
+	decTObjectOrderedSet<deSkyLink> pLinks;
+	decTObjectOrderedSet<deSkyLayer> pLayers;
 	
 	deBaseGraphicSky *pPeerGraphic;
 	
@@ -77,8 +72,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky resource. */
-	deSky( deSkyManager *manager );
+	deSky(deSkyManager *manager);
 	
+	deSky(const deSky& copy) = delete;
+	deSky& operator=(const deSky& other) = delete;
+
 protected:
 	/**
 	 * \brief Clean up sky resource.
@@ -86,7 +84,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSky();
+	~deSky() override;
 	/*@}*/
 	
 	
@@ -98,70 +96,55 @@ public:
 	inline const decColor &GetBgColor() const{ return pBgColor; }
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	/*@}*/
 	
 	
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSkyController> &GetControllers() const{ return pControllers; }
 	
 	/**
 	 * \brief Set number of controllers.
 	 * 
 	 * Sets all controllers to default vaules.
 	 */
-	void SetControllerCount( int count );
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
-	 * to GetControllerCount().
-	 */
-	deSkyController &GetControllerAt( int index ) const;
+	void SetControllerCount(int count);
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
+	/*@}*/
 	
 	
 	
-	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	/** \name Links */
+	/*@{*/
+	/** \brief Links. */
+	inline const decTObjectOrderedSet<deSkyLink> &GetLinks() const{ return pLinks; }
 	
 	/**
 	 * \brief Set number of links.
 	 * 
 	 * Sets all links to default vaules.
 	 */
-	void SetLinkCount( int count );
-	
-	/**
-	 * \brief Link at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
-	 * to GetLinkCount().
-	 */
-	deSkyLink &GetLinkAt( int index ) const;
+	void SetLinkCount(int count);
+	/*@}*/
 	
 	
 	
-	/** \brief Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	/** \name Layers */
+	/*@{*/
+	/** \brief Layers. */
+	inline const decTObjectOrderedSet<deSkyLayer> &GetLayers() const{ return pLayers; }
 	
 	/**
 	 * \brief Set number of layers.
 	 * 
 	 * Sets all links to default vaules.
 	 */
-	void SetLayerCount( int count );
-	
-	/**
-	 * \brief Layer at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
-	 * to GetLayerCount().
-	 */
-	deSkyLayer &GetLayerAt( int index ) const;
+	void SetLayerCount(int count);
 	
 	
 	
@@ -182,7 +165,7 @@ public:
 	inline deBaseGraphicSky *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicSky *peer );
+	void SetPeerGraphic(deBaseGraphicSky *peer);
 	/*@}*/
 };
 

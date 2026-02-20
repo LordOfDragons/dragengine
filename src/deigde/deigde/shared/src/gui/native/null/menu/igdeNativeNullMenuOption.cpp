@@ -39,7 +39,8 @@ igdeNativeNullMenuOption::igdeNativeNullMenuOption(){
 igdeNativeNullMenuOption::~igdeNativeNullMenuOption(){
 }
 
-igdeNativeNullMenuOption *igdeNativeNullMenuOption::CreateNativeWidget( igdeMenuOption& ){
+igdeNativeNullMenuOption *igdeNativeNullMenuOption::CreateNativeWidget(igdeMenuOption&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullMenuOption;
 }
 
@@ -54,6 +55,22 @@ void igdeNativeNullMenuOption::DestroyNativeWidget(){
 
 // Management
 ///////////////
+
+void igdeNativeNullMenuOption::UpdateText(){
+}
+
+void igdeNativeNullMenuOption::UpdateDescription(){
+}
+
+void igdeNativeNullMenuOption::UpdateHotKey(){
+}
+
+void igdeNativeNullMenuOption::UpdateIcon(){
+}
+
+void igdeNativeNullMenuOption::UpdateEnabled(){
+}
+
 
 void igdeNativeNullMenuOption::UpdateSelected(){
 }

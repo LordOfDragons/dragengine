@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleSubAnimator;
+#include "../../../animator/rule/aeRuleSubAnimator.h"
 
 
 
@@ -36,26 +36,30 @@ class aeRuleSubAnimator;
  * Undo rule sub animator set enable rotation.
  */
 class aeURuleSubAnimToggleEnableRotation : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleSubAnimToggleEnableRotation>;
+	
+	
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSubAnimToggleEnableRotation( aeRuleSubAnimator *rule );
+	aeURuleSubAnimToggleEnableRotation(aeRuleSubAnimator *rule);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleSubAnimToggleEnableRotation();
+	~aeURuleSubAnimToggleEnableRotation() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

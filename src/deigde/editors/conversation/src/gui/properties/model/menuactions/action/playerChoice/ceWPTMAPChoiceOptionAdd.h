@@ -48,12 +48,13 @@ protected:
 	ceWPTMAPChoiceOptionAdd();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAPChoiceOptionAdd>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionAdd( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionAdd(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice );
+		ceCAPlayerChoice &playerChoice);
 	/*@}*/
 	
 	
@@ -70,7 +71,7 @@ public:
 	inline ceCAPlayerChoice &GetIfElse() const{ return *pPlayerChoice; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

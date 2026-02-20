@@ -40,33 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetFov::gdeUOCCameraSetFov( gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCCameraSetFov::gdeUOCCameraSetFov(gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue) :
+
+pCamera(nullptr)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Camera set fov" );
+	SetShortInfo("@GameDefinition.Undo.OCCameraSetFov");
 	
 	pOldValue = camera->GetFov();
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetFov::~gdeUOCCameraSetFov(){
-	if( pCamera ){
-		pCamera->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ gdeUOCCameraSetFov::~gdeUOCCameraSetFov(){
 ///////////////
 
 void gdeUOCCameraSetFov::Undo(){
-	pCamera->SetFov( pOldValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetFov(pOldValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }
 
 void gdeUOCCameraSetFov::Redo(){
-	pCamera->SetFov( pNewValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetFov(pNewValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }

@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "meUHTPaintMask.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/meWorldGuiParameters.h"
@@ -46,17 +42,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTPaintMask::meUHTPaintMask( int drawMode, meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, unsigned char *oldValues ){
-	if( ! world || ! sector || ! texture || ! oldValues ) DETHROW( deeInvalidParam );
+meUHTPaintMask::meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size,
+decTList<unsigned char> &&oldValues){
+	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	int pixelCount = size.x * size.y;
 	
-	if( drawMode == meWorldGuiParameters::empdmDraw ){
-		SetShortInfo( "Draw Mask" );
+	if(drawMode == meWorldGuiParameters::empdmDraw){
+		SetShortInfo("@World.UHTPaintMask.DrawMask");
 		
 	}else{
-		SetShortInfo( "Erase Mask" );
+		SetShortInfo("@World.UHTPaintMask.EraseMask");
 	}
 	
 	pWorld = world;
@@ -64,37 +61,22 @@ meHeightTerrainTexture *texture, const decPoint &grid, const decPoint &size, uns
 	pTexture = texture;
 	
 	pSize = size;
-	pOldValues = NULL;
-	pNewValues = NULL;
 	
 	pGrid.x1 = grid.x;
 	pGrid.y1 = grid.y;
 	pGrid.x2 = grid.x + size.x;
 	pGrid.y2 = grid.y + size.y;
-	pWorld->GetLogger()->LogInfoFormat( "World Editor", "UHTPaintMask: g=(%i,%i,%i,%i)", pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2 );
+	pWorld->GetLogger()->LogInfoFormat("World Editor", "UHTPaintMask: g=(%i,%i,%i,%i)", pGrid.x1, pGrid.y1, pGrid.x2, pGrid.y2);
 	
-	SetMemoryConsumption( sizeof( meUHTPaintMask ) + sizeof( unsigned char ) * pixelCount * 2 );
+	SetMemoryConsumption(sizeof(meUHTPaintMask) + sizeof(unsigned char) * pixelCount * 2);
 	
-	try{
-		pOldValues = new unsigned char[ pixelCount ];
-		if( ! pOldValues ) DETHROW( deeOutOfMemory );
-		
-		pNewValues = new unsigned char[ pixelCount ];
-		if( ! pNewValues ) DETHROW( deeOutOfMemory );
-		
-		pSaveValues();
-		
-		memcpy( pOldValues, oldValues, sizeof( unsigned char ) * pixelCount );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pNewValues.SetCountDiscard(pixelCount);
+	pSaveValues();
+	
+	pOldValues = std::move(oldValues);
 }
 
-meUHTPaintMask::~meUHTPaintMask(){
-	pCleanUp();
-}
+meUHTPaintMask::~meUHTPaintMask() = default;
 
 
 
@@ -102,11 +84,11 @@ meUHTPaintMask::~meUHTPaintMask(){
 ///////////////
 
 void meUHTPaintMask::Undo(){
-	pRestoreValues( pOldValues );
+	pRestoreValues(pOldValues);
 }
 
 void meUHTPaintMask::Redo(){
-	pRestoreValues( pNewValues );
+	pRestoreValues(pNewValues);
 }
 
 
@@ -114,42 +96,38 @@ void meUHTPaintMask::Redo(){
 // Private Functions
 //////////////////////
 
-void meUHTPaintMask::pCleanUp(){
-	if( pNewValues ) delete [] pNewValues;
-	if( pOldValues ) delete [] pOldValues;
-}
-
 void meUHTPaintMask::pSaveValues(){
+	unsigned char * const values = pNewValues.GetArrayPointer();
 	deImage *mask = pTexture->GetMaskImage();
-	meTerrainMaskImage tmi( mask );
+	meTerrainMaskImage tmi(mask);
 	int sgx, sgy;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			sgy = pGrid.y1 + y;
 			
-			pNewValues[ y * pSize.x + x ] = tmi.GetMaskValueAt( sgx, sgy );
+			values[y * pSize.x + x] = tmi.GetMaskValueAt(sgx, sgy);
 		}
 	}
 }
 
-void meUHTPaintMask::pRestoreValues( unsigned char *values ){
+void meUHTPaintMask::pRestoreValues(const decTList<unsigned char> &values){
 	deImage *mask = pTexture->GetMaskImage();
-	meTerrainMaskImage tmi( mask );
+	meTerrainMaskImage tmi(mask);
 	int sgx, sgy;
 	int x, y;
 	
-	for( y=0; y<pSize.y; y++ ){
-		for( x=0; x<pSize.x; x++ ){
+	for(y=0; y<pSize.y; y++){
+		for(x=0; x<pSize.x; x++){
 			sgx = pGrid.x1 + x;
 			sgy = pGrid.y1 + y;
 			
-			tmi.SetMaskValueAt( sgx, sgy, values[ y * pSize.x + x ] );
+			tmi.SetMaskValueAt(sgx, sgy, values[y * pSize.x + x]);
 		}
 	}
 	
-	pTexture->SetMaskChanged( true );
+	pTexture->SetMaskChanged(true);
 	pTexture->NotifyTextureMaskChanged();
 }

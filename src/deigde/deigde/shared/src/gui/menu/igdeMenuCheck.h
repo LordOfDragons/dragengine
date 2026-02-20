@@ -38,22 +38,32 @@
 class DE_DLL_EXPORT igdeMenuCheck : public igdeMenuCommand{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuCheck> Ref;
+	using Ref = deTObjectReference<igdeMenuCheck>;
+	
+	
+	class cNativeMenuCheck : public cNativeMenuCommand{
+	public:
+		virtual ~cNativeMenuCheck() override = default;
+		virtual void UpdateChecked() = 0;
+	};
 	
 	
 private:
 	bool pChecked;
 	
 	
+protected:
+	cNativeMenuCheck *pNativeMenuCheck;
+	
 	
 public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuCheck( igdeEnvironment &environment );
+	igdeMenuCheck(igdeEnvironment &environment);
 	
 	/** \brief Create menu entry. */
-	igdeMenuCheck( igdeEnvironment &environment, igdeAction *action );
+	igdeMenuCheck(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -64,7 +74,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMenuCheck();
+	~igdeMenuCheck() override;
 	/*@}*/
 	
 	
@@ -76,12 +86,12 @@ public:
 	inline bool GetChecked() const{ return pChecked; }
 	
 	/** \brief Set if menu entry is checked. */
-	void SetChecked( bool checked );
+	void SetChecked(bool checked);
 	
 	
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -95,14 +105,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

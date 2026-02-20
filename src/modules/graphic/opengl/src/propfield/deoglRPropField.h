@@ -27,8 +27,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/common/collection/decPointerLinkedList.h>
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTLinkedList.h>
 
 #include "../deoglGL.h"
 
@@ -57,26 +57,31 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	decObjectList pTypes;
+	decTObjectList<deoglRPropFieldType> pTypes;
 	bool pTypesRequirePrepareForRender;
 	
 	bool pWorldMarkedRemove;
-	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	decTLinkedList<deoglRPropField>::Element pLLPrepareForRenderWorld;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRPropField>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render prop field. */
-	deoglRPropField( deoglRenderThread &renderThread );
+	deoglRPropField(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render prop field. */
-	virtual ~deoglRPropField();
+	~deoglRPropField() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -86,7 +91,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or NULL if not set. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	
 	
@@ -94,7 +99,7 @@ public:
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
 	/** Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	
 	
@@ -105,7 +110,7 @@ public:
 	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Update extends. */
-	void UpdateExtends( const dePropField &propField );
+	void UpdateExtends(const dePropField &propField);
 	
 	
 	
@@ -124,7 +129,7 @@ public:
 	 * given camera matrix. After this is done the instance matrices are ready
 	 * to be used in subsequent rendering calls.
 	 */
-	void PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix );
+	void PrepareInstances(const decDVector &cameraPosition, const decDMatrix &cameraMatrix);
 	
 	
 	
@@ -132,13 +137,13 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type at index. */
-	deoglRPropFieldType &GetTypeAt( int index ) const;
+	deoglRPropFieldType &GetTypeAt(int index) const;
 	
 	/** Remove all types. */
 	void RemoveAllTypes();
 	
 	/** Add type. */
-	void AddType( deoglRPropFieldType* type );
+	void AddType(deoglRPropFieldType* type);
 	
 	/** Type requires prepare for render. */
 	void TypeRequiresPrepareForRender();
@@ -154,11 +159,11 @@ public:
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/** Set marked for removal. */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decTLinkedList<deoglRPropField>::Element &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decTLinkedList<deoglRPropField>::Element &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
 	
 	

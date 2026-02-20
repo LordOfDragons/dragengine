@@ -23,14 +23,14 @@ class KDEVDSCODECOMPLETION_EXPORT DSCodeCompletionWorker : public CodeCompletion
 	Q_OBJECT
 	
 public:
-	DSCodeCompletionWorker( DSCodeCompletionModel &model, const QUrl &document );
+	DSCodeCompletionWorker(DSCodeCompletionModel &model, const QUrl &document);
 	
-	CodeCompletionContext *createCompletionContext( const DUContextPointer context,
+	CodeCompletionContext *createCompletionContext(const DUContextPointer context,
 		const QString &contextText, const QString &followingText,
-		const CursorInRevision &position ) const override;
+		const CursorInRevision &position) const override;
 	
-	void updateContextRange( Range &contextRange, View *view,
-		const DUContextPointer context ) const override;
+	void updateContextRange(Range &contextRange, View *view,
+		const DUContextPointer context) const override;
 	
 	
 	

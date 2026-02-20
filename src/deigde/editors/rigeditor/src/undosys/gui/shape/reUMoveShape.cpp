@@ -26,10 +26,8 @@
 #include <stdlib.h>
 
 #include "reUMoveShape.h"
-#include "reUndoDataShape.h"
 #include "../../../rig/bone/reRigBone.h"
 #include "../../../rig/shape/reRigShape.h"
-#include "../../../rig/shape/reRigShapeList.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,41 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUMoveShape::reUMoveShape( reRigShapeList &list ){
-	int shapeCount = list.GetShapeCount();
+reUMoveShape::reUMoveShape(igdeEnvironment &environment, const reRigShape::List &list) :
+reBaseUndoMove(environment)
+{
+	DEASSERT_TRUE(list.IsNotEmpty())
 	
-	if( shapeCount == 0 ) DETHROW( deeInvalidParam );
+	list.Visit([&](reRigShape *s){
+		pShapes.Add(reUndoDataShape::Ref::New(s));
+	});
 	
-	pShapes = NULL;
-	pShapeCount = 0;
-	
-	try{
-		if( shapeCount > 0 ){
-			pShapes = new reUndoDataShape*[ shapeCount ];
-			if( ! pShapes ) DETHROW( deeOutOfMemory );
-			
-			while( pShapeCount < shapeCount ){
-				pShapes[ pShapeCount ] = new reUndoDataShape( list.GetShapeAt( pShapeCount ) );
-				if( ! pShapes[ pShapeCount ] ) DETHROW( deeOutOfMemory );
-				pShapeCount++;
-			}
-		}
+	if(list.GetCount() > 1){
+		SetShortInfo("@Rig.Undo.ShapesMove");
 		
-		if( shapeCount > 1 ){
-			SetShortInfo( "Move Shapes" );
-			
-		}else{
-			SetShortInfo( "Move Shape" );
-		}
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	}else{
+		SetShortInfo("@Rig.Undo.ShapeMove");
 	}
 }
 
 reUMoveShape::~reUMoveShape(){
-	pCleanUp();
 }
 
 
@@ -84,55 +65,30 @@ reUMoveShape::~reUMoveShape(){
 /////////////////////////////
 
 void reUMoveShape::Undo(){
-	reRigShape *shape;
-	int s;
-	
-	for( s=0; s<pShapeCount; s++ ){
-		shape = pShapes[ s ]->GetShape();
-		
-		shape->SetPosition( pShapes[ s ]->GetOldPosition() );
-	}
+	pShapes.Visit([&](const reUndoDataShape &d){
+		d.GetShape()->SetPosition(d.GetOldPosition());
+	});
 }
 
 void reUMoveShape::Redo(){
-	reRigShape *shape;
-	decMatrix matrix;
-	reRigBone *bone;
-	int s;
-	
-	for( s=0; s<pShapeCount; s++ ){
-		shape = pShapes[ s ]->GetShape();
-		bone = shape->GetRigBone();
+	pShapes.Visit([&](const reUndoDataShape &d){
+		reRigShape &shape = d.GetShape();
+		reRigBone * const bone = shape.GetRigBone();
 		
-		if( bone ){
+		decMatrix matrix;
+		if(bone){
 			matrix = bone->GetPoseMatrix().ToMatrix()
 				* decMatrix::CreateTranslation( GetDistance() )
 				* bone->GetInversePoseMatrix().ToMatrix();
 			
 		}else{
-			matrix.SetTranslation( GetDistance() );
+			matrix.SetTranslation(GetDistance());
 		}
 		
-		shape->SetPosition( matrix * pShapes[ s ]->GetOldPosition() );
-	}
+		shape.SetPosition(matrix * d.GetOldPosition());
+	});
 }
 
 void reUMoveShape::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void reUMoveShape::pCleanUp(){
-	if( pShapes ){
-		while( pShapeCount > 0 ){
-			pShapeCount--;
-			delete pShapes[ pShapeCount ];
-		}
-		
-		delete [] pShapes;
-	}
 }

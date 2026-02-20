@@ -37,6 +37,10 @@
  */
 class DE_DLL_EXPORT igdeProgressBar : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeProgressBar>;
+	
+	
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */
@@ -46,6 +50,14 @@ public:
 		eoVertical
 	};
 	
+	class cNativeProgressBar{
+	public:
+		virtual ~cNativeProgressBar() = default;
+		virtual void UpdateRange() = 0;
+		virtual void UpdateValue() = 0;
+		virtual void UpdateEnabled() = 0;
+		virtual void UpdateDescription() = 0;
+	};
 	
 	
 private:
@@ -56,13 +68,16 @@ private:
 	decString pDescription;
 	
 	
+protected:
+	cNativeProgressBar *pNativeProgressBar;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeProgressBar( igdeEnvironment &environment, int lower, int upper,
-		eOrientation orientation, const char *description = "" );
+	igdeProgressBar(igdeEnvironment &environment, int lower, int upper,
+		eOrientation orientation, const char *description = "");
 	
 	
 	
@@ -73,7 +88,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeProgressBar();
+	~igdeProgressBar() override;
 	/*@}*/
 	
 	
@@ -88,7 +103,7 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	
 	
@@ -96,7 +111,7 @@ public:
 	inline int GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Range lower value. */
 	inline int GetLower() const{ return pLower; }
@@ -105,7 +120,7 @@ public:
 	inline int GetUpper() const{ return pUpper; }
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	/*@}*/
 	
 	
@@ -119,14 +134,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
@@ -138,6 +158,9 @@ protected:
 	
 	/** \brief Description changed. */
 	virtual void OnDescriptionChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

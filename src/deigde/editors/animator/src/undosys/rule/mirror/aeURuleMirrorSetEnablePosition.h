@@ -35,6 +35,10 @@
  * Undo set rule mirror enable position.
  */
 class aeURuleMirrorSetEnablePosition : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleMirrorSetEnablePosition>;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetEnablePosition( aeRuleMirror *rule );
+	aeURuleMirrorSetEnablePosition(aeRuleMirror *rule);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleMirrorSetEnablePosition();
+	~aeURuleMirrorSetEnablePosition() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

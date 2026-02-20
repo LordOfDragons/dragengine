@@ -45,11 +45,11 @@ pRenderThread(renderThread)
 	if(/*renderThread.GetChoices().GetFBOCubeUseLayered()*/ false){
 		int i;
 		for(i=0; i<6; i++){
-			pFaceFBOs.Add(deoglFramebuffer::Ref::NewWith(renderThread, false));
+			pFaceFBOs.Add(deoglFramebuffer::Ref::New(renderThread, false));
 		}
 		
 	}else{
-		pFBO.TakeOverWith(renderThread, false);
+		pFBO = deoglFramebuffer::Ref::New(renderThread, false);
 	}
 }
 
@@ -58,7 +58,7 @@ pRenderThread(renderThread)
 ///////////////
 
 deoglFramebuffer *deoglFramebufferCube::GetFaceFBO(int face) const{
-	return (deoglFramebuffer*)pFaceFBOs.GetAt(face);
+	return pFaceFBOs.GetAt(face);
 }
 
 deoglFramebuffer *deoglFramebufferCube::GetBaseFBO() const{

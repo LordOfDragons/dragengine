@@ -32,13 +32,17 @@
  * Animation Rule Panel.
  */
 class aeWPAPanelRuleAnimation : public aeWPAPanelRule{
+public:
+	using Ref = deTObjectReference<aeWPAPanelRuleAnimation>;
+	
+	
 private:
-	igdeComboBoxFilterReference pCBMoveName;
-	igdeTextFieldReference pEditMoveTime;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBoxFilter::Ref pCBMoveName;
+	igdeTextField::Ref pEditMoveTime;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleAnimation( aeWPRule &wpRule );
+	aeWPAPanelRuleAnimation(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleAnimation();
+	~aeWPAPanelRuleAnimation() override;
 	/*@}*/
 	
 	
@@ -59,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Update animation move list. */
-	virtual void UpdateAnimMoveList();
+	void UpdateAnimMoveList() override;
 	
 	/** Update rule. */
-	virtual void UpdateRule();
+	void UpdateRule() override;
 	
 	/** Update target list. */
-	virtual void UpdateTargetList();
+	void UpdateTargetList() override;
 	/*@}*/
 };
 

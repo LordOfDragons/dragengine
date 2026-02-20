@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create VR support. */
-	deoglVR( deoglRCamera &camera );
+	deoglVR(deoglRCamera &camera);
 	
 	/** Clean up VR support. */
 	~deoglVR();
@@ -119,7 +119,7 @@ public:
 	
 	
 	/** Update target frame rate. */
-	void UpdateTargetFPS( float elapsed );
+	void UpdateTargetFPS(float elapsed);
 	
 	/** Target frame rate. */
 	inline int GetTargetFPS() const{ return pTargetFPS; }
@@ -166,7 +166,7 @@ public:
 	
 private:
 	void pGetParameters();
-	int pCalcTargetFPS( float frameTime ) const;
+	int pCalcTargetFPS(float frameTime) const;
 	void pRenderStereo();
 };
 

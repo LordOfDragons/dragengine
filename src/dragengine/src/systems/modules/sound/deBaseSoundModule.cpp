@@ -30,8 +30,8 @@
 // Class deBaseSoundModule
 ////////////////////////////
 
-deBaseSoundModule::deBaseSoundModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseSoundModule::deBaseSoundModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseSoundModule::~deBaseSoundModule(){

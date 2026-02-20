@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 
@@ -35,8 +35,12 @@ class ceCameraShot;
  * \brief Undo Action Camera Shot Set Actor Count.
  */
 class ceUCCShotSetActorCount : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCCShotSetActorCount>;
+	
+	
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	int pOldCount;
 	int pNewCount;
@@ -45,19 +49,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetActorCount( ceCameraShot *cameraShot, int newCount );
+	ceUCCShotSetActorCount(ceCameraShot *cameraShot, int newCount);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCCShotSetActorCount();
+	~ceUCCShotSetActorCount() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

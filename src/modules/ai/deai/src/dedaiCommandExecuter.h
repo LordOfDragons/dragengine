@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new command executer. */
-	dedaiCommandExecuter( deDEAIModule *ogl );
+	dedaiCommandExecuter(deDEAIModule *ogl);
 	/** \brief Cleans up the command executer. */
 	~dedaiCommandExecuter();
 	/*@}*/
@@ -50,11 +50,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Executes a command. */
-	void ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 private:
-	void pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
 };
 
 #endif

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkDynamicState.h"
 #include "devkPipeline.h"
 #include "../devkDevice.h"
@@ -52,27 +49,27 @@ devkDynamicState::~devkDynamicState(){
 // Management
 ///////////////
 
-void devkDynamicState::Apply( devkCommandBuffer &commandBuffer, const devkPipeline &pipeline ) const{
+void devkDynamicState::Apply(devkCommandBuffer &commandBuffer, const devkPipeline &pipeline) const{
 	const devkPipelineConfiguration &config = pipeline.GetConfiguration();
 	devkDevice &device = pipeline.GetDevice();
 	
-	if( config.GetDynamicDepthBias() ){
-		device.vkCmdSetDepthBias( commandBuffer.GetBuffer(),
-			depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor );
+	if(config.GetDynamicDepthBias()){
+		device.vkCmdSetDepthBias(commandBuffer.GetBuffer(),
+			depthBiasConstantFactor, depthBiasClamp, depthBiasSlopeFactor);
 	}
 	
-	if( config.GetDynamicStencil() ){
+	if(config.GetDynamicStencil()){
 		#define SET_FRONT_BACK(func,front,back) \
-			if( front == back ){ \
-				device.func( commandBuffer.GetBuffer(), VK_STENCIL_FACE_FRONT_AND_BACK, front ); \
+			if(front == back){ \
+				device.func(commandBuffer.GetBuffer(), VK_STENCIL_FACE_FRONT_AND_BACK, front); \
 			}else{ \
-				device.func( commandBuffer.GetBuffer(), VK_STENCIL_FACE_FRONT_BIT, front ); \
-				device.func( commandBuffer.GetBuffer(), VK_STENCIL_FACE_BACK_BIT, back ); \
+				device.func(commandBuffer.GetBuffer(), VK_STENCIL_FACE_FRONT_BIT, front); \
+				device.func(commandBuffer.GetBuffer(), VK_STENCIL_FACE_BACK_BIT, back); \
 			}
 		
-		SET_FRONT_BACK( vkCmdSetStencilCompareMask, stencilFrontCompareMask, stencilBackCompareMask )
-		SET_FRONT_BACK( vkCmdSetStencilWriteMask, stencilFrontWriteMask, stencilBackWriteMask )
-		SET_FRONT_BACK( vkCmdSetStencilReference, stencilFrontReference, stencilBackWriteMask )
+		SET_FRONT_BACK(vkCmdSetStencilCompareMask, stencilFrontCompareMask, stencilBackCompareMask)
+		SET_FRONT_BACK(vkCmdSetStencilWriteMask, stencilFrontWriteMask, stencilBackWriteMask)
+		SET_FRONT_BACK(vkCmdSetStencilReference, stencilFrontReference, stencilBackWriteMask)
 		
 		#undef SET_FRONT_BACK
 	}
@@ -83,11 +80,14 @@ void devkDynamicState::Apply( devkCommandBuffer &commandBuffer, const devkPipeli
 // Operators
 //////////////
 
-bool devkDynamicState::operator==( const devkDynamicState &state ) const{
-	return memcmp( this, &state, sizeof( devkDynamicState ) ) == 0;
-}
-
-devkDynamicState &devkDynamicState::operator=( const devkDynamicState &state ){
-	memcpy( this, &state, sizeof( devkDynamicState ) );
-	return *this;
+bool devkDynamicState::operator==(const devkDynamicState &state) const{
+	return depthBiasConstantFactor == state.depthBiasConstantFactor
+		&& depthBiasClamp == state.depthBiasClamp
+		&& depthBiasSlopeFactor == state.depthBiasSlopeFactor
+		&& stencilFrontCompareMask == state.stencilFrontCompareMask
+		&& stencilBackCompareMask == state.stencilBackCompareMask
+		&& stencilFrontWriteMask == state.stencilFrontWriteMask
+		&& stencilBackWriteMask == state.stencilBackWriteMask
+		&& stencilFrontReference == state.stencilFrontReference
+		&& stencilBackReference == state.stencilBackReference;
 }

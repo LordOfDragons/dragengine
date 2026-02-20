@@ -39,22 +39,32 @@
 class DE_DLL_EXPORT igdeMenuOption : public igdeMenuCommand{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeMenuOption> Ref;
+	using Ref = deTObjectReference<igdeMenuOption>;
+	
+	
+	class cNativeMenuOption : public cNativeMenuCommand{
+	public:
+		virtual ~cNativeMenuOption() override = default;
+		virtual void UpdateSelected() = 0;
+	};
 	
 	
 private:
 	bool pSelected;
 	
 	
+protected:
+	cNativeMenuOption *pNativeMenuOption;
+	
 	
 public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuOption( igdeEnvironment &environment );
+	igdeMenuOption(igdeEnvironment &environment);
 	
 	/** \brief Create menu entry. */
-	igdeMenuOption( igdeEnvironment &environment, igdeAction *action );
+	igdeMenuOption(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -65,7 +75,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeMenuOption();
+	~igdeMenuOption() override;
 	/*@}*/
 	
 	
@@ -77,12 +87,12 @@ public:
 	inline bool GetSelected() const{ return pSelected; }
 	
 	/** \brief Set if menu entry is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -96,14 +106,19 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:

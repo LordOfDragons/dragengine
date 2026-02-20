@@ -37,6 +37,9 @@ class ceCAIfElseCase;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAIfElseCaseRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAIfElseCaseRemoveAllActions>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAIfElse *pIfElse;
@@ -52,9 +55,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseRemoveAllActions( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseRemoveAllActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase );
+		ceCAIfElse &ifElse, ceCAIfElseCase &ifCase);
 	/*@}*/
 	
 	
@@ -71,7 +74,7 @@ public:
 	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

@@ -49,13 +49,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Value has been added. */
-	virtual void ValueAdded( int index, deNetworkValue *value );
+	virtual void ValueAdded(int index, deNetworkValue *value);
 	
 	/** \brief Value has changed. */
-	virtual void ValueChanged( int index, deNetworkValue *value );
+	virtual void ValueChanged(int index, deNetworkValue *value);
 	
 	/** \brief Precision has changed. */
-	virtual void PrecisionChanged( int index, deNetworkValue *value );
+	virtual void PrecisionChanged(int index, deNetworkValue *value);
 	/*@}*/
 };
 

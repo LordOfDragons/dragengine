@@ -77,49 +77,49 @@ public:
 	/** Creastes a new collision frustum with default parameters. */
 	deoalCollisionFrustum();
 	/** Cleans up the collision frustum. */
-	virtual ~deoalCollisionFrustum();
+	~deoalCollisionFrustum() override;
 	/*@}*/
 	
 	/** @name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume(deoalCollisionVolume *volume);
-	virtual float VolumeMoveHitsVolume( deoalCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	bool VolumeHitsVolume(deoalCollisionVolume *volume) override;
+	float VolumeMoveHitsVolume(deoalCollisionVolume *volume, const decVector &displacement, decVector *normal) override;
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume(deoalCollisionSphere *sphere);
-	virtual bool CylinderHitsVolume(deoalCollisionCylinder *cylinder);
-	virtual bool CapsuleHitsVolume(deoalCollisionCapsule *capsule);
-	virtual bool BoxHitsVolume(deoalCollisionBox *box);
-	virtual bool TriangleHitsVolume( deoalCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( deoalCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( deoalCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( deoalCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( deoalCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( deoalCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( deoalCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( deoalCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	bool SphereHitsVolume(deoalCollisionSphere *sphere) override;
+	bool CylinderHitsVolume(deoalCollisionCylinder *cylinder) override;
+	bool CapsuleHitsVolume(deoalCollisionCapsule *capsule) override;
+	bool BoxHitsVolume(deoalCollisionBox *box) override;
+	bool TriangleHitsVolume(deoalCollisionTriangle *triangle) override;
+	bool FrustumHitsVolume(deoalCollisionFrustum *frustum) override;
+	float SphereMoveHitsVolume(deoalCollisionSphere *sphere, const decVector &displacement, decVector *normal) override;
+	float CylinderMoveHitsVolume(deoalCollisionCylinder *cylinder, const decVector &displacement, decVector *normal) override;
+	float CapsuleMoveHitsVolume(deoalCollisionCapsule *capsule, const decVector &displacement, decVector *normal) override;
+	float BoxMoveHitsVolume(deoalCollisionBox *box, const decVector &displacement, decVector *normal) override;
+	float TriangleMoveHitsVolume(deoalCollisionTriangle *triangle, const decVector &displacement, decVector *normal) override;
+	float FrustumMoveHitsVolume(deoalCollisionFrustum *frustum, const decVector &displacement, decVector *normal) override;
+	float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal) override;
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( deoalCollisionSphere *sphere );
-	virtual void GetEnclosingBox( deoalCollisionBox *box );
+	void GetEnclosingSphere(deoalCollisionSphere *sphere) override;
+	void GetEnclosingBox(deoalCollisionBox *box) override;
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	bool IsPointInside(const decVector &point) override;
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	decVector ClosestPointTo(const decVector &point) override;
 	/*@}*/
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit( deoalCollisionVolumeVisitor *visitor );
+	void Visit(deoalCollisionVolumeVisitor *visitor) override;
 	/*}*/
 	
 	/** @name Collision Routines */
@@ -142,43 +142,43 @@ public:
 	 * Determines if the given triangle hits this frustum.
 	 * @warning Not implemented yet and always returns false.
 	 */
-	bool TriangleHitsFrustum( deoalCollisionTriangle *triangle );
+	bool TriangleHitsFrustum(deoalCollisionTriangle *triangle);
 	/**
 	 * Determines if the given frustum hits this frustum.
 	 * @warning Not implemented yet and always returns false.
 	 */
-	bool FrustumHitsFrustum( deoalCollisionFrustum *frustum );
+	bool FrustumHitsFrustum(deoalCollisionFrustum *frustum);
 	
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float SphereMoveHitsFrustum( deoalCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsFrustum(deoalCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given cylinder to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CylinderMoveHitsFrustum( deoalCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
+	float CylinderMoveHitsFrustum(deoalCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given capsule to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CapsuleMoveHitsFrustum( deoalCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
+	float CapsuleMoveHitsFrustum(deoalCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given box to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float BoxMoveHitsFrustum( deoalCollisionBox *box, const decVector &displacement, decVector *normal );
+	float BoxMoveHitsFrustum(deoalCollisionBox *box, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given triangle to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float TriangleMoveHitsFrustum( deoalCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
+	float TriangleMoveHitsFrustum(deoalCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given frustum to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float FrustumMoveHitsFrustum( deoalCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
+	float FrustumMoveHitsFrustum(deoalCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** @name Collision Routines */

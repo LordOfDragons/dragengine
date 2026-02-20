@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTOOLBAR_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeToolBar;
 class igdeEnvironment;
@@ -58,7 +58,7 @@ class igdeWidget;
  * toolbar itself has to be deleted too.
  */
 class igdeNativeFoxToolBar : public FXToolBar{
-	FXDECLARE( igdeNativeFoxToolBar )
+	FXDECLARE(igdeNativeFoxToolBar)
 	
 protected:
 	igdeNativeFoxToolBar();
@@ -76,14 +76,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxToolBar( igdeToolBar &owner, FXComposite *parent,
-		FXComposite *windowParent, int layoutFlags );
+	igdeNativeFoxToolBar(igdeToolBar &owner, FXComposite *parent,
+		FXComposite *windowParent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxToolBar();
+	~igdeNativeFoxToolBar() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxToolBar* CreateNativeWidget( igdeToolBar &owner );
+	static igdeNativeFoxToolBar* CreateNativeWidget(igdeToolBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -93,6 +93,6 @@ public:
 	/*@}*/
 };
 
-typedef igdeNativeFoxToolBar igdeNativeToolBar;
+using igdeNativeToolBar = igdeNativeFoxToolBar;
 
 #endif

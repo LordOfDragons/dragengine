@@ -65,20 +65,19 @@
 #include "../aeIGDEModule.h"
 #include "../animatoreditor.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -93,10 +92,11 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decGlobalFunctions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
@@ -111,13 +111,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWindowMain::aeWindowMain( aeIGDEModule &module ) :
-igdeEditorWindow( module ),
-pListener( NULL ),
-pLoadSaveSystem( NULL ),
-pView3D( NULL ),
-pWindowProperties( NULL ),
-pAnimator( NULL )
+aeWindowMain::aeWindowMain(aeIGDEModule &module) :
+igdeEditorWindow(module),
+pLoadSaveSystem(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -125,9 +121,9 @@ pAnimator( NULL )
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new aeWindowMainListener( *this );
-	pLoadSaveSystem = new aeLoadSaveSystem( this );
-	pConfiguration = new aeConfiguration( *this );
+	pListener = aeWindowMainListener::Ref::New(*this);
+	pLoadSaveSystem = new aeLoadSaveSystem(this);
+	pConfiguration = new aeConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
 	
@@ -135,45 +131,33 @@ pAnimator( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 400 ) );
-	AddChild( splitted );
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
+	AddChild(splitted);
 	
-	pWindowProperties = new aeWindowProperties( *this );
-	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
+	pWindowProperties = aeWindowProperties::Ref::New(*this);
+	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new aeView3D( *this );
-	splitted->AddChild( pView3D, igdeContainerSplitted::eaCenter );
+	pView3D = aeView3D::Ref::New(*this);
+	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewAnimator();
 	ResetViews();
 }
 
 aeWindowMain::~aeWindowMain(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetAnimator( NULL );
-	
-	if( pView3D ){
-		pView3D->FreeReference();
-	}
-	if( pWindowProperties ){
-		pWindowProperties->FreeReference();
-	}
-	
+	SetAnimator(nullptr);
 	pClipboard.ClearAll();
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pLoadSaveSystem ){
+	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if( pListener ){
-		pListener->FreeReference();
 	}
 }
 
@@ -192,117 +176,112 @@ void aeWindowMain::ResetViews(){
 
 
 
-void aeWindowMain::SetAnimator( aeAnimator *animator ){
-	if( animator == pAnimator ){
+void aeWindowMain::SetAnimator(aeAnimator *animator){
+	if(animator == pAnimator){
 		return;
 	}
 	
-	pView3D->SetAnimator( NULL );
-	pWindowProperties->SetAnimator( NULL );
+	pView3D->SetAnimator(nullptr);
+	pWindowProperties->SetAnimator(nullptr);
 	
-	pActionEditUndo->SetUndoSystem( NULL );
-	pActionEditRedo->SetUndoSystem( NULL );
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
-	if( pAnimator ){
-		pAnimator->RemoveNotifier( pListener );
+	if(pAnimator){
+		pAnimator->RemoveNotifier(pListener);
 		pAnimator->Dispose();
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
-	if( animator ){
-		animator->AddReference();
-		animator->AddNotifier( pListener );
+	if(animator){
+		animator->AddNotifier(pListener);
 		
-		pActionEditUndo->SetUndoSystem( animator->GetUndoSystem() );
-		pActionEditRedo->SetUndoSystem( animator->GetUndoSystem() );
+		pActionEditUndo->SetUndoSystem(animator->GetUndoSystem());
+		pActionEditRedo->SetUndoSystem(animator->GetUndoSystem());
 		
-		pWindowProperties->SetAnimator( animator );
-		pView3D->SetAnimator( animator );
+		pWindowProperties->SetAnimator(animator);
+		pView3D->SetAnimator(animator);
 	}
 	
 	UpdateAllActions();
 }
 
 void aeWindowMain::CreateNewAnimator(){
-	deObjectReference animator;
-	animator.TakeOver( new aeAnimator( *this ) );
-	SetAnimator( ( aeAnimator* )( deObject* )animator );
+	const aeAnimator::Ref animator(aeAnimator::Ref::New(*this));
+	SetAnimator(animator);
 }
 
-void aeWindowMain::SaveAnimator( const char *filename ){
-	if( ! pAnimator ){
+void aeWindowMain::SaveAnimator(const char *filename){
+	if(!pAnimator){
 		return;
 	}
 	
-	const decString basePath( pAnimator->GetDirectoryPath() );
+	const decString basePath(pAnimator->GetDirectoryPath());
 	
-	pLoadSaveSystem->SaveAnimator( pAnimator, filename );
-	pAnimator->SetFilePath( filename );
-	pAnimator->SetChanged( false );
-	pAnimator->SetSaved( true );
+	pLoadSaveSystem->SaveAnimator(pAnimator, filename);
+	pAnimator->SetFilePath(filename);
+	pAnimator->SetChanged(false);
+	pAnimator->SetSaved(true);
 	
-	if( pAnimator->GetDirectoryPath() != basePath ){
+	if(pAnimator->GetDirectoryPath() != basePath){
 		pWindowProperties->OnAnimatorPathChanged();
 	}
 	
-	GetRecentFiles().AddFile( filename );
+	GetRecentFiles().AddFile(filename);
 }
 
 
 
-void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup ){
-	if( ! pAnimator || ( intoGroup && insert ) ){
+void aeWindowMain::CreateRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup){
+	if(!pAnimator || (intoGroup && insert)){
 		return;
 	}
 	
 	aeRule * const activeRule = pAnimator->GetActiveRule();
 	int index = pAnimator->GetRules().GetCount();
-	aeRuleGroup *parentGroup = NULL;
-	deObjectReference refRule;
-	igdeUndoReference undo;
+	aeRuleGroup *parentGroup = nullptr;
+	igdeUndo::Ref undo;
 	
-	if( activeRule ){
-		if( intoGroup ){
-			if( activeRule->GetType() != deAnimatorRuleVisitorIdentify::ertGroup ){
+	if(activeRule){
+		if(intoGroup){
+			if(activeRule->GetType() != deAnimatorRuleVisitorIdentify::ertGroup){
 				return;
 			}
-			parentGroup = ( aeRuleGroup* )activeRule;
+			parentGroup = (aeRuleGroup*)activeRule;
 			index = parentGroup->GetRules().GetCount();
 			
 		}else{
 			parentGroup = activeRule->GetParentGroup();
-			if( parentGroup ){
+			if(parentGroup){
 				index = parentGroup->GetRules().GetCount();
 			}
 			
-			if( insert ){
-				if( parentGroup ){
-					index = parentGroup->GetRules().IndexOf( activeRule );
+			if(insert){
+				if(parentGroup){
+					index = parentGroup->GetRules().IndexOf(activeRule);
 					
 				}else{
-					index = pAnimator->GetRules().IndexOf( activeRule );
+					index = pAnimator->GetRules().IndexOf(activeRule);
 				}
 			}
 		}
 	}
 	
-	refRule.TakeOver( aeRule::CreateRuleFromType( type ) );
-	aeRule * const rule = ( aeRule* )( deObject* )refRule;
+	const aeRule::Ref rule(aeRule::CreateRuleFromType(type, GetEnvironment().GetTranslationManager()));
 	
-	if( parentGroup ){
-		undo.TakeOver( new aeURuleGroupAddRule( parentGroup, rule, index ) );
+	if(parentGroup){
+		undo = aeURuleGroupAddRule::Ref::New(parentGroup, rule, index);
 		
 	}else{
-		undo.TakeOver( new aeUAddRule( pAnimator, rule, index ) );
+		undo = aeUAddRule::Ref::New(pAnimator, rule, index);
 	}
 	
-	if( undo ){
-		pAnimator->GetUndoSystem()->Add( undo );
+	if(undo){
+		pAnimator->GetUndoSystem()->Add(undo);
 	}
 	
-	pAnimator->SetActiveRule( rule );
+	pAnimator->SetActiveRule(rule);
 }
 
 
@@ -324,43 +303,43 @@ void aeWindowMain::OnAfterEngineStop(){
 void aeWindowMain::OnActivate(){
 	igdeEditorWindow::OnActivate();
 	
-	pView3D->SetEnableRendering( true );
+	pView3D->SetEnableRendering(true);
 }
 
 void aeWindowMain::OnDeactivate(){
-	pView3D->SetEnableRendering( false );
+	pView3D->SetEnableRendering(false);
 	
 	igdeEditorWindow::OnDeactivate();
 }
 
-void aeWindowMain::OnFrameUpdate( float elapsed ){
-	if( ! GetActiveModule() ){
+void aeWindowMain::OnFrameUpdate(float elapsed){
+	if(!GetActiveModule()){
 		return;
 	}
 	
-	pView3D->OnFrameUpdate( elapsed );
+	pView3D->OnFrameUpdate(elapsed);
 }
 
-void aeWindowMain::GetChangedDocuments( decStringList &list ){
-	if( pAnimator && pAnimator->GetChanged() ){
-		list.Add( pAnimator->GetFilePath() );
+void aeWindowMain::GetChangedDocuments(decStringList &list){
+	if(pAnimator && pAnimator->GetChanged()){
+		list.Add(pAnimator->GetFilePath());
 	}
 }
 
-void aeWindowMain::LoadDocument( const char *filename ){
-	if( pAnimator && pAnimator->GetChanged() ){
-		if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, "Open Animator",
-		"Open animator discards changes. Is this ok?" ) == igdeCommonDialogs::ebNo ){
+void aeWindowMain::LoadDocument(const char *filename){
+	if(pAnimator && pAnimator->GetChanged()){
+		if(igdeCommonDialogs::Question(*this, igdeCommonDialogs::ebsYesNo, "@Animator.WindowMain.OpenAnimator.Title",
+		"@Animator.WindowMain.OpenAnimator.Message") == igdeCommonDialogs::ebNo){
 			return;
 		}
 	}
 	
-	SetAnimator( aeAnimator::Ref::New( pLoadSaveSystem->LoadAnimator( filename ) ) );
-	GetRecentFiles().AddFile( filename );
+	SetAnimator(pLoadSaveSystem->LoadAnimator(filename));
+	GetRecentFiles().AddFile(filename);
 }
 
-bool aeWindowMain::SaveDocument( const char *filename ){
-	if( pAnimator && pAnimator->GetFilePath().Equals( filename ) ){
+bool aeWindowMain::SaveDocument(const char *filename){
+	if(pAnimator && pAnimator->GetFilePath().Equals(filename)){
 		pActionFileSave->OnAction();
 		return true; // TODO better implement this so failure can be detected
 	}
@@ -377,14 +356,14 @@ void aeWindowMain::OnGameProjectChanged(){
 	CreateNewAnimator();
 }
 
-igdeStepableTask *aeWindowMain::OnGameDefinitionChanged(){
-	return new aeTaskSyncGameDefinition( *this );
+igdeStepableTask::Ref aeWindowMain::OnGameDefinitionChanged(){
+	return aeTaskSyncGameDefinition::Ref::New(*this);
 }
 
 
 
-igdeIcon *aeWindowMain::GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes type ) const{
-	switch( type ){
+igdeIcon *aeWindowMain::GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const{
+	switch(type){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
 		return pIconRuleAnimation;
 		
@@ -426,22 +405,22 @@ igdeIcon *aeWindowMain::GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes t
 		return pIconRuleMirror;
 		
 	default:
-		return NULL;
+		return nullptr;
 	};
 }
 
 
 
-void aeWindowMain::SetProgressVisible( bool visible ){
-	GetEnvironment().SetProgressVisible( visible );
+void aeWindowMain::SetProgressVisible(bool visible){
+	GetEnvironment().SetProgressVisible(visible);
 }
 
-void aeWindowMain::SetProgress( float progress ){
-	GetEnvironment().SetProgress( progress );
+void aeWindowMain::SetProgress(float progress){
+	GetEnvironment().SetProgress(progress);
 }
 
-void aeWindowMain::SetProgressText( const char *text ){
-	GetEnvironment().SetProgressText( text );
+void aeWindowMain::SetProgressText(const char *text){
+	GetEnvironment().SetProgressText(text);
 }
 
 
@@ -452,64 +431,71 @@ void aeWindowMain::SetProgressText( const char *text ){
 namespace{
 
 class cActionBase : public igdeAction{
+public:
+	typedef deTObjectReference<cActionBase> Ref;
+	
+private:
 protected:
 	aeWindowMain &pWindow;
 	
 public:
-	cActionBase( aeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	cActionBase(aeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	igdeAction( text, icon, description, mnemonic, igdeHotKey( modifiers, keyCode ) ),
-	pWindow( window ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
+	pWindow(window){}
 	
-	cActionBase( aeWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	igdeAction( text, icon, description, mnemonic ),
-	pWindow( window ){}
+	cActionBase(aeWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	igdeAction(text, icon, description, mnemonic),
+	pWindow(window){}
 	
-	virtual void OnAction(){
-		if( ! pWindow.GetAnimator() ){
+	void OnAction() override{
+		if(!pWindow.GetAnimator()){
 			return;
 		}
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( pWindow.GetAnimator() ) );
-		if( undo ){
-			pWindow.GetAnimator()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(pWindow.GetAnimator()));
+		if(undo){
+			pWindow.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator) = 0;
 	
-	virtual void Update(){
-		if( pWindow.GetAnimator() ){
-			Update( *pWindow.GetAnimator() );
+	void Update() override{
+		if(pWindow.GetAnimator()){
+			Update(*pWindow.GetAnimator());
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 
 
 class cActionFileNew : public igdeAction{
+public:
+	typedef deTObjectReference<cActionFileNew> Ref;
+	
+private:
 	aeWindowMain &pWindow;
 public:
-	cActionFileNew( aeWindowMain &window ) :
-	igdeAction( "New", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ),
-		"Create new animator", deInputEvent::ekcN, igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcN ) ),
-	pWindow( window ){}
+	cActionFileNew(aeWindowMain &window) :
+	igdeAction("@Animator.Action.File.New", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
+		"@Animator.Action.File.New.ToolTip", deInputEvent::ekcN, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcN)),
+	pWindow(window){}
 	
-	virtual void OnAction(){
-		if( pWindow.GetAnimator() && pWindow.GetAnimator()->GetChanged()
-		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Animator",
-		"Creating a new animator discarding the current one is that ok?" ) == igdeCommonDialogs::ebNo ){
+	void OnAction() override{
+		if(pWindow.GetAnimator() && pWindow.GetAnimator()->GetChanged()
+		&& igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Animator.Dialog.NewAnimator.Title",
+		"@Animator.Dialog.NewAnimator.Message") == igdeCommonDialogs::ebNo){
 			return;
 		}
 		
@@ -518,339 +504,355 @@ public:
 };
 
 class cActionFileOpen : public igdeAction{
+public:
+	typedef deTObjectReference<cActionFileOpen> Ref;
+	
+private:
 	aeWindowMain &pWindow;
 public:
-	cActionFileOpen( aeWindowMain &window ) : igdeAction( "Open...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Open animator from file",
-		deInputEvent::ekcO, igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcO ) ), pWindow( window ){}
+	cActionFileOpen(aeWindowMain &window) : igdeAction("@Animator.Action.File.Open",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "@Animator.Action.File.Open.ToolTip",
+		deInputEvent::ekcO, igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcO)), pWindow(window){}
 	
-	virtual void OnAction(){
-		if( pWindow.GetAnimator() && pWindow.GetAnimator()->GetChanged() ){
-			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Animator",
-			"Open animator discards changes. Is this ok?" ) == igdeCommonDialogs::ebNo ){
+	void OnAction() override{
+		if(pWindow.GetAnimator() && pWindow.GetAnimator()->GetChanged()){
+			if(igdeCommonDialogs::Question(pWindow, igdeCommonDialogs::ebsYesNo, "@Animator.Dialog.OpenAnimator.Title",
+			"@Animator.Dialog.OpenAnimator.MessageDiscardChanges") == igdeCommonDialogs::ebNo){
 				return;
 			}
 		}
 		
-		decString filename( pWindow.GetAnimator() ? pWindow.GetAnimator()->GetFilePath()
-			: pWindow.GetGameProject()->GetPathData() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Animator",
+		decString filename(pWindow.GetAnimator() ? pWindow.GetAnimator()->GetFilePath()
+			: pWindow.GetGameProject()->GetPathData());
+		if(!igdeCommonDialogs::GetFileOpen(pWindow, "@Animator.WindowMain.OpenAnimator.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			return;
 		}
 		
-		pWindow.SetAnimator( aeAnimator::Ref::New( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) ) );
-		pWindow.GetRecentFiles().AddFile( filename );
+		pWindow.SetAnimator(pWindow.GetLoadSaveSystem().LoadAnimator(filename));
+		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };
 
 class cActionFileSaveAs : public cActionBase{
 public:
-	cActionFileSaveAs( aeWindowMain &window ) : cActionBase( window,
-		"Save As...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ),
-		"Saves animator under a differen file", deInputEvent::ekcA ){}
+	typedef deTObjectReference<cActionFileSaveAs> Ref;
+	cActionFileSaveAs(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.File.SaveAs", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.Action.File.SaveAs.ToolTip", deInputEvent::ekcA){}
 	
-	virtual igdeUndo * OnAction( aeAnimator *animator ){
-		decString filename( animator->GetFilePath() );
-		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Animator",
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator){
+		decString filename(animator->GetFilePath());
+		if(igdeCommonDialogs::GetFileSave(pWindow, "@Animator.Dialog.SaveAnimator.Title",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
-			pWindow.SaveAnimator( filename );
+			pWindow.SaveAnimator(filename);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 class cActionFileSave : public cActionFileSaveAs{
 public:
-	cActionFileSave( aeWindowMain &window ) : cActionFileSaveAs( window ){
-		SetText( "Save" );
-		SetIcon( window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ) );
-		SetDescription( "Saves animator to file" );
-		SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
-		SetMnemonic( deInputEvent::ekcS );
+	typedef deTObjectReference<cActionFileSave> Ref;
+	cActionFileSave(aeWindowMain &window) : cActionFileSaveAs(window){
+		SetText("@Animator.Action.File.Save");
+		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs));
+		SetDescription("@Animator.Action.File.Save.ToolTip");
+		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
+		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		if( animator->GetSaved() ){
-			if( animator->GetChanged() ){
-				pWindow.SaveAnimator( animator->GetFilePath() );
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		if(animator->GetSaved()){
+			if(animator->GetChanged()){
+				pWindow.SaveAnimator(animator->GetFilePath());
 			}
 			
 		}else{
-			cActionFileSaveAs::OnAction( animator );
+			cActionFileSaveAs::OnAction(animator);
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &animator ){
-		SetEnabled( animator.GetChanged() );
+	void Update(const aeAnimator &animator) override{
+		SetEnabled(animator.GetChanged());
 	}
 };
 
 
 class cActionEditCut : public cActionBase{
 public:
-	cActionEditCut( aeWindowMain &window ) : cActionBase( window,
-		"Cut", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-		"Cut selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcX, deInputEvent::ekcT ){}
+	typedef deTObjectReference<cActionEditCut> Ref;
+	cActionEditCut(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+		"@Animator.Action.Edit.Cut.ToolTip", deInputEvent::esmControl,
+		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual igdeUndo *OnAction( aeAnimator* ){
-		return NULL;
+	igdeUndo::Ref OnAction(aeAnimator*) override{
+		return {};
 	}
 };
 
 class cActionEditCopy : public cActionBase{
 public:
-	cActionEditCopy( aeWindowMain &window ) : cActionBase( window,
-		"Copy", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-		"Copies selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcC, deInputEvent::ekcC ){}
+	typedef deTObjectReference<cActionEditCopy> Ref;
+	cActionEditCopy(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.Action.Edit.Copy.ToolTip", deInputEvent::esmControl,
+		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual igdeUndo *OnAction( aeAnimator* ){
-		return NULL;
+	igdeUndo::Ref OnAction(aeAnimator*) override{
+		return {};
 	}
 };
 
 class cActionEditPaste : public cActionBase{
 public:
-	cActionEditPaste( aeWindowMain &window ) : cActionBase( window,
-		"Paste", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste objects", deInputEvent::esmControl,
-		deInputEvent::ekcV, deInputEvent::ekcP ){}
+	typedef deTObjectReference<cActionEditPaste> Ref;
+	cActionEditPaste(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Animator.Action.Edit.Paste.ToolTip", deInputEvent::esmControl,
+		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual igdeUndo *OnAction( aeAnimator* ){
-		return NULL;
+	igdeUndo::Ref OnAction(aeAnimator*) override{
+		return {};
 	}
 };
 
 class cActionEditLocoEnabled : public cActionBase{
 public:
-	cActionEditLocoEnabled( aeWindowMain &window ) : cActionBase( window,
-		"Locomotion Testing", NULL, "Enables/Disabled the locomotion testing",
-		deInputEvent::esmControl, deInputEvent::ekcL, deInputEvent::ekcL ){}
+	typedef deTObjectReference<cActionEditLocoEnabled> Ref;
+	cActionEditLocoEnabled(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.LocomotionTesting", nullptr, "@Animator.Action.Edit.LocomotionTesting.ToolTip",
+		deInputEvent::esmControl, deInputEvent::ekcL, deInputEvent::ekcL){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		if( animator->GetWakeboard().GetEnabled() ){
-			return NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		if(animator->GetWakeboard().GetEnabled()){
+			return {};
 		}
 		
-		if( animator->GetLocomotion().GetEnabled() ){
+		if(animator->GetLocomotion().GetEnabled()){
 			pWindow.GetView3D().StopLocomotionTesting();
 			
 		}else{
 			pWindow.GetView3D().StartLocomotionTesting();
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &animator ){
-		SetSelected( animator.GetLocomotion().GetEnabled() );
+	void Update(const aeAnimator &animator) override{
+		SetSelected(animator.GetLocomotion().GetEnabled());
 	}
 };
 
 class cActionEditWBEnabled : public cActionBase{
 public:
-	   cActionEditWBEnabled( aeWindowMain &window ) : cActionBase( window,
-		"Wakeboarding", NULL, "Enables/Disabled wakeboarding",
-		deInputEvent::esmControl, deInputEvent::ekcW, deInputEvent::ekcW ){}
+	typedef deTObjectReference<cActionEditWBEnabled> Ref;
+	cActionEditWBEnabled(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.Wakeboarding", nullptr, "@Animator.Action.Edit.Wakeboarding.ToolTip",
+		deInputEvent::esmControl, deInputEvent::ekcW, deInputEvent::ekcW){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		if( animator->GetLocomotion().GetEnabled() ){
-			return NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		if(animator->GetLocomotion().GetEnabled()){
+			return {};
 		}
 		
-		if( animator->GetWakeboard().GetEnabled() ){
+		if(animator->GetWakeboard().GetEnabled()){
 			pWindow.GetView3D().StopWakeboarding();
 			
 		}else{
 			pWindow.GetView3D().StartWakeboarding();
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &animator ){
-		SetSelected( animator.GetWakeboard().GetEnabled() );
+	void Update(const aeAnimator &animator) override{
+		SetSelected(animator.GetWakeboard().GetEnabled());
 	}
 };
 
 class cActionEditShowBones : public cActionBase{
 public:
-	cActionEditShowBones( aeWindowMain &window ) : cActionBase( window,
-		"Show Bones", NULL, "Show bones", deInputEvent::ekcB ){}
+	typedef deTObjectReference<cActionEditShowBones> Ref;
+	cActionEditShowBones(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.ShowBones", nullptr, "@Animator.Action.Edit.ShowBones.ToolTip", deInputEvent::ekcB){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		animator->SetShowBones( ! animator->GetShowBones() );
-		return NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		animator->SetShowBones(!animator->GetShowBones());
+		return {};
 	}
 	
-	virtual void Update( const aeAnimator &animator ){
-		SetSelected( animator.GetShowBones() );
+	void Update(const aeAnimator &animator) override{
+		SetSelected(animator.GetShowBones());
 	}
 };
 
 class cActionEditDDBoneSize : public cActionBase{
 public:
-	cActionEditDDBoneSize( aeWindowMain &window ) : cActionBase( window,
-		"Show Bones Base Size...", NULL, "Show bones base size", deInputEvent::ekcS ){}
+	typedef deTObjectReference<cActionEditDDBoneSize> Ref;
+	cActionEditDDBoneSize(aeWindowMain &window) : cActionBase(window,
+		"@Animator.Action.Edit.ShowBonesBaseSize", nullptr, "@Animator.Action.Edit.ShowBonesBaseSize.ToolTip", deInputEvent::ekcS){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		float size = animator->GetDDBoneSize();
-		if( igdeCommonDialogs::GetFloat( &pWindow, "Set bone base size", "Size:", size ) ){
-			animator->SetDDBoneSize( size );
+		if(igdeCommonDialogs::GetFloat(pWindow, "@Animator.Dialog.SetBoneBaseSize.Title", "@Animator.Dialog.SetBoneBaseSize.Size", size)){
+			animator->SetDDBoneSize(size);
 		}
-		return NULL;
+		return {};
 	}
 };
 
 
 class cActionBaseController : public cActionBase{
 public:
-	cActionBaseController( aeWindowMain &window, const char *text, igdeIcon *icon,
+	typedef deTObjectReference<cActionBaseController> Ref;
+	cActionBaseController(aeWindowMain &window, const char *text, igdeIcon *icon,
 		const char *description, int modifiers = deInputEvent::esmNone,
 		deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	cActionBase( window, text, icon, description, modifiers, keyCode, mnemonic ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	cActionBase(window, text, icon, description, modifiers, keyCode, mnemonic){}
 	
-	cActionBaseController( aeWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, mnemonic ){}
+	cActionBaseController(aeWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		return animator->GetActiveController()
-			? OnActionController( animator, animator->GetActiveController() ) : NULL;
+			? OnActionController(animator, animator->GetActiveController()) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ) = 0;
+	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller) = 0;
 	
-	virtual void Update( const aeAnimator &animator ){
-		if( animator.GetActiveController() ){
-			UpdateController( animator, *animator.GetActiveController() );
+	void Update(const aeAnimator &animator) override{
+		if(animator.GetActiveController()){
+			UpdateController(animator, *animator.GetActiveController());
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void UpdateController( const aeAnimator &, const aeController & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void UpdateController(const aeAnimator &, const aeController &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 class cActionControllerAdd : public cActionBase{
 public:
-	cActionControllerAdd( aeWindowMain &window ) : cActionBase( window, "Add...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add a controller", deInputEvent::ekcA ){}
+	typedef deTObjectReference<cActionControllerAdd> Ref;
+	cActionControllerAdd(aeWindowMain &window) : cActionBase(window, "@Animator.Action.Controller.Add",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.Action.Controller.Add.ToolTip", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		decString name( "Controller" );
-		if( ! igdeCommonDialogs::GetString( &pWindow, "Add Controller", "Name:", name ) ){
-			return NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		decString name(pWindow.Translate("Animator.DefaultName.Controller").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pWindow, "@Animator.Dialog.AddController.Title", "@Animator.Dialog.AddController.Name", name)){
+			return {};
 		}
-		if( animator->GetControllers().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
-			return NULL;
+		if(animator->GetControllers().HasNamed(name)){
+			igdeCommonDialogs::Error(pWindow, "@Animator.Dialog.AddController.Title", "@Animator.Dialog.AddController.ErrorNameExists");
+			return {};
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new aeController( name ) );
-		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
+		const aeController::Ref controller(aeController::Ref::New(name));
+		return aeUAddController::Ref::New(animator, controller);
 	}
 };
 
 class cActionControllerDuplicate : public cActionBaseController{
 public:
-	cActionControllerDuplicate( aeWindowMain &window ) : cActionBaseController( window, "Duplicate",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Duplicate controller", deInputEvent::ekcD ){}
+	typedef deTObjectReference<cActionControllerDuplicate> Ref;
+	cActionControllerDuplicate(aeWindowMain &window) : cActionBaseController(window, "@Animator.Action.Controller.Duplicate",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.Action.Controller.Duplicate.ToolTip", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ){
-		decString name( controller->GetName() + " Copy" );
-		if( ! igdeCommonDialogs::GetString( &pWindow, "Duplicate Controller", "Name:", name ) ){
-			return nullptr;
+	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller){
+		decString name(controller->GetName() + " Copy");
+		if(!igdeCommonDialogs::GetString(pWindow, "@Animator.Dialog.DuplicateController.Title", "@Animator.Dialog.DuplicateController.Name", name)){
+			return {};
 		}
 		
-		if( animator->GetControllers().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
-			return nullptr;
+		if(animator->GetControllers().HasNamed(name)){
+			igdeCommonDialogs::Error(pWindow, "@Animator.Dialog.AddController.Title", "@Animator.Dialog.AddController.ErrorNameExists");
+			return {};
 		}
 		
-		const aeController::Ref duplicate( aeController::Ref::New( new aeController( *controller ) ) );
-		duplicate->SetName( name );
-		return new aeUAddController( animator, duplicate );
+		const aeController::Ref duplicate(aeController::Ref::New(*controller));
+		duplicate->SetName(name);
+		return aeUAddController::Ref::New(animator, duplicate, "@Animator.Undo.DuplicateController");
 	}
 };
 
 class cActionControllerRemove : public cActionBaseController{
 public:
-	cActionControllerRemove( aeWindowMain &window ) : cActionBaseController( window, "Remove",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove controller", deInputEvent::ekcR ){}
+	typedef deTObjectReference<cActionControllerRemove> Ref;
+	cActionControllerRemove(aeWindowMain &window) : cActionBaseController(window, "@Animator.Action.Controller.Remove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.Action.Controller.Remove.ToolTip", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ){
-		const aeLinkList &links = animator->GetLinks();
-		const int count = links.GetCount();
-		int i, usageCount = 0;
+	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller){
+		const aeLink::List &links = animator->GetLinks();
+		int usageCount = 0;
 		decStringList names;
 		
-		for( i=0; i<count; i++ ){
-			const aeLink &link = *links.GetAt( i );
-			if( link.GetController() == controller ){
-				names.Add( link.GetName() );
+		links.Visit([&](const aeLink &link){
+			if(link.GetController() == controller){
+				names.Add(link.GetName());
 				usageCount++;
 			}
-		}
+		});
 		
-		if( usageCount > 0 ){
+		if(usageCount > 0){
 			names.SortAscending();
-			const decString strNames( ( names.GetCount() <= 5 ? names : names.Splice( 0, 4 ) ).Join( ", " ) );
+			const decString strNames(DEJoin((names.GetCount() <= 5 ? names : names.GetHead(5)), ", "));
 			
-			if( igdeCommonDialogs::QuestionFormat( &pWindow, igdeCommonDialogs::ebsYesNo,
-			"Remove Controller", "%d links are using this controller (%s). Remove controller?",
-			usageCount, strNames.GetString() ) != igdeCommonDialogs::ebYes ){
-				return NULL;
+			if(igdeCommonDialogs::QuestionFormat(pWindow, igdeCommonDialogs::ebsYesNo,
+			"@Animator.Dialog.RemoveController.Title", "@Animator.Dialog.RemoveController.Message",
+			usageCount, strNames.GetString()) != igdeCommonDialogs::ebYes){
+				return {};
 			}
 		}
 		
-		return new aeURemoveController( animator, controller );
+		return aeURemoveController::Ref::New(animator, controller);
 	}
 };
 
 class cActionControllerUp : public cActionBaseController{
 public:
-	cActionControllerUp( aeWindowMain &window ) : cActionBaseController( window, "Move Up",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ),
-		"Move controller up", deInputEvent::ekcU ){}
+	typedef deTObjectReference<cActionControllerUp> Ref;
+	cActionControllerUp(aeWindowMain &window) : cActionBaseController(window, "@Animator.Action.Controller.MoveUp",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Animator.Action.Controller.MoveUp.ToolTip", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ){
-		return animator->GetControllers().IndexOf( controller ) > 0
-			? new aeUMoveControllerUp( animator, controller ) : NULL;
+	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller){
+		return animator->GetControllers().IndexOf(controller) > 0
+			? aeUMoveControllerUp::Ref::New(animator, controller) : igdeUndo::Ref();
 	}
 	
-	virtual void UpdateController( const aeAnimator &animator, const aeController &controller ){
-		SetEnabled( animator.GetControllers().IndexOf( ( aeController* )&controller ) > 0 );
+	void UpdateController(const aeAnimator &animator, const aeController &controller) override{
+		SetEnabled(animator.GetControllers().IndexOf((aeController*)&controller) > 0);
 	}
 };
 
 class cActionControllerDown : public cActionBaseController{
 public:
-	cActionControllerDown( aeWindowMain &window ) : cActionBaseController( window, "Move Down",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ),
-		"Move controller down", deInputEvent::ekcD ){}
+	typedef deTObjectReference<cActionControllerDown> Ref;
+	cActionControllerDown(aeWindowMain &window) : cActionBaseController(window, "@Animator.Action.Controller.MoveDown",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Animator.Action.Controller.MoveDown.ToolTip", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ){
-		return animator->GetControllers().IndexOf( controller ) < animator->GetControllers().GetCount() - 1
-			? new aeUMoveControllerDown( animator, controller ) : NULL;
+	virtual igdeUndo::Ref OnActionController(aeAnimator *animator, aeController *controller){
+		return animator->GetControllers().IndexOf(controller) < animator->GetControllers().GetCount() - 1
+			? aeUMoveControllerDown::Ref::New(animator, controller) : igdeUndo::Ref();
 	}
 	
-	virtual void UpdateController( const aeAnimator &animator, const aeController &controller ){
-		SetEnabled( animator.GetControllers().IndexOf( ( aeController* )&controller )
-			< animator.GetControllers().GetCount() - 1 );
+	void UpdateController(const aeAnimator &animator, const aeController &controller) override{
+		SetEnabled(animator.GetControllers().IndexOf((aeController*)&controller)
+			< animator.GetControllers().GetCount() - 1);
 	}
 };
 
@@ -858,107 +860,106 @@ public:
 
 class cActionBaseLink : public cActionBase{
 public:
-	cActionBaseLink( aeWindowMain &window, const char *text, igdeIcon *icon,
+	typedef deTObjectReference<cActionBaseLink> Ref;
+	cActionBaseLink(aeWindowMain &window, const char *text, igdeIcon *icon,
 		const char *description, int modifiers = deInputEvent::esmNone,
 		deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	cActionBase( window, text, icon, description, modifiers, keyCode, mnemonic ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	cActionBase(window, text, icon, description, modifiers, keyCode, mnemonic){}
 	
-	cActionBaseLink( aeWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, mnemonic ){}
+	cActionBaseLink(aeWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		return animator->GetActiveLink() ? OnActionLink( animator, animator->GetActiveLink() ) : NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		return animator->GetActiveLink() ? OnActionLink(animator, animator->GetActiveLink()) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionLink( aeAnimator *animator, aeLink *link ) = 0;
+	virtual igdeUndo::Ref OnActionLink(aeAnimator *animator, aeLink *link) = 0;
 	
-	virtual void Update( const aeAnimator &animator ){
-		if( animator.GetActiveLink() ){
-			UpdateLink( animator, *animator.GetActiveLink() );
+	void Update(const aeAnimator &animator) override{
+		if(animator.GetActiveLink()){
+			UpdateLink(animator, *animator.GetActiveLink());
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void UpdateLink( const aeAnimator &, const aeLink & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void UpdateLink(const aeAnimator &, const aeLink &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 class cActionLinkAdd : public cActionBase{
 public:
-	cActionLinkAdd( aeWindowMain &window ) : cActionBase( window, "Add...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add a link", deInputEvent::ekcA ){}
+	typedef deTObjectReference<cActionLinkAdd> Ref;
+	cActionLinkAdd(aeWindowMain &window) : cActionBase(window, "@Animator.Action.Link.Add",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.Action.Link.Add.ToolTip", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		decString name( "Link" );
-		if( ! igdeCommonDialogs::GetString( &pWindow, "Add Link", "Name:", name ) ){
-			return NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		decString name(pWindow.Translate("Animator.DefaultName.Link").ToUTF8());
+		if(!igdeCommonDialogs::GetString(pWindow, "@Animator.Dialog.AddLink.Title", "@Animator.Dialog.AddLink.Name", name)){
+			return {};
 		}
 		
-		deObjectReference link;
-		link.TakeOver( new aeLink( name ) );
-		return new aeULinkAdd( animator, ( aeLink* )( deObject* )link );
+		const aeLink::Ref link(aeLink::Ref::New(name));
+		return aeULinkAdd::Ref::New(animator, link);
 	}
 };
 
 class cActionLinkDuplicate : public cActionBaseLink{
 public:
-	cActionLinkDuplicate( aeWindowMain &window ) : cActionBaseLink( window, "Duplicate",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Duplicate link", deInputEvent::ekcD ){}
+	typedef deTObjectReference<cActionLinkDuplicate> Ref;
+	cActionLinkDuplicate(aeWindowMain &window) : cActionBaseLink(window, "@Animator.Action.Link.Duplicate",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.Action.Link.Duplicate.ToolTip", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionLink( aeAnimator *animator, aeLink *link ){
-		decString name( link->GetName() + " Copy" );
-		if( ! igdeCommonDialogs::GetString( &pWindow, "Duplicate Link", "Name:", name ) ){
-			return NULL;
+	virtual igdeUndo::Ref OnActionLink(aeAnimator *animator, aeLink *link){
+		decString name(link->GetName() + " Copy");
+		if(!igdeCommonDialogs::GetString(pWindow, "@Animator.Dialog.DuplicateLink.Title", "@Animator.Dialog.DuplicateLink.Name", name)){
+			return {};
 		}
 		
-		deObjectReference newLink;
-		newLink.TakeOver( new aeLink( *link ) );
-		( ( aeLink& )( deObject& )newLink ).SetName( name );
-		return new aeULinkAdd( animator, ( aeLink* )( deObject* )newLink );
+		auto newLink = aeLink::Ref::New(*link);
+		newLink->SetName(name);
+		return aeULinkAdd::Ref::New(animator, newLink);
 	}
 };
 
 class cActionLinkRemove : public cActionBaseLink{
 public:
-	cActionLinkRemove( aeWindowMain &window ) : cActionBaseLink( window, "Remove",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove link", deInputEvent::ekcR ){}
+	typedef deTObjectReference<cActionLinkRemove> Ref;
+	cActionLinkRemove(aeWindowMain &window) : cActionBaseLink(window, "@Animator.Action.Link.Remove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.Action.Link.Remove.ToolTip", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionLink( aeAnimator *animator, aeLink *link ){
-		const int usageCount = animator->CountLinkUsage( link );
-		if( usageCount > 0 ){
-			decString text;
-			text.Format( "The link '%s' is used by %d targets.\n"
-				"If the link is removed now it is also removed from\n"
-				"all the targets using it. Do you want to remove the link?",
-				link->GetName().GetString(), usageCount );
-			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo,
-			"Remove Link", text ) == igdeCommonDialogs::ebNo ){
-				return NULL;
+	virtual igdeUndo::Ref OnActionLink(aeAnimator *animator, aeLink *link){
+		const int usageCount = animator->CountLinkUsage(link);
+		if(usageCount > 0){
+			if(igdeCommonDialogs::QuestionFormat(pWindow, igdeCommonDialogs::ebsYesNo,
+			"@Animator.Dialog.RemoveLink.Title", "@Animator.Dialog.RemoveLink.Message",
+			link->GetName().GetString(), usageCount) == igdeCommonDialogs::ebNo){
+				return {};
 			}
 		}
 		
-		return new aeULinkRemove( link );
+		return aeULinkRemove::Ref::New(link);
 	}
 };
 
 class cActionLinkRemoveUnused : public cActionBase{
 public:
-	cActionLinkRemoveUnused( aeWindowMain &window ) : cActionBase( window, "Remove Unused Links",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove links not used in any rule target", deInputEvent::ekcU ){}
+	typedef deTObjectReference<cActionLinkRemoveUnused> Ref;
+	cActionLinkRemoveUnused(aeWindowMain &window) : cActionBase(window, "@Animator.Action.Link.RemoveUnused",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.Action.Link.RemoveUnused.ToolTip", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		return new aeULinkRemoveUnused( animator );
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		return aeULinkRemoveUnused::Ref::New(animator);
 	}
 };
 
@@ -966,35 +967,36 @@ public:
 
 class cActionBaseRule : public cActionBase{
 public:
-	cActionBaseRule( aeWindowMain &window, const char *text, igdeIcon *icon,
+	typedef deTObjectReference<cActionBaseRule> Ref;
+	cActionBaseRule(aeWindowMain &window, const char *text, igdeIcon *icon,
 		const char *description, int modifiers = deInputEvent::esmNone,
 		deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	cActionBase( window, text, icon, description, modifiers, keyCode, mnemonic ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	cActionBase(window, text, icon, description, modifiers, keyCode, mnemonic){}
 	
-	cActionBaseRule( aeWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, mnemonic ){}
+	cActionBaseRule(aeWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		return animator->GetActiveRule() ? OnActionRule( animator, animator->GetActiveRule() ) : NULL;
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		return animator->GetActiveRule() ? OnActionRule(animator, animator->GetActiveRule()) : igdeUndo::Ref();
 	}
 	
-	virtual igdeUndo *OnActionRule( aeAnimator *animator, aeRule *rule ) = 0;
+	virtual igdeUndo::Ref OnActionRule(aeAnimator *animator, aeRule *rule) = 0;
 	
-	virtual void Update( const aeAnimator &animator ){
-		if( animator.GetActiveRule() ){
-			UpdateRule( animator, *animator.GetActiveRule() );
+	void Update(const aeAnimator &animator) override{
+		if(animator.GetActiveRule()){
+			UpdateRule(animator, *animator.GetActiveRule());
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void UpdateRule( const aeAnimator &, const aeRule & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void UpdateRule(const aeAnimator &, const aeRule &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -1002,13 +1004,14 @@ class cActionRuleAdd : public cActionBase{
 	const deAnimatorRuleVisitorIdentify::eRuleTypes pType;
 	const bool pInsert;
 public:
-	cActionRuleAdd( aeWindowMain &window, deAnimatorRuleVisitorIdentify::eRuleTypes type,
-		bool insert, const char *text, igdeIcon *icon, const char *description ) :
-	cActionBase( window, text, icon, description ), pType( type ), pInsert( insert ){}
+	typedef deTObjectReference<cActionRuleAdd> Ref;
+	cActionRuleAdd(aeWindowMain &window, deAnimatorRuleVisitorIdentify::eRuleTypes type,
+		bool insert, const char *text, igdeIcon *icon, const char *description) :
+	cActionBase(window, text, icon, description), pType(type), pInsert(insert){}
 	
-	virtual igdeUndo *OnAction( aeAnimator* ){
-		pWindow.CreateRule( pType, pInsert, false );
-		return NULL;
+	igdeUndo::Ref OnAction(aeAnimator*) override{
+		pWindow.CreateRule(pType, pInsert, false);
+		return {};
 	}
 };
 
@@ -1016,98 +1019,102 @@ class cActionRuleAddIntoGroup : public cActionBaseRule{
 	const deAnimatorRuleVisitorIdentify::eRuleTypes pType;
 	const bool pInsert;
 public:
-	cActionRuleAddIntoGroup( aeWindowMain &window, deAnimatorRuleVisitorIdentify::eRuleTypes type,
-		bool insert, const char *text, igdeIcon *icon, const char *description ) :
-	cActionBaseRule( window, text, icon, description ), pType( type ), pInsert( insert ){}
+	typedef deTObjectReference<cActionRuleAddIntoGroup> Ref;
+	cActionRuleAddIntoGroup(aeWindowMain &window, deAnimatorRuleVisitorIdentify::eRuleTypes type,
+		bool insert, const char *text, igdeIcon *icon, const char *description) :
+	cActionBaseRule(window, text, icon, description), pType(type), pInsert(insert){}
 	
-	virtual igdeUndo *OnActionRule( aeAnimator*, aeRule *rule ){
-		if( rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup ){
-			pWindow.CreateRule( pType, pInsert, true );
+	virtual igdeUndo::Ref OnActionRule(aeAnimator*, aeRule *rule){
+		if(rule->GetType() == deAnimatorRuleVisitorIdentify::ertGroup){
+			pWindow.CreateRule(pType, pInsert, true);
 		}
-		return NULL;
+		return {};
 	}
 	
-	virtual void UpdateRule( const aeAnimator & , const aeRule &rule ){
-		SetEnabled( rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup );
+	void UpdateRule(const aeAnimator & , const aeRule &rule) override{
+		SetEnabled(rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup);
 	}
 };
 
 class cActionRuleRemove : public cActionBaseRule{
 public:
-	cActionRuleRemove( aeWindowMain &window ) : cActionBaseRule( window, "Remove",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove rule", deInputEvent::ekcR ){}
+	typedef deTObjectReference<cActionRuleRemove> Ref;
+	cActionRuleRemove(aeWindowMain &window) : cActionBaseRule(window, "@Animator.Action.Rule.Remove",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.Action.Rule.Remove.ToolTip", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionRule( aeAnimator *animator, aeRule *rule ){
+	virtual igdeUndo::Ref OnActionRule(aeAnimator *animator, aeRule *rule){
 		aeRuleGroup * const parentGroup = rule->GetParentGroup();
 		
-		if( parentGroup ){
-			return new aeURuleGroupRemoveRule( parentGroup, rule );
+		if(parentGroup){
+			return aeURuleGroupRemoveRule::Ref::New(parentGroup, rule);
 			
 		}else{
-			return new aeURemoveRule( animator, rule );
+			return aeURemoveRule::Ref::New(animator, rule);
 		}
 	}
 };
 
 class cActionRuleUp : public cActionBaseRule{
 public:
-	cActionRuleUp( aeWindowMain &window ) : cActionBaseRule( window, "Move Up",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiUp ),
-		"Move rule up", deInputEvent::ekcU ){}
+	typedef deTObjectReference<cActionRuleUp> Ref;
+	cActionRuleUp(aeWindowMain &window) : cActionBaseRule(window, "@Animator.Action.Rule.MoveUp",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
+		"@Animator.Action.Rule.MoveUp.ToolTip", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionRule( aeAnimator *animator, aeRule *rule ){
+	virtual igdeUndo::Ref OnActionRule(aeAnimator *animator, aeRule *rule){
 		aeRuleGroup * const parentGroup = rule->GetParentGroup();
 		
-		if( parentGroup ){
-			const int index = parentGroup->GetRules().IndexOf( rule );
-			return index > 0 ? new aeURuleGroupMoveRuleUp( parentGroup, rule ) : NULL;
+		if(parentGroup){
+			const int index = parentGroup->GetRules().IndexOf(rule);
+			return index > 0 ? aeURuleGroupMoveRuleUp::Ref::New(parentGroup, rule) : aeURuleGroupMoveRuleUp::Ref();
 			
 		}else{
-			const int index = animator->GetRules().IndexOf( rule );
-			return index > 0 ? new aeUMoveRuleUp( animator, rule ) : NULL;
+			const int index = animator->GetRules().IndexOf(rule);
+			return index > 0 ? aeUMoveRuleUp::Ref::New(animator, rule) : aeUMoveRuleUp::Ref();
 		}
 	}
 	
-	virtual void UpdateRule( const aeAnimator &animator, const aeRule &rule ){
+	void UpdateRule(const aeAnimator &animator, const aeRule &rule) override{
 		const aeRuleGroup * const parentGroup = rule.GetParentGroup();
 		
-		if( parentGroup ){
-			SetEnabled( parentGroup->GetRules().IndexOf( ( aeRule* )&rule ) > 0 );
+		if(parentGroup){
+			SetEnabled(parentGroup->GetRules().IndexOf((aeRule*)&rule) > 0);
 			
 		}else{
-			SetEnabled( animator.GetRules().IndexOf( ( aeRule* )&rule ) > 0 );
+			SetEnabled(animator.GetRules().IndexOf((aeRule*)&rule) > 0);
 		}
 	}
 };
 
 class cActionRuleDown : public cActionBaseRule{
 public:
-	cActionRuleDown( aeWindowMain &window ) : cActionBaseRule( window, "Move Down",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiDown ),
-		"Move rule down", deInputEvent::ekcD ){}
+	typedef deTObjectReference<cActionRuleDown> Ref;
+	cActionRuleDown(aeWindowMain &window) : cActionBaseRule(window, "@Animator.Action.Rule.MoveDown",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
+		"@Animator.Action.Rule.MoveDown.ToolTip", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionRule( aeAnimator *animator, aeRule *rule ){
+	virtual igdeUndo::Ref OnActionRule(aeAnimator *animator, aeRule *rule){
 		aeRuleGroup * const pg = rule->GetParentGroup();
 		
-		if( pg ){
-			const int index = pg->GetRules().IndexOf( rule );
-			return index < pg->GetRules().GetCount() - 1 ? new aeURuleGroupMoveRuleDown( pg, rule ) : NULL;
+		if(pg){
+			const int index = pg->GetRules().IndexOf(rule);
+			return index < pg->GetRules().GetCount() - 1 ? aeURuleGroupMoveRuleDown::Ref::New(pg, rule) : aeURuleGroupMoveRuleDown::Ref();
 			
 		}else{
-			const int index = animator->GetRules().IndexOf( rule );
-			return index < animator->GetRules().GetCount() - 1 ? new aeUMoveRuleDown( animator, rule ) : NULL;
+			const int index = animator->GetRules().IndexOf(rule);
+			return index < animator->GetRules().GetCount() - 1 ? aeUMoveRuleDown::Ref::New(animator, rule) : aeUMoveRuleDown::Ref();
 		}
 	}
 	
-	virtual void UpdateRule( const aeAnimator &animator, const aeRule &rule ){
+	void UpdateRule(const aeAnimator &animator, const aeRule &rule) override{
 		const aeRuleGroup * const pg = rule.GetParentGroup();
 		
-		if( pg ){
-			SetEnabled( pg->GetRules().IndexOf( ( aeRule* )&rule ) < pg->GetRules().GetCount() - 1 );
+		if(pg){
+			SetEnabled(pg->GetRules().IndexOf((aeRule*)&rule) < pg->GetRules().GetCount() - 1);
 			
 		}else{
-			SetEnabled( animator.GetRules().IndexOf( ( aeRule* )&rule ) < animator.GetRules().GetCount() - 1 );
+			SetEnabled(animator.GetRules().IndexOf((aeRule*)&rule) < animator.GetRules().GetCount() - 1);
 		}
 	}
 };
@@ -1120,353 +1127,353 @@ public:
 //////////////////////
 
 void aeWindowMain::pLoadIcons(){
-	pIconRuleAnimation.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_animation.png" ) );
-	pIconRuleAnimationDifference.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_animation_difference.png" ) );
-	pIconRuleAnimationSelect.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_animation.png" ) );
-	pIconRuleBoneTransformator.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_bone_transformator.png" ) );
-	pIconRuleForeignState.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_foreign_state.png" ) );
-	pIconRuleGroup.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_group.png" ) );
-	pIconRuleInverseKinematic.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_inverse_kinematic.png" ) );
-	pIconRuleLimit.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_limit.png" ) );
-	pIconRuleStateManipulator.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_state_manipulator.png" ) );
-	pIconRuleStateSnapshot.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_state_snapshot.png" ) );
-	pIconRuleSubAnimator.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_sub_animator.png" ) );
-	pIconRuleTrackTo.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_track_to.png" ) );
-	pIconRuleMirror.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_mirror.png" ) );
+	pIconRuleAnimation = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_animation.png");
+	pIconRuleAnimationDifference = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_animation_difference.png");
+	pIconRuleAnimationSelect = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_animation.png");
+	pIconRuleBoneTransformator = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_bone_transformator.png");
+	pIconRuleForeignState = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_foreign_state.png");
+	pIconRuleGroup = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_group.png");
+	pIconRuleInverseKinematic = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_inverse_kinematic.png");
+	pIconRuleLimit = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_limit.png");
+	pIconRuleStateManipulator = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_state_manipulator.png");
+	pIconRuleStateSnapshot = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_state_snapshot.png");
+	pIconRuleSubAnimator = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_sub_animator.png");
+	pIconRuleTrackTo = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_track_to.png");
+	pIconRuleMirror = igdeIcon::LoadPNG(GetEditorModule(), "icons/rule_mirror.png");
 }
 
 void aeWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver( new cActionFileNew( *this ) );
-	pActionFileOpen.TakeOver( new cActionFileOpen( *this ) );
-	pActionFileSave.TakeOver( new cActionFileSave( *this ) );
-	pActionFileSaveAs.TakeOver( new cActionFileSaveAs( *this ) );
+	pActionFileNew = cActionFileNew::Ref::New(*this);
+	pActionFileOpen = cActionFileOpen::Ref::New(*this);
+	pActionFileSave = cActionFileSave::Ref::New(*this);
+	pActionFileSaveAs = cActionFileSaveAs::Ref::New(*this);
 	
-	pActionEditUndo.TakeOver( new igdeActionUndo( environment ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( environment ) );
+	pActionEditUndo = igdeActionUndo::Ref::New(environment);
+	pActionEditRedo = igdeActionRedo::Ref::New(environment);
 	
-	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
-	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
-	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
+	pActionEditCut = cActionEditCut::Ref::New(*this);
+	pActionEditCopy = cActionEditCopy::Ref::New(*this);
+	pActionEditPaste = cActionEditPaste::Ref::New(*this);
 	
-	pActionEditLocoEnabled.TakeOver( new cActionEditLocoEnabled( *this ) );
-	pActionEditWBTracking.TakeOver( new cActionEditWBEnabled( *this ) );
-	pActionEditShowBones.TakeOver( new cActionEditShowBones( *this ) );
-	pActionEditDDBoneSize.TakeOver( new cActionEditDDBoneSize( *this ) );
+	pActionEditLocoEnabled = cActionEditLocoEnabled::Ref::New(*this);
+	pActionEditWBTracking = cActionEditWBEnabled::Ref::New(*this);
+	pActionEditShowBones = cActionEditShowBones::Ref::New(*this);
+	pActionEditDDBoneSize = cActionEditDDBoneSize::Ref::New(*this);
 	
-	pActionControllerAdd.TakeOver( new cActionControllerAdd( *this ) );
-	pActionControllerDuplicate.TakeOver( new cActionControllerDuplicate( *this ) );
-	pActionControllerRemove.TakeOver( new cActionControllerRemove( *this ) );
-	pActionControllerUp.TakeOver( new cActionControllerUp( *this ) );
-	pActionControllerDown.TakeOver( new cActionControllerDown( *this ) );
+	pActionControllerAdd = cActionControllerAdd::Ref::New(*this);
+	pActionControllerDuplicate = cActionControllerDuplicate::Ref::New(*this);
+	pActionControllerRemove = cActionControllerRemove::Ref::New(*this);
+	pActionControllerUp = cActionControllerUp::Ref::New(*this);
+	pActionControllerDown = cActionControllerDown::Ref::New(*this);
 	
-	pActionLinkAdd.TakeOver( new cActionLinkAdd( *this ) );
-	pActionLinkDuplicate.TakeOver( new cActionLinkDuplicate( *this ) );
-	pActionLinkRemove.TakeOver( new cActionLinkRemove( *this ) );
-	pActionLinkRemoveUnused.TakeOver( new cActionLinkRemoveUnused( *this ) );
+	pActionLinkAdd = cActionLinkAdd::Ref::New(*this);
+	pActionLinkDuplicate = cActionLinkDuplicate::Ref::New(*this);
+	pActionLinkRemove = cActionLinkRemove::Ref::New(*this);
+	pActionLinkRemoveUnused = cActionLinkRemoveUnused::Ref::New(*this);
 	
-	pActionRuleAddAnim.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
-		false, "Animation", pIconRuleAnimation, "Add an animation rule" ) );
-	pActionRuleAddAnimDiff.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimationDifference,
-		false, "Animation Difference", pIconRuleAnimationDifference, "Add an animation difference rule" ) );
-	pActionRuleAddAnimSelect.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimationSelect,
-		false, "Animation Select", pIconRuleAnimationSelect, "Add an animation select rule" ) );
-	pActionRuleAddBoneRot.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertBoneTransformator,
-		false, "Bone Transformator", pIconRuleBoneTransformator, "Add a bone transformator rule" ) );
-	pActionRuleAddInvKin.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertInverseKinematic,
-		false, "Inverse Kinematic", pIconRuleInverseKinematic, "Add an inverse kinematic rule" ) );
-	pActionRuleAddStateManip.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertStateManipulator,
-		false, "State Manipulator", pIconRuleStateManipulator, "Add a state manipulator rule" ) );
-	pActionRuleAddStateSnap.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertStateSnapshot,
-		false, "State Snapshot", pIconRuleStateSnapshot, "Add a state snapshot rule" ) );
-	pActionRuleAddForeignState.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertForeignState,
-		false, "Foreign State", pIconRuleForeignState, "Add a foreign state rule" ) );
-	pActionRuleAddGroup.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertGroup,
-		false, "Group", pIconRuleGroup, "Add a group rule" ) );
-	pActionRuleAddSubAnimator.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertSubAnimator,
-		false, "Sub Animator", pIconRuleSubAnimator, "Add a sub animator rule" ) );
-	pActionRuleAddTrackTo.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertTrackTo,
-		false, "Track To", pIconRuleTrackTo, "Add a track to rule" ) );
-	pActionRuleAddLimit.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertLimit,
-		false, "Limit", pIconRuleLimit, "Add a limit rule" ) );
-	pActionRuleAddMirror.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertMirror,
-		false, "Mirror", pIconRuleMirror, "Add a mirror rule" ) );
+	pActionRuleAddAnim = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimation,
+		false, "@Animator.Action.Rule.Animation", pIconRuleAnimation, "@Animator.Action.Rule.Animation.ToolTip");
+	pActionRuleAddAnimDiff = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimationDifference,
+		false, "@Animator.Action.Rule.AnimationDifference", pIconRuleAnimationDifference, "@Animator.Action.Rule.AnimationDifference.ToolTip");
+	pActionRuleAddAnimSelect = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimationSelect,
+		false, "@Animator.Action.Rule.AnimationSelect", pIconRuleAnimationSelect, "@Animator.Action.Rule.AnimationSelect.ToolTip");
+	pActionRuleAddBoneRot = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertBoneTransformator,
+		false, "@Animator.Action.Rule.BoneTransformator", pIconRuleBoneTransformator, "@Animator.Action.Rule.BoneTransformator.ToolTip");
+	pActionRuleAddInvKin = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertInverseKinematic,
+		false, "@Animator.Action.Rule.InverseKinematic", pIconRuleInverseKinematic, "@Animator.Action.Rule.InverseKinematic.ToolTip");
+	pActionRuleAddStateManip = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertStateManipulator,
+		false, "@Animator.Action.Rule.StateManipulator", pIconRuleStateManipulator, "@Animator.Action.Rule.StateManipulator.ToolTip");
+	pActionRuleAddStateSnap = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertStateSnapshot,
+		false, "@Animator.Action.Rule.StateSnapshot", pIconRuleStateSnapshot, "@Animator.Action.Rule.StateSnapshot.ToolTip");
+	pActionRuleAddForeignState = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertForeignState,
+		false, "@Animator.Action.Rule.ForeignState", pIconRuleForeignState, "@Animator.Action.Rule.ForeignState.ToolTip");
+	pActionRuleAddGroup = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertGroup,
+		false, "@Animator.Action.Rule.Group", pIconRuleGroup, "@Animator.Action.Rule.Group.ToolTip");
+	pActionRuleAddSubAnimator = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertSubAnimator,
+		false, "@Animator.Action.Rule.SubAnimator", pIconRuleSubAnimator, "@Animator.Action.Rule.SubAnimator.ToolTip");
+	pActionRuleAddTrackTo = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertTrackTo,
+		false, "@Animator.Action.Rule.TrackTo", pIconRuleTrackTo, "@Animator.Action.Rule.TrackTo.ToolTip");
+	pActionRuleAddLimit = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertLimit,
+		false, "@Animator.Action.Rule.Limit", pIconRuleLimit, "@Animator.Action.Rule.Limit.ToolTip");
+	pActionRuleAddMirror = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertMirror,
+		false, "@Animator.Action.Rule.Mirror", pIconRuleMirror, "@Animator.Action.Rule.Mirror.ToolTip");
 	
-	pActionRuleAddIntoGroupAnim.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
-		false, "Animation", pIconRuleAnimation, "Add an animation rule" ) );
-	pActionRuleAddIntoGroupAnimDiff.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertAnimationDifference,
-		false, "Animation Difference", pIconRuleAnimationDifference, "Add an animation difference rule" ) );
-	pActionRuleAddIntoGroupAnimSelect.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertAnimationSelect,
-		false, "Animation Select", pIconRuleAnimationSelect, "Add an animation select rule" ) );
-	pActionRuleAddIntoGroupBoneRot.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertBoneTransformator,
-		false, "Bone Transformator", pIconRuleBoneTransformator, "Add a bone transformator rule" ) );
-	pActionRuleAddIntoGroupInvKin.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertInverseKinematic,
-		false, "Inverse Kinematic", pIconRuleInverseKinematic, "Add an inverse kinematic rule" ) );
-	pActionRuleAddIntoGroupStateManip.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertStateManipulator,
-		false, "State Manipulator", pIconRuleStateManipulator, "Add a state manipulator rule" ) );
-	pActionRuleAddIntoGroupStateSnap.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertStateSnapshot,
-		false, "State Snapshot", pIconRuleStateSnapshot, "Add a state snapshot rule" ) );
-	pActionRuleAddIntoGroupForeignState.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertForeignState,
-		false, "Foreign State", pIconRuleForeignState, "Add a foreign state rule" ) );
-	pActionRuleAddIntoGroupGroup.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertGroup,
-		false, "Group", pIconRuleGroup, "Add a group rule" ) );
-	pActionRuleAddIntoGroupSubAnimator.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertSubAnimator,
-		false, "Sub Animator", pIconRuleSubAnimator, "Add a sub animator rule" ) );
-	pActionRuleAddIntoGroupTrackTo.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertTrackTo,
-		false, "Track To", pIconRuleTrackTo, "Add a track to rule" ) );
-	pActionRuleAddIntoGroupLimit.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertLimit,
-		false, "Limit", pIconRuleLimit, "Add a limit rule" ) );
-	pActionRuleAddIntoGroupMirror.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertMirror,
-		false, "Mirror", pIconRuleMirror, "Add a mirror rule" ) );
+	pActionRuleAddIntoGroupAnim = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimation,
+		false, "@Animator.Action.Rule.Animation", pIconRuleAnimation, "@Animator.Action.Rule.Animation.ToolTip");
+	pActionRuleAddIntoGroupAnimDiff = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimationDifference,
+		false, "@Animator.Action.Rule.AnimationDifference", pIconRuleAnimationDifference, "@Animator.Action.Rule.AnimationDifference.ToolTip");
+	pActionRuleAddIntoGroupAnimSelect = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimationSelect,
+		false, "@Animator.Action.Rule.AnimationSelect", pIconRuleAnimationSelect, "@Animator.Action.Rule.AnimationSelect.ToolTip");
+	pActionRuleAddIntoGroupBoneRot = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertBoneTransformator,
+		false, "@Animator.Action.Rule.BoneTransformator", pIconRuleBoneTransformator, "@Animator.Action.Rule.BoneTransformator.ToolTip");
+	pActionRuleAddIntoGroupInvKin = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertInverseKinematic,
+		false, "@Animator.Action.Rule.InverseKinematic", pIconRuleInverseKinematic, "@Animator.Action.Rule.InverseKinematic.ToolTip");
+	pActionRuleAddIntoGroupStateManip = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertStateManipulator,
+		false, "@Animator.Action.Rule.StateManipulator", pIconRuleStateManipulator, "@Animator.Action.Rule.StateManipulator.ToolTip");
+	pActionRuleAddIntoGroupStateSnap = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertStateSnapshot,
+		false, "@Animator.Action.Rule.StateSnapshot", pIconRuleStateSnapshot, "@Animator.Action.Rule.StateSnapshot.ToolTip");
+	pActionRuleAddIntoGroupForeignState = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertForeignState,
+		false, "@Animator.Action.Rule.ForeignState", pIconRuleForeignState, "@Animator.Action.Rule.ForeignState.ToolTip");
+	pActionRuleAddIntoGroupGroup = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertGroup,
+		false, "@Animator.Action.Rule.Group", pIconRuleGroup, "@Animator.Action.Rule.Group.ToolTip");
+	pActionRuleAddIntoGroupSubAnimator = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertSubAnimator,
+		false, "@Animator.Action.Rule.SubAnimator", pIconRuleSubAnimator, "@Animator.Action.Rule.SubAnimator.ToolTip");
+	pActionRuleAddIntoGroupTrackTo = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertTrackTo,
+		false, "@Animator.Action.Rule.TrackTo", pIconRuleTrackTo, "@Animator.Action.Rule.TrackTo.ToolTip");
+	pActionRuleAddIntoGroupLimit = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertLimit,
+		false, "@Animator.Action.Rule.Limit", pIconRuleLimit, "@Animator.Action.Rule.Limit.ToolTip");
+	pActionRuleAddIntoGroupMirror = cActionRuleAddIntoGroup::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertMirror,
+		false, "@Animator.Action.Rule.Mirror", pIconRuleMirror, "@Animator.Action.Rule.Mirror.ToolTip");
 	
-	pActionRuleInsertAnim.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
-		true, "Animation", pIconRuleAnimation, "Insert an animation rule" ) );
-	pActionRuleInsertAnimDiff.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimationDifference,
-		true, "Animation Difference", pIconRuleAnimationDifference, "Insert an animation difference rule" ) );
-	pActionRuleInsertAnimSelect.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimationSelect,
-		true, "Animation Select", pIconRuleAnimationSelect, "Insert an animation select rule" ) );
-	pActionRuleInsertBoneRot.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertBoneTransformator,
-		true, "Bone Transformator", pIconRuleBoneTransformator, "Insert a bone transformator rule" ) );
-	pActionRuleInsertInvKin.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertInverseKinematic,
-		true, "Inverse Kinematic", pIconRuleInverseKinematic, "Insert an inverse kinematic rule" ) );
-	pActionRuleInsertStateManip.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertStateManipulator,
-		true, "State Manipulator", pIconRuleStateManipulator, "Insert a state manipulator rule" ) );
-	pActionRuleInsertStateSnap.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertStateSnapshot,
-		true, "State Snapshot", pIconRuleStateSnapshot, "Insert a state snapshot rule" ) );
-	pActionRuleInsertForeignState.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertForeignState,
-		true, "Foreign State", pIconRuleForeignState, "Insert a foreign state rule" ) );
-	pActionRuleInsertGroup.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertGroup,
-		true, "Group", pIconRuleGroup, "Insert a group rule" ) );
-	pActionRuleInsertSubAnimator.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertSubAnimator,
-		true, "Sub Animator", pIconRuleSubAnimator, "Insert a sub animator rule" ) );
-	pActionRuleInsertTrackTo.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertTrackTo,
-		true, "Track To", pIconRuleTrackTo, "Insert a track to rule" ) );
-	pActionRuleInsertLimit.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertLimit,
-		true, "Limit", pIconRuleLimit, "Insert a limit rule" ) );
-	pActionRuleInsertMirror.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertMirror,
-		true, "Mirror", pIconRuleMirror, "Insert a mirror rule" ) );
+	pActionRuleInsertAnim = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimation,
+		true, "@Animator.Action.Rule.Animation", pIconRuleAnimation, "@Animator.Action.Rule.Animation.Insert.ToolTip");
+	pActionRuleInsertAnimDiff = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimationDifference,
+		true, "@Animator.Action.Rule.AnimationDifference", pIconRuleAnimationDifference, "@Animator.Action.Rule.AnimationDifference.Insert.ToolTip");
+	pActionRuleInsertAnimSelect = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertAnimationSelect,
+		true, "@Animator.Action.Rule.AnimationSelect", pIconRuleAnimationSelect, "@Animator.Action.Rule.AnimationSelect.Insert.ToolTip");
+	pActionRuleInsertBoneRot = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertBoneTransformator,
+		true, "@Animator.Action.Rule.BoneTransformator", pIconRuleBoneTransformator, "@Animator.Action.Rule.BoneTransformator.Insert.ToolTip");
+	pActionRuleInsertInvKin = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertInverseKinematic,
+		true, "@Animator.Action.Rule.InverseKinematic", pIconRuleInverseKinematic, "@Animator.Action.Rule.InverseKinematic.Insert.ToolTip");
+	pActionRuleInsertStateManip = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertStateManipulator,
+		true, "@Animator.Action.Rule.StateManipulator", pIconRuleStateManipulator, "@Animator.Action.Rule.StateManipulator.Insert.ToolTip");
+	pActionRuleInsertStateSnap = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertStateSnapshot,
+		true, "@Animator.Action.Rule.StateSnapshot", pIconRuleStateSnapshot, "@Animator.Action.Rule.StateSnapshot.Insert.ToolTip");
+	pActionRuleInsertForeignState = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertForeignState,
+		true, "@Animator.Action.Rule.ForeignState", pIconRuleForeignState, "@Animator.Action.Rule.ForeignState.Insert.ToolTip");
+	pActionRuleInsertGroup = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertGroup,
+		true, "@Animator.Action.Rule.Group", pIconRuleGroup, "@Animator.Action.Rule.Group.Insert.ToolTip");
+	pActionRuleInsertSubAnimator = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertSubAnimator,
+		true, "@Animator.Action.Rule.SubAnimator", pIconRuleSubAnimator, "@Animator.Action.Rule.SubAnimator.Insert.ToolTip");
+	pActionRuleInsertTrackTo = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertTrackTo,
+		true, "@Animator.Action.Rule.TrackTo", pIconRuleTrackTo, "@Animator.Action.Rule.TrackTo.Insert.ToolTip");
+	pActionRuleInsertLimit = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertLimit,
+		true, "@Animator.Action.Rule.Limit", pIconRuleLimit, "@Animator.Action.Rule.Limit.Insert.ToolTip");
+	pActionRuleInsertMirror = cActionRuleAdd::Ref::New(*this, deAnimatorRuleVisitorIdentify::ertMirror,
+		true, "@Animator.Action.Rule.Mirror", pIconRuleMirror, "@Animator.Action.Rule.Mirror.Insert.ToolTip");
 	
-	pActionRuleRemove.TakeOver( new cActionRuleRemove( *this ) );
-	pActionRuleUp.TakeOver( new cActionRuleUp( *this ) );
-	pActionRuleDown.TakeOver( new cActionRuleDown( *this ) );
+	pActionRuleRemove = cActionRuleRemove::Ref::New(*this);
+	pActionRuleUp = cActionRuleUp::Ref::New(*this);
+	pActionRuleDown = cActionRuleDown::Ref::New(*this);
 	
 	
 	// register for updating
-	AddUpdateAction( pActionFileNew );
-	AddUpdateAction( pActionFileOpen );
-	AddUpdateAction( pActionFileSave );
-	AddUpdateAction( pActionFileSaveAs );
+	AddUpdateAction(pActionFileNew);
+	AddUpdateAction(pActionFileOpen);
+	AddUpdateAction(pActionFileSave);
+	AddUpdateAction(pActionFileSaveAs);
 	
-	AddUpdateAction( pActionEditUndo );
-	AddUpdateAction( pActionEditRedo );
+	AddUpdateAction(pActionEditUndo);
+	AddUpdateAction(pActionEditRedo);
 	
-	AddUpdateAction( pActionEditCut );
-	AddUpdateAction( pActionEditCopy );
-	AddUpdateAction( pActionEditPaste );
-	AddUpdateAction( pActionEditLocoEnabled );
-	AddUpdateAction( pActionEditWBTracking );
-	AddUpdateAction( pActionEditShowBones );
-	AddUpdateAction( pActionEditDDBoneSize );
+	AddUpdateAction(pActionEditCut);
+	AddUpdateAction(pActionEditCopy);
+	AddUpdateAction(pActionEditPaste);
+	AddUpdateAction(pActionEditLocoEnabled);
+	AddUpdateAction(pActionEditWBTracking);
+	AddUpdateAction(pActionEditShowBones);
+	AddUpdateAction(pActionEditDDBoneSize);
 	
-	AddUpdateAction( pActionControllerAdd );
-	AddUpdateAction( pActionControllerDuplicate );
-	AddUpdateAction( pActionControllerRemove );
-	AddUpdateAction( pActionControllerUp );
-	AddUpdateAction( pActionControllerDown );
+	AddUpdateAction(pActionControllerAdd);
+	AddUpdateAction(pActionControllerDuplicate);
+	AddUpdateAction(pActionControllerRemove);
+	AddUpdateAction(pActionControllerUp);
+	AddUpdateAction(pActionControllerDown);
 	
-	AddUpdateAction( pActionLinkAdd );
-	AddUpdateAction( pActionLinkDuplicate );
-	AddUpdateAction( pActionLinkRemove );
-	AddUpdateAction( pActionLinkRemoveUnused );
+	AddUpdateAction(pActionLinkAdd);
+	AddUpdateAction(pActionLinkDuplicate);
+	AddUpdateAction(pActionLinkRemove);
+	AddUpdateAction(pActionLinkRemoveUnused);
 	
-	AddUpdateAction( pActionRuleAddAnim );
-	AddUpdateAction( pActionRuleAddAnimDiff );
-	AddUpdateAction( pActionRuleAddAnimSelect );
-	AddUpdateAction( pActionRuleAddBoneRot );
-	AddUpdateAction( pActionRuleAddInvKin );
-	AddUpdateAction( pActionRuleAddStateManip );
-	AddUpdateAction( pActionRuleAddStateSnap );
-	AddUpdateAction( pActionRuleAddForeignState );
-	AddUpdateAction( pActionRuleAddGroup );
-	AddUpdateAction( pActionRuleAddSubAnimator );
-	AddUpdateAction( pActionRuleAddTrackTo );
-	AddUpdateAction( pActionRuleAddLimit );
-	AddUpdateAction( pActionRuleAddMirror );
+	AddUpdateAction(pActionRuleAddAnim);
+	AddUpdateAction(pActionRuleAddAnimDiff);
+	AddUpdateAction(pActionRuleAddAnimSelect);
+	AddUpdateAction(pActionRuleAddBoneRot);
+	AddUpdateAction(pActionRuleAddInvKin);
+	AddUpdateAction(pActionRuleAddStateManip);
+	AddUpdateAction(pActionRuleAddStateSnap);
+	AddUpdateAction(pActionRuleAddForeignState);
+	AddUpdateAction(pActionRuleAddGroup);
+	AddUpdateAction(pActionRuleAddSubAnimator);
+	AddUpdateAction(pActionRuleAddTrackTo);
+	AddUpdateAction(pActionRuleAddLimit);
+	AddUpdateAction(pActionRuleAddMirror);
 	
-	AddUpdateAction( pActionRuleInsertAnim );
-	AddUpdateAction( pActionRuleInsertAnimDiff );
-	AddUpdateAction( pActionRuleInsertAnimSelect );
-	AddUpdateAction( pActionRuleInsertBoneRot );
-	AddUpdateAction( pActionRuleInsertInvKin );
-	AddUpdateAction( pActionRuleInsertStateManip );
-	AddUpdateAction( pActionRuleInsertStateSnap );
-	AddUpdateAction( pActionRuleInsertForeignState );
-	AddUpdateAction( pActionRuleInsertGroup );
-	AddUpdateAction( pActionRuleInsertSubAnimator );
-	AddUpdateAction( pActionRuleInsertTrackTo );
-	AddUpdateAction( pActionRuleInsertLimit );
-	AddUpdateAction( pActionRuleInsertMirror );
+	AddUpdateAction(pActionRuleInsertAnim);
+	AddUpdateAction(pActionRuleInsertAnimDiff);
+	AddUpdateAction(pActionRuleInsertAnimSelect);
+	AddUpdateAction(pActionRuleInsertBoneRot);
+	AddUpdateAction(pActionRuleInsertInvKin);
+	AddUpdateAction(pActionRuleInsertStateManip);
+	AddUpdateAction(pActionRuleInsertStateSnap);
+	AddUpdateAction(pActionRuleInsertForeignState);
+	AddUpdateAction(pActionRuleInsertGroup);
+	AddUpdateAction(pActionRuleInsertSubAnimator);
+	AddUpdateAction(pActionRuleInsertTrackTo);
+	AddUpdateAction(pActionRuleInsertLimit);
+	AddUpdateAction(pActionRuleInsertMirror);
 	
-	AddUpdateAction( pActionRuleRemove );
-	AddUpdateAction( pActionRuleUp );
-	AddUpdateAction( pActionRuleDown );
+	AddUpdateAction(pActionRuleRemove);
+	AddUpdateAction(pActionRuleUp);
+	AddUpdateAction(pActionRuleDown);
 }
 
 void aeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBFile = igdeToolBar::Ref::New(GetEnvironment());
 	
-	helper.ToolBarButton( pTBFile, pActionFileNew );
-	helper.ToolBarButton( pTBFile, pActionFileOpen );
-	helper.ToolBarButton( pTBFile, pActionFileSave );
+	helper.ToolBarButton(pTBFile, pActionFileNew);
+	helper.ToolBarButton(pTBFile, pActionFileOpen);
+	helper.ToolBarButton(pTBFile, pActionFileSave);
 	
-	AddSharedToolBar( pTBFile );
+	AddSharedToolBar(pTBFile);
 }
 
 void aeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBEdit = igdeToolBar::Ref::New(GetEnvironment());
 	
-	helper.ToolBarButton( pTBEdit, pActionEditUndo );
-	helper.ToolBarButton( pTBEdit, pActionEditRedo );
+	helper.ToolBarButton(pTBEdit, pActionEditUndo);
+	helper.ToolBarButton(pTBEdit, pActionEditRedo);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditCut );
-	helper.ToolBarButton( pTBEdit, pActionEditCopy );
-	helper.ToolBarButton( pTBEdit, pActionEditPaste );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditCut);
+	helper.ToolBarButton(pTBEdit, pActionEditCopy);
+	helper.ToolBarButton(pTBEdit, pActionEditPaste);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddAnim );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddAnimDiff );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddAnimSelect );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddBoneRot );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddInvKin );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddStateManip );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddStateSnap );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddForeignState );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddGroup );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddSubAnimator );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddTrackTo );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddLimit );
-	helper.ToolBarButton( pTBEdit, pActionRuleAddMirror );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddAnim);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddAnimDiff);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddAnimSelect);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddBoneRot);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddInvKin);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddStateManip);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddStateSnap);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddForeignState);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddGroup);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddSubAnimator);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddTrackTo);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddLimit);
+	helper.ToolBarButton(pTBEdit, pActionRuleAddMirror);
 	
-	AddSharedToolBar( pTBEdit );
+	AddSharedToolBar(pTBEdit);
 }
 
 void aeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
-	pCreateMenuFile( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.File", deInputEvent::ekcF);
+	pCreateMenuFile(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
-	pCreateMenuEdit( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Edit", deInputEvent::ekcE);
+	pCreateMenuEdit(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Controller", deInputEvent::ekcC ) );
-	pCreateMenuController( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Controller", deInputEvent::ekcC);
+	pCreateMenuController(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Link", deInputEvent::ekcL ) );
-	pCreateMenuLink( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Link", deInputEvent::ekcL);
+	pCreateMenuLink(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Rule", deInputEvent::ekcR ) );
-	pCreateMenuRule( cascade );
-	AddSharedMenu( cascade );
+	cascade = igdeMenuCascade::Ref::New(env, "@Animator.Menu.Rule", deInputEvent::ekcR);
+	pCreateMenuRule(cascade);
+	AddSharedMenu(cascade);
 }
 
-void aeWindowMain::pCreateMenuFile( igdeMenuCascade &menu ){
+void aeWindowMain::pCreateMenuFile(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionFileNew );
-	helper.MenuCommand( menu, pActionFileOpen );
-	helper.MenuRecentFiles( menu, GetRecentFiles() );
-	helper.MenuCommand( menu, pActionFileSave );
-	helper.MenuCommand( menu, pActionFileSaveAs );
+	helper.MenuCommand(menu, pActionFileNew);
+	helper.MenuCommand(menu, pActionFileOpen);
+	helper.MenuRecentFiles(menu, GetRecentFiles());
+	helper.MenuCommand(menu, pActionFileSave);
+	helper.MenuCommand(menu, pActionFileSaveAs);
 }
 
-void aeWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
+void aeWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEditUndo );
-	helper.MenuCommand( menu, pActionEditRedo );
+	helper.MenuCommand(menu, pActionEditUndo);
+	helper.MenuCommand(menu, pActionEditRedo);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditCut );
-	helper.MenuCommand( menu, pActionEditCopy );
-	helper.MenuCommand( menu, pActionEditPaste );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditCut);
+	helper.MenuCommand(menu, pActionEditCopy);
+	helper.MenuCommand(menu, pActionEditPaste);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCheck( menu, pActionEditLocoEnabled );
-	helper.MenuCheck( menu, pActionEditWBTracking );
+	helper.MenuSeparator(menu);
+	helper.MenuCheck(menu, pActionEditLocoEnabled);
+	helper.MenuCheck(menu, pActionEditWBTracking);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCheck( menu, pActionEditShowBones );
-	helper.MenuCommand( menu, pActionEditDDBoneSize );
+	helper.MenuSeparator(menu);
+	helper.MenuCheck(menu, pActionEditShowBones);
+	helper.MenuCommand(menu, pActionEditDDBoneSize);
 }
 
-void aeWindowMain::pCreateMenuController( igdeMenuCascade &menu ){
+void aeWindowMain::pCreateMenuController(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionControllerAdd );
-	helper.MenuCommand( menu, pActionControllerDuplicate );
-	helper.MenuCommand( menu, pActionControllerRemove );
-	helper.MenuCommand( menu, pActionControllerUp );
-	helper.MenuCommand( menu, pActionControllerDown );
+	helper.MenuCommand(menu, pActionControllerAdd);
+	helper.MenuCommand(menu, pActionControllerDuplicate);
+	helper.MenuCommand(menu, pActionControllerRemove);
+	helper.MenuCommand(menu, pActionControllerUp);
+	helper.MenuCommand(menu, pActionControllerDown);
 }
 
-void aeWindowMain::pCreateMenuLink( igdeMenuCascade &menu ){
+void aeWindowMain::pCreateMenuLink(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionLinkAdd );
-	helper.MenuCommand( menu, pActionLinkDuplicate );
-	helper.MenuCommand( menu, pActionLinkRemove );
-	helper.MenuCommand( menu, pActionLinkRemoveUnused );
+	helper.MenuCommand(menu, pActionLinkAdd);
+	helper.MenuCommand(menu, pActionLinkDuplicate);
+	helper.MenuCommand(menu, pActionLinkRemove);
+	helper.MenuCommand(menu, pActionLinkRemoveUnused);
 }
 
-void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
+void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascadeReference subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
-	menu.AddChild( subMenu );
-	helper.MenuCommand( subMenu, pActionRuleAddAnim );
-	helper.MenuCommand( subMenu, pActionRuleAddAnimDiff );
-	helper.MenuCommand( subMenu, pActionRuleAddAnimSelect );
-	helper.MenuCommand( subMenu, pActionRuleAddBoneRot );
-	helper.MenuCommand( subMenu, pActionRuleAddInvKin );
-	helper.MenuCommand( subMenu, pActionRuleAddStateManip );
-	helper.MenuCommand( subMenu, pActionRuleAddStateSnap );
-	helper.MenuCommand( subMenu, pActionRuleAddForeignState );
-	helper.MenuCommand( subMenu, pActionRuleAddGroup );
-	helper.MenuCommand( subMenu, pActionRuleAddSubAnimator );
-	helper.MenuCommand( subMenu, pActionRuleAddTrackTo );
-	helper.MenuCommand( subMenu, pActionRuleAddLimit );
-	helper.MenuCommand( subMenu, pActionRuleAddMirror );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
+		GetEnvironment(), "@Animator.Menu.Rule.Add", deInputEvent::ekcA));
+	menu.AddChild(subMenu);
+	helper.MenuCommand(subMenu, pActionRuleAddAnim);
+	helper.MenuCommand(subMenu, pActionRuleAddAnimDiff);
+	helper.MenuCommand(subMenu, pActionRuleAddAnimSelect);
+	helper.MenuCommand(subMenu, pActionRuleAddBoneRot);
+	helper.MenuCommand(subMenu, pActionRuleAddInvKin);
+	helper.MenuCommand(subMenu, pActionRuleAddStateManip);
+	helper.MenuCommand(subMenu, pActionRuleAddStateSnap);
+	helper.MenuCommand(subMenu, pActionRuleAddForeignState);
+	helper.MenuCommand(subMenu, pActionRuleAddGroup);
+	helper.MenuCommand(subMenu, pActionRuleAddSubAnimator);
+	helper.MenuCommand(subMenu, pActionRuleAddTrackTo);
+	helper.MenuCommand(subMenu, pActionRuleAddLimit);
+	helper.MenuCommand(subMenu, pActionRuleAddMirror);
 	
-	subMenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Insert", deInputEvent::ekcI ) );
-	menu.AddChild( subMenu );
-	helper.MenuCommand( subMenu, pActionRuleInsertAnim );
-	helper.MenuCommand( subMenu, pActionRuleInsertAnimDiff );
-	helper.MenuCommand( subMenu, pActionRuleInsertAnimSelect );
-	helper.MenuCommand( subMenu, pActionRuleInsertBoneRot );
-	helper.MenuCommand( subMenu, pActionRuleInsertInvKin );
-	helper.MenuCommand( subMenu, pActionRuleInsertStateManip );
-	helper.MenuCommand( subMenu, pActionRuleInsertStateSnap );
-	helper.MenuCommand( subMenu, pActionRuleInsertForeignState );
-	helper.MenuCommand( subMenu, pActionRuleInsertGroup );
-	helper.MenuCommand( subMenu, pActionRuleInsertSubAnimator );
-	helper.MenuCommand( subMenu, pActionRuleInsertTrackTo );
-	helper.MenuCommand( subMenu, pActionRuleInsertLimit );
-	helper.MenuCommand( subMenu, pActionRuleInsertMirror );
+	subMenu = igdeMenuCascade::Ref::New(GetEnvironment(), "@Animator.Menu.Rule.Insert", deInputEvent::ekcI);
+	menu.AddChild(subMenu);
+	helper.MenuCommand(subMenu, pActionRuleInsertAnim);
+	helper.MenuCommand(subMenu, pActionRuleInsertAnimDiff);
+	helper.MenuCommand(subMenu, pActionRuleInsertAnimSelect);
+	helper.MenuCommand(subMenu, pActionRuleInsertBoneRot);
+	helper.MenuCommand(subMenu, pActionRuleInsertInvKin);
+	helper.MenuCommand(subMenu, pActionRuleInsertStateManip);
+	helper.MenuCommand(subMenu, pActionRuleInsertStateSnap);
+	helper.MenuCommand(subMenu, pActionRuleInsertForeignState);
+	helper.MenuCommand(subMenu, pActionRuleInsertGroup);
+	helper.MenuCommand(subMenu, pActionRuleInsertSubAnimator);
+	helper.MenuCommand(subMenu, pActionRuleInsertTrackTo);
+	helper.MenuCommand(subMenu, pActionRuleInsertLimit);
+	helper.MenuCommand(subMenu, pActionRuleInsertMirror);
 	
-	helper.MenuCommand( subMenu, pActionRuleRemove );
-	helper.MenuCommand( subMenu, pActionRuleUp );
-	helper.MenuCommand( subMenu, pActionRuleDown );
+	helper.MenuCommand(subMenu, pActionRuleRemove);
+	helper.MenuCommand(subMenu, pActionRuleUp);
+	helper.MenuCommand(subMenu, pActionRuleDown);
 }

@@ -37,23 +37,23 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deWebpModule( deLoadableModule &loadableModule );
+	deWebpModule(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
-	virtual ~deWebpModule();
+	~deWebpModule() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/** Quick check if the file can be loaded by this module. */
-	virtual deBaseImageInfo *InitLoadImage( decBaseFileReader &reader );
+	deBaseImageInfo *InitLoadImage(decBaseFileReader &reader) override;
 	
 	/** Load image. */
-	virtual void LoadImage( decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos );
+	void LoadImage(decBaseFileReader &reader, deImage &image, deBaseImageInfo &infos) override;
 	
 	/** Save image. */
-	virtual void SaveImage( decBaseFileWriter &writer, const deImage &image );
+	void SaveImage(decBaseFileWriter &writer, const deImage &image) override;
 	/*@}*/
 };
 

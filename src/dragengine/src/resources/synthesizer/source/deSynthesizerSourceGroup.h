@@ -26,7 +26,7 @@
 #define _DESYNTHESIZERGROUPGROUP_H_
 
 #include "deSynthesizerSource.h"
-#include "../../../common/collection/decObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 
 /**
@@ -35,8 +35,7 @@
 class DE_DLL_EXPORT deSynthesizerSourceGroup : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizerSourceGroup> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizerSourceGroup>;
 	
 	
 public:
@@ -67,7 +66,7 @@ public:
 	
 	
 private:
-	decObjectOrderedSet pSources;
+	decTObjectOrderedSet<deSynthesizerSource> pSources;
 	
 	eApplicationTypes pApplicationType;
 	
@@ -88,7 +87,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizerSourceGroup();
+	~deSynthesizerSourceGroup() override;
 	/*@}*/
 	
 	
@@ -96,23 +95,14 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of sources. */
-	int GetSourceCount() const;
-	
-	/** \brief Source at index. */
-	deSynthesizerSource *GetSourceAt( int index ) const;
-	
-	/** \brief Index of source or -1 if absent. */
-	int IndexOfSource( deSynthesizerSource *source ) const;
-	
-	/** \brief Source is present. */
-	bool HasSource( deSynthesizerSource *source ) const;
+	/** \brief Sources. */
+	inline const decTObjectOrderedSet<deSynthesizerSource> &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
-	void AddSource( deSynthesizerSource *source );
+	void AddSource(deSynthesizerSource *source);
 	
 	/** \brief Remove source. */
-	void RemoveSource( deSynthesizerSource *source );
+	void RemoveSource(deSynthesizerSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
@@ -123,7 +113,7 @@ public:
 	inline eApplicationTypes GetApplicationType() const{ return pApplicationType; }
 	
 	/** \brief Set source application type. */
-	void SetApplicationType( eApplicationTypes type );
+	void SetApplicationType(eApplicationTypes type);
 	
 	/** \brief Select target. */
 	inline deSynthesizerControllerTarget &GetTargetSelect(){ return pTargetSelect; }
@@ -135,7 +125,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	void Visit(deSynthesizerSourceVisitor &visitor) override;
 	/*@}*/
 };
 

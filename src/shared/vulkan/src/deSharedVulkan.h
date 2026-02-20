@@ -41,8 +41,7 @@ class devkLoader;
 class deSharedVulkan : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
-	
+	using Ref = deTObjectReference<deSharedVulkan>;
 	
 	
 private:
@@ -62,14 +61,14 @@ public:
 	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
 	 */
 	#ifdef WITH_DEBUG
-	deSharedVulkan( deBaseModule &module, bool enableDebug = true );
+	deSharedVulkan(deBaseModule &module, bool enableDebug = true);
 	#else
-	deSharedVulkan( deBaseModule &module, bool enableDebug = false );
+	deSharedVulkan(deBaseModule &module, bool enableDebug = false);
 	#endif
 	
 protected:
 	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	~deSharedVulkan() override;
 	/*@}*/
 	
 	
@@ -87,7 +86,7 @@ public:
 	inline const decPath &GetCachePath() const{ return pCachePath; }
 	
 	/** Set cache path. */
-	void SetCachePath( const decPath &path );
+	void SetCachePath(const decPath &path);
 	/*@}*/
 	
 	

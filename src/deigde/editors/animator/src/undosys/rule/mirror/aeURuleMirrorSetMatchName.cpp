@@ -33,19 +33,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetMatchName::aeURuleMirrorSetMatchName( aeRuleMirror *rule,
-int index, aeRuleMirror::cMatchName *newValue ) :
-pRule( rule ),
-pIndex( index ),
-pNewValue( newValue )
+aeURuleMirrorSetMatchName::aeURuleMirrorSetMatchName(aeRuleMirror *rule,
+int index, aeRuleMirror::MatchName *newValue) :
+pRule(rule),
+pIndex(index),
+pNewValue(newValue)
 {
-	if( ! rule || ! newValue || rule->HasMatchName( newValue ) ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(newValue)
+	DEASSERT_FALSE(rule->GetMatchNames().Has(newValue))
 	
-	pOldValue = rule->GetMatchNameAt( index );
+	pOldValue = rule->GetMatchNames().GetAt(index);
 	
-	SetShortInfo( "Mirror rule set match name" );
+	SetShortInfo("@Animator.Undo.RuleMirrorSetMatchName");
 }
 
 aeURuleMirrorSetMatchName::~aeURuleMirrorSetMatchName(){
@@ -57,9 +57,9 @@ aeURuleMirrorSetMatchName::~aeURuleMirrorSetMatchName(){
 ///////////////
 
 void aeURuleMirrorSetMatchName::Undo(){
-	pRule->SetMatchNameAt( pIndex, pOldValue );
+	pRule->SetMatchNameAt(pIndex, pOldValue);
 }
 
 void aeURuleMirrorSetMatchName::Redo(){
-	pRule->SetMatchNameAt( pIndex, pNewValue );
+	pRule->SetMatchNameAt(pIndex, pNewValue);
 }

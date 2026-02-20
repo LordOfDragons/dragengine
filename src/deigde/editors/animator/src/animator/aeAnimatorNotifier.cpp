@@ -43,104 +43,104 @@ aeAnimatorNotifier::~aeAnimatorNotifier(){
 // Notifications
 //////////////////
 
-void aeAnimatorNotifier::StateChanged( aeAnimator* ){
+void aeAnimatorNotifier::StateChanged(aeAnimator*){
 }
 
-void aeAnimatorNotifier::UndoChanged( aeAnimator* ){
+void aeAnimatorNotifier::UndoChanged(aeAnimator*){
 }
 
-void aeAnimatorNotifier::AnimatorChanged( aeAnimator* ){
+void aeAnimatorNotifier::AnimatorChanged(aeAnimator*){
 }
 
-void aeAnimatorNotifier::ViewChanged( aeAnimator* ){
+void aeAnimatorNotifier::ViewChanged(aeAnimator*){
 }
 
-void aeAnimatorNotifier::ModelChanged( aeAnimator *animator ){
-	ViewChanged( animator );
+void aeAnimatorNotifier::ModelChanged(aeAnimator *animator){
+	ViewChanged(animator);
 }
 
-void aeAnimatorNotifier::SkyChanged( aeAnimator *animator ){
-	ViewChanged( animator );
+void aeAnimatorNotifier::SkyChanged(aeAnimator *animator){
+	ViewChanged(animator);
 }
 
-void aeAnimatorNotifier::EnvObjectChanged( aeAnimator *animator ){
-	ViewChanged( animator );
+void aeAnimatorNotifier::EnvObjectChanged(aeAnimator *animator){
+	ViewChanged(animator);
 }
 
-void aeAnimatorNotifier::RigChanged( aeAnimator *animator ){
-	AnimatorChanged( animator );
+void aeAnimatorNotifier::RigChanged(aeAnimator *animator){
+	AnimatorChanged(animator);
 }
 
-void aeAnimatorNotifier::AnimationChanged( aeAnimator *animator ){
-	AnimatorChanged( animator );
+void aeAnimatorNotifier::AnimationChanged(aeAnimator *animator){
+	AnimatorChanged(animator);
 }
 
-void aeAnimatorNotifier::PlaybackChanged( aeAnimator* ){
+void aeAnimatorNotifier::PlaybackChanged(aeAnimator*){
 }
 
-void aeAnimatorNotifier::LocomotionChanged( aeAnimator* ){
-}
-
-
-
-void aeAnimatorNotifier::ActiveControllerChanged( aeAnimator*, aeController* ){
-}
-
-void aeAnimatorNotifier::ControllerChanged( aeAnimator*, aeController* ){
-}
-
-void aeAnimatorNotifier::ControllerNameChanged( aeAnimator*, aeController* ){
-}
-
-void aeAnimatorNotifier::ControllerValueChanged( aeAnimator*, aeController* ){
-}
-
-void aeAnimatorNotifier::ControllerStructureChanged( aeAnimator* ){
+void aeAnimatorNotifier::LocomotionChanged(aeAnimator*){
 }
 
 
 
-void aeAnimatorNotifier::ActiveLinkChanged( aeAnimator*, aeLink* ){
+void aeAnimatorNotifier::ActiveControllerChanged(aeAnimator*, aeController*){
 }
 
-void aeAnimatorNotifier::LinkChanged( aeAnimator*, aeLink* ){
+void aeAnimatorNotifier::ControllerChanged(aeAnimator*, aeController*){
 }
 
-void aeAnimatorNotifier::LinkNameChanged( aeAnimator*, aeLink* ){
+void aeAnimatorNotifier::ControllerNameChanged(aeAnimator*, aeController*){
 }
 
-void aeAnimatorNotifier::LinkStructureChanged( aeAnimator* ){
+void aeAnimatorNotifier::ControllerValueChanged(aeAnimator*, aeController*){
 }
 
-
-
-void aeAnimatorNotifier::ActiveRuleChanged( aeAnimator*, aeRule* ){
-}
-
-void aeAnimatorNotifier::RuleChanged( aeAnimator*, aeRule* ){
-}
-
-void aeAnimatorNotifier::RuleNameChanged( aeAnimator*, aeRule* ){
-}
-
-void aeAnimatorNotifier::RuleStructureChanged( aeAnimator* ){
+void aeAnimatorNotifier::ControllerStructureChanged(aeAnimator*){
 }
 
 
 
-void aeAnimatorNotifier::ActiveAttachmentChanged( aeAnimator*, aeAttachment* ){
+void aeAnimatorNotifier::ActiveLinkChanged(aeAnimator*, aeLink*){
 }
 
-void aeAnimatorNotifier::AttachmentChanged( aeAnimator*, aeAttachment* ){
+void aeAnimatorNotifier::LinkChanged(aeAnimator*, aeLink*){
 }
 
-void aeAnimatorNotifier::AttachmentStructureChanged( aeAnimator* ){
+void aeAnimatorNotifier::LinkNameChanged(aeAnimator*, aeLink*){
+}
+
+void aeAnimatorNotifier::LinkStructureChanged(aeAnimator*){
 }
 
 
 
-void aeAnimatorNotifier::CameraChanged( aeAnimator* ){
+void aeAnimatorNotifier::ActiveRuleChanged(aeAnimator*, aeRule*){
 }
 
-void aeAnimatorNotifier::CameraViewChanged( aeAnimator* ){
+void aeAnimatorNotifier::RuleChanged(aeAnimator*, aeRule*){
+}
+
+void aeAnimatorNotifier::RuleNameChanged(aeAnimator*, aeRule*){
+}
+
+void aeAnimatorNotifier::RuleStructureChanged(aeAnimator*){
+}
+
+
+
+void aeAnimatorNotifier::ActiveAttachmentChanged(aeAnimator*, aeAttachment*){
+}
+
+void aeAnimatorNotifier::AttachmentChanged(aeAnimator*, aeAttachment*){
+}
+
+void aeAnimatorNotifier::AttachmentStructureChanged(aeAnimator*){
+}
+
+
+
+void aeAnimatorNotifier::CameraChanged(aeAnimator*){
+}
+
+void aeAnimatorNotifier::CameraViewChanged(aeAnimator*){
 }

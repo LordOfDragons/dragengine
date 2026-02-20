@@ -42,41 +42,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable( ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorParameter *condition, const char *newVariable ) :
-pTopic( NULL ),
-pAction( NULL ),
-pCondition( NULL ),
-pNewVariable( newVariable )
+ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorParameter *condition, const char *newVariable) :
+
+
+
+pNewVariable(newVariable)
 {
-	if( ! topic || ! action || ! condition ){
-		DETHROW( deeInvalidParam );
+	if(!topic || !action || !condition){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldVariable = condition->GetTestVariable();
 	
-	SetShortInfo( "ActorParameter: Set Test Variable" );
+	SetShortInfo("@Conversation.Undo.ActorParameterSetTestVariable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetTestVariable::~ceUCCAParamSetTestVariable(){
-	if( pCondition ){
-		pCondition->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -85,11 +71,11 @@ ceUCCAParamSetTestVariable::~ceUCCAParamSetTestVariable(){
 ///////////////
 
 void ceUCCAParamSetTestVariable::Undo(){
-	pCondition->SetTestVariable( pOldVariable );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTestVariable(pOldVariable);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCAParamSetTestVariable::Redo(){
-	pCondition->SetTestVariable( pNewVariable );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetTestVariable(pNewVariable);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

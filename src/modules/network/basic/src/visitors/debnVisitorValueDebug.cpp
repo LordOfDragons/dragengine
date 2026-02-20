@@ -54,7 +54,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnVisitorValueDebug::debnVisitorValueDebug( deNetworkBasic *module ){
+debnVisitorValueDebug::debnVisitorValueDebug(deNetworkBasic *module){
 	pModule = module;
 }
 
@@ -71,69 +71,69 @@ debnVisitorValueDebug::~debnVisitorValueDebug(){
 // Visiting
 /////////////
 
-void debnVisitorValueDebug::VisitValue( deNetworkValue* ){
-	DETHROW( deeInvalidParam );
+void debnVisitorValueDebug::VisitValue(deNetworkValue*){
+	DETHROW(deeInvalidParam);
 }
 
 
-void debnVisitorValueDebug::VisitInteger( deNetworkValueInteger *value ){
+void debnVisitorValueDebug::VisitInteger(deNetworkValueInteger *value){
 #if defined __MINGW32__ || defined __MINGW64__
 	#ifdef PRId64
 		#undef PRId64
 	#endif
 	#define PRId64 "I64u"
 #endif
-	pModule->LogInfoFormat( "- Integer: %" PRId64, value->GetInt() );
+	pModule->LogInfoFormat("- Integer: %" PRId64, value->GetInt());
 }
 
-void debnVisitorValueDebug::VisitFloat( deNetworkValueFloat *value ){
-	pModule->LogInfoFormat( "- Float: %g", value->GetFloat() );
+void debnVisitorValueDebug::VisitFloat(deNetworkValueFloat *value){
+	pModule->LogInfoFormat("- Float: %g", value->GetFloat());
 }
 
-void debnVisitorValueDebug::VisitString( deNetworkValueString *value ){
-	pModule->LogInfoFormat( "- String: '%s'", value->GetString().GetString() );
+void debnVisitorValueDebug::VisitString(deNetworkValueString *value){
+	pModule->LogInfoFormat("- String: '%s'", value->GetString().GetString());
 }
 
-void debnVisitorValueDebug::VisitData( deNetworkValueData *value ){
+void debnVisitorValueDebug::VisitData(deNetworkValueData *value){
 	int i, length = value->GetLength();
 	uint8_t *data = value->GetData();
 	decString text;
 	
-	text.AppendFormat( "- Data: %i bytes:", length );
-	for( i=0; i<20; i++ ){
-		if( i == length ) break;
-		text.AppendFormat( " 0x%X(%c)", ( unsigned char )data[ i ], data[ i ] );
+	text.AppendFormat("- Data: %i bytes:", length);
+	for(i=0; i<20; i++){
+		if(i == length) break;
+		text.AppendFormat(" 0x%X(%c)", (unsigned char)data[i], data[i]);
 	}
 	
-	pModule->LogInfo( text.GetString() );
+	pModule->LogInfo(text.GetString());
 }
 
-void debnVisitorValueDebug::VisitPoint2( deNetworkValuePoint2 *value ){
+void debnVisitorValueDebug::VisitPoint2(deNetworkValuePoint2 *value){
 	const decPoint &point = value->GetPoint();
 	
-	pModule->LogInfoFormat( "- Point2: %i, %i", point.x, point.y );
+	pModule->LogInfoFormat("- Point2: %i, %i", point.x, point.y);
 }
 
-void debnVisitorValueDebug::VisitPoint3( deNetworkValuePoint3 *value ){
+void debnVisitorValueDebug::VisitPoint3(deNetworkValuePoint3 *value){
 	const decPoint3 &point = value->GetPoint();
 	
-	pModule->LogInfoFormat( "- Point3: %i, %i, %i", point.x, point.y, point.z );
+	pModule->LogInfoFormat("- Point3: %i, %i, %i", point.x, point.y, point.z);
 }
 
-void debnVisitorValueDebug::VisitVector2( deNetworkValueVector2 *value ){
+void debnVisitorValueDebug::VisitVector2(deNetworkValueVector2 *value){
 	const decVector2 &vector = value->GetVector();
 	
-	pModule->LogInfoFormat( "- Vector2: %g, %g", vector.x, vector.y );
+	pModule->LogInfoFormat("- Vector2: %g, %g", vector.x, vector.y);
 }
 
-void debnVisitorValueDebug::VisitVector3( deNetworkValueVector3 *value ){
+void debnVisitorValueDebug::VisitVector3(deNetworkValueVector3 *value){
 	const decDVector &vector = value->GetVector();
 	
-	pModule->LogInfoFormat( "- Vector3: %g, %g, %g", vector.x, vector.y, vector.z );
+	pModule->LogInfoFormat("- Vector3: %g, %g, %g", vector.x, vector.y, vector.z);
 }
 
-void debnVisitorValueDebug::VisitQuaternion( deNetworkValueQuaternion *value ){
+void debnVisitorValueDebug::VisitQuaternion(deNetworkValueQuaternion *value){
 	const decQuaternion &quaternion = value->GetQuaternion();
 	
-	pModule->LogInfoFormat( "- Quaternion: %g, %g, %g, %g", quaternion.x, quaternion.y, quaternion.z, quaternion.w );
+	pModule->LogInfoFormat("- Quaternion: %g, %g, %g, %g", quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 }

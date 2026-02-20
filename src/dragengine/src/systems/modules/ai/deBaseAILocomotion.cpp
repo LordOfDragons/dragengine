@@ -43,13 +43,13 @@ deBaseAILocomotion::~deBaseAILocomotion(){
 // Notifications
 //////////////////
 
-void deBaseAILocomotion::UnitAdded( int index ){
+void deBaseAILocomotion::UnitAdded(int index){
 }
 
-void deBaseAILocomotion::UnitRemoved( int index ){
+void deBaseAILocomotion::UnitRemoved(int index){
 }
 
-void deBaseAILocomotion::UnitChanged( int index ){
+void deBaseAILocomotion::UnitChanged(int index){
 }
 
 void deBaseAILocomotion::AllUnitsRemoved(){

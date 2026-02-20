@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _DESYNSYNTHESIZERSOURCEGSYNTHESIZER_H_
-#define _DESYNSYNTHESIZERSOURCEGSYNTHESIZER_H_
+#ifndef _DESYNSYNTHESIZERSOURCESYNTHESIZER_H_
+#define _DESYNSYNTHESIZERSOURCESYNTHESIZER_H_
 
 #include "desynSynthesizerSource.h"
-
-class deSynthesizerSourceSynthesizer;
+#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/resources/synthesizer/source/deSynthesizerSourceSynthesizer.h>
 
 
 
@@ -38,8 +38,7 @@ class desynSynthesizerSourceSynthesizer : public desynSynthesizerSource{
 private:
 	desynSynthesizer *pChildSynthesizer;
 	
-	desynSynthesizerSource **pSources;
-	int pSourceCount;
+	decTUniqueList<desynSynthesizerSource> pSources;
 	
 	
 	
@@ -47,11 +46,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSourceSynthesizer( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceSynthesizer &source );
-	
-	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSourceSynthesizer();
+	desynSynthesizerSourceSynthesizer(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceSynthesizer &source);
 	/*@}*/
 	
 	
@@ -68,10 +64,10 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	int StateDataSizeSource(int offset) override;
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	void InitStateDataSource(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound using source.
@@ -81,8 +77,8 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) override;
 	
 	/**
 	 * \brief Skip sound.
@@ -91,16 +87,15 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) override;
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateSources( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceSynthesizer &source );
-	void pClearSources();
+	void pCreateSources(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceSynthesizer &source);
 };
 
 #endif

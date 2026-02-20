@@ -27,7 +27,7 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class meCLSelect;
 
@@ -37,8 +37,11 @@ class meCLSelect;
  * \brief View editor navigation space edit.
  */
 class meViewEditorNavSpaceEdit : public meViewEditorNavigation{
+public:
+	using Ref = deTObjectReference<meViewEditorNavSpaceEdit>;
+	
 private:
-	deColliderReference pColVol;
+	deCollider::Ref pColVol;
 	meCLSelect *pCLSelect;
 	float pSelectDistance;
 	
@@ -48,10 +51,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditorNavSpaceEdit( meView3D &view );
+	meViewEditorNavSpaceEdit(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditorNavSpaceEdit();
+	~meViewEditorNavSpaceEdit() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -65,19 +71,19 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** \brief View size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief Left mouse button has been pressed. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	
 	/** \brief Left mouse button has been released. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	
 	/** \brief Mouse has been moved. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	
 	/** \brief The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	void OnMouseWheel(int steps, bool shift, bool control) override;
 	/*@}*/
 	
 	

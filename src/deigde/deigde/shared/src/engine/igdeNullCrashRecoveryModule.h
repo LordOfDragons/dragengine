@@ -31,15 +31,20 @@
 
 
 /**
- * \brief Null CrashRecovery Module.
+ * \brief nullptr CrashRecovery Module.
  */
 class DE_DLL_EXPORT igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModule{
 public:
 	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
-		cModule( deModuleSystem *system );
-		virtual ~cModule();
-		virtual void CreateModule();
+		using Ref = deTObjectReference<cModule>;
+		cModule(deModuleSystem *system);
+		
+	protected:
+		~cModule() override;
+		
+	public:
+		void CreateModule() override;
 	};
 	
 	
@@ -48,10 +53,10 @@ public:
 	/** \name Constructor, destructor */
 	/*@{*/
 	/** \brief Create module. */
-	igdeNullCrashRecoveryModule( deLoadableModule &loadableModule );
+	igdeNullCrashRecoveryModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~igdeNullCrashRecoveryModule();
+	~igdeNullCrashRecoveryModule() override;
 	/*@}*/
 	
 	
@@ -59,10 +64,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Initialize module. */
-	virtual bool Init();
+	bool Init() override;
 	
 	/** \brief Shut down module and cleans up. */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/*@}*/
 	
 	
@@ -70,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Crash recovery. */
-	virtual bool RecoverFromError();
+	bool RecoverFromError() override;
 	/*@}*/
 };
 

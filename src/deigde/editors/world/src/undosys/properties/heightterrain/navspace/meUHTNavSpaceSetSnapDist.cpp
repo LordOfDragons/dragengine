@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceSetSnapDist::meUHTNavSpaceSetSnapDist( meHeightTerrainNavSpace *navspace, float newSnapDist ) :
-pNavSpace( NULL ),
-pNewSnapDist( newSnapDist )
+meUHTNavSpaceSetSnapDist::meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace *navspace, float newSnapDist) :
+
+pNewSnapDist(newSnapDist)
 {
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(!navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldSnapDist = navspace->GetSnapDistance();
 	
-	SetShortInfo( "Height terrain nav-space set snap distance" );
+	SetShortInfo("@World.UHTNavSpaceSetSnapDist.HeightTerrainNavSpaceSetSnapDistance");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceSetSnapDist::~meUHTNavSpaceSetSnapDist(){
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ meUHTNavSpaceSetSnapDist::~meUHTNavSpaceSetSnapDist(){
 ///////////////
 
 void meUHTNavSpaceSetSnapDist::Undo(){
-	pNavSpace->SetSnapDistance( pOldSnapDist );
+	pNavSpace->SetSnapDistance(pOldSnapDist);
 }
 
 void meUHTNavSpaceSetSnapDist::Redo(){
-	pNavSpace->SetSnapDistance( pNewSnapDist );
+	pNavSpace->SetSnapDistance(pNewSnapDist);
 }

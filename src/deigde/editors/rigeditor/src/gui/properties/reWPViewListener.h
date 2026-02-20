@@ -35,6 +35,9 @@ class reWPView;
  * \brief View panel rig listener.
  */
 class reWPViewListener : public reRigNotifier{
+public:
+	using Ref = deTObjectReference<reWPViewListener>;
+	
 private:
 	reWPView &pPanel;
 	
@@ -44,10 +47,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPViewListener( reWPView &panel );
+	reWPViewListener(reWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~reWPViewListener();
+protected:
+	~reWPViewListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,31 +60,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief The root bone changed. */
-	virtual void RootBoneChanged( reRig *rig );
+	virtual void RootBoneChanged(reRig *rig);
 	
 	/** \brief The resource changed. */
-	virtual void ResourceChanged( reRig *rig );
+	void ResourceChanged(reRig *rig) override;
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged( reRig *rig );
+	void SkyChanged(reRig *rig) override;
 	
 	/** \brief The environment object changed. */
-	virtual void EnvObjectChanged( reRig *rig );
+	void EnvObjectChanged(reRig *rig) override;
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( reRig *rig );
+	void ViewChanged(reRig *rig) override;
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( reRig *rig );
+	void CameraChanged(reRig *rig) override;
 	
 	/** \brief The camera view changed. */
-	virtual void CameraViewChanged( reRig *rig );
+	void CameraViewChanged(reRig *rig) override;
 	
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged( reRig *rig );
+	void BoneCountChanged(reRig *rig) override;
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged( reRig *rig, reRigBone *bone );
+	void BoneChanged(reRig *rig, reRigBone *bone) override;
 	/*@}*/
 };
 

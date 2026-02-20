@@ -41,41 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPCFPSetExtension::gdeUGDWPCFPSetExtension( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeFilePattern *filePattern, const char *newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUGDWPCFPSetExtension::gdeUGDWPCFPSetExtension(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
+
+pProperty(nullptr)
 {
-	if( ! gamedef || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(!gamedef || !property || !filePattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property custom file pattern set extension" );
+	SetShortInfo("@GameDefinition.Undo.GDWPCFPSetExtension");
 	
 	pOldValue = filePattern->GetDefaultExtension();
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUGDWPCFPSetExtension::~gdeUGDWPCFPSetExtension(){
-	if( pFilePattern ){
-		pFilePattern->FreeReference();
-	}
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -84,11 +69,11 @@ gdeUGDWPCFPSetExtension::~gdeUGDWPCFPSetExtension(){
 ///////////////
 
 void gdeUGDWPCFPSetExtension::Undo(){
-	pFilePattern->SetDefaultExtension( pOldValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pFilePattern->SetDefaultExtension(pOldValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPCFPSetExtension::Redo(){
-	pFilePattern->SetDefaultExtension( pNewValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pFilePattern->SetDefaultExtension(pNewValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

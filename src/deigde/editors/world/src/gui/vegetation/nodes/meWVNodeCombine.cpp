@@ -42,9 +42,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -61,18 +59,18 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	cTextX( meWVNodeCombine &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextX>;
+	cTextX(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleCombine()->GetX() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleCombine()->GetX()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleCombineSetX( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleCombine(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCombineSetX::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCombine(), value));
 	}
 };
 
@@ -81,18 +79,18 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	cTextY( meWVNodeCombine &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextY>;
+	cTextY(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleCombine()->GetY() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleCombine()->GetY()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleCombineSetY( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleCombine(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCombineSetY::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCombine(), value));
 	}
 };
 
@@ -101,18 +99,18 @@ protected:
 	meWVNodeCombine &pNode;
 	
 public:
-	cTextZ( meWVNodeCombine &node ) : pNode( node ){ }
+	using Ref = deTObjectReference<cTextZ>;
+	cTextZ(meWVNodeCombine &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleCombine()->GetZ() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleCombine()->GetZ()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleCombineSetZ( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleCombine(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCombineSetZ::Ref::New(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCombine(), value));
 	}
 };
 
@@ -126,43 +124,43 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeCombine::meWVNodeCombine( meWindowVegetation &windowVegetation, meHTVRuleCombine *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleCombine( rule )
+meWVNodeCombine::meWVNodeCombine(meWindowVegetation &windowVegetation, meHTVRuleCombine *rule) :
+meWVNode(windowVegetation, rule),
+pRuleCombine(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	SetTitle( "Combine" );
+	SetTitle("@World.WVNodeCombine.Title");
 	
 	// slots
-	igdeNVSlotReference slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector composed of the input values",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeCombine.Output.Vector", "@World.WVNodeCombine.Output.Vector.ToolTip",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "X", "X component of vector",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisX ) );
-	helper.EditFloat( slot, "X component of vector if slot is not connected.",
-		pEditX, new cTextX( *this ) );
-	AddSlot( slot );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(env,
+		"@World.WVNodeCombine.Input.X", "@World.WVNodeCombine.Input.X.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisX));
+	helper.EditFloat(slot, "@World.WVNodeCombine.XComponent",
+		pEditX, cTextX::Ref::New(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y component of vector",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY ) );
-	helper.EditFloat( slot, "Y component of vector if slot is not connected.",
-		pEditY, new cTextY( *this ) );
-	AddSlot( slot );
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Y", "@World.WVNodeCombine.Input.Y.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY);
+	helper.EditFloat(slot, "@World.WVNodeCombine.YComponent",
+		pEditY, cTextY::Ref::New(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Z", "Z component of vector",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ ) );
-	helper.EditFloat( slot, "Z component of vector if slot is not connected.",
-		pEditZ, new cTextZ( *this ) );
-	AddSlot( slot );
+	slot = meWVNodeSlot::Ref::New(env, "@World.WVNodeCombine.Input.Z", "@World.WVNodeCombine.Input.Z.ToolTip",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ);
+	helper.EditFloat(slot, "@World.WVNodeCombine.ZComponent",
+		pEditZ, cTextZ::Ref::New(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters = igdeContainerForm::Ref::New(env);
+	AddChild(pFraParameters);
 }
 
 meWVNodeCombine::~meWVNodeCombine(){
@@ -176,7 +174,7 @@ meWVNodeCombine::~meWVNodeCombine(){
 void meWVNodeCombine::Update(){
 	meWVNode::Update();
 	
-	pEditX->SetFloat( pRuleCombine->GetX() );
-	pEditY->SetFloat( pRuleCombine->GetY() );
-	pEditZ->SetFloat( pRuleCombine->GetZ() );
+	pEditX->SetFloat(pRuleCombine->GetX());
+	pEditY->SetFloat(pRuleCombine->GetY());
+	pEditZ->SetFloat(pRuleCombine->GetZ());
 }

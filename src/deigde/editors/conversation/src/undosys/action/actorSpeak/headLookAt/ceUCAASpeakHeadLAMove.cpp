@@ -42,44 +42,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLAMove::ceUCAASpeakHeadLAMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *headLookAt, int newIndex ){
-	if( ! topic || ! actorSpeak || ! headLookAt ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakHeadLAMove::ceUCAASpeakHeadLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *headLookAt, int newIndex){
+	if(!topic || !actorSpeak || !headLookAt){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
-	pHeadLA = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
+	pHeadLA = nullptr;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetHeadLookAtList().IndexOf( headLookAt );
+	pOldIndex = actorSpeak->GetHeadLookAts().IndexOf(headLookAt);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetHeadLookAtList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetHeadLookAts().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move HeadLookAt" );
+	SetShortInfo("@Conversation.Undo.MoveHeadLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLAMove::~ceUCAASpeakHeadLAMove(){
-	if( pHeadLA ){
-		pHeadLA->FreeReference();
-	}
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -88,11 +74,11 @@ ceUCAASpeakHeadLAMove::~ceUCAASpeakHeadLAMove(){
 ///////////////
 
 void ceUCAASpeakHeadLAMove::Undo(){
-	pActorSpeak->GetHeadLookAtList().MoveTo( pHeadLA, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetHeadLookAts().Move(pHeadLA, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakHeadLAMove::Redo(){
-	pActorSpeak->GetHeadLookAtList().MoveTo( pHeadLA, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetHeadLookAts().Move(pHeadLA, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

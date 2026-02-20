@@ -44,20 +44,20 @@ debpCollisionVolumeVisitor::~debpCollisionVolumeVisitor(){
 // Visiting
 /////////////
 
-void debpCollisionVolumeVisitor::VisitSphere( debpCollisionSphere *sphere ){
+void debpCollisionVolumeVisitor::VisitSphere(debpCollisionSphere *sphere){
 }
 
-void debpCollisionVolumeVisitor::VisitCylinder( debpCollisionCylinder *cylinder ){
+void debpCollisionVolumeVisitor::VisitCylinder(debpCollisionCylinder *cylinder){
 }
 
-void debpCollisionVolumeVisitor::VisitCapsule( debpCollisionCapsule *capsule ){
+void debpCollisionVolumeVisitor::VisitCapsule(debpCollisionCapsule *capsule){
 }
 
-void debpCollisionVolumeVisitor::VisitBox( debpCollisionBox *box ){
+void debpCollisionVolumeVisitor::VisitBox(debpCollisionBox *box){
 }
 
-void debpCollisionVolumeVisitor::VisitTriangle( debpCollisionTriangle *triangle ){
+void debpCollisionVolumeVisitor::VisitTriangle(debpCollisionTriangle *triangle){
 }
 
-void debpCollisionVolumeVisitor::VisitFrustum( debpCollisionFrustum *frustum ){
+void debpCollisionVolumeVisitor::VisitFrustum(debpCollisionFrustum *frustum){
 }

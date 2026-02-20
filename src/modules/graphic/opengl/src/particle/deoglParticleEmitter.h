@@ -25,10 +25,12 @@
 #ifndef _DEOGLPARTICLEEMITTER_H_
 #define _DEOGLPARTICLEEMITTER_H_
 
+#include "deoglRParticleEmitter.h"
+
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitter.h>
 
-class deoglRParticleEmitter;
 class deoglParticleEmitterType;
 
 class deGraphicOpenGl;
@@ -44,10 +46,9 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deParticleEmitter &pParticleEmitter;
 	
-	deoglRParticleEmitter *pREmitter;
+	deoglRParticleEmitter::Ref pREmitter;
 	
-	deoglParticleEmitterType **pTypes;
-	int pTypeCount;
+	decTUniqueList<deoglParticleEmitterType> pTypes;
 	
 	bool pDirtyTypes;
 	
@@ -55,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglParticleEmitter( deGraphicOpenGl &ogl, const deParticleEmitter &emitter );
+	deoglParticleEmitter(deGraphicOpenGl &ogl, const deParticleEmitter &emitter);
 	
 	/** Clean up peer. */
-	virtual ~deoglParticleEmitter();
+	~deoglParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -74,18 +75,21 @@ public:
 	
 	
 	/** Render particle emitter. */
-	inline deoglRParticleEmitter *GetREmitter() const{ return pREmitter; }
+	inline const deoglRParticleEmitter::Ref &GetREmitter() const{ return pREmitter; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
+	/** Types. */
+	inline const decTUniqueList<deoglParticleEmitterType> &GetTypes() const{ return pTypes; }
+	
 	/** Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{ return pTypes.GetCount(); }
 	
 	/** Type at index. */
-	deoglParticleEmitterType &GetTypeAt( int index ) const;
+	deoglParticleEmitterType &GetTypeAt(int index) const;
 	
 	/** Update parameter samples if required. */
 	void UpdateParameterSamples();
@@ -96,16 +100,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Controller count changed. */
-	virtual void ControllerCountChanged();
+	void ControllerCountChanged() override;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	void ControllerChanged(int controller) override;
 	
 	/** Type count changed. */
-	virtual void TypeCountChanged();
+	void TypeCountChanged() override;
 	
 	/** Type changed. */
-	virtual void TypeChanged( int type );
+	void TypeChanged(int type) override;
 	/*@}*/
 	
 private:

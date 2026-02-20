@@ -36,6 +36,9 @@ class ceConversationAction;
  * \brief Menu action paste condition to logic.
  */
 class ceWPTMACLogicPasteCondition : public ceWPTMAPasteCondition{
+public:
+	using Ref = deTObjectReference<ceWPTMACLogicPasteCondition>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceConversationAction *pAction;
@@ -51,9 +54,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicPasteCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicPasteCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceConversationAction &action, ceCConditionLogic &logic );
+		ceConversationAction &action, ceCConditionLogic &logic);
 	/*@}*/
 	
 	
@@ -70,7 +73,7 @@ public:
 	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	igdeUndo::Ref CreateUndo(const ceConversationCondition::List &conditions) override;
 	/*@}*/
 };
 

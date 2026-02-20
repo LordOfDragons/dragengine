@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deoglTexUnitConfig.h"
 #include "deoglTexUnitsConfig.h"
 #include "deoglTexUnitsConfigList.h"
@@ -57,31 +54,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglTexUnitsConfig::deoglTexUnitsConfig( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pUnits( NULL ),
-pUnitCount( 0 ),
-pParamBlock( NULL ),
-pMaterialIndex( -1 ),
-pMaterialUsageCount( 0 ),
-pUsageCount( 1 ),
-pUnitsHashCode( 0 ),
-pUniqueKey( renderThread.GetUniqueKey().Get() ),
-pRTSTexture( NULL ),
-pLLPrev( NULL ),
-pLLNext( NULL ){
+deoglTexUnitsConfig::deoglTexUnitsConfig(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pParamBlock(nullptr),
+pMaterialIndex(-1),
+pMaterialUsageCount(0),
+pUsageCount(1),
+pUnitsHashCode(0),
+pUniqueKey(renderThread.GetUniqueKey().Get()),
+pRTSTexture(nullptr),
+pLLConfigs(this){
 }
 
 deoglTexUnitsConfig::~deoglTexUnitsConfig(){
-	if( pRTSTexture ){
-		pRenderThread.GetRenderTaskSharedPool().ReturnTexture( pRTSTexture );
+	if(pRTSTexture){
+		pRenderThread.GetRenderTaskSharedPool().ReturnTexture(pRTSTexture);
 	}
 	
-	if( pUnits ){
-		delete [] pUnits;
-	}
-	
-	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	pRenderThread.GetUniqueKey().Return(pUniqueKey);
 	
 }
 
@@ -90,41 +80,28 @@ deoglTexUnitsConfig::~deoglTexUnitsConfig(){
 // Management
 ///////////////
 
-void deoglTexUnitsConfig::SetUnitCount( int count ){
-	if( pUnits ){
-		delete [] pUnits;
-		pUnits = NULL;
-		pUnitCount = 0;
-	}
-	
-	if( count > 0 ){
-		pUnits = new deoglTexUnitConfig[ count ];
-		pUnitCount = count;
-	}
+void deoglTexUnitsConfig::SetUnitCount(int count){
+	pUnits.SetAll(count, {});
 }
 
-deoglTexUnitConfig &deoglTexUnitsConfig::GetUnitAt( int index ) const{
-	if( index < 0 || index >= pUnitCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pUnits[ index ];
+deoglTexUnitConfig &deoglTexUnitsConfig::GetUnitAt(int index){
+	return pUnits[index];
 }
 
-void deoglTexUnitsConfig::SetUnits( const deoglTexUnitConfig *units, int unitCount ){
-	if( unitCount < 0 || ( unitCount > 0 && ! units ) ){
-		DETHROW( deeInvalidParam );
+void deoglTexUnitsConfig::SetUnits(const deoglTexUnitConfig *units, int unitCount){
+	if(unitCount < 0 || (unitCount > 0 && !units)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	SetUnitCount( unitCount );
-	for( i=0; i<unitCount; i++ ){
-		pUnits[ i ].SetFrom( units[ i ] );
+	SetUnitCount(unitCount);
+	for(i=0; i<unitCount; i++){
+		pUnits[i].SetFrom(units[i]);
 	}
 }
 
-void deoglTexUnitsConfig::SetParameterBlock( deoglShaderParameterBlock *paramBlock ){
+void deoglTexUnitsConfig::SetParameterBlock(deoglShaderParameterBlock *paramBlock){
 	pParamBlock = paramBlock;
 }
 
@@ -134,15 +111,14 @@ void deoglTexUnitsConfig::Apply() const{
 	//deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	//tsmgr.DisableStagesAbove( pUnitCount - 1 );
 	
-	int i;
-	for( i=0; i<pUnitCount; i++ ){
-		pUnits[ i ].Apply( pRenderThread, i );
-	}
+	pUnits.VisitIndexed([&](int i, deoglTexUnitConfig &unit){
+		unit.Apply(pRenderThread, i);
+	});
 }
 
 
 
-void deoglTexUnitsConfig::SetMaterialIndex( int index ){
+void deoglTexUnitsConfig::SetMaterialIndex(int index){
 	pMaterialIndex = index;
 }
 
@@ -151,43 +127,32 @@ void deoglTexUnitsConfig::AddMaterialUsage(){
 }
 
 void deoglTexUnitsConfig::RemoveMaterialUsage(){
-	if( pMaterialUsageCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pMaterialUsageCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	pMaterialUsageCount--;
 }
 
 
 
-bool deoglTexUnitsConfig::Equals( const deoglTexUnitsConfig &tuc ) const{
-	if( pUnitsHashCode != tuc.pUnitsHashCode || pUnitCount != tuc.pUnitCount ){
-		return false;
-	}
-	
-	int i;
-	
-	for( i=0; i<pUnitCount; i++ ){
-		if( ! pUnits[ i ].Equals( tuc.pUnits[ i ] ) ){
-			return false;
-		}
-	}
-	
-	return true;
+bool deoglTexUnitsConfig::Equals(const deoglTexUnitsConfig &tuc) const{
+	return pUnitsHashCode == tuc.pUnitsHashCode
+		&& pUnits == tuc.GetUnits();
 }
 
-bool deoglTexUnitsConfig::Equals( const deoglTexUnitConfig *units, int unitCount,
-deoglShaderParameterBlock *paramBlock ) const{
-	if( unitCount < 0 || ( unitCount > 0 && ! units ) ){
-		DETHROW( deeInvalidParam );
+bool deoglTexUnitsConfig::Equals(const deoglTexUnitConfig *units, int unitCount,
+deoglShaderParameterBlock *paramBlock) const{
+	if(unitCount < 0 || (unitCount > 0 && !units)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pUnitCount != unitCount || pParamBlock != paramBlock ){
+	if(pUnits.GetCount() != unitCount || pParamBlock != paramBlock){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<pUnitCount; i++ ){
-		if( ! pUnits[ i ].Equals( units[ i ] ) ){
+	for(i=0; i<pUnits.GetCount(); i++){
+		if(pUnits[i] != units[i]){
 			return false;
 		}
 	}
@@ -204,69 +169,60 @@ void deoglTexUnitsConfig::AddUsage(){
 void deoglTexUnitsConfig::RemoveUsage(){
 	pUsageCount--;
 	
-	if( pUsageCount > 0 ){
+	if(pUsageCount > 0){
 		return;
 	}
 	
-	if( pRTSTexture ){
-		pRenderThread.GetRenderTaskSharedPool().ReturnTexture( pRTSTexture );
-		pRTSTexture = NULL;
+	if(pRTSTexture){
+		pRenderThread.GetRenderTaskSharedPool().ReturnTexture(pRTSTexture);
+		pRTSTexture = nullptr;
 	}
 	
-	pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
+	pRenderThread.GetShader().GetTexUnitsConfigList().Remove(this);
 }
 
 void deoglTexUnitsConfig::CalcUnitsHashCode(){
-	pUnitsHashCode = CalcUnitsHashCodeForUnits( pUnits, pUnitCount );
+	pUnitsHashCode = CalcUnitsHashCodeForUnits(pUnits);
 }
 
-unsigned int deoglTexUnitsConfig::CalcUnitsHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount ){
-	if( unitCount < 0 || ( unitCount > 0 && ! units ) ){
-		DETHROW( deeInvalidParam );
-	}
-	
+unsigned int deoglTexUnitsConfig::CalcUnitsHashCodeForUnits(const decTList<deoglTexUnitConfig> &units){
 	// for the hash function the opengl texture names of each unit are simply added.
 	// this works since opengl names are unique for each texture no matter what type
 	// the texture is of. the filtering and wrapping parameters are not very useful
 	// for the hash value as is the unit number. textures tend to be used for the
 	// same units in different configurations hence the order of the units is not
 	// important. this gives a fast hash value that does the trick good enough
-	unsigned int hashCode = 0;
-	int i;
-	
-	for( i=0; i<unitCount; i++ ){
-		if( units[ i ].GetTexture() ){
-			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
-				+ ( unsigned int )units[ i ].GetTexture()->GetTexture();
+	return units.Inject(0, [&](unsigned int hc, const deoglTexUnitConfig &unit){
+		if(unit.GetTexture()){
+			return hc += (unsigned int)deoglTexUnitConfig::EST_BASE_GLNAME
+				+ (unsigned int)unit.GetTexture()->GetTexture();
 			
-		}else if( units[ i ].GetCubeMap() ){
-			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
-				+ ( unsigned int )units[ i ].GetCubeMap()->GetTexture();
+		}else if(unit.GetCubeMap()){
+			return hc += (unsigned int)deoglTexUnitConfig::EST_BASE_GLNAME
+				+ (unsigned int)unit.GetCubeMap()->GetTexture();
 			
-		}else if( units[ i ].GetTBO() ){
-			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
-				+ ( unsigned int )units[ i ].GetTBO();
+		}else if(unit.GetTBO()){
+			return hc += (unsigned int)deoglTexUnitConfig::EST_BASE_GLNAME
+				+ (unsigned int)unit.GetTBO();
 			
 		}else{
-			hashCode += ( unsigned int )units[ i ].GetSpecial();
+			return hc += (unsigned int)unit.GetSpecial();
 		}
-	}
-	
-	return hashCode;
+	});
 	
 	/*
 	unsigned int temp;
 	int i;
 	
-	for( i=0; i<unitCount; i++ ){
+	for(i=0; i<unitCount; i++){
 		temp = hashCode >> 24;
-		hashCode = ( hashCode << 8 ) + temp;
+		hashCode = (hashCode << 8) + temp;
 		
-		if( units[ i ].GetTexture() ){
-			hashCode ^= ( unsigned int )units[ i ].GetTexture()->GetTexture();
+		if(units[i].GetTexture()){
+			hashCode ^= (unsigned int)units[i].GetTexture()->GetTexture();
 			
-		}else if( units[ i ].GetCubeMap() ){
-			hashCode ^= ( unsigned int )units[ i ].GetCubeMap()->GetTexture();
+		}else if(units[i].GetCubeMap()){
+			hashCode ^= (unsigned int)units[i].GetCubeMap()->GetTexture();
 			
 		}else{
 			hashCode = ~hashCode;
@@ -278,20 +234,10 @@ unsigned int deoglTexUnitsConfig::CalcUnitsHashCodeForUnits( const deoglTexUnitC
 
 
 void deoglTexUnitsConfig::EnsureRTSTexture(){
-	if( pRTSTexture ){
+	if(pRTSTexture){
 		return;
 	}
 	
 	pRTSTexture = pRenderThread.GetRenderTaskSharedPool().GetTexture();
-	pRTSTexture->SetTUC( this );
-}
-
-
-
-void deoglTexUnitsConfig::SetLLPrev( deoglTexUnitsConfig *entry ){
-	pLLPrev = entry;
-}
-
-void deoglTexUnitsConfig::SetLLNext( deoglTexUnitsConfig *entry ){
-	pLLNext = entry;
+	pRTSTexture->SetTUC(this);
 }

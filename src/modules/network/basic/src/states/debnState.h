@@ -25,6 +25,9 @@
 #ifndef _DEBNSTATE_H_
 #define _DEBNSTATE_H_
 
+#include "debnStateLink.h"
+
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/network/deBaseNetworkState.h>
 
@@ -35,7 +38,6 @@ class debnWorld;
 class debnValue;
 class debnStateLink;
 class debnConnection;
-class debnStateLinkList;
 class decBaseFileReader;
 class decBaseFileWriter;
 
@@ -47,11 +49,9 @@ class debnState : public deBaseNetworkState{
 private:
 	deNetworkState &pState;
 	
-	debnValue **pValues;
-	int pValueCount;
-	int pValueSize;
+	decTUniqueList<debnValue> pValues;
 	
-	debnStateLinkList *pLinks;
+	debnStateLink::List pLinks;
 	
 	debnWorld *pParentWorld;
 	
@@ -61,10 +61,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create state. */
-	debnState( deNetworkState &state );
+	debnState(deNetworkState &state);
 	
 	/** \brief Clean up state. */
-	virtual ~debnState();
+	~debnState() override;
 	/*@}*/
 	
 	
@@ -75,19 +75,20 @@ public:
 	inline deNetworkState &GetState() const{ return pState; }
 	
 	/** Retrieves the list of state links. */
-	inline debnStateLinkList *GetLinks() const{ return pLinks; }
+	inline debnStateLink::List &GetLinks(){ return pLinks; }
+	inline const debnStateLink::List &GetLinks() const{ return pLinks; }
 	
 	/** Update state. */
 	void Update();
 	
 	/** Retrieves the number of values. */
-	inline int GetValueCount() const{ return pValueCount; }
+	inline int GetValueCount() const{ return pValues.GetCount(); }
 	
 	/** \brief Read values from message. */
-	void LinkReadValues( decBaseFileReader &reader, debnStateLink &link );
+	void LinkReadValues(decBaseFileReader &reader, debnStateLink &link);
 	
 	/** \brief Read all values from message. */
-	void LinkReadAllValues( decBaseFileReader &reader, debnStateLink &link );
+	void LinkReadAllValues(decBaseFileReader &reader, debnStateLink &link);
 	
 	/**
 	 * \brief Read all values from message including types.
@@ -95,38 +96,38 @@ public:
 	 * Verifies that the values in the state match in type and update their values.
 	 * Returns true if the state matches and has been updated or false otherwise.
 	 */
-	bool LinkReadAndVerifyAllValues( decBaseFileReader &reader );
+	bool LinkReadAndVerifyAllValues(decBaseFileReader &reader);
 	
 	/**
 	 * \brief Write all values to message.
 	 * \param[in] withTypes Include types.
 	 */
-	void LinkWriteValues( decBaseFileWriter &writer );
+	void LinkWriteValues(decBaseFileWriter &writer);
 	
 	/**
 	 * \brief Write all values to message.
 	 * \param[in] withTypes Include types.
 	 */
-	void LinkWriteValuesWithVerify( decBaseFileWriter &writer );
+	void LinkWriteValuesWithVerify(decBaseFileWriter &writer);
 	
 	/**
 	 * \brief Write values to message if changed in link.
 	 * \param[in] withTypes Include types. Value only if \em allValues is true.
 	 * \param[in] allValues Ignore changed flags and send all values.
 	 */
-	void LinkWriteValues( decBaseFileWriter &writer, debnStateLink &link );
+	void LinkWriteValues(decBaseFileWriter &writer, debnStateLink &link);
 	
 	/** \brief Invalid value in all state links. */
-	void InvalidateValue( int index );
+	void InvalidateValue(int index);
 	
 	/** \brief Invalid value in all state links. */
-	void InvalidateValueExcept( int index, debnStateLink &link );
+	void InvalidateValueExcept(int index, debnStateLink &link);
 	
 	/** \brief Parent world or NULL. */
 	inline debnWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( debnWorld *world );
+	void SetParentWorld(debnWorld *world);
 	/*@}*/
 	
 	
@@ -134,10 +135,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Value added. */
-	virtual void ValueAdded( int index, deNetworkValue *value );
+	void ValueAdded(int index, deNetworkValue *value) override;
 	
 	/** \brief Value changed. */
-	virtual void ValueChanged( int index, deNetworkValue *value );
+	void ValueChanged(int index, deNetworkValue *value) override;
 	/*@}*/
 };
 

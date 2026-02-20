@@ -28,6 +28,7 @@
 #include "../../deoglBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -36,8 +37,7 @@
 class deoglPixelBuffer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglPixelBuffer> Ref;
-	
+	using Ref = deTObjectReference<deoglPixelBuffer>;
 	
 	
 public:
@@ -192,20 +192,20 @@ private:
 	bool pCompressed;
 	GLenum pGLPixelFormat;
 	GLenum pGLPixelType;
-	void *pPixels;
+	decTList<char> pPixels;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer. */
-	deoglPixelBuffer( ePixelFormats format, int width, int height, int depth );
+	deoglPixelBuffer(ePixelFormats format, int width, int height, int depth);
 	
 	/** Create copy of pixel buffer. */
-	deoglPixelBuffer( const deoglPixelBuffer &pixelBuffer );
+	deoglPixelBuffer(const deoglPixelBuffer &pixelBuffer);
 	
 protected:
 	/** Cleans up the opengl array texture. */
-	virtual ~deoglPixelBuffer();
+	~deoglPixelBuffer() override;
 	/*@}*/
 	
 	
@@ -233,43 +233,105 @@ public:
 	/** Determines if the pixel buffer contains compressed data. */
 	inline bool GetCompressed() const{ return pCompressed; }
 	
+	
 	/** Retrieves the bare data pointer. */
-	inline void *GetPointer() const{ return pPixels; }
+	inline void *GetPointer(){ return pPixels.GetArrayPointer(); }
+	
 	/** Retrieves the sByte1 data pointer if the format is epfByte1 or otherwise throws an exception. */
-	sByte1 *GetPointerByte1() const;
+	sByte1 *GetPointerByte1();
+	
 	/** Retrieves the sByte2 data pointer if the format is epfByte2 or otherwise throws an exception. */
-	sByte2 *GetPointerByte2() const;
+	sByte2 *GetPointerByte2();
+	
 	/** Retrieves the sByte3 data pointer if the format is epfByte3 or otherwise throws an exception. */
-	sByte3 *GetPointerByte3() const;
+	sByte3 *GetPointerByte3();
+	
 	/** Retrieves the sByte4 data pointer if the format is epfByte4 or otherwise throws an exception. */
-	sByte4 *GetPointerByte4() const;
+	sByte4 *GetPointerByte4();
+	
 	/** Retrieves the sFloat1 data pointer if the format is epfFloat1 or otherwise throws an exception. */
-	sFloat1 *GetPointerFloat1() const;
+	sFloat1 *GetPointerFloat1();
+	
 	/** Retrieves the sFloat2 data pointer if the format is epfFloat2 or otherwise throws an exception. */
-	sFloat2 *GetPointerFloat2() const;
+	sFloat2 *GetPointerFloat2();
+	
 	/** Retrieves the sFloat3 data pointer if the format is epfFloat3 or otherwise throws an exception. */
-	sFloat3 *GetPointerFloat3() const;
+	sFloat3 *GetPointerFloat3();
+	
 	/** Retrieves the sFloat4 data pointer if the format is epfFloat4 or otherwise throws an exception. */
-	sFloat4 *GetPointerFloat4() const;
+	sFloat4 *GetPointerFloat4();
+	
 	/** Retrieves the sInt1 data pointer if the format is epfInt1 or otherwise throws an exception. */
-	sInt1 *GetPointerInt1() const;
+	sInt1 *GetPointerInt1();
+	
 	/** Retrieves the sDepth data pointer if the format is epfDepth or otherwise throws an exception. */
-	sDepth *GetPointerDepth() const;
+	sDepth *GetPointerDepth();
+	
 	/** Retrieves the sStencil data pointer if the format is epfStencil or otherwise throws an exception. */
-	sStencil *GetPointerStencil() const;
+	sStencil *GetPointerStencil();
+	
 	/** Retrieves the sDepthStencil data pointer if the format is epfDepthStencil or otherwise throws an exception. */
-	sDepthStencil *GetPointerDepthStencil() const;
+	sDepthStencil *GetPointerDepthStencil();
+	
 	/** Retrieves the sDXT1 data pointer if the format is epfDXT1 or otherwise throws an exception. */
-	sDXT1 *GetPointerDXT1() const;
+	sDXT1 *GetPointerDXT1();
+	
 	/** Retrieves the sDXT3 data pointer if the format is epfDXT3 or otherwise throws an exception. */
-	sDXT3 *GetPointerDXT3() const;
+	sDXT3 *GetPointerDXT3();
+	
+	
+	/** Retrieves the bare data pointer. */
+	inline const void *GetPointer() const{ return pPixels.GetArrayPointer(); }
+	
+	/** Retrieves the sByte1 data pointer if the format is epfByte1 or otherwise throws an exception. */
+	const sByte1 *GetPointerByte1() const;
+	
+	/** Retrieves the sByte2 data pointer if the format is epfByte2 or otherwise throws an exception. */
+	const sByte2 *GetPointerByte2() const;
+	
+	/** Retrieves the sByte3 data pointer if the format is epfByte3 or otherwise throws an exception. */
+	const sByte3 *GetPointerByte3() const;
+	
+	/** Retrieves the sByte4 data pointer if the format is epfByte4 or otherwise throws an exception. */
+	const sByte4 *GetPointerByte4() const;
+	
+	/** Retrieves the sFloat1 data pointer if the format is epfFloat1 or otherwise throws an exception. */
+	const sFloat1 *GetPointerFloat1() const;
+	
+	/** Retrieves the sFloat2 data pointer if the format is epfFloat2 or otherwise throws an exception. */
+	const sFloat2 *GetPointerFloat2() const;
+	
+	/** Retrieves the sFloat3 data pointer if the format is epfFloat3 or otherwise throws an exception. */
+	const sFloat3 *GetPointerFloat3() const;
+	
+	/** Retrieves the sFloat4 data pointer if the format is epfFloat4 or otherwise throws an exception. */
+	const sFloat4 *GetPointerFloat4() const;
+	
+	/** Retrieves the sInt1 data pointer if the format is epfInt1 or otherwise throws an exception. */
+	const sInt1 *GetPointerInt1() const;
+	
+	/** Retrieves the sDepth data pointer if the format is epfDepth or otherwise throws an exception. */
+	const sDepth *GetPointerDepth() const;
+	
+	/** Retrieves the sStencil data pointer if the format is epfStencil or otherwise throws an exception. */
+	const sStencil *GetPointerStencil() const;
+	
+	/** Retrieves the sDepthStencil data pointer if the format is epfDepthStencil or otherwise throws an exception. */
+	const sDepthStencil *GetPointerDepthStencil() const;
+	
+	/** Retrieves the sDXT1 data pointer if the format is epfDXT1 or otherwise throws an exception. */
+	const sDXT1 *GetPointerDXT1() const;
+	
+	/** Retrieves the sDXT3 data pointer if the format is epfDXT3 or otherwise throws an exception. */
+	const sDXT3 *GetPointerDXT3() const;
+	
 	
 	/** Sets the pixel data to a uniform color. */
-	void SetToIntColor( int red, int green, int blue, int alpha );
+	void SetToIntColor(int red, int green, int blue, int alpha);
 	/** Sets the pixel data to a uniform color. */
-	void SetToUIntColor( unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha );
+	void SetToUIntColor(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha);
 	/** Sets the pixel data to a uniform color. */
-	void SetToFloatColor( float red, float green, float blue, float alpha );
+	void SetToFloatColor(float red, float green, float blue, float alpha);
 	/** Sets the pixel data to a uniform depth/stencil. */
 	void SetToDepthStencil(float depth, int stencil);
 	

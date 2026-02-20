@@ -40,34 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotSmoothness::gdeUOCLightSetSpotSmoothness( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetSpotSmoothness::gdeUOCLightSetSpotSmoothness(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set spot smoothness" );
+	SetShortInfo("@GameDefinition.Undo.OCLightSetSpotSmoothness");
 	
 	pOldValue = light->GetSpotSmoothness();
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetSpotSmoothness::~gdeUOCLightSetSpotSmoothness(){
-	if( pLight ){
-		pLight->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -76,11 +66,11 @@ gdeUOCLightSetSpotSmoothness::~gdeUOCLightSetSpotSmoothness(){
 ///////////////
 
 void gdeUOCLightSetSpotSmoothness::Undo(){
-	pLight->SetSpotSmoothness( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotSmoothness(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetSpotSmoothness::Redo(){
-	pLight->SetSpotSmoothness( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetSpotSmoothness(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

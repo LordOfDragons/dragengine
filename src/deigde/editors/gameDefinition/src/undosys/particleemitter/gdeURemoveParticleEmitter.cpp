@@ -41,34 +41,25 @@
 ////////////////////////////
 
 gdeURemoveParticleEmitter::gdeURemoveParticleEmitter(
-gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter ) :
-pGameDefinition( NULL ),
-pParticleEmitter( NULL )
+gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
+
+pParticleEmitter(nullptr)
 {
-	if( ! gameDefinition || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition || !particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! gameDefinition->GetParticleEmitters().Has( particleEmitter ) ){
-		DETHROW( deeInvalidParam );
+	if(!gameDefinition->GetParticleEmitters().Has(particleEmitter)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove particle emitter" );
+	SetShortInfo("@GameDefinition.Undo.RemoveParticleEmitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveParticleEmitter::~gdeURemoveParticleEmitter(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
-	if( pGameDefinition ){
-		pGameDefinition->FreeReference();
-	}
 }
 
 
@@ -77,9 +68,9 @@ gdeURemoveParticleEmitter::~gdeURemoveParticleEmitter(){
 ///////////////
 
 void gdeURemoveParticleEmitter::Undo(){
-	pGameDefinition->AddParticleEmitter( pParticleEmitter );
+	pGameDefinition->AddParticleEmitter(pParticleEmitter);
 }
 
 void gdeURemoveParticleEmitter::Redo(){
-	pGameDefinition->RemoveParticleEmitter( pParticleEmitter );
+	pGameDefinition->RemoveParticleEmitter(pParticleEmitter);
 }

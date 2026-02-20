@@ -34,8 +34,8 @@
 #include "../ceWindowMain.h"
 #include "../../conversation/ceConversation.h"
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -49,27 +49,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWindowProperties::ceWindowProperties( ceWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+ceWindowProperties::ceWindowProperties(ceWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	igdeWidgetReference panel;
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	pPanelConversation = ceWPConversation::Ref::New(*this);
+	AddChild(pPanelConversation, "@Conversation.WindowProperties.Conversation");
 	
-	panel.TakeOver( pPanelConversation = new ceWPConversation( *this ) );
-	AddChild( panel, "Conversation" );
+	pPanelTopic = ceWPTopic::Ref::New(*this);
+	AddChild(pPanelTopic, "@Conversation.WindowProperties.Topic");
 	
-	panel.TakeOver( pPanelTopic = new ceWPTopic( *this ) );
-	AddChild( panel, "Topic" );
+	pPanelView = ceWPView::Ref::New(*this);
+	AddChild(pPanelView, "@Conversation.WindowProperties.View");
 	
-	panel.TakeOver( pPanelView = new ceWPView( *this ) );
-	AddChild( panel, "View" );
+	pPanelUndoHistory = ceWPUndoHistory::Ref::New(GetEnvironment());
+	AddChild(pPanelUndoHistory, "@Conversation.WindowProperties.Undo");
 	
-	panel.TakeOver( pPanelUndoHistory = new ceWPUndoHistory( GetEnvironment() ) );
-	AddChild( panel, "Undo" );
-	
-	SetActivePanel( 0 ); // conversation
+	SetActivePanel(0); // conversation
 }
 
 ceWindowProperties::~ceWindowProperties(){
@@ -80,15 +78,11 @@ ceWindowProperties::~ceWindowProperties(){
 // Management
 ///////////////
 
-ceWPTopic &ceWindowProperties::GetPanelTopic() const{
-	return *pPanelTopic;
-}
-
-void ceWindowProperties::SetConversation( ceConversation *conversation ){
-	pPanelConversation->SetConversation( conversation );
-	pPanelTopic->SetConversation( conversation );
-	pPanelView->SetConversation( conversation );
-	pPanelUndoHistory->SetConversation( conversation );
+void ceWindowProperties::SetConversation(ceConversation *conversation){
+	pPanelConversation->SetConversation(conversation);
+	pPanelTopic->SetConversation(conversation);
+	pPanelView->SetConversation(conversation);
+	pPanelUndoHistory->SetConversation(conversation);
 }
 
 void ceWindowProperties::OnConversationPathChanged(){

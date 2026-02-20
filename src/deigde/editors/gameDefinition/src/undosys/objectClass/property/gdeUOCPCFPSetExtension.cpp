@@ -41,41 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPCFPSetExtension::gdeUOCPCFPSetExtension( gdeObjectClass *objectClass,
-gdeProperty *property, gdeFilePattern *filePattern, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUOCPCFPSetExtension::gdeUOCPCFPSetExtension(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
+
+pProperty(nullptr)
 {
-	if( ! objectClass || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property || !filePattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property custom file pattern set extension" );
+	SetShortInfo("@GameDefinition.Undo.OCPCFPSetExtension");
 	
 	pOldValue = filePattern->GetDefaultExtension();
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUOCPCFPSetExtension::~gdeUOCPCFPSetExtension(){
-	if( pFilePattern ){
-		pFilePattern->FreeReference();
-	}
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -84,11 +69,11 @@ gdeUOCPCFPSetExtension::~gdeUOCPCFPSetExtension(){
 ///////////////
 
 void gdeUOCPCFPSetExtension::Undo(){
-	pFilePattern->SetDefaultExtension( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pFilePattern->SetDefaultExtension(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPCFPSetExtension::Redo(){
-	pFilePattern->SetDefaultExtension( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pFilePattern->SetDefaultExtension(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

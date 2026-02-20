@@ -40,32 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCATriggerSetAction::ceUCATriggerSetAction( ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator ){
-	if( ! topic || ! action ){
-		DETHROW( deeInvalidParam );
+ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator){
+	if(!topic || !action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pAction = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
 	pOldAction = action->GetAction();
 	pNewAction = newOperator;
 	
-	SetShortInfo( "Action trigger set action" );
+	SetShortInfo("@Conversation.Undo.ActionTriggerSetAction");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCATriggerSetAction::~ceUCATriggerSetAction(){
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -74,11 +65,11 @@ ceUCATriggerSetAction::~ceUCATriggerSetAction(){
 ///////////////
 
 void ceUCATriggerSetAction::Undo(){
-	pAction->SetAction( pOldAction );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetAction(pOldAction);
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCATriggerSetAction::Redo(){
-	pAction->SetAction( pNewAction );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetAction(pNewAction);
+	pTopic->NotifyActionChanged(pAction);
 }

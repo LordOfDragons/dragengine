@@ -55,7 +55,6 @@
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../skin/shader/deoglSkinShader.h"
-#include "../skin/state/deoglSkinState.h"
 #include "../skin/state/deoglSkinStateRenderable.h"
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -76,40 +75,40 @@
 // Class deoglRBillboard::WorldComputeElement
 ///////////////////////////////////////////////
 
-deoglRBillboard::WorldComputeElement::WorldComputeElement( deoglRBillboard &billboard ) :
-deoglWorldComputeElement( eetBillboard, &billboard ),
-pBillboard( billboard ){
+deoglRBillboard::WorldComputeElement::WorldComputeElement(deoglRBillboard &billboard) :
+deoglWorldComputeElement(eetBillboard, &billboard),
+pBillboard(billboard){
 }
 
-void deoglRBillboard::WorldComputeElement::UpdateData( sDataElement &data ) const{
+void deoglRBillboard::WorldComputeElement::UpdateData(sDataElement &data) const{
 	const decDVector &refpos = GetReferencePosition();
-	data.SetExtends( pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos );
-	data.SetLayerMask( pBillboard.GetLayerMask() );
-	data.flags = ( uint32_t )( deoglWorldCompute::eefBillboard
-		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
+	data.SetExtends(pBillboard.GetMinimumExtend() - refpos, pBillboard.GetMaximumExtend() - refpos);
+	data.SetLayerMask(pBillboard.GetLayerMask());
+	data.flags = (uint32_t)(deoglWorldCompute::eefBillboard
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic);
 	data.geometryCount = 1;
 	data.highestLod = 0;
 }
 
-void deoglRBillboard::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+void deoglRBillboard::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry *data) const{
 	const deoglSkinTexture * const skinTexture = pBillboard.GetUseSkinTexture();
-	if( ! skinTexture ){
+	if(!skinTexture){
 		return;
 	}
 	
 	int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
 	
-	SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptBillboard,
+	SetDataGeometry(*data, 0, filters, deoglSkinTexturePipelinesList::eptBillboard,
 		deoglSkinTexturePipelines::emDoubleSided, skinTexture,
 		pBillboard.GetRenderThread().GetDeferredRendering().GetVAOBillboard(),
-		pBillboard.GetSharedSPBRTIGroup().GetRTSInstance(), pBillboard.GetSharedSPBElement()->GetIndex() );
+		pBillboard.GetSharedSPBRTIGroup().GetRTSInstance(), pBillboard.GetSharedSPBElement()->GetIndex());
 	
 	sInfoTUC info;
 	info.geometry = pBillboard.GetTUCGeometry();
 	info.depth = pBillboard.GetTUCDepth();
 	info.counter = pBillboard.GetTUCCounter();
 	info.envMap = pBillboard.GetTUCEnvMap();
-	SetDataGeometryTUCs( *data, info );
+	SetDataGeometryTUCs(*data, info);
 }
 
 
@@ -120,73 +119,64 @@ void deoglRBillboard::WorldComputeElement::UpdateDataGeometries( sDataElementGeo
 // Constructor, destructor
 ////////////////////////////
 
-deoglRBillboard::deoglRBillboard( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRBillboard::deoglRBillboard(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
+pParentWorld(nullptr),
+pOctreeNode(nullptr),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
+pUseSkinTexture(nullptr),
+pLocked(true),
+pSpherical(false),
+pSizeFixedToScreen(false),
+pVisible(true),
 
-pSkin( NULL ),
-pUseSkinTexture( NULL ),
-pDynamicSkin( NULL ),
-pLocked( true ),
-pSpherical( false ),
-pSizeFixedToScreen( false ),
-pVisible( true ),
+pSkinRendered(renderThread, *this),
+pSkyShadowSplitMask(0),
+pSortDistance(0.0f),
+pOccluded(false),
+pDirtyPrepareSkinStateRenderables(true),
+pDirtyRenderSkinStateRenderables(true),
+pRenderEnvMapFadePerTime(1.0f),
+pRenderEnvMapFadeFactor(1.0f),
+pDirtyRenderEnvMap(true),
 
-pSkinState( NULL ),
-pSkinRendered( renderThread, *this ),
-pSkyShadowSplitMask( 0 ),
-pSortDistance( 0.0f ),
-pOccluded( false ),
-pDirtyPrepareSkinStateRenderables( true ),
-pDirtyRenderSkinStateRenderables( true ),
+pTUCDepth(nullptr),
+pTUCGeometry(nullptr),
+pTUCCounter(nullptr),
+pTUCEnvMap(nullptr),
 
-pRenderEnvMap( nullptr ),
-pRenderEnvMapFade( nullptr ),
-pRenderEnvMapFadePerTime( 1.0f ),
-pRenderEnvMapFadeFactor( 1.0f ),
-pDirtyRenderEnvMap( true ),
+pDirtySharedSPBElement(true),
+pDirtyTUCs(true),
 
-pSharedSPBElement( NULL ),
+pSpecialFlags(0),
 
-pTUCDepth( NULL ),
-pTUCGeometry( NULL ),
-pTUCCounter( NULL ),
-pTUCEnvMap( NULL ),
+pCullSphereRadius(0.0f),
+pDirtyCulling(true),
+pRenderVisible(true),
 
-pDirtySharedSPBElement( true ),
-pDirtyTUCs( true ),
+pMarked(false),
 
-pSpecialFlags( 0 ),
+pCSOctreeIndex(0),
 
-pCullSphereRadius( 0.0f ),
-pDirtyCulling( true ),
-pRenderVisible( true ),
+pWorldMarkedRemove(false),
 
-pMarked( false ),
+pLLWorld(this),
 
-pCSOctreeIndex( 0 ),
-
-pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ),
-
-pLLPrepareForRenderWorld( this )
+pLLPrepareForRenderWorld(this)
 {
 	try{
-		pSkinState = new deoglSkinState( renderThread, *this );
+		pSkinState = deoglSkinState::Ref::New(renderThread, *this);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
-	LEAK_CHECK_CREATE( renderThread, Billboard );
+	LEAK_CHECK_CREATE(renderThread, Billboard);
 }
 
 deoglRBillboard::~deoglRBillboard(){
-	LEAK_CHECK_FREE( pRenderThread, Billboard );
+	LEAK_CHECK_FREE(pRenderThread, Billboard);
 	pCleanUp();
 }
 
@@ -195,8 +185,8 @@ deoglRBillboard::~deoglRBillboard(){
 // Management
 ///////////////
 
-void deoglRBillboard::SetParentWorld( deoglRWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglRBillboard::SetParentWorld(deoglRWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
@@ -207,8 +197,8 @@ void deoglRBillboard::SetParentWorld( deoglRWorld *parentWorld ){
 	
 	pParentWorld = parentWorld;
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveBillboard( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveBillboard(this);
 	}
 	
 	pDirtyRenderEnvMap = true;
@@ -216,52 +206,42 @@ void deoglRBillboard::SetParentWorld( deoglRWorld *parentWorld ){
 
 
 
-void deoglRBillboard::SetOctreeNode( deoglWorldOctree *octreeNode ){
+void deoglRBillboard::SetOctreeNode(deoglWorldOctree *octreeNode){
 	pOctreeNode = octreeNode;
 }
 
 void deoglRBillboard::UpdateOctreeNode(){
-	if( ! pParentWorld ){
+	if(!pParentWorld){
 		return;
 	}
 	
 	// insert into parent world octree
-	if( pVisible ){
-		pParentWorld->GetOctree().InsertBillboardIntoTree( this );
+	if(pVisible){
+		pParentWorld->GetOctree().InsertBillboardIntoTree(this);
 		
-		if( pWorldComputeElement->GetWorldCompute() ){
+		if(pWorldComputeElement->GetWorldCompute()){
 			pWorldComputeElement->ComputeUpdateElement();
 			
 		}else{
-			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+			pParentWorld->GetCompute().AddElement(pWorldComputeElement);
 		}
 		
 	}else{
 		pWorldComputeElement->RemoveFromCompute();
-		if( pOctreeNode ){
-			pOctreeNode->RemoveBillboard( this );
+		if(pOctreeNode){
+			pOctreeNode->RemoveBillboard(this);
 		}
 	}
 }
 
 
 
-void deoglRBillboard::SetSkin( deoglRSkin *skin ){
-	if( skin == pSkin ){
+void deoglRBillboard::SetSkin(deoglRSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
-	
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
-	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt( 0 ) : NULL;
-	
-	if( skin ){
-		skin->AddReference();
-	}
-	
+	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : nullptr;
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
 	
@@ -270,91 +250,81 @@ void deoglRBillboard::SetSkin( deoglRSkin *skin ){
 	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
-void deoglRBillboard::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
+void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
-	if( dynamicSkin == pDynamicSkin ){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if( pDynamicSkin ){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if( dynamicSkin ){
-		dynamicSkin->AddReference();
-	}
-	
 	pSkinRendered.SetDirty();
 }
 
 
 
-void deoglRBillboard::SetPosition( const decDVector &position ){
+void deoglRBillboard::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void deoglRBillboard::SetAxis( const decVector &axis ){
+void deoglRBillboard::SetAxis(const decVector &axis){
 	pAxis = axis;
 }
 
-void deoglRBillboard::SetSize( const decVector2 &size ){
+void deoglRBillboard::SetSize(const decVector2 &size){
 	pSize = size;
 }
 
-void deoglRBillboard::SetOffset( const decVector2 &offset ){
+void deoglRBillboard::SetOffset(const decVector2 &offset){
 	pOffset = offset;
 }
 
-void deoglRBillboard::SetLayerMask( const decLayerMask &layerMask ){
+void deoglRBillboard::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
-void deoglRBillboard::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void deoglRBillboard::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
 	pVisible = visible;
 	
-	if( visible ){
+	if(visible){
 		pRequiresPrepareForRender();
 	}
 }
 
-void deoglRBillboard::SetLocked( bool locked ){
+void deoglRBillboard::SetLocked(bool locked){
 	pLocked = locked;
 }
 
-void deoglRBillboard::SetSpherical( bool spherical ){
+void deoglRBillboard::SetSpherical(bool spherical){
 	pSpherical = spherical;
 }
 
-void deoglRBillboard::SetSizeFixedToScreen( bool sizeFixedToScreen ){
+void deoglRBillboard::SetSizeFixedToScreen(bool sizeFixedToScreen){
 	pSizeFixedToScreen = sizeFixedToScreen;
 }
 
-void deoglRBillboard::UpdateSkin( float elapsed ){
+void deoglRBillboard::UpdateSkin(float elapsed){
 	// WARNING called from main thread during synchronization time
 	
-	pSkinState->AdvanceTime( elapsed );
-	if( pUseSkinTexture ){
-		if( pUseSkinTexture->GetDynamicChannels() ){
+	pSkinState->AdvanceTime(elapsed);
+	if(pUseSkinTexture){
+		if(pUseSkinTexture->GetDynamicChannels()){
 			MarkParamBlocksDirty();
 			MarkTUCsDirty();
 			
-		}else if( pUseSkinTexture->GetCalculatedProperties()
-		|| pUseSkinTexture->GetConstructedProperties() ){
+		}else if(pUseSkinTexture->GetCalculatedProperties()
+		|| pUseSkinTexture->GetConstructedProperties()){
 			MarkParamBlocksDirty();
 		}
 	}
 	
-	if( pRenderEnvMapFade ){
+	if(pRenderEnvMapFade){
 		pRenderEnvMapFadeFactor += pRenderEnvMapFadePerTime * elapsed;
 		
-		if( pRenderEnvMapFadeFactor >= 1.0f ){
-			SetRenderEnvMapFade( NULL );
+		if(pRenderEnvMapFadeFactor >= 1.0f){
+			SetRenderEnvMapFade(nullptr);
 			pRenderEnvMapFadeFactor = 1.0f;
 		}
 	}
@@ -365,7 +335,7 @@ void deoglRBillboard::InitSkinStateStates(){
 }
 
 void deoglRBillboard::UpdateSkinStateStates(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->UpdateAll();
 	}
 }
@@ -378,8 +348,8 @@ void deoglRBillboard::DirtyPrepareSkinStateRenderables(){
 
 void deoglRBillboard::UpdateRenderableMapping(){
 	pSkinState->RemoveAllRenderables();
-	if( pSkin && pDynamicSkin ){
-		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	if(pSkin && pDynamicSkin){
+		pSkinState->AddRenderables(*pSkin, *pDynamicSkin);
 	}
 	
 	MarkParamBlocksDirty();
@@ -387,7 +357,7 @@ void deoglRBillboard::UpdateRenderableMapping(){
 }
 
 void deoglRBillboard::DynamicSkinRenderablesChanged(){
-	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+	if(!pDynamicSkin || !pSkin || !pSkin->GetHasRenderables()){
 		return;
 	}
 	
@@ -395,38 +365,38 @@ void deoglRBillboard::DynamicSkinRenderablesChanged(){
 	MarkTUCsDirty();
 }
 
-void deoglRBillboard::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pSkinState ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
+void deoglRBillboard::PrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
+	if(pSkinState){
+		pSkinState->PrepareRenderables(pSkin, pDynamicSkin, renderPlanMask);
 	}
 }
 
-void deoglRBillboard::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pSkinState ){
-		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
+void deoglRBillboard::RenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask){
+	if(pSkinState){
+		pSkinState->RenderRenderables(pSkin, pDynamicSkin, renderPlanMask);
 	}
 }
 
 void deoglRBillboard::PrepareSkinStateConstructed(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->PrepareConstructedProperties();
 	}
 }
 
-void deoglRBillboard::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
-	pSkinState->AddRenderPlans( plan );
-	pSkinRendered.AddRenderPlans( plan );
+void deoglRBillboard::AddSkinStateRenderPlans(deoglRenderPlan &plan){
+	pSkinState->AddRenderPlans(plan);
+	pSkinRendered.AddRenderPlans(plan);
 }
 
 
 
-void deoglRBillboard::UpdateExtends( const deBillboard &billboard ){
+void deoglRBillboard::UpdateExtends(const deBillboard &billboard){
 	const decDVector &position = billboard.GetPosition();
 	const decVector2 &size = billboard.GetSize();
 	const float width = size.x * 0.5f;
 	const float height = size.y * 0.5f;
 	
-	if( width > height ){
+	if(width > height){
 		pMinExtend.x = position.x - width;
 		pMinExtend.y = position.y - width;
 		pMinExtend.z = position.z - width;
@@ -446,8 +416,8 @@ void deoglRBillboard::UpdateExtends( const deBillboard &billboard ){
 
 
 
-deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
-	switch( type ){
+deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const{
+	switch(type){
 	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
@@ -466,34 +436,33 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForPipelineType( deoglSkinTexturePip
 		return GetTUCEnvMap();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
-	if( ! pUseSkinTexture ){
-		return NULL;
+deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
+	if(!pUseSkinTexture){
+		return nullptr;
 	}
 	
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-		GetAt( deoglSkinTexturePipelinesList::eptBillboard ).GetWithRef( type ).GetShader();
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
-	deoglTexUnitsConfig *tuc = NULL;
+		GetAt(deoglSkinTexturePipelinesList::eptBillboard).GetWithRef(type).GetShader();
+	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
+	deoglRDynamicSkin::Ref dynamicSkin;
+	deoglTexUnitsConfig *tuc = nullptr;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
-		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], pParentWorld->GetSkyEnvironmentMap(),
-			pRenderEnvMap, pRenderEnvMapFade );
+		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, nullptr, dynamicSkin);
+		skinShader.SetTUCPerObjectEnvMap(&units[0], pParentWorld->GetSkyEnvironmentMap(),
+			pRenderEnvMap, pRenderEnvMapFade);
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetTextureUnitCount(),
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			&units[0], skinShader.GetTextureUnitCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if( ! tuc ){
-		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	if(!tuc){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(nullptr, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc ->EnsureRTSTexture();
 	
@@ -517,17 +486,17 @@ void deoglRBillboard::MarkTUCsDirty(){
 
 
 
-void deoglRBillboard::UpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
-int element, deoglSkinShader &skinShader ){
-	if( ! pUseSkinTexture ){
+void deoglRBillboard::UpdateInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
+int element, deoglSkinShader &skinShader){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
 	// update shader parameter block
 	int target;
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-	if( target != -1 ){
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixModel);
+	if(target != -1){
 		const decDVector &referencePosition = pParentWorld->GetReferencePosition();
 		decDMatrix matrix;
 		
@@ -539,58 +508,58 @@ int element, deoglSkinShader &skinShader ){
 		matrix.a22 = pAxis.y;
 		matrix.a23 = pAxis.z;
 		
-		paramBlock.SetParameterDataMat4x3( target, element, matrix );
+		paramBlock.SetParameterDataMat4x3(target, element, matrix);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
-	if( target != -1 ){
-		paramBlock.SetParameterDataMat3x3( target, element, decMatrix() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixNormal);
+	if(target != -1){
+		paramBlock.SetParameterDataMat3x3(target, element, decMatrix());
 		//paramBlock.SetParameterDataMat3x3( target, element, decMatrix().GetRotationMatrix().Invert() );
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardPosTransform );
-	if( target != -1 ){
-		decVector2 scale( pSize.x * 0.5f, pSize.y * 0.5f );
-		decVector2 offset( pOffset.x, pOffset.y );
-		paramBlock.SetParameterDataVec4( target, scale.x, scale.y, offset.x, offset.y );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutBillboardPosTransform);
+	if(target != -1){
+		decVector2 scale(pSize.x * 0.5f, pSize.y * 0.5f);
+		decVector2 offset(pOffset.x, pOffset.y);
+		paramBlock.SetParameterDataVec4(target, scale.x, scale.y, offset.x, offset.y);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardParams );
-	if( target != -1 ){
-		paramBlock.SetParameterDataBVec3( target, pLocked, pSpherical, pSizeFixedToScreen );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutBillboardParams);
+	if(target != -1){
+		paramBlock.SetParameterDataBVec3(target, pLocked, pSpherical, pSizeFixedToScreen);
 	}
 	
 	// per texture properties
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
-	if( target != -1 ){
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixTexCoord);
+	if(target != -1){
 		decTexMatrix2 matrix;
 		
 		const deoglSkinTextureProperty &propertyOffset =
-			pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordOffset );
+			pUseSkinTexture->GetMaterialPropertyAt(deoglSkinTexture::empTexCoordOffset);
 		const deoglSkinTextureProperty &propertyScale =
-			pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordScale );
+			pUseSkinTexture->GetMaterialPropertyAt(deoglSkinTexture::empTexCoordScale);
 		const deoglSkinTextureProperty &propertyRotate =
-			pUseSkinTexture->GetMaterialPropertyAt( deoglSkinTexture::empTexCoordRotate );
+			pUseSkinTexture->GetMaterialPropertyAt(deoglSkinTexture::empTexCoordRotate);
 		
-		const decVector2 offset( propertyOffset.ResolveVector2(
-			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordOffset() ) );
-		const decVector2 scale( propertyScale.ResolveVector2(
-			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordScale() ) );
+		const decVector2 offset(propertyOffset.ResolveVector2(
+			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordOffset()));
+		const decVector2 scale(propertyScale.ResolveVector2(
+			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordScale()));
 		const float rotate = propertyRotate.ResolveAsFloat(
-			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordRotate() );
+			pSkinState, pDynamicSkin, pUseSkinTexture->GetTexCoordRotate());
 		
-		const bool hasOffset = ! decVector2().IsEqualTo( offset );
-		const bool hasScale = ! decVector2( 1.0f, 1.0f ).IsEqualTo( scale );
-		const bool hasRotate = fabsf( rotate ) > FLOAT_SAFE_EPSILON;
+		const bool hasOffset = !decVector2().IsEqualTo(offset);
+		const bool hasScale = !decVector2(1.0f, 1.0f).IsEqualTo(scale);
+		const bool hasRotate = fabsf(rotate) > FLOAT_SAFE_EPSILON;
 		
-		if( hasScale || hasRotate ){
-			matrix = decTexMatrix2::CreateCenterSRT( scale, rotate * TWO_PI, offset ) * matrix;
+		if(hasScale || hasRotate){
+			matrix = decTexMatrix2::CreateCenterSRT(scale, rotate * TWO_PI, offset) * matrix;
 			
-		}else if( hasOffset ){
-			matrix = decTexMatrix2::CreateTranslation( offset ) * matrix;
+		}else if(hasOffset){
+			matrix = decTexMatrix2::CreateTranslation(offset) * matrix;
 		}
 		
-		paramBlock.SetParameterDataMat3x2( target, element, matrix );
+		paramBlock.SetParameterDataMat3x2(target, element, matrix);
 	}
 	
 	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
@@ -598,74 +567,74 @@ int element, deoglSkinShader &skinShader ){
 		paramBlock.SetParameterDataBool(target, element, true);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, element, pRenderEnvMapFadeFactor );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutEnvMapFade);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, element, pRenderEnvMapFadeFactor);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
-	if( target != -1 ){
-		if( pSkinState ){
-			paramBlock.SetParameterDataVec2( target, element, pSkinState->GetVariationSeed() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutVariationSeed);
+	if(target != -1){
+		if(pSkinState){
+			paramBlock.SetParameterDataVec2(target, element, pSkinState->GetVariationSeed());
 			
 		}else{
-			paramBlock.SetParameterDataVec2( target, element, 0.0f, 0.0f );
+			paramBlock.SetParameterDataVec2(target, element, 0.0f, 0.0f);
 		}
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
-	if( target != -1 ){
-		paramBlock.SetParameterDataVec4( target, element, 0.0f, 0.0f, 1.0f, 0.0f );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutInstSkinClipPlaneNormal);
+	if(target != -1){
+		paramBlock.SetParameterDataVec4(target, element, 0.0f, 0.0f, 1.0f, 0.0f);
 	}
 	
-	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
+	skinShader.SetTexParamsInInstParamSPB(paramBlock, element, *pUseSkinTexture);
 	
 	// per texture dynamic texture properties
-	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture, pSkinState, pDynamicSkin );
+	skinShader.SetDynTexParamsInInstParamSPB(paramBlock, element, *pUseSkinTexture, pSkinState, pDynamicSkin);
 }
 
 
 
-void deoglRBillboard::UpdateCubeFaceVisibility( const decDVector &cubePosition ){
+void deoglRBillboard::UpdateCubeFaceVisibility(const decDVector &cubePosition){
 	deoglCubeHelper::CalcFaceVisibility(
-		pMinExtend - cubePosition, pMaxExtend - cubePosition, pCubeFaceVisible );
+		pMinExtend - cubePosition, pMaxExtend - cubePosition, pCubeFaceVisible);
 	
 	// DEBUG
 	/*
-	pRenderThread.GetLogger().LogInfoFormat( "DEBUG: (%g,%g,%g) [%d, %d, %d, %d, %d, %d] {(%g,%g,%g), (%g,%g,%g)}",
+	pRenderThread.GetLogger().LogInfoFormat("DEBUG: (%g,%g,%g) [%d, %d, %d, %d, %d, %d] {(%g,%g,%g), (%g,%g,%g)}",
 		pMatrix.GetPosition().x, pMatrix.GetPosition().y, pMatrix.GetPosition().z,
 		    pCubeFaceVisible[0], pCubeFaceVisible[1], pCubeFaceVisible[2],
 		    pCubeFaceVisible[3], pCubeFaceVisible[4], pCubeFaceVisible[5],
 		    (pMinExtend - cubePosition).x, (pMinExtend - cubePosition).y, (pMinExtend - cubePosition).z,
-		    (pMaxExtend - cubePosition).x, (pMaxExtend - cubePosition).y, (pMaxExtend - cubePosition).z );
+		    (pMaxExtend - cubePosition).x, (pMaxExtend - cubePosition).y, (pMaxExtend - cubePosition).z);
 	*/
 }
 
-bool deoglRBillboard::GetCubeFaceVisible( int cubeFace ) const{
-	if( cubeFace < 0 || cubeFace > 5 ){
-		DETHROW( deeInvalidParam );
+bool deoglRBillboard::GetCubeFaceVisible(int cubeFace) const{
+	if(cubeFace < 0 || cubeFace > 5){
+		DETHROW(deeInvalidParam);
 	}
-	return pCubeFaceVisible[ cubeFace ];
+	return pCubeFaceVisible[cubeFace];
 }
 
 void deoglRBillboard::SetSpecialFlagsFromFaceVisibility(){
 	pSpecialFlags = 0;
-	if( pCubeFaceVisible[ 0 ] ){
+	if(pCubeFaceVisible[0]){
 		pSpecialFlags |= 0x1;
 	}
-	if( pCubeFaceVisible[ 1 ] ){
+	if(pCubeFaceVisible[1]){
 		pSpecialFlags |= 0x2;
 	}
-	if( pCubeFaceVisible[ 2 ] ){
+	if(pCubeFaceVisible[2]){
 		pSpecialFlags |= 0x8;
 	}
-	if( pCubeFaceVisible[ 3 ] ){
+	if(pCubeFaceVisible[3]){
 		pSpecialFlags |= 0x4;
 	}
-	if( pCubeFaceVisible[ 4 ] ){
+	if(pCubeFaceVisible[4]){
 		pSpecialFlags |= 0x10;
 	}
-	if( pCubeFaceVisible[ 5 ] ){
+	if(pCubeFaceVisible[5]){
 		pSpecialFlags |= 0x20;
 	}
 }
@@ -673,7 +642,7 @@ void deoglRBillboard::SetSpecialFlagsFromFaceVisibility(){
 
 
 const decDVector &deoglRBillboard::GetCullSphereCenter(){
-	if( pDirtyCulling ){
+	if(pDirtyCulling){
 		pUpdateCullSphere();
 		pDirtyCulling = false;
 	}
@@ -682,7 +651,7 @@ const decDVector &deoglRBillboard::GetCullSphereCenter(){
 }
 
 float deoglRBillboard::GetCullSphereRadius(){
-	if( pDirtyCulling ){
+	if(pDirtyCulling){
 		pUpdateCullSphere();
 		pDirtyCulling = false;
 	}
@@ -696,33 +665,33 @@ void deoglRBillboard::SetDirtyCulling(){
 
 
 
-void deoglRBillboard::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition ){
-	if( ! pUseSkinTexture ){
+void deoglRBillboard::StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition){
+	if(!pUseSkinTexture){
 		return;
 	}
 	
-	const decVector minExtend( pMinExtend - cameraPosition );
-	const decVector maxExtend( pMaxExtend - cameraPosition );
-	occlusionTest.AddInputData( minExtend, maxExtend, this );
+	const decVector minExtend(pMinExtend - cameraPosition);
+	const decVector maxExtend(pMaxExtend - cameraPosition);
+	occlusionTest.AddInputData(minExtend, maxExtend, this);
 }
 
 void deoglRBillboard::OcclusionTestInvisible(){
 	pRenderVisible = false;
 }
 
-void deoglRBillboard::SetRenderVisible( bool visible ){
+void deoglRBillboard::SetRenderVisible(bool visible){
 	pRenderVisible = visible;
 }
 
-void deoglRBillboard::SetSortDistance( float distance ){
+void deoglRBillboard::SetSortDistance(float distance){
 	pSortDistance = distance;
 }
 
-void deoglRBillboard::SetOccluded( bool occluded ){
+void deoglRBillboard::SetOccluded(bool occluded){
 	pOccluded = occluded;
 }
 
-void deoglRBillboard::SetSkyShadowSplitMask( int mask ){
+void deoglRBillboard::SetSkyShadowSplitMask(int mask){
 	pSkyShadowSplitMask = mask;
 }
 
@@ -731,11 +700,11 @@ void deoglRBillboard::SetSkyShadowSplitMask( int mask ){
 // Render world usage
 ///////////////////////
 
-void deoglRBillboard::SetWorldMarkedRemove( bool marked ){
+void deoglRBillboard::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoglRBillboard::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
+void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// note about the switch process. we have to wait setting the fading environment map until the
 	// new environment map has been set. if this is not done the SetRenderEnvMapFade function tries
 	// to add the billboard to the billboard list of the same environment map as the current one
@@ -746,56 +715,51 @@ void deoglRBillboard::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	// switch may still occur. a possible solution would be to delay the switch until the fading
 	// is finished. for this we would have to keep the dirty flag set, which is currently set
 	// outside somewhere
-	if( envmap == pRenderEnvMap ){
+	if(envmap == pRenderEnvMap){
 		return;
 	}
 	
-	deoglEnvironmentMap * const prevEnvMap = pRenderEnvMap;
-	const deObjectReference guard( prevEnvMap );
+	const deoglEnvironmentMap::Ref guard(pRenderEnvMap);
 	
-	if( pRenderEnvMap ){
-		pRenderEnvMap->GetBillboardList().RemoveIfExisting( this );
-		pRenderEnvMap->FreeReference();
+	if(pRenderEnvMap){
+		pRenderEnvMap->GetBillboardList().Remove(this);
 	}
 	
 	pRenderEnvMap = envmap;
 	
-	if( envmap ){
-		envmap->AddReference();
-		envmap->GetBillboardList().Add( this );
+	if(envmap){
+		envmap->GetBillboardList().Add(this);
 	}
 	
 	// now it is safe to set the fade env map
-	SetRenderEnvMapFade( prevEnvMap );
+	SetRenderEnvMapFade(guard);
 	pRenderEnvMapFadeFactor = 0.0f;
 	
-	if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
+	if(!guard){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
 		MarkTUCsDirty();
 	}
 }
 
-void deoglRBillboard::SetRenderEnvMapFade( deoglEnvironmentMap *envmap ){
-	if( envmap == pRenderEnvMapFade ){
+void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
+	if(envmap == pRenderEnvMapFade){
 		return;
 	}
 	
-	if( pRenderEnvMapFade ){
-		pRenderEnvMapFade->GetBillboardList().RemoveIfExisting( this );
-		pRenderEnvMapFade->FreeReference();
+	if(pRenderEnvMapFade){
+		pRenderEnvMapFade->GetBillboardList().Remove(this);
 	}
 	
 	pRenderEnvMapFade = envmap;
 	
-	if( envmap ){
-		envmap->AddReference();
-		envmap->GetBillboardList().Add( this );
+	if(envmap){
+		envmap->GetBillboardList().Add(this);
 	}
 	
 	MarkTUCsDirty();
 }
 
-void deoglRBillboard::SetRenderEnvMapFadePerTime( float fadePerTime ){
-	if( fadePerTime < 0.1f ){
+void deoglRBillboard::SetRenderEnvMapFadePerTime(float fadePerTime){
+	if(fadePerTime < 0.1f){
 		pRenderEnvMapFadePerTime = 0.1f;
 		
 	}else{
@@ -803,15 +767,15 @@ void deoglRBillboard::SetRenderEnvMapFadePerTime( float fadePerTime ){
 	}
 }
 
-void deoglRBillboard::SetRenderEnvMapFadeFactor( float factor ){
-	if( factor < 0.0f ){
+void deoglRBillboard::SetRenderEnvMapFadeFactor(float factor){
+	if(factor < 0.0f){
 		factor = 0.0f;
 		
-	}else if( factor > 1.0f ){
+	}else if(factor > 1.0f){
 		factor = 1.0f;
 	}
 	
-	if( fabsf( factor - pRenderEnvMapFadeFactor ) > 0.001f ){
+	if(fabsf(factor - pRenderEnvMapFadeFactor) > 0.001f){
 		pRenderEnvMapFadeFactor = factor;
 		
 	}
@@ -822,16 +786,16 @@ void deoglRBillboard::WorldEnvMapLayoutChanged(){
 }
 
 void deoglRBillboard::UpdateRenderEnvMap(){
-	if( ! pDirtyRenderEnvMap ){
+	if(!pDirtyRenderEnvMap){
 		return;
 	}
 	pDirtyRenderEnvMap = false;
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+	if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap){
 		return;
 	}
 	
-	DEASSERT_NOTNULL( pParentWorld )
+	DEASSERT_NOTNULL(pParentWorld)
 	
 	// for the time being we simply pick the environment map that is closest to the billboard position.
 	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
@@ -851,48 +815,40 @@ void deoglRBillboard::UpdateRenderEnvMap(){
 	deoglFindBestEnvMap visitor;
 	decDVector position;
 	
-	position = ( pMinExtend + pMaxExtend ) * 0.5;
+	position = (pMinExtend + pMaxExtend) * 0.5;
 	
-	visitor.SetPosition( position );
+	visitor.SetPosition(position);
 	//pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
-	visitor.VisitList( pParentWorld->GetEnvMapList() );
+	visitor.VisitList(pParentWorld->GetEnvMapList());
 	
-	if( visitor.GetEnvMap() ){
-		SetRenderEnvMap( visitor.GetEnvMap() );
+	if(visitor.GetEnvMap()){
+		SetRenderEnvMap(visitor.GetEnvMap());
 		
-	}else if( pParentWorld->GetSkyEnvironmentMap() ){
-		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
+	}else if(pParentWorld->GetSkyEnvironmentMap()){
+		SetRenderEnvMap(pParentWorld->GetSkyEnvironmentMap());
 		
 	}else{
-		SetRenderEnvMap( nullptr );
-		SetRenderEnvMapFade( nullptr );
+		SetRenderEnvMap(nullptr);
+		SetRenderEnvMapFade(nullptr);
 		pRenderEnvMapFadeFactor = 1.0f;
 	}
 	//pOgl->LogInfoFormat( "update billboard %p render env map %p\n", pBillboard, pRenderEnvMap );
 }
 
 void deoglRBillboard::InvalidateRenderEnvMap(){
-	if( ! pRenderEnvMap && ! pRenderEnvMapFade ){
+	if(!pRenderEnvMap && !pRenderEnvMapFade){
 		return;
 	}
 	
-	SetRenderEnvMap( nullptr );
-	SetRenderEnvMapFade( nullptr );
+	SetRenderEnvMap(nullptr);
+	SetRenderEnvMapFade(nullptr);
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglRBillboard::InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap ){
-	if( pRenderEnvMap == envmap || pRenderEnvMapFade == envmap ){
+void deoglRBillboard::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
+	if(pRenderEnvMap == envmap || pRenderEnvMapFade == envmap){
 		InvalidateRenderEnvMap();
 	}
-}
-
-void deoglRBillboard::SetLLWorldPrev( deoglRBillboard *billboard ){
-	pLLWorldPrev = billboard;
-}
-
-void deoglRBillboard::SetLLWorldNext( deoglRBillboard *billboard ){
-	pLLWorldNext = billboard;
 }
 
 
@@ -904,11 +860,11 @@ void deoglRBillboard::WorldReferencePointChanged(){
 
 
 
-void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
+void deoglRBillboard::PrepareForRender(deoglRenderPlan&, const deoglRenderPlanMasked *mask){
 	PrepareSkinStateConstructed();
 	
-	if( pDirtyPrepareSkinStateRenderables ){
-		PrepareSkinStateRenderables( mask );
+	if(pDirtyPrepareSkinStateRenderables){
+		PrepareSkinStateRenderables(mask);
 		pDirtyPrepareSkinStateRenderables = false;
 		pDirtyRenderSkinStateRenderables = true;
 	}
@@ -917,16 +873,16 @@ void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanM
 	pPrepareParamBlocks();
 }
 
-void deoglRBillboard::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
-	if( pDirtyRenderSkinStateRenderables ){
-		RenderSkinStateRenderables( mask );
+void deoglRBillboard::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
+	if(pDirtyRenderSkinStateRenderables){
+		RenderSkinStateRenderables(mask);
 		pDirtyRenderSkinStateRenderables = false;
 	}
 }
 
 void deoglRBillboard::PrepareQuickDispose(){
-	pParentWorld = NULL;
-	pOctreeNode = NULL;
+	pParentWorld = nullptr;
+	pOctreeNode = nullptr;
 }
 
 
@@ -935,38 +891,21 @@ void deoglRBillboard::PrepareQuickDispose(){
 //////////////////////
 
 void deoglRBillboard::pCleanUp(){
-	SetParentWorld( NULL );
-	
-	if( pSkin ){
-		pSkin->FreeReference();
-	}
-	if( pDynamicSkin ){
-		pDynamicSkin->FreeReference();
-	}
-	if( pRenderEnvMap ){
-		pRenderEnvMap->FreeReference();
-	}
-	if( pRenderEnvMapFade ){
-		pRenderEnvMapFade->FreeReference();
-	}
-	
-	if( pSharedSPBElement ){
-		pSharedSPBElement->FreeReference();
-	}
-	if( pTUCDepth ){
+	SetParentWorld(nullptr);
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
 	}
-	if( pTUCCounter ){
+	if(pTUCCounter){
 		pTUCCounter->RemoveUsage();
 	}
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
 	}
-	if( pSkinState ){
-		delete pSkinState;
+	if(pSkinState){
+		pSkinState->DropOwner();
 	}
 }
 
@@ -976,69 +915,69 @@ void deoglRBillboard::pUpdateCullSphere(){
 	deoglDCollisionSphere sphere;
 	deoglDCollisionBox box;
 	
-	box.SetFromExtends( pMinExtend, pMaxExtend );
-	box.GetEnclosingSphere( &sphere );
+	box.SetFromExtends(pMinExtend, pMaxExtend);
+	box.GetEnclosingSphere(&sphere);
 	
 	pCullSphereCenter = sphere.GetCenter();
-	pCullSphereRadius = ( float )sphere.GetRadius();
+	pCullSphereRadius = (float)sphere.GetRadius();
 }
 
 void deoglRBillboard::pPrepareTUCs(){
-	if( ! pDirtyTUCs ){
+	if(!pDirtyTUCs){
 		return;
 	}
 	
 	// depth
-	if( pTUCDepth ){
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
+		pTUCDepth = nullptr;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
+	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 	
 	// geometry
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
+		pTUCGeometry = nullptr;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
+	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
 	// counter
-	if( pTUCCounter ){
+	if(pTUCCounter){
 		pTUCCounter->RemoveUsage();
-		pTUCCounter = NULL;
+		pTUCCounter = nullptr;
 	}
-	pTUCCounter = BareGetTUCFor( deoglSkinTexturePipelines::etCounter );
+	pTUCCounter = BareGetTUCFor(deoglSkinTexturePipelines::etCounter);
 	
 	// envmap
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
+		pTUCEnvMap = nullptr;
 	}
 	
-	if( pUseSkinTexture ){
-		deoglTexUnitConfig unit[ 8 ];
+	if(pUseSkinTexture){
+		deoglTexUnitConfig unit[8];
 		
-		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+		if(pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV()){
+			unit[0].EnableArrayTextureFromChannel(pRenderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
-				pRenderThread.GetDefaultTextures().GetColorArray() );
+				pRenderThread.GetDefaultTextures().GetColorArray());
 			
-			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+			unit[1].EnableArrayTextureFromChannel(pRenderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
-				pRenderThread.GetDefaultTextures().GetEmissivityArray() );
+				pRenderThread.GetDefaultTextures().GetEmissivityArray());
 			
 		}else{
-			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+			unit[0].EnableTextureFromChannel(pRenderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
-				pRenderThread.GetDefaultTextures().GetColor() );
+				pRenderThread.GetDefaultTextures().GetColor());
 			
-			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+			unit[1].EnableTextureFromChannel(pRenderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
-				pRenderThread.GetDefaultTextures().GetEmissivity() );
+				pRenderThread.GetDefaultTextures().GetEmissivity());
 		}
 		
-		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(&unit[0], 2,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 		pTUCEnvMap->EnsureRTSTexture();
 	}
 	
@@ -1047,14 +986,14 @@ void deoglRBillboard::pPrepareTUCs(){
 }
 
 void deoglRBillboard::pPrepareParamBlocks(){
-	if( ! pSharedSPBElement ){
-		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+	if(!pSharedSPBElement){
+		if(pRenderThread.GetChoices().GetSharedSPBUseSSBO()){
 			pSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceSSBO ).AddElement();
+				.GetSharedSPBList(deoglRTBufferObject::esspblSkinInstanceSSBO).AddElement();
 			
-		}else if( pRenderThread.GetChoices().GetGlobalSharedSPBLists() ){
+		}else if(pRenderThread.GetChoices().GetGlobalSharedSPBLists()){
 			pSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceUBO ).AddElement();
+				.GetSharedSPBList(deoglRTBufferObject::esspblSkinInstanceUBO).AddElement();
 			
 		}else{
 			pSharedSPBElement = pRenderThread.GetBufferObject().GetBillboardSPBListUBO().AddElement();
@@ -1063,42 +1002,42 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		pDirtySharedSPBElement = true;
 	}
 	
-	if( pDirtySharedSPBElement ){
-		if( pSharedSPBElement && pUseSkinTexture ){
+	if(pDirtySharedSPBElement){
+		if(pSharedSPBElement && pUseSkinTexture){
 			// it does not matter which shader type we use since all are required to use the
 			// same shared spb instance layout
 			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-				GetAt( deoglSkinTexturePipelinesList::eptBillboard ).
-				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
+				GetAt(deoglSkinTexturePipelinesList::eptBillboard).
+				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			// update parameter block area belonging to this element
-			UpdateInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ),
-				pSharedSPBElement->GetIndex(), skinShader );
+			UpdateInstanceParamBlock(deoglSharedSPBElementMapBuffer(*pSharedSPBElement),
+				pSharedSPBElement->GetIndex(), skinShader);
 		}
 		
 		pDirtySharedSPBElement = false;
 	}
 	
-	if( ! pSharedSPBRTIGroup && pSharedSPBElement ){
+	if(!pSharedSPBRTIGroup && pSharedSPBElement){
 		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
 		deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
-		pSharedSPBRTIGroup.TakeOver( list.GetWith( spb ) );
+		pSharedSPBRTIGroup = list.GetWith(spb);
 		
-		if( ! pSharedSPBRTIGroup ){
-			pSharedSPBRTIGroup.TakeOver( list.AddWith( spb ) );
+		if(!pSharedSPBRTIGroup){
+			pSharedSPBRTIGroup = list.AddWith(spb);
 			
 			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
-			rtsi.SetSubInstanceSPB( &spb );
-			rtsi.SetFirstPoint( 0 );
-			rtsi.SetFirstIndex( 0 );
-			rtsi.SetPointCount( 4 );
-			rtsi.SetPrimitiveType( GL_TRIANGLE_FAN );
+			rtsi.SetSubInstanceSPB(&spb);
+			rtsi.SetFirstPoint(0);
+			rtsi.SetFirstIndex(0);
+			rtsi.SetPointCount(4);
+			rtsi.SetPrimitiveType(GL_TRIANGLE_FAN);
 		}
 	}
 }
 
 void deoglRBillboard::pRequiresPrepareForRender(){
-	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
-		pParentWorld->AddPrepareForRenderBillboard( this );
+	if(!pLLPrepareForRenderWorld.GetList() && pParentWorld){
+		pParentWorld->AddPrepareForRenderBillboard(this);
 	}
 }

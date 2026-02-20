@@ -37,31 +37,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigatorPath::deNavigatorPath() :
-pPoints( NULL ),
-pCount( 0 ),
-pSize( 0 ){
+deNavigatorPath::deNavigatorPath()
+{
 }
 
-deNavigatorPath::deNavigatorPath( const deNavigatorPath &path ) :
-pPoints( NULL ),
-pCount( 0 ),
-pSize( 0 )
+deNavigatorPath::deNavigatorPath(const deNavigatorPath &path) :
+pPoints(path.pPoints)
 {
-	if( path.pCount == 0 ){
-		return;
-	}
-	
-	pPoints = new decDVector[ path.pCount ];
-	memcpy( pPoints, path.pPoints, sizeof( decDVector ) * path.pCount );
-	pCount = path.pCount;
-	pSize = path.pCount;
 }
 
 deNavigatorPath::~deNavigatorPath(){
-	if( pPoints ){
-		delete [] pPoints;
-	}
 }
 
 
@@ -69,57 +54,28 @@ deNavigatorPath::~deNavigatorPath(){
 // Management
 ///////////////
 
-const decDVector &deNavigatorPath::GetAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pPoints[ index ];
+const decDVector &deNavigatorPath::GetAt(int index) const{
+	return pPoints[index];
 }
 
-void deNavigatorPath::SetAt( int index, const decDVector &position ){
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
-	}
-	pPoints[ index ] = position;
+void deNavigatorPath::SetAt(int index, const decDVector &position){
+	pPoints[index] = position;
 }
 
-void deNavigatorPath::Add( const decDVector &point ){
-	if( pCount == pSize ){
-		const int newSize = pCount + 10;
-		decDVector * const newArray = new decDVector[ newSize ];
-		if( pPoints ){
-			memcpy( newArray, pPoints, sizeof( decDVector ) * pCount );
-			delete [] pPoints;
-		}
-		pPoints = newArray;
-		pSize = newSize;
-	}
-	
-	pPoints[ pCount++ ] = point;
+void deNavigatorPath::Add(const decDVector &point){
+	pPoints.Add(point);
 }
 
-void deNavigatorPath::AddPath( const deNavigatorPath &path ){
-	int i;
-	for( i=0; i<path.pCount; i++ ){
-		Add( path.pPoints[ i ] );
-	}
+void deNavigatorPath::AddPath(const deNavigatorPath &path){
+	pPoints += path.pPoints;
 }
 
-void deNavigatorPath::RemoveFrom( int index ){
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int i;
-	for( i=index+1; i<pCount; i++ ){
-		pPoints[ i - 1 ] = pPoints[ i ];
-	}
-	
-	pCount--;
+void deNavigatorPath::RemoveFrom(int index){
+	pPoints.RemoveFrom(index);
 }
 
 void deNavigatorPath::RemoveAll(){
-	pCount = 0;
+	pPoints.RemoveAll();
 }
 
 
@@ -127,8 +83,7 @@ void deNavigatorPath::RemoveAll(){
 // Operators
 //////////////
 
-deNavigatorPath &deNavigatorPath::operator=( const deNavigatorPath &path ){
-	RemoveAll();
-	AddPath( path );
+deNavigatorPath &deNavigatorPath::operator=(const deNavigatorPath &path){
+	pPoints = path.pPoints;
 	return *this;
 }

@@ -25,8 +25,8 @@
 #ifndef _SEDIALOGADDPROPERTY_H_
 #define _SEDIALOGADDPROPERTY_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 #include <dragengine/common/string/decStringSet.h>
@@ -41,20 +41,23 @@ class seWindowMain;
 class seDialogAddProperty : public igdeDialog{
 private:
 	seWindowMain &pWindowMain;
-	igdeListBoxReference pListProperties;
-	igdeTextFieldReference pEditCustomPropertyName;
+	igdeListBox::Ref pListProperties;
+	igdeTextField::Ref pEditCustomPropertyName;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<seDialogAddProperty>;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	seDialogAddProperty( seWindowMain &windowMain );
+	seDialogAddProperty(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
-	virtual ~seDialogAddProperty();
+	~seDialogAddProperty() override;
 	/*@}*/
 	
 	
@@ -66,13 +69,13 @@ public:
 	decStringSet GetSelectedPropertyNames() const;
 	
 	/** \brief Set selected property names. */
-	void SetSelectedPropertyNames( const decStringSet &list );
+	void SetSelectedPropertyNames(const decStringSet &list);
 	
 	/** \brief Custom property name. */
 	const decString &GetCustomPropertyName() const;
 	
 	/** \brief Set custom property name. */
-	void SetCustomPropertyName( const char *name );
+	void SetCustomPropertyName(const char *name);
 	/*@}*/
 	
 	

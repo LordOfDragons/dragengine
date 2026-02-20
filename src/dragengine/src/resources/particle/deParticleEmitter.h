@@ -26,12 +26,13 @@
 #define _DEPARTICLEEMITTER_H_
 
 #include "deParticleEmitterParameter.h"
+#include "deParticleEmitterController.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deParticleEmitterManager;
-class deParticleEmitterController;
 class deParticleEmitterType;
 
 class deBaseGraphicParticleEmitter;
@@ -111,17 +112,12 @@ class deBasePhysicsParticleEmitter;
 class DE_DLL_EXPORT deParticleEmitter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deParticleEmitter> Ref;
-	
+	using Ref = deTObjectReference<deParticleEmitter>;
 	
 	
 private:
-	deParticleEmitterController **pControllers;
-	int pControllerCount;
-	int pControllerSize;
-	
-	deParticleEmitterType *pTypes;
-	int pTypeCount;
+	deParticleEmitterController::List pControllers;
+	decTObjectOrderedSet<deParticleEmitterType> pTypes;
 	
 	bool pEmitBurst;
 	float pBurstLifetime;
@@ -137,8 +133,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new particle emitter. */
-	deParticleEmitter( deParticleEmitterManager *manager );
+	deParticleEmitter(deParticleEmitterManager *manager);
 	
+	deParticleEmitter(const deParticleEmitter&) = delete;
+	deParticleEmitter& operator=(const deParticleEmitter&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up particle emitter.
@@ -146,7 +145,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deParticleEmitter();
+	~deParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -158,64 +157,54 @@ public:
 	inline float GetBurstLifetime() const{ return pBurstLifetime; }
 	
 	/** \brief Set burst lifetime of the emitter. */
-	void SetBurstLifetime( float lifetime );
+	void SetBurstLifetime(float lifetime);
 	
 	/** \brief Particles are emit as burst (particle count curve) or continuous (interval curve). */
 	inline bool GetEmitBurst() const{ return pEmitBurst; }
 	
 	/** \brief Set if particles are emit as burst (particle count curve) or continuous (interval curve). */
-	void SetEmitBurst( bool emitBurst );
+	void SetEmitBurst(bool emitBurst);
 	
-	/** \brief Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	/** \brief Types. */
+	inline const decTObjectOrderedSet<deParticleEmitterType> &GetTypes() const{ return pTypes; }
 	
-	/** \brief Set number of types. */
-	void SetTypeCount( int count );
+	/** \brief Add type. */
+	void AddType(deParticleEmitterType *type);
 	
-	/** \brief Type at the given index. */
-	deParticleEmitterType &GetTypeAt( int index );
-	const deParticleEmitterType &GetTypeAt( int index ) const;
+	/** \brief Remove type. */
+	void RemoveType(deParticleEmitterType *type);
+	
+	/** \brief Remove all types. */
+	void RemoveAllTypes();
 	
 	/** \brief Notifies that the type at the given index changed. */
-	void NotifyTypeChangedAt( int type );
+	void NotifyTypeChangedAt(int type);
 	
 	/** \brief Graphic module takes care of simulation. */
 	inline bool GetGraphicModuleSimulates() const{ return pGraphicModuleSimlates; }
 	
 	/** \brief Set if graphic module takes care of simulation. */
-	void SetGraphicModuleSimulates( bool graphicModuleSimulates );
+	void SetGraphicModuleSimulates(bool graphicModuleSimulates);
 	/*@}*/
 	
 	
 	
 	/** \name Controller Management */
 	/*@{*/
-	/** \brief Count of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
-	
-	/** \brief Controller at index. */
-	deParticleEmitterController *GetControllerAt( int index ) const;
-	
-	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController( deParticleEmitterController *controller ) const;
-	
-	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *controller ) const;
-	
-	/** \brief Controller is present. */
-	bool HasController( deParticleEmitterController *controller ) const;
+	/** \brief Controllers. */
+	inline const deParticleEmitterController::List &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
-	void AddController( deParticleEmitterController *controller );
+	void AddController(deParticleEmitterController *controller);
 	
 	/** \brief Remove controller. */
-	void RemoveController( deParticleEmitterController *controller );
+	void RemoveController(deParticleEmitterController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
 	
 	/** \brief Notify peers controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	/*@}*/
 	
 	
@@ -226,13 +215,13 @@ public:
 	inline deBaseGraphicParticleEmitter *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object or NULL if not assigned. */
-	void SetPeerGraphic( deBaseGraphicParticleEmitter *peer );
+	void SetPeerGraphic(deBaseGraphicParticleEmitter *peer);
 	
 	/** \brief Physics system peer object or NULL if not assigned. */
 	inline deBasePhysicsParticleEmitter *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object or NULL if not assigned. */
-	void SetPeerPhysics( deBasePhysicsParticleEmitter *peer );
+	void SetPeerPhysics(deBasePhysicsParticleEmitter *peer);
 	/*@}*/
 };
 

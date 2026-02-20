@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionTextureUse::deoglMemoryConsumptionTextureUse( deoglMemoryConsumptionTexture &tracker ) :
-colorCompressed( tracker.colorCompressed ),
-colorUncompressed( tracker.colorUncompressed ),
-depthCompressed( tracker.depthCompressed ),
-depthUncompressed( tracker.depthUncompressed ){
+deoglMemoryConsumptionTextureUse::deoglMemoryConsumptionTextureUse(deoglMemoryConsumptionTexture &tracker) :
+colorCompressed(tracker.colorCompressed),
+colorUncompressed(tracker.colorUncompressed),
+depthCompressed(tracker.depthCompressed),
+depthUncompressed(tracker.depthUncompressed){
 }
 
 deoglMemoryConsumptionTextureUse::~deoglMemoryConsumptionTextureUse(){
@@ -73,11 +73,11 @@ void deoglMemoryConsumptionTextureUse::Clear(){
 	depthUncompressed = 0;
 }
 
-void deoglMemoryConsumptionTextureUse::Set( unsigned long long consumption, bool depth, bool compressed ){
+void deoglMemoryConsumptionTextureUse::Set(unsigned long long consumption, bool depth, bool compressed){
 	Clear();
 	
-	if( depth ){
-		if( compressed ){
+	if(depth){
+		if(compressed){
 			depthCompressed = consumption;
 			
 		}else{
@@ -85,7 +85,7 @@ void deoglMemoryConsumptionTextureUse::Set( unsigned long long consumption, bool
 		}
 		
 	}else{
-		if( compressed ){
+		if(compressed){
 			colorCompressed = consumption;
 			
 		}else{
@@ -95,28 +95,28 @@ void deoglMemoryConsumptionTextureUse::Set( unsigned long long consumption, bool
 }
 
 #ifdef BACKEND_OPENGL
-void deoglMemoryConsumptionTextureUse::SetCompressed( unsigned long long consumption,
-const deoglCapsTextureFormat& format ){
-	Set( consumption, format.GetIsDepth() || format.GetIsDepthFloat(), true );
+void deoglMemoryConsumptionTextureUse::SetCompressed(unsigned long long consumption,
+const deoglCapsTextureFormat& format){
+	Set(consumption, format.GetIsDepth() || format.GetIsDepthFloat(), true);
 }
 
-void deoglMemoryConsumptionTextureUse::SetUncompressed( const deoglCapsTextureFormat &format,
-int width, int height, int depth, int mipMapLevels ){
-	unsigned long long consumption = BaseConsumption( format, width, height, depth );
-	if( mipMapLevels > 0 ){
-		consumption = MipMappedConsumption( mipMapLevels, width, height, consumption );
+void deoglMemoryConsumptionTextureUse::SetUncompressed(const deoglCapsTextureFormat &format,
+int width, int height, int depth, int mipMapLevels){
+	unsigned long long consumption = BaseConsumption(format, width, height, depth);
+	if(mipMapLevels > 0){
+		consumption = MipMappedConsumption(mipMapLevels, width, height, consumption);
 	}
-	Set( consumption, format.GetIsDepth() || format.GetIsDepthFloat(), false );
+	Set(consumption, format.GetIsDepth() || format.GetIsDepthFloat(), false);
 }
 
 unsigned long long deoglMemoryConsumptionTextureUse::BaseConsumption(
-const deoglCapsTextureFormat &format, int width, int height, int depth ) const{
-	unsigned long long consumption = ( unsigned long long )width
+const deoglCapsTextureFormat &format, int width, int height, int depth) const{
+	unsigned long long consumption = (unsigned long long)width
 		* ( unsigned long long )height
 		* ( unsigned long long )depth;
 	
-	consumption *= ( unsigned long long )( format.GetBitsPerPixel() >> 3 );
-	if( ( format.GetBitsPerPixel() & 0x7 ) > 0 ){
+	consumption *= (unsigned long long)(format.GetBitsPerPixel() >> 3);
+	if((format.GetBitsPerPixel() & 0x7) > 0){
 		consumption >>= 1ull;
 	}
 	
@@ -153,14 +153,14 @@ int width, int height, int depth) const{
 #endif
 
 unsigned long long deoglMemoryConsumptionTextureUse::MipMappedConsumption(
-int levels, int width, int height, unsigned long long baseConsumption ) const{
+int levels, int width, int height, unsigned long long baseConsumption) const{
 	int i;
 	
-	for( i=0; i<levels; i++ ){
-		width = decMath::max( width >> 1, 1 );
-		height = decMath::max( height >> 1, 1 );
+	for(i=0; i<levels; i++){
+		width = decMath::max(width >> 1, 1);
+		height = decMath::max(height >> 1, 1);
 		
-		baseConsumption += ( unsigned long long )width * ( unsigned long long )height;
+		baseConsumption += (unsigned long long)width * (unsigned long long)height;
 	}
 	
 	return baseConsumption;

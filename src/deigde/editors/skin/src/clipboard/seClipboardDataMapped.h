@@ -25,23 +25,24 @@
 #ifndef _SECLIPBOARDDATAMAPPED_H_
 #define _SECLIPBOARDDATAMAPPED_H_
 
-#include "../skin/mapped/seMappedList.h"
+#include "../skin/mapped/seMapped.h"
 
 #include <deigde/clipboard/igdeClipboardData.h>
-
-#include <dragengine/common/collection/decObjectList.h>
 
 
 /** Clipboard data mapped. */
 class seClipboardDataMapped : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<seClipboardDataMapped>;
+	
 	/** Type name. */
 	static const char * const TYPE_NAME;
 	
 	
 	
 private:
-	seMappedList pMapped;
+	seMapped::List pMapped;
 	
 	
 	
@@ -49,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create clipboard data from selected mapped. */
-	seClipboardDataMapped( const seMappedList &list );
+	explicit seClipboardDataMapped(const seMapped::List &list);
 	
 protected:
 	/**
@@ -58,7 +59,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~seClipboardDataMapped();
+	~seClipboardDataMapped() override;
 	/*@}*/
 	
 	
@@ -66,11 +67,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Count of mapped. */
-	int GetCount() const;
-	
-	/** \brief Mapped at index. */
-	const seMapped &GetAt( int index ) const;
+	/** Mapped list. */
+	inline const seMapped::List &GetMapped() const{ return pMapped; }
 	/*@}*/
 };
 

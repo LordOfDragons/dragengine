@@ -30,7 +30,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -48,8 +48,16 @@ class deBaseModule;
 class fbxRigBone : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxRigBone> Ref;
+	using Ref = deTObjectReference<fbxRigBone>;
 	
+	/** \brief List of rig bones. */
+	class List : public decTCollectionQueryByName<decTObjectOrderedSet<fbxRigBone>,fbxRigBone>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<fbxRigBone>,fbxRigBone>::decTCollectionQueryByName;
+		
+		/** \brief Find bone by model ID or nullptr if absent. */
+		fbxRigBone *FindWithModelID(int64_t id) const;
+	};
 	
 	
 private:
@@ -78,11 +86,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRigBone( fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel );
+	fbxRigBone(fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel);
 	
 protected:
 	/** \brief Clean up connection. */
-	virtual ~fbxRigBone();
+	~fbxRigBone() override;
 	/*@}*/
 	
 	
@@ -106,10 +114,10 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Node model ID. */
 	inline int64_t GetNodeModelID() const{ return pNodeModelID; }
@@ -147,7 +155,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

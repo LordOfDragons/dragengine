@@ -36,6 +36,9 @@ class ceCAWait;
  * \brief Menu action remove all actions.
  */
 class ceWPTMAWaitActionsRemoveAllActions : public ceWPTMARemoveAllActions{
+public:
+	using Ref = deTObjectReference<ceWPTMAWaitActionsRemoveAllActions>;
+
 private:
 	ceConversationTopic *pTopic;
 	ceCAWait *pWait;
@@ -50,8 +53,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsRemoveAllActions( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait );
+	ceWPTMAWaitActionsRemoveAllActions(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait);
 	/*@}*/
 	
 	
@@ -65,7 +68,7 @@ public:
 	inline ceCAWait *GetWait() const{ return pWait; }
 
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo();
+	igdeUndo::Ref CreateUndo() override;
 	/*@}*/
 };
 

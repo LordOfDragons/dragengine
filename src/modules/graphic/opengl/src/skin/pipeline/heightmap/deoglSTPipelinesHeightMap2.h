@@ -31,32 +31,29 @@
 /**
  * HeightMap skin texture pipelines.
  */
-class deoglSTPipelinesHeightMap2 : public deoglSTPipelinesHeightMap1
-{
+class deoglSTPipelinesHeightMap2 : public deoglSTPipelinesHeightMap1{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesHeightMap2( const deoglSkinTexture &texture );
+	explicit deoglSTPipelinesHeightMap2(const deoglSkinTexture &texture);
 	
-protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesHeightMap2();
+	~deoglSTPipelinesHeightMap2() override;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	void pPipelineConfigGeometry(deoglPipelineConfiguration &config) override;
 };
 
 #endif

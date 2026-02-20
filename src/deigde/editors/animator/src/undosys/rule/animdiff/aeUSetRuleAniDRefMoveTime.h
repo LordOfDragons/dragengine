@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleAnimationDifference;
  * Undo to set the reference move time of a animation difference rule.
  */
 class aeUSetRuleAniDRefMoveTime : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUSetRuleAniDRefMoveTime>;
+	
+	
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 	float pOldTime;
 	float pNewTime;
@@ -51,19 +55,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAniDRefMoveTime( aeRuleAnimationDifference *rule, float newTime );
+	aeUSetRuleAniDRefMoveTime(aeRuleAnimationDifference *rule, float newTime);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUSetRuleAniDRefMoveTime();
+	~aeUSetRuleAniDRefMoveTime() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

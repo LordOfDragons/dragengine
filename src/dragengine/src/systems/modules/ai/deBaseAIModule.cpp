@@ -27,8 +27,8 @@
 // Class deBaseAIModule
 /////////////////////////
 
-deBaseAIModule::deBaseAIModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseAIModule::deBaseAIModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseAIModule::~deBaseAIModule(){

@@ -41,30 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetMovement::ceUCAASpeakSetMovement( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement ){
-	if( ! topic || ! newMovement ) DETHROW( deeInvalidParam );
+ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement){
+	if(!topic || !newMovement) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	pOldMovement = actorSpeak->GetMovement();
 	pNewMovement = newMovement;
 	
-	SetShortInfo( "Actor Speak Set Movement" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetMovement");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetMovement::~ceUCAASpeakSetMovement(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -73,11 +64,11 @@ ceUCAASpeakSetMovement::~ceUCAASpeakSetMovement(){
 ///////////////
 
 void ceUCAASpeakSetMovement::Undo(){
-	pActorSpeak->SetMovement( pOldMovement.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetMovement(pOldMovement.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetMovement::Redo(){
-	pActorSpeak->SetMovement( pNewMovement.GetString() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetMovement(pNewMovement.GetString());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

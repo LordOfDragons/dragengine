@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -37,6 +37,10 @@ class gdeGameDefinition;
  * \brief Undo action game definition set identifier.
  */
 class gdeUGDSetID : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDSetID> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
 	
@@ -49,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetID( gdeGameDefinition *gameDefinition, const char *newValue );
+	gdeUGDSetID(gdeGameDefinition *gameDefinition, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

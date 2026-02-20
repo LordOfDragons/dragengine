@@ -47,12 +47,12 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -69,19 +69,19 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cTextCommand( ceWPCGameCommand &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cTextCommand>;
+	cTextCommand(ceWPCGameCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || textField->GetText() == condition->GetCommand() ){
+		if(!topic || !action || !condition || textField->GetText() == condition->GetCommand()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCGameCmdSetCommand( topic, action, condition, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCGameCmdSetCommand::Ref::New(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -89,29 +89,29 @@ class cActionEditCommand : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cActionEditCommand( ceWPCGameCommand &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionEditCommand>;
+	cActionEditCommand(ceWPCGameCommand &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"@Conversation.Action.EditInDialog.ToolTip"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
-		decString text( condition->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
-			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == condition->GetCommand() ){
+		decString text(condition->GetCommand());
+		if(!igdeCommonDialogs::GetMultilineString(
+			pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"@Conversation.Dialog.EditCommand", "@Conversation.Dialog.Command", text)
+		|| text == condition->GetCommand()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCGameCmdSetCommand( topic, action, condition, text ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCGameCmdSetCommand::Ref::New(topic, action, condition, text));
 	}
 };
 
@@ -119,20 +119,20 @@ class cActionNegate : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cActionNegate( ceWPCGameCommand &panel ) : igdeAction( "Negate", NULL,
-		"True if the result of the command is negated" ), pPanel( panel ){ }
+	using Ref = deTObjectReference<cActionNegate>;
+	cActionNegate(ceWPCGameCommand &panel) : igdeAction("@Conversation.WPConditionGameCommand.Negate", nullptr,
+		"@Conversation.Condition.GameCommandNegate.ToolTip"), pPanel(panel){ }
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(!topic || !action || !condition){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCCGameCmdToggleNegate( topic, action, condition ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCGameCmdToggleNegate::Ref::New(topic, action, condition));
 	}
 };
 
@@ -145,15 +145,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCGameCommand::ceWPCGameCommand( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCGameCommand::ceWPCGameCommand(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "@Conversation.FormLine.Command", "@Conversation.WPConditionGameCommand.Command.ToolTip", formLine);
+	helper.EditString(formLine, "@Conversation.WPConditionGameCommand.Command.ToolTip", pEditCommand, cTextCommand::Ref::New(*this));
+	helper.Button(formLine, pBtnCommand, cActionEditCommand::Ref::New(*this));
 	
-	helper.CheckBox( formLine, pChkNegate, new cActionNegate( *this ), true );
+	helper.CheckBox(formLine, pChkNegate, cActionNegate::Ref::New(*this));
 }
 
 ceWPCGameCommand::~ceWPCGameCommand(){
@@ -167,23 +167,23 @@ ceWPCGameCommand::~ceWPCGameCommand(){
 ceCConditionGameCommand *ceWPCGameCommand::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectGameCommand ){
-		return ( ceCConditionGameCommand* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectGameCommand){
+		return (ceCConditionGameCommand*)condition;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 void ceWPCGameCommand::UpdateCondition(){
 	const ceCConditionGameCommand * const condition = GetCondition();
 	
-	if( condition ){
-		pEditCommand->SetText( condition->GetCommand() );
-		pChkNegate->SetChecked( condition->GetNegate() );
+	if(condition){
+		pEditCommand->SetText(condition->GetCommand());
+		pChkNegate->SetChecked(condition->GetNegate());
 		
 	}else{
 		pEditCommand->ClearText();
-		pChkNegate->SetChecked( false );
+		pChkNegate->SetChecked(false);
 	}
 }

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save game project. */
-	igdeLSGameProject( igdeLoadSaveSystem *lssys );
+	igdeLSGameProject(igdeLoadSaveSystem *lssys);
 	
 	/** \brief Clean up load/save game project. */
 	~igdeLSGameProject();
@@ -65,27 +65,27 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name to display in a file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in a file dialog. */
 	inline const decString &GetPattern() const{ return pPattern; }
 	
 	/** \brief Set file pattern to display in a file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
 	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
 	
 	/** \brief Set he default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	
 	
 	/** \brief Load game project from a file reader. */
-	void Load( const char *filename, igdeGameProject *project, decBaseFileReader *file );
+	void Load(const char *filename, igdeGameProject *project, decBaseFileReader *file);
 	
 	/** \brief Save game project from a file reader. */
-	void Save( igdeGameProject *project, decBaseFileWriter *file );
+	void Save(igdeGameProject *project, decBaseFileWriter *file);
 	/*@}*/
 };
 

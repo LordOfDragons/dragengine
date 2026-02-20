@@ -57,13 +57,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Text. */
 	inline const decUnicodeString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	/*@}*/
 };
 

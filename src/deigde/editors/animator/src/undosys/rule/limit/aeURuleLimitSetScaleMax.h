@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -38,8 +38,12 @@ class aeRuleLimit;
  * Undo action rule limitor set maximum scaling.
  */
 class aeURuleLimitSetScaleMax : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleLimitSetScaleMax>;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;
@@ -48,19 +52,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetScaleMax( aeRuleLimit *rule, const decVector &newMax );
+	aeURuleLimitSetScaleMax(aeRuleLimit *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleLimitSetScaleMax();
+	~aeURuleLimitSetScaleMax() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 private:

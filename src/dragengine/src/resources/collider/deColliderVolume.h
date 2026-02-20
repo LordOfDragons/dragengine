@@ -26,7 +26,7 @@
 #define _DECOLLIDERVOLUME_H_
 
 #include "deCollider.h"
-#include "../../common/shape/decShapeList.h"
+#include "../../common/shape/decShape.h"
 
 
 /**
@@ -44,12 +44,11 @@
 class DE_DLL_EXPORT deColliderVolume : public deCollider{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deColliderVolume> Ref;
-	
+	using Ref = deTObjectReference<deColliderVolume>;
 	
 	
 private:
-	decShapeList pShapes;
+	decShape::List pShapes;
 	
 	
 	
@@ -57,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create volume collider. */
-	deColliderVolume( deColliderManager *manager );
+	deColliderVolume(deColliderManager *manager);
 	
 protected:
 	/**
@@ -66,7 +65,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deColliderVolume();
+	~deColliderVolume() override;
 	/*@}*/
 	
 	
@@ -75,10 +74,10 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShape::List &GetShapes() const{ return pShapes; }
 	
 	/** \brief Set shapes. */
-	void SetShapes( const decShapeList &shapes );
+	void SetShapes(const decShape::List &shapes);
 	/*@}*/
 	
 	
@@ -86,7 +85,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deColliderVisitor &visitor );
+	void Visit(deColliderVisitor &visitor) override;
 	/*@}*/
 };
 

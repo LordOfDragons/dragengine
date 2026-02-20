@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleComponents;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleComponents.h"
 
 
 
@@ -43,9 +43,15 @@ class meHTVRuleComponents;
  * Undo action to set the vector of a height terrain vegetation rule components.
  */
 class meUHTVRuleCompSetVector : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleCompSetVector>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleComponents *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleComponents::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;
@@ -54,17 +60,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCompSetVector( meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector );
+	meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleCompSetVector();
+
+protected:
+	~meUHTVRuleCompSetVector() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

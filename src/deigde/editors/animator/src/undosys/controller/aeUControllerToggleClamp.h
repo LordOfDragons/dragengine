@@ -25,19 +25,20 @@
 #ifndef _AEUCONTROLLERTOGGLECLAMP_H_
 #define _AEUCONTROLLERTOGGLECLAMP_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
  * Undo action controller toggle clamp.
  */
 class aeUControllerToggleClamp : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUControllerToggleClamp>;
+	
+	
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	
 	
 	
@@ -45,11 +46,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerToggleClamp( aeController *controller );
+	aeUControllerToggleClamp(aeController *controller);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeUControllerToggleClamp();
+	~aeUControllerToggleClamp() override;
 	/*@}*/
 	
 	
@@ -58,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -25,10 +25,9 @@
 #ifndef _DENAVIGATIONBLOCKERMANAGER_H_
 #define _DENAVIGATIONBLOCKERMANAGER_H_
 
+#include "deNavigationBlocker.h"
 #include "../../deResourceManager.h"
 #include "../../deResourceList.h"
-
-class deNavigationBlocker;
 
 
 /**
@@ -44,10 +43,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new manager. */
-	deNavigationBlockerManager( deEngine *engine );
+	deNavigationBlockerManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
-	virtual ~deNavigationBlockerManager();
+	~deNavigationBlockerManager() override;
 	/*@}*/
 	
 	
@@ -61,10 +60,10 @@ public:
 	deNavigationBlocker *GetRootNavigationBlocker() const;
 	
 	/** \brief Create new blocker. */
-	deNavigationBlocker *CreateNavigationBlocker();
+	deNavigationBlocker::Ref CreateNavigationBlocker();
 	
 	/** \brief Release leaking resources and report them. */
-	virtual void ReleaseLeakingResources();
+	void ReleaseLeakingResources() override;
 	/*@}*/
 	
 	
@@ -72,10 +71,10 @@ public:
 	/** \name System Peer Management */
 	/*@{*/
 	/** \brief AI System Peers of all stored resources have to be created. */
-	virtual void SystemAILoad();
+	void SystemAILoad() override;
 	
 	/** \brief AI System Peers of all stored resources have to be freed. */
-	virtual void SystemAIUnload();
+	void SystemAIUnload() override;
 	/*@}*/
 	
 	
@@ -86,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource) override;
 	/*@}*/
 };
 

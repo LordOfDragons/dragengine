@@ -40,28 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetAdd::ceUCTargetAdd( ceConversation *conversation, ceTarget *target ){
-	if( ! conversation || ! target ) DETHROW( deeInvalidParam );
+ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
+	if(!conversation || !target) DETHROW(deeInvalidParam);
 	
-	pConversation = NULL;
-	pTarget = NULL;
+	pConversation = nullptr;
+	pTarget = nullptr;
 	
-	SetShortInfo( "Add Target" );
+	SetShortInfo("@Conversation.Undo.AddTarget");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetAdd::~ceUCTargetAdd(){
-	if( pTarget ){
-		pTarget->FreeReference();
-	}
-	if( pConversation ){
-		pConversation->FreeReference();
-	}
 }
 
 
@@ -70,10 +61,10 @@ ceUCTargetAdd::~ceUCTargetAdd(){
 ///////////////
 
 void ceUCTargetAdd::Undo(){
-	pConversation->RemoveTarget( pTarget );
+	pConversation->RemoveTarget(pTarget);
 }
 
 void ceUCTargetAdd::Redo(){
-	pConversation->AddTarget( pTarget );
-	pConversation->SetActiveTarget( pTarget );
+	pConversation->AddTarget(pTarget);
+	pConversation->SetActiveTarget(pTarget);
 }

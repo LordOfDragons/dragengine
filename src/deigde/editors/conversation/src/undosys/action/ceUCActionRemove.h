@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceConversationAction;
+#include "../../conversation/topic/ceConversationTopic.h"
+#include "../../conversation/action/ceConversationAction.h"
 
 
 
@@ -36,28 +36,32 @@ class ceConversationAction;
  * \brief Undo Action Remove Conversation Action.
  */
 class ceUCActionRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCActionRemove>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionRemove( ceConversationTopic *topic, ceConversationAction *action );
+	ceUCActionRemove(ceConversationTopic *topic, ceConversationAction *action);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCActionRemove();
+	~ceUCActionRemove() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

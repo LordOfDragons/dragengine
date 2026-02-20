@@ -27,50 +27,18 @@
 #include "igdeNativeNullViewCurveBezier.h"
 
 
-// class igdeNativeFoxViewCurveBezierView
-///////////////////////////////////////////
-
-igdeNativeFoxViewCurveBezierView::igdeNativeFoxViewCurveBezierView(){
-}
-
-igdeNativeFoxViewCurveBezierView::~igdeNativeFoxViewCurveBezierView(){
-}
-
-void igdeNativeFoxViewCurveBezierView::UpdateEnabled(){
-}
-
-void igdeNativeFoxViewCurveBezierView::UpdateDefaultSize(){
-}
-
-void igdeNativeFoxViewCurveBezierView::UpdateCurve(){
-}
-
-void igdeNativeFoxViewCurveBezierView::UpdateSelectedPoint(){
-}
-
-void igdeNativeFoxViewCurveBezierView::UpdateClamp(){
-}
-
-void igdeNativeFoxViewCurveBezierView::ResetView(){
-}
-
-void igdeNativeFoxViewCurveBezierView::FitViewToCurve(){
-}
-
-
 
 // class igdeNativeNullViewCurveBezier
 ////////////////////////////////////////
 
-igdeNativeNullViewCurveBezier::igdeNativeNullViewCurveBezier() :
-pView( new igdeNativeFoxViewCurveBezierView ){
+igdeNativeNullViewCurveBezier::igdeNativeNullViewCurveBezier(){
 }
 
 igdeNativeNullViewCurveBezier::~igdeNativeNullViewCurveBezier(){
-	delete pView;
 }
 
-igdeNativeNullViewCurveBezier *igdeNativeNullViewCurveBezier::CreateNativeWidget( igdeViewCurveBezier& ){
+igdeNativeNullViewCurveBezier *igdeNativeNullViewCurveBezier::CreateNativeWidget(igdeViewCurveBezier&){
+	// DELint-Allow-NewWithoutRef
 	return new igdeNativeNullViewCurveBezier;
 }
 
@@ -79,6 +47,27 @@ void igdeNativeNullViewCurveBezier::PostCreateNativeWidget(){
 
 void igdeNativeNullViewCurveBezier::DestroyNativeWidget(){
 	delete this;
+}
+
+void igdeNativeNullViewCurveBezier::UpdateEnabled(){
+}
+
+void igdeNativeNullViewCurveBezier::UpdateDefaultSize(){
+}
+
+void igdeNativeNullViewCurveBezier::UpdateCurve(){
+}
+
+void igdeNativeNullViewCurveBezier::UpdateSelectedPoint(){
+}
+
+void igdeNativeNullViewCurveBezier::UpdateClamp(){
+}
+
+void igdeNativeNullViewCurveBezier::ResetView(){
+}
+
+void igdeNativeNullViewCurveBezier::FitViewToCurve(){
 }
 
 #endif

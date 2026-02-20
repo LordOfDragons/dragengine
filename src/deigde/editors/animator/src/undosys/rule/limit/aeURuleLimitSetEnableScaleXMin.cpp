@@ -39,23 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnableScaleXMin::aeURuleLimitSetEnableScaleXMin( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnableScaleXMin::aeURuleLimitSetEnableScaleXMin(aeRuleLimit *rule){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Limit toggle enable minimum x scaling" );
+	SetShortInfo("@Animator.Undo.RuleLimitToggleEnableMinimumXScaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleXMin::~aeURuleLimitSetEnableScaleXMin(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -68,5 +64,5 @@ void aeURuleLimitSetEnableScaleXMin::Undo(){
 }
 
 void aeURuleLimitSetEnableScaleXMin::Redo(){
-	pRule->SetEnableScalingXMin( ! pRule->GetEnableScalingXMin() );
+	pRule->SetEnableScalingXMin(!pRule->GetEnableScalingXMin());
 }

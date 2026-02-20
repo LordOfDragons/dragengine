@@ -30,54 +30,54 @@
 // Class deSCCommon
 /////////////////////
 
-uint32 deSCCommon::UInt32( const deServiceObject &so ){
-	return UInt32( so.GetString() );
+uint32 deSCCommon::UInt32(const deServiceObject &so){
+	return UInt32(so.GetString());
 }
 
-deServiceObject::Ref deSCCommon::UInt32( uint32 value ){
-	return deServiceObject::NewString( UInt32ToString( value ) );
+deServiceObject::Ref deSCCommon::UInt32(uint32 value){
+	return deServiceObject::NewString(UInt32ToString(value));
 }
 
-uint32 deSCCommon::UInt32( const decString &string ){
-	return ( uint32 )string.ToLongValid();
+uint32 deSCCommon::UInt32(const decString &string){
+	return (uint32)string.ToLongValid();
 }
 
-decString deSCCommon::UInt32ToString( uint32 value ){
+decString deSCCommon::UInt32ToString(uint32 value){
 	decString string;
-	string.AppendValue( ( unsigned long long )value );
+	string.AppendValue((unsigned long long)value);
 	return string;
 }
 
-uint64 deSCCommon::UInt64( const deServiceObject &so ){
-	return UInt64( so.GetString() );
+uint64 deSCCommon::UInt64(const deServiceObject &so){
+	return UInt64(so.GetString());
 }
 
-deServiceObject::Ref deSCCommon::UInt64( uint64 value ){
-	return deServiceObject::NewString( UInt64ToString( value ) );
+deServiceObject::Ref deSCCommon::UInt64(uint64 value){
+	return deServiceObject::NewString(UInt64ToString(value));
 }
 
-uint64 deSCCommon::UInt64( const decString &string ){
-	return ( uint64 )string.ToLongValid();
+uint64 deSCCommon::UInt64(const decString &string){
+	return (uint64)string.ToLongValid();
 }
 
-decString deSCCommon::UInt64ToString( uint64 value ){
+decString deSCCommon::UInt64ToString(uint64 value){
 	decString string;
-	string.AppendValue( ( long long )value );
+	string.AppendValue((long long)value);
 	return string;
 }
 
-CSteamID deSCCommon::SteamID( const deServiceObject::Ref &so ){
-	return CSteamID( UInt64( so->GetString() ) );
+CSteamID deSCCommon::SteamID(const deServiceObject::Ref &so){
+	return CSteamID(UInt64(so->GetString()));
 }
 
-deServiceObject::Ref deSCCommon::SteamID( const CSteamID &id ){
-	return deServiceObject::NewString( SteamIDToString( id ) );
+deServiceObject::Ref deSCCommon::SteamID(const CSteamID &id){
+	return deServiceObject::NewString(SteamIDToString(id));
 }
 
-CSteamID deSCCommon::SteamID( const decString &string ){
-	return CSteamID( UInt64( string ) );
+CSteamID deSCCommon::SteamID(const decString &string){
+	return CSteamID(UInt64(string));
 }
 
-decString deSCCommon::SteamIDToString( const CSteamID &id ){
-	return UInt64ToString( id.ConvertToUint64() );
+decString deSCCommon::SteamIDToString(const CSteamID &id){
+	return UInt64ToString(id.ConvertToUint64());
 }

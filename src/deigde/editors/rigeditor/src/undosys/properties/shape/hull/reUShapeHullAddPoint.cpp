@@ -35,16 +35,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUShapeHullAddPoint::reUShapeHullAddPoint( reRigShapeHull *shape, const decVector &point, int index ) :
-pShape( shape ),
-pPoint( point ),
-pIndex( index )
+reUShapeHullAddPoint::reUShapeHullAddPoint(reRigShapeHull *shape, const decVector &point, int index) :
+pShape(shape),
+pPoint(point),
+pIndex(index)
 {
-	if( ! shape || index < 0 || index > shape->GetPointCount() ){
-		DETHROW( deeInvalidParam );
+	if(!shape || index < 0 || index > shape->GetPoints().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Shape hull add point" );
+	SetShortInfo("@Rig.Undo.ShapeHullAddPoint");
 }
 
 reUShapeHullAddPoint::~reUShapeHullAddPoint(){
@@ -56,9 +56,9 @@ reUShapeHullAddPoint::~reUShapeHullAddPoint(){
 ///////////////
 
 void reUShapeHullAddPoint::Undo(){
-	( ( reRigShapeHull& )( deObject& )pShape ).RemovePoint( pIndex );
+	pShape->RemovePoint(pIndex);
 }
 
 void reUShapeHullAddPoint::Redo(){
-	( ( reRigShapeHull& )( deObject& )pShape ).InsertPoint( pPoint, pIndex );
+	pShape->InsertPoint(pPoint, pIndex);
 }

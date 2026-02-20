@@ -38,9 +38,9 @@
 ////////////////////////////
 
 deComponentBone::deComponentBone() :
-pParentBone( 0 ),
-pScale( 1.0f, 1.0f, 1.0f ),
-pDirtyInvMatrix( true ){
+pParentBone(0),
+pScale(1.0f, 1.0f, 1.0f),
+pDirtyInvMatrix(true){
 }
 
 deComponentBone::~deComponentBone(){
@@ -51,25 +51,25 @@ deComponentBone::~deComponentBone(){
 // management
 ///////////////
 
-void deComponentBone::SetPosition( const decVector &position ){
+void deComponentBone::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deComponentBone::SetRotation( const decQuaternion &rotation ){
+void deComponentBone::SetRotation(const decQuaternion &rotation){
 	pRotation = rotation;
 }
 
-void deComponentBone::SetScale( const decVector &scale ){
+void deComponentBone::SetScale(const decVector &scale){
 	pScale = scale;
 }
 
-void deComponentBone::SetMatrix( const decMatrix &matrix ){
+void deComponentBone::SetMatrix(const decMatrix &matrix){
 	pMatrix = matrix;
 	pDirtyInvMatrix = true;
 }
 
 const decMatrix &deComponentBone::GetInverseMatrix(){
-	if( pDirtyInvMatrix ){
+	if(pDirtyInvMatrix){
 		pInvMatrix = pMatrix.QuickInvert();
 		pDirtyInvMatrix = false;
 	}
@@ -77,11 +77,11 @@ const decMatrix &deComponentBone::GetInverseMatrix(){
 	return pInvMatrix;
 }
 
-void deComponentBone::SetOriginalMatrix( const decVector &position, const decVector &rotation ){
-	pOrgMatrix.SetRT( rotation, position );
+void deComponentBone::SetOriginalMatrix(const decVector &position, const decVector &rotation){
+	pOrgMatrix.SetRT(rotation, position);
 	pInvOrgMatrix = pOrgMatrix.Invert();
 }
 
-void deComponentBone::SetParentBone( int parentBone ){
+void deComponentBone::SetParentBone(int parentBone){
 	pParentBone = parentBone;
 }

@@ -41,32 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACommentSetComment::ceUCACommentSetComment( ceConversationTopic *topic, ceCAComment *action, const char *newComment ){
-	if( ! topic || ! newComment ){
-		DETHROW( deeInvalidParam );
+ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment){
+	if(!topic || !newComment){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pComment = NULL;
+	pTopic = nullptr;
+	pComment = nullptr;
 	pOldComment = action->GetComment();
 	pNewComment = newComment;
 	
-	SetShortInfo( "Comment set comment" );
+	SetShortInfo("@Conversation.Undo.CommentSetComment");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pComment = action;
-	action->AddReference();
 }
 
 ceUCACommentSetComment::~ceUCACommentSetComment(){
-	if( pComment ){
-		pComment->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ ceUCACommentSetComment::~ceUCACommentSetComment(){
 ///////////////
 
 void ceUCACommentSetComment::Undo(){
-	pComment->SetComment( pOldComment.GetString() );
-	pTopic->NotifyActionChanged( pComment );
+	pComment->SetComment(pOldComment.GetString());
+	pTopic->NotifyActionChanged(pComment);
 }
 
 void ceUCACommentSetComment::Redo(){
-	pComment->SetComment( pNewComment.GetString() );
-	pTopic->NotifyActionChanged( pComment );
+	pComment->SetComment(pNewComment.GetString());
+	pTopic->NotifyActionChanged(pComment);
 }

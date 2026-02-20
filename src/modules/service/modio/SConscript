@@ -21,7 +21,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 appendLibrary(envModule, parent_targets['lib_modio'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.29'
+versionString = '1.30'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -32,9 +32,6 @@ pathModule = '{}/modules/service/modio/{}'.format(
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
-
-# required by modio
-envModule.Append(CXXFLAGS = ['-std=c++17'])
 
 # determine the source files
 sources = []

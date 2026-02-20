@@ -56,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable texture. */
-	deoglRenderableDepthTexture( deoglRenderThread &renderThread,
-		int width, int height, bool withStencil, bool useFloat );
+	deoglRenderableDepthTexture(deoglRenderThread &renderThread,
+		int width, int height, bool withStencil, bool useFloat);
 	
 	/** Clean up renderable texture. */
 	~deoglRenderableDepthTexture();
@@ -82,13 +82,13 @@ public:
 	
 	
 	/** Format matche. */
-	bool Matches( int width, int height, bool withStencil, bool useFloat ) const;
+	bool Matches(int width, int height, bool withStencil, bool useFloat) const;
 	
 	/** Texture is in use. */
 	inline bool GetInUse() const{ return pInUse; }
 	
 	/** Set if texture is in use. */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	
 	
 	

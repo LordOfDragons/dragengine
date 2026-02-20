@@ -27,8 +27,8 @@
 
 #include "igdeWidget.h"
 #include "event/igdeActionListener.h"
-#include "event/igdeActionReference.h"
-#include "resources/igdeIconReference.h"
+#include "event/igdeAction.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -36,10 +36,11 @@
 /**
  * \brief IGDE UI Button with text and icon.
  */
-class DE_DLL_EXPORT igdeButton : public igdeWidget, igdeActionListener{
+class DE_DLL_EXPORT igdeButton : public igdeWidget, public igdeActionListener{
 public:
 	/** \brief Strong reference. */
-	typedef deTObjectReference<igdeButton> Ref;
+	using Ref = deTObjectReference<igdeButton>;
+	
 	
 	/** \brief Button style. */
 	enum eButtonStyle{
@@ -50,30 +51,45 @@ public:
 		ebsToolBar
 	};
 	
+	class cNativeButton{
+	public:
+		virtual ~cNativeButton() = default;
+		virtual void Focus() = 0;
+		virtual void UpdateStyle() = 0;
+		virtual void UpdateText() = 0;
+		virtual void UpdateDescription() = 0;
+		virtual void UpdateIcon() = 0;
+		virtual void UpdateEnabled() = 0;
+	};
+	
 	
 private:
 	eButtonStyle pStyle;
 	decString pText;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	bool pDefault;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
+	
+	
+protected:
+	cNativeButton *pNativeButton;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create button. */
-	igdeButton( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		eButtonStyle = ebsNormal );
+	igdeButton(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeButton( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, eButtonStyle = ebsNormal );
+	igdeButton(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeButton( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
+	igdeButton(igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal);
 	
 	
 protected:
@@ -94,43 +110,43 @@ public:
 	inline eButtonStyle GetStyle() const{ return pStyle; }
 	
 	/** \brief Set button style. */
-	void SetStyle( eButtonStyle style );
+	void SetStyle(eButtonStyle style);
 	
 	/** \brief Text. */
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	/** \brief Icon or nullptr. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	/** \brief Set icon or nullptr. */
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Button is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Widget is the default widget if used in dialogs. */
 	inline bool GetDefault() const{ return pDefault; }
 	
 	/** \brief Set if if widget is the default widget if used in dialogs. */
-	void SetDefault( bool isdefault );
+	void SetDefault(bool isdefault);
 	
-	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	/** \brief Set action or nullptr. */
+	void SetAction(igdeAction *action);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -145,10 +161,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	void OnParameterChanged( igdeAction *action ) override;
+	void OnParameterChanged(igdeAction *action) override;
 	
 	/** \brief Action has been destroyed. */
-	void OnDestroyed( igdeAction *action ) override;
+	void OnDestroyed(igdeAction *action) override;
 	/*@}*/
 	
 	
@@ -169,6 +185,12 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
+	
 	
 protected:
 	/** \brief Style changed. */
@@ -188,6 +210,9 @@ protected:
 	
 	/** \brief Default changed. */
 	virtual void OnDefaultChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

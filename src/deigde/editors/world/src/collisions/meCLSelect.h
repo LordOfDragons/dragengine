@@ -25,12 +25,11 @@
 #ifndef _MECLSELECT_H_
 #define _MECLSELECT_H_
 
-#include "meCLHitList.h"
-#include "../world/object/meObjectList.h"
-#include "../world/objectshape/meObjectShapeList.h"
+#include "meCLHitListEntry.h"
+#include "../world/object/meObject.h"
+#include "../world/objectshape/meObjectShape.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 class meWorld;
@@ -68,10 +67,10 @@ private:
 	bool pCanSelectNavSpaces;
 	bool pCanSelectHTNavPoints;
 	
-	meCLHitList pHitList;
+	meCLHitListEntry::List pHitList;
 	
-	meObjectList pRectSelOldObjectList;
-	meObjectShapeList pRectSelOldObjectShapeList;
+	meObject::List pRectSelOldObjectList;
+	meObjectShape::List pRectSelOldObjectShapeList;
 	
 	
 	
@@ -79,10 +78,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meCLSelect( meWorld &world );
+	meCLSelect(meWorld &world);
 	
 	/** \brief Clean up listener. */
-	virtual ~meCLSelect();
+	~meCLSelect() override;
 	/*@}*/
 	
 	
@@ -96,7 +95,7 @@ public:
 	inline const decDVector &GetRayDirection() const{ return pRayDirection; }
 	
 	/** \brief Set ray origin and direction. */
-	void SetRay( const decDVector &origin, const decVector &direction );
+	void SetRay(const decDVector &origin, const decVector &direction);
 	
 	
 	
@@ -104,53 +103,53 @@ public:
 	inline bool GetSingleSelect() const{ return pSingleSelect; }
 	
 	/** \brief Set if single selection is used. */
-	void SetSingleSelect( bool singleSelect );
+	void SetSingleSelect(bool singleSelect);
 	
 	/** \brief Rectangular selection is used. */
 	inline bool GetRectSelect() const{ return pRectSelect; }
 	
 	/** \brief Set if rectangular selection is used. */
-	void SetRectSelect( bool rectSelect );
+	void SetRectSelect(bool rectSelect);
 	
 	
 	
 	/** \brief Set if colliders of objects can be hit. */
-	void SetCanHitObjects( bool canHit );
+	void SetCanHitObjects(bool canHit);
 	
 	/** \brief Set if colliders of object shapes can be ht. */
-	void SetCanHitObjectShapes( bool canHit );
+	void SetCanHitObjectShapes(bool canHit);
 	
 	/** \brief Set if colliders of decals can be hit. */
-	void SetCanHitDecals( bool canHit );
+	void SetCanHitDecals(bool canHit);
 	
 	/** \brief Set if colliders of navigation spaces can be hit. */
-	void SetCanHitNavSpaces( bool canHit );
+	void SetCanHitNavSpaces(bool canHit);
 	
 	/** \brief Set if colliders of height terrain can be hit. */
-	void SetCanHitHTNavPoints( bool canHit );
+	void SetCanHitHTNavPoints(bool canHit);
 	
 	/** \brief Set all can hit. */
-	void SetCanHitAll( bool canHit );
+	void SetCanHitAll(bool canHit);
 	
 	
 	
 	/** \brief Set if objects can be selected. */
-	void SetCanSelectObjects( bool canSelect );
+	void SetCanSelectObjects(bool canSelect);
 	
 	/** \brief Set if object shapes can be selected. */
-	void SetCanSelectObjectShapes( bool canSelect );
+	void SetCanSelectObjectShapes(bool canSelect);
 	
 	/** \brief Set if decals can be selected. */
-	void SetCanSelectDecals( bool canSelect );
+	void SetCanSelectDecals(bool canSelect);
 	
 	/** \brief Set if navigation spaces can be selected. */
-	void SetCanSelectNavSpaces( bool canSelect );
+	void SetCanSelectNavSpaces(bool canSelect);
 	
 	/** \brief Set if height terrain navigation points can be selected. */
-	void SetCanSelectHTNavPoints( bool canSelect );
+	void SetCanSelectHTNavPoints(bool canSelect);
 	
 	/** \brief Set can select all. */
-	void SetCanSelectAll( bool canSelect );
+	void SetCanSelectAll(bool canSelect);
 	
 	
 	
@@ -161,8 +160,8 @@ public:
 	void StoreRectSelect();
 	
 	/** \brief Get hit list. */
-	inline meCLHitList &GetHitList(){ return pHitList; }
-	inline const meCLHitList &GetHitList() const{ return pHitList; }
+	inline meCLHitListEntry::List &GetHitList(){ return pHitList; }
+	inline const meCLHitListEntry::List &GetHitList() const{ return pHitList; }
 	
 	/** \brief Prepare for a test clearing only the hit list. */
 	void Prepare();
@@ -176,13 +175,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
 	
 	/** \brief Collider can be hit. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
 	
 	/** \brief Collider changed during physics processing. */
-	virtual void ColliderChanged( deCollider *owner );
+	void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 };
 

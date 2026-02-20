@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan light. */
-	deoglRenderPlanLight( deoglRenderPlan &plan );
+	deoglRenderPlanLight(deoglRenderPlan &plan);
 	
 	/** Clean up render plan light. */
 	~deoglRenderPlanLight();
@@ -84,7 +84,7 @@ public:
 	inline deoglCollideListLight *GetLight() const{ return pLight; }
 	
 	/** Set light. */
-	void SetLight( deoglCollideListLight *light );
+	void SetLight(deoglCollideListLight *light);
 	
 	/** Light position in world space. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
@@ -110,13 +110,13 @@ public:
 	inline int GetGIShadowSizeDynamic() const{ return pGIShadowSizeDynamic; }
 	
 	/** Set shadow size. */
-	void SetShadowSizeStatic( int size );
-	void SetTranspShadowSizeStatic( int size );
-	void SetAmbientShadowSizeStatic( int size );
+	void SetShadowSizeStatic(int size);
+	void SetTranspShadowSizeStatic(int size);
+	void SetAmbientShadowSizeStatic(int size);
 	
-	void SetShadowSizeDynamic( int size );
-	void SetTranspShadowSizeDynamic( int size );
-	void SetAmbientShadowSizeDynamic( int size );
+	void SetShadowSizeDynamic(int size);
+	void SetTranspShadowSizeDynamic(int size);
+	void SetAmbientShadowSizeDynamic(int size);
 	
 	/** Render switches. */
 	inline bool GetUseShadow() const{ return pUseShadow; }

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCBillboardListener::gdeWPSOCBillboardListener( gdeWPSOCBillboard &panel ) :
-pPanel( panel ){
+gdeWPSOCBillboardListener::gdeWPSOCBillboardListener(gdeWPSOCBillboard &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCBillboardListener::~gdeWPSOCBillboardListener(){
@@ -52,45 +52,45 @@ gdeWPSOCBillboardListener::~gdeWPSOCBillboardListener(){
 // Management
 ///////////////
 
-void gdeWPSOCBillboardListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCBillboardListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCBillboardListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCBillboardListener::OCPropertiesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCBillboardListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCBillboardListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCBillboardListener::OCBillboardsChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCBillboardListener::OCBillboardsChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	
 	pPanel.UpdateBillboard();
 }
 
-void gdeWPSOCBillboardListener::OCBillboardChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ){
-	if( pPanel.GetObjectClass() != objectClass || pPanel.GetBillboard() != billboard ){
+void gdeWPSOCBillboardListener::OCBillboardChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+	if(pPanel.GetObjectClass() != objectClass || pPanel.GetBillboard() != billboard){
 		return;
 	}
 	
 	pPanel.UpdateBillboard();
 }
 
-void gdeWPSOCBillboardListener::ActiveOCBillboardChanged( gdeGameDefinition* ){
+void gdeWPSOCBillboardListener::ActiveOCBillboardChanged(gdeGameDefinition*){
 	pPanel.UpdateBillboard();
 }

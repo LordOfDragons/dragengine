@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "devkDescriptorSetLayoutConfiguration.h"
 
 #include <dragengine/common/exceptions.h>
@@ -34,98 +31,52 @@
 ///////////////////////////////////////////////
 
 devkDescriptorSetLayoutConfiguration::devkDescriptorSetLayoutConfiguration() :
-pType( VK_DESCRIPTOR_TYPE_SAMPLER ),
-pShaderStageFlags( VK_SHADER_STAGE_ALL ),
-pLayoutBindings( nullptr ),
-pLayoutBindingCount( 0 ){
+pType(VK_DESCRIPTOR_TYPE_SAMPLER),
+pShaderStageFlags(VK_SHADER_STAGE_ALL){
 }
 
 devkDescriptorSetLayoutConfiguration::devkDescriptorSetLayoutConfiguration(
-	const devkDescriptorSetLayoutConfiguration &configuration ) :
-pType( VK_DESCRIPTOR_TYPE_SAMPLER ),
-pShaderStageFlags( VK_SHADER_STAGE_ALL ),
-pLayoutBindings( nullptr ),
-pLayoutBindingCount( 0 )
+	const devkDescriptorSetLayoutConfiguration &configuration) :
+pType(VK_DESCRIPTOR_TYPE_SAMPLER),
+pShaderStageFlags(VK_SHADER_STAGE_ALL)
 {
 	*this = configuration;
 }
 
-devkDescriptorSetLayoutConfiguration::~devkDescriptorSetLayoutConfiguration(){
-	if( pLayoutBindings ){
-		delete [] pLayoutBindings;
-	}
-}
+devkDescriptorSetLayoutConfiguration::~devkDescriptorSetLayoutConfiguration() = default;
 
 
 
 // Management
 ///////////////
 
-void devkDescriptorSetLayoutConfiguration::SetType( VkDescriptorType type ){
+void devkDescriptorSetLayoutConfiguration::SetType(VkDescriptorType type){
 	pType = type;
 }
 
-void devkDescriptorSetLayoutConfiguration::SetShaderStageFlags( VkShaderStageFlags flags ){
+void devkDescriptorSetLayoutConfiguration::SetShaderStageFlags(VkShaderStageFlags flags){
 	pShaderStageFlags = flags;
 }
 
-void devkDescriptorSetLayoutConfiguration::SetLayoutBindingCount( int count ){
-	if( count < 0 ){
-		DETHROW_INFO( deeInvalidParam, "count < 0" );
-	}
+void devkDescriptorSetLayoutConfiguration::SetLayoutBindingCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( pLayoutBindings ){
-		delete [] pLayoutBindings;
-		pLayoutBindings = nullptr;
-		pLayoutBindingCount = 0;
-	}
-	
-	if( count == 0 ){
-		return;
-	}
-	
-	pLayoutBindings = new VkDescriptorSetLayoutBinding[ count ]{};
-	pLayoutBindingCount = count;
-}
-
-const VkDescriptorSetLayoutBinding &devkDescriptorSetLayoutConfiguration::GetLayoutBindingAt( int index ) const{
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pLayoutBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= layoutBindingCount" );
-	}
-	return pLayoutBindings[ index ];
+	pLayoutBindings.SetAll(count, {});
 }
 
 void devkDescriptorSetLayoutConfiguration::SetLayoutBindingAt(
-int index, const VkDescriptorSetLayoutBinding &binding ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pLayoutBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= layoutBindingCount" );
-	}
-	if( binding.pImmutableSamplers ){
-		DETHROW_INFO( deeInvalidParam, "binding.pImmutableSamplers not nullptr" );
-	}
+int index, const VkDescriptorSetLayoutBinding &binding){
+	DEASSERT_NULL(binding.pImmutableSamplers)
 	
-	pLayoutBindings[ index ] = binding;
+	pLayoutBindings[index] = binding;
 }
 
 void devkDescriptorSetLayoutConfiguration::SetLayoutBindingAt(
-int index, int binding, VkDescriptorType type, VkShaderStageFlags flags ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pLayoutBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= layoutBindingCount" );
-	}
-	
-	pLayoutBindings[ index ].binding = binding;
-	pLayoutBindings[ index ].stageFlags = flags;
-	pLayoutBindings[ index ].descriptorType = type;
-	pLayoutBindings[ index ].descriptorCount = 1;
+int index, int binding, VkDescriptorType type, VkShaderStageFlags flags){
+	pLayoutBindings[index].binding = binding;
+	pLayoutBindings[index].stageFlags = flags;
+	pLayoutBindings[index].descriptorType = type;
+	pLayoutBindings[index].descriptorCount = 1;
 }
 
 
@@ -133,32 +84,25 @@ int index, int binding, VkDescriptorType type, VkShaderStageFlags flags ){
 // Operators
 //////////////
 
+static bool operator==(const VkDescriptorSetLayoutBinding &a, const VkDescriptorSetLayoutBinding &b){
+	return a.binding == b.binding
+		&& a.descriptorType == b.descriptorType
+		&& a.descriptorCount == b.descriptorCount
+		&& a.stageFlags == b.stageFlags
+		&& a.pImmutableSamplers == b.pImmutableSamplers;
+}
+
 bool devkDescriptorSetLayoutConfiguration::operator==(
-const devkDescriptorSetLayoutConfiguration &configuration ) const{
-	if( pType != configuration.pType
-	|| pShaderStageFlags != configuration.pShaderStageFlags
-	|| pLayoutBindingCount != configuration.pLayoutBindingCount ){
-		return false;
-	}
-	
-	if( pLayoutBindingCount > 0 && memcmp( pLayoutBindings, configuration.pLayoutBindings,
-	sizeof( VkDescriptorSetLayoutBinding ) * pLayoutBindingCount ) ){
-		return false;
-	}
-	
-	return true;
+const devkDescriptorSetLayoutConfiguration &configuration) const{
+	return pType == configuration.pType
+		&& pShaderStageFlags == configuration.pShaderStageFlags
+		&& pLayoutBindings == configuration.pLayoutBindings;
 }
 
 devkDescriptorSetLayoutConfiguration &devkDescriptorSetLayoutConfiguration::operator=(
-const devkDescriptorSetLayoutConfiguration &configuration ){
+const devkDescriptorSetLayoutConfiguration &configuration){
 	pType = configuration.pType;
 	pShaderStageFlags = configuration.pShaderStageFlags;
-	
-	SetLayoutBindingCount( configuration.pLayoutBindingCount );
-	if( pLayoutBindingCount > 0 ){
-		memcpy( pLayoutBindings, configuration.pLayoutBindings,
-			sizeof( VkDescriptorSetLayoutBinding ) * pLayoutBindingCount );
-	}
-	
+	pLayoutBindings = configuration.pLayoutBindings;
 	return *this;
 }

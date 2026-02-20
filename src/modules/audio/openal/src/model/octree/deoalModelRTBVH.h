@@ -25,6 +25,7 @@
 #ifndef _DEOALMODELRTBVH_H_
 #define _DEOALMODELRTBVH_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 
 
@@ -51,8 +52,8 @@ public:
 	struct sFace{
 		decVector normal;
 		decVector baseVertex;
-		decVector edgeNormal[ 3 ];
-		float edgeDistance[ 3 ];
+		decVector edgeNormal[3];
+		float edgeDistance[3];
 		int indexFace;
 		int indexTexture;
 	};
@@ -78,21 +79,10 @@ private:
 		int next;
 	};
 	
-	sFace *pFaces;
-	int pFaceCount;
-	int pFaceSize;
-	
-	sNode *pNodes;
-	int pNodeCount;
-	int pNodeSize;
-	
-	sBuildNode *pBuildNodes;
-	int pBuildNodeCount;
-	int pBuildNodeSize;
-	
-	sBuildFace *pBuildFaces;
-	int pBuildFaceCount;
-	int pBuildFaceSize;
+	decTList<sFace> pFaces;
+	decTList<sNode> pNodes;
+	decTList<sBuildNode> pBuildNodes;
+	decTList<sBuildFace> pBuildFaces;
 	
 	int pIndexNode;
 	int pIndexFace;
@@ -114,21 +104,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Faces. */
-	inline const sFace *GetFaces() const{ return pFaces; }
+	inline const sFace *GetFaces() const{ return pFaces.GetArrayPointer(); }
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{ return pFaces.GetCount(); }
 	
 	/** \brief Nodes. */
-	inline const sNode *GetNodes() const{ return pNodes; }
+	inline const sNode *GetNodes() const{ return pNodes.GetArrayPointer(); }
 	
 	/** \brief Node count. */
-	inline int GetNodeCount() const{ return pNodeCount; }
+	inline int GetNodeCount() const{ return pNodes.GetCount(); }
 	
 	
 	
 	/** \brief Build from faces. */
-	void Build( const deoalModelFace *faces, int faceCount );
+	void Build(const deoalModelFace *faces, int faceCount);
 	
 	/** \brief Drop temporary build data. */
 	void DropBuildData();
@@ -137,12 +127,11 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	int pAddBuildNode();
-	void pUpdateNodeExtends( sBuildNode &node ) const;
-	void pSplitNode( int nodeIndex );
-	void pNodeAddFace( sBuildNode &node, int faceIndex );
-	void pBuildVisitNode( const sBuildNode &buildNode );
+	void pUpdateNodeExtends(sBuildNode &node) const;
+	void pSplitNode(int nodeIndex);
+	void pNodeAddFace(sBuildNode &node, int faceIndex);
+	void pBuildVisitNode(const sBuildNode &buildNode);
 };
 
 #endif

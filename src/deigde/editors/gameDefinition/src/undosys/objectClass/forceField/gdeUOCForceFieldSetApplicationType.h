@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/forcefield/deForceField.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,9 +38,13 @@ class gdeObjectClass;
  * \brief Undo action object class force field set application type.
  */
 class gdeUOCForceFieldSetApplicationType : public igdeUndo{
+public:
+	using Ref = deTObjectReference<gdeUOCForceFieldSetApplicationType>;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	deForceField::eApplicationTypes pOldValue;
 	deForceField::eApplicationTypes pNewValue;
@@ -51,12 +55,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetApplicationType( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, deForceField::eApplicationTypes newValue );
+	gdeUOCForceFieldSetApplicationType(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, deForceField::eApplicationTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCForceFieldSetApplicationType();
+	~gdeUOCForceFieldSetApplicationType() override;
 	/*@}*/
 	
 	
@@ -65,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

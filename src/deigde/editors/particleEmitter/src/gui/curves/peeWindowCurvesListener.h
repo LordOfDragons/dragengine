@@ -35,6 +35,10 @@ class peeWindowCurves;
  * \brief Curves Window Listener.
  */
 class peeWindowCurvesListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWindowCurvesListener>;
+	
 private:
 	peeWindowCurves &pWindow;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWindowCurvesListener( peeWindowCurves &window );
+	peeWindowCurvesListener(peeWindowCurves &window);
 	
 	/** \brief Clean up listener. */
-	virtual ~peeWindowCurvesListener();
+protected:
+	~peeWindowCurvesListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,16 +61,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type count or order changed. */
-	virtual void TypeStructureChanged( peeEmitter *emitter );
+	void TypeStructureChanged(peeEmitter *emitter) override;
 	
 	/** \brief A type parameter changed. */
-	virtual void TypeParameterChanged( peeEmitter *emitter, peeType *type, peeParameter *parameter );
+	void TypeParameterChanged(peeEmitter *emitter, peeType *type, peeParameter *parameter) override;
 	
 	/** \brief Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged( peeEmitter *emitter, peeType *type );
+	void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type) override;
 	
 	/** \brief Active type changed. */
-	virtual void ActiveTypeChanged( peeEmitter *emitter );
+	void ActiveTypeChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

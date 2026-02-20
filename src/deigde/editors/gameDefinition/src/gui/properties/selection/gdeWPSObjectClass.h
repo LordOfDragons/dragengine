@@ -25,100 +25,105 @@
 #ifndef _GDEWPSOBJECTCLASS_H_
 #define _GDEWPSOBJECTCLASS_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include "gdeWPSObjectClassListener.h"
+#include "../gdeWPTagList.h"
+#include "../gdeWPPropertyList.h"
+#include "../../../gamedef/gdeGameDefinition.h"
+
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeFilePattern;
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeProperty;
 class gdeOCComponentTexture;
 class gdeOCInherit;
-class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSObjectClassListener;
 
 
 /**
  * \brief Object class property panel.
  */
 class gdeWPSObjectClass : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<gdeWPSObjectClass> Ref;
+	
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSObjectClassListener *pListener;
+	gdeWPSObjectClassListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeActionReference pActionInheritAdd;
-	igdeActionReference pActionInheritRemove;
-	igdeActionReference pActionInheritRemoveAll;
-	igdeActionReference pActionPropertyValueSet;
-	igdeActionReference pActionPropertyValueRemove;
-	igdeActionReference pActionPropertyValueClear;
-	igdeActionReference pActionPropertyValuesFromSubObjects;
-	igdeActionContextMenuReference pActionTexturesMenu;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
+	igdeAction::Ref pActionInheritAdd;
+	igdeAction::Ref pActionInheritRemove;
+	igdeAction::Ref pActionInheritRemoveAll;
+	igdeAction::Ref pActionPropertyValueSet;
+	igdeAction::Ref pActionPropertyValueRemove;
+	igdeAction::Ref pActionPropertyValueClear;
+	igdeAction::Ref pActionPropertyValuesFromSubObjects;
+	igdeActionContextMenu::Ref pActionTexturesMenu;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeComboBoxReference pCBScaleMode;
-	igdeCheckBoxReference pChkIsGhost;
-	igdeCheckBoxReference pChkCanInstantiate;
-	igdeCheckBoxReference pChkIsAttachableBehavior;
-	igdeCheckBoxReference pChkInheritSOBillboards;
-	igdeCheckBoxReference pChkInheritSOComponents;
-	igdeCheckBoxReference pChkInheritSOLights;
-	igdeCheckBoxReference pChkInheritSOSnapPoints;
-	igdeCheckBoxReference pChkInheritSOParticleEmitters;
-	igdeCheckBoxReference pChkInheritSOForceFields;
-	igdeCheckBoxReference pChkInheritSOEnvMapProbes;
-	igdeCheckBoxReference pChkInheritSOSpeakers;
-	igdeCheckBoxReference pChkInheritSONavigationSpaces;
-	igdeCheckBoxReference pChkInheritSONavigationBlockers;
-	igdeCheckBoxReference pChkInheritSOWorlds;
-	igdeTextFieldReference pEditDefaultInheritPropertyPrefix;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeComboBox::Ref pCBScaleMode;
+	igdeCheckBox::Ref pChkIsGhost;
+	igdeCheckBox::Ref pChkCanInstantiate;
+	igdeCheckBox::Ref pChkIsAttachableBehavior;
+	igdeCheckBox::Ref pChkInheritSOBillboards;
+	igdeCheckBox::Ref pChkInheritSOComponents;
+	igdeCheckBox::Ref pChkInheritSOLights;
+	igdeCheckBox::Ref pChkInheritSOSnapPoints;
+	igdeCheckBox::Ref pChkInheritSOParticleEmitters;
+	igdeCheckBox::Ref pChkInheritSOForceFields;
+	igdeCheckBox::Ref pChkInheritSOEnvMapProbes;
+	igdeCheckBox::Ref pChkInheritSOSpeakers;
+	igdeCheckBox::Ref pChkInheritSONavigationSpaces;
+	igdeCheckBox::Ref pChkInheritSONavigationBlockers;
+	igdeCheckBox::Ref pChkInheritSOWorlds;
+	igdeTextField::Ref pEditDefaultInheritPropertyPrefix;
 	
-	igdeWidgetReference pEditProperties;
-	igdeWidgetReference pEditTextureProperties;
+	gdeWPPropertyList::Ref pEditProperties;
+	gdeWPPropertyList::Ref pEditTextureProperties;
 	
-	igdeComboBoxReference pCBPropertyValuesKeys;
-	igdeButtonReference pBtnPropertyValueSet;
-	igdeIconListBoxReference pListPropertyValues;
+	igdeComboBox::Ref pCBPropertyValuesKeys;
+	igdeButton::Ref pBtnPropertyValueSet;
+	igdeIconListBox::Ref pListPropertyValues;
 	
-	igdeComboBoxFilterReference pCBCategory;
-	igdeButtonReference pBtnJumpToCategory;
+	igdeComboBoxFilter::Ref pCBCategory;
+	igdeButton::Ref pBtnJumpToCategory;
 	
-	igdeWidgetReference pListHideTags;
-	igdeWidgetReference pListPartialHideTags;
+	gdeWPTagList::Ref pListHideTags;
+	gdeWPTagList::Ref pListPartialHideTags;
 	
-	igdeListBoxReference pListInherits;
-	igdeComboBoxFilterReference pInheritCBClass;
-	igdeButtonReference pBtnJumpToInheritClass;
-	igdeTextFieldReference pInheritEditPropertyPrefix;
-	igdeButtonReference pBtnInheritPropertyPrefixReset;
+	igdeListBox::Ref pListInherits;
+	igdeComboBoxFilter::Ref pInheritCBClass;
+	igdeButton::Ref pBtnJumpToInheritClass;
+	igdeTextField::Ref pInheritEditPropertyPrefix;
+	igdeButton::Ref pBtnInheritPropertyPrefixReset;
 	
-	igdeComboBoxReference pCBTextures;
-	igdeButtonReference pBtnTextures;
-	igdeTextFieldReference pTextureEditName;
-	igdeEditPathReference pTextureEditPathSkin;
-	igdeEditVector2Reference pTextureEditOffset;
-	igdeTextFieldReference pTextureEditRotation;
-	igdeEditVector2Reference pTextureEditScale;
-	igdeColorBoxReference pTextureClrTint;
+	igdeComboBox::Ref pCBTextures;
+	igdeButton::Ref pBtnTextures;
+	igdeTextField::Ref pTextureEditName;
+	igdeEditPath::Ref pTextureEditPathSkin;
+	igdeEditVector2::Ref pTextureEditOffset;
+	igdeTextField::Ref pTextureEditRotation;
+	igdeEditVector2::Ref pTextureEditScale;
+	igdeColorBox::Ref pTextureClrTint;
 	
 	
 	
@@ -126,7 +131,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSObjectClass( gdeWindowProperties &windowMain );
+	gdeWPSObjectClass(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -141,24 +146,24 @@ public:
 	/** \brief Properties window. */
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	/** \brief Game definition or \em nullptr if not set. */
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	/** \brief Set game definition or \em nullptr if not set. */
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
-	/** \brief Active object class or \em NULL if absent. */
+	/** \brief Active object class or \em nullptr if absent. */
 	gdeObjectClass *GetObjectClass() const;
 	
-	/** \brief Active property class or \em NULL if absent. */
+	/** \brief Active property class or \em nullptr if absent. */
 	gdeProperty *GetProperty() const;
 	
-	/** \brief Active texture property class or \em NULL if absent. */
+	/** \brief Active texture property class or \em nullptr if absent. */
 	gdeProperty *GetTextureProperty() const;
 	
-	/** \brief Active inherit or \em NULL if not set. */
+	/** \brief Active inherit or \em nullptr if not set. */
 	gdeOCInherit *GetInherit() const;
 	
 	/** \brief Active property key (in combo box). */
@@ -167,22 +172,22 @@ public:
 	/** \brief Active property value (in list box). */
 	const char *GetPropertyValue() const;
 	
-	/** \brief Active object class texture or \em NULL if not set. */
+	/** \brief Active object class texture or \em nullptr if not set. */
 	gdeOCComponentTexture *GetTexture() const;
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionInheritAdd() const{ return pActionInheritAdd; }
-	inline igdeAction *GetActionInheritRemove() const{ return pActionInheritRemove; }
-	inline igdeAction *GetActionInheritRemoveAll() const{ return pActionInheritRemoveAll; }
-	inline igdeAction *GetActionPropertyValueSet() const{ return pActionPropertyValueSet; }
-	inline igdeAction *GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
-	inline igdeAction *GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }
-	inline igdeAction *GetActionPropertyValuesFromSubObjects() const{ return pActionPropertyValuesFromSubObjects; }
-	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionInheritAdd() const{ return pActionInheritAdd; }
+	inline const igdeAction::Ref &GetActionInheritRemove() const{ return pActionInheritRemove; }
+	inline const igdeAction::Ref &GetActionInheritRemoveAll() const{ return pActionInheritRemoveAll; }
+	inline const igdeAction::Ref &GetActionPropertyValueSet() const{ return pActionPropertyValueSet; }
+	inline const igdeAction::Ref &GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
+	inline const igdeAction::Ref &GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }
+	inline const igdeAction::Ref &GetActionPropertyValuesFromSubObjects() const{ return pActionPropertyValuesFromSubObjects; }
+	inline const igdeActionContextMenu::Ref &GetActionTexturesMenu() const{ return pActionTexturesMenu; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
 	
 	
 	
@@ -228,7 +233,7 @@ public:
 	void UpdateInherit();
 	
 	/** \brief Select inherit. */
-	void SelectInherit( gdeOCInherit *inherit );
+	void SelectInherit(gdeOCInherit *inherit);
 	
 	/** \brief Update hide tags. */
 	void UpdateHideTags();
@@ -250,7 +255,7 @@ public:
 	
 private:
 	/** \brief Update category list. */
-	void pUpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void pUpdateCategoryList(const gdeCategory::List &list, const char *prefix);
 };
 
 #endif

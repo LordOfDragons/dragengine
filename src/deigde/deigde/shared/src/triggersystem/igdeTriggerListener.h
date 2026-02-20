@@ -36,13 +36,20 @@ class igdeTriggerTarget;
  */
 class DE_DLL_EXPORT igdeTriggerListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTriggerListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger listener. */
 	igdeTriggerListener();
 	
+protected:
 	/** \brief Clean up trigger listener. */
-	virtual ~igdeTriggerListener();
+	~igdeTriggerListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -50,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Trigger target changed. */
-	virtual void TriggerTargetChanged( igdeTriggerTarget *target );
+	virtual void TriggerTargetChanged(igdeTriggerTarget *target);
 	/*@}*/
 };
 

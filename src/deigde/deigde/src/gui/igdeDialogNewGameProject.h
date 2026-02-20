@@ -25,18 +25,18 @@
 #ifndef _IGDEDIALOGNEWGAMEPROJECT_H_
 #define _IGDEDIALOGNEWGAMEPROJECT_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditDirectoryReference.h>
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDirectory.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 #include <dragengine/common/file/decPath.h>
 
 
-class igdeGameProject;
 class igdeWindowMain;
 class igdeTemplate;
 
@@ -45,28 +45,33 @@ class igdeTemplate;
  * \brief New game project dialog.
  */
 class igdeDialogNewGameProject : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogNewGameProject> Ref;
+	
+	
 private:
 	igdeWindowMain &pWindowMain;
-	igdeGameProject *pNewProject;
+	igdeGameProject::Ref pNewProject;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeEditDirectoryReference pEditPathProject;
-	igdeTextFieldReference pEditPathData;
-	igdeTextFieldReference pEditPathCache;
-	igdeTextFieldReference pEditPathGameDefProject;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeEditDirectory::Ref pEditPathProject;
+	igdeTextField::Ref pEditPathData;
+	igdeTextField::Ref pEditPathCache;
+	igdeTextField::Ref pEditPathGameDefProject;
 	
-	igdeComboBoxReference pCBSharedGameDefs;
-	igdeTextAreaReference pEditSharedGameDefInfo;
-	igdeListBoxReference pListPathGameDefBase;
-	igdeButtonReference pBtnPathGameDefBaseAdd;
-	igdeButtonReference pBtnPathGameDefBaseRemove;
-	igdeButtonReference pBtnPathGameDefBaseUp;
-	igdeButtonReference pBtnPathGameDefBaseDown;
+	igdeComboBox::Ref pCBSharedGameDefs;
+	igdeTextArea::Ref pEditSharedGameDefInfo;
+	igdeListBox::Ref pListPathGameDefBase;
+	igdeButton::Ref pBtnPathGameDefBaseAdd;
+	igdeButton::Ref pBtnPathGameDefBaseRemove;
+	igdeButton::Ref pBtnPathGameDefBaseUp;
+	igdeButton::Ref pBtnPathGameDefBaseDown;
 	
-	igdeComboBoxReference pCBScriptModule;
-	igdeComboBoxReference pCBTemplate;
-	igdeTextAreaReference pEditTemplateInfo;
+	igdeComboBox::Ref pCBScriptModule;
+	igdeComboBox::Ref pCBTemplate;
+	igdeTextArea::Ref pEditTemplateInfo;
 	
 	bool pProjectPathChanged;
 	bool pProjectGameDefPathChanged;
@@ -77,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogNewGameProject( igdeWindowMain &windowMain );
+	explicit igdeDialogNewGameProject(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -89,8 +94,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Created game project or NULL if cancelled. */
-	inline igdeGameProject *GetNewProject() const{ return pNewProject; }
+	/** \brief Created game project or nullptr if cancelled. */
+	inline const igdeGameProject::Ref &GetNewProject() const{ return pNewProject; }
 	
 	void OnProjectDirChanged();
 	void OnProjectGameDefPathChanged();

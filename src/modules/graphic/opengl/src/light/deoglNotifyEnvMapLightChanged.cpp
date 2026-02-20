@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglNotifyEnvMapLightChanged::deoglNotifyEnvMapLightChanged( deoglRLight &light ) :
-pLight( light )
+deoglNotifyEnvMapLightChanged::deoglNotifyEnvMapLightChanged(deoglRLight &light) :
+pLight(light)
 {
-	pLightBox.SetFromExtends( light.GetMinimumExtend(), light.GetMaximumExtend() );
-	SetVisitEnvMaps( true );
+	pLightBox.SetFromExtends(light.GetMinimumExtend(), light.GetMaximumExtend());
+	SetVisitEnvMaps(true);
 }
 
 
@@ -53,16 +53,16 @@ pLight( light )
 // Visiting
 /////////////
 
-void deoglNotifyEnvMapLightChanged::VisitEnvMaps( deoglEnvironmentMap *envmap ){
-	if( envmap->GetSkyOnly() ){
+void deoglNotifyEnvMapLightChanged::VisitEnvMaps(deoglEnvironmentMap *envmap){
+	if(envmap->GetSkyOnly()){
 		return;
 	}
 	
-	if( envmap->GetHasInfluenceBox() ){
-		if( ! envmap->GetInfluenceCollisionBox().BoxHitsBox( &pLightBox ) ){
+	if(envmap->GetHasInfluenceBox()){
+		if(!envmap->GetInfluenceCollisionBox().BoxHitsBox(&pLightBox)){
 			return;
 		}
 	}
 	
-	envmap->LightChanged( &pLight );
+	envmap->LightChanged(&pLight);
 }

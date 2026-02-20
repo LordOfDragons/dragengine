@@ -39,23 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetScaleMax::aeURuleLimitSetScaleMax( aeRuleLimit *rule, const decVector &newMax ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetScaleMax::aeURuleLimitSetScaleMax(aeRuleLimit *rule, const decVector &newMax){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumScaling();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Limit Set maximum scaling" );
+		SetShortInfo("@Animator.Undo.SetRuleLimitMaximumScaling");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +69,11 @@ aeURuleLimitSetScaleMax::~aeURuleLimitSetScaleMax(){
 ///////////////
 
 void aeURuleLimitSetScaleMax::Undo(){
-	pRule->SetMaximumScaling( pOldMax );
+	pRule->SetMaximumScaling(pOldMax);
 }
 
 void aeURuleLimitSetScaleMax::Redo(){
-	pRule->SetMaximumScaling( pNewMax );
+	pRule->SetMaximumScaling(pNewMax);
 }
 
 
@@ -84,7 +82,4 @@ void aeURuleLimitSetScaleMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetScaleMax::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }

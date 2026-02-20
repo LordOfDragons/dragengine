@@ -27,15 +27,16 @@
 
 #include "../light/pipeline/deoglLightPipelinesParticle.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../skin/deoglRSkin.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
 class deoglLightShaderConfig;
 class deoglRParticleEmitter;
-class deoglRSkin;
 class deoglTexture;
 
 
@@ -45,6 +46,10 @@ class deoglTexture;
  */
 class deoglRParticleEmitterType : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRParticleEmitterType>;
+	
+	
 	/** Texture sampler curves. */
 	enum eSampleCurves{
 		// progress curves
@@ -70,13 +75,13 @@ private:
 	
 	float pParamFactorLinVelo;
 	float pParamFactorAngVelo;
-	float *pParameterSamples;
-	float pParamFactorMultiply[ ESC_COUNT ];
-	float pParamFactorAdd[ ESC_COUNT ];
+	decTList<float> pParameterSamples;
+	float pParamFactorMultiply[ESC_COUNT];
+	float pParamFactorAdd[ESC_COUNT];
 	deoglPixelBuffer::Ref pPixelBufferSamples;
 	deoglTexture *pTextureSamples;
 	
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	bool pEmitLight;
 	bool pHasTransparency;
@@ -89,14 +94,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render type. */
-	deoglRParticleEmitterType( deoglRParticleEmitter &emitter );
+	deoglRParticleEmitterType(deoglRParticleEmitter &emitter);
 	
+protected:
 	/** Clean up render type. */
-	virtual ~deoglRParticleEmitterType();
+	~deoglRParticleEmitterType() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Particle emitter. */
@@ -111,13 +117,13 @@ public:
 	inline float GetParamFactorAngVelo() const{ return pParamFactorAngVelo; }
 	
 	/** Parameter multiply factor. */
-	inline const float *GetParamFactorMultiply() const{ return &pParamFactorMultiply[ 0 ]; }
+	inline const float *GetParamFactorMultiply() const{ return &pParamFactorMultiply[0]; }
 	
 	/** Parameter add factor. */
-	inline const float *GetParamFactorAdd() const{ return &pParamFactorAdd[ 0 ]; }
+	inline const float *GetParamFactorAdd() const{ return &pParamFactorAdd[0]; }
 	
 	/** Parameter samples. */
-	inline const float *GetParameterSamples() const{ return pParameterSamples; }
+	inline const decTList<float> &GetParameterSamples() const{ return pParameterSamples; }
 	
 	/** Texture with the samples. */
 	inline deoglTexture *GetTextureSamples() const{ return pTextureSamples; }
@@ -128,18 +134,18 @@ public:
 	inline deParticleEmitterType::eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
 	/** Set simulation type. */
-	void SetSimulationType( deParticleEmitterType::eSimulationTypes simulationType );
+	void SetSimulationType(deParticleEmitterType::eSimulationTypes simulationType);
 	
 	
 	
 	/** Update parameter samples. */
-	void UpdateParameterSamples( const deParticleEmitterType &type );
+	void UpdateParameterSamples(const deParticleEmitterType &type);
 	
 	/** Sample a parameter. */
-	void SampleParameters( eSampleCurves curveProgress, eSampleCurves curveBeam, const deParticleEmitterParameter &parameter );
+	void SampleParameters(eSampleCurves curveProgress, eSampleCurves curveBeam, const deParticleEmitterParameter &parameter);
 	
 	/** Sampled parameter value using interpolation. */
-	float GetSampledParameter( eSampleCurves curve, float location ) const;
+	float GetSampledParameter(eSampleCurves curve, float location) const;
 	
 	/** Prepare for rendering. */
 	void PrepareForRender();
@@ -147,16 +153,16 @@ public:
 	
 	
 	/** Skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Particles emit light. */
 	inline bool GetEmitLight() const{ return pEmitLight; }
 	
 	/** Check if particles emit light. */
-	void CheckEmitLight( const deParticleEmitterType &type );
+	void CheckEmitLight(const deParticleEmitterType &type);
 	
 	/**
 	 * Particles have transparency.

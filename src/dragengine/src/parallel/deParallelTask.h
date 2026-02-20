@@ -25,12 +25,13 @@
 #ifndef _DEPARALLELTASK_H_
 #define _DEPARALLELTASK_H_
 
-#include "../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/string/decString.h"
 #include "../threading/deThreadSafeObject.h"
 
 class deLogger;
 class deBaseModule;
+class deParallelProcessing;
 
 
 /**
@@ -62,6 +63,17 @@ class deBaseModule;
  * Use SetFinishAfterRun() to set the appropriate behavior.
  */
 class DE_DLL_EXPORT deParallelTask : public deThreadSafeObject{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTThreadSafeObjectReference<deParallelTask>;
+	
+	/** \brief List of tasks. */
+	using TaskList = decTThreadSafeObjectOrderedSet<deParallelTask>;
+	
+	/** \brief List of task pointers. */
+	using TaskPointerList = decTOrderedSet<deParallelTask*>;
+	
+	
 private:
 	deBaseModule *pOwner;
 	
@@ -71,8 +83,8 @@ private:
 	bool pEmptyRun;
 	bool pLowPriority;
 	
-	decThreadSafeObjectOrderedSet pDependsOn;
-	decThreadSafeObjectOrderedSet pDependedOnBy;
+	TaskList pDependsOn;
+	TaskPointerList pDependedOnBy;
 	
 	
 	
@@ -83,11 +95,11 @@ public:
 	 * \brief Create task.
 	 * \param[in] owner Module owning the task or NULL if global.
 	 */
-	deParallelTask( deBaseModule *owner );
+	deParallelTask(deBaseModule *owner);
 	
 protected:
 	/** \brief Clean up task. */
-	virtual ~deParallelTask();
+	~deParallelTask() override;
 	/*@}*/
 	
 	
@@ -113,7 +125,7 @@ public:
 	 * \param finishAfterRun If true task is marked finished after Run() method exits.
 	 * If false Task is marked finished after Finished() method exits.
 	 */
-	void SetMarkFinishedAfterRun( bool markFinishedAfterRun );
+	void SetMarkFinishedAfterRun(bool markFinishedAfterRun);
 	
 	/** \brief Task has empty run implementation. */
 	inline bool GetEmptyRun() const{ return pEmptyRun; }
@@ -124,13 +136,13 @@ public:
 	 * This is an optimization. If the run implementation is empty the task will be finished
 	 * without running the empty run method using a free thread.
 	 */
-	void SetEmptyRun( bool emptyRun );
+	void SetEmptyRun(bool emptyRun);
 	
 	/** \brief Task has lower priority than other tasks. */
 	inline bool GetLowPriority() const{ return pLowPriority; }
 	
 	/** \brief Set if task has lower priority than other tasks. */
-	void SetLowPriority( bool lowPriority );
+	void SetLowPriority(bool lowPriority);
 	
 	/** \brief Task has been cancelled. */
 	inline bool IsCancelled() const{ return pCancel; }
@@ -140,8 +152,10 @@ public:
 	 * 
 	 * Call from the main thread to cancel a task. A cancelled task does not
 	 * call Finished() or Run() if still pending.
+	 * 
+	 * \note Locks deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	void Cancel();
+	void Cancel(deParallelProcessing &parallel);
 	
 	/** \brief Task is finished. */
 	inline bool GetFinished() const{ return pFinished; }
@@ -153,54 +167,55 @@ public:
 	 */
 	void SetFinished();
 	
-	/** \brief Number of tasks this task depends on. */
-	int GetDependsOnCount() const;
-	
-	/** \brief Depend on task at index. */
-	deParallelTask *GetDependsOnAt( int index ) const;
-	
-	/** \brief Task depends on another task. */
-	bool DoesDependOn( deParallelTask *task ) const;
+	/**
+	 * \brief List of tasks this task is depending on.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
+	 */
+	inline const TaskList &GetDependsOn() const{ return pDependsOn; }
 	
 	/**
 	 * \brief Add task this task depends on.
 	 * \throws deeInvalidParam \em task is NULL.
 	 * \throws deeInvalidParam \em task is this task.
 	 * \throws deeInvalidParam \em task has been already added.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	void AddDependsOn( deParallelTask *task );
+	void AddDependsOn(deParallelTask *task);
 	
 	/**
 	 * \brief Remove task this task depends on.
 	 * \throws deeInvalidParam \em task is NULL.
 	 * \throws deeInvalidParam \em task is this task.
 	 * \throws deeInvalidParam \em task has not been added.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	void RemoveDependsOn( deParallelTask *task );
+	void RemoveDependsOn(deParallelTask *task);
 	
-	/** \brief Remove all tasks this task depends on. */
+	/**
+	 * \brief Remove all tasks this task depends on.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
+	 */
 	void RemoveAllDependsOn();
 	
 	/**
 	 * \brief List of tasks depending on this task.
-	 * 
-	 * Used by deParallelProcessing only.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	inline decThreadSafeObjectOrderedSet &GetDependedOnBy(){ return pDependedOnBy; }
-	inline const decThreadSafeObjectOrderedSet &GetDependedOnBy() const{ return pDependedOnBy; }
+	inline TaskPointerList &GetDependedOnBy(){ return pDependedOnBy; }
+	inline const TaskPointerList &GetDependedOnBy() const{ return pDependedOnBy; }
 	
 	/**
 	 * \brief Remove from all tasks depending on this task.
-	 * 
-	 * Used by deParallelProcessing only.
+	 * \warning Call only while holding deParallelProcessing::GetTaskDependencyMutex().
 	 */
 	void RemoveFromAllDependedOnTasks();
 	
 	/**
 	 * \brief Task can run.
 	 * \returns true if task does not depend on other tasks or all other tasks finished.
+	 * \note Locks deParallelProcessing::GetTaskDependencyMutex().
 	 */
-	bool CanRun() const;
+	bool CanRun(deParallelProcessing &parallel) const;
 	
 	/**
 	 * \brief Reset task.
@@ -267,6 +282,14 @@ public:
 	virtual decString GetDebugDetails() const;
 	
 // 	void VerifyDependsOn();
+	/*@}*/
+	
+	
+	
+	/** \name Internal use only. */
+	/*@{*/
+	/** \brief Internal use only. */
+	void UnprotectedCancel();
 	/*@}*/
 };
 

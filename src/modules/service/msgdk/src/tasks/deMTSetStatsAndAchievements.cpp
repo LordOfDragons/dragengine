@@ -5,6 +5,7 @@
 #include "../convert/deMCCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/service/deServiceManager.h>
 
 
@@ -19,7 +20,7 @@ deMTSetStatsAndAchievements::deMTSetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pResultData(deServiceObject::Ref::New(new deServiceObject)),
+pResultData(deServiceObject::Ref::New()),
 pWaitAchievementsSynced(false)
 {
 	pService.GetModule().LogInfo("deMTSetStatsAndAchievements: Set stats and achievements");
@@ -28,20 +29,20 @@ pWaitAchievementsSynced(false)
 	
 	so = request.GetChildAt("stats");
 	if(so){
-		pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject(so, true)));
+		pResultData->SetChildAt("stats", deServiceObject::Ref::New(so, true));
 	}
 	else
 	{
-		pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject));
+		pResultData->SetChildAt("stats", deServiceObject::Ref::New());
 	}
 	
 	so = request.GetChildAt("achievements");
 	if(so){
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::New(new deServiceObject(so, true)));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New(so, true));
 	}
 	else
 	{
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::New(new deServiceObject));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New());
 	}
 
 	pService.NewPendingRequest(pRequestId, "setStatsAndAchievements", pResultData);
@@ -164,55 +165,44 @@ void deMTSetStatsAndAchievements::pSetStats()
 	decStringList values;
 	decString value;
 
-	XblTitleManagedStatistic * const xblstats = new XblTitleManagedStatistic[count];
-	try
+	decTList<XblTitleManagedStatistic> xblstats(count, XblTitleManagedStatistic{});
+	int i;
+	for(i=0; i<count; i++)
 	{
-		int i;
-		for(i=0; i<count; i++)
+		const decString &name = names.GetAt(i);
+		const deServiceObject::Ref &soChild = so->GetChildAt(name);
+
+		xblstats[i].statisticName = name;
+
+		switch(soChild->GetValueType())
 		{
-			const decString &name = names.GetAt(i);
-			const deServiceObject::Ref &soChild = so->GetChildAt(name);
+		case deServiceObject::evtInteger:
+			value.Format("%d", soChild->GetInteger());
+			values.Add(value);
+			xblstats[i].stringValue = values.GetAt(values.GetCount() - 1);
+			xblstats[i].statisticType = XblTitleManagedStatType::String;
+			break;
 
-			xblstats[i] = {};
-			xblstats[i].statisticName = name;
+		case deServiceObject::evtFloat:
+			xblstats[i].numberValue = (double)soChild->GetFloat();
+			xblstats[i].statisticType = XblTitleManagedStatType::Number;
+			break;
 
-			switch(soChild->GetValueType())
-			{
-			case deServiceObject::evtInteger:
-				value.Format("%d", soChild->GetInteger());
-				values.Add(value);
-				xblstats[i].stringValue = values.GetAt(values.GetCount() - 1);
-				xblstats[i].statisticType = XblTitleManagedStatType::String;
-				break;
+		case deServiceObject::evtString:
+			xblstats[i].stringValue = soChild->GetString();
+			xblstats[i].statisticType = XblTitleManagedStatType::String;
+			break;
 
-			case deServiceObject::evtFloat:
-				xblstats[i].numberValue = (double)soChild->GetFloat();
-				xblstats[i].statisticType = XblTitleManagedStatType::Number;
-				break;
-
-			case deServiceObject::evtString:
-				xblstats[i].stringValue = soChild->GetString();
-				xblstats[i].statisticType = XblTitleManagedStatType::String;
-				break;
-
-			default:
-				value.Format("Invalid value for stat '%s': type %d",
-					name.GetString(), soChild->GetValueType());
-				DETHROW_INFO(deeInvalidParam, value);
-			}
+		default:
+			value.Format("Invalid value for stat '%s': type %d",
+				name.GetString(), soChild->GetValueType());
+			DETHROW_INFO(deeInvalidParam, value);
 		}
-
-		pService.AssertResult(XblTitleManagedStatsUpdateStatsAsync(
-			pService.GetXblContext(), xblstats, count, GetAsyncBlockPtr()),
-			"deMTSetStatsAndAchievements.pSetStats.XblTitleManagedStatsUpdateStatsAsync");
-
-		delete [] xblstats;
 	}
-	catch(const deException &)
-	{
-		delete [] xblstats;
-		throw;
-	}
+
+	pService.AssertResult(XblTitleManagedStatsUpdateStatsAsync(
+		pService.GetXblContext(), xblstats.GetArrayPointer(), count, GetAsyncBlockPtr()),
+		"deMTSetStatsAndAchievements.pSetStats.XblTitleManagedStatsUpdateStatsAsync");
 }
 
 void deMTSetStatsAndAchievements::OnFinished()

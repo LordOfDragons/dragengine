@@ -39,28 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetEmitController::peeUTypeSetEmitController( peeType *type,
-deParticleEmitterType::eEmitControllers controller, const char *newTarget ) :
-pType( NULL ),
-pController( controller ),
-pNewTarget( newTarget )
+peeUTypeSetEmitController::peeUTypeSetEmitController(peeType *type,
+deParticleEmitterType::eEmitControllers controller, const char *newTarget) :
+
+pController(controller),
+pNewTarget(newTarget)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(!type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Type Emit Controller" );
+	SetShortInfo("@ParticleEmitter.Undo.Type.SetEmitController");
 	
-	pOldTarget = type->GetEmitController( controller );
+	pOldTarget = type->GetEmitController(controller);
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetEmitController::~peeUTypeSetEmitController(){
-	if( pType ){
-		pType->FreeReference();
-	}
 }
 
 
@@ -69,9 +65,9 @@ peeUTypeSetEmitController::~peeUTypeSetEmitController(){
 ///////////////
 
 void peeUTypeSetEmitController::Undo(){
-	pType->SetEmitController( pController, pOldTarget );
+	pType->SetEmitController(pController, pOldTarget);
 }
 
 void peeUTypeSetEmitController::Redo(){
-	pType->SetEmitController( pController, pNewTarget );
+	pType->SetEmitController(pController, pNewTarget);
 }

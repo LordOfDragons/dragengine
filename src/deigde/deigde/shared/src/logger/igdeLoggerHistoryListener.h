@@ -40,13 +40,20 @@ class igdeLoggerHistoryEntry;
  */
 class DE_DLL_EXPORT igdeLoggerHistoryListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeLoggerHistoryListener>;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
 	igdeLoggerHistoryListener();
 	
+protected:
 	/** \brief Clean up listener. */
-	virtual ~igdeLoggerHistoryListener();
+	~igdeLoggerHistoryListener() override;
+	
+public:
 	/*@}*/
 	
 	
@@ -54,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief A message has been added to the history. */
-	virtual void MessageAdded( igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry );
+	virtual void MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry);
 	
 	/** \brief History has been cleared. */
-	virtual void HistoryCleared( igdeLoggerHistory *history );
+	virtual void HistoryCleared(igdeLoggerHistory *history);
 	/*@}*/
 };
 

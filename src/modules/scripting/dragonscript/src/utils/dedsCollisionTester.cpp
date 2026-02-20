@@ -54,55 +54,43 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsCollisionTester::dedsCollisionTester( deScriptingDragonScript &ds ) :
-pDS( ds ){
-	pWorld = NULL;
-	pTouchSensor = NULL;
-	
-	pCollider = NULL;
-	
-	pColliderListener = NULL;
+dedsCollisionTester::dedsCollisionTester(deScriptingDragonScript &ds) :
+pDS(ds){
+	pColliderListener = nullptr;
 	pHasColliderListener = false;
 	
 	pHasCollision = false;
 	pHitDistance = 0.0f;
-	pHitCollider = NULL;
 	pHitBone = 0;
 	
-	pColliderListener = pDS.GetScriptEngine()->GetMainRunTime()->CreateValue( pDS.GetClassColliderListener() );
+	pColliderListener = pDS.GetScriptEngine()->GetMainRunTime()->CreateValue(pDS.GetClassColliderListener());
 }
 
-dedsCollisionTester::dedsCollisionTester( const dedsCollisionTester &collisionTester ) :
-pDS( collisionTester.pDS ){
-	pWorld = NULL;
-	pTouchSensor = NULL;
-	
-	pCollider = NULL;
-	
-	pColliderListener = NULL;
+dedsCollisionTester::dedsCollisionTester(const dedsCollisionTester &collisionTester) :
+pDS(collisionTester.pDS){
+	pColliderListener = nullptr;
 	pHasColliderListener = false;
 	
 	pHasCollision = false;
 	pHitDistance = 0.0f;
-	pHitCollider = NULL;
 	pHitBone = 0;
 	
-	pColliderListener = pDS.GetScriptEngine()->GetMainRunTime()->CreateValue( pDS.GetClassColliderListener() );
+	pColliderListener = pDS.GetScriptEngine()->GetMainRunTime()->CreateValue(pDS.GetClassColliderListener());
 	
 	// Set parameters
 	try{
-		SetWorld( collisionTester.pWorld );
-		SetTouchSensor( collisionTester.pTouchSensor );
-		if( collisionTester.pCollider ){
-			pCopyCollider( collisionTester.pCollider );
+		SetWorld(collisionTester.pWorld);
+		SetTouchSensor(collisionTester.pTouchSensor);
+		if(collisionTester.pCollider){
+			pCopyCollider(collisionTester.pCollider);
 		}
-		SetCollisionFilter( collisionTester.pCollisionFilter );
-		if( collisionTester.pHasColliderListener ){
-			SetColliderListener( collisionTester.pColliderListener->GetRealObject() );
+		SetCollisionFilter(collisionTester.pCollisionFilter);
+		if(collisionTester.pHasColliderListener){
+			SetColliderListener(collisionTester.pColliderListener->GetRealObject());
 		}
 		pListIgnoreColliders = collisionTester.pListIgnoreColliders;
 		
-	}catch( const duException & ){
+	}catch(const duException &){
 		pCleanUp();
 		throw;
 	}
@@ -117,83 +105,42 @@ dedsCollisionTester::~dedsCollisionTester(){
 // Management
 ///////////////
 
-void dedsCollisionTester::SetWorld( deWorld *world ){
-	if( world == pWorld ){
-		return;
-	}
-	
-	if( pWorld ){
-		pWorld->FreeReference();
-	}
+void dedsCollisionTester::SetWorld(deWorld *world){
 	pWorld = world;
-	if( world ){
-		world->AddReference();
-	}
 }
 
-void dedsCollisionTester::SetTouchSensor( deTouchSensor *touchSensor ){
-	if( touchSensor == pTouchSensor ){
-		return;
-	}
-	
-	if( pTouchSensor ){
-		pTouchSensor->FreeReference();
-	}
+void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
 	pTouchSensor = touchSensor;
-	if( touchSensor ){
-		touchSensor->AddReference();
-	}
 }
 
 
 
 void dedsCollisionTester::SetCollisionRay(){
-	if( pCollider ){
-		pCollider->FreeReference();
-		pCollider = NULL;
-	}
+	pCollider = nullptr;
 }
 
-void dedsCollisionTester::SetCollisionShape( const decShapeList &shapeList ){
-	if( pCollider ){
-		pCollider->FreeReference();
-		pCollider = NULL;
-	}
+void dedsCollisionTester::SetCollisionShape(const decShape::List &shapeList){
+	pCollider = nullptr;
 	
-	const int count = shapeList.GetCount();
-	
-	if( count > 0 ){
-		deColliderVolume *colliderVolume = NULL;
-		decShape *shape = NULL;
-		
-		try{
-			colliderVolume = pDS.GetGameEngine()->GetColliderManager()->CreateColliderVolume();
-			colliderVolume->SetShapes( shapeList );
-			colliderVolume->SetCollisionFilter( pCollisionFilter );
-			
-		}catch( const duException & ){
-			if( shape ){
-				delete shape;
-			}
-			if( colliderVolume ){
-				colliderVolume->FreeReference();
-			}
-			throw;
-		}
+	if(shapeList.GetCount() > 0){
+		const deColliderVolume::Ref colliderVolume(
+			pDS.GetGameEngine()->GetColliderManager()->CreateColliderVolume());
+		colliderVolume->SetShapes(shapeList);
+		colliderVolume->SetCollisionFilter(pCollisionFilter);
 		
 		pCollider = colliderVolume;
 	}
 }
 
-void dedsCollisionTester::SetCollisionFilter( const decCollisionFilter &filter ){
-	if( filter == pCollisionFilter ){
+void dedsCollisionTester::SetCollisionFilter(const decCollisionFilter &filter){
+	if(filter == pCollisionFilter){
 		return;
 	}
 	
 	pCollisionFilter = filter;
 	
-	if( pCollider ){
-		pCollider->SetCollisionFilter( filter );
+	if(pCollider){
+		pCollider->SetCollisionFilter(filter);
 	}
 }
 
@@ -201,16 +148,16 @@ dsRealObject *dedsCollisionTester::GetColliderListener() const{
 	return pColliderListener->GetRealObject();
 }
 
-void dedsCollisionTester::SetColliderListener( dsRealObject *object ){
+void dedsCollisionTester::SetColliderListener(dsRealObject *object){
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pColliderListener, object );
-		rt.CastValueTo( pColliderListener, pColliderListener, pDS.GetClassColliderListener() );
+	if(object){
+		rt.SetObject(pColliderListener, object);
+		rt.CastValueTo(pColliderListener, pColliderListener, pDS.GetClassColliderListener());
 		pHasColliderListener = true;
 		
 	}else{
-		rt.SetNull( pColliderListener, pDS.GetClassColliderListener() );
+		rt.SetNull(pColliderListener, pDS.GetClassColliderListener());
 		pHasColliderListener = false;
 	}
 }
@@ -221,96 +168,96 @@ void dedsCollisionTester::Reset(){
 	pHasCollision = false;
 }
 
-void dedsCollisionTester::RayHits( const decDVector &position, const decVector &direction ){
-	if( pTouchSensor ){
-		pTouchSensor->RayHits( position, direction, this );
+void dedsCollisionTester::RayHits(const decDVector &position, const decVector &direction){
+	if(pTouchSensor){
+		pTouchSensor->RayHits(position, direction, this);
 		
-	}else if( pWorld ){
-		pWorld->RayHits( position, direction, this, pCollisionFilter );
+	}else if(pWorld){
+		pWorld->RayHits(position, direction, this, pCollisionFilter);
 	}
 }
 
-void dedsCollisionTester::ColliderHits( const decDVector &position ){
-	ColliderHits( position, decQuaternion() );
+void dedsCollisionTester::ColliderHits(const decDVector &position){
+	ColliderHits(position, decQuaternion());
 }
 
-void dedsCollisionTester::ColliderHits( const decDVector &position, const decQuaternion &orientation ){
-	if( ! pCollider ){
+void dedsCollisionTester::ColliderHits(const decDVector &position, const decQuaternion &orientation){
+	if(!pCollider){
 		return;
 	}
 	
-	pCollider->SetPosition( position );
-	pCollider->SetOrientation( orientation );
+	pCollider->SetPosition(position);
+	pCollider->SetOrientation(orientation);
 	
-	if( pTouchSensor ){
-		pTouchSensor->ColliderHits( pCollider, this );
+	if(pTouchSensor){
+		pTouchSensor->ColliderHits(pCollider, this);
 		
-	}else if( pWorld ){
-		pWorld->ColliderHits( pCollider, this );
+	}else if(pWorld){
+		pWorld->ColliderHits(pCollider, this);
 	}
 }
 
-void dedsCollisionTester::ColliderMoveHits( const decDVector &position, const decVector &direction ){
-	ColliderMoveHits( position, decQuaternion(), direction );
+void dedsCollisionTester::ColliderMoveHits(const decDVector &position, const decVector &direction){
+	ColliderMoveHits(position, decQuaternion(), direction);
 }
 
-void dedsCollisionTester::ColliderMoveHits( const decDVector &position, const decQuaternion &orientation,
-const decVector &direction ){
-	if( ! pCollider ){
+void dedsCollisionTester::ColliderMoveHits(const decDVector &position, const decQuaternion &orientation,
+const decVector &direction){
+	if(!pCollider){
 		return;
 	}
 	
-	pCollider->SetPosition( position );
-	pCollider->SetOrientation( orientation );
+	pCollider->SetPosition(position);
+	pCollider->SetOrientation(orientation);
 	
-	if( pTouchSensor ){
-		pTouchSensor->ColliderMoveHits( pCollider, direction, this );
+	if(pTouchSensor){
+		pTouchSensor->ColliderMoveHits(pCollider, direction, this);
 		
-	}else if( pWorld ){
-		pWorld->ColliderMoveHits( pCollider, direction, this );
+	}else if(pWorld){
+		pWorld->ColliderMoveHits(pCollider, direction, this);
 	}
 }
 
-void dedsCollisionTester::ColliderRotateHits( const decDVector &position, const decVector &rotation ){
-	ColliderRotateHits( position, decQuaternion(), rotation );
+void dedsCollisionTester::ColliderRotateHits(const decDVector &position, const decVector &rotation){
+	ColliderRotateHits(position, decQuaternion(), rotation);
 }
 
-void dedsCollisionTester::ColliderRotateHits( const decDVector &position, const decQuaternion &orientation,
-const decVector &rotation ){
-	if( ! pCollider ){
+void dedsCollisionTester::ColliderRotateHits(const decDVector &position, const decQuaternion &orientation,
+const decVector &rotation){
+	if(!pCollider){
 		return;
 	}
 	
-	pCollider->SetPosition( position );
-	pCollider->SetOrientation( orientation );
+	pCollider->SetPosition(position);
+	pCollider->SetOrientation(orientation);
 	
-	if( pTouchSensor ){
-		pTouchSensor->ColliderRotateHits( pCollider, rotation, this );
+	if(pTouchSensor){
+		pTouchSensor->ColliderRotateHits(pCollider, rotation, this);
 		
-	}else if( pWorld ){
-		pWorld->ColliderRotateHits( pCollider, rotation, this );
+	}else if(pWorld){
+		pWorld->ColliderRotateHits(pCollider, rotation, this);
 	}
 }
 
-void dedsCollisionTester::ColliderMoveRotateHits( const decDVector &position, const decVector &direction,
-const decVector &rotation ){
-	ColliderMoveRotateHits( position, decQuaternion(), direction, rotation );
+void dedsCollisionTester::ColliderMoveRotateHits(const decDVector &position, const decVector &direction,
+const decVector &rotation){
+	ColliderMoveRotateHits(position, decQuaternion(), direction, rotation);
 }
 
-void dedsCollisionTester::ColliderMoveRotateHits( const decDVector &position, const decQuaternion &orientation,
-const decVector &direction, const decVector &rotation ){
-	if( ! pCollider ){
+void dedsCollisionTester::ColliderMoveRotateHits(const decDVector &position, const decQuaternion &orientation,
+const decVector &direction, const decVector &rotation){
+	if(!pCollider){
 		return;
 	}
 	
-	pCollider->SetPosition( position );
-	pCollider->SetOrientation( orientation );
+	pCollider->SetPosition(position);
+	pCollider->SetOrientation(orientation);
 	
-	if( pTouchSensor ){
-		pTouchSensor->ColliderMoveRotateHits( pCollider, direction, rotation, this );
+	if(pTouchSensor){
+		pTouchSensor->ColliderMoveRotateHits(pCollider, direction, rotation, this);
 		
-	}else if( pWorld ){
-		pWorld->ColliderMoveRotateHits( pCollider, direction, rotation, this );
+	}else if(pWorld){
+		pWorld->ColliderMoveRotateHits(pCollider, direction, rotation, this);
 	}
 }
 
@@ -319,19 +266,11 @@ const decVector &direction, const decVector &rotation ){
 // Notifications
 //////////////////
 
-void dedsCollisionTester::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( pHasCollision && info->GetDistance() > pHitDistance ){
+void dedsCollisionTester::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(pHasCollision && info->GetDistance() > pHitDistance){
 		return;
 	}
-	
-	if( pHitCollider ){
-		pHitCollider->FreeReference();
-	}
 	pHitCollider = info->GetCollider();
-	if( pHitCollider ){
-		pHitCollider->AddReference();
-	}
-	
 	pHitBone = info->GetBone();
 	pHitNormal = info->GetNormal();
 	pHitDistance = info->GetDistance();
@@ -339,21 +278,21 @@ void dedsCollisionTester::CollisionResponse( deCollider *owner, deCollisionInfo 
 	pHasCollision = true;
 }
 
-bool dedsCollisionTester::CanHitCollider( deCollider *owner, deCollider *collider ){
-	if( pHasColliderListener ){
+bool dedsCollisionTester::CanHitCollider(deCollider *owner, deCollider *collider){
+	if(pHasColliderListener){
 		const int funcIndex = pDS.GetClassColliderListener()->GetFuncIndexCanHitCollider();
 		dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
-		deClassCollider &clsCol = *pDS.GetClassCollider();
 		bool canHitCollider = false;
 		
 		try{
-			clsCol.PushCollider( rt, collider ); // collider
-			clsCol.PushCollider( rt, NULL ); // owner
-			rt->RunFunctionFast( pColliderListener, funcIndex );
+			deClassCollider &clsCol = *pDS.GetClassCollider();
+			clsCol.PushCollider(rt, collider); // collider
+			clsCol.PushCollider(rt, nullptr); // owner
+			rt->RunFunctionFast(pColliderListener, funcIndex);
 			
 			canHitCollider = rt->GetReturnBool();
 			
-		}catch( const duException &e ){
+		}catch(const duException &e){
 			rt->PrintExceptionTrace();
 			e.PrintError();
 		}
@@ -361,12 +300,12 @@ bool dedsCollisionTester::CanHitCollider( deCollider *owner, deCollider *collide
 		return canHitCollider;
 		
 	}else{
-		if( collider ){
+		if(collider){
 			const int count = pListIgnoreColliders.GetCount();
 			int i;
 			
-			for( i=0; i<count; i++ ){
-				if( ( deCollider* )pListIgnoreColliders.GetAt( i ) == collider ){
+			for(i=0; i<count; i++){
+				if(pListIgnoreColliders.GetAt(i) == collider){
 					return false;
 				}
 			}
@@ -382,42 +321,22 @@ bool dedsCollisionTester::CanHitCollider( deCollider *owner, deCollider *collide
 //////////////////////
 
 void dedsCollisionTester::pCleanUp(){
-	if( pHitCollider ){
-		pHitCollider->FreeReference();
-		pHitCollider = NULL;
-	}
+	SetWorld(nullptr);
+	SetTouchSensor(nullptr);
 	
-	SetWorld( NULL );
-	SetTouchSensor( NULL );
-	if( pCollider ){
-		pCollider->FreeReference();
-		pCollider = NULL;
-	}
-	
-	if( pColliderListener ){
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pColliderListener );
-		pColliderListener = NULL;
+	if(pColliderListener){
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pColliderListener);
 	}
 }
 
-void dedsCollisionTester::pCopyCollider( deCollider *collider ){
+void dedsCollisionTester::pCopyCollider(deCollider *collider){
 	deColliderVisitorIdentify visitor;
-	collider->Visit( visitor );
+	collider->Visit(visitor);
 	
-	if( visitor.IsVolume() ){
-		const deColliderVolume &copyColliderVolume = visitor.CastToVolume();
-		deColliderVolume *colliderVolume = NULL;
-		
-		try{
-			colliderVolume = pDS.GetGameEngine()->GetColliderManager()->CreateColliderVolume();
-			colliderVolume->SetShapes( copyColliderVolume.GetShapes() );
-			
-		}catch( const duException & ){
-			if( colliderVolume ){
-				colliderVolume->FreeReference();
-			}
-			throw;
-		}
+	if(visitor.IsVolume()){
+		const deColliderVolume::Ref colliderVolume(
+			pDS.GetGameEngine()->GetColliderManager()->CreateColliderVolume());
+		colliderVolume->SetShapes(visitor.CastToVolume().GetShapes());
 		
 		pCollider = colliderVolume;
 	}

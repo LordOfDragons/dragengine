@@ -50,12 +50,13 @@ protected:
 	ceWPTMACLogicClearCondition();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMACLogicClearCondition>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicClearCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicClearCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceConversationAction &action, ceCConditionLogic &logic );
+		ceConversationAction &action, ceCConditionLogic &logic);
 	/*@}*/
 	
 	
@@ -75,7 +76,7 @@ public:
 	inline ceCConditionLogic &GetLogic() const{ return *pLogic; }
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	/*@}*/
 };
 

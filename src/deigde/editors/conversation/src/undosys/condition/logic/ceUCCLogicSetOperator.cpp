@@ -41,39 +41,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicSetOperator::ceUCCLogicSetOperator( ceConversationTopic *topic,
+ceUCCLogicSetOperator::ceUCCLogicSetOperator(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionLogic *logic,
-ceCConditionLogic::eOperators newOperator ){
-	if( ! topic || ! action || ! logic ) DETHROW( deeInvalidParam );
+ceCConditionLogic::eOperators newOperator){
+	if(!topic || !action || !logic) DETHROW(deeInvalidParam);
 	
-	pTopic = NULL;
-	pAction = NULL;
-	pLogic = NULL;
+	pTopic = nullptr;
+	pAction = nullptr;
+	pLogic = nullptr;
 	pOldOperator = logic->GetOperator();
 	pNewOperator = newOperator;
 	
-	SetShortInfo( "Logic Set Operator" );
+	SetShortInfo("@Conversation.Undo.LogicSetOperator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
 }
 
 ceUCCLogicSetOperator::~ceUCCLogicSetOperator(){
-	if( pLogic ){
-		pLogic->FreeReference();
-	}
-	if( pAction ){
-		pAction->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -82,11 +68,11 @@ ceUCCLogicSetOperator::~ceUCCLogicSetOperator(){
 ///////////////
 
 void ceUCCLogicSetOperator::Undo(){
-	pLogic->SetOperator( pOldOperator );
-	pTopic->NotifyConditionChanged( pAction, pLogic );
+	pLogic->SetOperator(pOldOperator);
+	pTopic->NotifyConditionChanged(pAction, pLogic);
 }
 
 void ceUCCLogicSetOperator::Redo(){
-	pLogic->SetOperator( pNewOperator );
-	pTopic->NotifyConditionChanged( pAction, pLogic );
+	pLogic->SetOperator(pNewOperator);
+	pTopic->NotifyConditionChanged(pAction, pLogic);
 }

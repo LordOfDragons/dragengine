@@ -25,15 +25,16 @@
 #ifndef _IGDEGDPREVIEWCREATOR_H_
 #define _IGDEGDPREVIEWCREATOR_H_
 
+#include "../igdeGDPreviewListener.h"
+
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/canvas/capture/deCaptureCanvasReference.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
+#include <dragengine/resources/image/deImage.h>
 
-class igdeGDPreviewListener;
 class igdeEnvironment;
 
 
@@ -54,21 +55,25 @@ private:
 	
 	igdeEnvironment &pEnvironment;
 	
-	deCaptureCanvasReference pCaptureCanvas;
-	deCanvasViewReference pCanvas;
+	deCaptureCanvas::Ref pCaptureCanvas;
+	deCanvasView::Ref pCanvas;
 	
 	eStates pState;
-	deImageReference pImage;
-	decObjectOrderedSet pListeners;
+	deImage::Ref pImage;
+	decTObjectOrderedSet<igdeGDPreviewListener> pListeners;
 	bool pEnableDebug;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDPreviewCreator>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPreviewCreator( igdeEnvironment &environment, const decPoint &size );
+	igdeGDPreviewCreator(igdeEnvironment &environment, const decPoint &size);
 	
 protected:
 	/**
@@ -77,7 +82,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeGDPreviewCreator();
+	~igdeGDPreviewCreator() override;
 	/*@}*/
 	
 	
@@ -90,25 +95,25 @@ public:
 	inline const igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Canvas to create image from. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	
 	
-	/** \brief Image or NULL if not created. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or nullptr if not created. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or NULL if not created. */
-	void SetImage( deImage *image );
+	/** \brief Set image or nullptr if not created. */
+	void SetImage(deImage *image);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeGDPreviewListener *listener );
+	void AddListener(igdeGDPreviewListener *listener);
 	
 	
 	
 	/** \brief Update preview with elapsed time to create a new frame. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/**
 	 * \brief Begin creating preview.
@@ -128,7 +133,7 @@ public:
 	
 protected:
 	/** \brief Notify listeners image has been created. */
-	void NotifyImageCreated( deImage *image );
+	void NotifyImageCreated(deImage *image);
 	
 	/** \brief Debug prefix. */
 	virtual decString DebugPrefix() = 0;
@@ -140,10 +145,10 @@ protected:
 	virtual bool IsCanvasReadyForRender() = 0;
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed ) = 0;
+	virtual void UpdateCanvasForRender(float elapsed) = 0;
 	
 	/** \brief Debug log if enabled. */
-	void DebugLog( const char *message );
+	void DebugLog(const char *message);
 	/*@}*/
 	
 	

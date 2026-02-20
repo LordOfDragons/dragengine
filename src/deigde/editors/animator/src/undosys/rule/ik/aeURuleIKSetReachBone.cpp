@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetReachBone::aeURuleIKSetReachBone( aeRuleInverseKinematic *rule, const char *newValue ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleIKSetReachBone::aeURuleIKSetReachBone(aeRuleInverseKinematic *rule, const char *newValue){
+	if(!rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
-	SetShortInfo( "Inverse kinematic set reach bone" );
+	SetShortInfo("@Animator.Undo.RuleInverseKinematicSetReachBone");
 	
 	pOldValue = rule->GetReachBone();
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachBone::~aeURuleIKSetReachBone(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ aeURuleIKSetReachBone::~aeURuleIKSetReachBone(){
 ///////////////
 
 void aeURuleIKSetReachBone::Undo(){
-	pRule->SetReachBone( pOldValue );
+	pRule->SetReachBone(pOldValue);
 }
 
 void aeURuleIKSetReachBone::Redo(){
-	pRule->SetReachBone( pNewValue );
+	pRule->SetReachBone(pNewValue);
 }

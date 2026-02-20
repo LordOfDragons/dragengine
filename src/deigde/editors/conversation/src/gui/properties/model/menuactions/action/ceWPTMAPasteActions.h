@@ -26,10 +26,10 @@
 #define _CEWPTMAPASTEACTIONS_H_
 
 #include "../ceWPTMenuAction.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
+#include "../../../../../undosys/action/ceUCActionPaste.h"
 
 class ceConversation;
-class ceConversationActionList;
-class ceUCActionPaste;
 
 
 
@@ -47,15 +47,16 @@ protected:
 	ceWPTMAPasteActions();
 	
 public:
+	using Ref = deTObjectReference<ceWPTMAPasteActions>;
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPasteActions( ceWindowMain &windowMain,
-		ceConversation &conversation );
+	ceWPTMAPasteActions(ceWindowMain &windowMain,
+		ceConversation &conversation);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAPasteActions( ceWindowMain &windowMain,
-		ceConversation &conversation, const char *text );
+	ceWPTMAPasteActions(ceWindowMain &windowMain,
+		ceConversation &conversation, const char *text);
 	/*@}*/
 	
 	
@@ -68,10 +69,10 @@ public:
 	
 	
 	/** \brief Do menu action. */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste::Ref CreateUndo(const ceConversationAction::List &actions);
 	/*@}*/
 };
 

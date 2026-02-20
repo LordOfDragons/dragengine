@@ -49,7 +49,8 @@ class deoglShaderParameterBlock;
  */
 class deoglSkinShader : public deObject{
 public:
-	typedef deTObjectReference<deoglSkinShader> Ref;
+	using Ref = deTObjectReference<deoglSkinShader>;
+	
 	
 	enum eReflectionTestMode{
 		ertmOldVersion,
@@ -327,8 +328,8 @@ private:
 	
 	deoglSkinShaderConfig pConfig;
 	
-	int pTextureTargets[ ETT_COUNT ];
-	int pInstanceUniformTargets[ EIUT_COUNT ];
+	int pTextureTargets[ETT_COUNT];
+	int pInstanceUniformTargets[EIUT_COUNT];
 	int pUsedInstanceUniformTargetCount;
 	int pTextureUnitCount;
 	
@@ -343,11 +344,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin shader. */
-	deoglSkinShader( deoglRenderThread &renderThread, const deoglSkinShaderConfig &config );
+	deoglSkinShader(deoglRenderThread &renderThread, const deoglSkinShaderConfig &config);
+	
+protected:
 	/** Cleans up the skin shader. */
-	virtual ~deoglSkinShader();
+	~deoglSkinShader() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -357,10 +361,10 @@ public:
 	inline const deoglSkinShaderConfig &GetConfig() const{ return pConfig; }
 	
 	/** Retrieves the index for a texture target or -1 if not used. */
-	int GetTextureTarget( eTextureTargets target ) const;
+	int GetTextureTarget(eTextureTargets target) const;
 	
 	/** Retrieves the index for an instance parameter uniform target or -1 if not used. */
-	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
+	int GetInstanceUniformTarget(eInstanceUniformTargets target) const;
 	
 	/** Required count of texture unit index used by this shader. */
 	inline int GetTextureUnitCount() const{ return pTextureUnitCount; }
@@ -375,52 +379,52 @@ public:
 	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	inline const deoglShaderProgram::Ref &GetShader() const{ return pShader; }
 	
 	/** Create render skin shader shader parameter block. */
-	static deoglSPBlockUBO::Ref CreateSPBRender( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBRender(deoglRenderThread &renderThread);
 	
 	/** Create occlusion map shader parameter block. */
-	static deoglSPBlockUBO::Ref CreateSPBOccMap( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBOccMap(deoglRenderThread &renderThread);
 	
 	/** Create special shader parameter block. */
-	static deoglSPBlockUBO::Ref CreateSPBSpecial( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBSpecial(deoglRenderThread &renderThread);
 	
 	/** Create texture parameter shader parameter block. */
-	static deoglSPBlockUBO::Ref CreateSPBTexParam( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateSPBTexParam(deoglRenderThread &renderThread);
 	
 	/** Create instance parameter shader parameter block. */
 	deoglSPBlockUBO::Ref CreateSPBInstParam() const;
 	
 	/** Create shared instance parameter shader storage buffer. */
-	static deoglSPBlockUBO::Ref CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateLayoutSkinInstanceUBO(deoglRenderThread &renderThread);
 	
 	/** Create shared instance parameter shader storage buffer. */
-	static deoglSPBlockSSBO::Ref CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread );
+	static deoglSPBlockSSBO::Ref CreateLayoutSkinInstanceSSBO(deoglRenderThread &renderThread);
 	
 	/** Create shared texture parameter shader storage buffer. */
-	static deoglSPBlockUBO::Ref CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO::Ref CreateLayoutSkinTextureUBO(deoglRenderThread &renderThread);
 	
 	/** Create shared texture parameter shader storage buffer. */
-	static deoglSPBlockSSBO::Ref CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread );
+	static deoglSPBlockSSBO::Ref CreateLayoutSkinTextureSSBO(deoglRenderThread &renderThread);
 	
 	/** Set texture parameters in instance parameter shader block. */
-	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
-		const deoglSkinTexture &skinTexture ) const;
+	void SetTexParamsInInstParamSPB(deoglShaderParameterBlock &paramBlock,
+		const deoglSkinTexture &skinTexture) const;
 	
 	/** Set texture parameters in instance parameter shader block. */
-	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock, int element,
-		const deoglSkinTexture &skinTexture ) const;
+	void SetTexParamsInInstParamSPB(deoglShaderParameterBlock &paramBlock, int element,
+		const deoglSkinTexture &skinTexture) const;
 	
 	/** Set dynamic texture parameters in instance parameter shader block. */
-	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
+	void SetDynTexParamsInInstParamSPB(deoglShaderParameterBlock &paramBlock,
 		const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin ) const;
+		deoglRDynamicSkin *dynamicSkin) const;
 	
 	/** Set dynamic texture parameters in instance parameter shader block. */
-	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
+	void SetDynTexParamsInInstParamSPB(deoglShaderParameterBlock &paramBlock,
 		int element, const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin ) const;
+		deoglRDynamicSkin *dynamicSkin) const;
 	
 	/**
 	 * Set texture unit configurations.
@@ -429,8 +433,8 @@ public:
 	 * left untouched. The configs array has to contain at least GetUsedTextureTargetCount
 	 * entries. No boundary checking is conducted.
 	 */
-	void SetTUCCommon( deoglTexUnitConfig *units, const deoglSkinTexture &skinTexture,
-		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin );
+	void SetTUCCommon(deoglTexUnitConfig *units, const deoglSkinTexture &skinTexture,
+		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin);
 	
 	/**
 	 * Sets per-object environment map texture unit configurations.
@@ -444,8 +448,8 @@ public:
 	 * This is a temporary call used to handle the per-object environment map situation until
 	 * the real solution is implemented and working correctly.
 	 */
-	void SetTUCPerObjectEnvMap( deoglTexUnitConfig *units, deoglEnvironmentMap *envmapSky,
-		deoglEnvironmentMap *envmap, deoglEnvironmentMap *envmapFade );
+	void SetTUCPerObjectEnvMap(deoglTexUnitConfig *units, deoglEnvironmentMap *envmapSky,
+		deoglEnvironmentMap *envmap, deoglEnvironmentMap *envmapFade);
 	/*@}*/
 	
 	
@@ -456,7 +460,7 @@ private:
 	/** Generate shader. */
 	void GenerateShader(cShaderPreparedListener *listener);
 	/** Generate shader defines. */
-	void GenerateDefines( deoglShaderDefines &defines );
+	void GenerateDefines(deoglShaderDefines &defines);
 	/** Generate source code for the vertex unit. */
 	void GenerateVertexSC();
 	/** Generate source code for the geometry unit. */

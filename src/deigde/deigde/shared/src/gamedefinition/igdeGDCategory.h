@@ -26,7 +26,7 @@
 #define _IGDEGDCATEGORY_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 
@@ -42,10 +42,25 @@ class decPath;
  * category and an optional list of children cathegories.
  */
 class DE_DLL_EXPORT igdeGDCategory : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeGDCategory>;
+	
+	/** \brief List of categories. */
+	class DE_DLL_EXPORT List : public decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>{
+	public:
+		using decTCollectionQueryByName<decTObjectOrderedSet<igdeGDCategory>,igdeGDCategory>::decTCollectionQueryByName;
+		
+		/** \brief Category by path or nullptr if absent. */
+		igdeGDCategory *FindWithPath(const decPath &path) const;
+	};
+	
+	
 private:
 	decString pName;
 	decString pDescription;
-	decObjectOrderedSet pCategories;
+	List pCategories;
 	decStringSet pAutoCategorizePattern;
 	bool pHidden;
 	
@@ -57,13 +72,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create category. */
-	igdeGDCategory( const char *name );
+	explicit igdeGDCategory(const char *name);
 	
 	
 	
 protected:
 	/** \brief Clean up category. */
-	virtual ~igdeGDCategory();
+	~igdeGDCategory() override;
 	/*@}*/
 	
 	
@@ -78,28 +93,28 @@ public:
 	inline const decString &GetDescription() const{ return pDescription; }
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
-	/** \brief Parent category or NULL if this is a top category. */
+	/** \brief Parent category or nullptr if this is a top category. */
 	inline igdeGDCategory *GetParent() const{ return pParent; }
 	
-	/** \brief Set parent category or NULL if this is a top category. */
-	void SetParent( igdeGDCategory *category );
+	/** \brief Set parent category or nullptr if this is a top category. */
+	void SetParent(igdeGDCategory *category);
 	
 	/** \brief Patterns to match to add. */
 	inline const decStringSet &GetAutoCategorizePattern() const{ return pAutoCategorizePattern; }
 	
 	/** \brief Set patterns to match to add. */
-	void SetAutoCategorizePattern( const decStringSet &patternList );
+	void SetAutoCategorizePattern(const decStringSet &patternList);
 	
 	/** \brief Get category matching path using auto categorize. */
-	igdeGDCategory *AutoCategorize( const decString &path ) const;
+	igdeGDCategory *AutoCategorize(const decString &path) const;
 	
 	/** \brief Hidden in browser. */
 	inline bool GetHidden() const{ return pHidden; }
 	
 	/** \brief Set if hidden in browser. */
-	void SetHidden( bool hidden );
+	void SetHidden(bool hidden);
 	
 	
 	
@@ -109,7 +124,7 @@ public:
 	 * Only the category names of all categories with a parent are added to the path.
 	 * Hence the root category is not included in the path.
 	 */
-	void GetFullPath( decPath &path ) const;
+	void GetFullPath(decPath &path) const;
 	
 	/** \brief Full path string. */
 	decString GetFullPathString() const;
@@ -119,35 +134,14 @@ public:
 	
 	/** \name Children Categories */
 	/*@{*/
-	/** \brief Count of categories. */
-	int GetCategoryCount() const;
-	
-	/** \brief Category is present. */
-	bool HasCategory( igdeGDCategory *category ) const;
-	
-	/** \brief Named category is present. */
-	bool HasCategoryNamed( const char *name ) const;
-	
-	/** \brief Index of category or -1 if absent. */
-	int IndexOfCategory( igdeGDCategory *category ) const;
-	
-	/** \brief Index of named category or -1 if absent. */
-	int IndexOfCategoryNamed( const char *name ) const;
-	
-	/** \brief Category at index. */
-	igdeGDCategory *GetCategoryAt( int index ) const;
-	
-	/** \brief Named category or NULL if absent. */
-	igdeGDCategory *GetCategoryNamed( const char *name ) const;
-	
-	/** \brief Category by path or NULL if absent. */
-	igdeGDCategory *GetCategoryWithPath( const decPath &path ) const;
+	/** \brief Categories. */
+	inline const List &GetCategories() const{ return pCategories; }
 	
 	/** \brief Add category. */
-	void AddCategory( igdeGDCategory *category );
+	void AddCategory(igdeGDCategory *category);
 	
 	/** \brief Remove category. */
-	void RemoveCategory( igdeGDCategory *category );
+	void RemoveCategory(igdeGDCategory *category);
 	
 	/** \brief Remove all categories. */
 	void RemoveAllCategories();
@@ -159,13 +153,17 @@ public:
 	 * exists already only the description is updated. Children Categories
 	 * are added to already existing categories not shadowing them.
 	 */
-	void UpdateWith( const igdeGDCategory &category );
+	void UpdateWith(const igdeGDCategory &category);
+
+
+	/** Compare. */
+	int Compare(const igdeGDCategory& category) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pAutoCategorize( const decString &path, int &longestMatch, igdeGDCategory *&category ) const;
+	void pAutoCategorize(const decString &path, int &longestMatch, igdeGDCategory *&category) const;
 };
 
 #endif

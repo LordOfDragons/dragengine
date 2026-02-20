@@ -36,14 +36,16 @@ class gdeSkin;
  */
 class gdeWPSTIMSkins : public gdeWPSTreeItemModel{
 public:
+	typedef deTObjectReference<gdeWPSTIMSkins> Ref;
+
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkins( gdeWPSTreeModel &tree );
+	gdeWPSTIMSkins(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
-	virtual ~gdeWPSTIMSkins();
+	~gdeWPSTIMSkins() override;
 	/*@}*/
 	
 	
@@ -51,8 +53,8 @@ protected:
 public:
 	/** \brief Management */
 	/*@{*/
-	/** \brief Model with skin or \em NULL. */
-	gdeWPSTIMSkin *GetChildWith( gdeSkin *skin ) const;
+	/** \brief Model with skin or \em nullptr. */
+	gdeWPSTIMSkin *GetChildWith(gdeSkin *skin) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -60,13 +62,13 @@ public:
 	
 	
 	/** \brief Added to tree. */
-	virtual void OnAddedToTree();
+	void OnAddedToTree() override;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	void OnContextMenu(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	void SelectBestMatching(const char *string) override;
 	/*@}*/
 };
 

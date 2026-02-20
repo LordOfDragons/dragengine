@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -53,16 +53,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\image\jpeg\SConscript" />
     <None Include="post_build.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegEncoder.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegImageInfos.h" />
-    <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegModule.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\image\jpeg\src\deJpegEncoder.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\jpeg\src\deJpegImageInfos.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\image\jpeg\src\deJpegModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\jpeg\src\module.xml" />
@@ -425,4 +415,14 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\image\jpeg\src\deJpegEncoder.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\jpeg\src\deJpegImageInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\image\jpeg\src\deJpegModule.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegEncoder.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegImageInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\image\jpeg\src\deJpegModule.h" />
+  </ItemGroup>
 </Project>

@@ -41,32 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime ){
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime){
+	if(!topic){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTopic = NULL;
-	pActorSpeak = NULL;
+	pTopic = nullptr;
+	pActorSpeak = nullptr;
 	pOldTime = actorSpeak->GetMinSpeechTime();
 	pNewTime = newTime;
 	
-	SetShortInfo( "Actor speak set minimum speech time" );
+	SetShortInfo("@Conversation.Undo.ActorSpeakSetMinimumSpeechTime");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetMinSpeechTime::~ceUCAASpeakSetMinSpeechTime(){
-	if( pActorSpeak ){
-		pActorSpeak->FreeReference();
-	}
-	if( pTopic ){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -75,11 +66,11 @@ ceUCAASpeakSetMinSpeechTime::~ceUCAASpeakSetMinSpeechTime(){
 ///////////////
 
 void ceUCAASpeakSetMinSpeechTime::Undo(){
-	pActorSpeak->SetMinSpeechTime( pOldTime );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetMinSpeechTime(pOldTime);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakSetMinSpeechTime::Redo(){
-	pActorSpeak->SetMinSpeechTime( pNewTime );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetMinSpeechTime(pNewTime);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

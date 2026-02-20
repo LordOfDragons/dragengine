@@ -26,6 +26,7 @@
 #define _DESYNSYNTHESIZERSOURCEGROUP_H_
 
 #include "desynSynthesizerSource.h"
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceGroup.h>
 
 class deSynthesizerSourceGroup;
@@ -38,8 +39,7 @@ class desynSynthesizerSource;
  */
 class desynSynthesizerSourceGroup : public desynSynthesizerSource{
 private:
-	desynSynthesizerSource **pSources;
-	int pSourceCount;
+	decTUniqueList<desynSynthesizerSource> pSources;
 	
 	deSynthesizerSourceGroup::eApplicationTypes pApplicationType;
 	float pSelectRange;
@@ -52,11 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSourceGroup( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceGroup &source );
-	
-	/** \brief Clean up synthesizer source. */
-	virtual ~desynSynthesizerSourceGroup();
+	desynSynthesizerSourceGroup(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceGroup &source);
 	/*@}*/
 	
 	
@@ -70,7 +67,7 @@ public:
 	
 	
 	/** \brief Select value. */
-	float GetSelect( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetSelect(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -79,10 +76,10 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	int StateDataSizeSource(int offset) override;
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	void InitStateDataSource(char *stateData) override;
 	
 	/**
 	 * \brief Generate sound using source.
@@ -92,20 +89,20 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) override;
 	
 	/** \brief Generate sound using all mode. */
-	void GenerateSoundAll( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundAll(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Generate sound using select mode. */
-	void GenerateSoundSelect( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundSelect(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Generate sound using solo mode. */
-	void GenerateSoundSolo( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSoundSolo(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
@@ -114,15 +111,14 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) override;
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateSources( desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSourceGroup &source );
-	void pClearSources();
+	void pCreateSources(desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSourceGroup &source);
 };
 
 #endif

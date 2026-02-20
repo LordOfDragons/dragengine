@@ -27,7 +27,7 @@
 #define _DEAUDIONULL_H_
 
 // includes
-#include "dragengine/systems/modules/audio/deBaseAudioModule.h"
+#include <dragengine/systems/modules/audio/deBaseAudioModule.h>
 
 
 
@@ -40,9 +40,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new null audio module. */
-	deAudioNull( deLoadableModule &loadableModule );
+	deAudioNull(deLoadableModule &loadableModule);
 	/** Cleans up the null audio module. */
-	virtual ~deAudioNull();
+	~deAudioNull() override;
 	/*@}*/
 	
 	/** @name Management */
@@ -52,34 +52,34 @@ public:
 	 * To access the os of the engine use the GetOS function. The active microphone
 	 * is passed as parameter and can be NULL if no microphone is active yet.
 	 */
-	virtual bool Init( deMicrophone *activeMic );
+	bool Init(deMicrophone *activeMic) override;
 	/**
 	 * Called to cleanup the module. All resources have to be freed and running threads
 	 * stopped or killed if needed.
 	 */
-	virtual void CleanUp();
+	void CleanUp() override;
 	/** Process audio. */
-	virtual void ProcessAudio();
+	void ProcessAudio() override;
 	/**
 	 * Sets the active microphone. Can be NULL to unset the active microphone.
 	 */
-	virtual void SetActiveMicrophone( deMicrophone *microphone );
+	void SetActiveMicrophone(deMicrophone *microphone) override;
 	/*@}*/
 	
 	/** @name Audio Management */
 	/*@{*/
-	virtual deBaseAudioWorld *CreateWorld( deWorld *world );
-	virtual deBaseAudioSound *CreateSound( deSound *sound );
-	virtual deBaseAudioSpeaker *CreateSpeaker( deSpeaker *speaker );
-	virtual deBaseAudioMicrophone *CreateMicrophone( deMicrophone *microphone );
-	virtual deBaseAudioComponent *CreateComponent( deComponent *component );
-	virtual deBaseAudioModel *CreateModel( deModel *model );
-	virtual deBaseAudioSkin *CreateSkin( deSkin *skin );
-	virtual deBaseAudioDecal *CreateDecal( deDecal *decal );
-	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
-	virtual deBaseAudioVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer );
-	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance( deSynthesizerInstance *instance );
-	virtual deBaseAudioHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain );
+	deBaseAudioWorld *CreateWorld(deWorld *world) override;
+	deBaseAudioSound *CreateSound(deSound *sound) override;
+	deBaseAudioSpeaker *CreateSpeaker(deSpeaker *speaker) override;
+	deBaseAudioMicrophone *CreateMicrophone(deMicrophone *microphone) override;
+	deBaseAudioComponent *CreateComponent(deComponent *component) override;
+	deBaseAudioModel *CreateModel(deModel *model) override;
+	deBaseAudioSkin *CreateSkin(deSkin *skin) override;
+	deBaseAudioDecal *CreateDecal(deDecal *decal) override;
+	deBaseAudioSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter) override;
+	deBaseAudioVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer) override;
+	deBaseAudioSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance) override;
+	deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) override;
 	/*@}*/
 };
 

@@ -26,15 +26,15 @@
 #define _AEVIEW3D_H_
 
 #include "gizmo/aeGizmoManager.h"
+#include "../animator/aeAnimator.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class aeWindowMain;
-class aeAnimator;
 
 
 
@@ -42,15 +42,20 @@ class aeAnimator;
  * 3D view.
  */
 class aeView3D : public igdeViewRenderWindow{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<aeView3D>;
+	
+	
 private:
 	aeWindowMain &pWindowMain;
 	
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
-	igdeMouseKeyListenerReference pLocomotionInteraction;
-	igdeMouseKeyListenerReference pWakeboardInteraction;
-	igdeMouseKeyListenerReference pEditorInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeMouseKeyListener::Ref pLocomotionInteraction;
+	igdeMouseKeyListener::Ref pWakeboardInteraction;
+	igdeMouseKeyListener::Ref pEditorInteraction;
 	
 	aeGizmoManager pGizmos;
 	
@@ -60,11 +65,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view. */
-	aeView3D( aeWindowMain &windowMain );
+	aeView3D(aeWindowMain &windowMain);
 	
 protected:
 	/** Clean up view. */
-	virtual ~aeView3D();
+	~aeView3D() override;
 	/*@}*/
 	
 	
@@ -79,10 +84,10 @@ public:
 	void ResetView();
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Start locomotion testing. */
 	void StartLocomotionTesting();
@@ -97,10 +102,10 @@ public:
 	void StopWakeboarding();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	
 	/** Gizmos. */
 	inline aeGizmoManager &GetGizoms(){ return pGizmos; }

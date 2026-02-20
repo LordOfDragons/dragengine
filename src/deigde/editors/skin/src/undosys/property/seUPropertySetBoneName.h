@@ -34,6 +34,10 @@
  * \brief Undo Action Property Set Bone Name.
  */
 class seUPropertySetBoneName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUPropertySetBoneName>;
+	
+	
 private:
 	const seProperty::Ref pProperty;
 	const decString pOldName;
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetBoneName( seProperty *property, const char *newName );
+	seUPropertySetBoneName(seProperty *property, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUPropertySetBoneName() override;
+	~seUPropertySetBoneName() override;
 	/*@}*/
 	
 	
@@ -58,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo() override;
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo() override;
+	void Redo() override;
 	/*@}*/
 };
 

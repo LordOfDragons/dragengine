@@ -36,6 +36,12 @@ class igdeEditVector2;
  * \brief IGDE UI EditVector2 Listener.
  */
 class DE_DLL_EXPORT igdeEditVector2Listener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeEditVector2Listener>;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -51,7 +57,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       vectorer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeEditVector2Listener();
+	~igdeEditVector2Listener() override;
 	/*@}*/
 	
 	
@@ -64,7 +70,7 @@ public:
 	 * 
 	 * User entered vector and accepted it.
 	 */
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 );
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2);
 	/*@}*/
 };
 

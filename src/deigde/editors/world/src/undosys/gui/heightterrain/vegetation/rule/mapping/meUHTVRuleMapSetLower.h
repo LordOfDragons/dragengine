@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleMapping;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleMapping.h"
 
 
 
@@ -41,9 +41,15 @@ class meHTVRuleMapping;
  * Undo action to set the lower bound of a height terrain vegetation rule mapping.
  */
 class meUHTVRuleMapSetLower : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleMapSetLower>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMapping *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMapping::Ref pRule;
 	
 	float pOldLower;
 	float pNewLower;
@@ -52,17 +58,21 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMapSetLower( meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nlower );
+	meUHTVRuleMapSetLower(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nlower);
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleMapSetLower();
+
+protected:
+	~meUHTVRuleMapSetLower() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

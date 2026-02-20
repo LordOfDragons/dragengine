@@ -25,13 +25,13 @@
 #ifndef _DESKIN_H_
 #define _DESKIN_H_
 
+#include "deSkinMapped.h"
+#include "deSkinTexture.h"
 #include "../deFileResource.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../common/collection/decTUniqueList.h"
 
-class deSkinTexture;
 class deSkinManager;
-class deSkinMapped;
-
 class deBaseGraphicSkin;
 class deBaseAudioSkin;
 class deBasePhysicsSkin;
@@ -55,15 +55,13 @@ class deBasePhysicsSkin;
 class DE_DLL_EXPORT deSkin : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSkin> Ref;
-	
+	using Ref = deTObjectReference<deSkin>;
 	
 	
 private:
-	deSkinTexture **pTextures;
-	int pTextureCount, pTextureSize;
+	deSkinTexture::List pTextures;
 	
-	decObjectOrderedSet pMapped;
+	deSkinMapped::List pMapped;
 	
 	deBaseGraphicSkin *pPeerGraphic;
 	deBaseAudioSkin *pPeerAudio;
@@ -75,8 +73,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new skin object with the given resource manager and filename. */
-	deSkin( deSkinManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deSkin(deSkinManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -85,7 +83,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSkin();
+	~deSkin() override;
 	/*@}*/
 	
 	
@@ -93,46 +91,31 @@ protected:
 public:
 	/** \name Texture Management */
 	/*@{*/
+	/** \brief Textures. */
+	inline const deSkinTexture::List &GetTextures() const{ return pTextures; }
+	
 	/** \brief Count of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{ return pTextures.GetCount(); }
 	
 	/** \brief Adds the given texture. */
-	void AddTexture( deSkinTexture *tex );
+	void AddTexture(deSkinTexture::Ref &&tex);
 	
 	/** \brief Texture with the given index. */
-	deSkinTexture *GetTextureAt( int index ) const;
+	const deSkinTexture::Ref &GetTextureAt(int index) const;
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
-	int IndexOfTextureNamed( const char *name ) const;
+	int IndexOfTextureNamed(const char *name) const;
 	/*@}*/
 	
 	
 	
 	/** \name Mapped Values */
 	/*@{*/
-	/** \brief Count of mapped values. */
-	int GetMappedCount() const;
-	
-	/** \brief Mapped value at index. */
-	deSkinMapped *GetMappedAt( int index ) const;
-	
-	/** \brief Named mapped value or nullptr. */
-	deSkinMapped *GetMappedNamed( const char *name ) const;
-	
-	/** \brief Index of mapped value or -1 if absent. */
-	int IndexOfMapped( deSkinMapped *mapped ) const;
-	
-	/** \brief Index of named mapped value or -1 if absent. */
-	int IndexOfMappedNamed( const char *name ) const;
-	
-	/** \brief Mapped value is present. */
-	bool HasMapped( deSkinMapped *mapped ) const;
-	
-	/** \brief Named mapped value is present. */
-	bool HasMappedNamed( const char *name ) const;
+	/** \brief Mapped. */
+	inline const deSkinMapped::List &GetMapped() const{ return pMapped; }
 	
 	/** \brief Add mapped value. */
-	void AddMapped( deSkinMapped *mapped );
+	void AddMapped(deSkinMapped *mapped);
 	/*@}*/
 	
 	
@@ -143,19 +126,19 @@ public:
 	inline deBaseGraphicSkin *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer object. */
-	void SetPeerGraphic( deBaseGraphicSkin *peer );
+	void SetPeerGraphic(deBaseGraphicSkin *peer);
 	
 	/** \brief Audio system peer object. */
 	inline deBaseAudioSkin *GetPeerAudio() const{ return pPeerAudio; }
 	
 	/** \brief Set audio system peer object. */
-	void SetPeerAudio( deBaseAudioSkin *peer );
+	void SetPeerAudio(deBaseAudioSkin *peer);
 	
 	/** \brief Physics system peer object. */
 	inline deBasePhysicsSkin *GetPeerPhysics() const{ return pPeerPhysics; }
 	
 	/** \brief Set physics system peer object. */
-	void SetPeerPhysics( deBasePhysicsSkin *peer );
+	void SetPeerPhysics(deBasePhysicsSkin *peer);
 	/*@}*/
 	
 	

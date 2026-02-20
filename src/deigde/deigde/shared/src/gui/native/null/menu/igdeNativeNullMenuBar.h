@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullMenuBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullMenuBar* CreateNativeWidget( igdeMenuBar &owner );
+	static igdeNativeNullMenuBar* CreateNativeWidget(igdeMenuBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

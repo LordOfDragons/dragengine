@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
-class saeSAnimation;
+#include "../../sanimation/phoneme/saePhoneme.h"
+#include "../../sanimation/saeSAnimation.h"
 
 
 
@@ -36,9 +36,13 @@ class saeSAnimation;
  * Undo Action Remove Phoneme.
  */
 class saeUPhonemeRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<saeUPhonemeRemove>;
+	
+	
 private:
 	saeSAnimation *pSAnimation;
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	
 	
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeRemove( saePhoneme *phoneme );
+	saeUPhonemeRemove(saePhoneme *phoneme);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~saeUPhonemeRemove();
+	~saeUPhonemeRemove() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

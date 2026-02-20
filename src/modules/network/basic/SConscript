@@ -20,7 +20,7 @@ elif envModule['OSWindows']:
 	libs.append('ws2_32')
 
 # fetch values in expanded form for later use
-versionString = '1.24'
+versionString = '1.30'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

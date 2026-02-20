@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRLink;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRLink.h"
 
 
 
@@ -41,25 +41,35 @@ class meHTVRLink;
  * Undo action for adding a height terrain vegetation link.
  */
 class meUHTVLinkAdd : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVLinkAdd>;
+	
+	
+public:
+	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRLink *pLink;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRLink::Ref pLink;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVLinkAdd( meHTVegetationLayer *vlayer, meHTVRLink *link );
+	meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link);
 	/** \brief Clean up object. */
-	virtual ~meUHTVLinkAdd();
+
+protected:
+	~meUHTVLinkAdd() override;
+
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

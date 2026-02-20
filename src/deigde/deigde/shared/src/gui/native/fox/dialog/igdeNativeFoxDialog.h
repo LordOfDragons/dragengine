@@ -26,6 +26,7 @@
 #define _IGDENATIVEFOXDIALOG_H_
 
 #include "../foxtoolkit.h"
+#include "../../../dialog/igdeDialog.h"
 
 class igdeDialog;
 class igdeEnvironment;
@@ -36,8 +37,8 @@ class igdeWidget;
 /**
  * FOX Native dialog.
  */
-class igdeNativeFoxDialog : public FXDialogBox{
-	FXDECLARE( igdeNativeFoxDialog )
+class igdeNativeFoxDialog : public FXDialogBox, public igdeDialog::cNativeDialog{
+	FXDECLARE(igdeNativeFoxDialog)
 	
 protected:
 	igdeNativeFoxDialog();
@@ -54,13 +55,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxDialog( igdeDialog &owner, FXWindow *parent, const igdeGuiTheme &guitheme );
+	igdeNativeFoxDialog(igdeDialog &owner, FXWindow *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
-	virtual ~igdeNativeFoxDialog();
+	~igdeNativeFoxDialog() override;
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxDialog* CreateNativeWidget( igdeDialog &owner, igdeWidget *ownerOwner );
+	static igdeNativeFoxDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -73,35 +74,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateEnabled();
-	virtual void UpdatePosition();
-	virtual void UpdateIcon();
-	virtual void UpdateTitle();
-	virtual void UpdateSize();
-	virtual void ShowDialog();
+	void UpdateEnabled() override;
+	void UpdatePosition() override;
+	void UpdateIcon() override;
+	void UpdateTitle() override;
+	void UpdateSize() override;
+	void RaiseAndActivate() override;
 	
-	virtual void CloseDialog( bool accepted );
+	void ShowDialog() override;
+	void CloseDialog(bool accepted) override;
 	
-	static int DialogFlags( const igdeDialog &owner );
+	static int DialogFlags(const igdeDialog &owner);
 	
-	static int DialogPadLeft( const igdeGuiTheme &guitheme );
-	static int DialogPadRight( const igdeGuiTheme &guitheme );
-	static int DialogPadTop( const igdeGuiTheme &guitheme );
-	static int DialogPadBottom( const igdeGuiTheme &guitheme );
-	static int DialogPadContent( const igdeGuiTheme &guitheme );
-	static int DialogPadButtons( const igdeGuiTheme &guitheme );
+	static int DialogPadLeft(const igdeGuiTheme &guitheme);
+	static int DialogPadRight(const igdeGuiTheme &guitheme);
+	static int DialogPadTop(const igdeGuiTheme &guitheme);
+	static int DialogPadBottom(const igdeGuiTheme &guitheme);
+	static int DialogPadContent(const igdeGuiTheme &guitheme);
+	static int DialogPadButtons(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onClose( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
-	long onFrameUpdate( FXObject*, FXSelector, void* );
+	long onClose(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
+	long onFrameUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 
-typedef igdeNativeFoxDialog igdeNativeDialog;
+using igdeNativeDialog = igdeNativeFoxDialog;
 
 #endif

@@ -40,26 +40,22 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetPath::gdeUParticleEmitterSetPath(
-gdeParticleEmitter *particleEmitter, const char *newValue ) :
-pParticleEmitter( NULL )
+gdeParticleEmitter *particleEmitter, const char *newValue) :
+pParticleEmitter(nullptr)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(!particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set path" );
+	SetShortInfo("@GameDefinition.Undo.ParticleEmitterSetPath");
 	
 	pOldValue = particleEmitter->GetPath();
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeUParticleEmitterSetPath::~gdeUParticleEmitterSetPath(){
-	if( pParticleEmitter ){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 
@@ -68,9 +64,9 @@ gdeUParticleEmitterSetPath::~gdeUParticleEmitterSetPath(){
 ///////////////
 
 void gdeUParticleEmitterSetPath::Undo(){
-	pParticleEmitter->SetPath( pOldValue );
+	pParticleEmitter->SetPath(pOldValue);
 }
 
 void gdeUParticleEmitterSetPath::Redo(){
-	pParticleEmitter->SetPath( pNewValue );
+	pParticleEmitter->SetPath(pNewValue);
 }

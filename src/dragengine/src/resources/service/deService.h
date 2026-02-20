@@ -53,8 +53,7 @@ class deBaseScriptingService;
 class DE_DLL_EXPORT deService : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deService> Ref;
-	
+	using Ref = deTObjectReference<deService>;
 	
 	
 private:
@@ -70,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new service object. */
-	deService( deServiceManager *manager, const char *name );
+	deService(deServiceManager *manager, const char *name);
 	
 protected:
 	/**
@@ -79,7 +78,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deService();
+	~deService() override;
 	/*@}*/
 	
 	
@@ -100,12 +99,12 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	void StartRequest( const decUniqueID &id, const deServiceObject &request );
+	void StartRequest(const decUniqueID &id, const deServiceObject &request);
 	
 	/**
 	 * \brief Cancel service request if running.
 	 */
-	void CancelRequest( const decUniqueID &id );
+	void CancelRequest(const decUniqueID &id);
 	
 	/**
 	 * \brief Response received for request.
@@ -113,26 +112,26 @@ public:
 	 * If finished is true the request finished with this response otherwise more responses
 	 * will be delivered. Id is a unique identifier used to start the matching request.
 	 */
-	void RequestResponse( const decUniqueID &id, const deServiceObject::Ref &response, bool finished );
+	void RequestResponse(const decUniqueID &id, const deServiceObject::Ref &response, bool finished);
 	
 	/**
 	 * \brief Response received for request.
 	 * 
 	 * Id is a unique identifier used to start the matching request.
 	 */
-	void RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error );
+	void RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error);
 	
 	/**
 	 * \brief Service event received.
 	 */
-	void EventReceived( const deServiceObject::Ref &event );
+	void EventReceived(const deServiceObject::Ref &event);
 	
 	/**
 	 * \brief Run action returning result immediately.
 	 * 
 	 * Can return nullptr if action has no return value.
 	 */
-	deServiceObject::Ref RunAction( const deServiceObject &action );
+	deServiceObject::Ref RunAction(const deServiceObject &action);
 	/*@}*/
 	
 	
@@ -146,13 +145,13 @@ public:
 	inline deBaseServiceService *GetPeerService() const{ return pPeerService; }
 	
 	/** \brief Set service system peer object. */
-	void SetPeerService( deBaseServiceModule *module, deBaseServiceService *peer );
+	void SetPeerService(deBaseServiceModule *module, deBaseServiceService *peer);
 	
 	/** \brief Scripting system peer object. */
 	inline deBaseScriptingService *GetPeerScripting() const{ return pPeerScripting; }
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingService *peer );
+	void SetPeerScripting(deBaseScriptingService *peer);
 	/*@}*/
 };
 

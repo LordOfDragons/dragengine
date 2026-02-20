@@ -35,6 +35,10 @@
  * Undo action rule bone transformator set axis.
  */
 class aeURuleBTransSetAxis : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeURuleBTransSetAxis>;
+	
+	
 private:
 	aeRuleBoneTransformator::Ref pRule;
 	decVector pOldValue;
@@ -46,11 +50,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetAxis( aeRuleBoneTransformator *rule, const decVector &newValue );
+	aeURuleBTransSetAxis(aeRuleBoneTransformator *rule, const decVector &newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleBTransSetAxis();
+	~aeURuleBTransSetAxis() override;
 	/*@}*/
 	
 	
@@ -59,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

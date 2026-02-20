@@ -27,12 +27,12 @@
 
 #include <delauncher/delLauncher.h>
 
-#include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
-#include <dragengine/logger/deLoggerReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/logger/deLogger.h>
 
 #ifdef OS_BEOS
 #include <delauncher/game/delGame.h>
@@ -48,15 +48,17 @@ public:
 	class Launcher : public delLauncher{
 	public:
 		Launcher();
-		virtual ~Launcher();
+		~Launcher() override;
 	};
 	
 #ifdef OS_UNIX
 	class PreloadLibrary : public deObject{
 		void * const pHandle;
 	public:
-		PreloadLibrary( const decPath &basePath, const char *filename );
-		virtual ~PreloadLibrary();
+		using Ref = deTObjectReference<PreloadLibrary>;
+		PreloadLibrary(const decPath &basePath, const char *filename);
+	protected:
+		~PreloadLibrary() override;
 	};
 #endif
 	
@@ -69,7 +71,7 @@ private:
 	decStringList pEnvParamsStore;
 	
 #ifdef OS_UNIX
-	decObjectSet pPreloadLibraries;
+	decTObjectSet<PreloadLibrary> pPreloadLibraries;
 #endif
 	
 	Launcher *pLauncher;
@@ -97,7 +99,7 @@ public:
 	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
 	/** Add argument to the command line argument list. */
-	void AddArgument( const decUnicodeString &argument );
+	void AddArgument(const decUnicodeString &argument);
 	
 	/** Working directory. */
 	inline const decPath GetWorkingDirectory() const{ return pWorkingDir; }

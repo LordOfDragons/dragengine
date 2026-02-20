@@ -37,6 +37,8 @@
  */
 class deoglDMBConvexVolumeFace : public decConvexVolumeFace{
 public:
+	using Ref = deTUniqueReference<deoglDMBConvexVolumeFace>;
+	
 	bool pDecalFace;
 	
 	
@@ -46,9 +48,10 @@ public:
 	/*@{*/
 	/** Create decal mesh builder convex volume face. */
 	deoglDMBConvexVolumeFace();
+	explicit deoglDMBConvexVolumeFace(bool decalFace);
 	
 	/** Clean up decal mesh builder convex volume face. */
-	virtual ~deoglDMBConvexVolumeFace();
+	~deoglDMBConvexVolumeFace() override;
 	/*@}*/
 	
 	
@@ -59,7 +62,7 @@ public:
 	inline bool GetDecalFace() const{ return pDecalFace; }
 	
 	/** Set if decal face. */
-	void SetDecalFace( bool decalFace );
+	void SetDecalFace(bool decalFace);
 	/*@}*/
 };
 

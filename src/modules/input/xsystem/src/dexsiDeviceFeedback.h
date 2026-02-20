@@ -28,10 +28,10 @@
 #include "dexsiXInclude.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceFeedback.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deInputDeviceFeedback;
 class deXSystemInput;
@@ -50,8 +50,8 @@ private:
 	decString pName;
 	deInputDeviceFeedback::eFeedbackTypes pType;
 	
-	deImageReference pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	deImage::Ref pDisplayImage;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMaximum;
@@ -63,14 +63,18 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<dexsiDeviceFeedback>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device feedback. */
-	dexsiDeviceFeedback( deXSystemInput &module );
+	dexsiDeviceFeedback(deXSystemInput &module);
 	
 protected:
 	/** \brief Clean up device feedback. */
-	virtual ~dexsiDeviceFeedback();
+	~dexsiDeviceFeedback() override;
 	/*@}*/
 	
 	
@@ -85,42 +89,42 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Type. */
 	inline deInputDeviceFeedback::eFeedbackTypes GetType() const{ return pType; }
 	
 	/** \brief Set type. */
-	void SetType( deInputDeviceFeedback::eFeedbackTypes type );
+	void SetType(deInputDeviceFeedback::eFeedbackTypes type);
 	
 	
 	
 	/** \brief Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/** \brief Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** \brief Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -128,7 +132,7 @@ public:
 	inline int GetMaximum() const{ return pMaximum; }
 	
 	/** \brief Set maximum value. */
-	void SetMaximum( int maximum );
+	void SetMaximum(int maximum);
 	
 	
 	
@@ -136,7 +140,7 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set current value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	
 	
@@ -144,12 +148,12 @@ public:
 	inline int GetEvdevCode() const{ return pEvdevCode; }
 	
 	/** \brief Set libevdev specific event code. */
-	void SetEvdevCode( int code );
+	void SetEvdevCode(int code);
 	
 	
 	
 	/** \brief Update engine input device information feedback. */
-	void GetInfo( deInputDeviceFeedback &info ) const;
+	void GetInfo(deInputDeviceFeedback &info) const;
 	/*@}*/
 };
 

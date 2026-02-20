@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Map block. */
-	deoglSharedSPBElementMapBuffer( deoglSharedSPBElement &element );
+	deoglSharedSPBElementMapBuffer(deoglSharedSPBElement &element);
 	
 	/** Unmap block if mapped. */
 	~deoglSharedSPBElementMapBuffer();

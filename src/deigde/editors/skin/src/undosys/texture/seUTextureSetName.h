@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seTexture;
+#include "../../skin/texture/seTexture.h"
 
 
 
@@ -35,8 +35,12 @@ class seTexture;
  * \brief Undo Action Set Texture Name.
  */
 class seUTextureSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUTextureSetName>;
+	
+	
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	decString pOldName;
 	decString pNewName;
@@ -45,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUTextureSetName( seTexture *texture, const char *newName );
+	seUTextureSetName(seTexture *texture, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~seUTextureSetName();
+	~seUTextureSetName() override;
 	/*@}*/
 	
 	
@@ -57,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

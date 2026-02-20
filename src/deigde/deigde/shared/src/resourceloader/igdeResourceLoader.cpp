@@ -33,7 +33,6 @@
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/deFileResource.h>
@@ -48,8 +47,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeResourceLoader::igdeResourceLoader( igdeEnvironment &environment ) :
-pEnvironment( environment ){
+igdeResourceLoader::igdeResourceLoader(igdeEnvironment &environment) :
+pEnvironment(environment){
 }
 
 igdeResourceLoader::~igdeResourceLoader(){
@@ -65,38 +64,37 @@ void igdeResourceLoader::Update(){
 	deLogger &logger = *pEnvironment.GetLogger();
 	deResourceLoaderInfo info;
 	
-	while( loader.NextFinishedRequest( info ) ){
-		const int index = pIndexOfTaskWith( info.GetPath(), info.GetResourceType() );
-		if( index == -1 ){
+	while(loader.NextFinishedRequest(info)){
+		const int index = pIndexOfTaskWith(info.GetPath(), info.GetResourceType());
+		if(index == -1){
 			continue;
 		}
 		
-		const deObjectReference guardTask( pTasks.GetAt( index ) );
-		pTasks.RemoveFrom( index );
-		igdeResourceLoaderTask &task = ( igdeResourceLoaderTask& )( deObject& )guardTask;
+		const igdeResourceLoaderTask::Ref task(pTasks.GetAt(index));
+		pTasks.RemoveFrom(index);
 		
-		if( info.GetResource() ){
-			task.NotifyLoadingFinished( logger, info.GetResource() );
+		if(info.GetResource()){
+			task->NotifyLoadingFinished(logger, info.GetResource());
 			
 		}else{
-			task.NotifyLoadingFailed( logger );
+			task->NotifyLoadingFailed(logger);
 		}
 	}
 }
 
-void igdeResourceLoader::RequestResource( const char *filename,
-deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listener ){
-	if( ! filename || ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeResourceLoader::RequestResource(const char *filename,
+deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listener){
+	if(!filename || !listener){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int task = pIndexOfTaskWith( filename, resourceType );
-	if( task == -1 ){
-		pAddTask( filename, resourceType );
+	int task = pIndexOfTaskWith(filename, resourceType);
+	if(task == -1){
+		pAddTask(filename, resourceType);
 		task = pTasks.GetCount() - 1;
 	}
 	
-	( ( igdeResourceLoaderTask* )pTasks.GetAt( task ) )->AddListener( listener );
+	pTasks.GetAt(task)->AddListener(listener);
 }
 
 
@@ -104,25 +102,17 @@ deResourceLoader::eResourceType resourceType, igdeResourceLoaderListener *listen
 // Private Functions
 //////////////////////
 
-int igdeResourceLoader::pIndexOfTaskWith( const char *filename,
-deResourceLoader::eResourceType resourceType ){
-	int i;
-	for( i=0; i<pTasks.GetCount(); i++ ){
-		const igdeResourceLoaderTask &task = *( ( igdeResourceLoaderTask* )pTasks.GetAt( i ) );
-		if( task.GetFilename() == filename && task.GetResourceType() == resourceType ){
-			return i;
-		}
-	}
-	
-	return -1;
+int igdeResourceLoader::pIndexOfTaskWith(const char *filename,
+deResourceLoader::eResourceType resourceType){
+	return pTasks.IndexOfMatching([&](const igdeResourceLoaderTask &t){
+		return t.GetFilename() == filename && t.GetResourceType() == resourceType;
+	});
 }
 
-void igdeResourceLoader::pAddTask( const char *filename,
-deResourceLoader::eResourceType resourceType ){
-	deObjectReference task;
-	task.TakeOver( new igdeResourceLoaderTask( filename, resourceType ) );
-	pTasks.Add( task );
+void igdeResourceLoader::pAddTask(const char *filename,
+deResourceLoader::eResourceType resourceType){
+	pTasks.Add(igdeResourceLoaderTask::Ref::New(filename, resourceType));
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	engine.GetResourceLoader()->AddLoadRequest( engine.GetVirtualFileSystem(), filename, resourceType );
+	engine.GetResourceLoader()->AddLoadRequest(engine.GetVirtualFileSystem(), filename, resourceType);
 }

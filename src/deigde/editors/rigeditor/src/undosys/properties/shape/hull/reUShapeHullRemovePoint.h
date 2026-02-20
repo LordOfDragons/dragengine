@@ -25,9 +25,9 @@
 #ifndef _REUSHAPEHULLREMOVEPOINT_H_
 #define _REUSHAPEHULLREMOVEPOINT_H_
 
+#include "../../../../rig/shape/reRigShapeHull.h"
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class reRigShapeHull;
@@ -38,8 +38,12 @@ class reRigShapeHull;
  * \brief Undo action shape hull remove point.
  */
 class reUShapeHullRemovePoint : public igdeUndo{
+public:
+	using Ref = deTObjectReference<reUShapeHullRemovePoint>;
+	
+	
 private:
-	deObjectReference pShape;
+	const reRigShapeHull::Ref pShape;
 	
 	decVector pPoint;
 	int pIndex;
@@ -50,11 +54,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUShapeHullRemovePoint( reRigShapeHull *shape, int index );
+	reUShapeHullRemovePoint(reRigShapeHull *shape, int index);
 	
 protected:
 	/** \brief Clean up undo. */
-	virtual ~reUShapeHullRemovePoint();
+	~reUShapeHullRemovePoint() override;
 	/*@}*/
 	
 	
@@ -63,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

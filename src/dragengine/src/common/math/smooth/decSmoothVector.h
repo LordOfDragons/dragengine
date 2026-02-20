@@ -58,7 +58,7 @@ public:
 	decSmoothVector();
 	
 	/** \brief Create copy of a smooth vector. */
-	decSmoothVector( const decSmoothVector &copy );
+	decSmoothVector(const decSmoothVector &copy);
 	
 	/** \brief Clean up smooth vector. */
 	~decSmoothVector();
@@ -72,31 +72,31 @@ public:
 	inline const decVector &GetValue() const{ return pValue; }
 	
 	/** \brief Set current value. */
-	void SetValue( const decVector &value );
+	void SetValue(const decVector &value);
 	
 	/** \brief Goal value. */
 	inline const decVector &GetGoal() const{ return pGoal; }
 	
 	/** \brief Set goal value. */
-	void SetGoal( const decVector &goal );
+	void SetGoal(const decVector &goal);
 	
 	/** \brief Adjustment time in seconds. */
 	inline float GetAdjustTime() const{ return pAdjustTime; }
 	
 	/** \brief Adjustment time in seconds. Clamped to 0 or larger. */
-	void SetAdjustTime( float adjustTime );
+	void SetAdjustTime(float adjustTime);
 	
 	/** \brief Adjustment range in units. */
 	inline float GetAdjustRange() const{ return pAdjustRange; }
 	
 	/** \brief Set adjustment range in units. Clamped to 0 or larger. */
-	void SetAdjustRange( float range );
+	void SetAdjustRange(float range);
 	
 	/** \brief Change speed of the value in units per second. */
 	inline float GetChangeSpeed() const{ return pChangeSpeed; }
 	
 	/** \brief Set change speed of the value in units per second. */
-	void SetChangeSpeed( float changeSpeed );
+	void SetChangeSpeed(float changeSpeed);
 	
 	
 	
@@ -109,7 +109,7 @@ public:
 	 * Goal is not modified.
 	 * \param[in] elapsed Elapsed time in seconds. If less than 0.001s update is skipped.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	
@@ -121,17 +121,17 @@ public:
 	 * 
 	 * Two smooth vectors are equal if their value is equal.
 	 */
-	bool operator==( const decSmoothVector &other ) const;
+	bool operator==(const decSmoothVector &other) const;
 	
 	/**
 	 * \brief Determine if two smooth vector are not equal.
 	 * 
 	 * Two smooth vectors are not equal if their value is not equal.
 	 */
-	bool operator!=( const decSmoothVector &other ) const;
+	bool operator!=(const decSmoothVector &other) const;
 	
 	/** \brief Copy another smooth vector to this smooth vector. */
-	decSmoothVector &operator=( const decSmoothVector &other );
+	decSmoothVector &operator=(const decSmoothVector &other);
 	/*@}*/
 	
 	

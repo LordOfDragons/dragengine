@@ -26,13 +26,14 @@
 #define _GDEVAOPARTICLEEMITTER_H_
 
 #include "gdeVAOSubObject.h"
+#include "../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/particle/deParticleEmitterReference.h>
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
-class gdeOCParticleEmitter;
-class igdeWDebugDrawerShape;
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+
 class igdeWCoordSysArrows;
 
 
@@ -41,14 +42,19 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object particleEmitter for edit view.
  */
 class gdeVAOParticleEmitter : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOParticleEmitter> Ref;
+	
+	
 private:
-	gdeOCParticleEmitter *pOCParticleEmitter;
+	gdeOCParticleEmitter::Ref pOCParticleEmitter;
 	
-	deParticleEmitterReference pEmitter;
-	deParticleEmitterInstanceReference pInstance;
+	deParticleEmitter::Ref pEmitter;
+	deParticleEmitterInstance::Ref pInstance;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -57,8 +63,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object particleEmitter. */
-	gdeVAOParticleEmitter( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCParticleEmitter *ocemitter );
+	gdeVAOParticleEmitter(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCParticleEmitter *ocemitter);
 	
 protected:
 	/**
@@ -67,7 +73,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOParticleEmitter();
+	~gdeVAOParticleEmitter() override;
 	/*@}*/
 	
 	
@@ -76,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pOCParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetOCParticleEmitter() const{ return pOCParticleEmitter; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Reattach resources. */
 	void AttachResources();
@@ -88,7 +94,7 @@ public:
 	void DetachResources();
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

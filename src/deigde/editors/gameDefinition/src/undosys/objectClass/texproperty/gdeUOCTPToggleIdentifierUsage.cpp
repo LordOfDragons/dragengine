@@ -41,30 +41,20 @@
 ////////////////////////////
 
 gdeUOCTPToggleIdentifierUsage::gdeUOCTPToggleIdentifierUsage(
-gdeObjectClass *objectClass, gdeProperty *property ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeObjectClass *objectClass, gdeProperty *property) :
+pObjectClass(nullptr)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property toggle identifier usage" );
+	SetShortInfo("@GameDefinition.Undo.OCTPToggleIdentifierUsage");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPToggleIdentifierUsage::~gdeUOCTPToggleIdentifierUsage(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -73,11 +63,11 @@ gdeUOCTPToggleIdentifierUsage::~gdeUOCTPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUOCTPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(!pProperty->GetIdentifierUsage());
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

@@ -50,37 +50,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSelection::meWPSelection( meWindowProperties &windowProperties ) :
-igdeSwitcher( windowProperties.GetEnvironment() ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pWorld( NULL )
+meWPSelection::meWPSelection(meWindowProperties &windowProperties) :
+igdeSwitcher(windowProperties.GetEnvironment()),
+pWindowProperties(windowProperties)
 {
-	pListener = new meWPSelectionListener( *this );
+	pListener = meWPSelectionListener::Ref::New(*this);
 	
-	GetEnvironment().GetUIHelper().Label( *this, "No Selection" );
+	GetEnvironment().GetUIHelper().Label(*this, "@World.WPSelection.NoSelection");
 	
-	pPanelObject.TakeOver( new meWPSObject( *this ) );
-	AddChild( pPanelObject );
+	pPanelObject = meWPSObject::Ref::New(*this);
+	AddChild(pPanelObject);
 	
-	pPanelObjectShape.TakeOver( new meWPSObjectShape( *this ) );
-	AddChild( pPanelObjectShape );
+	pPanelObjectShape = meWPSObjectShape::Ref::New(*this);
+	AddChild(pPanelObjectShape);
 	
-	pPanelDecal.TakeOver( new meWPSDecal( *this ) );
-	AddChild( pPanelDecal );
+	pPanelDecal = meWPSDecal::Ref::New(*this);
+	AddChild(pPanelDecal);
 	
-	pPanelNavSpace.TakeOver( new meWPSNavSpace( *this ) );
-	AddChild( pPanelNavSpace );
+	pPanelNavSpace = meWPSNavSpace::Ref::New(*this);
+	AddChild(pPanelNavSpace);
 	
-	SetCurrent( 0 );  // empty
+	SetCurrent(0);  // empty
 }
 
 meWPSelection::~meWPSelection(){
-	SetWorld( NULL );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetWorld(nullptr);
 }
 
 
@@ -88,32 +82,30 @@ meWPSelection::~meWPSelection(){
 // Management
 ///////////////
 
-void meWPSelection::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPSelection::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	( ( meWPSObject& )( igdeWidget& )pPanelObject ).SetWorld( NULL );
-	( ( meWPSObjectShape& )( igdeWidget& )pPanelObjectShape ).SetWorld( NULL );
-	( ( meWPSDecal& )( igdeWidget& )pPanelDecal ).SetWorld( NULL );
-	( ( meWPSNavSpace& )( igdeWidget& )pPanelNavSpace ).SetWorld( NULL );
+	pPanelObject->SetWorld(nullptr);
+	pPanelObjectShape->SetWorld(nullptr);
+	pPanelDecal->SetWorld(nullptr);
+	pPanelNavSpace->SetWorld(nullptr);
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
-		pWorld->FreeReference();
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
-		world->AddReference();
+	if(world){
+		world->AddNotifier(pListener);
 	}
 	
-	( ( meWPSObject& )( igdeWidget& )pPanelObject ).SetWorld( world );
-	( ( meWPSObjectShape& )( igdeWidget& )pPanelObjectShape ).SetWorld( world );
-	( ( meWPSDecal& )( igdeWidget& )pPanelDecal ).SetWorld( world );
-	( ( meWPSNavSpace& )( igdeWidget& )pPanelNavSpace ).SetWorld( world );
+	pPanelObject->SetWorld(world);
+	pPanelObjectShape->SetWorld(world);
+	pPanelDecal->SetWorld(world);
+	pPanelNavSpace->SetWorld(world);
 	
 	ElementModeChanged();
 }
@@ -121,35 +113,35 @@ void meWPSelection::SetWorld( meWorld *world ){
 
 
 void meWPSelection::ElementModeChanged(){
-	if( ! pWorld ){
-		SetCurrent( 0 ); // none
+	if(!pWorld){
+		SetCurrent(0); // none
 		return;
 	}
 	
-	switch( pWorld->GetGuiParameters().GetElementMode() ){
+	switch(pWorld->GetGuiParameters().GetElementMode()){
 	case meWorldGuiParameters::eemObject:
-		SetCurrent( 1 );
+		SetCurrent(1);
 		break;
 		
 	case meWorldGuiParameters::eemObjectShape:
-		SetCurrent( 2 );
+		SetCurrent(2);
 		break;
 		
 	case meWorldGuiParameters::eemDecal:
-		SetCurrent( 3 );
+		SetCurrent(3);
 		break;
 		
 	case meWorldGuiParameters::eemNavSpace:
-		SetCurrent( 4 );
+		SetCurrent(4);
 		break;
 		
 	default:
-		SetCurrent( 0 ); // none
+		SetCurrent(0); // none
 	}
 }
 
 void meWPSelection::OnGameDefinitionChanged(){
-	( ( meWPSObject& )( igdeWidget& )pPanelObject ).OnGameDefinitionChanged();
-	( ( meWPSObjectShape& )( igdeWidget& )pPanelObjectShape ).OnGameDefinitionChanged();
-	( ( meWPSDecal& )( igdeWidget& )pPanelDecal ).OnGameDefinitionChanged();
+	pPanelObject->OnGameDefinitionChanged();
+	pPanelObjectShape->OnGameDefinitionChanged();
+	pPanelDecal->OnGameDefinitionChanged();
 }

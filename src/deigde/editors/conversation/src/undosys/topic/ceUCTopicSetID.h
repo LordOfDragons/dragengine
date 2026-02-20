@@ -25,13 +25,15 @@
 #ifndef _CEUCTOPICSETID_H_
 #define _CEUCTOPICSETID_H_
 
-#include "../action/ceUndoCActionList.h"
+#include "../action/ceUndoCAction.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
+#include <dragengine/common/collection/decTOrderedSet.h>
+
 class ceConversation;
-class ceConversationActionList;
 
 
 
@@ -39,13 +41,17 @@ class ceConversationActionList;
  * \brief Undo action topic set id.
  */
 class ceUCTopicSetID : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCTopicSetID>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	
 	decString pOldID;
 	decString pNewID;
 	
-	ceUndoCActionList pSnippets;
+	decTObjectOrderedSet<ceUndoCAction> pSnippets;
 	
 	
 	
@@ -53,11 +59,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicSetID( const ceConversation &conversation,
-		ceConversationTopic *topic, const char *newID );
+	ceUCTopicSetID(const ceConversation &conversation,
+		ceConversationTopic *topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
-	virtual ~ceUCTopicSetID();
+protected:
+	~ceUCTopicSetID() override;
+public:
 	/*@}*/
 	
 	
@@ -66,19 +74,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 	
 	
 	
 private:
-	void pSetID( const char *id );
+	void pSetID(const char *id);
 	
-	void pAddSnippets( ceConversationTopic *topic, const char *matchGroupID,
-		const char *matchTopicID, const ceConversationActionList &actions );
+	void pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
+		const char *matchTopicID, const ceConversationAction::List &actions);
 };
 
 #endif

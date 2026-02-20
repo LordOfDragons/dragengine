@@ -37,7 +37,7 @@ class deoglPipelineState{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	bool pColorMask[ 4 ];
+	bool pColorMask[4];
 	bool pDepthMask;
 	bool pEnableScissorTest;
 	GLenum pPolygonMode;
@@ -60,7 +60,7 @@ private:
 	GLuint pStencilRefMask;
 	GLuint pStencilMask;
 	bool pEnableBlend;
-	float pBlendColor[ 4 ];
+	float pBlendColor[4];
 	GLenum pBlendFuncSource;
 	GLenum pBlendFuncDest;
 	bool pClipControl;
@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline state. */
-	deoglPipelineState( deoglRenderThread &renderThread );
+	deoglPipelineState(deoglRenderThread &renderThread);
 	/*@}*/
 	
 	
@@ -81,27 +81,27 @@ public:
 	/*@{*/
 	void Reset();
 	
-	void ColorMask( bool red, bool green, bool blue, bool alpha );
-	void DepthMask( bool mask );
-	void EnableScissorTest( bool enable );
-	void PolygonMode( GLenum mode );
-	void EnableCullFace( bool enable );
-	void CullFace( GLenum cullFace );
-	void EnablePolygonOffsetFill( bool enable );
-	void PolygonOffset( float factor, float bias );
-	void EnableDepthTest( bool enable );
-	void DepthFunc( GLenum depthFunc );
-	void EnableStencilTest( bool enable );
-	void StencilOp( GLenum fail, GLenum zfail, GLenum zpass );
-	void StencilOpFront( GLenum fail, GLenum zfail, GLenum zpass );
-	void StencilOpBack( GLenum fail, GLenum zfail, GLenum zpass );
-	void StencilFunc( GLenum func, GLint ref, GLuint mask );
-	void StencilMask( GLuint mask );
-	void EnableBlend( bool enable );
-	void BlendColor( float red, float green, float blue, float alpha );
-	void BlendFunc( GLenum sfactor, GLenum dfactor );
-	void ClipControl( bool clipControl );
-	void EnableDepthClamp( bool enable );
+	void ColorMask(bool red, bool green, bool blue, bool alpha);
+	void DepthMask(bool mask);
+	void EnableScissorTest(bool enable);
+	void PolygonMode(GLenum mode);
+	void EnableCullFace(bool enable);
+	void CullFace(GLenum cullFace);
+	void EnablePolygonOffsetFill(bool enable);
+	void PolygonOffset(float factor, float bias);
+	void EnableDepthTest(bool enable);
+	void DepthFunc(GLenum depthFunc);
+	void EnableStencilTest(bool enable);
+	void StencilOp(GLenum fail, GLenum zfail, GLenum zpass);
+	void StencilOpFront(GLenum fail, GLenum zfail, GLenum zpass);
+	void StencilOpBack(GLenum fail, GLenum zfail, GLenum zpass);
+	void StencilFunc(GLenum func, GLint ref, GLuint mask);
+	void StencilMask(GLuint mask);
+	void EnableBlend(bool enable);
+	void BlendColor(float red, float green, float blue, float alpha);
+	void BlendFunc(GLenum sfactor, GLenum dfactor);
+	void ClipControl(bool clipControl);
+	void EnableDepthClamp(bool enable);
 	/*@}*/
 };
 

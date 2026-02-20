@@ -43,10 +43,6 @@
 ////////////////////////////
 
 reCLHitListEntry::reCLHitListEntry(){
-	pBone = NULL;
-	pShape = NULL;
-	pPush = NULL;
-	pConstraint = NULL;
 	pDistance = 0.0f;
 }
 
@@ -60,84 +56,44 @@ reCLHitListEntry::~reCLHitListEntry(){
 ///////////////
 
 void reCLHitListEntry::Clear(){
-	if( pBone ){
-		pBone->FreeReference();
-		pBone = NULL;
-	}
-	
-	if( pShape ){
-		pShape->FreeReference();
-		pShape = NULL;
-	}
-	
-	if( pConstraint ){
-		pConstraint->FreeReference();
-		pConstraint = NULL;
-	}
-	
-	if( pPush ){
-		pPush->FreeReference();
-		pPush = NULL;
-	}
-	
+	pBone = nullptr;
+	pShape = nullptr;
+	pConstraint = nullptr;
+	pPush = nullptr;
 	pDistance = 0.0f;
 }
 
-void reCLHitListEntry::SetBone( reRigBone *bone ){
-	if( bone != pBone ){
-		if( pBone ) pBone->FreeReference();
-		
-		pBone = bone;
-		
-		if( bone ) bone->AddReference();
-	}
+void reCLHitListEntry::SetBone(reRigBone *bone){
+	pBone = bone;
 }
 
-void reCLHitListEntry::SetShape( reRigShape *shape ){
-	if( shape != pShape ){
-		if( pShape ) pShape->FreeReference();
-		
-		pShape = shape;
-		
-		if( shape ) shape->AddReference();
-	}
+void reCLHitListEntry::SetShape(reRigShape *shape){
+	pShape = shape;
 }
 
-void reCLHitListEntry::SetConstraint( reRigConstraint *constraint ){
-	if( constraint != pConstraint ){
-		if( pConstraint ) pConstraint->FreeReference();
-		
-		pConstraint = constraint;
-		
-		if( constraint ) constraint->AddReference();
-	}
+void reCLHitListEntry::SetConstraint(reRigConstraint *constraint){
+	pConstraint = constraint;
 }
 
-void reCLHitListEntry::SetPush( reRigPush *push ){
-	if( push != pPush ){
-		if( pPush ) pPush->FreeReference();
-		
-		pPush = push;
-		
-		if( push ) push->AddReference();
-	}
+void reCLHitListEntry::SetPush(reRigPush *push){
+	pPush = push;
 }
 
-void reCLHitListEntry::SetDistance( float distance ){
+void reCLHitListEntry::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void reCLHitListEntry::SetNormal( const decVector &normal ){
+void reCLHitListEntry::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-int reCLHitListEntry::CompareTo( const reCLHitListEntry &entry ) const{
-	float difference = entry.GetDistance() - pDistance;
+int reCLHitListEntry::Compare(const reCLHitListEntry &entry) const{
+	const float difference = entry.GetDistance() - pDistance;
 	
-	if( difference > 1e-5f ){
+	if(difference > 1e-5f){
 		return -1;
 		
-	}else if( difference < -1e-5f ){
+	}else if(difference < -1e-5f){
 		return 1;
 		
 	}else{

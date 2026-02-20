@@ -34,8 +34,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feBaseClip::feBaseClip( int type ){
-	if( type < ectObject || type > ectObject ) DETHROW( deeInvalidParam );
+feBaseClip::feBaseClip(int type){
+	if(type < ectObject || type > ectObject) DETHROW(deeInvalidParam);
 	
 	pType = type;
 }

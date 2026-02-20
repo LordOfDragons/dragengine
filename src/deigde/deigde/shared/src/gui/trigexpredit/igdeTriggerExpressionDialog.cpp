@@ -26,7 +26,9 @@
 
 #include "igdeTriggerExpressionDialog.h"
 #include "igdeTriggerExpressionEditor.h"
-#include "../igdeContainerReference.h"
+#include "../igdeApplication.h"
+#include "../igdeContainer.h"
+#include "../../environment/igdeEnvironment.h"
 #include "../../triggersystem/igdeTriggerTargetList.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
 
@@ -40,21 +42,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTriggerExpressionDialog::igdeTriggerExpressionDialog( igdeEnvironment &environment,
-const igdeTriggerTargetList &targetList, igdeTriggerExpressionParser &parser, const char *title ) :
-igdeDialog( environment, title )
+igdeTriggerExpressionDialog::igdeTriggerExpressionDialog(igdeEnvironment &environment,
+const igdeTriggerTargetList &targetList, igdeTriggerExpressionParser &parser, const char *title) :
+igdeDialog(environment, title)
 {
-	SetInitialSize( decPoint( 800, 500 ) );
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 500)));
 	
-	pEditor.TakeOver( new igdeTriggerExpressionEditor( environment ) );
-	igdeTriggerExpressionEditor &editor = ( igdeTriggerExpressionEditor& )( igdeWidget& )pEditor;
-	editor.SetParser( &parser );
-	editor.SetTargetList( &targetList );
+	pEditor = igdeTriggerExpressionEditor::Ref::New(environment);
+	igdeTriggerExpressionEditor &editor = (igdeTriggerExpressionEditor&)(igdeWidget&)pEditor;
+	editor.SetParser(&parser);
+	editor.SetTargetList(&targetList);
 	
-	igdeContainerReference buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Discard" );
+	igdeContainer::Ref buttonBar;
+	CreateButtonBar(buttonBar, "@Igde.Accept", "@Igde.Discard");
 	
-	AddContent( pEditor, buttonBar );
+	AddContent(pEditor, buttonBar);
 }
 
 igdeTriggerExpressionDialog::~igdeTriggerExpressionDialog(){
@@ -66,9 +68,9 @@ igdeTriggerExpressionDialog::~igdeTriggerExpressionDialog(){
 ///////////////
 
 const decString &igdeTriggerExpressionDialog::GetExpression() const{
-	return ( ( igdeTriggerExpressionEditor& )( igdeWidget& )pEditor ).GetExpression();
+	return ((igdeTriggerExpressionEditor&)(igdeWidget&)pEditor).GetExpression();
 }
 
-void igdeTriggerExpressionDialog::SetExpression( const char *expression ){
-	( ( igdeTriggerExpressionEditor& )( igdeWidget& )pEditor ).SetExpression( expression );
+void igdeTriggerExpressionDialog::SetExpression(const char *expression){
+	((igdeTriggerExpressionEditor&)(igdeWidget&)pEditor).SetExpression(expression);
 }

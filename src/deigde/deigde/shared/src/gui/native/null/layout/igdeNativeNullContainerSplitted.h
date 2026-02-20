@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLCONTAINERSPLITTED_H_
 #define _IGDENATIVENULLCONTAINERSPLITTED_H_
 
+#include "../../../layout/igdeContainerSplitted.h"
+
 class igdeContainerSplitted;
 
 
 /**
  * Null button.
  */
-class igdeNativeNullContainerSplitted{
+class igdeNativeNullContainerSplitted : public igdeContainerSplitted::cNativeContainerSplitted{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullContainerSplitted();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullContainerSplitted* CreateNativeWidget( igdeContainerSplitted &owner );
+	static igdeNativeNullContainerSplitted* CreateNativeWidget(igdeContainerSplitted &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,7 +57,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateSplitValue();
+	void UpdateSplitValue() override;
 	/*@}*/
 };
 

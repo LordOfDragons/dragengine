@@ -27,6 +27,8 @@
 
 #include "deoglBasics.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglRenderThread;
 class deoglTexture;
 
@@ -46,7 +48,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	sGlyph *pGlyphs;
+	decTList<sGlyph> pGlyphs;
 	int pFontHeight;
 	deoglTexture *pTexture;
 	
@@ -54,17 +56,20 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new debug font. */
-	deoglDebugFont( deoglRenderThread &renderThread );
+	deoglDebugFont(deoglRenderThread &renderThread);
 	/** Cleans up the shared vbo. */
 	~deoglDebugFont();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the glyphs array. */
-	inline sGlyph *GetGlyphs() const{ return pGlyphs; }
+	/** Glyphs. */
+	inline decTList<sGlyph> &GetGlyphs(){ return pGlyphs; }
+	inline const decTList<sGlyph> &GetGlyphs() const{ return pGlyphs; }
+	
 	/** Retrieves the texture. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
+	
 	/** Retrieves the font height. */
 	inline int GetFontHeight() const{ return pFontHeight; }
 	/*@}*/

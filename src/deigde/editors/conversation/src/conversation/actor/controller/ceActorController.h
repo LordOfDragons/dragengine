@@ -26,6 +26,7 @@
 #define _CEACTORCONTROLLER_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -37,8 +38,9 @@
 class ceActorController : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceActorController> Ref;
+	using Ref = deTObjectReference<ceActorController>;
 	
+	using List = decTObjectOrderedSet<ceActorController>;
 	
 	
 public:
@@ -80,11 +82,11 @@ public:
 	ceActorController();
 	
 	/** \brief Create copy of controller. */
-	ceActorController( const ceActorController &controller );
+	ceActorController(const ceActorController &controller);
 	
 protected:
 	/** \brief Clean up actor controller. */
-	virtual ~ceActorController();
+	~ceActorController() override;
 	/*@}*/
 	
 	
@@ -96,25 +98,25 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Update type. */
 	inline eUpdateTypes GetUpdateType() const{ return pUpdateType; }
 	
 	/** \brief Set update type. */
-	void SetUpdateType( eUpdateTypes type );
+	void SetUpdateType(eUpdateTypes type);
 	
 	/** \brief Constant value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set constant value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Constant vector. */
 	inline const decVector &GetVector() const{ return pVector; }
 	
 	/** \brief Set constant vector. */
-	void SetVector( const decVector &vector );
+	void SetVector(const decVector &vector);
 	/*@}*/
 };
 

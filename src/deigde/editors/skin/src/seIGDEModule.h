@@ -37,11 +37,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	seIGDEModule( igdeEnvironment &environment );
+	seIGDEModule(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up module. */
-	virtual ~seIGDEModule();
+	~seIGDEModule() override;
 	/*@}*/
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start module. */
-	virtual void Start();
+	void Start() override;
 	/*@}*/
 };
 

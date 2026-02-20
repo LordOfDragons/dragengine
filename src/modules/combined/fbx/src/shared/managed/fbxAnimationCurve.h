@@ -29,7 +29,6 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -44,8 +43,7 @@ class fbxProperty;
 class fbxAnimationCurve : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxAnimationCurve> Ref;
-	
+	using Ref = deTObjectReference<fbxAnimationCurve>;
 	
 	
 private:
@@ -60,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationCurve( fbxNode &nodeCurve );
+	fbxAnimationCurve(fbxNode &nodeCurve);
 	
 protected:
 	/** \brief Clean up move. */
-	virtual ~fbxAnimationCurve();
+	~fbxAnimationCurve() override;
 	/*@}*/
 	
 	

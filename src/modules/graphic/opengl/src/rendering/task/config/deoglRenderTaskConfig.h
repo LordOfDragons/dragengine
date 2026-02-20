@@ -25,6 +25,8 @@
 #ifndef _DEOGLRENDERTASKCONFIG_H_
 #define _DEOGLRENDERTASKCONFIG_H_
 
+#include <dragengine/common/collection/decTList.h>
+
 class deoglRenderTaskConfigTexture;
 
 
@@ -33,9 +35,7 @@ class deoglRenderTaskConfigTexture;
  */
 class deoglRenderTaskConfig{
 private:
-	deoglRenderTaskConfigTexture *pTextures;
-	int pTextureCount;
-	int pTextureSize;
+	decTList<deoglRenderTaskConfigTexture> pTextures;
 	
 	
 	
@@ -53,17 +53,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Count of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
-	
-	/** Texture at index. */
-	deoglRenderTaskConfigTexture &GetTextureAt( int index ) const;
+	/** Textures. */
+	inline decTList<deoglRenderTaskConfigTexture> &GetTextures(){ return pTextures; }
+	inline const decTList<deoglRenderTaskConfigTexture> &GetTextures() const{ return pTextures; }
 	
 	/** Add texture. */
 	deoglRenderTaskConfigTexture &AddTexture();
-	
-	/** Remove all textures. */
-	void RemoveAllTextures();
 	/*@}*/
 };
 

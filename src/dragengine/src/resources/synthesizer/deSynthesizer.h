@@ -27,7 +27,7 @@
 
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
-#include "../../common/collection/decObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
 
 class deRig;
 class deSynthesizerSource;
@@ -47,14 +47,13 @@ class deBaseSynthesizerSynthesizer;
 class DE_DLL_EXPORT deSynthesizer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deSynthesizer> Ref;
-	
+	using Ref = deTObjectReference<deSynthesizer>;
 	
 	
 private:
-	decObjectOrderedSet pControllers;
-	decObjectOrderedSet pLinks;
-	decObjectOrderedSet pSources;
+	decTObjectOrderedSet<deSynthesizerController> pControllers;
+	decTObjectOrderedSet<deSynthesizerLink> pLinks;
+	decTObjectOrderedSet<deSynthesizerSource> pSources;
 	
 	int pChannelCount;
 	int pSampleRate;
@@ -69,8 +68,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer. */
-	deSynthesizer( deSynthesizerManager *manager );
+	deSynthesizer(deSynthesizerManager *manager);
 	
+	deSynthesizer(const deSynthesizer& synthesizer) = delete;
+	deSynthesizer& operator=(const deSynthesizer& synthesizer) = delete;
+
 protected:
 	/**
 	 * \brief Clean up synthesizer.
@@ -78,7 +80,7 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSynthesizer();
+	~deSynthesizer() override;
 	/*@}*/
 	
 	
@@ -90,57 +92,45 @@ public:
 	inline int GetChannelCount() const{ return pChannelCount; }
 	
 	/** \brief Set number of channels. */
-	void SetChannelCount( int channelCount );
+	void SetChannelCount(int channelCount);
 	
 	/** \brief Sample rate. */
 	inline int GetSampleRate() const{ return pSampleRate; }
 	
 	/** \brief Set sample rate. */
-	void SetSampleRate( int sampleRate );
+	void SetSampleRate(int sampleRate);
 	
 	/** \brief Bytes per sample. */
 	inline int GetBytesPerSample() const{ return pBytesPerSample; }
 	
 	/** \brief Set bytes per sample. */
-	void SetBytesPerSample( int bytesPerSample );
+	void SetBytesPerSample(int bytesPerSample);
 	
 	/** \brief Number of samples to create. */
 	inline int GetSampleCount() const{ return pSampleCount; }
 	
 	/** \brief Set number of samples to create. */
-	void SetSampleCount( int sampleCount );
+	void SetSampleCount(int sampleCount);
 	/*@}*/
 	
 	
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Number of controllers. */
-	int GetControllerCount() const;
-	
-	/**
-	 * \brief Controller at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetControllerCount().
-	 */
-	deSynthesizerController *GetControllerAt( int index ) const;
+	/** \brief Controllers. */
+	inline const decTObjectOrderedSet<deSynthesizerController> &GetControllers() const{ return pControllers; }
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController( deSynthesizerController *controller ) const;
-	
-	/** \brief Index of controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
-	
-	/** \brief Controller is present. */
-	bool HasController( deSynthesizerController *controller ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Add controller. */
-	void AddController( deSynthesizerController *controller );
+	void AddController(deSynthesizerController *controller);
 	
 	/**
 	 * \brief Remove controller.
 	 * \throws deeInvalidParam \em controller is absent.
 	 */
-	void RemoveController( deSynthesizerController *controller );
+	void RemoveController(deSynthesizerController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
@@ -153,29 +143,17 @@ public:
 	
 	/** \name Links */
 	/*@{*/
-	/** \brief Number of links. */
-	int GetLinkCount() const;
-	
-	/**
-	 * \brief Link at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetLinkCount().
-	 */
-	deSynthesizerLink *GetLinkAt( int index ) const;
-	
-	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink( deSynthesizerLink *link ) const;
-	
-	/** \brief Link is present. */
-	bool HasLink( deSynthesizerLink *link ) const;
+	/** \brief Links. */
+	inline const decTObjectOrderedSet<deSynthesizerLink> &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
-	void AddLink( deSynthesizerLink *link );
+	void AddLink(deSynthesizerLink *link);
 	
 	/**
 	 * \brief Remove link.
 	 * \throws deeInvalidParam \em link is absent.
 	 */
-	void RemoveLink( deSynthesizerLink *link );
+	void RemoveLink(deSynthesizerLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
@@ -188,29 +166,17 @@ public:
 	
 	/** \name Sources */
 	/*@{*/
-	/** \brief Number of sources. */
-	int GetSourceCount() const;
-	
-	/**
-	 * \brief Source at index.
-	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal to GetSourceCount().
-	 */
-	deSynthesizerSource *GetSourceAt( int index ) const;
-	
-	/** \brief Index of source or -1 if absent. */
-	int IndexOfSource( deSynthesizerSource *source ) const;
-	
-	/** \brief Source is present. */
-	bool HasSource( deSynthesizerSource *source ) const;
+	/** \brief Sources. */
+	inline const decTObjectOrderedSet<deSynthesizerSource> &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
-	void AddSource( deSynthesizerSource *source );
+	void AddSource(deSynthesizerSource *source);
 	
 	/**
 	 * \brief Remove source.
 	 * \throws deeOutOfBoundary \em source is absent.
 	 */
-	void RemoveSource( deSynthesizerSource *source );
+	void RemoveSource(deSynthesizerSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();
@@ -227,7 +193,7 @@ public:
 	inline deBaseSynthesizerSynthesizer *GetPeerSynthesizer() const{ return pPeerSynthesizer; }
 	
 	/** \brief Set synthesizer system peer. */
-	void SetPeerSynthesizer( deBaseSynthesizerSynthesizer *peer );
+	void SetPeerSynthesizer(deBaseSynthesizerSynthesizer *peer);
 	/*@}*/
 };
 

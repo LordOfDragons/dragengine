@@ -25,14 +25,15 @@
 #ifndef _SAEVIEWSANIMATION_H_
 #define _SAEVIEWSANIMATION_H_
 
+#include "../sanimation/saeSAnimation.h"
+
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/font/deFontReference.h>
+#include <dragengine/resources/font/deFont.h>
 
 class saeWindowMain;
-class saeSAnimation;
 
 
 
@@ -40,13 +41,16 @@ class saeSAnimation;
  * Speech Animation View.
  */
 class saeViewSAnimation : public igdeViewRenderWindow{
+public:
+	using Ref = deTObjectReference<saeViewSAnimation>;
+	
 private:
 	saeWindowMain &pWindowMain;
-	deFontReference pFontStats;
+	deFont::Ref pFontStats;
 	
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	
@@ -54,11 +58,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speech animation view. */
-	saeViewSAnimation( saeWindowMain &windowMain );
+	saeViewSAnimation(saeWindowMain &windowMain);
 	
 protected:
 	/** Clean up speech animation view. */
-	virtual ~saeViewSAnimation();
+	~saeViewSAnimation() override;
 	/*@}*/
 	
 	
@@ -70,16 +74,16 @@ public:
 	void ResetView();
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed) override;
 	
 	/** Create canvas. */
-	virtual void CreateCanvas();
+	void CreateCanvas() override;
 	/*@}*/
 };
 

@@ -28,6 +28,7 @@
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDevicePose.h>
@@ -42,8 +43,7 @@ class deoxrAction;
 class deoxrHandTracker : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrHandTracker> Ref;
-	
+	using Ref = deTObjectReference<deoxrHandTracker>;
 	
 	
 private:
@@ -88,17 +88,15 @@ private:
 	const XrHandEXT pHand;
 	XrHandTrackerEXT pHandTracker;
 	
-	XrHandJointLocationEXT *pJointLocations;
-	XrHandJointVelocityEXT *pJointVelocities;
-	int pJointCount;
+	decTList<XrHandJointLocationEXT> pJointLocations;
+	decTList<XrHandJointVelocityEXT> pJointVelocities;
 	
 	XrHandJointsLocateInfoEXT pLocateInfo;
 	XrHandJointLocationsEXT pLocations;
 	XrHandJointVelocitiesEXT pVelocities;
 	XrHandJointsMotionRangeInfoEXT pMotionRange;
 	
-	deInputDevicePose *pPoseBones;
-	int pPoseBoneCount;
+	decTList<deInputDevicePose> pPoseBones;
 	
 	static const int FingerBendingCount = 5;
 	sFingerBending pBendFinger[FingerBendingCount];
@@ -111,8 +109,7 @@ private:
 	
 	sFingerInput pFingerInput[4];
 	
-	sBoneMapping *pMapBoneXrToDe;
-	int pMapBoneXrToDeCount;
+	decTList<sBoneMapping> pMapBoneXrToDe;
 	
 	
 	
@@ -120,11 +117,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create hand tracker. */
-	deoxrHandTracker( deoxrSession &session, deoxrDevice &device, XrHandEXT hand );
+	deoxrHandTracker(deoxrSession &session, deoxrDevice &device, XrHandEXT hand);
 	
 protected:
 	/** Clean up space. */
-	virtual ~deoxrHandTracker();
+	~deoxrHandTracker() override;
 	/*@}*/
 	
 	
@@ -145,23 +142,23 @@ public:
 	void Locate();
 	
 	/** Count of pose bones. */
-	inline int GetPoseBoneCount() const{ return pPoseBoneCount; }
+	inline int GetPoseBoneCount() const{ return pPoseBones.GetCount(); }
 	
 	/** Pose bone at index. */
-	deInputDevicePose &GetPoseBoneAt( int index );
-	const deInputDevicePose &GetPoseBoneAt( int index ) const;
+	deInputDevicePose &GetPoseBoneAt(int index);
+	const deInputDevicePose &GetPoseBoneAt(int index) const;
 	
 	/** Bending value for finger. */
-	float GetBendFingerAt( int index ) const;
+	float GetBendFingerAt(int index) const;
 	
 	/** Spread finger value for finger. */
-	float GetSpreadFingerAt( int index ) const;
+	float GetSpreadFingerAt(int index) const;
 	
 	/** Finger input value. */
 	float GetFingerInputAt(int index) const;
 	
 	/** Log bone poses. */
-	void LogPoseBones( const char *prefix ) const;
+	void LogPoseBones(const char *prefix) const;
 	
 	/** Reference pose changed. */
 	void ReferencePoseChanged();
@@ -171,7 +168,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pSetBoneMapping( int index, deInputDevice::eHandBones to, XrHandJointEXT from );
+	void pSetBoneMapping(int index, deInputDevice::eHandBones to, XrHandJointEXT from);
 	void pFixBrokenBoneRotations();
 	void pCalcFingerBending();
 	void pCalcFingerSpreading();

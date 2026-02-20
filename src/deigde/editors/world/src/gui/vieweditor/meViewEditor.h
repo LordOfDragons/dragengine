@@ -27,12 +27,14 @@
 
 #include "../../world/meWorldGuiParameters.h"
 
+#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputEvent.h>
 
 class meCamera;
 class meConfiguration;
-class meObjectList;
+class meObject;
 class meView3D;
 class meWorld;
 class meWorldGuiParameters;
@@ -51,7 +53,11 @@ class decCollisionFilter;
  * Provides support for handling mouse and keyboard input directed at the meView3D
  * widget for a specific editing task.
  */
-class meViewEditor{
+class meViewEditor : public deObject{
+public:
+	using Ref = deTObjectReference<meViewEditor>;
+	using List = decTObjectOrderedSet<const meViewEditor>;
+	
 private:
 	meView3D &pView;
 	
@@ -74,14 +80,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditor( meView3D &view );
+	meViewEditor(meView3D &view);
 	
+protected:
 	/** \brief Clean up view editor. */
-	virtual ~meViewEditor();
+	~meViewEditor() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent view. */
@@ -158,24 +165,19 @@ public:
 	 * \brief Check for axis locking in response to a key press event.
 	 * \returns true if the key has been handled.
 	 */
-	bool CheckAxisLocking( deInputEvent::eKeyCodes key );
+	bool CheckAxisLocking(deInputEvent::eKeyCodes key);
 	
 	/** \brief Log exception. */
-	void LogException( const deException &exception ) const;
-	
-	
-	
-	/** \brief List of selected objects including all objects attached to them. */
-	void GetSelectedObjectsWithAttached( meObjectList &list );
+	void LogException(const deException &exception) const;
 	
 	
 	
 	/** \brief Test for collision with scene elements using a ray originating from (x,y) running along the view axis. */
-	void RayTestCollision( deBaseScriptingCollider *listener, const decDVector &rayPosition,
-		const decVector &rayDirection, const decCollisionFilter &collisionFilter );
+	void RayTestCollision(deBaseScriptingCollider *listener, const decDVector &rayPosition,
+		const decVector &rayDirection, const decCollisionFilter &collisionFilter);
 	
 	/** \brief Test for collision with scene elements using a collider . */
-	void ColliderTestCollision( deBaseScriptingCollider *listener, deCollider *collider );
+	void ColliderTestCollision(deBaseScriptingCollider *listener, deCollider *collider);
 	
 	
 	
@@ -194,7 +196,7 @@ public:
 	
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	/*@}*/
 	
 	
@@ -205,31 +207,31 @@ public:
 	virtual void OnResize();
 	
 	/** \brief A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );
+	virtual bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control);
 	
 	/** \brief A key on the keyboard has been released. Return true if handled. */
-	virtual bool OnKeyRelease( deInputEvent::eKeyCodes key, bool shift, bool control );
+	virtual bool OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, bool control);
 	
 	/** \brief The left mouse button has been pressed. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonPress(int x, int y, bool shift, bool control);
 	
 	/** \brief The left mouse button has been released. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control);
 	
 	/** \brief The right mouse button has been pressed. */
-	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnRightMouseButtonPress(int x, int y, bool shift, bool control);
 	
 	/** \brief The right mouse button has been released. */
-	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnRightMouseButtonRelease(int x, int y, bool shift, bool control);
 	
 	/** \brief The mouse has been moved. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	virtual void OnMouseMove(int x, int y, bool shift, bool control);
 	
 	/**
 	 * \brief The mouse wheel has been used. Steps contains the number of steps
 	 *        up (positive) or down (negative)
 	 */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	virtual void OnMouseWheel(int steps, bool shift, bool control);
 	
 	/** \brief The mouse entered view. */
 	virtual void OnMouseEnter();

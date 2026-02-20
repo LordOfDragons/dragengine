@@ -38,26 +38,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetVideoPath::seUPropertySetVideoPath( seProperty *property, const char *newPath ){
-	if( ! property || ! newPath ){
-		DETHROW( deeInvalidParam );
+seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const char *newPath){
+	if(!property || !newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pProperty = NULL;
+	pProperty = nullptr;
 	
-	SetShortInfo( "Property Set Video Path" );
+	SetShortInfo("@Skin.Undo.PropertySetVideoPath");
 	
 	pOldPath = property->GetVideoPath();
 	pNewPath = newPath;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetVideoPath::~seUPropertySetVideoPath(){
-	if( pProperty ){
-		pProperty->FreeReference();
-	}
 }
 
 
@@ -66,9 +62,9 @@ seUPropertySetVideoPath::~seUPropertySetVideoPath(){
 ///////////////
 
 void seUPropertySetVideoPath::Undo(){
-	pProperty->SetVideoPath( pOldPath.GetString() );
+	pProperty->SetVideoPath(pOldPath.GetString());
 }
 
 void seUPropertySetVideoPath::Redo(){
-	pProperty->SetVideoPath( pNewPath.GetString() );
+	pProperty->SetVideoPath(pNewPath.GetString());
 }

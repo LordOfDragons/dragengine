@@ -40,70 +40,60 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategoryRemove::gdeUCategoryRemove( gdeGameDefinition *gameDefinition,
-gdeCategory *category, eCategoryType type ) :
-gdeUCategoryBase( gameDefinition, type ),
-pParent( NULL ),
-pCategory( NULL )
+gdeUCategoryRemove::gdeUCategoryRemove(gdeGameDefinition *gameDefinition,
+gdeCategory *category, eCategoryType type) :
+gdeUCategoryBase(gameDefinition, type)
 {
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(!category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Category remove" );
+	SetShortInfo("@GameDefinition.Undo.CategoryRemove");
 	
 	gdeCategory * const parent = category->GetParent();
-	if( parent ){
-		if( ! parent->GetCategories().Has( category ) ){
-		   DETHROW( deeInvalidParam );
+	if(parent){
+		if(!parent->GetCategories().Has(category)){
+		   DETHROW(deeInvalidParam);
 		}
 		
 		pParent = parent;
-		parent->AddReference();
 		
 	}else{
-		switch( type ){
+		switch(type){
 		case ectObjectClass:
-			if( ! gameDefinition->GetCategoriesObjectClass().Has( category ) ){
-				DETHROW( deeInvalidParam );
+			if(!gameDefinition->GetCategoriesObjectClass().Has(category)){
+				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 		case ectParticleEmitter:
-			if( ! gameDefinition->GetCategoriesParticleEmitter().Has( category ) ){
-				DETHROW( deeInvalidParam );
+			if(!gameDefinition->GetCategoriesParticleEmitter().Has(category)){
+				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 		case ectSkin:
-			if( ! gameDefinition->GetCategoriesSkin().Has( category ) ){
-				DETHROW( deeInvalidParam );
+			if(!gameDefinition->GetCategoriesSkin().Has(category)){
+				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 		case ectSky:
-			if( ! gameDefinition->GetCategoriesSky().Has( category ) ){
-				DETHROW( deeInvalidParam );
+			if(!gameDefinition->GetCategoriesSky().Has(category)){
+				DETHROW(deeInvalidParam);
 			}
 			break;
 			
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategoryRemove::~gdeUCategoryRemove(){
-	if( pCategory ){
-		pCategory->FreeReference();
-	}
-	if( pParent ){
-		pParent->FreeReference();
-	}
 }
 
 
@@ -114,30 +104,30 @@ gdeUCategoryRemove::~gdeUCategoryRemove(){
 void gdeUCategoryRemove::Undo(){
 	gdeGameDefinition &gameDefinition = *GetGameDefinition();
 	
-	if( pParent ){
-		pParent->AddCategory( pCategory );
+	if(pParent){
+		pParent->AddCategory(pCategory);
 		
 	}else{
-		switch( GetType() ){
+		switch(GetType()){
 		case ectObjectClass:
-			gameDefinition.GetCategoriesObjectClass().Add( pCategory );
+			gameDefinition.GetCategoriesObjectClass().Add(pCategory);
 			break;
 			
 		case ectParticleEmitter:
-			gameDefinition.GetCategoriesParticleEmitter().Add( pCategory );
+			gameDefinition.GetCategoriesParticleEmitter().Add(pCategory);
 			break;
 			
 		case ectSkin:
-			gameDefinition.GetCategoriesSkin().Add( pCategory );
+			gameDefinition.GetCategoriesSkin().Add(pCategory);
 			break;
 			
 		case ectSky:
-			gameDefinition.GetCategoriesSky().Add( pCategory );
+			gameDefinition.GetCategoriesSky().Add(pCategory);
 			break;
 			
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
@@ -148,15 +138,15 @@ void gdeUCategoryRemove::Redo(){
 	gdeGameDefinition &gameDefinition = *GetGameDefinition();
 	
 	gdeCategory *activeCheck = gameDefinition.GetActiveCategory();
-	while( activeCheck ){
-		if( activeCheck == pCategory ){
-			switch( gameDefinition.GetSelectedObjectType() ){
+	while(activeCheck){
+		if(activeCheck == pCategory){
+			switch(gameDefinition.GetSelectedObjectType()){
 			case gdeGameDefinition::eotCategoryObjectClass:
 			case gdeGameDefinition::eotCategoryParticleEmitter:
 			case gdeGameDefinition::eotCategorySkin:
 			case gdeGameDefinition::eotCategorySky:
-				if( ! activeCheck->GetParent() ){
-					gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotNoSelection );
+				if(!activeCheck->GetParent()){
+					gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotNoSelection);
 				}
 				break;
 				
@@ -164,37 +154,37 @@ void gdeUCategoryRemove::Redo(){
 				break;
 			}
 			
-			gameDefinition.SetActiveCategory( activeCheck->GetParent() );
+			gameDefinition.SetActiveCategory(activeCheck->GetParent());
 			break;
 		}
 		
 		activeCheck = activeCheck->GetParent();
 	}
 	
-	if( pParent ){
-		pParent->RemoveCategory( pCategory );
+	if(pParent){
+		pParent->RemoveCategory(pCategory);
 		
 	}else{
-		switch( GetType() ){
+		switch(GetType()){
 		case ectObjectClass:
-			gameDefinition.GetCategoriesObjectClass().Remove( pCategory );
+			gameDefinition.GetCategoriesObjectClass().Remove(pCategory);
 			break;
 			
 		case ectParticleEmitter:
-			gameDefinition.GetCategoriesParticleEmitter().Remove( pCategory );
+			gameDefinition.GetCategoriesParticleEmitter().Remove(pCategory);
 			break;
 			
 		case ectSkin:
-			gameDefinition.GetCategoriesSkin().Remove( pCategory );
+			gameDefinition.GetCategoriesSkin().Remove(pCategory);
 			break;
 			
 		case ectSky:
-			gameDefinition.GetCategoriesSky().Remove( pCategory );
+			gameDefinition.GetCategoriesSky().Remove(pCategory);
 			break;
 			
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	

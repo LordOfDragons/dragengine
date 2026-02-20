@@ -40,25 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRemoveProperty::meUDecalRemoveProperty( meDecal *decal, const char *key, const char *value ) :
-pDecal( NULL )
+meUDecalRemoveProperty::meUDecalRemoveProperty(meDecal *decal, const char *key, const char *value) :
+pDecal(nullptr)
 {
-	if( ! decal || ! key || ! value ){
-		DETHROW( deeInvalidParam );
+	if(!decal || !key || !value){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! decal->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(!decal->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pDecal = NULL;
+	pDecal = nullptr;
 	
-	SetShortInfo( "Remove decal property" );
+	SetShortInfo("@World.UDecalRemoveProperty.RemoveDecalProperty");
 	
 	pKey = key;
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRemoveProperty::~meUDecalRemoveProperty(){
@@ -71,11 +70,11 @@ meUDecalRemoveProperty::~meUDecalRemoveProperty(){
 ///////////////
 
 void meUDecalRemoveProperty::Undo(){
-	pDecal->SetProperty( pKey, pValue );
+	pDecal->SetProperty(pKey, pValue);
 }
 
 void meUDecalRemoveProperty::Redo(){
-	pDecal->RemoveProperty( pKey );
+	pDecal->RemoveProperty(pKey);
 }
 
 
@@ -84,7 +83,4 @@ void meUDecalRemoveProperty::Redo(){
 //////////////////////
 
 void meUDecalRemoveProperty::pCleanUp(){
-	if( pDecal ){
-		pDecal->FreeReference();
-	}
 }

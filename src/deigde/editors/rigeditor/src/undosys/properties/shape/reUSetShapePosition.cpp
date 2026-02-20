@@ -24,7 +24,7 @@
 
 #include "reUSetShapePosition.h"
 #include "../../../rig/shape/reRigShape.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 
@@ -34,21 +34,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapePosition::reUSetShapePosition( reRigShape *shape, const decVector &newPosition ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapePosition::reUSetShapePosition(reRigShape *shape, const decVector &newPosition){
+	DEASSERT_NOTNULL(shape)
 	
 	pShape = shape;
 	
 	pOldPosition = shape->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo( "Set Shape Position" );
-	
-	pShape->AddReference();
+	SetShortInfo("@Rig.Undo.ShapeSetPosition");
 }
 
 reUSetShapePosition::~reUSetShapePosition(){
-	pShape->FreeReference();
 }
 
 
@@ -57,9 +54,9 @@ reUSetShapePosition::~reUSetShapePosition(){
 ///////////////
 
 void reUSetShapePosition::Undo(){
-	pShape->SetPosition( pOldPosition );
+	pShape->SetPosition(pOldPosition);
 }
 
 void reUSetShapePosition::Redo(){
-	pShape->SetPosition( pNewPosition );
+	pShape->SetPosition(pNewPosition);
 }

@@ -25,17 +25,18 @@
 #ifndef _SEVIEWCONSTRUCTED_H_
 #define _SEVIEWCONSTRUCTED_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
+#include "seViewConstructedView.h"
+#include "seViewConstructedListener.h"
+
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeScrollBar.h>
+#include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 #include <dragengine/common/math/decMath.h>
 
 class seSkin;
 class seWindowMain;
-class seViewConstructedView;
-class seViewConstructedListener;
 
 
 
@@ -43,18 +44,21 @@ class seViewConstructedListener;
  * \brief Constructed property preview container.
  */
 class seViewConstructed : public igdeContainerBorder{
+public:
+	using Ref = deTObjectReference<seViewConstructed>;
+	
 private:
 	seWindowMain &pWindowMain;
-	seViewConstructedListener *pListener;
+	seViewConstructedListener::Ref pListener;
 	
 	decPoint pContentSize;
 	decPoint pScrollOffset;
 	
-	igdeScrollBarReference pSBHorizontal;
-	igdeScrollBarReference pSBVertical;
-	igdeComboBoxReference pCBZoom;
-	igdeSpinTextFieldReference pSpinLayer;
-	seViewConstructedView *pViewNode;
+	igdeScrollBar::Ref pSBHorizontal;
+	igdeScrollBar::Ref pSBVertical;
+	igdeComboBox::Ref pCBZoom;
+	igdeSpinTextField::Ref pSpinLayer;
+	seViewConstructedView::Ref pViewNode;
 	
 	
 	
@@ -62,11 +66,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create constructed property view. */
-	seViewConstructed( seWindowMain &windowMain );
+	seViewConstructed(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up constructed property view. */
-	virtual ~seViewConstructed();
+	~seViewConstructed() override;
 	/*@}*/
 	
 	
@@ -78,7 +82,7 @@ public:
 	seSkin *GetSkin() const;
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Constructed view. */
 	inline seViewConstructedView &GetViewNode() const{ return *pViewNode; }
@@ -86,7 +90,7 @@ public:
 	
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	
 	
 	
@@ -100,10 +104,10 @@ public:
 	void ResetView();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Widget size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** \brief View scrolled. */
 	void OnScrolled();

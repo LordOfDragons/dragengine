@@ -46,13 +46,13 @@ public:
 	decCurveBezier3DPoint();
 	
 	/** \brief Create a new bezier curve point. */
-	decCurveBezier3DPoint( const decVector &point );
+	decCurveBezier3DPoint(const decVector &point);
 	
 	/** \brief Create a new bezier curve point. */
-	decCurveBezier3DPoint( const decVector &point, const decVector &handle1, const decVector &handle2 );
+	decCurveBezier3DPoint(const decVector &point, const decVector &handle1, const decVector &handle2);
 	
 	/** \brief Create a new bezier curve point. */
-	decCurveBezier3DPoint( const decCurveBezier3DPoint &point );
+	decCurveBezier3DPoint(const decCurveBezier3DPoint &point);
 	/*@}*/
 	
 	
@@ -69,10 +69,10 @@ public:
 	inline const decVector &GetHandle2() const{ return pHandle2; }
 	
 	/** \brief Set point. */
-	void SetPoint( const decVector &point );
+	void SetPoint(const decVector &point);
 	
 	/** \brief Set point. */
-	void SetPoint( const decVector &point, const decVector &handle1, const decVector &handle2 );
+	void SetPoint(const decVector &point, const decVector &handle1, const decVector &handle2);
 	/*@}*/
 	
 	
@@ -80,10 +80,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Curve point is equal to another curve point. */
-	bool operator==( const decCurveBezier3DPoint &point ) const;
+	bool operator==(const decCurveBezier3DPoint &point) const;
 	
 	/** \brief Curve point is not equal to another curve point. */
-	bool operator!=( const decCurveBezier3DPoint &point ) const;
+	bool operator!=(const decCurveBezier3DPoint &point) const;
 	/*@}*/
 };
 

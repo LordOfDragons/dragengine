@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
-class gdeProperty;
+#include "../../../gamedef/gdeGameDefinition.h"
+#include "../../../gamedef/property/gdeProperty.h"
 
 
 
@@ -39,9 +39,13 @@ class gdeProperty;
  * \brief Undo action object class property set minimum value.
  */
 class gdeUGDDPSetMinValue : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUGDDPSetMinValue> Ref;
+	
+	
 private:
 	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
@@ -52,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetMinValue( gdeGameDefinition *gamedef, gdeProperty *property, float newValue );
+	gdeUGDDPSetMinValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

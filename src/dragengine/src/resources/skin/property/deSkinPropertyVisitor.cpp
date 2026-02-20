@@ -53,29 +53,29 @@ deSkinPropertyVisitor::~deSkinPropertyVisitor(){
 // Visiting
 /////////////
 
-void deSkinPropertyVisitor::VisitProperty( deSkinProperty &property ){
+void deSkinPropertyVisitor::VisitProperty(deSkinProperty &property){
 }
 
-void deSkinPropertyVisitor::VisitValue( deSkinPropertyValue &property ){
-	VisitProperty( property );
+void deSkinPropertyVisitor::VisitValue(deSkinPropertyValue &property){
+	VisitProperty(property);
 }
 
-void deSkinPropertyVisitor::VisitColor( deSkinPropertyColor &property ){
-	VisitProperty( property );
+void deSkinPropertyVisitor::VisitColor(deSkinPropertyColor &property){
+	VisitProperty(property);
 }
 
-void deSkinPropertyVisitor::VisitImage( deSkinPropertyImage &property ){
-	VisitProperty( property );
+void deSkinPropertyVisitor::VisitImage(deSkinPropertyImage &property){
+	VisitProperty(property);
 }
 
-void deSkinPropertyVisitor::VisitVideo( deSkinPropertyVideo &property ){
-	VisitProperty( property );
+void deSkinPropertyVisitor::VisitVideo(deSkinPropertyVideo &property){
+	VisitProperty(property);
 }
 
-void deSkinPropertyVisitor::VisitConstructed( deSkinPropertyConstructed &property ){
-	VisitProperty( property );
+void deSkinPropertyVisitor::VisitConstructed(deSkinPropertyConstructed &property){
+	VisitProperty(property);
 }
 
-void deSkinPropertyVisitor::VisitMapped( deSkinPropertyMapped &property ){
-	VisitProperty( property );
+void deSkinPropertyVisitor::VisitMapped(deSkinPropertyMapped &property){
+	VisitProperty(property);
 }

@@ -42,35 +42,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupPasteRule::aeURuleGroupPasteRule( aeRuleGroup *group, const aeRuleList &ruleList, int index ) :
-pGroup( NULL ),
-pIndex( index ){
-	const int ruleCount = ruleList.GetCount();
+aeURuleGroupPasteRule::aeURuleGroupPasteRule(aeRuleGroup *group, const aeRule::List &ruleList, int index) :
+
+pIndex(index){
+	DEASSERT_NOTNULL(group)
+	DEASSERT_TRUE(ruleList.IsNotEmpty())
 	
-	if( ! group || ruleCount == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	aeRule *rule = NULL;
-	int i;
-	
-	try{
-		for( i=0; i<ruleCount; i++ ){
-			rule = ruleList.GetAt( i )->CreateCopy();
-			pRuleList.Add( rule );
-			rule->FreeReference();
-			rule = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( rule ){
-			rule->FreeReference();
-		}
-		throw;
-	}
+	ruleList.Visit([&](aeRule &rule){
+		pRuleList.Add(rule.CreateCopy());
+	});
 	
 	pGroup = group;
-	group->AddReference();
 }
 
 aeURuleGroupPasteRule::~aeURuleGroupPasteRule(){
@@ -83,70 +65,59 @@ aeURuleGroupPasteRule::~aeURuleGroupPasteRule(){
 ///////////////
 
 void aeURuleGroupPasteRule::Undo(){
-	const int ruleCount = pRuleList.GetCount();
-	int i;
-	
-	for( i=0; i<ruleCount; i++ ){
-		pGroup->RemoveRule( pRuleList.GetAt( i ) );
-	}
+	pRuleList.Visit([&](aeRule *rule){
+		pGroup->RemoveRule(rule);
+	});
 	
 	// remove links added in a prior redo
 	aeAnimator * const animator = pGroup->GetAnimator();
 	
-	if( animator ){
-		const int linkCount = pRemoveLinkList.GetCount();
-		for( i=0; i<linkCount; i++ ){
-			animator->RemoveLink( pRemoveLinkList.GetAt( i ) );
-		}
+	if(animator){
+		pRemoveLinkList.Visit([&](aeLink *link){
+			animator->RemoveLink(link);
+		});
 		pRemoveLinkList.RemoveAll();
 	}
 	
 	// remove controller added in a prior redo
-	if( animator ){
-		const int controllerCount = pRemoveControllerList.GetCount();
-		for( i=0; i<controllerCount; i++ ){
-			animator->RemoveController( pRemoveControllerList.GetAt( i ) );
-		}
+	if(animator){
+		pRemoveControllerList.Visit([&](aeController *controller){
+			animator->RemoveController(controller);
+		});
 		pRemoveControllerList.RemoveAll();
 	}
 }
 
 void aeURuleGroupPasteRule::Redo(){
 	aeAnimator * const animator = pGroup->GetAnimator();
-	const int ruleCount = pRuleList.GetCount();
-	int i, j;
 	
 	pRemoveLinkList.RemoveAll();
 	
-	for( i=0; i<ruleCount; i++ ){
-		aeRule * const rule = pRuleList.GetAt( i );
-		
+	pRuleList.VisitIndexed([&](int i, aeRule *rule){
 		// check if links exist in the animator. if not add them and mark them to remove
 		// during undo. the same for controllers but with a difference. controllers are
 		// named so if a controller with the same name exists already reuse it
-		if( animator ){
-			aeLinkList linkList;
-			rule->ListLinks( linkList );
+		if(animator){
+			aeLink::List linkList;
+			rule->ListLinks(linkList);
 			
-			const int linkCount = linkList.GetCount();
-			for( j=0; j<linkCount; j++ ){
-				aeLink * const link = linkList.GetAt( j );
-				if( ! animator->GetLinks().Has( link ) ){
+			linkList.Visit([&](aeLink *link){
+				if(!animator->GetLinks().Has(link)){
 					aeController * const controller = link->GetController();
-					if( controller && ! animator->GetControllers().HasNamed( controller->GetName() ) ){
-						pRemoveControllerList.Add( controller );
-						animator->AddController( controller );
+					if(controller && !animator->GetControllers().HasNamed(controller->GetName())){
+						pRemoveControllerList.Add(controller);
+						animator->AddController(controller);
 					}
 					
-					pRemoveLinkList.Add( link );
-					animator->AddLink( link );
+					pRemoveLinkList.Add(link);
+					animator->AddLink(link);
 				}
-			}
+			});
 		}
 		
 		// insert the rule
-		pGroup->InsertRuleAt( rule, pIndex + i );
-	}
+		pGroup->InsertRuleAt(rule, pIndex + i);
+	});
 }
 
 
@@ -155,7 +126,4 @@ void aeURuleGroupPasteRule::Redo(){
 //////////////////////
 
 void aeURuleGroupPasteRule::pCleanUp(){
-	if( pGroup ){
-		pGroup->FreeReference();
-	}
 }

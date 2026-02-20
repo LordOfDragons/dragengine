@@ -29,6 +29,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoxrInstance;
 
@@ -39,7 +40,8 @@ class deoxrInstance;
 class deoxrSystem : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrSystem> Ref;
+	using Ref = deTObjectReference<deoxrSystem>;
+	
 	
 	/** System. */
 	enum eSystem{
@@ -88,11 +90,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create system. */
-	deoxrSystem( deoxrInstance &instance );
+	deoxrSystem(deoxrInstance &instance);
 	
 protected:
 	/** Clean up system. */
-	virtual ~deoxrSystem();
+	~deoxrSystem() override;
 	/*@}*/
 	
 	

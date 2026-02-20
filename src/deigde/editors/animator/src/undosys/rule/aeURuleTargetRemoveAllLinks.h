@@ -25,23 +25,26 @@
 #ifndef _AEURULETARGETREMOVEALLLINKS_H_
 #define _AEURULETARGETREMOVEALLLINKS_H_
 
-#include "../../animator/link/aeLinkList.h"
+#include "../../animator/controller/aeControllerTarget.h"
+#include "../../animator/link/aeLink.h"
+#include "../../animator/rule/aeRule.h"
 
 #include <deigde/undo/igdeUndo.h>
-
-class aeRule;
-class aeControllerTarget;
 
 
 /**
  * Undo action rule target remove all links.
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
-private:
-	aeRule *pRule;
-	aeControllerTarget *pTarget;
+public:
+	using Ref = deTObjectReference<aeURuleTargetRemoveAllLinks>;
 	
-	aeLinkList pLinks;
+	
+private:
+	aeRule::Ref pRule;
+	aeControllerTarget::Ref pTarget;
+	
+	aeLink::List pLinks;
 	
 	
 	
@@ -49,11 +52,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTargetRemoveAllLinks( aeRule *rule, aeControllerTarget *target, const aeLinkList &links );
+	aeURuleTargetRemoveAllLinks(aeRule *rule, aeControllerTarget *target);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~aeURuleTargetRemoveAllLinks();
+	~aeURuleTargetRemoveAllLinks() override;
 	/*@}*/
 	
 	
@@ -62,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

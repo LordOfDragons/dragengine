@@ -26,12 +26,12 @@
 #define _SESKINBUILDER_H_
 
 #include <dragengine/resources/skin/deSkinBuilder.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
 
 class seSkin;
 class sePropertyNode;
 class sePropertyNodeGroup;
 
-class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 
 
@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin builder. */
-	seSkinBuilder( const seSkin &skin );
+	seSkinBuilder(const seSkin &skin);
 	
 	/** Clean up skin builder. */
-	virtual ~seSkinBuilder();
+	~seSkinBuilder() override;
 	/*@}*/
 	
 	
@@ -60,20 +60,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Build skin into the provided skin object. */
-    virtual void BuildSkin( deSkin *engSkin );
+    void BuildSkin(deSkin *engSkin) override;
 	
 	/** Create skin property node group. */
-	void CreateNodeGroup( deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup );
+	void CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup);
 	
 	/** Create skin property node. */
-	deSkinPropertyNode *CreateNode( const sePropertyNode &node );
+	deSkinPropertyNode::Ref CreateNode(const sePropertyNode &node);
 	/*@}*/
 	
 	
 	
 protected:
-	void pAddMapped( deSkin &engSkin );
-	void pAddTextures( deSkin &engSkin );
+	void pAddMapped(deSkin &engSkin);
+	void pAddTextures(deSkin &engSkin);
 };
 
 #endif

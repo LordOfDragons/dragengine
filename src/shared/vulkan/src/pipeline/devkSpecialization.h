@@ -28,6 +28,7 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -36,15 +37,12 @@
 class devkSpecialization : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkSpecialization> Ref;
-	
+	using Ref = deTObjectReference<devkSpecialization>;
 	
 	
 private:
-	VkSpecializationMapEntry *pEntries;
-	int pEntryCount;
-	char *pData;
-	int pDataSize;
+	decTList<VkSpecializationMapEntry> pEntries;
+	decTList<char> pData;
 	
 	
 public:
@@ -61,7 +59,7 @@ public:
 	
 protected:
 	/** Clean up specialization configuration. */
-	virtual ~devkSpecialization();
+	~devkSpecialization() override;
 	/*@}*/
 	
 	
@@ -69,14 +67,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Count of entries. */
-	inline int GetEntryCount() const{ return pEntryCount; }
+	/** Entries. */
+	inline const decTList<VkSpecializationMapEntry> &GetEntries() const{ return pEntries; }
 	
 	/** Set count of entries. */
 	void SetEntryCount(int count);
-	
-	/** Entry. */
-	const VkSpecializationMapEntry &GetEntryAt(int index) const;
 	
 	/** Set entry. */
 	void SetEntryAt(int index, const VkSpecializationMapEntry &entry);
@@ -88,14 +83,11 @@ public:
 	void SetEntryFloatAt(int index, int constantID, int offset);
 	void SetEntryBoolAt(int index, int constantID, int offset);
 	
-	/** For devkSpecialization use only. */
-	inline const VkSpecializationMapEntry *GetEntries() const{ return pEntries; }
-	
 	/** Data. */
-	inline const void *GetData() const{ return pData; }
+	inline const void *GetData() const{ return pData.GetArrayPointer(); }
 	
 	/** Data size. */
-	inline int GetDataSize() const{ return pDataSize; }
+	inline int GetDataSize() const{ return pData.GetCount(); }
 	
 	/** Set data. */
 	void SetData(const void *data, int size);
@@ -111,11 +103,6 @@ public:
 	/** Copy configuration. */
 	devkSpecialization &operator=(const devkSpecialization &configuration);
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

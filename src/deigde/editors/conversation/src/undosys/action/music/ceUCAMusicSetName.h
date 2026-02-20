@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAMusic;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAMusic.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -36,9 +36,13 @@ class ceConversationTopic;
  * \brief Undo Action Music Conversation Action Set Name.
  */
 class ceUCAMusicSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCAMusicSetName>;
+	
+	
 private:
-	ceConversationTopic *pTopic;
-	ceCAMusic *pMusic;
+	ceConversationTopic::Ref pTopic;
+	ceCAMusic::Ref pMusic;
 	decString pOldName;
 	decString pNewName;
 	
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAMusicSetName( ceConversationTopic *topic, ceCAMusic *music, const char *newName );
+	ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName);
 protected:
 	/** \brief Clean up undo. */
-	virtual ~ceUCAMusicSetName();
+	~ceUCAMusicSetName() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

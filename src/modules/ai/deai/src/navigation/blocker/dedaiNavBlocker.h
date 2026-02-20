@@ -27,13 +27,13 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/ai/deBaseAINavigationBlocker.h>
 
 class deDEAIModule;
 class dedaiLayer;
 class dedaiWorld;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deNavigationBlocker;
 
@@ -61,7 +61,7 @@ private:
 	
 	decConvexVolumeList pConvexVolumeList;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSBlocker;
 	
 	
@@ -70,10 +70,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates peer. */
-	dedaiNavBlocker( deDEAIModule &deai, const deNavigationBlocker &blocker );
+	dedaiNavBlocker(deDEAIModule &deai, const deNavigationBlocker &blocker);
 	
 	/** \brief Clean up peer. */
-	virtual ~dedaiNavBlocker();
+	~dedaiNavBlocker() override;
 	/*@}*/
 	
 	
@@ -92,7 +92,7 @@ public:
 	inline dedaiWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** \brief Set parent world or \em NULL if not set. */
-	void SetParentWorld( dedaiWorld *world );
+	void SetParentWorld(dedaiWorld *world);
 	
 	
 	
@@ -140,28 +140,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Position changed. */
-	virtual void PositionChanged();
+	void PositionChanged() override;
 	
 	/** \brief Orientation changed. */
-	virtual void OrientationChanged();
+	void OrientationChanged() override;
 	
 	/** \brief Scaling changed. */
-	virtual void ScalingChanged();
+	void ScalingChanged() override;
 	
 	/** \brief Layer changed. */
-	virtual void LayerChanged();
+	void LayerChanged() override;
 	
 	/** \brief Space type changed. */
-	virtual void SpaceTypeChanged();
+	void SpaceTypeChanged() override;
 	
 	/** \brief Enabled changed. */
-	virtual void EnabledChanged();
+	void EnabledChanged() override;
 	
 	/** \brief Shape changed. */
-	virtual void ShapeChanged();
+	void ShapeChanged() override;
 	
 	/** \brief Priority changed. */
-	virtual void BlockingPriorityChanged();
+	void BlockingPriorityChanged() override;
 	/*@}*/
 	
 	

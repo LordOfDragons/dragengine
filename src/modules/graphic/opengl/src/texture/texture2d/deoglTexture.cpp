@@ -66,7 +66,7 @@ pRenderThread(renderThread),
 
 #ifdef BACKEND_OPENGL
 pTexture(0),
-pFormat(0),
+pFormat(nullptr),
 
 #elif defined BACKEND_VULKAN
 pFormat(nullptr),
@@ -180,7 +180,7 @@ void deoglTexture::CreateTexture(){
 	
 	OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 	
-	if(! pTexture){
+	if(!pTexture){
 		OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 		DEASSERT_NOTNULL(pTexture)
 	}
@@ -218,7 +218,7 @@ void deoglTexture::CreateTexture(){
 		
 	}else{
 		OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, 0, glformat,
-			pSize.x, pSize.y, 0, glpixelformat, glpixeltype, NULL));
+			pSize.x, pSize.y, 0, glpixelformat, glpixeltype, nullptr));
 		
 		if(pMipMapped){
 			pRealMipMapLevelCount = pMipMapLevelCount;
@@ -232,7 +232,7 @@ void deoglTexture::CreateTexture(){
 			for(i=0; i<pRealMipMapLevelCount; i++){
 				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
 				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i + 1,
-					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL));
+					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, nullptr));
 			}
 		}
 	}
@@ -316,7 +316,7 @@ void deoglTexture::CreateTexture(){
 		config.SetMipMapCount(pRealMipMapLevelCount);
 	}
 	
-	pImage.TakeOver(new devkImage(pRenderThread.GetContext().GetDevice(), config));
+	pImage = devkImage::Ref::New(pRenderThread.GetContext().GetDevice(), config);
 #endif
 	
 	UpdateMemoryUsage();
@@ -421,7 +421,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	
 #ifdef BACKEND_OPENGL
 	/*if(pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != 1){
-		pRenderThread.GetLogger().LogInfoFormat("PROBLEM! level=%d width(%d=%d) height(%d=%d) depth(%d)",
+		pRenderThread.GetLogger().LogInfoFormat("PROBLEM!level=%d width(%d=%d) height(%d=%d) depth(%d)",
 			level, pixelBuffer.GetWidth(), width, pixelBuffer.GetHeight(), height, pixelBuffer.GetDepth());
 		DETHROW(deeInvalidParam);
 	}*/
@@ -439,7 +439,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
 		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfByte4, width, height, 1)));
+			deoglPixelBuffer::epfByte4, width, height, 1));
 		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4();
 		const int count = width * height;
 		int i;
@@ -480,7 +480,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
 		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, 1)));
+			deoglPixelBuffer::epfFloat4, width, height, 1));
 		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4();
 		const int count = width * height;
 		int i;
@@ -531,7 +531,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 		rtframebuffer.Activate(fbo);
 		fbo->DetachAllImages();
 		
-		const GLenum buffers[1] = { GL_NONE };
+		const GLenum buffers[1] = {GL_NONE};
 		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
 		if(pFormat->GetIsDepth()){
 			fbo->AttachDepthTextureLevel((deoglTexture*)this, level);
@@ -700,7 +700,7 @@ void deoglTexture::UpdateMemoryUsage(){
 	pMemUse.Clear();
 	
 #ifdef BACKEND_OPENGL
-	if(! pTexture || ! pFormat){
+	if(!pTexture || !pFormat){
 		return;
 	}
 	

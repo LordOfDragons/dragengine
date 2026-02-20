@@ -46,7 +46,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -55,7 +55,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
@@ -76,41 +76,41 @@ protected:
 	aeWPAPanelRuleAnimationDifference &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRuleAnimationDifference &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(aeWPAPanelRuleAnimationDifference &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleAnimationDifference * const rule = ( aeRuleAnimationDifference* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleAnimationDifference *rule ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleAnimationDifference *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleAnimationDifference * const rule = ( aeRuleAnimationDifference* )pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)pPanel.GetRule();
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleAnimationDifference & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRuleAnimationDifference &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -119,23 +119,23 @@ protected:
 	aeWPAPanelRuleAnimationDifference &pPanel;
 	
 public:
-	cBaseTextFieldListener( aeWPAPanelRuleAnimationDifference &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseTextFieldListener>;
+	cBaseTextFieldListener(aeWPAPanelRuleAnimationDifference &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	void OnTextChanged(igdeTextField *textField) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleAnimationDifference * const rule = ( aeRuleAnimationDifference* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( textField, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleAnimationDifference *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleAnimationDifference *rule) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -143,126 +143,145 @@ protected:
 	aeWPAPanelRuleAnimationDifference &pPanel;
 	
 public:
-	cBaseComboBoxListener( aeWPAPanelRuleAnimationDifference &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseComboBoxListener>;
+	cBaseComboBoxListener(aeWPAPanelRuleAnimationDifference &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleAnimationDifference * const rule = ( aeRuleAnimationDifference* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)pPanel.GetRule();
+		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnChanged(comboBox, animator, rule));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator *animator, aeRuleAnimationDifference *rule ) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleAnimationDifference *rule) = 0;
 };
 
 
 class cComboLeadingMoveName : public cBaseComboBoxListener{
 public:
-	cComboLeadingMoveName( aeWPAPanelRuleAnimationDifference &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboLeadingMoveName>;
+	cComboLeadingMoveName(aeWPAPanelRuleAnimationDifference &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleAnimationDifference *rule ){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleAnimationDifference *rule) override{
 		return rule->GetLeadingMoveName() != comboBox->GetText()
-			? new aeUSetRuleAniDLeadMoveName( rule, comboBox->GetText() ) : NULL;
+			? aeUSetRuleAniDLeadMoveName::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cTextLeadingMoveTime : public cBaseTextFieldListener{
 public:
-	cTextLeadingMoveTime( aeWPAPanelRuleAnimationDifference &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextLeadingMoveTime>;
+	cTextLeadingMoveTime(aeWPAPanelRuleAnimationDifference &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleAnimationDifference *rule ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleAnimationDifference *rule) override{
 		const float value = textField->GetFloat();
-		return fabsf( rule->GetLeadingMoveTime() - value ) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleAniDLeadMoveTime( rule, value ) : NULL;
+		return fabsf(rule->GetLeadingMoveTime() - value) > FLOAT_SAFE_EPSILON
+			? aeUSetRuleAniDLeadMoveTime::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cComboReferenceMoveName : public cBaseComboBoxListener{
 public:
-	cComboReferenceMoveName( aeWPAPanelRuleAnimationDifference &panel ) : cBaseComboBoxListener( panel ){ }
+	using Ref = deTObjectReference<cComboReferenceMoveName>;
+	cComboReferenceMoveName(aeWPAPanelRuleAnimationDifference &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleAnimationDifference *rule ){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleAnimationDifference *rule) override{
 		return rule->GetReferenceMoveName() != comboBox->GetText()
-			? new aeUSetRuleAniDRefMoveName( rule, comboBox->GetText() ) : NULL;
+			? aeUSetRuleAniDRefMoveName::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
 class cTextReferenceMoveTime : public cBaseTextFieldListener{
 public:
-	cTextReferenceMoveTime( aeWPAPanelRuleAnimationDifference &panel ) : cBaseTextFieldListener( panel ){ }
+	using Ref = deTObjectReference<cTextReferenceMoveTime>;
+	cTextReferenceMoveTime(aeWPAPanelRuleAnimationDifference &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleAnimationDifference *rule ){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleAnimationDifference *rule) override{
 		const float value = textField->GetFloat();
-		return fabsf( rule->GetReferenceMoveTime() - value ) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleAniDRefMoveTime( rule, value ) : NULL;
+		return fabsf(rule->GetReferenceMoveTime() - value) > FLOAT_SAFE_EPSILON
+			? aeUSetRuleAniDRefMoveTime::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition( aeWPAPanelRuleAnimationDifference &panel ) : cBaseAction( panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnablePosition>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimationDifference *rule ){
-		return new aeURuleAnimDiffToggleEnablePosition( rule );
+public:
+	cActionEnablePosition(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationDifference.EnablePosition", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnablePosition.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
+		return aeURuleAnimDiffToggleEnablePosition::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimationDifference &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnablePosition() );
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnablePosition());
 	}
 };
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation( aeWPAPanelRuleAnimationDifference &panel ) : cBaseAction( panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableRotation>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimationDifference *rule ){
-		return new aeURuleAnimDiffToggleEnableRotation( rule );
+public:
+	cActionEnableRotation(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableRotation", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableRotation.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
+		return aeURuleAnimDiffToggleEnableRotation::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimationDifference &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableOrientation() );
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableOrientation());
 	}
 };
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize( aeWPAPanelRuleAnimationDifference &panel ) : cBaseAction( panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableSize>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimationDifference *rule ){
-		return new aeURuleAnimDiffToggleEnableSize( rule );
+public:
+	cActionEnableSize(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableSize", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableSize.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
+		return aeURuleAnimDiffToggleEnableSize::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimationDifference &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableSize() );
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableSize());
 	}
 };
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	cActionEnableVertexPositionSet( aeWPAPanelRuleAnimationDifference &panel ) : cBaseAction( panel,
-		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is" ){ }
+	using Ref = deTObjectReference<cActionEnableVertexPositionSet>;
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimationDifference *rule ){
-		return new aeURuleAnimDiffToggleEnableVertexPositionSet( rule );
+public:
+	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
+		return aeURuleAnimDiffToggleEnableVertexPositionSet::Ref::New(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimationDifference &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableVertexPositionSet() );
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetEnableVertexPositionSet());
 	}
 };
 
@@ -276,33 +295,37 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleAnimationDifference::aeWPAPanelRuleAnimationDifference( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference )
+aeWPAPanelRuleAnimationDifference::aeWPAPanelRuleAnimationDifference(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Animation:" );
+	helper.GroupBox(*this, groupBox, "@Animator.WPAPanelRuleAnimationDifference.Animation");
 	
-	helper.ComboBoxFilter( groupBox, "Leading Move Name:", true, "Name of leading animation move to use",
-		pCBLMoveName, new cComboLeadingMoveName( *this ) );
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName",
+		true, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName.ToolTip",
+		pCBLMoveName, cComboLeadingMoveName::Ref::New(*this));
 	pCBLMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Leading Move Time:", "Time relative to leading move playtime to retrieve",
-		pEditLMoveTime, new cTextLeadingMoveTime( *this ) );
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime",
+		"@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime.ToolTip",
+		pEditLMoveTime, cTextLeadingMoveTime::Ref::New(*this));
 	
-	helper.ComboBoxFilter( groupBox, "Reference Move Name:", true, "Name of reference animation move to use",
-		pCBRMoveName, new cComboReferenceMoveName( *this ) );
+	helper.ComboBoxFilter(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName",
+		true, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName.ToolTip",
+		pCBRMoveName, cComboReferenceMoveName::Ref::New(*this));
 	pCBRMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Reference Move Time:", "Time relative to reference move playtime to retrieve",
-		pEditRMoveTime, new cTextReferenceMoveTime( *this ) );
-	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
+	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime",
+		"@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.ToolTip",
+		pEditRMoveTime, cTextReferenceMoveTime::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 }
 
 aeWPAPanelRuleAnimationDifference::~aeWPAPanelRuleAnimationDifference(){
@@ -316,44 +339,44 @@ aeWPAPanelRuleAnimationDifference::~aeWPAPanelRuleAnimationDifference(){
 void aeWPAPanelRuleAnimationDifference::UpdateAnimMoveList(){
 	aeWPAPanelRule::UpdateAnimMoveList();
 	
-	const decString leadingMoveName( pCBLMoveName->GetText() );
-	const decString referenceMoveName( pCBRMoveName->GetText() );
+	const decString leadingMoveName(pCBLMoveName->GetText());
+	const decString referenceMoveName(pCBRMoveName->GetText());
 	
 	pCBLMoveName->RemoveAllItems();
 	pCBRMoveName->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deAnimation * const engAnimation = GetAnimator()->GetEngineAnimator()
-			? GetAnimator()->GetEngineAnimator()->GetAnimation() : NULL;
-		if( engAnimation ){
+			? GetAnimator()->GetEngineAnimator()->GetAnimation().Pointer() : nullptr;
+		if(engAnimation){
 			const int count = engAnimation->GetMoveCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBLMoveName->AddItem( engAnimation->GetMove( i )->GetName() );
-				pCBRMoveName->AddItem( engAnimation->GetMove( i )->GetName() );
+			for(i=0; i<count; i++){
+				pCBLMoveName->AddItem(engAnimation->GetMove(i)->GetName());
+				pCBRMoveName->AddItem(engAnimation->GetMove(i)->GetName());
 			}
 		}
 	}
 	
 	pCBLMoveName->SortItems();
 	pCBLMoveName->StoreFilterItems();
-	pCBLMoveName->SetText( leadingMoveName );
+	pCBLMoveName->SetText(leadingMoveName);
 	
 	pCBRMoveName->SortItems();
 	pCBRMoveName->StoreFilterItems();
-	pCBRMoveName->SetText( referenceMoveName );
+	pCBRMoveName->SetText(referenceMoveName);
 }
 
 void aeWPAPanelRuleAnimationDifference::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	const aeRuleAnimationDifference * const rule = ( aeRuleAnimationDifference* )GetRule();
+	const aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)GetRule();
 	
-	if( rule ){
-		pCBLMoveName->SetText( rule->GetLeadingMoveName() );
-		pEditLMoveTime->SetFloat( rule->GetLeadingMoveTime() );
-		pCBRMoveName->SetText( rule->GetReferenceMoveName() );
-		pEditRMoveTime->SetFloat( rule->GetReferenceMoveTime() );
+	if(rule){
+		pCBLMoveName->SetText(rule->GetLeadingMoveName());
+		pEditLMoveTime->SetFloat(rule->GetLeadingMoveTime());
+		pCBRMoveName->SetText(rule->GetReferenceMoveName());
+		pEditRMoveTime->SetFloat(rule->GetReferenceMoveTime());
 		
 	}else{
 		pCBLMoveName->ClearText();
@@ -363,10 +386,10 @@ void aeWPAPanelRuleAnimationDifference::UpdateRule(){
 	}
 	
 	const bool enabled = rule;
-	pCBLMoveName->SetEnabled( enabled );
-	pEditLMoveTime->SetEnabled( enabled );
-	pCBRMoveName->SetEnabled( enabled );
-	pEditRMoveTime->SetEnabled( enabled );
+	pCBLMoveName->SetEnabled(enabled);
+	pEditLMoveTime->SetEnabled(enabled);
+	pCBRMoveName->SetEnabled(enabled);
+	pEditRMoveTime->SetEnabled(enabled);
 	
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
@@ -377,9 +400,9 @@ void aeWPAPanelRuleAnimationDifference::UpdateRule(){
 void aeWPAPanelRuleAnimationDifference::UpdateTargetList(){
 	aeWPAPanelRule::UpdateTargetList();
 	
-	aeRuleAnimationDifference * const rule = ( aeRuleAnimationDifference* )GetRule();
-	if( rule ){
-		AddTarget( "Leading Move Time", &rule->GetTargetLeadingMoveTime() );
-		AddTarget( "Reference Move Time", &rule->GetTargetReferenceMoveTime() );
+	aeRuleAnimationDifference * const rule = (aeRuleAnimationDifference*)GetRule();
+	if(rule){
+		AddTarget("@Animator.Target.LeadingMoveTime", rule->GetTargetLeadingMoveTime());
+		AddTarget("@Animator.Target.ReferenceMoveTime", rule->GetTargetReferenceMoveTime());
 	}
 }

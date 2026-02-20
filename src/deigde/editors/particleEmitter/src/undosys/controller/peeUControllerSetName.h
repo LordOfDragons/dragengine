@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 
@@ -35,8 +35,12 @@ class peeController;
  * \brief Undo Action Set Controller Name.
  */
 class peeUControllerSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<peeUControllerSetName>;
+	
+	
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerSetName( peeController *controller, const char *newName );
+	peeUControllerSetName(peeController *controller, const char *newName);
 	
 protected:
 	/** \brief Clean up the undo action. */
-	virtual ~peeUControllerSetName();
+	~peeUControllerSetName() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

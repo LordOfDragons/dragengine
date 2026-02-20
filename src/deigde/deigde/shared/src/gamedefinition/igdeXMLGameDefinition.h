@@ -25,12 +25,12 @@
 #ifndef _IGDEXMLLOADGAMEDEFINITION_H_
 #define _IGDEXMLLOADGAMEDEFINITION_H_
 
+#include "../gui/filedialog/igdeFilePattern.h"
 #include "../utils/igdeBaseXML.h"
 
 class decBaseFileWriter;
 class decXmlWriter;
 class igdeAutoTagPatternList;
-class igdeFilePatternList;
 class igdeGameDefinition;
 class igdeGDCamera;
 class igdeGDCategory;
@@ -54,7 +54,6 @@ class igdeGDCWorld;
 class igdeEnvironment;
 
 class deLogger;
-class decStringSet;
 
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -75,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game definition xml object. */
-	igdeXMLGameDefinition( igdeEnvironment &environment, deLogger *logger );
+	igdeXMLGameDefinition(igdeEnvironment &environment, deLogger *logger);
 	
 	/** \brief Clean up game definition loader. */
 	virtual ~igdeXMLGameDefinition();
@@ -86,36 +85,36 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Loads a game definition file. */
-	void Load( decBaseFileReader &reader, igdeGameDefinition &gamedef );
+	void Load(decBaseFileReader &reader, igdeGameDefinition &gamedef);
 	
 	
 	
 private:
-	void pParseGameDefinition( const decXmlElementTag &root, igdeGameDefinition &gamedef );
-	void pParseClass( const decXmlElementTag &root, igdeGameDefinition &gamedef );
-	void pParseClassComponent( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassBillboard( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassInherit( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassComponentTexture( const decXmlElementTag &root, igdeGDClass &gdclass, igdeGDCComponent &gdccomponent );
-	void pParseClassLight( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassSnapPoint( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassParticleEmitter( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassForceField( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassEnvMapProbe( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassSpeaker( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassNavigationSpace( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseClassNavigationBlocker( const decXmlElementTag &root, igdeGDClass &gdclass );
+	void pParseGameDefinition(const decXmlElementTag &root, igdeGameDefinition &gamedef);
+	void pParseClass(const decXmlElementTag &root, igdeGameDefinition &gamedef);
+	void pParseClassComponent(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassBillboard(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassInherit(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassComponentTexture(const decXmlElementTag &root, igdeGDClass &gdclass, igdeGDCComponent &gdccomponent);
+	void pParseClassLight(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassSnapPoint(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassParticleEmitter(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassForceField(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassEnvMapProbe(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassSpeaker(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassNavigationSpace(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseClassNavigationBlocker(const decXmlElementTag &root, igdeGDClass &gdclass);
 	void pParseClassWorld(const decXmlElementTag &root, igdeGDClass &gdclass);
-	void pParseClassTexture( const decXmlElementTag &root, igdeGDClass &gdclass );
-	void pParseProperty( const decXmlElementTag &root, igdeGDProperty &property );
-	void pParseCustomFilePatternList( const decXmlElementTag &root, igdeFilePatternList &list );
-	void pParseCamera( const decXmlElementTag &root, igdeGDCamera *camera );
-	void pParseParticleEmitter( const decXmlElementTag &root, igdeGameDefinition &gamedef );
-	void pParseSkin( const decXmlElementTag &root, igdeGameDefinition &gamedef );
-	void pParseSky( const decXmlElementTag &root, igdeGameDefinition &gamedef );
-	void pParseGDCategories( const decXmlElementTag &root, igdeGameDefinition &gamedef );
-	void pParseRootCategory( const decXmlElementTag &root, igdeGDCategory *parent );
-	void pParseCategory( const decXmlElementTag &root, igdeGDCategory *parent );
+	void pParseClassTexture(const decXmlElementTag &root, igdeGDClass &gdclass);
+	void pParseProperty(const decXmlElementTag &root, igdeGDProperty &property);
+	void pParseCustomFilePatternList(const decXmlElementTag &root, igdeFilePattern::List &list);
+	void pParseCamera(const decXmlElementTag &root, igdeGDCamera *camera);
+	void pParseParticleEmitter(const decXmlElementTag &root, igdeGameDefinition &gamedef);
+	void pParseSkin(const decXmlElementTag &root, igdeGameDefinition &gamedef);
+	void pParseSky(const decXmlElementTag &root, igdeGameDefinition &gamedef);
+	void pParseGDCategories(const decXmlElementTag &root, igdeGameDefinition &gamedef);
+	void pParseRootCategory(const decXmlElementTag &root, igdeGDCategory *parent);
+	void pParseCategory(const decXmlElementTag &root, igdeGDCategory *parent);
 };
 
 #endif

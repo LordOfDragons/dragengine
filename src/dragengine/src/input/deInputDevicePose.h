@@ -55,7 +55,7 @@ public:
 	deInputDevicePose();
 	
 	/** \brief Create copy of input device pose. */
-	deInputDevicePose( const deInputDevicePose &pose );
+	deInputDevicePose(const deInputDevicePose &pose);
 	
 	/** \brief Clean up input device pose. */
 	~deInputDevicePose();
@@ -69,25 +69,25 @@ public:
 	inline const decVector &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set position in meters. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
 	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Linear velocity in meters per second. */
 	inline const decVector &GetLinearVelocity() const{ return pLinearVelocity; }
 	
 	/** \brief Set linear velocity in meters per second. */
-	void SetLinearVelocity( const decVector &velocity );
+	void SetLinearVelocity(const decVector &velocity);
 	
 	/** \brief Angular velocity in radians per second. */
 	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
 	
 	/** \brief Set angular velocity in radians per second. */
-	void SetAngularVelocity( const decVector &velocity );
+	void SetAngularVelocity(const decVector &velocity);
 	/*@}*/
 	
 	
@@ -95,7 +95,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy input device pose. */
-	deInputDevicePose &operator=( const deInputDevicePose &pose );
+	deInputDevicePose &operator=(const deInputDevicePose &pose);
 	/*@}*/
 };
 

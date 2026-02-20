@@ -36,8 +36,7 @@
 class DE_DLL_EXPORT deNetworkValueFloat : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deNetworkValueFloat> Ref;
-	
+	using Ref = deTObjectReference<deNetworkValueFloat>;
 	
 	
 private:
@@ -50,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueFloat( eValueFormats format, double value );
+	deNetworkValueFloat(eValueFormats format, double value);
 	
 	/** \brief Clean up network value object. */
-	virtual ~deNetworkValueFloat();
+	~deNetworkValueFloat() override;
 	/*@}*/
 	
 	
@@ -67,13 +66,13 @@ public:
 	inline double GetFloat() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetFloat( double value );
+	void SetFloat(double value);
 	
 	/** \brief Precision. */
 	inline double GetPrecision() const{ return pPrecision; }
 	
 	/** \brief Set precision. */
-	void SetPrecision( double precision );
+	void SetPrecision(double precision);
 	/*@}*/
 	
 	
@@ -81,7 +80,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	void Visit(deNetworkValueVisitor &visitor) override;
 	/*@}*/
 };
 

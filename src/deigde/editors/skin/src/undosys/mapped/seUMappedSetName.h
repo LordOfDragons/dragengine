@@ -35,6 +35,10 @@
  * Undo action set mapped name.
  */
 class seUMappedSetName : public igdeUndo{
+public:
+	using Ref = deTObjectReference<seUMappedSetName>;
+	
+	
 private:
 	const seMapped::Ref pMapped;
 	
@@ -47,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetName( seMapped *mapped, const char *newName );
+	seUMappedSetName(seMapped *mapped, const char *newName);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~seUMappedSetName();
+	~seUMappedSetName() override;
 	/*@}*/
 	
 	
@@ -60,10 +64,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -25,13 +25,15 @@
 #ifndef _IGDENATIVENULLMENUOPTION_H_
 #define _IGDENATIVENULLMENUOPTION_H_
 
+#include "../../../menu/igdeMenuOption.h"
+
 class igdeMenuOption;
 
 
 /**
  * Null widget.
  */
-class igdeNativeNullMenuOption{
+class igdeNativeNullMenuOption : public igdeMenuOption::cNativeMenuOption{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -42,7 +44,7 @@ public:
 	virtual ~igdeNativeNullMenuOption();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullMenuOption* CreateNativeWidget( igdeMenuOption &owner );
+	static igdeNativeNullMenuOption* CreateNativeWidget(igdeMenuOption &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -55,7 +57,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual void UpdateSelected();
+	void UpdateText() override;
+	void UpdateDescription() override;
+	void UpdateHotKey() override;
+	void UpdateIcon() override;
+	void UpdateEnabled() override;
+	
+	void UpdateSelected() override;
 	/*@}*/
 };
 

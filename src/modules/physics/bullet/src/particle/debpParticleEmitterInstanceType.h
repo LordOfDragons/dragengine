@@ -27,12 +27,13 @@
 
 #include "LinearMath/btVector3.h"
 
+#include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
 
 class debpForceField;
 class debpParticleEmitterInstance;
 class debpComponent;
-class deParticleEmitterInstance;
 
 
 
@@ -42,53 +43,53 @@ class deParticleEmitterInstance;
 class debpParticleEmitterInstanceType{
 public:
 	struct sParticle{
-		btVector3 position;
-		btVector3 linearVelocity;
-		btVector3 force;
-		float rotation;
-		float angularVelocity;
-		btVector3 gravity;
-		float forceFieldDirect;
-		float forceFieldSurface;
-		float forceFieldMass;
-		float forceFieldSpeed;
-		float timeToLive;
-		float lifetimeFactor;
-		float lifetime;
-		float size;
-		float mass;
-		float brown;
-		float damp;
-		float drag;
-		float elasticity;
-		float roughness;
+		btVector3 position = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		btVector3 linearVelocity = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		btVector3 force = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		float rotation = 0.0f;
+		float angularVelocity = 0.0f;
+		btVector3 gravity = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		float forceFieldDirect = 0.0f;
+		float forceFieldSurface = 0.0f;
+		float forceFieldMass = 0.0f;
+		float forceFieldSpeed = 0.0f;
+		float timeToLive = 0.0f;
+		float lifetimeFactor = 0.0f;
+		float lifetime = 0.0f;
+		float size = 0.0f;
+		float mass = 0.0f;
+		float brown = 0.0f;
+		float damp = 0.0f;
+		float drag = 0.0f;
+		float elasticity = 0.0f;
+		float roughness = 0.0f;
 		
-		float castSize;
-		float castMass;
-		float castRotation;
-		float castLinearVelocity;
-		float castAngularVelocity;
-		float castBrown;
-		float castDamp;
-		float castDrag;
-		btVector3 castGravity;
-		float castLocalGravity;
-		float castForceFieldDirect;
-		float castForceFieldSurface;
-		float castForceFieldMass;
-		float castForceFieldSpeed;
-		float castElasticity;
-		float castRoughness;
-		float castEmitDirection;
-		float castEmitParticleCount;
+		float castSize = 0.0f;
+		float castMass = 0.0f;
+		float castRotation = 0.0f;
+		float castLinearVelocity = 0.0f;
+		float castAngularVelocity = 0.0f;
+		float castBrown = 0.0f;
+		float castDamp = 0.0f;
+		float castDrag = 0.0f;
+		btVector3 castGravity = btVector3(BT_ZERO, BT_ZERO, BT_ZERO);
+		float castLocalGravity = 0.0f;
+		float castForceFieldDirect = 0.0f;
+		float castForceFieldSurface = 0.0f;
+		float castForceFieldMass = 0.0f;
+		float castForceFieldSpeed = 0.0f;
+		float castElasticity = 0.0f;
+		float castRoughness = 0.0f;
+		float castEmitDirection = 0.0f;
+		float castEmitParticleCount = 0.0f;
 		
-		float castEmissivity;
-		unsigned char castRed;
-		unsigned char castGreen;
-		unsigned char castBlue;
-		unsigned char castTransparency;
+		float castEmissivity = 0.0f;
+		unsigned char castRed = 0;
+		unsigned char castGreen = 0;
+		unsigned char castBlue = 0;
+		unsigned char castTransparency = 0;
 		
-		deParticleEmitterInstance *trailEmitter;
+		deParticleEmitterInstance::Ref trailEmitter = {};
 	};
 	
 private:
@@ -97,9 +98,8 @@ private:
 	
 	debpComponent *pComponent;
 	
-	sParticle *pParticles;
+	decTList<sParticle> pParticles;
 	int pParticleCount;
-	int pParticleSize;
 	
 	float pCastIntervalMin;
 	float pCastIntervalGap;
@@ -108,8 +108,7 @@ private:
 	float pBurstTimer;
 	int pBurstLastCurvePoint;
 	
-	deParticleEmitterInstanceType::sParticle *pGraParticles;
-	int pGraParticleSize;
+	decTList<deParticleEmitterInstanceType::sParticle> pGraParticles;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -125,23 +124,25 @@ public:
 	/** Retrieves the parent instance. */
 	inline debpParticleEmitterInstance *GetInstance() const{ return pInstance; }
 	/** Sets the parent instance. */
-	void SetInstance( debpParticleEmitterInstance *instance );
+	void SetInstance(debpParticleEmitterInstance *instance);
 	/** Retrieves the type number. */
 	inline int GetType() const{ return pType; }
 	/** Sets the type number. */
-	void SetType( int type );
+	void SetType(int type);
 	
-	/** Retrieves the particles. */
-	inline sParticle *GetParticles() const{ return pParticles; }
-	/** Retrieves the number of particles. */
+	/** Particles. */
+	inline decTList<sParticle> &GetParticles(){ return pParticles; }
+	inline const decTList<sParticle> &GetParticles() const{ return pParticles; }
+	
+	/** Particle count. */
 	inline int GetParticlesCount() const{ return pParticleCount; }
 	
 	/** Prepare stepping. */
-	void PrepareParticles( bool casting, float elapsed, float travelledDistance );
+	void PrepareParticles(bool casting, float elapsed, float travelledDistance);
 	/** Applies forces caused by a force field. */
-	void ApplyForceField( const debpForceField &forceField, float elapsed );
+	void ApplyForceField(const debpForceField &forceField, float elapsed);
 	/** Steps the particles. */
-	void StepParticles( float elapsed );
+	void StepParticles(float elapsed);
 	/** Finish stepping. */
 	void FinishStepping();
 	/** Update graphic particles. */
@@ -155,39 +156,39 @@ public:
 	void OnTypeChanged();
 	
 	/** Cast a particle. */
-	void CastParticle( float distance, float timeOffset );
+	void CastParticle(float distance, float timeOffset);
 	/** Kill a particle. */
-	void KillParticle( int index );
+	void KillParticle(int index);
 	/** Kill all particles. */
 	void KillAllParticles();
 	
 	/** \brief Cast single particle. */
-	void CastSingleParticle( float distance, float timeOffset );
+	void CastSingleParticle(float distance, float timeOffset);
 	
 	/** \brief Cast beam particle. */
-	void CastBeamParticle( float distance );
+	void CastBeamParticle(float distance);
 	
 	/** Set the cast values of a particle. */
-	void ParticleSetCastParams( sParticle &particle, float distance, float timeOffset );
+	void ParticleSetCastParams(sParticle &particle, float distance, float timeOffset);
 	/** Calculate for a particle the cast matrix. */
-	void ParticleCastMatrix( decDMatrix &matrix );
+	void ParticleCastMatrix(decDMatrix &matrix);
 	/** Create trail emitter for a particle. */
-	void ParticleCreateTrailEmitter( sParticle &particle );
+	void ParticleCreateTrailEmitter(sParticle &particle);
 	/** Set particle progress parameters for a point in time from cast parameters using the particle lifetime value. */
-	void ParticleSetProgressParams( sParticle &particle );
+	void ParticleSetProgressParams(sParticle &particle);
 	
 	/** Simulate particle. Returns false if the particle has to be killed due to a collision or true to keep it alive. */
-	bool ParticleSimulate( sParticle &particle, float elapsed );
+	bool ParticleSimulate(sParticle &particle, float elapsed);
 	/** Test for particle collision. Returns false if the particle has to be killed due to a collision or true to keep it alive. */
-	bool ParticleTestCollision( sParticle &particle, float elapsed );
+	bool ParticleTestCollision(sParticle &particle, float elapsed);
 	/** Set controllers of a trail or impact emitter. */
-	void ParticleSetEmitterControllers( const sParticle &particle,
-		deParticleEmitterInstance &instance, float linearVelocity );
+	void ParticleSetEmitterControllers(const sParticle &particle,
+		deParticleEmitterInstance &instance, float linearVelocity);
 	/** Update particle trail emitter if existing. */
-	void ParticleUpdateTrailEmitter( const sParticle &particle );
+	void ParticleUpdateTrailEmitter(const sParticle &particle);
 	/** Set controllers of a trail or impact emitter. */
-	void ParticleSetTrailEmitterControllers( const sParticle &particle,
-		deParticleEmitterInstance &instance, float linearVelocity );
+	void ParticleSetTrailEmitterControllers(const sParticle &particle,
+		deParticleEmitterInstance &instance, float linearVelocity);
 	/*@}*/
 	
 private:

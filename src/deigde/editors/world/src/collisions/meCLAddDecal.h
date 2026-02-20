@@ -25,13 +25,13 @@
 #ifndef _MECLADDDECAL_H_
 #define _MECLADDDECAL_H_
 
-#include "meCLHitList.h"
+#include "meCLHitListEntry.h"
+#include "../undosys/gui/decal/meUAddDecal.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
-
 
 class meWorld;
 class meObject;
@@ -48,24 +48,24 @@ private:
 	meWindowMain *pWndMain;
 	meWorld *pWorld;
 	
-	meCLHitList pHitList;
+	meCLHitListEntry::List pHitList;
 	
 	decDVector pRayOrigin;
 	decVector pRayDirection;
 	
 	bool pAlignWithNormal;
 	
-	igdeUndoReference pUndo;
+	meUAddDecal::Ref pUndo;
 	
 public:
 	// constructor, destructor
-	meCLAddDecal( meWindowMain *windowMain, meWorld *world );
-	virtual ~meCLAddDecal();
+	meCLAddDecal(meWindowMain *windowMain, meWorld *world);
+	~meCLAddDecal() override;
 	
 	// management
-	void SetRay( const decDVector &rayOrigin, const decVector &rayDirection );
+	void SetRay(const decDVector &rayOrigin, const decVector &rayDirection);
 	/** Sets if the decal has to be aligned with the surface normal upon creation. */
-	void SetAlignWithNormal( bool alignWithNormal );
+	void SetAlignWithNormal(bool alignWithNormal);
 	
 	void Reset();
 	void RunAction();
@@ -73,12 +73,12 @@ public:
 	void Cancel();
 	
 	// notifications
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
-	virtual void ColliderChanged( deCollider *owner );
+	void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	void ColliderChanged(deCollider *owner) override;
 	
 private:
-	decVector pGetRotationForNormal( const decVector &normal ) const;
+	decVector pGetRotationForNormal(const decVector &normal) const;
 };
 
 // end of include only once

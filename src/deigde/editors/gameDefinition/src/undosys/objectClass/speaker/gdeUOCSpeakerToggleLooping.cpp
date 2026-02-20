@@ -40,30 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping( gdeObjectClass *objectClass, gdeOCSpeaker *speaker ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
+
+pSpeaker(nullptr)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(!objectClass || !speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker toggle looping" );
+	SetShortInfo("@GameDefinition.Undo.OCSpeakerToggleLooping");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerToggleLooping::~gdeUOCSpeakerToggleLooping(){
-	if( pSpeaker ){
-		pSpeaker->FreeReference();
-	}
-	if( pObjectClass ){
-		pObjectClass->FreeReference();
-	}
 }
 
 
@@ -72,8 +63,8 @@ gdeUOCSpeakerToggleLooping::~gdeUOCSpeakerToggleLooping(){
 ///////////////
 
 void gdeUOCSpeakerToggleLooping::Undo(){
-	pSpeaker->SetLooping( ! pSpeaker->GetLooping() );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetLooping(!pSpeaker->GetLooping());
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerToggleLooping::Redo(){

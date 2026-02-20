@@ -36,11 +36,14 @@ class igdeGDClass;
  */
 class DE_DLL_EXPORT igdeDialogBrowserObjectClass : public igdeDialogBrowser{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogBrowserObjectClass> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogBrowserObjectClass( igdeEnvironment &environment,
-		const char *title = "Select Object Class" );
+	igdeDialogBrowserObjectClass(igdeEnvironment &environment,
+		const char *title = "@Igde.DialogBrowser.ObjectClass.DefaultTitle");
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -56,26 +59,26 @@ public:
 	igdeGDClass *GetSelectedObjectClass() const;
 	
 	/** \brief Set selected object class. */
-	void SetSelectedObjectClass( igdeGDClass *gdClass );
+	void SetSelectedObjectClass(igdeGDClass *gdClass);
 	
 	
 	
 	/** \brief Convenience method to select object class. */
-	static bool SelectObjectClass( igdeWidget *owner, igdeGDClass* &objectClass,
-		const char *title = "Select Object Class" );
+	static bool SelectObjectClass(igdeWidget *owner, igdeGDClass* &objectClass,
+		const char *title = "@Igde.DialogBrowser.ObjectClass.DefaultTitle");
 	
 	/** \brief Convenience method to select object class. */
-	static bool SelectObjectClass( igdeWidget *owner, decString &objectClass,
-		const char *title = "Select Object Class" );
+	static bool SelectObjectClass(igdeWidget *owner, decString &objectClass,
+		const char *title = "@Igde.DialogBrowser.ObjectClass.DefaultTitle");
 	/*@}*/
 	
 	
 	
 protected:
 	virtual igdeGDCategory *GetRootCategory() const;
-	virtual void AddItemsToList( igdeGDAddToListVisitor &visitor );
-	virtual void RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener );
-	virtual void GetSelectedItemInfo( decString &info );
+	virtual void AddItemsToList(igdeGDAddToListVisitor &visitor);
+	virtual void RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener);
+	virtual void GetSelectedItemInfo(decString &info);
 };
 
 #endif

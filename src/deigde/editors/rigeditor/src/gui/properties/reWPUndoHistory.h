@@ -25,10 +25,10 @@
 #ifndef _REWPUNDOHISTORY_H_
 #define _REWPUNDOHISTORY_H_
 
-#include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "../../rig/reRig.h"
+#include "reWPUndoHistoryListener.h"
 
-class reRig;
-class reWPUndoHistoryListener;
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 
 
@@ -36,9 +36,12 @@ class reWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class reWPUndoHistory : public igdeWPUndoHistory{
+public:
+	using Ref = deTObjectReference<reWPUndoHistory>;
+	
 private:
-	reRig *pRig;
-	reWPUndoHistoryListener *pListener;
+	reRig::Ref pRig;
+	reWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -46,11 +49,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPUndoHistory( igdeEnvironment &environment );
+	reWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~reWPUndoHistory();
+	~reWPUndoHistory() override;
 	/*@}*/
 	
 	
@@ -59,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	/*@}*/
 };
 

@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTDISTORTIMAGE_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectDistortImage.h"
 
-class deoglREffectDistortImage;
 class deEffectDistortImage;
 
 
@@ -39,7 +39,7 @@ class deoglEffectDistortImage : public deoglEffect{
 private:
 	const deEffectDistortImage &pEffectDistortImage;
 	
-	deoglREffectDistortImage *pREffectDistortImage;
+	deoglREffectDistortImage::Ref pREffectDistortImage;
 	
 	bool pDirtyStrength;
 	bool pDirtyImage;
@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectDistortImage( deGraphicOpenGl &ogl, const deEffectDistortImage &effect );
+	deoglEffectDistortImage(deGraphicOpenGl &ogl, const deEffectDistortImage &effect);
 	
 	/** Clean up effect. */
-	virtual ~deoglEffectDistortImage();
+	~deoglEffectDistortImage() override;
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	
 	
 	/** Update render thread counterpart if required. */
-	virtual void SyncToRender();
+	void SyncToRender() override;
 	/*@}*/
 	
 	
@@ -72,10 +72,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Image changed. */
-	virtual void ImageChanged();
+	void ImageChanged() override;
 	
 	/** Strength changed. */
-	virtual void StrengthChanged();
+	void StrengthChanged() override;
 	/*@}*/
 };
 

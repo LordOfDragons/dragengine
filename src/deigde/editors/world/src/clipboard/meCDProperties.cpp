@@ -34,9 +34,9 @@ const char * const meCDProperties::TYPE_NAME = "properties";
 // Constructor, destructor
 ////////////////////////////
 
-meCDProperties::meCDProperties( const decStringDictionary &properties ) :
-igdeClipboardData( TYPE_NAME ),
-pProperties( properties ){
+meCDProperties::meCDProperties(const decStringDictionary &properties) :
+igdeClipboardData(TYPE_NAME),
+pProperties(properties){
 }
 
 meCDProperties::~meCDProperties(){

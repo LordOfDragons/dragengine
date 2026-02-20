@@ -37,15 +37,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRCanvasText::deoglRCanvasText( deoglRenderThread &renderThread ) :
-deoglRCanvas( renderThread ),
-pTextSize( 1 )
+deoglRCanvasText::deoglRCanvasText(deoglRenderThread &renderThread) :
+deoglRCanvas(renderThread),
+pTextSize(1)
 {
-	LEAK_CHECK_CREATE( renderThread, CanvasText );
+	LEAK_CHECK_CREATE(renderThread, CanvasText);
 }
 
 deoglRCanvasText::~deoglRCanvasText(){
-	LEAK_CHECK_FREE( GetRenderThread(), CanvasText );
+	LEAK_CHECK_FREE(GetRenderThread(), CanvasText);
 }
 
 
@@ -61,24 +61,24 @@ void deoglRCanvasText::SetFontSize(deoglRFontSize *size){
 	pFontSize = size;
 }
 
-void deoglRCanvasText::SetTextSize( float size ){
+void deoglRCanvasText::SetTextSize(float size){
 	pTextSize = decMath::max(size, 0.0f);
 }
 
-void deoglRCanvasText::SetText( const char *text ){
+void deoglRCanvasText::SetText(const char *text){
 	pText = text;
 }
 
-void deoglRCanvasText::SetColor( const decColor &color ){
+void deoglRCanvasText::SetColor(const decColor &color){
 	pColor = color;
 }
 
 
-void deoglRCanvasText::Render( const deoglRenderCanvasContext &context ){
+void deoglRCanvasText::Render(const deoglRenderCanvasContext &context){
 	if(!pFont || pText.IsEmpty()){
 		return;
 	}
 	
-	const deoglRenderCanvasContext textContext( context, *this );
-	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasText( textContext, *this );
+	const deoglRenderCanvasContext textContext(context, *this);
+	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasText(textContext, *this);
 }

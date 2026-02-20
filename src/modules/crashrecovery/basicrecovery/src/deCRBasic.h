@@ -27,7 +27,7 @@
 #define _DECRBASIC_H_
 
 // includes
-#include "dragengine/systems/modules/crashrecovery/deBaseCrashRecoveryModule.h"
+#include <dragengine/systems/modules/crashrecovery/deBaseCrashRecoveryModule.h>
 
 class deErrorTraceValue;
 // predefinitions
@@ -44,21 +44,21 @@ private:
 	
 public:
 	// constructor, destructor
-	deCRBasic( deLoadableModule &loadableModule );
-	~deCRBasic();
+	deCRBasic(deLoadableModule &loadableModule);
+	~deCRBasic() override;
 	// management
-	bool Init();
-	void CleanUp();
+	bool Init() override;
+	void CleanUp() override;
 	// crash management
-	bool RecoverFromError();
+	bool RecoverFromError() override;
 	// internal functions for module classes only
-	void SetQuitEngine( bool quitEngine );
+	void SetQuitEngine(bool quitEngine);
 	
 	/** \brief Log trace to console. */
 	void LogTrace();
 	
 	/** \brief Log sub value error to console. */
-	void LogTraceSubValues( const deErrorTraceValue &traceValue, const char *indent );
+	void LogTraceSubValues(const deErrorTraceValue &traceValue, const char *indent);
 };
 
 // end of include only once

@@ -25,8 +25,8 @@
 #ifndef _DEOGLSHADERPREPROCESSOR_H_
 #define _DEOGLSHADERPREPROCESSOR_H_
 
-#include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringSet.h>
 
 class deoglRenderThread;
@@ -35,9 +35,6 @@ class deoglShaderSourceLocation;
 
 class deoglShaderDefines;
 class deoglShaderProgram;
-#ifdef WITH_OPENGLES
-class deoglShaderBindingList;
-#endif
 
 
 
@@ -85,7 +82,7 @@ private:
 	int pSourcesLen;
 	int pSourcesSize;
 	
-	decObjectDictionary pSymbolTable;
+	decTObjectDictionary<deoglShaderPreprocessorSymbol> pSymbolTable;
 	decStringSet pMacroSymbol;
 	const char *pInputNext;
 	const char *pInputFile;
@@ -94,7 +91,7 @@ private:
 	bool pOutputCode;
 	bool pOutputCodeCase;
 	bool pEndDirectiveBlock;
-	decObjectList pSourceLocations;
+	decTObjectList<deoglShaderSourceLocation> pSourceLocations;
 	int pLastMappedOutputLine;
 	
 	char *pResolveBuffer;
@@ -114,7 +111,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader preprocessor. */
-	deoglShaderPreprocessor( deoglRenderThread &renderThread );
+	deoglShaderPreprocessor(deoglRenderThread &renderThread);
+	
+	deoglShaderPreprocessor(const deoglShaderPreprocessor&) = delete;
+	deoglShaderPreprocessor& operator=(const deoglShaderPreprocessor&) = delete;
 	
 	/** Clean up shader preprocessor. */
 	~deoglShaderPreprocessor();
@@ -132,7 +132,7 @@ public:
 	
 	/** Resolve source location or NULL. */
 	const deoglShaderSourceLocation *ResolveSourceLocation(int line) const;
-	const deoglShaderSourceLocation *ResolveSourceLocation(const decObjectList &locations, int line) const;
+	const deoglShaderSourceLocation *ResolveSourceLocation(const decTObjectList<deoglShaderSourceLocation> &locations, int line) const;
 	/*@}*/
 	
 	
@@ -146,26 +146,29 @@ public:
 	inline int GetSourcesLength() const{ return pSourcesLen; }
 	
 	/** Source locations. */
-	inline const decObjectList &GetSourceLocations() const{ return pSourceLocations; }
+	inline const decTObjectList<deoglShaderSourceLocation> &GetSourceLocations() const{ return pSourceLocations; }
 	
 	/** Append to sources. */
-	void SourcesAppend( const char *text, bool mapLines );
+	void SourcesAppend(const char *text, bool mapLines);
 	
 	/** Append to sources. */
-	void SourcesAppend( const char *text, int length, bool mapLines );
+	void SourcesAppend(const char *text, int length, bool mapLines);
 	
 	/** Process source code. */
-	void SourcesAppendProcessed( const char *sourceCode );
+	void SourcesAppendProcessed(const char *sourceCode);
 	
 	/** Process source code. */
-	void SourcesAppendProcessed( const char *sourceCode, const char *inputFile,
-		bool resetState = false );
+	void SourcesAppendProcessed(const char *sourceCode, const char *inputFile,
+		bool resetState = false);
 	/*@}*/
 	
 	
 	
 	/** \name Symbol Table */
 	/*@{*/
+	/** Symbol table. */
+	inline const decTObjectDictionary<deoglShaderPreprocessorSymbol> &GetSymbolTable() const{ return pSymbolTable; }
+	
 	/** Number of symbols. */
 	int GetSymbolCount() const;
 	
@@ -173,16 +176,16 @@ public:
 	decStringList GetSymbolNames() const;
 	
 	/** Named symbol is present. */
-	bool HasSymbolNamed( const char *name ) const;
+	bool HasSymbolNamed(const char *name) const;
 	
 	/** Named symbol or \em NULL if absent. */
-	deoglShaderPreprocessorSymbol *GetSymbolNamed( const char *name ) const;
+	deoglShaderPreprocessorSymbol *GetSymbolNamed(const char *name) const;
 	
 	/** Set symbol. */
-	void SetSymbol( deoglShaderPreprocessorSymbol *symbol );
+	void SetSymbol(deoglShaderPreprocessorSymbol *symbol);
 	
 	/** Set symbol. */
-	void SetSymbol( const char *name, const char *value );
+	void SetSymbol(const char *name, const char *value);
 	
 	/** Named macro symbol is present. */
 	bool HasMacroSymbolNamed(const char *name) const;
@@ -194,13 +197,13 @@ public:
 	bool HasAnySymbolNamed(const char *name) const;
 	
 	/** Clear symbol. */
-	void ClearSymbol( const char *name );
+	void ClearSymbol(const char *name);
 	
 	/** Clear all symbols. */
 	void ClearAllSymbols();
 	
 	/** Set symbols from defines. */
-	void SetSymbolsFromDefines( const deoglShaderDefines &defines );
+	void SetSymbolsFromDefines(const deoglShaderDefines &defines);
 	
 	/** Set debug log parsing. */
 	void SetDebugLogParsing(bool enable);
@@ -220,32 +223,32 @@ private:
 	void pProcessSources();
 	void pProcessSingleLineComment();
 	void pProcessMultiLineComment();
-	void pProcessDirective( const char *beginLine );
+	void pProcessDirective(const char *beginLine);
 	void pProcessDirectiveInclude();
-	void pProcessDirectiveDefine( const char *beginLine );
-	void pProcessDirectiveUndefine( const char *beginLine );
+	void pProcessDirectiveDefine(const char *beginLine);
+	void pProcessDirectiveUndefine(const char *beginLine);
 	void pProcessDirectiveIfDef();
 	void pProcessDirectiveIfNotDef();
 	void pProcessDirectiveIf();
 	void pProcessDirectiveElseIf();
 	void pProcessDirectiveElse();
 	void pProcessDirectiveEndIf();
-	bool pProcessDirectiveCondition( const char *directive, bool groupOpen );
+	bool pProcessDirectiveCondition(const char *directive, bool groupOpen);
 	
-	eDirectiveTokens pParseDirectiveToken( sToken &token );
-	void pExpectDirectiveToken( sToken &token, eDirectiveTokens expectedType, const char *directive );
-	void pExpectDirectiveToken( eDirectiveTokens expectedType, const char *directive );
-	bool pParseDirectiveAnything( sToken &token );
-	decString pDirectiveTokenString( const sToken &token ) const;
-	void pErrorInvalidToken( const sToken &token, const char *directive ) const;
+	eDirectiveTokens pParseDirectiveToken(sToken &token);
+	void pExpectDirectiveToken(sToken &token, eDirectiveTokens expectedType, const char *directive);
+	void pExpectDirectiveToken(eDirectiveTokens expectedType, const char *directive);
+	bool pParseDirectiveAnything(sToken &token);
+	decString pDirectiveTokenString(const sToken &token) const;
+	void pErrorInvalidToken(const sToken &token, const char *directive) const;
 	
-	void pResolveString( const char *text, int length );
-	void pResolveBufferAppend( const char *text, int length );
-	void pSetResolveSymbolName( const char *name, int length );
+	void pResolveString(const char *text, int length);
+	void pResolveBufferAppend(const char *text, int length);
+	void pSetResolveSymbolName(const char *name, int length);
 	
-	bool pIsSymbol( int character ) const;
-	bool pIsSymbolBegin( int character ) const;
-	bool pIsNumber( int character ) const;
+	bool pIsSymbol(int character) const;
+	bool pIsSymbolBegin(int character) const;
+	bool pIsNumber(int character) const;
 };
 
 #endif

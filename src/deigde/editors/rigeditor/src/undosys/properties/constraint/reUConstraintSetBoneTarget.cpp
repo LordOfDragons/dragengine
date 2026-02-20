@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetBoneTarget::reUConstraintSetBoneTarget( reRigConstraint *constraint, reRigBone *newBone ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetBoneTarget::reUConstraintSetBoneTarget(reRigConstraint *constraint, reRigBone *newBone){
+	if(!constraint || !constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -51,27 +51,10 @@ reUConstraintSetBoneTarget::reUConstraintSetBoneTarget( reRigConstraint *constra
 	pOldBone = constraint->GetConstraintBone();
 	pNewBone = newBone;
 	
-	SetShortInfo( "Constraint set target bone" );
-	
-	pConstraint->AddReference();
-	if( pOldBone ){
-		pOldBone->AddReference();
-	}
-	if( pNewBone ){
-		pNewBone->AddReference();
-	}
+	SetShortInfo("@Rig.Undo.ConstraintSetTargetBone");
 }
 
 reUConstraintSetBoneTarget::~reUConstraintSetBoneTarget(){
-	if( pNewBone ){
-		pNewBone->FreeReference();
-	}
-	if( pOldBone ){
-		pOldBone->FreeReference();
-	}
-	if( pConstraint ){
-		pConstraint->FreeReference();
-	}
 }
 
 
@@ -80,9 +63,9 @@ reUConstraintSetBoneTarget::~reUConstraintSetBoneTarget(){
 ///////////////
 
 void reUConstraintSetBoneTarget::Undo(){
-	pConstraint->SetConstraintBone( pOldBone );
+	pConstraint->SetConstraintBone(pOldBone);
 }
 
 void reUConstraintSetBoneTarget::Redo(){
-	pConstraint->SetConstraintBone( pNewBone );
+	pConstraint->SetConstraintBone(pNewBone);
 }

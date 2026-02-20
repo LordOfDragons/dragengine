@@ -43,48 +43,48 @@ saeSAnimationListener::~saeSAnimationListener(){
 // Notifications
 //////////////////
 
-void saeSAnimationListener::StateChanged( saeSAnimation* ){
+void saeSAnimationListener::StateChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::UndoChanged( saeSAnimation* ){
+void saeSAnimationListener::UndoChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::ViewChanged( saeSAnimation* ){
+void saeSAnimationListener::ViewChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::SAnimationChanged( saeSAnimation* ){
+void saeSAnimationListener::SAnimationChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::ModelChanged( saeSAnimation* ){
+void saeSAnimationListener::ModelChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::SkyChanged( saeSAnimation* ){
+void saeSAnimationListener::SkyChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::CameraChanged( saeSAnimation* ){
-}
-
-
-
-void saeSAnimationListener::PhonemeStructureChanged( saeSAnimation* ){
-}
-
-void saeSAnimationListener::ActivePhonemeChanged( saeSAnimation* ){
-}
-
-void saeSAnimationListener::PhonemeChanged( saeSAnimation*, saePhoneme* ){
+void saeSAnimationListener::CameraChanged(saeSAnimation*){
 }
 
 
 
-void saeSAnimationListener::WordStructureChanged( saeSAnimation* ){
+void saeSAnimationListener::PhonemeStructureChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::WordNameChanged( saeSAnimation*, saeWord* ){
+void saeSAnimationListener::ActivePhonemeChanged(saeSAnimation*){
 }
 
-void saeSAnimationListener::ActiveWordChanged( saeSAnimation* ){
+void saeSAnimationListener::PhonemeChanged(saeSAnimation*, saePhoneme*){
 }
 
-void saeSAnimationListener::WordChanged( saeSAnimation*, saeWord* ){
+
+
+void saeSAnimationListener::WordStructureChanged(saeSAnimation*){
+}
+
+void saeSAnimationListener::WordNameChanged(saeSAnimation*, saeWord*){
+}
+
+void saeSAnimationListener::ActiveWordChanged(saeSAnimation*){
+}
+
+void saeSAnimationListener::WordChanged(saeSAnimation*, saeWord*){
 }

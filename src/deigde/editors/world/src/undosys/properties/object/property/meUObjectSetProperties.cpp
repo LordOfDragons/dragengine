@@ -39,26 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetProperties::meUObjectSetProperties( meObject *object, const decStringDictionary &newValues ) :
-pObject( NULL ),
-pNewValues( newValues )
+meUObjectSetProperties::meUObjectSetProperties(meObject *object, const decStringDictionary &newValues) :
+
+pNewValues(newValues)
 {
-	if( ! object || ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(!object || !object->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set object properties" );
+	SetShortInfo("@World.UObjectSetProperties.SetObjectProperties");
 	
 	pOldValues = object->GetProperties();
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetProperties::~meUObjectSetProperties(){
-	if( pObject ){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -67,9 +63,9 @@ meUObjectSetProperties::~meUObjectSetProperties(){
 ///////////////
 
 void meUObjectSetProperties::Undo(){
-	pObject->SetProperties( pOldValues );
+	pObject->SetProperties(pOldValues);
 }
 
 void meUObjectSetProperties::Redo(){
-	pObject->SetProperties( pNewValues );
+	pObject->SetProperties(pNewValues);
 }

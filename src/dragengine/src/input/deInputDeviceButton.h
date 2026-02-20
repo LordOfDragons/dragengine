@@ -26,8 +26,8 @@
 #define _INPUTDEVICEBUTTON_H_
 
 #include "../common/string/decString.h"
-#include "../common/collection/decObjectOrderedSet.h"
-#include "../resources/image/deImageReference.h"
+#include "../common/collection/decTOrderedSet.h"
+#include "../resources/image/deImage.h"
 
 
 /**
@@ -140,8 +140,8 @@ private:
 	decString pID, pName;
 	eButtonTypes pType;
 	decString pComponent;
-	deImageReference pDisplayImage;
-	decObjectOrderedSet pDisplayIcons;
+	deImage::Ref pDisplayImage;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	bool pTouchable, pApproachable;
 	
@@ -154,7 +154,7 @@ public:
 	deInputDeviceButton();
 	
 	/** \brief Create input device button. */
-	deInputDeviceButton( const deInputDeviceButton &button );
+	deInputDeviceButton(const deInputDeviceButton &button);
 	
 	/** \brief Clean up input device button. */
 	~deInputDeviceButton();
@@ -175,7 +175,7 @@ public:
 	inline const decString &GetID() const{ return pID; }
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/**
 	 * \brief Display name.
@@ -186,13 +186,13 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set Display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Button type. */
 	inline eButtonTypes GetType() const{ return pType; }
 	
 	/** \brief Button type. */
-	void SetType( eButtonTypes type );
+	void SetType(eButtonTypes type);
 	
 	/**
 	 * \brief Identifier of component or empty string.
@@ -204,44 +204,37 @@ public:
 	 * \brief Set identifier of component or empty string.
 	 * \version 1.6
 	 */
-	void SetComponent( const char *component );
+	void SetComponent(const char *component);
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/**
 	 * \brief Set image to represent the button in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	void SetDisplayImage( deImage *image );
+	void SetDisplayImage(deImage *image);
 	
-	/** \brief Count of icons representing the button in bindings. */
-	int GetDisplayIconCount() const;
-	
-	/**
-	 * \brief Icon at index representing the button in bindings.
-	 * 
-	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
-	 */
-	deImage *GetDisplayIconAt( int index ) const;
+	/** Display icons list. */
+	inline const decTObjectOrderedSet<deImage> &GetDisplayIcons() const{ return pDisplayIcons; }
 	
 	/**
 	 * \brief Add icon representing the button in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	void AddDisplayIcon( deImage *image );
+	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
 	/** \brief Set text to display centered across display image or icon. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	/**
 	 * \brief Button supports sending touch/untouch events.
@@ -253,7 +246,7 @@ public:
 	 * \brief Set if button supports sending touch/untouch events.
 	 * \version 1.11.1
 	 */
-	void SetTouchable( bool touchable );
+	void SetTouchable(bool touchable);
 	
 	/**
 	 * \brief Button supports sending approach/withdraw events.
@@ -273,7 +266,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy input device button. */
-	deInputDeviceButton &operator=( const deInputDeviceButton &button );
+	deInputDeviceButton &operator=(const deInputDeviceButton &button);
 	/*@}*/
 };
 

@@ -36,6 +36,10 @@ class aeAnimator;
  * Undo action animator remove bones.
  */
 class aeUAnimatorRemoveBone : public igdeUndo{
+public:
+	using Ref = deTObjectReference<aeUAnimatorRemoveBone>;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pBones;
@@ -46,19 +50,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUAnimatorRemoveBone( aeAnimator *animator, const char *pattern );
+	aeUAnimatorRemoveBone(aeAnimator *animator, const char *pattern);
 protected:
 	/** Clean up undo. */
-	virtual ~aeUAnimatorRemoveBone();
+	~aeUAnimatorRemoveBone() override;
 	/*@}*/
 	
 public:
 	/** \name Management */
 	/*@{*/
 	/** Undo action. */
-	virtual void Undo();
+	void Undo() override;
 	/** Redo action. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

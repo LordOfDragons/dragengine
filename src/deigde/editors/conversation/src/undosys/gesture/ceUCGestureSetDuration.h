@@ -34,6 +34,10 @@
  * Undo Action Gesture Set Length.
  */
 class ceUCGestureSetDuration : public igdeUndo{
+public:
+	using Ref = deTObjectReference<ceUCGestureSetDuration>;
+	
+	
 private:
 	const ceGesture::Ref pGesture;
 	
@@ -44,11 +48,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	ceUCGestureSetDuration( ceGesture *gesture, float newValue );
+	ceUCGestureSetDuration(ceGesture *gesture, float newValue);
 	
 protected:
 	/** Clean up undo. */
-	virtual ~ceUCGestureSetDuration();
+	~ceUCGestureSetDuration() override;
 	/*@}*/
 	
 	
@@ -57,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

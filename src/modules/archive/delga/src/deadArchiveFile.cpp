@@ -37,24 +37,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deadArchiveFile::deadArchiveFile( deArchiveDelga &module, const char *filename,
-const unz_file_info &info, const unz_file_pos &archivePosition ) :
-pModule( module ),
-pFilename( filename ),
-pArchivePosition( archivePosition ),
-pFileSize( ( int )info.uncompressed_size ),
-pCompressedSize( ( int )info.compressed_size ),
-pReadBlockSize( ( int )pCompressedSize )
+deadArchiveFile::deadArchiveFile(deArchiveDelga &module, const char *filename,
+const unz_file_info &info, const unz_file_pos &archivePosition) :
+pModule(module),
+pFilename(filename),
+pArchivePosition(archivePosition),
+pFileSize((int)info.uncompressed_size),
+pCompressedSize((int)info.compressed_size),
+pReadBlockSize((int)pCompressedSize)
 {
 	(void)pModule;
 	
 	decDateTime time;
-	time.SetYear( info.tmu_date.tm_year );
-	time.SetMonth( info.tmu_date.tm_mon );
-	time.SetDay( info.tmu_date.tm_mday - 1 );
-	time.SetHour( info.tmu_date.tm_hour );
-	time.SetMinute( info.tmu_date.tm_min );
-	time.SetSecond( info.tmu_date.tm_sec );
+	time.SetYear(info.tmu_date.tm_year);
+	time.SetMonth(info.tmu_date.tm_mon);
+	time.SetDay(info.tmu_date.tm_mday - 1);
+	time.SetHour(info.tmu_date.tm_hour);
+	time.SetMinute(info.tmu_date.tm_min);
+	time.SetSecond(info.tmu_date.tm_sec);
 	pModificationTime = time.ToSystemTime();
 }
 

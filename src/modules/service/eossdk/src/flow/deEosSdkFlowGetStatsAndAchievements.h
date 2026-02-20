@@ -25,6 +25,7 @@
 #ifndef _DEEOSSDKFLOWGETSTATSANDACHIEVEMENTS_H_
 #define _DEEOSSDKFLOWGETSTATSANDACHIEVEMENTS_H_
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 #include <eos_achievements.h>
@@ -41,8 +42,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create flow. */
-	deEosSdkFlowGetStatsAndAchievements( deEosSdkServiceEos &service, const decUniqueID &id,
-		const deServiceObject &request );
+	deEosSdkFlowGetStatsAndAchievements(deEosSdkServiceEos &service, const decUniqueID &id,
+		const deServiceObject &request);
 	
 	/** Clean up flow. */
 	~deEosSdkFlowGetStatsAndAchievements() override;
@@ -55,10 +56,10 @@ public:
 	void QueryStats();
 	void QueryPlayerAchievements();
 	
-	void OnQueryStatsCompleted( const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data );
+	void OnQueryStatsCompleted(const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data);
 	
 	void OnQueryPlayerAchievementsCompleted(
-		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data );
+		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data);
 	
 	void CheckFinished();
 	/*@}*/
@@ -67,7 +68,7 @@ public:
 	
 private:
 	decStringList pStats, pAchievements;
-	const char **pStatNames, **pAchievementNames;
+	decTList<const char*> pStatNames, pAchievementNames;
 	bool pStatsReceived, pAchievementsReceived;
 	const deServiceObject::Ref pResultData;
 };

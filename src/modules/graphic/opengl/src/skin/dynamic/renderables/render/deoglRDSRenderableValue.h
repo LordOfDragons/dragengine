@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLRRDSRENDERABLECOLOR_H_
-#define _DEOGLRRDSRENDERABLECOLOR_H_
+#ifndef _DEOGLRRDSRENDERABLEVALUE_H_
+#define _DEOGLRRDSRENDERABLEVALUE_H_
 
 #include <dragengine/deObject.h>
 
@@ -35,6 +35,11 @@
  * Render dynamic skin value renderable.
  */
 class deoglRDSRenderableValue : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglRDSRenderableValue>;
+	
+	
 private:
 	deoglTexture *pTexture;
 	float pValue;
@@ -44,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin value renderable. */
-	deoglRDSRenderableValue( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableValue(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin value renderable. */
-	virtual ~deoglRDSRenderableValue();
+	~deoglRDSRenderableValue() override;
 	/*@}*/
 	
 	
@@ -55,28 +60,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
 	
 	/**
 	 * Get value if support or default value.
 	 * \details Default implementation returns default value.
 	 */
-	virtual float GetRenderValue( float defaultValue );
+	float GetRenderValue(float defaultValue) override;
 	
 	/**
 	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
-	virtual decColor GetRenderColor( const decColor &defaultColor );
+	decColor GetRenderColor(const decColor &defaultColor) override;
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglTexture *GetRenderTexture();
+	deoglTexture *GetRenderTexture() override;
 	/*@}*/
 };
 

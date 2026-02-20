@@ -42,17 +42,22 @@ private:
 	bool pEnabled;
 	
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<deoglREffect>;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffect( deoglRenderThread &renderThread );
+	deoglREffect(deoglRenderThread &renderThread);
 	
+protected:
 	/** Clean up render effect. */
-	virtual ~deoglREffect();
+	~deoglREffect() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
@@ -62,13 +67,13 @@ public:
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** Set enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan ) = 0;
+	virtual void Render(deoglRenderPlan &plan) = 0;
 };
 
 #endif

@@ -46,12 +46,12 @@
 #include "../../undosys/animator/aeUAnimatorSetVertexPositionSets.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeWindow.h>
@@ -64,10 +64,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -89,39 +88,39 @@ protected:
 	aeWPAnimator &pPanel;
 	
 public:
-	cBaseAction( aeWPAnimator &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	using Ref = deTObjectReference<cBaseAction>;
+	cBaseAction(aeWPAnimator &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if( ! animator ){
+		if(!animator){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( OnAction( animator ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(OnAction(animator));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if( animator ){
-			Update( *animator );
+		if(animator){
+			Update(*animator);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -129,18 +128,19 @@ public:
 class cPathRig : public igdeEditPathListener{
 	aeWPAnimator &pPanel;
 public:
-	cPathRig( aeWPAnimator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cPathRig>;
+	cPathRig(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if( ! animator || animator->GetRigPath() == editPath->GetPath() ){
+		if(!animator || animator->GetRigPath() == editPath->GetPath()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeUAnimatorSetRigPath( animator, editPath->GetPath() ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		aeUAnimatorSetRigPath::Ref undo(aeUAnimatorSetRigPath::Ref::New(
+			animator, editPath->GetPath()));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -148,18 +148,19 @@ public:
 class cPathAnimation : public igdeEditPathListener{
 	aeWPAnimator &pPanel;
 public:
-	cPathAnimation( aeWPAnimator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cPathAnimation>;
+	cPathAnimation(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	void OnEditPathChanged(igdeEditPath *editPath) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if( ! animator || animator->GetAnimationPath() == editPath->GetPath() ){
+		if(!animator || animator->GetAnimationPath() == editPath->GetPath()){
 			return;
 		}
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new aeUAnimatorSetAnimationPath( animator, editPath->GetPath() ) );
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		aeUAnimatorSetAnimationPath::Ref undo(aeUAnimatorSetAnimationPath::Ref::New(
+			animator, editPath->GetPath()));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -167,143 +168,172 @@ public:
 
 class cActionRigBoneAdd : public cBaseAction{
 public:
-	cActionRigBoneAdd( aeWPAnimator &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add rig bone" ){}
+	using Ref = deTObjectReference<cActionRigBoneAdd>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionRigBoneAdd(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAnimator.Action.BoneAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
-		return ! name.IsEmpty() && ! animator->GetListBones().Has( name )
-			? new aeUAnimatorAddBone( animator, name ) : nullptr;
+		return !name.IsEmpty() && !animator->GetListBones().Has(name)
+			? aeUAnimatorAddBone::Ref::New(animator, name) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
-		SetEnabled( ! name.IsEmpty() && ! animator.GetListBones().Has( name ) );
+		SetEnabled(!name.IsEmpty() && !animator.GetListBones().Has(name));
 	}
 };
 
 class cActionRigBoneRemove : public cBaseAction{
 public:
-	cActionRigBoneRemove( aeWPAnimator &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove rig bone" ){}
+	using Ref = deTObjectReference<cActionRigBoneRemove>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionRigBoneRemove(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAnimator.Action.BoneRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
-		return ! name.IsEmpty() && animator->GetListBones().Has( name )
-			? new aeUAnimatorRemoveBone( animator, name ) : nullptr;
+		return !name.IsEmpty() && animator->GetListBones().Has(name)
+			? aeUAnimatorRemoveBone::Ref::New(animator, name) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBRigBoneText();
-		SetEnabled( ! name.IsEmpty() && animator.GetListBones().Has( name ) );
+		SetEnabled(!name.IsEmpty() && animator.GetListBones().Has(name));
 	}
 };
 
 class cActionMirrorRigBones : public cBaseAction{
 public:
-	cActionMirrorRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Mirror Bones",
-		nullptr, "Mirror rig bones" ){}
+	using Ref = deTObjectReference<cActionMirrorRigBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionMirrorRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneMirror",
+		nullptr, "@Animator.WPAnimator.Action.BoneMirror.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
-		return new aeUAnimatorMirrorBones( animator );
+		return aeUAnimatorMirrorBones::Ref::New(animator);
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
-		SetEnabled( animator.GetListBones().GetCount() > 0 );
+	void Update(const aeAnimator &animator) override{
+		SetEnabled(animator.GetListBones().GetCount() > 0);
 	}
 };
 
 class cActionCopyRigBones : public cBaseAction{
 public:
-	cActionCopyRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
+	using Ref = deTObjectReference<cActionCopyRigBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		igdeClipboardDataReference clip;
-		clip.TakeOver( new aeClipboardDataBones( animator->GetListBones() ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
-		return nullptr;
+public:
+	cActionCopyRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneCopy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.BoneCopy.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataBones::Ref::New(animator->GetListBones()));
+		return {};
 	}
 };
 
 class cActionPasteRigBones : public cBaseAction{
 public:
-	cActionPasteRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
+	using Ref = deTObjectReference<cActionPasteRigBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		aeClipboardDataBones * const clip = ( aeClipboardDataBones* )pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataBones::TYPE_NAME  );
-		if( ! clip ){
-			return nullptr;
+public:
+	cActionPasteRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BonePaste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.BonePaste.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
+		if(!clip){
+			return {};
 		}
 		
-		aeUAnimatorSetBones * const undo = new aeUAnimatorSetBones(
-			animator, animator->GetListBones() + clip->GetBones() );
-		undo->SetShortInfo( "Animator paste bones" );
+		const aeUAnimatorSetBones::Ref undo = aeUAnimatorSetBones::Ref::New(
+			animator, animator->GetListBones() + clip->GetBones());
+		undo->SetShortInfo("@Animator.Undo.PasteBones");
 		return undo;
 	}
 	
-	virtual void Update(const aeAnimator & ){
-		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
-			HasWithTypeName( aeClipboardDataBones::TYPE_NAME ) );
+	void Update(const aeAnimator &) override{
+		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			HasWithTypeName(aeClipboardDataBones::TYPE_NAME));
 	}
 };
 
 class cActionExportRigBones : public cBaseAction{
 public:
-	cActionExportRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Export To Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export bones" ){}
+	using Ref = deTObjectReference<cActionExportRigBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionExportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneExport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.WPAnimator.Action.BoneExport.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decStringSet bones = animator->GetListBones();
 		const int count = bones.GetCount();
 		decString text;
 		int i;
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				text.AppendCharacter( '\n' );
+		for(i=0; i<count; i++){
+			if(i > 0){
+				text.AppendCharacter('\n');
 			}
-			text.Append( bones.GetAt( i ) );
+			text.Append(bones.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Bones", text );
-		return nullptr;
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAnimator.Dialog.BoneExport.Title",
+			"@Animator.WPAnimator.Dialog.BoneExport.Bones", text);
+		return {};
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
-		SetEnabled( animator.GetListBones().GetCount() > 0 );
+	void Update(const aeAnimator &animator) override{
+		SetEnabled(animator.GetListBones().GetCount() > 0);
 	}
 };
 
 class cActionImportRigBones : public cBaseAction{
 public:
-	cActionImportRigBones( aeWPAnimator &panel ) : cBaseAction( panel, "Import From Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import bones" ){}
+	using Ref = deTObjectReference<cActionImportRigBones>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionImportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.BoneImport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Animator.WPAnimator.Action.BoneImport.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		decString text;
-		while( true ){
-			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
-			"Import From Text", "Bones. One bone per line.", text ) ){
-				return nullptr;
+		while(true){
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAnimator.Dialog.BoneImport.Title",
+			"@Animator.WPAnimator.Dialog.BoneImport.Message", text)){
+				return {};
 			}
 			break;
 		}
 		
-		const decStringList lines( text.Split( '\n' ) );
+		const decStringList lines(text.Split('\n'));
 		const int count = lines.GetCount();
 		decStringSet bones;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! lines.GetAt( i ).IsEmpty() ){
-				bones.Add( lines.GetAt( i ) );
+		for(i=0; i<count; i++){
+			if(!lines.GetAt(i).IsEmpty()){
+				bones.Add(lines.GetAt(i));
 			}
 		}
 		
-		aeUAnimatorSetBones * const undo = new aeUAnimatorSetBones( animator, animator->GetListBones() + bones );
-		undo->SetShortInfo( "Animator import bones" );
+		const aeUAnimatorSetBones::Ref undo = aeUAnimatorSetBones::Ref::New(animator, animator->GetListBones() + bones);
+		undo->SetShortInfo("@Animator.Undo.ImportBones");
 		return undo;
 	}
 };
@@ -313,174 +343,205 @@ protected:
 	aeWPAnimator &pPanel;
 	
 public:
-	cListRigBones( aeWPAnimator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cListRigBones>;
+	cListRigBones(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
-		if( pPanel.GetAnimator() && listBox->GetSelectedItem() ){
-			pPanel.SetCBRigBoneText( listBox->GetSelectedItem()->GetText() );
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(pPanel.GetAnimator() && listBox->GetSelectedItem()){
+			pPanel.SetCBRigBoneText(listBox->GetSelectedItem()->GetText());
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
-		if( ! pPanel.GetAnimator() ){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		if(!pPanel.GetAnimator()){
 			return;
 		}
 		
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, new cActionRigBoneAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionRigBoneRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionMirrorRigBones( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCopyRigBones( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteRigBones( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionExportRigBones( pPanel ), true );
-		helper.MenuCommand( menu, new cActionImportRigBones( pPanel ), true );
+		helper.MenuCommand(menu, cActionRigBoneAdd::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionRigBoneRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionMirrorRigBones::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionCopyRigBones::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteRigBones::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionExportRigBones::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportRigBones::Ref::New(pPanel));
 	}
 };
 
 
 class cActionRigVertexPositionSetAdd : public cBaseAction{
 public:
-	cActionRigVertexPositionSetAdd( aeWPAnimator &panel ) : cBaseAction( panel, "Add",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add vertex position set" ){}
+	using Ref = deTObjectReference<cActionRigVertexPositionSetAdd>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionRigVertexPositionSetAdd(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSAdd",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPAnimator.Action.VPSAdd.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		return ! name.IsEmpty() && ! animator->GetListVertexPositionSets().Has( name )
-			? new aeUAnimatorAddVertexPositionSet( animator, name ) : nullptr;
+		return !name.IsEmpty() && !animator->GetListVertexPositionSets().Has(name)
+			? aeUAnimatorAddVertexPositionSet::Ref::New(animator, name) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		SetEnabled( ! name.IsEmpty() && ! animator.GetListVertexPositionSets().Has( name ) );
+		SetEnabled(!name.IsEmpty() && !animator.GetListVertexPositionSets().Has(name));
 	}
 };
 
 class cActionRigVertexPositionSetRemove : public cBaseAction{
 public:
-	cActionRigVertexPositionSetRemove( aeWPAnimator &panel ) : cBaseAction( panel, "Remove",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove vertex position set" ){}
+	using Ref = deTObjectReference<cActionRigVertexPositionSetRemove>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionRigVertexPositionSetRemove(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSRemove",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"@Animator.WPAnimator.Action.VPSRemove.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		return ! name.IsEmpty() && animator->GetListVertexPositionSets().Has( name )
-			? new aeUAnimatorRemoveVertexPositionSet( animator, name ) : nullptr;
+		return !name.IsEmpty() && animator->GetListVertexPositionSets().Has(name)
+			? aeUAnimatorRemoveVertexPositionSet::Ref::New(animator, name) : igdeUndo::Ref();
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
+	void Update(const aeAnimator &animator) override{
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
-		SetEnabled( ! name.IsEmpty() && animator.GetListVertexPositionSets().Has( name ) );
+		SetEnabled(!name.IsEmpty() && animator.GetListVertexPositionSets().Has(name));
 	}
 };
 
 class cActionMirrorRigVertexPositionSets : public cBaseAction{
 public:
-	cActionMirrorRigVertexPositionSets( aeWPAnimator &panel ) : cBaseAction( panel,
-		"Mirror", nullptr, "Mirror vertex position sets" ){}
+	using Ref = deTObjectReference<cActionMirrorRigVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionMirrorRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel,
+		"@Animator.WPAnimator.Action.VPSMirror", nullptr,
+		"@Animator.WPAnimator.Action.VPSMirror.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
-		return new aeUAnimatorMirrorVertexPositionSets( animator );
+		return aeUAnimatorMirrorVertexPositionSets::Ref::New(animator);
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
-		SetEnabled( animator.GetListVertexPositionSets().GetCount() > 0 );
+	void Update(const aeAnimator &animator) override{
+		SetEnabled(animator.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
 
 class cActionCopyRigVertexPositionSets : public cBaseAction{
 public:
-	cActionCopyRigVertexPositionSets( aeWPAnimator &panel ) : cBaseAction( panel, "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
+	using Ref = deTObjectReference<cActionCopyRigVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		igdeClipboardDataReference clip;
-		clip.TakeOver( new aeClipboardDataVertexPositionSets( animator->GetListVertexPositionSets() ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
-		return nullptr;
+public:
+	cActionCopyRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSCopy",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.VPSCopy.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataVertexPositionSets::Ref::New(animator->GetListVertexPositionSets()));
+		return {};
 	}
 };
 
 class cActionPasteRigVertexPositionSets : public cBaseAction{
 public:
-	cActionPasteRigVertexPositionSets( aeWPAnimator &panel ) : cBaseAction( panel, "Paste",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
+	using Ref = deTObjectReference<cActionPasteRigVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		aeClipboardDataVertexPositionSets * const clip = ( aeClipboardDataVertexPositionSets* )pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataVertexPositionSets::TYPE_NAME  );
-		if( ! clip ){
-			return nullptr;
+public:
+	cActionPasteRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSPaste",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Animator.WPAnimator.Action.VPSPaste.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
+		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
+		if(!clip){
+			return {};
 		}
 		
-		aeUAnimatorSetVertexPositionSets * const undo = new aeUAnimatorSetVertexPositionSets(
-			animator, animator->GetListVertexPositionSets() + clip->GetVertexPositionSets() );
-		undo->SetShortInfo( "Animator paste vertex position sets" );
+		const aeUAnimatorSetVertexPositionSets::Ref undo(aeUAnimatorSetVertexPositionSets::Ref::New(
+			animator, animator->GetListVertexPositionSets() + clip->GetVertexPositionSets()));
+		undo->SetShortInfo("@Animator.Undo.PasteVertexPositionSets");
 		return undo;
 	}
 	
-	virtual void Update(const aeAnimator & ){
-		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
-			HasWithTypeName( aeClipboardDataVertexPositionSets::TYPE_NAME ) );
+	void Update(const aeAnimator &) override{
+		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			HasWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME));
 	}
 };
 
 class cActionExportRigVertexPositionSets : public cBaseAction{
 public:
-	cActionExportRigVertexPositionSets( aeWPAnimator &panel ) : cBaseAction( panel, "Export To Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ), "Export vertex position sets" ){}
+	using Ref = deTObjectReference<cActionExportRigVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionExportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSExport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
+		"@Animator.WPAnimator.Action.VPSExport.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		const decStringSet bones = animator->GetListVertexPositionSets();
 		const int count = bones.GetCount();
 		decString text;
 		int i;
-		for( i=0; i<count; i++ ){
-			if( i > 0 ){
-				text.AppendCharacter( '\n' );
+		for(i=0; i<count; i++){
+			if(i > 0){
+				text.AppendCharacter('\n');
 			}
-			text.Append( bones.GetAt( i ) );
+			text.Append(bones.GetAt(i));
 		}
-		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Export To Text", "Vertex position sets", text );
-		return nullptr;
+		igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAnimator.Dialog.VPSExport.Title",
+			"@Animator.WPAnimator.Dialog.VPSExport.Sets", text);
+		return {};
 	}
 	
-	virtual void Update(const aeAnimator &animator ){
-		SetEnabled( animator.GetListVertexPositionSets().GetCount() > 0 );
+	void Update(const aeAnimator &animator) override{
+		SetEnabled(animator.GetListVertexPositionSets().GetCount() > 0);
 	}
 };
 
 class cActionImportRigVertexPositionSets : public cBaseAction{
 public:
-	cActionImportRigVertexPositionSets( aeWPAnimator &panel ) : cBaseAction( panel, "Import From Text",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Import vertex position sets" ){}
+	using Ref = deTObjectReference<cActionImportRigVertexPositionSets>;
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
+public:
+	cActionImportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSImport",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
+		"@Animator.WPAnimator.Action.VPSImport.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(aeAnimator *animator) override{
 		decString text;
-		while( true ){
-			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
-			"Import From Text", "Vertex position sets. One vertex position set per line.", text ) ){
-				return nullptr;
+		while(true){
+			if(!igdeCommonDialogs::GetMultilineString(*pPanel.GetParentWindow(),
+			"@Animator.WPAnimator.Dialog.VPSImport.Title",
+			"@Animator.WPAnimator.Dialog.VPSImport.Message", text)){
+				return {};
 			}
 			break;
 		}
 		
-		const decStringList lines( text.Split( '\n' ) );
+		const decStringList lines(text.Split('\n'));
 		const int count = lines.GetCount();
 		decStringSet sets;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( ! lines.GetAt( i ).IsEmpty() ){
-				sets.Add( lines.GetAt( i ) );
+		for(i=0; i<count; i++){
+			if(!lines.GetAt(i).IsEmpty()){
+				sets.Add(lines.GetAt(i));
 			}
 		}
 		
-		aeUAnimatorSetVertexPositionSets * const undo = new aeUAnimatorSetVertexPositionSets(
-			animator, animator->GetListVertexPositionSets() + sets );
-		undo->SetShortInfo( "Animator import vertex position sets" );
+		const aeUAnimatorSetVertexPositionSets::Ref undo(aeUAnimatorSetVertexPositionSets::Ref::New(
+			animator, animator->GetListVertexPositionSets() + sets));
+		undo->SetShortInfo("@Animator.Undo.ImportVertexPositionSets");
 		return undo;
 	}
 };
@@ -490,30 +551,31 @@ protected:
 	aeWPAnimator &pPanel;
 	
 public:
-	cListRigVertexPositionSets( aeWPAnimator &panel ) : pPanel( panel ){ }
+	using Ref = deTObjectReference<cListRigVertexPositionSets>;
+	cListRigVertexPositionSets(aeWPAnimator &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
-		if( pPanel.GetAnimator() && listBox->GetSelectedItem() ){
-			pPanel.SetCBModelVertexPositionSetText( listBox->GetSelectedItem()->GetText() );
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(pPanel.GetAnimator() && listBox->GetSelectedItem()){
+			pPanel.SetCBModelVertexPositionSetText(listBox->GetSelectedItem()->GetText());
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
-		if( ! pPanel.GetAnimator() ){
+	void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
+		if(!pPanel.GetAnimator()){
 			return;
 		}
 		
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
-		helper.MenuCommand( menu, new cActionRigVertexPositionSetAdd( pPanel ), true );
-		helper.MenuCommand( menu, new cActionRigVertexPositionSetRemove( pPanel ), true );
-		helper.MenuCommand( menu, new cActionMirrorRigVertexPositionSets( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCopyRigVertexPositionSets( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteRigVertexPositionSets( pPanel ), true );
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionExportRigVertexPositionSets( pPanel ), true );
-		helper.MenuCommand( menu, new cActionImportRigVertexPositionSets( pPanel ), true );
+		helper.MenuCommand(menu, cActionRigVertexPositionSetAdd::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionRigVertexPositionSetRemove::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionMirrorRigVertexPositionSets::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionCopyRigVertexPositionSets::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPasteRigVertexPositionSets::Ref::New(pPanel));
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, cActionExportRigVertexPositionSets::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionImportRigVertexPositionSets::Ref::New(pPanel));
 	}
 };
 
@@ -527,63 +589,58 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAnimator::aeWPAnimator( aeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( nullptr ),
-pAnimator( nullptr )
+aeWPAnimator::aeWPAnimator(aeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPAnimatorListener( *this );
+	pListener = aeWPAnimatorListener::Ref::New(*this);
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
+	AddChild(content);
 	
 	
 	// animation
-	helper.GroupBox( content, groupBox, "Animator File Path:" );
-	helper.EditPath( groupBox, "Rig:", "Rig resource used by the animator",
-		igdeEnvironment::efpltRig, pEditRigPath, new cPathRig( *this ) );
-	helper.EditPath( groupBox, "Animation:", "Aniamtion resource used by the animator",
-		igdeEnvironment::efpltAnimation, pEditAnimPath, new cPathAnimation( *this ) );
+	helper.GroupBox(content, groupBox, "@Animator.WPAnimator.AnimatorFilePath");
+	helper.EditPath(groupBox, "@Animator.WPAnimator.Rig",
+		"@Animator.WPAnimator.Rig.ToolTip", igdeEnvironment::efpltRig, pEditRigPath, cPathRig::Ref::New(*this));
+	helper.EditPath(groupBox, "@Animator.WPAnimator.Animation",
+		"@Animator.WPAnimator.Animation.ToolTip", igdeEnvironment::efpltAnimation, pEditAnimPath, cPathAnimation::Ref::New(*this));
 	
 	
 	// affected bones
-	helper.GroupBoxFlow( content, groupBox, "Affected bones:" );
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedBones");
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBoxFilter( formLine, true, "Bone name", pCBBones, nullptr );
-	helper.Button( formLine, pBtnBoneAdd, new cActionRigBoneAdd( *this ), true );
-	helper.Button( formLine, pBtnBoneDel, new cActionRigBoneRemove( *this ), true );
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	groupBox->AddChild(formLine);
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAnimator.BoneName.ToolTip", pCBBones, {});
+	helper.Button(formLine, pBtnBoneAdd, cActionRigBoneAdd::Ref::New(*this));
+	helper.Button(formLine, pBtnBoneDel, cActionRigBoneRemove::Ref::New(*this));
 	
-	helper.ListBox( groupBox, 5, "Affectes bones", pListBones, new cListRigBones( *this ) );
+	helper.ListBox(groupBox, 5, "@Animator.WPAnimator.AffectedBones.ToolTip", pListBones, cListRigBones::Ref::New(*this));
 	pListBones->SetDefaultSorter();
 	
 	
 	// affected vertex position sets
-	helper.GroupBoxFlow( content, groupBox, "Affected vertex position sets:" );
+	helper.GroupBoxFlow(content, groupBox, "@Animator.WPAnimator.AffectedVertexPositionSets");
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBoxFilter( formLine, true, "Set name", pCBVertexPositionSets, nullptr );
-	helper.Button( formLine, pBtnVertexPositionSetAdd, new cActionRigVertexPositionSetAdd( *this ), true );
-	helper.Button( formLine, pBtnVertexPositionSetDel, new cActionRigVertexPositionSetRemove( *this ), true );
+	formLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	groupBox->AddChild(formLine);
+	helper.ComboBoxFilter(formLine, true, "@Animator.WPAnimator.SetName.ToolTip", pCBVertexPositionSets, {});
+	helper.Button(formLine, pBtnVertexPositionSetAdd, cActionRigVertexPositionSetAdd::Ref::New(*this));
+	helper.Button(formLine, pBtnVertexPositionSetDel, cActionRigVertexPositionSetRemove::Ref::New(*this));
 	
-	helper.ListBox( groupBox, 5, "Affectes vertex position sets", pListVertexPositionSets, new cListRigVertexPositionSets( *this ) );
+	helper.ListBox(groupBox, 5, "@Animator.WPAnimator.AffectedVertexPositionSets.ToolTip",
+		pListVertexPositionSets, cListRigVertexPositionSets::Ref::New(*this));
 	pListVertexPositionSets->SetDefaultSorter();
 }
 
 aeWPAnimator::~aeWPAnimator(){
-	SetAnimator( nullptr );
-	
-	if( pListener ){
-		pListener->FreeReference();
-	}
+	SetAnimator(nullptr);
 }
 
 
@@ -591,21 +648,19 @@ aeWPAnimator::~aeWPAnimator(){
 // Management
 ///////////////
 
-void aeWPAnimator::SetAnimator( aeAnimator *animator ){
-	if( animator == pAnimator ){
+void aeWPAnimator::SetAnimator(aeAnimator *animator){
+	if(animator == pAnimator){
 		return;
 	}
 	
-	if( pAnimator ){
-		pAnimator->RemoveNotifier( pListener );
-		pAnimator->FreeReference();
+	if(pAnimator){
+		pAnimator->RemoveNotifier(pListener);
 	}
 	
 	pAnimator = animator;
 	
-	if( animator ){
-		animator->AddNotifier( pListener );
-		animator->AddReference();
+	if(animator){
+		animator->AddNotifier(pListener);
 	}
 	
 	UpdateRigBoneList();
@@ -615,41 +670,41 @@ void aeWPAnimator::SetAnimator( aeAnimator *animator ){
 }
 
 void aeWPAnimator::UpdateAnimator(){
-	if( pAnimator ){
-		pEditRigPath->SetPath( pAnimator->GetRigPath() );
-		pEditAnimPath->SetPath( pAnimator->GetAnimationPath() );
+	if(pAnimator){
+		pEditRigPath->SetPath(pAnimator->GetRigPath());
+		pEditAnimPath->SetPath(pAnimator->GetAnimationPath());
 		
 		// bones
 		const decStringSet &boneList = pAnimator->GetListBones();
 		const int boneCount = boneList.GetCount();
-		const decString boneSelection( pListBones->GetSelectedItem()
-			? pListBones->GetSelectedItem()->GetText() : decString() );
+		const decString boneSelection(pListBones->GetSelectedItem()
+			? pListBones->GetSelectedItem()->GetText() : decString());
 		int i;
 		
 		pListBones->RemoveAllItems();
-		for( i=0; i<boneCount; i++ ){
-			pListBones->AddItem( boneList.GetAt( i ) );
+		for(i=0; i<boneCount; i++){
+			pListBones->AddItem(boneList.GetAt(i));
 		}
 		pListBones->SortItems();
-		pListBones->SetSelection( pListBones->IndexOfItem( boneSelection ) );
-		if( ! pListBones->GetSelectedItem() && pListBones->GetItemCount() > 0 ){
-			pListBones->SetSelection( 0 );
+		pListBones->SetSelection(pListBones->IndexOfItem(boneSelection));
+		if(!pListBones->GetSelectedItem() && pListBones->GetItems().IsNotEmpty()){
+			pListBones->SetSelection(0);
 		}
 		
 		// vertex position sets
 		const decStringSet &vpsList = pAnimator->GetListVertexPositionSets();
 		const int vpsCount = vpsList.GetCount();
-		const decString vpsSelection( pListVertexPositionSets->GetSelectedItem()
-			? pListVertexPositionSets->GetSelectedItem()->GetText() : decString() );
+		const decString vpsSelection(pListVertexPositionSets->GetSelectedItem()
+			? pListVertexPositionSets->GetSelectedItem()->GetText() : decString());
 		
 		pListVertexPositionSets->RemoveAllItems();
-		for( i=0; i<vpsCount; i++ ){
-			pListVertexPositionSets->AddItem( vpsList.GetAt( i ) );
+		for(i=0; i<vpsCount; i++){
+			pListVertexPositionSets->AddItem(vpsList.GetAt(i));
 		}
 		pListVertexPositionSets->SortItems();
-		pListVertexPositionSets->SetSelection( pListVertexPositionSets->IndexOfItem( vpsSelection ) );
-		if( ! pListVertexPositionSets->GetSelectedItem() && pListVertexPositionSets->GetItemCount() > 0 ){
-			pListVertexPositionSets->SetSelection( 0 );
+		pListVertexPositionSets->SetSelection(pListVertexPositionSets->IndexOfItem(vpsSelection));
+		if(!pListVertexPositionSets->GetSelectedItem() && pListVertexPositionSets->GetItems().IsNotEmpty()){
+			pListVertexPositionSets->SetSelection(0);
 		}
 		
 	}else{
@@ -661,12 +716,12 @@ void aeWPAnimator::UpdateAnimator(){
 	}
 	
 	const bool enabled = pAnimator;
-	pEditRigPath->SetEnabled( enabled );
-	pEditAnimPath->SetEnabled( enabled );
-	pCBBones->SetEnabled( enabled );
-	pListBones->SetEnabled( enabled );
-	pCBVertexPositionSets->SetEnabled( enabled );
-	pListVertexPositionSets->SetEnabled( enabled );
+	pEditRigPath->SetEnabled(enabled);
+	pEditAnimPath->SetEnabled(enabled);
+	pCBBones->SetEnabled(enabled);
+	pListBones->SetEnabled(enabled);
+	pCBVertexPositionSets->SetEnabled(enabled);
+	pListVertexPositionSets->SetEnabled(enabled);
 	
 	pBtnBoneAdd->GetAction()->Update();
 	pBtnBoneDel->GetAction()->Update();
@@ -675,28 +730,28 @@ void aeWPAnimator::UpdateAnimator(){
 }
 
 void aeWPAnimator::OnAnimatorPathChanged(){
-	if( pAnimator ){
-		pEditRigPath->SetBasePath( pAnimator->GetDirectoryPath() );
-		pEditAnimPath->SetBasePath( pAnimator->GetDirectoryPath() );
+	if(pAnimator){
+		pEditRigPath->SetBasePath(pAnimator->GetDirectoryPath());
+		pEditAnimPath->SetBasePath(pAnimator->GetDirectoryPath());
 		
 	}else{
-		pEditRigPath->SetBasePath( "" );
-		pEditAnimPath->SetBasePath( "" );
+		pEditRigPath->SetBasePath("");
+		pEditAnimPath->SetBasePath("");
 	}
 }
 
 void aeWPAnimator::UpdateRigBoneList(){
-	const decString selection( GetCBRigBoneText() );
+	const decString selection(GetCBRigBoneText());
 	
 	pCBBones->RemoveAllItems();
 	
-	if( pAnimator ){
+	if(pAnimator){
 		const deRig * const rig = pAnimator->GetEngineRig();
-		if( rig ){
+		if(rig){
 			const int count = rig->GetBoneCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBBones->AddItem( rig->GetBoneAt( i ).GetName() );
+			for(i=0; i<count; i++){
+				pCBBones->AddItem(rig->GetBoneAt(i)->GetName());
 			}
 		}
 		
@@ -704,31 +759,31 @@ void aeWPAnimator::UpdateRigBoneList(){
 		pCBBones->StoreFilterItems();
 	}
 	
-	pCBBones->SetText( selection );
+	pCBBones->SetText(selection);
 }
 
 const decString &aeWPAnimator::GetCBRigBoneText() const{
 	return pCBBones->GetText();
 }
 
-void aeWPAnimator::SetCBRigBoneText( const char *text ){
-	pCBBones->SetText( text );
+void aeWPAnimator::SetCBRigBoneText(const char *text){
+	pCBBones->SetText(text);
 }
 
 void aeWPAnimator::UpdateModelVertexPositionSetList(){
-	const decString selection( GetCBModelVertexPositionSetText() );
+	const decString selection(GetCBModelVertexPositionSetText());
 	
 	pCBVertexPositionSets->RemoveAllItems();
 	
-	if( pAnimator ){
+	if(pAnimator){
 		const deComponent * const component = pAnimator->GetEngineComponent();
-		const deModel * const model = component ? component->GetModel() : nullptr;
+		const deModel * const model = component ? component->GetModel().Pointer() : nullptr;
 		
-		if( model ){
+		if(model){
 			const int count = model->GetVertexPositionSetCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBVertexPositionSets->AddItem( model->GetVertexPositionSetAt( i )->GetName() );
+			for(i=0; i<count; i++){
+				pCBVertexPositionSets->AddItem(model->GetVertexPositionSetAt(i)->GetName());
 			}
 		}
 		
@@ -736,13 +791,13 @@ void aeWPAnimator::UpdateModelVertexPositionSetList(){
 		pCBVertexPositionSets->StoreFilterItems();
 	}
 	
-	pCBVertexPositionSets->SetText( selection );
+	pCBVertexPositionSets->SetText(selection);
 }
 
 const decString &aeWPAnimator::GetCBModelVertexPositionSetText() const{
 	return pCBVertexPositionSets->GetText();
 }
 
-void aeWPAnimator::SetCBModelVertexPositionSetText( const char *text ){
-	pCBVertexPositionSets->SetText( text );
+void aeWPAnimator::SetCBModelVertexPositionSetText(const char *text){
+	pCBVertexPositionSets->SetText(text);
 }

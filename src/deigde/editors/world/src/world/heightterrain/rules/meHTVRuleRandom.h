@@ -40,6 +40,10 @@
  */
 class meHTVRuleRandom : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<meHTVRuleRandom>;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Random value. */
@@ -56,23 +60,26 @@ public:
 	meHTVRuleRandom();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleRandom( const meHTVRuleRandom &rule );
+	meHTVRuleRandom(const meHTVRuleRandom &rule);
 	
+protected:
 	/** Cleans up the rule. */
-	virtual ~meHTVRuleRandom();
+	~meHTVRuleRandom() override;
+	
+public:
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Resets the rule state. */
-	virtual void Reset();
+	void Reset() override;
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv) override;
 	
 	/** \brief Copy rule. */
-	virtual meHTVRule *Copy() const;
+	meHTVRule::Ref Copy() const override;
 	/*@}*/
 };
 

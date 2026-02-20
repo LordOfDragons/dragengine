@@ -39,7 +39,7 @@ class devkDescriptorPoolPool;
 class devkDescriptorPoolSlot : public deObject{
 public:
 	/** Pool Reference. */
-	typedef devkTPoolReference<devkDescriptorPoolSlot> Ref;
+	using Ref = devkTPoolReference<devkDescriptorPoolSlot>;
 	
 	
 	
@@ -56,11 +56,11 @@ public:
 	 * Create descriptor pool slot.
 	 * \warning For use by devkDescriptorPoolPool only.
 	 */
-	devkDescriptorPoolSlot( devkDescriptorPoolPool &pool, VkDescriptorSet set );
+	devkDescriptorPoolSlot(devkDescriptorPoolPool &pool, VkDescriptorSet set);
 	
 protected:
 	/** Clean up descriptor pool slot. */
-	virtual ~devkDescriptorPoolSlot();
+	~devkDescriptorPoolSlot() override;
 	/*@}*/
 	
 	

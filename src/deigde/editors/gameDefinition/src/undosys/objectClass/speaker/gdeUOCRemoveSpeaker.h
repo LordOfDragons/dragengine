@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -37,9 +37,13 @@ class gdeObjectClass;
  * \brief Undo action object class remove speaker.
  */
 class gdeUOCRemoveSpeaker : public igdeUndo{
+public:
+	typedef deTObjectReference<gdeUOCRemoveSpeaker> Ref;
+	
+	
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -47,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveSpeaker( gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	gdeUOCRemoveSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 	
 protected:
 	/** \brief Clean up undo action. */

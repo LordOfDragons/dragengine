@@ -41,10 +41,10 @@
 ////////////////////////////
 
 deSynthesizerEffectStretch::deSynthesizerEffectStretch() :
-pMinTime( 0.0f ),
-pMaxTime( 0.0f ),
-pMinPitch( 0.0f ),
-pMaxPitch( 0.0f ){
+pMinTime(0.0f),
+pMaxTime(0.0f),
+pMinPitch(0.0f),
+pMaxPitch(0.0f){
 }
 
 deSynthesizerEffectStretch::~deSynthesizerEffectStretch(){
@@ -55,19 +55,19 @@ deSynthesizerEffectStretch::~deSynthesizerEffectStretch(){
 // Management
 ///////////////
 
-void deSynthesizerEffectStretch::SetMinTime( float stretch ){
+void deSynthesizerEffectStretch::SetMinTime(float stretch){
 	pMinTime = stretch;
 }
 
-void deSynthesizerEffectStretch::SetMaxTime( float stretch ){
+void deSynthesizerEffectStretch::SetMaxTime(float stretch){
 	pMaxTime = stretch;
 }
 
-void deSynthesizerEffectStretch::SetMinPitch( float shift ){
+void deSynthesizerEffectStretch::SetMinPitch(float shift){
 	pMinPitch = shift;
 }
 
-void deSynthesizerEffectStretch::SetMaxPitch( float shift ){
+void deSynthesizerEffectStretch::SetMaxPitch(float shift){
 	pMaxPitch = shift;
 }
 
@@ -76,6 +76,6 @@ void deSynthesizerEffectStretch::SetMaxPitch( float shift ){
 // Visiting
 /////////////
 
-void deSynthesizerEffectStretch::Visit( deSynthesizerEffectVisitor &visitor ){
-	visitor.VisitStretch( *this );
+void deSynthesizerEffectStretch::Visit(deSynthesizerEffectVisitor &visitor){
+	visitor.VisitStretch(*this);
 }

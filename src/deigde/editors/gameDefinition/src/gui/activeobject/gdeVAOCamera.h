@@ -26,10 +26,12 @@
 #define _GDEVAOCAMERA_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include "../../gamedef/objectClass/camera/gdeOCCamera.h"
 
-class gdeOCCamera;
-class igdeWDebugDrawerShape;
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+
+#include <dragengine/resources/debug/deDebugDrawer.h>
+
 class igdeWCoordSysArrows;
 
 
@@ -38,11 +40,16 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object camera for edit view.
  */
 class gdeVAOCamera : public gdeVAOSubObject{
-private:
-	gdeOCCamera *pOCCamera;
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOCamera> Ref;
 	
-	deDebugDrawerReference pDebugDrawer;
-	igdeWDebugDrawerShape *pDDSCenter;
+	
+private:
+	gdeOCCamera::Ref pOCCamera;
+	
+	deDebugDrawer::Ref pDebugDrawer;
+	igdeWDebugDrawerShape::Ref pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
 	
@@ -51,8 +58,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object camera. */
-	gdeVAOCamera( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCCamera *occamera );
+	gdeVAOCamera(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCCamera *occamera);
 	
 protected:
 	/**
@@ -61,7 +68,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~gdeVAOCamera();
+	~gdeVAOCamera() override;
 	/*@}*/
 	
 	
@@ -70,13 +77,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class camera. */
-	inline gdeOCCamera *GetOCCamera() const{ return pOCCamera; }
+	inline const gdeOCCamera::Ref &GetOCCamera() const{ return pOCCamera; }
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	void RebuildResources() override;
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	void SelectedObjectChanged() override;
 	/*@}*/
 	
 	

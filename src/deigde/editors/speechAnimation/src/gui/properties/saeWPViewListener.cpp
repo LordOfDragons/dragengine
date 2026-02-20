@@ -36,8 +36,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeWPViewListener::saeWPViewListener( saeWPView &panel ) :
-pPanel( panel ){
+saeWPViewListener::saeWPViewListener(saeWPView &panel) :
+pPanel(panel){
 }
 
 saeWPViewListener::~saeWPViewListener(){
@@ -48,18 +48,18 @@ saeWPViewListener::~saeWPViewListener(){
 // Management
 ///////////////
 
-void saeWPViewListener::SAnimationChanged( saeSAnimation *sanimation ){
+void saeWPViewListener::SAnimationChanged(saeSAnimation *sanimation){
 	pPanel.UpdateView();
 }
 
-void saeWPViewListener::ModelChanged( saeSAnimation *sanimation ){
+void saeWPViewListener::ModelChanged(saeSAnimation *sanimation){
 	pPanel.UpdateView();
 }
 
-void saeWPViewListener::SkyChanged( saeSAnimation *sanimation ){
+void saeWPViewListener::SkyChanged(saeSAnimation *sanimation){
 	pPanel.UpdateSky();
 }
 
-void saeWPViewListener::CameraChanged( saeSAnimation *sanimation ){
+void saeWPViewListener::CameraChanged(saeSAnimation *sanimation){
 	pPanel.UpdateCamera();
 }

@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPDebugContext::deoglPDebugContext( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "debugContext" );
-	SetDescription( "Enables debug context. This parameter has no effect after the module has been started" );
-	SetCategory( ecExpert );
+deoglPDebugContext::deoglPDebugContext(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("debugContext");
+	SetDescription("Enables debug context. This parameter has no effect after the module has been started");
+	SetCategory(ecExpert);
 }
 
 deoglPDebugContext::~deoglPDebugContext(){
@@ -58,6 +58,6 @@ bool deoglPDebugContext::GetParameterBool(){
 	return pOgl.GetConfiguration().GetDebugContext();
 }
 
-void deoglPDebugContext::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetDebugContext( value );
+void deoglPDebugContext::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetDebugContext(value);
 }

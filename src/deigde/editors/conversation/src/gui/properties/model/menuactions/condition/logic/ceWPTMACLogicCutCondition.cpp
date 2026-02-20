@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,16 +46,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACLogicCutCondition::ceWPTMACLogicCutCondition( ceWindowMain &windowMain,
+ceWPTMACLogicCutCondition::ceWPTMACLogicCutCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceConversationAction &action, ceCConditionLogic &logic,
-ceConversationCondition *condition ) :
-ceWPTMACopyCondition( windowMain, condition, "Logic: Cut Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pAction( &action ),
-pLogic( &logic ){
+ceConversationCondition *condition) :
+ceWPTMACopyCondition(windowMain, condition, "@Conversation.MenuAction.LogicCutCondition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pAction(&action),
+pLogic(&logic){
 }
 
 
@@ -66,8 +66,8 @@ pLogic( &logic ){
 void ceWPTMACLogicCutCondition::OnAction(){
 	ceWPTMACopyCondition::OnAction();
 	
-	igdeUndoReference undo;
-	undo.TakeOver( new ceUCCLogicRemove( pTopic, pAction, pLogic, GetCondition() ) );
-	undo->SetShortInfo( "Cut Condition" );
-	pConversation->GetUndoSystem()->Add( undo );
+	ceUCCLogicRemove::Ref undo(ceUCCLogicRemove::Ref::New(
+		pTopic, pAction, pLogic, GetCondition()));
+	undo->SetShortInfo("@Conversation.Undo.CutCondition");
+	pConversation->GetUndoSystem()->Add(undo);
 }

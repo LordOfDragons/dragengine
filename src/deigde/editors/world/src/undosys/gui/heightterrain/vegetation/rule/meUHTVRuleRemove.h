@@ -25,22 +25,24 @@
 #ifndef _MEUHTVRULEREMOVE_H_
 #define _MEUHTVRULEREMOVE_H_
 
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRule.h"
+#include "../../../../../world/heightterrain/rules/meHTVRLink.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class meHTVegetationLayer;
-class meHTVRule;
-
 
 
 /**
  * \brief Undo action height terrain vegetation remove rule.
  */
 class meUHTVRuleRemove : public igdeUndo{
+public:
+	using Ref = deTObjectReference<meUHTVRuleRemove>;
+	
+	
 private:
-	deObjectReference pVLayer;
-	deObjectReference pRule;
+	const meHTVegetationLayer::Ref pVLayer;
+	const meHTVRule::Ref pRule;
+	meHTVRLink::List pLinks;
 	
 	
 	
@@ -48,11 +50,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUHTVRuleRemove( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	meUHTVRuleRemove(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	
 protected:
 	/** \brief Clean up object. */
-	virtual ~meUHTVRuleRemove();
+
+protected:
+	~meUHTVRuleRemove() override;
+
+public:
 	/*@}*/
 	
 	
@@ -61,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo. */
-	virtual void Undo();
+	void Undo() override;
 	
 	/** \brief Redo. */
-	virtual void Redo();
+	void Redo() override;
 	/*@}*/
 };
 

@@ -29,14 +29,14 @@
 #include "deFontGlyph.h"
 #include "../deFileResource.h"
 #include "../image/deImage.h"
-#include "../../common/collection/decObjectList.h"
-#include "../../common/collection/decIntList.h"
+#include "../../common/collection/decTList.h"
 #include "../../common/math/decMath.h"
 #include "../../threading/deMutex.h"
 
 class deFontManager;
 class deBaseGraphicFont;
 class decUnicodeString;
+class cFontSize;
 
 
 /**
@@ -48,24 +48,22 @@ class decUnicodeString;
 class DE_DLL_EXPORT deFont : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deFont> Ref;
+	using Ref = deTObjectReference<deFont>;
 	
 	
 private:
-	deFontGlyph pUndefinedGlyph, *pGlyphs;
-	int pGlyphCount;
-	unsigned short *pGlyphGroups;
-	int pGlyphGroupCount;
-	unsigned short *pGlyphMap;
-	int pGlyphMapCount;
+	deFontGlyph pUndefinedGlyph;
+	decTList<deFontGlyph> pGlyphs;
+	decTList<unsigned short> pGlyphGroups;
+	decTList<unsigned short> pGlyphMap;
 	int pFontWidth, pLineHeight, pBaseLine;
 	bool pColorFont, pScalable;
 	
 	decString pImagePath;
 	deImage::Ref pImage;
 	
-	decIntList pFixedSizes;
-	decObjectList pSizes;
+	decTList<int> pFixedSizes;
+	decTObjectList<cFontSize> pSizes;
 	deMutex pMutex;
 	
 	deBaseGraphicFont *pPeerGraphic;
@@ -75,9 +73,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font resource. */
-	deFont( deFontManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deFont(deFontManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
+	deFont(const deFont&) = delete;
+	deFont& operator=(const deFont&) = delete;
+
 protected:
 	/**
 	 * \brief Clean up font.
@@ -96,13 +97,13 @@ public:
 	inline int GetLineHeight() const{ return pLineHeight; }
 	
 	/** \brief Set height of line of text in pixels. */
-	void SetLineHeight( int lineHeight );
+	void SetLineHeight(int lineHeight);
 	
 	/** \brief Font is colored and can not be tinted. */
 	inline bool GetIsColorFont() const{ return pColorFont; }
 	
 	/** \brief Set if font is colored and can not be tinted. */
-	void SetIsColorFont( bool colorFont );
+	void SetIsColorFont(bool colorFont);
 	
 	/** \brief Maximum width of all glyphs in pixels. */
 	inline int GetFontWidth() const{ return pFontWidth; }
@@ -125,24 +126,24 @@ public:
 	inline const deFontGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
 	
 	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{ return pGlyphCount; }
+	inline int GetGlyphCount() const{ return pGlyphs.GetCount(); }
 	
 	/** \brief Sets number of glyphs resetting all to default values. */
-	void SetGlyphCount( int count );
+	void SetGlyphCount(int count);
 	
 	/** \brief Glyph for unicode is defined. */
-	bool HasGlyph( int unicode ) const;
+	bool HasGlyph(int unicode) const;
 	
 	/** \brief Glyph at index. */
-	deFontGlyph &GetGlyphAt( int index );
-	const deFontGlyph &GetGlyphAt( int index ) const;
+	deFontGlyph &GetGlyphAt(int index);
+	const deFontGlyph &GetGlyphAt(int index) const;
 	
 	/**
 	 * \brief Glyph for Unicode.
 	 * 
 	 * If glyph is not defined the undefined glyph is returned.
 	 */
-	const deFontGlyph &GetGlyph( int unicode ) const;
+	const deFontGlyph &GetGlyph(int unicode) const;
 	
 	/**
 	 * \brief Glyph for Unicode.
@@ -171,7 +172,7 @@ public:
 	inline const decString &GetImagePath() const{ return pImagePath; }
 	
 	/** \brief Set path to image if existing. */
-	void SetImagePath( const char *path );
+	void SetImagePath(const char *path);
 	
 	/** \brief Image or nullptr. */
 	inline const deImage::Ref &GetImage() const{ return pImage; }
@@ -181,8 +182,8 @@ public:
 	
 	
 	/** \brief List of fixed font sizes (line heights). */
-	inline decIntList &GetFixedSizes(){ return pFixedSizes; }
-	inline const decIntList &GetFixedSizes() const{ return pFixedSizes; }
+	inline decTList<int> &GetFixedSizes(){ return pFixedSizes; }
+	inline const decTList<int> &GetFixedSizes() const{ return pFixedSizes; }
 	
 	/**
 	 * \brief Fixed size best matching line height.
@@ -265,14 +266,12 @@ public:
 	inline deBaseGraphicFont *GetPeerGraphic() const{ return pPeerGraphic; }
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicFont *peer );
+	void SetPeerGraphic(deBaseGraphicFont *peer);
 	/*@}*/
 	
 	
 	
 private:
-	void pCleanUp();
-	void pFreeGlyphMap();
 	void pCreateGlyphMap();
 	deFontSize *pGetSizeWith(int lineHeight);
 };

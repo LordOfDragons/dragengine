@@ -27,6 +27,8 @@
 
 #include "deNetworkBasic.h"
 #include "debnAddress.h"
+#include "debnSocket.h"
+#include "states/debnStateLink.h"
 
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
@@ -34,10 +36,8 @@
 class deConnection;
 class deNetworkBasic;
 class debnMessageManager;
-class debnSocket;
 class debnState;
 class debnStateLinkManager;
-class debnStateLinkList;
 class debnMessageAckList;
 class deNetworkMessage;
 class decBaseFileReader;
@@ -67,7 +67,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deConnection *pConnection;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	debnAddress pRemoteAddress;
 	int pConnectionState;
 	int pIdentifier;
@@ -76,7 +76,7 @@ private:
 	
 	eProtocols pProtocol;
 	debnStateLinkManager *pStateLinks;
-	debnStateLinkList *pModifiedStateLinks;
+	debnStateLink::List pModifiedStateLinks;
 	
 	// reliable messages
 	debnMessageManager *pReliableMessagesSend;
@@ -100,10 +100,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	debnConnection( deNetworkBasic *netBasic, deConnection *connection );
+	debnConnection(deNetworkBasic *netBasic, deConnection *connection);
 	
 	/** \brief Clean up connection. */
-	virtual ~debnConnection();
+	~debnConnection() override;
 	/*@}*/
 	
 	
@@ -114,7 +114,7 @@ public:
 	inline deConnection *GetConnection() const{ return pConnection; }
 	
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Remote address. */
 	inline const debnAddress &GetRemoteAddress() const{ return pRemoteAddress; }
@@ -123,7 +123,7 @@ public:
 	inline int GetIdentifier() const{ return pIdentifier; }
 	
 	/** \brief Set connection identifier. */
-	void SetIdentifier( int identifier );
+	void SetIdentifier(int identifier);
 	
 	/** \brief Protocol to use. */
 	inline eProtocols GetProtocol() const{ return pProtocol; }
@@ -131,67 +131,68 @@ public:
 	
 	
 	/** \brief List of modified state links. */
-	debnStateLinkList *GetModifiedStateLinks() const{ return pModifiedStateLinks; }
+	inline debnStateLink::List &GetModifiedStateLinks(){ return pModifiedStateLinks; }
+	inline const debnStateLink::List &GetModifiedStateLinks() const{ return pModifiedStateLinks; }
 	
 	/** \brief Process connection. */
-	void Process( float elapsedTime );
+	void Process(float elapsedTime);
 	
 	/** \brief Invalidate network state. */
-	void InvalidateState( debnState *state );
+	void InvalidateState(debnState *state);
 	
 	/** \brief Message matches connection. */
-	bool Matches( const debnSocket *bnSocket, const debnAddress &address ) const;
+	bool Matches(const debnSocket *bnSocket, const debnAddress &address) const;
 	
 	/** \brief Accept connection. */
-	void AcceptConnection( debnSocket *bnSocket, const debnAddress &address, eProtocols protocol );
+	void AcceptConnection(debnSocket *bnSocket, const debnAddress &address, eProtocols protocol);
 	
 	/** \brief Process connection ack message. */
-	void ProcessConnectionAck( decBaseFileReader &reader );
+	void ProcessConnectionAck(decBaseFileReader &reader);
 	
 	/** \brief Process connection close message. */
-	void ProcessConnectionClose( decBaseFileReader &reader );
+	void ProcessConnectionClose(decBaseFileReader &reader);
 	
 	/** \brief Process message. */
-	void ProcessMessage( decBaseFileReader &reader );
+	void ProcessMessage(decBaseFileReader &reader);
 	
 	/** \brief Process reliable message. */
-	void ProcessReliableMessage( decBaseFileReader &reader );
+	void ProcessReliableMessage(decBaseFileReader &reader);
 	
 	/** \brief Process reliable link state. */
-	void ProcessReliableLinkState( decBaseFileReader &reader );
+	void ProcessReliableLinkState(decBaseFileReader &reader);
 	
 	/** \brief Process reliable ack. */
-	void ProcessReliableAck( decBaseFileReader &reader );
+	void ProcessReliableAck(decBaseFileReader &reader);
 	
 	/** \brief Process link up. */
-	void ProcessLinkUp( decBaseFileReader &reader );
+	void ProcessLinkUp(decBaseFileReader &reader);
 	
 	/** \brief Process link down. */
-	void ProcessLinkDown( decBaseFileReader &reader );
+	void ProcessLinkDown(decBaseFileReader &reader);
 	
 	/** \brief Process link update. */
-	void ProcessLinkUpdate( decBaseFileReader &reader );
+	void ProcessLinkUpdate(decBaseFileReader &reader);
 	
 	/** \brief Process long reliable message. */
-	void ProcessReliableMessageLong( decBaseFileReader &reader );
+	void ProcessReliableMessageLong(decBaseFileReader &reader);
 	
 	/** \brief Process long reliable link state. */
-	void ProcessReliableLinkStateLong( decBaseFileReader &reader );
+	void ProcessReliableLinkStateLong(decBaseFileReader &reader);
 	
 	/** \brief Connect to connection object on host. */
-	virtual bool ConnectTo( const char *address );
+	bool ConnectTo(const char *address) override;
 	
 	/** \brief Disconnect from remote connection if connected. */
-	virtual void Disconnect();
+	void Disconnect() override;
 	
 	/** \brief Send message to remote connection if connected. */
-	virtual void SendMessage( deNetworkMessage *message, int maxDelay );
+	void SendMessage(deNetworkMessage *message, int maxDelay) override;
 	
 	/** \brief Send reliable message to remote connection if connected. */
-	virtual void SendReliableMessage( deNetworkMessage *message );
+	void SendReliableMessage(deNetworkMessage *message) override;
 	
 	/** \brief Link network state to remote network state. */
-	virtual void LinkState( deNetworkMessage *message, deNetworkState *state, bool readOnly );
+	void LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly) override;
 	/*@}*/
 	
 	
@@ -202,19 +203,19 @@ public:
 	inline debnConnection *GetPreviousConnection() const{ return pPreviousConnection; }
 	
 	/** \brief Set previous connection. */
-	void SetPreviousConnection( debnConnection *connection );
+	void SetPreviousConnection(debnConnection *connection);
 	
 	/** \brief Next connection. */
 	inline debnConnection *GetNextConnection() const{ return pNextConnection; }
 	
 	/** \brief Set next connection. */
-	void SetNextConnection( debnConnection *connection );
+	void SetNextConnection(debnConnection *connection);
 	
 	/** \brief Connection is registered. */
 	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
 	/** \brief Set if connection is registered. */
-	void SetIsRegistered( bool isRegistered );
+	void SetIsRegistered(bool isRegistered);
 	/*@}*/
 	
 	
@@ -223,13 +224,13 @@ private:
 	void pCleanUp();
 	void pDisconnect();
 	void pUpdateStates();
-	void pUpdateTimeouts( float elapsedTime );
+	void pUpdateTimeouts(float elapsedTime);
 	void pProcessQueuedMessages();
-	void pProcessReliableMessage( int number, decBaseFileReader &reader );
-	void pProcessLinkState( int number, decBaseFileReader &reader );
-	void pProcessReliableMessageLong( int number, decBaseFileReader &reader );
-	void pProcessLinkStateLong( int number, decBaseFileReader &reader );
-	void pAddReliableReceive( int type, int number, decBaseFileReader &reader );
+	void pProcessReliableMessage(int number, decBaseFileReader &reader);
+	void pProcessLinkState(int number, decBaseFileReader &reader);
+	void pProcessReliableMessageLong(int number, decBaseFileReader &reader);
+	void pProcessLinkStateLong(int number, decBaseFileReader &reader);
+	void pAddReliableReceive(int type, int number, decBaseFileReader &reader);
 	void pRemoveSendReliablesDone();
 	void pSendPendingReliables();
 };

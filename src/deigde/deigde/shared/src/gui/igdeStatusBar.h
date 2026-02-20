@@ -36,16 +36,32 @@
  * \brief IGDE UI StatusBar.
  */
 class DE_DLL_EXPORT igdeStatusBar : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeStatusBar>;
+	
+	
+	class cNativeStatusBar{
+	public:
+		virtual ~cNativeStatusBar() = default;
+		virtual void UpdateText() = 0;
+	};
+	
+	
 private:
 	decString pText;
 	
+	
+protected:
+	cNativeStatusBar *pNativeStatusBar;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create status line. */
-	igdeStatusBar( igdeEnvironment &environment );
+	igdeStatusBar(igdeEnvironment &environment);
 	
 	
 	
@@ -56,7 +72,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeStatusBar();
+	~igdeStatusBar() override;
 	/*@}*/
 	
 	
@@ -68,7 +84,7 @@ public:
 	inline const decString &GetText() const{ return pText; }
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Clear text. */
 	void ClearText();
@@ -85,19 +101,27 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
+	void DestroyNativeWidget() override;
 	
+	/**
+	 * \brief Drop native widget.
+	 * \warning IGDE Internal Use Only. Do not use.
+	 */
+	void DropNativeWidget() override;
 	
 	
 protected:
 	/** \brief Text changed. */
 	virtual void OnTextChanged();
+	
+	/** \brief Native widget language changed. */
+	void OnNativeWidgetLanguageChanged() override;
 	/*@}*/
 };
 

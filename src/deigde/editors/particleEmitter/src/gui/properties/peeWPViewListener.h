@@ -35,6 +35,10 @@ class peeWPView;
  * \brief View panel listener.
  */
 class peeWPViewListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<peeWPViewListener>;
+	
 private:
 	peeWPView &pPanel;
 	
@@ -44,10 +48,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWPViewListener( peeWPView &panel );
+	peeWPViewListener(peeWPView &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~peeWPViewListener();
+protected:
+	~peeWPViewListener() override;
+public:
 	/*@}*/
 	
 	
@@ -55,19 +61,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter changed. */
-	virtual void EmitterChanged( peeEmitter *emitter );
+	void EmitterChanged(peeEmitter *emitter) override;
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged( peeEmitter *emitter );
+	void SkyChanged(peeEmitter *emitter) override;
 	
 	/** \brief The environment component changed. */
-	virtual void EnvObjectChanged( peeEmitter *emitter );
+	void EnvObjectChanged(peeEmitter *emitter) override;
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( peeEmitter *emitter );
+	void ViewChanged(peeEmitter *emitter) override;
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( peeEmitter *emitter );
+	void CameraChanged(peeEmitter *emitter) override;
 	/*@}*/
 };
 

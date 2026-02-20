@@ -35,16 +35,17 @@
 class dexsiDeviceCoreMouse : public dexsiDevice{
 public:
 	/** Type holding strong reference. */
-	typedef deTObjectReference<dexsiDeviceCoreMouse> Ref;
+	using Ref = deTObjectReference<dexsiDeviceCoreMouse>;
+	
 	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	dexsiDeviceCoreMouse( deXSystemInput &module );
+	dexsiDeviceCoreMouse(deXSystemInput &module);
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~dexsiDeviceCoreMouse();
+	~dexsiDeviceCoreMouse() override;
 	/*@}*/
 	
 	
@@ -53,7 +54,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Update device state. */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 
