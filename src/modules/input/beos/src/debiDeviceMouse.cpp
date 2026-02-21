@@ -61,7 +61,7 @@ debiDevice(module)
 	SetType(deInputDevice::edtMouse);
 	
 	// add axis
-	const debiDeviceAxis::Ref axisX(debiDeviceAxis::Ref::NewWith(module));
+	auto axisX = debiDeviceAxis::Ref::New(module);
 	AddAxis(axisX);
 	axisX->SetIndex(0);
 	axisX->SetAbsolute(false);
@@ -70,7 +70,7 @@ debiDevice(module)
 	axisX->SetType(deInputDeviceAxis::eatMouse);
 	axisX->SetDisplayImages("mouseX");
 	
-	const debiDeviceAxis::Ref axisY(debiDeviceAxis::Ref::New(module));
+	auto axisY = debiDeviceAxis::Ref::New(module);
 	AddAxis(axisY);
 	axisY->SetIndex(1);
 	axisY->SetAbsolute(false);
@@ -79,7 +79,7 @@ debiDevice(module)
 	axisY->SetType(deInputDeviceAxis::eatMouse);
 	axisY->SetDisplayImages("mouseY");
 	
-	const debiDeviceAxis::Ref wheelY(debiDeviceAxis::Ref::New(module));
+	auto wheelY = debiDeviceAxis::Ref::New(module);
 	AddAxis(wheelY);
 	wheelY->SetIndex(2);
 	wheelY->SetAbsolute(false);
@@ -89,7 +89,7 @@ debiDevice(module)
 	wheelY->SetDisplayImages("mouseY");
 	wheelY->SetDisplayText("Wheel");
 	
-	const debiDeviceAxis::Ref wheelX(debiDeviceAxis::Ref::New(module));
+	auto wheelX = debiDeviceAxis::Ref::New(module);
 	AddAxis(wheelX);
 	wheelX->SetIndex(3);
 	wheelX->SetAbsolute(false);
@@ -113,7 +113,7 @@ debiDevice(module)
 	}
 	
 	if(buttonCount > 0){
-		debiDeviceButton::Ref button(debiDeviceButton::Ref::New(module));
+		auto button = debiDeviceButton::Ref::New(module);
 		AddButton(button);
 		button->SetID("left");
 		button->SetBICode(mmap.button[0]);
@@ -123,7 +123,7 @@ debiDevice(module)
 	}
 	
 	if(buttonCount > 1){
-		debiDeviceButton::Ref button(debiDeviceButton::Ref::New(module));
+		auto button = debiDeviceButton::Ref::New(module);
 		AddButton(button);
 		button->SetID("right");
 		button->SetBICode(mmap.button[1]);
@@ -133,7 +133,7 @@ debiDevice(module)
 	}
 	
 	if(buttonCount > 2){
-		debiDeviceButton::Ref button(debiDeviceButton::Ref::New(module));
+		auto button = debiDeviceButton::Ref::New(module);
 		AddButton(button);
 		button->SetID("middle");
 		button->SetBICode(mmap.button[2]);
@@ -144,7 +144,7 @@ debiDevice(module)
 	
 	int i;
 	for(i=3; i<buttonCount; i++){
-		debiDeviceButton::Ref button(debiDeviceButton::Ref::New(module));
+		auto button = debiDeviceButton::Ref::New(module);
 		AddButton(button);
 		
 		string.Format("aux%d", i - 2);
