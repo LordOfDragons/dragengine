@@ -49,6 +49,9 @@
 
 #ifdef OS_BEOS
 	#include <sys/sockio.h>
+	#include <stdio.h>
+	#include <NetworkInterface.h>
+	#include <NetworkRoster.h>
 #endif
 
 #ifdef OS_W32
@@ -526,6 +529,39 @@ uint32_t debnSocket::pScopeIdFor(const sockaddr_in6 &address){
 	}catch(...){
 		HeapFree(GetProcessHeap(), 0, addresses);
 		throw;
+	}
+	
+	return scope;
+	
+#elif defined OS_BEOS
+	BNetworkRoster &roster = BNetworkRoster::Default();
+	BNetworkInterface interface;
+	uint32_t cookie = 0;
+	uint32_t scope = 0;
+	
+	while(roster.GetNextInterface(&cookie, interface) == B_OK){
+		const int addrCount = interface.CountAddresses();
+		for(int i=0; i<addrCount; i++){
+			BNetworkInterfaceAddress ifaddr;
+			if(interface.GetAddressAt(i, ifaddr) != B_OK){
+				continue;
+			}
+			
+			const BNetworkAddress &addr = ifaddr.Address();
+			if(addr.Family() != AF_INET6){
+				continue;
+			}
+			
+			const sockaddr_in6 &sa = (const sockaddr_in6 &)addr.SockAddr();
+			if(memcmp(&sa.sin6_addr, &address.sin6_addr, sizeof(address.sin6_addr)) == 0){
+				scope = sa.sin6_scope_id;
+				break;
+			}
+		}
+		
+		if(scope != 0){
+			break;
+		}
 	}
 	
 	return scope;
