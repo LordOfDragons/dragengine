@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+#ifdef OS_BEOS
+	#define _DEFAULT_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,6 +54,7 @@
 #ifdef OS_BEOS
 	#include <sys/sockio.h>
 	#include <stdio.h>
+	#include <bsd/ifaddrs.h>
 	#include <NetworkInterface.h>
 	#include <NetworkRoster.h>
 #endif
@@ -376,7 +381,7 @@ void debnSocket::FindAddresses(decStringList &list, bool onlyPublic){
 		throw;
 	}
 	
-#elif defined OS_BEOS
+#elif defined OS_BEOS and defined NEVERCOMPILE
 	BNetworkRoster &roster = BNetworkRoster::Default();
 	BNetworkInterface interface;
 	uint32_t cookie = 0;
@@ -595,7 +600,7 @@ uint32_t debnSocket::pScopeIdFor(const sockaddr_in6 &address){
 	
 	return scope;
 	
-#elif defined OS_BEOS
+#elif defined OS_BEOS and defined NEVERCOMPILE
 	BNetworkRoster &roster = BNetworkRoster::Default();
 	BNetworkInterface interface;
 	uint32_t cookie = 0;
