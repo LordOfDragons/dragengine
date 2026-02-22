@@ -137,8 +137,10 @@ jobs:
         id: cache-extern
         uses: actions/cache@v4
         with:
-          path: ./vs/extern
-          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/*.ps1', './vs/extern/**/{*.ps1,*.sha256sum}') }}
+          path: |
+            ./vs/extern
+            ./vs/github_cached_externals
+          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/*.ps1', './vs/extern/*/*.ps1') }}
           restore-keys: |
             ${{ runner.os }}-extern-
       
