@@ -24,6 +24,10 @@ on:
         required: false
         default: true
         type: boolean
+      externalcache:
+        required: false
+        default: true
+        type: boolean
         
   workflow_dispatch:
     inputs:
@@ -53,6 +57,12 @@ on:
         required: false
         default: false
       lfscache:
+        description: 'Use LFS Cache'
+        required: false
+        default: true
+        type: boolean
+      externalcache:
+        description: 'Use External Dependencies Cache'
         required: false
         default: true
         type: boolean
@@ -123,11 +133,12 @@ jobs:
           Set-Content -Path "custom.py" -Value $Content
       
       - name: Cache External Dependencies
+        if: ${{ inputs.externalcache }}
         id: cache-extern
         uses: actions/cache@v4
         with:
           path: ./vs/extern
-          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/extern/**/*.ps1') }}
+          key: ${{ runner.os }}-extern-${{ hashFiles('./vs/*.ps1', './vs/extern/**/{*.ps1,*.sha256sum}') }}
           restore-keys: |
             ${{ runner.os }}-extern-
       
@@ -137,6 +148,7 @@ jobs:
           $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
           $Platform = "x64"
+          
           # $env:MSBUILDDISABLENODEREUSE=1
           # & msbuild /m:2 /p:CL_MPCount=2 `
           #   -tl:off /nodeReuse:false /v:m `
@@ -146,6 +158,11 @@ jobs:
             /p:BuildVersion=$BuilVersion `
             /p:Platform=$Platform `
             dragengine.sln
+          
+          # mark external cache as valid. it doesn't matter if the powershell script incorrectly
+          # runs this line although the build failed as the cache step will not cache anything
+          # if the build failed. the content also doesn't matter. the file only has to exist
+          Set-Content -Path "./vs/github_cached_externals" -Value "true"
       
       - name: Archive
         run: |
