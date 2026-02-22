@@ -162,7 +162,7 @@ jobs:
           # mark external cache as valid. it doesn't matter if the powershell script incorrectly
           # runs this line although the build failed as the cache step will not cache anything
           # if the build failed. the content also doesn't matter. the file only has to exist
-          Set-Content -Path "./vs/github_cached_externals" -Value "true"
+          Set-Content -Path "${{ github.workspace }}/vs/github_cached_externals" -Value "true"
       
       - name: Archive
         run: |
