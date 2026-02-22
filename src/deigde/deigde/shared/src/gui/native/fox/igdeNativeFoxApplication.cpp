@@ -192,8 +192,8 @@ void igdeNativeFoxApplication::Initialize(decUnicodeStringList &arguments){
 	
 	float scaleFont = 1.0f;
 	#ifdef OS_W32
-	// on windows the font size is for some strange reason rather large
-	scaleFont = 0.7f;
+	// on windows we have to counter the scaling or the font becomes huge
+	scaleFont = 1.0f / ((float)pDisplayScaleFactor / 100.0f);
 	#endif
 
 	const FXFont &fontNormal = *getNormalFont();
