@@ -428,7 +428,9 @@ void deoglRRenderWindow::CreateWindow(){
 		exStyle = WS_EX_NOPARENTNOTIFY;
 		
 	}else if(pFullScreen){
-		style = WS_VISIBLE | WS_POPUP | WS_MAXIMIZE;
+		// use WS_POPUP without WS_MAXIMIZE to avoid the work-area restriction
+		// that causes the taskbar to overlap the window
+		style = WS_VISIBLE | WS_POPUP;
 		
 	}else{
 		AdjustWindowRectEx(&windowRect, style, FALSE, 0);
@@ -473,6 +475,12 @@ void deoglRRenderWindow::CreateWindow(){
 	// activate window just in case windows messes up again
 	if(!pHostWindow){
 		SetActiveWindow(pWindow);
+	}
+	
+	// apply fullscreen settings. this sets HWND_TOPMOST and the correct window size
+	// and position so the window covers the entire screen above the taskbar
+	if(pFullScreen && !pHostWindow){
+		pUpdateFullScreen();
 	}
 	
 #elif defined OS_UNIX_X11
@@ -977,31 +985,19 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	pMacOSUpdateFullscreen();
 	
 #elif defined OS_W32
-	if(pFullScreen){
-		/*
-		LONG lStyle = GetWindowLong(hwnd, GWL_STYLE);
-		lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU);
-		SetWindowLong(hwnd, GWL_STYLE, lStyle);
-		LONG lExStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-		lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
-		SetWindowLong(hwnd, GWL_EXSTYLE, lExStyle);
-		SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
-		*/
-		SetWindowLong(pWindow, GWL_STYLE, WS_VISIBLE | WS_POPUP | WS_MAXIMIZE);
-		
-	}else{
-		SetWindowLong(pWindow, GWL_STYLE, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
-		// we need to adjust the position again... see CreateWindow
+	if(!pWindow){
+		return;
 	}
-	
-	SetWindowPos(pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
-		| SWP_NOZORDER | SWP_NOOWNERZORDER);
-	
 	if(pFullScreen){
-		// if fullscreen force the window position to fill the entire work area. relying on WS_MAXIMIZE
-		// is unfortunately not working reliably so we resize and move the window on our own to be sure
+		// use WS_POPUP without WS_MAXIMIZE. WS_MAXIMIZE interacts with the work area
+		// (which excludes the taskbar) and can cause the taskbar to overlap the window.
+		// WS_POPUP alone gives a true borderless window covering the entire screen
+		SetWindowLong(pWindow, GWL_STYLE, WS_VISIBLE | WS_POPUP);
+		
+		// set the window to cover the entire screen. using HWND_TOPMOST ensures the window
+		// sits above the taskbar which is itself a TOPMOST window. without this the taskbar
+		// overlaps the bottom of the fullscreen window covering important content
 		RECT rect{};
-		//DEASSERT_TRUE(SystemParametersInfoA(SPI_GETWORKAREA, 0, &rect, 0))
 		rect.right = GetSystemMetrics(SM_CXSCREEN);
 		rect.bottom = GetSystemMetrics(SM_CYSCREEN);
 		
@@ -1014,17 +1010,17 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d",
 			rect.left, rect.top, pWidth, pHeight);
 		
-		SetWindowPos(pWindow, NULL, pX, pY, pWidth, pHeight,
-			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
+		SetWindowPos(pWindow, HWND_TOPMOST, pX, pY, pWidth, pHeight, SWP_FRAMECHANGED);
+		
+	}else{
+		SetWindowLong(pWindow, GWL_STYLE, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
+		// we need to adjust the position again... see CreateWindow
+		
+		// remove the topmost flag that was set during fullscreen mode so the window
+		// behaves normally and does not float above all other windows
+		SetWindowPos(pWindow, HWND_NOTOPMOST, 0, 0, 0, 0,
+			SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 	}
-
-	/*
-	if(pWindow){
-		SetWindowPos(pWindow, NULL, 0, 0, pWidth, pHeight,
-			SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOMOVE | SWP_NOOWNERZORDER
-			| SWP_NOREDRAW | SWP_NOZORDER | SWP_SHOWWINDOW);
-	}
-	*/
 	
 #elif defined OS_UNIX_X11
 	if(pWindow > 255){
