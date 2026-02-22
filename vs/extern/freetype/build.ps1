@@ -7,6 +7,12 @@
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
+
+if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
+    return
+}
+
+
 $ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
