@@ -193,9 +193,42 @@ function DownloadArtifact {
         [Parameter(Mandatory=$true)][string]$UrlPath
     )
 
-    if (!(Test-Path "$SourceDir\$FilenameArtifact")) {
+    $artifactFullPath = Join-Path -Path $SourceDir -ChildPath $FilenameArtifact
+
+    if (!(Test-Path $artifactFullPath)) {
         #Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
-        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -Destination "$SourceDir\$FilenameArtifact"
+        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -Destination $artifactFullPath
+        
+        # Attempt to download a checksum file with suffix ".sha256sum" and verify the downloaded artifact.
+        $checksumFilename = "$FilenameArtifact.sha256sum"
+        $checksumPath = Join-Path -Path $SourceDir -ChildPath $checksumFilename
+
+        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$checksumFilename" -Destination $checksumPath
+
+        if ((Test-Path $checksumPath) -and (Test-Path $artifactFullPath)) {
+            try {
+                $checksumContent = Get-Content -Raw -Path $checksumPath
+                $m = [regex]::Match($checksumContent, '([A-Fa-f0-9]{64})')
+                if ($m.Success) {
+                    $expected = $m.Groups[1].Value.ToLower()
+                    # Use provided Get-FileHash shim/module
+                    $actual = (Get-FileHash -Path $artifactFullPath -Algorithm SHA256).Hash.ToLower()
+                    if ($expected -ne $actual) {
+                        Remove-Item -Path $artifactFullPath -Force -ErrorAction SilentlyContinue
+                        Remove-Item -Path $checksumPath -Force -ErrorAction SilentlyContinue
+                        throw "Checksum verification failed for ${FilenameArtifact}: expected $expected but got $actual"
+                    } else {
+                        Write-Host "Checksum verified for $FilenameArtifact"
+                    }
+                } else {
+                    Write-Verbose "Checksum file $checksumPath did not contain a valid SHA256 hash. Skipping verification."
+                }
+            } catch {
+                Write-Warning "Error while verifying checksum for ${FilenameArtifact}: $_. Verification skipped and artifact may be removed."
+            }
+        } else {
+            Write-Verbose "No checksum file found for ${FilenameArtifact}; skipping verification."
+        }
         
         #$Retries = 0
         #while ($Retries -lt 6) {
