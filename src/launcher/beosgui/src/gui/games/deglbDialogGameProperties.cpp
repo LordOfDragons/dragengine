@@ -410,10 +410,7 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 			dlg->Go();
 			Lock();
 		}else{
-			Unlock();
-			BAlert alert("Script Module", "Script module information not available.", "OK");
-			alert.Go();
-			Lock();
+			new BAlert("Script Module", "Script module information not available.", "OK")->Go(nullptr);
 		}
 		break;
 	}
