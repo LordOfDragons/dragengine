@@ -994,31 +994,46 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		// WS_POPUP alone gives a true borderless window covering the entire screen
 		SetWindowLong(pWindow, GWL_STYLE, WS_VISIBLE | WS_POPUP);
 		
-		// set the window to cover the entire screen. using HWND_TOPMOST ensures the window
-		// sits above the taskbar which is itself a TOPMOST window. without this the taskbar
-		// overlaps the bottom of the fullscreen window covering important content
-		RECT rect{};
-		rect.right = GetSystemMetrics(SM_CXSCREEN);
-		rect.bottom = GetSystemMetrics(SM_CYSCREEN);
+		// get the bounds of the monitor the window currently resides on. this is correct
+		// for multi-monitor setups and avoids the wrong primary-monitor-only result from
+		// GetSystemMetrics(SM_CXSCREEN)
+		HMONITOR hMonitor = MonitorFromWindow(pWindow, MONITOR_DEFAULTTOPRIMARY);
+		MONITORINFO mi;
+		mi.cbSize = sizeof(mi);
+		if(!GetMonitorInfo(hMonitor, &mi)){
+			mi.rcMonitor.left = 0;
+			mi.rcMonitor.top = 0;
+			mi.rcMonitor.right = GetSystemMetrics(SM_CXSCREEN);
+			mi.rcMonitor.bottom = GetSystemMetrics(SM_CYSCREEN);
+		}
 		
-		pX = rect.left;
-		pY = rect.top;
-		pWidth = rect.right - rect.left;
-		pHeight = rect.bottom - rect.top;
+		pX = mi.rcMonitor.left;
+		pY = mi.rcMonitor.top;
+		pWidth = mi.rcMonitor.right - mi.rcMonitor.left;
+		pHeight = mi.rcMonitor.bottom - mi.rcMonitor.top;
 		pNotifyPositionChanged = true;
 		pNotifySizeChanged = true;
 		pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d",
-			rect.left, rect.top, pWidth, pHeight);
+			pX, pY, pWidth, pHeight);
 		
-		SetWindowPos(pWindow, HWND_TOPMOST, pX, pY, pWidth, pHeight, SWP_FRAMECHANGED);
+		// on Windows 10/11 setting a window to TOPMOST disables the OS fullscreen-app detection
+		// which would otherwise hide the taskbar. the taskbar is also TOPMOST and Windows
+		// deliberately keeps it above other TOPMOST windows so using HWND_TOPMOST causes the
+		// taskbar to overlap the window. using HWND_TOP (non-topmost, brought to front) triggers
+		// Windows fullscreen detection: when a non-topmost foreground window covers the entire
+		// screen Windows automatically pushes the taskbar behind it.
+		SetWindowPos(pWindow, HWND_TOP, pX, pY, pWidth, pHeight,
+			SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+		
+		// ensure the window has focus so Windows fullscreen detection fires and pushes
+		// the taskbar behind our window
+		SetForegroundWindow(pWindow);
 		
 	}else{
 		SetWindowLong(pWindow, GWL_STYLE, WS_VISIBLE | WS_OVERLAPPEDWINDOW);
 		// we need to adjust the position again... see CreateWindow
 		
-		// remove the topmost flag that was set during fullscreen mode so the window
-		// behaves normally and does not float above all other windows
-		SetWindowPos(pWindow, HWND_NOTOPMOST, 0, 0, 0, 0,
+		SetWindowPos(pWindow, HWND_TOP, 0, 0, 0, 0,
 			SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER);
 	}
 	
