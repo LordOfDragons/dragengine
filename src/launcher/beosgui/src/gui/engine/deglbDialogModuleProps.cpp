@@ -274,7 +274,10 @@ void deglbDialogModuleProps::MessageReceived(BMessage *message){
 			info = "Failed to create module from library file.";
 		}
 		
-		new BAlert("Module Error Code", info, "OK")->Go(nullptr);
+		BAlert alert("Module Error Code", info, "OK");
+		Unlock();
+		alert.Go();
+		Lock();
 		break;
 	}
 		

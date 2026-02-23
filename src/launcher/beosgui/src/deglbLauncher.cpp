@@ -28,7 +28,6 @@
 #include <ctype.h>
 
 #include <Alert.h>
-#include <Autolock.h>
 
 #include "deglbLauncher.h"
 #include "config/deglbConfiguration.h"
@@ -255,9 +254,9 @@ void deglbLauncher::RunCommandLineGameStopCheck(){
 	}
 	
 	if(!pCmdLineGame){
-		BAutolock autolock(pWindowMain);
-		if(autolock.IsLocked()){
+		if(pWindowMain->LockLooper()){
 			pWindowMain->PostMessage(B_QUIT_REQUESTED);
+			pWindowMain->UnlockLooper();
 		}
 		return;
 	}
@@ -270,9 +269,9 @@ void deglbLauncher::RunCommandLineGameStopCheck(){
 		return;
 	}
 	
-	BAutolock autolock(pWindowMain);
-	if(autolock.IsLocked()){
+	if(pWindowMain->LockLooper()){
 		pWindowMain->PostMessage(B_QUIT_REQUESTED);
+		pWindowMain->UnlockLooper();
 	}
 }
 

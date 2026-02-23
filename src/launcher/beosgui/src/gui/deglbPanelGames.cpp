@@ -242,7 +242,10 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 			break;
 		}
 		if(!game->IsRunning()){
-			new BAlert("Kill Game", "This game is not running.", "OK")->Go(nullptr);
+			Window()->Unlock();
+			BAlert alert("Kill Game", "This game is not running.", "OK");
+			alert.Go();
+			Window()->Lock();
 		}else{
 			try{
 				game->KillGame();
@@ -332,7 +335,10 @@ void deglbPanelGames::pShowContextMenu(BPoint screenWhere, delGame *game){
 
 void deglbPanelGames::pRunGame(delGame *game){
 	if(game->IsRunning()){
-		new BAlert("Start Game", "This game is already running.", "OK")->Go(nullptr);
+		Window()->Unlock();
+		BAlert alert("Start Game", "This game is already running.", "OK");
+		alert.Go();
+		Window()->Lock();
 		return;
 	}
 	
@@ -346,7 +352,10 @@ void deglbPanelGames::pRunGame(delGame *game){
 			decString error;
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 			game->GetUseCustomPatch(), error)){
-				new BAlert("Can not run game", error.GetString(), "OK")->Go(nullptr);
+				Window()->Unlock();
+				BAlert alert("Can not run game", error.GetString(), "OK");
+				alert.Go();
+				Window()->Lock();
 				return;
 			}
 			
@@ -372,20 +381,26 @@ void deglbPanelGames::pRunGame(delGame *game){
 			break;
 			
 		}else if(!profile->GetValid()){
-			new BAlert("Can not run game",
-				"The Game Profile is not working. Please fix it in Game Properties.",
-				"OK")->Go(nullptr);
+			Window()->Unlock();
+			BAlert alert("Can not run game",
+				"The Game Profile is not working. Please fix it in Game Properties.", "OK");
+			alert.Go();
+			Window()->Lock();
 			break;
 			
 		}else if(!game->GetAllFormatsSupported()){
-			new BAlert("Can not run game",
-				"One or more File Formats required by the game are not working.",
-				"OK")->Go(nullptr);
+			Window()->Unlock();
+			BAlert alert("Can not run game",
+				"One or more File Formats required by the game are not working.", "OK");
+			alert.Go();
+			Window()->Lock();
 			break;
 			
 		}else{
-			new BAlert("Can not run game", "Game related properties are incorrect.",
-				"OK")->Go(nullptr);
+			Window()->Unlock();
+			BAlert alert("Can not run game", "Game related properties are incorrect.", "OK");
+			alert.Go();
+			Window()->Lock();
 			break;
 		}
 	}
@@ -395,7 +410,10 @@ void deglbPanelGames::pRunGame(delGame *game){
 
 void deglbPanelGames::pRunGameWith(delGame *game){
 	if(game->IsRunning()){
-		new BAlert("Start Game", "This game is already running.", "OK")->Go(nullptr);
+		Window()->Unlock();
+		BAlert alert("Start Game", "This game is already running.", "OK");
+		alert.Go();
+		Window()->Lock();
 		return;
 	}
 	
@@ -403,7 +421,10 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 		const char *msg = game->GetAllFormatsSupported()
 			? "Game related properties are incorrect."
 			: "One or more File Formats required by the game are not working.";
-		new BAlert("Can not run game", msg, "OK")->Go(nullptr);
+		Window()->Unlock();
+		BAlert alert("Can not run game", msg, "OK");
+		alert.Go();
+		Window()->Lock();
 		return;
 	}
 	
@@ -432,13 +453,19 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 	decString error;
 	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 	game->GetUseCustomPatch(), error)){
-		new BAlert("Can not run game", error.GetString(), "OK")->Go(nullptr);
+		Window()->Unlock();
+		BAlert alert("Can not run game", error.GetString(), "OK");
+		alert.Go();
+		Window()->Lock();
 		UpdateGameList();
 		return;
 	}
 	
 	if(runParams.GetGameProfile() && !runParams.GetGameProfile()->GetValid()){
-		new BAlert("Can not run game", "The selected profile is not valid.", "OK")->Go(nullptr);
+		Window()->Unlock();
+		BAlert alert("Can not run game", "The selected profile is not valid.", "OK");
+		alert.Go();
+		Window()->Lock();
 		UpdateGameList();
 		return;
 	}
