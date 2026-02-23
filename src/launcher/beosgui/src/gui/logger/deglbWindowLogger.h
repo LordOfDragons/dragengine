@@ -41,6 +41,13 @@ class delLoggerHistoryEntry;
  * \brief Logger Window. Display the logging history.
  */
 class deglbWindowLogger : public BWindow{
+public:
+	enum eMessages{
+		MSG_ADD_ENTRY = 'wlae',
+		MSG_CLEAR = 'wlcl'
+	};
+	
+	
 private:
 	delLoggerHistoryListener::Ref pListener;
 	delLoggerHistory::Ref pLogger;
@@ -83,6 +90,7 @@ public:
 	
 	/** \name BWindow */
 	/*@{*/
+	void MessageReceived(BMessage *message) override;
 	bool QuitRequested() override;
 	/*@}*/
 };

@@ -118,7 +118,7 @@ bool deglbLauncher::RunCommandLineGame(){
 			instance->StartEngine();
 			instance->LoadModules();
 			
-			GetGameManager().LoadGameFromDisk(*instance, pRunGame, list);
+			GetGameManager().LoadGameFromDisk(instance, pRunGame, list);
 			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);

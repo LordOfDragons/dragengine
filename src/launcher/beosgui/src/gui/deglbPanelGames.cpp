@@ -30,11 +30,9 @@
 #include <PopUpMenu.h>
 #include <MenuItem.h>
 #include <Alert.h>
-
-#ifdef OS_BEOS
-#include <unistd.h>
-#include <errno.h>
-#endif
+#include <Roster.h>
+#include <Entry.h>
+#include <Path.h>
 
 #include "deglbPanelGames.h"
 #include "deglbWindowMain.h"
@@ -503,21 +501,21 @@ void deglbPanelGames::pShowLogs(delGame *game){
 	
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(path));
 	if(!container->ExistsFile(decPath::CreatePathUnix("/logs"))){
-		Window()->Unlock();
-		BAlert alert("Show Logs",
-			"There are no logs for this game.\nLogs will be present after running the game.", "OK");
-		alert.Go();
-		Window()->Lock();
+		BAlert * const alert = new BAlert("Show Logs",
+			"There are no logs for this game.\nLogs will be present after running the game.",
+			"OK");
+		alert->Go(nullptr); // async
 		return;
 	}
 	
 	path.AddComponent("logs");
 	
-	// On Haiku, open folder using the Tracker
-	const char * const appname = "open";
-	if(fork() == 0){
-		execlp(appname, appname, path.GetPathNative().GetString(), nullptr);
-		printf("Failed running '%s' (error %d)\n", appname, errno);
-		exit(0);
+	// On Haiku, open folder in Tracker using BRoster
+	BEntry entry(path.GetPathNative().GetString());
+	entry_ref ref;
+	if(entry.GetRef(&ref) == B_OK){
+		BMessage msg(B_REFS_RECEIVED);
+		msg.AddRef("refs", &ref);
+		be_roster->Launch("application/x-vnd.Be-TRAK", &msg);
 	}
 }

@@ -55,17 +55,16 @@ deglbWindowLoggerListener::~deglbWindowLoggerListener(){
 void deglbWindowLoggerListener::MessageAdded(const delLoggerHistory &,
 const delLoggerHistoryEntry &entry){
 	// Called from a non-UI thread with history mutex locked.
-	// Post a message to the logger window to handle it safely.
-	if(pWindow.LockLooper()){
-		pWindow.AddLogEntry(entry);
-		pWindow.UnlockLooper();
-	}
+	// Use PostMessage to avoid deadlock: mutex held here, window lock needed for UI updates.
+	BMessage msg(deglbWindowLogger::MSG_ADD_ENTRY);
+	msg.AddInt32("type", (int32)entry.GetType());
+	msg.AddString("source", entry.GetSource().GetString());
+	msg.AddString("message", entry.GetMessage().GetString());
+	pWindow.PostMessage(&msg);
 }
 
 void deglbWindowLoggerListener::HistoryCleared(const delLoggerHistory &){
 	// Called from a non-UI thread with history mutex locked.
-	if(pWindow.LockLooper()){
-		pWindow.ClearLog();
-		pWindow.UnlockLooper();
-	}
+	// Use PostMessage to avoid deadlock.
+	pWindow.PostMessage(deglbWindowLogger::MSG_CLEAR);
 }

@@ -194,10 +194,9 @@ void deglbWindowMain::DisplayException(const deException &exception){
 	message.Format("An exception occurred.\nFile='%s'\nLine=%d\nReason='%s'",
 		exception.GetFile(), exception.GetLine(), exception.GetDescription());
 	
-	BAlert alert("Application Error", message.GetString(), "OK");
-	Unlock();
-	alert.Go();
-	Lock();
+	BAlert * const alert = new BAlert("Application Error", message.GetString(), "OK",
+		nullptr, nullptr, B_WIDTH_AS_USUAL, B_STOP_ALERT);
+	alert->Go(nullptr); // async, non-blocking
 }
 
 void deglbWindowMain::ShowWindowLogger(){
@@ -235,8 +234,8 @@ void deglbWindowMain::ReloadGamesAndPatches(){
 	instance->StartEngine();
 	instance->LoadModules();
 	
-	pLauncher->GetGameManager().LoadGames(*instance);
-	pLauncher->GetPatchManager().LoadPatches(*instance);
+	pLauncher->GetGameManager().LoadGames(instance);
+	pLauncher->GetPatchManager().LoadPatches(instance);
 	}
 	
 	pLauncher->GetGameManager().LoadGameConfigs();

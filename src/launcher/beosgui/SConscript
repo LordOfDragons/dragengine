@@ -8,7 +8,7 @@ envLauncher = parent_env.Clone()
 if not envLauncher['OSBeOS']:
 	Return()
 
-buildLauncher = envLauncher.get('build_guilauncher', TernaryVariableNo) != TernaryVariableNo
+buildLauncher = envLauncher['build_beosgui_launcher'] != TernaryVariableNo
 
 parent_report['build BeOS GUI Launcher'] = 'yes' if buildLauncher else 'no'
 if not buildLauncher:

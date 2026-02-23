@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include <execinfo.h>
 
 #include "deglbLauncher.h"
 #include "deglbSignalHandler.h"
@@ -76,21 +75,6 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 		}
 	}
 	
-	void *btentries[50];
-	size_t btentryCount = backtrace(btentries, 50);
-	
-	if(logger){
-		logger->LogError(logSource, "Backtrace:");
-		char ** const btStrings = backtrace_symbols(btentries, btentryCount);
-		for(size_t i=0; i<btentryCount; i++){
-			logger->LogError(logSource, btStrings[i]);
-		}
-		free(btStrings);
-	}else{
-		printf("Backtrace:\n");
-		backtrace_symbols_fd(btentries, btentryCount, fileno(stdout));
-	}
-	
 	if(logger){
 		logger->LogError(logSource, "Done, exiting.");
 	}else{
@@ -113,21 +97,6 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 		logger->LogError(logSource, "Unhandled Exception!");
 	}else{
 		printf("Unhandled Exception\n");
-	}
-	
-	void *btentries[50];
-	size_t btentryCount = backtrace(btentries, 50);
-	
-	if(logger){
-		logger->LogError(logSource, "Backtrace:");
-		char **btStrings = backtrace_symbols(btentries, btentryCount);
-		for(size_t i=0; i<btentryCount; i++){
-			logger->LogError(logSource, btStrings[i]);
-		}
-		free(btStrings);
-	}else{
-		printf("Backtrace:\n");
-		backtrace_symbols_fd(btentries, btentryCount, fileno(stdout));
 	}
 	
 	if(logger){

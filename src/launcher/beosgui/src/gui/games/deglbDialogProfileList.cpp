@@ -498,12 +498,25 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 	}
 		
 	case MSG_PROF_RENAME:{
-		// Rename the profile by appending a numeric suffix to create a unique name
+		// Rename the profile to a unique name by appending a numeric suffix
 		cEditProfile * const profile = pGetSelectedProfile();
 		if(profile){
 			ApplyChanges();
+			const decString baseName(profile->pEdit->GetName().GetString());
 			decString newName;
-			newName.Format("%s 2", profile->pEdit->GetName().GetString());
+			int num = 2;
+			while(true){
+				newName.Format("%s %d", baseName.GetString(), num++);
+				bool found = false;
+				int i;
+				for(i=0; i<pProfiles.GetCount(); i++){
+					if(pProfiles.GetAt(i)->pEdit->GetName() == newName){
+						found = true;
+						break;
+					}
+				}
+				if(!found) break;
+			}
 			profile->pEdit->SetName(newName);
 			UpdateProfileList();
 		}

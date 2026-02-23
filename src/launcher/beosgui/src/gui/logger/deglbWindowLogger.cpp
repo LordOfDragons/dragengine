@@ -175,6 +175,49 @@ void deglbWindowLogger::UpdateLogs(){
 // BWindow
 ///////////
 
+void deglbWindowLogger::MessageReceived(BMessage *message){
+	switch(message->what){
+	case MSG_ADD_ENTRY:{
+		// Entry data encoded in message: type, source, message
+		int32 type = delLoggerHistoryEntry::emtInfo;
+		const char *source = nullptr;
+		const char *msg = nullptr;
+		message->FindInt32("type", &type);
+		message->FindString("source", &source);
+		message->FindString("message", &msg);
+		
+		rgb_color color = {0, 0, 0, 255};
+		bool bold = false;
+		switch(type){
+		case delLoggerHistoryEntry::emtWarn:
+			color = {128, 0, 255, 255};
+			bold = true;
+			break;
+		case delLoggerHistoryEntry::emtError:
+			color = {255, 0, 0, 255};
+			bold = true;
+			break;
+		}
+		
+		decString text;
+		text.Format("[%s] %s", source ? source : "", msg ? msg : "");
+		pListView->AddItem(new deglbLogListItem(text.GetString(), color, bold));
+		
+		if(pLogger && pListView->CountItems() > pLogger->GetHistorySize()){
+			delete pListView->RemoveItem((int32)0);
+		}
+		pListView->ScrollToSelection();
+		break;}
+		
+	case MSG_CLEAR:
+		ClearLog();
+		break;
+		
+	default:
+		BWindow::MessageReceived(message);
+	}
+}
+
 bool deglbWindowLogger::QuitRequested(){
 	Hide();
 	return false; // do not quit, just hide
