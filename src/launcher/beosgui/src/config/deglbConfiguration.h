@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,10 +43,8 @@ private:
 	
 	deglbConfigWindow pWindowMain;
 	
-	rgb_color pClrValidBack;
-	rgb_color pClrValidText;
-	rgb_color pClrProblemBack;
-	rgb_color pClrProblemText;
+	rgb_color pClrValidBack, pClrValidText;
+	rgb_color pClrProblemBack, pClrProblemText;
 	
 	
 	
@@ -54,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	deglbConfiguration(deglbLauncher &launcher);
+	explicit deglbConfiguration(deglbLauncher &launcher);
 	
 	/** \brief Clean up configuration. */
 	~deglbConfiguration();

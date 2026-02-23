@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <LayoutBuilder.h>
 #include <GroupView.h>
 #include <TabView.h>
@@ -43,7 +39,7 @@
 
 
 // Class deglbDialogModuleProps
-///////////////////////////////
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -184,58 +180,99 @@ void deglbDialogModuleProps::SetFromModule(){
 		return;
 	}
 	
-	pEditName->SetText(pModule->GetName().GetString());
+	pEditName->SetText(pModule->GetName());
 	
 	const char *typeStr = "Unknown";
 	switch(pModule->GetType()){
-	case deModuleSystem::emtGraphic: typeStr = "Graphic"; break;
-	case deModuleSystem::emtAudio: typeStr = "Audio"; break;
-	case deModuleSystem::emtInput: typeStr = "Input"; break;
-	case deModuleSystem::emtNetwork: typeStr = "Network"; break;
-	case deModuleSystem::emtPhysics: typeStr = "Physics"; break;
-	case deModuleSystem::emtAnimator: typeStr = "Animator"; break;
-	case deModuleSystem::emtAI: typeStr = "AI"; break;
-	case deModuleSystem::emtCrashRecovery: typeStr = "Crash Recovery"; break;
-	case deModuleSystem::emtSynthesizer: typeStr = "Synthesizer"; break;
-	case deModuleSystem::emtVR: typeStr = "VR"; break;
-	default: break;
+	case deModuleSystem::emtGraphic:
+		typeStr = "Graphic";
+		break;
+		
+	case deModuleSystem::emtAudio:
+		typeStr = "Audio";
+		break;
+		
+	case deModuleSystem::emtInput:
+		typeStr = "Input";
+		break;
+		
+	case deModuleSystem::emtNetwork:
+		typeStr = "Network";
+		break;
+		
+	case deModuleSystem::emtPhysics:
+		typeStr = "Physics";
+		break;
+		
+	case deModuleSystem::emtAnimator:
+		typeStr = "Animator";
+		break;
+		
+	case deModuleSystem::emtAI:
+		typeStr = "AI";
+		break;
+		
+	case deModuleSystem::emtCrashRecovery:
+		typeStr = "Crash Recovery";
+		break;
+		
+	case deModuleSystem::emtSynthesizer:
+		typeStr = "Synthesizer";
+		break;
+		
+	case deModuleSystem::emtVR:
+		typeStr = "VR";
+		break;
+		
+	default:
+		break;
 	}
 	pEditType->SetText(typeStr);
 	
 	const char *statusStr = "Unknown";
 	switch(pModule->GetStatus()){
-	case delEngineModule::emsReady: statusStr = "Ready"; break;
-	case delEngineModule::emsNotTested: statusStr = "Not Tested"; break;
-	case delEngineModule::emsBroken: statusStr = "Broken"; break;
-	default: break;
+	case delEngineModule::emsReady:
+		statusStr = "Ready";
+		break;
+		
+	case delEngineModule::emsNotTested:
+		statusStr = "Not Tested";
+		break;
+		
+	case delEngineModule::emsBroken:
+		statusStr = "Broken";
+		break;
+		
+	default:
+		break;
 	}
 	pEditStatus->SetText(statusStr);
 	
-	pEditAuthor->SetText(pModule->GetAuthor().GetString());
-	pEditVersion->SetText(pModule->GetVersion().GetString());
-	pEditPattern->SetText(pModule->GetPattern().GetString());
+	pEditAuthor->SetText(pModule->GetAuthor());
+	pEditVersion->SetText(pModule->GetVersion());
+	pEditPattern->SetText(pModule->GetPattern());
 	
 	pChkIsFallback->SetValue(pModule->GetIsFallback() ? B_CONTROL_ON : B_CONTROL_OFF);
 	
-	pTextDescription->SetText(pModule->GetDescription().ToUTF8().GetString());
+	pTextDescription->SetText(pModule->GetDescription().ToUTF8());
 	
 	// Error code
 	decString errCodeStr;
 	errCodeStr.Format("%d", pModule->GetErrorCode());
-	pEditErrorCode->SetText(errCodeStr.GetString());
+	pEditErrorCode->SetText(errCodeStr);
 	
-	pEditLibFileName->SetText(pModule->GetLibFileName().GetString());
+	pEditLibFileName->SetText(pModule->GetLibFileName());
 	
 	decString sizeStr;
 	sizeStr.Format("%d", pModule->GetLibFileSizeShould());
-	pEditLibFileSizeShould->SetText(sizeStr.GetString());
+	pEditLibFileSizeShould->SetText(sizeStr);
 	
 	sizeStr.Format("%d", pModule->GetLibFileSizeIs());
-	pEditLibFileSizeIs->SetText(sizeStr.GetString());
+	pEditLibFileSizeIs->SetText(sizeStr);
 	
-	pEditLibFileHashShould->SetText(pModule->GetLibFileHashShould().GetString());
-	pEditLibFileHashIs->SetText(pModule->GetLibFileHashIs().GetString());
-	pEditLibFileEntryPoint->SetText(pModule->GetLibFileEntryPoint().GetString());
+	pEditLibFileHashShould->SetText(pModule->GetLibFileHashShould());
+	pEditLibFileHashIs->SetText(pModule->GetLibFileHashIs());
+	pEditLibFileEntryPoint->SetText(pModule->GetLibFileEntryPoint());
 }
 
 
@@ -258,28 +295,41 @@ void deglbDialogModuleProps::MessageReceived(BMessage *message){
 		const int errorCode = pModule->GetErrorCode();
 		const char *info = "No information available.";
 		
-		if(errorCode == 0){
+		switch (errorCode) {
+		case 0:
 			info = "Module loaded successfully.";
-		}else if(errorCode == deLibraryModule::eecLibFileNotFound){
+			break;
+			
+		case deLibraryModule::eecLibFileNotFound:
 			info = "Library file not found.";
-		}else if(errorCode == deLibraryModule::eecLibFileSizeMismatch){
+			break;
+			
+		case deLibraryModule::eecLibFileSizeMismatch:
 			info = "Library file has wrong size (possible corruption or version mismatch).";
-		}else if(errorCode == deLibraryModule::eecLibFileCheckSumMismatch){
+			break;
+			
+		case deLibraryModule::eecLibFileCheckSumMismatch:
 			info = "Library file checksum failed (possible corruption or version mismatch).";
-		}else if(errorCode == deLibraryModule::eecLibFileOpenFailed){
+			break;
+			
+		case deLibraryModule::eecLibFileOpenFailed:
 			info = "Failed to open library file.";
-		}else if(errorCode == deLibraryModule::eecLibFileEntryPointNotFound){
+			break;
+			
+		case deLibraryModule::eecLibFileEntryPointNotFound:
 			info = "Entry point not found in library file.";
-		}else if(errorCode == deLibraryModule::eecLibFileCreateModuleFailed){
+			break;
+			
+		case deLibraryModule::eecLibFileCreateModuleFailed:
 			info = "Failed to create module from library file.";
+			break;
 		}
 		
 		BAlert alert("Module Error Code", info, "OK");
 		Unlock();
 		alert.Go();
 		Lock();
-		break;
-	}
+		}break;
 		
 	default:
 		BWindow::MessageReceived(message);

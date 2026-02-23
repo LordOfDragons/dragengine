@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <LayoutBuilder.h>
 #include <GroupView.h>
@@ -55,13 +51,13 @@
 //////////////////////////////////////////////
 
 deglbDialogProfileList::cEditProfile::cEditProfile(const char *name) :
-pOriginal(nullptr),
-pEdit(new delGameProfile(name)){
+original(nullptr),
+edit(delGameProfile::Ref::New(name)){
 }
 
 deglbDialogProfileList::cEditProfile::cEditProfile(delGameProfile *profile) :
-pOriginal(profile),
-pEdit(new delGameProfile(*profile)){
+original(profile),
+edit(delGameProfile::Ref::New(*profile)){
 }
 
 deglbDialogProfileList::cEditProfile::~cEditProfile(){
@@ -75,11 +71,10 @@ deglbDialogProfileList::cEditProfile::~cEditProfile(){
 // Constructor, destructor
 ////////////////////////////
 
-deglbDialogProfileList::deglbDialogProfileList(deglbWindowMain *windowMain,
-delGameProfile *selectProfile) :
+deglbDialogProfileList::deglbDialogProfileList(deglbWindowMain *windowMain, delGameProfile *selectProfile) :
 BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(700, 500)),
-"Profiles", B_TITLED_WINDOW,
-B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+	"Profiles", B_TITLED_WINDOW,
+	B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
 pWindowMain(windowMain),
 pSem(create_sem(0, "profile_list_sem")),
 pResult(false)
@@ -210,27 +205,23 @@ void deglbDialogProfileList::UpdateProfileList(){
 	const int selectedIndex = pListProfiles->CurrentSelection();
 	cEditProfile *selectedProfile = nullptr;
 	if(selectedIndex >= 0 && selectedIndex < pProfiles.GetCount()){
-		selectedProfile = pProfiles.GetAt(selectedIndex);
+		selectedProfile = pProfiles[selectedIndex];
 	}
 	
 	pListProfiles->MakeEmpty();
 	
-	const int count = pProfiles.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		const cEditProfile &profile = *pProfiles.GetAt(i);
-		pListProfiles->AddItem(new BStringItem(profile.pEdit->GetName().GetString()));
-	}
+	pProfiles.Visit([&](const cEditProfile &profile){
+		pListProfiles->AddItem(new BStringItem(profile.edit->GetName()));
+	});
 	
 	// Restore selection
 	if(selectedProfile){
-		for(i=0; i<pProfiles.GetCount(); i++){
-			if(pProfiles.GetAt(i) == selectedProfile){
-				pListProfiles->Select(i);
-				break;
-			}
+		const int index = pProfiles.IndexOf(selectedProfile);
+		if(index >= 0){
+			pListProfiles->Select(index);
 		}
-	}else if(pProfiles.GetCount() > 0){
+		
+	}else if(pProfiles.IsNotEmpty()){
 		pListProfiles->Select(0);
 	}
 }
@@ -241,7 +232,7 @@ void deglbDialogProfileList::UpdateProfile(){
 		return;
 	}
 	
-	const delGameProfile &edit = *profile->pEdit;
+	const delGameProfile &edit = *profile->edit;
 	
 	UpdateSystemModuleList(pSysGraphic, edit.GetModuleGraphic(), edit.GetModuleGraphicVersion());
 	UpdateSystemModuleList(pSysInput, edit.GetModuleInput(), edit.GetModuleInputVersion());
@@ -256,14 +247,14 @@ void deglbDialogProfileList::UpdateProfile(){
 	UpdateSystemModuleList(pSysNetwork, edit.GetModuleNetwork(), edit.GetModuleNetworkVersion());
 	UpdateSystemModuleList(pSysVR, edit.GetModuleVR(), edit.GetModuleVRVersion());
 	
-	pEditRunArgs->SetText(edit.GetRunArguments().GetString());
+	pEditRunArgs->SetText(edit.GetRunArguments());
 	pChkReplaceRunArgs->SetValue(edit.GetReplaceRunArguments() ? B_CONTROL_ON : B_CONTROL_OFF);
 	
 	decString widthStr, heightStr;
 	widthStr.Format("%d", edit.GetWidth());
 	heightStr.Format("%d", edit.GetHeight());
-	pEditWidth->SetText(widthStr.GetString());
-	pEditHeight->SetText(heightStr.GetString());
+	pEditWidth->SetText(widthStr);
+	pEditHeight->SetText(heightStr);
 }
 
 void deglbDialogProfileList::UpdateSystemModuleList(sSystem &system, const char *moduleName,
@@ -272,40 +263,36 @@ const char *moduleVersion){
 		delete system.popup->RemoveItem((int32)0);
 	}
 	
-	const delEngineModuleList &modules = pWindowMain->GetLauncher()->GetEngine().GetModules();
-	
 	BMessage *msg = new BMessage(system.msgWhat);
 	msg->AddString("module", "");
 	msg->AddString("version", "");
 	system.popup->AddItem(new BMenuItem("< Best Available >", msg));
 	
-	const int count = modules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const delEngineModule &module = *modules.GetAt(i);
+	pWindowMain->GetLauncher()->GetEngine().GetModules().Visit([&](const delEngineModule &module){
 		if((int)module.GetType() != system.type){
-			continue;
+			return;
 		}
-		decString text;
-		text.Format("%s %s", module.GetName().GetString(), module.GetVersion().GetString());
+		auto text = decString::Formatted("{0} {1}", module.GetName(), module.GetVersion());
 		msg = new BMessage(system.msgWhat);
-		msg->AddString("module", module.GetName().GetString());
-		msg->AddString("version", module.GetVersion().GetString());
-		system.popup->AddItem(new BMenuItem(text.GetString(), msg));
-	}
+		msg->AddString("module", module.GetName());
+		msg->AddString("version", module.GetVersion());
+		system.popup->AddItem(new BMenuItem(text, msg));
+	});
 	
 	// Select matching module
 	bool found = false;
 	if(moduleName && moduleName[0]){
+		int i;
 		for(i=0; i<system.popup->CountItems(); i++){
 			BMenuItem * const item = system.popup->ItemAt(i);
 			BMessage * const imsg = item ? item->Message() : nullptr;
-			if(!imsg) continue;
+			if(!imsg){
+				continue;
+			}
+			
 			const char *mn = nullptr;
 			const char *mv = nullptr;
-			if(imsg->FindString("module", &mn) == B_OK && mn
-			&& strcmp(mn, moduleName) == 0){
+			if(imsg->FindString("module", &mn) == B_OK && mn && strcmp(mn, moduleName) == 0){
 				if(imsg->FindString("version", &mv) == B_OK && mv
 				&& (!moduleVersion || !moduleVersion[0] || strcmp(mv, moduleVersion) == 0)){
 					item->SetMarked(true);
@@ -327,7 +314,7 @@ void deglbDialogProfileList::ApplyChanges(){
 		return;
 	}
 	
-	delGameProfile &edit = *profile->pEdit;
+	delGameProfile &edit = *profile->edit;
 	
 	// Run args
 	edit.SetRunArguments(pEditRunArgs->Text());
@@ -341,16 +328,22 @@ void deglbDialogProfileList::ApplyChanges(){
 	auto applySystem = [&](sSystem &system, 
 		void (delGameProfile::*setName)(const char*),
 		void (delGameProfile::*setVersion)(const char*)){
-		BMenuItem * const item = system.popup->FindMarked();
-		if(!item) return;
-		BMessage * const msg = item->Message();
-		if(!msg) return;
-		const char *mn = nullptr;
-		const char *mv = nullptr;
-		msg->FindString("module", &mn);
-		msg->FindString("version", &mv);
-		(edit.*setName)(mn ? mn : "");
-		(edit.*setVersion)(mv ? mv : "");
+			BMenuItem * const item = system.popup->FindMarked();
+			if(!item){
+				return;
+			}
+			
+			BMessage * const msg = item->Message();
+			if(!msg){
+				return;
+			}
+			
+			const char *mn = nullptr;
+			const char *mv = nullptr;
+			msg->FindString("module", &mn);
+			msg->FindString("version", &mv);
+			(edit.*setName)(mn ? mn : "");
+			(edit.*setVersion)(mv ? mv : "");
 	};
 	
 	applySystem(pSysGraphic, &delGameProfile::SetModuleGraphic,
@@ -385,40 +378,21 @@ void deglbDialogProfileList::SaveProfiles(){
 	// Remove profiles that were deleted (not in pProfiles with original)
 	// and update/add profiles
 	
-	// Collect originals still present
-	delGameProfile::List toRemove;
-	const int profileCount = profiles.GetCount();
-	int i, j;
+	profiles.RemoveIf([&](delGameProfile *profile){
+		return pProfiles.NoneMatching([&](const cEditProfile &ep){
+			return ep.original == profile;
+		});
+	});
 	
-	for(i=0; i<profileCount; i++){
-		delGameProfile * const profile = profiles.GetAt(i);
-		bool found = false;
-		for(j=0; j<pProfiles.GetCount(); j++){
-			if(pProfiles.GetAt(j)->pOriginal == profile){
-				found = true;
-				break;
-			}
-		}
-		if(!found){
-			toRemove.Add(profile);
-		}
-	}
-	
-	for(i=0; i<toRemove.GetCount(); i++){
-		profiles.Remove(toRemove.GetAt(i));
-	}
-	
-	// Add/update profiles
-	for(i=0; i<pProfiles.GetCount(); i++){
-		cEditProfile &ep = *pProfiles.GetAt(i);
-		if(ep.pOriginal){
-			*ep.pOriginal = *ep.pEdit;
+	pProfiles.Visit([&](cEditProfile &ep){
+		if(ep.original){
+			*ep.original = *ep.edit;
+			
 		}else{
-			delGameProfile::Ref newProfile(new delGameProfile(*ep.pEdit));
-			profiles.Add(newProfile);
-			ep.pOriginal = newProfile;
+			ep.original = delGameProfile::Ref::New(*ep.edit);
+			profiles.Add(ep.original);
 		}
-	}
+	});
 }
 
 
@@ -451,20 +425,13 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		// Create profile with a unique auto-generated name
 		decString name("New Profile");
 		int num = 1;
-		while(true){
-			bool found = false;
-			int i;
-			for(i=0; i<pProfiles.GetCount(); i++){
-				if(pProfiles.GetAt(i)->pEdit->GetName() == name){
-					found = true;
-					break;
-				}
-			}
-			if(!found) break;
-			name.Format("New Profile %d", num++);
+		while(pProfiles.HasMatching([&](const cEditProfile &profile){
+			return profile.edit->GetName() == name;
+		})){
+			name.FormatSafe("New Profile {0}", num++);
 		}
 		
-		pProfiles.Add(cEditProfile::Ref::New(name.GetString()));
+		pProfiles.Add(cEditProfile::Ref::New(name));
 		UpdateProfileList();
 		pListProfiles->Select(pProfiles.GetCount() - 1);
 		UpdateProfile();
@@ -475,17 +442,14 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		cEditProfile * const profile = pGetSelectedProfile();
 		if(profile){
 			ApplyChanges();
-			decString newName;
-			newName.Format("%s Copy", profile->pEdit->GetName().GetString());
-			cEditProfile::Ref newProfile(new cEditProfile(profile->pEdit));
-			newProfile->pEdit->SetName(newName);
+			auto newProfile = cEditProfile::Ref::New(profile->edit);
+			newProfile->edit->SetName(decString::Formatted("{0} Copy", profile->edit->GetName()));
 			pProfiles.Add(newProfile);
 			UpdateProfileList();
 			pSetSelectedProfile(newProfile);
 			UpdateProfile();
 		}
-		break;
-	}
+		}break;
 		
 	case MSG_PROF_DEL:{
 		cEditProfile * const profile = pGetSelectedProfile();
@@ -502,22 +466,15 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		cEditProfile * const profile = pGetSelectedProfile();
 		if(profile){
 			ApplyChanges();
-			const decString baseName(profile->pEdit->GetName().GetString());
+			const decString baseName(profile->edit->GetName());
 			decString newName;
 			int num = 2;
-			while(true){
-				newName.Format("%s %d", baseName.GetString(), num++);
-				bool found = false;
-				int i;
-				for(i=0; i<pProfiles.GetCount(); i++){
-					if(pProfiles.GetAt(i)->pEdit->GetName() == newName){
-						found = true;
-						break;
-					}
-				}
-				if(!found) break;
+			while(pProfiles.HasMatching([&](const cEditProfile &profile){
+				return profile.edit->GetName() == newName;
+			})){
+				newName.FormatSafe("{0} {1}", baseName, num++);
 			}
-			profile->pEdit->SetName(newName);
+			profile->edit->SetName(newName);
 			UpdateProfileList();
 		}
 		break;
@@ -561,12 +518,9 @@ deglbDialogProfileList::cEditProfile *deglbDialogProfileList::pGetSelectedProfil
 }
 
 void deglbDialogProfileList::pSetSelectedProfile(cEditProfile *profile){
-	const int count = pProfiles.GetCount();
-	for(int i=0; i<count; i++){
-		if(pProfiles.GetAt(i) == profile){
-			pListProfiles->Select(i);
-			return;
-		}
+	const int index = pProfiles.IndexOf(profile);
+	if(index >= 0){
+		pListProfiles->Select(index);
 	}
 }
 
@@ -584,25 +538,22 @@ void deglbDialogProfileList::pLoadProfiles(delGameProfile *selectProfile){
 	
 	pProfiles.RemoveAll();
 	
-	const int count = profiles.GetCount();
-	int i;
-	
 	cEditProfile *selectEdit = nullptr;
 	
-	for(i=0; i<count; i++){
-		delGameProfile * const profile = profiles.GetAt(i);
-		cEditProfile::Ref ep(new cEditProfile(profile));
+	pProfiles.Visit([&](const delGameProfile *profile){
+		auto ep = cEditProfile::Ref::New(profile);
 		pProfiles.Add(ep);
-		if(profile == selectProfile){
+		if(selectProfile == profile){
 			selectEdit = ep;
 		}
-	}
+	});
 	
 	UpdateProfileList();
 	
 	if(selectEdit){
 		pSetSelectedProfile(selectEdit);
-	}else if(pProfiles.GetCount() > 0){
+		
+	}else if(pProfiles.IsNotEmpty()){
 		pListProfiles->Select(0);
 	}
 	

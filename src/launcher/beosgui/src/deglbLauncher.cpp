@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
 
 #include <Alert.h>
@@ -126,15 +123,14 @@ bool deglbLauncher::RunCommandLineGame(){
 		}
 		
 		if(list.GetCount() == 0){
-			decString message;
-			message.Format("No game definition found: %s", pRunGame.GetString());
+			const auto message = decString::Formatted("No game definition found: {0}", pRunGame);
 			GetLogger()->LogInfo(GetLogSource(), message);
-			BAlert alert("Run Game", message.GetString(), "OK");
+			BAlert alert("Run Game", message, "OK");
 			alert.Go();
 			return false;
 		}
 		
-		pCmdLineGame = list.GetAt(0);
+		pCmdLineGame = list.First();
 		
 		if(!GetGameManager().GetGames().Has(pCmdLineGame)){
 			pCmdLineGame->LoadConfig();
@@ -145,7 +141,7 @@ bool deglbLauncher::RunCommandLineGame(){
 		
 	}else{
 		try{
-			game = GetGameManager().GetGames().FindWithId(decUuid(pRunGame.GetString(), false));
+			game = GetGameManager().GetGames().FindWithId({pRunGame, false});
 		}catch(const deException &){
 		}
 		
@@ -153,7 +149,7 @@ bool deglbLauncher::RunCommandLineGame(){
 			const delGame::List matching(GetGameManager().GetGames().CollectWithAliasId(pRunGame));
 			
 			if(matching.GetCount() == 1){
-				game = matching.GetAt(0);
+				game = matching.First();
 				
 			}else if(matching.GetCount() > 1){
 				GetLogger()->LogInfoFormat(GetLogSource(),
@@ -166,9 +162,8 @@ bool deglbLauncher::RunCommandLineGame(){
 	}
 	
 	if(!game){
-		decString message;
-		message.Format("Game not found: %s", pRunGame.GetString());
-		BAlert alert("Run Game", message.GetString(), "OK");
+		const auto message = decString::Formatted("Game not found: {0}", pRunGame);
+		BAlert alert("Run Game", message, "OK");
 		alert.Go();
 		return false;
 	}
@@ -179,9 +174,8 @@ bool deglbLauncher::RunCommandLineGame(){
 		if(!pRunProfileName.IsEmpty()){
 			profile = GetGameManager().GetProfiles().FindNamed(pRunProfileName);
 			if(!profile){
-				decString message;
-				message.Format("No profile found named '%s'", pRunProfileName.GetString());
-				BAlert alert("Run Game", message.GetString(), "OK");
+				const auto message = decString::Formatted("No profile found named '{0}'", pRunProfileName);
+				BAlert alert("Run Game", message, "OK");
 				alert.Go();
 				return false;
 			}
@@ -192,9 +186,8 @@ bool deglbLauncher::RunCommandLineGame(){
 			runParams.SetGameProfile(profile);
 			
 			decString error;
-			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
-			game->GetUseCustomPatch(), error)){
-				BAlert alert("Can not run game", error.GetString(), "OK");
+			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+				BAlert alert("Can not run game", error, "OK");
 				alert.Go();
 				return false;
 			}
@@ -319,10 +312,12 @@ void deglbLauncher::pParseArguments(){
 		if(argument == "--profile"){
 			if(argumentCount - argumentIndex > 0){
 				pRunProfileName = pArguments.GetArgumentAt(++argumentIndex)->ToUTF8();
+				
 			}else{
 				GetLogger()->LogError(GetLogSource(), "Missing profile name after --profile");
 				DETHROW_INFO(deeInvalidParam, "Missing profile name after --profile");
 			}
+			
 		}else if(argument.GetLength() > 0){
 			if(argument[0] == '-'){
 				const int optionLen = argument.GetLength();
@@ -335,26 +330,29 @@ void deglbLauncher::pParseArguments(){
 						if(o == optionLen - 1){
 							if(argumentCount - argumentIndex > 0){
 								pRunProfileName = pArguments.GetArgumentAt(++argumentIndex)->ToUTF8();
+								
 							}else{
 								GetLogger()->LogError(GetLogSource(), "Missing profile name after -p");
 								DETHROW_INFO(deeInvalidParam, "Missing profile name after -p");
 							}
+							
 						}else{
-							decString message;
-							message.Format("Invalid option '%s'", argument.GetString());
+							const auto message = decString::Formatted("Invalid option '{0}'", argument);
 							GetLogger()->LogError(GetLogSource(), message);
 							DETHROW_INFO(deeInvalidParam, message);
 						}
+						
 					}else{
-						decString message;
-						message.Format("Unknown option -%c", (char)option);
+						const auto message = decString::Formatted("Unknown option -{0:c}", (char)option);
 						GetLogger()->LogError(GetLogSource(), message);
 						DETHROW_INFO(deeInvalidParam, message);
 					}
 				}
+				
 			}else{
 				break;
 			}
+			
 		}else{
 			break;
 		}
@@ -383,6 +381,7 @@ decString deglbLauncher::pUrlDecode(const char *url){
 			const char hex[3] = {walker[1], walker[2], 0};
 			decoded.AppendCharacter((char)strtol(hex, nullptr, 16));
 			walker += 3;
+			
 		}else{
 			decoded.AppendCharacter(*(walker++));
 		}

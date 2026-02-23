@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <signal.h>
 
 #include "deglbLauncher.h"
@@ -53,23 +50,28 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 			logger->LogErrorFormat(logSource,
 				"Segmentation Fault! Tried to access not allocated memory at %p.",
 				infos->si_addr);
+			
 		}else{
 			printf("Segmentation Fault! Tried to access not allocated memory at %p.\n",
 				infos->si_addr);
 		}
+		
 	}else if(infos->si_code == SEGV_ACCERR){
 		if(logger){
 			logger->LogErrorFormat(logSource,
 				"Segmentation Fault! Permission denied accessing memory at %p.",
 				infos->si_addr);
+			
 		}else{
 			printf("Segmentation Fault! Permission denied accessing memory at %p.\n",
 				infos->si_addr);
 		}
+		
 	}else{
 		if(logger){
 			logger->LogErrorFormat(logSource,
 				"Segmentation Fault! Unknown memory error at %p.", infos->si_addr);
+			
 		}else{
 			printf("Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr);
 		}
@@ -77,6 +79,7 @@ static void signalSegV(int number, siginfo_t *infos, void *ptrContext){
 	
 	if(logger){
 		logger->LogError(logSource, "Done, exiting.");
+		
 	}else{
 		printf("Done, exiting.\n");
 	}
@@ -95,12 +98,14 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 	
 	if(logger){
 		logger->LogError(logSource, "Unhandled Exception!");
+		
 	}else{
 		printf("Unhandled Exception\n");
 	}
 	
 	if(logger){
 		logger->LogError(logSource, "Done, exiting.");
+		
 	}else{
 		printf("Done, exiting.\n");
 	}
@@ -117,13 +122,13 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 ////////////////////////////
 
 deglbSignalHandler::deglbSignalHandler(deglbLauncher &launcher) :
-pLauncher(launcher){
+pLauncher(launcher),
+pSignalHandler(nullptr)
+{
 	pRegisterSignals();
 }
 
-deglbSignalHandler::~deglbSignalHandler(){
-	pSignalHandler = nullptr;
-}
+deglbSignalHandler::~deglbSignalHandler() = default;
 
 
 
@@ -132,9 +137,6 @@ deglbSignalHandler::~deglbSignalHandler(){
 
 void deglbSignalHandler::pRegisterSignals(){
 	struct sigaction action;
-	
-	pSignalHandler = this;
-	
 	memset(&action, 0, sizeof(action));
 	action.sa_sigaction = signalSegV;
 	action.sa_flags = SA_SIGINFO;

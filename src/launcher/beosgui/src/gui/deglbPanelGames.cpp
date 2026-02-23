@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <LayoutBuilder.h>
 #include <PopUpMenu.h>
@@ -52,23 +48,20 @@
 
 
 // Class deglbPanelGames::cGameListItem
-////////////////////////////////////////
+/////////////////////////////////////////
 
 deglbPanelGames::cGameListItem::cGameListItem(delGame *game) :
 pGame(game),
 pIcon(nullptr)
 {
-	// Try to get a game icon
-	const delGameIconList &icons = game->GetIcons();
-	const int iconCount = icons.GetCount();
-	
-	for(int i=0; i<iconCount; i++){
-		deglbGameIcon * const icon = dynamic_cast<deglbGameIcon*>(icons.GetAt(i));
-		if(icon && icon->GetBitmap()){
-			pIcon = icon->CreateScaledBitmap(32);
-			break;
+	game->GetIcons().VisitWhile([&](const delGameIcon::Ref &icon){
+		auto glbIcon = icon.DynamicCast<deglbGameIcon>();
+		if(glbIcon && glbIcon->GetBitmap()){
+			pIcon = glbIcon->CreateScaledBitmap(32);
+			return false;
 		}
-	}
+		return true;
+	});
 }
 
 deglbPanelGames::cGameListItem::~cGameListItem(){
@@ -79,12 +72,14 @@ deglbPanelGames::cGameListItem::~cGameListItem(){
 
 void deglbPanelGames::cGameListItem::DrawItem(BView *owner, BRect frame, bool complete){
 	if(IsSelected() || complete){
-		owner->SetHighColor(IsSelected() ? ui_color(B_LIST_SELECTED_BACKGROUND_COLOR)
+		owner->SetHighColor(IsSelected()
+			? ui_color(B_LIST_SELECTED_BACKGROUND_COLOR)
 			: owner->ViewColor());
 		owner->FillRect(frame);
 	}
 	
-	owner->SetHighColor(IsSelected() ? ui_color(B_LIST_SELECTED_ITEM_TEXT_COLOR)
+	owner->SetHighColor(IsSelected()
+		? ui_color(B_LIST_SELECTED_ITEM_TEXT_COLOR)
 		: ui_color(B_LIST_ITEM_TEXT_COLOR));
 	
 	const float iconSize = 32.0f;
@@ -102,7 +97,7 @@ void deglbPanelGames::cGameListItem::DrawItem(BView *owner, BRect frame, bool co
 	const float textY = frame.top + iconSize * 0.35f + fh.ascent;
 	
 	const decString title(pGame->GetTitle().ToUTF8());
-	owner->DrawString(title.GetString(), BPoint(textX, textY));
+	owner->DrawString(title, BPoint(textX, textY));
 	
 	// Status line
 	const char *status = pGame->GetCanRun() ? "Ready" : "Not Ready";
@@ -151,7 +146,7 @@ delGame *deglbPanelGames::GetSelectedGame() const{
 		return nullptr;
 	}
 	
-	const cGameListItem * const item = dynamic_cast<cGameListItem*>(pListGames->ItemAt(selection));
+	auto item = dynamic_cast<cGameListItem*>(pListGames->ItemAt(selection));
 	return item ? item->pGame : nullptr;
 }
 
@@ -160,7 +155,7 @@ void deglbPanelGames::SetSelectedGame(delGame *game){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const cGameListItem * const item = dynamic_cast<cGameListItem*>(pListGames->ItemAt(i));
+		auto item = dynamic_cast<cGameListItem*>(pListGames->ItemAt(i));
 		if(item && item->pGame == game){
 			pListGames->Select(i);
 			return;
@@ -177,13 +172,9 @@ void deglbPanelGames::UpdateGameList(){
 	
 	pListGames->MakeEmpty();
 	
-	const delGame::List &gameList = pWindowMain->GetLauncher()->GetGameManager().GetGames();
-	const int count = gameList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pListGames->AddItem(new cGameListItem(gameList.GetAt(i)));
-	}
+	pWindowMain->GetLauncher()->GetGameManager().GetGames().Visit([&](delGame *game){
+		pListGames->AddItem(new cGameListItem(game));
+	});
 	
 	SetSelectedGame(selectedGame);
 }
@@ -222,6 +213,7 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 			}
 			pWindowMain->GetLauncher()->GetGameManager().Verify();
 			UpdateGameList();
+			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
@@ -246,6 +238,7 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 			BAlert alert("Kill Game", "This game is not running.", "OK");
 			alert.Go();
 			Window()->Lock();
+			
 		}else{
 			try{
 				game->KillGame();
@@ -353,24 +346,24 @@ void deglbPanelGames::pRunGame(delGame *game){
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 			game->GetUseCustomPatch(), error)){
 				Window()->Unlock();
-				BAlert alert("Can not run game", error.GetString(), "OK");
+				BAlert alert("Can not run game", error, "OK");
 				alert.Go();
 				Window()->Lock();
 				return;
 			}
 			
 			if(profile->GetReplaceRunArguments()){
-				runParams.SetRunArguments(profile->GetRunArguments().GetString());
+				runParams.SetRunArguments(profile->GetRunArguments());
+				
 			}else{
-				runParams.SetRunArguments(
-					(game->GetRunArguments() + " " + profile->GetRunArguments()).GetString());
+				runParams.SetRunArguments(game->GetRunArguments() + " " + profile->GetRunArguments());
 			}
 			
 			runParams.SetWidth(profile->GetWidth());
 			runParams.SetHeight(profile->GetHeight());
 			runParams.SetFullScreen(profile->GetFullScreen());
 			
-			const decPoint windowSize(game->GetDisplayScaledWindowSize());
+			const auto windowSize = game->GetDisplayScaledWindowSize();
 			if(windowSize != decPoint()){
 				runParams.SetWidth(windowSize.x);
 				runParams.SetHeight(windowSize.y);
@@ -382,16 +375,14 @@ void deglbPanelGames::pRunGame(delGame *game){
 			
 		}else if(!profile->GetValid()){
 			Window()->Unlock();
-			BAlert alert("Can not run game",
-				"The Game Profile is not working. Please fix it in Game Properties.", "OK");
+			BAlert alert("Can not run game", "The Game Profile is not working. Please fix it in Game Properties.", "OK");
 			alert.Go();
 			Window()->Lock();
 			break;
 			
 		}else if(!game->GetAllFormatsSupported()){
 			Window()->Unlock();
-			BAlert alert("Can not run game",
-				"One or more File Formats required by the game are not working.", "OK");
+			BAlert alert("Can not run game", "One or more File Formats required by the game are not working.", "OK");
 			alert.Go();
 			Window()->Lock();
 			break;
@@ -454,7 +445,7 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 	game->GetUseCustomPatch(), error)){
 		Window()->Unlock();
-		BAlert alert("Can not run game", error.GetString(), "OK");
+		BAlert alert("Can not run game", error, "OK");
 		alert.Go();
 		Window()->Lock();
 		UpdateGameList();
@@ -472,17 +463,18 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 	
 	if(runParams.GetGameProfile()){
 		if(runParams.GetGameProfile()->GetReplaceRunArguments()){
-			runParams.SetRunArguments(runParams.GetGameProfile()->GetRunArguments().GetString());
+			runParams.SetRunArguments(runParams.GetGameProfile()->GetRunArguments());
+			
 		}else{
-			runParams.SetRunArguments((game->GetRunArguments() + " "
-				+ runParams.GetGameProfile()->GetRunArguments()).GetString());
+			runParams.SetRunArguments(game->GetRunArguments() + " "
+				+ runParams.GetGameProfile()->GetRunArguments());
 		}
 		runParams.SetWidth(runParams.GetGameProfile()->GetWidth());
 		runParams.SetHeight(runParams.GetGameProfile()->GetHeight());
 		runParams.SetFullScreen(runParams.GetGameProfile()->GetFullScreen());
 	}
 	
-	const decPoint windowSize(game->GetDisplayScaledWindowSize());
+	const auto windowSize = game->GetDisplayScaledWindowSize();
 	if(windowSize != decPoint()){
 		runParams.SetWidth(windowSize.x);
 		runParams.SetHeight(windowSize.y);
@@ -511,7 +503,7 @@ void deglbPanelGames::pShowLogs(delGame *game){
 	path.AddComponent("logs");
 	
 	// On Haiku, open folder in Tracker using BRoster
-	BEntry entry(path.GetPathNative().GetString());
+	BEntry entry(path.GetPathNative());
 	entry_ref ref;
 	if(entry.GetRef(&ref) == B_OK){
 		BMessage msg(B_REFS_RECEIVED);

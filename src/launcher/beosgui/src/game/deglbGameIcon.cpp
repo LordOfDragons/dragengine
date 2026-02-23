@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <Bitmap.h>
 #include <BitmapStream.h>
@@ -76,8 +72,8 @@ BBitmap *deglbGameIcon::CreateScaledBitmap(int size) const{
 	const int srcH = (int)pBitmap->Bounds().Height() + 1;
 	const int dstW = size;
 	const int dstH = size;
-	const uint8 * const srcData = (const uint8*)pBitmap->Bits();
-	uint8 * const dstData = (uint8*)scaled->Bits();
+	const uint8 * const srcData = reinterpret_cast<const uint8*>(pBitmap->Bits());
+	uint8 * const dstData = reinterpret_cast<uint8*>(scaled->Bits());
 	const int srcBpr = pBitmap->BytesPerRow();
 	const int dstBpr = scaled->BytesPerRow();
 	
@@ -137,6 +133,7 @@ void deglbGameIcon::pCreatePNGBitmap(){
 		if(bitmap){
 			pBitmap = bitmap;
 		}
+		
 	}catch(const deException &){
 		if(pBitmap){
 			delete pBitmap;

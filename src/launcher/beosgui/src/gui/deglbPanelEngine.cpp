@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <LayoutBuilder.h>
 #include <PopUpMenu.h>
 #include <MenuItem.h>
@@ -45,17 +41,38 @@
 
 static const char *pModuleTypeName(int type){
 	switch(type){
-	case deModuleSystem::emtGraphic: return "Graphic";
-	case deModuleSystem::emtAudio: return "Audio";
-	case deModuleSystem::emtInput: return "Input";
-	case deModuleSystem::emtNetwork: return "Network";
-	case deModuleSystem::emtPhysics: return "Physics";
-	case deModuleSystem::emtAnimator: return "Animator";
-	case deModuleSystem::emtAI: return "AI";
-	case deModuleSystem::emtCrashRecovery: return "CrashRecovery";
-	case deModuleSystem::emtSynthesizer: return "Synthesizer";
-	case deModuleSystem::emtVR: return "VR";
-	default: return "Unknown";
+	case deModuleSystem::emtGraphic:
+		return "Graphic";
+		
+	case deModuleSystem::emtAudio:
+		return "Audio";
+		
+	case deModuleSystem::emtInput:
+		return "Input";
+		
+	case deModuleSystem::emtNetwork:
+		return "Network";
+		
+	case deModuleSystem::emtPhysics:
+		return "Physics";
+		
+	case deModuleSystem::emtAnimator:
+		return "Animator";
+		
+	case deModuleSystem::emtAI:
+		return "AI";
+		
+	case deModuleSystem::emtCrashRecovery:
+		return "Crash Recovery";
+		
+	case deModuleSystem::emtSynthesizer:	
+		return "Synthesizer";
+		
+	case deModuleSystem::emtVR:
+		return "VR";
+		
+	default:
+		return "Unknown";
 	}
 }
 
@@ -63,20 +80,23 @@ static const char *pModuleTypeName(int type){
 // Class deglbPanelEngine::cModuleListItem
 //////////////////////////////////////////
 
-deglbPanelEngine::cModuleListItem::cModuleListItem(delEngineModule *module) :
-pModule(module){
+deglbPanelEngine::cModuleListItem::cModuleListItem(delEngineModule *module) : pModule(module){
 }
 
 void deglbPanelEngine::cModuleListItem::DrawItem(BView *owner, BRect frame, bool complete){
 	if(IsSelected() || complete){
-		owner->SetHighColor(IsSelected() ? ui_color(B_LIST_SELECTED_BACKGROUND_COLOR)
+		owner->SetHighColor(IsSelected()
+			? ui_color(B_LIST_SELECTED_BACKGROUND_COLOR)
 			: owner->ViewColor());
 		owner->FillRect(frame);
 	}
 	
 	const bool ready = pModule->GetStatus() == delEngineModule::emsReady;
-	rgb_color textColor = IsSelected() ? ui_color(B_LIST_SELECTED_ITEM_TEXT_COLOR)
-		: (ready ? ui_color(B_LIST_ITEM_TEXT_COLOR) : rgb_color{200, 0, 0, 255});
+	rgb_color textColor = IsSelected()
+		? ui_color(B_LIST_SELECTED_ITEM_TEXT_COLOR)
+		: (ready ?
+			ui_color(B_LIST_ITEM_TEXT_COLOR)
+			: rgb_color{200, 0, 0, 255});
 	
 	owner->SetHighColor(textColor);
 	
@@ -86,8 +106,12 @@ void deglbPanelEngine::cModuleListItem::DrawItem(BView *owner, BRect frame, bool
 	
 	decString text;
 	const char *statusStr = "Ready";
-	if(pModule->GetStatus() == delEngineModule::emsNotTested) statusStr = "Not Tested";
-	else if(pModule->GetStatus() == delEngineModule::emsBroken) statusStr = "Broken";
+	if(pModule->GetStatus() == delEngineModule::emsNotTested){
+		statusStr = "Not Tested";
+		
+	}else if(pModule->GetStatus() == delEngineModule::emsBroken){
+		statusStr = "Broken";
+	}
 	
 	text.Format("%s  [%s]  v%s  %s",
 		pModule->GetName().GetString(),
@@ -95,7 +119,7 @@ void deglbPanelEngine::cModuleListItem::DrawItem(BView *owner, BRect frame, bool
 		pModule->GetVersion().GetString(),
 		statusStr);
 	
-	owner->DrawString(text.GetString(), BPoint(frame.left + 4, textY));
+	owner->DrawString(text, BPoint(frame.left + 4, textY));
 }
 
 void deglbPanelEngine::cModuleListItem::Update(BView *owner, const BFont *font){
@@ -137,21 +161,16 @@ delEngineModule *deglbPanelEngine::GetSelectedModule() const{
 	if(selection < 0){
 		return nullptr;
 	}
-	const cModuleListItem * const item =
-		dynamic_cast<cModuleListItem*>(pListModules->ItemAt(selection));
+	auto item = dynamic_cast<cModuleListItem*>(pListModules->ItemAt(selection));
 	return item ? item->pModule : nullptr;
 }
 
 void deglbPanelEngine::UpdateModuleList(){
 	pListModules->MakeEmpty();
 	
-	const delEngineModuleList &modules = pWindowMain->GetLauncher()->GetEngine().GetModules();
-	const int count = modules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pListModules->AddItem(new cModuleListItem(modules.GetAt(i)));
-	}
+	pWindowMain->GetLauncher()->GetEngine().GetModules().Visit([&](delEngineModule *module){
+		pListModules->AddItem(new cModuleListItem(module));
+	});
 }
 
 
@@ -172,12 +191,12 @@ void deglbPanelEngine::MessageReceived(BMessage *message){
 				Window()->Unlock();
 				dlg->Go();
 				Window()->Lock();
+				
 			}catch(const deException &e){
 				pWindowMain->DisplayException(e);
 			}
 		}
-		break;
-	}
+		}break;
 		
 	default:
 		BView::MessageReceived(message);

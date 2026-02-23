@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <LayoutBuilder.h>
 #include <GroupView.h>
@@ -54,16 +50,15 @@
 
 
 // Class deglbDialogGameProperties
-///////////////////////////////////
+////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deglbDialogGameProperties::deglbDialogGameProperties(deglbWindowMain *windowMain,
-delGame *game) :
+deglbDialogGameProperties::deglbDialogGameProperties(deglbWindowMain *windowMain, delGame *game) :
 BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(600, 450)),
-"Game Properties", B_TITLED_WINDOW,
-B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+	"Game Properties", B_TITLED_WINDOW,
+	B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
 pWindowMain(windowMain),
 pGame(game),
 pSem(create_sem(0, "game_props_sem")),
@@ -218,19 +213,19 @@ void deglbDialogGameProperties::UpdateGame(){
 		return;
 	}
 	
-	pEditIdentifier->SetText(pGame->GetIdentifier().ToHexString(false).GetString());
-	pEditAliasIdentifier->SetText(pGame->GetAliasIdentifier().GetString());
-	pEditTitle->SetText(pGame->GetTitle().ToUTF8().GetString());
-	pTextDescription->SetText(pGame->GetDescription().ToUTF8().GetString());
-	pEditCreator->SetText(pGame->GetCreator().ToUTF8().GetString());
-	pEditHomepage->SetText(pGame->GetHomepage().GetString());
-	pEditGameDir->SetText(pGame->GetGameDirectory().GetString());
-	pEditDelgaFile->SetText(pGame->GetDelgaFile().GetString());
-	pEditDataDir->SetText(pGame->GetDataDirectory().GetString());
-	pEditScriptDir->SetText(pGame->GetScriptDirectory().GetString());
-	pEditScriptModule->SetText(pGame->GetScriptModule().GetString());
-	pEditScriptModuleVersion->SetText(pGame->GetScriptModuleVersion().GetString());
-	pEditRunArgs->SetText(pGame->GetRunArguments().GetString());
+	pEditIdentifier->SetText(pGame->GetIdentifier().ToHexString(false));
+	pEditAliasIdentifier->SetText(pGame->GetAliasIdentifier());
+	pEditTitle->SetText(pGame->GetTitle().ToUTF8());
+	pTextDescription->SetText(pGame->GetDescription().ToUTF8());
+	pEditCreator->SetText(pGame->GetCreator().ToUTF8());
+	pEditHomepage->SetText(pGame->GetHomepage());
+	pEditGameDir->SetText(pGame->GetGameDirectory());
+	pEditDelgaFile->SetText(pGame->GetDelgaFile());
+	pEditDataDir->SetText(pGame->GetDataDirectory());
+	pEditScriptDir->SetText(pGame->GetScriptDirectory());
+	pEditScriptModule->SetText(pGame->GetScriptModule());
+	pEditScriptModuleVersion->SetText(pGame->GetScriptModuleVersion());
+	pEditRunArgs->SetText(pGame->GetRunArguments());
 	
 	UpdateProfileList();
 	UpdatePatchList();
@@ -261,11 +256,11 @@ void deglbDialogGameProperties::UpdateProfileList(){
 		delGameProfile * const profile = profiles.GetAt(i);
 		msg = new BMessage(MSG_PROFILE_CHANGED);
 		msg->AddPointer("profile", profile);
-		pPopupProfile->AddItem(new BMenuItem(profile->GetName().GetString(), msg));
+		pPopupProfile->AddItem(new BMenuItem(profile->GetName(), msg));
 	}
 	
 	// Select active profile
-	delGameProfile * const active = pGame->GetActiveProfile();
+	const delGameProfile * const active = pGame->GetActiveProfile();
 	if(active){
 		for(i=0; i<pPopupProfile->CountItems(); i++){
 			BMenuItem * const item = pPopupProfile->ItemAt(i);
@@ -277,6 +272,7 @@ void deglbDialogGameProperties::UpdateProfileList(){
 				break;
 			}
 		}
+		
 	}else if(pPopupProfile->CountItems() > 0){
 		pPopupProfile->ItemAt(0)->SetMarked(true);
 	}
@@ -285,6 +281,7 @@ void deglbDialogGameProperties::UpdateProfileList(){
 	delGameProfile * const validateProfile = pGame->GetProfileToUse();
 	if(validateProfile && validateProfile->GetValid()){
 		pLabProfileProblems->SetText("");
+		
 	}else{
 		pLabProfileProblems->SetText("Profile has problems. The game cannot run.");
 	}
@@ -300,20 +297,15 @@ void deglbDialogGameProperties::UpdatePatchList(){
 	pPopupPatch->AddItem(new BMenuItem("< No Patch >", msg));
 	
 	const delPatchManager &patchMgr = pWindowMain->GetLauncher()->GetPatchManager();
-	const delPatch::List &patches = patchMgr.GetPatches();
 	const decUuid &gameId = pGame->GetIdentifier();
-	const int count = patches.GetCount();
-	int i;
 	
-	for(i=0; i<count; i++){
-		delPatch * const patch = patches.GetAt(i);
-		if(patch->GetGameID() != gameId){
-			continue;
+	patchMgr.GetPatches().Visit([&](delPatch &p){
+		if(p.GetGameID() == gameId){
+			BMessage *msg = new BMessage(MSG_PATCH_CHANGED);
+			msg->AddPointer("patch", &p);
+			pPopupPatch->AddItem(new BMenuItem(p.GetName().ToUTF8(), msg));
 		}
-		msg = new BMessage(MSG_PATCH_CHANGED);
-		msg->AddPointer("patch", patch);
-		pPopupPatch->AddItem(new BMenuItem(patch->GetName().ToUTF8().GetString(), msg));
-	}
+	});
 	
 	if(pPopupPatch->CountItems() > 0){
 		pPopupPatch->ItemAt(0)->SetMarked(true);
@@ -327,18 +319,11 @@ void deglbDialogGameProperties::UpdateFileFormatList(){
 		return;
 	}
 	
-	const delFileFormat::List &formats = pGame->GetFileFormats();
-	const int count = formats.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const delFileFormat &format = formats.GetAt(i);
-		decString text;
-		text.Format("[%s] %s",
-			format.GetSupported() ? "OK" : "FAIL",
-			format.GetPattern().GetString());
-		pListFileFormats->AddItem(new BStringItem(text.GetString()));
-	}
+	pGame->GetFileFormats().Visit([&](const delFileFormat &format){
+		auto text = decString::Formatted("[{0}] {1}",
+			format.GetSupported() ? "OK" : "FAIL", format.GetPattern());
+		pListFileFormats->AddItem(new BStringItem(text));
+	});
 }
 
 
@@ -386,6 +371,7 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 				gameManager.SaveGameConfigs();
 				UpdateProfileList();
 			}
+			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
@@ -402,21 +388,20 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 		break;
 		
 	case MSG_SCRMODINFO:{
-		delEngineModule * const module = pWindowMain->GetLauncher()->GetEngine().GetModules().
-			GetNamed(pGame->GetScriptModule());
+		auto module = pWindowMain->GetLauncher()->GetEngine().GetModules().GetNamed(pGame->GetScriptModule());
 		if(module){
 			deglbDialogModuleProps *dlg = new deglbDialogModuleProps(pWindowMain, module);
 			Unlock();
 			dlg->Go();
 			Lock();
+			
 		}else{
 			Unlock();
 			BAlert alert("Script Module", "Script module information not available.", "OK");
 			alert.Go();
 			Lock();
 		}
-		break;
-	}
+		}break;
 		
 	default:
 		BWindow::MessageReceived(message);

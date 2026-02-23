@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <Application.h>
 #include <LayoutBuilder.h>
@@ -56,7 +52,7 @@
 ////////////////
 
 // 1 second pulse in microseconds
-#define PULSE_TIME_USEC	1000000LL
+#define PULSE_TIME_USEC 1000000LL
 
 
 // Class deglbWindowMain
@@ -190,11 +186,11 @@ void deglbWindowMain::DisplayException(const deException &exception){
 		pLauncher->GetLogger()->LogException("Application Error", exception);
 	}
 	
-	decString message;
-	message.Format("An exception occurred.\nFile='%s'\nLine=%d\nReason='%s'",
+	auto message = decString::Formatted(
+		"An exception occurred.\nFile='{0}'\nLine={1}\nReason='{2}'",
 		exception.GetFile(), exception.GetLine(), exception.GetDescription());
 	
-	BAlert * const alert = new BAlert("Application Error", message.GetString(), "OK",
+	BAlert * const alert = new BAlert("Application Error", message, "OK",
 		nullptr, nullptr, B_WIDTH_AS_USUAL, B_STOP_ALERT);
 	alert->Go(nullptr); // async, non-blocking
 }
@@ -214,6 +210,7 @@ void deglbWindowMain::ShowWindowLogger(){
 void deglbWindowMain::SetProgressVisible(bool visible){
 	if(visible){
 		pProgressBar->Show();
+		
 	}else{
 		pProgressBar->Hide();
 	}
@@ -224,13 +221,13 @@ void deglbWindowMain::SetProgress(float progress){
 }
 
 void deglbWindowMain::SetProgressText(const decUnicodeString &text){
-	pStatusText->SetText(text.ToUTF8().GetString());
+	pStatusText->SetText(text.ToUTF8());
 }
 
 void deglbWindowMain::ReloadGamesAndPatches(){
 	{
-	const delEngineInstance::Ref instance(pLauncher->GetEngineInstanceFactory().
-		CreateEngineInstance(*pLauncher, pLauncher->GetEngine().GetLogFile()));
+	const auto instance = pLauncher->GetEngineInstanceFactory().
+		CreateEngineInstance(*pLauncher, pLauncher->GetEngine().GetLogFile());
 	instance->StartEngine();
 	instance->LoadModules();
 	
@@ -270,6 +267,7 @@ void deglbWindowMain::MessageReceived(BMessage *message){
 	case MSG_VIEW_LOGGING:
 		try{
 			ShowWindowLogger();
+			
 		}catch(const deException &e){
 			DisplayException(e);
 		}
@@ -284,6 +282,7 @@ void deglbWindowMain::MessageReceived(BMessage *message){
 			
 			pLauncher->GetGameManager().Verify();
 			pPanelGames->UpdateGameList();
+			
 		}catch(const deException &e){
 			DisplayException(e);
 		}

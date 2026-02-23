@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <LayoutBuilder.h>
 #include <MenuItem.h>
 
@@ -42,15 +38,15 @@
 
 
 // Class deglbDialogRunGameWith
-///////////////////////////////
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 deglbDialogRunGameWith::deglbDialogRunGameWith(deglbWindowMain *windowMain, delGame *game) :
 BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(500, 200)),
-"Select Profile", B_TITLED_WINDOW,
-B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+	"Select Profile", B_TITLED_WINDOW,
+	B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
 pWindowMain(windowMain),
 pGame(game),
 pProfile(game->GetActiveProfile()),
@@ -114,7 +110,6 @@ bool deglbDialogRunGameWith::Go(){
 
 void deglbDialogRunGameWith::UpdateGame(){
 	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-	const delGameProfile::List &profiles = gameManager.GetProfiles();
 	
 	while(pPopupProfile->CountItems() > 0){
 		delete pPopupProfile->RemoveItem((int32)0);
@@ -130,14 +125,11 @@ void deglbDialogRunGameWith::UpdateGame(){
 		pPopupProfile->AddItem(new BMenuItem("< Custom Profile >", msg));
 	}
 	
-	const int count = profiles.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delGameProfile * const profile = profiles.GetAt(i);
+	gameManager.GetProfiles().Visit([&](delGameProfile *profile){
 		msg = new BMessage(MSG_PROFILE_CHANGED);
 		msg->AddPointer("profile", profile);
-		pPopupProfile->AddItem(new BMenuItem(profile->GetName().GetString(), msg));
-	}
+		pPopupProfile->AddItem(new BMenuItem(profile->GetName(), msg));
+	});
 	
 	// Select current profile
 	delGameProfile *sel = pProfile;
@@ -146,9 +138,12 @@ void deglbDialogRunGameWith::UpdateGame(){
 		for(i=0; i<pPopupProfile->CountItems(); i++){
 			BMenuItem * const item = pPopupProfile->ItemAt(i);
 			BMessage * const imsg = item ? item->Message() : nullptr;
-			if(!imsg) continue;
+			if(!imsg){
+				continue;
+			}
+			
 			void *ptr = nullptr;
-			if(imsg->FindPointer("profile", &ptr) == B_OK && ptr == sel){
+			if(imsg->FindPointer("profile", &ptr) == B_OK && sel == ptr){
 				found = item;
 				break;
 			}
@@ -156,6 +151,7 @@ void deglbDialogRunGameWith::UpdateGame(){
 	}
 	if(found){
 		found->SetMarked(true);
+		
 	}else if(pPopupProfile->CountItems() > 0){
 		pPopupProfile->ItemAt(0)->SetMarked(true);
 	}
@@ -171,6 +167,7 @@ void deglbDialogRunGameWith::UpdateGame(){
 	
 	if(validateProfile && validateProfile->GetValid()){
 		pLabProblem->SetText("");
+		
 	}else{
 		pLabProblem->SetText("Profile has problems. The game will not run with it.");
 	}
@@ -198,11 +195,10 @@ void deglbDialogRunGameWith::MessageReceived(BMessage *message){
 	case MSG_PROFILE_CHANGED:{
 		void *ptr = nullptr;
 		if(message->FindPointer("profile", &ptr) == B_OK){
-			pProfile = (delGameProfile*)ptr;
+			pProfile = reinterpret_cast<delGameProfile*>(ptr);
 			UpdateGame();
 		}
-		break;
-	}
+		}break;
 		
 	case MSG_EDIT_PROFILES:{
 		delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
@@ -229,6 +225,7 @@ void deglbDialogRunGameWith::MessageReceived(BMessage *message){
 				gameManager.SaveGameConfigs();
 				UpdateGame();
 			}
+			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}

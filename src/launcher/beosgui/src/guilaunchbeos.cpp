@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <signal.h>
 
 #include <Application.h>
@@ -57,6 +54,7 @@ public:
 			deglbWindowMain * const window = new deglbWindowMain(pArgc, pArgv);
 			if(window->RunCommandLineActions()){
 				window->Show();
+				
 			}else{
 				Quit();
 			}
@@ -77,15 +75,12 @@ int main(int argc, char **argv){
 	act.sa_handler = SIG_IGN;
 	sigaction(SIGPIPE, &act, nullptr);
 	
-	int returnValue = 0;
-	
 	try{
-		deglbApplication app(argc, argv);
-		app.Run();
+		deglbApplication(argc, argv).Run();
+		return 0;
+		
 	}catch(const deException &e){
 		e.PrintError();
-		returnValue = -1;
+		return -1;
 	}
-	
-	return returnValue;
 }

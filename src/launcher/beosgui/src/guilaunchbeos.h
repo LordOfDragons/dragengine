@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEGLB_GUILAUNCHB_H_
-#define _DEGLB_GUILAUNCHB_H_
+#ifndef _DEGLB_GUILAUNCHBEOS_H_
+#define _DEGLB_GUILAUNCHBEOS_H_
 
 // end of include only once
 #endif

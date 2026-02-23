@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deglbWindowLogger.h"
 #include "deglbWindowLoggerListener.h"
 
@@ -35,7 +32,7 @@
 
 
 // Class deglbWindowLoggerListener
-///////////////////////////////////
+////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -58,8 +55,8 @@ const delLoggerHistoryEntry &entry){
 	// Use PostMessage to avoid deadlock: mutex held here, window lock needed for UI updates.
 	BMessage msg(deglbWindowLogger::MSG_ADD_ENTRY);
 	msg.AddInt32("type", (int32)entry.GetType());
-	msg.AddString("source", entry.GetSource().GetString());
-	msg.AddString("message", entry.GetMessage().GetString());
+	msg.AddString("source", entry.GetSource());
+	msg.AddString("message", entry.GetMessage());
 	pWindow.PostMessage(&msg);
 }
 

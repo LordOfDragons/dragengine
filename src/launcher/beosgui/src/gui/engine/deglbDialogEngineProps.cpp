@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <LayoutBuilder.h>
 #include <GroupView.h>
@@ -47,7 +43,7 @@
 
 
 // Class deglbDialogEngineProps
-///////////////////////////////
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -136,12 +132,11 @@ void deglbDialogEngineProps::Go(){
 }
 
 void deglbDialogEngineProps::SetFromEngine(){
-	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
 	
-	pEditPathConfig->SetText(engine.GetPathConfig().GetString());
-	pEditPathShare->SetText(engine.GetPathShare().GetString());
-	pEditPathLib->SetText(engine.GetPathLib().GetString());
+	pEditPathConfig->SetText(engine.GetPathConfig());
+	pEditPathShare->SetText(engine.GetPathShare());
+	pEditPathLib->SetText(engine.GetPathLib());
 	
 	UpdateProfileList();
 }
@@ -161,14 +156,11 @@ void deglbDialogEngineProps::UpdateProfileList(){
 	pPopupProfile->AddItem(new BMenuItem("< Default Profile >", msg));
 	
 	// Add profiles
-	const int count = profiles.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delGameProfile * const profile = profiles.GetAt(i);
+	profiles.Visit([&](delGameProfile *p){
 		msg = new BMessage(MSG_PROFILE_CHANGED);
-		msg->AddPointer("profile", profile);
-		pPopupProfile->AddItem(new BMenuItem(profile->GetName().GetString(), msg));
-	}
+		msg->AddPointer("profile", p);
+		pPopupProfile->AddItem(new BMenuItem(p->GetName(), msg));
+	});
 	
 	// Select active profile
 	delGameProfile * const active = gameManager.GetActiveProfile();
@@ -176,9 +168,15 @@ void deglbDialogEngineProps::UpdateProfileList(){
 	if(active){
 		for(i=0; i<pPopupProfile->CountItems(); i++){
 			BMenuItem * const item = pPopupProfile->ItemAt(i);
-			if(!item) continue;
+			if(!item){
+				continue;
+			}
+			
 			BMessage * const imsg = item->Message();
-			if(!imsg) continue;
+			if(!imsg){
+				continue;
+			}
+			
 			void *ptr = nullptr;
 			if(imsg->FindPointer("profile", &ptr) == B_OK && ptr == active){
 				found = item;
@@ -189,6 +187,7 @@ void deglbDialogEngineProps::UpdateProfileList(){
 	
 	if(found){
 		found->SetMarked(true);
+		
 	}else if(pPopupProfile->CountItems() > 0){
 		pPopupProfile->ItemAt(0)->SetMarked(true);
 	}
@@ -210,7 +209,7 @@ void deglbDialogEngineProps::MessageReceived(BMessage *message){
 		void *ptr = nullptr;
 		if(message->FindPointer("profile", &ptr) == B_OK){
 			delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-			gameManager.SetActiveProfile((delGameProfile*)ptr);
+			gameManager.SetActiveProfile(reinterpret_cast<delGameProfile*>(ptr));
 			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
 		}
 		break;
@@ -236,11 +235,11 @@ void deglbDialogEngineProps::MessageReceived(BMessage *message){
 				gameManager.SaveGameConfigs();
 				UpdateProfileList();
 			}
+			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
-		break;
-	}
+		}break;
 		
 	default:
 		BWindow::MessageReceived(message);

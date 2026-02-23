@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,11 +81,10 @@ private:
 	public:
 		using Ref = deTObjectReference<cEditProfile>;
 		
-		delGameProfile::Ref pOriginal;
-		delGameProfile::Ref pEdit;
+		delGameProfile::Ref original, edit;
 		
-		cEditProfile(const char *name);
-		cEditProfile(delGameProfile *profile);
+		explicit cEditProfile(const char *name);
+		explicit cEditProfile(delGameProfile *profile);
 		
 	protected:
 		~cEditProfile() override;
@@ -175,8 +174,7 @@ public:
 private:
 	cEditProfile *pGetSelectedProfile() const;
 	void pSetSelectedProfile(cEditProfile *profile);
-	void pCreateSystem(sSystem &system, const char *label, int type, uint32 msgWhat,
-		BView *container);
+	void pCreateSystem(sSystem &system, const char *label, int type, uint32 msgWhat, BView *container);
 	void pLoadProfiles(delGameProfile *selectProfile);
 };
 

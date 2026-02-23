@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "deglbConfigXML.h"
 #include "deglbConfiguration.h"
@@ -60,8 +56,7 @@ pClrProblemBack({255, 128, 128, 255}),
 pClrProblemText({0, 0, 0, 255}){
 }
 
-deglbConfiguration::~deglbConfiguration(){
-}
+deglbConfiguration::~deglbConfiguration() = default;
 
 
 
@@ -71,8 +66,8 @@ deglbConfiguration::~deglbConfiguration(){
 void deglbConfiguration::LoadConfiguration(){
 	const decString &logSource = pLauncher.GetLogSource();
 	deglbConfigXML configXML(pLauncher.GetLogger(), logSource);
-	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
-	deLogger &logger = *pLauncher.GetLogger();
+	deVirtualFileSystem &vfs = pLauncher.GetVFS();
+	deLogger &logger = pLauncher.GetLogger();
 	decPath pathFile;
 	
 	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_SYSTEM);
@@ -81,10 +76,12 @@ void deglbConfiguration::LoadConfiguration(){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
 			logger.LogInfo(logSource, "Reading system configuration file");
 			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
+			
 		}else{
 			logger.LogError(logSource, "System configuration file is not a regular file");
 			DETHROW_INFO(deeInvalidParam, "System configuration file is not a regular file");
 		}
+		
 	}else{
 		logger.LogInfo(logSource, "System configuration file not found, skipped");
 	}
@@ -95,10 +92,12 @@ void deglbConfiguration::LoadConfiguration(){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
 			logger.LogInfo(logSource, "Reading user configuration file");
 			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
+			
 		}else{
 			logger.LogError(logSource, "User configuration file is not a regular file");
 			DETHROW_INFO(deeInvalidParam, "User configuration file is not a regular file");
 		}
+		
 	}else{
 		logger.LogInfo(logSource, "User configuration file not found, will be created upon exiting");
 	}
@@ -112,10 +111,10 @@ void deglbConfiguration::SaveConfiguration(){
 	}
 	
 	const decString &logSource = pLauncher.GetLogSource();
-	deLogger &logger = *pLauncher.GetLogger();
+	deLogger &logger = pLauncher.GetLogger();
 	
 	deglbConfigXML configXML(pLauncher.GetLogger(), logSource);
-	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
+	deVirtualFileSystem &vfs = pLauncher.GetVFS();
 	decPath pathFile;
 	
 	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
@@ -125,10 +124,12 @@ void deglbConfiguration::SaveConfiguration(){
 		
 		try{
 			configXML.WriteToFile(vfs.OpenFileForWriting(pathFile), *this);
+			
 		}catch(const deException &){
 			logger.LogError(logSource,
 				"Failed to write user configuration file (file permission problem)");
 		}
+		
 	}else{
 		logger.LogError(logSource,
 			"Failed to write user configuration file (file writing problem)");
