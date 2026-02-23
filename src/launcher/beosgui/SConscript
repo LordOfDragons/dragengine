@@ -1,0 +1,80 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLauncher = parent_env.Clone()
+
+# only build on BeOS/Haiku
+if not envLauncher['OSBeOS']:
+	Return()
+
+buildLauncher = envLauncher.get('build_guilauncher', TernaryVariableNo) != TernaryVariableNo
+
+parent_report['build BeOS GUI Launcher'] = 'yes' if buildLauncher else 'no'
+if not buildLauncher:
+	Return()
+
+# fetch values in expanded form for later use
+pathBin = envLauncher.subst(envLauncher['path_launcher_bin'])
+pathConfig = envLauncher.subst(envLauncher['path_launcher_config'])
+pathData = envLauncher.subst(envLauncher['path_launcher_data'])
+pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
+pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
+
+libs = ['root', 'be']
+
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
+libs.extend(parent_targets['delauncher']['binlibs'])
+
+# compile flags
+envLauncher.Append(CXXFLAGS = [
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_SHARE_PATH', pathShare),
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_GAMES_PATH', pathGames),
+	cmdlineDefinePath(envLauncher, 'LAUNCHER_CONFIG_PATH', pathConfig)])
+
+if not envLauncher['with_debug']:
+	envLauncher.Append(LINKFLAGS = ['-s'])
+
+envLauncher.Append(CPPFLAGS = envLauncher['SANITIZE_FLAGS'])
+envLauncher.Append(LINKFLAGS = envLauncher['SANITIZE_FLAGS'])
+
+# source files
+sources = []
+headers = []
+globFiles(envLauncher, 'src', '*.cpp', sources)
+globFiles(envLauncher, 'src', '*.h', headers)
+
+objects = [envLauncher.StaticObject(s) for s in sources]
+
+# build: compile first, then add resources
+program_org = envLauncher.Program(target='delauncher-gui-beos-org', source=objects, LIBS=libs)
+rsrc = envLauncher.RDef('src/beos_res.rdef')
+program = envLauncher.Rsrc(target='delauncher-gui-beos', source=[program_org, rsrc])
+
+targetBuild = parent_env.Alias('launcher_beosgui_build', program)
+
+install = []
+archive = {}
+
+install.append(envLauncher.Install(pathBin, program))
+for p in program:
+	archive[os.path.join(pathBin, p.name)] = p
+
+targetInstall = parent_env.Alias('launcher_beosgui', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envLauncher, ['{}/src'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+buildCloc = envLauncher.Alias('launcher_beosgui_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['launcher_beosgui'] = {
+	'name' : 'Drag[en]gine BeOS GUI Launcher',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'archive-launcher' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
