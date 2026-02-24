@@ -72,7 +72,7 @@ deglbDialogProfileList::cEditProfile::~cEditProfile(){
 
 deglbDialogProfileList::deglbDialogProfileList(deglbWindowMain *windowMain,
 	delGameProfile *selectProfile, const BMessenger &resultTarget, int resultMessage) :
-BWindow({}, "Profiles", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
+BWindow({}, "Profiles", B_TITLED_WINDOW, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain),
 pResultTarget(resultTarget),
 pResultMessage(resultMessage),

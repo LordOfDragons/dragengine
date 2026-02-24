@@ -45,7 +45,7 @@
 
 deglbDialogRunGameWith::deglbDialogRunGameWith(deglbWindowMain *windowMain, delGame *game,
 	const BMessenger &resultTarget, int resultMessage) :
-BWindow({}, "Select Profile", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
+BWindow({}, "Select Profile", B_TITLED_WINDOW, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain),
 pResultTarget(resultTarget),
 pResultMessage(resultMessage),

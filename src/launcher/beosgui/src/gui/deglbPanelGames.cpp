@@ -101,7 +101,7 @@ deglbPanelGames::cGameListItem::~cGameListItem(){
 ////////////////////////////
 
 deglbPanelGames::deglbPanelGames(deglbWindowMain *windowMain) :
-BView("panelGames", 0),
+BView("panelGames", B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain)
 {
 	pListGames = new BColumnListView("gamesList", 0, B_NO_BORDER, false);

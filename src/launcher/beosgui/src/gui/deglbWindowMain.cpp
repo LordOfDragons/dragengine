@@ -63,7 +63,7 @@
 ////////////////////////////
 
 deglbWindowMain::deglbWindowMain(int argc, char **argv) :
-BWindow({}, "Drag[en]gine Launcher", B_TITLED_WINDOW, 0),
+BWindow({}, "Drag[en]gine Launcher", B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS),
 pLauncher(nullptr),
 pMenuBar(nullptr),
 pPanelGames(nullptr),

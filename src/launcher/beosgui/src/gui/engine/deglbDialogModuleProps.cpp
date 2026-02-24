@@ -96,7 +96,6 @@ pModule(module)
 		.Add(pChkIsFallback)
 		.Add(scrollDesc, 1.0f)
 	.End();
-	tabView->AddTab(infoTab);
 	
 	// Status tab
 	BView * const statusTab = new BView("Status", 0);
@@ -139,11 +138,13 @@ pModule(module)
 		.Add(pEditLibFileEntryPoint)
 		.AddGlue()
 	.End();
-	tabView->AddTab(statusTab);
 	
 	// Close button
 	BButton * const btnClose = new BButton("close", "Close",
 		new BMessage(MSG_OK));
+	
+	tabView->AddTab(infoTab);
+	tabView->AddTab(statusTab);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)

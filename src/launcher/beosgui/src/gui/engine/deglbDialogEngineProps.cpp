@@ -50,7 +50,7 @@
 
 deglbDialogEngineProps::deglbDialogEngineProps(deglbWindowMain *windowMain,
 	const BMessenger &resultTarget, int resultMessage) :
-BWindow({}, "Engine Properties", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
+BWindow({}, "Engine Properties", B_TITLED_WINDOW, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain),
 pResultTarget(resultTarget),
 pResultMessage(resultMessage),

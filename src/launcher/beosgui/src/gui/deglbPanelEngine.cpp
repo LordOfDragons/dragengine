@@ -201,7 +201,7 @@ public:
 			auto view = dynamic_cast<BView*>(*target);
 			auto item = dynamic_cast<deglbPanelEngine::cModuleListItem*>(pListView.RowAt(where));
 			if(item){
-				printf("Filter: %d %d %p\n", (int)buttons, (int)clicks, item);
+				//printf("Filter: %d %d %p\n", (int)buttons, (int)clicks, item);
 				if(buttons == B_SECONDARY_MOUSE_BUTTON){
 					view->ConvertToScreen(&where);
 					pPanel.OnListContextMenu(item, where);
@@ -223,7 +223,7 @@ public:
 }
 
 deglbPanelEngine::deglbPanelEngine(deglbWindowMain *windowMain) :
-BView("panelEngine", 0),
+BView("panelEngine", B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain)
 {
 	pListModules = new BColumnListView("modulesList", 0, B_NO_BORDER, false);
