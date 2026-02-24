@@ -55,21 +55,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglbDialogGameProperties::deglbDialogGameProperties(deglbWindowMain *windowMain, delGame *game) :
-BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(600, 450)),
-	"Game Properties", B_TITLED_WINDOW,
-	B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+deglbDialogGameProperties::deglbDialogGameProperties(deglbWindowMain *windowMain, delGame *game,
+	const BMessenger &resultTarget, int resultMessage) :
+BWindow({}, "Game Properties", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
 pWindowMain(windowMain),
-pGame(game),
-pSem(create_sem(0, "game_props_sem")),
-pResult(false)
+pResultTarget(resultTarget),
+pResultMessage(resultMessage),
+pResultValue(false),
+pGame(game)
 {
-	SetFeel(B_MODAL_APP_FEEL);
+	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
 	
 	// --- Info tab ---
-	BView * const infoTab = new BView("Info", B_WILL_DRAW);
+	BView * const infoTab = new BView("Info", 0);
 	
 	pEditIdentifier = new BTextControl("id", "Identifier:", "", nullptr);
 	pEditIdentifier->SetEnabled(false);
@@ -81,9 +81,8 @@ pResult(false)
 	pEditTitle->SetEnabled(false);
 	
 	pTextDescription = new BTextView("desc");
-	pTextDescription->SetEditable(false);
-	BScrollView * const scrollDesc = new BScrollView("descScroll", pTextDescription,
-		B_WILL_DRAW | B_FRAME_EVENTS, false, true);
+	pTextDescription->MakeEditable(false);
+	BScrollView * const scrollDesc = new BScrollView("descScroll", pTextDescription, 0, false, true);
 	
 	pEditCreator = new BTextControl("creator", "Creator:", "", nullptr);
 	pEditCreator->SetEnabled(false);
@@ -130,7 +129,7 @@ pResult(false)
 	tabView->AddTab(infoTab);
 	
 	// --- Settings tab ---
-	BView * const settingsTab = new BView("Settings", B_WILL_DRAW);
+	BView * const settingsTab = new BView("Settings", 0);
 	
 	pPopupProfile = new BPopUpMenu("< Default Profile >");
 	pMenuProfile = new BMenuField("profile", "Profile:", pPopupProfile);
@@ -162,11 +161,10 @@ pResult(false)
 	tabView->AddTab(settingsTab);
 	
 	// --- File Formats tab ---
-	BView * const formatsTab = new BView("File Formats", B_WILL_DRAW);
+	BView * const formatsTab = new BView("File Formats", 0);
 	
 	pListFileFormats = new BListView("fileFormats");
-	BScrollView * const scrollFormats = new BScrollView("formatsScroll", pListFileFormats,
-		B_WILL_DRAW | B_FRAME_EVENTS, false, true);
+	BScrollView * const scrollFormats = new BScrollView("formatsScroll", pListFileFormats, 0, false, true);
 	
 	BLayoutBuilder::Group<>(formatsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
@@ -191,22 +189,18 @@ pResult(false)
 	SetDefaultButton(btnOK);
 	
 	UpdateGame();
+	
+	ResizeToPreferred();
+	
+	CenterOnScreen();
 }
 
-deglbDialogGameProperties::~deglbDialogGameProperties(){
-	delete_sem(pSem);
-}
+deglbDialogGameProperties::~deglbDialogGameProperties() = default;
 
 
 
 // Management
 ///////////////
-
-bool deglbDialogGameProperties::Go(){
-	Show();
-	acquire_sem(pSem);
-	return pResult;
-}
 
 void deglbDialogGameProperties::UpdateGame(){
 	if(!pGame){
@@ -301,7 +295,7 @@ void deglbDialogGameProperties::UpdatePatchList(){
 	
 	patchMgr.GetPatches().Visit([&](delPatch &p){
 		if(p.GetGameID() == gameId){
-			BMessage *msg = new BMessage(MSG_PATCH_CHANGED);
+			msg = new BMessage(MSG_PATCH_CHANGED);
 			msg->AddPointer("patch", &p);
 			pPopupPatch->AddItem(new BMenuItem(p.GetName().ToUTF8(), msg));
 		}
@@ -334,14 +328,11 @@ void deglbDialogGameProperties::UpdateFileFormatList(){
 void deglbDialogGameProperties::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_OK:
-		pResult = true;
-		release_sem(pSem);
+		pResultValue = true;
 		Quit();
 		break;
 		
 	case MSG_CANCEL:
-		pResult = false;
-		release_sem(pSem);
 		Quit();
 		break;
 		
@@ -354,29 +345,26 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 		break;
 	}
 		
-	case MSG_EDIT_PROFILES:{
-		delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+	case MSG_EDIT_PROFILES:
+		(new deglbDialogProfileList(pWindowMain, pGame->GetActiveProfile(),
+			BMessenger(this), MSG_EDIT_PROFILES_DONE))->Show();
+		break;
+		
+	case MSG_EDIT_PROFILES_DONE:
 		try{
-			deglbDialogProfileList *dlg = new deglbDialogProfileList(
-				pWindowMain, pGame->GetActiveProfile());
-			Unlock();
-			const bool result = dlg->Go();
-			Lock();
-			if(result){
-				pWindowMain->GetLauncher()->GetEngine().SaveConfig();
-				gameManager.GetProfiles().Visit([&](delGameProfile &p){
-					p.Verify(*pWindowMain->GetLauncher());
-				});
-				gameManager.ApplyProfileChanges();
-				gameManager.SaveGameConfigs();
-				UpdateProfileList();
-			}
+			delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
+			gameManager.GetProfiles().Visit([&](delGameProfile &p){
+				p.Verify(*pWindowMain->GetLauncher());
+			});
+			gameManager.ApplyProfileChanges();
+			gameManager.SaveGameConfigs();
+			UpdateProfileList();
 			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
 		break;
-	}
 		
 	case MSG_DROP_CUSTOM_PROFILE:
 		pGame->SetCustomProfile(nullptr);
@@ -390,16 +378,10 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 	case MSG_SCRMODINFO:{
 		auto module = pWindowMain->GetLauncher()->GetEngine().GetModules().GetNamed(pGame->GetScriptModule());
 		if(module){
-			deglbDialogModuleProps *dlg = new deglbDialogModuleProps(pWindowMain, module);
-			Unlock();
-			dlg->Go();
-			Lock();
+			(new deglbDialogModuleProps(pWindowMain, module, {}, 0))->Show();
 			
 		}else{
-			Unlock();
-			BAlert alert("Script Module", "Script module information not available.", "OK");
-			alert.Go();
-			Lock();
+			(new BAlert("Script Module", "Script module information not available.", "OK"))->Go(nullptr);
 		}
 		}break;
 		
@@ -409,7 +391,10 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 }
 
 bool deglbDialogGameProperties::QuitRequested(){
-	pResult = false;
-	release_sem(pSem);
+	if(pResultTarget.IsValid()){
+		BMessage reply(pResultMessage);
+		reply.SetBool("result", pResultValue);
+		pResultTarget.SendMessage(&reply);
+	}
 	return true;
 }

@@ -8,7 +8,7 @@ import shlex
 tools = ARGUMENTS.get('tools', '')
 if tools:
 	if tools == 'mingw64':
-		import os, shutil
+		import os, shuti
 		
 		# import os. llvm-mingw needs to be installed outside /usr . required PATH to be respected
 		parent_env = Environment(ENV = {'PATH': os.environ['PATH']}, CPPPATH='.', LIBPATH='.', tools=['mingw'])

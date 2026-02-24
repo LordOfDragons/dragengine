@@ -47,12 +47,17 @@ public:
 		MSG_RUN = 'rgwr',
 		MSG_CANCEL = 'rgwc',
 		MSG_PROFILE_CHANGED = 'rgwp',
-		MSG_EDIT_PROFILES = 'rgwe'
+		MSG_EDIT_PROFILES = 'rgwe',
+		MSG_EDIT_PROFILES_DONE = 'rgwE'
 	};
 	
 	
 private:
 	deglbWindowMain *pWindowMain;
+	BMessenger pResultTarget;
+	int pResultMessage;
+	bool pResultValue;
+	
 	const delGame::Ref pGame;
 	delGameProfile::Ref pProfile;
 	
@@ -60,16 +65,14 @@ private:
 	BPopUpMenu *pPopupProfile;
 	BStringView *pLabProblem;
 	
-	sem_id pSem;
-	bool pResult;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	deglbDialogRunGameWith(deglbWindowMain *windowMain, delGame *game);
+	deglbDialogRunGameWith(deglbWindowMain *windowMain, delGame *game,
+		const BMessenger &resultTarget, int resultMessage);
 	
 	/** \brief Clean up dialog. */
 	~deglbDialogRunGameWith() override;
@@ -90,9 +93,6 @@ public:
 	
 	/** \brief Set profile. */
 	void SetProfile(delGameProfile *profile);
-	
-	/** \brief Run dialog, returns true if user confirmed, false if cancelled. */
-	bool Go();
 	
 	/** \brief Update profile list. */
 	void UpdateGame();

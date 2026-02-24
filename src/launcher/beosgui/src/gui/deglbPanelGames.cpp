@@ -50,63 +50,47 @@
 // Class deglbPanelGames::cGameListItem
 /////////////////////////////////////////
 
-deglbPanelGames::cGameListItem::cGameListItem(delGame *game) :
-pGame(game),
-pIcon(nullptr)
+deglbPanelGames::cGameListItem::cGameListItem(delGame *agame) :
+game(agame),
+icon(nullptr)
 {
-	game->GetIcons().VisitWhile([&](const delGameIcon::Ref &icon){
-		auto glbIcon = icon.DynamicCast<deglbGameIcon>();
+	agame->GetIcons().VisitWhile([&](const delGameIcon::Ref &i){
+		auto glbIcon = i.DynamicCast<deglbGameIcon>();
 		if(glbIcon && glbIcon->GetBitmap()){
-			pIcon = glbIcon->CreateScaledBitmap(32);
+			icon = glbIcon->CreateScaledBitmap(32);
 			return false;
 		}
 		return true;
 	});
+	
+	if(icon){
+		SetField(new BBitmapField(icon), 0);
+	}
+	SetField(new BStringField(agame->GetTitle().ToUTF8()), 1);
+	
+	delGameProfile * const profile = agame->GetProfileToUse();
+	const char *status;
+	if(agame->GetCanRun() && profile->GetValid()){
+		status = "Ready";
+		
+	}else if(!profile->GetValid()){
+		status = "Profile Broken";
+		
+	}else if(!agame->GetAllFormatsSupported()){
+		status = "Missing Modules";
+		
+	}else{
+		status = "Installation Broken";
+	}
+	SetField(new BStringField(status), 2);
+	
+	SetField(new BStringField(agame->GetCreator().ToUTF8()), 3);
 }
 
 deglbPanelGames::cGameListItem::~cGameListItem(){
-	if(pIcon){
-		delete pIcon;
+	if(icon){
+		delete icon;
 	}
-}
-
-void deglbPanelGames::cGameListItem::DrawItem(BView *owner, BRect frame, bool complete){
-	if(IsSelected() || complete){
-		owner->SetHighColor(IsSelected()
-			? ui_color(B_LIST_SELECTED_BACKGROUND_COLOR)
-			: owner->ViewColor());
-		owner->FillRect(frame);
-	}
-	
-	owner->SetHighColor(IsSelected()
-		? ui_color(B_LIST_SELECTED_ITEM_TEXT_COLOR)
-		: ui_color(B_LIST_ITEM_TEXT_COLOR));
-	
-	const float iconSize = 32.0f;
-	const float padding = 4.0f;
-	
-	// Draw icon if available
-	if(pIcon){
-		owner->DrawBitmap(pIcon, BPoint(frame.left + padding, frame.top + padding));
-	}
-	
-	// Draw text
-	font_height fh;
-	owner->GetFontHeight(&fh);
-	const float textX = frame.left + iconSize + padding * 2;
-	const float textY = frame.top + iconSize * 0.35f + fh.ascent;
-	
-	const decString title(pGame->GetTitle().ToUTF8());
-	owner->DrawString(title, BPoint(textX, textY));
-	
-	// Status line
-	const char *status = pGame->GetCanRun() ? "Ready" : "Not Ready";
-	const float statusY = textY + fh.ascent + fh.descent + 2.0f;
-	owner->DrawString(status, BPoint(textX, statusY));
-}
-
-void deglbPanelGames::cGameListItem::Update(BView *owner, const BFont *font){
-	SetHeight(40.0f);
 }
 
 
@@ -117,18 +101,21 @@ void deglbPanelGames::cGameListItem::Update(BView *owner, const BFont *font){
 ////////////////////////////
 
 deglbPanelGames::deglbPanelGames(deglbWindowMain *windowMain) :
-BView("panelGames", B_WILL_DRAW | B_FRAME_EVENTS),
+BView("panelGames", 0),
 pWindowMain(windowMain)
 {
-	pListGames = new BListView("gamesList");
+	pListGames = new BColumnListView("gamesList", 0, B_NO_BORDER, false);
 	pListGames->SetSelectionMessage(new BMessage(MSG_LIST_CHANGED));
 	pListGames->SetInvocationMessage(new BMessage(MSG_CONTEXT_RUN));
 	
-	BScrollView * const scrollView = new BScrollView("gamesScroll", pListGames,
-		B_WILL_DRAW | B_FRAME_EVENTS, false, true);
+	const float factor = be_plain_font->StringWidth("M");
+	pListGames->AddColumn(new BBitmapColumn(" ", 32, 32, 32, B_ALIGN_CENTER), 0);
+	pListGames->AddColumn(new BStringColumn("Game", factor * 25, 10, 10000, B_TRUNCATE_END), 1);
+	pListGames->AddColumn(new BStringColumn("Status", factor * 12, 10, 10000, B_TRUNCATE_END), 2);
+	pListGames->AddColumn(new BStringColumn("Creator", factor * 15, 10, 10000, B_TRUNCATE_END), 3);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-		.Add(scrollView)
+		.Add(pListGames)
 	.End();
 }
 
@@ -141,39 +128,38 @@ deglbPanelGames::~deglbPanelGames(){
 ///////////////
 
 delGame *deglbPanelGames::GetSelectedGame() const{
-	const int selection = pListGames->CurrentSelection();
-	if(selection < 0){
-		return nullptr;
-	}
-	
-	auto item = dynamic_cast<cGameListItem*>(pListGames->ItemAt(selection));
-	return item ? item->pGame : nullptr;
+	auto item = dynamic_cast<cGameListItem*>(pListGames->CurrentSelection());
+	return item ? item->game.Pointer() : nullptr;
 }
 
 void deglbPanelGames::SetSelectedGame(delGame *game){
-	const int count = pListGames->CountItems();
+	const int count = pListGames->CountRows();
 	int i;
 	
+	pListGames->DeselectAll();
+	
 	for(i=0; i<count; i++){
-		auto item = dynamic_cast<cGameListItem*>(pListGames->ItemAt(i));
-		if(item && item->pGame == game){
-			pListGames->Select(i);
+		auto item = dynamic_cast<cGameListItem*>(pListGames->RowAt(i));
+		if(item && item->game == game){
+			pListGames->AddToSelection(item);
+			pListGames->ScrollTo(item);
 			return;
 		}
 	}
 	
 	if(count > 0){
-		pListGames->Select(0);
+		pListGames->AddToSelection(pListGames->RowAt(0));
+		pListGames->ScrollTo(pListGames->RowAt(0));
 	}
 }
 
 void deglbPanelGames::UpdateGameList(){
 	delGame * const selectedGame = GetSelectedGame();
 	
-	pListGames->MakeEmpty();
+	pListGames->Clear();
 	
 	pWindowMain->GetLauncher()->GetGameManager().GetGames().Visit([&](delGame *game){
-		pListGames->AddItem(new cGameListItem(game));
+		pListGames->AddRow(new cGameListItem(game));
 	});
 	
 	SetSelectedGame(selectedGame);
@@ -200,14 +186,22 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 		
 	case MSG_CONTEXT_PROPS:{
 		delGame * const game = GetSelectedGame();
+		if(game){
+			(new deglbDialogGameProperties(pWindowMain, game,
+				BMessenger(this), MSG_CONTEXT_PROPS_DONE))->Show();
+		}
+		}break;
+		
+	case MSG_CONTEXT_PROPS_DONE:{
+		delGame * const game = GetSelectedGame();
 		if(!game){
 			break;
 		}
+		
+		bool result = false;
+		message->FindBool("result", &result);
+		
 		try{
-			deglbDialogGameProperties *dlg = new deglbDialogGameProperties(pWindowMain, game);
-			Window()->Unlock();
-			const bool result = dlg->Go();
-			Window()->Lock();
 			if(result){
 				game->SaveConfig();
 			}
@@ -217,16 +211,30 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
-		break;
-	}
+		}break;
 		
 	case MSG_CONTEXT_RUNWITH:{
 		delGame * const game = GetSelectedGame();
 		if(game){
 			pRunGameWith(game);
 		}
-		break;
-	}
+		}break;
+		
+	case MSG_CONTEXT_RUNWITH_DONE:{
+		delGame * const game = GetSelectedGame();
+		if(game){
+			bool result = false;
+			message->FindBool("result", &result);
+			
+			delGameProfile::Ref profile;
+			BString profileName;
+			if(result && message->FindString("profile", &profileName) == B_OK){
+				profile = pWindowMain->GetLauncher()->GetGameManager().GetProfiles().FindNamed(profileName);
+			}
+			
+			pRunGameWithDone(game, result, profile);
+		}
+		}break;
 		
 	case MSG_CONTEXT_KILL:{
 		delGame * const game = GetSelectedGame();
@@ -234,10 +242,10 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 			break;
 		}
 		if(!game->IsRunning()){
-			Window()->Unlock();
-			BAlert alert("Kill Game", "This game is not running.", "OK");
-			alert.Go();
-			Window()->Lock();
+			(new BAlert(
+				"Kill Game",
+				"This game is not running.",
+				"OK"))->Go(nullptr);
 			
 		}else{
 			try{
@@ -254,8 +262,11 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 		if(game){
 			pShowLogs(game);
 		}
+		}break;
+		
+	case MSG_UPDATE_GAMELIST:
+		UpdateGameList();
 		break;
-	}
 		
 	default:
 		BView::MessageReceived(message);
@@ -267,9 +278,9 @@ void deglbPanelGames::MouseDown(BPoint where){
 	GetMouse(&where, &buttons);
 	
 	if(buttons & B_SECONDARY_MOUSE_BUTTON){
-		const int index = pListGames->IndexOf(where);
-		if(index >= 0){
-			pListGames->Select(index);
+		auto item = dynamic_cast<cGameListItem*>(pListGames->RowAt(where));
+		if(item){
+			SetSelectedGame(item->game);
 		}
 		
 		delGame * const game = GetSelectedGame();
@@ -328,10 +339,10 @@ void deglbPanelGames::pShowContextMenu(BPoint screenWhere, delGame *game){
 
 void deglbPanelGames::pRunGame(delGame *game){
 	if(game->IsRunning()){
-		Window()->Unlock();
-		BAlert alert("Start Game", "This game is already running.", "OK");
-		alert.Go();
-		Window()->Lock();
+		(new BAlert(
+			"Start Game",
+			"This game is already running.",
+			"OK"))->Go(nullptr);
 		return;
 	}
 	
@@ -345,10 +356,10 @@ void deglbPanelGames::pRunGame(delGame *game){
 			decString error;
 			if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 			game->GetUseCustomPatch(), error)){
-				Window()->Unlock();
-				BAlert alert("Can not run game", error, "OK");
-				alert.Go();
-				Window()->Lock();
+				(new BAlert(
+					"Can not run game",
+					error,
+					"OK"))->Go(nullptr);
 				return;
 			}
 			
@@ -374,24 +385,24 @@ void deglbPanelGames::pRunGame(delGame *game){
 			break;
 			
 		}else if(!profile->GetValid()){
-			Window()->Unlock();
-			BAlert alert("Can not run game", "The Game Profile is not working. Please fix it in Game Properties.", "OK");
-			alert.Go();
-			Window()->Lock();
+			(new BAlert(
+				"Can not run game",
+				"The Game Profile is not working. Please fix it in Game Properties.",
+				"OK"))->Go(nullptr);
 			break;
 			
 		}else if(!game->GetAllFormatsSupported()){
-			Window()->Unlock();
-			BAlert alert("Can not run game", "One or more File Formats required by the game are not working.", "OK");
-			alert.Go();
-			Window()->Lock();
+			(new BAlert(
+				"Can not run game",
+				"One or more File Formats required by the game are not working.",
+				"OK"))->Go(nullptr);
 			break;
 			
 		}else{
-			Window()->Unlock();
-			BAlert alert("Can not run game", "Game related properties are incorrect.", "OK");
-			alert.Go();
-			Window()->Lock();
+			(new BAlert(
+				"Can not run game",
+				"Game related properties are incorrect.",
+				"OK"))->Go(nullptr);
 			break;
 		}
 	}
@@ -401,10 +412,10 @@ void deglbPanelGames::pRunGame(delGame *game){
 
 void deglbPanelGames::pRunGameWith(delGame *game){
 	if(game->IsRunning()){
-		Window()->Unlock();
-		BAlert alert("Start Game", "This game is already running.", "OK");
-		alert.Go();
-		Window()->Lock();
+		(new BAlert(
+			"Start Game",
+			"This game is already running.",
+			"OK"))->Go(nullptr);
 		return;
 	}
 	
@@ -412,20 +423,20 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 		const char *msg = game->GetAllFormatsSupported()
 			? "Game related properties are incorrect."
 			: "One or more File Formats required by the game are not working.";
-		Window()->Unlock();
-		BAlert alert("Can not run game", msg, "OK");
-		alert.Go();
-		Window()->Lock();
+		(new BAlert(
+			"Can not run game",
+			msg,
+			"OK"))->Go(nullptr);
 		return;
 	}
 	
-	deglbDialogRunGameWith *dlg = new deglbDialogRunGameWith(pWindowMain, game);
+	deglbDialogRunGameWith *dlg = new deglbDialogRunGameWith(
+		pWindowMain, game, BMessenger(this), MSG_CONTEXT_RUNWITH_DONE);
 	dlg->SetProfile(game->GetActiveProfile());
-	
-	Window()->Unlock();
-	const bool result = dlg->Go();
-	Window()->Lock();
-	
+	dlg->Show();
+}
+
+void deglbPanelGames::pRunGameWithDone(delGame *game, bool result, const delGameProfile::Ref &profile){
 	if(!result){
 		UpdateGameList();
 		return;
@@ -433,7 +444,7 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 	
 	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	delGameRunParams runParams;
-	runParams.SetGameProfile(dlg->GetProfile());
+	runParams.SetGameProfile(profile);
 	if(!runParams.GetGameProfile()){
 		runParams.SetGameProfile(gameManager.GetActiveProfile());
 		if(!runParams.GetGameProfile()){
@@ -444,20 +455,18 @@ void deglbPanelGames::pRunGameWith(delGame *game){
 	decString error;
 	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(),
 	game->GetUseCustomPatch(), error)){
-		Window()->Unlock();
-		BAlert alert("Can not run game", error, "OK");
-		alert.Go();
-		Window()->Lock();
-		UpdateGameList();
+		(new BAlert(
+			"Can not run game",
+			error,
+			"OK"))->Go(new BInvoker(new BMessage(MSG_UPDATE_GAMELIST), BMessenger(this)));
 		return;
 	}
 	
 	if(runParams.GetGameProfile() && !runParams.GetGameProfile()->GetValid()){
-		Window()->Unlock();
-		BAlert alert("Can not run game", "The selected profile is not valid.", "OK");
-		alert.Go();
-		Window()->Lock();
-		UpdateGameList();
+		(new BAlert(
+			"Can not run game",
+			"The selected profile is not valid.",
+			"OK"))->Go(new BInvoker(new BMessage(MSG_UPDATE_GAMELIST), BMessenger(this)));
 		return;
 	}
 	
@@ -493,10 +502,9 @@ void deglbPanelGames::pShowLogs(delGame *game){
 	
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(path));
 	if(!container->ExistsFile(decPath::CreatePathUnix("/logs"))){
-		BAlert * const alert = new BAlert("Show Logs",
+		(new BAlert("Show Logs",
 			"There are no logs for this game.\nLogs will be present after running the game.",
-			"OK");
-		alert->Go(nullptr); // async
+			"OK"))->Go(nullptr);
 		return;
 	}
 	

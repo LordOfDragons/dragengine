@@ -51,6 +51,10 @@ public:
 	
 private:
 	deglbWindowMain *pWindowMain;
+	BMessenger pResultTarget;
+	int pResultMessage;
+	bool pResultValue;
+	
 	const delEngineModule::Ref pModule;
 	
 	BTextControl *pEditName;
@@ -70,15 +74,14 @@ private:
 	BTextControl *pEditLibFileHashIs;
 	BTextControl *pEditLibFileEntryPoint;
 	
-	sem_id pSem;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	deglbDialogModuleProps(deglbWindowMain *windowMain, delEngineModule *module);
+	deglbDialogModuleProps(deglbWindowMain *windowMain, delEngineModule *module,
+		const BMessenger &resultTarget, int resultMessage);
 	
 	/** \brief Clean up dialog. */
 	~deglbDialogModuleProps() override;

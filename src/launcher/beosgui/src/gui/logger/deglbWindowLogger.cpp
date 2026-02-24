@@ -24,6 +24,7 @@
 
 #include <LayoutBuilder.h>
 #include <ScrollView.h>
+#include <Screen.h>
 
 #include "deglbWindowLogger.h"
 #include "deglbWindowLoggerListener.h"
@@ -75,8 +76,7 @@ public:
 ////////////////////////////
 
 deglbWindowLogger::deglbWindowLogger() :
-BWindow(BRect(100, 100, 700, 550), "Logging History",
-	B_TITLED_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS),
+BWindow({}, "Logging History", B_TITLED_WINDOW, 0),
 pListener(deglbWindowLoggerListener::Ref::New(*this))
 {
 	pListView = new BListView("logList");
@@ -86,6 +86,18 @@ pListener(deglbWindowLoggerListener::Ref::New(*this))
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(scrollView)
 	.End();
+	
+	font_height fh;
+	be_plain_font->GetHeight(&fh);
+	float lineHeight = fh.ascent + fh.descent + fh.leading;
+	ResizeTo(be_plain_font->StringWidth("M") * 50, lineHeight * 20);
+	
+	BScreen screen(this);
+	if(screen.IsValid()){
+		BRect screenFrame = screen.Frame();
+		BRect windowFrame = Frame();
+		MoveTo((screenFrame.Width() - windowFrame.Width()) / 2, (screenFrame.Height() - windowFrame.Height()) / 2);
+	}
 }
 
 deglbWindowLogger::~deglbWindowLogger(){

@@ -26,6 +26,7 @@
 #include <BitmapStream.h>
 #include <TranslationUtils.h>
 #include <DataIO.h>
+#include <View.h>
 
 #include "deglbGameIcon.h"
 
@@ -63,36 +64,16 @@ BBitmap *deglbGameIcon::CreateScaledBitmap(int size) const{
 		return new BBitmap(*pBitmap);
 	}
 	
-	BBitmap * const scaled = new BBitmap(BRect(0, 0, size - 1, size - 1), B_RGBA32);
-	pBitmap->Lock();
-	scaled->Lock();
-	
-	// simple nearest-neighbor scale
-	const int srcW = (int)pBitmap->Bounds().Width() + 1;
-	const int srcH = (int)pBitmap->Bounds().Height() + 1;
-	const int dstW = size;
-	const int dstH = size;
-	const uint8 * const srcData = reinterpret_cast<const uint8*>(pBitmap->Bits());
-	uint8 * const dstData = reinterpret_cast<uint8*>(scaled->Bits());
-	const int srcBpr = pBitmap->BytesPerRow();
-	const int dstBpr = scaled->BytesPerRow();
-	
-	int x, y;
-	for(y=0; y<dstH; y++){
-		const int srcY = y * srcH / dstH;
-		for(x=0; x<dstW; x++){
-			const int srcX = x * srcW / dstW;
-			const uint8 * const sp = srcData + srcY * srcBpr + srcX * 4;
-			uint8 * const dp = dstData + y * dstBpr + x * 4;
-			dp[0] = sp[0];
-			dp[1] = sp[1];
-			dp[2] = sp[2];
-			dp[3] = sp[3];
-		}
+	BRect newRect(0, 0, size, size);
+	BBitmap * const scaled = new BBitmap(newRect, B_RGBA32, true); // true = acceptsViews
+	if(scaled->Lock()){
+		BView * const view = new BView(newRect, "scaler", B_FOLLOW_NONE, B_WILL_DRAW);
+		scaled->AddChild(view);
+		view->DrawBitmap(pBitmap, pBitmap->Bounds(), newRect);
+		scaled->RemoveChild(view);
+		delete view;
+		scaled->Unlock();
 	}
-	
-	scaled->Unlock();
-	pBitmap->Unlock();
 	
 	return scaled;
 }
@@ -131,10 +112,12 @@ void deglbGameIcon::pCreatePNGBitmap(){
 		BMemoryIO memIO(GetContent()->GetPointer(), GetContent()->GetLength());
 		BBitmap * const bitmap = BTranslationUtils::GetBitmap(&memIO);
 		if(bitmap){
+			DEASSERT_TRUE(bitmap->IsValid())
 			pBitmap = bitmap;
 		}
 		
-	}catch(const deException &){
+	}catch(const deException &e){
+		e.PrintError();
 		if(pBitmap){
 			delete pBitmap;
 			pBitmap = nullptr;

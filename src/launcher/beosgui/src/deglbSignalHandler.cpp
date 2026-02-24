@@ -122,8 +122,7 @@ static void signalAbort(int number, siginfo_t *infos, void *ptrContext){
 ////////////////////////////
 
 deglbSignalHandler::deglbSignalHandler(deglbLauncher &launcher) :
-pLauncher(launcher),
-pSignalHandler(nullptr)
+pLauncher(launcher)
 {
 	pRegisterSignals();
 }

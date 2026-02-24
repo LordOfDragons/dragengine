@@ -29,7 +29,6 @@
 #include <MenuItem.h>
 #include <StringItem.h>
 #include <Alert.h>
-#include <TextEntryAlert.h>
 
 #include "deglbDialogProfileList.h"
 #include "../engine/deglbDialogModuleProps.h"
@@ -71,21 +70,20 @@ deglbDialogProfileList::cEditProfile::~cEditProfile(){
 // Constructor, destructor
 ////////////////////////////
 
-deglbDialogProfileList::deglbDialogProfileList(deglbWindowMain *windowMain, delGameProfile *selectProfile) :
-BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(700, 500)),
-	"Profiles", B_TITLED_WINDOW,
-	B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+deglbDialogProfileList::deglbDialogProfileList(deglbWindowMain *windowMain,
+	delGameProfile *selectProfile, const BMessenger &resultTarget, int resultMessage) :
+BWindow({}, "Profiles", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
 pWindowMain(windowMain),
-pSem(create_sem(0, "profile_list_sem")),
-pResult(false)
+pResultTarget(resultTarget),
+pResultMessage(resultMessage),
+pResultValue(false)
 {
-	SetFeel(B_MODAL_APP_FEEL);
+	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	// Profile list on the left
 	pListProfiles = new BListView("profiles");
 	pListProfiles->SetSelectionMessage(new BMessage(MSG_PROFILE_SEL));
-	BScrollView * const scrollProfiles = new BScrollView("profilesScroll", pListProfiles,
-		B_WILL_DRAW | B_FRAME_EVENTS, false, true);
+	BScrollView * const scrollProfiles = new BScrollView("profilesScroll", pListProfiles, 0, false, true);
 	
 	BButton * const btnAdd = new BButton("add", "Add", new BMessage(MSG_PROF_ADD));
 	BButton * const btnDup = new BButton("dup", "Duplicate", new BMessage(MSG_PROF_DUP));
@@ -96,7 +94,7 @@ pResult(false)
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
 	
 	// Systems tab
-	BView * const systemsTab = new BView("Systems", B_WILL_DRAW);
+	BView * const systemsTab = new BView("Systems", 0);
 	
 	pCreateSystem(pSysGraphic, "Graphic:", deModuleSystem::emtGraphic,
 		MSG_MOD_GRA_CHANGED, systemsTab);
@@ -136,7 +134,7 @@ pResult(false)
 	tabView->AddTab(systemsTab);
 	
 	// Settings tab
-	BView * const settingsTab = new BView("Settings", B_WILL_DRAW);
+	BView * const settingsTab = new BView("Settings", 0);
 	
 	pEditRunArgs = new BTextControl("runArgs", "Run Arguments:", "", nullptr);
 	pChkReplaceRunArgs = new BCheckBox("replaceArgs", "Replace Run Arguments", nullptr);
@@ -184,22 +182,18 @@ pResult(false)
 	SetDefaultButton(btnOK);
 	
 	pLoadProfiles(selectProfile);
+	
+	ResizeToPreferred();
+	
+	CenterOnScreen();
 }
 
-deglbDialogProfileList::~deglbDialogProfileList(){
-	delete_sem(pSem);
-}
+deglbDialogProfileList::~deglbDialogProfileList() = default;
 
 
 
 // Management
 ///////////////
-
-bool deglbDialogProfileList::Go(){
-	Show();
-	acquire_sem(pSem);
-	return pResult;
-}
 
 void deglbDialogProfileList::UpdateProfileList(){
 	const int selectedIndex = pListProfiles->CurrentSelection();
@@ -405,14 +399,11 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 	case MSG_OK:
 		ApplyChanges();
 		SaveProfiles();
-		pResult = true;
-		release_sem(pSem);
+		pResultValue = true;
 		Quit();
 		break;
 		
 	case MSG_CANCEL:
-		pResult = false;
-		release_sem(pSem);
 		Quit();
 		break;
 		
@@ -469,8 +460,8 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 			const decString baseName(profile->edit->GetName());
 			decString newName;
 			int num = 2;
-			while(pProfiles.HasMatching([&](const cEditProfile &profile){
-				return profile.edit->GetName() == newName;
+			while(pProfiles.HasMatching([&](const cEditProfile &p){
+				return p.edit->GetName() == newName;
 			})){
 				newName.FormatSafe("{0} {1}", baseName, num++);
 			}
@@ -499,8 +490,11 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 }
 
 bool deglbDialogProfileList::QuitRequested(){
-	pResult = false;
-	release_sem(pSem);
+	if(pResultTarget.IsValid()){
+		BMessage reply(pResultMessage);
+		reply.SetBool("result", pResultValue);
+		pResultTarget.SendMessage(&reply);
+	}
 	return true;
 }
 
@@ -533,14 +527,11 @@ uint32 msgWhat, BView *container){
 }
 
 void deglbDialogProfileList::pLoadProfiles(delGameProfile *selectProfile){
-	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-	const delGameProfile::List &profiles = gameManager.GetProfiles();
-	
 	pProfiles.RemoveAll();
 	
 	cEditProfile *selectEdit = nullptr;
 	
-	pProfiles.Visit([&](const delGameProfile *profile){
+	pWindowMain->GetLauncher()->GetGameManager().GetProfiles().Visit([&](delGameProfile *profile){
 		auto ep = cEditProfile::Ref::New(profile);
 		pProfiles.Add(ep);
 		if(selectProfile == profile){

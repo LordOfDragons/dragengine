@@ -38,10 +38,10 @@
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/profile/delGameProfile.h>
 
-#include <dragengine/common/collection/decTObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decUuid.h>
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
+#include <dragengine/deTObjectReference.h>
 
 class deglbWindowMain;
 
@@ -98,6 +98,9 @@ private:
 	};
 	
 	deglbWindowMain *pWindowMain;
+	BMessenger pResultTarget;
+	int pResultMessage;
+	bool pResultValue;
 	
 	decTObjectOrderedSet<cEditProfile> pProfiles;
 	
@@ -119,16 +122,14 @@ private:
 	BTextControl *pEditWidth;
 	BTextControl *pEditHeight;
 	
-	sem_id pSem;
-	bool pResult;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	deglbDialogProfileList(deglbWindowMain *windowMain, delGameProfile *selectProfile);
+	deglbDialogProfileList(deglbWindowMain *windowMain, delGameProfile *selectProfile,
+		const BMessenger &resultTarget, int resultMessage);
 	
 	/** \brief Clean up dialog. */
 	~deglbDialogProfileList() override;
@@ -140,9 +141,6 @@ public:
 	/*@{*/
 	/** \brief Main window. */
 	inline deglbWindowMain *GetWindowMain() const{ return pWindowMain; }
-	
-	/** \brief Run dialog, returns true if changes were made. */
-	bool Go();
 	
 	/** \brief Update profile list. */
 	void UpdateProfileList();

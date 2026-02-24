@@ -50,6 +50,7 @@ public:
 		MSG_VIEW_ENGINE = 'venp',
 		MSG_VIEW_LOGGING = 'vlog',
 		MSG_SETTINGS_ENGINE = 'seng',
+		MSG_SETTINGS_ENGINE_DONE = 'senG',
 		MSG_TIMER_PULSE = 'tpls'
 	};
 	

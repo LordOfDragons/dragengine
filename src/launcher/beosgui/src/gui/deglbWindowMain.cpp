@@ -28,6 +28,7 @@
 #include <MenuItem.h>
 #include <SeparatorItem.h>
 #include <Alert.h>
+#include <Screen.h>
 
 #include "deglbWindowMain.h"
 #include "deglbPanelGames.h"
@@ -62,8 +63,7 @@
 ////////////////////////////
 
 deglbWindowMain::deglbWindowMain(int argc, char **argv) :
-BWindow(BRect(10, 50, 810, 450), "Drag[en]gine Launcher",
-B_TITLED_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS),
+BWindow({}, "Drag[en]gine Launcher", B_TITLED_WINDOW, 0),
 pLauncher(nullptr),
 pMenuBar(nullptr),
 pPanelGames(nullptr),
@@ -89,22 +89,17 @@ pPulseRunner(nullptr)
 	pMenuBar = new BMenuBar("menuBar");
 	
 	BMenu * const menuFile = new BMenu("File");
-	menuFile->AddItem(new BMenuItem("Quit\t\tQuit the launcher",
-		new BMessage(MSG_FILE_QUIT), 'Q'));
+	menuFile->AddItem(new BMenuItem("Quit", new BMessage(MSG_FILE_QUIT), 'Q'));
 	pMenuBar->AddItem(menuFile);
 	
 	BMenu * const menuView = new BMenu("View");
-	menuView->AddItem(new BMenuItem("Games\t\tShow Games",
-		new BMessage(MSG_VIEW_GAMES)));
-	menuView->AddItem(new BMenuItem("Engine\t\tShow Engine information",
-		new BMessage(MSG_VIEW_ENGINE)));
-	menuView->AddItem(new BMenuItem("Logging\t\tShow Logging",
-		new BMessage(MSG_VIEW_LOGGING)));
+	menuView->AddItem(new BMenuItem("Games", new BMessage(MSG_VIEW_GAMES)));
+	menuView->AddItem(new BMenuItem("Engine", new BMessage(MSG_VIEW_ENGINE)));
+	menuView->AddItem(new BMenuItem("Logging", new BMessage(MSG_VIEW_LOGGING)));
 	pMenuBar->AddItem(menuView);
 	
 	BMenu * const menuSettings = new BMenu("Settings");
-	menuSettings->AddItem(new BMenuItem("Engine...\t\tChange Engine Settings",
-		new BMessage(MSG_SETTINGS_ENGINE)));
+	menuSettings->AddItem(new BMenuItem("Engine...", new BMessage(MSG_SETTINGS_ENGINE)));
 	pMenuBar->AddItem(menuSettings);
 	
 	// Create panels
@@ -128,6 +123,16 @@ pPulseRunner(nullptr)
 			.Add(pProgressBar)
 		.End()
 	.End();
+	
+	// Resize to preferred size and show centered
+	//ResizeToPreferred();
+	
+	font_height fh;
+	be_plain_font->GetHeight(&fh);
+	float lineHeight = fh.ascent + fh.descent + fh.leading;
+	ResizeTo(be_plain_font->StringWidth("M") * 60, lineHeight * 20);
+	
+	//CenterOnScreen();
 	
 	// Initialize content
 	pPanelGames->UpdateGameList();
@@ -168,10 +173,8 @@ bool deglbWindowMain::RunCommandLineActions(){
 		return false;
 	}
 	
-	if(pLauncher->HasCommandLineRunGame()){
-		if(!pLauncher->RunCommandLineGame()){
-			return false;
-		}
+	if(pLauncher->HasCommandLineRunGame() && !pLauncher->RunCommandLineGame()){
+		return false;
 	}
 	
 	// Start pulse timer
@@ -190,9 +193,10 @@ void deglbWindowMain::DisplayException(const deException &exception){
 		"An exception occurred.\nFile='{0}'\nLine={1}\nReason='{2}'",
 		exception.GetFile(), exception.GetLine(), exception.GetDescription());
 	
-	BAlert * const alert = new BAlert("Application Error", message, "OK",
-		nullptr, nullptr, B_WIDTH_AS_USUAL, B_STOP_ALERT);
-	alert->Go(nullptr); // async, non-blocking
+	(new BAlert(
+		"Application Error",
+		message,
+		"OK", nullptr, nullptr, B_WIDTH_AS_USUAL, B_STOP_ALERT))->Go(nullptr);
 }
 
 void deglbWindowMain::ShowWindowLogger(){
@@ -238,7 +242,7 @@ void deglbWindowMain::ReloadGamesAndPatches(){
 	pLauncher->GetGameManager().LoadGameConfigs();
 	pLauncher->GetGameManager().Verify();
 	
-	pPanelGames->UpdateGameList();
+	//pPanelGames->UpdateGameList();
 }
 
 
@@ -274,12 +278,11 @@ void deglbWindowMain::MessageReceived(BMessage *message){
 		break;
 		
 	case MSG_SETTINGS_ENGINE:
+		(new deglbDialogEngineProps(this, BMessenger(this), MSG_SETTINGS_ENGINE_DONE))->Show();
+		break;
+		
+	case MSG_SETTINGS_ENGINE_DONE:
 		try{
-			deglbDialogEngineProps *dlg = new deglbDialogEngineProps(this);
-			Unlock();
-			dlg->Go();
-			Lock();
-			
 			pLauncher->GetGameManager().Verify();
 			pPanelGames->UpdateGameList();
 			

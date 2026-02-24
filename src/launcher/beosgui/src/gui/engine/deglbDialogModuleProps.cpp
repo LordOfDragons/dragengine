@@ -45,20 +45,20 @@
 ////////////////////////////
 
 deglbDialogModuleProps::deglbDialogModuleProps(deglbWindowMain *windowMain,
-delEngineModule *module) :
-BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(500, 400)),
-"Module Properties", B_TITLED_WINDOW,
-B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+	delEngineModule *module, const BMessenger &resultTarget, int resultMessage) :
+BWindow({}, "Module Properties", B_TITLED_WINDOW, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain),
-pModule(module),
-pSem(create_sem(0, "module_props_sem"))
+pResultTarget(resultTarget),
+pResultMessage(resultMessage),
+pResultValue(false),
+pModule(module)
 {
-	SetFeel(B_MODAL_APP_FEEL);
+	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
 	
 	// Information tab
-	BView * const infoTab = new BView("Information", B_WILL_DRAW);
+	BView * const infoTab = new BView("Information", 0);
 	
 	pEditName = new BTextControl("name", "Name:", "", nullptr);
 	pEditName->SetEnabled(false);
@@ -82,9 +82,8 @@ pSem(create_sem(0, "module_props_sem"))
 	pChkIsFallback->SetEnabled(false);
 	
 	pTextDescription = new BTextView("description");
-	pTextDescription->SetEditable(false);
-	BScrollView * const scrollDesc = new BScrollView("descScroll", pTextDescription,
-		B_WILL_DRAW | B_FRAME_EVENTS, false, true);
+	pTextDescription->MakeEditable(false);
+	BScrollView * const scrollDesc = new BScrollView("descScroll", pTextDescription, 0, false, true);
 	
 	BLayoutBuilder::Group<>(infoTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
@@ -100,7 +99,7 @@ pSem(create_sem(0, "module_props_sem"))
 	tabView->AddTab(infoTab);
 	
 	// Status tab
-	BView * const statusTab = new BView("Status", B_WILL_DRAW);
+	BView * const statusTab = new BView("Status", 0);
 	
 	pEditErrorCode = new BTextControl("errorCode", "Error Code:", "", nullptr);
 	pEditErrorCode->SetEnabled(false);
@@ -159,21 +158,22 @@ pSem(create_sem(0, "module_props_sem"))
 	SetDefaultButton(btnClose);
 	
 	SetFromModule();
+	
+	ResizeToPreferred();
+	
+	font_height fh;
+	be_plain_font->GetHeight(&fh);
+	ResizeTo(be_plain_font->StringWidth("M") * 50, Size().Height());
+	
+	CenterOnScreen();
 }
 
-deglbDialogModuleProps::~deglbDialogModuleProps(){
-	delete_sem(pSem);
-}
+deglbDialogModuleProps::~deglbDialogModuleProps() = default;
 
 
 
 // Management
 ///////////////
-
-void deglbDialogModuleProps::Go(){
-	Show();
-	acquire_sem(pSem);
-}
 
 void deglbDialogModuleProps::SetFromModule(){
 	if(!pModule){
@@ -248,7 +248,7 @@ void deglbDialogModuleProps::SetFromModule(){
 	}
 	pEditStatus->SetText(statusStr);
 	
-	pEditAuthor->SetText(pModule->GetAuthor());
+	pEditAuthor->SetText(pModule->GetAuthor().ToUTF8());
 	pEditVersion->SetText(pModule->GetVersion());
 	pEditPattern->SetText(pModule->GetPattern());
 	
@@ -283,7 +283,7 @@ void deglbDialogModuleProps::SetFromModule(){
 void deglbDialogModuleProps::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_OK:
-		release_sem(pSem);
+		pResultValue = true;
 		Quit();
 		break;
 		
@@ -325,10 +325,7 @@ void deglbDialogModuleProps::MessageReceived(BMessage *message){
 			break;
 		}
 		
-		BAlert alert("Module Error Code", info, "OK");
-		Unlock();
-		alert.Go();
-		Lock();
+		(new BAlert("Module Error Code", info, "OK"))->Go(nullptr);
 		}break;
 		
 	default:
@@ -337,6 +334,11 @@ void deglbDialogModuleProps::MessageReceived(BMessage *message){
 }
 
 bool deglbDialogModuleProps::QuitRequested(){
-	release_sem(pSem);
+	if(pResultTarget.IsValid()){
+		BMessage reply(pResultMessage);
+		reply.SetBool("result", pResultValue);
+		pResultTarget.SendMessage(&reply);
+	}
 	return true;
 }
+

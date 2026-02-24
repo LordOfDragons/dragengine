@@ -28,7 +28,8 @@
 #include <View.h>
 #include <ListView.h>
 #include <ScrollView.h>
-#include <ListItem.h>
+#include <ColumnListView.h>
+#include <ColumnTypes.h>
 
 #include <delauncher/engine/modules/delEngineModule.h>
 
@@ -41,26 +42,23 @@ class deglbWindowMain;
 class deglbPanelEngine : public BView{
 public:
 	/** \brief Module list item. */
-	class cModuleListItem : public BListItem{
+	class cModuleListItem : public BRow{
 	public:
-		delEngineModule::Ref pModule;
+		delEngineModule::Ref module;
 		
 		cModuleListItem(delEngineModule *module);
 		~cModuleListItem() override = default;
-		
-		void DrawItem(BView *owner, BRect frame, bool complete) override;
-		void Update(BView *owner, const BFont *font) override;
 	};
 	
 	enum eMessages{
-		MSG_LIST_CHANGED = 'pelc',
-		MSG_CONTEXT_PROPS = 'pecp'
+		MSG_CONTEXT_PROPS = 'pecp',
+		MSG_CONTEXT_PROPS_DONE = 'pecP'
 	};
 	
 	
 private:
 	deglbWindowMain *pWindowMain;
-	BListView *pListModules;
+	BColumnListView *pListModules;
 	
 	
 	
@@ -93,13 +91,15 @@ public:
 	/** \name BView */
 	/*@{*/
 	void MessageReceived(BMessage *message) override;
-	void MouseDown(BPoint where) override;
+	
+	void OnListContextMenu(cModuleListItem *item, const BPoint &where);
+	void OnListInvoke(cModuleListItem *item);
 	/*@}*/
 	
 	
 	
 private:
-	void pShowContextMenu(BPoint screenWhere, delEngineModule *module);
+	void pShowContextMenu(BPoint screenWhere);
 };
 
 #endif

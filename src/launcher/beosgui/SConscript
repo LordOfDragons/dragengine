@@ -21,7 +21,9 @@ pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
 
-libs = ['root', 'be']
+libs = ['root', 'be', 'translation', 'columnlistview']
+
+envLauncher.Append(CPPPATH = ['/boot/system/develop/headers/private/interface'])
 
 appendLibrary(envLauncher, parent_targets['delauncher'], libs)
 libs.extend(parent_targets['delauncher']['binlibs'])

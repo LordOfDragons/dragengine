@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglbDialogRunGameWith::deglbDialogRunGameWith(deglbWindowMain *windowMain, delGame *game) :
-BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(500, 200)),
-	"Select Profile", B_TITLED_WINDOW,
-	B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+deglbDialogRunGameWith::deglbDialogRunGameWith(deglbWindowMain *windowMain, delGame *game,
+	const BMessenger &resultTarget, int resultMessage) :
+BWindow({}, "Select Profile", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
 pWindowMain(windowMain),
+pResultTarget(resultTarget),
+pResultMessage(resultMessage),
+pResultValue(false),
 pGame(game),
-pProfile(game->GetActiveProfile()),
-pSem(create_sem(0, "run_game_with_sem")),
-pResult(false)
+pProfile(game->GetActiveProfile())
 {
-	SetFeel(B_MODAL_APP_FEEL);
+	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	pPopupProfile = new BPopUpMenu("< Default Profile >");
 	pMenuProfile = new BMenuField("profile", "Profile:", pPopupProfile);
@@ -86,11 +86,13 @@ pResult(false)
 	SetDefaultButton(btnRun);
 	
 	UpdateGame();
+	
+	ResizeToPreferred();
+	
+	CenterOnScreen();
 }
 
-deglbDialogRunGameWith::~deglbDialogRunGameWith(){
-	delete_sem(pSem);
-}
+deglbDialogRunGameWith::~deglbDialogRunGameWith() = default;
 
 
 
@@ -100,12 +102,6 @@ deglbDialogRunGameWith::~deglbDialogRunGameWith(){
 void deglbDialogRunGameWith::SetProfile(delGameProfile *profile){
 	pProfile = profile;
 	UpdateGame();
-}
-
-bool deglbDialogRunGameWith::Go(){
-	Show();
-	acquire_sem(pSem);
-	return pResult;
 }
 
 void deglbDialogRunGameWith::UpdateGame(){
@@ -135,6 +131,7 @@ void deglbDialogRunGameWith::UpdateGame(){
 	delGameProfile *sel = pProfile;
 	BMenuItem *found = nullptr;
 	if(sel){
+		int i;
 		for(i=0; i<pPopupProfile->CountItems(); i++){
 			BMenuItem * const item = pPopupProfile->ItemAt(i);
 			BMessage * const imsg = item ? item->Message() : nullptr;
@@ -181,14 +178,11 @@ void deglbDialogRunGameWith::UpdateGame(){
 void deglbDialogRunGameWith::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_RUN:
-		pResult = true;
-		release_sem(pSem);
+		pResultValue = true;
 		Quit();
 		break;
 		
 	case MSG_CANCEL:
-		pResult = false;
-		release_sem(pSem);
 		Quit();
 		break;
 		
@@ -202,35 +196,33 @@ void deglbDialogRunGameWith::MessageReceived(BMessage *message){
 		
 	case MSG_EDIT_PROFILES:{
 		delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-		try{
-			delGameProfile *profile = pProfile;
+		delGameProfile *profile = pProfile;
+		if(!profile){
+			profile = gameManager.GetActiveProfile();
 			if(!profile){
-				profile = gameManager.GetActiveProfile();
-				if(!profile){
-					profile = gameManager.GetDefaultProfile();
-				}
+				profile = gameManager.GetDefaultProfile();
 			}
-			
-			deglbDialogProfileList *dlg = new deglbDialogProfileList(pWindowMain, profile);
-			Unlock();
-			const bool result = dlg->Go();
-			Lock();
-			
-			if(result){
-				pWindowMain->GetLauncher()->GetEngine().SaveConfig();
-				gameManager.GetProfiles().Visit([&](delGameProfile &p){
-					p.Verify(*pWindowMain->GetLauncher());
-				});
-				gameManager.ApplyProfileChanges();
-				gameManager.SaveGameConfigs();
-				UpdateGame();
-			}
+		}
+		
+		(new deglbDialogProfileList(pWindowMain, profile,
+			BMessenger(this), MSG_EDIT_PROFILES_DONE))->Show();
+		}break;
+		
+	case MSG_EDIT_PROFILES_DONE:
+		try{
+			delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
+			gameManager.GetProfiles().Visit([&](delGameProfile &p){
+				p.Verify(*pWindowMain->GetLauncher());
+			});
+			gameManager.ApplyProfileChanges();
+			gameManager.SaveGameConfigs();
+			UpdateGame();
 			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
 		break;
-	}
 		
 	default:
 		BWindow::MessageReceived(message);
@@ -238,7 +230,11 @@ void deglbDialogRunGameWith::MessageReceived(BMessage *message){
 }
 
 bool deglbDialogRunGameWith::QuitRequested(){
-	pResult = false;
-	release_sem(pSem);
+	if(pResultTarget.IsValid()){
+		BMessage reply(pResultMessage);
+		reply.SetBool("result", pResultValue);
+		reply.SetString("profile", pProfile->GetName());
+		pResultTarget.SendMessage(&reply);
+	}
 	return true;
 }

@@ -48,20 +48,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglbDialogEngineProps::deglbDialogEngineProps(deglbWindowMain *windowMain) :
-BWindow(BRect(windowMain->Frame().LeftTop() + BPoint(50, 50), BSize(600, 350)),
-"Engine Properties", B_TITLED_WINDOW,
-B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+deglbDialogEngineProps::deglbDialogEngineProps(deglbWindowMain *windowMain,
+	const BMessenger &resultTarget, int resultMessage) :
+BWindow({}, "Engine Properties", B_TITLED_WINDOW, B_NOT_ZOOMABLE),
 pWindowMain(windowMain),
-pSem(create_sem(0, "engine_props_sem"))
+pResultTarget(resultTarget),
+pResultMessage(resultMessage),
+pResultValue(false)
 {
-	SetFeel(B_MODAL_APP_FEEL);
+	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	// Build UI with BTabView
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
 	
 	// Information tab
-	BView * const infoTab = new BView("Information", B_WILL_DRAW);
+	BView * const infoTab = new BView("Information", 0);
 	
 	pEditPathConfig = new BTextControl("pathConfig", "Path Config:", "", nullptr);
 	pEditPathConfig->SetEnabled(false);
@@ -82,7 +83,7 @@ pSem(create_sem(0, "engine_props_sem"))
 	tabView->AddTab(infoTab);
 	
 	// Settings tab
-	BView * const settingsTab = new BView("Settings", B_WILL_DRAW);
+	BView * const settingsTab = new BView("Settings", 0);
 	
 	pPopupProfile = new BPopUpMenu("< Default Profile >");
 	pMenuProfile = new BMenuField("profile", "Active Profile:", pPopupProfile);
@@ -115,21 +116,23 @@ pSem(create_sem(0, "engine_props_sem"))
 	SetDefaultButton(btnClose);
 	
 	SetFromEngine();
+	
+	ResizeToPreferred();
+	
+	font_height fh;
+	be_plain_font->GetHeight(&fh);
+	ResizeTo(be_plain_font->StringWidth("M") * 50, Size().Height());
+	
+	CenterOnScreen();
 }
 
 deglbDialogEngineProps::~deglbDialogEngineProps(){
-	delete_sem(pSem);
 }
 
 
 
 // Management
 ///////////////
-
-void deglbDialogEngineProps::Go(){
-	Show();
-	acquire_sem(pSem);
-}
 
 void deglbDialogEngineProps::SetFromEngine(){
 	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
@@ -166,6 +169,7 @@ void deglbDialogEngineProps::UpdateProfileList(){
 	delGameProfile * const active = gameManager.GetActiveProfile();
 	BMenuItem *found = nullptr;
 	if(active){
+		int i;
 		for(i=0; i<pPopupProfile->CountItems(); i++){
 			BMenuItem * const item = pPopupProfile->ItemAt(i);
 			if(!item){
@@ -201,7 +205,7 @@ void deglbDialogEngineProps::UpdateProfileList(){
 void deglbDialogEngineProps::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_OK:
-		release_sem(pSem);
+		pResultValue = true;
 		Quit();
 		break;
 		
@@ -215,31 +219,27 @@ void deglbDialogEngineProps::MessageReceived(BMessage *message){
 		break;
 	}
 		
-	case MSG_EDIT_PROFILES:{
-		delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+	case MSG_EDIT_PROFILES:
+		(new deglbDialogProfileList(
+			pWindowMain, pWindowMain->GetLauncher()->GetGameManager().GetActiveProfile(),
+			BMessenger(this), MSG_EDIT_PROFILES_DONE))->Show();
+		break;
+		
+	case MSG_EDIT_PROFILES_DONE:
 		try{
-			deglbDialogProfileList *dlg = new deglbDialogProfileList(
-				pWindowMain, gameManager.GetActiveProfile());
-			
-			// Unlock this window while the dialog runs
-			Unlock();
-			const bool result = dlg->Go();
-			Lock();
-			
-			if(result){
-				pWindowMain->GetLauncher()->GetEngine().SaveConfig();
-				gameManager.GetProfiles().Visit([&](delGameProfile &p){
-					p.Verify(*pWindowMain->GetLauncher());
-				});
-				gameManager.ApplyProfileChanges();
-				gameManager.SaveGameConfigs();
-				UpdateProfileList();
-			}
+			delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
+			gameManager.GetProfiles().Visit([&](delGameProfile &p){
+				p.Verify(*pWindowMain->GetLauncher());
+			});
+			gameManager.ApplyProfileChanges();
+			gameManager.SaveGameConfigs();
+			UpdateProfileList();
 			
 		}catch(const deException &e){
 			pWindowMain->DisplayException(e);
 		}
-		}break;
+		break;
 		
 	default:
 		BWindow::MessageReceived(message);
@@ -247,6 +247,10 @@ void deglbDialogEngineProps::MessageReceived(BMessage *message){
 }
 
 bool deglbDialogEngineProps::QuitRequested(){
-	release_sem(pSem);
+	if(pResultTarget.IsValid()){
+		BMessage reply(pResultMessage);
+		reply.SetBool("result", pResultValue);
+		pResultTarget.SendMessage(&reply);
+	}
 	return true;
 }

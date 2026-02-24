@@ -51,6 +51,7 @@ public:
 		MSG_CANCEL = 'gpca',
 		MSG_PROFILE_CHANGED = 'gppc',
 		MSG_EDIT_PROFILES = 'gpep',
+		MSG_EDIT_PROFILES_DONE = 'gpeP',
 		MSG_DROP_CUSTOM_PROFILE = 'gpdc',
 		MSG_PATCH_CHANGED = 'gppx',
 		MSG_SCRMODINFO = 'gpsm'
@@ -59,6 +60,10 @@ public:
 	
 private:
 	deglbWindowMain *pWindowMain;
+	BMessenger pResultTarget;
+	int pResultMessage;
+	bool pResultValue;
+	
 	delGame::Ref pGame;
 	
 	// Info tab
@@ -86,16 +91,14 @@ private:
 	// File Formats tab
 	BListView *pListFileFormats;
 	
-	sem_id pSem;
-	bool pResult;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	deglbDialogGameProperties(deglbWindowMain *windowMain, delGame *game);
+	deglbDialogGameProperties(deglbWindowMain *windowMain, delGame *game,
+		const BMessenger &resultTarget, int resultMessage);
 	
 	/** \brief Clean up dialog. */
 	~deglbDialogGameProperties() override;
@@ -110,9 +113,6 @@ public:
 	
 	/** \brief Game. */
 	inline delGame &GetGame() const{ return *pGame; }
-	
-	/** \brief Run dialog, returns true if user confirmed changes. */
-	bool Go();
 	
 	/** \brief Update game values. */
 	void UpdateGame();

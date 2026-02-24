@@ -44,12 +44,16 @@ public:
 	enum eMessages{
 		MSG_OK = 'epok',
 		MSG_PROFILE_CHANGED = 'eppc',
-		MSG_EDIT_PROFILES = 'epep'
+		MSG_EDIT_PROFILES = 'epep',
+		MSG_EDIT_PROFILES_DONE = 'epeP'
 	};
 	
 	
 private:
 	deglbWindowMain *pWindowMain;
+	BMessenger pResultTarget;
+	int pResultMessage;
+	bool pResultValue;
 	
 	BTextControl *pEditPathConfig;
 	BTextControl *pEditPathShare;
@@ -58,15 +62,14 @@ private:
 	BMenuField *pMenuProfile;
 	BPopUpMenu *pPopupProfile;
 	
-	sem_id pSem;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	explicit deglbDialogEngineProps(deglbWindowMain *windowMain);
+	explicit deglbDialogEngineProps(deglbWindowMain *windowMain,
+		const BMessenger &resultTarget, int resultMessage);
 	
 	/** \brief Clean up dialog. */
 	~deglbDialogEngineProps() override;
@@ -78,9 +81,6 @@ public:
 	/*@{*/
 	/** \brief Main window. */
 	inline deglbWindowMain *GetWindowMain() const{ return pWindowMain; }
-	
-	/** \brief Run modal dialog. */
-	void Go();
 	
 	/** \brief Set values from engine. */
 	void SetFromEngine();

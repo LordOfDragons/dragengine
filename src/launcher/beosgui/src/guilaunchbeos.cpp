@@ -26,7 +26,7 @@
 
 #include <Application.h>
 
-#include "guilaunchb.h"
+#include "guilaunchbeos.h"
 #include "gui/deglbWindowMain.h"
 
 #include <dragengine/common/exceptions.h>
@@ -76,7 +76,8 @@ int main(int argc, char **argv){
 	sigaction(SIGPIPE, &act, nullptr);
 	
 	try{
-		deglbApplication(argc, argv).Run();
+		deglbApplication app(argc, argv);
+		app.Run();
 		return 0;
 		
 	}catch(const deException &e){

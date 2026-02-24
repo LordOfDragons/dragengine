@@ -28,7 +28,8 @@
 #include <View.h>
 #include <ListView.h>
 #include <ScrollView.h>
-#include <ListItem.h>
+#include <ColumnListView.h>
+#include <ColumnTypes.h>
 #include <Bitmap.h>
 
 #include <delauncher/game/delGame.h>
@@ -42,31 +43,31 @@ class deglbWindowMain;
 class deglbPanelGames : public BView{
 public:
 	/** \brief Game list item. */
-	class cGameListItem : public BListItem{
+	class cGameListItem : public BRow{
 	public:
-		delGame::Ref pGame;
-		BBitmap *pIcon;
+		delGame::Ref game;
+		BBitmap *icon;
 		
 		cGameListItem(delGame *game);
 		~cGameListItem() override;
-		
-		void DrawItem(BView *owner, BRect frame, bool complete) override;
-		void Update(BView *owner, const BFont *font) override;
 	};
 	
 	enum eMessages{
 		MSG_LIST_CHANGED = 'pglc',
 		MSG_CONTEXT_PROPS = 'pgcp',
+		MSG_CONTEXT_PROPS_DONE = 'pgcP',
 		MSG_CONTEXT_RUN = 'pgcr',
 		MSG_CONTEXT_RUNWITH = 'pgcw',
+		MSG_CONTEXT_RUNWITH_DONE = 'pgcW',
 		MSG_CONTEXT_KILL = 'pgck',
-		MSG_CONTEXT_SHOWLOGS = 'pgcs'
+		MSG_CONTEXT_SHOWLOGS = 'pgcs',
+		MSG_UPDATE_GAMELIST = 'pgUG'
 	};
 	
 	
 private:
 	deglbWindowMain *pWindowMain;
-	BListView *pListGames;
+	BColumnListView *pListGames;
 	
 	
 	
@@ -111,6 +112,7 @@ private:
 	void pShowContextMenu(BPoint screenWhere, delGame *game);
 	void pRunGame(delGame *game);
 	void pRunGameWith(delGame *game);
+	void pRunGameWithDone(delGame *game, bool result, const delGameProfile::Ref &profile);
 	void pShowLogs(delGame *game);
 };
 
