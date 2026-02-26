@@ -33,11 +33,21 @@
 #include <stdint.h>
 #include <sys/types.h>
 #ifdef OS_W32
-#include <dragengine/app/deOSWindows.h>
+	#include <dragengine/app/deOSWindows.h>
+
 #else
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/select.h>
+	#ifdef OS_BEOS
+		#include <Application.h>
+		#include <AppFileInfo.h>
+		#include <Roster.h>
+		#include <Path.h>
+		#include <spawn.h>
+		char **environ;
+	#endif
+	
+	#include <unistd.h>
+	#include <sys/wait.h>
+	#include <sys/select.h>
 #endif
 
 #include "delEngineInstanceThreaded.h"
