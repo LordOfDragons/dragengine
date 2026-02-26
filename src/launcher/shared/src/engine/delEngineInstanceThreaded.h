@@ -78,11 +78,14 @@ private:
 	DWORD pThreadID;
 	decString pExecutableName;
 	static decString pDefaultExecutableName;
+	
 #else
 	int pPipeIn;
 	int pPipeOut;
 	pid_t pProcessID;
 #endif
+	
+	int pLogProcessId;
 	
 	
 	
@@ -130,6 +133,15 @@ public:
 	/** \brief Kill engine if running. */
 	void KillEngine() override;
 	
+#ifdef OS_BEOS
+	/**
+	 * \brief Intercept engine instance launch.
+	 * 
+	 * Call this in your BApplication::ReadyToRun(). If intercepted the call does not return but
+	 * instead call exit(0) once the engine instance is shut down.
+	 */
+	static void InterceptLaunch();
+#endif
 	
 	
 	/** \brief Write unsigned char to pipe. */

@@ -92,13 +92,15 @@ pProcessHandle(INVALID_HANDLE_VALUE),
 pThreadHandle(INVALID_HANDLE_VALUE),
 pProcessID(0),
 pThreadID(0),
-pExecutableName(pDefaultExecutableName)
-#else
+pExecutableName(pDefaultExecutableName),
 
+#else
 pPipeIn(0),
 pPipeOut(0),
-pProcessID(0)
+pProcessID(0),
 #endif
+
+pLogProcessId(0)
 {
 }
 
@@ -283,6 +285,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 		
 		pProcessHandle = procInfo.hProcess;
 		pProcessID = procInfo.dwProcessId;
+		pLogProcessId = (int)pProcessID;
 		pThreadHandle = procInfo.hThread;
 		pThreadID = procInfo.dwThreadId;
 		pPipeIn = pipesInWrite;
@@ -297,6 +300,73 @@ bool delEngineInstanceThreaded::StartEngine(){
 		
 		pReadLog->Start();
 		*/
+		
+		return true;
+	}
+	
+#elif defined OS_BEOS
+	fflush(nullptr);
+	
+	if(!pProcessID){
+		BPath path;
+		app_info info;
+		DEASSERT_TRUE(be_app->GetAppInfo(&info) == B_OK)
+		
+		BEntry entry(&info.ref);
+		entry.GetPath(&path);
+		
+		decStringList envStrings;
+		char **walkEnv = environ;
+		while(*walkEnv){
+			envStrings.Add(*walkEnv++);
+		}
+		envStrings.Add(decString::Formatted("_EITLD_LOGFILESOURCE={0}", logFile.GetPathNative()));
+		envStrings.Add(decString::Formatted("_EITLD_USECONSOLE={0}", GetUseConsole() ? 1 : 0));
+		
+		decTList<char*> envPointers(envStrings.GetCount());
+		envStrings.Visit([&](const decString &each){
+			envPointers.Add(each.GetMutableString());
+		});
+		
+		int pipesIn[2] = {0, 0};
+		int pipesOut[2] = {0, 0};
+		
+		if(pipe(pipesIn) || pipe(pipesOut)){
+			if(pipesIn[0]){
+				close(pipesIn[0]);
+			}
+			if(pipesIn[1]){
+				close(pipesIn[1]);
+			}
+			if(pipesOut[0]){
+				close(pipesOut[0]);
+			}
+			if(pipesOut[1]){
+				close(pipesOut[1]);
+			}
+			return false;
+		}
+		
+		posix_spawn_file_actions_t actions;
+		posix_spawn_file_actions_init(&actions);
+		
+		posix_spawn_file_actions_adddup2(&actions, pipesIn[0], STDIN_FILENO);
+		posix_spawn_file_actions_adddup2(&actions, pipesOut[1], STDOUT_FILENO);
+		
+		posix_spawn_file_actions_addclose(&actions, pipesIn[1]);
+		posix_spawn_file_actions_addclose(&actions, pipesOut[0]);
+		
+		char *argv[] = {const_cast<char*>(path.Path()), nullptr};
+		if(posix_spawn(&pProcessID, path.Path(), &actions, nullptr, argv, envPointers.GetArrayPointer()) == 0){
+			close(pipesIn[0]);
+			close(pipesOut[1]);
+			
+			pPipeIn = pipesIn[1];
+			pPipeOut = pipesOut[0];
+			
+			GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+				"Game engine running in process %i", pProcessID);
+		}
 		
 		return true;
 	}
@@ -330,6 +400,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 		}
 		
 		pProcessID = fork();
+		pLogProcessId = (int)pProcessID;
 		
 		if(pProcessID == 0){
 			close(pipesIn[1]);
@@ -363,7 +434,7 @@ void delEngineInstanceThreaded::StopEngine(){
 #ifdef OS_W32
 	if(pProcessHandle != INVALID_HANDLE_VALUE){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-			"Stopping game engine in process %i", (int)pProcessID);
+			"Stopping game engine in process %i", pLogProcessId);
 		if(!StopProcess()){
 			TerminateProcess(pProcessHandle, 0);
 			WaitForSingleObject(pProcessHandle, 5000);
@@ -394,6 +465,7 @@ void delEngineInstanceThreaded::StopEngine(){
 		pProcessID = 0;
 	}
 #endif
+	pLogProcessId = 0;
 	
 #ifdef OS_W32
 	if(pPipeIn != INVALID_HANDLE_VALUE){
@@ -424,7 +496,7 @@ void delEngineInstanceThreaded::KillEngine(){
 #ifdef OS_W32
 	if(pProcessHandle != INVALID_HANDLE_VALUE){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-			"Killing game engine process %i", (int)pProcessID);
+			"Killing game engine process %i", pLogProcessId);
 		TerminateProcess(pProcessHandle, 0);
 		WaitForSingleObject(pProcessHandle, 5000);
 		
@@ -454,7 +526,7 @@ void delEngineInstanceThreaded::KillEngine(){
 #else
 	if(pProcessID){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-			"Killing game engine process %i", pProcessID);
+			"Killing game engine process %i", pLogProcessId);
 		kill(pProcessID, SIGKILL);
 		waitpid(pProcessID, nullptr, 0);
 		
@@ -471,8 +543,26 @@ void delEngineInstanceThreaded::KillEngine(){
 		pPipeOut = 0;
 	}
 #endif
+	pLogProcessId = 0;
 }
 
+#ifdef OS_BEOS
+void delEngineInstanceThreaded::InterceptLaunch(){
+	const char *logFileSource = getenv("_EITLD_LOGFILESOURCE");
+	if(!logFileSource){
+		return;
+	}
+	
+	//debug_printf("delEngineInstanceThreaded::InterceptLaunch(): Intercepted\n");
+	delEngineProcess process(STDIN_FILENO, STDOUT_FILENO, logFileSource);
+	
+	const char *useConsole = getenv("_EITLD_USECONSOLE");
+	process.SetUseConsole(useConsole && strcmp(useConsole, "1") == 0);
+	
+	process.Run();
+	exit(0);
+}
+#endif
 
 
 void delEngineInstanceThreaded::WriteUCharToPipe(int value){
@@ -504,7 +594,7 @@ void delEngineInstanceThreaded::WriteString16ToPipe(const char *string){
 }
 
 void delEngineInstanceThreaded::WriteToPipe(const void *data, int length){
-	#ifdef OS_W32
+#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
 	if(pPipeIn == INVALID_HANDLE_VALUE
@@ -513,11 +603,11 @@ void delEngineInstanceThreaded::WriteToPipe(const void *data, int length){
 		DETHROW(deeInvalidAction);
 	}
 	
-	#else
+#else
 	if(!pPipeOut || write(pPipeIn, data, length) < length){
 		DETHROW(deeInvalidAction);
 	}
-	#endif
+#endif
 }
 
 
@@ -555,7 +645,7 @@ void delEngineInstanceThreaded::ReadString16FromPipe(decString &string){
 }
 
 void delEngineInstanceThreaded::ReadFromPipe(void *data, int length){
-	#ifdef OS_W32
+#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
 	if(pPipeOut == INVALID_HANDLE_VALUE
@@ -564,15 +654,15 @@ void delEngineInstanceThreaded::ReadFromPipe(void *data, int length){
 		DETHROW(deeInvalidAction);
 	}
 	
-	#else
+#else
 	if(!pPipeOut || read(pPipeOut, data, length) != length){
 		DETHROW(deeInvalidAction);
 	}
-	#endif
+#endif
 }
 
 bool delEngineInstanceThreaded::CheckCanReadPipe(){
-	#ifdef OS_W32
+#ifdef OS_W32
 	if(pPipeOut == INVALID_HANDLE_VALUE){
 		return false;
 	}
@@ -580,7 +670,7 @@ bool delEngineInstanceThreaded::CheckCanReadPipe(){
 	DWORD readableBytes = 0;
 	return PeekNamedPipe(pPipeOut, NULL, 0, NULL, &readableBytes, NULL) && readableBytes > 0;
 	
-	#else
+#else
 	if(!pPipeOut){
 		return false;
 	}
@@ -595,7 +685,7 @@ bool delEngineInstanceThreaded::CheckCanReadPipe(){
 	tv.tv_usec = 0;
 	
 	return select(pPipeOut + 1, &rfds, nullptr, nullptr, &tv) == 1;
-	#endif
+#endif
 }
 
 void delEngineInstanceThreaded::DrainReadPipe(){
@@ -613,7 +703,7 @@ bool delEngineInstanceThreaded::StopProcess(){
 	if(pPipeIn){
 #endif
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-			"Sending eccStopProcess to process %i", (int)pProcessID);
+			"Sending eccStopProcess to process %d", pLogProcessId);
 		
 		try{
 			WriteUCharToPipe(delEngineProcess::eccStopProcess);
@@ -629,12 +719,14 @@ bool delEngineInstanceThreaded::StopProcess(){
 		
 #ifdef OS_W32
 		WaitForSingleObject(pProcessHandle, 5000);
+		
 #else
 		waitpid(pProcessID, nullptr, 0);
 #endif
 		
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-			"Process %i terminated", (int)pProcessID);
+			"Process %d terminated", pLogProcessId);
+		pLogProcessId = 0;
 		return true;
 	}
 	
@@ -643,7 +735,7 @@ bool delEngineInstanceThreaded::StopProcess(){
 
 void delEngineInstanceThreaded::GetProperty(int property, decString &value){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccGetProperty(property=%i) to process %i", property, (int)pProcessID);
+		"Sending eccGetProperty(property=%i) to process %i", property, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetProperty);
 	WriteUCharToPipe(property);
@@ -657,7 +749,7 @@ void delEngineInstanceThreaded::GetProperty(int property, decString &value){
 
 void delEngineInstanceThreaded::LoadModules(){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccLoadModules to process %i", (int)pProcessID);
+		"Sending eccLoadModules to process %i", pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccLoadModules);
 	
@@ -668,7 +760,7 @@ void delEngineInstanceThreaded::LoadModules(){
 
 void delEngineInstanceThreaded::GetInternalModules(delEngineModuleList &list){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccGetInternalModules to process %d", (int)pProcessID);
+		"Sending eccGetInternalModules to process %d", pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetInternalModules);
 	
@@ -711,7 +803,7 @@ int delEngineInstanceThreaded::GetModuleStatus(const char *moduleName, const cha
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccGetModuleStatus(module='%s':%s) to process %i",
-		moduleName, moduleVersion, (int)pProcessID);
+		moduleName, moduleVersion, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetModuleStatus);
 	WriteString16ToPipe(moduleName);
@@ -727,7 +819,7 @@ int delEngineInstanceThreaded::GetModuleStatus(const char *moduleName, const cha
 void delEngineInstanceThreaded::GetModuleParams(delEngineModule &module){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccGetModuleParamList(moduleName='%s') to process %i",
-		module.GetName().GetString(), (int)pProcessID);
+		module.GetName().GetString(), pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetModuleParamList);
 	WriteString16ToPipe(module.GetName());
@@ -801,7 +893,7 @@ const char *parameter, const char *value){
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccSetModuleParameter(module='%s':%s,parameter=%s,value='%s') to process %d",
-		moduleName, moduleVersion, parameter, value, (int)pProcessID);
+		moduleName, moduleVersion, parameter, value, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetModuleParameter);
 	WriteString16ToPipe(moduleName);
@@ -824,7 +916,7 @@ void delEngineInstanceThreaded::ActivateModule(const char *moduleName, const cha
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccActivateModule(module='%s':%s) to process %i",
-		moduleName, moduleVersion, (int)pProcessID);
+		moduleName, moduleVersion, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccActivateModule);
 	WriteString16ToPipe(moduleName);
@@ -845,7 +937,7 @@ void delEngineInstanceThreaded::EnableModule(const char *moduleName, const char 
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccEnableModule(module='%s':%s %s) to process %i",
-		moduleName, moduleVersion, enable ? "enable" : "disable", (int)pProcessID);
+		moduleName, moduleVersion, enable ? "enable" : "disable", pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccEnableModule);
 	WriteString16ToPipe(moduleName);
@@ -863,7 +955,7 @@ void delEngineInstanceThreaded::SetDataDirectory(const char *directory){
 	}
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccSetDataDir(directory='%s') to process %i", directory, (int)pProcessID);
+		"Sending eccSetDataDir(directory='%s') to process %i", directory, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetDataDir);
 	WriteString16ToPipe(directory);
@@ -877,7 +969,7 @@ void delEngineInstanceThreaded::SetCacheAppID(const char *cacheAppID){
 	}
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccSetCacheAppID(id='%s') to process %i", cacheAppID, (int)pProcessID);
+		"Sending eccSetCacheAppID(id='%s') to process %i", cacheAppID, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetCacheAppID);
 	WriteString16ToPipe(cacheAppID);
@@ -893,7 +985,7 @@ void delEngineInstanceThreaded::SetPathOverlay(const char* path){
 	}
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccSetPathOverlay(path='%s') to process %i", path, (int)pProcessID);
+		"Sending eccSetPathOverlay(path='%s') to process %i", path, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetPathOverlay);
 	WriteString16ToPipe(path);
@@ -909,7 +1001,7 @@ void delEngineInstanceThreaded::SetPathCapture(const char* path){
 	}
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccSetPathCapture(path='%s') to process %i", path, (int)pProcessID);
+		"Sending eccSetPathCapture(path='%s') to process %i", path, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetPathCapture);
 	WriteString16ToPipe(path);
@@ -925,7 +1017,7 @@ void delEngineInstanceThreaded::SetPathConfig(const char* path){
 	}
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccSetPathConfig(path='%s') to process %i", path, (int)pProcessID);
+		"Sending eccSetPathConfig(path='%s') to process %i", path, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetPathConfig);
 	WriteString16ToPipe(path);
@@ -949,7 +1041,7 @@ bool readOnly, const decStringSet &hiddenPath){
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccVFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c,hiddenPath=%d) to process %i",
-		vfsRoot, nativeDirectory, readOnly?'y':'n', hiddenPathCount, (int)pProcessID);
+		vfsRoot, nativeDirectory, readOnly?'y':'n', hiddenPathCount, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccVFSAddDiskDir);
 	WriteString16ToPipe(vfsRoot);
@@ -969,7 +1061,7 @@ bool readOnly, const decStringSet &hiddenPath){
 
 void delEngineInstanceThreaded::VFSAddScriptSharedDataDir(){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccVFSAddScriptSharedDataDir to process %i", (int)pProcessID);
+		"Sending eccVFSAddScriptSharedDataDir to process %i", pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccVFSAddScriptSharedDataDir);
 	
@@ -991,7 +1083,7 @@ const char *archivePath, const decStringSet &hiddenPath){
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccVFSAddDelga(delgaFile='%s', archivePath=%s, hiddenPath=%d) to process %i",
-		delgaFile, archivePath, hiddenPathCount, (int)pProcessID);
+		delgaFile, archivePath, hiddenPathCount, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccVFSAddDelgaFile);
 	WriteString16ToPipe(delgaFile);
@@ -1012,7 +1104,7 @@ void delEngineInstanceThreaded::ModulesAddVFSContainers(const char *stage){
 	DEASSERT_NOTNULL(stage)
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccModulesAddVFSContainers(stage='%s') to process %i", stage, (int)pProcessID);
+		"Sending eccModulesAddVFSContainers(stage='%s') to process %i", stage, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccModulesAddVFSContainers);
 	WriteString16ToPipe(stage);
@@ -1029,7 +1121,7 @@ void delEngineInstanceThreaded::SetCmdLineArgs(const char *arguments)
 	}
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccSetCmdLineArgs(arguments='%s') to process %i", arguments, (int)pProcessID);
+		"Sending eccSetCmdLineArgs(arguments='%s') to process %i", arguments, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccSetCmdLineArgs);
 	WriteString16ToPipe(arguments);
@@ -1127,7 +1219,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 	
 	if(exitCode != STILL_ACTIVE){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-			"Received game stop (result=%ld) from process %d", exitCode, (int)pProcessID);
+			"Received game stop (result=%ld) from process %d", exitCode, pLogProcessId);
 		
 		if(pThreadHandle){
 			CloseHandle(pThreadHandle);
@@ -1157,8 +1249,8 @@ int delEngineInstanceThreaded::IsGameRunning(){
 	/*
 	if(CheckCanReadPipe()){
 		//const int result = ReadUCharFromPipe();
-		//GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(), "Received game stop (result=%d) from process %d", result, ( int )pProcessID );
-		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(), "Game process %d exited", (int)pProcessID);
+		//GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(), "Received game stop (result=%d) from process %d", result, pLogProcessId );
+		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(), "Game process %d exited", pLogProcessId);
 		return 0;
 	}
 	*/
@@ -1218,7 +1310,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 decPoint delEngineInstanceThreaded::GetDisplayCurrentResolution(int display){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccGetDisplayCurrentResolution(display=%d)"
-		" to process %i", display, (int)pProcessID);
+		" to process %i", display, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetDisplayCurrentResolution);
 	WriteUCharToPipe(display);
@@ -1242,7 +1334,7 @@ int delEngineInstanceThreaded::GetDisplayResolutions(int display, decPoint *reso
 	
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccGetDisplayResolutions(display=%d, resolutions=%d, resolutionCount=%d) to process %i",
-		display, resolutions ? 1 : 0, resolutionCount, (int)pProcessID);
+		display, resolutions ? 1 : 0, resolutionCount, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetDisplayResolutions);
 	WriteUCharToPipe(display);
@@ -1268,7 +1360,7 @@ int delEngineInstanceThreaded::GetDisplayResolutions(int display, decPoint *reso
 int delEngineInstanceThreaded::GetDisplayCurrentScaleFactor(int display){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 		"Sending eccGetDisplayCurrentScaleFactor(display=%d) to process %d",
-		display, (int)pProcessID);
+		display, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccGetDisplayCurrentScaleFactor);
 	WriteUCharToPipe(display);
@@ -1283,7 +1375,7 @@ int delEngineInstanceThreaded::GetDisplayCurrentScaleFactor(int display){
 void delEngineInstanceThreaded::ReadDelgaGameDefs(const char *delgaFile, decStringList &list){
 	// send command
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccReadDelgaGameDefs (delgaFile=%s) to process %i", delgaFile, (int)pProcessID);
+		"Sending eccReadDelgaGameDefs (delgaFile=%s) to process %i", delgaFile, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccReadDelgaGameDefs);
 	WriteString16ToPipe(delgaFile);
@@ -1307,7 +1399,7 @@ void delEngineInstanceThreaded::ReadDelgaGameDefs(const char *delgaFile, decStri
 void delEngineInstanceThreaded::ReadDelgaPatchDefs(const char *delgaFile, decStringList &list){
 	// send command
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccReadDelgaPatchDefs (delgaFile=%s) to process %i", delgaFile, (int)pProcessID);
+		"Sending eccReadDelgaPatchDefs (delgaFile=%s) to process %i", delgaFile, pLogProcessId);
 	
 	WriteUCharToPipe(delEngineProcess::eccReadDelgaPatchDefs);
 	WriteString16ToPipe(delgaFile);
@@ -1332,7 +1424,7 @@ void delEngineInstanceThreaded::ReadDelgaPatchDefs(const char *delgaFile, decStr
 void delEngineInstanceThreaded::ReadDelgaFiles(const char *delgaFile,
 const decStringList &filenames, decTObjectOrderedSet<decMemoryFile> &filesContent){
 	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-		"Sending eccReadDelgaFiles (delgaFile=%s) to process %i", delgaFile, (int)pProcessID);
+		"Sending eccReadDelgaFiles (delgaFile=%s) to process %i", delgaFile, pLogProcessId);
 	
 	const int fileCount = filenames.GetCount();
 	filesContent.RemoveAll();

@@ -29,6 +29,8 @@
 #include "guilaunchbeos.h"
 #include "gui/deglbWindowMain.h"
 
+#include <delauncher/engine/delEngineInstanceThreaded.h>
+
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -50,6 +52,8 @@ public:
 	}
 	
 	void ReadyToRun() override{
+		delEngineInstanceThreaded::InterceptLaunch();
+		
 		try{
 			deglbWindowMain * const window = new deglbWindowMain(pArgc, pArgv);
 			if(window->RunCommandLineActions()){
@@ -58,6 +62,7 @@ public:
 			}else{
 				Quit();
 			}
+			
 		}catch(const deException &e){
 			e.PrintError();
 			Quit();

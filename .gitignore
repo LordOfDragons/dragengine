@@ -12,3 +12,5 @@ custom.py
 compile_commands.json
 scons_commands.log
 .tidy_fixes
+.genio
+

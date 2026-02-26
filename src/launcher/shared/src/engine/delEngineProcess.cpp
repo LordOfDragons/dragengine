@@ -449,7 +449,7 @@ void delEngineProcess::WriteToPipe(const void *data, int length){
 	}
 	
 	#else
-	if(!pPipeOut || write(pPipeOut, data, length) != length){
+	if(write(pPipeOut, data, length) != length){
 		DETHROW(deeInvalidAction);
 	}
 	#endif
@@ -493,7 +493,7 @@ void delEngineProcess::ReadFromPipe(void *data, int length){
 	}
 	
 	#else
-	if(!pPipeIn || read(pPipeIn, data, length) != length){
+	if(read(pPipeIn, data, length) != length){
 		DETHROW(deeInvalidAction);
 	}
 	#endif
