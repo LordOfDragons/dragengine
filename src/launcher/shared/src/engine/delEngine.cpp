@@ -500,7 +500,8 @@ void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filen
 		gameXML.ReadFromFile(decMemoryFileReader::Ref::New(memoryFile), game);
 		
 		game->SetDefaultLogFile();
-		game->SetDelgaFile(filename);
+		game->SetDelgaFile(decPath::CreatePathNative(filename).AbsolutePath(
+			decPath::CreateWorkingDirectory()).GetPathNative());
 		
 		list.Add(game);
 		
@@ -570,7 +571,8 @@ void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *file
 		patch = delPatch::Ref::New();
 		patchXML.ReadFromFile(decMemoryFileReader::Ref::New(memoryFile), patch);
 		
-		patch->SetDelgaFile(filename);
+		patch->SetDelgaFile(decPath::CreatePathNative(filename).AbsolutePath(
+			decPath::CreateWorkingDirectory()).GetPathNative());
 		
 		list.Add(patch);
 	}

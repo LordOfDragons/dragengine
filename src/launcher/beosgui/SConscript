@@ -49,9 +49,9 @@ globFiles(envLauncher, 'src', '*.h', headers)
 objects = [envLauncher.StaticObject(s) for s in sources]
 
 # build: compile first, then add resources
-program_org = envLauncher.Program(target='delauncher-gui-beos-org', source=objects, LIBS=libs)
+program_org = envLauncher.Program(target='delauncher-gui-org', source=objects, LIBS=libs)
 rsrc = envLauncher.RDef('src/beos_res.rdef')
-program = envLauncher.Rsrc(target='delauncher-gui-beos', source=[program_org, rsrc])
+program = envLauncher.Rsrc(target='delauncher-gui', source=[program_org, rsrc])
 
 targetBuild = parent_env.Alias('launcher_beosgui_build', program)
 
