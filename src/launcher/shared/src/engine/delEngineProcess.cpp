@@ -1385,7 +1385,8 @@ void delEngineProcess::CommandGetDisplayResolutions(){
 		display = ReadUCharFromPipe();
 		count = ReadUCharFromPipe();
 		
-		const int resolutionCount = decMath::min(pEngine->GetOS()->GetDisplayResolutionCount(display), 255);
+		const int resolutionCount = decMath::min(
+			pEngine->GetOS()->GetDisplayResolutionCount(display), 0xff);
 		
 		if(count == 0){
 			WriteUCharToPipe(ercSuccess);
