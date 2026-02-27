@@ -622,23 +622,23 @@ void deOSWindows::pFindResolutions(){
 	DEVMODE mode = {};
 	mode.dmSize = sizeof(mode);
 	mode.dmDriverExtra = 0;
-
+	
 	while(EnumDisplaySettingsW(NULL, count, &mode)){
 		count++;
 	}
-
+	
+	pResolutions.RemoveAll();
+	
 	if(count == 0){
-		pResolutions.RemoveAll();
 		pResolutions.Add({pScreenWidth, pScreenHeight});
 		return;
 	}
-
-	pResolutions.SetCountDiscard(count);
+	
 	int i, j;
-
+	
 	for(i=0; i<count; i++){
 		DEASSERT_TRUE(EnumDisplaySettingsW(NULL, i, &mode));
-
+		
 		const decPoint resolution((int)mode.dmPelsWidth, (int)mode.dmPelsHeight);
 		
 		for(j=0; j<pResolutions.GetCount(); j++){
@@ -646,14 +646,14 @@ void deOSWindows::pFindResolutions(){
 				break;
 			}
 		}
-
+		
 		if(j < pResolutions.GetCount()){
 			continue;
 		}
-
+		
 		pResolutions.Add(resolution);
 	}
-
+	
 	for(i=1; i<pResolutions.GetCount(); i++){
 		const decPoint &a = pResolutions.GetAt(i - 1);
 		const decPoint &b = pResolutions.GetAt(i);
