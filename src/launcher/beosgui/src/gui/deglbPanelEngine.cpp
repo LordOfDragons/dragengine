@@ -200,23 +200,30 @@ public:
 			
 			auto view = dynamic_cast<BView*>(*target);
 			auto item = dynamic_cast<deglbPanelEngine::cModuleListItem*>(pListView.RowAt(where));
-			if(item){
-				//printf("Filter: %d %d %p\n", (int)buttons, (int)clicks, item);
-				if(buttons == B_SECONDARY_MOUSE_BUTTON){
-					view->ConvertToScreen(&where);
-					pPanel.OnListContextMenu(item, where);
-					return B_SKIP_MESSAGE;
-					
-				}else if(buttons == B_PRIMARY_MOUSE_BUTTON && clicks == 2){
-					pPanel.OnListInvoke(item);
-					return B_SKIP_MESSAGE;
-				}
+			if(!item){
+				break;
 			}
-			} return B_DISPATCH_MESSAGE;
+			
+			pListView.DeselectAll();
+			pListView.AddToSelection(item);
+			pListView.ScrollTo(item);
+			
+			if(buttons == B_SECONDARY_MOUSE_BUTTON){
+				view->ConvertToScreen(&where);
+				pPanel.OnListContextMenu(item, where);
+				return B_SKIP_MESSAGE;
+				
+			}else if(buttons == B_PRIMARY_MOUSE_BUTTON && clicks == 2){
+				pPanel.OnListInvoke(item);
+				return B_SKIP_MESSAGE;
+			}
+			}break;
 			
 		default:
-			return B_DISPATCH_MESSAGE;
+			break;
 		};
+		
+		return B_DISPATCH_MESSAGE;
 	}
 };
 
@@ -261,6 +268,9 @@ void deglbPanelEngine::UpdateModuleList(){
 	});
 }
 
+void deglbPanelEngine::PrepareShutDown(){
+	pListModules->Clear();
+}
 
 
 // BView

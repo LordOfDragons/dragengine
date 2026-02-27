@@ -367,17 +367,23 @@ bool delEngineInstanceThreaded::StartEngine(){
 		posix_spawn_file_actions_addclose(&actions, pipesOut[0]);
 		
 		char *argv[] = {const_cast<char*>(path.Path()), nullptr};
-		if(posix_spawn(&pProcessID, path.Path(), &actions, nullptr, argv, envPointers.GetArrayPointer()) == 0){
-			close(pipesIn[0]);
-			close(pipesOut[1]);
-			
-			pPipeIn = pipesIn[1];
-			pPipeOut = pipesOut[0];
-			
-			GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
-				"Game engine running in process %i", pProcessID);
+		int result = posix_spawn(&pProcessID, path.Path(), &actions,
+			nullptr, argv, envPointers.GetArrayPointer());
+		if(result != 0){
+			GetLauncher().GetLogger()->LogErrorFormat(GetLauncher().GetLogSource(),
+				"Game engine launching failed: %s", strerror(result));
+			DETHROW_INFO(deeInvalidAction, strerror(result));
 		}
 		
+		close(pipesIn[0]);
+		close(pipesOut[1]);
+		
+		pPipeIn = pipesIn[1];
+		pPipeOut = pipesOut[0];
+		pLogProcessId = pProcessID;
+		
+		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+			"Game engine running in process %i", pProcessID);
 		return true;
 	}
 	
@@ -557,13 +563,14 @@ void delEngineInstanceThreaded::KillEngine(){
 }
 
 #ifdef OS_BEOS
+
 void delEngineInstanceThreaded::InterceptLaunch(){
 	const char *logFileSource = getenv("_EITLD_LOGFILESOURCE");
 	if(!logFileSource){
 		return;
 	}
 	
-	//debug_printf("delEngineInstanceThreaded::InterceptLaunch(): Intercepted\n");
+	//debug_printf("delEngineInstanceThreaded::InterceptLaunch(): Intercepted: %s\n", logFileSource);
 	delEngineProcess process(STDIN_FILENO, STDOUT_FILENO, logFileSource);
 	
 	const char *useConsole = getenv("_EITLD_USECONSOLE");
@@ -572,6 +579,7 @@ void delEngineInstanceThreaded::InterceptLaunch(){
 	process.Run();
 	exit(0);
 }
+
 #endif
 
 
@@ -614,7 +622,7 @@ void delEngineInstanceThreaded::WriteToPipe(const void *data, int length){
 	}
 	
 #else
-	if(!pPipeOut || write(pPipeIn, data, length) < length){
+	if(!pPipeIn || write(pPipeIn, data, length) < length){
 		DETHROW(deeInvalidAction);
 	}
 #endif

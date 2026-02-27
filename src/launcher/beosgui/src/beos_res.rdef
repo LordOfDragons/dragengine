@@ -15,3 +15,9 @@ resource file_types message {
     "types" = "application/dragengine-delga",
     "types" = "application/dragengine-gamedefinition"
 };
+
+resource(1, "BEOS:ICON") #'PNG ' import "../icons/delauncher-gui.png";
+
+resource(101, "icon_valid_small") #'PNG ' import "../icons/icon_valid_small.png";
+resource(102, "icon_invalid_small") #'PNG ' import "../icons/icon_invalid_small.png";
+resource(103, "button_info") #'PNG ' import "../icons/button_info.png";

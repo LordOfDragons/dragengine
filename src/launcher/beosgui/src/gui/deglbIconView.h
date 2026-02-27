@@ -22,87 +22,50 @@
  * SOFTWARE.
  */
 
-#ifndef _DEGLB_PANELENGINE_H_
-#define _DEGLB_PANELENGINE_H_
+#ifndef _DEGLB_ICONVIEW_H_
+#define _DEGLB_ICONVIEW_H_
 
 #include <View.h>
-#include <ListView.h>
-#include <ScrollView.h>
-#include <ColumnListView.h>
-#include <ColumnTypes.h>
-
-#include <delauncher/engine/modules/delEngineModule.h>
-
-class deglbWindowMain;
 
 
 /**
- * \brief Engine Panel.
+ * \brief Icon view.
+ * \note Bitmap is not shared and has to stay valid as long as the widget exists.
  */
-class deglbPanelEngine : public BView{
-public:
-	/** \brief Module list item. */
-	class cModuleListItem : public BRow{
-	public:
-		delEngineModule::Ref module;
-		
-		cModuleListItem(delEngineModule *module);
-		~cModuleListItem() override = default;
-	};
-	
-	enum eMessages{
-		MSG_CONTEXT_PROPS = 'pecp',
-		MSG_CONTEXT_PROPS_DONE = 'pecP'
-	};
-	
-	
+class deglbIconView : public BView{
 private:
-	deglbWindowMain *pWindowMain;
-	BColumnListView *pListModules;
-	
+	BBitmap *pBitmap;
+	int pMinSize;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
-	deglbPanelEngine(deglbWindowMain *windowMain);
+	/** \brief Create view. */
+	deglbIconView(BBitmap *bitmap = nullptr, int minSize = 0);
 	
-	/** \brief Clean up panel. */
-	~deglbPanelEngine() override;
+	/** \brief Clean up dialog. */
+	~deglbIconView() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
-	inline deglbWindowMain *GetWindowMain() const{ return pWindowMain; }
+	/** \brief Icon or nullptr. */
+	inline BBitmap *GetIcon() const{ return pBitmap; }
 	
-	/** \brief Selected module or nullptr. */
-	delEngineModule *GetSelectedModule() const;
-	
-	/** \brief Update module list. */
-	void UpdateModuleList();
-	
-	/** \brief Prepare to shut down. */
-	void PrepareShutDown();
+	/** \brief Set icon or nullptr. */
+	void SetIcon(BBitmap *bitmap);
 	/*@}*/
 	
 	
 	
 	/** \name BView */
-	/*@{*/
-	void MessageReceived(BMessage *message) override;
-	
-	void OnListContextMenu(cModuleListItem *item, const BPoint &where);
-	void OnListInvoke(cModuleListItem *item);
+	BSize MinSize() override;
+	BSize PreferredSize() override;
+	void Draw(BRect updateRect) override;
 	/*@}*/
-	
-	
-	
-private:
-	void pShowContextMenu(BPoint screenWhere);
 };
 
 #endif

@@ -36,6 +36,9 @@
 #include <StringView.h>
 #include <OS.h>
 
+#include "../deglbIconView.h"
+#include "../deglbIconTabView.h"
+
 #include <delauncher/game/delGame.h>
 
 class deglbWindowMain;
@@ -67,21 +70,41 @@ private:
 	delGame::Ref pGame;
 	
 	// Info tab
-	BTextControl *pEditIdentifier;
-	BTextControl *pEditAliasIdentifier;
-	BTextControl *pEditTitle;
+	deglbIconTabView *pTabInfo;
+	
+	BTextView *pEditIdentifier;
+	BTextView *pEditAliasIdentifier;
+	BTextView *pEditTitle;
 	BTextView *pTextDescription;
-	BTextControl *pEditCreator;
-	BTextControl *pEditHomepage;
-	BTextControl *pEditGameDir;
-	BTextControl *pEditDelgaFile;
-	BTextControl *pEditDataDir;
-	BTextControl *pEditScriptDir;
-	BTextControl *pEditScriptModule;
-	BTextControl *pEditScriptModuleVersion;
+	BTextView *pEditCreator;
+	BTextView *pEditHomepage;
+	
+	BTextView *pEditGameDir;
+	deglbIconView *pIconGameDir;
+	BTextView *pEditGameDirProblem;
+	
+	BTextView *pEditDelgaFile;
+	deglbIconView *pIconDelgaFile;
+	BTextView *pEditDelgaFileProblem;
+	
+	BTextView *pEditDataDir;
+	deglbIconView *pIconDataDir;
+	BTextView *pEditDataDirProblem;
+	
+	BTextView *pEditScriptDir;
+	deglbIconView *pIconScriptDir;
+	BTextView *pEditScriptDirProblem;
+	
+	BTextView *pEditScriptModule;
+	deglbIconView *pIconScriptModule;
+	BTextView *pEditScriptModuleProblem;
+	BTextView *pEditScriptModuleVersion;
 	
 	// Settings tab
+	deglbIconTabView *pTabSettings;
+	
 	BMenuField *pMenuProfile;
+	deglbIconView *pIconProfile;
 	BPopUpMenu *pPopupProfile;
 	BStringView *pLabProfileProblems;
 	BTextControl *pEditRunArgs;
@@ -89,6 +112,8 @@ private:
 	BPopUpMenu *pPopupPatch;
 	
 	// File Formats tab
+	deglbIconTabView *pTabFormats;
+	
 	BListView *pListFileFormats;
 	
 	

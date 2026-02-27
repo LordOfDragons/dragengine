@@ -29,6 +29,7 @@
 #include <SeparatorItem.h>
 #include <Alert.h>
 #include <Screen.h>
+#include <TranslationUtils.h>
 
 #include "deglbWindowMain.h"
 #include "deglbPanelGames.h"
@@ -79,6 +80,11 @@ pPulseRunner(nullptr)
 	if(pLauncher->GetCmdLineQuitNow()){
 		return;
 	}
+	
+	// Load icons
+	pIconValidSmall = IconRef::New(BTranslationUtils::GetBitmap('PNG ', 101));
+	pIconInvalidSmall = IconRef::New(BTranslationUtils::GetBitmap('PNG ', 102));
+	pIconButtonInfo = IconRef::New(BTranslationUtils::GetBitmap('PNG ', 103));
 	
 	// Apply window geometry from config
 	const deglbConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
@@ -140,6 +146,13 @@ pPulseRunner(nullptr)
 }
 
 deglbWindowMain::~deglbWindowMain(){
+	if(pPanelGames){
+		pPanelGames->PrepareShutDown();
+	}
+	if(pPanelEngine){
+		pPanelEngine->PrepareShutDown();
+	}
+	
 	if(pPulseRunner){
 		delete pPulseRunner;
 		pPulseRunner = nullptr;

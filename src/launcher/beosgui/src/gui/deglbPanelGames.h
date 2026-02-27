@@ -96,6 +96,9 @@ public:
 	
 	/** \brief Update the games list. */
 	void UpdateGameList();
+	
+	/** \brief Prepare to shut down. */
+	void PrepareShutDown();
 	/*@}*/
 	
 	
@@ -103,7 +106,9 @@ public:
 	/** \name BView */
 	/*@{*/
 	void MessageReceived(BMessage *message) override;
-	void MouseDown(BPoint where) override;
+	
+	void OnListContextMenu(cGameListItem *item, const BPoint &where);
+	void OnListInvoke(cGameListItem *item);
 	/*@}*/
 	
 	

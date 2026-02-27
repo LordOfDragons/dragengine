@@ -29,6 +29,7 @@
 #include <Roster.h>
 #include <Entry.h>
 #include <Path.h>
+#include <MessageFilter.h>
 
 #include "deglbPanelGames.h"
 #include "deglbWindowMain.h"
@@ -100,13 +101,66 @@ deglbPanelGames::cGameListItem::~cGameListItem(){
 // Constructor, destructor
 ////////////////////////////
 
+namespace{
+
+class cMessageFilterListGames : public BMessageFilter{
+	deglbPanelGames &pPanel;
+	BColumnListView &pListView;
+	
+public:
+	cMessageFilterListGames(deglbPanelGames &panel, BColumnListView &listView) :
+	BMessageFilter(B_MOUSE_DOWN),
+	pPanel(panel),
+	pListView(listView){ 
+	}
+	
+	filter_result Filter(BMessage *message, BHandler **target) override{
+		switch(message->what){
+		case B_MOUSE_DOWN:{
+			int32 buttons = 0, clicks = 0;
+			BPoint where;
+			
+			message->FindInt32("buttons", &buttons);
+			message->FindInt32("clicks", &clicks);
+			message->FindPoint("be:view_where", &where);
+			
+			auto view = dynamic_cast<BView*>(*target);
+			auto item = dynamic_cast<deglbPanelGames::cGameListItem*>(pListView.RowAt(where));
+			if(!item){
+				break;
+			}
+			
+			pListView.DeselectAll();
+			pListView.AddToSelection(item);
+			pListView.ScrollTo(item);
+			
+			if(buttons == B_SECONDARY_MOUSE_BUTTON){
+				view->ConvertToScreen(&where);
+				pPanel.OnListContextMenu(item, where);
+				return B_SKIP_MESSAGE;
+				
+			}else if(buttons == B_PRIMARY_MOUSE_BUTTON && clicks == 2){
+				pPanel.OnListInvoke(item);
+				return B_SKIP_MESSAGE;
+			}
+			}break;
+			
+		default:
+			break;
+		};
+		
+		return B_DISPATCH_MESSAGE;
+	}
+};
+
+}
+
 deglbPanelGames::deglbPanelGames(deglbWindowMain *windowMain) :
 BView("panelGames", B_ASYNCHRONOUS_CONTROLS),
 pWindowMain(windowMain)
 {
 	pListGames = new BColumnListView("gamesList", 0, B_NO_BORDER, false);
-	pListGames->SetSelectionMessage(new BMessage(MSG_LIST_CHANGED));
-	pListGames->SetInvocationMessage(new BMessage(MSG_CONTEXT_RUN));
+	pListGames->ScrollView()->AddFilter(new cMessageFilterListGames(*this, *pListGames));
 	
 	const float factor = be_plain_font->StringWidth("M");
 	pListGames->AddColumn(new BBitmapColumn(" ", 32, 32, 32, B_ALIGN_CENTER), 0);
@@ -163,6 +217,10 @@ void deglbPanelGames::UpdateGameList(){
 	});
 	
 	SetSelectedGame(selectedGame);
+}
+
+void deglbPanelGames::PrepareShutDown(){
+	pListGames->Clear();
 }
 
 
@@ -273,25 +331,21 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 	}
 }
 
-void deglbPanelGames::MouseDown(BPoint where){
-	uint32 buttons;
-	GetMouse(&where, &buttons);
-	
-	if(buttons & B_SECONDARY_MOUSE_BUTTON){
-		auto item = dynamic_cast<cGameListItem*>(pListGames->RowAt(where));
-		if(item){
-			SetSelectedGame(item->game);
-		}
-		
-		delGame * const game = GetSelectedGame();
-		if(game){
-			ConvertToScreen(&where);
-			pShowContextMenu(where, game);
-		}
-		return;
+void deglbPanelGames::OnListContextMenu(cGameListItem *item, const BPoint &where){
+	if(item){
+		pListGames->DeselectAll();
+		pListGames->AddToSelection(item);
+		pListGames->ScrollTo(item);
 	}
 	
-	BView::MouseDown(where);
+	delGame * const game = GetSelectedGame();
+	if(game){
+		pShowContextMenu(where, game);
+	}
+}
+
+void deglbPanelGames::OnListInvoke(cGameListItem *item){
+	pRunGame(item->game);
 }
 
 

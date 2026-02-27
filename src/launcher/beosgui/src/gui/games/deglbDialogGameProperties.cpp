@@ -29,6 +29,8 @@
 #include <MenuItem.h>
 #include <Alert.h>
 #include <StringItem.h>
+#include <TextView.h>
+#include <StringView.h>
 
 #include "deglbDialogGameProperties.h"
 #include "deglbDialogProfileList.h"
@@ -64,69 +66,155 @@ pResultMessage(resultMessage),
 pResultValue(false),
 pGame(game)
 {
+	const deglbConfiguration &configuration = windowMain->GetLauncher()->GetConfiguration();
+	rgb_color backColorProblem(configuration.GetBackColorProblem());
+	rgb_color textColorProblem(configuration.GetTextColorProblem());
+	
 	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
-	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
+	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_LABEL);
 	
 	// --- Info tab ---
 	BView * const infoTab = new BView("Info", 0);
 	
-	pEditIdentifier = new BTextControl("id", "Identifier:", "", nullptr);
-	pEditIdentifier->SetEnabled(false);
+	pEditIdentifier = new BTextView("id");
+	pEditIdentifier->MakeEditable(false);
+	pEditIdentifier->SetWordWrap(false);
 	
-	pEditAliasIdentifier = new BTextControl("alias", "Alias Identifier:", "", nullptr);
-	pEditAliasIdentifier->SetEnabled(false);
+	pEditAliasIdentifier = new BTextView("alias");
+	pEditAliasIdentifier->MakeEditable(false);
+	pEditAliasIdentifier->SetWordWrap(false);
 	
-	pEditTitle = new BTextControl("title", "Title:", "", nullptr);
-	pEditTitle->SetEnabled(false);
+	pEditTitle = new BTextView("title");
+	pEditTitle->MakeEditable(false);
+	pEditTitle->SetWordWrap(false);
 	
-	pTextDescription = new BTextView("desc");
+	pEditCreator = new BTextView("creator");
+	pEditCreator->MakeEditable(false);
+	pEditCreator->SetWordWrap(false);
+	
+	pEditHomepage = new BTextView("homepage");
+	pEditHomepage->MakeEditable(false);
+	pEditHomepage->SetWordWrap(false);
+	
+	pEditGameDir = new BTextView("gameDir");
+	pEditGameDir->MakeEditable(false);
+	pEditGameDir->SetWordWrap(false);
+	pIconGameDir = new deglbIconView(windowMain->GetIconValidSmall());
+	pEditGameDirProblem = new BTextView("gameDirProblem");
+	pEditGameDirProblem->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColorProblem);
+	pEditGameDirProblem->SetViewColor(backColorProblem);
+	pEditGameDirProblem->Hide();
+	
+	pEditDelgaFile = new BTextView("delgaFile");
+	pEditDelgaFile->MakeEditable(false);
+	pEditDelgaFile->SetWordWrap(false);
+	pIconDelgaFile = new deglbIconView(windowMain->GetIconValidSmall());
+	pEditDelgaFileProblem = new BTextView("delgaFileProblem");
+	pEditDelgaFileProblem->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColorProblem);
+	pEditDelgaFileProblem->SetViewColor(backColorProblem);
+	pEditDelgaFileProblem->Hide();
+	
+	pEditDataDir = new BTextView("dataDir");
+	pEditDataDir->MakeEditable(false);
+	pEditDataDir->SetWordWrap(false);
+	pIconDataDir = new deglbIconView(windowMain->GetIconValidSmall());
+	pEditDataDirProblem = new BTextView("dataDirProblem");
+	pEditDataDirProblem->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColorProblem);
+	pEditDataDirProblem->SetViewColor(backColorProblem);
+	pEditDataDirProblem->Hide();
+	
+	pEditScriptDir = new BTextView("scriptDir");
+	pEditScriptDir->MakeEditable(false);
+	pEditScriptDir->SetWordWrap(false);
+	pIconScriptDir = new deglbIconView(windowMain->GetIconValidSmall());
+	pEditScriptDirProblem = new BTextView("scriptDirProblem");
+	pEditScriptDirProblem->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColorProblem);
+	pEditScriptDirProblem->SetViewColor(backColorProblem);
+	pEditScriptDirProblem->Hide();
+	
+	pEditScriptModule = new BTextView("scriptModule");
+	pEditScriptModule->MakeEditable(false);
+	pEditScriptModule->SetWordWrap(false);
+	pIconScriptModule = new deglbIconView(windowMain->GetIconValidSmall());
+	pEditScriptModuleProblem = new BTextView("scriptModuleProblem");
+	pEditScriptModuleProblem->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColorProblem);
+	pEditScriptModuleProblem->SetViewColor(backColorProblem);
+	pEditScriptModuleProblem->Hide();
+	
+	pEditScriptModuleVersion = new BTextView("scriptModuleVersion");
+	pEditScriptModuleVersion->MakeEditable(false);
+	
+	pTextDescription = new BTextView("description");
 	pTextDescription->MakeEditable(false);
-	BScrollView * const scrollDesc = new BScrollView("descScroll", pTextDescription, 0, false, true);
+	BScrollView * const scrollDesc = new BScrollView("descriptionScroll", pTextDescription, 0, false, true);
 	
-	pEditCreator = new BTextControl("creator", "Creator:", "", nullptr);
-	pEditCreator->SetEnabled(false);
-	
-	pEditHomepage = new BTextControl("homepage", "Homepage:", "", nullptr);
-	pEditHomepage->SetEnabled(false);
-	
-	pEditGameDir = new BTextControl("gameDir", "Game Directory:", "", nullptr);
-	pEditGameDir->SetEnabled(false);
-	
-	pEditDelgaFile = new BTextControl("delgaFile", "Delga File:", "", nullptr);
-	pEditDelgaFile->SetEnabled(false);
-	
-	pEditDataDir = new BTextControl("dataDir", "Data Directory:", "", nullptr);
-	pEditDataDir->SetEnabled(false);
-	
-	pEditScriptDir = new BTextControl("scriptDir", "Script Directory:", "", nullptr);
-	pEditScriptDir->SetEnabled(false);
-	
-	pEditScriptModule = new BTextControl("scriptMod", "Script Module:", "", nullptr);
-	pEditScriptModule->SetEnabled(false);
-	
-	pEditScriptModuleVersion = new BTextControl("scriptModVer", "Script Module Version:",
-		"", nullptr);
-	pEditScriptModuleVersion->SetEnabled(false);
-	
-	BLayoutBuilder::Group<>(infoTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	BLayoutBuilder::Grid<>(infoTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(pEditIdentifier)
-		.Add(pEditAliasIdentifier)
-		.Add(pEditTitle)
-		.Add(scrollDesc, 1.0f)
-		.Add(pEditCreator)
-		.Add(pEditHomepage)
-		.Add(pEditGameDir)
-		.Add(pEditDelgaFile)
-		.Add(pEditDataDir)
-		.Add(pEditScriptDir)
-		.AddGroup(B_HORIZONTAL)
-			.Add(pEditScriptModule)
-			.Add(pEditScriptModuleVersion)
+		
+		.Add(new BStringView("label", "Identifier:"), 0, 0)
+		.Add(pEditIdentifier, 1, 0)
+		
+		.Add(new BStringView("label", "Alias Identifier:"), 0, 1)
+		.Add(pEditAliasIdentifier, 1, 1)
+		
+		.Add(new BStringView("label", "Title:"), 0, 2)
+		.Add(pEditTitle, 1, 2)
+		
+		.Add(new BStringView("label", "Creator:"), 0, 3)
+		.Add(pEditCreator, 1, 3)
+		
+		.Add(new BStringView("label", "Homepage:"), 0, 4)
+		.Add(pEditHomepage, 1, 4)
+		
+		.Add(new BStringView("label", "Game Directory:"), 0, 5)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 5)
+			.Add(pIconGameDir, 0)
+			.Add(pEditGameDir)
 		.End()
+		
+		.Add(new BStringView("label", "Delga File:"), 0, 6)
+		.AddGroup(B_VERTICAL, 0, 1, 6)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 0)
+				.Add(pIconDelgaFile, 0)
+				.Add(pEditDelgaFile, 1)
+			.End()
+			.Add(pEditDelgaFileProblem, 1)
+		.End()
+		
+		.Add(new BStringView("label", "Data Directory:"), 0, 7)
+		.AddGroup(B_VERTICAL, 0, 1, 7)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 0)
+				.Add(pIconDataDir, 0)
+				.Add(pEditDataDir, 1)
+			.End()
+			.Add(pEditDataDirProblem, 1)
+		.End()
+		
+		.Add(new BStringView("label", "Script Directory:"), 0, 9)
+		.AddGroup(B_VERTICAL, 0, 1, 9)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 0)
+				.Add(pIconScriptDir, 0)
+				.Add(pEditScriptDir, 1)
+			.End()
+			.Add(pEditScriptDirProblem, 1)
+		.End()
+		
+		.Add(new BStringView("label", "Script Module:"), 0, 10)
+		.AddGroup(B_VERTICAL, 0, 1, 10)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 0)
+				.Add(pIconScriptModule, 0)
+				.Add(pEditScriptModule, 1)
+				.Add(pEditScriptModuleVersion, 0)
+			.End()
+			.Add(pEditScriptModuleProblem, 0)
+		.End()
+		
+		.Add(scrollDesc, 1.0f, 1, 11)
 	.End();
-	tabView->AddTab(infoTab);
+	
+	pTabInfo = new deglbIconTabView(windowMain->GetIconValidSmall(), "Info", infoTab);
+	tabView->AddTab(infoTab, pTabInfo);
 	
 	// --- Settings tab ---
 	BView * const settingsTab = new BView("Settings", 0);
@@ -158,7 +246,9 @@ pGame(game)
 		.Add(pMenuPatch)
 		.AddGlue()
 	.End();
-	tabView->AddTab(settingsTab);
+	
+	pTabSettings = new deglbIconTabView(windowMain->GetIconValidSmall(), "Settings", settingsTab);
+	tabView->AddTab(settingsTab, pTabSettings);
 	
 	// --- File Formats tab ---
 	BView * const formatsTab = new BView("File Formats", 0);
@@ -170,7 +260,9 @@ pGame(game)
 		.SetInsets(B_USE_DEFAULT_SPACING)
 		.Add(scrollFormats)
 	.End();
-	tabView->AddTab(formatsTab);
+	
+	pTabFormats = new deglbIconTabView(windowMain->GetIconValidSmall(), "File Formats", formatsTab);
+	tabView->AddTab(formatsTab, pTabFormats);
 	
 	// Main layout with OK/Cancel buttons
 	BButton * const btnOK = new BButton("ok", "OK", new BMessage(MSG_OK));
@@ -191,6 +283,7 @@ pGame(game)
 	UpdateGame();
 	
 	ResizeToPreferred();
+	SetSizeLimits(Bounds().Width(), 99999, Bounds().Height(), 99999);
 	
 	CenterOnScreen();
 }
@@ -207,18 +300,61 @@ void deglbDialogGameProperties::UpdateGame(){
 		return;
 	}
 	
+	bool panelInfoWorking = true;
+	BBitmap * const iconValid = pWindowMain->GetIconValidSmall();
+	BBitmap * const iconInvalid = pWindowMain->GetIconInvalidSmall();
+	
 	pEditIdentifier->SetText(pGame->GetIdentifier().ToHexString(false));
 	pEditAliasIdentifier->SetText(pGame->GetAliasIdentifier());
 	pEditTitle->SetText(pGame->GetTitle().ToUTF8());
 	pTextDescription->SetText(pGame->GetDescription().ToUTF8());
 	pEditCreator->SetText(pGame->GetCreator().ToUTF8());
 	pEditHomepage->SetText(pGame->GetHomepage());
+	
 	pEditGameDir->SetText(pGame->GetGameDirectory());
+	pIconGameDir->SetIcon(pWindowMain->GetIconValidSmall());
+	
 	pEditDelgaFile->SetText(pGame->GetDelgaFile());
+	pIconDelgaFile->SetIcon(pWindowMain->GetIconValidSmall());
+	
 	pEditDataDir->SetText(pGame->GetDataDirectory());
+	pIconDataDir->SetIcon(pWindowMain->GetIconValidSmall());
+	
 	pEditScriptDir->SetText(pGame->GetScriptDirectory());
+	pIconScriptDir->SetIcon(pWindowMain->GetIconValidSmall());
+	
+	delEngineModule *engineModule = nullptr;
+	if(pGame->GetScriptModuleVersion().IsEmpty()){
+		engineModule = pWindowMain->GetLauncher()->GetEngine().GetModules().GetNamed(
+			pGame->GetScriptModule());
+		
+	}else{
+		engineModule = pWindowMain->GetLauncher()->GetEngine().GetModules().GetNamedAtLeast(
+			pGame->GetScriptModule(), pGame->GetScriptModuleVersion());
+	}
 	pEditScriptModule->SetText(pGame->GetScriptModule());
 	pEditScriptModuleVersion->SetText(pGame->GetScriptModuleVersion());
+	
+	if(!engineModule){
+		pIconScriptModule->SetIcon(iconInvalid);
+		pEditScriptModuleProblem->SetText("The required Script Module does not exist.");
+		pEditScriptModuleProblem->Show();
+		panelInfoWorking = false;
+		
+	}else if(engineModule->GetStatus() != delEngineModule::emsReady){
+		pIconScriptModule->SetIcon(iconInvalid);
+		pEditScriptModuleProblem->SetText("The required Script Module is not working correctly.");
+		pEditScriptModuleProblem->Show();
+		panelInfoWorking = false;
+		
+	}else{
+		pIconScriptModule->SetIcon(iconValid);
+		pEditScriptModuleProblem->SetText("");
+		pEditScriptModuleProblem->Hide();
+	}
+	
+	pTabInfo->SetIcon(panelInfoWorking ? iconValid : iconInvalid);
+	
 	pEditRunArgs->SetText(pGame->GetRunArguments());
 	
 	UpdateProfileList();

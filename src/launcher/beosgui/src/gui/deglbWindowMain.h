@@ -31,6 +31,8 @@
 #include <StatusBar.h>
 #include <MessageRunner.h>
 
+#include <dragengine/deTUniqueReference.h>
+
 class deException;
 class decUnicodeString;
 class deglbLauncher;
@@ -56,6 +58,9 @@ public:
 	
 	
 private:
+	using IconRef = deTUniqueReference<BBitmap>;
+	
+	
 	deglbLauncher *pLauncher;
 	
 	BMenuBar *pMenuBar;
@@ -70,6 +75,7 @@ private:
 	
 	BMessageRunner *pPulseRunner;
 	
+	IconRef pIconValidSmall, pIconInvalidSmall, pIconButtonInfo;
 	
 	
 public:
@@ -122,6 +128,12 @@ public:
 	
 	/** \brief Reload games and patches. */
 	void ReloadGamesAndPatches();
+	
+	
+	/** \brief Get icons. */
+	inline BBitmap *GetIconValidSmall() const{ return pIconValidSmall; }
+	inline BBitmap *GetIconInvalidSmall() const{ return pIconInvalidSmall; }
+	inline BBitmap *GetIconButtonInfo() const{ return pIconButtonInfo; }
 	/*@}*/
 	
 	
