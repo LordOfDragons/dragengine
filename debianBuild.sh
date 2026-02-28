@@ -38,25 +38,37 @@ fetchExternals() {
     lib_denetwork_fetch lib_deremotelauncher_fetch || exit 1
 }
 
+addIncludeBinaryEntry() {
+  local pattern="$1"
+  local files
+  files=$(dir -1 $pattern 2>/dev/null)
+  if [ -z "$files" ]; then
+    echo "Error: No files found matching: $pattern" >&2
+    exit 1
+  fi
+  echo "$files" >> "$FILE"
+}
+
 writeIncludeBinaries() {
   FILE=debian/source/include-binaries
-  echo "detesting/data/content/model/box/box2.demodel" >$FILE
-  echo "detesting/data/content/model/box/box.demodel" >>$FILE
-  echo "detesting/data/content/image/icon64.png" >>$FILE
-  echo `dir -1 extern/eossdk/eossdk-*.zip` >>$FILE
-  echo `dir -1 extern/eossdk/eossdk_bin_linux-*.tar.xz` >>$FILE
-  echo `dir -1 extern/fox/fox-*.tar.xz` >>$FILE
-  echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
-  echo `dir -1 extern/modio/modio-sdk-*.tar.xz` >>$FILE
-  echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
-  echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
-  echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
-  echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
-  echo `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` >>$FILE
-  echo `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` >>$FILE
-  echo `dir -1 extern/jsoncpp/jsoncpp-*.tar.xz` >>$FILE
-  echo `dir -1 extern/freetype/freetype-*.tar.xz` >>$FILE
-  echo `dir -1 extern/*/*.sha256sum` >>$FILE
+  > "$FILE"
+  addIncludeBinaryEntry "detesting/data/content/model/box/box2.demodel"
+  addIncludeBinaryEntry "detesting/data/content/model/box/box.demodel"
+  addIncludeBinaryEntry "detesting/data/content/image/icon64.png"
+  addIncludeBinaryEntry "extern/eossdk/eossdk-*.zip"
+  addIncludeBinaryEntry "extern/eossdk/eossdk_bin_linux-*.tar.xz"
+  addIncludeBinaryEntry "extern/fox/fox-*.tar.xz"
+  addIncludeBinaryEntry "extern/liburing/liburing-liburing-*.tar.bz2"
+  addIncludeBinaryEntry "extern/modio/modio-sdk-*.tar.xz"
+  addIncludeBinaryEntry "extern/openxr/OpenXR-SDK-release-*.tar.xz"
+  addIncludeBinaryEntry "extern/steamsdk/steamsdk160.tar.xz"
+  addIncludeBinaryEntry "extern/mingw/mingw_stdthreads.tar.bz2"
+  addIncludeBinaryEntry "extern/libapng/libpng-*tar.bz2"
+  addIncludeBinaryEntry "extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2"
+  addIncludeBinaryEntry "extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2"
+  addIncludeBinaryEntry "extern/jsoncpp/jsoncpp-*.tar.xz"
+  addIncludeBinaryEntry "extern/freetype/freetype-*.tar.xz"
+  addIncludeBinaryEntry "extern/*/*.sha256sum"
 }
 
 cleanScons() {
