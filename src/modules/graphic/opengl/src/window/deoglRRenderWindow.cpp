@@ -266,6 +266,7 @@ void deoglRRenderWindow::SetHostWindow(BWindow *window){
 };
 
 BGLView *deoglRRenderWindow::GetGLView() const{
+	DEASSERT_NOTNULL(pWindow)
 	return pWindow->GetGLView();
 }
 
@@ -585,6 +586,7 @@ void deoglRRenderWindow::SwapBuffers(){
 	DEASSERT_TRUE(emscripten_webgl_commit_frame() == EMSCRIPTEN_RESULT_SUCCESS)
 	
 #elif defined OS_BEOS
+	DEASSERT_NOTNULL(pWindow)
 	pWindow->GetGLView()->SwapBuffers(false); // true = sync
 	
 	// ensure window resizing is properly applied to the opengl context
@@ -966,13 +968,11 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	}
 	
 #ifdef OS_BEOS
-	/*
 	if(pWindow){
-		pWindow->ResizeTo((float)pWidth, (float)pHeight);
+		//pWindow->ResizeTo((float)pWidth, (float)pHeight);
+		pWindow->SetFullScreen(pFullScreen);
 	}
-	*/
-	pWindow->SetFullScreen(pFullScreen);
-	
+		
 #elif defined OS_MACOS
 	pMacOSUpdateFullscreen();
 	

@@ -189,12 +189,12 @@ void deBeOSInput::CleanUp(){
 ////////////
 
 int deBeOSInput::GetDeviceCount(){
-	return pDevices->GetCount();
+	return pDevices->GetDevices().GetCount();
 }
 
 deInputDevice::Ref deBeOSInput::GetDeviceAt(int index){
-	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
-	pDevices->GetAt(index)->GetInfo(device);
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
+	pDevices->GetDevices()[index]->GetInfo(device);
 	return device;
 }
 
@@ -203,11 +203,11 @@ int deBeOSInput::IndexOfDeviceWithID(const char *id){
 }
 
 int deBeOSInput::IndexOfButtonWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfButtonWithID(id);
+	return pDevices->GetDevices()[device]->IndexOfButtonWithID(id);
 }
 
 int deBeOSInput::IndexOfAxisWithID(int device, const char *id){
-	return pDevices->GetAt(device)->IndexOfAxisWithID(id);
+	return pDevices->GetDevices()[device]->IndexOfAxisWithID(id);
 }
 
 int deBeOSInput::IndexOfFeedbackWithID(int device, const char *id){
@@ -215,11 +215,11 @@ int deBeOSInput::IndexOfFeedbackWithID(int device, const char *id){
 }
 
 bool deBeOSInput::GetButtonPressed(int device, int button){
-	return pDevices->GetAt(device)->GetButtonAt(button)->GetPressed();
+	return pDevices->GetDevices()[device]->GetButtons()[button]->GetPressed();
 }
 
 float deBeOSInput::GetAxisValue(int device, int axis){
-	return pDevices->GetAt(device)->GetAxisAt(axis)->GetValue();
+	return pDevices->GetDevices()[device]->GetAxes()[axis]->GetValue();
 }
 
 float deBeOSInput::GetFeedbackValue(int device, int feedback){
@@ -236,13 +236,13 @@ int deBeOSInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCo
 	}
 	
 	const debiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
-	const int count = rdevice.GetButtonCount();
+	const int count = rdevice.GetButtons().GetCount();
 	int bestPriority = 10;
 	int bestButton = -1;
 	int i;
 	
 	for(i=0; i<count; i++){
-		const debiDeviceButton &button = *rdevice.GetButtonAt(i);
+		const debiDeviceButton &button = *rdevice.GetButtons()[i];
 		if(button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority){
 			bestButton = i;
 			bestPriority = button.GetMatchPriority();
@@ -268,11 +268,9 @@ int deBeOSInput::ButtonMatchingKeyChar(int device, int character){
 void deBeOSInput::ProcessEvents(){
 	pQueryMousePosition(true);
 	
-	const int deviceCount = pDevices->GetCount();
-	int i;
-	for(i=0; i<deviceCount; i++){
-		pDevices->GetAt(i)->Update();
-	}
+	pDevices->GetDevices().Visit([](debiDevice &device){
+		device.Update();
+	});
 }
 
 void deBeOSInput::ClearEvents(){
@@ -320,7 +318,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 			keyChar, modifiers);*/
 		
 		const timeval eventTime = pEventTimeFromBeTime(message.GetInt64("when", 0));
-		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt(button);
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtons()[button];
 		deviceButton.SetPressed(true);
 		
 		pAddKeyPress(pDevices->GetKeyboard()->GetIndex(), button, keyChar,
@@ -350,7 +348,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 		//LogInfoFormat( "B_KEY_UP: code=%d char=%d modifiers=%d", virtualKeyCode, keyChar, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime(message.GetInt64("when", 0));
-		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt(button);
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtons()[button];
 		deviceButton.SetPressed(false);
 		
 		pAddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button, keyChar,
@@ -378,7 +376,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 		//LogInfoFormat( "B_UNMAPPED_KEY_DOWN: code=%d modifiers=%d", virtualKeyCode, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime(message.GetInt64("when", 0));
-		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt(button);
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtons()[button];
 		deviceButton.SetPressed(true);
 		
 		pAddKeyPress(pDevices->GetKeyboard()->GetIndex(), button, 0,
@@ -406,7 +404,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 		//LogInfoFormat( "B_UNMAPPED_KEY_UP: code=%d modifiers=%d", virtualKeyCode, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime(message.GetInt64("when", 0));
-		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt(button);
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtons()[button];
 		deviceButton.SetPressed(false);
 		
 		pAddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button, 0,
@@ -443,7 +441,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 				continue;
 			}
 			
-			pDevices->GetMouse()->GetButtonAt(buttonIndex)->SetPressed(true);
+			pDevices->GetMouse()->GetButtons()[buttonIndex]->SetPressed(true);
 			pAddMousePress(pDevices->GetMouse()->GetIndex(), buttonIndex, modifiers, eventTime);
 		}
 		} break;
@@ -484,7 +482,7 @@ void deBeOSInput::EventLoop(const BMessage &message){
 				continue;
 			}
 			
-			pDevices->GetMouse()->GetButtonAt(buttonIndex)->SetPressed(false);
+			pDevices->GetMouse()->GetButtons()[buttonIndex]->SetPressed(false);
 			pAddMouseRelease(pDevices->GetMouse()->GetIndex(), buttonIndex, modifiers, eventTime);
 		}
 		} break;
@@ -881,6 +879,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> debiRegisterInternalModule(deModuleSystem *system){
-	return debiModuleInternal::Ref::NewWith(system);
+	return debiModuleInternal::Ref::New(system);
 }
 #endif

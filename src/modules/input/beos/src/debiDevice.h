@@ -42,11 +42,10 @@ class deInputDevice;
  * \brief Input device.
  */
 class debiDevice : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<debiDevice> Ref;
-
-
-public:
+	
 	/** \brief Source identifier. */
 	enum eSources{
 		/** \brief BeOS. */
@@ -68,7 +67,7 @@ private:
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	decTObjectOrderedSet<debiDeviceButton> pButtons;

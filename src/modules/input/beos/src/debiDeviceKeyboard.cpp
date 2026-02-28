@@ -100,7 +100,7 @@ debiDevice(module)
 		}
 		
 		// create buttons
-		debiDeviceButton::Ref sharedButton(debiDeviceButton::Ref::NewWith(module));
+		auto sharedButton = debiDeviceButton::Ref::New(module);
 		sharedButton->SetDisplayImages("key");
 		
 		int buttonIndex = 0;
@@ -416,14 +416,7 @@ debiDeviceKeyboard::~debiDeviceKeyboard(){
 
 int debiDeviceKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 	// this task is just a guess so missing a solution is fine
-	const int count = GetButtonCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(GetButtonAt(i)->GetBIChar() == keyChar){
-			return i;
-		}
-	}
-	
-	return -1;
+	return GetButtons().IndexOfMatching([&](const debiDeviceButton &button){
+		return button.GetBIChar() == keyChar;
+	});
 }

@@ -10,9 +10,11 @@ internalModule = envModule['build_network_basic_internal']
 parent_report['build Basic Network Module'] = 'yes (internal)' if internalModule else 'yes'
 
 libs = []
+syslibs = []
 
 if envModule['OSBeOS']:
-	libs.append( 'network' )
+	libs.extend(['be', 'network'])
+	syslibs.extend(['be', 'network'])
 	
 elif envModule['OSWindows']:
 	libs.append('wsock32')
@@ -57,7 +59,7 @@ if internalModule:
 	install.extend(targetBuild)
 	
 	parent_targets['dragengine']['add internal module'](
-		envModule, library, [], 'denbRegisterInternalModule')
+		envModule, library, [], 'denbRegisterInternalModule', syslibs)
 	
 else:
 	library = envModule.LoadableModule( target='netbasicnetwork', source=objects, LIBS=libs )

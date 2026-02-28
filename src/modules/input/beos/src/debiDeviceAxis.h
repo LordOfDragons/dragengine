@@ -51,7 +51,7 @@ private:
 	deInputDeviceAxis::eAxisTypes pType;
 	
 	deImage::Ref pDisplayImage;
-	decTObjectOrderedSet<deInputDeviceDisplayIcon> pDisplayIcons;
+	decTObjectOrderedSet<deImage> pDisplayIcons;
 	decString pDisplayText;
 	
 	int pMinimum;

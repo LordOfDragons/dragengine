@@ -154,6 +154,37 @@ scons -h
 - **Android**: Via SCons with platform-specific configuration
 - **Web/WebAssembly**: Experimental support
 
+## Haiku-OS (BeOS)
+
+### Porting from FOX-ToolKit to Haiku's native API
+- **Prefixing**: Use `Beos` prefix for Haiku based classes where prefix `Fox` is used for FOX based classes.
+- **Prefer BLayoutAPI**: Always use `BLayoutBuilder` and `BGroupLayout/BGridLayout`. Do not use manual `BRect` frame coordinates for widget placement unless specifically requested.
+- **Window Flags**: Use `B_AUTO_UPDATE_SIZE_LIMITS` for `BWindow` objects to ensure they automatically resize to fit their content.
+- **Widget Hierarchy**: Map FOX `FXWindow`-derived classes to Haiku `BView` or its convenience subclasses (e.g., `BGroupView`).
+- When refactoring from the FOX backend, identify the FXSEL target/selector patterns and replace them with a BMessage system where the what constant represents the action.
+- Explicitly note that in Haiku, calling AddChild() on a BWindow or BView transfers ownership to the parent. The agent must ensure the backend does not double-delete these objects in its own destructor to avoid 'use-after-free' crashes.
+- To bridge FOX-style selectors, the Haiku backend must implement a central MessageReceived(BMessage* msg) handler in the BWindow subclass. The agent should map specific BMessage->what codes to the abstract UI layer's dispatch system.
+- When the abstract layer calls a method to update a widget (e.g., SetText), the backend must verify it is in the window's thread or use window->Lock() / window->Unlock(). Failures to lock the window before modifying a BView will lead to runtime errors.
+- Do not hardcode pixel dimensions for widgets. Use BLayoutBuilder to create flexible grids and groups. This ensures the UI remains usable regardless of the user's system font size—a core requirement of the Haiku User Interface Guidelines.
+
+### Threading and Safety
+- **Locker Pattern**: When accessing a `BView` or its properties from a non-window thread, always wrap the call in `window->Lock()` and `window->Unlock()`, or use `BAutolock`.
+- **Message Loops**: Ensure the backend correctly implements `MessageReceived(BMessage* msg)` to bridge the Haiku event loop back to the abstract UI layer's dispatchers.
+
+### API and Tooling
+- **Native Types**: Use Haiku-specific types for fixed-size integers (e.g., `int32`, `uint32`) rather than standard C++ types for better API compatibility.
+- **Reference**: Treat the [Haiku Book](https://api.haiku-os.org) as the primary source for API signatures and documentation.
+- **Resource Management**: In Haiku, `BWindow` takes ownership of its child `BView` objects; ensure the backend doesn't double-delete widgets during cleanup.
+
+### Reasoning and Execution Process
+Before writing any code for the Haiku-OS backend, the agent MUST follow these steps in order and output its reasoning:
+
+1. **API Mapping Analysis**: Compare the FOX-Toolkit class (reference) with the abstract UI interface. Identify the closest native Be API equivalent (e.g., `FXTextField` -> `BTextControl`).
+2. **Threading Audit**: Identify which methods in the abstract interface require `BWindow` locking or thread-safe `BMessenger` calls.
+3. **Layout Strategy**: Plan the `BLayoutBuilder` hierarchy. Determine if the FOX packer logic can be replaced by a `BGroupLayout` or `BGridLayout`.
+4. **Message Routing**: Define the `uint32` message constants needed to bridge Haiku's `BMessage` system back to the abstract layer's event handlers.
+5. **Implementation**: Only after steps 1–4 are validated, generate the C++ header and source files.
+
 ## Dependencies
 
 The project can use both system libraries and in-tree builds from `extern/`:

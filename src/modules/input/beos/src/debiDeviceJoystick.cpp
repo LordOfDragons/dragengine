@@ -246,11 +246,11 @@ void debiDeviceJoystick::Update(){
 	}
 	
 	// update axes
-	const int countAxis = GetAxisCount();
+	const int countAxis = GetAxes().GetCount();
 	int i;
 	
 	for(i=0; i<countAxis; i++){
-		debiDeviceAxis &axis = *GetAxisAt(i);
+		debiDeviceAxis &axis = GetAxes()[i];
 		float value = axis.GetValue();
 		
 		switch(axis.GetType()){
@@ -317,10 +317,10 @@ void debiDeviceJoystick::Update(){
 	}
 	
 	// update buttons
-	const int countButtons = GetButtonCount();
+	const int countButtons = GetButtons().GetCount();
 	
 	for(i=0; i<countButtons; i++){
-		debiDeviceButton &button = *GetButtonAt(i);
+		debiDeviceButton &button = GetButtons()[i];
 		
 		if((buttonValues & (1 << button.GetBICode())) == 0){
 			if(!button.GetPressed()){

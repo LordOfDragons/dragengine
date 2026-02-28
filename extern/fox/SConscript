@@ -19,7 +19,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = False
 
 # parameters
-foxSrcVersion = '1.7.67'
+foxSrcVersion = '1.7.85'
 srcdir = 'fox-{}'.format(foxSrcVersion)
 
 libFOXVersion = '1.7'
@@ -34,7 +34,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'fox', 'lib_fox_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'fox', 'lib_fox_fetch')
 
 # check if system fox is present
 hasSystemFOX = False
