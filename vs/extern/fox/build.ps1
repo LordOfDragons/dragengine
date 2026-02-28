@@ -8,11 +8,18 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "fox-1.7.81-vc64"
+if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
+    return
+}
+
+
+$LibVersion = "1.7.85"
+
+$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "fox-$LibVersion-bin"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "fox-1.7.81-vc64.zip" -UrlPath "fox"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "fox-$LibVersion-bin.tar.xz" -UrlPath "fox"
 
-Expand-Archive -Path "$ProjectDir\fox-1.7.81-vc64.zip" -DestinationPath $ProjectDir
+Expand-TarXz -Path "$ProjectDir\fox-$LibVersion-bin.tar.xz" -Destination $ProjectDir

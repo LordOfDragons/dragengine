@@ -8,6 +8,11 @@
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 
+if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
+    return
+}
+
+
 $ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "libvorbis-1.3.5-vc64"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse

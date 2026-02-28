@@ -305,12 +305,13 @@ long igdeNativeFoxFileDialog::onBtnMkDir(FXObject*, FXSelector, void*){
 			path.AddComponent(dirname.text());
 			
 			if(pVFS->ExistsFile(path)){
-				FXMessageBox::information(this, MBOX_OK, pOwner->Translate("Igde.FoxFileDialog.CreateDirectory").ToUTF8().GetString(),
-					pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.ErrorExists").ToUTF8().GetString());
+				FXMessageBox::information(this, MBOX_OK,
+					pOwner->Translate("Igde.FoxFileDialog.CreateDirectory").ToUTF8().GetString(),
+					"%s", pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.ErrorExists").ToUTF8().GetString());
 				
 			}else if(!pVFS->CanWriteFile(path)){
 				FXMessageBox::information(this, MBOX_OK, pOwner->Translate("Igde.FoxFileDialog.CreateDirectory").ToUTF8().GetString(),
-					pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.ErrorReadOnly").ToUTF8().GetString());
+					"%s", pOwner->Translate("Igde.FoxFileDialog.CreateDirectory.ErrorReadOnly").ToUTF8().GetString());
 				
 			}else{
 				break;

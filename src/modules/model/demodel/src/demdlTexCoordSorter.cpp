@@ -63,7 +63,7 @@ void demdlTexCoordSorter::Resize(int faceCount, int texCoordSetCount){
 	if(faceCount > 0){
 		pFaceCorners.AddRange(faceCount * 3, -1);
 		pTCBucketEntries.AddRange(faceCount * 3, {});
-		pTexCoords.AddRange(faceCount * 3, {});
+		pTexCoords.EnlargeCapacityDiscard(faceCount * 3);
 		
 		if(texCoordSetCount > 0){
 			pFaceTexCoords.AddRange(faceCount * 3 * texCoordSetCount, {});
@@ -236,7 +236,7 @@ int demdlTexCoordSorter::HashTexCoords(int baseIndex) const{
 bool demdlTexCoordSorter::TexCoordsAreEqual(int texCoords1, int texCoords2) const{
 	int i;
 	for(i=0; i<pTexCoordSetCount; i++){
-		if(pTexCoords[texCoords1 + i] != pTexCoords[texCoords2 + i]){
+		if(pFaceTexCoords.GetAt(texCoords1 + i) != pFaceTexCoords.GetAt(texCoords2 + i)){
 			return false;
 		}
 	}

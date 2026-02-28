@@ -81,68 +81,44 @@ void debiDeviceManager::UpdateDeviceList(){
 
 
 debiDevice *debiDeviceManager::GetWithID(const char *id){
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		debiDevice * const device = (debiDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return device;
-		}
-	}
-	
-	return NULL;
+	return pDevices.FindOrDefault([&](const debiDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 int debiDeviceManager::IndexOfWithID(const char *id){
-	const int count = pDevices.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		debiDevice * const device = (debiDevice*)pDevices.GetAt(i);
-		if(device->GetID() == id){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pDevices.IndexOfMatching([&](const debiDevice &device){
+		return device.GetID() == id;
+	});
 }
 
 
 
 void debiDeviceManager::LogDevices(){
-	const int count = pDevices.GetCount();
-	int i, j;
-	
 	pModule.LogInfo("Input Devices:");
 	
-	for(i=0; i<count; i++){
-		const debiDevice &device = *((debiDevice*)pDevices.GetAt(i));
+	pDevices.Visit([&](const debiDevice &device){
 		pModule.LogInfoFormat("- %s (%s) [%d]", device.GetName().GetString(),
 			device.GetID().GetString(), device.GetType());
 		
-		const int axisCount = device.GetAxisCount();
-		if(axisCount > 0){
+		if(device.GetAxes().IsNotEmpty()){
 			pModule.LogInfo("  Axes:");
-			for(j=0; j<axisCount; j++){
-				const debiDeviceAxis &axis = *device.GetAxisAt(j);
+			device.GetAxes().Visit([&](const debiDeviceAxis &axis){
 				pModule.LogInfoFormat("    - '%s' (%s) %d .. %d [%d %d]",
-					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
-					axis.GetMaximum(), 0, 0);
-			}
+					axis.GetName().GetString(), axis.GetID().GetString(),
+					axis.GetMinimum(), axis.GetMaximum(), 0, 0);
+			});
 		}
 		
-		const int buttonCount = device.GetButtonCount();
-		if(buttonCount > 0){
+		if(device.GetButtons().IsNotEmpty()){
 			pModule.LogInfo("  Buttons:");
-			for(j=0; j<buttonCount; j++){
-				const debiDeviceButton &button = *device.GetButtonAt(j);
+			device.GetButtons().VisitIndexed([&](int i, const debiDeviceButton &button){
 				pModule.LogInfoFormat("    - '%s' (%s) %d => %d",
-					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetBICode(), j);
-			}
+				 	button.GetName().GetString(), button.GetID().GetString(),
+					button.GetBICode(), i);
+			});
 		}
-	}
+	});
 }
 
 
@@ -188,11 +164,11 @@ void debiDeviceManager::pCleanUp(){
 
 
 void debiDeviceManager::pCreateDevices(){
-	pMouse.TakeOverWith(pModule);
+	pMouse = debiDeviceMouse::Ref::New(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard.TakeOverWith(pModule);
+	pKeyboard = debiDeviceKeyboard::Ref::New(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 	
@@ -211,7 +187,7 @@ void debiDeviceManager::pCreateJoystickDevices(){
 			DETHROW(deeInvalidParam);
 		}
 		
-		const debiDeviceJoystick::Ref joystick(debiDeviceJoystick::Ref::NewWith(pModule, name));
+		auto joystick = debiDeviceJoystick::Ref::New(pModule, name);
 		joystick->SetIndex(pDevices.GetCount());
 		pDevices.Add(joystick);
 	}

@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+#ifdef OS_BEOS
+	#define _DEFAULT_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,6 +53,10 @@
 
 #ifdef OS_BEOS
 	#include <sys/sockio.h>
+	#include <stdio.h>
+	#include <bsd/ifaddrs.h>
+	#include <NetworkInterface.h>
+	#include <NetworkRoster.h>
 #endif
 
 #ifdef OS_W32
@@ -373,6 +381,68 @@ void debnSocket::FindAddresses(decStringList &list, bool onlyPublic){
 		throw;
 	}
 	
+#elif defined OS_BEOS and defined NEVERCOMPILE
+	BNetworkRoster &roster = BNetworkRoster::Default();
+	BNetworkInterface interface;
+	uint32_t cookie = 0;
+	
+	// find IPv6 addresses
+	while(roster.GetNextInterface(&cookie, interface) == B_OK){
+		if(onlyPublic && (interface.Flags() & IFF_LOOPBACK) != 0){
+			continue;
+		}
+		
+		const int addrCount = interface.CountAddresses();
+		for(int i=0; i<addrCount; i++){
+			BNetworkInterfaceAddress ifaddr;
+			if(interface.GetAddressAt(i, ifaddr) != B_OK){
+				continue;
+			}
+			
+			const BNetworkAddress &addr = ifaddr.Address();
+			if(addr.Family() != AF_INET6){
+				continue;
+			}
+			
+			char bufferIPv6[INET6_ADDRSTRLEN];
+			const sockaddr_in6 &sa = (const sockaddr_in6 &)addr.SockAddr();
+			if(!inet_ntop(AF_INET6, &sa.sin6_addr, bufferIPv6, sizeof(bufferIPv6))){
+				continue;
+			}
+			
+			list.Add(bufferIPv6);
+		}
+	}
+	
+	// find IPv4 addresses
+	cookie = 0;
+	while(roster.GetNextInterface(&cookie, interface) == B_OK){
+		if(onlyPublic && (interface.Flags() & IFF_LOOPBACK) != 0){
+			continue;
+		}
+		
+		const int addrCount = interface.CountAddresses();
+		for(int i=0; i<addrCount; i++){
+			BNetworkInterfaceAddress ifaddr;
+			if(interface.GetAddressAt(i, ifaddr) != B_OK){
+				continue;
+			}
+			
+			const BNetworkAddress &addr = ifaddr.Address();
+			if(addr.Family() != AF_INET){
+				continue;
+			}
+			
+			char bufferIPv4[INET_ADDRSTRLEN];
+			const sockaddr_in &sa = (const sockaddr_in &)addr.SockAddr();
+			if(!inet_ntop(AF_INET, &sa.sin_addr, bufferIPv4, sizeof(bufferIPv4))){
+				continue;
+			}
+			
+			list.Add(bufferIPv4);
+		}
+	}
+	
 #else
 	ifaddrs *ifaddr, *ifiter;
 	char bufferIPv6[INET6_ADDRSTRLEN];
@@ -526,6 +596,39 @@ uint32_t debnSocket::pScopeIdFor(const sockaddr_in6 &address){
 	}catch(...){
 		HeapFree(GetProcessHeap(), 0, addresses);
 		throw;
+	}
+	
+	return scope;
+	
+#elif defined OS_BEOS and defined NEVERCOMPILE
+	BNetworkRoster &roster = BNetworkRoster::Default();
+	BNetworkInterface interface;
+	uint32_t cookie = 0;
+	uint32_t scope = 0;
+	
+	while(roster.GetNextInterface(&cookie, interface) == B_OK){
+		const int addrCount = interface.CountAddresses();
+		for(int i=0; i<addrCount; i++){
+			BNetworkInterfaceAddress ifaddr;
+			if(interface.GetAddressAt(i, ifaddr) != B_OK){
+				continue;
+			}
+			
+			const BNetworkAddress &addr = ifaddr.Address();
+			if(addr.Family() != AF_INET6){
+				continue;
+			}
+			
+			const sockaddr_in6 &sa = (const sockaddr_in6 &)addr.SockAddr();
+			if(memcmp(&sa.sin6_addr, &address.sin6_addr, sizeof(address.sin6_addr)) == 0){
+				scope = sa.sin6_scope_id;
+				break;
+			}
+		}
+		
+		if(scope != 0){
+			break;
+		}
 	}
 	
 	return scope;

@@ -36,6 +36,8 @@
 #include <dragengine/app/deOSUnix.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/input/deInputDeviceButton.h>
+#include <dragengine/input/deInputDeviceAxis.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputEventQueue.h>
 #include <dragengine/resources/image/deImage.h>
@@ -96,16 +98,14 @@ void debiDevice::SetDisplayImages(const char *name){
 	decString filename;
 	
 	filename.Format("%s/%s/image.png", basePath, name);
-	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
-	deImage::Ref icon;
 	int i;
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
-		pDisplayIcons.Add((deImage*)icon);
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 
@@ -116,37 +116,21 @@ void debiDevice::SetDisplayText(const char *text){
 
 
 debiDeviceButton *debiDevice::GetButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		debiDeviceButton * const button = (debiDeviceButton*)pButtons.GetAt(i);
-		if(button->GetID() == id){
-			return button;
-		}
-	}
-	return NULL;
+	return pButtons.FindOrDefault([&](const debiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 int debiDevice::IndexOfButtonWithID(const char *id) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(((debiDeviceButton*)pButtons.GetAt(i))->GetID() == id){
-			return i;
-		}
-	}
-	return -1;
+	return pButtons.IndexOfMatching([&](const debiDeviceButton &button){
+		return button.GetID() == id;
+	});
 }
 
 int debiDevice::IndexOfButtonWithBICode(int code) const{
-	const int count = pButtons.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(((debiDeviceButton*)pButtons.GetAt(i))->GetBICode() == code){
-			return i;
-		}
-	}
-	return -1;
+	return pButtons.IndexOfMatching([&](const debiDeviceButton &button){
+		return button.GetBICode() == code;
+	});
 }
 
 void debiDevice::AddButton(debiDeviceButton *button){
@@ -159,37 +143,21 @@ void debiDevice::AddButton(debiDeviceButton *button){
 
 
 debiDeviceAxis *debiDevice::GetAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		debiDeviceAxis * const axis = (debiDeviceAxis*)pAxes.GetAt(i);
-		if(axis->GetID() == id){
-			return axis;
-		}
-	}
-	return NULL;
+	return pAxes.FindOrDefault([&](const debiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 int debiDevice::IndexOfAxisWithID(const char *id) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(((debiDeviceAxis*)pAxes.GetAt(i))->GetID() == id){
-			return i;
-		}
-	}
-	return -1;
+	return pAxes.IndexOfMatching([&](const debiDeviceAxis &axis){
+		return axis.GetID() == id;
+	});
 }
 
 int debiDevice::IndexOfAxisWithBICode(int code) const{
-	const int count = pAxes.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		if(((debiDeviceAxis*)pAxes.GetAt(i))->GetBICode() == code){
-			return i;
-		}
-	}
-	return -1;
+	return pAxes.IndexOfMatching([&](const debiDeviceAxis &axis){
+		return axis.GetBICode() == code;
+	});
 }
 
 void debiDevice::AddAxis(debiDeviceAxis *axis){
@@ -208,8 +176,6 @@ void debiDevice::SetDirtyAxesValues(bool dirty){
 
 
 void debiDevice::GetInfo(deInputDevice &info) const{
-	int i;
-	
 	info.SetID(pID);
 	info.SetName(pName);
 	info.SetType(pType);
@@ -224,12 +190,12 @@ void debiDevice::GetInfo(deInputDevice &info) const{
 	
 	info.SetButtonCount(pButtons.GetCount());
 	pButtons.VisitIndexed([&](int i, const debiDeviceButton &button){
-		button.GetInfo(info.GetButtons().GetAt(i));
+		button.GetInfo(info.GetButtons()[i]);
 	});
 	
 	info.SetAxisCount(pAxes.GetCount());
 	pAxes.VisitIndexed([&](int i, const debiDeviceAxis &axis){
-		axis.GetInfo(info.GetAxes().GetAt(i));
+		axis.GetInfo(info.GetAxes()[i]);
 	});
 }
 
