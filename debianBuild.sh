@@ -45,7 +45,7 @@ writeIncludeBinaries() {
   echo "detesting/data/content/image/icon64.png" >>$FILE
   echo `dir -1 extern/eossdk/eossdk-*.zip` >>$FILE
   echo `dir -1 extern/eossdk/eossdk_bin_linux-*.tar.xz` >>$FILE
-  echo `dir -1 extern/fox/fox-*.tar.bz2` >>$FILE
+  echo `dir -1 extern/fox/fox-*.tar.xz` >>$FILE
   echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
   echo `dir -1 extern/modio/modio-sdk-*.tar.xz` >>$FILE
   echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
@@ -110,7 +110,7 @@ gunzip ../$FILE || exit 1
 tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
   `dir -1 extern/eossdk/eossdk-*.zip` \
   `dir -1 extern/eossdk/eossdk_bin_linux-*.tar.xz` \
-  `dir -1 extern/fox/fox-*.tar.bz2` \
+  `dir -1 extern/fox/fox-*.tar.xz` \
   `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` \
   `dir -1 extern/modio/modio-sdk-*.tar.xz` \
   `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` \
