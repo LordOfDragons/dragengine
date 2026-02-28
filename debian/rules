@@ -104,6 +104,9 @@ override_dh_auto_install:
 override_dh_dwz:
 	dh_dwz -XlibDEFOX-1.7.so
 
+override_dh_strip:
+	dh_strip -XlibDEFOX-1.7.so
+
 override_dh_shlibdeps:
 	dh_shlibdeps
 	
