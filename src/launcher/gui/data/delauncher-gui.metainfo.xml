@@ -73,7 +73,7 @@
 	</screenshots>
 	
 	<releases>
-		<release version="1.31" date="2026-02-20">
+		<release version="1.30.1" date="2026-02-20">
 			<description>
 				<p>Drag[en]gine 1.30.1 Release. Fixed regression in Windows screen resolution
 					detection and texture coordinate sorting when loading old model formats.</p>
