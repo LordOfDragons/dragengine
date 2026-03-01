@@ -190,7 +190,6 @@ pListCaches(nullptr),
 pCalcSizeDataDir(nullptr),
 pCalcSizeCaptureDir(nullptr),
 pCalcSizeConfigDir(nullptr),
-pCalcSizePending(true),
 pCalcSizePulse(nullptr)
 {
 	const deglbConfiguration &configuration = windowMain->GetLauncher()->GetConfiguration();

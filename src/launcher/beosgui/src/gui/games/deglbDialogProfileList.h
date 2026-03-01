@@ -44,7 +44,6 @@
 #include <delauncher/game/profile/delGPDisableModuleVersion.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
-#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/utils/decUuid.h>
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>

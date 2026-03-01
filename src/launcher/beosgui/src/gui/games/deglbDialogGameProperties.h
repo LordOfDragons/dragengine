@@ -156,7 +156,6 @@ private:
 	deglbCalculateDirectorySize *pCalcSizeDataDir;
 	deglbCalculateDirectorySize *pCalcSizeCaptureDir;
 	deglbCalculateDirectorySize *pCalcSizeConfigDir;
-	bool pCalcSizePending;
 	BMessageRunner *pCalcSizePulse;
 	
 	

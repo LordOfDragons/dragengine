@@ -800,11 +800,14 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 			deglbDialogProfileListParameter * const param =
 				static_cast<deglbDialogProfileListParameter*>(paramPtr);
 			
+			// validate the pointer is still in our current list
+			if(!pMPParameters.Has(param)){
+				break;
+			}
+			
 			pTextMPParamInfo->SetText(param->GetDescription().GetString());
 			
-			if(param->GetEditWidget() == param->GetLabel()){
-				// shouldn't happen
-			}else if(dynamic_cast<BMenuField*>(param->GetEditWidget())){
+			if(dynamic_cast<BMenuField*>(param->GetEditWidget())){
 				param->ApplyMenuSelection();
 			}else if(dynamic_cast<BCheckBox*>(param->GetEditWidget())){
 				param->ApplyCheckBox();
