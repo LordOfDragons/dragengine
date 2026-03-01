@@ -27,21 +27,27 @@
 
 #include <Window.h>
 #include <Button.h>
+#include <GroupView.h>
 #include <ListView.h>
 #include <ScrollView.h>
 #include <MenuField.h>
 #include <PopUpMenu.h>
 #include <TextControl.h>
+#include <TextView.h>
 #include <CheckBox.h>
 #include <OS.h>
 
+#include "deglbDialogProfileListParameter.h"
+
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/profile/delGameProfile.h>
+#include <delauncher/game/profile/delGPDisableModuleVersion.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/utils/decUuid.h>
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
+#include <dragengine/systems/modules/deModuleParameter.h>
 
 class deglbWindowMain;
 
@@ -72,7 +78,15 @@ public:
 		MSG_RUNARGS_CHANGED = 'plra',
 		MSG_WIDTH_CHANGED = 'plwc',
 		MSG_HEIGHT_CHANGED = 'plhc',
-		MSG_FULLSCREEN_CHANGED = 'plfc'
+		MSG_FULLSCREEN_CHANGED = 'plfc',
+		MSG_MP_MODULE_SEL = 'plmM',
+		MSG_MP_PARAM_CHANGED = 'plmP',
+		MSG_MP_CAT_BASIC = 'plcB',
+		MSG_MP_CAT_ADVANCED = 'plcA',
+		MSG_MP_CAT_EXPERT = 'plcE',
+		MSG_DISABLE_MOD_MODULE_CHANGED = 'pldM',
+		MSG_DISABLE_MOD_ADD = 'plda',
+		MSG_DISABLE_MOD_REMOVE = 'pldr'
 	};
 	
 private:
@@ -117,10 +131,28 @@ private:
 	sSystem pSysNetwork;
 	sSystem pSysVR;
 	
+	// Module Parameters tab
+	BListView *pListMPModules;
+	BGroupView *pContainerMPParams;
+	BTextView *pTextMPParamInfo;
+	BButton *pBtnMPCatBasic;
+	BButton *pBtnMPCatAdvanced;
+	BButton *pBtnMPCatExpert;
+	decTObjectOrderedSet<deglbDialogProfileListParameter> pMPParameters;
+	deModuleParameter::eCategory pMPCategory;
+	
+	// Run Parameters tab
 	BTextControl *pEditRunArgs;
 	BCheckBox *pChkReplaceRunArgs;
 	BTextControl *pEditWidth;
 	BTextControl *pEditHeight;
+	BMenuField *pMenuFullscreen;
+	BPopUpMenu *pPopupFullscreen;
+	BMenuField *pMenuDisableModModule;
+	BPopUpMenu *pPopupDisableModModule;
+	BMenuField *pMenuDisableModVersion;
+	BPopUpMenu *pPopupDisableModVersion;
+	BListView *pListDisabledModules;
 	
 	
 	
@@ -152,6 +184,24 @@ public:
 	void UpdateSystemModuleList(sSystem &system, const char *moduleName,
 		const char *moduleVersion);
 	
+	/** \brief Update module parameters module list. */
+	void UpdateMPModuleList();
+	
+	/** \brief Update module parameters parameter list for selected module. */
+	void UpdateMPParameterList();
+	
+	/** \brief Update module parameter visibility based on current category. */
+	void UpdateMPParameterVisibility();
+	
+	/** \brief Update fullscreen resolutions list. */
+	void UpdateFullscreenResolutions();
+	
+	/** \brief Update disable module versions list. */
+	void UpdateDisabledModuleVersionsList();
+	
+	/** \brief Update disable module version combo boxes. */
+	void UpdateDisableModuleVersionCombos();
+	
 	/** \brief Apply changes to profile. */
 	void ApplyChanges();
 	
@@ -174,6 +224,8 @@ private:
 	void pSetSelectedProfile(cEditProfile *profile);
 	void pCreateSystem(sSystem &system, const char *label, int type, uint32 msgWhat, BView *container);
 	void pLoadProfiles(delGameProfile *selectProfile);
+	void pRebuildMPParams(BGroupView *container,
+		decTObjectOrderedSet<deglbDialogProfileListParameter> &params);
 };
 
 #endif
