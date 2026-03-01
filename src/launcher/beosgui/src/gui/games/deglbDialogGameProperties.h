@@ -27,16 +27,22 @@
 
 #include <Window.h>
 #include <Button.h>
+#include <String.h>
 #include <TextControl.h>
 #include <TextView.h>
 #include <ScrollView.h>
 #include <MenuField.h>
+#include <MessageRunner.h>
 #include <PopUpMenu.h>
 #include <ListView.h>
 #include <StringView.h>
 #include <OS.h>
 #include <ColumnListView.h>
 #include <ColumnTypes.h>
+
+#include "deglbCalculateDirectorySize.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 #include "../deglbIconView.h"
 #include "../deglbIconTabView.h"
@@ -70,7 +76,9 @@ public:
 		MSG_EDIT_PROFILES_DONE = 'gpeP',
 		MSG_DROP_CUSTOM_PROFILE = 'gpdc',
 		MSG_PATCH_CHANGED = 'gppx',
-		MSG_SCRMODINFO = 'gpsi'
+		MSG_SCRMODINFO = 'gpsi',
+		MSG_TAB_CHANGED = 'gptc',
+		MSG_TIMER_CALCSIZE = 'gpts'
 	};
 	
 	
@@ -131,6 +139,25 @@ private:
 	BColumnListView *pListFileFormats;
 	
 	// Disc usage tab
+	struct sCache{
+		deglbCalculateDirectorySize *calcSize;
+		BString name;
+		uint64_t used;
+	};
+	
+	BStringView *pLabSizeDelgaFile;
+	BStringView *pLabSizeDataDir;
+	BStringView *pLabSizeCaptureDir;
+	BStringView *pLabSizeConfigDir;
+	BStringView *pLabSizeCaches;
+	BColumnListView *pListCaches;
+	decTList<sCache> pCaches;
+	
+	deglbCalculateDirectorySize *pCalcSizeDataDir;
+	deglbCalculateDirectorySize *pCalcSizeCaptureDir;
+	deglbCalculateDirectorySize *pCalcSizeConfigDir;
+	bool pCalcSizePending;
+	BMessageRunner *pCalcSizePulse;
 	
 	
 public:
@@ -165,6 +192,12 @@ public:
 	
 	/** \brief Update patch list. */
 	void UpdatePatchList();
+	
+	/** \brief Update disc usage. */
+	void UpdateDiscUsage();
+	
+	/** \brief Update cache list. */
+	void UpdateCacheList();
 	/*@}*/
 	
 	
@@ -174,6 +207,10 @@ public:
 	void MessageReceived(BMessage *message) override;
 	bool QuitRequested() override;
 	/*@}*/
+	
+private:
+	BString FormatSize1024(uint64_t size) const;
+	void pDeleteCaches();
 };
 
 #endif

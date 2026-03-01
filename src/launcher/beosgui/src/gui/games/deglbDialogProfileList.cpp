@@ -29,8 +29,11 @@
 #include <MenuItem.h>
 #include <StringItem.h>
 #include <Alert.h>
+#include <CheckBox.h>
+#include <Slider.h>
 
 #include "deglbDialogProfileList.h"
+#include "deglbDialogProfileListParameter.h"
 #include "../engine/deglbDialogModuleProps.h"
 #include "../deglbWindowMain.h"
 #include "../../deglbLauncher.h"
@@ -38,11 +41,15 @@
 #include <delauncher/engine/delEngine.h>
 #include <delauncher/engine/modules/delEngineModule.h>
 #include <delauncher/engine/modules/delEngineModuleList.h>
+#include <delauncher/engine/modules/parameter/delEMParameter.h>
 #include <delauncher/game/delGameManager.h>
 #include <delauncher/game/profile/delGameProfile.h>
+#include <delauncher/game/profile/delGPModule.h>
+#include <delauncher/game/profile/delGPDisableModuleVersion.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 
@@ -76,7 +83,21 @@ BWindow({}, "Profiles", B_TITLED_WINDOW, B_NOT_ZOOMABLE | B_ASYNCHRONOUS_CONTROL
 pWindowMain(windowMain),
 pResultTarget(resultTarget),
 pResultMessage(resultMessage),
-pResultValue(false)
+pResultValue(false),
+pListMPModules(nullptr),
+pContainerMPParams(nullptr),
+pTextMPParamInfo(nullptr),
+pBtnMPCatBasic(nullptr),
+pBtnMPCatAdvanced(nullptr),
+pBtnMPCatExpert(nullptr),
+pMPCategory(deModuleParameter::ecBasic),
+pMenuFullscreen(nullptr),
+pPopupFullscreen(nullptr),
+pMenuDisableModModule(nullptr),
+pPopupDisableModModule(nullptr),
+pMenuDisableModVersion(nullptr),
+pPopupDisableModVersion(nullptr),
+pListDisabledModules(nullptr)
 {
 	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
@@ -133,26 +154,87 @@ pResultValue(false)
 	.End();
 	tabView->AddTab(systemsTab);
 	
-	// Settings tab
-	BView * const settingsTab = new BView("Settings", 0);
+	// Module Parameters tab
+	BView * const mpTab = new BView("Module Parameters", 0);
+	
+	pListMPModules = new BListView("mpModules");
+	pListMPModules->SetSelectionMessage(new BMessage(MSG_MP_MODULE_SEL));
+	BScrollView * const scrollMPModules = new BScrollView("mpModulesScroll", pListMPModules, 0, false, true);
+	
+	pContainerMPParams = new BGroupView(B_VERTICAL, B_USE_SMALL_SPACING);
+	BScrollView * const scrollMPParams = new BScrollView("mpParamsScroll", pContainerMPParams, 0, false, true);
+	
+	pTextMPParamInfo = new BTextView("mpParamInfo");
+	pTextMPParamInfo->MakeEditable(false);
+	pTextMPParamInfo->SetWordWrap(true);
+	BScrollView * const scrollMPInfo = new BScrollView("mpInfoScroll", pTextMPParamInfo, 0, false, true);
+	
+	pBtnMPCatBasic = new BButton("catBasic", "Basic", new BMessage(MSG_MP_CAT_BASIC));
+	pBtnMPCatAdvanced = new BButton("catAdvanced", "Advanced", new BMessage(MSG_MP_CAT_ADVANCED));
+	pBtnMPCatExpert = new BButton("catExpert", "Expert", new BMessage(MSG_MP_CAT_EXPERT));
+	
+	BLayoutBuilder::Group<>(mpTab, B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING)
+		.Add(scrollMPModules, 0.3f)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING, 0.7f)
+			.Add(scrollMPParams)
+			.Add(scrollMPInfo, 0.3f)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING)
+				.Add(pBtnMPCatBasic)
+				.Add(pBtnMPCatAdvanced)
+				.Add(pBtnMPCatExpert)
+				.AddGlue()
+			.End()
+		.End()
+	.End();
+	tabView->AddTab(mpTab);
+	
+	// Run Parameters tab
+	BView * const runParamsTab = new BView("Run Parameters", 0);
 	
 	pEditRunArgs = new BTextControl("runArgs", "Run Arguments:", "", nullptr);
 	pChkReplaceRunArgs = new BCheckBox("replaceArgs", "Replace Run Arguments", nullptr);
-	
 	pEditWidth = new BTextControl("width", "Width:", "1280", nullptr);
 	pEditHeight = new BTextControl("height", "Height:", "720", nullptr);
 	
-	BLayoutBuilder::Group<>(settingsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	pPopupFullscreen = new BPopUpMenu("Window");
+	pMenuFullscreen = new BMenuField("fullscreen", "Full Screen:", pPopupFullscreen);
+	
+	pPopupDisableModModule = new BPopUpMenu("");
+	pMenuDisableModModule = new BMenuField("disModModule", "Module:", pPopupDisableModModule);
+	pPopupDisableModVersion = new BPopUpMenu("");
+	pMenuDisableModVersion = new BMenuField("disModVer", "Version:", pPopupDisableModVersion);
+	
+	BButton * const btnDisableAdd = new BButton("disableAdd", "Add",
+		new BMessage(MSG_DISABLE_MOD_ADD));
+	BButton * const btnDisableRemove = new BButton("disableRemove", "Remove",
+		new BMessage(MSG_DISABLE_MOD_REMOVE));
+	
+	pListDisabledModules = new BListView("disabledModules");
+	BScrollView * const scrollDisabled = new BScrollView("disabledScroll",
+		pListDisabledModules, 0, false, true);
+	
+	BLayoutBuilder::Group<>(runParamsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
 		.Add(pEditRunArgs)
 		.Add(pChkReplaceRunArgs)
 		.AddGroup(B_HORIZONTAL)
 			.Add(pEditWidth)
 			.Add(pEditHeight)
+			.Add(pMenuFullscreen)
 		.End()
-		.AddGlue()
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
+			.Add(new BStringView("disLabel", "Disable Module Versions:"))
+			.AddGroup(B_HORIZONTAL)
+				.Add(pMenuDisableModModule)
+				.Add(pMenuDisableModVersion)
+				.Add(btnDisableAdd)
+				.Add(btnDisableRemove)
+			.End()
+			.Add(scrollDisabled)
+		.End()
 	.End();
-	tabView->AddTab(settingsTab);
+	tabView->AddTab(runParamsTab);
 	
 	// Buttons
 	BButton * const btnOK = new BButton("ok", "OK", new BMessage(MSG_OK));
@@ -241,6 +323,10 @@ void deglbDialogProfileList::UpdateProfile(){
 	UpdateSystemModuleList(pSysNetwork, edit.GetModuleNetwork(), edit.GetModuleNetworkVersion());
 	UpdateSystemModuleList(pSysVR, edit.GetModuleVR(), edit.GetModuleVRVersion());
 	
+	// Module Parameters
+	UpdateMPParameterList();
+	
+	// Run Parameters
 	pEditRunArgs->SetText(edit.GetRunArguments());
 	pChkReplaceRunArgs->SetValue(edit.GetReplaceRunArguments() ? B_CONTROL_ON : B_CONTROL_OFF);
 	
@@ -249,6 +335,209 @@ void deglbDialogProfileList::UpdateProfile(){
 	heightStr.Format("%d", edit.GetHeight());
 	pEditWidth->SetText(widthStr);
 	pEditHeight->SetText(heightStr);
+	
+	// Fullscreen
+	if(edit.GetFullScreen()){
+		const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
+		const int count = engine.GetResolutions().GetCount();
+		int selIndex = 0;
+		for(int i=0; i<count; i++){
+			const decPoint &res = engine.GetResolutions()[i];
+			if(res.x == edit.GetWidth() && res.y == edit.GetHeight()){
+				selIndex = i + 1;
+				break;
+			}
+		}
+		BMenuItem * const item = pPopupFullscreen->ItemAt(selIndex);
+		if(item){
+			item->SetMarked(true);
+		}
+	}else{
+		BMenuItem * const item = pPopupFullscreen->ItemAt(0);
+		if(item){
+			item->SetMarked(true);
+		}
+	}
+	
+	UpdateDisabledModuleVersionsList();
+}
+
+void deglbDialogProfileList::UpdateMPModuleList(){
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	const int count = moduleList.GetCount();
+	
+	decStringSet moduleNames;
+	for(int i=0; i<count; i++){
+		moduleNames.Add(moduleList.GetAt(i)->GetName());
+	}
+	
+	const decStringList sorted(decStringList(moduleNames).GetSortedAscending());
+	
+	const int prevSel = pListMPModules->CurrentSelection();
+	pListMPModules->MakeEmpty();
+	
+	sorted.Visit([&](const decString &name){
+		pListMPModules->AddItem(new BStringItem(name.GetString()));
+	});
+	
+	if(prevSel >= 0 && prevSel < pListMPModules->CountItems()){
+		pListMPModules->Select(prevSel);
+	}else if(pListMPModules->CountItems() > 0){
+		pListMPModules->Select(0);
+	}
+}
+
+void deglbDialogProfileList::UpdateMPParameterList(){
+	pRebuildMPParams(pContainerMPParams, pMPParameters);
+	
+	const int sel = pListMPModules->CurrentSelection();
+	BStringItem * const selItem = sel >= 0
+		? dynamic_cast<BStringItem*>(pListMPModules->ItemAt(sel)) : nullptr;
+	
+	if(!selItem || !pGetSelectedProfile()){
+		return;
+	}
+	
+	const decString moduleName(selItem->Text());
+	const delEngineModule * const engineModule = pWindowMain->GetLauncher()->
+		GetEngine().GetModules().GetNamed(moduleName);
+	if(!engineModule){
+		return;
+	}
+	
+	const delEMParameter::List &paramList = engineModule->GetParameters();
+	const int count = paramList.GetCount();
+	
+	decStringSet names;
+	for(int i=0; i<count; i++){
+		names.Add(paramList.GetAt(i)->GetInfo().GetName());
+	}
+	
+	const decStringList sorted(decStringList(names).GetSortedAscending());
+	delGameProfile &profile = *pGetSelectedProfile()->edit;
+	
+	sorted.Visit([&](const decString &name){
+		delEMParameter *parameter = nullptr;
+		for(int i=0; i<count; i++){
+			if(paramList.GetAt(i)->GetInfo().GetName() == name){
+				parameter = paramList.GetAt(i);
+				break;
+			}
+		}
+		if(parameter){
+			auto param = deglbDialogProfileListParameter::Ref::New(
+				*parameter, profile, moduleName.GetString(), MSG_MP_PARAM_CHANGED);
+			pMPParameters.Add(param);
+			
+			BGroupView * const row = new BGroupView(B_HORIZONTAL, B_USE_SMALL_SPACING);
+			BLayoutBuilder::Group<>(row)
+				.Add(param->GetLabel(), 0.4f)
+				.Add(param->GetEditWidget(), 0.6f)
+			.End();
+			pContainerMPParams->GetLayout()->AddView(row);
+		}
+	});
+	
+	UpdateMPParameterVisibility();
+	pContainerMPParams->InvalidateLayout();
+}
+
+void deglbDialogProfileList::UpdateMPParameterVisibility(){
+	pMPParameters.Visit([&](deglbDialogProfileListParameter &param){
+		param.UpdateVisibility(pMPCategory);
+	});
+}
+
+void deglbDialogProfileList::UpdateFullscreenResolutions(){
+	while(pPopupFullscreen->CountItems() > 0){
+		delete pPopupFullscreen->RemoveItem((int32)0);
+	}
+	
+	pPopupFullscreen->AddItem(new BMenuItem("Window", new BMessage(MSG_FULLSCREEN_CHANGED)));
+	
+	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
+	const int count = engine.GetResolutions().GetCount();
+	for(int i=0; i<count; i++){
+		const decPoint &res = engine.GetResolutions()[i];
+		BString text;
+		text.SetToFormat("%d x %d", res.x, res.y);
+		BMessage * const msg = new BMessage(MSG_FULLSCREEN_CHANGED);
+		msg->AddInt32("width", res.x);
+		msg->AddInt32("height", res.y);
+		pPopupFullscreen->AddItem(new BMenuItem(text.String(), msg));
+	}
+	
+	if(pPopupFullscreen->CountItems() > 0){
+		pPopupFullscreen->ItemAt(0)->SetMarked(true);
+	}
+}
+
+void deglbDialogProfileList::UpdateDisabledModuleVersionsList(){
+	pListDisabledModules->MakeEmpty();
+	
+	cEditProfile * const profile = pGetSelectedProfile();
+	if(!profile){
+		return;
+	}
+	
+	profile->edit->GetDisableModuleVersions().Visit([&](const delGPDisableModuleVersion &ver){
+		BString text;
+		text.SetToFormat("%s (%s)", ver.GetName().GetString(), ver.GetVersion().GetString());
+		pListDisabledModules->AddItem(new BStringItem(text.String()));
+	});
+}
+
+void deglbDialogProfileList::UpdateDisableModuleVersionCombos(){
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	const int count = moduleList.GetCount();
+	
+	while(pPopupDisableModModule->CountItems() > 0){
+		delete pPopupDisableModModule->RemoveItem((int32)0);
+	}
+	
+	decStringSet moduleNames;
+	for(int i=0; i<count; i++){
+		moduleNames.Add(moduleList.GetAt(i)->GetName());
+	}
+	
+	decStringList(moduleNames).GetSortedAscending().Visit([&](const decString &name){
+		BMessage * const msg = new BMessage(MSG_DISABLE_MOD_MODULE_CHANGED);
+		msg->AddString("module", name.GetString());
+		pPopupDisableModModule->AddItem(new BMenuItem(name.GetString(), msg));
+	});
+	
+	if(pPopupDisableModModule->CountItems() > 0){
+		pPopupDisableModModule->ItemAt(0)->SetMarked(true);
+	}
+	
+	// Update version combo based on selected module
+	const char *selModuleName = nullptr;
+	BMenuItem * const selModItem = pPopupDisableModModule->FindMarked();
+	if(selModItem && selModItem->Message()){
+		selModItem->Message()->FindString("module", &selModuleName);
+	}
+	
+	while(pPopupDisableModVersion->CountItems() > 0){
+		delete pPopupDisableModVersion->RemoveItem((int32)0);
+	}
+	
+	if(selModuleName){
+		decStringSet versions;
+		for(int i=0; i<count; i++){
+			const delEngineModule &mod = *moduleList.GetAt(i);
+			if(mod.GetName() == selModuleName){
+				versions.Add(mod.GetVersion());
+			}
+		}
+		decStringList(versions).GetSortedAscending().Visit([&](const decString &ver){
+			pPopupDisableModVersion->AddItem(
+				new BMenuItem(ver.GetString(), new BMessage(MSG_DISABLE_MOD_MODULE_CHANGED)));
+		});
+	}
+	
+	if(pPopupDisableModVersion->CountItems() > 0){
+		pPopupDisableModVersion->ItemAt(0)->SetMarked(true);
+	}
 }
 
 void deglbDialogProfileList::UpdateSystemModuleList(sSystem &system, const char *moduleName,
@@ -317,6 +606,22 @@ void deglbDialogProfileList::ApplyChanges(){
 	// Width/height
 	edit.SetWidth(atoi(pEditWidth->Text()));
 	edit.SetHeight(atoi(pEditHeight->Text()));
+	
+	// Fullscreen
+	BMenuItem * const fsItem = pPopupFullscreen->FindMarked();
+	if(fsItem && fsItem->Message()){
+		int32 fsWidth = 0, fsHeight = 0;
+		if(fsItem->Message()->FindInt32("width", &fsWidth) == B_OK
+		&& fsItem->Message()->FindInt32("height", &fsHeight) == B_OK){
+			edit.SetFullScreen(true);
+			edit.SetWidth((int)fsWidth);
+			edit.SetHeight((int)fsHeight);
+		}else{
+			edit.SetFullScreen(false);
+		}
+	}else{
+		edit.SetFullScreen(false);
+	}
 	
 	// System modules
 	auto applySystem = [&](sSystem &system, 
@@ -484,6 +789,114 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		// Module selection changed - values are read back when applying changes
 		break;
 		
+	case MSG_MP_MODULE_SEL:
+		UpdateMPParameterList();
+		pTextMPParamInfo->SetText("");
+		break;
+		
+	case MSG_MP_PARAM_CHANGED:{
+		void *paramPtr = nullptr;
+		if(message->FindPointer("param", &paramPtr) == B_OK && paramPtr){
+			deglbDialogProfileListParameter * const param =
+				static_cast<deglbDialogProfileListParameter*>(paramPtr);
+			
+			pTextMPParamInfo->SetText(param->GetDescription().GetString());
+			
+			if(param->GetEditWidget() == param->GetLabel()){
+				// shouldn't happen
+			}else if(dynamic_cast<BMenuField*>(param->GetEditWidget())){
+				param->ApplyMenuSelection();
+			}else if(dynamic_cast<BCheckBox*>(param->GetEditWidget())){
+				param->ApplyCheckBox();
+			}else if(dynamic_cast<BSlider*>(param->GetEditWidget())){
+				param->ApplySlider();
+			}else{
+				param->ApplyTextControl();
+			}
+		}
+		}break;
+		
+	case MSG_MP_CAT_BASIC:
+		pMPCategory = deModuleParameter::ecBasic;
+		UpdateMPParameterVisibility();
+		break;
+		
+	case MSG_MP_CAT_ADVANCED:
+		pMPCategory = deModuleParameter::ecAdvanced;
+		UpdateMPParameterVisibility();
+		break;
+		
+	case MSG_MP_CAT_EXPERT:
+		pMPCategory = deModuleParameter::ecExpert;
+		UpdateMPParameterVisibility();
+		break;
+		
+	case MSG_FULLSCREEN_CHANGED:
+		// fullscreen selection changed - read back on apply
+		break;
+		
+	case MSG_DISABLE_MOD_MODULE_CHANGED:{
+		const char *modName = nullptr;
+		if(message->FindString("module", &modName) == B_OK && modName){
+			// Update version combo for the selected module
+			const delEngineModuleList &moduleList =
+				pWindowMain->GetLauncher()->GetEngine().GetModules();
+			const int count = moduleList.GetCount();
+			
+			while(pPopupDisableModVersion->CountItems() > 0){
+				delete pPopupDisableModVersion->RemoveItem((int32)0);
+			}
+			
+			decStringSet versions;
+			for(int i=0; i<count; i++){
+				const delEngineModule &mod = *moduleList.GetAt(i);
+				if(mod.GetName() == modName){
+					versions.Add(mod.GetVersion());
+				}
+			}
+			decStringList(versions).GetSortedAscending().Visit([&](const decString &ver){
+				pPopupDisableModVersion->AddItem(new BMenuItem(ver.GetString(),
+					new BMessage(MSG_DISABLE_MOD_MODULE_CHANGED)));
+			});
+			if(pPopupDisableModVersion->CountItems() > 0){
+				pPopupDisableModVersion->ItemAt(0)->SetMarked(true);
+			}
+		}
+		}break;
+		
+	case MSG_DISABLE_MOD_ADD:{
+		cEditProfile * const profile = pGetSelectedProfile();
+		if(profile){
+			const char *modName = nullptr;
+			BMenuItem * const modItem = pPopupDisableModModule->FindMarked();
+			if(modItem && modItem->Message()){
+				modItem->Message()->FindString("module", &modName);
+			}
+			const char *verName = nullptr;
+			BMenuItem * const verItem = pPopupDisableModVersion->FindMarked();
+			if(verItem){
+				verName = verItem->Label();
+			}
+			if(modName && verName
+			&& !profile->edit->GetDisableModuleVersions().HasWith(modName, verName)){
+				profile->edit->GetDisableModuleVersions().Add(
+					delGPDisableModuleVersion(modName, verName));
+				UpdateDisabledModuleVersionsList();
+			}
+		}
+		}break;
+		
+	case MSG_DISABLE_MOD_REMOVE:{
+		cEditProfile * const profile = pGetSelectedProfile();
+		if(profile){
+			const int sel = pListDisabledModules->CurrentSelection();
+			if(sel >= 0 && sel < profile->edit->GetDisableModuleVersions().GetCount()){
+				profile->edit->GetDisableModuleVersions().RemoveFrom(sel);
+				UpdateDisabledModuleVersionsList();
+			}
+		}
+		}break;
+		
 	default:
 		BWindow::MessageReceived(message);
 	}
@@ -539,6 +952,9 @@ void deglbDialogProfileList::pLoadProfiles(delGameProfile *selectProfile){
 		}
 	});
 	
+	UpdateFullscreenResolutions();
+	UpdateDisableModuleVersionCombos();
+	UpdateMPModuleList();
 	UpdateProfileList();
 	
 	if(selectEdit){
@@ -549,4 +965,21 @@ void deglbDialogProfileList::pLoadProfiles(delGameProfile *selectProfile){
 	}
 	
 	UpdateProfile();
+}
+
+void deglbDialogProfileList::pRebuildMPParams(BGroupView *container,
+decTObjectOrderedSet<deglbDialogProfileListParameter> &params){
+	// Clear parameter list first (releases parameter objects)
+	params.RemoveAll();
+	
+	// Remove and delete all child views from container
+	if(container){
+		BView *child = container->ChildAt(0);
+		while(child){
+			BView * const next = child->NextSibling();
+			container->RemoveChild(child);
+			delete child;
+			child = next;
+		}
+	}
 }
