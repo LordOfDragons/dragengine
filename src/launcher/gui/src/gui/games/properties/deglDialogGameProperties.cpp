@@ -671,7 +671,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 		
 		// add status
 		if(matchingModule){
-			if(module->GetStatus() == delEngineModule::emsReady){
+			if(matchingModule->GetStatus() == delEngineModule::emsReady){
 				text.append("OK");
 				iicon = pWindowMain->GetIconValidSmall();
 				

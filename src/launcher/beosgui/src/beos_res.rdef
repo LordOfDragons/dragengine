@@ -1,0 +1,23 @@
+resource app_flags B_MULTIPLE_LAUNCH;
+
+resource app_signature "application/x-vnd.dragengine-launcher-gui.app";
+
+resource app_version {
+    major = 1,
+    minor = 0,
+    variety = B_APPV_FINAL,
+    internal = 0,
+    short_info = "Drag[en]gine GUI Launcher",
+    long_info = "GUI Launcher for Drag[en]gine based games"
+};
+
+resource file_types message {
+    "types" = "application/dragengine-delga",
+    "types" = "application/dragengine-gamedefinition"
+};
+
+resource(1, "BEOS:ICON") #'PNG ' import "../icons/delauncher-gui.png";
+
+resource(101, "icon_valid_small") #'PNG ' import "../icons/icon_valid_small.png";
+resource(102, "icon_invalid_small") #'PNG ' import "../icons/icon_invalid_small.png";
+resource(103, "button_info") #'PNG ' import "../icons/button_info.png";

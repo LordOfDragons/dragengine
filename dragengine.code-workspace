@@ -205,6 +205,10 @@
 			"path": "src/launcher/live"
 		},
 		{
+			"name": "Launcher: BeOS GUI",
+			"path": "src/launcher/beosgui"
+		},
+		{
 			"name": "IGDE",
 			"path": "src/deigde/deigde"
 		},
@@ -293,6 +297,7 @@
 			"path": "ghdocs"
 		},
 		{
+			"name": "installer",
 			"path": "installer"
 		}
 	],
