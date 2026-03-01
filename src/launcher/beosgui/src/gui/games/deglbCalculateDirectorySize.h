@@ -80,7 +80,7 @@ public:
 	void Run() override;
 	
 	/** \brief For internal use only. */
-	void IncrementSize(int size);
+	void IncrementSize(uint64_t size);
 	/*@}*/
 	
 	

@@ -303,11 +303,10 @@ void deglbDialogProfileListParameter::pSetParameterValue(float value){
 	int i;
 	for(i=string.GetLength()-1; i>0; i--){
 		if(string[i] == '.'){
-			string[i] = 0;
+			string = string.GetLeft(i);
 			break;
-		}else if(string[i] == '0'){
-			string[i] = 0;
-		}else{
+		}else if(string[i] != '0'){
+			string = string.GetLeft(i + 1);
 			break;
 		}
 	}

@@ -107,7 +107,7 @@ void deglbCalculateDirectorySize::Run(){
 	}
 }
 
-void deglbCalculateDirectorySize::IncrementSize(int size){
+void deglbCalculateDirectorySize::IncrementSize(uint64_t size){
 	const deMutexGuard guard(pMutex);
 	pSize += size;
 }
@@ -128,7 +128,7 @@ public:
 	}
 	
 	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
-		pOwner.IncrementSize((int)vfs.GetFileSize(path));
+		pOwner.IncrementSize((uint64_t)vfs.GetFileSize(path));
 		return !pAbort;
 	}
 	
