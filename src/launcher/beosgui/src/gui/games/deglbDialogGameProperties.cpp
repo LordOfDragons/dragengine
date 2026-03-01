@@ -38,6 +38,7 @@
 #include "../engine/deglbDialogModuleProps.h"
 #include "../../deglbLauncher.h"
 #include "../../config/deglbConfiguration.h"
+#include "../../game/deglbGameIcon.h"
 
 #include <delauncher/game/delGameManager.h>
 #include <delauncher/game/patch/delPatchManager.h>
@@ -49,6 +50,117 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/systems/deModuleSystem.h>
+
+
+// Class deglbDialogGameProperties::cGameListItem
+/////////////////////////////////////////
+
+deglbDialogGameProperties::cFileFormatListItem::cFileFormatListItem(
+	const delFileFormat &afileFormat, deglbWindowMain &windowMain) :
+fileFormat(afileFormat),
+icon(nullptr)
+{
+	// type string
+	const char *textType;
+	switch(afileFormat.GetType()){
+	case deModuleSystem::emtAnimation:
+		textType = "Animation";
+		break;
+		
+	case deModuleSystem::emtFont:
+		textType = "Font";
+		break;
+		
+	case deModuleSystem::emtImage:
+		textType = "Image";
+		break;
+		
+	case deModuleSystem::emtLanguagePack:
+		textType = "Language Pack";
+		break;
+		
+	case deModuleSystem::emtModel:
+		textType = "Model";
+		break;
+		
+	case deModuleSystem::emtRig:
+		textType = "Rig";
+		break;
+		
+	case deModuleSystem::emtSkin:
+		textType = "Skin";
+		break;
+		
+	case deModuleSystem::emtSound:
+		textType = "Sound";
+		break;
+		
+	case deModuleSystem::emtVideo:
+		textType = "Video";
+		break;
+		
+	case deModuleSystem::emtOcclusionMesh:
+		textType = "Occlusion Mesh";
+		break;
+		
+	default:
+		textType = "???\t";
+	}
+	
+	// module supporting this file format
+	delEngineModule *matchingModule = nullptr;
+	
+	if(!deModuleSystem::IsSingleType(afileFormat.GetType())){
+		const delEngine &engine = windowMain.GetLauncher()->GetEngine();
+		const delEngineModuleList &moduleList = engine.GetModules();
+		int m, moduleCount = moduleList.GetCount();
+		
+		for(m=0; m<moduleCount; m++){
+			delEngineModule *module = moduleList.GetAt(m);
+			
+			if(module->GetType() == afileFormat.GetType()
+			&& afileFormat.GetPattern().MatchesPattern(module->GetPattern())){
+				matchingModule = module;
+				break;
+			}
+		}
+	}
+	
+	const char *textModule = "-";
+	if(matchingModule){
+		textModule = matchingModule->GetName();
+	}
+	
+	// status
+	const char *textStatus;
+	if(matchingModule){
+		if(matchingModule->GetStatus() == delEngineModule::emsReady){
+			textStatus = "OK";
+			icon = windowMain.GetIconValidSmall();
+			
+		}else{
+			textStatus = "Broken";
+			icon = windowMain.GetIconInvalidSmall();
+		}
+		
+	}else{
+		textStatus = "Missing";
+		icon = windowMain.GetIconInvalidSmall();
+	}
+	
+	// add fields
+	if(icon){
+		SetField(new BBitmapField(icon), 0);
+	}
+	
+	SetField(new BStringField(textType), 1);
+	SetField(new BStringField(afileFormat.GetPattern()), 2);
+	SetField(new BStringField(textModule), 3);
+	SetField(new BStringField(textStatus), 4);
+}
+
+deglbDialogGameProperties::cFileFormatListItem::~cFileFormatListItem() = default;
 
 
 // Class deglbDialogGameProperties
@@ -70,6 +182,7 @@ pGame(game)
 	rgb_color backColorProblem(configuration.GetBackColorProblem());
 	rgb_color textColorProblem(configuration.GetTextColorProblem());
 	
+	//SetFeel(B_MODAL_SUBSET_WINDOW_FEEL);
 	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_LABEL);
@@ -145,9 +258,14 @@ pGame(game)
 	pEditScriptModuleVersion = new BTextView("scriptModuleVersion");
 	pEditScriptModuleVersion->MakeEditable(false);
 	
+	BButton * const btnScriptModuleInfo = new BButton("btnInfo", "", new BMessage(MSG_SCRMODINFO));
+	btnScriptModuleInfo->SetIcon(windowMain->GetIconButtonInfo());
+	
 	pTextDescription = new BTextView("description");
 	pTextDescription->MakeEditable(false);
 	BScrollView * const scrollDesc = new BScrollView("descriptionScroll", pTextDescription, 0, false, true);
+	
+	pIconGame = new deglbIconView();
 	
 	BLayoutBuilder::Grid<>(infoTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
@@ -206,11 +324,13 @@ pGame(game)
 				.Add(pIconScriptModule, 0)
 				.Add(pEditScriptModule, 1)
 				.Add(pEditScriptModuleVersion, 0)
+				.Add(btnScriptModuleInfo, 0)
 			.End()
 			.Add(pEditScriptModuleProblem, 0)
 		.End()
 		
-		.Add(scrollDesc, 1.0f, 1, 11)
+		.Add(pIconGame, 0, 11)
+		.Add(scrollDesc, 1, 11)
 	.End();
 	
 	pTabInfo = new deglbIconTabView(windowMain->GetIconValidSmall(), "Info", infoTab);
@@ -219,32 +339,51 @@ pGame(game)
 	// --- Settings tab ---
 	BView * const settingsTab = new BView("Settings", 0);
 	
+	pIconProfile = new deglbIconView(windowMain->GetIconValidSmall());
 	pPopupProfile = new BPopUpMenu("< Default Profile >");
-	pMenuProfile = new BMenuField("profile", "Profile:", pPopupProfile);
+	pMenuProfile = new BMenuField("profile", nullptr, pPopupProfile);
 	
 	BButton * const btnEditProfiles = new BButton("editProfiles", "Edit Profiles...",
 		new BMessage(MSG_EDIT_PROFILES));
+	
 	BButton * const btnDropCustom = new BButton("dropCustom", "Drop Custom Profile",
 		new BMessage(MSG_DROP_CUSTOM_PROFILE));
+	btnDropCustom->SetExplicitMaxSize({B_SIZE_UNLIMITED, B_SIZE_UNSET});
 	
-	pLabProfileProblems = new BStringView("profProblems", "");
+	pLabProfileProblems = new BTextView("profProblems");
+	pLabProfileProblems->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColorProblem);
+	pLabProfileProblems->SetViewColor(backColorProblem);
+	pLabProfileProblems->Hide();
 	
-	pEditRunArgs = new BTextControl("runArgs", "Run Arguments:", "", nullptr);
+	//pEditRunArgs = new BTextView("runArgs");
+	//pEditRunArgs->SetWordWrap(false);
+	pEditRunArgs = new BTextControl("runArgs", nullptr, "", nullptr);
 	
 	pPopupPatch = new BPopUpMenu("< No Patch >");
-	pMenuPatch = new BMenuField("patch", "Patch:", pPopupPatch);
+	pMenuPatch = new BMenuField("patch", nullptr, pPopupPatch);
 	
-	BLayoutBuilder::Group<>(settingsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	BLayoutBuilder::Grid<>(settingsTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL)
-			.Add(pMenuProfile)
-			.Add(btnEditProfiles)
-			.Add(btnDropCustom)
+		
+		.Add(new BStringView("label", "Profile:"), 0, 0)
+		.AddGroup(B_VERTICAL, 0, 1, 0)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 0)
+				.Add(pIconProfile, 0)
+				.Add(pMenuProfile, 1)
+				.Add(btnEditProfiles, 0)
+			.End()
+			.Add(pLabProfileProblems, 1)
 		.End()
-		.Add(pLabProfileProblems)
-		.Add(pEditRunArgs)
-		.Add(pMenuPatch)
-		.AddGlue()
+		
+		.Add(btnDropCustom, 1, 1)
+		
+		.Add(new BStringView("label", "Run Arguments:"), 0, 2)
+		.Add(pEditRunArgs, 1, 2)
+		
+		.Add(new BStringView("label", "Patch:"), 0, 3)
+		.Add(pMenuPatch, 1, 3)
+		
+		.AddGlue(1, 4)
 	.End();
 	
 	pTabSettings = new deglbIconTabView(windowMain->GetIconValidSmall(), "Settings", settingsTab);
@@ -253,16 +392,33 @@ pGame(game)
 	// --- File Formats tab ---
 	BView * const formatsTab = new BView("File Formats", 0);
 	
-	pListFileFormats = new BListView("fileFormats");
-	BScrollView * const scrollFormats = new BScrollView("formatsScroll", pListFileFormats, 0, false, true);
+	pListFileFormats = new BColumnListView("fileFormatList", 0, B_NO_BORDER, false);
+	
+	const float factor = be_plain_font->StringWidth("M");
+	pListFileFormats->AddColumn(new BBitmapColumn(" ", 32, 32, 32, B_ALIGN_CENTER), 0);
+	pListFileFormats->AddColumn(new BStringColumn("Resource Type", factor * 15, 10, 10000, B_TRUNCATE_END), 1);
+	pListFileFormats->AddColumn(new BStringColumn("File Format", factor * 15, 10, 10000, B_TRUNCATE_END), 2);
+	pListFileFormats->AddColumn(new BStringColumn("Supported by", factor * 15, 10, 10000, B_TRUNCATE_END), 3);
+	pListFileFormats->AddColumn(new BStringColumn("Status", factor * 15, 10, 10000, B_TRUNCATE_END), 4);
 	
 	BLayoutBuilder::Group<>(formatsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(scrollFormats)
+		.Add(pListFileFormats)
 	.End();
 	
 	pTabFormats = new deglbIconTabView(windowMain->GetIconValidSmall(), "File Formats", formatsTab);
 	tabView->AddTab(formatsTab, pTabFormats);
+	
+	// --- Disc usage tab ---
+	BView * const usageTab = new BView("Disc Usage", 0);
+	
+	BLayoutBuilder::Group<>(usageTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING)
+		
+	.End();
+	
+	tabView->AddTab(usageTab);
+	
 	
 	// Main layout with OK/Cancel buttons
 	BButton * const btnOK = new BButton("ok", "OK", new BMessage(MSG_OK));
@@ -283,7 +439,9 @@ pGame(game)
 	UpdateGame();
 	
 	ResizeToPreferred();
-	SetSizeLimits(Bounds().Width(), 99999, Bounds().Height(), 99999);
+	
+	float minWidth = be_plain_font->StringWidth("M") * 60;
+	SetSizeLimits(decMath::max(Bounds().Width(), minWidth), 99999, Bounds().Height(), 99999);
 	
 	CenterOnScreen();
 }
@@ -300,6 +458,7 @@ void deglbDialogGameProperties::UpdateGame(){
 		return;
 	}
 	
+	// game information
 	bool panelInfoWorking = true;
 	BBitmap * const iconValid = pWindowMain->GetIconValidSmall();
 	BBitmap * const iconInvalid = pWindowMain->GetIconInvalidSmall();
@@ -310,6 +469,9 @@ void deglbDialogGameProperties::UpdateGame(){
 	pTextDescription->SetText(pGame->GetDescription().ToUTF8());
 	pEditCreator->SetText(pGame->GetCreator().ToUTF8());
 	pEditHomepage->SetText(pGame->GetHomepage());
+	
+	const deglbGameIcon * const icon = dynamic_cast<deglbGameIcon*>(pGame->GetIcons().GetLargest(128));
+	pIconGame->SetIcon(icon ? icon->CreateScaledBitmap(128) : nullptr);
 	
 	pEditGameDir->SetText(pGame->GetGameDirectory());
 	pIconGameDir->SetIcon(pWindowMain->GetIconValidSmall());
@@ -355,6 +517,26 @@ void deglbDialogGameProperties::UpdateGame(){
 	
 	pTabInfo->SetIcon(panelInfoWorking ? iconValid : iconInvalid);
 	
+	// settings
+	auto validateGameProfile = pGame->GetActiveProfile();
+	if(!validateGameProfile){
+		validateGameProfile = pWindowMain->GetLauncher()->GetGameManager().GetActiveProfile();
+		if(!validateGameProfile){
+			validateGameProfile = pWindowMain->GetLauncher()->GetGameManager().GetDefaultProfile();
+		}
+	}
+	
+	if(validateGameProfile && validateGameProfile->GetValid()){
+		pIconProfile->SetIcon(iconValid);
+		pLabProfileProblems->SetText("");
+		pLabProfileProblems->Hide();
+		
+	}else{
+		pIconProfile->SetIcon(iconInvalid);
+		pLabProfileProblems->SetText("Profile has problems. The game will not run with it.");
+		pLabProfileProblems->Show();
+	}
+	
 	pEditRunArgs->SetText(pGame->GetRunArguments());
 	
 	UpdateProfileList();
@@ -365,6 +547,7 @@ void deglbDialogGameProperties::UpdateGame(){
 void deglbDialogGameProperties::UpdateProfileList(){
 	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	const delGameProfile::List &profiles = gameManager.GetProfiles();
+	delGameProfile *active = pGame->GetActiveProfile();
 	
 	while(pPopupProfile->CountItems() > 0){
 		delete pPopupProfile->RemoveItem((int32)0);
@@ -380,30 +563,16 @@ void deglbDialogGameProperties::UpdateProfileList(){
 		pPopupProfile->AddItem(new BMenuItem("< Custom Profile >", msg));
 	}
 	
-	const int count = profiles.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		delGameProfile * const profile = profiles.GetAt(i);
+	profiles.Visit([&](delGameProfile *profile){
 		msg = new BMessage(MSG_PROFILE_CHANGED);
 		msg->AddPointer("profile", profile);
 		pPopupProfile->AddItem(new BMenuItem(profile->GetName(), msg));
-	}
-	
-	// Select active profile
-	const delGameProfile * const active = pGame->GetActiveProfile();
-	if(active){
-		for(i=0; i<pPopupProfile->CountItems(); i++){
-			BMenuItem * const item = pPopupProfile->ItemAt(i);
-			BMessage * const imsg = item ? item->Message() : nullptr;
-			if(!imsg) continue;
-			void *ptr = nullptr;
-			if(imsg->FindPointer("profile", &ptr) == B_OK && ptr == active){
-				item->SetMarked(true);
-				break;
-			}
+		if(profile == active){
+			pPopupProfile->ItemAt(pPopupProfile->CountItems() - 1)->SetMarked(true);
 		}
-		
-	}else if(pPopupProfile->CountItems() > 0){
+	});
+	
+	if(!active && pPopupProfile->CountItems() > 0){
 		pPopupProfile->ItemAt(0)->SetMarked(true);
 	}
 	
@@ -411,49 +580,69 @@ void deglbDialogGameProperties::UpdateProfileList(){
 	delGameProfile * const validateProfile = pGame->GetProfileToUse();
 	if(validateProfile && validateProfile->GetValid()){
 		pLabProfileProblems->SetText("");
+		pTabSettings->SetIcon(pWindowMain->GetIconValidSmall());
 		
 	}else{
 		pLabProfileProblems->SetText("Profile has problems. The game cannot run.");
+		pTabSettings->SetIcon(pWindowMain->GetIconInvalidSmall());
 	}
 }
 
 void deglbDialogGameProperties::UpdatePatchList(){
+	const delPatchManager &patchManager = pWindowMain->GetLauncher()->GetPatchManager();
+	const decUuid &gameId = pGame->GetIdentifier();
+	const decUuid &useCustomPatch = pGame->GetUseCustomPatch();
+	
 	while(pPopupPatch->CountItems() > 0){
 		delete pPopupPatch->RemoveItem((int32)0);
 	}
 	
 	BMessage *msg = new BMessage(MSG_PATCH_CHANGED);
-	msg->AddPointer("patch", nullptr);
-	pPopupPatch->AddItem(new BMenuItem("< No Patch >", msg));
+	msg->AddBool("useLatestPatch", true);
+	pPopupPatch->AddItem(new BMenuItem("< Latest >", msg));
+	if(!useCustomPatch && pGame->GetUseLatestPatch()){
+		pPopupPatch->ItemAt(pPopupPatch->CountItems() - 1)->SetMarked(true);
+	}
 	
-	const delPatchManager &patchMgr = pWindowMain->GetLauncher()->GetPatchManager();
-	const decUuid &gameId = pGame->GetIdentifier();
-	
-	patchMgr.GetPatches().Visit([&](delPatch &p){
-		if(p.GetGameID() == gameId){
-			msg = new BMessage(MSG_PATCH_CHANGED);
-			msg->AddPointer("patch", &p);
-			pPopupPatch->AddItem(new BMenuItem(p.GetName().ToUTF8(), msg));
+	patchManager.GetPatches().Visit([&](delPatch *patch){
+		if(patch->GetGameID() != gameId){
+			return;
+		}
+		
+		msg = new BMessage(MSG_PATCH_CHANGED);
+		msg->AddPointer("customPatch", patch);
+		pPopupPatch->AddItem(new BMenuItem(patch->GetName().ToUTF8(), msg));
+		
+		if(patch->GetIdentifier() == useCustomPatch){
+			pPopupPatch->ItemAt(pPopupPatch->CountItems() - 1)->SetMarked(true);
 		}
 	});
 	
-	if(pPopupPatch->CountItems() > 0){
-		pPopupPatch->ItemAt(0)->SetMarked(true);
+	msg = new BMessage(MSG_PATCH_CHANGED);
+	msg->AddBool("useLatestPatch", false);
+	pPopupPatch->AddItem(new BMenuItem("< Vanilla >", msg));
+	if(!useCustomPatch && !pGame->GetUseLatestPatch()){
+		pPopupPatch->ItemAt(pPopupPatch->CountItems() - 1)->SetMarked(true);
 	}
 }
 
 void deglbDialogGameProperties::UpdateFileFormatList(){
-	pListFileFormats->MakeEmpty();
+	pListFileFormats->Clear();
 	
 	if(!pGame){
 		return;
 	}
 	
 	pGame->GetFileFormats().Visit([&](const delFileFormat &format){
-		auto text = decString::Formatted("[{0}] {1}",
-			format.GetSupported() ? "OK" : "FAIL", format.GetPattern());
-		pListFileFormats->AddItem(new BStringItem(text));
+		pListFileFormats->AddRow(new cFileFormatListItem(format, *pWindowMain));
 	});
+	
+	if(pGame->GetAllFormatsSupported()){
+		pTabFormats->SetIcon(pWindowMain->GetIconValidSmall());
+		
+	}else{
+		pTabFormats->SetIcon(pWindowMain->GetIconInvalidSmall());
+	}
 }
 
 
@@ -507,18 +696,30 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 		UpdateProfileList();
 		break;
 		
-	case MSG_PATCH_CHANGED:
-		// Patch selection is handled at OK time
-		break;
+	case MSG_PATCH_CHANGED:{
+		void *customPatch = nullptr;
+		bool latestPatch = false;
+		if(message->FindPointer("customPatch", &customPatch) == B_OK){
+			pGame->SetUseLatestPatch(false);
+			pGame->SetUseCustomPatch(reinterpret_cast<delPatch*>(customPatch)->GetIdentifier());
+			UpdatePatchList();
+			
+		}else if(message->FindBool("useLatestPatch", &latestPatch) == B_OK){
+			pGame->SetUseLatestPatch(latestPatch);
+			pGame->SetUseCustomPatch({});
+			UpdatePatchList();
+		}
+		}break;
 		
 	case MSG_SCRMODINFO:{
 		auto module = pWindowMain->GetLauncher()->GetEngine().GetModules().GetNamed(pGame->GetScriptModule());
-		if(module){
-			(new deglbDialogModuleProps(pWindowMain, module, {}, 0))->Show();
-			
-		}else{
+		if(!module){
 			(new BAlert("Script Module", "Script module information not available.", "OK"))->Go(nullptr);
 		}
+		
+		auto dialog = new deglbDialogModuleProps(pWindowMain, module, {}, 0);
+		//dialog->AddToSubset(this);
+		dialog->Show();
 		}break;
 		
 	default:

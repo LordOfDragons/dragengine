@@ -53,6 +53,7 @@ pResultMessage(resultMessage),
 pResultValue(false),
 pModule(module)
 {
+	//SetFeel(B_MODAL_SUBSET_WINDOW_FEEL);
 	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
@@ -326,7 +327,10 @@ void deglbDialogModuleProps::MessageReceived(BMessage *message){
 			break;
 		}
 		
-		(new BAlert("Module Error Code", info, "OK"))->Go(nullptr);
+		auto alert = new BAlert("Module Error Code", info, "OK");
+//		alert->SetFeel(B_MODAL_SUBSET_WINDOW_FEEL);
+		alert->AddToSubset(this);
+		alert->Go(nullptr);
 		}break;
 		
 	default:

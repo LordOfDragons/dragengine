@@ -35,11 +35,14 @@
 #include <ListView.h>
 #include <StringView.h>
 #include <OS.h>
+#include <ColumnListView.h>
+#include <ColumnTypes.h>
 
 #include "../deglbIconView.h"
 #include "../deglbIconTabView.h"
 
 #include <delauncher/game/delGame.h>
+#include <delauncher/game/fileformat/delFileFormat.h>
 
 class deglbWindowMain;
 
@@ -49,6 +52,16 @@ class deglbWindowMain;
  */
 class deglbDialogGameProperties : public BWindow{
 public:
+	/** \brief File format list item. */
+	class cFileFormatListItem : public BRow{
+	public:
+		const delFileFormat &fileFormat;
+		BBitmap *icon;
+		
+		cFileFormatListItem(const delFileFormat &fileFormat, deglbWindowMain &windowMain);
+		~cFileFormatListItem() override;
+	};
+	
 	enum eMessages{
 		MSG_OK = 'gpok',
 		MSG_CANCEL = 'gpca',
@@ -57,7 +70,7 @@ public:
 		MSG_EDIT_PROFILES_DONE = 'gpeP',
 		MSG_DROP_CUSTOM_PROFILE = 'gpdc',
 		MSG_PATCH_CHANGED = 'gppx',
-		MSG_SCRMODINFO = 'gpsm'
+		MSG_SCRMODINFO = 'gpsi'
 	};
 	
 	
@@ -76,6 +89,7 @@ private:
 	BTextView *pEditAliasIdentifier;
 	BTextView *pEditTitle;
 	BTextView *pTextDescription;
+	deglbIconView *pIconGame;
 	BTextView *pEditCreator;
 	BTextView *pEditHomepage;
 	
@@ -106,7 +120,7 @@ private:
 	BMenuField *pMenuProfile;
 	deglbIconView *pIconProfile;
 	BPopUpMenu *pPopupProfile;
-	BStringView *pLabProfileProblems;
+	BTextView *pLabProfileProblems;
 	BTextControl *pEditRunArgs;
 	BMenuField *pMenuPatch;
 	BPopUpMenu *pPopupPatch;
@@ -114,8 +128,9 @@ private:
 	// File Formats tab
 	deglbIconTabView *pTabFormats;
 	
-	BListView *pListFileFormats;
+	BColumnListView *pListFileFormats;
 	
+	// Disc usage tab
 	
 	
 public:

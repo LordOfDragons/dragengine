@@ -244,10 +244,14 @@ void deglbPanelGames::MessageReceived(BMessage *message){
 		
 	case MSG_CONTEXT_PROPS:{
 		delGame * const game = GetSelectedGame();
-		if(game){
-			(new deglbDialogGameProperties(pWindowMain, game,
-				BMessenger(this), MSG_CONTEXT_PROPS_DONE))->Show();
+		if(!game){
+			break;
 		}
+		
+		auto dialog = new deglbDialogGameProperties(pWindowMain, game,
+			BMessenger(this), MSG_CONTEXT_PROPS_DONE);
+		//dialog->AddToSubset(pWindowMain);
+		dialog->Show();
 		}break;
 		
 	case MSG_CONTEXT_PROPS_DONE:{
