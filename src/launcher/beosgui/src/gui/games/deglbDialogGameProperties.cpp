@@ -23,6 +23,7 @@
  */
 
 #include <LayoutBuilder.h>
+#include <Entry.h>
 #include <GroupView.h>
 #include <TabView.h>
 #include <ScrollView.h>
@@ -31,6 +32,7 @@
 #include <StringItem.h>
 #include <TextView.h>
 #include <StringView.h>
+#include <MessageRunner.h>
 
 #include "deglbDialogGameProperties.h"
 #include "deglbDialogProfileList.h"
@@ -46,8 +48,10 @@
 #include <delauncher/game/fileformat/delFileFormat.h>
 #include <delauncher/game/profile/delGameProfile.h>
 #include <delauncher/engine/modules/delEngineModule.h>
+#include <delauncher/engine/modules/delEngineModuleList.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -176,7 +180,17 @@ pWindowMain(windowMain),
 pResultTarget(resultTarget),
 pResultMessage(resultMessage),
 pResultValue(false),
-pGame(game)
+pGame(game),
+pLabSizeDelgaFile(nullptr),
+pLabSizeDataDir(nullptr),
+pLabSizeCaptureDir(nullptr),
+pLabSizeConfigDir(nullptr),
+pLabSizeCaches(nullptr),
+pListCaches(nullptr),
+pCalcSizeDataDir(nullptr),
+pCalcSizeCaptureDir(nullptr),
+pCalcSizeConfigDir(nullptr),
+pCalcSizePulse(nullptr)
 {
 	const deglbConfiguration &configuration = windowMain->GetLauncher()->GetConfiguration();
 	rgb_color backColorProblem(configuration.GetBackColorProblem());
@@ -412,9 +426,34 @@ pGame(game)
 	// --- Disc usage tab ---
 	BView * const usageTab = new BView("Disc Usage", 0);
 	
-	BLayoutBuilder::Group<>(usageTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	pLabSizeDelgaFile = new BStringView("sizeDelga", "...");
+	pLabSizeDataDir = new BStringView("sizeData", "...");
+	pLabSizeCaptureDir = new BStringView("sizeCapture", "...");
+	pLabSizeConfigDir = new BStringView("sizeConfig", "...");
+	pLabSizeCaches = new BStringView("sizeCaches", "...");
+	
+	const float colFactor = be_plain_font->StringWidth("M");
+	pListCaches = new BColumnListView("cacheList", 0, B_NO_BORDER, false);
+	pListCaches->AddColumn(new BStringColumn("Module",
+		colFactor * 20, 10, 10000, B_TRUNCATE_END), 0);
+	pListCaches->AddColumn(new BStringColumn("Used",
+		colFactor * 10, 10, 10000, B_TRUNCATE_END), 1);
+	
+	BLayoutBuilder::Grid<>(usageTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		
+		.Add(new BStringView("label", "DELGA size:"), 0, 0)
+		.Add(pLabSizeDelgaFile, 1, 0)
+		.Add(new BStringView("label", "Data dir size:"), 0, 1)
+		.Add(pLabSizeDataDir, 1, 1)
+		.Add(new BStringView("label", "Capture dir size:"), 0, 2)
+		.Add(pLabSizeCaptureDir, 1, 2)
+		.Add(new BStringView("label", "Config dir size (config, saves...):"), 0, 3)
+		.Add(pLabSizeConfigDir, 1, 3)
+		.Add(new BStringView("label", "All caches size:"), 0, 4)
+		.Add(pLabSizeCaches, 1, 4)
+		.Add(new BStringView("label", "Engine module caches:"), 0, 5)
+		.Add(pListCaches, 1, 5)
+		.AddGlue(0, 6)
 	.End();
 	
 	tabView->AddTab(usageTab);
@@ -444,9 +483,40 @@ pGame(game)
 	SetSizeLimits(decMath::max(Bounds().Width(), minWidth), 99999, Bounds().Height(), 99999);
 	
 	CenterOnScreen();
+	
+	UpdateDiscUsage();
 }
 
-deglbDialogGameProperties::~deglbDialogGameProperties() = default;
+deglbDialogGameProperties::~deglbDialogGameProperties(){
+	if(pCalcSizePulse){
+		delete pCalcSizePulse;
+	}
+	
+	pDeleteCaches();
+	
+	if(pCalcSizeDataDir){
+		pCalcSizeDataDir->Abort();
+	}
+	if(pCalcSizeCaptureDir){
+		pCalcSizeCaptureDir->Abort();
+	}
+	if(pCalcSizeConfigDir){
+		pCalcSizeConfigDir->Abort();
+	}
+	
+	if(pCalcSizeDataDir){
+		pCalcSizeDataDir->WaitForExit();
+		delete pCalcSizeDataDir;
+	}
+	if(pCalcSizeCaptureDir){
+		pCalcSizeCaptureDir->WaitForExit();
+		delete pCalcSizeCaptureDir;
+	}
+	if(pCalcSizeConfigDir){
+		pCalcSizeConfigDir->WaitForExit();
+		delete pCalcSizeConfigDir;
+	}
+}
 
 
 
@@ -645,6 +715,107 @@ void deglbDialogGameProperties::UpdateFileFormatList(){
 	}
 }
 
+void deglbDialogGameProperties::UpdateDiscUsage(){
+	const delGame &game = *pGame;
+	decPath path;
+	
+	pLabSizeDelgaFile->SetText("0");
+	if(!game.GetDelgaFile().IsEmpty()){
+		try{
+			BEntry entry(game.GetDelgaFile().GetString());
+			off_t size;
+			if(entry.GetSize(&size) == B_OK){
+				pLabSizeDelgaFile->SetText(FormatSize1024((uint64_t)size).String());
+			}
+		}catch(...){
+		}
+	}
+	
+	pLabSizeDataDir->SetText("Calculating...");
+	pLabSizeCaptureDir->SetText("Calculating...");
+	pLabSizeConfigDir->SetText("Calculating...");
+	pLabSizeCaches->SetText("Calculating...");
+	
+	try{
+		path.SetFromNative(game.GetGameDirectory());
+		path.AddUnixPath(game.GetDataDirectory());
+		pCalcSizeDataDir = new deglbCalculateDirectorySize(path.GetPathNative());
+		pCalcSizeDataDir->Start();
+	}catch(const deException &e){
+		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+	}
+	
+	try{
+		path.SetFromNative(pWindowMain->GetLauncher()->GetPathConfigUser());
+		path.AddComponent("games");
+		path.AddComponent(game.GetIdentifier().ToHexString(false));
+		path.AddComponent("capture");
+		pCalcSizeCaptureDir = new deglbCalculateDirectorySize(path.GetPathNative());
+		pCalcSizeCaptureDir->Start();
+	}catch(const deException &e){
+		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+	}
+	
+	try{
+		path.SetFromNative(pWindowMain->GetLauncher()->GetPathConfigUser());
+		path.AddComponent("games");
+		path.AddComponent(game.GetIdentifier().ToHexString(false));
+		path.AddComponent("config");
+		pCalcSizeConfigDir = new deglbCalculateDirectorySize(path.GetPathNative());
+		pCalcSizeConfigDir->Start();
+	}catch(const deException &e){
+		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+	}
+	
+	UpdateCacheList();
+	
+	pCalcSizePulse = new BMessageRunner(BMessenger(this),
+		new BMessage(MSG_TIMER_CALCSIZE), 500000LL);
+}
+
+void deglbDialogGameProperties::UpdateCacheList(){
+	pDeleteCaches();
+	
+	if(!pGame){
+		return;
+	}
+	
+	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
+	const delEngineModuleList &moduleList = engine.GetModules();
+	const int count = moduleList.GetCount();
+	decPath path;
+	
+	pListCaches->Clear();
+	
+	for(int i=0; i<count; i++){
+		const delEngineModule &module = *moduleList.GetAt(i);
+		
+		sCache cache;
+		cache.calcSize = nullptr;
+		cache.name = module.GetName().GetString();
+		cache.used = 0;
+		pCaches.Add(cache);
+		
+		BRow * const row = new BRow();
+		row->SetField(new BStringField(module.GetName().GetString()), 0);
+		row->SetField(new BStringField("Calculating..."), 1);
+		pListCaches->AddRow(row);
+		
+		try{
+			path.SetFromNative(engine.GetPathCache());
+			path.AddUnixPath("local");
+			path.AddUnixPath(pGame->GetIdentifier().ToHexString(false));
+			path.AddUnixPath("modules");
+			path.AddUnixPath(deModuleSystem::GetTypeDirectory(module.GetType()));
+			path.AddUnixPath(module.GetDirectoryName());
+			pCaches[i].calcSize = new deglbCalculateDirectorySize(path.GetPathNative());
+			pCaches[i].calcSize->Start();
+		}catch(const deException &e){
+			pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+		}
+	}
+}
+
 
 
 // BWindow
@@ -722,6 +893,86 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 		dialog->Show();
 		}break;
 		
+	case MSG_TIMER_CALCSIZE:{
+		bool reschedule = false;
+		
+		if(pCalcSizeDataDir){
+			if(pCalcSizeDataDir->IsRunning()){
+				reschedule = true;
+			}else{
+				pCalcSizeDataDir->WaitForExit();
+				const uint64_t size = pCalcSizeDataDir->GetSize();
+				const bool failed = pCalcSizeDataDir->GetFailed();
+				delete pCalcSizeDataDir;
+				pCalcSizeDataDir = nullptr;
+				pLabSizeDataDir->SetText(failed ? "Failed!" : FormatSize1024(size).String());
+			}
+		}
+		
+		if(pCalcSizeCaptureDir){
+			if(pCalcSizeCaptureDir->IsRunning()){
+				reschedule = true;
+			}else{
+				pCalcSizeCaptureDir->WaitForExit();
+				const uint64_t size = pCalcSizeCaptureDir->GetSize();
+				const bool failed = pCalcSizeCaptureDir->GetFailed();
+				delete pCalcSizeCaptureDir;
+				pCalcSizeCaptureDir = nullptr;
+				pLabSizeCaptureDir->SetText(failed ? "Failed!" : FormatSize1024(size).String());
+			}
+		}
+		
+		if(pCalcSizeConfigDir){
+			if(pCalcSizeConfigDir->IsRunning()){
+				reschedule = true;
+			}else{
+				pCalcSizeConfigDir->WaitForExit();
+				const uint64_t size = pCalcSizeConfigDir->GetSize();
+				const bool failed = pCalcSizeConfigDir->GetFailed();
+				delete pCalcSizeConfigDir;
+				pCalcSizeConfigDir = nullptr;
+				pLabSizeConfigDir->SetText(failed ? "Failed!" : FormatSize1024(size).String());
+			}
+		}
+		
+		int cachesPending = 0;
+		for(int i=0; i<pCaches.GetCount(); i++){
+			if(!pCaches[i].calcSize){
+				continue;
+			}
+			if(pCaches[i].calcSize->IsRunning()){
+				reschedule = true;
+				cachesPending++;
+			}else{
+				pCaches[i].calcSize->WaitForExit();
+				pCaches[i].used = pCaches[i].calcSize->GetSize();
+				const bool failed = pCaches[i].calcSize->GetFailed();
+				delete pCaches[i].calcSize;
+				pCaches[i].calcSize = nullptr;
+				
+				// update row in list
+				BRow * const row = pListCaches->RowAt(i);
+				if(row){
+					row->SetField(new BStringField(
+						failed ? "Failed!" : FormatSize1024(pCaches[i].used).String()), 1);
+				}
+			}
+		}
+		
+		if(cachesPending == 0 && !reschedule){
+			uint64_t total = 0;
+			for(int i=0; i<pCaches.GetCount(); i++){
+				total += pCaches[i].used;
+			}
+			pLabSizeCaches->SetText(FormatSize1024(total).String());
+		}
+		
+		if(!reschedule && pCalcSizePulse){
+			delete pCalcSizePulse;
+			pCalcSizePulse = nullptr;
+		}
+		}break;
+		
 	default:
 		BWindow::MessageReceived(message);
 	}
@@ -734,4 +985,39 @@ bool deglbDialogGameProperties::QuitRequested(){
 		pResultTarget.SendMessage(&reply);
 	}
 	return true;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+BString deglbDialogGameProperties::FormatSize1024(uint64_t size) const{
+	BString text;
+	if(size >= (uint64_t)1024 * 1024 * 1024){
+		text.SetToFormat("%.1f GiB", (double)size / (1024.0 * 1024.0 * 1024.0));
+	}else if(size >= 1024 * 1024){
+		text.SetToFormat("%.1f MiB", (double)size / (1024.0 * 1024.0));
+	}else if(size >= 1024){
+		text.SetToFormat("%.1f KiB", (double)size / 1024.0);
+	}else{
+		text.SetToFormat("%" B_PRIu64 " B", size);
+	}
+	return text;
+}
+
+void deglbDialogGameProperties::pDeleteCaches(){
+	for(int i=0; i<pCaches.GetCount(); i++){
+		if(pCaches[i].calcSize){
+			pCaches[i].calcSize->Abort();
+		}
+	}
+	for(int i=0; i<pCaches.GetCount(); i++){
+		if(pCaches[i].calcSize){
+			pCaches[i].calcSize->WaitForExit();
+			delete pCaches[i].calcSize;
+			pCaches[i].calcSize = nullptr;
+		}
+	}
+	pCaches.RemoveAll();
 }
