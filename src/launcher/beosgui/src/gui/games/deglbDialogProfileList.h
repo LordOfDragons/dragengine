@@ -70,6 +70,7 @@ public:
 		MSG_PROF_DUP = 'plpd',
 		MSG_PROF_DEL = 'plpx',
 		MSG_PROF_RENAME = 'plpr',
+		MSG_PROF_RENAME_DONE = 'plpR',
 		MSG_MOD_GRA_CHANGED = 'plmg',
 		MSG_MOD_INP_CHANGED = 'plmi',
 		MSG_MOD_PHY_CHANGED = 'plmp',
@@ -109,6 +110,7 @@ public:
 		MSG_MP_CAT_BASIC = 'plcB',
 		MSG_MP_CAT_ADVANCED = 'plcA',
 		MSG_MP_CAT_EXPERT = 'plcE',
+		MSG_MP_CAT_EXPERT_ALLOW = 'plCE',
 		MSG_DISABLE_MOD_MODULE_CHANGED = 'pldM',
 		MSG_DISABLE_MOD_ADD = 'plda',
 		MSG_DISABLE_MOD_REMOVE = 'pldr'
@@ -161,6 +163,7 @@ private:
 	bool pResultValue;
 	
 	decTObjectOrderedSet<cEditProfile> pProfiles;
+	deTObjectReference<cEditProfile> pActiveProfile;
 	
 	BListView *pListProfiles;
 	
@@ -268,7 +271,7 @@ public:
 	
 	
 private:
-	cEditProfile *pGetSelectedProfile() const;
+	cEditProfile *pGetSelectedProfileFromSelection() const;
 	void pSetSelectedProfile(cEditProfile *profile);
 	void pCreateSystem(sSystem &system, int type, uint32 msgWhat,
 		uint32 msgVersionWhat, uint32 msgInfoWhat);

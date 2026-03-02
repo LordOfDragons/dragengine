@@ -220,7 +220,7 @@ void deglbDialogEngineProps::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_OK:
 		pResultValue = true;
-		Quit();
+		PostMessage(B_QUIT_REQUESTED);
 		break;
 		
 	case MSG_PROFILE_CHANGED:{

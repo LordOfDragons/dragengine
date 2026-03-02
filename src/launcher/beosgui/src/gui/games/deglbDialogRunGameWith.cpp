@@ -179,11 +179,11 @@ void deglbDialogRunGameWith::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_RUN:
 		pResultValue = true;
-		Quit();
+		PostMessage(B_QUIT_REQUESTED);
 		break;
 		
 	case MSG_CANCEL:
-		Quit();
+		PostMessage(B_QUIT_REQUESTED);
 		break;
 		
 	case MSG_PROFILE_CHANGED:{

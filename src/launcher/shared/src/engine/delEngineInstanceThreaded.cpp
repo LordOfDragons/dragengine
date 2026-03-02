@@ -337,6 +337,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 		envStrings.Visit([&](const decString &each){
 			envPointers.Add(each.GetMutableString());
 		});
+		envPointers.Add(nullptr);
 		
 		int pipesIn[2] = {0, 0};
 		int pipesOut[2] = {0, 0};
@@ -360,8 +361,8 @@ bool delEngineInstanceThreaded::StartEngine(){
 		posix_spawn_file_actions_t actions;
 		posix_spawn_file_actions_init(&actions);
 		
-		posix_spawn_file_actions_adddup2(&actions, pipesIn[0], STDIN_FILENO);
-		posix_spawn_file_actions_adddup2(&actions, pipesOut[1], STDOUT_FILENO);
+		posix_spawn_file_actions_adddup2(&actions, pipesIn[0], 3);
+		posix_spawn_file_actions_adddup2(&actions, pipesOut[1], 4);
 		
 		posix_spawn_file_actions_addclose(&actions, pipesIn[1]);
 		posix_spawn_file_actions_addclose(&actions, pipesOut[0]);
@@ -571,7 +572,7 @@ void delEngineInstanceThreaded::InterceptLaunch(){
 	}
 	
 	//debug_printf("delEngineInstanceThreaded::InterceptLaunch(): Intercepted: %s\n", logFileSource);
-	delEngineProcess process(STDIN_FILENO, STDOUT_FILENO, logFileSource);
+	delEngineProcess process(3, 4, logFileSource);
 	
 	const char *useConsole = getenv("_EITLD_USECONSOLE");
 	process.SetUseConsole(useConsole && strcmp(useConsole, "1") == 0);

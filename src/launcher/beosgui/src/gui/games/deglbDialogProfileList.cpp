@@ -36,6 +36,7 @@
 #include "deglbDialogProfileList.h"
 #include "deglbDialogProfileListParameter.h"
 #include "../engine/deglbDialogModuleProps.h"
+#include "../deglbDialogInputString.h"
 #include "../deglbWindowMain.h"
 #include "../../deglbLauncher.h"
 
@@ -206,15 +207,15 @@ pListDisabledModules(nullptr)
 	pCreateSystem(pSysVR, deModuleSystem::emtVR,
 		MSG_MOD_VR_CHANGED, MSG_MOD_VR_VERSION_CHANGED, MSG_MOD_VR_INFO);
 	
-	auto addSystemRow = [](BLayoutBuilder::Grid<> &builder, sSystem &sys,
-	const char *label, int row){
-		builder.Add(new BStringView("label", label), 0, row);
-		builder.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, row)
-			.Add(sys.icon)
-			.Add(sys.menuField, 1.0f)
-			.Add(sys.menuFieldVersion, 0.5f)
-			.Add(sys.btnInfo)
-		.End();
+	auto addSystemRow = [](BLayoutBuilder::Grid<> &builder, sSystem &sys, const char *label, int row){
+		builder
+			.Add(new BStringView("label", label), 0, row)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, row)
+				.Add(sys.icon, 0.0f)
+				.Add(sys.menuField, 1.0f)
+				.Add(sys.menuFieldVersion, 0.0f)
+				.Add(sys.btnInfo, 0.0f)
+			.End();
 	};
 	
 	BLayoutBuilder::Grid<> sysLayout(systemsTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING);
@@ -422,12 +423,12 @@ void deglbDialogProfileList::UpdateProfileList(){
 }
 
 void deglbDialogProfileList::UpdateProfile(){
-	cEditProfile * const profile = pGetSelectedProfile();
+	cEditProfile * const profile = pActiveProfile;
 	if(!profile){
 		return;
 	}
 	
-	const delGameProfile &edit = *profile->edit;
+	const delGameProfile &edit = profile->edit;
 	
 	UpdateSystemModuleList(pSysGraphic, edit.GetModuleGraphic(), edit.GetModuleGraphicVersion());
 	UpdateSystemModuleList(pSysInput, edit.GetModuleInput(), edit.GetModuleInputVersion());
@@ -455,7 +456,9 @@ void deglbDialogProfileList::UpdateProfile(){
 	widthStr.Format("%d", edit.GetWidth());
 	heightStr.Format("%d", edit.GetHeight());
 	pEditWidth->SetText(widthStr);
+	pEditWidth->SetEnabled(!edit.GetFullScreen());
 	pEditHeight->SetText(heightStr);
+	pEditHeight->SetEnabled(!edit.GetFullScreen());
 	
 	// Fullscreen
 	if(edit.GetFullScreen()){
@@ -515,7 +518,7 @@ void deglbDialogProfileList::UpdateMPParameterList(){
 	BStringItem * const selItem = sel >= 0
 		? dynamic_cast<BStringItem*>(pListMPModules->ItemAt(sel)) : nullptr;
 	
-	if(!selItem || !pGetSelectedProfile()){
+	if(!selItem || !pActiveProfile){
 		return;
 	}
 	
@@ -533,7 +536,7 @@ void deglbDialogProfileList::UpdateMPParameterList(){
 	});
 	
 	const decStringList sorted(decStringList(names).GetSortedAscending());
-	delGameProfile &profile = *pGetSelectedProfile()->edit;
+	delGameProfile &profile = pActiveProfile->edit;
 	const delGPModule * const gpmodule = profile.GetModules().FindNamed(moduleName);
 	
 	auto layout = dynamic_cast<BGridLayout*>(pContainerMPParams->GetLayout());
@@ -608,7 +611,7 @@ void deglbDialogProfileList::UpdateFullscreenResolutions(){
 void deglbDialogProfileList::UpdateDisabledModuleVersionsList(){
 	pListDisabledModules->MakeEmpty();
 	
-	cEditProfile * const profile = pGetSelectedProfile();
+	cEditProfile * const profile = pActiveProfile;
 	if(!profile){
 		return;
 	}
@@ -680,9 +683,6 @@ const char *moduleVersion){
 		delete system.popup->RemoveItem((int32)0);
 	}
 	
-	// First item: best available (empty module name)
-	system.popup->AddItem(new BMenuItem("< Best Available >", new BMessage(system.msgWhat)));
-	
 	// Add unique module names sorted
 	decStringSet moduleNames;
 	pWindowMain->GetLauncher()->GetEngine().GetModules().Visit([&](const delEngineModule &module){
@@ -695,28 +695,10 @@ const char *moduleVersion){
 		auto msg = new BMessage(system.msgWhat);
 		msg->AddString("module", name.GetString());
 		system.popup->AddItem(new BMenuItem(name.GetString(), msg));
-	});
-	
-	// Select matching module name
-	bool found = false;
-	if(moduleName && moduleName[0]){
-		for(int i=0; i<system.popup->CountItems(); i++){
-			BMenuItem * const item = system.popup->ItemAt(i);
-			BMessage * const imsg = item ? item->Message() : nullptr;
-			if(!imsg){
-				continue;
-			}
-			const char *mn = nullptr;
-			if(imsg->FindString("module", &mn) == B_OK && mn && strcmp(mn, moduleName) == 0){
-				item->SetMarked(true);
-				found = true;
-				break;
-			}
+		if(name == moduleName){
+			system.popup->ItemAt(system.popup->CountItems() - 1)->SetMarked(true);
 		}
-	}
-	if(!found){
-		system.popup->ItemAt(0)->SetMarked(true);
-	}
+	});
 	
 	// Rebuild version popup and update icon
 	pUpdateSystemVersionPopup(system, moduleName, moduleVersion);
@@ -724,12 +706,12 @@ const char *moduleVersion){
 }
 
 void deglbDialogProfileList::ApplyChanges(){
-	cEditProfile * const profile = pGetSelectedProfile();
+	cEditProfile * const profile = pActiveProfile;
 	if(!profile){
 		return;
 	}
 	
-	delGameProfile &edit = *profile->edit;
+	delGameProfile &edit = profile->edit;
 	
 	// Run args
 	edit.SetRunArguments(pEditRunArgs->Text());
@@ -798,8 +780,7 @@ void deglbDialogProfileList::ApplyChanges(){
 }
 
 void deglbDialogProfileList::SaveProfiles(){
-	delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
-	delGameProfile::List &profiles = gameManager.GetProfiles();
+	auto &profiles = pWindowMain->GetLauncher()->GetGameManager().GetProfiles();
 	
 	// Apply changes to selected profile first
 	ApplyChanges();
@@ -835,29 +816,34 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		ApplyChanges();
 		SaveProfiles();
 		pResultValue = true;
-		Quit();
+		PostMessage(B_QUIT_REQUESTED);
 		break;
 		
 	case MSG_CANCEL:
-		Quit();
+		PostMessage(B_QUIT_REQUESTED);
 		break;
 		
 	case MSG_PROFILE_SEL:
 		ApplyChanges();
+		pActiveProfile = pGetSelectedProfileFromSelection();
 		UpdateProfile();
 		break;
 		
 	case MSG_PROF_ADD:{
 		// Create profile with a unique auto-generated name
 		decString name("New Profile");
-		int num = 1;
-		while(pProfiles.HasMatching([&](const cEditProfile &profile){
-			return profile.edit->GetName() == name;
+		int number = 2;
+		while(pProfiles.HasMatching([&](const cEditProfile &p){
+			return p.edit->GetName() == name;
 		})){
-			name.FormatSafe("New Profile {0}", num++);
+			name.FormatSafe("New Profile {0}", number++);
 		}
 		
-		pProfiles.Add(cEditProfile::Ref::New(name));
+		auto newProfile = cEditProfile::Ref::New(pWindowMain->GetLauncher()->GetGameManager().GetDefaultProfile());
+		newProfile->original.Clear();
+		newProfile->edit->SetName(name);
+		
+		pProfiles.Add(newProfile);
 		UpdateProfileList();
 		pListProfiles->Select(pProfiles.GetCount() - 1);
 		UpdateProfile();
@@ -865,20 +851,32 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 	}
 		
 	case MSG_PROF_DUP:{
-		cEditProfile * const profile = pGetSelectedProfile();
-		if(profile){
-			ApplyChanges();
-			auto newProfile = cEditProfile::Ref::New(profile->edit);
-			newProfile->edit->SetName(decString::Formatted("{0} Copy", profile->edit->GetName()));
-			pProfiles.Add(newProfile);
-			UpdateProfileList();
-			pSetSelectedProfile(newProfile);
-			UpdateProfile();
+		cEditProfile * const profile = pActiveProfile;
+		if(!profile){
+			break;
 		}
+		
+		ApplyChanges();
+		auto newProfile = cEditProfile::Ref::New(profile->edit);
+		newProfile->original.Clear();
+		
+		decString name(profile->edit->GetName());
+		int number = 2;
+		while(pProfiles.HasMatching([&](const cEditProfile &p){
+			return p.edit->GetName() == name;
+		})){
+			name.FormatSafe("{0} #{1}", profile->edit->GetName(), number++);
+		}
+		newProfile->edit->SetName(name);
+		
+		pProfiles.Add(newProfile);
+		UpdateProfileList();
+		pSetSelectedProfile(newProfile);
+		UpdateProfile();
 		}break;
 		
 	case MSG_PROF_DEL:{
-		cEditProfile * const profile = pGetSelectedProfile();
+		cEditProfile * const profile = pActiveProfile;
 		if(profile){
 			pProfiles.Remove(profile);
 			UpdateProfileList();
@@ -889,23 +887,41 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		
 	case MSG_PROF_RENAME:{
 		// Rename the profile to a unique name by appending a numeric suffix
-		cEditProfile * const profile = pGetSelectedProfile();
+		cEditProfile * const profile = pActiveProfile;
 		if(profile){
-			ApplyChanges();
-			const decString baseName(profile->edit->GetName());
-			decString newName;
-			int num = 2;
-			while(pProfiles.HasMatching([&](const cEditProfile &p){
-				return p.edit->GetName() == newName;
-			})){
-				newName.FormatSafe("{0} {1}", baseName, num++);
-			}
-			profile->edit->SetName(newName);
-			UpdateProfileList();
+			(new deglbDialogInputString("Rename Profile", "Name:", profile->edit->GetName(),
+				BMessenger(this), MSG_PROF_RENAME_DONE))->Show();
 		}
-		break;
-	}
+		}break;
 		
+	case MSG_PROF_RENAME_DONE:{
+		cEditProfile * const profile = pActiveProfile;
+		if(!profile){
+			break;
+		}
+		
+		BString name;
+		if(message->FindString("text", &name) != B_OK){
+			break;
+		}
+		
+		if(profile->edit->GetName() == name.String()){
+			break;
+		}
+		
+		if(pProfiles.HasMatching([&](const cEditProfile &p){
+			return p.edit->GetName() == name.String();
+		})){
+			(new BAlert("Rename Profile", "A profile with this name exists already",
+				"OK", nullptr, nullptr, B_WIDTH_AS_USUAL, B_INFO_ALERT))->Go(nullptr);
+			break;
+		}
+		
+		ApplyChanges();
+		profile->edit->SetName(name);
+		UpdateProfileList();
+		}break;
+	
 	case MSG_MOD_GRA_CHANGED:
 	case MSG_MOD_INP_CHANGED:
 	case MSG_MOD_PHY_CHANGED:
@@ -917,76 +933,82 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 	case MSG_MOD_SYN_CHANGED:
 	case MSG_MOD_VR_CHANGED:{
 		// Module selection changed - update profile, version popup, icon, and profile list
-		cEditProfile * const profile = pGetSelectedProfile();
-		if(!profile) break;
-		
-		const char *mn = nullptr;
-		message->FindString("module", &mn);
-		const decString moduleName(mn ? mn : "");
-		
-		sSystem *system = nullptr;
-		void (delGameProfile::*setName)(const char*) = nullptr;
-		void (delGameProfile::*setVersion)(const char*) = nullptr;
-		switch(message->what){
-		case MSG_MOD_GRA_CHANGED:
-			system = &pSysGraphic;
-			setName = &delGameProfile::SetModuleGraphic;
-			setVersion = &delGameProfile::SetModuleGraphicVersion;
-			break;
-		case MSG_MOD_INP_CHANGED:
-			system = &pSysInput;
-			setName = &delGameProfile::SetModuleInput;
-			setVersion = &delGameProfile::SetModuleInputVersion;
-			break;
-		case MSG_MOD_PHY_CHANGED:
-			system = &pSysPhysics;
-			setName = &delGameProfile::SetModulePhysics;
-			setVersion = &delGameProfile::SetModulePhysicsVersion;
-			break;
-		case MSG_MOD_AMR_CHANGED:
-			system = &pSysAnimator;
-			setName = &delGameProfile::SetModuleAnimator;
-			setVersion = &delGameProfile::SetModuleAnimatorVersion;
-			break;
-		case MSG_MOD_AI_CHANGED:
-			system = &pSysAI;
-			setName = &delGameProfile::SetModuleAI;
-			setVersion = &delGameProfile::SetModuleAIVersion;
-			break;
-		case MSG_MOD_CR_CHANGED:
-			system = &pSysCrashRecovery;
-			setName = &delGameProfile::SetModuleCrashRecovery;
-			setVersion = &delGameProfile::SetModuleCrashRecoveryVersion;
-			break;
-		case MSG_MOD_AUD_CHANGED:
-			system = &pSysAudio;
-			setName = &delGameProfile::SetModuleAudio;
-			setVersion = &delGameProfile::SetModuleAudioVersion;
-			break;
-		case MSG_MOD_NET_CHANGED:
-			system = &pSysNetwork;
-			setName = &delGameProfile::SetModuleNetwork;
-			setVersion = &delGameProfile::SetModuleNetworkVersion;
-			break;
-		case MSG_MOD_SYN_CHANGED:
-			system = &pSysSynthesizer;
-			setName = &delGameProfile::SetModuleSynthesizer;
-			setVersion = &delGameProfile::SetModuleSynthesizerVersion;
-			break;
-		case MSG_MOD_VR_CHANGED:
-			system = &pSysVR;
-			setName = &delGameProfile::SetModuleVR;
-			setVersion = &delGameProfile::SetModuleVRVersion;
+		cEditProfile * const profile = pActiveProfile;
+		if(!profile){
 			break;
 		}
 		
-		if(system && setName && setVersion){
-			delGameProfile &edit = *profile->edit;
-			(edit.*setName)(moduleName.GetString());
-			(edit.*setVersion)("");
-			edit.Verify(*pWindowMain->GetLauncher());
-			pUpdateSystemVersionPopup(*system, moduleName.GetString(), "");
-			pUpdateSystemIcon(*system, moduleName.GetString(), "");
+		BString moduleName;
+		message->FindString("module", &moduleName);
+		
+		sSystem *system = nullptr;
+		
+		switch(message->what){
+		case MSG_MOD_GRA_CHANGED:
+			system = &pSysGraphic;
+			profile->edit->SetModuleGraphic(moduleName);
+			profile->edit->SetModuleGraphicVersion("");
+			break;
+			
+		case MSG_MOD_INP_CHANGED:
+			system = &pSysInput;
+			profile->edit->SetModuleInput(moduleName);
+			profile->edit->SetModuleInputVersion("");
+			break;
+			
+		case MSG_MOD_PHY_CHANGED:
+			system = &pSysPhysics;
+			profile->edit->SetModulePhysics(moduleName);
+			profile->edit->SetModulePhysicsVersion("");
+			break;
+			
+		case MSG_MOD_AMR_CHANGED:
+			system = &pSysAnimator;
+			profile->edit->SetModuleAnimator(moduleName);
+			profile->edit->SetModuleAnimatorVersion("");
+			break;
+			
+		case MSG_MOD_AI_CHANGED:
+			system = &pSysAI;
+			profile->edit->SetModuleAI(moduleName);
+			profile->edit->SetModuleAIVersion("");
+			break;
+			
+		case MSG_MOD_CR_CHANGED:
+			system = &pSysCrashRecovery;
+			profile->edit->SetModuleCrashRecovery(moduleName);
+			profile->edit->SetModuleCrashRecoveryVersion("");
+			break;
+			
+		case MSG_MOD_AUD_CHANGED:
+			system = &pSysAudio;
+			profile->edit->SetModuleAudio(moduleName);
+			profile->edit->SetModuleAudioVersion("");
+			break;
+			
+		case MSG_MOD_NET_CHANGED:
+			system = &pSysNetwork;
+			profile->edit->SetModuleNetwork(moduleName);
+			profile->edit->SetModuleNetworkVersion("");
+			break;
+			
+		case MSG_MOD_SYN_CHANGED:
+			system = &pSysSynthesizer;
+			profile->edit->SetModuleSynthesizer(moduleName);
+			profile->edit->SetModuleSynthesizerVersion("");
+			break;
+			
+		case MSG_MOD_VR_CHANGED:
+			system = &pSysVR;
+			profile->edit->SetModuleVR(moduleName);
+			profile->edit->SetModuleVRVersion("");
+			break;
+		}
+		
+		if(system){
+			profile->edit->Verify(*pWindowMain->GetLauncher());
+			pUpdateSystemVersionPopup(*system, moduleName, "");
+			pUpdateSystemIcon(*system, moduleName, "");
 			pUpdateSystemsTabIcon();
 			UpdateProfileList();
 		}
@@ -1002,75 +1024,82 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 	case MSG_MOD_NET_VERSION_CHANGED:
 	case MSG_MOD_SYN_VERSION_CHANGED:
 	case MSG_MOD_VR_VERSION_CHANGED:{
-		cEditProfile * const profile = pGetSelectedProfile();
-		if(!profile) break;
-		
-		const char *mv = nullptr;
-		message->FindString("version", &mv);
-		const decString moduleVersion(mv ? mv : "");
-		
-		sSystem *system = nullptr;
-		void (delGameProfile::*setVersion)(const char*) = nullptr;
-		const decString &(delGameProfile::*getName)() const = nullptr;
-		switch(message->what){
-		case MSG_MOD_GRA_VERSION_CHANGED:
-			system = &pSysGraphic;
-			setVersion = &delGameProfile::SetModuleGraphicVersion;
-			getName = &delGameProfile::GetModuleGraphic;
-			break;
-		case MSG_MOD_INP_VERSION_CHANGED:
-			system = &pSysInput;
-			setVersion = &delGameProfile::SetModuleInputVersion;
-			getName = &delGameProfile::GetModuleInput;
-			break;
-		case MSG_MOD_PHY_VERSION_CHANGED:
-			system = &pSysPhysics;
-			setVersion = &delGameProfile::SetModulePhysicsVersion;
-			getName = &delGameProfile::GetModulePhysics;
-			break;
-		case MSG_MOD_AMR_VERSION_CHANGED:
-			system = &pSysAnimator;
-			setVersion = &delGameProfile::SetModuleAnimatorVersion;
-			getName = &delGameProfile::GetModuleAnimator;
-			break;
-		case MSG_MOD_AI_VERSION_CHANGED:
-			system = &pSysAI;
-			setVersion = &delGameProfile::SetModuleAIVersion;
-			getName = &delGameProfile::GetModuleAI;
-			break;
-		case MSG_MOD_CR_VERSION_CHANGED:
-			system = &pSysCrashRecovery;
-			setVersion = &delGameProfile::SetModuleCrashRecoveryVersion;
-			getName = &delGameProfile::GetModuleCrashRecovery;
-			break;
-		case MSG_MOD_AUD_VERSION_CHANGED:
-			system = &pSysAudio;
-			setVersion = &delGameProfile::SetModuleAudioVersion;
-			getName = &delGameProfile::GetModuleAudio;
-			break;
-		case MSG_MOD_NET_VERSION_CHANGED:
-			system = &pSysNetwork;
-			setVersion = &delGameProfile::SetModuleNetworkVersion;
-			getName = &delGameProfile::GetModuleNetwork;
-			break;
-		case MSG_MOD_SYN_VERSION_CHANGED:
-			system = &pSysSynthesizer;
-			setVersion = &delGameProfile::SetModuleSynthesizerVersion;
-			getName = &delGameProfile::GetModuleSynthesizer;
-			break;
-		case MSG_MOD_VR_VERSION_CHANGED:
-			system = &pSysVR;
-			setVersion = &delGameProfile::SetModuleVRVersion;
-			getName = &delGameProfile::GetModuleVR;
+		cEditProfile * const profile = pActiveProfile;
+		if(!profile){
 			break;
 		}
 		
-		if(system && setVersion && getName){
-			delGameProfile &edit = *profile->edit;
-			(edit.*setVersion)(moduleVersion.GetString());
-			edit.Verify(*pWindowMain->GetLauncher());
-			const decString moduleName((edit.*getName)());
-			pUpdateSystemIcon(*system, moduleName.GetString(), moduleVersion.GetString());
+		BString moduleVersion;
+		message->FindString("version", &moduleVersion);
+		
+		sSystem *system = nullptr;
+		const decString *moduleName = nullptr;
+		
+		switch(message->what){
+		case MSG_MOD_GRA_VERSION_CHANGED:
+			system = &pSysGraphic;
+			profile->edit->SetModuleGraphicVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleGraphic();
+			break;
+			
+		case MSG_MOD_INP_VERSION_CHANGED:
+			system = &pSysInput;
+			profile->edit->SetModuleInputVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleInput();
+			break;
+			
+		case MSG_MOD_PHY_VERSION_CHANGED:
+			system = &pSysPhysics;
+			profile->edit->SetModulePhysicsVersion(moduleVersion);
+			moduleName = &profile->edit->GetModulePhysics();
+			break;
+			
+		case MSG_MOD_AMR_VERSION_CHANGED:
+			system = &pSysAnimator;
+			profile->edit->SetModuleAnimatorVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleAnimator();
+			break;
+			
+		case MSG_MOD_AI_VERSION_CHANGED:
+			system = &pSysAI;
+			profile->edit->SetModuleAIVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleAI();
+			break;
+			
+		case MSG_MOD_CR_VERSION_CHANGED:
+			system = &pSysCrashRecovery;
+			profile->edit->SetModuleCrashRecoveryVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleCrashRecovery();
+			break;
+			
+		case MSG_MOD_AUD_VERSION_CHANGED:
+			system = &pSysAudio;
+			profile->edit->SetModuleAudioVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleAudio();
+			break;
+			
+		case MSG_MOD_NET_VERSION_CHANGED:
+			system = &pSysNetwork;
+			profile->edit->SetModuleNetworkVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleNetwork();
+			break;
+			
+		case MSG_MOD_SYN_VERSION_CHANGED:
+			system = &pSysSynthesizer;
+			profile->edit->SetModuleSynthesizerVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleSynthesizer();
+			break;
+			
+		case MSG_MOD_VR_VERSION_CHANGED:
+			system = &pSysVR;
+			profile->edit->SetModuleVRVersion(moduleVersion);
+			moduleName = &profile->edit->GetModuleVR();
+			break;
+		}
+		
+		if(system && moduleName){
+			profile->edit->Verify(*pWindowMain->GetLauncher());
+			pUpdateSystemIcon(*system, *moduleName, moduleVersion);
 			pUpdateSystemsTabIcon();
 			UpdateProfileList();
 		}
@@ -1086,63 +1115,72 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 	case MSG_MOD_NET_INFO:
 	case MSG_MOD_SYN_INFO:
 	case MSG_MOD_VR_INFO:{
-		cEditProfile * const profile = pGetSelectedProfile();
-		if(!profile) break;
-		
-		const decString &(delGameProfile::*getName)() const = nullptr;
-		const decString &(delGameProfile::*getVersion)() const = nullptr;
-		switch(message->what){
-		case MSG_MOD_GRA_INFO:
-			getName = &delGameProfile::GetModuleGraphic;
-			getVersion = &delGameProfile::GetModuleGraphicVersion;
-			break;
-		case MSG_MOD_INP_INFO:
-			getName = &delGameProfile::GetModuleInput;
-			getVersion = &delGameProfile::GetModuleInputVersion;
-			break;
-		case MSG_MOD_PHY_INFO:
-			getName = &delGameProfile::GetModulePhysics;
-			getVersion = &delGameProfile::GetModulePhysicsVersion;
-			break;
-		case MSG_MOD_AMR_INFO:
-			getName = &delGameProfile::GetModuleAnimator;
-			getVersion = &delGameProfile::GetModuleAnimatorVersion;
-			break;
-		case MSG_MOD_AI_INFO:
-			getName = &delGameProfile::GetModuleAI;
-			getVersion = &delGameProfile::GetModuleAIVersion;
-			break;
-		case MSG_MOD_CR_INFO:
-			getName = &delGameProfile::GetModuleCrashRecovery;
-			getVersion = &delGameProfile::GetModuleCrashRecoveryVersion;
-			break;
-		case MSG_MOD_AUD_INFO:
-			getName = &delGameProfile::GetModuleAudio;
-			getVersion = &delGameProfile::GetModuleAudioVersion;
-			break;
-		case MSG_MOD_NET_INFO:
-			getName = &delGameProfile::GetModuleNetwork;
-			getVersion = &delGameProfile::GetModuleNetworkVersion;
-			break;
-		case MSG_MOD_SYN_INFO:
-			getName = &delGameProfile::GetModuleSynthesizer;
-			getVersion = &delGameProfile::GetModuleSynthesizerVersion;
-			break;
-		case MSG_MOD_VR_INFO:
-			getName = &delGameProfile::GetModuleVR;
-			getVersion = &delGameProfile::GetModuleVRVersion;
+		cEditProfile * const profile = pActiveProfile;
+		if(!profile){
 			break;
 		}
 		
-		if(getName && getVersion){
-			delGameProfile &edit = *profile->edit;
-			const decString moduleName((edit.*getName)());
-			const decString moduleVersion((edit.*getVersion)());
-			const delEngineModuleList &moduleList =
-				pWindowMain->GetLauncher()->GetEngine().GetModules();
-			delEngineModule * const module = moduleVersion.IsEmpty()
-				? moduleList.GetNamed(moduleName.GetString())
-				: moduleList.GetNamed(moduleName.GetString(), moduleVersion.GetString());
+		const decString *moduleName = nullptr;
+		const decString *moduleVersion = nullptr;
+		
+		switch(message->what){
+		case MSG_MOD_GRA_INFO:
+			moduleName = &profile->edit->GetModuleGraphic();
+			moduleVersion = &profile->edit->GetModuleGraphicVersion();
+			break;
+			
+		case MSG_MOD_INP_INFO:
+			moduleName = &profile->edit->GetModuleInput();
+			moduleVersion = &profile->edit->GetModuleInputVersion();
+			break;
+			
+		case MSG_MOD_PHY_INFO:
+			moduleName = &profile->edit->GetModulePhysics();
+			moduleVersion = &profile->edit->GetModulePhysicsVersion();
+			break;
+			
+		case MSG_MOD_AMR_INFO:
+			moduleName = &profile->edit->GetModuleAnimator();
+			moduleVersion = &profile->edit->GetModuleAnimatorVersion();
+			break;
+			
+		case MSG_MOD_AI_INFO:
+			moduleName = &profile->edit->GetModuleAI();
+			moduleVersion = &profile->edit->GetModuleAIVersion();
+			break;
+			
+		case MSG_MOD_CR_INFO:
+			moduleName = &profile->edit->GetModuleCrashRecovery();
+			moduleVersion = &profile->edit->GetModuleCrashRecoveryVersion();
+			break;
+			
+		case MSG_MOD_AUD_INFO:
+			moduleName = &profile->edit->GetModuleAudio();
+			moduleVersion = &profile->edit->GetModuleAudioVersion();
+			break;
+			
+		case MSG_MOD_NET_INFO:
+			moduleName = &profile->edit->GetModuleNetwork();
+			moduleVersion = &profile->edit->GetModuleNetworkVersion();
+			break;
+			
+		case MSG_MOD_SYN_INFO:
+			moduleName = &profile->edit->GetModuleSynthesizer();
+			moduleVersion = &profile->edit->GetModuleSynthesizerVersion();
+			break;
+			
+		case MSG_MOD_VR_INFO:
+			moduleName = &profile->edit->GetModuleVR();
+			moduleVersion = &profile->edit->GetModuleVRVersion();
+			break;
+		}
+		
+		if(moduleName && moduleVersion){
+			auto &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+			auto module = moduleVersion->IsEmpty()
+				? moduleList.GetNamed(*moduleName)
+				: moduleList.GetNamed(*moduleName, *moduleVersion);
+			
 			if(module){
 				(new deglbDialogModuleProps(pWindowMain, module, {}, 0))->Show();
 			}
@@ -1200,26 +1238,38 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		
 	case MSG_MP_CAT_EXPERT:
 		if(pMPCategory != deModuleParameter::ecExpert && !pAllowExpertMode){
-			// BAlert::Go() is synchronous and the alert deletes itself when closed
-			BAlert * const alert = new BAlert("Enable Expert Parameters",
+			pOptMPCatBasic->SetValue(pMPCategory == deModuleParameter::ecBasic ? 1 : 0);
+			pOptMPCatAdvanced->SetValue(pMPCategory == deModuleParameter::ecAdvanced ? 1 : 0);
+			pOptMPCatExpert->SetValue(0);
+			
+			(new BAlert("Enable Expert Parameters",
 				"Do you really want to enable expert parameters?\n\n"
 				"You can easily break modules with them!",
-				"No", "Yes", nullptr, B_WIDTH_AS_USUAL, B_WARNING_ALERT);
-			if(alert->Go() != 1){
-				pOptMPCatBasic->SetValue(pMPCategory == deModuleParameter::ecBasic ? 1 : 0);
-				pOptMPCatAdvanced->SetValue(pMPCategory == deModuleParameter::ecAdvanced ? 1 : 0);
-				pOptMPCatExpert->SetValue(0);
-				break;
-			}
-			pAllowExpertMode = true;
+				"No", "Yes", nullptr, B_WIDTH_AS_USUAL, B_WARNING_ALERT))->Go(
+					new BInvoker(new BMessage(MSG_MP_CAT_EXPERT_ALLOW), this));
+			
+		}else{
+			pMPCategory = deModuleParameter::ecExpert;
+			UpdateMPParameterList();
 		}
-		pMPCategory = deModuleParameter::ecExpert;
-		UpdateMPParameterList();
 		break;
 		
-	case MSG_FULLSCREEN_CHANGED:
+	case MSG_MP_CAT_EXPERT_ALLOW:{
+		int32 selection;
+		if(message->FindInt32("which", &selection) == B_OK && selection == 1){
+			pOptMPCatExpert->SetValue(1);
+			pAllowExpertMode = true;
+			pMPCategory = deModuleParameter::ecExpert;
+			UpdateMPParameterList();
+		}
+		}break;
+		
+	case MSG_FULLSCREEN_CHANGED:{
 		// fullscreen selection changed - read back on apply
-		break;
+		const bool isNotFullscreen = pPopupFullscreen->ItemAt(0)->IsMarked();
+		pEditWidth->SetEnabled(isNotFullscreen);
+		pEditHeight->SetEnabled(isNotFullscreen);
+		}break;
 		
 	case MSG_DISABLE_MOD_MODULE_CHANGED:{
 		const char *modName = nullptr;
@@ -1251,7 +1301,7 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		}break;
 		
 	case MSG_DISABLE_MOD_ADD:{
-		cEditProfile * const profile = pGetSelectedProfile();
+		cEditProfile * const profile = pActiveProfile;
 		if(profile){
 			const char *modName = nullptr;
 			BMenuItem * const modItem = pPopupDisableModModule->FindMarked();
@@ -1273,7 +1323,7 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		}break;
 		
 	case MSG_DISABLE_MOD_REMOVE:{
-		cEditProfile * const profile = pGetSelectedProfile();
+		cEditProfile * const profile = pActiveProfile;
 		if(profile){
 			const int sel = pListDisabledModules->CurrentSelection();
 			if(sel >= 0 && sel < profile->edit->GetDisableModuleVersions().GetCount()){
@@ -1302,7 +1352,7 @@ bool deglbDialogProfileList::QuitRequested(){
 // Private Functions
 //////////////////////
 
-deglbDialogProfileList::cEditProfile *deglbDialogProfileList::pGetSelectedProfile() const{
+deglbDialogProfileList::cEditProfile *deglbDialogProfileList::pGetSelectedProfileFromSelection() const{
 	const int selection = pListProfiles->CurrentSelection();
 	if(selection < 0 || selection >= pProfiles.GetCount()){
 		return nullptr;
@@ -1315,6 +1365,7 @@ void deglbDialogProfileList::pSetSelectedProfile(cEditProfile *profile){
 	if(index >= 0){
 		pListProfiles->Select(index);
 	}
+	pActiveProfile = profile;
 }
 
 void deglbDialogProfileList::pCreateSystem(sSystem &system, int type,
@@ -1325,13 +1376,15 @@ uint32 msgWhat, uint32 msgVersionWhat, uint32 msgInfoWhat){
 	
 	system.popup = new BPopUpMenu("< Best Available >");
 	system.menuField = new BMenuField("field", nullptr, system.popup);
-	system.menuField->SetExplicitMaxSize({B_SIZE_UNLIMITED, B_SIZE_UNSET});
 	
 	system.popupVersion = new BPopUpMenu("< Latest >");
 	system.menuFieldVersion = new BMenuField("fieldVersion", nullptr, system.popupVersion);
+	auto size = system.menuFieldVersion->MinSize();
+	system.menuFieldVersion->SetExplicitMinSize(size);
+	system.menuFieldVersion->SetExplicitPreferredSize(size);
 	
-	system.btnInfo = new BButton("info", "?", new BMessage(msgInfoWhat));
-	system.btnInfo->SetExplicitMaxSize({B_SIZE_UNSET, B_SIZE_UNSET});
+	system.btnInfo = new BButton("btnInfo", "", new BMessage(msgInfoWhat));
+	system.btnInfo->SetIcon(pWindowMain->GetIconButtonInfo());
 	
 	system.type = type;
 	system.msgWhat = msgWhat;
@@ -1347,8 +1400,8 @@ const char *moduleName, const char *selectedVersion){
 	}
 	
 	// First item: latest (empty version)
-	system.popupVersion->AddItem(new BMenuItem("< Latest >",
-		new BMessage(system.msgVersionWhat)));
+	system.popupVersion->AddItem(new BMenuItem("< Latest >", new BMessage(system.msgVersionWhat)));
+	bool hasSelected = false;
 	
 	if(moduleName && moduleName[0]){
 		decStringSet versions;
@@ -1362,22 +1415,15 @@ const char *moduleName, const char *selectedVersion){
 			auto msg = new BMessage(system.msgVersionWhat);
 			msg->AddString("version", ver.GetString());
 			system.popupVersion->AddItem(new BMenuItem(ver.GetString(), msg));
+			
+			if(ver == selectedVersion){
+				system.popupVersion->ItemAt(system.popupVersion->CountItems() - 1)->SetMarked(true);
+				hasSelected = true;
+			}
 		});
 	}
 	
-	// Select matching version
-	bool found = false;
-	if(selectedVersion && selectedVersion[0]){
-		for(int i=1; i<system.popupVersion->CountItems(); i++){
-			BMenuItem * const item = system.popupVersion->ItemAt(i);
-			if(item && strcmp(item->Label(), selectedVersion) == 0){
-				item->SetMarked(true);
-				found = true;
-				break;
-			}
-		}
-	}
-	if(!found && system.popupVersion->CountItems() > 0){
+	if(!hasSelected){
 		system.popupVersion->ItemAt(0)->SetMarked(true);
 	}
 }

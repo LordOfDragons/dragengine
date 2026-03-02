@@ -151,8 +151,8 @@ pModule(module)
 	pEditLibFileEntryPoint->MakeEditable(false);
 	pEditLibFileEntryPoint->SetWordWrap(false);
 	
-	BButton * const btnInfo = new BButton("btnInfo", "?",
-		new BMessage(MSG_SHOW_INFO));
+	BButton * const btnInfo = new BButton("btnInfo", "", new BMessage(MSG_SHOW_INFO));
+	btnInfo->SetIcon(windowMain->GetIconButtonInfo());
 	
 	BLayoutBuilder::Grid<>(statusTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
@@ -329,7 +329,7 @@ void deglbDialogModuleProps::MessageReceived(BMessage *message){
 	switch(message->what){
 	case MSG_OK:
 		pResultValue = true;
-		Quit();
+		PostMessage(B_QUIT_REQUESTED);
 		break;
 		
 	case MSG_SHOW_INFO:{
