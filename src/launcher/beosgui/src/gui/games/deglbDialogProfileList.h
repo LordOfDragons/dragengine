@@ -131,10 +131,11 @@ private:
 	
 	/** \brief Profile list item with validity icon. */
 	class cProfileListItem : public BListItem{
-	public:
+	private:
 		BBitmap *pIcon;
 		BString pText;
 		
+	public:
 		cProfileListItem(BBitmap *icon, const char *text);
 		void DrawItem(BView *owner, BRect bounds, bool complete) override;
 		void Update(BView *owner, const BFont *font) override;

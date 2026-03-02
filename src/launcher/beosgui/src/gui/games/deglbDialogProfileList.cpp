@@ -1200,6 +1200,7 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		
 	case MSG_MP_CAT_EXPERT:
 		if(pMPCategory != deModuleParameter::ecExpert && !pAllowExpertMode){
+			// BAlert::Go() is synchronous and the alert deletes itself when closed
 			BAlert * const alert = new BAlert("Enable Expert Parameters",
 				"Do you really want to enable expert parameters?\n\n"
 				"You can easily break modules with them!",
