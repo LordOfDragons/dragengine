@@ -183,7 +183,8 @@ void deoglRRenderWindow::cGLWindow::FrameResized(float newWidth, float newHeight
 bool deoglRRenderWindow::cGLWindow::QuitRequested(){
 	if(pBlockQuitRequested){
 		// do not close the window but post a quit request
-		be_app->PostMessage(B_QUIT_REQUESTED);
+		//be_app->PostMessage(B_QUIT_REQUESTED);
+		pWindow.GetRenderThread().GetContext().SetUserRequestedQuit(true);
 		return false;
 	}
 	

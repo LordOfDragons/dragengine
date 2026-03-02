@@ -497,6 +497,10 @@ bool deoglRTContext::GetUserRequestedQuit(){
 	return requested;
 }
 
+void deoglRTContext::SetUserRequestedQuit(bool userRequestedQuit){
+	pUserRequestedQuit = userRequestedQuit;
+}
+
 void deoglRTContext::DropCompileContexts(int count){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	int i;
