@@ -35,7 +35,9 @@
 #include <TextControl.h>
 #include <TextView.h>
 #include <CheckBox.h>
+#include <RadioButton.h>
 #include <OS.h>
+#include <GridView.h>
 
 #include "deglbDialogProfileListParameter.h"
 
@@ -133,11 +135,12 @@ private:
 	
 	// Module Parameters tab
 	BListView *pListMPModules;
-	BGroupView *pContainerMPParams;
+	BGridView *pContainerMPParams;
+	BScrollView *pScrollMPParams;
 	BTextView *pTextMPParamInfo;
-	BButton *pBtnMPCatBasic;
-	BButton *pBtnMPCatAdvanced;
-	BButton *pBtnMPCatExpert;
+	BRadioButton *pOptMPCatBasic;
+	BRadioButton *pOptMPCatAdvanced;
+	BRadioButton *pOptMPCatExpert;
 	decTObjectOrderedSet<deglbDialogProfileListParameter> pMPParameters;
 	deModuleParameter::eCategory pMPCategory;
 	
@@ -190,9 +193,6 @@ public:
 	/** \brief Update module parameters parameter list for selected module. */
 	void UpdateMPParameterList();
 	
-	/** \brief Update module parameter visibility based on current category. */
-	void UpdateMPParameterVisibility();
-	
 	/** \brief Update fullscreen resolutions list. */
 	void UpdateFullscreenResolutions();
 	
@@ -222,9 +222,9 @@ public:
 private:
 	cEditProfile *pGetSelectedProfile() const;
 	void pSetSelectedProfile(cEditProfile *profile);
-	void pCreateSystem(sSystem &system, const char *label, int type, uint32 msgWhat, BView *container);
+	void pCreateSystem(sSystem &system, int type, uint32 msgWhat, BView *container);
 	void pLoadProfiles(delGameProfile *selectProfile);
-	void pRebuildMPParams(BGroupView *container,
+	void pRebuildMPParams(BGridView *container,
 		decTObjectOrderedSet<deglbDialogProfileListParameter> &params);
 };
 

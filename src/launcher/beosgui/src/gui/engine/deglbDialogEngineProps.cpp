@@ -64,21 +64,31 @@ pResultValue(false)
 	// Information tab
 	BView * const infoTab = new BView("Information", 0);
 	
-	pEditPathConfig = new BTextControl("pathConfig", "Path Config:", "", nullptr);
-	pEditPathConfig->SetEnabled(false);
+	pEditPathConfig = new BTextView("pathConfig");
+	pEditPathConfig->MakeEditable(false);
+	pEditPathConfig->SetWordWrap(false);
 	
-	pEditPathShare = new BTextControl("pathShare", "Path Share:", "", nullptr);
-	pEditPathShare->SetEnabled(false);
+	pEditPathShare = new BTextView("pathShare");
+	pEditPathShare->MakeEditable(false);
+	pEditPathShare->SetWordWrap(false);
 	
-	pEditPathLib = new BTextControl("pathLib", "Path Libraries:", "", nullptr);
-	pEditPathLib->SetEnabled(false);
+	pEditPathLib = new BTextView("pathLib");
+	pEditPathLib->MakeEditable(false);
+	pEditPathLib->SetWordWrap(false);
 	
-	BLayoutBuilder::Group<>(infoTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	BLayoutBuilder::Grid<>(infoTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(pEditPathConfig)
-		.Add(pEditPathShare)
-		.Add(pEditPathLib)
-		.AddGlue()
+		
+		.Add(new BStringView("label", "Path Config:"), 0, 0)
+		.Add(pEditPathConfig, 1, 0)
+		
+		.Add(new BStringView("label", "Path Share:"), 0, 1)
+		.Add(pEditPathShare, 1, 1)
+		
+		.Add(new BStringView("label", "Path Libraries:"), 0, 2)
+		.Add(pEditPathLib, 1, 2)
+		
+		.AddGlue(0, 3)
 	.End();
 	tabView->AddTab(infoTab);
 	
@@ -86,16 +96,21 @@ pResultValue(false)
 	BView * const settingsTab = new BView("Settings", 0);
 	
 	pPopupProfile = new BPopUpMenu("< Default Profile >");
-	pMenuProfile = new BMenuField("profile", "Active Profile:", pPopupProfile);
+	pMenuProfile = new BMenuField("profile", nullptr, pPopupProfile);
 	
 	BButton * const btnEditProfiles = new BButton("editProfiles", "Edit Profiles...",
 		new BMessage(MSG_EDIT_PROFILES));
 	
-	BLayoutBuilder::Group<>(settingsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	BLayoutBuilder::Grid<>(settingsTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(pMenuProfile)
-		.Add(btnEditProfiles)
-		.AddGlue()
+		
+		.Add(new BStringView("label", "Active Profile:"), 0, 0)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 0)
+			.Add(pMenuProfile, 1.0f)
+			.Add(btnEditProfiles, 0.0f)
+		.End()
+		
+		.AddGlue(0, 1)
 	.End();
 	tabView->AddTab(settingsTab);
 	
@@ -119,9 +134,8 @@ pResultValue(false)
 	
 	ResizeToPreferred();
 	
-	font_height fh;
-	be_plain_font->GetHeight(&fh);
-	ResizeTo(be_plain_font->StringWidth("M") * 50, Size().Height());
+	float minWidth = be_plain_font->StringWidth("M") * 60;
+	SetSizeLimits(decMath::max(Bounds().Width(), minWidth), 99999, Bounds().Height(), 99999);
 	
 	CenterOnScreen();
 }

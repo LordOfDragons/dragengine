@@ -42,7 +42,7 @@
 
 #include "deglbCalculateDirectorySize.h"
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 #include "../deglbIconView.h"
 #include "../deglbIconTabView.h"
@@ -140,9 +140,13 @@ private:
 	
 	// Disc usage tab
 	struct sCache{
-		deglbCalculateDirectorySize *calcSize;
+		deTUniqueReference<deglbCalculateDirectorySize> calcSize;
 		BString name;
-		uint64_t used;
+		uint64_t used = 0;
+		uint64_t limit = 1000000000;
+		float fillLevel = 0.0f;
+		
+		sCache(const char *name);
 	};
 	
 	BStringView *pLabSizeDelgaFile;
@@ -151,7 +155,7 @@ private:
 	BStringView *pLabSizeConfigDir;
 	BStringView *pLabSizeCaches;
 	BColumnListView *pListCaches;
-	decTList<sCache> pCaches;
+	decTUniqueList<sCache> pCaches;
 	
 	deglbCalculateDirectorySize *pCalcSizeDataDir;
 	deglbCalculateDirectorySize *pCalcSizeCaptureDir;
@@ -209,6 +213,7 @@ public:
 	
 private:
 	BString FormatSize1024(uint64_t size) const;
+	BString FormatSize1000(uint64_t size) const;
 	void pDeleteCaches();
 };
 

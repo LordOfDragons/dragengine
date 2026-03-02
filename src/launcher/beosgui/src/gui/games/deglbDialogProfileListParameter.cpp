@@ -23,6 +23,8 @@
  */
 
 #include <MenuItem.h>
+#include <LayoutBuilder.h>
+#include <MessageFilter.h>
 
 #include "deglbDialogProfileListParameter.h"
 
@@ -34,6 +36,51 @@
 #include <dragengine/common/string/decString.h>
 
 
+namespace{
+
+class cMessageFilterMPParameter : public BMessageFilter{
+	deglbDialogProfileListParameter &pParameter;
+	
+public:
+	cMessageFilterMPParameter(deglbDialogProfileListParameter &parameter) :
+	BMessageFilter(B_MOUSE_DOWN),
+	pParameter(parameter){ 
+	}
+	
+	filter_result Filter(BMessage *message, BHandler **target) override{
+		switch(message->what){
+		case B_MOUSE_DOWN:{
+			int32 buttons = 0, clicks = 0;
+			BPoint where;
+			
+			message->FindInt32("buttons", &buttons);
+			message->FindInt32("clicks", &clicks);
+			message->FindPoint("be:view_where", &where);
+			
+			auto view = dynamic_cast<BView*>(*target);
+			
+			if(buttons == B_SECONDARY_MOUSE_BUTTON && clicks == 1){
+				view->ConvertToScreen(&where);
+				pParameter.OnLabelContextMenu(where);
+				return B_SKIP_MESSAGE;
+				
+			}else if(buttons == B_PRIMARY_MOUSE_BUTTON){
+				pParameter.OnLabelClicked();
+				return B_SKIP_MESSAGE;
+			}
+			}break;
+			
+		default:
+			break;
+		};
+		
+		return B_DISPATCH_MESSAGE;
+	}
+};
+
+}
+
+
 // Class deglbDialogProfileListParameter
 /////////////////////////////////////////
 
@@ -41,7 +88,7 @@
 ////////////////////////////
 
 deglbDialogProfileListParameter::deglbDialogProfileListParameter(delEMParameter &parameter,
-	delGameProfile &profile, const char *moduleName, uint32 msgWhat) :
+	delGameProfile &profile, const char *moduleName, uint32 msgWhat, BMessenger target) :
 pParameter(parameter),
 pProfile(profile),
 pModuleName(moduleName),
@@ -49,11 +96,13 @@ pDescription(parameter.GetInfo().GetDescription()),
 pLabel(nullptr),
 pMenuField(nullptr),
 pPopUpMenu(nullptr),
+pViewCheckBox(nullptr),
 pCheckBox(nullptr),
 pSlider(nullptr),
 pTextControl(nullptr),
 pCustomized(false),
-pMsgWhat(msgWhat)
+pMsgWhat(msgWhat),
+pTarget(target)
 {
 	// build description including selection entry descriptions
 	if(parameter.GetInfo().GetType() == deModuleParameter::eptSelection){
@@ -69,13 +118,24 @@ pMsgWhat(msgWhat)
 	const char * const displayName = !parameter.GetInfo().GetDisplayName().IsEmpty()
 		? parameter.GetInfo().GetDisplayName() : parameter.GetInfo().GetName();
 	pLabel = new BStringView("label", displayName);
+	pLabel->SetExplicitAlignment({B_ALIGN_USE_FULL_WIDTH, B_ALIGN_VERTICAL_UNSET});
+	pLabel->AddFilter(new cMessageFilterMPParameter(*this));
 	
 	// create appropriate edit widget
 	switch(parameter.GetInfo().GetType()){
 	case deModuleParameter::eptBoolean:{
 		BMessage * const msg = new BMessage(msgWhat);
 		msg->AddPointer("param", this);
-		pCheckBox = new BCheckBox("value", "", msg);
+		msg->AddString("action", "valueChanged");
+		pCheckBox = new BCheckBox("value", nullptr, msg);
+		
+		pViewCheckBox = new BGroupView();
+		BLayoutBuilder::Group<>(pViewCheckBox, B_HORIZONTAL, B_USE_SMALL_SPACING)
+			.SetInsets(0)
+			.AddGlue()
+			.Add(pCheckBox, 0.0f)
+			.AddGlue()
+		.End();
 		}break;
 		
 	case deModuleParameter::eptRanged:{
@@ -85,10 +145,34 @@ pMsgWhat(msgWhat)
 		const int minInt = (int)(minVal * 1000.0f);
 		const int maxInt = (int)(maxVal * 1000.0f);
 		const int stepInt = step > 0.0f ? (int)(step * 1000.0f) : 1;
-		BMessage * const msg = new BMessage(msgWhat);
+		BMessage *msg = new BMessage(msgWhat);
 		msg->AddPointer("param", this);
-		pSlider = new BSlider("value", "", msg, minInt, maxInt, B_HORIZONTAL);
+		msg->AddString("action", "valueChanged");
+		msg->AddInt16("selector", 0);
+		pSlider = new BSlider("value", nullptr, msg, minInt, maxInt, B_HORIZONTAL);
 		pSlider->SetKeyIncrementValue(stepInt);
+		pSlider->SetHashMarks(B_HASH_MARKS_BOTH);
+		pSlider->SetHashMarkCount((int)ceilf((maxVal - minVal) / decMath::max(step, 0.001f)));
+		
+		msg = new BMessage(msgWhat);
+		msg->AddPointer("param", this);
+		msg->AddString("action", "valueChanged");
+		msg->AddInt16("selector", 0);
+		pSlider->SetModificationMessage(msg);
+		
+		msg = new BMessage(msgWhat);
+		msg->AddPointer("param", this);
+		msg->AddString("action", "valueChanged");
+		msg->AddInt16("selector", 1);
+		pSliderInput = new BTextControl("valueInput", nullptr, "", msg);
+		pSliderInput->SetExplicitPreferredSize({pSliderInput->StringWidth("M") * 4, B_SIZE_UNSET});
+		
+		pViewSlider = new BGroupView();
+		BLayoutBuilder::Group<>(pViewSlider, B_HORIZONTAL, B_USE_SMALL_SPACING)
+			.SetInsets(0)
+			.Add(pSlider, 1.0f)
+			.Add(pSliderInput, 0.0f)
+		.End();
 		}break;
 		
 	case deModuleParameter::eptSelection:{
@@ -98,6 +182,7 @@ pMsgWhat(msgWhat)
 			BMessage * const msg = new BMessage(msgWhat);
 			msg->AddString("value", entry.value.GetString());
 			msg->AddPointer("param", this);
+			msg->AddString("action", "valueChanged");
 			pPopUpMenu->AddItem(new BMenuItem(entry.displayName.GetString(), msg));
 		});
 		pMenuField = new BMenuField("value", "", pPopUpMenu);
@@ -108,7 +193,8 @@ pMsgWhat(msgWhat)
 	default:{
 		BMessage * const msg = new BMessage(msgWhat);
 		msg->AddPointer("param", this);
-		pTextControl = new BTextControl("value", "", "", msg);
+		msg->AddString("action", "valueChanged");
+		pTextControl = new BTextControl("value", nullptr, "", msg);
 		}break;
 	}
 	
@@ -129,11 +215,11 @@ BView *deglbDialogProfileListParameter::GetEditWidget() const{
 	if(pMenuField){
 		return pMenuField;
 	}
-	if(pCheckBox){
-		return pCheckBox;
+	if(pViewCheckBox){
+		return pViewCheckBox;
 	}
-	if(pSlider){
-		return pSlider;
+	if(pViewSlider){
+		return pViewSlider;
 	}
 	return pTextControl;
 }
@@ -163,6 +249,7 @@ void deglbDialogProfileListParameter::Update(){
 	case deModuleParameter::eptRanged:
 		if(pSlider){
 			pSlider->SetValue((int)(value.ToFloat() * 1000.0f));
+			pSliderInput->SetText(value);
 		}
 		break;
 		
@@ -210,6 +297,13 @@ void deglbDialogProfileListParameter::Update(){
 	}
 }
 
+void deglbDialogProfileListParameter::Apply(int selector){
+	ApplyMenuSelection();
+	ApplyCheckBox();
+	ApplySlider(selector);
+	ApplyTextControl();
+}
+
 void deglbDialogProfileListParameter::ApplyMenuSelection(){
 	if(!pPopUpMenu){
 		return;
@@ -230,10 +324,27 @@ void deglbDialogProfileListParameter::ApplyCheckBox(){
 	}
 }
 
-void deglbDialogProfileListParameter::ApplySlider(){
-	if(pSlider){
-		pSetParameterValue((float)pSlider->Value() / 1000.0f);
+void deglbDialogProfileListParameter::ApplySlider(int selector){
+	if(!pSlider){
+		return;
 	}
+	
+	const float minVal = pParameter.GetInfo().GetMinimumValue();
+	const float maxVal = pParameter.GetInfo().GetMaximumValue();
+	const float step = pParameter.GetInfo().GetValueStepSize();
+	
+	float value = minVal;
+	if(selector == 0){
+		value = (float)pSlider->Value() / 1000.0f;
+		
+	}else if(selector == 1){
+		value = decString(pSliderInput->Text()).ToFloat();
+	}
+	
+	value = floorf((value / step) + 0.5f) * step;
+	value = decMath::clamp(value, minVal, maxVal);
+	
+	pSetParameterValue(value);
 }
 
 void deglbDialogProfileListParameter::ApplyTextControl(){
@@ -257,27 +368,26 @@ void deglbDialogProfileListParameter::Reset(){
 	Update();
 }
 
-void deglbDialogProfileListParameter::UpdateVisibility(deModuleParameter::eCategory category){
-	const bool visible = pCustomized || pParameter.GetInfo().GetCategory() <= category;
+void deglbDialogProfileListParameter::OnLabelContextMenu(const BPoint &where){
+	BPopUpMenu *menu = new BPopUpMenu("context", false, false);
 	
-	if(pLabel){
-		if(visible){
-			pLabel->Show();
-		}else{
-			pLabel->Hide();
-		}
-	}
+	auto msg = new BMessage(pMsgWhat);
+	msg->AddPointer("param", this);
+	msg->AddString("action", "resetValue");
+	BMenuItem *item = new BMenuItem("Reset Value", msg);
+	item->SetTarget(pTarget);
+	menu->AddItem(item);
 	
-	BView * const edit = GetEditWidget();
-	if(edit){
-		if(visible){
-			edit->Show();
-		}else{
-			edit->Hide();
-		}
-	}
+	menu->Go(where, true, false, true);
+	delete menu;
 }
 
+void deglbDialogProfileListParameter::OnLabelClicked(){
+	auto msg = new BMessage(pMsgWhat);
+	msg->AddPointer("param", this);
+	msg->AddString("action", "updateInfoText");
+	pTarget.SendMessage(msg);
+}
 
 
 // Private Functions

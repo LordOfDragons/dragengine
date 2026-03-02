@@ -55,9 +55,9 @@ private:
 	int pResultMessage;
 	bool pResultValue;
 	
-	BTextControl *pEditPathConfig;
-	BTextControl *pEditPathShare;
-	BTextControl *pEditPathLib;
+	BTextView *pEditPathConfig;
+	BTextView *pEditPathShare;
+	BTextView *pEditPathLib;
 	
 	BMenuField *pMenuProfile;
 	BPopUpMenu *pPopupProfile;

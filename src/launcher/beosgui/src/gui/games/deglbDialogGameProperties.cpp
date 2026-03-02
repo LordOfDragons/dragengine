@@ -33,6 +33,7 @@
 #include <TextView.h>
 #include <StringView.h>
 #include <MessageRunner.h>
+#include <Box.h>
 
 #include "deglbDialogGameProperties.h"
 #include "deglbDialogProfileList.h"
@@ -165,6 +166,10 @@ icon(nullptr)
 }
 
 deglbDialogGameProperties::cFileFormatListItem::~cFileFormatListItem() = default;
+
+
+deglbDialogGameProperties::sCache::sCache(const char *aname) : name(aname){
+}
 
 
 // Class deglbDialogGameProperties
@@ -427,33 +432,60 @@ pCalcSizePulse(nullptr)
 	BView * const usageTab = new BView("Disc Usage", 0);
 	
 	pLabSizeDelgaFile = new BStringView("sizeDelga", "...");
+	pLabSizeDelgaFile->SetAlignment(B_ALIGN_RIGHT);
+	
 	pLabSizeDataDir = new BStringView("sizeData", "...");
+	pLabSizeDataDir->SetAlignment(B_ALIGN_RIGHT);
+	
 	pLabSizeCaptureDir = new BStringView("sizeCapture", "...");
+	pLabSizeCaptureDir->SetAlignment(B_ALIGN_RIGHT);
+	
 	pLabSizeConfigDir = new BStringView("sizeConfig", "...");
+	pLabSizeConfigDir->SetAlignment(B_ALIGN_RIGHT);
+	
 	pLabSizeCaches = new BStringView("sizeCaches", "...");
+	pLabSizeCaches->SetAlignment(B_ALIGN_RIGHT);
 	
-	const float colFactor = be_plain_font->StringWidth("M");
 	pListCaches = new BColumnListView("cacheList", 0, B_NO_BORDER, false);
-	pListCaches->AddColumn(new BStringColumn("Module",
-		colFactor * 20, 10, 10000, B_TRUNCATE_END), 0);
-	pListCaches->AddColumn(new BStringColumn("Used",
-		colFactor * 10, 10, 10000, B_TRUNCATE_END), 1);
+	pListCaches->AddColumn(new BStringColumn("Module", factor * 20, 10, 10000, B_TRUNCATE_END), 0);
+	pListCaches->AddColumn(new BStringColumn("Used", factor * 10, 10, 10000, B_TRUNCATE_END), 1);
+	pListCaches->AddColumn(new BStringColumn("Limit", factor * 10, 10, 10000, B_TRUNCATE_END), 2);
+	pListCaches->AddColumn(new BStringColumn("Fill-Level", factor * 10, 10, 10000, B_TRUNCATE_END), 3);
 	
-	BLayoutBuilder::Grid<>(usageTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
+	BBox *frameModuleCaches = new BBox("frame_moduleCaches");
+	frameModuleCaches->SetLabel("Engine module caches:");
+	
+	font_height fh;
+	be_plain_font->GetHeight(&fh);
+	float lineHeight = fh.ascent + fh.descent + fh.leading;
+	
+	BLayoutBuilder::Group<>(frameModuleCaches, B_VERTICAL, B_USE_SMALL_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING, lineHeight, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.Add(pListCaches)
+	.End();
+	
+	BLayoutBuilder::Group<>(usageTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(new BStringView("label", "DELGA size:"), 0, 0)
-		.Add(pLabSizeDelgaFile, 1, 0)
-		.Add(new BStringView("label", "Data dir size:"), 0, 1)
-		.Add(pLabSizeDataDir, 1, 1)
-		.Add(new BStringView("label", "Capture dir size:"), 0, 2)
-		.Add(pLabSizeCaptureDir, 1, 2)
-		.Add(new BStringView("label", "Config dir size (config, saves...):"), 0, 3)
-		.Add(pLabSizeConfigDir, 1, 3)
-		.Add(new BStringView("label", "All caches size:"), 0, 4)
-		.Add(pLabSizeCaches, 1, 4)
-		.Add(new BStringView("label", "Engine module caches:"), 0, 5)
-		.Add(pListCaches, 1, 5)
-		.AddGlue(0, 6)
+		.AddGrid(B_USE_SMALL_SPACING, B_USE_SMALL_SPACING, 1.0)
+			.SetInsets(0)
+			
+			.Add(new BStringView("label", "DELGA size:"), 0, 0)
+			.Add(pLabSizeDelgaFile, 1, 0)
+			
+			.Add(new BStringView("label", "Data dir size:"), 0, 1)
+			.Add(pLabSizeDataDir, 1, 1)
+			
+			.Add(new BStringView("label", "Capture dir size:"), 0, 2)
+			.Add(pLabSizeCaptureDir, 1, 2)
+			
+			.Add(new BStringView("label", "Config dir size (config, saves...):"), 0, 3)
+			.Add(pLabSizeConfigDir, 1, 3)
+			
+			.Add(new BStringView("label", "All caches size:"), 0, 4)
+			.Add(pLabSizeCaches, 1, 4)
+		.End()
+		
+		.Add(frameModuleCaches)
 	.End();
 	
 	tabView->AddTab(usageTab);
@@ -742,7 +774,7 @@ void deglbDialogGameProperties::UpdateDiscUsage(){
 		pCalcSizeDataDir = new deglbCalculateDirectorySize(path.GetPathNative());
 		pCalcSizeDataDir->Start();
 	}catch(const deException &e){
-		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherGUI", e);
 	}
 	
 	try{
@@ -753,7 +785,7 @@ void deglbDialogGameProperties::UpdateDiscUsage(){
 		pCalcSizeCaptureDir = new deglbCalculateDirectorySize(path.GetPathNative());
 		pCalcSizeCaptureDir->Start();
 	}catch(const deException &e){
-		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherGUI", e);
 	}
 	
 	try{
@@ -764,7 +796,7 @@ void deglbDialogGameProperties::UpdateDiscUsage(){
 		pCalcSizeConfigDir = new deglbCalculateDirectorySize(path.GetPathNative());
 		pCalcSizeConfigDir->Start();
 	}catch(const deException &e){
-		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+		pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherGUI", e);
 	}
 	
 	UpdateCacheList();
@@ -781,24 +813,18 @@ void deglbDialogGameProperties::UpdateCacheList(){
 	}
 	
 	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
-	const delEngineModuleList &moduleList = engine.GetModules();
-	const int count = moduleList.GetCount();
 	decPath path;
 	
 	pListCaches->Clear();
 	
-	for(int i=0; i<count; i++){
-		const delEngineModule &module = *moduleList.GetAt(i);
-		
-		sCache cache;
-		cache.calcSize = nullptr;
-		cache.name = module.GetName().GetString();
-		cache.used = 0;
-		pCaches.Add(cache);
+	engine.GetModules().Visit([&](const delEngineModule &module){
+		auto cache = deTUniqueReference<sCache>::New(module.GetName());
 		
 		BRow * const row = new BRow();
 		row->SetField(new BStringField(module.GetName().GetString()), 0);
 		row->SetField(new BStringField("Calculating..."), 1);
+		row->SetField(new BStringField(FormatSize1000(cache->limit).String()), 2);
+		row->SetField(new BStringField("0.0%"), 3);
 		pListCaches->AddRow(row);
 		
 		try{
@@ -808,12 +834,15 @@ void deglbDialogGameProperties::UpdateCacheList(){
 			path.AddUnixPath("modules");
 			path.AddUnixPath(deModuleSystem::GetTypeDirectory(module.GetType()));
 			path.AddUnixPath(module.GetDirectoryName());
-			pCaches[i].calcSize = new deglbCalculateDirectorySize(path.GetPathNative());
-			pCaches[i].calcSize->Start();
+			cache->calcSize = deTUniqueReference<deglbCalculateDirectorySize>::New(path.GetPathNative());
+			cache->calcSize->Start();
+			
 		}catch(const deException &e){
-			pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherBeOSGUI", e);
+			pWindowMain->GetLauncher()->GetLogger()->LogException("DELauncherGUI", e);
 		}
-	}
+		
+		pCaches.Add(std::move(cache));
+	});
 }
 
 
@@ -936,34 +965,39 @@ void deglbDialogGameProperties::MessageReceived(BMessage *message){
 		}
 		
 		int cachesPending = 0;
-		for(int i=0; i<pCaches.GetCount(); i++){
-			if(!pCaches[i].calcSize){
-				continue;
+		pCaches.VisitIndexed([&](int i, sCache &cache){
+			if(!cache.calcSize){
+				return;
 			}
-			if(pCaches[i].calcSize->IsRunning()){
+			
+			if(cache.calcSize->IsRunning()){
 				reschedule = true;
 				cachesPending++;
+				
 			}else{
-				pCaches[i].calcSize->WaitForExit();
-				pCaches[i].used = pCaches[i].calcSize->GetSize();
-				const bool failed = pCaches[i].calcSize->GetFailed();
-				delete pCaches[i].calcSize;
-				pCaches[i].calcSize = nullptr;
+				cache.calcSize->WaitForExit();
+				cache.used = cache.calcSize->GetSize();
+				const bool failed = cache.calcSize->GetFailed();
+				cache.calcSize.Clear();
+				
+				cache.fillLevel = (float)cache.used / (float)cache.limit;
 				
 				// update row in list
 				BRow * const row = pListCaches->RowAt(i);
 				if(row){
-					row->SetField(new BStringField(
-						failed ? "Failed!" : FormatSize1024(pCaches[i].used).String()), 1);
+					row->SetField(new BStringField(failed ? "Failed!"
+						: FormatSize1024(cache.used).String()), 1);
+					row->SetField(new BStringField(FormatSize1000(cache.limit).String()), 2);
+					row->SetField(new BStringField(decString::Formatted(
+						"{0:.1f}%", (double)(cache.fillLevel * 100.0f))), 3);
 				}
 			}
-		}
+		});
 		
 		if(cachesPending == 0 && !reschedule){
-			uint64_t total = 0;
-			for(int i=0; i<pCaches.GetCount(); i++){
-				total += pCaches[i].used;
-			}
+			const uint64_t total = pCaches.Inject(0, [](int acc, const sCache &cache){
+				return acc + cache.used;
+			});
 			pLabSizeCaches->SetText(FormatSize1024(total).String());
 		}
 		
@@ -994,12 +1028,26 @@ bool deglbDialogGameProperties::QuitRequested(){
 
 BString deglbDialogGameProperties::FormatSize1024(uint64_t size) const{
 	BString text;
-	if(size >= (uint64_t)1024 * 1024 * 1024){
-		text.SetToFormat("%.1f GiB", (double)size / (1024.0 * 1024.0 * 1024.0));
-	}else if(size >= 1024 * 1024){
-		text.SetToFormat("%.1f MiB", (double)size / (1024.0 * 1024.0));
+	if(size >= 1024000000){
+		text.SetToFormat("%.1f GiB", (double)size / 1024000000);
+	}else if(size >= 1024000){
+		text.SetToFormat("%.1f MiB", (double)size / 1024000);
 	}else if(size >= 1024){
-		text.SetToFormat("%.1f KiB", (double)size / 1024.0);
+		text.SetToFormat("%.1f KiB", (double)size / 1024);
+	}else{
+		text.SetToFormat("%" B_PRIu64 " B", size);
+	}
+	return text;
+}
+
+BString deglbDialogGameProperties::FormatSize1000(uint64_t size) const{
+	BString text;
+	if(size >= 1000000000){
+		text.SetToFormat("%.1f GiB", (double)size / 1000000000);
+	}else if(size >= 1000000){
+		text.SetToFormat("%.1f MiB", (double)size / 1000000);
+	}else if(size >= 1000){
+		text.SetToFormat("%.1f KiB", (double)size / 1000);
 	}else{
 		text.SetToFormat("%" B_PRIu64 " B", size);
 	}
@@ -1007,17 +1055,16 @@ BString deglbDialogGameProperties::FormatSize1024(uint64_t size) const{
 }
 
 void deglbDialogGameProperties::pDeleteCaches(){
-	for(int i=0; i<pCaches.GetCount(); i++){
-		if(pCaches[i].calcSize){
-			pCaches[i].calcSize->Abort();
+	pCaches.Visit([](sCache &cache){
+		if(cache.calcSize){
+			cache.calcSize->Abort();
 		}
-	}
-	for(int i=0; i<pCaches.GetCount(); i++){
-		if(pCaches[i].calcSize){
-			pCaches[i].calcSize->WaitForExit();
-			delete pCaches[i].calcSize;
-			pCaches[i].calcSize = nullptr;
+	});
+	pCaches.Visit([](sCache &cache){
+		if(cache.calcSize){
+			cache.calcSize->WaitForExit();
+			cache.calcSize.Clear();
 		}
-	}
+	});
 	pCaches.RemoveAll();
 }

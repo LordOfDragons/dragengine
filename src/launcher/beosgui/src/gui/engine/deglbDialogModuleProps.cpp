@@ -61,23 +61,29 @@ pModule(module)
 	// Information tab
 	BView * const infoTab = new BView("Information", 0);
 	
-	pEditName = new BTextControl("name", "Name:", "", nullptr);
-	pEditName->SetEnabled(false);
+	pEditName = new BTextView("name");
+	pEditName->MakeEditable(false);
+	pEditName->SetWordWrap(false);
 	
-	pEditType = new BTextControl("type", "Type:", "", nullptr);
-	pEditType->SetEnabled(false);
+	pEditType = new BTextView("type");
+	pEditType->MakeEditable(false);
+	pEditType->SetWordWrap(false);
 	
-	pEditStatus = new BTextControl("status", "Status:", "", nullptr);
-	pEditStatus->SetEnabled(false);
+	pEditStatus = new BTextView("status");
+	pEditStatus->MakeEditable(false);
+	pEditStatus->SetWordWrap(false);
 	
-	pEditAuthor = new BTextControl("author", "Author:", "", nullptr);
-	pEditAuthor->SetEnabled(false);
+	pEditAuthor = new BTextView("author");
+	pEditAuthor->MakeEditable(false);
+	pEditAuthor->SetWordWrap(false);
 	
-	pEditVersion = new BTextControl("version", "Version:", "", nullptr);
-	pEditVersion->SetEnabled(false);
+	pEditVersion = new BTextView("version");
+	pEditVersion->MakeEditable(false);
+	pEditVersion->SetWordWrap(false);
 	
-	pEditPattern = new BTextControl("pattern", "Pattern:", "", nullptr);
-	pEditPattern->SetEnabled(false);
+	pEditPattern = new BTextView("pattern");
+	pEditPattern->MakeEditable(false);
+	pEditPattern->SetWordWrap(false);
 	
 	pChkIsFallback = new BCheckBox("fallback", "Is Fallback", nullptr);
 	pChkIsFallback->SetEnabled(false);
@@ -88,12 +94,28 @@ pModule(module)
 	
 	BLayoutBuilder::Group<>(infoTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(pEditName)
-		.Add(pEditType)
-		.Add(pEditStatus)
-		.Add(pEditAuthor)
-		.Add(pEditVersion)
-		.Add(pEditPattern)
+		.AddGrid(B_USE_SMALL_SPACING, B_USE_SMALL_SPACING, 0.0f)
+			.SetInsets(0)
+			
+			.Add(new BStringView("label", "Name:"), 0, 0)
+			.Add(pEditName, 1, 0)
+			
+			.Add(new BStringView("label", "Type:"), 0, 1)
+			.Add(pEditType, 1, 1)
+			
+			.Add(new BStringView("label", "Status:"), 0, 2)
+			.Add(pEditStatus, 1, 2)
+			
+			.Add(new BStringView("label", "Author:"), 0, 3)
+			.Add(pEditAuthor, 1, 3)
+			
+			.Add(new BStringView("label", "Version:"), 0, 4)
+			.Add(pEditVersion, 1, 4)
+			
+			.Add(new BStringView("label", "Pattern:"), 0, 5)
+			.Add(pEditPattern, 1, 5)
+		.End()
+		
 		.Add(pChkIsFallback)
 		.Add(scrollDesc, 1.0f)
 	.End();
@@ -101,43 +123,65 @@ pModule(module)
 	// Status tab
 	BView * const statusTab = new BView("Status", 0);
 	
-	pEditErrorCode = new BTextControl("errorCode", "Error Code:", "", nullptr);
-	pEditErrorCode->SetEnabled(false);
+	pEditErrorCode = new BTextView("errorCode");
+	pEditErrorCode->MakeEditable(false);
+	pEditErrorCode->SetWordWrap(false);
 	
-	pEditLibFileName = new BTextControl("libFile", "Library File:", "", nullptr);
-	pEditLibFileName->SetEnabled(false);
+	pEditLibFileName = new BTextView("libFile");
+	pEditLibFileName->MakeEditable(false);
+	pEditLibFileName->SetWordWrap(false);
 	
-	pEditLibFileSizeShould = new BTextControl("libSizeShould", "File Size Should:", "", nullptr);
-	pEditLibFileSizeShould->SetEnabled(false);
+	pEditLibFileSizeShould = new BTextView("libSizeShould");
+	pEditPattern->MakeEditable(false);
+	pEditPattern->SetWordWrap(false);
 	
-	pEditLibFileSizeIs = new BTextControl("libSizeIs", "File Size Is:", "", nullptr);
-	pEditLibFileSizeIs->SetEnabled(false);
+	pEditLibFileSizeIs = new BTextView("libSizeIs");
+	pEditLibFileSizeIs->MakeEditable(false);
+	pEditLibFileSizeIs->SetWordWrap(false);
 	
-	pEditLibFileHashShould = new BTextControl("libHashShould", "File Hash Should:", "", nullptr);
-	pEditLibFileHashShould->SetEnabled(false);
+	pEditLibFileHashShould = new BTextView("libHashShould");
+	pEditLibFileHashShould->MakeEditable(false);
+	pEditLibFileHashShould->SetWordWrap(false);
 	
-	pEditLibFileHashIs = new BTextControl("libHashIs", "File Hash Is:", "", nullptr);
-	pEditLibFileHashIs->SetEnabled(false);
+	pEditLibFileHashIs = new BTextView("libHashIs");
+	pEditLibFileHashIs->MakeEditable(false);
+	pEditLibFileHashIs->SetWordWrap(false);
 	
-	pEditLibFileEntryPoint = new BTextControl("entryPoint", "Entry Point:", "", nullptr);
-	pEditLibFileEntryPoint->SetEnabled(false);
+	pEditLibFileEntryPoint = new BTextView("entryPoint");
+	pEditLibFileEntryPoint->MakeEditable(false);
+	pEditLibFileEntryPoint->SetWordWrap(false);
 	
 	BButton * const btnInfo = new BButton("btnInfo", "?",
 		new BMessage(MSG_SHOW_INFO));
 	
-	BLayoutBuilder::Group<>(statusTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	BLayoutBuilder::Grid<>(statusTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL)
+		
+		.Add(new BStringView("label", "Error Code:"), 0, 0)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 0)
 			.Add(pEditErrorCode)
 			.Add(btnInfo)
 		.End()
-		.Add(pEditLibFileName)
-		.Add(pEditLibFileSizeShould)
-		.Add(pEditLibFileSizeIs)
-		.Add(pEditLibFileHashShould)
-		.Add(pEditLibFileHashIs)
-		.Add(pEditLibFileEntryPoint)
-		.AddGlue()
+		
+		.Add(new BStringView("label", "Library File:"), 0, 1)
+		.Add(pEditLibFileName, 1, 1)
+		
+		.Add(new BStringView("label", "File Size Should:"), 0, 2)
+		.Add(pEditLibFileSizeShould, 1, 2)
+		
+		.Add(new BStringView("label", "File Size Is:"), 0, 3)
+		.Add(pEditLibFileSizeIs, 1, 3)
+		
+		.Add(new BStringView("label", "File Hash Should:"), 0, 4)
+		.Add(pEditLibFileHashShould, 1, 4)
+		
+		.Add(new BStringView("label", "File Hash Is:"), 0, 5)
+		.Add(pEditLibFileHashIs, 1, 5)
+		
+		.Add(new BStringView("label", "Entry Point:"), 0, 6)
+		.Add(pEditLibFileEntryPoint, 1, 6)
+		
+		.AddGlue(0, 7)
 	.End();
 	
 	// Close button
@@ -163,9 +207,8 @@ pModule(module)
 	
 	ResizeToPreferred();
 	
-	font_height fh;
-	be_plain_font->GetHeight(&fh);
-	ResizeTo(be_plain_font->StringWidth("M") * 50, Size().Height());
+	float minWidth = be_plain_font->StringWidth("M") * 60;
+	SetSizeLimits(decMath::max(Bounds().Width(), minWidth), 99999, Bounds().Height(), 99999);
 	
 	CenterOnScreen();
 }

@@ -31,6 +31,7 @@
 #include <Alert.h>
 #include <CheckBox.h>
 #include <Slider.h>
+#include <Box.h>
 
 #include "deglbDialogProfileList.h"
 #include "deglbDialogProfileListParameter.h"
@@ -70,7 +71,6 @@ deglbDialogProfileList::cEditProfile::~cEditProfile(){
 }
 
 
-
 // Class deglbDialogProfileList
 ////////////////////////////////
 
@@ -87,9 +87,9 @@ pResultValue(false),
 pListMPModules(nullptr),
 pContainerMPParams(nullptr),
 pTextMPParamInfo(nullptr),
-pBtnMPCatBasic(nullptr),
-pBtnMPCatAdvanced(nullptr),
-pBtnMPCatExpert(nullptr),
+pOptMPCatBasic(nullptr),
+pOptMPCatAdvanced(nullptr),
+pOptMPCatExpert(nullptr),
 pMPCategory(deModuleParameter::ecBasic),
 pMenuFullscreen(nullptr),
 pPopupFullscreen(nullptr),
@@ -101,15 +101,29 @@ pListDisabledModules(nullptr)
 {
 	SetFeel(B_MODAL_APP_WINDOW_FEEL);
 	
+	font_height fh;
+	be_plain_font->GetHeight(&fh);
+	float lineHeight = fh.ascent + fh.descent + fh.leading;
+	
 	// Profile list on the left
 	pListProfiles = new BListView("profiles");
 	pListProfiles->SetSelectionMessage(new BMessage(MSG_PROFILE_SEL));
 	BScrollView * const scrollProfiles = new BScrollView("profilesScroll", pListProfiles, 0, false, true);
+	float minSize = pListProfiles->StringWidth("M") * 20;
+	scrollProfiles->SetExplicitMinSize({minSize, B_SIZE_UNSET});
+	scrollProfiles->SetExplicitPreferredSize({minSize, B_SIZE_UNSET});
 	
 	BButton * const btnAdd = new BButton("add", "Add", new BMessage(MSG_PROF_ADD));
+	btnAdd->SetExplicitAlignment({B_ALIGN_USE_FULL_WIDTH, B_ALIGN_VERTICAL_UNSET});
+	
 	BButton * const btnDup = new BButton("dup", "Duplicate", new BMessage(MSG_PROF_DUP));
+	btnDup->SetExplicitAlignment({B_ALIGN_USE_FULL_WIDTH, B_ALIGN_VERTICAL_UNSET});
+	
 	BButton * const btnDel = new BButton("del", "Delete", new BMessage(MSG_PROF_DEL));
+	btnDel->SetExplicitAlignment({B_ALIGN_USE_FULL_WIDTH, B_ALIGN_VERTICAL_UNSET});
+	
 	BButton * const btnRename = new BButton("rename", "Rename", new BMessage(MSG_PROF_RENAME));
+	btnRename->SetExplicitAlignment({B_ALIGN_USE_FULL_WIDTH, B_ALIGN_VERTICAL_UNSET});
 	
 	// Profile settings on the right - put in a tab view
 	BTabView * const tabView = new BTabView("tabs", B_WIDTH_FROM_WIDEST);
@@ -117,40 +131,71 @@ pListDisabledModules(nullptr)
 	// Systems tab
 	BView * const systemsTab = new BView("Systems", 0);
 	
-	pCreateSystem(pSysGraphic, "Graphic:", deModuleSystem::emtGraphic,
-		MSG_MOD_GRA_CHANGED, systemsTab);
-	pCreateSystem(pSysInput, "Input:", deModuleSystem::emtInput,
-		MSG_MOD_INP_CHANGED, systemsTab);
-	pCreateSystem(pSysPhysics, "Physics:", deModuleSystem::emtPhysics,
-		MSG_MOD_PHY_CHANGED, systemsTab);
-	pCreateSystem(pSysAnimator, "Animator:", deModuleSystem::emtAnimator,
-		MSG_MOD_AMR_CHANGED, systemsTab);
-	pCreateSystem(pSysAI, "AI:", deModuleSystem::emtAI,
-		MSG_MOD_AI_CHANGED, systemsTab);
-	pCreateSystem(pSysCrashRecovery, "Crash Recovery:", deModuleSystem::emtCrashRecovery,
-		MSG_MOD_CR_CHANGED, systemsTab);
-	pCreateSystem(pSysAudio, "Audio:", deModuleSystem::emtAudio,
-		MSG_MOD_AUD_CHANGED, systemsTab);
-	pCreateSystem(pSysSynthesizer, "Synthesizer:", deModuleSystem::emtSynthesizer,
-		MSG_MOD_SYN_CHANGED, systemsTab);
-	pCreateSystem(pSysNetwork, "Network:", deModuleSystem::emtNetwork,
-		MSG_MOD_NET_CHANGED, systemsTab);
-	pCreateSystem(pSysVR, "VR:", deModuleSystem::emtVR,
-		MSG_MOD_VR_CHANGED, systemsTab);
+	pCreateSystem(pSysGraphic, deModuleSystem::emtGraphic, MSG_MOD_GRA_CHANGED, systemsTab);
+	pCreateSystem(pSysInput, deModuleSystem::emtInput, MSG_MOD_INP_CHANGED, systemsTab);
+	pCreateSystem(pSysPhysics, deModuleSystem::emtPhysics, MSG_MOD_PHY_CHANGED, systemsTab);
+	pCreateSystem(pSysAnimator, deModuleSystem::emtAnimator, MSG_MOD_AMR_CHANGED, systemsTab);
+	pCreateSystem(pSysAI, deModuleSystem::emtAI, MSG_MOD_AI_CHANGED, systemsTab);
+	pCreateSystem(pSysCrashRecovery, deModuleSystem::emtCrashRecovery, MSG_MOD_CR_CHANGED, systemsTab);
+	pCreateSystem(pSysAudio, deModuleSystem::emtAudio, MSG_MOD_AUD_CHANGED, systemsTab);
+	pCreateSystem(pSysSynthesizer, deModuleSystem::emtSynthesizer, MSG_MOD_SYN_CHANGED, systemsTab);
+	pCreateSystem(pSysNetwork, deModuleSystem::emtNetwork, MSG_MOD_NET_CHANGED, systemsTab);
+	pCreateSystem(pSysVR, deModuleSystem::emtVR, MSG_MOD_VR_CHANGED, systemsTab);
 	
-	BLayoutBuilder::Group<>(systemsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
+	BLayoutBuilder::Grid<>(systemsTab, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(pSysGraphic.menuField)
-		.Add(pSysInput.menuField)
-		.Add(pSysPhysics.menuField)
-		.Add(pSysAnimator.menuField)
-		.Add(pSysAI.menuField)
-		.Add(pSysCrashRecovery.menuField)
-		.Add(pSysAudio.menuField)
-		.Add(pSysSynthesizer.menuField)
-		.Add(pSysNetwork.menuField)
-		.Add(pSysVR.menuField)
-		.AddGlue()
+		
+		.Add(new BStringView("label", "Graphic:"), 0, 0)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 0)
+			.Add(pSysGraphic.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Input:"), 0, 1)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 1)
+			.Add(pSysInput.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Physics:"), 0, 2)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 2)
+			.Add(pSysPhysics.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Animator:"), 0, 3)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 3)
+			.Add(pSysAnimator.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "AI:"), 0, 4)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 4)
+			.Add(pSysAI.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Crash Recovery:"), 0, 5)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 5)
+			.Add(pSysCrashRecovery.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Audio:"), 0, 6)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 6)
+			.Add(pSysAudio.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Synthesizer:"), 0, 7)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 7)
+			.Add(pSysSynthesizer.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "Network:"), 0, 8)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 8)
+			.Add(pSysNetwork.menuField)
+		.End()
+		
+		.Add(new BStringView("label", "VR:"), 0, 9)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 9)
+			.Add(pSysVR.menuField)
+		.End()
+		
+		.AddGlue(0, 10)
 	.End();
 	tabView->AddTab(systemsTab);
 	
@@ -160,29 +205,44 @@ pListDisabledModules(nullptr)
 	pListMPModules = new BListView("mpModules");
 	pListMPModules->SetSelectionMessage(new BMessage(MSG_MP_MODULE_SEL));
 	BScrollView * const scrollMPModules = new BScrollView("mpModulesScroll", pListMPModules, 0, false, true);
+	minSize = pListMPModules->StringWidth("M") * 15;
+	scrollMPModules->SetExplicitMinSize({minSize, lineHeight * 2});
+	scrollMPModules->SetExplicitPreferredSize({minSize, lineHeight * 6});
 	
-	pContainerMPParams = new BGroupView(B_VERTICAL, B_USE_SMALL_SPACING);
-	BScrollView * const scrollMPParams = new BScrollView("mpParamsScroll", pContainerMPParams, 0, false, true);
+	pContainerMPParams = new BGridView(B_VERTICAL, B_USE_SMALL_SPACING);
+	
+	pScrollMPParams = new BScrollView("mpParamsScroll", pContainerMPParams, 0, false, true);
+	minSize = pContainerMPParams->StringWidth("M") * 15;
+	pScrollMPParams->SetExplicitMinSize({minSize, lineHeight * 2});
+	pScrollMPParams->SetExplicitPreferredSize({minSize, lineHeight * 6});
+	
+	BLayoutBuilder::Grid<>(pContainerMPParams, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING)
+	.End();
 	
 	pTextMPParamInfo = new BTextView("mpParamInfo");
 	pTextMPParamInfo->MakeEditable(false);
 	pTextMPParamInfo->SetWordWrap(true);
 	BScrollView * const scrollMPInfo = new BScrollView("mpInfoScroll", pTextMPParamInfo, 0, false, true);
+	scrollMPInfo->SetExplicitMinSize({B_SIZE_UNSET, lineHeight * 3});
+	scrollMPInfo->SetExplicitPreferredSize({B_SIZE_UNSET, lineHeight * 3});
 	
-	pBtnMPCatBasic = new BButton("catBasic", "Basic", new BMessage(MSG_MP_CAT_BASIC));
-	pBtnMPCatAdvanced = new BButton("catAdvanced", "Advanced", new BMessage(MSG_MP_CAT_ADVANCED));
-	pBtnMPCatExpert = new BButton("catExpert", "Expert", new BMessage(MSG_MP_CAT_EXPERT));
+	pOptMPCatBasic = new BRadioButton("catBasic", "Basic", new BMessage(MSG_MP_CAT_BASIC));
+	pOptMPCatBasic->SetValue(1);
+	pOptMPCatAdvanced = new BRadioButton("catAdvanced", "Advanced", new BMessage(MSG_MP_CAT_ADVANCED));
+	pOptMPCatExpert = new BRadioButton("catExpert", "Expert", new BMessage(MSG_MP_CAT_EXPERT));
 	
 	BLayoutBuilder::Group<>(mpTab, B_HORIZONTAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(scrollMPModules, 0.3f)
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING, 0.7f)
-			.Add(scrollMPParams)
-			.Add(scrollMPInfo, 0.3f)
-			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING)
-				.Add(pBtnMPCatBasic)
-				.Add(pBtnMPCatAdvanced)
-				.Add(pBtnMPCatExpert)
+		.Add(scrollMPModules, 0.0f)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING, 1.0f)
+			.Add(pScrollMPParams, 1.0f)
+			.Add(scrollMPInfo, 0.0f)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 0.0f)
+				.AddGlue()
+				.Add(pOptMPCatBasic)
+				.Add(pOptMPCatAdvanced)
+				.Add(pOptMPCatExpert)
 				.AddGlue()
 			.End()
 		.End()
@@ -192,13 +252,17 @@ pListDisabledModules(nullptr)
 	// Run Parameters tab
 	BView * const runParamsTab = new BView("Run Parameters", 0);
 	
-	pEditRunArgs = new BTextControl("runArgs", "Run Arguments:", "", nullptr);
+	pEditRunArgs = new BTextControl("runArgs", nullptr, "", nullptr);
 	pChkReplaceRunArgs = new BCheckBox("replaceArgs", "Replace Run Arguments", nullptr);
-	pEditWidth = new BTextControl("width", "Width:", "1280", nullptr);
-	pEditHeight = new BTextControl("height", "Height:", "720", nullptr);
+	pChkReplaceRunArgs->SetExplicitMaxSize({B_SIZE_UNLIMITED, B_SIZE_UNSET});
+	pEditWidth = new BTextControl("width", nullptr, "1280", nullptr);
+	pEditWidth->SetExplicitPreferredSize({pEditWidth->StringWidth("M") * 5, B_SIZE_UNSET});
+	pEditHeight = new BTextControl("height", nullptr, "720", nullptr);
+	pEditHeight->SetExplicitPreferredSize({pEditHeight->StringWidth("M") * 5, B_SIZE_UNSET});
 	
 	pPopupFullscreen = new BPopUpMenu("Window");
 	pMenuFullscreen = new BMenuField("fullscreen", "Full Screen:", pPopupFullscreen);
+	pMenuFullscreen->SetExplicitMaxSize({B_SIZE_UNLIMITED, B_SIZE_UNSET});
 	
 	pPopupDisableModModule = new BPopUpMenu("");
 	pMenuDisableModModule = new BMenuField("disModModule", "Module:", pPopupDisableModModule);
@@ -214,25 +278,39 @@ pListDisabledModules(nullptr)
 	BScrollView * const scrollDisabled = new BScrollView("disabledScroll",
 		pListDisabledModules, 0, false, true);
 	
+	BBox *frameDisabledModules = new BBox("frame_disabledModules");
+	frameDisabledModules->SetLabel("Disabled Module Versions:");
+	
+	BLayoutBuilder::Group<>(frameDisabledModules, B_VERTICAL, B_USE_SMALL_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING, lineHeight, B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
+		.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING)
+			.Add(pMenuDisableModModule)
+			.Add(pMenuDisableModVersion)
+			.Add(btnDisableAdd)
+			.Add(btnDisableRemove)
+		.End()
+		.Add(scrollDisabled)
+	.End();
+	
 	BLayoutBuilder::Group<>(runParamsTab, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.Add(pEditRunArgs)
-		.Add(pChkReplaceRunArgs)
-		.AddGroup(B_HORIZONTAL)
-			.Add(pEditWidth)
-			.Add(pEditHeight)
-			.Add(pMenuFullscreen)
-		.End()
-		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
-			.Add(new BStringView("disLabel", "Disable Module Versions:"))
-			.AddGroup(B_HORIZONTAL)
-				.Add(pMenuDisableModModule)
-				.Add(pMenuDisableModVersion)
-				.Add(btnDisableAdd)
-				.Add(btnDisableRemove)
+		
+		.AddGrid(B_USE_SMALL_SPACING, B_USE_SMALL_SPACING, 0.0f)
+			.Add(new BStringView("label", "Run Arguments:"), 0, 0)
+			.Add(pEditRunArgs, 1, 0)
+			
+			.Add(pChkReplaceRunArgs, 1, 1)
+			
+			.Add(new BStringView("label", "Window Size:"), 0, 2)
+			.AddGroup(B_HORIZONTAL, B_USE_SMALL_SPACING, 1, 2)
+				.Add(pEditWidth, 0.0f)
+				.Add(new BStringView("label", "x"), 0.0f)
+				.Add(pEditHeight, 0.0f)
+				.Add(pMenuFullscreen, 1.0f)
 			.End()
-			.Add(scrollDisabled)
 		.End()
+		
+		.Add(frameDisabledModules)
 	.End();
 	tabView->AddTab(runParamsTab);
 	
@@ -242,19 +320,19 @@ pListDisabledModules(nullptr)
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING, 0.3f)
-				.Add(scrollProfiles)
-				.AddGroup(B_HORIZONTAL)
-					.Add(btnAdd)
-					.Add(btnDup)
-					.Add(btnDel)
-					.Add(btnRename)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING, 1.0f)
+			.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING, 0.0f)
+				.Add(scrollProfiles, 1.0f)
+				.AddGrid(0.0f, 0.0f, 0.0f)
+					.Add(btnAdd, 0, 0)
+					.Add(btnDel, 1, 0)
+					.Add(btnRename, 0, 1)
+					.Add(btnDup, 1, 1)
 				.End()
 			.End()
-			.Add(tabView, 0.7f)
+			.Add(tabView, 1.0f)
 		.End()
-		.AddGroup(B_HORIZONTAL)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING, 0.0f)
 			.AddGlue()
 			.Add(btnOK)
 			.Add(btnCancel)
@@ -266,6 +344,9 @@ pListDisabledModules(nullptr)
 	pLoadProfiles(selectProfile);
 	
 	ResizeToPreferred();
+	
+	float minWidth = be_plain_font->StringWidth("M") * 90;
+	SetSizeLimits(decMath::max(Bounds().Width(), minWidth), 99999, Bounds().Height(), 99999);
 	
 	CenterOnScreen();
 }
@@ -399,53 +480,65 @@ void deglbDialogProfileList::UpdateMPParameterList(){
 	}
 	
 	const decString moduleName(selItem->Text());
-	const delEngineModule * const engineModule = pWindowMain->GetLauncher()->
-		GetEngine().GetModules().GetNamed(moduleName);
+	auto engineModule = pWindowMain->GetLauncher()->GetEngine().GetModules().GetNamed(moduleName);
 	if(!engineModule){
 		return;
 	}
 	
-	const delEMParameter::List &paramList = engineModule->GetParameters();
-	const int count = paramList.GetCount();
+	const auto &paramList = engineModule->GetParameters();
 	
 	decStringSet names;
-	for(int i=0; i<count; i++){
-		names.Add(paramList.GetAt(i)->GetInfo().GetName());
-	}
+	paramList.Visit([&](const delEMParameter &p){
+		names.Add(p.GetInfo().GetName());
+	});
 	
 	const decStringList sorted(decStringList(names).GetSortedAscending());
 	delGameProfile &profile = *pGetSelectedProfile()->edit;
+	const delGPModule * const gpmodule = profile.GetModules().FindNamed(moduleName);
+	
+	auto layout = dynamic_cast<BGridLayout*>(pContainerMPParams->GetLayout());
+	int curRow = 0;
+	
+	while(layout->CountItems() > 0){
+		layout->RemoveItem(layout->CountItems() - 1);
+	}
 	
 	sorted.Visit([&](const decString &name){
-		delEMParameter *parameter = nullptr;
-		for(int i=0; i<count; i++){
-			if(paramList.GetAt(i)->GetInfo().GetName() == name){
-				parameter = paramList.GetAt(i);
-				break;
-			}
+		auto parameter = paramList.FindOrDefault([&](const delEMParameter &p){
+			return p.GetInfo().GetName() == name;
+		});
+		if(!parameter){
+			return;
 		}
-		if(parameter){
-			auto param = deglbDialogProfileListParameter::Ref::New(
-				*parameter, profile, moduleName.GetString(), MSG_MP_PARAM_CHANGED);
-			pMPParameters.Add(param);
-			
-			BGroupView * const row = new BGroupView(B_HORIZONTAL, B_USE_SMALL_SPACING);
-			BLayoutBuilder::Group<>(row)
-				.Add(param->GetLabel(), 0.4f)
-				.Add(param->GetEditWidget(), 0.6f)
-			.End();
-			pContainerMPParams->GetLayout()->AddView(row);
+		
+		const bool visible =
+			(gpmodule && gpmodule->GetParameters().Has(name))
+			|| parameter->GetInfo().GetCategory() <= pMPCategory;
+		if(!visible){
+			return;
 		}
+		
+		auto param = deglbDialogProfileListParameter::Ref::New(*parameter,
+			profile, moduleName, MSG_MP_PARAM_CHANGED, BMessenger(this));
+		pMPParameters.Add(param);
+		
+		layout->AddView(param->GetLabel(), 0, curRow);
+		layout->AddView(param->GetEditWidget(), 1, curRow);
+		curRow++;
+		
+		param->Update();
 	});
 	
-	UpdateMPParameterVisibility();
-	pContainerMPParams->InvalidateLayout();
-}
-
-void deglbDialogProfileList::UpdateMPParameterVisibility(){
-	pMPParameters.Visit([&](deglbDialogProfileListParameter &param){
-		param.UpdateVisibility(pMPCategory);
-	});
+	layout->AddItem(BSpaceLayoutItem::CreateGlue(), 0, curRow);
+	layout->AddItem(BSpaceLayoutItem::CreateGlue(), 1, curRow);
+	
+	pScrollMPParams->InvalidateLayout(true);
+	
+	// haiku fails to update scrollbars in BScrollView. "creative" way to get it working
+	pScrollMPParams->ResizeBy(0.0f, 1.0f);
+	pScrollMPParams->Layout(true);
+	pScrollMPParams->ResizeBy(0.0f, -1.0f);
+	pScrollMPParams->Layout(true);
 }
 
 void deglbDialogProfileList::UpdateFullscreenResolutions(){
@@ -546,17 +639,12 @@ const char *moduleVersion){
 		delete system.popup->RemoveItem((int32)0);
 	}
 	
-	BMessage *msg = new BMessage(system.msgWhat);
-	msg->AddString("module", "");
-	msg->AddString("version", "");
-	system.popup->AddItem(new BMenuItem("< Best Available >", msg));
-	
 	pWindowMain->GetLauncher()->GetEngine().GetModules().Visit([&](const delEngineModule &module){
 		if((int)module.GetType() != system.type){
 			return;
 		}
 		auto text = decString::Formatted("{0} {1}", module.GetName(), module.GetVersion());
-		msg = new BMessage(system.msgWhat);
+		auto msg = new BMessage(system.msgWhat);
 		msg->AddString("module", module.GetName());
 		msg->AddString("version", module.GetVersion());
 		system.popup->AddItem(new BMenuItem(text, msg));
@@ -796,42 +884,51 @@ void deglbDialogProfileList::MessageReceived(BMessage *message){
 		
 	case MSG_MP_PARAM_CHANGED:{
 		void *paramPtr = nullptr;
-		if(message->FindPointer("param", &paramPtr) == B_OK && paramPtr){
-			deglbDialogProfileListParameter * const param =
-				static_cast<deglbDialogProfileListParameter*>(paramPtr);
-			
-			// validate the pointer is still in our current list
-			if(!pMPParameters.Has(param)){
-				break;
-			}
-			
+		if(message->FindPointer("param", &paramPtr) != B_OK || !paramPtr){
+			break;
+		}
+		
+		deglbDialogProfileListParameter * const param =
+			static_cast<deglbDialogProfileListParameter*>(paramPtr);
+		
+		// validate the pointer is still in our current list
+		if(!pMPParameters.Has(param)){
+			break;
+		}
+		
+		BString action;
+		if(message->FindString("action", &action) != B_OK){
+			break;
+		}
+		
+		if(action == "valueChanged"){
 			pTextMPParamInfo->SetText(param->GetDescription().GetString());
+			int16 selector = 0;
+			message->FindInt16("selector", &selector);
+			param->Apply(selector);
 			
-			if(dynamic_cast<BMenuField*>(param->GetEditWidget())){
-				param->ApplyMenuSelection();
-			}else if(dynamic_cast<BCheckBox*>(param->GetEditWidget())){
-				param->ApplyCheckBox();
-			}else if(dynamic_cast<BSlider*>(param->GetEditWidget())){
-				param->ApplySlider();
-			}else{
-				param->ApplyTextControl();
-			}
+		}else if(action == "resetValue"){
+			pTextMPParamInfo->SetText(param->GetDescription().GetString());
+			param->Reset();
+			
+		}else if(action == "updateInfoText"){
+			pTextMPParamInfo->SetText(param->GetDescription().GetString());
 		}
 		}break;
 		
 	case MSG_MP_CAT_BASIC:
 		pMPCategory = deModuleParameter::ecBasic;
-		UpdateMPParameterVisibility();
+		UpdateMPParameterList();
 		break;
 		
 	case MSG_MP_CAT_ADVANCED:
 		pMPCategory = deModuleParameter::ecAdvanced;
-		UpdateMPParameterVisibility();
+		UpdateMPParameterList();
 		break;
 		
 	case MSG_MP_CAT_EXPERT:
 		pMPCategory = deModuleParameter::ecExpert;
-		UpdateMPParameterVisibility();
+		UpdateMPParameterList();
 		break;
 		
 	case MSG_FULLSCREEN_CHANGED:
@@ -934,10 +1031,10 @@ void deglbDialogProfileList::pSetSelectedProfile(cEditProfile *profile){
 	}
 }
 
-void deglbDialogProfileList::pCreateSystem(sSystem &system, const char *label, int type,
+void deglbDialogProfileList::pCreateSystem(sSystem &system, int type,
 uint32 msgWhat, BView *container){
 	system.popup = new BPopUpMenu("< Best Available >");
-	system.menuField = new BMenuField(label, label, system.popup);
+	system.menuField = new BMenuField("field", nullptr, system.popup);
 	system.type = type;
 	system.msgWhat = msgWhat;
 }
@@ -970,7 +1067,7 @@ void deglbDialogProfileList::pLoadProfiles(delGameProfile *selectProfile){
 	UpdateProfile();
 }
 
-void deglbDialogProfileList::pRebuildMPParams(BGroupView *container,
+void deglbDialogProfileList::pRebuildMPParams(BGridView *container,
 decTObjectOrderedSet<deglbDialogProfileListParameter> &params){
 	// Clear parameter list first (releases parameter objects)
 	params.RemoveAll();

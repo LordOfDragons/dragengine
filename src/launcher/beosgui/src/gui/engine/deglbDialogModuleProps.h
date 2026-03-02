@@ -57,22 +57,22 @@ private:
 	
 	const delEngineModule::Ref pModule;
 	
-	BTextControl *pEditName;
-	BTextControl *pEditType;
-	BTextControl *pEditStatus;
-	BTextControl *pEditAuthor;
-	BTextControl *pEditVersion;
-	BTextControl *pEditPattern;
+	BTextView *pEditName;
+	BTextView *pEditType;
+	BTextView *pEditStatus;
+	BTextView *pEditAuthor;
+	BTextView *pEditVersion;
+	BTextView *pEditPattern;
 	BCheckBox *pChkIsFallback;
 	BTextView *pTextDescription;
 	
-	BTextControl *pEditErrorCode;
-	BTextControl *pEditLibFileName;
-	BTextControl *pEditLibFileSizeShould;
-	BTextControl *pEditLibFileSizeIs;
-	BTextControl *pEditLibFileHashShould;
-	BTextControl *pEditLibFileHashIs;
-	BTextControl *pEditLibFileEntryPoint;
+	BTextView *pEditErrorCode;
+	BTextView *pEditLibFileName;
+	BTextView *pEditLibFileSizeShould;
+	BTextView *pEditLibFileSizeIs;
+	BTextView *pEditLibFileHashShould;
+	BTextView *pEditLibFileHashIs;
+	BTextView *pEditLibFileEntryPoint;
 	
 	
 	

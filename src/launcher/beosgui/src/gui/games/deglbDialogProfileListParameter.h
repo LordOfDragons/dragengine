@@ -31,6 +31,7 @@
 #include <Slider.h>
 #include <StringView.h>
 #include <TextControl.h>
+#include <GroupView.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -58,12 +59,16 @@ private:
 	BStringView *pLabel;
 	BMenuField *pMenuField;
 	BPopUpMenu *pPopUpMenu;
+	BGroupView *pViewCheckBox;
 	BCheckBox *pCheckBox;
 	BSlider *pSlider;
+	BTextControl *pSliderInput;
+	BGroupView *pViewSlider;
 	BTextControl *pTextControl;
 	
 	bool pCustomized;
 	uint32 pMsgWhat;
+	BMessenger pTarget;
 	
 	
 	
@@ -72,7 +77,7 @@ public:
 	/*@{*/
 	/** \brief Create parameter. */
 	deglbDialogProfileListParameter(delEMParameter &parameter, delGameProfile &profile,
-		const char *moduleName, uint32 msgWhat);
+		const char *moduleName, uint32 msgWhat, BMessenger target);
 	
 protected:
 	/** \brief Clean up parameter. */
@@ -102,6 +107,9 @@ public:
 	/** \brief Update edit widget from current parameter value. */
 	void Update();
 	
+	/** \brief Apply value. */
+	void Apply(int selector);
+	
 	/** \brief Apply value from menu field selection. */
 	void ApplyMenuSelection();
 	
@@ -109,7 +117,7 @@ public:
 	void ApplyCheckBox();
 	
 	/** \brief Apply value from slider. */
-	void ApplySlider();
+	void ApplySlider(int selector);
 	
 	/** \brief Apply value from text control. */
 	void ApplyTextControl();
@@ -117,8 +125,11 @@ public:
 	/** \brief Reset value to default. */
 	void Reset();
 	
-	/** \brief Update visibility. */
-	void UpdateVisibility(deModuleParameter::eCategory category);
+	/** \brief Label context menu. */
+	void OnLabelContextMenu(const BPoint &where);
+	
+	/** \brief Label clicked. */
+	void OnLabelClicked();
 	/*@}*/
 	
 	
