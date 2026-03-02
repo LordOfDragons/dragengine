@@ -38,8 +38,11 @@
 #include <RadioButton.h>
 #include <OS.h>
 #include <GridView.h>
+#include <TabView.h>
 
 #include "deglbDialogProfileListParameter.h"
+#include "../deglbIconView.h"
+#include "../deglbIconTabView.h"
 
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/profile/delGameProfile.h>
@@ -77,6 +80,26 @@ public:
 		MSG_MOD_NET_CHANGED = 'plme',
 		MSG_MOD_SYN_CHANGED = 'plmf',
 		MSG_MOD_VR_CHANGED = 'plmh',
+		MSG_MOD_GRA_VERSION_CHANGED = 'pvmg',
+		MSG_MOD_INP_VERSION_CHANGED = 'pvmi',
+		MSG_MOD_PHY_VERSION_CHANGED = 'pvmp',
+		MSG_MOD_AMR_VERSION_CHANGED = 'pvma',
+		MSG_MOD_AI_VERSION_CHANGED = 'pvmb',
+		MSG_MOD_CR_VERSION_CHANGED = 'pvmc',
+		MSG_MOD_AUD_VERSION_CHANGED = 'pvmd',
+		MSG_MOD_NET_VERSION_CHANGED = 'pvme',
+		MSG_MOD_SYN_VERSION_CHANGED = 'pvmf',
+		MSG_MOD_VR_VERSION_CHANGED = 'pvmh',
+		MSG_MOD_GRA_INFO = 'pimg',
+		MSG_MOD_INP_INFO = 'pimi',
+		MSG_MOD_PHY_INFO = 'pimp',
+		MSG_MOD_AMR_INFO = 'pima',
+		MSG_MOD_AI_INFO = 'pimb',
+		MSG_MOD_CR_INFO = 'pimc',
+		MSG_MOD_AUD_INFO = 'pimd',
+		MSG_MOD_NET_INFO = 'pime',
+		MSG_MOD_SYN_INFO = 'pimf',
+		MSG_MOD_VR_INFO = 'pimh',
 		MSG_RUNARGS_CHANGED = 'plra',
 		MSG_WIDTH_CHANGED = 'plwc',
 		MSG_HEIGHT_CHANGED = 'plhc',
@@ -106,11 +129,30 @@ private:
 		~cEditProfile() override;
 	};
 	
+	/** \brief Profile list item with validity icon. */
+	class cProfileListItem : public BListItem{
+	private:
+		BBitmap *pIcon;
+		BString pText;
+		
+	public:
+		cProfileListItem(BBitmap *icon, const char *text);
+		void DrawItem(BView *owner, BRect bounds, bool complete) override;
+		void Update(BView *owner, const BFont *font) override;
+	};
+	
 	struct sSystem{
+		deglbIconView *icon;
 		BMenuField *menuField;
 		BPopUpMenu *popup;
+		BMenuField *menuFieldVersion;
+		BPopUpMenu *popupVersion;
+		BButton *btnInfo;
 		int type;
 		uint32 msgWhat;
+		uint32 msgVersionWhat;
+		uint32 msgInfoWhat;
+		bool valid;
 	};
 	
 	deglbWindowMain *pWindowMain;
@@ -121,6 +163,10 @@ private:
 	decTObjectOrderedSet<cEditProfile> pProfiles;
 	
 	BListView *pListProfiles;
+	
+	bool pSystemsValid;
+	deglbIconTabView *pTabSystems;
+	BTabView *pTabView;
 	
 	sSystem pSysGraphic;
 	sSystem pSysInput;
@@ -143,6 +189,8 @@ private:
 	BRadioButton *pOptMPCatExpert;
 	decTObjectOrderedSet<deglbDialogProfileListParameter> pMPParameters;
 	deModuleParameter::eCategory pMPCategory;
+	
+	static bool pAllowExpertMode;
 	
 	// Run Parameters tab
 	BTextControl *pEditRunArgs;
@@ -222,7 +270,13 @@ public:
 private:
 	cEditProfile *pGetSelectedProfile() const;
 	void pSetSelectedProfile(cEditProfile *profile);
-	void pCreateSystem(sSystem &system, int type, uint32 msgWhat, BView *container);
+	void pCreateSystem(sSystem &system, int type, uint32 msgWhat,
+		uint32 msgVersionWhat, uint32 msgInfoWhat);
+	void pUpdateSystemVersionPopup(sSystem &system, const char *moduleName,
+		const char *selectedVersion);
+	void pUpdateSystemIcon(sSystem &system, const char *moduleName,
+		const char *moduleVersion);
+	void pUpdateSystemsTabIcon();
 	void pLoadProfiles(delGameProfile *selectProfile);
 	void pRebuildMPParams(BGridView *container,
 		decTObjectOrderedSet<deglbDialogProfileListParameter> &params);
