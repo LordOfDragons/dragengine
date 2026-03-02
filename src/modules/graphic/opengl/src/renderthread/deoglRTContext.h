@@ -228,6 +228,11 @@ public:
 	 */
 	bool GetUserRequestedQuit();
 	
+	/**
+	 * Set user requested quit.
+	 */
+	void SetUserRequestedQuit(bool userRequestedQuit);
+	
 	/** Application is activated. */
 	inline bool GetAppActivated() const{ return pAppActivated; }
 	

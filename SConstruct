@@ -8,7 +8,7 @@ import shlex
 tools = ARGUMENTS.get('tools', '')
 if tools:
 	if tools == 'mingw64':
-		import os, shutil
+		import os, shuti
 		
 		# import os. llvm-mingw needs to be installed outside /usr . required PATH to be respected
 		parent_env = Environment(ENV = {'PATH': os.environ['PATH']}, CPPPATH='.', LIBPATH='.', tools=['mingw'])
@@ -226,6 +226,7 @@ params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
 params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
 params.Add(TernaryVariable('build_guilauncher', 'Build GUI Launcher'))
+params.Add(TernaryVariable('build_beosgui_launcher', 'Build BeOS GUI Launcher'))
 params.Add(TernaryVariable('build_consolelauncher', 'Build Console Launcher'))
 params.Add(TernaryVariable('build_font_freetype', 'Build FreeType Font Module'))
 params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
@@ -981,6 +982,7 @@ scdirs.append('src/dragengine/asset')
 scdirs.append('src/launcher/shared')
 scdirs.append('src/launcher/console')
 scdirs.append('src/launcher/gui')
+scdirs.append('src/launcher/beosgui')
 scdirs.append('src/launcher/android')
 scdirs.append('src/launcher/live')
 scdirs.append('src/launcher/web')

@@ -497,10 +497,14 @@ bool deoglRTContext::GetUserRequestedQuit(){
 	return requested;
 }
 
+void deoglRTContext::SetUserRequestedQuit(bool userRequestedQuit){
+	pUserRequestedQuit = userRequestedQuit;
+}
+
 void deoglRTContext::DropCompileContexts(int count){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	
 	int i;
+	
 #ifdef OS_UNIX_X11
 #ifdef BACKEND_OPENGL
 	for(i=count; i<pCompileContextCount; i++){
@@ -535,8 +539,10 @@ void deoglRTContext::DropCompileContexts(int count){
 	}
 	
 #elif defined OS_BEOS
+	(void)logger; (void)i;
 	
 #elif defined OS_MACOS
+	(void)logger; (void)i;
 	
 #elif defined OS_W32
 	for(i=count; i<pCompileContextCount; i++){
