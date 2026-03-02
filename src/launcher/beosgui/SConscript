@@ -48,9 +48,21 @@ globFiles(envLauncher, 'src', '*.h', headers)
 
 objects = [envLauncher.StaticObject(s) for s in sources]
 
+# update RDEF
+version = envLauncher['version'].split('.')
+
+rdefUpdates = [
+	{'action': 'text', 'value': version[0], 'keyword': 'VERSION_MAJOR'},
+	{'action': 'text', 'value': version[1] if len(version) > 1 else '0', 'keyword': 'VERSION_MINOR'},
+	{'action': 'text', 'value': version[2] if len(version) > 2 else '0', 'keyword': 'VERSION_PATCH'}]
+
+updateRdef = envLauncher.UpdateModuleManifest('beos_rdef',
+	envLauncher.File('src/beos_res.rdef.in').srcnode(),
+	ManifestUpdates=rdefUpdates)
+
 # build: compile first, then add resources
 program_org = envLauncher.Program(target='delauncher-gui-org', source=objects, LIBS=libs)
-rsrc = envLauncher.RDef('src/beos_res.rdef')
+rsrc = envLauncher.RDef(updateRdef)
 program = envLauncher.Rsrc(target='delauncher-gui', source=[program_org, rsrc])
 
 targetBuild = parent_env.Alias('launcher_beosgui_build', program)
