@@ -78,11 +78,11 @@ private:
 		cGLWindow &pWindow;
 	public:
 		cGLView(cGLWindow &widow, const BRect &frame);
-		virtual void KeyDown(const char *bytes, int32 numBytes);
-		virtual void KeyUp(const char *bytes, int32 numBytes);
-		virtual void MouseDown(BPoint point);
-		virtual void MouseMoved(BPoint point, uint32 transit, const BMessage *message);
-		virtual void MouseUp(BPoint point);
+		void KeyDown(const char *bytes, int32 numBytes) override;
+		void KeyUp(const char *bytes, int32 numBytes) override;
+		void MouseDown(BPoint point) override;
+		void MouseMoved(BPoint point, uint32 transit, const BMessage *message) override;
+		void MouseUp(BPoint point) override;
 	};
 	
 	class cGLWindow : public BDirectWindow{
@@ -93,15 +93,15 @@ private:
 		bool pBlockQuitRequested;
 	public:
 		cGLWindow(deoglRRenderWindow &window);
-		virtual ~cGLWindow();
+		~cGLWindow() override;
 		inline deoglRRenderWindow &GetWindow() const{ return pWindow; }
 		inline cGLView *GetGLView() const{ return pGLView; }
 		void SendCurMessageToEngine();
-		virtual void DirectConnected(direct_buffer_info *info);
-		virtual void WindowActivated(bool active);
-		virtual void MessageReceived(BMessage *message);
-		virtual	void FrameResized(float newWidth, float newHeight);
-		virtual	bool QuitRequested();
+		void DirectConnected(direct_buffer_info *info) override;
+		void WindowActivated(bool active) override;
+		void MessageReceived(BMessage *message) override;
+		void FrameResized(float newWidth, float newHeight) override;
+		bool QuitRequested() override;
 		void SetBlockQuitRequested(bool blockQuitRequested);
 	};
 	

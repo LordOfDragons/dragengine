@@ -1,0 +1,288 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef _DEGLB_DIALOGPROFILELIST_H_
+#define _DEGLB_DIALOGPROFILELIST_H_
+
+#include <Window.h>
+#include <Button.h>
+#include <GroupView.h>
+#include <ListView.h>
+#include <ScrollView.h>
+#include <MenuField.h>
+#include <PopUpMenu.h>
+#include <TextControl.h>
+#include <TextView.h>
+#include <CheckBox.h>
+#include <RadioButton.h>
+#include <OS.h>
+#include <GridView.h>
+#include <TabView.h>
+
+#include "deglbDialogProfileListParameter.h"
+#include "../deglbIconView.h"
+#include "../deglbIconTabView.h"
+
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/profile/delGameProfile.h>
+#include <delauncher/game/profile/delGPDisableModuleVersion.h>
+
+#include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/utils/decUuid.h>
+#include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
+#include <dragengine/systems/modules/deModuleParameter.h>
+
+class deglbWindowMain;
+
+
+/**
+ * \brief Profile List Dialog.
+ */
+class deglbDialogProfileList : public BWindow{
+public:
+	enum eMessages{
+		MSG_OK = 'plok',
+		MSG_CANCEL = 'plca',
+		MSG_PROFILE_SEL = 'plps',
+		MSG_PROF_ADD = 'plpa',
+		MSG_PROF_DUP = 'plpd',
+		MSG_PROF_DEL = 'plpx',
+		MSG_PROF_RENAME = 'plpr',
+		MSG_PROF_RENAME_DONE = 'plpR',
+		MSG_MOD_GRA_CHANGED = 'plmg',
+		MSG_MOD_INP_CHANGED = 'plmi',
+		MSG_MOD_PHY_CHANGED = 'plmp',
+		MSG_MOD_AMR_CHANGED = 'plma',
+		MSG_MOD_AI_CHANGED = 'plmb',
+		MSG_MOD_CR_CHANGED = 'plmc',
+		MSG_MOD_AUD_CHANGED = 'plmd',
+		MSG_MOD_NET_CHANGED = 'plme',
+		MSG_MOD_SYN_CHANGED = 'plmf',
+		MSG_MOD_VR_CHANGED = 'plmh',
+		MSG_MOD_GRA_VERSION_CHANGED = 'pvmg',
+		MSG_MOD_INP_VERSION_CHANGED = 'pvmi',
+		MSG_MOD_PHY_VERSION_CHANGED = 'pvmp',
+		MSG_MOD_AMR_VERSION_CHANGED = 'pvma',
+		MSG_MOD_AI_VERSION_CHANGED = 'pvmb',
+		MSG_MOD_CR_VERSION_CHANGED = 'pvmc',
+		MSG_MOD_AUD_VERSION_CHANGED = 'pvmd',
+		MSG_MOD_NET_VERSION_CHANGED = 'pvme',
+		MSG_MOD_SYN_VERSION_CHANGED = 'pvmf',
+		MSG_MOD_VR_VERSION_CHANGED = 'pvmh',
+		MSG_MOD_GRA_INFO = 'pimg',
+		MSG_MOD_INP_INFO = 'pimi',
+		MSG_MOD_PHY_INFO = 'pimp',
+		MSG_MOD_AMR_INFO = 'pima',
+		MSG_MOD_AI_INFO = 'pimb',
+		MSG_MOD_CR_INFO = 'pimc',
+		MSG_MOD_AUD_INFO = 'pimd',
+		MSG_MOD_NET_INFO = 'pime',
+		MSG_MOD_SYN_INFO = 'pimf',
+		MSG_MOD_VR_INFO = 'pimh',
+		MSG_RUNARGS_CHANGED = 'plra',
+		MSG_WIDTH_CHANGED = 'plwc',
+		MSG_HEIGHT_CHANGED = 'plhc',
+		MSG_FULLSCREEN_CHANGED = 'plfc',
+		MSG_MP_MODULE_SEL = 'plmM',
+		MSG_MP_PARAM_CHANGED = 'plmP',
+		MSG_MP_CAT_BASIC = 'plcB',
+		MSG_MP_CAT_ADVANCED = 'plcA',
+		MSG_MP_CAT_EXPERT = 'plcE',
+		MSG_MP_CAT_EXPERT_ALLOW = 'plCE',
+		MSG_DISABLE_MOD_MODULE_CHANGED = 'pldM',
+		MSG_DISABLE_MOD_ADD = 'plda',
+		MSG_DISABLE_MOD_REMOVE = 'pldr'
+	};
+	
+private:
+	/** \brief Profile edit wrapper. */
+	class cEditProfile : public deObject{
+	public:
+		using Ref = deTObjectReference<cEditProfile>;
+		
+		delGameProfile::Ref original, edit;
+		
+		explicit cEditProfile(const char *name);
+		explicit cEditProfile(delGameProfile *profile);
+		
+	protected:
+		~cEditProfile() override;
+	};
+	
+	/** \brief Profile list item with validity icon. */
+	class cProfileListItem : public BListItem{
+	private:
+		BBitmap *pIcon;
+		BString pText;
+		
+	public:
+		cProfileListItem(BBitmap *icon, const char *text);
+		void DrawItem(BView *owner, BRect bounds, bool complete) override;
+		void Update(BView *owner, const BFont *font) override;
+	};
+	
+	struct sSystem{
+		deglbIconView *icon;
+		BMenuField *menuField;
+		BPopUpMenu *popup;
+		BMenuField *menuFieldVersion;
+		BPopUpMenu *popupVersion;
+		BButton *btnInfo;
+		int type;
+		uint32 msgWhat;
+		uint32 msgVersionWhat;
+		uint32 msgInfoWhat;
+		bool valid;
+	};
+	
+	deglbWindowMain *pWindowMain;
+	BMessenger pResultTarget;
+	int pResultMessage;
+	bool pResultValue;
+	
+	decTObjectOrderedSet<cEditProfile> pProfiles;
+	deTObjectReference<cEditProfile> pActiveProfile;
+	
+	BListView *pListProfiles;
+	
+	bool pSystemsValid;
+	deglbIconTabView *pTabSystems;
+	BTabView *pTabView;
+	
+	sSystem pSysGraphic;
+	sSystem pSysInput;
+	sSystem pSysPhysics;
+	sSystem pSysAnimator;
+	sSystem pSysAI;
+	sSystem pSysCrashRecovery;
+	sSystem pSysAudio;
+	sSystem pSysSynthesizer;
+	sSystem pSysNetwork;
+	sSystem pSysVR;
+	
+	// Module Parameters tab
+	BListView *pListMPModules;
+	BGridView *pContainerMPParams;
+	BScrollView *pScrollMPParams;
+	BTextView *pTextMPParamInfo;
+	BRadioButton *pOptMPCatBasic;
+	BRadioButton *pOptMPCatAdvanced;
+	BRadioButton *pOptMPCatExpert;
+	decTObjectOrderedSet<deglbDialogProfileListParameter> pMPParameters;
+	deModuleParameter::eCategory pMPCategory;
+	
+	static bool pAllowExpertMode;
+	
+	// Run Parameters tab
+	BTextControl *pEditRunArgs;
+	BCheckBox *pChkReplaceRunArgs;
+	BTextControl *pEditWidth;
+	BTextControl *pEditHeight;
+	BMenuField *pMenuFullscreen;
+	BPopUpMenu *pPopupFullscreen;
+	BMenuField *pMenuDisableModModule;
+	BPopUpMenu *pPopupDisableModModule;
+	BMenuField *pMenuDisableModVersion;
+	BPopUpMenu *pPopupDisableModVersion;
+	BListView *pListDisabledModules;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create dialog. */
+	deglbDialogProfileList(deglbWindowMain *windowMain, delGameProfile *selectProfile,
+		const BMessenger &resultTarget, int resultMessage);
+	
+	/** \brief Clean up dialog. */
+	~deglbDialogProfileList() override;
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Main window. */
+	inline deglbWindowMain *GetWindowMain() const{ return pWindowMain; }
+	
+	/** \brief Update profile list. */
+	void UpdateProfileList();
+	
+	/** \brief Update selected profile. */
+	void UpdateProfile();
+	
+	/** \brief Update system module list. */
+	void UpdateSystemModuleList(sSystem &system, const char *moduleName,
+		const char *moduleVersion);
+	
+	/** \brief Update module parameters module list. */
+	void UpdateMPModuleList();
+	
+	/** \brief Update module parameters parameter list for selected module. */
+	void UpdateMPParameterList();
+	
+	/** \brief Update fullscreen resolutions list. */
+	void UpdateFullscreenResolutions();
+	
+	/** \brief Update disable module versions list. */
+	void UpdateDisabledModuleVersionsList();
+	
+	/** \brief Update disable module version combo boxes. */
+	void UpdateDisableModuleVersionCombos();
+	
+	/** \brief Apply changes to profile. */
+	void ApplyChanges();
+	
+	/** \brief Save profiles back to manager. */
+	void SaveProfiles();
+	/*@}*/
+	
+	
+	
+	/** \name BWindow */
+	/*@{*/
+	void MessageReceived(BMessage *message) override;
+	bool QuitRequested() override;
+	/*@}*/
+	
+	
+	
+private:
+	cEditProfile *pGetSelectedProfileFromSelection() const;
+	void pSetSelectedProfile(cEditProfile *profile);
+	void pCreateSystem(sSystem &system, int type, uint32 msgWhat,
+		uint32 msgVersionWhat, uint32 msgInfoWhat);
+	void pUpdateSystemVersionPopup(sSystem &system, const char *moduleName,
+		const char *selectedVersion);
+	void pUpdateSystemIcon(sSystem &system, const char *moduleName,
+		const char *moduleVersion);
+	void pUpdateSystemsTabIcon();
+	void pLoadProfiles(delGameProfile *selectProfile);
+	void pRebuildMPParams(BGridView *container,
+		decTObjectOrderedSet<deglbDialogProfileListParameter> &params);
+};
+
+#endif
