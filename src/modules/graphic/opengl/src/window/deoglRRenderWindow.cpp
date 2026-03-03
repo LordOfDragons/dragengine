@@ -146,7 +146,7 @@ pBlockQuitRequested(true)
 	
 	// create empty cursor and assign it
 	pCursor = new BCursor(B_CURSOR_ID_NO_CURSOR);
-	pGLView->SetViewCursor(pCursor);
+	pGLView->SetViewCursor(pCursor, true);
 }
 
 deoglRRenderWindow::cGLWindow::~cGLWindow(){
@@ -167,6 +167,7 @@ void deoglRRenderWindow::cGLWindow::DirectConnected(direct_buffer_info *info){
 
 void deoglRRenderWindow::cGLWindow::WindowActivated(bool active){
 	SendCurMessageToEngine();
+	pGLView->SetViewCursor(pCursor, true);
 }
 
 void deoglRRenderWindow::cGLWindow::MessageReceived(BMessage *message){
@@ -182,7 +183,8 @@ void deoglRRenderWindow::cGLWindow::FrameResized(float newWidth, float newHeight
 bool deoglRRenderWindow::cGLWindow::QuitRequested(){
 	if(pBlockQuitRequested){
 		// do not close the window but post a quit request
-		be_app->PostMessage(B_QUIT_REQUESTED);
+		//be_app->PostMessage(B_QUIT_REQUESTED);
+		pWindow.GetRenderThread().GetContext().SetUserRequestedQuit(true);
 		return false;
 	}
 	
