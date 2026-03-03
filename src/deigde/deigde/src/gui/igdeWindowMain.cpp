@@ -1387,7 +1387,6 @@ void igdeWindowMain::UpdateSyncProject(){
 			pTimerSyncProject = nullptr;
 		}
 		
-		delete pTaskSyncGameDefinition;
 		pTaskSyncGameDefinition = nullptr;
 		pActionGameReloadXMLElementClasses->Update();
 		
@@ -1397,7 +1396,6 @@ void igdeWindowMain::UpdateSyncProject(){
 			pTimerSyncProject = nullptr;
 		}
 		if(pTaskSyncGameDefinition){
-			delete pTaskSyncGameDefinition;
 			pTaskSyncGameDefinition = nullptr;
 		}
 		
@@ -1581,7 +1579,6 @@ void igdeWindowMain::pCleanUp(){
 	}
 	
 	if(pTaskSyncGameDefinition){
-		delete pTaskSyncGameDefinition;
 		pTaskSyncGameDefinition = nullptr;
 	}
 	
