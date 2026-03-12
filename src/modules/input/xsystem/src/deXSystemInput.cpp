@@ -803,8 +803,14 @@ const timeval &eventTime){
 	for(int i=0; i<count; i++){
 		deInputEvent &event = queue.GetEventAt(i);
 		if(event.GetType() == deInputEvent::eeMouseMove && event.GetDevice() == device){
-			event.SetX(event.GetX() + x);
-			event.SetY(event.GetY() + y);
+			if(GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()){
+				event.SetX(event.GetX() + x);
+				event.SetY(event.GetY() + y);
+				
+			}else{
+				event.SetX(x);
+				event.SetY(y);
+			}
 			event.SetState(state);
 			return;
 		}
