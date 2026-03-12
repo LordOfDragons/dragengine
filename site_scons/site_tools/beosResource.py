@@ -25,6 +25,8 @@ def generate(env):
 			raise Exception('Failed building')
 		if os.system('/bin/xres -o "{}" "{}"'.format(target[0], source[1].abspath)):
 			raise Exception('Failed building')
+		if os.system('/bin/mimeset -f "{}"'.format(target[0].abspath)):
+			raise Exception('Failed building')
 	
 	env.Append(BUILDERS={'RDef': Builder(action=Action(
 		builderRdef, '$RDEFCOMSTR'), suffix='.rsrc', src_suffix='.rdef')})

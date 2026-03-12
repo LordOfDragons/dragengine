@@ -149,7 +149,9 @@ if not (parent_env['OSPosix'] or parent_env['OSWindows'] or parent_env['OSBeOS']
 
 # parameters
 #params = Variables(['parameters.cache', 'custom.py'])
-params = Variables(['custom.py'])
+params = Variables([ARGUMENTS.get('config_file', 'custom.py')])
+
+params.Add(StringVariable('config_file', 'Custom settings file to load', 'custom.py'))
 
 params.Add(EnumVariable('platform_android', 'Build for Android platform', 'no', ['no', 'armv7', 'armv8', 'x86', 'quest']))
 params.Add(BoolVariable('platform_webwasm', 'Build for Web WASM platform', False))
@@ -408,6 +410,8 @@ elif parent_env['OSBeOS']:
 	
 	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'null', ['null']))
 	
+	params.Add(StringVariable('package_haiku_revision', 'Revision for Haiku package', '1'))
+	
 	params.Add(PathVariable('prefix', 'System path', '/boot/system', PathVariable.PathAccept))
 	params.Add(PathVariable('libdir', 'System libraries', '${prefix}/lib', PathVariable.PathAccept))
 	params.Add(PathVariable('includedir', 'System includes', '${prefix}/develop/include', PathVariable.PathAccept))
@@ -417,6 +421,7 @@ elif parent_env['OSBeOS']:
 	params.Add(PathVariable('sysvardir', 'System var', '${prefix}/settings', PathVariable.PathAccept))
 	params.Add(PathVariable('cachedir', 'System cache', '${prefix}/cache', PathVariable.PathAccept))
 	params.Add(PathVariable('docdir', 'System documentation', '${prefix}/documentation', PathVariable.PathAccept))
+	params.Add(PathVariable('appsdir', 'Applications', '${prefix}/apps', PathVariable.PathAccept))
 
 	params.Add(PathVariable('path_de_bin', 'Path to the Drag[en]gine binaries',
 		'${execdir}', PathVariable.PathAccept))

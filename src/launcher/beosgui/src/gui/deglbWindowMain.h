@@ -48,6 +48,8 @@ class deglbWindowMain : public BWindow{
 public:
 	enum eMessages{
 		MSG_FILE_QUIT = 'fqit',
+		MSG_FILE_RUN_DELGA = 'frud',
+		MSG_FILE_RUN_DELGA_RESULT = 'fruD',
 		MSG_VIEW_GAMES = 'vgam',
 		MSG_VIEW_ENGINE = 'venp',
 		MSG_VIEW_LOGGING = 'vlog',
@@ -142,6 +144,8 @@ public:
 	/*@{*/
 	void MessageReceived(BMessage *message) override;
 	bool QuitRequested() override;
+	void FileRunDelga();
+	void RunDelga(const char *filename);
 	/*@}*/
 };
 
