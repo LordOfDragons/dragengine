@@ -762,8 +762,8 @@ deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime){
 void deXSystemInput::pAddMousePress(int device, int button, int state,
 const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
-	deInputEvent event;
 	
+	deInputEvent event;
 	event.SetType(deInputEvent::eeMousePress);
 	event.SetDevice(device);
 	event.SetCode(button);
@@ -779,8 +779,8 @@ const timeval &eventTime){
 void deXSystemInput::pAddMouseRelease(int device, int button, int state,
 const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
-	deInputEvent event;
 	
+	deInputEvent event;
 	event.SetType(deInputEvent::eeMouseRelease);
 	event.SetDevice(device);
 	event.SetCode(button);
@@ -796,8 +796,21 @@ const timeval &eventTime){
 void deXSystemInput::pAddMouseMove(int device, int state, int x, int y,
 const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
-	deInputEvent event;
 	
+	// if a mouse move event matching device is present update it instead of adding a new event.
+	// this ensures the game does not receive multiple mouse move events per frame update
+	const int count = queue.GetEventCount();
+	for(int i=0; i<count; i++){
+		deInputEvent &event = queue.GetEventAt(i);
+		if(event.GetType() == deInputEvent::eeMouseMove && event.GetDevice() == device){
+			event.SetX(event.GetX() + x);
+			event.SetY(event.GetY() + y);
+			event.SetState(state);
+			return;
+		}
+	}
+	
+	deInputEvent event;
 	event.SetType(deInputEvent::eeMouseMove);
 	event.SetDevice(device);
 	event.SetCode(0); // code of x axis. y axis has to be code + 1
