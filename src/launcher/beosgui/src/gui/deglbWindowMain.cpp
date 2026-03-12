@@ -413,6 +413,15 @@ void deglbWindowMain::RunDelga(const char *filename){
 	
 	delGame::Ref loadedGame(pLauncher->GetGameManager().GetGames().FindWithId(game->GetIdentifier()));
 	if(loadedGame){
+		if(loadedGame->GetDelgaFile() == path){
+			game = loadedGame;
+			
+		}else{
+			game->LoadConfig();
+			pLauncher->GetGameManager().GetGames().Remove(loadedGame);
+			pLauncher->GetGameManager().GetGames().Add(game);
+			pPanelGames->UpdateGameList();
+		}
 		game = loadedGame;
 		
 	}else{
@@ -442,12 +451,6 @@ void deglbWindowMain::RunDelga(const char *filename){
 		BAlert alert("Can not run game", "Game profile is not valid.", "OK");
 		alert.Go();
 		return;
-	}
-	
-	if(!loadedGame){
-		game->SaveConfig();
-		pLauncher->GetGameManager().GetGames().Add(game);
-		pPanelGames->UpdateGameList();
 	}
 	
 	delGameRunParams runParams;

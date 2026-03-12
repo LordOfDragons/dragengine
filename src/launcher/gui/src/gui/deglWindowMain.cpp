@@ -39,6 +39,7 @@
 #include "../config/deglConfiguration.h"
 #include "../config/deglConfigWindow.h"
 
+#include <delauncher/game/delGameRunParams.h>
 #include <delauncher/engine/delEngineInstance.h>
 
 #include <dragengine/common/exceptions.h>
@@ -64,6 +65,7 @@ FXDEFMAP(deglWindowMain) deglWindowMainMap[] = {
 	//FXMAPFUNC( SEL_CONFIGURE, 0, deglWindowMain::onResize ),
 	FXMAPFUNC(SEL_COMMAND, deglWindowMain::ID_FILE_QUIT, deglWindowMain::onFileQuit),
 	FXMAPFUNC(SEL_COMMAND, deglWindowMain::ID_FILE_INSTALL, deglWindowMain::onFileInstall),
+	FXMAPFUNC(SEL_COMMAND, deglWindowMain::ID_FILE_RUN_DELGA, deglWindowMain::onFileRunDelga),
 	FXMAPFUNC(SEL_COMMAND, deglWindowMain::ID_VIEW_GAMES, deglWindowMain::onViewGames),
 	FXMAPFUNC(SEL_COMMAND, deglWindowMain::ID_VIEW_ENGINE, deglWindowMain::onViewEngine),
 	FXMAPFUNC(SEL_COMMAND, deglWindowMain::ID_VIEW_LOGGING, deglWindowMain::onViewLogging),
@@ -144,6 +146,7 @@ FXMainWindow(papp, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50,
 	new FXMenuTitle(pMenuBar, "&File", nullptr, menuFile);
 	
 // 	new FXMenuCommand( menuFile, "Install...\t\tInstall game/patch *.delga file", nullptr, this, ID_FILE_INSTALL );
+	new FXMenuCommand(menuFile, "Run DELGA...\t\tRun *.delga file", nullptr, this, ID_FILE_RUN_DELGA);
 	
 	new FXMenuSeparator(menuFile);
 	new FXMenuCommand(menuFile, "&Quit\t\tQuits the launcher", nullptr, this, ID_FILE_QUIT);
@@ -330,11 +333,111 @@ void deglWindowMain::ReloadGamesAndPatches(){
 }
 
 
+void deglWindowMain::RunDelga(const char *filename){
+	const decString path(filename);
+	if(!decPath::IsNativePathAbsolute(path)){
+		return;
+	}
+	
+	pLauncher->GetLogger()->LogInfoFormat(pLauncher->GetLogSource(), "Run Game: '%s'", path.GetString());
+	
+	delGame::List list;
+	try{
+		const delEngineInstance::Ref instance(pLauncher->GetEngineInstanceFactory().
+			CreateEngineInstance(*pLauncher, pLauncher->GetEngine().GetLogFile()));
+		
+		instance->StartEngine();
+		instance->LoadModules();
+		
+		pLauncher->GetGameManager().LoadGameFromDisk(instance, path, list);
+		
+	}catch(const deException &e){
+		DisplayException(e);
+		return;
+	}
+	
+	if(list.IsEmpty()){
+		const auto msg = decString::Formatted("No game definition found: {0}", path);
+		pLauncher->GetLogger()->LogInfo(pLauncher->GetLogSource(), msg);
+		FXMessageBox::error(this, MBOX_OK, "Run Game", "%s", msg.GetString());
+		return;
+	}
+	
+	delGame::Ref game = list.First();
+	
+	delGame::Ref loadedGame(pLauncher->GetGameManager().GetGames().FindWithId(game->GetIdentifier()));
+	if(loadedGame){
+		if(loadedGame->GetDelgaFile() == path){
+			game = loadedGame;
+			
+		}else{
+			game->LoadConfig();
+			pLauncher->GetGameManager().GetGames().Remove(loadedGame);
+			pLauncher->GetGameManager().GetGames().Add(game);
+			pPanelGames->UpdateGameList();
+		}
+		
+	}else{
+		game->LoadConfig();
+	}
+	
+	game->VerifyRequirements();
+	
+	if(!game->GetCanRun()){
+		if(!game->GetAllFormatsSupported()){
+			FXMessageBox::error(this, MBOX_OK, "Can not run game",
+				"One or more File Formats required by the game are not working.\n\n"
+				"Try updating Drag[en]gine to the latest version");
+			
+		}else{
+			FXMessageBox::error(this, MBOX_OK, "Can not run game",
+				"Game related properties are incorrect.\n\n"
+				"Try updating Drag[en]gine to the latest version");
+		}
+		return;
+	}
+	
+	delGameProfile *profile = game->GetProfileToUse();
+	if(!profile->GetValid()){
+		FXMessageBox::error(this, MBOX_OK, "Can not run game", "Game profile is not valid.");
+		return;
+	}
+	
+	delGameRunParams runParams;
+	runParams.SetGameProfile(profile);
+	
+	decString error;
+	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+		FXMessageBox::error(this, MBOX_OK, "Can not run game", "%s", error.GetString());
+		return;
+	}
+	
+	decString arguments(profile->GetRunArguments());
+	if(!profile->GetReplaceRunArguments()){
+		arguments = game->GetRunArguments() + " " + arguments;
+	}
+	
+	runParams.SetRunArguments(arguments);
+	runParams.SetFullScreen(profile->GetFullScreen());
+	runParams.SetWidth(profile->GetWidth());
+	runParams.SetHeight(profile->GetHeight());
+	
+	const decPoint windowSize(game->GetDisplayScaledWindowSize());
+	if(windowSize != decPoint()){
+		runParams.SetWidth(windowSize.x);
+		runParams.SetHeight(windowSize.y);
+		runParams.SetFullScreen(false);
+	}
+	
+	game->StartGame(runParams);
+}
+
 
 // Events
 ///////////
 
-long deglWindowMain::onResize(FXObject*, FXSelector, void*){
+long deglWindowMain::onResize(FXObject *, FXSelector, void *)
+{
 	if(pLauncher){
 		deglConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
 		
@@ -355,8 +458,6 @@ long deglWindowMain::onResize(FXObject*, FXSelector, void*){
 	return 1;
 }
 
-
-
 long deglWindowMain::onFileInstall(FXObject*, FXSelector, void*){
 	try{
 		if(deglInstallDelga(*this).Run()){
@@ -367,6 +468,16 @@ long deglWindowMain::onFileInstall(FXObject*, FXSelector, void*){
 		DisplayException(e);
 	}
 	
+	return 1;
+}
+
+long deglWindowMain::onFileRunDelga(FXObject*, FXSelector, void*){
+	FXFileDialog dialog(this, "Run DELGA");
+	dialog.setPatternList("DELGA (*.delga)\nAll Files (*)");
+	dialog.setCurrentPattern(0);
+	if(dialog.execute(PLACEMENT_OWNER)){
+		RunDelga(dialog.getFilename().text());
+	}
 	return 1;
 }
 

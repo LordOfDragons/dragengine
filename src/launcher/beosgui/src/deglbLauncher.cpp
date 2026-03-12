@@ -134,6 +134,14 @@ bool deglbLauncher::RunCommandLineGame(){
 		
 		delGame::Ref loadedGame(GetGameManager().GetGames().FindWithId(pCmdLineGame->GetIdentifier()));
 		if(loadedGame){
+			if(loadedGame->GetDelgaFile() == pRunGame){
+				pCmdLineGame = loadedGame;
+				
+			}else{
+				pCmdLineGame->LoadConfig();
+				GetGameManager().GetGames().Remove(loadedGame);
+				GetGameManager().GetGames().Add(pCmdLineGame);
+			}
 			pCmdLineGame = loadedGame;
 			
 		}else{
