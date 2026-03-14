@@ -379,6 +379,8 @@ void deglWindowMain::RunDelga(const char *filename){
 		
 	}else{
 		game->LoadConfig();
+		pLauncher->GetGameManager().GetGames().Add(game);
+		pPanelGames->UpdateGameList();
 	}
 	
 	game->VerifyRequirements();
