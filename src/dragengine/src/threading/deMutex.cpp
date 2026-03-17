@@ -99,8 +99,14 @@ void deMutex::Lock(){
 #endif
 	
 #ifdef OS_W32
-	if(WaitForSingleObject(pMutex, INFINITE) != WAIT_OBJECT_0){
+	// WAIT_ABANDONED means the previous owner thread died but Windows still grants
+	// ownership. Accept it to avoid lock-count leaks from untracked ownership grants.
+	const DWORD result = WaitForSingleObject(pMutex, INFINITE);
+	if(result != WAIT_OBJECT_0 && result != WAIT_ABANDONED){
 		DETHROW(deeInvalidAction);
+	}
+	if(result == WAIT_ABANDONED){
+		printf("[MUTEX] %p: Acquired abandoned mutex (previous owner died)\n", this);
 	}
 #endif
 }
@@ -122,6 +128,10 @@ bool deMutex::TryLock(){
 #ifdef OS_W32
 	switch(WaitForSingleObject(pMutex, 0)){
 	case WAIT_OBJECT_0:
+		return true;
+		
+	case WAIT_ABANDONED:
+		printf("[MUTEX] %p: Acquired abandoned mutex via TryLock (previous owner died)\n", this);
 		return true;
 		
 	case WAIT_TIMEOUT:
@@ -159,6 +169,10 @@ bool deMutex::TryLock(int timeout){
 #ifdef OS_W32
 	switch(WaitForSingleObject(pMutex, timeout)){
 	case WAIT_OBJECT_0:
+		return true;
+		
+	case WAIT_ABANDONED:
+		printf("[MUTEX] %p: Acquired abandoned mutex via TryLock(timeout) (previous owner died)\n", this);
 		return true;
 		
 	case WAIT_TIMEOUT:

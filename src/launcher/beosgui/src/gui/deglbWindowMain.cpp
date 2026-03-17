@@ -30,6 +30,8 @@
 #include <Alert.h>
 #include <Screen.h>
 #include <TranslationUtils.h>
+#include <StorageKit.h>
+#include <sys/stat.h>
 
 #include "deglbWindowMain.h"
 #include "deglbPanelGames.h"
@@ -41,6 +43,7 @@
 #include "../config/deglbConfigWindow.h"
 
 #include <delauncher/engine/delEngineInstance.h>
+#include <delauncher/game/delGameRunParams.h>
 #include <delauncher/logger/delLoggerHistory.h>
 
 #include <dragengine/common/exceptions.h>
@@ -56,6 +59,28 @@
 // 1 second pulse in microseconds
 #define PULSE_TIME_USEC 1000000LL
 
+
+namespace {
+
+class DelgaExtensionFilter : public BRefFilter {
+public:
+	DelgaExtensionFilter() = default;
+	
+	bool Filter(const entry_ref* ref, BNode* node, struct stat_beos* _broken, const char* mimeType) override{
+		struct stat st;
+		if(node->GetStat(&st) != B_OK){
+			return false;
+		}
+		if(S_ISDIR(st.st_mode)){
+			return true;
+		}
+		
+		BString name(ref->name);
+		return name.EndsWith(".delga") || name.EndsWith(".degame");
+	}
+};
+
+}
 
 // Class deglbWindowMain
 /////////////////////////
@@ -95,6 +120,7 @@ pPulseRunner(nullptr)
 	pMenuBar = new BMenuBar("menuBar");
 	
 	BMenu * const menuFile = new BMenu("File");
+	menuFile->AddItem(new BMenuItem("Run DELGA", new BMessage(MSG_FILE_RUN_DELGA)));
 	menuFile->AddItem(new BMenuItem("Quit", new BMessage(MSG_FILE_QUIT), 'Q'));
 	pMenuBar->AddItem(menuFile);
 	
@@ -271,6 +297,23 @@ void deglbWindowMain::MessageReceived(BMessage *message){
 		}
 		break;
 		
+	case MSG_FILE_RUN_DELGA:
+		try{
+			FileRunDelga();
+			
+		}catch(const deException &e){
+			DisplayException(e);
+		}
+		break;
+		
+	case MSG_FILE_RUN_DELGA_RESULT:{
+		entry_ref er;
+		message->FindRef("refs", &er);
+		BEntry entry(&er, true);
+		BPath path(&entry);
+		RunDelga(path.Path());
+		}break;
+		
 	case MSG_VIEW_GAMES:
 		pPanelEngine->Hide();
 		pPanelGames->Show();
@@ -326,4 +369,118 @@ bool deglbWindowMain::QuitRequested(){
 	}
 	be_app->PostMessage(B_QUIT_REQUESTED);
 	return true;
+}
+
+
+void deglbWindowMain::FileRunDelga(){
+	(new BFilePanel(B_OPEN_PANEL, new BMessenger(this), nullptr, B_FILE_NODE, false,
+		new BMessage(MSG_FILE_RUN_DELGA_RESULT), new DelgaExtensionFilter))->Show();
+}
+
+
+void deglbWindowMain::RunDelga(const char *filename){
+	const decString path(filename);
+	if(!decPath::IsNativePathAbsolute(path)){
+		return;
+	}
+	
+	pLauncher->GetLogger()->LogInfoFormat(pLauncher->GetLogSource(), "Run Game: '%s'", path.GetString());
+	
+	delGame::List list;
+	try{
+		const delEngineInstance::Ref instance(pLauncher->GetEngineInstanceFactory().
+			CreateEngineInstance(*pLauncher, pLauncher->GetEngine().GetLogFile()));
+		
+		instance->StartEngine();
+		instance->LoadModules();
+		
+		pLauncher->GetGameManager().LoadGameFromDisk(instance, path, list);
+		
+	}catch(const deException &e){
+		DisplayException(e);
+		return;
+	}
+	
+	if(list.IsEmpty()){
+		const auto message = decString::Formatted("No game definition found: {0}", path);
+		pLauncher->GetLogger()->LogInfo(pLauncher->GetLogSource(), message);
+		BAlert alert("Run Game", message, "OK");
+		alert.Go();
+		return;
+	}
+	
+	delGame::Ref game = list.First();
+	
+	delGame::Ref loadedGame(pLauncher->GetGameManager().GetGames().FindWithId(game->GetIdentifier()));
+	if(loadedGame){
+		if(loadedGame->GetDelgaFile() == path){
+			game = loadedGame;
+			
+		}else{
+			game->LoadConfig();
+			pLauncher->GetGameManager().GetGames().Remove(loadedGame);
+			pLauncher->GetGameManager().GetGames().Add(game);
+			pPanelGames->UpdateGameList();
+		}
+		game = loadedGame;
+		
+	}else{
+		game->LoadConfig();
+		pLauncher->GetGameManager().GetGames().Add(game);
+		pPanelGames->UpdateGameList();
+	}
+	
+	game->VerifyRequirements();
+	
+	if(!game->GetCanRun()){
+		if(!game->GetAllFormatsSupported()){
+			BAlert alert("Can not run game",
+				"One or more File Formats required by the game are not working.\n\n"
+				"Try updating Drag[en]gine to the latest version", "OK");
+			alert.Go();
+			
+		}else{
+			BAlert alert("Can not run game",
+				"Game related properties are incorrect.\n\n"
+				"Try updating Drag[en]gine to the latest version", "OK");
+			alert.Go();
+		}
+		return;
+	}
+
+	delGameProfile *profile = game->GetProfileToUse();
+	if(!profile->GetValid()){
+		BAlert alert("Can not run game", "Game profile is not valid.", "OK");
+		alert.Go();
+		return;
+	}
+	
+	delGameRunParams runParams;
+	runParams.SetGameProfile(profile);
+	
+	decString error;
+	if(!runParams.FindPatches(*game, game->GetUseLatestPatch(), game->GetUseCustomPatch(), error)){
+		BAlert alert("Can not run game", error, "OK");
+		alert.Go();
+		return;
+	}
+	
+	decString arguments(profile->GetRunArguments());
+	if(!profile->GetReplaceRunArguments()){
+		arguments = game->GetRunArguments() + " " + arguments;
+	}
+	
+	runParams.SetRunArguments(arguments);
+	runParams.SetFullScreen(profile->GetFullScreen());
+	runParams.SetWidth(profile->GetWidth());
+	runParams.SetHeight(profile->GetHeight());
+	
+	const decPoint windowSize(game->GetDisplayScaledWindowSize());
+	if(windowSize != decPoint()){
+		runParams.SetWidth(windowSize.x);
+		runParams.SetHeight(windowSize.y);
+		runParams.SetFullScreen(false);
+	}
+	
+	game->StartGame(runParams);
 }

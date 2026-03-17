@@ -54,7 +54,8 @@ void deoxrInstance::sSuggestBinding::Set(deoxrAction *paction, const deoxrPath &
 deoxrInstance::deoxrInstance(deVROpenXR &oxr, bool enableDebug) :
 pOxr(oxr),
 pDebug(*this),
-pInstance(XR_NULL_HANDLE)
+pInstance(XR_NULL_HANDLE),
+pRuntimeVersion(0)
 {
 	#ifndef WITH_DEBUG
 	(void)enableDebug;
@@ -532,6 +533,15 @@ void deoxrInstance::pCreateInstance(bool enableValidationLayers){
 	
 	// create device
 	OXR_CHECK(xrCreateInstance(&instanceCreateInfo, &pInstance));
+	
+	XrInstanceProperties instanceProperties{XR_TYPE_INSTANCE_PROPERTIES};
+	OXR_CHECK(xrGetInstanceProperties(pInstance, &instanceProperties));
+	pRuntimeName = instanceProperties.runtimeName;
+	pRuntimeVersion = instanceProperties.runtimeVersion;
+	
+	pOxr.LogInfoFormat("OpenXR Runtime: %s %d.%d.%d", pRuntimeName.GetString(),
+		XR_VERSION_MAJOR(pRuntimeVersion), XR_VERSION_MINOR(pRuntimeVersion),
+		XR_VERSION_PATCH(pRuntimeVersion));
 }
 
 void deoxrInstance::pLoadFunctions(){

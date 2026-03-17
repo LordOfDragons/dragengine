@@ -51,6 +51,7 @@ public:
 		ID_LAST = FXMainWindow::ID_LAST,
 		ID_FILE_QUIT,
 		ID_FILE_INSTALL,
+		ID_FILE_RUN_DELGA,
 		ID_VIEW_GAMES,
 		ID_VIEW_ENGINE,
 		ID_VIEW_LOGGING,
@@ -150,6 +151,9 @@ public:
 	
 	/** Info button icon. */
 	inline FXIcon *GetIconButtonInfo() const{ return pIconButtonInfo; }
+	
+	/** Run DELGA file directly. */
+	void RunDelga(const char *filename);
 	/*@}*/
 	
 	
@@ -160,6 +164,7 @@ public:
 	
 	long onFileQuit(FXObject *sender, FXSelector selector, void *data);
 	long onFileInstall(FXObject *sender, FXSelector selector, void *data);
+	long onFileRunDelga(FXObject *sender, FXSelector selector, void *data);
 	
 	long onViewGames(FXObject *sender, FXSelector selector, void *data);
 	long onViewEngine(FXObject *sender, FXSelector selector, void *data);

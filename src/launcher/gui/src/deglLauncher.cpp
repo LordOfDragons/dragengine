@@ -159,7 +159,19 @@ bool deglLauncher::RunCommandLineGame(){
 		
 		// load configuration if the game is not installed. this allows to keep the parameter
 		// changes alive done by the player inside the game
-		if(!GetGameManager().GetGames().Has(pCmdLineGame)){
+		delGame::Ref loadedGame(GetGameManager().GetGames().FindWithId(pCmdLineGame->GetIdentifier()));
+		if(loadedGame){
+			if(loadedGame->GetDelgaFile() == pRunGame){
+				pCmdLineGame = loadedGame;
+				
+			}else{
+				pCmdLineGame->LoadConfig();
+				GetGameManager().GetGames().Remove(loadedGame);
+				GetGameManager().GetGames().Add(pCmdLineGame);
+			}
+			pCmdLineGame = loadedGame;
+			
+		}else{
 			pCmdLineGame->LoadConfig();
 		}
 		

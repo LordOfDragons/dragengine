@@ -124,12 +124,13 @@ private:
 	deoxrDebug pDebug;
 	
 	XrInstance pInstance;
+	decString pRuntimeName;
+	XrVersion pRuntimeVersion;
 	
 	sExtension pSupportsExtension[ExtensionCount];
 	sLayer pSupportsLayer[LayerCount];
 	
 	deoxrPath pPathHandRight, pPathHandLeft, pPathHead, pPathGamepad;
-	
 	
 	
 public:
@@ -176,6 +177,12 @@ public:
 	
 	/** Instance. */
 	inline XrInstance GetInstance() const{ return pInstance; }
+	
+	/** Runtime name from xrGetInstanceProperties. */
+	inline const decString &GetRuntimeName() const{ return pRuntimeName; }
+	
+	/** Runtime version from xrGetInstanceProperties. */
+	inline XrVersion GetRuntimeVersion() const{ return pRuntimeVersion; }
 	
 	/** Right hand path. */
 	inline const deoxrPath &GetPathHandRight() const{ return pPathHandRight; }

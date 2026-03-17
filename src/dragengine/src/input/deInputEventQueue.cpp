@@ -48,6 +48,11 @@ deInputEventQueue::~deInputEventQueue(){
 // Management
 ///////////////
 
+deInputEvent &deInputEventQueue::GetEventAt(int index){
+	DEASSERT_TRUE(index < pEventCount)
+	return pEvents[index];
+}
+
 const deInputEvent &deInputEventQueue::GetEventAt(int index) const{
 	DEASSERT_TRUE(index < pEventCount)
 	return pEvents[index];

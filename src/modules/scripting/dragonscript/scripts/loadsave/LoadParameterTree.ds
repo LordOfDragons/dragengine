@@ -198,7 +198,7 @@ class LoadParameterTree extends BaseXmlLoader
 			
 		elif tagName.equals("treeFile")
 			var ParameterTree tree = append != null if append cast ParameterTree else ParameterTree.new()
-			loadFromFile(File.absolutePath(element.getCDataContent(), basePath).getPath(), tree)
+			loadFromFile(File.absolutePath(element.getFirstCData(), basePath).getPath(), tree)
 			return tree
 			
 		else

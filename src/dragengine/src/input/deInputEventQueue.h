@@ -71,6 +71,7 @@ public:
 	 * \brief Event by index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetEventCount()-1.
 	 */
+	deInputEvent &GetEventAt(int index);
 	const deInputEvent &GetEventAt(int index) const;
 	
 	/**
