@@ -397,8 +397,7 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click");
 		
-		const bool isHandheldObject = basePath.EndsWith("/handheld_object");
-		if(!instance.BugSteamVRTrackpad() || isHandheldObject){
+		if(!instance.BugSteamVRTrackpad()){
 			pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
 			realBindingCount++;
 		}
@@ -795,8 +794,7 @@ void deoxrDPHtcViveTracker::pTrySuggestBindings(int restrictCount){
 		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click");
 		
-		const bool isHandheldObject = basePath.EndsWith("/handheld_object");
-		if(!instance.BugSteamVRTrackpad() || isHandheldObject){
+		if(!instance.BugSteamVRTrackpad()){
 			pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
 			realBindingCount++;
 		}
