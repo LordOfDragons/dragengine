@@ -106,6 +106,7 @@ deBaseVRModule(loadableModule),
 pDevices(*this),
 pGraphicApiOpenGL(*this),
 pLoader(nullptr),
+pActions{},
 pSessionState(XR_SESSION_STATE_UNKNOWN),
 pShutdownRequested(false),
 pPreventDeletion(false),
@@ -116,7 +117,6 @@ pRequestFeatureEyeGazeTracking(efslDisabled),
 pRequestFeatureFacialTracking(efslDisabled),
 pLogLevel(LogLevel::info)
 {
-	memset(pActions, 0, sizeof(pActions));
 	pCreateParameters();
 }
 
@@ -1037,14 +1037,16 @@ void deVROpenXR::pCreateActionSet(){
 	});
 	
 	// store actions for quick retrieval
-	pActionSet->GetActions().VisitIndexed([&](int i, deoxrAction *action){
+	pActionSet->GetActions().VisitIndexed(0, InputActionCount, [&](int i, deoxrAction *action){
 		pActions[i] = action;
 	});
 }
 
 void deVROpenXR::pDestroyActionSet(){
-	memset(pActions, 0, sizeof(pActions));
-	pActionSet = nullptr;
+	for(int i=0; i<InputActionCount; i++){
+		pActions[i] = nullptr;
+	}
+	pActionSet.Clear();
 }
 
 void deVROpenXR::pCreateDeviceProfiles(){
