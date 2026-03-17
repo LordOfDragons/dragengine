@@ -386,6 +386,14 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 // 		const decString basePath( tracker.path.GetName() );
 		const decString basePath(tracker.pathRole.GetName());
 		
+		// SteamVR bug: skip handheld_object role entirely. The POSE binding causes
+		// SteamVR to set a stale path context to /user/hand/right/pose/raw, making
+		// subsequent float bindings resolve to that stale path instead. The tracker
+		// is already fully covered by the regular hand interaction profiles.
+		if(instance.BugSteamVRTrackpad() && basePath.EndsWith("/handheld_object")){
+			continue;
+		}
+		
 		(b++)->Set(tracker.action, deoxrPath(instance, basePath + "/input/grip/pose"));
 		realBindingCount += 9;
 		
@@ -782,6 +790,14 @@ void deoxrDPHtcViveTracker::pTrySuggestBindings(int restrictCount){
 	
 	pRoleActions.Visit([&](const RoleAction &roleAction){
 		const decString basePath(roleAction.path.GetName());
+		
+		// SteamVR bug: skip handheld_object role entirely. The POSE binding causes
+		// SteamVR to set a stale path context to /user/hand/right/pose/raw, making
+		// subsequent float bindings resolve to that stale path instead. The tracker
+		// is already fully covered by the regular hand interaction profiles.
+		if(instance.BugSteamVRTrackpad() && basePath.EndsWith("/handheld_object")){
+			return;
+		}
 		
 		(b++)->Set(roleAction.action, deoxrPath(instance, basePath + "/input/grip/pose"));
 		realBindingCount += 9;
