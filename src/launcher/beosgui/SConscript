@@ -20,8 +20,10 @@ pathConfig = envLauncher.subst(envLauncher['path_launcher_config'])
 pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
+pathSysApps = envLauncher.subst(envLauncher['appsdir'])
+pathSysData = envLauncher.subst(envLauncher['datadir'])
 
-libs = ['root', 'be', 'translation', 'columnlistview']
+libs = ['root', 'be', 'translation', 'columnlistview', 'tracker']
 
 envLauncher.Append(CPPPATH = ['/boot/system/develop/headers/private/interface'])
 
@@ -63,16 +65,18 @@ updateRdef = envLauncher.UpdateModuleManifest('beos_rdef',
 # build: compile first, then add resources
 program_org = envLauncher.Program(target='delauncher-gui-org', source=objects, LIBS=libs)
 rsrc = envLauncher.RDef(updateRdef)
-program = envLauncher.Rsrc(target='delauncher-gui', source=[program_org, rsrc])
+program = envLauncher.Rsrc(target='DELauncher', source=[program_org, rsrc])
 
 targetBuild = parent_env.Alias('launcher_beosgui_build', program)
 
 install = []
 archive = {}
+archiveLinks = {}
 
-install.append(envLauncher.Install(pathBin, program))
+install.append(envLauncher.Install(pathSysApps, program))
 for p in program:
-	archive[os.path.join(pathBin, p.name)] = p
+	archive[os.path.join(pathSysApps, p.name)] = p
+archiveLinks[os.path.join(pathSysData, 'deskbar/menu/Applications/DELauncher')] = '../../../../apps/DELauncher'
 
 targetInstall = parent_env.Alias('launcher_beosgui', install)
 
@@ -90,5 +94,6 @@ parent_targets['launcher_beosgui'] = {
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'archive-launcher' : archive,
+	'archive-links-launcher': archiveLinks,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

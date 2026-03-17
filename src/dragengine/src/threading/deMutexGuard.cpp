@@ -50,7 +50,11 @@ pLocked(false)
 
 deMutexGuard::~deMutexGuard(){
 	if(pLocked){
-		Unlock();
+		try{
+			Unlock();
+		}catch(const deException &e){
+			e.PrintError();
+		}
 	}
 }
 

@@ -83,7 +83,7 @@ deoglRenderBase(renderThread)
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool renderStereoVRLayer = renderThread.GetChoices().GetRenderStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
-	deoglPipelineConfiguration pipconf;
+	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines commonDefines;
 	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
@@ -92,11 +92,15 @@ deoglRenderBase(renderThread)
 		GetRenderThread().GetShader().SetCommonDefines(commonDefines);
 		
 		
-		
 		pipconf.Reset();
 		pipconf.SetDepthMask(false);
 		pipconf.EnableBlendBlend();
 		
+		
+		pipconf2 = pipconf;
+		pipconf2.EnableDepthTest(renderThread.GetChoices().GetDepthCompareFuncRegular());
+		pipconf2.SetEnableScissorTest(true);
+		pipconf2.SetClipControl(useInverseDepth);
 		
 		
 		// shape x-ray
@@ -124,7 +128,7 @@ deoglRenderBase(renderThread)
 		if(useInverseDepth){
 			defines.SetDefines("INVERSE_DEPTH");
 		}
-		pAsyncGetPipeline(pPipelineShapeSolid, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineShapeSolid, pipconf2, sources, defines);
 		
 		// shape solid stereo
 		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
@@ -134,7 +138,7 @@ deoglRenderBase(renderThread)
 		if(!renderStereoVRLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Shape Stereo");
 		}
-		pAsyncGetPipeline(pPipelineShapeSolidStereo, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineShapeSolidStereo, pipconf2, sources, defines);
 		
 		
 		
@@ -162,7 +166,7 @@ deoglRenderBase(renderThread)
 		if(useInverseDepth){
 			defines.SetDefines("INVERSE_DEPTH");
 		}
-		pAsyncGetPipeline(pPipelineMeshSolid, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineMeshSolid, pipconf2, sources, defines);
 		
 		// mesh solid stereo
 		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
@@ -172,7 +176,7 @@ deoglRenderBase(renderThread)
 		if(!renderStereoVRLayer){
 			sources = shaderManager.GetSourcesNamed("DefRen Shape Stereo");
 		}
-		pAsyncGetPipeline(pPipelineMeshSolidStereo, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineMeshSolidStereo, pipconf2, sources, defines);
 		
 	}catch(const deException &){
 		pCleanUp();

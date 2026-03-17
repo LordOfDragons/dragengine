@@ -49,24 +49,42 @@ def createHaikuHpkg(env, target, source):
 		if not os.path.exists(fileDir):
 			os.makedirs(fileDir)
 		shutil.copy(node.abspath, fileDir)
+		
+		if path.startswith('apps/'):
+			os.system('/bin/mimeset -f "{}"'.format(os.path.join(fileDir, node.name)))
 	shutil.copy(pathPackageInfo, os.path.join(dirCollect, '.PackageInfo'))
 	
+	# create symbolic links
+	for path, linkTarget in env['PackageLinks'].items():
+		if path[0:13] != '/boot/system/':
+			raise Exception('Invalid base path in package')
+		path = os.path.join(dirCollect, path[13:])
+		fileDir = os.path.dirname(path)
+		if not os.path.exists(fileDir):
+			os.makedirs(fileDir)
+		os.symlink(linkTarget, path)
+	
+	# build package
 	if os.system('package create -q -C "{}" "{}"'.format(dirCollect, pathHpkg)):
 		raise Exception("Create package failed")
 	
 	# delete collect dir since it is not required anymore and will be deleted the next time anyway
-	shutil.rmtree(dirCollect)
+	#shutil.rmtree(dirCollect)
 
 # fetch values in expanded form for later use
 versionString = envPackage['version']
 if envPackage['force_version']:
 	versionString = envPackage['force_version']
 
+revisionString = envPackage['package_haiku_revision']
+
 # collect files to archive
 filesEngine = {}
 filesEngineDevelop = {}
 filesIGDE = {}
 filesIGDEDevelop = {}
+
+linksEngine = {}
 
 for target in parent_targets.values():
 	if 'archive-engine' in target:
@@ -79,17 +97,41 @@ for target in parent_targets.values():
 		filesIGDE.update(target['archive-igde'])
 	if 'archive-igde-develop' in target:
 		filesIGDEDevelop.update(target['archive-igde-develop'])
+	if 'archive-links-engine' in target:
+		linksEngine.update(target['archive-links-engine'])
+	if 'archive-links-launcher' in target:
+		linksEngine.update( target['archive-links-launcher'])
+
+# update package definition manifests
+piUpdates = [
+	{'action': 'text', 'value': envPackage['version'], 'keyword': '%VERSION%'},
+	{'action': 'text', 'value': revisionString, 'keyword': '%REVISION%'}]
+
+updatePiDragengine = envPackage.UpdateModuleManifest(
+	envPackage.File('haiku_packageinfo/dragengine'),
+	envPackage.File('haiku_packageinfo/dragengine.in').srcnode(),
+	ManifestUpdates=piUpdates)
+
+collectDirDragengine = 'hpkg_dragengine'
+
+postInstallScriptDragengine = envPackage.Install(
+	os.path.join(collectDirDragengine, 'boot/post-install'),
+	envPackage.File('haiku_packageinfo/dragengine-setup-script.sh'))
 
 # create builders
 package = []
 
-filename = 'dragengine-{}-1-x86_64.hpkg'.format(versionString)
-package.append(envPackage.Command(filename, filesEngine.values(),
+filename = 'dragengine-{}-{}-x86_64.hpkg'.format(versionString, revisionString)
+package.append(
+	envPackage.Command(filename,
+	filesEngine.values() + updatePiDragengine + [postInstallScriptDragengine],
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
-	CollectDir=envPackage.Dir('hpkg_dragengine'),
-	PackageInfo=envPackage.File('haiku_packageinfo/dragengine').srcnode(),
-	PackageFiles=filesEngine))
+	CollectDir=envPackage.Dir(collectDirDragengine),
+	PackageInfo=updatePiDragengine[0],
+	PackageFiles=filesEngine,
+	PackageLinks=linksEngine))
 
+"""
 filename = 'dragengine_devel-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesEngineDevelop.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
@@ -110,6 +152,7 @@ package.append(envPackage.Command(filename, filesIGDEDevelop.values(),
 	CollectDir=envPackage.Dir('hpkg_deigde_develop'),
 	PackageInfo=envPackage.File('haiku_packageinfo/igde-develop').srcnode(),
 	PackageFiles=filesIGDEDevelop))
+"""
 
 for target in parent_targets.values():
 	if 'package' in target:
