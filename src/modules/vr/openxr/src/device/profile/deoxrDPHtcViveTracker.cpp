@@ -370,7 +370,6 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	const int bindingCount = 10 * count;
 	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
-	
 	int realBindingCount = 0;
 	
 	int i;
@@ -388,6 +387,7 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		const decString basePath(tracker.pathRole.GetName());
 		
 		(b++)->Set(tracker.action, deoxrPath(instance, basePath + "/input/grip/pose"));
+		realBindingCount += 9;
 		
 		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click");
 		
@@ -397,13 +397,15 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click");
 		
-		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+		const bool isHandheldObject = basePath.EndsWith("/handheld_object");
+		if(!instance.BugSteamVRTrackpad() || isHandheldObject){
+			pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+			realBindingCount++;
+		}
 		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
 		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
 		
 		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
-		
-		realBindingCount += 10;
 	}
 	
 	GetInstance().SuggestBindings(GetPath(), bindings, realBindingCount);
@@ -775,29 +777,34 @@ void deoxrDPHtcViveTracker::pTrySuggestBindings(int restrictCount){
 	}
 	
 	const deoxrInstance &instance = GetInstance();
-	const int bindingCount = 10 * count;
-	decTList<deoxrInstance::sSuggestBinding> bindings(bindingCount, deoxrInstance::sSuggestBinding{});
+	decTList<deoxrInstance::sSuggestBinding> bindings(10 * count, deoxrInstance::sSuggestBinding{});
 	deoxrInstance::sSuggestBinding *b = bindings.GetArrayPointer();
+	int realBindingCount = 0;
 	
 	pRoleActions.Visit([&](const RoleAction &roleAction){
 		const decString basePath(roleAction.path.GetName());
 		
 		(b++)->Set(roleAction.action, deoxrPath(instance, basePath + "/input/grip/pose"));
-	
+		realBindingCount += 9;
+		
 		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click");
-	
+		
 		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click");
 		pAdd(b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value");
-	
+		
 		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click");
-	
-		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+		
+		const bool isHandheldObject = basePath.EndsWith("/handheld_object");
+		if(!instance.BugSteamVRTrackpad() || isHandheldObject){
+			pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+			realBindingCount++;
+		}
 		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
 		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
-	
+		
 		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	});
 	
-	GetInstance().SuggestBindings(GetPath(), bindings.GetArrayPointer(), bindingCount);
+	GetInstance().SuggestBindings(GetPath(), bindings.GetArrayPointer(), realBindingCount);
 }

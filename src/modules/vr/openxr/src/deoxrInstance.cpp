@@ -54,7 +54,9 @@ void deoxrInstance::sSuggestBinding::Set(deoxrAction *paction, const deoxrPath &
 deoxrInstance::deoxrInstance(deVROpenXR &oxr, bool enableDebug) :
 pOxr(oxr),
 pDebug(*this),
-pInstance(XR_NULL_HANDLE)
+pInstance(XR_NULL_HANDLE),
+pRuntimeVersion(0),
+pBugSteamVRTrackpad(false)
 {
 	#ifndef WITH_DEBUG
 	(void)enableDebug;
@@ -532,6 +534,26 @@ void deoxrInstance::pCreateInstance(bool enableValidationLayers){
 	
 	// create device
 	OXR_CHECK(xrCreateInstance(&instanceCreateInfo, &pInstance));
+	
+	XrInstanceProperties instanceProperties{XR_TYPE_INSTANCE_PROPERTIES};
+	OXR_CHECK(xrGetInstanceProperties(pInstance, &instanceProperties));
+	pRuntimeName = instanceProperties.runtimeName;
+	pRuntimeVersion = instanceProperties.runtimeVersion;
+	
+	pOxr.LogInfoFormat("OpenXR Runtime: %s %d.%d.%d", pRuntimeName.GetString(),
+		XR_VERSION_MAJOR(pRuntimeVersion), XR_VERSION_MINOR(pRuntimeVersion),
+		XR_VERSION_PATCH(pRuntimeVersion));
+	
+	// SteamVR >= 2.14 (beta: 2.15.5) bug:
+	// crashes xrAttachSessionActionSets when eiaTrackpadAnalog (vector2) is suggested for
+	// body-role tracker paths. Workaround: skip it for non-handheld-object paths until Valve
+	// fixes the bug.
+	pBugSteamVRTrackpad = pRuntimeName.FindString("SteamVR") != -1
+		&& pRuntimeVersion >= XR_MAKE_VERSION(2, 14, 0);
+	if(pBugSteamVRTrackpad){
+		pOxr.LogWarn("Detected SteamVR >= 2.14.0 with trackpad bug."
+			" Skip trackpad bindings for body-role tracker paths.");
+	}
 }
 
 void deoxrInstance::pLoadFunctions(){

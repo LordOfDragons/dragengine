@@ -124,12 +124,15 @@ private:
 	deoxrDebug pDebug;
 	
 	XrInstance pInstance;
+	decString pRuntimeName;
+	XrVersion pRuntimeVersion;
 	
 	sExtension pSupportsExtension[ExtensionCount];
 	sLayer pSupportsLayer[LayerCount];
 	
 	deoxrPath pPathHandRight, pPathHandLeft, pPathHead, pPathGamepad;
 	
+	bool pBugSteamVRTrackpad;
 	
 	
 public:
@@ -177,6 +180,12 @@ public:
 	/** Instance. */
 	inline XrInstance GetInstance() const{ return pInstance; }
 	
+	/** Runtime name from xrGetInstanceProperties. */
+	inline const decString &GetRuntimeName() const{ return pRuntimeName; }
+	
+	/** Runtime version from xrGetInstanceProperties. */
+	inline XrVersion GetRuntimeVersion() const{ return pRuntimeVersion; }
+	
 	/** Right hand path. */
 	inline const deoxrPath &GetPathHandRight() const{ return pPathHandRight; }
 	
@@ -191,6 +200,13 @@ public:
 	
 	/** Suggest input bindings. */
 	void SuggestBindings(const deoxrPath &profile, const sSuggestBinding *bindings, int count);
+	
+	/**
+	 * SteamVR >= 2.14 bug: crashes xrAttachSessionActionSets when eiaTrackpadAnalog
+	 * (vector2) is suggested for body-role tracker paths. Workaround: skip it for
+	 * non-handheld-object paths until Valve fixes the bug.
+	 */
+	inline bool BugSteamVRTrackpad() const{ return pBugSteamVRTrackpad; }
 	/*@}*/
 	
 	
