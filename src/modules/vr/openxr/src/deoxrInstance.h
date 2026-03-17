@@ -132,8 +132,6 @@ private:
 	
 	deoxrPath pPathHandRight, pPathHandLeft, pPathHead, pPathGamepad;
 	
-	bool pBugSteamVRTrackpad;
-	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -200,13 +198,6 @@ public:
 	
 	/** Suggest input bindings. */
 	void SuggestBindings(const deoxrPath &profile, const sSuggestBinding *bindings, int count);
-	
-	/**
-	 * SteamVR >= 2.14 bug: crashes xrAttachSessionActionSets when eiaTrackpadAnalog
-	 * (vector2) is suggested for body-role tracker paths. Workaround: skip it for
-	 * non-handheld-object paths until Valve fixes the bug.
-	 */
-	inline bool BugSteamVRTrackpad() const{ return pBugSteamVRTrackpad; }
 	/*@}*/
 	
 	

@@ -55,8 +55,7 @@ deoxrInstance::deoxrInstance(deVROpenXR &oxr, bool enableDebug) :
 pOxr(oxr),
 pDebug(*this),
 pInstance(XR_NULL_HANDLE),
-pRuntimeVersion(0),
-pBugSteamVRTrackpad(false)
+pRuntimeVersion(0)
 {
 	#ifndef WITH_DEBUG
 	(void)enableDebug;
@@ -543,23 +542,6 @@ void deoxrInstance::pCreateInstance(bool enableValidationLayers){
 	pOxr.LogInfoFormat("OpenXR Runtime: %s %d.%d.%d", pRuntimeName.GetString(),
 		XR_VERSION_MAJOR(pRuntimeVersion), XR_VERSION_MINOR(pRuntimeVersion),
 		XR_VERSION_PATCH(pRuntimeVersion));
-	
-	// SteamVR >= 2.14 bug (two related sub-bugs):
-	// Bug A: crashes xrAttachSessionActionSets when eiaTrackpadAnalog (vector2) is
-	//   suggested for any tracker role path (body roles included). Fixed by skipping
-	//   eiaTrackpadAnalog for all tracker role paths.
-	// Bug B: the POSE binding for the 'handheld_object' role causes SteamVR to
-	//   internally remap the role to /user/hand/right and set a stale path context
-	//   to /user/hand/right/pose/raw. The first float action after that (eiaTriggerAnalog)
-	//   then resolves to the stale pose path instead of trigger/value, leaving corrupted
-	//   binding data that crashes xrAttachSessionActionSets. Fixed by skipping the
-	//   entire handheld_object role (already fully covered by regular hand profiles).
-	pBugSteamVRTrackpad = pRuntimeName.FindString("SteamVR") != -1
-		&& pRuntimeVersion >= XR_MAKE_VERSION(2, 14, 0);
-	if(pBugSteamVRTrackpad){
-		pOxr.LogWarn("Detected SteamVR >= 2.14.0 with tracker binding bug."
-			" Skipping trackpad and handheld_object bindings in tracker profile.");
-	}
 }
 
 void deoxrInstance::pLoadFunctions(){

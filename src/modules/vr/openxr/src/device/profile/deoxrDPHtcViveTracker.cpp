@@ -386,16 +386,7 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 // 		const decString basePath( tracker.path.GetName() );
 		const decString basePath(tracker.pathRole.GetName());
 		
-		// SteamVR bug: skip handheld_object role entirely. The POSE binding causes
-		// SteamVR to set a stale path context to /user/hand/right/pose/raw, making
-		// subsequent float bindings resolve to that stale path instead. The tracker
-		// is already fully covered by the regular hand interaction profiles.
-		if(instance.BugSteamVRTrackpad() && basePath.EndsWith("/handheld_object")){
-			continue;
-		}
-		
 		(b++)->Set(tracker.action, deoxrPath(instance, basePath + "/input/grip/pose"));
-		realBindingCount += 9;
 		
 		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click");
 		
@@ -405,14 +396,12 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click");
 		
-		if(!instance.BugSteamVRTrackpad()){
-			pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
-			realBindingCount++;
-		}
+		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
 		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
 		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
 		
 		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
+		realBindingCount += 10;
 	}
 	
 	GetInstance().SuggestBindings(GetPath(), bindings, realBindingCount);
@@ -784,23 +773,14 @@ void deoxrDPHtcViveTracker::pTrySuggestBindings(int restrictCount){
 	}
 	
 	const deoxrInstance &instance = GetInstance();
-	decTList<deoxrInstance::sSuggestBinding> bindings(10 * count, deoxrInstance::sSuggestBinding{});
+	const int bindingCount = 10 * count;
+	decTList<deoxrInstance::sSuggestBinding> bindings(bindingCount, deoxrInstance::sSuggestBinding{});
 	deoxrInstance::sSuggestBinding *b = bindings.GetArrayPointer();
-	int realBindingCount = 0;
 	
 	pRoleActions.Visit([&](const RoleAction &roleAction){
 		const decString basePath(roleAction.path.GetName());
 		
-		// SteamVR bug: skip handheld_object role entirely. The POSE binding causes
-		// SteamVR to set a stale path context to /user/hand/right/pose/raw, making
-		// subsequent float bindings resolve to that stale path instead. The tracker
-		// is already fully covered by the regular hand interaction profiles.
-		if(instance.BugSteamVRTrackpad() && basePath.EndsWith("/handheld_object")){
-			return;
-		}
-		
 		(b++)->Set(roleAction.action, deoxrPath(instance, basePath + "/input/grip/pose"));
-		realBindingCount += 9;
 		
 		pAdd(b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click");
 		
@@ -810,15 +790,12 @@ void deoxrDPHtcViveTracker::pTrySuggestBindings(int restrictCount){
 		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		pAdd(b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click");
 		
-		if(!instance.BugSteamVRTrackpad()){
-			pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
-			realBindingCount++;
-		}
+		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
 		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
 		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
 		
 		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	});
 	
-	GetInstance().SuggestBindings(GetPath(), bindings.GetArrayPointer(), realBindingCount);
+	GetInstance().SuggestBindings(GetPath(), bindings.GetArrayPointer(), bindingCount);
 }
