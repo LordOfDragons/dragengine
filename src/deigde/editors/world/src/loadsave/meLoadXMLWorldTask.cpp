@@ -283,6 +283,9 @@ void meLoadXMLWorldTask::pLoadWorldEditorBackgroundObject(const decXmlElementTag
 		if(tagName == "class"){
 			bgObject.SetGDClassName(GetCDataString(*tag));
 			
+		}else if(tagName == "world"){
+			bgObject.SetPathWorld(GetCDataString(*tag));
+			
 		}else if(tagName == "position"){
 			bgObject.SetPosition(decDVector(GetAttributeDouble(*tag, "x"),
 				GetAttributeDouble(*tag, "y"), GetAttributeDouble(*tag, "z")));
