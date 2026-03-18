@@ -254,6 +254,12 @@
 # 
 # archive_name_engine_dev = 'dragengine-dev'
 
+# Archive file name without extension for Drag[en]gine Debug archive
+# 
+# Value type: string
+# 
+# archive_name_engine_debug = 'dragengine-dbg'
+
 # Archive file name without extension for IGDE archive
 # 
 # Value type: string
@@ -266,11 +272,23 @@
 # 
 # archive_name_igde_dev = 'deigde_dev'
 
+# Archive file name without extension for IGDE Debug archive
+# 
+# Value type: string
+# 
+# archive_name_igde_debug = 'deigde_dbg'
+
 # Archive file name without extension for Special archive
 # 
 # Value type: string
 # 
 # archive_name_special = 'despecial'
+
+# Archive file name without extension for Special Debug archive
+# 
+# Value type: string
+# 
+# archive_name_special_debug = 'despecial_dbg'
 
 # Installer file name without extension for Drag[en]gine installer
 # 

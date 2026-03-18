@@ -88,20 +88,25 @@ if envLauncher['OSWindows']:
 	objects.append(envLauncher.RES('src/guilaunch-res.rc'))
 
 program = envLauncher.Program(target='delauncher-gui', source=objects, LIBS=libs)
+(program, programDebug) = envLauncher.SplitDebugIf(program)
 programs.append(program)
 
 if envLauncher['OSPosix']:
 	linkProgram = envLauncher.SymLink(envLauncher.File('delauncher'), program)
 	programs.append(linkProgram)
 
-targetBuild = parent_env.Alias('launcher_gui_build', programs)
+targetBuild = parent_env.Alias('launcher_gui_build', programs + programDebug)
 
 install = []
 archive = {}
+archiveDebug = {}
 
 install.append(envLauncher.Install(pathBin, program))
 for p in program:
 	archive[os.path.join(pathBin, p.name)] = p
+
+for p in programDebug:
+	archiveDebug[os.path.join(pathBin, p.name)] = p
 
 if envLauncher['OSPosix']:
 	for l in linkProgram:
@@ -194,5 +199,6 @@ parent_targets['launcher_gui'] = {
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'archive-launcher' : archive,
+	'archive-launcher-debug' : archiveDebug,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

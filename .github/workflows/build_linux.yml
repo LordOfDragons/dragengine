@@ -205,17 +205,6 @@ jobs:
           # the rest can be build full throttle
           scons -j 14 archive installer detests_build
       
-      - name: Debug Symbols
-        if: ${{ ! inputs.debugBuild }}
-        run: |
-          ./separateDebugSymbols.sh \
-            archive/build/dragengine-${{ inputs.releaseVersion }}-linux64.tar.bz2 \
-            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
-          
-          ./separateDebugSymbols.sh \
-            archive/build/deigde-${{ inputs.releaseVersion }}-linux64.tar.bz2 \
-            archive/build/deigde-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
-      
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
         if: ${{ inputs.codeql }}

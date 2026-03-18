@@ -52,6 +52,8 @@ if envArchive['archive_format'] == 'tarbz2':
 elif envArchive['archive_format'] == 'zip':
 	archiveSuffix = '.zip'
 	archiveMethod = ArchiveZip
+else:
+	raise Exception('Unsupported archive format: {}'.format(envArchive['archive_format']))
 
 if envArchive['archive_name_engine']:
 	filename = '{}{}'.format(envArchive['archive_name_engine'], archiveSuffix)
@@ -88,6 +90,48 @@ if envArchive['archive_name_special']:
 		ArchiveFiles = filesSpecial)
 	archive.append(archiveSpecial)
 
+
+archiveEngineDebug = None
+archiveIgdeDebug = None
+archiveSpecialDebug = None
+
+if envArchive['with_debug_split']:
+	filesEngineDebug = {}
+	filesIGDEDebug = {}
+	filesSpecialDebug = {}
+	
+	for target in parent_targets.values():
+		if 'archive-engine-debug' in target:
+			filesEngineDebug.update(target['archive-engine-debug'])
+		if 'archive-launcher-debug' in target:
+			filesEngineDebug.update(target['archive-launcher-debug'])
+		if 'archive-igde-debug' in target:
+			filesIGDEDebug.update(target['archive-igde-debug'])
+		if 'archive-special-debug' in target:
+			filesSpecialDebug.update(target['archive-special-debug'])
+	
+	if envArchive['archive_name_engine_debug']:
+		filename = '{}{}'.format(envArchive['archive_name_engine_debug'], archiveSuffix)
+		archiveEngineDebug = envArchive.Command(filename, filesEngineDebug.values(),
+			envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+			ArchiveFiles = filesEngineDebug)
+		archive.append(archiveEngineDebug)
+	
+	if envArchive['archive_name_igde_debug']:
+		filename = '{}{}'.format(envArchive['archive_name_igde_debug'], archiveSuffix)
+		archiveIgdeDebug = envArchive.Command(filename, filesIGDEDebug.values(),
+			envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+			ArchiveFiles = filesIGDEDebug)
+		archive.append(archiveIgdeDebug)
+	
+	if envArchive['archive_name_special_debug']:
+		filename = '{}{}'.format(envArchive['archive_name_special_debug'], archiveSuffix)
+		archiveSpecialDebug = envArchive.Command(filename, filesSpecialDebug.values(),
+			envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+			ArchiveFiles = filesSpecialDebug)
+		archive.append(archiveSpecialDebug)
+
+
 for target in parent_targets.values():
 	if 'archive' in target:
 		archive.append(target['build'])
@@ -100,4 +144,7 @@ parent_targets['archive'] = {
 	'archiveEngineDev': archiveEngineDev,
 	'archiveIgde': archiveIgde,
 	'archiveIgdeDev': archiveIgdeDev,
-	'archiveSpecial': archiveSpecial}
+	'archiveSpecial': archiveSpecial,
+	'archiveEngineDebug': archiveEngineDebug,
+	'archiveIgdeDebug': archiveIgdeDebug,
+	'archiveSpecialDebug': archiveSpecialDebug}
