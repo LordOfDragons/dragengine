@@ -73,7 +73,7 @@ jobs:
     
     steps:
       - name: Expand Pagefile
-        uses: al-cheb/configure-pagefile-action@v1.4
+        uses: al-cheb/configure-pagefile-action@v1.5
         with:
           minimum-size: 32GB
       
