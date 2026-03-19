@@ -145,7 +145,8 @@ if envIGDELib['OSPosix']:
 	envIGDELib.Replace(SHLIBVERSION = libVersionString)
 
 buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, LIBS=libsLib)
-targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
+(buildLibrary, buildLibraryDebug) = envIGDELib.SplitDebugIf(buildLibrary)
+targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary + buildLibraryDebug)
 
 refDir = envIGDELib.Dir('shared/src').srcnode()
 for h in sharedHeaders:
@@ -161,6 +162,7 @@ installData = []
 
 archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in sharedHeaders}
 archiveLib = {}
+archiveLibDebug = {}
 
 if envIGDELib['OSPosix']:
 	l = buildLibrary[0]
@@ -173,6 +175,9 @@ if envIGDELib['OSPosix']:
 	
 	lname = '.'.join(lname.split('.')[0:-1])
 	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
+	
+	for l in buildLibraryDebug:
+		archiveLibDebug['{}/{}'.format(pathLib, l.name)] = l
 	
 elif envIGDELib['OSWindows']:
 	installLibRuntime.append(envIGDELib.Install(pathSysLib, 'deigdeshared.dll'))
@@ -203,6 +208,12 @@ if envIGDELib['igde_toolkit'] == 'fox':
 			parent_targets['lib_fox']['globalInstallTracker'].append(key)
 			installLibRuntime.append(envIGDELib.Install(foxRuntimePath, l))
 			archiveLib[os.path.join(foxRuntimePath, l.name)] = l
+	
+	for l in reversed(parent_targets['lib_fox']['runtimelibsDebug']):
+		key = '{}/{}'.format(foxRuntimePath, l)
+		if not key in parent_targets['lib_fox']['globalInstallTracker']:
+			parent_targets['lib_fox']['globalInstallTracker'].append(key)
+			archiveLibDebug[os.path.join(foxRuntimePath, l.name)] = l
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
 targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)
@@ -241,6 +252,7 @@ parent_targets['deigde_shared'] = {
 	'install-runtime' : targetInstallLibRuntime,
 	'install-igde-runtime' : targetInstallLibRuntime,
 	'archive-igde' : archiveLib,
+	'archive-igde-debug' : archiveLibDebug,
 	'archive-igde-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen}
 
@@ -284,13 +296,18 @@ elif envIGDEApp['OSBeOS']:
 	libsApp.extend(['root', 'be'])
 
 program = envIGDEApp.Program(target='deigde', source=objects, LIBS=libsApp)
-targetBuildApp = envIGDEApp.Alias('deigde_build', program)
+(program, programDebug) = envIGDEApp.SplitDebugIf(program)
+targetBuildApp = envIGDEApp.Alias('deigde_build', program + programDebug)
 
 installApp = []
 archiveApp = {}
+archiveAppDebug = {}
 installApp.append(envIGDEApp.Install(pathBin, program))
 for p in program:
 	archiveApp[os.path.join(pathBin, p.name)] = p
+
+for p in programDebug:
+	archiveAppDebug[os.path.join(pathBin, p.name)] = p
 
 if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
@@ -363,5 +380,6 @@ parent_targets['deigde'] = {
 	'install' : targetInstall,
 	'install-igde-runtime': targetInstallApp,
 	'archive-igde' : archiveApp,
+	'archive-igde-debug' : archiveAppDebug,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

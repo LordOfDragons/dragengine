@@ -284,7 +284,9 @@ if buildStatic:
 else:
 	library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
 
-targetBuild = envDragengine.Alias('dragengine_build', library)
+(library, libraryDebug) = envDragengine.SplitDebugIf(library)
+
+targetBuild = envDragengine.Alias('dragengine_build', library + libraryDebug)
 
 refDir = envDragengine.Dir('src').srcnode()
 copyHeaders = []
@@ -300,6 +302,7 @@ installRuntime = []
 
 archiveDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
 archiveEngine = {}
+archiveEngineDebug = {}
 
 if not buildStatic:
 	if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
@@ -313,6 +316,9 @@ if not buildStatic:
 			
 			lname = '.'.join(lname.split('.')[0:-1])
 			archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
+		
+		for l in libraryDebug:
+			archiveEngineDebug['{}/{}'.format(pathLib, l.name)] = l
 
 	elif envDragengine['OSWindows']:
 		installRuntime.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
@@ -401,6 +407,7 @@ parent_targets['dragengine'] = {
 	'install-engine-runtime': targetInstallRuntime,
 	'library': library,
 	'archive-engine': archiveEngine,
+	'archive-engine-debug': archiveEngineDebug,
 	'archive-engine-develop': archiveDevelop,
 	'doxygen': targetDoxygen,
 	'cloc': targetCloc,
@@ -417,6 +424,7 @@ if not envDragengine['with_static_internalmodules']:
 	
 	modulesInstall = []
 	modulesArchive = {}
+	modulesArchiveDebug = {}
 	
 	envModules['InternalModuleCreateFunctions'] = []
 	envModules['InternalModuleCreateFunctionsPriority'] = []
@@ -472,7 +480,8 @@ if not envDragengine['with_static_internalmodules']:
 	modulesObjects = [envModules.SharedObject(modulesTargetCreateInternalModules)]
 	
 	modulesLibrary = envModules.LoadableModule(target='demodules', source=modulesObjects, LIBS=modulesLibs)
-	modulesTargetBuild = envModules.Alias('deinternalmodules_build', modulesLibrary)
+	(modulesLibrary, modulesLibraryDebug) = envModules.SplitDebugIf(modulesLibrary)
+	modulesTargetBuild = envModules.Alias('deinternalmodules_build', modulesLibrary + modulesLibraryDebug)
 	
 	for l in modulesLibrary:
 		if l.name.endswith(envModules['SHLIBSUFFIX']):
@@ -483,6 +492,9 @@ if not envDragengine['with_static_internalmodules']:
 			pathPdb = os.path.join(envModules.subst(envModules['path_pdb']), 'EngineModules')
 			modulesInstall.append(envModules.Install(pathPdb, 'demodules.pdb'))
 			modulesArchive['{}/demodules.pdb'.format(pathPdb)] = envModules.File('demodules.pdb')
+	
+	for l in modulesLibraryDebug:
+		modulesArchiveDebug[os.path.join(modulesPath, l.name)] = l
 	
 	modulesTargetInstall = envModules.Alias('deinternalmodules', modulesInstall)
 
@@ -563,7 +575,8 @@ if not envDragengine['with_static_internalmodules']:
 		'build': modulesTargetBuild,
 		'install': modulesTargetInstall,
 		'install-engine-runtime': modulesTargetInstall,
-		'archive-engine': modulesArchive}
+		'archive-engine': modulesArchive,
+		'archive-engine-debug': modulesArchiveDebug}
 	
 	if envDragengine['platform_webwasm']:
 		parent_targets['deinternalmodules']['wasm-preload-files'] = {

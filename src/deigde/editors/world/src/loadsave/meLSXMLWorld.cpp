@@ -200,7 +200,7 @@ void meLSXMLWorld::pWriteWorldEditor(decXmlWriter &writer, const meWorld &world)
 		writer.WriteClosingTag("skyController", false);
 	}
 	
-	if(world.GetBgObject()->GetGDClass()){
+	if(world.GetBgObject()->GetGDClass() || world.GetBgObject()->GetPathWorld()){
 		pWriteWorldEditorBackgroundObject(writer, world);
 	}
 	
@@ -215,7 +215,12 @@ void meLSXMLWorld::pWriteWorldEditorBackgroundObject(decXmlWriter &writer, const
 	const igdeWObject &bgObject = *world.GetBgObject();
 	writer.WriteOpeningTag("backgroundObject");
 	
-	writer.WriteDataTagString("class", bgObject.GetGDClass()->GetName());
+	if(bgObject.GetGDClass()){
+		writer.WriteDataTagString("class", bgObject.GetGDClass()->GetName());
+		
+	}else{
+		writer.WriteDataTagString("world", bgObject.GetPathWorld());
+	}
 	
 	const decVector &position = bgObject.GetPosition();
 	if(!position.IsZero()){

@@ -61,6 +61,7 @@ if hasSystemFOX:
 		'version' : libFOXVersion,
 		'libs' : libs,
 		'runtimelibs' : [],
+		'runtimelibsDebug' : [],
 		'depends' : [],
 		'linkWholeArchive' : []}
 	# 'cppflags' : ['-DOLD_STRING_COMPARE_NS'],
@@ -185,9 +186,11 @@ library = envLibrary.Command(targets,
 	[nodeArtifacts, patches, postPatches, parent_targets['lib_libpng']['depends']],
 	envLibrary.Action(foxBuild, 'Build fox'))
 
+(library, libraryDebug) = envLibrary.SplitDebugIf(library)
+
 #envLibrary.SideEffect('#notParallelCMake', library)
 
-depends = parent_env.Alias('lib_fox', library)
+depends = parent_env.Alias('lib_fox', library + libraryDebug)
 
 envLibrary.Clean(library, ['bin', 'include', 'lib', srcdir])
 
@@ -214,8 +217,10 @@ if buildStaticLinking:
 		libs.extend(['gdi32', 'imm32', 'wsock32', 'winspool', 'opengl32'])
 		#libs.extend(['comctl32', 'wsock32', 'imm32', 'msimg32'])
 	runtimelibs = []
+	runtimelibsDebug = []
 else:
 	runtimelibs = [library[0]]
+	runtimelibsDebug = [libraryDebug[0]]
 #runtimelibs.extend(parent_targets['lib_libpng']['runtimelibs'])
 
 if envLibrary['OSWindows']:
@@ -229,6 +234,7 @@ parent_targets['lib_fox'] = {
 	'version' : libFOXVersion,
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,
+	'runtimelibsDebug' : runtimelibsDebug,
 	'depends' : depends,
 	'linkWholeArchive' : linkWholeArchive,
 	'globalInstallTracker' : []}

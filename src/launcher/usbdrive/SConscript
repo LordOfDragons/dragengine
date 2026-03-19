@@ -20,13 +20,20 @@ elif parent_env['OSWindows']:
 	program.extend(envLauncher.Program('windows64_launcher', ['src/launcher_windows.cpp', 'src/common.cpp']))
 	program.extend(envLauncher.Program('windows64_deigde', ['src/deigde_windows.cpp', 'src/common.cpp']))
 
-target = envLauncher.Alias('launcher_usbdrive', program)
+(program, programDebug) = envLauncher.SplitDebugIf(program)
+
+target = envLauncher.Alias('launcher_usbdrive', program + programDebug)
 
 archive = {}
+archiveDebug = {}
 for p in program:
 	archive[p.name] = p
+
+for p in programDebug:
+	archiveDebug[p.name] = p
 
 parent_targets['launcher_usbdrive'] = {
 	'name': 'USB-Drive Launcher',
 	'build': target,
-	'archive-special': archive}
+	'archive-special': archive,
+	'archive-special-debug': archiveDebug}

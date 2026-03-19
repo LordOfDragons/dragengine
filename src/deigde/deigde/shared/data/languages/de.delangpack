@@ -522,6 +522,8 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.WPWObject.DynamicCollider.ToolTip">Das Objekt wird mithilfe eines dynamischen Kollisionswerkzeugs angehängt.</translation>
 	<translation name="Igde.WPWObject.Class">Klasse:</translation>
 	<translation name="Igde.WPWObject.Class.ToolTip">Pfad zur zu verwendenden Objektklasse.</translation>
+	<translation name="Igde.WPWObject.World">Welt:</translation>
+	<translation name="Igde.WPWObject.World.ToolTip">Pfad zur zu verwendenden Welt.</translation>
 	<translation name="Igde.WPWObject.Position">Position:</translation>
 	<translation name="Igde.WPWObject.Position.ToolTip">Position des Objekts in Metern.</translation>
 	<translation name="Igde.WPWObject.Orientation">Orientierung:</translation>

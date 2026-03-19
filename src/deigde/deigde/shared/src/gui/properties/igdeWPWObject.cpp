@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "igdeWPWObject.h"
 #include "../igdeUIHelper.h"
 #include "../igdeCommonDialogs.h"
@@ -35,6 +32,7 @@
 #include "../browse/igdeDialogBrowserObjectClass.h"
 #include "../composed/igdeEditVector.h"
 #include "../composed/igdeEditVectorListener.h"
+#include "../composed/igdeEditPathListener.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerForm.h"
@@ -109,7 +107,7 @@ public:
 			return;
 		}
 		
-		igdeWObject &object = *pPanel.GetObject();
+		igdeWObject &object = pPanel.GetObject();
 		igdeGDClass * const oldGDClass = object.GetGDClass();
 		igdeGDClass * const newGDClass = pPanel.GetEnvironment().GetGameProject()->
 			GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(textField->GetText());
@@ -160,6 +158,38 @@ public:
 			
 		}else{
 			object.SetGDClass(gdClass);
+		}
+		pPanel.OnAction();
+	}
+};
+
+
+class cEditPathWorld : public igdeEditPathListener{
+	igdeWPWObject &pPanel;
+	
+public:
+	typedef deTObjectReference<cEditPathWorld> Ref;
+	
+	cEditPathWorld(igdeWPWObject &panel) : pPanel(panel){}
+	
+	void OnEditPathChanged(igdeEditPath *editPath) override{
+		if(!pPanel.GetObject()){
+			return;
+		}
+		
+		igdeWObject &object = pPanel.GetObject();
+		const decString &newPath = editPath->GetPath();
+		if(newPath == object.GetPathWorld()){
+			return;
+		}
+		
+		if(pPanel.GetUndoSystem()){
+			auto undo = igdeWPWObject::UndoChanges::Ref::New(pPanel.GetObject());
+			undo->SetPathWorldNew(newPath);
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetPathWorld(newPath);
 		}
 		pPanel.OnAction();
 	}
@@ -294,6 +324,7 @@ pObject(object)
 	DEASSERT_NOTNULL(object)
 	
 	pGDClassNew = pGDClassOld = object->GetGDClass();
+	pPathWorldNew = pPathWorldOld = object->GetPathWorld();
 	pPositionNew = pPositionOld = object->GetPosition();
 	pOrientationNew = pOrientationOld = object->GetOrientation();
 	pScalingNew = pScalingOld = object->GetScaling();
@@ -303,6 +334,10 @@ pObject(object)
 
 void igdeWPWObject::UndoChanges::SetGDClassNew(igdeGDClass *gdClass){
 	pGDClassNew = gdClass;
+}
+
+void igdeWPWObject::UndoChanges::SetPathWorldNew(const decString &path){
+	pPathWorldNew = path;
 }
 
 void igdeWPWObject::UndoChanges::SetPositionNew(const decDVector &position){
@@ -327,6 +362,7 @@ void igdeWPWObject::UndoChanges::SetDynamicColliderNew(bool dynamicCollider){
 
 void igdeWPWObject::UndoChanges::Undo(){
 	pObject->SetGDClass(pGDClassOld);
+	pObject->SetPathWorld(pPathWorldOld);
 	pObject->SetPosition(pPositionOld);
 	pObject->SetOrientation(pOrientationOld);
 	pObject->SetScaling(pScalingOld);
@@ -336,6 +372,7 @@ void igdeWPWObject::UndoChanges::Undo(){
 
 void igdeWPWObject::UndoChanges::Redo(){
 	pObject->SetGDClass(pGDClassNew);
+	pObject->SetPathWorld(pPathWorldNew);
 	pObject->SetPosition(pPositionNew);
 	pObject->SetOrientation(pOrientationNew);
 	pObject->SetScaling(pScalingNew);
@@ -395,6 +432,7 @@ void igdeWPWObject::UpdateObject(){
 			pEditClass->ClearText();
 		}
 		
+		pEditPathWorld->SetPath(pObject->GetPathWorld());
 		pEditPosition->SetVector(pObject->GetPosition());
 		pEditOrientation->SetVector(pObject->GetOrientation().GetEulerAngles() * RAD2DEG);
 		pEditScaling->SetVector(pObject->GetScaling());
@@ -403,6 +441,7 @@ void igdeWPWObject::UpdateObject(){
 		
 	}else{
 		pEditClass->ClearText();
+		pEditPathWorld->ClearPath();
 		pEditPosition->SetVector(decVector());
 		pEditOrientation->SetVector(decVector());
 		pEditScaling->SetVector(decVector());
@@ -412,6 +451,8 @@ void igdeWPWObject::UpdateObject(){
 	
 	const bool enabled = pObject;
 	pEditClass->SetEnabled(enabled);
+	pBtnClass->SetEnabled(enabled);
+	pEditPathWorld->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);
 	pEditOrientation->SetEnabled(enabled);
 	pEditScaling->SetEnabled(enabled);
@@ -478,6 +519,8 @@ void igdeWPWObject::pCreateContent(){
 		pEditClass, cTextClass::Ref::New(*this));
 	helper.Button(frameLine, pBtnClass, cActionSelectClass::Ref::New(*this, pEditClass));
 	
+	helper.EditPath(form, "@Igde.WPWObject.World", "@Igde.WPWObject.World.ToolTip",
+		igdeEnvironment::efpltWorld, pEditPathWorld, cEditPathWorld::Ref::New(*this));
 	helper.EditVector(form, "@Igde.WPWObject.Position", "@Igde.WPWObject.Position.ToolTip",
 		pEditPosition, cEditPosition::Ref::New(*this));
 	helper.EditVector(form, "@Igde.WPWObject.Orientation", "@Igde.WPWObject.Orientation.ToolTip",

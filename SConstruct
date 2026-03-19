@@ -8,7 +8,7 @@ import shlex
 tools = ARGUMENTS.get('tools', '')
 if tools:
 	if tools == 'mingw64':
-		import os, shuti
+		import os, shutil
 		
 		# import os. llvm-mingw needs to be installed outside /usr . required PATH to be respected
 		parent_env = Environment(ENV = {'PATH': os.environ['PATH']}, CPPPATH='.', LIBPATH='.', tools=['mingw'])
@@ -110,6 +110,7 @@ parent_env.Tool('runExternalCommand')
 parent_env.Tool('macos_bundle')
 parent_env.Tool('downloadArtifact')
 parent_env.Tool('updateModuleManifest')
+parent_env.Tool('splitDebug')
 
 InitCommon(parent_env)
 #print('os.name', os.name)
@@ -158,6 +159,7 @@ params.Add(BoolVariable('platform_webwasm', 'Build for Web WASM platform', False
 params.Add(BoolVariable('with_tests', 'Build engine tests', False))
 params.Add(BoolVariable('with_debug', 'Build with debug symbols for GDB usage', False))
 params.Add(BoolVariable('with_debug_symbols', 'For release build only force debug symbols', False))
+params.Add(BoolVariable('with_debug_split', 'Split debug symbols into separate files (Linux)', False))
 params.Add(BoolVariable('with_warnerrors', 'Treat warnings as errors (dev-builds)', False))
 params.Add(BoolVariable('with_sanitize', 'Enable sanitizing (dev-builds)', False))
 params.Add(BoolVariable('with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False))
@@ -319,12 +321,18 @@ params.Add(StringVariable('archive_name_engine',
 	'Archive file name without extension for Drag[en]gine archive', 'dragengine'))
 params.Add(StringVariable('archive_name_engine_dev',
 	'Archive file name without extension for Drag[en]gine Development archive', 'dragengine-dev'))
+params.Add(StringVariable('archive_name_engine_debug',
+	'Archive file name without extension for Drag[en]gine Debug archive', 'dragengine-dbg'))
 params.Add(StringVariable('archive_name_igde',
 	'Archive file name without extension for IGDE archive', 'deigde'))
 params.Add(StringVariable('archive_name_igde_dev',
 	'Archive file name without extension for IGDE Development archive', 'deigde_dev'))
+params.Add(StringVariable('archive_name_igde_debug',
+	'Archive file name without extension for IGDE Debug archive', 'deigde_dbg'))
 params.Add(StringVariable('archive_name_special',
 	'Archive file name without extension for Special archive', 'despecial'))
+params.Add(StringVariable('archive_name_special_debug',
+	'Archive file name without extension for Special Debug archive', 'despecial_dbg'))
 
 params.Add(StringVariable('addon_name_blender',
 	'Blender addon file name without extension', 'blender-addon-dragengine'))

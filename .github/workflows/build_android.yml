@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: ${{ !inputs.lfscache }}
           submodules: 'recursive'
@@ -54,7 +54,7 @@ jobs:
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
 
       - name: Restore LFS Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: lfs-cache
         if: ${{ inputs.lfscache }}
         with:
@@ -96,7 +96,7 @@ jobs:
           sed -i -e 's/{AndroidVersionCode}/${{ inputs.buildNumber }}/g' custom.py
       
       - name: Cache external
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: external-cache
         with:
           path: ./extern
@@ -104,7 +104,7 @@ jobs:
           restore-keys: external-cache-android-${{ inputs.androidArch }}-
       
       # - name: Cache SCons
-      #   uses: actions/cache@v4
+      #   uses: actions/cache@v5
       #   id: scons-cache
       #   if: ${{ inputs.sconscache }}
       #   with:
@@ -119,23 +119,12 @@ jobs:
           scons --config=force -j 1 lib_openxr lib_libjpeg lib_libwebm
           scons -j 14 archive launcher_android_build
       
-      - name: Debug Symbols
-        run: |
-          COMPILER_PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm"
-          
-          export OBJCOPY="$COMPILER_PATH-objcopy"
-          export STRIP="$COMPILER_PATH-strip"
-          
-          ./separateDebugSymbols.sh \
-            archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2 \
-            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
-      
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         
       - name: Store Archives
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifactArchive }}
           path: |

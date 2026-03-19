@@ -49,6 +49,7 @@ appendLibrary(envModule, parent_targets['lib_agdk'], libs)
 
 install = []
 archive = {}
+archiveDebug = {}
 
 if internalModule:
 	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
@@ -67,12 +68,16 @@ else:
 	objects = [envModule.SharedObject(s) for s in sources]
 	
 	library = envModule.LoadableModule(target='inpandroid', source=objects, LIBS=libs)
-	targetBuild = envModule.Alias('inp_android_build', library)
+	(library, libraryDebug) = envModule.SplitDebugIf(library)
+	targetBuild = envModule.Alias('inp_android_build', library + libraryDebug)
 	
 	for l in library:
 		if l.name.endswith(envModule['SHLIBSUFFIX']):
 			install.append(envModule.Install(pathModule, l))
 			archive[os.path.join(pathModule, l.name)] = l
+	
+	for l in libraryDebug:
+		archiveDebug[os.path.join(pathModule, l.name)] = l
 	
 	manifestUpdates = [
 		{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
@@ -108,5 +113,6 @@ parent_targets['inp_android'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine': archive,
+	'archive-engine-debug' : archiveDebug,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

@@ -67,6 +67,7 @@ if not useInternalLoader:
 
 install = []
 archive = {}
+archiveDebug = {}
 assetEngine = {}
 
 if internalModule:
@@ -85,12 +86,16 @@ else:
 	objects = [envModule.SharedObject(s) for s in sources]
 	
 	library = envModule.LoadableModule(target='vropenxr', source=objects, LIBS=libs)
-	targetBuild = envModule.Alias('vr_openxr_build', library)
+	(library, libraryDebug) = envModule.SplitDebugIf(library)
+	targetBuild = envModule.Alias('vr_openxr_build', library + libraryDebug)
 	
 	for l in library:
 		if l.name.endswith(envModule['SHLIBSUFFIX']):
 			install.append(envModule.Install(pathModule, l))
 			archive[os.path.join(pathModule, l.name)] = l
+	
+	for l in libraryDebug:
+		archiveDebug[os.path.join(pathModule, l.name)] = l
 	
 	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
 		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
@@ -141,6 +146,7 @@ parent_targets['vr_openxr'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'archive-engine-debug' : archiveDebug,
 	'asset-engine' : assetEngine,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

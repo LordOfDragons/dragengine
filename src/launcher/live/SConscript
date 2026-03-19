@@ -75,11 +75,16 @@ elif envLauncher['OSWindows']:
 	envLauncher.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 	program = envLauncher.Program(target='LaunchWindows64', source=objects, LIBS=libs)
 
-targetBuild = envLauncher.Alias('launcher_live', program)
+(program, programDebug) = envLauncher.SplitDebugIf(program)
+targetBuild = envLauncher.Alias('launcher_live', program + programDebug)
 
 archive = {}
+archiveDebug = {}
 for p in program:
 	archive[p.name] = p
+
+for p in programDebug:
+	archiveDebug[p.name] = p
 
 if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
@@ -90,7 +95,8 @@ parent_targets['launcher_live'] = {
 	'name': 'Drag[en]gine Live Launcher',
 	'build': targetBuild,
 	'install': targetBuild,
-	'archive-special': archive}
+	'archive-special': archive,
+	'archive-special-debug': archiveDebug}
 
 # https://www.greenend.org.uk/rjk/tech/putenv.html
 # (namely putenv usually does not copy the value. it is important to keep the string allocated

@@ -37,14 +37,19 @@ if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
 library = envEditor.LoadableModule( target='synthesizer', source=objects, LIBS=libs )
-targetBuild = envEditor.Alias( 'editor_synthesizer_build', library )
+(library, libraryDebug) = envEditor.SplitDebugIf(library)
+targetBuild = envEditor.Alias( 'editor_synthesizer_build', library + libraryDebug)
 
 install = []
 archive = {}
+archiveDebug = {}
 for l in library:
 	if l.name.endswith( envEditor[ 'SHLIBSUFFIX' ] ):
 		install.append( envEditor.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
+
+for l in libraryDebug:
+	archiveDebug[os.path.join(pathModule, l.name)] = l
 
 if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
 	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
@@ -85,5 +90,6 @@ parent_targets[ 'editor_synthesizer' ] = {
 	'install' : targetInstall,
 	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archive,
+	'archive-igde-debug' : archiveDebug,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }
