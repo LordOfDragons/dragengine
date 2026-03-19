@@ -16,9 +16,10 @@ def generate(env):
 		env.AddPostAction(target, splitDebugAction)
 		debugTargets = []
 		for t in target:
-			t2 = str(t) + ".debug"
+			t2 = str(t) + '.debug'
 			debugTargets.append(env.File(t2))
 			env.Clean(t, t2)
+			env.SideEffect(t2, t)
 		return (target, debugTargets)
 	
 	def SplitDebugIf(env, target):
