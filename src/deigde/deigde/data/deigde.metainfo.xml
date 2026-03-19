@@ -96,6 +96,11 @@
 	</screenshots>
 	
 	<releases>
+		<release version="1.30.4" date="2026-03-17">
+			<description>
+				<p>Drag[en]gine 1.30.4 Release. Reduce installer size with proper stripping.</p>
+			</description>
+		</release>
 		<release version="1.30.3" date="2026-03-17">
 			<description>
 				<p>Drag[en]gine 1.30.3 Release. Fixed segfault in SteamVR due to adding actions.</p>
