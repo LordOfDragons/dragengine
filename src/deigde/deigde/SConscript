@@ -208,6 +208,12 @@ if envIGDELib['igde_toolkit'] == 'fox':
 			parent_targets['lib_fox']['globalInstallTracker'].append(key)
 			installLibRuntime.append(envIGDELib.Install(foxRuntimePath, l))
 			archiveLib[os.path.join(foxRuntimePath, l.name)] = l
+	
+	for l in reversed(parent_targets['lib_fox']['runtimelibsDebug']):
+		key = '{}/{}'.format(foxRuntimePath, l)
+		if not key in parent_targets['lib_fox']['globalInstallTracker']:
+			parent_targets['lib_fox']['globalInstallTracker'].append(key)
+			archiveLibDebug[os.path.join(foxRuntimePath, l.name)] = l
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
 targetInstallLibRuntime = envIGDELib.Alias('deigde_shared_runtime', installLibRuntime)

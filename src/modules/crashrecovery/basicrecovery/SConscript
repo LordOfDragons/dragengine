@@ -125,6 +125,11 @@ else:
 			manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
 			install.append(envModule.Install(pathModule, l))
 			archive[os.path.join(pathModule, l.name)] = l
+		
+		for l in reversed(parent_targets['lib_fox']['runtimelibsDebug']):
+			manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
+			install.append(envModule.Install(pathModule, l))
+			archiveDebug[os.path.join(pathModule, l.name)] = l
 	
 	manifest = envModule.File( 'src/module.xml' )
 	updateManifest = envModule.UpdateModuleManifest(manifest,

@@ -494,8 +494,7 @@ if not envDragengine['with_static_internalmodules']:
 			modulesArchive['{}/demodules.pdb'.format(pathPdb)] = envModules.File('demodules.pdb')
 	
 	for l in modulesLibraryDebug:
-		if l.name.endswith(envModules['SHLIBSUFFIX']):
-			modulesArchiveDebug[os.path.join(modulesPath, l.name)] = l
+		modulesArchiveDebug[os.path.join(modulesPath, l.name)] = l
 	
 	modulesTargetInstall = envModules.Alias('deinternalmodules', modulesInstall)
 

@@ -127,13 +127,19 @@ if envLauncher['OSWindows']:
 if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archive[os.path.join(pathBin, l.name)] = l
-	
+
 for l in reversed(parent_targets['lib_fox']['runtimelibs']):
 	key = '{}/{}'.format(pathBinLib, l)
 	if not key in parent_targets['lib_fox']['globalInstallTracker']:
 		parent_targets['lib_fox']['globalInstallTracker'].append(key)
 		install.append(envLauncher.Install(pathBinLib, l))
 		archive[os.path.join(pathBinLib, l.name)] = l
+
+for l in reversed(parent_targets['lib_fox']['runtimelibsDebug']):
+	key = '{}/{}'.format(pathBinLib, l)
+	if not key in parent_targets['lib_fox']['globalInstallTracker']:
+		parent_targets['lib_fox']['globalInstallTracker'].append(key)
+		archiveDebug[os.path.join(pathBinLib, l.name)] = l
 
 
 if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
