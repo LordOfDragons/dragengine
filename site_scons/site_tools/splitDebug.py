@@ -1,19 +1,11 @@
 def generate(env):
-	def splitDebugAction(target, source, env):
-		libPath = str(target[0])
-		debugPath = libPath + '.debug'
-		
-		commands = [
-			"objcopy --only-keep-debug {} {}".format(libPath, debugPath),
-			"strip --strip-debug --strip-unneeded {}".format(libPath),
-			"objcopy --add-gnu-debuglink={} {}".format(debugPath, libPath)]
-		
-		return 0 if all(env.Execute(c) == 0 for c in commands) else 1
-	
 	def SplitDebug(env, target):
 		"""Splits target into a stripped and a debug version.
 		Returns tuple (strippedTargets, debugTargets)."""
-		env.AddPostAction(target, splitDebugAction)
+		env.AddPostAction(target, [
+			"$OBJCOPY --only-keep-debug $TARGET ${TARGET}.debug",
+			"$STRIP --strip-debug --strip-unneeded $TARGET",
+			"$OBJCOPY --add-gnu-debuglink=${TARGET}.debug $TARGET"])
 		debugTargets = []
 		for t in target:
 			t2 = str(t) + '.debug'
@@ -31,6 +23,9 @@ def generate(env):
 		if not env['OSPosix']:
 			return (target, [])
 		return SplitDebug(env, target)
+	
+	env.SetDefault(OBJCOPY='objcopy')
+	env.SetDefault(STRIP='strip')
 	
 	env.AddMethod(SplitDebug, 'SplitDebug')
 	env.AddMethod(SplitDebugIf, 'SplitDebugIf')
