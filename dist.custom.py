@@ -7,7 +7,6 @@
 # Since this is a python file after all you can also use the values True and False
 # instead of 'yes' and 'no' as well as all kinds of code you can use in python for
 # example to adjust configuration on external parameters.
-#
 
 
 # General configuration
