@@ -267,7 +267,7 @@ jobs:
           git push -f origin nightly
       
       - name: Upload Artifacts
-        uses: ncipollo/release-action@v1.21
+        uses: ncipollo/release-action@v1.21.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
