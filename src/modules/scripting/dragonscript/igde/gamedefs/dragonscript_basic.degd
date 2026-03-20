@@ -19,6 +19,11 @@
 					<name>Behavior</name>
 					<description>Composable elements are jack of all trade elements that can be build using ECCompose* classes implementing the Composable interface to provide various abilities (or traits). Composable elements are suited for prototyping or rapid development since they require little written code. Building element classes the conventional way though is usually preferred.<br/><br/>Here in the game definition you can add behaviors as "inherited" classes to get access to the properties they define. These object classes themselves can not be used but only as inherited objects.</description>
 					<hidden>true</hidden>
+					<category>
+						<name>Attachable</name>
+						<description>Attachable behaviors allow to add dynamic behaviors to elements at runtime or during instantiation. Attachable behavior object classes can not be used as inherited objects.</description>
+						<hidden>true</hidden>
+					</category>
 				</category>
 			</category>
 		</classes>
@@ -3073,6 +3078,17 @@
 			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECABehaviorAnchorElement'>
+		<description>Behavior allowing to locate elements in a GameWorld using a unique name.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<attachableBehavior>true</attachableBehavior>
+		<property name='anchorID'>
+			<description>Anchor name or empty string to not anchor.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior/Attachable</category>
 	</class>
 	<class name='ECBehaviorRandomizeGeometry'>
 		<description>Behavior adding support to randomize position, rotation and scaling.</description>

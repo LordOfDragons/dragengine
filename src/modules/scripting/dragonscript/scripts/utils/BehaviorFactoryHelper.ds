@@ -1571,5 +1571,6 @@ class BehaviorFactoryHelper
 	 * \version 1.29
 	 */
 	func void addCommonAttachableFactories(AttachableBehaviorFactoryList factories)
+		factories.add(ECABehaviorAnchorElement.Factory.new())
 	end
 end
