@@ -147,9 +147,9 @@ jobs:
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         #emscons scons -j 1 lib_openxr lib_libjpeg lib_libwebm
         #
-        # "source ./emsdk-cache/emsdk-main/emsdk_env.sh" is required to work around bug in mymindstorm/setup-emsdk@v14
+        # "source $EMSDK_ENV" is required to work around bug in mymindstorm/setup-emsdk@v14
         run: |
-          source ./emsdk-cache/emsdk-main/emsdk_env.sh
+          source $EMSDK_ENV
           emscons scons --config=force -j 1 lib_libjpeg lib_libwebm
           emscons scons -j 14 archive launcher_web_build
           cd src/launcher/web/build
