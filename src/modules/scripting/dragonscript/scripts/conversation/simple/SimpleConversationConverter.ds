@@ -765,8 +765,11 @@ class SimpleConversationConverter
 		
 		applySpeechPause(state)
 		
-		if duration == 0
+		if duration == -1
 			duration = pFacePoseDuration
+			
+		else
+			duration = DEMath.max(duration, 0.0)
 		end
 		var float delay = DEMath.max(state.speechTime - state.facePoseTime, 0.0)
 		if state.actionActorSpeak != null
@@ -788,8 +791,11 @@ class SimpleConversationConverter
 		
 		applySpeechPause(state)
 		
-		if duration == 0
-			duration = pLookAtDuration
+		if duration == -1
+			duration = pFacePoseDuration
+			
+		else
+			duration = DEMath.max(duration, 0.0)
 		end
 		var float delay = DEMath.max(state.speechTime - state.lookAtTime, 0.0)
 		if state.actionActorSpeak != null

@@ -301,6 +301,7 @@ class SimpleConversationAction
 			throw ENullPointer.new("type")
 		end
 		pType = type
+		pDuration = -1
 	end
 	
 	/** \brief Create copy of simple conversation action. */
@@ -497,8 +498,8 @@ class SimpleConversationAction
 	/**
 	 * \brief Duration in seconds.
 	 * 
-	 * - \ref Type#facePose: Duration or 0 to use default.
-	 * - \ref Type#lookAt: Duration or 0 to use default.
+	 * - \ref Type#facePose: Duration or -1 to use default.
+	 * - \ref Type#lookAt: Duration or -1 to use default.
 	 * - other types: Not used and is 0
 	 */
 	func float getDuration()
@@ -506,11 +507,11 @@ class SimpleConversationAction
 	end
 	
 	/**
-	 * \brief Set duration in seconds.
+	 * \brief Set duration in seconds or -1 to use default.
 	 * \see #getDuration()
 	 */
 	func void setDuration(float duration)
-		pDuration = DEMath.max(duration, 0.0)
+		pDuration = DEMath.max(duration, -1.0)
 	end
 	
 	/**

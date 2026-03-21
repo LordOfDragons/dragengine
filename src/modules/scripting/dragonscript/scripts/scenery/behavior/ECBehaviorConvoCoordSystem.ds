@@ -75,18 +75,18 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorConvoCoordSystem pECBehavior
-		private var ElementConvoCoordSystem pConvoCoordSystem
+		var ECBehaviorConvoCoordSystem pECBehavior
+		var ElementConvoCoordSystem pConvoCoordSystem
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorConvoCoordSystem ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorConvoCoordSystem ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pConvoCoordSystem = null
 			super.dispose()
 		end
@@ -94,7 +94,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var StringID name = pECBehavior.getName().getValue(stub)
 			if name == null
 				return
@@ -121,26 +121,26 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorConvoCoordSystem getECBehavior()
+		func ECBehaviorConvoCoordSystem getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Conversation coordinate system or \em null. */
-		public func ElementConvoCoordSystem getConvoCoordSystem()
+		func ElementConvoCoordSystem getConvoCoordSystem()
 			return pConvoCoordSystem
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			if pConvoCoordSystem != null
 				getElement().getGameWorld().getConvoCoordSystemList().add(pConvoCoordSystem)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			if pConvoCoordSystem != null
 				getElement().getGameWorld().getConvoCoordSystemList().remove(pConvoCoordSystem.getID())
 			end
@@ -149,55 +149,61 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	
 	
 	
-	private var ECPStringID pName
-	private var ECPVector pPosition
-	private var ECPVector pOrientation
+	var String pPrefix
+	var ECPStringID pName
+	var ECPVector pPosition
+	var ECPVector pOrientation
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) this(eclass, "")
+	func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, String id) \
+	func new(BehaviorElementClass eclass, String id) \
 	this(eclass, id, id.empty() if "convoCoordSystem." else "convoCoordSystem(" + id + ").")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
-		pName = ECPStringID.new(prefix + "name")
-		eclass.addProperty(pName)
+	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
 		
-		pPosition = ECPVector.new(prefix + "position")
-		eclass.addProperty(pPosition)
-		
-		pOrientation = ECPVector.new(prefix + "orientation")
-		eclass.addProperty(pOrientation)
+		eclass.addProperty(pName = ECPStringID.new(prefix + "name"))
+		eclass.addProperty(pPosition = ECPVector.new(prefix + "position"))
+		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation"))
 		
 		eclass.addBehavior(this)
 	end
 	
 	
 	
+	/**
+	 * \brief Property prefix.
+	 * \version 1.31
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Name of conversation coordinate system. */
-	public func ECPStringID getName()
+	func ECPStringID getName()
 		return pName
 	end
 	
 	/** \brief Position relative to behavior element. */
-	public func ECPVector getPosition()
+	func ECPVector getPosition()
 		return pPosition
 	end
 	
 	/** \brief Orientation relative to behavior element. */
-	public func ECPVector getOrientation()
+	func ECPVector getOrientation()
 		return pOrientation
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -209,7 +215,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorConvoCoordSystem getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorConvoCoordSystem getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorConvoCoordSystem each
 			return true
 		end) cast ECBehaviorConvoCoordSystem
@@ -221,7 +227,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorConvoCoordSystem with specific identifier.
 	 */
-	static public func ECBehaviorConvoCoordSystem getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorConvoCoordSystem getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorConvoCoordSystem each
 			return each.getID().equals(id)
 		end) cast ECBehaviorConvoCoordSystem
@@ -233,7 +239,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Returns list contains ECBehaviorConvoCoordSystem behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorConvoCoordSystem each
 			return true
 		end)
@@ -248,7 +254,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * of type ECBehaviorConvoCoordSystem.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -260,7 +266,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorConvoCoordSystem.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -272,7 +278,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Returns list contains ECBehaviorConvoCoordSystem.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -281,7 +287,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end
