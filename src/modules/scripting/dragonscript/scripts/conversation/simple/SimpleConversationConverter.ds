@@ -80,6 +80,9 @@ class SimpleConversationConverter
 		/** \brief Open actor speak simple conversation actor or null. */
 		public var SimpleConversationActor actor
 		
+		/** \brief OPen actor speak simple conversation actor camera shot identifier or null. */
+		public var StringID actorCameraId
+		
 		/** \brief Open actor speak conversation action or null. */
 		public var CActionActorSpeak actionActorSpeak
 		
@@ -584,19 +587,19 @@ class SimpleConversationConverter
 				end
 			end
 			
-			var StringID id = state.actor.getCamera()
+			state.actorCameraId = state.actor.getCamera()
 			
 			select mode
 			case SimpleConversationAction.SpecialMode.noCamera,\
 				SimpleConversationAction.SpecialMode.noCameraNoDelay
-					id = null
+					state.actorCameraId = null
 			end
 			
-			if id != null
-				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
+			if state.actorCameraId != null
+				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(state.actorCameraId)
 				if camera == null
 					throw EInvalidParam.new("Camera '{}' not found in actor '{}' in snippet '{}'".format(\
-						Array.newWith(id, target, state.snippet.getId())))
+						Array.newWith(state.actorCameraId, target, state.snippet.getId())))
 				end
 				convertCamera(state, camera, camera.randomShot(), mode)
 				
@@ -610,7 +613,7 @@ class SimpleConversationConverter
 		else
 			state.forceCameraShotCounter++
 			if state.forceCameraShotCounter > pMinSpeakCountCameraChange
-				var StringID id = state.actor.getCamera()
+				var StringID id = state.actorCameraId
 				if id != null
 					var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
 					convertCamera(state, camera, camera.randomShot(), mode)
