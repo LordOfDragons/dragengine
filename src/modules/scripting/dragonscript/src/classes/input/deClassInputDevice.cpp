@@ -495,6 +495,18 @@ void deClassInputDevice::nfGetHandRig::RunFunction(dsRunTime *rt, dsValue *mysel
 	ds.GetClassRig()->PushRig(rt, device.GetDevice()->GetHandRig());
 }
 
+// public func Rig getBodyRig()
+deClassInputDevice::nfGetBodyRig::nfGetBodyRig(const sInitData &init) :
+dsFunction(init.clsInputDevice, "getBodyRig", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
+}
+void deClassInputDevice::nfGetBodyRig::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsInputDevice &device = *dedsGetNativeData<sInputDeviceNatDat>(p_GetNativeData(myself)).device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
+	
+	ds.GetClassRig()->PushRig(rt, device.GetDevice()->GetBodyRig());
+}
+
 // public func bool getSupportsFaceEyeExpressions()
 deClassInputDevice::nfGetSupportsFaceEyeExpressions::nfGetSupportsFaceEyeExpressions(const sInitData &init) :
 dsFunction(init.clsInputDevice, "getSupportsFaceEyeExpressions", DSFT_FUNCTION,
@@ -842,6 +854,7 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetBoneConfiguration(init));
 	AddFunction(new nfGetFingerTipOffset(init));
 	AddFunction(new nfGetHandRig(init));
+	AddFunction(new nfGetBodyRig(init));
 	AddFunction(new nfGetSupportsFaceEyeExpressions(init));
 	AddFunction(new nfGetSupportsFaceMouthExpressions(init));
 	AddFunction(new nfGetUsingHandInteraction(init));

@@ -40,6 +40,7 @@ pin Dragengine.Utils
 class BaseVRActor extends BaseActor
 	var ECBehaviorVRPlayspace.Instance pVRPlayspace
 	var ECBehaviorVRHMD.Instance pVRHMD
+	var ECBehaviorVRBody.Instance pVRBody
 	var ECBehaviorVRHand.Instance pVRRightHand
 	var ECBehaviorVRHand.Instance pVRLeftHand
 	var ECBehaviorVRHandPointAt.Instance pVRRightHandPointAt
@@ -65,6 +66,7 @@ class BaseVRActor extends BaseActor
 	func new(BaseVRActorClass eclass) super(eclass)
 		pVRPlayspace = eclass.getVRPlayspace().instance(this)
 		pVRHMD = eclass.getVRHMD().instance(this)
+		pVRBody = eclass.getVRBody().instance(this)
 		pVRRightHand = eclass.getVRRightHand().instance(this)
 		pVRLeftHand = eclass.getVRLeftHand().instance(this)
 		pVRRightHandPointAt = eclass.getVRRightHandPointAt().instance(this)
@@ -95,6 +97,14 @@ class BaseVRActor extends BaseActor
 	/** \brief VR HMD. */
 	func ECBehaviorVRHMD.Instance getVRHMD()
 		return pVRHMD
+	end
+	
+	/**
+	 * \brief VR Body.
+	 * \version 1.31
+	 */
+	func ECBehaviorVRBody.Instance getVRBody()
+		return pVRBody
 	end
 	
 	/** \brief VR Right Hand Controller. */

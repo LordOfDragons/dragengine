@@ -778,7 +778,9 @@ void deoxrSession::pCleanUp(){
 		const deoxrInstance &instance = pSystem.GetInstance();
 		instance.GetOxr().LogInfoFormat("Exit Session due to shuting down");
 		
-		OXR_CHECK(instance.xrRequestExitSession(pSession));
+		if(!instance.GetOxr().GetPreventDeletion()){
+			OXR_CHECK(instance.xrRequestExitSession(pSession));
+		}
 		pRunning = false;
 		pPredictedDisplayTime = 0;
 		pPredictedDisplayPeriod = 0;
@@ -813,7 +815,9 @@ void deoxrSession::pCleanUp(){
 	
 	if(pSession){
 		pSystem.GetInstance().GetOxr().GetDeviceProfiles().OnSessionEnd();
-		pSystem.GetInstance().xrDestroySession(pSession);
+		if(!pSystem.GetInstance().GetOxr().GetPreventDeletion()){
+			pSystem.GetInstance().xrDestroySession(pSession);
+		}
 		pSession = XR_NULL_HANDLE;
 	}
 }

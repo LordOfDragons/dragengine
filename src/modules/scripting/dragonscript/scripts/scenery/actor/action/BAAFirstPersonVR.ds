@@ -47,21 +47,21 @@ pin Dragengine.Utils
  */
 class BAAFirstPersonVR extends BAAFirstPerson
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
+	class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
 		public static fixed var String NAME = "BAAFirstPersonVR"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return BAAFirstPersonVR.new()
 		end
 		
-		public static func void registerFactory(Persistency persistency)
+		static func void registerFactory(Persistency persistency)
 			persistency.addFactory(NAME, Factory.new())
 		end
 		
-		public func BaseActorAction createAction(ECBehaviorActorAIAction.Instance instance)
+		func BaseActorAction createAction(ECBehaviorActorAIAction.Instance instance)
 			return BAAFirstPersonVR.new()
 		end
 	end
@@ -76,6 +76,9 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	/** \brief VR HMD behavior. */
 	protected var ECBehaviorVRHMD.Instance vrHMD
+	
+	/** \brief VR Body behavior. */
+	protected var ECBehaviorVRBody.Instance vrBody
 	
 	/** \brief VR Right Hand Controller behavior. */
 	protected var ECBehaviorVRHand.Instance vrRightHand
@@ -134,33 +137,41 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	
 	/** \brief Create actor action. */
-	public func new()
+	func new()
 	end
 	
 	
 	
 	/** \brief Player input turning. */
-	public func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
+	func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
 		return playerInputTurn
 	end
 	
 	/** \brief VR Playspace. */
-	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+	func ECBehaviorVRPlayspace.Instance getVRPlayspace()
 		return vrPlayspace
 	end
 	
 	/** \brief VR HMD. */
-	public func ECBehaviorVRHMD.Instance getVRHMD()
+	func ECBehaviorVRHMD.Instance getVRHMD()
 		return vrHMD
 	end
 	
+	/**
+	 * \brief VR Body.
+	 * \version 1.31
+	 */
+	func ECBehaviorVRBody.Instance getVRBody()
+		return vrBody
+	end
+	
 	/** \brief VR Right Hand Controller. */
-	public func ECBehaviorVRHand.Instance getVRRightHand()
+	func ECBehaviorVRHand.Instance getVRRightHand()
 		return vrRightHand
 	end
 	
 	/** \brief VR Left Hand Controller. */
-	public func ECBehaviorVRHand.Instance getVRLeftHand()
+	func ECBehaviorVRHand.Instance getVRLeftHand()
 		return vrLeftHand
 	end
 	
@@ -168,7 +179,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Right Hand Controller Point-At.
 	 * \version 1.7
 	 */
-	public func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
+	func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
 		return vrRightHandPointAt
 	end
 	
@@ -176,7 +187,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Left Hand Controller Point-At.
 	 * \version 1.7
 	 */
-	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
+	func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
 		return vrLeftHandPointAt
 	end
 	
@@ -184,7 +195,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Right Hand Controller Laser Pointer.
 	 * \version 1.7
 	 */
-	public func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
+	func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
 		return vrRightHandLaserPointer
 	end
 	
@@ -192,7 +203,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Left Hand Controller Laser Pointer.
 	 * \version 1.7
 	 */
-	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
+	func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
 		return vrLeftHandLaserPointer
 	end
 	
@@ -200,7 +211,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Right Hand Controller Attach Slot.
 	 * \version 1.9
 	 */
-	public func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
+	func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
 		return vrRightHandAttachSlot
 	end
 	
@@ -208,7 +219,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Left Hand Controller Attach Slot.
 	 * \version 1.9
 	 */
-	public func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
+	func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
 		return vrLeftHandAttachSlot
 	end
 	
@@ -216,7 +227,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Right Hand Controller Grabber.
 	 * \version 1.9
 	 */
-	public func ECBehaviorGrabber.Instance getVRRightHandGrabber()
+	func ECBehaviorGrabber.Instance getVRRightHandGrabber()
 		return vrRightHandGrabber
 	end
 	
@@ -224,44 +235,44 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * \brief VR Left Hand Controller Grabber.
 	 * \version 1.9
 	 */
-	public func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
+	func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
 		return vrLeftHandGrabber
 	end
 	
 	
 	
 	/** \brief Start looking up. */
-	public func void lookUpStart()
+	func void lookUpStart()
 	end
 	
 	/** \brief Stop looking up. */
-	public func void lookUpStop()
+	func void lookUpStop()
 	end
 	
 	/** \brief Start looking down. */
-	public func void lookDownStart()
+	func void lookDownStart()
 	end
 	
 	/** \brief Stop looking down. */
-	public func void lookDownStop()
+	func void lookDownStop()
 	end
 	
 	/** \brief Analog looking up/down. */
-	public func void analogLookUD(float amount, bool sticky)
+	func void analogLookUD(float amount, bool sticky)
 	end
 	
 	
 	
 	/** \brief Start crouching. */
-	public func void crouchStart()
+	func void crouchStart()
 	end
 	
 	/** \brief Stop crouching. */
-	public func void crouchStop()
+	func void crouchStop()
 	end
 	
 	/** \brief Toggle crouching. */
-	public func void crouchToggle()
+	func void crouchToggle()
 	end
 	
 	
@@ -285,6 +296,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			var BaseVRActor vrActor = actor cast BaseVRActor
 			vrPlayspace = vrActor.getVRPlayspace()
 			vrHMD = vrActor.getVRHMD()
+			vrBody = vrActor.getVRBody()
 			vrRightHand = vrActor.getVRRightHand()
 			vrLeftHand = vrActor.getVRLeftHand()
 			vrRightHandPointAt = vrActor.getVRRightHandPointAt()
@@ -299,6 +311,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		else
 			vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn(actor)
 			vrHMD = ECBehaviorVRHMD.getInstanceIn(actor)
+			vrBody = ECBehaviorVRBody.getInstanceIn(actor)
 			vrRightHand = ECBehaviorVRHand.getInstanceIn(actor, BaseVRActorClass.idVRRightHand)
 			vrLeftHand = ECBehaviorVRHand.getInstanceIn(actor, BaseVRActorClass.idVRLeftHand)
 			vrRightHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, BaseVRActorClass.idVRRightHand)
@@ -382,7 +395,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 end

@@ -426,6 +426,7 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deVROpenXR.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBodyTracker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrGlobalFunctions.cpp" />
@@ -447,6 +448,7 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceFeedback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBodyTracker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.cpp" />
@@ -487,6 +489,7 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deVROpenXR.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBodyTracker.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFunctionNames.h" />
@@ -509,6 +512,7 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceFeedback.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBodyTracker.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.h" />

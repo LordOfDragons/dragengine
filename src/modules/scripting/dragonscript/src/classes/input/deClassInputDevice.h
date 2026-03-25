@@ -152,6 +152,7 @@ private:
 	DEF_NATFUNC(nfGetSupportsFaceMouthExpressions);
 	DEF_NATFUNC(nfGetUsingHandInteraction);
 	DEF_NATFUNC(nfGetHandRig);
+	DEF_NATFUNC(nfGetBodyRig);
 	DEF_NATFUNC(nfGetVRModel);
 	DEF_NATFUNC(nfGetVRSkin);
 	

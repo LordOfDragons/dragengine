@@ -22,36 +22,34 @@
  * SOFTWARE.
  */
 
-#include "deoxrDPEyeGazeInteraction.h"
-#include "../../deVROpenXR.h"
+#include "deoxrDPBodyTracker.h"
 #include "../../deoxrInstance.h"
+#include "../../deoxrSystem.h"
 
-#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deoxrDPEyeGazeInteraction
-////////////////////////////////////
+// Class deoxrDPBodyTracker
+/////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPEyeGazeInteraction::deoxrDPEyeGazeInteraction(deoxrInstance &instance) :
-deoxrDeviceProfile(instance,
-	deoxrPath(instance, "/interaction_profiles/ext/eye_gaze_interaction"),
-	"Eye Gaze Interaction"){
+deoxrDPBodyTracker::deoxrDPBodyTracker(deoxrInstance &instance) :
+deoxrDeviceProfile(instance, deoxrPath(), "Body Tracker"){
 }
 
-deoxrDPEyeGazeInteraction::~deoxrDPEyeGazeInteraction() = default;
+deoxrDPBodyTracker::~deoxrDPBodyTracker() = default;
 
 
 
 // Management
 ///////////////
 
-void deoxrDPEyeGazeInteraction::CheckAttached(){
-	if(GetInstance().SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
+void deoxrDPBodyTracker::CheckAttached(){
+	if(GetInstance().SupportsExtension(deoxrInstance::extFBBodyTracking)
+	|| GetInstance().SupportsExtension(deoxrInstance::extMETABodyTrackingFullBody)){
 		pAddDevice();
 		
 	}else{
@@ -59,27 +57,10 @@ void deoxrDPEyeGazeInteraction::CheckAttached(){
 	}
 }
 
-void deoxrDPEyeGazeInteraction::SuggestBindings(){
-	if(!GetInstance().SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
-		return;
-	}
-	
-	// Valid for user paths:
-	// - /user/eyes_ext
-	// 
-	// Supported component paths:
-	// - /input/gaze_ext/pose
-	
-	const int bindingCount = 1;
-	deoxrInstance::sSuggestBinding bindings[bindingCount];
-	deoxrInstance::sSuggestBinding *b = bindings;
-	
-	pAdd(b, deVROpenXR::eiaPose, "/user/eyes_ext/input/gaze_ext/pose");
-	
-	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
+void deoxrDPBodyTracker::SuggestBindings(){
 }
 
-void deoxrDPEyeGazeInteraction::ClearActions(){
+void deoxrDPBodyTracker::ClearActions(){
 	pRemoveDevice();
 }
 
@@ -88,7 +69,7 @@ void deoxrDPEyeGazeInteraction::ClearActions(){
 // Private Functions
 //////////////////////
 
-void deoxrDPEyeGazeInteraction::pAddDevice() {
+void deoxrDPBodyTracker::pAddDevice(){
 	if(pDevice){
 		return;
 	}
@@ -98,20 +79,17 @@ void deoxrDPEyeGazeInteraction::pAddDevice() {
 	
 	decString id;
 	
-	pDevice->SetType(deInputDevice::edtVREyeTracker);
-	pDevice->SetName("Eye Tracker");
-	id.Format("%segi", OXR_DEVID_PREFIX);
-	
-	pDevice->SetActionPose(oxr.GetAction(deVROpenXR::eiaPose));
+	pDevice->SetType(deInputDevice::edtVRBodyTracker);
+	pDevice->SetName("Body Tracker");
+	id.Format("%sbt", OXR_DEVID_PREFIX);
 	pDevice->SetID(id);
 	
-	pDevice->SetSpacePose(deoxrSpace::Ref::New(*pGetSession(),
-		pDevice->GetActionPose(), pDevice->GetSubactionPath(), GetDeviceRotation()));
+	pAddBodyTracker(pDevice);
 	
-	GetInstance().GetOxr().GetDevices().Add(pDevice);
+	oxr.GetDevices().Add(pDevice);
 }
 
-void deoxrDPEyeGazeInteraction::pRemoveDevice() {
+void deoxrDPBodyTracker::pRemoveDevice(){
 	if(!pDevice){
 		return;
 	}

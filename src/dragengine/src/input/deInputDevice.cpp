@@ -111,6 +111,10 @@ void deInputDevice::SetHandRig(deRig *rig){
 	pHandRig = rig;
 }
 
+void deInputDevice::SetBodyRig(deRig *rig){
+	pBodyRig = rig;
+}
+
 void deInputDevice::SetSupportsFaceEyeExpressions(bool supportsFaceEyeExpressions){
 	pSupportsFaceEyeExpressions = supportsFaceEyeExpressions;
 }

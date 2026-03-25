@@ -49,6 +49,22 @@ void deBaseVRModule::RequestFeatureFacialTracking(eFeatureSupportLevel level){
 	DEASSERT_TRUE(level != efslRequired)
 }
 
+void deBaseVRModule::RequestFeatureBodyTracking(eFeatureSupportLevel level){
+	DEASSERT_TRUE(level != efslRequired)
+}
+
+bool deBaseVRModule::SupportsEyeGazeTracking(){
+	return false;
+}
+
+bool deBaseVRModule::SupportsFacialTracking(){
+	return false;
+}
+
+bool deBaseVRModule::SupportsBodyTracking(){
+	return false;
+}
+
 bool deBaseVRModule::IsRuntimeRunning(){
 	return false;
 }

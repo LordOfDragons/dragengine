@@ -1,0 +1,1345 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Animators
+
+
+/**
+ * \brief Behavior element behavior adding VR Body support to actor.
+ * \version 1.31
+ * 
+ * This behavior tracks a body tracker providing body bone pose data. Body trackers produce
+ * bone pose data for the upper or full body of the user. The bone configuration can be
+ * retrieved using \ref #getBoneConfiguration(). The body rig containing the skeleton as used
+ * by the body tracking device can be retrieved using \ref #getBodyRig(). The body rig can
+ * change if the input device recalibrates the user. If the body rig changed a
+ * \ref Listener#bodyRigChanged() notification is sent.
+ * 
+ * Requires \ref ECBehaviorActorAnimated to show the body and optionally animated it. This behavior
+ * maintains an \ref AnimationInstance itself and applies the bone position after the actor
+ * animated animation. This allows other behaviors to add more animations on top of the tracked
+ * body pose.
+ * 
+ * This behavior can be added only once to an element. The prefix of the element class properties
+ * is "vrBody.".
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrbody
+ */
+class ECBehaviorVRBody extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Input device attached and ready to use. */
+		func void inputDeviceAttached(Instance instance)
+		
+		/** \brief Input device detached and no more usable. */
+		func void inputDeviceDetached(Instance instance)
+		
+		/**
+		 * \brief Bone skeleton of body tracker changed.
+		 * 
+		 * Body rig provided by input device changed.
+		 */
+		func void bodyRigChanged(Instance instance)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new(): end
+		
+		func void inputDeviceAttached(Instance instance): end
+		func void inputDeviceDetached(Instance instance): end
+		func void bodyRigChanged(Instance instance): end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving \ref Instance as parameter returning \ref Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRPlayspace
+	 * - Required: \ref ECBehaviorActorAnimated
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRBody'>
+	 *   <!-- optional: use ECBehaviorActorAnimated with identifier instead of default one. -->
+	 *   <string name='actorAnimated'>identifier</string>
+	 *   
+	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='bindingManager'>default</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRBody")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id must be empty")
+			end
+			
+			var ECBehaviorVRBody behavior = ECBehaviorVRBody.new(eclass,\
+				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
+				eclass.sharedFactoryHelper.defaultActorAnimated(eclass, parameters),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrBody")
+			return behavior
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Actor animated listener. */
+		private class ApplyAnimatorListener extends ECBehaviorActorAnimated.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void updateControllers(ECBehaviorActorAnimated.Instance instance, float elapsed)
+				pInstance.updateControllers()
+			end
+			
+			func void animationApplied(ECBehaviorActorAnimated.Instance instance)
+				pInstance.applyAnimations()
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "vrBody.check". */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "attached", null)
+				if value != null
+					result &= pInstance.isAttached() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief Input device listener. */
+		class AttachDetachChangedListener extends DefaultBindingManagerListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void deviceAttached(BindingManager manager, InputDevice device)
+				if device.getType() == InputDeviceType.vrBodyTracker
+					pInstance.setInputDevice(device)
+				end
+			end
+			
+			func void deviceDetached(BindingManager manager, InputDevice device)
+				if pInstance.getInputDevice() == device
+					pInstance.setInputDevice(null)
+				end
+			end
+			
+			func void devicesReloaded(BindingManager manager)
+				pInstance.setInputDevice(manager.findDevice(block InputDevice each
+					return each.getType() == InputDeviceType.vrBodyTracker
+				end))
+			end
+		end
+		
+		protected class Bone
+			public var String bone
+			public var int poseIndex
+			public var String namePrefix
+			public var ADController adControllerPosition
+			public var ADController adControllerOrientation
+			public var AnimatorController controllerPosition
+			public var AnimatorController controllerOrientation
+			public var Vector posePosition
+			public var Quaternion poseOrientation, retargetOrientation
+			public var bool usePosition, isLowerBody
+			
+			func new(String bone, int poseIndex, String namePrefix, bool isLowerBody)\
+			this(bone, poseIndex, namePrefix, isLowerBody, false)
+			end
+			
+			func new(String bone, int poseIndex, String namePrefix, bool isLowerBody, bool usePosition)
+				this.bone = bone
+				this.poseIndex = poseIndex
+				this.namePrefix = namePrefix
+				this.isLowerBody = isLowerBody
+				this.usePosition = usePosition
+				posePosition = Vector.new()
+				poseOrientation = Quaternion.new()
+				retargetOrientation = Quaternion.new()
+			end
+		end
+		
+		protected enum BoneEntry
+			// upper body
+			hips
+			spineLower: spineMiddle: spineUpper
+			chest: neck: head
+			leftShoulder: leftScapula: leftArmUpper: leftArmLower: leftHandWristTwist: leftHandWrist
+			rightShoulder: rightScapula: rightArmUpper: rightArmLower: rightHandWristTwist: rightHandWrist
+			
+			// full body
+			leftUpperLeg: leftLowerLeg: leftFootAnkleTwist: leftFootAnkle
+			leftFootSubtalar: leftFootTransverse: leftFootBall
+			
+			rightUpperLeg: rightLowerLeg: rightFootAnkleTwist: rightFootAnkle
+			rightFootSubtalar: rightFootTransverse: rightFootBall
+		end
+		
+		
+		var ECBehaviorVRBody pECBehavior
+		var ECBehaviorVRPlayspace.Instance pVRPlayspace
+		var ECBehaviorActorAnimated.Instance pActorAnimated
+		var InputDevice pInputDevice
+		var Vector pPosition
+		var Quaternion pOrientation
+		var Rig pBodyRig
+		var Array pListeners
+		var AttachDetachChangedListener pAttachDetachListener
+		var ECComposeBTSM.Instance pBTSMs
+		var bool pOnlyRotation, pEnableUpperBody, pEnableLowerBody
+		var String pBoneOrigin
+		var Array pBones, pAnimateBones
+		var AnimatorInstance pAnimatorInstance
+		var ADController pADControllerEnableLowerBody
+		var AnimatorController pControllerEnableLowerBody
+		var ADController pADControllerIKHandRightPosition, pADControllerIKHandRightOrientation
+		var AnimatorController pControllerIKHandRightPosition, pControllerIKHandRightOrientation
+		var ADController pADControllerIKHandLeftPosition, pADControllerIKHandLeftOrientation
+		var AnimatorController pControllerIKHandLeftPosition, pControllerIKHandLeftOrientation
+		var Bone pBoneIKHandRight, pBoneIKHandLeft
+		var Matrix pBodyScale
+		var String pBoneWristRight, pBoneWristLeft
+		
+		
+		
+		/** \brief Create instance. */
+		func new(ECBehaviorVRBody ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pPosition = Vector.new()
+			pOrientation = Quaternion.new()
+			pListeners = Array.new()
+			pAttachDetachListener = AttachDetachChangedListener.new(this)
+			pBones = Array.new()
+			pBodyScale = Matrix.new()
+			
+			pVRPlayspace = ecbehavior.getVRPlayspace().instance(element)
+			pActorAnimated = ecbehavior.getActorAnimated().instance(element)
+		end
+		
+		func void dispose()
+			pAttachDetachListener = null
+			pListeners = null
+			pActorAnimated = null
+			pVRPlayspace = null
+			pBTSMs = null
+			super.dispose()
+		end
+		
+		func void init(StubElement stub)
+			pOnlyRotation = pECBehavior.getOnlyRotation().getValue(stub)
+			pEnableLowerBody = pECBehavior.getEnableLowerBody().getValue(stub)
+			
+			pBoneWristRight = pECBehavior.getBoneRightHandWrist().getValue(stub)
+			pBoneWristLeft = pECBehavior.getBoneLeftHandWrist().getValue(stub)
+			
+			// add bones
+			pBoneOrigin = pECBehavior.getBoneOrigin().getValue(stub)
+			
+			pBones.add(Bone.new(pECBehavior.getBoneHips().getValue(stub), InputDeviceFullBodyBone.hips, "hips", false, true))
+			pBones.add(Bone.new(pECBehavior.getBoneSpineLower().getValue(stub), InputDeviceFullBodyBone.spineLower, "spineLower", false))
+			pBones.add(Bone.new(pECBehavior.getBoneSpineMiddle().getValue(stub), InputDeviceFullBodyBone.spineMiddle, "spineMiddle", false))
+			pBones.add(Bone.new(pECBehavior.getBoneSpineUpper().getValue(stub), InputDeviceFullBodyBone.spineUpper, "spineUpper", false))
+			pBones.add(Bone.new(pECBehavior.getBoneChest().getValue(stub), InputDeviceFullBodyBone.chest, "chest", false))
+			pBones.add(Bone.new(pECBehavior.getBoneNeck().getValue(stub), InputDeviceFullBodyBone.neck, "neck", false))
+			pBones.add(Bone.new(pECBehavior.getBoneHead().getValue(stub), InputDeviceFullBodyBone.head, "head", false))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftShoulder().getValue(stub), InputDeviceFullBodyBone.leftShoulder, "leftShoulder", false))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftScapula().getValue(stub), InputDeviceFullBodyBone.leftScapula, "leftScapula", false))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftArmUpper().getValue(stub), InputDeviceFullBodyBone.leftArmUpper, "leftArmUpper", false))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftArmLower().getValue(stub), InputDeviceFullBodyBone.leftArmLower, "leftArmLower", false))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftHandWristTwist().getValue(stub), InputDeviceFullBodyBone.leftHandWristTwist, "leftHandWristTwist", false))
+			pBones.add(Bone.new(pBoneWristLeft, InputDeviceFullBodyBone.leftHandWrist, "leftHandWrist", false))
+			pBones.add(Bone.new(pECBehavior.getBoneRightShoulder().getValue(stub), InputDeviceFullBodyBone.rightShoulder, "rightShoulder", false))
+			pBones.add(Bone.new(pECBehavior.getBoneRightScapula().getValue(stub), InputDeviceFullBodyBone.rightScapula, "rightScapula", false))
+			pBones.add(Bone.new(pECBehavior.getBoneRightArmUpper().getValue(stub), InputDeviceFullBodyBone.rightArmUpper, "rightArmUpper", false))
+			pBones.add(Bone.new(pECBehavior.getBoneRightArmLower().getValue(stub), InputDeviceFullBodyBone.rightArmLower, "rightArmLower", false))
+			pBones.add(Bone.new(pECBehavior.getBoneRightHandWristTwist().getValue(stub), InputDeviceFullBodyBone.rightHandWristTwist, "rightHandWristTwist", false))
+			pBones.add(Bone.new(pBoneWristRight, InputDeviceFullBodyBone.rightHandWrist, "rightHandWrist", false))
+			
+			pBones.add(Bone.new(pECBehavior.getBoneLeftUpperLeg().getValue(stub), InputDeviceFullBodyBone.leftUpperLeg, "leftUpperLeg", true))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftLowerLeg().getValue(stub), InputDeviceFullBodyBone.leftLowerLeg, "leftLowerLeg", true))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftFootAnkleTwist().getValue(stub), InputDeviceFullBodyBone.leftFootAnkleTwist, "leftFootAnkleTwist", true))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftFootAnkle().getValue(stub), InputDeviceFullBodyBone.leftFootAnkle, "leftFootAnkle", true))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftFootSubtalar().getValue(stub), InputDeviceFullBodyBone.leftFootSubtalar, "leftFootSubtalar", true))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftFootTransverse().getValue(stub), InputDeviceFullBodyBone.leftFootTransverse, "leftFootTransverse", true))
+			pBones.add(Bone.new(pECBehavior.getBoneLeftFootBall().getValue(stub), InputDeviceFullBodyBone.leftFootBall, "leftFootBall", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightUpperLeg().getValue(stub), InputDeviceFullBodyBone.rightUpperLeg, "rightUpperLeg", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightLowerLeg().getValue(stub), InputDeviceFullBodyBone.rightLowerLeg, "rightLowerLeg", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightFootAnkleTwist().getValue(stub), InputDeviceFullBodyBone.rightFootAnkleTwist, "rightFootAnkleTwist", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightFootAnkle().getValue(stub), InputDeviceFullBodyBone.rightFootAnkle, "rightFootAnkle", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightFootSubtalar().getValue(stub), InputDeviceFullBodyBone.rightFootSubtalar, "rightFootSubtalar", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightFootTransverse().getValue(stub), InputDeviceFullBodyBone.rightFootTransverse, "rightFootTransverse", true))
+			pBones.add(Bone.new(pECBehavior.getBoneRightFootBall().getValue(stub), InputDeviceFullBodyBone.rightFootBall, "rightFootBall", true))
+			
+			// collect bones to animate
+			pAnimateBones = pBones.collect(block Bone each
+				return not each.bone.empty()
+			end)
+			
+			// create animator instance
+			var Component component = pActorAnimated.getComponent().getComponent()
+			
+			pAnimatorInstance = AnimatorInstance.new()
+			pAnimatorInstance.setComponent(component)
+			if component != null and component.getRig() != null
+				pAnimatorInstance.setAnimator(createAnimator(stub, component))
+				
+				// get controllers and store them for later use
+				pAnimateBones.forEach(block Bone bone
+					bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
+					bone.adControllerOrientation = null
+					
+					if bone.adControllerPosition != null
+						bone.controllerPosition = pAnimatorInstance.getControllerAt(bone.adControllerPosition.getIndex())
+						bone.adControllerPosition = null
+					end
+				end)
+				
+				pControllerEnableLowerBody = pAnimatorInstance.getControllerAt(pADControllerEnableLowerBody.getIndex())
+				pADControllerEnableLowerBody = null
+				
+				if pADControllerIKHandRightPosition != null
+					pControllerIKHandRightPosition = pAnimatorInstance.getControllerAt(pADControllerIKHandRightPosition.getIndex())
+					pADControllerIKHandRightPosition = null
+				end
+				if pADControllerIKHandRightOrientation != null
+					pControllerIKHandRightOrientation = pAnimatorInstance.getControllerAt(pADControllerIKHandRightOrientation.getIndex())
+					pADControllerIKHandRightOrientation = null
+				end
+				
+				if pADControllerIKHandLeftPosition != null
+					pControllerIKHandLeftPosition = pAnimatorInstance.getControllerAt(pADControllerIKHandLeftPosition.getIndex())
+					pADControllerIKHandLeftPosition = null
+				end
+				if pADControllerIKHandLeftOrientation != null
+					pControllerIKHandLeftOrientation = pAnimatorInstance.getControllerAt(pADControllerIKHandLeftOrientation.getIndex())
+					pADControllerIKHandLeftOrientation = null
+				end
+			end
+			
+			// do the rest
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
+			
+			if pControllerEnableLowerBody != null
+				pControllerEnableLowerBody.setValue(pEnableLowerBody if 1 else 0)
+			end
+			
+			updateBoneRetargetOrientations()
+			
+			// attach to actor animated to update controller and apply animation in time
+			pActorAnimated.addListener(ApplyAnimatorListener.new(this))
+		end
+		
+		/** \brief Create animator definition. */
+		protected func AnimatorDefinition createAnimatorDefinition(StubElement stub, Component component)
+			// create animator definition
+			var AnimatorDefinition definition = AnimatorDefinition.new("body pose")
+			definition.setRig(component.getRig())
+			
+			// add bones
+			if not pBoneOrigin.empty()
+				definition.addBone(pBoneOrigin)
+			end
+			pAnimateBones.forEach(block Bone each
+				definition.addBone(each.bone)
+			end)
+			
+			// add snapshot rule rule
+			var ADRuleStateSnapshot ruleSnapshot = ADRuleStateSnapshot.new()
+			ruleSnapshot.setUseLastState(true)
+			if not pBoneOrigin.empty()
+				ruleSnapshot.addBone(pBoneOrigin)
+			end
+			pAnimateBones.forEach(block Bone each
+				ruleSnapshot.addBone(each.bone)
+			end)
+			definition.addRule(ruleSnapshot)
+			
+			// add controllers, links and rules for bones
+			pADControllerEnableLowerBody = ADController.new()
+			pADControllerEnableLowerBody.setName("enable lower body")
+			pADControllerEnableLowerBody.setMinimum(0)
+			pADControllerEnableLowerBody.setMaximum(1)
+			pADControllerEnableLowerBody.setClamp(true)
+			definition.addController(pADControllerEnableLowerBody)
+			
+			var ADLink linkLowerBody = ADLink.new()
+			linkLowerBody.setController(pADControllerEnableLowerBody)
+			linkLowerBody.setCurve(CurveBezier.newDefaultLinear())
+			definition.addLink(linkLowerBody)
+			
+			pAnimateBones.forEach(block Bone bone
+				bone.adControllerOrientation = ADController.new()
+				bone.adControllerOrientation.setName(bone.namePrefix + " orientation")
+				definition.addController(bone.adControllerOrientation)
+				
+				var ADLink linkOrientation = ADLink.new()
+				linkOrientation.setController(bone.adControllerOrientation)
+				definition.addLink(linkOrientation)
+				
+				var ADRuleInverseKinematic rule = ADRuleInverseKinematic.new()
+				rule.setName(bone.namePrefix)
+				rule.setAdjustOrientation(true)
+				rule.setAdjustPosition(false)
+				rule.addBone(bone.bone)
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalOrientation, linkOrientation))
+				
+				if bone.isLowerBody
+					rule.addTargetLink(ADRuleTargetLink.new(\
+						ARInverseKinematicTarget.blendFactor, linkLowerBody))
+				end
+				
+				if bone.usePosition or not pOnlyRotation
+					bone.adControllerPosition = ADController.new()
+					bone.adControllerPosition.setName(bone.namePrefix + " position")
+					definition.addController(bone.adControllerPosition)
+					
+					var ADLink linkPosition = ADLink.new()
+					linkPosition.setController(bone.adControllerPosition)
+					definition.addLink(linkPosition)
+					
+					rule.setAdjustPosition(true)
+					rule.addTargetLink(ADRuleTargetLink.new(\
+						ARInverseKinematicTarget.goalPosition, linkPosition))
+				end
+				
+				definition.addRule(rule)
+			end)
+			
+			// add inverse kinematics to line up hand wrists with controller
+			pBoneIKHandRight = pBones.find(block Bone each
+				return each.poseIndex == InputDeviceFullBodyBone.rightHandWrist
+			end) cast Bone
+			var Bone boneShoulder = pBones.find(block Bone each
+				return each.poseIndex == InputDeviceFullBodyBone.rightShoulder
+			end) cast Bone
+			if pBoneIKHandRight != null and boneShoulder != null
+				pADControllerIKHandRightPosition = ADController.new()
+				pADControllerIKHandRightPosition.setName("ik right hand position")
+				definition.addController(pADControllerIKHandRightPosition)
+				
+				pADControllerIKHandRightOrientation = ADController.new()
+				pADControllerIKHandRightOrientation.setName("ik right hand orientation")
+				definition.addController(pADControllerIKHandRightOrientation)
+				
+				var ADLink linkPosition = ADLink.new()
+				linkPosition.setController(pADControllerIKHandRightPosition)
+				definition.addLink(linkPosition)
+				
+				var ADLink linkOrientation = ADLink.new()
+				linkOrientation.setController(pADControllerIKHandRightOrientation)
+				definition.addLink(linkOrientation)
+				
+				var ADRuleInverseKinematic rule = ADRuleInverseKinematic.new()
+				rule.setName("ik right hand")
+				rule.setAdjustOrientation(true)
+				rule.setAdjustPosition(true)
+				rule.addBone(pBoneIKHandRight.bone)
+				rule.addBone(boneShoulder.bone)
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalPosition, linkPosition))
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalOrientation, linkOrientation))
+				definition.addRule(rule)
+			end
+			
+			pBoneIKHandLeft = pBones.find(block Bone each
+				return each.poseIndex == InputDeviceFullBodyBone.leftHandWrist
+			end) cast Bone
+			boneShoulder = pBones.find(block Bone each
+				return each.poseIndex == InputDeviceFullBodyBone.leftShoulder
+			end) cast Bone
+			if pBoneIKHandLeft != null and boneShoulder != null
+				pADControllerIKHandLeftPosition = ADController.new()
+				pADControllerIKHandLeftPosition.setName("ik left hand position")
+				definition.addController(pADControllerIKHandLeftPosition)
+				
+				pADControllerIKHandLeftOrientation = ADController.new()
+				pADControllerIKHandLeftOrientation.setName("ik left hand orientation")
+				definition.addController(pADControllerIKHandLeftOrientation)
+				
+				var ADLink linkPosition = ADLink.new()
+				linkPosition.setController(pADControllerIKHandLeftPosition)
+				definition.addLink(linkPosition)
+				
+				var ADLink linkOrientation = ADLink.new()
+				linkOrientation.setController(pADControllerIKHandLeftOrientation)
+				definition.addLink(linkOrientation)
+				
+				var ADRuleInverseKinematic rule = ADRuleInverseKinematic.new()
+				rule.setName("ik left hand")
+				rule.setAdjustOrientation(true)
+				rule.setAdjustPosition(true)
+				rule.addBone(pBoneIKHandLeft.bone)
+				rule.addBone(boneShoulder.bone)
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalPosition, linkPosition))
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalOrientation, linkOrientation))
+				definition.addRule(rule)
+			end
+			
+			// finished
+			return definition
+		end
+		
+		/** Create animator using definition created using createAnimatorDefinition(). */
+		protected func Animator createAnimator(StubElement stub, Component component)
+			var Animator animator = Animator.new()
+			createAnimatorDefinition(stub, component).buildAnimator(animator)
+			return animator
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorVRBody getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Playspace. */
+		func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+			return pVRPlayspace
+		end
+		
+		/** \brief Actor animated behavior instance. */
+		func ECBehaviorActorAnimated.Instance getActorAnimated()
+			return pActorAnimated
+		end
+		
+		/** \brief Input device or null if detached. */
+		func InputDevice getInputDevice()
+			return pInputDevice
+		end
+		
+		/** \brief Set input device or null if detached. */
+		func void setInputDevice(InputDevice device)
+			if device == pInputDevice
+				setBodyRig(device != null if device.getBodyRig() else null)
+				return
+			end
+			
+			if pInputDevice != null
+				pListeners.forEach(block Listener each
+					each.inputDeviceDetached(this)
+				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "detached")
+				end
+			end
+			
+			pInputDevice = device
+			
+			if device != null
+				pListeners.forEach(block Listener each
+					each.inputDeviceAttached(this)
+				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "attached")
+				end
+			end
+			
+			setBodyRig(device != null if device.getBodyRig() else null)
+		end
+		
+		/** \brief Input device is attached. */
+		func bool isAttached()
+			return pInputDevice != null
+		end
+		
+		/** \brief Input device is detached. */
+		func bool isDetached()
+			return pInputDevice == null
+		end
+		
+		/**
+		 * \brief Body rig or null if not set or input device is detached.
+		 * 
+		 * Describes the skeleton used by the input device. The body rig can change if the input
+		 * device recalibrates the user. If the body rig changed a
+		 * \ref Listener#bodyRigChanged() notification is sent.
+		 */
+		func Rig getBodyRig()
+			return pBodyRig
+		end
+		
+		/**
+		 * \brief Set body rig.
+		 * 
+		 * Notifies listeners if the body rig changed.
+		 */
+		protected func void setBodyRig(Rig rig)
+			if pBodyRig == rig
+				return
+			end
+			
+			pBodyRig = rig
+			updateBoneRetargetOrientations()
+			
+			pListeners.forEach(block Listener each
+				each.bodyRigChanged(this)
+			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "rigChanged")
+			end
+		end
+		
+		/**
+		 * \brief Bone configuration.
+		 * 
+		 * Returns \ref InputDeviceBoneConfiguration#none if tracker is detached.
+		 */
+		func InputDeviceBoneConfiguration getBoneConfiguration()
+			if pInputDevice != null
+				return pInputDevice.getBoneConfiguration()
+			end
+			return InputDeviceBoneConfiguration.none
+		end
+		
+		/** \brief Upper body supported. */
+		func bool isUpperBodySupported()
+			return getBoneConfiguration() == InputDeviceBoneConfiguration.upperBody
+		end
+		
+		/** \brief Full body supported. */
+		func bool isFullBodySupported()
+			return getBoneConfiguration() == InputDeviceBoneConfiguration.fullBody
+		end
+		
+		
+		
+		/** \brief Apply only rotation instead of position and rotation. */
+		func bool getOnlyRotation()
+			return pOnlyRotation
+		end
+		
+		/** \brief Enable lower body. */
+		func bool getEnableLowerBody()
+			return pEnableLowerBody
+		end
+		
+		/** \brief Right hand wrist bone or null. */
+		func String getBoneWristRight()
+			return pBoneWristRight
+		end
+		
+		/** \brief Left hand wrist bone or null. */
+		func String getBoneWristLeft()
+			return pBoneWristLeft
+		end
+		
+		
+		
+		/** \brief Bone entry. */
+		protected func Bone getBone(BoneEntry entry)
+			return pBones.getAt(entry.order()) cast Bone
+		end
+		
+		/** \brief Bone entry. */
+		protected func Bone getBoneAt(int index)
+			return pBones.getAt(index) cast Bone
+		end
+		
+		
+		
+		/**
+		 * \brief Position.
+		 * \note Position is queried each time the function is called.
+		 */
+		func DVector getPosition()
+			return pVRPlayspace.getMatrix() * DVector.new(getPositionPlayspace())
+		end
+		
+		/**
+		 * \brief Playspace local position.
+		 * \note Position is queried each time the function is called.
+		 */
+		func Vector getPositionPlayspace()
+			if pInputDevice != null
+				pPosition = pInputDevice.getDevicePosePosition()
+			end
+			return pPosition
+		end
+		
+		/**
+		 * \brief Orientation.
+		 * \note Orientation is queried each time the function is called.
+		 */
+		func Quaternion getOrientation()
+			return getOrientationPlayspace() * pVRPlayspace.getOrientation()
+		end
+		
+		/**
+		 * \brief Playspace local orientation.
+		 * \note Orientation is queried each time the function is called.
+		 */
+		func Quaternion getOrientationPlayspace()
+			if pInputDevice != null
+				pOrientation = pInputDevice.getDevicePoseOrientation()
+			end
+			return pOrientation
+		end
+		
+		/**
+		 * \brief Matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		func DMatrix getMatrix()
+			return DMatrix.newWorld(getPosition(), getOrientation())
+		end
+		
+		/**
+		 * \brief Playspace local matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		func Matrix getMatrixPlayspace()
+			return Matrix.newWorld(getPositionPlayspace(), getOrientationPlayspace())
+		end
+		
+		/**
+		 * \brief Inverse matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		func DMatrix getInverseMatrix()
+			return getMatrix().getInverse()
+		end
+		
+		/**
+		 * \brief Inverse playspace local matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		func Matrix getInverseMatrixPlayspace()
+			return getMatrixPlayspace().getInverse()
+		end
+		
+		
+		
+		/** \brief Body scale matrix. */
+		func Matrix getBodyScale()
+			return pBodyScale
+		end
+		
+		/** \brief Body scale matrix. */
+		func void setBodyScale(Matrix scale)
+			if scale == null
+				throw ENullPointer.new()
+			end
+			pBodyScale = scale
+		end
+		
+		
+		
+		/** \brief Update controllers. */
+		func void updateControllers()
+			if pInputDevice == null
+				return
+			end
+			
+			var Matrix boneMatrix, rootMatrix = pInputDevice.getDevicePoseMatrix()
+			
+			pAnimateBones.forEach(block Bone bone
+				boneMatrix = pInputDevice.getDeviceBonePoseMatrix(bone.poseIndex, false) * rootMatrix
+				bone.poseOrientation = boneMatrix.toQuaternion()
+				bone.posePosition = boneMatrix.getPosition()
+			end)
+			
+			pAnimateBones.forEach(block Bone bone
+				bone.controllerOrientation.setOrientation(bone.retargetOrientation * bone.poseOrientation)
+				if bone.controllerPosition != null
+					bone.controllerPosition.setVector(pBodyScale * bone.posePosition)
+				end
+			end)
+			
+			if pControllerIKHandRightPosition != null
+				pControllerIKHandRightPosition.setVector(pBoneIKHandRight.posePosition)
+				pControllerIKHandRightOrientation.setOrientation(\
+					pBoneIKHandRight.retargetOrientation * pBoneIKHandRight.poseOrientation)
+			end
+			if pControllerIKHandLeftPosition != null
+				pControllerIKHandLeftPosition.setVector(pBoneIKHandLeft.posePosition)
+				pControllerIKHandLeftOrientation.setOrientation(\
+					pBoneIKHandLeft.retargetOrientation * pBoneIKHandLeft.poseOrientation)
+			end
+		end
+		
+		/** \brief Apply animations. */
+		func void applyAnimations()
+			if pAnimatorInstance != null
+				pAnimatorInstance.apply()
+			end
+		end
+		
+		/** \brief Update bone retarget orientations. */
+		func void updateBoneRetargetOrientations()
+			if pInputDevice == null
+				return
+			end
+			
+			var Component component = pActorAnimated.getComponent().getComponent()
+			if component == null
+				return
+			end
+			
+			var Rig rig = component.getRig()
+			if rig == null
+				return
+			end
+			
+			var bool fullBody = isFullBodySupported()
+			
+			pAnimateBones.forEach(block Bone bone
+				var int boneIndex = rig.indexOfBoneNamed(bone.bone)
+				if boneIndex != -1
+					if pBodyRig != null and (fullBody or not bone.isLowerBody)
+						bone.retargetOrientation = (rig.getBoneMatrix(boneIndex)\
+							* pBodyRig.getBoneInverseMatrix(bone.poseIndex)).toQuaternion()
+						
+					else
+						bone.retargetOrientation = Quaternion.new()
+					end
+				end
+			end)
+		end
+		
+		
+		/** \brief Add listener. */
+		func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		func void addToGameWorld()
+			var BindingManager bindingManager = pECBehavior.getBindingManager()
+			bindingManager.addListener(pAttachDetachListener)
+			
+			setInputDevice(bindingManager.findDevice(block InputDevice each
+				return each.getType() == InputDeviceType.vrBodyTracker
+			end))
+		end
+		
+		func void removeFromGameWorld()
+			pECBehavior.getBindingManager().removeListener(pAttachDetachListener)
+			setInputDevice(null)
+		end
+	end
+	
+	
+	
+	var BindingManager pBindingManager
+	var ECBehaviorVRPlayspace pVRPlayspace
+	var ECBehaviorActorAnimated pActorAnimated
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	var ECPString pBoneOrigin, pBoneHips
+	var ECPString pBoneSpineLower, pBoneSpineMiddle, pBoneSpineUpper
+	var ECPString pBoneChest, pBoneNeck, pBoneHead
+	var ECPString pBoneLeftShoulder, pBoneLeftScapula
+	var ECPString pBoneLeftArmUpper, pBoneLeftArmLower, pBoneLeftHandWristTwist, pBoneLeftHandWrist
+	var ECPString pBoneRightShoulder, pBoneRightScapula
+	var ECPString pBoneRightArmUpper, pBoneRightArmLower, pBoneRightHandWristTwist, pBoneRightHandWrist
+	var ECPString pBoneLeftUpperLeg, pBoneLeftLowerLeg, pBoneLeftFootAnkleTwist
+	var ECPString pBoneLeftFootAnkle, pBoneLeftFootSubtalar, pBoneLeftFootTransverse, pBoneLeftFootBall
+	var ECPString pBoneRightUpperLeg, pBoneRightLowerLeg, pBoneRightFootAnkleTwist
+	var ECPString pBoneRightFootAnkle, pBoneRightFootSubtalar, pBoneRightFootTransverse, pBoneRightFootBall
+	var ECPBoolean pOnlyRotation, pEnableLowerBody
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace,\
+	ECBehaviorActorAnimated actorAnimated) this(eclass, vrPlayspace, actorAnimated,\
+	eclass.sharedFactoryHelper.defaultBindingManager())
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace,\
+	ECBehaviorActorAnimated actorAnimated, BindingManager bindingManager)\
+	this(eclass, vrPlayspace, actorAnimated, bindingManager, "vrBody")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace,\
+	ECBehaviorActorAnimated actorAnimated, BindingManager bindingManager, String subID)\
+	this(eclass, vrPlayspace, actorAnimated, bindingManager, subID, subID + ".")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace,\
+	ECBehaviorActorAnimated actorAnimated, BindingManager bindingManager,\
+	String subID, String prefix) super(eclass)
+		if vrPlayspace == null
+			throw ENullPointer.new("vrPlayspace")
+		end
+		if actorAnimated == null
+			throw ENullPointer.new("actorAnimated")
+		end
+		if bindingManager == null
+			throw ENullPointer.new("bindingManager")
+		end
+		
+		pPrefix = prefix
+		pBindingManager = bindingManager
+		pVRPlayspace = vrPlayspace
+		pActorAnimated = actorAnimated
+		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
+		
+		// upper body bones
+		eclass.addProperty(pBoneOrigin = ECPString.new(prefix + "boneOrigin", "origin"))
+		eclass.addProperty(pBoneHips = ECPString.new(prefix + "boneHips", "hips"))
+		eclass.addProperty(pBoneSpineLower = ECPString.new(prefix + "boneSpineLower", "spineLower"))
+		eclass.addProperty(pBoneSpineMiddle = ECPString.new(prefix + "boneSpineMiddle", "spineMiddle"))
+		eclass.addProperty(pBoneSpineUpper = ECPString.new(prefix + "boneSpineUpper", "spineUpper"))
+		eclass.addProperty(pBoneChest = ECPString.new(prefix + "boneChest", "chest"))
+		eclass.addProperty(pBoneNeck = ECPString.new(prefix + "boneNeck", "neck"))
+		eclass.addProperty(pBoneHead = ECPString.new(prefix + "boneHead", "head"))
+		eclass.addProperty(pBoneLeftShoulder = ECPString.new(prefix + "boneLeftShoulder", "shoulder.l"))
+		eclass.addProperty(pBoneLeftScapula = ECPString.new(prefix + "boneLeftScapula", "scapula.l"))
+		eclass.addProperty(pBoneLeftArmUpper = ECPString.new(prefix + "boneLeftArmUpper", "armUpper.l"))
+		eclass.addProperty(pBoneLeftArmLower = ECPString.new(prefix + "boneLeftArmLower", "armLower.l"))
+		eclass.addProperty(pBoneLeftHandWristTwist = ECPString.new(prefix + "boneLeftHandWristTwist", "wristTwist.l"))
+		eclass.addProperty(pBoneLeftHandWrist = ECPString.new(prefix + "boneLeftHandWrist", "wrist.l"))
+		eclass.addProperty(pBoneRightShoulder = ECPString.new(prefix + "boneRightShoulder", "shoulder.r"))
+		eclass.addProperty(pBoneRightScapula = ECPString.new(prefix + "boneRightScapula", "scapula.r"))
+		eclass.addProperty(pBoneRightArmUpper = ECPString.new(prefix + "boneRightArmUpper", "armUpper.r"))
+		eclass.addProperty(pBoneRightArmLower = ECPString.new(prefix + "boneRightArmLower", "armLower.r"))
+		eclass.addProperty(pBoneRightHandWristTwist = ECPString.new(prefix + "boneRightHandWristTwist", "wristTwist.r"))
+		eclass.addProperty(pBoneRightHandWrist = ECPString.new(prefix + "boneRightHandWrist", "wrist.r"))
+		
+		// full body bones
+		eclass.addProperty(pBoneLeftUpperLeg = ECPString.new(prefix + "boneLeftUpperLeg", "upperLeg.l"))
+		eclass.addProperty(pBoneLeftLowerLeg = ECPString.new(prefix + "boneLeftLowerLeg", "lowerLeg.l"))
+		eclass.addProperty(pBoneLeftFootAnkleTwist = ECPString.new(prefix + "boneLeftFootAnkleTwist", "footAnkleTwist.l"))
+		eclass.addProperty(pBoneLeftFootAnkle = ECPString.new(prefix + "boneLeftFootAnkle", "footAnkle.l"))
+		eclass.addProperty(pBoneLeftFootSubtalar = ECPString.new(prefix + "boneLeftFootSubtalar", "footSubtalar.l"))
+		eclass.addProperty(pBoneLeftFootTransverse = ECPString.new(prefix + "boneLeftFootTransverse", "footTransverse.l"))
+		eclass.addProperty(pBoneLeftFootBall = ECPString.new(prefix + "boneLeftFootBall", "footBall.l"))
+		eclass.addProperty(pBoneRightUpperLeg = ECPString.new(prefix + "boneRightUpperLeg", "upperLeg.r"))
+		eclass.addProperty(pBoneRightLowerLeg = ECPString.new(prefix + "boneRightLowerLeg", "lowerLeg.r"))
+		eclass.addProperty(pBoneRightFootAnkleTwist = ECPString.new(prefix + "boneRightFootAnkleTwist", "footAnkleTwist.r"))
+		eclass.addProperty(pBoneRightFootAnkle = ECPString.new(prefix + "boneRightFootAnkle", "footAnkle.r"))
+		eclass.addProperty(pBoneRightFootSubtalar = ECPString.new(prefix + "boneRightFootSubtalar", "footSubtalar.r"))
+		eclass.addProperty(pBoneRightFootTransverse = ECPString.new(prefix + "boneRightFootTransverse", "footTransverse.r"))
+		eclass.addProperty(pBoneRightFootBall = ECPString.new(prefix + "boneRightFootBall", "footBall.r"))
+		
+		eclass.addProperty(pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true))
+		eclass.addProperty(pEnableLowerBody = ECPBoolean.new(prefix + "enableLowerBody", true))
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pListenerFactories = null
+		pActorAnimated = null
+		pVRPlayspace = null
+		pBTSMs = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Binding manager. */
+	func BindingManager getBindingManager()
+		return pBindingManager
+	end
+	
+	/** \brief VR Playspace behavior. */
+	func ECBehaviorVRPlayspace getVRPlayspace()
+		return pVRPlayspace
+	end
+	
+	/** \brief Actor animated behavior. */
+	func ECBehaviorActorAnimated getActorAnimated()
+		return pActorAnimated
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	
+	
+	/** \brief Origin bone name. */
+	func ECPString getBoneOrigin()
+		return pBoneOrigin
+	end
+	
+	/** \brief Hips bone name. */
+	func ECPString getBoneHips()
+		return pBoneHips
+	end
+	
+	/** \brief Spine lower bone name. */
+	func ECPString getBoneSpineLower()
+		return pBoneSpineLower
+	end
+	
+	/** \brief Spine middle bone name. */
+	func ECPString getBoneSpineMiddle()
+		return pBoneSpineMiddle
+	end
+	
+	/** \brief Spine upper bone name. */
+	func ECPString getBoneSpineUpper()
+		return pBoneSpineUpper
+	end
+	
+	/** \brief Chest bone name. */
+	func ECPString getBoneChest()
+		return pBoneChest
+	end
+	
+	/** \brief Neck bone name. */
+	func ECPString getBoneNeck()
+		return pBoneNeck
+	end
+	
+	/** \brief Head bone name. */
+	func ECPString getBoneHead()
+		return pBoneHead
+	end
+	
+	/** \brief Left shoulder bone name. */
+	func ECPString getBoneLeftShoulder()
+		return pBoneLeftShoulder
+	end
+	
+	/** \brief Left scapula bone name. */
+	func ECPString getBoneLeftScapula()
+		return pBoneLeftScapula
+	end
+	
+	/** \brief Left upper arm bone name. */
+	func ECPString getBoneLeftArmUpper()
+		return pBoneLeftArmUpper
+	end
+	
+	/** \brief Left lower arm bone name. */
+	func ECPString getBoneLeftArmLower()
+		return pBoneLeftArmLower
+	end
+	
+	/** \brief Left hand wrist twist bone name. */
+	func ECPString getBoneLeftHandWristTwist()
+		return pBoneLeftHandWristTwist
+	end
+	
+	/** \brief Left hand wrist bone name. */
+	func ECPString getBoneLeftHandWrist()
+		return pBoneLeftHandWrist
+	end
+	
+	/** \brief Right shoulder bone name. */
+	func ECPString getBoneRightShoulder()
+		return pBoneRightShoulder
+	end
+	
+	/** \brief Right scapula bone name. */
+	func ECPString getBoneRightScapula()
+		return pBoneRightScapula
+	end
+	
+	/** \brief Right upper arm bone name. */
+	func ECPString getBoneRightArmUpper()
+		return pBoneRightArmUpper
+	end
+	
+	/** \brief Right lower arm bone name. */
+	func ECPString getBoneRightArmLower()
+		return pBoneRightArmLower
+	end
+	
+	/** \brief Right hand wrist twist bone name. */
+	func ECPString getBoneRightHandWristTwist()
+		return pBoneRightHandWristTwist
+	end
+	
+	/** \brief Right hand wrist bone name. */
+	func ECPString getBoneRightHandWrist()
+		return pBoneRightHandWrist
+	end
+	
+	/** \brief Left upper leg bone name. */
+	func ECPString getBoneLeftUpperLeg()
+		return pBoneLeftUpperLeg
+	end
+	
+	/** \brief Left lower leg bone name. */
+	func ECPString getBoneLeftLowerLeg()
+		return pBoneLeftLowerLeg
+	end
+	
+	/** \brief Left foot ankle twist bone name. */
+	func ECPString getBoneLeftFootAnkleTwist()
+		return pBoneLeftFootAnkleTwist
+	end
+	
+	/** \brief Left foot ankle bone name. */
+	func ECPString getBoneLeftFootAnkle()
+		return pBoneLeftFootAnkle
+	end
+	
+	/** \brief Left foot subtalar bone name. */
+	func ECPString getBoneLeftFootSubtalar()
+		return pBoneLeftFootSubtalar
+	end
+	
+	/** \brief Left foot transverse bone name. */
+	func ECPString getBoneLeftFootTransverse()
+		return pBoneLeftFootTransverse
+	end
+	
+	/** \brief Left foot ball bone name. */
+	func ECPString getBoneLeftFootBall()
+		return pBoneLeftFootBall
+	end
+	
+	/** \brief Right upper leg bone name. */
+	func ECPString getBoneRightUpperLeg()
+		return pBoneRightUpperLeg
+	end
+	
+	/** \brief Right lower leg bone name. */
+	func ECPString getBoneRightLowerLeg()
+		return pBoneRightLowerLeg
+	end
+	
+	/** \brief Right foot ankle twist bone name. */
+	func ECPString getBoneRightFootAnkleTwist()
+		return pBoneRightFootAnkleTwist
+	end
+	
+	/** \brief Right foot ankle bone name. */
+	func ECPString getBoneRightFootAnkle()
+		return pBoneRightFootAnkle
+	end
+	
+	/** \brief Right foot subtalar bone name. */
+	func ECPString getBoneRightFootSubtalar()
+		return pBoneRightFootSubtalar
+	end
+	
+	/** \brief Right foot transverse bone name. */
+	func ECPString getBoneRightFootTransverse()
+		return pBoneRightFootTransverse
+	end
+	
+	/** \brief Right foot ball bone name. */
+	func ECPString getBoneRightFootBall()
+		return pBoneRightFootBall
+	end
+	
+	/** \brief Apply only rotation instead of position and rotation. */
+	func ECPBoolean getOnlyRotation()
+		return pOnlyRotation
+	end
+	
+	/** \brief Enable lower body bones if supported by input device. */
+	func ECPBoolean getEnableLowerBody()
+		return pEnableLowerBody
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular \ref BehaviorElementClass contains a behavior
+	 * of type \ref ECBehaviorVRBody.
+	 */
+	static func ECBehaviorVRBody getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRBody each
+			return true
+		end) cast ECBehaviorVRBody
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular \ref BehaviorElement contains a behavior instance
+	 * of type \ref ECBehaviorVRBody.Instance .
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

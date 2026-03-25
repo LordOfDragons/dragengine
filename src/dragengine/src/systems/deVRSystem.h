@@ -42,6 +42,7 @@ private:
 	deCamera::Ref pCamera;
 	deBaseVRModule::eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
 	deBaseVRModule::eFeatureSupportLevel pRequestFeatureFacialTracking;
+	deBaseVRModule::eFeatureSupportLevel pRequestFeatureBodyTracking;
 	bool pEnablePassthrough;
 	float pPassthroughTransparency;
 	
@@ -125,6 +126,23 @@ public:
 	void RequestFeatureFacialTracking(deBaseVRModule::eFeatureSupportLevel level);
 	
 	/**
+	 * \brief Set feature request level for body tracking.
+	 * \version 1.31
+	 * 
+	 * Body tracking provides the pose of body as input device bones. Estimating bode pose is an
+	 * expensive operation running on the headset. The majority of games and applications do not
+	 * require body tracking. To enable set the feature request level to
+	 * optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time startRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support body tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	void RequestFeatureBodyTracking(deBaseVRModule::eFeatureSupportLevel level);
+	
+	/**
 	 * \brief Start VR.
 	 * 
 	 * VR systems typically are required to be activated before they can be used.
@@ -165,6 +183,30 @@ public:
 	 * \version 1.12
 	 */
 	bool SupportsPassthrough();
+	
+	/**
+	 * \brief Eye gaze tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Throws exception if VR runtime is not running.
+	 */
+	bool SupportsEyeGazeTracking();
+	
+	/**
+	 * \brief Facial tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Throws exception if VR runtime is not running.
+	 */
+	bool SupportsFacialTracking();
+	
+	/**
+	 * \brief Body tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Throws exception if VR runtime is not running.
+	 */
+	bool SupportsBodyTracking();
 	
 	/**
 	 * \brief Presenting user environment inside the rendered world is enabled.

@@ -212,7 +212,9 @@ void deoxrSwapchain::ReleaseImage(){
 
 void deoxrSwapchain::pCleanUp(){
 	if(pSwapchain){
-		pSession.GetSystem().GetInstance().xrDestroySwapchain(pSwapchain);
+		if(!pSession.GetSystem().GetInstance().GetOxr().GetPreventDeletion()){
+			pSession.GetSystem().GetInstance().xrDestroySwapchain(pSwapchain);
+		}
 		pSwapchain = XR_NULL_HANDLE;
 	}
 }

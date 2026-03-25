@@ -150,7 +150,13 @@ public:
 		 * \brief VR Eye Tracker.
 		 * \version 1.12
 		 */
-		edtVREyeTracker
+		edtVREyeTracker,
+		
+		/**
+		 * \brief VR Body Tracker.
+		 * \version 1.31
+		 */
+		edtVRBodyTracker
 	};
 	
 	/**
@@ -181,12 +187,44 @@ public:
 		 * Poses are relative to the parent bone inside chains and the device coordinate
 		 * frame for chain root bones.
 		 */
-		ebcHand
+		ebcHand,
+		
+		/**
+		 * \brief Upper body bones.
+		 * \version 1.31
+		 * 
+		 * Bones are defined according to the bones defined in the XR_FB_body_tracking extension.
+		 * Hand bones are not includes since these are handled by input devices of type
+		 * \ref deInputDevice::edtVRRightHand and \ref deInputDevice::edtVRLeftHand .
+		 * 
+		 * Use \ref deInputDevice::eUpperBodyBones enumeration as bone indices.
+		 * 
+		 * Poses are relative to the parent bone inside chains and the device coordinate
+		 * frame for chain root bones.
+		 */
+		ebcUpperBody,
+		
+		/**
+		 * \brief Full body bones.
+		 * \version 1.31
+		 * 
+		 * Bones are defined according to the bones defined in the XR_META_body_tracking_full_body
+		 * extension. Hand bones are not includes since these are handled by input devices of type
+		 * \ref deInputDevice::edtVRRightHand and \ref deInputDevice::edtVRLeftHand .
+		 * 
+		 * Use \ref deInputDevice::eFullBodyBones enumeration as bone indices.
+		 * 
+		 * Poses are relative to the parent bone inside chains and the device coordinate
+		 * frame for chain root bones.
+		 */
+		ebcFullBody
 	};
 	
 	/**
 	 * \brief Convenience enumeration for hand bones.
 	 * \version 1.6
+	 * 
+	 * Use as bone indices for devices with bone configuration \ref deInputDevice::ebcHand.
 	 */
 	enum eHandBones{
 		ehbWrist,
@@ -217,6 +255,90 @@ public:
 	 * \version 1.6
 	 */
 	static const int HandBoneCount = 21;
+	
+	/**
+	 * \brief Convenience enumeration for upper body bones.
+	 * \version 1.31
+	 * 
+	 * Use as bone indices for devices with bone configuration \ref deInputDevice::ebcUpperBody.
+	 */
+	enum eUpperBodyBones{
+		eubbHips,
+		eubbSpineLower,
+		eubbSpineMiddle,
+		eubbSpineUpper,
+		eubbChest,
+		eubbNeck,
+		eubbHead,
+		eubbLeftShoulder,
+		eubbLeftScapula,
+		eubbLeftArmUpper,
+		eubbLeftArmLower,
+		eubbLeftHandWristTwist,
+		eubbLeftHandWrist,
+		eubbRightShoulder,
+		eubbRightScapula,
+		eubbRightArmUpper,
+		eubbRightArmLower,
+		eubbRightHandWristTwist,
+		eubbRightHandWrist
+	};
+	
+	/**
+	 * \brief Convenience value count of upper body bones.
+	 * \version 1.31
+	 */
+	static const int UpperBodyBoneCount = 19;
+	
+	/**
+	 * \brief Convenience enumeration for full body bones.
+	 * \version 1.31
+	 * 
+	 * Use as bone indices for devices with bone configuration \ref deInputDevice::ebcFullBody.
+	 * 
+	 * The first 19 bones are shared with \ref deInputDevice::eUpperBodyBones .
+	 */
+	enum eFullBodyBones{
+		efbbHips = eubbHips,
+		efbbSpineLower = eubbSpineLower,
+		efbbSpineMiddle = eubbSpineMiddle,
+		efbbSpineUpper = eubbSpineUpper,
+		efbbChest = eubbChest,
+		efbbNeck = eubbNeck,
+		efbbHead = eubbHead,
+		efbbLeftShoulder = eubbLeftShoulder,
+		efbbLeftScapula = eubbLeftScapula,
+		efbbLeftArmUpper = eubbLeftArmUpper,
+		efbbLeftArmLower = eubbLeftArmLower,
+		efbbLeftHandWristTwist = eubbLeftHandWristTwist,
+		efbbLeftHandWrist = eubbLeftHandWrist,
+		efbbRightShoulder = eubbRightShoulder,
+		efbbRightScapula = eubbRightScapula,
+		efbbRightArmUpper = eubbRightArmUpper,
+		efbbRightArmLower = eubbRightArmLower,
+		efbbRightHandWristTwist = eubbRightHandWristTwist,
+		efbbRightHandWrist = eubbRightHandWrist,
+		efbbLeftUpperLeg,
+		efbbLeftLowerLeg,
+		efbbLeftFootAnkleTwist,
+		efbbLeftFootAnkle,
+		efbbLeftFootSubtalar,
+		efbbLeftFootTransverse,
+		efbbLeftFootBall,
+		efbbRightUpperLeg,
+		efbbRightLowerLeg,
+		efbbRightFootAnkleTwist,
+		efbbRightFootAnkle,
+		efbbRightFootSubtalar,
+		efbbRightFootTransverse,
+		efbbRightFootBall
+	};
+	
+	/**
+	 * \brief Convenience value count of full body bones.
+	 * \version 1.31
+	 */
+	static const int FullBodyBoneCount = 33;
 	
 	/**
 	 * \brief Convenience enumeration for face expressions.
@@ -410,6 +532,9 @@ private:
 	/** \brief Hand rig if ebcHand is used. */
 	deRig::Ref pHandRig;
 	
+	/** \brief Body rig if ebcUpperBody or ebcFullBody is used. */
+	deRig::Ref pBodyRig;
+	
 	/** \brief Device supports face eye expressions. */
 	bool pSupportsFaceEyeExpressions;
 	
@@ -563,6 +688,18 @@ public:
 	 * \version 1.6
 	 */
 	void SetHandRig(deRig *rig);
+	
+	/**
+	 * \brief Body rig if ebcUpperBody or ebcFullBody is used.
+	 * \version 1.31
+	 */
+	inline const deRig::Ref &GetBodyRig() const{ return pBodyRig; }
+	
+	/**
+	 * \brief Set body rig if ebcUpperBody or ebcFullBody is used.
+	 * \version 1.31
+	 */
+	void SetBodyRig(deRig *rig);
 	
 	/**
 	 * \brief Device supports face eye expressions.

@@ -57,6 +57,7 @@ class InputEvent
 	 * | InputEventType.buttonRelease | Index of button in device |
 	 * | InputEventType.deviceAttachedDetached | not used |
 	 * | InputEventType.deviceParamsChanged | not used |
+	 * | InputEventType.boneSkeletonChanged | not used |
 	 */
 	public func int getCode()
 		return 0

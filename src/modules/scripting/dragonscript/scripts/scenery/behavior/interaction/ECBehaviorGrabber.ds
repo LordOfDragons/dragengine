@@ -1011,9 +1011,25 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		return pVRHand
 	end
 	
+	/**
+	 * \brief Set VR Hand behavior or null if not used.
+	 * \version 1.31
+	 */
+	func void setVRHand(ECBehaviorVRHand vrHand)
+		pVRHand = vrHand
+	end
+	
 	/** \brief Collider behavior or null if not used. */
 	func ECBehaviorCollider getCollider()
 		return pCollider
+	end
+	
+	/**
+	 * \brief Set Collider behavior or null if not used.
+	 * \version 1.31
+	 */
+	func void setCollider(ECBehaviorCollider collider)
+		pCollider = collider
 	end
 	
 	/** \brief Attach resource. */

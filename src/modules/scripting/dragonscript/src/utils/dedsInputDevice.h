@@ -57,7 +57,7 @@ private:
 	
 	deInputDevicePose pDevicePose;
 	
-	decTList<deInputDevicePose> pBonePoses;
+	decTList<deInputDevicePose> pBonePoses, pBonePosesWithController;
 	int pBonePoseCount;
 	decTList<float> pFaceExpressions;
 	int pFaceExpressionCount;

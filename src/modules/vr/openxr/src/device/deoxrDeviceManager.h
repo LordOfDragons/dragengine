@@ -78,15 +78,6 @@ public:
 	/** Remove device if present and queue event. */
 	void Remove(deoxrDevice *device);
 	
-	/**
-	 * Update device parameters if present and queue event. If device becomes invalid
-	 * remove it instead.
-	 */
-// 	void UpdateParameters( vr::TrackedDeviceIndex_t index );
-	
-	/** Free name number for device type. */
-// 	int NextNameNumber( vr::TrackedDeviceClass deviceClass ) const;
-	
 	/** Track device states. */
 	void TrackDeviceStates();
 	

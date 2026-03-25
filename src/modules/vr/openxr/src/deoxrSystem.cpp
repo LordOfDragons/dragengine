@@ -48,6 +48,8 @@ pSupportsFaceEyeTracking(false),
 pSupportsFaceLipTracking(false),
 pSupportsPassthrough(false),
 pSupportsXDevSpace(false),
+pSupportsUpperBodyTracking(false),
+pSupportsFullBodyTracking(false),
 pSupportsEnvBlendModeAlphaBlend(false)
 {
 	try{
@@ -89,6 +91,19 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		if(instance.SupportsExtension(deoxrInstance::extMNDXXDevSpace)){
 			*next = &sysXDevSpaceProps;
 			next = (void**)&sysXDevSpaceProps.next;
+		}
+		
+		XrSystemBodyTrackingPropertiesFB sysBodyTrackProps{XR_TYPE_SYSTEM_BODY_TRACKING_PROPERTIES_FB};
+		if(instance.SupportsExtension(deoxrInstance::extFBBodyTracking)){
+			*next = &sysBodyTrackProps;
+			next = (void**)&sysBodyTrackProps.next;
+		}
+		
+		XrSystemPropertiesBodyTrackingFullBodyMETA sysFullBodyTrackProps{
+			XR_TYPE_SYSTEM_PROPERTIES_BODY_TRACKING_FULL_BODY_META};
+		if(instance.SupportsExtension(deoxrInstance::extMETABodyTrackingFullBody)){
+			*next = &sysFullBodyTrackProps;
+			next = (void**)&sysFullBodyTrackProps.next;
 		}
 		
 		OXR_CHECK(instance.xrGetSystemProperties(instance.GetInstance(), pSystemId, &sysProps));
@@ -141,6 +156,26 @@ pSupportsEnvBlendModeAlphaBlend(false)
 			}
 		}
 		
+		if(instance.SupportsExtension(deoxrInstance::extFBBodyTracking)){
+			if(sysBodyTrackProps.supportsBodyTracking){
+				pSupportsUpperBodyTracking = true;
+				
+			}else{
+				instance.DisableExtension(deoxrInstance::extFBBodyTracking);
+				oxr.LogWarn("Disabling extFBBodyTracking extension since body tracking is not supported by the system");
+			}
+		}
+		
+		if(instance.SupportsExtension(deoxrInstance::extMETABodyTrackingFullBody)){
+			if(sysFullBodyTrackProps.supportsFullBodyTracking){
+				pSupportsFullBodyTracking = true;
+				
+			}else{
+				instance.DisableExtension(deoxrInstance::extMETABodyTrackingFullBody);
+				oxr.LogWarn("Disabling extMETABodyTrackingFullBody extension since full body tracking is not supported by the system");
+			}
+		}
+		
 		XrEnvironmentBlendMode envBlendModes[3]{};
 		uint32_t i, envBlendModeCount;
 		OXR_CHECK(instance.xrEnumerateEnvironmentBlendModes(instance.GetInstance(), pSystemId,
@@ -164,6 +199,8 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		oxr.LogInfoFormat("Supports eye gaze tracking: %s", pSupportsEyeGazeTracking ? "yes" : "no");
 		oxr.LogInfoFormat("Supports face eye tracking: %s", pSupportsFaceEyeTracking ? "yes" : "no");
 		oxr.LogInfoFormat("Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports upper body tracking: %s", pSupportsUpperBodyTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports full body tracking: %s", pSupportsFullBodyTracking ? "yes" : "no");
 		oxr.LogInfoFormat("Supports environment blend mode alpha blend: %s", pSupportsEnvBlendModeAlphaBlend ? "yes" : "no");
 		oxr.LogInfoFormat("Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no");
 		oxr.LogInfoFormat("Supports XDev space: %s", pSupportsXDevSpace ? "yes" : "no");
@@ -176,6 +213,12 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		if(oxr.GetRequestFeatureFacialTracking() == deBaseVRModule::efslRequired){
 			if(!pSupportsFaceEyeTracking && !pSupportsFaceLipTracking){
 				DETHROW_INFO(deeInvalidParam, "Requires facial tracking but required extensions are absent");
+			}
+		}
+		
+		if(oxr.GetRequestFeatureBodyTracking() == deBaseVRModule::efslRequired){
+			if(!pSupportsUpperBodyTracking && !pSupportsFullBodyTracking){
+				DETHROW_INFO(deeInvalidParam, "Requires body tracking but required extension is absent");
 			}
 		}
 		
