@@ -358,7 +358,7 @@ void deoxrSession::Begin(){
 	beginInfo.primaryViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
 	OXR_CHECK(instance.xrBeginSession(pSession, &beginInfo));
-	// pRequestCenterSpaceOrigin = true;
+	pRequestCenterSpaceOrigin = true;
 	
 	pRunning = true;
 }
