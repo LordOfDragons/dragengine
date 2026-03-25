@@ -655,4 +655,60 @@ class BaseVRActorClass extends BaseActorClass
 	protected func Element createElement()
 		return BaseVRActor.new(this)
 	end
+	
+	
+	
+	/**
+	 * \brief Set up collider as ghost collider.
+	 * \version 1.31
+	 * 
+	 * Ghost colliders have empty collision filter and kinematic collision response. They collide
+	 * with nothing and are useful to show a body without physically interacting with the game
+	 * world. The collider has no gravity.
+	 * 
+	 * This does not affect the AI collider.
+	 */
+	func void setGhostCollision()
+		var ECComposeCollider cc = getCollider().getCollider()
+		cc.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		cc.getLocalGravity().setVector(Vector.new())
+		cc.getWeight().setValue(1)
+		cc.setCollisionFilter(CollisionFilter.new())
+	end
+	
+	/**
+	 * \brief Set up collider as kinematic collider.
+	 * \version 1.31
+	 * 
+	 * Collider has kinematic collision response and can collide with \ref PhysicsElementClass
+	 * and \ref SimpleElementClass. This allows body to physically interact with the game world.
+	 * 
+	 * This does not affect the AI collider.
+	 */
+	func void setKinematicCollision()
+		var ECComposeCollider cc = getCollider().getCollider()
+		cc.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		cc.getLocalGravity().setVector(Vector.new())
+		cc.getWeight().setValue(1)
+		cc.setCollisionFilter(getKinematicCollisionFilter())
+	end
+	
+	/**
+	 * \brief Set up collider as dynamic collider.
+	 * \version 1.31
+	 * 
+	 * Collider has dynamic collision response and can collide with \ref PhysicsElementClass
+	 * and \ref SimpleElementClass. This allows body to physically interact with the game world.
+	 * In contrary to \ref #setKinematicCollision() the rig can have dynamic bones affected
+	 * by world gravity.
+	 * 
+	 * This does not affect the AI collider.
+	 */
+	func void setDynamicCollision()
+		var ECComposeCollider cc = getCollider().getCollider()
+		cc.getPhysicsType().setEnumeration(CollisionResponse.dynamic)
+		cc.getLocalGravity().setVector(null)
+		cc.getWeight().setValue(1)
+		cc.setCollisionFilter(getDynamicCollisionFilter())
+	end
 end
