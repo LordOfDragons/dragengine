@@ -851,7 +851,7 @@ class ECBehaviorVRBody extends DefaultECBehavior
 		
 		/** \brief Update controllers. */
 		func void updateControllers()
-			if pInputDevice == null
+			if pInputDevice == null or pAnimateBones == null
 				return
 			end
 			
@@ -891,7 +891,7 @@ class ECBehaviorVRBody extends DefaultECBehavior
 		
 		/** \brief Update bone retarget orientations. */
 		func void updateBoneRetargetOrientations()
-			if pInputDevice == null
+			if pInputDevice == null or pAnimateBones == null
 				return
 			end
 			
