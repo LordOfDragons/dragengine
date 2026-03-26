@@ -44,12 +44,11 @@ pType(edtGeneric),
 pBoneConfiguration(ebcNone),
 pSupportsFaceEyeExpressions(false),
 pSupportsFaceMouthExpressions(false),
-pUsingHandInteraction(false){
+pUsingHandInteraction(false),
+pVRTrackerRole(evrtrUnknown){
 }
 
-deInputDevice::~deInputDevice(){
-	pCleanUp();
-}
+deInputDevice::~deInputDevice() = default;
 
 
 
@@ -135,6 +134,9 @@ void deInputDevice::SetVRSkin(deSkin *skin){
 	pVRSkin = skin;
 }
 
+void deInputDevice::SetVRTrackerRole(eVRTrackerRoles role){
+	pVRTrackerRole = role;
+}
 
 
 // Buttons
@@ -171,7 +173,7 @@ int deInputDevice::IndexOfAxisWithID(const char *id) const{
 //////////////
 
 void deInputDevice::SetFeedbackCount(int count){
-	pFeedbacks = decTList<deInputDeviceFeedback>(count, deInputDeviceFeedback());
+	pFeedbacks = decTList<deInputDeviceFeedback>(count, {});
 }
 
 int deInputDevice::IndexOfFeedbackWithID(const char *id) const{
@@ -193,12 +195,4 @@ int deInputDevice::IndexOfComponentWithID(const char *id) const{
 	return pComponents.IndexOfMatching([&](const deInputDeviceComponent &component){
 		return component.GetID() == id;
 	});
-}
-
-
-
-// Privat functions
-/////////////////////
-
-void deInputDevice::pCleanUp(){
 }

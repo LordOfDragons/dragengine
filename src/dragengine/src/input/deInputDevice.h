@@ -474,6 +474,32 @@ public:
 	 */
 	static const int FaceExpressionCount = 51;
 	
+	/**
+	 * \brief Tracker role.
+	 * \version 1.31
+	 * 
+	 * Used for devices of type \ref deInputDevice::edtVRTracker to indicate the role.
+	 */
+	enum eVRTrackerRoles{
+		evrtrUnknown,
+		evrtrLeftWrist,
+		evrtrLeftElbow,
+		evrtrLeftShoulder,
+		evrtrLeftKnee,
+		evrtrLeftAnkle,
+		evrtrLeftFoot,
+		evrtrRightWrist,
+		evrtrRightElbow,
+		evrtrRightShoulder,
+		evrtrRightKnee,
+		evrtrRightAnkle,
+		evrtrRightFoot,
+		evrtrChest,
+		evrtrWaist,
+		evrtrHandheld,
+		evrtrCamera,
+		evrtrKeyboard
+	};
 	
 	
 private:
@@ -549,6 +575,9 @@ private:
 	
 	/** \brief Skin for VR model or nullptr if not set. */
 	deSkin::Ref pVRSkin;
+	
+	/** \brief Tracker role. */
+	eVRTrackerRoles pVRTrackerRole;
 	
 	
 	
@@ -760,6 +789,18 @@ public:
 	 * \version 1.6
 	 */
 	void SetVRSkin(deSkin *skin);
+	
+	/**
+	 * \brief VR Tracker role.
+	 * \version 1.31
+	 */
+	inline eVRTrackerRoles GetVRTrackerRole() const{ return pVRTrackerRole; }
+	
+	/**
+	 * \brief Set VR tracker role.
+	 * \version 1.31
+	 */
+	void SetVRTrackerRole(eVRTrackerRoles trackerRole);
 	/*@}*/
 	
 	
@@ -844,11 +885,6 @@ public:
 	 */
 	int IndexOfComponentWithID(const char *id) const;
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

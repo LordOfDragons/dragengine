@@ -563,6 +563,19 @@ void deClassInputDevice::nfGetVRSkin::RunFunction(dsRunTime *rt, dsValue *myself
 
 
 
+// public func InputDeviceVRTrackerRole getVRTrackerRole()
+deClassInputDevice::nfGetVRTrackerRole::nfGetVRTrackerRole(const sInitData &init) :
+dsFunction(init.clsInputDevice, "getVRTrackerRole", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceVRTrackerRole){
+}
+void deClassInputDevice::nfGetVRTrackerRole::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsInputDevice &device = *dedsGetNativeData<sInputDeviceNatDat>(p_GetNativeData(myself)).device;
+	rt->PushValue(static_cast<deClassInputDevice*>(GetOwnerClass())->GetClassInputDeviceVRTrackerRole()
+		->GetVariable(device.GetDevice()->GetVRTrackerRole())->GetStaticValue());
+}
+
+
+
 // public func bool isPresent()
 deClassInputDevice::nfIsPresent::nfIsPresent(const sInitData &init) :
 dsFunction(init.clsInputDevice, "isPresent", DSFT_FUNCTION,
@@ -771,6 +784,7 @@ dsClass("InputDevice", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
 pDS(ds),
 pClsInputDeviceType(nullptr),
 pClsInputDeviceBoneConfiguration(nullptr),
+pClsInputDeviceVRTrackerRole(nullptr),
 pClsInputEventSource(nullptr),
 pClsInputEventKeyLocation(nullptr)
 {
@@ -791,6 +805,7 @@ deClassInputDevice::~deClassInputDevice(){
 void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	pClsInputDeviceType = engine->GetClass("Dragengine.InputDeviceType");
 	pClsInputDeviceBoneConfiguration = engine->GetClass("Dragengine.InputDeviceBoneConfiguration");
+	pClsInputDeviceVRTrackerRole = engine->GetClass("Dragengine.InputDeviceVRTrackerRole");
 	pClsInputEventSource = engine->GetClass("Dragengine.InputEventSource");
 	pClsInputEventKeyLocation = engine->GetClass("Dragengine.InputEventKeyLocation");
 	
@@ -812,6 +827,7 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	init.clsIDComponent = pDS.GetClassInputDeviceComponent();
 	init.clsInputDeviceType = pClsInputDeviceType;
 	init.clsInputDeviceBoneConfiguration = pClsInputDeviceBoneConfiguration;
+	init.clsInputDeviceVRTrackerRole = pClsInputDeviceVRTrackerRole;
 	init.clsInputEventSource = pClsInputEventSource;
 	init.clsInputEventKeyLocation = pClsInputEventKeyLocation;
 	init.clsVector = pDS.GetClassVector();
@@ -860,6 +876,7 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetUsingHandInteraction(init));
 	AddFunction(new nfGetVRModel(init));
 	AddFunction(new nfGetVRSkin(init));
+	AddFunction(new nfGetVRTrackerRole(init));
 	
 	AddFunction(new nfIsPresent(init));
 	

@@ -59,11 +59,11 @@ pPoseValidity(0),
 pType(deInputDevice::edtGeneric),
 pBoneConfiguration(deInputDevice::ebcNone),
 pNameNumber(-1),
-pEnableTwoFingerTriggerSimulation(true){
+pEnableTwoFingerTriggerSimulation(true),
+pVRTrackerRole(deInputDevice::evrtrUnknown){
 }
 
-deoxrDevice::~deoxrDevice(){
-}
+deoxrDevice::~deoxrDevice() = default;
 
 
 
@@ -356,6 +356,10 @@ void deoxrDevice::SetBodyTracker(deoxrBodyTracker *bodyTracker){
 	pBodyTracker = bodyTracker;
 }
 
+void deoxrDevice::SetVRTrackerRole(deInputDevice::eVRTrackerRoles role){
+	pVRTrackerRole = role;
+}
+
 
 
 void deoxrDevice::GetInfo(deInputDevice &info) const{
@@ -402,6 +406,8 @@ void deoxrDevice::GetInfo(deInputDevice &info) const{
 	if(pBodyTracker){
 		info.SetBodyRig(pBodyTracker->GetBodyRig());
 	}
+	
+	info.SetVRTrackerRole(pVRTrackerRole);
 	
 	switch(pType){
 	case deInputDevice::edtVRRightHand:

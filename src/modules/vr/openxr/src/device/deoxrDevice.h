@@ -102,6 +102,8 @@ private:
 	deoxrFaceTracker::Ref pFaceTracker;
 	deoxrBodyTracker::Ref pBodyTracker;
 
+	deInputDevice::eVRTrackerRoles pVRTrackerRole;
+
 	
 	
 public:
@@ -324,6 +326,13 @@ public:
 	
 	/** Set body tracker or nullptr. */
 	void SetBodyTracker(deoxrBodyTracker *bodyTracker);
+	
+	
+	/** VR tracker role. */
+	inline deInputDevice::eVRTrackerRoles GetVRTrackerRole() const{ return pVRTrackerRole; }
+	
+	/** Set VR tracker role. */
+	void SetVRTrackerRole(deInputDevice::eVRTrackerRoles role);
 	
 	
 	

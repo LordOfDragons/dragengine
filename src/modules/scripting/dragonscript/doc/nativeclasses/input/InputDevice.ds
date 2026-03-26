@@ -223,6 +223,14 @@ class InputDevice
 		return null
 	end
 	
+	/**
+	 * \brief VR tracker role.
+	 * \version 1.31
+	 */
+	func InputDeviceVRTrackerRole getVRTrackerRole()
+		return null
+	end
+	
 	
 	
 	/**
