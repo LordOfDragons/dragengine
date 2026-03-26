@@ -151,8 +151,8 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 			if(serialLower.BeginsWith("lhr-") && nameLower.FindString("tracker") != -1){
 				pAddDeviceTracker(list, device);
 				
-			}else if(serialLower.BeginsWith("wivrn-") && nameLower.FindString("tracker")){
-				pAddDeviceTracker(list, device);
+			//}else if(serialLower.BeginsWith("wivrn-") && nameLower.FindString("tracker")){
+			//	pAddDeviceTracker(list, device);
 			}
 		}
 		
