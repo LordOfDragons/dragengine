@@ -130,6 +130,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 
 install = []
 archive = {}
+archiveDebug = {}
 
 # setup the builders
 if internalModule:
@@ -159,12 +160,16 @@ if internalModule:
 	
 else:
 	library = envModule.LoadableModule( target='phybullet', source=objects, LIBS=libs )
-	targetBuild = envModule.Alias( 'phy_bullet_build', library )
+	(library, libraryDebug) = envModule.SplitDebugIf(library)
+	targetBuild = envModule.Alias( 'phy_bullet_build', library + libraryDebug)
 	
 	for l in library:
 		if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
 			install.append( envModule.Install( pathModule, l ) )
 			archive[ os.path.join( pathModule, l.name ) ] = l
+	
+	for l in libraryDebug:
+		archiveDebug[os.path.join(pathModule, l.name)] = l
 	
 	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
 		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
@@ -200,5 +205,6 @@ parent_targets[ 'phy_bullet' ] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'archive-engine-debug' : archiveDebug,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

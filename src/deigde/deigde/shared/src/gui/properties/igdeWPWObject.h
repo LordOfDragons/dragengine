@@ -32,6 +32,7 @@
 #include "../igdeContainer.h"
 #include "../igdeTextField.h"
 #include "../composed/igdeEditVector.h"
+#include "../composed/igdeEditPath.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
@@ -71,6 +72,7 @@ public:
 		const igdeWObject::Ref pObject;
 		
 		igdeGDClass::Ref pGDClassOld, pGDClassNew;
+		decString pPathWorldOld, pPathWorldNew;
 		decDVector pPositionOld, pPositionNew;
 		decQuaternion pOrientationOld, pOrientationNew;
 		decVector pScalingOld, pScalingNew;
@@ -91,6 +93,7 @@ public:
 	public:
 		/** \brief Set new value. */
 		void SetGDClassNew(igdeGDClass *gdClass);
+		void SetPathWorldNew(const decString &path);
 		void SetPositionNew(const decDVector &position);
 		void SetOrientationNew(const decQuaternion &orientation);
 		void SetScalingNew(const decVector &scaling);
@@ -110,6 +113,8 @@ private:
 	
 	igdeTextField::Ref pEditClass;
 	igdeButton::Ref pBtnClass;
+	
+	igdeEditPath::Ref pEditPathWorld;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditOrientation;

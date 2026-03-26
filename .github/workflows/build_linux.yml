@@ -94,7 +94,7 @@ jobs:
     runs-on: ubuntu-22.04
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: ${{ !inputs.lfscache }}
           submodules: 'recursive'
@@ -105,7 +105,7 @@ jobs:
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
       
       - name: Restore LFS Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: lfs-cache
         if: ${{ inputs.lfscache }}
         with:
@@ -144,15 +144,14 @@ jobs:
           sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild }}/g' custom.py
       
       - name: Cache external
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: external-cache
         with:
           path: ./extern
           key: external-cache-linux-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
-          restore-keys: external-cache-linux-
       
       # - name: Cache SCons
-      #   uses: actions/cache@v4
+      #   uses: actions/cache@v5
       #   id: scons-cache
       #   if: ${{ inputs.sconscache }}
       #   with:
@@ -205,17 +204,6 @@ jobs:
           # the rest can be build full throttle
           scons -j 14 archive installer detests_build
       
-      - name: Debug Symbols
-        if: ${{ ! inputs.debugBuild }}
-        run: |
-          ./separateDebugSymbols.sh \
-            archive/build/dragengine-${{ inputs.releaseVersion }}-linux64.tar.bz2 \
-            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
-          
-          ./separateDebugSymbols.sh \
-            archive/build/deigde-${{ inputs.releaseVersion }}-linux64.tar.bz2 \
-            archive/build/deigde-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
-      
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
         if: ${{ inputs.codeql }}
@@ -232,7 +220,7 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         
       - name: Store Archives
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifactArchive }}
           path: |
@@ -246,7 +234,7 @@ jobs:
           if-no-files-found: error
         
       - name: Store Installers
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifactInstaller }}
           path: |
@@ -257,7 +245,7 @@ jobs:
           if-no-files-found: error
         
       - name: Store Tools
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifactTools }}
           path: |

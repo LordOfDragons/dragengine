@@ -1,0 +1,57 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief Convenience enumeration for upper body bones.
+ * \version 1.31
+ * 
+ * Use as bone indices for devices with bone configuration \ref InputDeviceBoneConfiguration#upperBody.
+ */
+fixed class InputDeviceUpperBodyBone
+	public static fixed var int hips = 0
+	public static fixed var int spineLower = 1
+	public static fixed var int spineMiddle = 2
+	public static fixed var int spineUpper = 3
+	public static fixed var int chest = 4
+	public static fixed var int neck = 5
+	public static fixed var int head = 6
+	
+	public static fixed var int leftShoulder = 7
+	public static fixed var int leftScapula = 8
+	public static fixed var int leftArmUpper = 9
+	public static fixed var int leftArmLower = 10
+	public static fixed var int leftHandWristTwist = 11
+	public static fixed var int leftHandWrist = 12
+	
+	public static fixed var int rightShoulder = 13
+	public static fixed var int rightScapula = 14
+	public static fixed var int rightArmUpper = 15
+	public static fixed var int rightArmLower = 16
+	public static fixed var int rightHandWristTwist = 17
+	public static fixed var int rightHandWrist = 18
+end

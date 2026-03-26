@@ -67,15 +67,19 @@ program_org = envLauncher.Program(target='delauncher-gui-org', source=objects, L
 rsrc = envLauncher.RDef(updateRdef)
 program = envLauncher.Rsrc(target='DELauncher', source=[program_org, rsrc])
 
-targetBuild = parent_env.Alias('launcher_beosgui_build', program)
+(program, programDebug) = envLauncher.SplitDebugIf(program)
+targetBuild = parent_env.Alias('launcher_beosgui_build', program + programDebug)
 
 install = []
 archive = {}
+archiveDebug = {}
 archiveLinks = {}
 
 install.append(envLauncher.Install(pathSysApps, program))
 for p in program:
 	archive[os.path.join(pathSysApps, p.name)] = p
+for p in programDebug:
+	archiveDebug[os.path.join(pathSysApps, p.name)] = p
 archiveLinks[os.path.join(pathSysData, 'deskbar/menu/Applications/DELauncher')] = '../../../../apps/DELauncher'
 
 targetInstall = parent_env.Alias('launcher_beosgui', install)
@@ -94,6 +98,7 @@ parent_targets['launcher_beosgui'] = {
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'archive-launcher' : archive,
+	'archive-launcher-debug' : archiveDebug,
 	'archive-links-launcher': archiveLinks,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

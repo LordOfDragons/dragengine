@@ -85,10 +85,12 @@ public:
 		extFBTouchControllerPro, //!< XR_FB_touch_controller_pro
 		extFBTouchControllerProximity, //!< XR_FB_touch_controller_proximity
 		extMETATouchControllerPlus, //!< XR_META_touch_controller_plus
-		extMNDXXDevSpace //!< XR_MNDX_xdev_space
+		extMNDXXDevSpace, //!< XR_MNDX_xdev_space
+		extFBBodyTracking, //!< XR_FB_body_tracking
+		extMETABodyTrackingFullBody //!< XR_META_body_tracking_full_body
 	};
 	
-	static const int ExtensionCount = extMNDXXDevSpace + 1;
+	static const int ExtensionCount = extMETABodyTrackingFullBody + 1;
 	
 	/** Layers. */
 	enum eLayer{

@@ -44,14 +44,19 @@ appendLibrary(envModule, parent_targets['dragengine'], libs)
 envModule.Append(LIBS = libs)
 
 library = envModule.LoadableModule(target='inpmacos', source=objects)
-targetBuild = envModule.Alias('inp_macos_build', library)
+(library, libraryDebug) = envModule.SplitDebugIf(library)
+targetBuild = envModule.Alias('inp_macos_build', library + libraryDebug)
 
 install = []
 archive = {}
+archiveDebug = {}
 for l in library:
 	if l.name.endswith(envModule['SHLIBSUFFIX']):
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
+
+for l in libraryDebug:
+	archiveDebug[os.path.join(pathModule, l.name)] = l
 
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
@@ -83,5 +88,6 @@ parent_targets['inp_macos'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'archive-engine-debug' : archiveDebug,
 	'cloc' : buildCloc,
 	'clocReport' : os.path.join(srcdir, 'clocreport.csv')}

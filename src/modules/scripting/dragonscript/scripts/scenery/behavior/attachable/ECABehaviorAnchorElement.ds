@@ -1,0 +1,123 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Attachable behavior element behavior adding anchor element support.
+ * \version 1.31
+ * 
+ * Anchoring elements allows to locate elements in a GameWorld using a unique name set by the
+ * mapper. This is useful for game commands send by conversations scripts.
+ * 
+ * Element class property has name "anchorID".
+ * 
+ * This element behavior can be present only once in a BehaviorElement. Trying to add more
+ * than one instance results in an exception thrown.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * This behavior is similar to \ref ECBehaviorAnchorElement but can be attached if required.
+ * This is especially useful in editing worlds to add an anchor to any element without
+ * needing to add \ref ECBehaviorAnchorElement to the element class itself.
+ * 
+ * Upon adding behavior to element these properties are evaluated if present:
+ * - "anchorID" (string): anchor name to use. If not present the element is not anchored.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachable_anchorelement
+ */
+class ECABehaviorAnchorElement extends DefaultECAttachableBehavior
+	/** \brief Factory name. */
+	static fixed public var String FACTORY_NAME = "ECABehaviorAnchorElement"
+	
+	/**
+	 * \brief Behavior factory.
+	 */
+	class Factory implements AttachableBehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return ECABehaviorAnchorElement.FACTORY_NAME
+		end
+		
+		func ECAttachableBehavior createAttachableBehavior(BehaviorElement element)
+			return ECABehaviorAnchorElement.new()
+		end
+	end
+	
+	
+	var StringID pAnchorID
+	var bool pAnchorAdded
+	
+	
+	/** \brief Create behavior. */
+	func new()
+	end
+	
+	
+	func void onAddToElement()
+		var BehaviorElement element = getElement()
+		var String anchorId = element.getStub().getPropertyValueFor("anchorID", null)
+		if anchorId != null and not anchorId.empty()
+			pAnchorID = StringID.new(anchorId)
+		end
+		
+		if element.getGameWorld() != null
+			addToGameWorld()
+		end
+	end
+	
+	func void onRemoveFromElement()
+		removeFromGameWorld()
+	end
+	
+	
+	/** \brief Anchor name or null to not anchor. */
+	func StringID getAnchorID()
+		return pAnchorID
+	end
+	
+	
+	func void addToGameWorld()
+		if pAnchorID != null and not pAnchorAdded
+			var BehaviorElement element = getElement()
+			element.getGameWorld().getAnchoredElementList().add(pAnchorID, element)
+			pAnchorAdded = true
+		end
+	end
+	
+	func void removeFromGameWorld()
+		if pAnchorAdded
+			getElement().getGameWorld().getAnchoredElementList().remove(pAnchorID)
+			pAnchorAdded = false
+		end
+	end
+end

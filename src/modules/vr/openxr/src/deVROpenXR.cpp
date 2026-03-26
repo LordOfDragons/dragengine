@@ -53,6 +53,7 @@
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
 #include "device/profile/deoxrDPNoControllerHands.h"
 #include "device/profile/deoxrDPEyeGazeInteraction.h"
+#include "device/profile/deoxrDPBodyTracker.h"
 #include "device/profile/deoxrDPHandInteraction.h"
 #include "device/profile/deoxrDPHTCHandInteraction.h"
 #include "device/profile/deoxrDPMndxDevSpace.h"
@@ -115,6 +116,7 @@ pLastDetectedSystem(deoxrSystem::esUnknown),
 pThreadSync(nullptr),
 pRequestFeatureEyeGazeTracking(efslDisabled),
 pRequestFeatureFacialTracking(efslDisabled),
+pRequestFeatureBodyTracking(efslDisabled),
 pLogLevel(LogLevel::info)
 {
 	pCreateParameters();
@@ -333,6 +335,10 @@ void deVROpenXR::RequestFeatureFacialTracking(eFeatureSupportLevel level){
 	pRequestFeatureFacialTracking = level;
 }
 
+void deVROpenXR::RequestFeatureBodyTracking(eFeatureSupportLevel level){
+	pRequestFeatureBodyTracking = level;
+}
+
 void deVROpenXR::StartRuntime(){
 	deMutexGuard lock(pMutexOpenXR);
 	
@@ -402,6 +408,18 @@ void deVROpenXR::SetCamera(deCamera *camera){
 
 bool deVROpenXR::SupportsPassthrough(){
 	return pPassthrough;
+}
+
+bool deVROpenXR::SupportsEyeGazeTracking(){
+	return pSystem && pSystem->GetSupportsEyeGazeTracking();
+}
+
+bool deVROpenXR::SupportsFacialTracking(){
+	return pSystem && (pSystem->GetSupportsFaceEyeTracking() || pSystem->GetSupportsFaceLipTracking());
+}
+
+bool deVROpenXR::SupportsBodyTracking(){
+	return pSystem && (pSystem->GetSupportsUpperBodyTracking() || pSystem->GetSupportsFullBodyTracking());
 }
 
 void deVROpenXR::SetEnablePassthrough(bool enable){
@@ -489,9 +507,17 @@ void deVROpenXR::GetDevicePose(int device, deInputDevicePose &pose){
 void deVROpenXR::GetDeviceBonePose(int device, int bone, bool withController, deInputDevicePose &pose){
 	// with controller not yet supported
 	(void)withController;
-	deoxrHandTracker * const handTracker = pDevices.GetDevices().GetAt(device)->GetHandTracker();
+	const deoxrDevice &dev = pDevices.GetDevices().GetAt(device);
+	
+	deoxrHandTracker * const handTracker = dev.GetHandTracker();
 	if(handTracker){
 		pose = handTracker->GetPoseBoneAt(bone);
+		return;
+	}
+	
+	deoxrBodyTracker * const bodyTracker = dev.GetBodyTracker();
+	if(bodyTracker){
+		pose = bodyTracker->GetPoseBoneAt(bone);
 	}
 }
 
@@ -1075,6 +1101,7 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	
 	pDeviceProfiles.Add(deoxrDPHtcViveTracker::Ref::New(pInstance));
 	pDeviceProfiles.Add(deoxrDPEyeGazeInteraction::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPBodyTracker::Ref::New(pInstance));
 	
 	pDeviceProfiles.Add(deoxrDPMndxDevSpace::Ref::New(pInstance));
 	

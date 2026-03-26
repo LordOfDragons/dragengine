@@ -94,6 +94,7 @@ pin Dragengine.Utils
  *   </behavior>
  *   <behavior type='ECBehaviorVRPlayspace'/>
  *   <behavior type='ECBehaviorVRHMD'/>
+ *   <behavior type='ECBehaviorVRBody'/>
  *   <behavior type='ECBehaviorVRHand' id='right'>
  *     <map name='.btsmAlias'>
  *       <string key='vrHandRight'>vrHand(#thisHand).</string>
@@ -290,6 +291,7 @@ class BaseVRActorClass extends BaseActorClass
 	var ECBehaviorStateMachine pVRLeftStateMachine
 	var ECBehaviorVRPlayspace pVRPlayspace
 	var ECBehaviorVRHMD pVRHMD
+	var ECBehaviorVRBody pVRBody
 	var ECBehaviorVRHand pVRRightHand
 	var ECBehaviorVRHand pVRLeftHand
 	var ECBehaviorVRHandPointAt pVRRightHandPointAt
@@ -366,6 +368,10 @@ class BaseVRActorClass extends BaseActorClass
 		// add HMD behavior allowing to track player head
 		pVRHMD = ECBehaviorVRHMD.new(this, pVRPlayspace)
 		pVRHMD.getBTSMs().addBTSM(behaviorTree, stateMachine)
+		
+		// add body. this allows to track the user body if body tracking is present and enabled
+		pVRBody = ECBehaviorVRBody.new(this, pVRPlayspace, getActorAnimated())
+		pVRBody.getBTSMs().addBTSM(behaviorTree, stateMachine)
 		
 		// add right and left hand controllers
 		pVRRightHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrRightHand, idVRRightHand)
@@ -512,6 +518,14 @@ class BaseVRActorClass extends BaseActorClass
 		return pVRHMD
 	end
 	
+	/**
+	 * \brief VR Body.
+	 * \version 1.31
+	 */
+	func ECBehaviorVRBody getVRBody()
+		return pVRBody
+	end
+	
 	/** \brief VR Right Hand Controller. */
 	func ECBehaviorVRHand getVRRightHand()
 		return pVRRightHand
@@ -654,5 +668,149 @@ class BaseVRActorClass extends BaseActorClass
 	/** \brief Create element instance. */
 	protected func Element createElement()
 		return BaseVRActor.new(this)
+	end
+	
+	
+	
+	/**
+	 * \brief Set up collider as ghost collider.
+	 * \version 1.31
+	 * 
+	 * Ghost colliders have empty collision filter and kinematic collision response. They collide
+	 * with nothing and are useful to show a body without physically interacting with the game
+	 * world. The collider has no gravity.
+	 * 
+	 * This does not affect the AI collider.
+	 */
+	func void setGhostCollision()
+		var ECComposeCollider cc = getCollider().getCollider()
+		cc.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		cc.getLocalGravity().setVector(Vector.new())
+		cc.getWeight().setValue(1)
+		cc.setCollisionFilter(CollisionFilter.new())
+	end
+	
+	/**
+	 * \brief Set up collider as kinematic collider.
+	 * \version 1.31
+	 * 
+	 * Collider has kinematic collision response and can collide with \ref PhysicsElementClass
+	 * and \ref SimpleElementClass. This allows body to physically interact with the game world.
+	 * 
+	 * This does not affect the AI collider.
+	 */
+	func void setKinematicCollision()
+		var ECComposeCollider cc = getCollider().getCollider()
+		cc.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		cc.getLocalGravity().setVector(Vector.new())
+		cc.getWeight().setValue(1)
+		cc.setCollisionFilter(getKinematicCollisionFilter())
+	end
+	
+	/**
+	 * \brief Set up collider as dynamic collider.
+	 * \version 1.31
+	 * 
+	 * Collider has dynamic collision response and can collide with \ref PhysicsElementClass
+	 * and \ref SimpleElementClass. This allows body to physically interact with the game world.
+	 * In contrary to \ref #setKinematicCollision() the rig can have dynamic bones affected
+	 * by world gravity.
+	 * 
+	 * This does not affect the AI collider.
+	 */
+	func void setDynamicCollision()
+		var ECComposeCollider cc = getCollider().getCollider()
+		cc.getPhysicsType().setEnumeration(CollisionResponse.dynamic)
+		cc.getLocalGravity().setVector(null)
+		cc.getWeight().setValue(1)
+		cc.setCollisionFilter(getDynamicCollisionFilter())
+	end
+	
+	
+	
+	/**
+	 * \brief Switch to hand model mode.
+	 * \version 1.31
+	 * 
+	 * Sets VR hands to use their own model and collider. This is the default mode and best
+	 * used when only hand models are shown for the player
+	 */
+	func void setHandMode()
+		// enable VR hands by making them visible and collidable
+		getVRRightHand().getShowHand().setValue(true)
+		getVRRightHand().setPhysics()
+		
+		getVRLeftHand().getShowHand().setValue(true)
+		getVRLeftHand().setPhysics()
+		
+		// set hand pose to be applied to the hands
+		getVRRightHandPose().setVRBody(null)
+		getVRLeftHandPose().setVRBody(null)
+		
+		// set attach slot to target hand collider
+		getVRRightHandAttachSlot().setVRHand(getVRRightHand())
+		getVRRightHandAttachSlot().setCollider(null)
+		
+		getVRLeftHandAttachSlot().setVRHand(getVRLeftHand())
+		getVRLeftHandAttachSlot().setCollider(null)
+		
+		// set hand animations to target hand component
+		getVRRightHandAnimated().setComponent(pVRRightHand.getComponent())
+		getVRLeftHandAnimated().setComponent(pVRLeftHand.getComponent())
+		
+		// set grabber to target hand collider
+		var Vector position = Vector.new(0, -0.058, -0.078)
+		
+		pVRRightHandGrabber.setVRHand(getVRRightHand())
+		pVRRightHandGrabber.setCollider(null)
+		pVRRightHandGrabber.getAttach().getBone().setValue("")
+		pVRRightHandGrabber.getAttach().getPosition().setVector(position + Vector.new(-0.02, 0, 0.02))
+		
+		pVRLeftHandGrabber.setVRHand(getVRLeftHand())
+		pVRLeftHandGrabber.setCollider(null)
+		pVRLeftHandGrabber.getAttach().getBone().setValue("")
+		pVRLeftHandGrabber.getAttach().getPosition().setVector(position + Vector.new(0.02, 0, 0.02))
+	end
+	
+	/**
+	 * \brief Switch to body mode.
+	 * \version 1.31
+	 * 
+	 * Sets VR hands to use the body model and collider. This is best used when a full body
+	 * is shown for the player where the hands are part of the full body mode.
+	 */
+	func void setBodyMode()
+		// disable VR hands by making them invisible and non collidable
+		getVRRightHand().getShowHand().setValue(false)
+		getVRRightHand().setGhost()
+		
+		getVRLeftHand().getShowHand().setValue(false)
+		getVRLeftHand().setGhost()
+		
+		// set hand pose to be applied to the full body model
+		getVRRightHandPose().setVRBody(getVRBody())
+		getVRLeftHandPose().setVRBody(getVRBody())
+		
+		// set attach slot to target body collider
+		getVRRightHandAttachSlot().setVRHand(null)
+		getVRRightHandAttachSlot().setCollider(getCollider())
+		
+		getVRLeftHandAttachSlot().setVRHand(null)
+		getVRLeftHandAttachSlot().setCollider(getCollider())
+		
+		// set hand animations to target body component
+		getVRRightHandAnimated().setComponent(getComponent())
+		getVRLeftHandAnimated().setComponent(getComponent())
+		
+		// set grabber to target body collider
+		pVRRightHandGrabber.setVRHand(null)
+		pVRRightHandGrabber.setCollider(getCollider())
+		pVRRightHandGrabber.getAttach().getBone().setValue("wrist.r")
+		pVRRightHandGrabber.getAttach().getPosition().setVector(Vector.new(0, -0.035, 0.055))
+		
+		pVRLeftHandGrabber.setVRHand(null)
+		pVRLeftHandGrabber.setCollider(getCollider())
+		pVRLeftHandGrabber.getAttach().getBone().setValue("wrist.l")
+		pVRLeftHandGrabber.getAttach().getPosition().setVector(Vector.new(0, -0.035, 0.055))
 	end
 end

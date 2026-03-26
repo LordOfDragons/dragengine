@@ -109,6 +109,10 @@ private:
 	DEF_NATFUNC(nfRuntimeUsable);
 	DEF_NATFUNC(nfRequestFeatureEyeGazeTracking);
 	DEF_NATFUNC(nfRequestFeatureFacialTracking);
+	DEF_NATFUNC(nfRequestFeatureBodyTracking);
+	DEF_NATFUNC(nfSupportsEyeGazeTracking);
+	DEF_NATFUNC(nfSupportsFacialTracking);
+	DEF_NATFUNC(nfSupportsBodyTracking);
 	DEF_NATFUNC(nfStartRuntime);
 	DEF_NATFUNC(nfStopRuntime);
 	DEF_NATFUNC(nfIsRuntimeRunning);

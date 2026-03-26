@@ -747,7 +747,7 @@ void deoxrDPHtcViveTracker::pAddDevice(Tracker &tracker){
 	tracker.device->SetSubactionPath(tracker.pathRole);
 	tracker.device->SetID(id);
 	tracker.device->SetSpacePose(deoxrSpace::Ref::New(*pGetSession(), tracker.action, tracker.pathRole, decVector()));
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New(// 		*pGetSession(), tracker.action, tracker.path, decVector()) );
+	tracker.device->SetVRTrackerRole(pVRTrackerRoleFromPath(tracker.pathRole));
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger(tracker.device);
 	pAddAxisTrigger(tracker.device, trigger);
@@ -798,4 +798,62 @@ void deoxrDPHtcViveTracker::pTrySuggestBindings(int restrictCount){
 	});
 	
 	GetInstance().SuggestBindings(GetPath(), bindings.GetArrayPointer(), bindingCount);
+}
+
+deInputDevice::eVRTrackerRoles deoxrDPHtcViveTracker::pVRTrackerRoleFromPath(const deoxrPath &path) const{
+	const decString &roleName = path.GetName();
+	if(roleName.EndsWith("left_wrist")){
+		return deInputDevice::evrtrLeftWrist;
+		
+	}else if(roleName.EndsWith("left_elbow")){
+		return deInputDevice::evrtrLeftElbow;
+		
+	}else if(roleName.EndsWith("left_shoulder")){
+		return deInputDevice::evrtrLeftShoulder;
+		
+	}else if(roleName.EndsWith("left_knee")){
+		return deInputDevice::evrtrLeftKnee;
+		
+	}else if(roleName.EndsWith("left_ankle")){
+		return deInputDevice::evrtrLeftAnkle;
+		
+	}else if(roleName.EndsWith("left_foot")){
+		return deInputDevice::evrtrLeftFoot;
+		
+	}else if(roleName.EndsWith("right_wrist")){
+		return deInputDevice::evrtrRightWrist;
+		
+	}else if(roleName.EndsWith("right_elbow")){
+		return deInputDevice::evrtrRightElbow;
+		
+	}else if(roleName.EndsWith("right_shoulder")){
+		return deInputDevice::evrtrRightShoulder;
+		
+	}else if(roleName.EndsWith("right_knee")){
+		return deInputDevice::evrtrRightKnee;
+		
+	}else if(roleName.EndsWith("right_ankle")){
+		return deInputDevice::evrtrRightAnkle;
+		
+	}else if(roleName.EndsWith("right_foot")){
+		return deInputDevice::evrtrRightFoot;
+		
+	}else if(roleName.EndsWith("chest")){
+		return deInputDevice::evrtrChest;
+		
+	}else if(roleName.EndsWith("waist")){
+		return deInputDevice::evrtrWaist;
+		
+	}else if(roleName.EndsWith("handheld_object")){
+		return deInputDevice::evrtrHandheld;
+		
+	}else if(roleName.EndsWith("camera")){
+		return deInputDevice::evrtrCamera;
+		
+	}else if(roleName.EndsWith("keyboard")){
+		return deInputDevice::evrtrKeyboard;
+		
+	}else{
+		return deInputDevice::evrtrUnknown;
+	}
 }

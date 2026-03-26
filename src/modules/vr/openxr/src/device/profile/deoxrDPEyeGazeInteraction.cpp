@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoxrDPEyeGazeInteraction.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
@@ -46,8 +43,7 @@ deoxrDeviceProfile(instance,
 	"Eye Gaze Interaction"){
 }
 
-deoxrDPEyeGazeInteraction::~deoxrDPEyeGazeInteraction(){
-}
+deoxrDPEyeGazeInteraction::~deoxrDPEyeGazeInteraction() = default;
 
 
 
@@ -122,5 +118,5 @@ void deoxrDPEyeGazeInteraction::pRemoveDevice() {
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	oxr.GetDevices().Remove(pDevice);
-	pDevice = nullptr;
+	pDevice.Clear();
 }

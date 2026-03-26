@@ -15,7 +15,7 @@ parent_report['build BeOS Input Module'] = ('yes (internal)' if internalModule e
 if not buildModule:
 	Return()
 
-versionString = '1.30'
+versionString = '1.31'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -41,6 +41,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 
 install = []
 archive = {}
+archiveDebug = {}
 assetEngine = {}
 
 if internalModule:
@@ -60,12 +61,16 @@ else:
 	objects = [envModule.SharedObject(s) for s in sources]
 	
 	library = envModule.LoadableModule(target='inpxsystem', source=objects, LIBS=libs)
-	targetBuild = envModule.Alias('inp_beos_build', library)
+	(library, libraryDebug) = envModule.SplitDebugIf(library)
+	targetBuild = envModule.Alias('inp_beos_build', library + libraryDebug)
 	
 	for l in library:
 		if l.name.endswith(envModule['SHLIBSUFFIX']):
 			install.append(envModule.Install(pathModule, l))
 			archive[os.path.join(pathModule, l.name)] = l
+	
+	for l in libraryDebug:
+		archiveDebug[os.path.join(pathModule, l.name)] = l
 	
 	manifestUpdates = [
 		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
@@ -106,6 +111,7 @@ parent_targets['inp_beos'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'archive-engine-debug' : archiveDebug,
 	'asset-engine' : assetEngine,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

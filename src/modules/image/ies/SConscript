@@ -29,6 +29,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 
 install = []
 archive = {}
+archiveDebug = {}
 
 if internalModule:
 	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
@@ -47,12 +48,16 @@ else:
 	objects = [envModule.SharedObject(s) for s in sources]
 	
 	library = envModule.LoadableModule(target='imgies', source=objects, LIBS=libs)
-	targetBuild = envModule.Alias('img_ies_build', library)
+	(library, libraryDebug) = envModule.SplitDebugIf(library)
+	targetBuild = envModule.Alias('img_ies_build', library + libraryDebug)
 	
 	for l in library:
 		if l.name.endswith(envModule['SHLIBSUFFIX']):
 			install.append(envModule.Install(pathModule, l))
 			archive[os.path.join(pathModule, l.name)] = l
+	
+	for l in libraryDebug:
+		archiveDebug[os.path.join(pathModule, l.name)] = l
 	
 	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
 		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
@@ -88,5 +93,6 @@ parent_targets['img_ies'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'archive-engine-debug' : archiveDebug,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

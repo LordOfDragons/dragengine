@@ -386,6 +386,55 @@ class BaseActorClass extends BehaviorElementClass
 	end
 	
 	
+	/**
+	 * \brief Kinematic collider collision filter for (not AI collider).
+	 * \version 1.31
+	 * 
+	 * Collision category:
+	 * - \ref BaseGameApp.CollisionFilterBit#actor
+	 * 
+	 * Collision filter:
+	 * - \ref BaseGameApp.CollisionFilterBit#geometry
+	 * - \ref BaseGameApp.CollisionFilterBit#dynamic
+	 * - \ref BaseGameApp.CollisionFilterBit#particle
+	 */
+	func CollisionFilter getKinematicCollisionFilter()
+		var LayerMask cfcategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actor)
+		
+		var LayerMask cffilter = LayerMask.new()
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.particle)
+		
+		return CollisionFilter.new(cfcategory, cffilter)
+	end
+	
+	/**
+	 * \brief Dynamic collider collision filter for (not AI collider).
+	 * \version 1.31
+	 * 
+	 * Collision category:
+	 * - \ref BaseGameApp.CollisionFilterBit#actor
+	 * 
+	 * Collision filter:
+	 * - \ref BaseGameApp.CollisionFilterBit#actor
+	 * - \ref BaseGameApp.CollisionFilterBit#geometry
+	 * - \ref BaseGameApp.CollisionFilterBit#dynamic
+	 * - \ref BaseGameApp.CollisionFilterBit#particle
+	 */
+	func CollisionFilter getDynamicCollisionFilter()
+		var LayerMask cfcategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actor)
+		
+		var LayerMask cffilter = LayerMask.new()
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.particle)
+		
+		return CollisionFilter.new(cfcategory, cffilter)
+	end
+	
+	
 	/** \brief Create copy of element class. */
 	func ElementClass duplicateNamed(String classname)
 		return BaseActorClass.new(classname)

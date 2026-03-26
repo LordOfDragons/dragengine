@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Generate build number
         id: buildnumber
-        uses: onyxmueller/build-tag-number@v1
+        uses: onyxmueller/build-tag-number@v1.0.4
         with:
           token: ${{ secrets.github_token }}
           prefix: github
@@ -154,37 +154,37 @@ jobs:
     
     steps:
       - name: Get Linux Archives
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: archives-linux
       
       - name: Get Windows Archives
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: archives-windows
       
       - name: Get Linux Installers
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: installers-linux
       
       - name: Get Windows Installers
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: installers-windows
       
       - name: Get Crossplatform Tools
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: tools-crossplatform
       
       - name: Get Linux CI Installers
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: installers-linux-ci
       
       - name: Get Live Launcher
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: archive-livelauncher
       
@@ -221,7 +221,7 @@ jobs:
           rm -rf repackage
       
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -257,7 +257,7 @@ jobs:
           done
       
       - name: Upload Artifacts
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.21.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: false
@@ -338,7 +338,7 @@ jobs:
       contents: write
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: master
           lfs: true

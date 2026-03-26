@@ -49,6 +49,7 @@ pActiveModule(nullptr),
 pEventQueue(100),
 pRequestFeatureEyeGazeTracking(deBaseVRModule::efslDisabled),
 pRequestFeatureFacialTracking(deBaseVRModule::efslDisabled),
+pRequestFeatureBodyTracking(deBaseVRModule::efslDisabled),
 pEnablePassthrough(false),
 pPassthroughTransparency(1.0f){
 }
@@ -91,6 +92,14 @@ void deVRSystem::RequestFeatureFacialTracking(deBaseVRModule::eFeatureSupportLev
 	pRequestFeatureFacialTracking = level;
 }
 
+void deVRSystem::RequestFeatureBodyTracking(deBaseVRModule::eFeatureSupportLevel level){
+	if(!GetIsRunning()){
+		DETHROW_INFO(deeInvalidAction, "Module not running");
+	}
+	
+	pRequestFeatureBodyTracking = level;
+}
+
 void deVRSystem::StartRuntime(){
 	if(!GetIsRunning()){
 		DETHROW_INFO(deeInvalidAction, "Module not running");
@@ -98,6 +107,7 @@ void deVRSystem::StartRuntime(){
 	
 	pActiveModule->RequestFeatureEyeGazeTracking(pRequestFeatureEyeGazeTracking);
 	pActiveModule->RequestFeatureFacialTracking(pRequestFeatureFacialTracking);
+	pActiveModule->RequestFeatureBodyTracking(pRequestFeatureBodyTracking);
 	
 	pActiveModule->StartRuntime();
 	
@@ -142,6 +152,30 @@ bool deVRSystem::SupportsPassthrough(){
 	}
 	
 	return pActiveModule->SupportsPassthrough();
+}
+
+bool deVRSystem::SupportsEyeGazeTracking(){
+	if(!GetIsRunning()){
+		DETHROW_INFO(deeInvalidAction, "Module not running");
+	}
+	
+	return pActiveModule->SupportsEyeGazeTracking();
+}
+
+bool deVRSystem::SupportsFacialTracking(){
+	if(!GetIsRunning()){
+		DETHROW_INFO(deeInvalidAction, "Module not running");
+	}
+	
+	return pActiveModule->SupportsFacialTracking();
+}
+
+bool deVRSystem::SupportsBodyTracking(){
+	if(!GetIsRunning()){
+		DETHROW_INFO(deeInvalidAction, "Module not running");
+	}
+	
+	return pActiveModule->SupportsBodyTracking();
 }
 
 void deVRSystem::SetEnablePassthrough(bool enable){

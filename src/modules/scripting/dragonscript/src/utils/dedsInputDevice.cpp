@@ -48,10 +48,27 @@ pDevice(module.GetDeviceAt(deviceIndex)),
 pBonePoseCount(0),
 pFaceExpressionCount(0)
 {
-	if(pDevice->GetBoneConfiguration() == deInputDevice::ebcHand){
-		pBonePoses.AddRange(deInputDevice::HandBoneCount * 2, {});
+	switch(pDevice->GetBoneConfiguration()){
+	case deInputDevice::ebcHand:
+		pBonePoses.AddRange(deInputDevice::HandBoneCount, {});
+		pBonePosesWithController.AddRange(deInputDevice::HandBoneCount, {});
 		pBonePoseCount = deInputDevice::HandBoneCount;
+		break;
+		
+	case deInputDevice::ebcUpperBody:
+		pBonePoses.AddRange(deInputDevice::UpperBodyBoneCount, {});
+		pBonePoseCount = deInputDevice::UpperBodyBoneCount;
+		break;
+		
+	case deInputDevice::ebcFullBody:
+		pBonePoses.AddRange(deInputDevice::FullBodyBoneCount, {});
+		pBonePoseCount = deInputDevice::FullBodyBoneCount;
+		break;
+		
+	default:
+		break;
 	}
+	
 	if(pDevice->GetSupportsFaceEyeExpressions() || pDevice->GetSupportsFaceMouthExpressions()){
 		pFaceExpressions.AddRange(deInputDevice::FaceExpressionCount, {});
 		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
@@ -66,10 +83,27 @@ pDevice(module.GetDeviceAt(deviceIndex)),
 pBonePoseCount(0),
 pFaceExpressionCount(0)
 {
-	if(pDevice->GetBoneConfiguration() == deInputDevice::ebcHand){
-		pBonePoses.AddRange(deInputDevice::HandBoneCount * 2, {});
+	switch(pDevice->GetBoneConfiguration()){
+	case deInputDevice::ebcHand:
+		pBonePoses.AddRange(deInputDevice::HandBoneCount, {});
+		pBonePosesWithController.AddRange(deInputDevice::HandBoneCount, {});
 		pBonePoseCount = deInputDevice::HandBoneCount;
+		break;
+		
+	case deInputDevice::ebcUpperBody:
+		pBonePoses.AddRange(deInputDevice::UpperBodyBoneCount, {});
+		pBonePoseCount = deInputDevice::UpperBodyBoneCount;
+		break;
+		
+	case deInputDevice::ebcFullBody:
+		pBonePoses.AddRange(deInputDevice::FullBodyBoneCount, {});
+		pBonePoseCount = deInputDevice::FullBodyBoneCount;
+		break;
+		
+	default:
+		break;
 	}
+	
 	if(pDevice->GetSupportsFaceEyeExpressions() || pDevice->GetSupportsFaceMouthExpressions()){
 		pFaceExpressions.AddRange(deInputDevice::FaceExpressionCount, {});
 		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
@@ -89,7 +123,12 @@ const deInputDevicePose &dedsInputDevice::GetBonePoseAt(int index, bool withCont
 		return defaultPose;
 	}
 	
-	return pBonePoses[withController ? pBonePoseCount + index : index];
+	if(withController && pBonePosesWithController.IsNotEmpty()){
+		return pBonePosesWithController[index];
+		
+	}else{
+		return pBonePoses[index];
+	}
 }
 
 float dedsInputDevice::GetFaceExpressionAt(int index) const{
@@ -101,41 +140,35 @@ float dedsInputDevice::GetFaceExpressionAt(int index) const{
 }
 
 void dedsInputDevice::OnFrameUpdate(){
-	int i;
-	
 	switch(pDeviceSource){
 	case deInputEvent::esInput:{
 		deBaseInputModule &module = *pDS.GetGameEngine()->GetInputSystem()->GetActiveModule();
-		
 		module.GetDevicePose(pDeviceIndex, pDevicePose);
 		
-		for(i=0; i<pBonePoseCount; i++){
-			module.GetDeviceBonePose(pDeviceIndex, i, false, pBonePoses[i]);
-		}
-		for(i=0; i<pBonePoseCount; i++){
-			module.GetDeviceBonePose(pDeviceIndex, i, true, pBonePoses[pBonePoseCount + i]);
-		}
-		
-		for(i=0; i<pFaceExpressionCount; i++){
-			pFaceExpressions[i] = module.GetDeviceFaceExpression(pDeviceIndex, i);
-		}
+		pBonePoses.VisitIndexed([&](int index, deInputDevicePose &pose){
+			module.GetDeviceBonePose(pDeviceIndex, index, false, pose);
+		});
+		pBonePosesWithController.VisitIndexed([&](int index, deInputDevicePose &pose){
+			module.GetDeviceBonePose(pDeviceIndex, index, true, pose);
+		});
+		pFaceExpressions.VisitIndexed([&](int index, float &expression){
+			expression = module.GetDeviceFaceExpression(pDeviceIndex, index);
+		});
 		}break;
 		
 	case deInputEvent::esVR:{
 		deBaseVRModule &module = *pDS.GetGameEngine()->GetVRSystem()->GetActiveModule();
-		
 		module.GetDevicePose(pDeviceIndex, pDevicePose);
 		
-		for(i=0; i<pBonePoseCount; i++){
-			module.GetDeviceBonePose(pDeviceIndex, i, false, pBonePoses[i]);
-		}
-		for(i=0; i<pBonePoseCount; i++){
-			module.GetDeviceBonePose(pDeviceIndex, i, true, pBonePoses[pBonePoseCount + i]);
-		}
-		
-		for(i=0; i<pFaceExpressionCount; i++){
-			pFaceExpressions[i] = module.GetDeviceFaceExpression(pDeviceIndex, i);
-		}
+		pBonePoses.VisitIndexed([&](int index, deInputDevicePose &pose){
+			module.GetDeviceBonePose(pDeviceIndex, index, false, pose);
+		});
+		pBonePosesWithController.VisitIndexed([&](int index, deInputDevicePose &pose){
+			module.GetDeviceBonePose(pDeviceIndex, index, true, pose);
+		});
+		pFaceExpressions.VisitIndexed([&](int index, float &expression){
+			expression = module.GetDeviceFaceExpression(pDeviceIndex, index);
+		});
 		}break;
 	}
 }
@@ -153,6 +186,7 @@ void dedsInputDevice::Update(const dedsInputDevice &device){
 	
 	if(pBonePoseCount != device.pBonePoseCount){
 		pBonePoses = device.pBonePoses;
+		pBonePosesWithController = device.pBonePosesWithController;
 		pBonePoseCount = device.pBonePoseCount;
 	}
 	

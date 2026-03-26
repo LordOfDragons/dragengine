@@ -90,6 +90,52 @@ void deClassVRSystem::nfRequestFeatureFacialTracking::RunFunction(dsRunTime *rt,
 	ds.GetGameEngine()->GetVRSystem()->RequestFeatureFacialTracking(level);
 }
 
+// public static func void requestFeatureBodyTracking(VRFeatureSupportLevel level)
+deClassVRSystem::nfRequestFeatureBodyTracking::nfRequestFeatureBodyTracking(const sInitData &init) :
+dsFunction(init.clsInputDevice, "requestFeatureBodyTracking", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsVRFeatureSupportLevel); // level
+}
+void deClassVRSystem::nfRequestFeatureBodyTracking::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	
+	const deBaseVRModule::eFeatureSupportLevel level = (deBaseVRModule::eFeatureSupportLevel)
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	ds.GetGameEngine()->GetVRSystem()->RequestFeatureBodyTracking(level);
+}
+
+// public static func bool supportsEyeGazeTracking()
+deClassVRSystem::nfSupportsEyeGazeTracking::nfSupportsEyeGazeTracking(const sInitData &init) :
+dsFunction(init.clsVRSystem, "supportsEyeGazeTracking", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+}
+void deClassVRSystem::nfSupportsEyeGazeTracking::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	rt->PushBool(ds.GetGameEngine()->GetVRSystem()->SupportsEyeGazeTracking());
+}
+
+// public static func bool supportsFacialTracking()
+deClassVRSystem::nfSupportsFacialTracking::nfSupportsFacialTracking(const sInitData &init) :
+dsFunction(init.clsVRSystem, "supportsFacialTracking", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+}
+void deClassVRSystem::nfSupportsFacialTracking::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	rt->PushBool(ds.GetGameEngine()->GetVRSystem()->SupportsFacialTracking());
+}
+
+// public static func bool supportsBodyTracking()
+deClassVRSystem::nfSupportsBodyTracking::nfSupportsBodyTracking(const sInitData &init) :
+dsFunction(init.clsVRSystem, "supportsBodyTracking", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+}
+void deClassVRSystem::nfSupportsBodyTracking::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	rt->PushBool(ds.GetGameEngine()->GetVRSystem()->SupportsBodyTracking());
+}
+
 // public static func void startRuntime
 deClassVRSystem::nfStartRuntime::nfStartRuntime(const sInitData &init) :
 dsFunction(init.clsVRSystem, "startRuntime", DSFT_FUNCTION,
@@ -569,6 +615,10 @@ void deClassVRSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfRuntimeUsable(init));
 	AddFunction(new nfRequestFeatureEyeGazeTracking(init));
 	AddFunction(new nfRequestFeatureFacialTracking(init));
+	AddFunction(new nfRequestFeatureBodyTracking(init));
+	AddFunction(new nfSupportsEyeGazeTracking(init));
+	AddFunction(new nfSupportsFacialTracking(init));
+	AddFunction(new nfSupportsBodyTracking(init));
 	AddFunction(new nfStartRuntime(init));
 	AddFunction(new nfStopRuntime(init));
 	AddFunction(new nfIsRuntimeRunning(init));

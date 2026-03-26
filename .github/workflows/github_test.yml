@@ -9,7 +9,7 @@ jobs:
     if: false
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           lfs: false
           submodules: 'recursive'
@@ -19,7 +19,7 @@ jobs:
         run: (git lfs ls-files -l) | ForEach-Object { $_.Split(" ")[0] } | sort | Out-File -FilePath ".lfs-objects-id"
 
       - name: Restore LFS Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: lfs-vs-cache
         with:
           path: .git/lfs
@@ -32,7 +32,7 @@ jobs:
           git lfs logs last
       
       - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
         
       - name: Install requirements
         run: Install-Module -Name 7Zip4PowerShell -Scope CurrentUser -Force -Verbose

@@ -107,4 +107,10 @@ enum InputDeviceType
 	 * \version 1.12
 	 */
 	vrEyeTracker
+	
+	/**
+	 * \brief VR Body Tracker.
+	 * \version 1.31
+	 */
+	vrBodyTracker
 end

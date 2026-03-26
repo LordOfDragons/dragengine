@@ -164,10 +164,18 @@ class InputDevice
 	end
 	
 	/**
-	 * \brief Hand rig if ebcHand is used.
+	 * \brief Hand rig if \ref InputDeviceBoneConfiguration#hand is used.
 	 * \version 1.6
 	 */
 	func Rig getHandRig()
+		return null
+	end
+	
+	/**
+	 * \brief Body rig if \ref InputDeviceBoneConfiguration#upperBody or \ref InputDeviceBoneConfiguration#fullBody is used.
+	 * \version 1.31
+	 */
+	func Rig getBodyRig()
 		return null
 	end
 	
@@ -212,6 +220,14 @@ class InputDevice
 	 * \version 1.6
 	 */
 	func Skin getVRSkin()
+		return null
+	end
+	
+	/**
+	 * \brief VR tracker role.
+	 * \version 1.31
+	 */
+	func InputDeviceVRTrackerRole getVRTrackerRole()
 		return null
 	end
 	

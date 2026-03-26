@@ -1,0 +1,77 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief Convenience enumeration for full body bones.
+ * \version 1.31
+ * 
+ * Use as bone indices for devices with bone configuration \ref InputDeviceBoneConfiguration#fullBody.
+ * 
+ * The first 19 bones are shared with \ref InputDeviceBoneConfiguration#upperBody .
+ */
+fixed class InputDeviceFullBodyBone
+	// upper body (same as InputDeviceUpperBodyBone)
+	public static fixed var int hips = 0
+	public static fixed var int spineLower = 1
+	public static fixed var int spineMiddle = 2
+	public static fixed var int spineUpper = 3
+	public static fixed var int chest = 4
+	public static fixed var int neck = 5
+	public static fixed var int head = 6
+	
+	public static fixed var int leftShoulder = 7
+	public static fixed var int leftScapula = 8
+	public static fixed var int leftArmUpper = 9
+	public static fixed var int leftArmLower = 10
+	public static fixed var int leftHandWristTwist = 11
+	public static fixed var int leftHandWrist = 12
+	
+	public static fixed var int rightShoulder = 13
+	public static fixed var int rightScapula = 14
+	public static fixed var int rightArmUpper = 15
+	public static fixed var int rightArmLower = 16
+	public static fixed var int rightHandWristTwist = 17
+	public static fixed var int rightHandWrist = 18
+	
+	// lower body
+	public static fixed var int leftUpperLeg = 19
+	public static fixed var int leftLowerLeg = 20
+	public static fixed var int leftFootAnkleTwist = 21
+	public static fixed var int leftFootAnkle = 22
+	public static fixed var int leftFootSubtalar = 23
+	public static fixed var int leftFootTransverse = 24
+	public static fixed var int leftFootBall = 25
+	
+	public static fixed var int rightUpperLeg = 26
+	public static fixed var int rightLowerLeg = 27
+	public static fixed var int rightFootAnkleTwist = 28
+	public static fixed var int rightFootAnkle = 29
+	public static fixed var int rightFootSubtalar = 30
+	public static fixed var int rightFootTransverse = 31
+	public static fixed var int rightFootBall = 32
+end

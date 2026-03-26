@@ -1523,6 +1523,7 @@ class BehaviorFactoryHelper
 	/** \brief Add VR behavior factories to factory list. */
 	func void addVRFactories(BehaviorFactoryList factories)
 		factories.add(ECBehaviorVRControlDesktop.Factory.new())
+		factories.add(ECBehaviorVRBody.Factory.new())
 		factories.add(ECBehaviorVRHand.Factory.new())
 		factories.add(ECBehaviorVRHandAction.Factory.new())
 		factories.add(ECBehaviorVRHandLaserPointer.Factory.new())
@@ -1571,5 +1572,6 @@ class BehaviorFactoryHelper
 	 * \version 1.29
 	 */
 	func void addCommonAttachableFactories(AttachableBehaviorFactoryList factories)
+		factories.add(ECABehaviorAnchorElement.Factory.new())
 	end
 end

@@ -81,6 +81,8 @@ private:
 	bool pSupportsFaceLipTracking;
 	bool pSupportsPassthrough;
 	bool pSupportsXDevSpace;
+	bool pSupportsUpperBodyTracking;
+	bool pSupportsFullBodyTracking;
 	
 	bool pSupportsEnvBlendModeAlphaBlend;
 	
@@ -161,6 +163,12 @@ public:
 	
 	/** Supports XDev space. */
 	inline bool GetSupportsXDevSpace() const{ return pSupportsXDevSpace; }
+	
+	/** Supports upper body tracking. */
+	inline bool GetSupportsUpperBodyTracking() const{ return pSupportsUpperBodyTracking; }
+	
+	/** Supports full body tracking. */
+	inline bool GetSupportsFullBodyTracking() const{ return pSupportsFullBodyTracking; }
 	/*@}*/
 	
 	

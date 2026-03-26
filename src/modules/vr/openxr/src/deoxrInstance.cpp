@@ -104,6 +104,8 @@ pRuntimeVersion(0)
 	pSupportsExtension[extFBTouchControllerProximity].name = XR_FB_TOUCH_CONTROLLER_PROXIMITY_EXTENSION_NAME;
 	pSupportsExtension[extMETATouchControllerPlus].name = XR_META_TOUCH_CONTROLLER_PLUS_EXTENSION_NAME;
 	pSupportsExtension[extMNDXXDevSpace].name = XR_MNDX_XDEV_SPACE_EXTENSION_NAME;
+	pSupportsExtension[extFBBodyTracking].name = XR_FB_BODY_TRACKING_EXTENSION_NAME;
+	pSupportsExtension[extMETABodyTrackingFullBody].name = XR_META_BODY_TRACKING_FULL_BODY_EXTENSION_NAME;
 	
 	#ifdef OS_ANDROID
 		pSupportsExtension[extKHRAndroidCreateInstance].name = XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME;
@@ -151,6 +153,10 @@ pRuntimeVersion(0)
 	pSupportsExtension[extFBTouchControllerProximity].enableIfSupported = true;
 	pSupportsExtension[extMETATouchControllerPlus].enableIfSupported = true;
 	pSupportsExtension[extMNDXXDevSpace].enableIfSupported = true;
+	pSupportsExtension[extFBBodyTracking].enableIfSupported =
+		oxr.GetRequestFeatureBodyTracking() != deBaseVRModule::efslDisabled;
+	pSupportsExtension[extMETABodyTrackingFullBody].enableIfSupported =
+		oxr.GetRequestFeatureBodyTracking() != deBaseVRModule::efslDisabled;
 	
 	memset(&pSupportsLayer, 0, sizeof(pSupportsLayer));
 	pSupportsLayer[layerLunarCoreValidation].name = "XR_APILAYER_LUNARG_core_validation";
@@ -419,10 +425,9 @@ void deoxrInstance::pDetectLayers(){
 void deoxrInstance::pCreateInstance(bool enableValidationLayers){
 	pOxr.LogInfo("Create OpenXR Instance");
 	
-	pOxr.LogInfoFormat("Request Feature Eye Gaze Tracking: %d",
-		pOxr.GetRequestFeatureEyeGazeTracking());
-	pOxr.LogInfoFormat("Request Feature Facial Tracking: %d",
-		pOxr.GetRequestFeatureFacialTracking());
+	pOxr.LogInfoFormat("Request Feature Eye Gaze Tracking: %d", (int)pOxr.GetRequestFeatureEyeGazeTracking());
+	pOxr.LogInfoFormat("Request Feature Facial Tracking: %d", (int)pOxr.GetRequestFeatureFacialTracking());
+	pOxr.LogInfoFormat("Request Feature Body Tracking: %d", (int)pOxr.GetRequestFeatureBodyTracking());
 
 	pSupportsLayer[layerLunarCoreValidation].enableIfSupported = enableValidationLayers;
 	pSupportsLayer[layerApiDump].enableIfSupported = false; //enableValidationLayers;

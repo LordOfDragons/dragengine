@@ -272,25 +272,24 @@ void igdeWObject::SetGDClass(igdeGDClass *gdClass){
 	
 	pGDClass = gdClass;
 	
-	pDirtyExtends = true;
-	pDirtyFallbackColliderShape = true;
-	
-	pUpdateVisiblity();
-	pUpdateColliderResponseType();
-	pUpdateColliderShapes();
-	
-	UpdateTriggerTargets();
-	
-	if(pWorld){
-		pCreateSubObjects();
-		
-		pSubObjectsInitTriggers();
-		pSubObjectsUpdateTriggers();
-	}
+	pUpdateContent();
 }
 
 void igdeWObject::SetGDClassName(const char *gdClassName){
 	SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->GetClassManager()->GetClasses().FindNamed(gdClassName));
+}
+
+void igdeWObject::SetPathWorld(const char *path){
+	if(path == pPathWorld){
+		return;
+	}
+	
+	pDestroySubObjects();
+	pWorldGDClass.Clear();
+	
+	pPathWorld = path;
+	
+	pUpdateContent();
 }
 
 void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){
@@ -714,22 +713,17 @@ void igdeWObject::UpdateTriggerTargets(){
 		return;
 	}
 	
-	const decStringList &keys = pProperties.GetKeys();
-	const int keyCount = keys.GetCount();
-	int i;
-	
-	for(i=0; i<keyCount; i++){
-		const decString &key = keys.GetAt(i);
+	pProperties.GetKeys().Visit([&](const decString &key){
 		const decString &value = pProperties.GetAt(key);
 		if(value.IsEmpty()){
-			continue;
+			return;
 		}
 		
 		igdeGDProperty * const gdproperty = pGDClass->GetPropertyNamed(key);
 		if(gdproperty && gdproperty->GetType() == igdeGDProperty::eptTriggerTarget){
 			pListTriggerTarget.Add(pTriggerTable->GetNamedAddIfMissing(value));
 		}
-	}
+	});
 }
 
 void igdeWObject::UpdateTriggerableProperties(){
@@ -840,6 +834,24 @@ void igdeWObject::pCleanUp(){
 
 
 
+void igdeWObject::pUpdateContent(){
+	pDirtyExtends = true;
+	pDirtyFallbackColliderShape = true;
+	
+	pUpdateVisiblity();
+	pUpdateColliderResponseType();
+	pUpdateColliderShapes();
+	
+	UpdateTriggerTargets();
+	
+	if(pWorld){
+		pCreateSubObjects();
+		
+		pSubObjectsInitTriggers();
+		pSubObjectsUpdateTriggers();
+	}
+}
+
 void igdeWObject::pUpdateVisiblity(){
 	const bool partiallyVisible = (pVisible && !pPartiallyHidden);
 	pColliderFallback->SetEnabled(!pColliderComponent && partiallyVisible);
@@ -847,13 +859,27 @@ void igdeWObject::pUpdateVisiblity(){
 	pSubObjectsUpdateVisibility();
 }
 
-
+igdeGDClass::Ref igdeWObject::pCreateWorldGDClass(){
+	auto gdclass = igdeGDClass::Ref::New("_World");
+	auto gdcworld = igdeGDCWorld::Ref::New();
+	gdcworld->SetPath(pPathWorld);
+	gdclass->AddWorld(gdcworld);
+	return gdclass;
+}
 
 void igdeWObject::pCreateSubObjects(){
 	pAsyncLoadCounter = 1;
 	
-	if(pGDClass && pWorld){
-		pCreateSubObjects("", pGDClass, igdeGDClass::FilterSubObjectsAll);
+	if(pWorld){
+		if(pGDClass){
+			pCreateSubObjects("", pGDClass, igdeGDClass::FilterSubObjectsAll);
+			
+		}else if(!pPathWorld.IsEmpty()){
+			if(!pWorldGDClass){
+				pWorldGDClass = pCreateWorldGDClass();
+			}
+			pCreateSubObjects("", pWorldGDClass, igdeGDClass::FilterSubObjectsAll);
+		}
 	}
 	
 	pAsyncLoadCounter--;

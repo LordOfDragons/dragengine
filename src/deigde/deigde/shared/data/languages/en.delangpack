@@ -523,6 +523,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPWObject.DynamicCollider.ToolTip">Object is attached using a dynamic collider</translation>
 	<translation name="Igde.WPWObject.Class">Class:</translation>
 	<translation name="Igde.WPWObject.Class.ToolTip">Path to the object class to use.</translation>
+	<translation name="Igde.WPWObject.World">World:</translation>
+	<translation name="Igde.WPWObject.World.ToolTip">Path to the world to use.</translation>
 	<translation name="Igde.WPWObject.Position">Position:</translation>
 	<translation name="Igde.WPWObject.Position.ToolTip">Position of object in meters.</translation>
 	<translation name="Igde.WPWObject.Orientation">Orientation:</translation>

@@ -42,9 +42,9 @@ class RefCountedClassScanner:
         
         # Match class declarations with inheritance
         # Matches: class ClassName : public BaseClass
-        # Also handles DLL export macros and various spacing
+        # Also handles DLL export macros, various spacing, and qualified names (Outer::Inner)
         class_pattern = re.compile(
-            r'class\s+(?:\w+\s+)?(\w+)\s*:\s*(?:public|protected|private)\s+(\w+(?:\s*,\s*(?:public|protected|private)\s+\w+)*)',
+            r'class\s+(?:\w+\s+)?(\w+)\s*:\s*(?:public|protected|private)\s+(\w+(?:::\w+)*(?:\s*,\s*(?:public|protected|private)\s+\w+(?:::\w+)*)*)',
             re.MULTILINE
         )
         
@@ -53,8 +53,8 @@ class RefCountedClassScanner:
             bases_str = match.group(2)
             
             # Extract all base classes
-            # The bases_str might be just "BaseClass" or "BaseClass, public OtherBase"
-            base_pattern = re.compile(r'(?:(?:public|protected|private)\s+)?(\w+)')
+            # The bases_str might be "BaseClass", "Outer::Inner", or "BaseClass, public OtherBase"
+            base_pattern = re.compile(r'(?:(?:public|protected|private)\s+)?(\w+(?:::\w+)*)')
             for base_match in base_pattern.finditer(bases_str):
                 base_name = base_match.group(1)
                 if base_name and base_name not in ('public', 'protected', 'private'):

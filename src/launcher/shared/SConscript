@@ -65,7 +65,8 @@ if buildStatic:
 else:
 	buildLibrary = envLibrary.SharedLibrary(target='delauncher', source=objects, LIBS=libsLib)
 
-targetBuildLib = envLibrary.Alias('delauncher_build', buildLibrary)
+(buildLibrary, buildLibraryDebug) = envLibrary.SplitDebugIf(buildLibrary)
+targetBuildLib = envLibrary.Alias('delauncher_build', buildLibrary + buildLibraryDebug)
 
 refDir = envLibrary.Dir('src').srcnode()
 copyHeaders = []
@@ -80,6 +81,7 @@ installLibRuntime = []
 
 archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
 archiveLib = {}
+archiveLibDebug = {}
 
 if not buildStatic:
 	if envLibrary['OSPosix']:
@@ -93,6 +95,9 @@ if not buildStatic:
 		
 		lname = '.'.join(lname.split('.')[0:-1])
 		archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
+		
+		for l in buildLibraryDebug:
+			archiveLibDebug['{}/{}'.format(pathLib, l.name)] = l
 		
 	elif envLibrary['OSWindows']:
 		installLibRuntime.append(envLibrary.Install(pathSysLib, 'delauncher.dll'))
@@ -159,6 +164,7 @@ parent_targets['delauncher'] = {
 	'install-runtime' : targetInstallLibRuntime,
 	'install-launcher-runtime' : targetInstallLibRuntime,
 	'archive-engine' : archiveLib,
+	'archive-engine-debug' : archiveLibDebug,
 	'archive-engine-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen,
 	'cloc' : buildCloc,

@@ -30,6 +30,7 @@
 #include "../deoxrSpace.h"
 #include "../deoxrHandTracker.h"
 #include "../deoxrFaceTracker.h"
+#include "../deoxrBodyTracker.h"
 #include "../action/deoxrAction.h"
 
 #include <dragengine/deObject.h>
@@ -99,6 +100,9 @@ private:
 	bool pEnableTwoFingerTriggerSimulation;
 	
 	deoxrFaceTracker::Ref pFaceTracker;
+	deoxrBodyTracker::Ref pBodyTracker;
+
+	deInputDevice::eVRTrackerRoles pVRTrackerRole;
 
 	
 	
@@ -315,6 +319,20 @@ public:
 	
 	/** Set face tracker or nullptr. */
 	void SetFaceTracker(deoxrFaceTracker *faceTracker);
+	
+	
+	/** Body tracker or nullptr. */
+	inline const deoxrBodyTracker::Ref &GetBodyTracker() const{ return pBodyTracker; }
+	
+	/** Set body tracker or nullptr. */
+	void SetBodyTracker(deoxrBodyTracker *bodyTracker);
+	
+	
+	/** VR tracker role. */
+	inline deInputDevice::eVRTrackerRoles GetVRTrackerRole() const{ return pVRTrackerRole; }
+	
+	/** Set VR tracker role. */
+	void SetVRTrackerRole(deInputDevice::eVRTrackerRoles role);
 	
 	
 	

@@ -59,11 +59,11 @@ pPoseValidity(0),
 pType(deInputDevice::edtGeneric),
 pBoneConfiguration(deInputDevice::ebcNone),
 pNameNumber(-1),
-pEnableTwoFingerTriggerSimulation(true){
+pEnableTwoFingerTriggerSimulation(true),
+pVRTrackerRole(deInputDevice::evrtrUnknown){
 }
 
-deoxrDevice::~deoxrDevice(){
-}
+deoxrDevice::~deoxrDevice() = default;
 
 
 
@@ -352,6 +352,16 @@ void deoxrDevice::SetFaceTracker(deoxrFaceTracker *faceTracker){
 
 
 
+void deoxrDevice::SetBodyTracker(deoxrBodyTracker *bodyTracker){
+	pBodyTracker = bodyTracker;
+}
+
+void deoxrDevice::SetVRTrackerRole(deInputDevice::eVRTrackerRoles role){
+	pVRTrackerRole = role;
+}
+
+
+
 void deoxrDevice::GetInfo(deInputDevice &info) const{
 	int i;
 	
@@ -392,6 +402,12 @@ void deoxrDevice::GetInfo(deInputDevice &info) const{
 
 	info.SetSupportsFaceEyeExpressions(pFaceTracker);
 	info.SetSupportsFaceMouthExpressions(pFaceTracker);
+	
+	if(pBodyTracker){
+		info.SetBodyRig(pBodyTracker->GetBodyRig());
+	}
+	
+	info.SetVRTrackerRole(pVRTrackerRole);
 	
 	switch(pType){
 	case deInputDevice::edtVRRightHand:
@@ -547,6 +563,24 @@ void deoxrDevice::TrackStates(){
 		pFaceTracker->Update();
 	}
 	
+	if(pBodyTracker){
+		pBodyTracker->Locate();
+		
+		pPoseDevice.SetPosition(pBodyTracker->GetRootPosition());
+		pPoseDevice.SetOrientation(pBodyTracker->GetRootOrientation());
+		
+		if(pBodyTracker->GetSkeletonDirty()){
+			pBodyTracker->SetSkeletonDirty(false);
+			
+			deInputEvent event;
+			event.SetType(deInputEvent::eeDeviceParamsChanged);
+			event.SetSource(deInputEvent::esVR);
+			event.SetDevice(pIndex);
+			pOxr.InputEventSetTimestamp(event);
+			pOxr.SendEvent(event);
+		}
+	}
+	
 	pAxes.Visit([](deoxrDeviceAxis &axis){
 		axis.TrackState();
 	});
@@ -569,5 +603,8 @@ void deoxrDevice::GetDevicePose(deInputDevicePose &pose){
 void deoxrDevice::ReferenceSpaceChanged(){
 	if(pHandTracker){
 		pHandTracker->ReferencePoseChanged();
+	}
+	if(pBodyTracker){
+		pBodyTracker->ReferencePoseChanged();
 	}
 }

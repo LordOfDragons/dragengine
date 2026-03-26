@@ -99,7 +99,8 @@ private:
 	
 	deWorld::Ref pWorld;
 	deCamera::Ref pCamera;
-	igdeGDClass::Ref pGDClass;
+	igdeGDClass::Ref pGDClass, pWorldGDClass;
+	decString pPathWorld;
 	
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
@@ -203,6 +204,12 @@ public:
 	
 	/** \brief Set game definition object class by name if found. */
 	void SetGDClassName(const char *gdClassName);
+	
+	/** \brief Path to world. */
+	inline const decString &GetPathWorld() const{ return pPathWorld; }
+	
+	/** \brief Set path to world. */
+	void SetPathWorld(const char *path);
 	
 	/** \brief Position. */
 	inline decDVector GetPosition() const{ return pPosition; }
@@ -479,8 +486,10 @@ public:
 private:
 	void pCleanUp();
 	
+	void pUpdateContent();
 	void pUpdateVisiblity();
 	
+	igdeGDClass::Ref pCreateWorldGDClass();
 	void pCreateSubObjects();
 	void pCreateSubObjects(const decString &prefix, const igdeGDClass &gdclas, int filter);
 	void pDestroySubObjects();
