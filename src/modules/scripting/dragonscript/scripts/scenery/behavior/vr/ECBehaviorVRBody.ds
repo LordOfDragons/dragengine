@@ -342,9 +342,13 @@ class ECBehaviorVRBody extends DefaultECBehavior
 			pBoneWristRight = pECBehavior.getBoneRightHandWrist().getValue(stub)
 			pBoneWristLeft = pECBehavior.getBoneLeftHandWrist().getValue(stub)
 			
-			// add bones
 			pBoneOrigin = pECBehavior.getBoneOrigin().getValue(stub)
 			
+			if not pECBehavior.getEnabled().getValue(stub)
+				return
+			end
+			
+			// add bones
 			pBones.add(Bone.new(pECBehavior.getBoneHips().getValue(stub), InputDeviceFullBodyBone.hips, "hips", false, true))
 			pBones.add(Bone.new(pECBehavior.getBoneSpineLower().getValue(stub), InputDeviceFullBodyBone.spineLower, "spineLower", false))
 			pBones.add(Bone.new(pECBehavior.getBoneSpineMiddle().getValue(stub), InputDeviceFullBodyBone.spineMiddle, "spineMiddle", false))
@@ -866,12 +870,12 @@ class ECBehaviorVRBody extends DefaultECBehavior
 				end
 			end)
 			
-			if pControllerIKHandRightPosition != null
+			if pControllerIKHandRightPosition != null and pBoneIKHandRight != null
 				pControllerIKHandRightPosition.setVector(pBoneIKHandRight.posePosition)
 				pControllerIKHandRightOrientation.setOrientation(\
 					pBoneIKHandRight.retargetOrientation * pBoneIKHandRight.poseOrientation)
 			end
-			if pControllerIKHandLeftPosition != null
+			if pControllerIKHandLeftPosition != null and pBoneIKHandLeft != null
 				pControllerIKHandLeftPosition.setVector(pBoneIKHandLeft.posePosition)
 				pControllerIKHandLeftOrientation.setOrientation(\
 					pBoneIKHandLeft.retargetOrientation * pBoneIKHandLeft.poseOrientation)
@@ -967,7 +971,7 @@ class ECBehaviorVRBody extends DefaultECBehavior
 	var ECPString pBoneLeftFootAnkle, pBoneLeftFootSubtalar, pBoneLeftFootTransverse, pBoneLeftFootBall
 	var ECPString pBoneRightUpperLeg, pBoneRightLowerLeg, pBoneRightFootAnkleTwist
 	var ECPString pBoneRightFootAnkle, pBoneRightFootSubtalar, pBoneRightFootTransverse, pBoneRightFootBall
-	var ECPBoolean pOnlyRotation, pEnableLowerBody
+	var ECPBoolean pOnlyRotation, pEnableLowerBody, pEnabled
 	
 	
 	
@@ -1050,6 +1054,7 @@ class ECBehaviorVRBody extends DefaultECBehavior
 		
 		eclass.addProperty(pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true))
 		eclass.addProperty(pEnableLowerBody = ECPBoolean.new(prefix + "enableLowerBody", true))
+		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
 		
 		eclass.addBehavior(this)
 	end
@@ -1270,6 +1275,11 @@ class ECBehaviorVRBody extends DefaultECBehavior
 	/** \brief Enable lower body bones if supported by input device. */
 	func ECPBoolean getEnableLowerBody()
 		return pEnableLowerBody
+	end
+	
+	/** \brief Enable body pose. */
+	func ECPBoolean getEnabled()
+		return pEnabled
 	end
 	
 	
