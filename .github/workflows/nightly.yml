@@ -21,7 +21,7 @@ jobs:
         id: buildnumber
         uses: onyxmueller/build-tag-number@v1.0.4
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.PAT_BUILDBOT }}
           prefix: github
   
   build_linux:
