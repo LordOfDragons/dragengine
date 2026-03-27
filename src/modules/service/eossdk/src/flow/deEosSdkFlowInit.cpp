@@ -33,12 +33,19 @@
 // Class deEosSdkFlowInit
 ///////////////////////////
 
+// Protection against spurious callbacks after the flow has already finished
+static deEosSdkFlowInit *vActiveInstance = nullptr;
+
 static void fCreateDeviceIdCallback(const EOS_Connect_CreateDeviceIdCallbackInfo *data){
-	((deEosSdkFlowInit*)data->ClientData)->OnCreateDeviceIdCallback(*data);
+	if(vActiveInstance && vActiveInstance == data->ClientData){
+		vActiveInstance->OnCreateDeviceIdCallback(*data);
+	}
 }
 
 static void fLoginCallback(const EOS_Connect_LoginCallbackInfo *data){
-	((deEosSdkFlowInit*)data->ClientData)->OnLoginCallback(*data);
+	if(vActiveInstance && vActiveInstance == data->ClientData){
+		vActiveInstance->OnLoginCallback(*data);
+	}
 }
 
 // Constructor, destructor
@@ -47,8 +54,15 @@ static void fLoginCallback(const EOS_Connect_LoginCallbackInfo *data){
 deEosSdkFlowInit::deEosSdkFlowInit(deEosSdkServiceEos &service) :
 deEosSdkFlow(service, decUniqueID())
 {
+	vActiveInstance = this;
 	GetModule().LogInfo("deEosSdkFlowInit: Init service");
 	CreateDeviceId();
+}
+
+deEosSdkFlowInit::~deEosSdkFlowInit(){
+	if(vActiveInstance == this){
+		vActiveInstance = nullptr;
+	}
 }
 
 

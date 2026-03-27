@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,95 +22,67 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine
 
 
 /**
- * \brief InputDevice type.
+ * \brief VR tracker role.
+ * \version 1.31
+ *
+ * Used for devices of type \ref InputDeviceType#vrTracker to indicate the role.
  */
-enum InputDeviceType
-	/** \brief Mouse. */
-	mouse
+enum InputDeviceVRTrackerRole
+	/** \brief No specific role assigned. */
+	unknown
 	
-	/** \brief Keyboard. */
+	/** \brief Left wrist tracker. */
+	leftWrist
+	
+	/** \brief Left elbow tracker. */
+	leftElbow
+	
+	/** \brief Left shoulder tracker. */
+	leftShoulder
+	
+	/** \brief Left knee tracker. */
+	leftKnee
+	
+	/** \brief Left ankle tracker. */
+	leftAnkle
+	
+	/** \brief Left foot tracker. */
+	leftFoot
+	
+	/** \brief Right wrist tracker. */
+	rightWrist
+	
+	/** \brief Right elbow tracker. */
+	rightElbow
+	
+	/** \brief Right shoulder tracker. */
+	rightShoulder
+	
+	/** \brief Right knee tracker. */
+	rightKnee
+	
+	/** \brief Right ankle tracker. */
+	rightAnkle
+	
+	/** \brief Right foot tracker. */
+	rightFoot
+	
+	/** \brief Chest tracker. */
+	chest
+	
+	/** \brief Waist tracker. */
+	waist
+	
+	/** \brief Handheld object tracker. */
+	handheld
+	
+	/** \brief Camera tracker. */
+	camera
+	
+	/** \brief Keyboard tracker. */
 	keyboard
-	
-	/** \brief Game pad. */
-	gamepad
-	
-	/** \brief Joystick. */
-	joystick
-	
-	/** \brief Touchpad. */
-	touchpad
-	
-	/** \brief Touchscreen. */
-	touchscreen
-	
-	/** \brief Racing wheel. */
-	racingWheel
-	
-	/** \brief Generic device. */
-	generic
-	
-	/**
-	 * \brief VR Head mounted display.
-	 * \version 1.6
-	 */
-	vrHMD
-	
-	/**
-	 * \brief VR Right Hand Controller.
-	 * \version 1.6
-	 */
-	vrRightHand
-	
-	/**
-	 * \brief VR Left Hand Controller.
-	 * \version 1.6
-	 */
-	vrLeftHand
-	
-	/**
-	 * \brief VR Treadmill.
-	 * \version 1.6
-	 */
-	vrTreadmill
-	
-	/**
-	 * \brief VR Stylus.
-	 * \version 1.6
-	 */
-	vrStylus
-	
-	/**
-	 * \brief VR Generic Controller.
-	 * \version 1.6
-	 */
-	vrController
-	
-	/**
-	 * \brief VR Tracker.
-	 * \version 1.6
-	 */
-	vrTracker
-	
-	/**
-	 * \brief VR Base Station.
-	 * \version 1.6
-	 */
-	vrBaseStation
-	
-	/**
-	 * \brief VR Eye Tracker.
-	 * \version 1.12
-	 */
-	vrEyeTracker
-	
-	/**
-	 * \brief VR Body Tracker.
-	 * \version 1.31
-	 */
-	vrBodyTracker
 end

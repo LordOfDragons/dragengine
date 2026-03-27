@@ -39,8 +39,10 @@ public:
 	/*@{*/
 	/** Create flow. */
 	deEosSdkFlowInit(deEosSdkServiceEos &service);
-	/*@}*/
 	
+	/** Delete flow. */
+	~deEosSdkFlowInit() override;
+	/*@}*/
 	
 	
 	/** \name Management */
@@ -52,10 +54,6 @@ public:
 	void OnCreateDeviceIdCallback(const EOS_Connect_CreateDeviceIdCallbackInfo &data);
 	void OnLoginCallback(const EOS_Connect_LoginCallbackInfo &data);
 	/*@}*/
-	
-	
-	
-private:
 };
 
 #endif

@@ -84,7 +84,7 @@ deRig::Ref deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filenam
 	deRig::Ref rig;
 	
 	try{
-		// check if the rigation with this filename already exists. this check
+		// check if the rig with this filename already exists. this check
 		// is only done if the filename is not empty in which case an unnamed
 		// rig is created
 		if(filename[0] != '\0'){

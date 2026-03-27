@@ -80,6 +80,9 @@ class SimpleConversationConverter
 		/** \brief Open actor speak simple conversation actor or null. */
 		public var SimpleConversationActor actor
 		
+		/** \brief OPen actor speak simple conversation actor camera shot identifier or null. */
+		public var StringID actorCameraId
+		
 		/** \brief Open actor speak conversation action or null. */
 		public var CActionActorSpeak actionActorSpeak
 		
@@ -593,6 +596,7 @@ class SimpleConversationConverter
 			end
 			
 			if id != null
+				state.actorCameraId = id
 				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
 				if camera == null
 					throw EInvalidParam.new("Camera '{}' not found in actor '{}' in snippet '{}'".format(\
@@ -610,7 +614,7 @@ class SimpleConversationConverter
 		else
 			state.forceCameraShotCounter++
 			if state.forceCameraShotCounter > pMinSpeakCountCameraChange
-				var StringID id = state.actor.getCamera()
+				var StringID id = state.actorCameraId
 				if id != null
 					var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
 					convertCamera(state, camera, camera.randomShot(), mode)
@@ -765,8 +769,11 @@ class SimpleConversationConverter
 		
 		applySpeechPause(state)
 		
-		if duration == 0
+		if duration == -1
 			duration = pFacePoseDuration
+			
+		else
+			duration = DEMath.max(duration, 0.0)
 		end
 		var float delay = DEMath.max(state.speechTime - state.facePoseTime, 0.0)
 		if state.actionActorSpeak != null
@@ -788,8 +795,11 @@ class SimpleConversationConverter
 		
 		applySpeechPause(state)
 		
-		if duration == 0
-			duration = pLookAtDuration
+		if duration == -1
+			duration = pFacePoseDuration
+			
+		else
+			duration = DEMath.max(duration, 0.0)
 		end
 		var float delay = DEMath.max(state.speechTime - state.lookAtTime, 0.0)
 		if state.actionActorSpeak != null

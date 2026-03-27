@@ -88,6 +88,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 *   <!-- required: use vr hand with id. -->
 	 *   <string name='vrHand'>right</string>
 	 * 
+	 *   <!-- optional: use vr body. -->
+	 *   <string name='vrBody'/>
+	 * 
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
 	 *     <string/> <!-- add behavior with empty identifier -->
@@ -117,6 +120,10 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorVRHandPose behavior = ECBehaviorVRHandPose.new(eclass,\
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
+			
+			if parameters.has("vrBody")
+				behavior.setVRBody(ECBehaviorVRBody.getBehaviorIn(eclass))
+			end
 			
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
@@ -188,6 +195,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		var ECBehaviorVRHandPose pECBehavior
 		var ECBehaviorVRHand.Instance pVRHand
+		var ECBehaviorVRBody.Instance pVRBody
 		
 		var bool pOnlyRotation
 		var String pBoneOrigin
@@ -198,6 +206,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		var Matrix pHandScale
 		var float pModelFingerTipDistance, pPoseFingerTipDistance
+		var bool pUseVRBody
 		
 		
 		
@@ -208,11 +217,15 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			pHandScale = Matrix.new()
 			
 			pVRHand = ecbehavior.getVRHand().instance(element)
+			if ecbehavior.getVRBody() != null
+				pVRBody = ecbehavior.getVRBody().instance(element)
+			end
 		end
 		
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
 			pVRHand = null
+			pVRBody = null
 			
 			super.dispose()
 		end
@@ -226,13 +239,23 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			pModelFingerTipDistance = pECBehavior.getFingerTipDistance().getValue(stub)
 			pPoseFingerTipDistance = pModelFingerTipDistance
 			
-			// add bones
 			pBoneOrigin = pECBehavior.getBoneOrigin().getValue(stub)
 			
 			if not pECBehavior.getEnabled().getValue(stub)
 				return
 			end
 			
+			// determine component to use and if vr body has to be used
+			var Component component
+			if pVRBody != null
+				component = pVRBody.getActorAnimated().getComponent().getComponent()
+				pUseVRBody = component != null
+			end
+			if component == null
+				component = pVRHand.getComponent().getComponent()
+			end
+			
+			// add bones
 			pBones.add(Bone.new(pECBehavior.getBoneWrist().getValue(stub), InputDeviceHandBone.wrist, "wrist", true))
 			pBones.add(Bone.new(pECBehavior.getBoneThumb1().getValue(stub), InputDeviceHandBone.thumb0, "thumb1", true))
 			pBones.add(Bone.new(pECBehavior.getBoneThumb2().getValue(stub), InputDeviceHandBone.thumb1, "thumb2"))
@@ -260,8 +283,6 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			end)
 			
 			// create animator instance
-			var Component component = pVRHand.getComponent().getComponent()
-			
 			pAnimatorInstance = AnimatorInstance.new()
 			pAnimatorInstance.setComponent(component)
 			if component != null and component.getRig() != null
@@ -269,9 +290,10 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				
 				// get controllers and store them for later use
 				pAnimateBones.forEach(block Bone bone
-					bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
-					bone.adControllerOrientation = null
-					
+					if bone.adControllerOrientation != null
+						bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
+						bone.adControllerOrientation = null
+					end
 					if bone.adControllerPosition != null
 						bone.controllerPosition = pAnimatorInstance.getControllerAt(bone.adControllerPosition.getIndex())
 						bone.adControllerPosition = null
@@ -296,19 +318,42 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			definition.setRig(component.getRig())
 			
 			// add bones
-			if not pBoneOrigin.empty()
+			if not pBoneOrigin.empty() and not pUseVRBody
 				definition.addBone(pBoneOrigin)
 			end
 			pAnimateBones.forEach(block Bone each
 				definition.addBone(each.bone)
 			end)
 			
+			// add state snapshot rule for wrist bone if VR body is used. this is required since
+			// otherwise the IK solver bone has invalid state
+			var String solverBone
+			if pUseVRBody
+				if pVRHand.isRightHand()
+					solverBone = pVRBody.getBoneWristRight()
+					
+				else
+					solverBone = pVRBody.getBoneWristLeft()
+				end
+				
+				if not solverBone.empty()
+					var ADRuleStateSnapshot rule = ADRuleStateSnapshot.new()
+					rule.setName("last state")
+					rule.setUseLastState(true)
+					definition.addRule(rule)
+				end
+			end
+			
 			// add reset rule
 			var ADRuleStateManipulator ruleReset = ADRuleStateManipulator.new()
-			if not pBoneOrigin.empty()
+			ruleReset.setName("reset")
+			if not pBoneOrigin.empty() and not pUseVRBody
 				ruleReset.addBone(pBoneOrigin)
 			end
 			pAnimateBones.forEach(block Bone each
+				if pUseVRBody and each.poseIndex == InputDeviceHandBone.wrist
+					return null
+				end
 				ruleReset.addBone(each.bone)
 			end)
 			definition.addRule(ruleReset)
@@ -326,7 +371,11 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			linkEnableFingers.setCurve(CurveBezier.newDefaultLinear())
 			definition.addLink(linkEnableFingers)
 			
-			pAnimateBones.forEach(block int index, Bone bone
+			pAnimateBones.forEach(block Bone bone
+				if pUseVRBody and bone.poseIndex == InputDeviceHandBone.wrist
+					return null
+				end
+				
 				bone.adControllerOrientation = ADController.new()
 				bone.adControllerOrientation.setName(bone.namePrefix + " orientation")
 				definition.addController(bone.adControllerOrientation)
@@ -340,10 +389,16 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				rule.setAdjustOrientation(true)
 				rule.setAdjustPosition(false)
 				rule.addBone(bone.bone)
+				
 				rule.addTargetLink(ADRuleTargetLink.new(\
 					ARInverseKinematicTarget.goalOrientation, linkOrientation))
 				rule.addTargetLink(ADRuleTargetLink.new(\
 					ARInverseKinematicTarget.blendFactor, linkEnableFingers))
+				
+				if pUseVRBody
+					rule.setSolverBone(solverBone)
+					rule.setUseSolverBone(true)
+				end
 				
 				if bone.usePosition or not pOnlyRotation
 					bone.adControllerPosition = ADController.new()
@@ -385,11 +440,27 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			return pVRHand
 		end
 		
+		/**
+		 * \brief VR Body behavior instance or null.
+		 * \version 1.31
+		 */
+		func ECBehaviorVRBody.Instance getVRBody()
+			return pVRBody
+		end
+		
 		
 		
 		/** \brief Apply only rotation instead of position and rotation. */
 		func bool getOnlyRotation()
 			return pOnlyRotation
+		end
+		
+		/**
+		 * \brief VR body is used instead of hands for applying finger pose.
+		 * \version 1.31
+		 */
+		func bool getUseVRBody()
+			return pUseVRBody
 		end
 		
 		
@@ -420,7 +491,6 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				return
 			end
 			
-			// fetch values
 			pAnimateBones.forEach(block Bone bone
 				bone.poseOrientation = device.getDeviceBonePoseOrientation(bone.poseIndex, false)
 				bone.posePosition = device.getDeviceBonePosePosition(bone.poseIndex, false)
@@ -433,11 +503,24 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			end
 			
 			// update controllers with transformed poses
-			pAnimateBones.forEach(block Bone bone
-				bone.controllerOrientation.setOrientation(bone.poseOrientation)
+			var Matrix matrixHand = pHandScale
+			var Quaternion quatHand
+			
+			if pUseVRBody
+				var Bone b = getBone(BoneEntry.wrist)
+				matrixHand = matrixHand * Matrix.newWorld(b.posePosition, b.poseOrientation).getInverse()
+				quatHand = b.poseOrientation.conjugate()
 				
+			else
+				quatHand = Quaternion.new()
+			end
+			
+			pAnimateBones.forEach(block Bone bone
+				if bone.controllerOrientation != null
+					bone.controllerOrientation.setOrientation(bone.poseOrientation * quatHand)
+				end
 				if bone.controllerPosition != null
-					bone.controllerPosition.setVector(pHandScale * bone.posePosition)
+					bone.controllerPosition.setVector(matrixHand * bone.posePosition)
 				end
 			end)
 			
@@ -510,6 +593,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	
 	var ECBehaviorVRHand pVRHand
+	var ECBehaviorVRBody pVRBody
 	var ECPString pBoneOrigin, pBoneWrist
 	var ECPString pBoneThumb1, pBoneThumb2, pBoneThumb3
 	var ECPString pBoneIndex1, pBoneIndex2, pBoneIndex3, pBoneIndex4
@@ -583,6 +667,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pVRHand = null
+		pVRBody = null
 		pBTSMs = null
 		super.dispose()
 	end
@@ -600,6 +685,22 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief VR Hand behavior or null. */
 	func ECBehaviorVRHand getVRHand()
 		return pVRHand
+	end
+	
+	/**
+	 * \brief VR body to synchronize hand with or null.
+	 * \version 1.31
+	 */
+	func ECBehaviorVRBody getVRBody()
+		return pVRBody
+	end
+	
+	/**
+	 * \brief Set VR body to synchronize hand with.
+	 * \version 1.31
+	 */
+	func void setVRBody(ECBehaviorVRBody vrBody)
+		pVRBody = vrBody
 	end
 	
 	/** \brief Origin bone name. */

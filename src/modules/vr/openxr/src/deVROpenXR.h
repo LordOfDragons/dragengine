@@ -139,6 +139,7 @@ private:
 	
 	eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
 	eFeatureSupportLevel pRequestFeatureFacialTracking;
+	eFeatureSupportLevel pRequestFeatureBodyTracking;
 	
 	LogLevel pLogLevel;
 	
@@ -228,6 +229,7 @@ public:
 	/** Requested feature levels. */
 	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{ return pRequestFeatureEyeGazeTracking; }
 	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{ return pRequestFeatureFacialTracking; }
+	inline eFeatureSupportLevel GetRequestFeatureBodyTracking() const{ return pRequestFeatureBodyTracking; }
 	
 	/** Log level. */
 	inline LogLevel GetLogLevel() const{ return pLogLevel; }
@@ -265,6 +267,18 @@ public:
 	
 	/** Set feature request level for facial tracking. */
 	void RequestFeatureFacialTracking(eFeatureSupportLevel level) override;
+	
+	/** Set feature request level for body tracking. */
+	void RequestFeatureBodyTracking(eFeatureSupportLevel level) override;
+	
+	/** Eye gaze tracking is supported. */
+	bool SupportsEyeGazeTracking() override;
+	
+	/** Facial tracking is supported. */
+	bool SupportsFacialTracking() override;
+	
+	/** Body tracking is supported. */
+	bool SupportsBodyTracking() override;
 	
 	/**
 	 * Start VR.

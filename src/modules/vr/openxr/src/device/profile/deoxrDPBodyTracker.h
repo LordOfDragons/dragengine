@@ -22,95 +22,58 @@
  * SOFTWARE.
  */
 
+#ifndef _DEOXRDPBODYTRACKER_H_
+#define _DEOXRDPBODYTRACKER_H_
 
-namespace Dragengine
+#include "deoxrDeviceProfile.h"
 
 
 /**
- * \brief InputDevice type.
+ * Body tracker device profile.
+ * 
+ * Supports XR_FB_body_tracking and XR_META_body_tracking_full_body.
  */
-enum InputDeviceType
-	/** \brief Mouse. */
-	mouse
+class deoxrDPBodyTracker : public deoxrDeviceProfile{
+public:
+	using Ref = deTObjectReference<deoxrDPBodyTracker>;
 	
-	/** \brief Keyboard. */
-	keyboard
 	
-	/** \brief Game pad. */
-	gamepad
+private:
+	deoxrDevice::Ref pDevice;
 	
-	/** \brief Joystick. */
-	joystick
 	
-	/** \brief Touchpad. */
-	touchpad
 	
-	/** \brief Touchscreen. */
-	touchscreen
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create device profile. */
+	deoxrDPBodyTracker(deoxrInstance &instance);
 	
-	/** \brief Racing wheel. */
-	racingWheel
+protected:
+	/** Clean up device profile. */
+	~deoxrDPBodyTracker() override;
+	/*@}*/
 	
-	/** \brief Generic device. */
-	generic
 	
-	/**
-	 * \brief VR Head mounted display.
-	 * \version 1.6
-	 */
-	vrHMD
 	
-	/**
-	 * \brief VR Right Hand Controller.
-	 * \version 1.6
-	 */
-	vrRightHand
+public:
+	/** \name Management */
+	/*@{*/
+	/** Check attached. */
+	void CheckAttached() override;
 	
-	/**
-	 * \brief VR Left Hand Controller.
-	 * \version 1.6
-	 */
-	vrLeftHand
+	/** Suggest bindings. */
+	void SuggestBindings() override;
 	
-	/**
-	 * \brief VR Treadmill.
-	 * \version 1.6
-	 */
-	vrTreadmill
+	/** Clear actions. */
+	void ClearActions() override;
+	/*@}*/
 	
-	/**
-	 * \brief VR Stylus.
-	 * \version 1.6
-	 */
-	vrStylus
 	
-	/**
-	 * \brief VR Generic Controller.
-	 * \version 1.6
-	 */
-	vrController
 	
-	/**
-	 * \brief VR Tracker.
-	 * \version 1.6
-	 */
-	vrTracker
-	
-	/**
-	 * \brief VR Base Station.
-	 * \version 1.6
-	 */
-	vrBaseStation
-	
-	/**
-	 * \brief VR Eye Tracker.
-	 * \version 1.12
-	 */
-	vrEyeTracker
-	
-	/**
-	 * \brief VR Body Tracker.
-	 * \version 1.31
-	 */
-	vrBodyTracker
-end
+private:
+	void pAddDevice();
+	void pRemoveDevice();
+};
+
+#endif

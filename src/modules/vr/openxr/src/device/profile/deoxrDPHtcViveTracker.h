@@ -130,6 +130,7 @@ private:
 	
 	void pAddDevice(Tracker &tracker);
 	void pTrySuggestBindings(int restrictCount);
+	deInputDevice::eVRTrackerRoles pVRTrackerRoleFromPath(const deoxrPath &path) const;
 };
 
 #endif

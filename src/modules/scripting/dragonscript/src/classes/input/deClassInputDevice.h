@@ -41,6 +41,7 @@ private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsInputDeviceType;
 	dsClass *pClsInputDeviceBoneConfiguration;
+	dsClass *pClsInputDeviceVRTrackerRole;
 	dsClass *pClsInputEventSource;
 	dsClass *pClsInputEventKeyLocation;
 	
@@ -74,6 +75,7 @@ public:
 	
 	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
 	inline dsClass *GetClassInputDeviceBoneConfiguration() const{ return pClsInputDeviceBoneConfiguration; }
+	inline dsClass *GetClassInputDeviceVRTrackerRole() const{ return pClsInputDeviceVRTrackerRole; }
 	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
 	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
@@ -101,6 +103,7 @@ private:
 		dsClass *clsIDComponent;
 		dsClass *clsInputDeviceType;
 		dsClass *clsInputDeviceBoneConfiguration;
+		dsClass *clsInputDeviceVRTrackerRole;
 		dsClass *clsInputEventSource;
 		dsClass *clsInputEventKeyLocation;
 		dsClass *clsVector;
@@ -152,8 +155,10 @@ private:
 	DEF_NATFUNC(nfGetSupportsFaceMouthExpressions);
 	DEF_NATFUNC(nfGetUsingHandInteraction);
 	DEF_NATFUNC(nfGetHandRig);
+	DEF_NATFUNC(nfGetBodyRig);
 	DEF_NATFUNC(nfGetVRModel);
 	DEF_NATFUNC(nfGetVRSkin);
+	DEF_NATFUNC(nfGetVRTrackerRole);
 	
 	DEF_NATFUNC(nfIsPresent);
 	

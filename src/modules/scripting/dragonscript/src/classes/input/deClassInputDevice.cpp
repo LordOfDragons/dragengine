@@ -495,6 +495,18 @@ void deClassInputDevice::nfGetHandRig::RunFunction(dsRunTime *rt, dsValue *mysel
 	ds.GetClassRig()->PushRig(rt, device.GetDevice()->GetHandRig());
 }
 
+// public func Rig getBodyRig()
+deClassInputDevice::nfGetBodyRig::nfGetBodyRig(const sInitData &init) :
+dsFunction(init.clsInputDevice, "getBodyRig", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
+}
+void deClassInputDevice::nfGetBodyRig::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsInputDevice &device = *dedsGetNativeData<sInputDeviceNatDat>(p_GetNativeData(myself)).device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
+	
+	ds.GetClassRig()->PushRig(rt, device.GetDevice()->GetBodyRig());
+}
+
 // public func bool getSupportsFaceEyeExpressions()
 deClassInputDevice::nfGetSupportsFaceEyeExpressions::nfGetSupportsFaceEyeExpressions(const sInitData &init) :
 dsFunction(init.clsInputDevice, "getSupportsFaceEyeExpressions", DSFT_FUNCTION,
@@ -547,6 +559,19 @@ void deClassInputDevice::nfGetVRSkin::RunFunction(dsRunTime *rt, dsValue *myself
 	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassSkin()->PushSkin(rt, device.GetDevice()->GetVRSkin());
+}
+
+
+
+// public func InputDeviceVRTrackerRole getVRTrackerRole()
+deClassInputDevice::nfGetVRTrackerRole::nfGetVRTrackerRole(const sInitData &init) :
+dsFunction(init.clsInputDevice, "getVRTrackerRole", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceVRTrackerRole){
+}
+void deClassInputDevice::nfGetVRTrackerRole::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsInputDevice &device = *dedsGetNativeData<sInputDeviceNatDat>(p_GetNativeData(myself)).device;
+	rt->PushValue(static_cast<deClassInputDevice*>(GetOwnerClass())->GetClassInputDeviceVRTrackerRole()
+		->GetVariable(device.GetDevice()->GetVRTrackerRole())->GetStaticValue());
 }
 
 
@@ -759,6 +784,7 @@ dsClass("InputDevice", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
 pDS(ds),
 pClsInputDeviceType(nullptr),
 pClsInputDeviceBoneConfiguration(nullptr),
+pClsInputDeviceVRTrackerRole(nullptr),
 pClsInputEventSource(nullptr),
 pClsInputEventKeyLocation(nullptr)
 {
@@ -779,6 +805,7 @@ deClassInputDevice::~deClassInputDevice(){
 void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	pClsInputDeviceType = engine->GetClass("Dragengine.InputDeviceType");
 	pClsInputDeviceBoneConfiguration = engine->GetClass("Dragengine.InputDeviceBoneConfiguration");
+	pClsInputDeviceVRTrackerRole = engine->GetClass("Dragengine.InputDeviceVRTrackerRole");
 	pClsInputEventSource = engine->GetClass("Dragengine.InputEventSource");
 	pClsInputEventKeyLocation = engine->GetClass("Dragengine.InputEventKeyLocation");
 	
@@ -800,6 +827,7 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	init.clsIDComponent = pDS.GetClassInputDeviceComponent();
 	init.clsInputDeviceType = pClsInputDeviceType;
 	init.clsInputDeviceBoneConfiguration = pClsInputDeviceBoneConfiguration;
+	init.clsInputDeviceVRTrackerRole = pClsInputDeviceVRTrackerRole;
 	init.clsInputEventSource = pClsInputEventSource;
 	init.clsInputEventKeyLocation = pClsInputEventKeyLocation;
 	init.clsVector = pDS.GetClassVector();
@@ -842,11 +870,13 @@ void deClassInputDevice::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetBoneConfiguration(init));
 	AddFunction(new nfGetFingerTipOffset(init));
 	AddFunction(new nfGetHandRig(init));
+	AddFunction(new nfGetBodyRig(init));
 	AddFunction(new nfGetSupportsFaceEyeExpressions(init));
 	AddFunction(new nfGetSupportsFaceMouthExpressions(init));
 	AddFunction(new nfGetUsingHandInteraction(init));
 	AddFunction(new nfGetVRModel(init));
 	AddFunction(new nfGetVRSkin(init));
+	AddFunction(new nfGetVRTrackerRole(init));
 	
 	AddFunction(new nfIsPresent(init));
 	

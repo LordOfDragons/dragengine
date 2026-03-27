@@ -27,90 +27,31 @@ namespace Dragengine
 
 
 /**
- * \brief InputDevice type.
+ * \brief Convenience enumeration for upper body bones.
+ * \version 1.31
+ * 
+ * Use as bone indices for devices with bone configuration \ref InputDeviceBoneConfiguration#upperBody.
  */
-enum InputDeviceType
-	/** \brief Mouse. */
-	mouse
+fixed class InputDeviceUpperBodyBone
+	public static fixed var int hips = 0
+	public static fixed var int spineLower = 1
+	public static fixed var int spineMiddle = 2
+	public static fixed var int spineUpper = 3
+	public static fixed var int chest = 4
+	public static fixed var int neck = 5
+	public static fixed var int head = 6
 	
-	/** \brief Keyboard. */
-	keyboard
+	public static fixed var int leftShoulder = 7
+	public static fixed var int leftScapula = 8
+	public static fixed var int leftArmUpper = 9
+	public static fixed var int leftArmLower = 10
+	public static fixed var int leftHandWristTwist = 11
+	public static fixed var int leftHandWrist = 12
 	
-	/** \brief Game pad. */
-	gamepad
-	
-	/** \brief Joystick. */
-	joystick
-	
-	/** \brief Touchpad. */
-	touchpad
-	
-	/** \brief Touchscreen. */
-	touchscreen
-	
-	/** \brief Racing wheel. */
-	racingWheel
-	
-	/** \brief Generic device. */
-	generic
-	
-	/**
-	 * \brief VR Head mounted display.
-	 * \version 1.6
-	 */
-	vrHMD
-	
-	/**
-	 * \brief VR Right Hand Controller.
-	 * \version 1.6
-	 */
-	vrRightHand
-	
-	/**
-	 * \brief VR Left Hand Controller.
-	 * \version 1.6
-	 */
-	vrLeftHand
-	
-	/**
-	 * \brief VR Treadmill.
-	 * \version 1.6
-	 */
-	vrTreadmill
-	
-	/**
-	 * \brief VR Stylus.
-	 * \version 1.6
-	 */
-	vrStylus
-	
-	/**
-	 * \brief VR Generic Controller.
-	 * \version 1.6
-	 */
-	vrController
-	
-	/**
-	 * \brief VR Tracker.
-	 * \version 1.6
-	 */
-	vrTracker
-	
-	/**
-	 * \brief VR Base Station.
-	 * \version 1.6
-	 */
-	vrBaseStation
-	
-	/**
-	 * \brief VR Eye Tracker.
-	 * \version 1.12
-	 */
-	vrEyeTracker
-	
-	/**
-	 * \brief VR Body Tracker.
-	 * \version 1.31
-	 */
-	vrBodyTracker
+	public static fixed var int rightShoulder = 13
+	public static fixed var int rightScapula = 14
+	public static fixed var int rightArmUpper = 15
+	public static fixed var int rightArmLower = 16
+	public static fixed var int rightHandWristTwist = 17
+	public static fixed var int rightHandWrist = 18
 end

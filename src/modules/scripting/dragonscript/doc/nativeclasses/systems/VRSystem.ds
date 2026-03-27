@@ -38,15 +38,15 @@ fixed class VRSystem
 	 * Enabling this feature usually requires the user to explicitely agree. Furthermore eye
 	 * gaze tracking is not required for the majority of games and applications. For these
 	 * reasons eye gaze tracking is disabled by default. To enable set the feature request
-	 * level to optional or required.
+	 * level to \ref VRFeatureSupportLevel#optional or \ref VRFeatureSupportLevel#required.
 	 * 
 	 * The set feature request level takes effect only the next time StartRuntime() is
 	 * called. It has no effect while the VR runtime is running.
 	 * 
-	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
+	 * If the VR module does not support eye gaze tracking and \ref VRFeatureSupportLevel#required
 	 * is specified an exception is thrown.
 	 */
-	public func void requestFeatureEyeGazeTracking(VRFeatureSupportLevel level)
+	static func void requestFeatureEyeGazeTracking(VRFeatureSupportLevel level)
 	end
 	
 	/**
@@ -59,15 +59,66 @@ fixed class VRSystem
 	 * is an expensive operation and can degrade performance. Last but not least facial
 	 * tracking is not required for the majority of games and applications. For this reason
 	 * facial tracking is disabled by default. To enable set the feature request level to
-	 * optional or required.
+	 * \ref VRFeatureSupportLevel#optional or \ref VRFeatureSupportLevel#required.
 	 * 
 	 * The set feature request level takes effect only the next time StartRuntime() is
 	 * called. It has no effect while the VR runtime is running.
 	 * 
-	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
+	 * If the VR module does not support facial tracking and \ref VRFeatureSupportLevel#required
 	 * is specified an exception is thrown.
 	 */
-	public func void requestFeatureFacialTracking(VRFeatureSupportLevel level)
+	static func void requestFeatureFacialTracking(VRFeatureSupportLevel level)
+	end
+	
+	/**
+	 * \brief Set feature request level for body tracking.
+	 * \version 1.31
+	 * 
+	 * Body tracking provides the pose of body as input device bones. Estimating bode pose is an
+	 * expensive operation running on the headset. The majority of games and applications do not
+	 * require body tracking. To enable set the feature request level to
+	 * \ref VRFeatureSupportLevel#optional or \ref VRFeatureSupportLevel#required.
+	 * 
+	 * The set feature request level takes effect only the next time startRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support body tracking and \ref VRFeatureSupportLevel#required
+	 * is specified an exception is thrown.
+	 */
+	static func void requestFeatureBodyTracking(VRFeatureSupportLevel level)
+	end
+	
+	/**
+	 * \brief Eye gaze tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Can be called after startRuntime() returned successfully. Returns true if eye gaze
+	 * tracking has been requested and is supported by the VR runtime.
+	 */
+	static func bool supportsEyeGazeTracking()
+		return false
+	end
+	
+	/**
+	 * \brief Facial tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Can be called after startRuntime() returned successfully. Returns true if facial tracking
+	 * has been requested and is supported by the VR runtime.
+	 */
+	static func bool supportsFacialTracking()
+		return false
+	end
+	
+	/**
+	 * \brief Body tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Can be called after startRuntime() returned successfully. Returns true if body tracking
+	 * has been requested and is supported by the VR runtime.
+	 */
+	static func bool supportsBodyTracking()
+		return false
 	end
 	
 	/**

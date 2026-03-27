@@ -1,0 +1,444 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Debugging
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+
+/**
+ * \brief Debug ECBehaviorVRBody.
+ * \version 1.31
+ * 
+ * To use create an instance of DebugBehaviorVRBodyPose with the behavior to monitor then call
+ * \ref BehaviorElement#addAttachableBehavior(). The debug class attaches to the behavior element
+ * owning the behavior instance. To remove the debug class from the behavior element call
+ * \ref #safeDispose().
+ * 
+ * Displays a debug skeleton showing the body bone poses.
+ * 
+ * Five shapes are used for the skeleton visualization:
+ * - Shape 0 (blue/purple): Spine and head chain
+ * - Shape 1 (cyan): Left arm chain
+ * - Shape 2 (green): Right arm chain
+ * - Shape 3 (yellow): Left leg chain (full body only)
+ * - Shape 4 (orange): Right leg chain (full body only)
+ */
+class DebugBehaviorVRBodyPose extends DefaultECAttachableBehavior
+	var ECBehaviorVRBody.Instance pBehavior
+	var DebugDrawer pDDSkeleton, pDDBoneCoordSys
+	var float pThicknessSkeletonLine, pThicknessCoordAxis
+	var float pLengthBoneTip, pLengthCoordAxis
+	var Matrix pMatrixTransform
+	
+	
+	/** \brief Create debug instance for behavior. */
+	func new(ECBehaviorVRBody.Instance behavior)
+		pBehavior = behavior
+		pMatrixTransform = Matrix.new()
+		
+		pDDSkeleton = DebugDrawer.new()
+		pDDSkeleton.setVisible(true)
+		pDDSkeleton.setXRay(true)
+		pDDSkeleton.setShapeCount(5)
+		
+		// spine + head: blue/purple
+		pDDSkeleton.shapeSetEdgeColor(0, Color.new(0.4, 0, 1, 1))
+		pDDSkeleton.shapeSetFillColor(0, Color.new(0.4, 0, 1, 0.2))
+		
+		// left arm: cyan
+		pDDSkeleton.shapeSetEdgeColor(1, Color.new(0, 0.7, 1, 1))
+		pDDSkeleton.shapeSetFillColor(1, Color.new(0, 0.7, 1, 0.2))
+		
+		// right arm: green
+		pDDSkeleton.shapeSetEdgeColor(2, Color.new(0, 1, 0.3, 1))
+		pDDSkeleton.shapeSetFillColor(2, Color.new(0, 1, 0.3, 0.2))
+		
+		// left leg: yellow
+		pDDSkeleton.shapeSetEdgeColor(3, Color.new(1, 0.8, 0, 1))
+		pDDSkeleton.shapeSetFillColor(3, Color.new(1, 0.8, 0, 0.2))
+		
+		// right leg: orange
+		pDDSkeleton.shapeSetEdgeColor(4, Color.new(1, 0.4, 0, 1))
+		pDDSkeleton.shapeSetFillColor(4, Color.new(1, 0.4, 0, 0.2))
+		
+		pDDBoneCoordSys = DebugDrawer.new()
+		pDDBoneCoordSys.setVisible(true)
+		pDDBoneCoordSys.setXRay(true)
+		pDDBoneCoordSys.setShapeCount(3)
+		pDDBoneCoordSys.shapeSetEdgeColor(0, Color.new(1, 0, 0, 1))
+		pDDBoneCoordSys.shapeSetFillColor(0, Color.new(1, 0, 0, 0.2))
+		pDDBoneCoordSys.shapeSetEdgeColor(1, Color.new(0, 1, 0, 1))
+		pDDBoneCoordSys.shapeSetFillColor(1, Color.new(0, 1, 0, 0.2))
+		pDDBoneCoordSys.shapeSetEdgeColor(2, Color.new(0, 0, 1, 1))
+		pDDBoneCoordSys.shapeSetFillColor(2, Color.new(0, 0, 1, 0.2))
+		
+		pThicknessSkeletonLine = 0.006
+		pLengthBoneTip = 0.05
+		
+		pThicknessCoordAxis = 0.002
+		pLengthCoordAxis = 0.02
+		
+		setRequiresThink(true)
+	end
+	
+	
+	/** \brief Monitored behavior. */
+	func ECBehaviorVRBody.Instance getBehavior()
+		return pBehavior
+	end
+	
+	
+	
+	/** \brief Skeleton is visible. */
+	func bool getSkeletonVisible()
+		return pDDSkeleton.getVisible()
+	end
+	
+	/** \brief Set if skeleton is visible. */
+	func void setSkeletonVisible(bool visible)
+		pDDSkeleton.setVisible(visible)
+	end
+	
+	/** \brief Bone coordinate systems are visible. */
+	func bool getBoneCoordSystemsVisible()
+		return pDDBoneCoordSys.getVisible()
+	end
+	
+	/** \brief Set if bone coordinate systems are visible. */
+	func void setBoneCoordSystemsVisible(bool visible)
+		pDDBoneCoordSys.setVisible(visible)
+	end
+	
+	/** \brief Thickness of skeleton lines in meters. */
+	func float getThicknessSkeletonLine()
+		return pThicknessSkeletonLine
+	end
+	
+	/** \brief Set thickness of skeleton lines in meters. */
+	func void setThicknessSkeletonLine(float thickness)
+		pThicknessSkeletonLine = thickness
+	end
+	
+	/** \brief Length of bone tip extension in meters. */
+	func float getLengthBoneTip()
+		return pLengthBoneTip
+	end
+	
+	/** \brief Set length of bone tip extension in meters. */
+	func void setLengthBoneTip(float length)
+		pLengthBoneTip = length
+	end
+	
+	/** \brief Thickness of coordinate axis lines in meters. */
+	func float getThicknessCoordAxis()
+		return pThicknessCoordAxis
+	end
+	
+	/** \brief Set thickness of coordinate axis lines in meters. */
+	func void setThicknessCoordAxis(float thickness)
+		pThicknessCoordAxis = thickness
+	end
+	
+	/** \brief Length of coordinate axis lines in meters. */
+	func float getLengthCoordAxis()
+		return pLengthCoordAxis
+	end
+	
+	/** \brief Set length of coordinate axis lines in meters. */
+	func void setLengthCoordAxis(float length)
+		pLengthCoordAxis = length
+	end
+	
+	/** \brief Transformation matrix for the debug drawer relative to behavior coordinate system. */
+	func Matrix getTransformMatrix()
+		return pMatrixTransform
+	end
+	
+	/** \brief Set transformation matrix for the debug drawer relative to behavior coordinate system. */
+	func void setTransformMatrix(Matrix matrix)
+		if matrix == null
+			throw ENullPointer.new()
+		end
+		pMatrixTransform = matrix
+	end
+	
+	
+	
+	func void postThink(float elapsed)
+		update()
+	end
+	
+	func void addToGameWorld()
+		var World world = getElement().getGameWorld().getWorld()
+		world.addDebugDrawer(pDDSkeleton)
+		world.addDebugDrawer(pDDBoneCoordSys)
+	end
+	
+	func void removeFromGameWorld()
+		var World world = getElement().getGameWorld().getWorld()
+		world.removeDebugDrawer(pDDSkeleton)
+		world.removeDebugDrawer(pDDBoneCoordSys)
+	end
+	
+	func void onAddToElement()
+		log("DebugBehaviorVRBodyPose.onAddToElement: " + getElement().getClass().getClassname())
+		if getElement().getGameWorld() != null
+			addToGameWorld()
+		end
+	end
+	
+	func void onRemoveFromElement()
+		log("DebugBehaviorVRBodyPose.onRemoveFromElement: " + getElement().getClass().getClassname())
+		if getElement().getGameWorld() != null
+			removeFromGameWorld()
+		end
+	end
+	
+	
+	
+	protected func InputDevice getInputDevice()
+		var InputDevice device = pBehavior.getInputDevice()
+		if device == null
+			return null
+		end
+		
+		select device.getBoneConfiguration()
+		case InputDeviceBoneConfiguration.upperBody
+			if device.getDeviceBonePoseCount() != 19
+				return null
+			end
+			
+		case InputDeviceBoneConfiguration.fullBody
+			if device.getDeviceBonePoseCount() != 33
+				return null
+			end
+			
+		else
+			return null
+		end
+		
+		return device
+	end
+	
+	protected func void update()
+		var InputDevice device = getInputDevice()
+		if device == null
+			return
+		end
+		
+		var DMatrix matrix = (pBehavior.getMatrixPlayspace() * pMatrixTransform).toDMatrix()\
+			* pBehavior.getVRPlayspace().getMatrix()
+		
+		updateSkeleton(device, matrix)
+		updateCoordSystems(device, matrix)
+	end
+	
+	protected func void updateSkeleton(InputDevice device, DMatrix matrix)
+		var bool fullBody = device.getBoneConfiguration() == InputDeviceBoneConfiguration.fullBody
+		var bool enableLowerBody = pBehavior.getEnableLowerBody()
+		var ShapeList shapes
+		
+		pDDSkeleton.setPosition(matrix.getPosition())
+		pDDSkeleton.setOrientation(matrix.toQuaternion())
+		
+		// spine + head
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceFullBodyBone.hips, InputDeviceFullBodyBone.spineLower)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.spineLower, InputDeviceFullBodyBone.spineMiddle)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.spineMiddle, InputDeviceFullBodyBone.spineUpper)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.spineUpper, InputDeviceFullBodyBone.chest)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.chest, InputDeviceFullBodyBone.neck)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.neck, InputDeviceFullBodyBone.head)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.head)
+		pDDSkeleton.shapeSetShapes(0, shapes)
+		
+		// left arm
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceFullBodyBone.chest, InputDeviceFullBodyBone.leftShoulder)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.leftShoulder, InputDeviceFullBodyBone.leftScapula)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.leftScapula, InputDeviceFullBodyBone.leftArmUpper)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.leftArmUpper, InputDeviceFullBodyBone.leftArmLower)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.leftArmLower, InputDeviceFullBodyBone.leftHandWristTwist)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.leftHandWristTwist, InputDeviceFullBodyBone.leftHandWrist)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.leftHandWrist)
+		pDDSkeleton.shapeSetShapes(1, shapes)
+		
+		// right arm
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceFullBodyBone.chest, InputDeviceFullBodyBone.rightShoulder)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.rightShoulder, InputDeviceFullBodyBone.rightScapula)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.rightScapula, InputDeviceFullBodyBone.rightArmUpper)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.rightArmUpper, InputDeviceFullBodyBone.rightArmLower)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.rightArmLower, InputDeviceFullBodyBone.rightHandWristTwist)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.rightHandWristTwist, InputDeviceFullBodyBone.rightHandWrist)
+		addLineShape(shapes, device, InputDeviceFullBodyBone.rightHandWrist)
+		pDDSkeleton.shapeSetShapes(2, shapes)
+		
+		// left leg (full body only)
+		shapes = ShapeList.new()
+		if fullBody and enableLowerBody
+			addLineShape(shapes, device, InputDeviceFullBodyBone.hips, InputDeviceFullBodyBone.leftUpperLeg)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftUpperLeg, InputDeviceFullBodyBone.leftLowerLeg)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftLowerLeg, InputDeviceFullBodyBone.leftFootAnkleTwist)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftFootAnkleTwist, InputDeviceFullBodyBone.leftFootAnkle)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftFootAnkle, InputDeviceFullBodyBone.leftFootSubtalar)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftFootSubtalar, InputDeviceFullBodyBone.leftFootTransverse)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftFootTransverse, InputDeviceFullBodyBone.leftFootBall)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.leftFootBall)
+		end
+		pDDSkeleton.shapeSetShapes(3, shapes)
+		
+		// right leg (full body only)
+		shapes = ShapeList.new()
+		if fullBody and enableLowerBody
+			addLineShape(shapes, device, InputDeviceFullBodyBone.hips, InputDeviceFullBodyBone.rightUpperLeg)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightUpperLeg, InputDeviceFullBodyBone.rightLowerLeg)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightLowerLeg, InputDeviceFullBodyBone.rightFootAnkleTwist)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightFootAnkleTwist, InputDeviceFullBodyBone.rightFootAnkle)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightFootAnkle, InputDeviceFullBodyBone.rightFootSubtalar)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightFootSubtalar, InputDeviceFullBodyBone.rightFootTransverse)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightFootTransverse, InputDeviceFullBodyBone.rightFootBall)
+			addLineShape(shapes, device, InputDeviceFullBodyBone.rightFootBall)
+		end
+		pDDSkeleton.shapeSetShapes(4, shapes)
+	end
+	
+	protected func void updateCoordSystems(InputDevice device, DMatrix matrix)
+		var bool fullBody = device.getBoneConfiguration() == InputDeviceBoneConfiguration.fullBody
+		var bool enableLowerBody = pBehavior.getEnableLowerBody()
+		var ShapeList shapesX = ShapeList.new()
+		var ShapeList shapesY = ShapeList.new()
+		var ShapeList shapesZ = ShapeList.new()
+		
+		pDDBoneCoordSys.setPosition(matrix.getPosition())
+		pDDBoneCoordSys.setOrientation(matrix.toQuaternion())
+		
+		// device origin
+		addCoordSystem(shapesX, shapesY, shapesZ, Matrix.new(), 2)
+		
+		// spine + head
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.hips, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.spineLower, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.spineMiddle, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.spineUpper, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.chest, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.neck, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.head, false))
+		
+		// left arm
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftShoulder, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftScapula, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftArmUpper, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftArmLower, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftHandWristTwist, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftHandWrist, false))
+		
+		// right arm
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightShoulder, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightScapula, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightArmUpper, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightArmLower, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightHandWristTwist, false))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightHandWrist, false))
+		
+		// lower body (full body only)
+		if fullBody and enableLowerBody
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftUpperLeg, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftLowerLeg, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftFootAnkleTwist, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftFootAnkle, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftFootSubtalar, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftFootTransverse, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.leftFootBall, false))
+			
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightUpperLeg, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightLowerLeg, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightFootAnkleTwist, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightFootAnkle, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightFootSubtalar, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightFootTransverse, false))
+			addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceFullBodyBone.rightFootBall, false))
+		end
+		
+		pDDBoneCoordSys.shapeSetShapes(0, shapesX)
+		pDDBoneCoordSys.shapeSetShapes(1, shapesY)
+		pDDBoneCoordSys.shapeSetShapes(2, shapesZ)
+	end
+	
+	protected func void addLineShape(ShapeList shapes, InputDevice device, int indexHead, int indexTail)
+		var Vector posHead = device.getDeviceBonePosePosition(indexHead, false)
+		var Vector posTail = device.getDeviceBonePosePosition(indexTail, false)
+		
+		var Vector direction = posTail - posHead
+		var float length = direction.getLength()
+		if length < 0.001
+			return
+		end
+		
+		var Vector view = direction / length
+		var Vector up = DEMath.fabs(view.getY()) < 0.99 if Vector.new(0, 1, 0) else Vector.new(0, 0, 1)
+		var Quaternion orientation = Matrix.newVU(view, up).toQuaternion()
+		
+		shapes.addBox((posHead + posTail) / 2,\
+			Vector.new(pThicknessSkeletonLine / 2, length / 2, pThicknessSkeletonLine / 2),\
+			Vector2.new(0.2, 0.2),\
+			Quaternion.newFromEulerX(-90) * orientation)
+	end
+	
+	protected func void addLineShape(ShapeList shapes, InputDevice device, int indexHead)
+		var Matrix matrixHead = device.getDeviceBonePoseMatrix(indexHead, false)
+		
+		var Vector center = matrixHead * Vector.new(0, 0, pLengthBoneTip / 2)
+		
+		shapes.addBox(center,\
+			Vector.new(pThicknessSkeletonLine / 2, pLengthBoneTip / 2, pThicknessSkeletonLine / 2),\
+			Vector2.new(0.2, 0.2),\
+			Quaternion.newFromEulerX(-90) * matrixHead.toQuaternion())
+	end
+	
+	protected func void addCoordSystem(ShapeList shapesX, ShapeList shapesY, ShapeList shapesZ, Matrix matrix)
+		addCoordSystem(shapesX, shapesY, shapesZ, matrix, 1)
+	end
+	
+	protected func void addCoordSystem(ShapeList shapesX, ShapeList shapesY, ShapeList shapesZ, Matrix matrix, float scale)
+		var Quaternion orientation = matrix.toQuaternion()
+		var float offset = (pLengthCoordAxis / 2) * scale
+		var Vector hs = Vector.new(pThicknessCoordAxis / 2, pThicknessCoordAxis / 2, offset) * scale
+		
+		shapesX.addBox(matrix * Vector.new(offset, 0, 0), hs, Quaternion.newFromEulerY(-90) * orientation)
+		shapesY.addBox(matrix * Vector.new(0, offset, 0), hs, Quaternion.newFromEulerX(90) * orientation)
+		shapesZ.addBox(matrix * Vector.new(0, 0, offset), hs, orientation)
+	end
+	
+	protected func void log(String message)
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			app.getConsole().addMessage(message)
+			
+		else
+			Engine.log(message)
+		end
+	end
+end

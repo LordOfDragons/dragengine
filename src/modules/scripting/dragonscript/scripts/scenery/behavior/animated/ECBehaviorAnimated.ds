@@ -809,6 +809,17 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		return pComponent
 	end
 	
+	/**
+	 * \brief Set component behavior to animate.
+	 * \version 1.31
+	 */
+	func void setComponent(ECBehaviorComponent component)
+		if component == null
+			throw ENullPointer.new()
+		end
+		pComponent = component
+	end
+	
 	/** \brief Composeable animator for element class. */
 	func ECComposeAnimator getAnimator()
 		return pAnimator

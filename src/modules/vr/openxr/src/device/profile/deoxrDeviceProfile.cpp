@@ -30,6 +30,7 @@
 #include "../deoxrDeviceButton.h"
 #include "../deoxrDeviceComponent.h"
 #include "../../deoxrHandTracker.h"
+#include "../../deoxrBodyTracker.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -746,4 +747,26 @@ bool withInputSimulation){
 	}
 	
 	return handTracker;
+}
+
+deoxrBodyTracker *deoxrDeviceProfile::pAddBodyTracker(deoxrDevice &device){
+	deoxrSession &session = pInstance.GetOxr().GetSession();
+	
+	if(pInstance.SupportsExtension(deoxrInstance::extMETABodyTrackingFullBody)
+	&& session.GetSystem().GetSupportsFullBodyTracking()){
+		auto bodyTracker = deoxrBodyTracker::Ref::New(session, deInputDevice::ebcFullBody);
+		device.SetBodyTracker(bodyTracker);
+		device.SetBoneConfiguration(deInputDevice::ebcFullBody);
+		return bodyTracker;
+	}
+	
+	if(pInstance.SupportsExtension(deoxrInstance::extFBBodyTracking)
+	&& session.GetSystem().GetSupportsUpperBodyTracking()){
+		auto bodyTracker = deoxrBodyTracker::Ref::New(session, deInputDevice::ebcUpperBody);
+		device.SetBodyTracker(bodyTracker);
+		device.SetBoneConfiguration(deInputDevice::ebcUpperBody);
+		return bodyTracker;
+	}
+	
+	return nullptr;
 }

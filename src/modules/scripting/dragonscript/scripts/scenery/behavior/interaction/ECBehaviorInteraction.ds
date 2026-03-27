@@ -29,8 +29,6 @@ pin Dragengine.Utils
 /**
  * \brief Behavior element behavior adding storing supported interactions.
  * 
- * Element class properties have the prefix "interactable.".
- * 
  * This behavior uses no other behaviors.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
@@ -59,6 +57,7 @@ class ECBehaviorInteraction extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorInteraction'/>
+	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").

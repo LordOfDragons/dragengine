@@ -55,4 +55,34 @@ enum InputDeviceBoneConfiguration
 	 * frame for chain root bones.
 	 */
 	hand
+	
+	/**
+	 * \brief Upper body bones.
+	 * \version 1.31
+	 * 
+	 * Bones are defined according to the bones defined in the XR_FB_body_tracking extension.
+	 * Hand bones are not includes since these are handled by input devices of type
+	 * \ref InputDeviceType#vrRightHand and \ref InputDeviceType#vrLeftHand .
+	 * 
+	 * Use \ref InputDeviceUpperBodyBone enumeration as bone indices.
+	 * 
+	 * Poses are relative to the parent bone inside chains and the device coordinate
+	 * frame for chain root bones.
+	 */
+	upperBody
+	
+	/**
+	 * \brief Full body bones.
+	 * \version 1.31
+	 * 
+	 * Bones are defined according to the bones defined in the XR_META_body_tracking_full_body
+	 * extension. Hand bones are not includes since these are handled by input devices of type
+	 * \ref InputDeviceType#vrRightHand and \ref InputDeviceType#vrLeftHand .
+	 * 
+	 * Use \ref InputDeviceFullBodyBone enumeration as bone indices.
+	 * 
+	 * Poses are relative to the parent bone inside chains and the device coordinate
+	 * frame for chain root bones.
+	 */
+	fullBody
 end

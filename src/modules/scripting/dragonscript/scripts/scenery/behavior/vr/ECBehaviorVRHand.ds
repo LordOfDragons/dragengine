@@ -357,25 +357,27 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			// create collider
 			var BehaviorElement element = getElement()
 			pCollider = createCollider(stub)
-			pCollider.setColliderListener(this)
-			pCollider.setOwner(element)
-			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
-			
-			// if response type is dynamic update bone position. this is required for dynamic
-			// rigs with bones. upon initializing the bones they are set to zero but bones
-			// in colliders are in world space. without init dynamic bones end up everywhere
-			// but not where we want them
-			if pCollider.getResponseType() == CollisionResponse.dynamic and pCollider castable ColliderComponent
-				(pCollider cast ColliderComponent).copyStatesFromComponent()
+			if pCollider != null
+				pCollider.setColliderListener(this)
+				pCollider.setOwner(element)
+				pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+				
+				// if response type is dynamic update bone position. this is required for dynamic
+				// rigs with bones. upon initializing the bones they are set to zero but bones
+				// in colliders are in world space. without init dynamic bones end up everywhere
+				// but not where we want them
+				if pCollider.getResponseType() == CollisionResponse.dynamic and pCollider castable ColliderComponent
+					(pCollider cast ColliderComponent).copyStatesFromComponent()
+				end
+				
+				// attach component if not rig attached already
+				attachComponent(stub)
 			end
-			
-			// attach component if not rig attached already
-			attachComponent(stub)
 			
 			// do the rest
 			pECBehavior.createListeners(this)
 			
-			updateVisibile()
+			updateVisibility()
 			
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
@@ -393,11 +395,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 */
 		protected func Collider createCollider(StubElement stub)
 			var BehaviorElement element = getElement()
-			var Collider collider
-			
-			if pComponent != null
-				collider = pECBehavior.getCollider().createCollider(element, stub, pComponent.getComponent())
-			end
+			var Collider collider = pECBehavior.getCollider().createCollider(\
+				element, stub, pComponent.getComponent())
 			
 			if collider == null
 				collider = pECBehavior.getCollider().createCollider(element, stub)
@@ -411,7 +410,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \version 1.7
 		 */
 		protected func void attachComponent(StubElement stub)
-			if pComponent.getComponent() != null and not pCollider castable ColliderComponent
+			if pComponent.getComponent() != null and pCollider != null and not pCollider castable ColliderComponent
 				pCollider.attachStatic(pComponent.getComponent(), Vector.new(), Quaternion.new())
 			end
 		end
@@ -527,7 +526,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Collider.
+		 * \brief Collider or null.
 		 * \version 1.7
 		 */
 		func Collider getCollider()
@@ -725,7 +724,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 				return getRigShapeProperty(info.getBone(), info.getShape())
 				
 			else
-				return  null
+				return null
 			end
 		end
 		
@@ -851,13 +850,17 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			end))
 			
 			// add collider to world
-			getElement().getGameWorld().getWorld().addCollider(pCollider)
+			if pCollider != null
+				getElement().getGameWorld().getWorld().addCollider(pCollider)
+			end
 		end
 		
 		/** \brief Element has been removed from game world. Stop tracking device. */
 		func void removeFromGameWorld()
 			// remove collider from game world
-			getElement().getGameWorld().getWorld().removeCollider(pCollider)
+			if pCollider != null
+				getElement().getGameWorld().getWorld().removeCollider(pCollider)
+			end
 			
 			// forget about input device
 			pECBehavior.getBindingManager().removeListener(pAttachDetachListener)
@@ -870,18 +873,22 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * Calls updateDebugPanelPosition() if required.
 		 */
 		func void think(float elapsed)
-			pCollider.setGeometry(getPosition(), getOrientation())
+			if pCollider != null
+				pCollider.setGeometry(getPosition(), getOrientation())
+			end
 			updateDebugPanelPosition()
 		end
 		
 		/** \brief Element state changed like visible. */
 		func void stateChanged()
-			updateVisibile()
+			updateVisibility()
 		end
 		
 		/** \brief Position or orientation changed. */
 		func void geometryChanged()
-			pCollider.setScale(getElement().getScaling())
+			if pCollider != null
+				pCollider.setScale(getElement().getScaling())
+			end
 		end
 		
 		
@@ -941,16 +948,14 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			component.setRig(pCustomRig)
 		end
 		
-		/** \brief Update component visible. */
-		protected func void updateVisibile()
-			var Component component = pComponent.getComponent()
-			if component == null
-				return
-			end
-			
+		/** \brief Update component visibility. */
+		protected func void updateVisibility()
 			var bool visible = pShowHand and getElement().getVisible()
 			
-			component.setVisible(visible)
+			var Component component = pComponent.getComponent()
+			if component != null
+				component.setVisible(visible)
+			end
 			
 			if pCollider != null
 				pCollider.setEnabled(visible)
@@ -967,9 +972,11 @@ class ECBehaviorVRHand extends DefaultECBehavior
 				var Quaternion orientation = Quaternion.readFromFile(reader)
 				var Vector scaling = Vector.readFromFile(reader)
 				
-				pCollider.setGeometry(position, orientation, scaling)
-				pCollider.setLinearVelocity(Vector.readFromFile(reader))
-				pCollider.setAngularVelocity(Vector.readFromFile(reader))
+				if pCollider != null
+					pCollider.setGeometry(position, orientation, scaling)
+					pCollider.setLinearVelocity(Vector.readFromFile(reader))
+					pCollider.setAngularVelocity(Vector.readFromFile(reader))
+				end
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -1148,9 +1155,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * \brief Set up collider as ghost collider.
 	 * \version 1.7
 	 * 
-	 * Ghost colliders have empty collision filter and kinematic collision response. They collide
-	 * with nothing and are useful to interact with the game world without physically pushing
-	 * objects by accident. 
+	 * Collider has empty collision filter and kinematic collision response and collides with
+	 * nothing. This is useful to interact with the game world without physically pushing
+	 * objects by accident.
 	 */
 	func void setGhost()
 		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
@@ -1163,19 +1170,20 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * \brief Set up collider as kinematic collider.
 	 * \version 1.10
 	 * 
-	 * Kinematic colliders have kinematic collision response, collision category
-	 * BaseGameApp.CollisionFilterBit.geometry and filter BaseGameApp.CollisionFilterBit.dynamic
-	 * and BaseGameApp.CollisionFilterBit.particle. They collide with PhysicsElementClass and
-	 * SimpleElementClass and allow hands to physically push objects.
+	 * Collider has kinematic collision response and the same collision filter as
+	 * \ref BaseVRActorClass. The Collider can collider with \ref PhysicsElementClass and
+	 * \ref SimpleElementClass. This allows hands to physically push objects.
 	 */
 	func void setPhysics()
 		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		pCollider.getLocalGravity().setVector(null)
 		pCollider.getWeight().setValue(1)
 		
-		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.geometry)
+		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actor)
 		
 		var LayerMask lmFilter = LayerMask.new()
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
 		lmFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
 		lmFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
 		

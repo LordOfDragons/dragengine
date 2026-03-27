@@ -39,6 +39,7 @@
 class deoxrInstance;
 class deoxrSession;
 class deoxrHandTracker;
+class deoxrBodyTracker;
 class deoxrActionSet;
 
 
@@ -219,6 +220,8 @@ protected:
 	const char *pButtonDisplayText(eButtonLabel label) const;
 	
 	deoxrHandTracker *pAddHandTracker(deoxrDevice &device, bool leftHand, bool withInputSimulation);
+	
+	deoxrBodyTracker *pAddBodyTracker(deoxrDevice &device);
 };
 
 #endif

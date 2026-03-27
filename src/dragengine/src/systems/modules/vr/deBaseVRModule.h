@@ -146,6 +146,50 @@ public:
 	virtual void RequestFeatureFacialTracking(deBaseVRModule::eFeatureSupportLevel level);
 	
 	/**
+	 * \brief Set feature request level for body tracking.
+	 * \version 1.31
+	 * 
+	 * Body tracking provides the pose of body as input device bones. Estimating bode pose is an
+	 * expensive operation running on the headset. The majority of games and applications do not
+	 * require body tracking. To enable set the feature request level to
+	 * optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time startRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support body tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	virtual void RequestFeatureBodyTracking(deBaseVRModule::eFeatureSupportLevel level);
+	
+	/**
+	 * \brief Eye gaze tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Can be called while VR runtime is running. Returns true if eye gaze tracking is
+	 * supported and active.
+	 */
+	virtual bool SupportsEyeGazeTracking();
+	
+	/**
+	 * \brief Facial tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Can be called while VR runtime is running. Returns true if facial tracking is
+	 * supported and active.
+	 */
+	virtual bool SupportsFacialTracking();
+	
+	/**
+	 * \brief Body tracking is supported.
+	 * \version 1.31
+	 * 
+	 * Can be called while VR runtime is running. Returns true if body tracking is
+	 * supported and active.
+	 */
+	virtual bool SupportsBodyTracking();
+	
+	/**
 	 * \brief Start VR.
 	 * 
 	 * VR systems typically are required to be activated before they can be used.

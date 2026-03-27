@@ -110,10 +110,10 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			// pAnchorAdded is used to avoid exceptions thrown in removeFromGameWorld
 			// in case adding the anchor here throws an exception (duplicate ID).
 			// this avoids disposing of a game world after an exception ending up in
-			// another exception causing huge leak reports that are useless     
-			if pAnchorID != null
-				getElement().getGameWorld().getAnchoredElementList() \
-					.add(pAnchorID, getElement())
+			// another exception causing huge leak reports that are useless
+			if pAnchorID != null and not pAnchorAdded
+				var BehaviorElement element = getElement()
+				element.getGameWorld().getAnchoredElementList().add(pAnchorID, element)
 				pAnchorAdded = true
 			end
 		end
