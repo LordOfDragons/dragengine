@@ -457,6 +457,12 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 		}else if(tagName == "animator"){
 			component->SetAnimatorPath(GetCDataString(*tag));
 			
+		}else if(tagName == "animation"){
+			component->SetAnimationPath(GetCDataString(*tag));
+			
+		}else if(tagName == "move"){
+			component->SetMove(GetCDataString(*tag));
+			
 		}else if(tagName == "occlusionMesh"){
 			component->SetOcclusionMeshPath(GetCDataString(*tag));
 			

@@ -47,37 +47,37 @@
 
 static void UpdateComponent(decStringDictionary &values,
 igdeCodecPropertyString codec, const gdeOCComponent &component){
-	if(component.IsPropertySet(gdeOCComponent::epModel)){
+	if(component.IsPropertySet(gdeOCComponent::epModel) && !component.GetModelPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epModel),
 			component.GetModelPath());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epSkin)){
+	if(component.IsPropertySet(gdeOCComponent::epSkin) && !component.GetSkinPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epSkin),
 			component.GetSkinPath());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epRig)){
+	if(component.IsPropertySet(gdeOCComponent::epRig) && !component.GetRigPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epRig),
 			component.GetRigPath());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epAnimator)){
+	if(component.IsPropertySet(gdeOCComponent::epAnimator) && !component.GetAnimatorPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epAnimator),
 			component.GetAnimatorPath());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epPlaybackController)){
+	if(component.IsPropertySet(gdeOCComponent::epPlaybackController) && !component.GetPlaybackController().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epPlaybackController),
 			component.GetPlaybackController());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epOcclusionMesh)){
+	if(component.IsPropertySet(gdeOCComponent::epOcclusionMesh) && !component.GetOcclusionMeshPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epOcclusionMesh),
 			component.GetOcclusionMeshPath());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epAudioModel)){
+	if(component.IsPropertySet(gdeOCComponent::epAudioModel) && !component.GetAudioModelPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epAudioModel),
 			component.GetAudioModelPath());
 	}
@@ -109,12 +109,12 @@ igdeCodecPropertyString codec, const gdeOCComponent &component){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epAttachRotation), string);
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epAnimation)){
+	if(component.IsPropertySet(gdeOCComponent::epAnimation) && !component.GetAnimationPath().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epAnimation),
 			component.GetAnimationPath());
 	}
 	
-	if(component.IsPropertySet(gdeOCComponent::epMove)){
+	if(component.IsPropertySet(gdeOCComponent::epMove) && !component.GetMove().IsEmpty()){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epMove),
 			component.GetMove());
 	}
@@ -124,7 +124,7 @@ static void UpdateEnvMapProbe(decStringDictionary &values,
 igdeCodecPropertyString codec, const gdeOCEnvMapProbe &envMapProbe){
 	decString string;
 	
-	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epInfluenceArea)){
+	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epInfluenceArea) && !envMapProbe.GetShapeListInfluence().IsEmpty()){
 		codec.EncodeShapeList(envMapProbe.GetShapeListInfluence(), string);
 		values.SetAt(envMapProbe.GetPropertyName(gdeOCEnvMapProbe::epInfluenceArea), string);
 	}
@@ -139,7 +139,7 @@ igdeCodecPropertyString codec, const gdeOCEnvMapProbe &envMapProbe){
 		values.SetAt(envMapProbe.GetPropertyName(gdeOCEnvMapProbe::epInfluencePriority), string);
 	}
 	
-	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epReflectionShape)){
+	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epReflectionShape) && envMapProbe.GetShapeReflection()){
 		decShape::List list;
 		if(envMapProbe.GetShapeReflection()){
 			list.Add(envMapProbe.GetShapeReflection()->Copy());
@@ -148,7 +148,7 @@ igdeCodecPropertyString codec, const gdeOCEnvMapProbe &envMapProbe){
 		values.SetAt(envMapProbe.GetPropertyName(gdeOCEnvMapProbe::epReflectionShape), string);
 	}
 	
-	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epReflectionMask)){
+	if(envMapProbe.IsPropertySet(gdeOCEnvMapProbe::epReflectionMask) && !envMapProbe.GetShapeListReflectionMask().IsEmpty()){
 		codec.EncodeShapeList(envMapProbe.GetShapeListReflectionMask(), string);
 		values.SetAt(envMapProbe.GetPropertyName(gdeOCEnvMapProbe::epReflectionMask), string);
 	}
@@ -232,7 +232,7 @@ igdeCodecPropertyString codec, const gdeOCLight &light){
 		values.SetAt(light.GetPropertyName(gdeOCLight::epSpotExponent), string);
 	}
 	
-	if(light.IsPropertySet(gdeOCLight::epLightSkin)){
+	if(light.IsPropertySet(gdeOCLight::epLightSkin) && !light.GetLightSkinPath().IsEmpty()){
 		values.SetAt(light.GetPropertyName(gdeOCLight::epLightSkin), light.GetLightSkinPath());
 	}
 	
@@ -276,7 +276,7 @@ igdeCodecPropertyString codec, const gdeOCNavigationBlocker &navblocker){
 			navblocker.GetEnabled() ? "1" : "0");
 	}
 	
-	if(navblocker.IsPropertySet(gdeOCNavigationBlocker::epShape)){
+	if(navblocker.IsPropertySet(gdeOCNavigationBlocker::epShape) && !navblocker.GetShapeList().IsEmpty()){
 		codec.EncodeShapeList(navblocker.GetShapeList(), string);
 		values.SetAt(navblocker.GetPropertyName(gdeOCNavigationBlocker::epShape), string);
 	}
@@ -306,12 +306,12 @@ static void UpdateNavSpace(decStringDictionary &values,
 igdeCodecPropertyString codec, const gdeOCNavigationSpace &navspace){
 	decString string;
 	
-	if(navspace.IsPropertySet(gdeOCNavigationSpace::epPath)){
+	if(navspace.IsPropertySet(gdeOCNavigationSpace::epPath) && !navspace.GetPath().IsEmpty()){
 		values.SetAt(navspace.GetPropertyName(gdeOCNavigationSpace::epPath),
 			navspace.GetPath());
 	}
 	
-	if(navspace.IsPropertySet(gdeOCNavigationSpace::epBlockerShape)){
+	if(navspace.IsPropertySet(gdeOCNavigationSpace::epBlockerShape) && !navspace.GetBlockerShapeList().IsEmpty()){
 		codec.EncodeShapeList(navspace.GetBlockerShapeList(), string);
 		values.SetAt(navspace.GetPropertyName(gdeOCNavigationSpace::epBlockerShape), string);
 	}
@@ -351,7 +351,7 @@ static void UpdateSpeaker(decStringDictionary &values,
 igdeCodecPropertyString codec, const gdeOCSpeaker &speaker){
 	decString string;
 	
-	if(speaker.IsPropertySet(gdeOCSpeaker::epSound)){
+	if(speaker.IsPropertySet(gdeOCSpeaker::epSound) && !speaker.GetPathSound().IsEmpty()){
 		values.SetAt(speaker.GetPropertyName(gdeOCSpeaker::epSound),
 			speaker.GetPathSound());
 	}
@@ -405,7 +405,7 @@ igdeCodecPropertyString codec, const gdeOCSpeaker &speaker){
 static void UpdateWorld(decStringDictionary &values, igdeCodecPropertyString codec, const gdeOCWorld &world){
 	decString string;
 	
-	if(world.IsPropertySet(gdeOCWorld::epPath)){
+	if(world.IsPropertySet(gdeOCWorld::epPath) && !world.GetPath().IsEmpty()){
 		values.SetAt(world.GetPropertyName(gdeOCWorld::epPath), world.GetPath());
 	}
 	if(world.IsPropertySet(gdeOCWorld::epPosition)){
@@ -418,60 +418,53 @@ static void UpdateWorld(decStringDictionary &values, igdeCodecPropertyString cod
 	}
 }
 
+static void ProcessObjectClassSubObjects(decStringDictionary &newValues, igdeCodecPropertyString &codec,
+const gdeObjectClass &objectClass, const gdeGameDefinition *gameDefinition){
+	if(gameDefinition){
+		objectClass.GetInherits().Visit([&](const gdeOCInherit &inherit){
+			const gdeObjectClass * const ioc = gameDefinition->FindObjectClass(inherit.GetName());
+			if(ioc){
+				ProcessObjectClassSubObjects(newValues, codec, *ioc, gameDefinition);
+			}
+		});
+	}
+	
+	objectClass.GetComponents().Visit([&](const gdeOCComponent &component){
+		UpdateComponent(newValues, codec, component);
+	});
+	
+	objectClass.GetEnvMapProbes().Visit([&](const gdeOCEnvMapProbe &envMapProbe){
+		UpdateEnvMapProbe(newValues, codec, envMapProbe);
+	});
+	
+	objectClass.GetLights().Visit([&](const gdeOCLight &light){
+		UpdateLight(newValues, codec, light);
+	});
+	
+	objectClass.GetNavigationBlockers().Visit([&](const gdeOCNavigationBlocker &navBlocker){
+		UpdateNavBlocker(newValues, codec, navBlocker);
+	});
+	
+	objectClass.GetNavigationSpaces().Visit([&](const gdeOCNavigationSpace &navSpace){
+		UpdateNavSpace(newValues, codec, navSpace);
+	});
+	
+	objectClass.GetSpeakers().Visit([&](const gdeOCSpeaker &speaker){
+		UpdateSpeaker(newValues, codec, speaker);
+	});
+	
+	objectClass.GetWorlds().Visit([&](const gdeOCWorld &world){
+		UpdateWorld(newValues, codec, world);
+	});
+}
+
 static decStringDictionary BuildValues(const gdeObjectClass &objectClass){
 	// build property values
 	decStringDictionary newValues(objectClass.GetPropertyValues());
 	igdeCodecPropertyString codec;
-	int i, count;
 	
-	// components
-	const gdeOCComponent::List &components = objectClass.GetComponents();
-	count = components.GetCount();
-	for(i=0; i<count; i++){
-		UpdateComponent(newValues, codec, *components.GetAt(i));
-	}
-	
-	// environment map probes
-	const gdeOCEnvMapProbe::List &envMapProbes = objectClass.GetEnvMapProbes();
-	count = envMapProbes.GetCount();
-	for(i=0; i<count; i++){
-		UpdateEnvMapProbe(newValues, codec, *envMapProbes.GetAt(i));
-	}
-	
-	// lights
-	const gdeOCLight::List &lights = objectClass.GetLights();
-	count = lights.GetCount();
-	for(i=0; i<count; i++){
-		UpdateLight(newValues, codec, *lights.GetAt(i));
-	}
-	
-	// navigation blockers
-	const gdeOCNavigationBlocker::List &navBlockers = objectClass.GetNavigationBlockers();
-	count = navBlockers.GetCount();
-	for(i=0; i<count; i++){
-		UpdateNavBlocker(newValues, codec, *navBlockers.GetAt(i));
-	}
-	
-	// navigation spaces
-	const gdeOCNavigationSpace::List &navSpaces = objectClass.GetNavigationSpaces();
-	count = navSpaces.GetCount();
-	for(i=0; i<count; i++){
-		UpdateNavSpace(newValues, codec, *navSpaces.GetAt(i));
-	}
-	
-	// speakers
-	const gdeOCSpeaker::List &speakers = objectClass.GetSpeakers();
-	count = speakers.GetCount();
-	for(i=0; i<count; i++){
-		UpdateSpeaker(newValues, codec, *speakers.GetAt(i));
-	}
-	
-	// worlds
-	const gdeOCWorld::List &worlds = objectClass.GetWorlds();
-	count = worlds.GetCount();
-	for(i=0; i<count; i++){
-		UpdateWorld(newValues, codec, *worlds.GetAt(i));
-	}
+	// process sub-objects from this class and all inherited classes
+	ProcessObjectClassSubObjects(newValues, codec, objectClass, objectClass.GetGameDefinition());
 	
 	// collect parent property values
 	decStringDictionary parentValues;
@@ -479,21 +472,19 @@ static decStringDictionary BuildValues(const gdeObjectClass &objectClass){
 	
 	// final dictionary is the difference between the new and the parent dictionary.
 	// this contains now only the parameters that actually changed
-	decStringList names(newValues.GetKeys());
-	const decString *parentValue;
+	const decStringList names(newValues.GetKeys());
 	decStringDictionary values;
 	
-	count = names.GetCount();
-	for(i=0; i<count; i++){
-		const decString &name = names.GetAt(i);
+	names.Visit([&](const decString &name){
 		const decString &newValue = newValues.GetAt(name);
 		
+		const decString *parentValue;
 		if(parentValues.GetAt(name, parentValue) && *parentValue == newValue){
-			continue; // same values as the parent has, skip it
+			return; // same values as the parent has, skip it
 		}
 		
 		values.SetAt(name, newValues.GetAt(name));
-	}
+	});
 	
 	// finished
 	return values;

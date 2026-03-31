@@ -826,7 +826,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				animator->SetRig(rig);
 				
 				try{
-					const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
+					auto controller(deAnimatorController::Ref::New());
 					controller->SetName(playbackController);
 					controller->SetValueRange(0.0f, animation->GetMove(moveIndex)->GetPlaytime());
 					controller->SetClamp(false);
@@ -838,7 +838,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				}
 				
 				try{
-					const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
+					auto link(deAnimatorLink::Ref::New());
 					link->SetController(0);
 					
 					decCurveBezier curve;
@@ -852,8 +852,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				}
 				
 				try{
-					const deAnimatorRuleAnimation::Ref rule(
-						deAnimatorRuleAnimation::Ref::New());
+					auto rule = deAnimatorRuleAnimation::Ref::New();
 					rule->SetEnableSize(true);
 					rule->SetMoveName(move);
 					rule->GetTargetMoveTime().AddLink(0);
