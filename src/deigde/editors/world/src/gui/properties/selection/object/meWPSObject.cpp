@@ -1351,7 +1351,7 @@ public:
 	virtual decString GetGDDefaultValue(const char *key) const{
 		const meObjectTexture * const texture = pPanel.GetActiveTexture();
 		decString value;
-		if(texture && texture->GetObject()->GetGDClass()){
+		if(texture && texture->GetObject() && texture->GetObject()->GetGDClass()){
 			texture->GetObject()->GetGDClass()->GetDefaultTexturePropertyValue(key, value);
 		}
 		return value;
@@ -1359,14 +1359,14 @@ public:
 	
 	const igdeGDProperty *GetGDProperty(const char *key) const override{
 		const meObjectTexture * const texture = pPanel.GetActiveTexture();
-		return texture && texture->GetObject()->GetGDClass()
+		return texture && texture->GetObject() && texture->GetObject()->GetGDClass()
 			? texture->GetObject()->GetGDClass()->GetTexturePropertyNamed(key) : nullptr;
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{
 		const meObjectTexture * const texture = pPanel.GetActiveTexture();
 		decStringSet keys;
-		if(texture && texture->GetObject()->GetGDClass()){
+		if(texture && texture->GetObject() && texture->GetObject()->GetGDClass()){
 			texture->GetObject()->GetGDClass()->AddTexturePropertyNames(keys, true);
 		}
 		return keys;

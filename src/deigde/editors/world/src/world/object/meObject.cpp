@@ -1106,7 +1106,7 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 	pTextures.RemoveOrThrow(texture);
 	
 	if(pActiveTexture == texture){
-		pActiveTexture = nullptr;
+		pActiveTexture.Clear();
 	}
 	
 	texture->SetObject(nullptr);
@@ -1129,6 +1129,8 @@ void meObject::RemoveAllTextures(){
 	pTextures.Visit([](meObjectTexture &t){
 		t.SetObject(nullptr);
 	});
+	
+	pTextures.RemoveAll();
 	
 	// this is a problem here. on clean up it makes no sense to recreate textures in the component.
 	// we need a way to prevent any kind of updates during clean up which are no more needed at that time
