@@ -269,6 +269,7 @@ void igdeWObject::SetGDClass(igdeGDClass *gdClass){
 	}
 	
 	pDestroySubObjects();
+	DetachCollider();
 	
 	pGDClass = gdClass;
 	
@@ -285,6 +286,7 @@ void igdeWObject::SetPathWorld(const char *path){
 	}
 	
 	pDestroySubObjects();
+	DetachCollider();
 	pWorldGDClass.Clear();
 	
 	pPathWorld = path;
@@ -661,7 +663,7 @@ void igdeWObject::DetachCollider(){
 		}
 	}
 	
-	pParentCollider = nullptr;
+	pParentCollider.Clear();
 	pAttachToBone.Empty();
 	
 	// reset position and orientation otherwise our state and the collider state are out of sync
@@ -747,6 +749,12 @@ void igdeWObject::SubObjectExtendsDirty(){
 }
 
 void igdeWObject::SetInteractCollider(deColliderComponent *collider){
+	if(pColliderComponent == collider){
+		return;
+	}
+	
+	DetachCollider();
+	
 	if(pColliderComponent){
 		pEnvironment.SetColliderDelegee(pColliderComponent, nullptr);
 		pEnvironment.SetColliderUserPointer(pColliderComponent, nullptr);
@@ -815,8 +823,8 @@ void igdeWObject::UpdateAnyContentVisibile(){
 //////////////////////
 
 void igdeWObject::pCleanUp(){
-	DetachCollider();
 	pDestroySubObjects();
+	DetachCollider();
 	SetWorld(nullptr);
 	
 	pCollidersInteraction.Visit([&](deCollider *c){
@@ -1048,6 +1056,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 void igdeWObject::pDestroySubObjects(){
 	pSubObjects.RemoveAll();
 }
+
 void igdeWObject::pSubObjectsReattachToColliders(){
 	pSubObjects.Visit([&](igdeWOSubObject &so){
 		so.ReattachToColliders();

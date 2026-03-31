@@ -1086,7 +1086,7 @@ void igdeWOSOComponent::DetachFromCollider(){
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
 	pAttachment = nullptr;
-	pAttachedToCollider = nullptr;
+	pAttachedToCollider.Clear();
 }
 
 bool igdeWOSOComponent::pIsVisible() const{

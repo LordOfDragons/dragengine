@@ -49,6 +49,17 @@
 #define LOGSOURCE "Animator Editor"
 
 
+// Class aeAttachment::cAsyncLoadListener
+///////////////////////////////////////////
+
+aeAttachment::cAsyncLoadListener::cAsyncLoadListener(aeAttachment &attachment) :
+pAttachment(attachment){
+}
+
+void aeAttachment::cAsyncLoadListener::LoadFinished(igdeWObject &wrapper, bool succeeded){
+	pAttachment.ReattachCollider();
+}
+
 
 // Class aeAttachment
 ///////////////////////
@@ -58,6 +69,7 @@
 
 aeAttachment::aeAttachment(igdeEnvironment *environment, const char *name) :
 pAnimator(nullptr),
+pAsyncLoadListener(*this),
 pName(name),
 pAttachType(eatNone)
 {
@@ -70,6 +82,7 @@ pAttachType(eatNone)
 		pObjectWrapper->SetDynamicCollider(false);
 		pObjectWrapper->SetCollisionFilter(decCollisionFilter(layerMask));
 		pObjectWrapper->SetCollisionFilterFallback(decCollisionFilter(layerMask));
+		pObjectWrapper->SetAsyncLoadFinished(&pAsyncLoadListener);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -124,13 +137,7 @@ void aeAttachment::SetAttachType(eAttachTypes type){
 	
 	pAttachType = type;
 	
-	DetachCollider();
-	AttachCollider();
-	
-	if(pAnimator){
-		pAnimator->AttachmentsForceUpdate();
-	}
-	ResetPhysics();
+	ReattachCollider();
 	
 	if(pAnimator){
 		pAnimator->NotifyAttachmentChanged(this);
@@ -148,6 +155,14 @@ void aeAttachment::SetBoneName(const char *name){
 	
 	pBoneName = name;
 	
+	ReattachCollider();
+	
+	if(pAnimator){
+		pAnimator->NotifyAttachmentChanged(this);
+	}
+}
+
+void aeAttachment::ReattachCollider(){
 	DetachCollider();
 	AttachCollider();
 	
@@ -155,12 +170,7 @@ void aeAttachment::SetBoneName(const char *name){
 		pAnimator->AttachmentsForceUpdate();
 	}
 	ResetPhysics();
-	
-	if(pAnimator){
-		pAnimator->NotifyAttachmentChanged(this);
-	}
 }
-
 
 
 void aeAttachment::Update(float elapsed){
@@ -209,5 +219,8 @@ void aeAttachment::DetachCollider(){
 
 void aeAttachment::pCleanUp(){
 	SetAnimator(nullptr);
-	pObjectWrapper = nullptr;
+	if(pObjectWrapper){
+		pObjectWrapper->SetAsyncLoadFinished(nullptr);
+		pObjectWrapper.Clear();
+	}
 }
