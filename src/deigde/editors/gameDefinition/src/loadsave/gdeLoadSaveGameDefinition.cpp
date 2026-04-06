@@ -763,6 +763,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent(const decXmlElementTag
 		}else if(tagName == "affectsAudio"){
 			component->SetAffectsAudio(GetCDataBool(*tag));
 			
+		}else if(tagName == "enableGI"){
+			component->SetEnableGI(GetCDataBool(*tag));
+			
 		}else if(tagName == "lightShadowIgnore"){
 			component->SetLightShadowIgnore(GetCDataBool(*tag));
 			
@@ -812,6 +815,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent(const decXmlElementTag
 				
 			}else if(value == "affectsAudio"){
 				component->SetPropertyName(gdeOCComponent::epAffectsAudio, property);
+				
+			}else if(value == "enableGI"){
+				component->SetPropertyName(gdeOCComponent::epEnableGI, property);
 				
 			}else if(value == "lightShadowIgnore"){
 				component->SetPropertyName(gdeOCComponent::epLightShadowIgnore, property);
@@ -2560,6 +2566,9 @@ decXmlWriter &writer, const gdeOCComponent &component){
 	if(!component.GetAffectsAudio()){
 		writer.WriteDataTagBool("affectsAudio", component.GetAffectsAudio());
 	}
+	if(!component.GetEnableGI()){
+		writer.WriteDataTagBool("enableGI", component.GetEnableGI());
+	}
 	if(component.GetLightShadowIgnore()){
 		writer.WriteDataTagBool("lightShadowIgnore", component.GetLightShadowIgnore());
 	}
@@ -2613,6 +2622,8 @@ decXmlWriter &writer, const gdeOCComponent &component){
 		"link", "renderEnvMap");
 	pWriteLink(writer, component.GetPropertyName(gdeOCComponent::epAffectsAudio),
 		"link", "affectsAudio");
+	pWriteLink(writer, component.GetPropertyName(gdeOCComponent::epEnableGI),
+		"link", "enableGI");
 	pWriteLink(writer, component.GetPropertyName(gdeOCComponent::epLightShadowIgnore),
 		"link", "lightShadowIgnore");
 	pWriteLink(writer, component.GetPropertyName(gdeOCComponent::epAttachPosition),

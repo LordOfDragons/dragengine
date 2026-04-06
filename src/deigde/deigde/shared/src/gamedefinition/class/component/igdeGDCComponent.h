@@ -60,6 +60,7 @@ public:
 		epAudioModel,
 		epRenderEnvMap,
 		epAffectsAudio,
+		epEnableGI,
 		epAttachPosition,
 		epAttachRotation,
 		epLightShadowIgnore,
@@ -83,6 +84,7 @@ private:
 	bool pStatic;
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
+	bool pEnableGI;
 	bool pPartialHide;
 	bool pAttachTarget;
 	bool pLightShadowIgnore;
@@ -212,6 +214,12 @@ public:
 	
 	/** \brief Ses if component affects audio. */
 	void SetAffectsAudio(bool affectsAudio);
+	
+	/** \brief Component affects global illumination. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Sets if component affects global illumination. */
+	void SetEnableGI(bool enableGI);
 	
 	/** \brief Component is ignored from shadows cast by lights present in the same object. */
 	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }

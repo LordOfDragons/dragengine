@@ -92,6 +92,11 @@ igdeCodecPropertyString codec, const gdeOCComponent &component){
 			component.GetAffectsAudio() ? "1" : "0");
 	}
 	
+	if(component.IsPropertySet(gdeOCComponent::epEnableGI)){
+		values.SetAt(component.GetPropertyName(gdeOCComponent::epEnableGI),
+			component.GetEnableGI() ? "1" : "0");
+	}
+	
 	if(component.IsPropertySet(gdeOCComponent::epLightShadowIgnore)){
 		values.SetAt(component.GetPropertyName(gdeOCComponent::epLightShadowIgnore),
 			component.GetLightShadowIgnore() ? "1" : "0");

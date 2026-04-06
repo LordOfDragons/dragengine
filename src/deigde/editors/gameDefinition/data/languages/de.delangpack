@@ -700,6 +700,7 @@
 	<translation name="GameDefinition.Undo.OCComponentSetRotation">Objektklasse Komponente: Drehung festlegen</translation>
 	<translation name="GameDefinition.Undo.OCComponentSetSkinPath">Objektklasse Komponente: Skin-Pfad festlegen</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleAffectsAudio">Objektklasse Komponente: Audio umschalten</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleEnableGI">Objektklasse Komponente: Globale Beleuchtung umschalten</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleAttachTarget">Objektklasse Komponente: Anhängen umschalten</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleDoNotScale">Objektklasse Komponente: Nicht skalieren umschalten</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleLightShadowIgnore">Objektklasse Komponente: Schatten ignorieren umschalten</translation>
@@ -936,6 +937,7 @@
 	<translation name="GameDefinition.PanelOCComponent.PropertyAudioModel">Audiomodell</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyRenderEnvMap">Render-Umgebungskarte</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyAffectsAudio">Beeinflusst Audio</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyEnableGI">Beeinflusst globale Beleuchtung</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyLightShadowIgnore">Licht-Schatten ignorieren</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyAttachPosition">Position</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyAttachRotation">Drehung anbringen</translation>
@@ -1502,6 +1504,8 @@
 	<translation name="GameDefinition.WPSOCComponent.RenderEnvMap.ToolTip">Die Komponente ist in den Umgebungskarten enthalten.</translation>
 	<translation name="GameDefinition.WPSOCComponent.AffectsAudio">Audio</translation>
 	<translation name="GameDefinition.WPSOCComponent.AffectsAudio.ToolTip">Komponente beeinflusst Audio</translation>
+	<translation name="GameDefinition.WPSOCComponent.EnableGI">Globale Beleuchtung</translation>
+	<translation name="GameDefinition.WPSOCComponent.EnableGI.ToolTip">Komponente beeinflusst globale Beleuchtung</translation>
 	<translation name="GameDefinition.WPSOCComponent.LightShadowIgnore">Kein Schatten</translation>
 	<translation name="GameDefinition.WPSOCComponent.LightShadowIgnore.ToolTip">Die Komponente wirft keine Schatten von Lichtern, die sich im selben Objekt befinden.</translation>
 	<translation name="GameDefinition.WPSOCComponent.PartialHide">Teilweise ausblenden</translation>

@@ -177,6 +177,12 @@ public:
 	/** \brief Write color. */
 	void WriteColor4(decXmlWriter &writer, const char *name, const decColor &color);
 	
+	/** \brief Write point. */
+	void WritePoint(decXmlWriter &writer, const char *name, const decPoint &point);
+	
+	/** \brief Write point. */
+	void WritePoint3(decXmlWriter &writer, const char *name, const decPoint3 &point);
+	
 	
 	
 	/** \brief Log warning about an unknown tag. */

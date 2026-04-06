@@ -56,6 +56,7 @@
 			<link target='audioModel' property='audioModel'/>
 			<link target='renderEnvMap' property='renderEnvMap'/>
 			<link target='affectsAudio' property='affectsAudio'/>
+			<link target='enableGI' property='enableGI'/>
 		</component>
 		<property name='model'>
 			<description>Model file to use instead of the class defined one.</description>
@@ -233,7 +234,8 @@
 			<skin>/igde/models/box/materials/unknown.deskin</skin>
 			<static>true</static>
 			<noScaling>true</noScaling>
-			<renderEnvMap>0</renderEnvMap>
+			<renderEnvMap>false</renderEnvMap>
+			<enableGI>false</enableGI>
 			
 			<link target='skin' property='skin'/>
 		</component>
@@ -259,6 +261,7 @@
 			<static>true</static>
 			<noScaling>true</noScaling>
 			<renderEnvMap>false</renderEnvMap>
+			<enableGI>false</enableGI>
 		</component>
 		
 		<category>IGDE/Placeholder</category>
@@ -276,6 +279,7 @@
 			<static>true</static>
 			<noScaling>true</noScaling>
 			<renderEnvMap>false</renderEnvMap>
+			<enableGI>false</enableGI>
 		</component>
 		
 		<category>IGDE/Placeholder</category>
@@ -293,6 +297,7 @@
 			<static>true</static>
 			<noScaling>true</noScaling>
 			<renderEnvMap>false</renderEnvMap>
+			<enableGI>false</enableGI>
 		</component>
 		
 		<category>IGDE/Placeholder</category>
@@ -310,6 +315,7 @@
 			<static>true</static>
 			<noScaling>true</noScaling>
 			<renderEnvMap>false</renderEnvMap>
+			<enableGI>false</enableGI>
 		</component>
 		
 		<category>IGDE/Placeholder</category>
@@ -327,6 +333,7 @@
 			<static>true</static>
 			<noScaling>true</noScaling>
 			<renderEnvMap>false</renderEnvMap>
+			<enableGI>false</enableGI>
 		</component>
 		
 		<category>IGDE/Placeholder</category>

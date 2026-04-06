@@ -740,6 +740,10 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pComponent->SetScaling(GetWrapper().GetScaling());
 	}
 	
+	pComponent->SetEnableGI(GetBoolProperty(
+		pGDComponent.GetPropertyName(igdeGDCComponent::epEnableGI),
+		pGDComponent.GetEnableGI()));
+	
 	UpdateLayerMasks();
 	
 	// update textures

@@ -708,6 +708,7 @@
 	<translation name="GameDefinition.Undo.OCComponentSetRotation">Component set orientation</translation>
 	<translation name="GameDefinition.Undo.OCComponentSetSkinPath">Component set skin path</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleAffectsAudio">Component toggle affects audiomap</translation>
+	<translation name="GameDefinition.Undo.OCComponentToggleEnableGI">Component toggle enable GI</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleAttachTarget">Component toggle attach target</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleDoNotScale">Component toggle do not scale</translation>
 	<translation name="GameDefinition.Undo.OCComponentToggleLightShadowIgnore">Component toggle light shadow ignore</translation>
@@ -944,6 +945,7 @@
 	<translation name="GameDefinition.PanelOCComponent.PropertyAudioModel">Audio model</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyRenderEnvMap">Render environment map</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyAffectsAudio">Affects audio</translation>
+	<translation name="GameDefinition.PanelOCComponent.PropertyEnableGI">Affects global illumination</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyLightShadowIgnore">Light shadow ignore</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyAttachPosition">Attach position</translation>
 	<translation name="GameDefinition.PanelOCComponent.PropertyAttachRotation">Attach rotation</translation>
@@ -1510,6 +1512,8 @@
 	<translation name="GameDefinition.WPSOCComponent.RenderEnvMap.ToolTip">Component is included in environment maps</translation>
 	<translation name="GameDefinition.WPSOCComponent.AffectsAudio">Affects audio</translation>
 	<translation name="GameDefinition.WPSOCComponent.AffectsAudio.ToolTip">Component affects audio</translation>
+	<translation name="GameDefinition.WPSOCComponent.EnableGI">Enable GI</translation>
+	<translation name="GameDefinition.WPSOCComponent.EnableGI.ToolTip">Component affects global illumination</translation>
 	<translation name="GameDefinition.WPSOCComponent.LightShadowIgnore">Light Shadow Ignore</translation>
 	<translation name="GameDefinition.WPSOCComponent.LightShadowIgnore.ToolTip">Component is not casting shadows from lights present in the same object</translation>
 	<translation name="GameDefinition.WPSOCComponent.PartialHide">Partial hide</translation>

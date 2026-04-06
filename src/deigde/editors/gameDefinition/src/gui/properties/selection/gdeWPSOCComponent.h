@@ -93,6 +93,7 @@ private:
 	igdeCheckBox::Ref pChkStatic;
 	igdeCheckBox::Ref pChkRenderEnvMap;
 	igdeCheckBox::Ref pChkAffectsAudio;
+	igdeCheckBox::Ref pChkEnableGI;
 	igdeCheckBox::Ref pChkPartialHide;
 	igdeCheckBox::Ref pChkAttachTarget;
 	igdeCheckBox::Ref pChkLightShadowIgnore;
