@@ -624,7 +624,7 @@ extern GLAPI PFNGLTEXBUFFERARBPROC pglTexBuffer;
 // OpenGL version 1.4
 ///////////////////////
 
-// extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
+extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
 
 
 

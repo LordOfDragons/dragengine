@@ -73,6 +73,8 @@ pEnableBlend(false),
 pBlendColor(0.0f, 0.0f, 0.0f, 0.0f),
 pBlendFuncSource(GL_ONE),
 pBlendFuncDest(GL_ZERO),
+pBlendFuncAlphaSource(GL_ONE),
+pBlendFuncAlphaDest(GL_ZERO),
 pClipControl(false),
 pSPBInstanceIndexBase(-1),
 pDrawIDOffset(-1),
@@ -115,6 +117,8 @@ pEnableBlend(false),
 pBlendColor(0.0f, 0.0f, 0.0f, 0.0f),
 pBlendFuncSource(GL_ONE),
 pBlendFuncDest(GL_ZERO),
+pBlendFuncAlphaSource(GL_ONE),
+pBlendFuncAlphaDest(GL_ZERO),
 pClipControl(false),
 pSPBInstanceIndexBase(-1),
 pDrawIDOffset(-1),
@@ -360,12 +364,20 @@ void deoglPipelineConfiguration::SetBlendFuncDest(GLenum mode){
 	pBlendFuncDest = mode;
 }
 
+void deoglPipelineConfiguration::SetBlendFuncAlphaSource(GLenum mode){
+	pBlendFuncAlphaSource = mode;
+}
+
+void deoglPipelineConfiguration::SetBlendFuncAlphaDest(GLenum mode){
+	pBlendFuncAlphaDest = mode;
+}
+
 void deoglPipelineConfiguration::EnableBlendReplace(){
 	EnableBlend(GL_ONE, GL_ZERO);
 }
 
 void deoglPipelineConfiguration::EnableBlendBlend(){
-	EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 }
 
 void deoglPipelineConfiguration::EnableBlendAdd(){
@@ -373,7 +385,7 @@ void deoglPipelineConfiguration::EnableBlendAdd(){
 }
 
 void deoglPipelineConfiguration::EnableBlendTranspAdd(){
-	EnableBlend(GL_SRC_ALPHA, GL_ONE);
+	EnableBlend(GL_SRC_ALPHA, GL_ONE, GL_ONE, GL_ONE);
 }
 
 void deoglPipelineConfiguration::EnableBlendAddConst(const decColor &color){
@@ -382,11 +394,17 @@ void deoglPipelineConfiguration::EnableBlendAddConst(const decColor &color){
 }
 
 void deoglPipelineConfiguration::EnableBlend(GLenum source, GLenum dest){
+	EnableBlend(source, dest, source, dest);
+}
+
+void deoglPipelineConfiguration::EnableBlend(GLenum source, GLenum dest,
+GLenum alphaSource, GLenum alphaDest){
 	pEnableBlend = true;
 	pBlendFuncSource = source;
 	pBlendFuncDest = dest;
+	pBlendFuncAlphaSource = alphaSource;
+	pBlendFuncAlphaDest = alphaDest;
 }
-
 
 
 void deoglPipelineConfiguration::SetClipControl(bool clipControl){
@@ -471,7 +489,7 @@ void deoglPipelineConfiguration::Activate(deoglRenderThread &renderThread) const
 		state.EnableBlend(pEnableBlend);
 		if(pEnableBlend){
 			state.BlendColor(pBlendColor.r, pBlendColor.g, pBlendColor.b, pBlendColor.a);
-			state.BlendFunc(pBlendFuncSource, pBlendFuncDest);
+			state.BlendFunc(pBlendFuncSource, pBlendFuncDest, pBlendFuncAlphaSource, pBlendFuncAlphaDest);
 		}
 		
 		state.ClipControl(pClipControl);
@@ -523,6 +541,8 @@ deoglPipelineConfiguration &deoglPipelineConfiguration::operator=(const deoglPip
 	pBlendColor = config.pBlendColor;
 	pBlendFuncSource = config.pBlendFuncSource;
 	pBlendFuncDest = config.pBlendFuncDest;
+	pBlendFuncAlphaSource = config.pBlendFuncAlphaSource;
+	pBlendFuncAlphaDest = config.pBlendFuncAlphaDest;
 	pClipControl = config.pClipControl;
 	pSPBInstanceIndexBase = config.pSPBInstanceIndexBase;
 	pDrawIDOffset = config.pDrawIDOffset;
@@ -565,6 +585,8 @@ bool deoglPipelineConfiguration::operator==(const deoglPipelineConfiguration &co
 		&& pBlendColor.IsEqualTo(config.pBlendColor)
 		&& pBlendFuncSource == config.pBlendFuncSource
 		&& pBlendFuncDest == config.pBlendFuncDest
+		&& pBlendFuncAlphaSource == config.pBlendFuncAlphaSource
+		&& pBlendFuncAlphaDest == config.pBlendFuncAlphaDest
 		&& pClipControl == config.pClipControl
 		&& pSPBInstanceIndexBase == config.pSPBInstanceIndexBase
 		&& pDrawIDOffset == config.pDrawIDOffset

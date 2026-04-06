@@ -1218,9 +1218,9 @@ void deoglRenderCanvas::pActivateVAOShapes(){
 void deoglRenderCanvas::pCreatePipelines(
 const deoglPipeline* (&pipelines)[deoglRCanvas::BlendModeCount], deoglPipelineConfiguration &config,
 const deoglShaderSources *sources, const deoglShaderDefines &defines){
-	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 	pAsyncGetPipeline(pipelines[deCanvas::ebmBlend], config, sources, defines);
 	
-	config.EnableBlend(GL_SRC_ALPHA , GL_ONE);
+	config.EnableBlend(GL_SRC_ALPHA , GL_ONE, GL_ONE, GL_ONE);
 	pAsyncGetPipeline(pipelines[deCanvas::ebmAdd], config, sources, defines);
 }

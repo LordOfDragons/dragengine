@@ -790,7 +790,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	#endif
 	
 	// opengl version 1.4
-	// pGetRequiredFunction( (void**)&pglBlendFuncSeparate, "glBlendFuncSeparate" );
+	pGetRequiredFunction((void**)&pglBlendFuncSeparate, "glBlendFuncSeparate");
 	
 	// GL_ARB_vertex_buffer_object . opengl version 1.5
 	pGetRequiredFunction((void**)&pglBindBuffer, "glBindBuffer");

@@ -18,16 +18,26 @@ layout(location=1) out vec4 outColor2;
 // !SplitLayers
 // layout(location=0) out vec4 outColor;
 
-void main( void ){
+void main(void){
 	// gamma correction only
 	//outColor = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma );
 	
 	// gamma, contrast and brightness correction
 	if(SplitLayers){
-		outColor1 = pow( texture( texColor, vec3( vTexCoord, 0 ) ), pGamma ) * pContrast + pBrightness;
-		outColor2 = pow( texture( texColor, vec3( vTexCoord, 1 ) ), pGamma ) * pContrast + pBrightness;
+		outColor1 = pow(texture(texColor, vec3(vTexCoord, 0)), pGamma) * pContrast + pBrightness;
+		outColor2 = pow(texture(texColor, vec3(vTexCoord, 1)), pGamma) * pContrast + pBrightness;
 		
 	}else{
-		outColor1 = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma ) * pContrast + pBrightness;
+		outColor1 = pow(texture(texColor, vec3(vTexCoord, vLayer)), pGamma) * pContrast + pBrightness;
+	}
+	
+	// clamp alpha value to the range from 0 to 1. larger values can happen during
+	// rendering of transparent objects and can cause issues in 2d rendering
+	if(SplitLayers){
+		outColor1.a = clamp(outColor1.a, 0, 1);
+		outColor2.a = clamp(outColor2.a, 0, 1);
+		
+	}else{
+		outColor1.a = clamp(outColor1.a, 0, 1);
 	}
 }

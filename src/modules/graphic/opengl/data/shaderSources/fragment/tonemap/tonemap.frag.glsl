@@ -139,4 +139,8 @@ void main( void ){
 	//      to add burning out the blacks which is annoying. the tone map operator should
 	//      provide a balance output. if an artist wants burning out blacks he should do
 	//      so after the tone mapping is done (still float buffer)
+	
+	// clamp alpha value to the range from 0 to 1. larger values can happen during
+	// rendering of transparent objects and can cause issues in 2d rendering
+	outColor.a = clamp(outColor.a, 0, 1);
 }
