@@ -118,8 +118,10 @@ private:
 	igdeEditVector2::Ref pEditTexTCScaling;
 	igdeTextField::Ref pEditTexTCRotation;
 	igdeColorBox::Ref pClrTexTint;
-	igdeCheckBox::Ref pChkShowMissingTextures;
 	meWPPropertyList::Ref pEditTexProperties;
+	
+	igdeCheckBox::Ref pChkShowMissingTextures;
+	igdeCheckBox::Ref pChkCameraShowPreview;
 	
 	igdeEditSliderText::Ref pSldLigInt;
 	igdeColorBox::Ref pClrLight;

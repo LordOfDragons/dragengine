@@ -222,6 +222,10 @@ public:
 	virtual void ObjectGeometryChanged(meWorld *world, meObject *object);
 	/** Object properties changed. */
 	virtual void ObjectPropertiesChanged(meWorld *world, meObject *object);
+	
+	/** Object camera show preview changed. */
+	virtual void ObjectCameraShowPreview(meWorld *world, meObject *object);
+	
 	/** Object active property changed. */
 	virtual void ObjectActivePropertyChanged(meWorld *world, meObject *object);
 	

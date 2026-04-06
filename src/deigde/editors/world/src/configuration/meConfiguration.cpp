@@ -60,6 +60,8 @@
 
 meConfiguration::meConfiguration(meWindowMain &windowMain) :
 pWindowMain(windowMain),
+pPreviewCameraSize(320, 320 * 9 / 16),
+pPreviewCameraTransparency(1.0f),
 pPreventSaving(false)
 {
 	pReset();
@@ -174,6 +176,25 @@ void meConfiguration::SetEnableAuralization(bool enable){
 	pWindowMain.ConfigEnableAuralizationChanged();
 }
 
+void meConfiguration::SetPreviewCameraSize(const decPoint &size){
+	const decPoint rsize(size.Largest(decPoint(10, 10)));
+	if(pPreviewCameraSize == size){
+		return;
+	}
+	
+	pPreviewCameraSize = size;
+	SaveConfiguration();
+}
+
+void meConfiguration::SetPreviewCameraTransparency(float transparency){
+	transparency = decMath::clamp(transparency, 0.0f, 1.0f);
+	if(fabsf(transparency - pPreviewCameraTransparency) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pPreviewCameraTransparency = transparency;
+	SaveConfiguration();
+}
 
 
 deInputEvent::eKeyCodes meConfiguration::GetHotKeyAt(int hotkey) const{
@@ -271,6 +292,7 @@ void meConfiguration::pReset(){
 	
 	pEnableGI = false;
 	pEnableAuralization = false;
+	pPreviewCameraSize = {320, 320 * 9 / 16};
 	
 	pHotKeys[ehkSelectWorkMode] = deInputEvent::ekcW;
 	pHotKeys[ehkSelectElementMode] = deInputEvent::ekcE;

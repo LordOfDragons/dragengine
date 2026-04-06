@@ -1340,6 +1340,24 @@ public:
 	}
 };
 
+class cActionCameraShowPreview : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionCameraShowPreview> Ref;
+	cActionCameraShowPreview(meWPSObject &panel) : cBaseAction(panel,
+		"@World.WPSObject.Action.CameraShowPreview", nullptr,
+		"@World.WPSObject.Action.CameraShowPreview.ToolTip"){}
+	
+	igdeUndo::Ref OnAction(meObject *object) override{
+		object->SetCameraShowPreview(!object->GetCameraShowPreview());
+		return {};
+	}
+	
+	void Update() override{
+		const meObject * const object = pPanel.GetActiveObject();
+		SetEnabled(object && object->GetCamera());
+	}
+};
+
 
 class cEditTextureProperties : public meWPPropertyList {
 	meWPSObject &pPanel;
@@ -1569,6 +1587,7 @@ pPreventUpdate(false)
 	helper.GroupBox(content, groupBox, "@World.WPSObject.DisplayOptions", true);
 	
 	helper.CheckBox(groupBox, pChkShowMissingTextures, cActionShowMissingTextures::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkCameraShowPreview, cActionCameraShowPreview::Ref::New(*this));
 	
 	
 	// texture
@@ -1788,6 +1807,7 @@ void meWPSObject::UpdateGeometry(){
 		pEditScaling->SetVector(object->GetScaling());
 		pEditRotation->SetVector(object->GetRotation());
 		pChkShowMissingTextures->SetChecked(object->GetShowMissingTextures());
+		pChkCameraShowPreview->SetChecked(object->GetCameraShowPreview());
 		
 	}else{
 		pEditID->ClearText();
@@ -1797,6 +1817,7 @@ void meWPSObject::UpdateGeometry(){
 		pEditScaling->SetVector(decVector(1.0f, 1.0f, 1.0f));
 		pEditRotation->SetVector(decVector());
 		pChkShowMissingTextures->SetChecked(false);
+		pChkCameraShowPreview->SetChecked(false);
 	}
 }
 

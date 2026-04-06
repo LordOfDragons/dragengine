@@ -1252,6 +1252,13 @@ void meWorld::NotifyObjectPropertiesChanged(meObject *object){
 	});
 }
 
+void meWorld::NotifyObjectCameraShowPreview(meObject *object){
+	DEASSERT_NOTNULL(object)
+	pNotifiers.Visit([&](meWorldNotifier &l){
+		l.ObjectCameraShowPreview(this, object);
+	});
+}
+
 void meWorld::NotifyObjectActivePropertyChanged(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);

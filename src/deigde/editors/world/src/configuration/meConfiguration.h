@@ -94,6 +94,9 @@ private:
 	bool pEnableGI;
 	bool pEnableAuralization;
 	
+	decPoint pPreviewCameraSize;
+	float pPreviewCameraTransparency;
+	
 	deInputEvent::eKeyCodes pHotKeys[EHK_COUNT];
 	
 	bool pPreventSaving;
@@ -104,7 +107,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	meConfiguration(meWindowMain &windowMain);
+	explicit meConfiguration(meWindowMain &windowMain);
 	
 	/** \brief Clean up configuration. */
 	~meConfiguration();
@@ -187,6 +190,18 @@ public:
 	/** \brief Set enable auralization in microphones. */
 	void SetEnableAuralization(bool enable);
 	
+	
+	/** \brief Preview camera size. */
+	inline const decPoint &GetPreviewCameraSize() const{ return pPreviewCameraSize; }
+	
+	/** \brief Set preview camera size. */
+	void SetPreviewCameraSize(const decPoint &size);
+	
+	/** \brief Preview camera transparency. */
+	inline float GetPreviewCameraTransparency() const{ return pPreviewCameraTransparency; }
+	
+	/** \brief Set preview camera transparency. */
+	void SetPreviewCameraTransparency(float transparency);
 	
 	
 	/** \brief Given hot key. */

@@ -193,6 +193,7 @@ pWOAsyncFinished(*this)
 	pActive = false;
 	pVisible = true;
 	pShowMissingTextures = false;
+	pCameraShowPreview = false;
 	pSize.Set(0.5f, 0.5f, 0.5f);
 	pScaling.Set(1.0f, 1.0f, 1.0f);
 	pAttachedTo = nullptr;
@@ -417,6 +418,22 @@ void meObject::SetShowMissingTextures(bool showMissingTextures){
 	
 	if(pWorld){
 		pWorld->NotifyObjectChanged(this);
+	}
+}
+
+void meObject::SetCameraShowPreview(bool cameraShowPreview){
+	if(cameraShowPreview == pCameraShowPreview){
+		return;
+	}
+	
+	pCameraShowPreview = cameraShowPreview;
+	
+	if(pCamera){
+		pCamera->SetShowPreview(cameraShowPreview);
+	}
+	
+	if(pWorld){
+		pWorld->NotifyObjectCameraShowPreview(this);
 	}
 }
 
@@ -2002,6 +2019,7 @@ void meObject::pUpdateCamera(){
 		if(!pCamera && pWorld){
 			pCamera = new meCamera(GetEnvironment()->GetEngineController()->GetEngine());
 			pCamera->SetEnableGI(pWorld->GetWindowMain().GetConfiguration().GetEnableGI());
+			pCamera->SetShowPreview(pCameraShowPreview);
 			pCamera->SetHostObject(this);
 			pCamera->SetWorld(pWorld);
 		}

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,64 +22,60 @@
  * SOFTWARE.
  */
 
-#ifndef _MEVIEW3D_H_
-#define _MEVIEW3D_H_
+#ifndef _MEPREVIEWCAMERA_H_
+#define _MEPREVIEWCAMERA_H_
 
-#include "meView3DListener.h"
-#include "vieweditor/meViewEditor.h"
-#include "previewcamera/mePreviewCamera.h"
-#include "../world/meWorld.h"
+#include "mePreviewCameraCamera.h"
+#include "mePreviewCameraListener.h"
+#include "../../world/meWorld.h"
+#include "../../world/object/meObject.h"
 
-#include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/gui/resources/igdeFont.h>
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
-#include <dragengine/resources/font/deFont.h>
-#include <dragengine/resources/font/deFontSize.h>
 
 class meWindowMain;
 
 
 /**
- * 3D view of the world.
+ * Preview selected cameras.
  */
-class meView3D : public igdeViewRenderWindow{
+class mePreviewCamera : public deObject{
 public:
-	using Ref = deTObjectReference<meView3D>;
+	using Ref = deTObjectReference<mePreviewCamera>;
+	using CameraList = decTObjectOrderedSet<mePreviewCameraCamera>;
+	
 	
 private:
 	meWindowMain &pWindowMain;
-	meView3DListener::Ref pListener;
+	mePreviewCameraListener::Ref pListener;
 	
 	meWorld::Ref pWorld;
 	
-	igdeMouseKeyListener::Ref pListenerEditor;
-	meViewEditor::Ref pEditor;
-	mePreviewCamera::Ref pPreviewCamera;
+	igdeFont::Ref pFontLabel;
 	
-	int pFPSHistory[30];
-	float pFPSRedrawCanvasDelay;
+	decPoint pRenderWorldSize;
 	
-	igdeFont::Ref pFontStats;
-	deCanvasView::Ref pCanvasFPS;
-	deCanvasText::Ref pCanvasFPSText;
+	deCanvasView::Ref pCanvasPanel;
 	
+	CameraList pCameras;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create view. */
-	meView3D(meWindowMain &windowMain);
+	/** Create preview camera. */
+	mePreviewCamera(meWindowMain &windowMain, deCanvasView &container);
 	
 protected:
-	/** Clean up view. */
-	~meView3D() override;
+	/** Clean up preview camera. */
+	~mePreviewCamera() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -88,36 +84,43 @@ public:
 	/** Window. */
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Reset view. */
-	void ResetView();
-	
 	/** World. */
 	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world render. */
 	void SetWorld(meWorld *world);
 	
-	/** Create canvas. */
-	void CreateCanvas() override;
+	/** Cameras. */
+	inline const CameraList &GetCameras() const{ return pCameras; }
 	
-	/** Resize canvas to fit window size. */
-	void OnResize() override;
+	/** Object is previewed. */
+	bool HasObject(meObject *object) const;
+	
+	/** Panel. */
+	inline const deCanvasView::Ref &GetPanel() const{ return pCanvasPanel; }
+	
+	/** Render world size. */
+	inline const decPoint &GetRenderWorldSize() const{ return pRenderWorldSize; }
+	
+	/** Set render world size. */
+	void SetRenderWorldSize(const decPoint &size);
+	
+	/** Label font. */
+	inline const igdeFont::Ref &GetFontLabel() const{ return pFontLabel; }
+	
+	/** Rebuild cameras. */
+	void RebuildCameras();
+	
+	/** Parent canvas has been resized. */
+	void OnParentResized();
 	
 	/** Game like frame update. */
-	void OnFrameUpdate(float elapsed) override;
-	
-	/** Mode changed. */
-	void ModeChanged();
-	
-	/** Active camera changed. */
-	void ActiveCameraChanged();
-	
-	/** Editor or nullptr. */
-	inline const meViewEditor::Ref &GetEditor() const{ return pEditor; }
-	
-	/** Preview camera or nullptr. */
-	inline const mePreviewCamera::Ref &GetPreviewCamera() const{ return pPreviewCamera; }
+	void OnFrameUpdate(float elapsed);
 	/*@}*/
+	
+	
+private:
+	void pCreateContent(deCanvasView &container);
 };
 
 #endif

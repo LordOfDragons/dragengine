@@ -275,7 +275,6 @@ public:
 	void ConfigEnableAuralizationChanged();
 	
 	
-	
 	inline bool GetUse3DCursor() const{ return pUse3DCursor; }
 	void SetUse3DCursor(bool useIt);
 	inline decVector Get3DCursor() const{ return p3DCursor; }
