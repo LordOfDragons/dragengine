@@ -26,7 +26,9 @@
 #define _DECAMERA_H_
 
 #include "../deResource.h"
+#include "../component/deComponent.h"
 #include "../effect/deEffect.h"
+#include "../../common/collection/decTSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/curve/decCurveBezier.h"
@@ -137,6 +139,8 @@ private:
 	deEffect::List pEffects;
 	
 	decLayerMask pLayerMask;
+	
+	decTObjectSet<deComponent> pIgnoreComponents;
 	
 	deBaseGraphicCamera *pPeerGraphic;
 	
@@ -330,6 +334,35 @@ public:
 	 * \note If enabled make sure to match the curve range to the white intensity.
 	 */
 	void SetToneMapCurve(const decCurveBezier &curve);
+	
+	
+	
+	/**
+	 * \brief Components to ignore during rendering.
+	 * \version 1.32
+	 */
+	inline const decTObjectSet<deComponent> &GetIgnoreComponents() const{ return pIgnoreComponents; }
+	
+	/**
+	 * \brief Add component to ignore during rendering.
+	 * \version 1.32
+	 * 
+	 * Does nothing if \em component is present.
+	 */
+	void AddIgnoreComponent(deComponent *component);
+	
+	/**
+	 * \brief Remove component to ignore during rendering.
+	 * \version 1.32
+	 * Does nothing if \em component is absent.
+	 */
+	void RemoveIgnoreComponent(deComponent *component);
+	
+	/**
+	 * \brief Remove all components to ignore during rendering.
+	 * \version 1.32
+	 */
+	void RemoveAllIgnoreComponents();
 	/*@}*/
 	
 	

@@ -86,6 +86,12 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * <behavior type='ECBehaviorCamera'>
 	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
 	 *   <string name='layerMask'>0 1 4</string>
+	 * 
+	 *   <!-- optional: list of ECBehaviorComponent identifiers to ignore -->
+	 *   <list name='ignoreComponents'>
+	 *     <string>first</string>
+	 *     <string>second</string>
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -108,6 +114,12 @@ class ECBehaviorCamera extends DefaultECBehavior
 			if parameters.has("layerMask")
 				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			if parameters.has("ignoreComponents")
+				(parameters.getAt("ignoreComponents") cast Array).forEach(block String each
+					behavior.addIgnoreComponent(ECBehaviorComponent.getBehaviorIn(eclass, each))
+				end)
 			end
 			
 			getHelper().setPropertiesFromParameters(eclass, parameters, "camera", id)
@@ -147,6 +159,8 @@ class ECBehaviorCamera extends DefaultECBehavior
 			if pCamera == null
 				return
 			end
+			
+			addIgnoreComponents(stub)
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachCamera(stub, pCollider)
@@ -191,6 +205,20 @@ class ECBehaviorCamera extends DefaultECBehavior
 		 */
 		protected func void attachCamera(StubElement stub, ECBehaviorCollider.Instance collider)
 			pECBehavior.getAttach().attach(collider.getCollider(), pCamera, stub)
+		end
+		
+		/**
+		 * \brief Add ignore components to camera.
+		 * \version 1.32
+		 */
+		protected func void addIgnoreComponents(StubElement stub)
+			var BehaviorElement element = getElement()
+			pECBehavior.forEachIgnoreComponent(block ECBehaviorComponent each
+				var Component component = each.instance(element).getComponent()
+				if component != null
+					pCamera.addIgnoreComponent(component)
+				end
+			end)
 		end
 		
 		
@@ -240,6 +268,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	var LayerMask pLayerMask
 	var ECPString pPathParameters
 	var LoadCamera pLoadCamera
+	var Array pIgnoreComponents
 	
 	
 	
@@ -259,6 +288,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id, \
 	String prefix) super(eclass, id)
 		pCollider = collider
+		pIgnoreComponents = Array.new()
 		pLayerMask = LayerMask.new()
 		pLoadCamera = eclass.sharedFactoryHelper.defaultLoaders().getCamera()
 		
@@ -302,6 +332,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	
 	/** \brief Dispose of behavior. */
 	func void dispose()
+		pIgnoreComponents = null
 		pCollider = null
 		super.dispose()
 	end
@@ -408,6 +439,25 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 */
 	func void setLoadCamera(LoadCamera loader)
 		pLoadCamera = loader
+	end
+	
+	/**
+	 * \brief Add component to ignore while rendering.
+	 * \version 1.32
+	 */
+	func void addIgnoreComponent(ECBehaviorComponent component)
+		if component == null
+			throw ENullPointer.new()
+		end
+		pIgnoreComponents.add(component)
+	end
+	
+	/**
+	 * \brief Visit components to ignore while rendering using block.
+	 * \version 1.32
+	 */
+	func void forEachIgnoreComponent(Block ablock)
+		pIgnoreComponents.forEach(ablock)
 	end
 	
 	

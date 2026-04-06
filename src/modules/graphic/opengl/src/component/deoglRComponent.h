@@ -529,6 +529,9 @@ public:
 	/** The world reference point changed. */
 	void WorldReferencePointChanged();
 	
+	/** World compute element or nullptr. */
+	inline const deoglRComponentWCElement::Ref &GetWorldComputeElement() const{ return pWorldComputeElement; }
+	
 	
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */

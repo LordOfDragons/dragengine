@@ -30,6 +30,7 @@
 #include "deoglRCamera.h"
 #include "deoglWorld.h"
 #include "../deGraphicOpenGl.h"
+#include "../component/deoglComponent.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../canvas/deoglCanvasRenderWorld.h"
 #include "../effects/deoglEffect.h"
@@ -42,6 +43,7 @@
 #include <dragengine/resources/effect/deEffect.h>
 #include <dragengine/resources/propfield/dePropField.h>
 #include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/world/deWorld.h>
 
 
@@ -69,6 +71,7 @@ pDirtyPropFields(true),
 pDirtyEffects(true),
 pResetAdaptedIntensity(true),
 pDirtyVR(true),
+pDirtyIgnoreComponents(true),
 pEnableVR(false)
 {
 	try{
@@ -186,6 +189,15 @@ void deoglCamera::SyncToRender(){
 // 			pOgl.LogInfoFormat( "Camera.Sync prop fields: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
+	if(pDirtyIgnoreComponents){
+		pRCamera->RemoveAllIgnoreComponents();
+		pCamera.GetIgnoreComponents().Visit([&](deComponent *component){
+			pRCamera->AddIgnoreComponent(static_cast<deoglComponent*>(
+				component->GetPeerGraphic())->GetRComponent());
+		});
+		pDirtyIgnoreComponents = false;
+	}
+	
 	if(pDirtyPlanCamParams){
 		if(!pEnableVR){
 			pRCamera->GetPlan().SetCameraParameters(pCamera.GetFov(), pCamera.GetFovRatio(),
@@ -277,6 +289,10 @@ void deoglCamera::EffectRemoved(int index, deEffect *effect){
 
 void deoglCamera::AllEffectsRemoved(){
 	pDirtyEffects = true;
+}
+
+void deoglCamera::IgnoreComponentsChanged(){
+	pDirtyIgnoreComponents = true;
 }
 
 
