@@ -34,10 +34,10 @@ void main(void){
 	// clamp alpha value to the range from 0 to 1. larger values can happen during
 	// rendering of transparent objects and can cause issues in 2d rendering
 	if(SplitLayers){
-		outColor1.a = clamp(outColor1.a, 0, 1);
-		outColor2.a = clamp(outColor2.a, 0, 1);
+		outColor1.a = clamp(outColor1.a, 0.0, 1.0);
+		outColor2.a = clamp(outColor2.a, 0.0, 1.0);
 		
 	}else{
-		outColor1.a = clamp(outColor1.a, 0, 1);
+		outColor1.a = clamp(outColor1.a, 0.0, 1.0);
 	}
 }

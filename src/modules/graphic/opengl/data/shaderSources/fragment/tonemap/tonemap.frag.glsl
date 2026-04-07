@@ -142,5 +142,5 @@ void main( void ){
 	
 	// clamp alpha value to the range from 0 to 1. larger values can happen during
 	// rendering of transparent objects and can cause issues in 2d rendering
-	outColor.a = clamp(outColor.a, 0, 1);
+	outColor.a = clamp(outColor.a, 0.0, 1.0);
 }
