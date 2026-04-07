@@ -146,9 +146,6 @@
     <ClInclude Include="..\..\..\src\launcher\gui\src\game\deglGameIcon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\launcher\gui\src\glconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\launcher\gui\src\gui\deglGuiBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
