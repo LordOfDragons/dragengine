@@ -77,6 +77,8 @@ deoglRComponentTexture::deoglRComponentTexture(deoglRComponent &component, int i
 pComponent(component),
 pIndex(index),
 
+pSkinTexture(-1),
+
 pUseTextureNumber(0),
 pUseSkinTexture(nullptr),
 pUseDoubleSided(false),
@@ -163,11 +165,12 @@ void deoglRComponentTexture::SetTransform(const decTexMatrix2 &matrix){
 
 
 
-void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+void deoglRComponentTexture::SetSkin(deoglRSkin *skin, int texture){
+	if(skin == pSkin && texture == pSkinTexture){
 		return;
 	}
 	pSkin = skin;
+	pSkinTexture = texture;
 	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
@@ -261,7 +264,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	
 	if(pSkin){
 		pUseSkin = pSkin;
-		pUseTextureNumber = pUseSkin->GetTextureCount() == 0 ? -1 : 0;
+		pUseTextureNumber = pSkinTexture >= 0 && pSkinTexture < pUseSkin->GetTextureCount() ? pSkinTexture : -1;
 	}
 	
 	if(!pUseSkin){

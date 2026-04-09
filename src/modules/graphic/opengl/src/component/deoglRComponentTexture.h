@@ -59,6 +59,7 @@ private:
 	decTexMatrix2 pTransform;
 	
 	deoglRSkin::Ref pSkin;
+	int pSkinTexture;
 	deoglRDynamicSkin::Ref pDynamicSkin;
 	deoglSkinState::Ref pSkinState;
 	
@@ -134,8 +135,11 @@ public:
 	/** Skin or NULL if there is none. */
 	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
+	/** Skin texture. */
+	inline int GetSkinTexture() const{ return pSkinTexture; }
+	
 	/** Set skin or NULL if there is none. */
-	void SetSkin(deoglRSkin *skin);
+	void SetSkin(deoglRSkin *skin, int texture);
 	
 	/** Dynamic skin or NULL if there is none. */
 	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }

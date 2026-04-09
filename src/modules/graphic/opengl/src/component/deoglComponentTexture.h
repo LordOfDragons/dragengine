@@ -53,6 +53,7 @@ private:
 	deoglSkinStateController *pSkinStateController;
 	
 	deoglSkin *pSkin;
+	int pSkinTexture;
 	deoglDynamicSkin *pDynamicSkin;
 	
 	bool pDirtyTexture;

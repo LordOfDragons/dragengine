@@ -35,30 +35,30 @@ pin Dragengine.Scenery
  * 
  * Supports replacing Skin and DynamicSkin of a matching component texture.
  * 
- * If a Skin instance is present the texture defined by the component Skin
- * instance or a manually set Skin is replaced with the new Skin instance.
- * The first texture defined in the replacing Skin instance is used. It is
- * possible to use skins with more than one texture but then only the first
- * texture is used. Using a skin with no texture is possible to render parts
- * of a component invisible.
+ * If a Skin instance is present the texture defined by the component Skin instance or a manually
+ * set Skin is replaced with the new Skin instance. The first texture defined in the replacing
+ * Skin instance is used. It is possible to use skins with more than one texture but then only
+ * the first texture is used. Using a skin with no texture is possible to render parts of a
+ * component invisible.
  * 
- * If a color tint is present a DynamicSkin is created and replaces the
- * component or manually set dynamic skin. It is possible to use color tint
- * without using a new Skin instance. In this case the currently used skin
- * of the component texture is modified.
+ * If no Skin instance is present and no skin instance has been assigned to the component texture
+ * yet the component skin is used as skin instance with the matching texture index. This allows
+ * to easily replace the tint of a component texture no matter if a skin is explicitely set or not.
  * 
- * If a transform is present it replaces the component or manually set
- * transformation if present. It is possible to use transform without using
- * a new Skin instance. In this case the currently used skin of the
- * component texture is modified.
+ * If a color tint is present a DynamicSkin is created and replaces the component or manually set
+ * dynamic skin. It is possible to use color tint without using a new Skin instance. In this case
+ * the currently used skin of the component texture is modified.
  * 
- * Texture replacements have to be applied to a component using
- * applyToComponent() method after setting up the component with all skin
- * and dynamic skin instances. If no component texture matches the name
- * the texture replacement has no effect.
+ * If a transform is present it replaces the component or manually set transformation if present.
+ * It is possible to use transform without using a new Skin instance. In this case the currently
+ * used skin of the component texture is modified.
  * 
- * To use a texture replacement in an element class use the
- * ECPTextureReplacementList element class property.
+ * Texture replacements have to be applied to a component using applyToComponent() method after
+ * setting up the component with all skin and dynamic skin instances. If no component texture
+ * matches the name the texture replacement has no effect.
+ * 
+ * To use a texture replacement in an element class use the ECPTextureReplacementList
+ * element class property.
  */
 class TextureReplacement
 	var String pName, pPath
@@ -159,6 +159,15 @@ class TextureReplacement
 		
 		if pSkin != null
 			component.setTextureSkinAt(index, pSkin, 0)
+			
+		elif component.getTextureSkinAt(index) == null
+			var Skin skin = component.getSkin()
+			if skin != null
+				var int texture = skin.indexOfTextureNamed(pName)
+				if texture != -1
+					component.setTextureSkinAt(index, skin, texture)
+				end
+			end
 		end
 		
 		if pTransform != null
