@@ -68,6 +68,7 @@ writeIncludeBinaries() {
   addIncludeBinaryEntry "extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2"
   addIncludeBinaryEntry "extern/jsoncpp/jsoncpp-*.tar.xz"
   addIncludeBinaryEntry "extern/freetype/freetype-*.tar.xz"
+  addIncludeBinaryEntry "extern/libopus/opus-*.tar.xz"
   addIncludeBinaryEntry "extern/*/*.sha256sum"
 }
 
@@ -134,6 +135,7 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
   `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` \
   `dir -1 extern/jsoncpp/jsoncpp-*.tar.xz` \
   `dir -1 extern/freetype/freetype-*.tar.xz` \
+  `dir -1 extern/libopus/opus-*.tar.xz` \
   `dir -1 extern/*/*.sha256sum` || exit 1
 gzip ../$FILETAR || exit 1
 
