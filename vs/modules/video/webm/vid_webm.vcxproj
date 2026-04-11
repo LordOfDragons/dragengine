@@ -58,6 +58,9 @@
     <ProjectReference Include="..\..\..\extern\libwebm\extern_libwebm.vcxproj">
       <Project>{4d75dd29-281b-4635-ad4a-a36e5a11f3fa}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libopus\extern_libopus.vcxproj">
+      <Project>{e5a02a21-b50d-42a9-888a-cec77bcc9b15}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\video\webm\SConscript" />

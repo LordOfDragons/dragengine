@@ -26,8 +26,10 @@
 #define _DEWMAUDIOTRACKCALLBACK_H_
 
 #include "dewmTrackCallback.h"
+#include "dewmAudioStream.h"
 
-class dewmVorbisStream;
+#include <dragengine/deTUniqueReference.h>
+
 class dewmInfos;
 
 
@@ -41,7 +43,7 @@ private:
 	int pResPosition;
 	int pSampleSize;
 	
-	dewmVorbisStream *pStreamVorbis;
+	deTUniqueReference<dewmAudioStream> pStream;
 	
 	
 	

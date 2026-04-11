@@ -70,6 +70,22 @@ dewmVorbisStream::~dewmVorbisStream(){
 // Management
 ///////////////
 
+int dewmVorbisStream::GetBytesPerSample() const{
+	return pBytesPerSample;
+}
+
+int dewmVorbisStream::GetSampleRate() const{
+	return pSampleRate;
+}
+
+int dewmVorbisStream::GetChannelCount() const{
+	return pChannelCount;
+}
+
+int dewmVorbisStream::GetBufferSampleSize() const{
+	return pBufferSampleSize;
+}
+
 bool dewmVorbisStream::OpenTrack(const webm::TrackEntry &track){
 	if(track.track_type.value() != webm::TrackType::kAudio){
 		pCallback.GetModule().LogErrorFormat("VorbisStream.OpenTrack: track type is not audio");
@@ -139,15 +155,17 @@ bool dewmVorbisStream::OpenTrack(const webm::TrackEntry &track){
 	ogg_packet op[3];
 	memset(op, 0, sizeof(op));
 	
-	op[0].packet = (unsigned char*)(codecPrivateData.data() + offset);
+	op[0].packet = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(
+		codecPrivateData.data() + offset));
 	op[0].bytes = (long)headerSize[0];
 	op[0].b_o_s = 1;
 	
-	op[1].packet = (unsigned char*)(codecPrivateData.data() + offset + headerSize[0]);
+	op[1].packet = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(
+		codecPrivateData.data() + offset + headerSize[0]));
 	op[1].bytes = (long)headerSize[1];
 	
-	op[2].packet = (unsigned char*)(codecPrivateData.data()
-		+ offset + headerSize[0] + headerSize[1]);
+	op[2].packet = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(
+		codecPrivateData.data() + offset + headerSize[0] + headerSize[1]));
 	op[2].bytes = (long)headerSize[2];
 	
 	vorbis_info_init(&pInfo);
@@ -201,14 +219,12 @@ void dewmVorbisStream::CopySamples(){
 	const int copiedSampleCount = decMath::min(synthSamplecount, bufferSampleCount);
 	
 	if(pCallback.GetResBuffer()){
-		int16_t *ptrBuffer = (int16_t*)(pCallback.GetResBuffer()
-			+ pCallback.GetResPosition() * pBufferSampleSize);
-		int i, j;
+		int16_t *ptrBuffer = reinterpret_cast<int16_t*>(
+			pCallback.GetResBuffer() + pCallback.GetResPosition() * pBufferSampleSize);
 		
-		for(i=0; i<copiedSampleCount; i++){
-			for(j=0; j<pChannelCount; j++){
-				*( ptrBuffer++ ) = ( int16_t )decMath::clamp(
-					(int)(samples[j][i] * 32767), -32768, 32767);
+		for(int i=0; i<copiedSampleCount; i++){
+			for(int j=0; j<pChannelCount; j++){
+				*(ptrBuffer++) = (int16_t)decMath::clamp((int)(samples[j][i] * 32767), -32768, 32767);
 			}
 		}
 	}
@@ -218,7 +234,8 @@ void dewmVorbisStream::CopySamples(){
 }
 
 void dewmVorbisStream::LoadFrameData(std::uint64_t frameSize){
-	pPacket.packet = (unsigned char*)pCallback.GetFrameBuffer().GetArrayPointer();
+	pPacket.packet = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(
+		pCallback.GetFrameBuffer().GetArrayPointer()));
 	pPacket.bytes = (long)frameSize;
 	
 	if(vorbis_synthesis(&pBlock, &pPacket)){
@@ -247,8 +264,7 @@ void dewmVorbisStream::FillUpBuffer(){
 		memset(pFillUpSample.GetArrayPointer(), 0, pBufferSampleSize);
 	}
 	
-	int i;
-	for(i=pCallback.GetResPosition(); i<pCallback.GetResSize(); i++){
+	for(int i=pCallback.GetResPosition(); i<pCallback.GetResSize(); i++){
 		memcpy(ptrBuffer, pFillUpSample.GetArrayPointer(), pBufferSampleSize);
 		ptrBuffer += pBufferSampleSize;
 	}

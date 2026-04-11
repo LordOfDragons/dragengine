@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,51 +22,49 @@
  * SOFTWARE.
  */
 
-#ifndef _DEWMVORBISSTREAM_H_
-#define _DEWMVORBISSTREAM_H_
+#ifndef _DEWMOPUSSTREAM_H_
+#define _DEWMOPUSSTREAM_H_
 
 #include "dewmAudioStream.h"
 
 #include <webm/callback.h>
-#include <vorbis/codec.h>
+#include <opus/opus_multistream.h>
 #include <dragengine/common/collection/decTList.h>
 
 class dewmAudioTrackCallback;
 
 
 /**
- * Vorbis audio stream.
+ * Opus audio stream.
  */
-class dewmVorbisStream : public dewmAudioStream{
+class dewmOpusStream : public dewmAudioStream{
 private:
 	dewmAudioTrackCallback &pCallback;
 	
 	int pBytesPerSample;
 	int pSampleRate;
 	int pChannelCount;
+	int pPreSkip;
 	
 	int pBufferSampleSize;
 	
-	vorbis_info pInfo;
-	vorbis_dsp_state pContext;
-	vorbis_block pBlock;
-	bool pInfoInited;
-	bool pContextInited;
-	bool pBlockInited;
+	OpusMSDecoder *pDecoder;
 	
-	ogg_packet pPacket;
-	decTList<uint8_t> pFillUpSample;
+	/** Decoded PCM samples (int16, interleaved). */
+	decTList<int16_t> pPcmBuffer;
+	int pPcmBufferPos;
+	int pPcmBufferCount;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create vorbis stream. */
-	explicit dewmVorbisStream(dewmAudioTrackCallback &callback);
+	/** Create opus stream. */
+	explicit dewmOpusStream(dewmAudioTrackCallback &callback);
 	
-	/** Clean up vorbis stream. */
-	~dewmVorbisStream() override;
+	/** Clean up opus stream. */
+	~dewmOpusStream() override;
 	/*@}*/
 	
 	
@@ -96,9 +94,6 @@ public:
 	
 	/** Rewind. */
 	void Rewind() override;
-	
-	/** Fill up buffer at end of segment. */
-	void FillUpBuffer();
 	/*@}*/
 };
 
