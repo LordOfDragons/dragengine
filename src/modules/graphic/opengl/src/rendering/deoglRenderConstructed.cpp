@@ -485,9 +485,9 @@ void deoglRenderConstructed::pActivateVAOShapes(){
 void deoglRenderConstructed::pCreatePipelines(const deoglPipeline* (&pipelines)[2],
 deoglPipelineConfiguration &config, const deoglShaderSources *sources,
 const deoglShaderDefines &defines){
-	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 	pAsyncGetPipeline(pipelines[deSkinPropertyNode::ecmBlend], config, sources, defines);
 	
-	config.EnableBlend(GL_SRC_ALPHA , GL_ONE);
+	config.EnableBlend(GL_SRC_ALPHA , GL_ONE, GL_ONE, GL_ONE);
 	pAsyncGetPipeline(pipelines[deSkinPropertyNode::ecmOverlay], config, sources, defines);
 }

@@ -46,7 +46,9 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../world/deoglRWorld.h"
+#include "../world/deoglRCamera.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decGlobalFunctions.h>
@@ -228,6 +230,10 @@ deoglRenderBase(renderThread)
 	defines.SetDefines("CLEAR_CULL_RESULT");
 	pAsyncGetPipeline(pPipelineUpdateCullResultClear, pipconf,
 		"DefRen Plan Update Cull Result", defines);
+	
+	defines = commonDefines;
+	pAsyncGetPipeline(pPipelineUpdateCullResultForceCulled, pipconf,
+		"DefRen Plan Update Cull Result Force Culled", defines);
 	
 	
 	// build render task
@@ -443,6 +449,42 @@ const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, int l
 	OGL_CHECK(renderThread, pglDispatchComputeIndirect(0));
 	OGL_CHECK(renderThread, pglMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 	counters.DeactivateDispatchIndirect();
+	
+	if(plan.GetCamera() && plan.GetCamera()->GetIgnoreComponents().IsNotEmpty()){
+		const decTObjectSet<deoglRComponent> &components = plan.GetCamera()->GetIgnoreComponents();
+		const int compCount = components.GetCount();
+		
+		if(compCount > pSSBOUpdateIndices->GetElementCount()){
+			pSSBOUpdateIndices->SetElementCount(compCount);
+		}
+		
+		int nextIndex = 0;
+		{
+		const deoglSPBMapBuffer mappedIndex(pSSBOUpdateIndices, 0, compCount);
+		uint32_t * const dataIndex = (uint32_t*)pSSBOUpdateIndices->GetMappedBuffer();
+		
+		pSSBOUpdateIndices->Clear();
+		
+		components.Visit([&](const deoglRComponent &component){
+			const auto &wce = component.GetWorldComputeElement();
+			if(wce && wce->GetIndex() != -1 && wce->GetSPBGeometries()){
+				dataIndex[nextIndex++] = (uint32_t)wce->GetIndex();
+			}
+		});
+		}
+		
+		if(nextIndex > 0){
+			pPipelineUpdateCullResultForceCulled->Activate();
+			
+			pPipelineUpdateCullResultForceCulled->GetShader().SetParameterUInt(0, nextIndex);
+			
+			pSSBOUpdateIndices->Activate(0);
+			pSSBOElementCullResult->Activate(1);
+			
+			OGL_CHECK(renderThread, pglDispatchCompute((nextIndex - 1) / 64 + 1, 1, 1));
+			OGL_CHECK(renderThread, pglMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
+		}
+	}
 }
 
 void deoglRenderCompute::UpdateCullResultOcclusion(const deoglRenderPlan &plan,

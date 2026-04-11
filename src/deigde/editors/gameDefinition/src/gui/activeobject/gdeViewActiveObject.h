@@ -25,6 +25,8 @@
 #ifndef _GDEVIEWACTIVEOBJECT_H_
 #define _GDEVIEWACTIVEOBJECT_H_
 
+#include <functional>
+
 #include "gdeVAOBillboard.h"
 #include "gdeVAOCamera.h"
 #include "gdeVAOComponent.h"
@@ -318,6 +320,9 @@ private:
 	void pRebuildOCSnapPoints(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	void pRebuildOCSpeakers(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	void pRebuildOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix);
+	
+	void pAllInheritedApply(const gdeObjectClass &objectClass, const decString &propertyPrefix,
+		std::function<void(const gdeObjectClass &, const decString &)> function);
 	
 	void pOCReattachAllObjects();
 	

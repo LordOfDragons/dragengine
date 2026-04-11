@@ -385,7 +385,7 @@ GLAPI PFNGLTEXBUFFERARBPROC pglTexBuffer = nullptr;
 // OpenGL version 1.4
 ///////////////////////
 
-// GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
+GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
 
 
 

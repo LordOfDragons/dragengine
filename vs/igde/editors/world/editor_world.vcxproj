@@ -299,6 +299,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meView3DListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meWindowMain.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFColorMatrix.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFDistortImage.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFFilterKernel.cpp" />
@@ -643,6 +646,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meView3DListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meWindowMain.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCamera.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraCamera.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFColorMatrix.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFDistortImage.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFFilterKernel.h" />

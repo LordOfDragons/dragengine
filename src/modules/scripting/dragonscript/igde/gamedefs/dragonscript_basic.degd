@@ -276,6 +276,8 @@
 			<rig>/igde/models/interactionZone/izone.derig</rig>
 			<partialHide>true</partialHide>
 			<renderEnvMap>false</renderEnvMap>
+			<affectsAudio>false</affectsAudio>
+			<enableGI>false</enableGI>
 		</component>
 		<property name='name'>
 			<description>Unique name of spawn point.</description>
@@ -615,6 +617,8 @@
 			<rig>/igde/models/box/box.derig</rig>
 			<partialHide>true</partialHide>
 			<renderEnvMap>false</renderEnvMap>
+			<affectsAudio>false</affectsAudio>
+			<enableGI>false</enableGI>
 		</component>
 		<partialHideTag>Editing</partialHideTag>
 		<partialHideTag>Info</partialHideTag>
@@ -636,6 +640,7 @@
 			<link target='renderEnvMap' property='renderEnvMap'/>
 			<link target='affectsAudio' property='affectsAudio'/>
 			<link target='lightShadowIgnore' property='igdeLightShadowIgnore'/>
+			<link target='enableGI' property='enableGI'/>
 		</component>
 		<property name='model'>
 			<description>Model file to use instead of the class defined one.</description>
@@ -1320,6 +1325,8 @@
 			<skin>/igde/models/environmentMap/envmap.deskin</skin>
 			<partialHide>true</partialHide>
 			<renderEnvMap>false</renderEnvMap>
+			<affectsAudio>false</affectsAudio>
+			<enableGI>false</enableGI>
 		</component>
 		<environmentMapProbe>
 			<link target='influenceArea' property='influenceArea'/>

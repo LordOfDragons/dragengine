@@ -31,6 +31,7 @@ class deEngine;
 class deCamera;
 class deClassVector;
 class deClassDVector;
+class deClassComponent;
 class deClassEffect;
 class deScriptingDragonScript;
 
@@ -88,6 +89,7 @@ private:
 		dsClass *clsVector;
 		dsClass *clsQuaternion;
 		dsClass *clsEffect;
+		dsClass *clsComponent;
 		dsClass *clsPoint;
 		dsClass *clsLayerMask;
 		dsClass *clsWorld;
@@ -160,6 +162,13 @@ private:
 	DEF_NATFUNC(nfAddEffect);
 	DEF_NATFUNC(nfRemoveEffect);
 	DEF_NATFUNC(nfRemoveAllEffects);
+	
+	DEF_NATFUNC(nfGetIgnoreComponentCount);
+	DEF_NATFUNC(nfGetIgnoreComponentAt);
+	DEF_NATFUNC(nfHasIgnoreComponent);
+	DEF_NATFUNC(nfAddIgnoreComponent);
+	DEF_NATFUNC(nfRemoveIgnoreComponent);
+	DEF_NATFUNC(nfRemoveAllIgnoreComponents);
 	
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);

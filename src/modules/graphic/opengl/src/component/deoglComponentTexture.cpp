@@ -56,6 +56,7 @@ pIndex(index),
 pSkinStateController(nullptr),
 
 pSkin(nullptr),
+pSkinTexture(-1),
 pDynamicSkin(nullptr),
 
 pDirtyTexture(true),
@@ -89,10 +90,10 @@ void deoglComponentTexture::SyncToRender(){
 		
 		// update skin
 		if(pSkin){
-			pRTexture->SetSkin(pSkin->GetRSkin());
+			pRTexture->SetSkin(pSkin->GetRSkin(), pSkinTexture);
 			
 		}else{
-			pRTexture->SetSkin(nullptr);
+			pRTexture->SetSkin(nullptr, -1);
 		}
 		
 		// update dynamic skin
@@ -187,12 +188,15 @@ void deoglComponentTexture::DynamicSkinRenderableRequiresSync(deoglDSRenderable&
 void deoglComponentTexture::TextureChanged(const deComponentTexture &texture){
 	// skin
 	deoglSkin *skin = nullptr;
+	int skinTexture = 0;
 	if(texture.GetSkin()){
 		skin = (deoglSkin*)texture.GetSkin()->GetPeerGraphic();
+		skinTexture = texture.GetTexture();
 	}
 	
-	if(skin != pSkin){
+	if(skin != pSkin || skinTexture != pSkinTexture){
 		pSkin = skin;
+		pSkinTexture = skinTexture;
 		pDirtyRenderableMapping = true;
 		pComponent.DirtyTextureUseSkin();
 	}

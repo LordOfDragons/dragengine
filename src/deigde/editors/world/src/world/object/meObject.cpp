@@ -193,6 +193,7 @@ pWOAsyncFinished(*this)
 	pActive = false;
 	pVisible = true;
 	pShowMissingTextures = false;
+	pCameraShowPreview = false;
 	pSize.Set(0.5f, 0.5f, 0.5f);
 	pScaling.Set(1.0f, 1.0f, 1.0f);
 	pAttachedTo = nullptr;
@@ -417,6 +418,22 @@ void meObject::SetShowMissingTextures(bool showMissingTextures){
 	
 	if(pWorld){
 		pWorld->NotifyObjectChanged(this);
+	}
+}
+
+void meObject::SetCameraShowPreview(bool cameraShowPreview){
+	if(cameraShowPreview == pCameraShowPreview){
+		return;
+	}
+	
+	pCameraShowPreview = cameraShowPreview;
+	
+	if(pCamera){
+		pCamera->SetShowPreview(cameraShowPreview);
+	}
+	
+	if(pWorld){
+		pWorld->NotifyObjectCameraShowPreview(this);
 	}
 }
 
@@ -1106,7 +1123,7 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 	pTextures.RemoveOrThrow(texture);
 	
 	if(pActiveTexture == texture){
-		pActiveTexture = nullptr;
+		pActiveTexture.Clear();
 	}
 	
 	texture->SetObject(nullptr);
@@ -1129,6 +1146,8 @@ void meObject::RemoveAllTextures(){
 	pTextures.Visit([](meObjectTexture &t){
 		t.SetObject(nullptr);
 	});
+	
+	pTextures.RemoveAll();
 	
 	// this is a problem here. on clean up it makes no sense to recreate textures in the component.
 	// we need a way to prevent any kind of updates during clean up which are no more needed at that time
@@ -2000,6 +2019,7 @@ void meObject::pUpdateCamera(){
 		if(!pCamera && pWorld){
 			pCamera = new meCamera(GetEnvironment()->GetEngineController()->GetEngine());
 			pCamera->SetEnableGI(pWorld->GetWindowMain().GetConfiguration().GetEnableGI());
+			pCamera->SetShowPreview(pCameraShowPreview);
 			pCamera->SetHostObject(this);
 			pCamera->SetWorld(pWorld);
 		}

@@ -58,6 +58,9 @@
     <ProjectReference Include="..\..\..\extern\libwebm\extern_libwebm.vcxproj">
       <Project>{4d75dd29-281b-4635-ad4a-a36e5a11f3fa}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libopus\extern_libopus.vcxproj">
+      <Project>{e5a02a21-b50d-42a9-888a-cec77bcc9b15}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\video\webm\SConscript" />
@@ -424,6 +427,7 @@
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmOpusStream.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.cpp" />
@@ -434,8 +438,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioStream.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmOpusStream.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.h" />

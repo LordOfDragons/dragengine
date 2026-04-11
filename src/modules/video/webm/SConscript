@@ -14,6 +14,7 @@ if not buildModule:
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 appendLibrary(envModule, parent_targets['lib_libvorbis'], libs)
+appendLibrary(envModule, parent_targets['lib_libopus'], libs)
 appendLibrary(envModule, parent_targets['lib_libvpx'], libs)
 appendLibrary(envModule, parent_targets['lib_libwebm'], libs)
 
@@ -52,8 +53,10 @@ if internalModule:
 	targetBuild = parent_env.Alias('img_png_build', library)
 	install.extend(targetBuild)
 	
-	parent_targets['dragengine']['add internal module'](envModule, library,
-		['lib_libvorbis', 'lib_libvpx', 'lib_libwebm'], 'dewebmRegisterInternalModule')
+	parent_targets['dragengine']['add internal module'](
+		envModule, library,
+		['lib_libvorbis', 'lib_libopus', 'lib_libvpx', 'lib_libwebm'],
+		'dewebmRegisterInternalModule')
 	
 else:
 	objects = [envModule.SharedObject(s) for s in sources]
@@ -83,6 +86,7 @@ else:
 	
 	rtlibs = []
 	rtlibs.extend(parent_targets['lib_libvorbis']['runtimelibs'])
+	rtlibs.extend(parent_targets['lib_libopus']['runtimelibs'])
 	rtlibs.extend(parent_targets['lib_libvpx']['runtimelibs'])
 	rtlibs.extend(parent_targets['lib_libwebm']['runtimelibs'])
 	

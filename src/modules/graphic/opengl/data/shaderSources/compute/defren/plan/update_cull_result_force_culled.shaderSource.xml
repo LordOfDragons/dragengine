@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Update Cull Result Force Culled</name>
+	<stage>compute</stage>
+	<source>update_cull_result_force_culled.comp.glsl</source>
+	
+	<shaderStorageBlock name='UpdateIndex' binding='0'/>
+	<shaderStorageBlock name='ElementCullResult' binding='1'/>
+</shaderSource>

@@ -235,7 +235,7 @@ void gdeGameDefinition::UpdateBaseGameDefinitions(gdeLoadSaveSystem &loadSaveSys
 			}
 		}
 		if(j < oldCount){
-			continue;  // already loaded
+			continue; // already loaded
 		}
 		
 		// resolve game definition id using the environment

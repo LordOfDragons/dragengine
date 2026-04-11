@@ -25,6 +25,8 @@
 #ifndef _DEWMVORBISSTREAM_H_
 #define _DEWMVORBISSTREAM_H_
 
+#include "dewmAudioStream.h"
+
 #include <webm/callback.h>
 #include <vorbis/codec.h>
 #include <dragengine/common/collection/decTList.h>
@@ -33,9 +35,9 @@ class dewmAudioTrackCallback;
 
 
 /**
- * Vorbis stream.
+ * Vorbis audio stream.
  */
-class dewmVorbisStream{
+class dewmVorbisStream : public dewmAudioStream{
 private:
 	dewmAudioTrackCallback &pCallback;
 	
@@ -61,10 +63,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vorbis stream. */
-	dewmVorbisStream(dewmAudioTrackCallback &callback);
+	explicit dewmVorbisStream(dewmAudioTrackCallback &callback);
 	
 	/** Clean up vorbis stream. */
-	~dewmVorbisStream();
+	~dewmVorbisStream() override;
 	/*@}*/
 	
 	
@@ -72,28 +74,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Bytes per sample. */
-	inline int GetBytesPerSample() const{ return pBytesPerSample; }
+	int GetBytesPerSample() const override;
 	
 	/** Sample rate. */
-	inline int GetSampleRate() const{ return pSampleRate; }
+	int GetSampleRate() const override;
 	
 	/** Channel count. */
-	inline int GetChannelCount() const{ return pChannelCount; }
+	int GetChannelCount() const override;
 	
 	/** Buffer sample size. */
-	inline int GetBufferSampleSize() const{ return pBufferSampleSize; }
+	int GetBufferSampleSize() const override;
 	
 	/** Open track. */
-	bool OpenTrack(const webm::TrackEntry &track);
+	bool OpenTrack(const webm::TrackEntry &track) override;
 	
 	/** Copy samples. */
-	void CopySamples();
+	void CopySamples() override;
 	
 	/** Load frame data. */
-	void LoadFrameData(std::uint64_t frameSize);
+	void LoadFrameData(std::uint64_t frameSize) override;
 	
 	/** Rewind. */
-	void Rewind();
+	void Rewind() override;
 	
 	/** Fill up buffer at end of segment. */
 	void FillUpBuffer();

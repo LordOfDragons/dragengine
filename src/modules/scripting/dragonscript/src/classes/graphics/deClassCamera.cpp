@@ -37,6 +37,7 @@
 #include "../deClassEngine.h"
 #include "../effects/deClassEffect.h"
 #include "../curve/deClassCurveBezier.h"
+#include "../graphics/deClassComponent.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
@@ -50,6 +51,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/camera/deCameraManager.h>
+#include <dragengine/resources/component/deComponent.h>
 
 
 
@@ -65,7 +67,7 @@ struct sCamNatDat{
 // Native functions
 /////////////////////
 
-// public func new()
+// func new()
 deClassCamera::nfNew::nfNew(const sInitData &init) :
 dsFunction(init.clsCamera, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -79,7 +81,7 @@ void deClassCamera::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	nd.camera->SetEnableGI(ds.GetClassEngine()->GetDefaultEnableGI());
 }
 
-// public func destructor()
+// func destructor()
 deClassCamera::nfDestructor::nfDestructor(const sInitData &init) :
 dsFunction(init.clsCamera, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -94,7 +96,7 @@ void deClassCamera::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 
 
 
-// public func DVector getPosition()
+// func DVector getPosition()
 deClassCamera::nfGetPosition::nfGetPosition(const sInitData &init) :
 dsFunction(init.clsCamera, "getPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
@@ -106,7 +108,7 @@ void deClassCamera::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	ds.GetClassDVector()->PushDVector(rt, camera.GetPosition());
 }
 
-// public func void setPosition( DVector position )
+// func void setPosition( DVector position )
 deClassCamera::nfSetPosition::nfSetPosition(const sInitData &init) :
 dsFunction(init.clsCamera, "setPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -120,7 +122,7 @@ void deClassCamera::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.SetPosition(ds.GetClassDVector()->GetDVector(obj));
 }
 
-// public func Quaternion getOrientation()
+// func Quaternion getOrientation()
 deClassCamera::nfGetOrientation::nfGetOrientation(const sInitData &init) :
 dsFunction(init.clsCamera, "getOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
@@ -132,7 +134,7 @@ void deClassCamera::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself
 	ds.GetClassQuaternion()->PushQuaternion(rt, camera.GetOrientation());
 }
 
-// public func void setOrientation( Quaternion orientation )
+// func void setOrientation( Quaternion orientation )
 deClassCamera::nfSetOrientation::nfSetOrientation(const sInitData &init) :
 dsFunction(init.clsCamera, "setOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -146,7 +148,7 @@ void deClassCamera::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself
 	camera.SetOrientation(ds.GetClassQuaternion()->GetQuaternion(obj));
 }
 
-// public func float getFov()
+// func float getFov()
 deClassCamera::nfGetFov::nfGetFov(const sInitData &init) :
 dsFunction(init.clsCamera, "getFov", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -156,7 +158,7 @@ void deClassCamera::nfGetFov::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushFloat(camera.GetFov() * RAD2DEG);
 }
 
-// public func void setFov( float fov )
+// func void setFov( float fov )
 deClassCamera::nfSetFov::nfSetFov(const sInitData &init) :
 dsFunction(init.clsCamera, "setFov", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -168,7 +170,7 @@ void deClassCamera::nfSetFov::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.SetFov(rt->GetValue(0)->GetFloat() * DEG2RAD);
 }
 
-// public func float getFovRatio()
+// func float getFovRatio()
 deClassCamera::nfGetFovRatio::nfGetFovRatio(const sInitData &init) :
 dsFunction(init.clsCamera, "getFovRatio", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -178,7 +180,7 @@ void deClassCamera::nfGetFovRatio::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushFloat(camera.GetFovRatio());
 }
 
-// public func void setFovRatio( float fovRatio )
+// func void setFovRatio( float fovRatio )
 deClassCamera::nfSetFovRatio::nfSetFovRatio(const sInitData &init) :
 dsFunction(init.clsCamera, "setFovRatio", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -190,7 +192,7 @@ void deClassCamera::nfSetFovRatio::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.SetFovRatio(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getImageDistance()
+// func float getImageDistance()
 deClassCamera::nfGetImageDistance::nfGetImageDistance(const sInitData &init) :
 dsFunction(init.clsCamera, "getImageDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -200,7 +202,7 @@ void deClassCamera::nfGetImageDistance::RunFunction(dsRunTime *rt, dsValue *myse
 	rt->PushFloat(camera.GetImageDistance());
 }
 
-// public func void setImageDistance( float distance )
+// func void setImageDistance( float distance )
 deClassCamera::nfSetImageDistance::nfSetImageDistance(const sInitData &init) :
 dsFunction(init.clsCamera, "setImageDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -212,7 +214,7 @@ void deClassCamera::nfSetImageDistance::RunFunction(dsRunTime *rt, dsValue *myse
 	camera.SetImageDistance(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getViewDistance()
+// func float getViewDistance()
 deClassCamera::nfGetViewDistance::nfGetViewDistance(const sInitData &init) :
 dsFunction(init.clsCamera, "getViewDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -222,7 +224,7 @@ void deClassCamera::nfGetViewDistance::RunFunction(dsRunTime *rt, dsValue *mysel
 	rt->PushFloat(camera.GetViewDistance());
 }
 
-// public func void setViewDistance( float distance )
+// func void setViewDistance( float distance )
 deClassCamera::nfSetViewDistance::nfSetViewDistance(const sInitData &init) :
 dsFunction(init.clsCamera, "setViewDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -236,7 +238,7 @@ void deClassCamera::nfSetViewDistance::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
-// public func bool getEnableHDRR()
+// func bool getEnableHDRR()
 deClassCamera::nfGetEnableHDRR::nfGetEnableHDRR(const sInitData &init) :
 dsFunction(init.clsCamera, "getEnableHDRR", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
@@ -246,7 +248,7 @@ void deClassCamera::nfGetEnableHDRR::RunFunction(dsRunTime *rt, dsValue *myself)
 	rt->PushBool(camera.GetEnableHDRR());
 }
 
-// public func void setEnableHDRR( bool enable )
+// func void setEnableHDRR( bool enable )
 deClassCamera::nfSetEnableHDRR::nfSetEnableHDRR(const sInitData &init) :
 dsFunction(init.clsCamera, "setEnableHDRR", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -258,7 +260,7 @@ void deClassCamera::nfSetEnableHDRR::RunFunction(dsRunTime *rt, dsValue *myself)
 	camera.SetEnableHDRR(rt->GetValue(0)->GetBool());
 }
 
-// public func float getExposure()
+// func float getExposure()
 deClassCamera::nfGetExposure::nfGetExposure(const sInitData &init) :
 dsFunction(init.clsCamera, "getExposure", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -268,7 +270,7 @@ void deClassCamera::nfGetExposure::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushFloat(camera.GetExposure());
 }
 
-// public func void setExposure( float exposure )
+// func void setExposure( float exposure )
 deClassCamera::nfSetExposure::nfSetExposure(const sInitData &init) :
 dsFunction(init.clsCamera, "setExposure", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -280,7 +282,7 @@ void deClassCamera::nfSetExposure::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.SetExposure(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getLowestIntensity()
+// func float getLowestIntensity()
 deClassCamera::nfGetLowestIntensity::nfGetLowestIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "getLowestIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -290,7 +292,7 @@ void deClassCamera::nfGetLowestIntensity::RunFunction(dsRunTime *rt, dsValue *my
 	rt->PushFloat(camera.GetLowestIntensity());
 }
 
-// public func void setLowestIntensity( float lowestIntensity )
+// func void setLowestIntensity( float lowestIntensity )
 deClassCamera::nfSetLowestIntensity::nfSetLowestIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "setLowestIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -302,7 +304,7 @@ void deClassCamera::nfSetLowestIntensity::RunFunction(dsRunTime *rt, dsValue *my
 	camera.SetLowestIntensity(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getHighestIntensity()
+// func float getHighestIntensity()
 deClassCamera::nfGetHighestIntensity::nfGetHighestIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "getHighestIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -312,7 +314,7 @@ void deClassCamera::nfGetHighestIntensity::RunFunction(dsRunTime *rt, dsValue *m
 	rt->PushFloat(camera.GetHighestIntensity());
 }
 
-// public func void setHighestIntensity( float highestIntensity )
+// func void setHighestIntensity( float highestIntensity )
 deClassCamera::nfSetHighestIntensity::nfSetHighestIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "setHighestIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -324,7 +326,7 @@ void deClassCamera::nfSetHighestIntensity::RunFunction(dsRunTime *rt, dsValue *m
 	camera.SetHighestIntensity(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getAdaptionTime()
+// func float getAdaptionTime()
 deClassCamera::nfGetAdaptionTime::nfGetAdaptionTime(const sInitData &init) :
 dsFunction(init.clsCamera, "getAdaptionTime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -334,7 +336,7 @@ void deClassCamera::nfGetAdaptionTime::RunFunction(dsRunTime *rt, dsValue *mysel
 	rt->PushFloat(camera.GetAdaptionTime());
 }
 
-// public func void setAdaptionTime( float adaptionTime )
+// func void setAdaptionTime( float adaptionTime )
 deClassCamera::nfSetAdaptionTime::nfSetAdaptionTime(const sInitData &init) :
 dsFunction(init.clsCamera, "setAdaptionTime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -346,7 +348,7 @@ void deClassCamera::nfSetAdaptionTime::RunFunction(dsRunTime *rt, dsValue *mysel
 	camera.SetAdaptionTime(rt->GetValue(0)->GetFloat());
 }
 
-// public func void resetAdaptedIntensity()
+// func void resetAdaptedIntensity()
 deClassCamera::nfResetAdaptedIntensity::nfResetAdaptedIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "resetAdaptedIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -358,7 +360,7 @@ void deClassCamera::nfResetAdaptedIntensity::RunFunction(dsRunTime*, dsValue *my
 
 
 
-// public func bool getEnableGI()
+// func bool getEnableGI()
 deClassCamera::nfGetEnableGI::nfGetEnableGI(const sInitData &init) :
 dsFunction(init.clsCamera, "getEnableGI", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
@@ -368,7 +370,7 @@ void deClassCamera::nfGetEnableGI::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushBool(camera.GetEnableGI());
 }
 
-// public func void setEnableGI( bool enable )
+// func void setEnableGI( bool enable )
 deClassCamera::nfSetEnableGI::nfSetEnableGI(const sInitData &init) :
 dsFunction(init.clsCamera, "setEnableGI", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -382,7 +384,7 @@ void deClassCamera::nfSetEnableGI::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func float getWhiteIntensity()
+// func float getWhiteIntensity()
 deClassCamera::nfGetWhiteIntensity::nfGetWhiteIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "getWhiteIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -392,7 +394,7 @@ void deClassCamera::nfGetWhiteIntensity::RunFunction(dsRunTime *rt, dsValue *mys
 	rt->PushFloat(camera.GetWhiteIntensity());
 }
 
-// public func void setWhiteIntensity( float intensity )
+// func void setWhiteIntensity( float intensity )
 deClassCamera::nfSetWhiteIntensity::nfSetWhiteIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "setWhiteIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -404,7 +406,7 @@ void deClassCamera::nfSetWhiteIntensity::RunFunction(dsRunTime *rt, dsValue *mys
 	camera.SetWhiteIntensity(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getBloomIntensity()
+// func float getBloomIntensity()
 deClassCamera::nfGetBloomIntensity::nfGetBloomIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "getBloomIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -414,7 +416,7 @@ void deClassCamera::nfGetBloomIntensity::RunFunction(dsRunTime *rt, dsValue *mys
 	rt->PushFloat(camera.GetBloomIntensity());
 }
 
-// public func void setBloomIntensity( float intensity )
+// func void setBloomIntensity( float intensity )
 deClassCamera::nfSetBloomIntensity::nfSetBloomIntensity(const sInitData &init) :
 dsFunction(init.clsCamera, "setBloomIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -426,7 +428,7 @@ void deClassCamera::nfSetBloomIntensity::RunFunction(dsRunTime *rt, dsValue *mys
 	camera.SetBloomIntensity(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getBloomStrength()
+// func float getBloomStrength()
 deClassCamera::nfGetBloomStrength::nfGetBloomStrength(const sInitData &init) :
 dsFunction(init.clsCamera, "getBloomStrength", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -436,7 +438,7 @@ void deClassCamera::nfGetBloomStrength::RunFunction(dsRunTime *rt, dsValue *myse
 	rt->PushFloat(camera.GetBloomStrength());
 }
 
-// public func void setBloomStrength( float strength )
+// func void setBloomStrength( float strength )
 deClassCamera::nfSetBloomStrength::nfSetBloomStrength(const sInitData &init) :
 dsFunction(init.clsCamera, "setBloomStrength", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -448,7 +450,7 @@ void deClassCamera::nfSetBloomStrength::RunFunction(dsRunTime *rt, dsValue *myse
 	camera.SetBloomStrength(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getBloomSize()
+// func float getBloomSize()
 deClassCamera::nfGetBloomSize::nfGetBloomSize(const sInitData &init) :
 dsFunction(init.clsCamera, "getBloomSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -458,7 +460,7 @@ void deClassCamera::nfGetBloomSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushFloat(camera.GetBloomSize());
 }
 
-// public func void setBloomSize( float size )
+// func void setBloomSize( float size )
 deClassCamera::nfSetBloomSize::nfSetBloomSize(const sInitData &init) :
 dsFunction(init.clsCamera, "setBloomSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -470,7 +472,7 @@ void deClassCamera::nfSetBloomSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.SetBloomSize(rt->GetValue(0)->GetFloat());
 }
 
-// public func float getBloomBlend()
+// func float getBloomBlend()
 deClassCamera::nfGetBloomBlend::nfGetBloomBlend(const sInitData &init) :
 dsFunction(init.clsCamera, "getBloomBlend", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
@@ -480,7 +482,7 @@ void deClassCamera::nfGetBloomBlend::RunFunction(dsRunTime *rt, dsValue *myself)
 	rt->PushFloat(camera.GetBloomBlend());
 }
 
-// public func void setBloomBlend( float blend )
+// func void setBloomBlend( float blend )
 deClassCamera::nfSetBloomBlend::nfSetBloomBlend(const sInitData &init) :
 dsFunction(init.clsCamera, "setBloomBlend", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -492,7 +494,7 @@ void deClassCamera::nfSetBloomBlend::RunFunction(dsRunTime *rt, dsValue *myself)
 	camera.SetBloomBlend(rt->GetValue(0)->GetFloat());
 }
 
-// public func CurveBezier getToneMapCurve()
+// func CurveBezier getToneMapCurve()
 deClassCamera::nfGetToneMapCurve::nfGetToneMapCurve(const sInitData &init) :
 dsFunction(init.clsCamera, "getToneMapCurve", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
@@ -503,7 +505,7 @@ void deClassCamera::nfGetToneMapCurve::RunFunction(dsRunTime *rt, dsValue *mysel
 	ds.GetClassCurveBezier()->PushCurve(rt, camera.GetToneMapCurve());
 }
 
-// public func void setToneMapCurve( CurveBezier curve )
+// func void setToneMapCurve( CurveBezier curve )
 deClassCamera::nfSetToneMapCurve::nfSetToneMapCurve(const sInitData &init) :
 dsFunction(init.clsCamera, "setToneMapCurve", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -518,7 +520,7 @@ void deClassCamera::nfSetToneMapCurve::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
-// public func Point project( Point viewportSize, DVector position )
+// func Point project( Point viewportSize, DVector position )
 deClassCamera::nfProject::nfProject(const sInitData &init) :
 dsFunction(init.clsCamera, "project", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
@@ -553,7 +555,7 @@ void deClassCamera::nfProject::RunFunction(dsRunTime *rt, dsValue *myself){
 	ds.GetClassPoint()->PushPoint(rt, point);
 }
 
-// public func Vector backProject( Point viewportSize, Point position )
+// func Vector backProject( Point viewportSize, Point position )
 deClassCamera::nfBackProject::nfBackProject(const sInitData &init) :
 dsFunction(init.clsCamera, "backProject", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
@@ -580,7 +582,7 @@ void deClassCamera::nfBackProject::RunFunction(dsRunTime *rt, dsValue *myself){
 	ds.GetClassVector()->PushVector(rt, (camera.GetOrientation() * direction.Normalized()).ToVector());
 }
 
-// public func Vector backProject( int width, int height, int x, int y )
+// func Vector backProject( int width, int height, int x, int y )
 deClassCamera::nfBackProject2::nfBackProject2(const sInitData &init) :
 dsFunction(init.clsCamera, "backProject", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
@@ -613,7 +615,7 @@ void deClassCamera::nfBackProject2::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func LayerMask getLayerMask()
+// func LayerMask getLayerMask()
 deClassCamera::nfGetLayerMask::nfGetLayerMask(const sInitData &init) :
 dsFunction(init.clsCamera, "getLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
@@ -625,7 +627,7 @@ void deClassCamera::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	ds.GetClassLayerMask()->PushLayerMask(rt, camera.GetLayerMask());
 }
 
-// public func void setLayerMask( LayerMask layerMask )
+// func void setLayerMask( LayerMask layerMask )
 deClassCamera::nfSetLayerMask::nfSetLayerMask(const sInitData &init) :
 dsFunction(init.clsCamera, "setLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -639,7 +641,7 @@ void deClassCamera::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.NotifyLayerMaskChanged();
 }
 
-// public func World getParentWorld()
+// func World getParentWorld()
 deClassCamera::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
 dsFunction(init.clsCamera, "getParentWorld", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
@@ -653,7 +655,7 @@ void deClassCamera::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself
 
 
 
-// public func DMatrix getMatrix()
+// func DMatrix getMatrix()
 deClassCamera::nfGetMatrix::nfGetMatrix(const sInitData &init) :
 dsFunction(init.clsCamera, "getMatrix", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix){
@@ -666,7 +668,7 @@ void deClassCamera::nfGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 		camera.GetPosition(), camera.GetOrientation()));
 }
 
-// public func DMatrix getInverseMatrix()
+// func DMatrix getInverseMatrix()
 deClassCamera::nfGetInverseMatrix::nfGetInverseMatrix(const sInitData &init) :
 dsFunction(init.clsCamera, "getInverseMatrix", DSFT_FUNCTION,
 	DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix){
@@ -684,7 +686,7 @@ void deClassCamera::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myse
 // Efects
 ///////////
 
-// public func int getEffectCount()
+// func int getEffectCount()
 deClassCamera::nfGetEffectCount::nfGetEffectCount(const sInitData &init) :
 dsFunction(init.clsCamera, "getEffectCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
@@ -695,7 +697,7 @@ void deClassCamera::nfGetEffectCount::RunFunction(dsRunTime *rt, dsValue *myself
 	rt->PushInt(camera.GetEffectCount());
 }
 
-// public func Effect getEffectAt( int index )
+// func Effect getEffectAt( int index )
 deClassCamera::nfGetEffectAt::nfGetEffectAt(const sInitData &init) :
 dsFunction(init.clsCamera, "getEffect", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsEffect){
@@ -709,7 +711,7 @@ void deClassCamera::nfGetEffectAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	ds.GetClassEffect()->PushEffect(rt, camera.GetEffectAt(index));
 }
 
-// public func void addEffect( Effect effect )
+// func void addEffect( Effect effect )
 deClassCamera::nfAddEffect::nfAddEffect(const sInitData &init) :
 dsFunction(init.clsCamera, "addEffect", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -724,7 +726,7 @@ void deClassCamera::nfAddEffect::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.AddEffect(ds.GetClassEffect()->GetEffect(obj));
 }
 
-// public func void removeEffect( Effect effect )
+// func void removeEffect( Effect effect )
 deClassCamera::nfRemoveEffect::nfRemoveEffect(const sInitData &init) :
 dsFunction(init.clsCamera, "removeEffect", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -739,7 +741,7 @@ void deClassCamera::nfRemoveEffect::RunFunction(dsRunTime *rt, dsValue *myself){
 	camera.RemoveEffect(ds.GetClassEffect()->GetEffect(obj));
 }
 
-// public func void removeAllEffects()
+// func void removeAllEffects()
 deClassCamera::nfRemoveAllEffects::nfRemoveAllEffects(const sInitData &init) :
 dsFunction(init.clsCamera, "removeAllEffects", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -752,10 +754,105 @@ void deClassCamera::nfRemoveAllEffects::RunFunction(dsRunTime*, dsValue *myself)
 
 
 
+// Ignore components
+//////////////////////
+
+// func int getIgnoreComponentCount()
+deClassCamera::nfGetIgnoreComponentCount::nfGetIgnoreComponentCount(const sInitData &init) :
+dsFunction(init.clsCamera, "getIgnoreComponentCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+}
+void deClassCamera::nfGetIgnoreComponentCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCamera &camera = dedsGetNativeData<sCamNatDat>(p_GetNativeData(myself)).camera;
+	rt->PushInt(camera.GetIgnoreComponents().GetCount());
+}
+
+// func Component getIgnoreComponentAt(int index)
+deClassCamera::nfGetIgnoreComponentAt::nfGetIgnoreComponentAt(const sInitData &init) :
+dsFunction(init.clsCamera, "getIgnoreComponentAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsComponent){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassCamera::nfGetIgnoreComponentAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCamera &camera = dedsGetNativeData<sCamNatDat>(p_GetNativeData(myself)).camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
+	
+	ds.GetClassComponent()->PushComponent(rt, camera.GetIgnoreComponents().GetAt(rt->GetValue(0)->GetInt()));
+}
+
+// func bool hasIgnoreComponent(Component component)
+deClassCamera::nfHasIgnoreComponent::nfHasIgnoreComponent(const sInitData &init) :
+dsFunction(init.clsCamera, "hasIgnoreComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
+	p_AddParameter(init.clsComponent); // component
+}
+void deClassCamera::nfHasIgnoreComponent::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCamera &camera = dedsGetNativeData<sCamNatDat>(p_GetNativeData(myself)).camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
+	
+	deComponent * const component = ds.GetClassComponent()->GetComponent(
+		rt->GetValue(0)->GetRealObject());
+	if(!component){
+		DSTHROW(dueNullPointer);
+	}
+	
+	rt->PushBool(camera.GetIgnoreComponents().Has(component));
+}
+
+// func void addIgnoreComponent(Component component)
+deClassCamera::nfAddIgnoreComponent::nfAddIgnoreComponent(const sInitData &init) :
+dsFunction(init.clsCamera, "addIgnoreComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsComponent); // component
+}
+void deClassCamera::nfAddIgnoreComponent::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCamera &camera = dedsGetNativeData<sCamNatDat>(p_GetNativeData(myself)).camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
+	
+	deComponent * const component = ds.GetClassComponent()->GetComponent(
+		rt->GetValue(0)->GetRealObject());
+	if(!component){
+		DSTHROW(dueNullPointer);
+	}
+	
+	camera.AddIgnoreComponent(component);
+}
+
+// func void removeIgnoreComponent(Component component)
+deClassCamera::nfRemoveIgnoreComponent::nfRemoveIgnoreComponent(const sInitData &init) :
+dsFunction(init.clsCamera, "removeIgnoreComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsComponent); // component
+}
+void deClassCamera::nfRemoveIgnoreComponent::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCamera &camera = dedsGetNativeData<sCamNatDat>(p_GetNativeData(myself)).camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
+	
+	deComponent * const component = ds.GetClassComponent()->GetComponent(
+		rt->GetValue(0)->GetRealObject());
+	if(!component){
+		DSTHROW(dueNullPointer);
+	}
+	
+	camera.RemoveIgnoreComponent(component);
+}
+
+// func void removeAllIgnoreComponents()
+deClassCamera::nfRemoveAllIgnoreComponents::nfRemoveAllIgnoreComponents(const sInitData &init) :
+dsFunction(init.clsCamera, "removeAllIgnoreComponents", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+}
+void deClassCamera::nfRemoveAllIgnoreComponents::RunFunction(dsRunTime*, dsValue *myself){
+	deCamera &camera = dedsGetNativeData<sCamNatDat>(p_GetNativeData(myself)).camera;
+	camera.RemoveAllIgnoreComponents();
+}
+
+
+
 // Misc
 /////////
 
-// public func int hashCode()
+// func int hashCode()
 deClassCamera::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsCamera, "hashCode", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
@@ -768,7 +865,7 @@ void deClassCamera::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt((int)(intptr_t)camera);
 }
 
-// public func bool equals( Object object )
+// func bool equals( Object object )
 deClassCamera::nfEquals::nfEquals(const sInitData &init) :
 dsFunction(init.clsCamera, "equals", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
@@ -830,6 +927,7 @@ void deClassCamera::CreateClassMembers(dsEngine *engine){
 	init.clsDVector = pDS.GetClassDVector();
 	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsEffect = pDS.GetClassEffect();
+	init.clsComponent = pDS.GetClassComponent();
 	init.clsPoint = pDS.GetClassPoint();
 	init.clsLayerMask = pDS.GetClassLayerMask();
 	init.clsWorld = pDS.GetClassWorld();
@@ -896,6 +994,13 @@ void deClassCamera::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfAddEffect(init));
 	AddFunction(new nfRemoveEffect(init));
 	AddFunction(new nfRemoveAllEffects(init));
+	
+	AddFunction(new nfGetIgnoreComponentCount(init));
+	AddFunction(new nfGetIgnoreComponentAt(init));
+	AddFunction(new nfHasIgnoreComponent(init));
+	AddFunction(new nfAddIgnoreComponent(init));
+	AddFunction(new nfRemoveIgnoreComponent(init));
+	AddFunction(new nfRemoveAllIgnoreComponents(init));
 	
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));

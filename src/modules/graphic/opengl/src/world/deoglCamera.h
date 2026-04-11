@@ -61,6 +61,7 @@ private:
 	bool pDirtyEffects;
 	bool pResetAdaptedIntensity;
 	bool pDirtyVR;
+	bool pDirtyIgnoreComponents;
 	
 	bool pEnableVR;
 	
@@ -148,6 +149,9 @@ public:
 	
 	/** All effects have been removed. */
 	void AllEffectsRemoved() override;
+	
+	/** Ignore components changed. */
+	void IgnoreComponentsChanged() override;
 	/*@}*/
 	
 	

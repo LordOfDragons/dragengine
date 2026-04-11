@@ -30,11 +30,13 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
 class deoglREffect;
 class deoglRenderPlan;
 class deoglRenderThread;
+class deoglRComponent;
 class deoglTexture;
 class deoglVR;
 
@@ -77,6 +79,7 @@ private:
 	deoglRenderPlan *pPlan;
 	
 	decTObjectList<deoglREffect> pEffects;
+	decTObjectSet<deoglRComponent> pIgnoreComponents;
 	
 	bool pInitTexture;
 	
@@ -213,6 +216,17 @@ public:
 	
 	/** Enable/Disable VR. */
 	void EnableVR(bool enable);
+	
+	
+	
+	/** \brief Components to ignore during rendering. */
+	inline const decTObjectSet<deoglRComponent> &GetIgnoreComponents() const{ return pIgnoreComponents; }
+	
+	/** \brief Remove all ignore components. */
+	void RemoveAllIgnoreComponents();
+	
+	/** \brief Add ignore component. */
+	void AddIgnoreComponent(deoglRComponent *component);
 	
 	
 	

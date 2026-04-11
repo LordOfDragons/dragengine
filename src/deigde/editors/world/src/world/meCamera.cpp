@@ -50,7 +50,8 @@ igdeCamera(engine),
 
 pDDVolume(nullptr),
 pWorld(nullptr),
-pHostObject(nullptr)
+pHostObject(nullptr),
+pShowPreview(false)
 {
 	SetLowestIntensity(1.0f);
 	SetHighestIntensity(20.0f);
@@ -113,6 +114,10 @@ void meCamera::SetHostMatrix(const decDMatrix &matrix){
 
 void meCamera::Reset(){
 	igdeCamera::Reset();
+}
+
+void meCamera::SetShowPreview(bool showPreview){
+	pShowPreview = showPreview;
 }
 
 

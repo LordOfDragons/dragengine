@@ -192,8 +192,7 @@ void gdeVAOComponent::pCleanUp(){
 
 void gdeVAOComponent::pCreateComponent(){
 	deOcclusionMesh::Ref occlusionMesh;
-	deModel::Ref audioModel;
-	deModel::Ref model;
+	deModel::Ref model, audioModel;
 	deSkin::Ref skin;
 	deRig::Ref rig;
 	
@@ -466,11 +465,13 @@ void gdeVAOComponent::pCreateAnimator(){
 		
 		animator = engine.GetAnimatorManager()->CreateAnimator();
 		animator->SetAnimation(animation);
+		animator->SetRig(pComponent->GetRig());
 		
 		try{
 			const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
 			controller->SetName(pOCComponent->GetPlaybackController());
 			controller->SetValueRange(0.0f, animation->GetMove(moveIndex)->GetPlaytime());
+			controller->SetClamp(false);
 			animator->AddController(controller);
 			
 		}catch(const deException &e){

@@ -225,7 +225,10 @@ void meView3D::SetWorld(meWorld *world){
 		return;
 	}
 	
-	pEditor = nullptr;
+	pEditor.Clear();
+	if(pPreviewCamera){
+		pPreviewCamera->SetWorld(nullptr);
+	}
 	
 	SetRenderWorld(nullptr);
 	
@@ -240,12 +243,19 @@ void meView3D::SetWorld(meWorld *world){
 		ModeChanged();
 		ActiveCameraChanged();
 	}
+	if(pPreviewCamera){
+		pPreviewCamera->SetWorld(world);
+	}
 }
 
 
 
 void meView3D::OnFrameUpdate(float elapsed){
 	igdeViewRenderWindow::OnFrameUpdate(elapsed);
+	
+	if(pPreviewCamera){
+		pPreviewCamera->OnFrameUpdate(elapsed);
+	}
 	
 	if(pWorld){
 		pWorld->UpdateDEWorld(elapsed);
@@ -283,9 +293,12 @@ void meView3D::CreateCanvas(){
 	
 	igdeViewRenderWindow::CreateCanvas();
 	
+	DEASSERT_NOTNULL(GetRenderWindowCanvas());
+	pPreviewCamera = mePreviewCamera::Ref::New(pWindowMain, *GetRenderWindowCanvas());
+	
 	if(!pCanvasFPS){
 		pCanvasFPS = GetEngine()->GetCanvasManager()->CreateCanvasView();
-		pCanvasFPS->SetOrder(10.0f);
+		pCanvasFPS->SetOrder(1000.0f);
 		pCanvasFPS->SetPosition(decPoint(5, 5));
 		pCanvasFPS->SetSize(decPoint(lineHeight * 4, lineHeight));
 		AddCanvas(pCanvasFPS);
@@ -318,6 +331,9 @@ void meView3D::CreateCanvas(){
 }
 
 void meView3D::OnResize(){
+	if(pPreviewCamera){
+		pPreviewCamera->OnParentResized();
+	}
 	if(pEditor){
 		pEditor->OnResize();
 	}
@@ -326,7 +342,7 @@ void meView3D::OnResize(){
 
 
 void meView3D::ModeChanged(){
-	pEditor = nullptr;
+	pEditor.Clear();
 	
 	if(!pWorld){
 		return;

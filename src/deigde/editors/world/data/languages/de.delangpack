@@ -1162,6 +1162,17 @@ Eigenschaftstyp verstossen. Bitte seien Sie daher vorsichtig bei der Eingabe.</t
 	<translation name="World.WPView.Action.Object.ToolTip">An Objekt angeheftete Kamera</translation>
 	<translation name="World.WPView.Action.EnableAuralization">Auralisation</translation>
 	<translation name="World.WPView.Action.EnableAuralization.ToolTip">Aktivieren Sie die Auralisierung, sofern sie vom Audiomodul unterstützt wird</translation>
+	<translation name="World.WPView.PreviewCamera.Label">Vorschau-Kamera:</translation>
+	<translation name="World.WPView.Action.PreviewCameraSize">Grösse</translation>
+	<translation name="World.WPView.Action.PreviewCameraSize.ToolTip">Grösse der Vorschau-Kamera in Pixels</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo960x540">Auf 960x540 festlegen</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo800x450">Auf 800x450 festlegen</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo640x360">Auf 640x360 festlegen</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo480x270">Auf 480x270 festlegen</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo320x180">Auf 320x180 festlegen</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo160x90">Auf 160x90 festlegen</translation>
+	<translation name="World.WPView.Action.PreviewCameraTransparency">Transparenz</translation>
+	<translation name="World.WPView.Action.PreviewCameraTransparency.ToolTip">Transparenz der Vorschau-Kamera</translation>
 	<translation name="World.WPView.Action.LimitBoxClear">Löschen</translation>
 	<translation name="World.WPView.Action.LimitBoxClear.ToolTip">Begrenzung löschen</translation>
 	<translation name="World.WPView.Action.LimitBoxDefault">Würfel festlegen</translation>
@@ -1293,6 +1304,8 @@ Eigenschaftstyp verstossen. Bitte seien Sie daher vorsichtig bei der Eingabe.</t
 	<translation name="World.WPSObject.Action.AttachableRemoveAll.ToolTip">Alle anhängbare Verhalten entfernen</translation>
 	<translation name="World.WPSObject.Action.ShowMissingTextures">Fehlende Texturen anzeigen</translation>
 	<translation name="World.WPSObject.Action.ShowMissingTextures.ToolTip">Fehlende Texturen mithilfe von Platzhaltertexturen anzeigen</translation>
+	<translation name="World.WPSObject.Action.CameraShowPreview">Kamera-Vorschau anzeigen</translation>
+	<translation name="World.WPSObject.Action.CameraShowPreview.ToolTip">Kamera im Vorschau-Panel anzeigen</translation>
 	<translation name="World.WPSObject.Tint.ToolTip">Farbton. Wirkt sich auf das Renderziel "tint" aus</translation>
 	<translation name="World.WPSObject.Intensity">Intensität:</translation>
 	

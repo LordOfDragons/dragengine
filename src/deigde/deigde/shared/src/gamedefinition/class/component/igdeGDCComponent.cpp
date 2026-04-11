@@ -46,6 +46,7 @@ pLightShadowIgnore(false)
 	pPartialHide = false;
 	pRenderEnvMap = true;
 	pAffectsAudio = true;
+	pEnableGI = true;
 	pAttachTarget = true;
 	pColliderResponseType = deCollider::ertStatic;
 }
@@ -64,6 +65,7 @@ pDoNotScale(component.pDoNotScale),
 pStatic(component.pStatic),
 pRenderEnvMap(component.pRenderEnvMap),
 pAffectsAudio(component.pAffectsAudio),
+pEnableGI(component.pEnableGI),
 pPartialHide(component.pPartialHide),
 pAttachTarget(component.pAttachTarget),
 pLightShadowIgnore(component.pLightShadowIgnore),
@@ -152,6 +154,10 @@ void igdeGDCComponent::SetRenderEnvMap(bool renderEnvMap){
 
 void igdeGDCComponent::SetAffectsAudio(bool affectsAudio){
 	pAffectsAudio = affectsAudio;
+}
+
+void igdeGDCComponent::SetEnableGI(bool enableGI){
+	pEnableGI = enableGI;
 }
 
 void igdeGDCComponent::SetLightShadowIgnore(bool lightShadowIgnore){

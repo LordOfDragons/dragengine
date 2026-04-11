@@ -83,7 +83,7 @@ void deoglSTPipelinesParticle::pPipelineConfigGeometry(deoglPipelineConfiguratio
 	deoglSkinTexturePipelines::pPipelineConfigGeometry(config);
 	
 	config.SetMasks(true, true, true, false, false);
-	config.EnableBlend(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	config.EnableBlend(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 	config.EnableDepthTest(pTexture.GetRenderThread().GetChoices().GetDepthCompareFuncRegular());
 	config.SetEnableCullFace(false);
 }

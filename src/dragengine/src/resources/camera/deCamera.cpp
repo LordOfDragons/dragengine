@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deCamera.h"
 #include "deCameraManager.h"
 #include "../effect/deEffect.h"
@@ -344,6 +339,38 @@ void deCamera::NotifyLayerMaskChanged(){
 void deCamera::ResetAdaptedIntensity(){
 	if(pPeerGraphic){
 		pPeerGraphic->ResetAdaptedIntensity();
+	}
+}
+
+
+
+void deCamera::AddIgnoreComponent(deComponent *component){
+	DEASSERT_NOTNULL(component)
+	
+	pIgnoreComponents.Add(component);
+	
+	if(pPeerGraphic){
+		pPeerGraphic->IgnoreComponentsChanged();
+	}
+}
+
+void deCamera::RemoveIgnoreComponent(deComponent *component){
+	pIgnoreComponents.Remove(component);
+	
+	if(pPeerGraphic){
+		pPeerGraphic->IgnoreComponentsChanged();
+	}
+}
+
+void deCamera::RemoveAllIgnoreComponents(){
+	if(pIgnoreComponents.IsEmpty()){
+		return;
+	}
+	
+	pIgnoreComponents.RemoveAll();
+	
+	if(pPeerGraphic){
+		pPeerGraphic->IgnoreComponentsChanged();
 	}
 }
 
