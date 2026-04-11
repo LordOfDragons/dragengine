@@ -427,6 +427,7 @@
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmOpusStream.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.cpp" />
@@ -437,8 +438,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioStream.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.h" />
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmOpusStream.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVPXTrackCallback.h" />
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmVideoAudioDecoder.h" />
