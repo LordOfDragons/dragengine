@@ -79,6 +79,10 @@ def libopusBuild(target, source, env):
 		cmdline.append('--enable-shared=yes')
 		cmdline.append('--enable-static=no')
 	
+	if env['platform_webwasm']:
+		cmdline.append('--disable-rtcd')
+		# cmdline.append('--disable-intrinsics')
+	
 	if 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
 	
