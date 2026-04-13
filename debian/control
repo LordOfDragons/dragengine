@@ -33,7 +33,8 @@ Build-Depends: debhelper-compat (= 12),
                libopenvr-dev,
                glslang-tools,
                libfreetype-dev,
-               libopus-dev
+               libopus-dev,
+               libfftw3-dev
 Standards-Version: 4.1.3
 Homepage: https://dragondreams.ch
 Rules-Requires-Root: no
