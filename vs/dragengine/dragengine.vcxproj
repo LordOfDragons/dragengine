@@ -857,6 +857,9 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioCaptureListener.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophone.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSound.cpp" />
@@ -1022,6 +1025,7 @@
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundDecoder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundInfo.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerAudioAnalyzer.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSound.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizer.cpp" />
@@ -1453,6 +1457,9 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioCaptureListener.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophone.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSound.h" />
@@ -1618,6 +1625,7 @@
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundDecoder.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundInfo.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerAudioAnalyzer.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSound.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizer.h" />
