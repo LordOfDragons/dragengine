@@ -87,6 +87,7 @@
 #include "resources/sensor/deTouchSensorManager.h"
 #include "resources/sensor/deSoundLevelMeterManager.h"
 #include "resources/smoke/deSmokeEmitterManager.h"
+#include "resources/sound/deAudioAnalyzerManager.h"
 #include "resources/sound/deMicrophoneManager.h"
 #include "resources/sound/deSoundManager.h"
 #include "resources/sound/deSpeakerManager.h"
@@ -127,6 +128,7 @@ enum eResourceManager{
 	ermAnimators,
 	ermAnimatorInstances,
 	ermArchives,
+	ermAudioAnalyzers,
 	ermBillboards,
 	ermCanvas,
 	ermCameras,
@@ -200,6 +202,7 @@ static const int vLocalResourcePeerCreationOrder[ManagerCount] = {
 	ermFonts,
 	
 	ermAnimations,
+	ermAudioAnalyzers,
 	ermLanguagePacks,
 	ermModels,
 	ermOcclusionMesh,
@@ -597,6 +600,10 @@ deSynthesizerManager *deEngine::GetSynthesizerManager() const{
 
 deSynthesizerInstanceManager *deEngine::GetSynthesizerInstanceManager() const{
 	return pResMgrs.GetAt(ermSynthesizerInstances).PointerStaticCast<deSynthesizerInstanceManager>();
+}
+
+deAudioAnalyzerManager *deEngine::GetAudioAnalyzerManager() const{
+	return pResMgrs.GetAt(ermAudioAnalyzers).PointerStaticCast<deAudioAnalyzerManager>();
 }
 
 deTouchSensorManager *deEngine::GetTouchSensorManager() const{
@@ -1164,6 +1171,7 @@ void deEngine::pInitResourceManagers(){
 	pResMgrs.SetAt(ermAnimatorInstances, deTUniqueReference<deAnimatorInstanceManager>::New(this));
 	pResMgrs.SetAt(ermAnimators, deTUniqueReference<deAnimatorManager>::New(this));
 	pResMgrs.SetAt(ermArchives, deTUniqueReference<deArchiveManager>::New(this));
+	pResMgrs.SetAt(ermAudioAnalyzers, deTUniqueReference<deAudioAnalyzerManager>::New(this));
 	pResMgrs.SetAt(ermBillboards, deTUniqueReference<deBillboardManager>::New(this));
 	pResMgrs.SetAt(ermCanvas, deTUniqueReference<deCanvasManager>::New(this));
 	pResMgrs.SetAt(ermCameras, deTUniqueReference<deCameraManager>::New(this));
@@ -1216,6 +1224,7 @@ void deEngine::pInitResourceManagers(){
 	RESMGRSANCHECK(ermAnimators, ertAnimator);
 	RESMGRSANCHECK(ermAnimatorInstances, ertAnimatorInstance);
 	RESMGRSANCHECK(ermArchives, ertArchive);
+	RESMGRSANCHECK(ermAudioAnalyzers, ertAudioAnalyzer);
 	RESMGRSANCHECK(ermBillboards, ertBillboard);
 	RESMGRSANCHECK(ermCanvas, ertCanvas);
 	RESMGRSANCHECK(ermCameras, ertCamera);

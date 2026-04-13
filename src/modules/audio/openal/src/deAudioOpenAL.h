@@ -25,8 +25,10 @@
 #ifndef _DEAUDIOOPENAL_H_
 #define _DEAUDIOOPENAL_H_
 
+#include "capture/deoalAudioCapture.h"
 #include "parameters/deoalParameter.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/systems/modules/audio/deBaseAudioModule.h>
 
 class deoalAudioThread;
@@ -35,7 +37,6 @@ class deoalConfiguration;
 class deoalDevMode;
 class deoalMicrophone;
 class deoalWorld;
-
 
 
 /**
@@ -52,14 +53,14 @@ private:
 	deoalDevMode *pDevMode;
 	
 	deoalMicrophone *pActiveMicrophone;
-	
+	deTUniqueReference<deoalAudioCapture> pAudioCapture;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create openal audio module. */
-	deAudioOpenAL(deLoadableModule &loadableModule);
+	explicit deAudioOpenAL(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up openal audio module. */
 	~deAudioOpenAL() override;
@@ -164,8 +165,25 @@ public:
 	
 	/** \brief Create deHeightTerrain peer. */
 	deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) override;
-	/*@}*/
 	
+	
+	/** \brief Can audio be captured. */
+	bool CanCaptureAudio() const override;
+	
+	/** \brief Start audio capture. */
+	void StartAudioCapture() override;
+	
+	/** \brief Stop audio capture. */
+	void StopAudioCapture() override;
+	
+	/** \brief Is capturing audio. */
+	bool IsCapturingAudio() const override;
+	
+	/** \brief Audio capture format. */
+	void GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const override;
+	
+	/** \brief Audio capture levels. */
+	void GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const override;
 	
 	
 	/** \name Notifications */

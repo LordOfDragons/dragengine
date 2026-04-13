@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,50 +22,35 @@
  * SOFTWARE.
  */
 
-#include "deBaseAudioModule.h"
-#include "../../../common/exceptions.h"
+#ifndef _DEBASESYNTHESIZERAUDIOANALYZER_H_
+#define _DEBASESYNTHESIZERAUDIOANALYZER_H_
+
+#include "../../../dragengine_export.h"
 
 
-// Class deBaseAudioModule
-////////////////////////////
+/**
+ * \brief Synthesizer module audio analyzer peer.
+ */
+class DE_DLL_EXPORT deBaseSynthesizerAudioAnalyzer{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create peer. */
+	deBaseSynthesizerAudioAnalyzer();
+	
+	/** \brief Clean up peer. */
+	virtual ~deBaseSynthesizerAudioAnalyzer();
+	/*@}*/
+	
+	
+	/** \name Notifications */
+	/*@{*/
+	/** \brief Configuration changed. */
+	virtual void ConfigurationChanged();
+	
+	/** \brief Update results. */
+	virtual void UpdateResults();
+	/*@}*/
+};
 
-deBaseAudioModule::deBaseAudioModule(deLoadableModule &loadableModule) :
-deBaseModule(loadableModule){
-}
-
-deBaseAudioModule::~deBaseAudioModule(){
-}
-
-
-
-// Management
-///////////////
-
-int deBaseAudioModule::GetFPSRate(){
-	return 0;
-}
-
-
-bool deBaseAudioModule::CanCaptureAudio() const{
-	return false;
-}
-
-void deBaseAudioModule::StartAudioCapture(){
-	DETHROW(deeInvalidAction);
-}
-
-void deBaseAudioModule::StopAudioCapture(){
-	DETHROW(deeInvalidAction);
-}
-
-bool deBaseAudioModule::IsCapturingAudio() const{
-	return false;
-}
-
-void deBaseAudioModule::GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const{
-	format = {};
-}
-
-void deBaseAudioModule::GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const{
-	levels = {};
-}
+#endif

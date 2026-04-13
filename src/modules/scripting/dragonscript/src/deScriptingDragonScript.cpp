@@ -184,6 +184,7 @@
 
 #include "classes/resources/deClassResourceListener.h"
 
+#include "classes/sound/deClassAudioAnalyzer.h"
 #include "classes/sound/deClassMicrophone.h"
 #include "classes/sound/deClassSound.h"
 #include "classes/sound/deClassSpeaker.h"
@@ -501,6 +502,7 @@ pClsSmDbl(nullptr),
 pClsSmVec(nullptr),
 pClsSmVec2(nullptr),
 pClsSmDVec(nullptr),
+pClsAudioAnalyzer(nullptr),
 pClsSnd(nullptr),
 pClsSoundLevelMeter(nullptr),
 pClsSoundLevelMeterSpeaker(nullptr),
@@ -1460,6 +1462,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass(pClsXMLEl = new deClassEasyXMLElement(*this));
 		package->AddHostClass(pClsLP = new deClassLanguagePack(*this));
 		package->AddHostClass(pClsLangPackBuilder = new deClassLanguagePackBuilder(*this));
+		package->AddHostClass(pClsAudioAnalyzer = new deClassAudioAnalyzer(*this));
 		package->AddHostClass(pClsSnd = new deClassSound(*this));
 		package->AddHostClass(pClsSoundLevelMeter = new deClassSoundLevelMeter(*this));
 		package->AddHostClass(pClsSoundLevelMeterSpeaker = new deClassSoundLevelMeterSpeaker(*this));

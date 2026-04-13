@@ -561,6 +561,7 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassAudioAnalyzer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.cpp" />
@@ -786,6 +787,7 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassAudioAnalyzer.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.h" />

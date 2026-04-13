@@ -1,0 +1,167 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Audio analyzer resource.
+ * \version 1.32
+ * 
+ * Analyzes audio data providing time-domain and frequency-domain results. To use create an
+ * AudioAnalyzer instance and configure the analysis parameters. Audio analysis is performed
+ * by the synthesizer module asynchronously. Call updateResults() periodically (for example
+ * each frame update or using a timer) to retrieve the accumulated analysis results.
+ * 
+ * Time-domain results include the root mean square amplitude (RMS), absolute peak amplitude
+ * and the zero-crossing rate. Frequency-domain results include the spectral centroid,
+ * spectral flatness, spectral flux, spectral roll-off frequency, individual spectral peaks
+ * and frequency band energy levels as well as the estimated fundamental pitch.
+ * 
+ * This is a native class.
+ */
+class AudioAnalyzer
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create audio analyzer. */
+	func new()
+	end
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Use audio capture as input for analysis.
+	 * 
+	 * Default is false.
+	 */
+	func bool getUseAudioCapture()
+		return false
+	end
+	
+	/**
+	 * \brief Set use of audio capture as input for analysis.
+	 */
+	func void setUseAudioCapture(bool useAudioCapture)
+	end
+	
+	/** \brief Count of spectral peaks tracked. */
+	func int getSpectralPeaksCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Set count of spectral peaks tracked.
+	 * \throws EInvalidParam count is less than 1.
+	 */
+	func void setSpectralPeaksCount(int count)
+	end
+	
+	/** \brief Count of frequency bands tracked. */
+	func int getFrequencyBandsCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Set count of frequency bands tracked.
+	 * \throws EInvalidParam count is less than 1.
+	 */
+	func void setFrequencyBandsCount(int count)
+	end
+	
+	/**
+	 * \brief Update results.
+	 * 
+	 * Fetch asynchronously accumulated analysis results from synthesizer module. The results stay
+	 * valid until the next call to updateResults(). The time interval betwen calling
+	 * updateResults() affects the granularity of the results.
+	 */
+	func void updateResults()
+	end
+	/*@}*/
+	
+	
+	/** \name Time-Domain Results */
+	/*@{*/
+	/** \brief Root mean square amplitude in range 0 to 1. */
+	func float getRMS()
+		return 0.0
+	end
+	
+	/** \brief Absolute peak amplitude in range 0 to 1. */
+	func float getPeak()
+		return 0.0
+	end
+	
+	/** \brief Zero-crossing rate in range 0 to 1. */
+	func float getZeroCrossingRate()
+		return 0.0
+	end
+	/*@}*/
+	
+	
+	/** \name Frequency-Domain Results */
+	/*@{*/
+	/** \brief Spectral centroid (center of mass of spectrum) in Hz. */
+	func float getSpectralCentroid()
+		return 0.0
+	end
+	
+	/** \brief Spectral flatness in range 0 (tonal) to 1 (noise-like). */
+	func float getSpectralFlatness()
+		return 0.0
+	end
+	
+	/** \brief Spectral flux measuring rate of spectrum change. */
+	func float getSpectralFlux()
+		return 0.0
+	end
+	
+	/** \brief Spectral roll-off frequency in Hz. */
+	func float getSpectralRolloff()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Most prominent frequency peak in Hz at index sorted by magnitude.
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getSpectralPeaksCount().
+	 */
+	func float getSpectralPeakAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Energy level of equally spaced frequency band at index in range 0 to 1.
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandAt(int index)
+		return 0.0
+	end
+	
+	/** \brief Estimated pitch (fundamental frequency) in Hz or 0 if not detected. */
+	func float getPitch()
+		return 0.0
+	end
+	/*@}*/
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Audio analyzers are equal. */
+	func bool equals(Object obj)
+		return false
+	end
+	
+	/** \brief Hash code. */
+	func int hashCode()
+		return 0
+	end
+	/*@}*/
+end

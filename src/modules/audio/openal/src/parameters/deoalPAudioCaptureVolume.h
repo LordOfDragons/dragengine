@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,50 +22,37 @@
  * SOFTWARE.
  */
 
-#include "deBaseAudioModule.h"
-#include "../../../common/exceptions.h"
+#ifndef _DEOALPAUDIIOCAPTUREVOLUME_H_
+#define _DEOALPAUDIIOCAPTUREVOLUME_H_
+
+#include "deoalParameterFloat.h"
 
 
-// Class deBaseAudioModule
-////////////////////////////
+/**
+ * \brief Parameter audio capture volume scale.
+ *
+ * Scale factor for captured audio samples in the range from 0 to 1.5.
+ */
+class deoalPAudioCaptureVolume : public deoalParameterFloat{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create parameter. */
+	explicit deoalPAudioCaptureVolume(deAudioOpenAL &oal);
+	
+	/** Clean up parameter. */
+	~deoalPAudioCaptureVolume() override;
+	/*@}*/
+	
+	
+	/** \name Parameter Value */
+	/*@{*/
+	/** Current value. */
+	float GetParameterFloat() override;
+	
+	/** Set current value. */
+	void SetParameterFloat(float value) override;
+	/*@}*/
+};
 
-deBaseAudioModule::deBaseAudioModule(deLoadableModule &loadableModule) :
-deBaseModule(loadableModule){
-}
-
-deBaseAudioModule::~deBaseAudioModule(){
-}
-
-
-
-// Management
-///////////////
-
-int deBaseAudioModule::GetFPSRate(){
-	return 0;
-}
-
-
-bool deBaseAudioModule::CanCaptureAudio() const{
-	return false;
-}
-
-void deBaseAudioModule::StartAudioCapture(){
-	DETHROW(deeInvalidAction);
-}
-
-void deBaseAudioModule::StopAudioCapture(){
-	DETHROW(deeInvalidAction);
-}
-
-bool deBaseAudioModule::IsCapturingAudio() const{
-	return false;
-}
-
-void deBaseAudioModule::GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const{
-	format = {};
-}
-
-void deBaseAudioModule::GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const{
-	levels = {};
-}
+#endif

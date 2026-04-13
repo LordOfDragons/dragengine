@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,50 +22,25 @@
  * SOFTWARE.
  */
 
-#include "deBaseAudioModule.h"
-#include "../../../common/exceptions.h"
+#include "deAudioCaptureListener.h"
 
 
-// Class deBaseAudioModule
+// Class deAudioCaptureListener
+/////////////////////////////////
+
+// Constructor, destructor
 ////////////////////////////
 
-deBaseAudioModule::deBaseAudioModule(deLoadableModule &loadableModule) :
-deBaseModule(loadableModule){
+deAudioCaptureListener::deAudioCaptureListener() = default;
+deAudioCaptureListener::~deAudioCaptureListener() = default;
+
+
+
+// Notifications
+//////////////////
+
+void deAudioCaptureListener::StateChanged(){
 }
 
-deBaseAudioModule::~deBaseAudioModule(){
-}
-
-
-
-// Management
-///////////////
-
-int deBaseAudioModule::GetFPSRate(){
-	return 0;
-}
-
-
-bool deBaseAudioModule::CanCaptureAudio() const{
-	return false;
-}
-
-void deBaseAudioModule::StartAudioCapture(){
-	DETHROW(deeInvalidAction);
-}
-
-void deBaseAudioModule::StopAudioCapture(){
-	DETHROW(deeInvalidAction);
-}
-
-bool deBaseAudioModule::IsCapturingAudio() const{
-	return false;
-}
-
-void deBaseAudioModule::GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const{
-	format = {};
-}
-
-void deBaseAudioModule::GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const{
-	levels = {};
+void deAudioCaptureListener::SamplesCaptured(const void*, int){
 }

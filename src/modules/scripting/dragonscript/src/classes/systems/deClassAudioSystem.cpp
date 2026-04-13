@@ -46,7 +46,7 @@
 // Management
 ///////////////
 
-// public static func Microphone getActiveMicrophone()
+// static func Microphone getActiveMicrophone()
 deClassAudioSystem::nfGetActiveMicrophone::nfGetActiveMicrophone(const sInitData &init) :
 dsFunction(init.clsAudSys, "getActiveMicrophone", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsMic){
@@ -65,7 +65,7 @@ void deClassAudioSystem::nfGetActiveMicrophone::RunFunction(dsRunTime *rt, dsVal
 	}
 }
 
-// public static func setActiveMicrophone( Microphone microphone )
+// static func setActiveMicrophone(Microphone microphone)
 deClassAudioSystem::nfSetActiveMicrophone::nfSetActiveMicrophone(const sInitData &init) :
 dsFunction(init.clsAudSys, "setActiveMicrophone", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
@@ -87,10 +87,115 @@ void deClassAudioSystem::nfSetActiveMicrophone::RunFunction(dsRunTime *rt, dsVal
 
 
 
+// Audio capture
+//////////////////
+
+// static func bool canCaptureAudio()
+deClassAudioSystem::nfCanCaptureAudio::nfCanCaptureAudio(const sInitData &init) :
+dsFunction(init.clsAudSys, "canCaptureAudio", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+}
+void deClassAudioSystem::nfCanCaptureAudio::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	rt->PushBool(ds.GetGameEngine()->GetAudioSystem()->CanCaptureAudio());
+}
+
+// static func void startAudioCapture()
+deClassAudioSystem::nfStartAudioCapture::nfStartAudioCapture(const sInitData &init) :
+dsFunction(init.clsAudSys, "startAudioCapture", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+}
+void deClassAudioSystem::nfStartAudioCapture::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	ds.GetGameEngine()->GetAudioSystem()->StartAudioCapture();
+}
+
+// static func void stopAudioCapture()
+deClassAudioSystem::nfStopAudioCapture::nfStopAudioCapture(const sInitData &init) :
+dsFunction(init.clsAudSys, "stopAudioCapture", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+}
+void deClassAudioSystem::nfStopAudioCapture::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	ds.GetGameEngine()->GetAudioSystem()->StopAudioCapture();
+}
+
+// static func bool isCapturingAudio()
+deClassAudioSystem::nfIsCapturingAudio::nfIsCapturingAudio(const sInitData &init) :
+dsFunction(init.clsAudSys, "isCapturingAudio", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+}
+void deClassAudioSystem::nfIsCapturingAudio::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	rt->PushBool(ds.GetGameEngine()->GetAudioSystem()->IsCapturingAudio());
+}
+
+// static func int getAudioCaptureSampleRate()
+deClassAudioSystem::nfGetAudioCaptureSampleRate::nfGetAudioCaptureSampleRate(const sInitData &init) :
+dsFunction(init.clsAudSys, "getAudioCaptureSampleRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
+}
+void deClassAudioSystem::nfGetAudioCaptureSampleRate::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	deAudioSystem::AudioCaptureFormat format;
+	ds.GetGameEngine()->GetAudioSystem()->GetAudioCaptureFormat(format);
+	rt->PushInt(format.sampleRate);
+}
+
+// static func int getAudioCaptureBitRate()
+deClassAudioSystem::nfGetAudioCaptureBitRate::nfGetAudioCaptureBitRate(const sInitData &init) :
+dsFunction(init.clsAudSys, "getAudioCaptureBitRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
+}
+void deClassAudioSystem::nfGetAudioCaptureBitRate::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	deAudioSystem::AudioCaptureFormat format;
+	ds.GetGameEngine()->GetAudioSystem()->GetAudioCaptureFormat(format);
+	rt->PushInt(format.bitRate);
+}
+
+// static func float getAudioCapturePeak()
+deClassAudioSystem::nfGetAudioCapturePeak::nfGetAudioCapturePeak(const sInitData &init) :
+dsFunction(init.clsAudSys, "getAudioCapturePeak", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
+}
+void deClassAudioSystem::nfGetAudioCapturePeak::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	deAudioSystem::AudioCaptureLevels levels;
+	ds.GetGameEngine()->GetAudioSystem()->GetAudioCaptureLevels(levels);
+	rt->PushFloat(levels.peak);
+}
+
+// static func float getAudioCaptureRMS()
+deClassAudioSystem::nfGetAudioCaptureRMS::nfGetAudioCaptureRMS(const sInitData &init) :
+dsFunction(init.clsAudSys, "getAudioCaptureRMS", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
+}
+void deClassAudioSystem::nfGetAudioCaptureRMS::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = (static_cast<deClassAudioSystem*>(GetOwnerClass()))->GetDS();
+	deAudioSystem::AudioCaptureLevels levels;
+	ds.GetGameEngine()->GetAudioSystem()->GetAudioCaptureLevels(levels);
+	rt->PushFloat(levels.rms);
+}
+
+
+// static func float audioLevelToDbPercentage(float level)
+deClassAudioSystem::nfAudioLevelToDbPercentage::nfAudioLevelToDbPercentage(const sInitData &init) :
+dsFunction(init.clsAudSys, "audioLevelToDbPercentage", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
+	p_AddParameter(init.clsFloat); // level
+}
+void deClassAudioSystem::nfAudioLevelToDbPercentage::RunFunction(dsRunTime *rt, dsValue*){
+	const float level = rt->GetValue(0)->GetFloat();
+	const float db = 20.0f * log10f(decMath::clamp(level, 1e-3f, 1.0f));
+	rt->PushFloat(decMath::linearStep(db, -60.0f, 0.0f));
+}
+
+
 // Parameters
 ///////////////
 
-// public static func int getParameterCount()
+// static func int getParameterCount()
 deClassAudioSystem::nfGetParameterCount::nfGetParameterCount(const sInitData &init) :
 dsFunction(init.clsAudSys, "getParameterCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
@@ -103,7 +208,7 @@ void deClassAudioSystem::nfGetParameterCount::RunFunction(dsRunTime *rt, dsValue
 	rt->PushInt(module->GetParameterCount());
 }
 
-// public static func ModuleParameter getParameterInfo( int index )
+// static func ModuleParameter getParameterInfo(int index)
 deClassAudioSystem::nfGetParameterInfo::nfGetParameterInfo(const sInitData &init) :
 dsFunction(init.clsAudSys, "getParameterInfo", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
@@ -120,7 +225,7 @@ void deClassAudioSystem::nfGetParameterInfo::RunFunction(dsRunTime *rt, dsValue 
 	clsAudSys->GetDS().GetClassModuleParameter()->PushParameter(rt, module, index);
 }
 
-// public static func ModuleParameter getParameterInfo( String name )
+// static func ModuleParameter getParameterInfo(String name)
 deClassAudioSystem::nfGetParameterInfo2::nfGetParameterInfo2(const sInitData &init) :
 dsFunction(init.clsAudSys, "getParameterInfo", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
@@ -135,7 +240,7 @@ void deClassAudioSystem::nfGetParameterInfo2::RunFunction(dsRunTime *rt, dsValue
 		module->IndexOfParameterNamed(rt->GetValue(0)->GetString()));
 }
 
-// public static func String getParameterValue( String name )
+// static func String getParameterValue(String name)
 deClassAudioSystem::nfGetParameterValue::nfGetParameterValue(const sInitData &init) :
 dsFunction(init.clsAudSys, "getParameterValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
@@ -148,7 +253,7 @@ void deClassAudioSystem::nfGetParameterValue::RunFunction(dsRunTime *rt, dsValue
 	rt->PushString(module->GetParameterValue(rt->GetValue(0)->GetString()));
 }
 
-// public static func void setParameterValue( String name, String value )
+// static func void setParameterValue(String name, String value)
 deClassAudioSystem::nfSetParameterValue::nfSetParameterValue(const sInitData &init) :
 dsFunction(init.clsAudSys, "setParameterValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
@@ -165,7 +270,7 @@ void deClassAudioSystem::nfSetParameterValue::RunFunction(dsRunTime *rt, dsValue
 
 
 
-// public static func String sendCommand( String command )
+// static func String sendCommand(String command)
 deClassAudioSystem::nfSendCommand::nfSendCommand(const sInitData &init) : dsFunction(init.clsAudSys,
 "sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
 	p_AddParameter(init.clsString); // command
@@ -184,7 +289,7 @@ void deClassAudioSystem::nfSendCommand::RunFunction(dsRunTime *rt, dsValue *myse
 	rt->PushString(answer.ToUTF8());
 }
 
-// public static func int getFPSRate()
+// static func int getFPSRate()
 deClassAudioSystem::nfGetFPSRate::nfGetFPSRate(const sInitData &init) :
 dsFunction(init.clsAudSys, "getFPSRate", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
@@ -236,6 +341,17 @@ void deClassAudioSystem::CreateClassMembers(dsEngine *engine){
 	// add functions
 	AddFunction(new nfGetActiveMicrophone(init));
 	AddFunction(new nfSetActiveMicrophone(init));
+	
+	AddFunction(new nfCanCaptureAudio(init));
+	AddFunction(new nfStartAudioCapture(init));
+	AddFunction(new nfStopAudioCapture(init));
+	AddFunction(new nfIsCapturingAudio(init));
+	AddFunction(new nfGetAudioCaptureSampleRate(init));
+	AddFunction(new nfGetAudioCaptureBitRate(init));
+	AddFunction(new nfGetAudioCapturePeak(init));
+	AddFunction(new nfGetAudioCaptureRMS(init));
+	
+	AddFunction(new nfAudioLevelToDbPercentage(init));
 	
 	AddFunction(new nfGetParameterCount(init));
 	AddFunction(new nfGetParameterInfo(init));

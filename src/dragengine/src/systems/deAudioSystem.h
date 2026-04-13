@@ -26,8 +26,12 @@
 #define _DEAUDIOSYSTEM_H_
 
 #include "deBaseSystem.h"
+#include "../common/collection/decTOrderedSet.h"
 #include "../common/math/decMath.h"
 #include "../resources/sound/deMicrophone.h"
+#include "../resources/sound/deAudioCaptureListener.h"
+#include "../threading/deMutex.h"
+
 
 class deBaseAudioModule;
 class deComponent;
@@ -53,14 +57,29 @@ class DE_DLL_EXPORT deAudioSystem : public deBaseSystem{
 private:
 	deBaseAudioModule *pActiveModule;
 	deMicrophone::Ref pActiveMic;
+	decTObjectOrderedSet<deAudioCaptureListener> pAudioCaptureListeners;
+	deMutex pMutexAudioCaptureListeners;
 	
+	
+public:
+	/** \brief Audio capture format. */
+	struct AudioCaptureFormat{
+		int sampleRate = 44100;
+		int bitRate = 16;
+	};
+	
+	/** \brief Audio capture levels. */
+	struct AudioCaptureLevels{
+		float peak = 0.0f;
+		float rms = 0.0f;
+	};
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new audio system  linked to the given engine. */
-	deAudioSystem(deEngine *engine);
+	explicit deAudioSystem(deEngine *engine);
 	
 	/** \brief Clean up audio system. */
 	~deAudioSystem() override;
@@ -126,6 +145,44 @@ public:
 	
 	/** \brief Create peer for the height terrain using the active module and assigns it. */
 	void LoadHeightTerrain(deHeightTerrain &heightTerrain);
+	
+	
+	
+	/** \brief Audio can be captured. */
+	bool CanCaptureAudio() const;
+	
+	/** \brief Start audio capture. */
+	void StartAudioCapture();
+	
+	/** \brief Stop audio capture. */
+	void StopAudioCapture();
+	
+	/** \brief Is capturing audio. */
+	bool IsCapturingAudio() const;
+	
+	/** \brief Audio capture format. */
+	void GetAudioCaptureFormat(AudioCaptureFormat &format) const;
+	
+	/** \brief Audio capture levels. */
+	void GetAudioCaptureLevels(AudioCaptureLevels &levels) const;
+	
+	/** \brief Add audio capture listener. */
+	void AddAudioCaptureListener(const deAudioCaptureListener::Ref &listener);
+	
+	/** \brief Remove audio capture listener. */
+	void RemoveAudioCaptureListener(const deAudioCaptureListener::Ref &listener);
+	
+	/**
+	 * \brief Notify audio capture listeners state changed.
+	 * \note For use by the audio module only.
+	 */
+	void NotifyAudioCaptureStateChanged();
+	
+	/**
+	 * \brief Notify audio capture listeners new samples arrived.
+	 * \note For use by the audio module only.
+	 */
+	void NotifyAudioCaptureSamplesCaptured(const void *samples, int count);
 	/*@}*/
 	
 	

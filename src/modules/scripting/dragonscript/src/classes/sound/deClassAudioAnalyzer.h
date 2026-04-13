@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,20 @@
  * SOFTWARE.
  */
 
-#ifndef _DECLASSAUDIOSYSTEM_H_
-#define _DECLASSAUDIOSYSTEM_H_
+#ifndef _DECLASSAUDIOANALYZER_H_
+#define _DECLASSAUDIOANALYZER_H_
 
 #include <libdscript/libdscript.h>
 
-#include <dragengine/common/math/decMath.h>
-
-class deEngine;
 class deScriptingDragonScript;
+class deAudioAnalyzer;
 
 
-
-// audio script class
-class deClassAudioSystem : public dsClass{
+/**
+ * \brief Audio analyzer script class.
+ * \version 1.32
+ */
+class deClassAudioAnalyzer : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	
@@ -45,63 +45,72 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	explicit deClassAudioSystem(deScriptingDragonScript &ds);
+	explicit deClassAudioAnalyzer(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
-	~deClassAudioSystem() override;
+	~deClassAudioAnalyzer() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine) override;
-	
 	/** \brief Module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	
+	/** \brief Create script class members. */
+	void CreateClassMembers(dsEngine *engine) override;
+	
+	/** \brief Audio analyzer from real object or nullptr if real object is nullptr. */
+	deAudioAnalyzer *GetAudioAnalyze(dsRealObject *myself) const;
+	
+	/** \brief Push audio analyzer or nullptr onto the stack. */
+	void PushAudioAnalyze(dsRunTime *rt, deAudioAnalyzer *analyzer);
 	/*@}*/
 	
 	
 	
 private:
 	struct sInitData{
-		dsClass *clsAudSys;
-		dsClass *clsMic;
+		dsClass *clsAudioAnalyzer;
+		
 		dsClass *clsVoid;
 		dsClass *clsInteger;
 		dsClass *clsFloat;
 		dsClass *clsBool;
-		dsClass *clsString;
-		dsClass *clsModPar;
+		dsClass *clsObject;
 	};
+	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{\
+	class name : public dsFunction{ \
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC(nfGetActiveMicrophone);
-	DEF_NATFUNC(nfSetActiveMicrophone);
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC(nfCanCaptureAudio);
-	DEF_NATFUNC(nfStartAudioCapture);
-	DEF_NATFUNC(nfStopAudioCapture);
-	DEF_NATFUNC(nfIsCapturingAudio);
-	DEF_NATFUNC(nfGetAudioCaptureSampleRate);
-	DEF_NATFUNC(nfGetAudioCaptureBitRate);
-	DEF_NATFUNC(nfGetAudioCapturePeak);
-	DEF_NATFUNC(nfGetAudioCaptureRMS);
+	DEF_NATFUNC(nfGetUseAudioCapture);
+	DEF_NATFUNC(nfSetUseAudioCapture);
+	DEF_NATFUNC(nfGetSpectralPeaksCount);
+	DEF_NATFUNC(nfSetSpectralPeaksCount);
+	DEF_NATFUNC(nfGetFrequencyBandsCount);
+	DEF_NATFUNC(nfSetFrequencyBandsCount);
+	DEF_NATFUNC(nfUpdateResults);
 	
-	DEF_NATFUNC(nfAudioLevelToDbPercentage);
+	DEF_NATFUNC(nfGetRMS);
+	DEF_NATFUNC(nfGetPeak);
+	DEF_NATFUNC(nfGetZeroCrossingRate);
+	DEF_NATFUNC(nfGetSpectralCentroid);
+	DEF_NATFUNC(nfGetSpectralFlatness);
+	DEF_NATFUNC(nfGetSpectralFlux);
+	DEF_NATFUNC(nfGetSpectralRolloff);
+	DEF_NATFUNC(nfGetSpectralPeakAt);
+	DEF_NATFUNC(nfGetFrequencyBandAt);
+	DEF_NATFUNC(nfGetPitch);
 	
-	DEF_NATFUNC(nfGetParameterCount);
-	DEF_NATFUNC(nfGetParameterInfo);
-	DEF_NATFUNC(nfGetParameterInfo2);
-	DEF_NATFUNC(nfGetParameterValue);
-	DEF_NATFUNC(nfSetParameterValue);
-	DEF_NATFUNC(nfSendCommand);
-	DEF_NATFUNC(nfGetFPSRate);
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

@@ -34,6 +34,7 @@ class deBaseSynthesizerModule;
 class deSound;
 class deSynthesizer;
 class deSynthesizerInstance;
+class deAudioAnalyzer;
 
 
 /**
@@ -74,6 +75,9 @@ public:
 	
 	/** \brief Create and assign peer for synthesizer instance using the active module. */
 	void LoadSynthesizerInstance(deSynthesizerInstance *instance);
+
+	/** \brief Create and assign peer for audio analyzer using the active module. */
+	void LoadAudioAnalyzer(deAudioAnalyzer *analyzer);
 	/*@}*/
 	
 	

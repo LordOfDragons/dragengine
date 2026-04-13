@@ -73,6 +73,9 @@ public:
 		/** \brief Archive resource. */
 		ertArchive,
 		
+		/** \brief Audio analyzer resource */
+		ertAudioAnalyzer,
+		
 		/** \brief Billboard resource. */
 		ertBillboard,
 		

@@ -22,16 +22,11 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalConfiguration.h"
 #include "../deAudioOpenAL.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
-
 
 
 // Class deoalConfiguration
@@ -62,7 +57,10 @@ pAsyncAudioSkipSyncTimeRatio(0.5),
 pUseSharedEffectSlots(true),
 pShareEnvironmentThreshold(0.05f),
 pSwitchSharedEnvironmentThreshold(0.1f),
-pMaxSharedEffectSlots(8)
+pMaxSharedEffectSlots(8),
+
+pAudioCaptureVolume(1.0f),
+pAudioCaptureNoiseGate(powf(10.0f, -45.0f / 20.0f)) // -45 dB
 {
 	pApplyAuralizationProfile();
 }
@@ -71,8 +69,7 @@ deoalConfiguration::deoalConfiguration(const deoalConfiguration &config){
 	*this = config;
 }
 
-deoalConfiguration::~deoalConfiguration(){
-}
+deoalConfiguration::~deoalConfiguration() = default;
 
 
 
@@ -274,6 +271,26 @@ void deoalConfiguration::SetMaxSharedEffectSlots(int count){
 	pDirty = true;
 }
 
+void deoalConfiguration::SetAudioCaptureVolume(float volume){
+	volume = decMath::clamp(volume, 0.0f, 1.5f);
+	if(fabsf(volume - pAudioCaptureVolume) <= FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pAudioCaptureVolume = volume;
+	pDirty = true;
+}
+
+void deoalConfiguration::SetAudioCaptureNoiseGate(float noiseGate){
+	noiseGate = decMath::clamp(noiseGate, 0.0f, 1.0f);
+	if(fabsf(noiseGate - pAudioCaptureNoiseGate) <= FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pAudioCaptureNoiseGate = noiseGate;
+	pDirty = true;
+}
+
 
 
 // Operators
@@ -299,6 +316,15 @@ deoalConfiguration &deoalConfiguration::operator=(const deoalConfiguration &conf
 	pShareEnvironmentThreshold = config.pShareEnvironmentThreshold;
 	pSwitchSharedEnvironmentThreshold = config.pSwitchSharedEnvironmentThreshold;
 	pMaxSharedEffectSlots = config.pMaxSharedEffectSlots;
+	
+	pAsyncAudio = config.pAsyncAudio;
+	pAsyncAudioSkipSyncTimeRatio = config.pAsyncAudioSkipSyncTimeRatio;
+	pFrameRateLimit = config.pFrameRateLimit;
+	
+	pAudioCaptureVolume = config.pAudioCaptureVolume;
+	pAudioCaptureNoiseGate = config.pAudioCaptureNoiseGate;
+	
+	pLogLevel = config.pLogLevel;
 	return *this;
 }
 
@@ -306,9 +332,6 @@ deoalConfiguration &deoalConfiguration::operator=(const deoalConfiguration &conf
 
 // Private Functions
 //////////////////////
-
-void deoalConfiguration::pCleanUp(){
-}
 
 void deoalConfiguration::pApplyAuralizationProfile(){
 	// switch profile.

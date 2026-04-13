@@ -429,6 +429,8 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBufferList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capabilities\deoalCapabilities.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalATAudioCapture.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalAudioCapture.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponent.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentBone.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentTexture.cpp" />
@@ -494,6 +496,8 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelOctreeVisitor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTBVH.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTOctree.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureNoiseGate.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureVolume.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.cpp" />
@@ -578,6 +582,8 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\buffer\deoalSharedBufferList.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capabilities\deoalCapabilities.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalATAudioCapture.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalAudioCapture.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponent.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentBone.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponentTexture.h" />
@@ -649,6 +655,8 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelOctreeVisitor.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTBVH.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTOctree.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureNoiseGate.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureVolume.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.h" />

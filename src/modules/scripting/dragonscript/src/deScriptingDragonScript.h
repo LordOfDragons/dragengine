@@ -187,6 +187,7 @@ class deClassSmoothFloat;
 class deClassSmoothDouble;
 class deClassSmoothVector;
 class deClassSmoothVector2;
+class deClassAudioAnalyzer;
 class deClassSmoothDVector;
 class deClassSound;
 class deClassSoundLevelMeter;
@@ -440,6 +441,7 @@ private:
 	deClassSmoothVector *pClsSmVec;
 	deClassSmoothVector2 *pClsSmVec2;
 	deClassSmoothDVector *pClsSmDVec;
+	deClassAudioAnalyzer *pClsAudioAnalyzer;
 	deClassSound *pClsSnd;
 	deClassSoundLevelMeter *pClsSoundLevelMeter;
 	deClassSoundLevelMeterSpeaker *pClsSoundLevelMeterSpeaker;
@@ -814,6 +816,7 @@ public:
 	inline deClassSmoothVector *GetClassSmoothVector() const{ return pClsSmVec; }
 	inline deClassSmoothVector2 *GetClassSmoothVector2() const{ return pClsSmVec2; }
 	inline deClassSmoothDVector *GetClassSmoothDVector() const{ return pClsSmDVec; }
+	inline deClassAudioAnalyzer *GetClassAudioAnalyzer() const{ return pClsAudioAnalyzer; }
 	inline deClassSound *GetClassSound() const{ return pClsSnd; }
 	inline deClassSoundLevelMeter *GetClassSoundLevelMeter() const{ return pClsSoundLevelMeter; }
 	inline deClassSoundLevelMeterSpeaker *GetClassSoundLevelMeterSpeaker() const{ return pClsSoundLevelMeterSpeaker; }
