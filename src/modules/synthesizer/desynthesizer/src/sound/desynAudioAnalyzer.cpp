@@ -101,7 +101,7 @@ pResPitch(0.0)
 	
 	const int bandCount = analyzer.GetFrequencyBandsCount(); // always > 0
 	pResBands.SetCount(bandCount, 0.0f);
-	pWorkBands.SetCount(bandCount, 0.0f);
+	pWorkBands.SetCount(bandCount, {});
 	
 	auto &audSys = *module.GetGameEngine()->GetAudioSystem();
 	audSys.GetAudioCaptureFormat(pInputFormat);
@@ -384,8 +384,12 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	pWorkPeaks.SetCountDiscard(0);
 	
 	const int bandCount = pWorkBands.GetCount();
-	const int binsPerBand = HALF_FFT_SIZE / bandCount;
-	pWorkBands.SetRangeAt(0, bandCount, 0.0f);
+	pWorkBands.SetRangeAt(0, bandCount, {});
+	
+	// logarithmic band mapping: bin k maps to band floor(log(k)/log(N-1)*bandCount).
+	// bin 0 is DC and has no meaningful frequency, so it is skipped.
+	const float logMaxBin = logf((float)(HALF_FFT_SIZE - 1));
+	const float invLogBandScale = logMaxBin > 0.0f ? (float)bandCount / logMaxBin : 0.0f;
 	
 	const int lo = decMath::max(1, (int)(80.0f / freqPerBin));
 	const int hi = decMath::min(HALF_FFT_SIZE - 1, (int)(1000.0f / freqPerBin));
@@ -412,10 +416,11 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 			}
 		}
 		
-		// frequency bands
-		const int bandIndex = k / binsPerBand;
-		if(bandIndex < bandCount){
-			pWorkBands[bandIndex] += magnitude[k];
+		// frequency bands (logarithmic spacing)
+		if(k > 0){
+			auto &band = pWorkBands[decMath::min((int)(logf((float)k) * invLogBandScale), bandCount - 1)];
+			band.energy += magnitude[k];
+			band.count++;
 		}
 		
 		// pitch (highest magnitude bin in the 80-1000 Hz range)
@@ -424,6 +429,13 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 			bestBin = k;
 		}
 	}
+	
+	// average band energy by bin count so all bands are comparable regardless of width
+	pWorkBands.Visit([&](Band &band){
+		if(band.count > 0){
+			band.energy /= (float)band.count;
+		}
+	});
 	
 	// sort peaks by descending magnitude
 	pWorkPeaks.Sort([](const Peak &a, const Peak &b){
@@ -449,8 +461,8 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	// frequency band accumulation. skipped if count of bands changed mid flight
 	const int resBandCount = pResBands.GetCount();
 	if(resBandCount == pWorkBands.GetCount()){
-		pWorkBands.VisitIndexed([&](int index, float energy){
-			pResBands[index] += energy;
+		pWorkBands.VisitIndexed([&](int index, const Band &band){
+			pResBands[index] += band.energy;
 		});
 		
 	}else{

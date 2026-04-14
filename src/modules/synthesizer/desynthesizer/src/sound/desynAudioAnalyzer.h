@@ -80,6 +80,11 @@ private:
 		float mag = 0.0f;
 	};
 	
+	struct Band{
+		float energy = 0.0f;
+		int count = 0;
+	};
+	
 	
 	deDESynthesizer &pModule;
 	deAudioAnalyzer &pAnalyzer;
@@ -105,7 +110,7 @@ private:
 	deMutex pMutexResults;
 	
 	decTList<Peak> pWorkPeaks;
-	decTList<float> pWorkBands;
+	decTList<Band> pWorkBands;
 	
 	int pResFrameCount, pResSampleCount, pResZeroCrossings;
 	float pResPeak, pResPeakMag;

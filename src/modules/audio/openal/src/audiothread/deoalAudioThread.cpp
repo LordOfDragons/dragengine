@@ -247,9 +247,10 @@ void deoalAudioThread::CleanUp(){
 		pCleanUpThread();
 	}
 	
+	pAudioCapture.Clear();
 	SetActiveMicrophone(nullptr);
 	
-	pDeactiveMicrophone = nullptr;
+	pDeactiveMicrophone.Clear();
 	pActiveWorld = nullptr;
 	pProcessOnceWorld.RemoveAll();
 	

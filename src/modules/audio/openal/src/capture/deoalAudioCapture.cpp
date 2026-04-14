@@ -43,7 +43,11 @@ pOal(oal),
 pState(esStopped){
 }
 
-deoalAudioCapture::~deoalAudioCapture() = default;
+deoalAudioCapture::~deoalAudioCapture(){
+	if(pState != esStopped){
+		StopCapture();
+	}
+}
 
 
 // Management
