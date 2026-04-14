@@ -89,7 +89,7 @@ private:
 	deDESynthesizer &pModule;
 	deAudioAnalyzer &pAnalyzer;
 	
-	CaptureAudio::Ref pListener;
+	deTObjectReference<CaptureAudio> pListener;
 	AnalyzeThread pThread;
 	
 	deMutex pMutexInput;
