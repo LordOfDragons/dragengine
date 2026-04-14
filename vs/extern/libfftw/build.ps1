@@ -10,7 +10,7 @@ if (Test-Path "$PSScriptRoot\..\..\github_cached_externals") {
 }
 
 $FftwVersion = "3.3.10"
-$SourceArchive = "libfftw-$FftwVersion.tar.xz"
+$SourceArchive = "fftw-$FftwVersion.tar.xz"
 
 $ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
