@@ -130,7 +130,7 @@ jobs:
         id: external-cache
         with:
           path: ./extern
-          key: external-cache-web-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          key: external-cache-web-${{ hashFiles('./extern/**/SConscript', './extern/**/*.tar.*', './extern/**/*.zip') }}
           restore-keys: external-cache-web-
       
       # - name: Cache SCons
