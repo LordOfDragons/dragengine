@@ -469,9 +469,12 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		pWorkBands.SetCountDiscard(resBandCount);
 	}
 	
-	// spectral peaks: keep the frame with the strongest single peak
+	// keep spectral peaks of frame with the strongest single peak sorted by ascending frequency
 	if(pWorkPeaks.IsNotEmpty() && pWorkPeaks[0].mag > pResPeakMag){
 		pResPeakMag = pWorkPeaks[0].mag;
 		pResSpectralPeaks.Swap(pWorkPeaks);
+		pResSpectralPeaks.Sort([](const Peak &a, const Peak &b){
+			return DECompare(a.freq, b.freq);
+		});
 	}
 }

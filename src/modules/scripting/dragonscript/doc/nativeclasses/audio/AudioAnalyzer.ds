@@ -128,7 +128,7 @@ class AudioAnalyzer
 	end
 	
 	/**
-	 * \brief Most prominent frequency peak in Hz at index sorted by magnitude.
+	 * \brief Most prominent frequency peak in Hz at index sorted from lowest frequency to highest.
 	 * \throws EInvalidParam index is less than 0
 	 * \throws EInvalidParam index is greater than or equal to getSpectralPeaksCount().
 	 */

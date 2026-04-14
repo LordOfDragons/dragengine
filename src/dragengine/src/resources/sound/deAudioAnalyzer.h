@@ -199,7 +199,7 @@ public:
 	 */
 	void SetSpectralRolloff(float spectralRolloff);
 	
-	/** \brief Most prominent frequency peaks in Hz sorted by magnitude. */
+	/** \brief Most prominent frequency peaks in Hz sorted from lowest frequency to highest. */
 	inline decTList<float> &GetSpectralPeaks(){ return pSpectralPeaks; }
 	inline const decTList<float> &GetSpectralPeaks() const{ return pSpectralPeaks; }
 	
