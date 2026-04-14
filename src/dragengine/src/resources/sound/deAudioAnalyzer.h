@@ -49,10 +49,19 @@ public:
 	using PeerSynthesizer = deTUniqueReference<deBaseSynthesizerAudioAnalyzer>;
 	
 	
+	/** \brief Spectral peak. */
+	struct SpectralPeak{
+		/** \brief Frequency of the peak in Hz. */
+		float frequency = 0.0f;
+		
+		/** \brief Magnitude of the peak. */
+		float magnitude = 0.0f;
+	};
+	
+	
 private:
 	bool pUseAudioCapture;
-	int pSpectralPeaksCount;
-	int pFrequencyBandsCount;
+	int pFrequencyBandCount;
 	
 	float pRMS;
 	float pPeak;
@@ -61,7 +70,7 @@ private:
 	float pSpectralFlatness;
 	float pSpectralFlux;
 	float pSpectralRolloff;
-	decTList<float> pSpectralPeaks;
+	decTList<SpectralPeak> pSpectralPeaks;
 	decTList<float> pFrequencyBands;
 	float pPitch;
 	
@@ -100,17 +109,11 @@ public:
 	 */
 	void SetUseAudioCapture(bool useAudioCapture);
 	
-	/** \brief Count of spectral peaks. */
-	inline int GetSpectralPeaksCount() const{ return pSpectralPeaksCount; }
-	
-	/** \brief Set count of spectral peaks. */
-	void SetSpectralPeaksCount(int count);
-	
 	/** \brief Count of frequency bands. */
-	inline int GetFrequencyBandsCount() const{ return pFrequencyBandsCount; }
+	inline int GetFrequencyBandCount() const{ return pFrequencyBandCount; }
 	
 	/** \brief Set count of frequency bands. */
-	void SetFrequencyBandsCount(int count);
+	void SetFrequencyBandCount(int count);
 	
 	
 	/**
@@ -199,9 +202,9 @@ public:
 	 */
 	void SetSpectralRolloff(float spectralRolloff);
 	
-	/** \brief Most prominent frequency peaks in Hz sorted from lowest frequency to highest. */
-	inline decTList<float> &GetSpectralPeaks(){ return pSpectralPeaks; }
-	inline const decTList<float> &GetSpectralPeaks() const{ return pSpectralPeaks; }
+	/** \brief Spectral peak sorted from strongest to weakest. */
+	inline decTList<SpectralPeak> &GetSpectralPeaks(){ return pSpectralPeaks; }
+	inline const decTList<SpectralPeak> &GetSpectralPeaks() const{ return pSpectralPeaks; }
 	
 	/** \brief Energy levels of equally-spaced frequency bands in range 0 to 1. */
 	inline decTList<float> &GetFrequencyBands(){ return pFrequencyBands; }

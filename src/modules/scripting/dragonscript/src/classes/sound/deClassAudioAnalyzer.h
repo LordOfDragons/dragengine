@@ -92,10 +92,8 @@ private:
 	
 	DEF_NATFUNC(nfGetUseAudioCapture);
 	DEF_NATFUNC(nfSetUseAudioCapture);
-	DEF_NATFUNC(nfGetSpectralPeaksCount);
-	DEF_NATFUNC(nfSetSpectralPeaksCount);
-	DEF_NATFUNC(nfGetFrequencyBandsCount);
-	DEF_NATFUNC(nfSetFrequencyBandsCount);
+	DEF_NATFUNC(nfGetFrequencyBandCount);
+	DEF_NATFUNC(nfSetFrequencyBandCount);
 	DEF_NATFUNC(nfUpdateResults);
 	
 	DEF_NATFUNC(nfGetRMS);
@@ -105,7 +103,9 @@ private:
 	DEF_NATFUNC(nfGetSpectralFlatness);
 	DEF_NATFUNC(nfGetSpectralFlux);
 	DEF_NATFUNC(nfGetSpectralRolloff);
-	DEF_NATFUNC(nfGetSpectralPeakAt);
+	DEF_NATFUNC(nfGetSpectralPeakCount);
+	DEF_NATFUNC(nfGetSpectralPeakFrequencyAt);
+	DEF_NATFUNC(nfGetSpectralPeakMagnitudeAt);
 	DEF_NATFUNC(nfGetFrequencyBandAt);
 	DEF_NATFUNC(nfGetPitch);
 	

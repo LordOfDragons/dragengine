@@ -40,8 +40,7 @@
 deAudioAnalyzer::deAudioAnalyzer(deAudioAnalyzerManager *manager) :
 deResource(manager),
 pUseAudioCapture(false),
-pSpectralPeaksCount(3),
-pFrequencyBandsCount(8),
+pFrequencyBandCount(8),
 pRMS(0.0f),
 pPeak(0.0f),
 pZeroCrossingRate(0.0f),
@@ -51,8 +50,7 @@ pSpectralFlux(0.0f),
 pSpectralRolloff(0.0f),
 pPitch(0.0f)
 {
-	pSpectralPeaks.SetCount(pSpectralPeaksCount, 0.0f);
-	pFrequencyBands.SetCount(pFrequencyBandsCount, 0.0f);
+	pFrequencyBands.SetCount(pFrequencyBandCount, 0.0f);
 }
 
 deAudioAnalyzer::~deAudioAnalyzer() = default;
@@ -73,25 +71,11 @@ void deAudioAnalyzer::SetUseAudioCapture(bool useAudioCapture){
 	}
 }
 
-void deAudioAnalyzer::SetSpectralPeaksCount(int count){
-	DEASSERT_TRUE(count > 0)
-	if(count == pSpectralPeaksCount){
-		return;
-	}
-	
-	pSpectralPeaksCount = count;
-	pSpectralPeaks.SetCount(pSpectralPeaksCount, 0.0f);
-	
-	if(pPeerSynthesizer){
-		pPeerSynthesizer->ConfigurationChanged();
-	}
-}
-
-void deAudioAnalyzer::SetFrequencyBandsCount(int count){
+void deAudioAnalyzer::SetFrequencyBandCount(int count){
 	DEASSERT_TRUE(count > 0)
 	
-	pFrequencyBandsCount = count;
-	pFrequencyBands.SetCount(pFrequencyBandsCount, 0.0f);
+	pFrequencyBandCount = count;
+	pFrequencyBands.SetCount(pFrequencyBandCount, 0.0f);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ConfigurationChanged();

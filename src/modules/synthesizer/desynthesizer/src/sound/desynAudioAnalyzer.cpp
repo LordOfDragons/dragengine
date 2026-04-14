@@ -98,8 +98,9 @@ pResPitch(0.0)
 	pFftOut = fftw_alloc_complex(FFT_SIZE / 2 + 1);
 	pFftPlan = fftw_plan_dft_r2c_1d(FFT_SIZE, pFftIn, pFftOut, FFTW_MEASURE);
 	memset(pPrevMagnitude, 0, sizeof(pPrevMagnitude));
+	pSampleBuffer.EnlargeCapacity(FFT_SIZE);
 	
-	const int bandCount = analyzer.GetFrequencyBandsCount(); // always > 0
+	const int bandCount = analyzer.GetFrequencyBandCount(); // always > 0
 	pResBands.SetCount(bandCount, 0.0f);
 	pWorkBands.SetCount(bandCount, {});
 	
@@ -153,9 +154,13 @@ void desynAudioAnalyzer::UpdateResults(){
 		pAnalyzer.SetSpectralRolloff((float)(pResRolloff * (double)invFrames));
 		pAnalyzer.SetPitch((float)(pResPitch * (double)invFrames));
 		
-		const int peakCount = pResSpectralPeaks.GetCount();
-		pAnalyzer.GetSpectralPeaks().VisitIndexed([&](int index, float &value){
-			value = index < peakCount ? pResSpectralPeaks[index].freq : 0.0f;
+		pResSpectralPeaks.Sort([](const deAudioAnalyzer::SpectralPeak &a, const deAudioAnalyzer::SpectralPeak &b){
+			return DECompare(b.magnitude, a.magnitude);
+		});
+		auto &peaks = pAnalyzer.GetSpectralPeaks();
+		peaks.SetCountDiscard(0);
+		pResSpectralPeaks.Visit([&](const deAudioAnalyzer::SpectralPeak &peak){
+			peaks.Add(peak);
 		});
 		
 		const float maxBandEnergy = pResBands.Inject(0.0f, [](float acc, float energy){
@@ -182,19 +187,6 @@ void desynAudioAnalyzer::UpdateResults(){
 		pResPeakMag = 0.0f;
 		pResSpectralPeaks.SetCountDiscard(0);
 		pResBands.SetRangeAt(0, pResBands.GetCount(), 0.0f);
-		
-	}else{
-		// no frames processed. clear results
-		pAnalyzer.SetRMS(0.0f);
-		pAnalyzer.SetPeak(0.0f);
-		pAnalyzer.SetZeroCrossingRate(0.0f);
-		pAnalyzer.SetSpectralCentroid(0.0f);
-		pAnalyzer.SetSpectralFlatness(0.0f);
-		pAnalyzer.SetSpectralFlux(0.0f);
-		pAnalyzer.SetSpectralRolloff(0.0f);
-		pAnalyzer.SetPitch(0.0f);
-		pAnalyzer.GetSpectralPeaks().SetRangeAt(0, pAnalyzer.GetSpectralPeaks().GetCount(), 0.0f);
-		pAnalyzer.GetFrequencyBands().SetRangeAt(0, pAnalyzer.GetFrequencyBands().GetCount(), 0.0f);
 	}
 	
 	// update array size if configuration changed. does nothing if size is unchanged
@@ -293,19 +285,29 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	}
 	
 	const float norm = 1.0f / 32768.0f;
-	const float freqPerBin = (float)pSampleRate / (float)FFT_SIZE;
 	
-	// for the first min(n, FFT_SIZE) samples compute RMS/peak/ZCR and fill
-	// the Hann-windowed FFT input in one pass. any remaining samples beyond
-	// FFT_SIZE are still counted for the time-domain metrics.
+	// push new samples into the ring buffer, dropping oldest if full
+	const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - FFT_SIZE;
+	if(dropSampleCount > 0){
+		pSampleBuffer.RemoveHead(dropSampleCount);
+	}
+	
+	samples.Visit([&](int16_t sample){
+		pSampleBuffer.Add((float)sample * norm);
+	});
+	
+	// do not process until the ring buffer is fully populated
+	if(pSampleBuffer.GetCount() < FFT_SIZE){
+		return;
+	}
+	
+	// compute time-domain metrics over the entire ring buffer (consistent with FFT window)
 	double sumSq = 0.0;
 	float peak = 0.0f;
 	int zeroCrossings = 0;
 	int prevSign = 0;
 	
-	const int fftIn = decMath::min(sampleCount, FFT_SIZE);
-	samples.VisitIndexed([&](int i, int16_t sample){
-		const float s = (float)sample * norm;
+	pSampleBuffer.VisitIndexed([&](int i, float s){
 		sumSq += (double)s * (double)s;
 		peak = decMath::max(peak, fabsf(s));
 		
@@ -314,17 +316,14 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 			zeroCrossings++;
 		}
 		prevSign = curSign;
-		
-		if(i < fftIn){
-			// apply Hann window to reduce spectral leakage.
-			// max(..., 1) prevents division-by-zero when fftIn == 1
-			const float w = 0.5f * (1.0f - cosf(TWO_PI * (float)i / (float)decMath::max(fftIn - 1, 1)));
-			pFftIn[i] = (double)(s * w);
-		}
 	});
 	
-	for(int i=fftIn; i<FFT_SIZE; i++){
-		pFftIn[i] = 0.0;
+	const float freqPerBin = (float)pSampleRate / (float)FFT_SIZE;
+	
+	// fill FFT input from ring buffer (oldest to newest) with Hann window
+	for(int i=0; i<FFT_SIZE; i++){
+		const float w = 0.5f * (1.0f - cosf(TWO_PI * (float)i / (float)(FFT_SIZE - 1)));
+		pFftIn[i] = (double)(pSampleBuffer.GetAt(i) * w);
 	}
 	
 	// FFT
@@ -410,8 +409,8 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		if(k >= 1 && k < HALF_FFT_SIZE - 1){
 			if(magnitude[k] > magnitude[k - 1] && magnitude[k] > magnitude[k + 1]){
 				pWorkPeaks.Add({
-					.freq = (float)k * freqPerBin,
-					.mag = magnitude[k]
+					.frequency = (float)k * freqPerBin,
+					.magnitude = magnitude[k]
 				});
 			}
 		}
@@ -437,18 +436,13 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		}
 	});
 	
-	// sort peaks by descending magnitude
-	pWorkPeaks.Sort([](const Peak &a, const Peak &b){
-		return DECompare(b.mag, a.mag);
-	});
-	
 	const float pitchHz = bestMag > 0.0f ? (float)bestBin * freqPerBin : 0.0f;
 	
 	// accumulate results under mutex
 	const deMutexGuard guard(pMutexResults);
 	
 	pResFrameCount++;
-	pResSampleCount += sampleCount;
+	pResSampleCount += FFT_SIZE;
 	pResSumSq += sumSq;
 	pResPeak = decMath::max(pResPeak, peak);
 	pResZeroCrossings += zeroCrossings;
@@ -469,12 +463,15 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		pWorkBands.SetCountDiscard(resBandCount);
 	}
 	
-	// keep spectral peaks of frame with the strongest single peak sorted by ascending frequency
-	if(pWorkPeaks.IsNotEmpty() && pWorkPeaks[0].mag > pResPeakMag){
-		pResPeakMag = pWorkPeaks[0].mag;
-		pResSpectralPeaks.Swap(pWorkPeaks);
-		pResSpectralPeaks.Sort([](const Peak &a, const Peak &b){
-			return DECompare(a.freq, b.freq);
+	// keep spectral peaks of frame with the strongest single peak
+	if(pWorkPeaks.IsNotEmpty()){
+		const float peakMag = pWorkPeaks.Inject(0.0f, [](float acc, const deAudioAnalyzer::SpectralPeak &sp){
+			return decMath::max(acc, sp.magnitude);
 		});
+		
+		if(peakMag > pResPeakMag){
+			pResSpectralPeaks.Swap(pWorkPeaks);
+			pResPeakMag = peakMag;
+		}
 	}
 }

@@ -29,6 +29,7 @@
 #include <fftw3.h>
 
 #include <dragengine/common/collection/decTList.h>
+#include <dragengine/resources/sound/deAudioAnalyzer.h>
 #include <dragengine/resources/sound/deAudioCaptureListener.h>
 #include <dragengine/systems/deAudioSystem.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerAudioAnalyzer.h>
@@ -37,7 +38,6 @@
 #include <dragengine/threading/deSemaphore.h>
 
 class deDESynthesizer;
-class deAudioAnalyzer;
 
 
 /**
@@ -45,7 +45,7 @@ class deAudioAnalyzer;
  */
 class desynAudioAnalyzer : public deBaseSynthesizerAudioAnalyzer{
 public:
-	static constexpr int FFT_SIZE = 1024;
+	static constexpr int FFT_SIZE = 2048;
 	static constexpr int HALF_FFT_SIZE = FFT_SIZE / 2;
 	
 	
@@ -75,11 +75,6 @@ private:
 		void Run() override;
 	};
 	
-	struct Peak{
-		float freq = 0.0f;
-		float mag = 0.0f;
-	};
-	
 	struct Band{
 		float energy = 0.0f;
 		int count = 0;
@@ -107,15 +102,17 @@ private:
 	
 	float pPrevMagnitude[FFT_SIZE / 2];
 	
+	decTList<float> pSampleBuffer;
+	
 	deMutex pMutexResults;
 	
-	decTList<Peak> pWorkPeaks;
+	decTList<deAudioAnalyzer::SpectralPeak> pWorkPeaks;
 	decTList<Band> pWorkBands;
 	
 	int pResFrameCount, pResSampleCount, pResZeroCrossings;
 	float pResPeak, pResPeakMag;
 	double pResSumSq, pResCentroid, pResFlatness, pResFlux, pResRolloff, pResPitch;
-	decTList<Peak> pResSpectralPeaks;
+	decTList<deAudioAnalyzer::SpectralPeak> pResSpectralPeaks;
 	decTList<float> pResBands;
 	
 	

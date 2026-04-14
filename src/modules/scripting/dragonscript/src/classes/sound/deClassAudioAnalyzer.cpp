@@ -100,46 +100,25 @@ void deClassAudioAnalyzer::nfSetUseAudioCapture::RunFunction(dsRunTime *rt, dsVa
 	analyzer.SetUseAudioCapture(rt->GetValue(0)->GetBool());
 }
 
-// func int getSpectralPeaksCount()
-deClassAudioAnalyzer::nfGetSpectralPeaksCount::nfGetSpectralPeaksCount(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "getSpectralPeaksCount", DSFT_FUNCTION,
+// func int getFrequencyBandCount()
+deClassAudioAnalyzer::nfGetFrequencyBandCount::nfGetFrequencyBandCount(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassAudioAnalyzer::nfGetSpectralPeaksCount::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassAudioAnalyzer::nfGetFrequencyBandCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	rt->PushInt(analyzer.GetSpectralPeaksCount());
+	rt->PushInt(analyzer.GetFrequencyBandCount());
 }
 
-// func void setSpectralPeaksCount(int count)
-deClassAudioAnalyzer::nfSetSpectralPeaksCount::nfSetSpectralPeaksCount(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "setSpectralPeaksCount", DSFT_FUNCTION,
+// func void setFrequencyBandCount(int count)
+deClassAudioAnalyzer::nfSetFrequencyBandCount::nfSetFrequencyBandCount(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setFrequencyBandCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
-void deClassAudioAnalyzer::nfSetSpectralPeaksCount::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassAudioAnalyzer::nfSetFrequencyBandCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	analyzer.SetSpectralPeaksCount(rt->GetValue(0)->GetInt());
-}
-
-// func int getFrequencyBandsCount()
-deClassAudioAnalyzer::nfGetFrequencyBandsCount::nfGetFrequencyBandsCount(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "getFrequencyBandsCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
-}
-void deClassAudioAnalyzer::nfGetFrequencyBandsCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	rt->PushInt(analyzer.GetFrequencyBandsCount());
-}
-
-// func void setFrequencyBandsCount(int count)
-deClassAudioAnalyzer::nfSetFrequencyBandsCount::nfSetFrequencyBandsCount(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "setFrequencyBandsCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
-	p_AddParameter(init.clsInteger); // count
-}
-void deClassAudioAnalyzer::nfSetFrequencyBandsCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	analyzer.SetFrequencyBandsCount(rt->GetValue(0)->GetInt());
+	analyzer.SetFrequencyBandCount(rt->GetValue(0)->GetInt());
 }
 
 // func void updateResults()
@@ -232,15 +211,36 @@ void deClassAudioAnalyzer::nfGetSpectralRolloff::RunFunction(dsRunTime *rt, dsVa
 	rt->PushFloat(analyzer.GetSpectralRolloff());
 }
 
-// func float getSpectralPeakAt(int index)
-deClassAudioAnalyzer::nfGetSpectralPeakAt::nfGetSpectralPeakAt(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "getSpectralPeakAt", DSFT_FUNCTION,
+// func int getSpectralPeakCount()
+deClassAudioAnalyzer::nfGetSpectralPeakCount::nfGetSpectralPeakCount(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getSpectralPeakCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+}
+void deClassAudioAnalyzer::nfGetSpectralPeakCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushInt(analyzer.GetSpectralPeaks().GetCount());
+}
+
+// func float getSpectralPeakFrequencyAt(int index)
+deClassAudioAnalyzer::nfGetSpectralPeakFrequencyAt::nfGetSpectralPeakFrequencyAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getSpectralPeakFrequencyAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 	p_AddParameter(init.clsInteger); // index
 }
-void deClassAudioAnalyzer::nfGetSpectralPeakAt::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassAudioAnalyzer::nfGetSpectralPeakFrequencyAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	rt->PushFloat(analyzer.GetSpectralPeaks()[rt->GetValue(0)->GetInt()]);
+	rt->PushFloat(analyzer.GetSpectralPeaks()[rt->GetValue(0)->GetInt()].frequency);
+}
+
+// func float getSpectralPeakMagnitudeAt(int index)
+deClassAudioAnalyzer::nfGetSpectralPeakMagnitudeAt::nfGetSpectralPeakMagnitudeAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getSpectralPeakMagnitudeAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassAudioAnalyzer::nfGetSpectralPeakMagnitudeAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetSpectralPeaks()[rt->GetValue(0)->GetInt()].magnitude);
 }
 
 // func float getFrequencyBandAt(int index)
@@ -335,10 +335,8 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction(new nfGetUseAudioCapture(init));
 	AddFunction(new nfSetUseAudioCapture(init));
-	AddFunction(new nfGetSpectralPeaksCount(init));
-	AddFunction(new nfSetSpectralPeaksCount(init));
-	AddFunction(new nfGetFrequencyBandsCount(init));
-	AddFunction(new nfSetFrequencyBandsCount(init));
+	AddFunction(new nfGetFrequencyBandCount(init));
+	AddFunction(new nfSetFrequencyBandCount(init));
 	AddFunction(new nfUpdateResults(init));
 	
 	AddFunction(new nfGetRMS(init));
@@ -348,7 +346,9 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetSpectralFlatness(init));
 	AddFunction(new nfGetSpectralFlux(init));
 	AddFunction(new nfGetSpectralRolloff(init));
-	AddFunction(new nfGetSpectralPeakAt(init));
+	AddFunction(new nfGetSpectralPeakCount(init));
+	AddFunction(new nfGetSpectralPeakFrequencyAt(init));
+	AddFunction(new nfGetSpectralPeakMagnitudeAt(init));
 	AddFunction(new nfGetFrequencyBandAt(init));
 	AddFunction(new nfGetPitch(init));
 	

@@ -50,20 +50,8 @@ class AudioAnalyzer
 	func void setUseAudioCapture(bool useAudioCapture)
 	end
 	
-	/** \brief Count of spectral peaks tracked. */
-	func int getSpectralPeaksCount()
-		return 0
-	end
-	
-	/**
-	 * \brief Set count of spectral peaks tracked.
-	 * \throws EInvalidParam count is less than 1.
-	 */
-	func void setSpectralPeaksCount(int count)
-	end
-	
 	/** \brief Count of frequency bands tracked. */
-	func int getFrequencyBandsCount()
+	func int getFrequencyBandCount()
 		return 0
 	end
 	
@@ -71,7 +59,7 @@ class AudioAnalyzer
 	 * \brief Set count of frequency bands tracked.
 	 * \throws EInvalidParam count is less than 1.
 	 */
-	func void setFrequencyBandsCount(int count)
+	func void setFrequencyBandCount(int count)
 	end
 	
 	/**
@@ -127,12 +115,30 @@ class AudioAnalyzer
 		return 0.0
 	end
 	
+	/** \brief Count of spectral peak frequencies. */
+	func int getSpectralPeakCount()
+		return 0
+	end
+	
 	/**
-	 * \brief Most prominent frequency peak in Hz at index sorted from lowest frequency to highest.
+	 * \brief Spectral peak frequency in Hz at index.
 	 * \throws EInvalidParam index is less than 0
 	 * \throws EInvalidParam index is greater than or equal to getSpectralPeaksCount().
+	 * 
+	 * Spectral peaks are sorted from strongest to weakest.
 	 */
-	func float getSpectralPeakAt(int index)
+	func float getSpectralPeakFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Spectral peak magnitude at index.
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getSpectralPeaksCount().
+	 * 
+	 * Spectral peaks are sorted from strongest to weakest.
+	 */
+	func float getSpectralPeakMagnitudeAt(int index)
 		return 0.0
 	end
 	
