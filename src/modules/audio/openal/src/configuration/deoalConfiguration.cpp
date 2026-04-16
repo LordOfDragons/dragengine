@@ -60,7 +60,7 @@ pSwitchSharedEnvironmentThreshold(0.1f),
 pMaxSharedEffectSlots(8),
 
 pAudioCaptureVolume(1.0f),
-pAudioCaptureNoiseGate(powf(10.0f, -45.0f / 20.0f)) // -45 dB
+pAudioCaptureNoiseGate(powf(10.0f, -50.0f / 20.0f)) // -50 dB
 {
 	pApplyAuralizationProfile();
 }

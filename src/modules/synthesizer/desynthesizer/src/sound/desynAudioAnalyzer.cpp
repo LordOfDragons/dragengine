@@ -61,7 +61,12 @@ pOwner(owner){
 desynAudioAnalyzer::AnalyzeThread::~AnalyzeThread() = default;
 
 void desynAudioAnalyzer::AnalyzeThread::Run(){
-	pOwner.AnalyzeLoop();
+	try{
+		pOwner.AnalyzeLoop();
+		
+	}catch(const deException &e){
+		pOwner.GetModule().LogException(e);
+	}
 }
 
 
@@ -385,10 +390,12 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	const int bandCount = pWorkBands.GetCount();
 	pWorkBands.SetRangeAt(0, bandCount, {});
 	
-	// logarithmic band mapping: bin k maps to band floor(log(k)/log(N-1)*bandCount).
+	// logarithmic band mapping within capped frequency range.
 	// bin 0 is DC and has no meaningful frequency, so it is skipped.
-	const float logMaxBin = logf((float)(HALF_FFT_SIZE - 1));
-	const float invLogBandScale = logMaxBin > 0.0f ? (float)bandCount / logMaxBin : 0.0f;
+	const int freqLoBin = decMath::max(1, (int)(pAnalyzer.GetLowestFrequency() / freqPerBin));
+	const int freqHiBin = decMath::min(HALF_FFT_SIZE - 1, (int)(pAnalyzer.GetHighestFrequency() / freqPerBin));
+	const float logBinRange = freqHiBin > freqLoBin ? logf((float)freqHiBin / (float)freqLoBin) : 1.0f;
+	const float invLogBinRange = (float)bandCount / logBinRange;
 	
 	const int lo = decMath::max(1, (int)(80.0f / freqPerBin));
 	const int hi = decMath::min(HALF_FFT_SIZE - 1, (int)(1000.0f / freqPerBin));
@@ -415,9 +422,10 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 			}
 		}
 		
-		// frequency bands (logarithmic spacing)
-		if(k > 0){
-			auto &band = pWorkBands[decMath::min((int)(logf((float)k) * invLogBandScale), bandCount - 1)];
+		// frequency bands (logarithmic spacing within capped frequency range)
+		if(k >= freqLoBin && k <= freqHiBin){
+			const float logRel = logf((float)k / (float)freqLoBin);
+			auto &band = pWorkBands[decMath::min((int)(logRel * invLogBinRange), bandCount - 1)];
 			band.energy += magnitude[k];
 			band.count++;
 		}

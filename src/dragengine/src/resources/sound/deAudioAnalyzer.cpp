@@ -41,6 +41,8 @@ deAudioAnalyzer::deAudioAnalyzer(deAudioAnalyzerManager *manager) :
 deResource(manager),
 pUseAudioCapture(false),
 pFrequencyBandCount(8),
+pLowestFrequency(20.0f),
+pHighestFrequency(20000.0f),
 pRMS(0.0f),
 pPeak(0.0f),
 pZeroCrossingRate(0.0f),
@@ -76,6 +78,15 @@ void deAudioAnalyzer::SetFrequencyBandCount(int count){
 	
 	pFrequencyBandCount = count;
 	pFrequencyBands.SetCount(pFrequencyBandCount, 0.0f);
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetFrequencyRange(float lowestFrequency, float highestFrequency){
+	pLowestFrequency = decMath::max(lowestFrequency, 1.0f);
+	pHighestFrequency = decMath::max(highestFrequency, pLowestFrequency + 1.0f);
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ConfigurationChanged();

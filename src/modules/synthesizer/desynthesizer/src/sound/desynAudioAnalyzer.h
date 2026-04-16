@@ -126,6 +126,9 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
+	/** \brief Module. */
+	inline deDESynthesizer &GetModule() const{ return pModule; }
+	
 	/** \brief Configuration changed. */
 	void ConfigurationChanged() override;
 	

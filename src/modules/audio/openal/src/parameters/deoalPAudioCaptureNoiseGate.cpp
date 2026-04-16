@@ -43,13 +43,13 @@ deoalParameterFloat(oal)
 		" Samples with volume below threshold are forced to zero."
 		" This removes background noise and microphone hiss.");
 	SetType(deModuleParameter::eptRanged);
-	SetMinimumValue(-60.0f);
+	SetMinimumValue(-75.0f);
 	SetMaximumValue(0.0f);
 	SetValueStepSize(1.0f);
 	
 	SetCategory(ecBasic);
 	SetDisplayName("Audio Capture Noise Gate");
-	SetDefaultValue("-45.0");
+	SetDefaultValue("-50.0");
 }
 
 deoalPAudioCaptureNoiseGate::~deoalPAudioCaptureNoiseGate() = default;
@@ -61,11 +61,11 @@ deoalPAudioCaptureNoiseGate::~deoalPAudioCaptureNoiseGate() = default;
 float deoalPAudioCaptureNoiseGate::GetParameterFloat(){
 	const float level = pOal.GetConfiguration().GetAudioCaptureNoiseGate();
 	const float db = 20.0f * log10f(decMath::clamp(level, 1e-3f, 1.0f));
-	return decMath::linearStep(db, -60.0f, 0.0f);
+	return decMath::linearStep(db, -75.0f, 0.0f);
 }
 
 void deoalPAudioCaptureNoiseGate::SetParameterFloat(float value){
-	const float db = decMath::clamp(value, -60.0f, 0.0f);
+	const float db = decMath::clamp(value, -75.0f, 0.0f);
 	const float level = powf(10.0f, db / 20.0f);
 	pOal.GetConfiguration().SetAudioCaptureNoiseGate(level);
 }

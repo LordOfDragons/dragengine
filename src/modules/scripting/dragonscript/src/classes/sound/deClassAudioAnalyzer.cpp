@@ -121,6 +121,38 @@ void deClassAudioAnalyzer::nfSetFrequencyBandCount::RunFunction(dsRunTime *rt, d
 	analyzer.SetFrequencyBandCount(rt->GetValue(0)->GetInt());
 }
 
+// func float getLowestFrequency()
+deClassAudioAnalyzer::nfGetLowestFrequency::nfGetLowestFrequency(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getLowestFrequency", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassAudioAnalyzer::nfGetLowestFrequency::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetLowestFrequency());
+}
+
+// func float getHighestFrequency()
+deClassAudioAnalyzer::nfGetHighestFrequency::nfGetHighestFrequency(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getHighestFrequency", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassAudioAnalyzer::nfGetHighestFrequency::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetHighestFrequency());
+}
+
+// func void setFrequencyRange(float lowestFrequency, float highestFrequency)
+deClassAudioAnalyzer::nfSetFrequencyRange::nfSetFrequencyRange(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setFrequencyRange", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // lowestFrequency
+	p_AddParameter(init.clsFloat); // highestFrequency
+}
+void deClassAudioAnalyzer::nfSetFrequencyRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetFrequencyRange(rt->GetValue(0)->GetFloat(), rt->GetValue(1)->GetFloat());
+}
+
 // func void updateResults()
 deClassAudioAnalyzer::nfUpdateResults::nfUpdateResults(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "updateResults", DSFT_FUNCTION,
@@ -337,6 +369,9 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfSetUseAudioCapture(init));
 	AddFunction(new nfGetFrequencyBandCount(init));
 	AddFunction(new nfSetFrequencyBandCount(init));
+	AddFunction(new nfGetLowestFrequency(init));
+	AddFunction(new nfGetHighestFrequency(init));
+	AddFunction(new nfSetFrequencyRange(init));
 	AddFunction(new nfUpdateResults(init));
 	
 	AddFunction(new nfGetRMS(init));

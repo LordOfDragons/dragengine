@@ -62,6 +62,7 @@ public:
 private:
 	bool pUseAudioCapture;
 	int pFrequencyBandCount;
+	float pLowestFrequency, pHighestFrequency;
 	
 	float pRMS;
 	float pPeak;
@@ -114,6 +115,15 @@ public:
 	
 	/** \brief Set count of frequency bands. */
 	void SetFrequencyBandCount(int count);
+	
+	/** \brief Lowest frequency for frequency bands in Hz. */
+	inline float GetLowestFrequency() const{ return pLowestFrequency; }
+	
+	/** \brief Highest frequency for frequency bands in Hz. */
+	inline float GetHighestFrequency() const{ return pHighestFrequency; }
+	
+	/** \brief Set frequency range for frequency bands in Hz. */
+	void SetFrequencyRange(float lowestFrequency, float highestFrequency);
 	
 	
 	/**

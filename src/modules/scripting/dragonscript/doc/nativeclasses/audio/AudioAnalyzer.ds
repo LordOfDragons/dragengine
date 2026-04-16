@@ -63,6 +63,30 @@ class AudioAnalyzer
 	end
 	
 	/**
+	 * \brief Lowest frequency for frequency bands in Hz.
+	 * 
+	 * Default is 20 Hz.
+	 */
+	func float getLowestFrequency()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Highest frequency for frequency bands in Hz.
+	 * 
+	 * Default is 20000 Hz.
+	 */
+	func float getHighestFrequency()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set frequency range for frequency bands in Hz.
+	 */
+	func void setFrequencyRange(float lowestFrequency, float highestFrequency)
+	end
+	
+	/**
 	 * \brief Update results.
 	 * 
 	 * Fetch asynchronously accumulated analysis results from synthesizer module. The results stay
@@ -143,7 +167,10 @@ class AudioAnalyzer
 	end
 	
 	/**
-	 * \brief Energy level of equally spaced frequency band at index in range 0 to 1.
+	 * \brief Energy level of frequency band at index in range 0 to 1.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
 	 * \throws EInvalidParam index is less than 0
 	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
 	 */

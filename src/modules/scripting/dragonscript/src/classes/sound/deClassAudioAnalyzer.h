@@ -94,6 +94,9 @@ private:
 	DEF_NATFUNC(nfSetUseAudioCapture);
 	DEF_NATFUNC(nfGetFrequencyBandCount);
 	DEF_NATFUNC(nfSetFrequencyBandCount);
+	DEF_NATFUNC(nfGetLowestFrequency);
+	DEF_NATFUNC(nfGetHighestFrequency);
+	DEF_NATFUNC(nfSetFrequencyRange);
 	DEF_NATFUNC(nfUpdateResults);
 	
 	DEF_NATFUNC(nfGetRMS);
