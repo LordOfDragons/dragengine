@@ -77,6 +77,8 @@ private:
 	
 	struct Band{
 		float energy = 0.0f;
+		float lowestFrequency = 0.0f;
+		float highestFrequency = 0.0f;
 		int count = 0;
 	};
 	
@@ -113,7 +115,7 @@ private:
 	float pResPeak, pResPeakMag;
 	double pResSumSq, pResCentroid, pResFlatness, pResFlux, pResRolloff, pResPitch;
 	decTList<deAudioAnalyzer::SpectralPeak> pResSpectralPeaks;
-	decTList<float> pResBands;
+	decTList<deAudioAnalyzer::FrequencyBand> pResBands;
 	
 	
 public:

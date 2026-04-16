@@ -275,15 +275,60 @@ void deClassAudioAnalyzer::nfGetSpectralPeakMagnitudeAt::RunFunction(dsRunTime *
 	rt->PushFloat(analyzer.GetSpectralPeaks()[rt->GetValue(0)->GetInt()].magnitude);
 }
 
-// func float getFrequencyBandAt(int index)
-deClassAudioAnalyzer::nfGetFrequencyBandAt::nfGetFrequencyBandAt(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "getFrequencyBandAt", DSFT_FUNCTION,
+// func float getFrequencyBandEnergyAt(int index)
+deClassAudioAnalyzer::nfGetFrequencyBandEnergyAt::nfGetFrequencyBandEnergyAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandEnergyAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 	p_AddParameter(init.clsInteger); // index
 }
-void deClassAudioAnalyzer::nfGetFrequencyBandAt::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassAudioAnalyzer::nfGetFrequencyBandEnergyAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()]);
+	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].energy);
+}
+
+// func float getFrequencyBandAverageEnergyAt(int index)
+deClassAudioAnalyzer::nfGetFrequencyBandAverageEnergyAt::nfGetFrequencyBandAverageEnergyAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandAverageEnergyAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassAudioAnalyzer::nfGetFrequencyBandAverageEnergyAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].averageEnergy);
+}
+
+// func float getFrequencyBandLowestFrequencyAt(int index)
+deClassAudioAnalyzer::nfGetFrequencyBandLowestFrequencyAt::nfGetFrequencyBandLowestFrequencyAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandLowestFrequencyAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassAudioAnalyzer::nfGetFrequencyBandLowestFrequencyAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].lowestFrequency);
+}
+
+// func float getFrequencyBandHighestFrequencyAt(int index)
+deClassAudioAnalyzer::nfGetFrequencyBandHighestFrequencyAt::nfGetFrequencyBandHighestFrequencyAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandHighestFrequencyAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassAudioAnalyzer::nfGetFrequencyBandHighestFrequencyAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].highestFrequency);
+}
+
+// func float getMaxBandEnergy()
+deClassAudioAnalyzer::nfGetMaxBandEnergy::nfGetMaxBandEnergy(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getMaxBandEnergy", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassAudioAnalyzer::nfGetMaxBandEnergy::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands().Inject(0.0f, [](float acc, const deAudioAnalyzer::FrequencyBand &band){
+		return decMath::max(acc, band.energy);
+	}));
 }
 
 // func float getPitch()
@@ -384,7 +429,11 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetSpectralPeakCount(init));
 	AddFunction(new nfGetSpectralPeakFrequencyAt(init));
 	AddFunction(new nfGetSpectralPeakMagnitudeAt(init));
-	AddFunction(new nfGetFrequencyBandAt(init));
+	AddFunction(new nfGetFrequencyBandEnergyAt(init));
+	AddFunction(new nfGetFrequencyBandAverageEnergyAt(init));
+	AddFunction(new nfGetFrequencyBandLowestFrequencyAt(init));
+	AddFunction(new nfGetFrequencyBandHighestFrequencyAt(init));
+	AddFunction(new nfGetMaxBandEnergy(init));
 	AddFunction(new nfGetPitch(init));
 	
 	AddFunction(new nfEquals(init));

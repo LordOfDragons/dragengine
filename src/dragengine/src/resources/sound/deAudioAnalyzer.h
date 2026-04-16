@@ -58,6 +58,21 @@ public:
 		float magnitude = 0.0f;
 	};
 	
+	/** \brief Frequency band. */
+	struct FrequencyBand{
+		/** \brief Lowest frequency of the band in Hz. */
+		float lowestFrequency = 0.0f;
+		
+		/** \brief Highest frequency of the band in Hz. */
+		float highestFrequency = 0.0f;
+		
+		/** \brief Energy of the band. */
+		float energy = 0.0f;
+		
+		/** \brief Average energy of the band. */
+		float averageEnergy = 0.0f;
+	};
+	
 	
 private:
 	bool pUseAudioCapture;
@@ -72,7 +87,7 @@ private:
 	float pSpectralFlux;
 	float pSpectralRolloff;
 	decTList<SpectralPeak> pSpectralPeaks;
-	decTList<float> pFrequencyBands;
+	decTList<FrequencyBand> pFrequencyBands;
 	float pPitch;
 	
 	PeerSynthesizer pPeerSynthesizer;
@@ -216,9 +231,9 @@ public:
 	inline decTList<SpectralPeak> &GetSpectralPeaks(){ return pSpectralPeaks; }
 	inline const decTList<SpectralPeak> &GetSpectralPeaks() const{ return pSpectralPeaks; }
 	
-	/** \brief Energy levels of equally-spaced frequency bands in range 0 to 1. */
-	inline decTList<float> &GetFrequencyBands(){ return pFrequencyBands; }
-	inline const decTList<float> &GetFrequencyBands() const{ return pFrequencyBands; }
+	/** \brief Energy levels of logarithmically spaced frequency bands. */
+	inline decTList<FrequencyBand> &GetFrequencyBands(){ return pFrequencyBands; }
+	inline const decTList<FrequencyBand> &GetFrequencyBands() const{ return pFrequencyBands; }
 	
 	/** \brief Estimated pitch (fundamental frequency) in Hz or 0 if not detected. */
 	inline float GetPitch() const{ return pPitch; }

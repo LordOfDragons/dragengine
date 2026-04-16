@@ -52,7 +52,7 @@ pSpectralFlux(0.0f),
 pSpectralRolloff(0.0f),
 pPitch(0.0f)
 {
-	pFrequencyBands.SetCount(pFrequencyBandCount, 0.0f);
+	pFrequencyBands.SetCount(pFrequencyBandCount, {});
 }
 
 deAudioAnalyzer::~deAudioAnalyzer() = default;
@@ -77,7 +77,7 @@ void deAudioAnalyzer::SetFrequencyBandCount(int count){
 	DEASSERT_TRUE(count > 0)
 	
 	pFrequencyBandCount = count;
-	pFrequencyBands.SetCount(pFrequencyBandCount, 0.0f);
+	pFrequencyBands.SetCount(pFrequencyBandCount, {});
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ConfigurationChanged();

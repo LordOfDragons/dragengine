@@ -167,14 +167,61 @@ class AudioAnalyzer
 	end
 	
 	/**
-	 * \brief Energy level of frequency band at index in range 0 to 1.
+	 * \brief Energy level of frequency band at index.
 	 * 
 	 * Bands are logarithmically spaced within the frequency range set by
 	 * \ref #setFrequencyRange(float,float).
+	 * 
 	 * \throws EInvalidParam index is less than 0
 	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
 	 */
-	func float getFrequencyBandAt(int index)
+	func float getFrequencyBandEnergyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Average energy level of frequency band at index.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandAverageEnergyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Lowest frequency of frequency band at index in Hz.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandLowestFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Highest frequency of frequency band at index in Hz.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandHighestFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Maximum energy level of all frequency bands.
+	 */
+	func float getMaxBandEnergy()
 		return 0.0
 	end
 	
