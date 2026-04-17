@@ -50,6 +50,25 @@ class AudioAnalyzer
 	func void setUseAudioCapture(bool useAudioCapture)
 	end
 	
+	/**
+	 * \brief FFT resolution (window size in samples).
+	 * 
+	 * Higher values give better frequency resolution at the cost of more processing time
+	 * and higher latency.
+	 * 
+	 * Default is 1024.
+	 */
+	func int getResolution()
+		return 0
+	end
+	
+	/**
+	 * \brief Set FFT resolution.
+	 * \throws EInvalidParam resolution is less than 64.
+	 */
+	func void setResolution(int resolution)
+	end
+	
 	/** \brief Count of frequency bands tracked. */
 	func int getFrequencyBandCount()
 		return 0
@@ -84,6 +103,83 @@ class AudioAnalyzer
 	 * \brief Set frequency range for frequency bands in Hz.
 	 */
 	func void setFrequencyRange(float lowestFrequency, float highestFrequency)
+	end
+	
+	/**
+	 * \brief Apply pre-emphasis filter before FFT.
+	 * 
+	 * If enabled pre-emphasis filter is applied to the input samples before the FFT calculation.
+	 * This boosts high frequencies to improve analysis quality.
+	 * 
+	 * Default is true.
+	 */
+	func bool getEnablePreEmphasis()
+		return false
+	end
+	
+	/**
+	 * \brief Set apply pre-emphasis filter before FFT.
+	 * 
+	 * If enabled pre-emphasis filter is applied to the input samples before the FFT calculation.
+	 * This boosts high frequencies to improve analysis quality.
+	 */
+	func void setEnablePreEmphasis(bool enable)
+	end
+	
+	/**
+	 * \brief Pre-emphasis filter coefficient.
+	 * 
+	 * Default is 0.97.
+	 */
+	func float getPreEmphasisFactor()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set pre-emphasis filter coefficient.
+	 * 
+	 * Factor is clamped to the range from 0 to 1.
+	 */
+	func void setPreEmphasisFactor(float factor)
+	end
+	
+	/**
+	 * \brief Apply mel filter banks after FFT.
+	 * 
+	 * If enabled changes frequency bands from logarithmically spaced to mel-scale spaced
+	 * triangular filters. This produces a perceptually-motivated band distribution closer
+	 * to how humans perceive pitch and timbre.
+	 * 
+	 * Default is false.
+	 */
+	func bool getEnableMelFiltering()
+		return false
+	end
+	
+	/**
+	 * \brief Set apply mel filter banks after FFT.
+	 * 
+	 * If enabled changes frequency bands from logarithmically spaced to mel-scale spaced
+	 * triangular filters. This produces a perceptually-motivated band distribution closer
+	 * to how humans perceive pitch and timbre.
+	 */
+	func void setEnableMelFiltering(bool enable)
+	end
+	
+	/**
+	 * \brief Count of mel filter banks.
+	 * 
+	 * Default is 40.
+	 */
+	func int getMelFilterCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Set count of mel filter bank filters.
+	 * \throws EInvalidParam count is less than 1.
+	 */
+	func void setMelFilterCount(int count)
 	end
 	
 	/**
@@ -176,19 +272,6 @@ class AudioAnalyzer
 	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
 	 */
 	func float getFrequencyBandEnergyAt(int index)
-		return 0.0
-	end
-	
-	/**
-	 * \brief Average energy level of frequency band at index.
-	 * 
-	 * Bands are logarithmically spaced within the frequency range set by
-	 * \ref #setFrequencyRange(float,float).
-	 * 
-	 * \throws EInvalidParam index is less than 0
-	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
-	 */
-	func float getFrequencyBandAverageEnergyAt(int index)
 		return 0.0
 	end
 	

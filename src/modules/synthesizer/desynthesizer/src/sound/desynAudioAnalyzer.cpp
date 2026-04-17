@@ -83,7 +83,9 @@ pListener(deTObjectReference<CaptureAudio>::New(*this)),
 pThread(*this),
 pStopThread(false),
 pThreadRunning(false),
-pSampleRate(44100),
+pSampleRate(48000), // will be updated from capture format
+pFftSize(analyzer.GetResolution()),
+pHalfFftSize(analyzer.GetResolution() / 2),
 pFftIn(nullptr),
 pFftOut(nullptr),
 pFftPlan(nullptr),
@@ -99,11 +101,16 @@ pResFlux(0.0),
 pResRolloff(0.0),
 pResPitch(0.0)
 {
-	pFftIn = fftw_alloc_real(FFT_SIZE);
-	pFftOut = fftw_alloc_complex(FFT_SIZE / 2 + 1);
-	pFftPlan = fftw_plan_dft_r2c_1d(FFT_SIZE, pFftIn, pFftOut, FFTW_MEASURE);
-	memset(pPrevMagnitude, 0, sizeof(pPrevMagnitude));
-	pSampleBuffer.EnlargeCapacity(FFT_SIZE);
+	pConfig.resolution = pAnalyzer.GetResolution();
+	pConfig.lowestFrequency = pAnalyzer.GetLowestFrequency();
+	pConfig.highestFrequency = pAnalyzer.GetHighestFrequency();
+	pConfig.enablePreEmphasis = pAnalyzer.GetEnablePreEmphasis();
+	pConfig.preEmphasisFactor = pAnalyzer.GetPreEmphasisFactor();
+	pConfig.enableMelFiltering = pAnalyzer.GetEnableMelFiltering();
+	pConfig.melFilterCount = pAnalyzer.GetMelFilterCount();
+	pWorkConfig = pConfig;
+	
+	pRebuildFftPlan(pFftSize);
 	
 	const int bandCount = analyzer.GetFrequencyBandCount(); // always > 0
 	pResBands.SetCount(bandCount, {});
@@ -201,7 +208,15 @@ void desynAudioAnalyzer::UpdateResults(){
 		pResBands.SetRangeAt(0, pResBands.GetCount(), {});
 	}
 	
-	// update array size if configuration changed. does nothing if size is unchanged
+	// update configuration if configuration
+	pConfig.resolution = pAnalyzer.GetResolution();
+	pConfig.lowestFrequency = pAnalyzer.GetLowestFrequency();
+	pConfig.highestFrequency = pAnalyzer.GetHighestFrequency();
+	pConfig.enablePreEmphasis = pAnalyzer.GetEnablePreEmphasis();
+	pConfig.preEmphasisFactor = pAnalyzer.GetPreEmphasisFactor();
+	pConfig.enableMelFiltering = pAnalyzer.GetEnableMelFiltering();
+	pConfig.melFilterCount = pAnalyzer.GetMelFilterCount();
+	
 	pResBands.SetCount(pAnalyzer.GetFrequencyBands().GetCount(), {});
 }
 
@@ -290,7 +305,40 @@ void desynAudioAnalyzer::AnalyzeLoop(){
 // Private helpers
 ///////////////////
 
+void desynAudioAnalyzer::pRebuildFftPlan(int newSize){
+	if(pFftPlan){
+		fftw_destroy_plan(pFftPlan);
+		pFftPlan = nullptr;
+	}
+	if(pFftOut){
+		fftw_free(pFftOut);
+		pFftOut = nullptr;
+	}
+	if(pFftIn){
+		fftw_free(pFftIn);
+		pFftIn = nullptr;
+	}
+	
+	pFftSize = newSize;
+	pHalfFftSize = newSize / 2;
+	
+	pFftIn = fftw_alloc_real(pFftSize);
+	pFftOut = fftw_alloc_complex(pFftSize / 2 + 1);
+	pFftPlan = fftw_plan_dft_r2c_1d(pFftSize, pFftIn, pFftOut, FFTW_MEASURE);
+	
+	pPrevMagnitude.SetCount(pHalfFftSize, 0.0f);
+	pMagnitude.SetCount(pHalfFftSize, 0.0f);
+	pSampleBuffer.SetCountDiscard(0);
+	pSampleBuffer.EnlargeCapacity(pFftSize);
+}
+
 void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
+	// rebuild FFT plan if resolution changed
+	const int resolution = pWorkConfig.resolution;
+	if(resolution != pFftSize){
+		pRebuildFftPlan(resolution);
+	}
+	
 	const int sampleCount = samples.GetCount();
 	if(sampleCount == 0){
 		return;
@@ -299,7 +347,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	const float norm = 1.0f / 32768.0f;
 	
 	// push new samples into the ring buffer, dropping oldest if full
-	const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - FFT_SIZE;
+	const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - pFftSize;
 	if(dropSampleCount > 0){
 		pSampleBuffer.RemoveHead(dropSampleCount);
 	}
@@ -309,7 +357,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	});
 	
 	// do not process until the ring buffer is fully populated
-	if(pSampleBuffer.GetCount() < FFT_SIZE){
+	if(pSampleBuffer.GetCount() < pFftSize){
 		return;
 	}
 	
@@ -330,12 +378,21 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		prevSign = curSign;
 	});
 	
-	const float freqPerBin = (float)pSampleRate / (float)FFT_SIZE;
+	const float freqPerBin = (float)pSampleRate / (float)pFftSize;
 	
-	// fill FFT input from ring buffer (oldest to newest) with Hann window
-	for(int i=0; i<FFT_SIZE; i++){
-		const float w = 0.5f * (1.0f - cosf(TWO_PI * (float)i / (float)(FFT_SIZE - 1)));
-		pFftIn[i] = (double)(pSampleBuffer.GetAt(i) * w);
+	// fill FFT input from ring buffer (oldest to newest) with Hann window.
+	// optionally apply pre-emphasis filter
+	const bool enablePreEmphasis = pWorkConfig.enablePreEmphasis;
+	const float preEmphasisFactor = pWorkConfig.preEmphasisFactor;
+	const float * const sampleBuffer = pSampleBuffer.GetArrayPointer();
+	
+	for(int i=0; i<pFftSize; i++){
+		const float w = 0.5f * (1.0f - cosf(TWO_PI * (float)i / (float)(pFftSize - 1)));
+		float s = sampleBuffer[i];
+		if(enablePreEmphasis && i > 0){
+			s -= preEmphasisFactor * sampleBuffer[i - 1];
+		}
+		pFftIn[i] = (double)(s * w);
 	}
 	
 	// FFT
@@ -343,7 +400,8 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	
 	// first spectral loop: magnitudes, energy, centroid, flatness, flux.
 	// covers all quantities that can be accumulated in a single forward pass
-	float magnitude[HALF_FFT_SIZE];
+	float * const prevMagnitude = pPrevMagnitude.GetArrayPointer();
+	float * const magnitude = pMagnitude.GetArrayPointer();
 	float totalEnergy = 0.0f;
 	float weightedSum = 0.0f;
 	double logSum = 0.0;
@@ -351,7 +409,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	float maxMag = 0.0f;
 	float fluxSum = 0.0f;
 	
-	for(int k=0; k<HALF_FFT_SIZE; k++){
+	for(int k=0; k<pHalfFftSize; k++){
 		const double re = pFftOut[k][0];
 		const double im = pFftOut[k][1];
 		magnitude[k] = (float)sqrt(re * re + im * im);
@@ -367,23 +425,23 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		
 		maxMag = decMath::max(maxMag, magnitude[k]);
 		
-		fluxSum += decMath::max(0.0f, magnitude[k] - pPrevMagnitude[k]);
+		fluxSum += decMath::max(0.0f, magnitude[k] - prevMagnitude[k]);
 	}
-	memcpy(pPrevMagnitude, magnitude, sizeof(float) * HALF_FFT_SIZE);
+	memcpy(prevMagnitude, magnitude, sizeof(float) * pHalfFftSize);
 	
 	// derived scalars from the first pass
 	const float centroid = totalEnergy > 0.0f ? weightedSum / totalEnergy : 0.0f;
 	
 	float flatness = 0.0f;
 	if(logCount > 0 && totalEnergy > 0.0f){
-		const float divisor = totalEnergy / (float)HALF_FFT_SIZE;
+		const float divisor = totalEnergy / (float)pHalfFftSize;
 		if(divisor > 0.0f){
 			const float geom = (float)exp(logSum / (double)logCount);
 			flatness = decMath::clamp(geom / divisor, 0.0f, 1.0f);
 		}
 	}
 	
-	const float flux = maxMag > 0.0f ? fluxSum / ((float)HALF_FFT_SIZE * maxMag) : 0.0f;
+	const float flux = maxMag > 0.0f ? fluxSum / ((float)pHalfFftSize * maxMag) : 0.0f;
 	
 	// second spectral loop: rolloff, peaks, frequency bands, pitch.
 	// these quantities require the complete magnitude array accumulated in the first pass
@@ -397,24 +455,27 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	const int bandCount = pWorkBands.GetCount();
 	pWorkBands.SetRangeAt(0, bandCount, {});
 	
-	pWorkBands.Visit([&](Band &band){
-		band.lowestFrequency = pAnalyzer.GetHighestFrequency();
-		band.highestFrequency = pAnalyzer.GetLowestFrequency();
-	});
+	const bool enableMelFiltering = pWorkConfig.enableMelFiltering;
 	
-	// logarithmic band mapping within capped frequency range.
-	// bin 0 is DC and has no meaningful frequency, so it is skipped.
-	const int freqLoBin = decMath::max(1, (int)(pAnalyzer.GetLowestFrequency() / freqPerBin));
-	const int freqHiBin = decMath::min(HALF_FFT_SIZE - 1, (int)(pAnalyzer.GetHighestFrequency() / freqPerBin));
+	if(!enableMelFiltering){
+		pWorkBands.Visit([&](Band &band){
+			band.lowestFrequency = pWorkConfig.highestFrequency;
+			band.highestFrequency = pWorkConfig.lowestFrequency;
+		});
+	}
+	
+	// logarithmic band mapping parameters (used only when mel filtering is disabled)
+	const int freqLoBin = decMath::max(1, (int)(pWorkConfig.lowestFrequency / freqPerBin));
+	const int freqHiBin = decMath::min(pHalfFftSize - 1, (int)(pWorkConfig.highestFrequency / freqPerBin));
 	const float logBinRange = freqHiBin > freqLoBin ? logf((float)freqHiBin / (float)freqLoBin) : 1.0f;
 	const float invLogBinRange = (float)bandCount / logBinRange;
 	
 	const int lo = decMath::max(1, (int)(80.0f / freqPerBin));
-	const int hi = decMath::min(HALF_FFT_SIZE - 1, (int)(1000.0f / freqPerBin));
+	const int hi = decMath::min(pHalfFftSize - 1, (int)(1000.0f / freqPerBin));
 	float bestMag = 0.0f;
 	int bestBin = 0;
 	
-	for(int k=0; k<HALF_FFT_SIZE; k++){
+	for(int k=0; k<pHalfFftSize; k++){
 		// spectral rolloff (85 % energy threshold)
 		if(!rolloffFound){
 			cumulative += magnitude[k];
@@ -425,7 +486,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		}
 		
 		// spectral peaks (local maxima)
-		if(k >= 1 && k < HALF_FFT_SIZE - 1){
+		if(k >= 1 && k < pHalfFftSize - 1){
 			if(magnitude[k] > magnitude[k - 1] && magnitude[k] > magnitude[k + 1]){
 				pWorkPeaks.Add({
 					.frequency = (float)k * freqPerBin,
@@ -434,8 +495,9 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 			}
 		}
 		
-		// frequency bands (logarithmic spacing within capped frequency range)
-		if(k >= freqLoBin && k <= freqHiBin){
+		// frequency bands: logarithmic spacing within capped frequency range
+		// skipped when mel filtering is enabled
+		if(!enableMelFiltering && k >= freqLoBin && k <= freqHiBin){
 			const float logRel = logf((float)k / (float)freqLoBin);
 			
 			auto &band = pWorkBands[decMath::min((int)(logRel * invLogBinRange), bandCount - 1)];
@@ -454,13 +516,100 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		}
 	}
 	
+	// mel filter bank: triangular filters equally spaced in mel scale.
+	// energies are mapped into the output bands
+	if(enableMelFiltering && bandCount > 0){
+		const int melCount = pWorkConfig.melFilterCount;
+		const float loFreq = pWorkConfig.lowestFrequency;
+		const float hiFreq = pWorkConfig.highestFrequency;
+		const float lowMel = 2595.0f * log10f(1.0f + loFreq / 700.0f);
+		const float highMel = 2595.0f * log10f(1.0f + hiFreq / 700.0f);
+		const float melRange = highMel - lowMel;
+		const float melFactor = melRange / (float)(melCount + 1);
+		
+		// grow mel energy buffer if needed
+		pMelEnergies.EnlargeCapacity(melCount);
+		float * const melEnergies = pMelEnergies.GetArrayPointer();
+		
+		// compute mel filter center/boundary bin indices and filter energies
+		for(int m=0; m<melCount; m++){
+			// compute three consecutive mel-scale boundary points for this filter
+			const float melLeft = lowMel + melFactor * (float)(m);
+			const float melCenter = lowMel + melFactor * (float)(m + 1);
+			const float melRight = lowMel + melFactor * (float)(m + 2);
+			
+			const float hzLeft = 700.0f * (powf(10.0f, melLeft / 2595.0f) - 1.0f);
+			const float hzCenter = 700.0f * (powf(10.0f, melCenter / 2595.0f) - 1.0f);
+			const float hzRight = 700.0f * (powf(10.0f, melRight / 2595.0f) - 1.0f);
+			
+			const int binLeft = decMath::max(0, (int)(hzLeft / freqPerBin));
+			const int binCenter = decMath::min(pHalfFftSize - 1, (int)(hzCenter / freqPerBin));
+			const int binRight = decMath::min(pHalfFftSize - 1, (int)(hzRight / freqPerBin));
+			
+			float energy = 0.0f;
+			float weightSum = 0.0f;
+			
+			for(int k=binLeft; k<=binRight; k++){
+				float w;
+				
+				if(k <= binCenter){
+					if(binCenter > binLeft){
+						w = (float)(k - binLeft) / (float)(binCenter - binLeft);
+						
+					}else{
+						w = 1.0f;
+					}
+					
+				}else{
+					if(binRight > binCenter){
+						w = (float)(binRight - k) / (float)(binRight - binCenter);
+						
+					}else{
+						w = 0.0f;
+					}
+				}
+				
+				energy += magnitude[k] * w;
+				weightSum += w;
+			}
+			
+			melEnergies[m] = weightSum > 0.0f ? energy / weightSum : 0.0f;
+		}
+		
+		// map mel filter energies into output bands
+		const float melBandFactor = (float)melCount / (float)bandCount;
+		
+		for(int b=0; b<bandCount; b++){
+			const int melFrom = (int)(melBandFactor * (float)b);
+			const int melTo = (int)(melBandFactor * (float)(b + 1));
+			
+			float energy = 0.0f;
+			int count = 0;
+			for(int m=melFrom; m<melTo && m<melCount; m++){
+				energy += melEnergies[m];
+				count++;
+			}
+			
+			// derive frequency range from the mel filters that map to this band
+			const float melBoundLeft = lowMel + melRange * (float)melFrom / (float)(melCount + 1);
+			const float melBoundRight = lowMel + melRange
+				* (float)(decMath::min(melTo, melCount - 1) + 2) / (float)(melCount + 1);
+			
+			auto &band = pWorkBands[b];
+			band.energy = count > 0 ? energy / (float)count : 0.0f;
+			band.count = count;
+			band.lowestFrequency = 700.0f * (powf(10.0f, melBoundLeft / 2595.0f) - 1.0f);
+			band.highestFrequency = 700.0f * (powf(10.0f, melBoundRight / 2595.0f) - 1.0f);
+		}
+	}
+	
 	const float pitchHz = bestMag > 0.0f ? (float)bestBin * freqPerBin : 0.0f;
 	
 	// accumulate results under mutex
 	const deMutexGuard guard(pMutexResults);
 	
 	pResFrameCount++;
-	pResSampleCount += FFT_SIZE;
+	pResSampleCount += pFftSize;
 	pResSumSq += sumSq;
 	pResPeak = decMath::max(pResPeak, peak);
 	pResZeroCrossings += zeroCrossings;
@@ -474,17 +623,16 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	const int resBandCount = pResBands.GetCount();
 	if(resBandCount == pWorkBands.GetCount()){
 		pWorkBands.VisitIndexed([&](int index, const Band &band){
+			// average band energy by bin count so all bands are comparable regardless of width
+			float energy = band.energy;
+			if(!enableMelFiltering && band.count > 0){
+				energy /= (float)band.count;
+			}
+			
 			auto &resBand = pResBands[index];
-			resBand.energy += band.energy;
+			resBand.energy += energy;
 			resBand.lowestFrequency = band.lowestFrequency;
 			resBand.highestFrequency = band.highestFrequency;
-			
-			// average band energy by bin count so all bands are comparable regardless of width
-			float averageEnergy = band.count;
-			if(band.count > 0){
-				averageEnergy /= (float)band.count;
-			}
-			resBand.averageEnergy += averageEnergy;
 		});
 		
 	}else{
@@ -502,4 +650,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 			pResPeakMag = peakMag;
 		}
 	}
+	
+	// copy config
+	pWorkConfig = pConfig;
 }

@@ -68,16 +68,18 @@ public:
 		
 		/** \brief Energy of the band. */
 		float energy = 0.0f;
-		
-		/** \brief Average energy of the band. */
-		float averageEnergy = 0.0f;
 	};
 	
 	
 private:
 	bool pUseAudioCapture;
+	int pResolution;
 	int pFrequencyBandCount;
 	float pLowestFrequency, pHighestFrequency;
+	bool pEnablePreEmphasis;
+	float pPreEmphasisFactor;
+	bool pEnableMelFiltering;
+	int pMelFilterCount;
 	
 	float pRMS;
 	float pPeak;
@@ -125,6 +127,16 @@ public:
 	 */
 	void SetUseAudioCapture(bool useAudioCapture);
 	
+	/**
+	 * \brief FFT resolution (window size in samples).
+	 * 
+	 * Default is 1024.
+	 */
+	inline int GetResolution() const{ return pResolution; }
+	
+	/** \brief Set FFT resolution. */
+	void SetResolution(int resolution);
+	
 	/** \brief Count of frequency bands. */
 	inline int GetFrequencyBandCount() const{ return pFrequencyBandCount; }
 	
@@ -139,6 +151,53 @@ public:
 	
 	/** \brief Set frequency range for frequency bands in Hz. */
 	void SetFrequencyRange(float lowestFrequency, float highestFrequency);
+	
+	/**
+	 * \brief Apply pre-emphasis filter before FFT.
+	 * 
+	 * Default is true.
+	 */
+	inline bool GetEnablePreEmphasis() const{ return pEnablePreEmphasis; }
+	
+	/** \brief Set apply pre-emphasis filter before FFT. */
+	void SetEnablePreEmphasis(bool enable);
+	
+	/**
+	 * \brief Pre-emphasis filter coefficient.
+	 * 
+	 * Default is 0.97.
+	 */
+	inline float GetPreEmphasisFactor() const{ return pPreEmphasisFactor; }
+	
+	/** \brief Set pre-emphasis filter coefficient. */
+	void SetPreEmphasisFactor(float factor);
+	
+	/**
+	 * \brief Apply mel filter banks after FFT.
+	 * 
+	 * If enabled changes frequency bands from logarithmically spaced to mel-scale spaced
+	 * triangular filters. Default is false.
+	 */
+	inline bool GetEnableMelFiltering() const{ return pEnableMelFiltering; }
+	
+	/**
+	 * \brief Set apply mel filter banks after FFT.
+	 * 
+	 * If enabled changes frequency bands from logarithmically spaced to mel-scale spaced
+	 * triangular filters.
+	 */
+	void SetEnableMelFiltering(bool enable);
+	
+	/**
+	 * \brief Count of mel filter banks.
+	 * 
+	 * Default is 40.
+	 */
+	inline int GetMelFilterCount() const{ return pMelFilterCount; }
+	
+	/** \brief Set count of mel filter banks. */
+	void SetMelFilterCount(int count);
+	
 	
 	
 	/**

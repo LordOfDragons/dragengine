@@ -44,11 +44,6 @@ class deDESynthesizer;
  * \brief Synthesizer module audio analyzer peer.
  */
 class desynAudioAnalyzer : public deBaseSynthesizerAudioAnalyzer{
-public:
-	static constexpr int FFT_SIZE = 2048;
-	static constexpr int HALF_FFT_SIZE = FFT_SIZE / 2;
-	
-	
 private:
 	class CaptureAudio : public deAudioCaptureListener{
 	private:
@@ -82,6 +77,16 @@ private:
 		int count = 0;
 	};
 	
+	struct Configuration{
+		int resolution = 0;
+		int lowestFrequency = 0;
+		int highestFrequency = 0;
+		bool enablePreEmphasis = false;
+		float preEmphasisFactor = 0.0f;
+		bool enableMelFiltering = false;
+		int melFilterCount = 0;
+	};
+	
 	
 	deDESynthesizer &pModule;
 	deAudioAnalyzer &pAnalyzer;
@@ -97,14 +102,15 @@ private:
 	bool pStopThread, pThreadRunning;
 	
 	int pSampleRate;
+	Configuration pConfig, pWorkConfig;
 	
+	int pFftSize;
+	int pHalfFftSize;
 	double *pFftIn;
 	fftw_complex *pFftOut;
 	fftw_plan pFftPlan;
 	
-	float pPrevMagnitude[FFT_SIZE / 2];
-	
-	decTList<float> pSampleBuffer;
+	decTList<float> pPrevMagnitude, pMagnitude, pMelEnergies, pSampleBuffer;
 	
 	deMutex pMutexResults;
 	
@@ -154,6 +160,7 @@ public:
 	
 private:
 	void pProcessFrame(const decTList<int16_t> &samples);
+	void pRebuildFftPlan(int newSize);
 };
 
 #endif

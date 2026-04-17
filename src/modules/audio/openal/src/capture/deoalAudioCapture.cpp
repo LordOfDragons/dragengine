@@ -104,7 +104,7 @@ void deoalAudioCapture::Synchronize(){
 	case esStarting:
 		try{
 			auto ac = deTUniqueReference<deoalATAudioCapture>::New(
-				pOal.GetAudioThread(), AL_FORMAT_MONO16, 44100);
+				pOal.GetAudioThread(), AL_FORMAT_MONO16, 48000);
 			ac->StartCapture();
 			ac->GetFormat(pFormat);
 			

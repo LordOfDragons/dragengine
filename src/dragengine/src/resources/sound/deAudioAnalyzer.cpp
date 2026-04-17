@@ -40,9 +40,14 @@
 deAudioAnalyzer::deAudioAnalyzer(deAudioAnalyzerManager *manager) :
 deResource(manager),
 pUseAudioCapture(false),
+pResolution(1024),
 pFrequencyBandCount(8),
 pLowestFrequency(20.0f),
 pHighestFrequency(20000.0f),
+pEnablePreEmphasis(true),
+pPreEmphasisFactor(0.97f),
+pEnableMelFiltering(false),
+pMelFilterCount(40),
 pRMS(0.0f),
 pPeak(0.0f),
 pZeroCrossingRate(0.0f),
@@ -73,8 +78,26 @@ void deAudioAnalyzer::SetUseAudioCapture(bool useAudioCapture){
 	}
 }
 
+void deAudioAnalyzer::SetResolution(int resolution){
+	DEASSERT_TRUE(resolution >= 64)
+	
+	if(resolution == pResolution){
+		return;
+	}
+	
+	pResolution = resolution;
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
 void deAudioAnalyzer::SetFrequencyBandCount(int count){
 	DEASSERT_TRUE(count > 0)
+	
+	if(count == pFrequencyBandCount){
+		return;
+	}
 	
 	pFrequencyBandCount = count;
 	pFrequencyBands.SetCount(pFrequencyBandCount, {});
@@ -87,6 +110,57 @@ void deAudioAnalyzer::SetFrequencyBandCount(int count){
 void deAudioAnalyzer::SetFrequencyRange(float lowestFrequency, float highestFrequency){
 	pLowestFrequency = decMath::max(lowestFrequency, 1.0f);
 	pHighestFrequency = decMath::max(highestFrequency, pLowestFrequency + 1.0f);
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetEnablePreEmphasis(bool enable){
+	if(enable == pEnablePreEmphasis){
+		return;
+	}
+	
+	pEnablePreEmphasis = enable;
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetPreEmphasisFactor(float factor){
+	factor = decMath::clamp(factor, 0.0f, 1.0f);
+	if(fabsf(factor - pPreEmphasisFactor) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pPreEmphasisFactor = factor;
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetEnableMelFiltering(bool enable){
+	if(enable == pEnableMelFiltering){
+		return;
+	}
+	
+	pEnableMelFiltering = enable;
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetMelFilterCount(int count){
+	DEASSERT_TRUE(count > 0)
+	
+	if(count == pMelFilterCount){
+		return;
+	}
+	
+	pMelFilterCount = count;
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ConfigurationChanged();

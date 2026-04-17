@@ -100,6 +100,27 @@ void deClassAudioAnalyzer::nfSetUseAudioCapture::RunFunction(dsRunTime *rt, dsVa
 	analyzer.SetUseAudioCapture(rt->GetValue(0)->GetBool());
 }
 
+// func int getResolution()
+deClassAudioAnalyzer::nfGetResolution::nfGetResolution(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getResolution", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+}
+void deClassAudioAnalyzer::nfGetResolution::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushInt(analyzer.GetResolution());
+}
+
+// func void setResolution(int resolution)
+deClassAudioAnalyzer::nfSetResolution::nfSetResolution(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setResolution", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInteger); // resolution
+}
+void deClassAudioAnalyzer::nfSetResolution::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetResolution(rt->GetValue(0)->GetInt());
+}
+
 // func int getFrequencyBandCount()
 deClassAudioAnalyzer::nfGetFrequencyBandCount::nfGetFrequencyBandCount(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "getFrequencyBandCount", DSFT_FUNCTION,
@@ -151,6 +172,90 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassAudioAnalyzer::nfSetFrequencyRange::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
 	analyzer.SetFrequencyRange(rt->GetValue(0)->GetFloat(), rt->GetValue(1)->GetFloat());
+}
+
+// func bool getEnablePreEmphasis()
+deClassAudioAnalyzer::nfGetEnablePreEmphasis::nfGetEnablePreEmphasis(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getEnablePreEmphasis", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassAudioAnalyzer::nfGetEnablePreEmphasis::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushBool(analyzer.GetEnablePreEmphasis());
+}
+
+// func void setEnablePreEmphasis(bool enable)
+deClassAudioAnalyzer::nfSetEnablePreEmphasis::nfSetEnablePreEmphasis(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setEnablePreEmphasis", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enable
+}
+void deClassAudioAnalyzer::nfSetEnablePreEmphasis::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetEnablePreEmphasis(rt->GetValue(0)->GetBool());
+}
+
+// func float getPreEmphasisFactor()
+deClassAudioAnalyzer::nfGetPreEmphasisFactor::nfGetPreEmphasisFactor(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getPreEmphasisFactor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassAudioAnalyzer::nfGetPreEmphasisFactor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetPreEmphasisFactor());
+}
+
+// func void setPreEmphasisFactor(float factor)
+deClassAudioAnalyzer::nfSetPreEmphasisFactor::nfSetPreEmphasisFactor(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setPreEmphasisFactor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // factor
+}
+void deClassAudioAnalyzer::nfSetPreEmphasisFactor::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetPreEmphasisFactor(rt->GetValue(0)->GetFloat());
+}
+
+// func bool getEnableMelFiltering()
+deClassAudioAnalyzer::nfGetEnableMelFiltering::nfGetEnableMelFiltering(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getEnableMelFiltering", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassAudioAnalyzer::nfGetEnableMelFiltering::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushBool(analyzer.GetEnableMelFiltering());
+}
+
+// func void setEnableMelFiltering(bool enable)
+deClassAudioAnalyzer::nfSetEnableMelFiltering::nfSetEnableMelFiltering(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setEnableMelFiltering", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enable
+}
+void deClassAudioAnalyzer::nfSetEnableMelFiltering::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetEnableMelFiltering(rt->GetValue(0)->GetBool());
+}
+
+// func int getMelFilterCount()
+deClassAudioAnalyzer::nfGetMelFilterCount::nfGetMelFilterCount(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getMelFilterCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+}
+void deClassAudioAnalyzer::nfGetMelFilterCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushInt(analyzer.GetMelFilterCount());
+}
+
+// func void setMelFilterCount(int count)
+deClassAudioAnalyzer::nfSetMelFilterCount::nfSetMelFilterCount(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setMelFilterCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInteger); // count
+}
+void deClassAudioAnalyzer::nfSetMelFilterCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetMelFilterCount(rt->GetValue(0)->GetInt());
 }
 
 // func void updateResults()
@@ -286,17 +391,6 @@ void deClassAudioAnalyzer::nfGetFrequencyBandEnergyAt::RunFunction(dsRunTime *rt
 	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].energy);
 }
 
-// func float getFrequencyBandAverageEnergyAt(int index)
-deClassAudioAnalyzer::nfGetFrequencyBandAverageEnergyAt::nfGetFrequencyBandAverageEnergyAt(const sInitData &init) :
-dsFunction(init.clsAudioAnalyzer, "getFrequencyBandAverageEnergyAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
-	p_AddParameter(init.clsInteger); // index
-}
-void deClassAudioAnalyzer::nfGetFrequencyBandAverageEnergyAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
-	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].averageEnergy);
-}
-
 // func float getFrequencyBandLowestFrequencyAt(int index)
 deClassAudioAnalyzer::nfGetFrequencyBandLowestFrequencyAt::nfGetFrequencyBandLowestFrequencyAt(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "getFrequencyBandLowestFrequencyAt", DSFT_FUNCTION,
@@ -412,11 +506,22 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction(new nfGetUseAudioCapture(init));
 	AddFunction(new nfSetUseAudioCapture(init));
+	AddFunction(new nfGetResolution(init));
+	AddFunction(new nfSetResolution(init));
 	AddFunction(new nfGetFrequencyBandCount(init));
 	AddFunction(new nfSetFrequencyBandCount(init));
 	AddFunction(new nfGetLowestFrequency(init));
 	AddFunction(new nfGetHighestFrequency(init));
 	AddFunction(new nfSetFrequencyRange(init));
+	AddFunction(new nfGetEnablePreEmphasis(init));
+	AddFunction(new nfSetEnablePreEmphasis(init));
+	AddFunction(new nfGetPreEmphasisFactor(init));
+	AddFunction(new nfSetPreEmphasisFactor(init));
+	AddFunction(new nfGetEnableMelFiltering(init));
+	AddFunction(new nfSetEnableMelFiltering(init));
+	AddFunction(new nfGetMelFilterCount(init));
+	AddFunction(new nfSetMelFilterCount(init));
+	
 	AddFunction(new nfUpdateResults(init));
 	
 	AddFunction(new nfGetRMS(init));
@@ -430,7 +535,6 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetSpectralPeakFrequencyAt(init));
 	AddFunction(new nfGetSpectralPeakMagnitudeAt(init));
 	AddFunction(new nfGetFrequencyBandEnergyAt(init));
-	AddFunction(new nfGetFrequencyBandAverageEnergyAt(init));
 	AddFunction(new nfGetFrequencyBandLowestFrequencyAt(init));
 	AddFunction(new nfGetFrequencyBandHighestFrequencyAt(init));
 	AddFunction(new nfGetMaxBandEnergy(init));
