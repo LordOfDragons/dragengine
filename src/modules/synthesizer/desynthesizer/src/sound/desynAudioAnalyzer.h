@@ -102,7 +102,7 @@ private:
 	
 	bool pStopThread, pThreadRunning;
 	
-	int pSampleRate;
+	int pSampleRate, pMaxInputSamples;
 	Configuration pConfig, pWorkConfig;
 	
 	int pFftSize;

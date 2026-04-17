@@ -84,6 +84,7 @@ pThread(*this),
 pStopThread(false),
 pThreadRunning(false),
 pSampleRate(48000), // will be updated from capture format
+pMaxInputSamples(pSampleRate / 2), // 250ms
 pFftSize(analyzer.GetResolution()),
 pHalfFftSize(analyzer.GetResolution() / 2),
 pFftIn(nullptr),
@@ -230,6 +231,16 @@ void desynAudioAnalyzer::OnSamplesCaptured(const void *samples, int count){
 	
 	const deMutexGuard guard(pMutexInput);
 	
+	const int dropSampleCount = pInputSamples.GetCount() + count - pMaxInputSamples;
+	if(dropSampleCount > 0){
+		if(dropSampleCount >= pInputSamples.GetCount()){
+			pInputSamples.SetCountDiscard(0);
+			
+		}else{
+			pInputSamples.RemoveHead(dropSampleCount);
+		}
+	}
+	
 	switch(pInputFormat.bitRate){
 	case 16:{
 		const int16_t * const s = reinterpret_cast<const int16_t*>(samples);
@@ -260,6 +271,7 @@ void desynAudioAnalyzer::OnStateChanged(){
 		deAudioSystem::AudioCaptureFormat fmt;
 		audSys.GetAudioCaptureFormat(fmt);
 		pSampleRate = fmt.sampleRate;
+		pMaxInputSamples = pSampleRate / 4; // 250ms
 		
 		pStopThread = false;
 		pThread.Start();
@@ -351,7 +363,12 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	// push new samples into the ring buffer, dropping oldest if full
 	const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - pFftSize;
 	if(dropSampleCount > 0){
-		pSampleBuffer.RemoveHead(dropSampleCount);
+		if(dropSampleCount >= pSampleBuffer.GetCount()){
+			pSampleBuffer.SetCountDiscard(0);
+			
+		}else{
+			pSampleBuffer.RemoveHead(dropSampleCount);
+		}
 	}
 	
 	samples.Visit([&](int16_t sample){
