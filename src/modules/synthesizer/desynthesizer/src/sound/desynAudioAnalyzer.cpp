@@ -630,10 +630,19 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 				* (float)(decMath::min(melTo, melCount - 1) + 2) / (float)(melCount + 1);
 			
 			auto &band = pWorkBands[b];
-			band.energy = count > 0 ? energy / (float)count : 0.0f;
 			band.count = count;
 			band.lowestFrequency = 700.0f * (powf(10.0f, melBoundLeft / 2595.0f) - 1.0f);
 			band.highestFrequency = 700.0f * (powf(10.0f, melBoundRight / 2595.0f) - 1.0f);
+			
+			if(count > 0){
+				if(pWorkConfig.normalizeMelEnergies){
+					energy /= (float)count;
+				}
+				band.energy = energy;
+				
+			}else{
+				band.energy = 0.0f;
+			}
 		}
 	}
 	
