@@ -80,6 +80,7 @@ private:
 	float pPreEmphasisFactor;
 	bool pEnableMelFiltering;
 	int pMelFilterCount;
+	bool pNormalizeMelEnergies;
 	
 	float pRMS;
 	float pPeak;
@@ -198,7 +199,15 @@ public:
 	/** \brief Set count of mel filter banks. */
 	void SetMelFilterCount(int count);
 	
+	/**
+	 * \brief Normalize mel filter bank energies.
+	 * 
+	 * Default is true.
+	 */
+	inline bool GetNormalizeMelEnergies() const{ return pNormalizeMelEnergies; }
 	
+	/** \brief Set normalize mel filter bank energies. */
+	void SetNormalizeMelEnergies(bool normalize);
 	
 	/**
 	 * \brief Update results.

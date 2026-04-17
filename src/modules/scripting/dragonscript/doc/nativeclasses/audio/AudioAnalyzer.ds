@@ -183,6 +183,22 @@ class AudioAnalyzer
 	end
 	
 	/**
+	 * \brief Normalize mel filter bank energies.
+	 * 
+	 * Default is true.
+	 */
+	func bool getNormalizeMelEnergies()
+		return false
+	end
+	
+	/**
+	 * \brief Set normalize mel filter bank energies.
+	 */
+	func void setNormalizeMelEnergies(bool normalize)
+	end
+	
+	
+	/**
 	 * \brief Update results.
 	 * 
 	 * Fetch asynchronously accumulated analysis results from synthesizer module. The results stay

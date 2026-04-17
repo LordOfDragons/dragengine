@@ -108,6 +108,7 @@ pResPitch(0.0)
 	pConfig.preEmphasisFactor = pAnalyzer.GetPreEmphasisFactor();
 	pConfig.enableMelFiltering = pAnalyzer.GetEnableMelFiltering();
 	pConfig.melFilterCount = pAnalyzer.GetMelFilterCount();
+	pConfig.normalizeMelEnergies = pAnalyzer.GetNormalizeMelEnergies();
 	pWorkConfig = pConfig;
 	
 	pRebuildFftPlan(pFftSize);
@@ -216,6 +217,7 @@ void desynAudioAnalyzer::UpdateResults(){
 	pConfig.preEmphasisFactor = pAnalyzer.GetPreEmphasisFactor();
 	pConfig.enableMelFiltering = pAnalyzer.GetEnableMelFiltering();
 	pConfig.melFilterCount = pAnalyzer.GetMelFilterCount();
+	pConfig.normalizeMelEnergies = pAnalyzer.GetNormalizeMelEnergies();
 	
 	pResBands.SetCount(pAnalyzer.GetFrequencyBands().GetCount(), {});
 }
@@ -573,7 +575,10 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 				weightSum += w;
 			}
 			
-			melEnergies[m] = weightSum > 0.0f ? energy / weightSum : 0.0f;
+			melEnergies[m] = energy;
+			if(pWorkConfig.normalizeMelEnergies && weightSum > 0.0f){
+				melEnergies[m] /= weightSum;
+			}
 		}
 		
 		// map mel filter energies into output bands

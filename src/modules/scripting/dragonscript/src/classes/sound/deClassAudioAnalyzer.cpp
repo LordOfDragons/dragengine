@@ -258,6 +258,29 @@ void deClassAudioAnalyzer::nfSetMelFilterCount::RunFunction(dsRunTime *rt, dsVal
 	analyzer.SetMelFilterCount(rt->GetValue(0)->GetInt());
 }
 
+// func bool getNormalizeMelEnergies()
+deClassAudioAnalyzer::nfGetNormalizeMelEnergies::nfGetNormalizeMelEnergies(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getNormalizeMelEnergies", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassAudioAnalyzer::nfGetNormalizeMelEnergies::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushBool(analyzer.GetNormalizeMelEnergies());
+}
+
+// func void setNormalizeMelEnergies(bool normalize)
+deClassAudioAnalyzer::nfSetNormalizeMelEnergies::nfSetNormalizeMelEnergies(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setNormalizeMelEnergies", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // normalize
+}
+void deClassAudioAnalyzer::nfSetNormalizeMelEnergies::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetNormalizeMelEnergies(rt->GetValue(0)->GetBool());
+}
+
+
+
 // func void updateResults()
 deClassAudioAnalyzer::nfUpdateResults::nfUpdateResults(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "updateResults", DSFT_FUNCTION,
@@ -521,6 +544,8 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfSetEnableMelFiltering(init));
 	AddFunction(new nfGetMelFilterCount(init));
 	AddFunction(new nfSetMelFilterCount(init));
+	AddFunction(new nfGetNormalizeMelEnergies(init));
+	AddFunction(new nfSetNormalizeMelEnergies(init));
 	
 	AddFunction(new nfUpdateResults(init));
 	

@@ -48,6 +48,7 @@ pEnablePreEmphasis(true),
 pPreEmphasisFactor(0.97f),
 pEnableMelFiltering(false),
 pMelFilterCount(40),
+pNormalizeMelEnergies(true),
 pRMS(0.0f),
 pPeak(0.0f),
 pZeroCrossingRate(0.0f),
@@ -161,6 +162,18 @@ void deAudioAnalyzer::SetMelFilterCount(int count){
 	}
 	
 	pMelFilterCount = count;
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetNormalizeMelEnergies(bool normalize){
+	if(normalize == pNormalizeMelEnergies){
+		return;
+	}
+	
+	pNormalizeMelEnergies = normalize;
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ConfigurationChanged();

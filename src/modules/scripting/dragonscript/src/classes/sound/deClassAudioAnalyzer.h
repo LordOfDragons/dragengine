@@ -107,6 +107,8 @@ private:
 	DEF_NATFUNC(nfSetEnableMelFiltering);
 	DEF_NATFUNC(nfGetMelFilterCount);
 	DEF_NATFUNC(nfSetMelFilterCount);
+	DEF_NATFUNC(nfGetNormalizeMelEnergies);
+	DEF_NATFUNC(nfSetNormalizeMelEnergies);
 	DEF_NATFUNC(nfUpdateResults);
 	
 	DEF_NATFUNC(nfGetRMS);

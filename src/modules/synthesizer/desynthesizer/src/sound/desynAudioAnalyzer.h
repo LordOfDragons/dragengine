@@ -81,10 +81,11 @@ private:
 		int resolution = 0;
 		int lowestFrequency = 0;
 		int highestFrequency = 0;
-		bool enablePreEmphasis = false;
+		bool enablePreEmphasis = true;
 		float preEmphasisFactor = 0.0f;
 		bool enableMelFiltering = false;
 		int melFilterCount = 0;
+		bool normalizeMelEnergies = true;
 	};
 	
 	
