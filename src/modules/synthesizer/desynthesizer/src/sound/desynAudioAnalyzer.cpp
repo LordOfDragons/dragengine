@@ -83,8 +83,9 @@ pListener(deTObjectReference<CaptureAudio>::New(*this)),
 pThread(*this),
 pStopThread(false),
 pThreadRunning(false),
-pSampleRate(48000), // will be updated from capture format
-pMaxInputSamples(pSampleRate / 2), // 250ms
+pCaptureSampleRate(48000), // will be updated from capture format
+pMaxInputSamples(pCaptureSampleRate / 2), // 250ms
+pDownsamplePhase(0.0),
 pFftSize(analyzer.GetResolution()),
 pHalfFftSize(analyzer.GetResolution() / 2),
 pFftIn(nullptr),
@@ -102,6 +103,7 @@ pResFlux(0.0),
 pResRolloff(0.0),
 pResPitch(0.0)
 {
+	pConfig.sampleRate = pAnalyzer.GetSampleRate();
 	pConfig.resolution = pAnalyzer.GetResolution();
 	pConfig.lowestFrequency = pAnalyzer.GetLowestFrequency();
 	pConfig.highestFrequency = pAnalyzer.GetHighestFrequency();
@@ -211,6 +213,7 @@ void desynAudioAnalyzer::UpdateResults(){
 	}
 	
 	// update configuration if configuration
+	pConfig.sampleRate = pAnalyzer.GetSampleRate();
 	pConfig.resolution = pAnalyzer.GetResolution();
 	pConfig.lowestFrequency = pAnalyzer.GetLowestFrequency();
 	pConfig.highestFrequency = pAnalyzer.GetHighestFrequency();
@@ -270,8 +273,9 @@ void desynAudioAnalyzer::OnStateChanged(){
 		
 		deAudioSystem::AudioCaptureFormat fmt;
 		audSys.GetAudioCaptureFormat(fmt);
-		pSampleRate = fmt.sampleRate;
-		pMaxInputSamples = pSampleRate / 4; // 250ms
+		pCaptureSampleRate = fmt.sampleRate;
+		pMaxInputSamples = pCaptureSampleRate / 4; // 250ms
+		pDownsamplePhase = 0.0;
 		
 		pStopThread = false;
 		pThread.Start();
@@ -360,20 +364,49 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	
 	const float norm = 1.0f / 32768.0f;
 	
-	// push new samples into the ring buffer, dropping oldest if full
-	const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - pFftSize;
-	if(dropSampleCount > 0){
-		if(dropSampleCount >= pSampleBuffer.GetCount()){
-			pSampleBuffer.SetCountDiscard(0);
-			
-		}else{
-			pSampleBuffer.RemoveHead(dropSampleCount);
+	// push new samples into the ring buffer at the target sample rate, dropping oldest if full
+	const int sampleRate = pWorkConfig.sampleRate;
+	if(pCaptureSampleRate == sampleRate){
+		const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - pFftSize;
+		if(dropSampleCount > 0){
+			if(dropSampleCount >= pSampleBuffer.GetCount()){
+				pSampleBuffer.SetCountDiscard(0);
+				
+			}else{
+				pSampleBuffer.RemoveHead(dropSampleCount);
+			}
 		}
+		
+		samples.Visit([&](int16_t sample){
+			pSampleBuffer.Add((float)sample * norm);
+		});
+		
+	}else{
+		// downsample to target sample rate using linear interpolation
+		const double step = (double)pCaptureSampleRate / (double)sampleRate;
+		const int outputCount = decMath::max(0,
+			(int)((double)(sampleCount - pDownsamplePhase) / step) + 1);
+		
+		const int dropSampleCount = pSampleBuffer.GetCount() + outputCount - pFftSize;
+		if(dropSampleCount > 0){
+			if(dropSampleCount >= pSampleBuffer.GetCount()){
+				pSampleBuffer.SetCountDiscard(0);
+				
+			}else{
+				pSampleBuffer.RemoveHead(dropSampleCount);
+			}
+		}
+		
+		while(pDownsamplePhase < (double)sampleCount){
+			const int i = (int)pDownsamplePhase;
+			const int j = decMath::min(i + 1, sampleCount - 1);
+			const double frac = pDownsamplePhase - (double)i;
+			const float s = (float)((double)samples[i] * (1.0 - frac) + (double)samples[j] * frac) * norm;
+			pSampleBuffer.Add(s);
+			pDownsamplePhase += step;
+		}
+		pDownsamplePhase -= (double)sampleCount;
 	}
-	
-	samples.Visit([&](int16_t sample){
-		pSampleBuffer.Add((float)sample * norm);
-	});
 	
 	// do not process until the ring buffer is fully populated
 	if(pSampleBuffer.GetCount() < pFftSize){
@@ -397,7 +430,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		prevSign = curSign;
 	});
 	
-	const float freqPerBin = (float)pSampleRate / (float)pFftSize;
+	const float freqPerBin = (float)sampleRate / (float)pFftSize;
 	
 	// fill FFT input from ring buffer (oldest to newest) with Hann window.
 	// optionally apply pre-emphasis filter

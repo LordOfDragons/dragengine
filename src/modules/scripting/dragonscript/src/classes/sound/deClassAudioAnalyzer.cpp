@@ -100,6 +100,27 @@ void deClassAudioAnalyzer::nfSetUseAudioCapture::RunFunction(dsRunTime *rt, dsVa
 	analyzer.SetUseAudioCapture(rt->GetValue(0)->GetBool());
 }
 
+// func int getSampleRate()
+deClassAudioAnalyzer::nfGetSampleRate::nfGetSampleRate(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getSampleRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+}
+void deClassAudioAnalyzer::nfGetSampleRate::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushInt(analyzer.GetSampleRate());
+}
+
+// func void setSampleRate(int sampleRate)
+deClassAudioAnalyzer::nfSetSampleRate::nfSetSampleRate(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "setSampleRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInteger); // sampleRate
+}
+void deClassAudioAnalyzer::nfSetSampleRate::RunFunction(dsRunTime *rt, dsValue *myself){
+	deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	analyzer.SetSampleRate(rt->GetValue(0)->GetInt());
+}
+
 // func int getResolution()
 deClassAudioAnalyzer::nfGetResolution::nfGetResolution(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "getResolution", DSFT_FUNCTION,
@@ -529,6 +550,8 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction(new nfGetUseAudioCapture(init));
 	AddFunction(new nfSetUseAudioCapture(init));
+	AddFunction(new nfGetSampleRate(init));
+	AddFunction(new nfSetSampleRate(init));
 	AddFunction(new nfGetResolution(init));
 	AddFunction(new nfSetResolution(init));
 	AddFunction(new nfGetFrequencyBandCount(init));

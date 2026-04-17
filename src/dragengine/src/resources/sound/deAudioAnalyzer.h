@@ -73,6 +73,7 @@ public:
 	
 private:
 	bool pUseAudioCapture;
+	int pSampleRate;
 	int pResolution;
 	int pFrequencyBandCount;
 	float pLowestFrequency, pHighestFrequency;
@@ -127,6 +128,21 @@ public:
 	 * \brief Set use of audio capture as input for analysis.
 	 */
 	void SetUseAudioCapture(bool useAudioCapture);
+	
+	/**
+	 * \brief Analysis sample rate in Hz.
+	 * 
+	 * Downsamples input from input sample rate to analysis sample rate.
+	 * Default is 16000.
+	 */
+	inline int GetSampleRate() const{ return pSampleRate; }
+	
+	/**
+	 * \brief Set analysis sample rate in Hz.
+	 * 
+	 * Downsamples input from input sample rate to analysis sample rate.
+	 */
+	void SetSampleRate(int sampleRate);
 	
 	/**
 	 * \brief FFT resolution (window size in samples).

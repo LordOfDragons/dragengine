@@ -78,6 +78,7 @@ private:
 	};
 	
 	struct Configuration{
+		int sampleRate = 16000;
 		int resolution = 0;
 		int lowestFrequency = 0;
 		int highestFrequency = 0;
@@ -102,7 +103,8 @@ private:
 	
 	bool pStopThread, pThreadRunning;
 	
-	int pSampleRate, pMaxInputSamples;
+	int pCaptureSampleRate, pMaxInputSamples;
+	double pDownsamplePhase;
 	Configuration pConfig, pWorkConfig;
 	
 	int pFftSize;

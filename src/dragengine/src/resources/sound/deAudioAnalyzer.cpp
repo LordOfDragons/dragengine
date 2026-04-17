@@ -40,6 +40,7 @@
 deAudioAnalyzer::deAudioAnalyzer(deAudioAnalyzerManager *manager) :
 deResource(manager),
 pUseAudioCapture(false),
+pSampleRate(16000),
 pResolution(1024),
 pFrequencyBandCount(8),
 pLowestFrequency(20.0f),
@@ -73,6 +74,20 @@ void deAudioAnalyzer::SetUseAudioCapture(bool useAudioCapture){
 	}
 	
 	pUseAudioCapture = useAudioCapture;
+	
+	if(pPeerSynthesizer){
+		pPeerSynthesizer->ConfigurationChanged();
+	}
+}
+
+void deAudioAnalyzer::SetSampleRate(int sampleRate){
+	DEASSERT_TRUE(sampleRate > 0)
+	
+	if(sampleRate == pSampleRate){
+		return;
+	}
+	
+	pSampleRate = sampleRate;
 	
 	if(pPeerSynthesizer){
 		pPeerSynthesizer->ConfigurationChanged();

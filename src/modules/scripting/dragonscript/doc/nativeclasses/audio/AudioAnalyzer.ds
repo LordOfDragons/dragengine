@@ -51,6 +51,25 @@ class AudioAnalyzer
 	end
 	
 	/**
+	 * \brief Analysis sample rate in Hz.
+	 * 
+	 * Downsamples input from input sample rate to analysis sample rate.
+	 * Default is 16000.
+	 */
+	func int getSampleRate()
+		return 0
+	end
+	
+	/**
+	 * \brief Set analysis sample rate in Hz.
+	 * \throws EInvalidParam sampleRate is less than 1.
+	 * 
+	 * Downsamples input from input sample rate to analysis sample rate.
+	 */
+	func void setSampleRate(int sampleRate)
+	end
+	
+	/**
 	 * \brief FFT resolution (window size in samples).
 	 * 
 	 * Higher values give better frequency resolution at the cost of more processing time
