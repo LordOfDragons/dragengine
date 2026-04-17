@@ -364,19 +364,9 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	
 	const float norm = 1.0f / 32768.0f;
 	
-	// push new samples into the ring buffer at the target sample rate, dropping oldest if full
+	// append new samples to the buffer at the target sample rate
 	const int sampleRate = pWorkConfig.sampleRate;
 	if(pCaptureSampleRate == sampleRate){
-		const int dropSampleCount = pSampleBuffer.GetCount() + sampleCount - pFftSize;
-		if(dropSampleCount > 0){
-			if(dropSampleCount >= pSampleBuffer.GetCount()){
-				pSampleBuffer.SetCountDiscard(0);
-				
-			}else{
-				pSampleBuffer.RemoveHead(dropSampleCount);
-			}
-		}
-		
 		samples.Visit([&](int16_t sample){
 			pSampleBuffer.Add((float)sample * norm);
 		});
@@ -384,19 +374,6 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	}else{
 		// downsample to target sample rate using linear interpolation
 		const double step = (double)pCaptureSampleRate / (double)sampleRate;
-		const int outputCount = decMath::max(0,
-			(int)((double)(sampleCount - pDownsamplePhase) / step) + 1);
-		
-		const int dropSampleCount = pSampleBuffer.GetCount() + outputCount - pFftSize;
-		if(dropSampleCount > 0){
-			if(dropSampleCount >= pSampleBuffer.GetCount()){
-				pSampleBuffer.SetCountDiscard(0);
-				
-			}else{
-				pSampleBuffer.RemoveHead(dropSampleCount);
-			}
-		}
-		
 		while(pDownsamplePhase < (double)sampleCount){
 			const int i = (int)pDownsamplePhase;
 			const int j = decMath::min(i + 1, sampleCount - 1);
@@ -408,32 +385,36 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		pDownsamplePhase -= (double)sampleCount;
 	}
 	
-	// do not process until the ring buffer is fully populated
-	if(pSampleBuffer.GetCount() < pFftSize){
-		return;
+	// sliding window. process as long as there are enough samples in the buffer
+	const int hopSize = pFftSize / 2;
+	while(pSampleBuffer.GetCount() >= pFftSize){
+		pAnalyzeWindow(hopSize);
 	}
-	
-	// compute time-domain metrics over the entire ring buffer (consistent with FFT window)
+}
+
+void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
+	// time-domain metrics over the non-overlapping hop samples at the end of the window.
+	// only the last hopSize samples are new. earlier samples were already covered in
+	// prior calls to pAnalyzeWindow
 	double sumSq = 0.0;
 	float peak = 0.0f;
 	int zeroCrossings = 0;
-	int prevSign = 0;
+	int prevSign = pSampleBuffer[pFftSize - hopSize - 1] >= 0.0f ? 1 : -1;
 	
-	pSampleBuffer.VisitIndexed([&](int i, float s){
+	pSampleBuffer.Visit(pFftSize - hopSize, pFftSize, [&](float s){
 		sumSq += (double)s * (double)s;
 		peak = decMath::max(peak, fabsf(s));
 		
 		const int curSign = s >= 0.0f ? 1 : -1;
-		if(i > 0 && curSign != prevSign){
+		if(curSign != prevSign){
 			zeroCrossings++;
 		}
 		prevSign = curSign;
 	});
 	
-	const float freqPerBin = (float)sampleRate / (float)pFftSize;
+	const float freqPerBin = (float)pWorkConfig.sampleRate / (float)pFftSize;
 	
-	// fill FFT input from ring buffer (oldest to newest) with Hann window.
-	// optionally apply pre-emphasis filter
+	// fill FFT input from the full window with Hann window and optional pre-emphasis
 	const bool enablePreEmphasis = pWorkConfig.enablePreEmphasis;
 	const float preEmphasisFactor = pWorkConfig.preEmphasisFactor;
 	const float * const sampleBuffer = pSampleBuffer.GetArrayPointer();
@@ -467,7 +448,6 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		magnitude[k] = (float)sqrt(re * re + im * im);
 		
 		totalEnergy += magnitude[k];
-		
 		weightedSum += (float)k * freqPerBin * magnitude[k];
 		
 		if(magnitude[k] > 0.0f){
@@ -476,7 +456,6 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		}
 		
 		maxMag = decMath::max(maxMag, magnitude[k]);
-		
 		fluxSum += decMath::max(0.0f, magnitude[k] - prevMagnitude[k]);
 	}
 	memcpy(prevMagnitude, magnitude, sizeof(float) * pHalfFftSize);
@@ -660,11 +639,14 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 	
 	const float pitchHz = bestMag > 0.0f ? (float)bestBin * freqPerBin : 0.0f;
 	
+	// advance the sliding window. this can be done before accumulating results since
+	pSampleBuffer.RemoveHead(hopSize);
+	
 	// accumulate results under mutex
 	const deMutexGuard guard(pMutexResults);
 	
 	pResFrameCount++;
-	pResSampleCount += pFftSize;
+	pResSampleCount += hopSize;
 	pResSumSq += sumSq;
 	pResPeak = decMath::max(pResPeak, peak);
 	pResZeroCrossings += zeroCrossings;
@@ -706,6 +688,7 @@ void desynAudioAnalyzer::pProcessFrame(const decTList<int16_t> &samples){
 		}
 	}
 	
-	// copy config
+	// copy config. this is not required to be done in all hops but here we have the
+	// mutex already locked so why not
 	pWorkConfig = pConfig;
 }

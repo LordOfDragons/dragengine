@@ -163,6 +163,7 @@ public:
 	
 private:
 	void pProcessFrame(const decTList<int16_t> &samples);
+	void pAnalyzeWindow(int hopSize);
 	void pRebuildFftPlan(int newSize);
 };
 
