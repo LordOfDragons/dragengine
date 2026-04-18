@@ -66,6 +66,9 @@ public:
 		/** \brief Highest frequency of the band in Hz. */
 		float highestFrequency = 0.0f;
 		
+		/** \brief Magnitude of the band. */
+		float magnitude = 0.0f;
+		
 		/** \brief Energy of the band. */
 		float energy = 0.0f;
 	};

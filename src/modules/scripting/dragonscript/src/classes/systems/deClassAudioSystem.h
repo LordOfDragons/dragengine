@@ -93,7 +93,8 @@ private:
 	DEF_NATFUNC(nfGetAudioCapturePeak);
 	DEF_NATFUNC(nfGetAudioCaptureRMS);
 	
-	DEF_NATFUNC(nfAudioLevelToDbPercentage);
+	DEF_NATFUNC(nfMagnitudeToDb);
+	DEF_NATFUNC(nfMagnitudeToDbPercentage);
 	
 	DEF_NATFUNC(nfGetParameterCount);
 	DEF_NATFUNC(nfGetParameterInfo);

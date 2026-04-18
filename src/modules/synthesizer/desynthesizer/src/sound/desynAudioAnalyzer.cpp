@@ -344,8 +344,9 @@ void desynAudioAnalyzer::pRebuildFftPlan(int newSize){
 	pFftOut = fftw_alloc_complex(pFftSize / 2 + 1);
 	pFftPlan = fftw_plan_dft_r2c_1d(pFftSize, pFftIn, pFftOut, FFTW_MEASURE);
 	
-	pPrevMagnitude.SetCount(pHalfFftSize, 0.0f);
-	pMagnitude.SetCount(pHalfFftSize, 0.0f);
+	pPrevMagnitudes.SetCount(pHalfFftSize, 0.0f);
+	pMagnitudes.SetCount(pHalfFftSize, 0.0f);
+	pEnergies.SetCount(pHalfFftSize, 0.0f);
 	pSampleBuffer.SetCountDiscard(0);
 	pSampleBuffer.EnlargeCapacity(pFftSize);
 }
@@ -433,10 +434,14 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 	
 	// first spectral loop: magnitudes, energy, centroid, flatness, flux.
 	// covers all quantities that can be accumulated in a single forward pass
-	float * const prevMagnitude = pPrevMagnitude.GetArrayPointer();
-	float * const magnitude = pMagnitude.GetArrayPointer();
-	float totalEnergy = 0.0f;
-	float weightedSum = 0.0f;
+	float * const prevMagnitudes = pPrevMagnitudes.GetArrayPointer();
+	float * const magnitudes = pMagnitudes.GetArrayPointer();
+	float * const energies = pEnergies.GetArrayPointer();
+	const double fftScaleMagnitude = 1.0 / (double)pFftSize;
+	const double fftScaleEnergy = 1.0 / (double)(pFftSize * pFftSize);
+	float totalMagnitude = 0.0f;
+	//float totalEnergy = 0.0f;
+	float centroidSum = 0.0f;
 	double logSum = 0.0;
 	int logCount = 0;
 	float maxMag = 0.0f;
@@ -445,27 +450,31 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 	for(int k=0; k<pHalfFftSize; k++){
 		const double re = pFftOut[k][0];
 		const double im = pFftOut[k][1];
-		magnitude[k] = (float)sqrt(re * re + im * im);
+		const double magSq = re * re + im * im;
+		magnitudes[k] = (float)(sqrt(magSq) * fftScaleMagnitude);
+		energies[k] = (float)(magSq * fftScaleEnergy);
 		
-		totalEnergy += magnitude[k];
-		weightedSum += (float)k * freqPerBin * magnitude[k];
+		totalMagnitude += magnitudes[k];
+		//totalEnergy += energies[k];
 		
-		if(magnitude[k] > 0.0f){
-			logSum += log((double)magnitude[k]);
+		centroidSum += (float)k * freqPerBin * magnitudes[k];
+		
+		if(magnitudes[k] > 0.0f){
+			logSum += log((double)magnitudes[k]);
 			logCount++;
 		}
 		
-		maxMag = decMath::max(maxMag, magnitude[k]);
-		fluxSum += decMath::max(0.0f, magnitude[k] - prevMagnitude[k]);
+		maxMag = decMath::max(maxMag, magnitudes[k]);
+		fluxSum += decMath::max(0.0f, magnitudes[k] - prevMagnitudes[k]);
 	}
-	memcpy(prevMagnitude, magnitude, sizeof(float) * pHalfFftSize);
+	memcpy(prevMagnitudes, magnitudes, sizeof(float) * pHalfFftSize);
 	
 	// derived scalars from the first pass
-	const float centroid = totalEnergy > 0.0f ? weightedSum / totalEnergy : 0.0f;
+	const float centroid = totalMagnitude > 0.0f ? centroidSum / totalMagnitude : 0.0f;
 	
 	float flatness = 0.0f;
-	if(logCount > 0 && totalEnergy > 0.0f){
-		const float divisor = totalEnergy / (float)pHalfFftSize;
+	if(logCount > 0 && totalMagnitude > 0.0f){
+		const float divisor = totalMagnitude / (float)pHalfFftSize;
 		if(divisor > 0.0f){
 			const float geom = (float)exp(logSum / (double)logCount);
 			flatness = decMath::clamp(geom / divisor, 0.0f, 1.0f);
@@ -476,7 +485,7 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 	
 	// second spectral loop: rolloff, peaks, frequency bands, pitch.
 	// these quantities require the complete magnitude array accumulated in the first pass
-	const float rolloffThreshold = 0.85f * totalEnergy;
+	const float rolloffThreshold = 0.85f * totalMagnitude;
 	float rolloff = 0.0f;
 	float cumulative = 0.0f;
 	bool rolloffFound = false;
@@ -509,7 +518,7 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 	for(int k=0; k<pHalfFftSize; k++){
 		// spectral rolloff (85 % energy threshold)
 		if(!rolloffFound){
-			cumulative += magnitude[k];
+			cumulative += magnitudes[k];
 			if(cumulative >= rolloffThreshold){
 				rolloff = (float)k * freqPerBin;
 				rolloffFound = true;
@@ -518,10 +527,10 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 		
 		// spectral peaks (local maxima)
 		if(k >= 1 && k < pHalfFftSize - 1){
-			if(magnitude[k] > magnitude[k - 1] && magnitude[k] > magnitude[k + 1]){
+			if(magnitudes[k] > magnitudes[k - 1] && magnitudes[k] > magnitudes[k + 1]){
 				pWorkPeaks.Add({
 					.frequency = (float)k * freqPerBin,
-					.magnitude = magnitude[k]
+					.magnitude = magnitudes[k]
 				});
 			}
 		}
@@ -532,7 +541,8 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 			const float logRel = logf((float)k / (float)freqLoBin);
 			
 			auto &band = pWorkBands[decMath::min((int)(logRel * invLogBinRange), bandCount - 1)];
-			band.energy += magnitude[k];
+			band.magnitude += magnitudes[k];
+			band.energy += energies[k];
 			band.count++;
 			
 			const float binFreq = (float)k * freqPerBin;
@@ -541,8 +551,8 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 		}
 		
 		// pitch (highest magnitude bin in the 80-1000 Hz range)
-		if(k >= lo && k <= hi && magnitude[k] > bestMag){
-			bestMag = magnitude[k];
+		if(k >= lo && k <= hi && magnitudes[k] > bestMag){
+			bestMag = magnitudes[k];
 			bestBin = k;
 		}
 	}
@@ -600,7 +610,7 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 					}
 				}
 				
-				energy += magnitude[k] * w;
+				energy += energies[k] * w;
 				weightSum += w;
 			}
 			
@@ -669,13 +679,19 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 	const int resBandCount = pResBands.GetCount();
 	if(resBandCount == pWorkBands.GetCount()){
 		pWorkBands.VisitIndexed([&](int index, const Band &band){
-			// average band energy by bin count so all bands are comparable regardless of width
+			// average band magnitude and energy by bin count so all bands are comparable regardless of width
+			float magnitude = band.magnitude;
 			float energy = band.energy;
-			if(!enableMelFiltering && band.count > 0){
-				energy /= (float)band.count;
+			
+			if(band.count > 0){
+				magnitude /= (float)band.count;
+				if(!enableMelFiltering){
+					energy /= (float)band.count;
+				}
 			}
 			
 			auto &resBand = pResBands[index];
+			resBand.magnitude += magnitude;
 			resBand.energy += energy;
 			resBand.lowestFrequency = band.lowestFrequency;
 			resBand.highestFrequency = band.highestFrequency;

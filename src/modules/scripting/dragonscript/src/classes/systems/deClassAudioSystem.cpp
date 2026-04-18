@@ -179,13 +179,25 @@ void deClassAudioSystem::nfGetAudioCaptureRMS::RunFunction(dsRunTime *rt, dsValu
 }
 
 
-// static func float audioLevelToDbPercentage(float level)
-deClassAudioSystem::nfAudioLevelToDbPercentage::nfAudioLevelToDbPercentage(const sInitData &init) :
-dsFunction(init.clsAudSys, "audioLevelToDbPercentage", DSFT_FUNCTION,
+// static func float magnitudeToDb(float level)
+deClassAudioSystem::nfMagnitudeToDb::nfMagnitudeToDb(const sInitData &init) :
+dsFunction(init.clsAudSys, "magnitudeToDb", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
 	p_AddParameter(init.clsFloat); // level
 }
-void deClassAudioSystem::nfAudioLevelToDbPercentage::RunFunction(dsRunTime *rt, dsValue*){
+void deClassAudioSystem::nfMagnitudeToDb::RunFunction(dsRunTime *rt, dsValue*){
+	const float level = rt->GetValue(0)->GetFloat();
+	const float db = 20.0f * log10f(decMath::clamp(level, 1e-3f, 1.0f));
+	rt->PushFloat(db);
+}
+
+// static func float magnitudeToDbPercentage(float level)
+deClassAudioSystem::nfMagnitudeToDbPercentage::nfMagnitudeToDbPercentage(const sInitData &init) :
+dsFunction(init.clsAudSys, "magnitudeToDbPercentage", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
+	p_AddParameter(init.clsFloat); // level
+}
+void deClassAudioSystem::nfMagnitudeToDbPercentage::RunFunction(dsRunTime *rt, dsValue*){
 	const float level = rt->GetValue(0)->GetFloat();
 	const float db = 20.0f * log10f(decMath::clamp(level, 1e-3f, 1.0f));
 	rt->PushFloat(decMath::linearStep(db, -60.0f, 0.0f));
@@ -351,7 +363,8 @@ void deClassAudioSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetAudioCapturePeak(init));
 	AddFunction(new nfGetAudioCaptureRMS(init));
 	
-	AddFunction(new nfAudioLevelToDbPercentage(init));
+	AddFunction(new nfMagnitudeToDb(init));
+	AddFunction(new nfMagnitudeToDbPercentage(init));
 	
 	AddFunction(new nfGetParameterCount(init));
 	AddFunction(new nfGetParameterInfo(init));

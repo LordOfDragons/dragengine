@@ -105,13 +105,23 @@ fixed class AudioSystem
 	
 	
 	/**
-	 * \brief Convert audio level value to percentage decibel value.
+	 * \brief Convert magnitude to decibel.
 	 * \version 1.32
 	 * 
-	 * Converts value in the range from 0 to 1 to percentage decibel value in the range from
-	 * 0(-60dB) to 1(0dB).
+	 * Converts magnitude in the range from 0 to 1 to decibel value.
 	 */
-	static func float audioLevelToDbPercentage(float level)
+	static func float magnitudeToDb(float level)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Convert magnitude to percentage decibel.
+	 * \version 1.32
+	 * 
+	 * Converts magnitude in the range from 0 to 1 to percentage decibel in the range
+	 * from 0(-60dB) to 1(0dB).
+	 */
+	static func float magnitudeToDbPercentage(float level)
 		return 0.0
 	end
 	/*@}*/

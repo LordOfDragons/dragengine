@@ -71,6 +71,7 @@ private:
 	};
 	
 	struct Band{
+		float magnitude = 0.0f;
 		float energy = 0.0f;
 		float lowestFrequency = 0.0f;
 		float highestFrequency = 0.0f;
@@ -113,7 +114,7 @@ private:
 	fftw_complex *pFftOut;
 	fftw_plan pFftPlan;
 	
-	decTList<float> pPrevMagnitude, pMagnitude, pMelEnergies, pSampleBuffer;
+	decTList<float> pPrevMagnitudes, pMagnitudes, pEnergies, pMelEnergies, pSampleBuffer;
 	
 	deMutex pMutexResults;
 	

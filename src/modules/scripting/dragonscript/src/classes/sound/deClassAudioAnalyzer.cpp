@@ -424,6 +424,17 @@ void deClassAudioAnalyzer::nfGetSpectralPeakMagnitudeAt::RunFunction(dsRunTime *
 	rt->PushFloat(analyzer.GetSpectralPeaks()[rt->GetValue(0)->GetInt()].magnitude);
 }
 
+// func float getFrequencyBandMagnitudeAt(int index)
+deClassAudioAnalyzer::nfGetFrequencyBandMagnitudeAt::nfGetFrequencyBandMagnitudeAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandMagnitudeAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassAudioAnalyzer::nfGetFrequencyBandMagnitudeAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].magnitude);
+}
+
 // func float getFrequencyBandEnergyAt(int index)
 deClassAudioAnalyzer::nfGetFrequencyBandEnergyAt::nfGetFrequencyBandEnergyAt(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "getFrequencyBandEnergyAt", DSFT_FUNCTION,
@@ -455,6 +466,18 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 void deClassAudioAnalyzer::nfGetFrequencyBandHighestFrequencyAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
 	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].highestFrequency);
+}
+
+// func float getMaxBandMagnitude()
+deClassAudioAnalyzer::nfGetMaxBandMagnitude::nfGetMaxBandMagnitude(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getMaxBandMagnitude", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassAudioAnalyzer::nfGetMaxBandMagnitude::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands().Inject(0.0f, [](float acc, const deAudioAnalyzer::FrequencyBand &band){
+		return decMath::max(acc, band.magnitude);
+	}));
 }
 
 // func float getMaxBandEnergy()
@@ -582,9 +605,11 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetSpectralPeakCount(init));
 	AddFunction(new nfGetSpectralPeakFrequencyAt(init));
 	AddFunction(new nfGetSpectralPeakMagnitudeAt(init));
+	AddFunction(new nfGetFrequencyBandMagnitudeAt(init));
 	AddFunction(new nfGetFrequencyBandEnergyAt(init));
 	AddFunction(new nfGetFrequencyBandLowestFrequencyAt(init));
 	AddFunction(new nfGetFrequencyBandHighestFrequencyAt(init));
+	AddFunction(new nfGetMaxBandMagnitude(init));
 	AddFunction(new nfGetMaxBandEnergy(init));
 	AddFunction(new nfGetPitch(init));
 	

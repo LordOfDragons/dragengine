@@ -123,9 +123,11 @@ private:
 	DEF_NATFUNC(nfGetSpectralPeakCount);
 	DEF_NATFUNC(nfGetSpectralPeakFrequencyAt);
 	DEF_NATFUNC(nfGetSpectralPeakMagnitudeAt);
+	DEF_NATFUNC(nfGetFrequencyBandMagnitudeAt);
 	DEF_NATFUNC(nfGetFrequencyBandEnergyAt);
 	DEF_NATFUNC(nfGetFrequencyBandLowestFrequencyAt);
 	DEF_NATFUNC(nfGetFrequencyBandHighestFrequencyAt);
+	DEF_NATFUNC(nfGetMaxBandMagnitude);
 	DEF_NATFUNC(nfGetMaxBandEnergy);
 	DEF_NATFUNC(nfGetPitch);
 	
