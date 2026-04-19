@@ -563,8 +563,8 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 		const int melCount = pWorkConfig.melFilterCount;
 		const float loFreq = pWorkConfig.lowestFrequency;
 		const float hiFreq = pWorkConfig.highestFrequency;
-		const float lowMel = 2595.0f * log10f(1.0f + loFreq / 700.0f);
-		const float highMel = 2595.0f * log10f(1.0f + hiFreq / 700.0f);
+		const float lowMel = 1125.0f * logf(1.0f + loFreq / 700.0f);
+		const float highMel = 1125.0f * logf(1.0f + hiFreq / 700.0f);
 		const float melRange = highMel - lowMel;
 		const float melFactor = melRange / (float)(melCount + 1);
 		
@@ -579,9 +579,9 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 			const float melCenter = lowMel + melFactor * (float)(m + 1);
 			const float melRight = lowMel + melFactor * (float)(m + 2);
 			
-			const float hzLeft = 700.0f * (powf(10.0f, melLeft / 2595.0f) - 1.0f);
-			const float hzCenter = 700.0f * (powf(10.0f, melCenter / 2595.0f) - 1.0f);
-			const float hzRight = 700.0f * (powf(10.0f, melRight / 2595.0f) - 1.0f);
+			const float hzLeft = 700.0f * (expf(melLeft / 1125.0f) - 1.0f);
+			const float hzCenter = 700.0f * (expf(melCenter / 1125.0f) - 1.0f);
+			const float hzRight = 700.0f * (expf(melRight / 1125.0f) - 1.0f);
 			
 			const int binLeft = decMath::max(0, (int)(hzLeft / freqPerBin));
 			const int binCenter = decMath::min(pHalfFftSize - 1, (int)(hzCenter / freqPerBin));
@@ -641,8 +641,8 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 			
 			auto &band = pWorkBands[b];
 			band.count = count;
-			band.lowestFrequency = 700.0f * (powf(10.0f, melBoundLeft / 2595.0f) - 1.0f);
-			band.highestFrequency = 700.0f * (powf(10.0f, melBoundRight / 2595.0f) - 1.0f);
+			band.lowestFrequency = 700.0f * (expf(melBoundLeft / 1125.0f) - 1.0f);
+			band.highestFrequency = 700.0f * (expf(melBoundRight / 1125.0f) - 1.0f);
 			
 			if(count > 0){
 				if(pWorkConfig.normalizeMelEnergies){
@@ -653,6 +653,18 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 			}else{
 				band.energy = 0.0f;
 			}
+		}
+		
+		// apply DCT to log mel energies producing one coefficient per band.
+		const float mfccLogEpsilon = 1e-10f;
+		const float mfccFactor = (float)M_PI / (float)melCount;
+		for(int b=0; b<bandCount; b++){
+			float dct = 0.0f;
+			for(int m=0; m<melCount; m++){
+				dct += logf(decMath::max(melEnergies[m], mfccLogEpsilon))
+					* cosf(mfccFactor * (float)b * ((float)m - 0.5f));
+			}
+			pWorkBands[b].mfcc = dct;
 		}
 	}
 	
@@ -695,6 +707,7 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 			resBand.energy += energy;
 			resBand.lowestFrequency = band.lowestFrequency;
 			resBand.highestFrequency = band.highestFrequency;
+			resBand.mfcc += band.mfcc;
 		});
 		
 	}else{

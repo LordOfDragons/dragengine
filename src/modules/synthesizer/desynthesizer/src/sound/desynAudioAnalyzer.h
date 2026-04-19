@@ -75,6 +75,7 @@ private:
 		float energy = 0.0f;
 		float lowestFrequency = 0.0f;
 		float highestFrequency = 0.0f;
+		float mfcc = 0.0f;
 		int count = 0;
 	};
 	

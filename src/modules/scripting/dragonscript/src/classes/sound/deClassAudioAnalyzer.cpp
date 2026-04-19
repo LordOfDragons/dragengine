@@ -468,6 +468,17 @@ void deClassAudioAnalyzer::nfGetFrequencyBandHighestFrequencyAt::RunFunction(dsR
 	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].highestFrequency);
 }
 
+// func float getFrequencyBandMfccAt(int index)
+deClassAudioAnalyzer::nfGetFrequencyBandMfccAt::nfGetFrequencyBandMfccAt(const sInitData &init) :
+dsFunction(init.clsAudioAnalyzer, "getFrequencyBandMfccAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // index
+}
+void deClassAudioAnalyzer::nfGetFrequencyBandMfccAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAudioAnalyzer &analyzer = dedsGetNativeData<sAANatDat>(p_GetNativeData(myself)).audioAnalyze;
+	rt->PushFloat(analyzer.GetFrequencyBands()[rt->GetValue(0)->GetInt()].mfcc);
+}
+
 // func float getMaxBandMagnitude()
 deClassAudioAnalyzer::nfGetMaxBandMagnitude::nfGetMaxBandMagnitude(const sInitData &init) :
 dsFunction(init.clsAudioAnalyzer, "getMaxBandMagnitude", DSFT_FUNCTION,
@@ -633,6 +644,7 @@ void deClassAudioAnalyzer::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetFrequencyBandEnergyAt(init));
 	AddFunction(new nfGetFrequencyBandLowestFrequencyAt(init));
 	AddFunction(new nfGetFrequencyBandHighestFrequencyAt(init));
+	AddFunction(new nfGetFrequencyBandMfccAt(init));
 	AddFunction(new nfGetMaxBandMagnitude(init));
 	AddFunction(new nfGetMaxBandEnergy(init));
 	AddFunction(new nfGetTotalBandMagnitude(init));

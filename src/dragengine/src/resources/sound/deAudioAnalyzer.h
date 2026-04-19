@@ -71,6 +71,14 @@ public:
 		
 		/** \brief Energy of the band. */
 		float energy = 0.0f;
+		
+		/**
+		 * \brief Mel Frequency Cepstral Coefficient.
+		 * 
+		 * Set to the DCT coefficient of the log mel energies corresponding to this band.
+		 * Only valid if mel filtering is enabled. Otherwise 0.
+		 */
+		float mfcc = 0.0f;
 	};
 	
 	
@@ -211,7 +219,7 @@ public:
 	/**
 	 * \brief Count of mel filter banks.
 	 * 
-	 * Default is 40.
+	 * Default is 26.
 	 */
 	inline int GetMelFilterCount() const{ return pMelFilterCount; }
 	

@@ -188,7 +188,7 @@ class AudioAnalyzer
 	/**
 	 * \brief Count of mel filter banks.
 	 * 
-	 * Default is 40.
+	 * Default is 26.
 	 */
 	func int getMelFilterCount()
 		return 0
@@ -346,6 +346,19 @@ class AudioAnalyzer
 	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
 	 */
 	func float getFrequencyBandHighestFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Mel Frequency Cepstral Coefficient of the frequency band at index.
+	 * 
+	 * Returns the DCT coefficient of the log mel energies corresponding to this band.
+	 * Only valid if mel filtering is enabled otherwise 0.
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandMfccAt(int index)
 		return 0.0
 	end
 	
