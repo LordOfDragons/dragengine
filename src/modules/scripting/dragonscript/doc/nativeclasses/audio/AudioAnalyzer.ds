@@ -363,6 +363,20 @@ class AudioAnalyzer
 		return 0.0
 	end
 	
+	/**
+	 * \brief Total magnitude of all frequency bands.
+	 */
+	func float getTotalBandMagnitude()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Total energy of all frequency bands.
+	 */
+	func float getTotalBandEnergy()
+		return 0.0
+	end
+	
 	/** \brief Estimated pitch (fundamental frequency) in Hz or 0 if not detected. */
 	func float getPitch()
 		return 0.0

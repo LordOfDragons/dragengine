@@ -129,6 +129,8 @@ private:
 	DEF_NATFUNC(nfGetFrequencyBandHighestFrequencyAt);
 	DEF_NATFUNC(nfGetMaxBandMagnitude);
 	DEF_NATFUNC(nfGetMaxBandEnergy);
+	DEF_NATFUNC(nfGetTotalBandMagnitude);
+	DEF_NATFUNC(nfGetTotalBandEnergy);
 	DEF_NATFUNC(nfGetPitch);
 	
 	DEF_NATFUNC(nfEquals);
