@@ -41,6 +41,11 @@ fixed class AudioSystem
 	/**
 	 * \brief Start audio capture.
 	 * \version 1.32
+	 * 
+	 * On certain platforms capturing audio requires explicit user consent. Calling this method
+	 * can potentially interrupt the application showing a permission dialog. Hence after calling
+	 * this method it can take some time until the audio capture begins. You can check if audio
+	 * capturing is running by calling \ref #isCapturingAudio().
 	 */
 	static func void startAudioCapture()
 	end

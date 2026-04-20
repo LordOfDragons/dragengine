@@ -61,16 +61,8 @@ pin Dragengine.Scenery
  * \par Audio Analyzer
  * 
  * Lip synchronization uses an instance of \ref AudioAnalyzer to analyze the audio. The subclasses
- * configure the analyzer for their specific needs. The user though is responsible to set the audio
- * source to use. In general the user wants to record voice audio. This is done by calling
- * \ref AudioAnalyzer#setUseAudioCapture() with parameter "true". This is not done automatically
- * to avoid activating the microphone if the user wants to use a different audio source. This is
- * especially useful on platforms requiring explicit consent by the user to capturing audio.
- * 
- * To simplify this process you can call \ref #captureVoiceAudio(). This enables audio capture
- * on the analyzer. Call \ref AudioSystem#isCapturingAudio() to know when audio capturing is
- * actually running. Depending on the platform this can take some time due to permission dialogs
- * or similar necessary interactions.
+ * configure the analyzer for their specific needs. The user is responsible to set the audio source
+ * if he does not want to use the default microphone.
  */
 abstract class LipSync
 	/**
@@ -212,18 +204,6 @@ abstract class LipSync
 	 */
 	func void setResponseTime(float responseTime)
 		pResponseTime = Math.max(responseTime, 0.01)
-	end
-	
-	/**
-	 * \brief Set analyzer to capture voice audio.
-	 * 
-	 * On certain platforms capturing audio requires explicit user consent. Calling this method
-	 * can potentially interrupt the application showing a permission dialog. Hence after calling
-	 * this method it can take some time until the audio capture begins. You can check if audio
-	 * capturing is running by calling \ref AudioSystem#isCapturingAudio().
-	 */
-	func void captureVoiceAudio()
-		pAudioAnalyzer.setUseAudioCapture(true)
 	end
 	
 	

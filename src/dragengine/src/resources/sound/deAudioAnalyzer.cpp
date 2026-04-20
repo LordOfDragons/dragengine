@@ -39,7 +39,7 @@
 
 deAudioAnalyzer::deAudioAnalyzer(deAudioAnalyzerManager *manager) :
 deResource(manager),
-pUseAudioCapture(false),
+pUseAudioCapture(true),
 pSampleRate(16000),
 pResolution(1024),
 pFrequencyBandCount(8),

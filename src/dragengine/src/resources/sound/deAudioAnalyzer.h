@@ -131,7 +131,7 @@ public:
 	/**
 	 * \brief Use audio capture as input for analysis.
 	 * 
-	 * Default is false.
+	 * Default is true. Has no effect unless deAudioSystem::StartAudioCapture() is called.
 	 */
 	inline bool GetUseAudioCapture() const{ return pUseAudioCapture; }
 	

@@ -38,7 +38,7 @@ class AudioAnalyzer
 	/**
 	 * \brief Use audio capture as input for analysis.
 	 * 
-	 * Default is false.
+	 * Default is true. Has no effect unless \ref AudioSystem#startAudioCapture() is called.
 	 */
 	func bool getUseAudioCapture()
 		return false
