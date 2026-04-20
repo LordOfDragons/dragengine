@@ -1,0 +1,168 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Utils
+
+
+/**
+ * \brief One Euro Filter.
+ * 
+ * The One Euro Filter is a simple algorithm for smoothing noisy data with two parameters for
+ * tuning.
+ * 
+ * \ref Calibration
+ * 
+ * To calibrate the filter start with beta set to 0 and cutoff set to a reasonable starting value
+ * like 1Hz. Process slow changing or stable data. This tunes for small jitter. Increase the
+ * cutoff frequency until the small jitter is reduced to an acceptable level. Then process fast
+ * changing data. This tunes for input lag. Increase beta until the lag is reduced to an
+ * acceptable level.
+ * 
+ * \ref Usage
+ * 
+ * To use the filter create an instance with the tuned parameters beta and cutoff. Then call
+ * \ref OneEuroFilter#reset() with initial sample data. Now you can call
+ * \ref OneEuroFilter#process() to filter incoming data while retrieving the filtered value.
+ */
+class OneEuroFilter
+	var float pCutoff, pBeta, pLastValue, pLastChangeRate
+	
+	
+	/**
+	 * \brief Create filter.
+	 */
+	func new(float cutoff, float beta)
+		pCutoff = cutoff
+		pBeta = beta
+	end
+	
+	
+	/**
+	 * \brief Cutoff frequency.
+	 */
+	func float getCutoff()
+		return pCutoff
+	end
+	
+	/**
+	 * \brief Set cutoff frequency.
+	 */
+	func void setCutoff(float cutoff)
+		pCutoff = cutoff
+	end
+	
+	/**
+	 * \brief Beta.
+	 */
+	func float getBeta()
+		return pBeta
+	end
+	
+	/**
+	 * \brief Set beta.
+	 */
+	func void setBeta(float beta)
+		pBeta = beta
+	end
+	
+	
+	/**
+	 * \brief Reset filter.
+	 * 
+	 * Same as calling reset(0, 0).
+	 */
+	func void reset()
+		pLastValue = 0
+		pLastChangeRate = 0
+	end
+	
+	/**
+	 * \brief Reset filter.
+	 * 
+	 * Same as calling reset(value, 0).
+	 */
+	func void reset(float value)
+		pLastValue = value
+		pLastChangeRate = 0
+	end
+	
+	/**
+	 * \brief Reset filter.
+	 */
+	func void reset(float value, float changeRate)
+		pLastValue = value
+		pLastChangeRate = changeRate
+	end
+	
+	/**
+	 * \brief Process data.
+	 */
+	func float process(float elapsed, float value)
+		// filtered derivative of the signal
+		var float a_d = smoothingFactor(elapsed, 1)
+		var float dx = (value - pLastValue) / elapsed
+		var float dx_hat = exponentialSmoothing(a_d, dx, pLastChangeRate)
+		
+		// filtered signal
+		var float cutoff = pCutoff + pBeta * Math.fabs(dx_hat)
+		var float a = smoothingFactor(elapsed, cutoff)
+		var float x_hat = exponentialSmoothing(a, value, pLastValue)
+		
+		// store previous values
+		pLastValue = x_hat
+		pLastChangeRate = dx_hat
+		
+		return x_hat
+	end
+	
+	/**
+	 * \brief Get last value.
+	 */
+	func float getLastValue()
+		return pLastValue
+	end
+	
+	/**
+	 * \brief Get last change rate.
+	 */
+	func float getLastChangeRate()
+		return pLastChangeRate
+	end
+	
+	
+	/**
+	 * \brief Smoothing factor.
+	 */
+	protected func float smoothingFactor(float elapsed, float cutoff)
+		var float r = 2 * Math.M_PI * cutoff * elapsed
+		return r / (r + 1)
+	end
+	
+	/**
+	 * \brief Exponential smoothing.
+	 */
+	protected func float exponentialSmoothing(float factor, float value, float prevValue)
+		return factor * value + (1 - factor) * prevValue
+	end
+end

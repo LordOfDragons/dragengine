@@ -24,6 +24,7 @@
 
 namespace Dragengine.Audio.LipSync
 pin Dragengine.Scenery
+pin Dragengine.Utils
 
 /**
  * \brief Base class for lip synchronization.
@@ -93,6 +94,7 @@ abstract class LipSync
 	class VisemeResult
 		var Viseme pViseme
 		var float pWeight, pWeightSmooth
+		var OneEuroFilter pWeightFilter
 		
 		
 		/**
@@ -100,8 +102,11 @@ abstract class LipSync
 		 */
 		func new(Viseme viseme)
 			this.pViseme = viseme
+			pWeightFilter = OneEuroFilter.new(5, 1)
 			if viseme == Viseme.sil
-				pWeight = pWeightSmooth = 1
+				pWeight = 1
+				pWeightSmooth = 1
+				pWeightFilter.reset(1)
 			end
 		end
 		
@@ -142,12 +147,19 @@ abstract class LipSync
 		func void setWeightSmooth(float value)
 			pWeightSmooth = Math.clamp(value, 0.0, 1.0)
 		end
+		
+		/**
+		 * \brief Weight filter.
+		 */
+		func OneEuroFilter getWeightFilter()
+			return pWeightFilter
+		end
 	end
 	
 	
-	var float pNoiseFloor
-	var float pResponseTime
+	var float pNoiseFloor, pUpdateInterval, pUpdateElapse
 	var float pJawOpeness, pJawOpenessSmooth
+	var OneEuroFilter pJawOpenessFilter
 	var Dictionary pVisemeResults, pVisemeSubsetResults
 	var AudioAnalyzer pAudioAnalyzer
 	
@@ -156,8 +168,10 @@ abstract class LipSync
 	 * \brief Create lip sync.
 	 */
 	func new()
-		pNoiseFloor = 0.01 // -40dB
-		pResponseTime = 0.05
+		pNoiseFloor = 0.015 // -30dB(0.032) -35dB(0.018) -40dB(0.01)
+		pUpdateInterval = 1.0 / 30.0
+		
+		pJawOpenessFilter = OneEuroFilter.new(5, 1)
 		
 		pVisemeResults = Dictionary.new()
 		Viseme.forEach(block Viseme each
@@ -189,23 +203,18 @@ abstract class LipSync
 	end
 	
 	/**
-	 * \brief Response time in seconds.
-	 * 
-	 * How many seconds the mouth takes to move. 0.05 = fast/crisp, 0.1 = smooth/heavy
+	 * \brief Update interval in seconds.
 	 */
-	func float getResponseTime()
-		return pResponseTime
+	func float getUpdateInterval()
+		return pUpdateInterval
 	end
 	
 	/**
-	 * \brief Set response time in seconds.
-	 * 
-	 * How many seconds the mouth takes to move. 0.05 = fast/crisp, 0.1 = smooth/heavy
+	 * \brief Set update interval in seconds.
 	 */
-	func void setResponseTime(float responseTime)
-		pResponseTime = Math.max(responseTime, 0.01)
+	func void setUpdateInterval(float updateInterval)
+		pUpdateInterval = Math.max(updateInterval, 0.001)
 	end
-	
 	
 	/**
 	 * \brief Get jaw openess in range 0 to 1.
@@ -235,6 +244,13 @@ abstract class LipSync
 	 */
 	func void setJawOpenessSmooth(float value)
 		pJawOpenessSmooth = Math.clamp(value, 0.0, 1.0)
+	end
+	
+	/**
+	 * \brief Jaw openess filter.
+	 */
+	func OneEuroFilter getJawOpenessFilter()
+		return pJawOpenessFilter
 	end
 	
 	
@@ -308,16 +324,23 @@ abstract class LipSync
 	 * Same as \ref #silence() but also changes smoothed values.
 	 */
 	func void reset()
+		var int value
+		
 		pJawOpeness = pJawOpenessSmooth = 0
+		pJawOpenessFilter.reset(0)
 		
 		pVisemeResults.forEachValue(block VisemeResult each
-			each.setWeight(each.getViseme() == Viseme.sil if 1 else 0)
-			each.setWeightSmooth(each.getWeight())
+			value = each.getViseme() == Viseme.sil if 1 else 0
+			each.setWeight(value)
+			each.setWeightSmooth(value)
+			each.getWeightFilter().reset(value)
 		end)
 		
 		pVisemeSubsetResults.forEachValue(block VisemeResult each
-			each.setWeight(each.getViseme() == Viseme.sil if 1 else 0)
-			each.setWeightSmooth(each.getWeight())
+			value = each.getViseme() == Viseme.sil if 1 else 0
+			each.setWeight(value)
+			each.setWeightSmooth(value)
+			each.getWeightFilter().reset(value)
 		end)
 	end
 	
@@ -326,7 +349,21 @@ abstract class LipSync
 	 * \brief Update lip synchronization.
 	 * \param elapsed Elapsed time since last update in seconds.
 	 */
-	abstract func void update(float elapsed)
+	func void update(float elapsed)
+		pUpdateElapse += elapsed
+		if pUpdateElapse >= pUpdateInterval
+			updateLipSync(pUpdateInterval)
+			pUpdateElapse = Math.min(pUpdateElapse - pUpdateInterval, pUpdateInterval)
+		end
+		smoothResults(elapsed)
+	end
+	
+	
+	/**
+	 * \brief Process lip synchronization.
+	 * \param elapsed Elapsed time since last update in seconds.
+	 */
+	abstract protected func void updateLipSync(float elapsed)
 	
 	
 	/**
@@ -454,15 +491,13 @@ abstract class LipSync
 			return
 		end
 		
-		var float factor = 1 - Math.exp(-elapsed / pResponseTime)
-		pJawOpenessSmooth = DEMath.mix(pJawOpenessSmooth, pJawOpeness, factor)
+		pJawOpenessSmooth = pJawOpenessFilter.process(elapsed, pJawOpeness)
 		
-		factor = 1 - Math.exp(-elapsed / pResponseTime)
 		pVisemeResults.forEachValue(block VisemeResult viseme
-			viseme.setWeightSmooth(DEMath.mix(viseme.getWeightSmooth(), viseme.getWeight(), factor))
+			viseme.setWeightSmooth(viseme.getWeightFilter().process(elapsed, viseme.getWeight()))
 		end)
 		pVisemeSubsetResults.forEachValue(block VisemeResult viseme
-			viseme.setWeightSmooth(DEMath.mix(viseme.getWeightSmooth(), viseme.getWeight(), factor))
+			viseme.setWeightSmooth(viseme.getWeightFilter().process(elapsed, viseme.getWeight()))
 		end)
 	end
 end

@@ -69,14 +69,12 @@ class LipSyncJawFlaping extends LipSync
 	
 	
 	
-	func void update(float elapsed)
+	protected func void updateLipSync(float elapsed)
 		getAudioAnalyzer().updateResults()
 		
 		setJawOpeness(DEMath.smoothStep(getAudioAnalyzer().getRMS(), getNoiseFloor(), pOpenMouthLevel))
 		
 		setVisemeSubsetFromJawOpeness()
 		setVisemeFullFromSubset()
-		
-		smoothResults(elapsed)
 	end
 end
