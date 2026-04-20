@@ -657,7 +657,7 @@ void desynAudioAnalyzer::pAnalyzeWindow(int hopSize){
 		
 		// apply DCT to log mel energies producing one coefficient per band.
 		const float mfccLogEpsilon = 1e-10f;
-		const float mfccFactor = (float)M_PI / (float)melCount;
+		const float mfccFactor = PI / (float)melCount;
 		for(int b=0; b<bandCount; b++){
 			float dct = 0.0f;
 			for(int m=0; m<melCount; m++){
