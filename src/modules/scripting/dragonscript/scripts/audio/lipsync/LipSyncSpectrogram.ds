@@ -154,7 +154,7 @@ class LipSyncSpectrogram extends LipSync
 	func new()
 		pBandEnergies = Array.new(16, 0.0)
 		
-		var float cutoff = 5, beta = 1
+		var float cutoff = 5, beta = 0
 		pLow = OneEuroFilter.new(cutoff, beta)
 		pLowMid = OneEuroFilter.new(cutoff, beta)
 		pMid = OneEuroFilter.new(cutoff, beta)
@@ -210,7 +210,7 @@ class LipSyncSpectrogram extends LipSync
 		var AudioAnalyzer analyzer = getAudioAnalyzer()
 		analyzer.updateResults()
 		
-		var float rms = pRms.process(elapsed, analyzer.getRMS())
+		var float rms = pRms.process(analyzer.getRMS(), elapsed)
 		if rms > this.getNoiseFloor()
 			collectBandEnergies()
 			calculateVisemes(elapsed)
@@ -295,17 +295,17 @@ class LipSyncSpectrogram extends LipSync
 	 */
 	protected func void calculateVisemes(float elapsed)
 		// group bands into logical vocal buckets
-		var float low = pLow.process(elapsed, getBandEnergyRange(0, 2)) // bass/plosives (PP, OU)
-		var float lowMid = pLowMid.process(elapsed, getBandEnergyRange(3, 5)) // vowels (AA, OH, RR)
-		var float mid = pMid.process(elapsed, getBandEnergyRange(6, 9)) // consonants (DD, NN, KK)
-		var float high = pHigh.process(elapsed, getBandEnergyRange(10, 15)) // sibilants (SS, CH, FF)
+		var float low = pLow.process(getBandEnergyRange(0, 2), elapsed) // bass/plosives (PP, OU)
+		var float lowMid = pLowMid.process(getBandEnergyRange(3, 5), elapsed) // vowels (AA, OH, RR)
+		var float mid = pMid.process(getBandEnergyRange(6, 9), elapsed) // consonants (DD, NN, KK)
+		var float high = pHigh.process(getBandEnergyRange(10, 15), elapsed) // sibilants (SS, CH, FF)
 		
 		// map broad energy to specific visemes
 		var float total = low + lowMid + mid + high
 		var float factor = total > 0 if 1 / total else 0
 		
-		var float flatness = pFlatness.process(elapsed, getAudioAnalyzer().getSpectralFlatness())
-		var float zrc = pZcr.process(elapsed, getAudioAnalyzer().getZeroCrossingRate())
+		var float flatness = pFlatness.process(getAudioAnalyzer().getSpectralFlatness(), elapsed)
+		var float zrc = pZcr.process(getAudioAnalyzer().getZeroCrossingRate(), elapsed)
 		var float weight, mapLow, mapHigh
 		
 		pVisemeTargets.forEachValue(block VisemeTarget each

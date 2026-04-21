@@ -24,21 +24,27 @@
 
 namespace Dragengine.Audio.LipSync
 pin Dragengine.Scenery
+pin Dragengine.Utils
 
 /**
  * \brief Lip synchronization for jaw flapping.
  * 
- * Provides jaw flapping lip synchronization. For more details see \ref LipSync.
+ * Provides jaw flapping lip synchronization using RMS (root mean square) amplitude.
+ * For more details see \ref LipSync.
  */
 class LipSyncJawFlaping extends LipSync
 	var float pOpenMouthLevel
+	var OneEuroFilter pRms
 	
 	
 	/**
 	 * \brief Create lip sync.
 	 */
 	func new()
-		pOpenMouthLevel = 0.35
+		pOpenMouthLevel = 0.25
+		pRms = OneEuroFilter.new(5, 0)
+		getJawOpenessFilter().setBeta(5)
+		getJawOpenessFilter().setCutoff(0)
 		
 		var AudioAnalyzer analyzer = getAudioAnalyzer()
 		analyzer.setSampleRate(16000)
@@ -52,7 +58,7 @@ class LipSyncJawFlaping extends LipSync
 	 * \brief Open mouth sound level.
 	 * 
 	 * Sound level where jaw is fully open. Value is measured in RMS (root mean square).
-	 * Default value is 0.35.
+	 * Default value is 0.25.
 	 */
 	func float getOpenMouthLevel()
 		return pOpenMouthLevel
@@ -72,7 +78,9 @@ class LipSyncJawFlaping extends LipSync
 	protected func void updateLipSync(float elapsed)
 		getAudioAnalyzer().updateResults()
 		
-		setJawOpeness(DEMath.smoothStep(getAudioAnalyzer().getRMS(), getNoiseFloor(), pOpenMouthLevel))
+		var float rms = pRms.process(getAudioAnalyzer().getRMS(), elapsed)
+		
+		setJawOpeness(DEMath.linearStep(rms, getNoiseFloor(), pOpenMouthLevel))
 		
 		setVisemeSubsetFromJawOpeness()
 		setVisemeFullFromSubset()

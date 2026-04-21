@@ -118,7 +118,11 @@ class OneEuroFilter
 	/**
 	 * \brief Process data.
 	 */
-	func float process(float elapsed, float value)
+	func float process(float value, float elapsed)
+		if elapsed == 0
+			return pLastValue
+		end
+		
 		// filtered derivative of the signal
 		var float a_d = smoothingFactor(elapsed, 1)
 		var float dx = (value - pLastValue) / elapsed

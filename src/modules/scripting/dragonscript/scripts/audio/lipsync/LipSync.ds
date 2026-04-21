@@ -102,7 +102,7 @@ abstract class LipSync
 		 */
 		func new(Viseme viseme)
 			this.pViseme = viseme
-			pWeightFilter = OneEuroFilter.new(5, 1)
+			pWeightFilter = OneEuroFilter.new(5, 0)
 			if viseme == Viseme.sil
 				pWeight = 1
 				pWeightSmooth = 1
@@ -171,7 +171,7 @@ abstract class LipSync
 		pNoiseFloor = 0.015 // -30dB(0.032) -35dB(0.018) -40dB(0.01)
 		pUpdateInterval = 1.0 / 30.0
 		
-		pJawOpenessFilter = OneEuroFilter.new(5, 1)
+		pJawOpenessFilter = OneEuroFilter.new(5, 0)
 		
 		pVisemeResults = Dictionary.new()
 		Viseme.forEach(block Viseme each
@@ -391,8 +391,8 @@ abstract class LipSync
 	 */
 	protected func void setJawOpenessFromVisemeSubset()
 		pJawOpeness = (pVisemeSubsetResults.getAt(Viseme.aa) cast VisemeResult).getWeight()\
-			+ (pVisemeSubsetResults.getAt(Viseme.o) cast VisemeResult).getWeight()\
-			+ (pVisemeSubsetResults.getAt(Viseme.e) cast VisemeResult).getWeight()
+			+ (pVisemeSubsetResults.getAt(Viseme.o) cast VisemeResult).getWeight() * 0.25\
+			+ (pVisemeSubsetResults.getAt(Viseme.e) cast VisemeResult).getWeight() * 0.5
 		pJawOpeness = Math.min(pJawOpeness, 1.0)
 	end
 	
@@ -494,13 +494,13 @@ abstract class LipSync
 			return
 		end
 		
-		pJawOpenessSmooth = pJawOpenessFilter.process(elapsed, pJawOpeness)
+		pJawOpenessSmooth = pJawOpenessFilter.process(pJawOpeness, elapsed)
 		
 		pVisemeResults.forEachValue(block VisemeResult viseme
-			viseme.setWeightSmooth(viseme.getWeightFilter().process(elapsed, viseme.getWeight()))
+			viseme.setWeightSmooth(viseme.getWeightFilter().process(viseme.getWeight(), elapsed))
 		end)
 		pVisemeSubsetResults.forEachValue(block VisemeResult viseme
-			viseme.setWeightSmooth(viseme.getWeightFilter().process(elapsed, viseme.getWeight()))
+			viseme.setWeightSmooth(viseme.getWeightFilter().process(viseme.getWeight(), elapsed))
 		end)
 	end
 end
