@@ -348,12 +348,15 @@ abstract class LipSync
 	/**
 	 * \brief Update lip synchronization.
 	 * \param elapsed Elapsed time since last update in seconds.
+	 * 
+	 * Calls \ref #updateLipSync() at fixed intervals defined by \ref #pUpdateInterval and
+	 * smooths the results.
 	 */
 	func void update(float elapsed)
 		pUpdateElapse += elapsed
 		if pUpdateElapse >= pUpdateInterval
 			updateLipSync(pUpdateInterval)
-			pUpdateElapse = Math.min(pUpdateElapse - pUpdateInterval, pUpdateInterval)
+			pUpdateElapse = Math.fmod(pUpdateElapse - pUpdateInterval, pUpdateInterval)
 		end
 		smoothResults(elapsed)
 	end

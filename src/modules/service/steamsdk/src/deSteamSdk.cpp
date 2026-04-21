@@ -105,7 +105,8 @@ deSteamSdk *deSteamSdk::globalModule = nullptr;
 
 deSteamSdk::deSteamSdk(deLoadableModule& loadableModule) :
 deBaseServiceModule(loadableModule),
-pSdkInited(false){
+pSdkInited(false)
+{
 	globalModule = this;
 }
 
@@ -124,6 +125,10 @@ deSteamSdk::~deSteamSdk(){
 ///////////////
 
 decStringSet deSteamSdk::GetSupportedServices(){
+	if(!SteamAPI_IsSteamRunning()){
+		return {};
+	}
+	
 	decStringSet names;
 	names.Add(deSsdkServiceSteam::serviceName);
 	return names;
