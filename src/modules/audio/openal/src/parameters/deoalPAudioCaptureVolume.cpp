@@ -39,17 +39,17 @@ deoalPAudioCaptureVolume::deoalPAudioCaptureVolume(deAudioOpenAL &oal) :
 deoalParameterFloat(oal)
 {
 	SetName("audioCaptureVolume");
-	SetDescription("Scale volume of captured audio samples."
-		" Values above 1 amplify the volume (quiet microphones)."
-		" Values below 1 attenuate the volume (loud microphones).");
+	SetDescription("Raise volume of captured audio samples in dB."
+		" Values above 0 amplify the volume (quiet microphones)."
+		" Values below 0 attenuate the volume (loud microphones).");
 	SetType(deModuleParameter::eptRanged);
-	SetMinimumValue(0.0f);
-	SetMaximumValue(1.5f);
-	SetValueStepSize(0.01f);
+	SetMinimumValue(-40.0f);
+	SetMaximumValue(40.0f);
+	SetValueStepSize(1.0f);
 	
 	SetCategory(ecBasic);
 	SetDisplayName("Audio Capture Volume");
-	SetDefaultValue("1");
+	SetDefaultValue("0");
 }
 
 deoalPAudioCaptureVolume::~deoalPAudioCaptureVolume() = default;
@@ -59,9 +59,13 @@ deoalPAudioCaptureVolume::~deoalPAudioCaptureVolume() = default;
 ///////////////
 
 float deoalPAudioCaptureVolume::GetParameterFloat(){
-	return pOal.GetConfiguration().GetAudioCaptureVolume();
+	const float level = pOal.GetConfiguration().GetAudioCaptureVolume();
+	const float db = 20.0f * log10f(decMath::max(level, 1e-3f));
+	return decMath::clamp(db, -40.0f, 40.0f);
 }
 
 void deoalPAudioCaptureVolume::SetParameterFloat(float value){
-	pOal.GetConfiguration().SetAudioCaptureVolume(value);
+	const float db = decMath::clamp(value, -40.0f, 40.0f);
+	const float level = powf(10.0f, db / 20.0f);
+	pOal.GetConfiguration().SetAudioCaptureVolume(level);
 }

@@ -49,7 +49,7 @@ deoalParameterFloat(oal)
 	
 	SetCategory(ecBasic);
 	SetDisplayName("Audio Capture Noise Gate");
-	SetDefaultValue("-50.0");
+	SetDefaultValue("-50");
 }
 
 deoalPAudioCaptureNoiseGate::~deoalPAudioCaptureNoiseGate() = default;
@@ -61,7 +61,7 @@ deoalPAudioCaptureNoiseGate::~deoalPAudioCaptureNoiseGate() = default;
 float deoalPAudioCaptureNoiseGate::GetParameterFloat(){
 	const float level = pOal.GetConfiguration().GetAudioCaptureNoiseGate();
 	const float db = 20.0f * log10f(decMath::clamp(level, 1e-3f, 1.0f));
-	return decMath::linearStep(db, -75.0f, 0.0f);
+	return decMath::clamp(db, -75.0f, 0.0f);
 }
 
 void deoalPAudioCaptureNoiseGate::SetParameterFloat(float value){

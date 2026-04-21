@@ -59,7 +59,7 @@ pShareEnvironmentThreshold(0.05f),
 pSwitchSharedEnvironmentThreshold(0.1f),
 pMaxSharedEffectSlots(8),
 
-pAudioCaptureVolume(1.0f),
+pAudioCaptureVolume(powf(10.0f, 0.0f / 20.0f)), // 0 dB
 pAudioCaptureNoiseGate(powf(10.0f, -50.0f / 20.0f)) // -50 dB
 {
 	pApplyAuralizationProfile();
@@ -272,7 +272,6 @@ void deoalConfiguration::SetMaxSharedEffectSlots(int count){
 }
 
 void deoalConfiguration::SetAudioCaptureVolume(float volume){
-	volume = decMath::clamp(volume, 0.0f, 1.5f);
 	if(fabsf(volume - pAudioCaptureVolume) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
