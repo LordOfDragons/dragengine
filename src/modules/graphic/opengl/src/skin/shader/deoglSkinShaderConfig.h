@@ -198,6 +198,7 @@ public:
 	bool pLuminanceOnly;
 	bool pGIMaterial;
 	bool pSkinClipPlane;
+	bool pDitherTransparency;
 	
 	bool pDynamicColorTint;
 	bool pDynamicColorGamma;
@@ -470,6 +471,9 @@ public:
 	inline bool GetSkinClipPlane() const{ return pSkinClipPlane; }
 	void SetSkinClipPlane(bool skinClipPlane);
 	
+	/** Dither transparency. */
+	inline bool GetDitherTransparency() const{ return pDitherTransparency; }
+	void SetDitherTransparency(bool ditherTransparency);
 	
 	
 	/** Color tint texture property is dynamic. */

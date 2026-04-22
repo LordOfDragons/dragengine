@@ -1109,7 +1109,7 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace(int size, bool useFloatDepth,
 
 
 
-int deoglShadowMapper::ShadowMapSize (const deoglConfiguration &config){
+int deoglShadowMapper::ShadowMapSize(const deoglConfiguration &config){
 	switch(config.GetShadowQuality()){
 	case deoglConfiguration::esqVeryHigh:
 		return 4096;
@@ -1158,6 +1158,22 @@ int deoglShadowMapper::ShadowCubeSize(const deoglConfiguration& config){
 	}
 }
 
+bool deoglShadowMapper::UseShadowDither(const deoglConfiguration &config){
+	return true;
+	/*
+	switch(config.GetShadowQuality()){
+	case deoglConfiguration::esqVeryHigh:
+	case deoglConfiguration::esqHigh:
+	default:
+	case deoglConfiguration::esqMedium:
+		return false;
+		
+	case deoglConfiguration::esqLow:
+	case deoglConfiguration::esqVeryLow:
+		return true;
+	}
+	*/
+}
 
 
 // Private Functions

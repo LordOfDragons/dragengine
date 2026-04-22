@@ -257,6 +257,7 @@ protected:
 	
 	virtual void pSetMaskedSolidity(deoglSkinShaderConfig &config);
 	virtual void pSetSkinClipping(deoglSkinShaderConfig &config);
+	virtual void pSetDitherTransparency(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	
 	virtual void pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);
 	virtual void pSetTypeDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo);

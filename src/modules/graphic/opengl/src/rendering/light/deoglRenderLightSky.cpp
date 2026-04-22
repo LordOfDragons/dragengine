@@ -451,7 +451,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 	
 	target = lightShader.GetTextureTarget(deoglLightShader::ettNoise);
 	if(target != -1){
-		tsmgr.EnableTexture(target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest());
+		tsmgr.EnableTexture(target, *renderThread.GetDefaultTextures().GetNoise(), GetSamplerRepeatNearest());
 	}
 	
 	target = lightShader.GetTextureTarget(deoglLightShader::ettLightDepth1);
@@ -526,7 +526,7 @@ const deoglRenderPlanMasked *mask, bool xray){
 			
 			target = lightShaderGI.GetTextureTarget(deoglLightShader::ettNoise);
 			if(target != -1){
-				tsmgr.EnableTexture(target, *renderThread.GetDefaultTextures().GetNoise2D(), GetSamplerRepeatNearest());
+				tsmgr.EnableTexture(target, *renderThread.GetDefaultTextures().GetNoise(), GetSamplerRepeatNearest());
 			}
 			
 			RenderFullScreenQuadVAO();

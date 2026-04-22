@@ -20,10 +20,10 @@
 // Samplers
 /////////////
 
-layout(binding=20) uniform lowp sampler2D texHeightMapMask;
+layout(binding=21) uniform lowp sampler2D texHeightMapMask;
 
-layout(binding=20) uniform HIGHP samplerBuffer texSubInstance1;
-layout(binding=21) uniform HIGHP samplerBuffer texSubInstance2;
+layout(binding=21) uniform HIGHP samplerBuffer texSubInstance1;
+layout(binding=22) uniform HIGHP samplerBuffer texSubInstance2;
 
 
 

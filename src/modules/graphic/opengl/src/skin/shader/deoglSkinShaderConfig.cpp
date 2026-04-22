@@ -87,6 +87,7 @@ void deoglSkinShaderConfig::Reset(){
 	pLuminanceOnly = false;
 	pGIMaterial = false;
 	pSkinClipPlane = false;
+	pDitherTransparency = false;
 	
 	pDynamicColorTint = false;
 	pDynamicColorGamma = false;
@@ -275,6 +276,9 @@ void deoglSkinShaderConfig::SetSkinClipPlane(bool skinClipPlane){
 	pSkinClipPlane = skinClipPlane;
 }
 
+void deoglSkinShaderConfig::SetDitherTransparency(bool ditherTransparency){
+	pDitherTransparency = ditherTransparency;
+}
 
 
 void deoglSkinShaderConfig::SetDynamicColorTint(bool dynamic){
@@ -547,6 +551,7 @@ void deoglSkinShaderConfig::UpdateKey(){
 	if(pLuminanceOnly) pKey2 |= (uint32_t)1 << 19;
 	if(pGIMaterial) pKey2 |= (uint32_t)1 << 20;
 	if(pSkinClipPlane) pKey2 |= (uint32_t)1 << 21;
+	if(pDitherTransparency) pKey2 |= (uint32_t)1 << 22;
 	
 	pKey3 = (uint64_t)0;
 	if(pDynamicColorTint) pKey3 |= (uint64_t)1 << 0;
@@ -743,6 +748,9 @@ void deoglSkinShaderConfig::DebugGetConfigString(decString &string) const{
 	}
 	if(pSkinClipPlane){
 		string.Append(" skinClpPl");
+	}
+	if(pDitherTransparency){
+		string.Append(" ditherTran");
 	}
 	
 	if(pDynamicColorTint){
@@ -962,6 +970,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=(const deoglSkinShaderCon
 	pLuminanceOnly = config.pLuminanceOnly;
 	pGIMaterial = config.pGIMaterial;
 	pSkinClipPlane = config.pSkinClipPlane;
+	pDitherTransparency = config.pDitherTransparency;
 	
 	pDynamicColorTint = config.pDynamicColorTint;
 	pDynamicColorGamma = config.pDynamicColorGamma;

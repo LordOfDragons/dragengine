@@ -34,6 +34,7 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../rendering/deoglRenderReflection.h"
 #include "../../shaders/deoglBatchedShaderLoading.h"
+#include "../../shadow/deoglShadowMapper.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -664,6 +665,7 @@ void deoglSkinTexturePipelines::pSetShadowProjection(deoglSkinShaderConfig &conf
 	pSetMaskedSolidity(config);
 	pSetSkinClipping(config);
 	pSetTypeShadow(config, cinfo);
+	pSetDitherTransparency(config, cinfo);
 }
 
 void deoglSkinTexturePipelines::pSetShadowProjectionCube(deoglSkinShaderConfig &config,
@@ -740,6 +742,20 @@ void deoglSkinTexturePipelines::pSetSkinClipping(deoglSkinShaderConfig &config){
 	}
 }
 
+void deoglSkinTexturePipelines::pSetDitherTransparency(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
+	config.SetDitherTransparency(!pTexture.GetSolid() &&
+		deoglShadowMapper::UseShadowDither(pTexture.GetRenderThread().GetConfiguration()));
+	if(!config.GetDitherTransparency()){
+		return;
+	}
+	
+	if(HASCHANTEX(ectTransparency)){
+		config.SetTextureTransparency(true);
+	}
+	if(HASCHANTEX(ectSolidity)){
+		config.SetTextureSolidity(true);
+	}
+}
 
 
 void deoglSkinTexturePipelines::pSetTypeGeometry(deoglSkinShaderConfig &config, const ChannelInfo &){

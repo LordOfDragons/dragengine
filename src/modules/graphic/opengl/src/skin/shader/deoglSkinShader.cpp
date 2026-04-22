@@ -1289,6 +1289,12 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin){
 		units[pTextureTargets[ettDepthTest]].EnableSpecial(deoglTexUnitConfig::estPrevDepth,
 			pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest));
 	}
+	
+	// noise
+	if(pTextureTargets[ettNoise] != -1){
+		units[pTextureTargets[ettNoise]].EnableTexture(pRenderThread.GetDefaultTextures().GetNoise(),
+			pRenderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatNearest));
+	}
 }
 
 
@@ -1768,6 +1774,9 @@ void deoglSkinShader::GenerateDefines(deoglShaderDefines &defines){
 	if(pConfig.GetSkinClipPlane()){
 		defines.SetDefines("SKIN_CLIP_PLANE");
 	}
+	if(pConfig.GetDitherTransparency()){
+		defines.SetDefines("WITH_DITHER_TRANSPARENCY");
+	}
 	
 	// dynamic texture property usage definitions
 	if(pConfig.GetDynamicColorTint()){
@@ -2097,19 +2106,23 @@ void deoglSkinShader::UpdateTextureTargets(){
 		pTextureTargets[ettDepthTest] = 19;
 	}
 	
+	if(pConfig.GetDitherTransparency()){
+		pTextureTargets[ettNoise] = 20;
+	}
+	
 	switch(geometryMode){
 	case deoglSkinShaderConfig::egmParticle:
-		pTextureTargets[ettSamples] = 20;
+		pTextureTargets[ettSamples] = 21;
 		break;
 		
 	case deoglSkinShaderConfig::egmPropField:
 	case deoglSkinShaderConfig::egmPropFieldImposter:
-		pTextureTargets[ettSubInstance1] = 20;
-		pTextureTargets[ettSubInstance2] = 21;
+		pTextureTargets[ettSubInstance1] = 21;
+		pTextureTargets[ettSubInstance2] = 22;
 		break;
 		
 	case deoglSkinShaderConfig::egmHeightMap:
-		pTextureTargets[ettHeightMapMask] = 20;
+		pTextureTargets[ettHeightMapMask] = 21;
 		break;
 		
 	default:
