@@ -314,6 +314,15 @@ void deComponent::SetModelAndSkin(deModel *model, deSkin *skin){
 	}
 }
 
+void deComponent::ResetSkinTime(float time){
+	if(pPeerGraphic){
+		pPeerGraphic->ResetSkinTime(time);
+	}
+	if(pPeerAudio){
+		pPeerAudio->ResetSkinTime(time);
+	}
+}
+
 void deComponent::SetOcclusionMesh(deOcclusionMesh *occmesh){
 	if(occmesh == pOcclusionMesh){
 		return;

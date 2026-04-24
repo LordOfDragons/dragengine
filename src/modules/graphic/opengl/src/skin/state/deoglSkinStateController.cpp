@@ -193,14 +193,14 @@ int textureIndex, deoglWorld *world){
 	pHasConstructedProperties = skin->GetConstructedPropertyCount() > 0;
 }
 
-void deoglSkinStateController::ResetTime(){
+void deoglSkinStateController::ResetTime(float time){
 	const int count = pVideoPlayers.GetCount();
 	int i;
 	
 	for(i=0; i< count; i++){
 		deVideoPlayer * const videoPlayer = pVideoPlayers.GetAt(i);
 		if(videoPlayer){
-			videoPlayer->SetPlayPosition(0.0f);
+			videoPlayer->SetPlayPosition(time);
 		}
 	}
 }

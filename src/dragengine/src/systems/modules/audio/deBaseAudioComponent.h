@@ -99,6 +99,12 @@ public:
 	/** \brief Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
 	
+	/**
+	 * \brief Reset skin time.
+	 * \version 1.32
+	 */
+	virtual void ResetSkinTime(float time);
+	
 	
 	
 	/** \brief Decal has been added. */

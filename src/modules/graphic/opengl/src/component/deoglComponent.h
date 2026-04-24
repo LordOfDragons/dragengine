@@ -97,6 +97,9 @@ public:
 	bool pDecalRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
+	bool pResetSkinTime;
+	float pResetSkinTimeTime;
+	
 	decTLinkedList<deoglComponent>::Element pLLSyncWorld;
 	
 	
@@ -243,6 +246,9 @@ public:
 	
 	/** Dynamic skin changed. */
 	void DynamicSkinChanged() override;
+		
+	/** \brief Reset skin time. */
+	void ResetSkinTime(float time) override;
 	
 	
 	

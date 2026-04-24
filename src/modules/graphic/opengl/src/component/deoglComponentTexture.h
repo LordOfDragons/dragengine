@@ -103,6 +103,9 @@ public:
 	/** Init skin state. */
 	void InitSkinState();
 	
+	/** Reset time. */
+	void ResetSkinTime(float time);
+	
 	/** Advance time. */
 	void AdvanceTime(float timeStep);
 	

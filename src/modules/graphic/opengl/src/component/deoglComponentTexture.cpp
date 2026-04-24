@@ -144,11 +144,16 @@ void deoglComponentTexture::InitSkinState(){
 	}
 }
 
-void deoglComponentTexture::AdvanceTime(float timeStep){
-	if(!pRTexture->GetSkinState()){
-		return;
+void deoglComponentTexture::ResetSkinTime(float time){
+	if(pRTexture->GetSkinState()){
+		pSkinStateController->ResetTime(time);
 	}
-	pSkinStateController->AdvanceTime(timeStep);
+}
+
+void deoglComponentTexture::AdvanceTime(float timeStep){
+	if(pRTexture->GetSkinState()){
+		pSkinStateController->AdvanceTime(timeStep);
+	}
 }
 
 void deoglComponentTexture::ClearSkinStateController(){

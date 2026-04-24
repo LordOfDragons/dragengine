@@ -82,7 +82,7 @@ struct sCompNatDat{
 // native functions
 /////////////////////
 
-// public func new()
+// func new()
 deClassComponent::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCom,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -94,7 +94,7 @@ void deClassComponent::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.component = ds.GetGameEngine()->GetComponentManager()->CreateComponent();
 }
 
-// public func new( Model model, Skin skin )
+// func new( Model model, Skin skin )
 deClassComponent::nfNew2::nfNew2(const sInitData &init) : dsFunction(init.clsCom,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsMdl); // model
@@ -110,7 +110,7 @@ void deClassComponent::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.component = ds.GetGameEngine()->GetComponentManager()->CreateComponent(model, skin);
 }
 
-// public func destructor()
+// func destructor()
 deClassComponent::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsCom,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -122,7 +122,7 @@ void deClassComponent::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 	dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).~sCompNatDat();
 }
 
-// public func Model getModel()
+// func Model getModel()
 deClassComponent::nfGetModel::nfGetModel(const sInitData &init) : dsFunction(init.clsCom,
 "getModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMdl){
 }
@@ -132,7 +132,7 @@ void deClassComponent::nfGetModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	clsComp->GetClassModel()->PushModel(rt, component->GetModel());
 }
 
-// public func Rig getRig()
+// func Rig getRig()
 deClassComponent::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.clsCom,
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
@@ -146,7 +146,7 @@ void deClassComponent::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// public func Skin getSkin()
+// func Skin getSkin()
 deClassComponent::nfGetSkin::nfGetSkin(const sInitData &init) : dsFunction(init.clsCom,
 "getSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
@@ -156,7 +156,7 @@ void deClassComponent::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	clsComp->GetClassSkin()->PushSkin(rt, component->GetSkin());
 }
 
-// public func DVector getPosition()
+// func DVector getPosition()
 deClassComponent::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunction(init.clsCom,
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
@@ -167,7 +167,7 @@ void deClassComponent::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself
 	clsComp->GetClassDVector()->PushDVector(rt, component->GetPosition());
 }
 
-// public func Quaternion getOrientation()
+// func Quaternion getOrientation()
 deClassComponent::nfGetOrientation::nfGetOrientation(const sInitData &init) : dsFunction(init.clsCom,
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
@@ -178,7 +178,7 @@ void deClassComponent::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *mys
 	clsComp->GetClassQuaternion()->PushQuaternion(rt, component->GetOrientation());
 }
 
-// public func Vector getScaling()
+// func Vector getScaling()
 deClassComponent::nfGetScaling::nfGetScaling(const sInitData &init) : dsFunction(init.clsCom,
 "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
@@ -188,7 +188,7 @@ void deClassComponent::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself)
 	clsComp->GetScriptModule()->PushVector(rt, component->GetScaling());
 }
 
-// public func DMatrix getMatrix()
+// func DMatrix getMatrix()
 deClassComponent::nfGetMatrix::nfGetMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "getMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMat){
 }
@@ -198,7 +198,7 @@ void deClassComponent::nfGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	clsDMatrix.PushDMatrix(rt, component.GetMatrix());
 }
 
-// public func DMatrix getInverseMatrix()
+// func DMatrix getInverseMatrix()
 deClassComponent::nfGetInverseMatrix::nfGetInverseMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "getInverseMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMat){
 }
@@ -208,7 +208,7 @@ void deClassComponent::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *m
 	clsDMatrix.PushDMatrix(rt, component.GetInverseMatrix());
 }
 
-// 	public func bool getVisible()
+// 	func bool getVisible()
 deClassComponent::nfGetVisible::nfGetVisible(const sInitData &init) : dsFunction(init.clsCom,
 "getVisible", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
@@ -219,7 +219,7 @@ void deClassComponent::nfGetVisible::RunFunction(dsRunTime *rt, dsValue *myself)
 
 
 
-// public func OcclusionMesh getOcclusionMesh()
+// func OcclusionMesh getOcclusionMesh()
 deClassComponent::nfGetOcclusionMesh::nfGetOcclusionMesh(const sInitData &init) : dsFunction(init.clsCom,
 "getOcclusionMesh", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsOccM){
 }
@@ -230,7 +230,7 @@ void deClassComponent::nfGetOcclusionMesh::RunFunction(dsRunTime *rt, dsValue *m
 	clsOccM.PushOcclusionMesh(rt, component.GetOcclusionMesh());
 }
 
-// public func void setOcclusionMesh( OcclusionMesh occlusionMesh )
+// func void setOcclusionMesh( OcclusionMesh occlusionMesh )
 deClassComponent::nfSetOcclusionMesh::nfSetOcclusionMesh(const sInitData &init) : dsFunction(init.clsCom,
 "setOcclusionMesh", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsOccM); // occlusionMesh
@@ -244,7 +244,7 @@ void deClassComponent::nfSetOcclusionMesh::RunFunction(dsRunTime *rt, dsValue *m
 
 
 
-// public func Model getAudioModel()
+// func Model getAudioModel()
 deClassComponent::nfGetAudioModel::nfGetAudioModel(const sInitData &init) :
 dsFunction(init.clsCom, "getAudioModel", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsMdl){
@@ -256,7 +256,7 @@ void deClassComponent::nfGetAudioModel::RunFunction(dsRunTime *rt, dsValue *myse
 	clsModel.PushModel(rt, component.GetAudioModel());
 }
 
-// public func void setAudioModel( Model model )
+// func void setAudioModel( Model model )
 deClassComponent::nfSetAudioModel::nfSetAudioModel(const sInitData &init) :
 dsFunction(init.clsCom, "setAudioModel", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -271,7 +271,7 @@ void deClassComponent::nfSetAudioModel::RunFunction(dsRunTime *rt, dsValue *myse
 
 
 
-// public func void setModel( Model model )
+// func void setModel( Model model )
 deClassComponent::nfSetModel::nfSetModel(const sInitData &init) : dsFunction(init.clsCom,
 "setModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsMdl); // model
@@ -283,7 +283,7 @@ void deClassComponent::nfSetModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	component->SetModel(clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject()));
 }
 
-// public func void setModelKeepTextures( Model model )
+// func void setModelKeepTextures( Model model )
 deClassComponent::nfSetModelKeepTextures::nfSetModelKeepTextures(const sInitData &init) : dsFunction(init.clsCom,
 "setModelKeepTextures", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsMdl); // model
@@ -295,7 +295,7 @@ void deClassComponent::nfSetModelKeepTextures::RunFunction(dsRunTime *rt, dsValu
 	component.SetModelKeepTextures(ds.GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject()));
 }
 
-// public func void setSkin( Skin skin )
+// func void setSkin( Skin skin )
 deClassComponent::nfSetSkin::nfSetSkin(const sInitData &init) : dsFunction(init.clsCom,
 "setSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkin); // skin
@@ -307,7 +307,7 @@ void deClassComponent::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	component->SetSkin(clsComp->GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject()));
 }
 
-// public func void setRig( Rig rig )
+// func void setRig( Rig rig )
 deClassComponent::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.clsCom,
 "setRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsRig); // rig
@@ -319,7 +319,7 @@ void deClassComponent::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	component->SetRig(clsComp->GetClassRig()->GetRig(rt->GetValue(0)->GetRealObject()));
 }
 
-// public func void setModelAndSkin( Model model, Skin skin )
+// func void setModelAndSkin( Model model, Skin skin )
 deClassComponent::nfSetModelAndSkin::nfSetModelAndSkin(const sInitData &init) : dsFunction(init.clsCom,
 "setModelAndSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsMdl); // model
@@ -334,7 +334,17 @@ void deClassComponent::nfSetModelAndSkin::RunFunction(dsRunTime *rt, dsValue *my
 	component->SetModelAndSkin(model, skin);
 }
 
-// public func void setPosition( DVector position )
+// func void resetSkinTime(float time)
+deClassComponent::nfResetSkinTime::nfResetSkinTime(const sInitData &init) :
+dsFunction(init.clsCom, "resetSkinTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // time
+}
+void deClassComponent::nfResetSkinTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	deComponent &component = dedsGetNativeData<sCompNatDat>(p_GetNativeData(myself)).component;
+	component.ResetSkinTime(rt->GetValue(0)->GetFloat());
+}
+
+// func void setPosition( DVector position )
 deClassComponent::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunction(init.clsCom,
 "setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDVec); // position
@@ -349,7 +359,7 @@ void deClassComponent::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself
 	component->SetPosition(clsComp->GetClassDVector()->GetDVector(obj));
 }
 
-// public func void setOrientation( Quaternion orientation )
+// func void setOrientation( Quaternion orientation )
 deClassComponent::nfSetOrientation::nfSetOrientation(const sInitData &init) : dsFunction(init.clsCom,
 "setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuat); // orientation
@@ -364,7 +374,7 @@ void deClassComponent::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *mys
 	component->SetOrientation(clsComp->GetClassQuaternion()->GetQuaternion(obj));
 }
 
-// public func void setScaling( Vector scaling )
+// func void setScaling( Vector scaling )
 deClassComponent::nfSetScaling::nfSetScaling(const sInitData &init) : dsFunction(init.clsCom,
 "setScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // scaling
@@ -377,7 +387,7 @@ void deClassComponent::nfSetScaling::RunFunction(dsRunTime *rt, dsValue *myself)
 	component->SetScaling(clsComp->GetScriptModule()->GetVector(obj));
 }
 
-// public func void setVisible( bool visible )
+// func void setVisible( bool visible )
 deClassComponent::nfSetVisible::nfSetVisible(const sInitData &init) : dsFunction(init.clsCom,
 "setVisible", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // visible
@@ -400,7 +410,7 @@ void deClassComponent::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *mys
 }
 
 
-// public func LayerMask getLayerMask()
+// func LayerMask getLayerMask()
 deClassComponent::nfGetLayerMask::nfGetLayerMask(const sInitData &init) : dsFunction(init.clsCom,
 "getLayerMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
@@ -411,7 +421,7 @@ void deClassComponent::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *mysel
 	ds.GetClassLayerMask()->PushLayerMask(rt, component.GetLayerMask());
 }
 
-// public func void setLayerMask( LayerMask layerMask )
+// func void setLayerMask( LayerMask layerMask )
 deClassComponent::nfSetLayerMask::nfSetLayerMask(const sInitData &init) : dsFunction(init.clsCom,
 "setLayerMask", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLayerMask); // layerMask
@@ -425,7 +435,7 @@ void deClassComponent::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
-// public func DynamicSkin getDynamicSkin()
+// func DynamicSkin getDynamicSkin()
 deClassComponent::nfGetDynamicSkin::nfGetDynamicSkin(const sInitData &init) : dsFunction(init.clsCom,
 "getDynamicSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDSkin){
 }
@@ -437,7 +447,7 @@ void deClassComponent::nfGetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *mys
 	clsDSkin.PushDynamicSkin(rt, component.GetDynamicSkin());
 }
 
-// public func void setDynamicSkin( DynamicSkin dynamicSkin )
+// func void setDynamicSkin( DynamicSkin dynamicSkin )
 deClassComponent::nfSetDynamicSkin::nfSetDynamicSkin(const sInitData &init) : dsFunction(init.clsCom,
 "setDynamicSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDSkin); // dynamicSkin
@@ -453,7 +463,7 @@ void deClassComponent::nfSetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *mys
 
 
 
-// public func int getBoneCount()
+// func int getBoneCount()
 deClassComponent::nfGetBoneCount::nfGetBoneCount(const sInitData &init) : dsFunction(init.clsCom,
 "getBoneCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -462,7 +472,7 @@ void deClassComponent::nfGetBoneCount::RunFunction(dsRunTime *rt, dsValue *mysel
 	rt->PushInt(component.GetBones().GetCount());
 }
 
-// public func int indexOfBoneNamed( String name )
+// func int indexOfBoneNamed( String name )
 deClassComponent::nfIndexOfBoneNamed::nfIndexOfBoneNamed(const sInitData &init) : dsFunction(init.clsCom,
 "indexOfBoneNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
@@ -480,7 +490,7 @@ void deClassComponent::nfIndexOfBoneNamed::RunFunction(dsRunTime *rt, dsValue *m
 	}
 }
 
-// public func String boneGetName( int index )
+// func String boneGetName( int index )
 deClassComponent::nfBoneGetName::nfBoneGetName(const sInitData &init) : dsFunction(init.clsCom,
 "boneGetName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // bone
@@ -497,7 +507,7 @@ void deClassComponent::nfBoneGetName::RunFunction(dsRunTime *rt, dsValue *myself
 	rt->PushString(rig->GetBoneAt(index)->GetName());
 }
 
-// public func Vector boneGetPosition( int bone )
+// func Vector boneGetPosition( int bone )
 deClassComponent::nfBoneGetPosition::nfBoneGetPosition(const sInitData &init) : dsFunction(init.clsCom,
 "boneGetPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsInt); // bone
@@ -512,7 +522,7 @@ void deClassComponent::nfBoneGetPosition::RunFunction(dsRunTime *rt, dsValue *my
 	ds.GetClassVector()->PushVector(rt, bone.GetPosition());
 }
 
-// public func void boneSetPosition( int bone, Vector position )
+// func void boneSetPosition( int bone, Vector position )
 deClassComponent::nfBoneSetPosition::nfBoneSetPosition(const sInitData &init) : dsFunction(init.clsCom,
 "boneSetPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // bone
@@ -529,7 +539,7 @@ void deClassComponent::nfBoneSetPosition::RunFunction(dsRunTime *rt, dsValue *my
 	component.InvalidateBones();
 }
 
-// public func Quaternion boneGetRotation( int bone )
+// func Quaternion boneGetRotation( int bone )
 deClassComponent::nfBoneGetRotation::nfBoneGetRotation(const sInitData &init) :
 dsFunction(init.clsCom, "boneGetRotation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
@@ -545,7 +555,7 @@ void deClassComponent::nfBoneGetRotation::RunFunction(dsRunTime *rt, dsValue *my
 	ds.GetClassQuaternion()->PushQuaternion(rt, bone.GetRotation());
 }
 
-// public func void boneSetRotation( int index, Quaternion rotation )
+// func void boneSetRotation( int index, Quaternion rotation )
 deClassComponent::nfBoneSetRotation::nfBoneSetRotation(const sInitData &init) :
 dsFunction(init.clsCom, "boneSetRotation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -595,7 +605,7 @@ void deClassComponent::nfBoneSetScale::RunFunction(dsRunTime *rt, dsValue *mysel
 	component.InvalidateBones();
 }
 
-// public func Matrix boneGetMatrix( int bone )
+// func Matrix boneGetMatrix( int bone )
 deClassComponent::nfBoneGetMatrix::nfBoneGetMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "boneGetMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 	p_AddParameter(init.clsInt); // bone
@@ -610,7 +620,7 @@ void deClassComponent::nfBoneGetMatrix::RunFunction(dsRunTime *rt, dsValue *myse
 	ds.GetClassMatrix()->PushMatrix(rt, bone.GetMatrix());
 }
 
-// public func Matrix boneGetInverseMatrix( int bone )
+// func Matrix boneGetInverseMatrix( int bone )
 deClassComponent::nfBoneGetInverseMatrix::nfBoneGetInverseMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "boneGetInverseMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 	p_AddParameter(init.clsInt); // bone
@@ -625,7 +635,7 @@ void deClassComponent::nfBoneGetInverseMatrix::RunFunction(dsRunTime *rt, dsValu
 	ds.GetClassMatrix()->PushMatrix(rt, bone.GetInverseMatrix());
 }
 
-// public func Matrix getBoneOriginMatrix( int bone )
+// func Matrix getBoneOriginMatrix( int bone )
 deClassComponent::nfGetBoneOriginMatrix::nfGetBoneOriginMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "getBoneOriginMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 	p_AddParameter(init.clsInt); // bone
@@ -647,7 +657,7 @@ void deClassComponent::nfGetBoneOriginMatrix::RunFunction(dsRunTime *rt, dsValue
 	}
 }
 
-// public func Matrix getBoneOriginInverseMatrix( int bone )
+// func Matrix getBoneOriginInverseMatrix( int bone )
 deClassComponent::nfGetBoneOriginInverseMatrix::nfGetBoneOriginInverseMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "getBoneOriginInverseMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 	p_AddParameter(init.clsInt); // bone
@@ -670,7 +680,7 @@ void deClassComponent::nfGetBoneOriginInverseMatrix::RunFunction(dsRunTime *rt, 
 	}
 }
 
-// public func Vector getBonePosition( String boneName )
+// func Vector getBonePosition( String boneName )
 deClassComponent::nfGetBonePosition::nfGetBonePosition(const sInitData &init) : dsFunction(init.clsCom,
 "getBonePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 	p_AddParameter(init.clsStr); // boneName
@@ -694,7 +704,7 @@ void deClassComponent::nfGetBonePosition::RunFunction(dsRunTime *rt, dsValue *my
 	clsComp.GetScriptModule()->PushVector(rt, decVector());
 }
 
-// public func Quaternion getBoneRotation( String boneName )
+// func Quaternion getBoneRotation( String boneName )
 deClassComponent::nfGetBoneRotation::nfGetBoneRotation(const sInitData &init) : dsFunction(init.clsCom,
 "getBoneRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 	p_AddParameter(init.clsStr); // boneName
@@ -718,7 +728,7 @@ void deClassComponent::nfGetBoneRotation::RunFunction(dsRunTime *rt, dsValue *my
 	ds.GetClassQuaternion()->PushQuaternion(rt, decQuaternion());
 }
 
-// public func Matrix getBoneMatrix( String boneName )
+// func Matrix getBoneMatrix( String boneName )
 deClassComponent::nfGetBoneMatrix::nfGetBoneMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "getBoneMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 	p_AddParameter(init.clsStr); // boneName
@@ -742,7 +752,7 @@ void deClassComponent::nfGetBoneMatrix::RunFunction(dsRunTime *rt, dsValue *myse
 	clsMatrix.PushMatrix(rt, decMatrix());
 }
 
-// public func Matrix getBoneInverseMatrix( String boneName )
+// func Matrix getBoneInverseMatrix( String boneName )
 deClassComponent::nfGetBoneInverseMatrix::nfGetBoneInverseMatrix(const sInitData &init) : dsFunction(init.clsCom,
 "getBoneInverseMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat){
 	p_AddParameter(init.clsStr); // boneName
@@ -766,7 +776,7 @@ void deClassComponent::nfGetBoneInverseMatrix::RunFunction(dsRunTime *rt, dsValu
 	clsMatrix.PushMatrix(rt, decMatrix());
 }
 
-// public func void setBonePosition( String boneName, Vector position )
+// func void setBonePosition( String boneName, Vector position )
 deClassComponent::nfSetBonePosition::nfSetBonePosition(const sInitData &init) :
 dsFunction(init.clsCom, "setBonePosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -791,7 +801,7 @@ void deClassComponent::nfSetBonePosition::RunFunction(dsRunTime *rt, dsValue *my
 	}
 }
 
-// public func void setBoneRotation( String boneName, Quaternion rotation )
+// func void setBoneRotation( String boneName, Quaternion rotation )
 deClassComponent::nfSetBoneRotation::nfSetBoneRotation(const sInitData &init) : dsFunction(init.clsCom,
 "setBoneRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // boneName
@@ -817,7 +827,7 @@ void deClassComponent::nfSetBoneRotation::RunFunction(dsRunTime *rt, dsValue *my
 
 
 
-// public func int getVertexPositionSetCount()
+// func int getVertexPositionSetCount()
 deClassComponent::nfGetVertexPositionSetCount::nfGetVertexPositionSetCount(const sInitData &init) :
 dsFunction(init.clsCom, "getVertexPositionSetCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -826,7 +836,7 @@ void deClassComponent::nfGetVertexPositionSetCount::RunFunction(dsRunTime *rt, d
 	rt->PushInt(component.GetVertexPositionSetWeights().GetCount());
 }
 
-// public func int indexOfVertexPositionSetNamed(String name)
+// func int indexOfVertexPositionSetNamed(String name)
 deClassComponent::nfIndexOfVertexPositionSetNamed::nfIndexOfVertexPositionSetNamed(const sInitData &init) :
 dsFunction(init.clsCom, "indexOfVertexPositionSetNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
@@ -839,7 +849,7 @@ void deClassComponent::nfIndexOfVertexPositionSetNamed::RunFunction(dsRunTime *r
 	rt->PushInt(model ? model->IndexOfVertexPositionSetNamed(name) : -1);
 }
 
-// public func String vertexPositionSetGetNameAt(int index)
+// func String vertexPositionSetGetNameAt(int index)
 deClassComponent::nfVertexPositionSetGetNameAt::nfVertexPositionSetGetNameAt(const sInitData &init) : dsFunction(init.clsCom,
 "vertexPositionSetGetNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // bone
@@ -856,7 +866,7 @@ void deClassComponent::nfVertexPositionSetGetNameAt::RunFunction(dsRunTime *rt, 
 	rt->PushString(model->GetVertexPositionSetAt(index)->GetName());
 }
 
-// public func float vertexPositionSetGetWeightAt(int index)
+// func float vertexPositionSetGetWeightAt(int index)
 deClassComponent::nfVertexPositionSetGetWeightAt::nfVertexPositionSetGetWeightAt(const sInitData &init) :
 dsFunction(init.clsCom, "vertexPositionSetGetWeightAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsInt); // index
@@ -866,7 +876,7 @@ void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction(dsRunTime *rt
 	rt->PushFloat(component.GetVertexPositionSetWeights()[rt->GetValue(0)->GetInt()]);
 }
 
-// public func float vertexPositionSetGetWeightNamed(String name)
+// func float vertexPositionSetGetWeightNamed(String name)
 deClassComponent::nfVertexPositionSetGetWeightNamed::nfVertexPositionSetGetWeightNamed(const sInitData &init) :
 dsFunction(init.clsCom, "vertexPositionSetGetWeightNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 	p_AddParameter(init.clsStr); // name
@@ -880,7 +890,7 @@ void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction(dsRunTime 
 		component.GetModel()->IndexOfVertexPositionSetNamed(rt->GetValue(0)->GetString())]);
 }
 
-// public func void vertexPositionSetSetWeightAt(int index, float weight)
+// func void vertexPositionSetSetWeightAt(int index, float weight)
 deClassComponent::nfVertexPositionSetSetWeightAt::nfVertexPositionSetSetWeightAt(const sInitData &init) :
 dsFunction(init.clsCom, "vertexPositionSetSetWeightAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
@@ -892,7 +902,7 @@ void deClassComponent::nfVertexPositionSetSetWeightAt::RunFunction(dsRunTime *rt
 	component.InvalidateMesh();
 }
 
-// public func void vertexPositionSetSetWeightNamed(String name, float weight)
+// func void vertexPositionSetSetWeightNamed(String name, float weight)
 deClassComponent::nfVertexPositionSetSetWeightNamed::nfVertexPositionSetSetWeightNamed(const sInitData &init) :
 dsFunction(init.clsCom, "vertexPositionSetSetWeightNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // name
@@ -911,7 +921,7 @@ void deClassComponent::nfVertexPositionSetSetWeightNamed::RunFunction(dsRunTime 
 
 
 
-// public func void updateBones()
+// func void updateBones()
 deClassComponent::nfUpdateBones::nfUpdateBones(const sInitData &init) : dsFunction(init.clsCom,
 "updateBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -920,7 +930,7 @@ void deClassComponent::nfUpdateBones::RunFunction(dsRunTime *rt, dsValue *myself
 	component->PrepareBones();
 }
 
-// public func void copyBonesToComponent( Component component )
+// func void copyBonesToComponent( Component component )
 deClassComponent::nfCopyBonesToComponent::nfCopyBonesToComponent(const sInitData &init) : dsFunction(init.clsCom,
 "copyBonesToComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCom); // component
@@ -942,7 +952,7 @@ void deClassComponent::nfCopyBonesToComponent::RunFunction(dsRunTime *rt, dsValu
 // Textures
 /////////////
 
-// public func int indexOfTextureNamed( String name )
+// func int indexOfTextureNamed( String name )
 deClassComponent::nfIndexOfTextureNamed::nfIndexOfTextureNamed(const sInitData &init) : dsFunction(init.clsCom,
 "indexOfTextureNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
@@ -954,7 +964,7 @@ void deClassComponent::nfIndexOfTextureNamed::RunFunction(dsRunTime *rt, dsValue
 	rt->PushInt(component.GetModel() ? component.GetModel()->IndexOfTextureNamed(name) : -1);
 }
 
-// public func int indexOfTextureClosestTo( Vector position, float radius )
+// func int indexOfTextureClosestTo( Vector position, float radius )
 deClassComponent::nfIndexOfTextureClosedTo::nfIndexOfTextureClosedTo(const sInitData &init) : dsFunction(init.clsCom,
 "indexOfTextureClosestTo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsVec); // position
@@ -969,7 +979,7 @@ void deClassComponent::nfIndexOfTextureClosedTo::RunFunction(dsRunTime *rt, dsVa
 	rt->PushInt(component.IndexOfTextureClosestTo(vector, radius));
 }
 
-// public func int getTextureCount()
+// func int getTextureCount()
 deClassComponent::nfGetTextureCount::nfGetTextureCount(const sInitData &init) : dsFunction(init.clsCom,
 "getTextureCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -978,7 +988,7 @@ void deClassComponent::nfGetTextureCount::RunFunction(dsRunTime *rt, dsValue *my
 	rt->PushInt(component.GetTextureCount());
 }
 
-// public func String getTextureNameAt(int index)
+// func String getTextureNameAt(int index)
 deClassComponent::nfGetTextureNameAt::nfGetTextureNameAt(const sInitData &init) :
 dsFunction(init.clsCom, "getTextureNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
@@ -995,7 +1005,7 @@ void deClassComponent::nfGetTextureNameAt::RunFunction(dsRunTime *rt, dsValue *m
 	rt->PushString(model->GetTextureAt(index)->GetName());
 }
 
-// public func Skin getTextureSkinAt( int index )
+// func Skin getTextureSkinAt( int index )
 deClassComponent::nfGetTextureSkinAt::nfGetTextureSkinAt(const sInitData &init) : dsFunction(init.clsCom,
 "getTextureSkinAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 	p_AddParameter(init.clsInt); // index
@@ -1008,7 +1018,7 @@ void deClassComponent::nfGetTextureSkinAt::RunFunction(dsRunTime *rt, dsValue *m
 	ds.GetClassSkin()->PushSkin(rt, component.GetTextureAt(index).GetSkin());
 }
 
-// public func void setTextureSkinAt( int index, Skin skin, int skinTexture )
+// func void setTextureSkinAt( int index, Skin skin, int skinTexture )
 deClassComponent::nfSetTextureSkinAt::nfSetTextureSkinAt(const sInitData &init) : dsFunction(init.clsCom,
 "setTextureSkinAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
@@ -1030,7 +1040,7 @@ void deClassComponent::nfSetTextureSkinAt::RunFunction(dsRunTime *rt, dsValue *m
 	component.NotifyTextureChanged(index);
 }
 
-// public func int getTextureTextureAt( int index )
+// func int getTextureTextureAt( int index )
 deClassComponent::nfGetTextureTextureAt::nfGetTextureTextureAt(const sInitData &init) :
 dsFunction(init.clsCom, "getTextureTextureAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -1043,7 +1053,7 @@ void deClassComponent::nfGetTextureTextureAt::RunFunction(dsRunTime *rt, dsValue
 	rt->PushInt(component.GetTextureAt(index).GetTexture());
 }
 
-// public func TexMatrix2 getTextureTransformAt( int index )
+// func TexMatrix2 getTextureTransformAt( int index )
 deClassComponent::nfGetTextureTransformAt::nfGetTextureTransformAt(const sInitData &init): dsFunction(init.clsCom,
 "getTextureTransformAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTexMat2){
 	p_AddParameter(init.clsInt); // index
@@ -1056,7 +1066,7 @@ void deClassComponent::nfGetTextureTransformAt::RunFunction(dsRunTime *rt, dsVal
 	ds.GetClassTexMatrix2()->PushTexMatrix(rt, component.GetTextureAt(index).GetTransform());
 }
 
-// public func void setTextureTransformAt( int index, TexMatrix2 transform )
+// func void setTextureTransformAt( int index, TexMatrix2 transform )
 deClassComponent::nfSetTextureTransformAt::nfSetTextureTransformAt(const sInitData &init): dsFunction(init.clsCom,
 "setTextureTransformAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
@@ -1074,7 +1084,7 @@ void deClassComponent::nfSetTextureTransformAt::RunFunction(dsRunTime *rt, dsVal
 	component.NotifyTextureChanged(index);
 }
 
-// public func DynamicSkin getTextureDynamicSkinAt( int index )
+// func DynamicSkin getTextureDynamicSkinAt( int index )
 deClassComponent::nfGetTextureDynamicSkinAt::nfGetTextureDynamicSkinAt(const sInitData &init) : dsFunction(init.clsCom,
 "getTextureDynamicSkinAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDSkin){
 	p_AddParameter(init.clsInt); // index
@@ -1087,7 +1097,7 @@ void deClassComponent::nfGetTextureDynamicSkinAt::RunFunction(dsRunTime *rt, dsV
 	ds.GetClassDynamicSkin()->PushDynamicSkin(rt, component.GetTextureAt(index).GetDynamicSkin());
 }
 
-// public func void setTextureDynamicSkinAt( int index, DynamicSkin dynamicSkin )
+// func void setTextureDynamicSkinAt( int index, DynamicSkin dynamicSkin )
 deClassComponent::nfSetTextureDynamicSkinAt::nfSetTextureDynamicSkinAt(const sInitData &init) : dsFunction(init.clsCom,
 "setTextureDynamicSkinAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // index
@@ -1110,7 +1120,7 @@ void deClassComponent::nfSetTextureDynamicSkinAt::RunFunction(dsRunTime *rt, dsV
 // Decals
 ///////////
 
-// public func void addDecal( Decal decal )
+// func void addDecal( Decal decal )
 deClassComponent::nfAddDecal::nfAddDecal(const sInitData &init) :
 dsFunction(init.clsCom, "addDecal", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1124,7 +1134,7 @@ void deClassComponent::nfAddDecal::RunFunction(dsRunTime *rt, dsValue *myself){
 	component.AddDecal(decal);
 }
 
-// public func void removeDecal( Decal decal )
+// func void removeDecal( Decal decal )
 deClassComponent::nfRemoveDecal::nfRemoveDecal(const sInitData &init) :
 dsFunction(init.clsCom, "removeDecal", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1138,7 +1148,7 @@ void deClassComponent::nfRemoveDecal::RunFunction(dsRunTime *rt, dsValue *myself
 	component.RemoveDecal(decal);
 }
 
-// public func void removeAllDecals()
+// func void removeAllDecals()
 deClassComponent::nfRemoveAllDecals::nfRemoveAllDecals(const sInitData &init) :
 dsFunction(init.clsCom, "removeAllDecals", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1148,7 +1158,7 @@ void deClassComponent::nfRemoveAllDecals::RunFunction(dsRunTime *rt, dsValue *my
 	component.RemoveAllDecals();
 }
 
-// public func int getDecalCount()
+// func int getDecalCount()
 deClassComponent::nfGetDecalCount::nfGetDecalCount(const sInitData &init) :
 dsFunction(init.clsCom, "getDecalCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -1158,7 +1168,7 @@ void deClassComponent::nfGetDecalCount::RunFunction(dsRunTime *rt, dsValue *myse
 	rt->PushInt(component.GetDecalCount());
 }
 
-// public func void forEachDecal( Block ablock )
+// func void forEachDecal( Block ablock )
 deClassComponent::nfForEachDecal::nfForEachDecal(const sInitData &init) :
 dsFunction(init.clsCom, "forEachDecal", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1184,7 +1194,7 @@ void deClassComponent::nfForEachDecal::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
-// public func int hashCode()
+// func int hashCode()
 deClassComponent::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsCom, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -1195,7 +1205,7 @@ void deClassComponent::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt((int)(intptr_t)component);
 }
 
-// public func bool equals( Object obj )
+// func bool equals( Object obj )
 deClassComponent::nfEquals::nfEquals(const sInitData &init) :
 dsFunction(init.clsCom, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // obj
@@ -1217,7 +1227,7 @@ void deClassComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 // Hints
 //////////
 
-// public func ComponentHintMovement getHintMovement()
+// func ComponentHintMovement getHintMovement()
 deClassComponent::nfGetHintMovement::nfGetHintMovement(const sInitData &init) :
 dsFunction(init.clsCom, "getHintMovement", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsComponentHintMovement){
@@ -1228,7 +1238,7 @@ void deClassComponent::nfGetHintMovement::RunFunction(dsRunTime *rt, dsValue *my
 		->GetVariable(component.GetHintMovement())->GetStaticValue());
 }
 
-// public func void setHintMovement( ComponentHintMovement hint )
+// func void setHintMovement( ComponentHintMovement hint )
 deClassComponent::nfSetHintMovement::nfSetHintMovement(const sInitData &init) :
 dsFunction(init.clsCom, "setHintMovement", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1245,7 +1255,7 @@ void deClassComponent::nfSetHintMovement::RunFunction(dsRunTime *rt, dsValue *my
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
-// public func bool getEnableGI()
+// func bool getEnableGI()
 deClassComponent::nfGetEnableGI::nfGetEnableGI(const sInitData &init) :
 dsFunction(init.clsCom, "getEnableGI", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
@@ -1255,7 +1265,7 @@ void deClassComponent::nfGetEnableGI::RunFunction(dsRunTime *rt, dsValue *myself
 	rt->PushBool(component.GetEnableGI());
 }
 
-// public func void setEnableGI( bool enable )
+// func void setEnableGI( bool enable )
 deClassComponent::nfSetEnableGI::nfSetEnableGI(const sInitData &init) :
 dsFunction(init.clsCom, "setEnableGI", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1266,7 +1276,7 @@ void deClassComponent::nfSetEnableGI::RunFunction(dsRunTime *rt, dsValue *myself
 	component.SetEnableGI(rt->GetValue(0)->GetBool());
 }
 
-// public func int getHintGIImportance()
+// func int getHintGIImportance()
 deClassComponent::nfGetHintGIImportance::nfGetHintGIImportance(const sInitData &init) :
 dsFunction(init.clsCom, "getHintGIImportance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -1276,7 +1286,7 @@ void deClassComponent::nfGetHintGIImportance::RunFunction(dsRunTime *rt, dsValue
 	rt->PushInt(component.GetHintGIImportance());
 }
 
-// public func void setHintGIImportance( int importance )
+// func void setHintGIImportance( int importance )
 deClassComponent::nfSetHintGIImportance::nfSetHintGIImportance(const sInitData &init) :
 dsFunction(init.clsCom, "setHintGIImportance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -1429,6 +1439,7 @@ void deClassComponent::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfSetSkin(init));
 	AddFunction(new nfSetRig(init));
 	AddFunction(new nfSetModelAndSkin(init));
+	AddFunction(new nfResetSkinTime(init));
 	AddFunction(new nfSetPosition(init));
 	AddFunction(new nfSetOrientation(init));
 	AddFunction(new nfSetScaling(init));

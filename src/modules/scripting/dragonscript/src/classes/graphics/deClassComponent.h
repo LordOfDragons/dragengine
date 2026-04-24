@@ -154,6 +154,7 @@ private:
 	DEF_NATFUNC(nfSetSkin);
 	DEF_NATFUNC(nfSetRig);
 	DEF_NATFUNC(nfSetModelAndSkin);
+	DEF_NATFUNC(nfResetSkinTime);
 	DEF_NATFUNC(nfGetOcclusionMesh);
 	DEF_NATFUNC(nfSetOcclusionMesh);
 	DEF_NATFUNC(nfGetAudioModel);
