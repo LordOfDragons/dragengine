@@ -93,6 +93,7 @@
 #ifdef OS_WEBWASM
 #include <emscripten/html5.h>
 #include <emscripten/threading.h>
+#include <dragengine/app/deOSWebWasm.h>
 #endif
 
 

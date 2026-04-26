@@ -36,6 +36,7 @@
 #include "../../deGraphicOpenGl.h"
 #include "../../extensions/wasmfix.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
