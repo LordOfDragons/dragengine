@@ -383,6 +383,8 @@ void deoglRTCBUnixX11EGL::pChooseVisual(){
 	if(!pVisInfo){
 		DETHROW_INFO(deeInvalidAction, "Failed to find XVisualInfo for EGL config");
 	}
+	
+	pChooseConfig();
 }
 
 void deoglRTCBUnixX11EGL::pCreateContext(){

@@ -63,15 +63,13 @@ pAppActivated(true)
 {
 #ifdef OS_UNIX_X11
 #	ifdef BACKEND_OPENGL
-	/*
 	{
-		renderThread.GetLogger().LogInfo("deoglRTContext: Try creating EGL backend");
-		auto backend = deTUniqueReference<deoglRTCBUnixX11OpenGLUsingEGL>::New(*this);
-		if(backend->TryInit()){
-			pBackend = std::move(backend);
-		}
+	renderThread.GetLogger().LogInfo("deoglRTContext: Try creating EGL backend");
+	auto backend = deTUniqueReference<deoglRTCBUnixX11EGL>::New(*this);
+	if(backend->TryInit()){
+		pBackend = std::move(backend);
 	}
-	*/
+	}
 	
 	if(!pBackend){
 		renderThread.GetLogger().LogInfo("deoglRTContext: Try creating GLX backend");
