@@ -34,9 +34,11 @@
 #include "../deoglRTContext.h"
 #include "../deoglRenderThread.h"
 #include "../deoglRTLogger.h"
+#include "../deoglLoaderThread.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../configuration/deoglConfiguration.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>

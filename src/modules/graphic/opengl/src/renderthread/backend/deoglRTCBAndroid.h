@@ -30,8 +30,7 @@
 #ifdef OS_ANDROID
 
 #include "deoglRTCBackend.h"
-#include "../../extensions/egl.h"
-#include "../../extensions/glesext.h"
+#include "../../deoglGL.h"
 
 class deOSAndroid;
 
@@ -103,6 +102,9 @@ public:
 	
 	/** Swap buffers. */
 	void SwapBuffers(deoglRRenderWindow &window) override;
+	
+	/** Get function pointer. */
+	void *GetFunctionPointer(const char *funcName) override;
 	
 	
 	/** Application window has been created. */

@@ -423,7 +423,7 @@ void deoglRenderThread::InitAppWindow(){
 		DEBUG_SYNC_MT_PASS("out");
 		
 	}else{
-		pContext->InitAppWindow();
+		pContext->GetBackend()->InitAppWindow();
 	}
 }
 
@@ -449,7 +449,7 @@ void deoglRenderThread::TerminateAppWindow(){
 		DEBUG_SYNC_MT_STATE
 		
 	}else{
-		pContext->TerminateAppWindow();
+		pContext->GetBackend()->TerminateAppWindow();
 	}
 }
 #endif
@@ -610,7 +610,7 @@ void deoglRenderThread::Run(){
 		#ifdef WITH_OPENGLES
 		}else if(pThreadState == etsWindowTerminate){
 			try{
-				pContext->TerminateAppWindow();
+				pContext->GetBackend()->TerminateAppWindow();
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
@@ -622,7 +622,7 @@ void deoglRenderThread::Run(){
 			
 		}else if(pThreadState == etsWindowInit){
 			try{
-				pContext->InitAppWindow();
+				pContext->GetBackend()->InitAppWindow();
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
@@ -669,7 +669,8 @@ void deoglRenderThread::Synchronize(){
 			(deoglRenderWindow*)graSys.GetRenderWindow()->GetPeerGraphic();
 		if(oglWindow){
 			deoglRRenderWindow * const oglRWindow = oglWindow->GetRRenderWindow();
-			oglRWindow->OnResize(pContext->GetScreenWidth(), pContext->GetScreenHeight());
+			oglRWindow->OnResize(pContext->GetBackend()->GetScreenWidth(),
+				pContext->GetBackend()->GetScreenHeight());
 			
 			deCanvasView * const iocanvas = graSys.GetInputOverlayCanvas();
 			if(iocanvas){
@@ -2216,7 +2217,7 @@ void deoglRenderThread::pSwapBuffers(){
 void deoglRenderThread::pBeginFrame(){
 	const deoglDebugTraceGroup debugTrace(*this, "BeginFrame");
 	#ifdef WITH_OPENGLES
-	pContext->CheckConfigurationChanged();
+	pContext->GetBackend()->CheckConfigurationChanged();
 	#endif
 	
 	// free objects registered for delayed deletion. done before the rendering starts

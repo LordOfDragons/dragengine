@@ -104,7 +104,11 @@ pRuntimeVersion(0)
 	pSupportsExtension[extMETABodyTrackingFullBody].name = XR_META_BODY_TRACKING_FULL_BODY_EXTENSION_NAME;
 	pSupportsExtension[extMETATouchControllerPlus].name = XR_META_TOUCH_CONTROLLER_PLUS_EXTENSION_NAME;
 	pSupportsExtension[extMNDHeadless].name = XR_MND_HEADLESS_EXTENSION_NAME;
-	pSupportsExtension[extMNDXEglEnable].name = XR_MNDX_EGL_ENABLE_EXTENSION_NAME;
+	#if defined(OS_UNIX) && !defined(OS_ANDROID)
+		pSupportsExtension[extMNDXEglEnable].name = XR_MNDX_EGL_ENABLE_EXTENSION_NAME;
+	#else
+		pSupportsExtension[extMNDXEglEnable].name = "XR_MNDX_egl_enable";
+	#endif
 	pSupportsExtension[extMNDXXDevSpace].name = XR_MNDX_XDEV_SPACE_EXTENSION_NAME;
 	pSupportsExtension[extMSFTHandInteraction].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
 	

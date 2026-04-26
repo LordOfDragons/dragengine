@@ -37,6 +37,7 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTContext.h"
 
 
 /**
@@ -226,10 +227,10 @@ const void * const *indices, GLsizei drawcount){
 __eglMustCastToProperFunctionPointerType androidGetProcAddress(
 deoglRenderThread &renderThread, const char *name){
 	// find native method
-	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress(name);
+	auto address = renderThread.GetContext().GetBackend()->GetFunctionPointer(name);
 	if(address){
 		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): native", name);
-		return address;
+		return (__eglMustCastToProperFunctionPointerType)address;
 	}
 	
 	// return replacement if existing otherwise return NULL
