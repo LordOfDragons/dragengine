@@ -42,11 +42,6 @@
 #include <dragengine/parallel/deParallelProcessing.h>
 
 
-#ifndef EGL_CONTEXT_OPENGL_DEBUG
-#define EGL_CONTEXT_OPENGL_DEBUG 0x31B0
-#endif
-
-
 struct sOpenGlVersionUsingEGL{
 	int major;
 	int minor;
@@ -69,8 +64,6 @@ pEGLDisplay(EGL_NO_DISPLAY),
 pEGLConfig(nullptr),
 pEGLContext(EGL_NO_CONTEXT),
 pEGLLoaderContext(EGL_NO_CONTEXT),
-pEGLWindowSurface(EGL_NO_SURFACE),
-pEGLWindow(0),
 pEGLLoaderSurface(EGL_NO_SURFACE),
 pEglGetDisplay(nullptr),
 pEglInitialize(nullptr),
@@ -146,12 +139,6 @@ bool deoglRTCBUnixX11EGL::TryInit(){
 	
 	pLibHandle = handle;
 	logger.LogInfo("deoglRTCBUnixX11EGL: Using EGL backend (libEGL.so)");
-	
-	pOpenDisplay();
-	pCreateAtoms();
-	pChooseConfig();
-	pChooseVisual();
-	pCreateContext();
 	return true;
 }
 
@@ -186,28 +173,10 @@ void deoglRTCBUnixX11EGL::DropCompileContexts(int count){
 	pCompileContextCount = count;
 }
 
-void deoglRTCBUnixX11EGL::ActivateContext(deoglRRenderWindow &renderWindow){
-	const EGLNativeWindowType window = (EGLNativeWindowType)renderWindow.GetWindow();
+void deoglRTCBUnixX11EGL::ActivateContext(deoglRRenderWindow &window){
+	DEASSERT_FALSE(window.GetEGLSurface() == EGL_NO_SURFACE)
 	
-	// WARNING! this is not working. the surface has to be attached to the render window
-	//          and not recreated for each activation as this happens each frame update
-	
-	if(pEGLWindow != window || pEGLWindowSurface == EGL_NO_SURFACE){
-		if(pEGLWindowSurface != EGL_NO_SURFACE){
-			pEglDestroySurface(pEGLDisplay, pEGLWindowSurface);
-			pEGLWindowSurface = EGL_NO_SURFACE;
-		}
-		
-		pEGLWindowSurface = pEglCreateWindowSurface(pEGLDisplay, pEGLConfig, window, nullptr);
-		if(pEGLWindowSurface == EGL_NO_SURFACE){
-			pRTContext.GetRenderThread().GetLogger().LogError(
-				"eglCreateWindowSurface failed for render window");
-			DETHROW(deeInvalidAction);
-		}
-		pEGLWindow = window;
-	}
-	
-	if(pEglMakeCurrent(pEGLDisplay, pEGLWindowSurface, pEGLWindowSurface, pEGLContext) == EGL_FALSE){
+	if(pEglMakeCurrent(pEGLDisplay, window.GetEGLSurface(), window.GetEGLSurface(), pEGLContext) == EGL_FALSE){
 		pRTContext.GetRenderThread().GetLogger().LogError("eglMakeCurrent failed");
 		DETHROW(deeInvalidParam);
 	}
@@ -251,18 +220,12 @@ void deoglRTCBUnixX11EGL::DeactivateCompileContext(int){
 }
 
 void deoglRTCBUnixX11EGL::SwapBuffers(deoglRRenderWindow &window){
-	// WARNING! this is not working. the surface has to be attached to the render window
-	if(pEGLWindowSurface != EGL_NO_SURFACE){
-		pEglSwapBuffers(pEGLDisplay, pEGLWindowSurface);
+	if(window.GetEGLSurface() != EGL_NO_SURFACE){
+		pEglSwapBuffers(pEGLDisplay, window.GetEGLSurface());
 	}
 }
 
 void deoglRTCBUnixX11EGL::ApplyVSync(deoglRRenderWindow&, deoglConfiguration::eVSyncMode vsyncMode){
-	if(pEglQuerySurface(pEGLDisplay, pEGLWindowSurface, EGL_SURFACE_TYPE, nullptr) == EGL_PBUFFER_BIT){
-		// eglSwapInterval does not work for Pbuffer surfaces, so we cannot apply VSync mode
-		return;
-	}
-	
 	deoglRTLogger &logger = pRTContext.GetRenderThread().GetLogger();
 	
 	switch(vsyncMode){
@@ -289,6 +252,32 @@ EGLSurface deoglRTCBUnixX11EGL::GetEGLCompileSurfaceAt(int index) const{
 }
 
 
+void deoglRTCBUnixX11EGL::CreateWindowSurface(deoglRRenderWindow &window){
+	if(window.GetEGLSurface() != EGL_NO_SURFACE){
+		return;
+	}
+	
+	EGLSurface surface = pEglCreateWindowSurface(pEGLDisplay, pEGLConfig,
+		(EGLNativeWindowType)window.GetWindow(), nullptr);
+	if(surface == EGL_NO_SURFACE){
+		pRTContext.GetRenderThread().GetLogger().LogError(
+			"eglCreateWindowSurface failed for render window");
+		DETHROW(deeInvalidAction);
+	}
+	
+	window.SetEGLSurface(surface);
+}
+
+void deoglRTCBUnixX11EGL::DestroyWindowSurface(deoglRRenderWindow &window){
+	if(window.GetEGLSurface() == EGL_NO_SURFACE){
+		return;
+	}
+	
+	pEglDestroySurface(pEGLDisplay, window.GetEGLSurface());
+	window.SetEGLSurface(EGL_NO_SURFACE);
+}
+
+
 // Protected Functions
 ////////////////////////
 
@@ -298,12 +287,6 @@ void deoglRTCBUnixX11EGL::pFreeContext(){
 	}
 	
 	pEglMakeCurrent(pEGLDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-	
-	if(pEGLWindowSurface != EGL_NO_SURFACE){
-		pEglDestroySurface(pEGLDisplay, pEGLWindowSurface);
-		pEGLWindowSurface = EGL_NO_SURFACE;
-		pEGLWindow = 0;
-	}
 	
 	int i;
 	for(i=0; i<pCompileContextCount; i++){

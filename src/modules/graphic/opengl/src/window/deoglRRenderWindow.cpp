@@ -223,6 +223,9 @@ pWindow(nullptr),
 pHostWindow(0),
 pWindow(0),
 pNullCursor(0),
+#ifdef BACKEND_OPENGL
+pEGLSurface(EGL_NO_SURFACE),
+#endif
 #endif
 
 pX(0),
@@ -279,6 +282,12 @@ void deoglRRenderWindow::SetHostWindow(NSWindow *window){
 void deoglRRenderWindow::SetHostWindow(Window window){
 	pHostWindow = window;
 };
+
+#ifdef BACKEND_OPENGL
+void deoglRRenderWindow::SetEGLSurface(EGLSurface surface){
+	pEGLSurface = surface;
+}
+#endif
 
 #elif defined OS_W32
 void deoglRRenderWindow::SetHostWindow(HWND window){
@@ -568,6 +577,14 @@ void deoglRRenderWindow::CreateWindow(){
 	
 	// set window title
 	pSetWindowTitle();
+	
+	// backend specific initialization
+#ifdef BACKEND_OPENGL
+	auto backendEgl = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixX11EGL>();
+	if(backendEgl){
+		backendEgl->CreateWindowSurface(*this);
+	}
+#endif
 #endif
 	pAfterCreateScaleFactor = pGetDisplayScaleFactor();
 }
@@ -578,6 +595,7 @@ void deoglRRenderWindow::SwapBuffers(){
 	}
 	
 	const deoglDebugTraceGroup debugTrace(pRenderThread, "Window.SwapBuffers");
+	pUpdateVSync();
 	pRenderThread.GetContext().GetBackend()->SwapBuffers(*this);
 	pSwapBuffers = false;
 }
@@ -760,6 +778,24 @@ bool deoglRRenderWindow::GetNotifySizeChanged(){
 // Private Functions
 //////////////////////
 
+void deoglRRenderWindow::pUpdateVSync(){
+	// check if VSync has to be enabled or disabled
+	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
+	
+	if(vsyncMode != pVSyncMode){
+		pVSyncMode = vsyncMode;
+		pInitSwapInterval = true;
+	}
+	
+	// apply changes if required
+	if(!pInitSwapInterval){
+		return;
+	}
+	
+	pInitSwapInterval = false;
+	pRenderThread.GetContext().GetBackend()->ApplyVSync(*this, vsyncMode);
+}
+
 void deoglRRenderWindow::pDestroyWindow(){
 	// if context is missing this can be due to early start-up failure where setting up the
 	// proper context had not been yet possible
@@ -805,6 +841,13 @@ void deoglRRenderWindow::pDestroyWindow(){
 	pWindow = NULL;
 	
 #elif defined OS_UNIX_X11
+#ifdef BACKEND_OPENGL
+	auto backendEgl = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixX11EGL>();
+	if(backendEgl){
+		backendEgl->DestroyWindowSurface(*this);
+	}
+#endif
+	
 	if(pWindow > 255){
 		if(pRenderThread.HasContext()){
 			Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();

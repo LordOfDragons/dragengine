@@ -133,13 +133,6 @@ bool deoglRTCBUnixX11GLX::TryInit(){
 	
 	pLibHandle = handle;
 	logger.LogInfo("deoglRTCBUnixX11GLX: Using GLX backend (libGLX.so)");
-	
-	pOpenDisplay();
-	pCreateAtoms();
-	pChooseVisual();
-	pChooseFBConfig();
-	pCreateColorMap();
-	pCreateContext();
 	return true;
 }
 

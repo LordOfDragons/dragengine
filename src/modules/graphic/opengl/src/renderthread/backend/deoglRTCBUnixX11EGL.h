@@ -46,8 +46,6 @@ protected:
 	EGLContext pEGLContext;
 	EGLContext pEGLLoaderContext;
 	EGLContext pEGLCompileContext[MaxCompileContextCount];
-	EGLSurface pEGLWindowSurface;
-	EGLNativeWindowType pEGLWindow;
 	EGLSurface pEGLLoaderSurface;
 	EGLSurface pEGLCompileSurface[MaxCompileContextCount];
 	
@@ -138,6 +136,9 @@ public:
 	inline EGLSurface GetEGLLoaderSurface() const{ return pEGLLoaderSurface; }
 	EGLSurface GetEGLCompileSurfaceAt(int index) const;
 	inline PFNEGLGETPROCADDRESSPROC GetEGLGetProcAddressFunc() const{ return pEglGetProcAddress; }
+	
+	void CreateWindowSurface(deoglRRenderWindow &window);
+	void DestroyWindowSurface(deoglRRenderWindow &window);
 	/*@}*/
 	
 	
