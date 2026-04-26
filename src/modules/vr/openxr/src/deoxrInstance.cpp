@@ -68,13 +68,17 @@ pRuntimeVersion(0)
 		pSupportsExtension[extKHROpenglEnable].name = XR_KHR_OPENGL_ENABLE_EXTENSION_NAME;
 	#endif
 	
-	pSupportsExtension[extKHRVisibilityMask].name = XR_KHR_VISIBILITY_MASK_EXTENSION_NAME;
+	pSupportsExtension[extEPICViewConfigurationFov].name = XR_EPIC_VIEW_CONFIGURATION_FOV_EXTENSION_NAME;
+	pSupportsExtension[extEXTDebugUtils].name = XR_EXT_DEBUG_UTILS_EXTENSION_NAME;
 	pSupportsExtension[extEXTEyeGazeInteraction].name = XR_EXT_EYE_GAZE_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extEXTHandInteraction].name = XR_EXT_HAND_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[extEXTHandJointsMotionRange].name = XR_EXT_HAND_JOINTS_MOTION_RANGE_EXTENSION_NAME;
 	pSupportsExtension[extEXTHandTracking].name = XR_EXT_HAND_TRACKING_EXTENSION_NAME;
+	pSupportsExtension[extEXTHPMixedRealityController].name = XR_EXT_HP_MIXED_REALITY_CONTROLLER_EXTENSION_NAME;
 	pSupportsExtension[extEXTPerformanceSettings].name = XR_EXT_PERFORMANCE_SETTINGS_EXTENSION_NAME;
+	pSupportsExtension[extEXTSamsungOdysseyController].name = XR_EXT_SAMSUNG_ODYSSEY_CONTROLLER_EXTENSION_NAME;
 	pSupportsExtension[extEXTViewConfigurationDepthRange].name = XR_EXT_VIEW_CONFIGURATION_DEPTH_RANGE_EXTENSION_NAME;
-	pSupportsExtension[extEPICViewConfigurationFov].name = XR_EPIC_VIEW_CONFIGURATION_FOV_EXTENSION_NAME;
+	pSupportsExtension[extFBBodyTracking].name = XR_FB_BODY_TRACKING_EXTENSION_NAME;
 	pSupportsExtension[extFBDisplayRefreshRate].name = XR_FB_DISPLAY_REFRESH_RATE_EXTENSION_NAME;
 	pSupportsExtension[extFBFoveation].name = XR_FB_FOVEATION_EXTENSION_NAME;
 	pSupportsExtension[extFBFoveationConfiguration].name = XR_FB_FOVEATION_CONFIGURATION_EXTENSION_NAME;
@@ -86,26 +90,23 @@ pRuntimeVersion(0)
 	pSupportsExtension[extFBPassthroughKeyboardHands].name = XR_FB_PASSTHROUGH_KEYBOARD_HANDS_EXTENSION_NAME;
 	pSupportsExtension[extFBRenderModel].name = XR_FB_RENDER_MODEL_EXTENSION_NAME;
 	pSupportsExtension[extFBSpaceWarp].name = XR_FB_SPACE_WARP_EXTENSION_NAME;
-	pSupportsExtension[extFBTriangleMesh].name = XR_FB_TRIANGLE_MESH_EXTENSION_NAME;
-	pSupportsExtension[extHTCFacialTracking].name = XR_HTC_FACIAL_TRACKING_EXTENSION_NAME;
-	pSupportsExtension[extHTCXViveTrackerInteraction].name = XR_HTCX_VIVE_TRACKER_INTERACTION_EXTENSION_NAME;
-	pSupportsExtension[extMNDHeadless].name = XR_MND_HEADLESS_EXTENSION_NAME;
-	pSupportsExtension[extEXTDebugUtils].name = XR_EXT_DEBUG_UTILS_EXTENSION_NAME;
-	pSupportsExtension[extEXTHPMixedRealityController].name = XR_EXT_HP_MIXED_REALITY_CONTROLLER_EXTENSION_NAME;
-	pSupportsExtension[extEXTSamsungOdysseyController].name = XR_EXT_SAMSUNG_ODYSSEY_CONTROLLER_EXTENSION_NAME;
-	pSupportsExtension[extHTCViveCosmosControllerInteraction].name = XR_HTC_VIVE_COSMOS_CONTROLLER_INTERACTION_EXTENSION_NAME;
-	pSupportsExtension[extHTCViveFocus3ControllerInteraction].name = XR_HTC_VIVE_FOCUS3_CONTROLLER_INTERACTION_EXTENSION_NAME;
-	pSupportsExtension[extHUAWEIControllerInteraction].name = XR_HUAWEI_CONTROLLER_INTERACTION_EXTENSION_NAME;
-	pSupportsExtension[extMSFTHandInteraction].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
-	pSupportsExtension[extKHRCompositionLayerDepth].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
-	pSupportsExtension[extEXTHandInteraction].name = XR_EXT_HAND_INTERACTION_EXTENSION_NAME;
-	pSupportsExtension[extHTCHandInteraction].name = XR_HTC_HAND_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[extFBTouchControllerPro].name = XR_FB_TOUCH_CONTROLLER_PRO_EXTENSION_NAME;
 	pSupportsExtension[extFBTouchControllerProximity].name = XR_FB_TOUCH_CONTROLLER_PROXIMITY_EXTENSION_NAME;
-	pSupportsExtension[extMETATouchControllerPlus].name = XR_META_TOUCH_CONTROLLER_PLUS_EXTENSION_NAME;
-	pSupportsExtension[extMNDXXDevSpace].name = XR_MNDX_XDEV_SPACE_EXTENSION_NAME;
-	pSupportsExtension[extFBBodyTracking].name = XR_FB_BODY_TRACKING_EXTENSION_NAME;
+	pSupportsExtension[extFBTriangleMesh].name = XR_FB_TRIANGLE_MESH_EXTENSION_NAME;
+	pSupportsExtension[extHTCFacialTracking].name = XR_HTC_FACIAL_TRACKING_EXTENSION_NAME;
+	pSupportsExtension[extHTCHandInteraction].name = XR_HTC_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extHTCViveCosmosControllerInteraction].name = XR_HTC_VIVE_COSMOS_CONTROLLER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extHTCViveFocus3ControllerInteraction].name = XR_HTC_VIVE_FOCUS3_CONTROLLER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extHTCXViveTrackerInteraction].name = XR_HTCX_VIVE_TRACKER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extHUAWEIControllerInteraction].name = XR_HUAWEI_CONTROLLER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extKHRCompositionLayerDepth].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
+	pSupportsExtension[extKHRVisibilityMask].name = XR_KHR_VISIBILITY_MASK_EXTENSION_NAME;
 	pSupportsExtension[extMETABodyTrackingFullBody].name = XR_META_BODY_TRACKING_FULL_BODY_EXTENSION_NAME;
+	pSupportsExtension[extMETATouchControllerPlus].name = XR_META_TOUCH_CONTROLLER_PLUS_EXTENSION_NAME;
+	pSupportsExtension[extMNDHeadless].name = XR_MND_HEADLESS_EXTENSION_NAME;
+	pSupportsExtension[extMNDXEglEnable].name = XR_MNDX_EGL_ENABLE_EXTENSION_NAME;
+	pSupportsExtension[extMNDXXDevSpace].name = XR_MNDX_XDEV_SPACE_EXTENSION_NAME;
+	pSupportsExtension[extMSFTHandInteraction].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
 	
 	#ifdef OS_ANDROID
 		pSupportsExtension[extKHRAndroidCreateInstance].name = XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME;
@@ -153,6 +154,7 @@ pRuntimeVersion(0)
 	pSupportsExtension[extFBTouchControllerProximity].enableIfSupported = true;
 	pSupportsExtension[extMETATouchControllerPlus].enableIfSupported = true;
 	pSupportsExtension[extMNDXXDevSpace].enableIfSupported = true;
+	pSupportsExtension[extMNDXEglEnable].enableIfSupported = true;
 	pSupportsExtension[extFBBodyTracking].enableIfSupported =
 		oxr.GetRequestFeatureBodyTracking() != deBaseVRModule::efslDisabled;
 	pSupportsExtension[extMETABodyTrackingFullBody].enableIfSupported =

@@ -15,44 +15,58 @@ if envModule['OSBeOS']:
 
 # do configure stuff
 hasOpenGL = False
+hasGL = False
 buildModule = False
 
 if envModule['build_graphics_opengl'] != TernaryVariableNo:
 	conf = envModule.Configure()
 	
 	if envModule['with_opengl'] != TernaryVariableNo:
-		hasOpenGL = conf.CheckLibWithHeader('GL', 'GL/gl.h', 'c++', call='glEnable(0);')
+		# find libOpenGL (VND)
+		hasOpenGL = conf.CheckLibWithHeader('OpenGL', 'GL/gl.h', 'c++', call='glEnable(0);')
 		if hasOpenGL:
 			buildModule = True
 			envModule.Append(CXXFLAGS = '-DHAS_LIB_OPENGL')
-			libs.append('GL')
-		if not hasOpenGL and envModule['platform_android'] != 'no':
-			hasOpenGL = True
-			buildModule = True
+			libs.append('OpenGL')
 		
-		if not hasOpenGL:
-			hasOpenGL = conf.CheckLibWithHeader('opengl32', 'GL/gl.h', 'c++', call='glEnable(0);')
-			if hasOpenGL:
+		# find libGL
+		else:
+			hasGL = conf.CheckLibWithHeader('GL', 'GL/gl.h', 'c++', call='glEnable(0);')
+			if hasGL:
 				buildModule = True
-				envModule.Append(CXXFLAGS = '-DHAS_LIB_OPENGL')
-				libs.append('opengl32')
+				envModule.Append(CXXFLAGS = '-DHAS_LIB_GL')
+				libs.append('GL')
+			
+			# android workaround
+			if not hasGL and envModule['platform_android'] != 'no':
+				hasGL = True
+				buildModule = True
+			
+			# old stuff
+			if not hasGL:
+				hasGL = conf.CheckLibWithHeader('opengl32', 'GL/gl.h', 'c++', call='glEnable(0);')
+				if hasGL:
+					buildModule = True
+					envModule.Append(CXXFLAGS = '-DHAS_LIB_GL')
+					libs.append('opengl32')
+			
+			# macOS workaround
+			if envModule['OSMacOS']:
+				hasGL = True
+				buildModule = True
 		
-		if envModule['OSMacOS']:
-			hasOpenGL = True
-			buildModule = True
-		
-		if hasOpenGL:
+		if hasGL:
 			if envModule['OSPosix'] or envModule['OSMacOS']:
 				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', call='glXGetProcAddress(NULL);')
 				if hasFuncProc:
 					envModule.Append(CXXFLAGS = '-DHAS_OGL_GETPROC')
 		
-		if not hasOpenGL and envModule['with_opengl'] == TernaryVariableYes:
-			Exit('Requested to use OpenGL but gl.h or libGL could not be found or is not usable.')
+		if not hasOpenGL and not hasGL and envModule['with_opengl'] == TernaryVariableYes:
+			Exit('Requested to use OpenGL but gl.h or libOpenGL/libGL could not be found or is not usable.')
 	
 	conf.Finish()
 
-if envModule['build_graphics_opengl'] == TernaryVariableYes and not hasOpenGL:
+if envModule['build_graphics_opengl'] == TernaryVariableYes and not hasGL:
 	Exit('Requested to build OpenGL Graphics Module but OpenGL could not be found or is not usable.')
 
 # build module if requested

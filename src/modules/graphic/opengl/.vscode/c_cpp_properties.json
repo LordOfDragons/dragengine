@@ -9,6 +9,7 @@
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [
+                "HAS_LIB_OPENGL=1",
                 "BACKEND_OPENGL=1",
                 //"BACKEND_VULKAN=1",
                 "MODULE_VERSION=\"9999\"",

@@ -309,7 +309,6 @@ private:
 #ifdef OS_MACOS
 	void pMacOSCreateWindow();
 	void pMacOSDestroyWindow();
-	void pMacOSSwapBuffers();
 	void pMacOSCenterOnScreen();
 	void pMacOSResizeWindow();
 	void pMacOSSetWindowTitle();
@@ -320,8 +319,6 @@ public:
 	void pMacOSDelegateWindowDeactivated();
 	void pMacOSDelegateWindowResized();
 #endif
-	
-	void pUpdateVSync();
 };
 
 #endif

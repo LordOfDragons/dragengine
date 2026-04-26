@@ -2208,12 +2208,9 @@ void deoglRenderThread::DebugMemoryUsageSmall(const char *prefix){
 #endif
 
 void deoglRenderThread::pSwapBuffers(){
-	const int count = pRRenderWindowList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoglRRenderWindow*)pRRenderWindowList.GetAt(i))->SwapBuffers();
-	}
+	pRRenderWindowList.Visit([](deoglRRenderWindow &window){
+		window.SwapBuffers();
+	});
 }
 
 void deoglRenderThread::pBeginFrame(){
@@ -2237,7 +2234,7 @@ void deoglRenderThread::pBeginFrame(){
 	pShader->GetShaderManager().Update();
 	
 	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
-	pContext->ProcessEventLoop();
+	pContext->GetBackend()->ProcessEventLoop();
 	#endif
 	
 	pOgl.GetShaderCompilingInfo()->PrepareForRender(pLastFrameTime);

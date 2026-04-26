@@ -281,39 +281,45 @@ public:
 		// OpenGL
 		struct sGraphicApiConnectionOpenGl{
 			#ifdef OS_BEOS
-			void *dummy; //!< avoid empty struct
+			void *dummy = nullptr; //!< avoid empty struct
 			
 			#elif defined OS_ANDROID
-			void *display; //!< Android: EGLDisplay
-			void *config; //!< Android: EGLConfig
-			void *context; //!< Android: EGLContext
+			void *display = nullptr; //!< Android: EGLDisplay
+			void *config = nullptr; //!< Android: EGLConfig
+			void *context = nullptr; //!< Android: EGLContext
 			
 			#elif defined OS_WEBWASM
-			void *dummy; //!< avoid empty struct
+			void *dummy = nullptr; //!< avoid empty struct
 			
 			#elif defined OS_UNIX_X11
-			void *display; //!< X11: Display*
-			uint32_t visualid; //!< X11: uint32_t
-			void *glxFBConfig; //!< GLXFBConfig
-			unsigned long glxDrawable; //!< GLXDrawable
-			void *glxContext; //!< GLXContext
+			void *display = nullptr; //!< X11: Display*
+			uint32_t visualid = 0; //!< X11: uint32_t
+			
+			void *glxFBConfig = nullptr; //!< GLX: GLXFBConfig
+			unsigned long glxDrawable = 0; //!< GLX: GLXDrawable
+			void *glxContext = nullptr; //!< GLX: GLXContext
+			
+			void *eglGetProcAddress = nullptr; // EGL: PFN_xrEglGetProcAddressMNDX
+			void *eglDisplay = nullptr; //!< EGL: EGLDisplay
+			void *eglConfig = nullptr; //!< EGL: EGLConfig
+			void *eglContext = nullptr; //!< EGL: EGLContext
 			
 			#elif defined OS_W32
-			void *hDC; // Windows: HDC
-			void *hGLRC; // Windows: HGLRC
+			void *hDC = nullptr; // Windows: HDC
+			void *hGLRC = nullptr; // Windows: HGLRC
 			
 			#else
-			void *dummy; //!< avoid empty struct
+			void *dummy = nullptr; //!< avoid empty struct
 			#endif
 		} opengl;
 		
 		// Vulkan
 		struct sGraphicApiConnectionVulkan{
-			void *instance; //!< Vulkan: VkInstance
-			void *physicalDevice; //!< Vulkan: VkPhysicalDevice
-			void *device; //!< Vulkan: VkDevice
-			uint32_t queueFamilyIndex; //!< Vulkan: uint32_t
-			uint32_t queueIndex; //!< Vulkan: uint32_t
+			void *instance = nullptr; //!< Vulkan: VkInstance
+			void *physicalDevice = nullptr; //!< Vulkan: VkPhysicalDevice
+			void *device = nullptr; //!< Vulkan: VkDevice
+			uint32_t queueFamilyIndex = 0; //!< Vulkan: uint32_t
+			uint32_t queueIndex = 0; //!< Vulkan: uint32_t
 		} vulkan;
 	};
 	
