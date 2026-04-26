@@ -643,7 +643,7 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 	#elif defined OS_W32
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
-	connection.opengl.hGLRC = context.GetContext();
+	connection.opengl.hGLRC = context.GetBackend()->GetContext();
 	
 	if(context.GetActiveRRenderWindow()){
 		connection.opengl.hDC = context.GetActiveRRenderWindow()->GetWindowDC();

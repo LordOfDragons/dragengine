@@ -719,7 +719,7 @@ void deoglRRenderWindow::CenterOnScreen(){
 		return;
 	}
 	const decPoint screenSize(pRenderThread.GetContext().GetBackend()->
-		GetOSWindows()->GetDisplayCurrentResolution(0));
+		GetOSWindow()->GetDisplayCurrentResolution(0));
 	SetWindowPos(pWindow, NULL, (screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2,
 		0, 0, SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOREDRAW
 		| SWP_NOZORDER | SWP_SHOWWINDOW);
