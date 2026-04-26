@@ -46,13 +46,24 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 	try{
 		XrSwapchainCreateInfo createInfo{XR_TYPE_SWAPCHAIN_CREATE_INFO};
 		createInfo.createFlags = 0;
-		createInfo.usageFlags = XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
+		createInfo.usageFlags = 0;
 		createInfo.sampleCount = 1;
 		createInfo.width = size.x;
 		createInfo.height = size.y;
 		createInfo.faceCount = 1;
 		createInfo.arraySize = 1;
 		createInfo.mipCount = 1;
+		
+		// required to render into the image as a target (FBO attachment).
+		// required for glBlitFramebuffer since this requires an FBO
+		createInfo.usageFlags |= XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT;
+		
+		// required when blitting into the image using glBlitFramebuffer.
+		// required if vkCmdClearColorImage is used on the image
+		createInfo.usageFlags |= XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
+		
+		// required for SteamVR since compositor samples the image to display it
+		createInfo.usageFlags |= XR_SWAPCHAIN_USAGE_SAMPLED_BIT;
 		
 		const int64_t * const formats = session.GetSwapchainFormats().GetArrayPointer();
 		const int formatCount = session.GetSwapchainFormats().GetCount();
