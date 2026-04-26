@@ -804,7 +804,7 @@ parent_env.Append(CXXFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
 
 # this warning causes too many false positives requiring dummy range checks to be inserted
 # in various locations. warning is disabled unless proven to be actually helping
-if parent_env['platform_android'] == 'no':
+if parent_env['platform_android'] == 'no' and not parent_env['platform_webwasm']:
 	parent_env.Append(CXXFLAGS = ['-Wno-alloc-size-larger-than'])
 
 # no default targets
