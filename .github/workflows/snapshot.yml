@@ -1,0 +1,137 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: true
+        type: string
+        default: 'master'
+      version:
+        description: 'Version'
+        required: true
+        type: string
+        default: 'X.Y{.Z}'
+
+jobs:
+  prerelease_checks:
+    uses: ./.github/workflows/prerelease_checks.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      version: ${{ github.event.inputs.version }}
+  
+  generate_buildnumbers:
+    needs: [prerelease_checks]
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1.0.4
+        with:
+          token: ${{ secrets.PAT_BUILDBOT }}
+          prefix: github
+  
+  build_linux:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_linux.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-linux
+      artifactInstaller: installers-linux
+      artifactTools: tools-crossplatform
+      sconscache: false
+  
+  build_windows:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_windows_vs.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+  
+  build_windows_installer:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_windows_installer.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+      artifactInstaller: installers-windows
+
+  build_msix:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_msix.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+      artifactMsix: msix-windows
+  
+  build_linux_ci:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_linux_ci.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-linux-ci
+      artifactInstaller: installers-linux-ci
+      sconscache: false
+  
+  build_android_armv8:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      androidArch: 'armv8'
+      artifactArchive: archives-android-armv8
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+      sconscache: false
+  
+  build_android_armv7:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      androidArch: 'armv7'
+      artifactArchive: archives-android-armv7
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+      sconscache: false
+  
+  build_live:
+    needs: [build_linux, build_windows]
+    uses: ./.github/workflows/build_live.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactLinux: archives-linux
+      artifactWindows: archives-windows
+      artifactLauncher: archive-livelauncher
+    
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
+    
+  testing:
+    needs: [build_linux, build_testing]
+    uses: ./.github/workflows/testing.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: installers-linux
+      artifactTesting: archive-testing
+      artifactResults: testing-results
