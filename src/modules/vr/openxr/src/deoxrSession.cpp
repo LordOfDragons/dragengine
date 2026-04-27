@@ -278,7 +278,7 @@ pIsGACOpenGL(false),
 						}
 						
 					}else if(gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable){
-						oxr.GetGraphicApiOpenGLGLX().Load();
+						oxr.GetGraphicApiOpenGL().Load();
 						
 						memset(&gbopenglGlx, 0, sizeof(gbopenglGlx));
 						gbopenglGlx.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_XLIB_KHR;
@@ -775,7 +775,7 @@ void deoxrSession::RestoreOpenGLCurrent(){
 	#endif
 	
 	if(pGACOpenGLGLXContext && pGACOpenGLDisplay && pGACOpenGLGLXDrawable){
-		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGLGLX().MakeCurrent(
+		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
 			pGACOpenGLDisplay, pGACOpenGLGLXDrawable, pGACOpenGLGLXContext);
 	}
 	

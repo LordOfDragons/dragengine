@@ -247,7 +247,7 @@ void deoxrSwapchain::pGetImages(){
 		
 		for(i=0; i<count; i++){
 			pImages[i].openglImage = images[i].image;
-// 				pImages[i].openglFbo = new deoxrGraphicApiOpenGLGLX::Framebuffer(
+// 				pImages[i].openglFbo = new deoxrGraphicApiOpenGL::Framebuffer(
 // 					oxr.GetGraphicApiOpenGL(), images[i].image);
 		}
 		}break;

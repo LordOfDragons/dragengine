@@ -22,10 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "deoxrGraphicApiOpenGLGLX.h"
+#include "deoxrGraphicApiOpenGL.h"
 #include "../deVROpenXR.h"
 
 #include <dragengine/common/exceptions.h>
@@ -76,10 +73,10 @@ typedef void (*PFNGLGETINTEGERV)(GLenum pname, GLint *params);
 typedef void (*PFNGLDRAWBUFFERSPROC)(GLsizei n, const GLenum *bufs);
 
 
-// class deoxrGraphicApiOpenGLGLX::Framebuffer
+// class deoxrGraphicApiOpenGL::Framebuffer
 /////////////////////////////////////////////
 
-deoxrGraphicApiOpenGLGLX::Framebuffer::Framebuffer(deoxrGraphicApiOpenGLGLX &gaogl, unsigned int image) :
+deoxrGraphicApiOpenGL::Framebuffer::Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image) :
 pGAOgl(gaogl),
 pFBO(0)
 {
@@ -96,17 +93,17 @@ pFBO(0)
 	((PFNGLBINDFRAMEBUFFERPROC)pGAOgl.pFuncBindFramebuffer)(GL_FRAMEBUFFER, prevFbo);
 }
 
-deoxrGraphicApiOpenGLGLX::Framebuffer::~Framebuffer(){
+deoxrGraphicApiOpenGL::Framebuffer::~Framebuffer(){
 	if(pFBO){
 		((PFNGLDELETEFRAMEBUFFERSPROC)pGAOgl.pFuncDeleteFramebuffers)(1, &pFBO);
 	}
 }
 
 
-// class deoxrGraphicApiOpenGLGLX
+// class deoxrGraphicApiOpenGL
 ////////////////////////////////
 
-deoxrGraphicApiOpenGLGLX::deoxrGraphicApiOpenGLGLX(deVROpenXR &oxr) :
+deoxrGraphicApiOpenGL::deoxrGraphicApiOpenGL(deVROpenXR &oxr) :
 pOxr(oxr),
 #ifdef OS_BEOS
 pLibHandle(0),
@@ -129,7 +126,7 @@ pFuncDrawBuffers(nullptr)
 {
 }
 
-deoxrGraphicApiOpenGLGLX::~deoxrGraphicApiOpenGLGLX(){
+deoxrGraphicApiOpenGL::~deoxrGraphicApiOpenGL(){
 	pCleanUp();
 }
 
@@ -138,7 +135,7 @@ deoxrGraphicApiOpenGLGLX::~deoxrGraphicApiOpenGLGLX(){
 // Management
 ///////////////
 
-void deoxrGraphicApiOpenGLGLX::Load(){
+void deoxrGraphicApiOpenGL::Load(){
 	if(pLibHandle){
 		return;
 	}
@@ -147,7 +144,7 @@ void deoxrGraphicApiOpenGLGLX::Load(){
 	pGetFunctions();
 }
 
-void deoxrGraphicApiOpenGLGLX::Unload(){
+void deoxrGraphicApiOpenGL::Unload(){
 	if(!pLibHandle){
 		return;
 	}
@@ -167,14 +164,14 @@ void deoxrGraphicApiOpenGLGLX::Unload(){
 }
 
 #ifdef OS_UNIX_X11
-GLXDrawable deoxrGraphicApiOpenGLGLX::GetCurrentDrawable(){
+GLXDrawable deoxrGraphicApiOpenGL::GetCurrentDrawable(){
 	if(!pFuncGetCurrentDrawable){
 		DETHROW(deeInvalidParam);
 	}
 	return ((PFNGLXGETCURRENTDRAWABLE)pFuncGetCurrentDrawable)();
 }
 
-void deoxrGraphicApiOpenGLGLX::MakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx){
+void deoxrGraphicApiOpenGL::MakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx){
 	if(!pFuncMakeCurrent){
 		DETHROW(deeInvalidParam);
 	}
@@ -182,7 +179,7 @@ void deoxrGraphicApiOpenGLGLX::MakeCurrent(Display *dpy, GLXDrawable drawable, G
 }
 
 #elif defined OS_W32
-void deoxrGraphicApiOpenGLGLX::MakeCurrent(HDC hDc, HGLRC context){
+void deoxrGraphicApiOpenGL::MakeCurrent(HDC hDc, HGLRC context){
 	if(!pFuncMakeCurrent){
 		DETHROW(deeInvalidParam);
 	}
@@ -195,11 +192,11 @@ void deoxrGraphicApiOpenGLGLX::MakeCurrent(HDC hDc, HGLRC context){
 // Private Functions
 //////////////////////
 
-void deoxrGraphicApiOpenGLGLX::pCleanUp(){
+void deoxrGraphicApiOpenGL::pCleanUp(){
 	Unload();
 }
 
-void deoxrGraphicApiOpenGLGLX::pLoadLibrary(){
+void deoxrGraphicApiOpenGL::pLoadLibrary(){
 #ifdef OS_BEOS
 	pLibHandle = load_add_on("opengl");
 	if(pLibHandle < 0){
@@ -208,48 +205,48 @@ void deoxrGraphicApiOpenGLGLX::pLoadLibrary(){
 	
 #elif defined HAS_LIB_DL
 	#ifdef OS_ANDROID
-		pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Try loading libGLESv3.so");
+		pOxr.LogInfo("deoxrGraphicApiOpenGL: Try loading libGLESv3.so");
 		pLibHandle = dlopen("libGLESv3.so", RTLD_NOW);
 		if(pLibHandle){
-			pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Loading libGLESv3.so succeeded");
+			pOxr.LogInfo("deoxrGraphicApiOpenGL: Loading libGLESv3.so succeeded");
 			
 		}else{
-			pOxr.LogErrorFormat("deoxrGraphicApiOpenGLGLX: dlerror: %s.", dlerror());
+			pOxr.LogErrorFormat("deoxrGraphicApiOpenGL: dlerror: %s.", dlerror());
 			
-			pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Try loading libGLESv3.so.1");
+			pOxr.LogInfo("deoxrGraphicApiOpenGL: Try loading libGLESv3.so.1");
 			pLibHandle = dlopen("libGLESv3.so.1", RTLD_NOW);
 			
 			if(pLibHandle){
-				pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Loading libGLESv3.so.1 succeeded");
+				pOxr.LogInfo("deoxrGraphicApiOpenGL: Loading libGLESv3.so.1 succeeded");
 			}
 		}
 	#else
-		pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Try loading libGL.so");
+		pOxr.LogInfo("deoxrGraphicApiOpenGL: Try loading libGL.so");
 		pLibHandle = dlopen("libGL.so", RTLD_NOW);
 		if(pLibHandle){
-			pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Loading libGL.so succeeded");
+			pOxr.LogInfo("deoxrGraphicApiOpenGL: Loading libGL.so succeeded");
 			
 		}else{
-			pOxr.LogErrorFormat("deoxrGraphicApiOpenGLGLX: dlerror: %s.", dlerror());
+			pOxr.LogErrorFormat("deoxrGraphicApiOpenGL: dlerror: %s.", dlerror());
 			
-			pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Try loading libGL.so.1");
+			pOxr.LogInfo("deoxrGraphicApiOpenGL: Try loading libGL.so.1");
 			pLibHandle = dlopen("libGL.so.1", RTLD_NOW);
 			
 			if(pLibHandle){
-				pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Loading libGL.so.1 succeeded");
+				pOxr.LogInfo("deoxrGraphicApiOpenGL: Loading libGL.so.1 succeeded");
 			}
 		}
 	#endif
 	if(!pLibHandle){
-		pOxr.LogErrorFormat("deoxrGraphicApiOpenGLGLX: dlerror: %s.", dlerror());
+		pOxr.LogErrorFormat("deoxrGraphicApiOpenGL: dlerror: %s.", dlerror());
 		DETHROW_INFO(deeInvalidAction, "Load OpenGL library failed");
 	}
 	
 #elif defined OS_W32
-	pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Try loading OpenGL32.dll");
+	pOxr.LogInfo("deoxrGraphicApiOpenGL: Try loading OpenGL32.dll");
 	pLibHandle = LoadLibrary(L"OpenGL32");
 	if(pLibHandle){
-		pOxr.LogInfo("deoxrGraphicApiOpenGLGLX: Loading OpenGL32.dll succeeded");
+		pOxr.LogInfo("deoxrGraphicApiOpenGL: Loading OpenGL32.dll succeeded");
 		
 	}else{
 		int err = GetLastError();
@@ -258,7 +255,7 @@ void deoxrGraphicApiOpenGLGLX::pLoadLibrary(){
 			NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 			messageBuffer, 250, NULL);
 		
-		pOxr.LogErrorFormat("deoxrGraphicApiOpenGLGLX: LoadLibrary(err=%i): %s.",
+		pOxr.LogErrorFormat("deoxrGraphicApiOpenGL: LoadLibrary(err=%i): %s.",
 			err, deOSWindows::WideToUtf8(messageBuffer).GetString());
 		
 		DETHROW_INFO(deeInvalidAction, "Load OpenGL DLL failed");
@@ -266,7 +263,7 @@ void deoxrGraphicApiOpenGLGLX::pLoadLibrary(){
 #endif
 }
 
-void deoxrGraphicApiOpenGLGLX::pGetFunctions(){
+void deoxrGraphicApiOpenGL::pGetFunctions(){
 	#ifdef OS_UNIX_X11
 		pFuncGetCurrentDrawable = pGetFunction("glXGetCurrentDrawable");
 		pFuncMakeCurrent = pGetFunction("glXMakeCurrent");
@@ -286,7 +283,7 @@ void deoxrGraphicApiOpenGLGLX::pGetFunctions(){
 // 	pFuncDrawBuffers = pGetFunction( "glDrawBuffers" );
 }
 
-void *deoxrGraphicApiOpenGLGLX::pGetFunction(const char *name){
+void *deoxrGraphicApiOpenGL::pGetFunction(const char *name){
 	void *func = nullptr;
 #ifdef OS_BEOS
 	if(get_image_symbol(pLibHandle, name, B_SYMBOL_TYPE_TEXT, &func) != B_OK){
@@ -307,7 +304,7 @@ void *deoxrGraphicApiOpenGLGLX::pGetFunction(const char *name){
 	return func;
 }
 
-void deoxrGraphicApiOpenGLGLX::pEnable(uint32_t capability, bool enable){
+void deoxrGraphicApiOpenGL::pEnable(uint32_t capability, bool enable){
 	if(enable){
 		if(!pFuncEnable){
 			DETHROW(deeInvalidParam);

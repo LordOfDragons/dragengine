@@ -41,7 +41,7 @@
 #include "action/deoxrActionSet.h"
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
-#include "graphicapi/deoxrGraphicApiOpenGLGLX.h"
+#include "graphicapi/deoxrGraphicApiOpenGL.h"
 #ifdef OS_UNIX_X11
 #	include "graphicapi/deoxrGraphicApiOpenGLEGL.h"
 #endif
@@ -120,7 +120,7 @@ private:
 	deoxrDeviceProfileManager pDeviceProfiles;
 	deoxrDeviceManager pDevices;
 	
-	deoxrGraphicApiOpenGLGLX pGraphicApiOpenGLGLX;
+	deoxrGraphicApiOpenGL pGraphicApiOpenGL;
 #ifdef OS_UNIX_X11
 	deoxrGraphicApiOpenGLEGL pGraphicApiOpenGLEGL;
 #endif
@@ -202,8 +202,8 @@ public:
 	void InputEventSetTimestamp(deInputEvent &event) const;
 	
 	/** Graphic api OpenGL. */
-	inline deoxrGraphicApiOpenGLGLX &GetGraphicApiOpenGLGLX(){ return pGraphicApiOpenGLGLX; }
-	inline const deoxrGraphicApiOpenGLGLX &GetGraphicApiOpenGLGLX() const{ return pGraphicApiOpenGLGLX; }
+	inline deoxrGraphicApiOpenGL &GetGraphicApiOpenGL(){ return pGraphicApiOpenGL; }
+	inline const deoxrGraphicApiOpenGL &GetGraphicApiOpenGL() const{ return pGraphicApiOpenGL; }
 	
 #ifdef OS_UNIX_X11
 	/** Graphic api OpenGL EGL. */

@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRGRAPHICAPIOPENGLGLX_H_
-#define _DEOXRGRAPHICAPIOPENGLGLX_H_
+#ifndef _DEOXRGRAPHICAPIOPENGL_H_
+#define _DEOXRGRAPHICAPIOPENGL_H_
 
 #include <dragengine/dragengine_configuration.h>
 
@@ -53,22 +53,22 @@ using GAOglFbo = unsigned int;
 using GAOglImage = unsigned int;
 
 /**
- * Graphic api OpenGL using GLX.
+ * Graphic api OpenGL.
  */
-class deoxrGraphicApiOpenGLGLX{
+class deoxrGraphicApiOpenGL{
 public:
 	class Framebuffer : public deObject{
 	public:
 		using Ref = deTObjectReference<Framebuffer>;
 	
 	
-		Framebuffer(deoxrGraphicApiOpenGLGLX &gaogl, unsigned int image);
+		Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image);
 		
 	protected:
 		~Framebuffer() override;
 		
 	private:
-		deoxrGraphicApiOpenGLGLX &pGAOgl;
+		deoxrGraphicApiOpenGL &pGAOgl;
 		unsigned int pFBO;
 	};
 	friend class Framebuffer;
@@ -107,10 +107,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create graphic api opengl. */
-	explicit deoxrGraphicApiOpenGLGLX(deVROpenXR &oxr);
+	explicit deoxrGraphicApiOpenGL(deVROpenXR &oxr);
 	
 	/** Clean up instance. */
-	~deoxrGraphicApiOpenGLGLX();
+	~deoxrGraphicApiOpenGL();
 	/*@}*/
 	
 	
