@@ -35,7 +35,7 @@ Build-Depends: debhelper-compat (= 12),
                libfreetype-dev,
                libopus-dev,
                libfftw3-dev,
-               egl-dev
+               libegl-dev
 Standards-Version: 4.1.3
 Homepage: https://dragondreams.ch
 Rules-Requires-Root: no
