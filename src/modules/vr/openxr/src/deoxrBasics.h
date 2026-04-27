@@ -52,6 +52,7 @@
 	using EGLDisplay = void *;
 	using EGLConfig = void *;
 	using EGLContext = void *;
+	using EGLSurface = void *;
 	
 	#define XR_USE_PLATFORM_XLIB
 	#define XR_USE_PLATFORM_EGL

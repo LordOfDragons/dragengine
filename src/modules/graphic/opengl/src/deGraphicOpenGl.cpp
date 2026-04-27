@@ -629,7 +629,12 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 	}
 	
 	if(context.GetActiveRRenderWindow()){
-		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
+		if(backendEGL){
+			connection.opengl.eglSurface = (void*)(EGLNativeWindowType)context.GetActiveRRenderWindow()->GetWindow();
+			
+		}else{
+			connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
+		}
 	}
 	
 	#elif defined BACKEND_VULKAN

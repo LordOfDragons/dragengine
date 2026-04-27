@@ -125,8 +125,13 @@ private:
 	EGLContext pGACOpenGLContext;
 #elif defined OS_UNIX
 	Display *pGACOpenGLDisplay;
-	GLXDrawable pGACOpenGLDrawable;
-	GLXContext pGACOpenGLContext;
+	GLXDrawable pGACOpenGLGLXDrawable;
+	GLXContext pGACOpenGLGLXContext;
+	#ifdef OS_UNIX_X11
+		EGLDisplay pGACOpenGLEGLDisplay;
+		EGLSurface pGACOpenGLEglSurface;
+		EGLContext pGACOpenGLEglContext;
+	#endif
 #elif defined OS_W32
 	HDC pGACOpenGLHDC;
 	HGLRC pGACOpenGLContext;
@@ -138,7 +143,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create session. */
-	deoxrSession(deoxrSystem &system);
+	explicit deoxrSession(deoxrSystem &system);
 	
 protected:
 	/** Clean up space. */

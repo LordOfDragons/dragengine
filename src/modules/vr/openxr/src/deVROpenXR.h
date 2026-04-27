@@ -41,7 +41,10 @@
 #include "action/deoxrActionSet.h"
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
-#include "graphicapi/deoxrGraphicApiOpenGL.h"
+#include "graphicapi/deoxrGraphicApiOpenGLGLX.h"
+#ifdef OS_UNIX_X11
+#	include "graphicapi/deoxrGraphicApiOpenGLEGL.h"
+#endif
 #include "parameters/deoxrParameter.h"
 
 /** input module device identifier prefix. */
@@ -117,7 +120,10 @@ private:
 	deoxrDeviceProfileManager pDeviceProfiles;
 	deoxrDeviceManager pDevices;
 	
-	deoxrGraphicApiOpenGL pGraphicApiOpenGL;
+	deoxrGraphicApiOpenGLGLX pGraphicApiOpenGLGLX;
+#ifdef OS_UNIX_X11
+	deoxrGraphicApiOpenGLEGL pGraphicApiOpenGLEGL;
+#endif
 	
 	deoxrLoader *pLoader;
 	deoxrInstance::Ref pInstance;
@@ -196,8 +202,14 @@ public:
 	void InputEventSetTimestamp(deInputEvent &event) const;
 	
 	/** Graphic api OpenGL. */
-	inline deoxrGraphicApiOpenGL &GetGraphicApiOpenGL(){ return pGraphicApiOpenGL; }
-	inline const deoxrGraphicApiOpenGL &GetGraphicApiOpenGL() const{ return pGraphicApiOpenGL; }
+	inline deoxrGraphicApiOpenGLGLX &GetGraphicApiOpenGLGLX(){ return pGraphicApiOpenGLGLX; }
+	inline const deoxrGraphicApiOpenGLGLX &GetGraphicApiOpenGLGLX() const{ return pGraphicApiOpenGLGLX; }
+	
+#ifdef OS_UNIX_X11
+	/** Graphic api OpenGL EGL. */
+	inline deoxrGraphicApiOpenGLEGL &GetGraphicApiOpenGLEGL(){ return pGraphicApiOpenGLEGL; }
+	inline const deoxrGraphicApiOpenGLEGL &GetGraphicApiOpenGLEGL() const{ return pGraphicApiOpenGLEGL; }
+#endif
 	
 	/** Wait until ready exit. */
 	void WaitUntilReadyExit();

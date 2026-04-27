@@ -26,7 +26,7 @@
 #define _DEOXRSWAPCHAIN_H_
 
 #include "deoxrBasics.h"
-#include "graphicapi/deoxrGraphicApiOpenGL.h"
+#include "graphicapi/deoxrGraphicApiOpenGLGLX.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
@@ -48,7 +48,7 @@ public:
 	/** Image. */
 	struct sImage{
 		uint32_t openglImage;
-		deoxrGraphicApiOpenGL::Framebuffer::Ref openglFbo;
+		deoxrGraphicApiOpenGLGLX::Framebuffer::Ref openglFbo;
 	};
 	
 	/** Type. */

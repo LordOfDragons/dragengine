@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,25 +22,14 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRGRAPHICAPIOPENGL_H_
-#define _DEOXRGRAPHICAPIOPENGL_H_
+#ifndef _DEOXRGRAPHICAPIOPENGLEGL_H_
+#define _DEOXRGRAPHICAPIOPENGLEGL_H_
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_BEOS
-#include <kernel/image.h>
-#endif
+#ifdef OS_UNIX_X11
 
-#ifdef HAS_LIB_DL
 #include <dlfcn.h>
-#endif
-
-#ifdef OS_W32
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0502
-#endif
-#include <dragengine/app/include_windows.h>
-#endif
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -49,68 +38,27 @@
 
 class deVROpenXR;
 
-using GAOglFbo = unsigned int;
-using GAOglImage = unsigned int;
 
 /**
- * Oxr instance.
+ * Graphic api OpenGL using EGL.
  */
-class deoxrGraphicApiOpenGL{
-public:
-	class Framebuffer : public deObject{
-	public:
-		using Ref = deTObjectReference<Framebuffer>;
-	
-	
-		Framebuffer(deoxrGraphicApiOpenGL &gaogl, unsigned int image);
-		
-	protected:
-		~Framebuffer() override;
-		
-	private:
-		deoxrGraphicApiOpenGL &pGAOgl;
-		unsigned int pFBO;
-	};
-	friend class Framebuffer;
-	
+class deoxrGraphicApiOpenGLEGL{
 private:
 	deVROpenXR &pOxr;
 	
-	#ifdef OS_BEOS
-	image_id pLibHandle;
-	#endif
-	
-	#ifdef HAS_LIB_DL
 	void *pLibHandle;
-	#endif
 	
-	#ifdef OS_W32
-	HMODULE pLibHandle;
-	#endif
-	
-	void *pFuncGetCurrentDrawable;
 	void *pFuncMakeCurrent;
-	void *pFuncGetIntegerv;
-	void *pFuncEnable;
-	void *pFuncDisable;
-	void *pFuncIsEnabled;
-	
-	void *pFuncGenFramebuffers;
-	void *pFuncBindFramebuffer;
-	void *pFuncDeleteFramebuffers;
-	void *pFuncBlitFramebuffer;
-	void *pFuncFramebufferTexture2D;
-	void *pFuncDrawBuffers;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create graphic api opengl. */
-	deoxrGraphicApiOpenGL(deVROpenXR &oxr);
+	explicit deoxrGraphicApiOpenGLEGL(deVROpenXR &oxr);
 	
 	/** Clean up instance. */
-	~deoxrGraphicApiOpenGL();
+	~deoxrGraphicApiOpenGLEGL();
 	/*@}*/
 	
 	
@@ -127,17 +75,8 @@ public:
 	/** Unload. */
 	void Unload();
 	
-#ifdef OS_UNIX_X11
-	/** Get current drawable. */
-	GLXDrawable GetCurrentDrawable();
-	
 	/** Make current. */
-	void MakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx);
-	
-#elif defined OS_W32
-	/** Make current. */
-	void MakeCurrent(HDC hDc, HGLRC context);
-#endif
+	void MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
 	/*@}*/
 	
 	
@@ -147,8 +86,7 @@ private:
 	void pLoadLibrary();
 	void pGetFunctions();
 	void *pGetFunction(const char *name);
-	void pEnable(uint32_t capability, bool enable);
 };
 
 #endif
-
+#endif

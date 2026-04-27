@@ -154,8 +154,13 @@ pIsGACOpenGL(false),
 	pGACOpenGLContext(nullptr)
 #elif defined OS_UNIX
 	pGACOpenGLDisplay(nullptr),
-	pGACOpenGLDrawable(0),
-	pGACOpenGLContext(nullptr)
+	pGACOpenGLGLXDrawable(0),
+	pGACOpenGLGLXContext(nullptr)
+	#ifdef OS_UNIX_X11
+		,pGACOpenGLEGLDisplay(nullptr),
+		pGACOpenGLEglSurface(nullptr),
+		pGACOpenGLEglContext(nullptr)
+	#endif
 #elif defined OS_W32
 	pGACOpenGLHDC(NULL),
 	pGACOpenGLContext(NULL)
@@ -192,8 +197,13 @@ pIsGACOpenGL(false),
 			pGACOpenGLContext = (EGLContext)gacon.opengl.context;
 		#elif defined OS_UNIX
 			pGACOpenGLDisplay = (Display*)gacon.opengl.display;
-			pGACOpenGLDrawable = (GLXDrawable)gacon.opengl.glxDrawable;
-			pGACOpenGLContext = (GLXContext)gacon.opengl.glxContext;
+			pGACOpenGLGLXDrawable = (GLXDrawable)gacon.opengl.glxDrawable;
+			pGACOpenGLGLXContext = (GLXContext)gacon.opengl.glxContext;
+			#ifdef OS_UNIX_X11
+				pGACOpenGLEGLDisplay = (EGLDisplay)gacon.opengl.eglDisplay;
+				pGACOpenGLEglSurface = (EGLSurface)gacon.opengl.eglSurface;
+				pGACOpenGLEglContext = (EGLContext)gacon.opengl.eglContext;
+			#endif
 		#elif defined OS_W32
 			pGACOpenGLHDC = (HDC)gacon.opengl.hDC;
 			pGACOpenGLContext = (HGLRC)gacon.opengl.hGLRC;
@@ -252,29 +262,31 @@ pIsGACOpenGL(false),
 				if(gacon.opengl.display){
 					if(gacon.opengl.eglGetProcAddress && gacon.opengl.eglDisplay
 					&& gacon.opengl.eglConfig && gacon.opengl.eglContext){
-						oxr.GetGraphicApiOpenGL().Load();
-						
-						gbopenglEgl.type = XR_TYPE_GRAPHICS_BINDING_EGL_MNDX;
-						gbopenglEgl.getProcAddress = (PFN_xrEglGetProcAddressMNDX)gacon.opengl.eglGetProcAddress;
-						gbopenglEgl.display = (EGLDisplay)gacon.opengl.eglDisplay;
-						gbopenglEgl.config = (EGLConfig)gacon.opengl.eglConfig;
-						gbopenglEgl.context = (EGLContext)gacon.opengl.eglContext;
-						
-						pGraphicApi = egaOpenGL;
-						graphicBinding = &gbopenglEgl;
-						pIsGACOpenGL = true;
-						oxr.LogInfo("Create Session: Using OpenGL on Xlib using EGL");
+						if(instance.SupportsExtension(deoxrInstance::extMNDXEglEnable)){
+							oxr.GetGraphicApiOpenGLEGL().Load();
+							
+							gbopenglEgl.type = XR_TYPE_GRAPHICS_BINDING_EGL_MNDX;
+							gbopenglEgl.getProcAddress = (PFN_xrEglGetProcAddressMNDX)gacon.opengl.eglGetProcAddress;
+							gbopenglEgl.display = pGACOpenGLEGLDisplay;
+							gbopenglEgl.config = (EGLConfig)gacon.opengl.eglConfig;
+							gbopenglEgl.context = pGACOpenGLEglContext;
+							
+							pGraphicApi = egaOpenGL;
+							graphicBinding = &gbopenglEgl;
+							pIsGACOpenGL = true;
+							oxr.LogInfo("Create Session: Using OpenGL on Xlib using EGL");
+						}
 						
 					}else if(gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable){
-						oxr.GetGraphicApiOpenGL().Load();
+						oxr.GetGraphicApiOpenGLGLX().Load();
 						
 						memset(&gbopenglGlx, 0, sizeof(gbopenglGlx));
 						gbopenglGlx.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_XLIB_KHR;
 						gbopenglGlx.xDisplay = pGACOpenGLDisplay;
 						gbopenglGlx.visualid = gacon.opengl.visualid;
 						gbopenglGlx.glxFBConfig = (GLXFBConfig)gacon.opengl.glxFBConfig;
-						gbopenglGlx.glxDrawable = pGACOpenGLDrawable;
-						gbopenglGlx.glxContext = pGACOpenGLContext;
+						gbopenglGlx.glxDrawable = pGACOpenGLGLXDrawable;
+						gbopenglGlx.glxContext = pGACOpenGLGLXContext;
 						
 						pGraphicApi = egaOpenGL;
 						graphicBinding = &gbopenglGlx;
@@ -750,15 +762,26 @@ void deoxrSession::RequestCenterSpaceOrigin(){
 }
 
 void deoxrSession::RestoreOpenGLCurrent(){
-	#ifdef OS_ANDROID
-		// nothing
-	#elif defined OS_UNIX
-		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
-			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext);
-	#elif defined OS_W32
-		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
-			pGACOpenGLHDC, pGACOpenGLContext);
+#ifdef OS_ANDROID
+	// nothing
+#elif defined OS_UNIX
+	#ifdef OS_UNIX_X11
+		if(pGACOpenGLEglContext && pGACOpenGLEGLDisplay && pGACOpenGLEglSurface){
+			pSystem.GetInstance().GetOxr().GetGraphicApiOpenGLEGL().MakeCurrent(
+				pGACOpenGLEGLDisplay, pGACOpenGLEglSurface,
+				pGACOpenGLEglSurface, pGACOpenGLEglContext);
+			return;
+		}
 	#endif
+	
+	if(pGACOpenGLGLXContext && pGACOpenGLDisplay && pGACOpenGLGLXDrawable){
+		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGLGLX().MakeCurrent(
+			pGACOpenGLDisplay, pGACOpenGLGLXDrawable, pGACOpenGLGLXContext);
+	}
+	
+#elif defined OS_W32
+	pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(pGACOpenGLHDC, pGACOpenGLContext);
+#endif
 }
 
 const char *deoxrSession::GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound) const{

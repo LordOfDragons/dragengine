@@ -105,7 +105,10 @@ deBaseModule *OpenXRCreateModule(deLoadableModule *loadableModule){
 deVROpenXR::deVROpenXR(deLoadableModule &loadableModule) :
 deBaseVRModule(loadableModule),
 pDevices(*this),
-pGraphicApiOpenGL(*this),
+pGraphicApiOpenGLGLX(*this),
+#ifdef OS_UNIX_X11
+pGraphicApiOpenGLEGL(*this),
+#endif
 pLoader(nullptr),
 pActions{},
 pSessionState(XR_SESSION_STATE_UNKNOWN),
@@ -313,7 +316,10 @@ void deVROpenXR::CleanUp(){
 		pLoader = nullptr;
 	}
 	
-	pGraphicApiOpenGL.Unload();
+	pGraphicApiOpenGLGLX.Unload();
+#ifdef OS_UNIX_X11
+	pGraphicApiOpenGLEGL.Unload();
+#endif
 	
 	pSessionState = XR_SESSION_STATE_UNKNOWN;
 }

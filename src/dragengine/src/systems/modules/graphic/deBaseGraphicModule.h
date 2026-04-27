@@ -303,6 +303,7 @@ public:
 			void *eglDisplay = nullptr; //!< EGL: EGLDisplay
 			void *eglConfig = nullptr; //!< EGL: EGLConfig
 			void *eglContext = nullptr; //!< EGL: EGLContext
+			void *eglSurface = nullptr; //!< EGL: EGLSurface
 			
 			#elif defined OS_W32
 			void *hDC = nullptr; // Windows: HDC
