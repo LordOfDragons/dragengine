@@ -190,6 +190,7 @@ params.Add(TernaryVariable('with_system_libogg', 'Use System libogg'))
 params.Add(TernaryVariable('with_system_libvorbis', 'Use System libvorbis'))
 params.Add(TernaryVariable('with_system_libtheora', 'Use System libtheora'))
 params.Add(TernaryVariable('with_system_libopus', 'Use System libopus'))
+params.Add(TernaryVariable('with_system_libfftw', 'Use System libfftw'))
 params.Add(TernaryVariable('with_system_fox', 'Use System FOX Toolkit'))
 params.Add(TernaryVariable('with_system_dragonscript', 'Use System DragonScript'))
 params.Add(PathVariable('with_dragonscript_inc',
@@ -803,7 +804,8 @@ parent_env.Append(CXXFLAGS = ['-Wno-deprecated-enum-enum-conversion'])
 
 # this warning causes too many false positives requiring dummy range checks to be inserted
 # in various locations. warning is disabled unless proven to be actually helping
-parent_env.Append(CXXFLAGS = ['-Wno-alloc-size-larger-than'])
+if parent_env['platform_android'] == 'no' and not parent_env['platform_webwasm']:
+	parent_env.Append(CXXFLAGS = ['-Wno-alloc-size-larger-than'])
 
 # no default targets
 Default(None)
@@ -886,6 +888,7 @@ extdirs.append('extern/libogg')
 extdirs.append('extern/libvorbis')
 extdirs.append('extern/libtheora')
 extdirs.append('extern/libopus')
+extdirs.append('extern/libfftw')
 extdirs.append('extern/fox')
 extdirs.append('extern/dragonscript')
 extdirs.append('extern/libevdev')

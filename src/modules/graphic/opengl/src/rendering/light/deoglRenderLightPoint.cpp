@@ -1011,7 +1011,7 @@ const sShadowDepthMaps &shadowDepthMaps){
 	
 	target = shader.GetTextureTarget(deoglLightShader::ettNoise);
 	if(target != -1){
-		tsmgr.EnableTexture(target, *dt.GetNoise2D(), GetSamplerRepeatNearest());
+		tsmgr.EnableTexture(target, *dt.GetNoise(), GetSamplerRepeatNearest());
 	}
 	
 	target = shader.GetTextureTarget(deoglLightShader::ettShadow1SolidDepth);
@@ -1440,6 +1440,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
+	const bool useDitherShadow = deoglShadowMapper::UseShadowDither(config);
 	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderPlan &plan = planLight.GetPlan();
 	decMatrix matrixCamera;
@@ -1510,7 +1511,6 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	}
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetSolid(true);
 	addToRenderTask.SetNoShadowNone(true);
 	addToRenderTask.SetUseSpecialParamBlock(true);
 	// addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etShadowDistanceCube );
@@ -1550,6 +1550,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	renderTask.SetUseSPBInstanceFlags(true);
 	
 	addToRenderTask.SetSolid(true);
+	addToRenderTask.SetFilterSolid(!useDitherShadow);
 	addToRenderTask.SetForceDoubleSided(true);
 	if(shadowParams.collideList1){
 		addToRenderTask.AddComponents(*shadowParams.collideList1);
@@ -1584,6 +1585,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	// render the transparent shadow cube maps if required
 	if(shadowParams.withTransparent){
 		addToRenderTask.SetSolid(false);
+		addToRenderTask.SetFilterSolid(true);
 		
 		pPipelineClearBuffers->Activate();
 		shadowMapper.ActivateTransparentCubeMap(shadowParams.transpShadowMapSize, useInverseDepth);

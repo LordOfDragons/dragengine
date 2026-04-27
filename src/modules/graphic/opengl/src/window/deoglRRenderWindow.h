@@ -52,6 +52,10 @@ class NSView;
 #elif defined OS_UNIX_X11
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+#	ifdef BACKEND_OPENGL
+#		include "../extensions/egl.h"
+#	endif
 #endif
 
 class deoglRenderThread;
@@ -127,6 +131,10 @@ private:
 	Window pHostWindow;
 	Window pWindow;
 	Cursor pNullCursor;
+	
+#	ifdef BACKEND_OPENGL
+		EGLSurface pEGLSurface;
+#	endif
 #endif
 	
 	int pX;
@@ -199,6 +207,11 @@ public:
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	inline Window GetWindow() const{ return pWindow; }
 	void SetHostWindow(Window window);
+	
+#ifdef BACKEND_OPENGL
+	inline EGLSurface GetEGLSurface() const{ return pEGLSurface; }
+	void SetEGLSurface(EGLSurface surface);
+#endif
 #endif
 	
 	
@@ -293,6 +306,8 @@ public:
 	
 	
 private:
+	void pUpdateVSync();
+	
 #if defined OS_UNIX_X11
 	void pCreateNullCursor();
 #endif
@@ -309,7 +324,6 @@ private:
 #ifdef OS_MACOS
 	void pMacOSCreateWindow();
 	void pMacOSDestroyWindow();
-	void pMacOSSwapBuffers();
 	void pMacOSCenterOnScreen();
 	void pMacOSResizeWindow();
 	void pMacOSSetWindowTitle();
@@ -320,8 +334,6 @@ public:
 	void pMacOSDelegateWindowDeactivated();
 	void pMacOSDelegateWindowResized();
 #endif
-	
-	void pUpdateVSync();
 };
 
 #endif

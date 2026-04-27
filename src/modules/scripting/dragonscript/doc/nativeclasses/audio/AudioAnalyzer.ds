@@ -1,0 +1,412 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+/**
+ * \brief Audio analyzer resource.
+ * \version 1.32
+ * 
+ * Analyzes audio data providing time-domain and frequency-domain results. To use create an
+ * AudioAnalyzer instance and configure the analysis parameters. Audio analysis is performed
+ * by the synthesizer module asynchronously. Call updateResults() periodically (for example
+ * each frame update or using a timer) to retrieve the accumulated analysis results.
+ * 
+ * Time-domain results include the root mean square amplitude (RMS), absolute peak amplitude
+ * and the zero-crossing rate. Frequency-domain results include the spectral centroid,
+ * spectral flatness, spectral flux, spectral roll-off frequency, individual spectral peaks
+ * and frequency band energy levels as well as the estimated fundamental pitch.
+ * 
+ * This is a native class.
+ */
+class AudioAnalyzer
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create audio analyzer. */
+	func new()
+	end
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Use audio capture as input for analysis.
+	 * 
+	 * Default is true. Has no effect unless \ref AudioSystem#startAudioCapture() is called.
+	 */
+	func bool getUseAudioCapture()
+		return false
+	end
+	
+	/**
+	 * \brief Set use of audio capture as input for analysis.
+	 */
+	func void setUseAudioCapture(bool useAudioCapture)
+	end
+	
+	/**
+	 * \brief Analysis sample rate in Hz.
+	 * 
+	 * Downsamples input from input sample rate to analysis sample rate.
+	 * Default is 16000.
+	 */
+	func int getSampleRate()
+		return 0
+	end
+	
+	/**
+	 * \brief Set analysis sample rate in Hz.
+	 * \throws EInvalidParam sampleRate is less than 1.
+	 * 
+	 * Downsamples input from input sample rate to analysis sample rate.
+	 */
+	func void setSampleRate(int sampleRate)
+	end
+	
+	/**
+	 * \brief FFT resolution (window size in samples).
+	 * 
+	 * Higher values give better frequency resolution at the cost of more processing time
+	 * and higher latency.
+	 * 
+	 * Default is 1024.
+	 */
+	func int getResolution()
+		return 0
+	end
+	
+	/**
+	 * \brief Set FFT resolution.
+	 * \throws EInvalidParam resolution is less than 64.
+	 */
+	func void setResolution(int resolution)
+	end
+	
+	/** \brief Count of frequency bands tracked. */
+	func int getFrequencyBandCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Set count of frequency bands tracked.
+	 * \throws EInvalidParam count is less than 1.
+	 */
+	func void setFrequencyBandCount(int count)
+	end
+	
+	/**
+	 * \brief Lowest frequency for frequency bands in Hz.
+	 * 
+	 * Default is 20 Hz.
+	 */
+	func float getLowestFrequency()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Highest frequency for frequency bands in Hz.
+	 * 
+	 * Default is 20000 Hz.
+	 */
+	func float getHighestFrequency()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set frequency range for frequency bands in Hz.
+	 */
+	func void setFrequencyRange(float lowestFrequency, float highestFrequency)
+	end
+	
+	/**
+	 * \brief Apply pre-emphasis filter before FFT.
+	 * 
+	 * If enabled pre-emphasis filter is applied to the input samples before the FFT calculation.
+	 * This boosts high frequencies to improve analysis quality.
+	 * 
+	 * Default is true.
+	 */
+	func bool getEnablePreEmphasis()
+		return false
+	end
+	
+	/**
+	 * \brief Set apply pre-emphasis filter before FFT.
+	 * 
+	 * If enabled pre-emphasis filter is applied to the input samples before the FFT calculation.
+	 * This boosts high frequencies to improve analysis quality.
+	 */
+	func void setEnablePreEmphasis(bool enable)
+	end
+	
+	/**
+	 * \brief Pre-emphasis filter coefficient.
+	 * 
+	 * Default is 0.97.
+	 */
+	func float getPreEmphasisFactor()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set pre-emphasis filter coefficient.
+	 * 
+	 * Factor is clamped to the range from 0 to 1.
+	 */
+	func void setPreEmphasisFactor(float factor)
+	end
+	
+	/**
+	 * \brief Apply mel filter banks after FFT.
+	 * 
+	 * If enabled changes frequency bands from logarithmically spaced to mel-scale spaced
+	 * triangular filters. This produces a perceptually-motivated band distribution closer
+	 * to how humans perceive pitch and timbre.
+	 * 
+	 * Default is false.
+	 */
+	func bool getEnableMelFiltering()
+		return false
+	end
+	
+	/**
+	 * \brief Set apply mel filter banks after FFT.
+	 * 
+	 * If enabled changes frequency bands from logarithmically spaced to mel-scale spaced
+	 * triangular filters. This produces a perceptually-motivated band distribution closer
+	 * to how humans perceive pitch and timbre.
+	 */
+	func void setEnableMelFiltering(bool enable)
+	end
+	
+	/**
+	 * \brief Count of mel filter banks.
+	 * 
+	 * Default is 26.
+	 */
+	func int getMelFilterCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Set count of mel filter bank filters.
+	 * \throws EInvalidParam count is less than 1.
+	 */
+	func void setMelFilterCount(int count)
+	end
+	
+	/**
+	 * \brief Normalize mel filter bank energies.
+	 * 
+	 * Default is true.
+	 */
+	func bool getNormalizeMelEnergies()
+		return false
+	end
+	
+	/**
+	 * \brief Set normalize mel filter bank energies.
+	 */
+	func void setNormalizeMelEnergies(bool normalize)
+	end
+	
+	
+	/**
+	 * \brief Update results.
+	 * 
+	 * Fetch asynchronously accumulated analysis results from synthesizer module. The results stay
+	 * valid until the next call to updateResults(). The time interval betwen calling
+	 * updateResults() affects the granularity of the results.
+	 */
+	func void updateResults()
+	end
+	/*@}*/
+	
+	
+	/** \name Time-Domain Results */
+	/*@{*/
+	/** \brief Root mean square amplitude in range 0 to 1. */
+	func float getRMS()
+		return 0.0
+	end
+	
+	/** \brief Absolute peak amplitude in range 0 to 1. */
+	func float getPeak()
+		return 0.0
+	end
+	
+	/** \brief Zero-crossing rate in range 0 to 1. */
+	func float getZeroCrossingRate()
+		return 0.0
+	end
+	/*@}*/
+	
+	
+	/** \name Frequency-Domain Results */
+	/*@{*/
+	/** \brief Spectral centroid (center of mass of spectrum) in Hz. */
+	func float getSpectralCentroid()
+		return 0.0
+	end
+	
+	/** \brief Spectral flatness in range 0 (tonal) to 1 (noise-like). */
+	func float getSpectralFlatness()
+		return 0.0
+	end
+	
+	/** \brief Spectral flux measuring rate of spectrum change. */
+	func float getSpectralFlux()
+		return 0.0
+	end
+	
+	/** \brief Spectral roll-off frequency in Hz. */
+	func float getSpectralRolloff()
+		return 0.0
+	end
+	
+	/** \brief Count of spectral peak frequencies. */
+	func int getSpectralPeakCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Spectral peak frequency in Hz at index.
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getSpectralPeaksCount().
+	 * 
+	 * Spectral peaks are sorted from strongest to weakest.
+	 */
+	func float getSpectralPeakFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Spectral peak magnitude at index.
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getSpectralPeaksCount().
+	 * 
+	 * Spectral peaks are sorted from strongest to weakest.
+	 */
+	func float getSpectralPeakMagnitudeAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Magnitude of frequency band at index.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandMagnitudeAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Energy of frequency band at index.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandEnergyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Lowest frequency of frequency band at index in Hz.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandLowestFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Highest frequency of frequency band at index in Hz.
+	 * 
+	 * Bands are logarithmically spaced within the frequency range set by
+	 * \ref #setFrequencyRange(float,float).
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandHighestFrequencyAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Mel Frequency Cepstral Coefficient of the frequency band at index.
+	 * 
+	 * Returns the DCT coefficient of the log mel energies corresponding to this band.
+	 * Only valid if mel filtering is enabled otherwise 0.
+	 * 
+	 * \throws EInvalidParam index is less than 0
+	 * \throws EInvalidParam index is greater than or equal to getFrequencyBandsCount().
+	 */
+	func float getFrequencyBandMfccAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Maximum magnitude of all frequency bands.
+	 */
+	func float getMaxBandMagnitude()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Maximum energy of all frequency bands.
+	 */
+	func float getMaxBandEnergy()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Total magnitude of all frequency bands.
+	 */
+	func float getTotalBandMagnitude()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Total energy of all frequency bands.
+	 */
+	func float getTotalBandEnergy()
+		return 0.0
+	end
+	
+	/** \brief Estimated pitch (fundamental frequency) in Hz or 0 if not detected. */
+	func float getPitch()
+		return 0.0
+	end
+	/*@}*/
+	
+	
+	/** \name Operators */
+	/*@{*/
+	/** \brief Audio analyzers are equal. */
+	func bool equals(Object obj)
+		return false
+	end
+	
+	/** \brief Hash code. */
+	func int hashCode()
+		return 0
+	end
+	/*@}*/
+end

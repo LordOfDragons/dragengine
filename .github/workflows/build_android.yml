@@ -100,7 +100,7 @@ jobs:
         id: external-cache
         with:
           path: ./extern
-          key: external-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          key: external-cache-android-${{ inputs.androidArch }}-${{ hashFiles('./extern/**/SConscript', './extern/**/*.tar.*', './extern/**/*.zip') }}
           restore-keys: external-cache-android-${{ inputs.androidArch }}-
       
       # - name: Cache SCons

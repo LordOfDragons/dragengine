@@ -26,6 +26,7 @@
 #define _DEBASEAUDIOMODULE_H_
 
 #include "../deBaseModule.h"
+#include "../../deAudioSystem.h"
 
 class deBaseAudioComponent;
 class deBaseAudioDecal;
@@ -141,6 +142,26 @@ public:
 	
 	/** \brief Create deHeightTerrain peer. */
 	virtual deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) = 0;
+	
+	
+	
+	/** \brief Can audio be captured. */
+	virtual bool CanCaptureAudio() const;
+	
+	/** \brief Start audio capture. */
+	virtual void StartAudioCapture();
+	
+	/** \brief Stop audio capture. */
+	virtual void StopAudioCapture();
+	
+	/** \brief Is capturing audio. */
+	virtual bool IsCapturingAudio() const;
+	
+	/** \brief Audio capture format. */
+	virtual void GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const;
+	
+	/** \brief Audio capture levels. */
+	virtual void GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const;
 	/*@}*/
 };
 

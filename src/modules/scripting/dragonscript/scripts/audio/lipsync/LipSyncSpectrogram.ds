@@ -1,0 +1,448 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Audio.LipSync
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+/**
+ * \brief Spectrogram based lip synchronization.
+ * \version 1.32
+ * 
+ * Provides lip synchronization by analyzing the spectrogram of the audio signal. Provides
+ * full viseme set. For more details see section "Full viseme set" and "Audio Analyzer" in
+ * \ref LipSync.
+ */
+class LipSyncSpectrogram extends LipSync
+	/**
+	 * \brief Viseme target.
+	 */
+	protected class VisemeTarget
+		var LipSync.VisemeResult pViseme
+		var float pLow, pLowMid, pMid, pHigh
+		var float pFlatLow, pFlatHigh, pFlatToLow, pFlatToHigh
+		var float pZcrLow, pZcrHigh, pZcrToLow, pZcrToHigh
+		
+		/**
+		 * \brief Create viseme target.
+		 */
+		func new(LipSync.VisemeResult viseme)
+			pViseme = viseme
+		end
+		
+		
+		/**
+		 * \brief Viseme result.
+		 */
+		func LipSync.VisemeResult getViseme()
+			return pViseme
+		end
+		
+		
+		/**
+		 * \brief Band factors.
+		 */
+		func float getLow()
+			return pLow
+		end
+		
+		func float getLowMid()
+			return pLowMid
+		end
+		
+		func float getMid()
+			return pMid
+		end
+		
+		func float getHigh()
+			return pHigh
+		end
+		
+		func void setBandFactors(float low, float lowMid, float mid, float high)
+			pLow = low
+			pLowMid = lowMid
+			pMid = mid
+			pHigh = high
+		end
+		
+		
+		/**
+		 * \brief Flatness factors.
+		 */
+		func float getFlatLow()
+			return pFlatLow
+		end
+		
+		func float getFlatHigh()
+			return pFlatHigh
+		end
+		
+		func float getFlatToLow()
+			return pFlatToLow
+		end
+		
+		func float getFlatToHigh()
+			return pFlatToHigh
+		end
+		
+		func void setFlatnessFactors(float flatLow, float flatHigh, float flatToLow, float flatToHigh)
+			pFlatLow = flatLow
+			pFlatHigh = flatHigh
+			pFlatToLow = flatToLow
+			pFlatToHigh = flatToHigh
+		end
+		
+		
+		/**
+		 * \brief ZCR factors.
+		 */
+		func float getZcrLow()
+			return pZcrLow
+		end
+		
+		func float getZcrHigh()
+			return pZcrHigh
+		end
+		
+		func float getZcrToLow()
+			return pZcrToLow
+		end
+		
+		func float getZcrToHigh()
+			return pZcrToHigh
+		end
+		
+		func void setZcrFactors(float zcrLow, float zcrHigh, float zcrToLow, float zcrToHigh)
+			pZcrLow = zcrLow
+			pZcrHigh = zcrHigh
+			pZcrToLow = zcrToLow
+			pZcrToHigh = zcrToHigh
+		end
+	end
+	
+	
+	var Dictionary pVisemeTargets
+	var Array pBandEnergies
+	var float pTotalBandEnergy
+	var OneEuroFilter pLow, pLowMid, pMid, pHigh, pRms, pFlatness, pZcr
+	
+	
+	/**
+	 * \brief Create lip sync.
+	 */
+	func new()
+		pBandEnergies = Array.new(16, 0.0)
+		
+		var float cutoff = 5, beta = 0
+		pLow = OneEuroFilter.new(cutoff, beta)
+		pLowMid = OneEuroFilter.new(cutoff, beta)
+		pMid = OneEuroFilter.new(cutoff, beta)
+		pHigh = OneEuroFilter.new(cutoff, beta)
+		pRms = OneEuroFilter.new(cutoff, beta)
+		pFlatness = OneEuroFilter.new(cutoff, beta)
+		pZcr = OneEuroFilter.new(cutoff, beta)
+		
+		pVisemeTargets = Dictionary.new()
+		forEachVisemeResult(block VisemeResult each
+			pVisemeTargets.setAt(each.getViseme(), VisemeTarget.new(each))
+		end)
+		pInitVisemeTargets()
+		
+		var AudioAnalyzer analyzer = getAudioAnalyzer()
+		analyzer.setSampleRate(16000)
+		analyzer.setResolution(512)
+		analyzer.setEnablePreEmphasis(true)
+		analyzer.setPreEmphasisFactor(0.97)
+		analyzer.setEnableMelFiltering(true)
+		analyzer.setNormalizeMelEnergies(false)
+		analyzer.setMelFilterCount(40)
+		analyzer.setFrequencyBandCount(16)
+		analyzer.setFrequencyRange(20, 8000)
+	end
+	
+	
+	/**
+	 * \brief Viseme target.
+	 */
+	protected func VisemeTarget getVisemeTarget(Viseme viseme)
+		return pVisemeTargets.getAt(viseme) cast VisemeTarget
+	end
+	
+	/**
+	 * \brief Band energies in normalized log-mel.
+	 * 
+	 * \ref Array of \ref float as log-mel divided by \ref #getTotalBandEnergy().
+	 */
+	protected func Array getBandEnergies()
+		return pBandEnergies
+	end
+	
+	/**
+	 * \brief Total band energy in log-mel.
+	 */
+	protected func float getTotalBandEnergy()
+		return pTotalBandEnergy
+	end
+	
+	
+	protected func void updateLipSync(float elapsed)
+		var AudioAnalyzer analyzer = getAudioAnalyzer()
+		analyzer.updateResults()
+		
+		var float rms = pRms.process(analyzer.getRMS(), elapsed)
+		if rms > this.getNoiseFloor()
+			collectBandEnergies()
+			calculateVisemes(elapsed)
+			
+			setVisemeSubsetFromFull()
+			setJawOpenessFromVisemeSubset()
+			
+		else
+			silence()
+		end
+	end
+	
+	
+	/**
+	 * \brief Collect band energies.
+	 * 
+	 * After this call band energies can be retrieved from \ref #getBandEnergies() and total
+	 * band energy from \ref #getTotalBandEnergy().
+	 */
+	protected func void collectBandEnergies()
+		// log(melEnergies) is roughly -20 near silence. the values are thus lifted by 20
+		// and clamped so they can be normalized
+		var AudioAnalyzer analyzer = getAudioAnalyzer()
+		
+		var int i, count = analyzer.getFrequencyBandCount()
+		var float energy
+		for i = 0 to count
+			energy = analyzer.getFrequencyBandEnergyAt(i)
+			if energy > 0
+				energy = Math.max(Math.log(energy) + 20, 0.0)
+			end
+			pBandEnergies.setAt(i, energy)
+		end
+		
+		pTotalBandEnergy = pBandEnergies.inject(0.0, block float acc, float energy
+			return acc + energy
+		end) cast float
+		
+		var float factor = pTotalBandEnergy > 0 if 1 / pTotalBandEnergy else 1
+		for i = 0 to count
+			pBandEnergies.setAt(i, pBandEnergies.getAt(i) cast float * factor)
+		end
+	end
+	
+	/** \brief Get low energy bucket. */
+	protected func float getEnergyLow()
+		return pLow.getLastValue()
+	end
+	
+	/** \brief Get low-mid energy bucket. */
+	protected func float getEnergyLowMid()
+		return pLowMid.getLastValue()
+	end
+	
+	/** \brief Get mid energy bucket. */
+	protected func float getEnergyMid()
+		return pMid.getLastValue()
+	end
+	
+	/** \brief Get high energy bucket. */
+	protected func float getEnergyHigh()
+		return pHigh.getLastValue()
+	end
+	
+	/** \brief Get RMS energy. */
+	protected func float getRms()
+		return pRms.getLastValue()
+	end
+	
+	/** \brief Get spectral flatness. */
+	protected func float getFlatness()
+		return pFlatness.getLastValue()
+	end
+	
+	/** \brief Get zero-crossing rate. */
+	protected func float getZcr()
+		return pZcr.getLastValue()
+	end
+	
+	/**
+	 * \brief Calculate visemes based on band energies.
+	 */
+	protected func void calculateVisemes(float elapsed)
+		// group bands into logical vocal buckets
+		var float low = pLow.process(getBandEnergyRange(0, 2), elapsed) // bass/plosives (PP, OU)
+		var float lowMid = pLowMid.process(getBandEnergyRange(3, 5), elapsed) // vowels (AA, OH, RR)
+		var float mid = pMid.process(getBandEnergyRange(6, 9), elapsed) // consonants (DD, NN, KK)
+		var float high = pHigh.process(getBandEnergyRange(10, 15), elapsed) // sibilants (SS, CH, FF)
+		
+		// map broad energy to specific visemes
+		var float total = low + lowMid + mid + high
+		var float factor = total > 0 if 1 / total else 0
+		
+		var float flatness = pFlatness.process(getAudioAnalyzer().getSpectralFlatness(), elapsed)
+		var float zrc = pZcr.process(getAudioAnalyzer().getZeroCrossingRate(), elapsed)
+		var float weight, mapLow, mapHigh
+		
+		pVisemeTargets.forEachValue(block VisemeTarget each
+			weight = (low * each.getLow() + lowMid * each.getLowMid()\
+				+ mid * each.getMid() + high * each.getHigh()) * factor
+			
+			// hissing noises work best with zero-crossing-rate
+			mapLow = each.getZcrLow()
+			mapHigh = each.getZcrHigh()
+			if mapLow > 0 and mapHigh > 0
+				weight *= DEMath.linearStep(zrc, mapLow, mapHigh,\
+					each.getZcrToLow(), each.getZcrToHigh())
+			end
+			
+			// prevent closed mouth visemes opening mouth
+			mapLow = each.getFlatLow()
+			mapHigh = each.getFlatHigh()
+			if mapLow > 0 and mapHigh > 0
+				weight *= DEMath.linearStep(flatness, mapLow, mapHigh,\
+					each.getFlatToLow(), each.getFlatToHigh())
+			end
+			
+			each.getViseme().setWeight(weight)
+		end)
+		
+		// put more weight into the strong visemes. for this silence all viseme with a weight
+		// below percentage of the strongest one then apply a smoothing curve to the remaining ones
+		var float maxWeight = pVisemeTargets.injectValue(0.0, block float acc, VisemeTarget each
+			return Math.max(acc, each.getViseme().getWeight())
+		end) cast float
+		
+		var float threshold = maxWeight * 0.5
+		pVisemeTargets.forEachValue(block VisemeTarget each
+			each.getViseme().setWeight(DEMath.smoothStep(each.getViseme().getWeight(), threshold, maxWeight))
+		end)
+		
+		normalizeVisemes()
+	end
+	
+	/**
+	 * \brief Get sum of band energies from lower to upper inclusive.
+	 */
+	func float getBandEnergyRange(int lower, int upper)
+		return pBandEnergies.inject(lower, upper + 1, 0.0, block float acc, float value
+			return acc + value
+		end) cast float
+	end
+	
+	
+	
+	private func void pInitVisemeTargets()
+		/*
+		as a little guide line some frequency "influence" groups
+		
+		| Index | Name | Typical Frequency Range | Key Sounds/Shapes            |
+		| ----- | ---- | ----------------------- | ---------------------------- |
+		|   0   |  sil | N/A                     | Silence/Resting              |
+		|   1   |  PP  | 20Hz – 400Hz (Low)      | P, B, M (Lips closed)        |
+		|   2   |  FF  | 3kHz – 7kHz (High)      | F, V (Lip-to-teeth)          |
+		|   3   |  TH  | 2kHz – 5kHz (High)      | TH (Tongue-to-teeth)         |
+		|   4   |  DD  | 500Hz – 2kHz (Mid)      | T, D, N (Tip-of-tongue)      |
+		|   5   |  kk  | 1kHz – 3kHz (Mid-High)  | K, G (Back-of-tongue)        |
+		|   6   |  CH  | 2kHz – 4kHz (High)      | CH, SH, J (Rounded/Mid-open) |
+		|   7   |  SS  | 4kHz – 8kHz (Very High) | S, Z (Wide/Tense)            |
+		|   8   |  nn  | 400Hz – 1.5kHz (Mid)    | N, L (Tongue-press)          |
+		|   9   |  RR  | 300Hz – 1kHz (Mid)      | R (Slightly rounded)         |
+		|  10   |  aa  | 500Hz – 1.2kHz (Mid)    | AH, AW (Open Jaw)            |
+		|  11   |  E   | 400Hz – 2kHz (Mid)      | EH (Mid-Open)                |
+		|  12   |  ih  | 300Hz – 3kHz (Wide)     | IH, EE (Stretched)           |
+		|  13   |  oh  | 300Hz – 800Hz (Low-Mid) | OH (Rounded/Mid-open)        |
+		|  14   |  ou  | 200Hz – 600Hz (Low)     | OO (Rounded/Forward)         |
+		*/
+		
+		var VisemeTarget t
+		
+		t = getVisemeTarget(Viseme.pp)
+		t.setBandFactors(0.4, 0.3, 0, 0)
+		//t.setFlatnessFactors(0.4, 0.7, 1, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.ff)
+		t.setBandFactors(0, 0, 0.25, 0.5)
+		t.setZcrFactors(0.1, 0.2, 0, 1)
+		
+		t = getVisemeTarget(Viseme.th)
+		t.setBandFactors(0, 0, 0.35, 0.3)
+		t.setZcrFactors(0.1, 0.2, 0, 1)
+		
+		t = getVisemeTarget(Viseme.dd)
+		t.setBandFactors(0, 0, 0.6, 0.2)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.kk)
+		t.setBandFactors(0, 0.3, 0.4, 0)
+		t.setFlatnessFactors(0.4, 0.7, 1, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.ch)
+		t.setBandFactors(0, 0, 0.1, 0.8)
+		t.setFlatnessFactors(0.4, 0.7, 1, 0)
+		t.setZcrFactors(0.1, 0.2, 0, 1)
+		
+		t = getVisemeTarget(Viseme.ss)
+		t.setBandFactors(0, 0, 0, 1)
+		t.setZcrFactors(0.2, 0.3, 0, 1)
+		
+		t = getVisemeTarget(Viseme.nn)
+		t.setBandFactors(0, 0.25, 0.5, 0.25)
+		t.setFlatnessFactors(0.6, 0.8, 0, 1)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.rr)
+		t.setBandFactors(0.3, 0.4, 0, 0)
+		t.setFlatnessFactors(0.4, 0.7, 1, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.aa)
+		t.setBandFactors(0, 1, 0, 0)
+		t.setFlatnessFactors(0.5, 0.7, 1, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.e)
+		t.setBandFactors(0, 0.7, 0.15, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.i)
+		t.setBandFactors(0, 0, 0.6, 0.2)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.o)
+		t.setBandFactors(0.8, 0.1, 0, 0)
+		t.setFlatnessFactors(0.3, 0.6, 1, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+		
+		t = getVisemeTarget(Viseme.u)
+		t.setBandFactors(0.9, 0.05, 0, 0)
+		t.setFlatnessFactors(0.3, 0.6, 1, 0)
+		t.setZcrFactors(0, 0.2, 1, 0)
+	end
+end

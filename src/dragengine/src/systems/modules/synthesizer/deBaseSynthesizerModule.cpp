@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 #include "deBaseSynthesizerModule.h"
-
+#include "deBaseSynthesizerAudioAnalyzer.h"
 
 
 // Class deBaseSynthesizerModule
@@ -34,5 +33,12 @@ deBaseSynthesizerModule::deBaseSynthesizerModule(deLoadableModule &loadableModul
 deBaseModule(loadableModule){
 }
 
-deBaseSynthesizerModule::~deBaseSynthesizerModule(){
+deBaseSynthesizerModule::~deBaseSynthesizerModule() = default;
+
+
+// Synthesizer Management
+///////////////////////////
+	
+deTUniqueReference<deBaseSynthesizerAudioAnalyzer> deBaseSynthesizerModule::CreateAudioAnalyzer(deAudioAnalyzer*){
+	return {};
 }

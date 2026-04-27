@@ -49,6 +49,9 @@
     <ProjectReference Include="..\..\..\extern\soundtouch\extern_soundtouch.vcxproj">
       <Project>{96f6e551-7e2b-4a33-b210-3e19b9080fa3}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\libfftw\extern_libfftw.vcxproj">
+      <Project>{5A8F72B1-3D9C-4E6F-A1B2-C3D4E5F67890}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\synthesizer\desynthesizer\SConscript" />
@@ -422,6 +425,7 @@
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynAudioAnalyzer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.cpp" />
@@ -453,6 +457,7 @@
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterBool.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterFloat.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynAudioAnalyzer.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynSound.h" />
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\synthesizer\desynCreateSynthesizerEffect.h" />

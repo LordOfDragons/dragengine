@@ -337,6 +337,8 @@ void deglDialogProfileListParameter::Reset(){
 		}
 	}
 	
+	pParameter.SetValue(pParameter.GetInfo().GetDefaultValue());
+	
 	Update();
 }
 

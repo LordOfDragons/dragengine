@@ -407,6 +407,9 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassAudioAnalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1076,6 +1079,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassAudioAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.h">

@@ -26,14 +26,17 @@
 #define _DEBASESYNTHESIZERMODULE_H_
 
 #include "../deBaseModule.h"
+#include "../../../deTUniqueReference.h"
 
 class deBaseSynthesizerSound;
 class deBaseSynthesizerSynthesizer;
 class deBaseSynthesizerSynthesizerInstance;
+class deBaseSynthesizerAudioAnalyzer;
 
 class deSound;
 class deSynthesizer;
 class deSynthesizerInstance;
+class deAudioAnalyzer;
 
 
 /**
@@ -89,6 +92,13 @@ public:
 	 */
 	virtual deBaseSynthesizerSynthesizerInstance *CreateSynthesizerInstance(
 		deSynthesizerInstance *instance) = 0;
+	
+	/**
+	 * \brief Create peer for audio analyzer or nullptr if not supported.
+	 *
+	 * Default implementation returns nullptr.
+	 */
+	virtual deTUniqueReference<deBaseSynthesizerAudioAnalyzer> CreateAudioAnalyzer(deAudioAnalyzer *analyzer);
 	/*@}*/
 };
 

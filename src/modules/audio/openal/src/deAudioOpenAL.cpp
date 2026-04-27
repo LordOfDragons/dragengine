@@ -22,23 +22,23 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deAudioOpenAL.h"
 #include "deoalCommandExecuter.h"
 #include "audiothread/deoalAudioThread.h"
+#include "capture/deoalAudioCapture.h"
 #include "component/deoalComponent.h"
 #include "configuration/deoalConfiguration.h"
 #include "configuration/deoalLSConfiguration.h"
 #include "devmode/deoalDevMode.h"
+#include "extensions/deoalExtensions.h"
 #include "parameters/deoalParameter.h"
 #include "parameters/deoalPEnableEFX.h"
 #include "parameters/deoalPAuralizationMode.h"
 #include "parameters/deoalPAuralizationQuality.h"
 #include "parameters/deoalPMaxEnvSlots.h"
 #include "parameters/deoalPLogLevel.h"
+#include "parameters/deoalPAudioCaptureVolume.h"
+#include "parameters/deoalPAudioCaptureNoiseGate.h"
 #include "microphone/deoalMicrophone.h"
 #include "model/deoalModel.h"
 #include "skin/deoalSkin.h"
@@ -48,6 +48,8 @@
 #include "synthesizer/deoalSynthesizerInstance.h"
 #include "video/deoalVideoPlayer.h"
 #include "world/deoalWorld.h"
+
+#include <dragengine/common/string/decStringList.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/dragengine_configuration.h>
@@ -113,6 +115,8 @@ pActiveMicrophone(nullptr)
 		pParameters.Add(deTUniqueReference<deoalPAuralizationQuality>::New(*this));
 		pParameters.Add(deTUniqueReference<deoalPMaxEnvSlots>::New(*this));
 		pParameters.Add(deTUniqueReference<deoalPLogLevel>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPAudioCaptureVolume>::New(*this));
+		pParameters.Add(deTUniqueReference<deoalPAudioCaptureNoiseGate>::New(*this));
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -140,15 +144,9 @@ bool deAudioOpenAL::HasAudioThread() const{
 	return pAudioThread != nullptr;
 }
 
-
-
 deoalWorld *deAudioOpenAL::GetActiveWorld() const{
-	if(!pActiveMicrophone){
-		return nullptr;
-	}
-	return pActiveMicrophone->GetParentWorld();
+	return pActiveMicrophone ? pActiveMicrophone->GetParentWorld() : nullptr;
 }
-
 
 
 bool deAudioOpenAL::Init(deMicrophone *activeMic){
@@ -164,6 +162,8 @@ bool deAudioOpenAL::Init(deMicrophone *activeMic){
 		
 		pAudioThread = new deoalAudioThread(*this);
 		pAudioThread->Init();
+		
+		pAudioCapture = deTUniqueReference<deoalAudioCapture>::New(*this);
 		
 		SetActiveMicrophone(activeMic);
 		
@@ -181,6 +181,8 @@ void deAudioOpenAL::CleanUp(){
 	if(pConfiguration){
 		deoalLSConfiguration(*this, *pConfiguration).SaveConfig();
 	}
+	
+	pAudioCapture.Clear();
 	
 	if(pAudioThread){
 		pAudioThread->CleanUp();
@@ -223,6 +225,11 @@ void deAudioOpenAL::ProcessAudio(){
 		
 	}else{
 		pAudioThread->SetActiveMicrophone(nullptr);
+	}
+	
+	// synchrnoize audio capture
+	if(pAudioCapture){
+		pAudioCapture->Synchronize();
 	}
 	
 	// synchronize audio thread and trigger next audio cycle
@@ -302,6 +309,65 @@ deBaseAudioSynthesizerInstance *deAudioOpenAL::CreateSynthesizerInstance(deSynth
 deBaseAudioHeightTerrain *deAudioOpenAL::CreateHeightTerrain(deHeightTerrain &heightTerrain){
 	return nullptr;
 }
+
+
+bool deAudioOpenAL::CanCaptureAudio() const{
+	return pAudioThread && pAudioThread->GetExtensions().GetCanCapture();
+}
+
+void deAudioOpenAL::StartAudioCapture(){
+	DEASSERT_NOTNULL(pAudioThread)
+	DEASSERT_TRUE(pAudioThread->GetExtensions().GetCanCapture())
+	
+	pAudioCapture->StartCapture();
+}
+
+void deAudioOpenAL::StopAudioCapture(){
+	DEASSERT_NOTNULL(pAudioThread)
+	DEASSERT_TRUE(pAudioThread->GetExtensions().GetCanCapture())
+	
+	pAudioCapture->StopCapture();
+}
+
+bool deAudioOpenAL::IsCapturingAudio() const{
+	return pAudioCapture && pAudioCapture->IsCapturing();
+}
+
+void deAudioOpenAL::GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const{
+	if(pAudioCapture){
+		format = pAudioCapture->GetFormat();
+		
+	}else{
+		format = {};
+	}
+}
+
+void deAudioOpenAL::GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const{
+	if(pAudioCapture){
+		levels = pAudioCapture->GetLevels();
+		
+	}else{
+		levels = {};
+	}
+}
+
+#if 0
+decStringList deAudioOpenAL::GetRecordSources(){
+	decStringList sources;
+	
+	// query the list of available capture devices. alcGetString with ALC_CAPTURE_DEVICE_SPECIFIER
+	// returns a double-null-terminated list of null-terminated device name strings
+	const ALCchar *deviceList = alcGetString(nullptr, ALC_CAPTURE_DEVICE_SPECIFIER);
+	if(deviceList){
+		while(*deviceList){
+			sources.Add(deviceList);
+			deviceList += strlen(deviceList) + 1;
+		}
+	}
+	
+	return sources;
+}
+#endif
 
 
 

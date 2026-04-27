@@ -708,6 +708,18 @@ void deoglRComponent::InvalidateVAO(){
 
 
 
+void deoglRComponent::ResetSkinTime(float time){
+	// WARNING called from main thread during synchronization time
+	
+	pSkinState->SetTime(time);
+	
+	pTextures.Visit([&](deoglRComponentTexture &texture){
+		if(texture.GetSkinState()){
+			texture.GetSkinState()->SetTime(time);
+		}
+	});
+}
+
 void deoglRComponent::UpdateSkin(float elapsed){
 	// WARNING called from main thread during synchronization time
 	

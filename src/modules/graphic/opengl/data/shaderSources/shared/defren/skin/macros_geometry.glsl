@@ -23,7 +23,11 @@ precision HIGHP float;
 precision HIGHP int;
 
 const bool SolidityMultiplier = GeometryMode == GeometryModeDecal;
-const bool WithSolidity = TextureSolidity || WithOutline || SkinClipPlane;
+const bool WithSolidity = TextureSolidity || WithOutline || SkinClipPlane
+	|| WithDitherTransparency;
+
+const bool WithMaskedSolidity = MaskedSolidity || WithDitherTransparency;
+
 const bool WithEmissivity = TextureEmissivity || TextureRimEmissivity || WithOutline;
 
 const bool WithReflectDir = WithReflection || TextureEnvMap || TextureRimEmissivity

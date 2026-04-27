@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deSynthesizerSystem.h"
 #include "modules/deLoadableModule.h"
 #include "modules/synthesizer/deBaseSynthesizerModule.h"
@@ -36,6 +32,7 @@
 #include "../resources/synthesizer/deSynthesizer.h"
 #include "../resources/synthesizer/deSynthesizerManager.h"
 #include "../resources/synthesizer/deSynthesizerInstance.h"
+#include "../resources/sound/deAudioAnalyzer.h"
 #include "../resources/sound/deSound.h"
 
 
@@ -94,6 +91,15 @@ void deSynthesizerSystem::LoadSynthesizerInstance(deSynthesizerInstance *instanc
 		DETHROW(deeInvalidParam);
 	}
 	instance->SetPeerSynthesizer(pActiveModule->CreateSynthesizerInstance(instance));
+}
+
+void deSynthesizerSystem::LoadAudioAnalyzer(deAudioAnalyzer *analyzer){
+	if(!GetIsRunning()){
+		return;
+	}
+	
+	DEASSERT_NULL(analyzer->GetPeerSynthesizer())
+	analyzer->SetPeerSynthesizer(pActiveModule->CreateAudioAnalyzer(analyzer));
 }
 
 

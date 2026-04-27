@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<world>
+	<size x='1000' y='1000' z='1000'/>
+	<gravity x='0' y='-9.81' z='0'/>
+	<worldEditor>
+		<skyPath>/igde/skies/black.desky</skyPath>
+		<backgroundObject>
+			<world/>
+		</backgroundObject>
+	</worldEditor>
+	<nextObjectID>b</nextObjectID>
+	
+	<object id='1'>
+		<classname>IGDETestTerrain</classname>
+		<position x='0' y='0' z='0'/>
+	</object>
+	<object id='2'>
+		<classname>IGDEElement</classname>
+		<position x='0' y='0' z='10'/>
+		<rotation x='0' y='-90' z='0'/>
+		<scaling x='2' y='2' z='2'/>
+		<property key='model'>/igde/models/materialTest/stanford/dragon.demodel</property>
+		<property key='skin'>/igde/materials/stoneFloor/material.deskin</property>
+	</object>
+	<object id='3'>
+		<classname>IGDEElement</classname>
+		<position x='0' y='0' z='-10'/>
+		<rotation x='0' y='90' z='0'/>
+		<scaling x='2' y='2' z='2'/>
+		<property key='model'>/igde/models/materialTest/stanford/dragon.demodel</property>
+		<property key='skin'>/igde/materials/stoneFloor/material.deskin</property>
+	</object>
+	<object id='4'>
+		<classname>BaseLight</classname>
+		<position x='0.284' y='3.35' z='7'/>
+		<rotation x='-35' y='-176.537' z='1.731'/>
+		<property key='light.spotAngle'>75</property>
+		<property key='light.type'>spot</property>
+		<property key='light.intensity'>0.25</property>
+		<property key='light.range'>25</property>
+		<property key='light.halfIntensityDistance'>0.25</property>
+	</object>
+	<object id='5'>
+		<classname>BaseLight</classname>
+		<position x='-0.284' y='3.35' z='-7'/>
+		<rotation x='-35' y='3' z='0'/>
+		<property key='light.spotAngle'>75</property>
+		<property key='light.type'>spot</property>
+		<property key='light.intensity'>0.25</property>
+		<property key='light.range'>25</property>
+		<property key='light.halfIntensityDistance'>0.25</property>
+	</object>
+	<object id='6'>
+		<classname>IGDEElement</classname>
+		<position x='9.99994' y='0' z='-0.000193858'/>
+		<rotation x='0' y='180' z='0'/>
+		<scaling x='2' y='2' z='2'/>
+		<property key='model'>/igde/models/materialTest/stanford/dragon.demodel</property>
+		<property key='skin'>/igde/materials/stoneFloor/material.deskin</property>
+	</object>
+	<object id='7'>
+		<classname>BaseLight</classname>
+		<position x='7' y='3.35' z='-0.284'/>
+		<rotation x='-35' y='93' z='0'/>
+		<property key='light.spotAngle'>75</property>
+		<property key='light.type'>spot</property>
+		<property key='light.intensity'>0.25</property>
+		<property key='light.range'>25</property>
+		<property key='light.halfIntensityDistance'>0.25</property>
+	</object>
+	<object id='8'>
+		<classname>BaseLight</classname>
+		<position x='-7' y='3.35' z='0.284'/>
+		<rotation x='-35' y='-87' z='0'/>
+		<property key='light.spotAngle'>75</property>
+		<property key='light.type'>spot</property>
+		<property key='light.intensity'>0.25</property>
+		<property key='light.range'>25</property>
+		<property key='light.halfIntensityDistance'>0.25</property>
+	</object>
+	<object id='9'>
+		<classname>IGDEElement</classname>
+		<position x='-10.0001' y='0' z='-0.000192984'/>
+		<scaling x='2' y='2' z='2'/>
+		<property key='model'>/igde/models/materialTest/stanford/dragon.demodel</property>
+		<property key='skin'>/igde/materials/stoneFloor/material.deskin</property>
+	</object>
+	<object id='a'>
+		<classname>EnvironmentMap</classname>
+		<position x='0' y='2' z='0'/>
+		<property key='envMapProbe.reflectionShape'>box:position,0,0,0:extends,50,2,50</property>
+	</object>
+</world>

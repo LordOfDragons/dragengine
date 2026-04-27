@@ -137,6 +137,11 @@ void deoglAddToRenderTask::SetSolid(bool solid){
 	pUpdateFilters();
 }
 
+void deoglAddToRenderTask::SetFilterSolid(bool filterSolid){
+	pFilterSolid = filterSolid;
+	pUpdateFilters();
+}
+
 void deoglAddToRenderTask::SetNoNotReflected(bool noNotReflected){
 	pNoNotReflected = noNotReflected;
 	pUpdateFilters();
@@ -206,6 +211,7 @@ void deoglAddToRenderTask::Reset(){
 	pSkinPipelineModifier = 0;
 	
 	pSolid = false;
+	pFilterSolid = true;
 	pNoShadowNone = false;
 	pNoNotReflected = false;
 	pNoRendered = false;
@@ -1003,7 +1009,7 @@ deoglRParticleEmitterInstanceType &type){
 	const bool solid = skinTexture->GetSolid(); // && !etype.GetHasTransparency();
 	const bool hasHoles = skinTexture->GetHasHoles(); // && !etype.GetHasTransparency();
 	
-	if(pSolid != solid){
+	if(pFilterSolid && pSolid != solid){
 		return;
 	}
 	if(pFilterXRay && pXRay != skinTexture->GetXRay()){
@@ -1124,12 +1130,16 @@ void deoglAddToRenderTask::pUpdateFilters(){
 	
 	if(pOutline){
 		pFilters |= ertfOutline;
-		if(pSolid){
-			pFilters |= ertfOutlineSolid;
-		}
-		pFilterMask |= ertfOutline | ertfOutlineSolid;
+		pFilterMask |= ertfOutline;
 		
-	}else{
+		if(pFilterSolid){
+			if(pSolid){
+				pFilters |= ertfOutlineSolid;
+			}
+			pFilterMask |= ertfOutlineSolid;
+		}
+		
+	}else if(pFilterSolid){
 		if(pSolid){
 			pFilters |= ertfSolid;
 		}
@@ -1173,12 +1183,12 @@ bool deoglAddToRenderTask::pFilterReject(const deoglSkinTexture &skinTexture) co
 		if(!skinTexture.GetHasOutline()){
 			return true;
 		}
-		if(pSolid != skinTexture.GetIsOutlineSolid()){
+		if(pFilterSolid && pSolid != skinTexture.GetIsOutlineSolid()){
 			return true;
 		}
 		
 	}else{
-		if(pSolid != skinTexture.GetSolid()){
+		if(pFilterSolid && pSolid != skinTexture.GetSolid()){
 			return true;
 		}
 	}

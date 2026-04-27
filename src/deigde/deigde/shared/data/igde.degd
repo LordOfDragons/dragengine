@@ -139,84 +139,21 @@
 		<category>IGDE</category>
 	</class>
 	
-	<class name='IGDEEnvironmentRigEditor'>
-		<description>Test environment for the rig editor.</description>
-		<size x='52' y='5' z='52'/>
-		<base x='15' y='2.5' z='-5'/>
+	<class name='IGDETestTerrainNight'>
+		<description>Night time test terrain for use in the IGDE editors only. Uses point lights.</description>
 		<scaleMode>uniform</scaleMode>
-		<component>
-			<model>/igde/models/environments/rigeditor.demodel</model>
-			<rig>/igde/models/environments/rigeditor.derig</rig>
-			<texture name='wall'>
-				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
-			</texture>
-			<texture name='beton'>
-				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
-			</texture>
-			<texture name='grass'>
-				<skin>/igde/models/environments/materials/grass/material.deskin</skin>
-			</texture>
-		</component>
-		<environmentMapProbe>
-			<position x='0' y='2' z='0'/>
-			<reflectionShape>box:position,15,23,-5:extends,25,25,25</reflectionShape>
-		</environmentMapProbe>
+		<world>
+			<path>/igde/worlds/testTerrainNight.deworld</path>
+		</world>
 		<category>IGDE</category>
 	</class>
 	
-	<class name='IGDEEnvironmentRigEditor2'>
-		<description>Test environment for the rig editor.</description>
-		<size x='52' y='5' z='52'/>
-		<base x='15' y='2.5' z='-5'/>
-		<ghost>0</ghost>
+	<class name='IGDETestTerrainNight2'>
+		<description>Night time test terrain for use in the IGDE editors only. Uses spot lights.</description>
 		<scaleMode>uniform</scaleMode>
-		<component>
-			<model>/igde/models/environments/rigeditor2.demodel</model>
-			<rig>/igde/models/environments/rigeditor.derig</rig>
-			<texture name='wall'>
-				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
-			</texture>
-			<texture name='beton'>
-				<skin>/igde/models/environments/materials/beton/material.deskin</skin>
-			</texture>
-			<texture name='grass'>
-				<skin>/igde/models/environments/materials/grass/material.deskin</skin>
-			</texture>
-		</component>
-		<environmentMapProbe>
-			<position x='0' y='2' z='0'/>
-			<reflectionShape>box:position,15,23,-5:extends,25,25,25</reflectionShape>
-		</environmentMapProbe>
-		<light>
-			<type>point</type>
-			<position x='-5' y='10.7' z='-8'/>
-			<orientation x='0' y='0' z='0'/>
-			<color r='1' g='1' b='1'/>
-			<intensity>10</intensity>
-			<halfIntensityDistance>0.2</halfIntensityDistance>
-			<range>20</range>
-			<activated>1</activated>
-			<hintMovement>static</hintMovement>
-			<hintParameter>flicker</hintParameter>
-			<castShadows>true</castShadows>
-			<hintLightImportance>100</hintLightImportance>
-			<hintShadowImportance>100</hintShadowImportance>
-		</light>
-		<light>
-			<type>point</type>
-			<position x='5' y='10.7' z='8'/>
-			<orientation x='0' y='0' z='0'/>
-			<color r='1' g='1' b='1'/>
-			<intensity>10</intensity>
-			<halfIntensityDistance>0.2</halfIntensityDistance>
-			<range>20</range>
-			<activated>1</activated>
-			<hintMovement>static</hintMovement>
-			<hintParameter>flicker</hintParameter>
-			<castShadows>true</castShadows>
-			<hintLightImportance>100</hintLightImportance>
-			<hintShadowImportance>100</hintShadowImportance>
-		</light>
+		<world>
+			<path>/igde/worlds/testTerrainNight2.deworld</path>
+		</world>
 		<category>IGDE</category>
 	</class>
 	

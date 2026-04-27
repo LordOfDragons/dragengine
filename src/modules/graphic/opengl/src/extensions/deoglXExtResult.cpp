@@ -22,10 +22,7 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-
 #include "deoglXExtResult.h"
-
 
 #if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
 

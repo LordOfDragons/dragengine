@@ -110,6 +110,9 @@ private:
 	float pSwitchSharedEnvironmentThreshold;
 	int pMaxSharedEffectSlots;
 	
+	float pAudioCaptureVolume;
+	float pAudioCaptureNoiseGate;
+	
 	
 	
 public:
@@ -271,8 +274,20 @@ public:
 	
 	/** Set maximum shared effect slot count. */
 	void SetMaxSharedEffectSlots(int count);
-	/*@}*/
 	
+	
+	/** Audio capture volume scale factor. */
+	inline float GetAudioCaptureVolume() const{ return pAudioCaptureVolume; }
+	
+	/** Set audio capture volume scale factor. */
+	void SetAudioCaptureVolume(float volume);
+	
+	/** Audio capture noise gate threshold. */
+	inline float GetAudioCaptureNoiseGate() const{ return pAudioCaptureNoiseGate; }
+	
+	/** Set audio capture noise gate threshold. */
+	void SetAudioCaptureNoiseGate(float noiseGate);
+	/*@}*/
 	
 	
 	/** \name Operator */
@@ -282,9 +297,7 @@ public:
 	/*@}*/
 	
 	
-	
 private:
-	void pCleanUp();
 	void pApplyAuralizationProfile();
 };
 

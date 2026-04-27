@@ -39,6 +39,7 @@
 #include "../deoalCaches.h"
 #include "../buffer/deoalSharedBufferList.h"
 #include "../capabilities/deoalCapabilities.h"
+#include "../capture/deoalAudioCapture.h"
 #include "../component/deoalComponent.h"
 #include "../effect/deoalEffectSlotManager.h"
 #include "../effect/deoalSharedEffectSlotManager.h"
@@ -246,9 +247,10 @@ void deoalAudioThread::CleanUp(){
 		pCleanUpThread();
 	}
 	
+	pAudioCapture.Clear();
 	SetActiveMicrophone(nullptr);
 	
-	pDeactiveMicrophone = nullptr;
+	pDeactiveMicrophone.Clear();
 	pActiveWorld = nullptr;
 	pProcessOnceWorld.RemoveAll();
 	
@@ -645,7 +647,6 @@ void deoalAudioThread::pCleanUp(){
 }
 
 
-
 void deoalAudioThread::pInitThreadPhase1(){
 	// open device. this has to be done first
 	pContext = new deoalATContext(*this);
@@ -851,6 +852,10 @@ void deoalAudioThread::pProcessAudio(){
 		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
 	}
 	
+	if(pAudioCapture){
+		pAudioCapture->CaptureSamples();
+	}
+	
 	while(pProcessOnceWorld.IsNotEmpty()){
 		deoalAWorld * const world = pProcessOnceWorld.First();
 		world->PrepareProcessAudio();
@@ -888,6 +893,10 @@ void deoalAudioThread::pProcessAudioFast(){
 // 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
 		pWaitSkippedElapsed += pElapsed;
 		pWaitSkipped = true;
+	}
+	
+	if(pAudioCapture){
+		pAudioCapture->CaptureSamples();
 	}
 	
 	if(pActiveMicrophone){

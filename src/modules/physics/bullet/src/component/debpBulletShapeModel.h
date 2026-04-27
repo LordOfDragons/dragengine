@@ -80,9 +80,11 @@ public:
 	inline btTriangleIndexVertexArray *GetIndexVertexArray() const{ return pIndexVertexArray; }
 	
 	/** \brief Vertices. */
+	inline btScalar *GetVertices(){ return pVertices.GetArrayPointer(); }
 	inline const btScalar *GetVertices() const{ return pVertices.GetArrayPointer(); }
 	
 	/** \brief Faces. */
+	inline int *GetFaces(){ return pFaces.GetArrayPointer(); }
 	inline const int *GetFaces() const{ return pFaces.GetArrayPointer(); }
 	
 	/** \brief Vertex count. */

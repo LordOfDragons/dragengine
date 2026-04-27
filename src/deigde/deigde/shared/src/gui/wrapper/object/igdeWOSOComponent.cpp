@@ -1100,8 +1100,8 @@ bool igdeWOSOComponent::pIsVisible() const{
 		visible = partiallyVisible;
 	}
 	
-	//return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
-	return GetWrapper().GetColliderComponent() && partiallyVisible;
+	//return pCollider == GetWrapper().GetColliderComponent() && visible;
+	return GetWrapper().GetColliderComponent() && visible;
 }
 
 void igdeWOSOComponent::pUpdateOutlineComponent(){

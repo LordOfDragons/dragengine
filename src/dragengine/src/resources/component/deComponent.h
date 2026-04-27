@@ -202,6 +202,19 @@ public:
 	/** \brief Set model and skin at the same time. Either one can be NULL. */
 	void SetModelAndSkin(deModel *model, deSkin *skin);
 	
+	/**
+	 * \brief Reset skin time.
+	 * \version 1.32
+	 * 
+	 * The graphic module manages skin time. When creating a new component the skin time is
+	 * set to 0 and advanced when the deWorld is updated. All components created at the same
+	 * time share the same skin time. Reseting the skin time can be used for two main purposes:
+	 * - Manually synchronize the skin time of a set of components
+	 * - Randomize skin time of components created at the same time
+	 * Do not call this method to advance the skin time manually.
+	 */
+	void ResetSkinTime(float time);
+	
 	/** \brief Occlusion mesh or NULL if not assigned. */
 	inline const deOcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	

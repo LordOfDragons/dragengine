@@ -1,0 +1,111 @@
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+buildStaticLinking = True
+
+libversion = '3.3.10'
+srcdir = 'fftw-{}'.format(libversion)
+
+libLinkVersion = '3'
+libLinkName = 'fftw3'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libfftw', 'lib_libfftw_fetch')
+
+# check if system libfftw is present
+hasSystemFFTW = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libfftw'] != TernaryVariableNo:
+	hasSystemFFTW = conf.CheckLibWithHeader(libLinkName, 'fftw3.h', 'c++', call='fftw_plan_dft_r2c_1d(0,0,0,0);')
+conf.Finish()
+
+if not hasSystemFFTW and envLibrary['with_system_libfftw'] == TernaryVariableYes:
+	Exit('Requested to use system libfftw but no usable libfftw found.')
+
+libs = [libLinkName]
+
+parent_report['use system libfftw'] = 'yes' if hasSystemFFTW else 'no'
+
+if hasSystemFFTW:
+	parent_targets['lib_libfftw'] = {
+		'name' : 'Internal libfftw library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : []
+	}
+	Return()
+
+# build libfftw
+def libfftwBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	cmdline.append('--enable-silent-rules')
+	cmdline.append('--disable-dependency-tracking')
+	cmdline.append('--disable-doc')
+	cmdline.append('--disable-fortran')
+	# cmdline.append('--enable-threads')  # multi-threading support
+	# cmdline.append('--enable-openmp')  # OpenMP support
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building libfftw')
+
+targets = [staticFileName if buildStaticLinking else libFileName]
+targets.extend([
+	'include/fftw3.h'
+])
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(libfftwBuild, 'Build libfftw'))
+
+depends = parent_env.Alias('lib_libfftw', library)
+
+envLibrary.Clean(library, ['include', 'lib', 'share', 'bin', srcdir])
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_libfftw'] = {
+	'name' : 'Internal libfftw library',
+	'cpppath' : [envLibrary.Dir('include')],
+	'libpath' : [envLibrary.Dir('lib')],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends
+}

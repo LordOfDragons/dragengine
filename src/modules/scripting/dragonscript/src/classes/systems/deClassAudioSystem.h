@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassAudioSystem(deScriptingDragonScript &ds);
+	explicit deClassAudioSystem(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	~deClassAudioSystem() override;
@@ -83,6 +83,18 @@ private:
 	}
 	DEF_NATFUNC(nfGetActiveMicrophone);
 	DEF_NATFUNC(nfSetActiveMicrophone);
+	
+	DEF_NATFUNC(nfCanCaptureAudio);
+	DEF_NATFUNC(nfStartAudioCapture);
+	DEF_NATFUNC(nfStopAudioCapture);
+	DEF_NATFUNC(nfIsCapturingAudio);
+	DEF_NATFUNC(nfGetAudioCaptureSampleRate);
+	DEF_NATFUNC(nfGetAudioCaptureBitRate);
+	DEF_NATFUNC(nfGetAudioCapturePeak);
+	DEF_NATFUNC(nfGetAudioCaptureRMS);
+	
+	DEF_NATFUNC(nfMagnitudeToDb);
+	DEF_NATFUNC(nfMagnitudeToDbPercentage);
 	
 	DEF_NATFUNC(nfGetParameterCount);
 	DEF_NATFUNC(nfGetParameterInfo);

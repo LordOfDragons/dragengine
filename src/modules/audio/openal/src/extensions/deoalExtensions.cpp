@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalExtensions.h"
 #include "../deoalBasics.h"
 #include "../audiothread/deoalAudioThread.h"
@@ -48,7 +44,8 @@ extern __eglMustCastToProperFunctionPointerType androidGetProcAddress(const char
 static const char * const vExtensionNames[deoalExtensions::EXT_COUNT] = {
 	"ALC_EXT_EFX",
 	"ALC_SOFT_HRTF",
-	"ALC_EXT_debug"
+	"ALC_EXT_debug",
+	"ALC_EXT_CAPTURE"
 };
 
 
@@ -63,9 +60,12 @@ deoalExtensions::deoalExtensions(deoalAudioThread &audioThread) :
 pAudioThread(audioThread),
 pVersionMajor(0),
 pVersionMinor(0),
-pHasRequiredFunctions(true),
 pEfxVersionMajor(0),
-pEfxVersionMinor(0)
+pEfxVersionMinor(0),
+pHasRequiredFunctions(true),
+pHasEFX(false),
+pHasHRTF(false),
+pCanCapture(false)
 {
 	int i;
 	for(i=0; i<EXT_COUNT; i++){
@@ -101,6 +101,7 @@ void deoalExtensions::ScanDeviceExtensions() {
 	
 	pHasEFX = pHasExtension[ext_ALC_EXT_EFX];
 	pHasHRTF = pHasExtension[ext_ALC_SOFT_HRTF];
+	pCanCapture = pHasExtension[ext_ALC_EXT_CAPTURE];
 }
 
 void deoalExtensions::ScanContextExtensions(){

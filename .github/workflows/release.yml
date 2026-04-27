@@ -93,7 +93,8 @@ jobs:
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_android.yml
     with:
-      releaseVersion: nightly
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       androidArch: 'armv8'
       artifactArchive: archives-android-armv8
@@ -104,7 +105,8 @@ jobs:
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_android.yml
     with:
-      releaseVersion: nightly
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       androidArch: 'armv7'
       artifactArchive: archives-android-armv7

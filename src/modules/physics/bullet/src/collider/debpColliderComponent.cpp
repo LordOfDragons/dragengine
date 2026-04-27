@@ -33,7 +33,6 @@
 #include "debpColliderBones.h"
 #include "../dePhysicsBullet.h"
 #include "../debpBulletShape.h"
-#include "../debpBulletCompoundShape.h"
 #include "../debpMotionState.h"
 #include "../debpPhysicsBody.h"
 #include "../debpRig.h"
@@ -46,6 +45,7 @@
 #include "../component/debpModel.h"
 #include "../component/debpComponent.h"
 #include "../component/debpBulletShapeModel.h"
+#include "../component/debpBulletShapeModelScaled.h"
 #include "../forcefield/debpForceField.h"
 #include "../shape/debpShape.h"
 #include "../shape/debpCreateShape.h"
@@ -86,7 +86,6 @@
 #include <dragengine/deEngine.h>
 
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
 #include "BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
 #include "BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
 #include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
@@ -2473,24 +2472,8 @@ void debpColliderComponent::pUpdateBones(){
 				pSimplePhyBody->SetShapeSurface(0.0f); // TODO just triangle surface is enough
 				
 			}else{
-				// btScaledBvhTriangleMeshShape would contain working scaling but compound scaling is not working
-				
-				btCompoundShape *compoundShape = NULL;
-				btTransform transform;
-				transform.setIdentity(); // required, constructor does not initialize anything
-				
-				compoundShape = new btCompoundShape(true);
-				compoundShape->setUserPointer((void*)(intptr_t)0);
-				compoundShape->addChildShape(transform, model->GetShape()->GetShape()); // not released on destructor
-				
-				compoundShape->setLocalScaling(btVector3((btScalar)scale.x, (btScalar)scale.y, (btScalar)scale.z));
-					// setLocalScaling has to come last or scaling does not propagate
-				
-				const debpBulletCompoundShape::Ref bulletShape(
-					debpBulletCompoundShape::Ref::New(compoundShape));
-				bulletShape->AddChildShape(model->GetShape());
-				
-				pSimplePhyBody->SetShape(bulletShape);
+				pSimplePhyBody->SetShape(debpBulletShapeModelScaled::New(model->GetShape(),
+					btVector3((btScalar)scale.x, (btScalar)scale.y, (btScalar)scale.z)));
 				pSimplePhyBody->SetShapeSurface(0.0f);
 			}
 			

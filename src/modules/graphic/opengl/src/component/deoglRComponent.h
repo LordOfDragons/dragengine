@@ -428,6 +428,9 @@ public:
 	
 	
 	
+	/** Reset skin time. */
+	void ResetSkinTime(float time);
+	
 	/** Update skin. */
 	void UpdateSkin(float elapsed);
 	

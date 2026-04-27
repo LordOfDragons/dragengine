@@ -101,6 +101,7 @@ DTA(layout(binding=18) uniform mediump sampler2DArray texRimEmissivityArray)
 
 layout(binding=19) uniform HIGHP sampler2DArray texDepthTest;
 
+layout(binding=20) uniform lowp sampler2D texNoise;
 
 
 #undef DTNA

@@ -24,6 +24,7 @@
 	<define>TP_NORMAL_STRENGTH</define>
 	<define>WITH_OUTLINE</define>
 	<define>WITH_VARIATIONS</define>
+	<define>WITH_DITHER_TRANSPARENCY</define>
 	
 	<define>TEXTURE_ABSORPTION</define>
 	<define>TEXTURE_AO</define>

@@ -37,6 +37,7 @@ class deAnimatorManager;
 class deAnimatorInstanceManager;
 class deAnimatorSystem;
 class deArchiveManager;
+class deAudioAnalyzerManager;
 class deAudioSystem;
 class deBaseSystem;
 class deBillboardManager;
@@ -277,6 +278,7 @@ public:
 	deAnimationManager *GetAnimationManager() const;
 	deAnimatorManager *GetAnimatorManager() const;
 	deAnimatorInstanceManager *GetAnimatorInstanceManager() const;
+	deAudioAnalyzerManager *GetAudioAnalyzerManager() const;
 	deArchiveManager *GetArchiveManager() const;
 	deBillboardManager *GetBillboardManager() const;
 	deCanvasManager *GetCanvasManager() const;

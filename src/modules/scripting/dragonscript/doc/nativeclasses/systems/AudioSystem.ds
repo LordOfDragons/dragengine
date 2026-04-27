@@ -20,12 +20,114 @@ fixed class AudioSystem
 	/** \name Management */
 	/*@{*/
 	/** \brief Active microphone. */
-	public static func Microphone getActiveMicrophone()
+	static func Microphone getActiveMicrophone()
 		return null
 	end
 	
 	/** \brief Set active microphone. */
-	public static func void setActiveMicrophone( Microphone microphone )
+	static func void setActiveMicrophone( Microphone microphone )
+	end
+	
+	
+	
+	/**
+	 * \brief Audio can be captured.
+	 * \version 1.32
+	 */
+	static func bool canCaptureAudio()
+		return false
+	end
+	
+	/**
+	 * \brief Start audio capture.
+	 * \version 1.32
+	 * 
+	 * On certain platforms capturing audio requires explicit user consent. Calling this method
+	 * can potentially interrupt the application showing a permission dialog. Hence after calling
+	 * this method it can take some time until the audio capture begins. You can check if audio
+	 * capturing is running by calling \ref #isCapturingAudio().
+	 */
+	static func void startAudioCapture()
+	end
+	
+	/**
+	 * \brief Stop audio capture.
+	 * \version 1.32
+	 */
+	static func void stopAudioCapture()
+	end
+	
+	/**
+	 * \brief Is capturing audio.
+	 * \version 1.32
+	 * \return true between calls to \ref #startAudioCapture() and \ref #stopAudioCapture()
+	 *         otherwise false.
+	 */
+	static func bool isCapturingAudio()
+		return false
+	end
+	
+	/**
+	 * \brief Sample rate of audio capture in Hz.
+	 * \version 1.32
+	 * 
+	 * Returns 0 if audio is not being captured.
+	 */
+	static func int getAudioCaptureSampleRate()
+		return 0
+	end
+	
+	/**
+	 * \brief Bit rate of audio capture (e.g. 16).
+	 * \version 1.32
+	 * 
+	 * Returns 0 if audio is not being captured.
+	 */
+	static func int getAudioCaptureBitRate()
+		return 0
+	end
+	
+	/**
+	 * \brief Peak audio level.
+	 * \version 1.32
+	 * 
+	 * Returns value in the range from 0 to 1. Returns 0 if audio is not being captured.
+	 */
+	static func float getAudioCapturePeak()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Root-mean-square audio level.
+	 * \version 1.32
+	 * 
+	 * Returns value in the range from 0 to 1. Returns 0 if audio is not being captured.
+	 */
+	static func float getAudioCaptureRMS()
+		return 0.0
+	end
+	
+	
+	
+	/**
+	 * \brief Convert magnitude to decibel.
+	 * \version 1.32
+	 * 
+	 * Converts magnitude in the range from 0 to 1 to decibel value.
+	 */
+	static func float magnitudeToDb(float level)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Convert magnitude to percentage decibel.
+	 * \version 1.32
+	 * 
+	 * Converts magnitude in the range from 0 to 1 to percentage decibel in the range
+	 * from 0(-60dB) to 1(0dB).
+	 */
+	static func float magnitudeToDbPercentage(float level)
+		return 0.0
 	end
 	/*@}*/
 	
@@ -34,7 +136,7 @@ fixed class AudioSystem
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Number of parameters available. */
-	public static func int getParameterCount()
+	static func int getParameterCount()
 		return 0
 	end
 	
@@ -42,12 +144,12 @@ fixed class AudioSystem
 	 * \brief Parameter information.
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
-	public static func ModuleParameter getParameterInfo( int index )
+	static func ModuleParameter getParameterInfo( int index )
 		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
-	public static func ModuleParameter getParameterInfo( String name )
+	static func ModuleParameter getParameterInfo( String name )
 		return null
 	end
 	
@@ -55,7 +157,7 @@ fixed class AudioSystem
 	 * \brief Parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func String getParameterValue( String name )
+	static func String getParameterValue( String name )
 		return null
 	end
 	
@@ -63,11 +165,11 @@ fixed class AudioSystem
 	 * \brief Set named parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func void setParameterValue( String name, String value )
+	static func void setParameterValue( String name, String value )
 	end
 	
 	/** \brief Send command. */
-	public static func String sendCommand( String command )
+	static func String sendCommand( String command )
 		return null
 	end
 	
@@ -77,7 +179,7 @@ fixed class AudioSystem
 	 * 
 	 * Returns 0 if module is not using a separate thread.
 	 */
-	public static func int getFPSRate()
+	static func int getFPSRate()
 		return 0
 	end
 	/*@}*/

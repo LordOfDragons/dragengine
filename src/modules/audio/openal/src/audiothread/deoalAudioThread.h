@@ -26,12 +26,14 @@
 #define _DEOALAUDIOTHREAD_H_
 
 #include "deoalATLeakTracker.h"
+#include "../capture/deoalATAudioCapture.h"
 #include "../configuration/deoalConfiguration.h"
 #include "../environment/raytrace/deoalRayTraceHitElement.h"
 #include "../environment/raytrace/deoalSoundRayInteraction.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../world/deoalAWorld.h"
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decTimeHistory.h>
@@ -97,6 +99,7 @@ private:
 	
 	deoalCaches *pCaches;
 	deoalDecodeBuffer *pDecodeBuffer;
+	deTUniqueReference<deoalATAudioCapture> pAudioCapture;
 	
 	deoalExtensions *pExtensions;
 	deoalCapabilities *pCapabilities;
@@ -272,6 +275,10 @@ public:
 	
 	/** Shared decode buffer. */
 	inline deoalDecodeBuffer &GetDecodeBuffer() const{ return *pDecodeBuffer; }
+	
+	/** Audio capture. */
+	inline deTUniqueReference<deoalATAudioCapture> &GetAudioCapture(){ return pAudioCapture; }
+	inline const deTUniqueReference<deoalATAudioCapture> &GetAudioCapture() const{ return pAudioCapture; }
 	
 	/** Configuration. */
 	inline deoalConfiguration &GetConfiguration(){ return pConfiguration; }

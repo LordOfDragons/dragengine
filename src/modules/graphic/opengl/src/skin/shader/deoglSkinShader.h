@@ -86,6 +86,7 @@ public:
 		ettNonPbrMetalness,
 		ettDepth,
 		ettDepthTest,
+		ettNoise,
 		ettSamples,
 		ettSubInstance1,
 		ettSubInstance2,

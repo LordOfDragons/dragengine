@@ -715,7 +715,7 @@ void deoglShaderLanguage::pCleanUp(){
 
 void deoglShaderLanguage::pCreateCompileThreads(){
 	deoglRTContext &context = pRenderThread.GetContext();
-	int count = context.GetCompileContextCount();
+	int count = context.GetBackend()->GetCompileContextCount();
 	if(count == 0){
 		return;
 	}
@@ -733,7 +733,7 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 			*this, 0, deoglShaderCompilerThread::Type::glparallel);
 		t->Start();
 		pCompilerThreads.Add(std::move(t));
-		pRenderThread.GetContext().DropCompileContexts(1);
+		pRenderThread.GetContext().GetBackend()->DropCompileContexts(1);
 		
 	}else{
 		for(i=0; i<count; i++){
