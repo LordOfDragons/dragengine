@@ -27,10 +27,6 @@
 
 #include <dragengine/threading/deThread.h>
 
-#ifdef OS_UNIX_X11
-#include <GL/glx.h>
-#endif
-
 class deoglShaderLanguage;
 class deoglShaderCompiler;
 
@@ -58,10 +54,7 @@ private:
 	deoglShaderCompiler *pCompiler;
 	bool pExitThread;
 	State pState;
-#ifdef OS_UNIX_X11
-	Display *pDisplay;
-#endif
-
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

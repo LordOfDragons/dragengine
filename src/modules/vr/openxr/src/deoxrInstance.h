@@ -48,14 +48,17 @@ public:
 	
 	/** Extension. */
 	enum eExtension{
-		extKHROpenglEnable, //!< XR_KHR_opengl_enable
-		extKHRVisibilityMask, //!< XR_KHR_visibility_mask
+		extEPICViewConfigurationFov, //!< XR_EPIC_view_configuration_fov
+		extEXTDebugUtils, //!< XR_EXT_debug_utils
 		extEXTEyeGazeInteraction, //!< XR_EXT_eye_gaze_interaction
+		extEXTHandInteraction, //!< XR_EXT_hand_interaction
 		extEXTHandJointsMotionRange, //!< XR_EXT_hand_joints_motion_range
 		extEXTHandTracking, //!< XR_EXT_hand_tracking
+		extEXTHPMixedRealityController, // <!XR_EXT_hp_mixed_reality_controller
 		extEXTPerformanceSettings, //!< XR_EXT_performance_settings
+		extEXTSamsungOdysseyController, // <!XR_EXT_samsung_odyssey_controller
 		extEXTViewConfigurationDepthRange, //!< XR_EXT_view_configuration_depth_range
-		extEPICViewConfigurationFov, //!< XR_EPIC_view_configuration_fov
+		extFBBodyTracking, //!< XR_FB_body_tracking
 		extFBDisplayRefreshRate, //!< XR_FB_display_refresh_rate
 		extFBFoveation, //!< XR_FB_foveation
 		extFBFoveationConfiguration, //!< XR_FB_foveation_configuration
@@ -67,30 +70,28 @@ public:
 		extFBPassthroughKeyboardHands, //!< XR_FB_passthrough_keyboard_hands
 		extFBRenderModel, //!< XR_FB_render_model
 		extFBSpaceWarp, //!< XR_FB_space_warp
-		extFBTriangleMesh, //!< XR_FB_triangle_mesh
-		extHTCFacialTracking, //!< XR_HTC_facial_tracking
-		extHTCXViveTrackerInteraction, //!< XR_HTCX_vive_tracker_interaction
-		extMNDHeadless, //!< XR_MND_headless
-		extEXTHPMixedRealityController, // <!XR_EXT_hp_mixed_reality_controller
-		extEXTSamsungOdysseyController, // <!XR_EXT_samsung_odyssey_controller
-		extHTCViveCosmosControllerInteraction, // <!XR_HTC_vive_cosmos_controller_interaction
-		extHTCViveFocus3ControllerInteraction, // <!XR_HTC_vive_focus3_controller_interaction
-		extHUAWEIControllerInteraction, // <!XR_HUAWEI_controller_interaction
-		extMSFTHandInteraction, // <!XR_MSFT_hand_interaction
-		extEXTDebugUtils, //!< XR_EXT_debug_utils
-		extKHRCompositionLayerDepth, //!< XR_KHR_composition_layer_depth
-		extEXTHandInteraction, //!< XR_EXT_hand_interaction
-		extHTCHandInteraction, //!< XR_HTC_hand_interaction
-		extKHRAndroidCreateInstance, //!< XR_KHR_android_create_instance
 		extFBTouchControllerPro, //!< XR_FB_touch_controller_pro
 		extFBTouchControllerProximity, //!< XR_FB_touch_controller_proximity
+		extFBTriangleMesh, //!< XR_FB_triangle_mesh
+		extHTCFacialTracking, //!< XR_HTC_facial_tracking
+		extHTCHandInteraction, //!< XR_HTC_hand_interaction
+		extHTCViveCosmosControllerInteraction, // <!XR_HTC_vive_cosmos_controller_interaction
+		extHTCViveFocus3ControllerInteraction, // <!XR_HTC_vive_focus3_controller_interaction
+		extHTCXViveTrackerInteraction, //!< XR_HTCX_vive_tracker_interaction
+		extHUAWEIControllerInteraction, // <!XR_HUAWEI_controller_interaction
+		extKHRAndroidCreateInstance, //!< XR_KHR_android_create_instance
+		extKHRCompositionLayerDepth, //!< XR_KHR_composition_layer_depth
+		extKHROpenglEnable, //!< XR_KHR_opengl_enable
+		extKHRVisibilityMask, //!< XR_KHR_visibility_mask
+		extMETABodyTrackingFullBody, //!< XR_META_body_tracking_full_body
 		extMETATouchControllerPlus, //!< XR_META_touch_controller_plus
+		extMNDHeadless, //!< XR_MND_headless
+		extMNDXEglEnable, //!< XR_MNDX_egl_enable
 		extMNDXXDevSpace, //!< XR_MNDX_xdev_space
-		extFBBodyTracking, //!< XR_FB_body_tracking
-		extMETABodyTrackingFullBody //!< XR_META_body_tracking_full_body
+		extMSFTHandInteraction // <!XR_MSFT_hand_interaction
 	};
 	
-	static const int ExtensionCount = extMETABodyTrackingFullBody + 1;
+	static const int ExtensionCount = extMSFTHandInteraction + 1;
 	
 	/** Layers. */
 	enum eLayer{

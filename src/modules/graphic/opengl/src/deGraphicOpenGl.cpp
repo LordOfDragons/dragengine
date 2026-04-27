@@ -594,38 +594,61 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 	
 	#elif defined OS_ANDROID
 	const deoglRTContext &context = pRenderThread->GetContext();
+	auto &backend = context.GetBackend();
 	
-	connection.opengl.display = context.GetDisplay();
-	connection.opengl.config = context.GetConfig();
-	connection.opengl.context = context.GetContext();
+	connection.opengl.display = backend->GetDisplay();
+	connection.opengl.config = backend->GetConfig();
+	connection.opengl.context = backend->GetContext();
 	
 	#elif defined OS_WEBWASM
 	
 	#elif defined OS_UNIX & defined HAS_LIB_X11
 	const deoglRTContext &context = pRenderThread->GetContext();
+	auto &backend = context.GetBackend();
 	
 	#ifdef BACKEND_OPENGL
-	connection.opengl.display = context.GetDisplay();
-	connection.opengl.visualid = context.GetVisualInfo()->visualid;
-	connection.opengl.glxFBConfig = context.GetBestFBConfig();
-	connection.opengl.glxContext = context.GetContext();
+	connection.opengl.display = backend->GetDisplay();
+	connection.opengl.visualid = backend->GetVisualInfo()->visualid;
+	
+	auto backendEGL = backend.PointerDynamicCast<deoglRTCBUnixX11EGL>();
+	if(backendEGL){
+		connection.opengl.eglGetProcAddress = (void*)backendEGL->GetEGLGetProcAddressFunc();
+		connection.opengl.eglDisplay = backendEGL->GetEGLDisplay();
+		connection.opengl.eglConfig = backendEGL->GetEGLConfig();
+		connection.opengl.eglContext = backendEGL->GetEGLContext();
+		
+	}else{
+		auto backendGLX = backend.PointerDynamicCast<deoglRTCBUnixX11GLX>();
+		if(backendGLX){
+			connection.opengl.glxFBConfig = backendGLX->GetGLXBestFBConfig();
+			connection.opengl.glxContext = backendGLX->GetGLXContext();
+			
+		}else{
+			DETHROW_INFO(deeInvalidParam, "Unsupported backend type");
+		}
+	}
 	
 	if(context.GetActiveRRenderWindow()){
-		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
+		if(backendEGL){
+			connection.opengl.eglSurface = (void*)(EGLNativeWindowType)context.GetActiveRRenderWindow()->GetWindow();
+			
+		}else{
+			connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
+		}
 	}
 	
 	#elif defined BACKEND_VULKAN
-	connection.vulkan.instance = context.GetVulkan().GetInstance().GetInstance();
-	connection.vulkan.device = context.GetDevice().GetDevice();
-	connection.vulkan.physicalDevice = context.GetDevice().GetPhysicalDevice();
-	connection.vulkan.queueIndex = context.GetQueueGraphic().GetIndex();
-	connection.vulkan.queueFamilyIndex = context.GetQueueGraphic().GetFamily();
+	connection.vulkan.instance = backend->GetVulkan().GetInstance().GetInstance();
+	connection.vulkan.device = backend->GetDevice().GetDevice();
+	connection.vulkan.physicalDevice = backend->GetDevice().GetPhysicalDevice();
+	connection.vulkan.queueIndex = backend->GetQueueGraphic().GetIndex();
+	connection.vulkan.queueFamilyIndex = backend->GetQueueGraphic().GetFamily();
 	#endif
 	
 	#elif defined OS_W32
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
-	connection.opengl.hGLRC = context.GetContext();
+	connection.opengl.hGLRC = context.GetBackend()->GetContext();
 	
 	if(context.GetActiveRRenderWindow()){
 		connection.opengl.hDC = context.GetActiveRRenderWindow()->GetWindowDC();

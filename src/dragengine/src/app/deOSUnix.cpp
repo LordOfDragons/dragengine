@@ -425,6 +425,10 @@ void deOSUnix::SetEventMask(long mask){
 }
 
 void deOSUnix::SetWindow(Window wnd){
+	if(pCurWindow == wnd){
+		return;
+	}
+	
 	//XWindowAttributes xwa;
 	
 	// check if the is a window at the moment

@@ -93,6 +93,7 @@
 #ifdef OS_WEBWASM
 #include <emscripten/html5.h>
 #include <emscripten/threading.h>
+#include <dragengine/app/deOSWebWasm.h>
 #endif
 
 
@@ -423,7 +424,7 @@ void deoglRenderThread::InitAppWindow(){
 		DEBUG_SYNC_MT_PASS("out");
 		
 	}else{
-		pContext->InitAppWindow();
+		pContext->GetBackend()->InitAppWindow();
 	}
 }
 
@@ -449,7 +450,7 @@ void deoglRenderThread::TerminateAppWindow(){
 		DEBUG_SYNC_MT_STATE
 		
 	}else{
-		pContext->TerminateAppWindow();
+		pContext->GetBackend()->TerminateAppWindow();
 	}
 }
 #endif
@@ -610,7 +611,7 @@ void deoglRenderThread::Run(){
 		#ifdef WITH_OPENGLES
 		}else if(pThreadState == etsWindowTerminate){
 			try{
-				pContext->TerminateAppWindow();
+				pContext->GetBackend()->TerminateAppWindow();
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
@@ -622,7 +623,7 @@ void deoglRenderThread::Run(){
 			
 		}else if(pThreadState == etsWindowInit){
 			try{
-				pContext->InitAppWindow();
+				pContext->GetBackend()->InitAppWindow();
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
@@ -669,7 +670,8 @@ void deoglRenderThread::Synchronize(){
 			(deoglRenderWindow*)graSys.GetRenderWindow()->GetPeerGraphic();
 		if(oglWindow){
 			deoglRRenderWindow * const oglRWindow = oglWindow->GetRRenderWindow();
-			oglRWindow->OnResize(pContext->GetScreenWidth(), pContext->GetScreenHeight());
+			oglRWindow->OnResize(pContext->GetBackend()->GetScreenWidth(),
+				pContext->GetBackend()->GetScreenHeight());
 			
 			deCanvasView * const iocanvas = graSys.GetInputOverlayCanvas();
 			if(iocanvas){
@@ -2208,18 +2210,15 @@ void deoglRenderThread::DebugMemoryUsageSmall(const char *prefix){
 #endif
 
 void deoglRenderThread::pSwapBuffers(){
-	const int count = pRRenderWindowList.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((deoglRRenderWindow*)pRRenderWindowList.GetAt(i))->SwapBuffers();
-	}
+	pRRenderWindowList.Visit([](deoglRRenderWindow &window){
+		window.SwapBuffers();
+	});
 }
 
 void deoglRenderThread::pBeginFrame(){
 	const deoglDebugTraceGroup debugTrace(*this, "BeginFrame");
 	#ifdef WITH_OPENGLES
-	pContext->CheckConfigurationChanged();
+	pContext->GetBackend()->CheckConfigurationChanged();
 	#endif
 	
 	// free objects registered for delayed deletion. done before the rendering starts
@@ -2237,7 +2236,7 @@ void deoglRenderThread::pBeginFrame(){
 	pShader->GetShaderManager().Update();
 	
 	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS
-	pContext->ProcessEventLoop();
+	pContext->GetBackend()->ProcessEventLoop();
 	#endif
 	
 	pOgl.GetShaderCompilingInfo()->PrepareForRender(pLastFrameTime);

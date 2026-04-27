@@ -218,12 +218,6 @@ void deoglRRenderWindow::pMacOSDestroyWindow(){
 	printf("pMacOSDestroyWindow exit\n");
 }
 
-void deoglRRenderWindow::pMacOSSwapBuffers(){
-	NSOpenGLContext *context = pRenderThread.GetContext().GetContext();
-	[context flushBuffer];
-	[pView setNeedsDisplay:YES];
-}
-
 void deoglRRenderWindow::pMacOSCenterOnScreen(){
 	if( ! pWindow ){
 		return;

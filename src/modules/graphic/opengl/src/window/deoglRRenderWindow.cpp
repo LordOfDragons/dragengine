@@ -65,13 +65,11 @@
 #elif defined OS_W32
 #include <stdint.h>
 #include <dragengine/app/deOSWindows.h>
-#include "../extensions/deoglWExtResult.h"
 
 #elif defined OS_UNIX_X11
 #include <dragengine/app/deOSUnix.h>
 #include <X11/Xatom.h>
 #include <X11/Xresource.h>
-#include "../extensions/deoglXExtResult.h"
 #endif
 
 #include <dragengine/common/exceptions.h>
@@ -157,7 +155,7 @@ deoglRRenderWindow::cGLWindow::~cGLWindow(){
 }
 
 void deoglRRenderWindow::cGLWindow::SendCurMessageToEngine(){
-	pWindow.GetRenderThread().GetContext().GetOSBeOS()->MessageReceived(CurrentMessage());
+	pWindow.GetRenderThread().GetContext().GetBackend()->GetOSBeOS()->MessageReceived(CurrentMessage());
 }
 
 void deoglRRenderWindow::cGLWindow::DirectConnected(direct_buffer_info *info){
@@ -225,6 +223,9 @@ pWindow(nullptr),
 pHostWindow(0),
 pWindow(0),
 pNullCursor(0),
+#ifdef BACKEND_OPENGL
+pEGLSurface(EGL_NO_SURFACE),
+#endif
 #endif
 
 pX(0),
@@ -281,6 +282,12 @@ void deoglRRenderWindow::SetHostWindow(NSWindow *window){
 void deoglRRenderWindow::SetHostWindow(Window window){
 	pHostWindow = window;
 };
+
+#ifdef BACKEND_OPENGL
+void deoglRRenderWindow::SetEGLSurface(EGLSurface surface){
+	pEGLSurface = surface;
+}
+#endif
 
 #elif defined OS_W32
 void deoglRRenderWindow::SetHostWindow(HWND window){
@@ -436,11 +443,12 @@ void deoglRRenderWindow::CreateWindow(){
 		AdjustWindowRectEx(&windowRect, style, FALSE, 0);
 	}
 	
+	auto &backend = pRenderThread.GetContext().GetBackend();
 	wchar_t wideName[200];
-	deOSWindows::Utf8ToWide(pRenderThread.GetContext().GetWindowClassname(), wideName, 200);
+	deOSWindows::Utf8ToWide(backend->GetWindowClassname(), wideName, 200);
 	pWindow = CreateWindowEx(exStyle, wideName, L"Drag[en]gine OpenGL", style, 0, 0,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, parentWindow,
-		NULL, pRenderThread.GetContext().GetOSWindow()->GetInstApp(), NULL);
+		NULL, backend->GetOSWindow()->GetInstApp(), NULL);
 	if(!pWindow){
 		pRenderThread.GetLogger().LogErrorFormat("CreateWindowEx failed with error %lu", GetLastError());
 		DETHROW(deeOutOfMemory);
@@ -483,8 +491,9 @@ void deoglRRenderWindow::CreateWindow(){
 		return;
 	}
 	
-	Display * const display = pRenderThread.GetContext().GetDisplay();
-	XVisualInfo * const visInfo = pRenderThread.GetContext().GetVisualInfo();
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	Display * const display = backend->GetDisplay();
+	XVisualInfo * const visInfo = backend->GetVisualInfo();
 	XSetWindowAttributes swa;
 	Colormap colMap = 0;
 	//Cursor cursor = 0;
@@ -539,10 +548,10 @@ void deoglRRenderWindow::CreateWindow(){
 			XDefineCursor(display, pWindow, pNullCursor);
 			
 			// prevent user from killing us with the close button
-			Atom atom = pRenderThread.GetContext().GetAtomProtocols();
+			Atom atom = backend->GetAtomProtocols();
 			XSetWMProtocols(display, pWindow, &atom, 1);
 			
-			atom = pRenderThread.GetContext().GetAtomDeleteWindow();
+			atom = backend->GetAtomDeleteWindow();
 			XSetWMProtocols(display, pWindow, &atom, 1);
 			
 			// show window
@@ -568,6 +577,14 @@ void deoglRRenderWindow::CreateWindow(){
 	
 	// set window title
 	pSetWindowTitle();
+	
+	// backend specific initialization
+#ifdef BACKEND_OPENGL
+	auto backendEgl = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixX11EGL>();
+	if(backendEgl){
+		backendEgl->CreateWindowSurface(*this);
+	}
+#endif
 #endif
 	pAfterCreateScaleFactor = pGetDisplayScaleFactor();
 }
@@ -578,65 +595,8 @@ void deoglRRenderWindow::SwapBuffers(){
 	}
 	
 	const deoglDebugTraceGroup debugTrace(pRenderThread, "Window.SwapBuffers");
-	
-#ifdef OS_ANDROID
-	if(eglSwapBuffers(pRenderThread.GetContext().GetDisplay(), pRenderThread.GetContext().GetSurface()) == EGL_FALSE){
-		// log failure but do not thow exception
-	}
-	
-#elif defined OS_WEBWASM
-	DEASSERT_TRUE(emscripten_webgl_commit_frame() == EMSCRIPTEN_RESULT_SUCCESS)
-	
-#elif defined OS_BEOS
-	DEASSERT_NOTNULL(pWindow)
-	pWindow->GetGLView()->SwapBuffers(false); // true = sync
-	
-	// ensure window resizing is properly applied to the opengl context
-	pWindow->GetGLView()->UnlockGL();
-	pWindow->GetGLView()->LockGL();
-	
-#elif defined OS_MACOS
-	pMacOSSwapBuffers();
-	
-#elif defined OS_W32
 	pUpdateVSync();
-	
-	if(!::SwapBuffers(pWindowDC)){
-		pRenderThread.GetLogger().LogErrorFormat("SwapBuffers failed (%s:%i): error=0x%lx\n",
-			__FILE__, __LINE__, GetLastError());
-	}
-	
-#elif defined OS_UNIX_X11
-	pUpdateVSync();
-	
-	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
-	// 155=GLX, 11=glXSwapBuffers
-	// 
-	// but why BadMatch? from the doc:
-	// 
-	// BadMatch wird generiert wenn drawable nicht mit dem selben X-Screen und Visual erstellt
-	//    wurde wie ctx. Dieser Fehler wird auch generiert wenn drawable NIL und ctx nicht NIL war.
-	// second situation can not happen. pWindow never is NULL
-	// first should also not happen
-	// 
-	// happens only with IGDE hence it has to do something with changing windows or with
-	// hosted windows in general
-		//XSync( pRenderThread.GetContext().GetDisplay(), False );
-	
-	if(pRenderThread.GetConfiguration().GetRenderDocMode()){
-		// NOTE if RenderDoc is running glXSwapBuffers can throw invalid enum error while capturing
-		try{
-			OGL_CHECK(pRenderThread, glXSwapBuffers(pRenderThread.GetContext().GetDisplay(), pWindow));
-		}catch(...){
-			return;
-		}
-		
-	}else{
-		OGL_CHECK(pRenderThread, glXSwapBuffers(pRenderThread.GetContext().GetDisplay(), pWindow));
-	}
-		//XSync( pRenderThread.GetContext().GetDisplay(), False );
-#endif
-	
+	pRenderThread.GetContext().GetBackend()->SwapBuffers(*this);
 	pSwapBuffers = false;
 }
 
@@ -747,7 +707,8 @@ void deoglRRenderWindow::CenterOnScreen(){
 	if(!pWindow){
 		return;
 	}
-	const decPoint screenSize(pRenderThread.GetContext().GetOSBeOS()->GetDisplayCurrentResolution(0));
+	const decPoint screenSize(pRenderThread.GetContext().GetBackend()->
+		GetOSBeOS()->GetDisplayCurrentResolution(0));
 	pWindow->MoveTo((float)(screenSize.x - pWidth) * 0.5f, (float)(screenSize.y - pHeight) * 0.5f);
 	
 #elif defined OS_MACOS
@@ -757,7 +718,8 @@ void deoglRRenderWindow::CenterOnScreen(){
 	if(!pWindow){
 		return;
 	}
-	const decPoint screenSize(pRenderThread.GetContext().GetOSWindow()->GetDisplayCurrentResolution(0));
+	const decPoint screenSize(pRenderThread.GetContext().GetBackend()->
+		GetOSWindow()->GetDisplayCurrentResolution(0));
 	SetWindowPos(pWindow, NULL, (screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2,
 		0, 0, SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOREDRAW
 		| SWP_NOZORDER | SWP_SHOWWINDOW);
@@ -766,9 +728,9 @@ void deoglRRenderWindow::CenterOnScreen(){
 	if(pWindow < 255){
 		return;
 	}
-	const decPoint screenSize(pRenderThread.GetContext().GetOSUnix()->GetDisplayCurrentResolution(0));
-	XMoveWindow(pRenderThread.GetContext().GetDisplay(), pWindow,
-		(screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2);
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	const decPoint screenSize(backend->GetOSUnix()->GetDisplayCurrentResolution(0));
+	XMoveWindow(backend->GetDisplay(), pWindow, (screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2);
 #endif
 }
 
@@ -816,6 +778,24 @@ bool deoglRRenderWindow::GetNotifySizeChanged(){
 // Private Functions
 //////////////////////
 
+void deoglRRenderWindow::pUpdateVSync(){
+	// check if VSync has to be enabled or disabled
+	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
+	
+	if(vsyncMode != pVSyncMode){
+		pVSyncMode = vsyncMode;
+		pInitSwapInterval = true;
+	}
+	
+	// apply changes if required
+	if(!pInitSwapInterval){
+		return;
+	}
+	
+	pInitSwapInterval = false;
+	pRenderThread.GetContext().GetBackend()->ApplyVSync(*this, vsyncMode);
+}
+
 void deoglRRenderWindow::pDestroyWindow(){
 	// if context is missing this can be due to early start-up failure where setting up the
 	// proper context had not been yet possible
@@ -861,9 +841,16 @@ void deoglRRenderWindow::pDestroyWindow(){
 	pWindow = NULL;
 	
 #elif defined OS_UNIX_X11
+#ifdef BACKEND_OPENGL
+	auto backendEgl = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixX11EGL>();
+	if(backendEgl){
+		backendEgl->DestroyWindowSurface(*this);
+	}
+#endif
+	
 	if(pWindow > 255){
 		if(pRenderThread.HasContext()){
-			Display * const display = pRenderThread.GetContext().GetDisplay();
+			Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 			XSync(display, False); // required or strange problems can happen
 			
 			XUndefineCursor(display, pWindow);
@@ -875,7 +862,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 	
 	if(pNullCursor > 255){
 		if(pRenderThread.HasContext()){
-			Display * const display = pRenderThread.GetContext().GetDisplay();
+			Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 			XFreeCursor(display, pNullCursor);
 		}
 	}
@@ -914,7 +901,7 @@ void deoglRRenderWindow::pResizeWindow(){
 	
 #elif defined OS_UNIX_X11
 	if(pWindow > 255){
-		Display * const display = pRenderThread.GetContext().GetDisplay();
+		Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 		
 		if(pWidth > 0 && pHeight > 0){
 			XResizeWindow(display, pWindow, pWidth, pHeight);
@@ -947,7 +934,7 @@ void deoglRRenderWindow::pSetWindowTitle(){
 	
 #elif defined OS_UNIX_X11
 	if(pWindow > 255){
-		Display * const display = pRenderThread.GetContext().GetDisplay();
+		Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 		XTextProperty textProp;
 		const char * const title = pTitle.GetString();
 		
@@ -1030,8 +1017,9 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	
 #elif defined OS_UNIX_X11
 	if(pWindow > 255){
-		Display * const display = pRenderThread.GetContext().GetDisplay();
-		const XVisualInfo &visInfo = *pRenderThread.GetContext().GetVisualInfo();
+		auto &backend = pRenderThread.GetContext().GetBackend();
+		Display * const display = backend->GetDisplay();
+		const XVisualInfo &visInfo = *backend->GetVisualInfo();
 		Window rootWindow = XRootWindow(display, visInfo.screen);
 		
 		// set window manager hints. window managers should honor those flags when a window is mapped.
@@ -1227,7 +1215,7 @@ void deoglRRenderWindow::pSetIcon(){
 		return;
 	}
 	
-	Display * const display = pRenderThread.GetContext().GetDisplay();
+	Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 	
 	// image data has to be in ARGB format and using long as mentioned here:
 	// https://stackoverflow.com/a/15595582
@@ -1333,16 +1321,16 @@ int deoglRRenderWindow::pGetDisplayScaleFactor(){
 	int scale = 100;
 	
 #ifdef OS_ANDROID
-	scale = pRenderThread.GetContext().GetOSAndroid()->GetDisplayCurrentScaleFactor(0);
+	scale = pRenderThread.GetContext().GetBackend()->GetOSAndroid()->GetDisplayCurrentScaleFactor(0);
 	
 #elif defined OS_WEBWASM
-	scale = pRenderThread.GetContext().GetOSWebWasm()->GetDisplayCurrentScaleFactor(0);
+	scale = pRenderThread.GetContext().GetBackend()->GetOSWebWasm()->GetDisplayCurrentScaleFactor(0);
 	
 #elif defined OS_W32
 	scale = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
 	
 #elif defined OS_UNIX_X11
-	Display * const display = pRenderThread.GetContext().GetDisplay();
+	Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 	const char * const resourceString = XResourceManagerString(display);
 	if(!resourceString){
 		return scale;
@@ -1374,7 +1362,7 @@ void deoglRRenderWindow::pCreateNullCursor(){
 		return;
 	}
 	
-	Display * const display = pRenderThread.GetContext().GetDisplay();
+	Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 	Pixmap cursorMask;
 	XGCValues gcv;
 	GC gc;
@@ -1393,77 +1381,3 @@ void deoglRRenderWindow::pCreateNullCursor(){
 	XFreeGC(display, gc);
 }
 #endif
-
-void deoglRRenderWindow::pUpdateVSync(){
-	// check if VSync has to be enabled or disabled
-	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
-	
-	if(vsyncMode != pVSyncMode){
-		pVSyncMode = vsyncMode;
-		pInitSwapInterval = true;
-	}
-	
-	// apply changes if required
-	if(!pInitSwapInterval){
-		return;
-	}
-	
-	pInitSwapInterval = false;
-	
-#ifdef OS_W32
-	const deoglExtensions &ext = pRenderThread.GetExtensions();
-	deoglRTLogger &logger = pRenderThread.GetLogger();
-	
-	if(ext.GetHasExtension(deoglExtensions::ext_WGL_EXT_swap_control)){
-		switch(pVSyncMode){
-		case deoglConfiguration::evsmAdaptive:
-			if(ext.GetHasExtension(deoglExtensions::ext_WGL_EXT_swap_control_tear)){
-				logger.LogInfo("RenderWindow: Enable Adaptive V-Sync");
-				DEASSERT_TRUE(pwglSwapInterval(-1))
-				
-			}else{
-				logger.LogInfo("RenderWindow: Enable V-Sync");
-				DEASSERT_TRUE(pwglSwapInterval(1))
-			}
-			break;
-			
-		case deoglConfiguration::evsmOn:
-			logger.LogInfo("RenderWindow: Enable V-Sync");
-			DEASSERT_TRUE(pwglSwapInterval(1))
-			break;
-			
-		case deoglConfiguration::evsmOff:
-			logger.LogInfo("RenderWindow: Disable VSync");
-			DEASSERT_TRUE(pwglSwapInterval(0))
-		}
-	}
-	
-#elif defined OS_UNIX_X11
-	const deoglExtensions &ext = pRenderThread.GetExtensions();
-	deoglRTLogger &logger = pRenderThread.GetLogger();
-	
-	if(ext.GetHasExtension(deoglExtensions::ext_GLX_EXT_swap_control)){
-		switch(pVSyncMode){
-		case deoglConfiguration::evsmAdaptive:
-			if(ext.GetHasExtension(deoglExtensions::ext_GLX_EXT_swap_control_tear)){
-				logger.LogInfo("RenderWindow: Enable Adaptive V-Sync");
-				OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, -1));
-				
-			}else{
-				logger.LogInfo("RenderWindow: Enable V-Sync");
-				OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, 1));
-			}
-			break;
-			
-		case deoglConfiguration::evsmOn:
-			logger.LogInfo("RenderWindow: Enable V-Sync");
-			OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, 1));
-			break;
-			
-		case deoglConfiguration::evsmOff:
-			logger.LogInfo("RenderWindow: Disable VSync");
-			OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, 0));
-		}
-	}
-#endif
-}

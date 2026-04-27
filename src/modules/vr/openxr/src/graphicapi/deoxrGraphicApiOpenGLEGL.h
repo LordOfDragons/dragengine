@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,71 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLXEXTRESULT_H_
-#define _DEOGLXEXTRESULT_H_
+#ifndef _DEOXRGRAPHICAPIOPENGLEGL_H_
+#define _DEOXRGRAPHICAPIOPENGLEGL_H_
 
 #include <dragengine/dragengine_configuration.h>
 
-#if defined(OS_UNIX) && !defined(WITH_OPENGLES) && !defined(OS_BEOS) && !defined(OS_MACOS)
-#	include <GL/glx.h>
-#	include "glxext.h"
-	
-	// GLX_EXT_swap_control
-	extern PFNGLXSWAPINTERVALEXTPROC pglXSwapInterval;
-#endif
+#ifdef OS_UNIX_X11
 
+#include <dlfcn.h>
+
+#include <dragengine/deObject.h>
+#include <dragengine/common/string/decString.h>
+
+#include "../deoxrBasics.h"
+
+class deVROpenXR;
+
+
+/**
+ * Graphic api OpenGL using EGL.
+ */
+class deoxrGraphicApiOpenGLEGL{
+private:
+	deVROpenXR &pOxr;
+	
+	void *pLibHandle;
+	
+	void *pFuncMakeCurrent;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create graphic api opengl. */
+	explicit deoxrGraphicApiOpenGLEGL(deVROpenXR &oxr);
+	
+	/** Clean up instance. */
+	~deoxrGraphicApiOpenGLEGL();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Shared oxr. */
+	inline deVROpenXR &GetOxr() const{ return pOxr; }
+	
+	/** Load. */
+	void Load();
+	
+	/** Unload. */
+	void Unload();
+	
+	/** Make current. */
+	void MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
+	/*@}*/
+	
+	
+	
+private:
+	void pCleanUp();
+	void pLoadLibrary();
+	void pGetFunctions();
+	void *pGetFunction(const char *name);
+};
+
+#endif
 #endif

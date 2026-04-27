@@ -122,11 +122,11 @@ void deoglTexture::SetFormat(const devkFormat *format){
 }
 
 void deoglTexture::SetFormatMappingByNumber(devkDevice::eFormats format){
-	SetFormat(pRenderThread.GetContext().GetDevice().GetUseTexFormat(format));
+	SetFormat(pRenderThread.GetContext().GetBackend()->GetDevice().GetUseTexFormat(format));
 }
 
 void deoglTexture::SetFormatFBOByNumber(devkDevice::eFormats format){
-	SetFormat(pRenderThread.GetContext().GetDevice().GetUseFboFormat(format));
+	SetFormat(pRenderThread.GetContext().GetBackend()->GetDevice().GetUseFboFormat(format));
 }
 
 #endif
@@ -316,7 +316,7 @@ void deoglTexture::CreateTexture(){
 		config.SetMipMapCount(pRealMipMapLevelCount);
 	}
 	
-	pImage = devkImage::Ref::New(pRenderThread.GetContext().GetDevice(), config);
+	pImage = devkImage::Ref::New(pRenderThread.GetContext().GetBackend()->GetDevice(), config);
 #endif
 	
 	UpdateMemoryUsage();
@@ -611,7 +611,7 @@ void deoglTexture::CreateMipMaps(){
 	
 #elif defined BACKEND_VULKAN
 	devkCommandBuffer &cbuf = pImage->BeginCommandBuffer(
-		pRenderThread.GetContext().GetCommandPoolGraphic());
+		pRenderThread.GetContext().GetBackend()->GetCommandPoolGraphic());
 	pImage->GenerateMipMaps(cbuf);
 	cbuf.Submit();
 #endif

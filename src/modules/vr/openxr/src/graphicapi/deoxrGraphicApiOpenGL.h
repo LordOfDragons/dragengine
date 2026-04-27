@@ -53,7 +53,7 @@ using GAOglFbo = unsigned int;
 using GAOglImage = unsigned int;
 
 /**
- * Oxr instance.
+ * Graphic api OpenGL.
  */
 class deoxrGraphicApiOpenGL{
 public:
@@ -107,7 +107,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create graphic api opengl. */
-	deoxrGraphicApiOpenGL(deVROpenXR &oxr);
+	explicit deoxrGraphicApiOpenGL(deVROpenXR &oxr);
 	
 	/** Clean up instance. */
 	~deoxrGraphicApiOpenGL();

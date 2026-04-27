@@ -570,20 +570,21 @@ void deoglExtensions::pScanVersion(){
 }
 
 void deoglExtensions::pScanExtensions(){
+	auto &backend = pRenderThread.GetContext().GetBackend();
 #ifdef OS_UNIX_X11
-	const char *strXExtensions = (const char *)glXGetClientString(pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS);
+	const char *strXExtensions = (const char *)glXGetClientString(backend->GetDisplay(), GLX_EXTENSIONS);
 	if(!strXExtensions){
 		strXExtensions = "";
 	}
 	
 #elif defined OS_ANDROID
-	const char *strAExtensions = (const char *)eglQueryString(pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS);
+	const char *strAExtensions = (const char *)eglQueryString(backend->GetDisplay(), EGL_EXTENSIONS);
 	if(!strAExtensions){
 		strAExtensions = "";
 	}
 #endif
 	
-	PFNGLGETSTRINGIPROC pglGetStringi = (PFNGLGETSTRINGIPROC)pRenderThread.GetContext().GetFunctionPointer("glGetStringi");
+	PFNGLGETSTRINGIPROC pglGetStringi = (PFNGLGETSTRINGIPROC)backend->GetFunctionPointer("glGetStringi");
 	int i;
 	
 	if(pglGetStringi){
@@ -1403,7 +1404,7 @@ void deoglExtensions::pFixBuggedFunctions(){
 
 void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcName){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
-	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcName);
+	void *fp = (void*)pRenderThread.GetContext().GetBackend()->GetFunctionPointer(funcName);
 	
 	if(!fp){
 		pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s", funcName);
@@ -1418,10 +1419,11 @@ void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 
 void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcNameBase, const char *funcNameExtension){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
-	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	void *fp = (void*)backend->GetFunctionPointer(funcNameBase);
 	
 	if(!fp){
-		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension);
+		fp = (void*)backend->GetFunctionPointer(funcNameExtension);
 		
 		if(!fp){
 			pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s", funcNameBase);
@@ -1437,13 +1439,14 @@ void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcN
 
 void deoglExtensions::pGetRequiredFunction(void **funcPointer, const char *funcNameBase, const char *funcNameExtension1, const char *funcNameExtension2){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
-	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	void *fp = (void*)backend->GetFunctionPointer(funcNameBase);
 	
 	if(!fp){
-		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension1);
+		fp = (void*)backend->GetFunctionPointer(funcNameExtension1);
 		
 		if(!fp){
-			fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension2);
+			fp = (void*)backend->GetFunctionPointer(funcNameExtension2);
 			
 			if(!fp){
 				pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s", funcNameBase);
@@ -1473,7 +1476,7 @@ void deoglExtensions::pGetRequiredFunctionArbExt(void **funcPointer, const char 
 
 void deoglExtensions::pGetOptionalFunction(void **funcPointer, const char *funcName, int extensionIndex){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
-	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcName);
+	void *fp = (void*)pRenderThread.GetContext().GetBackend()->GetFunctionPointer(funcName);
 	
 	if(!fp){
 		pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function address for %s although extension %s is listed. This is a driver bug!",
@@ -1490,10 +1493,11 @@ void deoglExtensions::pGetOptionalFunction(void **funcPointer, const char *funcN
 void deoglExtensions::pGetOptionalFunction(void **funcPointer, const char *funcNameBase,
 const char *funcNameExtension, int extensionIndex){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
-	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	void *fp = (void*)backend->GetFunctionPointer(funcNameBase);
 	
 	if(!fp){
-		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension);
+		fp = (void*)backend->GetFunctionPointer(funcNameExtension);
 		
 		if(!fp){
 			pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function "
@@ -1512,13 +1516,14 @@ const char *funcNameExtension, int extensionIndex){
 void deoglExtensions::pGetOptionalFunction(void **funcPointer, const char *funcNameBase,
 const char *funcNameExtension1, const char *funcNameExtension2, int extensionIndex){
 	// find matching function pointer. this is done no matter if kept later on to do driver bug checking
-	void *fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameBase);
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	void *fp = (void*)backend->GetFunctionPointer(funcNameBase);
 	
 	if(!fp){
-		fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension1);
+		fp = (void*)backend->GetFunctionPointer(funcNameExtension1);
 		
 		if(!fp){
-			fp = (void*)pRenderThread.GetContext().GetFunctionPointer(funcNameExtension2);
+			fp = (void*)backend->GetFunctionPointer(funcNameExtension2);
 			
 			if(!fp){
 				pRenderThread.GetLogger().LogErrorFormat("Failed to get a suitable function "
