@@ -37,6 +37,7 @@ with_system_libwebm = 'yes'
 with_system_libvpx = 'yes'
 with_system_openvr = 'yes'
 with_system_openxr = 'no'           # ubuntu noble still has 1.0.20
+with_system_libopus = 'yes'
 with_opengl = 'yes'
 with_python = 'no'
 with_npapisdk = 'no'
