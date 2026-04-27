@@ -24,6 +24,17 @@ apt update -y -q \
   && apt-get -y -q upgrade \
   && apt-get -y -q install libdscript-dev glslang-tools || exit 1
 
+# dependencies from "debian/control"
+apt-get -y -q install \
+  scons libdscript-dev cmake autoconf libtool nasm \
+  libx11-dev libxrandr-dev libgl-dev libxi-dev \
+  libpulse-dev libasound2-dev portaudio19-dev libxft-dev \
+  libjpeg-dev libopenal-dev libogg-dev libvorbis-dev \
+  libtheora-dev libhidapi-dev libopenhmd-dev patchelf \
+  libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev \
+  libvpx-dev libopenvr-dev glslang-tools libfreetype-dev \
+  libopus-dev libfftw3-dev egl-dev
+
 export SCONSFLAGS="-j 8"
 
 # required since noble or git fails
