@@ -118,6 +118,10 @@ abstract class ConversationPlayback implements Persistable
 	func new(PersistencyEnvironment env, FileReader reader)
 		pActors = Array.new()
 		pCoordSystems = Array.new()
+		pVariables = Dictionary.new()
+		pMainLane = ConversationPlaybackLane.new(true)
+		pSideLanes = SafeArray.new()
+		pActiveLane = pMainLane
 		pListeners = Array.new()
 		pTranslationManager = BehaviorElementClass.sharedFactoryHelper.defaultTranslationManager()
 		
@@ -158,7 +162,6 @@ abstract class ConversationPlayback implements Persistable
 		var String variableName
 		var int variableValue
 		count = reader.readUShort()
-		pVariables = Dictionary.new()
 		for i = 0 to count
 			variableName = reader.readString8()
 			variableValue = reader.readInt()
@@ -166,11 +169,9 @@ abstract class ConversationPlayback implements Persistable
 		end
 		
 		count = reader.readUShort()
-		pMainLane = ConversationPlaybackLane.new(true)
 		for i = 0 to count
 			pMainLane.pushLayer(ConversationPlaybackLayer.readFromFile(env, reader))
 		end
-		pActiveLane = pMainLane
 		
 		var PersistencyFlags flags = PersistencyFlags.new(4, reader)
 		pMainLane.setWaitingForAction(flags.getAt(0))
