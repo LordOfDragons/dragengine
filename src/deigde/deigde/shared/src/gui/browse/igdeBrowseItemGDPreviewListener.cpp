@@ -63,12 +63,15 @@ void igdeBrowseItemGDPreviewListener::ImageCreated(deImage *image){
 	}
 	
 	igdeIcon::Ref icon;
-	if(image->GetWidth() > image->GetHeight()){
-		icon = igdeIcon::Ref::New(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth());
-		
-	}else{
-		icon = igdeIcon::Ref::New(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize);
+	if(image){
+		if(image->GetWidth() > image->GetHeight()){
+			icon = igdeIcon::Ref::New(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth());
+			
+		}else{
+			icon = igdeIcon::Ref::New(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize);
+		}
 	}
+	
 	pListItem->SetIcon(icon);
 	pIconListBox->ItemChangedAt(index);
 }
