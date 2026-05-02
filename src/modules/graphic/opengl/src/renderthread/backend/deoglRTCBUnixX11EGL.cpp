@@ -263,7 +263,7 @@ void deoglRTCBUnixX11EGL::CreateWindowSurface(deoglRRenderWindow &window){
 		(EGLNativeWindowType)window.GetWindow(), nullptr);
 	if(surface == EGL_NO_SURFACE){
 		pRTContext.GetRenderThread().GetLogger().LogErrorFormat(
-			"eglCreateWindowSurface failed for render window (%d)", (int)pEglGetError());
+			"eglCreateWindowSurface failed for render window (0x%x)", (int)pEglGetError());
 		DETHROW(deeInvalidAction);
 	}
 	
