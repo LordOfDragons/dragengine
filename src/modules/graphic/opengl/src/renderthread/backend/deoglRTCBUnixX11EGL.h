@@ -49,6 +49,7 @@ protected:
 	EGLSurface pEGLLoaderSurface;
 	EGLSurface pEGLCompileSurface[MaxCompileContextCount];
 	
+	PFNEGLGETERRORPROC pEglGetError;
 	PFNEGLGETDISPLAYPROC pEglGetDisplay;
 	PFNEGLINITIALIZEPROC pEglInitialize;
 	PFNEGLTERMINATEPROC pEglTerminate;

@@ -143,7 +143,12 @@ bool deXSystemInput::Init(){
 	// finish initialization
 	pIsListening = true;
 	
-	if(pDevices->GetWaylandInput().IsNull()){
+	bool hasWayland = false;
+#ifdef OS_UNIX_WAYLAND
+	hasWayland = pDevices->GetWaylandInput().IsNotNull();
+#endif
+	
+	if(!hasWayland){
 		pOSUnix->SetEventMask(StructureNotifyMask | ExposureMask
 			| EnterWindowMask | LeaveWindowMask | FocusChangeMask
 			| ButtonPressMask | ButtonReleaseMask
@@ -162,9 +167,15 @@ bool deXSystemInput::Init(){
 }
 
 void deXSystemInput::CleanUp(){
-	if(pDevices && !pDevices->GetWaylandInput()){
+	bool hasWayland = false;
+#ifdef OS_UNIX_WAYLAND
+	hasWayland = pDevices && pDevices->GetWaylandInput().IsNotNull();
+#endif
+	
+	if(!hasWayland){
 		pSetAutoRepeatEnabled(pSystemAutoRepeatEnabled);
 	}
+	
 	pDevices = nullptr;
 	pOSUnix = nullptr;
 }

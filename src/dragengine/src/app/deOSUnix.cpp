@@ -804,9 +804,11 @@ decString deOSUnix::GetUserLocaleTerritory(){
 // Wayland related
 ////////////////////
 
+#ifdef OS_UNIX_WAYLAND
 void deOSUnix::SetEnableWayland(bool enable){
 	pEnableWayland = enable;
 }
+#endif
 
 
 // Private Functions

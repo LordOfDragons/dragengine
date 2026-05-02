@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+#include "../dragengine_configuration.h"
+#if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND)
+
 #include "deWaylandHelper.h"
 
 
@@ -85,3 +88,5 @@ void *deWlDynLib::ResolveRequired(const char *symbol){
 	}
 	return ptr;
 }
+
+#endif

@@ -24,13 +24,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <dragengine/dragengine_configuration.h>
+#if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND)
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include "wayland-util.h"
-
-#include <dragengine/dragengine_configuration.h>
-#if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND)
 
 #ifdef __cplusplus
 extern "C" {

@@ -65,6 +65,7 @@ pEGLConfig(nullptr),
 pEGLContext(EGL_NO_CONTEXT),
 pEGLLoaderContext(EGL_NO_CONTEXT),
 pEGLLoaderSurface(EGL_NO_SURFACE),
+pEglGetError(nullptr),
 pEglGetDisplay(nullptr),
 pEglInitialize(nullptr),
 pEglTerminate(nullptr),
@@ -110,6 +111,7 @@ bool deoglRTCBUnixX11EGL::TryInit(){
 	}
 	
 	// load all required EGL symbols
+	pEglGetError = (PFNEGLGETERRORPROC)dlsym(handle, "eglGetError");
 	pEglGetDisplay = (PFNEGLGETDISPLAYPROC)dlsym(handle, "eglGetDisplay");
 	pEglInitialize = (PFNEGLINITIALIZEPROC)dlsym(handle, "eglInitialize");
 	pEglTerminate = (PFNEGLTERMINATEPROC)dlsym(handle, "eglTerminate");
@@ -131,7 +133,7 @@ bool deoglRTCBUnixX11EGL::TryInit(){
 	|| !pEglCreateWindowSurface || !pEglCreatePbufferSurface || !pEglDestroySurface
 	|| !pEglCreateContext || !pEglDestroyContext || !pEglMakeCurrent || !pEglGetProcAddress
 	|| !pEglQuerySurface || !pEglBindAPI || !pEglSwapBuffers || !pEglSwapInterval
-	|| !pEglGetConfigAttrib){
+	|| !pEglGetConfigAttrib || !pEglGetError){
 		logger.LogWarn("deoglRTCBUnixX11EGL: libEGL.so found but required symbols are missing.");
 		dlclose(handle);
 		return false;
@@ -260,8 +262,8 @@ void deoglRTCBUnixX11EGL::CreateWindowSurface(deoglRRenderWindow &window){
 	EGLSurface surface = pEglCreateWindowSurface(pEGLDisplay, pEGLConfig,
 		(EGLNativeWindowType)window.GetWindow(), nullptr);
 	if(surface == EGL_NO_SURFACE){
-		pRTContext.GetRenderThread().GetLogger().LogError(
-			"eglCreateWindowSurface failed for render window");
+		pRTContext.GetRenderThread().GetLogger().LogErrorFormat(
+			"eglCreateWindowSurface failed for render window (%d)", (int)pEglGetError());
 		DETHROW(deeInvalidAction);
 	}
 	
