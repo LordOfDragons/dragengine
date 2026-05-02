@@ -34,6 +34,9 @@
 #	ifdef OS_UNIX_X11
 #		include "backend/deoglRTCBUnixX11GLX.h"
 #		include "backend/deoglRTCBUnixX11EGL.h"
+#		ifdef OS_UNIX_WAYLAND
+#			include "backend/deoglRTCBUnixWaylandEGL.h"
+#		endif
 #	endif
 #endif // BACKEND_OPENGL
 #include "../window/deoglRenderWindow.h"
@@ -63,12 +66,23 @@ pAppActivated(true)
 {
 #ifdef OS_UNIX_X11
 #	ifdef BACKEND_OPENGL
+	
+#	ifdef OS_UNIX_WAYLAND
 	{
-	renderThread.GetLogger().LogInfo("deoglRTContext: Try creating EGL backend");
-	auto backend = deTUniqueReference<deoglRTCBUnixX11EGL>::New(*this);
+	renderThread.GetLogger().LogInfo("deoglRTContext: Try creating Wayland EGL backend");
+	auto backend = deTUniqueReference<deoglRTCBUnixWaylandEGL>::New(*this);
 	if(backend->TryInit()){
 		pBackend = std::move(backend);
 	}
+	}
+#	endif // OS_UNIX_WAYLAND
+	
+	if(!pBackend){
+		renderThread.GetLogger().LogInfo("deoglRTContext: Try creating EGL backend");
+		auto backend = deTUniqueReference<deoglRTCBUnixX11EGL>::New(*this);
+		if(backend->TryInit()){
+			pBackend = std::move(backend);
+		}
 	}
 	
 	if(!pBackend){

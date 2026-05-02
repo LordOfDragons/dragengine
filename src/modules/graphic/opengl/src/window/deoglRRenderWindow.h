@@ -55,6 +55,9 @@ class NSView;
 
 #	ifdef BACKEND_OPENGL
 #		include "../extensions/egl.h"
+#		ifdef OS_UNIX_WAYLAND
+#			include "../extensions/wayland/wayland-defs.h"
+#		endif
 #	endif
 #endif
 
@@ -132,6 +135,15 @@ private:
 	Window pWindow;
 	Cursor pNullCursor;
 	
+#ifdef OS_UNIX_WAYLAND
+	wl_surface *pWlSurface;
+	xdg_surface *pXdgSurface;
+	xdg_toplevel *pXdgToplevel;
+	wl_egl_window *pWlEglWindow;
+	wp_fractional_scale_v1 *pWpFractionalScale;
+	int pWaylandPreferredScale;
+#endif
+	
 #	ifdef BACKEND_OPENGL
 		EGLSurface pEGLSurface;
 #	endif
@@ -208,6 +220,39 @@ public:
 	inline Window GetWindow() const{ return pWindow; }
 	void SetHostWindow(Window window);
 	
+#ifdef OS_UNIX_WAYLAND
+	inline wl_surface *GetWlSurface() const{ return pWlSurface; }
+	void SetWlSurface(wl_surface *surface);
+	
+	inline xdg_surface *GetXdgSurface() const{ return pXdgSurface; }
+	void SetXdgSurface(xdg_surface *surface);
+	
+	inline xdg_toplevel *GetXdgToplevel() const{ return pXdgToplevel; }
+	void SetXdgToplevel(xdg_toplevel *toplevel);
+	
+	inline wl_egl_window *GetWlEglWindow() const{ return pWlEglWindow; }
+	void SetWlEglWindow(wl_egl_window *eglWindow);
+	
+	inline wp_fractional_scale_v1 *GetWpFractionalScale() const{ return pWpFractionalScale; }
+	void SetWpFractionalScale(wp_fractional_scale_v1 *scale);
+	
+	static void OnXdgSurfaceConfigure(void *data, xdg_surface *xdgSurface, uint32_t serial);
+	
+	static void OnXdgToplevelConfigure(void *data, xdg_toplevel *toplevel,
+		int32_t width, int32_t height, wl_array *states);
+	
+	static void OnXdgToplevelClose(void *data, xdg_toplevel *toplevel);
+	
+	static void OnXdgToplevelConfigureBounds(void *data, xdg_toplevel *toplevel,
+		int32_t width, int32_t height);
+	
+	static void OnXdgToplevelWmCapabilities(void *data, xdg_toplevel *toplevel,
+		wl_array *capabilities);
+	
+	static void OnWpFractionalScalePreferredScale(void *data,
+		wp_fractional_scale_v1 *fractionalScale, uint32_t scale);
+#endif
+
 #ifdef BACKEND_OPENGL
 	inline EGLSurface GetEGLSurface() const{ return pEGLSurface; }
 	void SetEGLSurface(EGLSurface surface);

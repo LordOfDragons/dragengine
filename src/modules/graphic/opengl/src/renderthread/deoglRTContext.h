@@ -33,6 +33,7 @@
 #	ifdef BACKEND_OPENGL
 #		include "backend/deoglRTCBUnixX11GLX.h"
 #		include "backend/deoglRTCBUnixX11EGL.h"
+#		include "backend/deoglRTCBUnixWaylandEGL.h"
 #	elif defined BACKEND_VULKAN
 #		include "backend/deoglRTCBUnixX11Vulkan.h"
 #	endif

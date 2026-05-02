@@ -35,6 +35,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#ifdef OS_UNIX_WAYLAND
+#include "deWaylandHelper.h"
+#endif
+
 
 /**
  * \brief Unix operating system.
@@ -58,6 +62,12 @@ private:
 	decTList<sDisplayInformation> pDisplayInformation;
 	decTList<decPoint> pDisplayResolutions;
 	int pScaleFactor;
+	
+	// Wayland support (dynamically loaded at runtime)
+#ifdef OS_UNIX_WAYLAND
+	wl_display *pWaylandDisplay;
+	bool pEnableWayland;
+#endif
 	
 	
 	
@@ -261,14 +271,44 @@ public:
 	
 	
 	
+#ifdef OS_UNIX_WAYLAND
+	/** \name Wayland related. */
+	/*@{*/
+	/** \brief Wayland display or nullptr if Wayland is not available. */
+	inline wl_display *GetWaylandDisplay() const{ return pWaylandDisplay; }
+	
+	/**
+	 * \brief Enable wayland if supported by system.
+	 * 
+	 * Default is true.
+	 */
+	inline bool GetEnableWayland() const{ return pEnableWayland; }
+	
+	/**
+	 * \brief Set enable wayland if supported by system.
+	 * 
+	 * Must be called before the render thread is created. If true Wayland will be used instead of
+	 * X11 if supported by the system. If false Wayland will not be used even if supported by the
+	 * system. This is required if the application using the game engine does not support Wayland.
+	 */
+	void SetEnableWayland(bool enable);
+	/*@}*/
+#endif
+	
+	
+	
 private:
 	void pCleanUp();
 	void pSetWindowEventMask();
 	decString pGetHomeDirectory();
 	void pGetDisplayInformation();
 	int pGetGlobalScaling() const;
+	
+#ifdef OS_UNIX_WAYLAND
+	bool pTryConnectWayland();
+	void pGetWaylandDisplayInformation();
+#endif
 };
 
-#endif
-
-#endif
+#endif // OS_UNIX_X11
+#endif // _DEOSUNIX_H_

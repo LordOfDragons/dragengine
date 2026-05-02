@@ -85,9 +85,9 @@ public:
 	 * Try to initialize. Returns false if the required library is not available
 	 * or required symbols are missing. Throws on other failures.
 	 */
-	bool TryInit();
+	virtual bool TryInit();
 	
-	/** Initialize phase 2 (render thread). */
+	/** Initialize phase 2. */
 	void InitPhase2() override;
 	
 	/** Clean up all resources. */
@@ -126,6 +126,12 @@ public:
 	/** Apply VSync mode. */
 	void ApplyVSync(deoglRRenderWindow &window, deoglConfiguration::eVSyncMode vsyncMode) override;
 	
+	/** Create surface for window. */
+	virtual void CreateWindowSurface(deoglRRenderWindow &window);
+	
+	/** Destroy surface for window. */
+	virtual void DestroyWindowSurface(deoglRRenderWindow &window);
+	
 	
 	/** Library functions. */
 	inline EGLDisplay GetEGLDisplay() const{ return pEGLDisplay; }
@@ -136,15 +142,12 @@ public:
 	inline EGLSurface GetEGLLoaderSurface() const{ return pEGLLoaderSurface; }
 	EGLSurface GetEGLCompileSurfaceAt(int index) const;
 	inline PFNEGLGETPROCADDRESSPROC GetEGLGetProcAddressFunc() const{ return pEglGetProcAddress; }
-	
-	void CreateWindowSurface(deoglRRenderWindow &window);
-	void DestroyWindowSurface(deoglRRenderWindow &window);
 	/*@}*/
 	
 	
 protected:
 	void pFreeContext();
-	void pChooseConfig();
+	virtual void pChooseConfig();
 	void pChooseVisual() override;
 	void pCreateContext();
 	void pUnloadLibrary();

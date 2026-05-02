@@ -34,6 +34,10 @@
 #include "dexsiDeviceFeedback.h"
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
+#ifdef OS_UNIX_WAYLAND
+	#include "dexsiWaylandInput.h"
+	#include "dexsiDeviceWaylandKeyboard.h"
+#endif
 
 #include "parameters/dexsiPRawMouseInput.h"
 #include "parameters/dexsiPRawMouseInputSensivity.h"
@@ -87,10 +91,6 @@ deBaseInputModule(loadableModule),
 
 pOSUnix(nullptr),
 
-pWindowWidth(0),
-pWindowHeight(0),
-
-pMouseButtons(0),
 pLastMouseX(0),
 pLastMouseY(0),
 
@@ -109,9 +109,7 @@ pRawMouseInputSensitivity(1.0)
 	pCreateParameters();
 }
 
-deXSystemInput::~deXSystemInput(){
-}
-
+deXSystemInput::~deXSystemInput() = default;
 
 
 // Management
@@ -127,32 +125,7 @@ void deXSystemInput::SetRawMouseInputSensitivity(double sensitivity){
 }
 
 bool deXSystemInput::Init(){
-	XWindowAttributes xwa;
-	
 	pOSUnix = GetOS()->CastToOSUnix();
-	pMouseButtons = 0;
-	pWindowWidth = 0;
-	pWindowHeight = 0;
-	pOSUnix->SetEventMask(StructureNotifyMask | ExposureMask
-		| EnterWindowMask | LeaveWindowMask | FocusChangeMask
-		| ButtonPressMask | ButtonReleaseMask
-		| KeyPressMask | KeyReleaseMask
-		/* | ButtonMotionMask | MotionNotify | PointerMotionMask | PointerMotionHintMask */
-);
-	
-	if(pOSUnix->GetWindow() > 255){
-		XGetWindowAttributes(pOSUnix->GetDisplay(), pOSUnix->GetWindow(), &xwa);
-		pWindowWidth = xwa.width;
-		pWindowHeight = xwa.height;
-	}
-	
-	pIsListening = true;
-	
-	// determine if keyboard auto-repeat is enabled
-	pSystemAutoRepeatEnabled = true; // figure this out using X11
-	pAutoRepeatEnabled = pSystemAutoRepeatEnabled;
-	
-	AppActivationChanged();
 	
 	// scan for devices
 	try{
@@ -167,13 +140,32 @@ bool deXSystemInput::Init(){
 		return false;
 	}
 	
+	// finish initialization
+	pIsListening = true;
+	
+	if(pDevices->GetWaylandInput().IsNull()){
+		pOSUnix->SetEventMask(StructureNotifyMask | ExposureMask
+			| EnterWindowMask | LeaveWindowMask | FocusChangeMask
+			| ButtonPressMask | ButtonReleaseMask
+			| KeyPressMask | KeyReleaseMask
+			/* | ButtonMotionMask | MotionNotify | PointerMotionMask | PointerMotionHintMask */
+		);
+		
+		// determine if keyboard auto-repeat is enabled
+		pSystemAutoRepeatEnabled = true; // figure this out using X11
+		pAutoRepeatEnabled = pSystemAutoRepeatEnabled;
+		
+		AppActivationChanged();
+	}
+	
 	return true;
 }
 
 void deXSystemInput::CleanUp(){
+	if(pDevices && !pDevices->GetWaylandInput()){
+		pSetAutoRepeatEnabled(pSystemAutoRepeatEnabled);
+	}
 	pDevices = nullptr;
-	
-	pSetAutoRepeatEnabled(pSystemAutoRepeatEnabled);
 	pOSUnix = nullptr;
 }
 
@@ -187,7 +179,7 @@ int deXSystemInput::GetDeviceCount(){
 }
 
 deInputDevice::Ref deXSystemInput::GetDeviceAt(int index){
-	const deInputDevice::Ref device(deInputDevice::Ref::New());
+	auto device = deInputDevice::Ref::New();
 	pDevices->GetDevices().GetAt(index)->GetInfo(device);
 	return device;
 }
@@ -225,64 +217,70 @@ void deXSystemInput::SetFeedbackValue(int device, int feedback, float value){
 }
 
 int deXSystemInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode){
-	if(device != pDevices->GetX11CoreKeyboard()->GetIndex()){
+	if(!pDevices->GetPrimaryKeyboard() || device != pDevices->GetPrimaryKeyboard()->GetIndex()){
 		return -1;
 	}
 	
-	const dexsiDeviceCoreKeyboard &rdevice = pDevices->GetX11CoreKeyboard();
-	const int count = rdevice.GetButtons().GetCount();
+	const dexsiDevice &rdevice = pDevices->GetPrimaryKeyboard();
 	int bestPriority = 10;
 	int bestButton = -1;
-	int i;
 	
-	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = rdevice.GetButtons().GetAt(i);
-		
+	rdevice.GetButtons().VisitIndexed([&](int i, const dexsiDeviceButton &button){
 		if(button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority){
 			bestButton = i;
 			bestPriority = button.GetMatchPriority();
 		}
-	}
+	});
 	
 	return bestButton;
 }
 
 int deXSystemInput::ButtonMatchingKeyChar(int device, int character){
-	if(device != pDevices->GetX11CoreKeyboard()->GetIndex()){
+	if(!pDevices->GetPrimaryKeyboard() || device != pDevices->GetPrimaryKeyboard()->GetIndex()){
 		return -1;
 	}
 	
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices->GetWaylandInput()){
+		return pDevices->GetWaylandInput()->GetWaylandKeyboard()->
+			ButtonMatchingKeyChar((uint32_t)character);
+	}
+#endif
 	return pDevices->GetX11CoreKeyboard()->ButtonMatchingKeyChar(character);
 }
 
 int deXSystemInput::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode,
 deInputEvent::eKeyLocation location){
-	if(device != pDevices->GetX11CoreKeyboard()->GetIndex()){
+	if(!pDevices->GetPrimaryKeyboard() || device != pDevices->GetPrimaryKeyboard()->GetIndex()){
 		return -1;
 	}
 	
-	const dexsiDeviceCoreKeyboard &rdevice = pDevices->GetX11CoreKeyboard();
-	const int count = rdevice.GetButtons().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = rdevice.GetButtons().GetAt(i);
-		if(button.GetKeyCode() == keyCode && button.GetKeyLocation() == location){
-			return i;
-		}
-	}
-	
-	return -1;
+	const dexsiDevice &rdevice = pDevices->GetPrimaryKeyboard();
+	return rdevice.GetButtons().IndexOfMatching([&](const dexsiDeviceButton &button){
+		return button.GetKeyCode() == keyCode && button.GetKeyLocation() == location;
+	});
 }
 
 int deXSystemInput::ButtonMatchingKeyChar(int device, int character,
 deInputEvent::eKeyLocation location){
-	if(device != pDevices->GetX11CoreKeyboard()->GetIndex()){
+	if(!pDevices->GetPrimaryKeyboard() || device != pDevices->GetPrimaryKeyboard()->GetIndex()){
 		return -1;
 	}
 	if(character < 0x20 || character > 0xff){
 		return -1;
 	}
+	
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices->GetWaylandInput()){
+		// search by unicode character matching and key location
+		const dexsiDeviceWaylandKeyboard &rdevice = pDevices->GetWaylandInput()->GetWaylandKeyboard();
+		return rdevice.GetButtons().IndexOfMatching([&](const dexsiDeviceButton &button){
+			const xkb_keysym_t keysym = (xkb_keysym_t)button.GetX11Code();
+			const uint32_t ucs = xkb_keysym_to_utf32(keysym);
+			return ucs > 0 && (uint32_t)character == ucs && button.GetKeyLocation() == location;
+		});
+	}
+#endif
 	
 	Display * const display = GetOSUnix()->GetDisplay();
 	const KeyCode x11code = XKeysymToKeycode(display, (KeySym)character);
@@ -291,39 +289,51 @@ deInputEvent::eKeyLocation location){
 	}
 	
 	const dexsiDeviceCoreKeyboard &rdevice = pDevices->GetX11CoreKeyboard();
-	const int count = rdevice.GetButtons().GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		const dexsiDeviceButton &button = rdevice.GetButtons().GetAt(i);
-		if(button.GetX11Code() == x11code && button.GetKeyLocation() == location){
-			return i;
-		}
-	}
-	
-	return -1;
+	return rdevice.GetButtons().IndexOfMatching([&](const dexsiDeviceButton &button){
+		return button.GetX11Code() == x11code && button.GetKeyLocation() == location;
+	});
 }
 
 
 
-// events
+// Events
 ///////////
 
 void deXSystemInput::ProcessEvents(){
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices && pDevices->GetWaylandInput()){
+		pDevices->GetWaylandInput()->DispatchEvents();
+		pDevices->Update();
+		return;
+	}
+#endif
+	
 	pUpdateRawMouseInput();
 	pQueryMousePosition(true);
 	pDevices->Update();
 }
 
 void deXSystemInput::ClearEvents(){
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices && pDevices->GetWaylandInput()){
+		return;
+	}
+#endif
+	
 	pQueryMousePosition(false);
 }
 
 void deXSystemInput::EventLoop(XEvent &event){
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices && pDevices->GetWaylandInput()){
+		return;
+	}
+#endif
+	
 	switch(event.type){
 	case ConfigureNotify:
-		pWindowWidth = event.xconfigure.width;
-		pWindowHeight = event.xconfigure.height;
+		//pWindowWidth = event.xconfigure.width;
+		//pWindowHeight = event.xconfigure.height;
 		break;
 		
 	case FocusIn:
@@ -531,6 +541,13 @@ void deXSystemInput::CaptureInputDevicesChanged(){
 		return; // not inited yet
 	}
 	
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices && pDevices->GetWaylandInput()){
+		pDevices->GetWaylandInput()->UpdateCapture();
+		return;
+	}
+#endif
+	
 	pUpdateAutoRepeat();
 	pQueryMousePosition(false);
 }
@@ -539,6 +556,13 @@ void deXSystemInput::AppActivationChanged(){
 	if(!pOSUnix){
 		return; // not inited yet
 	}
+	
+#ifdef OS_UNIX_WAYLAND
+	if(pDevices && pDevices->GetWaylandInput()){
+		pDevices->GetWaylandInput()->UpdateCapture();
+		return;
+	}
+#endif
 	
 	pUpdateAutoRepeat();
 	pQueryMousePosition(false);
@@ -772,8 +796,6 @@ const timeval &eventTime){
 	event.SetY(0);
 	event.SetTime(eventTime);
 	queue.AddEvent(event);
-	
-	pMouseButtons |= (1 << button);
 }
 
 void deXSystemInput::pAddMouseRelease(int device, int button, int state,
@@ -789,8 +811,6 @@ const timeval &eventTime){
 	event.SetY(0);
 	event.SetTime(eventTime);
 	queue.AddEvent(event);
-	
-	pMouseButtons &= ~(1 << button);
 }
 
 void deXSystemInput::pAddMouseMove(int device, int state, int x, int y,
