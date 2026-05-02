@@ -338,7 +338,7 @@ void deoglRTCBUnixWaylandEGL::pChooseConfig(){
 	}
 	
 	const EGLint configAttribs[] = {
-		EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT /*| EGL_PBUFFER_BIT*/,
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
 		EGL_RED_SIZE, 8,
 		EGL_GREEN_SIZE, 8,
@@ -350,9 +350,12 @@ void deoglRTCBUnixWaylandEGL::pChooseConfig(){
 	};
 	
 	EGLint numConfigs = 0;
-	if(pEglChooseConfig(pEGLDisplay, configAttribs, &pEGLConfig, 1, &numConfigs) == EGL_FALSE
-	|| numConfigs == 0){
-		DETHROW_INFO(deeInvalidAction, "eglChooseConfig for Wayland failed");
+	if(pEglChooseConfig(pEGLDisplay, configAttribs, &pEGLConfig, 1, &numConfigs) == EGL_FALSE){
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"eglChooseConfig for Wayland failed (0x{:x})", pEglGetError()));
+	}
+	if(numConfigs == 0){
+		DETHROW_INFO(deeInvalidAction, "eglChooseConfig for Wayland return 0 entries");
 	}
 	
 	logger.LogInfo("RTCBUnixWaylandEGL: EGL config selected (Wayland)");

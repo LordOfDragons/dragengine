@@ -781,7 +781,6 @@ void dexsiWaylandInput::OnRelativeMotion(void *data, zwp_relative_pointer_v1*,
 uint32_t utime_hi, uint32_t utime_lo,
 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t, wl_fixed_t){
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
-	printf("Relative motion: locked=%d dx=%.2f dy=%.2f\n", self.pPointerLocked, wl_fixed_to_double(dx), wl_fixed_to_double(dy));
 	if(!self.pPointerLocked){
 		return;
 	}
