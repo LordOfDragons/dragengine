@@ -982,21 +982,16 @@ struct sWlGatherModeInfo{
 	int width = 0, height = 0, refreshHz = 0;
 };
 
-static const int vWlMaxModes = 64;
-static const int vWlMaxOutputs = 32;
-
 struct sWlGatherOutputInfo{
 	wl_output *output = nullptr;
 	int currentWidth = 0, currentHeight = 0, currentRefreshHz = 0;
 	bool hasCurrentMode = false;
-	sWlGatherModeInfo modes[vWlMaxModes]{};
-	int modeCount = 0;
+	decTList<sWlGatherModeInfo> modes;
 };
 
 struct sWlGatherCtx{
 	const wl_output_listener *outputListener = nullptr;
-	sWlGatherOutputInfo outputs[vWlMaxOutputs]{};
-	int outputCount = 0;
+	decTUniqueList<sWlGatherOutputInfo> outputs;
 };
 
 static void sWlOutputGeometry(void*, wl_output*, int32_t, int32_t, int32_t, int32_t,
@@ -1005,9 +1000,7 @@ int32_t, const char*, const char*, int32_t){}
 static void sWlOutputMode(void *data, wl_output*, uint32_t flags,
 int32_t width, int32_t height, int32_t refresh){
 	sWlGatherOutputInfo &info = *(sWlGatherOutputInfo*)data;
-	if(info.modeCount < vWlMaxModes){
-		info.modes[info.modeCount++] = {width, height, (refresh + 500) / 1000};
-	}
+	info.modes.Add({width, height, (refresh + 500) / 1000});
 	if(flags & WL_OUTPUT_MODE_CURRENT){
 		info.currentWidth = width;
 		info.currentHeight = height;
@@ -1032,20 +1025,16 @@ const char *interface, uint32_t version){
 	if(strcmp(interface, wl_output_interface.name) != 0){
 		return;
 	}
-	if(ctx.outputCount >= vWlMaxOutputs){
-		return;
-	}
 	
 	auto output = (wl_output*)wl_registry_bind(registry, name, &wl_output_interface, version < 2u ? 1u : 2u);
 	if(!output){
 		return;
 	}
 	
-	sWlGatherOutputInfo &info = ctx.outputs[ctx.outputCount++];
-	memset(&info, 0, sizeof(info));
-	info.output = output;
-	info.currentRefreshHz = 60;
-	wl_proxy_add_listener((wl_proxy*)output, (void(**)(void))ctx.outputListener, &info);
+	auto info = deTUniqueReference<sWlGatherOutputInfo>::New();
+	info->output = output;
+	wl_output_add_listener(output, ctx.outputListener, info.Pointer());
+	ctx.outputs.Add(std::move(info));
 }
 
 static void sWlRegistryGlobalRemove(void*, wl_registry*, uint32_t){}
@@ -1070,7 +1059,7 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 	// receive globals and bind wl_output objects with their listeners
 	wl_display_roundtrip(pWaylandDisplay);
 	
-	if(ctx.outputCount == 0){
+	if(ctx.outputs.IsEmpty()){
 		wl_proxy_destroy((wl_proxy*)registry);
 		DETHROW_INFO(deeInvalidAction, "No Wayland outputs found");
 	}
@@ -1080,19 +1069,17 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 	
 	// count valid outputs and total mode entries
 	int validOutputs = 0, totalModes = 0;
-	for(int i=0; i<ctx.outputCount; i++){
-		if(!ctx.outputs[i].hasCurrentMode){
-			continue;
+	ctx.outputs.Visit([&](const sWlGatherOutputInfo &info){
+		if(info.hasCurrentMode){
+			validOutputs++;
+			totalModes += decMath::max(info.modes.GetCount(), 1);
 		}
-		
-		validOutputs++;
-		totalModes += ctx.outputs[i].modeCount > 0 ? ctx.outputs[i].modeCount : 1;
-	}
+	});
 	
 	if(validOutputs == 0){
-		for(int i=0; i<ctx.outputCount; i++){
-			wl_proxy_destroy((wl_proxy*)ctx.outputs[i].output);
-		}
+		ctx.outputs.Visit([&](const sWlGatherOutputInfo &info){
+			wl_proxy_destroy((wl_proxy*)info.output);
+		});
 		wl_proxy_destroy((wl_proxy*)registry);
 		DETHROW_INFO(deeInvalidAction, "No valid Wayland outputs found");
 	}
@@ -1101,23 +1088,22 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 	pDisplayResolutions = decTList<decPoint>(totalModes);
 	pDisplayInformation = decTList<sDisplayInformation>(validOutputs);
 	
-	for(int i=0; i<ctx.outputCount; i++){
-		const sWlGatherOutputInfo &info = ctx.outputs[i];
+	ctx.outputs.Visit([&](const sWlGatherOutputInfo &info){
 		if(!info.hasCurrentMode){
 			wl_proxy_destroy((wl_proxy*)info.output);
-			continue;
+			return;
 		}
 		
-		sDisplayInformation di;
-		di.currentResolution = decPoint(info.currentWidth, info.currentHeight);
+		sDisplayInformation di{};
+		di.currentResolution = {info.currentWidth, info.currentHeight};
 		di.currentRefreshRate = info.currentRefreshHz;
 		di.resolutions = pDisplayResolutions.GetArrayPointer() + pDisplayResolutions.GetCount();
 		
-		if(info.modeCount > 0){
-			for(int j=0; j<info.modeCount; j++){
-				pDisplayResolutions.Add({info.modes[j].width, info.modes[j].height});
-			}
-			di.resolutionCount = info.modeCount;
+		if(info.modes.IsNotEmpty()){
+			info.modes.Visit([&](const sWlGatherModeInfo &mode){
+				pDisplayResolutions.Add({mode.width, mode.height});
+			});
+			di.resolutionCount = info.modes.GetCount();
 			
 		}else{
 			pDisplayResolutions.Add(di.currentResolution);
@@ -1126,7 +1112,7 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 		
 		pDisplayInformation.Add(di);
 		wl_proxy_destroy((wl_proxy*)info.output);
-	}
+	});
 	
 	wl_proxy_destroy((wl_proxy*)registry);
 }

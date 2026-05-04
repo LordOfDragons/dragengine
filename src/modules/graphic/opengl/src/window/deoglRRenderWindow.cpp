@@ -73,6 +73,7 @@
 
 #if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
 #include "../renderthread/backend/deoglRTCBUnixWaylandEGL.h"
+#include <dragengine/threading/deMutexGuard.h>
 #endif
 #endif
 
@@ -234,7 +235,7 @@ pXdgSurface(nullptr),
 pXdgToplevel(nullptr),
 pWlEglWindow(nullptr),
 pWpFractionalScale(nullptr),
-pWaylandPreferredScale(120),
+pWpViewport(nullptr),
 #endif
 
 #ifdef BACKEND_OPENGL
@@ -255,7 +256,6 @@ pNotifySizeChanged(false),
 
 pVSyncMode(deoglConfiguration::evsmAdaptive),
 pInitSwapInterval(true),
-
 pAfterCreateScaleFactor(100)
 {
 	LEAK_CHECK_CREATE(renderThread, RenderWindow);
@@ -318,9 +318,13 @@ void deoglRRenderWindow::SetWpFractionalScale(wp_fractional_scale_v1 *scale){
 	pWpFractionalScale = scale;
 }
 
+void deoglRRenderWindow::SetWpViewport(wp_viewport *viewport){
+	pWpViewport = viewport;
+}
+
 void deoglRRenderWindow::OnWpFractionalScalePreferredScale(void *data,
 wp_fractional_scale_v1*, uint32_t scale){
-	((deoglRRenderWindow*)data)->pWaylandPreferredScale = (int)scale;
+	((deoglRRenderWindow*)data)->pAfterCreateScaleFactor = 100 * scale / 120;
 }
 
 void deoglRRenderWindow::OnXdgSurfaceConfigure(void *data, xdg_surface*, uint32_t serial){
@@ -328,22 +332,70 @@ void deoglRRenderWindow::OnXdgSurfaceConfigure(void *data, xdg_surface*, uint32_
 	auto backend = window->pRenderThread.GetContext().GetBackend()
 		.PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
 	if(backend){
-		backend->AckXdgSurfaceConfigure(*window, serial);
+		window->pLastConfigureResize.serial = serial;
+		window->pLastConfigureResize.requested = true;
+		
+		window->OnResize(window->pLastConfigureResize.renderSize.x,
+			window->pLastConfigureResize.renderSize.y);
+		
+		if(window->pXdgSurface){
+			xdg_surface_ack_configure(window->pXdgSurface, serial);
+		}
+		if(window->pWlEglWindow){
+			deoglWlEglWindowResize(window->pWlEglWindow, window->pLastConfigureResize.renderSize.x,
+				window->pLastConfigureResize.renderSize.y, 0, 0);
+		}
+		if(window->pWpViewport){
+			wp_viewport_set_destination(window->pWpViewport,
+				window->pLastConfigureResize.viewportSize.x,
+				window->pLastConfigureResize.viewportSize.y);
+		}
+		if(window->pXdgSurface){
+			xdg_surface_set_window_geometry(window->pXdgSurface, 0, 0,
+				window->pLastConfigureResize.viewportSize.x,
+				window->pLastConfigureResize.viewportSize.y);
+		}
+		if(window->pWlSurface){
+			wl_surface_commit(window->pWlSurface);
+			wl_display_flush(window->pRenderThread.GetContext().GetBackend()->GetOSUnix()->GetWaylandDisplay());
+		}
+		
+		/*
+		if(window->pXdgSurface){
+			const deMutexGuard lock(window->pMutexCommitConfigure);
+			window->pCommitConfigureResize = window->pLastConfigureResize;
+		}
+		*/
 	}
 }
 
 void deoglRRenderWindow::OnXdgToplevelConfigure(void *data, xdg_toplevel*, int32_t width,
 int32_t height, wl_array*){
+	// size is in logical coordinates
 	auto window = (deoglRRenderWindow*)data;
-	window->pRenderThread.GetLogger().LogInfoFormat("deoglRRenderWindow.OnXdgToplevelConfigure: %p (%d,%d)", data, width, height);
 	
-	if(width == 0 || height == 0){
-		// first time showing window. compositor wants to know the desired window size.
-		// this will be done after all the initial notifications have been received
-		return;
+	if(width == 0 && height == 0){
+		// first time showing window. compositor wants to know the desired window size
+		if(window->pFullScreen){
+			// full screen is a bit of a problem. size is in logical coordinates but since we
+			// do not know the global scaling in advance the window size is in physical
+			// coordinates. here we should know the global scaling so scale it down
+			width = window->pWidth * 100 / window->pAfterCreateScaleFactor;
+			height = window->pHeight * 100 / window->pAfterCreateScaleFactor;
+			
+		}else{
+			width = window->pWidth;
+			height = window->pHeight;
+		}
+		
+	}else{
+		// compositor changed the window size
 	}
 	
-	window->OnResize(decMath::max(width, 1), decMath::max(height, 1));
+	window->pLastConfigureResize.viewportSize.Set(decMath::max(width, 1), decMath::max(height, 1));
+	window->pLastConfigureResize.renderSize.Set(
+		decMath::max(width * window->pAfterCreateScaleFactor / 100, 1),
+		decMath::max(height * window->pAfterCreateScaleFactor / 100, 1));
 }
 
 void deoglRRenderWindow::OnXdgToplevelClose(void *data, xdg_toplevel*){
@@ -566,12 +618,9 @@ void deoglRRenderWindow::CreateWindow(){
 		PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
 	if(backendWayland){
 		// on Wayland all window management is done via Wayland protocol
-		if(pWlSurface){
-			return;
+		if(!pWlSurface){
+			backendWayland->CreateWindowSurface(*this);
 		}
-		
-		backendWayland->CreateWindowSurface(*this);
-		pAfterCreateScaleFactor = pGetDisplayScaleFactor();
 		return;
 	}
 #endif
@@ -688,6 +737,49 @@ void deoglRRenderWindow::SwapBuffers(){
 	pUpdateVSync();
 	pRenderThread.GetContext().GetBackend()->SwapBuffers(*this);
 	pSwapBuffers = false;
+	
+#if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	// this is annoying here. wayland sends the configure request on the main thread.
+	// we have to put this on hold until we swap buffers. but at this time we swap the
+	// previous buffer size. we have thus to hold the configure commit until after we
+	// rendered with the new size. this is done like this:
+	//
+	// - main thread stores request in pCommitConfigure* and sets pRequiresCommitConfigure
+	// - on swap move the commit request to pRenderCommitConfigure* and pRenderCommitConfigure
+	// - on swap finish the commit if pRenderCommitConfigure is set and reset it
+	/*
+	const deMutexGuard lock(pMutexCommitConfigure);
+	
+	if(pRenderConfigureResize.requested){
+		pRenderConfigureResize.requested = false;
+		
+		if(pXdgSurface){
+			xdg_surface_ack_configure(pXdgSurface, pRenderConfigureResize.serial);
+		}
+		if(pWlEglWindow){
+			deoglWlEglWindowResize(pWlEglWindow, pRenderConfigureResize.renderSize.x,
+				pRenderConfigureResize.renderSize.y, 0, 0);
+		}
+		if(pWpViewport){
+			wp_viewport_set_destination(pWpViewport, pRenderConfigureResize.viewportSize.x,
+				pRenderConfigureResize.viewportSize.y);
+		}
+		if(pXdgSurface){
+			xdg_surface_set_window_geometry(pXdgSurface, 0, 0,
+				pRenderConfigureResize.viewportSize.x, pRenderConfigureResize.viewportSize.y);
+		}
+		if(pWlSurface){
+			wl_surface_commit(pWlSurface);
+			wl_display_flush(pRenderThread.GetContext().GetBackend()->GetOSUnix()->GetWaylandDisplay());
+		}
+	}
+	
+	if(pCommitConfigureResize.requested){
+		pRenderConfigureResize = pCommitConfigureResize;
+		pCommitConfigureResize.requested = false;
+	}
+	*/
+#endif
 }
 
 void deoglRRenderWindow::Render(){
@@ -851,7 +943,7 @@ void deoglRRenderWindow::OnReposition(int x, int y){
 
 void deoglRRenderWindow::OnResize(int width, int height){
 	// Called from main thread
-	if(pWidth == 0 || pHeight == 0){
+	if(width == 0 || height == 0){
 		// due to X restrictions zero sized windows can not be defined so avoid
 		// triggering wrong resize events in this case
 		return;
@@ -861,22 +953,11 @@ void deoglRRenderWindow::OnResize(int width, int height){
 		return;
 	}
 	
-	pWidth = width;
-	pHeight = height;
+	pWidth = decMath::max(width, 1);
+	pHeight = decMath::max(height, 1);
 	// pRenderThread.GetOgl().LogInfoFormat("RRenderWindow.OnResize: %p (%d,%d)", this, width, height);
 	
 	pNotifySizeChanged = true;
-	
-	// on Wayland resize also the EGL surface attached to the window
-#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
-	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
-	if(backendWayland){
-		if(pWlEglWindow){
-			deoglWlEglWindowResize(pWlEglWindow, decMath::max(pWidth, 1), decMath::max(pHeight, 1), 0, 0);
-		}
-		return;
-	}
-#endif
 }
 
 
@@ -1029,14 +1110,6 @@ void deoglRRenderWindow::pResizeWindow(){
 #if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
 	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
 	if(backendWayland){
-		if(!pWlEglWindow){
-			return;
-		}
-		
-		// Wayland does not allow clients to resize their own windows.
-		// The compositor controls window size.
-		deoglWlEglWindowResize(pWlEglWindow, pWidth, pHeight, 0, 0);
-		wl_surface_commit(pWlSurface);
 		return;
 	}
 #endif
@@ -1524,8 +1597,7 @@ int deoglRRenderWindow::pGetDisplayScaleFactor(){
 #if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
 	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
 	if(backendWayland){
-		const double scalef = 100.0 * pWaylandPreferredScale / 120.0;
-		return decMath::max((int)(scalef / 25.0 + 0.5) * 25, 100);
+		return pAfterCreateScaleFactor;
 	}
 #endif
 	

@@ -47,12 +47,14 @@ private:
 	zxdg_toplevel_decoration_v1 *pDecoration;
 	wp_fractional_scale_manager_v1 *pWpFractionalScaleManager;
 	wp_color_manager_v1 *pColorManager;
+	wp_viewporter *pWpViewporter;
 	uint32_t pWlCompositorId;
 	uint32_t pXdgWmBaseId;
 	uint32_t pXdgWmBaseVersion;
 	uint32_t pDecorationManagerId;
 	uint32_t pWpFractionalScaleManagerId;
 	uint32_t pColorManagerId;
+	uint32_t pWpViewporterId;
 	
 	bool pWaylandReady;
 	
@@ -99,10 +101,6 @@ public:
 	void CreateFractionalScaleObject(deoglRRenderWindow &window);
 	
 	
-	/** Acknowledge xdg_surface configure event (sends ack_configure). */
-	void AckXdgSurfaceConfigure(deoglRRenderWindow &window, uint32_t serial);
-	
-	
 	/** Wayland compositor. */
 	inline wl_compositor *GetWlCompositor() const{ return pWlCompositor; }
 	
@@ -125,7 +123,6 @@ private:
 	void pRegisterWaylandCompositor();
 	void pUnregisterWaylandCompositor();
 	
-	/** Registry listener callbacks */
 	static void pOnRegistryGlobal(void *data, wl_registry *registry,
 		uint32_t name, const char *interface, uint32_t version);
 	

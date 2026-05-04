@@ -50,6 +50,11 @@
  *   src/modules/graphic/opengl/src/extensions/wayland/xdg-decoration-protocol.{h|cpp}
  * \endcode
  * 
+ * wayland-scanner {client-header|private-code} \
+ *   /usr/share/wayland-protocols/stable/viewporter/viewporter.xml \
+ *   src/modules/graphic/opengl/src/extensions/wayland/viewporter-protocol.{h|cpp}
+ * \endcode
+ * 
  * The files had then been modified the following way:
  * - Added OS_UNIX_WAYLAND guards
  * - Removed 'const' from wl_output_interface, wl_seat_interface and wl_surface_interface.
@@ -63,6 +68,7 @@
 
 #include "color-management-protocol.h"
 #include "fractional-scale-protocol.h"
+#include "viewporter-protocol.h"
 #include "xdg-decoration-protocol.h"
 #include "xdg-shell-protocol.h"
 

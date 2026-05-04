@@ -57,12 +57,14 @@ pDecorationManager(nullptr),
 pDecoration(nullptr),
 pWpFractionalScaleManager(nullptr),
 pColorManager(nullptr),
+pWpViewporter(nullptr),
 pWlCompositorId(0),
 pXdgWmBaseId(0),
 pXdgWmBaseVersion(0),
 pDecorationManagerId(0),
 pWpFractionalScaleManagerId(0),
 pColorManagerId(0),
+pWpViewporterId(0),
 pWaylandReady(false){
 }
 
@@ -168,14 +170,23 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 		DETHROW_INFO(deeInvalidAction, "xdg_surface_get_toplevel failed");
 	}
 	
+	// create viewport for window surface
+	auto viewport = wp_viewporter_get_viewport(pWpViewporter, wlSurface);
+	wl_surface_set_buffer_scale(wlSurface, 1);
+	
 	// set window title on xdg_toplevel
 	xdg_toplevel_set_title(xdgToplevel, window.GetTitle());
-	xdg_toplevel_set_app_id(xdgToplevel, "ch.dragondreams.dragengine");
+	decString appId(pRTContext.GetRenderThread().GetOgl().GetGameEngine()->GetCacheAppID());
+	if(appId.IsEmpty()){
+		appId.Set("default");
+	}
+	xdg_toplevel_set_app_id(xdgToplevel, decString::Formatted("ch.dragondreams.dragengine.{0}", appId));
 	
 	// store Wayland objects in render window
 	window.SetWlSurface(wlSurface);
 	window.SetXdgSurface(xdgSurface);
 	window.SetXdgToplevel(xdgToplevel);
+	window.SetWpViewport(viewport);
 	
 	// add xdg_surface configure listener
 	static const xdg_surface_listener xdgSurfaceListener = {
@@ -210,18 +221,35 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 		}
 	}
 	
-	// commit surface to trigger initial configure (required by xdg-shell protocol).
-	wl_surface_commit(wlSurface);
+	// fullscreen
+	if(window.GetFullScreen()){
+		xdg_toplevel_set_fullscreen(xdgToplevel, nullptr);
+	}
 	
+	// commit surface to trigger initial configure. attached managers are then frozen
+	wl_surface_commit(wlSurface);
 	if(pOSUnix){
 		wl_display_roundtrip(pOSUnix->GetWaylandDisplay());
 	}
 	
-	// create wl_egl_window
-	const int width = decMath::max(window.GetWidth(), 1);
-	const int height = decMath::max(window.GetHeight(), 1);
+	// calculate window size respecting global scaling
+	int renderWidth = window.GetWidth();
+	int renderHeight = window.GetHeight();
+	int viewportWidth = renderWidth;
+	int viewportHeight = renderHeight;
+	int scaleFactor = 100;
 	
-	wl_egl_window * const wlEglWindow = deoglWlEglWindowCreate(wlSurface, width, height);
+	if(viewport){
+		scaleFactor = window.GetAfterCreateScaleFactor();
+		viewportWidth = renderWidth * 100 / scaleFactor;
+		viewportHeight = renderHeight * 100 / scaleFactor;
+		
+		wp_viewport_set_destination(viewport, viewportWidth, viewportHeight);
+		xdg_surface_set_window_geometry(xdgSurface, 0, 0, viewportWidth, viewportHeight);
+	}
+	
+	// create wl_egl_window
+	wl_egl_window * const wlEglWindow = deoglWlEglWindowCreate(wlSurface, renderWidth, renderHeight);
 	if(!wlEglWindow){
 		wl_proxy_destroy((wl_proxy*)xdgToplevel);
 		wl_proxy_destroy((wl_proxy*)xdgSurface);
@@ -251,14 +279,15 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 	
 	window.SetEGLSurface(surface);
 	
-	deoglWlEglWindowResize(wlEglWindow, width, height, 0, 0);
+	//deoglWlEglWindowResize(wlEglWindow, renderWidth, renderHeight, 0, 0);
 	wl_surface_commit(wlSurface);
-	
 	if(pOSUnix){
 		wl_display_roundtrip(pOSUnix->GetWaylandDisplay());
 	}
 	
-	logger.LogInfoFormat("RTCBUnixWaylandEGL: Created Wayland window surface %dx%d", width, height);
+	logger.LogInfoFormat(
+		"RTCBUnixWaylandEGL.CreateWindowSurface: Created (scale=%d size=%dx%d render=%dx%d)",
+		scaleFactor, viewportWidth, viewportHeight, renderWidth, renderHeight);
 }
 
 void deoglRTCBUnixWaylandEGL::DestroyWindowSurface(deoglRRenderWindow &window){
@@ -272,30 +301,25 @@ void deoglRTCBUnixWaylandEGL::DestroyWindowSurface(deoglRRenderWindow &window){
 		window.SetWlEglWindow(nullptr);
 	}
 	
+	if(window.GetWpViewport()){
+		wp_viewport_destroy(window.GetWpViewport());
+		window.SetWpViewport(nullptr);
+	}
 	if(window.GetWpFractionalScale()){
 		wp_fractional_scale_v1_destroy(window.GetWpFractionalScale());
 		window.SetWpFractionalScale(nullptr);
 	}
-	
 	if(window.GetXdgToplevel()){
 		xdg_toplevel_destroy(window.GetXdgToplevel());
 		window.SetXdgToplevel(nullptr);
 	}
-	
 	if(window.GetXdgSurface()){
 		xdg_surface_destroy(window.GetXdgSurface());
 		window.SetXdgSurface(nullptr);
 	}
-	
 	if(window.GetWlSurface()){
 		wl_proxy_destroy((wl_proxy*)window.GetWlSurface());
 		window.SetWlSurface(nullptr);
-	}
-}
-
-void deoglRTCBUnixWaylandEGL::AckXdgSurfaceConfigure(deoglRRenderWindow &window, uint32_t serial){
-	if(window.GetXdgSurface()){
-		xdg_surface_ack_configure(window.GetXdgSurface(), serial);
 	}
 }
 
@@ -478,7 +502,6 @@ void deoglRTCBUnixWaylandEGL::CreateFractionalScaleObject(deoglRRenderWindow &wi
 	window.SetWpFractionalScale(fractionalScale);
 }
 
-
 void deoglRTCBUnixWaylandEGL::pOnRegistryGlobal(void *data, wl_registry *registry,
 uint32_t name, const char *interface, uint32_t version){
 	auto backend = (deoglRTCBUnixWaylandEGL*)data;
@@ -522,6 +545,14 @@ uint32_t name, const char *interface, uint32_t version){
 		backend->pColorManagerId = name;
 		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
 			"RTCBUnixWaylandEGL: Found interface wp_color_manager_v1");
+		
+	}else if(strcmp(interface, wp_viewporter_interface.name) == 0
+	&& !backend->pWpViewporter){
+		backend->pWpViewporter = (wp_viewporter*)wl_registry_bind(
+			registry, name, &wp_viewporter_interface, 1);
+		backend->pWpViewporterId = name;
+		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
+			"RTCBUnixWaylandEGL: Found interface wp_viewporter");
 	}
 }
 

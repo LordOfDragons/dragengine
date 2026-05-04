@@ -32,6 +32,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/threading/deMutex.h>
 
 #ifdef OS_W32
 #include "../include_windows.h"
@@ -141,7 +142,15 @@ private:
 	xdg_toplevel *pXdgToplevel;
 	wl_egl_window *pWlEglWindow;
 	wp_fractional_scale_v1 *pWpFractionalScale;
-	int pWaylandPreferredScale;
+	wp_viewport *pWpViewport;
+	
+	struct sConfigureResize{
+		uint32_t serial = 0;
+		decPoint viewportSize{}, renderSize{};
+		bool requested = false;
+	};
+	deMutex pMutexCommitConfigure;
+	sConfigureResize pLastConfigureResize, pCommitConfigureResize, pRenderConfigureResize;
 #endif
 	
 #	ifdef BACKEND_OPENGL
@@ -235,6 +244,9 @@ public:
 	
 	inline wp_fractional_scale_v1 *GetWpFractionalScale() const{ return pWpFractionalScale; }
 	void SetWpFractionalScale(wp_fractional_scale_v1 *scale);
+	
+	inline wp_viewport *GetWpViewport() const{ return pWpViewport; }
+	void SetWpViewport(wp_viewport *viewport);
 	
 	static void OnXdgSurfaceConfigure(void *data, xdg_surface *xdgSurface, uint32_t serial);
 	

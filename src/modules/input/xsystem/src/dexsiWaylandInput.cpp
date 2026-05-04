@@ -396,14 +396,20 @@ void dexsiWaylandInput::pFlushPointerEvents(const timeval &eventTime){
 	
 	const bool captureRequested = pModule.GetGameEngine()->GetInputSystem()->GetCaptureInputDevices();
 	if(pPointerHasMoved && (pPointerInWindow || captureRequested)){
+		double scaleFactor = 1.0;
+		auto renderWindow = pModule.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+		if(renderWindow){
+			scaleFactor = (double)renderWindow->GetScaleFactor() / 100.0;
+		}
+		
 		int x, y;
 		if(pModule.GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()){
-			x = (int)round(pPointerDeltaX);
-			y = (int)round(pPointerDeltaY);
+			x = (int)round(pPointerDeltaX * scaleFactor);
+			y = (int)round(pPointerDeltaY * scaleFactor);
 			
 		}else{
-			x = (int)round(pPointerX);
-			y = (int)round(pPointerY);
+			x = (int)round(pPointerX * scaleFactor);
+			y = (int)round(pPointerY * scaleFactor);
 		}
 		
 		pEnqueueMouseMove(x, y, mods, eventTime);
@@ -636,6 +642,8 @@ wl_surface *surface, wl_fixed_t sx, wl_fixed_t sy){
 	if(self.pModule.GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()){
 		self.pLockPointer();
 	}
+	
+	wl_pointer_set_cursor(self.pWlPointer, serial, nullptr, 0, 0);
 }
 
 void dexsiWaylandInput::OnPointerLeave(void *data, wl_pointer*, uint32_t, wl_surface*){
