@@ -25,11 +25,12 @@
 #ifndef _DEWAYLANDHELPER_H_
 #define _DEWAYLANDHELPER_H_
 
-#include "../dragengine_configuration.h"
-#include "../common/string/decString.h"
-#include "../common/exceptions.h"
+#include "../../dragengine_configuration.h"
 
 #if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND)
+
+#include "../../common/string/decString.h"
+#include "../../common/exceptions.h"
 
 #include <iostream>
 #include <dlfcn.h>
@@ -396,6 +397,89 @@ public:
 	/** \brief Access data. */
 	inline const T& operator*() const{ return *Get(); }
 	inline const T* operator->() const{ return Get(); }
+};
+
+
+/** \brief Wayland manager. */
+template<typename T> class deWaylandManager{
+private:
+	const wl_interface &pInterface;
+	int pVersion;
+	int pBoundVersion = 0;
+	void (*pDestroyFunc)(T*) = nullptr;
+	T *pManager = nullptr;
+	uint32_t pName = 0;
+	
+	
+public:
+	/** \brief Create manager. */
+	deWaylandManager(const wl_interface &interface, int version, void (*destroyFunc)(T*)) :
+	pInterface(interface), pVersion(version), pDestroyFunc(destroyFunc){
+	}
+	
+	/** \brief Destroy manager. */
+	virtual ~deWaylandManager(){
+		Unbind();
+	}
+	
+	/** \brief Interface. */
+	inline const wl_interface &GetInterface() const{ return pInterface; }
+	
+	/** \brief Version. */
+	inline int GetVersion() const{ return pVersion; }
+	
+	/** \brief Bound version. */
+	inline int GetBoundVersion() const{ return pBoundVersion; }
+	
+	/** \brief Manager. */
+	inline T* GetManager() const{ return pManager; }
+	inline operator T*() const{ return GetManager(); }
+	
+	/** \brief Is bound. */
+	inline bool IsBound() const{ return pManager != nullptr; }
+	inline operator bool() const{ return IsBound(); }
+	
+	/**
+	 * \brief Bind if matching and not bound.
+	 * \return True if bound, false if not matching or already bound.
+	 */
+	bool Bind(wl_registry *registry, uint32_t name, const char *interface, uint32_t version){
+		if(pManager || strcmp(interface, pInterface.name) != 0){
+			return false;
+		}
+		
+		const int bindVersion = decMath::min(pVersion, version);
+		pManager = reinterpret_cast<T*>(wl_registry_bind(registry, name, &pInterface, bindVersion));
+		if(!pManager){
+			return false;
+		}
+		
+		pName = name;
+		pBoundVersion = bindVersion;
+		OnBound();
+		return true;
+	}
+	
+	/** \brief Unbind. */
+	void Unbind(){
+		if(!pManager){
+			return;
+		}
+		
+		OnUnbound();
+		pDestroyFunc(pManager);
+		pManager = nullptr;
+		pName = 0;
+		pBoundVersion = 0;
+	}
+	
+	
+protected:
+	/** \brief Manager bound. */
+	virtual void OnBound(){}
+	
+	/** \brief Manager will be unbound. */
+	virtual void OnUnbound(){}
 };
 
 

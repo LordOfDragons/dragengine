@@ -22,10 +22,25 @@
  * SOFTWARE.
  */
 
-#include "../dragengine_configuration.h"
+#include "../../dragengine_configuration.h"
 #if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND)
 
 #include "deWaylandHelper.h"
+
+
+/*
+ * Wayland definitions.
+ *
+ * Types, listener structs and opcode defines are provided by the system
+ * wayland-client.h and the wayland-scanner-generated xdg-shell header.
+ * 
+ * The protocol files have been generated like this:
+ * 
+ * \code
+ * wayland-scanner {client-header|private-code} \
+ *   /usr/share/wayland-protocols/unstable/xdg-output/xdg-output-unstable-v1.xml \
+ *   src/dragengine/src/app/wayland/xdg-output-protocol.{h|cpp}
+ */
 
 
 // Class dewlDynamicLibrary

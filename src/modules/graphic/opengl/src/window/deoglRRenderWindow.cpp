@@ -381,18 +381,10 @@ int32_t height, wl_array*){
 	auto window = (deoglRRenderWindow*)data;
 	
 	if(width == 0 && height == 0){
-		// first time showing window. compositor wants to know the desired window size
-		if(window->pFullScreen){
-			// full screen is a bit of a problem. size is in logical coordinates but since we
-			// do not know the global scaling in advance the window size is in physical
-			// coordinates. here we should know the global scaling so scale it down
-			width = window->pWidth * 100 / window->pAfterCreateScaleFactor;
-			height = window->pHeight * 100 / window->pAfterCreateScaleFactor;
-			
-		}else{
-			width = window->pWidth;
-			height = window->pHeight;
-		}
+		// first time showing window. compositor wants to know the desired window size.
+		// window size has to be given in logical coordinates
+		width = window->pWidth * 100 / window->pAfterCreateScaleFactor;
+		height = window->pHeight * 100 / window->pAfterCreateScaleFactor;
 		
 	}else{
 		// compositor changed the window size

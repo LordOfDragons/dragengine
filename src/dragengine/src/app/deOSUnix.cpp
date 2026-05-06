@@ -488,7 +488,9 @@ pHostingRenderWindow(0),
 pScaleFactor(100)
 
 #ifdef OS_UNIX_WAYLAND
-,pWaylandDisplay(nullptr),
+,pWaylandRegistry(nullptr),
+pWaylandXdgOutputManager(zxdg_output_manager_v1_interface, 1, zxdg_output_manager_v1_destroy),
+pWaylandDisplay(nullptr),
 pEnableWayland(true)
 #endif
 {
@@ -816,10 +818,7 @@ void deOSUnix::SetEnableWayland(bool enable){
 
 void deOSUnix::pCleanUp(){
 #ifdef OS_UNIX_WAYLAND
-	if(pWaylandDisplay){
-		wl_display_disconnect(pWaylandDisplay);
-		pWaylandDisplay = nullptr;
-	}
+	pCleanUpWayland();
 #endif
 	
 	// close display
@@ -978,28 +977,21 @@ int deOSUnix::pGetGlobalScaling() const{
 }
 
 #ifdef OS_UNIX_WAYLAND
-struct sWlGatherModeInfo{
-	int width = 0, height = 0, refreshHz = 0;
-};
 
-struct sWlGatherOutputInfo{
-	wl_output *output = nullptr;
-	int currentWidth = 0, currentHeight = 0, currentRefreshHz = 0;
-	bool hasCurrentMode = false;
-	decTList<sWlGatherModeInfo> modes;
-};
+deOSUnix::sWaylandOutputInfo::sWaylandOutputInfo() :
+output(wl_output_interface, 2, wl_output_destroy),
+currentWidth(0),
+currentHeight(0),
+currentRefreshHz(0),
+hasCurrentMode(false),
+xdgOutput(nullptr),
+logicalWidth(0),
+logicalHeight(0){
+}
 
-struct sWlGatherCtx{
-	const wl_output_listener *outputListener = nullptr;
-	decTUniqueList<sWlGatherOutputInfo> outputs;
-};
-
-static void sWlOutputGeometry(void*, wl_output*, int32_t, int32_t, int32_t, int32_t,
-int32_t, const char*, const char*, int32_t){}
-
-static void sWlOutputMode(void *data, wl_output*, uint32_t flags,
-int32_t width, int32_t height, int32_t refresh){
-	sWlGatherOutputInfo &info = *(sWlGatherOutputInfo*)data;
+void deOSUnix::OnOutputMode(void *data, wl_output*, uint32_t flags, int32_t width,
+int32_t height, int32_t refresh){
+	auto &info = *reinterpret_cast<sWaylandOutputInfo*>(data);
 	info.modes.Add({width, height, (refresh + 500) / 1000});
 	if(flags & WL_OUTPUT_MODE_CURRENT){
 		info.currentWidth = width;
@@ -1009,59 +1001,83 @@ int32_t width, int32_t height, int32_t refresh){
 	}
 }
 
-static void sWlOutputDone(void*, wl_output*){}
-static void sWlOutputScale(void*, wl_output*, int32_t){}
-static void sWlOutputName(void*, wl_output*, const char*){}
-static void sWlOutputDescription(void*, wl_output*, const char*){}
-
-static const wl_output_listener vWlOutputListener = {
-	sWlOutputGeometry, sWlOutputMode, sWlOutputDone,
-	sWlOutputScale, sWlOutputName, sWlOutputDescription
-};
-
-static void sWlRegistryGlobal(void *data, wl_registry *registry, uint32_t name,
+void deOSUnix::OnRegistryGlobal(void *data, wl_registry *registry, uint32_t name,
 const char *interface, uint32_t version){
-	sWlGatherCtx &ctx = *(sWlGatherCtx*)data;
-	if(strcmp(interface, wl_output_interface.name) != 0){
-		return;
-	}
+	auto &osunix = *reinterpret_cast<deOSUnix*>(data);
 	
-	auto output = (wl_output*)wl_registry_bind(registry, name, &wl_output_interface, version < 2u ? 1u : 2u);
-	if(!output){
-		return;
+	if(osunix.pWaylandXdgOutputManager.Bind(registry, name, interface, version)){
+		
+	}else if(strcmp(interface, wl_output_interface.name) == 0){
+		auto info = deTUniqueReference<sWaylandOutputInfo>::New();
+		if(info->output.Bind(registry, name, interface, version)){
+			static const wl_output_listener listener = {
+				.geometry = [](void*, wl_output*, int32_t, int32_t, int32_t,
+					int32_t, int32_t, const char*, const char*, int32_t){},
+				.mode = OnOutputMode,
+				.done = [](void*, wl_output*){},
+				.scale = [](void*, wl_output*, int32_t){},
+				.name = [](void*, wl_output*, const char*){},
+				.description = [](void*, wl_output*, const char*){}
+			};
+			
+			wl_output_add_listener(info->output, &listener, info.Pointer());
+			osunix.pWaylandOutputs.Add(std::move(info));
+		}
 	}
-	
-	auto info = deTUniqueReference<sWlGatherOutputInfo>::New();
-	info->output = output;
-	wl_output_add_listener(output, ctx.outputListener, info.Pointer());
-	ctx.outputs.Add(std::move(info));
 }
 
 static void sWlRegistryGlobalRemove(void*, wl_registry*, uint32_t){}
 
-static const wl_registry_listener vWlRegistryListener = {
-	sWlRegistryGlobal, sWlRegistryGlobalRemove
-};
-
 void deOSUnix::pGetWaylandDisplayInformation(){
 	DEASSERT_NOTNULL(pWaylandDisplay)
 	
-	sWlGatherCtx ctx{};
-	ctx.outputListener = &vWlOutputListener;
-	
-	auto registry = wl_display_get_registry(pWaylandDisplay);
-	if(!registry){
+	pWaylandRegistry = wl_display_get_registry(pWaylandDisplay);
+	if(!pWaylandRegistry){
 		DETHROW_INFO(deeInvalidAction, "Failed to get Wayland registry");
 	}
 	
-	wl_proxy_add_listener((wl_proxy*)registry, (void(**)(void))&vWlRegistryListener, &ctx);
+	static const wl_registry_listener vWlRegistryListener = {
+		.global = OnRegistryGlobal,
+		.global_remove = sWlRegistryGlobalRemove
+	};
+	
+	wl_proxy_add_listener(reinterpret_cast<wl_proxy*>(pWaylandRegistry),
+		(void(**)(void))&vWlRegistryListener, this);
 	
 	// receive globals and bind wl_output objects with their listeners
 	wl_display_roundtrip(pWaylandDisplay);
 	
-	if(ctx.outputs.IsEmpty()){
-		wl_proxy_destroy((wl_proxy*)registry);
+	if(pWaylandOutputs.IsEmpty()){
+		pCleanUpWayland();
 		DETHROW_INFO(deeInvalidAction, "No Wayland outputs found");
+	}
+	
+	// obtain xdg outputs and register listeners
+	if(pWaylandXdgOutputManager){
+		pWaylandOutputs.Visit([&](sWaylandOutputInfo &info){
+			if(!info.output){
+				return;
+			}
+			
+			info.xdgOutput = zxdg_output_manager_v1_get_xdg_output(pWaylandXdgOutputManager, info.output);
+			if(!info.xdgOutput){
+				return;
+			}
+			
+			static const zxdg_output_v1_listener listener = {
+				.logical_position = [](void*, zxdg_output_v1*, int32_t, int32_t){},
+				.logical_size = [](void *data, zxdg_output_v1*, int32_t width, int32_t height){
+					auto &info2 = *reinterpret_cast<sWaylandOutputInfo*>(data);
+					info2.logicalWidth = width;
+					info2.logicalHeight = height;
+				},
+				.done = [](void*, zxdg_output_v1*){},
+				.name = [](void*, zxdg_output_v1*, const char*){},
+				.description = [](void*, zxdg_output_v1*, const char*){}
+			};
+			
+			zxdg_output_v1_add_listener(info.xdgOutput, &listener, &info);
+		});
 	}
 	
 	// receive mode events from all bound wl_output objects
@@ -1069,7 +1085,7 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 	
 	// count valid outputs and total mode entries
 	int validOutputs = 0, totalModes = 0;
-	ctx.outputs.Visit([&](const sWlGatherOutputInfo &info){
+	pWaylandOutputs.Visit([&](const sWaylandOutputInfo &info){
 		if(info.hasCurrentMode){
 			validOutputs++;
 			totalModes += decMath::max(info.modes.GetCount(), 1);
@@ -1077,10 +1093,7 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 	});
 	
 	if(validOutputs == 0){
-		ctx.outputs.Visit([&](const sWlGatherOutputInfo &info){
-			wl_proxy_destroy((wl_proxy*)info.output);
-		});
-		wl_proxy_destroy((wl_proxy*)registry);
+		pCleanUpWayland();
 		DETHROW_INFO(deeInvalidAction, "No valid Wayland outputs found");
 	}
 	
@@ -1088,9 +1101,10 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 	pDisplayResolutions = decTList<decPoint>(totalModes);
 	pDisplayInformation = decTList<sDisplayInformation>(validOutputs);
 	
-	ctx.outputs.Visit([&](const sWlGatherOutputInfo &info){
+	bool scaleFactorFound = false;
+	
+	pWaylandOutputs.Visit([&](const sWaylandOutputInfo &info){
 		if(!info.hasCurrentMode){
-			wl_proxy_destroy((wl_proxy*)info.output);
 			return;
 		}
 		
@@ -1100,7 +1114,7 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 		di.resolutions = pDisplayResolutions.GetArrayPointer() + pDisplayResolutions.GetCount();
 		
 		if(info.modes.IsNotEmpty()){
-			info.modes.Visit([&](const sWlGatherModeInfo &mode){
+			info.modes.Visit([&](const sWaylandOutputMode &mode){
 				pDisplayResolutions.Add({mode.width, mode.height});
 			});
 			di.resolutionCount = info.modes.GetCount();
@@ -1111,10 +1125,15 @@ void deOSUnix::pGetWaylandDisplayInformation(){
 		}
 		
 		pDisplayInformation.Add(di);
-		wl_proxy_destroy((wl_proxy*)info.output);
+		
+		if(info.logicalWidth > 0 && !scaleFactorFound){
+			const double scale = 100.0 * (double)info.currentWidth / (double)info.logicalWidth;
+			pScaleFactor = decMath::max((int)(scale / 25.0 + 0.5) * 25, 100);
+			scaleFactorFound = true;
+		}
 	});
 	
-	wl_proxy_destroy((wl_proxy*)registry);
+	pWaylandOutputs.RemoveAll();
 }
 
 bool deOSUnix::pTryConnectWayland(){
@@ -1146,6 +1165,23 @@ bool deOSUnix::pTryConnectWayland(){
 	
 	return true;
 }
+
+void deOSUnix::pCleanUpWayland(){
+	pWaylandOutputs.RemoveAll();
+	
+	pWaylandXdgOutputManager.Unbind();
+	
+	if(pWaylandRegistry){
+		wl_proxy_destroy(reinterpret_cast<wl_proxy*>(pWaylandRegistry));
+		pWaylandRegistry = nullptr;
+	}
+	
+	if(pWaylandDisplay){
+		wl_display_disconnect(pWaylandDisplay);
+		pWaylandDisplay = nullptr;
+	}
+}
+
 #endif // OS_UNIX_WAYLAND
 
 #endif // OS_UNIX_X11

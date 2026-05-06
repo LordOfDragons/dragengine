@@ -526,7 +526,7 @@ void deoglRTCBUnixWaylandEGL::pRegisterWaylandCompositor(){
 
 void deoglRTCBUnixWaylandEGL::pUnregisterWaylandCompositor(){
 	pWlOutputs.Visit([&](const sOutput &output){
-		wl_proxy_destroy((wl_proxy*)output.output);
+		wl_output_destroy(output.output);
 	});
 	pWlOutputs.RemoveAll();
 	

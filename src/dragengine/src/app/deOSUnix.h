@@ -31,12 +31,14 @@
 
 #include "deOS.h"
 #include "../common/collection/decTList.h"
+#include "../common/collection/decTUniqueList.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #ifdef OS_UNIX_WAYLAND
-#include "deWaylandHelper.h"
+#include "wayland/deWaylandHelper.h"
+#include "wayland/xdg-output-protocol.h"
 #endif
 
 
@@ -65,10 +67,27 @@ private:
 	
 	// Wayland support (dynamically loaded at runtime)
 #ifdef OS_UNIX_WAYLAND
+	wl_registry *pWaylandRegistry;
+	deWaylandManager<zxdg_output_manager_v1> pWaylandXdgOutputManager;
 	wl_display *pWaylandDisplay;
+	
+	struct sWaylandOutputMode{
+		int width = 0, height = 0, refreshHz = 0;
+	};
+	
+	struct sWaylandOutputInfo{
+		deWaylandManager<wl_output> output;
+		int currentWidth, currentHeight, currentRefreshHz;
+		bool hasCurrentMode;
+		decTList<sWaylandOutputMode> modes;
+		zxdg_output_v1 *xdgOutput;
+		int logicalWidth, logicalHeight;
+		sWaylandOutputInfo();
+	};
+	decTUniqueList<sWaylandOutputInfo> pWaylandOutputs;
+	
 	bool pEnableWayland;
 #endif
-	
 	
 	
 public:
@@ -307,6 +326,10 @@ private:
 #ifdef OS_UNIX_WAYLAND
 	bool pTryConnectWayland();
 	void pGetWaylandDisplayInformation();
+	void pCleanUpWayland();
+	
+	static void OnRegistryGlobal(void*, wl_registry*, uint32_t, const char*, uint32_t);
+	static void OnOutputMode(void*, wl_output*, uint32_t, int32_t, int32_t, int32_t);
 #endif
 };
 
