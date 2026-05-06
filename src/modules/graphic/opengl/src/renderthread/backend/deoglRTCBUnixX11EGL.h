@@ -26,8 +26,9 @@
 #define _DEOGLRTCBUNIXEGL_H_
 
 #include <dragengine/dragengine_configuration.h>
-
 #if defined(OS_UNIX_X11) && defined(BACKEND_OPENGL)
+
+#include <dragengine/common/string/decStringList.h>
 
 #include "deoglRTCBUnixX11.h"
 #include "../../extensions/egl.h"
@@ -49,6 +50,7 @@ protected:
 	EGLSurface pEGLLoaderSurface;
 	EGLSurface pEGLCompileSurface[MaxCompileContextCount];
 	
+	PFNEGLQUERYSTRINGPROC pEglQueryString;
 	PFNEGLGETERRORPROC pEglGetError;
 	PFNEGLGETDISPLAYPROC pEglGetDisplay;
 	PFNEGLINITIALIZEPROC pEglInitialize;
@@ -67,6 +69,8 @@ protected:
 	PFNEGLSWAPBUFFERSPROC pEglSwapBuffers;
 	PFNEGLSWAPINTERVALPROC pEglSwapInterval;
 	PFNEGLGETCONFIGATTRIBPROC pEglGetConfigAttrib;
+	
+	decStringList pEglExtensions;
 	
 	
 public:
@@ -150,6 +154,7 @@ protected:
 	void pFreeContext();
 	virtual void pChooseConfig();
 	void pChooseVisual() override;
+	void pQueryEglExtensions();
 	void pCreateContext();
 	void pUnloadLibrary();
 };

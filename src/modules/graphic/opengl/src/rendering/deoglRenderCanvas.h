@@ -36,6 +36,7 @@ class deoglRCanvasCanvasView;
 class deoglRCanvasImage;
 class deoglRCanvasPaint;
 class deoglRenderTarget;
+class deoglRRenderWindow;
 
 
 
@@ -56,6 +57,8 @@ private:
 	const deoglPipeline *pPipelineCanvasImageArrayMask[deoglRCanvas::BlendModeCount];
 	const deoglPipeline *pPipelineCanvasRenderWorld[deoglRCanvas::BlendModeCount];
 	const deoglPipeline *pPipelineCanvasRenderWorldMask[deoglRCanvas::BlendModeCount];
+	
+	const deoglPipeline *pPipelineFinalize, *pPipelineFinalizeHdr;
 	
 	deoglDebugInformation::Ref pDebugInfoCanvas;
 	deoglDebugInformation::Ref pDebugInfoCanvasView;
@@ -135,6 +138,13 @@ public:
 	
 	/** Draw canvas text. */
 	void DrawCanvasText(const deoglRenderCanvasContext &context, const deoglRCanvasText &canvas);
+	
+	/** Finalize. */
+	void Finalize(const deoglRenderCanvasContext &context, const deoglRRenderWindow &window);
+	
+	
+	/** Convert sRGB color to linear color space if HDR output is enabled. */
+	decColorMatrix Rgb2LinearIf(const deoglRenderCanvasContext &context, const decColorMatrix &color) const;
 	/*@}*/
 	
 	

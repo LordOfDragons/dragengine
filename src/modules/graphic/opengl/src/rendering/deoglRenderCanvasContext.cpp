@@ -31,6 +31,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../target/deoglRenderTarget.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../rendering/plan/deoglRenderPlanMasked.h"
 #include "../skin/state/node/deoglSkinStateConstructedNode.h"
 
 #include <dragengine/common/exceptions.h>
@@ -59,7 +60,8 @@ pTCClampMax(1.0f, 1.0f),
 pColorTransform(copy.pColorTransform),
 pTransparency(copy.pTransparency),
 pMask(copy.pMask),
-pTCTransformMask(copy.pTCTransformMask){
+pTCTransformMask(copy.pTCTransformMask),
+pUseHdrOutput(copy.pUseHdrOutput){
 }
 
 deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglRCanvas &canvas,
@@ -78,7 +80,8 @@ pTCClampMin(0.0f, 0.0f),
 pTCClampMax(1.0f, 1.0f),
 // pColorTransform( canvas.GetColorTransform() ), // no, this applies color transform twice
 pTransparency(canvas.GetTransparency()),
-pMask(nullptr)
+pMask(nullptr),
+pUseHdrOutput(false)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
 	pClipFactor.x = (float)viewportSize.x * 0.5f;
@@ -119,7 +122,8 @@ pTCClampMax(1.0f, 1.0f),
 pColorTransform(childCanvas.GetColorTransform() * parentContext.pColorTransform),
 pTransparency(childCanvas.GetTransparency() * parentContext.pTransparency),
 pMask(parentContext.pMask),
-pTCTransformMask(parentContext.pTCTransformMask)
+pTCTransformMask(parentContext.pTCTransformMask),
+pUseHdrOutput(parentContext.pUseHdrOutput)
 {
 	pCalculateClipping(childCanvas.GetSize());
 	pClipMin.SetLargest(parentContext.pClipMin);
@@ -148,7 +152,8 @@ pTCClampMin(0.0f, 0.0f),
 pTCClampMax(1.0f, 1.0f),
 // pColorTransform( node.GetColorTransform() ), // no, this applies color transform twice
 pTransparency(node.GetTransparency()),
-pMask(nullptr)
+pMask(nullptr),
+pUseHdrOutput(false)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
 	pClipFactor.x = (float)viewportSize.x * 0.5f;
@@ -189,7 +194,8 @@ pTCClampMax(1.0f, 1.0f),
 pColorTransform(childNode.GetColorTransform() * parentContext.pColorTransform),
 pTransparency(childNode.GetTransparency() * parentContext.pTransparency),
 pMask(parentContext.pMask),
-pTCTransformMask(parentContext.pTCTransformMask)
+pTCTransformMask(parentContext.pTCTransformMask),
+pUseHdrOutput(parentContext.pUseHdrOutput)
 {
 	pCalculateClipping(decPoint(childNode.GetSize().x, childNode.GetSize().y));
 	pClipMin.SetLargest(parentContext.pClipMin);
@@ -279,6 +285,9 @@ void deoglRenderCanvasContext::UpdateTransformMask(){
 			* pTransform ).Invert().ToTexMatrix2();
 }
 
+void deoglRenderCanvasContext::SetUseHdrOutput(bool useHdrOutput){
+	pUseHdrOutput = useHdrOutput;
+}
 
 
 // Private Functions

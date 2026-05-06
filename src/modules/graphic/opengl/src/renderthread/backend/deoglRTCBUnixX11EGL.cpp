@@ -65,6 +65,7 @@ pEGLConfig(nullptr),
 pEGLContext(EGL_NO_CONTEXT),
 pEGLLoaderContext(EGL_NO_CONTEXT),
 pEGLLoaderSurface(EGL_NO_SURFACE),
+pEglQueryString(nullptr),
 pEglGetError(nullptr),
 pEglGetDisplay(nullptr),
 pEglInitialize(nullptr),
@@ -111,6 +112,7 @@ bool deoglRTCBUnixX11EGL::TryInit(){
 	}
 	
 	// load all required EGL symbols
+	pEglQueryString = (PFNEGLQUERYSTRINGPROC)dlsym(handle, "eglQueryString");
 	pEglGetError = (PFNEGLGETERRORPROC)dlsym(handle, "eglGetError");
 	pEglGetDisplay = (PFNEGLGETDISPLAYPROC)dlsym(handle, "eglGetDisplay");
 	pEglInitialize = (PFNEGLINITIALIZEPROC)dlsym(handle, "eglInitialize");
@@ -133,7 +135,7 @@ bool deoglRTCBUnixX11EGL::TryInit(){
 	|| !pEglCreateWindowSurface || !pEglCreatePbufferSurface || !pEglDestroySurface
 	|| !pEglCreateContext || !pEglDestroyContext || !pEglMakeCurrent || !pEglGetProcAddress
 	|| !pEglQuerySurface || !pEglBindAPI || !pEglSwapBuffers || !pEglSwapInterval
-	|| !pEglGetConfigAttrib || !pEglGetError){
+	|| !pEglGetConfigAttrib || !pEglGetError || !pEglQueryString){
 		logger.LogWarn("deoglRTCBUnixX11EGL: libEGL.so found but required symbols are missing.");
 		dlclose(handle);
 		return false;
@@ -338,6 +340,8 @@ void deoglRTCBUnixX11EGL::pChooseConfig(){
 		DETHROW_INFO(deeInvalidAction, "eglBindAPI(EGL_OPENGL_API) failed");
 	}
 	
+	pQueryEglExtensions();
+	
 	const EGLint configAttribs[] = {
 		EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
@@ -387,6 +391,20 @@ void deoglRTCBUnixX11EGL::pChooseVisual(){
 	}
 	
 	pChooseConfig();
+}
+
+void deoglRTCBUnixX11EGL::pQueryEglExtensions(){
+	const char *extensions = pEglQueryString(pEGLDisplay, EGL_EXTENSIONS);
+	if(extensions){
+		pEglExtensions = decString(extensions).Split(' ');
+	}
+	
+	auto &logger = pRTContext.GetRenderThread().GetLogger();
+	logger.LogInfo("Driver Reported EGL Extensions:");
+	
+	pEglExtensions.Visit([&](const decString &ext){
+		logger.LogInfoFormat("- %s", ext.GetString());
+	});
 }
 
 void deoglRTCBUnixX11EGL::pCreateContext(){

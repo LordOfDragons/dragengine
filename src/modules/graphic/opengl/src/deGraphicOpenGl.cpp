@@ -61,6 +61,7 @@
 
 #include "parameters/deoglPLogLevel.h"
 #include "parameters/deoglPVSyncMode.h"
+#include "parameters/deoglPEnableHDRMonitor.h"
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
@@ -791,6 +792,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 	pParameters.Add(deTUniqueReference<deoglPVRRenderScale>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPVRForceFrameRate>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPEnableHDRMonitor>::New(*this));
 	
 #if defined WITH_DEBUG || defined WITH_DEBUG_CONTEXT
 	pParameters.Add(deTUniqueReference<deoglPDebugContext>::New(*this));

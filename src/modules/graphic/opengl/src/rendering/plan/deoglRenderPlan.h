@@ -134,6 +134,7 @@ private:
 	bool pNoAmbientLight;
 	bool pUseGIState;
 	bool pRenderStereo;
+	bool pUseHdrOutput;
 	deoglGIState *pUseConstGIState;
 	eRenderVR pRenderVR;
 	
@@ -491,6 +492,12 @@ public:
 	
 	/** Set use stereo rendering. */
 	void SetRenderStereo (bool stereoRender);
+	
+	/** Use HDR output. */
+	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
+	
+	/** Set use HDR output. */
+	void SetUseHdrOutput(bool useHdrOutput);
 	
 	/** Render VR. */
 	inline eRenderVR GetRenderVR() const{ return pRenderVR; }

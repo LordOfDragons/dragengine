@@ -119,6 +119,7 @@ pLevel(0),
 
 pUseGIState(false),
 pRenderStereo(false),
+pUseHdrOutput(false),
 pUseConstGIState(nullptr),
 pRenderVR(ervrNone),
 pSkyLightCount(0),
@@ -1651,6 +1652,10 @@ void deoglRenderPlan::SetUseConstGIState(deoglGIState *giState){
 
 void deoglRenderPlan::SetRenderStereo (bool stereoRender){
 	pRenderStereo = stereoRender;
+}
+
+void deoglRenderPlan::SetUseHdrOutput(bool useHdrOutput){
+	pUseHdrOutput = useHdrOutput;
 }
 
 void deoglRenderPlan::SetRenderVR(eRenderVR renderVR){

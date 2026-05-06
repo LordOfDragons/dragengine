@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,57 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLRCANVASRENDERWORLD_H_
-#define _DEOGLRCANVASRENDERWORLD_H_
+#ifndef _DEOGLPENABLEHDRMONITOR_H_
+#define _DEOGLPENABLEHDRMONITOR_H_
 
-#include "deoglRCanvas.h"
-#include "../../world/deoglRCamera.h"
-
-class deoglRWorld;
+#include "deoglParameterBool.h"
 
 
 /**
- * Render canvas render world.
+ * Enable HDR monitor output if supported by hardware.
  */
-class deoglRCanvasRenderWorld : public deoglRCanvas{
-public:
-	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<deoglRCanvasRenderWorld>;
-	
-	
-private:
-	deoglRCamera::Ref pCamera;
-	bool pForceToneMapAdaption;
-	
-	
-	
+class deoglPEnableHDRMonitor : public deoglParameterBool{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create peer. */
-	deoglRCanvasRenderWorld(deoglRenderThread &renderThread);
+	/** Create parameter. */
+	explicit deoglPEnableHDRMonitor(deGraphicOpenGl &ogl);
 	
-	/** Clean up peer. */
-	~deoglRCanvasRenderWorld() override;
+	/** Clean up parameter. */
+	~deoglPEnableHDRMonitor() override;
 	/*@}*/
 	
 	
-	
-	/** \name Management */
+public:
+	/** \name Parameter Value */
 	/*@{*/
-	/** Camera or \em NULL if not set. */
-	inline const deoglRCamera::Ref &GetCamera() const{ return pCamera; }
+	/** Current value. */
+	bool GetParameterBool() override;
 	
-	/** Set camera or \em NULL if not set. */
-	void SetCamera(deoglRCamera *camera);
-	
-	
-	
-	/** Prepare for rendering. */
-	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput) override;
-	
-	/** Render. */
-	void Render(const deoglRenderCanvasContext &context) override;
+	/** Set current value. */
+	void SetParameterBool(bool value) override;
 	/*@}*/
 };
 

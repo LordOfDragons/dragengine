@@ -160,6 +160,8 @@ public:
 	
 	static void OnPointerAxisDiscrete(void *data, wl_pointer *pointer, uint32_t axis, int32_t discrete);
 	
+	static void OnPointerAxisValue120(void *data, wl_pointer *wl_pointer, uint32_t axis, int32_t value120);
+	
 	/** Locked pointer listener callbacks. */
 	static void OnLockedPointerLocked(void *data, zwp_locked_pointer_v1 *lockedPointer);
 	static void OnLockedPointerUnlocked(void *data, zwp_locked_pointer_v1 *lockedPointer);

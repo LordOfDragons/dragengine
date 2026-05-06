@@ -794,7 +794,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	
 	// tone mapping
 	const deoglRCamera * const oglCamera = plan.GetCamera();
-	float toneMapWhiteScale = 2.0f;
+	float toneMapWhiteScale = 3.0f / 2.0f;
 	float toneMapBloomIntensity = 1.0f;
 	float toneMapBloomStrength = 0.5f;
 	float toneMapBloomBlend = 1.0f;
@@ -823,6 +823,11 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		toneMapBloomStrength = oglCamera->GetBloomStrength();
 		toneMapBloomBlend = oglCamera->GetBloomBlend();
 		// oglCamera->GetBloomSize();
+	}
+	
+	if(plan.GetUseHdrOutput()){
+		//toneMapBloomStrength *= 0.5f;
+		toneMapBloomBlend *= 0.5f;
 	}
 	
 	// render all debug shapes with a z-offset to avoid z-fighting for shapes overlapping rendered

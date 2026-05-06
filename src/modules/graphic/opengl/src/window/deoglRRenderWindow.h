@@ -27,10 +27,11 @@
 
 #include "../configuration/deoglConfiguration.h"
 #include "../canvas/render/deoglRCanvasView.h"
-#include "../target/deoglRenderTarget.h"
+#include "../target/deoglRenderTargetArray.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -143,6 +144,7 @@ private:
 	wl_egl_window *pWlEglWindow;
 	wp_fractional_scale_v1 *pWpFractionalScale;
 	wp_viewport *pWpViewport;
+	wp_color_management_surface_v1 *pWpColorSurface;
 	
 	struct sConfigureResize{
 		uint32_t serial = 0;
@@ -176,16 +178,17 @@ private:
 	deoglConfiguration::eVSyncMode pVSyncMode;
 	bool pInitSwapInterval;
 	
-	deoglRenderTarget::Ref pRenderTarget;
+	deoglRenderTargetArray::Ref pRenderTarget;
 	
 	int pAfterCreateScaleFactor;
+	bool pUseHdrOutput;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRRenderWindow(deoglRenderThread &renderThread);
+	explicit deoglRRenderWindow(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up render render target. */
@@ -248,6 +251,9 @@ public:
 	inline wp_viewport *GetWpViewport() const{ return pWpViewport; }
 	void SetWpViewport(wp_viewport *viewport);
 	
+	inline wp_color_management_surface_v1 *GetWpColorSurface() const{ return pWpColorSurface; }
+	void SetWpColorSurface(wp_color_management_surface_v1 *surface);
+	
 	static void OnXdgSurfaceConfigure(void *data, xdg_surface *xdgSurface, uint32_t serial);
 	
 	static void OnXdgToplevelConfigure(void *data, xdg_toplevel *toplevel,
@@ -264,7 +270,7 @@ public:
 	static void OnWpFractionalScalePreferredScale(void *data,
 		wp_fractional_scale_v1 *fractionalScale, uint32_t scale);
 #endif
-
+	
 #ifdef BACKEND_OPENGL
 	inline EGLSurface GetEGLSurface() const{ return pEGLSurface; }
 	void SetEGLSurface(EGLSurface surface);
@@ -316,7 +322,13 @@ public:
 	
 	/** Scale factor stored during CreateWindow. */
 	inline int GetAfterCreateScaleFactor() const{ return pAfterCreateScaleFactor; }
-
+	
+	/** Use HDR output. */
+	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
+	void SetUseHdrOutput(bool useHdrOutput);
+	
+	/** Render target or nullptr. */
+	inline const deoglRenderTargetArray::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	
 	/** Render canvas view or \em NULL if not set. */
@@ -373,6 +385,8 @@ private:
 	
 	void pRepositionWindow();
 	void pResizeWindow();
+	void pCreateRenderTarget();
+	void pResizeRenderTarget();
 	void pSetWindowTitle();
 	void pUpdateFullScreen();
 	void pSetIcon();

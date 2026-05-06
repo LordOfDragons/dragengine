@@ -644,7 +644,7 @@ void deoglRLight::EarlyPrepareForRender(){
 void deoglRLight::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
 	if(pDirtyPrepareLightCanvas){
 		if(pLightCanvas){
-			pLightCanvas->PrepareForRender(renderPlanMask);
+			pLightCanvas->PrepareForRender(renderPlanMask, false);
 		}
 		pDirtyPrepareLightCanvas = false;
 	}

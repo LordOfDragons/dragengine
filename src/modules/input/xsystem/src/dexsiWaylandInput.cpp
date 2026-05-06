@@ -51,43 +51,44 @@
 /////////////////////////////
 
 static const wl_registry_listener vRegistryListener = {
-	dexsiWaylandInput::OnRegistryGlobal,
-	dexsiWaylandInput::OnRegistryGlobalRemove
+	.global = dexsiWaylandInput::OnRegistryGlobal,
+	.global_remove = dexsiWaylandInput::OnRegistryGlobalRemove
 };
 
 static const wl_seat_listener vSeatListener = {
-	dexsiWaylandInput::OnSeatCapabilities,
-	dexsiWaylandInput::OnSeatName
+	.capabilities = dexsiWaylandInput::OnSeatCapabilities,
+	.name = dexsiWaylandInput::OnSeatName
 };
 
 static const wl_pointer_listener vPointerListener = {
-	dexsiWaylandInput::OnPointerEnter,
-	dexsiWaylandInput::OnPointerLeave,
-	dexsiWaylandInput::OnPointerMotion,
-	dexsiWaylandInput::OnPointerButton,
-	dexsiWaylandInput::OnPointerAxis,
-	dexsiWaylandInput::OnPointerFrame,
-	dexsiWaylandInput::OnPointerAxisSource,
-	dexsiWaylandInput::OnPointerAxisStop,
-	dexsiWaylandInput::OnPointerAxisDiscrete
+	.enter = dexsiWaylandInput::OnPointerEnter,
+	.leave = dexsiWaylandInput::OnPointerLeave,
+	.motion = dexsiWaylandInput::OnPointerMotion,
+	.button = dexsiWaylandInput::OnPointerButton,
+	.axis = dexsiWaylandInput::OnPointerAxis,
+	.frame = dexsiWaylandInput::OnPointerFrame,
+	.axis_source = dexsiWaylandInput::OnPointerAxisSource,
+	.axis_stop = dexsiWaylandInput::OnPointerAxisStop,
+	.axis_discrete = dexsiWaylandInput::OnPointerAxisDiscrete,
+	.axis_value120 = dexsiWaylandInput::OnPointerAxisValue120
 };
 
 static const wl_keyboard_listener vKeyboardListener = {
-	dexsiWaylandInput::OnKeyboardKeymap,
-	dexsiWaylandInput::OnKeyboardEnter,
-	dexsiWaylandInput::OnKeyboardLeave,
-	dexsiWaylandInput::OnKeyboardKey,
-	dexsiWaylandInput::OnKeyboardModifiers,
-	dexsiWaylandInput::OnKeyboardRepeatInfo
+	.keymap = dexsiWaylandInput::OnKeyboardKeymap,
+	.enter = dexsiWaylandInput::OnKeyboardEnter,
+	.leave = dexsiWaylandInput::OnKeyboardLeave,
+	.key = dexsiWaylandInput::OnKeyboardKey,
+	.modifiers = dexsiWaylandInput::OnKeyboardModifiers,
+	.repeat_info = dexsiWaylandInput::OnKeyboardRepeatInfo
 };
 
 static const zwp_locked_pointer_v1_listener vLockedPointerListener = {
-	dexsiWaylandInput::OnLockedPointerLocked,
-	dexsiWaylandInput::OnLockedPointerUnlocked
+	.locked = dexsiWaylandInput::OnLockedPointerLocked,
+	.unlocked = dexsiWaylandInput::OnLockedPointerUnlocked
 };
 
 static const zwp_relative_pointer_v1_listener vRelativePointerListener = {
-	dexsiWaylandInput::OnRelativeMotion
+	.relative_motion = dexsiWaylandInput::OnRelativeMotion
 };
 
 
@@ -537,8 +538,7 @@ const char *interface, uint32_t version){
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
 	
 	if(strcmp(interface, wl_seat_interface.name) == 0 && !self.pWlSeat){
-		// bind seat at version 2+ to get seat name, cap at 5 for safety
-		const uint32_t bindVersion = version < 2u ? 1u : (version < 5u ? version : 5u);
+		const uint32_t bindVersion = decMath::min(version, 8);
 		self.pWlSeat = (wl_seat*)wl_registry_bind(registry, name, &wl_seat_interface, bindVersion);
 		self.pWlSeatId = name;
 		self.pWlSeatVersion = bindVersion;
@@ -730,6 +730,7 @@ uint32_t button, uint32_t state){
 
 void dexsiWaylandInput::OnPointerAxis(void *data, wl_pointer*, uint32_t,
 uint32_t axis, wl_fixed_t value){
+#if 0
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
 	
 	const double scrollValue = wl_fixed_to_double(value);
@@ -743,6 +744,7 @@ uint32_t axis, wl_fixed_t value){
 		self.pAccumScrollX += scrollValue;
 	}
 	self.pPointerHasScroll = true;
+#endif
 }
 
 void dexsiWaylandInput::OnPointerFrame(void *data, wl_pointer*){
@@ -765,6 +767,22 @@ void dexsiWaylandInput::OnPointerAxisDiscrete(void*, wl_pointer*, uint32_t, int3
 	// already handled by OnPointerAxis accumulation
 }
 
+void dexsiWaylandInput::OnPointerAxisValue120(void *data, wl_pointer*, uint32_t axis, int32_t value120){
+	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
+	
+	// 120 units per scroll step. positive = scroll up/right, negative = scroll down/left
+	const double scrollValue = (double)value120 / 120.0;
+	
+	// WL_POINTER_AXIS_VERTICAL_SCROLL=0 => vertical
+	// WL_POINTER_AXIS_HORIZONTAL_SCROLL=1 => horizontal
+	if(axis == WL_POINTER_AXIS_VERTICAL_SCROLL){
+		self.pAccumScrollY += scrollValue;
+		
+	}else if(axis == WL_POINTER_AXIS_HORIZONTAL_SCROLL){
+		self.pAccumScrollX += scrollValue;
+	}
+	self.pPointerHasScroll = true;
+}
 
 // Locked pointer callbacks
 /////////////////////////////

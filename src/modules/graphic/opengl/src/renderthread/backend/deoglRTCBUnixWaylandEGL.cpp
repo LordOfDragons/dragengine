@@ -65,6 +65,11 @@ pDecorationManagerId(0),
 pWpFractionalScaleManagerId(0),
 pColorManagerId(0),
 pWpViewporterId(0),
+pEglSupportsHdr(false),
+pColorManagerHasParametric(false),
+pColorManagerHasPQ(false),
+pColorManagerHasBT2020(false),
+pColorManagerHasSetMasteringDisplayPrimaries(false),
 pWaylandReady(false){
 }
 
@@ -190,16 +195,16 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 	
 	// add xdg_surface configure listener
 	static const xdg_surface_listener xdgSurfaceListener = {
-		deoglRRenderWindow::OnXdgSurfaceConfigure
+		.configure = deoglRRenderWindow::OnXdgSurfaceConfigure
 	};
 	wl_proxy_add_listener((wl_proxy*)xdgSurface, (void(**)(void))&xdgSurfaceListener, &window);
 	
 	// add xdg_toplevel configure/close listener
 	static const xdg_toplevel_listener xdgToplevelListener = {
-		deoglRRenderWindow::OnXdgToplevelConfigure,
-		deoglRRenderWindow::OnXdgToplevelClose,
-		deoglRRenderWindow::OnXdgToplevelConfigureBounds,
-		deoglRRenderWindow::OnXdgToplevelWmCapabilities
+		.configure = deoglRRenderWindow::OnXdgToplevelConfigure,
+		.close = deoglRRenderWindow::OnXdgToplevelClose,
+		.configure_bounds = deoglRRenderWindow::OnXdgToplevelConfigureBounds,
+		.wm_capabilities = deoglRRenderWindow::OnXdgToplevelWmCapabilities
 	};
 	wl_proxy_add_listener((wl_proxy*)xdgToplevel, (void(**)(void))&xdgToplevelListener, &window);
 	
@@ -232,6 +237,9 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 		wl_display_roundtrip(pOSUnix->GetWaylandDisplay());
 	}
 	
+	// set up HDR color management if configured and compositor supports it
+	CreateColorManagement(window);
+	
 	// calculate window size respecting global scaling
 	int renderWidth = window.GetWidth();
 	int renderHeight = window.GetHeight();
@@ -263,8 +271,15 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 	window.SetWlEglWindow(wlEglWindow);
 	
 	// create EGL surface from wl_egl_window
+	decTList<EGLint> surfaceAttribs;
+	if(window.GetUseHdrOutput()){
+		surfaceAttribs.Add(EGL_GL_COLORSPACE_KHR);
+		surfaceAttribs.Add(EGL_GL_COLORSPACE_LINEAR_KHR);
+	}
+	surfaceAttribs.Add(EGL_NONE);
+	
 	EGLSurface surface = pEglCreateWindowSurface(pEGLDisplay, pEGLConfig,
-		(EGLNativeWindowType)wlEglWindow, nullptr);
+		(EGLNativeWindowType)wlEglWindow, surfaceAttribs.GetArrayPointer());
 	if(surface == EGL_NO_SURFACE){
 		deoglWlEglWindowDestroy(wlEglWindow);
 		wl_proxy_destroy((wl_proxy*)xdgToplevel);
@@ -301,6 +316,10 @@ void deoglRTCBUnixWaylandEGL::DestroyWindowSurface(deoglRRenderWindow &window){
 		window.SetWlEglWindow(nullptr);
 	}
 	
+	if(window.GetWpColorSurface()){
+		wp_color_management_surface_v1_destroy(window.GetWpColorSurface());
+		window.SetWpColorSurface(nullptr);
+	}
 	if(window.GetWpViewport()){
 		wp_viewport_destroy(window.GetWpViewport());
 		window.SetWpViewport(nullptr);
@@ -361,28 +380,56 @@ void deoglRTCBUnixWaylandEGL::pChooseConfig(){
 		DETHROW_INFO(deeInvalidAction, "eglBindAPI(EGL_OPENGL_API) failed");
 	}
 	
-	const EGLint configAttribs[] = {
-		EGL_SURFACE_TYPE, EGL_WINDOW_BIT /*| EGL_PBUFFER_BIT*/,
+	pQueryEglExtensions();
+	
+	// try 10-bit config for HDR support
+	const EGLint configAttribsHdr[] = {
+		EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-		EGL_RED_SIZE, 8,
-		EGL_GREEN_SIZE, 8,
-		EGL_BLUE_SIZE, 8,
-		EGL_ALPHA_SIZE, 8,
+		EGL_RED_SIZE, 10,
+		EGL_GREEN_SIZE, 10,
+		EGL_BLUE_SIZE, 10,
+		EGL_ALPHA_SIZE, 2,
 		EGL_DEPTH_SIZE, 24,
 		EGL_STENCIL_SIZE, 8,
 		EGL_NONE
 	};
 	
 	EGLint numConfigs = 0;
-	if(pEglChooseConfig(pEGLDisplay, configAttribs, &pEGLConfig, 1, &numConfigs) == EGL_FALSE){
+	if(pEglChooseConfig(pEGLDisplay, configAttribsHdr, &pEGLConfig, 1, &numConfigs) == EGL_FALSE){
 		DETHROW_INFO(deeInvalidAction, decString::Formatted(
 			"eglChooseConfig for Wayland failed (0x{:x})", pEglGetError()));
 	}
-	if(numConfigs == 0){
-		DETHROW_INFO(deeInvalidAction, "eglChooseConfig for Wayland return 0 entries");
-	}
 	
-	logger.LogInfo("RTCBUnixWaylandEGL: EGL config selected (Wayland)");
+	if(numConfigs > 0){
+		pEglSupportsHdr = true;
+		logger.LogInfo("RTCBUnixWaylandEGL: HDR EGL config selected");
+		
+	}else{
+		// try 8-bit regular config
+		const EGLint configAttribs[] = {
+			EGL_SURFACE_TYPE, EGL_WINDOW_BIT /*| EGL_PBUFFER_BIT*/,
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+			EGL_RED_SIZE, 8,
+			EGL_GREEN_SIZE, 8,
+			EGL_BLUE_SIZE, 8,
+			EGL_ALPHA_SIZE, 8,
+			EGL_DEPTH_SIZE, 24,
+			EGL_STENCIL_SIZE, 8,
+			EGL_NONE
+		};
+		
+		numConfigs = 0;
+		if(pEglChooseConfig(pEGLDisplay, configAttribs, &pEGLConfig, 1, &numConfigs) == EGL_FALSE){
+			DETHROW_INFO(deeInvalidAction, decString::Formatted(
+				"eglChooseConfig for Wayland failed (0x{:x})", pEglGetError()));
+		}
+		if(numConfigs == 0){
+			DETHROW_INFO(deeInvalidAction, "eglChooseConfig for Wayland return 0 entries");
+		}
+		
+		logger.LogInfo("RTCBUnixWaylandEGL: SDR EGL config selected");
+	}
 }
 
 
@@ -435,6 +482,20 @@ void deoglRTCBUnixWaylandEGL::pRegisterWaylandCompositor(){
 	// all required data collected. registry proxy is not needed anymore
 	wl_proxy_destroy((wl_proxy*)registry);
 	
+	// add color manager listener before second roundtrip to receive capability events.
+	// the server sends capability events in response to the color manager binding which
+	// arrive during the second roundtrip
+	if(pColorManager){
+		static const wp_color_manager_v1_listener colorManagerListener = {
+			pOnColorManagerSupportedIntent,
+			pOnColorManagerSupportedFeature,
+			pOnColorManagerSupportedTfNamed,
+			pOnColorManagerSupportedPrimariesNamed,
+			pOnColorManagerDone
+		};
+		wp_color_manager_v1_add_listener(pColorManager, &colorManagerListener, this);
+	}
+	
 	// roundtrip to process any deferred binding responses
 	wl_display_roundtrip(wlDisplay);
 	
@@ -443,6 +504,15 @@ void deoglRTCBUnixWaylandEGL::pRegisterWaylandCompositor(){
 	}
 	if(!pXdgWmBase){
 		DETHROW_INFO(deeInvalidAction, "xdg_wm_base not found in Wayland registry");
+	}
+	
+	if(pColorManager){
+		logger.LogInfoFormat(
+			"RTCBUnixWaylandEGL: Color manager capabilities: parametric=%s PQ=%s BT2020=%s masDisPri=%s",
+			pColorManagerHasParametric ? "yes" : "no",
+			pColorManagerHasPQ ? "yes" : "no",
+			pColorManagerHasBT2020 ? "yes" : "no",
+			pColorManagerHasSetMasteringDisplayPrimaries ? "yes" : "no");
 	}
 	
 	// add xdg_wm_base ping listener (required by protocol)
@@ -455,6 +525,11 @@ void deoglRTCBUnixWaylandEGL::pRegisterWaylandCompositor(){
 }
 
 void deoglRTCBUnixWaylandEGL::pUnregisterWaylandCompositor(){
+	pWlOutputs.Visit([&](const sOutput &output){
+		wl_proxy_destroy((wl_proxy*)output.output);
+	});
+	pWlOutputs.RemoveAll();
+	
 	if(pDecoration){
 		zxdg_toplevel_decoration_v1_destroy(pDecoration);
 		pDecoration = nullptr;
@@ -467,12 +542,18 @@ void deoglRTCBUnixWaylandEGL::pUnregisterWaylandCompositor(){
 		xdg_wm_base_destroy(pXdgWmBase);
 		pXdgWmBase = nullptr;
 	}
-	
 	if(pWpFractionalScaleManager){
 		wp_fractional_scale_manager_v1_destroy(pWpFractionalScaleManager);
 		pWpFractionalScaleManager = nullptr;
 	}
-	
+	if(pColorManager){
+		wp_color_manager_v1_destroy(pColorManager);
+		pColorManager = nullptr;
+	}
+	if(pWpViewporter){
+		wp_viewporter_destroy(pWpViewporter);
+		pWpViewporter = nullptr;
+	}
 	if(pWlCompositor){
 		wl_compositor_destroy(pWlCompositor);
 		pWlCompositor = nullptr;
@@ -500,6 +581,216 @@ void deoglRTCBUnixWaylandEGL::CreateFractionalScaleObject(deoglRRenderWindow &wi
 	wp_fractional_scale_v1_add_listener(fractionalScale, &fractionalScaleListener, &window);
 	
 	window.SetWpFractionalScale(fractionalScale);
+}
+
+void deoglRTCBUnixWaylandEGL::CreateColorManagement(deoglRRenderWindow &window){
+	auto &logger = pRTContext.GetRenderThread().GetLogger();
+	auto &config = pRTContext.GetRenderThread().GetConfiguration();
+	
+	if(!config.GetEnableHDRMonitor() || !pEglSupportsHdr){
+		return;
+	}
+	
+	if(!pColorManager || !pColorManagerHasParametric || !pColorManagerHasPQ || !pColorManagerHasBT2020){
+		if(pColorManager){
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Compositor does not support HDR capabilities");
+		}
+		return;
+	}
+	
+	auto wlSurface = window.GetWlSurface();
+	if(!wlSurface){
+		return;
+	}
+	
+	// verify if HDR is enabled on output
+	if(pWlOutputs.IsNotEmpty()){
+		auto mngOutput = wp_color_manager_v1_get_output(pColorManager, pWlOutputs.First().output);
+		if(!mngOutput){
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Failed to create color management output for HDR check");
+			return;
+		}
+		
+		auto imageDesc = wp_color_management_output_v1_get_image_description(mngOutput);
+		if(!imageDesc){
+			wp_color_management_output_v1_destroy(mngOutput);
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Failed to get image description for HDR check");
+			return;
+		}
+		
+		auto info = wp_image_description_v1_get_information(imageDesc);
+		if(!info){
+			wp_image_description_v1_destroy(imageDesc);
+			wp_color_management_output_v1_destroy(mngOutput);
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Failed to get image description information for HDR check");
+			return;
+		}
+		
+		struct sHdrImageDescState{
+			bool hasBT2084 = false;
+			bool hasPQ = false;
+		} descState;
+		static const wp_image_description_info_v1_listener infoListener = {
+			.done = [](void*, wp_image_description_info_v1*){},
+			.icc_file = [](void*, wp_image_description_info_v1*, int32_t, uint32_t){},
+			.primaries = [](void*, wp_image_description_info_v1*,
+				int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t){},
+			.primaries_named = [](void *data, wp_image_description_info_v1*, uint32_t primaries){
+				if(primaries == WP_COLOR_MANAGER_V1_PRIMARIES_BT2020){
+					static_cast<sHdrImageDescState*>(data)->hasBT2084 = true;
+				}
+			},
+			.tf_power = [](void*, wp_image_description_info_v1*, uint32_t){},
+			.tf_named = [](void *data, wp_image_description_info_v1*, uint32_t tf){
+				if(tf == WP_COLOR_MANAGER_V1_TRANSFER_FUNCTION_ST2084_PQ){
+					static_cast<sHdrImageDescState*>(data)->hasPQ = true;
+				}
+			},
+			.luminances = [](void*, wp_image_description_info_v1*, uint32_t, uint32_t, uint32_t){},
+			.target_primaries = [](void*, wp_image_description_info_v1*,
+				int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t){},
+			.target_luminance = [](void*, wp_image_description_info_v1*, uint32_t, uint32_t){},
+			.target_max_cll = [](void*, wp_image_description_info_v1*, uint32_t){},
+			.target_max_fall = [](void*, wp_image_description_info_v1*, uint32_t){}
+		};
+		
+		wp_image_description_info_v1_add_listener(info, &infoListener, &descState);
+		
+		if(pOSUnix){
+			wl_display_roundtrip(pOSUnix->GetWaylandDisplay());
+		}
+		
+		wp_image_description_info_v1_destroy(info);
+		wp_image_description_v1_destroy(imageDesc);
+		wp_color_management_output_v1_destroy(mngOutput);
+		
+		if(!descState.hasPQ || !descState.hasBT2084){
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Connected output does not support required HDR capabilities");
+			return;
+		}
+	}
+	
+	// create color management surface
+	auto colorSurface = wp_color_manager_v1_get_surface(pColorManager, wlSurface);
+	if(!colorSurface){
+		logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+			"Failed to create color management surface");
+		return;
+	}
+	
+	// create parametric image description for HDR10 (PQ transfer function + BT.2020 primaries)
+	auto creator = wp_color_manager_v1_create_parametric_creator(pColorManager);
+	if(!creator){
+		wp_color_management_surface_v1_destroy(colorSurface);
+		logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+			"Failed to create parametric image description creator");
+		return;
+	}
+	
+	wp_image_description_creator_params_v1_set_tf_named(
+		creator, WP_COLOR_MANAGER_V1_TRANSFER_FUNCTION_ST2084_PQ);
+	
+	wp_image_description_creator_params_v1_set_primaries_named(
+		creator, WP_COLOR_MANAGER_V1_PRIMARIES_BT2020);
+	
+	if(pColorManagerHasSetMasteringDisplayPrimaries){
+		wp_image_description_creator_params_v1_set_mastering_luminance(creator, 1, 1000);
+	}
+	
+	// create image description object and destroy creator. creator is destroyed by this request
+	auto imageDesc = wp_image_description_creator_params_v1_create(creator);
+	
+	if(!imageDesc){
+		wp_color_management_surface_v1_destroy(colorSurface);
+		logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+			"Failed to create image description");
+		return;
+	}
+	
+	// wait for ready/failed event via roundtrip
+	struct sHdrImageDescState{
+		bool ready = false;
+		bool failed = false;
+	} descState;
+	static const wp_image_description_v1_listener descListener = {
+		.failed = [](void *data, wp_image_description_v1*, uint32_t, const char*) noexcept{
+			static_cast<sHdrImageDescState*>(data)->failed = true;
+		},
+		.ready = [](void *data, wp_image_description_v1*, uint32_t) noexcept{
+			static_cast<sHdrImageDescState*>(data)->ready = true;
+		},
+		.ready2 = [](void *data, wp_image_description_v1*, uint32_t, uint32_t) noexcept{
+			static_cast<sHdrImageDescState*>(data)->ready = true;
+		}
+	};
+	wp_image_description_v1_add_listener(imageDesc, &descListener, &descState);
+	
+	if(pOSUnix){
+		wl_display_roundtrip(pOSUnix->GetWaylandDisplay());
+	}
+	
+	if(descState.ready){
+		wp_color_management_surface_v1_set_image_description(colorSurface, imageDesc,
+			/*WP_COLOR_MANAGER_V1_RENDER_INTENT_PERCEPTUAL*/
+			WP_COLOR_MANAGER_V1_RENDER_INTENT_RELATIVE);
+		window.SetWpColorSurface(colorSurface);
+		window.SetUseHdrOutput(true);
+		logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+			"HDR10 (PQ/BT.2020) image description set on surface");
+		
+	}else{
+		wp_color_management_surface_v1_destroy(colorSurface);
+		if(descState.failed){
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Image description not supported by compositor");
+			
+		}else{
+			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
+				"Image description ready event not received");
+		}
+	}
+	
+	wp_image_description_v1_destroy(imageDesc);
+}
+
+void deoglRTCBUnixWaylandEGL::pOnColorManagerSupportedIntent(void*, wp_color_manager_v1*, uint32_t){
+	// intent tracking not needed for HDR decision
+}
+
+void deoglRTCBUnixWaylandEGL::pOnColorManagerSupportedFeature(void *data,
+wp_color_manager_v1*, uint32_t feature){
+	auto backend = static_cast<deoglRTCBUnixWaylandEGL*>(data);
+	if(feature == WP_COLOR_MANAGER_V1_FEATURE_PARAMETRIC){
+		backend->pColorManagerHasParametric = true;
+		
+	}else if(feature == WP_COLOR_MANAGER_V1_FEATURE_SET_MASTERING_DISPLAY_PRIMARIES){
+		backend->pColorManagerHasSetMasteringDisplayPrimaries = true;
+	}
+}
+
+void deoglRTCBUnixWaylandEGL::pOnColorManagerSupportedTfNamed(void *data,
+wp_color_manager_v1*, uint32_t tf){
+	auto backend = static_cast<deoglRTCBUnixWaylandEGL*>(data);
+	if(tf == WP_COLOR_MANAGER_V1_TRANSFER_FUNCTION_ST2084_PQ){
+		backend->pColorManagerHasPQ = true;
+	}
+}
+
+void deoglRTCBUnixWaylandEGL::pOnColorManagerSupportedPrimariesNamed(void *data,
+wp_color_manager_v1*, uint32_t primaries){
+	auto backend = static_cast<deoglRTCBUnixWaylandEGL*>(data);
+	if(primaries == WP_COLOR_MANAGER_V1_PRIMARIES_BT2020){
+		backend->pColorManagerHasBT2020 = true;
+	}
+}
+
+void deoglRTCBUnixWaylandEGL::pOnColorManagerDone(void *data, wp_color_manager_v1*){
+	// all capability events have been received; no action needed
 }
 
 void deoglRTCBUnixWaylandEGL::pOnRegistryGlobal(void *data, wl_registry *registry,
@@ -538,21 +829,27 @@ uint32_t name, const char *interface, uint32_t version){
 		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
 			"RTCBUnixWaylandEGL: Found interface zxdg_decoration_manager_v1");
 			
-	}else if(strcmp(interface, wp_color_manager_v1_interface.name) == 0
-	&& !backend->pColorManager){
+	}else if(strcmp(interface, wp_color_manager_v1_interface.name) == 0 && !backend->pColorManager){
 		backend->pColorManager = (wp_color_manager_v1*)wl_registry_bind(
 			registry, name, &wp_color_manager_v1_interface, 1);
 		backend->pColorManagerId = name;
 		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
 			"RTCBUnixWaylandEGL: Found interface wp_color_manager_v1");
 		
-	}else if(strcmp(interface, wp_viewporter_interface.name) == 0
-	&& !backend->pWpViewporter){
+	}else if(strcmp(interface, wp_viewporter_interface.name) == 0 && !backend->pWpViewporter){
 		backend->pWpViewporter = (wp_viewporter*)wl_registry_bind(
 			registry, name, &wp_viewporter_interface, 1);
 		backend->pWpViewporterId = name;
 		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
 			"RTCBUnixWaylandEGL: Found interface wp_viewporter");
+		
+	}else if(strcmp(interface, wl_output_interface.name) == 0){
+		auto output = deTUniqueReference<sOutput>::New();
+		output->output = (wl_output*)wl_registry_bind(registry, name, &wl_output_interface, 2);
+		output->name = name;
+		backend->pWlOutputs.Add(std::move(output));
+		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
+			"RTCBUnixWaylandEGL: Found interface wl_output");
 	}
 }
 
@@ -568,6 +865,20 @@ void deoglRTCBUnixWaylandEGL::pOnRegistryGlobalRemove(void *data, wl_registry*, 
 		
 	}else if(name == backend->pWpFractionalScaleManagerId){
 		backend->pWpFractionalScaleManager = nullptr;
+		
+	}else if(name == backend->pDecorationManagerId){
+		backend->pDecorationManager = nullptr;
+		
+	}else if(name == backend->pColorManagerId){
+		backend->pColorManager = nullptr;
+		
+	}else if(name == backend->pWpViewporterId){
+		backend->pWpViewporter = nullptr;
+		
+	}else{
+		backend->pWlOutputs.RemoveIf([&](const sOutput &output){
+			return output.name == name;
+		});
 	}
 }
 

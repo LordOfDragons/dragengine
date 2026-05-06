@@ -43,6 +43,7 @@ private:
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
+	bool pUseHdrOutput;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -85,7 +86,7 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput) override;
 	
 	/** Prepare for rendering render. */
 	void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask) override;

@@ -58,6 +58,7 @@ private:
 	float pTransparency;
 	deoglTexture *pMask;
 	decTexMatrix2 pTCTransformMask;
+	bool pUseHdrOutput;
 	
 	
 	
@@ -176,9 +177,12 @@ public:
 	
 	/** Update transformation mask from transformation. */
 	void UpdateTransformMask();
-	/*@}*/
 	
+	/** Use HDR output. */
+	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
 	
+	/** Set use HDR output. */
+	void SetUseHdrOutput(bool useHdrOutput);
 	
 private:
 	void pCalculateClipping(const decVector2 &canvasSize);

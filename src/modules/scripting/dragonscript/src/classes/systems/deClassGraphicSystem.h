@@ -86,11 +86,13 @@ private:
 	DEF_NATFUNC(nfGetWindowWidth);
 	DEF_NATFUNC(nfGetWindowHeight);
 	DEF_NATFUNC(nfGetWindowSize);
+	DEF_NATFUNC(nfGetWindowRealSize);
 	DEF_NATFUNC(nfSetWindowGeometry);
 	DEF_NATFUNC(nfSetWindowGeometry2);
 	DEF_NATFUNC(nfSetWindowTitle);
 	DEF_NATFUNC(nfGetWindowScaleFactor);
 	DEF_NATFUNC(nfGetWindowScaleFactorFloat);
+	DEF_NATFUNC(nfGetWindowHdrOutput);
 	DEF_NATFUNC(nfGetPrimaryCanvas);
 	DEF_NATFUNC(nfGetParameterCount);
 	DEF_NATFUNC(nfGetParameterInfo);

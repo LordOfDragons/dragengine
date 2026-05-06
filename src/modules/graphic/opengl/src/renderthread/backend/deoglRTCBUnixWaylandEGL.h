@@ -32,6 +32,8 @@
 #include "deoglRTCBUnixX11EGL.h"
 #include "../../extensions/wayland/wayland-defs.h"
 
+#include <dragengine/common/collection/decTList.h>
+
 
 /**
  * Wayland EGL OpenGL context backend for Unix.
@@ -55,6 +57,18 @@ private:
 	uint32_t pWpFractionalScaleManagerId;
 	uint32_t pColorManagerId;
 	uint32_t pWpViewporterId;
+	
+	struct sOutput{
+		wl_output *output;
+		uint32_t name;
+	};
+	decTList<sOutput> pWlOutputs;
+	
+	bool pEglSupportsHdr;
+	bool pColorManagerHasParametric;
+	bool pColorManagerHasPQ;
+	bool pColorManagerHasBT2020;
+	bool pColorManagerHasSetMasteringDisplayPrimaries;
 	
 	bool pWaylandReady;
 	
@@ -100,6 +114,9 @@ public:
 	/** Create fractional scale object for window surface if protocol is available. */
 	void CreateFractionalScaleObject(deoglRRenderWindow &window);
 	
+	/** Create HDR color management surface for window if compositor supports it. */
+	void CreateColorManagement(deoglRRenderWindow &window);
+	
 	
 	/** Wayland compositor. */
 	inline wl_compositor *GetWlCompositor() const{ return pWlCompositor; }
@@ -130,6 +147,21 @@ private:
 	
 	/** xdg_wm_base listener callbacks */
 	static void pOnXdgWmBasePing(void *data, xdg_wm_base *base, uint32_t serial);
+	
+	/** wp_color_manager_v1 listener callbacks */
+	static void pOnColorManagerSupportedIntent(void *data,
+		wp_color_manager_v1 *manager, uint32_t renderIntent);
+	
+	static void pOnColorManagerSupportedFeature(void *data,
+		wp_color_manager_v1 *manager, uint32_t feature);
+	
+	static void pOnColorManagerSupportedTfNamed(void *data,
+		wp_color_manager_v1 *manager, uint32_t tf);
+	
+	static void pOnColorManagerSupportedPrimariesNamed(void *data,
+		wp_color_manager_v1 *manager, uint32_t primaries);
+	
+	static void pOnColorManagerDone(void *data, wp_color_manager_v1 *manager);
 };
 
 #endif // OS_UNIX_X11 && BACKEND_OPENGL

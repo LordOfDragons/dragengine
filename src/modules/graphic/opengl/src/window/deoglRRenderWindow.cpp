@@ -236,6 +236,7 @@ pXdgToplevel(nullptr),
 pWlEglWindow(nullptr),
 pWpFractionalScale(nullptr),
 pWpViewport(nullptr),
+pWpColorSurface(nullptr),
 #endif
 
 #ifdef BACKEND_OPENGL
@@ -256,7 +257,8 @@ pNotifySizeChanged(false),
 
 pVSyncMode(deoglConfiguration::evsmAdaptive),
 pInitSwapInterval(true),
-pAfterCreateScaleFactor(100)
+pAfterCreateScaleFactor(100),
+pUseHdrOutput(false)
 {
 	LEAK_CHECK_CREATE(renderThread, RenderWindow);
 }
@@ -320,6 +322,10 @@ void deoglRRenderWindow::SetWpFractionalScale(wp_fractional_scale_v1 *scale){
 
 void deoglRRenderWindow::SetWpViewport(wp_viewport *viewport){
 	pWpViewport = viewport;
+}
+
+void deoglRRenderWindow::SetWpColorSurface(wp_color_management_surface_v1 *surface){
+	pWpColorSurface = surface;
 }
 
 void deoglRRenderWindow::OnWpFractionalScalePreferredScale(void *data,
@@ -471,6 +477,7 @@ void deoglRRenderWindow::SetSize(int width, int height){
 	pNotifySizeChanged = false;
 	
 	pResizeWindow();
+	pResizeRenderTarget();
 }
 
 void deoglRRenderWindow::SetTitle(const char *title){
@@ -504,7 +511,9 @@ void deoglRRenderWindow::SetIcon(deoglPixelBuffer *icon){
 	pSetIcon();
 }
 
-
+void deoglRRenderWindow::SetUseHdrOutput(bool useHdrOutput){
+	pUseHdrOutput = useHdrOutput;
+}
 
 void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 	pRCanvasView = rcanvasView;
@@ -792,6 +801,10 @@ void deoglRRenderWindow::Render(){
 	}
 #endif
 	
+	if(pUseHdrOutput){
+		pCreateRenderTarget();
+	}
+	
 	deoglDebugTraceGroup debugTrace(GetRenderThread(), "Window.Render");
 	
 	// make window current in the render context
@@ -808,39 +821,43 @@ void deoglRRenderWindow::Render(){
 	deoglRCanvas * const overlayCanvas = pRenderThread.GetCanvasOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
-	pRCanvasView->PrepareForRender(nullptr);
+	pRCanvasView->PrepareForRender(nullptr, pUseHdrOutput);
 	pRCanvasView->PrepareForRenderRender(nullptr);
 	if(isMainWindow){
 		if(inputOverlayCanvas){
-			inputOverlayCanvas->PrepareForRender(nullptr);
+			inputOverlayCanvas->PrepareForRender(nullptr, pUseHdrOutput);
 			inputOverlayCanvas->PrepareForRenderRender(nullptr);
 		}
 		if(debugOverlayCanvas){
-			debugOverlayCanvas->PrepareForRender(nullptr);
+			debugOverlayCanvas->PrepareForRender(nullptr, pUseHdrOutput);
 			debugOverlayCanvas->PrepareForRenderRender(nullptr);
 		}
 		if(overlayCanvas){
-			overlayCanvas->PrepareForRender(nullptr);
+			overlayCanvas->PrepareForRender(nullptr, pUseHdrOutput);
 			overlayCanvas->PrepareForRenderRender(nullptr);
 		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
-	// create render taget if required
+	// create render target if required
 	const decPoint size(pWidth, pHeight);
 	
 	// render canvas
-	pRenderThread.GetFramebuffer().Activate(nullptr /*pRenderTarget->GetFBO()*/);
+	deoglFramebuffer * const fbo = pRenderTarget ? pRenderTarget->GetFBO().Pointer() : nullptr;
+	pRenderThread.GetFramebuffer().Activate(fbo);
 	
-	deoglRenderCanvasContext context(*pRCanvasView,
-		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, nullptr);
+	deoglRenderCanvasContext context(*pRCanvasView, fbo, decPoint(), size, true, nullptr);
+	context.SetUseHdrOutput(pUseHdrOutput);
 	pRenderThread.GetRenderers().GetCanvas().Prepare(context);
-
+	
+	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 0, clearColor));
+	
 	const decPoint canvasSize(pRCanvasView->GetSize().Round());
 	if(canvasSize == size){
 		pRCanvasView->Render(context);
-
+		
 	}else{
 		// this happens if global display scaling is not 100%. in this case the
 		// canvas view is smaller than the window and has to be upscaled
@@ -860,6 +877,10 @@ void deoglRRenderWindow::Render(){
 		if(overlayCanvas){
 			overlayCanvas->Render(context);
 		}
+	}
+	
+	if(pRenderTarget){
+		pRenderThread.GetRenderers().GetCanvas().Finalize(context, *this);
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
@@ -958,6 +979,8 @@ void deoglRRenderWindow::OnResize(int width, int height){
 	// pRenderThread.GetOgl().LogInfoFormat("RRenderWindow.OnResize: %p (%d,%d)", this, width, height);
 	
 	pNotifySizeChanged = true;
+	
+	pResizeRenderTarget();
 }
 
 
@@ -1128,6 +1151,25 @@ void deoglRRenderWindow::pResizeWindow(){
 		XSync(display, False); // required or strange problems can happen
 	}
 #endif
+}
+
+void deoglRRenderWindow::pCreateRenderTarget(){
+	if(pRenderTarget){
+		return;
+	}
+	
+	pRenderTarget = deoglRenderTargetArray::Ref::New(pRenderThread,
+		decPoint3(pWidth, pHeight, 1), 4, pUseHdrOutput ? 16 : 8);
+	pRenderTarget->PrepareFramebuffer();
+}
+
+void deoglRRenderWindow::pResizeRenderTarget(){
+	if(!pRenderTarget || pWidth < 1 || pHeight < 1){
+		return;
+	}
+	
+	pRenderTarget->SetSize(decPoint3(pWidth, pHeight, 1));
+	pRenderTarget->PrepareFramebuffer();
 }
 
 void deoglRRenderWindow::pSetWindowTitle(){

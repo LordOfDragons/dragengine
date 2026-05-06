@@ -260,6 +260,33 @@ void deoglRenderBase::RenderFullScreenQuadVAO(bool useStereo) const{
 	OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 }
 
+float deoglRenderBase::Rgb2Linear(float color) const{
+	return color <= 0.04045f ? color / 12.92f : powf((color + 0.055f) / 1.055f, 12.0f / 5.0f);
+}
+
+decColor deoglRenderBase::Rgb2Linear(const decColor &color) const{
+	return {Rgb2Linear(color.r), Rgb2Linear(color.g), Rgb2Linear(color.b), color.a};
+}
+
+decColorMatrix deoglRenderBase::Rgb2Linear(const decColorMatrix &color) const{
+	decColorMatrix m(color);
+	m.a11 = Rgb2Linear(color.a11);
+	m.a12 = Rgb2Linear(color.a12);
+	m.a13 = Rgb2Linear(color.a13);
+	m.a15 = Rgb2Linear(color.a15);
+	
+	m.a21 = Rgb2Linear(color.a21);
+	m.a22 = Rgb2Linear(color.a22);
+	m.a23 = Rgb2Linear(color.a23);
+	m.a25 = Rgb2Linear(color.a25);
+	
+	m.a31 = Rgb2Linear(color.a31);
+	m.a32 = Rgb2Linear(color.a32);
+	m.a33 = Rgb2Linear(color.a33);
+	m.a35 = Rgb2Linear(color.a35);
+	return m;
+}
+
 
 
 // Debug

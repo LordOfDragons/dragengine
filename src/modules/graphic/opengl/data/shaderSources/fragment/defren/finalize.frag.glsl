@@ -10,6 +10,7 @@ UNIFORM_BIND(5) uniform vec4 pContrast; // red, green, blue
 layout(binding=0) uniform lowp sampler2DArray texColor;
 
 #include "shared/interface/2d/fragment.glsl"
+#include "shared/hdr_output.glsl"
 
 // SplitLayers
 layout(location=0) out vec4 outColor1;
@@ -29,6 +30,13 @@ void main(void){
 		
 	}else{
 		outColor1 = pow(texture(texColor, vec3(vTexCoord, vLayer)), pGamma) * pContrast + pBrightness;
+	}
+	
+	if(HdrOutput){
+		outColor1.rgb = encodeHdrOutput(outColor1.rgb);
+		if(SplitLayers){
+			outColor2.rgb = encodeHdrOutput(outColor2.rgb);
+		}
 	}
 	
 	// clamp alpha value to the range from 0 to 1. larger values can happen during

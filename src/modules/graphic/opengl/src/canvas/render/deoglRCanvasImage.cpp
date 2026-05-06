@@ -77,12 +77,12 @@ void deoglRCanvasImage::SetTCClampMaximum(const decVector2 &clamp){
 
 
 
-void deoglRCanvasImage::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+void deoglRCanvasImage::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
 	if(!pImage){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender(renderPlanMask);
+	deoglRCanvas::PrepareForRender(renderPlanMask, useHdrOutput);
 	pImage->PrepareForRender();
 }
 

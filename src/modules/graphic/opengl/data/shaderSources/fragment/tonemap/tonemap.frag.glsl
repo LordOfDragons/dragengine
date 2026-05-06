@@ -23,8 +23,8 @@ layout(location=0) out vec4 outColor;
 
 const float epsilon = 0.0001;
 const ivec2 tcParams = ivec2( 0, 0 );
-const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
-//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
+const vec3 lumiFactors = vec3(0.2125, 0.7154, 0.0721);
+//const vec3 lumiFactors = vec3(0.3086, 0.6094, 0.0820); // nVidia
 
 float uchimura(float x, float P, float a, float m, float l, float c, float b) {
 	// Uchimura 2017, "HDR theory and practice"
@@ -93,6 +93,16 @@ float uchimura(float x) {
 	return uchimura(x, P, a, m, l, c, b);
 }
 
+float uchimuraHdr(float x){
+	VARCONST float P = 1000.0 / 180.0;
+	VARCONST float a = 1.1;
+	VARCONST float m = 0.08;
+	VARCONST float l = 0.2;
+	VARCONST float c = 1.3;
+	VARCONST float b = 0.0;
+	return uchimura(x, P, a, m, l, c, b);
+}
+
 void main( void ){
 	ivec3 tc = ivec3(gl_FragCoord.xy, vLayer);
 	
@@ -118,18 +128,7 @@ void main( void ){
 	// uchimura, applied per channel
 	color.rgb *= params.g;
 	
-	outColor.a = color.a;
-	
-	if(WithToneMapCurve){
-		outColor.r = texture(texToneMapCurve, vec2(color.r, 0.0)).r;
-		outColor.g = texture(texToneMapCurve, vec2(color.g, 0.0)).r;
-		outColor.b = texture(texToneMapCurve, vec2(color.b, 0.0)).r;
-		
-	}else{
-		outColor.r = uchimura(color.r);
-		outColor.g = uchimura(color.g);
-		outColor.b = uchimura(color.b);
-	}
+	outColor = color;
 	
 	// bloom
 	outColor.rgb += textureLod(texBloom, vec3(tcBloom, vLayer), 0.0).rgb * vec3(pToneMapBloomBlend);
@@ -139,6 +138,33 @@ void main( void ){
 	//      to add burning out the blacks which is annoying. the tone map operator should
 	//      provide a balance output. if an artist wants burning out blacks he should do
 	//      so after the tone mapping is done (still float buffer)
+	
+	if(WithToneMapCurve){
+		outColor.r = texture(texToneMapCurve, vec2(outColor.r, 0.0)).r;
+		outColor.g = texture(texToneMapCurve, vec2(outColor.g, 0.0)).r;
+		outColor.b = texture(texToneMapCurve, vec2(outColor.b, 0.0)).r;
+		
+	}else{
+		if(HdrOutput){
+			outColor.r = uchimuraHdr(outColor.r);
+			outColor.g = uchimuraHdr(outColor.g);
+			outColor.b = uchimuraHdr(outColor.b);
+			
+		}else{
+			outColor.r = uchimura(outColor.r);
+			outColor.g = uchimura(outColor.g);
+			outColor.b = uchimura(outColor.b);
+		}
+	}
+	
+	if(HdrOutput){
+		// uchimura is per channel so white has to be achieved artificially
+		float hdrMax = 1000.0 / 180.0;
+		float luma = dot(outColor.rgb, lumiFactors);
+		float distToPeak = clamp((luma - 1.0) / (hdrMax - 1.0), 0.0, 1.0);
+		float saturationFactor = 1.0 - pow(distToPeak, 3.0);
+		outColor.rgb = mix(vec3(luma), outColor.rgb, saturationFactor);
+	}
 	
 	// clamp alpha value to the range from 0 to 1. larger values can happen during
 	// rendering of transparent objects and can cause issues in 2d rendering
