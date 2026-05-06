@@ -37,6 +37,11 @@
 #include "dexsiDeviceCoreKeyboard.h"
 #include "dexsiDeviceLibEvent.h"
 #include "deXSystemInput.h"
+#ifdef OS_UNIX_WAYLAND
+	#include "dexsiWaylandInput.h"
+	#include "dexsiDeviceWaylandMouse.h"
+	#include "dexsiDeviceWaylandKeyboard.h"
+#endif
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSUnix.h>
@@ -422,6 +427,35 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 
 
 void dexsiDeviceManager::pCreateDevices(){
+#ifdef OS_UNIX_WAYLAND
+	// use native Wayland input for mouse and keyboard
+	if(pModule.GetOSUnix()->GetWaylandDisplay()){
+		pWaylandInput = dexsiWaylandInput::Ref::New(pModule);
+		
+		if(pWaylandInput->IsReady()){
+			// register Wayland mouse and keyboard instead of X11 core devices
+			auto wlMouse = pWaylandInput->GetWaylandMouse();
+			if(wlMouse){
+				wlMouse->SetIndex(pDevices.GetCount());
+				pDevices.Add(wlMouse);
+			}
+			
+			auto wlKeyboard = pWaylandInput->GetWaylandKeyboard();
+			if(wlKeyboard){
+				wlKeyboard->SetIndex(pDevices.GetCount());
+				pDevices.Add(wlKeyboard);
+			}
+			
+			// only add gamepads/joysticks from evdev under Wayland
+			pCreateEvdevDevices();
+			return;
+		}
+		
+		// Wayland input not supported
+		pWaylandInput = nullptr;
+	}
+#endif
+	
 	pX11CoreMouse = dexsiDeviceCoreMouse::Ref::New(pModule);
 	pX11CoreMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pX11CoreMouse);

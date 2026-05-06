@@ -60,14 +60,11 @@ if envModule['build_graphics_opengl'] != TernaryVariableNo:
 				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', call='glXGetProcAddress(NULL);')
 				if hasFuncProc:
 					envModule.Append(CXXFLAGS = '-DHAS_OGL_GETPROC')
-		
-		if not hasOpenGL and not hasGL and envModule['with_opengl'] == TernaryVariableYes:
-			Exit('Requested to use OpenGL but gl.h or libOpenGL/libGL could not be found or is not usable.')
 	
 	conf.Finish()
 
-if envModule['build_graphics_opengl'] == TernaryVariableYes and not hasGL:
-	Exit('Requested to build OpenGL Graphics Module but OpenGL could not be found or is not usable.')
+if not hasOpenGL and not hasGL and envModule['with_opengl'] == TernaryVariableYes:
+	Exit('Requested to use OpenGL but gl.h or libOpenGL/libGL could not be found or is not usable.')
 
 # build module if requested
 internalModule = envModule['build_graphic_opengl_internal']

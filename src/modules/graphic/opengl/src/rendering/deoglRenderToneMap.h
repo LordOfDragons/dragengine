@@ -62,8 +62,14 @@ private:
 	const deoglPipeline *pPipelineToneMapStereo;
 	const deoglPipeline *pPipelineToneMapCustom;
 	const deoglPipeline *pPipelineToneMapCustomStereo;
+	const deoglPipeline *pPipelineToneMapHdr;
+	const deoglPipeline *pPipelineToneMapHdrStereo;
+	const deoglPipeline *pPipelineToneMapHdrCustom;
+	const deoglPipeline *pPipelineToneMapHdrCustomStereo;
 	const deoglPipeline *pPipelineLdr;
 	const deoglPipeline *pPipelineLdrStereo;
+	const deoglPipeline *pPipelineLdrHdr;
+	const deoglPipeline *pPipelineLdrHdrStereo;
 	
 	const deoglPipeline *pPipelineLumPrepare;
 	const deoglPipeline *pPipelineLumPrepareStereo;

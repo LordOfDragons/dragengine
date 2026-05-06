@@ -46,7 +46,9 @@
 deoglRCanvasCanvasView::deoglRCanvasCanvasView(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
 pTCClampMin(0.0f, 0.0f),
-pTCClampMax(1.0f, 1.0f){
+pTCClampMax(1.0f, 1.0f),
+pUseHdrOutput(false)
+{
 	LEAK_CHECK_CREATE(renderThread, CanvasCanvasView);
 }
 
@@ -81,17 +83,18 @@ void deoglRCanvasCanvasView::SetTCClampMaximum(const decVector2 &clamp){
 
 
 
-void deoglRCanvasCanvasView::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
-	deoglRCanvas::PrepareForRender(renderPlanMask);
+void deoglRCanvasCanvasView::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
+	deoglRCanvas::PrepareForRender(renderPlanMask, useHdrOutput);
 	if(pCanvasView){
-		pCanvasView->PrepareRenderTarget(renderPlanMask, 4, 8);
+		pCanvasView->PrepareRenderTarget(renderPlanMask, 4, useHdrOutput ? 32 : 8);
+		pUseHdrOutput = useHdrOutput;
 	}
 }
 
 void deoglRCanvasCanvasView::PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask){
 	deoglRCanvas::PrepareForRenderRender(renderPlanMask);
 	if(pCanvasView){
-		pCanvasView->RenderRenderTarget(renderPlanMask);
+		pCanvasView->RenderRenderTarget(renderPlanMask, pUseHdrOutput);
 	}
 }
 
@@ -103,5 +106,6 @@ void deoglRCanvasCanvasView::Render(const deoglRenderCanvasContext &context){
 	deoglRenderCanvasContext viewContext(context, *this);
 	viewContext.SetTCClampMinimum(pTCClampMin);
 	viewContext.SetTCClampMaximum(pTCClampMax);
+	viewContext.SetUseHdrOutput(false);
 	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasCanvasView(viewContext, *this);
 }

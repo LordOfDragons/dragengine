@@ -476,6 +476,7 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfile.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfileManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGL.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGLEGL.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\loader\deoxrApiLayer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\loader\deoxrLoader.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrPLogLevel.cpp" />
@@ -542,6 +543,7 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\extension\xdev\XR_MNDX_xdev_space.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\extension\xdev\openxr_extension_helpers.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGL.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGLEGL.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\loader\deoxrApiLayer.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\loader\deoxrLoader.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\loader\loader_interfaces.h" />

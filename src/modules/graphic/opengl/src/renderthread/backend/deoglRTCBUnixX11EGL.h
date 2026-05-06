@@ -26,8 +26,9 @@
 #define _DEOGLRTCBUNIXEGL_H_
 
 #include <dragengine/dragengine_configuration.h>
-
 #if defined(OS_UNIX_X11) && defined(BACKEND_OPENGL)
+
+#include <dragengine/common/string/decStringList.h>
 
 #include "deoglRTCBUnixX11.h"
 #include "../../extensions/egl.h"
@@ -49,6 +50,8 @@ protected:
 	EGLSurface pEGLLoaderSurface;
 	EGLSurface pEGLCompileSurface[MaxCompileContextCount];
 	
+	PFNEGLQUERYSTRINGPROC pEglQueryString;
+	PFNEGLGETERRORPROC pEglGetError;
 	PFNEGLGETDISPLAYPROC pEglGetDisplay;
 	PFNEGLINITIALIZEPROC pEglInitialize;
 	PFNEGLTERMINATEPROC pEglTerminate;
@@ -66,6 +69,8 @@ protected:
 	PFNEGLSWAPBUFFERSPROC pEglSwapBuffers;
 	PFNEGLSWAPINTERVALPROC pEglSwapInterval;
 	PFNEGLGETCONFIGATTRIBPROC pEglGetConfigAttrib;
+	
+	decStringList pEglExtensions;
 	
 	
 public:
@@ -85,9 +90,9 @@ public:
 	 * Try to initialize. Returns false if the required library is not available
 	 * or required symbols are missing. Throws on other failures.
 	 */
-	bool TryInit();
+	virtual bool TryInit();
 	
-	/** Initialize phase 2 (render thread). */
+	/** Initialize phase 2. */
 	void InitPhase2() override;
 	
 	/** Clean up all resources. */
@@ -126,6 +131,12 @@ public:
 	/** Apply VSync mode. */
 	void ApplyVSync(deoglRRenderWindow &window, deoglConfiguration::eVSyncMode vsyncMode) override;
 	
+	/** Create surface for window. */
+	virtual void CreateWindowSurface(deoglRRenderWindow &window);
+	
+	/** Destroy surface for window. */
+	virtual void DestroyWindowSurface(deoglRRenderWindow &window);
+	
 	
 	/** Library functions. */
 	inline EGLDisplay GetEGLDisplay() const{ return pEGLDisplay; }
@@ -136,16 +147,14 @@ public:
 	inline EGLSurface GetEGLLoaderSurface() const{ return pEGLLoaderSurface; }
 	EGLSurface GetEGLCompileSurfaceAt(int index) const;
 	inline PFNEGLGETPROCADDRESSPROC GetEGLGetProcAddressFunc() const{ return pEglGetProcAddress; }
-	
-	void CreateWindowSurface(deoglRRenderWindow &window);
-	void DestroyWindowSurface(deoglRRenderWindow &window);
 	/*@}*/
 	
 	
 protected:
 	void pFreeContext();
-	void pChooseConfig();
+	virtual void pChooseConfig();
 	void pChooseVisual() override;
+	void pQueryEglExtensions();
 	void pCreateContext();
 	void pUnloadLibrary();
 };

@@ -893,9 +893,9 @@ const char *gameObject){
 		pParallelProcessing->GetThreadCount());
 	
 	if(true){
-		pLogger->LogInfoFormat(LOGGING_NAME, "Screen Size is %dx%d.",
-			pOS->GetDisplayCurrentResolution(0).x,
-			pOS->GetDisplayCurrentResolution(0).y);
+		pLogger->LogInfoFormat(LOGGING_NAME, "Screen size %dx%d, scale factor %d.",
+			pOS->GetDisplayCurrentResolution(0).x, pOS->GetDisplayCurrentResolution(0).y,
+			pOS->GetDisplayCurrentScaleFactor(0));
 		
 		const int displayCount = pOS->GetDisplayCount();
 		pLogger->LogInfo(LOGGING_NAME, "Display Information:");

@@ -12,6 +12,9 @@ UNIFORM_BIND(7) uniform vec4 pTCClamp; // left, top, right, bottom
 // InputArrayTextures
 UNIFORM_BIND(8) uniform int pTCLayer;
 
+// HDR output flag (1 = HDR output active, 0 = SDR)
+UNIFORM_BIND(9) uniform int pHdrOutput;
+
 // WithTexture && !InputArrayTextures
 layout(binding=0) uniform lowp sampler2D texColor;
 
@@ -22,6 +25,7 @@ layout(binding=0) uniform lowp sampler2DArray texColorArray;
 layout(binding=1) uniform lowp sampler2D texMask;
 
 #include "shared/interface/2d/fragment.glsl"
+#include "shared/hdr_output.glsl"
 
 // vTexCoord: WithTexture || WithRenderWorld || InputArrayTextures
 
@@ -30,9 +34,9 @@ VARYING_BIND(3) in vec2 vTexCoordMask;
 
 layout(location=0) out vec4 outColor;
 
-void main( void ){
+void main(void){
 	// clamp to viewport. avoids changing glViewport/glScissor all the time
-	if( any( lessThan( gl_FragCoord.xy, pClipRect.xy ) ) || any( greaterThan( gl_FragCoord.xy, pClipRect.zw ) ) ){
+	if(any(lessThan(gl_FragCoord.xy, pClipRect.xy)) || any(greaterThan(gl_FragCoord.xy, pClipRect.zw))){
 		discard;
 	}
 	
@@ -47,20 +51,31 @@ void main( void ){
 			outColor = texture(texColor, tc);
 		}
 		
+		outColor.a = clamp(outColor.a, 0.0, 1.0);
 		outColor = pColorTransform * pow(outColor, pGamma);
 		
 	}else if(WithRenderWorld){
 		outColor = texture(texColorArray, vec3(tc, 0));
+		
+		outColor.a = clamp(outColor.a, 0.0, 1.0);
 		outColor = pColorTransform * pow(outColor, pGamma);
 		
 	}else{
-		outColor = vec4( pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3] );
+		outColor = vec4(pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3]);
+		outColor.a = clamp(outColor.a, 0.0, 1.0);
 	}
 	
 	outColor += pColorTransform2;
 	
+	// color transform can produce negative values. clamp them to avoid problems
+	outColor.rgb = max(outColor.rgb, vec3(0.0));
+	
+	if(pHdrOutput != 0 && !WithRenderWorld){
+		outColor.rgb = sRGB2Linear(outColor.rgb);
+	}
+	
 	// mask
 	if(WithMask){
-		outColor.a *= texture( texMask, vTexCoordMask ).r;
+		outColor.a *= texture(texMask, vTexCoordMask).r;
 	}
 }

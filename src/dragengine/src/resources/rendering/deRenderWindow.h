@@ -119,6 +119,7 @@ private:
 	int pScaleFactor;
 	bool pNotifyScriptOnResize;
 	bool pPaint;
+	bool pHdrOutput;
 	deImage::Ref pIcon;
 	
 	deCanvasView::Ref pCanvasView;
@@ -272,6 +273,12 @@ public:
 	
 	/** \brief Set window scale factor multiplied by 100 (monitor/DPI scaling). */
 	void SetScaleFactor(int scaleFactor);
+	
+	/** \brief Render window is using HDR output. */
+	inline bool GetHdrOutput() const{ return pHdrOutput; }
+	
+	/** \brief Set if the render window is using HDR output. */
+	void SetHdrOutput(bool hdrOutput);
 	
 	/** \brief Script is notified about the window changing size. */
 	inline bool GetNotifyScriptOnResize() const{ return pNotifyScriptOnResize; }

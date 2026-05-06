@@ -535,6 +535,12 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglXExtResult.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wasmfix.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\color-management-protocol.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\fractional-scale-protocol.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\viewporter-protocol.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\wayland-defs.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-decoration-protocol.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFontGlyphs.cpp" />
@@ -628,6 +634,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPHDRRMaximumIntensity.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPRenderDownScale.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPTranspLayerLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPEnableHDRMonitor.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPLogLevel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPVSyncMode.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameter.cpp" />
@@ -762,6 +769,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\rendering\task\shared\deoglRenderTaskSharedVAO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBAndroid.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBBeOS.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixWaylandEGL.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixX11.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixX11EGL.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixX11GLX.cpp" />
@@ -916,6 +924,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTree.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTreeNode.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\target\deoglRenderTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\target\deoglRenderTargetArray.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBO.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOBlock.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat16.cpp" />
@@ -1159,7 +1168,6 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\deoglXExtResult.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\egl.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\eglext.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\eglplatform.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\gles2ext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\gles32.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\glesext.h" />
@@ -1168,6 +1176,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\khrplatform.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\macosfix.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wasmfix.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\color-management-protocol.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\fractional-scale-protocol.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\viewporter-protocol.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\wayland-defs.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-decoration-protocol.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.h" />
@@ -1263,6 +1277,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPHDRRMaximumIntensity.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPRenderDownScale.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\defren\deoglPTranspLayerLimit.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPEnableHDRMonitor.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPLogLevel.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglPVSyncMode.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\parameters\deoglParameter.h" />
@@ -1399,6 +1414,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBAndroid.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBBeOS.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBMacOS.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixWaylandEGL.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixX11.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixX11EGL.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\renderthread\backend\deoglRTCBUnixX11GLX.h" />
@@ -1554,6 +1570,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTree.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sptree\deoglSPTreeNode.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\target\deoglRenderTarget.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\target\deoglRenderTargetArray.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBO.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOBlock.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\tbo\deoglDynamicTBOFloat16.h" />

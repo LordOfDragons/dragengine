@@ -350,7 +350,7 @@ def InitCommon(env):
 	# OS detection
 	OSPosix = (env['OS_NAME'] == 'posix')
 	OSWindows = (env['OS_NAME'] == 'win32') or (env['SYS_PLATFORM'] == 'win32')
-	OSBeOS = (env['SYS_PLATFORM'] == 'haiku1')
+	OSBeOS = (env['SYS_PLATFORM'] in ['haiku1', 'haiku'])
 	OSMacOS = (env['SYS_PLATFORM'] == 'darwin')
 	
 	env['OSPosix'] = OSPosix

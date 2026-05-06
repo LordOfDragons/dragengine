@@ -112,7 +112,7 @@ void deoglRCanvasView::SetResizeRenderTarget(){
 
 void deoglRCanvasView::PrepareRenderTarget(const deoglRenderPlanMasked *renderPlanMask,
 int componentCount, int bitCount){
-	PrepareForRender(renderPlanMask);
+	PrepareForRender(renderPlanMask, false);
 	
 	if(pRenderTarget && pRenderTarget->GetComponentCount() == componentCount
 	&& pRenderTarget->GetBitCount() == bitCount){
@@ -134,7 +134,7 @@ int componentCount, int bitCount){
 	}
 }
 
-void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPlanMask){
+void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
 	PrepareForRenderRender(renderPlanMask);
 	
 	if(!pRenderTarget->GetTextureDirty()){
@@ -159,6 +159,7 @@ void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPla
 	context.SetTransform(GetTransform().Invert().ToTexMatrix2() * context.GetTransform());
 	//context.UpdateTransformMask();
 	context.SetTCTransformMask(*pRenderTarget);
+	context.SetUseHdrOutput(useHdrOutput);
 	
 	GetRenderThread().GetRenderers().GetCanvas().Prepare(context);
 	
@@ -177,19 +178,19 @@ void deoglRCanvasView::RenderRenderTarget(const deoglRenderPlanMasked *renderPla
 
 
 
-void deoglRCanvasView::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+void deoglRCanvasView::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
 	const int count = pChildren.GetCount();
 	if(count == 0){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender(renderPlanMask);
+	deoglRCanvas::PrepareForRender(renderPlanMask, useHdrOutput);
 	
 	int i;
 	for(i=0; i<count; i++){
 		deoglRCanvas &child = pChildren.GetAt(i);
 		if(child.GetVisible()){
-			child.PrepareForRender(renderPlanMask);
+			child.PrepareForRender(renderPlanMask, useHdrOutput);
 		}
 	}
 }

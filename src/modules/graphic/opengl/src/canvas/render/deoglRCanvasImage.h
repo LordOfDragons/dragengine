@@ -85,7 +85,7 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput) override;
 	
 	/** Render. */
 	void Render(const deoglRenderCanvasContext &context) override;

@@ -58,6 +58,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Get context. */
+	inline deoglRTContext &GetContext(){ return pRTContext; }
+	
 	/** Initialize phase 2. */
 	virtual void InitPhase2();
 	

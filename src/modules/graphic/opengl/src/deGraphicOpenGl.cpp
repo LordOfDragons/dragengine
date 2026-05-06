@@ -61,6 +61,7 @@
 
 #include "parameters/deoglPLogLevel.h"
 #include "parameters/deoglPVSyncMode.h"
+#include "parameters/deoglPEnableHDRMonitor.h"
 #include "parameters/ao/deoglPAOSelfShadowEnable.h"
 #include "parameters/ao/deoglPAOSelfShadowSmoothAngle.h"
 #include "parameters/debug/deoglPDebugContext.h"
@@ -602,13 +603,30 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 	
 	#elif defined OS_WEBWASM
 	
-	#elif defined OS_UNIX & defined HAS_LIB_X11
+	#elif defined(OS_UNIX) && defined(HAS_LIB_X11)
 	const deoglRTContext &context = pRenderThread->GetContext();
 	auto &backend = context.GetBackend();
 	
 	#ifdef BACKEND_OPENGL
+	
+	#ifdef OS_UNIX_WAYLAND
+	auto backendWayland = backend.PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		connection.opengl.eglGetProcAddress = (void*)backendWayland->GetEGLGetProcAddressFunc();
+		connection.opengl.eglDisplay = backendWayland->GetEGLDisplay();
+		connection.opengl.eglConfig = backendWayland->GetEGLConfig();
+		connection.opengl.eglContext = backendWayland->GetEGLContext();
+		if(context.GetActiveRRenderWindow()){
+			connection.opengl.eglSurface = context.GetActiveRRenderWindow()->GetEGLSurface();
+		}
+		return;
+	}
+	#endif
+	
 	connection.opengl.display = backend->GetDisplay();
-	connection.opengl.visualid = backend->GetVisualInfo()->visualid;
+	if(backend->GetVisualInfo()){
+		connection.opengl.visualid = backend->GetVisualInfo()->visualid;
+	}
 	
 	auto backendEGL = backend.PointerDynamicCast<deoglRTCBUnixX11EGL>();
 	if(backendEGL){
@@ -630,7 +648,7 @@ void deGraphicOpenGl::GetGraphicApiConnection(sGraphicApiConnection &connection)
 	
 	if(context.GetActiveRRenderWindow()){
 		if(backendEGL){
-			connection.opengl.eglSurface = (void*)(EGLNativeWindowType)context.GetActiveRRenderWindow()->GetWindow();
+			connection.opengl.eglSurface = context.GetActiveRRenderWindow()->GetEGLSurface();
 			
 		}else{
 			connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
@@ -774,6 +792,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	
 	pParameters.Add(deTUniqueReference<deoglPVRRenderScale>::New(*this));
 	pParameters.Add(deTUniqueReference<deoglPVRForceFrameRate>::New(*this));
+	pParameters.Add(deTUniqueReference<deoglPEnableHDRMonitor>::New(*this));
 	
 #if defined WITH_DEBUG || defined WITH_DEBUG_CONTEXT
 	pParameters.Add(deTUniqueReference<deoglPDebugContext>::New(*this));

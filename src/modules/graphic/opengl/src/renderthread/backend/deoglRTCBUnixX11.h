@@ -78,7 +78,7 @@ public:
 	
 	
 	/** Process event loop. */
-	void ProcessEventLoop();
+	virtual void ProcessEventLoop();
 	
 	/** OS Unix. */
 	inline deOSUnix *GetOSUnix() const{ return pOSUnix; }
@@ -106,7 +106,7 @@ public:
 protected:
 	virtual void pChooseVisual() = 0;
 	void pFreeVisualInfo();
-	void pOpenDisplay();
+	virtual void pOpenDisplay();
 	void pCloseDisplay();
 	void pCreateColorMap();
 	void pCreateAtoms();

@@ -193,6 +193,10 @@ void dexsiDevice::AddButton(dexsiDeviceButton *button){
 	pButtons.Add(button);
 }
 
+void dexsiDevice::ClearButtons(){
+	pButtons.RemoveAll();
+}
+
 dexsiDeviceButton *dexsiDevice::GetButtonWithID(const char *id) const{
 	return pButtons.FindOrDefault([&](const dexsiDeviceButton &button){
 		return button.GetID() == id;

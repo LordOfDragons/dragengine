@@ -99,7 +99,7 @@ if not 'CROSSCOMPILE_CLANG' in parent_env:
 
 # Haiku: The PATH found by SCons are wrong in many ways causing binaries to be not found.
 #        Replace them with sane values. This is not a 'good' solution but should work.
-if sys.platform == 'haiku1':
+if sys.platform in ['haiku1', 'haiku']:
 	parent_env['ENV']['PATH'] = os.environ['PATH']
 
 parent_env.Tool('logStdOut')

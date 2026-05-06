@@ -591,6 +591,7 @@ void igdeIconListBox::AddListener(igdeIconListBoxListener *listener){
 void igdeIconListBox::RemoveListener(igdeIconListBoxListener *listener){
 	pListeners.Remove(listener);
 }
+
 void igdeIconListBox::NotifySelectionChanged(){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeIconListBoxListener &l){

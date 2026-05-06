@@ -127,6 +127,20 @@ void deClassGraphicSystem::nfGetWindowSize::RunFunction(dsRunTime *rt, dsValue *
 	clsGraSys.GetDS().GetClassPoint()->PushPoint(rt, size);
 }
 
+// static public func Point getWindowRealSize()
+deClassGraphicSystem::nfGetWindowRealSize::nfGetWindowRealSize(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowRealSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsPoint){
+}
+void deClassGraphicSystem::nfGetWindowRealSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	const deRenderWindow &renderWindow = *graSys.GetRenderWindow();
+	const decPoint size(renderWindow.GetWidth(), renderWindow.GetHeight());
+	
+	clsGraSys.GetDS().GetClassPoint()->PushPoint(rt, size);
+}
+
 // public static func void setWindowGeometry(int width, int height, bool fullScreen)
 deClassGraphicSystem::nfSetWindowGeometry::nfSetWindowGeometry(const sInitData &init) :
 dsFunction(init.clsGraSys, "setWindowGeometry", DSFT_FUNCTION,
@@ -204,6 +218,17 @@ void deClassGraphicSystem::nfGetWindowScaleFactorFloat::RunFunction(dsRunTime *r
 	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
 	rt->PushFloat(0.01f * (float)graSys.GetRenderWindow()->GetScaleFactor());
+}
+
+// static public func bool getWindowHdrOutput()
+deClassGraphicSystem::nfGetWindowHdrOutput::nfGetWindowHdrOutput(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowHdrOutput", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+}
+void deClassGraphicSystem::nfGetWindowHdrOutput::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	rt->PushBool(graSys.GetRenderWindow()->GetHdrOutput());
 }
 
 // public static func CanvasView getPrimaryCanvas()
@@ -379,10 +404,13 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetWindowWidth(init));
 	AddFunction(new nfGetWindowHeight(init));
 	AddFunction(new nfGetWindowSize(init));
+	AddFunction(new nfGetWindowRealSize(init));
 	AddFunction(new nfSetWindowGeometry(init));
 	AddFunction(new nfSetWindowGeometry2(init));
 	AddFunction(new nfSetWindowTitle(init));
 	AddFunction(new nfGetWindowScaleFactor(init));
+	AddFunction(new nfGetWindowScaleFactorFloat(init));
+	AddFunction(new nfGetWindowHdrOutput(init));
 	AddFunction(new nfGetPrimaryCanvas(init));
 	AddFunction(new nfGetParameterCount(init));
 	AddFunction(new nfGetParameterInfo(init)) ;
