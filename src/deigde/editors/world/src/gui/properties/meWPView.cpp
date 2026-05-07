@@ -457,7 +457,7 @@ class cActionMenuPreviewCameraSize : public igdeActionContextMenu{
 public:
 	typedef deTObjectReference<cActionMenuPreviewCameraSize> Ref;
 	cActionMenuPreviewCameraSize(meWPView &panel) : igdeActionContextMenu("",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPView.Action.PreviewCameraSizeMenu"),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPView.Action.PreviewCameraSize"),
 	pPanel(panel){}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
