@@ -34,7 +34,6 @@
 #include "../deoglRTContext.h"
 #include "../deoglRenderThread.h"
 #include "../../deGraphicOpenGl.h"
-#include "../../extensions/egl.h"
 #include "../../window/deoglRRenderWindow.h"
 
 #include <dragengine/resources/rendering/deRenderWindow.h>
@@ -86,7 +85,9 @@ void deoglRTCBBeOS::SwapBuffers(deoglRRenderWindow &window){
 }
 
 void *deoglRTCBBeOS::GetFunctionPointer(const char *funcName){
-	return (void*)eglGetProcAddress(funcName);
+	deoglRRenderWindow * const window = pRTContext.GetActiveRRenderWindow();
+	DEASSERT_NOTNULL(window)
+	return (void*)window->GetGLView()->GetGLProcAddress(funcName);
 }
 
 #endif // OS_BEOS
