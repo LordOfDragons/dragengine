@@ -84,4 +84,8 @@ void deoglRTCBBeOS::SwapBuffers(deoglRRenderWindow &window){
 	view->LockGL();
 }
 
+void *deoglRTCBBeOS::GetFunctionPointer(const char *funcName){
+	return (void*)eglGetProcAddress(funcName);
+}
+
 #endif // OS_BEOS

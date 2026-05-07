@@ -73,6 +73,9 @@ public:
 	/** Swap buffers. */
 	void SwapBuffers(deoglRRenderWindow &window) override;
 	
+	/** Get function pointer. */
+	void *GetFunctionPointer(const char *funcName) override;
+	
 	
 	/** OS BeOS. */
 	inline deOSBeOS *GetOSBeOS() const{ return pOSBeOS; }
