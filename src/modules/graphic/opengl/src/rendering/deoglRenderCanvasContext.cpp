@@ -61,7 +61,9 @@ pColorTransform(copy.pColorTransform),
 pTransparency(copy.pTransparency),
 pMask(copy.pMask),
 pTCTransformMask(copy.pTCTransformMask),
-pUseHdrOutput(copy.pUseHdrOutput){
+pUseHdrOutput(copy.pUseHdrOutput),
+pHdrMaxNits(copy.pHdrMaxNits),
+pHdrReferenceNits(copy.pHdrReferenceNits){
 }
 
 deoglRenderCanvasContext::deoglRenderCanvasContext(const deoglRCanvas &canvas,
@@ -81,7 +83,9 @@ pTCClampMax(1.0f, 1.0f),
 // pColorTransform( canvas.GetColorTransform() ), // no, this applies color transform twice
 pTransparency(canvas.GetTransparency()),
 pMask(nullptr),
-pUseHdrOutput(false)
+pUseHdrOutput(false),
+pHdrMaxNits(10000),
+pHdrReferenceNits(203)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
 	pClipFactor.x = (float)viewportSize.x * 0.5f;
@@ -123,7 +127,9 @@ pColorTransform(childCanvas.GetColorTransform() * parentContext.pColorTransform)
 pTransparency(childCanvas.GetTransparency() * parentContext.pTransparency),
 pMask(parentContext.pMask),
 pTCTransformMask(parentContext.pTCTransformMask),
-pUseHdrOutput(parentContext.pUseHdrOutput)
+pUseHdrOutput(parentContext.pUseHdrOutput),
+pHdrMaxNits(parentContext.pHdrMaxNits),
+pHdrReferenceNits(parentContext.pHdrReferenceNits)
 {
 	pCalculateClipping(childCanvas.GetSize());
 	pClipMin.SetLargest(parentContext.pClipMin);
@@ -153,7 +159,9 @@ pTCClampMax(1.0f, 1.0f),
 // pColorTransform( node.GetColorTransform() ), // no, this applies color transform twice
 pTransparency(node.GetTransparency()),
 pMask(nullptr),
-pUseHdrOutput(false)
+pUseHdrOutput(false),
+pHdrMaxNits(10000),
+pHdrReferenceNits(203)
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
 	pClipFactor.x = (float)viewportSize.x * 0.5f;
@@ -195,7 +203,9 @@ pColorTransform(childNode.GetColorTransform() * parentContext.pColorTransform),
 pTransparency(childNode.GetTransparency() * parentContext.pTransparency),
 pMask(parentContext.pMask),
 pTCTransformMask(parentContext.pTCTransformMask),
-pUseHdrOutput(parentContext.pUseHdrOutput)
+pUseHdrOutput(parentContext.pUseHdrOutput),
+pHdrMaxNits(parentContext.pHdrMaxNits),
+pHdrReferenceNits(parentContext.pHdrReferenceNits)
 {
 	pCalculateClipping(decPoint(childNode.GetSize().x, childNode.GetSize().y));
 	pClipMin.SetLargest(parentContext.pClipMin);
@@ -287,6 +297,14 @@ void deoglRenderCanvasContext::UpdateTransformMask(){
 
 void deoglRenderCanvasContext::SetUseHdrOutput(bool useHdrOutput){
 	pUseHdrOutput = useHdrOutput;
+}
+
+void deoglRenderCanvasContext::SetHdrMaxNits(int hdrMaxNits){
+	pHdrMaxNits = hdrMaxNits;
+}
+
+void deoglRenderCanvasContext::SetHdrReferenceNits(int hdrReferenceNits){
+	pHdrReferenceNits = hdrReferenceNits;
 }
 
 

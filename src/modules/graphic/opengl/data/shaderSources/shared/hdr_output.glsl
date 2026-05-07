@@ -19,10 +19,6 @@ const float pqC1 = 3424.0 / 4096.0; // ~0.836
 const float pqC2 = (2413.0 / 4096.0) * 32.0; // ~18.852
 const float pqC3 = (2392.0 / 4096.0) * 32.0; // ~18.688
 
-// SDR reference white in nits when shown on an HDR display (ITU-R BT.2408-4)
-const float pqSdrRefWhiteNits = 180.0; //203.0;
-const float pqPeakNits = 10000.0;
-
 // Normalised linear value -> PQ signal [0,1]
 vec3 pqOETF(vec3 lin){
 	vec3 Lp = pow(max(lin, 0.0), vec3(pqM1));
@@ -38,10 +34,7 @@ const mat3 matBt709ToBt2020 = mat3(
 	0.043306, 0.011360, 0.895578
 );
 
-// Full HDR encoding: linear BT.709 RGB (scene-linear, 1.0 = pqSdrRefWhiteNits) -> PQ BT.2020
-vec3 encodeHdrOutput(vec3 linearBt709){
-	vec3 bt2020 = matBt709ToBt2020 * linearBt709;
-	// Scale: 1.0 (SDR reference white) -> pqSdrRefWhiteNits / pqPeakNits inside PQ
-	float scale = pqSdrRefWhiteNits / pqPeakNits;
-	return pqOETF(bt2020 * scale);
+// Full HDR encoding: linear BT.709 RGB (scene-linear, 1.0 = refWhiteNits) -> PQ BT.2020
+vec3 encodeHdrOutput(vec3 linearBt709, float maxNits, float refWhiteNits){
+	return pqOETF((matBt709ToBt2020 * linearBt709) * vec3(refWhiteNits / maxNits));
 }

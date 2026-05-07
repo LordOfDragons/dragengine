@@ -4,6 +4,7 @@
 	
 	<parameter name='pTCBloomTransform' location='3'/>
 	<parameter name='pTCBloomClamp' location='4'/>
+	<parameter name='pHdrNits' location='5'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Tone Mapping</sourceCode>

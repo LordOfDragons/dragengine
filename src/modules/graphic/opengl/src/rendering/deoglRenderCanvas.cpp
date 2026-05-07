@@ -110,7 +110,8 @@ enum eSPFinalize{
 	spfinTCTransform,
 	spfinGamma,
 	spfinBrightness,
-	spfinContrast
+	spfinContrast,
+	spfinHdrNits
 };
 
 
@@ -801,6 +802,8 @@ const deoglRCanvasRenderWorld &canvas){
 		plan.SetLodLevelOffset(0);
 		plan.SetRenderStereo(false);
 		plan.SetUseHdrOutput(context.GetUseHdrOutput());
+		plan.SetHdrMaxNits(context.GetHdrMaxNits());
+		plan.SetHdrReferenceNits(context.GetHdrReferenceNits());
 #ifdef ENABLE_STEREO_RENDER_TEST
 		plan.SetRenderStereo(true);
 		plan.SetCameraStereoMatrix(decDMatrix::CreateTranslation(-0.1, 0, 0));
@@ -946,6 +949,7 @@ void deoglRenderCanvas::Finalize(const deoglRenderCanvasContext &context, const 
 	shader->SetParameterFloat(spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f);
 	shader->SetParameterFloat(spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f);
 	shader->SetParameterFloat(spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader->SetParameterFloat(spfinHdrNits, (float)window.GetHdrMaxNits(), (float)window.GetHdrReferenceNits());
 	
 	RenderFullScreenQuadVAO();
 	pActiveVAO = 0;

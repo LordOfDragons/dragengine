@@ -6,6 +6,7 @@ precision lowp int;
 UNIFORM_BIND(3) uniform vec4 pGamma; // red, green, blue
 UNIFORM_BIND(4) uniform vec4 pBrightness; // red, green, blue
 UNIFORM_BIND(5) uniform vec4 pContrast; // red, green, blue
+UNIFORM_BIND(6) uniform vec2 pHdrNits; // x=maxNits, y=refWhiteNits
 
 layout(binding=0) uniform lowp sampler2DArray texColor;
 
@@ -33,9 +34,9 @@ void main(void){
 	}
 	
 	if(HdrOutput){
-		outColor1.rgb = encodeHdrOutput(outColor1.rgb);
+		outColor1.rgb = encodeHdrOutput(outColor1.rgb, pHdrNits.x, pHdrNits.y);
 		if(SplitLayers){
-			outColor2.rgb = encodeHdrOutput(outColor2.rgb);
+			outColor2.rgb = encodeHdrOutput(outColor2.rgb, pHdrNits.x, pHdrNits.y);
 		}
 	}
 	

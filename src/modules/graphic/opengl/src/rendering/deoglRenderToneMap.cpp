@@ -160,14 +160,16 @@ enum eSPBloomAdd{
 
 enum eSPToneMap{
 	sptmTCBloomTransform,
-	sptmTCBloomClamp
+	sptmTCBloomClamp,
+	sptmHdrNits
 };
 
 enum eSPFinalize{
 	spfinTCTransform,
 	spfinGamma,
 	spfinBrightness,
-	spfinContrast
+	spfinContrast,
+	spfinHdrNits
 };
 
 enum eSPBloomDownSample{
@@ -956,6 +958,8 @@ void deoglRenderToneMap::RenderToneMappingPass(deoglRenderPlan &plan, int bloomW
 	
 	defren.SetShaderParamFSQuad(*shader, sptmTCBloomTransform, bloomWidth, bloomHeight);
 	shader->SetParameterFloat(sptmTCBloomClamp, clampBloomU, clampBloomV);
+	shader->SetParameterFloat(sptmHdrNits, (float)plan.GetHdrMaxNits(),
+		(float)plan.GetHdrReferenceNits(), oglCamera->GetWhiteIntensity());
 	
 	tsmgr.EnableArrayTexture(0, *defren.GetTextureColor(), GetSamplerClampNearest());
 	tsmgr.EnableTexture(1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest());
@@ -999,6 +1003,7 @@ void deoglRenderToneMap::RenderLDR(deoglRenderPlan &plan){
 	}
 	shader->SetParameterFloat(spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f);
 	shader->SetParameterFloat(spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader->SetParameterFloat(spfinHdrNits, (float)plan.GetHdrMaxNits(), (float)plan.GetHdrReferenceNits());
 	
 	RenderFullScreenQuad(plan);
 }

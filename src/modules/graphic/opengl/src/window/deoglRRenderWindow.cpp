@@ -258,7 +258,9 @@ pNotifySizeChanged(false),
 pVSyncMode(deoglConfiguration::evsmAdaptive),
 pInitSwapInterval(true),
 pAfterCreateScaleFactor(100),
-pUseHdrOutput(false)
+pUseHdrOutput(false),
+pHdrMaxNits(10000),
+pHdrReferenceNits(203)
 {
 	LEAK_CHECK_CREATE(renderThread, RenderWindow);
 }
@@ -507,8 +509,16 @@ void deoglRRenderWindow::SetUseHdrOutput(bool useHdrOutput){
 	pUseHdrOutput = useHdrOutput;
 }
 
+void deoglRRenderWindow::SetHdrMaxNits(int hdrMaxNits){
+	pHdrMaxNits = hdrMaxNits;
+}
+
 void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 	pRCanvasView = rcanvasView;
+}
+
+void deoglRRenderWindow::SetHdrReferenceNits(int hdrReferenceNits){
+	pHdrReferenceNits = hdrReferenceNits;
 }
 
 void deoglRRenderWindow::DropRCanvasView(){
@@ -591,7 +601,9 @@ void deoglRRenderWindow::CreateWindow(){
 		DETHROW(deeOutOfMemory);
 	}
 	
-	// set pixel format
+	// set pixel format. prefer 10-bit HDR format pre-selected during InitPhase3 when
+	// available so the context created in InitPhase4 can enable HDR output. SetPixelFormat
+	// may only be called once per DC so the probing has to happen earlier
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(pfd));
 	pfd.nSize = sizeof(pfd);
@@ -605,7 +617,27 @@ void deoglRRenderWindow::CreateWindow(){
 	pfd.cBlueBits = 8;
 	pfd.cAlphaBits = 8;
 	
-	SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
+	{
+	const int hdrFormat = backend->GetHdrPixelFormat();
+	if(hdrFormat > 0){
+		PIXELFORMATDESCRIPTOR pfdHdr;
+		memset(&pfdHdr, 0, sizeof(pfdHdr));
+		DescribePixelFormat(pWindowDC, hdrFormat, sizeof(pfdHdr), &pfdHdr);
+		if(SetPixelFormat(pWindowDC, hdrFormat, &pfdHdr)){
+			pRenderThread.GetLogger().LogInfoFormat(
+				"RRenderWindow.CreateWindow: Using 10-bit HDR pixel format%d", hdrFormat);
+			
+		}else{
+			pRenderThread.GetLogger().LogWarnFormat(
+				"RRenderWindow.CreateWindow: SetPixelFormat with HDR format %d failed (error %lu), "
+				"falling back to 8-bit", hdrFormat, GetLastError());
+			SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
+		}
+		
+	}else{
+		SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
+	}
+	}
 	
 	// activate window just in case windows messes up again
 	if(!pHostWindow){
@@ -841,6 +873,8 @@ void deoglRRenderWindow::Render(){
 	
 	deoglRenderCanvasContext context(*pRCanvasView, fbo, decPoint(), size, true, nullptr);
 	context.SetUseHdrOutput(pUseHdrOutput);
+	context.SetHdrMaxNits(pHdrMaxNits);
+	context.SetHdrReferenceNits(pHdrReferenceNits);
 	pRenderThread.GetRenderers().GetCanvas().Prepare(context);
 	
 	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};

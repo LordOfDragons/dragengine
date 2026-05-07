@@ -9,6 +9,7 @@ precision HIGHP int;
 
 UNIFORM_BIND(3) uniform vec4 pTCBloomTransform;
 UNIFORM_BIND(4) uniform vec2 pTCBloomClamp;
+UNIFORM_BIND(5) uniform vec3 pHdrNits; // x=maxNits, y=refWhiteNits, z=whiteIntensity
 
 layout(binding=0) uniform mediump sampler2DArray texColor;
 layout(binding=1) uniform HIGHP sampler2D texToneMapParams;
@@ -93,15 +94,23 @@ float uchimura(float x) {
 	return uchimura(x, P, a, m, l, c, b);
 }
 
-const float hdrMax = 1000.0 / 180.0; //1000.0 / 180.0;
-
 float uchimuraHdr(float x){
-	VARCONST float P = hdrMax;
+	/*
+	VARCONST float P = pHdrNits.x;
 	VARCONST float a = 1.1;
 	VARCONST float m = 0.08;
 	VARCONST float l = 0.2;
 	VARCONST float c = 1.3;
 	VARCONST float b = 0.0;
+	*/
+	
+	VARCONST float P = pHdrNits.x;
+	VARCONST float a = 1.0;
+	VARCONST float m = 0.1;
+	VARCONST float l = 0.4;
+	VARCONST float c = 1.3;
+	VARCONST float b = 0.0;
+	
 	return uchimura(x, P, a, m, l, c, b);
 }
 
@@ -160,23 +169,19 @@ void main( void ){
 	}
 	
 	if(HdrOutput){
-		// uchimura is per channel so white has to be achieved artificially
-		
+		// manual whiteout using camera white intensity parameter
 		/*
-		float hdrMax = 1000.0 / 180.0;
-		float luma = dot(outColor.rgb, lumiFactors);
-		float distToPeak = clamp((luma - 1.0) / (hdrMax - 1.0), 0.0, 1.0);
-		float saturationFactor = 1.0 - pow(distToPeak, 3.0);
-		outColor.rgb = mix(vec3(luma), outColor.rgb, saturationFactor);
-		*/
+		float whiteOutStart = pHdrNits.z;
+		float maxPeak = pHdrNits.x / pHdrNits.y;
 		
 		float luma = dot(outColor.rgb, lumiFactors);
-		const float whiteOutStart = 2.0;
+		
 		if(luma > whiteOutStart){
-			float distToPeak = clamp((luma - whiteOutStart) / (hdrMax - whiteOutStart), 0.0, 1.0);
-			float saturationFactor = 1.0 - pow(distToPeak, 4.0);
+			float distToPeak = clamp((luma - whiteOutStart) / (maxPeak - whiteOutStart), 0.0, 1.0);
+			float saturationFactor = 1.0 - pow(distToPeak, 2.0);
 			outColor.rgb = luma + (outColor.rgb - vec3(luma)) * saturationFactor;
 		}
+		*/
 	}
 	
 	// clamp alpha value to the range from 0 to 1. larger values can happen during

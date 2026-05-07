@@ -182,6 +182,7 @@ private:
 	
 	int pAfterCreateScaleFactor;
 	bool pUseHdrOutput;
+	int pHdrMaxNits, pHdrReferenceNits;
 	
 	
 public:
@@ -326,6 +327,14 @@ public:
 	/** Use HDR output. */
 	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
 	void SetUseHdrOutput(bool useHdrOutput);
+	
+	/** HDR maximum nits. */
+	inline int GetHdrMaxNits() const{ return pHdrMaxNits; }
+	void SetHdrMaxNits(int hdrMaxNits);
+	
+	/** HDR reference nits. */
+	inline int GetHdrReferenceNits() const{ return pHdrReferenceNits; }
+	void SetHdrReferenceNits(int hdrReferenceNits);
 	
 	/** Render target or nullptr. */
 	inline const deoglRenderTargetArray::Ref &GetRenderTarget() const{ return pRenderTarget; }

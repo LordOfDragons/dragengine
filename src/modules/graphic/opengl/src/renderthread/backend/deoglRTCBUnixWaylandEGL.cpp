@@ -633,7 +633,11 @@ void deoglRTCBUnixWaylandEGL::CreateColorManagement(deoglRRenderWindow &window){
 		struct sHdrImageDescState{
 			bool hasBT2084 = false;
 			bool hasPQ = false;
+			uint32_t minLum = 0;
+			uint32_t maxLum = 0;
+			uint32_t referenceLum = 0;
 		} descState;
+		
 		static const wp_image_description_info_v1_listener infoListener = {
 			.done = [](void*, wp_image_description_info_v1*){},
 			.icc_file = [](void*, wp_image_description_info_v1*, int32_t, uint32_t){},
@@ -650,10 +654,21 @@ void deoglRTCBUnixWaylandEGL::CreateColorManagement(deoglRRenderWindow &window){
 					static_cast<sHdrImageDescState*>(data)->hasPQ = true;
 				}
 			},
-			.luminances = [](void*, wp_image_description_info_v1*, uint32_t, uint32_t, uint32_t){},
+			.luminances = [](void *data, wp_image_description_info_v1*, uint32_t min_lum,
+				uint32_t max_lum, uint32_t reference_lum){
+					auto &state = *static_cast<sHdrImageDescState*>(data);
+					state.minLum = min_lum;
+					state.maxLum = max_lum;
+					state.referenceLum = reference_lum;
+				},
 			.target_primaries = [](void*, wp_image_description_info_v1*,
 				int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, int32_t){},
-			.target_luminance = [](void*, wp_image_description_info_v1*, uint32_t, uint32_t){},
+			.target_luminance = [](void *data, wp_image_description_info_v1*, uint32_t, uint32_t max_lum){
+					auto &state = *static_cast<sHdrImageDescState*>(data);
+					if(state.maxLum == 0){
+						state.maxLum = max_lum;
+					}
+				},
 			.target_max_cll = [](void*, wp_image_description_info_v1*, uint32_t){},
 			.target_max_fall = [](void*, wp_image_description_info_v1*, uint32_t){}
 		};
@@ -673,6 +688,12 @@ void deoglRTCBUnixWaylandEGL::CreateColorManagement(deoglRRenderWindow &window){
 				"Connected output does not support required HDR capabilities");
 			return;
 		}
+		
+		window.SetHdrMaxNits(descState.maxLum);
+		window.SetHdrReferenceNits(descState.referenceLum);
+		logger.LogInfoFormat("RTCBUnixWaylandEGL.CreateColorManagement: "
+			"Connected output HDR capabilities: minLum=%.4f maxLum=%u refLum=%u",
+			(double)descState.minLum / 10000.0, descState.maxLum, descState.referenceLum);
 	}
 	
 	// create color management surface
