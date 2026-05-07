@@ -33,7 +33,8 @@ apt-get -y -q install \
   libtheora-dev libhidapi-dev libopenhmd-dev patchelf \
   libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev \
   libvpx-dev libopenvr-dev glslang-tools libfreetype-dev \
-  libopus-dev libfftw3-dev libegl-dev || exit 1
+  libopus-dev libfftw3-dev libegl-dev libxkbcommon-dev \
+  || exit 1
 
 export SCONSFLAGS="-j 8"
 
