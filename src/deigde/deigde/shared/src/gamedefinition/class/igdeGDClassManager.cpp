@@ -339,6 +339,11 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 							component.SetAffectsAudio(propertyValue == "1");
 						}
 						
+						const decString &nameEnableGI = component.GetPropertyName(igdeGDCComponent::epEnableGI);
+						if(!nameEnableGI.IsEmpty() && gdclass->GetDefaultPropertyValue(nameEnableGI, propertyValue)){
+							component.SetEnableGI(propertyValue == "1");
+						}
+						
 						const decString &nameLightShadowIgnore = component.GetPropertyName(igdeGDCComponent::epLightShadowIgnore);
 						if(!nameLightShadowIgnore.IsEmpty() && gdclass->GetDefaultPropertyValue(nameLightShadowIgnore, propertyValue)){
 							component.SetLightShadowIgnore(propertyValue == "1");

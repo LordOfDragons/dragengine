@@ -25,18 +25,14 @@
 #ifndef _DEOGLXEXTRESULT_H_
 #define _DEOGLXEXTRESULT_H_
 
-
 #include <dragengine/dragengine_configuration.h>
 
-
-#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
-#include <GL/glx.h>
-#include "glxext.h"
-
-// GLX_EXT_swap_control
-extern PFNGLXSWAPINTERVALEXTPROC pglXSwapInterval;
-
+#if defined(OS_UNIX) && !defined(WITH_OPENGLES) && !defined(OS_BEOS) && !defined(OS_MACOS)
+#	include <GL/glx.h>
+#	include "glxext.h"
+	
+	// GLX_EXT_swap_control
+	extern PFNGLXSWAPINTERVALEXTPROC pglXSwapInterval;
 #endif
-
 
 #endif

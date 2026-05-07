@@ -59,6 +59,17 @@ fixed class GraphicSystem
 		return null
 	end
 	
+	/**
+	 * \brief Real size in pixels of render window.
+	 * \version 1.32
+	 * 
+	 * Real size differs from \ref #getWindowSize() if global scaling is used. Required for
+	 * screenshot creation to get the full image size instead of the scaled down size.
+	 */
+	static func Point getWindowRealSize()
+		return null
+	end
+	
 	/** \brief Set render window geometry. */
 	static func void setWindowGeometry(int width, int height, bool fullScreen)
 	end
@@ -92,6 +103,14 @@ fixed class GraphicSystem
 	 */
 	static func float getWindowScaleFactorFloat()
 		return 0.0
+	end
+	
+	/**
+	 * \brief Render window is using HDR output.
+	 * \version 1.32
+	 */
+	static func bool getWindowHdrOutput()
+		return false
 	end
 	
 	/** \brief Primary canvas view. */

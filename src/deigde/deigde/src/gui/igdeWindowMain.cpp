@@ -716,6 +716,12 @@ bool igdeWindowMain::ProcessCommandLine(const decUnicodeStringList &arguments){
 	
 	GetLogger()->LogInfoFormat(LOGSOURCE, "Loading game project %s", loadFile.GetString());
 	
+	auto pathLoadFile = decPath::CreatePathNative(loadFile);
+	if(!pathLoadFile.IsAbsolute()){
+		pathLoadFile = pathLoadFile.AbsolutePath(decPath::CreateWorkingDirectory());
+		loadFile = pathLoadFile.GetPathNative();
+	}
+	
 	if(!LoadGameProject(loadFile)){
 		return false;
 	}

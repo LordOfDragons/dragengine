@@ -63,6 +63,8 @@ private:
 	float pBlendColor[4];
 	GLenum pBlendFuncSource;
 	GLenum pBlendFuncDest;
+	GLenum pBlendFuncAlphaSource;
+	GLenum pBlendFuncAlphaDest;
 	bool pClipControl;
 	bool pEnableDepthClamp;
 	
@@ -99,7 +101,7 @@ public:
 	void StencilMask(GLuint mask);
 	void EnableBlend(bool enable);
 	void BlendColor(float red, float green, float blue, float alpha);
-	void BlendFunc(GLenum sfactor, GLenum dfactor);
+	void BlendFunc(GLenum sfactor, GLenum dfactor, GLenum alphaSfactor, GLenum alphaDfactor);
 	void ClipControl(bool clipControl);
 	void EnableDepthClamp(bool enable);
 	/*@}*/

@@ -90,6 +90,8 @@ void deoglPipelineState::Reset(){
 	pBlendColor[3] = 0.0f;
 	pBlendFuncSource = GL_ONE;
 	pBlendFuncDest = GL_ZERO;
+	pBlendFuncAlphaSource = GL_ONE;
+	pBlendFuncAlphaDest = GL_ZERO;
 	pClipControl = false;
 	pEnableDepthClamp = false;
 	
@@ -109,7 +111,8 @@ void deoglPipelineState::Reset(){
 	OGL_CHECK(pRenderThread, glStencilMask(pStencilMask));
 	ENABLE_GL_STATE(pEnableBlend, GL_BLEND)
 	OGL_CHECK(pRenderThread, pglBlendColor(pBlendColor[0], pBlendColor[1], pBlendColor[2], pBlendColor[3]));
-	OGL_CHECK(pRenderThread, glBlendFunc(pBlendFuncSource, pBlendFuncDest));
+	OGL_CHECK(pRenderThread, pglBlendFuncSeparate(
+		pBlendFuncSource, pBlendFuncDest, pBlendFuncAlphaSource, pBlendFuncAlphaDest));
 	if(pglClipControl){
 		pglClipControl(GL_LOWER_LEFT, pClipControl ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE);
 	}
@@ -317,15 +320,19 @@ void deoglPipelineState::BlendColor(float red, float green, float blue, float al
 	OGL_CHECK(pRenderThread, pglBlendColor(red, green, blue, alpha));
 }
 
-void deoglPipelineState::BlendFunc(GLenum sfactor, GLenum dfactor){
-	if(sfactor == pBlendFuncSource && dfactor == pBlendFuncDest){
+void deoglPipelineState::BlendFunc(GLenum sfactor, GLenum dfactor, GLenum alphaSfactor, GLenum alphaDfactor){
+	if(sfactor == pBlendFuncSource && dfactor == pBlendFuncDest
+	&& alphaSfactor == pBlendFuncAlphaSource && alphaDfactor == pBlendFuncAlphaDest){
 		return;
 	}
 	
 	pBlendFuncSource = sfactor;
 	pBlendFuncDest = dfactor;
+	pBlendFuncAlphaSource = alphaSfactor;
+	pBlendFuncAlphaDest = alphaDfactor;
+	pBlendFuncDest = dfactor;
 	
-	OGL_CHECK(pRenderThread, glBlendFunc(sfactor, dfactor));
+	OGL_CHECK(pRenderThread, pglBlendFuncSeparate(sfactor, dfactor, alphaSfactor, alphaDfactor));
 }
 
 void deoglPipelineState::ClipControl(bool clipControl){

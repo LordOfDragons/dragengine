@@ -614,6 +614,7 @@ public:
 	
 	void OnAction(aeAnimator *animator) override{
 		if(pPanel.GetAttachment()){
+			pPanel.GetAttachment()->ReattachCollider();
 			animator->NotifyAttachmentChanged(pPanel.GetAttachment());
 		}
 	}

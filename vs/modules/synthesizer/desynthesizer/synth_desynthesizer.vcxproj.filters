@@ -54,6 +54,9 @@
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynAudioAnalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -141,6 +144,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\parameters\desynParameterInt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynAudioAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\sound\desynDecodeBuffer.h">

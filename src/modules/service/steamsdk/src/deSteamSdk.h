@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deSteamSdk(deLoadableModule &loadableModule);
+	explicit deSteamSdk(deLoadableModule &loadableModule);
 	
 	/** Delete module. */
 	~deSteamSdk() override;

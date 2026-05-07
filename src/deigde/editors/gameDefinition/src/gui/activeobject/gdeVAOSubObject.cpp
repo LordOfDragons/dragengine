@@ -184,21 +184,10 @@ const char *gdeVAOSubObject::pPropertyValue(const decString &name) const{
 		return nullptr;
 	}
 	
-	const gdeObjectClass &objectClass = *pView.GetObjectClass();
-	const decString realName(pPropertyPrefix + name);
-	
-	// find in property values
-	const decString *propertyValue = nullptr;
-	if(objectClass.GetPropertyValues().GetAt(realName, propertyValue)){
-		return propertyValue->GetString();
+	static decString value;
+	if(pView.GetObjectClass()->NamedPropertyDefaultValue(pPropertyPrefix + name, value)){
+		return value;
 	}
 	
-	// find in properties
-	const gdeProperty * const property = objectClass.GetProperties().FindNamed(realName);
-	if(property){
-		return property->GetDefaultValue();
-	}
-	
-	// not found
 	return nullptr;
 }

@@ -53,6 +53,7 @@
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../../../shaders/deoglShaderProgram.h"
+#include "../../../shadow/deoglShadowMapper.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -94,6 +95,8 @@ void deoglRPTSkyLightBuildRT::Run(){
 	lodCalculator.SetMaxPixelError(2);
 	
 	try{
+		const bool useDitherShadow = deoglShadowMapper::UseShadowDither(
+			pPlan.GetPlan().GetRenderThread().GetConfiguration());
 		const deoglPipeline * const pipeline = pPlan.GetPlan().GetRenderThread().
 			GetRenderers().GetLight().GetRenderLightSky().GetPipelineOccMesh();
 		decTimer timer;
@@ -112,6 +115,7 @@ void deoglRPTSkyLightBuildRT::Run(){
 			layer.renderTask->Clear();
 			
 			addToRenderTask.SetSolid(true);
+			addToRenderTask.SetFilterSolid(!useDitherShadow);
 			addToRenderTask.SetNoShadowNone(true);
 			addToRenderTask.SetForceDoubleSided(true);
 			addToRenderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etShadowOrthogonal);

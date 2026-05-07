@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
 
 pin Dragengine.Gui
@@ -38,30 +37,30 @@ pin Dragengine.Scenery
  */
 class ScreenshotCreator
 	/** \brief Directory to store screenshots into including path delimiter. */
-	private var String pPath
+	var String pPath
 	
 	/** 
 	 * \brief File name prefix.
 	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
 	 */
-	private var String pPrefix
+	var String pPrefix
 	
 	/**
 	 * \brief File name suffix including file pattern.
 	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
 	 */
-	private var String pSuffix
+	var String pSuffix
 	
 	/** \brief Console to log finished screenshots to or \em null to not use. */
-	private var Console pConsole
+	var Console pConsole
 	
 	/** \brief Capture canvas for render window. */
-	private var CaptureCanvas pCaptureCanvas
+	var CaptureCanvas pCaptureCanvas
 	
 	/** \brief Capture pending. */
-	private var bool pCapturePending
+	var bool pCapturePending
 	
-	private var int pNextNumber
+	var int pNextNumber
 	
 	
 	/**
@@ -71,45 +70,44 @@ class ScreenshotCreator
 	 *          - prefix: 'screenshot-'
 	 *          - suffix: '.png'.
 	 */
-	public func new()
-		this.pPath = "/capture/"
-		this.pPrefix = "screenshot-"
-		this.pSuffix = ".png"
-		this.pCapturePending = false
-		this.pNextNumber = 1
+	func new()
+		pPath = "/capture/"
+		pPrefix = "screenshot-"
+		pSuffix = ".png"
+		pNextNumber = 1
 		
-		this.pCaptureCanvas = CaptureCanvas.new()
-		this.pCaptureCanvas.setCanvasView( GraphicSystem.getPrimaryCanvas() )
+		pCaptureCanvas = CaptureCanvas.new()
+		pCaptureCanvas.setCanvasView(GraphicSystem.getPrimaryCanvas())
 	end
 	
 	/**
 	 * \brief Dispose of held resources.
 	 * \details Call this before exiting your game for proper cleaning up.
 	 */
-	public func void dispose()
-		this.pCaptureCanvas = null
-		this.pConsole = null
+	func void dispose()
+		pCaptureCanvas = null
+		pConsole = null
 	end
 	
 	
 	
 	/** \brief Directory to store screenshots into including path delimiter. */
-	public func String getPath()
-		return this.pPath
+	func String getPath()
+		return pPath
 	end
 	
 	/**
 	 * \brief Set directory to store screenshots into
 	 * \details A trailing path separator will be added if missing.
 	 */
-	public func void setPath( String path )
+	func void setPath(String path)
 		if path == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPath = path
-		if this.pPath.empty() or this.pPath.getAt( this.pPath.getLength() - 1 ) != '/'
-			this.pPath = this.pPath + "/"
+		pPath = path
+		if pPath.empty() or pPath.getAt(pPath.getLength() - 1) != '/'
+			pPath = pPath + "/"
 		end
 	end
 	
@@ -117,50 +115,50 @@ class ScreenshotCreator
 	 * \brief File name prefix.
 	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
 	 */
-	public func String getPrefix()
-		return this.pPrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	/** 
 	 * \brief Set file name prefix.
 	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
 	 */
-	public func void setPrefix( String prefix )
+	func void setPrefix(String prefix)
 		if prefix == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPrefix = prefix
+		pPrefix = prefix
 	end
 	
 	/**
 	 * \brief File name suffix including file pattern.
 	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
 	 */
-	public func String getSuffix()
-		return this.pSuffix
+	func String getSuffix()
+		return pSuffix
 	end
 	
 	/**
 	 * \brief Set file name suffix including file pattern.
 	 * \details Used filename will be \code <prefix>date-time<suffix> \endcode.
 	 */
-	public func void setSuffix( String suffix )
+	func void setSuffix(String suffix)
 		if suffix == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pSuffix = suffix
+		pSuffix = suffix
 	end
 	
 	/** \brief Console to log finished screenshots to or \em null to not use. */
-	public func Console getConsole()
-		return this.pConsole
+	func Console getConsole()
+		return pConsole
 	end
 	
 	/** \brief Set console to log finished screenshots to or \em null to not use. */
-	public func void setConsole( Console console )
-		this.pConsole = console
+	func void setConsole(Console console)
+		pConsole = console
 	end
 	
 	
@@ -169,26 +167,26 @@ class ScreenshotCreator
 	 * \brief Update screenshot maker.
 	 * \details Call this during your game loop. Best is to call it towards the end.
 	 */
-	public func void update()
-		if not this.pCapturePending
+	func void update()
+		if not pCapturePending
 			return
 		end
 		
-		if this.pCaptureCanvas.getCapture()
+		if pCaptureCanvas.getCapture()
 			return
 		end
 		
-		this.pCapturePending = false
+		pCapturePending = false
 		
-		var String filename = this.pPath + this.pPrefix + this.pNextNumber + this.pSuffix
-		this.pNextNumber++
+		var String filename = pPath + pPrefix + pNextNumber + pSuffix
+		pNextNumber++
 		
-		var Image image = this.pCaptureCanvas.getImage()
-		this.pCaptureCanvas.dropImage()
+		var Image image = pCaptureCanvas.getImage()
+		pCaptureCanvas.dropImage()
 		
-		image.saveToFile( filename )
+		image.saveToFile(filename)
 		
-		this.screenshotFinished( filename )
+		screenshotFinished(filename)
 	end
 	
 	/**
@@ -199,15 +197,16 @@ class ScreenshotCreator
 	 *          be active at the same time. If a request is still pending the request
 	 *          is ignored.
 	 */
-	public func void takeScreenshot()
-		if this.pCapturePending
+	func void takeScreenshot()
+		if pCapturePending
 			return
 		end
 		
-		this.pCaptureCanvas.setImage( GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight(), 3, 8 )
-		this.pCaptureCanvas.setCapture( true )
+		var Point size = GraphicSystem.getWindowRealSize()
+		pCaptureCanvas.setImage(size.getX(), size.getY(), 3, 8)
+		pCaptureCanvas.setCapture(true)
 		
-		this.pCapturePending = true
+		pCapturePending = true
 	end
 	
 	
@@ -216,13 +215,13 @@ class ScreenshotCreator
 	 * \brief Screenshot finished.
 	 * \details Default implementation logs to the console if not \em null.
 	 */
-	public func void screenshotFinished( String filename )
-		if this.pConsole == null
+	func void screenshotFinished(String filename)
+		if pConsole == null
 			BehaviorElementClass.sharedFactoryHelper.defaultConsole().\
 				addMessage("Screenshot saved to " + filename)
 			
 		else
-			this.pConsole.addMessage( "Screenshot saved to " + filename )
+			pConsole.addMessage("Screenshot saved to " + filename)
 		end
 	end
 end

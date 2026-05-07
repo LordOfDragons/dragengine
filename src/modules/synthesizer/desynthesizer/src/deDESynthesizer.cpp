@@ -33,6 +33,7 @@
 #include "buffer/desynSharedBufferList.h"
 #include "sound/desynDecodeBuffer.h"
 #include "sound/desynSound.h"
+#include "sound/desynAudioAnalyzer.h"
 #include "synthesizer/desynSynthesizer.h"
 #include "synthesizer/desynSynthesizerInstance.h"
 
@@ -172,6 +173,11 @@ deBaseSynthesizerSynthesizer *deDESynthesizer::CreateSynthesizer(deSynthesizer *
 deBaseSynthesizerSynthesizerInstance *deDESynthesizer::CreateSynthesizerInstance(
 deSynthesizerInstance *instance){
 	return new desynSynthesizerInstance(*this, *instance);
+}
+
+deTUniqueReference<deBaseSynthesizerAudioAnalyzer> deDESynthesizer::CreateAudioAnalyzer(
+deAudioAnalyzer *analyzer){
+	return deTUniqueReference<desynAudioAnalyzer>::New(*this, *analyzer);
 }
 
 

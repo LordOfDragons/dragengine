@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -335,7 +335,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
@@ -365,7 +365,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
@@ -395,7 +395,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
@@ -425,7 +425,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
@@ -455,7 +455,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>Shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shcore.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\dragengine\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
@@ -470,6 +470,8 @@
     <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\app\wayland\deWaylandHelper.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\app\wayland\xdg-output-protocol.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.cpp" />
@@ -857,6 +859,9 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioCaptureListener.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophone.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSound.cpp" />
@@ -1022,6 +1027,7 @@
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundDecoder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundInfo.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerAudioAnalyzer.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSound.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizer.cpp" />
@@ -1048,6 +1054,8 @@
     <ClInclude Include="..\..\src\dragengine\src\app\deOS.h" />
     <ClInclude Include="..\..\src\dragengine\src\app\deOSWindows.h" />
     <ClInclude Include="..\..\src\dragengine\src\app\include_windows.h" />
+    <ClInclude Include="..\..\src\dragengine\src\app\wayland\deWaylandHelper.h" />
+    <ClInclude Include="..\..\src\dragengine\src\app\wayland\xdg-output-protocol.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decGlobalFunctions_safe.h" />
@@ -1453,6 +1461,9 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioCaptureListener.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophone.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSound.h" />
@@ -1618,6 +1629,7 @@
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundDecoder.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundInfo.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerAudioAnalyzer.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSound.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizer.h" />

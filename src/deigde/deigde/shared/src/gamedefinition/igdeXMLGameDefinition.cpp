@@ -457,6 +457,12 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 		}else if(tagName == "animator"){
 			component->SetAnimatorPath(GetCDataString(*tag));
 			
+		}else if(tagName == "animation"){
+			component->SetAnimationPath(GetCDataString(*tag));
+			
+		}else if(tagName == "move"){
+			component->SetMove(GetCDataString(*tag));
+			
 		}else if(tagName == "occlusionMesh"){
 			component->SetOcclusionMeshPath(GetCDataString(*tag));
 			
@@ -499,6 +505,9 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 			
 		}else if(tagName == "affectsAudio"){
 			component->SetAffectsAudio(GetCDataBool(*tag));
+			
+		}else if(tagName == "enableGI"){
+			component->SetEnableGI(GetCDataBool(*tag));
 			
 		}else if(tagName == "lightShadowIgnore"){
 			component->SetLightShadowIgnore(GetCDataBool(*tag));
@@ -548,6 +557,9 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 				
 			}else if(strcmp(value, "affectsAudio") == 0){
 				component->SetPropertyName(igdeGDCComponent::epAffectsAudio, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "enableGI") == 0){
+				component->SetPropertyName(igdeGDCComponent::epEnableGI, GetAttributeString(*tag, "property"));
 				
 			}else if(strcmp(value, "attachPosition") == 0){
 				component->SetPropertyName(igdeGDCComponent::epAttachPosition, GetAttributeString(*tag, "property"));

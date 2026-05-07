@@ -44,6 +44,7 @@ pDoNotScale(false),
 pStatic(true),
 pRenderEnvMap(true),
 pAffectsAudio(true),
+pEnableGI(true),
 pPartialHide(false),
 pAttachTarget(true),
 pLightShadowIgnore(false),
@@ -64,6 +65,7 @@ pDoNotScale(component.pDoNotScale),
 pStatic(component.pStatic),
 pRenderEnvMap(component.pRenderEnvMap),
 pAffectsAudio(component.pAffectsAudio),
+pEnableGI(component.pEnableGI),
 pPartialHide(component.pPartialHide),
 pAttachTarget(component.pAttachTarget),
 pLightShadowIgnore(component.pLightShadowIgnore),
@@ -162,6 +164,10 @@ void gdeOCComponent::SetRenderEnvMap(bool renderEnvMap){
 
 void gdeOCComponent::SetAffectsAudio(bool affectsAudio){
 	pAffectsAudio = affectsAudio;
+}
+
+void gdeOCComponent::SetEnableGI(bool enableGI){
+	pEnableGI = enableGI;
 }
 
 void gdeOCComponent::SetLightShadowIgnore(bool lightShadowIgnore){

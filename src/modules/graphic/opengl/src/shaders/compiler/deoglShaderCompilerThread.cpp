@@ -55,9 +55,6 @@ pType(type),
 pCompiler(nullptr),
 pExitThread(false),
 pState(State::prepare)
-#ifdef OS_UNIX_X11
-, pDisplay(None)
-#endif
 {
 	const char *typeName;
 	switch(type){
@@ -133,104 +130,14 @@ void deoglShaderCompilerThread::pCleanUp(){
 	if(pCompiler){
 		delete pCompiler;
 	}
-	
-#ifdef OS_ANDROID
-	eglMakeCurrent(pLanguage.GetRenderThread().GetContext().GetDisplay(),
-		EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-	
-#elif defined OS_WEBWASM
-	emscripten_webgl_make_context_current(0);
-	
-#elif defined OS_MACOS
-	pGLContextMakeCurrent(nullptr);
-	
-#elif defined OS_W32
-	wglMakeCurrent(NULL, NULL);
-	
-#elif defined OS_UNIX_X11
-	if(pDisplay){
-		glXMakeCurrent(pDisplay, None, nullptr);
-		XCloseDisplay(pDisplay);
+	if(pContextIndex > -1){
+		pLanguage.GetRenderThread().GetContext().GetBackend()->DeactivateCompileContext(pContextIndex);
 	}
-	// glXMakeCurrent(pLanguage.GetRenderThread().GetContext().GetDisplay(), None, nullptr);
-#endif
 }
 
 void deoglShaderCompilerThread::pActivateContext(){
 	if(pContextIndex > -1){
-#ifdef OS_WEBWASM
-		deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
-#elif ! defined OS_BEOS
-		const deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
-#endif
-		
-#ifdef OS_ANDROID
-		DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(),
-			context.GetCompileSurfaceAt(pContextIndex),
-			context.GetCompileSurfaceAt(pContextIndex),
-			context.GetCompileContextAt(pContextIndex)) == EGL_TRUE)
-		
-#elif defined OS_WEBWASM
-		DEASSERT_TRUE(emscripten_webgl_make_context_current(
-			context.GetCompileContextAt(pContextIndex)) == EMSCRIPTEN_RESULT_SUCCESS)
-		
-#elif defined OS_MACOS
-		DETHROW_INFO(deeInvalidAction, "how to do this?")
-		//pGLContextMakeCurrent(context.GetActiveRRenderWindow()->GetView());
-			
-#elif defined OS_W32
-		// on windows make current can randomly fail at times. in this case
-		// retry the make current call after a short wait to see if it fixes
-		// itself. if this goes on for too lang call it quits
-		const int retryCounterMax = 10;
-		const int retryDelayMs = 100;
-		int retryCounter;
-
-		for(retryCounter=0; retryCounter<retryCounterMax; retryCounter++){
-			if(wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(),
-			context.GetCompileContextAt(pContextIndex))){
-				if(retryCounter > 0){
-					pLanguage.GetRenderThread().GetLogger().LogErrorFormat(
-						"wglMakeCurrent recovered (%s:%i)[%d]: counter=%d\n",
-						__FILE__, __LINE__, pContextIndex, retryCounter);
-				}
-				break;
-			}
-
-			pLanguage.GetRenderThread().GetLogger().LogErrorFormat(
-				"wglMakeCurrent failed (%s:%i)[%d]: error=0x%lx, counter=%d\n",
-				__FILE__, __LINE__, pContextIndex, GetLastError(), retryCounter);
-
-			SleepEx(retryDelayMs, false);
-		}
-
-		if(retryCounter == retryCounterMax){
-			DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
-		}
-
-#elif defined OS_UNIX_X11
-		// on nVidia there can be strange segfaults if using context display connection.
-		// to be on the safe side use a unique display connection.
-		const char *dispName = getenv("DISPLAY");
-		if(!dispName){
-			dispName = "";
-		}
-		pDisplay = XOpenDisplay(dispName);
-		DEASSERT_NOTNULL(pDisplay)
-
-		// on nVidia if glXMakeCurrent fails and glGetError is called this can cause a segfault.
-		// as a work around for this problem use the return code instead.
-		DEASSERT_TRUE(glXMakeCurrent(/*context.GetDisplay()*/ pDisplay,
-			context.GetActiveRRenderWindow()->GetWindow(),
-			context.GetCompileContextAt(pContextIndex)))
-
-		/*
-		OGL_CHECK_WRTC(pLanguage.GetRenderThread(), pContextIndex == -1,
-			glXMakeCurrent(context.GetDisplay(),
-			context.GetActiveRRenderWindow()->GetWindow(),
-			context.GetCompileContextAt(pContextIndex)));
-		*/
-#endif
+		pLanguage.GetRenderThread().GetContext().GetBackend()->ActivateCompileContext(pContextIndex);
 	}
 	
 #ifdef OS_BEOS

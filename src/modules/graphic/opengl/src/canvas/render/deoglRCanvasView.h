@@ -96,12 +96,12 @@ public:
 		int componentCount, int bitCount);
 	
 	/** Render render target if dirty. */
-	void RenderRenderTarget(const deoglRenderPlanMasked *renderPlanMask);
+	void RenderRenderTarget(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput);
 	
 	
 	
 	/** Prepare for rendering. */
-	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput) override;
 	
 	/** Prepare for rendering render. */
 	void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask) override;

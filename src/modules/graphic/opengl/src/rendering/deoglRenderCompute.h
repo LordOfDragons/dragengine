@@ -63,6 +63,7 @@ private:
 	const deoglPipeline *pPipelineUpdateCullResultSet;
 	const deoglPipeline *pPipelineUpdateCullResultSetOcclusion;
 	const deoglPipeline *pPipelineUpdateCullResultClear;
+	const deoglPipeline *pPipelineUpdateCullResultForceCulled;
 	const deoglPipeline *pPipelineBuildRenderTask;
 	const deoglPipeline *pPipelineBuildRenderTaskOcclusion;
 	const deoglPipeline *pPipelineSortRenderTask;

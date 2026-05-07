@@ -169,7 +169,8 @@ packages required to build the game engine using as many system libraries as pos
         portaudio19-dev, libxft-dev, libjpeg-dev, libopenal-dev libogg-dev \
         libvorbis-dev libtheora-dev libhidapi-dev libopenhmd-dev patchelf \
         libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev libvpx-dev \
-        libopenvr-dev glslang-tools libfreetype-dev
+        libopenvr-dev glslang-tools libfreetype-dev libxkbcommon-dev \
+        libwayland-dev
 
 For Arch based distros using this command line installs all packages required to build
 the game engine using as many system libraries as possible:

@@ -101,8 +101,61 @@ void deoglCaptureCanvas::SyncToRender(){
 	if(pCapturePending){
 		if(!pRCaptureCanvas->GetCapturePending()){
 			if(image->GetData()){ // in case the user forgot to retain the image data
-				deoglPixelBuffer &pixelBuffer = *pRCaptureCanvas->GetPixelBuffer();
-				memcpy(image->GetData(), pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
+				deoglPixelBuffer &pbuf = pRCaptureCanvas->GetPixelBuffer();
+				
+				if(image->GetBitCount() == 8 || image->GetBitCount() == 32){
+					memcpy(image->GetData(), pbuf.GetPointer(), pbuf.GetImageSize());
+					
+				}else{
+					// 16-bit can not be directly copied since the pixel buffer stores floats
+					auto funcConvert = [](float value){
+						return (unsigned short)decMath::clamp((int)(value * 65535.0f), 0, 65535);
+					};
+					
+					const int pixCount = image->GetWidth() * image->GetHeight() * image->GetDepth();
+					int i;
+					
+					switch(image->GetComponentCount()){
+					case 1:{
+						const deoglPixelBuffer::sFloat1 * const srcData = pbuf.GetPointerFloat1();
+						sGrayscale16 * const destData = image->GetDataGrayscale16();
+						for(i=0; i<pixCount; i++){
+							destData[i].value = funcConvert(srcData[i].r);
+						}
+						}break;
+						
+					case 2:{
+						const deoglPixelBuffer::sFloat2 * const srcData = pbuf.GetPointerFloat2();
+						sGrayscaleAlpha16 * const destData = image->GetDataGrayscaleAlpha16();
+						for(i=0; i<pixCount; i++){
+							destData[i].value = funcConvert(srcData[i].r);
+							destData[i].alpha = funcConvert(srcData[i].g);
+						}
+						}break;
+						
+					case 3:{
+						const deoglPixelBuffer::sFloat3 * const srcData = pbuf.GetPointerFloat3();
+						sRGB16 * const destData = image->GetDataRGB16();
+						for(i=0; i<pixCount; i++){
+							destData[i].red = funcConvert(srcData[i].r);
+							destData[i].green = funcConvert(srcData[i].g);
+							destData[i].blue = funcConvert(srcData[i].b);
+						}
+						}break;
+						
+					case 4:{
+						const deoglPixelBuffer::sFloat4 * const srcData = pbuf.GetPointerFloat4();
+						sRGBA16 * const destData = image->GetDataRGBA16();
+						for(i=0; i<pixCount; i++){
+							destData[i].red = funcConvert(srcData[i].r);
+							destData[i].green = funcConvert(srcData[i].g);
+							destData[i].blue = funcConvert(srcData[i].b);
+							destData[i].alpha = funcConvert(srcData[i].a);
+						}
+						}break;
+					}
+				}
+				
 				image->NotifyImageDataChanged();
 			}
 			

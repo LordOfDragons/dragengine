@@ -159,4 +159,16 @@ abstract class DefaultBehaviorFactory implements BehaviorFactory
 	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActorFor(String value)
 		return pHelper.playerControlledActor(value)
 	end
+	
+	
+	/**
+	 * \brief Assert id is empty string.
+	 * \throws EInvalidParam if id is not empty string.
+	 * \version 1.32
+	 */
+	func void assertIdEmpty(String id)
+		if not id.empty()
+			throw EInvalidParam.new("id is not empty")
+		end
+	end
 end

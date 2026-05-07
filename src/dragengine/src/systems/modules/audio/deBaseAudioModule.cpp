@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
 #include "deBaseAudioModule.h"
-
+#include "../../../common/exceptions.h"
 
 
 // Class deBaseAudioModule
@@ -44,4 +43,29 @@ deBaseAudioModule::~deBaseAudioModule(){
 
 int deBaseAudioModule::GetFPSRate(){
 	return 0;
+}
+
+
+bool deBaseAudioModule::CanCaptureAudio() const{
+	return false;
+}
+
+void deBaseAudioModule::StartAudioCapture(){
+	DETHROW(deeInvalidAction);
+}
+
+void deBaseAudioModule::StopAudioCapture(){
+	DETHROW(deeInvalidAction);
+}
+
+bool deBaseAudioModule::IsCapturingAudio() const{
+	return false;
+}
+
+void deBaseAudioModule::GetAudioCaptureFormat(deAudioSystem::AudioCaptureFormat &format) const{
+	format = {};
+}
+
+void deBaseAudioModule::GetAudioCaptureLevels(deAudioSystem::AudioCaptureLevels &levels) const{
+	levels = {};
 }

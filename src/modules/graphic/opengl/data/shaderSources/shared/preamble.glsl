@@ -231,6 +231,8 @@ layout(constant_id=166) const bool NestedLoop = false;
 layout(constant_id=167) const bool WithToneMapCurve = false;
 layout(constant_id=168) const bool SampleStereo = false;
 layout(constant_id=169) const bool WithReflection = false;
+layout(constant_id=170) const bool WithDitherTransparency = false;
+layout(constant_id=171) const bool HdrOutput = false;
 
 
 // OpenGL

@@ -53,6 +53,7 @@
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleAttachTarget.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleRenderEnvMap.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleAffectsAudio.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentToggleEnableGI.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleLightShadowIgnore.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleStatic.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPlaybackController.h"
@@ -432,6 +433,19 @@ public:
 	
 	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
 		return gdeUOCComponentToggleAffectsAudio::Ref::New(objectClass, component);
+	}
+	
+	void Update() override{/* empty on purpose!*/}
+};
+
+class cActionEnableGI : public cBaseAction{
+public:
+	typedef deTObjectReference<cActionEnableGI> Ref;
+	cActionEnableGI(gdeWPSOCComponent &panel) : cBaseAction(panel, "@GameDefinition.WPSOCComponent.EnableGI",
+		"@GameDefinition.WPSOCComponent.EnableGI.ToolTip"){}
+	
+	virtual igdeUndo::Ref OnActionComponent(gdeObjectClass *objectClass, gdeOCComponent *component){
+		return gdeUOCComponentToggleEnableGI::Ref::New(objectClass, component);
 	}
 	
 	void Update() override{/* empty on purpose!*/}
@@ -1055,6 +1069,7 @@ pDirtyEngModelTexNames(true)
 	helper.CheckBox(groupBox, pChkAttachTarget, cActionAttachTarget::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkRenderEnvMap, cActionRenderEnvMap::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkAffectsAudio, cActionAffectsAudio::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableGI, cActionEnableGI::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkLightShadowIgnore, cActionLightShadowIgnore::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkStatic, cActionStatic::Ref::New(*this));
 	
@@ -1075,6 +1090,7 @@ pDirtyEngModelTexNames(true)
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAudioModel", nullptr, (void*)(intptr_t)gdeOCComponent::epAudioModel);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyRenderEnvMap", nullptr, (void*)(intptr_t)gdeOCComponent::epRenderEnvMap);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAffectsAudio", nullptr, (void*)(intptr_t)gdeOCComponent::epAffectsAudio);
+	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyEnableGI", nullptr, (void*)(intptr_t)gdeOCComponent::epEnableGI);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyLightShadowIgnore", nullptr, (void*)(intptr_t)gdeOCComponent::epLightShadowIgnore);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAttachPosition", nullptr,  (void*)(intptr_t)gdeOCComponent::epAttachPosition);
 	pCBPropertyNames->AddItem("@GameDefinition.PanelOCComponent.PropertyAttachRotation", nullptr, (void*)(intptr_t)gdeOCComponent::epAttachRotation);
@@ -1256,6 +1272,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pChkStatic->SetChecked(component->GetStatic());
 		pChkRenderEnvMap->SetChecked(component->GetRenderEnvMap());
 		pChkAffectsAudio->SetChecked(component->GetAffectsAudio());
+		pChkEnableGI->SetChecked(component->GetEnableGI());
 		pChkLightShadowIgnore->SetChecked(component->GetLightShadowIgnore());
 		pChkPartialHide->SetChecked(component->GetPartialHide());
 		pChkAttachTarget->SetChecked(component->GetAttachTarget());
@@ -1281,6 +1298,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pChkStatic->SetChecked(false);
 		pChkRenderEnvMap->SetChecked(false);
 		pChkAffectsAudio->SetChecked(false);
+		pChkEnableGI->SetChecked(false);
 		pChkLightShadowIgnore->SetChecked(false);
 		pChkPartialHide->SetChecked(false);
 		pChkAttachTarget->SetChecked(false);
@@ -1306,6 +1324,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 	pChkStatic->SetEnabled(enabled);
 	pChkRenderEnvMap->SetEnabled(enabled);
 	pChkAffectsAudio->SetEnabled(enabled);
+	pChkEnableGI->SetEnabled(enabled);
 	pChkLightShadowIgnore->SetEnabled(enabled);
 	pChkPartialHide->SetEnabled(enabled);
 	pChkAttachTarget->SetEnabled(enabled);

@@ -569,6 +569,20 @@ void igdeBaseXML::WriteColor4(decXmlWriter &writer, const char *name, const decC
 	writer.WriteOpeningTagEnd(true);
 }
 
+void igdeBaseXML::WritePoint(decXmlWriter &writer, const char *name, const decPoint &point){
+	writer.WriteOpeningTagStart(name);
+	writer.WriteAttributeInt("x", point.x);
+	writer.WriteAttributeInt("y", point.y);
+	writer.WriteOpeningTagEnd(true);
+}
+
+void igdeBaseXML::WritePoint3(decXmlWriter &writer, const char *name, const decPoint3 &point){
+	writer.WriteOpeningTagStart(name);
+	writer.WriteAttributeInt("x", point.x);
+	writer.WriteAttributeInt("y", point.y);
+	writer.WriteAttributeInt("z", point.z);
+	writer.WriteOpeningTagEnd(true);
+}
 
 
 void igdeBaseXML::LogWarnUnknownTag(const decXmlElementTag &root, const decXmlElementTag &tag){

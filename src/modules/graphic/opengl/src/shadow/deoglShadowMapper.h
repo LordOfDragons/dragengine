@@ -287,7 +287,9 @@ public:
 	
 	/** Shadow cube size from configuration shadow quality. */
 	static int ShadowCubeSize(const deoglConfiguration &config);
-	/*@}*/
+	
+	/** Use shadow dither from configuration shadow quality. */
+	static bool UseShadowDither(const deoglConfiguration &config);
 	
 	
 	

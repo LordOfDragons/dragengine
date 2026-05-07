@@ -59,6 +59,7 @@
 #include "../../../../gui/gdeWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -420,90 +421,53 @@ void gdeWPSTIMObjectClass::SelectBestMatching(const char *string){
 //////////////////////
 
 void gdeWPSTIMObjectClass::pAddSubObjects(){
-	igdeTreeItem::Ref item;
-	int i;
+	auto &tree = GetTree();
 	
-	const gdeOCBillboard::List &billboards = pObjectClass->GetBillboards();
-	const int billboardCount = billboards.GetCount();
-	for(i=0; i<billboardCount; i++){
-		item = gdeWPSTIMOCBillboard::Ref::New(GetTree(), pObjectClass, billboards.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetBillboards().VisitIndexed([&](int index, gdeOCBillboard *billboard){
+		AppendModel(gdeWPSTIMOCBillboard::Ref::New(tree, pObjectClass, billboard, index));
+	});
 	
-	const gdeOCCamera::List &cameras = pObjectClass->GetCameras();
-	const int cameraCount = cameras.GetCount();
-	for(i=0; i<cameraCount; i++){
-		item = gdeWPSTIMOCCamera::Ref::New(GetTree(), pObjectClass, cameras.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetCameras().VisitIndexed([&](int index, gdeOCCamera *camera){
+		AppendModel(gdeWPSTIMOCCamera::Ref::New(tree, pObjectClass, camera, index));
+	});
 	
-	const gdeOCComponent::List &components = pObjectClass->GetComponents();
-	const int componentCount = components.GetCount();
-	for(i=0; i<componentCount; i++){
-		item = gdeWPSTIMOCComponent::Ref::New(GetTree(), pObjectClass, components.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetComponents().VisitIndexed([&](int index, gdeOCComponent *component){
+		AppendModel(gdeWPSTIMOCComponent::Ref::New(tree, pObjectClass, component, index));
+	});
 	
-	const gdeOCEnvMapProbe::List &envMapProbes = pObjectClass->GetEnvMapProbes();
-	const int envMapProbeCount = envMapProbes.GetCount();
-	for(i=0; i<envMapProbeCount; i++){
-		item = gdeWPSTIMOCEnvMapProbe::Ref::New(GetTree(), pObjectClass, envMapProbes.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetEnvMapProbes().VisitIndexed([&](int index, gdeOCEnvMapProbe *envMapProbe){
+		AppendModel(gdeWPSTIMOCEnvMapProbe::Ref::New(tree, pObjectClass, envMapProbe, index));
+	});
 	
-	const gdeOCLight::List &lights = pObjectClass->GetLights();
-	const int lightCount = lights.GetCount();
-	for(i=0; i<lightCount; i++){
-		item = gdeWPSTIMOCLight::Ref::New(GetTree(), pObjectClass, lights.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetLights().VisitIndexed([&](int index, gdeOCLight *light){
+		AppendModel(gdeWPSTIMOCLight::Ref::New(tree, pObjectClass, light, index));
+	});
 	
-	const gdeOCNavigationBlocker::List &navBlockers = pObjectClass->GetNavigationBlockers();
-	const int navBlockerCount = navBlockers.GetCount();
-	for(i=0; i<navBlockerCount; i++){
-		item = gdeWPSTIMOCNavBlocker::Ref::New(GetTree(), pObjectClass, navBlockers.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetNavigationBlockers().VisitIndexed([&](int index, gdeOCNavigationBlocker *navBlocker){
+		AppendModel(gdeWPSTIMOCNavBlocker::Ref::New(tree, pObjectClass, navBlocker, index));
+	});
 	
-	const gdeOCNavigationSpace::List &navSpaces = pObjectClass->GetNavigationSpaces();
-	const int navSpaceCount = navSpaces.GetCount();
-	for(i=0; i<navSpaceCount; i++){
-		item = gdeWPSTIMOCNavSpace::Ref::New(GetTree(), pObjectClass, navSpaces.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetNavigationSpaces().VisitIndexed([&](int index, gdeOCNavigationSpace *navSpace){
+		AppendModel(gdeWPSTIMOCNavSpace::Ref::New(tree, pObjectClass, navSpace, index));
+	});
 	
-	const gdeOCParticleEmitter::List &particleEmitters = pObjectClass->GetParticleEmitters();
-	const int particleEmitterCount = particleEmitters.GetCount();
-	for(i=0; i<particleEmitterCount; i++){
-		item = gdeWPSTIMOCParticleEmitter::Ref::New(GetTree(), pObjectClass, particleEmitters.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetParticleEmitters().VisitIndexed([&](int index, gdeOCParticleEmitter *particleEmitter){
+		AppendModel(gdeWPSTIMOCParticleEmitter::Ref::New(tree, pObjectClass, particleEmitter, index));
+	});
 	
-	const gdeOCForceField::List &forceFields = pObjectClass->GetForceFields();
-	const int forceFieldCount = forceFields.GetCount();
-	for(i=0; i<forceFieldCount; i++){
-		item = gdeWPSTIMOCForceField::Ref::New(GetTree(), pObjectClass, forceFields.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetForceFields().VisitIndexed([&](int index, gdeOCForceField *forceField){
+		AppendModel(gdeWPSTIMOCForceField::Ref::New(tree, pObjectClass, forceField, index));
+	});
 	
-	const gdeOCSnapPoint::List &snapPoints = pObjectClass->GetSnapPoints();
-	const int snapPointCount = snapPoints.GetCount();
-	for(i=0; i<snapPointCount; i++){
-		item = gdeWPSTIMOCSnapPoint::Ref::New(GetTree(), pObjectClass, snapPoints.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetSnapPoints().VisitIndexed([&](int index, gdeOCSnapPoint *snapPoint){
+		AppendModel(gdeWPSTIMOCSnapPoint::Ref::New(tree, pObjectClass, snapPoint, index));
+	});
 	
-	const gdeOCSpeaker::List &speakers = pObjectClass->GetSpeakers();
-	const int speakerCount = speakers.GetCount();
-	for(i=0; i<speakerCount; i++){
-		item = gdeWPSTIMOCSpeaker::Ref::New(GetTree(), pObjectClass, speakers.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetSpeakers().VisitIndexed([&](int index, gdeOCSpeaker *speaker){
+		AppendModel(gdeWPSTIMOCSpeaker::Ref::New(tree, pObjectClass, speaker, index));
+	});
 	
-	const gdeOCWorld::List &worlds = pObjectClass->GetWorlds();
-	const int worldCount = worlds.GetCount();
-	for(i=0; i<worldCount; i++){
-		item = gdeWPSTIMOCWorld::Ref::New(GetTree(), pObjectClass, worlds.GetAt(i), i);
-		AppendModel(item);
-	}
+	pObjectClass->GetWorlds().VisitIndexed([&](int index, gdeOCWorld *world){
+		AppendModel(gdeWPSTIMOCWorld::Ref::New(tree, pObjectClass, world, index));
+	});
 }

@@ -34,7 +34,7 @@
  * Supports operating systems or configurations only exposing a text console
  * without any graphics support.
  */
-class deOSConsole : public deOS{
+class DE_DLL_EXPORT deOSConsole : public deOS{
 private:
 	int pScreenWidth;
 	int pScreenHeight;

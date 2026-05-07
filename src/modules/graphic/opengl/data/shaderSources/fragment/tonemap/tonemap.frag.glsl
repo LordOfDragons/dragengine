@@ -9,6 +9,7 @@ precision HIGHP int;
 
 UNIFORM_BIND(3) uniform vec4 pTCBloomTransform;
 UNIFORM_BIND(4) uniform vec2 pTCBloomClamp;
+UNIFORM_BIND(5) uniform vec3 pHdrNits; // x=maxNits, y=refWhiteNits, z=whiteIntensity
 
 layout(binding=0) uniform mediump sampler2DArray texColor;
 layout(binding=1) uniform HIGHP sampler2D texToneMapParams;
@@ -23,8 +24,8 @@ layout(location=0) out vec4 outColor;
 
 const float epsilon = 0.0001;
 const ivec2 tcParams = ivec2( 0, 0 );
-const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
-//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
+const vec3 lumiFactors = vec3(0.2125, 0.7154, 0.0721);
+//const vec3 lumiFactors = vec3(0.3086, 0.6094, 0.0820); // nVidia
 
 float uchimura(float x, float P, float a, float m, float l, float c, float b) {
 	// Uchimura 2017, "HDR theory and practice"
@@ -93,6 +94,26 @@ float uchimura(float x) {
 	return uchimura(x, P, a, m, l, c, b);
 }
 
+float uchimuraHdr(float x){
+	/*
+	VARCONST float P = pHdrNits.x;
+	VARCONST float a = 1.1;
+	VARCONST float m = 0.08;
+	VARCONST float l = 0.2;
+	VARCONST float c = 1.3;
+	VARCONST float b = 0.0;
+	*/
+	
+	VARCONST float P = pHdrNits.x;
+	VARCONST float a = 1.0;
+	VARCONST float m = 0.1;
+	VARCONST float l = 0.4;
+	VARCONST float c = 1.3;
+	VARCONST float b = 0.0;
+	
+	return uchimura(x, P, a, m, l, c, b);
+}
+
 void main( void ){
 	ivec3 tc = ivec3(gl_FragCoord.xy, vLayer);
 	
@@ -118,18 +139,7 @@ void main( void ){
 	// uchimura, applied per channel
 	color.rgb *= params.g;
 	
-	outColor.a = color.a;
-	
-	if(WithToneMapCurve){
-		outColor.r = texture(texToneMapCurve, vec2(color.r, 0.0)).r;
-		outColor.g = texture(texToneMapCurve, vec2(color.g, 0.0)).r;
-		outColor.b = texture(texToneMapCurve, vec2(color.b, 0.0)).r;
-		
-	}else{
-		outColor.r = uchimura(color.r);
-		outColor.g = uchimura(color.g);
-		outColor.b = uchimura(color.b);
-	}
+	outColor = color;
 	
 	// bloom
 	outColor.rgb += textureLod(texBloom, vec3(tcBloom, vLayer), 0.0).rgb * vec3(pToneMapBloomBlend);
@@ -139,4 +149,42 @@ void main( void ){
 	//      to add burning out the blacks which is annoying. the tone map operator should
 	//      provide a balance output. if an artist wants burning out blacks he should do
 	//      so after the tone mapping is done (still float buffer)
+	
+	if(WithToneMapCurve){
+		outColor.r = texture(texToneMapCurve, vec2(outColor.r, 0.0)).r;
+		outColor.g = texture(texToneMapCurve, vec2(outColor.g, 0.0)).r;
+		outColor.b = texture(texToneMapCurve, vec2(outColor.b, 0.0)).r;
+		
+	}else{
+		if(HdrOutput){
+			outColor.r = uchimuraHdr(outColor.r);
+			outColor.g = uchimuraHdr(outColor.g);
+			outColor.b = uchimuraHdr(outColor.b);
+			
+		}else{
+			outColor.r = uchimura(outColor.r);
+			outColor.g = uchimura(outColor.g);
+			outColor.b = uchimura(outColor.b);
+		}
+	}
+	
+	if(HdrOutput){
+		// manual whiteout using camera white intensity parameter
+		/*
+		float whiteOutStart = pHdrNits.z;
+		float maxPeak = pHdrNits.x / pHdrNits.y;
+		
+		float luma = dot(outColor.rgb, lumiFactors);
+		
+		if(luma > whiteOutStart){
+			float distToPeak = clamp((luma - whiteOutStart) / (maxPeak - whiteOutStart), 0.0, 1.0);
+			float saturationFactor = 1.0 - pow(distToPeak, 2.0);
+			outColor.rgb = luma + (outColor.rgb - vec3(luma)) * saturationFactor;
+		}
+		*/
+	}
+	
+	// clamp alpha value to the range from 0 to 1. larger values can happen during
+	// rendering of transparent objects and can cause issues in 2d rendering
+	outColor.a = clamp(outColor.a, 0.0, 1.0);
 }

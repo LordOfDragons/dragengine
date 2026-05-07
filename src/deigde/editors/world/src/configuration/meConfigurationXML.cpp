@@ -103,6 +103,9 @@ void meConfigurationXML::pWriteConfig(decXmlWriter &writer, const meConfiguratio
 	writer.WriteDataTagFloat("sensitivity", config.GetSensitivity());
 	writer.WriteDataTagBool("enableGI", config.GetEnableGI());
 	writer.WriteDataTagBool("enableAuralization", config.GetEnableAuralization());
+	WritePoint(writer, "previewCameraSize", config.GetPreviewCameraSize());
+	writer.WriteDataTagFloat("previewCameraTransparency", config.GetPreviewCameraTransparency());
+	
 	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
 	writer.WriteClosingTag("worldEditor", true);
@@ -148,6 +151,14 @@ void meConfigurationXML::pReadConfig(const decXmlElementTag &root, meConfigurati
 			
 		}else if(tag->GetName() == "enableAuralization"){
 			config.SetEnableAuralization(GetCDataBool(*tag));
+			
+		}else if(tag->GetName() == "previewCameraSize"){
+			decPoint size;
+			ReadPoint(*tag, size);
+			config.SetPreviewCameraSize(size);
+			
+		}else if(tag->GetName() == "previewCameraTransparency"){
+			config.SetPreviewCameraTransparency(GetCDataFloat(*tag));
 			
 		}else if(tag->GetName() == "recentFiles"){
 			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);

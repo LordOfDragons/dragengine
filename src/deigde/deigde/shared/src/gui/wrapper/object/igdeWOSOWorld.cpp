@@ -129,7 +129,9 @@ hasTCTransform(false){
 ////////////////
 
 igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
-pWrapper(igdeWObject::Ref::New(environment)){
+pWrapper(igdeWObject::Ref::New(environment))
+{
+	pWrapper->SetPartiallyHidden(true);
 }
 
 void igdeWOSOWorld::ChildObject::AddTexture(ChildObjectTexture *texture){

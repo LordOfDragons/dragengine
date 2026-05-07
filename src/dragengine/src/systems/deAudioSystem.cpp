@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deAudioSystem.h"
 #include "deModuleSystem.h"
 #include "modules/deLoadableModule.h"
@@ -47,6 +43,7 @@
 #include "../resources/synthesizer/deSynthesizerInstance.h"
 #include "../resources/video/deVideoPlayer.h"
 #include "../resources/terrain/heightmap/deHeightTerrain.h"
+#include "../threading/deMutexGuard.h"
 
 
 
@@ -60,8 +57,9 @@ extern const int *vResourcePeerCreationOrder;
 // Constructor, destructor
 ////////////////////////////
 
-deAudioSystem::deAudioSystem(deEngine *engine) : deBaseSystem(engine, "Audio", deModuleSystem::emtAudio){
-	pActiveModule = nullptr;
+deAudioSystem::deAudioSystem(deEngine *engine) :
+deBaseSystem(engine, "Audio", deModuleSystem::emtAudio),
+pActiveModule(nullptr){
 }
 
 deAudioSystem::~deAudioSystem(){
@@ -332,6 +330,70 @@ void deAudioSystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
 	heightTerrain.SetPeerAudio(pActiveModule->CreateHeightTerrain(heightTerrain));
 }
 
+
+
+bool deAudioSystem::CanCaptureAudio() const{
+	return GetIsRunning() ? pActiveModule->CanCaptureAudio() : false;
+}
+
+void deAudioSystem::StartAudioCapture(){
+	if(GetIsRunning()){
+		pActiveModule->StartAudioCapture();
+	}
+}
+
+void deAudioSystem::StopAudioCapture(){
+	if(GetIsRunning()){
+		pActiveModule->StopAudioCapture();
+	}
+}
+
+bool deAudioSystem::IsCapturingAudio() const{
+	return GetIsRunning() ? pActiveModule->IsCapturingAudio() : false;
+}
+
+void deAudioSystem::GetAudioCaptureFormat(AudioCaptureFormat &format) const{
+	if(GetIsRunning()){
+		pActiveModule->GetAudioCaptureFormat(format);
+		
+	}else{
+		format = {};
+	}
+}
+
+void deAudioSystem::GetAudioCaptureLevels(AudioCaptureLevels &levels) const{
+	if(GetIsRunning()){
+		pActiveModule->GetAudioCaptureLevels(levels);
+		
+	}else{
+		levels = {};
+	}
+}
+
+void deAudioSystem::AddAudioCaptureListener(const deAudioCaptureListener::Ref &listener){
+	DEASSERT_NOTNULL(listener)
+	const deMutexGuard lock(pMutexAudioCaptureListeners);
+	pAudioCaptureListeners.Add(listener);
+}
+
+void deAudioSystem::RemoveAudioCaptureListener(const deAudioCaptureListener::Ref &listener){
+	const deMutexGuard lock(pMutexAudioCaptureListeners);
+	pAudioCaptureListeners.Remove(listener);
+}
+
+void deAudioSystem::NotifyAudioCaptureStateChanged(){
+	const deMutexGuard lock(pMutexAudioCaptureListeners);
+	pAudioCaptureListeners.Visit([](deAudioCaptureListener &l){
+		l.StateChanged();
+	});
+}
+
+void deAudioSystem::NotifyAudioCaptureSamplesCaptured(const void *samples, int count){
+	const deMutexGuard lock(pMutexAudioCaptureListeners);
+	pAudioCaptureListeners.Visit([&](deAudioCaptureListener &l){
+		l.SamplesCaptured(samples, count);
+	});
+}
 
 
 // Private Functions

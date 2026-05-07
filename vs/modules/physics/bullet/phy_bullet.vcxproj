@@ -467,6 +467,7 @@
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderVolume.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModelScaled.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpComponent.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.cpp" />
@@ -788,6 +789,7 @@
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\collider\debpColliderVolume.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\commands\debpCommandExecuter.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpBulletShapeModelScaled.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpComponent.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModel.h" />
     <ClInclude Include="..\..\..\..\src\modules\physics\bullet\src\component\debpModelOctree.h" />

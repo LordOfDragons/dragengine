@@ -40,29 +40,29 @@ public:
 	enum eExtensions{
 		ext_ALC_EXT_EFX,
 		ext_ALC_SOFT_HRTF,
-		ext_ALC_EXT_debug
+		ext_ALC_EXT_debug,
+		ext_ALC_EXT_CAPTURE
 	};
 	
-	static const int EXT_COUNT = ext_ALC_EXT_debug + 1;
+	static const int EXT_COUNT = ext_ALC_EXT_CAPTURE + 1;
 	
 	
 	
 private:
 	deoalAudioThread &pAudioThread;
 	
-	int pVersionMajor;
-	int pVersionMinor;
+	int pVersionMajor, pVersionMinor;
 	decStringList pStrListExtensions;
 	
 	bool pHasExtension[EXT_COUNT];
 	bool pDisableExtension[EXT_COUNT];
 	
+	int pEfxVersionMajor, pEfxVersionMinor;
+	
 	bool pHasRequiredFunctions;
 	bool pHasEFX;
 	bool pHasHRTF;
-	
-	int pEfxVersionMajor;
-	int pEfxVersionMinor;
+	bool pCanCapture;
 	
 	
 	
@@ -129,6 +129,9 @@ public:
 	
 	/** HRTF is supported. */
 	inline bool GetHasHRTF() const{ return pHasHRTF; }
+	
+	/** Audio capture is supported. */
+	inline bool GetCanCapture() const{ return pCanCapture; }
 	/*@}*/
 	
 	

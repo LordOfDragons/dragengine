@@ -115,8 +115,7 @@ decStringSet deServiceManager::GetAllSupportedSerices() const{
 			return;
 		}
 		
-		deBaseServiceModule &srvmod = *((deBaseServiceModule*)loadmod.GetModule());
-		names += srvmod.GetSupportedServices();
+		names += ((deBaseServiceModule*)loadmod.GetModule())->GetSupportedServices();
 	});
 	
 	return names;

@@ -245,50 +245,15 @@ bool deoglLoaderThread::AwaitTask(const deoglLoaderThreadTask::Ref &task){
 //////////////////////
 
 void deoglLoaderThread::pInit(){
-#ifdef OS_WEBWASM
-	deoglRTContext &context = pRenderThread.GetContext();
-#elif ! defined OS_BEOS
-	const deoglRTContext &context = pRenderThread.GetContext();
-#endif
-	
-	#ifdef OS_UNIX_X11
-	OGLX_CHECK(pRenderThread, glXMakeCurrent(context.GetDisplay(),
-		context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext()));
-	
-#elif defined OS_ANDROID
-	DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(), context.GetLoaderSurface(),
-		context.GetLoaderSurface(), context.GetLoaderContext()) == EGL_TRUE)
-	
-#elif defined OS_WEBWASM
-	DEASSERT_TRUE(emscripten_webgl_make_context_current(
-		context.GetLoaderContext()) == EMSCRIPTEN_RESULT_SUCCESS)
-	
-#elif defined OS_MACOS
-	pGLContextMakeCurrent(context.GetActiveRRenderWindow()->GetView());
-	
-#elif defined OS_W32
-	if(!wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext())){
-		pRenderThread.GetLogger().LogErrorFormat("wglMakeCurrent failed (%s:%i): error=0x%lx\n",
-			__FILE__, __LINE__, GetLastError());
-		DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
-	}
-#endif
+	pRenderThread.GetContext().GetBackend()->ActivateLoaderContext();
 }
 
 void deoglLoaderThread::pCleanUp(){
-#ifdef OS_UNIX_X11
-	OGLX_CHECK(pRenderThread, glXMakeCurrent(pRenderThread.GetContext().GetDisplay(), None, nullptr));
-	
-#elif defined OS_ANDROID
-	eglMakeCurrent(pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-	
-#elif defined OS_WEBWASM
-	emscripten_webgl_make_context_current(0);
-	
-#elif defined OS_MACOS
-	pGLContextMakeCurrent(nullptr);
-	
-#elif defined OS_W32
-	wglMakeCurrent(NULL, NULL);
-#endif
+	try{
+		pRenderThread.GetContext().GetBackend()->DeactivateLoaderContext();
+		
+	}catch(const deException &e){
+		//pRenderThread.GetLogger().LogException(e);
+		// ignore exceptions during cleanup
+	}
 }

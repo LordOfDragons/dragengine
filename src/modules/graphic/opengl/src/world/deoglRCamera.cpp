@@ -30,6 +30,7 @@
 #include "deoglRWorld.h"
 #include "deoglWorldOctree.h"
 #include "../deoglBasics.h"
+#include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../effects/render/deoglREffect.h"
 #include "../rendering/plan/deoglRenderPlan.h"
@@ -276,6 +277,17 @@ int deoglRCamera::GetEffectCount() const{
 deoglREffect &deoglRCamera::GetEffectAt(int index) const{
 	return pEffects.GetAt(index);
 }
+
+void deoglRCamera::RemoveAllIgnoreComponents(){
+	pIgnoreComponents.RemoveAll();
+}
+
+void deoglRCamera::AddIgnoreComponent(deoglRComponent *component){
+	DEASSERT_NOTNULL(component)
+	pIgnoreComponents.Add(component);
+}
+
+
 
 void deoglRCamera::AddEffect(deoglREffect *effect){
 	pEffects.Add(effect);

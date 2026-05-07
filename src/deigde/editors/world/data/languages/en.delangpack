@@ -1163,6 +1163,17 @@ property type so be careful what you enter</translation>
 	<translation name="World.WPView.Action.Object.ToolTip">Select object camera</translation>
 	<translation name="World.WPView.Action.EnableAuralization">Enable Auralization</translation>
 	<translation name="World.WPView.Action.EnableAuralization.ToolTip">Enable auralization if supported by audio module</translation>
+	<translation name="World.WPView.PreviewCamera.Label">Preview Camera:</translation>
+	<translation name="World.WPView.Action.PreviewCameraSize">Size</translation>
+	<translation name="World.WPView.Action.PreviewCameraSize.ToolTip">Size of the preview camera in pixels</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo960x540">Set to 960x540</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo800x450">Set to 800x450</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo640x360">Set to 640x360</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo480x270">Set to 480x270</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo320x180">Set to 320x180</translation>
+	<translation name="World.WPView.Action.PreviewCameraSizeMenu.SetTo160x90">Set to 160x90</translation>
+	<translation name="World.WPView.Action.PreviewCameraTransparency">Transparency</translation>
+	<translation name="World.WPView.Action.PreviewCameraTransparency.ToolTip">Transparency of the preview camera</translation>
 	<translation name="World.WPView.Action.LimitBoxClear">Clear</translation>
 	<translation name="World.WPView.Action.LimitBoxClear.ToolTip">Clear limit box</translation>
 	<translation name="World.WPView.Action.LimitBoxDefault">Set Cube</translation>
@@ -1294,6 +1305,8 @@ property type so be careful what you enter</translation>
 	<translation name="World.WPSObject.Action.AttachableRemoveAll.ToolTip">Remove all attachable behaviors</translation>
 	<translation name="World.WPSObject.Action.ShowMissingTextures">Show Missing Textures</translation>
 	<translation name="World.WPSObject.Action.ShowMissingTextures.ToolTip">Show mising textures using placeholder texture</translation>
+	<translation name="World.WPSObject.Action.CameraShowPreview">Camera Show Preview</translation>
+	<translation name="World.WPSObject.Action.CameraShowPreview.ToolTip">Show camera in preview panel</translation>
 	<translation name="World.WPSObject.Tint.ToolTip">Color tint (affects renderable named 'tint').</translation>
 	<translation name="World.WPSObject.Intensity">Intensity:</translation>
 

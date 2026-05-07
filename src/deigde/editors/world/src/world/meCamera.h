@@ -48,6 +48,8 @@ private:
 	meObject *pHostObject;
 	decDMatrix pHostMatrix, pInvHostMatrix;
 	
+	bool pShowPreview;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -82,6 +84,12 @@ public:
 	
 	/** Set matrix transforming from host object to camera (and inverse). */
 	void SetHostMatrix(const decDMatrix &matrix);
+	
+	/** Show preview flag. */
+	inline bool GetShowPreview() const{ return pShowPreview; }
+	
+	/** Set show preview flag. */
+	void SetShowPreview(bool showPreview);
 	
 	/** Resets the camera. */
 	void Reset() override;

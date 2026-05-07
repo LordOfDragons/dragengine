@@ -904,7 +904,7 @@ enum class SpecDataType{
 	Int
 };
 
-static const int vSpecializationCount = 167;
+static const int vSpecializationCount = 169;
 static const struct sSpecialization{
 	int index;
 	SpecDataType dataType;
@@ -1078,7 +1078,9 @@ static const struct sSpecialization{
 	{166, SpecDataType::Bool, "NestedLoop", "NESTED_LOOP", "false"},
 	{167, SpecDataType::Bool, "WithToneMapCurve", "WITH_TONEMAP_CURVE", "false"},
 	{168, SpecDataType::Bool, "SampleStereo", "SAMPLE_STEREO", "false"},
-	{169, SpecDataType::Bool, "WithReflection", "WITH_REFLECTION", "false"}
+	{169, SpecDataType::Bool, "WithReflection", "WITH_REFLECTION", "false"},
+	{170, SpecDataType::Bool, "WithDitherTransparency", "WITH_DITHER_TRANSPARENCY", "false"},
+	{171, SpecDataType::Bool, "HdrOutput", "HDR_OUTPUT", "false"}
 };
 
 // Special:

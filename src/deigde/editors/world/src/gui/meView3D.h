@@ -27,6 +27,7 @@
 
 #include "meView3DListener.h"
 #include "vieweditor/meViewEditor.h"
+#include "previewcamera/mePreviewCamera.h"
 #include "../world/meWorld.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
@@ -43,7 +44,7 @@ class meWindowMain;
 
 
 /**
- * \brief 3D view of the world.
+ * 3D view of the world.
  */
 class meView3D : public igdeViewRenderWindow{
 public:
@@ -57,6 +58,7 @@ private:
 	
 	igdeMouseKeyListener::Ref pListenerEditor;
 	meViewEditor::Ref pEditor;
+	mePreviewCamera::Ref pPreviewCamera;
 	
 	int pFPSHistory[30];
 	float pFPSRedrawCanvasDelay;
@@ -70,11 +72,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create view. */
+	/** Create view. */
 	meView3D(meWindowMain &windowMain);
 	
 protected:
-	/** \brief Clean up view. */
+	/** Clean up view. */
 	~meView3D() override;
 	/*@}*/
 	
@@ -83,35 +85,38 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Window. */
+	/** Window. */
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Reset view. */
+	/** Reset view. */
 	void ResetView();
 	
-	/** \brief World. */
+	/** World. */
 	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world render. */
+	/** Set world render. */
 	void SetWorld(meWorld *world);
 	
-	/** \brief Create canvas. */
+	/** Create canvas. */
 	void CreateCanvas() override;
 	
-	/** \brief Resize canvas to fit window size. */
+	/** Resize canvas to fit window size. */
 	void OnResize() override;
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	void OnFrameUpdate(float elapsed) override;
 	
-	/** \brief Mode changed. */
+	/** Mode changed. */
 	void ModeChanged();
 	
-	/** \brief Active camera changed. */
+	/** Active camera changed. */
 	void ActiveCameraChanged();
 	
-	/** \brief Editor or nullptr. */
+	/** Editor or nullptr. */
 	inline const meViewEditor::Ref &GetEditor() const{ return pEditor; }
+	
+	/** Preview camera or nullptr. */
+	inline const mePreviewCamera::Ref &GetPreviewCamera() const{ return pPreviewCamera; }
 	/*@}*/
 };
 

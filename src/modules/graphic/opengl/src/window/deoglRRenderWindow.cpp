@@ -65,13 +65,16 @@
 #elif defined OS_W32
 #include <stdint.h>
 #include <dragengine/app/deOSWindows.h>
-#include "../extensions/deoglWExtResult.h"
 
 #elif defined OS_UNIX_X11
 #include <dragengine/app/deOSUnix.h>
 #include <X11/Xatom.h>
 #include <X11/Xresource.h>
-#include "../extensions/deoglXExtResult.h"
+
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+#include "../renderthread/backend/deoglRTCBUnixWaylandEGL.h"
+#include <dragengine/threading/deMutexGuard.h>
+#endif
 #endif
 
 #include <dragengine/common/exceptions.h>
@@ -157,7 +160,7 @@ deoglRRenderWindow::cGLWindow::~cGLWindow(){
 }
 
 void deoglRRenderWindow::cGLWindow::SendCurMessageToEngine(){
-	pWindow.GetRenderThread().GetContext().GetOSBeOS()->MessageReceived(CurrentMessage());
+	pWindow.GetRenderThread().GetContext().GetBackend()->GetOSBeOS()->MessageReceived(CurrentMessage());
 }
 
 void deoglRRenderWindow::cGLWindow::DirectConnected(direct_buffer_info *info){
@@ -225,6 +228,20 @@ pWindow(nullptr),
 pHostWindow(0),
 pWindow(0),
 pNullCursor(0),
+
+#ifdef OS_UNIX_WAYLAND
+pWlSurface(nullptr),
+pXdgSurface(nullptr),
+pXdgToplevel(nullptr),
+pWlEglWindow(nullptr),
+pWpFractionalScale(nullptr),
+pWpViewport(nullptr),
+pWpColorSurface(nullptr),
+#endif
+
+#ifdef BACKEND_OPENGL
+pEGLSurface(EGL_NO_SURFACE),
+#endif
 #endif
 
 pX(0),
@@ -240,8 +257,10 @@ pNotifySizeChanged(false),
 
 pVSyncMode(deoglConfiguration::evsmAdaptive),
 pInitSwapInterval(true),
-
-pAfterCreateScaleFactor(100)
+pAfterCreateScaleFactor(100),
+pUseHdrOutput(false),
+pHdrMaxNits(10000),
+pHdrReferenceNits(203)
 {
 	LEAK_CHECK_CREATE(renderThread, RenderWindow);
 }
@@ -281,6 +300,120 @@ void deoglRRenderWindow::SetHostWindow(NSWindow *window){
 void deoglRRenderWindow::SetHostWindow(Window window){
 	pHostWindow = window;
 };
+
+#ifdef OS_UNIX_WAYLAND
+void deoglRRenderWindow::SetWlSurface(wl_surface *surface){
+	pWlSurface = surface;
+}
+
+void deoglRRenderWindow::SetXdgSurface(xdg_surface *surface){
+	pXdgSurface = surface;
+}
+
+void deoglRRenderWindow::SetXdgToplevel(xdg_toplevel *toplevel){
+	pXdgToplevel = toplevel;
+}
+
+void deoglRRenderWindow::SetWlEglWindow(wl_egl_window *eglWindow){
+	pWlEglWindow = eglWindow;
+}
+
+void deoglRRenderWindow::SetWpFractionalScale(wp_fractional_scale_v1 *scale){
+	pWpFractionalScale = scale;
+}
+
+void deoglRRenderWindow::SetWpViewport(wp_viewport *viewport){
+	pWpViewport = viewport;
+}
+
+void deoglRRenderWindow::SetWpColorSurface(wp_color_management_surface_v1 *surface){
+	pWpColorSurface = surface;
+}
+
+void deoglRRenderWindow::OnWpFractionalScalePreferredScale(void *data,
+wp_fractional_scale_v1*, uint32_t scale){
+	((deoglRRenderWindow*)data)->pAfterCreateScaleFactor = 100 * scale / 120;
+}
+
+void deoglRRenderWindow::OnXdgSurfaceConfigure(void *data, xdg_surface*, uint32_t serial){
+	auto window = (deoglRRenderWindow*)data;
+	auto backend = window->pRenderThread.GetContext().GetBackend()
+		.PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backend){
+		window->pLastConfigureResize.serial = serial;
+		window->pLastConfigureResize.requested = true;
+		
+		window->OnResize(window->pLastConfigureResize.renderSize.x,
+			window->pLastConfigureResize.renderSize.y);
+		
+		if(window->pXdgSurface){
+			xdg_surface_ack_configure(window->pXdgSurface, serial);
+		}
+		if(window->pWlEglWindow){
+			deoglWlEglWindowResize(window->pWlEglWindow, window->pLastConfigureResize.renderSize.x,
+				window->pLastConfigureResize.renderSize.y, 0, 0);
+		}
+		if(window->pWpViewport){
+			wp_viewport_set_destination(window->pWpViewport,
+				window->pLastConfigureResize.viewportSize.x,
+				window->pLastConfigureResize.viewportSize.y);
+		}
+		if(window->pXdgSurface){
+			xdg_surface_set_window_geometry(window->pXdgSurface, 0, 0,
+				window->pLastConfigureResize.viewportSize.x,
+				window->pLastConfigureResize.viewportSize.y);
+		}
+		if(window->pWlSurface){
+			wl_surface_commit(window->pWlSurface);
+			wl_display_flush(window->pRenderThread.GetContext().GetBackend()->GetOSUnix()->GetWaylandDisplay());
+		}
+		
+		/*
+		if(window->pXdgSurface){
+			const deMutexGuard lock(window->pMutexCommitConfigure);
+			window->pCommitConfigureResize = window->pLastConfigureResize;
+		}
+		*/
+	}
+}
+
+void deoglRRenderWindow::OnXdgToplevelConfigure(void *data, xdg_toplevel*, int32_t width,
+int32_t height, wl_array*){
+	// size is in logical coordinates
+	auto window = (deoglRRenderWindow*)data;
+	
+	if(width == 0 && height == 0){
+		// first time showing window. compositor wants to know the desired window size.
+		// window size has to be given in logical coordinates
+		width = window->pWidth * 100 / window->pAfterCreateScaleFactor;
+		height = window->pHeight * 100 / window->pAfterCreateScaleFactor;
+		
+	}else{
+		// compositor changed the window size
+	}
+	
+	window->pLastConfigureResize.viewportSize.Set(decMath::max(width, 1), decMath::max(height, 1));
+	window->pLastConfigureResize.renderSize.Set(
+		decMath::max(width * window->pAfterCreateScaleFactor / 100, 1),
+		decMath::max(height * window->pAfterCreateScaleFactor / 100, 1));
+}
+
+void deoglRRenderWindow::OnXdgToplevelClose(void *data, xdg_toplevel*){
+	((deoglRRenderWindow*)data)->pRenderThread.GetContext().SetUserRequestedQuit(true);
+}
+
+void deoglRRenderWindow::OnXdgToplevelConfigureBounds(void*, xdg_toplevel*, int32_t, int32_t){
+}
+
+void deoglRRenderWindow::OnXdgToplevelWmCapabilities(void*, xdg_toplevel*, wl_array*){
+}
+#endif // OS_UNIX_WAYLAND
+
+#ifdef BACKEND_OPENGL
+void deoglRRenderWindow::SetEGLSurface(EGLSurface surface){
+	pEGLSurface = surface;
+}
+#endif
 
 #elif defined OS_W32
 void deoglRRenderWindow::SetHostWindow(HWND window){
@@ -338,6 +471,7 @@ void deoglRRenderWindow::SetSize(int width, int height){
 	pNotifySizeChanged = false;
 	
 	pResizeWindow();
+	pResizeRenderTarget();
 }
 
 void deoglRRenderWindow::SetTitle(const char *title){
@@ -371,10 +505,20 @@ void deoglRRenderWindow::SetIcon(deoglPixelBuffer *icon){
 	pSetIcon();
 }
 
+void deoglRRenderWindow::SetUseHdrOutput(bool useHdrOutput){
+	pUseHdrOutput = useHdrOutput;
+}
 
+void deoglRRenderWindow::SetHdrMaxNits(int hdrMaxNits){
+	pHdrMaxNits = hdrMaxNits;
+}
 
 void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 	pRCanvasView = rcanvasView;
+}
+
+void deoglRRenderWindow::SetHdrReferenceNits(int hdrReferenceNits){
+	pHdrReferenceNits = hdrReferenceNits;
 }
 
 void deoglRRenderWindow::DropRCanvasView(){
@@ -436,11 +580,12 @@ void deoglRRenderWindow::CreateWindow(){
 		AdjustWindowRectEx(&windowRect, style, FALSE, 0);
 	}
 	
+	auto &backend = pRenderThread.GetContext().GetBackend();
 	wchar_t wideName[200];
-	deOSWindows::Utf8ToWide(pRenderThread.GetContext().GetWindowClassname(), wideName, 200);
+	deOSWindows::Utf8ToWide(backend->GetWindowClassname(), wideName, 200);
 	pWindow = CreateWindowEx(exStyle, wideName, L"Drag[en]gine OpenGL", style, 0, 0,
 		windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, parentWindow,
-		NULL, pRenderThread.GetContext().GetOSWindow()->GetInstApp(), NULL);
+		NULL, backend->GetOSWindow()->GetInstApp(), NULL);
 	if(!pWindow){
 		pRenderThread.GetLogger().LogErrorFormat("CreateWindowEx failed with error %lu", GetLastError());
 		DETHROW(deeOutOfMemory);
@@ -456,7 +601,9 @@ void deoglRRenderWindow::CreateWindow(){
 		DETHROW(deeOutOfMemory);
 	}
 	
-	// set pixel format
+	// set pixel format. prefer 10-bit HDR format pre-selected during InitPhase3 when
+	// available so the context created in InitPhase4 can enable HDR output. SetPixelFormat
+	// may only be called once per DC so the probing has to happen earlier
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(pfd));
 	pfd.nSize = sizeof(pfd);
@@ -470,7 +617,27 @@ void deoglRRenderWindow::CreateWindow(){
 	pfd.cBlueBits = 8;
 	pfd.cAlphaBits = 8;
 	
-	SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
+	{
+	const int hdrFormat = backend->GetHdrPixelFormat();
+	if(hdrFormat > 0){
+		PIXELFORMATDESCRIPTOR pfdHdr;
+		memset(&pfdHdr, 0, sizeof(pfdHdr));
+		DescribePixelFormat(pWindowDC, hdrFormat, sizeof(pfdHdr), &pfdHdr);
+		if(SetPixelFormat(pWindowDC, hdrFormat, &pfdHdr)){
+			pRenderThread.GetLogger().LogInfoFormat(
+				"RRenderWindow.CreateWindow: Using 10-bit HDR pixel format%d", hdrFormat);
+			
+		}else{
+			pRenderThread.GetLogger().LogWarnFormat(
+				"RRenderWindow.CreateWindow: SetPixelFormat with HDR format %d failed (error %lu), "
+				"falling back to 8-bit", hdrFormat, GetLastError());
+			SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
+		}
+		
+	}else{
+		SetPixelFormat(pWindowDC, ChoosePixelFormat(pWindowDC, &pfd), &pfd);
+	}
+	}
 	
 	// activate window just in case windows messes up again
 	if(!pHostWindow){
@@ -478,13 +645,27 @@ void deoglRRenderWindow::CreateWindow(){
 	}
 	
 #elif defined OS_UNIX_X11
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().
+		PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		// on Wayland all window management is done via Wayland protocol
+		if(!pWlSurface){
+			backendWayland->CreateWindowSurface(*this);
+		}
+		return;
+	}
+#endif
+	
 	// if the window exists we do nothing
 	if(pWindow > 255){
 		return;
 	}
 	
-	Display * const display = pRenderThread.GetContext().GetDisplay();
-	XVisualInfo * const visInfo = pRenderThread.GetContext().GetVisualInfo();
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	Display * const display = backend->GetDisplay();
+	XVisualInfo * const visInfo = backend->GetVisualInfo();
 	XSetWindowAttributes swa;
 	Colormap colMap = 0;
 	//Cursor cursor = 0;
@@ -539,10 +720,10 @@ void deoglRRenderWindow::CreateWindow(){
 			XDefineCursor(display, pWindow, pNullCursor);
 			
 			// prevent user from killing us with the close button
-			Atom atom = pRenderThread.GetContext().GetAtomProtocols();
+			Atom atom = backend->GetAtomProtocols();
 			XSetWMProtocols(display, pWindow, &atom, 1);
 			
-			atom = pRenderThread.GetContext().GetAtomDeleteWindow();
+			atom = backend->GetAtomDeleteWindow();
 			XSetWMProtocols(display, pWindow, &atom, 1);
 			
 			// show window
@@ -568,6 +749,14 @@ void deoglRRenderWindow::CreateWindow(){
 	
 	// set window title
 	pSetWindowTitle();
+	
+	// backend specific initialization
+#ifdef BACKEND_OPENGL
+	auto backendEgl = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixX11EGL>();
+	if(backendEgl){
+		backendEgl->CreateWindowSurface(*this);
+	}
+#endif
 #endif
 	pAfterCreateScaleFactor = pGetDisplayScaleFactor();
 }
@@ -578,66 +767,52 @@ void deoglRRenderWindow::SwapBuffers(){
 	}
 	
 	const deoglDebugTraceGroup debugTrace(pRenderThread, "Window.SwapBuffers");
-	
-#ifdef OS_ANDROID
-	if(eglSwapBuffers(pRenderThread.GetContext().GetDisplay(), pRenderThread.GetContext().GetSurface()) == EGL_FALSE){
-		// log failure but do not thow exception
-	}
-	
-#elif defined OS_WEBWASM
-	DEASSERT_TRUE(emscripten_webgl_commit_frame() == EMSCRIPTEN_RESULT_SUCCESS)
-	
-#elif defined OS_BEOS
-	DEASSERT_NOTNULL(pWindow)
-	pWindow->GetGLView()->SwapBuffers(false); // true = sync
-	
-	// ensure window resizing is properly applied to the opengl context
-	pWindow->GetGLView()->UnlockGL();
-	pWindow->GetGLView()->LockGL();
-	
-#elif defined OS_MACOS
-	pMacOSSwapBuffers();
-	
-#elif defined OS_W32
 	pUpdateVSync();
-	
-	if(!::SwapBuffers(pWindowDC)){
-		pRenderThread.GetLogger().LogErrorFormat("SwapBuffers failed (%s:%i): error=0x%lx\n",
-			__FILE__, __LINE__, GetLastError());
-	}
-	
-#elif defined OS_UNIX_X11
-	pUpdateVSync();
-	
-	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
-	// 155=GLX, 11=glXSwapBuffers
-	// 
-	// but why BadMatch? from the doc:
-	// 
-	// BadMatch wird generiert wenn drawable nicht mit dem selben X-Screen und Visual erstellt
-	//    wurde wie ctx. Dieser Fehler wird auch generiert wenn drawable NIL und ctx nicht NIL war.
-	// second situation can not happen. pWindow never is NULL
-	// first should also not happen
-	// 
-	// happens only with IGDE hence it has to do something with changing windows or with
-	// hosted windows in general
-		//XSync( pRenderThread.GetContext().GetDisplay(), False );
-	
-	if(pRenderThread.GetConfiguration().GetRenderDocMode()){
-		// NOTE if RenderDoc is running glXSwapBuffers can throw invalid enum error while capturing
-		try{
-			OGL_CHECK(pRenderThread, glXSwapBuffers(pRenderThread.GetContext().GetDisplay(), pWindow));
-		}catch(...){
-			return;
-		}
-		
-	}else{
-		OGL_CHECK(pRenderThread, glXSwapBuffers(pRenderThread.GetContext().GetDisplay(), pWindow));
-	}
-		//XSync( pRenderThread.GetContext().GetDisplay(), False );
-#endif
-	
+	pRenderThread.GetContext().GetBackend()->SwapBuffers(*this);
 	pSwapBuffers = false;
+	
+#if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	// this is annoying here. wayland sends the configure request on the main thread.
+	// we have to put this on hold until we swap buffers. but at this time we swap the
+	// previous buffer size. we have thus to hold the configure commit until after we
+	// rendered with the new size. this is done like this:
+	//
+	// - main thread stores request in pCommitConfigure* and sets pRequiresCommitConfigure
+	// - on swap move the commit request to pRenderCommitConfigure* and pRenderCommitConfigure
+	// - on swap finish the commit if pRenderCommitConfigure is set and reset it
+	/*
+	const deMutexGuard lock(pMutexCommitConfigure);
+	
+	if(pRenderConfigureResize.requested){
+		pRenderConfigureResize.requested = false;
+		
+		if(pXdgSurface){
+			xdg_surface_ack_configure(pXdgSurface, pRenderConfigureResize.serial);
+		}
+		if(pWlEglWindow){
+			deoglWlEglWindowResize(pWlEglWindow, pRenderConfigureResize.renderSize.x,
+				pRenderConfigureResize.renderSize.y, 0, 0);
+		}
+		if(pWpViewport){
+			wp_viewport_set_destination(pWpViewport, pRenderConfigureResize.viewportSize.x,
+				pRenderConfigureResize.viewportSize.y);
+		}
+		if(pXdgSurface){
+			xdg_surface_set_window_geometry(pXdgSurface, 0, 0,
+				pRenderConfigureResize.viewportSize.x, pRenderConfigureResize.viewportSize.y);
+		}
+		if(pWlSurface){
+			wl_surface_commit(pWlSurface);
+			wl_display_flush(pRenderThread.GetContext().GetBackend()->GetOSUnix()->GetWaylandDisplay());
+		}
+	}
+	
+	if(pCommitConfigureResize.requested){
+		pRenderConfigureResize = pCommitConfigureResize;
+		pCommitConfigureResize.requested = false;
+	}
+	*/
+#endif
 }
 
 void deoglRRenderWindow::Render(){
@@ -649,6 +824,10 @@ void deoglRRenderWindow::Render(){
 		return; // window got closed under our nose
 	}
 #endif
+	
+	if(pUseHdrOutput){
+		pCreateRenderTarget();
+	}
 	
 	deoglDebugTraceGroup debugTrace(GetRenderThread(), "Window.Render");
 	
@@ -666,39 +845,45 @@ void deoglRRenderWindow::Render(){
 	deoglRCanvas * const overlayCanvas = pRenderThread.GetCanvasOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
-	pRCanvasView->PrepareForRender(nullptr);
+	pRCanvasView->PrepareForRender(nullptr, pUseHdrOutput);
 	pRCanvasView->PrepareForRenderRender(nullptr);
 	if(isMainWindow){
 		if(inputOverlayCanvas){
-			inputOverlayCanvas->PrepareForRender(nullptr);
+			inputOverlayCanvas->PrepareForRender(nullptr, pUseHdrOutput);
 			inputOverlayCanvas->PrepareForRenderRender(nullptr);
 		}
 		if(debugOverlayCanvas){
-			debugOverlayCanvas->PrepareForRender(nullptr);
+			debugOverlayCanvas->PrepareForRender(nullptr, pUseHdrOutput);
 			debugOverlayCanvas->PrepareForRenderRender(nullptr);
 		}
 		if(overlayCanvas){
-			overlayCanvas->PrepareForRender(nullptr);
+			overlayCanvas->PrepareForRender(nullptr, pUseHdrOutput);
 			overlayCanvas->PrepareForRenderRender(nullptr);
 		}
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsPrepare();
 	
-	// create render taget if required
+	// create render target if required
 	const decPoint size(pWidth, pHeight);
 	
 	// render canvas
-	pRenderThread.GetFramebuffer().Activate(nullptr /*pRenderTarget->GetFBO()*/);
+	deoglFramebuffer * const fbo = pRenderTarget ? pRenderTarget->GetFBO().Pointer() : nullptr;
+	pRenderThread.GetFramebuffer().Activate(fbo);
 	
-	deoglRenderCanvasContext context(*pRCanvasView,
-		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, nullptr);
+	deoglRenderCanvasContext context(*pRCanvasView, fbo, decPoint(), size, true, nullptr);
+	context.SetUseHdrOutput(pUseHdrOutput);
+	context.SetHdrMaxNits(pHdrMaxNits);
+	context.SetHdrReferenceNits(pHdrReferenceNits);
 	pRenderThread.GetRenderers().GetCanvas().Prepare(context);
-
+	
+	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	OGL_CHECK(pRenderThread, pglClearBufferfv(GL_COLOR, 0, clearColor));
+	
 	const decPoint canvasSize(pRCanvasView->GetSize().Round());
 	if(canvasSize == size){
 		pRCanvasView->Render(context);
-
+		
 	}else{
 		// this happens if global display scaling is not 100%. in this case the
 		// canvas view is smaller than the window and has to be upscaled
@@ -718,6 +903,10 @@ void deoglRRenderWindow::Render(){
 		if(overlayCanvas){
 			overlayCanvas->Render(context);
 		}
+	}
+	
+	if(pRenderTarget){
+		pRenderThread.GetRenderers().GetCanvas().Finalize(context, *this);
 	}
 	
 	pRenderThread.SampleDebugTimerRenderThreadRenderWindowsRender();
@@ -747,7 +936,8 @@ void deoglRRenderWindow::CenterOnScreen(){
 	if(!pWindow){
 		return;
 	}
-	const decPoint screenSize(pRenderThread.GetContext().GetOSBeOS()->GetDisplayCurrentResolution(0));
+	const decPoint screenSize(pRenderThread.GetContext().GetBackend()->
+		GetOSBeOS()->GetDisplayCurrentResolution(0));
 	pWindow->MoveTo((float)(screenSize.x - pWidth) * 0.5f, (float)(screenSize.y - pHeight) * 0.5f);
 	
 #elif defined OS_MACOS
@@ -757,18 +947,33 @@ void deoglRRenderWindow::CenterOnScreen(){
 	if(!pWindow){
 		return;
 	}
-	const decPoint screenSize(pRenderThread.GetContext().GetOSWindow()->GetDisplayCurrentResolution(0));
+	const decPoint screenSize(pRenderThread.GetContext().GetBackend()->
+		GetOSWindow()->GetDisplayCurrentResolution(0));
 	SetWindowPos(pWindow, NULL, (screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2,
 		0, 0, SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOREDRAW
 		| SWP_NOZORDER | SWP_SHOWWINDOW);
 	
 #elif defined OS_UNIX_X11
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		if(!pWlSurface){
+			return;
+		}
+		
+		// Wayland does not allow clients to position their own windows.
+		// The compositor controls window placement.
+		return;
+	}
+#endif
+	
 	if(pWindow < 255){
 		return;
 	}
-	const decPoint screenSize(pRenderThread.GetContext().GetOSUnix()->GetDisplayCurrentResolution(0));
-	XMoveWindow(pRenderThread.GetContext().GetDisplay(), pWindow,
-		(screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2);
+	auto &backend = pRenderThread.GetContext().GetBackend();
+	const decPoint screenSize(backend->GetOSUnix()->GetDisplayCurrentResolution(0));
+	XMoveWindow(backend->GetDisplay(), pWindow, (screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2);
 #endif
 }
 
@@ -785,7 +990,7 @@ void deoglRRenderWindow::OnReposition(int x, int y){
 
 void deoglRRenderWindow::OnResize(int width, int height){
 	// Called from main thread
-	if(pWidth == 0 || pHeight == 0){
+	if(width == 0 || height == 0){
 		// due to X restrictions zero sized windows can not be defined so avoid
 		// triggering wrong resize events in this case
 		return;
@@ -795,13 +1000,14 @@ void deoglRRenderWindow::OnResize(int width, int height){
 		return;
 	}
 	
-	pWidth = width;
-	pHeight = height;
+	pWidth = decMath::max(width, 1);
+	pHeight = decMath::max(height, 1);
 	// pRenderThread.GetOgl().LogInfoFormat("RRenderWindow.OnResize: %p (%d,%d)", this, width, height);
 	
 	pNotifySizeChanged = true;
+	
+	pResizeRenderTarget();
 }
-
 
 
 bool deoglRRenderWindow::GetNotifySizeChanged(){
@@ -815,6 +1021,24 @@ bool deoglRRenderWindow::GetNotifySizeChanged(){
 
 // Private Functions
 //////////////////////
+
+void deoglRRenderWindow::pUpdateVSync(){
+	// check if VSync has to be enabled or disabled
+	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
+	
+	if(vsyncMode != pVSyncMode){
+		pVSyncMode = vsyncMode;
+		pInitSwapInterval = true;
+	}
+	
+	// apply changes if required
+	if(!pInitSwapInterval){
+		return;
+	}
+	
+	pInitSwapInterval = false;
+	pRenderThread.GetContext().GetBackend()->ApplyVSync(*this, vsyncMode);
+}
 
 void deoglRRenderWindow::pDestroyWindow(){
 	// if context is missing this can be due to early start-up failure where setting up the
@@ -861,9 +1085,27 @@ void deoglRRenderWindow::pDestroyWindow(){
 	pWindow = NULL;
 	
 #elif defined OS_UNIX_X11
+#ifdef BACKEND_OPENGL
+	if(pRenderThread.HasContext()){
+#ifdef OS_UNIX_WAYLAND
+		auto backendWayland = pRenderThread.GetContext().GetBackend()
+			.PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+		if(backendWayland){
+			backendWayland->DestroyWindowSurface(*this);
+			return;
+		}
+#endif
+		
+		auto backendEgl = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixX11EGL>();
+		if(backendEgl){
+			backendEgl->DestroyWindowSurface(*this);
+		}
+	}
+#endif
+	
 	if(pWindow > 255){
 		if(pRenderThread.HasContext()){
-			Display * const display = pRenderThread.GetContext().GetDisplay();
+			Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 			XSync(display, False); // required or strange problems can happen
 			
 			XUndefineCursor(display, pWindow);
@@ -875,7 +1117,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 	
 	if(pNullCursor > 255){
 		if(pRenderThread.HasContext()){
-			Display * const display = pRenderThread.GetContext().GetDisplay();
+			Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 			XFreeCursor(display, pNullCursor);
 		}
 	}
@@ -913,8 +1155,16 @@ void deoglRRenderWindow::pResizeWindow(){
 	}
 	
 #elif defined OS_UNIX_X11
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		return;
+	}
+#endif
+	
 	if(pWindow > 255){
-		Display * const display = pRenderThread.GetContext().GetDisplay();
+		Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 		
 		if(pWidth > 0 && pHeight > 0){
 			XResizeWindow(display, pWindow, pWidth, pHeight);
@@ -927,6 +1177,25 @@ void deoglRRenderWindow::pResizeWindow(){
 		XSync(display, False); // required or strange problems can happen
 	}
 #endif
+}
+
+void deoglRRenderWindow::pCreateRenderTarget(){
+	if(pRenderTarget){
+		return;
+	}
+	
+	pRenderTarget = deoglRenderTargetArray::Ref::New(pRenderThread,
+		decPoint3(pWidth, pHeight, 1), 4, pUseHdrOutput ? 16 : 8);
+	pRenderTarget->PrepareFramebuffer();
+}
+
+void deoglRRenderWindow::pResizeRenderTarget(){
+	if(!pRenderTarget || pWidth < 1 || pHeight < 1){
+		return;
+	}
+	
+	pRenderTarget->SetSize(decPoint3(pWidth, pHeight, 1));
+	pRenderTarget->PrepareFramebuffer();
 }
 
 void deoglRRenderWindow::pSetWindowTitle(){
@@ -946,8 +1215,20 @@ void deoglRRenderWindow::pSetWindowTitle(){
 	}
 	
 #elif defined OS_UNIX_X11
+
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().
+		PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		if(pWlSurface){
+			xdg_toplevel_set_title(pXdgToplevel, pTitle);
+		}
+		return;
+	}
+#endif
+	
 	if(pWindow > 255){
-		Display * const display = pRenderThread.GetContext().GetDisplay();
+		Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 		XTextProperty textProp;
 		const char * const title = pTitle.GetString();
 		
@@ -1029,9 +1310,33 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	*/
 	
 #elif defined OS_UNIX_X11
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().
+		PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		if(!pXdgToplevel){
+			return;
+		}
+		
+		if(pFullScreen){
+			xdg_toplevel_set_fullscreen(pXdgToplevel, nullptr);
+			
+		}else{
+			xdg_toplevel_unset_fullscreen(pXdgToplevel);
+		}
+		
+		if(pWlSurface){
+			wl_surface_commit(pWlSurface);
+		}
+		return;
+	}
+#endif
+	
 	if(pWindow > 255){
-		Display * const display = pRenderThread.GetContext().GetDisplay();
-		const XVisualInfo &visInfo = *pRenderThread.GetContext().GetVisualInfo();
+		auto &backend = pRenderThread.GetContext().GetBackend();
+		Display * const display = backend->GetDisplay();
+		const XVisualInfo &visInfo = *backend->GetVisualInfo();
 		Window rootWindow = XRootWindow(display, visInfo.screen);
 		
 		// set window manager hints. window managers should honor those flags when a window is mapped.
@@ -1223,11 +1528,25 @@ void deoglRRenderWindow::pSetIcon(){
 	}
 	
 #elif defined OS_UNIX_X11
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		if(!pWlSurface){
+			return;
+		}
+		
+		// Wayland does not support setting window icons via client protocol.
+		// Icons are determined by the compositor based on the application ID.
+		return;
+	}
+#endif
+	
 	if(pWindow <= 255){
 		return;
 	}
 	
-	Display * const display = pRenderThread.GetContext().GetDisplay();
+	Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 	
 	// image data has to be in ARGB format and using long as mentioned here:
 	// https://stackoverflow.com/a/15595582
@@ -1333,16 +1652,24 @@ int deoglRRenderWindow::pGetDisplayScaleFactor(){
 	int scale = 100;
 	
 #ifdef OS_ANDROID
-	scale = pRenderThread.GetContext().GetOSAndroid()->GetDisplayCurrentScaleFactor(0);
+	scale = pRenderThread.GetContext().GetBackend()->GetOSAndroid()->GetDisplayCurrentScaleFactor(0);
 	
 #elif defined OS_WEBWASM
-	scale = pRenderThread.GetContext().GetOSWebWasm()->GetDisplayCurrentScaleFactor(0);
+	scale = pRenderThread.GetContext().GetBackend()->GetOSWebWasm()->GetDisplayCurrentScaleFactor(0);
 	
 #elif defined OS_W32
 	scale = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
 	
 #elif defined OS_UNIX_X11
-	Display * const display = pRenderThread.GetContext().GetDisplay();
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
+	if(backendWayland){
+		return pAfterCreateScaleFactor;
+	}
+#endif
+	
+	Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 	const char * const resourceString = XResourceManagerString(display);
 	if(!resourceString){
 		return scale;
@@ -1363,7 +1690,7 @@ int deoglRRenderWindow::pGetDisplayScaleFactor(){
 	
 	const double scalef = 100.0 * atof(value.addr) / 96.0;
 	scale = decMath::max((int)(scalef / 25.0 + 0.5) * 25, 100);
-	#endif
+#endif
 	
 	return scale;
 }
@@ -1374,7 +1701,7 @@ void deoglRRenderWindow::pCreateNullCursor(){
 		return;
 	}
 	
-	Display * const display = pRenderThread.GetContext().GetDisplay();
+	Display * const display = pRenderThread.GetContext().GetBackend()->GetDisplay();
 	Pixmap cursorMask;
 	XGCValues gcv;
 	GC gc;
@@ -1393,77 +1720,3 @@ void deoglRRenderWindow::pCreateNullCursor(){
 	XFreeGC(display, gc);
 }
 #endif
-
-void deoglRRenderWindow::pUpdateVSync(){
-	// check if VSync has to be enabled or disabled
-	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
-	
-	if(vsyncMode != pVSyncMode){
-		pVSyncMode = vsyncMode;
-		pInitSwapInterval = true;
-	}
-	
-	// apply changes if required
-	if(!pInitSwapInterval){
-		return;
-	}
-	
-	pInitSwapInterval = false;
-	
-#ifdef OS_W32
-	const deoglExtensions &ext = pRenderThread.GetExtensions();
-	deoglRTLogger &logger = pRenderThread.GetLogger();
-	
-	if(ext.GetHasExtension(deoglExtensions::ext_WGL_EXT_swap_control)){
-		switch(pVSyncMode){
-		case deoglConfiguration::evsmAdaptive:
-			if(ext.GetHasExtension(deoglExtensions::ext_WGL_EXT_swap_control_tear)){
-				logger.LogInfo("RenderWindow: Enable Adaptive V-Sync");
-				DEASSERT_TRUE(pwglSwapInterval(-1))
-				
-			}else{
-				logger.LogInfo("RenderWindow: Enable V-Sync");
-				DEASSERT_TRUE(pwglSwapInterval(1))
-			}
-			break;
-			
-		case deoglConfiguration::evsmOn:
-			logger.LogInfo("RenderWindow: Enable V-Sync");
-			DEASSERT_TRUE(pwglSwapInterval(1))
-			break;
-			
-		case deoglConfiguration::evsmOff:
-			logger.LogInfo("RenderWindow: Disable VSync");
-			DEASSERT_TRUE(pwglSwapInterval(0))
-		}
-	}
-	
-#elif defined OS_UNIX_X11
-	const deoglExtensions &ext = pRenderThread.GetExtensions();
-	deoglRTLogger &logger = pRenderThread.GetLogger();
-	
-	if(ext.GetHasExtension(deoglExtensions::ext_GLX_EXT_swap_control)){
-		switch(pVSyncMode){
-		case deoglConfiguration::evsmAdaptive:
-			if(ext.GetHasExtension(deoglExtensions::ext_GLX_EXT_swap_control_tear)){
-				logger.LogInfo("RenderWindow: Enable Adaptive V-Sync");
-				OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, -1));
-				
-			}else{
-				logger.LogInfo("RenderWindow: Enable V-Sync");
-				OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, 1));
-			}
-			break;
-			
-		case deoglConfiguration::evsmOn:
-			logger.LogInfo("RenderWindow: Enable V-Sync");
-			OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, 1));
-			break;
-			
-		case deoglConfiguration::evsmOff:
-			logger.LogInfo("RenderWindow: Disable VSync");
-			OGL_CHECK(pRenderThread, pglXSwapInterval(pRenderThread.GetContext().GetDisplay(), pWindow, 0));
-		}
-	}
-#endif
-}

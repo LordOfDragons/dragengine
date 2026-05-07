@@ -30,6 +30,12 @@
     <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\app\wayland\deWaylandHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\app\wayland\xdg-output-protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1191,6 +1197,15 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzerManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deAudioCaptureListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1686,6 +1701,9 @@
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerAudioAnalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1758,6 +1776,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\app\include_windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\app\wayland\deWaylandHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\app\wayland\xdg-output-protocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decCollectionInterfaces.h">
@@ -2975,6 +2999,15 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioAnalyzerManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deAudioCaptureListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3468,6 +3501,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerAudioAnalyzer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.h">

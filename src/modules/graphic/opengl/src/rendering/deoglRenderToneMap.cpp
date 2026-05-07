@@ -160,14 +160,16 @@ enum eSPBloomAdd{
 
 enum eSPToneMap{
 	sptmTCBloomTransform,
-	sptmTCBloomClamp
+	sptmTCBloomClamp,
+	sptmHdrNits
 };
 
 enum eSPFinalize{
 	spfinTCTransform,
 	spfinGamma,
 	spfinBrightness,
-	spfinContrast
+	spfinContrast,
+	spfinHdrNits
 };
 
 enum eSPBloomDownSample{
@@ -343,6 +345,30 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		pAsyncGetPipeline(pPipelineToneMapCustomStereo, pipconf, sources, defines);
 		defines.RemoveDefines("WITH_TONEMAP_CURVE");
 		
+		// tone map HDR
+		defines = commonDefines;
+		defines.SetDefines("NO_POSTRANSFORM", "NO_TCTRANSFORM", "HDR_OUTPUT");
+		sources = shaderManager.GetSourcesNamed("ToneMap Tone Mapping");
+		pAsyncGetPipeline(pPipelineToneMapHdr, pipconf, sources, defines);
+		
+		defines.SetDefines("WITH_TONEMAP_CURVE");
+		pAsyncGetPipeline(pPipelineToneMapHdrCustom, pipconf, sources, defines);
+		defines.RemoveDefines("WITH_TONEMAP_CURVE");
+		
+		// tone map HDR stereo
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
+		if(!renderFSQuadStereoVSLayer){
+			sources = shaderManager.GetSourcesNamed("ToneMap Tone Mapping Stereo");
+		}
+		pAsyncGetPipeline(pPipelineToneMapHdrStereo, pipconf, sources, defines);
+		
+		defines.SetDefines("WITH_TONEMAP_CURVE");
+		pAsyncGetPipeline(pPipelineToneMapHdrCustomStereo, pipconf, sources, defines);
+		defines.RemoveDefines("WITH_TONEMAP_CURVE");
+		
 		
 		// ldr
 		pipconf.Reset();
@@ -363,6 +389,22 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 			sources = shaderManager.GetSourcesNamed("DefRen Finalize Stereo");
 		}
 		pAsyncGetPipeline(pPipelineLdrStereo, pipconf, sources, defines);
+		
+		// ldr HDR
+		defines = commonDefines;
+		defines.SetDefines("NO_POSTRANSFORM", "HDR_OUTPUT");
+		sources = shaderManager.GetSourcesNamed("DefRen Finalize");
+		pAsyncGetPipeline(pPipelineLdrHdr, pipconf, sources, defines);
+		
+		// ldr HDR stereo
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
+		if(!renderFSQuadStereoVSLayer){
+			sources = shaderManager.GetSourcesNamed("DefRen Finalize Stereo");
+		}
+		pAsyncGetPipeline(pPipelineLdrHdrStereo, pipconf, sources, defines);
 		
 		
 		// lum prepare
@@ -900,10 +942,15 @@ void deoglRenderToneMap::RenderToneMappingPass(deoglRenderPlan &plan, int bloomW
 	defren.ActivateFBOTemporary2(false);
 	
 	const bool useCustom = oglCamera->UseCustomToneMapCurve();
+	const bool useHdr = plan.GetUseHdrOutput();
 	
 	const deoglPipeline &pipeline = useCustom
-		? (plan.GetRenderStereo() ? *pPipelineToneMapCustomStereo : *pPipelineToneMapCustom)
-		: (plan.GetRenderStereo() ? *pPipelineToneMapStereo : *pPipelineToneMap);
+		? (plan.GetRenderStereo()
+			? (useHdr ? *pPipelineToneMapHdrCustomStereo : *pPipelineToneMapCustomStereo)
+			: (useHdr ? *pPipelineToneMapHdrCustom : *pPipelineToneMapCustom))
+		: (plan.GetRenderStereo()
+			? (useHdr ? *pPipelineToneMapHdrStereo : *pPipelineToneMapStereo)
+			: (useHdr ? *pPipelineToneMapHdr : *pPipelineToneMap));
 	pipeline.Activate();
 	shader = &pipeline.GetShader();
 	
@@ -911,6 +958,8 @@ void deoglRenderToneMap::RenderToneMappingPass(deoglRenderPlan &plan, int bloomW
 	
 	defren.SetShaderParamFSQuad(*shader, sptmTCBloomTransform, bloomWidth, bloomHeight);
 	shader->SetParameterFloat(sptmTCBloomClamp, clampBloomU, clampBloomV);
+	shader->SetParameterFloat(sptmHdrNits, (float)plan.GetHdrMaxNits(),
+		(float)plan.GetHdrReferenceNits(), oglCamera->GetWhiteIntensity());
 	
 	tsmgr.EnableArrayTexture(0, *defren.GetTextureColor(), GetSamplerClampNearest());
 	tsmgr.EnableTexture(1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest());
@@ -936,16 +985,25 @@ void deoglRenderToneMap::RenderLDR(deoglRenderPlan &plan){
 	
 	tsmgr.EnableArrayTexture(0, *defren.GetTextureColor(), GetSamplerClampNearest());
 	
-	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr;
+	const bool useHdr = plan.GetUseHdrOutput();
+	const deoglPipeline &pipeline = useHdr
+		? (plan.GetRenderStereo() ? *pPipelineLdrHdrStereo : *pPipelineLdrHdr)
+		: (plan.GetRenderStereo() ? *pPipelineLdrStereo : *pPipelineLdr);
 	pipeline.Activate();
 	shader = &pipeline.GetShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
 	defren.SetShaderParamFSQuad(*shader, spfinTCTransform);
-	shader->SetParameterFloat(spfinGamma, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, 1.0f);
+	if(useHdr){
+		shader->SetParameterFloat(spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+		
+	}else{
+		shader->SetParameterFloat(spfinGamma, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, OGL_RENDER_INVGAMMA, 1.0f);
+	}
 	shader->SetParameterFloat(spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f);
 	shader->SetParameterFloat(spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader->SetParameterFloat(spfinHdrNits, (float)plan.GetHdrMaxNits(), (float)plan.GetHdrReferenceNits());
 	
 	RenderFullScreenQuad(plan);
 }

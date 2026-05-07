@@ -105,6 +105,9 @@ pTextureDynamicSkinRequiresSync(true),
 pDecalRequiresSync(true),
 pRequiresUpdateEverySync(false),
 
+pResetSkinTime(false),
+pResetSkinTimeTime(0.0f),
+
 pLLSyncWorld(this)
 {
 	try{
@@ -248,17 +251,31 @@ void deoglComponent::SyncToRender(){
 		
 		pRComponent->Update(pAccumUpdate);
 		
-		pSkinStateController->AdvanceTime(skinUpdate);
+		if(pResetSkinTime){
+			pSkinStateController->ResetTime(pResetSkinTimeTime);
+			
+		}else{
+			pSkinStateController->AdvanceTime(skinUpdate);
+		}
 		pSkinStateController->SyncToRender();
 		
 		pTextures.Visit([&](deoglComponentTexture &t){
-			t.AdvanceTime(skinUpdate);
+			if(pResetSkinTime){
+				t.ResetSkinTime(pResetSkinTimeTime);
+				
+			}else{
+				t.AdvanceTime(skinUpdate);
+			}
 			t.SyncToRender();
 		});
 		
 		pRComponent->UpdateSkin(skinUpdate);
+		if(pResetSkinTime){
+			pRComponent->ResetSkinTime(pResetSkinTimeTime);
+		}
 		
 		pAccumUpdate = 0.0f;
+		pResetSkinTime = false;
 		pCheckRequiresUpdateEverySync();
 // 	}
 	#ifdef HACK_TEST_CS
@@ -720,6 +737,10 @@ void deoglComponent::DynamicSkinChanged(){
 	pRequiresSync();
 }
 
+void deoglComponent::ResetSkinTime(float time){
+	pResetSkinTime = true;
+	pResetSkinTimeTime = time;
+}
 
 
 void deoglComponent::LayerMaskChanged(){

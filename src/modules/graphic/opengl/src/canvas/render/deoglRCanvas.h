@@ -146,7 +146,7 @@ public:
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput);
 	
 	/** Prepare for rendering render. */
 	virtual void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask);

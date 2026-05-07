@@ -1,0 +1,506 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Audio.LipSync
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+/**
+ * \brief Base class for lip synchronization.
+ * \version 1.32
+ * 
+ * Lip synchronization analyzes user voice audio and provides either a mouth openess value for
+ * jaw flapping or viseme weights for more detailed mouth shapes. See subclass documentation
+ * to know which result data they provide. All subclasses are required to fill in all possible
+ * values so the user can choose which category of lip sync he wants to use.
+ * 
+ * \par Jaw flapping
+ * 
+ * This is the most basic form of lip synchronization best used for characters lacking complex
+ * mouth pose abilities. Typical example of this are beast type characters with elongated snouts.
+ * In this case designing convincing mouth shapes can be difficult unless the character is of a
+ * cartoon type where mouth shapes are often very squishy. Apply the \ref #getJawOpenessSmooth()
+ * to the character jaw bone.
+ * 
+ * \par Viseme subset (4 visemes)
+ * 
+ * This subset represents basic mouth shapes that can be easily distinguished. These viseme
+ * are provided:
+ * - \ref Viseme#sil: Mouth closed. Covers \ref Viseme#silence and \ref Viseme#pp.
+ * - \ref Viseme#aa: Open mouth. Covers \ref Viseme#aa.
+ * - \ref Viseme#o: Round open mouth. Covers \ref Viseme#o, \ref Viseme#u, \ref Viseme#ff,
+ *                  \ref Viseme#ch and \ref Viseme#kk.
+ * - \ref Viseme#e: Spread open mouth. Covers \ref Viseme#e, \ref Viseme#i, \ref Viseme#ss,
+ *                  \ref Viseme#th, \ref Viseme#dd, \ref Viseme#nn and \ref Viseme#rr
+ * 
+ * \par Full viseme set (14 visemes)
+ * 
+ * The most detailed mode providing full set of viseme weights. This is best used for characters
+ * with complex mouth pose abilities.
+ * 
+ * \par Audio Analyzer
+ * 
+ * Lip synchronization uses an instance of \ref AudioAnalyzer to analyze the audio. The subclasses
+ * configure the analyzer for their specific needs. The user is responsible to set the audio source
+ * if he does not want to use the default microphone.
+ */
+abstract class LipSync
+	/**
+	 * \brief Visemes.
+	 */
+	enum Viseme
+		sil //<! silence
+		pp //<! p, b, m
+		ff //<! f, v
+		th //<! th
+		dd //<! t, d
+		kk //<! k, g
+		ch //<! ch, j, sh
+		ss //<! s, z
+		nn //<! n, l
+		rr //<! r
+		aa //<! a
+		e //<! e
+		i //<! ih
+		o //<! oh
+		u //<! ou
+	end
+	
+	
+	/**
+	 * \brief Viseme result.
+	 */
+	class VisemeResult
+		var Viseme pViseme
+		var float pWeight, pWeightSmooth
+		var OneEuroFilter pWeightFilter
+		
+		
+		/**
+		 * \brief Create viseme result.
+		 */
+		func new(Viseme viseme)
+			this.pViseme = viseme
+			pWeightFilter = OneEuroFilter.new(5, 0)
+			if viseme == Viseme.sil
+				pWeight = 1
+				pWeightSmooth = 1
+				pWeightFilter.reset(1)
+			end
+		end
+		
+		
+		/**
+		 * \brief Get viseme.
+		 */
+		func Viseme getViseme()
+			return pViseme
+		end
+		
+		/**
+		 * \brief Get viseme weight in range 0 to 1.
+		 */
+		func float getWeight()
+			return pWeight
+		end
+		
+		/**
+		 * \brief Set viseme weight in range 0 to 1.
+		 */
+		func void setWeight(float value)
+			pWeight = Math.clamp(value, 0.0, 1.0)
+		end
+		
+		/**
+		 * \brief Get smoothed viseme weight in range 0 to 1.
+		 * 
+		 * Use this value for animation character mouth.
+		 */
+		func float getWeightSmooth()
+			return pWeightSmooth
+		end
+		
+		/**
+		 * \brief Set smoothed viseme weight in range 0 to 1.
+		 */
+		func void setWeightSmooth(float value)
+			pWeightSmooth = Math.clamp(value, 0.0, 1.0)
+		end
+		
+		/**
+		 * \brief Weight filter.
+		 */
+		func OneEuroFilter getWeightFilter()
+			return pWeightFilter
+		end
+	end
+	
+	
+	var float pNoiseFloor, pUpdateInterval, pUpdateElapse
+	var float pJawOpeness, pJawOpenessSmooth
+	var OneEuroFilter pJawOpenessFilter
+	var Dictionary pVisemeResults, pVisemeSubsetResults
+	var AudioAnalyzer pAudioAnalyzer
+	
+	
+	/**
+	 * \brief Create lip sync.
+	 */
+	func new()
+		pNoiseFloor = 0.015 // -30dB(0.032) -35dB(0.018) -40dB(0.01)
+		pUpdateInterval = 1.0 / 30.0
+		
+		pJawOpenessFilter = OneEuroFilter.new(5, 0)
+		
+		pVisemeResults = Dictionary.new()
+		Viseme.forEach(block Viseme each
+			pVisemeResults.setAt(each, VisemeResult.new(each))
+		end)
+		
+		pVisemeSubsetResults = Dictionary.new()
+		pVisemeSubsetResults.setAt(Viseme.sil, VisemeResult.new(Viseme.sil))
+		pVisemeSubsetResults.setAt(Viseme.aa, VisemeResult.new(Viseme.aa))
+		pVisemeSubsetResults.setAt(Viseme.o, VisemeResult.new(Viseme.o))
+		pVisemeSubsetResults.setAt(Viseme.e, VisemeResult.new(Viseme.e))
+		
+		pAudioAnalyzer = AudioAnalyzer.new()
+	end
+	
+	
+	/**
+	 * \brief Noise floor in RMS (root mean square) amplitude.
+	 */
+	func float getNoiseFloor()
+		return pNoiseFloor
+	end
+	
+	/**
+	 * \brief Set noise floor in RMS (root mean square) amplitude.
+	 */
+	func void setNoiseFloor(float noiseFloor)
+		pNoiseFloor = Math.max(noiseFloor, 0.001)
+	end
+	
+	/**
+	 * \brief Update interval in seconds.
+	 */
+	func float getUpdateInterval()
+		return pUpdateInterval
+	end
+	
+	/**
+	 * \brief Set update interval in seconds.
+	 */
+	func void setUpdateInterval(float updateInterval)
+		pUpdateInterval = Math.max(updateInterval, 0.001)
+	end
+	
+	/**
+	 * \brief Get jaw openess in range 0 to 1.
+	 */
+	func float getJawOpeness()
+		return pJawOpeness
+	end
+	
+	/**
+	 * \brief Set jaw openess in range 0 to 1.
+	 */
+	func void setJawOpeness(float value)
+		pJawOpeness = Math.clamp(value, 0.0, 1.0)
+	end
+	
+	/**
+	 * \brief Smoothed jaw openess in range 0 to 1.
+	 * 
+	 * Use this value for animating the character jaw bone.
+	 */
+	func float getJawOpenessSmooth()
+		return pJawOpenessSmooth
+	end
+	
+	/**
+	 * \brief Set smoothed jaw openess in range 0 to 1.
+	 */
+	func void setJawOpenessSmooth(float value)
+		pJawOpenessSmooth = Math.clamp(value, 0.0, 1.0)
+	end
+	
+	/**
+	 * \brief Jaw openess filter.
+	 */
+	func OneEuroFilter getJawOpenessFilter()
+		return pJawOpenessFilter
+	end
+	
+	
+	/**
+	 * \brief Viseme result.
+	 */
+	func VisemeResult getVisemeResult(Viseme viseme)
+		return pVisemeResults.getAt(viseme) cast VisemeResult
+	end
+	
+	/**
+	 * \brief Visit viseme results with block.
+	 * 
+	 * Block receives one argument of type \ref VisemeResult.
+	 */
+	func void forEachVisemeResult(Block ablock)
+		pVisemeResults.forEachValue(block VisemeResult each
+			ablock.run(each)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Viseme sub result.
+	 * 
+	 * The viseme subset represents basic mouth shapes that can be easily distinguished.
+	 * Value values for viseme are:
+	 * - \ref Viseme#sil: Mouth closed. Covers \ref Viseme#silence and \ref Viseme#pp.
+	 * - \ref Viseme#aa: Open mouth. Covers \ref Viseme#aa.
+	 * - \ref Viseme#o: Round open mouth. Covers \ref Viseme#o, \ref Viseme#u, \ref Viseme#ff,
+	 *                  \ref Viseme#ch and \ref Viseme#kk.
+	 * - \ref Viseme#e: Spread open mouth. Covers \ref Viseme#e, \ref Viseme#i, \ref Viseme#ss,
+	 *                  \ref Viseme#th, \ref Viseme#dd, \ref Viseme#nn and \ref Viseme#rr
+	 */
+	func VisemeResult getVisemeSubsetResult(Viseme viseme)
+		return pVisemeSubsetResults.getAt(viseme) cast VisemeResult
+	end
+	
+	/**
+	 * \brief Visit viseme subset results with block.
+	 * 
+	 * Block receives one argument of type \ref VisemeResult.
+	 */
+	func void forEachVisemeSubsetResult(Block ablock)
+		pVisemeSubsetResults.forEachValue(block VisemeResult each
+			ablock.run(each)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Set jaw openess and viseme weights to 0 and silence weight to 1.
+	 * 
+	 * Does not affect smoothed values.
+	 */
+	func void silence()
+		pJawOpeness = 0
+		
+		pVisemeResults.forEachValue(block VisemeResult each
+			each.setWeight(each.getViseme() == Viseme.sil if 1 else 0)
+		end)
+		
+		pVisemeSubsetResults.forEachValue(block VisemeResult each
+			each.setWeight(each.getViseme() == Viseme.sil if 1 else 0)
+		end)
+	end
+	
+	/**
+	 * \brief Reset all weights to 0 and silence weights to 1.
+	 * 
+	 * Same as \ref #silence() but also changes smoothed values.
+	 */
+	func void reset()
+		var int value
+		
+		pJawOpeness = pJawOpenessSmooth = 0
+		pJawOpenessFilter.reset(0)
+		
+		pVisemeResults.forEachValue(block VisemeResult each
+			value = each.getViseme() == Viseme.sil if 1 else 0
+			each.setWeight(value)
+			each.setWeightSmooth(value)
+			each.getWeightFilter().reset(value)
+		end)
+		
+		pVisemeSubsetResults.forEachValue(block VisemeResult each
+			value = each.getViseme() == Viseme.sil if 1 else 0
+			each.setWeight(value)
+			each.setWeightSmooth(value)
+			each.getWeightFilter().reset(value)
+		end)
+	end
+	
+	
+	/**
+	 * \brief Update lip synchronization.
+	 * \param elapsed Elapsed time since last update in seconds.
+	 * 
+	 * Calls \ref #updateLipSync() at fixed intervals defined by \ref #pUpdateInterval and
+	 * smooths the results.
+	 */
+	func void update(float elapsed)
+		pUpdateElapse += elapsed
+		if pUpdateElapse >= pUpdateInterval
+			updateLipSync(pUpdateInterval)
+			pUpdateElapse = Math.fmod(pUpdateElapse - pUpdateInterval, pUpdateInterval)
+		end
+		smoothResults(elapsed)
+	end
+	
+	
+	/**
+	 * \brief Process lip synchronization.
+	 * \param elapsed Elapsed time since last update in seconds.
+	 */
+	abstract protected func void updateLipSync(float elapsed)
+	
+	
+	/**
+	 * \brief Audio analyzer.
+	 */
+	func AudioAnalyzer getAudioAnalyzer()
+		return pAudioAnalyzer
+	end
+	
+	
+	/**
+	 * \brief Viseme results.
+	 * 
+	 * \ref Dictionary mapping \ref Viseme to \ref VisemeResult.
+	 */
+	protected func Dictionary getVisemeResults()
+		return pVisemeResults
+	end
+	
+	/**
+	 * \brief Set jaw openess from viseme subset results.
+	 */
+	protected func void setJawOpenessFromVisemeSubset()
+		pJawOpeness = (pVisemeSubsetResults.getAt(Viseme.aa) cast VisemeResult).getWeight()\
+			+ (pVisemeSubsetResults.getAt(Viseme.o) cast VisemeResult).getWeight() * 0.25\
+			+ (pVisemeSubsetResults.getAt(Viseme.e) cast VisemeResult).getWeight() * 0.5
+		pJawOpeness = Math.min(pJawOpeness, 1.0)
+	end
+	
+	/**
+	 * \brief Set viseme subset from jaw openess.
+	 */
+	protected func void setVisemeSubsetFromJawOpeness()
+		(pVisemeSubsetResults.getAt(Viseme.aa) cast VisemeResult).setWeight(pJawOpeness)
+	end
+	
+	/**
+	 * \brief Set viseme subset results from full viseme results.
+	 */
+	protected func void setVisemeSubsetFromFull()
+		(pVisemeSubsetResults.getAt(Viseme.sil) cast VisemeResult).setWeight(\
+			(pVisemeResults.getAt(Viseme.sil) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.pp) cast VisemeResult).getWeight())
+		
+		(pVisemeSubsetResults.getAt(Viseme.aa) cast VisemeResult).setWeight(\
+			(pVisemeResults.getAt(Viseme.aa) cast VisemeResult).getWeight())
+		
+		(pVisemeSubsetResults.getAt(Viseme.o) cast VisemeResult).setWeight(\
+			(pVisemeResults.getAt(Viseme.o) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.u) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.ff) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.ch) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.kk) cast VisemeResult).getWeight())
+		
+		(pVisemeSubsetResults.getAt(Viseme.e) cast VisemeResult).setWeight(\
+			(pVisemeResults.getAt(Viseme.e) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.i) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.ss) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.th) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.dd) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.nn) cast VisemeResult).getWeight()\
+			+ (pVisemeResults.getAt(Viseme.rr) cast VisemeResult).getWeight())
+	end
+	
+	/**
+	 * \brief Set full viseme results from viseme subset results.
+	 */
+	protected func void setVisemeFullFromSubset()
+		(pVisemeResults.getAt(Viseme.sil) cast VisemeResult).setWeight(\
+			(pVisemeSubsetResults.getAt(Viseme.sil) cast VisemeResult).getWeight())
+		(pVisemeResults.getAt(Viseme.pp) cast VisemeResult).setWeight(\
+			(pVisemeSubsetResults.getAt(Viseme.sil) cast VisemeResult).getWeight())
+		(pVisemeResults.getAt(Viseme.ff) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.th) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.dd) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.kk) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.ch) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.ss) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.nn) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.rr) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.aa) cast VisemeResult).setWeight(\
+			(pVisemeSubsetResults.getAt(Viseme.aa) cast VisemeResult).getWeight())
+		(pVisemeResults.getAt(Viseme.e) cast VisemeResult).setWeight(\
+			(pVisemeSubsetResults.getAt(Viseme.e) cast VisemeResult).getWeight())
+		(pVisemeResults.getAt(Viseme.i) cast VisemeResult).setWeight(0)
+		(pVisemeResults.getAt(Viseme.o) cast VisemeResult).setWeight(\
+			(pVisemeSubsetResults.getAt(Viseme.o) cast VisemeResult).getWeight())
+		(pVisemeResults.getAt(Viseme.u) cast VisemeResult).setWeight(0)
+	end
+	
+	/**
+	 * \brief Normalize viseme weights.
+	 */
+	protected func void normalizeVisemes()
+		var float sum = pVisemeResults.injectValue(0.0, block float acc, VisemeResult each
+			return acc + each.getWeight()
+		end) cast float
+		
+		if sum > 0
+			var float factor = 1 / sum
+			pVisemeResults.forEachValue(block VisemeResult each
+				each.setWeight(each.getWeight() * factor)
+			end)
+		end
+		
+		sum = pVisemeSubsetResults.injectValue(0.0, block float acc, VisemeResult each
+			return acc + each.getWeight()
+		end) cast float
+		
+		if sum > 0
+			var float factor = 1 / sum
+			pVisemeSubsetResults.forEachValue(block VisemeResult each
+				each.setWeight(each.getWeight() * factor)
+			end)
+		end
+	end
+	
+	
+	/**
+	 * \brief Smooth jaw openess and visemes.
+	 * \param elapsed Time elapsed since last update in seconds.
+	 */
+	protected func void smoothResults(float elapsed)
+		if elapsed < 0.0001
+			return
+		end
+		
+		pJawOpenessSmooth = pJawOpenessFilter.process(pJawOpeness, elapsed)
+		
+		pVisemeResults.forEachValue(block VisemeResult viseme
+			viseme.setWeightSmooth(viseme.getWeightFilter().process(viseme.getWeight(), elapsed))
+		end)
+		pVisemeSubsetResults.forEachValue(block VisemeResult viseme
+			viseme.setWeightSmooth(viseme.getWeightFilter().process(viseme.getWeight(), elapsed))
+		end)
+	end
+end

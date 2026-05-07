@@ -592,6 +592,59 @@ void deOSWindows::SetRegistryValue(const char *key, const char *entry, const cha
 	RegCloseKey(hKey);
 }
 
+bool deOSWindows::GetDisplaySupportsHdr(){
+	// DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO (enum value 14) and the matching
+	// struct were introduced in Windows 10 version 1703. Rather than bumping the minimum
+	// SDK/WINNT version we define the struct locally with the same binary layout as the
+	// official SDK definition so that the code compiles against Win7-era headers while
+	// working correctly at runtime on Windows 10 1703+.
+	// On older Windows the DisplayConfigGetDeviceInfo call simply returns a non-zero
+	// (error) value for the unknown type, which is handled by the early-out below.
+	struct sAdvancedColorInfo{
+		DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+		union{
+			struct{
+				UINT32 advancedColorSupported     : 1;
+				UINT32 advancedColorEnabled       : 1;
+				UINT32 wideColorEnforced          : 1;
+				UINT32 advancedColorForceDisabled : 1;
+				UINT32 reserved                   : 28;
+			};
+			UINT32 value;
+		};
+		UINT32 colorEncoding;
+		UINT32 bitsPerColorChannel;
+	};
+	
+	static const auto kTypeAdvancedColor = (DISPLAYCONFIG_DEVICE_INFO_TYPE)14;
+	
+	UINT32 pathCount = 0, modeCount = 0;
+	if(GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount) != ERROR_SUCCESS){
+		return false;
+	}
+	
+	decTList<DISPLAYCONFIG_PATH_INFO> paths((int)pathCount, {});
+	decTList<DISPLAYCONFIG_MODE_INFO> modes((int)modeCount, {});
+	bool hdrFound = false;
+	
+	if(QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.GetArrayPointer(),
+	&modeCount, modes.GetArrayPointer(), nullptr) == ERROR_SUCCESS){
+		UINT32 i;
+		for(i=0; i<pathCount && !hdrFound; i++){
+			sAdvancedColorInfo colorInfo{};
+			colorInfo.header.type = kTypeAdvancedColor;
+			colorInfo.header.size = sizeof(colorInfo);
+			colorInfo.header.adapterId = paths[i].targetInfo.adapterId;
+			colorInfo.header.id = paths[i].targetInfo.id;
+			
+			hdrFound = DisplayConfigGetDeviceInfo(&colorInfo.header) == ERROR_SUCCESS
+				&& colorInfo.advancedColorEnabled;
+		}
+	}
+	
+	return hdrFound;
+}
+
 
 
 // Private Functions

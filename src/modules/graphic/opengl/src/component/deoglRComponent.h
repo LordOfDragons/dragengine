@@ -428,6 +428,9 @@ public:
 	
 	
 	
+	/** Reset skin time. */
+	void ResetSkinTime(float time);
+	
 	/** Update skin. */
 	void UpdateSkin(float elapsed);
 	
@@ -528,6 +531,9 @@ public:
 	
 	/** The world reference point changed. */
 	void WorldReferencePointChanged();
+	
+	/** World compute element or nullptr. */
+	inline const deoglRComponentWCElement::Ref &GetWorldComputeElement() const{ return pWorldComputeElement; }
 	
 	
 	

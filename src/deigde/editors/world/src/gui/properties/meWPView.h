@@ -34,7 +34,9 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeToggleTags.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
 #include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
@@ -86,6 +88,10 @@ private:
 	igdeAction::Ref pActionCameraObject;
 	
 	igdeCheckBox::Ref pChkEnableAuralization;
+	
+	igdeEditPoint::Ref pEditPreviewCameraSize;
+	igdeButton::Ref pBtnPreviewCameraSizeMenu;
+	igdeEditSliderText::Ref pEditPreviewCameraTransparency;
 	
 	igdeEditVector::Ref pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
 	igdeButton::Ref pBtnLimitBoxMenu;

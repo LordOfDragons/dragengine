@@ -254,6 +254,10 @@ void meWorldNotifier::ObjectPropertiesChanged(meWorld *world, meObject *object){
 	ObjectChanged(world, object);
 }
 
+void meWorldNotifier::ObjectCameraShowPreview(meWorld *world, meObject *object){
+	ObjectChanged(world, object);
+}
+
 void meWorldNotifier::ObjectActivePropertyChanged(meWorld*, meObject*){
 }
 

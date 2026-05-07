@@ -66,6 +66,7 @@ const vec3 packMask = vec3(1.0 / 256.0, 1.0 / 256.0, 0.0);
 #include "shared/interface/skin/emissivity.glsl"
 
 #include "shared/defren/skin/relief_mapping.glsl"
+#include "shared/defren/skin/dither.glsl"
 
 // Main Function
 //////////////////
@@ -176,7 +177,7 @@ void main(void){
 		color = vec3(TEXTURE(texColor, texColorArray, tcColor));
 	}
 	
-	float solidity;
+	float solidity = 1.0;
 	if(WithSolidity){
 		if(TextureSolidity){
 			solidity = remapSolidity(vSPBIndex, TEXTURE(texSolidity, texSolidityArray, tcColor).r);
@@ -231,9 +232,26 @@ void main(void){
 		}
 	}
 	
+	float transparency = 1.0;
+	if(WithDitherTransparency){
+		if(TextureTransparency){
+			transparency = TEXTURE(texTransparency, texTransparencyArray, tcColor).r;
+		}
+		transparency *= getTransparencyMultiplier(vSPBIndex);
+	}
+	
+	// apply dithering on transparent shadows
+	if(WithDitherTransparency){
+		solidity *= transparency;
+		
+		if(solidity < 0.999){
+			solidity = ditherSolidity(solidity, vSPBIndex);
+		}
+	}
+	
 	// discard fragments using masked solidity
 	if(WithSolidity){
-		if(solidity < (MaskedSolidity ? 0.35 : 0.001)){
+		if(solidity < (WithMaskedSolidity ? 0.35 : 0.001)){
 			if(!WithEmissivity){
 				discard;
 			}

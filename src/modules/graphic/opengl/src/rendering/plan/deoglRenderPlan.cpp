@@ -119,6 +119,9 @@ pLevel(0),
 
 pUseGIState(false),
 pRenderStereo(false),
+pUseHdrOutput(false),
+pHdrMaxNits(10000),
+pHdrReferenceNits(203),
 pUseConstGIState(nullptr),
 pRenderVR(ervrNone),
 pSkyLightCount(0),
@@ -1651,6 +1654,18 @@ void deoglRenderPlan::SetUseConstGIState(deoglGIState *giState){
 
 void deoglRenderPlan::SetRenderStereo (bool stereoRender){
 	pRenderStereo = stereoRender;
+}
+
+void deoglRenderPlan::SetUseHdrOutput(bool useHdrOutput){
+	pUseHdrOutput = useHdrOutput;
+}
+
+void deoglRenderPlan::SetHdrMaxNits(int hdrMaxNits){
+	pHdrMaxNits = hdrMaxNits;
+}
+
+void deoglRenderPlan::SetHdrReferenceNits(int hdrReferenceNits){
+	pHdrReferenceNits = hdrReferenceNits;
 }
 
 void deoglRenderPlan::SetRenderVR(eRenderVR renderVR){

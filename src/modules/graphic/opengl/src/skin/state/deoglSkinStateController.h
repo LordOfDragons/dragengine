@@ -116,7 +116,7 @@ public:
 	
 	
 	/** Reset time. */
-	void ResetTime();
+	void ResetTime(float time);
 	
 	/** Update time. */
 	void AdvanceTime(float timeStep);

@@ -75,6 +75,12 @@ public:
 	
 	/** \brief Request graphic module to reset adapted intensity to optimal value. */
 	virtual void ResetAdaptedIntensity();
+	
+	/**
+	 * \brief Ignore components changed.
+	 * \version 1.32
+	 */
+	virtual void IgnoreComponentsChanged();
 	/*@}*/
 	
 	

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Update Cull Result Force Culled</name>
+	
+	<parameter name='pIndexCount' location='0'/>
+	
+	<sourceCode unit='compute'>C DefRen Plan Update Cull Result Force Culled</sourceCode>
+</shader>

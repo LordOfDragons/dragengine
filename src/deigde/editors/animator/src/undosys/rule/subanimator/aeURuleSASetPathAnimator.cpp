@@ -65,8 +65,13 @@ void aeURuleSASetPathAnimator::Undo(){
 	pRule->SetPathSubAnimator(pOldPath);
 	pRule->LoadSubAnimator();
 	
+	const int connectionCount = pRule->GetConnections().GetCount();
 	pOldConnections.VisitIndexed([&](int index, aeController *controller){
-		pRule->SetControllerAt(index, controller);
+		// this check is required since it is possible the old sub animator
+		// changed or is even not existing anymore before undo is triggered
+		if(index < connectionCount){
+			pRule->SetControllerAt(index, controller);
+		}
 	});
 }
 

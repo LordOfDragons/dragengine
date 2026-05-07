@@ -31,6 +31,9 @@
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmOpusStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,10 +60,16 @@
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\deVideoWebm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmAudioTrackCallback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmInfos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmOpusStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\video\webm\src\dewmTrackCallback.h">

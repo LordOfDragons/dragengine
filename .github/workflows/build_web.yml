@@ -120,7 +120,7 @@ jobs:
           path: ${{ env.EM_CACHE_FOLDER }}
           key: ${{ env.EM_VERSION }}-${{ runner.os }}
       
-      - uses: mymindstorm/setup-emsdk@v14
+      - uses: mymindstorm/setup-emsdk@v15
         with:
           version: ${{ env.EM_VERSION }}
           actions-cache-folder: ${{ env.EM_CACHE_FOLDER }}
@@ -130,7 +130,7 @@ jobs:
         id: external-cache
         with:
           path: ./extern
-          key: external-cache-web-${{ hashFiles('./extern/**/{SConscript,*.tar.*,*.zip}') }}
+          key: external-cache-web-${{ hashFiles('./extern/**/SConscript', './extern/**/*.tar.*', './extern/**/*.zip') }}
           restore-keys: external-cache-web-
       
       # - name: Cache SCons

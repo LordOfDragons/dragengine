@@ -11,4 +11,7 @@ layout(location=0) out lowp vec4 outColor;
 
 void main( void ){
 	outColor = pColorTransform * textureLod( texTexture, vTexCoord, 0.0 ) + pColorTransform2;
+	
+	// color transform can produce negative values. clamp them to avoid problems
+	outColor.rgb = max(outColor.rgb, vec3(0.0));
 }

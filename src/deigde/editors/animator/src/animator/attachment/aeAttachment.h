@@ -60,9 +60,19 @@ public:
 		eatRig
 	};
 	
+	class cAsyncLoadListener : public igdeWObject::cAsyncLoadFinished{
+	private:
+		aeAttachment &pAttachment;
+		
+	public:
+		cAsyncLoadListener(aeAttachment &attachment);
+		void LoadFinished(igdeWObject &wrapper, bool succeeded) override;
+	};
+	
 private:
 	aeAnimator *pAnimator;
 	
+	cAsyncLoadListener pAsyncLoadListener;
 	igdeWObject::Ref pObjectWrapper;
 	
 	decString pName;
@@ -124,6 +134,9 @@ public:
 	
 	/** Dettach collider if attached. */
 	void DetachCollider();
+	
+	/** Reattach collider. */
+	void ReattachCollider();
 	
 	
 	

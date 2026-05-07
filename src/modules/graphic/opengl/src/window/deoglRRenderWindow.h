@@ -27,11 +27,13 @@
 
 #include "../configuration/deoglConfiguration.h"
 #include "../canvas/render/deoglRCanvasView.h"
-#include "../target/deoglRenderTarget.h"
+#include "../target/deoglRenderTargetArray.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/threading/deMutex.h>
 
 #ifdef OS_W32
 #include "../include_windows.h"
@@ -52,6 +54,13 @@ class NSView;
 #elif defined OS_UNIX_X11
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+#	ifdef BACKEND_OPENGL
+#		include "../extensions/egl.h"
+#		ifdef OS_UNIX_WAYLAND
+#			include "../extensions/wayland/wayland-defs.h"
+#		endif
+#	endif
 #endif
 
 class deoglRenderThread;
@@ -127,6 +136,28 @@ private:
 	Window pHostWindow;
 	Window pWindow;
 	Cursor pNullCursor;
+	
+#ifdef OS_UNIX_WAYLAND
+	wl_surface *pWlSurface;
+	xdg_surface *pXdgSurface;
+	xdg_toplevel *pXdgToplevel;
+	wl_egl_window *pWlEglWindow;
+	wp_fractional_scale_v1 *pWpFractionalScale;
+	wp_viewport *pWpViewport;
+	wp_color_management_surface_v1 *pWpColorSurface;
+	
+	struct sConfigureResize{
+		uint32_t serial = 0;
+		decPoint viewportSize{}, renderSize{};
+		bool requested = false;
+	};
+	deMutex pMutexCommitConfigure;
+	sConfigureResize pLastConfigureResize, pCommitConfigureResize, pRenderConfigureResize;
+#endif
+	
+#	ifdef BACKEND_OPENGL
+		EGLSurface pEGLSurface;
+#	endif
 #endif
 	
 	int pX;
@@ -147,16 +178,18 @@ private:
 	deoglConfiguration::eVSyncMode pVSyncMode;
 	bool pInitSwapInterval;
 	
-	deoglRenderTarget::Ref pRenderTarget;
+	deoglRenderTargetArray::Ref pRenderTarget;
 	
 	int pAfterCreateScaleFactor;
+	bool pUseHdrOutput;
+	int pHdrMaxNits, pHdrReferenceNits;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRRenderWindow(deoglRenderThread &renderThread);
+	explicit deoglRRenderWindow(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up render render target. */
@@ -199,6 +232,50 @@ public:
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	inline Window GetWindow() const{ return pWindow; }
 	void SetHostWindow(Window window);
+	
+#ifdef OS_UNIX_WAYLAND
+	inline wl_surface *GetWlSurface() const{ return pWlSurface; }
+	void SetWlSurface(wl_surface *surface);
+	
+	inline xdg_surface *GetXdgSurface() const{ return pXdgSurface; }
+	void SetXdgSurface(xdg_surface *surface);
+	
+	inline xdg_toplevel *GetXdgToplevel() const{ return pXdgToplevel; }
+	void SetXdgToplevel(xdg_toplevel *toplevel);
+	
+	inline wl_egl_window *GetWlEglWindow() const{ return pWlEglWindow; }
+	void SetWlEglWindow(wl_egl_window *eglWindow);
+	
+	inline wp_fractional_scale_v1 *GetWpFractionalScale() const{ return pWpFractionalScale; }
+	void SetWpFractionalScale(wp_fractional_scale_v1 *scale);
+	
+	inline wp_viewport *GetWpViewport() const{ return pWpViewport; }
+	void SetWpViewport(wp_viewport *viewport);
+	
+	inline wp_color_management_surface_v1 *GetWpColorSurface() const{ return pWpColorSurface; }
+	void SetWpColorSurface(wp_color_management_surface_v1 *surface);
+	
+	static void OnXdgSurfaceConfigure(void *data, xdg_surface *xdgSurface, uint32_t serial);
+	
+	static void OnXdgToplevelConfigure(void *data, xdg_toplevel *toplevel,
+		int32_t width, int32_t height, wl_array *states);
+	
+	static void OnXdgToplevelClose(void *data, xdg_toplevel *toplevel);
+	
+	static void OnXdgToplevelConfigureBounds(void *data, xdg_toplevel *toplevel,
+		int32_t width, int32_t height);
+	
+	static void OnXdgToplevelWmCapabilities(void *data, xdg_toplevel *toplevel,
+		wl_array *capabilities);
+	
+	static void OnWpFractionalScalePreferredScale(void *data,
+		wp_fractional_scale_v1 *fractionalScale, uint32_t scale);
+#endif
+	
+#ifdef BACKEND_OPENGL
+	inline EGLSurface GetEGLSurface() const{ return pEGLSurface; }
+	void SetEGLSurface(EGLSurface surface);
+#endif
 #endif
 	
 	
@@ -246,7 +323,21 @@ public:
 	
 	/** Scale factor stored during CreateWindow. */
 	inline int GetAfterCreateScaleFactor() const{ return pAfterCreateScaleFactor; }
-
+	
+	/** Use HDR output. */
+	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
+	void SetUseHdrOutput(bool useHdrOutput);
+	
+	/** HDR maximum nits. */
+	inline int GetHdrMaxNits() const{ return pHdrMaxNits; }
+	void SetHdrMaxNits(int hdrMaxNits);
+	
+	/** HDR reference nits. */
+	inline int GetHdrReferenceNits() const{ return pHdrReferenceNits; }
+	void SetHdrReferenceNits(int hdrReferenceNits);
+	
+	/** Render target or nullptr. */
+	inline const deoglRenderTargetArray::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	
 	/** Render canvas view or \em NULL if not set. */
@@ -293,6 +384,8 @@ public:
 	
 	
 private:
+	void pUpdateVSync();
+	
 #if defined OS_UNIX_X11
 	void pCreateNullCursor();
 #endif
@@ -301,6 +394,8 @@ private:
 	
 	void pRepositionWindow();
 	void pResizeWindow();
+	void pCreateRenderTarget();
+	void pResizeRenderTarget();
 	void pSetWindowTitle();
 	void pUpdateFullScreen();
 	void pSetIcon();
@@ -309,7 +404,6 @@ private:
 #ifdef OS_MACOS
 	void pMacOSCreateWindow();
 	void pMacOSDestroyWindow();
-	void pMacOSSwapBuffers();
 	void pMacOSCenterOnScreen();
 	void pMacOSResizeWindow();
 	void pMacOSSetWindowTitle();
@@ -320,8 +414,6 @@ public:
 	void pMacOSDelegateWindowDeactivated();
 	void pMacOSDelegateWindowResized();
 #endif
-	
-	void pUpdateVSync();
 };
 
 #endif

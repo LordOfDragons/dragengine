@@ -71,6 +71,7 @@
 #include "../vbo/deoglSharedVBOList.h"
 #include "../vbo/deoglSharedVBOListList.h"
 #include "../vr/deoglVR.h"
+#include "../window/deoglRRenderWindow.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
 
@@ -101,7 +102,16 @@ enum eSPCanvas{
 	spcClipRect,
 	spcTCClamp,
 	spcTCTransformMask,
-	spcTCLayer
+	spcTCLayer,
+	spcHdrOutput
+};
+
+enum eSPFinalize{
+	spfinTCTransform,
+	spfinGamma,
+	spfinBrightness,
+	spfinContrast,
+	spfinHdrNits
 };
 
 
@@ -178,6 +188,19 @@ pDebugCountCanvasCanvasView(0)
 		defines.SetDefines("WITH_MASK");
 		pCreatePipelines(pPipelineCanvasRenderWorldMask, pipconf, sources, defines);
 		
+		
+		// finlize
+		pipconf.Reset();
+		pipconf.SetDepthMask(false);
+		pipconf.SetEnableScissorTest(true);
+		
+		sources = shaderManager.GetSourcesNamed("DefRen Finalize");
+		defines = commonDefines;
+		defines.SetDefines("NO_POSTRANSFORM");
+		pAsyncGetPipeline(pPipelineFinalize, pipconf, sources, defines);
+		
+		defines.SetDefines("HDR_OUTPUT");
+		pAsyncGetPipeline(pPipelineFinalizeHdr, pipconf, sources, defines);
 		
 		
 		// debug information
@@ -336,6 +359,7 @@ void deoglRenderCanvas::DrawCanvasPaint(const deoglRenderCanvasContext &context,
 	shader.SetParameterTexMatrix3x2(spcTransform, context.GetTransform());
 	shader.SetParameterTexMatrix3x2(spcTCTransformMask, context.GetTCTransformMask());
 	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader.SetParameterInt(spcHdrOutput, context.GetUseHdrOutput() ? 1 : 0);
 	
 	deoglSharedVBOBlock &vboBlock = *canvas.GetVBOBlock();
 	const int vboOffset = vboBlock.GetOffset();
@@ -346,7 +370,8 @@ void deoglRenderCanvas::DrawCanvasPaint(const deoglRenderCanvasContext &context,
 	
 	// fill shape if fill color is not transparent
 	const decColor colorFill(canvas.GetFillColor(), canvas.GetFillColor().a * transparency);
-	const decColorMatrix colorTransformFill(decColorMatrix::CreateScaling(colorFill) * context.GetColorTransform());
+	const decColorMatrix colorTransformFill(
+		decColorMatrix::CreateScaling(colorFill) * context.GetColorTransform());
 	
 	if(canvas.GetDrawCountFill() > 0 && colorFill.a > FLOAT_SAFE_EPSILON){
 		shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransformFill);
@@ -359,7 +384,9 @@ void deoglRenderCanvas::DrawCanvasPaint(const deoglRenderCanvasContext &context,
 	const decColor colorLine(canvas.GetLineColor(), canvas.GetLineColor().a * transparency);
 	
 	if(canvas.GetDrawCountLine() > 0 && colorLine.a > FLOAT_SAFE_EPSILON && thickness > 0.1f){
-		const decColorMatrix colorTransformLine(decColorMatrix::CreateScaling(colorLine) * context.GetColorTransform());
+		const decColorMatrix colorTransformLine(
+			decColorMatrix::CreateScaling(colorLine) * context.GetColorTransform());
+		
 		shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransformLine);
 		
 		OGL_CHECK(renderThread, glDrawArrays(canvas.GetDrawModeLine(),
@@ -392,14 +419,17 @@ void deoglRenderCanvas::DrawCanvasImage(const deoglRenderCanvasContext &context,
 		: *pPipelineCanvasImage[canvas.GetBlendMode()];
 	pipeline.Activate();
 	
-	tsmgr.EnableTexture(0, *image->GetTexture(), GetSamplerRepeatLinear());
+	const bool sameSize = canvas.GetSize().Round() == decPoint(image->GetWidth(), image->GetHeight());
+	
+	tsmgr.EnableTexture(0, *image->GetTexture(), sameSize ? GetSamplerRepeatNearest() : GetSamplerRepeatLinear());
 	if(context.GetMask()){
-		tsmgr.EnableTexture(1, *context.GetMask(), GetSamplerClampLinear());
+		tsmgr.EnableTexture(1, *context.GetMask(), sameSize ? GetSamplerClampNearest() : GetSamplerClampLinear());
 	}
 	
 	const float transparency = context.GetTransparency();
-	const decColorMatrix colorTransform(decColorMatrix::CreateScaling(
-		1.0f, 1.0f, 1.0f, transparency) * context.GetColorTransform());
+	const decColorMatrix colorTransform(
+		decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency)
+		* context.GetColorTransform());
 	
 	const decTexMatrix2 billboardTransform(decTexMatrix2::CreateScale(canvas.GetSize()));
 	
@@ -410,6 +440,7 @@ void deoglRenderCanvas::DrawCanvasImage(const deoglRenderCanvasContext &context,
 	shader.SetParameterTexMatrix3x2(spcTCTransformMask, context.GetTCTransformMask());
 	shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransform);
 	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader.SetParameterInt(spcHdrOutput, context.GetUseHdrOutput() ? 1 : 0);
 	
 	shader.SetParameterFloat(spcClipRect,
 		(context.GetClipMin().x + 1.0f) * context.GetClipFactor().x,
@@ -456,13 +487,20 @@ void deoglRenderCanvas::DrawCanvasCanvasView(const deoglRenderCanvasContext &con
 		: *pPipelineCanvasImage[canvas.GetBlendMode()];
 	pipeline.Activate();
 	
-	tsmgr.EnableTexture(0, *renderTarget->GetTexture(), GetSamplerRepeatLinear());
+	const bool sameSize = canvas.GetSize().Round() == renderTarget->GetSize();
+	
+	tsmgr.EnableTexture(0, *renderTarget->GetTexture(),
+		sameSize ? GetSamplerRepeatNearest() : GetSamplerRepeatLinear());
+	
 	if(context.GetMask()){
-		tsmgr.EnableTexture(1, *context.GetMask(), GetSamplerClampLinear());
+		tsmgr.EnableTexture(1, *context.GetMask(),
+			sameSize ? GetSamplerClampNearest() : GetSamplerClampLinear());
 	}
 	
 	const float transparency = context.GetTransparency();
-	const decColorMatrix colorTransform(decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency) * context.GetColorTransform());
+	const decColorMatrix colorTransform(
+		decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency)
+		* context.GetColorTransform());
 	
 	const decTexMatrix2 billboardTransform(decTexMatrix2::CreateScale(canvas.GetSize()));
 	
@@ -473,6 +511,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView(const deoglRenderCanvasContext &con
 	shader.SetParameterTexMatrix3x2(spcTCTransformMask, context.GetTCTransformMask());
 	shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransform);
 	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader.SetParameterInt(spcHdrOutput, 0); // canvas view are already HDR-encoded if needed
 	
 	shader.SetParameterFloat(spcClipRect,
 		(context.GetClipMin().x + 1.0f) * context.GetClipFactor().x,
@@ -520,7 +559,9 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer(const deoglRenderCanvasContext &co
 	}
 	
 	const float transparency = context.GetTransparency();
-	const decColorMatrix colorTransform(decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency) * context.GetColorTransform());
+	const decColorMatrix colorTransform(
+		decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency)
+		* context.GetColorTransform());
 	
 	const decTexMatrix2 billboardTransform(decTexMatrix2::CreateScale(canvas.GetSize()));
 	
@@ -531,6 +572,7 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer(const deoglRenderCanvasContext &co
 	shader.SetParameterTexMatrix3x2(spcTCTransformMask, context.GetTCTransformMask());
 	shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransform);
 	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader.SetParameterInt(spcHdrOutput, context.GetUseHdrOutput() ? 1 : 0);
 	
 	shader.SetParameterFloat(spcClipRect,
 		(context.GetClipMin().x + 1.0f) * context.GetClipFactor().x,
@@ -616,16 +658,22 @@ void deoglRenderCanvas::DrawCanvasText(const deoglRenderCanvasContext &context, 
 	const float transparency = context.GetTransparency();
 	
 	if(font->GetIsColorFont()){
-		const decColorMatrix colorTransform(decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency) * context.GetColorTransform());
+		const decColorMatrix colorTransform(
+			decColorMatrix::CreateScaling(1.0f, 1.0f, 1.0f, transparency)
+			* context.GetColorTransform());
+		
 		shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransform);
 		
 	}else{
 		const decColor color(canvas.GetColor(), canvas.GetColor().a * transparency);
-		const decColorMatrix colorTransform(decColorMatrix::CreateScaling(color) * context.GetColorTransform());
+		const decColorMatrix colorTransform(
+			decColorMatrix::CreateScaling(color) * context.GetColorTransform());
+		
 		shader.SetParameterColorMatrix5x4(spcColorTransform, spcColorTransform2, colorTransform);
 	}
 	
-	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, context.GetUseHdrOutput() ? 0.45f : 1.0f);
+	shader.SetParameterInt(spcHdrOutput, context.GetUseHdrOutput() ? 1 : 0);
 	
 	// set clipping
 	shader.SetParameterFloat(spcClipRect,
@@ -753,6 +801,9 @@ const deoglRCanvasRenderWorld &canvas){
 		plan.SetLodMaxPixelError(config.GetLODMaxPixelError());
 		plan.SetLodLevelOffset(0);
 		plan.SetRenderStereo(false);
+		plan.SetUseHdrOutput(context.GetUseHdrOutput());
+		plan.SetHdrMaxNits(context.GetHdrMaxNits());
+		plan.SetHdrReferenceNits(context.GetHdrReferenceNits());
 #ifdef ENABLE_STEREO_RENDER_TEST
 		plan.SetRenderStereo(true);
 		plan.SetCameraStereoMatrix(decDMatrix::CreateTranslation(-0.1, 0, 0));
@@ -823,10 +874,15 @@ const deoglRCanvasRenderWorld &canvas){
 	shader.SetParameterTexMatrix3x2(spcTCTransformMask, context.GetTCTransformMask());
 	
 	// color correction from configuration applied over canvas color transformation
-	const float gamma = 1.0f / (OGL_RENDER_GAMMA * config.GetGammaCorrection());
+	const bool useHdr = context.GetUseHdrOutput();
+	float gamma = 1.0f / (OGL_RENDER_GAMMA * config.GetGammaCorrection());
 	decColorMatrix colorTransform;
 	
-	if(!vr){
+	if(useHdr){
+		gamma = 1.0f;
+	}
+	
+	if(!vr && !useHdr){
 		colorTransform *= decColorMatrix::CreateContrast(config.GetContrast());
 		colorTransform *= decColorMatrix::CreateBrightness(config.GetBrightness());
 	}
@@ -842,6 +898,8 @@ const deoglRCanvasRenderWorld &canvas){
 	}else{
 		shader.SetParameterFloat(spcGamma, 1.0f, 1.0f, 1.0f, 1.0f);
 	}
+	
+	shader.SetParameterInt(spcHdrOutput, useHdr ? 1 : 0);
 	
 	// set clipping
 	shader.SetParameterFloat(spcClipRect,
@@ -868,6 +926,40 @@ const deoglRCanvasRenderWorld &canvas){
 	}
 }
 
+void deoglRenderCanvas::Finalize(const deoglRenderCanvasContext &context, const deoglRRenderWindow &window){
+	auto &renderTarget = window.GetRenderTarget();
+	DEASSERT_NOTNULL(renderTarget)
+	DEASSERT_NOTNULL(renderTarget->GetTexture())
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	
+	const deoglDebugTraceGroup debugTraceToneMap(renderThread, "Window.Finalize");
+	const deoglPipeline &pipeline = window.GetUseHdrOutput() ? *pPipelineFinalizeHdr : *pPipelineFinalize;
+	
+	pipeline.Activate();
+	
+	renderThread.GetFramebuffer().Activate(nullptr);
+	tsmgr.EnableArrayTexture(0, *window.GetRenderTarget()->GetTexture(), GetSamplerClampNearest());
+	
+	SetViewport(context.GetViewportOffset(), context.GetViewportSize());
+	
+	auto shader = &pipeline.GetShader();
+	shader->SetParameterFloat(spfinTCTransform, 0.5f, 0.5f, 0.5f, 0.5f);
+	shader->SetParameterFloat(spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader->SetParameterFloat(spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f);
+	shader->SetParameterFloat(spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f);
+	shader->SetParameterFloat(spfinHdrNits, (float)window.GetHdrMaxNits(), (float)window.GetHdrReferenceNits());
+	
+	RenderFullScreenQuadVAO();
+	pActiveVAO = 0;
+}
+
+
+decColorMatrix deoglRenderCanvas::Rgb2LinearIf(const deoglRenderCanvasContext &context,
+const decColorMatrix &matrix) const{
+	return matrix; //context.GetUseHdrOutput() ? Rgb2Linear(matrix) : matrix;
+}
 
 
 void deoglRenderCanvas::DebugInfoCanvasReset(){
@@ -1218,9 +1310,9 @@ void deoglRenderCanvas::pActivateVAOShapes(){
 void deoglRenderCanvas::pCreatePipelines(
 const deoglPipeline* (&pipelines)[deoglRCanvas::BlendModeCount], deoglPipelineConfiguration &config,
 const deoglShaderSources *sources, const deoglShaderDefines &defines){
-	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 	pAsyncGetPipeline(pipelines[deCanvas::ebmBlend], config, sources, defines);
 	
-	config.EnableBlend(GL_SRC_ALPHA , GL_ONE);
+	config.EnableBlend(GL_SRC_ALPHA , GL_ONE, GL_ONE, GL_ONE);
 	pAsyncGetPipeline(pipelines[deCanvas::ebmAdd], config, sources, defines);
 }

@@ -429,11 +429,15 @@ public:
 	
 	/**
 	 * \brief Add component to ignore for shadow casting.
-	 * \throws deeInvalidParam \em component is present.
+	 * 
+	 * Does nothing if \em component is present.
 	 */
-	void AddShadowIgnoreComponent(deComponent *component);	/**
+	void AddShadowIgnoreComponent(deComponent *component);
+	
+	/**
 	 * \brief Remove component to ignore for shadow casting.
-	 * \throws deeInvalidParam \em component is absent.
+	 * 
+	 * Does nothing if \em component is absent.
 	 */
 	void RemoveShadowIgnoreComponent(deComponent *component);
 	

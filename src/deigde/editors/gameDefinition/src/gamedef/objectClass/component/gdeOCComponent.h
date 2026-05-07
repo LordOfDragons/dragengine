@@ -75,6 +75,9 @@ public:
 		/** \brief Affects audio. */
 		epAffectsAudio,
 		
+		/** \brief Affects global illumination. */
+		epEnableGI,
+		
 		/** \brief Attach position. */
 		epAttachPosition,
 		
@@ -107,6 +110,7 @@ private:
 	bool pStatic;
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
+	bool pEnableGI;
 	bool pPartialHide;
 	bool pAttachTarget;
 	bool pLightShadowIgnore;
@@ -238,6 +242,12 @@ public:
 	
 	/** \brief Set if component affects audio. */
 	void SetAffectsAudio(bool affectsAudio);
+	
+	/** \brief Component affects global illumination. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set if component affects global illumination. */
+	void SetEnableGI(bool enableGI);
 	
 	/** \brief Component is ignore from shadow casting of lights on the same object. */
 	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }

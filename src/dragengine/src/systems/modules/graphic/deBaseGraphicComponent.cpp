@@ -91,6 +91,9 @@ int deBaseGraphicComponent::IndexOfTextureClosestTo(const decVector &vector, flo
 void deBaseGraphicComponent::DynamicSkinChanged(){
 }
 
+void deBaseGraphicComponent::ResetSkinTime(float){
+}
+
 void deBaseGraphicComponent::AnimatorChanged(){
 }
 

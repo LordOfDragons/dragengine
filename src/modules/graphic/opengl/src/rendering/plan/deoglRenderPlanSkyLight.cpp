@@ -58,6 +58,7 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../shadow/deoglShadowCaster.h"
+#include "../../shadow/deoglShadowMapper.h"
 #include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../../shaders/paramblock/deoglSPBMapBufferRead.h"
 #include "../../sky/deoglRSkyInstance.h"
@@ -1214,6 +1215,8 @@ void deoglRenderPlanSkyLight::pBuildCRTShadow(int layer){
 	const sShadowLayer &sl = pShadowLayers[layer];
 	deoglComputeRenderTask &renderTask = sl.computeRenderTask;
 	const deoglComputeRenderTask::cGuard guard(renderTask, worldCompute, 3);
+	const bool useDitherShadow = deoglShadowMapper::UseShadowDither(
+		pPlan.GetRenderThread().GetConfiguration());
 	
 	renderTask.Clear();
 	renderTask.SetNoShadowNone(true);
@@ -1236,7 +1239,7 @@ void deoglRenderPlanSkyLight::pBuildCRTShadow(int layer){
 	renderTask.EndPass(worldCompute);
 	
 	// pass 2: all other geometry, all compact shadow
-	renderTask.SetFilterSolid(true);
+	renderTask.SetFilterSolid(!useDitherShadow);
 	renderTask.SetOcclusion(false);
 	renderTask.SetFilterDoubleSided(false);
 	renderTask.SetPipelineDoubleSided(nullptr);

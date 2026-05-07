@@ -925,7 +925,7 @@ deoglLightShader &shader, const sShadowDepthMaps &shadowDepthMaps){
 	
 	target = shader.GetTextureTarget(deoglLightShader::ettNoise);
 	if(target != -1){
-		tsmgr.EnableTexture(target, *dt.GetNoise2D(), GetSamplerRepeatNearest());
+		tsmgr.EnableTexture(target, *dt.GetNoise(), GetSamplerRepeatNearest());
 	}
 	
 	target = shader.GetTextureTarget(deoglLightShader::ettShadow1SolidDepth);
@@ -1315,6 +1315,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
+	const bool useDitherShadow = deoglShadowMapper::UseShadowDither(renderThread.GetConfiguration());
 	
 	DebugTimer3Reset(plan, false);
 	
@@ -1382,6 +1383,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid(true);
+	addToRenderTask.SetFilterSolid(!useDitherShadow);
 	addToRenderTask.SetNoShadowNone(true);
 	addToRenderTask.SetForceDoubleSided(true);
 	addToRenderTask.SetSkinPipelineType(deoglSkinTexturePipelines::etShadowProjection);
@@ -1432,6 +1434,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams){
 		}
 		
 		addToRenderTask.SetSolid(false);
+		addToRenderTask.SetFilterSolid(true);
 		if(shadowParams.collideList1){
 			addToRenderTask.AddComponents(*shadowParams.collideList1);
 		}

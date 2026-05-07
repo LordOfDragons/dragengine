@@ -31,9 +31,15 @@
 
 #include "deOS.h"
 #include "../common/collection/decTList.h"
+#include "../common/collection/decTUniqueList.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+#ifdef OS_UNIX_WAYLAND
+#include "wayland/deWaylandHelper.h"
+#include "wayland/xdg-output-protocol.h"
+#endif
 
 
 /**
@@ -59,6 +65,29 @@ private:
 	decTList<decPoint> pDisplayResolutions;
 	int pScaleFactor;
 	
+	// Wayland support (dynamically loaded at runtime)
+#ifdef OS_UNIX_WAYLAND
+	wl_registry *pWaylandRegistry;
+	deWaylandManager<zxdg_output_manager_v1> pWaylandXdgOutputManager;
+	wl_display *pWaylandDisplay;
+	
+	struct sWaylandOutputMode{
+		int width = 0, height = 0, refreshHz = 0;
+	};
+	
+	struct sWaylandOutputInfo{
+		deWaylandManager<wl_output> output;
+		int currentWidth, currentHeight, currentRefreshHz;
+		bool hasCurrentMode;
+		decTList<sWaylandOutputMode> modes;
+		zxdg_output_v1 *xdgOutput;
+		int logicalWidth, logicalHeight;
+		sWaylandOutputInfo();
+	};
+	decTUniqueList<sWaylandOutputInfo> pWaylandOutputs;
+	
+	bool pEnableWayland;
+#endif
 	
 	
 public:
@@ -261,14 +290,48 @@ public:
 	
 	
 	
+#ifdef OS_UNIX_WAYLAND
+	/** \name Wayland related. */
+	/*@{*/
+	/** \brief Wayland display or nullptr if Wayland is not available. */
+	inline wl_display *GetWaylandDisplay() const{ return pWaylandDisplay; }
+	
+	/**
+	 * \brief Enable wayland if supported by system.
+	 * 
+	 * Default is true.
+	 */
+	inline bool GetEnableWayland() const{ return pEnableWayland; }
+	
+	/**
+	 * \brief Set enable wayland if supported by system.
+	 * 
+	 * Must be called before the render thread is created. If true Wayland will be used instead of
+	 * X11 if supported by the system. If false Wayland will not be used even if supported by the
+	 * system. This is required if the application using the game engine does not support Wayland.
+	 */
+	void SetEnableWayland(bool enable);
+	/*@}*/
+#endif
+	
+	
+	
 private:
 	void pCleanUp();
 	void pSetWindowEventMask();
 	decString pGetHomeDirectory();
 	void pGetDisplayInformation();
 	int pGetGlobalScaling() const;
+	
+#ifdef OS_UNIX_WAYLAND
+	bool pTryConnectWayland();
+	void pGetWaylandDisplayInformation();
+	void pCleanUpWayland();
+	
+	static void OnRegistryGlobal(void*, wl_registry*, uint32_t, const char*, uint32_t);
+	static void OnOutputMode(void*, wl_output*, uint32_t, int32_t, int32_t, int32_t);
+#endif
 };
 
-#endif
-
-#endif
+#endif // OS_UNIX_X11
+#endif // _DEOSUNIX_H_

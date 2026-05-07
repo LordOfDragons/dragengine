@@ -36,7 +36,7 @@ jobs:
         id: buildnumber
         uses: onyxmueller/build-tag-number@v1.0.4
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.PAT_BUILDBOT }}
           prefix: github
   
   build_linux:
@@ -93,7 +93,8 @@ jobs:
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_android.yml
     with:
-      releaseVersion: nightly
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       androidArch: 'armv8'
       artifactArchive: archives-android-armv8
@@ -104,7 +105,8 @@ jobs:
     needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_android.yml
     with:
-      releaseVersion: nightly
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       androidArch: 'armv7'
       artifactArchive: archives-android-armv7
@@ -330,7 +332,7 @@ jobs:
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
             install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh,
             *.asc
-    
+
   upgrade_stable:
     needs: [upload]
     runs-on: ubuntu-latest
@@ -361,6 +363,18 @@ jobs:
       - name: Distribute Build
         run: |
           curl -X POST https://api.github.com/repos/LordOfDragons/dedistribute/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.ACTION_KEY }}" \
+            --data '{"event_type": "Release", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'
+
+  remote_launcher:
+    needs: [upload]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Remote Launcher Build
+        run: |
+          curl -X POST https://api.github.com/repos/LordOfDragons/deremotelauncher/dispatches \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.ACTION_KEY }}" \
             --data '{"event_type": "Release", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'

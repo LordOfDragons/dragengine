@@ -65,6 +65,8 @@ class deoglShaderDefines;
  * - StencilSameFrontBack: true
  * - BlendFuncSource: GL_ONE
  * - BlendFuncDest: GL_ZERO
+ * - BlendFuncAlphaSource: GL_ONE
+ * - BlendFuncAlphaDest: GL_ZERO
  * - ClipControl:
  *   - true: GL_LOWER_LEFT, GL_ZERO_TO_ONE
  *   - false: GL_LOWER_LEFT, GL_NEGATIVE_ONE_TO_ONE
@@ -120,6 +122,8 @@ private:
 	decColor pBlendColor;
 	GLenum pBlendFuncSource;
 	GLenum pBlendFuncDest;
+	GLenum pBlendFuncAlphaSource;
+	GLenum pBlendFuncAlphaDest;
 	
 	bool pClipControl;
 	
@@ -328,6 +332,14 @@ public:
 	inline GLenum GetBlendFuncDest() const{ return pBlendFuncDest; }
 	void SetBlendFuncDest(GLenum mode);
 	
+	/** Alpha source blend function. */
+	inline GLenum GetBlendFuncAlphaSource() const{ return pBlendFuncAlphaSource; }
+	void SetBlendFuncAlphaSource(GLenum mode);
+	
+	/** Alpha destination blend function. */
+	inline GLenum GetBlendFuncAlphaDest() const{ return pBlendFuncAlphaDest; }
+	void SetBlendFuncAlphaDest(GLenum mode);
+	
 	/** Enable blend with function GL_ONE / GL_ZERO. */
 	void EnableBlendReplace();
 	
@@ -345,6 +357,7 @@ public:
 	
 	/** Enable blend with function. */
 	void EnableBlend(GLenum source, GLenum dest);
+	void EnableBlend(GLenum source, GLenum dest, GLenum alphaSource, GLenum alphaDest);
 	
 	
 	

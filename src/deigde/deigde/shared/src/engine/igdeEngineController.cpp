@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,9 +38,13 @@
 #include "../gameproject/igdeGameProject.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/app/deOSUnix.h>
-#include <dragengine/app/deOSConsole.h>
-#include <dragengine/app/deOSWindows.h>
+#if defined(OS_UNIX) && defined(HAS_LIB_X11)
+	#include <dragengine/app/deOSUnix.h>
+#elif defined(OS_W32)
+	#include <dragengine/app/deOSWindows.h>
+#else
+	#include <dragengine/app/deOSConsole.h>
+#endif
 #include <dragengine/app/deCmdLineArgs.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
@@ -100,10 +106,15 @@ pRenderCounter(0)
 	// create the engine and initialize as far as possible
 	try{
 		// create os
-#if defined OS_UNIX && defined HAS_LIB_X11
+#if defined(OS_UNIX) && defined(HAS_LIB_X11)
 		logger->LogInfo(LOGSOURCE, "Creating OS Unix.");
 		os = new deOSUnix();
-#elif defined OS_W32
+		#if defined(OS_UNIX_WAYLAND) && defined(IGDE_TOOLKIT_FOX)
+			// IGDE uses FOX toolkit which is X11 based. The game engine render thread
+			// has to embed into FOX windows so Wayland can not be used for rendering.
+			(static_cast<deOSUnix*>(os))->SetEnableWayland(false);
+		#endif
+#elif defined(OS_W32)
 		logger->LogInfo(LOGSOURCE, "Creating OS Windows.");
 		os = new deOSWindows();
 #else

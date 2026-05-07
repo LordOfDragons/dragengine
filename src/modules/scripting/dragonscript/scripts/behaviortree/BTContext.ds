@@ -313,7 +313,7 @@ class BTContext
 		pActionFirstRun = true
 		
 		if pLogRuleChanges and pConsole != null
-			pConsole.addMessage(pLoggingName + ": Rule changed to " + rule)
+			pConsole.addMessage("{}: Rule changed to '{}'".format(Array.newWith(pLoggingName, rule)))
 		end
 		
 		onCurrentRuleChanged()
@@ -462,7 +462,7 @@ class BTContext
 		var BTRule rule
 		
 		if pLogSteps and pConsole != null
-			pConsole.addMessage(pLoggingName + ": Step Behavior Tree")
+			pConsole.addMessage("{}: Step Behavior Tree".format(Array.newWith(pLoggingName)))
 		end
 		
 		while pCurrentRule != null
@@ -472,8 +472,8 @@ class BTContext
 			pLastResult = rule.run(this)
 			
 			if pLogSteps and pConsole != null
-				pConsole.addMessage(pLoggingName + ": " + stepCount\
-					+ ") Run " + rule + " = " + pLastResult)
+				pConsole.addMessage("{}: {}) Run '{}' = {}".format(\
+					Array.newWith(pLoggingName, stepCount, rule, pLastResult)))
 			end
 			
 			if pLastResult == BTResult.running
@@ -483,8 +483,9 @@ class BTContext
 			if stepCount == runAwayLimit
 				var BTRunAwayException exception = BTRunAwayException.new(pRunAwayList)
 				if pConsole != null
-					pConsole.addMessage(pLoggingName + ": " \
-						+ exception.getReason() + "\n" + exception.getRunAwayBacktrace())
+					pConsole.addMessage("{}: {}({})\n{}".format(Array.newWith(pLoggingName,\
+						exception.getReason(), pBehaviorTree.getFilename(),\
+						exception.getRunAwayBacktrace())))
 				end
 				throw exception
 			end
@@ -495,7 +496,8 @@ class BTContext
 				if rule == null
 					if pLastResult == BTResult.failure
 						if pLogSteps and pConsole != null
-							pConsole.addMessage(pLoggingName + ": Behavior Tree Failed")
+							pConsole.addMessage("{}: Behavior Tree Failed".format(\
+								Array.newWith(pLoggingName)))
 						end
 						return false
 						
@@ -509,8 +511,8 @@ class BTContext
 				pLastResult = rule.run(this)
 				
 				if pLogSteps and pConsole != null
-					pConsole.addMessage(pLoggingName + ": " + stepCount\
-						+ ") Parent " + rule + "' = " + pLastResult)
+					pConsole.addMessage("{}: {}) Parent '{}' = {}".format(\
+						Array.newWith(pLoggingName, stepCount, rule, pLastResult)))
 				end
 				
 				if pLastResult == BTResult.running
@@ -520,8 +522,9 @@ class BTContext
 				if stepCount == runAwayLimit
 					var BTRunAwayException exception = BTRunAwayException.new(pRunAwayList)
 					if pConsole != null
-						pConsole.addMessage(pLoggingName + ": "\
-							+ exception.getReason() + "\n" + exception.getRunAwayBacktrace())
+						pConsole.addMessage("{}: {}({})\n{}".format(Array.newWith(pLoggingName,\
+							exception.getReason(), pBehaviorTree.getFilename(),\
+							exception.getRunAwayBacktrace())))
 					end
 					throw exception
 				end
@@ -529,7 +532,7 @@ class BTContext
 		end
 		
 		if pLogSteps and pConsole != null
-			pConsole.addMessage(pLoggingName + ": Behavior Tree Failed")
+			pConsole.addMessage("{}: Behavior Tree Failed".format(Array.newWith(pLoggingName)))
 		end
 		return false
 	end

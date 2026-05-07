@@ -60,6 +60,12 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capabilities\deoalCapabilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalATAudioCapture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalAudioCapture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -253,6 +259,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTOctree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureNoiseGate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.cpp">
@@ -503,6 +515,12 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capabilities\deoalCapabilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalATAudioCapture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\capture\deoalAudioCapture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\component\deoalAComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -714,6 +732,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\model\octree\deoalModelRTOctree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureNoiseGate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAudioCaptureVolume.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationMode.h">

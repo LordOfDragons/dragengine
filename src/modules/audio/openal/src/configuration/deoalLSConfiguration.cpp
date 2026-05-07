@@ -289,23 +289,25 @@ void deoalLSConfiguration::pLoadConfig(decBaseFileReader *file){
 			pConfig.SetAsyncAudio(pGetCDataBool(*tag, pConfig.GetAsyncAudio()));
 		
 		
-		
 		}else if(name == "useSharedEffectSlots"){
-			pConfig.SetUseSharedEffectSlots(pGetCDataBool(
-				*tag, pConfig.GetUseSharedEffectSlots() ) );
-		
-		}else if(name == "shareEnvironmentThreshold"){
-			pConfig.SetShareEnvironmentThreshold(pGetCDataFloat(
-				*tag, pConfig.GetShareEnvironmentThreshold() ) );
-		
-		}else if(name == "switchSharedEnvironmentThreshold"){
-			pConfig.SetSwitchSharedEnvironmentThreshold(pGetCDataFloat(
-				*tag, pConfig.GetSwitchSharedEnvironmentThreshold() ) );
-		
-		}else if(name == "maxSharedEffectSlots"){
-			pConfig.SetMaxSharedEffectSlots(pGetCDataInt(
-				*tag, pConfig.GetMaxSharedEffectSlots() ) );
+			pConfig.SetUseSharedEffectSlots(pGetCDataBool(*tag, pConfig.GetUseSharedEffectSlots()));
 			
+		}else if(name == "shareEnvironmentThreshold"){
+			pConfig.SetShareEnvironmentThreshold(pGetCDataFloat(*tag,
+				pConfig.GetShareEnvironmentThreshold()));
+			
+		}else if(name == "switchSharedEnvironmentThreshold"){
+			pConfig.SetSwitchSharedEnvironmentThreshold(pGetCDataFloat(*tag,
+				pConfig.GetSwitchSharedEnvironmentThreshold()));
+			
+		}else if(name == "maxSharedEffectSlots"){
+			pConfig.SetMaxSharedEffectSlots(pGetCDataInt(*tag, pConfig.GetMaxSharedEffectSlots()));
+			
+		}else if(name == "audioCaptureVolume"){
+			pConfig.SetAudioCaptureVolume(pGetCDataFloat(*tag, pConfig.GetAudioCaptureVolume()));
+			
+		}else if(name == "audioCaptureNoiseGate"){
+			pConfig.SetAudioCaptureNoiseGate(pGetCDataFloat(*tag, pConfig.GetAudioCaptureNoiseGate()));
 			
 			
 		}else{

@@ -185,6 +185,7 @@ private:
 	eGIUpdateSpeed pGIUpdateSpeed;
 	
 	eVSyncMode pVSyncMode;
+	bool pEnableHDRMonitor;
 	
 	decStringSet pDisableExtensions;
 	
@@ -473,6 +474,12 @@ public:
 	
 	/** Set ratio between game time and render time required to skip synchronization. */
 	void SetAsyncRenderSkipSyncTimeRatio(float ratio);
+	
+	/** Enable HDR monitor output (Wayland color management). */
+	inline bool GetEnableHDRMonitor() const{ return pEnableHDRMonitor; }
+	
+	/** Set enable HDR monitor output. */
+	void SetEnableHDRMonitor(bool enable);
 	
 	
 	

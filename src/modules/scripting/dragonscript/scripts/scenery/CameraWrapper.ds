@@ -33,25 +33,25 @@ namespace Dragengine.Scenery
  */
 class CameraWrapper
 	/** \brief Normal Camera FOV */
-	public fixed var float fovNormal = 39.60
+	public static fixed var float fovNormal = 39.60
 	
 	/** \brief Wide Camera FOV */
-	public fixed var float fovWide = 65.47
+	public static fixed var float fovWide = 65.47
 	
 	/** \brief Ultra Wide Camera FOV */
-	public fixed var float fovUltraWide = 83.97
+	public static fixed var float fovUltraWide = 83.97
 	
 	/** \brief Short Tele Camera FOV */
-	public fixed var float fovShortTele = 22.62
+	public static fixed var float fovShortTele = 22.62
 	
 	/** \brief Medium Tele Camera FOV */
-	public fixed var float fovMediumTele = 10.29
+	public static fixed var float fovMediumTele = 10.29
 	
 	/** \brief Long Tele Camera FOV */
-	public fixed var float fovLongTele = 6.87
+	public static fixed var float fovLongTele = 6.87
 	
 	/** \brief Typical First Person FOV */
-	public fixed var float fovFirstPerson = 90.00
+	public static fixed var float fovFirstPerson = 90.00
 	
 	
 	

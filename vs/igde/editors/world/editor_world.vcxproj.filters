@@ -95,6 +95,15 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\meWindowMainListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFColorMatrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1121,6 +1130,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\meWindowMainListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\previewcamera\mePreviewCameraListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\gui\properties\effects\meWEFColorMatrix.h">

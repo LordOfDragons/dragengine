@@ -11,6 +11,7 @@
 	<parameter name='pTCClamp' location='7'/> <!-- 6 -->
 	<parameter name='pTCTransformMask' location='2'/> <!-- 7 -->
 	<parameter name='pTCLayer' location='8'/> <!-- 8 -->
+	<parameter name='pHdrOutput' location='9'/> <!-- 9 -->
 	
 	<sourceCode unit='vertex'>V Canvas</sourceCode>
 	<sourceCode unit='fragment'>F Canvas</sourceCode>

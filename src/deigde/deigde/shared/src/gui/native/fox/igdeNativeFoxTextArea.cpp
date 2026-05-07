@@ -63,7 +63,16 @@ FXDEFMAP(igdeNativeFoxTextArea) igdeNativeFoxTextAreaMap[] = {
 	FXMAPFUNC(SEL_FOCUSOUT, igdeNativeFoxTextArea::ID_SELF,
 		igdeNativeFoxTextArea::onCommand),
 	
-	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxTextArea::ID_SELF,
+	/*
+	SEL_CHANGED is used in FXTextField to notify about text changes but in FXText it is used
+	to notify about cursor position changes. text changes are split across multiple messages
+	to give fine grained control. we do not need this granularity though.
+	*/
+	FXMAPFUNC(SEL_INSERTED, igdeNativeFoxTextArea::ID_SELF,
+		igdeNativeFoxTextArea::onChanged),
+	FXMAPFUNC(SEL_DELETED, igdeNativeFoxTextArea::ID_SELF,
+		igdeNativeFoxTextArea::onChanged),
+	FXMAPFUNC(SEL_REPLACED, igdeNativeFoxTextArea::ID_SELF,
 		igdeNativeFoxTextArea::onChanged),
 	
 	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxTextArea::ID_RESIZER,
@@ -193,10 +202,11 @@ void igdeNativeFoxTextArea::ApplyStyles(){
 }
 
 void igdeNativeFoxTextArea::UpdateText(){
-	if(pOwner->GetText() != pTextArea->getText().text()){
-		pTextArea->setText(pOwner->GetText().GetString());
+	if(pOwner->GetText() == pTextArea->getText().text()){
+		return;
 	}
 	
+	pTextArea->setText(pOwner->GetText().GetString());
 	ApplyStyles();
 }
 
@@ -387,6 +397,8 @@ long igdeNativeFoxTextArea::onCommand(FXObject*, FXSelector, void*){
 		return 0;
 	}
 	
+	pTextArea->update(); // workaround for FOX bug not repainting widget
+	
 	try{
 		pOwner->SetText(pTextArea->getText().text());
 		pOwner->NotifyTextChanged();
@@ -404,6 +416,8 @@ long igdeNativeFoxTextArea::onChanged(FXObject*, FXSelector, void*){
 	if(!pOwner->GetEnabled()){
 		return 0;
 	}
+	
+	pTextArea->update(); // workaround for FOX bug not repainting widget
 	
 	try{
 		pOwner->SetText(pTextArea->getText().text());

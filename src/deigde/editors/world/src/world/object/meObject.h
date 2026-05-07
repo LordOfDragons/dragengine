@@ -148,6 +148,7 @@ private:
 	bool pActive;
 	bool pVisible;
 	bool pShowMissingTextures;
+	bool pCameraShowPreview;
 	
 	meColliderOwner pColliderOwner;
 	
@@ -199,6 +200,12 @@ public:
 	inline bool GetShowMissingTextures() const{ return pShowMissingTextures; }
 	/** Sets if missing textures are shown. */
 	void SetShowMissingTextures(bool showMissingTextures);
+	
+	/** Camera show preview. */
+	inline bool GetCameraShowPreview() const{ return pCameraShowPreview; }
+	
+	/** Set camera show preview. */
+	void SetCameraShowPreview(bool cameraShowPreview);
 	
 	/** Retrieves the scale mode of the object class or esmFree if no class exists. */
 	igdeGDClass::eScaleModes GetScaleMode() const;

@@ -120,6 +120,9 @@
 # with_system_libtheora = 'auto'
 #   Use System libtheora
 # 
+# with_system_libopus = 'auto'
+#   Use System libopus
+# 
 # with_system_fox = 'auto'
 #   Use System FOX Toolkit
 # 

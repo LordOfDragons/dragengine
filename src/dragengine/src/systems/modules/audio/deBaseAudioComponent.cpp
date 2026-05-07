@@ -85,18 +85,21 @@ void deBaseAudioComponent::MeshDirty(){
 void deBaseAudioComponent::ParametersChanged(){
 }
 
-void deBaseAudioComponent::TextureChanged(int index, deComponentTexture &texture){
+void deBaseAudioComponent::TextureChanged(int, deComponentTexture&){
 }
 
 void deBaseAudioComponent::DynamicSkinChanged(){
 }
 
-
-
-void deBaseAudioComponent::DecalAdded(deDecal *decal){
+void deBaseAudioComponent::ResetSkinTime(float){
 }
 
-void deBaseAudioComponent::DecalRemoved(deDecal *decal){
+
+
+void deBaseAudioComponent::DecalAdded(deDecal*){
+}
+
+void deBaseAudioComponent::DecalRemoved(deDecal*){
 }
 
 void deBaseAudioComponent::AllDecalsRemoved(){

@@ -49,8 +49,13 @@
 	using GLXDrawable = unsigned long;
 	using GLXFBConfig = void *;
 	using GLXContext = void *;
+	using EGLDisplay = void *;
+	using EGLConfig = void *;
+	using EGLContext = void *;
+	using EGLSurface = void *;
 	
 	#define XR_USE_PLATFORM_XLIB
+	#define XR_USE_PLATFORM_EGL
 	#define XR_USE_GRAPHICS_API_OPENGL
 
 #elif defined OS_W32

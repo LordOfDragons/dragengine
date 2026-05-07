@@ -740,6 +740,10 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pComponent->SetScaling(GetWrapper().GetScaling());
 	}
 	
+	pComponent->SetEnableGI(GetBoolProperty(
+		pGDComponent.GetPropertyName(igdeGDCComponent::epEnableGI),
+		pGDComponent.GetEnableGI()));
+	
 	UpdateLayerMasks();
 	
 	// update textures
@@ -826,7 +830,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				animator->SetRig(rig);
 				
 				try{
-					const deAnimatorController::Ref controller(deAnimatorController::Ref::New());
+					auto controller(deAnimatorController::Ref::New());
 					controller->SetName(playbackController);
 					controller->SetValueRange(0.0f, animation->GetMove(moveIndex)->GetPlaytime());
 					controller->SetClamp(false);
@@ -838,7 +842,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				}
 				
 				try{
-					const deAnimatorLink::Ref link(deAnimatorLink::Ref::New());
+					auto link(deAnimatorLink::Ref::New());
 					link->SetController(0);
 					
 					decCurveBezier curve;
@@ -852,8 +856,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				}
 				
 				try{
-					const deAnimatorRuleAnimation::Ref rule(
-						deAnimatorRuleAnimation::Ref::New());
+					auto rule = deAnimatorRuleAnimation::Ref::New();
 					rule->SetEnableSize(true);
 					rule->SetMoveName(move);
 					rule->GetTargetMoveTime().AddLink(0);
@@ -1086,7 +1089,7 @@ void igdeWOSOComponent::DetachFromCollider(){
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
 	pAttachment = nullptr;
-	pAttachedToCollider = nullptr;
+	pAttachedToCollider.Clear();
 }
 
 bool igdeWOSOComponent::pIsVisible() const{
@@ -1097,8 +1100,8 @@ bool igdeWOSOComponent::pIsVisible() const{
 		visible = partiallyVisible;
 	}
 	
-	//return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
-	return GetWrapper().GetColliderComponent() && partiallyVisible;
+	//return pCollider == GetWrapper().GetColliderComponent() && visible;
+	return GetWrapper().GetColliderComponent() && visible;
 }
 
 void igdeWOSOComponent::pUpdateOutlineComponent(){

@@ -33,6 +33,7 @@
 #include <signal.h>
 #include <locale.h>
 #include <sys/time.h>
+#include <dlfcn.h>
 #include <X11/Xproto.h>
 #include <X11/extensions/Xrandr.h>
 #include <X11/Xresource.h>
@@ -252,6 +253,224 @@ static int errorHandler(Display *dpy, XErrorEvent *e){
 }
 
 
+#ifdef OS_UNIX_WAYLAND
+
+static deWlDynLib v_WaylandLib("OSUNIX", "wayland-client", 0);
+
+#define DE_DECL_WLIFACE(name) \
+	static const deWlDynLibData<wl_interface> v_wl_##name##_interface(v_WaylandLib, "wl_" #name "_interface"); \
+	extern "C" const wl_interface wl_##name##_interface = *v_wl_##name##_interface;
+
+DE_DECL_WLIFACE(registry)
+DE_DECL_WLIFACE(display)
+DE_DECL_WLIFACE(callback)
+DE_DECL_WLIFACE(compositor)
+DE_DECL_WLIFACE(shm_pool)
+DE_DECL_WLIFACE(shm)
+DE_DECL_WLIFACE(buffer)
+DE_DECL_WLIFACE(data_offer)
+DE_DECL_WLIFACE(data_source)
+DE_DECL_WLIFACE(data_device)
+DE_DECL_WLIFACE(data_device_manager)
+DE_DECL_WLIFACE(shell)
+DE_DECL_WLIFACE(shell_surface)
+DE_DECL_WLIFACE(surface)
+DE_DECL_WLIFACE(seat)
+DE_DECL_WLIFACE(pointer)
+DE_DECL_WLIFACE(keyboard)
+DE_DECL_WLIFACE(touch)
+DE_DECL_WLIFACE(output)
+DE_DECL_WLIFACE(region)
+DE_DECL_WLIFACE(subcompositor)
+DE_DECL_WLIFACE(subsurface)
+DE_DECL_WLIFACE(fixes)
+
+#undef DE_DECL_WLIFACE
+
+
+static deWlDynLibFunc<wl_display*(const char*)> v_wl_display_connect(v_WaylandLib, "wl_display_connect");
+extern "C" wl_display *wl_display_connect(const char *name){
+	return v_wl_display_connect(name);
+}
+
+static deWlDynLibFunc<void(wl_display*)> v_wl_display_disconnect(v_WaylandLib, "wl_display_disconnect");
+extern "C" void wl_display_disconnect(wl_display *display){
+	v_wl_display_disconnect(display);
+}
+
+static deWlDynLibFunc<int(wl_display*)> v_wl_display_dispatch(v_WaylandLib, "wl_display_dispatch");
+extern "C" int wl_display_dispatch(wl_display *display){
+	return v_wl_display_dispatch(display);
+}
+
+static deWlDynLibFunc<int(wl_display*)> v_wl_display_dispatch_pending(v_WaylandLib, "wl_display_dispatch_pending");
+extern "C" int wl_display_dispatch_pending(wl_display *display){
+	return v_wl_display_dispatch_pending(display);
+}
+
+static deWlDynLibFunc<int(wl_display*)> v_wl_display_flush(v_WaylandLib, "wl_display_flush");
+extern "C" int wl_display_flush(wl_display *display){
+	return v_wl_display_flush(display);
+}
+
+static deWlDynLibFunc<int(wl_display*)> v_wl_display_roundtrip(v_WaylandLib, "wl_display_roundtrip");
+extern "C" int wl_display_roundtrip(wl_display *display){
+	return v_wl_display_roundtrip(display);
+}
+
+static deWlDynLibFunc<const wl_interface*(wl_proxy*)> v_wl_proxy_get_interface(v_WaylandLib, "wl_proxy_get_interface");
+extern "C" const wl_interface *wl_proxy_get_interface(wl_proxy *proxy){
+	return v_wl_proxy_get_interface(proxy);
+}
+
+static deWlDynLibFunc<wl_proxy*(wl_proxy*, uint32_t, const wl_interface*, uint32_t, uint32_t, union wl_argument*)>
+	v_wl_proxy_marshal_array_flags(v_WaylandLib, "wl_proxy_marshal_array_flags");
+
+extern "C" wl_proxy *wl_proxy_marshal_array_flags(wl_proxy *proxy, uint32_t opcode,
+const wl_interface *interface, uint32_t version, uint32_t flags, union wl_argument *args){
+	return v_wl_proxy_marshal_array_flags(proxy, opcode, interface, version, flags, args);
+}
+
+
+static deWlDynLibFunc<wl_proxy*(wl_proxy*, uint32_t, const wl_interface*, uint32_t, uint32_t, ...)>
+	v_wl_proxy_marshal_flags(v_WaylandLib, "wl_proxy_marshal_flags");
+
+extern "C" wl_proxy *wl_proxy_marshal_flags(wl_proxy *proxy, uint32_t opcode, const wl_interface *interface,
+uint32_t version, uint32_t flags, ...){
+	const struct wl_interface *proxyIface = wl_proxy_get_interface(proxy);
+	if(!proxyIface || !proxyIface->methods){
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"Cannot marshal Wayland message: no method information available for opcode {0}", opcode));
+	}
+	
+	if(opcode >= (uint32_t)proxyIface->method_count) {
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"Cannot marshal Wayland message: Opcode {0} out of bounds for interface {1} (count {2})",
+			opcode, proxyIface->name, proxyIface->method_count));
+	}
+	
+	const char *sig = proxyIface->methods[opcode].signature;
+	if(!sig){
+		DETHROW_INFO(deeInvalidAction, decString::Formatted(
+			"Cannot marshal Wayland message: no signature information available for opcode {0} of interface {1}",
+			opcode, proxyIface->name));
+	}
+	
+	const int maxArgs = 20;
+	union wl_argument args[maxArgs];
+	
+	va_list ap;
+	va_start(ap, flags);
+	
+	int i = 0;
+	while(*sig && i < maxArgs){
+		if((*sig >= '0' && *sig <= '9') || *sig == '?'){
+			sig++;
+			continue;
+		}
+		
+		switch(*sig){
+		case 'i':
+			args[i++].i = va_arg(ap, int32_t);
+			break;
+			
+		case 'u':
+			args[i++].u = va_arg(ap, uint32_t);
+			break;
+			
+		case 'f':
+			args[i++].f = va_arg(ap, wl_fixed_t);
+			break;
+			
+		case 's':
+			args[i++].s = va_arg(ap, const char*);
+			break;
+			
+		case 'o':
+			args[i++].o = va_arg(ap, wl_object*);
+			break;
+			
+		case 'n':
+			args[i++].n = va_arg(ap, uint32_t);
+			break;
+			
+		case 'a':
+			args[i++].a = va_arg(ap, wl_array*);
+			break;
+			
+		case 'h':
+			args[i++].h = va_arg(ap, int32_t);
+			break;
+		}
+		sig++;
+	}
+	va_end(ap);
+	
+	return v_wl_proxy_marshal_array_flags(proxy, opcode, interface, version, flags, args);
+}
+
+static deWlDynLibFunc<uint32_t(wl_proxy*)> v_wl_proxy_get_version(v_WaylandLib, "wl_proxy_get_version");
+extern "C" uint32_t wl_proxy_get_version(wl_proxy *proxy){
+	return v_wl_proxy_get_version(proxy);
+}
+
+static deWlDynLibFunc<int(wl_proxy*, void (**)(void), void*)> v_wl_proxy_add_listener(v_WaylandLib, "wl_proxy_add_listener");
+extern "C" int wl_proxy_add_listener(wl_proxy *proxy, void (**implementation)(void), void *data){
+	return v_wl_proxy_add_listener(proxy, implementation, data);
+}
+
+static deWlDynLibFunc<void(wl_proxy*)> v_wl_proxy_destroy(v_WaylandLib, "wl_proxy_destroy");
+extern "C" void wl_proxy_destroy(wl_proxy *proxy){
+	v_wl_proxy_destroy(proxy);
+}
+
+static deWlDynLibFunc<void(wl_proxy*, wl_event_queue*)> v_wl_proxy_set_queue(v_WaylandLib, "wl_proxy_set_queue");
+extern "C" void wl_proxy_set_queue(wl_proxy *proxy, wl_event_queue *queue){
+	v_wl_proxy_set_queue(proxy, queue);
+}
+
+static deWlDynLibFunc<wl_event_queue*(wl_display*)> v_wl_display_create_queue(v_WaylandLib, "wl_display_create_queue");
+extern "C" wl_event_queue *wl_display_create_queue(wl_display *display){
+	return v_wl_display_create_queue(display);
+}
+
+static deWlDynLibFunc<void(wl_event_queue*)> v_wl_event_queue_destroy(v_WaylandLib, "wl_event_queue_destroy");
+extern "C" void wl_event_queue_destroy(wl_event_queue *queue){
+	v_wl_event_queue_destroy(queue);
+}
+
+static deWlDynLibFunc<int(wl_display*)> v_wl_display_get_fd(v_WaylandLib, "wl_display_get_fd");
+extern "C" int wl_display_get_fd(wl_display *display){
+	return v_wl_display_get_fd(display);
+}
+
+static deWlDynLibFunc<int(wl_display*, wl_event_queue*)> v_wl_display_prepare_read_queue(v_WaylandLib, "wl_display_prepare_read_queue");
+extern "C" int wl_display_prepare_read_queue(wl_display *display, wl_event_queue *queue){
+	return v_wl_display_prepare_read_queue(display, queue);
+}
+
+static deWlDynLibFunc<int(wl_display*)> v_wl_display_read_events(v_WaylandLib, "wl_display_read_events");
+extern "C" int wl_display_read_events(wl_display *display){
+	return v_wl_display_read_events(display);
+}
+
+static deWlDynLibFunc<void(wl_display*)> v_wl_display_cancel_read(v_WaylandLib, "wl_display_cancel_read");
+extern "C" void wl_display_cancel_read(wl_display *display){
+	v_wl_display_cancel_read(display);
+}
+
+static deWlDynLibFunc<int(wl_display*, wl_event_queue*)> v_wl_display_dispatch_queue_pending(v_WaylandLib, "wl_display_dispatch_queue_pending");
+extern "C" int wl_display_dispatch_queue_pending(wl_display *display, wl_event_queue *queue){
+	return v_wl_display_dispatch_queue_pending(display, queue);
+}
+
+static deWlDynLibFunc<int(wl_display*, wl_event_queue*)> v_wl_display_roundtrip_queue(v_WaylandLib, "wl_display_roundtrip_queue");
+extern "C" int wl_display_roundtrip_queue(wl_display *display, wl_event_queue *queue){
+	return v_wl_display_roundtrip_queue(display, queue);
+}
+
+#endif
+
 
 // Class deOSUnix
 ///////////////////
@@ -267,8 +486,26 @@ pEventMask(0),
 pHostingMainWindow(0),
 pHostingRenderWindow(0),
 pScaleFactor(100)
+
+#ifdef OS_UNIX_WAYLAND
+,pWaylandRegistry(nullptr),
+pWaylandXdgOutputManager(zxdg_output_manager_v1_interface, 1, zxdg_output_manager_v1_destroy),
+pWaylandDisplay(nullptr),
+pEnableWayland(true)
+#endif
 {
+	// init locale
+	setlocale(LC_ALL, "");
+	
 	try{
+#ifdef OS_UNIX_WAYLAND
+		// try to connect to Wayland display
+		if(pTryConnectWayland()){
+			pGetWaylandDisplayInformation();
+			return;
+		}
+#endif
+		
 		// set error handler
 		tempGlobalOS = this;
 		XSetErrorHandler(&errorHandler);
@@ -282,14 +519,11 @@ pScaleFactor(100)
 		if(!pDisplay){
 			printf("[OSUNIX] Cannot not open display %s\n", XDisplayName(dispName));
 			DETHROW(deeInvalidAction);
-	    }
+		}
 		
 		pScreen = XDefaultScreen(pDisplay);
 		pGetDisplayInformation();
 		pScaleFactor = pGetGlobalScaling();
-		
-		// init locale
-		setlocale(LC_ALL, "");
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -425,10 +659,14 @@ void deOSUnix::SetEventMask(long mask){
 }
 
 void deOSUnix::SetWindow(Window wnd){
+	if(pCurWindow == wnd){
+		return;
+	}
+	
 	//XWindowAttributes xwa;
 	
 	// check if the is a window at the moment
-	if(pCurWindow > 255){
+	if(pCurWindow > 255 && pDisplay){
 		// ungrab mouse pointer
 		XUngrabPointer(pDisplay, CurrentTime);
 		XUngrabKeyboard(pDisplay, CurrentTime);
@@ -443,7 +681,7 @@ void deOSUnix::SetWindow(Window wnd){
 	pSetWindowEventMask();
 	
 	// show new window if not null
-	if(pCurWindow > 255){
+	if(pCurWindow > 255 && pDisplay){
 		XMapWindow(pDisplay, pCurWindow);
 		XFlush(pDisplay);
 		// fetch geometry information
@@ -487,6 +725,10 @@ bool deOSUnix::HasHostingRenderWindow() const{
 
 
 void deOSUnix::ProcessEventLoop(bool sendToInputModule){
+	if(!pDisplay){
+		return;
+	}
+	
 	deInputSystem &inpSys = *GetEngine()->GetInputSystem();
 	deBaseInputModule &inputModule = *inpSys.GetActiveModule();
 	XEvent event;
@@ -561,11 +803,24 @@ decString deOSUnix::GetUserLocaleTerritory(){
 }
 
 
+// Wayland related
+////////////////////
+
+#ifdef OS_UNIX_WAYLAND
+void deOSUnix::SetEnableWayland(bool enable){
+	pEnableWayland = enable;
+}
+#endif
+
 
 // Private Functions
 //////////////////////
 
 void deOSUnix::pCleanUp(){
+#ifdef OS_UNIX_WAYLAND
+	pCleanUpWayland();
+#endif
+	
 	// close display
 	if(pDisplay){
 		XCloseDisplay(pDisplay);
@@ -580,9 +835,8 @@ void deOSUnix::pCleanUp(){
 }
 
 void deOSUnix::pSetWindowEventMask(){
-	XSetWindowAttributes swa;
-	
-	if(pCurWindow > 255){
+	if(pCurWindow > 255 && pDisplay){
+		XSetWindowAttributes swa;
 		swa.event_mask = pEventMask;
 		XChangeWindowAttributes(pDisplay, pCurWindow, CWEventMask, &swa);
 	}
@@ -610,6 +864,10 @@ decString deOSUnix::pGetHomeDirectory(){
 }
 
 void deOSUnix::pGetDisplayInformation(){
+	if(!pDisplay){
+		return;
+	}
+	
 	const int screenCount = XScreenCount(pDisplay);
 	if(screenCount == 0){
 		return; // should never happen
@@ -685,6 +943,10 @@ void deOSUnix::pGetDisplayInformation(){
 }
 
 int deOSUnix::pGetGlobalScaling() const{
+	if(!pDisplay){
+		return 100;
+	}
+	
 	const char * const resourceString = XResourceManagerString(pDisplay);
 	if(!resourceString){
 		return 100;
@@ -714,4 +976,212 @@ int deOSUnix::pGetGlobalScaling() const{
 	return decMath::max((int)(scale / 25.0 + 0.5) * 25, 100);
 }
 
-#endif
+#ifdef OS_UNIX_WAYLAND
+
+deOSUnix::sWaylandOutputInfo::sWaylandOutputInfo() :
+output(wl_output_interface, 2, wl_output_destroy),
+currentWidth(0),
+currentHeight(0),
+currentRefreshHz(0),
+hasCurrentMode(false),
+xdgOutput(nullptr),
+logicalWidth(0),
+logicalHeight(0){
+}
+
+void deOSUnix::OnOutputMode(void *data, wl_output*, uint32_t flags, int32_t width,
+int32_t height, int32_t refresh){
+	auto &info = *reinterpret_cast<sWaylandOutputInfo*>(data);
+	info.modes.Add({width, height, (refresh + 500) / 1000});
+	if(flags & WL_OUTPUT_MODE_CURRENT){
+		info.currentWidth = width;
+		info.currentHeight = height;
+		info.currentRefreshHz = (refresh + 500) / 1000;
+		info.hasCurrentMode = true;
+	}
+}
+
+void deOSUnix::OnRegistryGlobal(void *data, wl_registry *registry, uint32_t name,
+const char *interface, uint32_t version){
+	auto &osunix = *reinterpret_cast<deOSUnix*>(data);
+	
+	if(osunix.pWaylandXdgOutputManager.Bind(registry, name, interface, version)){
+		
+	}else if(strcmp(interface, wl_output_interface.name) == 0){
+		auto info = deTUniqueReference<sWaylandOutputInfo>::New();
+		if(info->output.Bind(registry, name, interface, version)){
+			static const wl_output_listener listener = {
+				.geometry = [](void*, wl_output*, int32_t, int32_t, int32_t,
+					int32_t, int32_t, const char*, const char*, int32_t){},
+				.mode = OnOutputMode,
+				.done = [](void*, wl_output*){},
+				.scale = [](void*, wl_output*, int32_t){},
+				.name = [](void*, wl_output*, const char*){},
+				.description = [](void*, wl_output*, const char*){}
+			};
+			
+			wl_output_add_listener(info->output, &listener, info.Pointer());
+			osunix.pWaylandOutputs.Add(std::move(info));
+		}
+	}
+}
+
+static void sWlRegistryGlobalRemove(void*, wl_registry*, uint32_t){}
+
+void deOSUnix::pGetWaylandDisplayInformation(){
+	DEASSERT_NOTNULL(pWaylandDisplay)
+	
+	pWaylandRegistry = wl_display_get_registry(pWaylandDisplay);
+	if(!pWaylandRegistry){
+		DETHROW_INFO(deeInvalidAction, "Failed to get Wayland registry");
+	}
+	
+	static const wl_registry_listener vWlRegistryListener = {
+		.global = OnRegistryGlobal,
+		.global_remove = sWlRegistryGlobalRemove
+	};
+	
+	wl_proxy_add_listener(reinterpret_cast<wl_proxy*>(pWaylandRegistry),
+		(void(**)(void))&vWlRegistryListener, this);
+	
+	// receive globals and bind wl_output objects with their listeners
+	wl_display_roundtrip(pWaylandDisplay);
+	
+	if(pWaylandOutputs.IsEmpty()){
+		pCleanUpWayland();
+		DETHROW_INFO(deeInvalidAction, "No Wayland outputs found");
+	}
+	
+	// obtain xdg outputs and register listeners
+	if(pWaylandXdgOutputManager){
+		pWaylandOutputs.Visit([&](sWaylandOutputInfo &info){
+			if(!info.output){
+				return;
+			}
+			
+			info.xdgOutput = zxdg_output_manager_v1_get_xdg_output(pWaylandXdgOutputManager, info.output);
+			if(!info.xdgOutput){
+				return;
+			}
+			
+			static const zxdg_output_v1_listener listener = {
+				.logical_position = [](void*, zxdg_output_v1*, int32_t, int32_t){},
+				.logical_size = [](void *data, zxdg_output_v1*, int32_t width, int32_t height){
+					auto &info2 = *reinterpret_cast<sWaylandOutputInfo*>(data);
+					info2.logicalWidth = width;
+					info2.logicalHeight = height;
+				},
+				.done = [](void*, zxdg_output_v1*){},
+				.name = [](void*, zxdg_output_v1*, const char*){},
+				.description = [](void*, zxdg_output_v1*, const char*){}
+			};
+			
+			zxdg_output_v1_add_listener(info.xdgOutput, &listener, &info);
+		});
+	}
+	
+	// receive mode events from all bound wl_output objects
+	wl_display_roundtrip(pWaylandDisplay);
+	
+	// count valid outputs and total mode entries
+	int validOutputs = 0, totalModes = 0;
+	pWaylandOutputs.Visit([&](const sWaylandOutputInfo &info){
+		if(info.hasCurrentMode){
+			validOutputs++;
+			totalModes += decMath::max(info.modes.GetCount(), 1);
+		}
+	});
+	
+	if(validOutputs == 0){
+		pCleanUpWayland();
+		DETHROW_INFO(deeInvalidAction, "No valid Wayland outputs found");
+	}
+	
+	// store display information
+	pDisplayResolutions = decTList<decPoint>(totalModes);
+	pDisplayInformation = decTList<sDisplayInformation>(validOutputs);
+	
+	bool scaleFactorFound = false;
+	
+	pWaylandOutputs.Visit([&](const sWaylandOutputInfo &info){
+		if(!info.hasCurrentMode){
+			return;
+		}
+		
+		sDisplayInformation di{};
+		di.currentResolution = {info.currentWidth, info.currentHeight};
+		di.currentRefreshRate = info.currentRefreshHz;
+		di.resolutions = pDisplayResolutions.GetArrayPointer() + pDisplayResolutions.GetCount();
+		
+		if(info.modes.IsNotEmpty()){
+			info.modes.Visit([&](const sWaylandOutputMode &mode){
+				pDisplayResolutions.Add({mode.width, mode.height});
+			});
+			di.resolutionCount = info.modes.GetCount();
+			
+		}else{
+			pDisplayResolutions.Add(di.currentResolution);
+			di.resolutionCount = 1;
+		}
+		
+		pDisplayInformation.Add(di);
+		
+		if(info.logicalWidth > 0 && !scaleFactorFound){
+			const double scale = 100.0 * (double)info.currentWidth / (double)info.logicalWidth;
+			pScaleFactor = decMath::max((int)(scale / 25.0 + 0.5) * 25, 100);
+			scaleFactorFound = true;
+		}
+	});
+	
+	pWaylandOutputs.RemoveAll();
+}
+
+bool deOSUnix::pTryConnectWayland(){
+	if(!v_WaylandLib.RequiredLog()){
+		return false;
+	}
+	
+	bool v = v_wl_display_connect.RequiredLog();
+	v &= v_wl_display_disconnect.RequiredLog();
+	v &= v_wl_display_dispatch.RequiredLog();
+	v &= v_wl_display_dispatch_pending.RequiredLog();
+	v &= v_wl_display_flush.RequiredLog();
+	v &= v_wl_display_roundtrip.RequiredLog();
+	v &= v_wl_proxy_marshal_flags.RequiredLog();
+	v &= v_wl_proxy_add_listener.RequiredLog();
+	v &= v_wl_proxy_destroy.RequiredLog();
+	v &= v_wl_registry_interface.RequiredLog();
+	v &= v_wl_output_interface.RequiredLog();
+	if(!v){
+		return false;
+	}
+	
+	// try connecting to Wayland display
+	pWaylandDisplay = wl_display_connect(nullptr);
+	if(!pWaylandDisplay){
+		printf("[OSUNIX] Cannot connect to Wayland display. WAYLAND_DISPLAY not set or compositor not running\n");
+		return false;
+	}
+	
+	return true;
+}
+
+void deOSUnix::pCleanUpWayland(){
+	pWaylandOutputs.RemoveAll();
+	
+	pWaylandXdgOutputManager.Unbind();
+	
+	if(pWaylandRegistry){
+		wl_proxy_destroy(reinterpret_cast<wl_proxy*>(pWaylandRegistry));
+		pWaylandRegistry = nullptr;
+	}
+	
+	if(pWaylandDisplay){
+		wl_display_disconnect(pWaylandDisplay);
+		pWaylandDisplay = nullptr;
+	}
+}
+
+#endif // OS_UNIX_WAYLAND
+
+#endif // OS_UNIX_X11

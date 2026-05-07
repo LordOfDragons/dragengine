@@ -67,8 +67,7 @@ private:
 	
 	deMutex pMutex;
 	int pPixelBufferUseCount;
-	deoglPixelBuffer::Ref pPixelBuffer;
-	deoglPixelBuffer::Ref pPixelBufferRImageTexture;
+	deoglPixelBuffer::Ref pPixelBuffer, pPixelBufferRImageTexture;
 	bool pDirtyTexture;
 	
 	decTOrderedSet<deoglCanvasImage*> pNotifyCanvas;
@@ -133,6 +132,11 @@ public:
 	 * Pixel buffer present only if CreatePixelBuffer() has been called.
 	 * */
 	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }
+	
+	/**
+	 * Pixel buffer for render image texture.
+	 */
+	inline const deoglPixelBuffer::Ref &GetPixelBufferRImageTexture() const{ return pPixelBufferRImageTexture; }
 	/*@}*/
 	
 	

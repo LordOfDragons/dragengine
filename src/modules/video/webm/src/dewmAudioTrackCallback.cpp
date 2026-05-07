@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-
 #include "deVideoWebm.h"
 #include "dewmAudioTrackCallback.h"
 #include "dewmVorbisStream.h"
+#include "dewmOpusStream.h"
 #include "dewmInfos.h"
 
 #include <dragengine/deEngine.h>
@@ -46,15 +45,10 @@ dewmTrackCallback(module),
 pResBuffer(nullptr),
 pResSize(0),
 pResPosition(0),
-pSampleSize(1),
-pStreamVorbis(nullptr){
+pSampleSize(1){
 }
 
-dewmAudioTrackCallback::~dewmAudioTrackCallback(){
-	if(pStreamVorbis){
-		delete pStreamVorbis;
-	}
-}
+dewmAudioTrackCallback::~dewmAudioTrackCallback() = default;
 
 
 
@@ -64,20 +58,20 @@ dewmAudioTrackCallback::~dewmAudioTrackCallback(){
 void dewmAudioTrackCallback::SetResBuffer(void *buffer, int samples){
 	DEASSERT_TRUE(!buffer || IsStreamOpen())
 	
-	pResBuffer = (uint8_t*)buffer;
+	pResBuffer = reinterpret_cast<uint8_t*>(buffer);
 	pResSize = samples;
 	pResPosition = 0;
 }
 
 bool dewmAudioTrackCallback::IsStreamOpen(){
-	return pStreamVorbis;
+	return pStream.IsNotNull();
 }
 
 void dewmAudioTrackCallback::Rewind(){
 	DEASSERT_TRUE(IsStreamOpen())
 	
-	if(pStreamVorbis){
-		pStreamVorbis->Rewind();
+	if(pStream){
+		pStream->Rewind();
 	}
 }
 
@@ -88,10 +82,10 @@ bool dewmAudioTrackCallback::OpenTrack(const webm::TrackEntry &track){
 void dewmAudioTrackCallback::UpdateInfos(dewmInfos &infos){
 	DEASSERT_TRUE(IsStreamOpen())
 	
-	if(pStreamVorbis){
-		infos.SetBytesPerSample(pStreamVorbis->GetBytesPerSample());
-		infos.SetSampleRate(pStreamVorbis->GetSampleRate());
-		infos.SetChannelCount(pStreamVorbis->GetChannelCount());
+	if(pStream){
+		infos.SetBytesPerSample(pStream->GetBytesPerSample());
+		infos.SetSampleRate(pStream->GetSampleRate());
+		infos.SetChannelCount(pStream->GetChannelCount());
 	}
 }
 
@@ -109,19 +103,25 @@ bool dewmAudioTrackCallback::pOpenTrack(const webm::TrackEntry &track){
 		return false;
 	}
 	
-	if(pStreamVorbis){
+	if(pStream){
 		return false;
 	}
 	
 	if(track.codec_id.value() == "A_VORBIS"){
-		pStreamVorbis = new dewmVorbisStream(*this);
-		if(pStreamVorbis->OpenTrack(track)){
-			pSampleSize = pStreamVorbis->GetBufferSampleSize();
+		auto stream = deTUniqueReference<dewmVorbisStream>::New(*this);
+		if(stream->OpenTrack(track)){
+			pSampleSize = stream->GetBufferSampleSize();
+			pStream = std::move(stream);
 			return true;
 		}
 		
-		delete pStreamVorbis;
-		pStreamVorbis = nullptr;
+	}else if(track.codec_id.value() == "A_OPUS"){
+		auto stream = deTUniqueReference<dewmOpusStream>::New(*this);
+		if(stream->OpenTrack(track)){
+			pSampleSize = stream->GetBufferSampleSize();
+			pStream = std::move(stream);
+			return true;
+		}
 	}
 	
 	return false;
@@ -169,8 +169,8 @@ void dewmAudioTrackCallback::pEndSegment(){
 //////////////////////
 
 void dewmAudioTrackCallback::pCopySamples(){
-	if(pStreamVorbis){
-		pStreamVorbis->CopySamples();
+	if(pStream){
+		pStream->CopySamples();
 	}
 }
 
@@ -185,7 +185,7 @@ void dewmAudioTrackCallback::pLoadFrameData(webm::Reader &reader, std::uint64_t 
 	const uint64_t frameSize = bytes_remaining;
 	pReadFrameData(reader, bytes_remaining);
 	
-	if(pStreamVorbis){
-		pStreamVorbis->LoadFrameData(frameSize);
+	if(pStream){
+		pStream->LoadFrameData(frameSize);
 	}
 }

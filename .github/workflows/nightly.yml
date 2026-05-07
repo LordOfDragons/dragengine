@@ -21,7 +21,7 @@ jobs:
         id: buildnumber
         uses: onyxmueller/build-tag-number@v1.0.4
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.PAT_BUILDBOT }}
           prefix: github
   
   build_linux:
@@ -262,9 +262,11 @@ jobs:
           done
       
       - name: Update git tag
+        env:
+          PUSH_TOKEN: ${{ secrets.PAT_BUILDBOT }}
         run: |
           git tag -f nightly
-          git push -f origin nightly
+          git push -f "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" nightly
       
       - name: Upload Artifacts
         uses: ncipollo/release-action@v1.21.0

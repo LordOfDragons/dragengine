@@ -85,6 +85,7 @@ pFullScreen(false),
 pScaleFactor(100),
 pNotifyScriptOnResize(false),
 pPaint(true),
+pHdrOutput(false),
 
 pPeerGraphic(nullptr)
 {
@@ -269,6 +270,10 @@ void deRenderWindow::SetScaleFactor(int scaleFactor){
 	if(pNotifyScriptOnResize){
 		GetResourceManager()->GetScriptingSystem()->OnResizeRenderWindow();
 	}
+}
+
+void deRenderWindow::SetHdrOutput(bool hdrOutput){
+	pHdrOutput = hdrOutput;
 }
 
 void deRenderWindow::SetNotifyScriptOnResize(bool notify){

@@ -37,14 +37,14 @@ jobs:
           pip3 install --upgrade PyGithub
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6.0.0
 
       - name: Build API Docs
         working-directory: ./ghdocs
         run: python3 _build.py
 
       - name: Build Pages
-        uses: actions/jekyll-build-pages@v1
+        uses: actions/jekyll-build-pages@v1.0.13
         with:
           source: ./ghdocs
           destination: ./_site
@@ -61,4 +61,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v5.0.0

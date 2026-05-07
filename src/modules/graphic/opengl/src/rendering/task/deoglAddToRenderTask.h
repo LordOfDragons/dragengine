@@ -79,7 +79,7 @@ private:
 	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
 	int pSkinPipelineModifier;
 	
-	bool pSolid;
+	bool pSolid, pFilterSolid;
 	bool pNoShadowNone;
 	bool pNoNotReflected;
 	bool pNoRendered;
@@ -141,6 +141,12 @@ public:
 	
 	/** Set if solid or transparent texture are added. */
 	void SetSolid(bool solid);
+	
+	/** Filter by solid or transparent or both. */
+	inline bool GetFilterSolid() const{ return pFilterSolid; }
+	
+	/** Set filter by solid or transparent or both. */
+	void SetFilterSolid(bool filterSolid);
 	
 	/** Textures with the shadow none property are not added. */
 	inline bool GetNoShadowNone() const{ return pNoShadowNone; }

@@ -70,6 +70,9 @@ void deBaseGraphicCamera::AllEffectsRemoved(){
 void deBaseGraphicCamera::ResetAdaptedIntensity(){
 }
 
+void deBaseGraphicCamera::IgnoreComponentsChanged(){
+}
+
 
 
 // For use by VR Module only

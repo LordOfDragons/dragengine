@@ -52,10 +52,8 @@ public:
 	
 private:
 	const igdeGDCComponent &pGDComponent;
-	deComponent::Ref pComponent;
-	deComponent::Ref pComponentInteraction;
-	deColliderComponent::Ref pCollider;
-	deColliderComponent::Ref pColliderInteraction;
+	deComponent::Ref pComponent, pComponentInteraction, pOutlineComponent;
+	deColliderComponent::Ref pCollider, pColliderInteraction;
 	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
 	deCollider::Ref pAttachedToCollider;
@@ -70,7 +68,6 @@ private:
 	decTObjectDictionary<deSkin> pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
-	deComponent::Ref pOutlineComponent;
 	
 	
 	
@@ -94,6 +91,9 @@ public:
 	
 	/** \brief Component interaction. */
 	inline const deComponent::Ref &GetComponentInteraction() const{ return pComponentInteraction; }
+	
+	/** \brief Outline component. */
+	inline const deComponent::Ref &GetOutlineComponent() const{ return pOutlineComponent; }
 	
 	/** \brief Collider. */
 	inline const deColliderComponent::Ref &GetCollider() const{ return pCollider; }

@@ -30,6 +30,7 @@
 #include "../render/deoglRCanvasView.h"
 #include "../../debug/deoglDebugTraceGroup.h"
 #include "../../renderthread/deoglRenderThread.h"
+#include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../target/deoglRenderTarget.h"
 #include "../../window/deoglRRenderWindow.h"
@@ -135,18 +136,51 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 	const int width = pPixelBuffer->GetWidth();
 	const int height = pPixelBuffer->GetHeight();
 	
-	if(width == renderWindow.GetWidth() && height == renderWindow.GetHeight()){
-		// extract image into memory
-		const deoglPixelBuffer::Ref tempData(deoglPixelBuffer::Ref::New(
-			pPixelBuffer->GetFormat(), width, height, 1));
+	// extract image into memory
+	const int srcWidth = renderWindow.GetWidth();
+	const int srcHeight = renderWindow.GetHeight();
+	auto tempPBuf = deoglPixelBuffer::Ref::New(pPixelBuffer->GetFormat(), srcWidth, srcHeight, 1);
+	
+	if(pBitCount == 32 && renderWindow.GetRenderTarget() && renderWindow.GetRenderTarget()->GetTexture()){
+		renderWindow.GetRenderTarget()->GetTexture()->GetPixels(tempPBuf);
 		
+		if(renderWindow.GetUseHdrOutput()){
+			// convert pixels from linear to sRGB
+			auto funcConvert = [](float c){
+				return c <= 0.0031308f ? c * 12.92f : 1.055f * pow(c, 5.0f / 12.0f) - 0.055f;
+			};
+			
+			const int pixelCount = srcWidth * srcHeight;
+			int i;
+			
+			if(renderWindow.GetRenderTarget()->GetBitCount() == 4){
+				deoglPixelBuffer::sFloat4 *data = tempPBuf->GetPointerFloat4();
+				for(i=0; i<pixelCount; i++){
+					data[i].r = funcConvert(data[i].r);
+					data[i].g = funcConvert(data[i].g);
+					data[i].b = funcConvert(data[i].b);
+				}
+				
+			}else{
+				deoglPixelBuffer::sFloat3 *data = tempPBuf->GetPointerFloat3();
+				for(i=0; i<pixelCount; i++){
+					data[i].r = funcConvert(data[i].r);
+					data[i].g = funcConvert(data[i].g);
+					data[i].b = funcConvert(data[i].b);
+				}
+			}
+		}
+		
+	}else{
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
-		OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
-			pPixelBuffer->GetGLPixelType(), tempData->GetPointer()));
+		OGL_CHECK(pRenderThread, glReadPixels(0, 0, srcWidth, srcHeight,
+			pPixelBuffer->GetGLPixelFormat(), pPixelBuffer->GetGLPixelType(), tempPBuf->GetPointer()));
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
-		
+	}
+	
+	if(width == srcWidth && height == srcHeight){
 		// copy data over in in the correct order (hence flipped upside down)
-		const char * const ptrTempData = reinterpret_cast<char*>(tempData->GetPointer());
+		const char * const ptrTempData = reinterpret_cast<char*>(tempPBuf->GetPointer());
 		char * const ptrPixBuf = reinterpret_cast<char*>(pPixelBuffer->GetPointer());
 		const int stride = pPixelBuffer->GetLineStride();
 		int y;
@@ -156,8 +190,28 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 		}
 		
 	}else{
-		// not matching. set black for the time being. requires fbo blitting with stretching to get working
-		CaptureBlack();
+		// not matching happens if global scaling is applied. copy using stretching (nearest)
+		const char * const ptrTempPBuf = reinterpret_cast<char*>(tempPBuf->GetPointer());
+		char * const ptrPixBuf = reinterpret_cast<char*>(pPixelBuffer->GetPointer());
+		const float srcStepX = (float)srcWidth / (float)width;
+		const float srcStepY = (float)srcHeight / (float)height;
+		const int destStride = pPixelBuffer->GetLineStride();
+		const int srcStride = tempPBuf->GetLineStride();
+		const int srcLastX = srcWidth - 1;
+		const int srcLastY = srcHeight - 1;
+		const int unitSize = pPixelBuffer->GetUnitSize();
+		int x, y;
+		
+		for(y=0; y<height; y++){
+			const int srcY = decMath::min((int)((float)y * srcStepY + 0.5f), srcLastY);
+			const char * const srcLinePtr = ptrTempPBuf + (srcLastY - srcY) * srcStride;
+			char * const destLinePtr = ptrPixBuf + y * destStride;
+			
+			for(x=0; x<width; x++){
+				const int srcX = decMath::min((int)((float)x * srcStepX + 0.5f), srcLastX);
+				memcpy(destLinePtr + x * unitSize, srcLinePtr + srcX * unitSize, unitSize);
+			}
+		}
 	}
 	
 	pCapturePending = false;
@@ -173,7 +227,7 @@ void deoglRCaptureCanvas::CapturePending(){
 	
 	if(pCanvasView){
 		pCanvasView->PrepareRenderTarget(nullptr, pComponentCount, pBitCount);
-		pCanvasView->RenderRenderTarget(nullptr);
+		pCanvasView->RenderRenderTarget(nullptr, false);
 			// TODO capturing can be a problem. if a render world view is contained and it is
 			//      not rendered yet it will be rendered. doing so using NULL as mask causes
 			//      a full blown rendering as if the camera is used in a render window.

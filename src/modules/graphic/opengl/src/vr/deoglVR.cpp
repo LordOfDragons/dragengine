@@ -221,7 +221,7 @@ void deoglVR::Render(){
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
 	deoglRCanvas * const debugOverlayCanvas = renderThread.GetCanvasDebugOverlay();
 	if(debugOverlayCanvas){
-		debugOverlayCanvas->PrepareForRender(nullptr);
+		debugOverlayCanvas->PrepareForRender(nullptr, false);
 		debugOverlayCanvas->PrepareForRenderRender(nullptr);
 	}
 	

@@ -48,6 +48,8 @@
 #include <deigde/gui/composed/igdeToggleTags.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
+#include <deigde/gui/composed/igdeEditPointListener.h>
+#include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -412,6 +414,97 @@ public:
 };
 
 
+class cEditPreviewCameraSize : public igdeEditPointListener{
+	meWPView &pPanel;
+	
+public:
+	typedef deTObjectReference<cEditPreviewCameraSize> Ref;
+	cEditPreviewCameraSize(meWPView &panel) : pPanel(panel){}
+	
+	void OnPointChanged(igdeEditPoint *editPoint) override{
+		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		if(editPoint->GetPoint() == configuration.GetPreviewCameraSize()){
+			return;
+		}
+		
+		configuration.SetPreviewCameraSize(editPoint->GetPoint());
+		pPanel.GetWorld()->NotifyEditingChanged();
+	}
+};
+
+class cActionSetPreviewCameraSize : public cBaseAction{
+	decPoint pSize;
+	
+public:
+	typedef deTObjectReference<cActionSetPreviewCameraSize> Ref;
+	cActionSetPreviewCameraSize(meWPView &panel, const decPoint &size, const char *text) :
+	cBaseAction(panel, text, nullptr, "@World.WPView.Action.PreviewCameraSize.ToolTip"), pSize(size){}
+	
+	void OnAction(meWorld &world) override{
+		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		if(pSize == configuration.GetPreviewCameraSize()){
+			return;
+		}
+		
+		configuration.SetPreviewCameraSize(pSize);
+		world.NotifyEditingChanged();
+	}
+};
+
+class cActionMenuPreviewCameraSize : public igdeActionContextMenu{
+	meWPView &pPanel;
+	
+public:
+	typedef deTObjectReference<cActionMenuPreviewCameraSize> Ref;
+	cActionMenuPreviewCameraSize(meWPView &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "@World.WPView.Action.PreviewCameraSize"),
+	pPanel(panel){}
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
+		meWorld * const world = pPanel.GetWorld();
+		if(!world){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(contextMenu, cActionSetPreviewCameraSize::Ref::New(pPanel,
+			decPoint(960, 540), "@World.WPView.Action.PreviewCameraSizeMenu.SetTo960x540"));
+		helper.MenuCommand(contextMenu, cActionSetPreviewCameraSize::Ref::New(pPanel,
+			decPoint(800, 450), "@World.WPView.Action.PreviewCameraSizeMenu.SetTo800x450"));
+		helper.MenuCommand(contextMenu, cActionSetPreviewCameraSize::Ref::New(pPanel,
+			decPoint(640, 360), "@World.WPView.Action.PreviewCameraSizeMenu.SetTo640x360"));
+		helper.MenuCommand(contextMenu, cActionSetPreviewCameraSize::Ref::New(pPanel,
+			decPoint(480, 270), "@World.WPView.Action.PreviewCameraSizeMenu.SetTo480x270"));
+		helper.MenuCommand(contextMenu, cActionSetPreviewCameraSize::Ref::New(pPanel,
+			decPoint(320, 180), "@World.WPView.Action.PreviewCameraSizeMenu.SetTo320x180"));
+		helper.MenuCommand(contextMenu, cActionSetPreviewCameraSize::Ref::New(pPanel,
+			decPoint(160, 90), "@World.WPView.Action.PreviewCameraSizeMenu.SetTo160x90"));
+	}
+};
+
+class cEditPreviewCameraTransparency : public igdeEditSliderTextListener{
+	meWPView &pPanel;
+	
+public:
+	typedef deTObjectReference<cEditPreviewCameraTransparency> Ref;
+	cEditPreviewCameraTransparency(meWPView &panel) : pPanel(panel){}
+	
+	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
+		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		if(fabsf(sliderText->GetValue() - configuration.GetPreviewCameraTransparency()) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		
+		configuration.SetPreviewCameraTransparency(sliderText->GetValue());
+		pPanel.GetWorld()->NotifyEditingChanged();
+	}
+	
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText){
+		OnSliderTextValueChanged(sliderText);
+	}
+};
+
+
 class cActionSkyChanged : public cBaseAction{
 public:
 	typedef deTObjectReference<cActionSkyChanged> Ref;
@@ -663,6 +756,23 @@ pPreventUpdateCamera(false)
 	helper.WPTriggerTable(content, pWPTriggerTable, cActionTriggerTable::Ref::New(*this),
 		"@World.WPView.TriggerTable.Label2", false, true);
 	
+	
+	// preview camera
+	helper.GroupBox(content, groupBox, "@World.WPView.PreviewCamera.Label", true);
+	helper.FormLineStretchFirst(groupBox, "@World.WPView.Action.PreviewCameraSize",
+		"@World.WPView.Action.PreviewCameraSize.ToolTip", formLine);
+	helper.EditPoint(formLine, "@World.WPView.Action.PreviewCameraSize.ToolTip",
+		pEditPreviewCameraSize, cEditPreviewCameraSize::Ref::New(*this));
+	actionMenu = cActionMenuPreviewCameraSize::Ref::New(*this);
+	helper.Button(formLine, pBtnPreviewCameraSizeMenu, actionMenu);
+	actionMenu->SetWidget(pBtnPreviewCameraSizeMenu);
+	
+	helper.EditSliderText(groupBox, "@World.WPView.Action.PreviewCameraTransparency",
+		"@World.WPView.Action.PreviewCameraTransparency.ToolTip",
+		0.0f, 1.0f, 6, 3, 0.1f, pEditPreviewCameraTransparency,
+		cEditPreviewCameraTransparency::Ref::New(*this));
+	
+	
 	// limit box
 	helper.GroupBox(content, groupBox, "@World.WPView.LimitBox");
 	
@@ -747,6 +857,8 @@ void meWPView::UpdateView(){
 	pEditSensitivity->SetFloat(configuration.GetSensitivity());
 	pChkAutoUpdate->SetChecked(configuration.GetAutoUpdate());
 	pChkEnableAuralization->SetChecked(configuration.GetEnableAuralization());
+	pEditPreviewCameraSize->SetPoint(configuration.GetPreviewCameraSize());
+	pEditPreviewCameraTransparency->SetValue(configuration.GetPreviewCameraTransparency());
 	
 	if(pWorld){
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();

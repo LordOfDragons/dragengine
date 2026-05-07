@@ -57,7 +57,7 @@ private:
 	
 	deoglTexture *pWeights;
 	deoglTexture *pMaskOpaque;
-	deoglTexture *pNoise2D;
+	deoglTexture *pNoise;
 	deoglCubeMap *pEnvMap;
 	
 	deoglArrayTexture *pColorArray;
@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread default textures. */
-	deoglRTDefaultTextures(deoglRenderThread &renderThread);
+	explicit deoglRTDefaultTextures(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread default textures. */
 	~deoglRTDefaultTextures();
@@ -144,8 +144,8 @@ public:
 	/** Default opaque mask texture. */
 	inline deoglTexture *GetMaskOpaque() const{ return pMaskOpaque; }
 	
-	/** Default 2d noise texture. */
-	inline deoglTexture *GetNoise2D() const{ return pNoise2D; }
+	/** Default noise texture. */
+	inline deoglTexture *GetNoise() const{ return pNoise; }
 	
 	/** Default weights texture. */
 	inline deoglTexture *GetWeightsTexture() const{ return pWeights; }
@@ -192,7 +192,7 @@ private:
 	void pCreateDefaultTexturesArray(deoglRenderThread &renderThread);
 	void pCreateWeightsTexture(deoglRenderThread &renderThread);
 	void pCreateTextureMaskOpaque(deoglRenderThread &renderThread);
-	void pCreateTextureNoise2D(deoglRenderThread &renderThread);
+	void pCreateTextureNoise(deoglRenderThread &renderThread);
 	void pCreateShadowTextures(deoglRenderThread &renderThread);
 };
 

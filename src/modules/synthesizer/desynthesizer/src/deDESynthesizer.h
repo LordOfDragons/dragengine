@@ -97,6 +97,9 @@ public:
 	
 	/** \brief Create peer for synthesizer instance or \em NULL if no explicit peer is required. */
 	deBaseSynthesizerSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance) override;
+
+	/** \brief Create peer for audio analyzer. */
+	deTUniqueReference<deBaseSynthesizerAudioAnalyzer> CreateAudioAnalyzer(deAudioAnalyzer *analyzer) override;
 	/*@}*/
 	
 	

@@ -646,6 +646,10 @@ public:
 	void NotifyObjectGeometryChanged(meObject *object);
 	/** Notifies all that an object changed properties. */
 	void NotifyObjectPropertiesChanged(meObject *object);
+	
+	/** Notifies all that an object camera show preview changed. */
+	void NotifyObjectCameraShowPreview(meObject *object);
+	
 	/** Notifies all that a object active property changed. */
 	void NotifyObjectActivePropertyChanged(meObject *object);
 	

@@ -22,20 +22,21 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRTDefaultTextures.h"
 #include "deoglRenderThread.h"
 #include "deoglRTLogger.h"
+#include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/deoglImage.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
 
 
 
@@ -66,7 +67,7 @@ pShadowCubeColor(nullptr),
 
 pWeights(nullptr),
 pMaskOpaque(nullptr),
-pNoise2D(nullptr),
+pNoise(nullptr),
 pEnvMap(nullptr),
 
 pColorArray(nullptr),
@@ -85,7 +86,7 @@ pNonPbrMetalnessArray(nullptr)
 		pCreateDefaultTextures(renderThread);
 		pCreateDefaultTexturesArray(renderThread);
 		pCreateTextureMaskOpaque(renderThread);
-		pCreateTextureNoise2D(renderThread);
+		pCreateTextureNoise(renderThread);
 		//pCreateWeightsTexture( renderThread );
 		pCreateShadowTextures(renderThread);
 		
@@ -147,8 +148,8 @@ void deoglRTDefaultTextures::pCleanUp(){
 	if(pEnvMap){
 		delete pEnvMap;
 	}
-	if(pNoise2D){
-		delete pNoise2D;
+	if(pNoise){
+		delete pNoise;
 	}
 	if(pMaskOpaque){
 		delete pMaskOpaque;
@@ -404,6 +405,7 @@ void deoglRTDefaultTextures::pCreateTextureMaskOpaque(deoglRenderThread &renderT
 	pMaskOpaque->SetPixels(pbByte1);
 }
 
+#if 0
 #ifdef OS_UNIX
 __attribute__((no_sanitize("signed-integer-overflow", "shift")))
 #endif
@@ -429,8 +431,10 @@ static void deoglRTDefaultTextures_CreateNoiseData(deoglPixelBuffer &pixelBuffer
 		}
 	}
 }
+#endif
 
-void deoglRTDefaultTextures::pCreateTextureNoise2D(deoglRenderThread &renderThread){
+void deoglRTDefaultTextures::pCreateTextureNoise(deoglRenderThread &renderThread){
+	#if 0
 	const int size = 32;
 	const deoglPixelBuffer::Ref pbByte4(deoglPixelBuffer::Ref::New(
 		deoglPixelBuffer::epfByte4, size, size, 1));
@@ -441,38 +445,18 @@ void deoglRTDefaultTextures::pCreateTextureNoise2D(deoglRenderThread &renderThre
 	pNoise2D->SetMapingFormat(4, false, false);
 	pNoise2D->CreateTexture();
 	pNoise2D->SetPixels(pbByte4);
+	#endif
 	
-	/*
-	int u, x, seedu = 17342954;
-	int v, y, seedv = 28017626;
-	int p, size = 32;
-	deoglPixelBuffer pixelBuffer(deoglPixelBuffer::epfByte4, size, size);
+	auto image = renderThread.GetOgl().GetGameEngine()->GetImageManager()->LoadImage(
+		&renderThread.GetOgl().GetVFS(), "blue_noise_256.png", "/share/images");
+	auto oglImage = dynamic_cast<deoglImage*>(image->GetPeerGraphic());
+	DEASSERT_NOTNULL(oglImage)
 	
-	deoglPixelBuffer::sByte4 *destInt32 = pixelBuffer.GetPointerInt32();
-	for(p=0, y=0; y<size; y++){
-		for(x=0; x<size; x++, p++){
-			u = x + y * 57 + seedu;
-			u = (u << 13) ^ u;
-			destInt32[p].r = (u * (u * u * 15731 + 789221) + 1376312589) >> 24;
-			
-			v = x + y * 57 + seedv;
-			v = (v << 13) ^ v;
-			destInt32[p].g = (v * (v * v * 15731 + 789221) + 1376312589) >> 24;
-			
-			destInt32[p].b = 0;
-			destInt32[p].a = 0;
-		}
-	}
-	
-	pNoise2D = new deoglTexture(this);
-	
-	pNoise2D->SetMipMapped(false);
-	pNoise2D->SetCompressed(false);
-	pNoise2D->SetMapingFormat(8, 4, false);
-	pNoise2D->SetSize(size, size);
-	pNoise2D->CreateTexture();
-	pNoise2D->SetPixels(pixelBuffer);
-	*/
+	pNoise = new deoglTexture(renderThread);
+	pNoise->SetSize(image->GetWidth(), image->GetHeight());
+	pNoise->SetMapingFormat(4, false, false);
+	pNoise->CreateTexture();
+	pNoise->SetPixels(oglImage->GetPixelBufferRImageTexture());
 }
 
 void deoglRTDefaultTextures::pCreateShadowTextures(deoglRenderThread &renderThread){

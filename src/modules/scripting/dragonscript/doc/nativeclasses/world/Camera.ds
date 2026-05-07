@@ -380,4 +380,59 @@ class Camera
 	func void removeAllEffects()
 	end
 	/*@}*/
+	
+	
+	
+	/** \name Ignore components */
+	/*@{*/
+	/**
+	 * \brief Number of components to ignore during rendering.
+	 * \version 1.32
+	 */
+	func int getIgnoreComponentCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Component to ignore during rendering at index.
+	 * \version 1.32
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getIgnoreComponentCount().
+	 */
+	func Component getIgnoreComponentAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Component to ignore during rendering is present.
+	 * \version 1.32
+	 */
+	func bool hasIgnoreComponent(Component component)
+		return false
+	end
+	
+	/**
+	 * \brief Add component to ignore during rendering.
+	 * \version 1.32
+	 * 
+	 * Does nothing if \em component is present.
+	 */
+	func void addIgnoreComponent(Component component)
+	end
+	
+	/**
+	 * \brief Remove component to ignore during rendering.
+	 * \version 1.32
+	 * 
+	 * Does nothing if \em component is absent.
+	 */
+	func void removeIgnoreComponent(Component component)
+	end
+	
+	/**
+	 * \brief Remove all components to ignore during rendering.
+	 * \version 1.32
+	 */
+	func void removeAllIgnoreComponents()
+	end
+	/*@}*/
 end
