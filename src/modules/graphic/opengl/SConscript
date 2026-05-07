@@ -84,7 +84,7 @@ if envModule['platform_android'] != 'no':
 	libs.extend(['GLESv3', 'GLESv2', 'GLESv1_CM', 'EGL'])
 
 if envModule['OSBeOS']:
-	pass
+	libs.append('egl')
 	# beos has a strange compiler bug. without debug flags compiled binary is faulty
 	#envModule.Append(CXXFLAGS = ['-g'])
 
