@@ -623,8 +623,8 @@ bool deOSWindows::GetDisplaySupportsHdr(){
 		return false;
 	}
 	
-	decTUniqueList<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
-	decTUniqueList<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
+	decTList<DISPLAYCONFIG_PATH_INFO> paths((int)pathCount, {});
+	decTList<DISPLAYCONFIG_MODE_INFO> modes((int)modeCount, {});
 	bool hdrFound = false;
 	
 	if(QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.GetArrayPointer(),
