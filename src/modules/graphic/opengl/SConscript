@@ -114,7 +114,7 @@ if envModule['platform_webwasm']:
 	envModule.Append(LINKFLAGS = ['-sFULL_ES3'])
 
 # fetch values in expanded form for later use
-versionString = '1.31'
+versionString = '1.32'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
