@@ -45,7 +45,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/collection/decTUniqueList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -551,8 +551,8 @@ void deoglRTCBWindows::pQueryHdrNits(deoglRRenderWindow &window){
 	
 	UINT32 pathCount = 0, modeCount = 0;
 	if(GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount) == ERROR_SUCCESS){
-		decTUniqueList<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
-		decTUniqueList<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
+		decTList<DISPLAYCONFIG_PATH_INFO> paths((int)pathCount, {});
+		decTList<DISPLAYCONFIG_MODE_INFO> modes((int)modeCount, {});
 		
 		if(QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.GetArrayPointer(),
 		&modeCount, modes.GetArrayPointer(), nullptr) == ERROR_SUCCESS){
