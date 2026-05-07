@@ -1964,14 +1964,20 @@ void deScriptingDragonScript::pPreprocessMouseMoveDpiAware(deInputEvent &event){
 	// if this is not handled correctly tiny mouse movements drop causing the mouse
 	// pointer to move like sticky glue. to solve this too small changes are
 	// accumulated over time to not drop them
-	pDpiAccumMouseMoved.x += event.GetX();
-	pDpiAccumMouseMoved.y += event.GetY();
-	
-	event.SetX(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.x));
-	event.SetY(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.y));
-
-	pDpiAccumMouseMoved.x -= pClsGraSys->CoordCanvas2WindowAlways(event.GetX());
-	pDpiAccumMouseMoved.y -= pClsGraSys->CoordCanvas2WindowAlways(event.GetY());
+	if(GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()){
+		pDpiAccumMouseMoved.x += event.GetX();
+		pDpiAccumMouseMoved.y += event.GetY();
+		
+		event.SetX(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.x));
+		event.SetY(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.y));
+		
+		pDpiAccumMouseMoved.x -= pClsGraSys->CoordCanvas2WindowAlways(event.GetX());
+		pDpiAccumMouseMoved.y -= pClsGraSys->CoordCanvas2WindowAlways(event.GetY());
+		
+	}else{
+		event.SetX(pClsGraSys->CoordWindows2CanvasAlways(event.GetX()));
+		event.SetY(pClsGraSys->CoordWindows2CanvasAlways(event.GetY()));
+	}
 }
 
 #ifdef WITH_INTERNAL_MODULE
