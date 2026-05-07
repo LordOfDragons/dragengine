@@ -134,6 +134,9 @@ private:
 	bool pNoAmbientLight;
 	bool pUseGIState;
 	bool pRenderStereo;
+	bool pUseHdrOutput;
+	int pHdrMaxNits;
+	int pHdrReferenceNits;
 	deoglGIState *pUseConstGIState;
 	eRenderVR pRenderVR;
 	
@@ -491,6 +494,24 @@ public:
 	
 	/** Set use stereo rendering. */
 	void SetRenderStereo (bool stereoRender);
+	
+	/** Use HDR output. */
+	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
+	
+	/** Set use HDR output. */
+	void SetUseHdrOutput(bool useHdrOutput);
+	
+	/** HDR peak luminance in nits. */
+	inline int GetHdrMaxNits() const{ return pHdrMaxNits; }
+	
+	/** Set HDR peak luminance in nits. */
+	void SetHdrMaxNits(int hdrMaxNits);
+	
+	/** HDR SDR reference white luminance in nits. */
+	inline int GetHdrReferenceNits() const{ return pHdrReferenceNits; }
+	
+	/** Set HDR SDR reference white luminance in nits. */
+	void SetHdrReferenceNits(int hdrReferenceNits);
 	
 	/** Render VR. */
 	inline eRenderVR GetRenderVR() const{ return pRenderVR; }

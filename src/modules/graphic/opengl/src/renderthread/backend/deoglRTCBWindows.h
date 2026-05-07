@@ -47,6 +47,7 @@ protected:
 	HGLRC pContext;
 	HGLRC pLoaderContext;
 	HGLRC pCompileContext[MaxCompileContextCount];
+	int pHdrPixelFormat;
 	
 	
 public:
@@ -123,6 +124,12 @@ public:
 	/** Compile context or NULL. */
 	inline HGLRC GetCompileContextAt(int index) const{ return pCompileContext[index]; }
 	
+	/** HDR pixel format chosen during initialization or 0 if not available. */
+	inline int GetHdrPixelFormat() const{ return pHdrPixelFormat; }
+	
+	/** True if a 10-bit HDR-capable pixel format was found during initialization. */
+	inline bool GetSupportsHdr() const{ return pHdrPixelFormat > 0; }
+	
 	/** Get function pointer. */
 	void *GetFunctionPointer(const char *funcName) override;
 	/*@}*/
@@ -133,6 +140,8 @@ protected:
 	void pCreateContext();
 	void pUnregisterWindowClass();
 	void pFreeContext();
+	void pChooseHdrPixelFormat();
+	void pQueryHdrNits(deoglRRenderWindow &window);
 };
 
 #endif // OS_W32

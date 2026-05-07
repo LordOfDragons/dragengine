@@ -9,6 +9,7 @@
 	<define>WITH_TONEMAP_CURVE</define>
 	<define>LAYERED_RENDERING</define>
 	<define>VS_RENDER_LAYER</define>
+	<define>HDR_OUTPUT</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>

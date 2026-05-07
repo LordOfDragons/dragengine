@@ -259,40 +259,38 @@ pIsGACOpenGL(false),
 				}
 				
 			#elif defined OS_UNIX
-				if(gacon.opengl.display){
-					if(gacon.opengl.eglGetProcAddress && gacon.opengl.eglDisplay
-					&& gacon.opengl.eglConfig && gacon.opengl.eglContext){
-						if(instance.SupportsExtension(deoxrInstance::extMNDXEglEnable)){
-							oxr.GetGraphicApiOpenGLEGL().Load();
-							
-							gbopenglEgl.type = XR_TYPE_GRAPHICS_BINDING_EGL_MNDX;
-							gbopenglEgl.getProcAddress = (PFN_xrEglGetProcAddressMNDX)gacon.opengl.eglGetProcAddress;
-							gbopenglEgl.display = pGACOpenGLEGLDisplay;
-							gbopenglEgl.config = (EGLConfig)gacon.opengl.eglConfig;
-							gbopenglEgl.context = pGACOpenGLEglContext;
-							
-							pGraphicApi = egaOpenGL;
-							graphicBinding = &gbopenglEgl;
-							pIsGACOpenGL = true;
-							oxr.LogInfo("Create Session: Using OpenGL on Xlib using EGL");
-						}
+				if(gacon.opengl.eglGetProcAddress && gacon.opengl.eglDisplay
+				&& gacon.opengl.eglConfig && gacon.opengl.eglContext){
+					if(instance.SupportsExtension(deoxrInstance::extMNDXEglEnable)){
+						oxr.GetGraphicApiOpenGLEGL().Load();
 						
-					}else if(gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable){
-						oxr.GetGraphicApiOpenGL().Load();
-						
-						memset(&gbopenglGlx, 0, sizeof(gbopenglGlx));
-						gbopenglGlx.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_XLIB_KHR;
-						gbopenglGlx.xDisplay = pGACOpenGLDisplay;
-						gbopenglGlx.visualid = gacon.opengl.visualid;
-						gbopenglGlx.glxFBConfig = (GLXFBConfig)gacon.opengl.glxFBConfig;
-						gbopenglGlx.glxDrawable = pGACOpenGLGLXDrawable;
-						gbopenglGlx.glxContext = pGACOpenGLGLXContext;
+						gbopenglEgl.type = XR_TYPE_GRAPHICS_BINDING_EGL_MNDX;
+						gbopenglEgl.getProcAddress = (PFN_xrEglGetProcAddressMNDX)gacon.opengl.eglGetProcAddress;
+						gbopenglEgl.display = pGACOpenGLEGLDisplay;
+						gbopenglEgl.config = (EGLConfig)gacon.opengl.eglConfig;
+						gbopenglEgl.context = pGACOpenGLEglContext;
 						
 						pGraphicApi = egaOpenGL;
-						graphicBinding = &gbopenglGlx;
+						graphicBinding = &gbopenglEgl;
 						pIsGACOpenGL = true;
-						oxr.LogInfo("Create Session: Using OpenGL on Xlib using GLX");
+						oxr.LogInfo("Create Session: Using OpenGL using EGL");
 					}
+					
+				}else if(gacon.opengl.display && gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable){
+					oxr.GetGraphicApiOpenGL().Load();
+					
+					memset(&gbopenglGlx, 0, sizeof(gbopenglGlx));
+					gbopenglGlx.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_XLIB_KHR;
+					gbopenglGlx.xDisplay = pGACOpenGLDisplay;
+					gbopenglGlx.visualid = gacon.opengl.visualid;
+					gbopenglGlx.glxFBConfig = (GLXFBConfig)gacon.opengl.glxFBConfig;
+					gbopenglGlx.glxDrawable = pGACOpenGLGLXDrawable;
+					gbopenglGlx.glxContext = pGACOpenGLGLXContext;
+					
+					pGraphicApi = egaOpenGL;
+					graphicBinding = &gbopenglGlx;
+					pIsGACOpenGL = true;
+					oxr.LogInfo("Create Session: Using OpenGL on Xlib using GLX");
 				}
 				
 			#elif defined OS_W32

@@ -74,12 +74,12 @@ void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
 
 
 
-void deoglRCanvasRenderWorld::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+void deoglRCanvasRenderWorld::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
 	if(!pCamera || !pCamera->GetParentWorld()){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender(renderPlanMask);
+	deoglRCanvas::PrepareForRender(renderPlanMask, useHdrOutput);
 	
 	if(pForceToneMapAdaption){
 		pCamera->SetForceToneMapAdaption(true);

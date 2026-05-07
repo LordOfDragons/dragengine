@@ -28,6 +28,7 @@
 
 #include "deoglRTCBWindows.h"
 
+#include <dxgi1_6.h>
 #include <dragengine/app/deOSWindows.h>
 
 #include "../deoglRTContext.h"
@@ -44,6 +45,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -83,7 +85,8 @@ deoglRTCBackend(context),
 pWindowClassname("DEOpenGLWindow"),
 pOSWindows(context.GetRenderThread().GetOgl().GetOS()->CastToOSWindows()),
 pContext(nullptr),
-pLoaderContext(nullptr)
+pLoaderContext(nullptr),
+pHdrPixelFormat(0)
 {
 	int i;
 	for(i=0; i<MaxCompileContextCount; i++){
@@ -366,6 +369,8 @@ void deoglRTCBWindows::pRegisterWindowClass(){
 	if(!RegisterClassEx(&wce)){
 		DETHROW(deeOutOfMemory);
 	}
+	
+	pChooseHdrPixelFormat();
 }
 
 void deoglRTCBWindows::pCreateContext(){
@@ -482,11 +487,93 @@ void deoglRTCBWindows::pCreateContext(){
 	// attach to context
 	wglMakeCurrent(activeWindow->GetWindowDC(), pContext);
 	
+	// enable HDR output if 10-bit pixel format if supported
+	const auto &config = pRTContext.GetRenderThread().GetConfiguration();
+	if(pHdrPixelFormat > 0 && config.GetEnableHDRMonitor()){
+		const int actualFormat = GetPixelFormat(activeWindow->GetWindowDC());
+		if(actualFormat == pHdrPixelFormat && deOSWindows::GetDisplaySupportsHdr()){
+			logger.LogInfo("RTCBWindows: HDR output enabled");
+			activeWindow->SetUseHdrOutput(true);
+			pQueryHdrNits(*activeWindow);
+			
+		}else{
+			logger.LogInfo("RTCBWindows: 10-bit pixel format available but HDR output not supported");
+		}
+	}
+	
 	// for windows we have to delay starting the make sure the loader thread is enabled after the loader
 	// context is ready. before this point ActivateRRenderWindow() is called and then the loader context
 	// is nullptr which causes problems. ActivateRRenderWindow() thus avoids enabling the loader if
 	// no loader context exists. we thus have to do it here to make sure enabling works
 	pRTContext.GetRenderThread().GetLoaderThread().EnableContext(true);
+}
+
+void deoglRTCBWindows::pQueryHdrNits(deoglRRenderWindow &window){
+	auto &logger = pRTContext.GetRenderThread().GetLogger();
+	
+	// query min/max nits via DXGI IDXGIOutput6::GetDesc1()
+	IDXGIFactory1 *factory = nullptr;
+	float minNits = 0.0f;
+	if(SUCCEEDED(CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)&factory))){
+		bool found = false;
+		IDXGIAdapter *adapter = nullptr;
+		for(UINT ai = 0; !found && factory->EnumAdapters(ai, &adapter) != DXGI_ERROR_NOT_FOUND; ai++){
+			IDXGIOutput *output = nullptr;
+			for(UINT oi = 0; !found && adapter->EnumOutputs(oi, &output) != DXGI_ERROR_NOT_FOUND; oi++){
+				IDXGIOutput6 *output6 = nullptr;
+				if(SUCCEEDED(output->QueryInterface(__uuidof(IDXGIOutput6), (void**)&output6))){
+					DXGI_OUTPUT_DESC1 desc = {};
+					if(SUCCEEDED(output6->GetDesc1(&desc))
+					&& desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020){
+						minNits = (float)desc.MinLuminance / 10000.0f;
+						window.SetHdrMaxNits((int)desc.MaxLuminance);
+						found = true;
+					}
+					output6->Release();
+				}
+				output->Release();
+			}
+			adapter->Release();
+		}
+		factory->Release();
+	}
+	
+	// query SDR reference white via DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL (type 16,
+	// available since Windows 10 version 1709). SDRWhiteLevel is in units of
+	// (1000 * nits / 80), so nits = SDRWhiteLevel * 80 / 1000. Standard SDR white is
+	// 1000 (80 nits); typical Windows HDR setting is 2000-4000 (160-320 nits).
+	// PQ HDR reference white 203 nits is returned when the compositor uses that level.
+	struct sSDRWhiteLevel{
+		DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+		UINT32 SDRWhiteLevel;
+	};
+	static const auto kTypeSDRWhiteLevel = (DISPLAYCONFIG_DEVICE_INFO_TYPE)16;
+	
+	UINT32 pathCount = 0, modeCount = 0;
+	if(GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount) == ERROR_SUCCESS){
+		decTUniqueList<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
+		decTUniqueList<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
+		
+		if(QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.GetArrayPointer(),
+		&modeCount, modes.GetArrayPointer(), nullptr) == ERROR_SUCCESS){
+			for(UINT32 i = 0; i < pathCount; i++){
+				sSDRWhiteLevel sdrInfo{};
+				sdrInfo.header.type = kTypeSDRWhiteLevel;
+				sdrInfo.header.size = sizeof(sdrInfo);
+				sdrInfo.header.adapterId = paths[i].targetInfo.adapterId;
+				sdrInfo.header.id = paths[i].targetInfo.id;
+				
+				if(DisplayConfigGetDeviceInfo(&sdrInfo.header) == ERROR_SUCCESS){
+					const int refNits = (int)(sdrInfo.SDRWhiteLevel * 80 / 1000);
+					window.SetHdrReferenceNits(refNits);
+					logger.LogInfoFormat(
+						"RTCBWindows: HDR capabilities: minNits=%.4f maxNits=%d refNits=%d",
+						minNits, window.GetHdrMaxNits(), refNits);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void deoglRTCBWindows::pUnregisterWindowClass(){
@@ -513,6 +600,102 @@ void deoglRTCBWindows::pFreeContext(){
 		wglDeleteContext(pContext);
 		pContext = nullptr;
 	}
+}
+
+void deoglRTCBWindows::pChooseHdrPixelFormat(){
+	// SetPixelFormat() can be called only once per window DC so the pixel format has to be
+	// chosen BEFORE deoglRRenderWindow::CreateWindow() is called. wglChoosePixelFormatARB
+	// requires an active OpenGL context to retrieve the function pointer. To resolve this
+	// chicken-and-egg problem a temporary dummy window and context is created to probe for
+	// the 10-bit pixel format
+	deoglRTLogger &logger = pRTContext.GetRenderThread().GetLogger();
+	
+	// create tiny invisible dummy window
+	wchar_t wideClassName[200];
+	deOSWindows::Utf8ToWide(pWindowClassname, wideClassName, MAX_PATH);
+	const HWND dummyHwnd = CreateWindowExW(0, wideClassName, L"DEOpenGLDummy",
+		WS_OVERLAPPED, 0, 0, 1, 1, nullptr, nullptr, pOSWindows->GetInstApp(), nullptr);
+	if(!dummyHwnd){
+		logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: CreateWindowEx failed, skipping HDR probe");
+		return;
+	}
+	
+	const HDC dummyDC = GetDC(dummyHwnd);
+	if(!dummyDC){
+		DestroyWindow(dummyHwnd);
+		logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: GetDC failed, skipping HDR probe");
+		return;
+	}
+	
+	// set basic pixel format
+	PIXELFORMATDESCRIPTOR pfd{};
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 24;
+	pfd.cRedBits = 8;
+	pfd.cGreenBits = 8;
+	pfd.cBlueBits = 8;
+	pfd.cAlphaBits = 8;
+	pfd.cDepthBits = 24;
+	
+	if(!SetPixelFormat(dummyDC, ChoosePixelFormat(dummyDC, &pfd), &pfd)){
+		ReleaseDC(dummyHwnd, dummyDC);
+		DestroyWindow(dummyHwnd);
+		logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: SetPixelFormat failed, skipping HDR probe");
+		return;
+	}
+	
+	// create basic context
+	const HGLRC dummyCtx = wglCreateContext(dummyDC);
+	if(!dummyCtx){
+		ReleaseDC(dummyHwnd, dummyDC);
+		DestroyWindow(dummyHwnd);
+		logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: wglCreateContext failed, skipping HDR probe");
+		return;
+	}
+	
+	wglMakeCurrent(dummyDC, dummyCtx);
+	
+	auto pwglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)
+		wglGetProcAddress("wglChoosePixelFormatARB");
+	
+	if(pwglChoosePixelFormatARB){
+		// try to find a 10-bit per channel pixel format
+		const int attribs[] = {
+			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+			WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+			WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+			WGL_RED_BITS_ARB, 10,
+			WGL_GREEN_BITS_ARB, 10,
+			WGL_BLUE_BITS_ARB, 10,
+			WGL_ALPHA_BITS_ARB, 2,
+			WGL_DEPTH_BITS_ARB, 24,
+			WGL_STENCIL_BITS_ARB, 8,
+			0
+		};
+		
+		int format = 0;
+		UINT numFormats = 0;
+		if(pwglChoosePixelFormatARB(dummyDC, attribs, nullptr, 1, &format, &numFormats)
+		&& numFormats > 0){
+			pHdrPixelFormat = format;
+			logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: 10-bit HDR pixel format");
+			
+		}else{
+			logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: No 10-bit HDR pixel format available");
+		}
+		
+	}else{
+		logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: wglChoosePixelFormatARB not available, skipping HDR probe");
+	}
+	
+	wglMakeCurrent(nullptr, nullptr);
+	wglDeleteContext(dummyCtx);
+	ReleaseDC(dummyHwnd, dummyDC);
+	DestroyWindow(dummyHwnd);
 }
 
 #endif // OS_W32

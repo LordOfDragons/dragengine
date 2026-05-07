@@ -15,3 +15,4 @@ StartupNotify=false
 Terminal=false
 PrefersNonDefaultGPU=true
 X-KDE-RunOnDiscreteGpu=true
+StartupWMClass="ch.dragondreams.dragengine.default"

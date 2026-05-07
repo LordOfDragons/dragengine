@@ -588,9 +588,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetSkinPath.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAffectsAudio.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleEnableGI.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAttachTarget.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleDoNotScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleEnableGI.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleLightShadowIgnore.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentTogglePartialHide.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleRenderEnvMap.cpp" />
@@ -1126,9 +1126,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetRotation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentSetSkinPath.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAffectsAudio.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleEnableGI.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleAttachTarget.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleDoNotScale.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleEnableGI.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleLightShadowIgnore.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentTogglePartialHide.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\component\gdeUOCComponentToggleRenderEnvMap.h" />

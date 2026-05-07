@@ -29,6 +29,9 @@
 #include "dexsiDevice.h"
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
+#ifdef OS_UNIX_WAYLAND
+	#include "dexsiWaylandInput.h"
+#endif
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTList.h>
@@ -58,6 +61,10 @@ private:
 	
 	dexsiDevice::Ref pPrimaryMouse;
 	dexsiDevice::Ref pPrimaryKeyboard;
+	
+#ifdef OS_UNIX_WAYLAND
+	dexsiWaylandInput::Ref pWaylandInput;
+#endif
 	
 	int pInotifyFd;
 	int pInotifyWatchEvdev;
@@ -112,6 +119,11 @@ public:
 	
 	/** Primary keyboard device. */
 	inline const dexsiDevice::Ref &GetPrimaryKeyboard() const{ return pPrimaryKeyboard; }
+	
+#ifdef OS_UNIX_WAYLAND
+	/** Wayland input manager or null if not supported. */
+	inline const dexsiWaylandInput::Ref &GetWaylandInput() const{ return pWaylandInput; }
+#endif
 	
 	
 	

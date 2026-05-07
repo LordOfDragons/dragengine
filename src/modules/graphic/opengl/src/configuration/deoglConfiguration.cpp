@@ -145,6 +145,7 @@ pGIQuality(egiqHigh),
 pGIUpdateSpeed(egiusMedium),
 
 pVSyncMode(evsmAdaptive),
+pEnableHDRMonitor(true),
 
 pVRRenderScale(1.0f),
 pVRForceFrameRate(0),
@@ -927,6 +928,15 @@ void deoglConfiguration::SetVSyncMode(eVSyncMode mode){
 	}
 	
 	pVSyncMode = mode;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetEnableHDRMonitor(bool enable){
+	if(enable == pEnableHDRMonitor){
+		return;
+	}
+	
+	pEnableHDRMonitor = enable;
 	pDirty = true;
 }
 

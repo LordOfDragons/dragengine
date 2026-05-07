@@ -84,7 +84,7 @@ void deoglRDSRenderableCanvas::PrepareForRender(const deoglRenderPlanMasked *ren
 
 void deoglRDSRenderableCanvas::Render(const deoglRenderPlanMasked *renderPlanMask){
 	if(pCanvas){
-		pCanvas->RenderRenderTarget(renderPlanMask);
+		pCanvas->RenderRenderTarget(renderPlanMask, false);
 	}
 }
 

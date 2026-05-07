@@ -62,7 +62,10 @@ public:
 		esLibevdev,
 		
 		/** Joystick API. */
-		esJoystickApi
+		esJoystickApi,
+		
+		/** Wayland. */
+		esWayland
 	};
 	
 	/** X type. */
@@ -195,6 +198,9 @@ public:
 	
 	/** Add button. */
 	void AddButton(dexsiDeviceButton *button);
+	
+	/** Remove all buttons. */
+	void ClearButtons();
 	
 	/** Button with identifier or \em NULL if absent. */
 	dexsiDeviceButton *GetButtonWithID(const char *id) const;

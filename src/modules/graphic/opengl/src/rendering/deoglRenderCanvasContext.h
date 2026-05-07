@@ -58,6 +58,9 @@ private:
 	float pTransparency;
 	deoglTexture *pMask;
 	decTexMatrix2 pTCTransformMask;
+	bool pUseHdrOutput;
+	int pHdrMaxNits;
+	int pHdrReferenceNits;
 	
 	
 	
@@ -176,9 +179,24 @@ public:
 	
 	/** Update transformation mask from transformation. */
 	void UpdateTransformMask();
-	/*@}*/
 	
+	/** Use HDR output. */
+	inline bool GetUseHdrOutput() const{ return pUseHdrOutput; }
 	
+	/** Set use HDR output. */
+	void SetUseHdrOutput(bool useHdrOutput);
+	
+	/** HDR peak luminance in nits. */
+	inline int GetHdrMaxNits() const{ return pHdrMaxNits; }
+	
+	/** Set HDR peak luminance in nits. */
+	void SetHdrMaxNits(int hdrMaxNits);
+	
+	/** HDR SDR reference white luminance in nits. */
+	inline int GetHdrReferenceNits() const{ return pHdrReferenceNits; }
+	
+	/** Set HDR SDR reference white luminance in nits. */
+	void SetHdrReferenceNits(int hdrReferenceNits);
 	
 private:
 	void pCalculateClipping(const decVector2 &canvasSize);

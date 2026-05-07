@@ -181,6 +181,13 @@ public:
 	 */
 	void RenderFullScreenQuadVAO(const deoglRenderPlan &plan) const;
 	void RenderFullScreenQuadVAO(bool useStereo) const;
+	
+	
+	
+	/** Convert sRGB color to linear color space. */
+	float Rgb2Linear(float color) const;
+	decColor Rgb2Linear(const decColor &color) const;
+	decColorMatrix Rgb2Linear(const decColorMatrix &color) const;
 	/*@}*/
 	
 	

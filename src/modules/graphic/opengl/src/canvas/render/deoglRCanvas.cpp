@@ -109,12 +109,12 @@ void deoglRCanvas::DirtyMaskRenderTarget(){
 
 
 
-void deoglRCanvas::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+void deoglRCanvas::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
 	if(!pMask){
 		return;
 	}
 	
-	pMask->PrepareForRender(renderPlanMask);
+	pMask->PrepareForRender(renderPlanMask, false);
 	
 	const int width = (int)(GetSize().x + 0.5f);
 	const int height = (int)(GetSize().y + 0.5f);
@@ -148,6 +148,7 @@ void deoglRCanvas::PrepareForRenderRender(const deoglRenderPlanMasked *renderPla
 	context.SetTransform(pMask->GetTransform().Invert().ToTexMatrix2() * context.GetTransform());
 	//context.UpdateTransformMask();
 	context.SetTCTransformMask(*pMaskRenderTarget);
+	context.SetUseHdrOutput(false);
 	
 	GetRenderThread().GetRenderers().GetCanvas().Prepare(context);
 	pMask->Render(context);

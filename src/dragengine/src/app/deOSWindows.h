@@ -305,6 +305,12 @@ public:
 	/** \brief Set registry value. */
 	static void SetRegistryValue(const char *key,
 		const char *entry, const char *value);
+	
+	/**
+	 * \brief Check if any connected display has HDR output enabled.
+	 * \version 1.32
+	 */
+	static bool GetDisplaySupportsHdr();
 	/*@}*/
 	
 	

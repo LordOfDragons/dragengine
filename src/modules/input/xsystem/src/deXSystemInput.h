@@ -64,10 +64,6 @@ private:
 	
 	deOSUnix *pOSUnix;
 	
-	int pWindowWidth;
-	int pWindowHeight;
-	
-	int pMouseButtons;
 	int pLastMouseX;
 	int pLastMouseY;
 	
@@ -92,7 +88,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deXSystemInput(deLoadableModule &loadableModule);
+	explicit deXSystemInput(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
 	~deXSystemInput() override;

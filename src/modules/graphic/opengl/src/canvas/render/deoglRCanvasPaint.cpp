@@ -128,12 +128,12 @@ void deoglRCanvasPaint::SetPointCount(int count){
 
 
 
-void deoglRCanvasPaint::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+void deoglRCanvasPaint::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask, bool useHdrOutput){
 	if(pFillColor.a < FLOAT_SAFE_EPSILON && pLineColor.a < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender(renderPlanMask);
+	deoglRCanvas::PrepareForRender(renderPlanMask, useHdrOutput);
 	pPrepareVBOBlock();
 }
 

@@ -81,6 +81,7 @@ pDirtyIcon(true)
 		
 		renderWindow.SetWindow(pRRenderWindow->GetWindow());
 		renderWindow.SetScaleFactor(pRRenderWindow->GetAfterCreateScaleFactor());
+		renderWindow.SetHdrOutput(pRRenderWindow->GetUseHdrOutput());
 		
 		// set application as active. x-system does not tell the new window it obtained
 		// the focus so we do this instead. (is this a bug or feature of x-system?)
