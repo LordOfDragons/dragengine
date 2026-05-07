@@ -378,3 +378,15 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.ACTION_KEY }}" \
             --data '{"event_type": "Release", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'
+
+  examples:
+    needs: [upload]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Examples Build
+        run: |
+          curl -X POST https://api.github.com/repos/LordOfDragons/deexamples/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.ACTION_KEY }}" \
+            --data '{"event_type": "Release", "client_payload": { "version": "${{ github.event.inputs.version }}" }}'
