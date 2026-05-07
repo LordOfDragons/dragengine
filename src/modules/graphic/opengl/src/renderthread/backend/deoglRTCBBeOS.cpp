@@ -33,6 +33,7 @@
 
 #include "../deoglRTContext.h"
 #include "../deoglRenderThread.h"
+#include "../../deGraphicOpenGl.h"
 #include "../../window/deoglRRenderWindow.h"
 
 #include <dragengine/resources/rendering/deRenderWindow.h>
