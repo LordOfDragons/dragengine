@@ -93,8 +93,10 @@ float uchimura(float x) {
 	return uchimura(x, P, a, m, l, c, b);
 }
 
+const float hdrMax = 1000.0 / 180.0; //1000.0 / 180.0;
+
 float uchimuraHdr(float x){
-	VARCONST float P = 1000.0 / 180.0;
+	VARCONST float P = hdrMax;
 	VARCONST float a = 1.1;
 	VARCONST float m = 0.08;
 	VARCONST float l = 0.2;
@@ -159,11 +161,22 @@ void main( void ){
 	
 	if(HdrOutput){
 		// uchimura is per channel so white has to be achieved artificially
+		
+		/*
 		float hdrMax = 1000.0 / 180.0;
 		float luma = dot(outColor.rgb, lumiFactors);
 		float distToPeak = clamp((luma - 1.0) / (hdrMax - 1.0), 0.0, 1.0);
 		float saturationFactor = 1.0 - pow(distToPeak, 3.0);
 		outColor.rgb = mix(vec3(luma), outColor.rgb, saturationFactor);
+		*/
+		
+		float luma = dot(outColor.rgb, lumiFactors);
+		const float whiteOutStart = 2.0;
+		if(luma > whiteOutStart){
+			float distToPeak = clamp((luma - whiteOutStart) / (hdrMax - whiteOutStart), 0.0, 1.0);
+			float saturationFactor = 1.0 - pow(distToPeak, 4.0);
+			outColor.rgb = luma + (outColor.rgb - vec3(luma)) * saturationFactor;
+		}
 	}
 	
 	// clamp alpha value to the range from 0 to 1. larger values can happen during
