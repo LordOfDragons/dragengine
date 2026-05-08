@@ -104,6 +104,8 @@
 #include "resources/canvas/deCanvasManager.h"
 #include "resources/canvas/capture/deCaptureCanvasManager.h"
 #include "resources/service/deServiceManager.h"
+#include "resources/scene/deScene.h"
+#include "resources/scene/deSceneManager.h"
 
 #include "errortracing/deErrorTrace.h"
 #include "errortracing/deErrorTracePoint.h"
@@ -174,9 +176,10 @@ enum eResourceManager{
 	ermVideos,
 	ermVideoPlayers,
 	ermWorlds,
-	ermServices
+	ermServices,
+	ermScenes
 };
-constexpr int ManagerCount = ermServices + 1;
+constexpr int ManagerCount = ermScenes + 1;
 
 enum eSystems{
 	esCrashRecovery,
@@ -207,6 +210,7 @@ static const int vLocalResourcePeerCreationOrder[ManagerCount] = {
 	ermModels,
 	ermOcclusionMesh,
 	ermRigs,
+	ermScenes,
 	ermSounds,
 	ermVideos,
 	
@@ -624,6 +628,10 @@ deWorldManager *deEngine::GetWorldManager() const{
 
 deServiceManager *deEngine::GetServiceManager() const{
 	return pResMgrs.GetAt(ermServices).PointerStaticCast<deServiceManager>();
+}
+
+deSceneManager *deEngine::GetSceneManager() const{
+	return pResMgrs.GetAt(ermScenes).PointerStaticCast<deSceneManager>();
 }
 
 
@@ -1218,6 +1226,7 @@ void deEngine::pInitResourceManagers(){
 	pResMgrs.SetAt(ermVideos, deTUniqueReference<deVideoManager>::New(this));
 	pResMgrs.SetAt(ermWorlds, deTUniqueReference<deWorldManager>::New(this));
 	pResMgrs.SetAt(ermServices, deTUniqueReference<deServiceManager>::New(this));
+	pResMgrs.SetAt(ermScenes, deTUniqueReference<deSceneManager>::New(this));
 	
 	// sanity check
 	RESMGRSANCHECK(ermAnimations, ertAnimation);
@@ -1271,6 +1280,7 @@ void deEngine::pInitResourceManagers(){
 	RESMGRSANCHECK(ermVideoPlayers, ertVideoPlayer);
 	RESMGRSANCHECK(ermWorlds, ertWorld);
 	RESMGRSANCHECK(ermServices, ertService);
+	RESMGRSANCHECK(ermScenes, ertScene);
 	
 	// create resource loader
 	pResLoader = new deResourceLoader(*this);

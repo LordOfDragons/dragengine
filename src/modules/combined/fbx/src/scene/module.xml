@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>FBXScene</name>
+	<description>Handles scenes in the binary FBX format.</description>
+	<author>DragonDreams GmbH (info@dragondreams.ch)</author>
+	<version>VERSION</version>
+	<type>Scene</type>
+	<pattern>.fbx</pattern>
+	<noSaving/>
+	<priority>1</priority>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>FBXSceneCreateModule</entrypoint>
+	</library>
+</module>

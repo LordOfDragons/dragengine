@@ -345,6 +345,82 @@ parent_targets['skin_fbx'] = {
 
 
 
+# scene module
+###############
+
+pathModule = os.path.join(pathModules, 'scene', 'fbxscene', versionString)
+
+sources = []
+headers = []
+globFiles(envModule, 'src/scene', '*.cpp', sources)
+globFiles(envModule, 'src/scene', '*.h', headers)
+
+clocDepends.extend(sources)
+clocDepends.extend(headers)
+
+install = []
+archive = {}
+archiveDebug = {}
+
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	
+	library = envModule.StaticLibrary(target='scnfbx', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('scn_fbx_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [], 'fbxSceneRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	objects.extend(objshared)
+	
+	library = envModule.LoadableModule('scnfbx', objects)
+	(library, libraryDebug) = envModule.SplitDebugIf(library)
+	targetBuild = envModule.Alias('scn_fbx_build', library + libraryDebug)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	for l in libraryDebug:
+		archiveDebug[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'scnfbx.pdb'))
+		archive['{}/scnfbx.pdb'.format(pathPdb)] = envModule.File('scnfbx.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File('src/scene/module.xml')
+	updateManifest = envModule.UpdateModuleManifest(manifest,
+		manifest.srcnode(), ManifestUpdates=manifestUpdates)
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('scn_fbx', install)
+
+parent_targets['scn_fbx'] = {
+	'name': 'FBX Scene Module',
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-engine-runtime': targetInstall,
+	'archive-engine': archive,
+	'archive-engine-debug': archiveDebug}
+
+
+
 # cloc. to not duplicate the values it is assigned only to the model module
 srcdir = Dir('.').srcnode()
 
