@@ -55,7 +55,7 @@ public:
 	
 private:
 	decTDictionary<decString, deResource::Ref> pResources;
-	decTDictionary<decString, decMemoryFile::Ref> pMemoryFiles;
+	decTDictionary<decString, decMemoryFile::Ref> pFiles;
 	
 	
 	
@@ -114,37 +114,37 @@ public:
 	
 	
 	
-	/** \name Memory File Management */
+	/** \name File Management */
 	/*@{*/
-	/** \brief Count of memory files. */
-	int GetMemoryFileCount() const;
+	/** \brief Count of files. */
+	int GetFileCount() const;
 	
-	/** \brief Memory file keys. */
-	decStringList GetMemoryFileKeys() const;
+	/** \brief File keys. */
+	decStringList GetFileKeys() const;
 	
-	/** \brief Memory file with key or NULL if absent. */
-	decMemoryFile *GetMemoryFileNamed(const char *name) const;
+	/** \brief File with key or NULL if absent. */
+	decMemoryFile *GetFileNamed(const char *name) const;
 	
-	/** \brief Memory file with key is present. */
-	bool HasMemoryFileNamed(const char *name) const;
+	/** \brief File with key is present. */
+	bool HasFileNamed(const char *name) const;
 	
 	/**
-	 * \brief Add memory file with key.
+	 * \brief Add file with key.
 	 * \throws deeInvalidParam \em name is NULL.
 	 * \throws deeInvalidParam \em file is NULL.
-	 * \throws deeInvalidParam Memory file with \em name is already present.
+	 * \throws deeInvalidParam File with \em name is already present.
 	 */
-	void AddMemoryFile(const char *name, decMemoryFile *file);
+	void AddFile(const char *name, decMemoryFile *file);
 	
 	/**
-	 * \brief Remove memory file with key.
+	 * \brief Remove file with key.
 	 * \throws deeInvalidParam \em name is NULL.
-	 * \throws deeInvalidParam Memory file with \em name is absent.
+	 * \throws deeInvalidParam File with \em name is absent.
 	 */
-	void RemoveMemoryFile(const char *name);
+	void RemoveFile(const char *name);
 	
-	/** \brief Remove all memory files. */
-	void RemoveAllMemoryFiles();
+	/** \brief Remove all files. */
+	void RemoveAllFiles();
 	/*@}*/
 };
 

@@ -97,48 +97,48 @@ void deScene::RemoveAllResources(){
 
 
 
-// Memory File Management
-//////////////////////////
+// File Management
+///////////////////
 
-int deScene::GetMemoryFileCount() const{
-	return pMemoryFiles.GetCount();
+int deScene::GetFileCount() const{
+	return pFiles.GetCount();
 }
 
-decStringList deScene::GetMemoryFileKeys() const{
-	const decTDictionary<decString, decMemoryFile::Ref>::KeyList keys(pMemoryFiles.GetKeys());
+decStringList deScene::GetFileKeys() const{
+	const decTDictionary<decString, decMemoryFile::Ref>::KeyList keys(pFiles.GetKeys());
 	decStringList result;
 	keys.Visit([&](const decString &key){ result.Add(key); });
 	return result;
 }
 
-decMemoryFile *deScene::GetMemoryFileNamed(const char *name) const{
+decMemoryFile *deScene::GetFileNamed(const char *name) const{
 	DEASSERT_NOTNULL(name)
 	const decMemoryFile::Ref *file = nullptr;
-	return pMemoryFiles.GetAt(name, file) ? file->Pointer() : nullptr;
+	return pFiles.GetAt(name, file) ? file->Pointer() : nullptr;
 }
 
-bool deScene::HasMemoryFileNamed(const char *name) const{
+bool deScene::HasFileNamed(const char *name) const{
 	DEASSERT_NOTNULL(name)
-	return pMemoryFiles.Has(name);
+	return pFiles.Has(name);
 }
 
-void deScene::AddMemoryFile(const char *name, decMemoryFile *file){
+void deScene::AddFile(const char *name, decMemoryFile *file){
 	DEASSERT_NOTNULL(name)
 	DEASSERT_NOTNULL(file)
-	if(pMemoryFiles.Has(name)){
-		DETHROW_INFO(deeInvalidParam, "memory file with name already present");
+	if(pFiles.Has(name)){
+		DETHROW_INFO(deeInvalidParam, "file with name already present");
 	}
-	pMemoryFiles.SetAt(name, decMemoryFile::Ref(file));
+	pFiles.SetAt(name, decMemoryFile::Ref(file));
 }
 
-void deScene::RemoveMemoryFile(const char *name){
+void deScene::RemoveFile(const char *name){
 	DEASSERT_NOTNULL(name)
-	if(!pMemoryFiles.Has(name)){
-		DETHROW_INFO(deeInvalidParam, "memory file with name absent");
+	if(!pFiles.Has(name)){
+		DETHROW_INFO(deeInvalidParam, "file with name absent");
 	}
-	pMemoryFiles.Remove(name);
+	pFiles.Remove(name);
 }
 
-void deScene::RemoveAllMemoryFiles(){
-	pMemoryFiles.RemoveAll();
+void deScene::RemoveAllFiles(){
+	pFiles.RemoveAll();
 }

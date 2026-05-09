@@ -170,6 +170,7 @@ class deClassRig;
 class deClassRigBuilder;
 class deClassRuntimeMeter;
 class deClassSafeArray;
+class deClassScene;
 class deClassScriptSystem;
 class deClassServer;
 class deClassServerListener;
@@ -422,6 +423,7 @@ private:
 	deClassServerListener *pClsSvrL;
 	deClassSafeArray *pClsSA;
 	deClassScriptSystem *pClsScrSys;
+	deClassScene *pClsScene;
 	deClassShapeList *pClsShaList;
 	deClassService *pClsService;
 	deClassServiceListener *pClsServiceListener;
@@ -796,6 +798,7 @@ public:
 	inline deClassRuntimeMeter *GetClassRuntimeMeter() const{ return pClsRTM; }
 	inline deClassSafeArray *GetClassSafeArray() const{ return pClsSA; }
 	inline deClassScriptSystem *GetClassScriptSystem() const{ return pClsScrSys; }
+	inline deClassScene *GetClassScene() const{ return pClsScene; }
 	inline deClassServer *GetClassServer() const{ return pClsSvr; }
 	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
