@@ -219,11 +219,11 @@ const igdeFilePattern::List *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePa
 	case efpltScene:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplScene);
 		
-	case efpltSky:
-		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
-		
 	case efpltSkin:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSkin);
+		
+	case efpltSky:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
 		
 	case efpltSound:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSound);
