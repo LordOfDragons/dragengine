@@ -653,8 +653,8 @@ return;
 }
 
 try{
-const fbxMaterial::Ref mat(fbxMaterial::Ref::New(fbxscene, node));
-pBuildSkinMaterial(skin, fbxscene, *mat);
+const fbxMaterial::Ref material(fbxMaterial::Ref::New(fbxscene, node));
+pBuildSkinMaterial(skin, fbxscene, *material);
 }catch(const deException &e){
 LogWarnFormat("Failed creating skin material: %s", e.GetDescription().GetString());
 }
@@ -663,7 +663,7 @@ LogWarnFormat("Failed creating skin material: %s", e.GetDescription().GetString(
 
 void fbxSceneModule::pBuildSkinMaterial(deSkin &skin, fbxScene &fbxscene,
 const fbxMaterial &material){
-auto texture = deSkinTexture::Ref::New(material.GetName());
+auto skinTexture = deSkinTexture::Ref::New(material.GetName());
 
 const fbxNode &nodeMaterial = material.GetNodeMaterial();
 const decColor black(0.0f, 0.0f, 0.0f);
@@ -711,22 +711,22 @@ fbxTexDiffuse = fbxTexture::Ref::New(fbxscene, node);
 if(fbxTexDiffuse){
 auto propColor = deSkinPropertyImage::Ref::New("color");
 propColor->SetPath(fbxTexDiffuse->GetFilename());
-texture->AddProperty(std::move(propColor));
+skinTexture->AddProperty(std::move(propColor));
 }else{
 auto propColor = deSkinPropertyColor::Ref::New("color");
 propColor->SetColor(color);
-texture->AddProperty(std::move(propColor));
+skinTexture->AddProperty(std::move(propColor));
 }
 
 auto propReflectivity = deSkinPropertyColor::Ref::New("reflectivity");
 propReflectivity->SetColor(fbxSpecular);
-texture->AddProperty(std::move(propReflectivity));
+skinTexture->AddProperty(std::move(propReflectivity));
 
 auto propRoughness = deSkinPropertyValue::Ref::New("roughness");
 propRoughness->SetValue(roughness);
-texture->AddProperty(std::move(propRoughness));
+skinTexture->AddProperty(std::move(propRoughness));
 
-skin.AddTexture(std::move(texture));
+skin.AddTexture(std::move(skinTexture));
 }
 
 void fbxSceneModule::pLoadRig(deScene &scene, fbxScene &fbxscene){
@@ -806,9 +806,9 @@ void fbxSceneModule::pBuildAnimation(deAnimation &animation, const fbxAnimationM
 const fbxRig *loadRig){
 if(loadRig){
 loadRig->GetBones().Visit([&](const fbxRigBone &rb){
-auto bone = deAnimationBone::Ref::New();
-bone->SetName(rb.GetName());
-animation.AddBone(std::move(bone));
+auto animBone = deAnimationBone::Ref::New();
+animBone->SetName(rb.GetName());
+animation.AddBone(std::move(animBone));
 });
 }
 
