@@ -34,9 +34,11 @@ class fbxRig;
 class fbxMaterial;
 class fbxNode;
 class fbxAnimationMove;
+class fbxTexture;
 class deModel;
 class deModelLOD;
 class deSkin;
+class deSkinTexture;
 class deRig;
 class deAnimation;
 
@@ -132,6 +134,12 @@ void pStoreDeworld(deScene &scene, const decString &deworldContent, int objectCo
 void pAppendXmlFloat(decString &xml, float value) const;
 
 void pAppendVector(decString &xml, const char *tag, const decVector &v) const;
+
+void pAddPropertyValue(deSkinTexture &texture, const char *name, float value);
+
+void pAddPropertyColor(deSkinTexture &texture, const char *name, const decColor &color);
+
+void pAddPropertyImage(deSkinTexture &texture, const char *name, const fbxTexture &fbxtex);
 };
 
 #endif
