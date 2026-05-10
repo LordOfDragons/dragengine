@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,6 @@ class deScene;
 
 /**
  * \brief Base scene module providing load/save support for scenes.
- *
- * Scene modules load and save file formats like FBX or GLB which contain multiple objects
- * such as models, skins, rigs and animations. These file formats are typically used to
- * transfer entire scenes from one application to another.
  */
 class DE_DLL_EXPORT deBaseSceneModule : public deBaseModule{
 public:
@@ -56,18 +52,11 @@ public:
 	/*@{*/
 	/**
 	 * \brief Load scene from file.
-	 *
-	 * The module stores all objects found in the scene file as the respective resource
-	 * types in the scene resources dictionary. Objects not convertible to engine resources
-	 * but convertible to other file formats are stored as memory files.
 	 */
 	virtual void LoadScene(decBaseFileReader &reader, deScene &scene) = 0;
 	
 	/**
 	 * \brief Save scene to file.
-	 *
-	 * For saving the user has to add resources and memory files to the deScene object
-	 * before calling this method. The scene module then saves them to the file.
 	 */
 	virtual void SaveScene(decBaseFileWriter &writer, const deScene &scene) = 0;
 	/*@}*/

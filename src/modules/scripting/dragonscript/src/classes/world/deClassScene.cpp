@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,18 +61,16 @@
 #include <libdscript/exceptions.h>
 
 
-
 // Native structure
 struct sSceneNatDat{
 	deScene::Ref scene;
 };
 
 
-
 // Native Functions
 /////////////////////
 
-// public func new(String filename)
+// func new(String filename)
 deClassScene::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsScene,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
@@ -86,7 +84,7 @@ void deClassScene::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.scene = sceneMgr.LoadScene(rt->GetValue(0)->GetString(), "/");
 }
 
-// static public func void loadAsynchron(String filename, ResourceListener listener)
+// static func void loadAsynchron(String filename, ResourceListener listener)
 deClassScene::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFunction(init.clsScene,
 "loadAsynchron", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
@@ -104,7 +102,7 @@ void deClassScene::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue*){
 	clsScene.GetDS().GetResourceLoader()->AddRequest(filename, deResourceLoader::ertScene, listener);
 }
 
-// public func destructor()
+// func destructor()
 deClassScene::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsScene,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -118,7 +116,7 @@ void deClassScene::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 
 
 
-// public func String getFilename()
+// func String getFilename()
 deClassScene::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(init.clsScene,
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
@@ -129,7 +127,7 @@ void deClassScene::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
 
 
 
-// public func int getResourceCount()
+// func int getResourceCount()
 deClassScene::nfGetResourceCount::nfGetResourceCount(const sInitData &init) :
 dsFunction(init.clsScene, "getResourceCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsInt){
@@ -139,7 +137,7 @@ void deClassScene::nfGetResourceCount::RunFunction(dsRunTime *rt, dsValue *mysel
 	rt->PushInt(scene.GetResources().GetCount());
 }
 
-// public func Array getResourceKeys()
+// func Array getResourceKeys()
 deClassScene::nfGetResourceKeys::nfGetResourceKeys(const sInitData &init) :
 dsFunction(init.clsScene, "getResourceKeys", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsArray){
@@ -168,13 +166,13 @@ void deClassScene::nfGetResourceKeys::RunFunction(dsRunTime *rt, dsValue *myself
 	}
 }
 
-// public func Object getResourceNamed(String name)
-deClassScene::nfGetResourceNamed::nfGetResourceNamed(const sInitData &init) :
-dsFunction(init.clsScene, "getResourceNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
+// func Object getResourceAt(String name)
+deClassScene::nfGetResourceAt::nfGetResourceAt(const sInitData &init) :
+dsFunction(init.clsScene, "getResourceAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsObj){
 	p_AddParameter(init.clsStr); // name
 }
-void deClassScene::nfGetResourceNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassScene::nfGetResourceAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassScene &clsScene = *static_cast<deClassScene*>(GetOwnerClass());
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	const deScriptingDragonScript &ds = clsScene.GetDS();
@@ -208,18 +206,18 @@ void deClassScene::nfGetResourceNamed::RunFunction(dsRunTime *rt, dsValue *mysel
 	}
 }
 
-// public func bool hasResourceNamed(String name)
-deClassScene::nfHasResourceNamed::nfHasResourceNamed(const sInitData &init) :
-dsFunction(init.clsScene, "hasResourceNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
+// func bool hasResourceAt(String name)
+deClassScene::nfHasResourceAt::nfHasResourceAt(const sInitData &init) :
+dsFunction(init.clsScene, "hasResourceAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsBool){
 	p_AddParameter(init.clsStr); // name
 }
-void deClassScene::nfHasResourceNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassScene::nfHasResourceAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	rt->PushBool(scene.GetResources().Has(rt->GetValue(0)->GetString()));
 }
 
-// public func void addResource(String name, Object resource)
+// func void addResource(String name, Object resource)
 deClassScene::nfAddResource::nfAddResource(const sInitData &init) :
 dsFunction(init.clsScene, "addResource", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsVoid){
@@ -241,10 +239,13 @@ void deClassScene::nfAddResource::RunFunction(dsRunTime *rt, dsValue *myself){
 	deResource *resource = nullptr;
 	if(resObj->GetType() == ds.GetClassModel()){
 		resource = ds.GetClassModel()->GetModel(resObj);
+		
 	}else if(resObj->GetType() == ds.GetClassSkin()){
 		resource = ds.GetClassSkin()->GetSkin(resObj);
+		
 	}else if(resObj->GetType() == ds.GetClassRig()){
 		resource = ds.GetClassRig()->GetRig(resObj);
+		
 	}else if(resObj->GetType() == ds.GetClassAnimation()){
 		resource = ds.GetClassAnimation()->GetAnimation(resObj);
 	}
@@ -256,7 +257,7 @@ void deClassScene::nfAddResource::RunFunction(dsRunTime *rt, dsValue *myself){
 	scene.AddResource(name, resource);
 }
 
-// public func void removeResource(String name)
+// func void removeResource(String name)
 deClassScene::nfRemoveResource::nfRemoveResource(const sInitData &init) :
 dsFunction(init.clsScene, "removeResource", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsVoid){
@@ -267,7 +268,7 @@ void deClassScene::nfRemoveResource::RunFunction(dsRunTime *rt, dsValue *myself)
 	scene.RemoveResource(rt->GetValue(0)->GetString());
 }
 
-// public func void removeAllResources()
+// func void removeAllResources()
 deClassScene::nfRemoveAllResources::nfRemoveAllResources(const sInitData &init) :
 dsFunction(init.clsScene, "removeAllResources", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsVoid){
@@ -278,7 +279,7 @@ void deClassScene::nfRemoveAllResources::RunFunction(dsRunTime*, dsValue *myself
 
 
 
-// public func int getFileCount()
+// func int getFileCount()
 deClassScene::nfGetFileCount::nfGetFileCount(const sInitData &init) :
 dsFunction(init.clsScene, "getFileCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsInt){
@@ -288,7 +289,7 @@ void deClassScene::nfGetFileCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	rt->PushInt(scene.GetFiles().GetCount());
 }
 
-// public func Array getFileKeys()
+// func Array getFileKeys()
 deClassScene::nfGetFileKeys::nfGetFileKeys(const sInitData &init) :
 dsFunction(init.clsScene, "getFileKeys", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsArray){
@@ -316,13 +317,13 @@ void deClassScene::nfGetFileKeys::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// public func MemoryFile getFileNamed(String name)
-deClassScene::nfGetFileNamed::nfGetFileNamed(const sInitData &init) :
-dsFunction(init.clsScene, "getFileNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
+// func MemoryFile getFileAt(String name)
+deClassScene::nfGetFileAt::nfGetFileAt(const sInitData &init) :
+dsFunction(init.clsScene, "getFileAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsMemFile){
 	p_AddParameter(init.clsStr); // name
 }
-void deClassScene::nfGetFileNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassScene::nfGetFileAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassScene &clsScene = *static_cast<deClassScene*>(GetOwnerClass());
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	
@@ -330,18 +331,18 @@ void deClassScene::nfGetFileNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 		scene.GetFiles().GetAt(rt->GetValue(0)->GetString()));
 }
 
-// public func bool hasFileNamed(String name)
-deClassScene::nfHasFileNamed::nfHasFileNamed(const sInitData &init) :
-dsFunction(init.clsScene, "hasFileNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
+// func bool hasFileAt(String name)
+deClassScene::nfHasFileAt::nfHasFileAt(const sInitData &init) :
+dsFunction(init.clsScene, "hasFileAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsBool){
 	p_AddParameter(init.clsStr); // name
 }
-void deClassScene::nfHasFileNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassScene::nfHasFileAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	rt->PushBool(scene.GetFiles().Has(rt->GetValue(0)->GetString()));
 }
 
-// public func void addFile(String name, MemoryFile file)
+// func void addFile(String name, MemoryFile file)
 deClassScene::nfAddFile::nfAddFile(const sInitData &init) :
 dsFunction(init.clsScene, "addFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsVoid){
@@ -362,7 +363,7 @@ void deClassScene::nfAddFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	scene.AddFile(name, file);
 }
 
-// public func void removeFile(String name)
+// func void removeFile(String name)
 deClassScene::nfRemoveFile::nfRemoveFile(const sInitData &init) :
 dsFunction(init.clsScene, "removeFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsVoid){
@@ -373,7 +374,7 @@ void deClassScene::nfRemoveFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	scene.RemoveFile(rt->GetValue(0)->GetString());
 }
 
-// public func void removeAllFiles()
+// func void removeAllFiles()
 deClassScene::nfRemoveAllFiles::nfRemoveAllFiles(const sInitData &init) :
 dsFunction(init.clsScene, "removeAllFiles", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 init.clsVoid){
@@ -384,7 +385,7 @@ void deClassScene::nfRemoveAllFiles::RunFunction(dsRunTime*, dsValue *myself){
 
 
 
-// public func bool equals(Object other)
+// func bool equals(Object other)
 deClassScene::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsScene,
 "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // other
@@ -403,7 +404,7 @@ void deClassScene::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 }
 
-// public func int hashCode()
+// func int hashCode()
 deClassScene::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(init.clsScene,
 "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
@@ -448,16 +449,16 @@ void deClassScene::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction(new nfGetResourceCount(init));
 	AddFunction(new nfGetResourceKeys(init));
-	AddFunction(new nfGetResourceNamed(init));
-	AddFunction(new nfHasResourceNamed(init));
+	AddFunction(new nfGetResourceAt(init));
+	AddFunction(new nfHasResourceAt(init));
 	AddFunction(new nfAddResource(init));
 	AddFunction(new nfRemoveResource(init));
 	AddFunction(new nfRemoveAllResources(init));
 	
 	AddFunction(new nfGetFileCount(init));
 	AddFunction(new nfGetFileKeys(init));
-	AddFunction(new nfGetFileNamed(init));
-	AddFunction(new nfHasFileNamed(init));
+	AddFunction(new nfGetFileAt(init));
+	AddFunction(new nfHasFileAt(init));
 	AddFunction(new nfAddFile(init));
 	AddFunction(new nfRemoveFile(init));
 	AddFunction(new nfRemoveAllFiles(init));

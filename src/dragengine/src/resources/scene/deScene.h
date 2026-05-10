@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@
 #define _DESCENE_H_
 
 #include "../deFileResource.h"
-#include "../deResource.h"
 #include "../../common/collection/decTDictionary.h"
 #include "../../common/file/decMemoryFile.h"
 #include "../../common/string/decStringList.h"
@@ -37,14 +36,17 @@ class deSceneManager;
 /**
  * \brief Scene Resource.
  *
- * Container resource for scene file formats like FBX or GLB containing multiple objects
- * such as models, skins, rigs and animations. Allows importing entire scenes from another
- * application for later use.
+ * Container resource storing multiple resource and non-resource objects for use by scene
+ * file formats like FBX or GLB. Such scenes are used to transfer data from one application
+ * to another. For this reason scenes are fully loaded from files and the user is supposed
+ * to store the actually used resources in Drag[en]gine optimized files.
  *
- * The resources dictionary maps unique names to loaded engine resources (deModel, deSkin,
- * deRig, deAnimation and similar). The name can be an identifier, a name or a path
- * depending on the scene file type. Objects not convertible to engine resources but
- * convertible to other file formats (like *.deworld) are stored as memory files.
+ * The resources dictionary maps unique names to loaded engine file resources. The name can
+ * be an identifier, a name or a path depending on the scene file type. Some non-file resources
+ * are stored as memory files (for example world files). This allows accessing entire scenes
+ * to convert them properly into Drag[en]gine optimized files. The memory files dictionary
+ * maps unique names to memory files similar to the resource dictionary. The keys used in each
+ * of the two dictionaries are unique across both dictionaries.
  */
 class DE_DLL_EXPORT deScene : public deFileResource{
 public:
@@ -86,15 +88,15 @@ public:
 	
 	/**
 	 * \brief Add resource with key.
-	 * \throws deeInvalidParam \em name is NULL.
-	 * \throws deeInvalidParam \em resource is NULL.
+	 * \throws deeInvalidParam \em name is nullptr.
+	 * \throws deeInvalidParam \em resource is nullptr.
 	 * \throws deeInvalidParam Resource with \em name is already present.
 	 */
 	void AddResource(const char *name, deResource *resource);
 	
 	/**
 	 * \brief Remove resource with key.
-	 * \throws deeInvalidParam \em name is NULL.
+	 * \throws deeInvalidParam \em name is nullptr.
 	 * \throws deeInvalidParam Resource with \em name is absent.
 	 */
 	void RemoveResource(const char *name);
@@ -112,15 +114,15 @@ public:
 	
 	/**
 	 * \brief Add file with key.
-	 * \throws deeInvalidParam \em name is NULL.
-	 * \throws deeInvalidParam \em file is NULL.
+	 * \throws deeInvalidParam \em name is nullptr.
+	 * \throws deeInvalidParam \em file is nullptr.
 	 * \throws deeInvalidParam File with \em name is already present.
 	 */
 	void AddFile(const char *name, decMemoryFile *file);
 	
 	/**
 	 * \brief Remove file with key.
-	 * \throws deeInvalidParam \em name is NULL.
+	 * \throws deeInvalidParam \em name is nullptr.
 	 * \throws deeInvalidParam File with \em name is absent.
 	 */
 	void RemoveFile(const char *name);

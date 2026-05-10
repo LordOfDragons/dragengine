@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,10 +59,10 @@ public:
 	/** \brief Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
-	/** \brief Scene from object or \em NULL if myself is \em NULL. */
+	/** \brief Scene from object or nullptr if myself is nullptr. */
 	deScene *GetScene(dsRealObject *myself) const;
 	
-	/** \brief Push scene onto stack. NULL is pushed as NULL scene object. */
+	/** \brief Push scene onto stack. nullptr is pushed as nullptr scene object. */
 	void PushScene(dsRunTime *rt, deScene *scene);
 	/*@}*/
 	
@@ -97,16 +97,16 @@ private:
 	
 	DEF_NATFUNC(nfGetResourceCount);
 	DEF_NATFUNC(nfGetResourceKeys);
-	DEF_NATFUNC(nfGetResourceNamed);
-	DEF_NATFUNC(nfHasResourceNamed);
+	DEF_NATFUNC(nfGetResourceAt);
+	DEF_NATFUNC(nfHasResourceAt);
 	DEF_NATFUNC(nfAddResource);
 	DEF_NATFUNC(nfRemoveResource);
 	DEF_NATFUNC(nfRemoveAllResources);
 	
 	DEF_NATFUNC(nfGetFileCount);
 	DEF_NATFUNC(nfGetFileKeys);
-	DEF_NATFUNC(nfGetFileNamed);
-	DEF_NATFUNC(nfHasFileNamed);
+	DEF_NATFUNC(nfGetFileAt);
+	DEF_NATFUNC(nfHasFileAt);
 	DEF_NATFUNC(nfAddFile);
 	DEF_NATFUNC(nfRemoveFile);
 	DEF_NATFUNC(nfRemoveAllFiles);

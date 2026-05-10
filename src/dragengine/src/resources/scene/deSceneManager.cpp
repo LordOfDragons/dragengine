@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "deScene.h"
 #include "deSceneManager.h"
@@ -58,12 +54,8 @@ deSceneManager::~deSceneManager(){
 // Management
 ///////////////
 
-int deSceneManager::GetSceneCount() const{
-	return pScenes.GetCount();
-}
-
 deScene *deSceneManager::GetRootScene() const{
-	return (deScene*)pScenes.GetRoot();
+	return dynamic_cast<deScene*>(pScenes.GetRoot());
 }
 
 deScene *deSceneManager::GetSceneWith(const char *filename) const{
@@ -71,7 +63,7 @@ deScene *deSceneManager::GetSceneWith(const char *filename) const{
 }
 
 deScene *deSceneManager::GetSceneWith(deVirtualFileSystem *vfs, const char *filename) const{
-	deScene * const scene = (deScene*)pScenes.GetWithFilename(vfs, filename);
+	auto scene = dynamic_cast<deScene*>(pScenes.GetWithFilename(vfs, filename));
 	return scene && !scene->GetOutdated() ? scene : nullptr;
 }
 
@@ -81,9 +73,8 @@ deScene::Ref deSceneManager::LoadScene(const char *filename, const char *basePat
 
 deScene::Ref deSceneManager::LoadScene(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
-	if(!vfs || !filename){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(vfs)
+	DEASSERT_NOTNULL(filename)
 	
 	deBaseSceneModule *module;
 	deScene::Ref scene;
@@ -97,7 +88,7 @@ const char *basePath){
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if scene with this filename already exists
-		deScene *findScene = (deScene*)pScenes.GetWithFilename(vfs, path.GetPathUnix());
+		deScene *findScene = dynamic_cast<deScene*>(pScenes.GetWithFilename(vfs, path.GetPathUnix()));
 		
 		if(findScene && findScene->GetModificationTime() != modificationTime){
 			LogInfoFormat("Scene '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -111,8 +102,8 @@ const char *basePath){
 			
 		}else{
 			// find the module able to handle this scene file
-			module = (deBaseSceneModule*)GetModuleSystem()->GetModuleAbleToLoad(
-				deModuleSystem::emtScene, path.GetPathUnix());
+			module = dynamic_cast<deBaseSceneModule*>(GetModuleSystem()->GetModuleAbleToLoad(
+				deModuleSystem::emtScene, path.GetPathUnix()));
 			
 			// load the file
 			scene = deScene::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
@@ -138,35 +129,35 @@ const char *basePath){
 }
 
 void deSceneManager::AddLoadedScene(deScene *scene){
-	if(!scene){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(scene)
+	
 	pScenes.Add(scene);
 }
 
 void deSceneManager::ReleaseLeakingResources(){
-	const int count = GetSceneCount();
-	
-	if(count > 0){
-		int unnamedSceneCount = 0;
-		
-		LogWarnFormat("%i leaking scenes", count);
-		
-		pScenes.GetResources().Visit([&](deResource *res){
-			const deScene * const scene = static_cast<deScene*>(res);
-			if(scene->GetFilename().IsEmpty()){
-				unnamedSceneCount++;
-			}else{
-				LogWarnFormat("- %s", scene->GetFilename().GetString());
-			}
-		});
-		
-		if(unnamedSceneCount > 0){
-			LogWarnFormat("%i unnamed scenes", unnamedSceneCount);
-		}
-		
-		pScenes.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
+	const int count = pScenes.GetResources().GetCount();
+	if(count == 0){
+		return;
 	}
+	
+	LogWarnFormat("%i leaking scenes", count);
+	
+	int unnamedSceneCount = 0;
+	pScenes.GetResources().Visit([&](deResource *res){
+		const deScene * const scene = static_cast<deScene*>(res);
+		if(scene->GetFilename().IsEmpty()){
+			unnamedSceneCount++;
+			
+		}else{
+			LogWarnFormat("- %s", scene->GetFilename().GetString());
+		}
+	});
+	
+	if(unnamedSceneCount > 0){
+		LogWarnFormat("%i unnamed scenes", unnamedSceneCount);
+	}
+	
+	pScenes.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
 }
 
 

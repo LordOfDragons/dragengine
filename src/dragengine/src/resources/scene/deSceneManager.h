@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,16 +58,13 @@ public:
 	/** \brief Scenes. */
 	inline const deFileResourceList &GetScenes() const{ return pScenes; }
 	
-	/** \brief Count of scenes. */
-	int GetSceneCount() const;
-	
 	/** \brief Root scene resource for iteration purpose. */
 	deScene *GetRootScene() const;
 	
-	/** \brief Scene with the given filename or NULL if not loaded yet. */
+	/** \brief Scene with the given filename or nullptr if not loaded yet. */
 	deScene *GetSceneWith(const char *filename) const;
 	
-	/** \brief Scene with the given filename or NULL if not loaded yet. */
+	/** \brief Scene with the given filename or nullptr if not loaded yet. */
 	deScene *GetSceneWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Loads a scene from the given file relative to the given base path. */
