@@ -136,7 +136,7 @@ init.clsInt){
 }
 void deClassScene::nfGetResourceCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
-	rt->PushInt(scene.GetResourceCount());
+	rt->PushInt(scene.GetResources().GetCount());
 }
 
 // public func Array getResourceKeys()
@@ -148,7 +148,7 @@ void deClassScene::nfGetResourceKeys::RunFunction(dsRunTime *rt, dsValue *myself
 	const deClassScene &clsScene = *static_cast<deClassScene*>(GetOwnerClass());
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	
-	const decStringList keys(scene.GetResourceKeys());
+	const decStringList keys(scene.GetResources().Keys());
 	const int count = keys.GetCount();
 	
 	dsClass * const clsArray = rt->GetEngine()->GetClassArray();
@@ -158,10 +158,10 @@ void deClassScene::nfGetResourceKeys::RunFunction(dsRunTime *rt, dsValue *myself
 		rt->CreateObject(arr, clsArray, 0);
 		const int funcAddTo = clsArray->GetFirstNamedFunction("add");
 		
-		for(int i=0; i<count; i++){
-			rt->PushString(keys.GetAt(i));
+		keys.Visit([](const decString &key){
+			rt->PushString(key);
 			rt->RunFunctionFast(arr, funcAddTo);
-		}
+		});
 		
 		rt->PushValue(arr);
 		rt->FreeValue(arr);
@@ -183,7 +183,7 @@ void deClassScene::nfGetResourceNamed::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	const deScriptingDragonScript &ds = clsScene.GetDS();
 	
-	deResource * const resource = scene.GetResourceNamed(rt->GetValue(0)->GetString());
+	auto resource = scene.GetResources().GetAt(rt->GetValue(0)->GetString());
 	if(!resource){
 		rt->PushObject(nullptr, clsScene.GetDS().GetScriptEngine()->GetClassObject());
 		return;
@@ -219,7 +219,7 @@ init.clsBool){
 }
 void deClassScene::nfHasResourceNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
-	rt->PushBool(scene.HasResourceNamed(rt->GetValue(0)->GetString()));
+	rt->PushBool(scene.GetResources().Has(rt->GetValue(0)->GetString()));
 }
 
 // public func void addResource(String name, Object resource)
@@ -288,7 +288,7 @@ init.clsInt){
 }
 void deClassScene::nfGetFileCount::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
-	rt->PushInt(scene.GetFileCount());
+	rt->PushInt(scene.GetFiles().GetCount());
 }
 
 // public func Array getFileKeys()
@@ -299,7 +299,7 @@ init.clsArray){
 void deClassScene::nfGetFileKeys::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	
-	const decStringList keys(scene.GetFileKeys());
+	const decStringList keys(scene.GetFiles().GetKeys());
 	const int count = keys.GetCount();
 	
 	dsClass * const clsArray = rt->GetEngine()->GetClassArray();
@@ -309,10 +309,10 @@ void deClassScene::nfGetFileKeys::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->CreateObject(arr, clsArray, 0);
 		const int funcAddTo = clsArray->GetFirstNamedFunction("add");
 		
-		for(int i=0; i<count; i++){
-			rt->PushString(keys.GetAt(i));
+		keys.Visit([](const decString &key){
+			rt->PushString(key);
 			rt->RunFunctionFast(arr, funcAddTo);
-		}
+		});
 		
 		rt->PushValue(arr);
 		rt->FreeValue(arr);
@@ -334,7 +334,7 @@ void deClassScene::nfGetFileNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	
 	clsScene.GetDS().GetClassMemoryFile()->PushMemoryFile(rt,
-		scene.GetFileNamed(rt->GetValue(0)->GetString()));
+		scene.GetFiles().GetAt(rt->GetValue(0)->GetString()));
 }
 
 // public func bool hasFileNamed(String name)
@@ -345,7 +345,7 @@ init.clsBool){
 }
 void deClassScene::nfHasFileNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
-	rt->PushBool(scene.HasFileNamed(rt->GetValue(0)->GetString()));
+	rt->PushBool(scene.GetFiles().Has(rt->GetValue(0)->GetString()));
 }
 
 // public func void addFile(String name, MemoryFile file)

@@ -52,35 +52,13 @@ deScene::~deScene(){
 // Resource Management
 ////////////////////////
 
-int deScene::GetResourceCount() const{
-	return pResources.GetCount();
-}
-
-decStringList deScene::GetResourceKeys() const{
-	const decTDictionary<decString, deResource::Ref>::KeyList keys(pResources.GetKeys());
-	decStringList result;
-	keys.Visit([&](const decString &key){ result.Add(key); });
-	return result;
-}
-
-deResource *deScene::GetResourceNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	const deResource::Ref *resource = nullptr;
-	return pResources.GetAt(name, resource) ? resource->Pointer() : nullptr;
-}
-
-bool deScene::HasResourceNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	return pResources.Has(name);
-}
-
 void deScene::AddResource(const char *name, deResource *resource){
 	DEASSERT_NOTNULL(name)
 	DEASSERT_NOTNULL(resource)
 	if(pResources.Has(name)){
 		DETHROW_INFO(deeInvalidParam, "resource with name already present");
 	}
-	pResources.SetAt(name, deResource::Ref(resource));
+	pResources.SetAt(name, resource);
 }
 
 void deScene::RemoveResource(const char *name){
@@ -100,35 +78,13 @@ void deScene::RemoveAllResources(){
 // File Management
 ///////////////////
 
-int deScene::GetFileCount() const{
-	return pFiles.GetCount();
-}
-
-decStringList deScene::GetFileKeys() const{
-	const decTDictionary<decString, decMemoryFile::Ref>::KeyList keys(pFiles.GetKeys());
-	decStringList result;
-	keys.Visit([&](const decString &key){ result.Add(key); });
-	return result;
-}
-
-decMemoryFile *deScene::GetFileNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	const decMemoryFile::Ref *file = nullptr;
-	return pFiles.GetAt(name, file) ? file->Pointer() : nullptr;
-}
-
-bool deScene::HasFileNamed(const char *name) const{
-	DEASSERT_NOTNULL(name)
-	return pFiles.Has(name);
-}
-
 void deScene::AddFile(const char *name, decMemoryFile *file){
 	DEASSERT_NOTNULL(name)
 	DEASSERT_NOTNULL(file)
 	if(pFiles.Has(name)){
 		DETHROW_INFO(deeInvalidParam, "file with name already present");
 	}
-	pFiles.SetAt(name, decMemoryFile::Ref(file));
+	pFiles.SetAt(name, file);
 }
 
 void deScene::RemoveFile(const char *name){

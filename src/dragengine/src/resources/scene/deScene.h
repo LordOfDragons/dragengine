@@ -54,8 +54,8 @@ public:
 	
 	
 private:
-	decTDictionary<decString, deResource::Ref> pResources;
-	decTDictionary<decString, decMemoryFile::Ref> pFiles;
+	decTObjectDictionary<deResource> pResources;
+	decTObjectDictionary<decMemoryFile> pFiles;
 	
 	
 	
@@ -81,17 +81,8 @@ protected:
 public:
 	/** \name Resource Management */
 	/*@{*/
-	/** \brief Count of resources. */
-	int GetResourceCount() const;
-	
-	/** \brief Resource keys. */
-	decStringList GetResourceKeys() const;
-	
-	/** \brief Resource with key or NULL if absent. */
-	deResource *GetResourceNamed(const char *name) const;
-	
-	/** \brief Resource with key is present. */
-	bool HasResourceNamed(const char *name) const;
+	/** \brief Resources. */
+	inline const decTObjectDictionary<deResource> &GetResources() const{ return pResources; }
 	
 	/**
 	 * \brief Add resource with key.
@@ -117,16 +108,7 @@ public:
 	/** \name File Management */
 	/*@{*/
 	/** \brief Count of files. */
-	int GetFileCount() const;
-	
-	/** \brief File keys. */
-	decStringList GetFileKeys() const;
-	
-	/** \brief File with key or NULL if absent. */
-	decMemoryFile *GetFileNamed(const char *name) const;
-	
-	/** \brief File with key is present. */
-	bool HasFileNamed(const char *name) const;
+	inline const decTObjectDictionary<decMemoryFile> &GetFiles() const{ return pFiles; }
 	
 	/**
 	 * \brief Add file with key.
