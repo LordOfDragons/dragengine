@@ -25,11 +25,11 @@
 #ifndef _DESCENEMANAGER_H_
 #define _DESCENEMANAGER_H_
 
+#include "deScene.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 
 class deEngine;
-class deScene;
 
 
 /**

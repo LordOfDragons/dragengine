@@ -422,12 +422,12 @@ private:
 	deClassRuntimeMeter *pClsRTM;
 	deClassServerListener *pClsSvrL;
 	deClassSafeArray *pClsSA;
-	deClassScriptSystem *pClsScrSys;
 	deClassScene *pClsScene;
-	deClassShapeList *pClsShaList;
+	deClassScriptSystem *pClsScrSys;
 	deClassService *pClsService;
 	deClassServiceListener *pClsServiceListener;
 	deClassServiceObject *pClsServiceObject;
+	deClassShapeList *pClsShaList;
 	deClassServer *pClsSvr;
 	deClassSkin *pClsSkin;
 	deClassSkinBuilder *pClsSkinBuilder;

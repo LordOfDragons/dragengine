@@ -145,22 +145,18 @@ dsFunction(init.clsScene, "getResourceKeys", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 init.clsArray){
 }
 void deClassScene::nfGetResourceKeys::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassScene &clsScene = *static_cast<deClassScene*>(GetOwnerClass());
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
-	
-	const decStringList keys(scene.GetResources().Keys());
-	const int count = keys.GetCount();
 	
 	dsClass * const clsArray = rt->GetEngine()->GetClassArray();
 	dsValue * const arr = rt->CreateValue(clsArray);
+	const auto keys = scene.GetResources().GetKeys();
 	
 	try{
 		rt->CreateObject(arr, clsArray, 0);
-		const int funcAddTo = clsArray->GetFirstNamedFunction("add");
 		
-		keys.Visit([](const decString &key){
+		keys.Visit([&](const decString &key){
 			rt->PushString(key);
-			rt->RunFunctionFast(arr, funcAddTo);
+			rt->RunFunction(arr, "add", 1);
 		});
 		
 		rt->PushValue(arr);
@@ -183,12 +179,13 @@ void deClassScene::nfGetResourceNamed::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	const deScriptingDragonScript &ds = clsScene.GetDS();
 	
-	auto resource = scene.GetResources().GetAt(rt->GetValue(0)->GetString());
-	if(!resource){
+	const deResource::Ref *refRes;
+	if(!scene.GetResources().GetAt(rt->GetValue(0)->GetString(), refRes)){
 		rt->PushObject(nullptr, clsScene.GetDS().GetScriptEngine()->GetClassObject());
 		return;
 	}
 	
+	auto resource = refRes->Pointer();
 	switch(resource->GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertModel:
 		ds.GetClassModel()->PushModel(rt, (deModel*)resource);
@@ -299,19 +296,15 @@ init.clsArray){
 void deClassScene::nfGetFileKeys::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScene &scene = *dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
 	
-	const decStringList keys(scene.GetFiles().GetKeys());
-	const int count = keys.GetCount();
-	
 	dsClass * const clsArray = rt->GetEngine()->GetClassArray();
 	dsValue * const arr = rt->CreateValue(clsArray);
+	const auto keys = scene.GetFiles().GetKeys();
 	
 	try{
 		rt->CreateObject(arr, clsArray, 0);
-		const int funcAddTo = clsArray->GetFirstNamedFunction("add");
-		
-		keys.Visit([](const decString &key){
+		keys.Visit([&](const decString &key){
 			rt->PushString(key);
-			rt->RunFunctionFast(arr, funcAddTo);
+			rt->RunFunction(arr, "add", 1);
 		});
 		
 		rt->PushValue(arr);
@@ -398,13 +391,15 @@ deClassScene::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsSce
 }
 void deClassScene::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deScene * const scene = dedsGetNativeData<sSceneNatDat>(p_GetNativeData(myself)).scene;
-	const deClassScene &clsScene = *static_cast<deClassScene*>(GetOwnerClass());
+	auto clsScene = static_cast<deClassScene*>(GetOwnerClass());
+	auto obj = rt->GetValue(0);
 	
-	dsValue * const other = rt->GetValue(0);
-	if(other->GetType()->IsA(clsScene)){
-		rt->PushBool(scene == clsScene.GetScene(other->GetRealObject()));
-	}else{
+	if(!p_IsObjOfType(obj, clsScene)){
 		rt->PushBool(false);
+		
+	}else{
+		const deScene * const otherScene = dedsGetNativeData<sSceneNatDat>(p_GetNativeData(obj)).scene;
+		rt->PushBool(scene == otherScene);
 	}
 }
 
