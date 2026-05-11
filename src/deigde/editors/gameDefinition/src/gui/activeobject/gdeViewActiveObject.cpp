@@ -713,6 +713,7 @@ void gdeViewActiveObject::pInitSkin(){
 	pPreviewSkin = engine.GetSkinManager()->LoadSkin(vfs, skin->GetPath(), "/");
 	
 	pPreviewComponent = engine.GetComponentManager()->CreateComponent(pPreviewModelBox, pPreviewSkin);
+	pPreviewComponent->SetEnableGI(false);
 	pGameDefinition->GetWorld()->AddComponent(pPreviewComponent);
 	
 	if(pPreviewComponent->GetTextureCount() == 0){

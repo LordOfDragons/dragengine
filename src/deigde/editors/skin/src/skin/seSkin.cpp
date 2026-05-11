@@ -928,6 +928,7 @@ void seSkin::pUpdateComponent(){
 			
 		}else{
 			pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin);
+			pEngComponent->SetEnableGI(false);
 			pEngWorld->AddComponent(pEngComponent);
 		}
 		
