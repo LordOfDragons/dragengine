@@ -378,6 +378,7 @@ void igdeWOSOComponent::UpdateLayerMasks(){
 	}
 	if(pOutlineComponent){
 		pOutlineComponent->SetLayerMask(LayerMaskFromInt(mask));
+		pOutlineComponent->SetEnableGI(false);
 	}
 }
 
@@ -636,7 +637,9 @@ void igdeWOSOComponent::pUpdateComponent(){
 		if(boneCount == 0){
 			// if rig shapes are used collision is possible if at least one shape is present
 			if(rig->GetShapes().GetCount() == 0){
-				rig = GetEnvironment().GetSharedModelCollisionRig();
+				if(GetWrapper().GetRequiresInteraction()){
+					rig = GetEnvironment().GetSharedModelCollisionRig();
+				}
 				pColliderCanInteract = model->GetLODs().First()->GetFaces().IsNotEmpty();
 			}
 			
@@ -650,13 +653,17 @@ void igdeWOSOComponent::pUpdateComponent(){
 				}
 			}
 			if(i == boneCount){
-				rig = GetEnvironment().GetSharedModelCollisionRig();
+				if(GetWrapper().GetRequiresInteraction()){
+					rig = GetEnvironment().GetSharedModelCollisionRig();
+				}
 				pColliderCanInteract = model->GetLODs().First()->GetFaces().IsNotEmpty();
 			}
 		}
 		
 	}else{
-		rig = GetEnvironment().GetSharedModelCollisionRig();
+		if(GetWrapper().GetRequiresInteraction()){
+			rig = GetEnvironment().GetSharedModelCollisionRig();
+		}
 		pColliderCanInteract = model->GetLODs().First()->GetFaces().IsNotEmpty();
 	}
 	
@@ -698,6 +705,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		pComponentInteraction->SetHintMovement(pComponent->GetHintMovement());
 		pComponentInteraction->SetRig(GetEnvironment().GetStockRig(igdeEnvironment::esrModelCollision));
 		pComponentInteraction->SetVisible(false);
+		pComponentInteraction->SetEnableGI(false);
 	}
 	
 	const bool modelChanged = model != currentModel;

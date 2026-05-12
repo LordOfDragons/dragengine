@@ -540,6 +540,7 @@ void meNavigationSpace::pUpdateShapes(){
 		pEngColComponent->SetRig(pEngRig);
 		pEngColComponent->SetPosition(pEngCollider->GetPosition());
 		pEngColComponent->SetOrientation(pEngCollider->GetOrientation());
+		pEngColComponent->SetEnableGI(false);
 	}
 	
 	pEngCollider->SetComponent(pEngColComponent);

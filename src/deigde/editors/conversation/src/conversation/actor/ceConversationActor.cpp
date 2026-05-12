@@ -658,6 +658,7 @@ void ceConversationActor::pUpdateComponent(){
 				
 			}else{
 				pEngComponent = engine.GetComponentManager()->CreateComponent(model, skin);
+				pEngComponent->SetEnableGI(false);
 				if(pConversation){
 					pConversation->GetEngineWorld()->AddComponent(pEngComponent);
 				}

@@ -70,7 +70,8 @@ static const wl_pointer_listener vPointerListener = {
 	.axis_source = dexsiWaylandInput::OnPointerAxisSource,
 	.axis_stop = dexsiWaylandInput::OnPointerAxisStop,
 	.axis_discrete = dexsiWaylandInput::OnPointerAxisDiscrete,
-	.axis_value120 = dexsiWaylandInput::OnPointerAxisValue120
+	.axis_value120 = dexsiWaylandInput::OnPointerAxisValue120,
+	.axis_relative_direction = [](void*, wl_pointer*, uint32_t, uint32_t){}
 };
 
 static const wl_keyboard_listener vKeyboardListener = {
@@ -103,18 +104,14 @@ pModule(module),
 pWlDisplay(nullptr),
 pWlRegistry(nullptr),
 pInputQueue(nullptr),
-pWlSeat(nullptr),
-pWlSeatId(0),
-pWlSeatVersion(0),
+pWlSeat(wl_seat_interface, 8, wl_seat_destroy),
 pWlPointer(nullptr),
 pWlKeyboard(nullptr),
 pXkbContext(nullptr),
 pXkbKeymap(nullptr),
 pXkbState(nullptr),
-pPointerConstraints(nullptr),
-pPointerConstraintsId(0),
-pRelPtrManager(nullptr),
-pRelPtrManagerId(0),
+pPointerConstraints(zwp_pointer_constraints_v1_interface, 1, zwp_pointer_constraints_v1_destroy),
+pRelPtrManager(zwp_relative_pointer_manager_v1_interface, 1, zwp_relative_pointer_manager_v1_destroy),
 pLockedPointer(nullptr),
 pRelativePointer(nullptr),
 pPointerLocked(false),
@@ -207,12 +204,8 @@ dexsiWaylandInput::~dexsiWaylandInput(){
 	pDestroyPointer();
 	pDestroyKeyboard();
 	
-	if(pRelPtrManager){
-		zwp_relative_pointer_manager_v1_destroy(pRelPtrManager);
-	}
-	if(pPointerConstraints){
-		zwp_pointer_constraints_v1_destroy(pPointerConstraints);
-	}
+	pRelPtrManager.Unbind();
+	pPointerConstraints.Unbind();
 	
 	if(pXkbState){
 		xkb_state_unref(pXkbState);
@@ -224,9 +217,8 @@ dexsiWaylandInput::~dexsiWaylandInput(){
 		xkb_context_unref(pXkbContext);
 	}
 	
-	if(pWlSeat){
-		wl_proxy_destroy((wl_proxy*)pWlSeat);
-	}
+	pWlSeat.Unbind();
+	
 	if(pWlRegistry){
 		wl_proxy_destroy((wl_proxy*)pWlRegistry);
 	}
@@ -262,6 +254,10 @@ void dexsiWaylandInput::DispatchEvents(){
 	}
 	
 	wl_display_dispatch_queue_pending(pWlDisplay, pInputQueue);
+	
+	timeval eventTime;
+	gettimeofday(&eventTime, nullptr);
+	pFlushPointerEvents(eventTime);
 }
 
 void dexsiWaylandInput::UpdateCapture(){
@@ -312,7 +308,6 @@ void dexsiWaylandInput::pLockPointer(){
 	wl_surface_commit(pPointerSurface);
 	if(pWlDisplay){
 		wl_display_flush(pWlDisplay);
-		wl_display_roundtrip_queue(pWlDisplay, pInputQueue);
 	}
 	
 	pModule.LogInfo("dexsiWaylandInput: Pointer locked");
@@ -329,10 +324,11 @@ void dexsiWaylandInput::pUnlockPointer(){
 		pLockedPointer = nullptr;
 		pPointerLocked = false;
 		
-		wl_surface_commit(pPointerSurface);
+		if(pPointerSurface){
+			wl_surface_commit(pPointerSurface);
+		}
 		if(pWlDisplay){
 			wl_display_flush(pWlDisplay);
-			wl_display_roundtrip_queue(pWlDisplay, pInputQueue);
 		}
 		
 		pModule.LogInfo("dexsiWaylandInput: Pointer unlocked");
@@ -350,7 +346,7 @@ void dexsiWaylandInput::pCreatePointer(){
 	}
 	
 	wl_proxy_set_queue((wl_proxy*)pWlPointer, pInputQueue);
-	wl_proxy_add_listener((wl_proxy*)pWlPointer, (void(**)(void))&vPointerListener, this);
+	wl_pointer_add_listener(pWlPointer, &vPointerListener, this);
 	
 	pModule.LogInfo("dexsiWaylandInput: Wayland pointer created");
 }
@@ -359,7 +355,7 @@ void dexsiWaylandInput::pDestroyPointer(){
 	if(!pWlPointer){
 		return;
 	}
-	wl_proxy_destroy((wl_proxy*)pWlPointer);
+	wl_pointer_destroy(pWlPointer);
 	pWlPointer = nullptr;
 }
 
@@ -374,7 +370,7 @@ void dexsiWaylandInput::pCreateKeyboard(){
 	}
 	
 	wl_proxy_set_queue((wl_proxy*)pWlKeyboard, pInputQueue);
-	wl_proxy_add_listener((wl_proxy*)pWlKeyboard, (void(**)(void))&vKeyboardListener, this);
+	wl_keyboard_add_listener(pWlKeyboard, &vKeyboardListener, this);
 	
 	pModule.LogInfo("dexsiWaylandInput: Wayland keyboard created");
 }
@@ -383,7 +379,7 @@ void dexsiWaylandInput::pDestroyKeyboard(){
 	if(!pWlKeyboard){
 		return;
 	}
-	wl_proxy_destroy((wl_proxy*)pWlKeyboard);
+	wl_keyboard_destroy(pWlKeyboard);
 	pWlKeyboard = nullptr;
 }
 
@@ -537,62 +533,33 @@ void dexsiWaylandInput::OnRegistryGlobal(void *data, wl_registry *registry, uint
 const char *interface, uint32_t version){
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
 	
-	if(strcmp(interface, wl_seat_interface.name) == 0 && !self.pWlSeat){
-		const uint32_t bindVersion = decMath::min(version, 8);
-		self.pWlSeat = (wl_seat*)wl_registry_bind(registry, name, &wl_seat_interface, bindVersion);
-		self.pWlSeatId = name;
-		self.pWlSeatVersion = bindVersion;
-		
-		if(self.pWlSeat){
-			wl_proxy_set_queue((wl_proxy*)self.pWlSeat, self.pInputQueue);
-			wl_proxy_add_listener((wl_proxy*)self.pWlSeat, (void(**)(void))&vSeatListener, data);
-			self.pModule.LogInfo("dexsiWaylandInput: Found seat interface");
-		}
-		
-	}else if(strcmp(interface, zwp_pointer_constraints_v1_interface.name) == 0
-	&& !self.pPointerConstraints){
-		self.pPointerConstraints = (zwp_pointer_constraints_v1*)wl_registry_bind(
-			registry, name, &zwp_pointer_constraints_v1_interface, 1);
-		self.pPointerConstraintsId = name;
-		if(self.pPointerConstraints){
-			wl_proxy_set_queue((wl_proxy*)self.pPointerConstraints, self.pInputQueue);
-			self.pModule.LogInfo("dexsiWaylandInput: Found interface zwp_pointer_constraints_v1");
-		}
-		
-	}else if(strcmp(interface, zwp_relative_pointer_manager_v1_interface.name) == 0
-	&& !self.pRelPtrManager){
-		self.pRelPtrManager = (zwp_relative_pointer_manager_v1*)wl_registry_bind(
-			registry, name, &zwp_relative_pointer_manager_v1_interface, 1);
-		self.pRelPtrManagerId = name;
-		if(self.pRelPtrManager){
-			wl_proxy_set_queue((wl_proxy*)self.pRelPtrManager, self.pInputQueue);
-			self.pModule.LogInfo("dexsiWaylandInput: Found interface zwp_relative_pointer_manager_v1");
-		}
+if(self.pWlSeat.Bind(registry, name, interface, version)){
+		wl_proxy_set_queue(self.pWlSeat, self.pInputQueue);
+		wl_proxy_add_listener(self.pWlSeat, (void(**)(void))&vSeatListener, data);
+		self.pModule.LogInfo("dexsiWaylandInput: Found seat interface");
+
+	}else if(self.pPointerConstraints.Bind(registry, name, interface, version)){
+		wl_proxy_set_queue(self.pPointerConstraints, self.pInputQueue);
+		self.pModule.LogInfo("dexsiWaylandInput: Found interface zwp_pointer_constraints_v1");
+
+	}else if(self.pRelPtrManager.Bind(registry, name, interface, version)){
+		wl_proxy_set_queue(self.pRelPtrManager, self.pInputQueue);
+		self.pModule.LogInfo("dexsiWaylandInput: Found interface zwp_relative_pointer_manager_v1");
 	}
 }
 
 void dexsiWaylandInput::OnRegistryGlobalRemove(void *data, wl_registry *registry, uint32_t name){
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
 	
-	if(name == self.pWlSeatId && self.pWlSeat){
-		// seat gone. destroy pointer and keyboard
+	if(self.pWlSeat.Unbind(name)){
+		// seat gone - clean up pointer and keyboard
 		self.pUnlockPointer();
 		self.pDestroyPointer();
 		self.pDestroyKeyboard();
-		wl_proxy_destroy((wl_proxy*)self.pWlSeat);
-		self.pWlSeat = nullptr;
-		self.pWlSeatId = 0;
 		self.pReady = false;
-		
-	}else if(name == self.pPointerConstraintsId && self.pPointerConstraints){
-		zwp_pointer_constraints_v1_destroy(self.pPointerConstraints);
-		self.pPointerConstraints = nullptr;
-		self.pPointerConstraintsId = 0;
-		
-	}else if(name == self.pRelPtrManagerId && self.pRelPtrManager){
-		zwp_relative_pointer_manager_v1_destroy(self.pRelPtrManager);
-		self.pRelPtrManager = nullptr;
-		self.pRelPtrManagerId = 0;
+
+	}else if(self.pPointerConstraints.Unbind(name)){
+	}else if(self.pRelPtrManager.Unbind(name)){
 	}
 }
 
@@ -748,11 +715,8 @@ uint32_t axis, wl_fixed_t value){
 }
 
 void dexsiWaylandInput::OnPointerFrame(void *data, wl_pointer*){
-	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
-	
-	timeval eventTime;
-	gettimeofday(&eventTime, nullptr);
-	self.pFlushPointerEvents(eventTime);
+	// accumulation is flushed at the end of DispatchEvents() to avoid multiple
+	// mouse-move/wheel events per ProcessEvents() call
 }
 
 void dexsiWaylandInput::OnPointerAxisSource(void*, wl_pointer*, uint32_t){
@@ -803,8 +767,7 @@ void dexsiWaylandInput::OnLockedPointerUnlocked(void *data, zwp_locked_pointer_v
 // Relative pointer callbacks
 ///////////////////////////////
 
-void dexsiWaylandInput::OnRelativeMotion(void *data, zwp_relative_pointer_v1*,
-uint32_t utime_hi, uint32_t utime_lo,
+void dexsiWaylandInput::OnRelativeMotion(void *data, zwp_relative_pointer_v1*, uint32_t, uint32_t,
 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t, wl_fixed_t){
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
 	if(!self.pPointerLocked){
@@ -814,13 +777,7 @@ wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t, wl_fixed_t){
 	self.pPointerDeltaX += wl_fixed_to_double(dx);
 	self.pPointerDeltaY += wl_fixed_to_double(dy);
 	self.pPointerHasMoved = true;
-	
-	const uint64_t us = ((uint64_t)utime_hi << 32) | (uint64_t)utime_lo;
-	timeval eventTime;
-	eventTime.tv_sec = (time_t)(us / 1000000u);
-	eventTime.tv_usec = (suseconds_t)(us % 1000000u);
-	
-	self.pFlushPointerEvents(eventTime);
+	// accumulation is flushed at the end of DispatchEvents()
 }
 
 
@@ -905,9 +862,12 @@ uint32_t time, uint32_t key, uint32_t state){
 	
 	const bool pressed = state == WL_KEYBOARD_KEY_STATE_PRESSED;
 	
-	// get unicode character from current XKB state
+	// get unicode character from current XKB state. xkb_state_key_get_utf32 returns 0 for
+	// keys with no unicode mapping (arrows, modifiers, etc.). for character keys it returns
+	// the unicode code point including control characters (backspace, etc.). this matches
+	// what XLookupString returns in the dexsiDeviceCoreKeyboard class
 	const uint32_t ucs32 = xkb_state_key_get_utf32(self.pXkbState, xkbCode);
-	const int keyChar = (ucs32 >= 32 && ucs32 != 127) ? (int)ucs32 : 0;
+	const int keyChar = (int)ucs32;
 	
 	// update button pressed state
 	dexsiDeviceButton * const deviceButton = self.pWaylandKeyboard->GetButtons().GetAt(buttonIndex);

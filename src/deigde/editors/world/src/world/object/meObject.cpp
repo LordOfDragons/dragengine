@@ -252,6 +252,7 @@ pWOAsyncFinished(*this)
 		pColDetCollider->SetResponseType(deCollider::ertKinematic);
 		pColDetCollider->SetUseLocalGravity(true);
 		
+		pWObject->SetRequiresInteraction(true);
 		pWObject->SetColliderUserPointer(&pColliderOwner);
 		pWObject->SetAsyncLoadFinished(&pWOAsyncFinished);
 		
@@ -1973,6 +1974,7 @@ void meObject::pUpdateBrokenComponent(){
 				GetComponentManager()->CreateComponent(gamedef.GetDefaultModel(), gamedef.GetDefaultSkin());
 			pEngComponentBroken->SetPosition(pWObject->GetPosition());
 			pEngComponentBroken->SetOrientation(pWObject->GetOrientation());
+			pEngComponentBroken->SetEnableGI(false);
 			
 			if(pWorld){
 				pWorld->GetEngineWorld()->AddComponent(pEngComponentBroken);

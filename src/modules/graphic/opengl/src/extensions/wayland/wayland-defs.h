@@ -53,6 +53,10 @@
  * wayland-scanner {client-header|private-code} \
  *   /usr/share/wayland-protocols/stable/viewporter/viewporter.xml \
  *   src/modules/graphic/opengl/src/extensions/wayland/viewporter-protocol.{h|cpp}
+ * 
+ * wayland-scanner {client-header|private-code} \
+ *   /usr/share/wayland-protocols/staging/xdg-toplevel-icon/xdg-toplevel-icon-v1.xml \
+ *   src/modules/graphic/opengl/src/extensions/wayland/xdg-toplevel-icon-protocol.{h|cpp}
  * \endcode
  * 
  * The files had then been modified the following way:
@@ -71,6 +75,7 @@
 #include "viewporter-protocol.h"
 #include "xdg-decoration-protocol.h"
 #include "xdg-shell-protocol.h"
+#include "xdg-toplevel-icon-protocol.h"
 
 
 // Wayland EGL

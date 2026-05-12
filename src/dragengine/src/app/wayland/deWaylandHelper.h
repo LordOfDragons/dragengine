@@ -439,6 +439,9 @@ public:
 	inline bool IsBound() const{ return pManager != nullptr; }
 	inline operator bool() const{ return IsBound(); }
 	
+	/** \brief Proxy auto-cast. */
+	inline operator wl_proxy*() const{ return (wl_proxy*)pManager; }
+	
 	/**
 	 * \brief Bind if matching and not bound.
 	 * \return True if bound, false if not matching or already bound.
@@ -471,6 +474,15 @@ public:
 		pManager = nullptr;
 		pName = 0;
 		pBoundVersion = 0;
+	}
+	
+	/** \brief Unbind if matching name. */
+	bool Unbind(uint32_t name){
+		if(pManager && pName == name){
+			Unbind();
+			return true;
+		}
+		return false;
 	}
 	
 	

@@ -51,20 +51,15 @@
 
 deoglRTCBUnixWaylandEGL::deoglRTCBUnixWaylandEGL(deoglRTContext &context) :
 deoglRTCBUnixX11EGL(context),
-pWlCompositor(nullptr),
-pXdgWmBase(nullptr),
-pDecorationManager(nullptr),
+pWlCompositor(wl_compositor_interface, 4, wl_compositor_destroy),
+pWlShm(wl_shm_interface, 1, wl_shm_destroy),
+pXdgWmBase(xdg_wm_base_interface, 4, xdg_wm_base_destroy),
+pDecorationManager(zxdg_decoration_manager_v1_interface, 1, zxdg_decoration_manager_v1_destroy),
 pDecoration(nullptr),
-pWpFractionalScaleManager(nullptr),
-pColorManager(nullptr),
-pWpViewporter(nullptr),
-pWlCompositorId(0),
-pXdgWmBaseId(0),
-pXdgWmBaseVersion(0),
-pDecorationManagerId(0),
-pWpFractionalScaleManagerId(0),
-pColorManagerId(0),
-pWpViewporterId(0),
+pWpFractionalScaleManager(wp_fractional_scale_manager_v1_interface, 1, wp_fractional_scale_manager_v1_destroy),
+pColorManager(wp_color_manager_v1_interface, 1, wp_color_manager_v1_destroy),
+pWpViewporter(wp_viewporter_interface, 1, wp_viewporter_destroy),
+pXdgToplevelIconManager(xdg_toplevel_icon_manager_v1_interface, 1, xdg_toplevel_icon_manager_v1_destroy),
 pEglSupportsHdr(false),
 pColorManagerHasParametric(false),
 pColorManagerHasPQ(false),
@@ -163,15 +158,15 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 	// create xdg_surface from xdg_wm_base
 	auto xdgSurface = (xdg_surface*)xdg_wm_base_get_xdg_surface(pXdgWmBase, wlSurface);
 	if(!xdgSurface){
-		wl_proxy_destroy((wl_proxy*)wlSurface);
+		wl_surface_destroy(wlSurface);
 		DETHROW_INFO(deeInvalidAction, "xdg_wm_base_get_xdg_surface failed");
 	}
 	
 	// create xdg_toplevel from xdg_surface
 	auto xdgToplevel = (xdg_toplevel*)xdg_surface_get_toplevel(xdgSurface);
 	if(!xdgToplevel){
-		wl_proxy_destroy((wl_proxy*)xdgSurface);
-		wl_proxy_destroy((wl_proxy*)wlSurface);
+		xdg_surface_destroy(xdgSurface);
+		wl_surface_destroy(wlSurface);
 		DETHROW_INFO(deeInvalidAction, "xdg_surface_get_toplevel failed");
 	}
 	
@@ -197,7 +192,7 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 	static const xdg_surface_listener xdgSurfaceListener = {
 		.configure = deoglRRenderWindow::OnXdgSurfaceConfigure
 	};
-	wl_proxy_add_listener((wl_proxy*)xdgSurface, (void(**)(void))&xdgSurfaceListener, &window);
+	xdg_surface_add_listener(xdgSurface, &xdgSurfaceListener, &window);
 	
 	// add xdg_toplevel configure/close listener
 	static const xdg_toplevel_listener xdgToplevelListener = {
@@ -206,7 +201,7 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 		.configure_bounds = deoglRRenderWindow::OnXdgToplevelConfigureBounds,
 		.wm_capabilities = deoglRRenderWindow::OnXdgToplevelWmCapabilities
 	};
-	wl_proxy_add_listener((wl_proxy*)xdgToplevel, (void(**)(void))&xdgToplevelListener, &window);
+	xdg_toplevel_add_listener(xdgToplevel, &xdgToplevelListener, &window);
 	
 	// create fractional scale object if compositor supports the protocol.
 	// must be done before the commit so the compositor can send preferred_scale during roundtrip
@@ -259,9 +254,9 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 	// create wl_egl_window
 	wl_egl_window * const wlEglWindow = deoglWlEglWindowCreate(wlSurface, renderWidth, renderHeight);
 	if(!wlEglWindow){
-		wl_proxy_destroy((wl_proxy*)xdgToplevel);
-		wl_proxy_destroy((wl_proxy*)xdgSurface);
-		wl_proxy_destroy((wl_proxy*)wlSurface);
+		xdg_toplevel_destroy(xdgToplevel);
+		xdg_surface_destroy(xdgSurface);
+		wl_surface_destroy(wlSurface);
 		window.SetWlSurface(nullptr);
 		window.SetXdgSurface(nullptr);
 		window.SetXdgToplevel(nullptr);
@@ -282,9 +277,9 @@ void deoglRTCBUnixWaylandEGL::CreateWindowSurface(deoglRRenderWindow &window){
 		(EGLNativeWindowType)wlEglWindow, surfaceAttribs.GetArrayPointer());
 	if(surface == EGL_NO_SURFACE){
 		deoglWlEglWindowDestroy(wlEglWindow);
-		wl_proxy_destroy((wl_proxy*)xdgToplevel);
-		wl_proxy_destroy((wl_proxy*)xdgSurface);
-		wl_proxy_destroy((wl_proxy*)wlSurface);
+		xdg_toplevel_destroy(xdgToplevel);
+		xdg_surface_destroy(xdgSurface);
+		wl_surface_destroy(wlSurface);
 		window.SetWlSurface(nullptr);
 		window.SetXdgSurface(nullptr);
 		window.SetXdgToplevel(nullptr);
@@ -525,39 +520,20 @@ void deoglRTCBUnixWaylandEGL::pRegisterWaylandCompositor(){
 }
 
 void deoglRTCBUnixWaylandEGL::pUnregisterWaylandCompositor(){
-	pWlOutputs.Visit([&](const sOutput &output){
-		wl_output_destroy(output.output);
-	});
 	pWlOutputs.RemoveAll();
 	
 	if(pDecoration){
 		zxdg_toplevel_decoration_v1_destroy(pDecoration);
 		pDecoration = nullptr;
 	}
-	if(pDecorationManager){
-		zxdg_decoration_manager_v1_destroy(pDecorationManager);
-		pDecorationManager = nullptr;
-	}
-	if(pXdgWmBase){
-		xdg_wm_base_destroy(pXdgWmBase);
-		pXdgWmBase = nullptr;
-	}
-	if(pWpFractionalScaleManager){
-		wp_fractional_scale_manager_v1_destroy(pWpFractionalScaleManager);
-		pWpFractionalScaleManager = nullptr;
-	}
-	if(pColorManager){
-		wp_color_manager_v1_destroy(pColorManager);
-		pColorManager = nullptr;
-	}
-	if(pWpViewporter){
-		wp_viewporter_destroy(pWpViewporter);
-		pWpViewporter = nullptr;
-	}
-	if(pWlCompositor){
-		wl_compositor_destroy(pWlCompositor);
-		pWlCompositor = nullptr;
-	}
+	pXdgToplevelIconManager.Unbind();
+	pWpViewporter.Unbind();
+	pColorManager.Unbind();
+	pWpFractionalScaleManager.Unbind();
+	pDecorationManager.Unbind();
+	pXdgWmBase.Unbind();
+	pWlShm.Unbind();
+	pWlCompositor.Unbind();
 }
 
 
@@ -606,7 +582,7 @@ void deoglRTCBUnixWaylandEGL::CreateColorManagement(deoglRRenderWindow &window){
 	
 	// verify if HDR is enabled on output
 	if(pWlOutputs.IsNotEmpty()){
-		auto mngOutput = wp_color_manager_v1_get_output(pColorManager, pWlOutputs.First().output);
+		auto mngOutput = wp_color_manager_v1_get_output(pColorManager, *pWlOutputs.First());
 		if(!mngOutput){
 			logger.LogInfo("RTCBUnixWaylandEGL.CreateColorManagement: "
 				"Failed to create color management output for HDR check");
@@ -817,90 +793,57 @@ void deoglRTCBUnixWaylandEGL::pOnColorManagerDone(void *data, wp_color_manager_v
 void deoglRTCBUnixWaylandEGL::pOnRegistryGlobal(void *data, wl_registry *registry,
 uint32_t name, const char *interface, uint32_t version){
 	auto backend = (deoglRTCBUnixWaylandEGL*)data;
+	auto &logger = backend->pRTContext.GetRenderThread().GetLogger();
 	
-	if(strcmp(interface, wl_compositor_interface.name) == 0 && !backend->pWlCompositor){
-		backend->pWlCompositor = (wl_compositor*)wl_registry_bind(registry, name,
-			&wl_compositor_interface, decMath::min(version, 4));
-		backend->pWlCompositorId = name;
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface wl_compositor");
+	if(backend->pWlCompositor.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface wl_compositor");
 		
-	}else if(strcmp(interface, xdg_wm_base_interface.name) == 0 && !backend->pXdgWmBase){
-		const uint32_t bindVersion = (uint32_t)decMath::min(version, 4);
-		backend->pXdgWmBase = (xdg_wm_base*)wl_registry_bind(registry, name,
-			&xdg_wm_base_interface, bindVersion);
-		backend->pXdgWmBaseId = name;
-		backend->pXdgWmBaseVersion = bindVersion;
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface xdg_wm_base");
+	}else if(backend->pWlShm.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface wl_shm");
 		
-	}else if(strcmp(interface, wp_fractional_scale_manager_v1_interface.name) == 0
-	&& !backend->pWpFractionalScaleManager){
-		backend->pWpFractionalScaleManager = (wp_fractional_scale_manager_v1*)wl_registry_bind(
-			registry, name, &wp_fractional_scale_manager_v1_interface, 1);
-		backend->pWpFractionalScaleManagerId = name;
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface wp_fractional_scale_manager_v1");
+	}else if(backend->pXdgWmBase.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface xdg_wm_base");
 		
-	}else if(strcmp(interface, zxdg_decoration_manager_v1_interface.name) == 0
-	&& !backend->pDecorationManager){
-		backend->pDecorationManager = (zxdg_decoration_manager_v1*)wl_registry_bind(
-			registry, name, &zxdg_decoration_manager_v1_interface, 1);
-		backend->pDecorationManagerId = name;
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface zxdg_decoration_manager_v1");
-			
-	}else if(strcmp(interface, wp_color_manager_v1_interface.name) == 0 && !backend->pColorManager){
-		backend->pColorManager = (wp_color_manager_v1*)wl_registry_bind(
-			registry, name, &wp_color_manager_v1_interface, 1);
-		backend->pColorManagerId = name;
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface wp_color_manager_v1");
+	}else if(backend->pWpFractionalScaleManager.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface wp_fractional_scale_manager_v1");
 		
-	}else if(strcmp(interface, wp_viewporter_interface.name) == 0 && !backend->pWpViewporter){
-		backend->pWpViewporter = (wp_viewporter*)wl_registry_bind(
-			registry, name, &wp_viewporter_interface, 1);
-		backend->pWpViewporterId = name;
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface wp_viewporter");
+	}else if(backend->pDecorationManager.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface zxdg_decoration_manager_v1");
+		
+	}else if(backend->pColorManager.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface wp_color_manager_v1");
+		
+	}else if(backend->pWpViewporter.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface wp_viewporter");
+		
+	}else if(backend->pXdgToplevelIconManager.Bind(registry, name, interface, version)){
+		logger.LogInfo("RTCBUnixWaylandEGL: Found interface xdg_toplevel_icon_manager_v1");
 		
 	}else if(strcmp(interface, wl_output_interface.name) == 0){
-		auto output = deTUniqueReference<sOutput>::New();
-		output->output = (wl_output*)wl_registry_bind(registry, name, &wl_output_interface, 2);
-		output->name = name;
-		backend->pWlOutputs.Add(std::move(output));
-		backend->pRTContext.GetRenderThread().GetLogger().LogInfo(
-			"RTCBUnixWaylandEGL: Found interface wl_output");
+		auto output = deTUniqueReference<deWaylandManager<wl_output>>::New(
+			wl_output_interface, 2, wl_output_destroy);
+		if(output->Bind(registry, name, interface, version)){
+			backend->pWlOutputs.Add(std::move(output));
+			logger.LogInfo("RTCBUnixWaylandEGL: Found interface wl_output");
+		}
 	}
 }
 
 void deoglRTCBUnixWaylandEGL::pOnRegistryGlobalRemove(void *data, wl_registry*, uint32_t name){
-	// handle removal of globals if needed (e.g. compositor disconnected)
 	auto backend = (deoglRTCBUnixWaylandEGL*)data;
 	
-	if(name == backend->pWlCompositorId){
-		backend->pWlCompositor = nullptr;
-		
-	}else if(name == backend->pXdgWmBaseId){
-		backend->pXdgWmBase = nullptr;
-		
-	}else if(name == backend->pWpFractionalScaleManagerId){
-		backend->pWpFractionalScaleManager = nullptr;
-		
-	}else if(name == backend->pDecorationManagerId){
-		backend->pDecorationManager = nullptr;
-		
-	}else if(name == backend->pColorManagerId){
-		backend->pColorManager = nullptr;
-		
-	}else if(name == backend->pWpViewporterId){
-		backend->pWpViewporter = nullptr;
-		
-	}else{
-		backend->pWlOutputs.RemoveIf([&](const sOutput &output){
-			return output.name == name;
-		});
-	}
+	backend->pWlCompositor.Unbind(name);
+	backend->pWlShm.Unbind(name);
+	backend->pXdgWmBase.Unbind(name);
+	backend->pWpFractionalScaleManager.Unbind(name);
+	backend->pDecorationManager.Unbind(name);
+	backend->pColorManager.Unbind(name);
+	backend->pWpViewporter.Unbind(name);
+	backend->pXdgToplevelIconManager.Unbind(name);
+	
+	backend->pWlOutputs.RemoveIf([&](deTUniqueReference<deWaylandManager<wl_output>> &output){
+		return output->Unbind(name);
+	});
 }
 
 

@@ -183,6 +183,7 @@ pRenderLayerMask(0x1),
 pRenderEnvMapMask(0x2),
 pAudioLayerMask(0x4),
 pDynamicCollider(false),
+pRequiresInteraction(false),
 pVisible(true),
 pPartiallyHidden(false),
 pListenerCollider(nullptr),
@@ -469,6 +470,10 @@ void igdeWObject::SetDynamicCollider(bool dynamic){
 	
 	pDynamicCollider = dynamic;
 	pUpdateColliderResponseType();
+}
+
+void igdeWObject::SetRequiresInteraction(bool requiresInteraction){
+	pRequiresInteraction = requiresInteraction;
 }
 
 

@@ -56,9 +56,7 @@ private:
 	wl_display *pWlDisplay;
 	wl_registry *pWlRegistry;
 	wl_event_queue *pInputQueue;
-	wl_seat *pWlSeat;
-	uint32_t pWlSeatId;
-	uint32_t pWlSeatVersion;
+	deWaylandManager<wl_seat> pWlSeat;
 	wl_pointer *pWlPointer;
 	wl_keyboard *pWlKeyboard;
 	
@@ -70,10 +68,8 @@ private:
 	dexsiDeviceWaylandKeyboard::Ref pWaylandKeyboard;
 	
 	/** Pointer constraints and relative pointer. */
-	zwp_pointer_constraints_v1 *pPointerConstraints;
-	uint32_t pPointerConstraintsId;
-	zwp_relative_pointer_manager_v1 *pRelPtrManager;
-	uint32_t pRelPtrManagerId;
+	deWaylandManager<zwp_pointer_constraints_v1> pPointerConstraints;
+	deWaylandManager<zwp_relative_pointer_manager_v1> pRelPtrManager;
 	zwp_locked_pointer_v1 *pLockedPointer;
 	zwp_relative_pointer_v1 *pRelativePointer;
 	bool pPointerLocked;

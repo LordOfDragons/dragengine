@@ -346,6 +346,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 			if(pLightBoxModel && pLightBoxSkin){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();
 				pComponent = engine.GetComponentManager()->CreateComponent(pLightBoxModel, pLightBoxSkin);
+				pComponent->SetEnableGI(false);
 				pWorld->AddComponent(pComponent);
 				
 				pLight = engine.GetLightManager()->CreateLight();
@@ -370,6 +371,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 			if(pModel){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();
 				pComponent = engine.GetComponentManager()->CreateComponent(pModel, pSkin);
+				pComponent->SetEnableGI(false);
 				
 				if(pComponent->GetTextureCount() == 1){
 					pComponent->GetTextureAt(0).SetSkin(pSkin);
