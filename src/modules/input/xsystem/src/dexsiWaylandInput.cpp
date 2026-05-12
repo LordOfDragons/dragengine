@@ -70,7 +70,8 @@ static const wl_pointer_listener vPointerListener = {
 	.axis_source = dexsiWaylandInput::OnPointerAxisSource,
 	.axis_stop = dexsiWaylandInput::OnPointerAxisStop,
 	.axis_discrete = dexsiWaylandInput::OnPointerAxisDiscrete,
-	.axis_value120 = dexsiWaylandInput::OnPointerAxisValue120
+	.axis_value120 = dexsiWaylandInput::OnPointerAxisValue120,
+	.axis_relative_direction = [](void*, wl_pointer*, uint32_t, uint32_t){}
 };
 
 static const wl_keyboard_listener vKeyboardListener = {
@@ -253,6 +254,10 @@ void dexsiWaylandInput::DispatchEvents(){
 	}
 	
 	wl_display_dispatch_queue_pending(pWlDisplay, pInputQueue);
+	
+	timeval eventTime;
+	gettimeofday(&eventTime, nullptr);
+	pFlushPointerEvents(eventTime);
 }
 
 void dexsiWaylandInput::UpdateCapture(){
@@ -710,11 +715,8 @@ uint32_t axis, wl_fixed_t value){
 }
 
 void dexsiWaylandInput::OnPointerFrame(void *data, wl_pointer*){
-	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
-	
-	timeval eventTime;
-	gettimeofday(&eventTime, nullptr);
-	self.pFlushPointerEvents(eventTime);
+	// accumulation is flushed at the end of DispatchEvents() to avoid multiple
+	// mouse-move/wheel events per ProcessEvents() call
 }
 
 void dexsiWaylandInput::OnPointerAxisSource(void*, wl_pointer*, uint32_t){
@@ -765,8 +767,7 @@ void dexsiWaylandInput::OnLockedPointerUnlocked(void *data, zwp_locked_pointer_v
 // Relative pointer callbacks
 ///////////////////////////////
 
-void dexsiWaylandInput::OnRelativeMotion(void *data, zwp_relative_pointer_v1*,
-uint32_t utime_hi, uint32_t utime_lo,
+void dexsiWaylandInput::OnRelativeMotion(void *data, zwp_relative_pointer_v1*, uint32_t, uint32_t,
 wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t, wl_fixed_t){
 	dexsiWaylandInput &self = *(dexsiWaylandInput*)data;
 	if(!self.pPointerLocked){
@@ -776,13 +777,7 @@ wl_fixed_t dx, wl_fixed_t dy, wl_fixed_t, wl_fixed_t){
 	self.pPointerDeltaX += wl_fixed_to_double(dx);
 	self.pPointerDeltaY += wl_fixed_to_double(dy);
 	self.pPointerHasMoved = true;
-	
-	const uint64_t us = ((uint64_t)utime_hi << 32) | (uint64_t)utime_lo;
-	timeval eventTime;
-	eventTime.tv_sec = (time_t)(us / 1000000u);
-	eventTime.tv_usec = (suseconds_t)(us % 1000000u);
-	
-	self.pFlushPointerEvents(eventTime);
+	// accumulation is flushed at the end of DispatchEvents()
 }
 
 
