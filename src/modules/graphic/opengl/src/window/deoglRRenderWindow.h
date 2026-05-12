@@ -146,6 +146,12 @@ private:
 	wp_viewport *pWpViewport;
 	wp_color_management_surface_v1 *pWpColorSurface;
 	
+	wl_shm_pool *pWlIconShmPool;
+	wl_buffer *pWlIconBuffer;
+	void *pWlIconShmData;
+	size_t pWlIconShmSize;
+	int pWlIconShmFd;
+	
 	struct sConfigureResize{
 		uint32_t serial = 0;
 		decPoint viewportSize{}, renderSize{};
@@ -388,6 +394,10 @@ private:
 	
 #if defined OS_UNIX_X11
 	void pCreateNullCursor();
+	
+#if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+	void pWlCleanupIconBuffer();
+#endif
 #endif
 	
 	void pDestroyWindow();
