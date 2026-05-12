@@ -308,7 +308,6 @@ void dexsiWaylandInput::pLockPointer(){
 	wl_surface_commit(pPointerSurface);
 	if(pWlDisplay){
 		wl_display_flush(pWlDisplay);
-		wl_display_roundtrip_queue(pWlDisplay, pInputQueue);
 	}
 	
 	pModule.LogInfo("dexsiWaylandInput: Pointer locked");
@@ -325,10 +324,11 @@ void dexsiWaylandInput::pUnlockPointer(){
 		pLockedPointer = nullptr;
 		pPointerLocked = false;
 		
-		wl_surface_commit(pPointerSurface);
+		if(pPointerSurface){
+			wl_surface_commit(pPointerSurface);
+		}
 		if(pWlDisplay){
 			wl_display_flush(pWlDisplay);
-			wl_display_roundtrip_queue(pWlDisplay, pInputQueue);
 		}
 		
 		pModule.LogInfo("dexsiWaylandInput: Pointer unlocked");
