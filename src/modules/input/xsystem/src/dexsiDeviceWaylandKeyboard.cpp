@@ -33,7 +33,6 @@
 #include "dexsiDeviceWaylandKeyboard.h"
 #include "dexsiDeviceAxis.h"
 #include "dexsiDeviceButton.h"
-#include "dexsiDeviceCoreKeyboard.h"
 #include "deXSystemInput.h"
 
 #include <xkbcommon/xkbcommon.h>
@@ -42,6 +41,249 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputEvent.h>
+
+
+// Helpers
+////////////
+
+static deInputEvent::eKeyCodes KeyCodeForXkbKeySym(xkb_keysym_t keysym){
+	switch(keysym){
+	case XKB_KEY_Shift_L:
+	case XKB_KEY_Shift_R:
+		return deInputEvent::ekcShift;
+		
+	case XKB_KEY_Control_L:
+	case XKB_KEY_Control_R:
+		return deInputEvent::ekcControl;
+		
+	case XKB_KEY_Meta_L:
+	case XKB_KEY_Meta_R:
+		return deInputEvent::ekcMeta;
+		
+	case XKB_KEY_Alt_L:
+	case XKB_KEY_Alt_R:
+		return deInputEvent::ekcAlt;
+		
+	case XKB_KEY_Super_L:
+	case XKB_KEY_Super_R:
+		return deInputEvent::ekcSuper;
+		
+	case XKB_KEY_Hyper_L:
+	case XKB_KEY_Hyper_R:
+		return deInputEvent::ekcHyper;
+		
+	case XKB_KEY_BackSpace:
+	case XKB_KEY_Clear:
+		return deInputEvent::ekcBackSpace;
+		
+	case XKB_KEY_Tab:
+	case XKB_KEY_KP_Tab:
+		return deInputEvent::ekcTab;
+		
+	case XKB_KEY_Linefeed:
+	case XKB_KEY_Return:
+	case XKB_KEY_KP_Enter:
+		return deInputEvent::ekcReturn;
+		
+	case XKB_KEY_Pause:
+	case XKB_KEY_Sys_Req:
+		return deInputEvent::ekcPause;
+		
+	case XKB_KEY_Escape:
+		return deInputEvent::ekcEscape;
+		
+	case XKB_KEY_space:
+		return deInputEvent::ekcSpace;
+		
+	case XKB_KEY_Delete:
+	case XKB_KEY_KP_Delete:
+		return deInputEvent::ekcDelete;
+		
+	case XKB_KEY_Home:
+	case XKB_KEY_Begin:
+	case XKB_KEY_KP_Home:
+	case XKB_KEY_KP_Begin:
+		return deInputEvent::ekcHome;
+		
+	case XKB_KEY_Left:
+	case XKB_KEY_KP_Left:
+		return deInputEvent::ekcArrowLeft;
+		
+	case XKB_KEY_Up:
+	case XKB_KEY_KP_Up:
+		return deInputEvent::ekcArrowUp;
+		
+	case XKB_KEY_Right:
+	case XKB_KEY_KP_Right:
+		return deInputEvent::ekcArrowRight;
+		
+	case XKB_KEY_Down:
+	case XKB_KEY_KP_Down:
+		return deInputEvent::ekcArrowDown;
+		
+	case XKB_KEY_Page_Up:
+	case XKB_KEY_KP_Page_Up:
+		return deInputEvent::ekcPageUp;
+		
+	case XKB_KEY_Page_Down:
+	case XKB_KEY_KP_Page_Down:
+		return deInputEvent::ekcPageDown;
+		
+	case XKB_KEY_End:
+	case XKB_KEY_KP_End:
+		return deInputEvent::ekcEnd;
+		
+	case XKB_KEY_Insert:
+	case XKB_KEY_KP_Insert:
+		return deInputEvent::ekcInsert;
+		
+	default:
+		if(keysym >= XKB_KEY_F1 && keysym <= XKB_KEY_F12){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcF1 + (keysym - XKB_KEY_F1));
+			
+		}else if(keysym >= XKB_KEY_KP_F1 && keysym <= XKB_KEY_KP_F4){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcF1 + (keysym - XKB_KEY_KP_F1));
+			
+		}else if(keysym >= XKB_KEY_KP_0 && keysym <= XKB_KEY_KP_9){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (keysym - XKB_KEY_KP_0));
+			
+		}else if(keysym >= XKB_KEY_0 && keysym <= XKB_KEY_9){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (keysym - XKB_KEY_0));
+			
+		}else if(keysym >= XKB_KEY_a && keysym <= XKB_KEY_z){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (keysym - XKB_KEY_a));
+			
+		}else if(keysym >= XKB_KEY_A && keysym <= XKB_KEY_Z){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (keysym - XKB_KEY_A));
+		}
+	}
+	
+	return deInputEvent::ekcUndefined;
+}
+
+static deInputEvent::eKeyLocation KeyLocationForXkbKeySym(xkb_keysym_t keysym){
+	switch(keysym){
+	case XKB_KEY_Shift_L:
+	case XKB_KEY_Control_L:
+	case XKB_KEY_Meta_L:
+	case XKB_KEY_Alt_L:
+	case XKB_KEY_Super_L:
+	case XKB_KEY_Hyper_L:
+		return deInputEvent::eklLeft;
+		
+	case XKB_KEY_Shift_R:
+	case XKB_KEY_Control_R:
+	case XKB_KEY_Meta_R:
+	case XKB_KEY_Alt_R:
+	case XKB_KEY_Super_R:
+	case XKB_KEY_Hyper_R:
+		return deInputEvent::eklRight;
+		
+	case XKB_KEY_KP_Tab:
+	case XKB_KEY_KP_Enter:
+	case XKB_KEY_KP_Delete:
+	case XKB_KEY_KP_Home:
+	case XKB_KEY_KP_Begin:
+	case XKB_KEY_KP_Left:
+	case XKB_KEY_KP_Up:
+	case XKB_KEY_KP_Right:
+	case XKB_KEY_KP_Down:
+	case XKB_KEY_KP_Page_Up:
+	case XKB_KEY_KP_Page_Down:
+	case XKB_KEY_KP_End:
+	case XKB_KEY_KP_Insert:
+		return deInputEvent::eklNumberPad;
+		
+	default:
+		if(keysym >= XKB_KEY_KP_F1 && keysym <= XKB_KEY_KP_F4){
+			return deInputEvent::eklNumberPad;
+			
+		}else if(keysym >= XKB_KEY_KP_0 && keysym <= XKB_KEY_KP_9){
+			return deInputEvent::eklNumberPad;
+		}
+	}
+	
+	return deInputEvent::eklNone;
+}
+
+static int MatchingPriorityForXkbKeySym(xkb_keysym_t keysym){
+	// lower value is higher priority
+	
+	switch(keysym){
+	case XKB_KEY_Shift_R:
+	case XKB_KEY_Control_R:
+	case XKB_KEY_Meta_R:
+	case XKB_KEY_Alt_R:
+	case XKB_KEY_Super_R:
+	case XKB_KEY_Hyper_R:
+	case XKB_KEY_BackSpace:
+	case XKB_KEY_Tab:
+	case XKB_KEY_Return:
+	case XKB_KEY_Pause:
+	case XKB_KEY_Escape:
+	case XKB_KEY_space:
+	case XKB_KEY_Delete:
+	case XKB_KEY_Home:
+	case XKB_KEY_Left:
+	case XKB_KEY_Up:
+	case XKB_KEY_Right:
+	case XKB_KEY_Down:
+	case XKB_KEY_Page_Up:
+	case XKB_KEY_Page_Down:
+	case XKB_KEY_End:
+	case XKB_KEY_Insert:
+		return 0;
+		
+	case XKB_KEY_Shift_L:
+	case XKB_KEY_Control_L:
+	case XKB_KEY_Meta_L:
+	case XKB_KEY_Alt_L:
+	case XKB_KEY_Super_L:
+	case XKB_KEY_Hyper_L:
+	case XKB_KEY_Clear:
+	case XKB_KEY_KP_Tab:
+	case XKB_KEY_KP_Enter:
+	case XKB_KEY_Sys_Req:
+	case XKB_KEY_KP_Delete:
+	case XKB_KEY_KP_Home:
+	case XKB_KEY_KP_Left:
+	case XKB_KEY_KP_Up:
+	case XKB_KEY_KP_Right:
+	case XKB_KEY_KP_Down:
+	case XKB_KEY_KP_Page_Up:
+	case XKB_KEY_KP_Page_Down:
+	case XKB_KEY_KP_End:
+	case XKB_KEY_KP_Insert:
+		return 1;
+		
+	case XKB_KEY_Linefeed:
+	case XKB_KEY_Begin:
+	case XKB_KEY_KP_Begin:
+		return 2;
+		
+	default:
+		if(keysym >= XKB_KEY_F1 && keysym <= XKB_KEY_F12){
+			return 0;
+			
+		}else if(keysym >= XKB_KEY_KP_F1 && keysym <= XKB_KEY_KP_F4){
+			return 1;
+			
+		}else if(keysym >= XKB_KEY_KP_0 && keysym <= XKB_KEY_KP_9){
+			return 1;
+			
+		}else if(keysym >= XKB_KEY_0 && keysym <= XKB_KEY_9){
+			return 0;
+			
+		}else if(keysym >= XKB_KEY_a && keysym <= XKB_KEY_z){
+			return 0;
+			
+		}else if(keysym >= XKB_KEY_A && keysym <= XKB_KEY_Z){
+			return 1;
+		}
+	}
+	
+	return 10;
+}
 
 
 // Class dexsiDeviceWaylandKeyboard
@@ -80,8 +322,8 @@ void dexsiDeviceWaylandKeyboard::RebuildFromKeymap(xkb_keymap *keymap){
 	const xkb_keycode_t maxKey = xkb_keymap_max_keycode(keymap);
 	
 	// pre-allocate lookup table
-	const int maxLinuxKeyCode = (int)(maxKey - 8 + 1);
-	pLinuxKeyCodeMap.SetCount(maxLinuxKeyCode, -1);
+	const int maxLinuxKeyCode = (int)(maxKey - minKey + 1);
+	pLinuxKeyCodeMap.SetAll(maxLinuxKeyCode, -1);
 	
 	auto sharedButton = dexsiDeviceButton::Ref::New(GetModule());
 	sharedButton->SetDisplayImages("key");
@@ -116,9 +358,9 @@ void dexsiDeviceWaylandKeyboard::RebuildFromKeymap(xkb_keymap *keymap){
 		
 		// store keysym as X11Code (reused field, compatible values)
 		button->SetX11Code((int)keysym);
-		button->SetKeyCode(dexsiDeviceCoreKeyboard::KeyCodeForKeySym((KeySym)keysym));
-		button->SetKeyLocation(dexsiDeviceCoreKeyboard::KeyLocationForKeySym((KeySym)keysym));
-		button->SetMatchPriority(dexsiDeviceCoreKeyboard::MatchingPriorityForKeySym((KeySym)keysym));
+		button->SetKeyCode(KeyCodeForXkbKeySym(keysym));
+		button->SetKeyLocation(KeyLocationForXkbKeySym(keysym));
+		button->SetMatchPriority(MatchingPriorityForXkbKeySym(keysym));
 		
 		button->SetDisplayImages(sharedButton);
 		

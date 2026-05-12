@@ -905,9 +905,12 @@ uint32_t time, uint32_t key, uint32_t state){
 	
 	const bool pressed = state == WL_KEYBOARD_KEY_STATE_PRESSED;
 	
-	// get unicode character from current XKB state
+	// get unicode character from current XKB state. xkb_state_key_get_utf32 returns 0 for
+	// keys with no unicode mapping (arrows, modifiers, etc.). for character keys it returns
+	// the unicode code point including control characters (backspace, etc.). this matches
+	// what XLookupString returns in the dexsiDeviceCoreKeyboard class
 	const uint32_t ucs32 = xkb_state_key_get_utf32(self.pXkbState, xkbCode);
-	const int keyChar = (ucs32 >= 32 && ucs32 != 127) ? (int)ucs32 : 0;
+	const int keyChar = (int)ucs32;
 	
 	// update button pressed state
 	dexsiDeviceButton * const deviceButton = self.pWaylandKeyboard->GetButtons().GetAt(buttonIndex);
