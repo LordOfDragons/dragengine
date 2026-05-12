@@ -74,6 +74,8 @@
 #if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
 #include "../renderthread/backend/deoglRTCBUnixWaylandEGL.h"
 #include <dragengine/threading/deMutexGuard.h>
+#include <sys/mman.h>
+#include <unistd.h>
 #endif
 #endif
 
@@ -237,6 +239,11 @@ pWlEglWindow(nullptr),
 pWpFractionalScale(nullptr),
 pWpViewport(nullptr),
 pWpColorSurface(nullptr),
+pWlIconShmPool(nullptr),
+pWlIconBuffer(nullptr),
+pWlIconShmData(nullptr),
+pWlIconShmSize(0),
+pWlIconShmFd(-1),
 #endif
 
 #ifdef BACKEND_OPENGL
@@ -1091,6 +1098,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 		auto backendWayland = pRenderThread.GetContext().GetBackend()
 			.PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
 		if(backendWayland){
+			pWlCleanupIconBuffer();
 			backendWayland->DestroyWindowSurface(*this);
 			return;
 		}
@@ -1370,6 +1378,28 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 #endif
 }
 
+#if defined(OS_UNIX_X11) && defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
+void deoglRRenderWindow::pWlCleanupIconBuffer(){
+	if(pWlIconBuffer){
+		wl_buffer_destroy(pWlIconBuffer);
+		pWlIconBuffer = nullptr;
+	}
+	if(pWlIconShmPool){
+		wl_shm_pool_destroy(pWlIconShmPool);
+		pWlIconShmPool = nullptr;
+	}
+	if(pWlIconShmData){
+		munmap(pWlIconShmData, pWlIconShmSize);
+		pWlIconShmData = nullptr;
+	}
+	if(pWlIconShmFd >= 0){
+		close(pWlIconShmFd);
+		pWlIconShmFd = -1;
+	}
+	pWlIconShmSize = 0;
+}
+#endif
+
 void deoglRRenderWindow::pSetIcon(){
 #ifdef OS_BEOS
 // 	if( pWindow ){
@@ -1532,12 +1562,151 @@ void deoglRRenderWindow::pSetIcon(){
 #if defined(OS_UNIX_WAYLAND) && defined(BACKEND_OPENGL)
 	auto backendWayland = pRenderThread.GetContext().GetBackend().PointerDynamicCast<deoglRTCBUnixWaylandEGL>();
 	if(backendWayland){
-		if(!pWlSurface){
+		if(!pWlSurface || !pXdgToplevel || !pIcon){
 			return;
 		}
 		
-		// Wayland does not support setting window icons via client protocol.
-		// Icons are determined by the compositor based on the application ID.
+		auto iconManager = backendWayland->GetXdgToplevelIconManager();
+		auto wlShm = backendWayland->GetWlShm();
+		if(!iconManager || !wlShm){
+			return;
+		}
+		
+		const int width = pIcon->GetWidth();
+		const int height = pIcon->GetHeight();
+		if(width != height || width <= 0){
+			return; // protocol requires square buffers
+		}
+		
+		const int pixelCount = width * height;
+		const size_t stride = (size_t)width * 4;
+		const size_t shmSize = stride * (size_t)height;
+		
+		const int fd = memfd_create("de-wayland-icon", MFD_CLOEXEC);
+		if(fd < 0){
+			return;
+		}
+		if(ftruncate(fd, (off_t)shmSize) < 0){
+			close(fd);
+			return;
+		}
+		
+		void * const shmData = mmap(nullptr, shmSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+		if(shmData == MAP_FAILED){
+			close(fd);
+			return;
+		}
+		
+		// convert pixel data to WL_SHM_FORMAT_ARGB8888 (0xAARRGGBB in native endian)
+		uint32_t * const dest = (uint32_t*)shmData;
+		int i;
+		switch(pIcon->GetFormat()){
+		case deoglPixelBuffer::epfByte1:{
+			const deoglPixelBuffer::sByte1 *src = pIcon->GetPointerByte1();
+			for(i=0; i<pixelCount; i++){
+				dest[i] = 0xff000000 | ((uint32_t)src[i].r << 16) | ((uint32_t)src[i].r << 8) | src[i].r;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfByte2:{
+			const deoglPixelBuffer::sByte2 *src = pIcon->GetPointerByte2();
+			for(i=0; i<pixelCount; i++){
+				dest[i] = ((uint32_t)src[i].g << 24) | ((uint32_t)src[i].r << 16)
+					| ((uint32_t)src[i].r << 8) | src[i].r;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfByte3:{
+			const deoglPixelBuffer::sByte3 *src = pIcon->GetPointerByte3();
+			for(i=0; i<pixelCount; i++){
+				dest[i] = 0xff000000 | ((uint32_t)src[i].r << 16)
+					| ((uint32_t)src[i].g << 8) | src[i].b;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfByte4:{
+			const deoglPixelBuffer::sByte4 *src = pIcon->GetPointerByte4();
+			for(i=0; i<pixelCount; i++){
+				dest[i] = ((uint32_t)src[i].a << 24) | ((uint32_t)src[i].r << 16)
+					| ((uint32_t)src[i].g << 8) | src[i].b;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfFloat1:{
+			const deoglPixelBuffer::sFloat1 *src = pIcon->GetPointerFloat1();
+			for(i=0; i<pixelCount; i++){
+				const uint8_t r = (uint8_t)(decMath::clamp(src[i].r * 255.0f, 0.0f, 255.0f));
+				dest[i] = 0xff000000 | ((uint32_t)r << 16) | ((uint32_t)r << 8) | r;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfFloat2:{
+			const deoglPixelBuffer::sFloat2 *src = pIcon->GetPointerFloat2();
+			for(i=0; i<pixelCount; i++){
+				const uint8_t r = (uint8_t)(decMath::clamp(src[i].r * 255.0f, 0.0f, 255.0f));
+				const uint8_t g = (uint8_t)(decMath::clamp(src[i].g * 255.0f, 0.0f, 255.0f));
+				dest[i] = ((uint32_t)g << 24) | ((uint32_t)r << 16) | ((uint32_t)r << 8) | r;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfFloat3:{
+			const deoglPixelBuffer::sFloat3 *src = pIcon->GetPointerFloat3();
+			for(i=0; i<pixelCount; i++){
+				const uint8_t r = (uint8_t)(decMath::clamp(src[i].r * 255.0f, 0.0f, 255.0f));
+				const uint8_t g = (uint8_t)(decMath::clamp(src[i].g * 255.0f, 0.0f, 255.0f));
+				const uint8_t b = (uint8_t)(decMath::clamp(src[i].b * 255.0f, 0.0f, 255.0f));
+				dest[i] = 0xff000000 | ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
+			}
+			}break;
+			
+		case deoglPixelBuffer::epfFloat4:{
+			const deoglPixelBuffer::sFloat4 *src = pIcon->GetPointerFloat4();
+			for(i=0; i<pixelCount; i++){
+				const uint8_t r = (uint8_t)(decMath::clamp(src[i].r * 255.0f, 0.0f, 255.0f));
+				const uint8_t g = (uint8_t)(decMath::clamp(src[i].g * 255.0f, 0.0f, 255.0f));
+				const uint8_t b = (uint8_t)(decMath::clamp(src[i].b * 255.0f, 0.0f, 255.0f));
+				const uint8_t a = (uint8_t)(decMath::clamp(src[i].a * 255.0f, 0.0f, 255.0f));
+				dest[i] = ((uint32_t)a << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
+			}
+			}break;
+			
+		default:
+			memset(dest, 0, shmSize);
+			break;
+		}
+		
+		auto shmPool = wl_shm_create_pool(wlShm, fd, (int32_t)shmSize);
+		if(!shmPool){
+			munmap(shmData, shmSize);
+			close(fd);
+			return;
+		}
+		
+		auto buffer = wl_shm_pool_create_buffer(shmPool, 0, width, height,
+			(int32_t)stride, WL_SHM_FORMAT_ARGB8888);
+		if(!buffer){
+			wl_shm_pool_destroy(shmPool);
+			munmap(shmData, shmSize);
+			close(fd);
+			return;
+		}
+		
+		pWlCleanupIconBuffer();
+		pWlIconShmPool = shmPool;
+		pWlIconBuffer = buffer;
+		pWlIconShmData = shmData;
+		pWlIconShmSize = shmSize;
+		pWlIconShmFd = fd;
+		
+		auto icon = xdg_toplevel_icon_manager_v1_create_icon(iconManager);
+		if(!icon){
+			return;
+		}
+		xdg_toplevel_icon_v1_add_buffer(icon, buffer, 1);
+		xdg_toplevel_icon_manager_v1_set_icon(iconManager, pXdgToplevel, icon);
+		xdg_toplevel_icon_v1_destroy(icon);
+		
+		wl_surface_commit(pWlSurface);
 		return;
 	}
 #endif

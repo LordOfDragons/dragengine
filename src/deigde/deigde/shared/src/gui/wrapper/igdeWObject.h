@@ -130,6 +130,7 @@ private:
 	decCollisionFilter pCollisionFilterFallback;
 	decCollisionFilter pCollisionFilterInteract;
 	bool pDynamicCollider;
+	bool pRequiresInteraction;
 	
 	bool pVisible;
 	bool pPartiallyHidden;
@@ -313,6 +314,12 @@ public:
 	
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);
+	
+	/** \brief Determines if the object requires interaction. */
+	inline bool GetRequiresInteraction() const{ return pRequiresInteraction; }
+	
+	/** \brief Sets if the object requires interaction. */
+	void SetRequiresInteraction(bool requiresInteraction);
 	
 	/** \brief Parent collider or nullptr if there is none. */
 	inline const deCollider::Ref &GetParentCollider() const{ return pParentCollider; }

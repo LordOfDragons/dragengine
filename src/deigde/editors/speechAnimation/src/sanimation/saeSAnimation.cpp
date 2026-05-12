@@ -793,6 +793,7 @@ void saeSAnimation::pUpdateComponent(){
 			
 		}else{
 			pEngComponent = engine.GetComponentManager()->CreateComponent(displayModel, displaySkin);
+			pEngComponent->SetEnableGI(false);
 			pEngWorld->AddComponent(pEngComponent);
 		}
 		

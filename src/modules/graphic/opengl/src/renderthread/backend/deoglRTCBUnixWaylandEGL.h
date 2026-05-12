@@ -32,7 +32,7 @@
 #include "deoglRTCBUnixX11EGL.h"
 #include "../../extensions/wayland/wayland-defs.h"
 
-#include <dragengine/common/collection/decTList.h>
+#include <dragengine/common/collection/decTUniqueList.h>
 
 
 /**
@@ -43,26 +43,17 @@
 class deoglRTCBUnixWaylandEGL : public deoglRTCBUnixX11EGL{
 private:
 	// Wayland compositor global objects
-	wl_compositor *pWlCompositor;
-	xdg_wm_base *pXdgWmBase;
-	zxdg_decoration_manager_v1 *pDecorationManager;
+	deWaylandManager<wl_compositor> pWlCompositor;
+	deWaylandManager<wl_shm> pWlShm;
+	deWaylandManager<xdg_wm_base> pXdgWmBase;
+	deWaylandManager<zxdg_decoration_manager_v1> pDecorationManager;
 	zxdg_toplevel_decoration_v1 *pDecoration;
-	wp_fractional_scale_manager_v1 *pWpFractionalScaleManager;
-	wp_color_manager_v1 *pColorManager;
-	wp_viewporter *pWpViewporter;
-	uint32_t pWlCompositorId;
-	uint32_t pXdgWmBaseId;
-	uint32_t pXdgWmBaseVersion;
-	uint32_t pDecorationManagerId;
-	uint32_t pWpFractionalScaleManagerId;
-	uint32_t pColorManagerId;
-	uint32_t pWpViewporterId;
+	deWaylandManager<wp_fractional_scale_manager_v1> pWpFractionalScaleManager;
+	deWaylandManager<wp_color_manager_v1> pColorManager;
+	deWaylandManager<wp_viewporter> pWpViewporter;
+	deWaylandManager<xdg_toplevel_icon_manager_v1> pXdgToplevelIconManager;
 	
-	struct sOutput{
-		wl_output *output;
-		uint32_t name;
-	};
-	decTList<sOutput> pWlOutputs;
+	decTUniqueList<deWaylandManager<wl_output>> pWlOutputs;
 	
 	bool pEglSupportsHdr;
 	bool pColorManagerHasParametric;
@@ -121,11 +112,17 @@ public:
 	/** Wayland compositor. */
 	inline wl_compositor *GetWlCompositor() const{ return pWlCompositor; }
 	
+	/** wl_shm global (nullptr if not available). */
+	inline wl_shm *GetWlShm() const{ return pWlShm; }
+	
 	/** xdg_wm_base global. */
 	inline xdg_wm_base *GetXdgWmBase() const{ return pXdgWmBase; }
 	
 	/** wp_fractional_scale_manager_v1 global (nullptr if protocol not available). */
 	inline wp_fractional_scale_manager_v1 *GetWpFractionalScaleManager() const{ return pWpFractionalScaleManager; }
+	
+	/** xdg_toplevel_icon_manager_v1 global (nullptr if protocol not available). */
+	inline xdg_toplevel_icon_manager_v1 *GetXdgToplevelIconManager() const{ return pXdgToplevelIconManager; }
 	/*@}*/
 	
 	

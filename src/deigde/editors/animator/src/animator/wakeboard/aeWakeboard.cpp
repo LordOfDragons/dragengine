@@ -104,6 +104,7 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		
 		pEngComponent = engine->GetComponentManager()->CreateComponent(engModel, engSkin);
 		pEngComponent->SetVisible(pEnabled);
+		pEngComponent->SetEnableGI(false);
 		engModel = nullptr;
 		engSkin = nullptr;
 		engWorld.AddComponent(pEngComponent);

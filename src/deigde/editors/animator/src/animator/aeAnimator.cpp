@@ -1287,6 +1287,7 @@ void aeAnimator::pUpdateComponent(){
 				
 			}else{
 				pEngComponent = engine->GetComponentManager()->CreateComponent(displayModel, displaySkin);
+				pEngComponent->SetEnableGI(false);
 				pEngWorld->AddComponent(pEngComponent);
 				
 				pEngCollider->AddAttachment(deColliderAttachment::Ref::New(pEngComponent));

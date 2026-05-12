@@ -1491,6 +1491,7 @@ void reRig::pUpdateComponent(){
 		}else{
 			rebuildTextures = true;
 			pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, skin);
+			pEngComponent->SetEnableGI(false);
 			pEngWorld->AddComponent(pEngComponent);
 		}
 		
