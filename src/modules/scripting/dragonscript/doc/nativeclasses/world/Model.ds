@@ -27,7 +27,7 @@ fixed class Model
 	 *          same loaded model resource. Once no object instance uses an model
 	 *          file anymore it is released from memory.
 	 */
-	public func new( String filename )
+	func new(String filename)
 	end
 	
 	/**
@@ -36,7 +36,7 @@ fixed class Model
 	 *          or if the file is already loaded the listener is used to deliver the loaded
 	 *          model or \em null if the loading failed.
 	 */
-	static public func void loadAsynchron( String filename, ResourceListener listener )
+	static func void loadAsynchron(String filename, ResourceListener listener)
 	end
 	/*@}*/
 	
@@ -45,17 +45,17 @@ fixed class Model
 	/** \name Management */
 	/*@{*/
 	/** \brief Normalized filename the model has been loaded from. */
-	public func String getFilename()
+	func String getFilename()
 		return null
 	end
 	
 	/** \brief Number of LODs. */
-	public func int getLodCount()
+	func int getLodCount()
 		return 0
 	end
 	
 	/** \brief Number of textures. */
-	public func int getTextureCount()
+	func int getTextureCount()
 		return 0
 	end
 	
@@ -63,7 +63,7 @@ fixed class Model
 	 * \brief Name of texture at index.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func String getTextureNameAt( int texture )
+	func String getTextureNameAt(int texture)
 		return null
 	end
 	
@@ -71,7 +71,7 @@ fixed class Model
 	 * \brief Number of faces in LOD.
 	 * \throws EOutOfBoundary \em lod is less than 0 or greater than or equal to getLodCount().
 	 */
-	public func int getFaceCount( int lod )
+	func int getFaceCount(int lod)
 		return 0
 	end
 	
@@ -79,7 +79,7 @@ fixed class Model
 	 * \brief Number of vertices in LOD.
 	 * \throws EOutOfBoundary \em lod is less than 0 or greater than or equal to getLodCount().
 	 */
-	public func int getVertexCount( int lod )
+	func int getVertexCount(int lod)
 		return 0
 	end
 	
@@ -87,7 +87,7 @@ fixed class Model
 	 * \brief Calculate minimum extend of LOD 0.
 	 * \version 1.7
 	 */
-	public func Vector getMinimumExtend()
+	func Vector getMinimumExtend()
 		return null
 	end
 	
@@ -95,9 +95,40 @@ fixed class Model
 	 * \brief Calculate maximum extend of LOD 0.
 	 * \version 1.7
 	 */
-	public func Vector getMaximumExtend()
+	func Vector getMaximumExtend()
 		return null
 	end
+	/*@}*/
+	
+	
+	
+	/** \name Vertex position sets */
+	/*@{*/
+	/**
+	 * \brief Count of vertex position sets.
+	 * \version 1.33
+	 */
+	func int getVertexPositionSetCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Index of vertex position set with name or -1 if not found.
+	 * \version 1.33
+	 */
+	func int indexOfVertexPositionSetNamed(String name)
+		return 0
+	end
+	
+	/**
+	 * \brief Name of vertex position set at index.
+	 * \version 1.33
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getVertexPositionSetCount().
+	 */
+	func String vertexPositionSetGetNameAt(int index)
+		return null
+	end
+	/*@}*/
 	
 	
 	
@@ -107,7 +138,7 @@ fixed class Model
 	 * \returns \em true if \em other is of type Model and both point to the same engine
 	 *          model resource.
 	 */
-	public func bool equals( Object other )
+	func bool equals(Object other)
 		return false
 	end
 	
@@ -115,7 +146,7 @@ fixed class Model
 	 * \brief Hash code for use as dictionary keys.
 	 * \details Implements Object.hashCode().
 	 */
-	public func int hashCode()
+	func int hashCode()
 		return 0
 	end
 	/*@}*/
