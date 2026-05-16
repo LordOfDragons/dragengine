@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <module>
-	<name>FBXRig</name>
-	<description>Handles rigs in the binary FBX format.</description>
-	<author>Plüss Roland (roland@rptd.ch)</author>
+	<name>FBXScene</name>
+	<description>Handles scenes in the binary FBX format.</description>
+	<author>DragonDreams GmbH (info@dragondreams.ch)</author>
 	<version>VERSION</version>
-	<type>Rig</type>
+	<type>Scene</type>
 	<pattern>.fbx</pattern>
 	<noSaving/>
 	<priority>1</priority>
@@ -12,6 +12,6 @@
 		<file>FILENAME</file>
 		<size>FILESIZE</size>
 		<sha1>SHA1SUM</sha1>
-		<entrypoint>FBXRigCreateModule</entrypoint>
+		<entrypoint>FBXSceneCreateModule</entrypoint>
 	</library>
 </module>

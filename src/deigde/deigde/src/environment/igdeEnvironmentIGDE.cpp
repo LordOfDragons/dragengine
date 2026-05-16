@@ -147,6 +147,9 @@ const igdeFilePattern::List *igdeEnvironmentIGDE::GetOpenFilePatternList(eFilePa
 	case efpltRig:
 		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplRig);
 		
+	case efpltScene:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplScene);
+		
 	case efpltSkin:
 		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSkin);
 		
@@ -213,11 +216,14 @@ const igdeFilePattern::List *igdeEnvironmentIGDE::GetSaveFilePatternList(eFilePa
 	case efpltRig:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplRig);
 		
-	case efpltSky:
-		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
+	case efpltScene:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplScene);
 		
 	case efpltSkin:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSkin);
+		
+	case efpltSky:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplSky);
 		
 	case efpltSound:
 		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplSound);

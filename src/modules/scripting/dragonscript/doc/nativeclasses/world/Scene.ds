@@ -1,0 +1,163 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Scene resource.
+ * \version 1.32
+ * 
+ * Scene resources are loaded from scene files (for example FBX). They contain named resources
+ * such as Model as well as named memory files such as *.deworld files. The main use of Scene
+ * files is transfering data from one application to another. Scene files are fully loaded into
+ * memory and thus are only suitable for transfering data. Stored the resources in Drag[en]gine
+ * optimized files or game internal formats for actual used in the game.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Scene
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Load scene from file.
+	 * 
+	 * If the scene file has been already loaded it is assigned to this object. If the scene is
+	 * not loaded yet the engine loads the scene. This call blocks until the scene is fully
+	 * loaded and ready to be used. For asynchronous loading use \ref #loadAsynchron().
+	 * Multiple objects can point to the same loaded scene resource. Once no object instance
+	 * uses a scene file anymore it is released from memory.
+	 */
+	func new(String filename)
+	end
+	
+	/**
+	 * \brief Load scene from file asynchronously.
+	 * 
+	 * Registers a request in the game engine to load a scene. Once finished or if the file is
+	 * already loaded the listener is used to deliver the loaded scene or null if the loading
+	 * failed.
+	 */
+	static func void loadAsynchron(String filename, ResourceListener listener)
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Normalized filename the scene has been loaded from. */
+	func String getFilename()
+		return null
+	end
+	
+	
+	
+	/** \brief Count of resources. */
+	func int getResourceCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Array of resource key strings.
+	 */
+	func Array getResourceKeys()
+		return null
+	end
+	
+	/**
+	 * \brief Resource with key or null if absent.
+	 * 
+	 * Returns resource as Object. The actual type depends on the resources type.
+	 */
+	func Object getResourceAt(String name)
+		return null
+	end
+	
+	/** \brief Resource with key is present. */
+	func bool hasResourceNamed(String name)
+		return false
+	end
+	
+	/**
+	 * \brief Add resource with key.
+	 * \param name Key to store resource under.
+	 * \param resource Resource to add. Must be a supported file resources type.
+	 * \throws EInvalidParam Resource with name is already present.
+	 * \throws EInvalidParam resource is null or unsupported type.
+	 */
+	func void addResource(String name, Object resource)
+	end
+	
+	/**
+	 * \brief Remove resource with key.
+	 * \throws EInvalidParam Resource with name is absent.
+	 */
+	func void removeResource(String name)
+	end
+	
+	/** \brief Remove all resources. */
+	func void removeAllResources()
+	end
+	
+	
+	
+	/** \brief Count of files. */
+	func int getFileCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Array of file key strings.
+	 */
+	func Array getFileKeys()
+		return null
+	end
+	
+	/**
+	 * \brief File with key or null if absent.
+	 */
+	func MemoryFile getFileNamed(String name)
+		return null
+	end
+	
+	/** \brief File with key is present. */
+	func bool hasFileNamed(String name)
+		return false
+	end
+	
+	/**
+	 * \brief Add file with key.
+	 * \throws EInvalidParam File with name is already present.
+	 * \throws ENullPointer file is null.
+	 */
+	func void addFile(String name, MemoryFile file)
+	end
+	
+	/**
+	 * \brief Remove file with key.
+	 * \throws EInvalidParam File with name is absent.
+	 */
+	func void removeFile(String name)
+	end
+	
+	/** \brief Remove all files. */
+	func void removeAllFiles()
+	end
+	
+	
+	
+	func bool equals(Object other)
+		return false
+	end
+	
+	func int hashCode()
+		return 0
+	end
+	/*@}*/
+end

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,44 @@
  * SOFTWARE.
  */
 
+#ifndef _DEBASESCENEMODULE_H_
+#define _DEBASESCENEMODULE_H_
 
-namespace Dragengine
+#include "../deBaseModule.h"
+
+class decBaseFileReader;
+class decBaseFileWriter;
+class deScene;
 
 
 /**
- * \brief ResourceLoader type.
+ * \brief Base scene module providing load/save support for scenes.
  */
-enum ResourceLoaderType
-	/** \brief Animation. */
-	animation
+class DE_DLL_EXPORT deBaseSceneModule : public deBaseModule{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create module. */
+	deBaseSceneModule(deLoadableModule &loadableModule);
 	
-	/** \brief Font. */
-	font
+	/** \brief Clean up module. */
+	~deBaseSceneModule() override;
+	/*@}*/
 	
-	/** \brief Image. */
-	image
 	
-	/** \brief LanguagePack. */
-	languagePack
 	
-	/** \brief Model. */
-	model
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief Load scene from file.
+	 */
+	virtual void LoadScene(decBaseFileReader &reader, deScene &scene) = 0;
 	
-	/** \brief Occlusion Mesh. */
-	occlusionMesh
-	
-	/** \brief Rig. */
-	rig
-	
-	/** \brief Scene. */
-	scene
-	
-	/** \brief Skin. */
-	skin
-	
-	/** \brief Sound. */
-	sound
-	
-	/** \brief Video. */
-	video
-end
+	/**
+	 * \brief Save scene to file.
+	 */
+	virtual void SaveScene(decBaseFileWriter &writer, const deScene &scene) = 0;
+	/*@}*/
+};
+
+#endif
