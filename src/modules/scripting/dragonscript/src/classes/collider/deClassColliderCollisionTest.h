@@ -132,6 +132,8 @@ private:
 	DEF_NATFUNC(nfHitNormalWorld);
 	DEF_NATFUNC(nfHitCollider);
 	DEF_NATFUNC(nfHitBone);
+	DEF_NATFUNC(nfHitFace);
+	DEF_NATFUNC(nfHitShape);
 #undef DEF_NATFUNC
 };
 
