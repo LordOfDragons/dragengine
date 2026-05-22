@@ -338,4 +338,4 @@ def build_dragengine(releases: list[Release], releases_idescripts: list[Release]
             each.write_data_file(releases)
 
 releases = find_repo_releases("LordOfDragons/dragengine")
-build_dragengine(releases[:3], releases[:20])
+build_dragengine(releases[:5], releases[:20])
