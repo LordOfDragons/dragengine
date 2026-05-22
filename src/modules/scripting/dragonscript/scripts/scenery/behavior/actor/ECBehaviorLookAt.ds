@@ -751,6 +751,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			and pLookAtFace == face and pLookAtShape == shape
 				pLookAtHitPoint = null
 				pLookAtDistance = distance
+				pLookAtHitNormal = hitNormal
 				return
 			end
 			
