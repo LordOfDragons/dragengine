@@ -761,7 +761,7 @@ void dedaiSpaceMesh::pInitFromNavSpace(){
 				pFaces[f].SetNormal(decVector(0.0f, 1.0f, 0.0f));
 				
 			}else{
-				pFaces[f].SetNormal(edge1 % bestEdge2);
+				pFaces[f].SetNormal((edge1 % bestEdge2).Normalized());
 			}
 			
 		}else{
@@ -929,7 +929,7 @@ void dedaiSpaceMesh::pInitFromHTNavSpace(){
 				pFaces[i].SetNormal(decVector(0.0f, 1.0f, 0.0f));
 				
 			}else{
-				pFaces[i].SetNormal(edge1 % bestEdge2);
+				pFaces[i].SetNormal((edge1 % bestEdge2).Normalized());
 			}
 			
 		}else{
