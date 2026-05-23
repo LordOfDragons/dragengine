@@ -1013,8 +1013,6 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces(dedaiConvexFaceList &list, int initia
 			continue;
 		}
 		
-		int lastVertex = face.GetVertexAt(vertexCount - 1);
-		
 		for(v=0; v<vertexCount; v++){
 			const int vertex = face.GetVertexAt(v);
 			
@@ -1063,36 +1061,30 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces(dedaiConvexFaceList &list, int initia
 			
 			// two faces case. possibly collapse two faces into one
 			if(otherFace){
-				// verify if the two vertices neighbor to the connection edge are convex. for this
-				// calculate the plane normal at the neighbor edges in the first face pointing
-				// inside the first face and check if the other face neighbor vertices are on the
-				// front side of these planes. of this is not the case joining the faces would
-				// result in a concave face
-				const int nextVertex2 = face.GetVertexAt((v + 2) % vertexCount);
-				const decVector &position1 = list.GetVertexAt(lastVertex);
-				const decVector &position2 = list.GetVertexAt(vertex);
-				const decVector &position3 = list.GetVertexAt(nextVertex);
-				const decVector &position4 = list.GetVertexAt(nextVertex2);
-				const decVector direction1(position2 - position1);
-				const decVector direction2(position4 - position3);
-				if(direction1.IsZero() || direction2.IsZero()){
-					lastVertex = vertex;
+				// verify the four edges touching the connection edge are convex
+				const int otherVertexCount = otherFace->GetVertexCount();
+				
+				const decVector &a1 = list.GetVertexAt(
+					face.GetVertexAt((v - 1 + vertexCount) % vertexCount));
+				const decVector &a2 = list.GetVertexAt(vertex);
+				const decVector &a3 = list.GetVertexAt(
+					otherFace->GetVertexAt((otherCorner + 1) % otherVertexCount));
+				if(a1.IsEqualTo(a2) || a2.IsEqualTo(a3)){
 					continue; // should not happen
 				}
-				const decVector normal1(face.GetNormal() % direction1.Normalized());
-				const decVector normal2(face.GetNormal() % direction2.Normalized());
+				if((face.GetNormal() % (a2 - a1).Normalized()) * (a3 - a1) < -thresholdConvex){
+					continue; // collapsing would produce concave face
+				}
 				
-				const int otherVertexCount = otherFace->GetVertexCount();
-				const int otherVertexPrev2 = otherFace->GetVertexAt((otherCorner - 2 + otherVertexCount) % otherVertexCount);
-				const int otherVertexNext = otherFace->GetVertexAt((otherCorner + 1) % otherVertexCount);
-				const decVector &otherPosition1 = list.GetVertexAt(otherVertexNext);
-				const decVector &otherPosition2 = list.GetVertexAt(otherVertexPrev2);
-				
-				const decVector otherDirection1(otherPosition1 - position2);
-				const decVector otherDirection2(otherPosition2 - position3);
-				if(normal1 * otherDirection1 < -thresholdConvex || normal2 * otherDirection2 < -thresholdConvex){
-					lastVertex = vertex;
-					continue; // first/second edge would lead into a concave face
+				const decVector &b1 = list.GetVertexAt(otherFace->GetVertexAt(
+					(otherCorner - 2 + otherVertexCount) % otherVertexCount));
+				const decVector &b2 = list.GetVertexAt(nextVertex);
+				const decVector &b3 = list.GetVertexAt(face.GetVertexAt((v + 2) % vertexCount));
+				if(b1.IsEqualTo(b2) || b2.IsEqualTo(b3)){
+					continue; // should not happen
+				}
+				if((otherFace->GetNormal() % (b2 - b1).Normalized()) * (b3 - b1) < -thresholdConvex){
+					continue; // collapsing would produce concave face
 				}
 				
 				// the joined face is convex. insert the vertices of the other face into this
@@ -1105,56 +1097,31 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces(dedaiConvexFaceList &list, int initia
 				otherFace->RemoveAllVertices();
 				vertexCount += otherVertexCount - 2;
 				
-				// there are now two possible scenarios due to wrapping around. if the corners have
-				// been added after the current vertex re-test the current vertex since a new face
-				// could be touching this face or the newly added following up edge could be co-linear
-				if(nextCorner > v){
-					// we re-test the current vertex so lastVertex stays the same
-					v--;
-					
-				// if the corners have been added before the current vertex due to wrapping around
-				// the situation is not so optimal. the current vertex counter has to be moved by
-				// otherVertexCount - 2 and reduced by 1 to re-test the current vertex. the corners
-				// added before the current vertex though would not be checked again missing more
-				// opportunities to optimize. for this reason start again at 0 to check the newly
-				// added corners. due to wrapping around the current vertex is vertexCount-1 in
-				// this case and thus nextCorner is 0. this re-tests a second time some corners
-				// but yields some more optimizations
-				}else{
-					lastVertex = vertex;
-					v = -1; // so we end up with v=nextCorner=0 in the next round
-				}
+				// we re-test the current vertex so lastVertex stays the same
+				v--;
 				
 			// single face case
 			}else{
 				if(hasOtherVertex){
-					lastVertex = vertex;
 					continue; // some other face shares this vertex so collapsing is not possible
 				}
 				
 				// if vertex is an initial vertex collapsing is prohibited
 				if(vertex < initialVertexCount){
-					lastVertex = vertex;
 					continue;
 				}
 				
-				const decVector &position1 = list.GetVertexAt(lastVertex);
-				const decVector &position2 = list.GetVertexAt(vertex);
-				const decVector &position3 = list.GetVertexAt(nextVertex);
-				const decVector direction(position2 - position1);
-				if(direction.IsZero()){
-					lastVertex = vertex;
-					continue;
-				}
-				const decVector normal(face.GetNormal() % direction.Normalized());
-				
-				if(fabsf(normal * (position3 - position2)) > thresholdColinear){
-					lastVertex = vertex;
+				const decVector &p1 = list.GetVertexAt(
+					face.GetVertexAt((v - 1 + vertexCount) % vertexCount));
+				const decVector &p2 = list.GetVertexAt(vertex);
+				const decVector &p3 = list.GetVertexAt(nextVertex);
+				if(!p2.IsEqualTo(p1) && !p3.IsEqualTo(p2)
+				&& fabsf((face.GetNormal() % (p2 - p1).Normalized()) * (p3 - p2)) > thresholdColinear){
 					continue; // edges are not co-linear
 				}
 				
-				// edges are co-linear. remove vertex. continue testing with the current
-				// vertex since the next edge could be co-linear again
+				// edges are co-linear or degenerated. remove vertex. continue testing with the
+				// current vertex since the next edge could be co-linear again
 				face.RemoveVertexFrom(v);
 				vertexCount--;
 				if(vertexCount < 3){
