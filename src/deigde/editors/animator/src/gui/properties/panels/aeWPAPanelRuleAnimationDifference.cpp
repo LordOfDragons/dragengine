@@ -39,12 +39,14 @@
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableRotation.h"
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableSize.h"
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableVertexPositionSet.h"
+#include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleComponentSpace.h"
 #include "../../../animatoreditor.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
@@ -285,8 +287,24 @@ public:
 	}
 };
 
-}
+class cActionComponentSpace : public cBaseAction{
+public:
+	using Ref = deTObjectReference<cActionComponentSpace>;
+	cActionComponentSpace(aeWPAPanelRuleAnimationDifference &panel) : cBaseAction(panel,
+		"@Animator.WPAPanelRuleAnimationDifference.ComponentSpace", nullptr,
+		"@Animator.WPAPanelRuleAnimationDifference.ComponentSpace.ToolTip"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleAnimationDifference *rule) override{
+		return aeURuleAnimDiffToggleComponentSpace::Ref::New(rule);
+	}
+	
+	void Update(const aeAnimator & , const aeRuleAnimationDifference &rule) override{
+		SetEnabled(true);
+		SetSelected(rule.GetUseComponentSpace());
+	}
+};
 
+}
 
 
 // Class aeWPAPanelRuleAnimationDifference
@@ -322,6 +340,9 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference)
 	helper.EditFloat(groupBox, "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime",
 		"@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.ToolTip",
 		pEditRMoveTime, cTextReferenceMoveTime::Ref::New(*this));
+	
+	helper.CheckBox(groupBox, pChkComponentSpace, cActionComponentSpace::Ref::New(*this));
+	
 	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
 	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
@@ -390,6 +411,7 @@ void aeWPAPanelRuleAnimationDifference::UpdateRule(){
 	pEditLMoveTime->SetEnabled(enabled);
 	pCBRMoveName->SetEnabled(enabled);
 	pEditRMoveTime->SetEnabled(enabled);
+	pChkComponentSpace->GetAction()->Update();
 	
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();

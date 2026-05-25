@@ -711,6 +711,9 @@ const aeRuleAnimationDifference &rule){
 	writer.WriteDataTagFloat("leadingMoveTime", rule.GetLeadingMoveTime());
 	writer.WriteDataTagString("referenceMoveName", rule.GetReferenceMoveName());
 	writer.WriteDataTagFloat("referenceMoveTime", rule.GetReferenceMoveTime());
+	if(rule.GetUseComponentSpace()){
+		writer.WriteDataTagBool("useComponentSpace", true);
+	}
 	
 	if(!rule.GetEnablePosition()){
 		writer.WriteDataTagBool("enablePosition", rule.GetEnablePosition());
@@ -2120,7 +2123,6 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, a
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	const aeRuleAnimationDifference::Ref rule(aeRuleAnimationDifference::Ref::New(""));
 	decXmlElementTag *tag;
-	const char *name;
 	int i;
 	
 	for(i=0; i<root->GetElementCount(); i++){
@@ -2151,22 +2153,25 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, a
 				}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
 					rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
 					
-				}else if(strcmp(tag->GetName(), "target") == 0){
-					name = pGetAttributeString(tag, "name");
+				}else if(strcmp(tag->GetName(), "useComponentSpace") == 0){
+					rule->SetUseComponentSpace(GetCDataBool(*tag));
 					
-					if(strcmp(name, "blendFactor") == 0){
+				}else if(strcmp(tag->GetName(), "target") == 0){
+					const decString &name = pGetAttributeString(tag, "name");
+					
+					if(name == "blendFactor"){
 						pLoadControllerTarget(tag, animator, rule->GetTargetBlendFactor());
 						
-					}else if(strcmp(name, "leadingMoveTime") == 0){
+					}else if(name == "leadingMoveTime"){
 						pLoadControllerTarget(tag, animator, rule->GetTargetLeadingMoveTime());
 						
-					}else if(strcmp(name, "referenceMoveTime") == 0){
+					}else if(name == "referenceMoveTime"){
 						pLoadControllerTarget(tag, animator, rule->GetTargetReferenceMoveTime());
 						
 					}else{
 						logger.LogErrorFormat("%s(%i:%i): Unknown target '%s'",
 							root->GetName().GetString(), tag->GetLineNumber(),
-							tag->GetPositionNumber(), name);
+							tag->GetPositionNumber(), name.GetString());
 						DETHROW(deeInvalidFileFormat);
 					}
 					

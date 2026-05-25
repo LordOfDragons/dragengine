@@ -416,6 +416,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveTime.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleComponentSpace.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnablePosition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableSize.cpp" />
@@ -700,6 +701,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeURuleAnimToggleEnableVertexPositionSet.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveTime.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleComponentSpace.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnablePosition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableRotation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnableSize.h" />

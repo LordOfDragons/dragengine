@@ -532,6 +532,8 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName.ToolTip">Name der Referenzanimationsbewegung (Resultat = führend - Referenz)</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime">Referenzzeit:</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.ToolTip">Zeit relativ zur Spielzeit der Referenzbewegung, bei der die Bewegung ausgewertet wird</translation>
+	<translation name="Animator.WPAPanelRuleAnimationDifference.ComponentSpace">Komponentenspace nutzen</translation>
+	<translation name="Animator.WPAPanelRuleAnimationDifference.ComponentSpace.ToolTip">Benutze Komponentenspace, um den Unterschied anzuwenden</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnablePosition">Position ändern</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnablePosition.ToolTip">Legt fest, ob die Position geändert wird.</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnableRotation">Drehung ändern</translation>
@@ -1001,6 +1003,7 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableRotation">Animationsunterschied: Drehung umschalten</translation>
 	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableSize">Animationsunterschied: Grösse umschalten</translation>
 	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableVertexPositionSet">Animationsunterschied: Vertex-Position umschalten</translation>
+	<translation name="Animator.Undo.RuleAnimationDifferenceToggleComponentSpace">Animationsunterschied: Komponentenspace benutzen umschalten</translation>
 	<translation name="Animator.Undo.SetRuleAnimationDifferenceLeadingMoveName">Animationsunterschied: Name der führenden Bewegung festlegen</translation>
 	<translation name="Animator.Undo.SetRuleAnimationDifferenceLeadingMoveTime">Animationsunterschied: Führende Bewegungszeit festlegen</translation>
 	<translation name="Animator.Undo.SetRuleAnimationDifferenceReferenceMoveName">Animationsunterschied: Name der Referenzbewegung festlegen</translation>

@@ -17,7 +17,7 @@ class ARAnimationDifference extends AnimatorRule
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create animator rule. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -26,56 +26,62 @@ class ARAnimationDifference extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable position modification. */
-	public func void setEnablePosition(bool enabled)
+	func void setEnablePosition(bool enabled)
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation(bool enabled)
+	func void setEnableOrientation(bool enabled)
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize(bool enabled)
+	func void setEnableSize(bool enabled)
 	end
 	
 	/**
 	 * \brief Enable vertex position set modification.
 	 * \version 1.17
 	 */
-	public func void setEnableVertexPositionSet(bool enabled)
+	func void setEnableVertexPositionSet(bool enabled)
 	end
 	
 	
 	
 	/** \brief Set leading move name. */
-	public func void setLeadingMoveName(String move)
+	func void setLeadingMoveName(String move)
 	end
 	
 	/** \brief Set time relative to leading move playtime. */
-	public func void setLeadingMoveTime(float time)
+	func void setLeadingMoveTime(float time)
 	end
 	
 	/** \brief Set reference move name. */
-	public func void setReferenceMoveName(String move)
+	func void setReferenceMoveName(String move)
 	end
 	
 	/** \brief Set time relative to reference move playtime. */
-	public func void setReferenceMoveTime(float time)
+	func void setReferenceMoveTime(float time)
 	end
 	
+	/**
+	 * \brief Set use component space.
+	 * \version 1.33
+	 */
+	func void setUseComponentSpace(bool useComponentSpace)
+	end
 	
 	
 	/**
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink(ARAnimationDifferenceTarget target, int link)
+	func void targetAddLink(ARAnimationDifferenceTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks(ARAnimationDifferenceTarget target)
+	func void targetRemoveAllLinks(ARAnimationDifferenceTarget target)
 	end
 	/*@}*/
 end

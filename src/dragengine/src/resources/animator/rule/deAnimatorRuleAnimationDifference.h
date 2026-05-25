@@ -46,7 +46,6 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<deAnimatorRuleAnimationDifference>;
 	
-	
 private:
 	decString pMove1Name;
 	float pMove1Time;
@@ -58,6 +57,7 @@ private:
 	bool pEnableOrientation;
 	bool pEnableSize;
 	bool pEnableVertexPositionSet;
+	bool pUseComponentSpace;
 	
 	deAnimatorControllerTarget pTargetLeadMoveTime;
 	deAnimatorControllerTarget pTargetRefMoveTime;
@@ -136,6 +136,18 @@ public:
 	
 	/** \brief Set if vertex position sets are enabled. */
 	void SetEnableVertexPositionSet(bool enabled);
+	
+	/**
+	 * \brief Use component space.
+	 * \version 1.33
+	 */
+	inline bool GetUseComponentSpace() const{ return pUseComponentSpace; }
+	
+	/**
+	 * \brief Set use component space.
+	 * \version 1.33
+	 */
+	void SetUseComponentSpace(bool useComponentSpace);
 	
 	/** \brief Leading move time target. */
 	inline deAnimatorControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }

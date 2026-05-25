@@ -49,6 +49,7 @@ pMove1Time(0.0f),
 pMove2Name("idle"),
 pMove2Time(0.0f),
 pUseSameMove(false),
+pUseComponentSpace(false),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
@@ -64,6 +65,7 @@ pMove1Time(copy.pMove1Time),
 pMove2Name(copy.pMove2Name),
 pMove2Time(copy.pMove2Time),
 pUseSameMove(copy.pUseSameMove),
+pUseComponentSpace(copy.pUseComponentSpace),
 pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
@@ -169,6 +171,19 @@ void aeRuleAnimationDifference::SetEnableVertexPositionSet(bool enabled){
 	}
 }
 
+void aeRuleAnimationDifference::SetUseComponentSpace(bool useComponentSpace){
+	if(useComponentSpace == pUseComponentSpace){
+		return;
+	}
+	
+	pUseComponentSpace = useComponentSpace;
+	
+	if(GetEngineRule()){
+		((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetUseComponentSpace(useComponentSpace);
+		NotifyRuleChanged();
+	}
+}
+
 
 
 void aeRuleAnimationDifference::UpdateTargets(){
@@ -223,15 +238,16 @@ deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
 	// init rule
 	InitEngineRule(engRule);
 	
-	engRule->SetLeadingMoveName(pMove1Name.GetString());
+	engRule->SetLeadingMoveName(pMove1Name);
 	engRule->SetLeadingMoveTime(pMove1Time);
-	engRule->SetReferenceMoveName(pMove2Name.GetString());
+	engRule->SetReferenceMoveName(pMove2Name);
 	engRule->SetReferenceMoveTime(pMove2Time);
 	engRule->SetUseSameMove(pUseSameMove);
 	engRule->SetEnablePosition(pEnablePosition);
 	engRule->SetEnableOrientation(pEnableOrientation);
 	engRule->SetEnableSize(pEnableSize);
 	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	engRule->SetUseComponentSpace(pUseComponentSpace);
 	
 	pTargetLeadMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetLeadingMoveTime());
 	pTargetRefMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetReferenceMoveTime());
@@ -267,6 +283,7 @@ aeRuleAnimationDifference &aeRuleAnimationDifference::operator=(const aeRuleAnim
 	SetEnableOrientation(copy.pEnableOrientation);
 	SetEnableSize(copy.pEnableSize);
 	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
+	SetUseComponentSpace(copy.pUseComponentSpace);
 	pTargetLeadMoveTime = copy.pTargetLeadMoveTime;
 	pTargetRefMoveTime = copy.pTargetRefMoveTime;
 	aeRule::operator=(copy);

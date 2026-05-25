@@ -85,16 +85,29 @@ pAnimationDifference(rule),
 
 pTargetLeadingMoveTime(rule.GetTargetLeadingMoveTime(), firstLink),
 pTargetReferenceMoveTime(rule.GetTargetReferenceMoveTime(), firstLink),
+pUseComponentSpace(rule.GetUseComponentSpace()),
 
 pEnablePosition(rule.GetEnablePosition()),
 pEnableOrientation(rule.GetEnableOrientation()),
 pEnableSize(rule.GetEnableSize()),
-pEnableVPS(rule.GetEnableVertexPositionSet())
+pEnableVPS(rule.GetEnableVertexPositionSet()),
+pStateListL(nullptr),
+pStateListR(nullptr)
 {
+	if(pUseComponentSpace){
+		pStateListL = instance.GetBoneStateList().CreateCopy();
+		pStateListR = instance.GetBoneStateList().CreateCopy();
+	}
 	RuleChanged();
 }
 
 dearRuleAnimationDifference::~dearRuleAnimationDifference(){
+	if(pStateListL){
+		delete pStateListL;
+	}
+	if(pStateListR){
+		delete pStateListR;
+	}
 }
 	
 
@@ -118,8 +131,6 @@ DEBUG_RESET_TIMERS;
 	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
-	bool newBlendMode = true;//true; // temporary hack
-	
 	// move times
 	const float ltime = pMove1->GetPlaytime() * decMath::clamp(
 		pTargetLeadingMoveTime.GetValue(GetInstance(), pAnimationDifference.GetLeadingMoveTime()), 0.0f, 1.0f);
@@ -127,92 +138,180 @@ DEBUG_RESET_TIMERS;
 	const float rtime = pMove2->GetPlaytime() * decMath::clamp(
 		pTargetReferenceMoveTime.GetValue(GetInstance(), pAnimationDifference.GetReferenceMoveTime()), 0.0f, 1.0f);
 	
-	// step through all bones and set animation
-	for(i=0; i<boneCount; i++){
-		const int animatorBone = GetBoneMappingFor(i);
-		if(animatorBone == -1){
-			continue;
-		}
+	// apply animation difference
+	if(pUseComponentSpace){
+		// component space requires evaluating full animation state lists to get global matrices.
+		// the difference is computed from the global matrices and applied to the bone global
+		// matrices. this is similar to bone transformator but using a per-bone transformation
+		// derived from the animation frames
 		
-		// if there is no valid bone index there is no difference
-		const int animationBone = pMapAnimationBones.GetAt(i);
-		if(animationBone == -1){
-			continue;
-		}
-		
-		// determine leading animation state
-		const dearAnimationKeyframeList &kflist1 = *pMove1->GetKeyframeListAt(animationBone);
-		const dearAnimationKeyframe * const keyframe1 = kflist1.GetWithTime(ltime);
-		
-		decVector lscale(1.0f, 1.0f, 1.0f);
-		decQuaternion lorientation;
-		decVector lposition;
-		
-		if(keyframe1){
-			const float time = ltime - keyframe1->GetTime();
-			if(pEnablePosition){
-				lposition = keyframe1->InterpolatePosition(time);
+		// set animation keyframe data for all mapped bones
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
+				continue;
 			}
-			if(pEnableOrientation){
-				lorientation = keyframe1->InterpolateRotation(time);
-			}
-			if(pEnableSize){
-				lscale = keyframe1->InterpolateScaling(time);
-			}
-		}
-		
-		// determine reference animation state
-		const dearAnimationKeyframeList &kflist2 = *pMove2->GetKeyframeListAt(animationBone);
-		const dearAnimationKeyframe * const keyframe2 = kflist2.GetWithTime(rtime);
-		
-		decVector rscale(1.0f, 1.0f, 1.0f);
-		decQuaternion rorientation;
-		decVector rposition;
-		
-		if(keyframe2){
-			const float time = rtime - keyframe2->GetTime();
-			if(pEnablePosition){
-				rposition = keyframe2->InterpolatePosition(time);
-			}
-			if(pEnableOrientation){
-				rorientation = keyframe2->InterpolateRotation(time);
-			}
-			if(pEnableSize){
-				rscale = keyframe2->InterpolateScaling(time);
-			}
-		}
-		
-		// blend difference with current state
-		dearBoneState &boneState = stalist.GetStateAt(animatorBone);
-		
-		if(newBlendMode){
-			rposition = boneState.GetPosition() + (lposition - rposition);
-			rorientation = (lorientation * rorientation.Conjugate()) * boneState.GetOrientation();
-			lscale = boneState.GetScale() + (lscale - rscale);
 			
-		}else{
-			rposition = boneState.GetPosition() + (lposition - rposition);
-			rorientation = boneState.GetOrientation() + (lorientation - rorientation);
-			rscale = boneState.GetScale() + (lscale - rscale);
+			const int animationBone = pMapAnimationBones.GetAt(i);
+			if(animationBone == -1){
+				continue;
+			}
 			
-			/*
-			if(sourceFactor == 1.0f && destFactor == 0.0f){
-				boneState->SetPosition(lposition - rposition);
-				boneState->SetOrientation(lorientation - rorientation);
-				//boneState->SetSize( size1 - size2 );
-			}else{
-//				module.LOGINFOFORMAT( "animation difference: bone='%s'->%i drot=(%g,%g,%g,%g)", boneState->GetRigBoneName(), animationBone,
-//					( lorientation - rorientation ).x, ( lorientation - rorientation ).y, ( lorientation - rorientation ).z,
-//					( lorientation - rorientation ).w );
-				boneState->SetPosition(boneState->GetPosition() * destFactor + (lposition - rposition) * sourceFactor);
-				boneState->SetOrientation(boneState->GetOrientation() * destFactor + (lorientation - rorientation) * sourceFactor);
-				//boneState->SetSize( boneState->GetSize() * destFactor
-				//	+ ( size1 - size2 ) * sourceFactor );
-			}*/
+			const dearAnimationKeyframeList &kfl1 = *pMove1->GetKeyframeListAt(animationBone);
+			const dearAnimationKeyframe * const kf1 = kfl1.GetWithTime(ltime);
+			if(kf1){
+				const float t = ltime - kf1->GetTime();
+				dearBoneState &sl = pStateListL->GetStateAt(animatorBone);
+				sl.SetPosition(kf1->InterpolatePosition(t));
+				sl.SetOrientation(kf1->InterpolateRotation(t));
+				sl.SetScale(kf1->InterpolateScaling(t));
+			}
+			
+			const dearAnimationKeyframeList &kfl2 = *pMove2->GetKeyframeListAt(animationBone);
+			const dearAnimationKeyframe * const kf2 = kfl2.GetWithTime(rtime);
+			if(kf2){
+				const float t = rtime - kf2->GetTime();
+				dearBoneState &sr = pStateListR->GetStateAt(animatorBone);
+				sr.SetPosition(kf2->InterpolatePosition(t));
+				sr.SetOrientation(kf2->InterpolateRotation(t));
+				sr.SetScale(kf2->InterpolateScaling(t));
+			}
 		}
 		
-		boneState.BlendWith(rposition, rorientation, rscale, blendMode,
-			blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
+		// update matrices
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
+				continue;
+			}
+			
+			if(pMapAnimationBones.GetAt(i) == -1){
+				continue;
+			}
+			
+			pStateListL->GetStateAt(animatorBone).UpdateMatrices();
+			pStateListR->GetStateAt(animatorBone).UpdateMatrices();
+			stalist.GetStateAt(animatorBone).UpdateMatrices();
+		}
+		
+		// apply difference per bone similar to bone transformator
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
+				continue;
+			}
+			
+			if(pMapAnimationBones.GetAt(i) == -1){
+				continue;
+			}
+			
+			const dearBoneState &sl = pStateListL->GetStateAt(animatorBone);
+			const dearBoneState &sr = pStateListR->GetStateAt(animatorBone);
+			dearBoneState &boneState = stalist.GetStateAt(animatorBone);
+			
+			decVector newPosition(boneState.GetPosition());
+			if(pEnablePosition){
+				newPosition += sl.GetPosition() - sr.GetPosition();
+			}
+			
+			decVector newScale(boneState.GetScale());
+			if(pEnableSize){
+				newScale += sl.GetScale() - sr.GetScale();
+			}
+			
+			decQuaternion newOrientation(boneState.GetOrientation());
+			if(pEnableOrientation){
+				// animation frame orientation in component space
+				decQuaternion slo(sl.GetGlobalMatrix().Normalized().ToQuaternion());
+				const decQuaternion sro(sr.GetGlobalMatrix().Normalized().ToQuaternion());
+				
+				// rotate leading orientation in component space to line up the leading parent
+				// state with the reference parent state
+				if(boneState.GetParentState()){
+					const decQuaternion slpo(sl.GetParentState()->GetGlobalMatrix().Normalized().ToQuaternion());
+					const decQuaternion srpo(sr.GetParentState()->GetGlobalMatrix().Normalized().ToQuaternion());
+					slo *= slpo.Conjugate() * srpo;
+				}
+				
+				// apply orientation difference in component space
+				newOrientation = boneState.GetGlobalMatrix().Normalized().ToQuaternion();
+				newOrientation *= sro.Conjugate() * slo;
+				
+				// transform orientation back into rig local space
+				if(boneState.GetParentState()){
+					newOrientation *= boneState.GetParentState()->GetInverseGlobalMatrix().Normalized().ToQuaternion();
+				}
+				newOrientation *= boneState.GetInverseRigLocalMatrix().Normalized().ToQuaternion();
+			}
+			
+			boneState.BlendWith(newPosition, newOrientation, newScale, blendMode, blendFactor,
+				pEnablePosition, pEnableOrientation, pEnableSize);
+		}
+		
+	}else{
+		//simple case where the animation frames can be applied directly per bone
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
+				continue;
+			}
+			
+			// if there is no valid bone index there is no difference
+			const int animationBone = pMapAnimationBones.GetAt(i);
+			if(animationBone == -1){
+				continue;
+			}
+			
+			// determine leading animation state
+			const dearAnimationKeyframeList &kflist1 = *pMove1->GetKeyframeListAt(animationBone);
+			const dearAnimationKeyframe * const keyframe1 = kflist1.GetWithTime(ltime);
+			
+			decVector lscale(1.0f, 1.0f, 1.0f);
+			decQuaternion lorientation;
+			decVector lposition;
+			
+			if(keyframe1){
+				const float time = ltime - keyframe1->GetTime();
+				if(pEnablePosition){
+					lposition = keyframe1->InterpolatePosition(time);
+				}
+				if(pEnableOrientation){
+					lorientation = keyframe1->InterpolateRotation(time);
+				}
+				if(pEnableSize){
+					lscale = keyframe1->InterpolateScaling(time);
+				}
+			}
+			
+			// determine reference animation state
+			const dearAnimationKeyframeList &kflist2 = *pMove2->GetKeyframeListAt(animationBone);
+			const dearAnimationKeyframe * const keyframe2 = kflist2.GetWithTime(rtime);
+			
+			decVector rscale(1.0f, 1.0f, 1.0f);
+			decQuaternion rorientation;
+			decVector rposition;
+			
+			if(keyframe2){
+				const float time = rtime - keyframe2->GetTime();
+				if(pEnablePosition){
+					rposition = keyframe2->InterpolatePosition(time);
+				}
+				if(pEnableOrientation){
+					rorientation = keyframe2->InterpolateRotation(time);
+				}
+				if(pEnableSize){
+					rscale = keyframe2->InterpolateScaling(time);
+				}
+			}
+			
+			// blend difference with current state
+			dearBoneState &boneState = stalist.GetStateAt(animatorBone);
+			
+			boneState.BlendWith(boneState.GetPosition() + (lposition - rposition),
+				(lorientation * rorientation.Conjugate()) * boneState.GetOrientation(),
+				boneState.GetScale() + (lscale - rscale), blendMode,
+				blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
+		}
 	}
 	
 	// step through all vertex position sets and set animation
@@ -267,6 +366,7 @@ void dearRuleAnimationDifference::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMove();
+	
 	pMapAnimationBones.Init(*this);
 	pMapAnimationVPS.Init(*this);
 }
