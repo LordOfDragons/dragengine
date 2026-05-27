@@ -43,6 +43,7 @@ private:
 	decString pMove2Name;
 	float pMove2Time;
 	bool pUseSameMove;
+	bool pUseComponentSpace;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
@@ -87,6 +88,12 @@ public:
 	inline bool GetUseSameMove() const{ return pUseSameMove; }
 	/** Set if the reference move is the same as the leading move. */
 	void SetUseSameMove(bool useSameMove);
+	
+	/** Use component space. */
+	inline bool GetUseComponentSpace() const{ return pUseComponentSpace; }
+	
+	/** Set use component space. */
+	void SetUseComponentSpace(bool useComponentSpace);
 	
 	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }

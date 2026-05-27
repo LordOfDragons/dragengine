@@ -49,7 +49,8 @@ pUseSameMove(false),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
-pEnableVertexPositionSet(true){
+pEnableVertexPositionSet(true),
+pUseComponentSpace(false){
 }
 
 deAnimatorRuleAnimationDifference::~deAnimatorRuleAnimationDifference(){
@@ -94,6 +95,10 @@ void deAnimatorRuleAnimationDifference::SetEnableSize(bool enabled){
 
 void deAnimatorRuleAnimationDifference::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
+}
+
+void deAnimatorRuleAnimationDifference::SetUseComponentSpace(bool useComponentSpace){
+	pUseComponentSpace = useComponentSpace;
 }
 
 

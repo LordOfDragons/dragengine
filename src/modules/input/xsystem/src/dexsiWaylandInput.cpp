@@ -392,6 +392,20 @@ void dexsiWaylandInput::pFlushPointerEvents(const timeval &eventTime){
 	const int mods = pGetModifiers();
 	
 	const bool captureRequested = pModule.GetGameEngine()->GetInputSystem()->GetCaptureInputDevices();
+	
+	// if capture is active but the window is not the active window, discard accumulated mouse
+	// input. this avoids applying mouse input in a game when moving the mouse pointer across the
+	// game window without capturing the mouse input
+	if(captureRequested && !pKeyboardHasFocus){
+		pPointerHasMoved = false;
+		pPointerDeltaX = 0.0;
+		pPointerDeltaY = 0.0;
+		pPointerHasScroll = false;
+		pAccumScrollX = 0.0;
+		pAccumScrollY = 0.0;
+		return;
+	}
+	
 	if(pPointerHasMoved && (pPointerInWindow || captureRequested)){
 		double scaleFactor = 1.0;
 		auto renderWindow = pModule.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();

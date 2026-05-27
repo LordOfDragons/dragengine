@@ -59,7 +59,7 @@ struct sCCTNatDat{
 // Constructors, Destructors
 //////////////////////////////
 
-// public func new()
+// func new()
 deClassColliderCollisionTest::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -70,7 +70,7 @@ void deClassColliderCollisionTest::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	nd.collisionTest = deColliderCollisionTest::Ref::New();
 }
 
-// public func new( ColliderCollisionTest collisionTest )
+// func new( ColliderCollisionTest collisionTest )
 deClassColliderCollisionTest::nfNewCopy::nfNewCopy(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCCT); // collisionTest
@@ -86,7 +86,7 @@ void deClassColliderCollisionTest::nfNewCopy::RunFunction(dsRunTime *rt, dsValue
 	nd.collisionTest = deColliderCollisionTest::Ref::New(other);
 }
 
-// public func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
+// func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
 deClassColliderCollisionTest::nfNewWorld::nfNewWorld(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCF); // collisionFilter
@@ -109,7 +109,7 @@ void deClassColliderCollisionTest::nfNewWorld::RunFunction(dsRunTime *rt, dsValu
 	nd.collisionTest->SetDirection(direction);
 }
 
-// public func new( CollisionFilter collisionFilter, Component component, String bone, Vector origin, Vector direction )
+// func new( CollisionFilter collisionFilter, Component component, String bone, Vector origin, Vector direction )
 deClassColliderCollisionTest::nfNewWorldBone::nfNewWorldBone(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCF); // collisionFilter
@@ -138,7 +138,7 @@ void deClassColliderCollisionTest::nfNewWorldBone::RunFunction(dsRunTime *rt, ds
 	nd.collisionTest->SetDirection(direction);
 }
 
-// public func new( TouchSensor touchSensor, CollisionFilter collisionFilter, Vector origin, Vector direction )
+// func new( TouchSensor touchSensor, CollisionFilter collisionFilter, Vector origin, Vector direction )
 deClassColliderCollisionTest::nfNewTouchSensor::nfNewTouchSensor(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsTS); // touchSensor
@@ -170,7 +170,7 @@ void deClassColliderCollisionTest::nfNewTouchSensor::RunFunction(dsRunTime *rt, 
 	nd.collisionTest->SetDirection(direction);
 }
 
-// public func new( TouchSensor touchSensor, CollisionFilter collisionFilter,
+// func new( TouchSensor touchSensor, CollisionFilter collisionFilter,
 // Component component, String bone, Vector origin, Vector direction )
 deClassColliderCollisionTest::nfNewTouchSensorBone::nfNewTouchSensorBone(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -212,7 +212,7 @@ void deClassColliderCollisionTest::nfNewTouchSensorBone::RunFunction(dsRunTime *
 	nd.collisionTest->SetDirection(direction);
 }
 
-// public func destructor()
+// func destructor()
 deClassColliderCollisionTest::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsCCT,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -229,7 +229,7 @@ void deClassColliderCollisionTest::nfDestructor::RunFunction(dsRunTime *rt, dsVa
 // Management
 ///////////////
 
-// public func TouchSensor getTouchSensor()
+// func TouchSensor getTouchSensor()
 deClassColliderCollisionTest::nfGetTouchSensor::nfGetTouchSensor(const sInitData &init) : dsFunction(init.clsCCT,
 "getTouchSensor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTS){
 }
@@ -240,7 +240,7 @@ void deClassColliderCollisionTest::nfGetTouchSensor::RunFunction(dsRunTime *rt, 
 	ds.GetClassTouchSensor()->PushTouchSensor(rt, collisionTest.GetTouchSensor());
 }
 
-// public func void setTouchSensor( TouchSensor touchSensor )
+// func void setTouchSensor( TouchSensor touchSensor )
 deClassColliderCollisionTest::nfSetTouchSensor::nfSetTouchSensor(const sInitData &init) : dsFunction(init.clsCCT,
 "setTouchSensor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsTS); // touchSensor
@@ -265,7 +265,7 @@ void deClassColliderCollisionTest::nfSetTouchSensor::RunFunction(dsRunTime *rt, 
 
 
 
-// public func Collider getCollider()
+// func Collider getCollider()
 deClassColliderCollisionTest::nfGetCollider::nfGetCollider(const sInitData &init) : dsFunction(init.clsCCT,
 "getCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
@@ -276,7 +276,7 @@ void deClassColliderCollisionTest::nfGetCollider::RunFunction(dsRunTime *rt, dsV
 	ds.GetClassCollider()->PushCollider(rt, collisionTest.GetCollider());
 }
 
-// public func void setCollider( Collider collider )
+// func void setCollider( Collider collider )
 deClassColliderCollisionTest::nfSetCollider::nfSetCollider(const sInitData &init) : dsFunction(init.clsCCT,
 "setCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCol); // collider
@@ -299,7 +299,7 @@ void deClassColliderCollisionTest::nfSetCollider::RunFunction(dsRunTime *rt, dsV
 	}
 }
 
-// public func CollisionFilter getCollisionFilter()
+// func CollisionFilter getCollisionFilter()
 deClassColliderCollisionTest::nfGetCollisionFilter::nfGetCollisionFilter(const sInitData &init) : dsFunction(init.clsCCT,
 "getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF){
 }
@@ -310,7 +310,7 @@ void deClassColliderCollisionTest::nfGetCollisionFilter::RunFunction(dsRunTime *
 	ds.GetClassCollisionFilter()->PushCollisionFilter(rt, collisionTest.GetCollisionFilter());
 }
 
-// public func void setCollisionFilter( CollisionFilter collisionFilter )
+// func void setCollisionFilter( CollisionFilter collisionFilter )
 deClassColliderCollisionTest::nfSetCollisionFilter::nfSetCollisionFilter(const sInitData &init) : dsFunction(init.clsCCT,
 "setCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCF); // collisionFilter
@@ -335,7 +335,7 @@ void deClassColliderCollisionTest::nfSetCollisionFilter::RunFunction(dsRunTime *
 
 
 
-// public func Component getComponent()
+// func Component getComponent()
 deClassColliderCollisionTest::nfGetComponent::nfGetComponent(const sInitData &init) : dsFunction(init.clsCCT,
 "getComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
@@ -346,7 +346,7 @@ void deClassColliderCollisionTest::nfGetComponent::RunFunction(dsRunTime *rt, ds
 	ds.GetClassComponent()->PushComponent(rt, collisionTest.GetComponent());
 }
 
-// public func void setComponent( Component component )
+// func void setComponent( Component component )
 deClassColliderCollisionTest::nfSetComponent::nfSetComponent(const sInitData &init) : dsFunction(init.clsCCT,
 "setComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCol); // collider
@@ -369,7 +369,7 @@ void deClassColliderCollisionTest::nfSetComponent::RunFunction(dsRunTime *rt, ds
 	}
 }
 
-// public func String getBone()
+// func String getBone()
 deClassColliderCollisionTest::nfGetBone::nfGetBone(const sInitData &init) : dsFunction(init.clsCCT,
 "getBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
@@ -379,7 +379,7 @@ void deClassColliderCollisionTest::nfGetBone::RunFunction(dsRunTime *rt, dsValue
 	rt->PushString(collisionTest.GetBone());
 }
 
-// public func void setBone( String bone )
+// func void setBone( String bone )
 deClassColliderCollisionTest::nfSetBone::nfSetBone(const sInitData &init) : dsFunction(init.clsCCT,
 "setBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // bone
@@ -401,7 +401,7 @@ void deClassColliderCollisionTest::nfSetBone::RunFunction(dsRunTime *rt, dsValue
 	}
 }
 
-// public func Vector getOrigin()
+// func Vector getOrigin()
 deClassColliderCollisionTest::nfGetOrigin::nfGetOrigin(const sInitData &init) : dsFunction(init.clsCCT,
 "getOrigin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
@@ -412,7 +412,7 @@ void deClassColliderCollisionTest::nfGetOrigin::RunFunction(dsRunTime *rt, dsVal
 	ds.GetClassVector()->PushVector(rt, collisionTest.GetOrigin());
 }
 
-// public func void setOrigin( Vector origin )
+// func void setOrigin( Vector origin )
 deClassColliderCollisionTest::nfSetOrigin::nfSetOrigin(const sInitData &init) : dsFunction(init.clsCCT,
 "setOrigin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // origin
@@ -435,7 +435,7 @@ void deClassColliderCollisionTest::nfSetOrigin::RunFunction(dsRunTime *rt, dsVal
 	}
 }
 
-// public func Quaternion getOrientation()
+// func Quaternion getOrientation()
 deClassColliderCollisionTest::nfGetOrientation::nfGetOrientation(const sInitData &init) :
 dsFunction(init.clsCCT, "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
@@ -446,7 +446,7 @@ void deClassColliderCollisionTest::nfGetOrientation::RunFunction(dsRunTime *rt, 
 	ds.GetClassQuaternion()->PushQuaternion(rt, collisionTest.GetOrientation());
 }
 
-// public func void setOrientation(Quaternion orientation)
+// func void setOrientation(Quaternion orientation)
 deClassColliderCollisionTest::nfSetOrientation::nfSetOrientation(const sInitData &init) :
 dsFunction(init.clsCCT, "setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
@@ -469,7 +469,7 @@ void deClassColliderCollisionTest::nfSetOrientation::RunFunction(dsRunTime *rt, 
 	}
 }
 
-// public func Vector getDirection()
+// func Vector getDirection()
 deClassColliderCollisionTest::nfGetDirection::nfGetDirection(const sInitData &init) : dsFunction(init.clsCCT,
 "getDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
@@ -480,7 +480,7 @@ void deClassColliderCollisionTest::nfGetDirection::RunFunction(dsRunTime *rt, ds
 	ds.GetClassVector()->PushVector(rt, collisionTest.GetDirection());
 }
 
-// public func void setDirection( Vector direction )
+// func void setDirection( Vector direction )
 deClassColliderCollisionTest::nfSetDirection::nfSetDirection(const sInitData &init) : dsFunction(init.clsCCT,
 "setDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // direction
@@ -503,7 +503,7 @@ void deClassColliderCollisionTest::nfSetDirection::RunFunction(dsRunTime *rt, ds
 	}
 }
 
-// public func bool getLocalDirection()
+// func bool getLocalDirection()
 deClassColliderCollisionTest::nfGetLocalDirection::nfGetLocalDirection(const sInitData &init) : dsFunction(init.clsCCT,
 "getLocalDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
@@ -513,7 +513,7 @@ void deClassColliderCollisionTest::nfGetLocalDirection::RunFunction(dsRunTime *r
 	rt->PushBool(collisionTest.GetLocalDirection());
 }
 
-// public func void setLocalDirection( bool localDirection )
+// func void setLocalDirection( bool localDirection )
 deClassColliderCollisionTest::nfSetLocalDirection::nfSetLocalDirection(const sInitData &init) : dsFunction(init.clsCCT,
 "setLocalDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // localDirection
@@ -535,7 +535,7 @@ void deClassColliderCollisionTest::nfSetLocalDirection::RunFunction(dsRunTime *r
 	}
 }
 
-// public func bool getEnabled()
+// func bool getEnabled()
 deClassColliderCollisionTest::nfGetEnabled::nfGetEnabled(const sInitData &init) : dsFunction(init.clsCCT,
 "getEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
@@ -545,7 +545,7 @@ void deClassColliderCollisionTest::nfGetEnabled::RunFunction(dsRunTime *rt, dsVa
 	rt->PushBool(collisionTest.GetEnabled());
 }
 
-// public func void setEnabled( bool enabled )
+// func void setEnabled( bool enabled )
 deClassColliderCollisionTest::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunction(init.clsCCT,
 "setEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
@@ -569,7 +569,7 @@ void deClassColliderCollisionTest::nfSetEnabled::RunFunction(dsRunTime *rt, dsVa
 
 
 
-// public func DVector getTestOrigin()
+// func DVector getTestOrigin()
 deClassColliderCollisionTest::nfGetTestOrigin::nfGetTestOrigin(const sInitData &init) : dsFunction(init.clsCCT,
 "getTestOrigin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
@@ -580,7 +580,7 @@ void deClassColliderCollisionTest::nfGetTestOrigin::RunFunction(dsRunTime *rt, d
 	ds.GetClassDVector()->PushDVector(rt, collisionTest.GetTestOrigin());
 }
 
-// public func Quaternion getTestOrientation()
+// func Quaternion getTestOrientation()
 deClassColliderCollisionTest::nfGetTestOrientation::nfGetTestOrientation(const sInitData &init) :
 dsFunction(init.clsCCT, "getTestOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
@@ -591,7 +591,7 @@ void deClassColliderCollisionTest::nfGetTestOrientation::RunFunction(dsRunTime *
 	ds.GetClassQuaternion()->PushQuaternion(rt, collisionTest.GetTestOrientation());
 }
 
-// public func DVector getTestDirection()
+// func DVector getTestDirection()
 deClassColliderCollisionTest::nfGetTestDirection::nfGetTestDirection(const sInitData &init) : dsFunction(init.clsCCT,
 "getTestDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
@@ -604,7 +604,7 @@ void deClassColliderCollisionTest::nfGetTestDirection::RunFunction(dsRunTime *rt
 
 
 
-// public func bool getHasCollision()
+// func bool getHasCollision()
 deClassColliderCollisionTest::nfGetHasCollision::nfGetHasCollision(const sInitData &init) :
 dsFunction(init.clsCCT, "getHasCollision", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
@@ -614,7 +614,7 @@ void deClassColliderCollisionTest::nfGetHasCollision::RunFunction(dsRunTime *rt,
 	rt->PushBool(collisionTest.GetCollisionInfo().GetCount() > 0);
 }
 
-// public func int getCollisionCount()
+// func int getCollisionCount()
 deClassColliderCollisionTest::nfGetCollisionCount::nfGetCollisionCount(const sInitData &init) :
 dsFunction(init.clsCCT, "getCollisionCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -624,7 +624,7 @@ void deClassColliderCollisionTest::nfGetCollisionCount::RunFunction(dsRunTime *r
 	rt->PushInt(collisionTest.GetCollisionInfo().GetCount());
 }
 
-// public func CollisionInfo getCollisionAt( int index )
+// func CollisionInfo getCollisionAt( int index )
 deClassColliderCollisionTest::nfGetCollisionAt::nfGetCollisionAt(const sInitData &init) :
 dsFunction(init.clsCCT, "getCollisionAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsCI){
@@ -638,7 +638,7 @@ void deClassColliderCollisionTest::nfGetCollisionAt::RunFunction(dsRunTime *rt, 
 	ds.GetClassCollisionInfo()->PushInfo(rt, collisionTest.GetCollisionInfo().GetAt(index));
 }
 
-// public func void reset()
+// func void reset()
 deClassColliderCollisionTest::nfReset::nfReset(const sInitData &init) : dsFunction(init.clsCCT,
 "reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
@@ -649,7 +649,7 @@ void deClassColliderCollisionTest::nfReset::RunFunction(dsRunTime *rt, dsValue *
 
 
 
-// public func float hitDistance( int index )
+// func float hitDistance( int index )
 deClassColliderCollisionTest::nfHitDistance::nfHitDistance(const sInitData &init) :
 dsFunction(init.clsCCT, "hitDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
@@ -663,7 +663,7 @@ void deClassColliderCollisionTest::nfHitDistance::RunFunction(dsRunTime *rt, dsV
 		* collisionTest.GetCollisionInfo().GetAt( index )->GetDistance() );
 }
 
-// public func Vector hitPointCollider( int index )
+// func Vector hitPointCollider( int index )
 deClassColliderCollisionTest::nfHitPointCollider::nfHitPointCollider(const sInitData &init) :
 dsFunction(init.clsCCT, "hitPointCollider", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
@@ -686,7 +686,7 @@ void deClassColliderCollisionTest::nfHitPointCollider::RunFunction(dsRunTime *rt
 	ds.GetClassVector()->PushVector(rt, hitPoint.ToVector());
 }
 
-// public func DVector hitPointWorld( int index )
+// func DVector hitPointWorld( int index )
 deClassColliderCollisionTest::nfHitPointWorld::nfHitPointWorld(const sInitData &init) :
 dsFunction(init.clsCCT, "hitPointWorld", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
@@ -703,7 +703,7 @@ void deClassColliderCollisionTest::nfHitPointWorld::RunFunction(dsRunTime *rt, d
 			* ( double )nd.collisionTest->GetCollisionInfo().GetAt( index )->GetDistance() );
 }
 
-// public func Vector hitNormalCollider( int index )
+// func Vector hitNormalCollider( int index )
 deClassColliderCollisionTest::nfHitNormalCollider::nfHitNormalCollider(const sInitData &init) :
 dsFunction(init.clsCCT, "hitNormalCollider", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
@@ -724,7 +724,7 @@ void deClassColliderCollisionTest::nfHitNormalCollider::RunFunction(dsRunTime *r
 	ds.GetClassVector()->PushVector(rt, normal);
 }
 
-// public func Vector hitNormalWorld( int index )
+// func Vector hitNormalWorld( int index )
 deClassColliderCollisionTest::nfHitNormalWorld::nfHitNormalWorld(const sInitData &init) :
 dsFunction(init.clsCCT, "hitNormalWorld", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
@@ -738,7 +738,7 @@ void deClassColliderCollisionTest::nfHitNormalWorld::RunFunction(dsRunTime *rt, 
 	ds.GetClassVector()->PushVector(rt, nd.collisionTest->GetCollisionInfo().GetAt(index)->GetNormal());
 }
 
-// public func Collider hitCollider( int index )
+// func Collider hitCollider( int index )
 deClassColliderCollisionTest::nfHitCollider::nfHitCollider(const sInitData &init) :
 dsFunction(init.clsCCT, "hitCollider", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
@@ -752,7 +752,7 @@ void deClassColliderCollisionTest::nfHitCollider::RunFunction(dsRunTime *rt, dsV
 	ds.GetClassCollider()->PushCollider(rt, collisionTest.GetCollisionInfo().GetAt(index)->GetCollider());
 }
 
-// public func int hitBone( int index )
+// func int hitBone( int index )
 deClassColliderCollisionTest::nfHitBone::nfHitBone(const sInitData &init) :
 dsFunction(init.clsCCT, "hitBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsInt); // index
@@ -764,6 +764,29 @@ void deClassColliderCollisionTest::nfHitBone::RunFunction(dsRunTime *rt, dsValue
 	rt->PushInt(collisionTest.GetCollisionInfo().GetAt(index)->GetBone());
 }
 
+// func int hitFace(int index)
+deClassColliderCollisionTest::nfHitFace::nfHitFace(const sInitData &init) :
+dsFunction(init.clsCCT, "hitFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+	p_AddParameter(init.clsInt); // index
+}
+void deClassColliderCollisionTest::nfHitFace::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
+	
+	const int index = rt->GetValue(0)->GetInt();
+	rt->PushInt(collisionTest.GetCollisionInfo().GetAt(index)->GetFace());
+}
+
+// func int hitShape(int index)
+deClassColliderCollisionTest::nfHitShape::nfHitShape(const sInitData &init) :
+dsFunction(init.clsCCT, "hitShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+	p_AddParameter(init.clsInt); // index
+}
+void deClassColliderCollisionTest::nfHitShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deColliderCollisionTest &collisionTest = dedsGetNativeData<sCCTNatDat>(p_GetNativeData(myself)).collisionTest;
+	
+	const int index = rt->GetValue(0)->GetInt();
+	rt->PushInt(collisionTest.GetCollisionInfo().GetAt(index)->GetShape());
+}
 
 
 // Class deClassColliderCollisionTest
@@ -857,6 +880,8 @@ void deClassColliderCollisionTest::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfHitNormalWorld(init));
 	AddFunction(new nfHitCollider(init));
 	AddFunction(new nfHitBone(init));
+	AddFunction(new nfHitFace(init));
+	AddFunction(new nfHitShape(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();

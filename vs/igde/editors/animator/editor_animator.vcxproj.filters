@@ -460,6 +460,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleComponentSpace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnablePosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1306,6 +1309,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animation\aeUSetRuleAnimMoveTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleComponentSpace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\animdiff\aeURuleAnimDiffToggleEnablePosition.h">

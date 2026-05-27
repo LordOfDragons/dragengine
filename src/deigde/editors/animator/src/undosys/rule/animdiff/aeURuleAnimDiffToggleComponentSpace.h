@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,60 +22,45 @@
  * SOFTWARE.
  */
 
-#ifndef _AEWPAPANELRULEANIMATIONDIFFERENCE_H_
-#define _AEWPAPANELRULEANIMATIONDIFFERENCE_H_
 
-#include "aeWPAPanelRule.h"
+#ifndef _AEURULEANIMDIFFTOGGLECOMPONENTSPACE_H_
+#define _AEURULEANIMDIFFTOGGLECOMPONENTSPACE_H_
 
+#include <deigde/undo/igdeUndo.h>
+
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 /**
- * Animation Difference Rule Panel.
+ * Undo action rule animation difference set use component space.
  */
-class aeWPAPanelRuleAnimationDifference : public aeWPAPanelRule{
+class aeURuleAnimDiffToggleComponentSpace : public igdeUndo{
 public:
-	using Ref = deTObjectReference<aeWPAPanelRuleAnimationDifference>;
-	
-	
+	using Ref = deTObjectReference<aeURuleAnimDiffToggleComponentSpace>;
+
+
 private:
-	igdeComboBoxFilter::Ref pCBLMoveName;
-	igdeTextField::Ref pEditLMoveTime;
-	
-	igdeComboBoxFilter::Ref pCBRMoveName;
-	igdeTextField::Ref pEditRMoveTime;
-	igdeCheckBox::Ref pChkComponentSpace;
-	
-	igdeCheckBox::Ref pChkEnablePosition;
-	igdeCheckBox::Ref pChkEnableRotation;
-	igdeCheckBox::Ref pChkEnableSize;
-	igdeCheckBox::Ref pChkEnableVertexPositionSet;
-	
-	
-	
+	aeRuleAnimationDifference::Ref pRule;
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create panel. */
-	aeWPAPanelRuleAnimationDifference(aeWPRule &wpRule);
-	
+	/** Create undo. */
+	aeURuleAnimDiffToggleComponentSpace(aeRuleAnimationDifference *rule);
+
 protected:
-	/** Clean up panel. */
-	~aeWPAPanelRuleAnimationDifference() override;
-	/*@}*/
-	
-	
-	
+	/** Clean up undo. */
+	~aeURuleAnimDiffToggleComponentSpace() override;
+	/*@{*/
+
 public:
 	/** \name Management */
 	/*@{*/
-	/** Update animation move list. */
-	void UpdateAnimMoveList() override;
-	
-	/** Update rule. */
-	void UpdateRule() override;
-	
-	/** Update target list. */
-	void UpdateTargetList() override;
+	/** Undo. */
+	void Undo() override;
+
+	/** Redo. */
+	void Redo() override;
 	/*@}*/
 };
 

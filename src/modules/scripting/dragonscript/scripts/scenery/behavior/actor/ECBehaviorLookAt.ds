@@ -303,10 +303,11 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		var DVector pLookAtOrigin
 		var DVector pLookAtDirection
 		var Element pLookAtElement
-		var int pLookAtBone
+		var int pLookAtBone, pLookAtFace, pLookAtShape
 		var String pLookAtBoneName
 		var float pLookAtDistance
 		var DVector pLookAtHitPoint
+		var Vector pLookAtHitNormal
 		
 		var Array pListeners
 		var ECComposeBTSM.Instance pBTSMs
@@ -447,7 +448,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pTest.setEnabled(enabled)
 			
 			if not enabled
-				setLookAtElement(null, -1, null, 0)
+				clearLookAt()
 			end
 			
 			pListeners.forEach(block Listener each
@@ -537,7 +538,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		/** \brief Look-at element or null. */
 		func Element getLookAtElement()
 			if pLookAtElement != null and pLookAtElement.isDisposed()
-				setLookAtElement(null, -1, null, 0)
+				clearLookAt()
 			end
 			return pLookAtElement
 		end
@@ -574,17 +575,41 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			return pLookAtBoneName
 		end
 		
+		/**
+		 * \brief Look-at face or -1.
+		 * \version 1.33
+		 */
+		func int getLookAtFace()
+			return pLookAtFace
+		end
+		
+		/**
+		 * \brief Look-at shape or -1.
+		 * \version 1.33
+		 */
+		func int getLookAtShape()
+			return pLookAtShape
+		end
+		
 		/** \brief Distance in meters to look-at hit point. */
 		func float getLookAtDistance()
 			return pLookAtDistance
 		end
 		
-		/** \brief Look-at hit point or \em null. */
+		/** \brief Look-at hit point or null. */
 		func DVector getLookAtHitPoint()
 			if pLookAtHitPoint == null and hasLookAtElement()
 				pLookAtHitPoint = pLookAtOrigin + pLookAtDirection.normalize() * pLookAtDistance
 			end
 			return pLookAtHitPoint
+		end
+		
+		/**
+		 * \brief Look-at hit normal or null.
+		 * \version 1.33
+		 */
+		func Vector getLookAtHitNormal()
+			return pLookAtHitNormal
 		end
 		
 		/** \brief Test origin used for last look-at test. */
@@ -673,7 +698,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			end
 			
 			if collider == null
-				setLookAtElement(null, -1, null, 0)
+				clearLookAt()
 				return
 			end
 			
@@ -692,7 +717,8 @@ class ECBehaviorLookAt extends DefaultECBehavior
 				element = null
 			end
 			
-			setLookAtElement(element, bone, boneName, pTest.hitDistance(0))
+			setLookAtElement(element, bone, boneName, pTest.hitFace(0), pTest.hitShape(0),\
+				pTest.hitDistance(0), pTest.hitNormalWorld(0))
 		end
 		
 		/** \brief Collision test. */
@@ -717,14 +743,23 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		
 		/** \brief Set look-at element. */
 		func void setLookAtElement(Element element, int bone, String boneName, float distance)
-			if pLookAtElement == element and pLookAtBone == bone
+		end
+		
+		func void setLookAtElement(Element element, int bone, String boneName, int face,\
+		int shape, float distance, Vector hitNormal)
+			if pLookAtElement == element and pLookAtBone == bone\
+			and pLookAtFace == face and pLookAtShape == shape
 				pLookAtHitPoint = null
 				pLookAtDistance = distance
+				pLookAtHitNormal = hitNormal
 				return
 			end
 			
-			if pLookAtElement != null and pLookAtElement castable BehaviorElement and not pLookAtElement.isDisposed()
-				var ECBehaviorLookedAt.Instance behavior = ECBehaviorLookedAt.getInstanceIn(pLookAtElement cast BehaviorElement)
+			if pLookAtElement != null\
+			and pLookAtElement castable BehaviorElement\
+			and not pLookAtElement.isDisposed()
+				var ECBehaviorLookedAt.Instance behavior =\
+					ECBehaviorLookedAt.getInstanceIn(pLookAtElement cast BehaviorElement)
 				if behavior != null
 					behavior.removeLookingActor(getElement())
 				end
@@ -733,8 +768,11 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pLookAtElement = element
 			pLookAtBone = bone
 			pLookAtBoneName = boneName
+			pLookAtFace = face
+			pLookAtShape = shape
 			pLookAtHitPoint = null
 			pLookAtDistance = distance
+			pLookAtHitNormal = hitNormal
 			
 			if element != null and element castable BehaviorElement
 				var ECBehaviorLookedAt.Instance behavior = \
@@ -750,6 +788,14 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			if pBTSMs != null
 				pBTSMs.runEvent(pECBehavior.getPrefix(), element != null if "lookAt" else "noLookAt")
 			end
+		end
+		
+		/**
+		 * \brief Clear look-at element.
+		 * \version 1.33
+		 */
+		func void clearLookAt()
+			setLookAtElement(null, -1, null, -1, -1, 0, null)
 		end
 	end
 	
@@ -939,7 +985,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Get behavior in element class or \em null if absent.
+	 * \brief Get behavior in element class or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorLookAt.
@@ -951,7 +997,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Get instance in element or \em null if absent.
+	 * \brief Get instance in element or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorLookAt.Instance .

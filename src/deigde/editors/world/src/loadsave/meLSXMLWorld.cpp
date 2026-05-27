@@ -200,7 +200,7 @@ void meLSXMLWorld::pWriteWorldEditor(decXmlWriter &writer, const meWorld &world)
 		writer.WriteClosingTag("skyController", false);
 	}
 	
-	if(world.GetBgObject()->GetGDClass() || world.GetBgObject()->GetPathWorld()){
+	if(world.GetBgObject()->GetGDClass() || !world.GetBgObject()->GetPathWorld().IsEmpty()){
 		pWriteWorldEditorBackgroundObject(writer, world);
 	}
 	

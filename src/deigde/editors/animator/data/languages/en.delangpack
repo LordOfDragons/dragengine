@@ -538,6 +538,8 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName.ToolTip">Name of reference animation move to use</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime">Reference Move Time:</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.ToolTip">Time relative to reference move playtime to retrieve</translation>
+	<translation name="Animator.WPAPanelRuleAnimationDifference.ComponentSpace">Use Component Space</translation>
+	<translation name="Animator.WPAPanelRuleAnimationDifference.ComponentSpace.ToolTip">Use component space to apply difference</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnablePosition">Enable position manipulation</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnablePosition.ToolTip">Determines if the position is modified or kept as it is</translation>
 	<translation name="Animator.WPAPanelRuleAnimationDifference.EnableRotation">Enable rotation manipulation</translation>
@@ -1005,8 +1007,9 @@ Apply all rules (all) or blend between two selected rules using the select targe
 	<translation name="Animator.Undo.SetRuleAnimationMoveTime">Set animation rule move time</translation>
 	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnablePosition">Rule animation difference toggle enable position</translation>
 	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableRotation">Rule animation difference toggle enable rotation</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableSize">Rule animation toggle enable size</translation>
-	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableVertexPositionSet">Rule animation toggle enable vertex position set</translation>
+	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableSize">Rule animation difference toggle enable size</translation>
+	<translation name="Animator.Undo.RuleAnimationDifferenceToggleEnableVertexPositionSet">Rule animation difference toggle enable vertex position set</translation>
+	<translation name="Animator.Undo.RuleAnimationDifferenceToggleUseComponentSpace">Rule animation difference toggle use component space</translation>
 	<translation name="Animator.Undo.SetRuleAnimationDifferenceLeadingMoveName">Set animation difference rule leading move name</translation>
 	<translation name="Animator.Undo.SetRuleAnimationDifferenceLeadingMoveTime">Set animation difference rule leading move time</translation>
 	<translation name="Animator.Undo.SetRuleAnimationDifferenceReferenceMoveName">Set animation difference rule reference move name</translation>

@@ -110,6 +110,13 @@ void dearBoneState::SetPosOrient(const decVector &position, const decQuaternion 
 	SetDirty(true);
 }
 
+void dearBoneState::Reset(){
+	pPosition.SetZero();
+	pOrientation.SetZero();
+	pScale.Set(1.0f, 1.0f, 1.0f);
+	SetDirty(true);
+}
+
 void dearBoneState::SetRigLocalMatrix(const decMatrix &matrix){
 	pRigLocalMatrix = matrix;
 	pInvRigLocalMatrix = matrix.QuickInvert();

@@ -392,7 +392,6 @@ const decXmlElementTag &root, deAnimator &animator){
 deAnimatorRule::Ref igdeLoadAnimator::pReadRuleAnimationDifference(
 const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	const char *name;
 	int e;
 	
 	const deAnimatorRuleAnimationDifference::Ref rule(
@@ -428,16 +427,19 @@ const decXmlElementTag &root, deAnimator &animator){
 		}else if(strcmp(tag->GetName(), "enableVertexPositionSet") == 0){
 			rule->SetEnableVertexPositionSet(GetCDataBool(*tag));
 			
-		}else if(strcmp(tag->GetName(), "target") == 0){
-			name = GetAttributeString(*tag, "name");
+		}else if(strcmp(tag->GetName(), "useComponentSpace") == 0){
+			rule->SetUseComponentSpace(GetCDataBool(*tag));
 			
-			if(strcmp(name, "blendFactor") == 0){
+		}else if(strcmp(tag->GetName(), "target") == 0){
+			const decString &name = GetAttributeString(*tag, "name");
+			
+			if(name == "blendFactor"){
 				pReadControllerTarget(*tag, rule->GetTargetBlendFactor());
 				
-			}else if(strcmp(name, "leadingMoveTime") == 0){
+			}else if(name == "leadingMoveTime"){
 				pReadControllerTarget(*tag, rule->GetTargetLeadingMoveTime());
 				
-			}else if(strcmp(name, "referenceMoveTime") == 0){
+			}else if(name == "referenceMoveTime"){
 				pReadControllerTarget(*tag, rule->GetTargetReferenceMoveTime());
 				
 			}else{

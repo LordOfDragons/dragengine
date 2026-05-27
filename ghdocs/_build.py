@@ -222,11 +222,11 @@ class IdeScriptsBuilder:
 
 
 def find_repo_releases(repo_name: str) -> list[Release]:
-    """Find all released of repository.
+    """Find all releases of repository.
 
-    Sorts releases by time from newest to oldest.
-    Skips nightly release. Keeps only the latest
-    minor release of releases with same major.
+    Sorts releases by version number from newest to oldest.
+    Skips nightly release. For each minor version keeps only
+    the latest patch release.
     """
     with Github() as gh:
         repo = gh.get_repo(repo_name)
@@ -241,7 +241,7 @@ def find_repo_releases(repo_name: str) -> list[Release]:
             except Exception:
                 continue
 
-        releases.sort(key=lambda x: x.publish_time)
+        releases.sort(key=lambda x: (int(x.major), int(x.minor), int(x.patch) if x.patch else 0))
         releases.reverse()
         temp_list = releases
         releases = []
@@ -251,7 +251,7 @@ def find_repo_releases(repo_name: str) -> list[Release]:
                 releases.append(each)
     return releases
 
-def build_dragengine(releases: list[Release]) -> None:
+def build_dragengine(releases: list[Release], releases_idescripts: list[Release]) -> None:
     curdir = os.getcwd()
 
     pathApiDoc = os.path.join(curdir, "artifacts", "apidoc")
@@ -313,14 +313,15 @@ def build_dragengine(releases: list[Release]) -> None:
 
     os.chdir("_repository/dragengine")
 
-    for release in releases:
+    for release in releases_idescripts:
         run_command("git checkout -f '{}'".format(release.tag_name))
         run_command("git reset --hard")
         run_command("git clean -x -f")
 
-        is_latest = release == releases[0]
+        is_latest = release == releases_idescripts[0]
         for builder in builders:
-            builder.build(release.version, is_latest)
+            if isinstance(builder, IdeScriptsBuilder) or release in releases:
+                builder.build(release.version, is_latest)
 
     # temporary
     run_command("git checkout master")
@@ -331,8 +332,10 @@ def build_dragengine(releases: list[Release]) -> None:
 
     os.chdir(curdir)
     for each in builders:
-        each.write_data_file(releases)
+        if isinstance(each, IdeScriptsBuilder):
+            each.write_data_file(releases_idescripts)
+        else:
+            each.write_data_file(releases)
 
 releases = find_repo_releases("LordOfDragons/dragengine")
-limit = 3 # 5
-build_dragengine(releases[:limit])
+build_dragengine(releases[:5], releases[:20])

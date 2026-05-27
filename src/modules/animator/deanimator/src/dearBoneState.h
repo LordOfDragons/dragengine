@@ -114,6 +114,9 @@ public:
 	/** Sets position and orientation. */
 	void SetPosOrient(const decVector &position, const decQuaternion &orientation);
 	
+	/** Reset state to default values. */
+	void Reset();
+	
 	/** Retrieves the rig local matrix. */
 	inline const decMatrix &GetRigLocalMatrix() const{ return pRigLocalMatrix; }
 	/** Retrieves the inverse rig local matrix. */
