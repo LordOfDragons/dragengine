@@ -65,7 +65,6 @@ debnConnection::debnConnection(deNetworkBasic *netBasic, deConnection *connectio
 	pNetBasic = netBasic;
 	pConnection = connection;
 	
-	pSocket = nullptr;
 	pConnectionState = ecsDisconnected;
 	pIdentifier = -1;
 	pElapsedConnectResend = 0.0f;
@@ -157,6 +156,10 @@ void debnConnection::AcceptConnection(debnSocket *bnSocket, const debnAddress &a
 	pProtocol = protocol;
 	pElapsedConnectResend = 0.0f;
 	pElapsedConnectTimeout = 0.0f;
+	
+	if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+		pNetBasic->LogInfoFormat("AcceptConnection: %s (%d)", address.ToString().GetString(), (int)protocol);
+	}
 }
 
 void debnConnection::ProcessConnectionAck(decBaseFileReader &reader){
@@ -169,7 +172,9 @@ void debnConnection::ProcessConnectionAck(decBaseFileReader &reader){
 		const eConnectionAck code = (eConnectionAck)reader.ReadByte();
 		
 		if(code == ecaAccepted){
-// 			pNetBasic->LogInfoFormat( "Connection accepted." );
+			if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+				pNetBasic->LogInfo("ProcessConnectionAck: connection accepted.");
+			}
 			
 			pProtocol = (eProtocols)reader.ReadUShort();
 			
@@ -177,7 +182,9 @@ void debnConnection::ProcessConnectionAck(decBaseFileReader &reader){
 			pConnection->SetConnected(true);
 			
 		}else{
-// 			pNetBasic->LogInfo( "Connection rejected." );
+			if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+				pNetBasic->LogInfo("ProcessConnectionAck: connection rejected.");
+			}
 			
 			pConnectionState = ecsDisconnected;
 			pConnection->SetConnected(false);
@@ -188,7 +195,9 @@ void debnConnection::ProcessConnectionAck(decBaseFileReader &reader){
 		}
 		
 	}else{
-// 		pNetBasic->LogInfo( "Invalid connection ack received." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessConnectionAck: received in wrong state %d", (int)pConnectionState);
+		}
 	}
 }
 
@@ -196,12 +205,14 @@ void debnConnection::ProcessConnectionClose(decBaseFileReader &reader){
 	deBaseScriptingConnection *scrCon = pConnection->GetPeerScripting();
 	
 	if(pConnectionState == ecsConnected){
-// 		pNetBasic->LogInfo( "Closing connection upon request from remote side." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfo("ProcessConnectionClose: closing requested by remote side.");
+		}
 		
 		pDisconnect();
 		
 		// WARNING!
-		// it is possible ( and very likely ) that the connection object
+		// it is possible (and very likely) that the connection object
 		// is freed during the callback. to avoid running into a segfault
 		// the callback is placed after the cleanup. a better solution
 		// would be to safeguard a pointer during this time.
@@ -228,7 +239,9 @@ void debnConnection::ProcessMessage(decBaseFileReader &reader){
 void debnConnection::ProcessReliableMessage(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
-// 		pNetBasic->LogInfo( "Reliable message received although not connected." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableMessage: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -244,7 +257,10 @@ void debnConnection::ProcessReliableMessage(decBaseFileReader &reader){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if(!validNumber){
-// 		pNetBasic->LogInfo( "Reliable message: invalid sequence number." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableMessage: invalid sequence number %d (%d .. %d).",
+				number, pReliableNumberRecv, (pReliableNumberRecv + pReliableWindowSize) % 65535);
+		}
 		return;
 	}
 	
@@ -283,7 +299,9 @@ void debnConnection::ProcessReliableMessage(decBaseFileReader &reader){
 void debnConnection::ProcessReliableLinkState(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
-// 		pNetBasic->LogInfoFormat( "Link state: not connected." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableLinkState: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -299,7 +317,10 @@ void debnConnection::ProcessReliableLinkState(decBaseFileReader &reader){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if(!validNumber){
-// 		pNetBasic->LogInfo( "Link state: invalid sequence number." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableLinkState: invalid sequence number %d (%d .. %d).",
+				number, pReliableNumberRecv, (pReliableNumberRecv + pReliableWindowSize) % 65535);
+		}
 		return;
 	}
 	
@@ -337,7 +358,9 @@ void debnConnection::ProcessReliableLinkState(decBaseFileReader &reader){
 void debnConnection::ProcessReliableAck(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
-// 		pNetBasic->LogInfo( "Reliable ack: not connected." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableAck: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -349,7 +372,9 @@ void debnConnection::ProcessReliableAck(decBaseFileReader &reader){
 	// verify
 	const int index = pReliableMessagesSend->IndexOfMessageWithNumber(number);
 	if(index == -1){
-// 		pNetBasic->LogInfo( "Reliable ack: no reliable transmission with this number waiting for an ack!" );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableAck: no reliable transmission with number %d waiting for an ack.", number);
+		}
 		return;
 	}
 	debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt(index);
@@ -375,7 +400,9 @@ void debnConnection::ProcessReliableAck(decBaseFileReader &reader){
 void debnConnection::ProcessLinkUp(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
-// 		pNetBasic->LogInfo( "Link up: not connected." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkUp: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -384,8 +411,17 @@ void debnConnection::ProcessLinkUp(decBaseFileReader &reader){
 	
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier(identifier);
-	if(!stateLink || stateLink->GetLinkState() != debnStateLink::elsListening){
-// 		pNetBasic->LogInfo( "Link up: link with this identifier does not exist or is not listening." );
+	if(!stateLink){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkUp: link with identifier %d does not exist.", identifier);
+		}
+		return;
+	}
+	if(stateLink->GetLinkState() != debnStateLink::elsListening){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkUp: link %d is in wrong state %d.",
+				identifier, (int)stateLink->GetLinkState());
+		}
 		return;
 	}
 	
@@ -399,7 +435,9 @@ void debnConnection::ProcessLinkUp(decBaseFileReader &reader){
 void debnConnection::ProcessLinkDown(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
-// 		pNetBasic->LogInfo( "Link down: not connected!" );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkDown: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -408,8 +446,17 @@ void debnConnection::ProcessLinkDown(decBaseFileReader &reader){
 	
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier(identifier);
-	if(!stateLink || stateLink->GetLinkState() != debnStateLink::elsListening){
-// 		pNetBasic->LogInfo( "Link down: link with this identifier does not exist or is not listening." );
+	if(!stateLink){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkDown: link with identifier %d does not exist.", identifier);
+		}
+		return;
+	}
+	if(stateLink->GetLinkState() != debnStateLink::elsListening){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkDown: link %d is in wrong state %d.",
+				identifier, (int)stateLink->GetLinkState());
+		}
 		return;
 	}
 	
@@ -422,7 +469,9 @@ void debnConnection::ProcessLinkDown(decBaseFileReader &reader){
 
 void debnConnection::ProcessLinkUpdate(decBaseFileReader &reader){
 	if(pConnectionState != ecsConnected){
-// 		pNetBasic->LogInfo( "Link update: not connected." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessLinkUpdate: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -433,8 +482,17 @@ void debnConnection::ProcessLinkUpdate(decBaseFileReader &reader){
 			const int identifier = reader.ReadUShort();
 			
 			debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier(identifier);
-			if(!stateLink || stateLink->GetLinkState() != debnStateLink::elsUp){
-// 				pNetBasic->LogInfo( "Invalid link identifier!" );
+			if(!stateLink){
+				if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+					pNetBasic->LogInfoFormat("ProcessLinkUpdate: link with identifier %d does not exist.", identifier);
+				}
+				return;
+			}
+			if(stateLink->GetLinkState() != debnStateLink::elsUp){
+				if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+					pNetBasic->LogInfoFormat("ProcessLinkUpdate: link %d is in wrong state %d.",
+						identifier, (int)stateLink->GetLinkState());
+				}
 				return;
 			}
 			
@@ -444,7 +502,9 @@ void debnConnection::ProcessLinkUpdate(decBaseFileReader &reader){
 		}
 		
 	}catch(const deException &){
-// 		pNetBasic->LogInfo( "Invalid data in the link update message!" );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfo("ProcessLinkUpdate: invalid data in link update message");
+		}
 		return;
 	}
 }
@@ -452,6 +512,9 @@ void debnConnection::ProcessLinkUpdate(decBaseFileReader &reader){
 void debnConnection::ProcessReliableMessageLong(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableMessageLong: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -467,6 +530,10 @@ void debnConnection::ProcessReliableMessageLong(decBaseFileReader &reader){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if(!validNumber){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableMessageLong: invalid sequence number %d (%d .. %d).",
+				number, pReliableNumberRecv, (pReliableNumberRecv + pReliableWindowSize) % 65535);
+		}
 		return;
 	}
 	
@@ -501,6 +568,9 @@ void debnConnection::ProcessReliableMessageLong(decBaseFileReader &reader){
 void debnConnection::ProcessReliableLinkStateLong(decBaseFileReader &reader){
 	// we process nothing if not connected
 	if(pConnectionState != ecsConnected){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableLinkStateLong: received in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -516,6 +586,10 @@ void debnConnection::ProcessReliableLinkStateLong(decBaseFileReader &reader){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if(!validNumber){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("ProcessReliableLinkStateLong: invalid sequence number %d (%d .. %d).",
+				number, pReliableNumberRecv, (pReliableNumberRecv + pReliableWindowSize) % 65535);
+		}
 		return;
 	}
 	
@@ -598,6 +672,10 @@ void debnConnection::Disconnect(){
 	if(pSocket){
 		// send close if connected
 		if(pConnectionState == ecsConnected){
+			if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+				pNetBasic->LogInfo("Disconnect: send close message");
+			}
+			
 			decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
 			sendWriter.SetPosition(0);
 			pNetBasic->GetSharedSendDatagram()->Clear();
@@ -617,6 +695,9 @@ void debnConnection::SendMessage(deNetworkMessage *message, int maxDelay){
 	
 	// only if connected
 	if(pConnectionState != ecsConnected){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("SendMessage: called in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -637,6 +718,9 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 	
 	// only if connected
 	if(pConnectionState != ecsConnected){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("SendReliableMessage: called in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -666,11 +750,13 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 			bnMessage->SetState(debnMessage::emsPending);
 			
 			// build message
-			deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false));
-			writer->WriteByte(eccReliableMessage);
+			{
+			auto writer = deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false);
+			writer->WriteByte(eccReliableMessageLong);
 			writer->WriteUShort((uint16_t)bnMessage->GetNumber());
 			writer->WriteByte(flags);
 			writer->Write(data + offset, partLength);
+			}
 			
 			// add
 			pReliableMessagesSend->AddMessage(std::move(bnMessage));
@@ -688,13 +774,12 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 		bnMessage->SetState(debnMessage::emsPending);
 		
 		// build message
-		deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false));
+		{
+		auto writer = deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false);
 		writer->WriteByte(eccReliableMessage);
 		writer->WriteUShort((uint16_t)bnMessage->GetNumber());
 		writer->Write(message->GetBuffer(), message->GetDataLength());
-		
-		// add
-		pReliableMessagesSend->AddMessage(std::move(bnMessage));
+		}
 		
 		// if the message fits into the window send it right now
 		if(pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize){
@@ -703,6 +788,9 @@ void debnConnection::SendReliableMessage(deNetworkMessage *message){
 			bnMessage->SetState(debnMessage::emsSend);
 			bnMessage->ResetElapsed();
 		}
+		
+		// add
+		pReliableMessagesSend->AddMessage(std::move(bnMessage));
 	}
 }
 
@@ -712,6 +800,9 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 	
 	// only if connected
 	if(pConnectionState != ecsConnected){
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("LinkState: called in wrong state %d.", (int)pConnectionState);
+		}
 		return;
 	}
 	
@@ -723,7 +814,9 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 	// check if a link exists with this state already that is not broken
 	debnStateLink *stateLink = pStateLinks->GetLinkWithNetworkState(bnState);
 	if(stateLink && stateLink->GetLinkState() != debnStateLink::elsDown){
-// 		pNetBasic->LogInfo( "There exists already a link to this state." );
+		if(pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug){
+			pNetBasic->LogInfoFormat("LinkState: there exists already a link %d to this state", stateLink->GetIdentifier());
+		}
 		return;
 	}
 	
@@ -754,7 +847,8 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 	bnMessage->SetState(debnMessage::emsPending);
 	
 	// build message
-	deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false));
+	{
+	auto writer = deNetworkMessageWriter::Ref::New(bnMessage->GetMessage(), false);
 	writer->WriteByte(eccReliableLinkState);
 	writer->WriteUShort((uint16_t)bnMessage->GetNumber());
 	writer->WriteUShort((uint16_t)stateLink->GetIdentifier());
@@ -764,9 +858,7 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 	writer->Write(message->GetBuffer(), message->GetDataLength());
 	
 	bnState->LinkWriteValuesWithVerify(writer);
-	
-	// add
-	pReliableMessagesSend->AddMessage(std::move(bnMessage));
+	}
 	
 	// if the message fits into the window send it right now
 	if(pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize){
@@ -775,6 +867,9 @@ void debnConnection::LinkState(deNetworkMessage *message, deNetworkState *state,
 		bnMessage->SetState(debnMessage::emsSend);
 		bnMessage->ResetElapsed();
 	}
+	
+	// add
+	pReliableMessagesSend->AddMessage(std::move(bnMessage));
 	
 	// switch the link to the listening state
 	stateLink->SetLinkState(debnStateLink::elsListening);
