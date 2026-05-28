@@ -96,6 +96,18 @@
 	</screenshots>
 	
 	<releases>
+		<release version="1.32.3" date="2026-05-27">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-32</url>
+			<description>
+				<p>Drag[en]gine 1.32.3 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
+		<release version="1.32.2" date="2026-05-17">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-32</url>
+			<description>
+				<p>Drag[en]gine 1.32.2 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
 		<release version="1.32.1" date="2026-05-12">
 			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-32</url>
 			<description>

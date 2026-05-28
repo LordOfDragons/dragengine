@@ -681,8 +681,20 @@ void deoglRTCBWindows::pChooseHdrPixelFormat(){
 		UINT numFormats = 0;
 		if(pwglChoosePixelFormatARB(dummyDC, attribs, nullptr, 1, &format, &numFormats)
 		&& numFormats > 0){
-			pHdrPixelFormat = format;
-			logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: 10-bit HDR pixel format");
+			// only commit to 10-bit pixel format if Windows HDR is actually enabled on the
+			// display right now. GetDisplaySupportsHdr() uses only Win32 APIs and can be
+			// called without an OpenGL context. Checking here avoids permanently setting a
+			// 10-bit pixel format on the real render window (SetPixelFormat is irreversible)
+			// when HDR is not enabled, which could otherwise force DWM into an expensive
+			// compositing path causing severe frame rate degradation
+			if(pRTContext.GetRenderThread().GetConfiguration().GetEnableHDRMonitor()
+			&& deOSWindows::GetDisplaySupportsHdr()){
+				pHdrPixelFormat = format;
+				logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: 10-bit HDR pixel format");
+				
+			}else{
+				logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: 10-bit pixel format found but HDR not enabled, using 8-bit");
+			}
 			
 		}else{
 			logger.LogInfo("RTCBWindows.pChooseHdrPixelFormat: No 10-bit HDR pixel format available");

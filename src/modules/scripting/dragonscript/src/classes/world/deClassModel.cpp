@@ -44,6 +44,7 @@
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelVertex.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 
 #include <libdscript/exceptions.h>
 
@@ -214,6 +215,43 @@ void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *mysel
 
 
 
+// public func int getVertexPositionSetCount()
+deClassModel::nfGetVertexPositionSetCount::nfGetVertexPositionSetCount(const sInitData &init) :
+dsFunction(init.clsMdl, "getVertexPositionSetCount",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+}
+void deClassModel::nfGetVertexPositionSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
+	
+	rt->PushInt(model.GetVertexPositionSetCount());
+}
+
+// public func int indexOfVertexPositionSetNamed(String name)
+deClassModel::nfIndexOfVertexPositionSetNamed::nfIndexOfVertexPositionSetNamed(const sInitData &init) :
+dsFunction(init.clsMdl, "indexOfVertexPositionSetNamed",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+	p_AddParameter(init.clsStr); // name
+}
+void deClassModel::nfIndexOfVertexPositionSetNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
+	
+	rt->PushInt(model.IndexOfVertexPositionSetNamed(rt->GetValue(0)->GetString()));
+}
+
+// public func String vertexPositionSetGetNameAt(int index)
+deClassModel::nfVertexPositionSetGetNameAt::nfVertexPositionSetGetNameAt(const sInitData &init) :
+dsFunction(init.clsMdl, "vertexPositionSetGetNameAt",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
+	p_AddParameter(init.clsInt); // index
+}
+void deClassModel::nfVertexPositionSetGetNameAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deModel &model = *dedsGetNativeData<sMdlNatDat>(p_GetNativeData(myself)).model;
+	
+	rt->PushString(model.GetVertexPositionSetAt(rt->GetValue(0)->GetInt())->GetName());
+}
+
+
+
 // public func int hashCode()
 deClassModel::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsMdl, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
@@ -304,6 +342,10 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetVertexCount(init));
 	AddFunction(new nfGetMinimumExtend(init));
 	AddFunction(new nfGetMaximumExtend(init));
+	
+	AddFunction(new nfGetVertexPositionSetCount(init));
+	AddFunction(new nfIndexOfVertexPositionSetNamed(init));
+	AddFunction(new nfVertexPositionSetGetNameAt(init));
 	
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));

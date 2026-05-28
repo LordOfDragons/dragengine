@@ -87,6 +87,10 @@ private:
 	DEF_NATFUNC(nfGetMinimumExtend);
 	DEF_NATFUNC(nfGetMaximumExtend);
 	
+	DEF_NATFUNC(nfGetVertexPositionSetCount);
+	DEF_NATFUNC(nfIndexOfVertexPositionSetNamed);
+	DEF_NATFUNC(nfVertexPositionSetGetNameAt);
+	
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
