@@ -391,8 +391,9 @@ void *igdeComboBox::GetSelectedItemData() const{
 	return pSelection != -1 ? pItems.GetAt(pSelection)->GetData() : nullptr;
 }
 
-deObject::Ref igdeComboBox::GetSelectedItemRefData() const{
-	return pSelection != -1 ? pItems.GetAt(pSelection)->GetRefData() : deObject::Ref();
+const deObject::Ref &igdeComboBox::GetSelectedItemRefData() const{
+	static const deObject::Ref nullref;
+	return pSelection != -1 ? pItems.GetAt(pSelection)->GetRefData() : nullref;
 }
 
 void igdeComboBox::SetSelection(int selection){

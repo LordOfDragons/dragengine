@@ -264,6 +264,10 @@ void igdeUIHelper::FormLineStretchFirst(igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment){
 	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
+	FormLineStretchFirst(form, line);
+}
+
+void igdeUIHelper::FormLineStretchFirst(igdeContainer &form, igdeContainer::Ref &line){
 	line = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	form.AddChild(line);
 }
@@ -1133,7 +1137,6 @@ void igdeUIHelper::Label(igdeLabel::Ref &label, const char *text,
 const char *description, int alignment){
 	label = igdeLabel::Ref::New(pEnvironment, text, description, alignment);
 }
-
 
 
 void igdeUIHelper::ScrollBar(igdeContainer &parent, bool horizontal, int lower, int upper,

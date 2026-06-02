@@ -237,6 +237,8 @@ public:
 	void FormLineStretchFirst(igdeContainer &form, const char *label,
 		const char *description, igdeContainer::Ref &line, int labelAlignment);
 	
+	void FormLineStretchFirst(igdeContainer &form, igdeContainer::Ref &line);
+	
 	/**
 	 * \brief Form line with label and container flowing downwards.
 	 * 
