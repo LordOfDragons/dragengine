@@ -21,6 +21,7 @@ class RefDeclarationScanner:
         self.scan_dir = Path(scan_dir)
         self.repo_root = Path(repo_root) if repo_root else self.scan_dir
         self.classes_with_ref: Set[str] = set()  # Classes that have Ref declaration
+        self.class_aliases_by_owner: Dict[str, Set[str]] = {}
         
     def find_cpp_files(self, directory: Path) -> List[Path]:
         """Find all C++ source and header files."""
@@ -68,6 +69,68 @@ class RefDeclarationScanner:
             classes.append(class_name)
         
         return classes
+
+    def extract_class_aliases(self, file_path: Path) -> Dict[str, Set[str]]:
+        """Extract alias names declared inside each class/struct in a file."""
+        class_aliases: Dict[str, Set[str]] = {}
+
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                lines = f.readlines()
+        except Exception:
+            return class_aliases
+
+        class_stack: List[Tuple[str, int]] = []
+        pending_class_name = None
+        pending_class_active = False
+
+        for line in lines:
+            code_for_parse = line.split('//', 1)[0]
+
+            class_decl_match = re.search(
+                r'\b(?:class|struct)\s+(?:\w+\s+)*?(\w+)\s*(?:[:{;])',
+                code_for_parse
+            )
+            if class_decl_match and pending_class_name is None:
+                pending_class_name = class_decl_match.group(1)
+                pending_class_active = True
+
+            opens = code_for_parse.count('{')
+            closes = code_for_parse.count('}')
+
+            if pending_class_active and opens > 0:
+                class_stack.append((pending_class_name, opens - closes))
+                class_aliases.setdefault(pending_class_name, set())
+                pending_class_name = None
+                pending_class_active = False
+
+            elif class_stack:
+                name, depth = class_stack[-1]
+                class_stack[-1] = (name, depth + opens - closes)
+
+            if class_stack:
+                current_class = class_stack[-1][0]
+
+                using_match = re.search(r'\busing\s+(\w+)\s*=', code_for_parse)
+                if using_match:
+                    alias_name = using_match.group(1)
+                    if alias_name != 'Ref':
+                        class_aliases[current_class].add(alias_name)
+
+                typedef_match = re.search(r'\btypedef\s+[^;]*\b(\w+)\s*;', code_for_parse)
+                if typedef_match:
+                    alias_name = typedef_match.group(1)
+                    if alias_name != 'Ref':
+                        class_aliases[current_class].add(alias_name)
+
+            while class_stack and class_stack[-1][1] <= 0:
+                class_stack.pop()
+
+            if pending_class_active and ';' in code_for_parse and '{' not in code_for_parse:
+                pending_class_name = None
+                pending_class_active = False
+
+        return class_aliases
     
     def build_ref_declarations_index(self, files: List[Path]):
         """Build index of all classes that have Ref declarations."""
@@ -77,6 +140,12 @@ class RefDeclarationScanner:
             classes = self.extract_ref_declarations(file_path)
             for class_name in classes:
                 self.classes_with_ref.add(class_name)
+
+            class_aliases = self.extract_class_aliases(file_path)
+            for owner, aliases in class_aliases.items():
+                if owner not in self.class_aliases_by_owner:
+                    self.class_aliases_by_owner[owner] = set()
+                self.class_aliases_by_owner[owner].update(aliases)
         
         print(f"Found {len(self.classes_with_ref)} classes with Ref declarations")
     
@@ -110,14 +179,81 @@ class RefDeclarationScanner:
         for match in using_pattern.finditer(content):
             local_classes_with_ref.add(match.group(1))
         
-        # Pattern to match ClassName::Ref usage
-        # Examples:
-        #   ClassName::Ref variable;
-        #   const ClassName::Ref variable;
-        #   ClassName::Ref variable(arg);
-        #   function returning: ClassName::Ref FunctionName()
-        #   member variable: ClassName::Ref pMember;
-        ref_usage_pattern = re.compile(r'\b(\w+)::Ref\b')
+        # Collect local type aliases. These aliases can reference types that already
+        # provide Ref, so Alias::Ref should not be flagged as a violation.
+        local_type_aliases = set()
+        using_alias_pattern = re.compile(r'\busing\s+(\w+)\s*=')
+        typedef_alias_pattern = re.compile(r'\btypedef\s+[^;]*\b(\w+)\s*;')
+
+        for match in using_alias_pattern.finditer(content):
+            alias_name = match.group(1)
+            if alias_name != 'Ref':
+                local_type_aliases.add(alias_name)
+
+        for match in typedef_alias_pattern.finditer(content):
+            alias_name = match.group(1)
+            if alias_name != 'Ref':
+                local_type_aliases.add(alias_name)
+
+        # Collect aliases declared inside classes/structs in this file.
+        # This allows handling code like:
+        #   void Owner::Method(const NestedAlias::Ref &value)
+        class_aliases: Dict[str, Set[str]] = {}
+        class_stack: List[Tuple[str, int]] = []
+        pending_class_name = None
+        pending_class_active = False
+
+        for line in lines:
+            code_for_parse = line.split('//', 1)[0]
+
+            class_decl_match = re.search(
+                r'\b(?:class|struct)\s+(?:\w+\s+)*?(\w+)\s*(?:[:{;])',
+                code_for_parse
+            )
+            if class_decl_match and pending_class_name is None:
+                pending_class_name = class_decl_match.group(1)
+                pending_class_active = True
+
+            opens = code_for_parse.count('{')
+            closes = code_for_parse.count('}')
+
+            if pending_class_active and opens > 0:
+                class_stack.append((pending_class_name, opens - closes))
+                class_aliases.setdefault(pending_class_name, set())
+                pending_class_name = None
+                pending_class_active = False
+
+            elif class_stack:
+                name, depth = class_stack[-1]
+                class_stack[-1] = (name, depth + opens - closes)
+
+            if class_stack:
+                current_class = class_stack[-1][0]
+
+                using_match = re.search(r'\busing\s+(\w+)\s*=', code_for_parse)
+                if using_match:
+                    alias_name = using_match.group(1)
+                    if alias_name != 'Ref':
+                        class_aliases[current_class].add(alias_name)
+
+                typedef_match = re.search(r'\btypedef\s+[^;]*\b(\w+)\s*;', code_for_parse)
+                if typedef_match:
+                    alias_name = typedef_match.group(1)
+                    if alias_name != 'Ref':
+                        class_aliases[current_class].add(alias_name)
+
+            while class_stack and class_stack[-1][1] <= 0:
+                class_stack.pop()
+
+            if pending_class_active and ';' in code_for_parse and '{' not in code_for_parse:
+                pending_class_name = None
+                pending_class_active = False
+
+        # Pattern to match (possibly qualified) ClassName::Ref usage.
+        # Captures:
+        #   qualifiers: optional "A::B::" prefix (without the last type)
+        #   class_name: type name directly before ::Ref
+        ref_usage_pattern = re.compile(r'\b(?:(?P<qualifiers>(?:\w+::)+))?(?P<class_name>\w+)::Ref\b')
         
         for line_num, line in enumerate(lines, 1):
             # Skip comments
@@ -128,9 +264,10 @@ class RefDeclarationScanner:
             # Remove single-line comments
             code_part = line.split('//', 1)[0]
             
-            # Find all 'ClassName::Ref' patterns
+            # Find all '*::Ref' patterns
             for match in ref_usage_pattern.finditer(code_part):
-                class_name = match.group(1)
+                class_name = match.group('class_name')
+                qualifiers = match.group('qualifiers')
                 
                 # Check if this class has a Ref declaration
                 # Skip common non-class identifiers
@@ -142,8 +279,45 @@ class RefDeclarationScanner:
                 if class_name.startswith('derl'):
                     continue
                 
-                # Check both global index and local file declarations
-                if class_name not in self.classes_with_ref and class_name not in local_classes_with_ref:
+                # If this refers to a local alias type, assume it resolves to a
+                # valid type providing Ref and do not flag it.
+                if class_name in local_type_aliases:
+                    continue
+
+                # In method definitions, nested class aliases can be used unqualified.
+                # Example: void Owner::Method(const PropertyData::Ref &value)
+                if not qualifiers:
+                    owner_matches = list(re.finditer(r'\b(\w+)::\w+\s*\(', code_part))
+                    for owner_match in owner_matches:
+                        if owner_match.start() > match.start():
+                            break
+                        owner_name = owner_match.group(1)
+                        if (
+                            class_name in class_aliases.get(owner_name, set())
+                            or class_name in self.class_aliases_by_owner.get(owner_name, set())
+                        ):
+                            qualifiers = f"{owner_name}::"
+                            break
+
+                # If this is a qualified name (for example Outer::Data::Ref), any
+                # qualifier component might be the owning class carrying Ref.
+                # If any token in the chain is known to provide Ref, accept it.
+                qualified_tokens = []
+                if qualifiers:
+                    qualified_tokens = [token for token in qualifiers.split('::') if token]
+
+                has_known_ref = (
+                    class_name in self.classes_with_ref
+                    or class_name in local_classes_with_ref
+                )
+
+                if not has_known_ref:
+                    for token in qualified_tokens:
+                        if token in self.classes_with_ref or token in local_classes_with_ref:
+                            has_known_ref = True
+                            break
+
+                if not has_known_ref:
                     violations.append((line_num, class_name, line.rstrip()))
         
         return violations
