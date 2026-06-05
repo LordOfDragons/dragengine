@@ -42,7 +42,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyCurveBezier::Listener{
+		igdeMetaPropertyCurveBezierWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyCurveBezierWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyCurveBezier &pPropertyCurveBezier;
+	PropertyListener::Ref pPropertyListener;
 	igdeViewCurveBezier::Ref pViewCurveBezier;
 	igdeViewCurveBezierListener::Ref pListener;
 	

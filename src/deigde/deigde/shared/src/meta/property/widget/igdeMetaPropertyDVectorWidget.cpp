@@ -130,8 +130,22 @@ public:
 }
 
 
+// Class igdeMetaPropertyDVectorWidget::PropertyListener
+//////////////////////////////////////////////////////////
+
+igdeMetaPropertyDVectorWidget::PropertyListener::PropertyListener(igdeMetaPropertyDVectorWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyDVectorWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyDVectorWidget::PropertyListener::OnValueChanged(igdeMetaPropertyDVector*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyDVectorWidget
-/////////////////////////////////////////
+////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -139,11 +153,15 @@ public:
 igdeMetaPropertyDVectorWidget::igdeMetaPropertyDVectorWidget(
 	igdeMetaPropertyDVector &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyDVector(property){
+pPropertyDVector(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyDVector.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyDVectorWidget::~igdeMetaPropertyDVectorWidget(){
 	Drop();
+	pPropertyDVector.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -163,6 +181,7 @@ void igdeMetaPropertyDVectorWidget::Create(igdeContainer &container, igdeUIHelpe
 		pPropertyDVector.GetPrecision(), pEditDVector, pListener);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyDVectorWidget::Drop(){

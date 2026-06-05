@@ -46,7 +46,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyInteger::Listener{
+		igdeMetaPropertyIntegerWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyIntegerWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyInteger *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyInteger &pPropertyInteger;
+	PropertyListener::Ref pPropertyListener;
 	igdeTextField::Ref pTextField;
 	igdeTextFieldListener::Ref pTextListener;
 	igdeEditSliderText::Ref pEditSliderText;

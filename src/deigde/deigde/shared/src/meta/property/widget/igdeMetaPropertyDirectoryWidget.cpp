@@ -130,8 +130,22 @@ public:
 }
 
 
+// Class igdeMetaPropertyDirectoryWidget::PropertyListener
+////////////////////////////////////////////////////////////
+
+igdeMetaPropertyDirectoryWidget::PropertyListener::PropertyListener(igdeMetaPropertyDirectoryWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyDirectoryWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyDirectoryWidget::PropertyListener::OnValueChanged(igdeMetaPropertyDirectory*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyDirectoryWidget
-///////////////////////////////////////////
+//////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -139,11 +153,15 @@ public:
 igdeMetaPropertyDirectoryWidget::igdeMetaPropertyDirectoryWidget(
 	igdeMetaPropertyDirectory &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyDirectory(property){
+pPropertyDirectory(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyDirectory.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyDirectoryWidget::~igdeMetaPropertyDirectoryWidget(){
 	Drop();
+	pPropertyDirectory.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -163,6 +181,7 @@ void igdeMetaPropertyDirectoryWidget::Create(igdeContainer &container, igdeUIHel
 		pEditDirectory, pListener, pPropertyDirectory.GetUseGameVFS());
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyDirectoryWidget::Drop(){

@@ -37,9 +37,15 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyDirectory>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyDirectory>{
+	};
+	
+	
 private:
 	bool pUseGameVFS;
 	decString pDefaultValue;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -47,7 +53,8 @@ public:
 	/*@{*/
 	
 	/** \brief Create directory meta property with label and description. */
-	igdeMetaPropertyDirectory(const char *name, const char *description, bool useGameVFS = true);
+	igdeMetaPropertyDirectory(const char *id, const char *name,
+		const char *description, bool useGameVFS = true);
 	
 protected:
 	/** \brief Clean up directory meta property. */
@@ -70,6 +77,14 @@ public:
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(const decString &value);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

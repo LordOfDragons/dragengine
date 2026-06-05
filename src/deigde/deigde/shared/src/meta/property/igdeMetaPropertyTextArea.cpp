@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyTextArea::igdeMetaPropertyTextArea(const char *name, const char *description, int rows) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyTextArea::igdeMetaPropertyTextArea(
+	const char *id, const char *name, const char *description, int rows) :
+igdeMetaProperty(id, name, description),
 pRows(rows){
 }
 
@@ -49,6 +50,12 @@ void igdeMetaPropertyTextArea::SetDefaultValue(const decString &value){
 
 void igdeMetaPropertyTextArea::SetRows(int rows){
 	pRows = decMath::max(rows, 1);
+}
+
+void igdeMetaPropertyTextArea::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(const igdeMetaContext::Ref &context){

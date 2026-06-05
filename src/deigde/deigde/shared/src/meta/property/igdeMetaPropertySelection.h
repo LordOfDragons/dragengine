@@ -40,9 +40,15 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertySelection>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertySelection>{
+	};
+	
+	
 private:
 	igdeListItem::List pChoices;
 	void *pDefaultValue;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -50,7 +56,8 @@ public:
 	/*@{*/
 	
 	/** \brief Create selection meta property with label and description. */
-	igdeMetaPropertySelection(const char *name, const char *description, const igdeListItem::List &choices);
+	igdeMetaPropertySelection(const char *id, const char *name,
+		const char *description, const igdeListItem::List &choices);
 	
 protected:
 	/** \brief Clean up selection meta property. */
@@ -70,6 +77,14 @@ public:
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(void *value);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

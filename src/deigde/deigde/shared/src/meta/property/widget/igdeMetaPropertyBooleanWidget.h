@@ -41,7 +41,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyBoolean::Listener{
+		igdeMetaPropertyBooleanWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyBooleanWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyBoolean &pPropertyBoolean;
+	PropertyListener::Ref pPropertyListener;
 	igdeCheckBox::Ref pCheckBox;
 	igdeAction::Ref pAction;
 	

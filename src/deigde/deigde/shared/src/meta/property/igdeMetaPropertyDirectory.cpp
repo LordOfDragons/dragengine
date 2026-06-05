@@ -33,8 +33,8 @@
 ////////////////////////////
 
 igdeMetaPropertyDirectory::igdeMetaPropertyDirectory(
-	const char *name, const char *description, bool useGameVFS) :
-igdeMetaProperty(name, description),
+	const char *id, const char *name, const char *description, bool useGameVFS) :
+igdeMetaProperty(id, name, description),
 pUseGameVFS(useGameVFS){
 }
 
@@ -50,6 +50,12 @@ void igdeMetaPropertyDirectory::SetUseGameVFS(bool useGameVFS){
 
 void igdeMetaPropertyDirectory::SetDefaultValue(const decString &value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyDirectory::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(const igdeMetaContext::Ref &context){

@@ -26,14 +26,22 @@
 #include "widget/igdeMetaPropertyObjectWidget.h"
 
 
+// Class igdeMetaPropertyObject::Listener
+///////////////////////////////////////////
+
+void igdeMetaPropertyObject::Listener::OnObjectsChanged(igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
+}
+
+
 // Class igdeMetaPropertyObject
-//////////////////////////////////
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyObject::igdeMetaPropertyObject(const char *name, const char *description) :
-igdeMetaProperty(name, description){
+igdeMetaPropertyObject::igdeMetaPropertyObject(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description){
 }
 
 igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;
@@ -41,6 +49,19 @@ igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;
 
 // Management
 ///////////////
+
+void igdeMetaPropertyObject::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
+
+void igdeMetaPropertyObject::NotifyObjectsChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnObjectsChanged(this, context);
+	});
+}
+
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyObjectWidget::Ref::New(*this, context);

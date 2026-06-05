@@ -34,9 +34,6 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 
-class igdeWPMetaContext;
-
-
 /**
  * \brief Window properties meta context list panel.
  *

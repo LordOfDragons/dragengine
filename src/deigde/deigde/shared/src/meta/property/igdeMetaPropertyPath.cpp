@@ -32,15 +32,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPath::igdeMetaPropertyPath(const char *name, const char *description,
-	igdeEnvironment::eFilePatternListTypes resourceType) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *name,
+	const char *description, igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaProperty(id, name, description),
 pResourceType(resourceType){
 }
 
-igdeMetaPropertyPath::igdeMetaPropertyPath(const char *name, const char *description,
-	const igdeFilePattern::List &customPatternList) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *name,
+	const char *description, const igdeFilePattern::List &customPatternList) :
+igdeMetaProperty(id, name, description),
 pResourceType(igdeEnvironment::eFilePatternListTypes::efpltAll),
 pCustomPatternList(customPatternList){
 }
@@ -50,6 +50,13 @@ igdeMetaPropertyPath::~igdeMetaPropertyPath() = default;
 
 // Management
 ///////////////
+
+void igdeMetaPropertyPath::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
+
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyPathWidget::Ref::New(*this, context);

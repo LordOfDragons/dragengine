@@ -42,7 +42,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyDirectory::Listener{
+		igdeMetaPropertyDirectoryWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyDirectoryWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyDirectory &pPropertyDirectory;
+	PropertyListener::Ref pPropertyListener;
 	igdeEditDirectory::Ref pEditDirectory;
 	igdeEditDirectoryListener::Ref pListener;
 	

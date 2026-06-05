@@ -31,7 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaProperty::igdeMetaProperty(const char *name, const char *description) :
+igdeMetaProperty::igdeMetaProperty(const char *id, const char *name, const char *description) :
+pId(id),
 pLabel(name),
 pDescription(description){
 }

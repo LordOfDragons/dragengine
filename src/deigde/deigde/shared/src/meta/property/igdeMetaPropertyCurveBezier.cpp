@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(const char *name, const char *description) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
 pClampMin(0.0f, 0.0f),
 pClampMax(1.0f, 1.0f),
 pClamp(false){
@@ -59,6 +60,12 @@ void igdeMetaPropertyCurveBezier::SetClamp(bool clamp){
 
 void igdeMetaPropertyCurveBezier::SetDefaultValue(const decCurveBezier &value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyCurveBezier::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(const igdeMetaContext::Ref &context){

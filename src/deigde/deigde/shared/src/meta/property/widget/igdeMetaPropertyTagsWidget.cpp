@@ -130,8 +130,22 @@ public:
 }
 
 
+// Class igdeMetaPropertyTagsWidget::PropertyListener
+///////////////////////////////////////////////////////
+
+igdeMetaPropertyTagsWidget::PropertyListener::PropertyListener(igdeMetaPropertyTagsWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyTagsWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyTagsWidget::PropertyListener::OnValueChanged(igdeMetaPropertyTags*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyTagsWidget
-//////////////////////////////////////
+/////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -139,11 +153,15 @@ public:
 igdeMetaPropertyTagsWidget::igdeMetaPropertyTagsWidget(
 	igdeMetaPropertyTags &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyTags(property){
+pPropertyTags(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyTags.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyTagsWidget::~igdeMetaPropertyTagsWidget(){
 	Drop();
+	pPropertyTags.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -162,6 +180,7 @@ void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &
 	helper.EditTags(container, pEditTags, pAction);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){

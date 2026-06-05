@@ -42,7 +42,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyDVector::Listener{
+		igdeMetaPropertyDVectorWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyDVectorWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyDVector *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyDVector &pPropertyDVector;
+	PropertyListener::Ref pPropertyListener;
 	igdeEditDVector::Ref pEditDVector;
 	igdeEditDVectorListener::Ref pListener;
 	

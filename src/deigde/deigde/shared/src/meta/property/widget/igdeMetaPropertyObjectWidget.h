@@ -42,10 +42,26 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyObject::Listener{
+		igdeMetaPropertyObjectWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyObjectWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectsChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyObject &pPropertyObject;
+	PropertyListener::Ref pPropertyListener;
 	igdeComboBoxFilter::Ref pComboBox;
 	igdeComboBoxListener::Ref pListener;
-	igdeMetaPropertyObject::ObjectData::Ref pListItems;
 	
 	
 public:
@@ -79,6 +95,8 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
+	/** \brief Update object list. */
+	void UpdateObjectList();
 	
 	/** \brief Combo box widget or nullptr. */
 	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }

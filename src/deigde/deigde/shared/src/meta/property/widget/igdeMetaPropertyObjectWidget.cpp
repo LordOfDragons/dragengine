@@ -130,6 +130,24 @@ public:
 }
 
 
+// Class igdeMetaPropertyObjectWidget::PropertyListener
+/////////////////////////////////////////////////////////
+
+igdeMetaPropertyObjectWidget::PropertyListener::PropertyListener(igdeMetaPropertyObjectWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyObjectWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyObjectWidget::PropertyListener::OnValueChanged(igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectsChanged(igdeMetaPropertyObject*, const igdeMetaContext::Ref &){
+	pWidget.UpdateObjectList();
+}
+
+
 // Class igdeMetaPropertyObjectWidget
 ///////////////////////////////////////
 
@@ -139,11 +157,15 @@ public:
 igdeMetaPropertyObjectWidget::igdeMetaPropertyObjectWidget(
 	igdeMetaPropertyObject &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyObject(property){
+pPropertyObject(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	property.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyObjectWidget::~igdeMetaPropertyObjectWidget(){
 	Drop();
+	pPropertyObject.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -163,6 +185,9 @@ void igdeMetaPropertyObjectWidget::Create(igdeContainer &container, igdeUIHelper
 	pComboBox->SetEditable(false);
 	
 	CreateContextMenuButton(line, helper);
+	
+	UpdateObjectList();
+	Update();
 }
 
 void igdeMetaPropertyObjectWidget::Drop(){
@@ -181,22 +206,26 @@ void igdeMetaPropertyObjectWidget::Update(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto items = GetPropertyObject().GetObjects();
-		if(pListItems != items){
-			pListItems = items;
-			
-			pComboBox->RemoveAllItems();
-			items->GetData().Visit([&](const igdeListItem &item){
-				pComboBox->AddItem(igdeListItem::Ref::New(item));
-			});
-			pComboBox->StoreFilterItems();
-		}
-		
-		const auto value = GetPropertyObject().GetPropertyValue(GetContext());
-		pComboBox->SetSelectionWithRefData(value);
+		pComboBox->SetSelectionWithRefData(GetPropertyObject().GetPropertyValue(GetContext()));
 	});
 }
 
+void igdeMetaPropertyObjectWidget::UpdateObjectList(){
+	if(!pComboBox){
+		return;
+	}
+	
+	RunWithPreventUpdate([&]{
+		const auto &items = GetPropertyObject().GetObjects();
+		pComboBox->RemoveAllItems();
+		items.Visit([&](const igdeListItem &item){
+			pComboBox->AddItem(igdeListItem::Ref::New(item));
+		});
+		pComboBox->StoreFilterItems();
+		
+		pComboBox->SetSelectionWithRefData(GetPropertyObject().GetPropertyValue(GetContext()));
+	});
+}
 
 // Protected Functions
 ////////////////////////

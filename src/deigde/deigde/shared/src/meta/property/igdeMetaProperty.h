@@ -25,9 +25,12 @@
 #ifndef _IGDEMETAPROPERTY_H_
 #define _IGDEMETAPROPERTY_H_
 
+#include <functional>
+
 #include "../igdeMetaContext.h"
 #include "../../gui/menu/igdeMenuCascade.h"
 #include "../../utils/igdeFilter.h"
+#include "../../utils/igdeTListenerList.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -47,8 +50,29 @@ public:
 	using List = decTObjectOrderedSet<igdeMetaProperty>;
 	
 	
+protected:
+	/** \brief Listener template. */
+	template <typename P>
+	class DE_DLL_EXPORT TListener : public deObject{
+	public:
+		/** \brief Reference type. */
+		using Ref = deTObjectReference<TListener<P>>;
+		
+		/** \brief Create listener. */
+		TListener() = default;
+		
+	protected:
+		/** \brief Destructor. */
+		virtual ~TListener() = default;
+		
+	public:
+		/** \brief Value changed. */
+		virtual void OnValueChanged(P *property, const igdeMetaContext::Ref &context){}
+	};
+	
+	
 private:
-	decString pLabel, pDescription, pFilter, pUndoInfo;
+	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
 	igdeFilter::Matchable pMatchable;
 	
 	
@@ -59,7 +83,7 @@ public:
 	/**
 	 * \brief Create meta property with label and description.
 	 */
-	igdeMetaProperty(const char *name, const char *description);
+	igdeMetaProperty(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up meta property. */
@@ -71,6 +95,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Identifier. */
+	inline const decString &GetId() const{ return pId; }
+	
 	/** \brief Label shown in UI Forms for this property. usually '@translation'. */
 	inline const decString &GetLabel() const{ return pLabel; }
 	
@@ -97,7 +124,6 @@ public:
 	
 	/** \brief Set undo info string or empty string to use label. */
 	void SetUndoInfo(const char *undoInfo);
-	
 	
 	/**
 	 * \brief Undo info string or empty to use label.

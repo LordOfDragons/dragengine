@@ -37,8 +37,14 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyBoolean>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyBoolean>{
+	};
+	
+	
 private:
 	bool pDefaultValue;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -46,7 +52,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create boolean meta property with label and description. */
-	igdeMetaPropertyBoolean(const char *name, const char *description);
+	igdeMetaPropertyBoolean(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up boolean meta property. */
@@ -63,6 +69,14 @@ public:
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(bool value);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

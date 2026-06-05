@@ -44,12 +44,28 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyString::Listener{
+		igdeMetaPropertyStringWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyStringWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
+		void OnStringListChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyString &pPropertyString;
+	PropertyListener::Ref pPropertyListener;
 	igdeTextField::Ref pTextField;
 	igdeTextFieldListener::Ref pTextListener;
 	igdeComboBoxFilter::Ref pComboBox;
 	igdeComboBoxListener::Ref pComboListener;
-	igdeMetaPropertyString::StringData::Ref pListItems;
 	
 	
 public:
@@ -82,6 +98,9 @@ public:
 	
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
+	
+	/** \brief Update string list. */
+	void UpdateStringList();
 	
 	
 	/** \brief Text field widget or nullptr. */

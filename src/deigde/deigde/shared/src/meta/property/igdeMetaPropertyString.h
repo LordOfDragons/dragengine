@@ -38,13 +38,23 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyString>;
 	
-	/** \brief String list meta data. */
-	using StringData = igdeTMetaData<igdeListItem::List>;
+	/** \brief List of allowed strings. */
+	using StringList = igdeListItem::List;
+	
+	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyString>{
+	public:
+		/** \brief String list changed. */
+		virtual void OnStringListChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context);
+	};
+	
 	
 private:
 	decString pDefaultValue;
 	bool pEnableStringList;
-	StringData::Ref pStringList;
+	StringList pStringList;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -52,7 +62,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create string meta property with label and description. */
-	igdeMetaPropertyString(const char *name, const char *description);
+	igdeMetaPropertyString(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up string meta property. */
@@ -75,6 +85,25 @@ public:
 	
 	/** \brief Set enable string list restriction. */
 	void SetEnableStringList(bool enable);
+	
+	/**
+	 * \brief String list to choose from.
+	 *
+	 * After changing the list call NotifyStringListChanged().
+	 */
+	inline StringList &GetStringList(){ return pStringList; }
+	inline const StringList &GetStringList() const{ return pStringList; }
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	
+	/** \brief Notify listeners about string list changed. */
+	void NotifyStringListChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**
@@ -104,14 +133,6 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value) = 0;
-	
-	/**
-	 * \brief String list to choose from.
-	 *
-	 * Subclass has to return the same immutable list reference as long as the list stays unchanged.
-	 * As soon as the list reference changes the widget content is updated to reflect the changes.
-	 */
-	virtual StringData::Ref GetStringList() const = 0;
 	
 	
 	/**

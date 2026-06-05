@@ -39,8 +39,14 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyVector2>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyVector2>{
+	};
+	
+	
 private:
 	decVector2 pDefaultValue;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -48,7 +54,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create vector2 meta property with label and description. */
-	igdeMetaPropertyVector2(const char *name, const char *description);
+	igdeMetaPropertyVector2(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up vector2 meta property. */
@@ -65,6 +71,14 @@ public:
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(const decVector2 &value);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

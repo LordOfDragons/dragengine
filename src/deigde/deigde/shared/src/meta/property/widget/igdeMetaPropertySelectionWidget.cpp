@@ -129,19 +129,37 @@ public:
 }
 
 
+// Class igdeMetaPropertySelectionWidget::PropertyListener
+////////////////////////////////////////////////////////////
+
+igdeMetaPropertySelectionWidget::PropertyListener::PropertyListener(igdeMetaPropertySelectionWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertySelectionWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertySelectionWidget::PropertyListener::OnValueChanged(igdeMetaPropertySelection*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertySelectionWidget
-///////////////////////////////////////////
+//////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(igdeMetaPropertySelection &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertySelection(property){
+pPropertySelection(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertySelection.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertySelectionWidget::~igdeMetaPropertySelectionWidget(){
 	Drop();
+	pPropertySelection.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -165,6 +183,7 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 	});
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertySelectionWidget::Drop(){

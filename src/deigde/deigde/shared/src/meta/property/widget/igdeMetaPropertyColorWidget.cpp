@@ -129,19 +129,37 @@ public:
 }
 
 
+// Class igdeMetaPropertyColorWidget::PropertyListener
+////////////////////////////////////////////////////////
+
+igdeMetaPropertyColorWidget::PropertyListener::PropertyListener(igdeMetaPropertyColorWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyColorWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyColorWidget::PropertyListener::OnValueChanged(igdeMetaPropertyColor*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyColorWidget
-///////////////////////////////////////
+//////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyColor(property){
+pPropertyColor(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyColor.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyColorWidget::~igdeMetaPropertyColorWidget(){
 	Drop();
+	pPropertyColor.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -160,6 +178,7 @@ void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper 
 	helper.ColorBox(container, pPropertyColor.GetDescription(), pColorBox, pListener);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyColorWidget::Drop(){

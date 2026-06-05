@@ -39,9 +39,15 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyPath>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyPath>{
+	};
+	
+	
 private:
 	igdeEnvironment::eFilePatternListTypes pResourceType;
 	igdeFilePattern::List pCustomPatternList;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -49,11 +55,11 @@ public:
 	/*@{*/
 
 	/** \brief Create path meta property with label and description. */
-	igdeMetaPropertyPath(const char *name, const char *description,
+	igdeMetaPropertyPath(const char *id, const char *name, const char *description,
 		igdeEnvironment::eFilePatternListTypes resourceType);
 	
 	/** \brief Create path meta property with label, description and custom file pattern list. */
-	igdeMetaPropertyPath(const char *name, const char *description,
+	igdeMetaPropertyPath(const char *id, const char *name, const char *description,
 		const igdeFilePattern::List &customPatternList);
 	
 protected:
@@ -71,6 +77,14 @@ public:
 	
 	/** \brief Custom pattern list. */
 	inline const igdeFilePattern::List &GetCustomPatternList() const{ return pCustomPatternList; }
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

@@ -32,9 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySelection::igdeMetaPropertySelection(const char *name, const char *description,
-	const igdeListItem::List &choices) :
-igdeMetaProperty(name, description),
+igdeMetaPropertySelection::igdeMetaPropertySelection(const char *id, const char *name,
+	const char *description, const igdeListItem::List &choices) :
+igdeMetaProperty(id, name, description),
 pChoices(choices),
 pDefaultValue(nullptr){
 }
@@ -47,6 +47,12 @@ igdeMetaPropertySelection::~igdeMetaPropertySelection() = default;
 
 void igdeMetaPropertySelection::SetDefaultValue(void *value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertySelection::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(const igdeMetaContext::Ref &context){

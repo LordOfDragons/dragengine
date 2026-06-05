@@ -42,7 +42,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyColor::Listener{
+		igdeMetaPropertyColorWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyColorWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyColor &pPropertyColor;
+	PropertyListener::Ref pPropertyListener;
 	igdeColorBox::Ref pColorBox;
 	igdeColorBoxListener::Ref pListener;
 	

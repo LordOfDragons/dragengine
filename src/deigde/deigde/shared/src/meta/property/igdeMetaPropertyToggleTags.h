@@ -39,8 +39,14 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyToggleTags>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyToggleTags>{
+	};
+	
+	
 private:
 	int pRows;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -48,7 +54,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create toggle tags meta property with label and description. */
-	igdeMetaPropertyToggleTags(const char *name, const char *description, int rows);
+	igdeMetaPropertyToggleTags(const char *id, const char *name, const char *description, int rows);
 	
 protected:
 	/** \brief Clean up toggle tags meta property. */
@@ -65,6 +71,14 @@ public:
 	
 	/** \brief Set rows. */
 	void SetRows(int rows);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

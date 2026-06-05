@@ -37,9 +37,15 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyTextArea>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyTextArea>{
+	};
+	
+	
 private:
 	decString pDefaultValue;
 	int pRows;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -47,7 +53,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create text area meta property with label and description. */
-	igdeMetaPropertyTextArea(const char *name, const char *description, int rows);
+	igdeMetaPropertyTextArea(const char *id, const char *name, const char *description, int rows);
 	
 protected:
 	/** \brief Clean up text area meta property. */
@@ -70,6 +76,14 @@ public:
 	
 	/** \brief Set rows. */
 	void SetRows(int rows);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

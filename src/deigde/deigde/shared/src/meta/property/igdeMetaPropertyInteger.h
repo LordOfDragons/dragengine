@@ -37,11 +37,17 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyInteger>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyInteger>{
+	};
+	
+	
 private:
 	int pDefaultValue;
 	int pLowerLimit, pUpperLimit, pTickSpacing;
 	bool pEnableLowerLimit, pEnableUpperLimit;
 	bool pEnableSpin;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -49,7 +55,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create integer meta property with label and description. */
-	igdeMetaPropertyInteger(const char *name, const char *description);
+	igdeMetaPropertyInteger(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up integer meta property. */
@@ -103,6 +109,15 @@ public:
 	
 	/** \brief Set enable spin widget. */
 	void SetEnableSpin(bool enable);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	
 	
 	/**
 	 * \brief Capture context.

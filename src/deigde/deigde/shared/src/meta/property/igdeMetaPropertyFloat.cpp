@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyFloat::igdeMetaPropertyFloat(const char *name, const char *description) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyFloat::igdeMetaPropertyFloat(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
 pPrecision(3),
 pDefaultValue(0.0f),
 pLowerLimit(0.0f),
@@ -78,6 +79,11 @@ void igdeMetaPropertyFloat::SetEnableUpperLimit(bool enable){
 	pEnableUpperLimit = enable;
 }
 
+void igdeMetaPropertyFloat::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyFloatWidget::Ref::New(*this, context);

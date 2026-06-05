@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *name, const char *description) :
-igdeMetaProperty(name, description){
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description){
 }
 
 igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;

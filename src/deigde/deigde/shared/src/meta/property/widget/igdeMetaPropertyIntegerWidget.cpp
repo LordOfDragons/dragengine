@@ -164,6 +164,20 @@ public:
 }
 
 
+// Class igdeMetaPropertyIntegerWidget::PropertyListener
+//////////////////////////////////////////////////////////
+
+igdeMetaPropertyIntegerWidget::PropertyListener::PropertyListener(igdeMetaPropertyIntegerWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyIntegerWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyIntegerWidget::PropertyListener::OnValueChanged(igdeMetaPropertyInteger*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyIntegerWidget
 ////////////////////////////////////////
 
@@ -173,11 +187,15 @@ public:
 igdeMetaPropertyIntegerWidget::igdeMetaPropertyIntegerWidget(
 	igdeMetaPropertyInteger &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyInteger(property){
+pPropertyInteger(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyInteger.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyIntegerWidget::~igdeMetaPropertyIntegerWidget(){
 	Drop();
+	pPropertyInteger.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -212,6 +230,7 @@ void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelpe
 	}
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyIntegerWidget::Drop(){

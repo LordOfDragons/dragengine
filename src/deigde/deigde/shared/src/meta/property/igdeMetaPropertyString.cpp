@@ -26,14 +26,22 @@
 #include "widget/igdeMetaPropertyStringWidget.h"
 
 
+// Class igdeMetaPropertyString::Listener
+///////////////////////////////////////////
+
+void igdeMetaPropertyString::Listener::OnStringListChanged(igdeMetaPropertyString*, const igdeMetaContext::Ref&){
+}
+
+
 // Class igdeMetaPropertyString
 /////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyString::igdeMetaPropertyString(const char *name, const char *description) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyString::igdeMetaPropertyString(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
 pEnableStringList(false){
 }
 
@@ -49,6 +57,18 @@ void igdeMetaPropertyString::SetDefaultValue(const decString &value){
 
 void igdeMetaPropertyString::SetEnableStringList(bool enable){
 	pEnableStringList = enable;
+}
+
+void igdeMetaPropertyString::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
+
+void igdeMetaPropertyString::NotifyStringListChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnStringListChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(const igdeMetaContext::Ref &context){

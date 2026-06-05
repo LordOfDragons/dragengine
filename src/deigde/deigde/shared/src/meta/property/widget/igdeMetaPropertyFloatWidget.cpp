@@ -148,19 +148,37 @@ public:
 }
 
 
+// Class igdeMetaPropertyFloatWidget::PropertyListener
+////////////////////////////////////////////////////////
+
+igdeMetaPropertyFloatWidget::PropertyListener::PropertyListener(igdeMetaPropertyFloatWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyFloatWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyFloatWidget::PropertyListener::OnValueChanged(igdeMetaPropertyFloat*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyFloatWidget
-///////////////////////////////////////
+//////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 igdeMetaPropertyFloatWidget::igdeMetaPropertyFloatWidget(igdeMetaPropertyFloat &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyFloat(property){
+pPropertyFloat(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyFloat.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyFloatWidget::~igdeMetaPropertyFloatWidget(){
 	Drop();
+	pPropertyFloat.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -190,6 +208,7 @@ void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper 
 	}
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyFloatWidget::Drop(){

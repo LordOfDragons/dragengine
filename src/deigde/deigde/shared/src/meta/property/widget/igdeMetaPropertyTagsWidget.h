@@ -42,7 +42,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertyTags::Listener{
+		igdeMetaPropertyTagsWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertyTagsWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertyTags *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertyTags &pPropertyTags;
+	PropertyListener::Ref pPropertyListener;
 	igdeEditTags::Ref pEditTags;
 	igdeAction::Ref pAction;
 	

@@ -39,8 +39,14 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyPoint3>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyPoint3>{
+	};
+	
+	
 private:
 	decPoint3 pDefaultValue;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -48,7 +54,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create point3 meta property with label and description. */
-	igdeMetaPropertyPoint3(const char *name, const char *description);
+	igdeMetaPropertyPoint3(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up point3 meta property. */
@@ -65,6 +71,14 @@ public:
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(const decPoint3 &value);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

@@ -48,7 +48,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create group meta property with label and description. */
-	igdeMetaPropertyGroup(const char *name, const char *description);
+	igdeMetaPropertyGroup(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up group meta property. */

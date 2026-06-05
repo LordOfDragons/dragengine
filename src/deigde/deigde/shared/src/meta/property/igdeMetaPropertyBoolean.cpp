@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyBoolean::igdeMetaPropertyBoolean(const char *name, const char *description) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyBoolean::igdeMetaPropertyBoolean(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
 pDefaultValue(false){
 }
 
@@ -45,6 +46,12 @@ igdeMetaPropertyBoolean::~igdeMetaPropertyBoolean() = default;
 
 void igdeMetaPropertyBoolean::SetDefaultValue(bool value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyBoolean::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(const igdeMetaContext::Ref &context){

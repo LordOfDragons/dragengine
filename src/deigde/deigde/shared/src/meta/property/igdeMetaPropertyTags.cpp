@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyTags::igdeMetaPropertyTags(const char *name, const char *description, int rows) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyTags::igdeMetaPropertyTags(
+	const char *id, const char *name, const char *description, int rows) :
+igdeMetaProperty(id, name, description),
 pRows(rows){
 }
 
@@ -45,6 +46,12 @@ igdeMetaPropertyTags::~igdeMetaPropertyTags() = default;
 
 void igdeMetaPropertyTags::SetRows(int rows){
 	pRows = decMath::max(rows, 1);
+}
+
+void igdeMetaPropertyTags::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyTags::CreateWidget(const igdeMetaContext::Ref &context){

@@ -130,6 +130,20 @@ public:
 }
 
 
+// Class igdeMetaPropertyToggleTagsWidget::PropertyListener
+/////////////////////////////////////////////////////////////
+
+igdeMetaPropertyToggleTagsWidget::PropertyListener::PropertyListener(igdeMetaPropertyToggleTagsWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyToggleTagsWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnValueChanged(igdeMetaPropertyToggleTags*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyToggleTagsWidget
 ///////////////////////////////////////////
 
@@ -139,11 +153,15 @@ public:
 igdeMetaPropertyToggleTagsWidget::igdeMetaPropertyToggleTagsWidget(
 	igdeMetaPropertyToggleTags &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyToggleTags(property){
+pPropertyToggleTags(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyToggleTags.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyToggleTagsWidget::~igdeMetaPropertyToggleTagsWidget(){
 	Drop();
+	pPropertyToggleTags.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -162,6 +180,7 @@ void igdeMetaPropertyToggleTagsWidget::Create(igdeContainer &container, igdeUIHe
 	helper.ToggleTags(container, pToggleTags, pAction);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){

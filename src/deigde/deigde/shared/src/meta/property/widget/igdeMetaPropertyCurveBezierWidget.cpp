@@ -130,6 +130,20 @@ public:
 }
 
 
+// Class igdeMetaPropertyCurveBezierWidget::PropertyListener
+//////////////////////////////////////////////////////////////
+
+igdeMetaPropertyCurveBezierWidget::PropertyListener::PropertyListener(igdeMetaPropertyCurveBezierWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyCurveBezierWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnValueChanged(igdeMetaPropertyCurveBezier*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyCurveBezierWidget
 ////////////////////////////////////////////
 
@@ -139,11 +153,15 @@ public:
 igdeMetaPropertyCurveBezierWidget::igdeMetaPropertyCurveBezierWidget(
 	igdeMetaPropertyCurveBezier &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyCurveBezier(property){
+pPropertyCurveBezier(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyCurveBezier.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyCurveBezierWidget::~igdeMetaPropertyCurveBezierWidget(){
 	Drop();
+	pPropertyCurveBezier.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -162,6 +180,7 @@ void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIH
 	helper.ViewCurveBezier(container, pViewCurveBezier, pListener);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){

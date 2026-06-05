@@ -42,7 +42,23 @@ public:
 	
 	
 private:
+	class PropertyListener : public igdeMetaPropertySelection::Listener{
+		igdeMetaPropertySelectionWidget &pWidget;
+		
+	public:
+		using Ref = deTObjectReference<PropertyListener>;
+		PropertyListener(igdeMetaPropertySelectionWidget &widget);
+		
+	protected:
+		virtual ~PropertyListener() override;
+		
+	public:
+		void OnValueChanged(igdeMetaPropertySelection *property, const igdeMetaContext::Ref &context) override;
+	};
+	
+	
 	igdeMetaPropertySelection &pPropertySelection;
+	PropertyListener::Ref pPropertyListener;
 	igdeComboBox::Ref pComboBox;
 	igdeComboBoxListener::Ref pListener;
 	

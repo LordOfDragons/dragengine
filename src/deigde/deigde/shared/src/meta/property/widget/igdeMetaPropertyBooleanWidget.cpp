@@ -129,6 +129,20 @@ public:
 }
 
 
+// Class igdeMetaPropertyBooleanWidget::PropertyListener
+//////////////////////////////////////////////////////////
+
+igdeMetaPropertyBooleanWidget::PropertyListener::PropertyListener(igdeMetaPropertyBooleanWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyBooleanWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyBooleanWidget::PropertyListener::OnValueChanged(igdeMetaPropertyBoolean*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyBooleanWidget
 ////////////////////////////////////////
 
@@ -138,11 +152,15 @@ public:
 igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(
 	igdeMetaPropertyBoolean &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyBoolean(property){
+pPropertyBoolean(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyBoolean.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyBooleanWidget::~igdeMetaPropertyBooleanWidget(){
 	Drop();
+	pPropertyBoolean.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -161,6 +179,7 @@ void igdeMetaPropertyBooleanWidget::Create(igdeContainer &container, igdeUIHelpe
 	helper.CheckBox(line, pCheckBox, pAction);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyBooleanWidget::Drop(){

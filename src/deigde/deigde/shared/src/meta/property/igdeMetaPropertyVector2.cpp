@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyVector2::igdeMetaPropertyVector2(const char *name, const char *description) :
-igdeMetaProperty(name, description){
+igdeMetaPropertyVector2::igdeMetaPropertyVector2(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description){
 }
 
 igdeMetaPropertyVector2::~igdeMetaPropertyVector2() = default;
@@ -44,6 +45,12 @@ igdeMetaPropertyVector2::~igdeMetaPropertyVector2() = default;
 
 void igdeMetaPropertyVector2::SetDefaultValue(const decVector2 &value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyVector2::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyVector2::CreateWidget(const igdeMetaContext::Ref &context){

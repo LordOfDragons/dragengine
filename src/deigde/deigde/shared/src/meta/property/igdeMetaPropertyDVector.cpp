@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyDVector::igdeMetaPropertyDVector(const char *name, const char *description) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyDVector::igdeMetaPropertyDVector(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
 pPrecision(3){
 }
 
@@ -49,6 +50,12 @@ void igdeMetaPropertyDVector::SetPrecision(int precision){
 
 void igdeMetaPropertyDVector::SetDefaultValue(const decDVector &value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyDVector::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyDVector::CreateWidget(const igdeMetaContext::Ref &context){

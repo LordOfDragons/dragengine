@@ -37,11 +37,17 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyFloat>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyFloat>{
+	};
+	
+	
 private:
 	int pPrecision;
 	float pDefaultValue;
 	float pLowerLimit, pUpperLimit, pTickSpacing;
 	bool pEnableLowerLimit, pEnableUpperLimit;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -49,7 +55,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create float meta property with label and description. */
-	igdeMetaPropertyFloat(const char *name, const char *description);
+	igdeMetaPropertyFloat(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up float meta property. */
@@ -103,6 +109,14 @@ public:
 	
 	/** \brief Set enable upper limit. */
 	void SetEnableUpperLimit(bool enable);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

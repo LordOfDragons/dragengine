@@ -129,8 +129,22 @@ public:
 }
 
 
+// Class igdeMetaPropertyTextAreaWidget::PropertyListener
+///////////////////////////////////////////////////////////
+
+igdeMetaPropertyTextAreaWidget::PropertyListener::PropertyListener(igdeMetaPropertyTextAreaWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyTextAreaWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyTextAreaWidget::PropertyListener::OnValueChanged(igdeMetaPropertyTextArea*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+
 // Class igdeMetaPropertyTextAreaWidget
-//////////////////////////////////////////
+/////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -138,11 +152,15 @@ public:
 igdeMetaPropertyTextAreaWidget::igdeMetaPropertyTextAreaWidget(
 	igdeMetaPropertyTextArea &property, igdeMetaContext &context) :
 igdeMetaPropertyWidget(property, context),
-pPropertyTextArea(property){
+pPropertyTextArea(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	pPropertyTextArea.GetListeners().Add(pPropertyListener);
 }
 
 igdeMetaPropertyTextAreaWidget::~igdeMetaPropertyTextAreaWidget(){
 	Drop();
+	pPropertyTextArea.GetListeners().Remove(pPropertyListener);
 }
 
 
@@ -162,6 +180,7 @@ void igdeMetaPropertyTextAreaWidget::Create(igdeContainer &container, igdeUIHelp
 		pTextArea, pPropertyTextArea.GetRows(), pListener);
 	
 	CreateContextMenuButton(line, helper);
+	Update();
 }
 
 void igdeMetaPropertyTextAreaWidget::Drop(){

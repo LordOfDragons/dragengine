@@ -40,11 +40,17 @@ public:
 	using Ref = deTObjectReference<igdeMetaPropertyCurveBezier>;
 	
 	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyCurveBezier>{
+	};
+	
+	
 private:
 	decVector2 pClampMin;
 	decVector2 pClampMax;
 	bool pClamp;
 	decCurveBezier pDefaultValue;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -52,7 +58,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create curve bezier meta property with label and description. */
-	igdeMetaPropertyCurveBezier(const char *name, const char *description);
+	igdeMetaPropertyCurveBezier(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up curve bezier meta property. */
@@ -87,6 +93,14 @@ public:
 	
 	/** \brief Set default value. */
 	void SetDefaultValue(const decCurveBezier &value);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value change. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**

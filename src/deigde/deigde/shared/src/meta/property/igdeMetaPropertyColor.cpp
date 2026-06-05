@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyColor::igdeMetaPropertyColor(const char *name, const char *description) :
-igdeMetaProperty(name, description){
+igdeMetaPropertyColor::igdeMetaPropertyColor(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description){
 }
 
 igdeMetaPropertyColor::~igdeMetaPropertyColor() = default;
@@ -44,6 +45,12 @@ igdeMetaPropertyColor::~igdeMetaPropertyColor() = default;
 
 void igdeMetaPropertyColor::SetDefaultValue(const decColor &value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyColor::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(const igdeMetaContext::Ref &context){

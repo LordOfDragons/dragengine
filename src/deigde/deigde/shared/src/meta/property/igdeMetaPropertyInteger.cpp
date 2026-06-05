@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyInteger::igdeMetaPropertyInteger(const char *name, const char *description) :
-igdeMetaProperty(name, description),
+igdeMetaPropertyInteger::igdeMetaPropertyInteger(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description),
 pDefaultValue(0),
 pLowerLimit(0),
 pUpperLimit(100),
@@ -78,6 +79,11 @@ void igdeMetaPropertyInteger::SetEnableSpin(bool enable){
 	pEnableSpin = enable;
 }
 
+void igdeMetaPropertyInteger::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
+}
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyIntegerWidget::Ref::New(*this, context);

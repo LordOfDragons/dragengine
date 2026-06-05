@@ -38,11 +38,21 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyObject>;
 	
-	/** \brief Object list data. */
-	using ObjectData = igdeTMetaData<igdeListItem::List>;
+	/** \brief List of objects. */
+	using ObjectList = igdeListItem::List;
+	
+	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyObject>{
+	public:
+		/** \brief List of allowed objects changed. */
+		virtual void OnObjectsChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context);
+	};
+	
 	
 private:
-	ObjectData::Ref pObjects;
+	ObjectList pObjects;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -50,7 +60,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create object meta property with label and description. */
-	igdeMetaPropertyObject(const char *name, const char *description);
+	igdeMetaPropertyObject(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up object meta property. */
@@ -62,6 +72,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/**
+	 * \brief Object list to choose from.
+	 * 
+	 * After changing the list call NotifyObjectsChanged().
+	 */
+	inline ObjectList &GetObjects(){ return pObjects; }
+	inline const ObjectList &GetObjects() const{ return pObjects; }
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about value changed. */
+	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	
+	/** \brief Notify listeners about objects changed. */
+	void NotifyObjectsChanged(const igdeMetaContext::Ref &context);
+	
+	
 	/**
 	 * \brief Capture context.
 	 *
@@ -89,14 +119,6 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const deObject::Ref &value) = 0;
-	
-	/**
-	 * \brief Object list to choose from.
-	 * 
-	 * Subclass has to return the same immutable list reference as long as the list stays unchanged.
-	 * As soon as the list reference changes the widget content is updated to reflect the changes.
-	 */
-	virtual ObjectData::Ref GetObjects() const = 0;
 	
 	
 	/**

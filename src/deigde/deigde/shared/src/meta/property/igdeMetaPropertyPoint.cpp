@@ -32,8 +32,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPoint::igdeMetaPropertyPoint(const char *name, const char *description) :
-igdeMetaProperty(name, description){
+igdeMetaPropertyPoint::igdeMetaPropertyPoint(
+	const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description){
 }
 
 igdeMetaPropertyPoint::~igdeMetaPropertyPoint() = default;
@@ -44,6 +45,12 @@ igdeMetaPropertyPoint::~igdeMetaPropertyPoint() = default;
 
 void igdeMetaPropertyPoint::SetDefaultValue(const decPoint &value){
 	pDefaultValue = value;
+}
+
+void igdeMetaPropertyPoint::NotifyValueChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnValueChanged(this, context);
+	});
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint::CreateWidget(const igdeMetaContext::Ref &context){
