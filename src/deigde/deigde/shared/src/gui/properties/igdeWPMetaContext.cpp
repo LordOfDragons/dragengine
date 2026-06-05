@@ -35,6 +35,20 @@
 #include <dragengine/common/exceptions.h>
 
 
+// Class igdeWPMetaContext::ContextListener
+/////////////////////////////////////////////
+
+igdeWPMetaContext::ContextListener::ContextListener(igdeWPMetaContext &panel) :
+pPanel(panel){
+}
+
+igdeWPMetaContext::ContextListener::~ContextListener() = default;
+
+void igdeWPMetaContext::ContextListener::OnPropertiesChanged(igdeMetaContext*){
+	pPanel.UpdatePropertyWidgets();
+}
+
+
 // Class igdeWPMetaContext
 ////////////////////////////
 
@@ -42,14 +56,14 @@
 ////////////////////////////
 
 igdeWPMetaContext::igdeWPMetaContext(igdeEnvironment &environment) :
-igdeContainerScroll(environment, false, true)
+igdeContainerScroll(environment, false, true),
+pContextListener(ContextListener::Ref::New(*this))
 {
 	pCreateContent();
 }
 
 igdeWPMetaContext::~igdeWPMetaContext(){
-	pClearPropertyWidgets();
-	pProperties.Clear();
+	SetContext({});
 }
 
 
@@ -61,17 +75,17 @@ void igdeWPMetaContext::SetContext(const igdeMetaContext::Ref &context){
 		return;
 	}
 	
-	pProperties.Clear();
+	if(pContext){
+		pContext->GetListeners().Remove(pContextListener);
+	}
+	
 	pContext = context;
+	
 	if(context){
-		pProperties = context->GetProperties();
+		context->GetListeners().Add(pContextListener);
 	}
 	
-	pCreatePropertyWidgets();
-	
-	if(pFilter){
-		pFilterPropertyWidgets();
-	}
+	UpdatePropertyWidgets();
 }
 
 void igdeWPMetaContext::SetFilter(const igdeFilter &filter){
@@ -92,6 +106,13 @@ void igdeWPMetaContext::SetFilter(igdeFilter &&filter){
 	pFilterPropertyWidgets();
 }
 
+void igdeWPMetaContext::UpdatePropertyWidgets(){
+	pCreatePropertyWidgets();
+	if(pFilter){
+		pFilterPropertyWidgets();
+	}
+}
+
 
 // Private Functions
 //////////////////////
@@ -108,16 +129,17 @@ void igdeWPMetaContext::pCreatePropertyWidgets(){
 		return;
 	}
 	
-	igdeEnvironment &env = GetEnvironment();
-	igdeUIHelper &helper = env.GetUIHelperProperties();
-	if(!pProperties){
+	const auto &properties = pContext->GetProperties();
+	if(properties.IsEmpty()){
 		return;
 	}
 	
+	igdeEnvironment &env = GetEnvironment();
+	igdeUIHelper &helper = env.GetUIHelperProperties();
 	auto form = igdeContainerForm::Ref::New(env);
 	pPropertyContainer->AddChild(form);
 	
-	pProperties->GetData().Visit([&](const igdeMetaProperty::Ref &property){
+	properties.Visit([&](const igdeMetaProperty::Ref &property){
 		auto group = property.DynamicCast<igdeMetaPropertyGroup>();
 		if(group){
 			form.Clear();

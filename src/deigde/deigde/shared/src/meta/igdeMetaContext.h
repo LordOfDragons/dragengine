@@ -27,6 +27,7 @@
 
 #include "igdeTMetaData.h"
 #include "../gui/resources/igdeIcon.h"
+#include "../utils/igdeTListenerList.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -52,15 +53,35 @@ public:
 	/** \brief Context data. */
 	using Data = igdeTMetaData<decTObjectOrderedSet<igdeMetaContext>>;
 	
-	/** \brief Properties meta data. */
-	using PropertyData = igdeTMetaData<decTObjectOrderedSet<igdeMetaProperty>>;
+	/** \brief List of properties. */
+	using PropertyList = decTObjectOrderedSet<igdeMetaProperty>;
+	
+	
+	/** \brief Listener. */
+	class DE_DLL_EXPORT Listener : public deObject{
+	public:
+		/** \brief Reference type. */
+		using Ref = deTObjectReference<Listener>;
+		
+		/** \brief Create listener. */
+		Listener();
+		
+	protected:
+		/** \brief Destructor. */
+		virtual ~Listener();
+		
+	public:
+		/** \brief Properties changed. */
+		virtual void OnPropertiesChanged(igdeMetaContext *context);
+	};
 	
 	
 private:
 	decString pIdentifier, pLabel, pDescription;
 	igdeIcon::Ref pIcon;
-	PropertyData::Ref pProperties;
+	PropertyList pProperties;
 	igdeUndoSystem *pUndoSystem;
+	igdeTListenerList<Listener> pListeners;
 	
 	
 public:
@@ -100,17 +121,27 @@ public:
 	/** \brief Set icon. */
 	void SetIcon(const igdeIcon::Ref &icon);
 	
-	/** \brief Get properties. */
-	inline const PropertyData::Ref &GetProperties() const{ return pProperties; }
-	
-	/** \brief Set properties. */
-	void SetProperties(const PropertyData::Ref &properties);
+	/**
+	 * \brief Properties.
+	 * 
+	 * After changing list of properties call NotifyPropertiesChanged().
+	 */
+	inline PropertyList &GetProperties(){ return pProperties; }
+	inline const PropertyList &GetProperties() const{ return pProperties; }
 	
 	/** \brief Get undo system or nullptr to apply actions immediately. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Set undo system or nullptr to apply actions immediately. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
+	
+	
+	/** \brief Listeners. */
+	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
+	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
+	
+	/** \brief Notify listeners about properties change. */
+	void NotifyPropertiesChanged();
 	/*@}*/
 };
 

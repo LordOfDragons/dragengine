@@ -26,6 +26,15 @@
 #include "property/igdeMetaProperty.h"
 
 
+// Class igdeMetaContext::Listener
+////////////////////////////////////
+
+igdeMetaContext::Listener::Listener() = default;
+igdeMetaContext::Listener::~Listener() = default;
+
+void igdeMetaContext::Listener::OnPropertiesChanged(igdeMetaContext*){}
+
+
 // Class igdeMetaContext
 //////////////////////////
 
@@ -55,10 +64,12 @@ void igdeMetaContext::SetIcon(const igdeIcon::Ref &icon){
 	pIcon = icon;
 }
 
-void igdeMetaContext::SetProperties(const PropertyData::Ref &properties){
-	pProperties = properties;
-}
-
 void igdeMetaContext::SetUndoSystem(igdeUndoSystem *undoSystem){
 	pUndoSystem = undoSystem;
+}
+
+void igdeMetaContext::NotifyPropertiesChanged(){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnPropertiesChanged(this);
+	});
 }

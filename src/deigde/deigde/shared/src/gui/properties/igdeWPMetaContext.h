@@ -49,10 +49,25 @@ public:
 	using PropertyWidgetList = decTObjectOrderedSet<igdeMetaPropertyWidget>;
 	
 private:
+	class ContextListener : public igdeMetaContext::Listener{
+		igdeWPMetaContext &pPanel;
+		
+	public:
+		using Ref = deTObjectReference<ContextListener>;
+		ContextListener(igdeWPMetaContext &panel);
+		
+	protected:
+		virtual ~ContextListener() override;
+		
+	public:
+		void OnPropertiesChanged(igdeMetaContext *context) override;
+	};
+	
+	
 	igdeMetaContext::Ref pContext;
+	ContextListener::Ref pContextListener;
 	igdeFilter pFilter;
 	
-	igdeMetaContext::PropertyData::Ref pProperties;
 	igdeContainerFlow::Ref pPropertyContainer;
 	PropertyWidgetList pPropertyWidgets;
 	
@@ -85,6 +100,9 @@ public:
 	/** \brief Set filter. */
 	void SetFilter(const igdeFilter &filter);
 	void SetFilter(igdeFilter &&filter);
+	
+	/** \brief Update property widgets. */
+	void UpdatePropertyWidgets();
 	/*@}*/
 	
 	
