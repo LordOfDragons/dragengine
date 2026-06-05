@@ -261,7 +261,7 @@ public:
 		igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
 	void EditString(igdeContainer &form, const char *label, const char *description,
-		int rows, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
+		int columns, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
 	/**
 	 * \brief Add text field.
@@ -271,13 +271,13 @@ public:
 	void EditString(igdeContainer &parent, const char *description,
 		igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
-	void EditString(igdeContainer &parent, const char *description, int rows,
+	void EditString(igdeContainer &parent, const char *description, int columns,
 		igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener);
 	
 	void EditString(const char *description, igdeTextField::Ref &textField,
 		const igdeTextFieldListener::Ref &listener);
 	
-	void EditString(const char *description, int rows, igdeTextField::Ref &textField,
+	void EditString(const char *description, int columns, igdeTextField::Ref &textField,
 		const igdeTextFieldListener::Ref &listener);
 	
 	

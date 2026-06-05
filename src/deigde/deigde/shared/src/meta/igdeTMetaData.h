@@ -22,20 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTSHARED_H_
-#define _IGDEMETAPROPERTSHARED_H_
+#ifndef _IGDETMETADATA_H_
+#define _IGDETMETADATA_H_
+
+#include <dragengine/deObject.h>
 
 
 /**
- * \brief Meta property data template.
+ * \brief Meta data template.
  * 
  * Allows to store by design immutable data by properties to detect changes in large data.
  */
 template <typename T>
-class DE_DLL_EXPORT igdeTMetaPropertyData : public deObject{
+class DE_DLL_EXPORT igdeTMetaData : public deObject{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeTMetaPropertyData<T>>;
+	using Ref = deTObjectReference<igdeTMetaData<T>>;
 	
 	
 private:
@@ -45,12 +47,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create meta property data. */
-	igdeTMetaPropertyData() = default;
+	/** \brief Create meta data. */
+	igdeTMetaData() = default;
 	
 protected:
-	/** \brief Clean up widget. */
-	~igdeTMetaPropertyData() override = default;
+	/** \brief Clean up meta data. */
+	~igdeTMetaData() override = default;
 	
 public:
 	/*@}*/

@@ -23,8 +23,9 @@
  */
 
 #include "igdeMetaPropertyWidget.h"
-#include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
+#include "../../../gui/igdeUIHelper.h"
+#include "../../../utils/igdeFilter.h"
 
 
 // Class igdeMetaPropertyWidget
@@ -51,6 +52,10 @@ void igdeMetaPropertyWidget::SetFilteredOut(bool filteredOut){
 	
 	pFilteredOut = filteredOut;
 	UpdateFilteredOut();
+}
+
+void igdeMetaPropertyWidget::Filter(const igdeFilter &filter){
+	SetFilteredOut(filter && filter.MatchesNot(GetProperty()->GetMatchable()));
 }
 
 

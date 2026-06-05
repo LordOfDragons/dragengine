@@ -293,8 +293,8 @@ igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
 }
 
 void igdeUIHelper::EditString(igdeContainer &form, const char *label, const char *description,
-int rows, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
-	EditString(description, rows, textField, listener);
+int columns, igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
+	EditString(description, columns, textField, listener);
 	FormLine(form, label, description, textField);
 }
 
@@ -304,9 +304,9 @@ igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
 	parent.AddChild(textField);
 }
 
-void igdeUIHelper::EditString(igdeContainer &parent, const char *description, int rows,
+void igdeUIHelper::EditString(igdeContainer &parent, const char *description, int columns,
 igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
-	EditString(description, rows, textField, listener);
+	EditString(description, columns, textField, listener);
 	parent.AddChild(textField);
 }
 
@@ -315,9 +315,9 @@ const igdeTextFieldListener::Ref &listener){
 	EditString(description, 15, textField, listener);
 }
 
-void igdeUIHelper::EditString(const char *description, int rows,
+void igdeUIHelper::EditString(const char *description, int columns,
 igdeTextField::Ref &textField, const igdeTextFieldListener::Ref &listener){
-	textField = igdeTextField::Ref::New(pEnvironment, rows, description);
+	textField = igdeTextField::Ref::New(pEnvironment, columns, description);
 	if(listener){
 		textField->AddListener(listener);
 	}

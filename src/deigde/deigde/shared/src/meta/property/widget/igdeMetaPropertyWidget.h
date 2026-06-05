@@ -35,6 +35,7 @@
 
 class igdeContainer;
 class igdeUIHelper;
+class igdeFilter;
 
 
 /**
@@ -44,6 +45,9 @@ class DE_DLL_EXPORT igdeMetaPropertyWidget : public deObject{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyWidget>;
+	
+	/** \brief List of property widgets. */
+	using List = decTObjectOrderedSet<igdeMetaPropertyWidget>;
 	
 	
 private:
@@ -84,6 +88,8 @@ public:
 	/** \brief Set widget is filtered out. */
 	void SetFilteredOut(bool filteredOut);
 	
+	/** \brief Filter widget. */
+	virtual void Filter(const igdeFilter &filter);
 	
 	/** \brief Create UI widgets adding them to container. */
 	virtual void Create(igdeContainer &container, igdeUIHelper &helper) = 0;

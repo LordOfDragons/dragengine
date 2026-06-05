@@ -22,64 +22,26 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaProperty.h"
+#include "igdeMetaPropertyGroup.h"
+#include "widget/igdeMetaPropertyGroupWidget.h"
 
 
-// Class igdeMetaProperty
-///////////////////////////
+// Class igdeMetaPropertyGroup
+////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaProperty::igdeMetaProperty(const char *name, const char *description) :
-pLabel(name),
-pDescription(description){
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *name, const char *description) :
+igdeMetaProperty(name, description){
 }
 
-igdeMetaProperty::~igdeMetaProperty() = default;
+igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
 
 
 // Management
 ///////////////
 
-void igdeMetaProperty::SetLabel(const char *label){
-	if(pLabel == label){
-		return;
-	}
-	
-	pLabel = label;
-	pUpdateMatchableFilter();
-}
-
-void igdeMetaProperty::SetDescription(const char *description){
-	pDescription = description;
-}
-
-void igdeMetaProperty::SetFilter(const char *filter){
-	if(pFilter == filter){
-		return;
-	}
-	
-	pFilter = filter;
-	pUpdateMatchableFilter();
-}
-
-void igdeMetaProperty::SetUndoInfo(const char *undoInfo){
-	pUndoInfo = undoInfo;
-}
-
-
-const decString &igdeMetaProperty::GetUndoInfoOrLabel() const{
-	return pUndoInfo.IsEmpty() ? pLabel : pUndoInfo;
-}
-
-void igdeMetaProperty::AddContextMenuEntries(igdeMenuCascade&, const igdeMetaContext::Ref&){
-}
-
-
-// Private Functions
-//////////////////////
-
-void igdeMetaProperty::pUpdateMatchableFilter(){
-	pMatchable = igdeFilter::Matchable((pFilter.IsEmpty() ? pLabel : pFilter));
+igdeMetaPropertyWidget::Ref igdeMetaPropertyGroup::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyGroupWidget::Ref::New(*this, context);
 }

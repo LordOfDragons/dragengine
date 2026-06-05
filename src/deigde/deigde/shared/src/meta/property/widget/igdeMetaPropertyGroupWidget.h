@@ -22,34 +22,29 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYSTRINGWIDGET_H_
-#define _IGDEMETAPROPERTYSTRINGWIDGET_H_
+#ifndef _IGDEMETAPROPERTYGROUPWIDGET_H_
+#define _IGDEMETAPROPERTYGROUPWIDGET_H_
 
 #include "igdeMetaPropertyWidget.h"
-#include "../igdeMetaPropertyString.h"
-#include "../../../gui/igdeLabel.h"
-#include "../../../gui/igdeTextField.h"
-#include "../../../gui/igdeComboBoxFilter.h"
-#include "../../../gui/event/igdeTextFieldListener.h"
-#include "../../../gui/event/igdeComboBoxListener.h"
+#include "../igdeMetaPropertyGroup.h"
+#include "../../../gui/igdeGroupBox.h"
+#include "../../../gui/event/igdeAction.h"
 
 
 /**
- * \brief String meta property widget class able to add itself to a widget holder.
+ * \brief Group meta property widget class able to add itself to a widget holder.
  */
-class DE_DLL_EXPORT igdeMetaPropertyStringWidget : public igdeMetaPropertyWidget{
+class DE_DLL_EXPORT igdeMetaPropertyGroupWidget : public igdeMetaPropertyWidget{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyStringWidget>;
+	using Ref = deTObjectReference<igdeMetaPropertyGroupWidget>;
 	
 	
 private:
-	igdeMetaPropertyString &pPropertyString;
-	igdeTextField::Ref pTextField;
-	igdeTextFieldListener::Ref pTextListener;
-	igdeComboBoxFilter::Ref pComboBox;
-	igdeComboBoxListener::Ref pComboListener;
-	igdeMetaPropertyString::StringData::Ref pListItems;
+	igdeMetaPropertyGroup &pPropertyGroup;
+	igdeGroupBox::Ref pGroupBox;
+	igdeContainer::Ref pGroupBoxContainer;
+	List pChildWidgets;
 	
 	
 public:
@@ -58,11 +53,11 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyStringWidget(igdeMetaPropertyString &property, igdeMetaContext &context);
+	igdeMetaPropertyGroupWidget(igdeMetaPropertyGroup &property, igdeMetaContext &context);
 	
 protected:
 	/** \brief Clean up widget. */
-	~igdeMetaPropertyStringWidget() override;
+	~igdeMetaPropertyGroupWidget() override;
 	
 public:
 	/*@}*/
@@ -70,12 +65,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Assigned property string. */
-	inline igdeMetaPropertyString &GetPropertyString() const{ return pPropertyString; }
+	/** \brief Assigned property group. */
+	inline igdeMetaPropertyGroup &GetPropertyGroup() const{ return pPropertyGroup; }
 	
 	
 	/** \brief Create UI widgets adding them to container. */
 	void Create(igdeContainer &container, igdeUIHelper &helper) override;
+	
+	/** \brief Filter widget. */
+	void Filter(const igdeFilter &filter) override;
 	
 	/** \brief Drop UI widgets. */
 	void Drop() override;
@@ -84,16 +82,19 @@ public:
 	void Update() override;
 	
 	
-	/** \brief Text field widget or nullptr. */
-	inline const igdeTextField::Ref &GetTextField() const{ return pTextField; }
+	/** \brief Group box or nullptr. */
+	inline const igdeGroupBox::Ref &GetGroupBox() const{ return pGroupBox; }
 	
-	/** \brief Combo box widget or nullptr. */
-	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }
+	/** \brief Group box container or nullptr. */
+	inline const igdeContainer::Ref &GetGroupBoxContainer() const{ return pGroupBoxContainer; }
+	
+	/** \brief Child widgets. */
+	inline List &GetChildWidgets(){ return pChildWidgets; }
+	inline const List &GetChildWidgets() const{ return pChildWidgets; }
 	/*@}*/
 	
 	
 protected:
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	void UpdateFilteredOut() override;
 };
 

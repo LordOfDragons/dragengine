@@ -26,7 +26,7 @@
 #define _IGDEMETAPROPERTYOBJECT_H_
 
 #include "igdeMetaProperty.h"
-#include "igdeMetaPropertyShared.h"
+#include "../igdeTMetaData.h"
 #include "../../gui/model/igdeListItem.h"
 
 
@@ -38,9 +38,11 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyObject>;
 	
+	/** \brief Object list data. */
+	using ObjectData = igdeTMetaData<igdeListItem::List>;
 	
 private:
-	igdeTMetaPropertyData<igdeListItem::List>::Ref pObjects;
+	ObjectData::Ref pObjects;
 	
 	
 public:
@@ -94,7 +96,7 @@ public:
 	 * Subclass has to return the same immutable list reference as long as the list stays unchanged.
 	 * As soon as the list reference changes the widget content is updated to reflect the changes.
 	 */
-	virtual igdeTMetaPropertyData<igdeListItem::List>::Ref GetObjects() const = 0;
+	virtual ObjectData::Ref GetObjects() const = 0;
 	
 	
 	/**

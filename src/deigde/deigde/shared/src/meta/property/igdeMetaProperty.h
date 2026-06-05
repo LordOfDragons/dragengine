@@ -27,6 +27,7 @@
 
 #include "../igdeMetaContext.h"
 #include "../../gui/menu/igdeMenuCascade.h"
+#include "../../utils/igdeFilter.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -42,9 +43,13 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaProperty>;
 	
+	/** \brief List of properties. */
+	using List = decTObjectOrderedSet<igdeMetaProperty>;
+	
 	
 private:
 	decString pLabel, pDescription, pFilter, pUndoInfo;
+	igdeFilter::Matchable pMatchable;
 	
 	
 public:
@@ -84,19 +89,15 @@ public:
 	/** \brief Set filter string or empty string to use label. */
 	void SetFilter(const char *filter);
 	
+	/** \brief Matchable. */
+	inline const igdeFilter::Matchable &GetMatchable() const{ return pMatchable; }
+	
 	/** \brief Undo info string or empty string to use label. */
 	inline const decString &GetUndoInfo() const{ return pUndoInfo; }
 	
 	/** \brief Set undo info string or empty string to use label. */
 	void SetUndoInfo(const char *undoInfo);
 	
-	
-	/**
-	 * \brief Filter string.
-	 * 
-	 * Returns filter string if not empty or label if filter string is empty.
-	 */
-	const decString &GetFilterOrLabel() const;
 	
 	/**
 	 * \brief Undo info string or empty to use label.
@@ -120,6 +121,10 @@ public:
 	 */
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context);
 	/*@}*/
+	
+	
+private:
+	void pUpdateMatchableFilter();
 };
 
 #endif

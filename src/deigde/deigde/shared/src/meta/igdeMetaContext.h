@@ -25,8 +25,12 @@
 #ifndef _IGDEMETACONTEXT_H_
 #define _IGDEMETACONTEXT_H_
 
+#include "igdeTMetaData.h"
+#include "../gui/resources/igdeIcon.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
+#include <dragengine/common/string/decString.h>
 
 class igdeMetaProperty;
 class igdeUndoSystem;
@@ -34,26 +38,40 @@ class igdeUndoSystem;
 
 /**
  * \brief Meta context.
+ * 
+ * Meta contexts contain properties of some object or part of an editor. These properties are
+ * typically shown in a property panel in the UI with unified look. Editors can provide multiple
+ * meta contexts at the same time. Each context is shown as a separate section in the property
+ * panel. Contexts use an identifier to track which section is the active one for each editor.
  */
 class DE_DLL_EXPORT igdeMetaContext : public deObject{
+public:
+	/** \brief Reference type. */
+	using Ref = deTObjectReference<igdeMetaContext>;
+	
+	/** \brief Context data. */
+	using Data = igdeTMetaData<decTObjectOrderedSet<igdeMetaContext>>;
+	
+	/** \brief Properties meta data. */
+	using PropertyData = igdeTMetaData<decTObjectOrderedSet<igdeMetaProperty>>;
+	
+	
 private:
-	decTObjectOrderedSet<igdeMetaProperty> pProperties;
+	decString pIdentifier, pLabel, pDescription;
+	igdeIcon::Ref pIcon;
+	PropertyData::Ref pProperties;
+	igdeUndoSystem *pUndoSystem;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	
-	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaContext>;
-	
-	
-	/** \brief Constructor. */
-	igdeMetaContext();
+	/** \brief Create meta context. */
+	igdeMetaContext(const char *identifier);
 	
 protected:
-	/** \brief Destructor. */
-	virtual ~igdeMetaContext();
+	/** \brief Clean up meta context. */
+	virtual ~igdeMetaContext() override;
 	
 public:
 	/*@}*/
@@ -61,8 +79,38 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo system or nullptr to apply actions immediately. */
-	virtual igdeUndoSystem *GetUndoSystem() const = 0;
+	/** \brief Get identifier. */
+	inline const decString &GetIdentifier() const{ return pIdentifier; }
+	
+	/** \brief Get label. */
+	inline const decString &GetLabel() const{ return pLabel; }
+	
+	/** \brief Set label. */
+	void SetLabel(const char *label);
+	
+	/** \brief Get description. */
+	inline const decString &GetDescription() const{ return pDescription; }
+	
+	/** \brief Set description. */
+	void SetDescription(const char *description);
+	
+	/** \brief Get icon. */
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
+	
+	/** \brief Set icon. */
+	void SetIcon(const igdeIcon::Ref &icon);
+	
+	/** \brief Get properties. */
+	inline const PropertyData::Ref &GetProperties() const{ return pProperties; }
+	
+	/** \brief Set properties. */
+	void SetProperties(const PropertyData::Ref &properties);
+	
+	/** \brief Get undo system or nullptr to apply actions immediately. */
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	
+	/** \brief Set undo system or nullptr to apply actions immediately. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	/*@}*/
 };
 

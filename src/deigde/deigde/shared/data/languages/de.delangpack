@@ -712,4 +712,8 @@ Eigenschaftstyp verstossen könnte.</translation>
 	
 	<!-- Fox Application -->
 	<translation name="Igde.FoxApplication.Error.Title">Anwendungsfehler</translation>
+	
+	<!-- Meta properties -->
+	<translation name="Igde.MetaContextList.Filter">Filter:</translation>
+	<translation name="Igde.MetaContextList.Filter.ToolTip">Zeige Eigenschaften, die dem Filter entsprechen</translation>
 </languagePack>

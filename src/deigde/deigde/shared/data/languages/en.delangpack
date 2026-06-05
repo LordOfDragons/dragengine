@@ -713,4 +713,8 @@ property type so be careful what you enter</translation>
 	
 	<!-- Fox Application -->
 	<translation name="Igde.FoxApplication.Error.Title">Application Error</translation>
+	
+	<!-- Meta properties -->
+	<translation name="Igde.MetaContextList.Filter">Filter:</translation>
+	<translation name="Igde.MetaContextList.Filter.ToolTip">Show properties matching filter</translation>
 </languagePack>

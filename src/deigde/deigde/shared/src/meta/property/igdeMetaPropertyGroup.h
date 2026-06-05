@@ -22,43 +22,56 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaContext.h"
-#include "property/igdeMetaProperty.h"
+#ifndef _IGDEMETAPROPERTYGROUP_H_
+#define _IGDEMETAPROPERTYGROUP_H_
+
+#include "igdeMetaProperty.h"
 
 
-// Class igdeMetaContext
-//////////////////////////
+/**
+ * \brief Group meta property.
+ * 
+ * Contains list of meta properties.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyGroup : public igdeMetaProperty{
+public:
+	/** \brief Reference type. */
+	using Ref = deTObjectReference<igdeMetaPropertyGroup>;
+	
+	
+private:
+	List pProperties;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create group meta property with label and description. */
+	igdeMetaPropertyGroup(const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up group meta property. */
+	~igdeMetaPropertyGroup() override;
+	
+public:
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Get list of properties. */
+	inline List &GetProperties(){ return pProperties; }
+	inline const List &GetProperties() const{ return pProperties; }
+	
+	
+	/**
+	 * \brief Create UI widget.
+	 * 
+	 * This object is able to add itself to a widget holder in the appropriate way.
+	 */
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
+	/*@}*/
+};
 
-// Constructor, destructor
-////////////////////////////
-
-igdeMetaContext::igdeMetaContext(const char *identifier) :
-pIdentifier(identifier),
-pUndoSystem(nullptr){
-}
-
-igdeMetaContext::~igdeMetaContext() = default;
-
-
-// Management
-///////////////
-
-void igdeMetaContext::SetLabel(const char *label){
-	pLabel = label;
-}
-
-void igdeMetaContext::SetDescription(const char *description){
-	pDescription = description;
-}
-
-void igdeMetaContext::SetIcon(const igdeIcon::Ref &icon){
-	pIcon = icon;
-}
-
-void igdeMetaContext::SetProperties(const PropertyData::Ref &properties){
-	pProperties = properties;
-}
-
-void igdeMetaContext::SetUndoSystem(igdeUndoSystem *undoSystem){
-	pUndoSystem = undoSystem;
-}
+#endif

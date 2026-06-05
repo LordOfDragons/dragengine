@@ -45,7 +45,7 @@ private:
 	igdeMetaPropertyObject &pPropertyObject;
 	igdeComboBoxFilter::Ref pComboBox;
 	igdeComboBoxListener::Ref pListener;
-	igdeTMetaPropertyData<igdeListItem::List>::Ref pListItems;
+	igdeMetaPropertyObject::ObjectData::Ref pListItems;
 	
 	
 public:
