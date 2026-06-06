@@ -54,7 +54,6 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context) override;
-		void OnPropertyContextChanged(igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -70,7 +69,8 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyDirectoryWidget(igdeMetaPropertyDirectory &property);
+	igdeMetaPropertyDirectoryWidget(igdeMetaPropertyDirectory &property,
+		const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */

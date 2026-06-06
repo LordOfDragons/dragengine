@@ -134,19 +134,16 @@ public:
 // Class igdeMetaPropertySelectionWidget::PropertyListener
 ////////////////////////////////////////////////////////////
 
-igdeMetaPropertySelectionWidget::PropertyListener::PropertyListener(igdeMetaPropertySelectionWidget &widget) :
+igdeMetaPropertySelectionWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertySelectionWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertySelectionWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertySelectionWidget::PropertyListener::OnValueChanged(igdeMetaPropertySelection*, const igdeMetaContext::Ref&){
+void igdeMetaPropertySelectionWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertySelection*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertySelectionWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertySelection *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -156,8 +153,9 @@ igdeMetaPropertySelection *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(igdeMetaPropertySelection &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(
+	igdeMetaPropertySelection &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertySelection(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

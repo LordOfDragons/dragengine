@@ -43,6 +43,6 @@ igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
 // Management
 ///////////////
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyGroup::CreateWidget(){
-	return igdeMetaPropertyGroupWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyGroup::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyGroupWidget::Ref::New(*this, context);
 }

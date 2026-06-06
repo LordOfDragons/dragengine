@@ -134,19 +134,16 @@ public:
 // Class igdeMetaPropertyPoint3Widget::PropertyListener
 /////////////////////////////////////////////////////////
 
-igdeMetaPropertyPoint3Widget::PropertyListener::PropertyListener(igdeMetaPropertyPoint3Widget &widget) :
+igdeMetaPropertyPoint3Widget::PropertyListener::PropertyListener(
+	igdeMetaPropertyPoint3Widget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyPoint3Widget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyPoint3Widget::PropertyListener::OnValueChanged(igdeMetaPropertyPoint3*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyPoint3Widget::PropertyListener::OnValueChanged(
+igdeMetaPropertyPoint3*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyPoint3Widget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyPoint3 *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -156,8 +153,9 @@ igdeMetaPropertyPoint3 *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPoint3Widget::igdeMetaPropertyPoint3Widget(igdeMetaPropertyPoint3 &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyPoint3Widget::igdeMetaPropertyPoint3Widget(
+	igdeMetaPropertyPoint3 &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyPoint3(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

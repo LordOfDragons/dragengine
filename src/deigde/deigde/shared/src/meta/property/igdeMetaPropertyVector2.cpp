@@ -53,6 +53,6 @@ void igdeMetaPropertyVector2::NotifyValueChanged(const igdeMetaContext::Ref &con
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyVector2::CreateWidget(){
-	return igdeMetaPropertyVector2Widget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyVector2::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyVector2Widget::Ref::New(*this, context);
 }

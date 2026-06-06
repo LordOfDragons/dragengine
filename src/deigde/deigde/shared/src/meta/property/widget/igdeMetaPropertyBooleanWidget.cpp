@@ -149,14 +149,11 @@ pWidget(widget){
 
 igdeMetaPropertyBooleanWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyBooleanWidget::PropertyListener::OnValueChanged(igdeMetaPropertyBoolean*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyBooleanWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyBoolean*, const igdeMetaContext::Ref&){
 	pWidget.Update();
 }
 
-void igdeMetaPropertyBooleanWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
-}
 
 // Class igdeMetaPropertyBooleanWidget
 ////////////////////////////////////////
@@ -164,8 +161,9 @@ igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(
+	igdeMetaPropertyBoolean &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyBoolean(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

@@ -149,22 +149,20 @@ public:
 // Class igdeMetaPropertyStringWidget::PropertyListener
 /////////////////////////////////////////////////////////
 
-igdeMetaPropertyStringWidget::PropertyListener::PropertyListener(igdeMetaPropertyStringWidget &widget) :
+igdeMetaPropertyStringWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyStringWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyStringWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyStringWidget::PropertyListener::OnValueChanged(igdeMetaPropertyString*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyStringWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 	pWidget.Update();
 }
 
-void igdeMetaPropertyStringWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyString *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
-}
-
-void igdeMetaPropertyStringWidget::PropertyListener::OnStringListChanged(igdeMetaPropertyString*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyStringWidget::PropertyListener::OnStringListChanged(
+igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 	pWidget.UpdateStringList();
 }
 
@@ -175,8 +173,9 @@ void igdeMetaPropertyStringWidget::PropertyListener::OnStringListChanged(igdeMet
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyStringWidget::igdeMetaPropertyStringWidget(igdeMetaPropertyString &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyStringWidget::igdeMetaPropertyStringWidget(
+	igdeMetaPropertyString &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyString(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

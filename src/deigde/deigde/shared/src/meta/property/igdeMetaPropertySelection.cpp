@@ -71,8 +71,8 @@ void igdeMetaPropertySelection::NotifyChoicesChanged(){
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(){
-	return igdeMetaPropertySelectionWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertySelectionWidget::Ref::New(*this, context);
 }
 
 

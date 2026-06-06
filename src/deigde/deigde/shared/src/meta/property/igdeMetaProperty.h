@@ -68,16 +68,12 @@ protected:
 	public:
 		/** \brief Value changed. */
 		virtual void OnValueChanged(P *property, const igdeMetaContext::Ref &context){}
-		
-		/** \brief Property meta context changed. */
-		virtual void OnPropertyContextChanged(P *property, const igdeMetaContext::Ref &context){}
 	};
 	
 	
 private:
 	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
 	igdeFilter::Matchable pMatchable;
-	Ref pContextProperty;
 	
 	
 public:
@@ -136,18 +132,12 @@ public:
 	 */
 	const decString &GetUndoInfoOrLabel() const;
 	
-	/** \brief Context property or nullptr. */
-	inline const Ref &GetContextProperty() const{ return pContextProperty; }
-	
-	/** \brief Set context property. */
-	void SetContextProperty(const Ref &property);
-	
 	/**
 	 * \brief Create UI widget.
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget() = 0;
+	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) = 0;
 	
 	/**
 	 * \brief Add context menu entries.
@@ -155,13 +145,6 @@ public:
 	 * Subclasses can override this method to add custom context menu entries.
 	 */
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context);
-	
-	/**
-	 * \brief Property meta context or nullptr.
-	 * 
-	 * Subclass can override this method to provide a meta context for other properties to use.
-	 */
-	virtual const igdeMetaContext::Ref &GetPropertyContext(const igdeMetaContext::Ref &context) const;
 	/*@}*/
 	
 	

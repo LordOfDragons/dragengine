@@ -155,19 +155,16 @@ public:
 // Class igdeMetaPropertyFloatWidget::PropertyListener
 ////////////////////////////////////////////////////////
 
-igdeMetaPropertyFloatWidget::PropertyListener::PropertyListener(igdeMetaPropertyFloatWidget &widget) :
+igdeMetaPropertyFloatWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyFloatWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyFloatWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyFloatWidget::PropertyListener::OnValueChanged(igdeMetaPropertyFloat*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyFloatWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyFloat*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyFloatWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyFloat *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -177,8 +174,9 @@ igdeMetaPropertyFloat *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyFloatWidget::igdeMetaPropertyFloatWidget(igdeMetaPropertyFloat &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyFloatWidget::igdeMetaPropertyFloatWidget(
+	igdeMetaPropertyFloat &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyFloat(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

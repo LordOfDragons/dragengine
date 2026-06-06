@@ -33,8 +33,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyGroupWidget::igdeMetaPropertyGroupWidget(igdeMetaPropertyGroup &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyGroupWidget::igdeMetaPropertyGroupWidget(
+	igdeMetaPropertyGroup &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyGroup(property){
 }
 

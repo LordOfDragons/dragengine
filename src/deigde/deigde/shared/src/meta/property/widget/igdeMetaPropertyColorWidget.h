@@ -54,7 +54,6 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context) override;
-		void OnPropertyContextChanged(igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -70,7 +69,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property);
+	igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property, const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */

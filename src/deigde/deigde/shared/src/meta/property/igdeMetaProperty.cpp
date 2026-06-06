@@ -69,21 +69,11 @@ void igdeMetaProperty::SetUndoInfo(const char *undoInfo){
 	pUndoInfo = undoInfo;
 }
 
-void igdeMetaProperty::SetContextProperty(const Ref &property){
-	pContextProperty = property;
-}
-
-
 const decString &igdeMetaProperty::GetUndoInfoOrLabel() const{
 	return pUndoInfo.IsEmpty() ? pLabel : pUndoInfo;
 }
 
 void igdeMetaProperty::AddContextMenuEntries(igdeMenuCascade&, const igdeMetaContext::Ref&){
-}
-
-const igdeMetaContext::Ref &igdeMetaProperty::GetPropertyContext(const igdeMetaContext::Ref&) const{
-	static const igdeMetaContext::Ref empty;
-	return empty;
 }
 
 

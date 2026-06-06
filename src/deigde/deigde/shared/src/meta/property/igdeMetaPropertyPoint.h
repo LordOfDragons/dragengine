@@ -115,7 +115,7 @@ public:
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
 	/*@}*/
 };
 

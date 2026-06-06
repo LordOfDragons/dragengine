@@ -54,7 +54,6 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnPropertyContextChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 		void OnActiveChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 		void OnSelectionChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 	};
@@ -72,7 +71,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyListWidget(igdeMetaPropertyList &property);
+	igdeMetaPropertyListWidget(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */

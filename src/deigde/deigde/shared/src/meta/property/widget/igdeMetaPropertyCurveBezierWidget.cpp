@@ -134,19 +134,16 @@ public:
 // Class igdeMetaPropertyCurveBezierWidget::PropertyListener
 //////////////////////////////////////////////////////////////
 
-igdeMetaPropertyCurveBezierWidget::PropertyListener::PropertyListener(igdeMetaPropertyCurveBezierWidget &widget) :
+igdeMetaPropertyCurveBezierWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyCurveBezierWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyCurveBezierWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnValueChanged(igdeMetaPropertyCurveBezier*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyCurveBezier*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -157,8 +154,8 @@ igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context){
 ////////////////////////////
 
 igdeMetaPropertyCurveBezierWidget::igdeMetaPropertyCurveBezierWidget(
-	igdeMetaPropertyCurveBezier &property) :
-igdeMetaPropertyWidget(property),
+	igdeMetaPropertyCurveBezier &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyCurveBezier(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

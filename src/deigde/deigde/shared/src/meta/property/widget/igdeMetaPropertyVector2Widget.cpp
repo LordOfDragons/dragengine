@@ -133,19 +133,16 @@ public:
 // Class igdeMetaPropertyVector2Widget::PropertyListener
 //////////////////////////////////////////////////////////
 
-igdeMetaPropertyVector2Widget::PropertyListener::PropertyListener(igdeMetaPropertyVector2Widget &widget) :
+igdeMetaPropertyVector2Widget::PropertyListener::PropertyListener(
+	igdeMetaPropertyVector2Widget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyVector2Widget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyVector2Widget::PropertyListener::OnValueChanged(igdeMetaPropertyVector2*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyVector2Widget::PropertyListener::OnValueChanged(
+igdeMetaPropertyVector2*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyVector2Widget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyVector2 *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -155,8 +152,9 @@ igdeMetaPropertyVector2 *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyVector2Widget::igdeMetaPropertyVector2Widget(igdeMetaPropertyVector2 &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyVector2Widget::igdeMetaPropertyVector2Widget(
+	igdeMetaPropertyVector2 &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyVector2(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

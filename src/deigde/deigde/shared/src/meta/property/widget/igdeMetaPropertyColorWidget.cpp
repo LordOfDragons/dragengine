@@ -139,13 +139,9 @@ pWidget(widget){
 
 igdeMetaPropertyColorWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyColorWidget::PropertyListener::OnValueChanged(igdeMetaPropertyColor*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyColorWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyColor*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyColorWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -155,8 +151,9 @@ igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(
+	igdeMetaPropertyColor &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyColor(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

@@ -54,6 +54,6 @@ void igdeMetaPropertyTags::NotifyValueChanged(const igdeMetaContext::Ref &contex
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyTags::CreateWidget(){
-	return igdeMetaPropertyTagsWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyTags::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyTagsWidget::Ref::New(*this, context);
 }

@@ -134,19 +134,16 @@ public:
 // Class igdeMetaPropertyDirectoryWidget::PropertyListener
 ////////////////////////////////////////////////////////////
 
-igdeMetaPropertyDirectoryWidget::PropertyListener::PropertyListener(igdeMetaPropertyDirectoryWidget &widget) :
+igdeMetaPropertyDirectoryWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyDirectoryWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyDirectoryWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyDirectoryWidget::PropertyListener::OnValueChanged(igdeMetaPropertyDirectory*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyDirectoryWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyDirectory*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyDirectoryWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -156,8 +153,9 @@ igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyDirectoryWidget::igdeMetaPropertyDirectoryWidget(igdeMetaPropertyDirectory &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyDirectoryWidget::igdeMetaPropertyDirectoryWidget(
+	igdeMetaPropertyDirectory &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyDirectory(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

@@ -135,19 +135,16 @@ public:
 // Class igdeMetaPropertyToggleTagsWidget::PropertyListener
 /////////////////////////////////////////////////////////////
 
-igdeMetaPropertyToggleTagsWidget::PropertyListener::PropertyListener(igdeMetaPropertyToggleTagsWidget &widget) :
+igdeMetaPropertyToggleTagsWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyToggleTagsWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyToggleTagsWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnValueChanged(igdeMetaPropertyToggleTags*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyToggleTags*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyToggleTags *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -157,8 +154,9 @@ igdeMetaPropertyToggleTags *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyToggleTagsWidget::igdeMetaPropertyToggleTagsWidget(igdeMetaPropertyToggleTags &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyToggleTagsWidget::igdeMetaPropertyToggleTagsWidget(
+	igdeMetaPropertyToggleTags &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyToggleTags(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

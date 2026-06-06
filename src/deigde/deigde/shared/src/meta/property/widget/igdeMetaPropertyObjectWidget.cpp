@@ -135,19 +135,16 @@ public:
 // Class igdeMetaPropertyObjectWidget::PropertyListener
 /////////////////////////////////////////////////////////
 
-igdeMetaPropertyObjectWidget::PropertyListener::PropertyListener(igdeMetaPropertyObjectWidget &widget) :
+igdeMetaPropertyObjectWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyObjectWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyObjectWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyObjectWidget::PropertyListener::OnValueChanged(igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyObjectWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyObjectWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectsChanged(igdeMetaPropertyObject*){
@@ -161,8 +158,9 @@ void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectsChanged(igdeMetaPr
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyObjectWidget::igdeMetaPropertyObjectWidget(igdeMetaPropertyObject &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyObjectWidget::igdeMetaPropertyObjectWidget(
+	igdeMetaPropertyObject &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyObject(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

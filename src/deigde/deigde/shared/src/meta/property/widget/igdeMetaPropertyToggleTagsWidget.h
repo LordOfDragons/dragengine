@@ -54,7 +54,6 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyToggleTags *property, const igdeMetaContext::Ref &context) override;
-		void OnPropertyContextChanged(igdeMetaPropertyToggleTags *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -70,7 +69,8 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyToggleTagsWidget(igdeMetaPropertyToggleTags &property);
+	igdeMetaPropertyToggleTagsWidget(igdeMetaPropertyToggleTags &property,
+		const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */

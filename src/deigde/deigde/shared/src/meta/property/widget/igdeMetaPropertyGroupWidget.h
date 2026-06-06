@@ -53,7 +53,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyGroupWidget(igdeMetaPropertyGroup &property);
+	igdeMetaPropertyGroupWidget(igdeMetaPropertyGroup &property, const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */

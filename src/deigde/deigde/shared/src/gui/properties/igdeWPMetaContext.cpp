@@ -149,22 +149,18 @@ void igdeWPMetaContext::pCreatePropertyWidgets(){
 	
 	pProperties->GetData().Visit([&](const igdeMetaProperty::Ref &property){
 		auto group = property.DynamicCast<igdeMetaPropertyGroup>();
-		const auto &ctxProp = property->GetContextProperty();
 		
 		if(group){
 			form.Clear();
 			auto widget = pCreatePropertyGroupWidget(*this, group);
-			if(!widget){
-				return;
+			if(widget){
+				pPropertyWidgets.Add(widget);
 			}
-			
-			pPropertyWidgets.Add(widget);
-			widget->SetContext(ctxProp ? ctxProp->GetPropertyContext(pContext) : pContext);
 			
 		}else{
 			auto widget = pPropertyWidgetCache.GetAtOrDefault(property);
 			if(!widget){
-				widget = property->CreateWidget();
+				widget = property->CreateWidget(pContext);
 				if(!widget){
 					return;
 				}
@@ -177,7 +173,6 @@ void igdeWPMetaContext::pCreatePropertyWidgets(){
 			}
 			widget->Create(form, helper);
 			pPropertyWidgets.Add(widget);
-			widget->SetContext(ctxProp ? ctxProp->GetPropertyContext(pContext) : pContext);
 		}
 	});
 }
@@ -189,7 +184,7 @@ igdeContainer &container, const igdeMetaPropertyGroup::Ref &groupProperty){
 	
 	auto groupWidget = pPropertyWidgetCache.GetAtOrDefault(groupProperty);
 	if(!groupWidget){
-		groupWidget = groupProperty->CreateWidget();
+		groupWidget = groupProperty->CreateWidget(pContext);
 		if(!groupWidget){
 			return {};
 		}
@@ -210,22 +205,18 @@ igdeContainer &container, const igdeMetaPropertyGroup::Ref &groupProperty){
 	
 	groupProperty->GetProperties().Visit([&](const igdeMetaProperty::Ref &property){
 		const auto group = property.DynamicCast<igdeMetaPropertyGroup>();
-		const auto &ctxProp = property->GetContextProperty();
 		
 		if(group){
 			form.Clear();
 			auto widget = pCreatePropertyGroupWidget(groupContainer, group);
-			if(!widget){
-				return;
+			if(widget){
+				childWidgets.Add(widget);
 			}
-			
-			childWidgets.Add(widget);
-			widget->SetContext(ctxProp ? ctxProp->GetPropertyContext(pContext) : pContext);
 			
 		}else{
 			auto widget = pPropertyWidgetCache.GetAtOrDefault(property);
 			if(!widget){
-				widget = property->CreateWidget();
+				widget = property->CreateWidget(pContext);
 				if(!widget){
 					return;
 				}
@@ -238,7 +229,6 @@ igdeContainer &container, const igdeMetaPropertyGroup::Ref &groupProperty){
 			}
 			widget->Create(form, helper);
 			childWidgets.Add(widget);
-			widget->SetContext(ctxProp ? ctxProp->GetPropertyContext(pContext) : pContext);
 		}
 	});
 	

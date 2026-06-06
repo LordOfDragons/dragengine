@@ -58,6 +58,6 @@ void igdeMetaPropertyDirectory::NotifyValueChanged(const igdeMetaContext::Ref &c
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(){
-	return igdeMetaPropertyDirectoryWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyDirectoryWidget::Ref::New(*this, context);
 }

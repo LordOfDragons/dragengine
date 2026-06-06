@@ -54,6 +54,6 @@ void igdeMetaPropertyBoolean::NotifyValueChanged(const igdeMetaContext::Ref &con
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(){
-	return igdeMetaPropertyBooleanWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyBooleanWidget::Ref::New(*this, context);
 }

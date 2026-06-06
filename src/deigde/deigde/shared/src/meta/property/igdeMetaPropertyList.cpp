@@ -67,7 +67,6 @@ void igdeMetaPropertyList::NotifyValueChanged(const igdeMetaContext::Ref &contex
 void igdeMetaPropertyList::NotifyActiveChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnActiveChanged(this, context);
-		listener.OnPropertyContextChanged(this, context);
 	});
 }
 
@@ -78,6 +77,6 @@ void igdeMetaPropertyList::NotifySelectionChanged(const igdeMetaContext::Ref &co
 }
 
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(){
-	return igdeMetaPropertyListWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyListWidget::Ref::New(*this, context);
 }

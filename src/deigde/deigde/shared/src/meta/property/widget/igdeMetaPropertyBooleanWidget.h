@@ -53,7 +53,6 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context) override;
-		void OnPropertyContextChanged(igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -69,7 +68,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property);
+	igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property, const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */

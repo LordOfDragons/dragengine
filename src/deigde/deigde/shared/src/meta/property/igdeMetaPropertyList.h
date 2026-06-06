@@ -153,18 +153,13 @@ public:
 	 */
 	virtual void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const = 0;
 	
-	/**
-	 * \brief Get object meta context.
-	 */
-	virtual const igdeMetaContext::Ref &GetObjectMetaContext(const deObject::Ref &object) const = 0;
-	
 	
 	/**
 	 * \brief Create UI widget.
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
 	/*@}*/
 };
 

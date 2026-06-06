@@ -52,7 +52,7 @@ public:
 	
 private:
 	const igdeMetaProperty::Ref pProperty;
-	igdeMetaContext::Ref pContext;
+	const igdeMetaContext::Ref pContext;
 	igdeLabel::Ref pLabel;
 	igdeButton::Ref pButtonContextMenu;
 	bool pFilteredOut = false;
@@ -65,7 +65,7 @@ protected:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyWidget(igdeMetaProperty &property);
+	igdeMetaPropertyWidget(igdeMetaProperty &property, const igdeMetaContext::Ref &context);
 	
 	/** \brief Clean up widget. */
 	virtual ~igdeMetaPropertyWidget();
@@ -81,9 +81,6 @@ public:
 	
 	/** \brief Meta context or nullptr. */
 	inline const igdeMetaContext::Ref &GetContext() const{return pContext;}
-	
-	/** \brief Set meta context. */
-	void SetContext(const igdeMetaContext::Ref &context);
 	
 	/** \brief Widget is filtered out. */
 	inline bool GetFilteredOut() const{ return pFilteredOut; }
@@ -120,9 +117,6 @@ public:
 	
 	
 protected:
-	/** \brief Meta context changed. */
-	virtual void OnContextChanged();
-	
 	/** \brief Create label widget adding it to container. */
 	void CreateLabel(igdeContainer &container, igdeUIHelper &helper);
 	

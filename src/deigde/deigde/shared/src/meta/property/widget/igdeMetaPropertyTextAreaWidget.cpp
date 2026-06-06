@@ -133,19 +133,16 @@ public:
 // Class igdeMetaPropertyTextAreaWidget::PropertyListener
 ///////////////////////////////////////////////////////////
 
-igdeMetaPropertyTextAreaWidget::PropertyListener::PropertyListener(igdeMetaPropertyTextAreaWidget &widget) :
+igdeMetaPropertyTextAreaWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyTextAreaWidget &widget) :
 pWidget(widget){
 }
 
 igdeMetaPropertyTextAreaWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyTextAreaWidget::PropertyListener::OnValueChanged(igdeMetaPropertyTextArea*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyTextAreaWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyTextArea*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyTextAreaWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyTextArea *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -155,8 +152,9 @@ igdeMetaPropertyTextArea *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyTextAreaWidget::igdeMetaPropertyTextAreaWidget(igdeMetaPropertyTextArea &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyTextAreaWidget::igdeMetaPropertyTextAreaWidget(
+	igdeMetaPropertyTextArea &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyTextArea(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

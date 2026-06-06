@@ -58,6 +58,6 @@ void igdeMetaPropertyTextArea::NotifyValueChanged(const igdeMetaContext::Ref &co
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(){
-	return igdeMetaPropertyTextAreaWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyTextAreaWidget::Ref::New(*this, context);
 }

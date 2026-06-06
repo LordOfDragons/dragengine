@@ -85,6 +85,6 @@ void igdeMetaPropertyInteger::NotifyValueChanged(const igdeMetaContext::Ref &con
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(){
-	return igdeMetaPropertyIntegerWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(const igdeMetaContext::Ref &context){
+	return igdeMetaPropertyIntegerWidget::Ref::New(*this, context);
 }

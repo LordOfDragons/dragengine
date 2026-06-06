@@ -139,13 +139,9 @@ pWidget(widget){
 
 igdeMetaPropertyPathWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyPathWidget::PropertyListener::OnValueChanged(igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyPathWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
 	pWidget.Update();
-}
-
-void igdeMetaPropertyPathWidget::PropertyListener::OnPropertyContextChanged(
-igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context){
-	pWidget.SetContext(property->GetPropertyContext(context));
 }
 
 
@@ -155,8 +151,9 @@ igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPathWidget::igdeMetaPropertyPathWidget(igdeMetaPropertyPath &property) :
-igdeMetaPropertyWidget(property),
+igdeMetaPropertyPathWidget::igdeMetaPropertyPathWidget(
+	igdeMetaPropertyPath &property, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget(property, context),
 pPropertyPath(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {

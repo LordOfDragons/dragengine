@@ -54,7 +54,6 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context) override;
-		void OnPropertyContextChanged(igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -70,7 +69,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyPathWidget(igdeMetaPropertyPath &property);
+	igdeMetaPropertyPathWidget(igdeMetaPropertyPath &property, const igdeMetaContext::Ref &context);
 	
 protected:
 	/** \brief Clean up widget. */
