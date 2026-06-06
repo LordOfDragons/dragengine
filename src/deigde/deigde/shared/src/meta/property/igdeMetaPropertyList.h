@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYOBJECT_H_
-#define _IGDEMETAPROPERTYOBJECT_H_
+#ifndef _IGDEMETAPROPERTYLIST_H_
+#define _IGDEMETAPROPERTYLIST_H_
 
 #include "igdeMetaProperty.h"
 #include "../igdeTMetaData.h"
@@ -33,27 +33,32 @@ class igdeMetaContextItemInfo;
 
 
 /**
- * \brief Object meta property.
+ * \brief List meta property.
+ * 
+ * Includes active object and object selection if supported.
  */
-class DE_DLL_EXPORT igdeMetaPropertyObject : public igdeMetaProperty{
+class DE_DLL_EXPORT igdeMetaPropertyList : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyObject>;
+	using Ref = deTObjectReference<igdeMetaPropertyList>;
 	
 	/** \brief List of objects. */
-	using ObjectList = decTObjectOrderedSet<deObject>;
+	using List = decTObjectOrderedSet<deObject>;
 	
 	
 	/** \brief Listener. */
-	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyObject>{
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyList>{
 	public:
-		/** \brief List of allowed objects changed. */
-		virtual void OnObjectsChanged(igdeMetaPropertyObject *property);
+		/** \brief Active object changed. */
+		virtual void OnActiveChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context);
+		
+		/** \brief Object selection changed. */
+		virtual void OnSelectionChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context);
 	};
 	
 	
 private:
-	ObjectList pObjects;
+	int pRows;
 	igdeTListenerList<Listener> pListeners;
 	
 	
@@ -62,11 +67,11 @@ public:
 	/*@{*/
 	
 	/** \brief Create object meta property with label and description. */
-	igdeMetaPropertyObject(const char *id, const char *name, const char *description);
+	igdeMetaPropertyList(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up object meta property. */
-	~igdeMetaPropertyObject() override;
+	~igdeMetaPropertyList() override;
 	
 public:
 	/*@}*/
@@ -74,13 +79,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**
-	 * \brief Object list to choose from.
-	 * 
-	 * After changing the list call NotifyObjectsChanged().
-	 */
-	inline ObjectList &GetObjects(){ return pObjects; }
-	inline const ObjectList &GetObjects() const{ return pObjects; }
+	/** \brief Rows. */
+	inline int GetRows() const{ return pRows; }
+	
+	/** \brief Set rows. */
+	void SetRows(int rows);
 	
 	
 	/** \brief Listeners. */
@@ -90,8 +93,11 @@ public:
 	/** \brief Notify listeners about value changed. */
 	void NotifyValueChanged(const igdeMetaContext::Ref &context);
 	
-	/** \brief Notify listeners about objects changed. */
-	void NotifyObjectsChanged();
+	/** \brief Notify listeners about active object changed. */
+	void NotifyActiveChanged(const igdeMetaContext::Ref &context);
+	
+	/** \brief Notify listeners about object selection changed. */
+	void NotifySelectionChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**
@@ -113,19 +119,44 @@ public:
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual const deObject::Ref &GetPropertyValue(const igdeMetaContext::Ref &context) const = 0;
+	virtual const List &GetPropertyValue(const igdeMetaContext::Ref &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const deObject::Ref &value) = 0;
+	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const List &value) = 0;
+	
+	/**
+	 * \brief Get active object or nullptr if no active object.
+	 */
+	virtual const deObject::Ref &GetActiveObject(const igdeMetaContext::Ref &context) const = 0;
+	
+	/**
+	 * \brief Set active object.
+	 */
+	virtual void SetActiveObject(const igdeMetaContext::Ref &context, const deObject::Ref &activeObject) = 0;
+	
+	/**
+	 * \brief Get object selection.
+	 */
+	virtual List GetSelection(const igdeMetaContext::Ref &context) const = 0;
+	
+	/**
+	 * \brief Set object selection.
+	 */
+	virtual void SetSelection(const igdeMetaContext::Ref &context, const List &selection) = 0;
 	
 	/**
 	 * \brief Get object item information.
 	 */
 	virtual void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const = 0;
+	
+	/**
+	 * \brief Get object meta context.
+	 */
+	virtual const igdeMetaContext::Ref &GetObjectMetaContext(const deObject::Ref &object) const = 0;
 	
 	
 	/**

@@ -195,7 +195,7 @@ void igdeMetaPropertyTextAreaWidget::Update(){
 	if(pTextArea){
 		RunWithPreventUpdate([&]{
 			pTextArea->SetText(GetContext()
-				? GetPropertyTextArea().GetPropertyValue(GetContext()) : decString());
+				? pPropertyTextArea.GetPropertyValue(GetContext()) : decString());
 		});
 	}
 }

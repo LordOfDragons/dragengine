@@ -196,8 +196,8 @@ void igdeMetaPropertyDVectorWidget::Update(){
 	if(pEditDVector){
 		RunWithPreventUpdate([&]{
 			pEditDVector->SetDVector(GetContext()
-				? GetPropertyDVector().GetPropertyValue(GetContext())
-				: GetPropertyDVector().GetDefaultValue());
+				? pPropertyDVector.GetPropertyValue(GetContext())
+				: pPropertyDVector.GetDefaultValue());
 		});
 	}
 }

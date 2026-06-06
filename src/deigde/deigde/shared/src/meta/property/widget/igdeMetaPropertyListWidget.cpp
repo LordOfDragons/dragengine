@@ -1,0 +1,214 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "igdeMetaPropertyListWidget.h"
+#include "../../igdeMetaContextItemInfo.h"
+#include "../../../gui/igdeUIHelper.h"
+#include "../../../environment/igdeEnvironment.h"
+
+
+namespace {
+
+class cUndo : public igdeUndo{
+	const igdeMetaPropertyList::Ref pProperty;
+	const igdeMetaContext::Ref pContext;
+	igdeMetaPropertyList::List pOldValue, pNewValue;
+	
+public:
+	cUndo(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context,
+		const igdeMetaPropertyList::List &newValue) :
+	pProperty(&property),
+	pContext(property.Capture(context)),
+	pOldValue(property.GetPropertyValue(context)),
+	pNewValue(newValue)
+	{
+		SetShortInfo(property.GetUndoInfoOrLabel());
+	}
+	
+	~cUndo() override = default;
+	
+	void Undo() override{
+		pProperty->SetPropertyValue(pContext, pOldValue);
+	}
+	
+	void Redo() override{
+		pProperty->SetPropertyValue(pContext, pNewValue);
+	}
+};
+
+
+class cListener : public igdeListBoxListener{
+	igdeMetaPropertyListWidget &pWidget;
+	
+public:
+	explicit cListener(igdeMetaPropertyListWidget &widget) :
+	pWidget(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(pWidget.GetPreventUpdate() || !pWidget.GetContext()){
+			return;
+		}
+		
+		pWidget.GetPropertyList().SetActiveObject(
+			pWidget.GetContext(), listBox->GetSelectedItemRefData());
+	}
+	
+	void OnItemSelected(igdeListBox *listBox, int index) override{
+	}
+	
+	void OnItemDeselected(igdeListBox *listBox, int index) override{
+	}
+	
+	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
+	}
+	
+	void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu) override{
+		pWidget.AddListBoxContextMenuEntries(menu);
+	}
+};
+
+}
+
+
+// Class igdeMetaPropertyListWidget::PropertyListener
+/////////////////////////////////////////////////////////////
+
+igdeMetaPropertyListWidget::PropertyListener::PropertyListener(igdeMetaPropertyListWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyListWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyListWidget::PropertyListener::OnValueChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+	pWidget.Update();
+}
+
+void igdeMetaPropertyListWidget::PropertyListener::OnActiveChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+	pWidget.SelectActiveObject();
+}
+
+void igdeMetaPropertyListWidget::PropertyListener::OnSelectionChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+}
+
+
+// Class igdeMetaPropertyListWidget
+///////////////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeMetaPropertyListWidget::igdeMetaPropertyListWidget(igdeMetaPropertyList &property) :
+igdeMetaPropertyWidget(property),
+pPropertyList(property),
+pPropertyListener(PropertyListener::Ref::New(*this))
+{
+	property.GetListeners().Add(pPropertyListener);
+}
+
+igdeMetaPropertyListWidget::~igdeMetaPropertyListWidget(){
+	Drop();
+	pPropertyList.GetListeners().Remove(pPropertyListener);
+}
+
+
+// Management
+///////////////
+
+void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+	DEASSERT_NULL(pListBox);
+	
+	CreateLabel(container, helper);
+	
+	igdeContainer::Ref line;
+	helper.FormLineStretchFirst(container, line);
+	
+	pListener = deTObjectReference<cListener>::New(*this);
+	helper.ListBox(container, pPropertyList.GetRows(),
+		pPropertyList.GetDescription(), pListBox, pListener);
+	
+	CreateContextMenuButton(line, helper);
+}
+
+void igdeMetaPropertyListWidget::Drop(){
+	if(pListBox && pListener){
+		pListBox->RemoveListener(pListener);
+	}
+	
+	pListener.Clear();
+	pListBox.Clear();
+	igdeMetaPropertyWidget::Drop();
+}
+
+void igdeMetaPropertyListWidget::Update(){
+	if(!pListBox){
+		return;
+	}
+	
+	RunWithPreventUpdate([&]{
+		const auto &objects = pPropertyList.GetPropertyValue(GetContext());
+		igdeMetaContextItemInfo info;
+		pListBox->RemoveAllItems();
+		objects.Visit([&](const deObject::Ref &object){
+			pPropertyList.GetObjectItemInfo(object, info);
+			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
+			item->SetRefData(object);
+			pListBox->AddItem(item);
+		});
+		
+		pListBox->SetSelectionWithRefData(GetContext()
+			? pPropertyList.GetActiveObject(GetContext())
+			: deObject::Ref());
+	});
+}
+
+void igdeMetaPropertyListWidget::SelectActiveObject(){
+	if(pListBox){
+		RunWithPreventUpdate([&]{
+			pListBox->SetSelectionWithRefData(GetContext()
+				? pPropertyList.GetActiveObject(GetContext())
+				: deObject::Ref());
+		});
+	}
+}
+
+void igdeMetaPropertyListWidget::AddListBoxContextMenuEntries(igdeMenuCascade &menu){
+	AddContextMenuEntries(menu);
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+}
+
+void igdeMetaPropertyListWidget::UpdateFilteredOut(){
+	igdeMetaPropertyWidget::UpdateFilteredOut();
+	if(pListBox){
+		pListBox->SetVisible(!GetFilteredOut());
+	}
+}

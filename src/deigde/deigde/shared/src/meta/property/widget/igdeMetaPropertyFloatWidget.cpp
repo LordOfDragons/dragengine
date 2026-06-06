@@ -233,15 +233,15 @@ void igdeMetaPropertyFloatWidget::Update(){
 	if(pTextField){
 		RunWithPreventUpdate([&]{
 			pTextField->SetFloat(GetContext()
-				? GetPropertyFloat().GetPropertyValue(GetContext())
-				: GetPropertyFloat().GetDefaultValue());
+				? pPropertyFloat.GetPropertyValue(GetContext())
+				: pPropertyFloat.GetDefaultValue());
 		});
 	}
 	if(pEditSliderText){
 		RunWithPreventUpdate([&]{
 			pEditSliderText->SetValue(GetContext()
-				? GetPropertyFloat().GetPropertyValue(GetContext())
-				: GetPropertyFloat().GetDefaultValue());
+				? pPropertyFloat.GetPropertyValue(GetContext())
+				: pPropertyFloat.GetDefaultValue());
 		});
 	}
 }

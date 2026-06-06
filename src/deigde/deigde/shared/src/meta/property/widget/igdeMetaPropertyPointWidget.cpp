@@ -195,8 +195,7 @@ void igdeMetaPropertyPointWidget::Update(){
 	if(pEditPoint){
 		RunWithPreventUpdate([&]{
 			pEditPoint->SetPoint(GetContext()
-				? GetPropertyPoint().GetPropertyValue(GetContext())
-				: decPoint());
+				? pPropertyPoint.GetPropertyValue(GetContext()) : decPoint());
 		});
 	}
 }

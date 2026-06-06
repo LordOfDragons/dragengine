@@ -194,7 +194,7 @@ void igdeMetaPropertyVector2Widget::Update(){
 	if(pEditVector2){
 		RunWithPreventUpdate([&]{
 			pEditVector2->SetVector2(GetContext()
-				? GetPropertyVector2().GetPropertyValue(GetContext()) : decVector2());
+				? pPropertyVector2.GetPropertyValue(GetContext()) : decVector2());
 		});
 	}
 }

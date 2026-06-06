@@ -199,11 +199,11 @@ void igdeMetaPropertyCurveBezierWidget::Update(){
 	
 	RunWithPreventUpdate([&]{
 		pViewCurveBezier->SetCurve(GetContext()
-			? GetPropertyCurveBezier().GetPropertyValue(GetContext())
-			: GetPropertyCurveBezier().GetDefaultValue());
-		pViewCurveBezier->SetClamp(GetPropertyCurveBezier().GetClamp());
-		pViewCurveBezier->SetClampMin(GetPropertyCurveBezier().GetClampMin());
-		pViewCurveBezier->SetClampMax(GetPropertyCurveBezier().GetClampMax());
+			? pPropertyCurveBezier.GetPropertyValue(GetContext())
+			: pPropertyCurveBezier.GetDefaultValue());
+		pViewCurveBezier->SetClamp(pPropertyCurveBezier.GetClamp());
+		pViewCurveBezier->SetClampMin(pPropertyCurveBezier.GetClampMin());
+		pViewCurveBezier->SetClampMax(pPropertyCurveBezier.GetClampMax());
 	});
 }
 

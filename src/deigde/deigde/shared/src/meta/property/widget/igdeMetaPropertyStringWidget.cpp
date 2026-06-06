@@ -228,12 +228,12 @@ void igdeMetaPropertyStringWidget::Drop(){
 void igdeMetaPropertyStringWidget::Update(){
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetText(GetContext() ? GetPropertyString().GetPropertyValue(GetContext()) : "");
+			pTextField->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : "");
 		});
 	}
 	if(pComboBox){
 		RunWithPreventUpdate([&]{
-			pComboBox->SetText(GetContext() ? GetPropertyString().GetPropertyValue(GetContext()) : "");
+			pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : "");
 		});
 	}
 }
@@ -244,14 +244,14 @@ void igdeMetaPropertyStringWidget::UpdateStringList(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto &items = GetPropertyString().GetStringList();
+		const auto &strings = pPropertyString.GetStringList();
 		pComboBox->RemoveAllItems();
-		items.Visit([&](const igdeListItem &item){
-			pComboBox->AddItem(igdeListItem::Ref::New(item));
+		strings.Visit([&](const decString &string){
+			pComboBox->AddItem(string);
 		});
 		pComboBox->StoreFilterItems();
 		
-		pComboBox->SetText(GetContext() ? GetPropertyString().GetPropertyValue(GetContext()) : "");
+		pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : "");
 	});
 }
 

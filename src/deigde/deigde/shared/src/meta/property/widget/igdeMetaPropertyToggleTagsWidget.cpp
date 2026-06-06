@@ -193,7 +193,7 @@ void igdeMetaPropertyToggleTagsWidget::Update(){
 	if(pToggleTags){
 		RunWithPreventUpdate([&]{
 			pToggleTags->SetTags(GetContext()
-				? GetPropertyToggleTags().GetPropertyValue(GetContext()): decStringSet());
+				? pPropertyToggleTags.GetPropertyValue(GetContext()) : decStringSet());
 		});
 	}
 }

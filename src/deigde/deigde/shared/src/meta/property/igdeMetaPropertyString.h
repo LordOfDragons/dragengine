@@ -29,6 +29,8 @@
 #include "../igdeTMetaData.h"
 #include "../../gui/model/igdeListItem.h"
 
+#include <dragengine/common/string/decStringList.h>
+
 
 /**
  * \brief String meta property.
@@ -37,9 +39,6 @@ class DE_DLL_EXPORT igdeMetaPropertyString : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyString>;
-	
-	/** \brief List of allowed strings. */
-	using StringList = igdeListItem::List;
 	
 	
 	/** \brief Listener. */
@@ -53,7 +52,7 @@ public:
 private:
 	decString pDefaultValue;
 	bool pEnableStringList;
-	StringList pStringList;
+	decStringList pStringList;
 	igdeTListenerList<Listener> pListeners;
 	
 	
@@ -91,8 +90,8 @@ public:
 	 *
 	 * After changing the list call NotifyStringListChanged().
 	 */
-	inline StringList &GetStringList(){ return pStringList; }
-	inline const StringList &GetStringList() const{ return pStringList; }
+	inline decStringList &GetStringList(){ return pStringList; }
+	inline const decStringList &GetStringList() const{ return pStringList; }
 	
 	
 	/** \brief Listeners. */

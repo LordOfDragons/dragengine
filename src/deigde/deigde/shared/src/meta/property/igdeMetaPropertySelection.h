@@ -30,6 +30,8 @@
 
 #include <type_traits>
 
+class igdeMetaContextItemInfo;
+
 
 /**
  * \brief Selection meta property.
@@ -39,14 +41,20 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertySelection>;
 	
+	/** \brief List of choices. */
+	using ListChoices = decTOrderedSet<void*>;
+	
 	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertySelection>{
+	public:
+		/** \brief Choices changed. */
+		virtual void OnChoicesChanged(igdeMetaPropertySelection *property);
 	};
 	
 	
 private:
-	igdeListItem::List pChoices;
+	ListChoices pChoices;
 	void *pDefaultValue;
 	igdeTListenerList<Listener> pListeners;
 	
@@ -56,8 +64,7 @@ public:
 	/*@{*/
 	
 	/** \brief Create selection meta property with label and description. */
-	igdeMetaPropertySelection(const char *id, const char *name,
-		const char *description, const igdeListItem::List &choices);
+	igdeMetaPropertySelection(const char *id, const char *name, const char *description);
 	
 protected:
 	/** \brief Clean up selection meta property. */
@@ -70,7 +77,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Choices. */
-	inline const igdeListItem::List &GetChoices() const{ return pChoices; }
+	inline const ListChoices &GetChoices() const{ return pChoices; }
+	
+	/**
+	 * \brief Set choices.
+	 * 
+	 * After changing choices call NotifyChoicesChanged() to notify listeners.
+	 */
+	void SetChoices(const ListChoices &choices);
 	
 	/** \brief Default value. */
 	inline void *GetDefaultValue() const{ return pDefaultValue; }
@@ -85,6 +99,9 @@ public:
 	
 	/** \brief Notify listeners about value change. */
 	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	
+	/** \brief Notify listeners about choices changed. */
+	void NotifyChoicesChanged();
 	
 	
 	/**
@@ -115,6 +132,11 @@ public:
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, void *value) = 0;
 	
+	/**
+	 * \brief Get choice item information.
+	 */
+	virtual void GetChoiceItemInfo(void *choice, igdeMetaContextItemInfo &info) const = 0;
+	
 	
 	/**
 	 * \brief Create UI widget.
@@ -135,15 +157,16 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertySelectionEnum<T>>;
 	
+	/** \brief List of choices. */
+	using ListChoicesEnum = decTOrderedSet<T>;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	
 	/** \brief Create selection meta property with label and description. */
-	igdeMetaPropertySelectionEnum(const char *name, const char *description,
-		const igdeListItem::List &choices) :
-	igdeMetaPropertySelection(name, description, choices){
+	igdeMetaPropertySelectionEnum(const char *id, const char *name, const char *description) :
+	igdeMetaPropertySelection(id, name, description){
 	}
 	
 protected:
@@ -156,6 +179,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Choices. */
+	inline ListChoicesEnum GetChoicesEnum() const{
+		ListChoicesEnum choices;
+		for(void *c : GetChoices()){
+			choices.Add(static_cast<T>(reinterpret_cast<intptr_t>(c)));
+		}
+		return choices;
+	}
+	
+	/** \brief Set choices. */
+	void SetChoicesEnum(const ListChoicesEnum &choices){
+		ListChoices listChoices;
+		for(T c : choices){
+			listChoices.Add(reinterpret_cast<void*>(static_cast<intptr_t>(c)));
+		}
+		SetChoices(listChoices);
+	}
+	
 	/** \brief Default value. */
 	inline T GetDefaultValueEnum() const{
 		return static_cast<T>(reinterpret_cast<intptr_t>(igdeMetaPropertySelection::GetDefaultValue()));
@@ -175,6 +216,10 @@ public:
 		SetPropertyValueEnum(context, static_cast<T>(reinterpret_cast<intptr_t>(value)));
 	}
 	
+	void GetChoiceItemInfo(void *choice, igdeMetaContextItemInfo &info) const{
+		GetChoiceItemInfoEnum(static_cast<T>(reinterpret_cast<intptr_t>(choice)), info);
+	}
+	
 	/**
 	 * \brief Get property value matching context.
 	 * 
@@ -188,14 +233,12 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValueEnum(const igdeMetaContext::Ref &context, T value) = 0;
+	
+	/**
+	 * \brief Get choice item information.
+	 */
+	virtual void GetChoiceItemInfoEnum(T choice, igdeMetaContextItemInfo &info) const = 0;
 	/*@}*/
-	
-	
-protected:
-	/** \brief Helper function to add choices to the list. */
-	static void AddChoice(igdeListItem::List &choices, T value, const char *name, igdeIcon *icon = nullptr){
-		choices.Add(igdeListItem::Ref::New(name, icon, "", reinterpret_cast<void*>(static_cast<intptr_t>(value))));
-	}
 };
 
 #endif

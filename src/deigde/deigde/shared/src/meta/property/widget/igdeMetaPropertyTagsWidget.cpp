@@ -193,7 +193,7 @@ void igdeMetaPropertyTagsWidget::Update(){
 	if(pEditTags){
 		RunWithPreventUpdate([&]{
 			pEditTags->SetTags(GetContext()
-				? GetPropertyTags().GetPropertyValue(GetContext()) : decStringSet());
+				? pPropertyTags.GetPropertyValue(GetContext()) : decStringSet());
 		});
 	}
 }

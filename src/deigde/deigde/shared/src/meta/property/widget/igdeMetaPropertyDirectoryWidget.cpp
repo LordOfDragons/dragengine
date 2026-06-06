@@ -197,8 +197,8 @@ void igdeMetaPropertyDirectoryWidget::Update(){
 	if(pEditDirectory){
 		RunWithPreventUpdate([&]{
 			pEditDirectory->SetDirectory(GetContext()
-				? GetPropertyDirectory().GetPropertyValue(GetContext())
-				: GetPropertyDirectory().GetDefaultValue());
+				? pPropertyDirectory.GetPropertyValue(GetContext())
+				: pPropertyDirectory.GetDefaultValue());
 		});
 	}
 }

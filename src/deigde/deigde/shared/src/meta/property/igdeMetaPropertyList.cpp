@@ -22,47 +22,61 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaPropertyObject.h"
-#include "widget/igdeMetaPropertyObjectWidget.h"
+#include "igdeMetaPropertyList.h"
+#include "widget/igdeMetaPropertyListWidget.h"
 
 
-// Class igdeMetaPropertyObject::Listener
-///////////////////////////////////////////
+// Class igdeMetaPropertyList::Listener
+///////////////////////////////////////////////
 
-void igdeMetaPropertyObject::Listener::OnObjectsChanged(igdeMetaPropertyObject*){
+void igdeMetaPropertyList::Listener::OnActiveChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+}
+
+void igdeMetaPropertyList::Listener::OnSelectionChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 }
 
 
-// Class igdeMetaPropertyObject
-/////////////////////////////////
+// Class igdeMetaPropertyList
+///////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyObject::igdeMetaPropertyObject(
+igdeMetaPropertyList::igdeMetaPropertyList(
 	const char *id, const char *name, const char *description) :
-igdeMetaProperty(id, name, description){
+igdeMetaProperty(id, name, description),
+pRows(4){
 }
 
-igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;
+igdeMetaPropertyList::~igdeMetaPropertyList() = default;
 
 
 // Management
 ///////////////
 
-void igdeMetaPropertyObject::NotifyValueChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyList::SetRows(int rows){
+	pRows = decMath::max(rows, 1);
+}
+
+void igdeMetaPropertyList::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
 }
 
-void igdeMetaPropertyObject::NotifyObjectsChanged(){
+void igdeMetaPropertyList::NotifyActiveChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
-		listener.OnObjectsChanged(this);
+		listener.OnActiveChanged(this, context);
+	});
+}
+
+void igdeMetaPropertyList::NotifySelectionChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnSelectionChanged(this, context);
 	});
 }
 
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(){
-	return igdeMetaPropertyObjectWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(){
+	return igdeMetaPropertyListWidget::Ref::New(*this);
 }

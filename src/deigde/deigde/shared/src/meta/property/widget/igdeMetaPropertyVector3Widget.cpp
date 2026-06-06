@@ -193,7 +193,8 @@ void igdeMetaPropertyVector3Widget::Drop(){
 void igdeMetaPropertyVector3Widget::Update(){
 	if(pEditVector){
 		RunWithPreventUpdate([&]{
-			pEditVector->SetVector(GetPropertyVector3().GetPropertyValue(GetContext()));
+			pEditVector->SetVector(GetContext()
+				? pPropertyVector3.GetPropertyValue(GetContext()) : decVector());
 		});
 	}
 }

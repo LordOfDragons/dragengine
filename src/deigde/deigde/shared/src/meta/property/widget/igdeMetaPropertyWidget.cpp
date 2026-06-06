@@ -97,7 +97,7 @@ void igdeMetaPropertyWidget::OnContextChanged(){
 void igdeMetaPropertyWidget::CreateLabel(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pLabel)
 	
-	helper.Label(container, pLabel, GetProperty()->GetLabel(), GetProperty()->GetDescription(),
+	helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
 		igdeLabel::eaLeft | igdeLabel::eaMiddle);
 }
 
@@ -115,7 +115,7 @@ void igdeMetaPropertyWidget::CreateContextMenuButton(igdeContainer &container, i
 void igdeMetaPropertyWidget::OnContextMenuButton(){
 	auto menu = igdeMenuCascade::Ref::New(pButtonContextMenu->GetEnvironment());
 	AddContextMenuEntries(*menu);
-	GetProperty()->AddContextMenuEntries(*menu, GetContext());
+	pProperty->AddContextMenuEntries(*menu, pContext);
 	
 	if(menu->GetChildren().IsNotEmpty()){
 		menu->Popup(pButtonContextMenu);
@@ -126,8 +126,8 @@ void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu)
 }
 
 void igdeMetaPropertyWidget::UpdateFilteredOut(){
-	if(GetLabel()){
-		GetLabel()->SetVisible(!pFilteredOut);
+	if(pLabel){
+		pLabel->SetVisible(!pFilteredOut);
 	}
 	if(pButtonContextMenu){
 		pButtonContextMenu->SetVisible(!pFilteredOut);

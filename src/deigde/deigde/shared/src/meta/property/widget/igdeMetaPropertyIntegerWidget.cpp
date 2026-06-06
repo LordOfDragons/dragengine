@@ -259,22 +259,22 @@ void igdeMetaPropertyIntegerWidget::Update(){
 	if(pTextField){
 		RunWithPreventUpdate([&]{
 			pTextField->SetInteger(GetContext()
-				? GetPropertyInteger().GetPropertyValue(GetContext())
-				: GetPropertyInteger().GetDefaultValue());
+				? pPropertyInteger.GetPropertyValue(GetContext())
+				: pPropertyInteger.GetDefaultValue());
 		});
 	}
 	if(pEditSliderText){
 		RunWithPreventUpdate([&]{
 			pEditSliderText->SetValue((float)(GetContext()
-				? GetPropertyInteger().GetPropertyValue(GetContext())
-				: GetPropertyInteger().GetDefaultValue()));
+				? pPropertyInteger.GetPropertyValue(GetContext())
+				: pPropertyInteger.GetDefaultValue()));
 		});
 	}
 	if(pSpinTextField){
 		RunWithPreventUpdate([&]{
 			pSpinTextField->SetValue(GetContext()
-				? GetPropertyInteger().GetPropertyValue(GetContext())
-				: GetPropertyInteger().GetDefaultValue());
+				? pPropertyInteger.GetPropertyValue(GetContext())
+				: pPropertyInteger.GetDefaultValue());
 		});
 	}
 }

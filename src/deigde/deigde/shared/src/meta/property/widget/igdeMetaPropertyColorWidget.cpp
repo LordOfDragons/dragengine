@@ -195,8 +195,8 @@ void igdeMetaPropertyColorWidget::Update(){
 	if(pColorBox){
 		RunWithPreventUpdate([&]{
 			pColorBox->SetColor(GetContext()
-				? GetPropertyColor().GetPropertyValue(GetContext())
-				: GetPropertyColor().GetDefaultValue());
+				? pPropertyColor.GetPropertyValue(GetContext())
+				: pPropertyColor.GetDefaultValue());
 		});
 	}
 }

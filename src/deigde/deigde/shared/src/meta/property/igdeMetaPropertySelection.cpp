@@ -26,16 +26,22 @@
 #include "widget/igdeMetaPropertySelectionWidget.h"
 
 
+// Class igdeMetaPropertySelection::Listener
+//////////////////////////////////////////////
+
+void igdeMetaPropertySelection::Listener::OnChoicesChanged(igdeMetaPropertySelection*){
+}
+
+
 // Class igdeMetaPropertySelection
 /////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySelection::igdeMetaPropertySelection(const char *id, const char *name,
-	const char *description, const igdeListItem::List &choices) :
+igdeMetaPropertySelection::igdeMetaPropertySelection(
+	const char *id, const char *name, const char *description) :
 igdeMetaProperty(id, name, description),
-pChoices(choices),
 pDefaultValue(nullptr){
 }
 
@@ -44,6 +50,10 @@ igdeMetaPropertySelection::~igdeMetaPropertySelection() = default;
 
 // Management
 ///////////////
+
+void igdeMetaPropertySelection::SetChoices(const ListChoices &choices){
+	pChoices = choices;
+}
 
 void igdeMetaPropertySelection::SetDefaultValue(void *value){
 	pDefaultValue = value;
@@ -55,6 +65,12 @@ void igdeMetaPropertySelection::NotifyValueChanged(const igdeMetaContext::Ref &c
 	});
 }
 
+void igdeMetaPropertySelection::NotifyChoicesChanged(){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnChoicesChanged(this);
+	});
+}
+
 igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(){
 	return igdeMetaPropertySelectionWidget::Ref::New(*this);
 }
@@ -63,20 +79,38 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(){
 // TEST
 #if 0
 #include "../../environment/igdeEnvironment.h"
+#include "../igdeMetaContextItemInfo.h"
 class TestClass : public igdeMetaPropertySelectionEnum<igdeEnvironment::eFilePatternListTypes> {
 public:
-	TestClass() : igdeMetaPropertySelectionEnum("Test", "Test description", CreateChoices()){ SetDefaultValueEnum(igdeEnvironment::eFilePatternListTypes::efpltModel); }
+	TestClass() : igdeMetaPropertySelectionEnum("test.property", "Test", "Test description"){
+		ListChoicesEnum choices;
+		choices.Add(igdeEnvironment::eFilePatternListTypes::efpltAll);
+		choices.Add(igdeEnvironment::eFilePatternListTypes::efpltAnimation);
+		choices.Add(igdeEnvironment::eFilePatternListTypes::efpltModel);
+		SetChoicesEnum(choices);
+		
+		SetDefaultValueEnum(igdeEnvironment::eFilePatternListTypes::efpltModel);
+	}
 	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{ return {}; }
 	bool IsValid(const igdeMetaContext::Ref &context) const override{ return true; }
 	igdeEnvironment::eFilePatternListTypes GetPropertyValueEnum(const igdeMetaContext::Ref &context) const override{ return igdeEnvironment::eFilePatternListTypes::efpltAll; }
 	void SetPropertyValueEnum(const igdeMetaContext::Ref &context, igdeEnvironment::eFilePatternListTypes value) override{ }
 	
-	static igdeListItem::List CreateChoices(){
-		igdeListItem::List c;
-		AddChoice(c, igdeEnvironment::eFilePatternListTypes::efpltAll, "All");
-		AddChoice(c, igdeEnvironment::eFilePatternListTypes::efpltAnimation, "Animation");
-		AddChoice(c, igdeEnvironment::eFilePatternListTypes::efpltModel, "Model");
-		return c;
+	void GetChoiceItemInfoEnum(igdeEnvironment::eFilePatternListTypes choice, igdeMetaContextItemInfo &info) const override{
+		switch(choice){
+		case igdeEnvironment::eFilePatternListTypes::efpltAll:
+			info.SetAll("All");
+			break;
+		case igdeEnvironment::eFilePatternListTypes::efpltAnimation:
+			info.SetAll("Animation");
+			break;
+		case igdeEnvironment::eFilePatternListTypes::efpltModel:
+			info.SetAll("Model");
+			break;
+		default:
+			info.SetAll("?");
+			break;
+		}
 	}
 };
 static TestClass vTestClass;

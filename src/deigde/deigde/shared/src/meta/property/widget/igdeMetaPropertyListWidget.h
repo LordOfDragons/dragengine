@@ -22,46 +22,47 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYOBJECTWIDGET_H_
-#define _IGDEMETAPROPERTYOBJECTWIDGET_H_
+#ifndef _IGDEMETAPROPERTYLISTWIDGET_H_
+#define _IGDEMETAPROPERTYLISTWIDGET_H_
 
 #include "igdeMetaPropertyWidget.h"
-#include "../igdeMetaPropertyObject.h"
+#include "../igdeMetaPropertyList.h"
 #include "../../../gui/igdeLabel.h"
-#include "../../../gui/igdeComboBoxFilter.h"
-#include "../../../gui/event/igdeComboBoxListener.h"
+#include "../../../gui/igdeListBox.h"
+#include "../../../gui/event/igdeListBoxListener.h"
 
 
 /**
- * \brief Object meta property widget class able to add itself to a widget holder.
+ * \brief List meta property widget class able to add itself to a widget holder.
  */
-class DE_DLL_EXPORT igdeMetaPropertyObjectWidget : public igdeMetaPropertyWidget{
+class DE_DLL_EXPORT igdeMetaPropertyListWidget : public igdeMetaPropertyWidget{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyObjectWidget>;
+	using Ref = deTObjectReference<igdeMetaPropertyListWidget>;
 	
 	
 private:
-	class PropertyListener : public igdeMetaPropertyObject::Listener{
-		igdeMetaPropertyObjectWidget &pWidget;
+	class PropertyListener : public igdeMetaPropertyList::Listener{
+		igdeMetaPropertyListWidget &pWidget;
 		
 	public:
 		using Ref = deTObjectReference<PropertyListener>;
-		PropertyListener(igdeMetaPropertyObjectWidget &widget);
+		PropertyListener(igdeMetaPropertyListWidget &widget);
 		
 	protected:
 		virtual ~PropertyListener() override;
 		
 	public:
-		void OnValueChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectsChanged(igdeMetaPropertyObject *property) override;
+		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		void OnActiveChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		void OnSelectionChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
-	igdeMetaPropertyObject &pPropertyObject;
+	igdeMetaPropertyList &pPropertyList;
 	PropertyListener::Ref pPropertyListener;
-	igdeComboBoxFilter::Ref pComboBox;
-	igdeComboBoxListener::Ref pListener;
+	igdeListBox::Ref pListBox;
+	igdeListBoxListener::Ref pListener;
 	
 	
 public:
@@ -70,11 +71,11 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyObjectWidget(igdeMetaPropertyObject &property);
+	igdeMetaPropertyListWidget(igdeMetaPropertyList &property);
 	
 protected:
 	/** \brief Clean up widget. */
-	~igdeMetaPropertyObjectWidget() override;
+	~igdeMetaPropertyListWidget() override;
 	
 public:
 	/*@}*/
@@ -82,8 +83,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Assigned property object. */
-	inline igdeMetaPropertyObject &GetPropertyObject() const{ return pPropertyObject; }
+	/** \brief Assigned property list. */
+	inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
 	
 	
 	/** \brief Create UI widgets adding them to container. */
@@ -95,11 +96,14 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
-	/** \brief Update object list. */
-	void UpdateObjectList();
+	/** \brief List box widget or nullptr. */
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 	
-	/** \brief Combo box widget or nullptr. */
-	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }
+	/** \brief Select active object. */
+	void SelectActiveObject();
+	
+	/** \brief Add list box context menu entries. */
+	void AddListBoxContextMenuEntries(igdeMenuCascade &menu);
 	/*@}*/
 	
 	

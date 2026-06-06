@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertySelectionWidget.h"
+#include "../../igdeMetaContextItemInfo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
 
@@ -179,8 +180,11 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 	helper.ComboBox(container, pPropertySelection.GetDescription(), pComboBox, pListener);
 	pComboBox->SetEditable(false);
 	
-	pPropertySelection.GetChoices().Visit([&](const igdeListItem &item){
-		pComboBox->AddItem(igdeListItem::Ref::New(item));
+	igdeMetaContextItemInfo info;
+	pPropertySelection.GetChoices().Visit([&](void *choice){
+		pPropertySelection.GetChoiceItemInfo(choice, info);
+		pComboBox->AddItem(igdeListItem::Ref::New(info.GetText(),
+			info.GetIcon(), info.GetDescription(), choice));
 	});
 	
 	CreateContextMenuButton(line, helper);
@@ -200,7 +204,7 @@ void igdeMetaPropertySelectionWidget::Update(){
 	if(pComboBox){
 		RunWithPreventUpdate([&]{
 			pComboBox->SetSelectionWithData(GetContext()
-				? GetPropertySelection().GetPropertyValue(GetContext()) : nullptr);
+				? pPropertySelection.GetPropertyValue(GetContext()) : nullptr);
 		});
 	}
 }

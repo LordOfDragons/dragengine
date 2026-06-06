@@ -22,47 +22,54 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaPropertyObject.h"
-#include "widget/igdeMetaPropertyObjectWidget.h"
+#include "igdeMetaContextItemInfo.h"
 
 
-// Class igdeMetaPropertyObject::Listener
-///////////////////////////////////////////
-
-void igdeMetaPropertyObject::Listener::OnObjectsChanged(igdeMetaPropertyObject*){
-}
-
-
-// Class igdeMetaPropertyObject
-/////////////////////////////////
+// Class igdeMetaContextItemInfo
+//////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyObject::igdeMetaPropertyObject(
-	const char *id, const char *name, const char *description) :
-igdeMetaProperty(id, name, description){
-}
-
-igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;
+igdeMetaContextItemInfo::igdeMetaContextItemInfo() = default;
+igdeMetaContextItemInfo::~igdeMetaContextItemInfo() = default;
 
 
 // Management
 ///////////////
 
-void igdeMetaPropertyObject::NotifyValueChanged(const igdeMetaContext::Ref &context){
-	pListeners.Notify([&](Listener &listener){
-		listener.OnValueChanged(this, context);
-	});
+void igdeMetaContextItemInfo::SetText(const decString &name){
+	pText = name;
 }
 
-void igdeMetaPropertyObject::NotifyObjectsChanged(){
-	pListeners.Notify([&](Listener &listener){
-		listener.OnObjectsChanged(this);
-	});
+void igdeMetaContextItemInfo::SetDescription(const decString &description){
+	pDescription = description;
 }
 
+void igdeMetaContextItemInfo::SetIcon(const igdeIcon::Ref &icon){
+	pIcon = icon;
+}
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(){
-	return igdeMetaPropertyObjectWidget::Ref::New(*this);
+void igdeMetaContextItemInfo::Clear(){
+	pText.Empty();
+	pDescription.Empty();
+	pIcon.Clear();
+}
+
+void igdeMetaContextItemInfo::SetAll(const char *text){
+	pText = text;
+	pDescription.Empty();
+	pIcon.Clear();
+}
+
+void igdeMetaContextItemInfo::SetAll(const char *text, const char *description){
+	pText = text;
+	pDescription = description;
+	pIcon.Clear();
+}
+
+void igdeMetaContextItemInfo::SetAll(const char *text, const char *description, const igdeIcon::Ref &icon){
+	pText = text;
+	pDescription = description;
+	pIcon = icon;
 }

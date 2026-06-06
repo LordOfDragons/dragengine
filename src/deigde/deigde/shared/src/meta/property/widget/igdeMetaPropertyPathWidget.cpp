@@ -203,8 +203,7 @@ void igdeMetaPropertyPathWidget::Update(){
 	if(pEditPath){
 		RunWithPreventUpdate([&]{
 			pEditPath->SetPath(GetContext()
-				? GetPropertyPath().GetPropertyValue(GetContext())
-				: decString());
+				? pPropertyPath.GetPropertyValue(GetContext()) : decString());
 		});
 	}
 }

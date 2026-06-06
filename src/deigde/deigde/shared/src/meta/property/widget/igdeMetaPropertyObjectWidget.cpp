@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyObjectWidget.h"
+#include "../../igdeMetaContextItemInfo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
 
@@ -144,7 +145,7 @@ void igdeMetaPropertyObjectWidget::PropertyListener::OnValueChanged(igdeMetaProp
 	pWidget.Update();
 }
 
-void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectsChanged(igdeMetaPropertyObject*, const igdeMetaContext::Ref &){
+void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectsChanged(igdeMetaPropertyObject*){
 	pWidget.UpdateObjectList();
 }
 
@@ -205,8 +206,7 @@ void igdeMetaPropertyObjectWidget::Update(){
 	
 	RunWithPreventUpdate([&]{
 		pComboBox->SetSelectionWithRefData(GetContext()
-			? GetPropertyObject().GetPropertyValue(GetContext())
-			: deObject::Ref());
+			? pPropertyObject.GetPropertyValue(GetContext()) : deObject::Ref());
 	});
 }
 
@@ -216,16 +216,19 @@ void igdeMetaPropertyObjectWidget::UpdateObjectList(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto &items = GetPropertyObject().GetObjects();
+		const auto &objects = pPropertyObject.GetObjects();
+		igdeMetaContextItemInfo info;
 		pComboBox->RemoveAllItems();
-		items.Visit([&](const igdeListItem &item){
-			pComboBox->AddItem(igdeListItem::Ref::New(item));
+		objects.Visit([&](const deObject::Ref &object){
+			pPropertyObject.GetObjectItemInfo(object, info);
+			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
+			item->SetRefData(object);
+			pComboBox->AddItem(item);
 		});
 		pComboBox->StoreFilterItems();
 		
 		pComboBox->SetSelectionWithRefData(GetContext()
-			? GetPropertyObject().GetPropertyValue(GetContext())
-			: deObject::Ref());
+			? pPropertyObject.GetPropertyValue(GetContext()) : deObject::Ref());
 	});
 }
 
