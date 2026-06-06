@@ -73,7 +73,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyFloatWidget(igdeMetaPropertyFloat &property, igdeMetaContext &context);
+	igdeMetaPropertyFloatWidget(igdeMetaPropertyFloat &property);
 	
 protected:
 	/** \brief Clean up widget. */

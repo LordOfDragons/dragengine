@@ -56,25 +56,28 @@ public:
 };
 
 
-class cListener : public igdeComboBoxListener{
+class cListenerHelper{
 	igdeMetaPropertySelectionWidget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertySelectionWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertySelectionWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertySelection &GetPropertySelection() const{ return pWidget.GetPropertySelection(); }
 	
-	void OnTextChanged(igdeComboBox *comboBox) override{
+	void OnValueChanged(void *newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertySelection();
 		auto oldValue = property.GetPropertyValue(context);
-		auto newValue = comboBox->GetSelectedItemData();
 		if(newValue == oldValue){
 			return;
 		}
@@ -90,39 +93,37 @@ public:
 };
 
 
+class cListener : public igdeComboBoxListener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertySelectionWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		pHelper.OnValueChanged(comboBox->GetSelectedItemData());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertySelectionWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertySelectionWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertySelection();
-		void * const defaultValue = property.GetDefaultValue();
-		void * const currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertySelection().GetDefaultValue());
 	}
 };
 
@@ -149,8 +150,8 @@ void igdeMetaPropertySelectionWidget::PropertyListener::OnValueChanged(igdeMetaP
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(igdeMetaPropertySelection &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(igdeMetaPropertySelection &property) :
+igdeMetaPropertyWidget(property),
 pPropertySelection(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -183,7 +184,6 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 	});
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertySelectionWidget::Drop(){
@@ -199,7 +199,8 @@ void igdeMetaPropertySelectionWidget::Drop(){
 void igdeMetaPropertySelectionWidget::Update(){
 	if(pComboBox){
 		RunWithPreventUpdate([&]{
-			pComboBox->SetSelectionWithData(GetPropertySelection().GetPropertyValue(GetContext()));
+			pComboBox->SetSelectionWithData(GetContext()
+				? GetPropertySelection().GetPropertyValue(GetContext()) : nullptr);
 		});
 	}
 }

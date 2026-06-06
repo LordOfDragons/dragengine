@@ -71,7 +71,11 @@ public:
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyInteger();
 		const int oldValue = property.GetPropertyValue(context);
 		if(newValue == oldValue){
@@ -184,9 +188,8 @@ void igdeMetaPropertyIntegerWidget::PropertyListener::OnValueChanged(igdeMetaPro
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyIntegerWidget::igdeMetaPropertyIntegerWidget(
-	igdeMetaPropertyInteger &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyIntegerWidget::igdeMetaPropertyIntegerWidget(igdeMetaPropertyInteger &property) :
+igdeMetaPropertyWidget(property),
 pPropertyInteger(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -230,7 +233,6 @@ void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelpe
 	}
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyIntegerWidget::Drop(){
@@ -256,17 +258,23 @@ void igdeMetaPropertyIntegerWidget::Drop(){
 void igdeMetaPropertyIntegerWidget::Update(){
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetInteger(GetPropertyInteger().GetPropertyValue(GetContext()));
+			pTextField->SetInteger(GetContext()
+				? GetPropertyInteger().GetPropertyValue(GetContext())
+				: GetPropertyInteger().GetDefaultValue());
 		});
 	}
 	if(pEditSliderText){
 		RunWithPreventUpdate([&]{
-			pEditSliderText->SetValue((float)GetPropertyInteger().GetPropertyValue(GetContext()));
+			pEditSliderText->SetValue((float)(GetContext()
+				? GetPropertyInteger().GetPropertyValue(GetContext())
+				: GetPropertyInteger().GetDefaultValue()));
 		});
 	}
 	if(pSpinTextField){
 		RunWithPreventUpdate([&]{
-			pSpinTextField->SetValue(GetPropertyInteger().GetPropertyValue(GetContext()));
+			pSpinTextField->SetValue(GetContext()
+				? GetPropertyInteger().GetPropertyValue(GetContext())
+				: GetPropertyInteger().GetDefaultValue());
 		});
 	}
 }

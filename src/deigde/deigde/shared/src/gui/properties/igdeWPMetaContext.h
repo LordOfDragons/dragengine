@@ -28,11 +28,9 @@
 #include "../layout/igdeContainerFlow.h"
 #include "../layout/igdeContainerScroll.h"
 #include "../../meta/igdeMetaContext.h"
+#include "../../meta/property/igdeMetaPropertyGroup.h"
 #include "../../meta/property/widget/igdeMetaPropertyWidget.h"
 #include "../../utils/igdeFilter.h"
-
-class igdeMetaPropertyGroup;
-class igdeMetaPropertyGroupWidget;
 
 
 /**
@@ -47,6 +45,10 @@ public:
 	
 	/** \brief List of property widgets. */
 	using PropertyWidgetList = decTObjectOrderedSet<igdeMetaPropertyWidget>;
+	
+	/** \brief Map of property widgets. */
+	using PropertyWidgetMap = decTDictionary<igdeMetaProperty::Ref, igdeMetaPropertyWidget::Ref>;
+	
 	
 private:
 	class ContextListener : public igdeMetaContext::Listener{
@@ -70,6 +72,7 @@ private:
 	
 	igdeContainerFlow::Ref pPropertyContainer;
 	PropertyWidgetList pPropertyWidgets;
+	PropertyWidgetMap pPropertyWidgetCache;
 	
 	
 public:
@@ -111,8 +114,8 @@ private:
 	
 	void pCreatePropertyWidgets();
 	
-	igdeMetaPropertyWidget::Ref pCreatePropertyGroupWidget(
-		igdeContainer &container, igdeMetaPropertyGroup &groupProperty);
+	igdeMetaPropertyWidget::Ref pCreatePropertyGroupWidget(igdeContainer &container,
+		const igdeMetaPropertyGroup::Ref &groupProperty);
 	
 	void pClearPropertyWidgets();
 	

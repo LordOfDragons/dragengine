@@ -57,25 +57,29 @@ public:
 };
 
 
-class cAction : public igdeAction{
+class cListenerHelper{
 	igdeMetaPropertyToggleTagsWidget &pWidget;
 	
 public:
-	explicit cAction(igdeMetaPropertyToggleTagsWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyToggleTagsWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cAction() override = default;
+	inline igdeMetaPropertyToggleTagsWidget &GetWidget() const{ return pWidget; }
+	inline igdeMetaPropertyToggleTags &GetPropertyToggleTags() const{ return pWidget.GetPropertyToggleTags(); }
 	
-	void OnAction() override{
+	void OnValueChanged(const decStringSet &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyToggleTags();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = pWidget.GetToggleTags()->GetEnabledTags();
 		if(newValue == oldValue){
 			return;
 		}
@@ -91,39 +95,37 @@ public:
 };
 
 
+class cAction : public igdeAction{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cAction(igdeMetaPropertyToggleTagsWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cAction() override = default;
+	
+	void OnAction() override{
+		pHelper.OnValueChanged(pHelper.GetWidget().GetToggleTags()->GetEnabledTags());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyToggleTagsWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyToggleTagsWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyToggleTags();
-		const decStringSet defaultValue;
-		const decStringSet currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged({});
 	}
 };
 
@@ -150,9 +152,8 @@ void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnValueChanged(igdeMeta
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyToggleTagsWidget::igdeMetaPropertyToggleTagsWidget(
-	igdeMetaPropertyToggleTags &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyToggleTagsWidget::igdeMetaPropertyToggleTagsWidget(igdeMetaPropertyToggleTags &property) :
+igdeMetaPropertyWidget(property),
 pPropertyToggleTags(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -180,7 +181,6 @@ void igdeMetaPropertyToggleTagsWidget::Create(igdeContainer &container, igdeUIHe
 	helper.ToggleTags(container, pToggleTags, pAction);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){
@@ -192,7 +192,8 @@ void igdeMetaPropertyToggleTagsWidget::Drop(){
 void igdeMetaPropertyToggleTagsWidget::Update(){
 	if(pToggleTags){
 		RunWithPreventUpdate([&]{
-			pToggleTags->SetTags(GetPropertyToggleTags().GetPropertyValue(GetContext()));
+			pToggleTags->SetTags(GetContext()
+				? GetPropertyToggleTags().GetPropertyValue(GetContext()): decStringSet());
 		});
 	}
 }

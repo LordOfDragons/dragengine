@@ -71,6 +71,6 @@ void igdeMetaPropertyString::NotifyStringListChanged(const igdeMetaContext::Ref 
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyStringWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(){
+	return igdeMetaPropertyStringWidget::Ref::New(*this);
 }

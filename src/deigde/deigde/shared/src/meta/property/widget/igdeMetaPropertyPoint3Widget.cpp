@@ -57,25 +57,28 @@ public:
 };
 
 
-class cListener : public igdeEditPoint3Listener{
+class cListenerHelper{
 	igdeMetaPropertyPoint3Widget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertyPoint3Widget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyPoint3Widget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertyPoint3 &GetPropertyPoint3() const{ return pWidget.GetPropertyPoint3(); }
 	
-	void OnPoint3Changed(igdeEditPoint3 *editPoint3) override{
+	void OnValueChanged(const decPoint3 &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyPoint3();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = editPoint3->GetPoint3();
 		if(newValue == oldValue){
 			return;
 		}
@@ -91,39 +94,37 @@ public:
 };
 
 
+class cListener : public igdeEditPoint3Listener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertyPoint3Widget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnPoint3Changed(igdeEditPoint3 *editPoint3) override{
+		pHelper.OnValueChanged(editPoint3->GetPoint3());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyPoint3Widget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyPoint3Widget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyPoint3();
-		const decPoint3 defaultValue = property.GetDefaultValue();
-		const decPoint3 currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyPoint3().GetDefaultValue());
 	}
 };
 
@@ -150,9 +151,8 @@ void igdeMetaPropertyPoint3Widget::PropertyListener::OnValueChanged(igdeMetaProp
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPoint3Widget::igdeMetaPropertyPoint3Widget(
-	igdeMetaPropertyPoint3 &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyPoint3Widget::igdeMetaPropertyPoint3Widget(igdeMetaPropertyPoint3 &property) :
+igdeMetaPropertyWidget(property),
 pPropertyPoint3(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -180,7 +180,6 @@ void igdeMetaPropertyPoint3Widget::Create(igdeContainer &container, igdeUIHelper
 	helper.EditPoint3(container, pPropertyPoint3.GetDescription(), pEditPoint3, pListener);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyPoint3Widget::Drop(){
@@ -195,7 +194,9 @@ void igdeMetaPropertyPoint3Widget::Drop(){
 void igdeMetaPropertyPoint3Widget::Update(){
 	if(pEditPoint3){
 		RunWithPreventUpdate([&]{
-			pEditPoint3->SetPoint3(GetPropertyPoint3().GetPropertyValue(GetContext()));
+			pEditPoint3->SetPoint3(GetContext()
+				? GetPropertyPoint3().GetPropertyValue(GetContext())
+				: decPoint3());
 		});
 	}
 }

@@ -63,6 +63,6 @@ void igdeMetaPropertyObject::NotifyObjectsChanged(const igdeMetaContext::Ref &co
 }
 
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyObjectWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(){
+	return igdeMetaPropertyObjectWidget::Ref::New(*this);
 }

@@ -34,9 +34,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyWidget::igdeMetaPropertyWidget(igdeMetaProperty &property, igdeMetaContext &context) :
-pProperty(&property),
-pContext(&context){
+igdeMetaPropertyWidget::igdeMetaPropertyWidget(igdeMetaProperty &property) :
+pProperty(&property){
 }
 
 igdeMetaPropertyWidget::~igdeMetaPropertyWidget() = default;
@@ -44,6 +43,16 @@ igdeMetaPropertyWidget::~igdeMetaPropertyWidget() = default;
 
 // Management
 ///////////////
+
+void igdeMetaPropertyWidget::SetContext(const igdeMetaContext::Ref &context){
+	if(pContext == context){
+		return;
+	}
+	
+	pContext = context;
+	OnContextChanged();
+	Update();
+}
 
 void igdeMetaPropertyWidget::SetFilteredOut(bool filteredOut){
 	if(pFilteredOut == filteredOut){
@@ -81,6 +90,9 @@ void igdeMetaPropertyWidget::RunWithPreventUpdate(const std::function<void()> &f
 
 // Protected Functions
 ////////////////////////
+
+void igdeMetaPropertyWidget::OnContextChanged(){
+}
 
 void igdeMetaPropertyWidget::CreateLabel(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pLabel)

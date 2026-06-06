@@ -56,25 +56,28 @@ public:
 };
 
 
-class cListener : public igdeEditVectorListener{
+class cListenerHelper{
 	igdeMetaPropertyVector3Widget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertyVector3Widget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyVector3Widget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertyVector3 &GetPropertyVector3() const{ return pWidget.GetPropertyVector3(); }
 	
-	void OnVectorChanged(igdeEditVector *editVector) override{
+	void OnValueChanged(const decVector &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyVector3();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = editVector->GetVector();
 		if(newValue.IsEqualTo(oldValue)){
 			return;
 		}
@@ -90,39 +93,37 @@ public:
 };
 
 
+class cListener : public igdeEditVectorListener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertyVector3Widget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnVectorChanged(igdeEditVector *editVector) override{
+		pHelper.OnValueChanged(editVector->GetVector());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyVector3Widget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyVector3Widget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyVector3();
-		const decVector defaultValue = property.GetDefaultValue();
-		const decVector currentValue = property.GetPropertyValue(context);
-		if(currentValue.IsEqualTo(defaultValue)){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyVector3().GetDefaultValue());
 	}
 };
 
@@ -149,8 +150,8 @@ void igdeMetaPropertyVector3Widget::PropertyListener::OnValueChanged(igdeMetaPro
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyVector3Widget::igdeMetaPropertyVector3Widget(igdeMetaPropertyVector3 &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyVector3Widget::igdeMetaPropertyVector3Widget(igdeMetaPropertyVector3 &property) :
+igdeMetaPropertyWidget(property),
 pPropertyVector3(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -178,7 +179,6 @@ void igdeMetaPropertyVector3Widget::Create(igdeContainer &container, igdeUIHelpe
 	helper.EditVector(container, pPropertyVector3.GetDescription(), 6, 3, pEditVector, pListener);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyVector3Widget::Drop(){

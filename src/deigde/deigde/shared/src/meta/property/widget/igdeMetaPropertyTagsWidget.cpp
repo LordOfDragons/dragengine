@@ -57,25 +57,29 @@ public:
 };
 
 
-class cAction : public igdeAction{
+class cListenerHelper{
 	igdeMetaPropertyTagsWidget &pWidget;
 	
 public:
-	explicit cAction(igdeMetaPropertyTagsWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyTagsWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cAction() override = default;
+	inline igdeMetaPropertyTagsWidget &GetWidget() const{ return pWidget; }
+	inline igdeMetaPropertyTags &GetPropertyTags() const{ return pWidget.GetPropertyTags(); }
 	
-	void OnAction() override{
+	void OnValueChanged(const decStringSet &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyTags();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = pWidget.GetEditTags()->GetTags();
 		if(newValue == oldValue){
 			return;
 		}
@@ -91,39 +95,37 @@ public:
 };
 
 
+class cAction : public igdeAction{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cAction(igdeMetaPropertyTagsWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cAction() override = default;
+	
+	void OnAction() override{
+		pHelper.OnValueChanged(pHelper.GetWidget().GetEditTags()->GetTags());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyTagsWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyTagsWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyTags();
-		const decStringSet defaultValue;
-		const decStringSet currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged({});
 	}
 };
 
@@ -150,9 +152,8 @@ void igdeMetaPropertyTagsWidget::PropertyListener::OnValueChanged(igdeMetaProper
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyTagsWidget::igdeMetaPropertyTagsWidget(
-	igdeMetaPropertyTags &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyTagsWidget::igdeMetaPropertyTagsWidget(igdeMetaPropertyTags &property) :
+igdeMetaPropertyWidget(property),
 pPropertyTags(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -180,7 +181,6 @@ void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &
 	helper.EditTags(container, pEditTags, pAction);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){
@@ -192,7 +192,8 @@ void igdeMetaPropertyTagsWidget::Drop(){
 void igdeMetaPropertyTagsWidget::Update(){
 	if(pEditTags){
 		RunWithPreventUpdate([&]{
-			pEditTags->SetTags(GetPropertyTags().GetPropertyValue(GetContext()));
+			pEditTags->SetTags(GetContext()
+				? GetPropertyTags().GetPropertyValue(GetContext()) : decStringSet());
 		});
 	}
 }

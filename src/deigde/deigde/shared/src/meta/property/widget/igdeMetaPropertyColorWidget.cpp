@@ -56,25 +56,28 @@ public:
 };
 
 
-class cListener : public igdeColorBoxListener{
+class cListenerHelper{
 	igdeMetaPropertyColorWidget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertyColorWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyColorWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertyColor &GetPropertyColor() const{ return pWidget.GetPropertyColor(); }
 	
-	void OnColorChanged(igdeColorBox *colorBox) override{
+	void OnValueChanged(const decColor &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyColor();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = colorBox->GetColor();
 		if(newValue.IsEqualTo(oldValue)){
 			return;
 		}
@@ -90,39 +93,37 @@ public:
 };
 
 
+class cListener : public igdeColorBoxListener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertyColorWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnColorChanged(igdeColorBox *colorBox) override{
+		pHelper.OnValueChanged(colorBox->GetColor());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyColorWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyColorWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyColor();
-		const decColor defaultValue = property.GetDefaultValue();
-		const decColor currentValue = property.GetPropertyValue(context);
-		if(currentValue.IsEqualTo(defaultValue)){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyColor().GetDefaultValue());
 	}
 };
 
@@ -149,8 +150,8 @@ void igdeMetaPropertyColorWidget::PropertyListener::OnValueChanged(igdeMetaPrope
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property) :
+igdeMetaPropertyWidget(property),
 pPropertyColor(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -178,7 +179,6 @@ void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper 
 	helper.ColorBox(container, pPropertyColor.GetDescription(), pColorBox, pListener);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyColorWidget::Drop(){
@@ -194,7 +194,9 @@ void igdeMetaPropertyColorWidget::Drop(){
 void igdeMetaPropertyColorWidget::Update(){
 	if(pColorBox){
 		RunWithPreventUpdate([&]{
-			pColorBox->SetColor(GetPropertyColor().GetPropertyValue(GetContext()));
+			pColorBox->SetColor(GetContext()
+				? GetPropertyColor().GetPropertyValue(GetContext())
+				: GetPropertyColor().GetDefaultValue());
 		});
 	}
 }

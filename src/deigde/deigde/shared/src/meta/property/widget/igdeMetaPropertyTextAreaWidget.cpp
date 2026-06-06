@@ -56,25 +56,28 @@ public:
 };
 
 
-class cListener : public igdeTextAreaListener{
+class cListenerHelper{
 	igdeMetaPropertyTextAreaWidget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertyTextAreaWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyTextAreaWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertyTextArea &GetPropertyTextArea() const{ return pWidget.GetPropertyTextArea(); }
 	
-	void OnTextChanged(igdeTextArea *textArea) override{
+	void OnValueChanged(const decString &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyTextArea();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = textArea->GetText();
 		if(newValue == oldValue){
 			return;
 		}
@@ -90,39 +93,37 @@ public:
 };
 
 
+class cListener : public igdeTextAreaListener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertyTextAreaWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnTextChanged(igdeTextArea *textArea) override{
+		pHelper.OnValueChanged(textArea->GetText());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyTextAreaWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyTextAreaWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyTextArea();
-		const decString defaultValue = property.GetDefaultValue();
-		const decString currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyTextArea().GetDefaultValue());
 	}
 };
 
@@ -149,9 +150,8 @@ void igdeMetaPropertyTextAreaWidget::PropertyListener::OnValueChanged(igdeMetaPr
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyTextAreaWidget::igdeMetaPropertyTextAreaWidget(
-	igdeMetaPropertyTextArea &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyTextAreaWidget::igdeMetaPropertyTextAreaWidget(igdeMetaPropertyTextArea &property) :
+igdeMetaPropertyWidget(property),
 pPropertyTextArea(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -180,7 +180,6 @@ void igdeMetaPropertyTextAreaWidget::Create(igdeContainer &container, igdeUIHelp
 		pTextArea, pPropertyTextArea.GetRows(), pListener);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyTextAreaWidget::Drop(){
@@ -195,7 +194,8 @@ void igdeMetaPropertyTextAreaWidget::Drop(){
 void igdeMetaPropertyTextAreaWidget::Update(){
 	if(pTextArea){
 		RunWithPreventUpdate([&]{
-			pTextArea->SetText(GetPropertyTextArea().GetPropertyValue(GetContext()));
+			pTextArea->SetText(GetContext()
+				? GetPropertyTextArea().GetPropertyValue(GetContext()) : decString());
 		});
 	}
 }

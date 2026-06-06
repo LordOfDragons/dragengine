@@ -57,25 +57,28 @@ public:
 };
 
 
-class cListener : public igdeViewCurveBezierListener{
+class cListenerHelper{
 	igdeMetaPropertyCurveBezierWidget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertyCurveBezierWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyCurveBezierWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertyCurveBezier &GetPropertyCurveBezier() const{ return pWidget.GetPropertyCurveBezier(); }
 	
-	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
+	void OnValueChanged(const decCurveBezier &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyCurveBezier();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = viewCurveBezier->GetCurve();
 		if(newValue == oldValue){
 			return;
 		}
@@ -91,39 +94,37 @@ public:
 };
 
 
+class cListener : public igdeViewCurveBezierListener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertyCurveBezierWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
+		pHelper.OnValueChanged(viewCurveBezier->GetCurve());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyCurveBezierWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyCurveBezierWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyCurveBezier();
-		const decCurveBezier defaultValue = property.GetDefaultValue();
-		const decCurveBezier currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyCurveBezier().GetDefaultValue());
 	}
 };
 
@@ -151,8 +152,8 @@ void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnValueChanged(igdeMet
 ////////////////////////////
 
 igdeMetaPropertyCurveBezierWidget::igdeMetaPropertyCurveBezierWidget(
-	igdeMetaPropertyCurveBezier &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+	igdeMetaPropertyCurveBezier &property) :
+igdeMetaPropertyWidget(property),
 pPropertyCurveBezier(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -180,7 +181,6 @@ void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIH
 	helper.ViewCurveBezier(container, pViewCurveBezier, pListener);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
@@ -198,8 +198,9 @@ void igdeMetaPropertyCurveBezierWidget::Update(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto &curve = GetPropertyCurveBezier().GetPropertyValue(GetContext());
-		pViewCurveBezier->SetCurve(curve);
+		pViewCurveBezier->SetCurve(GetContext()
+			? GetPropertyCurveBezier().GetPropertyValue(GetContext())
+			: GetPropertyCurveBezier().GetDefaultValue());
 		pViewCurveBezier->SetClamp(GetPropertyCurveBezier().GetClamp());
 		pViewCurveBezier->SetClampMin(GetPropertyCurveBezier().GetClampMin());
 		pViewCurveBezier->SetClampMax(GetPropertyCurveBezier().GetClampMax());

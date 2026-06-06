@@ -68,7 +68,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property, igdeMetaContext &context);
+	igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property);
 	
 protected:
 	/** \brief Clean up widget. */

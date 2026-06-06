@@ -138,7 +138,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) = 0;
+	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget() = 0;
 	
 	/**
 	 * \brief Add context menu entries.

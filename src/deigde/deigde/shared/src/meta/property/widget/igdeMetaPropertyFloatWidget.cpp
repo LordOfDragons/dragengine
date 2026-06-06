@@ -71,7 +71,11 @@ public:
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyFloat();
 		const float oldValue = property.GetPropertyValue(context);
 		if(fabsf(newValue - oldValue) < FLOAT_SAFE_EPSILON){
@@ -168,8 +172,8 @@ void igdeMetaPropertyFloatWidget::PropertyListener::OnValueChanged(igdeMetaPrope
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyFloatWidget::igdeMetaPropertyFloatWidget(igdeMetaPropertyFloat &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyFloatWidget::igdeMetaPropertyFloatWidget(igdeMetaPropertyFloat &property) :
+igdeMetaPropertyWidget(property),
 pPropertyFloat(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -208,7 +212,6 @@ void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper 
 	}
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyFloatWidget::Drop(){
@@ -229,12 +232,16 @@ void igdeMetaPropertyFloatWidget::Drop(){
 void igdeMetaPropertyFloatWidget::Update(){
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetFloat(GetPropertyFloat().GetPropertyValue(GetContext()));
+			pTextField->SetFloat(GetContext()
+				? GetPropertyFloat().GetPropertyValue(GetContext())
+				: GetPropertyFloat().GetDefaultValue());
 		});
 	}
 	if(pEditSliderText){
 		RunWithPreventUpdate([&]{
-			pEditSliderText->SetValue(GetPropertyFloat().GetPropertyValue(GetContext()));
+			pEditSliderText->SetValue(GetContext()
+				? GetPropertyFloat().GetPropertyValue(GetContext())
+				: GetPropertyFloat().GetDefaultValue());
 		});
 	}
 }

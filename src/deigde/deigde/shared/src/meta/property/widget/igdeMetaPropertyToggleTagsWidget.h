@@ -69,7 +69,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyToggleTagsWidget(igdeMetaPropertyToggleTags &property, igdeMetaContext &context);
+	igdeMetaPropertyToggleTagsWidget(igdeMetaPropertyToggleTags &property);
 	
 protected:
 	/** \brief Clean up widget. */

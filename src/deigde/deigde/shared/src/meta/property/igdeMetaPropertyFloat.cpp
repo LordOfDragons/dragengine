@@ -85,6 +85,6 @@ void igdeMetaPropertyFloat::NotifyValueChanged(const igdeMetaContext::Ref &conte
 	});
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyFloatWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(){
+	return igdeMetaPropertyFloatWidget::Ref::New(*this);
 }

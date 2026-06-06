@@ -69,7 +69,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property, igdeMetaContext &context);
+	igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property);
 	
 protected:
 	/** \brief Clean up widget. */

@@ -70,7 +70,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyObjectWidget(igdeMetaPropertyObject &property, igdeMetaContext &context);
+	igdeMetaPropertyObjectWidget(igdeMetaPropertyObject &property);
 	
 protected:
 	/** \brief Clean up widget. */

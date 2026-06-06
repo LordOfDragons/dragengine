@@ -57,25 +57,28 @@ public:
 };
 
 
-class cListener : public igdeEditDirectoryListener{
+class cListenerHelper{
 	igdeMetaPropertyDirectoryWidget &pWidget;
 	
 public:
-	explicit cListener(igdeMetaPropertyDirectoryWidget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyDirectoryWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cListener() override = default;
+	inline igdeMetaPropertyDirectory &GetPropertyDirectory() const{ return pWidget.GetPropertyDirectory(); }
 	
-	void OnEditDirectoryChanged(igdeEditDirectory *editDirectory) override{
+	void OnValueChanged(const decString &newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyDirectory();
 		const auto &oldValue = property.GetPropertyValue(context);
-		const auto &newValue = editDirectory->GetDirectory();
 		if(newValue == oldValue){
 			return;
 		}
@@ -91,39 +94,37 @@ public:
 };
 
 
+class cListener : public igdeEditDirectoryListener{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cListener(igdeMetaPropertyDirectoryWidget &widget) :
+	pHelper(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnEditDirectoryChanged(igdeEditDirectory *editDirectory) override{
+		pHelper.OnValueChanged(editDirectory->GetDirectory());
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyDirectoryWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyDirectoryWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyDirectory();
-		const decString defaultValue = property.GetDefaultValue();
-		const decString currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context, defaultValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyDirectory().GetDefaultValue());
 	}
 };
 
@@ -150,9 +151,8 @@ void igdeMetaPropertyDirectoryWidget::PropertyListener::OnValueChanged(igdeMetaP
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyDirectoryWidget::igdeMetaPropertyDirectoryWidget(
-	igdeMetaPropertyDirectory &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyDirectoryWidget::igdeMetaPropertyDirectoryWidget(igdeMetaPropertyDirectory &property) :
+igdeMetaPropertyWidget(property),
 pPropertyDirectory(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -181,7 +181,6 @@ void igdeMetaPropertyDirectoryWidget::Create(igdeContainer &container, igdeUIHel
 		pEditDirectory, pListener, pPropertyDirectory.GetUseGameVFS());
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyDirectoryWidget::Drop(){
@@ -197,7 +196,9 @@ void igdeMetaPropertyDirectoryWidget::Drop(){
 void igdeMetaPropertyDirectoryWidget::Update(){
 	if(pEditDirectory){
 		RunWithPreventUpdate([&]{
-			pEditDirectory->SetDirectory(GetPropertyDirectory().GetPropertyValue(GetContext()));
+			pEditDirectory->SetDirectory(GetContext()
+				? GetPropertyDirectory().GetPropertyValue(GetContext())
+				: GetPropertyDirectory().GetDefaultValue());
 		});
 	}
 }

@@ -69,7 +69,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyTextAreaWidget(igdeMetaPropertyTextArea &property, igdeMetaContext &context);
+	igdeMetaPropertyTextAreaWidget(igdeMetaPropertyTextArea &property);
 	
 protected:
 	/** \brief Clean up widget. */

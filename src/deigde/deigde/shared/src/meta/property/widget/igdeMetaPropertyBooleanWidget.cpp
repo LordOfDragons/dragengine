@@ -53,24 +53,32 @@ public:
 };
 
 
-class cAction : public igdeAction{
+
+class cListenerHelper{
 	igdeMetaPropertyBooleanWidget &pWidget;
 	
 public:
-	explicit cAction(igdeMetaPropertyBooleanWidget &widget) :
-	igdeAction("", nullptr, widget.GetProperty()->GetDescription()),
+	explicit cListenerHelper(igdeMetaPropertyBooleanWidget &widget) :
 	pWidget(widget){
 	}
 	
-	~cAction() override = default;
+	inline igdeMetaPropertyBoolean &GetPropertyBoolean() const{ return pWidget.GetPropertyBoolean(); }
+	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	
-	void OnAction() override{
+	void OnValueChanged(bool newValue){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
 		
-		auto &context = pWidget.GetContext();
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
 		auto &property = pWidget.GetPropertyBoolean();
+		if(newValue == property.GetPropertyValue(context)){
+			return;
+		}
 		
 		auto undo = deTObjectReference<cUndo>::New(property, context);
 		undo->Redo();
@@ -80,49 +88,52 @@ public:
 			undoSystem->Add(undo);
 		}
 	}
+};
+
+
+class cAction : public igdeAction{
+	cListenerHelper pHelper;
+	
+public:
+	explicit cAction(igdeMetaPropertyBooleanWidget &widget) :
+	igdeAction("", nullptr, widget.GetProperty()->GetDescription()),
+	pHelper(widget){
+	}
+	
+	~cAction() override = default;
+	
+	void OnAction() override{
+		if(pHelper.GetContext()){
+			pHelper.OnValueChanged(!pHelper.GetPropertyBoolean().GetPropertyValue(pHelper.GetContext()));
+		}
+	}
 	
 	void Update() override{
-		auto &property = pWidget.GetPropertyBoolean();
+		const auto &property = pHelper.GetPropertyBoolean();
+		const auto &context = pHelper.GetContext();
+		
 		SetText(property.GetLabel());
 		SetDescription(property.GetDescription());
-		SetSelected(property.GetPropertyValue(pWidget.GetContext()));
+		SetSelected(context ? property.GetPropertyValue(context) : property.GetDefaultValue());
 	}
 };
 
 
 class cActionResetToDefault : public igdeAction{
-	igdeMetaPropertyBooleanWidget &pWidget;
+	cListenerHelper pHelper;
 	
 public:
 	cActionResetToDefault(igdeMetaPropertyBooleanWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
-	pWidget(widget){
+	pHelper(widget){
 	}
 	
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		if(pWidget.GetPreventUpdate()){
-			return;
-		}
-		
-		auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyBoolean();
-		const bool defaultValue = property.GetDefaultValue();
-		const bool currentValue = property.GetPropertyValue(context);
-		if(currentValue == defaultValue){
-			return;
-		}
-		
-		auto undo = deTObjectReference<cUndo>::New(property, context);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		pHelper.OnValueChanged(pHelper.GetPropertyBoolean().GetDefaultValue());
 	}
 };
 
@@ -149,9 +160,8 @@ void igdeMetaPropertyBooleanWidget::PropertyListener::OnValueChanged(igdeMetaPro
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(
-	igdeMetaPropertyBoolean &property, igdeMetaContext &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property) :
+igdeMetaPropertyWidget(property),
 pPropertyBoolean(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -179,7 +189,6 @@ void igdeMetaPropertyBooleanWidget::Create(igdeContainer &container, igdeUIHelpe
 	helper.CheckBox(line, pCheckBox, pAction);
 	
 	CreateContextMenuButton(line, helper);
-	Update();
 }
 
 void igdeMetaPropertyBooleanWidget::Drop(){

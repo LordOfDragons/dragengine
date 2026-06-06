@@ -69,7 +69,7 @@ public:
 	/**
 	 * \brief Create meta property widget for property and context.
 	 */
-	igdeMetaPropertyCurveBezierWidget(igdeMetaPropertyCurveBezier &property, igdeMetaContext &context);
+	igdeMetaPropertyCurveBezierWidget(igdeMetaPropertyCurveBezier &property);
 	
 protected:
 	/** \brief Clean up widget. */

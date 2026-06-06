@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPMetaContextList(igdeEnvironment &environment);
+	explicit igdeWPMetaContextList(igdeEnvironment &environment);
 	
 	
 protected:
