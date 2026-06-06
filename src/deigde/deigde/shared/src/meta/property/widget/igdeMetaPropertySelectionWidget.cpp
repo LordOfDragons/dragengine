@@ -144,6 +144,11 @@ void igdeMetaPropertySelectionWidget::PropertyListener::OnValueChanged(igdeMetaP
 	pWidget.Update();
 }
 
+void igdeMetaPropertySelectionWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertySelection *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertySelectionWidget
 //////////////////////////////////////////

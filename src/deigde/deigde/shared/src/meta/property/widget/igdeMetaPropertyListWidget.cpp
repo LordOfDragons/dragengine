@@ -107,6 +107,11 @@ void igdeMetaPropertyListWidget::PropertyListener::OnValueChanged(igdeMetaProper
 	pWidget.Update();
 }
 
+void igdeMetaPropertyListWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyList *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 void igdeMetaPropertyListWidget::PropertyListener::OnActiveChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 	pWidget.SelectActiveObject();
 }
@@ -116,7 +121,7 @@ void igdeMetaPropertyListWidget::PropertyListener::OnSelectionChanged(igdeMetaPr
 
 
 // Class igdeMetaPropertyListWidget
-///////////////////////////////////////////
+/////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////

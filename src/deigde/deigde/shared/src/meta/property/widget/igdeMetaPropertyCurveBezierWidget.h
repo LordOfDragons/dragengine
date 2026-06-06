@@ -54,6 +54,7 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context) override;
+		void OnPropertyContextChanged(igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	

@@ -54,6 +54,7 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		void OnPropertyContextChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 		void OnActiveChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 		void OnSelectionChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 	};

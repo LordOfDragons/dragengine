@@ -144,6 +144,11 @@ void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnValueChanged(igdeMet
 	pWidget.Update();
 }
 
+void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyCurveBezierWidget
 ////////////////////////////////////////////

@@ -54,6 +54,7 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyTags *property, const igdeMetaContext::Ref &context) override;
+		void OnPropertyContextChanged(igdeMetaPropertyTags *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	

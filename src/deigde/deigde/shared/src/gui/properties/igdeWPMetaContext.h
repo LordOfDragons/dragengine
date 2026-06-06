@@ -70,6 +70,7 @@ private:
 	ContextListener::Ref pContextListener;
 	igdeFilter pFilter;
 	
+	igdeMetaContext::PropertyList::Ref pProperties;
 	igdeContainerFlow::Ref pPropertyContainer;
 	PropertyWidgetList pPropertyWidgets;
 	PropertyWidgetMap pPropertyWidgetCache;
@@ -96,6 +97,12 @@ public:
 	
 	/** \brief Set meta context or nullptr. */
 	void SetContext(const igdeMetaContext::Ref &context);
+	
+	/** \brief Properties. */
+	inline const igdeMetaContext::PropertyList::Ref &GetProperties() const{ return pProperties; }
+	
+	/** \brief Set properties. */
+	void SetProperties(const igdeMetaContext::PropertyList::Ref &properties);
 	
 	/** \brief Filter. */
 	inline const igdeFilter &GetFilter() const{ return pFilter; }

@@ -153,6 +153,10 @@ void igdeMetaPropertyBooleanWidget::PropertyListener::OnValueChanged(igdeMetaPro
 	pWidget.Update();
 }
 
+void igdeMetaPropertyBooleanWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
 
 // Class igdeMetaPropertyBooleanWidget
 ////////////////////////////////////////

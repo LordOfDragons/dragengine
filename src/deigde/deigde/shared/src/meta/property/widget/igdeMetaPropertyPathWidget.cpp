@@ -143,6 +143,11 @@ void igdeMetaPropertyPathWidget::PropertyListener::OnValueChanged(igdeMetaProper
 	pWidget.Update();
 }
 
+void igdeMetaPropertyPathWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyPathWidget
 /////////////////////////////////////

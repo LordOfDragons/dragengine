@@ -165,6 +165,11 @@ void igdeMetaPropertyFloatWidget::PropertyListener::OnValueChanged(igdeMetaPrope
 	pWidget.Update();
 }
 
+void igdeMetaPropertyFloatWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyFloat *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyFloatWidget
 //////////////////////////////////////

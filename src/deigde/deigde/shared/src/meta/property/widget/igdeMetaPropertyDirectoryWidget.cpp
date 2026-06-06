@@ -144,6 +144,11 @@ void igdeMetaPropertyDirectoryWidget::PropertyListener::OnValueChanged(igdeMetaP
 	pWidget.Update();
 }
 
+void igdeMetaPropertyDirectoryWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyDirectoryWidget
 //////////////////////////////////////////

@@ -145,6 +145,11 @@ void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnValueChanged(igdeMeta
 	pWidget.Update();
 }
 
+void igdeMetaPropertyToggleTagsWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyToggleTags *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyToggleTagsWidget
 ///////////////////////////////////////////

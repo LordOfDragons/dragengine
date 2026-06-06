@@ -143,6 +143,11 @@ void igdeMetaPropertyColorWidget::PropertyListener::OnValueChanged(igdeMetaPrope
 	pWidget.Update();
 }
 
+void igdeMetaPropertyColorWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyColorWidget
 //////////////////////////////////////

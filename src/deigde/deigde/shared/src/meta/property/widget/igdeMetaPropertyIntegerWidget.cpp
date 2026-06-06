@@ -181,6 +181,11 @@ void igdeMetaPropertyIntegerWidget::PropertyListener::OnValueChanged(igdeMetaPro
 	pWidget.Update();
 }
 
+void igdeMetaPropertyIntegerWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyInteger *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyIntegerWidget
 ////////////////////////////////////////

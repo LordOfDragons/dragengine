@@ -159,6 +159,11 @@ void igdeMetaPropertyStringWidget::PropertyListener::OnValueChanged(igdeMetaProp
 	pWidget.Update();
 }
 
+void igdeMetaPropertyStringWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyString *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 void igdeMetaPropertyStringWidget::PropertyListener::OnStringListChanged(igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 	pWidget.UpdateStringList();
 }

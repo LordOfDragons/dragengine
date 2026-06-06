@@ -144,6 +144,11 @@ void igdeMetaPropertyDVectorWidget::PropertyListener::OnValueChanged(igdeMetaPro
 	pWidget.Update();
 }
 
+void igdeMetaPropertyDVectorWidget::PropertyListener::OnPropertyContextChanged(
+igdeMetaPropertyDVector *property, const igdeMetaContext::Ref &context){
+	pWidget.SetContext(property->GetPropertyContext(context));
+}
+
 
 // Class igdeMetaPropertyDVectorWidget
 ////////////////////////////////////////

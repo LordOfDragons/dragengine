@@ -67,6 +67,7 @@ void igdeMetaPropertyList::NotifyValueChanged(const igdeMetaContext::Ref &contex
 void igdeMetaPropertyList::NotifyActiveChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnActiveChanged(this, context);
+		listener.OnPropertyContextChanged(this, context);
 	});
 }
 

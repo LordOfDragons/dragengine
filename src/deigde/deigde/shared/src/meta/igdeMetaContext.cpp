@@ -64,6 +64,16 @@ void igdeMetaContext::SetIcon(const igdeIcon::Ref &icon){
 	pIcon = icon;
 }
 
+
+void igdeMetaContext::SetProperties(const PropertyList::Ref &properties){
+	if(pProperties == properties){
+		return;
+	}
+	
+	pProperties = properties;
+	NotifyPropertiesChanged();
+}
+
 void igdeMetaContext::SetUndoSystem(igdeUndoSystem *undoSystem){
 	pUndoSystem = undoSystem;
 }

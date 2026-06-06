@@ -54,7 +54,7 @@ public:
 	using Data = igdeTMetaData<decTObjectOrderedSet<igdeMetaContext>>;
 	
 	/** \brief List of properties. */
-	using PropertyList = decTObjectOrderedSet<igdeMetaProperty>;
+	using PropertyList = igdeTMetaData<decTObjectOrderedSet<igdeMetaProperty>>;
 	
 	
 	/** \brief Listener. */
@@ -79,7 +79,7 @@ public:
 private:
 	decString pIdentifier, pLabel, pDescription;
 	igdeIcon::Ref pIcon;
-	PropertyList pProperties;
+	PropertyList::Ref pProperties;
 	igdeUndoSystem *pUndoSystem;
 	igdeTListenerList<Listener> pListeners;
 	
@@ -88,7 +88,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create meta context. */
-	igdeMetaContext(const char *identifier);
+	explicit igdeMetaContext(const char *identifier);
 	
 protected:
 	/** \brief Clean up meta context. */
@@ -121,13 +121,11 @@ public:
 	/** \brief Set icon. */
 	void SetIcon(const igdeIcon::Ref &icon);
 	
-	/**
-	 * \brief Properties.
-	 * 
-	 * After changing list of properties call NotifyPropertiesChanged().
-	 */
-	inline PropertyList &GetProperties(){ return pProperties; }
-	inline const PropertyList &GetProperties() const{ return pProperties; }
+	/** \brief Properties. */
+	inline const PropertyList::Ref &GetProperties() const{ return pProperties; }
+	
+	/** \brief Set properties. */
+	void SetProperties(const PropertyList::Ref &properties);
 	
 	/** \brief Get undo system or nullptr to apply actions immediately. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
