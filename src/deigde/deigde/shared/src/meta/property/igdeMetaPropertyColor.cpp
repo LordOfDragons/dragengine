@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyColor.h"
+#include "undo/igdeMetaPropertyColorUndo.h"
 #include "widget/igdeMetaPropertyColorWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyColor
@@ -51,6 +53,20 @@ void igdeMetaPropertyColor::NotifyValueChanged(const igdeMetaContext::Ref &conte
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyColorUndo::Ref igdeMetaPropertyColor::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const decColor &newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyColorUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(const igdeMetaContext::Ref &context){

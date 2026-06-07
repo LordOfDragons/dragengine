@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyToggleTags.h"
+#include "undo/igdeMetaPropertyToggleTagsUndo.h"
 #include "widget/igdeMetaPropertyToggleTagsWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyToggleTags
@@ -52,6 +54,20 @@ void igdeMetaPropertyToggleTags::NotifyValueChanged(const igdeMetaContext::Ref &
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyToggleTagsUndo::Ref igdeMetaPropertyToggleTags::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const decStringSet &newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyToggleTagsUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyToggleTags::CreateWidget(const igdeMetaContext::Ref &context){

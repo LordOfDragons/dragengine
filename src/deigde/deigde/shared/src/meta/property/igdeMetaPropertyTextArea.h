@@ -27,6 +27,8 @@
 
 #include "igdeMetaProperty.h"
 
+class igdeMetaPropertyTextAreaUndo;
+
 
 /**
  * \brief Text area meta property.
@@ -113,6 +115,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 *
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyTextAreaUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const char *newValue);
 	
 	
 	/**

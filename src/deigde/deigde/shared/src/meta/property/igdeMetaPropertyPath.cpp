@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyPath.h"
+#include "undo/igdeMetaPropertyPathUndo.h"
 #include "widget/igdeMetaPropertyPathWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyPath
@@ -57,6 +59,20 @@ void igdeMetaPropertyPath::NotifyValueChanged(const igdeMetaContext::Ref &contex
 	});
 }
 
+
+igdeMetaPropertyPathUndo::Ref igdeMetaPropertyPath::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const char *newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyPathUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
+}
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyPathWidget::Ref::New(*this, context);

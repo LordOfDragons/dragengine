@@ -29,6 +29,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
+class igdeMetaPropertyColorUndo;
+
 
 /**
  * \brief Color meta property.
@@ -108,6 +110,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decColor &value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 * 
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyColorUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const decColor &newValue);
 	
 	
 	/**

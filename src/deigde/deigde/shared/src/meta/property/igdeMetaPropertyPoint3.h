@@ -29,6 +29,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
+class igdeMetaPropertyPoint3Undo;
+
 
 /**
  * \brief Point3 meta property.
@@ -109,6 +111,14 @@ public:
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decPoint3 &value) = 0;
 	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 * 
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyPoint3Undo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const decPoint3 &newValue);
 	
 	/**
 	 * \brief Create UI widget.

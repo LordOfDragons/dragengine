@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyFloat.h"
+#include "undo/igdeMetaPropertyFloatUndo.h"
 #include "widget/igdeMetaPropertyFloatWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyFloat
@@ -83,6 +85,20 @@ void igdeMetaPropertyFloat::NotifyValueChanged(const igdeMetaContext::Ref &conte
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyFloatUndo::Ref igdeMetaPropertyFloat::ChangePropertyValue(
+const igdeMetaContext::Ref &context, float newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyFloatUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(const igdeMetaContext::Ref &context){

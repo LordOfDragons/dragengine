@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyVector3.h"
+#include "undo/igdeMetaPropertyVector3Undo.h"
 #include "widget/igdeMetaPropertyVector3Widget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyVector3
@@ -51,6 +53,20 @@ void igdeMetaPropertyVector3::NotifyValueChanged(const igdeMetaContext::Ref &con
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyVector3Undo::Ref igdeMetaPropertyVector3::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const decVector &newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyVector3Undo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyVector3::CreateWidget(const igdeMetaContext::Ref &context){

@@ -27,6 +27,7 @@
 
 #include "igdeMetaPropertyWidget.h"
 #include "../igdeMetaPropertyFloat.h"
+#include "../undo/igdeMetaPropertyFloatUndo.h"
 #include "../../../gui/igdeLabel.h"
 #include "../../../gui/igdeTextField.h"
 #include "../../../gui/event/igdeTextFieldListener.h"
@@ -65,6 +66,7 @@ private:
 	igdeTextFieldListener::Ref pTextListener;
 	igdeEditSliderText::Ref pEditSliderText;
 	igdeEditSliderTextListener::Ref pSliderListener;
+	igdeMetaPropertyFloatUndo::Ref pUndoSliding;
 	
 	
 public:
@@ -104,6 +106,12 @@ public:
 	
 	/** \brief Edit slider text widget or nullptr. */
 	inline const igdeEditSliderText::Ref &GetEditSliderText() const{ return pEditSliderText; }
+	
+	/** \brief Sliding undo or nullptr. */
+	inline const igdeMetaPropertyFloatUndo::Ref &GetUndoSliding() const{ return pUndoSliding; }
+	
+	/** \brief Set sliding undo or nullptr. */
+	void SetUndoSliding(const igdeMetaPropertyFloatUndo::Ref &undo);
 	/*@}*/
 	
 	

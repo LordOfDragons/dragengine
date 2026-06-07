@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyBoolean.h"
+#include "undo/igdeMetaPropertyBooleanUndo.h"
 #include "widget/igdeMetaPropertyBooleanWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyBoolean
@@ -52,6 +54,21 @@ void igdeMetaPropertyBoolean::NotifyValueChanged(const igdeMetaContext::Ref &con
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyBooleanUndo::Ref igdeMetaPropertyBoolean::ChangePropertyValue(
+const igdeMetaContext::Ref &context, bool newValue){
+	if(context && context->GetUndoSystem()){
+		SetPropertyValue(context, newValue);
+		auto undo = igdeMetaPropertyBooleanUndo::Ref::New(*this, context);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(const igdeMetaContext::Ref &context){

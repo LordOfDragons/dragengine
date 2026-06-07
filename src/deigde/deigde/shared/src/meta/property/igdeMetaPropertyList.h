@@ -30,7 +30,7 @@
 #include "../../gui/model/igdeListItem.h"
 
 class igdeMetaContextItemInfo;
-
+class igdeMetaPropertyListUndo;
 
 /**
  * \brief List meta property.
@@ -127,6 +127,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const List &value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 *
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const List &newValue);
 	
 	/**
 	 * \brief Get active object or nullptr if no active object.

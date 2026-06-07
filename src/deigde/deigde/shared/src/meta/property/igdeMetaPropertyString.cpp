@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyString.h"
+#include "undo/igdeMetaPropertyStringUndo.h"
 #include "widget/igdeMetaPropertyStringWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyString::Listener
@@ -69,6 +71,20 @@ void igdeMetaPropertyString::NotifyStringListChanged(const igdeMetaContext::Ref 
 	pListeners.Notify([&](Listener &listener){
 		listener.OnStringListChanged(this, context);
 	});
+}
+
+igdeMetaPropertyStringUndo::Ref igdeMetaPropertyString::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const char *newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyStringUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(const igdeMetaContext::Ref &context){

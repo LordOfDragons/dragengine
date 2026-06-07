@@ -30,6 +30,8 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 
+class igdeMetaPropertyCurveBezierUndo;
+
 
 /**
  * \brief Curve bezier meta property.
@@ -130,6 +132,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decCurveBezier &value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 *
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyCurveBezierUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const decCurveBezier &newValue);
 	
 	
 	/**

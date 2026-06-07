@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyPoint.h"
+#include "undo/igdeMetaPropertyPointUndo.h"
 #include "widget/igdeMetaPropertyPointWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyPoint
@@ -51,6 +53,20 @@ void igdeMetaPropertyPoint::NotifyValueChanged(const igdeMetaContext::Ref &conte
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyPointUndo::Ref igdeMetaPropertyPoint::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const decPoint &newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyPointUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint::CreateWidget(const igdeMetaContext::Ref &context){

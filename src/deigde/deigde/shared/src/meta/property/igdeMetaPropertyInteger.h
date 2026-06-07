@@ -27,6 +27,8 @@
 
 #include "igdeMetaProperty.h"
 
+class igdeMetaPropertyIntegerUndo;
+
 
 /**
  * \brief Integer meta property.
@@ -146,6 +148,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, int value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 * 
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyIntegerUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, int newValue);
 	
 	
 	/**

@@ -52,13 +52,7 @@ public:
 			return;
 		}
 		
-		auto undo = igdeMetaPropertyBooleanUndo::Ref::New(property, context);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		property.ChangePropertyValue(context, newValue);
 	}
 };
 

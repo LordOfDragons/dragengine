@@ -29,6 +29,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
+class igdeMetaPropertyDVectorUndo;
+
 
 /**
  * \brief DVector meta property.
@@ -116,6 +118,14 @@ public:
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decDVector &value) = 0;
 	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 * 
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyDVectorUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const decDVector &newValue);
 	
 	/**
 	 * \brief Create UI widget.

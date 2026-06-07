@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyCurveBezier.h"
+#include "undo/igdeMetaPropertyCurveBezierUndo.h"
 #include "widget/igdeMetaPropertyCurveBezierWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyCurveBezier
@@ -66,6 +68,20 @@ void igdeMetaPropertyCurveBezier::NotifyValueChanged(const igdeMetaContext::Ref 
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyCurveBezierUndo::Ref igdeMetaPropertyCurveBezier::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const decCurveBezier &newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(const igdeMetaContext::Ref &context){

@@ -27,6 +27,8 @@
 
 #include "igdeMetaProperty.h"
 
+class igdeMetaPropertyBooleanUndo;
+
 
 /**
  * \brief Boolean meta property.
@@ -106,6 +108,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, bool value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 * 
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyBooleanUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, bool newValue);
 	
 	
 	/**

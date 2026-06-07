@@ -27,6 +27,7 @@
 
 #include "igdeMetaPropertyWidget.h"
 #include "../igdeMetaPropertyCurveBezier.h"
+#include "../undo/igdeMetaPropertyCurveBezierUndo.h"
 #include "../../../gui/igdeLabel.h"
 #include "../../../gui/curveedit/igdeViewCurveBezier.h"
 #include "../../../gui/curveedit/igdeViewCurveBezierListener.h"
@@ -61,6 +62,7 @@ private:
 	PropertyListener::Ref pPropertyListener;
 	igdeViewCurveBezier::Ref pViewCurveBezier;
 	igdeViewCurveBezierListener::Ref pListener;
+	igdeMetaPropertyCurveBezierUndo::Ref pUndoDragging;
 	
 	
 public:
@@ -98,6 +100,15 @@ public:
 	
 	/** \brief View curve bezier widget or nullptr. */
 	inline const igdeViewCurveBezier::Ref &GetViewCurveBezier() const{ return pViewCurveBezier; }
+	
+	/** \brief Dragging undo or nullptr. */
+	inline const igdeMetaPropertyCurveBezierUndo::Ref &GetUndoDragging() const{ return pUndoDragging; }
+	
+	/** \brief Set dragging undo or nullptr. */
+	void SetUndoDragging(const igdeMetaPropertyCurveBezierUndo::Ref &undo);
+	
+	/** \brief Add curve edit context menu entries. */
+	void AddCurveEditContextMenuEntries(igdeMenuCascade &menu);
 	/*@}*/
 	
 	

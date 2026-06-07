@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyDirectory.h"
+#include "undo/igdeMetaPropertyDirectoryUndo.h"
 #include "widget/igdeMetaPropertyDirectoryWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyDirectory
@@ -56,6 +58,20 @@ void igdeMetaPropertyDirectory::NotifyValueChanged(const igdeMetaContext::Ref &c
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
+}
+
+igdeMetaPropertyDirectoryUndo::Ref igdeMetaPropertyDirectory::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const char *newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyDirectoryUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(const igdeMetaContext::Ref &context){

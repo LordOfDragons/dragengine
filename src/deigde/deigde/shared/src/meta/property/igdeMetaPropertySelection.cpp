@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertySelection.h"
+#include "undo/igdeMetaPropertySelectionUndo.h"
 #include "widget/igdeMetaPropertySelectionWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertySelection::Listener
@@ -69,6 +71,20 @@ void igdeMetaPropertySelection::NotifyChoicesChanged(){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnChoicesChanged(this);
 	});
+}
+
+igdeMetaPropertySelectionUndo::Ref igdeMetaPropertySelection::ChangePropertyValue(
+const igdeMetaContext::Ref &context, void *newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertySelectionUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(const igdeMetaContext::Ref &context){

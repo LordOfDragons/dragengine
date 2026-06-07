@@ -30,6 +30,7 @@
 #include "../../gui/model/igdeListItem.h"
 
 class igdeMetaContextItemInfo;
+class igdeMetaPropertyObjectUndo;
 
 
 /**
@@ -121,6 +122,15 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const deObject::Ref &value) = 0;
+	
+	/**
+	 * \brief Change property value matching context with undo support.
+	 *
+	 * If the context has an undo system the change is recorded as an undo action.
+	 * Otherwise SetPropertyValue() is called directly.
+	 */
+	deTObjectReference<igdeMetaPropertyObjectUndo> ChangePropertyValue(
+		const igdeMetaContext::Ref &context, const deObject::Ref &newValue);
 	
 	/**
 	 * \brief Get object item information.

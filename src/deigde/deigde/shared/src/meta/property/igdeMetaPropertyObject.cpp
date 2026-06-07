@@ -23,7 +23,9 @@
  */
 
 #include "igdeMetaPropertyObject.h"
+#include "undo/igdeMetaPropertyObjectUndo.h"
 #include "widget/igdeMetaPropertyObjectWidget.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
 // Class igdeMetaPropertyObject::Listener
@@ -62,6 +64,20 @@ void igdeMetaPropertyObject::NotifyObjectsChanged(){
 	});
 }
 
+
+igdeMetaPropertyObjectUndo::Ref igdeMetaPropertyObject::ChangePropertyValue(
+const igdeMetaContext::Ref &context, const deObject::Ref &newValue){
+	if(context && context->GetUndoSystem()){
+		auto undo = igdeMetaPropertyObjectUndo::Ref::New(*this, context, newValue);
+		undo->Redo();
+		context->GetUndoSystem()->Add(undo);
+		return undo;
+		
+	}else{
+		SetPropertyValue(context, newValue);
+		return {};
+	}
+}
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyObjectWidget::Ref::New(*this, context);

@@ -38,27 +38,22 @@ public:
 	pWidget(widget){
 	}
 	
+	inline igdeMetaPropertyIntegerWidget &GetWidget() const{ return pWidget; }
 	inline igdeMetaPropertyInteger &GetPropertyInteger() const{ return pWidget.GetPropertyInteger(); }
 	
-	void OnValueChanged(int newValue){
+	igdeMetaPropertyIntegerUndo::Ref OnValueChanged(int newValue){
 		if(pWidget.GetPreventUpdate()){
-			return;
+			return {};
 		}
 		
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertyInteger();
 		const int oldValue = property.GetPropertyValue(context);
 		if(newValue == oldValue){
-			return;
+			return {};
 		}
 		
-		auto undo = igdeMetaPropertyIntegerUndo::Ref::New(property, context, newValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		return property.ChangePropertyValue(context, newValue);
 	}
 };
 
@@ -76,10 +71,6 @@ public:
 	void OnTextChanged(igdeTextField *textField) override{
 		pHelper.OnValueChanged(textField->GetInteger());
 	}
-	
-	//void OnTextChanging(igdeTextField *textField) override;
-	
-	//void OnEnterKey(igdeTextField *textField) override;
 };
 
 
@@ -94,10 +85,37 @@ public:
 	~cSliderListener() override = default;
 	
 	void OnSliderTextValueChanged(igdeEditSliderText *sliderText) override{
-		pHelper.OnValueChanged((int)(sliderText->GetValue() + 0.5f));
+		if(pHelper.GetWidget().GetPreventUpdate()){
+			return;
+		}
+		
+		const int value = (int)(sliderText->GetValue() + 0.5f);
+		auto &undo = pHelper.GetWidget().GetUndoSliding();
+		if(undo){
+			undo->SetNewValue(value);
+			undo->ProgressiveRedo();
+			pHelper.GetWidget().SetUndoSliding({});
+			
+		}else{
+			pHelper.OnValueChanged(value);
+		}
 	}
 	
-	// void OnSliderTextValueChanging(igdeEditSliderText*) override
+	void OnSliderTextValueChanging(igdeEditSliderText *sliderText) override{
+		if(pHelper.GetWidget().GetPreventUpdate()){
+			return;
+		}
+		
+		const int value = (int)(sliderText->GetValue() + 0.5f);
+		auto &undo = pHelper.GetWidget().GetUndoSliding();
+		if(undo){
+			undo->SetNewValue(value);
+			undo->ProgressiveRedo();
+			
+		}else{
+			pHelper.GetWidget().SetUndoSliding(pHelper.OnValueChanged(value));
+		}
+	}
 };
 
 
@@ -250,6 +268,10 @@ void igdeMetaPropertyIntegerWidget::Update(){
 				: pPropertyInteger.GetDefaultValue());
 		});
 	}
+}
+
+void igdeMetaPropertyIntegerWidget::SetUndoSliding(const igdeMetaPropertyIntegerUndo::Ref &undo){
+	pUndoSliding = undo;
 }
 
 

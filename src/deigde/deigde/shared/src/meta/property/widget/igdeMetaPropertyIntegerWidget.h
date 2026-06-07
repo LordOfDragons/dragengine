@@ -27,6 +27,7 @@
 
 #include "igdeMetaPropertyWidget.h"
 #include "../igdeMetaPropertyInteger.h"
+#include "../undo/igdeMetaPropertyIntegerUndo.h"
 #include "../../../gui/igdeLabel.h"
 #include "../../../gui/igdeTextField.h"
 #include "../../../gui/igdeSpinTextField.h"
@@ -69,6 +70,7 @@ private:
 	igdeEditSliderTextListener::Ref pSliderListener;
 	igdeSpinTextField::Ref pSpinTextField;
 	igdeSpinTextFieldListener::Ref pSpinListener;
+	igdeMetaPropertyIntegerUndo::Ref pUndoSliding;
 	
 	
 public:
@@ -112,6 +114,12 @@ public:
 	
 	/** \brief Spin text field widget or nullptr. */
 	inline const igdeSpinTextField::Ref &GetSpinTextField() const{ return pSpinTextField; }
+	
+	/** \brief Sliding undo or nullptr. */
+	inline const igdeMetaPropertyIntegerUndo::Ref &GetUndoSliding() const{ return pUndoSliding; }
+	
+	/** \brief Set sliding undo or nullptr. */
+	void SetUndoSliding(const igdeMetaPropertyIntegerUndo::Ref &undo);
 	/*@}*/
 	
 	

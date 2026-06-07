@@ -38,27 +38,22 @@ public:
 	pWidget(widget){
 	}
 	
+	inline igdeMetaPropertyCurveBezierWidget &GetWidget() const{ return pWidget; }
 	inline igdeMetaPropertyCurveBezier &GetPropertyCurveBezier() const{ return pWidget.GetPropertyCurveBezier(); }
 	
-	void OnValueChanged(const decCurveBezier &newValue){
+	igdeMetaPropertyCurveBezierUndo::Ref OnValueChanged(const decCurveBezier &newValue){
 		if(pWidget.GetPreventUpdate()){
-			return;
+			return {};
 		}
 		
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertyCurveBezier();
 		const auto &oldValue = property.GetPropertyValue(context);
 		if(newValue == oldValue){
-			return;
+			return {};
 		}
 		
-		auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(property, context, newValue);
-		undo->Redo();
-		
-		auto * const undoSystem = context->GetUndoSystem();
-		if(undoSystem){
-			undoSystem->Add(undo);
-		}
+		return property.ChangePropertyValue(context, newValue);
 	}
 };
 
@@ -74,7 +69,41 @@ public:
 	~cListener() override = default;
 	
 	void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
-		pHelper.OnValueChanged(viewCurveBezier->GetCurve());
+		if(pHelper.GetWidget().GetPreventUpdate()){
+			return;
+		}
+		
+		auto &undo = pHelper.GetWidget().GetUndoDragging();
+		if(undo){
+			undo->SetNewValue(viewCurveBezier->GetCurve());
+			undo->ProgressiveRedo();
+			pHelper.GetWidget().SetUndoDragging({});
+			
+		}else{
+			pHelper.OnValueChanged(viewCurveBezier->GetCurve());
+		}
+	}
+	
+	void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
+		if(pHelper.GetWidget().GetPreventUpdate()){
+			return;
+		}
+		
+		auto &undo = pHelper.GetWidget().GetUndoDragging();
+		if(undo){
+			undo->SetNewValue(viewCurveBezier->GetCurve());
+			undo->ProgressiveRedo();
+			
+		}else{
+			pHelper.GetWidget().SetUndoDragging(pHelper.OnValueChanged(viewCurveBezier->GetCurve()));
+		}
+	}
+	
+	void OnSelectedPointChanged(igdeViewCurveBezier *viewCurveBezier) override{
+	}
+	
+	void AddContextMenuEntries(igdeViewCurveBezier *viewCurveBezier, igdeMenuCascade &menu) override{
+		pHelper.GetWidget().AddCurveEditContextMenuEntries(menu);
 	}
 };
 
@@ -176,6 +205,14 @@ void igdeMetaPropertyCurveBezierWidget::Update(){
 		pViewCurveBezier->SetClampMin(pPropertyCurveBezier.GetClampMin());
 		pViewCurveBezier->SetClampMax(pPropertyCurveBezier.GetClampMax());
 	});
+}
+
+void igdeMetaPropertyCurveBezierWidget::SetUndoDragging(const igdeMetaPropertyCurveBezierUndo::Ref &undo){
+	pUndoDragging = undo;
+}
+
+void igdeMetaPropertyCurveBezierWidget::AddCurveEditContextMenuEntries(igdeMenuCascade &menu){
+	AddContextMenuEntries(menu);
 }
 
 
