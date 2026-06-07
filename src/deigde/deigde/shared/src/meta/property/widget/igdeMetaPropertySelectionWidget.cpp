@@ -26,36 +26,10 @@
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
+#include "../undo/igdeMetaPropertySelectionUndo.h"
 
 
 namespace {
-
-class cUndo : public igdeUndo{
-	const igdeMetaPropertySelection::Ref pProperty;
-	const igdeMetaContext::Ref pContext;
-	void *pOldValue, *pNewValue;
-	
-public:
-	cUndo(igdeMetaPropertySelection &property, const igdeMetaContext::Ref &context, void *newValue) :
-	pProperty(&property),
-	pContext(property.Capture(context)),
-	pOldValue(property.GetPropertyValue(context)),
-	pNewValue(newValue)
-	{
-		SetShortInfo(property.GetUndoInfoOrLabel());
-	}
-	
-	~cUndo() override = default;
-	
-	void Undo() override{
-		pProperty->SetPropertyValue(pContext, pOldValue);
-	}
-	
-	void Redo() override{
-		pProperty->SetPropertyValue(pContext, pNewValue);
-	}
-};
-
 
 class cListenerHelper{
 	igdeMetaPropertySelectionWidget &pWidget;
@@ -73,17 +47,13 @@ public:
 		}
 		
 		const auto &context = pWidget.GetContext();
-		if(!context){
-			return;
-		}
-		
 		auto &property = pWidget.GetPropertySelection();
 		auto oldValue = property.GetPropertyValue(context);
 		if(newValue == oldValue){
 			return;
 		}
 		
-		auto undo = deTObjectReference<cUndo>::New(property, context, newValue);
+		auto undo = igdeMetaPropertySelectionUndo::Ref::New(property, context, newValue);
 		undo->Redo();
 		
 		auto * const undoSystem = context->GetUndoSystem();

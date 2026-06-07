@@ -25,37 +25,10 @@
 #include "igdeMetaPropertyCurveBezierWidget.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
+#include "../undo/igdeMetaPropertyCurveBezierUndo.h"
 
 
 namespace {
-
-class cUndo : public igdeUndo{
-	const igdeMetaPropertyCurveBezier::Ref pProperty;
-	const igdeMetaContext::Ref pContext;
-	decCurveBezier pOldValue, pNewValue;
-	
-public:
-	cUndo(igdeMetaPropertyCurveBezier &property, const igdeMetaContext::Ref &context,
-		const decCurveBezier &newValue) :
-	pProperty(&property),
-	pContext(property.Capture(context)),
-	pOldValue(property.GetPropertyValue(context)),
-	pNewValue(newValue)
-	{
-		SetShortInfo(property.GetUndoInfoOrLabel());
-	}
-	
-	~cUndo() override = default;
-	
-	void Undo() override{
-		pProperty->SetPropertyValue(pContext, pOldValue);
-	}
-	
-	void Redo() override{
-		pProperty->SetPropertyValue(pContext, pNewValue);
-	}
-};
-
 
 class cListenerHelper{
 	igdeMetaPropertyCurveBezierWidget &pWidget;
@@ -73,17 +46,13 @@ public:
 		}
 		
 		const auto &context = pWidget.GetContext();
-		if(!context){
-			return;
-		}
-		
 		auto &property = pWidget.GetPropertyCurveBezier();
 		const auto &oldValue = property.GetPropertyValue(context);
 		if(newValue == oldValue){
 			return;
 		}
 		
-		auto undo = deTObjectReference<cUndo>::New(property, context, newValue);
+		auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(property, context, newValue);
 		undo->Redo();
 		
 		auto * const undoSystem = context->GetUndoSystem();

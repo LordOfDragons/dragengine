@@ -26,37 +26,10 @@
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
+#include "../undo/igdeMetaPropertyListUndo.h"
 
 
 namespace {
-
-class cUndo : public igdeUndo{
-	const igdeMetaPropertyList::Ref pProperty;
-	const igdeMetaContext::Ref pContext;
-	igdeMetaPropertyList::List pOldValue, pNewValue;
-	
-public:
-	cUndo(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context,
-		const igdeMetaPropertyList::List &newValue) :
-	pProperty(&property),
-	pContext(property.Capture(context)),
-	pOldValue(property.GetPropertyValue(context)),
-	pNewValue(newValue)
-	{
-		SetShortInfo(property.GetUndoInfoOrLabel());
-	}
-	
-	~cUndo() override = default;
-	
-	void Undo() override{
-		pProperty->SetPropertyValue(pContext, pOldValue);
-	}
-	
-	void Redo() override{
-		pProperty->SetPropertyValue(pContext, pNewValue);
-	}
-};
-
 
 class cListener : public igdeListBoxListener{
 	igdeMetaPropertyListWidget &pWidget;
