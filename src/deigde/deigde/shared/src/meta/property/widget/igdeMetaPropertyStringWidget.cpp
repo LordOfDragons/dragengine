@@ -196,12 +196,12 @@ void igdeMetaPropertyStringWidget::Drop(){
 void igdeMetaPropertyStringWidget::Update(){
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : "");
+			pTextField->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : decString());
 		});
 	}
 	if(pComboBox){
 		RunWithPreventUpdate([&]{
-			pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : "");
+			pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : decString());
 		});
 	}
 }
@@ -219,7 +219,7 @@ void igdeMetaPropertyStringWidget::UpdateStringList(){
 		});
 		pComboBox->StoreFilterItems();
 		
-		pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : "");
+		pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : decString());
 	});
 }
 
