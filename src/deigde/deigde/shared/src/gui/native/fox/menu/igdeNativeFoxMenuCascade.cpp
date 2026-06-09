@@ -257,6 +257,86 @@ void igdeNativeFoxMenuCascade_PopupWindow::OnPositionChanged(){}
 void igdeNativeFoxMenuCascade_PopupWindow::OnVisibleChanged(){}
 void igdeNativeFoxMenuCascade_PopupWindow::OnEnabledChanged(){}
 
+
+
+class igdeNativeFoxPopupMenu : public FXMenuPane{
+	FXDECLARE(igdeNativeFoxPopupMenu)
+	
+protected:
+	igdeNativeFoxPopupMenu();
+	
+public:
+	enum eFoxIDs{
+		ID_SELF = FXMenuPane::ID_LAST,
+	};
+	
+public:
+	igdeNativeFoxPopupMenu(FXComposite *pparent);
+	virtual ~igdeNativeFoxPopupMenu() override;
+	
+	void popup(FXWindow* grabto,FXint x,FXint y,FXint w=0,FXint h=0) override;
+	
+	long onButtonPress(FXObject*,FXSelector,void*);
+	long onButtonRelease(FXObject*,FXSelector,void*);
+	long onEnter(FXObject*,FXSelector,void*);
+	long onLeave(FXObject*,FXSelector,void*);
+};
+
+FXDEFMAP(igdeNativeFoxPopupMenu) igdeNativeFoxPopupMenuMap[] = {
+	FXMAPFUNC(SEL_LEFTBUTTONPRESS, 0, igdeNativeFoxPopupMenu::onButtonPress),
+	FXMAPFUNC(SEL_LEFTBUTTONRELEASE, 0, igdeNativeFoxPopupMenu::onButtonRelease),
+	FXMAPFUNC(SEL_ENTER, 0, igdeNativeFoxPopupMenu::onEnter),
+	FXMAPFUNC(SEL_LEAVE, 0, igdeNativeFoxPopupMenu::onLeave)
+};
+
+FXIMPLEMENT(igdeNativeFoxPopupMenu, FXMenuPane, igdeNativeFoxPopupMenuMap, ARRAYNUMBER(igdeNativeFoxPopupMenuMap))
+
+igdeNativeFoxPopupMenu::igdeNativeFoxPopupMenu(){}
+
+igdeNativeFoxPopupMenu::igdeNativeFoxPopupMenu(FXComposite *pparent) :
+FXMenuPane(pparent){
+}
+
+igdeNativeFoxPopupMenu::~igdeNativeFoxPopupMenu() = default;
+
+void igdeNativeFoxPopupMenu::popup(FXWindow* grabto,FXint x,FXint y,FXint w,FXint h){
+	forceRefresh();
+	FXPopup::popup(grabto, x, y, w, h);
+}
+
+long igdeNativeFoxPopupMenu::onButtonPress(FXObject*, FXSelector, void *pdata){
+	const FXEvent &event = *((FXEvent*)pdata);
+	if(!contains(event.win_x, event.win_y)){
+		popdown();
+		return 1;
+	}
+	return 0;
+}
+
+long igdeNativeFoxPopupMenu::onButtonRelease(FXObject*, FXSelector, void*){
+	return 0;
+}
+
+long igdeNativeFoxPopupMenu::onEnter(FXObject*, FXSelector, void *pdata){
+	/*
+	const FXEvent &event = *((FXEvent*)pdata);
+	if(shown() && contains(event.win_x, event.win_y)){
+		printf("Mouse enter at %d, %d\n", event.win_x, event.win_y);
+		ungrab();
+	}
+	*/
+	return 0;
+}
+
+long igdeNativeFoxPopupMenu::onLeave(FXObject*, FXSelector, void *pdata){
+	const FXEvent &event = *((FXEvent*)pdata);
+	if(shown() && !contains(event.win_x, event.win_y)){
+		//printf("Mouse leave at %d, %d\n", event.win_x, event.win_y);
+		grab();
+	}
+	return 0;
+}
+
 }
 
 
@@ -396,7 +476,8 @@ void *igdeNativeFoxMenuCascade::CreateNativePopup(igdeMenuCascade&, igdeWidget &
 		DETHROW(deeInvalidParam);
 	}
 	
-	return new FXMenuPane(nativeParent);
+	return new igdeNativeFoxPopupMenu(nativeParent);
+	//return new FXMenuPane(nativeParent);
 }
 
 void igdeNativeFoxMenuCascade::PostCreateNativePopup(igdeMenuCascade&, void *native){
