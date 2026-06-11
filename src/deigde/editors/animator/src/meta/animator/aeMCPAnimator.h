@@ -40,7 +40,7 @@ public:
 		"@Animator.WPAnimator.Rig", "@Animator.WPAnimator.Rig.ToolTip",
 		igdeEnvironment::efpltRig){}
 	
-	virtual ~aeMCPAnimatorRig() override{}
+	~aeMCPAnimatorRig() override{}
 	
 	const decString &GetPropertyValue(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).GetRigPath();
@@ -63,7 +63,7 @@ public:
 		"@Animator.WPAnimator.Animation", "@Animator.WPAnimator.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation){}
 	
-	virtual ~aeMCPAnimatorAnimation() override{}
+	~aeMCPAnimatorAnimation() override{}
 	
 	const decString &GetPropertyValue(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).GetAnimationPath();
@@ -113,12 +113,7 @@ public:
 		Animator(context).SetSelectedBones(selection);
 	}
 	
-	void GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const override{
-		info.SetAll(string);
-	}
-	
 	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
-	
 	igdeAction::Ref CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
@@ -150,10 +145,15 @@ public:
 		Animator(context).SetActiveVertexPositionSet(activeString);
 	}
 	
-	void GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const override{
-		info.SetAll(string);
+	decStringSet GetSelection(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetSelectedVertexPositionSets();
 	}
 	
+	void SetSelection(const igdeMetaContext::Ref &context, const decStringSet &selection) override{
+		Animator(context).SetSelectedVertexPositionSets(selection);
+	}
+	
+	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
 	igdeAction::Ref CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };

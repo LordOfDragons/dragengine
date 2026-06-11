@@ -87,6 +87,21 @@ public:
 	};
 	
 	
+	/** \brief Add entries action. */
+	class DE_DLL_EXPORT ActionAdd : public igdeAction{
+	protected:
+		igdeMetaPropertySet &pProperty;
+		const igdeMetaContext::Ref pContext;
+		igdeWidget &pOwner;
+		
+	public:
+		using Ref = deTObjectReference<ActionAdd>;
+		ActionAdd(igdeMetaPropertySet &property, const igdeMetaContext::Ref &context,
+			igdeWidget &owner);
+		void OnAction() override;
+		void Update() override;
+	};
+	
 	/** \brief Remove selected entries action. */
 	class DE_DLL_EXPORT ActionRemove : public igdeAction{
 	protected:
@@ -228,6 +243,11 @@ public:
 	 * \brief Get object item information.
 	 */
 	virtual void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const = 0;
+	
+	/**
+	 * \brief Valid set of objects.
+	 */
+	virtual Set GetValidObjects(const igdeMetaContext::Ref &context) const;
 	
 	/**
 	 * \brief Create action for target button.

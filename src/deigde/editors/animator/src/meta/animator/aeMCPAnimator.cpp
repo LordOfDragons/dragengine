@@ -25,6 +25,7 @@
 #include "aeMCPAnimator.h"
 #include "../../gui/aeWindowMain.h"
 #include "../../undosys/animator/aeUAnimatorMirrorBones.h"
+#include "../../undosys/animator/aeUAnimatorMirrorVertexPositionSets.h"
 
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -67,14 +68,14 @@ public:
 }
 
 decStringSet aeMCPAnimatorAffectedBones::GetValidStrings(const igdeMetaContext::Ref &context) const{
-	decStringSet bones;
+	decStringSet strings;
 	const auto rig = Animator(context).GetEngineRig();
 	if(rig){
 		rig->GetBones().Visit([&](const deRigBone &bone){
-			bones.Add(bone.GetName());
+			strings.Add(bone.GetName());
 		});
 	}
-	return bones;
+	return strings;
 }
 
 igdeAction::Ref aeMCPAnimatorAffectedBones::CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -100,10 +101,66 @@ void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, co
 // Class aeMCPAnimatorAffectedVertexPositionSets
 //////////////////////////////////////////////////
 
+namespace {
+
+class cActionAffectedVertexPositionSetsMirror : public igdeAction{
+	aeMCPAnimatorAffectedVertexPositionSets &pProperty;
+	const igdeMetaContext::Ref pContext;
+	igdeWidget &pOwner;
+	
+public:
+	cActionAffectedVertexPositionSetsMirror(aeMCPAnimatorAffectedVertexPositionSets &property,
+		const igdeMetaContext::Ref &context, igdeWidget &owner) :
+	igdeAction("@Animator.WPAnimator.Action.VPSMirror", nullptr,
+		"@Animator.WPAnimator.Action.VPSMirror.ToolTip"),
+	pProperty(property), pContext(context), pOwner(owner){}
+	
+	void OnAction() override{
+		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
+		if(pProperty.IsValid(pContext)){
+			auto undo = aeUAnimatorMirrorVertexPositionSets::Ref::New(&pProperty.Animator(pContext));
+			if(undo->HasAnyEffect()){
+				pProperty.Animator(pContext).GetUndoSystem()->Add(undo);
+			}
+		}
+	}
+	
+	void Update() override{
+		SetEnabled(pProperty.IsValid(pContext) && pProperty.Animator(pContext).GetListVertexPositionSets().IsNotEmpty());
+	}
+};
+
+}
+
+decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetValidStrings(const igdeMetaContext::Ref &context) const{
+	decStringSet strings;
+	const auto component = Animator(context).GetEngineComponent();
+	if(component){
+		const auto model = component->GetModel();
+		if(model){
+			model->GetVertexPositionSets().Visit([&](const deModelVertexPositionSet &vps){
+				strings.Add(vps.GetName());
+			});
+		}
+	}
+	return strings;
+}
+
 igdeAction::Ref aeMCPAnimatorAffectedVertexPositionSets::CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	return CreateDefaultButtonAction(target, context, owner);
+	switch(target){
+	case TargetButton::add:
+		return igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner);
+		
+	default:
+		return CreateDefaultButtonAction(target, context, owner);
+	}
 }
 
 void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner));
 	AddDefaultContextMenuEntries(menu, context, owner);
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVertexPositionSetsMirror>::New(*this, context, owner));
 }

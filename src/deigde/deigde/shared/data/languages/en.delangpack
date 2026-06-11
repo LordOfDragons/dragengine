@@ -745,4 +745,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.MetaPropertyList.Action.ImportFromText.ToolTip">Import value from text</translation>
 	<translation name="Igde.MetaPropertyList.Dialog.ImportFromText.Title">Import From Text</translation>
 	<translation name="Igde.MetaPropertyList.Dialog.ImportFromText.Message">Values. One value per line.</translation>
+	<translation name='Igde.MetaPropertyList.Action.CopySelection'>Copy Selection</translation>
+	<translation name='Igde.MetaPropertyList.Action.CopySelection.ToolTip'>Copy selected value to clipboard</translation>
+	<translation name='Igde.MetaPropertyList.Action.PasteAppend'>Paste Append</translation>
+	<translation name='Igde.MetaPropertyList.Action.PasteAppend.ToolTip'>Paste from clipboard and append</translation>
 </languagePack>

@@ -270,7 +270,7 @@ public:
 	/**
 	 * \brief Get string item information.
 	 */
-	virtual void GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const = 0;
+	virtual void GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const;
 	
 	/**
 	 * \brief Valid set of strings.

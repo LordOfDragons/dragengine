@@ -25,7 +25,9 @@
 #include "igdeMetaPropertySet.h"
 #include "undo/igdeMetaPropertySetUndo.h"
 #include "widget/igdeMetaPropertySetWidget.h"
+#include "../igdeMetaContextItemInfo.h"
 #include "../../gui/igdeUIHelper.h"
+#include "../../gui/dialog/igdeDialogSetSelect.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndoSystem.h"
 #include "../../localization/igdeTranslationManager.h"
@@ -38,6 +40,80 @@ void igdeMetaPropertySet::Listener::OnActiveChanged(igdeMetaPropertySet*, const 
 }
 
 void igdeMetaPropertySet::Listener::OnSelectionChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+}
+
+
+// Class igdeMetaPropertySet::ActionAdd
+/////////////////////////////////////////
+
+igdeMetaPropertySet::ActionAdd::ActionAdd(igdeMetaPropertySet &property,
+	const igdeMetaContext::Ref &context, igdeWidget &owner) :
+igdeAction("@Igde.MetaPropertyList.Action.Add",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"@Igde.MetaPropertyList.Action.Add.ToolTip"),
+pProperty(property),
+pContext(context),
+pOwner(owner){
+}
+
+void igdeMetaPropertySet::ActionAdd::OnAction(){
+	if(!pProperty.IsValid(pContext)){
+		return;
+	}
+	
+	const igdeMetaPropertySet::Set candidates = pProperty.GetValidObjects(pContext);
+	if(candidates.IsEmpty()){
+		return;
+	}
+	
+	decStringSet candidateNames;
+	decTObjectDictionary<deObject> candidateMap;
+	igdeMetaContextItemInfo info;
+	candidates.Visit([&](const deObject::Ref &object){
+		pProperty.GetObjectItemInfo(object, info);
+		candidateNames.Add(info.GetText());
+		candidateMap.SetAt(info.GetText(), object);
+	});
+	
+	auto &environment = pOwner.GetEnvironment();
+	auto dialog = igdeDialogSetSelect::Ref::New(environment,
+		"@Igde.MetaPropertyList.Action.Dialog.AddEntries.Title",
+		"@Igde.MetaPropertyList.Action.Dialog.AddEntries.Message", candidateNames);
+	
+	auto iconPresent = environment.GetStockIcon(igdeEnvironment::esiSmallPlus);
+	auto iconAbsent = environment.GetStockIcon(igdeEnvironment::esiSmallMinus);
+	
+	const auto oldValue = pProperty.GetPropertyValue(pContext);
+	decStringSet oldValueNames;
+	oldValue.Visit([&](const deObject::Ref &object){
+		pProperty.GetObjectItemInfo(object, info);
+		oldValueNames.Add(info.GetText());
+	});
+	
+	dialog->MarkItems(oldValueNames, iconPresent, iconAbsent);
+	if(!dialog->Run(&pOwner)){
+		return;
+	}
+	
+	auto newValue = oldValue;
+	dialog->GetSelection().Visit([&](const decString &name){
+		if(const auto object = candidateMap.GetAtOrDefault(name)){
+			newValue.Add(object);
+		}
+	});
+	
+	if(newValue == oldValue){
+		return;
+	}
+	
+	const auto &tm = environment.GetTranslationManager();
+	pProperty.ChangePropertyValue(pContext, newValue,
+		tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
+			+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+}
+
+void igdeMetaPropertySet::ActionAdd::Update(){
+	SetEnabled(pProperty.IsValid(pContext));
 }
 
 
@@ -191,6 +267,10 @@ igdeMetaPropertySet::Set igdeMetaPropertySet::GetSelection(const igdeMetaContext
 }
 
 void igdeMetaPropertySet::SetSelection(const igdeMetaContext::Ref&, const Set&){
+}
+
+igdeMetaPropertySet::Set igdeMetaPropertySet::GetValidObjects(const igdeMetaContext::Ref &context) const{
+	return {};
 }
 
 igdeAction::Ref igdeMetaPropertySet::CreateButtonAction(TargetButton, const igdeMetaContext::Ref&, igdeWidget&){

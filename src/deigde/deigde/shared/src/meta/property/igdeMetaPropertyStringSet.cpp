@@ -325,6 +325,10 @@ decStringSet igdeMetaPropertyStringSet::GetSelection(const igdeMetaContext::Ref 
 void igdeMetaPropertyStringSet::SetSelection(const igdeMetaContext::Ref&, const decStringSet&){
 }
 
+void igdeMetaPropertyStringSet::GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const{
+	info.SetAll(string);
+}
+
 decStringSet igdeMetaPropertyStringSet::GetValidStrings(const igdeMetaContext::Ref&) const{
 	return {};
 }
