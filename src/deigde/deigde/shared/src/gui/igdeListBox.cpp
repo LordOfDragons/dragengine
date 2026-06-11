@@ -556,6 +556,7 @@ void igdeListBox::AddListener(igdeListBoxListener *listener){
 void igdeListBox::RemoveListener(igdeListBoxListener *listener){
 	pListeners.Remove(listener);
 }
+
 void igdeListBox::NotifySelectionChanged(){
 	const auto listeners(pListeners);
 	listeners.Visit([&](igdeListBoxListener &l){

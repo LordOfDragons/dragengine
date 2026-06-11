@@ -137,16 +137,14 @@ igdeMetaPropertyDirectoryWidget::~igdeMetaPropertyDirectoryWidget(){
 void igdeMetaPropertyDirectoryWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pEditDirectory)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditDirectory(container, pPropertyDirectory.GetDescription(),
-		pEditDirectory, pListener, pPropertyDirectory.GetUseGameVFS());
+	helper.EditDirectory(pPropertyDirectory.GetDescription(), pEditDirectory, pListener,
+		pPropertyDirectory.GetUseGameVFS());
+	WrapEditWidget(container, helper, pEditDirectory);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyDirectoryWidget::Drop(){
@@ -169,18 +167,8 @@ void igdeMetaPropertyDirectoryWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyDirectoryWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyDirectoryWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pEditDirectory){
-		pEditDirectory->SetVisible(!GetFilteredOut());
-	}
 }

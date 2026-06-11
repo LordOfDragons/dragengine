@@ -50,10 +50,11 @@ private:
 		PropertyListener(igdeMetaPropertyPathWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context) override;
+		void OnBasePathChanged(igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -94,15 +95,14 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
+	/** \brief Update base path. */
+	void UpdateBasePath();
 	
 	/** \brief Edit path widget or nullptr. */
 	inline const igdeEditPath::Ref &GetEditPath() const{ return pEditPath; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

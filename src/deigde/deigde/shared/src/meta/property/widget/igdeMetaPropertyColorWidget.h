@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyColorWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyColor *property, const igdeMetaContext::Ref &context) override;
@@ -97,12 +97,9 @@ public:
 	
 	/** \brief Color box widget or nullptr. */
 	inline const igdeColorBox::Ref &GetColorBox() const{ return pColorBox; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

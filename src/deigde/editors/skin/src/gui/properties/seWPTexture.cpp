@@ -345,11 +345,11 @@ public:
 };
 
 
-class cListProperties : public igdeListBoxListener{
+class cListSelection : public igdeListBoxListener{
 	seWPTexture &pPanel;
 public:
-	typedef deTObjectReference<cListProperties> Ref;
-	cListProperties(seWPTexture &panel) : pPanel(panel){}
+	typedef deTObjectReference<cListSelection> Ref;
+	cListSelection(seWPTexture &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seTexture * const texture = pPanel.GetTexture();
@@ -653,7 +653,7 @@ pPreventUpdateMappedTarget(false)
 	
 	// property
 	helper.GroupBoxFlow(content, groupBox, "@Skin.WPTexture.GroupProperty");
-	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Property", pListProperty, cListProperties::Ref::New(*this));
+	helper.ListBox(groupBox, 8, "@Skin.WPTexture.Property", pListProperty, cListSelection::Ref::New(*this));
 	pListProperty->SetDefaultSorter();
 	
 	form = igdeContainerForm::Ref::New(env);

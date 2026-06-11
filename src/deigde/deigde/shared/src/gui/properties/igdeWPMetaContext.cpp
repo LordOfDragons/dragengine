@@ -122,6 +122,15 @@ void igdeWPMetaContext::UpdatePropertyWidgets(){
 	}
 }
 
+void igdeWPMetaContext::OnLanguageChanged(){
+	igdeContainerScroll::OnLanguageChanged();
+	
+	pPropertyWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.UpdateMatchable(*this);
+	});
+	pFilterPropertyWidgets();
+}
+
 
 // Private Functions
 //////////////////////

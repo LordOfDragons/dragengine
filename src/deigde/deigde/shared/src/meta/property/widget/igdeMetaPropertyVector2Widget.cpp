@@ -137,15 +137,13 @@ igdeMetaPropertyVector2Widget::~igdeMetaPropertyVector2Widget(){
 void igdeMetaPropertyVector2Widget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pEditVector2)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditVector2(container, pPropertyVector2.GetDescription(), 6, 3, pEditVector2, pListener);
+	helper.EditVector2(pPropertyVector2.GetDescription(), 6, 3, pEditVector2, pListener);
+	WrapEditWidget(container, helper, pEditVector2);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyVector2Widget::Drop(){
@@ -166,18 +164,8 @@ void igdeMetaPropertyVector2Widget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyVector2Widget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyVector2Widget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pEditVector2){
-		pEditVector2->SetVisible(!GetFilteredOut());
-	}
 }

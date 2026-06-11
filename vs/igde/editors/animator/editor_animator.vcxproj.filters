@@ -250,6 +250,15 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1099,6 +1108,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeTMCPAnimator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.h">

@@ -49,6 +49,7 @@
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
+#include <deigde/gui/properties/igdeWPMetaContextList.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/resourceloader/igdeResourceLoader.h>
 #include <deigde/localization/igdeTranslationManager.h>
@@ -162,6 +163,7 @@ private:
 	igdeStatusBar::Ref pStatusBar;
 	igdeProgressBar::Ref pSBProgress;
 	igdeSwitcher::Ref pSwiContent;
+	igdeWPMetaContextList::Ref pWPMetaContextList;
 	
 	igdeToolBar::Ref pTBGame;
 	igdeContainer::Ref pFraEditors;
@@ -306,6 +308,9 @@ public:
 	/** Active module shared toolbars changed. */
 	void ActiveModuleSharedToolBarsChanged();
 	
+	/** Meta contexts changed. */
+	void MetaContextsChanged();
+	
 	/** Activate editor and bring it to the front. */
 	void ActivateEditor(igdeEditorModule *editor);
 	
@@ -337,6 +342,9 @@ public:
 	
 	/** Content switcher. */
 	inline const igdeSwitcher::Ref &GetContentSwitcher() const{ return pSwiContent; }
+	
+	/** Meta context list. */
+	inline const igdeWPMetaContextList::Ref &GetMetaContextList() const{ return pWPMetaContextList; }
 	
 	/** Game toolbar. */
 	inline const igdeToolBar::Ref &GetToolBarGame() const{ return pTBGame; }
@@ -507,6 +515,7 @@ private:
 	void pCreateMenuSettings(igdeMenuCascade &menu);
 	void pUpdateMenuRecentProjects(igdeMenuCascade &menu);
 	void pUpdateMenuWindow(igdeMenuCascade &menu);
+	void pUpdateWPContextList();
 	
 	void pUpdatePauseUpdating();
 	

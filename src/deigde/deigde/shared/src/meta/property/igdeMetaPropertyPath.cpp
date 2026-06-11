@@ -28,8 +28,15 @@
 #include "../../undo/igdeUndoSystem.h"
 
 
+// Class igdeMetaPropertyPath::Listener
+/////////////////////////////////////////
+
+void igdeMetaPropertyPath::Listener::OnBasePathChanged(igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
+}
+
+
 // Class igdeMetaPropertyPath
-////////////////////////////////
+///////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -56,6 +63,12 @@ igdeMetaPropertyPath::~igdeMetaPropertyPath() = default;
 void igdeMetaPropertyPath::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
+	});
+}
+
+void igdeMetaPropertyPath::NotifyBasePathChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnBasePathChanged(this, context);
 	});
 }
 

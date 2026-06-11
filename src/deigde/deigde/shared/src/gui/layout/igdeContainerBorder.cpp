@@ -151,6 +151,22 @@ void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
 	default:
 		DETHROW(deeInvalidParam);
 	}
+	
+	if(GetNativeWidget()){
+		// if the native widget is already created the order of the children can not be guaranteed
+		// anymore unless the widget is fully recreated. If the widgets are though already in the
+		// right order we can avoid a full recreation
+		const auto &children = GetChildren();
+		int index = 0;
+		if((pWidgetTop && children[index++] != pWidgetTop)
+		|| (pWidgetBottom && children[index++] != pWidgetBottom)
+		|| (pWidgetLeft && children[index++] != pWidgetLeft)
+		|| (pWidgetRight && children[index++] != pWidgetRight)
+		|| (pWidgetCenter && children[index++] != pWidgetCenter)){
+			DestroyNativeWidget();
+			CreateNativeWidget();
+		}
+	}
 }
 
 void igdeContainerBorder::AddChild(igdeWidget *child){
@@ -231,4 +247,28 @@ void igdeContainerBorder::DestroyNativeWidget(){
 	igdeNativeContainerBorder * const native = (igdeNativeContainerBorder*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeContainerBorder::CreateChildWidgetNativeWidgets(){
+	// we have to add the widgets in the correct order for the layout to work properly
+	// for certain native backends
+	if(pWidgetTop){
+		pWidgetTop->CreateNativeWidget();
+	}
+	if(pWidgetBottom){
+		pWidgetBottom->CreateNativeWidget();
+	}
+	if(pWidgetLeft){
+		pWidgetLeft->CreateNativeWidget();
+	}
+	if(pWidgetRight){
+		pWidgetRight->CreateNativeWidget();
+	}
+	if(pWidgetCenter){
+		pWidgetCenter->CreateNativeWidget();
+	}
 }

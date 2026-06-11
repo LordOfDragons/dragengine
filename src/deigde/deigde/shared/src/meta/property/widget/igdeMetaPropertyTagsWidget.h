@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyTagsWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyTags *property, const igdeMetaContext::Ref &context) override;
@@ -97,12 +97,9 @@ public:
 	
 	/** \brief Edit tags widget or nullptr. */
 	inline const igdeEditTags::Ref &GetEditTags() const{ return pEditTags; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

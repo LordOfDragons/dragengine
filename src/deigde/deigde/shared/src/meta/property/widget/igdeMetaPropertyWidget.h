@@ -54,7 +54,9 @@ private:
 	const igdeMetaProperty::Ref pProperty;
 	const igdeMetaContext::Ref pContext;
 	igdeLabel::Ref pLabel;
+	igdeContainer::Ref pEditContainer;
 	igdeButton::Ref pButtonContextMenu;
+	igdeFilter::Matchable pMatchable;
 	bool pFilteredOut = false;
 	bool pPreventUpdate = false;
 	
@@ -68,7 +70,7 @@ protected:
 	igdeMetaPropertyWidget(igdeMetaProperty &property, const igdeMetaContext::Ref &context);
 	
 	/** \brief Clean up widget. */
-	virtual ~igdeMetaPropertyWidget();
+	~igdeMetaPropertyWidget();
 	
 public:
 	/*@}*/
@@ -90,6 +92,12 @@ public:
 	
 	/** \brief Filter widget. */
 	virtual void Filter(const igdeFilter &filter);
+	
+	/** \brief Matchable. */
+	inline const igdeFilter::Matchable &GetMatchable() const{ return pMatchable; }
+	
+	/** \brief Update matchable. */
+	void UpdateMatchable(igdeContainer &container);
 	
 	/** \brief Create UI widgets adding them to container. */
 	virtual void Create(igdeContainer &container, igdeUIHelper &helper) = 0;
@@ -113,21 +121,22 @@ public:
 	
 	/** \brief Run function while preventing create undo or update value when widget changes. */
 	void RunWithPreventUpdate(const std::function<void()> &function);
+	
+	
+	/**
+	 * \brief Add context menu entries.
+	 * 
+	 * Calls igdeMetaProperty::AddContextMenuEntries(). Subclass has to super call before
+	 * adding menu entries to ensure special menu entries are located last in the menu.
+	 */
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	
 protected:
-	/** \brief Create label widget adding it to container. */
-	void CreateLabel(igdeContainer &container, igdeUIHelper &helper);
-	
-	/** \brief Create context menu button adding it to container. */
-	void CreateContextMenuButton(igdeContainer &container, igdeUIHelper &helper);
-	
-	/** \brief Context menu button pressed. */
-	void OnContextMenuButton();
-	
-	/** \brief Add context menu entries. */
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
+	/** \brief Create label and context menu button wrapping edit widget. */
+	void WrapEditWidget(igdeContainer &container, igdeUIHelper &helper,
+		igdeWidget *widget, igdeWidget *sideWidget = nullptr);
 	
 	/** \brief Update filtered out. */
 	virtual void UpdateFilteredOut();

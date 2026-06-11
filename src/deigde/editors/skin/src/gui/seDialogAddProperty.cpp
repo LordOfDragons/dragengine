@@ -76,12 +76,12 @@ public:
 	}
 };
 
-class cListProperties : public igdeListBoxListener{
+class cListSelection : public igdeListBoxListener{
 private:
 	seDialogAddProperty &pDialog;
 	
 public:
-	cListProperties(seDialogAddProperty &dialog) : pDialog(dialog){}
+	cListSelection(seDialogAddProperty &dialog) : pDialog(dialog){}
 	
 	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
 		if(index >= 0 and listBox->GetSelectedItem()){
@@ -118,7 +118,7 @@ pWindowMain(windowMain)
 	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5);
 	
 	helper.ListBox(content, 15, "@Skin.DialogAddProperty.PropertyNames",
-		pListProperties, deTObjectReference<cListProperties>::New(*this));
+		pListProperties, deTObjectReference<cListSelection>::New(*this));
 	pListProperties->SetSelectionMode(igdeListBox::esmMultiple);
 	pListProperties->SetDefaultSorter();
 	

@@ -1037,6 +1037,28 @@ const igdeListBoxListener::Ref &listener){
 
 
 
+void igdeUIHelper::ListBoxFilter(igdeContainer &form, const char *label, int rows,
+const char *description, igdeListBoxFilter::Ref &listBox, const igdeListBoxListener::Ref &listener){
+	ListBoxFilter(rows, description, listBox, listener);
+	FormLine(form, label, description, listBox, igdeLabel::eaLeft | igdeLabel::eaTop);
+}
+
+void igdeUIHelper::ListBoxFilter(igdeContainer &parent, int rows, const char *description,
+igdeListBoxFilter::Ref &listBox, const igdeListBoxListener::Ref &listener){
+	ListBoxFilter(rows, description, listBox, listener);
+	parent.AddChild(listBox);
+}
+
+void igdeUIHelper::ListBoxFilter(int rows, const char *description, igdeListBoxFilter::Ref &listBox,
+const igdeListBoxListener::Ref &listener){
+	listBox = igdeListBoxFilter::Ref::New(pEnvironment, rows, description);
+	if(listener){
+		listBox->AddListener(listener);
+	}
+}
+
+
+
 void igdeUIHelper::IconListBox(igdeContainer &parent, igdeIconListBox::Ref &listBox,
 const sColumnHeader *headers, int headerCount, const char *description, const igdeIconListBoxListener::Ref &listener){
 	IconListBox(headers, headerCount, description, listBox, listener);
@@ -1338,19 +1360,38 @@ const char *text, const char *description){
 
 
 
-void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, const igdeAction::Ref &action){
-	igdeButton::Ref widget(igdeButton::Ref::New(pEnvironment, action, igdeButton::ebsToolBar));
-	toolBar.AddChild(widget);
+void igdeUIHelper::ToolBarButton(igdeContainer &container, const igdeAction::Ref &action){
+	igdeButton::Ref button;
+	ToolBarButton(container, button, action);
 }
 
-void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, const igdeAction::Ref &action){
-	igdeToggleButton::Ref widget(igdeToggleButton::Ref::New(
-		pEnvironment, action, igdeToggleButton::ebsToolBar));
-	toolBar.AddChild(widget);
+void igdeUIHelper::ToolBarButton(igdeContainer &container, igdeButton::Ref &button,
+const igdeAction::Ref &action){
+	ToolBarButton(button, action);
+	container.AddChild(button);
 }
 
-void igdeUIHelper::ToolBarSeparator(igdeToolBar &toolBar){
-	toolBar.AddChild(igdeToolBarSeparator::Ref::New(pEnvironment));
+void igdeUIHelper::ToolBarButton(igdeButton::Ref &button, const igdeAction::Ref &action){
+	button = igdeButton::Ref::New(pEnvironment, action, igdeButton::ebsToolBar);
+}
+
+void igdeUIHelper::ToolBarToggleButton(igdeContainer &container, const igdeAction::Ref &action){
+	igdeToggleButton::Ref button;
+	ToolBarToggleButton(container, button, action);
+}
+
+void igdeUIHelper::ToolBarToggleButton(igdeContainer &container, igdeToggleButton::Ref &button,
+const igdeAction::Ref &action){
+	ToolBarToggleButton(button, action);
+	container.AddChild(button);
+}
+
+void igdeUIHelper::ToolBarToggleButton(igdeToggleButton::Ref &button, const igdeAction::Ref &action){
+	button = igdeToggleButton::Ref::New(pEnvironment, action, igdeToggleButton::ebsToolBar);
+}
+
+void igdeUIHelper::ToolBarSeparator(igdeContainer &container){
+	container.AddChild(igdeToolBarSeparator::Ref::New(pEnvironment));
 }
 
 

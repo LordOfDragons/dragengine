@@ -25,6 +25,7 @@
 #ifndef _IGDEWPMETACONTEXTLIST_H_
 #define _IGDEWPMETACONTEXTLIST_H_
 
+#include "igdeWPMetaContext.h"
 #include "../igdeTabBook.h"
 #include "../igdeTextField.h"
 #include "../layout/igdeContainerBorder.h"
@@ -47,6 +48,9 @@ public:
 	/** \brief List of context panels. */
 	using ContextPanelList = decTObjectOrderedSet<igdeWPMetaContext>;
 	
+	/** \brief Map of context panels. */
+	using ContextPanelMap = decTDictionary<igdeMetaContext::Ref, igdeWPMetaContext::Ref>;
+	
 	
 private:
 	igdeMetaContext::Data::Ref pData;
@@ -54,6 +58,7 @@ private:
 	igdeTextField::Ref pEditFilter;
 	igdeFilter pFilter;
 	ContextPanelList pContextPanels;
+	ContextPanelMap pContextPanelCache;
 	
 	
 public:
@@ -83,6 +88,9 @@ public:
 	
 	/** \brief Set filter. */
 	void SetFilter(const igdeFilter &filter);
+	
+	/** \brief Discard all cached context panels. */
+	void ClearCache();
 	/*@}*/
 	
 	

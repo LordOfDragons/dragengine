@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyObjectWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
@@ -101,12 +101,9 @@ public:
 	
 	/** \brief Combo box widget or nullptr. */
 	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

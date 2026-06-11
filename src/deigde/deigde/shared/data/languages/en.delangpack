@@ -717,4 +717,22 @@ property type so be careful what you enter</translation>
 	<!-- Meta properties -->
 	<translation name="Igde.MetaContextList.Filter">Filter:</translation>
 	<translation name="Igde.MetaContextList.Filter.ToolTip">Show properties matching filter</translation>
+	<translation name="Igde.MetaProperty.ContextMenu.ToolTip">Property menu</translation>
+	<translation name="Igde.MetaProperty.Action.ResetToDefault">Reset to Default</translation>
+	<translation name="Igde.MetaProperty.Action.ResetToDefault.ToolTip">Reset property to default value</translation>
+	<translation name="Igde.MetaProperty.Action.ClearFilter.ToolTip">Clear filter</translation>
+	<translation name="Igde.MetaPropertyList.Action.Add">Add</translation>
+	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Add entry</translation>
+	<translation name="Igde.MetaPropertyList.Action.Remove">Remove</translation>
+	<translation name="Igde.MetaPropertyList.Action.Remove.ToolTip">Remove entry</translation>
+	<translation name="Igde.MetaPropertyList.Action.RemoveAll">Remove All</translation>
+	<translation name="Igde.MetaPropertyList.Action.RemoveAll.ToolTip">Remove all entries</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveUp">Move Up</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveUp.ToolTip">Move entry up</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveDown">Move Down</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveDown.ToolTip">Move entry down</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveTop">Move to Top</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveTop.ToolTip">Move entry to top</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveBottom">Move to Bottom</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveBottom.ToolTip">Move entry to bottom</translation>
 </languagePack>

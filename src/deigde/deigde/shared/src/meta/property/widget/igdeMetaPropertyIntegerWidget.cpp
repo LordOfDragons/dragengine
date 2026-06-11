@@ -201,29 +201,29 @@ void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelpe
 	DEASSERT_NULL(pEditSliderText)
 	DEASSERT_NULL(pSpinTextField)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	if(pPropertyInteger.GetEnableSpin()){
 		pSpinListener = deTObjectReference<cSpinListener>::New(*this);
-		helper.EditSpinInteger(container, pPropertyInteger.GetDescription(),
+		helper.EditSpinInteger(pPropertyInteger.GetDescription(),
 			pPropertyInteger.GetLowerLimit(), pPropertyInteger.GetUpperLimit(),
 			pSpinTextField, pSpinListener);
+		WrapEditWidget(container, helper, pSpinTextField);
 		
 	}else if(pPropertyInteger.GetEnableLowerLimit() && pPropertyInteger.GetEnableUpperLimit()){
 		pSliderListener = deTObjectReference<cSliderListener>::New(*this);
-		helper.EditSliderText(container, pPropertyInteger.GetDescription(),
+		helper.EditSliderText(pPropertyInteger.GetDescription(),
 			pPropertyInteger.GetLowerLimit(), pPropertyInteger.GetUpperLimit(), 6,
 			pPropertyInteger.GetTickSpacing(), pEditSliderText, pSliderListener);
+		WrapEditWidget(container, helper, pEditSliderText);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
-		helper.EditInteger(container, pPropertyInteger.GetDescription(), 6, pTextField, pTextListener);
+		helper.EditInteger(pPropertyInteger.GetDescription(), 6, pTextField, pTextListener);
+		WrapEditWidget(container, helper, pTextField);
 	}
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyIntegerWidget::Drop(){
@@ -274,24 +274,8 @@ void igdeMetaPropertyIntegerWidget::SetUndoSliding(const igdeMetaPropertyInteger
 	pUndoSliding = undo;
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyIntegerWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyIntegerWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pTextField){
-		pTextField->SetVisible(!GetFilteredOut());
-	}
-	if(pEditSliderText){
-		pEditSliderText->SetVisible(!GetFilteredOut());
-	}
-	if(pSpinTextField){
-		pSpinTextField->SetVisible(!GetFilteredOut());
-	}
 }

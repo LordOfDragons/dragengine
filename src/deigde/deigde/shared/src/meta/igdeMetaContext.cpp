@@ -43,7 +43,7 @@ void igdeMetaContext::Listener::OnPropertiesChanged(igdeMetaContext*){}
 
 igdeMetaContext::igdeMetaContext(const char *identifier) :
 pIdentifier(identifier),
-pUndoSystem(nullptr){
+pDisposed(false){
 }
 
 igdeMetaContext::~igdeMetaContext() = default;
@@ -51,6 +51,15 @@ igdeMetaContext::~igdeMetaContext() = default;
 
 // Management
 ///////////////
+
+void igdeMetaContext::Dispose(){
+	if(pDisposed){
+		return;
+	}
+	
+	pDisposed = true;
+	SetProperties({});
+}
 
 void igdeMetaContext::SetLabel(const char *label){
 	pLabel = label;
@@ -72,10 +81,6 @@ void igdeMetaContext::SetProperties(const PropertyList::Ref &properties){
 	
 	pProperties = properties;
 	NotifyPropertiesChanged();
-}
-
-void igdeMetaContext::SetUndoSystem(igdeUndoSystem *undoSystem){
-	pUndoSystem = undoSystem;
 }
 
 void igdeMetaContext::NotifyPropertiesChanged(){

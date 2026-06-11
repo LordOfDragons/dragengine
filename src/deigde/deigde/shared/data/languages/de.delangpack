@@ -716,4 +716,22 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<!-- Meta properties -->
 	<translation name="Igde.MetaContextList.Filter">Filter:</translation>
 	<translation name="Igde.MetaContextList.Filter.ToolTip">Zeige Eigenschaften, die dem Filter entsprechen</translation>
+	<translation name="Igde.MetaProperty.ContextMenu.ToolTip">Eigenschaftsmenü</translation>
+	<translation name="Igde.MetaProperty.Action.ResetToDefault">Auf Standard zurücksetzen</translation>
+	<translation name="Igde.MetaProperty.Action.ResetToDefault.ToolTip">Eigenschaft auf Standardwert zurücksetzen</translation>
+	<translation name="Igde.MetaProperty.Action.ClearFilter.ToolTip">Filter löschen</translation>
+	<translation name="Igde.MetaPropertyList.Action.Add">Hinzufügen</translation>
+	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Eintrag hinzufügen</translation>
+	<translation name="Igde.MetaPropertyList.Action.Remove">Entfernen</translation>
+	<translation name="Igde.MetaPropertyList.Action.Remove.ToolTip">Eintrag entfernen</translation>
+	<translation name="Igde.MetaPropertyList.Action.RemoveAll">Alle entfernen</translation>
+	<translation name="Igde.MetaPropertyList.Action.RemoveAll.ToolTip">Alle Einträge entfernen</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveUp">Nach oben</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveUp.ToolTip">Eintrag nach oben verschieben</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveDown">Nach unten</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveDown.ToolTip">Eintrag nach unten verschieben</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveTop">Nach ganz oben</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveTop.ToolTip">Eintrag nach ganz oben verschieben</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveBottom">Nach ganz unten</translation>
+	<translation name="Igde.MetaPropertyList.Action.MoveBottom.ToolTip">Eintrag nach ganz unten verschieben</translation>
 </languagePack>

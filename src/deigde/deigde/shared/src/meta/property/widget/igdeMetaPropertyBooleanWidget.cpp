@@ -148,15 +148,14 @@ igdeMetaPropertyBooleanWidget::~igdeMetaPropertyBooleanWidget(){
 void igdeMetaPropertyBooleanWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pCheckBox)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
 	
 	pAction = deTObjectReference<cAction>::New(*this);
-	helper.CheckBox(line, pCheckBox, pAction);
+	helper.CheckBox(pCheckBox, pAction);
+	WrapEditWidget(container, helper, pCheckBox);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyBooleanWidget::Drop(){
@@ -177,18 +176,8 @@ void igdeMetaPropertyBooleanWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyBooleanWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyBooleanWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pCheckBox){
-		pCheckBox->SetVisible(!GetFilteredOut());
-	}
 }

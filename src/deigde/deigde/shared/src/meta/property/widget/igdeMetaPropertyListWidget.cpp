@@ -51,16 +51,45 @@ public:
 	}
 	
 	void OnItemSelected(igdeListBox *listBox, int index) override{
+		if(!pWidget.GetPreventUpdate()){
+			pWidget.StoreSelection();
+		}
 	}
 	
 	void OnItemDeselected(igdeListBox *listBox, int index) override{
+		if(!pWidget.GetPreventUpdate()){
+			pWidget.StoreSelection();
+		}
 	}
 	
 	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
 	}
 	
 	void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu) override{
-		pWidget.AddListBoxContextMenuEntries(menu);
+		pWidget.AddContextMenuEntries(menu);
+	}
+};
+
+
+class cActionResetToDefault : public igdeAction{
+	igdeMetaPropertyListWidget &pWidget;
+	
+public:
+	cActionResetToDefault(igdeMetaPropertyListWidget &widget) :
+	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
+		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~cActionResetToDefault() override = default;
+	
+	void OnAction() override{
+		const auto &context = pWidget.GetContext();
+		auto &property = pWidget.GetPropertyList();
+		if(property.GetPropertyValue(context).IsNotEmpty()){
+			property.ChangePropertyValue(context, {});
+		}
 	}
 };
 
@@ -68,7 +97,7 @@ public:
 
 
 // Class igdeMetaPropertyListWidget::PropertyListener
-/////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 
 igdeMetaPropertyListWidget::PropertyListener::PropertyListener(igdeMetaPropertyListWidget &widget) :
 pWidget(widget){
@@ -88,6 +117,7 @@ igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 
 void igdeMetaPropertyListWidget::PropertyListener::OnSelectionChanged(
 igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+	pWidget.RestoreSelection();
 }
 
 
@@ -101,7 +131,8 @@ igdeMetaPropertyListWidget::igdeMetaPropertyListWidget(
 	igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) :
 igdeMetaPropertyWidget(property, context),
 pPropertyList(property),
-pPropertyListener(PropertyListener::Ref::New(*this))
+pPropertyListener(PropertyListener::Ref::New(*this)),
+pRows(property.GetRows())
 {
 	property.GetListeners().Add(pPropertyListener);
 }
@@ -118,21 +149,34 @@ igdeMetaPropertyListWidget::~igdeMetaPropertyListWidget(){
 void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pListBox);
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ListBox(container, pPropertyList.GetRows(),
-		pPropertyList.GetDescription(), pListBox, pListener);
+	helper.ListBox(pRows, pPropertyList.GetDescription(), pListBox, pListener);
+	pListBox->SetSelectionMode(pPropertyList.GetMultiSelection()
+		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
 	
-	CreateContextMenuButton(line, helper);
+	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
+		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
+	pAddButton(igdeMetaPropertyList::TargetButton::add, helper, buttons);
+	pAddButton(igdeMetaPropertyList::TargetButton::remove, helper, buttons);
+	pAddButton(igdeMetaPropertyList::TargetButton::moveUp, helper, buttons);
+	pAddButton(igdeMetaPropertyList::TargetButton::moveDown, helper, buttons);
+	if(buttons->GetChildren().IsEmpty()){
+		buttons.Clear();
+	}
+	
+	WrapEditWidget(container, helper, pListBox, buttons);
+	
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyListWidget::Drop(){
-	if(pListBox && pListener){
-		pListBox->RemoveListener(pListener);
+	if(pListBox){
+		if(pListener){
+			pListBox->RemoveListener(pListener);
+		}
+		pRows = pListBox->GetRows();
 	}
 	
 	pListener.Clear();
@@ -146,7 +190,7 @@ void igdeMetaPropertyListWidget::Update(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto &objects = pPropertyList.GetPropertyValue(GetContext());
+		const auto objects = pPropertyList.GetPropertyValue(GetContext());
 		igdeMetaContextItemInfo info;
 		pListBox->RemoveAllItems();
 		objects.Visit([&](const deObject::Ref &object){
@@ -155,11 +199,10 @@ void igdeMetaPropertyListWidget::Update(){
 			item->SetRefData(object);
 			pListBox->AddItem(item);
 		});
-		
-		pListBox->SetSelectionWithRefData(GetContext()
-			? pPropertyList.GetActiveObject(GetContext())
-			: deObject::Ref());
 	});
+	
+	SelectActiveObject();
+	RestoreSelection();
 }
 
 void igdeMetaPropertyListWidget::SelectActiveObject(){
@@ -172,20 +215,62 @@ void igdeMetaPropertyListWidget::SelectActiveObject(){
 	}
 }
 
-void igdeMetaPropertyListWidget::AddListBoxContextMenuEntries(igdeMenuCascade &menu){
-	AddContextMenuEntries(menu);
+void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
+	
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+void igdeMetaPropertyListWidget::StoreSelection(){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple || !GetContext()){
+		return;
+	}
+	
+	igdeMetaPropertyList::List newValue;
+	pListBox->GetItems().Visit([&](const igdeListItem &item){
+		if(item.GetSelected()){
+			newValue.Add(item.GetRefData());
+		}
+	});
+	pPropertyList.ChangePropertyValue(GetContext(), newValue);
+}
+
+void igdeMetaPropertyListWidget::RestoreSelection(){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple || !GetContext()){
+		return;
+	}
+	
+	RunWithPreventUpdate([&]{
+		const auto selection = pPropertyList.GetSelection(GetContext());
+		pListBox->GetItems().VisitIndexed([&](int index, igdeListItem &item){
+			const bool selected = selection.Has(item.GetRefData());
+			if(item.GetSelected() != selected){
+				if(selected){
+					pListBox->SelectItem(index);
+					
+				}else{
+					pListBox->DeselectItem(index);
+				}
+			}
+		});
+	});
 }
 
 
-// Protected Functions
-////////////////////////
+// Private Functions
+//////////////////////
 
-void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
-}
-
-void igdeMetaPropertyListWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pListBox){
-		pListBox->SetVisible(!GetFilteredOut());
+void igdeMetaPropertyListWidget::pAddButton(igdeMetaPropertyList::TargetButton target,
+igdeUIHelper &helper, igdeContainer &container){
+	igdeButton::Ref button;
+	helper.Button(button, {});
+	button->SetStyle(igdeButton::ebsToolBar);
+	button->SetAction(pPropertyList.CreateButtonAction(target, GetContext(), button));
+	if(button->GetAction()){
+		container.AddChild(button);
 	}
 }

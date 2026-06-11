@@ -284,12 +284,42 @@ void igdeNativeFoxContainerFlow::DestroyNativeWidget(igdeContainerFlow&, void *n
 	delete (FXPacker*)native;
 }
 
+void igdeNativeFoxContainerFlow::ChildAdded(igdeContainerFlow &powner, void *native){
+	if(!powner.GetNativeContainer()){
+		return;
+	}
+	
+	switch(powner.GetStretching()){
+	case igdeContainerFlow::esLast:
+		if(powner.GetChildren().GetCount() > 1){
+			igdeUIFoxHelper::UpdateLayoutFlags(powner.GetChildren()[powner.GetChildren().GetCount() - 2]);
+			((FXPacker*)native)->recalc();
+		}
+		break;
+		
+	default:
+		break;
+	}
+}
+
 void igdeNativeFoxContainerFlow::ChildRemoved(igdeContainerFlow &powner, void *native){
-	if(powner.GetNativeContainer()
-	&& powner.GetStretching() == igdeContainerFlow::esLast
-	&& powner.GetChildren().IsNotEmpty()){
+	if(!powner.GetNativeContainer() || powner.GetChildren().IsEmpty()){
+		return;
+	}
+	
+	switch(powner.GetStretching()){
+	case igdeContainerFlow::esFirst:
+		igdeUIFoxHelper::UpdateLayoutFlags(powner.GetChildren().First());
+		((FXPacker*)native)->recalc();
+		break;
+		
+	case igdeContainerFlow::esLast:
 		igdeUIFoxHelper::UpdateLayoutFlags(powner.GetChildren().Last());
 		((FXPacker*)native)->recalc();
+		break;
+		
+	default:
+		break;
 	}
 }
 

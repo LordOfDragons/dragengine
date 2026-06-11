@@ -55,7 +55,7 @@ private:
 		PropertyListener(igdeMetaPropertyIntegerWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyInteger *property, const igdeMetaContext::Ref &context) override;
@@ -120,12 +120,9 @@ public:
 	
 	/** \brief Set sliding undo or nullptr. */
 	void SetUndoSliding(const igdeMetaPropertyIntegerUndo::Ref &undo);
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

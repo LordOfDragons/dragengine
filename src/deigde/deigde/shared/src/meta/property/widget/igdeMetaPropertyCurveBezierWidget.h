@@ -51,7 +51,7 @@ private:
 		PropertyListener(igdeMetaPropertyCurveBezierWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyCurveBezier *property, const igdeMetaContext::Ref &context) override;
@@ -109,12 +109,9 @@ public:
 	
 	/** \brief Add curve edit context menu entries. */
 	void AddCurveEditContextMenuEntries(igdeMenuCascade &menu);
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

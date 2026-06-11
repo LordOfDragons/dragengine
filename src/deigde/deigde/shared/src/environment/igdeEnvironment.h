@@ -371,6 +371,8 @@ public:
 	/** \brief Activate editor and bring it to the front. */
 	virtual void ActivateEditor(igdeEditorModule *editor) = 0;
 	
+	/** \brief Meta contexts changed. */
+	virtual void MetaContextsChanged() = 0;
 	
 	
 	/**

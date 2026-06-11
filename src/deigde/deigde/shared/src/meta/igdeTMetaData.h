@@ -50,14 +50,22 @@ public:
 	/** \brief Create meta data. */
 	igdeTMetaData() = default;
 	
+	/** \brief Create copy of meta data. */
+	igdeTMetaData(const igdeTMetaData &other) : pData(other.pData){}
+	
+	/** \brief Move meta data. */
+	igdeTMetaData(igdeTMetaData &&other) : pData(std::move(other.pData)){}
+	
+	/** \brief Create meta data with initial value. */
+	explicit igdeTMetaData(const T &data) : pData(data) {}
+	
 protected:
 	/** \brief Clean up meta data. */
 	~igdeTMetaData() override = default;
-	
-public:
 	/*@}*/
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data. */
@@ -67,6 +75,22 @@ public:
 	/** \brief Automatic cast. */
 	inline operator T &(){ return pData; }
 	inline operator const T &() const{ return pData; }
+	
+	/** \brief Copy operator. */
+	igdeTMetaData &operator=(const igdeTMetaData &other){
+		if(this != &other){
+			pData = other.pData;
+		}
+		return *this;
+	}
+	
+	/** \brief Move operator. */
+	igdeTMetaData &operator=(igdeTMetaData &&other) noexcept{
+		if(this != &other){
+			pData = std::move(other.pData);
+		}
+		return *this;
+	}
 	/*@}*/
 };
 

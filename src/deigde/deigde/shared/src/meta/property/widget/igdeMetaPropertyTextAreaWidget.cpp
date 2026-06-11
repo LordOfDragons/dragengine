@@ -137,16 +137,14 @@ igdeMetaPropertyTextAreaWidget::~igdeMetaPropertyTextAreaWidget(){
 void igdeMetaPropertyTextAreaWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pTextArea)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditString(container, pPropertyTextArea.GetDescription(),
-		pTextArea, pPropertyTextArea.GetRows(), pListener);
+	helper.EditString(pPropertyTextArea.GetDescription(), 15,
+		pPropertyTextArea.GetRows(), pTextArea, pListener);
+	WrapEditWidget(container, helper, pTextArea);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyTextAreaWidget::Drop(){
@@ -167,18 +165,8 @@ void igdeMetaPropertyTextAreaWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyTextAreaWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyTextAreaWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pTextArea){
-		pTextArea->SetVisible(!GetFilteredOut());
-	}
 }

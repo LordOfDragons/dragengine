@@ -172,15 +172,13 @@ igdeMetaPropertyCurveBezierWidget::~igdeMetaPropertyCurveBezierWidget(){
 void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pViewCurveBezier)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ViewCurveBezier(container, pViewCurveBezier, pListener);
+	helper.ViewCurveBezier(pViewCurveBezier, pListener);
+	WrapEditWidget(container, helper, pViewCurveBezier);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
@@ -215,18 +213,8 @@ void igdeMetaPropertyCurveBezierWidget::AddCurveEditContextMenuEntries(igdeMenuC
 	AddContextMenuEntries(menu);
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyCurveBezierWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pViewCurveBezier){
-		pViewCurveBezier->SetVisible(!GetFilteredOut());
-	}
 }

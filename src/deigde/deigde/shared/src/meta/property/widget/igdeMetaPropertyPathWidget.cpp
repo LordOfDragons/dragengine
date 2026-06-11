@@ -108,6 +108,11 @@ igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
 	pWidget.Update();
 }
 
+void igdeMetaPropertyPathWidget::PropertyListener::OnBasePathChanged(
+igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
+	pWidget.UpdateBasePath();
+}
+
 
 // Class igdeMetaPropertyPathWidget
 /////////////////////////////////////
@@ -136,23 +141,22 @@ igdeMetaPropertyPathWidget::~igdeMetaPropertyPathWidget(){
 void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pEditPath)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
 	
 	if(pPropertyPath.GetCustomPatternList().IsNotEmpty()){
-		helper.EditPath(container, pPropertyPath.GetDescription(),
+		helper.EditPath(pPropertyPath.GetDescription(),
 			pPropertyPath.GetCustomPatternList(), pEditPath, pListener);
 		
 	}else{
-		helper.EditPath(container, pPropertyPath.GetDescription(),
+		helper.EditPath(pPropertyPath.GetDescription(),
 			pPropertyPath.GetResourceType(), pEditPath, pListener);
 	}
+	WrapEditWidget(container, helper, pEditPath);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	UpdateBasePath();
+	Update();
 }
 
 void igdeMetaPropertyPathWidget::Drop(){
@@ -174,18 +178,17 @@ void igdeMetaPropertyPathWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
-void igdeMetaPropertyPathWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
-	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
-		deTObjectReference<cActionResetToDefault>::New(*this));
+void igdeMetaPropertyPathWidget::UpdateBasePath(){
+	if(pEditPath){
+		RunWithPreventUpdate([&]{
+			pEditPath->SetBasePath(GetContext()
+				? pPropertyPath.GetPropertyBasePath(GetContext()) : decString());
+		});
+	}
 }
 
-void igdeMetaPropertyPathWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pEditPath){
-		pEditPath->SetVisible(!GetFilteredOut());
-	}
+void igdeMetaPropertyPathWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
+	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
+		deTObjectReference<cActionResetToDefault>::New(*this));
 }

@@ -119,6 +119,9 @@ public:
 	
 	
 	
+	/** \brief Add child. */
+	void AddChild(igdeWidget *child) override;
+	
 	/** \brief Remove child. */
 	void RemoveChild(igdeWidget *child) override;
 	/*@}*/

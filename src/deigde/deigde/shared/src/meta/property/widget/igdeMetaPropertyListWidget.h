@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyListWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
@@ -63,6 +63,7 @@ private:
 	PropertyListener::Ref pPropertyListener;
 	igdeListBox::Ref pListBox;
 	igdeListBoxListener::Ref pListener;
+	int pRows;
 	
 	
 public:
@@ -86,7 +87,6 @@ public:
 	/** \brief Assigned property list. */
 	inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
 	
-	
 	/** \brief Create UI widgets adding them to container. */
 	void Create(igdeContainer &container, igdeUIHelper &helper) override;
 	
@@ -102,14 +102,19 @@ public:
 	/** \brief Select active object. */
 	void SelectActiveObject();
 	
-	/** \brief Add list box context menu entries. */
-	void AddListBoxContextMenuEntries(igdeMenuCascade &menu);
+	/** \brief Store selection. */
+	void StoreSelection();
+	
+	/** \brief Restore selection. */
+	void RestoreSelection();
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/
 	
 	
-protected:
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+private:
+	void pAddButton(igdeMetaPropertyList::TargetButton target,
+		igdeUIHelper &helper, igdeContainer &container);
 };
 
 #endif

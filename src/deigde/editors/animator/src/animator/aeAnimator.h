@@ -30,8 +30,10 @@
 #include "controller/aeController.h"
 #include "link/aeLink.h"
 #include "rule/aeRule.h"
+#include "../meta/animator/aeMCAnimator.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -78,6 +80,7 @@ class deLogger;
 class aeAnimator : public igdeEditableEntity{
 public:
 	using Ref = deTObjectReference<aeAnimator>;
+	using WeakRef = deTWeakObjectReference<aeAnimator>;
 	using AttachmentSet = decTObjectOrderedSet<aeAttachment>;
 	using NotifierSet = decTObjectOrderedSet<aeAnimatorNotifier>;
 	
@@ -105,6 +108,8 @@ public:
 	
 private:
 	aeWindowMain &pWindowMain;
+	aeMCAnimator::Ref pMetaContext;
+	
 	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
@@ -131,16 +136,18 @@ private:
 	aeCamera *pCamera;
 	
 	aeController::List pControllers;
-	aeController *pActiveController;
+	aeController::Ref pActiveController;
 	
 	aeLink::List pLinks;
-	aeLink *pActiveLink;
+	aeLink::Ref pActiveLink;
 	
 	aeRule::List pRules;
-	aeRule *pActiveRule;
+	aeRule::Ref pActiveRule;
 	
-	decStringSet pListBones;
-	decStringSet pListVertexPositionSets;
+	decStringSet pListBones, pSelectedBones;
+	decString pActiveBone;
+	decStringSet pListVertexPositionSets, pSelectedVertexPositionSets;
+	decString pActiveVertexPositionSet;
 	
 	AttachmentSet pAttachments;
 	aeAttachment::Ref pActiveAttachment;
@@ -174,7 +181,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
+	/** Meta context. */
+	inline const aeMCAnimator::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
@@ -308,7 +318,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** Active controller or nullptr. */
-	inline aeController *GetActiveController() const{ return pActiveController; }
+	inline const aeController::Ref &GetActiveController() const{ return pActiveController; }
 	
 	/** Set active controller or nullptr. */
 	void SetActiveController(aeController *controller);
@@ -343,7 +353,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** Active link or nullptr. */
-	inline aeLink *GetActiveLink() const{ return pActiveLink; }
+	inline const aeLink::Ref &GetActiveLink() const{ return pActiveLink; }
 	
 	/** Set active link or nullptr. */
 	void SetActiveLink(aeLink *link);
@@ -375,7 +385,7 @@ public:
 	void RemoveAllRules();
 	
 	/** Active rule or nullptr. */
-	inline aeRule *GetActiveRule() const{ return pActiveRule; }
+	inline const aeRule::Ref &GetActiveRule() const{ return pActiveRule; }
 	
 	/** Set active rule or nullptr. */
 	void SetActiveRule(aeRule *rule);
@@ -402,6 +412,18 @@ public:
 	
 	/** Removes all bones. */
 	void RemoveAllBones();
+	
+	/** Active bone or empty. */
+	inline const decString &GetActiveBone() const{ return pActiveBone; }
+	
+	/** Set active bone or empty. */
+	void SetActiveBone(const char *bone);
+	
+	/** Selected bones. */
+	inline const decStringSet &GetSelectedBones() const{ return pSelectedBones; }
+	
+	/** Set selected bones. */
+	void SetSelectedBones(const decStringSet &bones);
 	/*@}*/
 	
 	
@@ -422,6 +444,18 @@ public:
 	
 	/** Removes all vertex position sets. */
 	void RemoveAllVertexPositionSets();
+	
+	/** Active vertex position set or empty. */
+	inline const decString &GetActiveVertexPositionSet() const{ return pActiveVertexPositionSet; }
+	
+	/** Set active vertex position set or empty. */
+	void SetActiveVertexPositionSet(const char *vertexPositionSet);
+	
+	/** Selected vertex position sets. */
+	inline const decStringSet &GetSelectedVertexPositionSets() const{ return pSelectedVertexPositionSets; }
+	
+	/** Set selected vertex position sets. */
+	void SetSelectedVertexPositionSets(const decStringSet &sets);
 	/*@}*/
 	
 	
@@ -473,6 +507,9 @@ public:
 	
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
+	
+	/** Notify base path changed. */
+	void NotifyBasePathChanged();
 	
 	/** Notifies all listeners that the changed or saved state changed. */
 	void NotifyStateChanged() override;

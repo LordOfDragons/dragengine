@@ -222,6 +222,21 @@ void igdeEditorWindow::UpdateAllActions(){
 }
 
 
+// Meta contexts
+//////////////////
+
+void igdeEditorWindow::SetMetaContexts(const igdeMetaContext::Data::Ref &contexts){
+	if(pMetaContexts == contexts){
+		return;
+	}
+	
+	pMetaContexts = contexts;
+	
+	if(pActiveModule){
+		GetEnvironment().MetaContextsChanged();
+	}
+}
+
 
 // Internal
 /////////////

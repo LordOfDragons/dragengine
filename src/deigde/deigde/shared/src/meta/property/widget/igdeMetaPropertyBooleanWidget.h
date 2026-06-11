@@ -49,7 +49,7 @@ private:
 		PropertyListener(igdeMetaPropertyBooleanWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyBoolean *property, const igdeMetaContext::Ref &context) override;
@@ -96,12 +96,9 @@ public:
 	
 	/** \brief Boolean box widget or nullptr. */
 	inline const igdeCheckBox::Ref &GetBooleanBox() const{ return pCheckBox; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

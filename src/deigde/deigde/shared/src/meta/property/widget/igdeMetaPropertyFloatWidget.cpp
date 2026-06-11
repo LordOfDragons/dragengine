@@ -183,25 +183,24 @@ void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper 
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pEditSliderText)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	if(pPropertyFloat.GetEnableLowerLimit() && pPropertyFloat.GetEnableUpperLimit()){
 		pSliderListener = deTObjectReference<cSliderListener>::New(*this);
-		helper.EditSliderText(container, pPropertyFloat.GetDescription(),
+		helper.EditSliderText(pPropertyFloat.GetDescription(),
 			pPropertyFloat.GetLowerLimit(), pPropertyFloat.GetUpperLimit(), 6,
 			pPropertyFloat.GetPrecision(), pPropertyFloat.GetTickSpacing(),
 			pEditSliderText, pSliderListener);
+		WrapEditWidget(container, helper, pEditSliderText);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
-		helper.EditFloat(container, pPropertyFloat.GetDescription(), 10,
-			pPropertyFloat.GetPrecision(), pTextField, pTextListener);
+		helper.EditFloat(pPropertyFloat.GetDescription(), 10, pPropertyFloat.GetPrecision(),
+			pTextField, pTextListener);
+		WrapEditWidget(container, helper, pTextField);
 	}
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyFloatWidget::Drop(){
@@ -240,21 +239,8 @@ void igdeMetaPropertyFloatWidget::SetUndoSliding(const igdeMetaPropertyFloatUndo
 	pUndoSliding = undo;
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyFloatWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyFloatWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pTextField){
-		pTextField->SetVisible(!GetFilteredOut());
-	}
-	if(pEditSliderText){
-		pEditSliderText->SetVisible(!GetFilteredOut());
-	}
 }

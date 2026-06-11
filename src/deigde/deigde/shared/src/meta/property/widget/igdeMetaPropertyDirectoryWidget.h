@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyDirectoryWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyDirectory *property, const igdeMetaContext::Ref &context) override;
@@ -98,12 +98,9 @@ public:
 	
 	/** \brief Edit directory widget or nullptr. */
 	inline const igdeEditDirectory::Ref &GetEditDirectory() const{ return pEditDirectory; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

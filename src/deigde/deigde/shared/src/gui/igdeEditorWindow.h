@@ -28,6 +28,7 @@
 #include "igdeStepableTask.h"
 #include "layout/igdeContainerBox.h"
 #include "../utils/igdeRecentFiles.h"
+#include "../meta/igdeMetaContext.h"
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decStringList.h>
@@ -61,14 +62,14 @@ private:
 	SharedToolBarsList pSharedToolBars;
 	UpdateActionsList pUpdateActions;
 	igdeRecentFiles pRecentFiles;
-	
+	igdeMetaContext::Data::Ref pMetaContexts;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeEditorWindow(igdeEditorModule &editorModule);
+	explicit igdeEditorWindow(igdeEditorModule &editorModule);
 	
 	igdeEditorWindow(const igdeEditorWindow&) = delete;
 	igdeEditorWindow& operator=(const igdeEditorWindow&) = delete;
@@ -245,6 +246,17 @@ public:
 	
 	/** \brief Update all registered actions. */
 	void UpdateAllActions();
+	/*@}*/
+	
+	
+	
+	/** \name Meta contexts. */
+	/*@{*/
+	/** \brief List of meta contexts. */
+	inline const igdeMetaContext::Data::Ref &GetMetaContexts() const{ return pMetaContexts; }
+	
+	/** \brief Set list of meta contexts. */
+	void SetMetaContexts(const igdeMetaContext::Data::Ref &contexts);
 	/*@}*/
 	
 	

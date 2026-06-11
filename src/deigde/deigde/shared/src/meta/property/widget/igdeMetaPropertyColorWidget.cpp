@@ -136,15 +136,13 @@ igdeMetaPropertyColorWidget::~igdeMetaPropertyColorWidget(){
 void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pColorBox)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ColorBox(container, pPropertyColor.GetDescription(), pColorBox, pListener);
+	helper.ColorBox(pPropertyColor.GetDescription(), pColorBox, pListener);
+	WrapEditWidget(container, helper, pColorBox);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyColorWidget::Drop(){
@@ -167,18 +165,8 @@ void igdeMetaPropertyColorWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyColorWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pColorBox){
-		pColorBox->SetVisible(!GetFilteredOut());
-	}
 }

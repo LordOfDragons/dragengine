@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyToggleTagsWidget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyToggleTags *property, const igdeMetaContext::Ref &context) override;
@@ -98,12 +98,9 @@ public:
 	
 	/** \brief Toggle tags widget or nullptr. */
 	inline const igdeToggleTags::Ref &GetToggleTags() const{ return pToggleTags; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

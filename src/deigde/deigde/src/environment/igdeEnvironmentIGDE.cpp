@@ -339,6 +339,9 @@ void igdeEnvironmentIGDE::ActivateEditor(igdeEditorModule *editor){
 	pWindowMain->ActivateEditor(editor);
 }
 
+void igdeEnvironmentIGDE::MetaContextsChanged(){
+	pWindowMain->MetaContextsChanged();
+}
 
 
 void igdeEnvironmentIGDE::SetColliderDelegee(deCollider *collider,

@@ -80,8 +80,8 @@ private:
 	decString pIdentifier, pLabel, pDescription;
 	igdeIcon::Ref pIcon;
 	PropertyList::Ref pProperties;
-	igdeUndoSystem *pUndoSystem;
 	igdeTListenerList<Listener> pListeners;
+	bool pDisposed;
 	
 	
 public:
@@ -92,7 +92,7 @@ public:
 	
 protected:
 	/** \brief Clean up meta context. */
-	virtual ~igdeMetaContext() override;
+	~igdeMetaContext() override;
 	
 public:
 	/*@}*/
@@ -100,6 +100,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Dispose meta context. */
+	void Dispose();
+	
+	/** \brief Meta context has been disposed. */
+	inline bool IsDisposed() const{ return pDisposed; }
+	
+	
 	/** \brief Get identifier. */
 	inline const decString &GetIdentifier() const{ return pIdentifier; }
 	
@@ -127,11 +134,8 @@ public:
 	/** \brief Set properties. */
 	void SetProperties(const PropertyList::Ref &properties);
 	
-	/** \brief Get undo system or nullptr to apply actions immediately. */
-	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
-	
-	/** \brief Set undo system or nullptr to apply actions immediately. */
-	void SetUndoSystem(igdeUndoSystem *undoSystem);
+	/** \brief Undo system or nullptr to apply actions immediately. */
+	virtual igdeUndoSystem *GetUndoSystem() const = 0;
 	
 	
 	/** \brief Listeners. */

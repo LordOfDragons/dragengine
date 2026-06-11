@@ -137,6 +137,10 @@ public:
 	 */
 	void DestroyNativeWidget() override;
 	/*@}*/
+	
+	
+protected:
+	void CreateChildWidgetNativeWidgets() override;
 };
 
 #endif

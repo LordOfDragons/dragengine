@@ -36,6 +36,7 @@
 
 
 class igdeMetaPropertyWidget;
+class igdeWidget;
 
 
 /**
@@ -73,7 +74,6 @@ protected:
 	
 private:
 	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
-	igdeFilter::Matchable pMatchable;
 	
 	
 public:
@@ -87,7 +87,7 @@ public:
 	
 protected:
 	/** \brief Clean up meta property. */
-	virtual ~igdeMetaProperty() override;
+	~igdeMetaProperty() override;
 	
 public:
 	/*@}*/
@@ -116,9 +116,6 @@ public:
 	/** \brief Set filter string or empty string to use label. */
 	void SetFilter(const char *filter);
 	
-	/** \brief Matchable. */
-	inline const igdeFilter::Matchable &GetMatchable() const{ return pMatchable; }
-	
 	/** \brief Undo info string or empty string to use label. */
 	inline const decString &GetUndoInfo() const{ return pUndoInfo; }
 	
@@ -144,12 +141,9 @@ public:
 	 * 
 	 * Subclasses can override this method to add custom context menu entries.
 	 */
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context);
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const igdeMetaContext::Ref &context, igdeWidget &owner);
 	/*@}*/
-	
-	
-private:
-	void pUpdateMatchableFilter();
 };
 
 #endif

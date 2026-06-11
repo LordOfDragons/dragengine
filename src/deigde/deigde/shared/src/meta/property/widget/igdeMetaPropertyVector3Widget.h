@@ -50,7 +50,7 @@ private:
 		PropertyListener(igdeMetaPropertyVector3Widget &widget);
 		
 	protected:
-		virtual ~PropertyListener() override;
+		~PropertyListener() override;
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyVector3 *property, const igdeMetaContext::Ref &context) override;
@@ -98,12 +98,9 @@ public:
 	
 	/** \brief Edit vector widget or nullptr. */
 	inline const igdeEditVector::Ref &GetEditVector() const{ return pEditVector; }
-	/*@}*/
 	
-	
-protected:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
-	void UpdateFilteredOut() override;
+	/*@}*/
 };
 
 #endif

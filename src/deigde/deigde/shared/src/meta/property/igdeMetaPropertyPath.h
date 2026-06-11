@@ -43,6 +43,9 @@ public:
 	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyPath>{
+	public:
+		/** \brief Base path changed. */
+		virtual void OnBasePathChanged(igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context);
 	};
 	
 	
@@ -87,6 +90,9 @@ public:
 	
 	/** \brief Notify listeners about value change. */
 	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	
+	/** \brief Notify listeners about base path changed. */
+	void NotifyBasePathChanged(const igdeMetaContext::Ref &context);
 	
 	
 	/**
@@ -133,6 +139,13 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyPathUndo> ChangePropertyValue(
 		const igdeMetaContext::Ref &context, const char *newValue);
+	
+	/**
+	 * \brief Get property base path matching context.
+	 * 
+	 * Implemented by subclass.
+	 */
+	virtual const decString &GetPropertyBasePath(const igdeMetaContext::Ref &context) const = 0;
 	/*@}*/
 };
 

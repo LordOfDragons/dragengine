@@ -205,6 +205,7 @@ void aeWindowMain::SetAnimator(aeAnimator *animator){
 	}
 	
 	UpdateAllActions();
+	pUpdateMetaContexts();
 }
 
 void aeWindowMain::CreateNewAnimator(){
@@ -225,6 +226,7 @@ void aeWindowMain::SaveAnimator(const char *filename){
 	pAnimator->SetSaved(true);
 	
 	if(pAnimator->GetDirectoryPath() != basePath){
+		pAnimator->NotifyBasePathChanged();
 		pWindowProperties->OnAnimatorPathChanged();
 	}
 	
@@ -1476,4 +1478,11 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 	helper.MenuCommand(subMenu, pActionRuleRemove);
 	helper.MenuCommand(subMenu, pActionRuleUp);
 	helper.MenuCommand(subMenu, pActionRuleDown);
+}
+
+void aeWindowMain::pUpdateMetaContexts(){
+	auto list = igdeMetaContext::Data::Ref::New();
+	list->GetData().Add(pAnimator ? pAnimator->GetMetaContext() : aeMCAnimator::Ref::New(this));
+	// playground, view, undo?
+	SetMetaContexts(list);
 }

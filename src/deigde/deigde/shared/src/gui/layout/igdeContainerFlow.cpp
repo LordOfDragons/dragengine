@@ -59,6 +59,14 @@ igdeContainerFlow::~igdeContainerFlow(){
 // Management
 ///////////////
 
+void igdeContainerFlow::AddChild(igdeWidget *child){
+	igdeContainer::AddChild(child);
+	
+	if(GetNativeWidget()){
+		igdeNativeContainerFlow::ChildAdded(*this, GetNativeWidget());
+	}
+}
+
 void igdeContainerFlow::RemoveChild(igdeWidget *child){
 	igdeContainer::RemoveChild(child);
 	

@@ -28,6 +28,24 @@
 #include "../../../utils/igdeFilter.h"
 
 
+namespace{
+
+class cActionEditMenu : public igdeActionContextMenu{
+	igdeMetaPropertyWidget &pWidget;
+public:
+	cActionEditMenu(igdeMetaPropertyWidget &widget, igdeEnvironment &env) :
+	igdeActionContextMenu("", env.GetStockIcon(igdeEnvironment::esiEdit),
+		"@Igde.MetaProperty.ContextMenu.ToolTip"),
+	pWidget(widget){}
+	
+	void AddContextMenuEntries(igdeMenuCascade &menu) override{
+		pWidget.AddContextMenuEntries(menu);
+	}
+};
+
+}
+
+
 // Class igdeMetaPropertyWidget
 /////////////////////////////////
 
@@ -56,12 +74,17 @@ void igdeMetaPropertyWidget::SetFilteredOut(bool filteredOut){
 }
 
 void igdeMetaPropertyWidget::Filter(const igdeFilter &filter){
-	SetFilteredOut(filter && filter.MatchesNot(GetProperty()->GetMatchable()));
+	SetFilteredOut(filter && filter.MatchesNot(pMatchable));
 }
 
+void igdeMetaPropertyWidget::UpdateMatchable(igdeContainer &container){
+	pMatchable = igdeFilter::Matchable(container.TranslateIf(pProperty->GetFilter().IsEmpty()
+		? pProperty->GetLabel() : pProperty->GetFilter()).ToUTF8());
+}
 
 void igdeMetaPropertyWidget::Drop(){
 	pLabel.Clear();
+	pEditContainer.Clear();
 	pButtonContextMenu.Clear();
 }
 
@@ -80,45 +103,54 @@ void igdeMetaPropertyWidget::RunWithPreventUpdate(const std::function<void()> &f
 }
 
 
+void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	pProperty->AddContextMenuEntries(contextMenu, pContext, pEditContainer);
+}
+
+
 // Protected Functions
 ////////////////////////
 
-void igdeMetaPropertyWidget::CreateLabel(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyWidget::WrapEditWidget(igdeContainer &container,
+igdeUIHelper &helper, igdeWidget *widget, igdeWidget *sideWidget){
+	DEASSERT_NOTNULL(widget)
 	DEASSERT_NULL(pLabel)
-	
-	helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
-		igdeLabel::eaLeft | igdeLabel::eaMiddle);
-}
-
-void igdeMetaPropertyWidget::CreateContextMenuButton(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pButtonContextMenu)
+	DEASSERT_NULL(pEditContainer)
 	
-	auto action = igdeActionContextMenu::Ref::New("",
-		container.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
-		"@Igde.MetaProperty.ContextMenu.ToolTip");
+	// label on left side
+	helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
+		igdeLabel::eaLeft | igdeLabel::eaTop);
 	
-	helper.Button(container, pButtonContextMenu, action);
+	// edit widget in the center
+	pEditContainer = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
+		igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 5);
+	
+	pEditContainer->AddChild(widget);
+	
+	// context menu button on the right side
+	auto column = igdeContainerFlow::Ref::New(helper.GetEnvironment(), igdeContainerFlow::eaY,
+		sideWidget ? igdeContainerFlow::esLast : igdeContainerFlow::esNone);
+	
+	auto action = deTObjectReference<cActionEditMenu>::New(*this, container.GetEnvironment());
+	helper.Button(column, pButtonContextMenu, action);
+	pButtonContextMenu->SetStyle(igdeButton::ebsToolBar);
 	action->SetWidget(pButtonContextMenu);
-}
-
-void igdeMetaPropertyWidget::OnContextMenuButton(){
-	auto menu = igdeMenuCascade::Ref::New(pButtonContextMenu->GetEnvironment());
-	AddContextMenuEntries(*menu);
-	pProperty->AddContextMenuEntries(*menu, pContext);
 	
-	if(menu->GetChildren().IsNotEmpty()){
-		menu->Popup(pButtonContextMenu);
+	if(sideWidget){
+		column->AddChild(sideWidget);
 	}
-}
-
-void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	
+	pEditContainer->AddChild(column);
+	
+	container.AddChild(pEditContainer);
 }
 
 void igdeMetaPropertyWidget::UpdateFilteredOut(){
 	if(pLabel){
 		pLabel->SetVisible(!pFilteredOut);
 	}
-	if(pButtonContextMenu){
-		pButtonContextMenu->SetVisible(!pFilteredOut);
+	if(pEditContainer){
+		pEditContainer->SetVisible(!pFilteredOut);
 	}
 }

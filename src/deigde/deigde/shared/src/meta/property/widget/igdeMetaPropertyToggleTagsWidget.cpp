@@ -138,15 +138,13 @@ igdeMetaPropertyToggleTagsWidget::~igdeMetaPropertyToggleTagsWidget(){
 void igdeMetaPropertyToggleTagsWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pToggleTags)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pAction = deTObjectReference<cAction>::New(*this);
-	helper.ToggleTags(container, pToggleTags, pAction);
+	helper.ToggleTags(pToggleTags, pAction);
+	WrapEditWidget(container, helper, pToggleTags);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){
@@ -164,18 +162,8 @@ void igdeMetaPropertyToggleTagsWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyToggleTagsWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyToggleTagsWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pToggleTags){
-		pToggleTags->SetVisible(!GetFilteredOut());
-	}
 }

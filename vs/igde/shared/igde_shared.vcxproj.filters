@@ -269,6 +269,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogSetSelect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -408,6 +411,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.cpp">
@@ -605,6 +611,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBoxFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxMainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -771,6 +780,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBoxFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullMainWindow.cpp">
@@ -1106,7 +1118,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyTags.cpp">
@@ -1161,6 +1179,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySelectionUndo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySetUndo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringSetUndo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringUndo.cpp">
@@ -1221,6 +1245,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySelectionWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySetWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringSetWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringWidget.cpp">
@@ -1546,6 +1576,9 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogSetSelect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1685,6 +1718,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.h">
@@ -1885,6 +1921,9 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBoxFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxMainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2054,6 +2093,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBoxFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullMainWindow.h">
@@ -2398,7 +2440,13 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySelection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyTags.h">
@@ -2453,6 +2501,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySelectionUndo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySetUndo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringSetUndo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringUndo.h">
@@ -2513,6 +2567,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySelectionWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySetWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringSetWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringWidget.h">

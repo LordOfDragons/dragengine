@@ -81,12 +81,12 @@ public:
 };
 
 
-class cListProperties : public igdeIconListBoxListener {
+class cListSelection : public igdeIconListBoxListener {
 	meWPPropertyList &pPanel;
 	
 public:
-	using Ref = deTObjectReference<cListProperties>;
-	cListProperties(meWPPropertyList &panel) : pPanel(panel){}
+	using Ref = deTObjectReference<cListSelection>;
+	cListSelection(meWPPropertyList &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeIconListBox *listBox) override{
 		pPanel.UpdateProperty();
@@ -599,7 +599,7 @@ pEnabled(true)
 	};
 	helper.IconListBox(*this, pListProperties,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		headers, 2, "@World.WPPropertyList.Label.Properties", cListProperties::Ref::New(*this));
+		headers, 2, "@World.WPPropertyList.Label.Properties", cListSelection::Ref::New(*this));
 	pListProperties->SetDefaultSorter();
 	
 	helper.EditPropertyValue(*this, pEditPropertyValue, cEditPropertyValue::Ref::New(*this));

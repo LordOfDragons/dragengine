@@ -159,22 +159,19 @@ void igdeMetaPropertyStringWidget::Create(igdeContainer &container, igdeUIHelper
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pComboBox)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	if(pPropertyString.GetEnableStringList()){
 		pComboListener = deTObjectReference<cComboListener>::New(*this);
-		helper.ComboBoxFilter(container, pPropertyString.GetDescription(), pComboBox, pComboListener);
-		pComboBox->SetEditable(true);
+		helper.ComboBoxFilter(15, 10, true, pPropertyString.GetDescription(), pComboBox, pComboListener);
+		WrapEditWidget(container, helper, pComboBox);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
-		helper.EditString(container, pPropertyString.GetDescription(), 15, pTextField, pTextListener);
+		helper.EditString(pPropertyString.GetDescription(), 15, pTextField, pTextListener);
+		WrapEditWidget(container, helper, pTextField);
 	}
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
 	UpdateStringList();
 }
 
@@ -223,21 +220,8 @@ void igdeMetaPropertyStringWidget::UpdateStringList(){
 	});
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyStringWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyStringWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pTextField){
-		pTextField->SetVisible(!GetFilteredOut());
-	}
-	if(pComboBox){
-		pComboBox->SetVisible(!GetFilteredOut());
-	}
 }

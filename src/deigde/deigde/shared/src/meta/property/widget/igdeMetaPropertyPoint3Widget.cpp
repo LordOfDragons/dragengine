@@ -137,15 +137,13 @@ igdeMetaPropertyPoint3Widget::~igdeMetaPropertyPoint3Widget(){
 void igdeMetaPropertyPoint3Widget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pEditPoint3)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditPoint3(container, pPropertyPoint3.GetDescription(), pEditPoint3, pListener);
+	helper.EditPoint3(pPropertyPoint3.GetDescription(), pEditPoint3, pListener);
+	WrapEditWidget(container, helper, pEditPoint3);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyPoint3Widget::Drop(){
@@ -167,18 +165,8 @@ void igdeMetaPropertyPoint3Widget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyPoint3Widget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyPoint3Widget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pEditPoint3){
-		pEditPoint3->SetVisible(!GetFilteredOut());
-	}
 }

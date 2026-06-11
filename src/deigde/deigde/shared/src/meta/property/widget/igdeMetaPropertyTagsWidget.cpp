@@ -137,15 +137,13 @@ igdeMetaPropertyTagsWidget::~igdeMetaPropertyTagsWidget(){
 void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &helper){
 	DEASSERT_NULL(pEditTags)
 	
-	CreateLabel(container, helper);
-	
-	igdeContainer::Ref line;
-	helper.FormLineStretchFirst(container, line);
-	
 	pAction = deTObjectReference<cAction>::New(*this);
-	helper.EditTags(container, pEditTags, pAction);
+	helper.EditTags(pEditTags, pAction);
+	WrapEditWidget(container, helper, pEditTags);
 	
-	CreateContextMenuButton(line, helper);
+	UpdateMatchable(container);
+	
+	Update();
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){
@@ -163,18 +161,8 @@ void igdeMetaPropertyTagsWidget::Update(){
 	}
 }
 
-
-// Protected Functions
-////////////////////////
-
 void igdeMetaPropertyTagsWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
-}
-
-void igdeMetaPropertyTagsWidget::UpdateFilteredOut(){
-	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pEditTags){
-		pEditTags->SetVisible(!GetFilteredOut());
-	}
 }

@@ -57,6 +57,8 @@ void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper 
 	
 	pGroupBoxContainer = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
 	pGroupBox->AddChild(pGroupBoxContainer);
+	
+	UpdateMatchable(container);
 }
 
 void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){

@@ -47,6 +47,9 @@ public:
 	/** \brief Destroy native widget. */
 	static void DestroyNativeWidget(igdeContainerFlow &owner, void *native);
 	
+	/** \brief Child added. */
+	static void ChildAdded(igdeContainerFlow &owner, void *native);
+	
 	/** \brief Child removed. */
 	static void ChildRemoved(igdeContainerFlow &owner, void *native);
 	

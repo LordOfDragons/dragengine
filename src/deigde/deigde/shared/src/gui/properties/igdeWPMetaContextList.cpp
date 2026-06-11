@@ -27,6 +27,7 @@
 #include "../igdeUIHelper.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
+#include "../layout/igdeContainerBorder.h"
 #include "../../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -47,6 +48,26 @@ public:
 	
 	void OnTextChanging(igdeTextField *textField) override{
 		OnTextChanged(textField);
+	}
+};
+
+class cActionClearFilter : public igdeAction{
+	igdeWPMetaContextList &pPanel;
+	igdeTextField::Ref pTextField;
+	
+public:
+	cActionClearFilter(igdeWPMetaContextList &panel, igdeTextField *textField) :
+	igdeAction("", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
+		"@Igde.MetaProperty.Action.ClearFilter.ToolTip"),
+	pPanel(panel),
+	pTextField(textField){
+	}
+	
+	void OnAction() override{
+		if(pTextField){
+			pTextField->ClearText();
+		}
+		pPanel.SetFilter({});
 	}
 };
 
@@ -85,6 +106,10 @@ void igdeWPMetaContextList::SetData(const igdeMetaContext::Data::Ref &data){
 	}
 }
 
+void igdeWPMetaContextList::ClearCache(){
+	pContextPanelCache.RemoveAll();
+}
+
 void igdeWPMetaContextList::SetFilter(const igdeFilter &filter){
 	if(filter == pFilter){
 		return;
@@ -103,15 +128,21 @@ void igdeWPMetaContextList::pCreateContent(){
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	// top panel with filter
-	auto topPanel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast);
-	AddChild(topPanel, igdeContainerBorder::eaTop);
+	auto topPanel = igdeContainerBorder::Ref::New(env, 2);
 	
 	topPanel->AddChild(igdeLabel::Ref::New(env,
 		"@Igde.MetaContextList.Filter", "@Igde.MetaContextList.Filter.ToolTip",
-		env.GetStockIcon(igdeEnvironment::esiSearch)));
+		env.GetStockIcon(igdeEnvironment::esiSearch)), igdeContainerBorder::eaLeft);
 	
-	helper.EditString(topPanel, "@Igde.MetaContextList.Filter.ToolTip", 20,
-		pEditFilter, deTObjectReference<cTextFilterListener>::New(*this));
+	helper.EditString("@Igde.MetaContextList.Filter.ToolTip", 20, pEditFilter,
+		deTObjectReference<cTextFilterListener>::New(*this));
+	topPanel->AddChild(pEditFilter, igdeContainerBorder::eaCenter);
+	
+	igdeButton::Ref button;
+	helper.ToolBarButton(button, deTObjectReference<cActionClearFilter>::New(*this, pEditFilter));
+	topPanel->AddChild(button, igdeContainerBorder::eaRight);
+	
+	AddChild(topPanel, igdeContainerBorder::eaTop);
 	
 	// content with tab book
 	pTabBook = igdeTabBook::Ref::New(env);
@@ -128,7 +159,12 @@ void igdeWPMetaContextList::pCreateContextPanels(){
 	igdeEnvironment &env = GetEnvironment();
 	
 	pData->GetData().Visit([&](const igdeMetaContext::Ref &context){
-		auto panel = igdeWPMetaContext::Ref::New(env);
+		auto panel = pContextPanelCache.GetAtOrDefault(context);
+		if(!panel){
+			panel = igdeWPMetaContext::Ref::New(env);
+			pContextPanelCache.SetAt(context, panel);
+		}
+		
 		pTabBook->AddChild(panel, context->GetLabel(), context->GetIcon(), context->GetDescription());
 		pContextPanels.Add(panel);
 		panel->SetContext(context);
@@ -139,6 +175,10 @@ void igdeWPMetaContextList::pCreateContextPanels(){
 void igdeWPMetaContextList::pClearContextPanels(){
 	pContextPanels.RemoveAll();
 	pTabBook->RemoveAllChildren();
+	
+	pContextPanelCache.RemoveIf([](const igdeMetaContext &context, const igdeWPMetaContext::Ref&){
+		return context.IsDisposed();
+	});
 }
 
 void igdeWPMetaContextList::pFilterContextPanels(){

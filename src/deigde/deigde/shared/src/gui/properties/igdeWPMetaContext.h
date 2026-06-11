@@ -113,6 +113,9 @@ public:
 	
 	/** \brief Update property widgets. */
 	void UpdatePropertyWidgets();
+	
+	/** \brief Active language changed. */
+	void OnLanguageChanged() override;
 	/*@}*/
 	
 	

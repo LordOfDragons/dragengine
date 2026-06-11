@@ -367,6 +367,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogSetSelect.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEConsole.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEModuleStatus.cpp" />
@@ -414,6 +415,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxFilter.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBar.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBar.cpp" />
@@ -479,6 +481,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxIconListBox.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxLabel.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBox.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBoxFilter.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxMainWindow.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxProgressBar.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxRenderView.cpp" />
@@ -535,6 +538,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullIconListBox.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullLabel.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBox.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBoxFilter.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullMainWindow.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullProgressBar.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullRenderView.cpp" />
@@ -646,7 +650,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint3.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySelection.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySet.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyString.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringSet.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyTags.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyTextArea.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyToggleTags.cpp" />
@@ -665,6 +671,8 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPoint3Undo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPointUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySelectionUndo.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySetUndo.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringSetUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyTagsUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyTextAreaUndo.cpp" />
@@ -685,6 +693,8 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPoint3Widget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPointWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySelectionWidget.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySetWidget.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringSetWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyTagsWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyTextAreaWidget.cpp" />
@@ -794,6 +804,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogSetSelect.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEConsole.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\enginestatus\igdeDEModuleStatus.h" />
@@ -841,6 +852,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxFilter.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBar.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBar.h" />
@@ -907,6 +919,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxIconListBox.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxLabel.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBox.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxListBoxFilter.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxMainWindow.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxProgressBar.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\igdeNativeFoxRenderView.h" />
@@ -964,6 +977,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullIconListBox.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullLabel.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBox.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullListBoxFilter.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullMainWindow.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullProgressBar.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\null\igdeNativeNullRenderView.h" />
@@ -1078,7 +1092,9 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint3.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySelection.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySet.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyString.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringSet.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyTags.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyTextArea.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyToggleTags.h" />
@@ -1097,6 +1113,8 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPoint3Undo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPointUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySelectionUndo.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertySetUndo.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringSetUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyStringUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyTagsUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyTextAreaUndo.h" />
@@ -1117,6 +1135,8 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPoint3Widget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPointWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySelectionWidget.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySetWidget.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringSetWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyTagsWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyTextAreaWidget.h" />

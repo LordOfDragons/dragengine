@@ -176,6 +176,9 @@ public:
 	/** \brief Activate editor and bring it to the front. */
 	void ActivateEditor(igdeEditorModule *editor) override;
 	
+	/** \brief Meta contexts changed. */
+	void MetaContextsChanged() override;
+	
 	
 	
 	/**

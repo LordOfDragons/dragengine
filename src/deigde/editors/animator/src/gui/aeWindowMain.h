@@ -29,6 +29,7 @@
 #include "aeWindowMainListener.h"
 #include "properties/aeWindowProperties.h"
 #include "../animator/aeAnimator.h"
+#include "../meta/animator/aeMCAnimatorProperties.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
@@ -165,6 +166,8 @@ private:
 	igdeClipboard pClipboard;
 	aeLoadSaveSystem *pLoadSaveSystem;
 	
+	aeMCAnimatorProperties pMCAnimatorProperties;
+	
 	aeView3D::Ref pView3D;
 	aeWindowProperties::Ref pWindowProperties;
 	
@@ -200,6 +203,9 @@ public:
 	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	
+	/** Animator meta context properties. */
+	inline const aeMCAnimatorProperties &GetMCAnimatorProperties() const{ return pMCAnimatorProperties; }
 	
 	/** 3D View. */
 	inline aeView3D &GetView3D() const{ return pView3D; }
@@ -401,6 +407,7 @@ private:
 	void pCreateMenuController(igdeMenuCascade &menu);
 	void pCreateMenuLink(igdeMenuCascade &menu);
 	void pCreateMenuRule(igdeMenuCascade &menu);
+	void pUpdateMetaContexts();
 };
 
 #endif

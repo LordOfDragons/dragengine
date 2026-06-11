@@ -44,12 +44,7 @@ igdeMetaProperty::~igdeMetaProperty() = default;
 ///////////////
 
 void igdeMetaProperty::SetLabel(const char *label){
-	if(pLabel == label){
-		return;
-	}
-	
 	pLabel = label;
-	pUpdateMatchableFilter();
 }
 
 void igdeMetaProperty::SetDescription(const char *description){
@@ -57,12 +52,7 @@ void igdeMetaProperty::SetDescription(const char *description){
 }
 
 void igdeMetaProperty::SetFilter(const char *filter){
-	if(pFilter == filter){
-		return;
-	}
-	
 	pFilter = filter;
-	pUpdateMatchableFilter();
 }
 
 void igdeMetaProperty::SetUndoInfo(const char *undoInfo){
@@ -73,13 +63,5 @@ const decString &igdeMetaProperty::GetUndoInfoOrLabel() const{
 	return pUndoInfo.IsEmpty() ? pLabel : pUndoInfo;
 }
 
-void igdeMetaProperty::AddContextMenuEntries(igdeMenuCascade&, const igdeMetaContext::Ref&){
-}
-
-
-// Private Functions
-//////////////////////
-
-void igdeMetaProperty::pUpdateMatchableFilter(){
-	pMatchable = igdeFilter::Matchable((pFilter.IsEmpty() ? pLabel : pFilter));
+void igdeMetaProperty::AddContextMenuEntries(igdeMenuCascade&, const igdeMetaContext::Ref&, igdeWidget&){
 }
