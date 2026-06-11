@@ -62,14 +62,14 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCEnvMapProbePaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCEnvMapProbePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME).DynamicCast<gdeClipboardDataOCEnvMapProbe>();
 	if(!clip){
 		return {};
 	}
 	
 	const igdeUndo::Ref undo = gdeUOCAddEnvMapProbe::Ref::New(&objectClass,
-		gdeOCEnvMapProbe::Ref::New(*clip.DynamicCast<gdeClipboardDataOCEnvMapProbe>()->GetEnvMapProbe()));
+		gdeOCEnvMapProbe::Ref::New(*clip->GetEnvMapProbe()));
 	
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCEnvMapProbe");
 	return undo;

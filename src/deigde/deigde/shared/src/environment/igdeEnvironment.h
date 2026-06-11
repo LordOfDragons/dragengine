@@ -48,6 +48,7 @@ class igdeUIHelper;
 class igdeResourceLoaderListener;
 class igdeEditorModule;
 class igdeTranslationManager;
+class igdeClipboard;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -349,6 +350,8 @@ public:
 	/** \brief Translation manager. */
 	virtual igdeTranslationManager &GetTranslationManager() = 0;
 	
+	/** \brief Clipboard. */
+	virtual igdeClipboard &GetClipboard() = 0;
 	
 	
 	/** \brief Set visibility of the progress bar in the status bar. */

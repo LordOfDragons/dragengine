@@ -100,3 +100,7 @@ igdeUndoSystem *aeMCAnimator::GetUndoSystem() const{
 	auto animator = GetAnimator();
 	return animator ? animator->GetUndoSystem() : nullptr;
 }
+
+igdeClipboard *aeMCAnimator::GetClipboard() const{
+	return pWindow ? &pWindow->GetClipboard() : nullptr;
+}

@@ -264,17 +264,17 @@ public:
 	
 	void OnAction() override{
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || !pPanel.GetClipboard()){
+		if(property.IsEmpty()){
 			return;
 		}
 		
 		decStringDictionary properties;
 		properties.SetAt(property, pPanel.GetPropertyValue());
-		pPanel.GetClipboard()->Set(meCDProperties::Ref::New(properties));
+		pPanel.GetClipboard().Set(meCDProperties::Ref::New(properties));
 	}
 	
 	void Update() override{
-		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard());
+		SetEnabled(!pPanel.GetProperty().IsEmpty());
 	}
 };
 
@@ -290,15 +290,15 @@ public:
 	pPanel(panel){}
 	
 	void OnAction() override{
-		if(pPanel.GetProperties().IsEmpty() || !pPanel.GetClipboard()){
+		if(pPanel.GetProperties().IsEmpty()){
 			return;
 		}
 		
-		pPanel.GetClipboard()->Set(meCDProperties::Ref::New(pPanel.GetProperties()));
+		pPanel.GetClipboard().Set(meCDProperties::Ref::New(pPanel.GetProperties()));
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetProperties().IsNotEmpty() && pPanel.GetClipboard());
+		SetEnabled(pPanel.GetProperties().IsNotEmpty());
 	}
 };
 
@@ -313,7 +313,7 @@ public:
 	
 	void OnAction() override{
 		const decString property(pPanel.GetProperty());
-		if(property.IsEmpty() || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
+		if(property.IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -326,7 +326,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard());
+		SetEnabled(!pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem());
 	}
 };
 
@@ -340,7 +340,7 @@ public:
 	}
 	
 	void OnAction() override{
-		if(pPanel.GetProperties().IsEmpty() || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
+		if(pPanel.GetProperties().IsEmpty() || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -353,7 +353,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetProperties().IsNotEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard());
+		SetEnabled(pPanel.GetProperties().IsNotEmpty() && pPanel.GetUndoSystem());
 	}
 };
 
@@ -368,12 +368,11 @@ public:
 	pPanel(panel){}
 	
 	void OnAction() override{
-		if(!pPanel.GetClipboard() || !pPanel.GetUndoSystem()){
+		if(!pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		const meCDProperties * const clip = (const meCDProperties *)
-			pPanel.GetClipboard()->GetWithTypeName(meCDProperties::TYPE_NAME);
+		auto clip = pPanel.GetClipboard().GetWithTypeName(meCDProperties::TYPE_NAME).DynamicCast<meCDProperties>();
 		if(!clip || clip->GetProperties().IsEmpty()){
 			return;
 		}
@@ -391,8 +390,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetClipboard() && pPanel.GetUndoSystem()
-			&& pPanel.GetClipboard()->HasWithTypeName(meCDProperties::TYPE_NAME));
+		SetEnabled(pPanel.GetUndoSystem() && pPanel.GetClipboard().HasWithTypeName(meCDProperties::TYPE_NAME));
 	}
 };
 
@@ -561,7 +559,6 @@ public:
 meWPPropertyList::meWPPropertyList(igdeEnvironment &environment) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY),
 pUndoSystem(nullptr),
-pClipboard(nullptr),
 pEnabled(true)
 {
 	igdeEnvironment &env = GetEnvironment();
@@ -620,8 +617,8 @@ void meWPPropertyList::SetUndoSystem(igdeUndoSystem *undoSystem){
 	pUndoSystem = undoSystem;
 }
 
-void meWPPropertyList::SetClipboard(igdeClipboard *clipboard){
-	pClipboard = clipboard;
+igdeClipboard &meWPPropertyList::GetClipboard() const{
+	return GetEnvironment().GetClipboard();
 }
 
 void meWPPropertyList::SetProperties(const decStringDictionary &properties){

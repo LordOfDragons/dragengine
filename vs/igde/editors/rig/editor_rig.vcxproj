@@ -269,8 +269,6 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reBaseClip.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reClipboard.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLApplyPush.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLClosestElement.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLHitListEntry.cpp" />
@@ -395,8 +393,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUShapeSetProperty.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reBaseClip.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reClipboard.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLApplyPush.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLClosestElement.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLHitListEntry.h" />

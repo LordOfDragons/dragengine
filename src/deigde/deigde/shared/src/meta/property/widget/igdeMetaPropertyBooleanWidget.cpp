@@ -23,9 +23,10 @@
  */
 
 #include "igdeMetaPropertyBooleanWidget.h"
+#include "../undo/igdeMetaPropertyBooleanUndo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
-#include "../undo/igdeMetaPropertyBooleanUndo.h"
+#include "../../../localization/igdeTranslationManager.h"
 
 
 namespace {
@@ -41,7 +42,7 @@ public:
 	inline igdeMetaPropertyBoolean &GetPropertyBoolean() const{ return pWidget.GetPropertyBoolean(); }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	
-	void OnValueChanged(bool newValue){
+	void OnValueChanged(bool newValue, const char *undoInfo = nullptr){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
@@ -52,7 +53,11 @@ public:
 			return;
 		}
 		
-		property.ChangePropertyValue(context, newValue);
+		if(undoInfo){
+			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+		}
+		property.ChangePropertyValue(context, newValue, undoInfo);
 	}
 };
 
@@ -99,7 +104,7 @@ public:
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		pHelper.OnValueChanged(pHelper.GetPropertyBoolean().GetDefaultValue());
+		pHelper.OnValueChanged(pHelper.GetPropertyBoolean().GetDefaultValue(), GetText());
 	}
 };
 

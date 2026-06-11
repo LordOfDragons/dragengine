@@ -28,6 +28,7 @@
 #include "../../gui/igdeUIHelper.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndoSystem.h"
+#include "../../localization/igdeTranslationManager.h"
 
 
 // Class igdeMetaPropertySet::Listener
@@ -49,7 +50,8 @@ igdeAction("@Igde.MetaPropertyList.Action.Remove",
 	environment.GetStockIcon(igdeEnvironment::esiMinus),
 	"@Igde.MetaPropertyList.Action.Remove.ToolTip"),
 pProperty(property),
-pContext(context){
+pContext(context),
+pEnvironment(environment){
 }
 
 void igdeMetaPropertySet::ActionRemove::OnAction(){
@@ -67,7 +69,11 @@ void igdeMetaPropertySet::ActionRemove::OnAction(){
 		selection.Visit([&](const deObject::Ref &data){
 			newValue.Remove(data);
 		});
-		pProperty.ChangePropertyValue(pContext, newValue);
+		
+		const auto &tm = pEnvironment.GetTranslationManager();
+		pProperty.ChangePropertyValue(pContext, newValue,
+			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
 		
 	}else{
 		const auto active = pProperty.GetActiveObject(pContext);
@@ -77,7 +83,11 @@ void igdeMetaPropertySet::ActionRemove::OnAction(){
 		
 		auto newValue = pProperty.GetPropertyValue(pContext);
 		newValue.Remove(active);
-		pProperty.ChangePropertyValue(pContext, newValue);
+		
+		const auto &tm = pEnvironment.GetTranslationManager();
+		pProperty.ChangePropertyValue(pContext, newValue,
+			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
 	};
 }
 
@@ -95,12 +105,16 @@ igdeAction("@Igde.MetaPropertyList.Action.RemoveAll",
 	environment.GetStockIcon(igdeEnvironment::esiDelete),
 	"@Igde.MetaPropertyList.Action.RemoveAll.ToolTip"),
 pProperty(property),
-pContext(context){
+pContext(context),
+pEnvironment(environment){
 }
 
 void igdeMetaPropertySet::ActionRemoveAll::OnAction(){
 	if(pProperty.IsValid(pContext) && pProperty.GetActiveObject(pContext)){
-		pProperty.ChangePropertyValue(pContext, {});
+		const auto &tm = pEnvironment.GetTranslationManager();
+		pProperty.ChangePropertyValue(pContext, {},
+			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
 	}
 }
 
@@ -156,9 +170,11 @@ void igdeMetaPropertySet::NotifySelectionChanged(const igdeMetaContext::Ref &con
 
 
 igdeMetaPropertySetUndo::Ref igdeMetaPropertySet::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const Set &newValue){
+const igdeMetaContext::Ref &context, const Set &newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertySetUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertySetUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

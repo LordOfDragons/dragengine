@@ -61,9 +61,11 @@ void igdeMetaPropertyDirectory::NotifyValueChanged(const igdeMetaContext::Ref &c
 }
 
 igdeMetaPropertyDirectoryUndo::Ref igdeMetaPropertyDirectory::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const char *newValue){
+const igdeMetaContext::Ref &context, const char *newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyDirectoryUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyDirectoryUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

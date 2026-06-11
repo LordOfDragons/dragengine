@@ -62,14 +62,14 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCParticleEmitterPaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCParticleEmitterPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCParticleEmitter::TYPE_NAME).DynamicCast<gdeClipboardDataOCParticleEmitter>();
 	if(!clip){
 		return {};
 	}
 	
 	const igdeUndo::Ref undo = gdeUOCAddParticleEmitter::Ref::New(&objectClass, 
-		gdeOCParticleEmitter::Ref::New(*clip.DynamicCast<gdeClipboardDataOCParticleEmitter>()->GetParticleEmitter()));
+		gdeOCParticleEmitter::Ref::New(*clip->GetParticleEmitter()));
 	
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCParticleEmitter");
 	return undo;

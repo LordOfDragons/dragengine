@@ -50,7 +50,8 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	igdeMetaPropertyObjectUndo(igdeMetaPropertyObject &property,
-		const igdeMetaContext::Ref &context, const deObject::Ref &newValue);
+		const igdeMetaContext::Ref &context, const deObject::Ref &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 protected:
 	/** \brief Clean up undo action. */

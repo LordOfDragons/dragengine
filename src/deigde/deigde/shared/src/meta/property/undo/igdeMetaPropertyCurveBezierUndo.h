@@ -50,7 +50,8 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	igdeMetaPropertyCurveBezierUndo(igdeMetaPropertyCurveBezier &property,
-		const igdeMetaContext::Ref &context, const decCurveBezier &newValue);
+		const igdeMetaContext::Ref &context, const decCurveBezier &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 protected:
 	/** \brief Clean up undo action. */

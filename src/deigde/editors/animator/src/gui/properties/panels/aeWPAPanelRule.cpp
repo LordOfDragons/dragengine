@@ -397,12 +397,12 @@ public:
 public:
 	cActionPasteBones(aeWPAPanelRule &panel) : cBaseAction(panel,
 		"@Animator.WPAPanelRule.Action.PasteBones",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Animator.WPAPanelRule.Action.PasteBones.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
-		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowMain()
-			.GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
+		auto clip = pPanel.GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataBones::TYPE_NAME).DynamicCast<aeClipboardDataBones>();
 		if(!clip){
 			return {};
 		}
@@ -655,8 +655,8 @@ public:
 		"@Animator.WPAPanelRule.Action.PasteVPS.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
-		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowMain()
-			.GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
+		auto clip = pPanel.GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME).DynamicCast<aeClipboardDataVertexPositionSets>();
 		if(!clip){
 			return {};
 		}

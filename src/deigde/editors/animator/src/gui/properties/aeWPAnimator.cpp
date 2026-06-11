@@ -252,8 +252,8 @@ public:
 		"@Animator.WPAnimator.Action.BonePaste.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
-		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
+		auto clip = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataBones::TYPE_NAME).DynamicCast<aeClipboardDataBones>();
 		if(!clip){
 			return {};
 		}
@@ -455,12 +455,12 @@ public:
 	
 public:
 	cActionPasteRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "@Animator.WPAnimator.Action.VPSPaste",
-		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Animator.WPAnimator.Action.VPSPaste.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator) override{
-		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
+		auto clip = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME).DynamicCast<aeClipboardDataVertexPositionSets>();
 		if(!clip){
 			return {};
 		}

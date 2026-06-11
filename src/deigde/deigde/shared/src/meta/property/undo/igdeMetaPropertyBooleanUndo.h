@@ -49,7 +49,8 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	igdeMetaPropertyBooleanUndo(igdeMetaPropertyBoolean &property,
-		const igdeMetaContext::Ref &context);
+		const igdeMetaContext::Ref &context, const char *undoInfo = nullptr,
+		const char *undoInfoLong = nullptr);
 		
 protected:
 	/** \brief Clean up undo action. */

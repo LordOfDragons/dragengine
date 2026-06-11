@@ -118,7 +118,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyToggleTagsUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decStringSet &newValue);
+		const igdeMetaContext::Ref &context, const decStringSet &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

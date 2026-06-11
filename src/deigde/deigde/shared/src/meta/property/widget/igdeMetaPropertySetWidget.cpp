@@ -23,10 +23,12 @@
  */
 
 #include "igdeMetaPropertySetWidget.h"
+#include "../undo/igdeMetaPropertySetUndo.h"
 #include "../../igdeMetaContextItemInfo.h"
+#include "../../../clipboard/igdeClipboard.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
-#include "../undo/igdeMetaPropertySetUndo.h"
+#include "../../../localization/igdeTranslationManager.h"
 
 
 namespace {
@@ -71,6 +73,92 @@ public:
 };
 
 
+class ActionCopy : public igdeAction{
+	igdeMetaPropertySetWidget &pWidget;
+	
+public:
+	ActionCopy(igdeMetaPropertySetWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Copy",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Action.Copy.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~ActionCopy() override = default;
+	
+	void OnAction() override{
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
+		auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		clipboard->Set(igdeMetaPropertySet::ClipboardData::Ref::New(
+			pWidget.GetPropertySet().GetPropertyValue(context)));
+	}
+};
+
+
+class ActionPaste : public igdeAction{
+	igdeMetaPropertySetWidget &pWidget;
+	
+public:
+	ActionPaste(igdeMetaPropertySetWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Paste",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Igde.Action.Paste.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~ActionPaste() override = default;
+	
+	void OnAction() override{
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
+		const auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		const auto clip = clipboard->GetWithTypeName(igdeMetaPropertySet::ClipboardData::TypeName).
+			DynamicCast<igdeMetaPropertySet::ClipboardData>();
+		if(!clip){
+			return;
+		}
+		
+		auto &property = pWidget.GetPropertySet();
+		const auto data = clip->GetData();
+		if(property.GetPropertyValue(context) != data){
+			return;
+		}
+		
+		const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+		property.ChangePropertyValue(context, data,
+			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+	}
+	
+	void Update() override{
+		const auto &context = pWidget.GetContext();
+		if(context){
+			const auto cb = context->GetClipboard();
+			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertySet::ClipboardData::TypeName));
+			return;
+		}
+		SetEnabled(false);
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
 	igdeMetaPropertySetWidget &pWidget;
 	
@@ -87,9 +175,14 @@ public:
 	void OnAction() override{
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertySet();
-		if(property.GetPropertyValue(context).IsNotEmpty()){
-			property.ChangePropertyValue(context, {});
+		if(property.GetPropertyValue(context).IsEmpty()){
+			return;
 		}
+		
+		const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+		property.ChangePropertyValue(context, {},
+			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
 	}
 };
 
@@ -219,9 +312,18 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
 	
 	auto &helper = menu.GetEnvironment().GetUIHelper();
+	auto &context = GetContext();
+	
 	if(menu.GetChildren().IsNotEmpty()){
 		helper.MenuSeparator(menu);
 	}
+	
+	if(context && context->GetClipboard()){
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuSeparator(menu);
+	}
+	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }
 

@@ -117,6 +117,8 @@ public:
 		info.SetAll(string);
 	}
 	
+	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+	
 	igdeAction::Ref CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };

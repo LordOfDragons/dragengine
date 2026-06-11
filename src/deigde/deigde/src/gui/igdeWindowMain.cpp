@@ -526,6 +526,8 @@ pFirstEngineRun(true)
 		
 		pResourceLoader = new igdeResourceLoader(pEnvironmentIGDE);
 		
+		pClipboard = deTUniqueReference<igdeClipboard>::New();
+		
 		CreateEngineController(); // uses methods provided by base class
 		GetEngineController().UpdateEngine(nullptr, pConfiguration.GetPathIGDEData(),
 			pConfiguration.GetPathIGDEEditorData());
@@ -1627,10 +1629,13 @@ void igdeWindowMain::pCleanUp(){
 		pMenuWindow->RemoveAllChildren();
 	}
 	
-	// drop meta contexts since this is memory allocated by modules
+	// drop data potentially containing memory allocated by modules
 	if(pWPMetaContextList){
 		pWPMetaContextList->SetData({});
 		pWPMetaContextList->ClearCache();
+	}
+	if(pClipboard){
+		pClipboard->ClearAll();
 	}
 	
 	// shut down all modules. this is faster than shutting down the game engine first

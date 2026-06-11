@@ -29,13 +29,17 @@
 //////////////////////////////////////
 
 igdeMetaPropertyVector2Undo::igdeMetaPropertyVector2Undo(igdeMetaPropertyVector2 &property,
-	const igdeMetaContext::Ref &context, const decVector2 &newValue) :
+	const igdeMetaContext::Ref &context, const decVector2 &newValue,
+	const char *undoInfo, const char *undoInfoLong) :
 pProperty(&property),
 pContext(property.Capture(context)),
 pOldValue(property.GetPropertyValue(context)),
 pNewValue(newValue)
 {
-	SetShortInfo(property.GetUndoInfoOrLabel());
+	SetShortInfo(undoInfo ? undoInfo : property.GetUndoInfoOrLabel().GetString());
+	if(undoInfoLong){
+		SetLongInfo(undoInfoLong);
+	}
 }
 
 void igdeMetaPropertyVector2Undo::SetNewValue(const decVector2 &newValue){

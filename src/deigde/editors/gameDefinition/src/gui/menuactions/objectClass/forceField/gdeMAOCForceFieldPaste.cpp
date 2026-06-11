@@ -62,14 +62,14 @@ gdeBaseMAOCSubObject(windowMain, "@GameDefinition.Menu.OCForceFieldPaste",
 ///////////////
 
 igdeUndo::Ref gdeMAOCForceFieldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
-		.GetWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME));
+	auto clip = pWindowMain.GetClipboard().
+		GetWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME).DynamicCast<gdeClipboardDataOCForceField>();
 	if(!clip){
 		return {};
 	}
 	
 	const igdeUndo::Ref undo = gdeUOCAddForceField::Ref::New(&objectClass, 
-		gdeOCForceField::Ref::New(*clip.DynamicCast<gdeClipboardDataOCForceField>()->GetForceField()));
+		gdeOCForceField::Ref::New(*clip->GetForceField()));
 	
 	undo->SetShortInfo("@GameDefinition.Undo.PasteOCForceField");
 	return undo;

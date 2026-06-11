@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYCURVEBEZIER_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboard.h"
 
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
@@ -40,6 +41,23 @@ class DE_DLL_EXPORT igdeMetaPropertyCurveBezier : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyCurveBezier>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decCurveBezier>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.CurveBezier";
+		
+		explicit inline ClipboardData(const decCurveBezier &value) : igdeTClipboardData<decCurveBezier>(TypeName, value){}
+		explicit inline ClipboardData(decCurveBezier &&value) : igdeTClipboardData<decCurveBezier>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -140,7 +158,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyCurveBezierUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decCurveBezier &newValue);
+		const igdeMetaContext::Ref &context, const decCurveBezier &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

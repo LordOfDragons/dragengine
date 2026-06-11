@@ -88,9 +88,11 @@ void igdeMetaPropertyFloat::NotifyValueChanged(const igdeMetaContext::Ref &conte
 }
 
 igdeMetaPropertyFloatUndo::Ref igdeMetaPropertyFloat::ChangePropertyValue(
-const igdeMetaContext::Ref &context, float newValue){
+const igdeMetaContext::Ref &context, float newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyFloatUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyFloatUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

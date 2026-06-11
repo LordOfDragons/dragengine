@@ -23,10 +23,11 @@
  */
 
 #include "igdeMetaPropertyListWidget.h"
+#include "../undo/igdeMetaPropertyListUndo.h"
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
-#include "../undo/igdeMetaPropertyListUndo.h"
+#include "../../../localization/igdeTranslationManager.h"
 
 
 namespace {
@@ -87,9 +88,14 @@ public:
 	void OnAction() override{
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertyList();
-		if(property.GetPropertyValue(context).IsNotEmpty()){
-			property.ChangePropertyValue(context, {});
+		if(property.GetPropertyValue(context).IsEmpty()){
+			return;
 		}
+		
+		const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+		property.ChangePropertyValue(context, {},
+			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
 	}
 };
 

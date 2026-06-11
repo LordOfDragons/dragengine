@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYSTRING_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../igdeTMetaData.h"
 #include "../../gui/model/igdeListItem.h"
 
@@ -41,6 +42,23 @@ class DE_DLL_EXPORT igdeMetaPropertyString : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyString>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decString>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.String";
+		
+		explicit inline ClipboardData(const decString &value) : igdeTClipboardData<decString>(TypeName, value){}
+		explicit inline ClipboardData(decString &&value) : igdeTClipboardData<decString>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -142,7 +160,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyStringUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const char *newValue);
+		const igdeMetaContext::Ref &context, const char *newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

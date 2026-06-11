@@ -193,7 +193,6 @@ meWindowMain::~meWindowMain(){
 	}
 	
 	SetWorld(nullptr);
-	pClipboard.ClearAll();
 	
 	if(pConfiguration){
 		delete pConfiguration;
@@ -618,8 +617,8 @@ public:
 		switch(world->GetGuiParameters().GetElementMode()){
 		case meWorldGuiParameters::eemObject:
 			if(pWindow.GetClipboard().HasWithTypeName(meClipboardDataObject::TYPE_NAME)){
-				return meUPasteObject::Ref::New(world, (meClipboardDataObject*)
-					pWindow.GetClipboard().GetWithTypeName(meClipboardDataObject::TYPE_NAME));
+				return meUPasteObject::Ref::New(world, pWindow.GetClipboard().
+					GetWithTypeName(meClipboardDataObject::TYPE_NAME).DynamicCast<meClipboardDataObject>());
 			}
 			return {};
 			

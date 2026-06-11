@@ -19,12 +19,6 @@
     <None Include="..\..\..\..\src\deigde\editors\font\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -144,12 +138,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feClipboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\configuration\feConfiguration.h">
       <Filter>Header Files</Filter>
     </ClInclude>

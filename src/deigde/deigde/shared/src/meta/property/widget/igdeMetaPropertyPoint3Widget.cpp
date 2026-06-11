@@ -23,9 +23,11 @@
  */
 
 #include "igdeMetaPropertyPoint3Widget.h"
+#include "../undo/igdeMetaPropertyPoint3Undo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
-#include "../undo/igdeMetaPropertyPoint3Undo.h"
+#include "../../../clipboard/igdeClipboard.h"
+#include "../../../localization/igdeTranslationManager.h"
 
 
 namespace {
@@ -38,9 +40,11 @@ public:
 	pWidget(widget){
 	}
 	
+	inline igdeMetaPropertyPoint3Widget &GetWidget() const{ return pWidget; }
+	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyPoint3 &GetPropertyPoint3() const{ return pWidget.GetPropertyPoint3(); }
 	
-	void OnValueChanged(const decPoint3 &newValue){
+	void OnValueChanged(const decPoint3 &newValue, const char *undoInfo = nullptr){
 		if(pWidget.GetPreventUpdate()){
 			return;
 		}
@@ -52,7 +56,11 @@ public:
 			return;
 		}
 		
-		property.ChangePropertyValue(context, newValue);
+		if(undoInfo){
+			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+		}
+		property.ChangePropertyValue(context, newValue, undoInfo);
 	}
 };
 
@@ -73,6 +81,83 @@ public:
 };
 
 
+class ActionCopy : public igdeAction{
+	igdeMetaPropertyPoint3Widget &pWidget;
+	
+public:
+	ActionCopy(igdeMetaPropertyPoint3Widget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Copy",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Action.Copy.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~ActionCopy() override = default;
+	
+	void OnAction() override{
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
+		auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		clipboard->Set(igdeMetaPropertyPoint3::ClipboardData::Ref::New(
+			pWidget.GetPropertyPoint3().GetPropertyValue(context)));
+	}
+};
+
+
+class ActionPaste : public igdeAction{
+	cListenerHelper pHelper;
+	
+public:
+	ActionPaste(igdeMetaPropertyPoint3Widget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Paste",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Igde.Action.Paste.ToolTip"),
+	pHelper(widget){
+	}
+	
+	~ActionPaste() override = default;
+	
+	void OnAction() override{
+		const auto &context = pHelper.GetContext();
+		if(!context){
+			return;
+		}
+		
+		const auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		auto clip = clipboard->GetWithTypeName(igdeMetaPropertyPoint3::ClipboardData::TypeName)
+			.DynamicCast<igdeMetaPropertyPoint3::ClipboardData>();
+		if(!clip){
+			return;
+		}
+		
+		pHelper.OnValueChanged(clip->GetData(), GetText());
+	}
+	
+	void Update() override{
+		const auto &context = pHelper.GetContext();
+		if(context){
+			const auto cb = context->GetClipboard();
+			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyPoint3::ClipboardData::TypeName));
+			return;
+		}
+		SetEnabled(false);
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
 	cListenerHelper pHelper;
 	
@@ -87,7 +172,7 @@ public:
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		pHelper.OnValueChanged(pHelper.GetPropertyPoint3().GetDefaultValue());
+		pHelper.OnValueChanged(pHelper.GetPropertyPoint3().GetDefaultValue(), GetText());
 	}
 };
 
@@ -165,8 +250,21 @@ void igdeMetaPropertyPoint3Widget::Update(){
 	}
 }
 
-void igdeMetaPropertyPoint3Widget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
-	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
-	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
-		deTObjectReference<cActionResetToDefault>::New(*this));
+void igdeMetaPropertyPoint3Widget::AddContextMenuEntries(igdeMenuCascade &menu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
+	
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	auto &context = GetContext();
+	
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	
+	if(context && context->GetClipboard()){
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuSeparator(menu);
+	}
+	
+	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }

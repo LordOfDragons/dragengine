@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYFLOAT_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboardData.h"
 
 class igdeMetaPropertyFloatUndo;
 
@@ -37,6 +38,22 @@ class DE_DLL_EXPORT igdeMetaPropertyFloat : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyFloat>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<float>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Float";
+		
+		explicit inline ClipboardData(float value) : igdeTClipboardData<float>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -156,7 +173,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyFloatUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, float newValue);
+		const igdeMetaContext::Ref &context, float newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

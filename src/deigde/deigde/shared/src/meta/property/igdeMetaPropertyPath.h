@@ -138,7 +138,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyPathUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const char *newValue);
+		const igdeMetaContext::Ref &context, const char *newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get property base path matching context.

@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYPOINT_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboardData.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -39,6 +40,23 @@ class DE_DLL_EXPORT igdeMetaPropertyPoint : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyPoint>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decPoint>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Point";
+		
+		explicit inline ClipboardData(const decPoint &value) : igdeTClipboardData<decPoint>(TypeName, value){}
+		explicit inline ClipboardData(decPoint &&value) : igdeTClipboardData<decPoint>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -118,7 +136,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyPointUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decPoint &newValue);
+		const igdeMetaContext::Ref &context, const decPoint &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Create UI widget.

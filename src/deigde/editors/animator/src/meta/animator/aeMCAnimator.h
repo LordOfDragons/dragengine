@@ -102,6 +102,9 @@ public:
 	
 	/** Undo system or nullptr to apply actions immediately. */
 	igdeUndoSystem *GetUndoSystem() const override;
+	
+	/** \brief Clipboard or nullptr if not supported. */
+	igdeClipboard *GetClipboard() const override;
 	/*@}*/
 };
 

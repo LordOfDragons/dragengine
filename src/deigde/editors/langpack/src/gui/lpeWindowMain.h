@@ -31,6 +31,7 @@
 #include "../langpack/lpeLangPack.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
+#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -87,7 +88,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	lpeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	lpeLoadSaveSystem *pLoadSaveSystem;
 	
 	lpeWindowProperties::Ref pWindowProperties;
@@ -141,7 +141,8 @@ public:
 	inline lpeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** Load save system. */
 	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

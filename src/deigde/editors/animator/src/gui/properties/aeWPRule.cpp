@@ -174,8 +174,8 @@ public:
 		cBaseAction(panel, name, icon, description), pInsert(insert){}
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeRule *rule) override{
-		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
+		auto cdata = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataRule::TYPE_NAME).DynamicCast<aeClipboardDataRule>();
 		if(!cdata){
 			return {};
 		}
@@ -222,8 +222,8 @@ public:
 		"@Animator.WPRule.Action.PasteIntoGroup.ToolTip", false){}
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeRule *rule) override{
-		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
+		auto cdata = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataRule::TYPE_NAME).DynamicCast<aeClipboardDataRule>();
 		if(!cdata || rule->GetType() != deAnimatorRuleVisitorIdentify::ertGroup){
 			return {};
 		}

@@ -27,6 +27,7 @@
 
 #include "igdeMetaProperty.h"
 #include "../igdeTMetaData.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/event/igdeAction.h"
 
 #include <dragengine/common/collection/decTSet.h>
@@ -58,6 +59,23 @@ public:
 	};
 	
 	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<Set>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Set";
+		
+		explicit inline ClipboardData(const Set &value) : igdeTClipboardData<Set>(TypeName, value){}
+		explicit inline ClipboardData(Set &&value) : igdeTClipboardData<Set>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
+	
+	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertySet>{
 	public:
@@ -71,8 +89,10 @@ public:
 	
 	/** \brief Remove selected entries action. */
 	class DE_DLL_EXPORT ActionRemove : public igdeAction{
+	protected:
 		igdeMetaPropertySet &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
@@ -84,8 +104,10 @@ public:
 	
 	/** \brief Remove all entries action. */
 	class DE_DLL_EXPORT ActionRemoveAll : public igdeAction{
+	protected:
 		igdeMetaPropertySet &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
@@ -179,7 +201,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertySetUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const Set &newValue);
+		const igdeMetaContext::Ref &context, const Set &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get active object or nullptr if no active object.

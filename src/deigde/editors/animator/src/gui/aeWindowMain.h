@@ -163,7 +163,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	aeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	aeLoadSaveSystem *pLoadSaveSystem;
 	
 	aeMCAnimatorProperties pMCAnimatorProperties;
@@ -201,8 +200,8 @@ public:
 	inline aeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** Animator meta context properties. */
 	inline const aeMCAnimatorProperties &GetMCAnimatorProperties() const{ return pMCAnimatorProperties; }

@@ -74,9 +74,11 @@ void igdeMetaPropertyString::NotifyStringListChanged(const igdeMetaContext::Ref 
 }
 
 igdeMetaPropertyStringUndo::Ref igdeMetaPropertyString::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const char *newValue){
+const igdeMetaContext::Ref &context, const char *newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyStringUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyStringUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

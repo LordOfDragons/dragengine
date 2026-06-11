@@ -49,8 +49,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	igdeMetaPropertyListUndo(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context,
-		const igdeMetaPropertyList::List &newValue);
+	igdeMetaPropertyListUndo(igdeMetaPropertyList &property,
+		const igdeMetaContext::Ref &context, const igdeMetaPropertyList::List &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -35,6 +35,7 @@
 
 class igdeMetaProperty;
 class igdeUndoSystem;
+class igdeClipboard;
 
 
 /**
@@ -137,6 +138,8 @@ public:
 	/** \brief Undo system or nullptr to apply actions immediately. */
 	virtual igdeUndoSystem *GetUndoSystem() const = 0;
 	
+	/** \brief Clipboard or nullptr if not supported. */
+	virtual igdeClipboard *GetClipboard() const = 0;
 	
 	/** \brief Listeners. */
 	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }

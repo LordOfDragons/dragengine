@@ -56,9 +56,10 @@ void igdeMetaPropertyColor::NotifyValueChanged(const igdeMetaContext::Ref &conte
 }
 
 igdeMetaPropertyColorUndo::Ref igdeMetaPropertyColor::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const decColor &newValue){
+const igdeMetaContext::Ref &context, const decColor &newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyColorUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyColorUndo::Ref::New(*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

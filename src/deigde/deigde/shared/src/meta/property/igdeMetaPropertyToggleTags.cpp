@@ -57,9 +57,11 @@ void igdeMetaPropertyToggleTags::NotifyValueChanged(const igdeMetaContext::Ref &
 }
 
 igdeMetaPropertyToggleTagsUndo::Ref igdeMetaPropertyToggleTags::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const decStringSet &newValue){
+const igdeMetaContext::Ref &context, const decStringSet &newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyToggleTagsUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyToggleTagsUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

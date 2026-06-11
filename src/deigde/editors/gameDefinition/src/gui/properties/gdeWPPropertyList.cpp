@@ -195,13 +195,13 @@ public:
 	
 	void OnAction() override{
 		gdeProperty * const property = pPanel.GetProperty();
-		if(!property || !pPanel.GetClipboard()){
+		if(!property){
 			return;
 		}
 		
 		const gdeProperty::Ref clipProperty(gdeProperty::Ref::New(*property));
 		
-		pPanel.GetClipboard()->Set(gdeClipboardDataProperty::Ref::New(clipProperty));
+		pPanel.GetClipboard().Set(gdeClipboardDataProperty::Ref::New(clipProperty));
 	}
 	
 	void Update() override{
@@ -221,7 +221,7 @@ public:
 	
 	void OnAction() override{
 		gdeProperty * const property = pPanel.GetProperty();
-		if(!property || !pPanel.GetUndoSystem() || !pPanel.GetClipboard()){
+		if(!property || !pPanel.GetUndoSystem()){
 			return;
 		}
 		
@@ -245,12 +245,7 @@ public:
 	pPanel(panel){}
 	
 	void OnAction() override{
-		if(!pPanel.GetClipboard()){
-			return;
-		}
-		
-		const gdeClipboardDataProperty * const clip = (const gdeClipboardDataProperty *)
-			pPanel.GetClipboard()->GetWithTypeName(gdeClipboardDataProperty::TYPE_NAME);
+		auto clip = pPanel.GetClipboard().GetWithTypeName(gdeClipboardDataProperty::TYPE_NAME).DynamicCast<gdeClipboardDataProperty>();
 		if(!clip){
 			return;
 		}
@@ -277,8 +272,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.GetPropertyList() && pPanel.GetClipboard()
-			&& pPanel.GetClipboard()->HasWithTypeName(gdeClipboardDataProperty::TYPE_NAME));
+		SetEnabled(pPanel.GetPropertyList() && pPanel.GetClipboard().HasWithTypeName(gdeClipboardDataProperty::TYPE_NAME));
 	}
 };
 
@@ -758,8 +752,7 @@ public:
 gdeWPPropertyList::gdeWPPropertyList(igdeEnvironment &environment) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY),
 pPropertyList(nullptr),
-pGameDefinition(nullptr),
-pClipboard(nullptr)
+pGameDefinition(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -924,11 +917,9 @@ igdeUndoSystem *gdeWPPropertyList::GetUndoSystem() const{
 	return pGameDefinition ? pGameDefinition->GetUndoSystem() : nullptr;
 }
 
-void gdeWPPropertyList::SetClipboard(igdeClipboard *clipboard){
-	pClipboard = clipboard;
+igdeClipboard &gdeWPPropertyList::GetClipboard() const{
+	return GetEnvironment().GetClipboard();
 }
-
-
 
 gdeProperty *gdeWPPropertyList::GetProperty() const{
 	if(!pPropertyList){

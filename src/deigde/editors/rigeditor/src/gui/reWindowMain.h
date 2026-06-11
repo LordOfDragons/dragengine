@@ -30,6 +30,7 @@
 #include "properties/reWindowProperties.h"
 #include "../rig/reRig.h"
 
+#include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -41,7 +42,6 @@
 #include <dragengine/common/string/decStringList.h>
 
 class reConfiguration;
-class reClipboard;
 class reEngineController;
 class reLoadSaveSystem;
 class reIGDEModule;
@@ -146,7 +146,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	reConfiguration *pConfiguration;
-	reClipboard *pClipboard;
 	reLoadSaveSystem *pLoadSaveSystem;
 	
 	reView3D::Ref pView3D;
@@ -182,7 +181,8 @@ public:
 	inline reConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline reClipboard &GetClipboard() const{ return *pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief Load save system. */
 	inline reLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

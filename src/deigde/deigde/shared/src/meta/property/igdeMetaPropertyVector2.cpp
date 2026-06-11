@@ -56,9 +56,11 @@ void igdeMetaPropertyVector2::NotifyValueChanged(const igdeMetaContext::Ref &con
 }
 
 igdeMetaPropertyVector2Undo::Ref igdeMetaPropertyVector2::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const decVector2 &newValue){
+const igdeMetaContext::Ref &context, const decVector2 &newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyVector2Undo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyVector2Undo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

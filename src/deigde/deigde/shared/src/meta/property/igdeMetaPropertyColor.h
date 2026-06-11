@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYCOLOR_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboardData.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -39,6 +40,23 @@ class DE_DLL_EXPORT igdeMetaPropertyColor : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyColor>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decColor>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Color";
+		
+		explicit inline ClipboardData(const decColor &value) : igdeTClipboardData<decColor>(TypeName, value){}
+		explicit inline ClipboardData(decColor &&value) : igdeTClipboardData<decColor>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -118,7 +136,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyColorUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decColor &newValue);
+		const igdeMetaContext::Ref &context, const decColor &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

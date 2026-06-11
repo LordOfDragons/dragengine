@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYINTEGER_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboardData.h"
 
 class igdeMetaPropertyIntegerUndo;
 
@@ -37,6 +38,22 @@ class DE_DLL_EXPORT igdeMetaPropertyInteger : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyInteger>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<int>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Integer";
+		
+		explicit inline ClipboardData(int value) : igdeTClipboardData<int>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -156,7 +173,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyIntegerUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, int newValue);
+		const igdeMetaContext::Ref &context, int newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

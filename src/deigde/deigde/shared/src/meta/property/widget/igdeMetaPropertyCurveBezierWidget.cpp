@@ -23,9 +23,10 @@
  */
 
 #include "igdeMetaPropertyCurveBezierWidget.h"
+#include "../undo/igdeMetaPropertyCurveBezierUndo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
-#include "../undo/igdeMetaPropertyCurveBezierUndo.h"
+#include "../../../localization/igdeTranslationManager.h"
 
 
 namespace {
@@ -39,9 +40,10 @@ public:
 	}
 	
 	inline igdeMetaPropertyCurveBezierWidget &GetWidget() const{ return pWidget; }
+	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyCurveBezier &GetPropertyCurveBezier() const{ return pWidget.GetPropertyCurveBezier(); }
 	
-	igdeMetaPropertyCurveBezierUndo::Ref OnValueChanged(const decCurveBezier &newValue){
+	igdeMetaPropertyCurveBezierUndo::Ref OnValueChanged(const decCurveBezier &newValue, const char *undoInfo = nullptr){
 		if(pWidget.GetPreventUpdate()){
 			return {};
 		}
@@ -53,7 +55,11 @@ public:
 			return {};
 		}
 		
-		return property.ChangePropertyValue(context, newValue);
+		if(undoInfo){
+			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + tm.TranslateIf(undoInfo).ToUTF8();
+		}
+		return property.ChangePropertyValue(context, newValue, undoInfo);
 	}
 };
 
@@ -108,6 +114,83 @@ public:
 };
 
 
+class ActionCopy : public igdeAction{
+	igdeMetaPropertyCurveBezierWidget &pWidget;
+	
+public:
+	ActionCopy(igdeMetaPropertyCurveBezierWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Copy",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Action.Copy.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~ActionCopy() override = default;
+	
+	void OnAction() override{
+		const auto &context = pWidget.GetContext();
+		if(!context){
+			return;
+		}
+		
+		auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		clipboard->Set(igdeMetaPropertyCurveBezier::ClipboardData::Ref::New(
+			pWidget.GetPropertyCurveBezier().GetPropertyValue(context)));
+	}
+};
+
+
+class ActionPaste : public igdeAction{
+	cListenerHelper pHelper;
+	
+public:
+	ActionPaste(igdeMetaPropertyCurveBezierWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Paste",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Igde.Action.Paste.ToolTip"),
+	pHelper(widget){
+	}
+	
+	~ActionPaste() override = default;
+	
+	void OnAction() override{
+		const auto &context = pHelper.GetContext();
+		if(!context){
+			return;
+		}
+		
+		const auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		const auto clip = clipboard->GetWithTypeName(igdeMetaPropertyCurveBezier::ClipboardData::TypeName).
+			DynamicCast<igdeMetaPropertyCurveBezier::ClipboardData>();
+		if(!clip){
+			return;
+		}
+		
+		pHelper.OnValueChanged(clip->GetData(), GetText());
+	}
+	
+	void Update() override{
+		const auto &context = pHelper.GetContext();
+		if(context){
+			const auto cb = context->GetClipboard();
+			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyCurveBezier::ClipboardData::TypeName));
+			return;
+		}
+		SetEnabled(false);
+	}
+};
+
+
 class cActionResetToDefault : public igdeAction{
 	cListenerHelper pHelper;
 	
@@ -122,7 +205,7 @@ public:
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		pHelper.OnValueChanged(pHelper.GetPropertyCurveBezier().GetDefaultValue());
+		pHelper.OnValueChanged(pHelper.GetPropertyCurveBezier().GetDefaultValue(), GetText());
 	}
 };
 
@@ -213,8 +296,21 @@ void igdeMetaPropertyCurveBezierWidget::AddCurveEditContextMenuEntries(igdeMenuC
 	AddContextMenuEntries(menu);
 }
 
-void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
-	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
-	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
-		deTObjectReference<cActionResetToDefault>::New(*this));
+void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &menu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
+	
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	auto &context = GetContext();
+	
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	
+	if(context && context->GetClipboard()){
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuSeparator(menu);
+	}
+	
+	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }

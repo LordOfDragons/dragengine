@@ -79,7 +79,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	skyeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	skyeLoadSaveSystem *pLoadSaveSystem;
 	
 	skyeViewSky::Ref pViewSky;
@@ -133,7 +132,8 @@ public:
 	inline skyeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief load save system. */
 	inline skyeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

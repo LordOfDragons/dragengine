@@ -26,7 +26,7 @@
 #define _IGDEMETAPROPERTYVECTOR2_H_
 
 #include "igdeMetaProperty.h"
-
+#include "../../clipboard/igdeClipboardData.h"
 #include <dragengine/common/math/decMath.h>
 
 class igdeMetaPropertyVector2Undo;
@@ -39,6 +39,23 @@ class DE_DLL_EXPORT igdeMetaPropertyVector2 : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyVector2>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decVector2>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Vector2";
+		
+		explicit inline ClipboardData(const decVector2 &value) : igdeTClipboardData<decVector2>(TypeName, value){}
+		explicit inline ClipboardData(decVector2 &&value) : igdeTClipboardData<decVector2>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -118,7 +135,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyVector2Undo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decVector2 &newValue);
+		const igdeMetaContext::Ref &context, const decVector2 &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

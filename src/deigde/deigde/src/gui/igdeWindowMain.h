@@ -30,6 +30,7 @@
 #include "../configuration/igdeConfigurationLocal.h"
 #include "../template/igdeTemplate.h"
 
+#include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
@@ -54,6 +55,7 @@
 #include <deigde/resourceloader/igdeResourceLoader.h>
 #include <deigde/localization/igdeTranslationManager.h>
 
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/collection/decTDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -108,6 +110,7 @@ private:
 	igdeResourceLoader *pResourceLoader;
 	igdeUIHelper *pUIHelper;
 	igdeUIHelper *pUIHelperProperties;
+	deTUniqueReference<igdeClipboard> pClipboard;
 	igdeTimer::Ref pTimerFrameUpdate;
 	igdeTimer::Ref pTimerSyncProject;
 	
@@ -261,6 +264,9 @@ public:
 	
 	/** UI Helper. */
 	inline igdeUIHelper &GetUIHelper() const{ return *pUIHelper; }
+	
+	/** Clipboard. */
+	inline const deTUniqueReference<igdeClipboard> &GetClipboard() const{ return pClipboard; }
 	
 	/** UI Helper for properties panels. */
 	inline igdeUIHelper &GetUIHelperProperties() const{ return *pUIHelperProperties; }

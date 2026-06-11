@@ -76,8 +76,10 @@ public:
 	
 	/** \brief Remove selected entries action. */
 	class DE_DLL_EXPORT ActionRemove : public igdeAction{
+	protected:
 		igdeMetaPropertyList &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
@@ -89,8 +91,10 @@ public:
 	
 	/** \brief Remove all entries action. */
 	class DE_DLL_EXPORT ActionRemoveAll : public igdeAction{
+	protected:
 		igdeMetaPropertyList &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
@@ -102,8 +106,10 @@ public:
 	
 	/** \brief Move entry up action. */
 	class DE_DLL_EXPORT ActionMoveUp : public igdeAction{
+	protected:
 		igdeMetaPropertyList &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		bool pTop;
 		
 	public:
@@ -129,6 +135,7 @@ public:
 	class DE_DLL_EXPORT ActionMoveDown : public igdeAction{
 		igdeMetaPropertyList &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		bool pBottom;
 		
 	public:
@@ -236,7 +243,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const List &newValue);
+		const igdeMetaContext::Ref &context, const List &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get active object or nullptr if no active object.

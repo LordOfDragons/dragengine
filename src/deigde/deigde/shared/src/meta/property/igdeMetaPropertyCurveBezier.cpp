@@ -71,9 +71,10 @@ void igdeMetaPropertyCurveBezier::NotifyValueChanged(const igdeMetaContext::Ref 
 }
 
 igdeMetaPropertyCurveBezierUndo::Ref igdeMetaPropertyCurveBezier::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const decCurveBezier &newValue){
+const igdeMetaContext::Ref &context, const decCurveBezier &newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

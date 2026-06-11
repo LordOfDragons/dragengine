@@ -29,13 +29,17 @@
 /////////////////////////////////////
 
 igdeMetaPropertyStringUndo::igdeMetaPropertyStringUndo(igdeMetaPropertyString &property,
-	const igdeMetaContext::Ref &context, const char *newValue) :
+	const igdeMetaContext::Ref &context, const char *newValue,
+	const char *undoInfo, const char *undoInfoLong) :
 pProperty(&property),
 pContext(property.Capture(context)),
 pOldValue(property.GetPropertyValue(context)),
 pNewValue(newValue)
 {
-	SetShortInfo(property.GetUndoInfoOrLabel());
+	SetShortInfo(undoInfo ? undoInfo : property.GetUndoInfoOrLabel().GetString());
+	if(undoInfoLong){
+		SetLongInfo(undoInfoLong);
+	}
 }
 
 void igdeMetaPropertyStringUndo::Undo(){

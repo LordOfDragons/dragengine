@@ -347,7 +347,6 @@ public:
 	typedef deTObjectReference<cEditProperties> Ref;
 	cEditProperties(gdeWPSObjectClass &panel) :
 	gdeWPPropertyList(panel.GetEnvironment()), pPanel(panel){
-		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
 	igdeUndo::Ref UndoAdd(gdeProperty *property) override{
@@ -435,7 +434,6 @@ public:
 	typedef deTObjectReference<cEditTextureProperties> Ref;
 	cEditTextureProperties(gdeWPSObjectClass &panel) :
 	gdeWPPropertyList(panel.GetEnvironment()), pPanel(panel){
-		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
 	igdeUndo::Ref UndoAdd(gdeProperty *property) override{

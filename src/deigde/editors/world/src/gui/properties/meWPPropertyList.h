@@ -61,7 +61,6 @@ public:
 	
 private:
 	igdeUndoSystem *pUndoSystem;
-	igdeClipboard *pClipboard;
 	decStringDictionary pProperties;
 	
 	igdeIcon::Ref pIconUnknownKey;
@@ -112,10 +111,7 @@ public:
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	/** \brief Clipboard or nullptr. */
-	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
-	
-	/** \brief Set clipboard or nullptr. */
-	void SetClipboard(igdeClipboard *clipboard);
+	igdeClipboard &GetClipboard() const;
 	
 	/** \brief Property list to edit. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }

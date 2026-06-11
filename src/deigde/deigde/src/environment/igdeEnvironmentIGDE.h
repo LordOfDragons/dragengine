@@ -156,6 +156,9 @@ public:
 	/** \brief Translation manager. */
 	igdeTranslationManager &GetTranslationManager() override;
 	
+	/** \brief Clipboard. */
+	igdeClipboard &GetClipboard() override;
+	
 	
 	
 	/** \brief Sets the visibility of the progress bar in the status bar. */

@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYSELECTION_H_
 
 #include "igdeMetaProperty.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/model/igdeListItem.h"
 
 #include <type_traits>
@@ -44,6 +45,22 @@ public:
 	
 	/** \brief List of choices. */
 	using ListChoices = decTOrderedSet<void*>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<void*>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Selection";
+		
+		explicit inline ClipboardData(void *value) : igdeTClipboardData<void*>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -140,7 +157,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertySelectionUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, void *newValue);
+		const igdeMetaContext::Ref &context, void *newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get choice item information.

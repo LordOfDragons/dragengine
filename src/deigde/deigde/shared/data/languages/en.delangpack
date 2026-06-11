@@ -723,6 +723,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.MetaProperty.Action.ClearFilter.ToolTip">Clear filter</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add">Add</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Add entry</translation>
+	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Title">Add entries</translation>
+	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Message">Select entries to add</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove">Remove</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove.ToolTip">Remove entry</translation>
 	<translation name="Igde.MetaPropertyList.Action.RemoveAll">Remove All</translation>
@@ -735,4 +737,12 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.MetaPropertyList.Action.MoveTop.ToolTip">Move entry to top</translation>
 	<translation name="Igde.MetaPropertyList.Action.MoveBottom">Move to Bottom</translation>
 	<translation name="Igde.MetaPropertyList.Action.MoveBottom.ToolTip">Move entry to bottom</translation>
+	<translation name="Igde.MetaPropertyList.Action.ExportAsText">Export As Text</translation>
+	<translation name="Igde.MetaPropertyList.Action.ExportAsText.ToolTip">Export value as text</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ExportAsText.Title">Export As Text</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ExportAsText.Message">Values</translation>
+	<translation name="Igde.MetaPropertyList.Action.ImportFromText">Import From Text</translation>
+	<translation name="Igde.MetaPropertyList.Action.ImportFromText.ToolTip">Import value from text</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ImportFromText.Title">Import From Text</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ImportFromText.Message">Values. One value per line.</translation>
 </languagePack>

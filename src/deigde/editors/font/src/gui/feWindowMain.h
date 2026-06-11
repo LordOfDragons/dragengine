@@ -30,6 +30,7 @@
 #include "properties/feWindowProperties.h"
 #include "../font/feFont.h"
 
+#include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -39,7 +40,6 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class feConfiguration;
-class feClipboard;
 class feLoadSaveSystem;
 
 
@@ -73,7 +73,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	feConfiguration *pConfiguration;
-	feClipboard *pClipboard;
 	feLoadSaveSystem *pLoadSaveSystem;
 	
 	feViewFontImage::Ref pViewFontImage;
@@ -125,8 +124,10 @@ public:
 	
 	/** Retrieves the configuration. */
 	inline feConfiguration &GetConfiguration() const{ return *pConfiguration; }
-	/** Retrieves the clipboard. */
-	inline feClipboard &GetClipboard() const{ return *pClipboard; }
+	
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
+	
 	/** Retrieves the load save system. */
 	inline feLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	

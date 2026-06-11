@@ -205,8 +205,8 @@ public:
 			return;
 		}
 		
-		aeClipboardDataController * const cdata = (aeClipboardDataController*)pPanel.GetWindowProperties()
-			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataController::TYPE_NAME);
+		auto cdata = pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			GetWithTypeName(aeClipboardDataController::TYPE_NAME).DynamicCast<aeClipboardDataController>();
 		if(!cdata){
 			return;
 		}

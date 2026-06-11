@@ -242,8 +242,8 @@ public:
 			return;
 		}
 		
-		syneClipboardDataSource * const cdata = (syneClipboardDataSource*)pPanel.GetViewSynthesizer()
-			.GetWindowMain().GetClipboard().GetWithTypeName(syneClipboardDataSource::TYPE_NAME);
+		auto cdata = pPanel.GetViewSynthesizer()
+			.GetWindowMain().GetClipboard().GetWithTypeName(syneClipboardDataSource::TYPE_NAME).DynamicCast<syneClipboardDataSource>();
 		if(!cdata){
 			return;
 		}
@@ -285,8 +285,8 @@ public:
 			return;
 		}
 		
-		syneClipboardDataSource * const cdata = (syneClipboardDataSource*)pPanel.GetViewSynthesizer()
-			.GetWindowMain().GetClipboard().GetWithTypeName(syneClipboardDataSource::TYPE_NAME);
+		auto cdata = pPanel.GetViewSynthesizer()
+			.GetWindowMain().GetClipboard().GetWithTypeName(syneClipboardDataSource::TYPE_NAME).DynamicCast<syneClipboardDataSource>();
 		if(!cdata){
 			return;
 		}

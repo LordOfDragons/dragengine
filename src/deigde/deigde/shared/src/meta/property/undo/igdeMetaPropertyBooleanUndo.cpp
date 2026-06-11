@@ -28,12 +28,16 @@
 // Class igdeMetaPropertyBooleanUndo
 //////////////////////////////////////
 
-igdeMetaPropertyBooleanUndo::igdeMetaPropertyBooleanUndo(igdeMetaPropertyBoolean &property,
-	const igdeMetaContext::Ref &context) :
+igdeMetaPropertyBooleanUndo::igdeMetaPropertyBooleanUndo(
+	igdeMetaPropertyBoolean &property, const igdeMetaContext::Ref &context,
+	const char *undoInfo, const char *undoInfoLong) :
 pProperty(&property),
 pContext(property.Capture(context))
 {
-	SetShortInfo(property.GetUndoInfoOrLabel());
+	SetShortInfo(undoInfo ? undoInfo : property.GetUndoInfoOrLabel().GetString());
+	if(undoInfoLong){
+		SetLongInfo(undoInfoLong);
+	}
 }
 
 void igdeMetaPropertyBooleanUndo::Undo(){

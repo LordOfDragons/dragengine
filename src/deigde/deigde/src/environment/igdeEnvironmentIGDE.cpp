@@ -311,6 +311,9 @@ igdeTranslationManager &igdeEnvironmentIGDE::GetTranslationManager(){
 	return pWindowMain->GetTranslationManager();
 }
 
+igdeClipboard &igdeEnvironmentIGDE::GetClipboard(){
+	return pWindowMain->GetClipboard();
+}
 
 
 void igdeEnvironmentIGDE::SetProgressVisible(bool visible){

@@ -29,13 +29,17 @@
 ////////////////////////////////////
 
 igdeMetaPropertyColorUndo::igdeMetaPropertyColorUndo(igdeMetaPropertyColor &property,
-	const igdeMetaContext::Ref &context, const decColor &newValue) :
+	const igdeMetaContext::Ref &context, const decColor &newValue,
+	const char *undoInfo, const char *undoInfoLong) :
 pProperty(&property),
 pContext(property.Capture(context)),
 pOldValue(property.GetPropertyValue(context)),
 pNewValue(newValue)
 {
-	SetShortInfo(property.GetUndoInfoOrLabel());
+	SetShortInfo(undoInfo ? undoInfo : property.GetUndoInfoOrLabel().GetString());
+	if(undoInfoLong){
+		SetLongInfo(undoInfoLong);
+	}
 }
 
 void igdeMetaPropertyColorUndo::SetNewValue(const decColor &newValue){

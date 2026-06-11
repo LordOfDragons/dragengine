@@ -34,7 +34,6 @@
 #include "../rigeditor.h"
 #include "../configuration/reConfiguration.h"
 #include "../reIGDEModule.h"
-#include "../clipboard/reClipboard.h"
 #include "../loadsave/reLoadSaveSystem.h"
 #include "../rig/reRig.h"
 #include "../rig/bone/reRigBone.h"
@@ -104,7 +103,6 @@ reWindowMain::reWindowMain(reIGDEModule &module) :
 igdeEditorWindow(module),
 
 pConfiguration(nullptr),
-pClipboard(nullptr),
 pLoadSaveSystem(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
@@ -116,7 +114,6 @@ pLoadSaveSystem(nullptr)
 	pListener = reWindowMainListener::Ref::New(*this);
 	pLoadSaveSystem = new reLoadSaveSystem(*this);
 	pConfiguration = new reConfiguration(*this);
-	pClipboard = new reClipboard;
 	
 	pConfiguration->LoadConfiguration();
 	
@@ -141,9 +138,6 @@ pLoadSaveSystem(nullptr)
 reWindowMain::~reWindowMain(){
 	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
-	}
-	if(pClipboard){
-		delete pClipboard;
 	}
 	
 	SetRig(nullptr);
@@ -516,7 +510,7 @@ public:
 	}
 	
 	void Update(const reRig &) override{
-		SetEnabled(pWindow.GetClipboard().HasClip());
+		SetEnabled(pWindow.GetClipboard().GetData().IsNotEmpty());
 	}
 };
 

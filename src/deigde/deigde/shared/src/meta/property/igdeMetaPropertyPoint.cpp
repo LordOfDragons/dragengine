@@ -56,9 +56,11 @@ void igdeMetaPropertyPoint::NotifyValueChanged(const igdeMetaContext::Ref &conte
 }
 
 igdeMetaPropertyPointUndo::Ref igdeMetaPropertyPoint::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const decPoint &newValue){
+const igdeMetaContext::Ref &context, const decPoint &newValue,
+const char *undoInfo, const char *undoInfoLong){
 	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyPointUndo::Ref::New(*this, context, newValue);
+		auto undo = igdeMetaPropertyPointUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;

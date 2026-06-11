@@ -95,7 +95,7 @@ public:
 	
 	
 	/** \brief Boolean box widget or nullptr. */
-	inline const igdeCheckBox::Ref &GetBooleanBox() const{ return pCheckBox; }
+	inline const igdeCheckBox::Ref &GetCheckBox() const{ return pCheckBox; }
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/

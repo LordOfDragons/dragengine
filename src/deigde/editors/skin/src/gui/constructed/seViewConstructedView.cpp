@@ -300,8 +300,7 @@ public:
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "@Skin.ViewConstructed.Action.PasteNodes.ToolTip"){}
 	
 	igdeUndo::Ref OnAction(seSkin*, seProperty *property) override{
-		const seClipboardDataPropertyNode * const data = (seClipboardDataPropertyNode*)
-			pView.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataPropertyNode::TYPE_NAME);
+		auto data = pView.GetWindowMain().GetClipboard().GetWithTypeName(seClipboardDataPropertyNode::TYPE_NAME).DynamicCast<seClipboardDataPropertyNode>();
 		return data ? seUPNGroupPasteNodes::Ref::New(
 			pView.GetActiveNodeGroup() ? pView.GetActiveNodeGroup() : property->GetNodeGroup(),
 			property->GetActiveNodeLayer(), *data) : igdeUndo::Ref();

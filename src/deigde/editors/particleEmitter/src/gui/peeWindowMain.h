@@ -72,7 +72,6 @@ private:
 	igdeToolBar::Ref pTBEdit;
 	
 	peeConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	peeLoadSaveSystem *pLoadSaveSystem;
 	
 	peeViewEmitter::Ref pViewEmitter;
@@ -124,7 +123,8 @@ public:
 	inline peeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const{ return GetEnvironment().GetClipboard(); }
 	
 	/** \brief Load save system. */
 	inline peeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

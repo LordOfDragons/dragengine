@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	igdeClipboardData(const char *typeName);
+	explicit igdeClipboardData(const char *typeName);
 	
 protected:
 	/**
@@ -74,6 +74,49 @@ public:
 	/*@{*/
 	/** \brief Type name of clipboard data. */
 	inline const decString &GetTypeName() const{ return pTypeName; }
+	/*@}*/
+};
+
+
+/**
+ * \brief Clipboard data template.
+ */
+template<typename T> class igdeTClipboardData : public igdeClipboardData{
+public:
+	/** \brief Type holding strong reference. */
+	using Ref = deTObjectReference<igdeTClipboardData<T>>;
+	
+	
+private:
+	const T pData;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create simple clipboard data using copied data. */
+	igdeTClipboardData(const char *typeName, const T &data) :
+	igdeClipboardData(typeName),
+	pData(data){
+	}
+	
+	/** \brief Create simple clipboard data using moved data. */
+	igdeTClipboardData(const char *typeName, T &&data) :
+	igdeClipboardData(typeName),
+	pData(std::move(data)){
+	}
+	
+protected:
+	/** \brief Clean up object. */
+	~igdeTClipboardData() override = default;
+	/*@}*/
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Data. */
+	inline const T &GetData() const{ return pData; }
 	/*@}*/
 };
 

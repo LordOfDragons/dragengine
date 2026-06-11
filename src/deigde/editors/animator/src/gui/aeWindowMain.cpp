@@ -151,7 +151,6 @@ aeWindowMain::~aeWindowMain(){
 	}
 	
 	SetAnimator(nullptr);
-	pClipboard.ClearAll();
 	
 	if(pConfiguration){
 		delete pConfiguration;

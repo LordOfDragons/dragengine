@@ -118,7 +118,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyVector3Undo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decVector &newValue);
+		const igdeMetaContext::Ref &context, const decVector &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	
 	/**

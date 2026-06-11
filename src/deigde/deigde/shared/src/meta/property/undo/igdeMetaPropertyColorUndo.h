@@ -50,7 +50,8 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	igdeMetaPropertyColorUndo(igdeMetaPropertyColor &property,
-		const igdeMetaContext::Ref &context, const decColor &newValue);
+		const igdeMetaContext::Ref &context, const decColor &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 protected:
 	/** \brief Clean up undo action. */

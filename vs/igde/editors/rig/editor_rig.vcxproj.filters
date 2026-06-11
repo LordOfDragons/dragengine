@@ -19,12 +19,6 @@
     <None Include="..\..\..\..\src\deigde\editors\rigeditor\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reBaseClip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reClipboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLApplyPush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -393,12 +387,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reBaseClip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reClipboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLApplyPush.h">
       <Filter>Header Files</Filter>
     </ClInclude>

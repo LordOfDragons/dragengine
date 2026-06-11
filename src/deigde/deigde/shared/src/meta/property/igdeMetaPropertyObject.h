@@ -27,6 +27,7 @@
 
 #include "igdeMetaProperty.h"
 #include "../igdeTMetaData.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/model/igdeListItem.h"
 
 class igdeMetaContextItemInfo;
@@ -43,6 +44,23 @@ public:
 	
 	/** \brief List of objects. */
 	using ObjectList = decTObjectOrderedSet<deObject>;
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<deObject::Ref>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.Object";
+		
+		explicit inline ClipboardData(const deObject::Ref &value) : igdeTClipboardData<deObject::Ref>(TypeName, value){}
+		explicit inline ClipboardData(deObject::Ref &&value) : igdeTClipboardData<deObject::Ref>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
 	
 	
 	/** \brief Listener. */
@@ -130,7 +148,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyObjectUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const deObject::Ref &newValue);
+		const igdeMetaContext::Ref &context, const deObject::Ref &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get object item information.

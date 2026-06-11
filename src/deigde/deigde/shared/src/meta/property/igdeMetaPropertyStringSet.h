@@ -28,6 +28,7 @@
 #include "igdeMetaProperty.h"
 #include "../igdeTMetaData.h"
 #include "../igdeMetaContextItemInfo.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/event/igdeAction.h"
 
 #include <dragengine/common/string/decStringSet.h>
@@ -56,6 +57,23 @@ public:
 	};
 	
 	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decStringSet>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.StringSet";
+		
+		explicit inline ClipboardData(const decStringSet &value) : igdeTClipboardData<decStringSet>(TypeName, value){}
+		explicit inline ClipboardData(decStringSet &&value) : igdeTClipboardData<decStringSet>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
+	};
+	
+	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyStringSet>{
 	public:
@@ -67,10 +85,27 @@ public:
 	};
 	
 	
-	/** \brief Remove selected entries action. */
-	class DE_DLL_EXPORT ActionRemove : public igdeAction{
+	/** \brief Add entries action. */
+	class DE_DLL_EXPORT ActionAdd : public igdeAction{
+	protected:
 		igdeMetaPropertyStringSet &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeWidget &pOwner;
+		
+	public:
+		using Ref = deTObjectReference<ActionAdd>;
+		ActionAdd(igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context,
+			igdeWidget &owner);
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Remove selected entries action. */
+	class DE_DLL_EXPORT ActionRemove : public igdeAction{
+	protected:
+		igdeMetaPropertyStringSet &pProperty;
+		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
@@ -82,13 +117,45 @@ public:
 	
 	/** \brief Remove all entries action. */
 	class DE_DLL_EXPORT ActionRemoveAll : public igdeAction{
+	protected:
 		igdeMetaPropertyStringSet &pProperty;
 		const igdeMetaContext::Ref pContext;
+		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
 		ActionRemoveAll(igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context,
 			igdeEnvironment &environment);
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Export to text action. */
+	class DE_DLL_EXPORT ActionExportAsText : public igdeAction{
+	protected:
+		igdeMetaPropertyStringSet &pProperty;
+		const igdeMetaContext::Ref pContext;
+		igdeWidget &pOwner;
+		
+	public:
+		using Ref = deTObjectReference<ActionExportAsText>;
+		ActionExportAsText(igdeMetaPropertyStringSet &property,
+			const igdeMetaContext::Ref &context, igdeWidget &owner);
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Import from text action. */
+	class DE_DLL_EXPORT ActionImportFromText : public igdeAction{
+	protected:
+		igdeMetaPropertyStringSet &pProperty;
+		const igdeMetaContext::Ref pContext;
+		igdeWidget &pOwner;
+		
+	public:
+		using Ref = deTObjectReference<ActionImportFromText>;
+		ActionImportFromText(igdeMetaPropertyStringSet &property,
+			const igdeMetaContext::Ref &context, igdeWidget &owner);
 		void OnAction() override;
 		void Update() override;
 	};
@@ -177,7 +244,8 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyStringSetUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decStringSet &newValue);
+		const igdeMetaContext::Ref &context, const decStringSet &newValue,
+		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get active string or empty string if no active string.
@@ -203,6 +271,11 @@ public:
 	 * \brief Get string item information.
 	 */
 	virtual void GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const = 0;
+	
+	/**
+	 * \brief Valid set of strings.
+	 */
+	virtual decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const;
 	
 	/**
 	 * \brief Add context menu entries for adding new entries to the set.
@@ -237,6 +310,8 @@ public:
 	 * This adds the following actions:
 	 * - ActionRemove
 	 * - ActionRemoveAll
+	 * - ActionExportAsText
+	 * - ActionImportFromText
 	 */
 	void AddDefaultContextMenuEntries(igdeMenuCascade &contextMenu,
 		const igdeMetaContext::Ref &context, igdeWidget &owner);

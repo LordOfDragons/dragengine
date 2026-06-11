@@ -24,6 +24,7 @@
 
 #include "aeMCPAnimator.h"
 #include "../../gui/aeWindowMain.h"
+#include "../../undosys/animator/aeUAnimatorMirrorBones.h"
 
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -36,60 +37,50 @@
 
 namespace {
 
-class cActionAffectedBoneAdd : public igdeAction{
+class cActionAffectedBonesMirror : public igdeAction{
 	aeMCPAnimatorAffectedBones &pProperty;
 	const igdeMetaContext::Ref pContext;
 	igdeWidget &pOwner;
 	
 public:
-	cActionAffectedBoneAdd(aeMCPAnimatorAffectedBones &property, const igdeMetaContext::Ref &context,
-		igdeEnvironment &environment, igdeWidget &owner) :
-	igdeAction("@Igde.MetaPropertyList.Action.Add", environment.GetStockIcon(igdeEnvironment::esiPlus),
-		"@Igde.MetaPropertyList.Action.Add.ToolTip"),
+	cActionAffectedBonesMirror(aeMCPAnimatorAffectedBones &property,
+		const igdeMetaContext::Ref &context, igdeWidget &owner) :
+	igdeAction("@Animator.WPAnimator.Action.BoneMirror", nullptr,
+		"@Animator.WPAnimator.Action.BoneMirror.ToolTip"),
 	pProperty(property), pContext(context), pOwner(owner){}
 	
 	void OnAction() override{
-		if(!pProperty.IsValid(pContext)){
-			return;
+		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
+		if(pProperty.IsValid(pContext)){
+			auto undo = aeUAnimatorMirrorBones::Ref::New(&pProperty.Animator(pContext));
+			if(undo->HasAnyEffect()){
+				pProperty.Animator(pContext).GetUndoSystem()->Add(undo);
+			}
 		}
-		
-		const auto rig = pProperty.Animator(pContext).GetEngineRig();
-		if(!rig){
-			return;
-		}
-		
-		decStringSet bones;
-		rig->GetBones().Visit([&](const deRigBone &bone){
-			bones.Add(bone.GetName());
-		});
-		
-		auto &environment = pOwner.GetEnvironment();
-		auto dialog = igdeDialogSetSelect::Ref::New(environment,
-			"@Animator.WPAnimator.AffectedBones.Select",
-			"@Animator.WPAnimator.AffectedBones.Select.Message", bones);
-		
-		auto iconPresent = environment.GetStockIcon(igdeEnvironment::esiSmallPlus);
-		auto iconAbsent = environment.GetStockIcon(igdeEnvironment::esiSmallMinus);
-		
-		const auto oldValue = pProperty.GetPropertyValue(pContext);
-		dialog->MarkItems(oldValue, iconPresent, iconAbsent);
-		if(!dialog->Run(&pOwner)){
-			return;
-		}
-		
-		const auto newValue = oldValue + dialog->GetSelection();
-		if(newValue != oldValue){
-			pProperty.ChangePropertyValue(pContext, newValue);
-		}
+	}
+	
+	void Update() override{
+		SetEnabled(pProperty.IsValid(pContext) && pProperty.Animator(pContext).GetListBones().IsNotEmpty());
 	}
 };
 
 }
 
+decStringSet aeMCPAnimatorAffectedBones::GetValidStrings(const igdeMetaContext::Ref &context) const{
+	decStringSet bones;
+	const auto rig = Animator(context).GetEngineRig();
+	if(rig){
+		rig->GetBones().Visit([&](const deRigBone &bone){
+			bones.Add(bone.GetName());
+		});
+	}
+	return bones;
+}
+
 igdeAction::Ref aeMCPAnimatorAffectedBones::CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	switch(target){
 	case TargetButton::add:
-		return deTObjectReference<cActionAffectedBoneAdd>::New(*this, context, owner.GetEnvironment(), owner);
+		return igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner);
 		
 	default:
 		return CreateDefaultButtonAction(target, context, owner);
@@ -98,8 +89,11 @@ igdeAction::Ref aeMCPAnimatorAffectedBones::CreateButtonAction(TargetButton targ
 
 void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
-	helper.MenuCommand(menu, deTObjectReference<cActionAffectedBoneAdd>::New(*this, context, menu.GetEnvironment(), owner));
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner));
 	AddDefaultContextMenuEntries(menu, context, owner);
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, deTObjectReference<cActionAffectedBonesMirror>::New(*this, context, owner));
 }
 
 

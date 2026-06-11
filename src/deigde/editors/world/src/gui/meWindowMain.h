@@ -191,7 +191,6 @@ private:
 	igdeToolBar::Ref pTBDecal;
 	
 	meConfiguration *pConfiguration;
-	igdeClipboard pClipboard;
 	meLoadSaveSystem *pLoadSaveSystem;
 	meSaveSupport *pSaveSupport;
 	
@@ -237,8 +236,8 @@ public:
 	inline meConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const { return pClipboard; }
+	inline igdeClipboard &GetClipboard(){ return GetEnvironment().GetClipboard(); }
+	inline const igdeClipboard &GetClipboard() const { return GetEnvironment().GetClipboard(); }
 	
 	/** Load/save system. */
 	inline meLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }

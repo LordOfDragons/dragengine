@@ -722,6 +722,8 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.MetaProperty.Action.ClearFilter.ToolTip">Filter löschen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add">Hinzufügen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Eintrag hinzufügen</translation>
+	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Title">Einträge hinzufügen</translation>
+	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Message">Wählen Sie die hinzuzufügenden Einträge aus</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove">Entfernen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove.ToolTip">Eintrag entfernen</translation>
 	<translation name="Igde.MetaPropertyList.Action.RemoveAll">Alle entfernen</translation>
@@ -734,4 +736,12 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.MetaPropertyList.Action.MoveTop.ToolTip">Eintrag nach ganz oben verschieben</translation>
 	<translation name="Igde.MetaPropertyList.Action.MoveBottom">Nach ganz unten</translation>
 	<translation name="Igde.MetaPropertyList.Action.MoveBottom.ToolTip">Eintrag nach ganz unten verschieben</translation>
+	<translation name="Igde.MetaPropertyList.Action.ExportAsText">Als Text exportieren</translation>
+	<translation name="Igde.MetaPropertyList.Action.ExportAsText.ToolTip">Wert als Text exportieren</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ExportAsText.Title">Als Text exportieren</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ExportAsText.Message">Werte</translation>
+	<translation name="Igde.MetaPropertyList.Action.ImportFromText">Aus Text importieren</translation>
+	<translation name="Igde.MetaPropertyList.Action.ImportFromText.ToolTip">Wert aus Text importieren</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ImportFromText.Title">Aus Text importieren</translation>
+	<translation name="Igde.MetaPropertyList.Dialog.ImportFromText.Message">Werte. Ein Wert pro Zeile.</translation>
 </languagePack>
