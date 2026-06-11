@@ -712,7 +712,7 @@ void aeWPLink::SetAnimator(aeAnimator *animator){
 }
 
 aeLink *aeWPLink::GetLink() const{
-	return pAnimator ? pAnimator->GetActiveLink() : nullptr;
+	return pAnimator ? pAnimator->GetActiveLink().Pointer() : nullptr;
 }
 
 void aeWPLink::SelectActiveLink(){

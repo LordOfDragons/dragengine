@@ -621,7 +621,7 @@ void aeWPController::SetAnimator(aeAnimator *animator){
 }
 
 aeController *aeWPController::GetController() const{
-	return pAnimator ? pAnimator->GetActiveController() : nullptr;
+	return pAnimator ? pAnimator->GetActiveController().Pointer() : nullptr;
 }
 
 void aeWPController::SelectActiveController(){

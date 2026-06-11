@@ -463,7 +463,7 @@ void aeWPRule::SetAnimator(aeAnimator *animator){
 }
 
 aeRule *aeWPRule::GetRule() const{
-	return pAnimator ? pAnimator->GetActiveRule() : nullptr;
+	return pAnimator ? pAnimator->GetActiveRule().Pointer() : nullptr;
 }
 
 
