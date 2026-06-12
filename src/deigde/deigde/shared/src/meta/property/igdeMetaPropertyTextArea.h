@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYTEXTAREA_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageString.h"
 
 class igdeMetaPropertyTextAreaUndo;
 
@@ -134,6 +135,36 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Text area meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyTextAreaStorage : public igdeMetaPropertyTextArea{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageString<igdeMetaPropertyTextAreaStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create text area meta property with label and description. */
+	igdeMetaPropertyTextAreaStorage(const char *id, const char *name, const char *description, int rows);
+	
+protected:
+	/** \brief Clean up text area meta property. */
+	~igdeMetaPropertyTextAreaStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decString &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decString &value) override;
 };
 
 #endif

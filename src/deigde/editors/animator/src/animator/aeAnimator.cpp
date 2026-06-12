@@ -92,7 +92,11 @@
 aeAnimator::aeAnimator(aeWindowMain &windowMain) :
 igdeEditableEntity(&windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pMetaContext(aeMCAnimator::Ref::New(&windowMain))
+pMetaContext(aeMCAnimator::Ref::New(&windowMain)),
+rigPath(pWindowMain.GetMCAnimatorProperties().rig, pMetaContext),
+animationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
+affectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
+affectedVertexPositionSets(pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets, pMetaContext)
 {
 	deEngine * engine = GetEngine();
 	
@@ -165,6 +169,33 @@ pMetaContext(aeMCAnimator::Ref::New(&windowMain))
 		throw;
 	}
 	
+	rigPath.SetOnChanged([this](){
+		pUpdateComponent();
+		NotifyRigChanged();
+	});
+	
+	animationPath.SetOnChanged([this](){
+		pUpdateAnimator();
+		pCamera->SetBone("");
+		NotifyAnimationChanged();
+	});
+	
+	affectedBones.SetOnChanged([this](){
+		if(pEngAnimator){
+			pEngAnimator->GetListBones() = affectedBones;
+			pEngAnimator->NotifyBonesChanged();
+		}
+		NotifyAnimatorChanged();
+	});
+	
+	affectedVertexPositionSets.SetOnChanged([this](){
+		if(pEngAnimator){
+			pEngAnimator->GetListVertexPositionSets() = affectedVertexPositionSets;
+			pEngAnimator->NotifyVertexPositionSetsChanged();
+		}
+		NotifyAnimatorChanged();
+	});
+	
 	SetSaved(false);
 	SetChanged(false);
 }
@@ -229,28 +260,11 @@ void aeAnimator::SetDisplayRigPath(const char *path){
 }
 
 void aeAnimator::SetRigPath(const char *path){
-	if(pRigPath == path){
-		return;
-	}
-	
-	pRigPath = path;
-	
-	pUpdateComponent();
-	NotifyRigChanged();
-	pWindowMain.GetMCAnimatorProperties().rig->NotifyValueChanged(pMetaContext);
+	rigPath = path;
 }
 
 void aeAnimator::SetAnimationPath(const char *path){
-	if(pAnimationPath == path){
-		return;
-	}
-	
-	pAnimationPath = path;
-	
-	pUpdateAnimator();
-	pCamera->SetBone("");
-	NotifyAnimationChanged();
-	pWindowMain.GetMCAnimatorProperties().animation->NotifyValueChanged(pMetaContext);
+	animationPath = path;
 }
 
 bool aeAnimator::GetShowBones() const{
@@ -699,81 +713,19 @@ void aeAnimator::RebuildRules(){
 ////////////////////
 
 void aeAnimator::SetListBones(const decStringSet &bones){
-	if(bones == pListBones){
-		return;
-	}
-	
-	pListBones = bones;
-	
-	if(pEngAnimator){
-		pEngAnimator->GetListBones() = bones;
-		pEngAnimator->NotifyBonesChanged();
-	}
-	
-	NotifyAnimatorChanged();
-	pWindowMain.GetMCAnimatorProperties().affectedBones->NotifyValueChanged(pMetaContext);
+	affectedBones = bones;
 }
 
 void aeAnimator::AddBone(const char *bone){
-	if(!bone) DETHROW(deeInvalidParam);
-	
-	if(!pListBones.Has(bone)){
-		pListBones.Add(bone);
-		
-		if(pEngAnimator){
-			pEngAnimator->GetListBones().Add(bone);
-			pEngAnimator->NotifyBonesChanged();
-		}
-		
-		NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedBones->NotifyValueChanged(pMetaContext);
-	}
+	affectedBones = affectedBones.GetValue() + decStringSet(devctag, bone);
 }
 
 void aeAnimator::RemoveBone(const char *bone){
-	if(pListBones.Has(bone)){
-		pListBones.Remove(bone);
-		
-		if(pEngAnimator){
-			pEngAnimator->GetListBones().Remove(bone);
-			pEngAnimator->NotifyBonesChanged();
-		}
-		
-		NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedBones->NotifyValueChanged(pMetaContext);
-	}
+	affectedBones = affectedBones.GetValue() - decStringSet(devctag, bone);
 }
 
 void aeAnimator::RemoveAllBones(){
-	if(pListBones.GetCount() > 0){
-		pListBones.RemoveAll();
-		
-		if(pEngAnimator){
-			pEngAnimator->GetListBones().RemoveAll();
-			pEngAnimator->NotifyBonesChanged();
-		}
-		
-		NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedBones->NotifyValueChanged(pMetaContext);
-	}
-}
-
-void aeAnimator::SetActiveBone(const char *bone){
-	if(pActiveBone == bone){
-		return;
-	}
-	
-	pActiveBone = bone;
-	pWindowMain.GetMCAnimatorProperties().affectedBones->NotifyActiveChanged(pMetaContext);
-}
-
-void aeAnimator::SetSelectedBones(const decStringSet &bones){
-	if(pSelectedBones == bones){
-		return;
-	}
-	
-	pSelectedBones = bones;
-	pWindowMain.GetMCAnimatorProperties().affectedBones->NotifySelectionChanged(pMetaContext);
+	affectedBones = {};
 }
 
 
@@ -781,81 +733,19 @@ void aeAnimator::SetSelectedBones(const decStringSet &bones){
 ///////////////////////////////////
 
 void aeAnimator::SetListVertexPositionSets(const decStringSet &sets){
-	if(sets == pListVertexPositionSets){
-		return;
-	}
-	
-	pListVertexPositionSets = sets;
-	
-	if(pEngAnimator){
-		pEngAnimator->GetListVertexPositionSets() = sets;
-		pEngAnimator->NotifyVertexPositionSetsChanged();
-	}
-	
-	NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets->NotifyValueChanged(pMetaContext);
+	affectedVertexPositionSets = sets;
 }
 
 void aeAnimator::AddVertexPositionSet(const char *vertexPositionSet){
-	DEASSERT_NOTNULL(vertexPositionSet)
-	
-	if(!pListVertexPositionSets.Has(vertexPositionSet)){
-		pListVertexPositionSets.Add(vertexPositionSet);
-		
-		if(pEngAnimator){
-			pEngAnimator->GetListVertexPositionSets().Add(vertexPositionSet);
-			pEngAnimator->NotifyVertexPositionSetsChanged();
-		}
-		
-		NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets->NotifyValueChanged(pMetaContext);
-	}
+	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() + decStringSet(devctag, vertexPositionSet);
 }
 
 void aeAnimator::RemoveVertexPositionSet(const char *vertexPositionSet){
-	if(pListVertexPositionSets.Has(vertexPositionSet)){
-		pListVertexPositionSets.Remove(vertexPositionSet);
-		
-		if(pEngAnimator){
-			pEngAnimator->GetListVertexPositionSets().Remove(vertexPositionSet);
-			pEngAnimator->NotifyVertexPositionSetsChanged();
-		}
-		
-		NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets->NotifyValueChanged(pMetaContext);
-	}
+	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() - decStringSet(devctag, vertexPositionSet);
 }
 
 void aeAnimator::RemoveAllVertexPositionSets(){
-	if(pListVertexPositionSets.GetCount() > 0){
-		pListVertexPositionSets.RemoveAll();
-		
-		if(pEngAnimator){
-			pEngAnimator->GetListVertexPositionSets().RemoveAll();
-			pEngAnimator->NotifyVertexPositionSetsChanged();
-		}
-		
-		NotifyAnimatorChanged();
-		pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets->NotifyValueChanged(pMetaContext);
-	}
-}
-
-void aeAnimator::SetActiveVertexPositionSet(const char *vertexPositionSet){
-	if(pActiveVertexPositionSet == vertexPositionSet){
-		return;
-	}
-	
-	pActiveVertexPositionSet = vertexPositionSet;
-	pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets->NotifyActiveChanged(pMetaContext);
-}
-
-void aeAnimator::SetSelectedVertexPositionSets(const decStringSet &sets){
-	if(pSelectedVertexPositionSets == sets){
-		return;
-	}
-	
-	pSelectedVertexPositionSets = sets;
-	pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets->NotifySelectionChanged(pMetaContext);
+	affectedVertexPositionSets = {};
 }
 
 
@@ -1309,11 +1199,11 @@ void aeAnimator::pUpdateComponent(){
 			displayRig = engine->GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
 		}
 		
-		if(pRigPath.IsEmpty()){
+		if(rigPath.IsEmpty()){
 			pEngRig = nullptr;
 			
 		}else{
-			pEngRig = engine->GetRigManager()->LoadRig(pRigPath, GetDirectoryPath());
+			pEngRig = engine->GetRigManager()->LoadRig(rigPath, GetDirectoryPath());
 		}
 		
 	}catch(const deException &e){
@@ -1398,9 +1288,9 @@ void aeAnimator::pUpdateAnimator(){
 	deAnimation::Ref animation;
 	
 	try{
-		if(!pAnimationPath.IsEmpty()){
+		if(!animationPath.IsEmpty()){
 			animation = GetEngine()->GetAnimationManager()->
-				LoadAnimation(pAnimationPath, GetDirectoryPath());
+				LoadAnimation(animationPath, GetDirectoryPath());
 		}
 		
 	}catch(const deException &e){

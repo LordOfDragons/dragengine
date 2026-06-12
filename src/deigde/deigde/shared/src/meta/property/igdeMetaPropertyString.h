@@ -26,8 +26,9 @@
 #define _IGDEMETAPROPERTYSTRING_H_
 
 #include "igdeMetaProperty.h"
-#include "../../clipboard/igdeClipboardData.h"
+#include "storage/igdeMetaPropertyStorageString.h"
 #include "../igdeTMetaData.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/model/igdeListItem.h"
 
 #include <dragengine/common/string/decStringList.h>
@@ -171,6 +172,36 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief String meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyStringStorage : public igdeMetaPropertyString{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageString<igdeMetaPropertyStringStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create string meta property with label and description. */
+	igdeMetaPropertyStringStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up string meta property. */
+	~igdeMetaPropertyStringStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decString &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decString &value) override;
 };
 
 #endif

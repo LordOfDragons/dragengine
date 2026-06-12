@@ -78,16 +78,6 @@ decStringSet aeMCPAnimatorAffectedBones::GetValidStrings(const igdeMetaContext::
 	return strings;
 }
 
-igdeAction::Ref aeMCPAnimatorAffectedBones::CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	switch(target){
-	case TargetButton::add:
-		return igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner);
-		
-	default:
-		return CreateDefaultButtonAction(target, context, owner);
-	}
-}
-
 void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner));
@@ -144,16 +134,6 @@ decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetValidStrings(const igde
 		}
 	}
 	return strings;
-}
-
-igdeAction::Ref aeMCPAnimatorAffectedVertexPositionSets::CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	switch(target){
-	case TargetButton::add:
-		return igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, context, owner);
-		
-	default:
-		return CreateDefaultButtonAction(target, context, owner);
-	}
 }
 
 void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){

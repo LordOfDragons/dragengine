@@ -89,3 +89,22 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyCurveBezierWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyCurveBezierStorage
+///////////////////////////////////////
+
+igdeMetaPropertyCurveBezierStorage::igdeMetaPropertyCurveBezierStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyCurveBezier(id, name, description){
+}
+
+igdeMetaPropertyCurveBezierStorage::~igdeMetaPropertyCurveBezierStorage() = default;
+
+const decCurveBezier &igdeMetaPropertyCurveBezierStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyCurveBezierStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decCurveBezier &value){
+	GetStorage(context).SetValue(value);
+}

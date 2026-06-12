@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYBOOLEAN_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStoragePrimitive.h"
 
 class igdeMetaPropertyBooleanUndo;
 
@@ -127,6 +128,37 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Boolean meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyBooleanStorage : public igdeMetaPropertyBoolean{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStoragePrimitive<bool, igdeMetaPropertyBooleanStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create boolean meta property with label and description. */
+	igdeMetaPropertyBooleanStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up boolean meta property. */
+	~igdeMetaPropertyBooleanStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	bool GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, bool value) override;
 };
 
 #endif

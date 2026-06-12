@@ -106,3 +106,22 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyFloatWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyFloatStorage
+///////////////////////////////////
+
+igdeMetaPropertyFloatStorage::igdeMetaPropertyFloatStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyFloat(id, name, description){
+}
+
+igdeMetaPropertyFloatStorage::~igdeMetaPropertyFloatStorage() = default;
+
+float igdeMetaPropertyFloatStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyFloatStorage::SetPropertyValue(const igdeMetaContext::Ref &context, float value){
+	GetStorage(context).SetValue(value);
+}

@@ -74,3 +74,43 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyColorWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyColorStorage
+/////////////////////////////////
+
+igdeMetaPropertyColorStorage::igdeMetaPropertyColorStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyColor(id, name, description){
+}
+
+igdeMetaPropertyColorStorage::~igdeMetaPropertyColorStorage() = default;
+
+const decColor &igdeMetaPropertyColorStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyColorStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decColor &value){
+	GetStorage(context).SetValue(value);
+}
+
+
+// Test
+#if 0
+class TestColor{
+public:
+	igdeMetaPropertyColorStorage::Storage value;
+	
+	TestColor(igdeMetaPropertyColorStorage &property, const deTObjectReference<igdeMetaContext> &context) :
+	value(property, context){
+	}
+	
+	void Testing(){
+		const decColor cv = value; // implicit conversion
+		value = cv + decColor(0.1f, 0.1f, 0.1f); // implicit assignment. triggers notification
+		const decColor cv2 = value.GetValue();
+		value.SetValue(cv + decColor(0.1f, 0.1f, 0.1f)); // same value so no notification triggered
+		value = cv2; // same value so no notification triggered
+	}
+};
+#endif

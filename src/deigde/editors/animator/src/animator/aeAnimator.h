@@ -49,6 +49,9 @@
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+
 
 // predefinitions
 class igdeEnvironment;
@@ -130,9 +133,13 @@ private:
 	decString pDisplaySkinPath;
 	decString pDisplayRigPath;
 	
-	decString pRigPath;
-	decString pAnimationPath;
+public:
+	igdeMetaPropertyPathStorage::Storage rigPath;
+	igdeMetaPropertyPathStorage::Storage animationPath;
+	igdeMetaPropertyStringSetStorage::Storage affectedBones;
+	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
 	
+private:
 	aeCamera *pCamera;
 	
 	aeController::List pControllers;
@@ -143,11 +150,6 @@ private:
 	
 	aeRule::List pRules;
 	aeRule::Ref pActiveRule;
-	
-	decStringSet pListBones, pSelectedBones;
-	decString pActiveBone;
-	decStringSet pListVertexPositionSets, pSelectedVertexPositionSets;
-	decString pActiveVertexPositionSet;
 	
 	AttachmentSet pAttachments;
 	aeAttachment::Ref pActiveAttachment;
@@ -206,11 +208,11 @@ public:
 	void SetDisplayRigPath(const char *path);
 	
 	/** Retrieves the rig path. */
-	inline const decString &GetRigPath() const{ return pRigPath; }
+	inline const decString &GetRigPath() const{ return rigPath; }
 	/** Sets the rig path. */
 	void SetRigPath(const char *path);
 	/** Retrieves the rig path. */
-	inline const decString &GetAnimationPath() const{ return pAnimationPath; }
+	inline const decString &GetAnimationPath() const{ return animationPath; }
 	/** Sets the rig path. */
 	void SetAnimationPath(const char *path);
 	
@@ -399,7 +401,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** List of bones. */
-	inline const decStringSet &GetListBones() const{ return pListBones; }
+	inline const decStringSet &GetListBones() const{ return affectedBones; }
 	
 	/** Set list of bones. */
 	void SetListBones(const decStringSet &bones);
@@ -412,18 +414,6 @@ public:
 	
 	/** Removes all bones. */
 	void RemoveAllBones();
-	
-	/** Active bone or empty. */
-	inline const decString &GetActiveBone() const{ return pActiveBone; }
-	
-	/** Set active bone or empty. */
-	void SetActiveBone(const char *bone);
-	
-	/** Selected bones. */
-	inline const decStringSet &GetSelectedBones() const{ return pSelectedBones; }
-	
-	/** Set selected bones. */
-	void SetSelectedBones(const decStringSet &bones);
 	/*@}*/
 	
 	
@@ -431,7 +421,7 @@ public:
 	/** \name Vertex position set Management */
 	/*@{*/
 	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return affectedVertexPositionSets; }
 	
 	/** Set list of vertex position sets. */
 	void SetListVertexPositionSets(const decStringSet &sets);
@@ -444,18 +434,6 @@ public:
 	
 	/** Removes all vertex position sets. */
 	void RemoveAllVertexPositionSets();
-	
-	/** Active vertex position set or empty. */
-	inline const decString &GetActiveVertexPositionSet() const{ return pActiveVertexPositionSet; }
-	
-	/** Set active vertex position set or empty. */
-	void SetActiveVertexPositionSet(const char *vertexPositionSet);
-	
-	/** Selected vertex position sets. */
-	inline const decStringSet &GetSelectedVertexPositionSets() const{ return pSelectedVertexPositionSets; }
-	
-	/** Set selected vertex position sets. */
-	void SetSelectedVertexPositionSets(const decStringSet &sets);
 	/*@}*/
 	
 	

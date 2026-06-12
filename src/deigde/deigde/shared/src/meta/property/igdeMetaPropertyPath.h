@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYPATH_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageString.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../gui/filedialog/igdeFilePattern.h"
 
@@ -58,7 +59,6 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-
 	/** \brief Create path meta property with label and description. */
 	igdeMetaPropertyPath(const char *id, const char *name, const char *description,
 		igdeEnvironment::eFilePatternListTypes resourceType);
@@ -148,6 +148,41 @@ public:
 	 */
 	virtual const decString &GetPropertyBasePath(const ContextRef &context) const = 0;
 	/*@}*/
+};
+
+
+/**
+ * \brief Path meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyPathStorage : public igdeMetaPropertyPath{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageString<igdeMetaPropertyPathStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create path meta property with label and description. */
+	igdeMetaPropertyPathStorage(const char *id, const char *name, const char *description,
+		igdeEnvironment::eFilePatternListTypes resourceType);
+	
+	/** \brief Create path meta property with label, description and custom file pattern list. */
+	igdeMetaPropertyPathStorage(const char *id, const char *name, const char *description,
+		const igdeFilePattern::List &customPatternList);
+	
+protected:
+	/** \brief Clean up path meta property. */
+	~igdeMetaPropertyPathStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decString &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decString &value) override;
 };
 
 #endif

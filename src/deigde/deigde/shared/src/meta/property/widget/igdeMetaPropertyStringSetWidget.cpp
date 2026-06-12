@@ -44,13 +44,9 @@ public:
 	~cListener() override = default;
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
-		if(pWidget.GetPreventUpdate() || !pWidget.GetContext()){
-			return;
+		if(!pWidget.GetPreventUpdate() && pWidget.GetContext()){
+			pWidget.StoreActiveString();
 		}
-		
-		auto data = listBox->GetSelectedItemRefData();
-		pWidget.GetPropertyStringSet().SetActiveString(pWidget.GetContext(),
-			data ? data.DynamicCast<igdeTMetaData<decString>>()->GetData() : "");
 	}
 	
 	void OnItemSelected(igdeListBox *listBox, int index) override{
@@ -335,18 +331,33 @@ void igdeMetaPropertyStringSetWidget::Update(){
 	
 	SelectActiveString();
 	RestoreSelection();
+	
+	// if the list changed the selection and active string might not be valid anymore.
+	// store the current state to synchronize it
+	StoreSelection();
+	StoreActiveString();
 }
 
 void igdeMetaPropertyStringSetWidget::SelectActiveString(){
 	if(pListBox){
 		RunWithPreventUpdate([&]{
 			const auto active = pPropertyStringSet.GetActiveString(GetContext());
-			if(!active.IsEmpty()){
+			if(active){
 				pListBox->SetSelection(pListBox->GetItems().IndexOfMatching([&](const igdeListItem &item){
-					return item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData() == active;
+					return item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData() == active->GetData();
 				}));
 			}
 		});
+	}
+}
+
+void igdeMetaPropertyStringSetWidget::StoreActiveString(){
+	if(pListBox){
+		const auto data = pListBox->GetSelectedItemRefData();
+		pPropertyStringSet.SetActiveString(GetContext(), data
+			? igdeMetaPropertyStringSet::StringRef::New(
+				data.DynamicCast<igdeTMetaData<decString>>()->GetData())
+			: igdeMetaPropertyStringSet::StringRef());
 	}
 }
 

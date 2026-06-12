@@ -75,3 +75,22 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyVector3::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyVector3Widget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyVector3Storage
+///////////////////////////////////
+
+igdeMetaPropertyVector3Storage::igdeMetaPropertyVector3Storage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyVector3(id, name, description){
+}
+
+igdeMetaPropertyVector3Storage::~igdeMetaPropertyVector3Storage() = default;
+
+const decVector &igdeMetaPropertyVector3Storage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyVector3Storage::SetPropertyValue(const igdeMetaContext::Ref &context, const decVector &value){
+	GetStorage(context).SetValue(value);
+}

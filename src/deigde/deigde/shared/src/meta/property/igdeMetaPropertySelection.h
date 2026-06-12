@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYSELECTION_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStoragePrimitive.h"
 #include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/model/igdeListItem.h"
 
@@ -267,6 +268,44 @@ public:
 	 */
 	virtual void GetChoiceItemInfoEnum(T choice, igdeMetaContextItemInfo &info) const = 0;
 	/*@}*/
+};
+
+
+/**
+ * \brief Selection meta property using storage.
+ */
+template<typename T>
+class DE_DLL_EXPORT igdeMetaPropertySelectionEnumStorage : public igdeMetaPropertySelectionEnum<T>{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStoragePrimitive<T, igdeMetaPropertySelectionEnumStorage<T>>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create selection meta property with label and description. */
+	igdeMetaPropertySelectionEnumStorage(const char *id, const char *name, const char *description) :
+	igdeMetaPropertySelectionEnum<T>(id, name, description){}
+	
+protected:
+	/** \brief Clean up selection meta property. */
+	~igdeMetaPropertySelectionEnumStorage() override = default;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context) const = 0;
+	
+	
+	T GetPropertyValue(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context) const override{
+		return GetStorage(context).GetValue();
+	}
+	
+	void SetPropertyValue(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context, T value) override{
+		GetStorage(context).SetValue(value);
+	}
 };
 
 #endif

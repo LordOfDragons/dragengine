@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYVECTOR2_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageComplexIsEqualTo.h"
 #include "../../clipboard/igdeClipboardData.h"
 #include <dragengine/common/math/decMath.h>
 
@@ -146,6 +147,36 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Vector2 meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyVector2Storage : public igdeMetaPropertyVector2{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageComplexIsEqualTo<decVector2, igdeMetaPropertyVector2Storage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create vector2 meta property with label and description. */
+	igdeMetaPropertyVector2Storage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up vector2 meta property. */
+	~igdeMetaPropertyVector2Storage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decVector2 &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decVector2 &value) override;
 };
 
 #endif

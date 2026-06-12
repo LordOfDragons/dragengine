@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYCURVEBEZIER_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageComplex.h"
 #include "../../clipboard/igdeClipboard.h"
 
 #include <dragengine/common/curve/decCurveBezier.h>
@@ -169,6 +170,37 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Curve bezier meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyCurveBezierStorage : public igdeMetaPropertyCurveBezier{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageComplex<decCurveBezier, igdeMetaPropertyCurveBezierStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create curve bezier meta property with label and description. */
+	igdeMetaPropertyCurveBezierStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up curve bezier meta property. */
+	~igdeMetaPropertyCurveBezierStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decCurveBezier &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decCurveBezier &value) override;
 };
 
 #endif

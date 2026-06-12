@@ -28,6 +28,7 @@
 #include <functional>
 
 #include "../igdeMetaProperty.h"
+#include "../../igdeMetaContext.h"
 #include "../../../gui/igdeButton.h"
 #include "../../../gui/igdeLabel.h"
 #include "../../../gui/event/igdeActionContextMenu.h"

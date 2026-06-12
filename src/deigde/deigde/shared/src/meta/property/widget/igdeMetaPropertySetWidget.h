@@ -103,6 +103,9 @@ public:
 	/** \brief Select active object. */
 	void SelectActiveObject();
 	
+	/** \brief Store active object. */
+	void StoreActiveObject();
+	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Store selection. */

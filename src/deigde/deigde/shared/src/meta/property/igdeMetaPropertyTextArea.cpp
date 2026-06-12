@@ -80,3 +80,22 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyTextAreaWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyTextAreaStorage
+////////////////////////////////////
+
+igdeMetaPropertyTextAreaStorage::igdeMetaPropertyTextAreaStorage(
+	const char *id, const char *name, const char *description, int rows) :
+igdeMetaPropertyTextArea(id, name, description, rows){
+}
+
+igdeMetaPropertyTextAreaStorage::~igdeMetaPropertyTextAreaStorage() = default;
+
+const decString &igdeMetaPropertyTextAreaStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyTextAreaStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+	GetStorage(context).SetValue(value);
+}

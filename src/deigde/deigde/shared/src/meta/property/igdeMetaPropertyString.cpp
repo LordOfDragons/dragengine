@@ -93,3 +93,22 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyStringWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyStringStorage
+//////////////////////////////////
+
+igdeMetaPropertyStringStorage::igdeMetaPropertyStringStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyString(id, name, description){
+}
+
+igdeMetaPropertyStringStorage::~igdeMetaPropertyStringStorage() = default;
+
+const decString &igdeMetaPropertyStringStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyStringStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+	GetStorage(context).SetValue(value);
+}

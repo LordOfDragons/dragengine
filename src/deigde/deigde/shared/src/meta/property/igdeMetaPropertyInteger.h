@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYINTEGER_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStoragePrimitive.h"
 #include "../../clipboard/igdeClipboardData.h"
 
 class igdeMetaPropertyIntegerUndo;
@@ -184,6 +185,36 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Integer meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyIntegerStorage : public igdeMetaPropertyInteger{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStoragePrimitive<int, igdeMetaPropertyIntegerStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create integer meta property with label and description. */
+	igdeMetaPropertyIntegerStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up integer meta property. */
+	~igdeMetaPropertyIntegerStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	int GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, int value) override;
 };
 
 #endif

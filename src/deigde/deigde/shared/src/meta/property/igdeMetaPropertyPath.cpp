@@ -92,3 +92,27 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyPathWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyPathStorage
+////////////////////////////////
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *name,
+	const char *description, igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaPropertyPath(id, name, description, resourceType){
+}
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *name,
+	const char *description, const igdeFilePattern::List &customPatternList) :
+igdeMetaPropertyPath(id, name, description, customPatternList){
+}
+
+igdeMetaPropertyPathStorage::~igdeMetaPropertyPathStorage() = default;
+
+const decString &igdeMetaPropertyPathStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyPathStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+	GetStorage(context).SetValue(value);
+}

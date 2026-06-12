@@ -105,3 +105,43 @@ const igdeMetaContext::Ref &context, int newValue, const char *undoInfo, const c
 igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyIntegerWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyIntegerStorage
+///////////////////////////////////
+
+igdeMetaPropertyIntegerStorage::igdeMetaPropertyIntegerStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyInteger(id, name, description){
+}
+
+igdeMetaPropertyIntegerStorage::~igdeMetaPropertyIntegerStorage() = default;
+
+int igdeMetaPropertyIntegerStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyIntegerStorage::SetPropertyValue(const igdeMetaContext::Ref &context, int value){
+	GetStorage(context).SetValue(value);
+}
+
+
+// Test
+#if 0
+class TestInteger{
+public:
+	igdeMetaPropertyIntegerStorage::Storage value;
+	
+	TestInteger(igdeMetaPropertyIntegerStorage &property, const igdeMetaContext::Ref &context) :
+	value(property, context){
+	}
+	
+	void Testing(){
+		const int cv = value; // implicit conversion
+		value = cv + 5; // implicit assignment. triggers notification
+		const int cv2 = value.GetValue();
+		value.SetValue(cv + 5); // same value so no notification triggered
+		value = cv2; // same value so no notification triggered
+	}
+};
+#endif

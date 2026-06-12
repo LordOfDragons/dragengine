@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYSTRINGSET_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageStringSet.h"
 #include "../igdeTMetaData.h"
 #include "../igdeMetaContextItemInfo.h"
 #include "../../clipboard/igdeClipboardData.h"
@@ -45,6 +46,9 @@ class DE_DLL_EXPORT igdeMetaPropertyStringSet : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyStringSet>;
+	
+	/** \brief String reference. */
+	using StringRef = igdeTMetaData<decString>::Ref;
 	
 	
 	/** \brief Target button. */
@@ -250,12 +254,12 @@ public:
 	/**
 	 * \brief Get active string or empty string if no active string.
 	 */
-	virtual decString GetActiveString(const ContextRef &context) const = 0;
+	virtual StringRef GetActiveString(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set active string.
 	 */
-	virtual void SetActiveString(const ContextRef &context, const decString &activeString) = 0;
+	virtual void SetActiveString(const ContextRef &context, const StringRef &activeString) = 0;
 	
 	/**
 	 * \brief Get string selection.
@@ -281,6 +285,7 @@ public:
 	 * \brief Add context menu entries for adding new entries to the set.
 	 * 
 	 * Subclasses can override this method to add custom context menu entries.
+	 * Default implementation calls AddDefaultContextMenuEntries().
 	 */
 	virtual void AddContextMenuEntriesAdd(igdeMenuCascade &contextMenu,
 		const ContextRef &context, igdeWidget &owner);
@@ -289,7 +294,7 @@ public:
 	 * \brief Create action for target button.
 	 * 
 	 * Subclasses can override this method to create button action. If nullptr is returned
-	 * the button is destroyed.
+	 * the button is destroyed. Default implementation calls CreateDefaultButtonAction().
 	 */
 	virtual igdeAction::Ref CreateButtonAction(TargetButton target,
 		const ContextRef &context, igdeWidget &owner);
@@ -320,6 +325,40 @@ public:
 	igdeAction::Ref CreateDefaultButtonAction(TargetButton target,
 		const ContextRef &context, igdeWidget &owner);
 	/*@}*/
+};
+
+
+/**
+ * \brief String set meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyStringSetStorage : public igdeMetaPropertyStringSet{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageStringSet<igdeMetaPropertyStringSetStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create string set meta property with label and description. */
+	igdeMetaPropertyStringSetStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up string set meta property. */
+	~igdeMetaPropertyStringSetStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	decStringSet GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decStringSet &value) override;
+	StringRef GetActiveString(const ContextRef &context) const override;
+	void SetActiveString(const ContextRef &context, const StringRef &activeString) override;
+	decStringSet GetSelection(const ContextRef &context) const override;
+	void SetSelection(const ContextRef &context, const decStringSet &selection) override;
 };
 
 #endif

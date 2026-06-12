@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYCOLOR_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageComplexIsEqualTo.h"
 #include "../../clipboard/igdeClipboardData.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -147,6 +148,37 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Color meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyColorStorage : public igdeMetaPropertyColor{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageComplexIsEqualTo<decColor, igdeMetaPropertyColorStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create color meta property with label and description. */
+	igdeMetaPropertyColorStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up color meta property. */
+	~igdeMetaPropertyColorStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decColor &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decColor &value) override;
 };
 
 #endif

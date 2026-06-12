@@ -75,3 +75,22 @@ const char *undoInfo, const char *undoInfoLong){
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyPointWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyPointStorage
+///////////////////////////////////
+
+igdeMetaPropertyPointStorage::igdeMetaPropertyPointStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyPoint(id, name, description){
+}
+
+igdeMetaPropertyPointStorage::~igdeMetaPropertyPointStorage() = default;
+
+const decPoint &igdeMetaPropertyPointStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyPointStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decPoint &value){
+	GetStorage(context).SetValue(value);
+}

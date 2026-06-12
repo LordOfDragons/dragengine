@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYPOINT3_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageComplex.h"
 #include "../../clipboard/igdeClipboardData.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -146,6 +147,37 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Point3 meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyPoint3Storage : public igdeMetaPropertyPoint3{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageComplex<decPoint3, igdeMetaPropertyPoint3Storage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create point3 meta property with label and description. */
+	igdeMetaPropertyPoint3Storage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up point3 meta property. */
+	~igdeMetaPropertyPoint3Storage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decPoint3 &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decPoint3 &value) override;
 };
 
 #endif

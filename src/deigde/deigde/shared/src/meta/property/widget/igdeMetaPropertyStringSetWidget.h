@@ -103,6 +103,9 @@ public:
 	/** \brief Select active string. */
 	void SelectActiveString();
 	
+	/** \brief Store active string. */
+	void StoreActiveString();
+	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	
 	/** \brief Store selection. */

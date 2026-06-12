@@ -34,7 +34,7 @@
 
 
 /** Rig path. */
-class aeMCPAnimatorRig : public aeTMCPAnimator<igdeMetaPropertyPath>{
+class aeMCPAnimatorRig : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
 public:
 	aeMCPAnimatorRig() : aeTMCPAnimator("animator.rig",
 		"@Animator.WPAnimator.Rig", "@Animator.WPAnimator.Rig.ToolTip",
@@ -42,12 +42,8 @@ public:
 	
 	~aeMCPAnimatorRig() override{}
 	
-	const decString &GetPropertyValue(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetRigPath();
-	}
-	
-	void SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value) override{
-		Animator(context).SetRigPath(value);
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).rigPath;
 	}
 	
 	const decString &GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -57,7 +53,7 @@ public:
 
 
 /** Animation path. */
-class aeMCPAnimatorAnimation : public aeTMCPAnimator<igdeMetaPropertyPath>{
+class aeMCPAnimatorAnimation : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
 public:
 	aeMCPAnimatorAnimation() : aeTMCPAnimator("animator.animation",
 		"@Animator.WPAnimator.Animation", "@Animator.WPAnimator.Animation.ToolTip",
@@ -65,12 +61,8 @@ public:
 	
 	~aeMCPAnimatorAnimation() override{}
 	
-	const decString &GetPropertyValue(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetAnimationPath();
-	}
-	
-	void SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value) override{
-		Animator(context).SetAnimationPath(value);
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).animationPath;
 	}
 	
 	const decString &GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -80,7 +72,7 @@ public:
 
 
 /** Affected bones. */
-class aeMCPAnimatorAffectedBones : public aeTMCPAnimator<igdeMetaPropertyStringSet>{
+class aeMCPAnimatorAffectedBones : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
 public:
 	aeMCPAnimatorAffectedBones() : aeTMCPAnimator("animator.affectedBones",
 		"@Animator.WPAnimator.AffectedBones", "@Animator.WPAnimator.AffectedBones.ToolTip"){
@@ -89,38 +81,17 @@ public:
 	
 	~aeMCPAnimatorAffectedBones() override{}
 	
-	decStringSet GetPropertyValue(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetListBones();
-	}
-	
-	void SetPropertyValue(const igdeMetaContext::Ref &context, const decStringSet &value) override{
-		Animator(context).SetListBones(value);
-	}
-	
-	decString GetActiveString(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetActiveBone();
-	}
-	
-	void SetActiveString(const igdeMetaContext::Ref &context, const decString &activeString) override{
-		Animator(context).SetActiveBone(activeString);
-	}
-	
-	decStringSet GetSelection(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetSelectedBones();
-	}
-	
-	void SetSelection(const igdeMetaContext::Ref &context, const decStringSet &selection) override{
-		Animator(context).SetSelectedBones(selection);
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).affectedBones;
 	}
 	
 	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
-	igdeAction::Ref CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 
 
 /** Affected vertex position sets. */
-class aeMCPAnimatorAffectedVertexPositionSets : public aeTMCPAnimator<igdeMetaPropertyStringSet>{
+class aeMCPAnimatorAffectedVertexPositionSets : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
 public:
 	aeMCPAnimatorAffectedVertexPositionSets() : aeTMCPAnimator("animator.affectedVertexPositionSets",
 		"@Animator.WPAnimator.AffectedVertexPositionSets", "@Animator.WPAnimator.AffectedVertexPositionSets.ToolTip"){
@@ -129,32 +100,11 @@ public:
 	
 	~aeMCPAnimatorAffectedVertexPositionSets() override{}
 	
-	decStringSet GetPropertyValue(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetListVertexPositionSets();
-	}
-	
-	void SetPropertyValue(const igdeMetaContext::Ref &context, const decStringSet &value) override{
-		Animator(context).SetListVertexPositionSets(value);
-	}
-	
-	decString GetActiveString(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetActiveVertexPositionSet();
-	}
-	
-	void SetActiveString(const igdeMetaContext::Ref &context, const decString &activeString) override{
-		Animator(context).SetActiveVertexPositionSet(activeString);
-	}
-	
-	decStringSet GetSelection(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetSelectedVertexPositionSets();
-	}
-	
-	void SetSelection(const igdeMetaContext::Ref &context, const decStringSet &selection) override{
-		Animator(context).SetSelectedVertexPositionSets(selection);
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).affectedVertexPositionSets;
 	}
 	
 	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
-	igdeAction::Ref CreateButtonAction(TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 

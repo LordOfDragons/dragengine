@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYFLOAT_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageFloat.h"
 #include "../../clipboard/igdeClipboardData.h"
 
 class igdeMetaPropertyFloatUndo;
@@ -184,6 +185,37 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Float meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyFloatStorage : public igdeMetaPropertyFloat{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStoragePrimitive<float, igdeMetaPropertyFloatStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create float meta property with label and description. */
+	igdeMetaPropertyFloatStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up float meta property. */
+	~igdeMetaPropertyFloatStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	float GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, float value) override;
 };
 
 #endif

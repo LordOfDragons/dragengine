@@ -75,3 +75,22 @@ const igdeMetaContext::Ref &context, bool newValue, const char *undoInfo, const 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyBooleanWidget::Ref::New(*this, context);
 }
+
+
+// igdeMetaPropertyBooleanStorage
+///////////////////////////////////
+
+igdeMetaPropertyBooleanStorage::igdeMetaPropertyBooleanStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyBoolean(id, name, description){
+}
+
+igdeMetaPropertyBooleanStorage::~igdeMetaPropertyBooleanStorage() = default;
+
+bool igdeMetaPropertyBooleanStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyBooleanStorage::SetPropertyValue(const igdeMetaContext::Ref &context, bool value){
+	GetStorage(context).SetValue(value);
+}

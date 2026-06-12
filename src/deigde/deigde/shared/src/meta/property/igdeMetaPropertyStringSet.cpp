@@ -133,12 +133,12 @@ void igdeMetaPropertyStringSet::ActionRemove::OnAction(){
 		
 	}else{
 		const auto active = pProperty.GetActiveString(pContext);
-		if(active.IsEmpty()){
+		if(!active){
 			return;
 		}
 		
 		auto newValue = pProperty.GetPropertyValue(pContext);
-		newValue.Remove(active);
+		newValue.Remove(active->GetData());
 		
 		const auto &tm = pEnvironment.GetTranslationManager();
 		pProperty.ChangePropertyValue(pContext, newValue,
@@ -148,7 +148,7 @@ void igdeMetaPropertyStringSet::ActionRemove::OnAction(){
 }
 
 void igdeMetaPropertyStringSet::ActionRemove::Update(){
-	SetEnabled(pProperty.IsValid(pContext) && !pProperty.GetActiveString(pContext).IsEmpty());
+	SetEnabled(pProperty.IsValid(pContext) && pProperty.GetActiveString(pContext));
 }
 
 
@@ -320,7 +320,7 @@ const char *undoInfo, const char *undoInfoLong){
 
 decStringSet igdeMetaPropertyStringSet::GetSelection(const igdeMetaContext::Ref &context) const{
 	auto active = GetActiveString(context);
-	return active.IsEmpty() ? decStringSet(devctag, active) : decStringSet();
+	return active ? decStringSet(devctag, active->GetData()) : decStringSet();
 }
 
 void igdeMetaPropertyStringSet::SetSelection(const igdeMetaContext::Ref&, const decStringSet&){
@@ -334,11 +334,14 @@ decStringSet igdeMetaPropertyStringSet::GetValidStrings(const igdeMetaContext::R
 	return {};
 }
 
-void igdeMetaPropertyStringSet::AddContextMenuEntriesAdd(igdeMenuCascade&, const igdeMetaContext::Ref&, igdeWidget&){
+void igdeMetaPropertyStringSet::AddContextMenuEntriesAdd(
+igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	AddDefaultContextMenuEntries(menu, context, owner);
 }
 
-igdeAction::Ref igdeMetaPropertyStringSet::CreateButtonAction(TargetButton, const igdeMetaContext::Ref&, igdeWidget&){
-	return {};
+igdeAction::Ref igdeMetaPropertyStringSet::CreateButtonAction(
+TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	return CreateDefaultButtonAction(target, context, owner);
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyStringSet::CreateWidget(const igdeMetaContext::Ref &context){
@@ -363,10 +366,48 @@ const igdeMetaContext::Ref &context, igdeWidget &owner){
 igdeAction::Ref igdeMetaPropertyStringSet::CreateDefaultButtonAction(TargetButton target,
 	const igdeMetaContext::Ref &context, igdeWidget &owner){
 	switch(target){
+	case TargetButton::add:
+		return ActionAdd::Ref::New(*this, context, owner);
+		
 	case TargetButton::remove:
 		return ActionRemove::Ref::New(*this, context, owner.GetEnvironment());
 		
 	default:
 		return {};
 	}
+}
+
+
+// igdeMetaPropertyStringSetStorage
+/////////////////////////////////////
+
+igdeMetaPropertyStringSetStorage::igdeMetaPropertyStringSetStorage(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyStringSet(id, name, description){
+}
+
+igdeMetaPropertyStringSetStorage::~igdeMetaPropertyStringSetStorage() = default;
+
+decStringSet igdeMetaPropertyStringSetStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetValue();
+}
+
+void igdeMetaPropertyStringSetStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decStringSet &value){
+	GetStorage(context).SetValue(value);
+}
+
+igdeMetaPropertyStringSet::StringRef igdeMetaPropertyStringSetStorage::GetActiveString(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetActive();
+}
+
+void igdeMetaPropertyStringSetStorage::SetActiveString(const igdeMetaContext::Ref &context, const StringRef &activeString){
+	GetStorage(context).SetActive(activeString);
+}
+
+decStringSet igdeMetaPropertyStringSetStorage::GetSelection(const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetSelection();
+}
+
+void igdeMetaPropertyStringSetStorage::SetSelection(const igdeMetaContext::Ref &context, const decStringSet &selection){
+	GetStorage(context).SetSelection(selection);
 }

@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYOBJECT_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageComplex.h"
 #include "../igdeTMetaData.h"
 #include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/model/igdeListItem.h"
@@ -164,6 +165,37 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Object meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyObjectStorage : public igdeMetaPropertyObject{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageComplex<deObject::Ref, igdeMetaPropertyObjectStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	
+	/** \brief Create object meta property with label and description. */
+	igdeMetaPropertyObjectStorage(const char *id, const char *name, const char *description);
+	
+protected:
+	/** \brief Clean up object meta property. */
+	~igdeMetaPropertyObjectStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const deObject::Ref &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const deObject::Ref &value) override;
 };
 
 #endif

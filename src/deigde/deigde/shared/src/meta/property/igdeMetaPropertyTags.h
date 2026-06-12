@@ -26,6 +26,7 @@
 #define _IGDEMETAPROPERTYTAGS_H_
 
 #include "igdeMetaProperty.h"
+#include "storage/igdeMetaPropertyStorageComplex.h"
 
 #include <dragengine/common/string/decStringSet.h>
 
@@ -129,6 +130,36 @@ public:
 	 */
 	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
+};
+
+
+/**
+ * \brief Tags meta property using storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyTagsStorage : public igdeMetaPropertyTags{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageComplex<decStringSet, igdeMetaPropertyTagsStorage>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create tags meta property with label and description. */
+	igdeMetaPropertyTagsStorage(const char *id, const char *name, const char *description, int rows);
+	
+protected:
+	/** \brief Clean up tags meta property. */
+	~igdeMetaPropertyTagsStorage() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decStringSet &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decStringSet &value) override;
 };
 
 #endif

@@ -44,12 +44,9 @@ public:
 	~cListener() override = default;
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
-		if(pWidget.GetPreventUpdate() || !pWidget.GetContext()){
-			return;
+		if(!pWidget.GetPreventUpdate() && pWidget.GetContext()){
+			pWidget.StoreActiveObject();
 		}
-		
-		pWidget.GetPropertySet().SetActiveObject(
-			pWidget.GetContext(), listBox->GetSelectedItemRefData());
 	}
 	
 	void OnItemSelected(igdeListBox *listBox, int index) override{
@@ -334,6 +331,11 @@ void igdeMetaPropertySetWidget::Update(){
 	
 	SelectActiveObject();
 	RestoreSelection();
+	
+	// if the list changed the selection and active object might not be valid anymore.
+	// store the current state to synchronize it
+	StoreSelection();
+	StoreActiveObject();
 }
 
 void igdeMetaPropertySetWidget::SelectActiveObject(){
@@ -343,6 +345,12 @@ void igdeMetaPropertySetWidget::SelectActiveObject(){
 				? pPropertySet.GetActiveObject(GetContext())
 				: deObject::Ref());
 		});
+	}
+}
+
+void igdeMetaPropertySetWidget::StoreActiveObject(){
+	if(pListBox){
+		pPropertySet.SetActiveObject(GetContext(), pListBox->GetSelectedItemRefData());
 	}
 }
 
