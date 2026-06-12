@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaProperty.h"
+#include "../igdeMetaContext.h"
 
 
 // Class igdeMetaProperty

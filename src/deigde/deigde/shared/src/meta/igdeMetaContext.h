@@ -26,6 +26,7 @@
 #define _IGDEMETACONTEXT_H_
 
 #include "igdeTMetaData.h"
+#include "property/igdeMetaProperty.h"
 #include "../gui/resources/igdeIcon.h"
 #include "../utils/igdeTListenerList.h"
 
@@ -33,7 +34,6 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
-class igdeMetaProperty;
 class igdeUndoSystem;
 class igdeClipboard;
 

@@ -27,7 +27,6 @@
 
 #include <functional>
 
-#include "../igdeMetaContext.h"
 #include "../../gui/menu/igdeMenuCascade.h"
 #include "../../utils/igdeFilter.h"
 #include "../../utils/igdeTListenerList.h"
@@ -35,9 +34,9 @@
 #include <dragengine/common/string/decString.h>
 
 
+class igdeMetaContext;
 class igdeMetaPropertyWidget;
 class igdeWidget;
-
 
 /**
  * \brief Meta property.
@@ -49,6 +48,9 @@ public:
 	
 	/** \brief List of properties. */
 	using List = decTObjectOrderedSet<igdeMetaProperty>;
+	
+	/** \brief Context reference. */
+	using ContextRef = deTObjectReference<igdeMetaContext>;
 	
 	
 protected:
@@ -68,7 +70,7 @@ protected:
 		
 	public:
 		/** \brief Value changed. */
-		virtual void OnValueChanged(P *property, const igdeMetaContext::Ref &context){}
+		virtual void OnValueChanged(P *property, const ContextRef &context){}
 	};
 	
 	
@@ -134,7 +136,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) = 0;
+	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) = 0;
 	
 	/**
 	 * \brief Add context menu entries.
@@ -142,7 +144,7 @@ public:
 	 * Subclasses can override this method to add custom context menu entries.
 	 */
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu,
-		const igdeMetaContext::Ref &context, igdeWidget &owner);
+		const ContextRef &context, igdeWidget &owner);
 	/*@}*/
 };
 

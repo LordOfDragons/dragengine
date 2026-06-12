@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyTextArea.h"
 #include "undo/igdeMetaPropertyTextAreaUndo.h"
 #include "widget/igdeMetaPropertyTextAreaWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 

@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyStringSet.h"
 #include "undo/igdeMetaPropertyStringSetUndo.h"
 #include "widget/igdeMetaPropertyStringSetWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../gui/igdeUIHelper.h"
 #include "../../gui/igdeCommonDialogs.h"
 #include "../../gui/dialog/igdeDialogSetSelect.h"

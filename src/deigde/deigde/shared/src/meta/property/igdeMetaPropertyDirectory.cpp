@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyDirectory.h"
 #include "undo/igdeMetaPropertyDirectoryUndo.h"
 #include "widget/igdeMetaPropertyDirectoryWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 

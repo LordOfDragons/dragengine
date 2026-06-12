@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyPoint.h"
 #include "undo/igdeMetaPropertyPointUndo.h"
 #include "widget/igdeMetaPropertyPointWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 

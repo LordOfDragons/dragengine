@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyDVector.h"
 #include "undo/igdeMetaPropertyDVectorUndo.h"
 #include "widget/igdeMetaPropertyDVectorWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 

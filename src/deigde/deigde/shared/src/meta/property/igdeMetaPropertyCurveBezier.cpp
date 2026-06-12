@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyCurveBezier.h"
 #include "undo/igdeMetaPropertyCurveBezierUndo.h"
 #include "widget/igdeMetaPropertyCurveBezierWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 

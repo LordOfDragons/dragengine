@@ -105,7 +105,7 @@ public:
 	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
 	
 	/** \brief Notify listeners about value change. */
-	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	void NotifyValueChanged(const ContextRef &context);
 	
 	
 	/**
@@ -113,28 +113,28 @@ public:
 	 *
 	 * This returns an immutable context always returning the necessary state for getting or setting the property.
 	 */
-	virtual igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const = 0;
+	virtual ContextRef Capture(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Property is valid.
 	 *
 	 * This means calling GetPropertyValue() nor SetPropertyValue() throws an exception.
 	 */
-	virtual bool IsValid(const igdeMetaContext::Ref &context) const = 0;
+	virtual bool IsValid(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Get property value matching context.
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual const decDVector &GetPropertyValue(const igdeMetaContext::Ref &context) const = 0;
+	virtual const decDVector &GetPropertyValue(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decDVector &value) = 0;
+	virtual void SetPropertyValue(const ContextRef &context, const decDVector &value) = 0;
 	
 	/**
 	 * \brief Change property value matching context with undo support.
@@ -143,7 +143,7 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyDVectorUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decDVector &newValue,
+		const ContextRef &context, const decDVector &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
@@ -151,7 +151,7 @@ public:
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
 };
 

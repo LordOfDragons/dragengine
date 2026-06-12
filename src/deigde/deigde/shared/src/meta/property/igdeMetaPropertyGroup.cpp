@@ -24,6 +24,7 @@
 
 #include "igdeMetaPropertyGroup.h"
 #include "widget/igdeMetaPropertyGroupWidget.h"
+#include "../igdeMetaContext.h"
 
 
 // Class igdeMetaPropertyGroup

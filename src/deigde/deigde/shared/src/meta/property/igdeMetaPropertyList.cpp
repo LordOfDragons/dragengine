@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyList.h"
 #include "undo/igdeMetaPropertyListUndo.h"
 #include "widget/igdeMetaPropertyListWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../localization/igdeTranslationManager.h"
 #include "../../gui/igdeUIHelper.h"

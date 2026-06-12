@@ -78,10 +78,10 @@ public:
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyStringSet>{
 	public:
 		/** \brief Active string changed. */
-		virtual void OnActiveChanged(igdeMetaPropertyStringSet *property, const igdeMetaContext::Ref &context);
+		virtual void OnActiveChanged(igdeMetaPropertyStringSet *property, const ContextRef &context);
 		
 		/** \brief String selection changed. */
-		virtual void OnSelectionChanged(igdeMetaPropertyStringSet *property, const igdeMetaContext::Ref &context);
+		virtual void OnSelectionChanged(igdeMetaPropertyStringSet *property, const ContextRef &context);
 	};
 	
 	
@@ -89,12 +89,12 @@ public:
 	class DE_DLL_EXPORT ActionAdd : public igdeAction{
 	protected:
 		igdeMetaPropertyStringSet &pProperty;
-		const igdeMetaContext::Ref pContext;
+		const ContextRef pContext;
 		igdeWidget &pOwner;
 		
 	public:
 		using Ref = deTObjectReference<ActionAdd>;
-		ActionAdd(igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context,
+		ActionAdd(igdeMetaPropertyStringSet &property, const ContextRef &context,
 			igdeWidget &owner);
 		void OnAction() override;
 		void Update() override;
@@ -104,12 +104,12 @@ public:
 	class DE_DLL_EXPORT ActionRemove : public igdeAction{
 	protected:
 		igdeMetaPropertyStringSet &pProperty;
-		const igdeMetaContext::Ref pContext;
+		const ContextRef pContext;
 		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
-		ActionRemove(igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context,
+		ActionRemove(igdeMetaPropertyStringSet &property, const ContextRef &context,
 			igdeEnvironment &environment);
 		void OnAction() override;
 		void Update() override;
@@ -119,12 +119,12 @@ public:
 	class DE_DLL_EXPORT ActionRemoveAll : public igdeAction{
 	protected:
 		igdeMetaPropertyStringSet &pProperty;
-		const igdeMetaContext::Ref pContext;
+		const ContextRef pContext;
 		igdeEnvironment &pEnvironment;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
-		ActionRemoveAll(igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context,
+		ActionRemoveAll(igdeMetaPropertyStringSet &property, const ContextRef &context,
 			igdeEnvironment &environment);
 		void OnAction() override;
 		void Update() override;
@@ -134,13 +134,13 @@ public:
 	class DE_DLL_EXPORT ActionExportAsText : public igdeAction{
 	protected:
 		igdeMetaPropertyStringSet &pProperty;
-		const igdeMetaContext::Ref pContext;
+		const ContextRef pContext;
 		igdeWidget &pOwner;
 		
 	public:
 		using Ref = deTObjectReference<ActionExportAsText>;
 		ActionExportAsText(igdeMetaPropertyStringSet &property,
-			const igdeMetaContext::Ref &context, igdeWidget &owner);
+			const ContextRef &context, igdeWidget &owner);
 		void OnAction() override;
 		void Update() override;
 	};
@@ -149,13 +149,13 @@ public:
 	class DE_DLL_EXPORT ActionImportFromText : public igdeAction{
 	protected:
 		igdeMetaPropertyStringSet &pProperty;
-		const igdeMetaContext::Ref pContext;
+		const ContextRef pContext;
 		igdeWidget &pOwner;
 		
 	public:
 		using Ref = deTObjectReference<ActionImportFromText>;
 		ActionImportFromText(igdeMetaPropertyStringSet &property,
-			const igdeMetaContext::Ref &context, igdeWidget &owner);
+			const ContextRef &context, igdeWidget &owner);
 		void OnAction() override;
 		void Update() override;
 	};
@@ -200,13 +200,13 @@ public:
 	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
 	
 	/** \brief Notify listeners about value changed. */
-	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	void NotifyValueChanged(const ContextRef &context);
 	
 	/** \brief Notify listeners about active string changed. */
-	void NotifyActiveChanged(const igdeMetaContext::Ref &context);
+	void NotifyActiveChanged(const ContextRef &context);
 	
 	/** \brief Notify listeners about string selection changed. */
-	void NotifySelectionChanged(const igdeMetaContext::Ref &context);
+	void NotifySelectionChanged(const ContextRef &context);
 	
 	
 	/**
@@ -214,28 +214,28 @@ public:
 	 *
 	 * This returns an immutable context always returning the necessary state for getting or setting the property.
 	 */
-	virtual igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const = 0;
+	virtual ContextRef Capture(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Property is valid.
 	 *
 	 * This means calling GetPropertyValue() nor SetPropertyValue() throws an exception.
 	 */
-	virtual bool IsValid(const igdeMetaContext::Ref &context) const = 0;
+	virtual bool IsValid(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Get property value matching context.
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual decStringSet GetPropertyValue(const igdeMetaContext::Ref &context) const = 0;
+	virtual decStringSet GetPropertyValue(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decStringSet &value) = 0;
+	virtual void SetPropertyValue(const ContextRef &context, const decStringSet &value) = 0;
 	
 	/**
 	 * \brief Change property value matching context with undo support.
@@ -244,28 +244,28 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyStringSetUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const decStringSet &newValue,
+		const ContextRef &context, const decStringSet &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get active string or empty string if no active string.
 	 */
-	virtual decString GetActiveString(const igdeMetaContext::Ref &context) const = 0;
+	virtual decString GetActiveString(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set active string.
 	 */
-	virtual void SetActiveString(const igdeMetaContext::Ref &context, const decString &activeString) = 0;
+	virtual void SetActiveString(const ContextRef &context, const decString &activeString) = 0;
 	
 	/**
 	 * \brief Get string selection.
 	 */
-	virtual decStringSet GetSelection(const igdeMetaContext::Ref &context) const;
+	virtual decStringSet GetSelection(const ContextRef &context) const;
 	
 	/**
 	 * \brief Set string selection.
 	 */
-	virtual void SetSelection(const igdeMetaContext::Ref &context, const decStringSet &selection);
+	virtual void SetSelection(const ContextRef &context, const decStringSet &selection);
 	
 	/**
 	 * \brief Get string item information.
@@ -275,7 +275,7 @@ public:
 	/**
 	 * \brief Valid set of strings.
 	 */
-	virtual decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const;
+	virtual decStringSet GetValidStrings(const ContextRef &context) const;
 	
 	/**
 	 * \brief Add context menu entries for adding new entries to the set.
@@ -283,7 +283,7 @@ public:
 	 * Subclasses can override this method to add custom context menu entries.
 	 */
 	virtual void AddContextMenuEntriesAdd(igdeMenuCascade &contextMenu,
-		const igdeMetaContext::Ref &context, igdeWidget &owner);
+		const ContextRef &context, igdeWidget &owner);
 	
 	/**
 	 * \brief Create action for target button.
@@ -292,7 +292,7 @@ public:
 	 * the button is destroyed.
 	 */
 	virtual igdeAction::Ref CreateButtonAction(TargetButton target,
-		const igdeMetaContext::Ref &context, igdeWidget &owner);
+		const ContextRef &context, igdeWidget &owner);
 	
 	
 	/**
@@ -300,7 +300,7 @@ public:
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	
 	
 	/**
@@ -314,11 +314,11 @@ public:
 	 * - ActionImportFromText
 	 */
 	void AddDefaultContextMenuEntries(igdeMenuCascade &contextMenu,
-		const igdeMetaContext::Ref &context, igdeWidget &owner);
+		const ContextRef &context, igdeWidget &owner);
 	
 	/** \brief Create default button action. */
 	igdeAction::Ref CreateDefaultButtonAction(TargetButton target,
-		const igdeMetaContext::Ref &context, igdeWidget &owner);
+		const ContextRef &context, igdeWidget &owner);
 	/*@}*/
 };
 

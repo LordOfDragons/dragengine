@@ -45,7 +45,7 @@ public:
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyPath>{
 	public:
 		/** \brief Base path changed. */
-		virtual void OnBasePathChanged(igdeMetaPropertyPath *property, const igdeMetaContext::Ref &context);
+		virtual void OnBasePathChanged(igdeMetaPropertyPath *property, const ContextRef &context);
 	};
 	
 	
@@ -89,10 +89,10 @@ public:
 	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
 	
 	/** \brief Notify listeners about value change. */
-	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	void NotifyValueChanged(const ContextRef &context);
 	
 	/** \brief Notify listeners about base path changed. */
-	void NotifyBasePathChanged(const igdeMetaContext::Ref &context);
+	void NotifyBasePathChanged(const ContextRef &context);
 	
 	
 	/**
@@ -100,7 +100,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	
 	
 	/**
@@ -108,28 +108,28 @@ public:
 	 * 
 	 * This returns an immutable context always returning the necessary state for getting or setting the property.
 	 */
-	virtual igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const = 0;
+	virtual ContextRef Capture(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Property is valid.
 	 * 
 	 * This means calling GetPropertyValue() nor SetPropertyValue() throws an exception.
 	 */
-	virtual bool IsValid(const igdeMetaContext::Ref &context) const = 0;
+	virtual bool IsValid(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Get property value matching context.
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual const decString &GetPropertyValue(const igdeMetaContext::Ref &context) const = 0;
+	virtual const decString &GetPropertyValue(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value) = 0;
+	virtual void SetPropertyValue(const ContextRef &context, const decString &value) = 0;
 	
 	/**
 	 * \brief Change property value matching context with undo support.
@@ -138,7 +138,7 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyPathUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, const char *newValue,
+		const ContextRef &context, const char *newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
@@ -146,7 +146,7 @@ public:
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual const decString &GetPropertyBasePath(const igdeMetaContext::Ref &context) const = 0;
+	virtual const decString &GetPropertyBasePath(const ContextRef &context) const = 0;
 	/*@}*/
 };
 

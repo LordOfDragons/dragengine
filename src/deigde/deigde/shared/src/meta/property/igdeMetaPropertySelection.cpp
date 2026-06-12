@@ -25,6 +25,7 @@
 #include "igdeMetaPropertySelection.h"
 #include "undo/igdeMetaPropertySelectionUndo.h"
 #include "widget/igdeMetaPropertySelectionWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 

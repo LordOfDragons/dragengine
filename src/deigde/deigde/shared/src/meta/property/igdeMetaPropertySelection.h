@@ -116,7 +116,7 @@ public:
 	inline const igdeTListenerList<Listener> &GetListeners() const{ return pListeners; }
 	
 	/** \brief Notify listeners about value change. */
-	void NotifyValueChanged(const igdeMetaContext::Ref &context);
+	void NotifyValueChanged(const ContextRef &context);
 	
 	/** \brief Notify listeners about choices changed. */
 	void NotifyChoicesChanged();
@@ -127,28 +127,28 @@ public:
 	 * 
 	 * This returns an immutable context always returning the necessary state for getting or setting the property.
 	 */
-	virtual igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const = 0;
+	virtual ContextRef Capture(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Property is valid.
 	 * 
 	 * This means calling GetPropertyValue() nor SetPropertyValue() throws an exception.
 	 */
-	virtual bool IsValid(const igdeMetaContext::Ref &context) const = 0;
+	virtual bool IsValid(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Get property value matching context.
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual void *GetPropertyValue(const igdeMetaContext::Ref &context) const = 0;
+	virtual void *GetPropertyValue(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValue(const igdeMetaContext::Ref &context, void *value) = 0;
+	virtual void SetPropertyValue(const ContextRef &context, void *value) = 0;
 	
 	/**
 	 * \brief Change property value matching context with undo support.
@@ -157,7 +157,7 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertySelectionUndo> ChangePropertyValue(
-		const igdeMetaContext::Ref &context, void *newValue,
+		const ContextRef &context, void *newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
@@ -171,7 +171,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const igdeMetaContext::Ref &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
 	/*@}*/
 };
 
@@ -236,11 +236,11 @@ public:
 	}
 	
 	
-	void *GetPropertyValue(const igdeMetaContext::Ref &context) const override{
+	void *GetPropertyValue(const ContextRef &context) const override{
 		return reinterpret_cast<void*>(static_cast<intptr_t>(GetPropertyValueEnum(context)));
 	}
 	
-	void SetPropertyValue(const igdeMetaContext::Ref &context, void *value) override{
+	void SetPropertyValue(const ContextRef &context, void *value) override{
 		SetPropertyValueEnum(context, static_cast<T>(reinterpret_cast<intptr_t>(value)));
 	}
 	
@@ -253,14 +253,14 @@ public:
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual T GetPropertyValueEnum(const igdeMetaContext::Ref &context) const = 0;
+	virtual T GetPropertyValueEnum(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValueEnum(const igdeMetaContext::Ref &context, T value) = 0;
+	virtual void SetPropertyValueEnum(const ContextRef &context, T value) = 0;
 	
 	/**
 	 * \brief Get choice item information.
