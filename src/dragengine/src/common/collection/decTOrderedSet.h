@@ -41,7 +41,9 @@
 
 /**
  * \brief Ordered element set template class.
- * Elements can be included only once in the set.
+ * 
+ * Elements can be included only once in the set. Sets are equal if they contain the same
+ * elements in the same order.
  */
 template<typename T, typename TP = T>
 class decTOrderedSet{
@@ -758,7 +760,7 @@ public:
 		}
 		
 		for(p=0; p<pCount; p++){
-			if(!set.Has(pElements[p])){
+			if(pElements[p] != set.pElements[p]){
 				return false;
 			}
 		}

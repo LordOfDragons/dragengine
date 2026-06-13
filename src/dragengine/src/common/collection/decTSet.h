@@ -41,7 +41,8 @@
 /**
  * \brief Set template class.
  * 
- * All elements including default constructed values are allowed and they can occure only once in the set.
+ * All elements including default constructed values are allowed and they can occure only once
+ * in the set. Sets are equal if they contain the same elements independent of their order.
  */
 template<typename T, typename TP = T>
 class decTSet{
