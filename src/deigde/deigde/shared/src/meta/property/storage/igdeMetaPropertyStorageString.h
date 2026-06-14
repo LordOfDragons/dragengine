@@ -25,7 +25,7 @@
 #ifndef _IGDEMETAPROPERTYSTORAGESTRING_H_
 #define _IGDEMETAPROPERTYSTORAGESTRING_H_
 
-#include "igdeMetaPropertyStorageComplex.h"
+#include "igdeMetaPropertyStorage.h"
 
 #include <dragengine/common/string/decString.h>
 
