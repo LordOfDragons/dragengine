@@ -64,6 +64,21 @@ igdeMetaPropertyWidget::~igdeMetaPropertyWidget() = default;
 // Management
 ///////////////
 
+igdeEnvironment &igdeMetaPropertyWidget::GetEnvironment() const{
+	if(pLabel){
+		return pLabel->GetEnvironment();
+		
+	}else if(pEditContainer){
+		return pEditContainer->GetEnvironment();
+		
+	}else if(pButtonContextMenu){
+		return pButtonContextMenu->GetEnvironment();
+		
+	}else{
+		DETHROW(deeInvalidAction);
+	}
+}
+
 void igdeMetaPropertyWidget::SetFilteredOut(bool filteredOut){
 	if(pFilteredOut == filteredOut){
 		return;
@@ -74,12 +89,17 @@ void igdeMetaPropertyWidget::SetFilteredOut(bool filteredOut){
 }
 
 void igdeMetaPropertyWidget::Filter(const igdeFilter &filter){
-	SetFilteredOut(filter && filter.MatchesNot(pMatchable));
+	SetFilteredOut(filter && pMatchable && filter.MatchesNot(pMatchable));
 }
 
 void igdeMetaPropertyWidget::UpdateMatchable(igdeContainer &container){
-	pMatchable = igdeFilter::Matchable(container.TranslateIf(pProperty->GetFilter().IsEmpty()
-		? pProperty->GetLabel() : pProperty->GetFilter()).ToUTF8());
+	if(pLabel){
+		pMatchable = igdeFilter::Matchable(container.TranslateIf(pProperty->GetFilter().IsEmpty()
+			? pProperty->GetLabel() : pProperty->GetFilter()).ToUTF8());
+		
+	}else{
+		pMatchable = {};
+	}
 }
 
 void igdeMetaPropertyWidget::Drop(){
@@ -111,16 +131,18 @@ void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu)
 // Protected Functions
 ////////////////////////
 
-void igdeMetaPropertyWidget::WrapEditWidget(igdeContainer &container,
-igdeUIHelper &helper, igdeWidget *widget, igdeWidget *sideWidget){
+void igdeMetaPropertyWidget::WrapEditWidget(igdeContainer &container, igdeUIHelper &helper,
+bool noLabel, igdeWidget *widget, igdeWidget *sideWidget){
 	DEASSERT_NOTNULL(widget)
 	DEASSERT_NULL(pLabel)
 	DEASSERT_NULL(pButtonContextMenu)
 	DEASSERT_NULL(pEditContainer)
 	
 	// label on left side
-	helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
-		igdeLabel::eaLeft | igdeLabel::eaTop);
+	if(!noLabel){
+		helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
+			igdeLabel::eaLeft | igdeLabel::eaTop);
+	}
 	
 	// edit widget in the center
 	pEditContainer = igdeContainerFlow::Ref::New(helper.GetEnvironment(),

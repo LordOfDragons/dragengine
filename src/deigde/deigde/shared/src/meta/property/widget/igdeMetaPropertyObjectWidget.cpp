@@ -58,7 +58,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		property.ChangePropertyValue(context, newValue, undoInfo);
@@ -224,12 +224,12 @@ igdeMetaPropertyObjectWidget::~igdeMetaPropertyObjectWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyObjectWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyObjectWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pComboBox)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ComboBoxFilter(15, 10, false, pPropertyObject.GetDescription(), pComboBox, pListener);
-	WrapEditWidget(container, helper, pComboBox);
+	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
 	UpdateMatchable(container);
 	
@@ -263,19 +263,19 @@ void igdeMetaPropertyObjectWidget::UpdateObjectList(){
 	}
 	
 	RunWithPreventUpdate([&]{
+		const auto &context = GetContext();
 		const auto &objects = pPropertyObject.GetObjects();
 		igdeMetaContextItemInfo info;
 		pComboBox->RemoveAllItems();
 		objects.Visit([&](const deObject::Ref &object){
-			pPropertyObject.GetObjectItemInfo(object, info);
+			pPropertyObject.GetObjectItemInfo(context, object, info);
 			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
 			item->SetRefData(object);
 			pComboBox->AddItem(item);
 		});
 		pComboBox->StoreFilterItems();
 		
-		pComboBox->SetSelectionWithRefData(GetContext()
-			? pPropertyObject.GetPropertyValue(GetContext()) : deObject::Ref());
+		pComboBox->SetSelectionWithRefData(context ? pPropertyObject.GetPropertyValue(context) : deObject::Ref());
 	});
 }
 

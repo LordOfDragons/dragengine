@@ -31,6 +31,7 @@
 #include <deigde/meta/igdeMetaContextItemInfo.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyGroup.h>
 
 
 /** Rig path. */

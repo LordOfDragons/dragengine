@@ -47,7 +47,7 @@ igdeMetaPropertyGroupWidget::~igdeMetaPropertyGroupWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pGroupBox)
 	
 	igdeEnvironment &env = helper.GetEnvironment();
@@ -64,8 +64,10 @@ void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper 
 void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){
 	bool anyNotFilteredOut = false;
 	pChildWidgets.Visit([&](igdeMetaPropertyWidget &widget){
-		widget.Filter(filter);
-		anyNotFilteredOut |= !widget.GetFilteredOut();
+		if(widget.GetMatchable()){
+			widget.Filter(filter);
+			anyNotFilteredOut |= !widget.GetFilteredOut();
+		}
 	});
 	SetFilteredOut(filter && !anyNotFilteredOut);
 }

@@ -148,14 +148,15 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertyObjectUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyObjectUndo> ChangePropertyValue(
 		const ContextRef &context, const deObject::Ref &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get object item information.
 	 */
-	virtual void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const = 0;
+	virtual void GetObjectItemInfo(const ContextRef &context, const deObject::Ref &object,
+		igdeMetaContextItemInfo &info) const = 0;
 	
 	
 	/**

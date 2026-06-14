@@ -90,10 +90,9 @@ void igdeMetaPropertyFloat::NotifyValueChanged(const igdeMetaContext::Ref &conte
 igdeMetaPropertyFloatUndo::Ref igdeMetaPropertyFloat::ChangePropertyValue(
 const igdeMetaContext::Ref &context, float newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyFloatUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyFloatUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -103,7 +102,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyFloatWidget::Ref::New(*this, context);
 }
 
@@ -122,6 +122,7 @@ float igdeMetaPropertyFloatStorage::GetPropertyValue(const igdeMetaContext::Ref 
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyFloatStorage::SetPropertyValue(const igdeMetaContext::Ref &context, float value){
+void igdeMetaPropertyFloatStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, float value){
 	GetStorage(context).SetValue(value);
 }

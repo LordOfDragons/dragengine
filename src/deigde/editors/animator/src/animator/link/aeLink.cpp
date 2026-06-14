@@ -335,7 +335,7 @@ void aeLink::UpdateController(){
 	int indexController = -1;
 	
 	if(pController && engAnimator){
-		indexController = pController->GetEngineControllerIndex();
+		indexController = pController->GetIndex();
 	}
 	
 	pEngLink->SetController(indexController);

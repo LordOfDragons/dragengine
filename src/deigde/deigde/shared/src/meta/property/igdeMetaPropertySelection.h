@@ -157,14 +157,15 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertySelectionUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertySelectionUndo> ChangePropertyValue(
 		const ContextRef &context, void *newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get choice item information.
 	 */
-	virtual void GetChoiceItemInfo(void *choice, igdeMetaContextItemInfo &info) const = 0;
+	virtual void GetChoiceItemInfo(const ContextRef &context, void *choice,
+		igdeMetaContextItemInfo &info) const = 0;
 	
 	
 	/**
@@ -245,8 +246,8 @@ public:
 		SetPropertyValueEnum(context, static_cast<T>(reinterpret_cast<intptr_t>(value)));
 	}
 	
-	void GetChoiceItemInfo(void *choice, igdeMetaContextItemInfo &info) const{
-		GetChoiceItemInfoEnum(static_cast<T>(reinterpret_cast<intptr_t>(choice)), info);
+	void GetChoiceItemInfo(const ContextRef &context, void *choice, igdeMetaContextItemInfo &info) const{
+		GetChoiceItemInfoEnum(context, static_cast<T>(reinterpret_cast<intptr_t>(choice)), info);
 	}
 	
 	/**
@@ -266,7 +267,8 @@ public:
 	/**
 	 * \brief Get choice item information.
 	 */
-	virtual void GetChoiceItemInfoEnum(T choice, igdeMetaContextItemInfo &info) const = 0;
+	virtual void GetChoiceItemInfoEnum(const ContextRef &context, T choice,
+		igdeMetaContextItemInfo &info) const = 0;
 	/*@}*/
 };
 

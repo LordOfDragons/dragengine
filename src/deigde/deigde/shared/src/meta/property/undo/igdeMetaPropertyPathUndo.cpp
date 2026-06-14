@@ -42,6 +42,10 @@ pNewValue(newValue)
 	}
 }
 
+
+// Management
+///////////////
+
 void igdeMetaPropertyPathUndo::Undo(){
 	pProperty->SetPropertyValue(pContext, pOldValue);
 }

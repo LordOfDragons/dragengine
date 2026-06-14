@@ -158,7 +158,7 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertyCurveBezierUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyCurveBezierUndo> ChangePropertyValue(
 		const ContextRef &context, const decCurveBezier &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	

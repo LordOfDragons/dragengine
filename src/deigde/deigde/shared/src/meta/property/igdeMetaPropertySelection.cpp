@@ -76,10 +76,9 @@ void igdeMetaPropertySelection::NotifyChoicesChanged(){
 
 igdeMetaPropertySelectionUndo::Ref igdeMetaPropertySelection::ChangePropertyValue(
 const igdeMetaContext::Ref &context, void *newValue, const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertySelectionUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertySelectionUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -89,7 +88,8 @@ const igdeMetaContext::Ref &context, void *newValue, const char *undoInfo, const
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertySelectionWidget::Ref::New(*this, context);
 }
 

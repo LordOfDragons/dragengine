@@ -57,7 +57,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		property.ChangePropertyValue(context, newValue, undoInfo);
@@ -218,12 +218,12 @@ igdeMetaPropertyColorWidget::~igdeMetaPropertyColorWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pColorBox)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ColorBox(pPropertyColor.GetDescription(), pColorBox, pListener);
-	WrapEditWidget(container, helper, pColorBox);
+	WrapEditWidget(container, helper, noLabel, pColorBox);
 	
 	UpdateMatchable(container);
 	

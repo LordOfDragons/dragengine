@@ -350,7 +350,7 @@ void aeRuleSubAnimator::pUpdateConnections(deAnimatorRuleSubAnimator &rule) cons
 		pConnections.VisitIndexed([&](int i, const aeController *controller){
 			int engController = -1;
 			if(controller){
-				engController = controller->GetEngineControllerIndex();
+				engController = controller->GetIndex();
 			}
 			rule.SetConnectionAt(i, engController);
 		});

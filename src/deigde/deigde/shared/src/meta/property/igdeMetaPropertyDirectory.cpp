@@ -64,10 +64,9 @@ void igdeMetaPropertyDirectory::NotifyValueChanged(const igdeMetaContext::Ref &c
 igdeMetaPropertyDirectoryUndo::Ref igdeMetaPropertyDirectory::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyDirectoryUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyDirectoryUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -77,7 +76,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyDirectoryWidget::Ref::New(*this, context);
 }
 
@@ -92,10 +92,12 @@ igdeMetaPropertyDirectory(id, name, description){
 
 igdeMetaPropertyDirectoryStorage::~igdeMetaPropertyDirectoryStorage() = default;
 
-const decString &igdeMetaPropertyDirectoryStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decString &igdeMetaPropertyDirectoryStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyDirectoryStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+void igdeMetaPropertyDirectoryStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decString &value){
 	GetStorage(context).SetValue(value);
 }

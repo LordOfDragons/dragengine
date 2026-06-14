@@ -43,10 +43,12 @@ struct sSortEntry{
 // Class igdeMetaPropertyList::Listener
 /////////////////////////////////////////
 
-void igdeMetaPropertyList::Listener::OnActiveChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyList::Listener::OnActiveChanged(
+igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 }
 
-void igdeMetaPropertyList::Listener::OnSelectionChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyList::Listener::OnSelectionChanged(
+igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 }
 
 
@@ -426,10 +428,9 @@ void igdeMetaPropertyList::NotifySelectionChanged(const igdeMetaContext::Ref &co
 igdeMetaPropertyListUndo::Ref igdeMetaPropertyList::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const List &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyListUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyListUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -439,7 +440,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyList::List igdeMetaPropertyList::GetSelection(const igdeMetaContext::Ref &context) const{
+igdeMetaPropertyList::List igdeMetaPropertyList::GetSelection(
+const igdeMetaContext::Ref &context) const{
 	auto active = GetActiveObject(context);
 	return active ? List(devctag, active) : List();
 }
@@ -450,6 +452,11 @@ void igdeMetaPropertyList::SetSelection(const igdeMetaContext::Ref &context, con
 igdeAction::Ref igdeMetaPropertyList::CreateButtonAction(
 TargetButton, const igdeMetaContext::Ref&, igdeWidget&){
 	return {};
+}
+
+void igdeMetaPropertyList::AddContextMenuEntries(igdeMenuCascade &contextMenu,
+const ContextRef &context, igdeWidget &owner){
+	AddDefaultContextMenuEntries(contextMenu, context, owner);
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(const igdeMetaContext::Ref &context){

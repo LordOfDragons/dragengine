@@ -42,9 +42,14 @@ pNewValue(newValue)
 	}
 }
 
+
+// Management
+///////////////
+
 void igdeMetaPropertyColorUndo::SetNewValue(const decColor &newValue){
 	pNewValue = newValue;
 }
+
 
 void igdeMetaPropertyColorUndo::Undo(){
 	pProperty->SetPropertyValue(pContext, pOldValue);

@@ -22,31 +22,36 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYSTORAGESTRINGSET_H_
-#define _IGDEMETAPROPERTYSTORAGESTRINGSET_H_
+#ifndef _IGDEMETAPROPERTYSTORAGELIST_H_
+#define _IGDEMETAPROPERTYSTORAGELIST_H_
 
 #include "igdeMetaPropertyStorage.h"
 
-#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 
 
 /**
- * \brief String set meta property storage.
+ * \brief List meta property storage.
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
-template<typename P>
-class DE_DLL_EXPORT igdeMetaPropertyStorageStringSet : public igdeMetaPropertyStorage<P>{
+template<typename T, typename P, typename ListType = decTObjectOrderedSet<T>>
+class DE_DLL_EXPORT igdeMetaPropertyStorageList : public igdeMetaPropertyStorage<P>{
+public:
+	using ObjectRef = deTObjectReference<T>;
+	
 private:
-	decStringSet pValue, pSelection;
-	typename P::StringRef pActive;
+	ListType pValue, pSelection;
+	ObjectRef pActive;
+	std::function<void(const ObjectRef&)> pOnObjectAdded, pOnObjectRemoved;
+	std::function<void()> pOnActiveChanged;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create string set meta property storage. */
-	igdeMetaPropertyStorageStringSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
+	/** \brief Create list meta property storage. */
+	igdeMetaPropertyStorageList(P &property, const deTObjectReference<igdeMetaContext> &context) :
 	igdeMetaPropertyStorage<P>(property, context){
 	}
 	/*@}*/
@@ -55,24 +60,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get value. */
-	inline const decStringSet &GetValue() const{ return pValue; }
+	inline const ListType &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const decStringSet &value){
+	void SetValue(const ListType &value){
 		if(pValue == value){
 			return;
 		}
 		
+		if(pOnObjectRemoved){
+			pValue.Visit([&](const ObjectRef &object){
+				if(!value.Has(object)){
+					pOnObjectRemoved(object);
+				}
+			});
+		}
+		
+		if(pOnObjectAdded){
+			value.Visit([&](const ObjectRef &object){
+				if(!pValue.Has(object)){
+					pOnObjectAdded(object);
+				}
+			});
+		}
+		
 		pValue = value;
+		
 		igdeMetaPropertyStorage<P>::OnValueChanged();
 		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 	}
 	
 	/** \brief Get selection. */
-	inline const decStringSet &GetSelection() const{ return pSelection; }
+	inline const ListType &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const decStringSet &selection){
+	void SetSelection(const ListType &selection){
 		if(pSelection == selection){
 			return;
 		}
@@ -81,17 +103,52 @@ public:
 		igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
 	}
 	
-	/** \brief Get active string. */
-	inline const typename P::StringRef &GetActive() const{ return pActive; }
+	/** \brief Get active object. */
+	inline const ObjectRef &GetActive() const{ return pActive; }
 	
-	/** \brief Set active string. */
-	void SetActive(const typename P::StringRef &active){
+	/** \brief Set active object. */
+	void SetActive(const ObjectRef &active){
 		if(pActive == active){
 			return;
 		}
 		
 		pActive = active;
+		if(pOnActiveChanged){
+			pOnActiveChanged();
+		}
 		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+	}
+	
+	/** \brief Set active object. */
+	void SetActive(T* active){
+		if(pActive == active){
+			return;
+		}
+		
+		pActive = active;
+		if(pOnActiveChanged){
+			pOnActiveChanged();
+		}
+		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+	}
+	
+	
+	/** \brief Set function to call for objects added to the list. */
+	template <typename F>
+	void SetOnObjectAdded(F&& func){
+		pOnObjectAdded = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call for objects removed from the list. */
+	template <typename F>
+	void SetOnObjectRemoved(F&& func){
+		pOnObjectRemoved = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call if active object changed before listeners are notified. */
+	template <typename F>
+	void SetOnActiveChanged(F&& func){
+		pOnActiveChanged = std::forward<F>(func);
 	}
 	/*@}*/
 	
@@ -99,28 +156,28 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Implicit conversion operator. */
-	operator const decStringSet&() const{
+	operator const ListType&() const{
 		return GetValue();
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageStringSet<P> &operator=(const decStringSet &value){
+	igdeMetaPropertyStorageList<T, P, ListType> &operator=(const ListType &value){
 		SetValue(value);
 		return *this;
 	}
 	
 	/** \brief Value is equal. */
-	bool operator==(const decStringSet &value) const{
+	bool operator==(const ListType &value) const{
 		return pValue == value;
 	}
 	
 	/** \brief Access storage type functions. */
-	inline decStringSet* operator->(){
+	inline ListType* operator->(){
 		return &pValue;
 	}
 	
 	/** \brief Access storage type functions. */
-	inline const decStringSet* operator->() const{
+	inline const ListType* operator->() const{
 		return &pValue;
 	}
 	/*@}*/

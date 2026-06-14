@@ -36,10 +36,12 @@
 // Class igdeMetaPropertySet::Listener
 ////////////////////////////////////////
 
-void igdeMetaPropertySet::Listener::OnActiveChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+void igdeMetaPropertySet::Listener::OnActiveChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref&){
 }
 
-void igdeMetaPropertySet::Listener::OnSelectionChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+void igdeMetaPropertySet::Listener::OnSelectionChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref&){
 }
 
 
@@ -70,7 +72,7 @@ void igdeMetaPropertySet::ActionAdd::OnAction(){
 	decTObjectDictionary<deObject> candidateMap;
 	igdeMetaContextItemInfo info;
 	candidates.Visit([&](const deObject::Ref &object){
-		pProperty.GetObjectItemInfo(object, info);
+		pProperty.GetObjectItemInfo(pContext, object, info);
 		candidateNames.Add(info.GetText());
 		candidateMap.SetAt(info.GetText(), object);
 	});
@@ -86,7 +88,7 @@ void igdeMetaPropertySet::ActionAdd::OnAction(){
 	const auto oldValue = pProperty.GetPropertyValue(pContext);
 	decStringSet oldValueNames;
 	oldValue.Visit([&](const deObject::Ref &object){
-		pProperty.GetObjectItemInfo(object, info);
+		pProperty.GetObjectItemInfo(pContext, object, info);
 		oldValueNames.Add(info.GetText());
 	});
 	
@@ -248,10 +250,9 @@ void igdeMetaPropertySet::NotifySelectionChanged(const igdeMetaContext::Ref &con
 igdeMetaPropertySetUndo::Ref igdeMetaPropertySet::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const Set &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertySetUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertySetUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -261,7 +262,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertySet::Set igdeMetaPropertySet::GetSelection(const igdeMetaContext::Ref &context) const{
+igdeMetaPropertySet::Set igdeMetaPropertySet::GetSelection(
+const igdeMetaContext::Ref &context) const{
 	auto active = GetActiveObject(context);
 	return active ? Set(devctag, active) : Set();
 }
@@ -269,11 +271,13 @@ igdeMetaPropertySet::Set igdeMetaPropertySet::GetSelection(const igdeMetaContext
 void igdeMetaPropertySet::SetSelection(const igdeMetaContext::Ref&, const Set&){
 }
 
-igdeMetaPropertySet::Set igdeMetaPropertySet::GetValidObjects(const igdeMetaContext::Ref &context) const{
+igdeMetaPropertySet::Set igdeMetaPropertySet::GetValidObjects(
+const igdeMetaContext::Ref &context) const{
 	return {};
 }
 
-igdeAction::Ref igdeMetaPropertySet::CreateButtonAction(TargetButton, const igdeMetaContext::Ref&, igdeWidget&){
+igdeAction::Ref igdeMetaPropertySet::CreateButtonAction(
+TargetButton, const igdeMetaContext::Ref&, igdeWidget&){
 	return {};
 }
 

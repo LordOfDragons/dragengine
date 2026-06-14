@@ -76,6 +76,7 @@ protected:
 	
 private:
 	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
+	bool pHideLabel;
 	
 	
 public:
@@ -123,6 +124,12 @@ public:
 	
 	/** \brief Set undo info string or empty string to use label. */
 	void SetUndoInfo(const char *undoInfo);
+	
+	/** \brief Hide label in UI Forms. */
+	inline bool GetHideLabel() const{ return pHideLabel; }
+	
+	/** \brief Set hide label in UI Forms. */
+	void SetHideLabel(bool hideLabel);
 	
 	/**
 	 * \brief Undo info string or empty to use label.

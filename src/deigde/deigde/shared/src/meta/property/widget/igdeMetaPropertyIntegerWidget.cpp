@@ -57,7 +57,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		return property.ChangePropertyValue(context, newValue, undoInfo);
@@ -280,7 +280,7 @@ igdeMetaPropertyIntegerWidget::~igdeMetaPropertyIntegerWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pEditSliderText)
 	DEASSERT_NULL(pSpinTextField)
@@ -290,19 +290,19 @@ void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelpe
 		helper.EditSpinInteger(pPropertyInteger.GetDescription(),
 			pPropertyInteger.GetLowerLimit(), pPropertyInteger.GetUpperLimit(),
 			pSpinTextField, pSpinListener);
-		WrapEditWidget(container, helper, pSpinTextField);
+		WrapEditWidget(container, helper, noLabel, pSpinTextField);
 		
 	}else if(pPropertyInteger.GetEnableLowerLimit() && pPropertyInteger.GetEnableUpperLimit()){
 		pSliderListener = deTObjectReference<cSliderListener>::New(*this);
 		helper.EditSliderText(pPropertyInteger.GetDescription(),
 			pPropertyInteger.GetLowerLimit(), pPropertyInteger.GetUpperLimit(), 6,
 			pPropertyInteger.GetTickSpacing(), pEditSliderText, pSliderListener);
-		WrapEditWidget(container, helper, pEditSliderText);
+		WrapEditWidget(container, helper, noLabel, pEditSliderText);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
 		helper.EditInteger(pPropertyInteger.GetDescription(), 6, pTextField, pTextListener);
-		WrapEditWidget(container, helper, pTextField);
+		WrapEditWidget(container, helper, noLabel, pTextField);
 	}
 	
 	UpdateMatchable(container);

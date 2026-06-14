@@ -64,10 +64,9 @@ void igdeMetaPropertyTextArea::NotifyValueChanged(const igdeMetaContext::Ref &co
 igdeMetaPropertyTextAreaUndo::Ref igdeMetaPropertyTextArea::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyTextAreaUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyTextAreaUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -77,7 +76,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyTextAreaWidget::Ref::New(*this, context);
 }
 
@@ -92,10 +92,12 @@ igdeMetaPropertyTextArea(id, name, description, rows){
 
 igdeMetaPropertyTextAreaStorage::~igdeMetaPropertyTextAreaStorage() = default;
 
-const decString &igdeMetaPropertyTextAreaStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decString &igdeMetaPropertyTextAreaStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyTextAreaStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+void igdeMetaPropertyTextAreaStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decString &value){
 	GetStorage(context).SetValue(value);
 }

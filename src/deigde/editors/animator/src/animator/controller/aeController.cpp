@@ -48,7 +48,7 @@
 
 aeController::aeController(const char *name) :
 pAnimator(nullptr),
-pEngControllerIndex(-1),
+pIndex(-1),
 pName(name),
 pMinValue(0.0f),
 pMaxValue(1.0f),
@@ -63,7 +63,7 @@ pDefaultValue(0.0f){
 
 aeController::aeController(const aeController &copy) :
 pAnimator(nullptr),
-pEngControllerIndex(-1),
+pIndex(-1),
 pName(copy.pName),
 pMinValue(copy.pMinValue),
 pMaxValue(copy.pMaxValue),
@@ -94,14 +94,14 @@ void aeController::SetAnimator(aeAnimator *animator){
 	pReleaseGizmos();
 	
 	pAnimator = animator;
-	pEngControllerIndex = -1;
+	pIndex = -1;
 	
 	pCreateGizmos();
 }
 
-void aeController::SetEngineControllerIndex(int index){
-	if(index != pEngControllerIndex){
-		pEngControllerIndex = index;
+void aeController::SetIndex(int index){
+	if(index != pIndex){
+		pIndex = index;
 		
 		if(index != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
@@ -143,13 +143,13 @@ void aeController::SetMinimumValue(float value){
 			pMinValue = value;
 		}
 		
-		if(pEngControllerIndex != -1){
+		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllers().GetAt(pEngControllerIndex);
+			deAnimatorController &controller = instance.GetControllers().GetAt(pIndex);
 			
 			controller.SetValueRange(pMinValue, pMaxValue);
 			
-			instance.NotifyControllerChangedAt(pEngControllerIndex);
+			instance.NotifyControllerChangedAt(pIndex);
 		}
 		
 		pCurValue = pCheckValue(pCurValue);
@@ -171,13 +171,13 @@ void aeController::SetMaximumValue(float value){
 			pMaxValue = value;
 		}
 		
-		if(pEngControllerIndex != -1){
+		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllers().GetAt(pEngControllerIndex);
+			deAnimatorController &controller = instance.GetControllers().GetAt(pIndex);
 			
 			controller.SetValueRange(pMinValue, pMaxValue);
 			
-			instance.NotifyControllerChangedAt(pEngControllerIndex);
+			instance.NotifyControllerChangedAt(pIndex);
 		}
 		
 		pCurValue = pCheckValue(pCurValue);
@@ -196,13 +196,13 @@ void aeController::SetCurrentValue(float value){
 		if(fabsf(value - pCurValue) > 1e-5f){
 			pCurValue = value;
 			
-			if(pEngControllerIndex != -1){
+			if(pIndex != -1){
 				deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-				deAnimatorController &controller = instance.GetControllers().GetAt(pEngControllerIndex);
+				deAnimatorController &controller = instance.GetControllers().GetAt(pIndex);
 				
 				controller.SetCurrentValue(value);
 				
-				instance.NotifyControllerChangedAt(pEngControllerIndex);
+				instance.NotifyControllerChangedAt(pIndex);
 			}
 			
 			if(pAnimator){
@@ -220,13 +220,13 @@ void aeController::SetFrozen(bool frozen){
 	if(frozen != pFrozen){
 		pFrozen = frozen;
 		
-		if(pEngControllerIndex != -1){
+		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllers().GetAt(pEngControllerIndex);
+			deAnimatorController &controller = instance.GetControllers().GetAt(pIndex);
 			
 			controller.SetFrozen(frozen);
 			
-			instance.NotifyControllerChangedAt(pEngControllerIndex);
+			instance.NotifyControllerChangedAt(pIndex);
 		}
 		
 		if(pAnimator){
@@ -239,13 +239,13 @@ void aeController::SetClamp(bool clamp){
 	if(clamp != pClamp){
 		pClamp = clamp;
 		
-		if(pEngControllerIndex != -1){
+		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllers().GetAt(pEngControllerIndex);
+			deAnimatorController &controller = instance.GetControllers().GetAt(pIndex);
 			
 			controller.SetClamp(clamp);
 			
-			instance.NotifyControllerChangedAt(pEngControllerIndex);
+			instance.NotifyControllerChangedAt(pIndex);
 		}
 		
 		if(pAnimator){
@@ -261,13 +261,13 @@ void aeController::SetVector(const decVector &vector){
 	
 	pVector = vector;
 	
-	if(pEngControllerIndex != -1){
+	if(pIndex != -1){
 		deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-		deAnimatorController &controller = instance.GetControllers().GetAt(pEngControllerIndex);
+		deAnimatorController &controller = instance.GetControllers().GetAt(pIndex);
 		
 		controller.SetVector(vector);
 		
-		instance.NotifyControllerChangedAt(pEngControllerIndex);
+		instance.NotifyControllerChangedAt(pIndex);
 	}
 	
 	if(pAnimator){

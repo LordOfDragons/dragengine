@@ -56,7 +56,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		return property.ChangePropertyValue(context, newValue, undoInfo);
@@ -252,12 +252,12 @@ igdeMetaPropertyCurveBezierWidget::~igdeMetaPropertyCurveBezierWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pViewCurveBezier)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ViewCurveBezier(pViewCurveBezier, pListener);
-	WrapEditWidget(container, helper, pViewCurveBezier);
+	WrapEditWidget(container, helper, noLabel, pViewCurveBezier);
 	
 	UpdateMatchable(container);
 	

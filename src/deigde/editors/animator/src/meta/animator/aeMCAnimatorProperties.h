@@ -26,6 +26,7 @@
 #define _AEMCANIMATORPROPERTIES_H_
 
 #include "aeMCPAnimator.h"
+#include "aeMCPController.h"
 
 
 /**
@@ -41,6 +42,9 @@ public:
 	deTObjectReference<aeMCPAnimatorAffectedBones> affectedBones = deTObjectReference<aeMCPAnimatorAffectedBones>::New();
 	deTObjectReference<aeMCPAnimatorAffectedVertexPositionSets> affectedVertexPositionSets = deTObjectReference<aeMCPAnimatorAffectedVertexPositionSets>::New();
 	
+	deTObjectReference<igdeMetaPropertyGroup> groupController = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.group.controllers", "@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip");
+	deTObjectReference<aeMCPControllers> controllers = deTObjectReference<aeMCPControllers>::New();
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 };

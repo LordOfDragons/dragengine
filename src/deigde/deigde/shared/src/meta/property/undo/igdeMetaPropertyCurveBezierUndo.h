@@ -62,8 +62,21 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Property. */
+	inline const igdeMetaPropertyCurveBezier::Ref &GetProperty() const{ return pProperty; }
+	
+	/** \brief Context. */
+	inline const igdeMetaContext::Ref &GetContext() const{ return pContext; }
+	
+	/** \brief Old value. */
+	inline const decCurveBezier &GetOldValue() const{ return pOldValue; }
+	
+	/** \brief New value. */
+	inline const decCurveBezier &GetNewValue() const{ return pNewValue; }
+	
 	/** \brief Set new value. */
 	void SetNewValue(const decCurveBezier &newValue);
+	
 	
 	/** \brief Undo. */
 	void Undo() override;

@@ -59,10 +59,9 @@ void igdeMetaPropertyBoolean::NotifyValueChanged(const igdeMetaContext::Ref &con
 
 igdeMetaPropertyBooleanUndo::Ref igdeMetaPropertyBoolean::ChangePropertyValue(
 const igdeMetaContext::Ref &context, bool newValue, const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		SetPropertyValue(context, newValue);
-		auto undo = igdeMetaPropertyBooleanUndo::Ref::New(*this, context, undoInfo, undoInfoLong);
-		undo->Redo();
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyBooleanUndo::Ref::New(
+			*this, context, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -72,7 +71,8 @@ const igdeMetaContext::Ref &context, bool newValue, const char *undoInfo, const 
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyBooleanWidget::Ref::New(*this, context);
 }
 
@@ -91,6 +91,7 @@ bool igdeMetaPropertyBooleanStorage::GetPropertyValue(const igdeMetaContext::Ref
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyBooleanStorage::SetPropertyValue(const igdeMetaContext::Ref &context, bool value){
+void igdeMetaPropertyBooleanStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, bool value){
 	GetStorage(context).SetValue(value);
 }

@@ -162,7 +162,7 @@ public:
 			return;
 		}
 		
-		const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 		property.ChangePropertyValue(context, newValue,
 			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
 				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
@@ -214,7 +214,7 @@ public:
 			return;
 		}
 		
-		const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 		property.ChangePropertyValue(context, {},
 			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
 				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
@@ -274,7 +274,7 @@ igdeMetaPropertyStringSetWidget::~igdeMetaPropertyStringSetWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
@@ -291,7 +291,7 @@ void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHel
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, pListBox, buttons);
+	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
 	
 	UpdateMatchable(container);
 	
@@ -317,11 +317,12 @@ void igdeMetaPropertyStringSetWidget::Update(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto set = pPropertyStringSet.GetPropertyValue(GetContext());
+		const auto &context = GetContext();
+		const auto set = pPropertyStringSet.GetPropertyValue(context);
 		igdeMetaContextItemInfo info;
 		pListBox->RemoveAllItems();
 		set.Visit([&](const decString &string){
-			pPropertyStringSet.GetStringItemInfo(string, info);
+			pPropertyStringSet.GetStringItemInfo(context, string, info);
 			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
 			item->SetRefData(igdeTMetaData<decString>::Ref::New(string));
 			pListBox->AddItem(item);

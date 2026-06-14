@@ -59,9 +59,9 @@ void igdeMetaPropertyColor::NotifyValueChanged(const igdeMetaContext::Ref &conte
 igdeMetaPropertyColorUndo::Ref igdeMetaPropertyColor::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decColor &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyColorUndo::Ref::New(*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyColorUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -71,7 +71,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyColorWidget::Ref::New(*this, context);
 }
 
@@ -86,11 +87,13 @@ igdeMetaPropertyColor(id, name, description){
 
 igdeMetaPropertyColorStorage::~igdeMetaPropertyColorStorage() = default;
 
-const decColor &igdeMetaPropertyColorStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decColor &igdeMetaPropertyColorStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyColorStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decColor &value){
+void igdeMetaPropertyColorStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decColor &value){
 	GetStorage(context).SetValue(value);
 }
 

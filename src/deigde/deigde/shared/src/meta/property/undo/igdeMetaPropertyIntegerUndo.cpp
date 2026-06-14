@@ -42,9 +42,14 @@ pNewValue(newValue)
 	}
 }
 
+
+// Management
+///////////////
+
 void igdeMetaPropertyIntegerUndo::SetNewValue(int newValue){
 	pNewValue = newValue;
 }
+
 
 void igdeMetaPropertyIntegerUndo::Undo(){
 	pProperty->SetPropertyValue(pContext, pOldValue);

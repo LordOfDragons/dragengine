@@ -57,7 +57,7 @@ public:
 	
 private:
 	aeAnimator *pAnimator;
-	int pEngControllerIndex;
+	int pIndex;
 	
 	decString pName;
 	
@@ -101,10 +101,11 @@ public:
 	/** Sets the parent animator. */
 	void SetAnimator(aeAnimator *animator);
 	
-	/** Retrieves the index of the engine animator instance controller to update in the future. */
-	inline int GetEngineControllerIndex() const{ return pEngControllerIndex; }
-	/** Sets the index of the engine animator instance controller to update in the future. */
-	void SetEngineControllerIndex(int index);
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Sets the index. */
+	void SetIndex(int index);
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

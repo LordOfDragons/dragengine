@@ -57,7 +57,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		property.ChangePropertyValue(context, newValue, undoInfo);
@@ -219,12 +219,12 @@ igdeMetaPropertyPoint3Widget::~igdeMetaPropertyPoint3Widget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyPoint3Widget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyPoint3Widget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pEditPoint3)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.EditPoint3(pPropertyPoint3.GetDescription(), pEditPoint3, pListener);
-	WrapEditWidget(container, helper, pEditPoint3);
+	WrapEditWidget(container, helper, noLabel, pEditPoint3);
 	
 	UpdateMatchable(container);
 	

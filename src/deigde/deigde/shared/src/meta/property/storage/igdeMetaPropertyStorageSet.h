@@ -22,31 +22,32 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYSTORAGESTRINGSET_H_
-#define _IGDEMETAPROPERTYSTORAGESTRINGSET_H_
+#ifndef _IGDEMETAPROPERTYSTORAGESET_H_
+#define _IGDEMETAPROPERTYSTORAGESET_H_
 
 #include "igdeMetaPropertyStorage.h"
 
-#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/deObject.h>
 
 
 /**
- * \brief String set meta property storage.
+ * \brief Set meta property storage.
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
-template<typename P>
-class DE_DLL_EXPORT igdeMetaPropertyStorageStringSet : public igdeMetaPropertyStorage<P>{
+template<typename T, typename P>
+class DE_DLL_EXPORT igdeMetaPropertyStorageSet : public igdeMetaPropertyStorage<P>{
 private:
-	decStringSet pValue, pSelection;
-	typename P::StringRef pActive;
+	typename P::SetType pValue, pSelection;
+	typename P::ObjectTypeRef pActive;
+	std::function<void(const typename P::ObjectTypeRef&)> pOnObjectAdded, pOnObjectRemoved;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create string set meta property storage. */
-	igdeMetaPropertyStorageStringSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
+	/** \brief Create set meta property storage. */
+	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
 	igdeMetaPropertyStorage<P>(property, context){
 	}
 	/*@}*/
@@ -55,24 +56,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get value. */
-	inline const decStringSet &GetValue() const{ return pValue; }
+	inline const typename P::SetType &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const decStringSet &value){
+	void SetValue(const typename P::SetType &value){
 		if(pValue == value){
 			return;
 		}
 		
+		if(pOnObjectRemoved){
+			pValue.Visit([&](const typename P::ObjectTypeRef &object){
+				if(!value.Contains(object)){
+					pOnObjectRemoved(object);
+				}
+			});
+		}
+		
+		if(pOnObjectAdded){
+			value.Visit([&](const typename P::ObjectTypeRef &object){
+				if(!pValue.Contains(object)){
+					pOnObjectAdded(object);
+				}
+			});
+		}
+		
 		pValue = value;
+		
 		igdeMetaPropertyStorage<P>::OnValueChanged();
 		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 	}
 	
 	/** \brief Get selection. */
-	inline const decStringSet &GetSelection() const{ return pSelection; }
+	inline const typename P::SetType &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const decStringSet &selection){
+	void SetSelection(const typename P::SetType &selection){
 		if(pSelection == selection){
 			return;
 		}
@@ -81,11 +99,11 @@ public:
 		igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
 	}
 	
-	/** \brief Get active string. */
-	inline const typename P::StringRef &GetActive() const{ return pActive; }
+	/** \brief Get active object. */
+	inline const typename P::ObjectTypeRef &GetActive() const{ return pActive; }
 	
-	/** \brief Set active string. */
-	void SetActive(const typename P::StringRef &active){
+	/** \brief Set active object. */
+	void SetActive(const typename P::ObjectTypeRef &active){
 		if(pActive == active){
 			return;
 		}
@@ -93,34 +111,47 @@ public:
 		pActive = active;
 		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
 	}
+	
+	
+	/** \brief Set function to call for objects added to the list. */
+	template <typename F>
+	void SetOnObjectAdded(F&& func){
+		pOnObjectAdded = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call for objects removed from the list. */
+	template <typename F>
+	void SetOnObjectRemoved(F&& func){
+		pOnObjectRemoved = std::forward<F>(func);
+	}
 	/*@}*/
 	
 	
 	/** \name Operators */
 	/*@{*/
 	/** \brief Implicit conversion operator. */
-	operator const decStringSet&() const{
+	operator const typename P::SetType&() const{
 		return GetValue();
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageStringSet<P> &operator=(const decStringSet &value){
+	igdeMetaPropertyStorageSet<T, P> &operator=(const typename P::SetType &value){
 		SetValue(value);
 		return *this;
 	}
 	
 	/** \brief Value is equal. */
-	bool operator==(const decStringSet &value) const{
+	bool operator==(const typename P::SetType &value) const{
 		return pValue == value;
 	}
 	
 	/** \brief Access storage type functions. */
-	inline decStringSet* operator->(){
+	inline typename P::SetType* operator->(){
 		return &pValue;
 	}
 	
 	/** \brief Access storage type functions. */
-	inline const decStringSet* operator->() const{
+	inline const typename P::SetType* operator->() const{
 		return &pValue;
 	}
 	/*@}*/

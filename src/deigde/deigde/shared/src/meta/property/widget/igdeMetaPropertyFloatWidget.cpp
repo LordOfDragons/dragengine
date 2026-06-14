@@ -57,7 +57,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		return property.ChangePropertyValue(context, newValue, undoInfo);
@@ -263,7 +263,7 @@ igdeMetaPropertyFloatWidget::~igdeMetaPropertyFloatWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pEditSliderText)
 	
@@ -273,13 +273,13 @@ void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper 
 			pPropertyFloat.GetLowerLimit(), pPropertyFloat.GetUpperLimit(), 6,
 			pPropertyFloat.GetPrecision(), pPropertyFloat.GetTickSpacing(),
 			pEditSliderText, pSliderListener);
-		WrapEditWidget(container, helper, pEditSliderText);
+		WrapEditWidget(container, helper, noLabel, pEditSliderText);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
 		helper.EditFloat(pPropertyFloat.GetDescription(), 10, pPropertyFloat.GetPrecision(),
 			pTextField, pTextListener);
-		WrapEditWidget(container, helper, pTextField);
+		WrapEditWidget(container, helper, noLabel, pTextField);
 	}
 	
 	UpdateMatchable(container);

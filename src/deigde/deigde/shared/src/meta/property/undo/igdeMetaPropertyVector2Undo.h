@@ -62,8 +62,21 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Property. */
+	inline const igdeMetaPropertyVector2::Ref &GetProperty() const{ return pProperty; }
+	
+	/** \brief Context. */
+	inline const igdeMetaContext::Ref &GetContext() const{ return pContext; }
+	
+	/** \brief Old value. */
+	inline const decVector2 &GetOldValue() const{ return pOldValue; }
+	
+	/** \brief New value. */
+	inline const decVector2 &GetNewValue() const{ return pNewValue; }
+	
 	/** \brief Set new value. */
 	void SetNewValue(const decVector2 &newValue);
+	
 	
 	/** \brief Undo. */
 	void Undo() override;

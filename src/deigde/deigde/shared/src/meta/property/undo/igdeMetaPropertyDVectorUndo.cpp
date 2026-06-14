@@ -42,9 +42,14 @@ pNewValue(newValue)
 	}
 }
 
+
+// Management
+///////////////
+
 void igdeMetaPropertyDVectorUndo::SetNewValue(const decDVector &newValue){
 	pNewValue = newValue;
 }
+
 
 void igdeMetaPropertyDVectorUndo::Undo(){
 	pProperty->SetPropertyValue(pContext, pOldValue);

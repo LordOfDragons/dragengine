@@ -51,6 +51,10 @@ public:
 		return context.DynamicCast<aeMCAnimator>()->GetAnimator().IsNotNull();
 	}
 	
+	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAnimator>()->GetWindowRef();
+	}
+	
 	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{
 		return context.DynamicCast<aeMCAnimator>()->GetAnimator();
 	}
@@ -76,6 +80,10 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		return context.DynamicCast<aeMCAnimator>()->GetActiveController().IsNotNull();
+	}
+	
+	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAnimator>()->GetWindowRef();
 	}
 	
 	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{

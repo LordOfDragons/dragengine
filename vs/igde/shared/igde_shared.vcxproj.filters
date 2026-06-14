@@ -2464,6 +2464,33 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyVector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageComplex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageComplexIsEqualTo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageFloat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStoragePrimitive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageStringSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyBooleanUndo.h">
       <Filter>Header Files</Filter>
     </ClInclude>

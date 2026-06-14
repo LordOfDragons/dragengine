@@ -69,10 +69,9 @@ void igdeMetaPropertyObject::NotifyObjectsChanged(){
 igdeMetaPropertyObjectUndo::Ref igdeMetaPropertyObject::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const deObject::Ref &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyObjectUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyObjectUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -82,7 +81,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyObjectWidget::Ref::New(*this, context);
 }
 
@@ -97,10 +97,12 @@ igdeMetaPropertyObject(id, name, description){
 
 igdeMetaPropertyObjectStorage::~igdeMetaPropertyObjectStorage() = default;
 
-const deObject::Ref &igdeMetaPropertyObjectStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const deObject::Ref &igdeMetaPropertyObjectStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyObjectStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const deObject::Ref &value){
+void igdeMetaPropertyObjectStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const deObject::Ref &value){
 	GetStorage(context).SetValue(value);
 }

@@ -42,9 +42,14 @@ pNewValue(newValue)
 	}
 }
 
+
+// Management
+///////////////
+
 void igdeMetaPropertyCurveBezierUndo::SetNewValue(const decCurveBezier &newValue){
 	pNewValue = newValue;
 }
+
 
 void igdeMetaPropertyCurveBezierUndo::Undo(){
 	pProperty->SetPropertyValue(pContext, pOldValue);

@@ -92,7 +92,7 @@ public:
 			return;
 		}
 		
-		const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 		property.ChangePropertyValue(context, {},
 			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
 				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
@@ -152,7 +152,7 @@ igdeMetaPropertyListWidget::~igdeMetaPropertyListWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pListBox);
 	
 	pListener = deTObjectReference<cListener>::New(*this);
@@ -170,7 +170,7 @@ void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, pListBox, buttons);
+	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
 	
 	UpdateMatchable(container);
 	
@@ -196,11 +196,12 @@ void igdeMetaPropertyListWidget::Update(){
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto objects = pPropertyList.GetPropertyValue(GetContext());
+		const auto &context = GetContext();
+		const auto objects = pPropertyList.GetPropertyValue(context);
 		igdeMetaContextItemInfo info;
 		pListBox->RemoveAllItems();
 		objects.Visit([&](const deObject::Ref &object){
-			pPropertyList.GetObjectItemInfo(object, info);
+			pPropertyList.GetObjectItemInfo(context, object, info);
 			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
 			item->SetRefData(object);
 			pListBox->AddItem(item);
@@ -214,9 +215,8 @@ void igdeMetaPropertyListWidget::Update(){
 void igdeMetaPropertyListWidget::SelectActiveObject(){
 	if(pListBox){
 		RunWithPreventUpdate([&]{
-			pListBox->SetSelectionWithRefData(GetContext()
-				? pPropertyList.GetActiveObject(GetContext())
-				: deObject::Ref());
+			const auto &context = GetContext();
+			pListBox->SetSelectionWithRefData(context ? pPropertyList.GetActiveObject(context) : deObject::Ref());
 		});
 	}
 }

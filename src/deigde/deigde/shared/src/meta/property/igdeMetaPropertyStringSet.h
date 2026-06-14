@@ -247,7 +247,7 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertyStringSetUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyStringSetUndo> ChangePropertyValue(
 		const ContextRef &context, const decStringSet &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
@@ -274,21 +274,13 @@ public:
 	/**
 	 * \brief Get string item information.
 	 */
-	virtual void GetStringItemInfo(const decString &string, igdeMetaContextItemInfo &info) const;
+	virtual void GetStringItemInfo(const ContextRef &context, const decString &string,
+		igdeMetaContextItemInfo &info) const;
 	
 	/**
 	 * \brief Valid set of strings.
 	 */
 	virtual decStringSet GetValidStrings(const ContextRef &context) const;
-	
-	/**
-	 * \brief Add context menu entries for adding new entries to the set.
-	 * 
-	 * Subclasses can override this method to add custom context menu entries.
-	 * Default implementation calls AddDefaultContextMenuEntries().
-	 */
-	virtual void AddContextMenuEntriesAdd(igdeMenuCascade &contextMenu,
-		const ContextRef &context, igdeWidget &owner);
 	
 	/**
 	 * \brief Create action for target button.
@@ -298,6 +290,14 @@ public:
 	 */
 	virtual igdeAction::Ref CreateButtonAction(TargetButton target,
 		const ContextRef &context, igdeWidget &owner);
+	
+	/**
+	 * \brief Add context menu entries.
+	 * 
+	 * Subclasses can override this method to add custom context menu entries.
+	 */
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
 	
 	
 	/**

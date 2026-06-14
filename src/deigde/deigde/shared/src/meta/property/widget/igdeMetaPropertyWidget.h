@@ -85,6 +85,9 @@ public:
 	/** \brief Meta context or nullptr. */
 	inline const igdeMetaContext::Ref &GetContext() const{return pContext;}
 	
+	/** \brief Environment throwing exception if not available. */
+	igdeEnvironment &GetEnvironment() const;
+	
 	/** \brief Widget is filtered out. */
 	inline bool GetFilteredOut() const{ return pFilteredOut; }
 	
@@ -101,7 +104,7 @@ public:
 	void UpdateMatchable(igdeContainer &container);
 	
 	/** \brief Create UI widgets adding them to container. */
-	virtual void Create(igdeContainer &container, igdeUIHelper &helper) = 0;
+	virtual void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) = 0;
 	
 	/** \brief Drop UI widgets. */
 	virtual void Drop();
@@ -136,7 +139,7 @@ public:
 	
 protected:
 	/** \brief Create label and context menu button wrapping edit widget. */
-	void WrapEditWidget(igdeContainer &container, igdeUIHelper &helper,
+	void WrapEditWidget(igdeContainer &container, igdeUIHelper &helper, bool noLabel,
 		igdeWidget *widget, igdeWidget *sideWidget = nullptr);
 	
 	/** \brief Update filtered out. */

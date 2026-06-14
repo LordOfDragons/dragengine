@@ -84,6 +84,16 @@ public:
 	bool operator==(const T &value) const{
 		return pValue == value;
 	}
+	
+	/** \brief Access storage type functions. */
+	inline T* operator->(){
+		return &pValue;
+	}
+	
+	/** \brief Access storage type functions. */
+	inline const T* operator->() const{
+		return &pValue;
+	}
 	/*@}*/
 };
 

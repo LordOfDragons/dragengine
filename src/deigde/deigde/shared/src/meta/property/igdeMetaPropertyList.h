@@ -26,7 +26,7 @@
 #define _IGDEMETAPROPERTYLIST_H_
 
 #include "igdeMetaProperty.h"
-#include "../igdeTMetaData.h"
+#include "storage/igdeMetaPropertyStorageList.h"
 #include "../../gui/event/igdeAction.h"
 #include "../../gui/model/igdeListItem.h"
 
@@ -45,6 +45,9 @@ public:
 	
 	/** \brief List of objects. */
 	using List = decTObjectOrderedSet<deObject>;
+	
+	/** \brief Object reference. */
+	using ObjectRef = deTObjectReference<deObject>;
 	
 	
 	/** \brief Target button. */
@@ -204,7 +207,7 @@ public:
 	/** \brief Notify listeners about active object changed. */
 	void NotifyActiveChanged(const ContextRef &context);
 	
-	/** \brief Notify listeners about object selection changed. */
+	/** \brListief Notify listeners about object selection changed. */
 	void NotifySelectionChanged(const ContextRef &context);
 	
 	
@@ -242,19 +245,19 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValue(
 		const ContextRef &context, const List &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get active object or nullptr if no active object.
 	 */
-	virtual deObject::Ref GetActiveObject(const ContextRef &context) const = 0;
+	virtual ObjectRef GetActiveObject(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set active object.
 	 */
-	virtual void SetActiveObject(const ContextRef &context, const deObject::Ref &activeObject) = 0;
+	virtual void SetActiveObject(const ContextRef &context, const ObjectRef &activeObject) = 0;
 	
 	/**
 	 * \brief Get object selection.
@@ -269,7 +272,8 @@ public:
 	/**
 	 * \brief Get object item information.
 	 */
-	virtual void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const = 0;
+	virtual void GetObjectItemInfo(const ContextRef &context, const ObjectRef &object,
+		igdeMetaContextItemInfo &info) const = 0;
 	
 	/**
 	 * \brief Create action for target button.
@@ -279,6 +283,14 @@ public:
 	 */
 	virtual igdeAction::Ref CreateButtonAction(TargetButton target,
 		const ContextRef &context, igdeWidget &owner);
+	
+	/**
+	 * \brief Add context menu entries.
+	 * 
+	 * Subclasses can override this method to add custom context menu entries.
+	 */
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
 	
 	
 	/**
@@ -312,23 +324,17 @@ public:
 
 
 
-template<typename T, typename Enable = void>
-class igdeMetaPropertyListType;
-
-
 /**
  * \brief List meta property with deObject type.
  */
-template<typename T>
-class DE_DLL_EXPORT igdeMetaPropertyListType<T,
-	typename std::enable_if<std::is_base_of<deObject, T>::value>::type>
-	: public igdeMetaPropertyList{
+template<typename T, typename ListType = decTObjectOrderedSet<T>>
+class DE_DLL_EXPORT igdeMetaPropertyListType : public igdeMetaPropertyList{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyListType<T>>;
 	
-	/** \brief List of choices. */
-	using ListType = decTObjectOrderedSet<T>;
+	/** \brief Object type reference. */
+	using ObjectTypeRef = deTObjectReference<T>;
 	
 	
 public:
@@ -352,7 +358,7 @@ public:
 	/** Convert list. */
 	List ConvertList(const ListType &in) const{
 		List out;
-		in.Visit([&](const deTObjectReference<T> &object){
+		in.Visit([&](const ObjectTypeRef &object){
 			out.Add(object);
 		});
 		return out;
@@ -361,7 +367,7 @@ public:
 	/** Convert list. */
 	ListType ConvertList(const List &in) const{
 		ListType out;
-		in.Visit([&](const deObject::Ref &object){
+		in.Visit([&](const ObjectRef &object){
 			out.Add(object.DynamicCast<T>());
 		});
 		return out;
@@ -382,15 +388,16 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValueType(
-	const ContextRef &context, const ListType &newValue){
-		return ChangePropertyValue(context, ConvertList(newValue));
+	const ContextRef &context, const ListType &newValue,
+	const char *undoInfo = nullptr, const char *undoInfoLong = nullptr){
+		return ChangePropertyValue(context, ConvertList(newValue), undoInfo, undoInfoLong);
 	}
 	
-	deObject::Ref GetActiveObject(const ContextRef &context) const override{
+	ObjectRef GetActiveObject(const ContextRef &context) const override{
 		return GetActiveObjectType(context);
 	}
 	
-	void SetActiveObject(const ContextRef &context, const deObject::Ref &activeObject) override{
+	void SetActiveObject(const ContextRef &context, const ObjectRef &activeObject) override{
 		SetActiveObjectType(context, activeObject.DynamicCast<T>());
 	}
 	
@@ -402,8 +409,8 @@ public:
 		SetSelectionType(context, ConvertList(selection));
 	}
 	
-	void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const override{
-		GetObjectItemInfoType(object.DynamicCast<T>(), info);
+	void GetObjectItemInfo(const ContextRef &context, const ObjectRef &object, igdeMetaContextItemInfo &info) const override{
+		GetObjectItemInfoType(context, object.DynamicCast<T>(), info);
 	}
 	
 	
@@ -424,12 +431,12 @@ public:
 	/**
 	 * \brief Get active object or nullptr if no active object.
 	 */
-	virtual deTObjectReference<T> GetActiveObjectType(const ContextRef &context) const = 0;
+	virtual ObjectTypeRef GetActiveObjectType(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set active object.
 	 */
-	virtual void SetActiveObjectType(const ContextRef &context, const deTObjectReference<T>::Ref &activeObject) = 0;
+	virtual void SetActiveObjectType(const ContextRef &context, const ObjectTypeRef &activeObject) = 0;
 	
 	/**
 	 * \brief Get object selection.
@@ -448,146 +455,68 @@ public:
 	/**
 	 * \brief Get object item information.
 	 */
-	virtual void GetObjectItemInfoType(const deTObjectReference<T> &object, igdeMetaContextItemInfo &info) const = 0;
+	virtual void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object,
+		igdeMetaContextItemInfo &info) const = 0;
 	/*@}*/
 };
 
 
-
 /**
- * \brief List meta property with arbitrary type.
+ * \brief List meta property using storage.
  */
-template<typename T>
-class DE_DLL_EXPORT igdeMetaPropertyListType<T,
-	typename std::enable_if<!std::is_base_of<deObject, T>::value>::type>
-	: public igdeMetaPropertyList{
+template<typename T, typename ListType = decTObjectOrderedSet<T>>
+class DE_DLL_EXPORT igdeMetaPropertyListTypeStorage : public igdeMetaPropertyListType<T, ListType>{
 public:
-	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyListType<T>>;
-	
-	/** \brief List of choices. */
-	using ListType = decTOrderedSet<T>;
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageList<T, igdeMetaPropertyListTypeStorage<T, ListType>, ListType>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list meta property with label and description. */
-	igdeMetaPropertyListType(const char *id, const char *name, const char *description) :
-	igdeMetaPropertyList(id, name, description){
-	}
+	igdeMetaPropertyListTypeStorage(const char *id, const char *name, const char *description) :
+	igdeMetaPropertyListType<T, ListType>(id, name, description){}
 	
 protected:
 	/** \brief Clean up list meta property. */
-	~igdeMetaPropertyListType() override = default;
+	~igdeMetaPropertyListTypeStorage() override = default;
 	
 public:
 	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const deTObjectReference<igdeMetaContext> &context) const = 0;
 	
 	
-	/** \name Management */
-	/*@{*/
-	/** Convert list. */
-	List ConvertList(const ListType &in) const{
-		List out;
-		in.Visit([&](const T &object){
-			out.Add(igdeTMetaData<T>::Ref::New(object));
-		});
-		return out;
+	ListType GetPropertyValueType(
+	const deTObjectReference<igdeMetaContext> &context) const override{
+		return GetStorage(context).GetValue();
 	}
 	
-	/** Convert list. */
-	ListType ConvertList(const List &in) const{
-		ListType out;
-		in.Visit([&](const deObject::Ref &object){
-			out.Add(object.DynamicCast<igdeTMetaData<T>>()->GetData());
-		});
-		return out;
+	void SetPropertyValueType(const deTObjectReference<igdeMetaContext> &context,
+	const ListType &value) override{
+		GetStorage(context).SetValue(value);
 	}
 	
-	List GetPropertyValue(const ContextRef &context) const override{
-		return ConvertList(GetPropertyValueType(context));
+	typename igdeMetaPropertyListTypeStorage<T, ListType>::ObjectTypeRef GetActiveObjectType(
+	const deTObjectReference<igdeMetaContext> &context) const override{
+		return GetStorage(context).GetActive();
 	}
 	
-	void SetPropertyValue(const ContextRef &context, const List &value) override{
-		SetPropertyValueType(context, ConvertList(value));
+	void SetActiveObjectType(const deTObjectReference<igdeMetaContext> &context,
+	const typename igdeMetaPropertyListTypeStorage<T, ListType>::ObjectTypeRef &activeObject) override{
+		GetStorage(context).SetActive(activeObject);
 	}
 	
-	/**
-	 * \brief Change property value matching context with undo support.
-	 *
-	 * If the context has an undo system the change is recorded as an undo action.
-	 * Otherwise SetPropertyValue() is called directly.
-	 */
-	deTObjectReference<igdeMetaPropertyListUndo> ChangePropertyValueType(
-	const ContextRef &context, const ListType &newValue){
-		return ChangePropertyValue(context, ConvertList(newValue));
+	ListType GetSelectionType(
+	const deTObjectReference<igdeMetaContext> &context) const override{
+		return GetStorage(context).GetSelection();
 	}
 	
-	deObject::Ref GetActiveObject(const ContextRef &context) const override{
-		return igdeTMetaData<T>::Ref::New(GetActiveObjectType(context));
+	void SetSelectionType(const deTObjectReference<igdeMetaContext> &context,
+	const ListType &selection) override{
+		GetStorage(context).SetSelection(selection);
 	}
-	
-	void SetActiveObject(const ContextRef &context, const deObject::Ref &activeObject) override{
-		SetActiveObjectType(context, activeObject.DynamicCast<igdeTMetaData<T>>()->GetData());
-	}
-	
-	List GetSelection(const ContextRef &context) const override{
-		return ConvertList(GetSelectionType(context));
-	}
-	
-	void SetSelection(const ContextRef &context, const List &selection) override{
-		SetSelectionType(context, ConvertList(selection));
-	}
-	
-	void GetObjectItemInfo(const deObject::Ref &object, igdeMetaContextItemInfo &info) const override{
-		GetObjectItemInfoType(object.DynamicCast<igdeTMetaData<T>>()->GetData(), info);
-	}
-	
-	
-	/**
-	 * \brief Get property value matching context.
-	 * 
-	 * Implemented by subclass.
-	 */
-	virtual ListType GetPropertyValueType(const ContextRef &context) const = 0;
-	
-	/**
-	 * \brief Set property value matching context.
-	 * 
-	 * Implemented by subclass.
-	 */
-	virtual void SetPropertyValueType(const ContextRef &context, const ListType &value) = 0;
-	
-	/**
-	 * \brief Get active object or nullptr if no active object.
-	 */
-	virtual T GetActiveObjectType(const ContextRef &context) const = 0;
-	
-	/**
-	 * \brief Set active object.
-	 */
-	virtual void SetActiveObjectType(const ContextRef &context, const T &activeObject) = 0;
-	
-	/**
-	 * \brief Get object selection.
-	 */
-	virtual ListType GetSelectionType(const ContextRef &context) const{
-		auto active = GetActiveObjectType(context);
-		return active ? ListType(devctag, active) : ListType();
-	}
-	
-	/**
-	 * \brief Set object selection.
-	 */
-	virtual void SetSelectionType(const ContextRef &context, const ListType &selection){
-	}
-	
-	/**
-	 * \brief Get object item information.
-	 */
-	virtual void GetObjectItemInfoType(const T &object, igdeMetaContextItemInfo &info) const = 0;
-	/*@}*/
 };
 
 #endif

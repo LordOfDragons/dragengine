@@ -349,6 +349,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorBones.cpp" />
@@ -637,6 +638,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeTMCPAnimator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.h" />

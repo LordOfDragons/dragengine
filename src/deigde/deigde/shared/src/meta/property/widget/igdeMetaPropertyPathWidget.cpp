@@ -58,7 +58,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		property.ChangePropertyValue(context, newValue, undoInfo);
@@ -224,7 +224,7 @@ igdeMetaPropertyPathWidget::~igdeMetaPropertyPathWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pEditPath)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
@@ -237,7 +237,7 @@ void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &
 		helper.EditPath(pPropertyPath.GetDescription(),
 			pPropertyPath.GetResourceType(), pEditPath, pListener);
 	}
-	WrapEditWidget(container, helper, pEditPath);
+	WrapEditWidget(container, helper, noLabel, pEditPath);
 	
 	UpdateMatchable(container);
 	

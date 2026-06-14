@@ -51,6 +51,7 @@
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
 
 
 // predefinitions
@@ -139,11 +140,10 @@ public:
 	igdeMetaPropertyStringSetStorage::Storage affectedBones;
 	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
 	
+	igdeMetaPropertyListTypeStorage<aeController, aeController::List>::Storage controllers;
+	
 private:
 	aeCamera *pCamera;
-	
-	aeController::List pControllers;
-	aeController::Ref pActiveController;
 	
 	aeLink::List pLinks;
 	aeLink::Ref pActiveLink;
@@ -302,7 +302,7 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** Controllers. */
-	inline const aeController::List &GetControllers() const{ return pControllers; }
+	inline const aeController::List &GetControllers() const{ return controllers; }
 	
 	/** Add controller. */
 	void AddController(aeController *controller);
@@ -320,7 +320,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** Active controller or nullptr. */
-	inline const aeController::Ref &GetActiveController() const{ return pActiveController; }
+	inline const aeController::Ref &GetActiveController() const{ return controllers.GetActive(); }
 	
 	/** Set active controller or nullptr. */
 	void SetActiveController(aeController *controller);

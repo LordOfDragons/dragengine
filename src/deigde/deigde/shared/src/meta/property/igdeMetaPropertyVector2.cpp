@@ -59,10 +59,9 @@ void igdeMetaPropertyVector2::NotifyValueChanged(const igdeMetaContext::Ref &con
 igdeMetaPropertyVector2Undo::Ref igdeMetaPropertyVector2::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decVector2 &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyVector2Undo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyVector2Undo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -72,7 +71,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyVector2::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyVector2::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyVector2Widget::Ref::New(*this, context);
 }
 
@@ -87,10 +87,12 @@ igdeMetaPropertyVector2(id, name, description){
 
 igdeMetaPropertyVector2Storage::~igdeMetaPropertyVector2Storage() = default;
 
-const decVector2 &igdeMetaPropertyVector2Storage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decVector2 &igdeMetaPropertyVector2Storage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyVector2Storage::SetPropertyValue(const igdeMetaContext::Ref &context, const decVector2 &value){
+void igdeMetaPropertyVector2Storage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decVector2 &value){
 	GetStorage(context).SetValue(value);
 }

@@ -64,11 +64,6 @@ public:
 		igdeMetaPropertyStorage<P>::OnValueChanged();
 		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 	}
-	
-	/** \brief Value is equal. */
-	bool IsEqualTo(const T &value) const{
-		return pValue.IsEqualTo(value);
-	}
 	/*@}*/
 	
 	
@@ -88,6 +83,16 @@ public:
 	/** \brief Value is equal. */
 	bool operator==(const T &value) const{
 		return pValue.IsEqualTo(value);
+	}
+	
+	/** \brief Access storage type functions. */
+	inline T* operator->(){
+		return &pValue;
+	}
+	
+	/** \brief Access storage type functions. */
+	inline const T* operator->() const{
+		return &pValue;
 	}
 	/*@}*/
 };

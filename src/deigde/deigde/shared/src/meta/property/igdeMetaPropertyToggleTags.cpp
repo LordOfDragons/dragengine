@@ -60,10 +60,9 @@ void igdeMetaPropertyToggleTags::NotifyValueChanged(const igdeMetaContext::Ref &
 igdeMetaPropertyToggleTagsUndo::Ref igdeMetaPropertyToggleTags::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decStringSet &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyToggleTagsUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyToggleTagsUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -73,7 +72,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyToggleTags::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyToggleTags::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyToggleTagsWidget::Ref::New(*this, context);
 }
 
@@ -88,10 +88,12 @@ igdeMetaPropertyToggleTags(id, name, description, rows){
 
 igdeMetaPropertyToggleTagsStorage::~igdeMetaPropertyToggleTagsStorage() = default;
 
-const decStringSet &igdeMetaPropertyToggleTagsStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decStringSet &igdeMetaPropertyToggleTagsStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyToggleTagsStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decStringSet &value){
+void igdeMetaPropertyToggleTagsStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decStringSet &value){
 	GetStorage(context).SetValue(value);
 }

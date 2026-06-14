@@ -136,7 +136,7 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertyColorUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyColorUndo> ChangePropertyValue(
 		const ContextRef &context, const decColor &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	

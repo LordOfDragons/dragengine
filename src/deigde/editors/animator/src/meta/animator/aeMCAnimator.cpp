@@ -53,6 +53,11 @@ aeMCAnimator::~aeMCAnimator() = default;
 // Management
 ///////////////
 
+aeWindowMain &aeMCAnimator::GetWindowRef() const{
+	DEASSERT_NOTNULL(pWindow)
+	return *pWindow;
+}
+
 aeAnimator::Ref aeMCAnimator::GetAnimator() const{
 	return pWindow ? pWindow->GetAnimator() : aeAnimator::Ref(pAnimator);
 }

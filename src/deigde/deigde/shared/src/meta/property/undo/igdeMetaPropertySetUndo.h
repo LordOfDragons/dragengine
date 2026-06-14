@@ -62,6 +62,19 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Property. */
+	inline const igdeMetaPropertySet::Ref &GetProperty() const{ return pProperty; }
+	
+	/** \brief Context. */
+	inline const igdeMetaContext::Ref &GetContext() const{ return pContext; }
+	
+	/** \brief Old value. */
+	inline const igdeMetaPropertySet::Set &GetOldValue() const{ return pOldValue; }
+	
+	/** \brief New value. */
+	inline const igdeMetaPropertySet::Set &GetNewValue() const{ return pNewValue; }
+	
+	
 	/** \brief Undo. */
 	void Undo() override;
 	

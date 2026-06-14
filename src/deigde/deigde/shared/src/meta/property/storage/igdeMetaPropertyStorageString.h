@@ -77,9 +77,6 @@ public:
 		igdeMetaPropertyStorage<P>::OnValueChanged();
 		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 	}
-	
-	/** \brief String is empty. */
-	inline bool IsEmpty() const{ return pValue.IsEmpty(); }
 	/*@}*/
 	
 	
@@ -115,6 +112,16 @@ public:
 	/** \brief Value is equal. */
 	bool operator==(const char *value) const{
 		return pValue == value;
+	}
+	
+	/** \brief Access storage type functions. */
+	inline decString* operator->(){
+		return &pValue;
+	}
+	
+	/** \brief Access storage type functions. */
+	inline const decString* operator->() const{
+		return &pValue;
 	}
 	/*@}*/
 };

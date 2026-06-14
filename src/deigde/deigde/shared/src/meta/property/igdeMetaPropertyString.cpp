@@ -32,7 +32,8 @@
 // Class igdeMetaPropertyString::Listener
 ///////////////////////////////////////////
 
-void igdeMetaPropertyString::Listener::OnStringListChanged(igdeMetaPropertyString*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyString::Listener::OnStringListChanged(
+igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 }
 
 
@@ -77,10 +78,9 @@ void igdeMetaPropertyString::NotifyStringListChanged(const igdeMetaContext::Ref 
 igdeMetaPropertyStringUndo::Ref igdeMetaPropertyString::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyStringUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyStringUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -90,7 +90,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyStringWidget::Ref::New(*this, context);
 }
 
@@ -105,10 +106,12 @@ igdeMetaPropertyString(id, name, description){
 
 igdeMetaPropertyStringStorage::~igdeMetaPropertyStringStorage() = default;
 
-const decString &igdeMetaPropertyStringStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decString &igdeMetaPropertyStringStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyStringStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+void igdeMetaPropertyStringStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decString &value){
 	GetStorage(context).SetValue(value);
 }

@@ -76,6 +76,9 @@ public:
 	/** Window or nullptr. */
 	inline aeWindowMain *GetWindow() const{ return pWindow; }
 	
+	/** Window reference throwing exception if nullptr. */
+	aeWindowMain &GetWindowRef() const;
+	
 	/** Animator or null. */
 	deTObjectReference<aeAnimator> GetAnimator() const;
 	

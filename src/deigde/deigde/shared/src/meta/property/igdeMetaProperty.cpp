@@ -35,7 +35,8 @@
 igdeMetaProperty::igdeMetaProperty(const char *id, const char *name, const char *description) :
 pId(id),
 pLabel(name),
-pDescription(description){
+pDescription(description),
+pHideLabel(false){
 }
 
 igdeMetaProperty::~igdeMetaProperty() = default;
@@ -58,6 +59,10 @@ void igdeMetaProperty::SetFilter(const char *filter){
 
 void igdeMetaProperty::SetUndoInfo(const char *undoInfo){
 	pUndoInfo = undoInfo;
+}
+
+void igdeMetaProperty::SetHideLabel(bool hideLabel){
+	pHideLabel = hideLabel;
 }
 
 const decString &igdeMetaProperty::GetUndoInfoOrLabel() const{

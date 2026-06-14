@@ -58,7 +58,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		property.ChangePropertyValue(context, newValue, undoInfo);
@@ -220,16 +220,17 @@ igdeMetaPropertySelectionWidget::~igdeMetaPropertySelectionWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pComboBox)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ComboBox(15, 10, false, pPropertySelection.GetDescription(), pComboBox, pListener);
-	WrapEditWidget(container, helper, pComboBox);
+	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
+	const auto &context = GetContext();
 	igdeMetaContextItemInfo info;
 	pPropertySelection.GetChoices().Visit([&](void *choice){
-		pPropertySelection.GetChoiceItemInfo(choice, info);
+		pPropertySelection.GetChoiceItemInfo(context, choice, info);
 		pComboBox->AddItem(igdeListItem::Ref::New(info.GetText(),
 			info.GetIcon(), info.GetDescription(), choice));
 	});

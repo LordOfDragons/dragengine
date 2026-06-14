@@ -74,9 +74,9 @@ void igdeMetaPropertyCurveBezier::NotifyValueChanged(const igdeMetaContext::Ref 
 igdeMetaPropertyCurveBezierUndo::Ref igdeMetaPropertyCurveBezier::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decCurveBezier &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyCurveBezierUndo::Ref::New(
+			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -86,7 +86,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyCurveBezierWidget::Ref::New(*this, context);
 }
 
@@ -101,10 +102,12 @@ igdeMetaPropertyCurveBezier(id, name, description){
 
 igdeMetaPropertyCurveBezierStorage::~igdeMetaPropertyCurveBezierStorage() = default;
 
-const decCurveBezier &igdeMetaPropertyCurveBezierStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decCurveBezier &igdeMetaPropertyCurveBezierStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyCurveBezierStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decCurveBezier &value){
+void igdeMetaPropertyCurveBezierStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decCurveBezier &value){
 	GetStorage(context).SetValue(value);
 }

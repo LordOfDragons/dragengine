@@ -31,7 +31,8 @@
 // Class igdeMetaPropertyPath::Listener
 /////////////////////////////////////////
 
-void igdeMetaPropertyPath::Listener::OnBasePathChanged(igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyPath::Listener::OnBasePathChanged(
+igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
 }
 
 
@@ -76,10 +77,9 @@ void igdeMetaPropertyPath::NotifyBasePathChanged(const igdeMetaContext::Ref &con
 igdeMetaPropertyPathUndo::Ref igdeMetaPropertyPath::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyPathUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyPathUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -109,10 +109,12 @@ igdeMetaPropertyPath(id, name, description, customPatternList){
 
 igdeMetaPropertyPathStorage::~igdeMetaPropertyPathStorage() = default;
 
-const decString &igdeMetaPropertyPathStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decString &igdeMetaPropertyPathStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyPathStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decString &value){
+void igdeMetaPropertyPathStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decString &value){
 	GetStorage(context).SetValue(value);
 }

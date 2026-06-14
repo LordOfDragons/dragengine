@@ -1100,6 +1100,15 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyToggleTags.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyVector2.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyVector3.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorage.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageComplex.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageComplexIsEqualTo.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageFloat.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageList.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStoragePrimitive.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageSet.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageString.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageStringSet.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyBooleanUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyColorUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyCurveBezierUndo.h" />

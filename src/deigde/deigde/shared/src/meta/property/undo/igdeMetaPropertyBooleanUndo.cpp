@@ -40,6 +40,10 @@ pContext(property.Capture(context))
 	}
 }
 
+
+// Management
+///////////////
+
 void igdeMetaPropertyBooleanUndo::Undo(){
 	pProperty->SetPropertyValue(pContext, !pProperty->GetPropertyValue(pContext));
 }

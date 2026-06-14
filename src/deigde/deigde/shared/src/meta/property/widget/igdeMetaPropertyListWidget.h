@@ -88,7 +88,7 @@ public:
 	inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
 	
 	/** \brief Create UI widgets adding them to container. */
-	void Create(igdeContainer &container, igdeUIHelper &helper) override;
+	void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) override;
 	
 	/** \brief Drop UI widgets. */
 	void Drop() override;

@@ -57,7 +57,7 @@ public:
 		}
 		
 		if(undoInfo){
-			const auto &tm = pWidget.GetLabel()->GetEnvironment().GetTranslationManager();
+			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
 			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
 		property.ChangePropertyValue(context, newValue, undoInfo);
@@ -240,19 +240,19 @@ igdeMetaPropertyStringWidget::~igdeMetaPropertyStringWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyStringWidget::Create(igdeContainer &container, igdeUIHelper &helper){
+void igdeMetaPropertyStringWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pComboBox)
 	
 	if(pPropertyString.GetEnableStringList()){
 		pComboListener = deTObjectReference<cComboListener>::New(*this);
 		helper.ComboBoxFilter(15, 10, true, pPropertyString.GetDescription(), pComboBox, pComboListener);
-		WrapEditWidget(container, helper, pComboBox);
+		WrapEditWidget(container, helper, noLabel, pComboBox);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
 		helper.EditString(pPropertyString.GetDescription(), 15, pTextField, pTextListener);
-		WrapEditWidget(container, helper, pTextField);
+		WrapEditWidget(container, helper, noLabel, pTextField);
 	}
 	
 	UpdateMatchable(container);

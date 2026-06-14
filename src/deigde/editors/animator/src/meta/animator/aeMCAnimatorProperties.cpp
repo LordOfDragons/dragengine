@@ -34,6 +34,10 @@ aeMCAnimatorProperties::aeMCAnimatorProperties(){
 	data.Add(animation);
 	data.Add(affectedBones);
 	data.Add(affectedVertexPositionSets);
+	
+	data.Add(groupController);
+	auto &controllerProperties = groupController->GetProperties();
+	controllerProperties.Add(controllers);
 }
 
 aeMCAnimatorProperties::~aeMCAnimatorProperties() = default;

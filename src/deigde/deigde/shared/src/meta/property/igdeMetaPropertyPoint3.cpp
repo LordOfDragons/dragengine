@@ -59,10 +59,9 @@ void igdeMetaPropertyPoint3::NotifyValueChanged(const igdeMetaContext::Ref &cont
 igdeMetaPropertyPoint3Undo::Ref igdeMetaPropertyPoint3::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decPoint3 &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyPoint3Undo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyPoint3Undo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -72,7 +71,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint3::CreateWidget(const igdeMetaContext::Ref &context){
+igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint3::CreateWidget(
+const igdeMetaContext::Ref &context){
 	return igdeMetaPropertyPoint3Widget::Ref::New(*this, context);
 }
 
@@ -87,10 +87,12 @@ igdeMetaPropertyPoint3(id, name, description){
 
 igdeMetaPropertyPoint3Storage::~igdeMetaPropertyPoint3Storage() = default;
 
-const decPoint3 &igdeMetaPropertyPoint3Storage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decPoint3 &igdeMetaPropertyPoint3Storage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyPoint3Storage::SetPropertyValue(const igdeMetaContext::Ref &context, const decPoint3 &value){
+void igdeMetaPropertyPoint3Storage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decPoint3 &value){
 	GetStorage(context).SetValue(value);
 }

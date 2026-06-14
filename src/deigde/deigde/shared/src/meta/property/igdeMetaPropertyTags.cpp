@@ -60,10 +60,9 @@ void igdeMetaPropertyTags::NotifyValueChanged(const igdeMetaContext::Ref &contex
 igdeMetaPropertyTagsUndo::Ref igdeMetaPropertyTags::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decStringSet &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context && context->GetUndoSystem()){
-		auto undo = igdeMetaPropertyTagsUndo::Ref::New(
+	if(context->GetUndoSystem()){
+		const auto undo = igdeMetaPropertyTagsUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
-		undo->Redo();
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		
@@ -88,10 +87,12 @@ igdeMetaPropertyTags(id, name, description, rows){
 
 igdeMetaPropertyTagsStorage::~igdeMetaPropertyTagsStorage() = default;
 
-const decStringSet &igdeMetaPropertyTagsStorage::GetPropertyValue(const igdeMetaContext::Ref &context) const{
+const decStringSet &igdeMetaPropertyTagsStorage::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyTagsStorage::SetPropertyValue(const igdeMetaContext::Ref &context, const decStringSet &value){
+void igdeMetaPropertyTagsStorage::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decStringSet &value){
 	GetStorage(context).SetValue(value);
 }
