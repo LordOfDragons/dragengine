@@ -293,7 +293,7 @@ public:
  * \brief Set meta property with deObject type.
  */
 template<typename T>
-class DE_DLL_EXPORT igdeMetaPropertySetType : public igdeMetaPropertySet{
+class igdeMetaPropertySetType : public igdeMetaPropertySet{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertySetType<T>>;
@@ -433,7 +433,7 @@ public:
  * \brief Set meta property using storage.
  */
 template<typename T>
-class DE_DLL_EXPORT igdeMetaPropertySetTypeStorage : public igdeMetaPropertySetType<T>{
+class igdeMetaPropertySetTypeStorage : public igdeMetaPropertySetType<T>{
 public:
 	/** \brief Storage type. */
 	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertySetTypeStorage<T>>;

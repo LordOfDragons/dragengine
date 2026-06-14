@@ -34,7 +34,7 @@
  * Allows to store by design immutable data by properties to detect changes in large data.
  */
 template <typename T>
-class DE_DLL_EXPORT igdeTMetaData : public deObject{
+class igdeTMetaData : public deObject{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeTMetaData<T>>;

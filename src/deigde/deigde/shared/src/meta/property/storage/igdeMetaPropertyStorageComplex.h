@@ -34,7 +34,7 @@
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
 template<typename T, typename P>
-class DE_DLL_EXPORT igdeMetaPropertyStorageComplex : public igdeMetaPropertyStorage<P>{
+class igdeMetaPropertyStorageComplex : public igdeMetaPropertyStorage<P>{
 private:
 	T pValue = {};
 	

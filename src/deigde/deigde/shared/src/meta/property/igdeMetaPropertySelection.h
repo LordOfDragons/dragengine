@@ -182,7 +182,7 @@ public:
  * \brief Selection meta property with enumeration type.
  */
 template<typename T, typename = typename std::enable_if<std::is_enum<T>::value>::type>
-class DE_DLL_EXPORT igdeMetaPropertySelectionEnum : public igdeMetaPropertySelection{
+class igdeMetaPropertySelectionEnum : public igdeMetaPropertySelection{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertySelectionEnum<T>>;
@@ -277,7 +277,7 @@ public:
  * \brief Selection meta property using storage.
  */
 template<typename T>
-class DE_DLL_EXPORT igdeMetaPropertySelectionEnumStorage : public igdeMetaPropertySelectionEnum<T>{
+class igdeMetaPropertySelectionEnumStorage : public igdeMetaPropertySelectionEnum<T>{
 public:
 	/** \brief Storage type. */
 	using Storage = igdeMetaPropertyStoragePrimitive<T, igdeMetaPropertySelectionEnumStorage<T>>;

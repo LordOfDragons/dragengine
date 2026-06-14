@@ -328,7 +328,7 @@ public:
  * \brief List meta property with deObject type.
  */
 template<typename T, typename ListType = decTObjectOrderedSet<T>>
-class DE_DLL_EXPORT igdeMetaPropertyListType : public igdeMetaPropertyList{
+class igdeMetaPropertyListType : public igdeMetaPropertyList{
 public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyListType<T>>;
@@ -465,7 +465,7 @@ public:
  * \brief List meta property using storage.
  */
 template<typename T, typename ListType = decTObjectOrderedSet<T>>
-class DE_DLL_EXPORT igdeMetaPropertyListTypeStorage : public igdeMetaPropertyListType<T, ListType>{
+class igdeMetaPropertyListTypeStorage : public igdeMetaPropertyListType<T, ListType>{
 public:
 	/** \brief Storage type. */
 	using Storage = igdeMetaPropertyStorageList<T, igdeMetaPropertyListTypeStorage<T, ListType>, ListType>;

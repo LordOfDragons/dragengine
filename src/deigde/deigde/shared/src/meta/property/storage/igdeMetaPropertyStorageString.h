@@ -36,7 +36,7 @@
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
 template<typename P>
-class DE_DLL_EXPORT igdeMetaPropertyStorageString : public igdeMetaPropertyStorage<P>{
+class igdeMetaPropertyStorageString : public igdeMetaPropertyStorage<P>{
 private:
 	decString pValue;
 	

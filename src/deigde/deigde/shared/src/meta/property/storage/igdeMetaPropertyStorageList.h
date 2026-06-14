@@ -36,7 +36,7 @@
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
 template<typename T, typename P, typename ListType = decTObjectOrderedSet<T>>
-class DE_DLL_EXPORT igdeMetaPropertyStorageList : public igdeMetaPropertyStorage<P>{
+class igdeMetaPropertyStorageList : public igdeMetaPropertyStorage<P>{
 public:
 	using ObjectRef = deTObjectReference<T>;
 	

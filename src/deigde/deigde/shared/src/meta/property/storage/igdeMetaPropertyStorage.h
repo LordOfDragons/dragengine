@@ -39,7 +39,7 @@ class igdeMetaContext;
  * P is the meta property type.
  */
 template<typename P>
-class DE_DLL_EXPORT igdeMetaPropertyStorage{
+class igdeMetaPropertyStorage{
 private:
 	P &pProperty;
 	const deTObjectReference<igdeMetaContext> &pContext;
