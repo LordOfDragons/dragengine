@@ -26,7 +26,7 @@
 #define _IGDEMETAPROPERTYSELECTION_H_
 
 #include "igdeMetaProperty.h"
-#include "storage/igdeMetaPropertyStoragePrimitive.h"
+#include "storage/igdeMetaPropertyStorageEnum.h"
 #include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/model/igdeListItem.h"
 
@@ -173,15 +173,15 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	/*@}*/
 };
 
 
 /**
- * \brief Selection meta property with enumeration type.
+ * \brief Selection meta property with enumeration type ('enum class' or 'enum').
  */
-template<typename T, typename = typename std::enable_if<std::is_enum<T>::value>::type>
+template<typename T>
 class igdeMetaPropertySelectionEnum : public igdeMetaPropertySelection{
 public:
 	/** \brief Reference type. */
@@ -280,7 +280,7 @@ template<typename T>
 class igdeMetaPropertySelectionEnumStorage : public igdeMetaPropertySelectionEnum<T>{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStoragePrimitive<T, igdeMetaPropertySelectionEnumStorage<T>>;
+	using Storage = igdeMetaPropertyStorageEnum<T, igdeMetaPropertySelectionEnumStorage<T>>;
 	
 	
 public:
@@ -301,11 +301,11 @@ public:
 	virtual Storage &GetStorage(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context) const = 0;
 	
 	
-	T GetPropertyValue(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context) const override{
+	T GetPropertyValueEnum(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context) const override{
 		return GetStorage(context).GetValue();
 	}
 	
-	void SetPropertyValue(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context, T value) override{
+	void SetPropertyValueEnum(const typename igdeMetaPropertySelectionEnum<T>::ContextRef &context, T value) override{
 		GetStorage(context).SetValue(value);
 	}
 };

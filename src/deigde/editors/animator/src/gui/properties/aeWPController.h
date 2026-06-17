@@ -46,7 +46,7 @@ class aeWindowProperties;
 class aeWPController : public igdeContainerScroll{
 public:
 	using Ref = deTObjectReference<aeWPController>;
-	
+	bool preventUpdate = false;
 	
 private:
 	aeWindowProperties &pWindowProperties;

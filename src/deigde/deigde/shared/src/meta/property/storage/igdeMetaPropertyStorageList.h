@@ -54,6 +54,12 @@ public:
 	igdeMetaPropertyStorageList(P &property, const deTObjectReference<igdeMetaContext> &context) :
 	igdeMetaPropertyStorage<P>(property, context){
 	}
+	
+	/** \brief Create list meta property storage with initial value. */
+	igdeMetaPropertyStorageList(P &property, const deTObjectReference<igdeMetaContext> &context, const ListType &initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue){
+	}
 	/*@}*/
 	
 	
@@ -63,7 +69,7 @@ public:
 	inline const ListType &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const ListType &value){
+	void SetValue(const ListType &value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
@@ -87,27 +93,31 @@ public:
 		pValue = value;
 		
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Get selection. */
 	inline const ListType &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const ListType &selection){
+	void SetSelection(const ListType &selection, bool notify = true){
 		if(pSelection == selection){
 			return;
 		}
 		
 		pSelection = selection;
-		igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Get active object. */
 	inline const ObjectRef &GetActive() const{ return pActive; }
 	
 	/** \brief Set active object. */
-	void SetActive(const ObjectRef &active){
+	void SetActive(const ObjectRef &active, bool notify = true){
 		if(pActive == active){
 			return;
 		}
@@ -116,11 +126,13 @@ public:
 		if(pOnActiveChanged){
 			pOnActiveChanged();
 		}
-		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Set active object. */
-	void SetActive(T* active){
+	void SetActive(T* active, bool notify = true){
 		if(pActive == active){
 			return;
 		}
@@ -129,9 +141,14 @@ public:
 		if(pOnActiveChanged){
 			pOnActiveChanged();
 		}
-		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
+	
+	/** \brief Function to call for objects added to the list. */
+	inline const std::function<void(const ObjectRef&)> &GetOnObjectAdded() const{ return pOnObjectAdded; }
 	
 	/** \brief Set function to call for objects added to the list. */
 	template <typename F>
@@ -139,16 +156,40 @@ public:
 		pOnObjectAdded = std::forward<F>(func);
 	}
 	
+	/** \brief Set function to call for objects added to the list. */
+	template <typename F>
+	void SetOnObjectAdded(const F& func){
+		pOnObjectAdded = func;
+	}
+	
+	/** \brief Function to call for objects removed from the list. */
+	inline const std::function<void(const ObjectRef&)> &GetOnObjectRemoved() const{ return pOnObjectRemoved; }
+	
 	/** \brief Set function to call for objects removed from the list. */
 	template <typename F>
 	void SetOnObjectRemoved(F&& func){
 		pOnObjectRemoved = std::forward<F>(func);
 	}
 	
+	/** \brief Set function to call for objects removed from the list. */
+	template <typename F>
+	void SetOnObjectRemoved(const F& func){
+		pOnObjectRemoved = func;
+	}
+	
+	/** \brief Function to call if active object changed before listeners are notified. */
+	inline const std::function<void()> &GetOnActiveChanged() const{ return pOnActiveChanged; }
+	
 	/** \brief Set function to call if active object changed before listeners are notified. */
 	template <typename F>
 	void SetOnActiveChanged(F&& func){
 		pOnActiveChanged = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call if active object changed before listeners are notified. */
+	template <typename F>
+	void SetOnActiveChanged(const F& func){
+		pOnActiveChanged = func;
 	}
 	/*@}*/
 	

@@ -88,6 +88,39 @@ public:
 	}
 };
 
+class cActionControllerAdd : public igdeMetaProperty::Action{
+	aeMCPControllers &pPropertyController;
+	
+public:
+	cActionControllerAdd(aeMCPControllers &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.Action.Controller.Add",
+			nullptr, "@Animator.Action.Controller.Add.ToolTip"),
+		pPropertyController(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyController.IsValid(context)){
+			return;
+		}
+		
+		decString name(Translate("Animator.DefaultName.Controller").ToUTF8());
+		if(!igdeCommonDialogs::GetString(GetOwner(), "@Animator.Dialog.AddController.Title",
+		"@Animator.Dialog.AddController.Name", name)){
+			return;
+		}
+		
+		auto list = pPropertyController.GetStorage(context).GetValue();
+		if(list.HasNamed(name)){
+			igdeCommonDialogs::Error(GetOwner(), "@Animator.Dialog.AddController.Title",
+				"@Animator.Dialog.AddController.ErrorNameExists");
+			return;
+		}
+		
+		list.Add(aeController::Ref::New(pPropertyController.Animator(context).GetWindowMain(), name));
+		pPropertyController.ChangePropertyValueType(context, list, BuildUndoInfo(pPropertyController));
+	}
+};
+
 }
 
 igdeMetaPropertyListUndo::Ref aeMCPControllers::ChangePropertyValue(const ContextRef &context,
@@ -120,13 +153,13 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeAction::Ref aeMCPControllers::CreateButtonAction(TargetButton target, const ContextRef &context, igdeWidget &owner){
+igdeMetaProperty::Action::Ref aeMCPControllers::CreateButtonAction(TargetButton target, igdeWidget &owner){
 	switch(target){
 	case TargetButton::add:
-		return Animator(context).GetWindowMain().GetActionControllerAdd();
+		return deTObjectReference<cActionControllerAdd>::New(*this, owner);
 		
 	default:
-		return CreateDefaultButtonAction(target, context, owner);
+		return CreateDefaultButtonAction(target, owner);
 	}
 }
 
@@ -136,4 +169,161 @@ void aeMCPControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMe
 	helper.MenuCommand(menu, windowMain.GetActionControllerAdd());
 	helper.MenuCommand(menu, windowMain.GetActionControllerDuplicate());
 	AddDefaultContextMenuEntries(menu, context, owner);
+}
+
+
+// Class aeMCPControllerMaximumValue
+//////////////////////////////////////
+
+namespace {
+
+class cActionMaximumFromMove : public igdeMetaProperty::Action{
+	aeMCPControllerMaximumValue &pPropertyMaximum;
+	
+public:
+	cActionMaximumFromMove(aeMCPControllerMaximumValue &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.WPController.SetFromMove",
+			nullptr, "@Animator.WPController.SetFromMove.ToolTip"),
+		pPropertyMaximum(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyMaximum.IsValid(context)){
+			return;
+		}
+		
+		auto &controller = pPropertyMaximum.Controller(context);
+		if(!controller.GetAnimator()){
+			return;
+		}
+		
+		const auto &engAnimator = controller.GetAnimator()->GetEngineAnimator();
+		if(!engAnimator){
+			return;
+		}
+		
+		const auto &engAnimation = engAnimator->GetAnimation();
+		if(!engAnimation){
+			return;
+		}
+		
+		decStringList names;
+		engAnimation->GetMoves().Visit([&](const deAnimationMove &move){
+			names.Add(move.GetName());
+		});
+		if(names.IsEmpty()){
+			return;
+		}
+		
+		names.SortAscending();
+		int selection = 0;
+		if(!igdeCommonDialogs::SelectString(GetOwner(),
+		"@Animator.WPController.Dialog.SetRangeFromMove.Title",
+		"@Animator.WPController.Dialog.SetRangeFromMove.Message", names, selection)){
+			return;
+		}
+		
+		pPropertyMaximum.ChangePropertyValue(GetContext(),
+			engAnimation->GetMoves()[engAnimation->FindMove(names[selection])]->GetPlaytime(),
+			BuildUndoInfo(pPropertyMaximum));
+	}
+};
+
+}
+
+void aeMCPControllerMaximumValue::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	helper.MenuCommand(menu, deTObjectReference<cActionMaximumFromMove>::New(*this, owner, context));
+}
+
+
+// Class aeMCPControllerCurrentValue
+//////////////////////////////////////
+
+namespace {
+
+class cActionValueSetToLower : public igdeMetaProperty::Action{
+	aeMCPControllerCurrentValue &pPropertyCurrent;
+	
+public:
+	cActionValueSetToLower(aeMCPControllerCurrentValue &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.WPController.ValueSetToLower",
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallLeft),
+			"@Animator.WPController.ValueSetToLower.ToolTip"),
+		pPropertyCurrent(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyCurrent.IsValid(context)){
+			return;
+		}
+		
+		auto &controller = pPropertyCurrent.Controller(context);
+		pPropertyCurrent.ChangePropertyValue(context, controller.minimumValue, BuildUndoInfo(pPropertyCurrent));
+	}
+};
+
+class cActionValueSetToUpper : public igdeMetaProperty::Action{
+	aeMCPControllerCurrentValue &pPropertyCurrent;
+	
+public:
+	cActionValueSetToUpper(aeMCPControllerCurrentValue &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.WPController.ValueSetToUpper",
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallRight),
+			"@Animator.WPController.ValueSetToUpper.ToolTip"),
+		pPropertyCurrent(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyCurrent.IsValid(context)){
+			return;
+		}
+		
+		auto &controller = pPropertyCurrent.Controller(context);
+		pPropertyCurrent.ChangePropertyValue(context, controller.maximumValue, BuildUndoInfo(pPropertyCurrent));
+	}
+};
+
+class cActionValueSetToCenter : public igdeMetaProperty::Action{
+	aeMCPControllerCurrentValue &pPropertyCurrent;
+	
+public:
+	cActionValueSetToCenter(aeMCPControllerCurrentValue &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.WPController.ValueSetToCenter",
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+			"@Animator.WPController.ValueSetToCenter.ToolTip"),
+		pPropertyCurrent(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyCurrent.IsValid(context)){
+			return;
+		}
+		
+		auto &controller = pPropertyCurrent.Controller(context);
+		pPropertyCurrent.ChangePropertyValue(context, (controller.minimumValue + controller.maximumValue) / 2.0f, BuildUndoInfo(pPropertyCurrent));
+	}
+};
+
+}
+
+deTObjectReference<igdeMetaPropertyFloatUndo> aeMCPControllerCurrentValue::ChangePropertyValue(
+const ContextRef &context, float newValue, const char *undoInfo, const char *undoInfoLong){
+	if(Controller(context).frozen.GetValue()){
+		return {};
+	}
+	return aeTMCPAnimatorController::ChangePropertyValue(context, newValue, undoInfo, undoInfoLong);
+}
+
+void aeMCPControllerCurrentValue::AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner){
+	auto &helper = contextMenu.GetEnvironment().GetUIHelper();
+	if(contextMenu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(contextMenu);
+	}
+	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetToLower>::New(*this, owner, context));
+	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetToUpper>::New(*this, owner, context));
+	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetToCenter>::New(*this, owner, context));
 }

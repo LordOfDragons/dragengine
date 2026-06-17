@@ -28,8 +28,15 @@
 #include "../../undo/igdeUndoSystem.h"
 
 
+// Class igdeMetaPropertyInteger::Listener
+////////////////////////////////////////////
+
+void igdeMetaPropertyInteger::Listener::OnLimitsChanged(igdeMetaPropertyInteger*, const ContextRef&){
+}
+
+
 // Class igdeMetaPropertyInteger
-///////////////////////////////////
+//////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -87,6 +94,12 @@ void igdeMetaPropertyInteger::NotifyValueChanged(const igdeMetaContext::Ref &con
 	});
 }
 
+void igdeMetaPropertyInteger::NotifyLimitsChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnLimitsChanged(this, context);
+	});
+}
+
 igdeMetaPropertyIntegerUndo::Ref igdeMetaPropertyInteger::ChangePropertyValue(
 const igdeMetaContext::Ref &context, int newValue, const char *undoInfo, const char *undoInfoLong){
 	if(context->GetUndoSystem()){
@@ -101,9 +114,17 @@ const igdeMetaContext::Ref &context, int newValue, const char *undoInfo, const c
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyIntegerWidget::Ref::New(*this, context);
+int igdeMetaPropertyInteger::GetPropertyLowerLimit(const ContextRef &context) const{
+	return pLowerLimit;
+}
+
+int igdeMetaPropertyInteger::GetPropertyUpperLimit(const ContextRef &context) const{
+	return pUpperLimit;
+}
+
+
+igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(){
+	return igdeMetaPropertyIntegerWidget::Ref::New(*this);
 }
 
 
@@ -121,9 +142,16 @@ int igdeMetaPropertyIntegerStorage::GetPropertyValue(const igdeMetaContext::Ref 
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyIntegerStorage::SetPropertyValue(
-const igdeMetaContext::Ref &context, int value){
+void igdeMetaPropertyIntegerStorage::SetPropertyValue(const igdeMetaContext::Ref &context, int value){
 	GetStorage(context).SetValue(value);
+}
+
+int igdeMetaPropertyIntegerStorage::GetPropertyLowerLimit(const ContextRef &context) const{
+	return GetStorage(context).GetLowerLimit();
+}
+
+int igdeMetaPropertyIntegerStorage::GetPropertyUpperLimit(const ContextRef &context) const{
+	return GetStorage(context).GetUpperLimit();
 }
 
 

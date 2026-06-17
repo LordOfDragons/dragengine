@@ -74,55 +74,54 @@ public:
 		
 		/** \brief Object selection changed. */
 		virtual void OnSelectionChanged(igdeMetaPropertyList *property, const ContextRef &context);
+		
+		/** \brief Object item information changed. */
+		virtual void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const ContextRef &context);
 	};
 	
 	
 	/** \brief Remove selected entries action. */
-	class DE_DLL_EXPORT ActionRemove : public igdeAction{
-	protected:
-		igdeMetaPropertyList &pProperty;
-		const ContextRef pContext;
-		igdeEnvironment &pEnvironment;
+	class DE_DLL_EXPORT ActionRemove : public Action{
+	private:
+		igdeMetaPropertyList &pPropertyList;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
-		ActionRemove(igdeMetaPropertyList &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionRemove(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		
+		inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
 	};
 	
 	/** \brief Remove all entries action. */
-	class DE_DLL_EXPORT ActionRemoveAll : public igdeAction{
-	protected:
-		igdeMetaPropertyList &pProperty;
-		const ContextRef pContext;
-		igdeEnvironment &pEnvironment;
+	class DE_DLL_EXPORT ActionRemoveAll : public Action{
+	private:
+		igdeMetaPropertyList &pPropertyList;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
-		ActionRemoveAll(igdeMetaPropertyList &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionRemoveAll(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		
+		inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
 	};
 	
 	/** \brief Move entry up action. */
-	class DE_DLL_EXPORT ActionMoveUp : public igdeAction{
-	protected:
-		igdeMetaPropertyList &pProperty;
-		const ContextRef pContext;
-		igdeEnvironment &pEnvironment;
+	class DE_DLL_EXPORT ActionMoveUp : public Action{
+	private:
+		igdeMetaPropertyList &pPropertyList;
 		bool pTop;
 		
 	public:
 		using Ref = deTObjectReference<ActionMoveUp>;
-		ActionMoveUp(igdeMetaPropertyList &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionMoveUp(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		
-		inline bool IsTop() const{ return pTop; }
+		inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
+		inline bool GetTop() const{ return pTop; }
 		void SetTop(bool top);
 	};
 	
@@ -130,25 +129,23 @@ public:
 	class DE_DLL_EXPORT ActionMoveTop : public ActionMoveUp{
 	public:
 		using Ref = deTObjectReference<ActionMoveTop>;
-		ActionMoveTop(igdeMetaPropertyList &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionMoveTop(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 	};
 	
 	/** \brief Move entry down action. */
-	class DE_DLL_EXPORT ActionMoveDown : public igdeAction{
-		igdeMetaPropertyList &pProperty;
-		const ContextRef pContext;
-		igdeEnvironment &pEnvironment;
+	class DE_DLL_EXPORT ActionMoveDown : public Action{
+	private:
+		igdeMetaPropertyList &pPropertyList;
 		bool pBottom;
 		
 	public:
 		using Ref = deTObjectReference<ActionMoveDown>;
-		ActionMoveDown(igdeMetaPropertyList &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionMoveDown(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		
-		inline bool IsBottom() const{ return pBottom; }
+		inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
+		inline bool GetBottom() const{ return pBottom; }
 		void SetBottom(bool bottom);
 	};
 	
@@ -156,8 +153,7 @@ public:
 	class DE_DLL_EXPORT ActionMoveBottom : public ActionMoveDown{
 	public:
 		using Ref = deTObjectReference<ActionMoveBottom>;
-		ActionMoveBottom(igdeMetaPropertyList &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionMoveBottom(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 	};
 	
 	
@@ -207,9 +203,11 @@ public:
 	/** \brief Notify listeners about active object changed. */
 	void NotifyActiveChanged(const ContextRef &context);
 	
-	/** \brListief Notify listeners about object selection changed. */
+	/** \brief Notify listeners about object selection changed. */
 	void NotifySelectionChanged(const ContextRef &context);
 	
+	/** \brief Notify listeners about object information changed. */
+	void NotifyObjectItemInfoChanged(const ContextRef &context);
 	
 	/**
 	 * \brief Capture context.
@@ -281,8 +279,7 @@ public:
 	 * Subclasses can override this method to create button action. If nullptr is returned
 	 * the button is destroyed.
 	 */
-	virtual igdeAction::Ref CreateButtonAction(TargetButton target,
-		const ContextRef &context, igdeWidget &owner);
+	virtual Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner);
 	
 	/**
 	 * \brief Add context menu entries.
@@ -298,7 +295,7 @@ public:
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	
 	
 	/**
@@ -317,8 +314,7 @@ public:
 		const ContextRef &context, igdeWidget &owner);
 	
 	/** \brief Create default button action. */
-	igdeAction::Ref CreateDefaultButtonAction(TargetButton target,
-		const ContextRef &context, igdeWidget &owner);
+	Action::Ref CreateDefaultButtonAction(TargetButton target, igdeWidget &owner);
 	/*@}*/
 };
 

@@ -50,26 +50,26 @@ igdeMetaPropertyStringSet*, const igdeMetaContext::Ref&){
 ///////////////////////////////////////////////
 
 igdeMetaPropertyStringSet::ActionAdd::ActionAdd(igdeMetaPropertyStringSet &property,
-	const igdeMetaContext::Ref &context, igdeWidget &owner) :
-igdeAction("@Igde.MetaPropertyList.Action.Add",
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Add",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 	"@Igde.MetaPropertyList.Action.Add.ToolTip"),
-pProperty(property),
-pContext(context),
-pOwner(owner){
+pPropertyStringSet(property){
 }
 
 void igdeMetaPropertyStringSet::ActionAdd::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyStringSet.IsValid(context)){
 		return;
 	}
 	
-	const decStringSet candidates = pProperty.GetValidStrings(pContext);
+	const decStringSet candidates = pPropertyStringSet.GetValidStrings(context);
 	if(candidates.IsEmpty()){
 		return;
 	}
 	
-	auto &environment = pOwner.GetEnvironment();
+	auto &owner = GetOwner();
+	auto &environment = GetEnvironment();
 	auto dialog = igdeDialogSetSelect::Ref::New(environment,
 		"@Igde.MetaPropertyList.Action.Dialog.AddEntries.Title",
 		"@Igde.MetaPropertyList.Action.Dialog.AddEntries.Message", candidates);
@@ -77,9 +77,9 @@ void igdeMetaPropertyStringSet::ActionAdd::OnAction(){
 	auto iconPresent = environment.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	auto iconAbsent = environment.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	
-	const auto oldValue = pProperty.GetPropertyValue(pContext);
+	const auto oldValue = pPropertyStringSet.GetPropertyValue(context);
 	dialog->MarkItems(oldValue, iconPresent, iconAbsent);
-	if(!dialog->Run(&pOwner)){
+	if(!dialog->Run(&owner)){
 		return;
 	}
 	
@@ -88,14 +88,11 @@ void igdeMetaPropertyStringSet::ActionAdd::OnAction(){
 		return;
 	}
 	
-	const auto &tm = environment.GetTranslationManager();
-	pProperty.ChangePropertyValue(pContext, newValue,
-		tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-			+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+	pPropertyStringSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyStringSet));
 }
 
 void igdeMetaPropertyStringSet::ActionAdd::Update(){
-	SetEnabled(pProperty.IsValid(pContext));
+	SetEnabled(pPropertyStringSet.IsValid(GetContext()));
 }
 
 
@@ -103,54 +100,48 @@ void igdeMetaPropertyStringSet::ActionAdd::Update(){
 //////////////////////////////////////////////////
 
 igdeMetaPropertyStringSet::ActionRemove::ActionRemove(igdeMetaPropertyStringSet &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-igdeAction("@Igde.MetaPropertyList.Action.Remove",
-	environment.GetStockIcon(igdeEnvironment::esiMinus),
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Remove",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Igde.MetaPropertyList.Action.Remove.ToolTip"),
-pProperty(property),
-pContext(context),
-pEnvironment(environment){
+pPropertyStringSet(property){
 }
 
 void igdeMetaPropertyStringSet::ActionRemove::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyStringSet.IsValid(context)){
 		return;
 	}
 	
-	if(pProperty.GetMultiSelection()){
-		const auto selection = pProperty.GetSelection(pContext);
+	if(pPropertyStringSet.GetMultiSelection()){
+		const auto selection = pPropertyStringSet.GetSelection(context);
 		if(selection.IsEmpty()){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyStringSet.GetPropertyValue(context);
 		selection.Visit([&](const decString &string){
 			newValue.Remove(string);
 		});
 		
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyStringSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyStringSet));
 		
 	}else{
-		const auto active = pProperty.GetActiveString(pContext);
+		const auto active = pPropertyStringSet.GetActiveString(context);
 		if(!active){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyStringSet.GetPropertyValue(context);
 		newValue.Remove(active->GetData());
 		
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyStringSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyStringSet));
 	};
 }
 
 void igdeMetaPropertyStringSet::ActionRemove::Update(){
-	SetEnabled(pProperty.IsValid(pContext) && pProperty.GetActiveString(pContext));
+	const auto &context = GetContext();
+	SetEnabled(pPropertyStringSet.IsValid(context) && pPropertyStringSet.GetActiveString(context));
 }
 
 
@@ -158,29 +149,25 @@ void igdeMetaPropertyStringSet::ActionRemove::Update(){
 /////////////////////////////////////////////////////
 
 igdeMetaPropertyStringSet::ActionRemoveAll::ActionRemoveAll(
-	igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context,
-	igdeEnvironment &environment) :
-igdeAction("@Igde.MetaPropertyList.Action.RemoveAll",
-	environment.GetStockIcon(igdeEnvironment::esiDelete),
+	igdeMetaPropertyStringSet &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.RemoveAll",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 	"@Igde.MetaPropertyList.Action.RemoveAll.ToolTip"),
-pProperty(property),
-pContext(context),
-pEnvironment(environment){
+pPropertyStringSet(property){
 }
 
 void igdeMetaPropertyStringSet::ActionRemoveAll::OnAction(){
-	if(!pProperty.IsValid(pContext) || pProperty.GetPropertyValue(pContext).IsEmpty()){
+	const auto &context = GetContext();
+	if(!pPropertyStringSet.IsValid(context) || pPropertyStringSet.GetPropertyValue(context).IsEmpty()){
 		return;
 	}
 	
-	const auto &tm = pEnvironment.GetTranslationManager();
-	pProperty.ChangePropertyValue(pContext, {},
-		tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-			+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+	pPropertyStringSet.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertyStringSet));
 }
 
 void igdeMetaPropertyStringSet::ActionRemoveAll::Update(){
-	SetEnabled(pProperty.IsValid(pContext) && pProperty.GetPropertyValue(pContext).IsNotEmpty());
+	const auto &context = GetContext();
+	SetEnabled(pPropertyStringSet.IsValid(context) && pPropertyStringSet.GetPropertyValue(context).IsNotEmpty());
 }
 
 
@@ -188,27 +175,27 @@ void igdeMetaPropertyStringSet::ActionRemoveAll::Update(){
 ////////////////////////////////////////////////////////
 
 igdeMetaPropertyStringSet::ActionExportAsText::ActionExportAsText(
-	igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context, igdeWidget &owner) :
-igdeAction("@Igde.MetaPropertyList.Action.ExportAsText",
+	igdeMetaPropertyStringSet &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.ExportAsText",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 	"@Igde.MetaPropertyList.Action.ExportAsText.ToolTip"),
-pProperty(property),
-pContext(context),
-pOwner(owner){
+pPropertyStringSet(property){
 }
 
 void igdeMetaPropertyStringSet::ActionExportAsText::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyStringSet.IsValid(context)){
 		return;
 	}
 	
-	auto text = DEJoin(decStringList(pProperty.GetPropertyValue(pContext)).GetSortedAscending(), "\n");
-	igdeCommonDialogs::GetMultilineString(pOwner, "@Igde.MetaPropertyList.Dialog.ExportAsText.Title",
+	auto text = DEJoin(decStringList(pPropertyStringSet.GetPropertyValue(context)).GetSortedAscending(), "\n");
+	igdeCommonDialogs::GetMultilineString(GetOwner(),
+		"@Igde.MetaPropertyList.Dialog.ExportAsText.Title",
 		"@Igde.MetaPropertyList.Dialog.ExportAsText.Message", text);
 }
 
 void igdeMetaPropertyStringSet::ActionExportAsText::Update(){
-	SetEnabled(pProperty.IsValid(pContext));
+	SetEnabled(pPropertyStringSet.IsValid(GetContext()));
 }
 
 
@@ -216,23 +203,22 @@ void igdeMetaPropertyStringSet::ActionExportAsText::Update(){
 //////////////////////////////////////////////////////////
 
 igdeMetaPropertyStringSet::ActionImportFromText::ActionImportFromText(
-	igdeMetaPropertyStringSet &property, const igdeMetaContext::Ref &context, igdeWidget &owner) :
-igdeAction("@Igde.MetaPropertyList.Action.ImportFromText",
+	igdeMetaPropertyStringSet &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.ImportFromText",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 	"@Igde.MetaPropertyList.Action.ImportFromText.ToolTip"),
-pProperty(property),
-pContext(context),
-pOwner(owner){
+pPropertyStringSet(property){
 }
 
 void igdeMetaPropertyStringSet::ActionImportFromText::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyStringSet.IsValid(context)){
 		return;
 	}
 	
 	decString text;
 	while(true){
-		if(!igdeCommonDialogs::GetMultilineString(pOwner,
+		if(!igdeCommonDialogs::GetMultilineString(GetOwner(),
 		"@Igde.MetaPropertyList.Dialog.ImportFromText.Title",
 		"@Igde.MetaPropertyList.Dialog.ImportFromText.Message", text)){
 			return;
@@ -240,21 +226,18 @@ void igdeMetaPropertyStringSet::ActionImportFromText::OnAction(){
 		break;
 	}
 	
-	const auto oldValue = pProperty.GetPropertyValue(pContext);
+	const auto oldValue = pPropertyStringSet.GetPropertyValue(context);
 	const auto newValue = oldValue + decStringSet(text.Split('\n').Collect([](const decString &line){
 		return !line.GetTrimmed().IsEmpty();
 	}));
 	
 	if(newValue != oldValue){
-		const auto &tm = pOwner.GetEnvironment().GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyStringSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyStringSet));
 	}
 }
 
 void igdeMetaPropertyStringSet::ActionImportFromText::Update(){
-	SetEnabled(pProperty.IsValid(pContext));
+	SetEnabled(pPropertyStringSet.IsValid(GetContext()));
 }
 
 
@@ -276,6 +259,10 @@ igdeMetaPropertyStringSet::~igdeMetaPropertyStringSet() = default;
 
 // Management
 ///////////////
+
+void igdeMetaPropertyStringSet::SetDefaultValue(const decStringSet &value){
+	pDefaultValue = value;
+}
 
 void igdeMetaPropertyStringSet::SetRows(int rows){
 	pRows = decMath::max(rows, 1);
@@ -336,9 +323,9 @@ decStringSet igdeMetaPropertyStringSet::GetValidStrings(const igdeMetaContext::R
 	return {};
 }
 
-igdeAction::Ref igdeMetaPropertyStringSet::CreateButtonAction(
-TargetButton target, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	return CreateDefaultButtonAction(target, context, owner);
+igdeMetaProperty::Action::Ref igdeMetaPropertyStringSet::CreateButtonAction(
+TargetButton target, igdeWidget &owner){
+	return CreateDefaultButtonAction(target, owner);
 }
 
 void igdeMetaPropertyStringSet::AddContextMenuEntries(igdeMenuCascade &contextMenu,
@@ -346,9 +333,8 @@ const ContextRef &context, igdeWidget &owner){
 	AddDefaultContextMenuEntries(contextMenu, context, owner);
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyStringSet::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyStringSetWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyStringSet::CreateWidget(){
+	return igdeMetaPropertyStringSetWidget::Ref::New(*this);
 }
 
 void igdeMetaPropertyStringSet::AddDefaultContextMenuEntries(igdeMenuCascade &menu,
@@ -358,22 +344,22 @@ const igdeMetaContext::Ref &context, igdeWidget &owner){
 	if(menu.GetChildren().IsNotEmpty()){
 		helper.MenuSeparator(menu);
 	}
-	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, context, owner.GetEnvironment()));
-	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, context, owner.GetEnvironment()));
+	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, owner, context));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, ActionExportAsText::Ref::New(*this, context, owner));
-	helper.MenuCommand(menu, ActionImportFromText::Ref::New(*this, context, owner));
+	helper.MenuCommand(menu, ActionExportAsText::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionImportFromText::Ref::New(*this, owner, context));
 }
 
-igdeAction::Ref igdeMetaPropertyStringSet::CreateDefaultButtonAction(TargetButton target,
-	const igdeMetaContext::Ref &context, igdeWidget &owner){
+igdeMetaPropertyStringSet::Action::Ref igdeMetaPropertyStringSet::CreateDefaultButtonAction(
+TargetButton target, igdeWidget &owner){
 	switch(target){
 	case TargetButton::add:
-		return ActionAdd::Ref::New(*this, context, owner);
+		return ActionAdd::Ref::New(*this, owner);
 		
 	case TargetButton::remove:
-		return ActionRemove::Ref::New(*this, context, owner.GetEnvironment());
+		return ActionRemove::Ref::New(*this, owner);
 		
 	default:
 		return {};

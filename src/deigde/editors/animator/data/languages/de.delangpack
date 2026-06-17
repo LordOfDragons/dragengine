@@ -151,6 +151,12 @@ entfernt, die ihn verwenden. Möchten Sie den Link entfernen?</translation>
 	<translation name="Animator.WPController.SetFromMove.ToolTip">Legt Bereich fest aufgrund Spielzeit einer Animationsbewegung.</translation>
 	<translation name="Animator.WPController.Reset">Zurücksetzen</translation>
 	<translation name="Animator.WPController.Reset.ToolTip">Wert auf Controller-Minimum zurücksetzen</translation>
+	<translation name="Animator.WPController.ValueSetToLower">Auf Minimum setzen</translation>
+	<translation name="Animator.WPController.ValueSetToLower.ToolTip">Wert auf Controller-Minimum setzen</translation>
+	<translation name="Animator.WPController.ValueSetToUpper">Auf Maximum setzen</translation>
+	<translation name="Animator.WPController.ValueSetToUpper.ToolTip">Wert auf Controller-Maximum setzen</translation>
+	<translation name="Animator.WPController.ValueSetToCenter">Auf Mitte setzen</translation>
+	<translation name="Animator.WPController.ValueSetToCenter.ToolTip">Wert auf Controller-Mitte setzen</translation>
 	<translation name="Animator.WPController.Clamp">Wert auf Bereich begrenzen</translation>
 	<translation name="Animator.WPController.Clamp.ToolTip">Legt fest, ob der Wert des Controllers auf den angegebenen Bereich begrenzt wird.</translation>
 	<translation name="Animator.WPController.Frozen">Wert einfrieren</translation>

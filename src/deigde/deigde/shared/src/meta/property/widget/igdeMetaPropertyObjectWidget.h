@@ -68,10 +68,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyObjectWidget(igdeMetaPropertyObject &property,
-		const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyObjectWidget(igdeMetaPropertyObject &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -104,6 +103,10 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/
+	
+	
+protected:
+	void OnContextChanged() override;
 };
 
 #endif

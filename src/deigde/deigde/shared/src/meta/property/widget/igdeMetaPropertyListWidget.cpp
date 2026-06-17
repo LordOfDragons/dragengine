@@ -43,12 +43,9 @@ public:
 	~cListener() override = default;
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
-		if(pWidget.GetPreventUpdate() || !pWidget.GetContext()){
-			return;
+		if(!pWidget.GetPreventUpdate()){
+			pWidget.StoreActiveObject();
 		}
-		
-		pWidget.GetPropertyList().SetActiveObject(
-			pWidget.GetContext(), listBox->GetSelectedItemRefData());
 	}
 	
 	void OnItemSelected(igdeListBox *listBox, int index) override{
@@ -88,7 +85,7 @@ public:
 	void OnAction() override{
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertyList();
-		if(property.GetPropertyValue(context).IsEmpty()){
+		if(!property.IsValid(context) || property.GetPropertyValue(context).IsEmpty()){
 			return;
 		}
 		
@@ -112,18 +109,31 @@ pWidget(widget){
 igdeMetaPropertyListWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyListWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyList*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 void igdeMetaPropertyListWidget::PropertyListener::OnActiveChanged(
-igdeMetaPropertyList*, const igdeMetaContext::Ref&){
-	pWidget.SelectActiveObject();
+igdeMetaPropertyList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.SelectActiveObject();
+	}
 }
 
 void igdeMetaPropertyListWidget::PropertyListener::OnSelectionChanged(
-igdeMetaPropertyList*, const igdeMetaContext::Ref&){
-	pWidget.RestoreSelection();
+igdeMetaPropertyList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.RestoreSelection();
+	}
+}
+
+void igdeMetaPropertyListWidget::PropertyListener::OnObjectItemInfoChanged(
+igdeMetaPropertyList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.UpdateItemInfo();
+	}
 }
 
 
@@ -133,9 +143,8 @@ igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyListWidget::igdeMetaPropertyListWidget(
-	igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyListWidget::igdeMetaPropertyListWidget(igdeMetaPropertyList &property) :
+igdeMetaPropertyWidget(property),
 pPropertyList(property),
 pPropertyListener(PropertyListener::Ref::New(*this)),
 pRows(property.GetRows())
@@ -173,8 +182,6 @@ void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &
 	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyListWidget::Drop(){
@@ -185,6 +192,7 @@ void igdeMetaPropertyListWidget::Drop(){
 		pRows = pListBox->GetRows();
 	}
 	
+	pButtonActions.RemoveAll();
 	pListener.Clear();
 	pListBox.Clear();
 	igdeMetaPropertyWidget::Drop();
@@ -195,30 +203,78 @@ void igdeMetaPropertyListWidget::Update(){
 		return;
 	}
 	
+	const auto &context = GetContext();
+	const bool valid = pPropertyList.IsValid(context);
 	RunWithPreventUpdate([&]{
-		const auto &context = GetContext();
-		const auto objects = pPropertyList.GetPropertyValue(context);
-		igdeMetaContextItemInfo info;
 		pListBox->RemoveAllItems();
-		objects.Visit([&](const deObject::Ref &object){
-			pPropertyList.GetObjectItemInfo(context, object, info);
-			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
-			item->SetRefData(object);
-			pListBox->AddItem(item);
-		});
+		if(valid){
+			const auto objects = pPropertyList.GetPropertyValue(context);
+			igdeMetaContextItemInfo info;
+			objects.Visit([&](const deObject::Ref &object){
+				pPropertyList.GetObjectItemInfo(context, object, info);
+				auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
+				item->SetRefData(object);
+				pListBox->AddItem(item);
+			});
+		}
+		pListBox->SetEnabled(valid);
 	});
 	
 	SelectActiveObject();
 	RestoreSelection();
+	
+	// the list automatically selects the first item if the list is not empty. this potentially
+	// changes the active object without notification due to RunWithPreventUpdate(). store the
+	// current selection and active object to properly synchronize if anything changed
+	StoreSelection();
+	StoreActiveObject();
+}
+
+void igdeMetaPropertyListWidget::UpdateItemInfo(){
+	if(!pListBox){
+		return;
+	}
+	
+	const auto &context = GetContext();
+	const bool valid = pPropertyList.IsValid(context);
+	if(!valid){
+		return;
+	}
+	
+	const auto objects = pPropertyList.GetPropertyValue(context);
+	igdeMetaContextItemInfo info;
+	pListBox->GetItems().VisitIndexed([&](int index, igdeListItem &item){
+		const auto object = item.GetRefData();
+		pPropertyList.GetObjectItemInfo(context, object, info);
+		
+		const auto &text = info.GetText();
+		const auto &icon = info.GetIcon();
+		const auto &description = info.GetDescription();
+		if(item.GetText() == text && item.GetIcon() == icon && item.GetDescription() == description){
+			return;
+		}
+		
+		item.SetText(text);
+		item.SetIcon(icon);
+		item.SetDescription(description);
+		pListBox->ItemChangedAt(index);
+	});
 }
 
 void igdeMetaPropertyListWidget::SelectActiveObject(){
-	if(pListBox){
-		RunWithPreventUpdate([&]{
-			const auto &context = GetContext();
-			pListBox->SetSelectionWithRefData(context ? pPropertyList.GetActiveObject(context) : deObject::Ref());
-		});
+	if(!pListBox || !pPropertyList.IsValid(GetContext())){
+		return;
 	}
+	
+	pListBox->SetSelectionWithRefData(pPropertyList.GetActiveObject(GetContext()));
+}
+
+void igdeMetaPropertyListWidget::StoreActiveObject(){
+	if(!pListBox || !pPropertyList.IsValid(GetContext())){
+		return;
+	}
+	
+	pPropertyList.SetActiveObject(GetContext(), pListBox->GetSelectedItemRefData());
 }
 
 void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -232,7 +288,8 @@ void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 }
 
 void igdeMetaPropertyListWidget::StoreSelection(){
-	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple || !GetContext()){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple
+	|| !pPropertyList.IsValid(GetContext())){
 		return;
 	}
 	
@@ -246,7 +303,8 @@ void igdeMetaPropertyListWidget::StoreSelection(){
 }
 
 void igdeMetaPropertyListWidget::RestoreSelection(){
-	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple || !GetContext()){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple
+	|| !pPropertyList.IsValid(GetContext())){
 		return;
 	}
 	
@@ -267,6 +325,21 @@ void igdeMetaPropertyListWidget::RestoreSelection(){
 }
 
 
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyListWidget::OnContextChanged(){
+	Update();
+	SelectActiveObject();
+	RestoreSelection();
+	
+	auto &context = GetContext();
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.SetContext(context);
+	});
+}
+
+
 // Private Functions
 //////////////////////
 
@@ -275,8 +348,13 @@ igdeUIHelper &helper, igdeContainer &container){
 	igdeButton::Ref button;
 	helper.Button(button, {});
 	button->SetStyle(igdeButton::ebsToolBar);
-	button->SetAction(pPropertyList.CreateButtonAction(target, GetContext(), button));
-	if(button->GetAction()){
-		container.AddChild(button);
+	auto action = pPropertyList.CreateButtonAction(target, button);
+	if(!action){
+		return;
 	}
+	
+	action->SetContext(GetContext());
+	button->SetAction(action);
+	container.AddChild(button);
+	pButtonActions.Add(action);
 }

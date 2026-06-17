@@ -180,11 +180,13 @@ FXIcon *igdeNativeFoxCheckBox::CheckBoxIcon(const igdeCheckBox &powner){
 }
 
 int igdeNativeFoxCheckBox::CheckBoxFlags(const igdeCheckBox &powner){
+	int justify = powner.GetCentered() ? JUSTIFY_CENTER_X : JUSTIFY_LEFT;
+	
 	if(powner.GetStyle() == igdeCheckBox::ebsToolBar){
-		return JUSTIFY_LEFT | ICON_BEFORE_TEXT | FRAME_RAISED;
+		return justify | ICON_BEFORE_TEXT | FRAME_RAISED;
 		
 	}else{
-		return JUSTIFY_LEFT | ICON_BEFORE_TEXT;
+		return justify | ICON_BEFORE_TEXT;
 	}
 }
 

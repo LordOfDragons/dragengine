@@ -22,43 +22,52 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaPropertyVector3Undo.h"
+#include "aeMCController.h"
+#include "../../animator/aeAnimator.h"
+#include "../../animator/controller/aeController.h"
+#include "../../gui/aeWindowMain.h"
+
+#include <dragengine/common/exceptions.h>
 
 
-// Class igdeMetaPropertyVector3Undo
-//////////////////////////////////////
+// Class aeMCController
+/////////////////////////
 
-igdeMetaPropertyVector3Undo::igdeMetaPropertyVector3Undo(igdeMetaPropertyVector3 &property,
-	const igdeMetaContext::Ref &context, const decVector &newValue,
-	const char *undoInfo, const char *undoInfoLong) :
-pProperty(&property),
-pContext(property.Capture(context)),
-pOldValue(property.GetPropertyValue(context)),
-pNewValue(newValue)
+// Constructor, destructor
+////////////////////////////
+
+aeMCController::aeMCController(aeWindowMain &windowMain, aeController *controller) :
+igdeMetaContext("controller"),
+pWindowMain(windowMain),
+pController(controller)
 {
-	SetShortInfo(undoInfo ? undoInfo : property.GetUndoInfoOrLabel().GetString());
-	if(undoInfoLong){
-		SetLongInfo(undoInfoLong);
-	}
+	SetLabel("Controller");
+	SetDescription("Controller properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().controller.metaProperties);
 }
+
+aeMCController::~aeMCController() = default;
 
 
 // Management
 ///////////////
 
-void igdeMetaPropertyVector3Undo::SetNewValue(const decVector &newValue){
-	pNewValue = newValue;
+aeController &aeMCController::GetControllerRef() const{
+	DEASSERT_NOTNULL(pController)
+	return *pController;
 }
 
-
-void igdeMetaPropertyVector3Undo::Undo(){
-	pProperty->SetPropertyValue(pContext, pOldValue);
+aeMCController::Ref aeMCController::Capture() const{
+	auto context = Ref::New(pWindowMain, pController);
+	context->pGuardController = pController;
+	return context;
 }
 
-void igdeMetaPropertyVector3Undo::Redo(){
-	pProperty->SetPropertyValue(pContext, pNewValue);
+igdeUndoSystem *aeMCController::GetUndoSystem() const{
+	return pController && pController->GetAnimator()
+		? pController->GetAnimator()->GetUndoSystem() : nullptr;
 }
 
-void igdeMetaPropertyVector3Undo::ProgressiveRedo(){
-	Redo();
+igdeClipboard *aeMCController::GetClipboard() const{
+	return &pWindowMain.GetClipboard();
 }

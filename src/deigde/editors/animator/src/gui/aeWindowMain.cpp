@@ -113,7 +113,8 @@
 
 aeWindowMain::aeWindowMain(aeIGDEModule &module) :
 igdeEditorWindow(module),
-pLoadSaveSystem(nullptr)
+pLoadSaveSystem(nullptr),
+pMCAnimatorProperties(*this)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -208,8 +209,7 @@ void aeWindowMain::SetAnimator(aeAnimator *animator){
 }
 
 void aeWindowMain::CreateNewAnimator(){
-	const aeAnimator::Ref animator(aeAnimator::Ref::New(*this));
-	SetAnimator(animator);
+	SetAnimator(aeAnimator::Ref::New(*this));
 }
 
 void aeWindowMain::SaveAnimator(const char *filename){
@@ -759,8 +759,7 @@ public:
 			return {};
 		}
 		
-		const aeController::Ref controller(aeController::Ref::New(name));
-		return aeUAddController::Ref::New(animator, controller);
+		return aeUAddController::Ref::New(animator, aeController::Ref::New(pWindow, name));
 	}
 };
 
@@ -782,7 +781,7 @@ public:
 			return {};
 		}
 		
-		const aeController::Ref duplicate(aeController::Ref::New(*controller));
+		const auto duplicate = aeController::Ref::New(pWindow, *controller);
 		duplicate->SetName(name);
 		return aeUAddController::Ref::New(animator, duplicate, "@Animator.Undo.DuplicateController");
 	}
@@ -1481,7 +1480,7 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 
 void aeWindowMain::pUpdateMetaContexts(){
 	auto list = igdeMetaContext::Data::Ref::New();
-	list->GetData().Add(pAnimator ? pAnimator->GetMetaContext() : aeMCAnimator::Ref::New(this));
+	list->GetData().Add(pAnimator ? pAnimator->GetMetaContext() : aeMCAnimator::Ref::New(*this, nullptr));
 	// playground, view, undo?
 	SetMetaContexts(list);
 }

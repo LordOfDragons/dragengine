@@ -35,77 +35,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeMCAnimator::aeMCAnimator(aeWindowMain *window) :
+aeMCAnimator::aeMCAnimator(aeWindowMain &windowMain, aeAnimator *animator) :
 igdeMetaContext("animator"),
-pWindow(window)
+pWindowMain(windowMain),
+pAnimator(animator)
 {
 	SetLabel("Animator");
 	SetDescription("Animator properties");
-	
-	if(window){
-		SetProperties(window->GetMCAnimatorProperties().metaProperties);
-	}
+	SetProperties(windowMain.GetMCAnimatorProperties().metaProperties);
 }
-
+	
 aeMCAnimator::~aeMCAnimator() = default;
 
 
 // Management
 ///////////////
 
-aeWindowMain &aeMCAnimator::GetWindowRef() const{
-	DEASSERT_NOTNULL(pWindow)
-	return *pWindow;
+aeAnimator &aeMCAnimator::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator)
+	return *pAnimator;
 }
 
-aeAnimator::Ref aeMCAnimator::GetAnimator() const{
-	return pWindow ? pWindow->GetAnimator() : aeAnimator::Ref(pAnimator);
-}
-
-const aeController::Ref &aeMCAnimator::GetActiveController() const{
-	auto animator = GetAnimator();
-	return animator ? animator->GetActiveController() : pController;
-}
-
-const aeLink::Ref &aeMCAnimator::GetActiveLink() const{
-	auto animator = GetAnimator();
-	return animator ? animator->GetActiveLink() : pLink;
-}
-
-const aeRule::Ref &aeMCAnimator::GetActiveRule() const{
-	auto animator = GetAnimator();
-	return animator ? animator->GetActiveRule() : pRule;
-}
-
-aeMCAnimator::Ref aeMCAnimator::CaptureAnimator() const{
-	auto context = Ref::New(nullptr);
-	context->pAnimator = GetAnimator();
-	return context;
-}
-
-aeMCAnimator::Ref aeMCAnimator::CaptureController() const{
-	auto context = CaptureAnimator();
-	context->pController = GetActiveController();
-	return context;
-}
-
-aeMCAnimator::Ref aeMCAnimator::CaptureLink() const{
-	auto context = CaptureAnimator();
-	context->pLink = GetActiveLink();
-	return context;
-}
-
-aeMCAnimator::Ref aeMCAnimator::CaptureRule() const{
-	auto context = CaptureAnimator();
-	context->pRule = GetActiveRule();
+aeMCAnimator::Ref aeMCAnimator::Capture() const{
+	auto context = Ref::New(pWindowMain, pAnimator);
+	context->pGuardAnimator = pAnimator;
 	return context;
 }
 
 igdeUndoSystem *aeMCAnimator::GetUndoSystem() const{
-	auto animator = GetAnimator();
-	return animator ? animator->GetUndoSystem() : nullptr;
+	return pAnimator ? pAnimator->GetUndoSystem() : nullptr;
 }
 
 igdeClipboard *aeMCAnimator::GetClipboard() const{
-	return pWindow ? &pWindow->GetClipboard() : nullptr;
+	return &pWindowMain.GetClipboard();
 }

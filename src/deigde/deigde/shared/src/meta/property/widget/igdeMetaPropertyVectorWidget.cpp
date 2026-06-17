@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaPropertyVector3Widget.h"
+#include "igdeMetaPropertyVectorWidget.h"
 #include "../igdeMetaPropertyDVector.h"
-#include "../undo/igdeMetaPropertyVector3Undo.h"
+#include "../undo/igdeMetaPropertyVectorUndo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../clipboard/igdeClipboard.h"
@@ -34,34 +34,38 @@
 namespace {
 
 class cListenerHelper{
-	igdeMetaPropertyVector3Widget &pWidget;
+	igdeMetaPropertyVectorWidget &pWidget;
 	
 public:
-	explicit cListenerHelper(igdeMetaPropertyVector3Widget &widget) :
+	explicit cListenerHelper(igdeMetaPropertyVectorWidget &widget) :
 	pWidget(widget){
 	}
 	
-	inline igdeMetaPropertyVector3Widget &GetWidget() const{ return pWidget; }
+	inline igdeMetaPropertyVectorWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
-	inline igdeMetaPropertyVector3 &GetPropertyVector3() const{ return pWidget.GetPropertyVector3(); }
+	inline igdeMetaPropertyVector &GetPropertyVector() const{ return pWidget.GetPropertyVector(); }
+	inline bool IsValid() const{ return GetPropertyVector().IsValid(GetContext()); }
 	
 	void OnValueChanged(const decVector &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
 		const auto &context = pWidget.GetContext();
-		auto &property = pWidget.GetPropertyVector3();
+		auto &property = pWidget.GetPropertyVector();
 		const auto &oldValue = property.GetPropertyValue(context);
 		if(newValue.IsEqualTo(oldValue)){
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -70,7 +74,7 @@ class cListener : public igdeEditVectorListener{
 	cListenerHelper pHelper;
 	
 public:
-	explicit cListener(igdeMetaPropertyVector3Widget &widget) :
+	explicit cListener(igdeMetaPropertyVectorWidget &widget) :
 	pHelper(widget){
 	}
 	
@@ -83,10 +87,10 @@ public:
 
 
 class ActionCopy : public igdeAction{
-	igdeMetaPropertyVector3Widget &pWidget;
+	igdeMetaPropertyVectorWidget &pWidget;
 	
 public:
-	ActionCopy(igdeMetaPropertyVector3Widget &widget, const igdeMetaContext::Ref &context,
+	ActionCopy(igdeMetaPropertyVectorWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Copy",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
@@ -97,8 +101,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyVector();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -108,7 +113,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyDVector::ClipboardData::Ref::New(
-			pWidget.GetPropertyVector3().GetPropertyValue(context)));
+			property.GetPropertyValue(context)));
 	}
 };
 
@@ -117,7 +122,7 @@ class ActionPaste : public igdeAction{
 	cListenerHelper pHelper;
 	
 public:
-	ActionPaste(igdeMetaPropertyVector3Widget &widget, const igdeMetaContext::Ref &context,
+	ActionPaste(igdeMetaPropertyVectorWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Paste",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
@@ -128,12 +133,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -148,13 +152,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyDVector::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -163,7 +167,7 @@ class cActionResetToDefault : public igdeAction{
 	cListenerHelper pHelper;
 	
 public:
-	cActionResetToDefault(igdeMetaPropertyVector3Widget &widget) :
+	cActionResetToDefault(igdeMetaPropertyVectorWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
 		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
@@ -173,66 +177,65 @@ public:
 	~cActionResetToDefault() override = default;
 	
 	void OnAction() override{
-		pHelper.OnValueChanged(pHelper.GetPropertyVector3().GetDefaultValue(), GetText());
+		pHelper.OnValueChanged(pHelper.GetPropertyVector().GetDefaultValue(), GetText());
 	}
 };
 
 }
 
 
-// Class igdeMetaPropertyVector3Widget::PropertyListener
+// Class igdeMetaPropertyVectorWidget::PropertyListener
 //////////////////////////////////////////////////////////
 
-igdeMetaPropertyVector3Widget::PropertyListener::PropertyListener(
-	igdeMetaPropertyVector3Widget &widget) :
+igdeMetaPropertyVectorWidget::PropertyListener::PropertyListener(
+	igdeMetaPropertyVectorWidget &widget) :
 pWidget(widget){
 }
 
-igdeMetaPropertyVector3Widget::PropertyListener::~PropertyListener() = default;
+igdeMetaPropertyVectorWidget::PropertyListener::~PropertyListener() = default;
 
-void igdeMetaPropertyVector3Widget::PropertyListener::OnValueChanged(
-igdeMetaPropertyVector3*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+void igdeMetaPropertyVectorWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyVector*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
-// Class igdeMetaPropertyVector3Widget
+// Class igdeMetaPropertyVectorWidget
 ////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyVector3Widget::igdeMetaPropertyVector3Widget(
-	igdeMetaPropertyVector3 &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
-pPropertyVector3(property),
+igdeMetaPropertyVectorWidget::igdeMetaPropertyVectorWidget(igdeMetaPropertyVector &property) :
+igdeMetaPropertyWidget(property),
+pPropertyVector(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
-	pPropertyVector3.GetListeners().Add(pPropertyListener);
+	pPropertyVector.GetListeners().Add(pPropertyListener);
 }
 
-igdeMetaPropertyVector3Widget::~igdeMetaPropertyVector3Widget(){
+igdeMetaPropertyVectorWidget::~igdeMetaPropertyVectorWidget(){
 	Drop();
-	pPropertyVector3.GetListeners().Remove(pPropertyListener);
+	pPropertyVector.GetListeners().Remove(pPropertyListener);
 }
 
 
 // Management
 ///////////////
 
-void igdeMetaPropertyVector3Widget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyVectorWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pEditVector)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditVector(pPropertyVector3.GetDescription(), 6, 3, pEditVector, pListener);
+	helper.EditVector(pPropertyVector.GetDescription(), 6, 3, pEditVector, pListener);
 	WrapEditWidget(container, helper, noLabel, pEditVector);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
-void igdeMetaPropertyVector3Widget::Drop(){
+void igdeMetaPropertyVectorWidget::Drop(){
 	if(pEditVector && pListener){
 		pEditVector->RemoveListener(pListener);
 	}
@@ -241,16 +244,19 @@ void igdeMetaPropertyVector3Widget::Drop(){
 	igdeMetaPropertyWidget::Drop();
 }
 
-void igdeMetaPropertyVector3Widget::Update(){
-	if(pEditVector){
-		RunWithPreventUpdate([&]{
-			pEditVector->SetVector(GetContext()
-				? pPropertyVector3.GetPropertyValue(GetContext()) : decVector());
-		});
+void igdeMetaPropertyVectorWidget::Update(){
+	if(!pEditVector){
+		return;
 	}
+	
+	const bool valid = pPropertyVector.IsValid(GetContext());
+	RunWithPreventUpdate([&]{
+		pEditVector->SetVector(valid ? pPropertyVector.GetPropertyValue(GetContext()) : decVector());
+		pEditVector->SetEnabled(valid);
+	});
 }
 
-void igdeMetaPropertyVector3Widget::AddContextMenuEntries(igdeMenuCascade &menu){
+void igdeMetaPropertyVectorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
 	
 	auto &helper = menu.GetEnvironment().GetUIHelper();
@@ -267,4 +273,12 @@ void igdeMetaPropertyVector3Widget::AddContextMenuEntries(igdeMenuCascade &menu)
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyVectorWidget::OnContextChanged(){
+	Update();
 }

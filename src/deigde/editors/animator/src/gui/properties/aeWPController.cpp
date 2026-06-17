@@ -229,7 +229,7 @@ public:
 	cListControllers(aeWPController &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
-		if(pPanel.GetAnimator()){
+		if(pPanel.GetAnimator() && !pPanel.preventUpdate){
 			pPanel.GetAnimator()->SetActiveController(listBox->GetSelectedItem()
 				? (aeController*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
@@ -428,7 +428,7 @@ public:
 	void OnTextChanged(igdeComboBox *comboBox) override{
 		aeController * const controller = pPanel.GetController();
 		if(controller && comboBox->GetSelectedItem()){
-			controller->SetLocomotionAttribute((aeAnimatorLocomotion::eLocomotionTypes)
+			controller->SetLocomotionAttribute((aeAnimatorLocomotion::eAttributes)
 				(intptr_t)comboBox->GetSelectedItem()->GetData());
 		}
 	}
@@ -629,6 +629,7 @@ void aeWPController::SelectActiveController(){
 }
 
 void aeWPController::UpdateControllerList(){
+	preventUpdate = true;
 	pListController->UpdateRestoreSelection([&](){
 		pListController->RemoveAllItems();
 		
@@ -642,6 +643,7 @@ void aeWPController::UpdateControllerList(){
 	}, 0);
 	
 	UpdateController();
+	preventUpdate = false;
 }
 
 void aeWPController::UpdateController(){

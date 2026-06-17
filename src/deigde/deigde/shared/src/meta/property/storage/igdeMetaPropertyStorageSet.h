@@ -48,7 +48,14 @@ public:
 	/*@{*/
 	/** \brief Create set meta property storage. */
 	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(property.GetDefaultValue()){
+	}
+	
+	/** \brief Create set meta property storage with initial value. */
+	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context, const typename P::SetType &initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue){
 	}
 	/*@}*/
 	
@@ -59,7 +66,7 @@ public:
 	inline const typename P::SetType &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const typename P::SetType &value){
+	void SetValue(const typename P::SetType &value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
@@ -83,46 +90,70 @@ public:
 		pValue = value;
 		
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Get selection. */
 	inline const typename P::SetType &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const typename P::SetType &selection){
+	void SetSelection(const typename P::SetType &selection, bool notify = true){
 		if(pSelection == selection){
 			return;
 		}
 		
 		pSelection = selection;
-		igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Get active object. */
 	inline const typename P::ObjectTypeRef &GetActive() const{ return pActive; }
 	
 	/** \brief Set active object. */
-	void SetActive(const typename P::ObjectTypeRef &active){
+	void SetActive(const typename P::ObjectTypeRef &active, bool notify = true){
 		if(pActive == active){
 			return;
 		}
 		
 		pActive = active;
-		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	
-	/** \brief Set function to call for objects added to the list. */
+	/** \brief Function to call for objects added to the set. */
+	inline const std::function<void(const typename P::ObjectTypeRef&)> &GetOnObjectAdded() const{ return pOnObjectAdded; }
+	
+	/** \brief Set function to call for objects added to the set. */
 	template <typename F>
 	void SetOnObjectAdded(F&& func){
 		pOnObjectAdded = std::forward<F>(func);
 	}
 	
-	/** \brief Set function to call for objects removed from the list. */
+	/** \brief Set function to call for objects added to the set. */
+	template <typename F>
+	void SetOnObjectAdded(const F& func){
+		pOnObjectAdded = func;
+	}
+	
+	/** \brief Function to call for objects removed from the set. */
+	inline const std::function<void(const typename P::ObjectTypeRef&)> &GetOnObjectRemoved() const{ return pOnObjectRemoved; }
+	
+	/** \brief Set function to call for objects removed from the set. */
 	template <typename F>
 	void SetOnObjectRemoved(F&& func){
 		pOnObjectRemoved = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call for objects removed from the set. */
+	template <typename F>
+	void SetOnObjectRemoved(const F& func){
+		pOnObjectRemoved = func;
 	}
 	/*@}*/
 	

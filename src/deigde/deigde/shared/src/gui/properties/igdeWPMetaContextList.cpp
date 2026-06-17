@@ -165,7 +165,10 @@ void igdeWPMetaContextList::pCreateContextPanels(){
 			pContextPanelCache.SetAt(context, panel);
 		}
 		
-		pTabBook->AddChild(panel, context->GetLabel(), context->GetIcon(), context->GetDescription());
+		const auto scrollPanel = igdeContainerScroll::Ref::New(env, false, true);
+		scrollPanel->AddChild(panel);
+		pTabBook->AddChild(scrollPanel, context->GetLabel(), context->GetIcon(), context->GetDescription());
+		
 		pContextPanels.Add(panel);
 		panel->SetContext(context);
 		panel->SetFilter(pFilter);

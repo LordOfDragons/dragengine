@@ -28,6 +28,9 @@
 #include <algorithm>
 
 #include "aeMCAnimator.h"
+#include "aeMCController.h"
+#include "aeMCLink.h"
+#include "aeMCRule.h"
 
 
 /**
@@ -44,19 +47,20 @@ protected:
 	
 public:
 	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->CaptureAnimator();
+		return context.DynamicCast<aeMCAnimator>()->Capture();
 	}
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->GetAnimator().IsNotNull();
+		const auto c = context.DynamicCast<aeMCAnimator>();
+		return c && c->GetAnimator() != nullptr;
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetWindowRef();
+		return context.DynamicCast<aeMCAnimator>()->GetWindowMain();
 	}
 	
 	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetAnimator();
+		return context.DynamicCast<aeMCAnimator>()->GetAnimatorRef();
 	}
 };
 
@@ -75,23 +79,20 @@ protected:
 	
 public:
 	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->CaptureController();
+		return context.DynamicCast<aeMCController>()->Capture();
 	}
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->GetActiveController().IsNotNull();
+		const auto c = context.DynamicCast<aeMCController>();
+		return c && c->GetController() != nullptr;
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetWindowRef();
-	}
-	
-	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetAnimator();
+		return context.DynamicCast<aeMCController>()->GetWindowMain();
 	}
 	
 	inline aeController &Controller(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetActiveController();
+		return context.DynamicCast<aeMCController>()->GetControllerRef();
 	}
 };
 
@@ -110,19 +111,16 @@ protected:
 	
 public:
 	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->CaptureLink();
+		return context.DynamicCast<aeMCLink>()->Capture();
 	}
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->GetActiveLink().IsNotNull();
-	}
-	
-	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetAnimator();
+		const auto c = context.DynamicCast<aeMCLink>();
+		return c && c->GetLink() != nullptr;
 	}
 	
 	inline aeLink &Link(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetActiveLink();
+		return context.DynamicCast<aeMCLink>()->GetLinkRef();
 	}
 };
 
@@ -141,19 +139,20 @@ protected:
 	
 public:
 	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->CaptureRule();
+		return context.DynamicCast<aeMCRule>()->Capture();
+	}
+	
+	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCRule>()->GetWindowMain();
 	}
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
-		return context.DynamicCast<aeMCAnimator>()->GetActiveRule().IsNotNull();
-	}
-	
-	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetAnimator();
+		const auto c = context.DynamicCast<aeMCRule>();
+		return c && c->GetRule() != nullptr;
 	}
 	
 	inline aeRule &Rule(const igdeMetaContext::Ref &context) const{
-		return context.DynamicCast<aeMCAnimator>()->GetActiveRule();
+		return context.DynamicCast<aeMCRule>()->GetRuleRef();
 	}
 };
 

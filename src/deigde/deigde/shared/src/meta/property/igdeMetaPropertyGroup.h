@@ -46,18 +46,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	
 	/** \brief Create group meta property with label and description. */
 	igdeMetaPropertyGroup(const char *id, const char *name, const char *description);
+	
+	/** \brief Create group meta property with label and description and properties. */
+	igdeMetaPropertyGroup(const char *id, const char *name, const char *description, const List &properties);
 	
 protected:
 	/** \brief Clean up group meta property. */
 	~igdeMetaPropertyGroup() override;
-	
-public:
 	/*@}*/
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get list of properties. */
@@ -70,7 +71,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	/*@}*/
 };
 

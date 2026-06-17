@@ -71,9 +71,8 @@ const igdeMetaContext::Ref &context, bool newValue, const char *undoInfo, const 
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyBooleanWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(){
+	return igdeMetaPropertyBooleanWidget::Ref::New(*this);
 }
 
 

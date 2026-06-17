@@ -53,6 +53,10 @@ igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;
 // Management
 ///////////////
 
+void igdeMetaPropertyObject::SetDefaultValue(const ObjectRef &value){
+	pDefaultValue = value;
+}
+
 void igdeMetaPropertyObject::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
@@ -81,9 +85,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyObjectWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(){
+	return igdeMetaPropertyObjectWidget::Ref::New(*this);
 }
 
 

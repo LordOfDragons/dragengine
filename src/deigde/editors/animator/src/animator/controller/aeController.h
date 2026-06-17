@@ -25,7 +25,9 @@
 #ifndef _AECONTROLLER_H_
 #define _AECONTROLLER_H_
 
+#include "../locomotion/aeAnimatorLocomotion.h"
 #include "../../gui/gizmo/aeGizmoControllerIKPosition.h"
+#include "../../meta/animator/aeMCController.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -33,6 +35,17 @@
 
 #include <dragengine/common/string/decString.h>
 
+#include <deigde/meta/igdeMetaContext.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyInteger.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
+
+#include <optional>
+
+class aeWindowMain;
 class aeAnimator;
 class deAnimatorController;
 
@@ -56,24 +69,25 @@ public:
 	
 	
 private:
+	aeMCController::Ref pMetaContext;
 	aeAnimator *pAnimator;
 	int pIndex;
 	
-	decString pName;
-	
-	float pMinValue;
-	float pMaxValue;
-	float pCurValue;
-	bool pClamp;
-	bool pFrozen;
-	decVector pVector;
-	int pLocoAttr;
-	int pLocoLeg;
-	eVectorSimulation pVectorSimulation;
-	float pDefaultValue;
-	decVector pDefaultVector;
-	
 	aeGizmoControllerIKPosition::Ref pGizmoIKPosition;
+	
+public:
+	igdeMetaPropertyStringStorage::Storage name;
+	igdeMetaPropertyFloatStorage::Storage minimumValue;
+	igdeMetaPropertyFloatStorage::Storage maximumValue;
+	igdeMetaPropertyFloatStorage::Storage currentValue;
+	igdeMetaPropertyBooleanStorage::Storage clamp;
+	igdeMetaPropertyBooleanStorage::Storage frozen;
+	igdeMetaPropertyVectorStorage::Storage vector;
+	igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>::Storage locomotionAttribute;
+	igdeMetaPropertyIntegerStorage::Storage locomotionLeg;
+	igdeMetaPropertySelectionEnumStorage<eVectorSimulation>::Storage vectorSimulation;
+	igdeMetaPropertyFloatStorage::Storage defaultValue;
+	igdeMetaPropertyVectorStorage::Storage defaultVector;
 	
 	
 	
@@ -81,10 +95,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller. */
-	aeController(const char *name = "Controller");
+	aeController(aeWindowMain &windowMain, const char *name = "Controller");
 	
 	/** Create copy of controller. */
-	aeController(const aeController &copy);
+	aeController(aeWindowMain &windowMain, const aeController &copy);
 	
 protected:
 	/** Cleans up the animator controller. */
@@ -107,8 +121,11 @@ public:
 	/** Sets the index. */
 	void SetIndex(int index);
 	
+	/** Meta context. */
+	inline const aeMCController::Ref &GetMetaContext() const{ return pMetaContext; }
+	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{ return name; }
 	/** Sets the world filename. */
 	void SetName(const char *filename);
 	/** Updates the controller if required. */
@@ -119,54 +136,54 @@ public:
 	void InverseValue();
 	
 	/** Retrieves the minimum value. */
-	inline float GetMinimumValue() const{ return pMinValue; }
+	inline float GetMinimumValue() const{ return minimumValue; }
 	/** Sets the minimum value. */
 	void SetMinimumValue(float value);
 	/** Retrieves the maximum value. */
-	inline float GetMaximumValue() const{ return pMaxValue; }
+	inline float GetMaximumValue() const{ return maximumValue; }
 	/** Sets the maximum value. */
 	void SetMaximumValue(float value);
 	/** Retrieves the current value. */
-	inline float GetCurrentValue() const{ return pCurValue; }
+	inline float GetCurrentValue() const{ return currentValue; }
 	/** Sets the current value. */
 	void SetCurrentValue(float value);
 	/** Increments the current value. */
 	void IncrementCurrentValue(float incrementBy);
 	/** Determines if the controller is frozen. */
-	inline bool GetFrozen() const{ return pFrozen; }
+	inline bool GetFrozen() const{ return frozen; }
 	/** Sets if the controller is frozen. */
 	void SetFrozen(bool frozen);
 	/** Determines if values passed the range are clamped or wrapped around. */
-	inline bool GetClamp() const{ return pClamp; }
+	inline bool GetClamp() const{ return clamp; }
 	/** Sets if values passed the range are clamped or wrapped around. */
 	void SetClamp(bool clamp);
 	
 	/** Retrieves the controller vector. */
-	inline const decVector &GetVector() const{ return pVector; }
+	inline const decVector &GetVector() const{ return vector; }
 	/** Sets the controller vector. */
 	void SetVector(const decVector &vector);
 	
 	/** Retrieves the locomotion attribute this target is controlled by. */
-	inline int GetLocomotionAttribute() const{ return pLocoAttr; }
+	inline int GetLocomotionAttribute() const{ return locomotionAttribute; }
 	/** Sets the locomotion attribute this target is controlled by. */
-	void SetLocomotionAttribute(int attribute);
+	void SetLocomotionAttribute(aeAnimatorLocomotion::eAttributes attribute);
 	/** Retrieves the locomotion leg this target is controlled by. */
-	inline int GetLocomotionLeg() const{ return pLocoLeg; }
+	inline int GetLocomotionLeg() const{ return locomotionLeg; }
 	/** Sets the locomotion leg this target is controlled by. */
 	void SetLocomotionLeg(int leg);
 	
 	/** Vector simulation. */
-	inline eVectorSimulation GetVectorSimulation() const{ return pVectorSimulation; }
+	inline eVectorSimulation GetVectorSimulation() const{ return vectorSimulation; }
 	
 	/** Set vector simulation. */
 	void SetVectorSimulation(eVectorSimulation simulation);
 	
 	/** Default value. */
-	inline float GetDefaultValue() const{ return pDefaultValue; }
+	inline float GetDefaultValue() const{ return defaultValue; }
 	void SetDefaultValue(float value);
 	
 	/** Default vector. */
-	inline const decVector &GetDefaultVector() const{ return pDefaultVector; }
+	inline const decVector &GetDefaultVector() const{ return defaultVector; }
 	void SetDefaultVector(const decVector &vector);
 	
 	inline const aeGizmoControllerIKPosition::Ref &GetGizmoIKPosition() const{ return pGizmoIKPosition; }
@@ -179,6 +196,10 @@ private:
 	float pCheckValue(float value);
 	void pReleaseGizmos();
 	void pCreateGizmos();
+	
+	void pNotifyControllerChanged();
+	void pNotifyControllerValueChanged();
+	void pOnLimitsChanged();
 };
 
 #endif

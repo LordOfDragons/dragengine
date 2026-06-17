@@ -44,9 +44,10 @@ public:
 	inline igdeMetaPropertySelectionWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertySelection &GetPropertySelection() const{ return pWidget.GetPropertySelection(); }
+	inline bool IsValid() const{ return GetPropertySelection().IsValid(GetContext()); }
 	
 	void OnValueChanged(void *newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -57,11 +58,14 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -97,8 +101,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertySelection();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -108,7 +113,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertySelection::ClipboardData::Ref::New(
-			pWidget.GetPropertySelection().GetPropertyValue(context)));
+			property.GetPropertyValue(context)));
 	}
 };
 
@@ -128,12 +133,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -148,13 +152,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertySelection::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -191,8 +195,10 @@ pWidget(widget){
 igdeMetaPropertySelectionWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertySelectionWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertySelection*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertySelection*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
@@ -202,9 +208,8 @@ igdeMetaPropertySelection*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(
-	igdeMetaPropertySelection &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertySelectionWidget::igdeMetaPropertySelectionWidget(igdeMetaPropertySelection &property) :
+igdeMetaPropertyWidget(property),
 pPropertySelection(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -228,16 +233,15 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
 	const auto &context = GetContext();
+	const auto &tm = pComboBox->GetEnvironment().GetTranslationManager();
 	igdeMetaContextItemInfo info;
 	pPropertySelection.GetChoices().Visit([&](void *choice){
 		pPropertySelection.GetChoiceItemInfo(context, choice, info);
-		pComboBox->AddItem(igdeListItem::Ref::New(info.GetText(),
-			info.GetIcon(), info.GetDescription(), choice));
+		pComboBox->AddItem(igdeListItem::Ref::New(tm.TranslateIf(info.GetText()).ToUTF8(),
+			info.GetIcon(), tm.TranslateIf(info.GetDescription()).ToUTF8(), choice));
 	});
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertySelectionWidget::Drop(){
@@ -251,12 +255,15 @@ void igdeMetaPropertySelectionWidget::Drop(){
 }
 
 void igdeMetaPropertySelectionWidget::Update(){
-	if(pComboBox){
-		RunWithPreventUpdate([&]{
-			pComboBox->SetSelectionWithData(GetContext()
-				? pPropertySelection.GetPropertyValue(GetContext()) : nullptr);
-		});
+	if(!pComboBox){
+		return;
 	}
+	
+	const bool valid = pPropertySelection.IsValid(GetContext());
+	RunWithPreventUpdate([&]{
+		pComboBox->SetSelectionWithData(valid ? pPropertySelection.GetPropertyValue(GetContext()) : nullptr);
+		pComboBox->SetEnabled(valid);
+	});
 }
 
 void igdeMetaPropertySelectionWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -276,4 +283,12 @@ void igdeMetaPropertySelectionWidget::AddContextMenuEntries(igdeMenuCascade &men
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertySelectionWidget::OnContextChanged(){
+	Update();
 }

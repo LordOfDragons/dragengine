@@ -22,59 +22,57 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYVECTOR3WIDGET_H_
-#define _IGDEMETAPROPERTYVECTOR3WIDGET_H_
+#ifndef _IGDEMETAPROPERTYCONTEXTWIDGET_H_
+#define _IGDEMETAPROPERTYCONTEXTWIDGET_H_
 
 #include "igdeMetaPropertyWidget.h"
-#include "../igdeMetaPropertyVector3.h"
-#include "../../../gui/igdeLabel.h"
-#include "../../../gui/composed/igdeEditVector.h"
-#include "../../../gui/composed/igdeEditVectorListener.h"
+#include "../igdeMetaPropertyContext.h"
+#include "../igdeMetaPropertyGroup.h"
+#include "../../../gui/layout/igdeContainerFlow.h"
+#include "../../../gui/properties/igdeWPMetaContext.h"
 
 
 /**
- * \brief Vector3 meta property widget class able to add itself to a widget holder.
+ * \brief Context meta property widget class able to add itself to a widget holder.
  */
-class DE_DLL_EXPORT igdeMetaPropertyVector3Widget : public igdeMetaPropertyWidget{
+class DE_DLL_EXPORT igdeMetaPropertyContextWidget : public igdeMetaPropertyWidget{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyVector3Widget>;
+	using Ref = deTObjectReference<igdeMetaPropertyContextWidget>;
 	
 	
 private:
-	class PropertyListener : public igdeMetaPropertyVector3::Listener{
-		igdeMetaPropertyVector3Widget &pWidget;
+	class PropertyListener : public igdeMetaPropertyContext::Listener{
+		igdeMetaPropertyContextWidget &pWidget;
 		
 	public:
 		using Ref = deTObjectReference<PropertyListener>;
-		PropertyListener(igdeMetaPropertyVector3Widget &widget);
+		PropertyListener(igdeMetaPropertyContextWidget &widget);
 		
 	protected:
 		~PropertyListener() override;
 		
 	public:
-		void OnValueChanged(igdeMetaPropertyVector3 *property, const igdeMetaContext::Ref &context) override;
+		void OnValueChanged(igdeMetaPropertyContext *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
-	igdeMetaPropertyVector3 &pPropertyVector3;
+	igdeMetaPropertyContext &pPropertyContext;
 	PropertyListener::Ref pPropertyListener;
-	igdeEditVector::Ref pEditVector;
-	igdeEditVectorListener::Ref pListener;
+	igdeWPMetaContext::Ref pContextPanel;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyVector3Widget(igdeMetaPropertyVector3 &property,
-		const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyContextWidget(igdeMetaPropertyContext &property);
 	
 protected:
 	/** \brief Clean up widget. */
-	~igdeMetaPropertyVector3Widget() override;
+	~igdeMetaPropertyContextWidget() override;
 	
 public:
 	/*@}*/
@@ -82,8 +80,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Assigned property vector3. */
-	inline igdeMetaPropertyVector3 &GetPropertyVector3() const{ return pPropertyVector3; }
+	/** \brief Assigned property context. */
+	inline igdeMetaPropertyContext &GetPropertyContext() const{ return pPropertyContext; }
 	
 	
 	/** \brief Create UI widgets adding them to container. */
@@ -95,12 +93,18 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
+	/** \brief Filter widget. */
+	void Filter(const igdeFilter &filter) override;
 	
-	/** \brief Edit vector widget or nullptr. */
-	inline const igdeEditVector::Ref &GetEditVector() const{ return pEditVector; }
 	
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
+	/** \brief Context panel. */
+	inline const igdeWPMetaContext::Ref &GetContextPanel() const{ return pContextPanel; }
 	/*@}*/
+	
+	
+protected:
+	void UpdateFilteredOut() override;
+	void OnContextChanged() override;
 };
 
 #endif

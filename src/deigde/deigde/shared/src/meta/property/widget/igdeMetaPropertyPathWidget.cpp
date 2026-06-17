@@ -44,9 +44,10 @@ public:
 	inline igdeMetaPropertyPathWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyPath &GetPropertyPath() const{ return pWidget.GetPropertyPath(); }
+	inline bool IsValid() const{ return GetPropertyPath().IsValid(GetContext()); }
 	
 	void OnValueChanged(const decString &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -57,11 +58,14 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -97,8 +101,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyPath();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -108,7 +113,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyString::ClipboardData::Ref::New(
-			pWidget.GetPropertyPath().GetPropertyValue(context)));
+			property.GetPropertyValue(context)));
 	}
 };
 	
@@ -128,12 +133,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -148,13 +152,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyString::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -190,13 +194,17 @@ pWidget(widget){
 igdeMetaPropertyPathWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyPathWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyPath*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 void igdeMetaPropertyPathWidget::PropertyListener::OnBasePathChanged(
-igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
-	pWidget.UpdateBasePath();
+igdeMetaPropertyPath*, const igdeMetaContext::Ref& context){
+	if(pWidget.GetContext() == context){
+		pWidget.UpdateBasePath();
+	}
 }
 
 
@@ -206,9 +214,8 @@ igdeMetaPropertyPath*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPathWidget::igdeMetaPropertyPathWidget(
-	igdeMetaPropertyPath &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyPathWidget::igdeMetaPropertyPathWidget(igdeMetaPropertyPath &property) :
+igdeMetaPropertyWidget(property),
 pPropertyPath(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -242,7 +249,6 @@ void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &
 	UpdateMatchable(container);
 	
 	UpdateBasePath();
-	Update();
 }
 
 void igdeMetaPropertyPathWidget::Drop(){
@@ -256,18 +262,21 @@ void igdeMetaPropertyPathWidget::Drop(){
 }
 
 void igdeMetaPropertyPathWidget::Update(){
-	if(pEditPath){
-		RunWithPreventUpdate([&]{
-			pEditPath->SetPath(GetContext()
-				? pPropertyPath.GetPropertyValue(GetContext()) : decString());
-		});
+	if(!pEditPath){
+		return;
 	}
+	
+	const bool valid = pPropertyPath.IsValid(GetContext());
+	RunWithPreventUpdate([&]{
+		pEditPath->SetPath(valid ? pPropertyPath.GetPropertyValue(GetContext()) : decString());
+		pEditPath->SetEnabled(valid);
+	});
 }
 
 void igdeMetaPropertyPathWidget::UpdateBasePath(){
 	if(pEditPath){
 		RunWithPreventUpdate([&]{
-			pEditPath->SetBasePath(GetContext()
+			pEditPath->SetBasePath(pPropertyPath.IsValid(GetContext())
 				? pPropertyPath.GetPropertyBasePath(GetContext()) : decString());
 		});
 	}
@@ -290,4 +299,12 @@ void igdeMetaPropertyPathWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyPathWidget::OnContextChanged(){
+	Update();
+	UpdateBasePath();
 }

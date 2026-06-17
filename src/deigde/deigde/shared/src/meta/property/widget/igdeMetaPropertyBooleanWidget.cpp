@@ -41,9 +41,10 @@ public:
 	
 	inline igdeMetaPropertyBoolean &GetPropertyBoolean() const{ return pWidget.GetPropertyBoolean(); }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
+	inline bool IsValid() const{ return GetPropertyBoolean().IsValid(GetContext()); }
 	
 	void OnValueChanged(bool newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -53,28 +54,33 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
 
 class cAction : public igdeAction{
 	cListenerHelper pHelper;
+	bool pNoLabel;
 	
 public:
-	explicit cAction(igdeMetaPropertyBooleanWidget &widget) :
-	igdeAction("", nullptr, widget.GetProperty()->GetDescription()),
-	pHelper(widget){
+	explicit cAction(igdeMetaPropertyBooleanWidget &widget, bool noLabel) :
+	igdeAction(noLabel ? widget.GetPropertyBoolean().GetLabel() : decString(),
+		nullptr, widget.GetProperty()->GetDescription()),
+	pHelper(widget), pNoLabel(noLabel){
 	}
 	
 	~cAction() override = default;
 	
 	void OnAction() override{
-		if(pHelper.GetContext()){
+		if(pHelper.IsValid()){
 			pHelper.OnValueChanged(!pHelper.GetPropertyBoolean().GetPropertyValue(pHelper.GetContext()));
 		}
 	}
@@ -83,9 +89,10 @@ public:
 		const auto &property = pHelper.GetPropertyBoolean();
 		const auto &context = pHelper.GetContext();
 		
-		SetText(property.GetLabel());
+		SetText(pNoLabel ? property.GetLabel() : decString());
 		SetDescription(property.GetDescription());
-		SetSelected(context ? property.GetPropertyValue(context) : property.GetDefaultValue());
+		SetSelected(pHelper.IsValid() ? property.GetPropertyValue(context) : property.GetDefaultValue());
+		SetEnabled(pHelper.IsValid());
 	}
 };
 
@@ -121,8 +128,10 @@ pWidget(widget){
 igdeMetaPropertyBooleanWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyBooleanWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyBoolean*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyBoolean*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
@@ -132,9 +141,8 @@ igdeMetaPropertyBoolean*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(
-	igdeMetaPropertyBoolean &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyBooleanWidget::igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property) :
+igdeMetaPropertyWidget(property),
 pPropertyBoolean(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -154,13 +162,12 @@ void igdeMetaPropertyBooleanWidget::Create(igdeContainer &container, igdeUIHelpe
 	DEASSERT_NULL(pCheckBox)
 	
 	
-	pAction = deTObjectReference<cAction>::New(*this);
+	pAction = deTObjectReference<cAction>::New(*this, noLabel);
 	helper.CheckBox(pCheckBox, pAction);
+	pCheckBox->SetCentered(!noLabel);
 	WrapEditWidget(container, helper, noLabel, pCheckBox);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyBooleanWidget::Drop(){
@@ -185,4 +192,12 @@ void igdeMetaPropertyBooleanWidget::AddContextMenuEntries(igdeMenuCascade &conte
 	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyBooleanWidget::OnContextChanged(){
+	Update();
 }

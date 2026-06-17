@@ -43,9 +43,10 @@ public:
 	inline igdeMetaPropertyStringWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyString &GetPropertyString() const{ return pWidget.GetPropertyString(); }
+	inline bool IsValid() const{ return GetPropertyString().IsValid(GetContext()); }
 	
 	void OnValueChanged(const decString &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -56,11 +57,14 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -112,8 +116,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyString();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -123,7 +128,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyString::ClipboardData::Ref::New(
-			pWidget.GetPropertyString().GetPropertyValue(context)));
+			property.GetPropertyValue(context)));
 	}
 };
 	
@@ -143,12 +148,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -163,13 +167,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyString::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -206,13 +210,17 @@ pWidget(widget){
 igdeMetaPropertyStringWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyStringWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyString*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyString*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 void igdeMetaPropertyStringWidget::PropertyListener::OnStringListChanged(
-igdeMetaPropertyString*, const igdeMetaContext::Ref&){
-	pWidget.UpdateStringList();
+igdeMetaPropertyString*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.UpdateStringList();
+	}
 }
 
 
@@ -222,9 +230,8 @@ igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyStringWidget::igdeMetaPropertyStringWidget(
-	igdeMetaPropertyString &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyStringWidget::igdeMetaPropertyStringWidget(igdeMetaPropertyString &property) :
+igdeMetaPropertyWidget(property),
 pPropertyString(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -276,14 +283,18 @@ void igdeMetaPropertyStringWidget::Drop(){
 }
 
 void igdeMetaPropertyStringWidget::Update(){
+	const bool valid = pPropertyString.IsValid(GetContext());
+	
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : decString());
+			pTextField->SetText(valid ? pPropertyString.GetPropertyValue(GetContext()) : decString());
+			pTextField->SetEnabled(valid);
 		});
 	}
 	if(pComboBox){
 		RunWithPreventUpdate([&]{
-			pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : decString());
+			pComboBox->SetText(valid ? pPropertyString.GetPropertyValue(GetContext()) : decString());
+			pComboBox->SetEnabled(valid);
 		});
 	}
 }
@@ -322,4 +333,12 @@ void igdeMetaPropertyStringWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyStringWidget::OnContextChanged(){
+	Update();
 }

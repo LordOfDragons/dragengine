@@ -39,6 +39,8 @@ template<typename P>
 class igdeMetaPropertyStorageFloat : public igdeMetaPropertyStorage<P>{
 private:
 	float pValue = {};
+	float pLowerLimit = 0.0f;
+	float pUpperLimit = 1.0f;
 	
 	
 public:
@@ -46,7 +48,18 @@ public:
 	/*@{*/
 	/** \brief Create float meta property storage. */
 	igdeMetaPropertyStorageFloat(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(property.GetDefaultValue()),
+	pLowerLimit(property.GetLowerLimit()),
+	pUpperLimit(property.GetUpperLimit()){
+	}
+	
+	/** \brief Create float meta property storage with initial value. */
+	igdeMetaPropertyStorageFloat(P &property, const deTObjectReference<igdeMetaContext> &context, float initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue),
+	pLowerLimit(property.GetLowerLimit()),
+	pUpperLimit(property.GetUpperLimit()){
 	}
 	/*@}*/
 	
@@ -57,20 +70,64 @@ public:
 	inline float GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(float value){
+	void SetValue(float value, bool notify = true){
+		const auto &property = igdeMetaPropertyStorage<P>::Property();
+		if(property.GetEnableLowerLimit()){
+			value = decMath::max(value, pLowerLimit);
+		}
+		if(property.GetEnableUpperLimit()){
+			value = decMath::min(value, pUpperLimit);
+		}
+		
 		if(fabsf(pValue - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		pValue = value;
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	/*@}*/
 	
 	
 	/** \name Operators */
 	/*@{*/
+	/** \brief Lower limit. */
+	inline float GetLowerLimit() const{ return pLowerLimit; }
+	
+	/** \brief Set lower limit. */
+	void SetLowerLimit(float value){
+		if(fabsf(pLowerLimit - value) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		
+		pLowerLimit = value;
+		
+		if(igdeMetaPropertyStorage<P>::Property().GetEnableLowerLimit()){
+			igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
+			SetValue(pValue);
+		}
+	}
+	
+	/** \brief Upper limit. */
+	inline float GetUpperLimit() const{ return pUpperLimit; }
+	
+	/** \brief Set upper limit. */
+	void SetUpperLimit(float value){
+		if(fabsf(pUpperLimit - value) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		
+		pUpperLimit = value;
+		
+		if(igdeMetaPropertyStorage<P>::Property().GetEnableUpperLimit()){
+			igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
+			SetValue(pValue);
+		}
+	}
+	
 	/** \brief Implicit conversion operator. */
 	operator float() const{
 		return GetValue();

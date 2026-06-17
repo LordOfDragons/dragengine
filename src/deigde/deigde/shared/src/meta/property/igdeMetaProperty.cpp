@@ -24,6 +24,48 @@
 
 #include "igdeMetaProperty.h"
 #include "../igdeMetaContext.h"
+#include "../../environment/igdeEnvironment.h"
+#include "../../localization/igdeTranslationManager.h"
+
+
+// Class igdeMetaProperty::Action
+///////////////////////////////////
+
+igdeMetaProperty::Action::~Action() = default;
+
+void igdeMetaProperty::Action::SetContext(const ContextRef &context){
+	pContext = context;
+}
+
+igdeEnvironment &igdeMetaProperty::Action::GetEnvironment() const{
+	return pOwner.GetEnvironment();
+}
+
+igdeTranslationManager &igdeMetaProperty::Action::GetTranslationManager() const{
+	return GetEnvironment().GetTranslationManager();
+}
+
+decUnicodeString igdeMetaProperty::Action::Translate(const decString &entryName) const{
+	return GetTranslationManager().Translate(entryName);
+}
+
+decUnicodeString igdeMetaProperty::Action::Translate(const char *entryName) const{
+	return GetTranslationManager().Translate(entryName);
+}
+
+decUnicodeString igdeMetaProperty::Action::TranslateIf(const decString &text) const{
+	return GetTranslationManager().TranslateIf(text);
+}
+
+decUnicodeString igdeMetaProperty::Action::TranslateIf(const char *text) const{
+	return GetTranslationManager().TranslateIf(text);
+}
+
+decString igdeMetaProperty::Action::BuildUndoInfo(const igdeMetaProperty &property) const{
+	const auto &tm = GetTranslationManager();
+	return tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+		+ ": " + tm.TranslateIf(GetText()).ToUTF8();
+}
 
 
 // Class igdeMetaProperty
@@ -35,8 +77,7 @@
 igdeMetaProperty::igdeMetaProperty(const char *id, const char *name, const char *description) :
 pId(id),
 pLabel(name),
-pDescription(description),
-pHideLabel(false){
+pDescription(description){
 }
 
 igdeMetaProperty::~igdeMetaProperty() = default;
@@ -63,6 +104,10 @@ void igdeMetaProperty::SetUndoInfo(const char *undoInfo){
 
 void igdeMetaProperty::SetHideLabel(bool hideLabel){
 	pHideLabel = hideLabel;
+}
+
+void igdeMetaProperty::SetCanHideGroup(bool canHideGroup){
+	pCanHideGroup = canHideGroup;
 }
 
 const decString &igdeMetaProperty::GetUndoInfoOrLabel() const{

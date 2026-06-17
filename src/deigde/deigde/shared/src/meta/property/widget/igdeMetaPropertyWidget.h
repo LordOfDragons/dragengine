@@ -53,7 +53,7 @@ public:
 	
 private:
 	const igdeMetaProperty::Ref pProperty;
-	const igdeMetaContext::Ref pContext;
+	igdeMetaContext::Ref pContext;
 	igdeLabel::Ref pLabel;
 	igdeContainer::Ref pEditContainer;
 	igdeButton::Ref pButtonContextMenu;
@@ -66,9 +66,9 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyWidget(igdeMetaProperty &property, const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyWidget(igdeMetaProperty &property);
 	
 	/** \brief Clean up widget. */
 	~igdeMetaPropertyWidget();
@@ -84,6 +84,13 @@ public:
 	
 	/** \brief Meta context or nullptr. */
 	inline const igdeMetaContext::Ref &GetContext() const{return pContext;}
+	
+	/**
+	 * \brief Set meta context or nullptr.
+	 * 
+	 * Updates value and UI relevant data obtained through property getter calls.
+	 */
+	void SetContext(const igdeMetaContext::Ref &context);
 	
 	/** \brief Environment throwing exception if not available. */
 	igdeEnvironment &GetEnvironment() const;
@@ -102,6 +109,7 @@ public:
 	
 	/** \brief Update matchable. */
 	void UpdateMatchable(igdeContainer &container);
+	
 	
 	/** \brief Create UI widgets adding them to container. */
 	virtual void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) = 0;
@@ -144,6 +152,9 @@ protected:
 	
 	/** \brief Update filtered out. */
 	virtual void UpdateFilteredOut();
+	
+	/** \brief Context changed. */
+	virtual void OnContextChanged();
 };
 
 #endif

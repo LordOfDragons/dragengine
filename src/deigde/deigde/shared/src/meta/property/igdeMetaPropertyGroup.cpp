@@ -33,9 +33,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyGroup::igdeMetaPropertyGroup(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *name,
+	const char *description) :
 igdeMetaProperty(id, name, description){
+}
+
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *name,
+	const char *description, const List &properties) :
+igdeMetaProperty(id, name, description),
+pProperties(properties){
 }
 
 igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
@@ -44,6 +50,6 @@ igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
 // Management
 ///////////////
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyGroup::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyGroupWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyGroup::CreateWidget(){
+	return igdeMetaPropertyGroupWidget::Ref::New(*this);
 }

@@ -32,10 +32,9 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-#include "../controller/aeController.h"
 class aeAnimator;
+class aeController;
 class deAnimatorLink;
-
 
 
 /**
@@ -54,7 +53,7 @@ private:
 	
 	decString pName;
 	
-	aeController::Ref pController;
+	deTObjectReference<aeController> pController;
 	int pRepeat;
 	decCurveBezier pCurve;
 	
@@ -110,7 +109,7 @@ public:
 	
 	
 	/** Controller or \em nullptr. */
-	inline const aeController::Ref &GetController() const{ return pController; }
+	inline const deTObjectReference<aeController> &GetController() const{ return pController; }
 	
 	/** Set controller or \em nullptr. */
 	void SetController(aeController *controller, bool notify = true);

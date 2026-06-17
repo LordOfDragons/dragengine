@@ -86,9 +86,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyCurveBezierWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(){
+	return igdeMetaPropertyCurveBezierWidget::Ref::New(*this);
 }
 
 

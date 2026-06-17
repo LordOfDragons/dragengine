@@ -43,9 +43,10 @@ public:
 	inline igdeMetaPropertyPointWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyPoint &GetPropertyPoint() const{ return pWidget.GetPropertyPoint(); }
+	inline bool IsValid() const{ return GetPropertyPoint().IsValid(GetContext()); }
 	
 	void OnValueChanged(const decPoint &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -56,11 +57,14 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -96,8 +100,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyPoint();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -127,12 +132,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -147,13 +151,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyPoint::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -190,8 +194,10 @@ pWidget(widget){
 igdeMetaPropertyPointWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyPointWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyPoint*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyPoint*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
@@ -201,9 +207,8 @@ igdeMetaPropertyPoint*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPointWidget::igdeMetaPropertyPointWidget(
-	igdeMetaPropertyPoint &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyPointWidget::igdeMetaPropertyPointWidget(igdeMetaPropertyPoint &property) :
+igdeMetaPropertyWidget(property),
 pPropertyPoint(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -227,8 +232,6 @@ void igdeMetaPropertyPointWidget::Create(igdeContainer &container, igdeUIHelper 
 	WrapEditWidget(container, helper, noLabel, pEditPoint);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyPointWidget::Drop(){
@@ -241,12 +244,15 @@ void igdeMetaPropertyPointWidget::Drop(){
 }
 
 void igdeMetaPropertyPointWidget::Update(){
-	if(pEditPoint){
-		RunWithPreventUpdate([&]{
-			pEditPoint->SetPoint(GetContext()
-				? pPropertyPoint.GetPropertyValue(GetContext()) : decPoint());
-		});
+	if(!pEditPoint){
+		return;
 	}
+	
+	const bool valid = pPropertyPoint.IsValid(GetContext());
+	RunWithPreventUpdate([&]{
+		pEditPoint->SetPoint(valid ? pPropertyPoint.GetPropertyValue(GetContext()) : decPoint());
+		pEditPoint->SetEnabled(valid);
+	});
 }
 
 void igdeMetaPropertyPointWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -266,4 +272,12 @@ void igdeMetaPropertyPointWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyPointWidget::OnContextChanged(){
+	Update();
 }

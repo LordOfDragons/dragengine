@@ -44,9 +44,10 @@ public:
 	inline igdeMetaPropertyTagsWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyTags &GetPropertyTags() const{ return pWidget.GetPropertyTags(); }
+	inline bool IsValid() const{ return GetPropertyTags().IsValid(GetContext()); }
 	
 	void OnValueChanged(const decStringSet &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -57,11 +58,14 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -97,8 +101,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyTags();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -108,7 +113,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyStringSet::ClipboardData::Ref::New(
-			pWidget.GetPropertyTags().GetPropertyValue(context)));
+			property.GetPropertyValue(context)));
 	}
 };
 
@@ -128,12 +133,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -148,13 +152,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyStringSet::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -190,8 +194,10 @@ pWidget(widget){
 igdeMetaPropertyTagsWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyTagsWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyTags*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyTags*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
@@ -201,9 +207,8 @@ igdeMetaPropertyTags*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyTagsWidget::igdeMetaPropertyTagsWidget(
-	igdeMetaPropertyTags &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyTagsWidget::igdeMetaPropertyTagsWidget(igdeMetaPropertyTags &property) :
+igdeMetaPropertyWidget(property),
 pPropertyTags(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -227,8 +232,6 @@ void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &
 	WrapEditWidget(container, helper, noLabel, pEditTags);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){
@@ -238,12 +241,15 @@ void igdeMetaPropertyTagsWidget::Drop(){
 }
 
 void igdeMetaPropertyTagsWidget::Update(){
-	if(pEditTags){
-		RunWithPreventUpdate([&]{
-			pEditTags->SetTags(GetContext()
-				? pPropertyTags.GetPropertyValue(GetContext()) : decStringSet());
-		});
+	if(!pEditTags){
+		return;
 	}
+	
+	const bool valid = pPropertyTags.IsValid(GetContext());
+	RunWithPreventUpdate([&]{
+		pEditTags->SetTags(valid ? pPropertyTags.GetPropertyValue(GetContext()) : decStringSet());
+		// pEditTags->SetEnabled(valid); => TODO missing
+	});
 }
 
 void igdeMetaPropertyTagsWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -263,4 +269,12 @@ void igdeMetaPropertyTagsWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyTagsWidget::OnContextChanged(){
+	Update();
 }

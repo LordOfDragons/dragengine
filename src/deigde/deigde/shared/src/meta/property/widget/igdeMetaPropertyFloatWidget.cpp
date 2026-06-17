@@ -43,9 +43,10 @@ public:
 	inline igdeMetaPropertyFloatWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyFloat &GetPropertyFloat() const{ return pWidget.GetPropertyFloat(); }
+	inline bool IsValid() const{ return GetPropertyFloat().IsValid(GetContext()); }
 	
 	igdeMetaPropertyFloatUndo::Ref OnValueChanged(float newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return {};
 		}
 		
@@ -56,11 +57,14 @@ public:
 			return {};
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		return property.ChangePropertyValue(context, newValue, undoInfo);
+		return property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -140,8 +144,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyFloat();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -171,12 +176,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -191,13 +195,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyFloat::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -234,8 +238,18 @@ pWidget(widget){
 igdeMetaPropertyFloatWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyFloatWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyFloat*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyFloat*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
+}
+
+void igdeMetaPropertyFloatWidget::PropertyListener::OnLimitsChanged(
+igdeMetaPropertyFloat*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.UpdateLimits();
+		pWidget.Update();
+	}
 }
 
 
@@ -246,8 +260,8 @@ igdeMetaPropertyFloat*, const igdeMetaContext::Ref&){
 ////////////////////////////
 
 igdeMetaPropertyFloatWidget::igdeMetaPropertyFloatWidget(
-	igdeMetaPropertyFloat &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+	igdeMetaPropertyFloat &property) :
+igdeMetaPropertyWidget(property),
 pPropertyFloat(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -283,8 +297,6 @@ void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper 
 	}
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyFloatWidget::Drop(){
@@ -303,18 +315,35 @@ void igdeMetaPropertyFloatWidget::Drop(){
 }
 
 void igdeMetaPropertyFloatWidget::Update(){
+	const bool valid = pPropertyFloat.IsValid(GetContext());
+	
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetFloat(GetContext()
+			pTextField->SetFloat(valid
 				? pPropertyFloat.GetPropertyValue(GetContext())
 				: pPropertyFloat.GetDefaultValue());
+			pTextField->SetEnabled(valid);
 		});
 	}
 	if(pEditSliderText){
 		RunWithPreventUpdate([&]{
-			pEditSliderText->SetValue(GetContext()
+			pEditSliderText->SetValue(valid
 				? pPropertyFloat.GetPropertyValue(GetContext())
 				: pPropertyFloat.GetDefaultValue());
+			pEditSliderText->SetEnabled(valid);
+		});
+	}
+}
+
+void igdeMetaPropertyFloatWidget::UpdateLimits(){
+	const auto &context = GetContext();
+	const bool valid = pPropertyFloat.IsValid(context);
+	
+	if(pEditSliderText){
+		RunWithPreventUpdate([&]{
+			pEditSliderText->SetRange(
+				valid ? pPropertyFloat.GetPropertyLowerLimit(context) : pPropertyFloat.GetLowerLimit(),
+				valid ? pPropertyFloat.GetPropertyUpperLimit(context) : pPropertyFloat.GetUpperLimit());
 		});
 	}
 }
@@ -340,4 +369,13 @@ void igdeMetaPropertyFloatWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyFloatWidget::OnContextChanged(){
+	UpdateLimits();
+	Update();
 }

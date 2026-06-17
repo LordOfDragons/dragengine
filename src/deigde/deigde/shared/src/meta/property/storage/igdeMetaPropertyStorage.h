@@ -42,7 +42,7 @@ template<typename P>
 class igdeMetaPropertyStorage{
 private:
 	P &pProperty;
-	const deTObjectReference<igdeMetaContext> &pContext;
+	const deTObjectReference<igdeMetaContext> pContext;
 	std::function<void()> pOnValueChanged;
 	
 	
@@ -65,10 +65,19 @@ public:
 	/** \brief Context. */
 	inline const deTObjectReference<igdeMetaContext> &Context() const{ return pContext; }
 	
+	/** \brief Function to call if value changed before listeners are notified. */
+	inline const std::function<void()> &GetOnChanged() const{ return pOnValueChanged; }
+	
 	/** \brief Set function to call if value changed before listeners are notified. */
 	template <typename F>
 	void SetOnChanged(F&& func){
 		pOnValueChanged = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call if value changed before listeners are notified. */
+	template <typename F>
+	void SetOnChanged(const F& func){
+		pOnValueChanged = func;
 	}
 	
 	/** \brief Call value changed function if set. */

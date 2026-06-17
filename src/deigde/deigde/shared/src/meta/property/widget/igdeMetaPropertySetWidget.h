@@ -63,6 +63,7 @@ private:
 	PropertyListener::Ref pPropertyListener;
 	igdeListBox::Ref pListBox;
 	igdeListBoxListener::Ref pListener;
+	decTOrderedSet<igdeMetaProperty::Action::Ref> pButtonActions;
 	int pRows;
 	
 	
@@ -70,9 +71,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertySetWidget(igdeMetaPropertySet &property, const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertySetWidget(igdeMetaPropertySet &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -114,6 +115,10 @@ public:
 	/** \brief Restore selection. */
 	void RestoreSelection();
 	/*@}*/
+	
+	
+protected:
+	void OnContextChanged() override;
 	
 	
 private:

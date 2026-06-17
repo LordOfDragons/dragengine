@@ -42,9 +42,10 @@ public:
 	inline igdeMetaPropertyCurveBezierWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyCurveBezier &GetPropertyCurveBezier() const{ return pWidget.GetPropertyCurveBezier(); }
+	inline bool IsValid() const{ return GetPropertyCurveBezier().IsValid(GetContext()); }
 	
 	igdeMetaPropertyCurveBezierUndo::Ref OnValueChanged(const decCurveBezier &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return {};
 		}
 		
@@ -55,11 +56,14 @@ public:
 			return {};
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		return property.ChangePropertyValue(context, newValue, undoInfo);
+		return property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -129,8 +133,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyCurveBezier();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -160,12 +165,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -180,13 +184,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyCurveBezier::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -223,8 +227,10 @@ pWidget(widget){
 igdeMetaPropertyCurveBezierWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyCurveBezierWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyCurveBezier*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyCurveBezier*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
@@ -235,8 +241,8 @@ igdeMetaPropertyCurveBezier*, const igdeMetaContext::Ref&){
 ////////////////////////////
 
 igdeMetaPropertyCurveBezierWidget::igdeMetaPropertyCurveBezierWidget(
-	igdeMetaPropertyCurveBezier &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+	igdeMetaPropertyCurveBezier &property) :
+igdeMetaPropertyWidget(property),
 pPropertyCurveBezier(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -260,8 +266,6 @@ void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIH
 	WrapEditWidget(container, helper, noLabel, pViewCurveBezier);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
@@ -278,13 +282,15 @@ void igdeMetaPropertyCurveBezierWidget::Update(){
 		return;
 	}
 	
+	const bool valid = pPropertyCurveBezier.IsValid(GetContext());
 	RunWithPreventUpdate([&]{
-		pViewCurveBezier->SetCurve(GetContext()
+		pViewCurveBezier->SetCurve(valid
 			? pPropertyCurveBezier.GetPropertyValue(GetContext())
 			: pPropertyCurveBezier.GetDefaultValue());
 		pViewCurveBezier->SetClamp(pPropertyCurveBezier.GetClamp());
 		pViewCurveBezier->SetClampMin(pPropertyCurveBezier.GetClampMin());
 		pViewCurveBezier->SetClampMax(pPropertyCurveBezier.GetClampMax());
+		pViewCurveBezier->SetEnabled(valid);
 	});
 }
 
@@ -313,4 +319,12 @@ void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &m
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyCurveBezierWidget::OnContextChanged(){
+	Update();
 }

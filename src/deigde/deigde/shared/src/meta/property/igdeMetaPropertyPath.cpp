@@ -61,6 +61,10 @@ igdeMetaPropertyPath::~igdeMetaPropertyPath() = default;
 // Management
 ///////////////
 
+void igdeMetaPropertyPath::SetDefaultValue(const decString &value){
+	pDefaultValue = value;
+}
+
 void igdeMetaPropertyPath::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
@@ -89,8 +93,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyPathWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(){
+	return igdeMetaPropertyPathWidget::Ref::New(*this);
 }
 
 

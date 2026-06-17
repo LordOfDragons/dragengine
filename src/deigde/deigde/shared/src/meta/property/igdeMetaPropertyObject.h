@@ -46,17 +46,20 @@ public:
 	/** \brief List of objects. */
 	using ObjectList = decTObjectOrderedSet<deObject>;
 	
+	/** \brief Object reference. */
+	using ObjectRef = deTObjectReference<deObject>;
+	
 	
 	/** \brief Clipboard data. */
-	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<deObject::Ref>{
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<ObjectRef>{
 	public:
 		using Ref = deTObjectReference<ClipboardData>;
 		
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.Object";
 		
-		explicit inline ClipboardData(const deObject::Ref &value) : igdeTClipboardData<deObject::Ref>(TypeName, value){}
-		explicit inline ClipboardData(deObject::Ref &&value) : igdeTClipboardData<deObject::Ref>(TypeName, value){}
+		explicit inline ClipboardData(const ObjectRef &value) : igdeTClipboardData<ObjectRef>(TypeName, value){}
+		explicit inline ClipboardData(ObjectRef &&value) : igdeTClipboardData<ObjectRef>(TypeName, value){}
 		
 	protected:
 		/** \brief Clean up object. */
@@ -73,6 +76,7 @@ public:
 	
 	
 private:
+	ObjectRef pDefaultValue;
 	ObjectList pObjects;
 	igdeTListenerList<Listener> pListeners;
 	
@@ -94,8 +98,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**
-	 * \brief Object list to choose from.
+	/** \brief Default value. */
+	inline const ObjectRef &GetDefaultValue() const{ return pDefaultValue; }
+	
+	/** \brief Set default value. */
+	void SetDefaultValue(const ObjectRef &value);
+	
+	/** \brief Object list to choose from.
 	 * 
 	 * After changing the list call NotifyObjectsChanged().
 	 */
@@ -133,14 +142,14 @@ public:
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual const deObject::Ref &GetPropertyValue(const ContextRef &context) const = 0;
+	virtual const ObjectRef &GetPropertyValue(const ContextRef &context) const = 0;
 	
 	/**
 	 * \brief Set property value matching context.
 	 *
 	 * Implemented by subclass.
 	 */
-	virtual void SetPropertyValue(const ContextRef &context, const deObject::Ref &value) = 0;
+	virtual void SetPropertyValue(const ContextRef &context, const ObjectRef &value) = 0;
 	
 	/**
 	 * \brief Change property value matching context with undo support.
@@ -149,13 +158,13 @@ public:
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
 	virtual deTObjectReference<igdeMetaPropertyObjectUndo> ChangePropertyValue(
-		const ContextRef &context, const deObject::Ref &newValue,
+		const ContextRef &context, const ObjectRef &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
 	 * \brief Get object item information.
 	 */
-	virtual void GetObjectItemInfo(const ContextRef &context, const deObject::Ref &object,
+	virtual void GetObjectItemInfo(const ContextRef &context, const ObjectRef &object,
 		igdeMetaContextItemInfo &info) const = 0;
 	
 	
@@ -164,7 +173,7 @@ public:
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	/*@}*/
 };
 
@@ -175,7 +184,7 @@ public:
 class DE_DLL_EXPORT igdeMetaPropertyObjectStorage : public igdeMetaPropertyObject{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageComplex<deObject::Ref, igdeMetaPropertyObjectStorage>;
+	using Storage = igdeMetaPropertyStorageComplex<ObjectRef, igdeMetaPropertyObjectStorage>;
 	
 	
 public:
@@ -195,8 +204,8 @@ public:
 	virtual Storage &GetStorage(const ContextRef &context) const = 0;
 	
 	
-	const deObject::Ref &GetPropertyValue(const ContextRef &context) const override;
-	void SetPropertyValue(const ContextRef &context, const deObject::Ref &value) override;
+	const ObjectRef &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const ObjectRef &value) override;
 };
 
 #endif

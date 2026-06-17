@@ -43,9 +43,10 @@ public:
 	inline igdeMetaPropertyIntegerWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyInteger &GetPropertyInteger() const{ return pWidget.GetPropertyInteger(); }
+	inline bool IsValid() const{ return GetPropertyInteger().IsValid(GetContext()); }
 	
 	igdeMetaPropertyIntegerUndo::Ref OnValueChanged(int newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return {};
 		}
 		
@@ -56,11 +57,14 @@ public:
 			return {};
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		return property.ChangePropertyValue(context, newValue, undoInfo);
+		return property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -157,8 +161,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyInteger();
 		auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -188,12 +193,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -208,13 +212,13 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyInteger::ClipboardData::TypeName));
-			return;
+			
+		}else{
+			SetEnabled(false);
 		}
-		SetEnabled(false);
 	}
 };
 
@@ -251,8 +255,18 @@ pWidget(widget){
 igdeMetaPropertyIntegerWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyIntegerWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyInteger*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyInteger*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
+}
+
+void igdeMetaPropertyIntegerWidget::PropertyListener::OnLimitsChanged(
+igdeMetaPropertyInteger*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.UpdateLimits();
+		pWidget.Update();
+	}
 }
 
 
@@ -263,8 +277,8 @@ igdeMetaPropertyInteger*, const igdeMetaContext::Ref&){
 ////////////////////////////
 
 igdeMetaPropertyIntegerWidget::igdeMetaPropertyIntegerWidget(
-	igdeMetaPropertyInteger &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+	igdeMetaPropertyInteger &property) :
+igdeMetaPropertyWidget(property),
 pPropertyInteger(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -306,8 +320,6 @@ void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelpe
 	}
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyIntegerWidget::Drop(){
@@ -331,25 +343,52 @@ void igdeMetaPropertyIntegerWidget::Drop(){
 }
 
 void igdeMetaPropertyIntegerWidget::Update(){
+	const bool valid = pPropertyInteger.IsValid(GetContext());
+	
 	if(pTextField){
 		RunWithPreventUpdate([&]{
-			pTextField->SetInteger(GetContext()
+			pTextField->SetInteger(valid
 				? pPropertyInteger.GetPropertyValue(GetContext())
 				: pPropertyInteger.GetDefaultValue());
+			pTextField->SetEnabled(valid);
 		});
 	}
 	if(pEditSliderText){
 		RunWithPreventUpdate([&]{
-			pEditSliderText->SetValue((float)(GetContext()
+			pEditSliderText->SetValue((float)(valid
 				? pPropertyInteger.GetPropertyValue(GetContext())
 				: pPropertyInteger.GetDefaultValue()));
+			pEditSliderText->SetEnabled(valid);
 		});
 	}
 	if(pSpinTextField){
 		RunWithPreventUpdate([&]{
-			pSpinTextField->SetValue(GetContext()
+			pSpinTextField->SetValue(valid
 				? pPropertyInteger.GetPropertyValue(GetContext())
 				: pPropertyInteger.GetDefaultValue());
+			pSpinTextField->SetEnabled(valid);
+		});
+	}
+}
+
+void igdeMetaPropertyIntegerWidget::UpdateLimits(){
+	const auto &context = GetContext();
+	const bool valid = pPropertyInteger.IsValid(context);
+	
+	if(pEditSliderText){
+		RunWithPreventUpdate([&]{
+			pEditSliderText->SetRange(
+				(float)(valid ? pPropertyInteger.GetPropertyLowerLimit(context) : pPropertyInteger.GetLowerLimit()),
+				(float)(valid ? pPropertyInteger.GetPropertyUpperLimit(context) : pPropertyInteger.GetUpperLimit()));
+			pEditSliderText->SetTickSpacing((float)pPropertyInteger.GetTickSpacing());
+		});
+	}
+	
+	if(pSpinTextField){
+		RunWithPreventUpdate([&]{
+			pSpinTextField->SetRange(
+				valid ? pPropertyInteger.GetPropertyLowerLimit(context) : pPropertyInteger.GetLowerLimit(),
+				valid ? pPropertyInteger.GetPropertyUpperLimit(context) : pPropertyInteger.GetUpperLimit());
 		});
 	}
 }
@@ -375,4 +414,13 @@ void igdeMetaPropertyIntegerWidget::AddContextMenuEntries(igdeMenuCascade &menu)
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyIntegerWidget::OnContextChanged(){
+	UpdateLimits();
+	Update();
 }

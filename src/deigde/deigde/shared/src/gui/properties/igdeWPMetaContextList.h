@@ -48,8 +48,8 @@ public:
 	/** \brief List of context panels. */
 	using ContextPanelList = decTObjectOrderedSet<igdeWPMetaContext>;
 	
-	/** \brief Map of context panels. */
-	using ContextPanelMap = decTDictionary<igdeMetaContext::Ref, igdeWPMetaContext::Ref>;
+	/** \brief Context panel cache. */
+	using ContextPanelCache = decTDictionary<igdeMetaContext::Ref, igdeWPMetaContext::Ref>;
 	
 	
 private:
@@ -58,7 +58,7 @@ private:
 	igdeTextField::Ref pEditFilter;
 	igdeFilter pFilter;
 	ContextPanelList pContextPanels;
-	ContextPanelMap pContextPanelCache;
+	ContextPanelCache pContextPanelCache;
 	
 	
 public:

@@ -47,7 +47,14 @@ public:
 	/*@{*/
 	/** \brief Create string set meta property storage. */
 	igdeMetaPropertyStorageStringSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(property.GetDefaultValue()){
+	}
+	
+	/** \brief Create string set meta property storage with initial value. */
+	igdeMetaPropertyStorageStringSet(P &property, const deTObjectReference<igdeMetaContext> &context, const decStringSet &initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue){
 	}
 	/*@}*/
 	
@@ -58,40 +65,46 @@ public:
 	inline const decStringSet &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const decStringSet &value){
+	void SetValue(const decStringSet &value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
 		
 		pValue = value;
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Get selection. */
 	inline const decStringSet &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const decStringSet &selection){
+	void SetSelection(const decStringSet &selection, bool notify = true){
 		if(pSelection == selection){
 			return;
 		}
 		
 		pSelection = selection;
-		igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifySelectionChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Get active string. */
 	inline const typename P::StringRef &GetActive() const{ return pActive; }
 	
 	/** \brief Set active string. */
-	void SetActive(const typename P::StringRef &active){
+	void SetActive(const typename P::StringRef &active, bool notify = true){
 		if(pActive == active){
 			return;
 		}
 		
 		pActive = active;
-		igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	/*@}*/
 	

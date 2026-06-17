@@ -22,22 +22,51 @@
  * SOFTWARE.
  */
 
-#include "aeMCAnimatorProperties.h"
+#include "aeMCRule.h"
+#include "../../animator/rule/aeRule.h"
+#include "../../animator/aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
+#include <dragengine/common/exceptions.h>
 
-// Class aeMCAnimatorProperties
-/////////////////////////////////
-
-aeMCAnimatorProperties::aeMCAnimatorProperties(){
-	auto &data = metaProperties->GetData();
-	data.Add(rig);
-	data.Add(animation);
-	data.Add(affectedBones);
-	data.Add(affectedVertexPositionSets);
 	
-	data.Add(groupController);
-	auto &controllerProperties = groupController->GetProperties();
-	controllerProperties.Add(controllers);
+// Class aeMCRule
+///////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+aeMCRule::aeMCRule(aeWindowMain &windowMain, aeRule *rule) :
+igdeMetaContext("rule"),
+pWindowMain(windowMain),
+pRule(rule)
+{
+	SetLabel("Rule");
+	SetDescription("Rule properties");
+	// SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
 }
 
-aeMCAnimatorProperties::~aeMCAnimatorProperties() = default;
+aeMCRule::~aeMCRule() = default;
+
+
+// Management
+///////////////
+
+aeRule &aeMCRule::GetRuleRef() const{
+	DEASSERT_NOTNULL(pRule)
+	return *pRule;
+}
+
+aeMCRule::Ref aeMCRule::Capture() const{
+	auto context = Ref::New(pWindowMain, pRule);
+	context->pGuardRule = pRule;
+	return context;
+}
+
+igdeUndoSystem *aeMCRule::GetUndoSystem() const{
+	return pRule && pRule->GetAnimator() ? pRule->GetAnimator()->GetUndoSystem() : nullptr;
+}
+
+igdeClipboard *aeMCRule::GetClipboard() const{
+	return &pWindowMain.GetClipboard();
+}

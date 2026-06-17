@@ -22,25 +22,25 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYVECTOR3UNDO_H_
-#define _IGDEMETAPROPERTYVECTOR3UNDO_H_
+#ifndef _IGDEMETAPROPERTYVectorUNDO_H_
+#define _IGDEMETAPROPERTYVectorUNDO_H_
 
-#include "../igdeMetaPropertyVector3.h"
+#include "../igdeMetaPropertyVector.h"
 #include "../../igdeMetaContext.h"
 #include "../../../undo/igdeUndo.h"
 
 
 /**
- * \brief Vector3 meta property undo action.
+ * \brief Vector meta property undo action.
  */
-class DE_DLL_EXPORT igdeMetaPropertyVector3Undo : public igdeUndo{
+class DE_DLL_EXPORT igdeMetaPropertyVectorUndo : public igdeUndo{
 public:
 	/** \brief Type holding strong reference. */
-	using Ref = deTObjectReference<igdeMetaPropertyVector3Undo>;
+	using Ref = deTObjectReference<igdeMetaPropertyVectorUndo>;
 	
 	
 private:
-	const igdeMetaPropertyVector3::Ref pProperty;
+	const igdeMetaPropertyVector::Ref pProperty;
 	const igdeMetaContext::Ref pContext;
 	decVector pOldValue, pNewValue;
 	
@@ -49,13 +49,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	igdeMetaPropertyVector3Undo(igdeMetaPropertyVector3 &property,
+	igdeMetaPropertyVectorUndo(igdeMetaPropertyVector &property,
 		const igdeMetaContext::Ref &context, const decVector &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 protected:
 	/** \brief Clean up undo action. */
-	~igdeMetaPropertyVector3Undo() override = default;
+	~igdeMetaPropertyVectorUndo() override = default;
 	/*@}*/
 	
 	
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property. */
-	inline const igdeMetaPropertyVector3::Ref &GetProperty() const{ return pProperty; }
+	inline const igdeMetaPropertyVector::Ref &GetProperty() const{ return pProperty; }
 	
 	/** \brief Context. */
 	inline const igdeMetaContext::Ref &GetContext() const{ return pContext; }

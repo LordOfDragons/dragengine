@@ -69,10 +69,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyCurveBezierWidget(igdeMetaPropertyCurveBezier &property,
-		const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyCurveBezierWidget(igdeMetaPropertyCurveBezier &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -112,6 +111,10 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/
+	
+	
+protected:
+	void OnContextChanged() override;
 };
 
 #endif

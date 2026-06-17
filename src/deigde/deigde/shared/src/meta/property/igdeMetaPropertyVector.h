@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYVECTOR3_H_
-#define _IGDEMETAPROPERTYVECTOR3_H_
+#ifndef _IGDEMETAPROPERTYVector_H_
+#define _IGDEMETAPROPERTYVector_H_
 
 #include "igdeMetaProperty.h"
 #include "storage/igdeMetaPropertyStorageComplexIsEqualTo.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class igdeMetaPropertyVector3Undo;
+class igdeMetaPropertyVectorUndo;
 
 
 /**
- * \brief Vector3 meta property.
+ * \brief Vector meta property.
  */
-class DE_DLL_EXPORT igdeMetaPropertyVector3 : public igdeMetaProperty{
+class DE_DLL_EXPORT igdeMetaPropertyVector : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyVector3>;
+	using Ref = deTObjectReference<igdeMetaPropertyVector>;
 	
 	
 	/** \brief Listener. */
-	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyVector3>{
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyVector>{
 	};
 	
 	
@@ -56,12 +56,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	
-	/** \brief Create vector3 meta property with label and description. */
-	igdeMetaPropertyVector3(const char *id, const char *name, const char *description);
+	/** \brief Create Vector meta property with label and description. */
+	igdeMetaPropertyVector(const char *id, const char *name, const char *description);
 	
 protected:
-	/** \brief Clean up vector3 meta property. */
-	~igdeMetaPropertyVector3() override;
+	/** \brief Clean up Vector meta property. */
+	~igdeMetaPropertyVector() override;
 	
 public:
 	/*@}*/
@@ -118,7 +118,7 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	virtual deTObjectReference<igdeMetaPropertyVector3Undo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyVectorUndo> ChangePropertyValue(
 		const ContextRef &context, const decVector &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
@@ -128,29 +128,29 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	/*@}*/
 };
 
 
 /**
- * \brief Vector3 meta property using storage.
+ * \brief Vector meta property using storage.
  */
-class DE_DLL_EXPORT igdeMetaPropertyVector3Storage : public igdeMetaPropertyVector3{
+class DE_DLL_EXPORT igdeMetaPropertyVectorStorage : public igdeMetaPropertyVector{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageComplexIsEqualTo<decVector, igdeMetaPropertyVector3Storage>;
+	using Storage = igdeMetaPropertyStorageComplexIsEqualTo<decVector, igdeMetaPropertyVectorStorage>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create vector3 meta property with label and description. */
-	igdeMetaPropertyVector3Storage(const char *id, const char *name, const char *description);
+	/** \brief Create Vector meta property with label and description. */
+	igdeMetaPropertyVectorStorage(const char *id, const char *name, const char *description);
 	
 protected:
-	/** \brief Clean up vector3 meta property. */
-	~igdeMetaPropertyVector3Storage() override;
+	/** \brief Clean up Vector meta property. */
+	~igdeMetaPropertyVectorStorage() override;
 	
 public:
 	/*@}*/

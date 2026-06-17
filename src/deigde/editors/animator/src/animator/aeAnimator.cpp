@@ -92,12 +92,13 @@
 aeAnimator::aeAnimator(aeWindowMain &windowMain) :
 igdeEditableEntity(&windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pMetaContext(aeMCAnimator::Ref::New(&windowMain)),
+pMetaContext(aeMCAnimator::Ref::New(windowMain, this)),
 rigPath(pWindowMain.GetMCAnimatorProperties().rig, pMetaContext),
 animationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
 affectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
 affectedVertexPositionSets(pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets, pMetaContext),
-controllers(pWindowMain.GetMCAnimatorProperties().controllers, pMetaContext)
+controllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContext),
+controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContext)
 {
 	deEngine * engine = GetEngine();
 	
@@ -201,14 +202,16 @@ controllers(pWindowMain.GetMCAnimatorProperties().controllers, pMetaContext)
 		pUpdateLinks();
 		NotifyControllerStructureChanged();
 	});
-	controllers.SetOnObjectAdded([this](aeController &controller){
-		controller.SetAnimator(this);
+	controllers.SetOnObjectAdded([this](aeController &each){
+		each.SetAnimator(this);
 	});
-	controllers.SetOnObjectRemoved([this](aeController &controller){
-		controller.SetAnimator(nullptr);
+	controllers.SetOnObjectRemoved([this](aeController &each){
+		each.SetAnimator(nullptr);
 	});
 	controllers.SetOnActiveChanged([this](){
 		NotifyActiveControllerChanged();
+		const auto &active = controllers.GetActive();
+		controller.SetValue(active ? active->GetMetaContext() : aeMCController::Ref());
 	});
 	
 	SetSaved(false);
@@ -318,8 +321,8 @@ void aeAnimator::UpdateWorld(float elapsed){
 	
 	// update the controllers which are linked to the elapsed time
 	if(!pPaused){
-		controllers->Visit([&](aeController &controller){
-			controller.UpdateValue(controllerElapsed);
+		controllers->Visit([&](aeController &each){
+			each.UpdateValue(controllerElapsed);
 		});
 	}
 	
@@ -465,27 +468,27 @@ void aeAnimator::SetPathAttachmentConfig(const char *path){
 // Controllers
 ////////////////
 
-void aeAnimator::AddController(aeController *controller){
+void aeAnimator::AddController(aeController *acontroller){
 	auto list = controllers.GetValue();
-	list.AddOrThrow(controller);
+	list.AddOrThrow(acontroller);
 	controllers = list;
 }
 
-void aeAnimator::InsertControllerAt(aeController *controller, int index){
+void aeAnimator::InsertControllerAt(aeController *acontroller, int index){
 	auto list = controllers.GetValue();
-	list.InsertOrThrow(controller, index);
+	list.InsertOrThrow(acontroller, index);
 	controllers = list;
 }
 
-void aeAnimator::MoveControllerTo(aeController *controller, int index){
+void aeAnimator::MoveControllerTo(aeController *acontroller, int index){
 	auto list = controllers.GetValue();
-	list.Move(controller, index);
+	list.Move(acontroller, index);
 	controllers = list;
 }
 
-void aeAnimator::RemoveController(aeController *controller){
+void aeAnimator::RemoveController(aeController *acontroller){
 	auto list = controllers.GetValue();
-	list.RemoveOrThrow(controller);
+	list.RemoveOrThrow(acontroller);
 	controllers = list;
 }
 
@@ -493,35 +496,35 @@ void aeAnimator::RemoveAllControllers(){
 	controllers = {};
 }
 
-void aeAnimator::SetActiveController(aeController *controller){
-	controllers.SetActive(controller);
+void aeAnimator::SetActiveController(aeController *acontroller){
+	controllers.SetActive(acontroller);
 }
 
 void aeAnimator::ResetControllers(){
-	controllers->Visit([](aeController &controller){
-		controller.ResetValue();
+	controllers->Visit([](aeController &each){
+		each.ResetValue();
 	});
 }
 void aeAnimator::ResetControllersWith(int locomotionAttribute){
-	controllers->Visit([&](aeController &controller){
-		if(controller.GetLocomotionAttribute() == locomotionAttribute){
-			controller.ResetValue();
+	controllers->Visit([&](aeController &each){
+		if(each.GetLocomotionAttribute() == locomotionAttribute){
+			each.ResetValue();
 		}
 	});
 }
 	
 void aeAnimator::InverseControllersWith(int locomotionAttribute){
-	controllers->Visit([&](aeController &controller){
-		if(controller.GetLocomotionAttribute() == locomotionAttribute){
-			controller.InverseValue();
+	controllers->Visit([&](aeController &each){
+		if(each.GetLocomotionAttribute() == locomotionAttribute){
+			each.InverseValue();
 		}
 	});
 }
 
 void aeAnimator::IncrementControllersWith(int locomotionAttribute, float incrementBy){
-	controllers->Visit([&](aeController &controller){
-		if(controller.GetLocomotionAttribute() == locomotionAttribute){
-			controller.IncrementCurrentValue(incrementBy);
+	controllers->Visit([&](aeController &each){
+		if(each.GetLocomotionAttribute() == locomotionAttribute){
+			each.IncrementCurrentValue(incrementBy);
 		}
 	});
 }
@@ -909,28 +912,28 @@ void aeAnimator::NotifyActiveControllerChanged(){
 	});
 }
 
-void aeAnimator::NotifyControllerChanged(aeController *controller){
-	DEASSERT_NOTNULL(controller)
+void aeAnimator::NotifyControllerChanged(aeController *acontroller){
+	DEASSERT_NOTNULL(acontroller)
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ControllerChanged(this, controller);
+		listener->ControllerChanged(this, acontroller);
 	});
 	
 	SetChanged(true);
 }
 
-void aeAnimator::NotifyControllerNameChanged(aeController *controller){
-	DEASSERT_NOTNULL(controller)
+void aeAnimator::NotifyControllerNameChanged(aeController *acontroller){
+	DEASSERT_NOTNULL(acontroller)
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ControllerNameChanged(this, controller);
+		listener->ControllerNameChanged(this, acontroller);
 	});
 	
 	SetChanged(true);
 }
 
-void aeAnimator::NotifyControllerValueChanged(aeController *controller){
-	DEASSERT_NOTNULL(controller)
+void aeAnimator::NotifyControllerValueChanged(aeController *acontroller){
+	DEASSERT_NOTNULL(acontroller)
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ControllerValueChanged(this, controller);
+		listener->ControllerValueChanged(this, acontroller);
 	});
 }
 
@@ -1311,8 +1314,8 @@ void aeAnimator::pAnimCompChanged(){
 
 void aeAnimator::pUpdateEngineControllers(){
 	// set all engine controller indices in our controllers to -1
-	controllers->Visit([&](aeController &controller){
-		controller.SetIndex(-1);
+	controllers->Visit([&](aeController &each){
+		each.SetIndex(-1);
 	});
 	
 	// remove the animator from the animator instance
@@ -1322,7 +1325,7 @@ void aeAnimator::pUpdateEngineControllers(){
 	pEngAnimator->RemoveAllControllers();
 	
 	// add an engine controller for each controller we have
-	controllers->Visit([&](aeController &){
+	controllers->Visit([&](aeController &each){
 		pEngAnimator->AddController(deAnimatorController::Ref::New());
 	});
 	
@@ -1331,8 +1334,8 @@ void aeAnimator::pUpdateEngineControllers(){
 	pEngAnimatorInstance->SetAnimator(pEngAnimator);
 	
 	// now assign the matching engine controller indices to our controllers
-	controllers->VisitIndexed([&](int i, aeController &controller){
-		controller.SetIndex(i);
+	controllers->VisitIndexed([&](int i, aeController &each){
+		each.SetIndex(i);
 	});
 	
 	// links have to be updated now

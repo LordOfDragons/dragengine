@@ -53,6 +53,7 @@ public:
 private:
 	igdeEnvironment::eFilePatternListTypes pResourceType;
 	igdeFilePattern::List pCustomPatternList;
+	decString pDefaultValue;
 	igdeTListenerList<Listener> pListeners;
 	
 	
@@ -83,6 +84,12 @@ public:
 	/** \brief Custom pattern list. */
 	inline const igdeFilePattern::List &GetCustomPatternList() const{ return pCustomPatternList; }
 	
+	/** \brief Default value. */
+	inline const decString &GetDefaultValue() const{ return pDefaultValue; }
+	
+	/** \brief Set default value. */
+	void SetDefaultValue(const decString &value);
+	
 	
 	/** \brief Listeners. */
 	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
@@ -100,7 +107,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	
 	
 	/**

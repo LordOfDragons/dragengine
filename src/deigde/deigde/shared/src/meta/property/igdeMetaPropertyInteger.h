@@ -26,7 +26,7 @@
 #define _IGDEMETAPROPERTYINTEGER_H_
 
 #include "igdeMetaProperty.h"
-#include "storage/igdeMetaPropertyStoragePrimitive.h"
+#include "storage/igdeMetaPropertyStorageInteger.h"
 #include "../../clipboard/igdeClipboardData.h"
 
 class igdeMetaPropertyIntegerUndo;
@@ -59,6 +59,9 @@ public:
 	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyInteger>{
+	public:
+		/** \brief Limits changed. */
+		virtual void OnLimitsChanged(igdeMetaPropertyInteger *property, const ContextRef &context);
 	};
 	
 	
@@ -138,6 +141,8 @@ public:
 	/** \brief Notify listeners about value change. */
 	void NotifyValueChanged(const ContextRef &context);
 	
+	/** \brief Notify listeners about limits change. */
+	void NotifyLimitsChanged(const ContextRef &context);
 	
 	/**
 	 * \brief Capture context.
@@ -177,13 +182,19 @@ public:
 		const ContextRef &context, int newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
+	/** \brief Get property lower limit matching context. */
+	virtual int GetPropertyLowerLimit(const ContextRef &context) const;
+	
+	/** \brief Get property upper limit matching context. */
+	virtual int GetPropertyUpperLimit(const ContextRef &context) const;
+	
 	
 	/**
 	 * \brief Create UI widget.
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	/*@}*/
 };
 
@@ -194,7 +205,7 @@ public:
 class DE_DLL_EXPORT igdeMetaPropertyIntegerStorage : public igdeMetaPropertyInteger{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStoragePrimitive<int, igdeMetaPropertyIntegerStorage>;
+	using Storage = igdeMetaPropertyStorageInteger<igdeMetaPropertyIntegerStorage>;
 	
 	
 public:
@@ -215,6 +226,8 @@ public:
 	
 	int GetPropertyValue(const ContextRef &context) const override;
 	void SetPropertyValue(const ContextRef &context, int value) override;
+	int GetPropertyLowerLimit(const ContextRef &context) const override;
+	int GetPropertyUpperLimit(const ContextRef &context) const override;
 };
 
 #endif

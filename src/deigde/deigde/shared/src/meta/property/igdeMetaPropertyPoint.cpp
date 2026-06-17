@@ -71,8 +71,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyPointWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint::CreateWidget(){
+	return igdeMetaPropertyPointWidget::Ref::New(*this);
 }
 
 

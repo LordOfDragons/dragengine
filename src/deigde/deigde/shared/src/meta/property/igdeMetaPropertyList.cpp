@@ -51,59 +51,57 @@ void igdeMetaPropertyList::Listener::OnSelectionChanged(
 igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 }
 
+void igdeMetaPropertyList::Listener::OnObjectItemInfoChanged(
+igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+}
+
 
 // Class igdeMetaPropertyList::ActionRemove
 /////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionRemove::ActionRemove(igdeMetaPropertyList &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-igdeAction("@Igde.MetaPropertyList.Action.Remove",
-	environment.GetStockIcon(igdeEnvironment::esiMinus),
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Remove",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Igde.MetaPropertyList.Action.Remove.ToolTip"),
-pProperty(property),
-pContext(context),
-pEnvironment(environment){
+pPropertyList(property){
 }
 
 void igdeMetaPropertyList::ActionRemove::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyList.IsValid(context)){
 		return;
 	}
 	
-	if(pProperty.GetMultiSelection()){
-		const auto selection = pProperty.GetSelection(pContext);
+	if(pPropertyList.GetMultiSelection()){
+		const auto selection = pPropertyList.GetSelection(context);
 		if(selection.IsEmpty()){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyList.GetPropertyValue(context);
 		selection.Visit([&](const deObject::Ref &data){
 			newValue.Remove(data);
 		});
 		
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
 		
 	}else{
-		const auto active = pProperty.GetActiveObject(pContext);
+		const auto active = pPropertyList.GetActiveObject(context);
 		if(!active){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyList.GetPropertyValue(context);
 		newValue.Remove(active);
 		
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
 	};
 }
 
 void igdeMetaPropertyList::ActionRemove::Update(){
-	SetEnabled(pProperty.IsValid(pContext) && pProperty.GetActiveObject(pContext));
+	const auto &context = GetContext();
+	SetEnabled(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context));
 }
 
 
@@ -111,26 +109,23 @@ void igdeMetaPropertyList::ActionRemove::Update(){
 ////////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionRemoveAll::ActionRemoveAll(igdeMetaPropertyList &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-igdeAction("@Igde.MetaPropertyList.Action.RemoveAll",
-	environment.GetStockIcon(igdeEnvironment::esiDelete),
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.RemoveAll",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 	"@Igde.MetaPropertyList.Action.RemoveAll.ToolTip"),
-pProperty(property),
-pContext(context),
-pEnvironment(environment){
+pPropertyList(property){
 }
 
 void igdeMetaPropertyList::ActionRemoveAll::OnAction(){
-	if(pProperty.IsValid(pContext) && pProperty.GetActiveObject(pContext)){
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, {},
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+	const auto &context = GetContext();
+	if(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context)){
+		pPropertyList.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertyList));
 	}
 }
 
 void igdeMetaPropertyList::ActionRemoveAll::Update(){
-	SetEnabled(pProperty.IsValid(pContext) && pProperty.GetActiveObject(pContext));
+	const auto &context = GetContext();
+	SetEnabled(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context));
 }
 
 
@@ -138,28 +133,27 @@ void igdeMetaPropertyList::ActionRemoveAll::Update(){
 /////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveUp::ActionMoveUp(igdeMetaPropertyList &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-igdeAction("@Igde.MetaPropertyList.Action.MoveUp",
-	environment.GetStockIcon(igdeEnvironment::esiUp),
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.MoveUp",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 	"@Igde.MetaPropertyList.Action.MoveUp.ToolTip"),
-pProperty(property),
-pContext(context),
-pEnvironment(environment),
+pPropertyList(property),
 pTop(false){
 }
 
 void igdeMetaPropertyList::ActionMoveUp::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyList.IsValid(context)){
 		return;
 	}
 	
-	if(pProperty.GetMultiSelection()){
-		const auto selection = pProperty.GetSelection(pContext);
+	if(pPropertyList.GetMultiSelection()){
+		const auto selection = pPropertyList.GetSelection(context);
 		if(selection.IsEmpty()){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyList.GetPropertyValue(context);
 		
 		decTList<sSortEntry> sortedSelection(selection.GetCount());
 		selection.Visit([&](const deObject::Ref &data){
@@ -181,19 +175,16 @@ void igdeMetaPropertyList::ActionMoveUp::OnAction(){
 		});
 		
 		if(anyMoved){
-			const auto &tm = pEnvironment.GetTranslationManager();
-			pProperty.ChangePropertyValue(pContext, newValue,
-				tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-					+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+			pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
 		}
 		
 	}else{
-		const auto active = pProperty.GetActiveObject(pContext);
+		const auto active = pPropertyList.GetActiveObject(context);
 		if(!active){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyList.GetPropertyValue(context);
 		const int index = newValue.IndexOf(active);
 		if(index == 0){
 			return;
@@ -201,20 +192,19 @@ void igdeMetaPropertyList::ActionMoveUp::OnAction(){
 		
 		newValue.MoveIndex(index, pTop ? 0 : index - 1);
 		
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
 	};
 }
 
 void igdeMetaPropertyList::ActionMoveUp::Update(){
+	const auto &context = GetContext();
 	bool enabled = false;
-	if(pProperty.IsValid(pContext)){
-		if(pProperty.GetMultiSelection()){
-			const auto selection = pProperty.GetSelection(pContext);
+	
+	if(pPropertyList.IsValid(context)){
+		if(pPropertyList.GetMultiSelection()){
+			const auto selection = pPropertyList.GetSelection(context);
 			if(selection.IsNotEmpty()){
-				const auto list = pProperty.GetPropertyValue(pContext);
+				const auto list = pPropertyList.GetPropertyValue(context);
 				
 				decTList<sSortEntry> sortedSelection(selection.GetCount());
 				selection.Visit([&](const deObject::Ref &data){
@@ -230,10 +220,11 @@ void igdeMetaPropertyList::ActionMoveUp::Update(){
 			}
 			
 		}else{
-			const auto active = pProperty.GetActiveObject(pContext);
-			enabled = active && pProperty.GetPropertyValue(pContext).First() != active;
+			const auto active = pPropertyList.GetActiveObject(context);
+			enabled = active && pPropertyList.GetPropertyValue(context).First() != active;
 		}
 	}
+	
 	SetEnabled(enabled);
 }
 
@@ -246,11 +237,12 @@ void igdeMetaPropertyList::ActionMoveUp::SetTop(bool top){
 //////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveTop::ActionMoveTop(igdeMetaPropertyList &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-ActionMoveUp(property, context, environment){
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+ActionMoveUp(property, owner, context)
+{
 	SetText("@Igde.MetaPropertyList.Action.MoveTop");
 	SetDescription("@Igde.MetaPropertyList.Action.MoveTop.ToolTip");
-	SetIcon(environment.GetStockIcon(igdeEnvironment::esiStrongUp));
+	SetIcon(owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp));
 	SetTop(true);
 }
 
@@ -259,28 +251,27 @@ ActionMoveUp(property, context, environment){
 ///////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveDown::ActionMoveDown(igdeMetaPropertyList &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-igdeAction("@Igde.MetaPropertyList.Action.MoveDown",
-	environment.GetStockIcon(igdeEnvironment::esiDown),
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.MoveDown",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 	"@Igde.MetaPropertyList.Action.MoveDown.ToolTip"),
-pProperty(property),
-pContext(context),
-pEnvironment(environment),
+pPropertyList(property),
 pBottom(false){
 }
 
 void igdeMetaPropertyList::ActionMoveDown::OnAction(){
-	if(!pProperty.IsValid(pContext)){
+	const auto &context = GetContext();
+	if(!pPropertyList.IsValid(context)){
 		return;
 	}
 	
-	if(pProperty.GetMultiSelection()){
-		const auto selection = pProperty.GetSelection(pContext);
+	if(pPropertyList.GetMultiSelection()){
+		const auto selection = pPropertyList.GetSelection(context);
 		if(selection.IsEmpty()){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyList.GetPropertyValue(context);
 		
 		decTList<sSortEntry> sortedSelection(selection.GetCount());
 		selection.Visit([&](const deObject::Ref &data){
@@ -303,19 +294,16 @@ void igdeMetaPropertyList::ActionMoveDown::OnAction(){
 		});
 		
 		if(anyMoved){
-			const auto &tm = pEnvironment.GetTranslationManager();
-			pProperty.ChangePropertyValue(pContext, newValue,
-				tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-					+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+			pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
 		}
 		
 	}else{
-		const auto active = pProperty.GetActiveObject(pContext);
+		const auto active = pPropertyList.GetActiveObject(context);
 		if(!active){
 			return;
 		}
 		
-		auto newValue = pProperty.GetPropertyValue(pContext);
+		auto newValue = pPropertyList.GetPropertyValue(context);
 		const int index = newValue.IndexOf(active);
 		const int bottomIndex = newValue.GetCount() - 1;
 		if(index == bottomIndex){
@@ -324,20 +312,19 @@ void igdeMetaPropertyList::ActionMoveDown::OnAction(){
 		
 		newValue.MoveIndex(index, pBottom ? bottomIndex : index + 1);
 		
-		const auto &tm = pEnvironment.GetTranslationManager();
-		pProperty.ChangePropertyValue(pContext, newValue,
-			tm.TranslateIf(pProperty.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
 	};
 }
 
 void igdeMetaPropertyList::ActionMoveDown::Update(){
+	const auto &context = GetContext();
 	bool enabled = false;
-	if(pProperty.IsValid(pContext)){
-		if(pProperty.GetMultiSelection()){
-			const auto selection = pProperty.GetSelection(pContext);
+	
+	if(pPropertyList.IsValid(context)){
+		if(pPropertyList.GetMultiSelection()){
+			const auto selection = pPropertyList.GetSelection(context);
 			if(selection.IsNotEmpty()){
-				const auto list = pProperty.GetPropertyValue(pContext);
+				const auto list = pPropertyList.GetPropertyValue(context);
 				
 				decTList<sSortEntry> sortedSelection(selection.GetCount());
 				selection.Visit([&](const deObject::Ref &data){
@@ -354,10 +341,11 @@ void igdeMetaPropertyList::ActionMoveDown::Update(){
 			}
 			
 		}else{
-			const auto active = pProperty.GetActiveObject(pContext);
-			enabled = active && pProperty.GetPropertyValue(pContext).Last() != active;
+			const auto active = pPropertyList.GetActiveObject(context);
+			enabled = active && pPropertyList.GetPropertyValue(context).Last() != active;
 		}
 	}
+	
 	SetEnabled(enabled);
 }
 
@@ -370,11 +358,12 @@ void igdeMetaPropertyList::ActionMoveDown::SetBottom(bool bottom){
 /////////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveBottom::ActionMoveBottom(igdeMetaPropertyList &property,
-	const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-ActionMoveDown(property, context, environment){
+	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+ActionMoveDown(property, owner, context)
+{
 	SetText("@Igde.MetaPropertyList.Action.MoveBottom");
 	SetDescription("@Igde.MetaPropertyList.Action.MoveBottom.ToolTip");
-	SetIcon(environment.GetStockIcon(igdeEnvironment::esiStrongDown));
+	SetIcon(owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown));
 	SetBottom(true);
 }
 
@@ -424,6 +413,12 @@ void igdeMetaPropertyList::NotifySelectionChanged(const igdeMetaContext::Ref &co
 	});
 }
 
+void igdeMetaPropertyList::NotifyObjectItemInfoChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnObjectItemInfoChanged(this, context);
+	});
+}
+
 
 igdeMetaPropertyListUndo::Ref igdeMetaPropertyList::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const List &newValue,
@@ -449,8 +444,7 @@ const igdeMetaContext::Ref &context) const{
 void igdeMetaPropertyList::SetSelection(const igdeMetaContext::Ref &context, const List &selection){
 }
 
-igdeAction::Ref igdeMetaPropertyList::CreateButtonAction(
-TargetButton, const igdeMetaContext::Ref&, igdeWidget&){
+igdeMetaProperty::Action::Ref igdeMetaPropertyList::CreateButtonAction(TargetButton, igdeWidget&){
 	return {};
 }
 
@@ -459,8 +453,8 @@ const ContextRef &context, igdeWidget &owner){
 	AddDefaultContextMenuEntries(contextMenu, context, owner);
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyListWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(){
+	return igdeMetaPropertyListWidget::Ref::New(*this);
 }
 
 void igdeMetaPropertyList::AddDefaultContextMenuEntries(igdeMenuCascade &menu,
@@ -470,27 +464,27 @@ const igdeMetaContext::Ref &context, igdeWidget &owner){
 	if(menu.GetChildren().IsNotEmpty()){
 		helper.MenuSeparator(menu);
 	}
-	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, context, owner.GetEnvironment()));
-	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, context, owner.GetEnvironment()));
+	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, owner, context));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, ActionMoveUp::Ref::New(*this, context, owner.GetEnvironment()));
-	helper.MenuCommand(menu, ActionMoveDown::Ref::New(*this, context, owner.GetEnvironment()));
-	helper.MenuCommand(menu, ActionMoveTop::Ref::New(*this, context, owner.GetEnvironment()));
-	helper.MenuCommand(menu, ActionMoveBottom::Ref::New(*this, context, owner.GetEnvironment()));
+	helper.MenuCommand(menu, ActionMoveUp::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionMoveDown::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionMoveTop::Ref::New(*this, owner, context));
+	helper.MenuCommand(menu, ActionMoveBottom::Ref::New(*this, owner, context));
 }
 
-igdeAction::Ref igdeMetaPropertyList::CreateDefaultButtonAction(TargetButton target,
-	const igdeMetaContext::Ref &context, igdeWidget &owner){
+igdeMetaProperty::Action::Ref igdeMetaPropertyList::CreateDefaultButtonAction(
+TargetButton target, igdeWidget &owner){
 	switch(target){
 	case TargetButton::remove:
-		return ActionRemove::Ref::New(*this, context, owner.GetEnvironment());
+		return ActionRemove::Ref::New(*this, owner);
 		
 	case TargetButton::moveUp:
-		return ActionMoveUp::Ref::New(*this, context, owner.GetEnvironment());
+		return ActionMoveUp::Ref::New(*this, owner);
 		
 	case TargetButton::moveDown:
-		return ActionMoveDown::Ref::New(*this, context, owner.GetEnvironment());
+		return ActionMoveDown::Ref::New(*this, owner);
 		
 	default:
 		return {};

@@ -28,6 +28,13 @@
 #include "../../undo/igdeUndoSystem.h"
 
 
+// Class igdeMetaPropertyFloat::Listener
+//////////////////////////////////////////
+
+void igdeMetaPropertyFloat::Listener::OnLimitsChanged(igdeMetaPropertyFloat*, const ContextRef&){
+}
+
+
 // Class igdeMetaPropertyFloat
 /////////////////////////////////
 
@@ -87,6 +94,12 @@ void igdeMetaPropertyFloat::NotifyValueChanged(const igdeMetaContext::Ref &conte
 	});
 }
 
+void igdeMetaPropertyFloat::NotifyLimitsChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnLimitsChanged(this, context);
+	});
+}
+
 igdeMetaPropertyFloatUndo::Ref igdeMetaPropertyFloat::ChangePropertyValue(
 const igdeMetaContext::Ref &context, float newValue,
 const char *undoInfo, const char *undoInfoLong){
@@ -102,9 +115,17 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyFloatWidget::Ref::New(*this, context);
+float igdeMetaPropertyFloat::GetPropertyLowerLimit(const ContextRef &context) const{
+	return pLowerLimit;
+}
+
+float igdeMetaPropertyFloat::GetPropertyUpperLimit(const ContextRef &context) const{
+	return pUpperLimit;
+}
+
+
+igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(){
+	return igdeMetaPropertyFloatWidget::Ref::New(*this);
 }
 
 
@@ -122,7 +143,14 @@ float igdeMetaPropertyFloatStorage::GetPropertyValue(const igdeMetaContext::Ref 
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyFloatStorage::SetPropertyValue(
-const igdeMetaContext::Ref &context, float value){
+void igdeMetaPropertyFloatStorage::SetPropertyValue(const igdeMetaContext::Ref &context, float value){
 	GetStorage(context).SetValue(value);
+}
+
+float igdeMetaPropertyFloatStorage::GetPropertyLowerLimit(const ContextRef &context) const{
+	return GetStorage(context).GetLowerLimit();
+}
+
+float igdeMetaPropertyFloatStorage::GetPropertyUpperLimit(const ContextRef &context) const{
+	return GetStorage(context).GetUpperLimit();
 }

@@ -90,82 +90,73 @@ public:
 	
 	
 	/** \brief Add entries action. */
-	class DE_DLL_EXPORT ActionAdd : public igdeAction{
-	protected:
-		igdeMetaPropertyStringSet &pProperty;
-		const ContextRef pContext;
-		igdeWidget &pOwner;
+	class DE_DLL_EXPORT ActionAdd : public Action{
+	private:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionAdd>;
-		ActionAdd(igdeMetaPropertyStringSet &property, const ContextRef &context,
-			igdeWidget &owner);
+		ActionAdd(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		inline igdeMetaPropertyStringSet &GetPropertyStringSet() const{ return pPropertyStringSet; }
 	};
 	
 	/** \brief Remove selected entries action. */
-	class DE_DLL_EXPORT ActionRemove : public igdeAction{
-	protected:
-		igdeMetaPropertyStringSet &pProperty;
-		const ContextRef pContext;
-		igdeEnvironment &pEnvironment;
+	class DE_DLL_EXPORT ActionRemove : public Action{
+	private:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
-		ActionRemove(igdeMetaPropertyStringSet &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionRemove(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		inline igdeMetaPropertyStringSet &GetPropertyStringSet() const{ return pPropertyStringSet; }
 	};
 	
 	/** \brief Remove all entries action. */
-	class DE_DLL_EXPORT ActionRemoveAll : public igdeAction{
-	protected:
-		igdeMetaPropertyStringSet &pProperty;
-		const ContextRef pContext;
-		igdeEnvironment &pEnvironment;
+	class DE_DLL_EXPORT ActionRemoveAll : public Action{
+	private:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
-		ActionRemoveAll(igdeMetaPropertyStringSet &property, const ContextRef &context,
-			igdeEnvironment &environment);
+		ActionRemoveAll(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		inline igdeMetaPropertyStringSet &GetPropertyStringSet() const{ return pPropertyStringSet; }
 	};
 	
 	/** \brief Export to text action. */
-	class DE_DLL_EXPORT ActionExportAsText : public igdeAction{
-	protected:
-		igdeMetaPropertyStringSet &pProperty;
-		const ContextRef pContext;
-		igdeWidget &pOwner;
+	class DE_DLL_EXPORT ActionExportAsText : public Action{
+	private:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionExportAsText>;
-		ActionExportAsText(igdeMetaPropertyStringSet &property,
-			const ContextRef &context, igdeWidget &owner);
+		ActionExportAsText(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		inline igdeMetaPropertyStringSet &GetPropertyStringSet() const{ return pPropertyStringSet; }
 	};
 	
 	/** \brief Import from text action. */
-	class DE_DLL_EXPORT ActionImportFromText : public igdeAction{
-	protected:
-		igdeMetaPropertyStringSet &pProperty;
-		const ContextRef pContext;
-		igdeWidget &pOwner;
+	class DE_DLL_EXPORT ActionImportFromText : public Action{
+	private:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionImportFromText>;
-		ActionImportFromText(igdeMetaPropertyStringSet &property,
-			const ContextRef &context, igdeWidget &owner);
+		ActionImportFromText(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		inline igdeMetaPropertyStringSet &GetPropertyStringSet() const{ return pPropertyStringSet; }
 	};
 	
 	
 private:
+	decStringSet pDefaultValue;
 	int pRows;
 	bool pMultiSelection;
 	igdeTListenerList<Listener> pListeners;
@@ -186,6 +177,12 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Default value. */
+	inline const decStringSet &GetDefaultValue() const{ return pDefaultValue; }
+	
+	/** \brief Set default value. */
+	void SetDefaultValue(const decStringSet &value);
+	
 	/** \brief Rows. */
 	inline int GetRows() const{ return pRows; }
 	
@@ -288,8 +285,7 @@ public:
 	 * Subclasses can override this method to create button action. If nullptr is returned
 	 * the button is destroyed. Default implementation calls CreateDefaultButtonAction().
 	 */
-	virtual igdeAction::Ref CreateButtonAction(TargetButton target,
-		const ContextRef &context, igdeWidget &owner);
+	virtual Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner);
 	
 	/**
 	 * \brief Add context menu entries.
@@ -305,7 +301,7 @@ public:
 	 *
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	
 	
 	/**
@@ -322,8 +318,7 @@ public:
 		const ContextRef &context, igdeWidget &owner);
 	
 	/** \brief Create default button action. */
-	igdeAction::Ref CreateDefaultButtonAction(TargetButton target,
-		const ContextRef &context, igdeWidget &owner);
+	Action::Ref CreateDefaultButtonAction(TargetButton target, igdeWidget &owner);
 	/*@}*/
 };
 

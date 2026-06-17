@@ -52,10 +52,8 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyWidget::igdeMetaPropertyWidget(
-	igdeMetaProperty &property, const igdeMetaContext::Ref &context) :
-pProperty(&property),
-pContext(context){
+igdeMetaPropertyWidget::igdeMetaPropertyWidget(igdeMetaProperty &property) :
+pProperty(&property){
 }
 
 igdeMetaPropertyWidget::~igdeMetaPropertyWidget() = default;
@@ -102,6 +100,7 @@ void igdeMetaPropertyWidget::UpdateMatchable(igdeContainer &container){
 	}
 }
 
+
 void igdeMetaPropertyWidget::Drop(){
 	pLabel.Clear();
 	pEditContainer.Clear();
@@ -123,8 +122,19 @@ void igdeMetaPropertyWidget::RunWithPreventUpdate(const std::function<void()> &f
 }
 
 
+void igdeMetaPropertyWidget::SetContext(const igdeMetaContext::Ref &context){
+	if(pContext == context){
+		return;
+	}
+	
+	pContext = context;
+	OnContextChanged();
+}
+
 void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
-	pProperty->AddContextMenuEntries(contextMenu, pContext, pEditContainer);
+	if(pContext){
+		pProperty->AddContextMenuEntries(contextMenu, pContext, pEditContainer);
+	}
 }
 
 
@@ -175,4 +185,7 @@ void igdeMetaPropertyWidget::UpdateFilteredOut(){
 	if(pEditContainer){
 		pEditContainer->SetVisible(!pFilteredOut);
 	}
+}
+
+void igdeMetaPropertyWidget::OnContextChanged(){
 }

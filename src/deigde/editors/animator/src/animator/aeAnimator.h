@@ -49,6 +49,7 @@
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
@@ -141,6 +142,7 @@ public:
 	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
 	
 	igdeMetaPropertyListTypeStorage<aeController, aeController::List>::Storage controllers;
+	igdeMetaPropertyContextStorage::Storage controller;
 	
 private:
 	aeCamera *pCamera;

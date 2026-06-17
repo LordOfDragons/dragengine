@@ -46,7 +46,14 @@ public:
 	/*@{*/
 	/** \brief Create string meta property storage. */
 	igdeMetaPropertyStorageString(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(property.GetDefaultValue()){
+	}
+	
+	/** \brief Create string meta property storage with initial value. */
+	igdeMetaPropertyStorageString(P &property, const deTObjectReference<igdeMetaContext> &context, const decString &initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue){
 	}
 	/*@}*/
 	
@@ -57,25 +64,29 @@ public:
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const decString &value){
+	void SetValue(const decString &value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
 		
 		pValue = value;
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	
 	/** \brief Set value. */
-	void SetValue(const char *value){
+	void SetValue(const char *value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
 		
 		pValue = value;
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	/*@}*/
 	

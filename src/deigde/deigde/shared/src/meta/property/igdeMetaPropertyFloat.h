@@ -59,6 +59,9 @@ public:
 	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyFloat>{
+	public:
+		/** \brief Limits changed. */
+		virtual void OnLimitsChanged(igdeMetaPropertyFloat *property, const ContextRef &context);
 	};
 	
 	
@@ -138,6 +141,8 @@ public:
 	/** \brief Notify listeners about value change. */
 	void NotifyValueChanged(const ContextRef &context);
 	
+	/** \brief Notify listeners about limits change. */
+	void NotifyLimitsChanged(const ContextRef &context);
 	
 	/**
 	 * \brief Capture context.
@@ -177,13 +182,19 @@ public:
 		const ContextRef &context, float newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
+	/** \brief Get property lower limit matching context. */
+	virtual float GetPropertyLowerLimit(const ContextRef &context) const;
+	
+	/** \brief Get property upper limit matching context. */
+	virtual float GetPropertyUpperLimit(const ContextRef &context) const;
+	
 	
 	/**
 	 * \brief Create UI widget.
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) override;
+	deTObjectReference<igdeMetaPropertyWidget> CreateWidget() override;
 	/*@}*/
 };
 
@@ -194,7 +205,7 @@ public:
 class DE_DLL_EXPORT igdeMetaPropertyFloatStorage : public igdeMetaPropertyFloat{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStoragePrimitive<float, igdeMetaPropertyFloatStorage>;
+	using Storage = igdeMetaPropertyStorageFloat<igdeMetaPropertyFloatStorage>;
 	
 	
 public:
@@ -216,6 +227,8 @@ public:
 	
 	float GetPropertyValue(const ContextRef &context) const override;
 	void SetPropertyValue(const ContextRef &context, float value) override;
+	float GetPropertyLowerLimit(const ContextRef &context) const override;
+	float GetPropertyUpperLimit(const ContextRef &context) const override;
 };
 
 #endif

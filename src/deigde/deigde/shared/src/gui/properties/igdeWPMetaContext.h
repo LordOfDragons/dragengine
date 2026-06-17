@@ -26,7 +26,6 @@
 #define _IGDEWPMETACONTEXT_H_
 
 #include "../layout/igdeContainerFlow.h"
-#include "../layout/igdeContainerScroll.h"
 #include "../../meta/igdeMetaContext.h"
 #include "../../meta/property/igdeMetaPropertyGroup.h"
 #include "../../meta/property/widget/igdeMetaPropertyWidget.h"
@@ -38,7 +37,7 @@
  *
  * Displays properties defined in a meta context in a vertical list.
  */
-class DE_DLL_EXPORT igdeWPMetaContext : public igdeContainerScroll{
+class DE_DLL_EXPORT igdeWPMetaContext : public igdeContainerFlow{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<igdeWPMetaContext>;
@@ -47,7 +46,7 @@ public:
 	using PropertyWidgetList = decTObjectOrderedSet<igdeMetaPropertyWidget>;
 	
 	/** \brief Map of property widgets. */
-	using PropertyWidgetMap = decTDictionary<igdeMetaProperty::Ref, igdeMetaPropertyWidget::Ref>;
+	using PropertyWidgetCache = decTDictionary<igdeMetaProperty::Ref, igdeMetaPropertyWidget::Ref>;
 	
 	
 private:
@@ -71,9 +70,8 @@ private:
 	igdeFilter pFilter;
 	
 	igdeMetaContext::PropertyList::Ref pProperties;
-	igdeContainerFlow::Ref pPropertyContainer;
 	PropertyWidgetList pPropertyWidgets;
-	PropertyWidgetMap pPropertyWidgetCache;
+	PropertyWidgetCache pPropertyWidgetCache;
 	
 	
 public:
@@ -111,6 +109,9 @@ public:
 	void SetFilter(const igdeFilter &filter);
 	void SetFilter(igdeFilter &&filter);
 	
+	/** \brief One or more widgets are not filtered out. */
+	bool HasVisibleWidgets() const;
+	
 	/** \brief Update property widgets. */
 	void UpdatePropertyWidgets();
 	
@@ -120,8 +121,6 @@ public:
 	
 	
 private:
-	void pCreateContent();
-	
 	void pCreatePropertyWidgets();
 	
 	igdeMetaPropertyWidget::Ref pCreatePropertyGroupWidget(igdeContainer &container,

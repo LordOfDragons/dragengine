@@ -43,9 +43,10 @@ public:
 	inline igdeMetaPropertyColorWidget &GetWidget() const{ return pWidget; }
 	inline const igdeMetaContext::Ref &GetContext() const{ return pWidget.GetContext(); }
 	inline igdeMetaPropertyColor &GetPropertyColor() const{ return pWidget.GetPropertyColor(); }
+	inline bool IsValid() const{ return GetPropertyColor().IsValid(GetContext()); }
 	
 	void OnValueChanged(const decColor &newValue, const char *undoInfo = nullptr){
-		if(pWidget.GetPreventUpdate()){
+		if(pWidget.GetPreventUpdate() || !IsValid()){
 			return;
 		}
 		
@@ -56,11 +57,14 @@ public:
 			return;
 		}
 		
+		decString strUndoInfo;
 		if(undoInfo){
 			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			undoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8() + ": " + tm.TranslateIf(undoInfo).ToUTF8();
+			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
 		}
-		property.ChangePropertyValue(context, newValue, undoInfo);
+		property.ChangePropertyValue(context, newValue,
+			undoInfo ? strUndoInfo.GetString() : nullptr);
 	}
 };
 
@@ -96,8 +100,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertyColor();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -107,7 +112,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyColor::ClipboardData::Ref::New(
-			pWidget.GetPropertyColor().GetPropertyValue(context)));
+			property.GetPropertyValue(context)));
 	}
 };
 
@@ -127,12 +132,11 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
-		const auto &context = pHelper.GetContext();
-		if(!context){
+		if(!pHelper.IsValid()){
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
+		const auto clipboard = pHelper.GetContext()->GetClipboard();
 		if(!clipboard){
 			return;
 		}
@@ -147,9 +151,8 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pHelper.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pHelper.IsValid()){
+			const auto cb = pHelper.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyColor::ClipboardData::TypeName));
 			return;
 		}
@@ -189,8 +192,10 @@ pWidget(widget){
 igdeMetaPropertyColorWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertyColorWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertyColor*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertyColor*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 
@@ -200,9 +205,8 @@ igdeMetaPropertyColor*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(
-	igdeMetaPropertyColor &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertyColorWidget::igdeMetaPropertyColorWidget(igdeMetaPropertyColor &property) :
+igdeMetaPropertyWidget(property),
 pPropertyColor(property),
 pPropertyListener(PropertyListener::Ref::New(*this))
 {
@@ -226,8 +230,6 @@ void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper 
 	WrapEditWidget(container, helper, noLabel, pColorBox);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertyColorWidget::Drop(){
@@ -241,13 +243,17 @@ void igdeMetaPropertyColorWidget::Drop(){
 }
 
 void igdeMetaPropertyColorWidget::Update(){
-	if(pColorBox){
-		RunWithPreventUpdate([&]{
-			pColorBox->SetColor(GetContext()
-				? pPropertyColor.GetPropertyValue(GetContext())
-				: pPropertyColor.GetDefaultValue());
-		});
+	if(!pColorBox){
+		return;
 	}
+	
+	const bool valid = pPropertyColor.IsValid(GetContext());
+	RunWithPreventUpdate([&]{
+		pColorBox->SetColor(valid
+			? pPropertyColor.GetPropertyValue(GetContext())
+			: pPropertyColor.GetDefaultValue());
+		pColorBox->SetEnabled(valid);
+	});
 }
 
 void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -267,4 +273,12 @@ void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyColorWidget::OnContextChanged(){
+	Update();
 }

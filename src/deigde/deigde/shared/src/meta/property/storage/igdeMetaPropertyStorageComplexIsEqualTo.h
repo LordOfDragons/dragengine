@@ -44,7 +44,14 @@ public:
 	/*@{*/
 	/** \brief Create complex meta property storage. */
 	igdeMetaPropertyStorageComplexIsEqualTo(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(property.GetDefaultValue()){
+	}
+	
+	/** \brief Create complex meta property storage with initial value. */
+	igdeMetaPropertyStorageComplexIsEqualTo(P &property, const deTObjectReference<igdeMetaContext> &context, const T &initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue){
 	}
 	/*@}*/
 	
@@ -55,14 +62,16 @@ public:
 	inline const T &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const T &value){
+	void SetValue(const T &value, bool notify = true){
 		if(pValue.IsEqualTo(value)){
 			return;
 		}
 		
 		pValue = value;
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	/*@}*/
 	

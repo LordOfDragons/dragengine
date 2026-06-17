@@ -44,7 +44,7 @@ public:
 	~cListener() override = default;
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
-		if(!pWidget.GetPreventUpdate() && pWidget.GetContext()){
+		if(!pWidget.GetPreventUpdate()){
 			pWidget.StoreActiveObject();
 		}
 	}
@@ -87,8 +87,9 @@ public:
 	~ActionCopy() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertySet();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -97,9 +98,8 @@ public:
 			return;
 		}
 		
-		const auto values = pSelection
-			? pWidget.GetPropertySet().GetSelection(context)
-			: pWidget.GetPropertySet().GetPropertyValue(context);
+		const auto values = pSelection ? property.GetSelection(context)
+			: property.GetPropertyValue(context);
 		
 		if(values.IsNotEmpty()){
 			clipboard->Set(igdeMetaPropertySet::ClipboardData::Ref::New(values));
@@ -139,8 +139,9 @@ public:
 	~ActionPaste() override = default;
 	
 	void OnAction() override{
+		auto &property = pWidget.GetPropertySet();
 		const auto &context = pWidget.GetContext();
-		if(!context){
+		if(!property.IsValid(context)){
 			return;
 		}
 		
@@ -155,7 +156,6 @@ public:
 			return;
 		}
 		
-		auto &property = pWidget.GetPropertySet();
 		const auto oldData = property.GetPropertyValue(context);
 		const auto newData = pAppend ? oldData + clip->GetData() : clip->GetData();
 		if(oldData == newData){
@@ -169,9 +169,8 @@ public:
 	}
 	
 	void Update() override{
-		const auto &context = pWidget.GetContext();
-		if(context){
-			const auto cb = context->GetClipboard();
+		if(pWidget.GetPropertySet().IsValid(pWidget.GetContext())){
+			const auto cb = pWidget.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertySet::ClipboardData::TypeName));
 			return;
 		}
@@ -210,7 +209,7 @@ public:
 	void OnAction() override{
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertySet();
-		if(property.GetPropertyValue(context).IsEmpty()){
+		if(!property.IsValid(context) || property.GetPropertyValue(context).IsEmpty()){
 			return;
 		}
 		
@@ -234,18 +233,24 @@ pWidget(widget){
 igdeMetaPropertySetWidget::PropertyListener::~PropertyListener() = default;
 
 void igdeMetaPropertySetWidget::PropertyListener::OnValueChanged(
-igdeMetaPropertySet*, const igdeMetaContext::Ref&){
-	pWidget.Update();
+igdeMetaPropertySet*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
 }
 
 void igdeMetaPropertySetWidget::PropertyListener::OnActiveChanged(
-igdeMetaPropertySet*, const igdeMetaContext::Ref&){
-	pWidget.SelectActiveObject();
+igdeMetaPropertySet*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.SelectActiveObject();
+	}
 }
 
 void igdeMetaPropertySetWidget::PropertyListener::OnSelectionChanged(
-igdeMetaPropertySet*, const igdeMetaContext::Ref&){
-	pWidget.RestoreSelection();
+igdeMetaPropertySet*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.RestoreSelection();
+	}
 }
 
 
@@ -255,9 +260,8 @@ igdeMetaPropertySet*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySetWidget::igdeMetaPropertySetWidget(
-	igdeMetaPropertySet &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+igdeMetaPropertySetWidget::igdeMetaPropertySetWidget(igdeMetaPropertySet &property) :
+igdeMetaPropertyWidget(property),
 pPropertySet(property),
 pPropertyListener(PropertyListener::Ref::New(*this)),
 pRows(property.GetRows())
@@ -294,8 +298,6 @@ void igdeMetaPropertySetWidget::Create(igdeContainer &container, igdeUIHelper &h
 	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
 	
 	UpdateMatchable(container);
-	
-	Update();
 }
 
 void igdeMetaPropertySetWidget::Drop(){
@@ -308,6 +310,7 @@ void igdeMetaPropertySetWidget::Drop(){
 	
 	pListener.Clear();
 	pListBox.Clear();
+	pButtonActions.RemoveAll();
 	igdeMetaPropertyWidget::Drop();
 }
 
@@ -316,43 +319,48 @@ void igdeMetaPropertySetWidget::Update(){
 		return;
 	}
 	
+	const auto &context = GetContext();
+	const bool valid = pPropertySet.IsValid(context);
 	RunWithPreventUpdate([&]{
-		const auto &context = GetContext();
-		const auto objects = pPropertySet.GetPropertyValue(context);
-		igdeMetaContextItemInfo info;
 		pListBox->RemoveAllItems();
-		objects.Visit([&](const deObject::Ref &object){
-			pPropertySet.GetObjectItemInfo(context, object, info);
-			auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
-			item->SetRefData(object);
-			pListBox->AddItem(item);
-		});
-		pListBox->SortItems();
+		if(valid){
+			const auto objects = pPropertySet.GetPropertyValue(context);
+			igdeMetaContextItemInfo info;
+			objects.Visit([&](const deObject::Ref &object){
+				pPropertySet.GetObjectItemInfo(context, object, info);
+				auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
+				item->SetRefData(object);
+				pListBox->AddItem(item);
+			});
+			pListBox->SortItems();
+		}
+		pListBox->SetEnabled(valid);
 	});
 	
 	SelectActiveObject();
 	RestoreSelection();
 	
-	// if the list changed the selection and active object might not be valid anymore.
-	// store the current state to synchronize it
+	// the list automatically selects the first item if the list is not empty. this potentially
+	// changes the active object without notification due to RunWithPreventUpdate(). store the
+	// current selection and active object to properly synchronize if anything changed
 	StoreSelection();
 	StoreActiveObject();
 }
 
 void igdeMetaPropertySetWidget::SelectActiveObject(){
-	if(pListBox){
-		RunWithPreventUpdate([&]{
-			pListBox->SetSelectionWithRefData(GetContext()
-				? pPropertySet.GetActiveObject(GetContext())
-				: deObject::Ref());
-		});
+	if(!pListBox || !pPropertySet.IsValid(GetContext())){
+		return;
 	}
+	
+	pListBox->SetSelectionWithRefData(pPropertySet.GetActiveObject(GetContext()));
 }
 
 void igdeMetaPropertySetWidget::StoreActiveObject(){
-	if(pListBox){
-		pPropertySet.SetActiveObject(GetContext(), pListBox->GetSelectedItemRefData());
+	if(!pListBox || !pPropertySet.IsValid(GetContext())){
+		return;
 	}
+	
+	pPropertySet.SetActiveObject(GetContext(), pListBox->GetSelectedItemRefData());
 }
 
 void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -377,7 +385,8 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 }
 
 void igdeMetaPropertySetWidget::StoreSelection(){
-	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple || !GetContext()){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple
+	|| !pPropertySet.IsValid(GetContext())){
 		return;
 	}
 	
@@ -391,7 +400,8 @@ void igdeMetaPropertySetWidget::StoreSelection(){
 }
 
 void igdeMetaPropertySetWidget::RestoreSelection(){
-	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple || !GetContext()){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple
+	|| !pPropertySet.IsValid(GetContext())){
 		return;
 	}
 	
@@ -412,6 +422,21 @@ void igdeMetaPropertySetWidget::RestoreSelection(){
 }
 
 
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertySetWidget::OnContextChanged(){
+	Update();
+	SelectActiveObject();
+	RestoreSelection();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.SetContext(GetContext());
+	});
+}
+
+
 // Private Functions
 //////////////////////
 
@@ -420,8 +445,13 @@ igdeUIHelper &helper, igdeContainer &container){
 	igdeButton::Ref button;
 	helper.Button(button, {});
 	button->SetStyle(igdeButton::ebsToolBar);
-	button->SetAction(pPropertySet.CreateButtonAction(target, GetContext(), button));
-	if(button->GetAction()){
-		container.AddChild(button);
+	auto action = pPropertySet.CreateButtonAction(target, button);
+	if(!action){
+		return;
 	}
+	
+	action->SetContext(GetContext());
+	button->SetAction(action);
+	container.AddChild(button);
+	pButtonActions.Add(action);
 }

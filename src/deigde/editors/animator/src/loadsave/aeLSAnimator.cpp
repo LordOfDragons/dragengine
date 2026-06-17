@@ -1776,7 +1776,7 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 	decVector vector;
 	int i, leg;
 	
-	const aeController::Ref controller(aeController::Ref::New());
+	const auto controller = aeController::Ref::New(*pLSSys->GetWindowMain());
 	animator.AddController(controller);
 	
 	// parse tag

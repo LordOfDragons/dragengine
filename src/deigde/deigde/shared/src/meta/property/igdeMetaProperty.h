@@ -30,6 +30,7 @@
 #include "../../gui/menu/igdeMenuCascade.h"
 #include "../../utils/igdeFilter.h"
 #include "../../utils/igdeTListenerList.h"
+#include "../../gui/event/igdeAction.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -37,6 +38,7 @@
 class igdeMetaContext;
 class igdeMetaPropertyWidget;
 class igdeWidget;
+class igdeTranslationManager;
 
 /**
  * \brief Meta property.
@@ -53,10 +55,9 @@ public:
 	using ContextRef = deTObjectReference<igdeMetaContext>;
 	
 	
-protected:
 	/** \brief Listener template. */
 	template <typename P>
-	class DE_DLL_EXPORT TListener : public deObject{
+	class TListener : public deObject{
 	public:
 		/** \brief Reference type. */
 		using Ref = deTObjectReference<TListener<P>>;
@@ -73,10 +74,61 @@ protected:
 		virtual void OnValueChanged(P *property, const ContextRef &context){}
 	};
 	
+	/** \brief Base action storing owner and dynamic context. */
+	class DE_DLL_EXPORT Action : public igdeAction{
+	public:
+		/** \brief Reference type. */
+		using Ref = deTObjectReference<Action>;
+		
+	private:
+		igdeWidget &pOwner;
+		ContextRef pContext;
+		
+	public:
+		/** \brief Create action. */
+		template <typename... A>
+		Action(igdeWidget &owner, const ContextRef &context, A&&... args) :
+		igdeAction(std::forward<A>(args)...),
+		pOwner(owner), pContext(context){
+		}
+		
+	protected:
+		/** \brief Destructor. */
+		~Action() override;
+		
+	public:
+		/** \brief Context. */
+		inline const ContextRef &GetContext() const{ return pContext; }
+		
+		/** \brief Set context. */
+		void SetContext(const ContextRef &context);
+		
+		/** \brief Owner widget. */
+		inline igdeWidget &GetOwner() const{ return pOwner; }
+		
+		/** \brief Environment. */
+		igdeEnvironment &GetEnvironment() const;
+		
+		/** \brief Translation manager. */
+		igdeTranslationManager &GetTranslationManager() const;
+		
+		/** \brief Translation for entry name entry name itself if absent. */
+		decUnicodeString Translate(const decString &entryName) const;
+		decUnicodeString Translate(const char *entryName) const;
+		
+		/** \brief Translate text if it starts with translation character '@'. */
+		decUnicodeString TranslateIf(const decString &text) const;
+		decUnicodeString TranslateIf(const char *text) const;
+		
+		/** \brief Build undo info. */
+		decString BuildUndoInfo(const igdeMetaProperty &property) const;
+	};
+	
 	
 private:
 	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
-	bool pHideLabel;
+	bool pHideLabel = false;
+	bool pCanHideGroup = true;
 	
 	
 public:
@@ -131,6 +183,12 @@ public:
 	/** \brief Set hide label in UI Forms. */
 	void SetHideLabel(bool hideLabel);
 	
+	/** \brief Can hide group. */
+	inline bool GetCanHideGroup() const{ return pCanHideGroup; }
+	
+	/** \brief Set can hide group. */
+	void SetCanHideGroup(bool canHideGroup);
+	
 	/**
 	 * \brief Undo info string or empty to use label.
 	 * 
@@ -143,7 +201,7 @@ public:
 	 * 
 	 * This object is able to add itself to a widget holder in the appropriate way.
 	 */
-	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget(const ContextRef &context) = 0;
+	virtual deTObjectReference<igdeMetaPropertyWidget> CreateWidget() = 0;
 	
 	/**
 	 * \brief Add context menu entries.

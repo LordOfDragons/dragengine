@@ -51,9 +51,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyGroupWidget(igdeMetaPropertyGroup &property, const deTObjectReference<igdeMetaContext> &context);
+	explicit igdeMetaPropertyGroupWidget(igdeMetaPropertyGroup &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -96,6 +96,7 @@ public:
 	
 protected:
 	void UpdateFilteredOut() override;
+	void OnContextChanged() override;
 };
 
 #endif

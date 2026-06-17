@@ -66,9 +66,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property, const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyBooleanWidget(igdeMetaPropertyBoolean &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -93,12 +93,15 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
-	
 	/** \brief Boolean box widget or nullptr. */
 	inline const igdeCheckBox::Ref &GetCheckBox() const{ return pCheckBox; }
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/
+	
+	
+protected:
+	void OnContextChanged() override;
 };
 
 #endif

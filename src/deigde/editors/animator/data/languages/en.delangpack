@@ -158,6 +158,12 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Animator.WPController.SetFromMove.ToolTip">Sets the ranges from the playtime of a move</translation>
 	<translation name="Animator.WPController.Reset">Reset</translation>
 	<translation name="Animator.WPController.Reset.ToolTip">Reset value to controller minimum</translation>
+	<translation name="Animator.WPController.ValueSetToLower">Set to lower</translation>
+	<translation name="Animator.WPController.ValueSetToLower.ToolTip">Set value to controller minimum</translation>
+	<translation name="Animator.WPController.ValueSetToUpper">Set to upper</translation>
+	<translation name="Animator.WPController.ValueSetToUpper.ToolTip">Set value to controller maximum</translation>
+	<translation name="Animator.WPController.ValueSetToCenter">Set to center</translation>
+	<translation name="Animator.WPController.ValueSetToCenter.ToolTip">Set value to controller center</translation>
 	<translation name="Animator.WPController.Clamp">Clamp value to range</translation>
 	<translation name="Animator.WPController.Clamp.ToolTip">Determines if the value of the controller is clamped to the given range</translation>
 	<translation name="Animator.WPController.Frozen">Freeze Controller value</translation>

@@ -34,8 +34,8 @@
 ////////////////////////////
 
 igdeMetaPropertyGroupWidget::igdeMetaPropertyGroupWidget(
-	igdeMetaPropertyGroup &property, const igdeMetaContext::Ref &context) :
-igdeMetaPropertyWidget(property, context),
+	igdeMetaPropertyGroup &property) :
+igdeMetaPropertyWidget(property),
 pPropertyGroup(property){
 }
 
@@ -64,8 +64,8 @@ void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper 
 void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){
 	bool anyNotFilteredOut = false;
 	pChildWidgets.Visit([&](igdeMetaPropertyWidget &widget){
-		if(widget.GetMatchable()){
-			widget.Filter(filter);
+		widget.Filter(filter);
+		if(widget.GetProperty()->GetCanHideGroup()){
 			anyNotFilteredOut |= !widget.GetFilteredOut();
 		}
 	});
@@ -95,4 +95,13 @@ void igdeMetaPropertyGroupWidget::UpdateFilteredOut(){
 	if(pGroupBox){
 		pGroupBox->SetVisible(!GetFilteredOut());
 	}
+}
+
+void igdeMetaPropertyGroupWidget::OnContextChanged(){
+	Update();
+	
+	const auto &context = GetContext();
+	pChildWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.SetContext(context);
+	});
 }

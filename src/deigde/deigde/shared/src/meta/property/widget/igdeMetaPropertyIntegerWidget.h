@@ -59,6 +59,7 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyInteger *property, const igdeMetaContext::Ref &context) override;
+		void OnLimitsChanged(igdeMetaPropertyInteger *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -77,10 +78,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyIntegerWidget(igdeMetaPropertyInteger &property,
-		const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyIntegerWidget(igdeMetaPropertyInteger &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -105,6 +105,9 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
+	/** \brief Update UI widgets with current property limits. */
+	void UpdateLimits();
+	
 	
 	/** \brief Text field widget or nullptr. */
 	inline const igdeTextField::Ref &GetTextField() const{ return pTextField; }
@@ -123,6 +126,10 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/
+	
+	
+protected:
+	void OnContextChanged() override;
 };
 
 #endif

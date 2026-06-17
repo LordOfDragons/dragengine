@@ -22,45 +22,45 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaPropertyVector3.h"
-#include "undo/igdeMetaPropertyVector3Undo.h"
-#include "widget/igdeMetaPropertyVector3Widget.h"
+#include "igdeMetaPropertyVector.h"
+#include "undo/igdeMetaPropertyVectorUndo.h"
+#include "widget/igdeMetaPropertyVectorWidget.h"
 #include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
 
 
-// Class igdeMetaPropertyVector3
+// Class igdeMetaPropertyVector
 ///////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyVector3::igdeMetaPropertyVector3(
+igdeMetaPropertyVector::igdeMetaPropertyVector(
 	const char *id, const char *name, const char *description) :
 igdeMetaProperty(id, name, description){
 }
 
-igdeMetaPropertyVector3::~igdeMetaPropertyVector3() = default;
+igdeMetaPropertyVector::~igdeMetaPropertyVector() = default;
 
 
 // Management
 ///////////////
 
-void igdeMetaPropertyVector3::SetDefaultValue(const decVector &value){
+void igdeMetaPropertyVector::SetDefaultValue(const decVector &value){
 	pDefaultValue = value;
 }
 
-void igdeMetaPropertyVector3::NotifyValueChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyVector::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
 }
 
-igdeMetaPropertyVector3Undo::Ref igdeMetaPropertyVector3::ChangePropertyValue(
+igdeMetaPropertyVectorUndo::Ref igdeMetaPropertyVector::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decVector &newValue,
 const char *undoInfo, const char *undoInfoLong){
 	if(context->GetUndoSystem()){
-		const auto undo = igdeMetaPropertyVector3Undo::Ref::New(
+		const auto undo = igdeMetaPropertyVectorUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
 		return undo;
@@ -71,28 +71,27 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyVector3::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyVector3Widget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyVector::CreateWidget(){
+	return igdeMetaPropertyVectorWidget::Ref::New(*this);
 }
 
 
-// igdeMetaPropertyVector3Storage
+// igdeMetaPropertyVectorStorage
 ///////////////////////////////////
 
-igdeMetaPropertyVector3Storage::igdeMetaPropertyVector3Storage(
+igdeMetaPropertyVectorStorage::igdeMetaPropertyVectorStorage(
 	const char *id, const char *name, const char *description) :
-igdeMetaPropertyVector3(id, name, description){
+igdeMetaPropertyVector(id, name, description){
 }
 
-igdeMetaPropertyVector3Storage::~igdeMetaPropertyVector3Storage() = default;
+igdeMetaPropertyVectorStorage::~igdeMetaPropertyVectorStorage() = default;
 
-const decVector &igdeMetaPropertyVector3Storage::GetPropertyValue(
+const decVector &igdeMetaPropertyVectorStorage::GetPropertyValue(
 const igdeMetaContext::Ref &context) const{
 	return GetStorage(context).GetValue();
 }
 
-void igdeMetaPropertyVector3Storage::SetPropertyValue(
+void igdeMetaPropertyVectorStorage::SetPropertyValue(
 const igdeMetaContext::Ref &context, const decVector &value){
 	GetStorage(context).SetValue(value);
 }

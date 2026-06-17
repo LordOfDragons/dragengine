@@ -71,9 +71,8 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertyColorWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(){
+	return igdeMetaPropertyColorWidget::Ref::New(*this);
 }
 
 

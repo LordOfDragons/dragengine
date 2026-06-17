@@ -56,6 +56,7 @@ private:
 		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 		void OnActiveChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 		void OnSelectionChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -63,6 +64,7 @@ private:
 	PropertyListener::Ref pPropertyListener;
 	igdeListBox::Ref pListBox;
 	igdeListBoxListener::Ref pListener;
+	decTOrderedSet<igdeMetaProperty::Action::Ref> pButtonActions;
 	int pRows;
 	
 	
@@ -70,9 +72,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create meta property widget for property and context.
+	 * \brief Create meta property widget for property.
 	 */
-	igdeMetaPropertyListWidget(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context);
+	explicit igdeMetaPropertyListWidget(igdeMetaPropertyList &property);
 	
 protected:
 	/** \brief Clean up widget. */
@@ -96,11 +98,17 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
+	/** \brief Update item information. */
+	void UpdateItemInfo();
+	
 	/** \brief List box widget or nullptr. */
 	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 	
 	/** \brief Select active object. */
 	void SelectActiveObject();
+	
+	/** \brief Store active object. */
+	void StoreActiveObject();
 	
 	/** \brief Store selection. */
 	void StoreSelection();
@@ -110,6 +118,10 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/
+	
+	
+protected:
+	void OnContextChanged() override;
 	
 	
 private:

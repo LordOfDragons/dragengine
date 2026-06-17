@@ -88,9 +88,8 @@ const igdeMetaContext::Ref &context, void *newValue, const char *undoInfo, const
 	}
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(
-const igdeMetaContext::Ref &context){
-	return igdeMetaPropertySelectionWidget::Ref::New(*this, context);
+igdeMetaPropertyWidget::Ref igdeMetaPropertySelection::CreateWidget(){
+	return igdeMetaPropertySelectionWidget::Ref::New(*this);
 }
 
 

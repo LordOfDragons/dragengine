@@ -44,7 +44,14 @@ public:
 	/*@{*/
 	/** \brief Create primitive value meta property storage. */
 	igdeMetaPropertyStoragePrimitive(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(property.GetDefaultValue()){
+	}
+	
+	/** \brief Create primitive value meta property storage with initial value. */
+	igdeMetaPropertyStoragePrimitive(P &property, const deTObjectReference<igdeMetaContext> &context, T initialValue) :
+	igdeMetaPropertyStorage<P>(property, context),
+	pValue(initialValue){
 	}
 	/*@}*/
 	
@@ -55,14 +62,16 @@ public:
 	inline T GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(T value){
+	void SetValue(T value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
 		
 		pValue = value;
 		igdeMetaPropertyStorage<P>::OnValueChanged();
-		igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
 	}
 	/*@}*/
 	
