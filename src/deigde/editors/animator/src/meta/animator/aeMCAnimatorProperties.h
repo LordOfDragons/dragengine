@@ -43,11 +43,18 @@ public:
 	deTObjectReference<aeMCPControllerVector> vector = deTObjectReference<aeMCPControllerVector>::New();
 	deTObjectReference<aeMCPControllerClamp> clamp = deTObjectReference<aeMCPControllerClamp>::New();
 	deTObjectReference<aeMCPControllerFrozen> frozen = deTObjectReference<aeMCPControllerFrozen>::New();
+	deTObjectReference<aeMCPControllerDefaultValue> defaultValue = deTObjectReference<aeMCPControllerDefaultValue>::New();
+	deTObjectReference<aeMCPControllerDefaultVector> defaultVector = deTObjectReference<aeMCPControllerDefaultVector>::New();
+	
 	deTObjectReference<aeMCPControllerLocomotionAttribute> locomotionAttribute = deTObjectReference<aeMCPControllerLocomotionAttribute>::New();
 	deTObjectReference<aeMCPControllerLocomotionLeg> locomotionLeg = deTObjectReference<aeMCPControllerLocomotionLeg>::New();
 	deTObjectReference<aeMCPControllerVectorSimulation> vectorSimulation = deTObjectReference<aeMCPControllerVectorSimulation>::New();
-	deTObjectReference<aeMCPControllerDefaultValue> defaultValue = deTObjectReference<aeMCPControllerDefaultValue>::New();
-	deTObjectReference<aeMCPControllerDefaultVector> defaultVector = deTObjectReference<aeMCPControllerDefaultVector>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupLocomotionTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"controller.groupLocomotionTesting", "@Animator.WPController.LocomotionTesting", "@Animator.WPController.LocomotionTesting.ToolTip",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			locomotionAttribute,
+			locomotionLeg,
+			vectorSimulation));
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		decTObjectOrderedSet<igdeMetaProperty>(devctag,
@@ -58,17 +65,15 @@ public:
 			vector,
 			clamp,
 			frozen,
-			locomotionAttribute,
-			locomotionLeg,
-			vectorSimulation,
 			defaultValue,
-			defaultVector)
+			defaultVector,
+			groupLocomotionTesting)
 	);
 	
 	deTObjectReference<aeMCPControllers> controllers = deTObjectReference<aeMCPControllers>::New();
 	deTObjectReference<aeMCPController> controller;
 	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.group.controllers", "@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip",
+		"animator.groupControllers", "@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip",
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, controllers, controller));
 	
 	aeMCControllerProperties(aeWindowMain &windowMain) :

@@ -173,6 +173,7 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Animator.WPController.DefaultVector">Default Vector:</translation>
 	<translation name="Animator.WPController.DefaultVector.ToolTip">Default vector value of controller</translation>
 	<translation name="Animator.WPController.LocomotionTesting">Locomotion Testing:</translation>
+	<translation name="Animator.WPController.LocomotionTesting.ToolTip">Locomotion testing</translation>
 	<translation name="Animator.WPController.Attribute">Attribute:</translation>
 	<translation name="Animator.WPController.Attribute.ToolTip">Selects the locomotion attribute affecting this controller</translation>
 	<translation name="Animator.WPController.Attribute.None">None</translation>

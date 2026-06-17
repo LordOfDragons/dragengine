@@ -166,6 +166,7 @@ entfernt, die ihn verwenden. Möchten Sie den Link entfernen?</translation>
 	<translation name="Animator.WPController.DefaultVector">Standardvektor:</translation>
 	<translation name="Animator.WPController.DefaultVector.ToolTip">Standard-Vektorwert des Controllers</translation>
 	<translation name="Animator.WPController.LocomotionTesting">Bewegungstests:</translation>
+	<translation name="Animator.WPController.LocomotionTesting.ToolTip">Bewegungstests</translation>
 	<translation name="Animator.WPController.Attribute">Attribut:</translation>
 	<translation name="Animator.WPController.Attribute.ToolTip">Wählt das Bewegungsattribut aus, das diesen Controller beeinflusst.</translation>
 	<translation name="Animator.WPController.Attribute.None">Keine</translation>
