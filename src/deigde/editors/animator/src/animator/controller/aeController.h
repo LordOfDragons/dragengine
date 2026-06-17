@@ -43,8 +43,6 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
-#include <optional>
-
 class aeWindowMain;
 class aeAnimator;
 class deAnimatorController;

@@ -98,7 +98,9 @@ animationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
 affectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
 affectedVertexPositionSets(pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets, pMetaContext),
 controllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContext),
-controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContext)
+controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContext),
+links(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContext),
+link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContext)
 {
 	deEngine * engine = GetEngine();
 	
@@ -199,6 +201,7 @@ controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaCon
 	});
 	
 	controllers.SetOnChanged([this](){
+		allowedListControllers = igdeMetaPropertyObjectType<aeController>::ObjectTypeList::New(controllers);
 		pUpdateLinks();
 		NotifyControllerStructureChanged();
 	});
@@ -212,6 +215,22 @@ controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaCon
 		NotifyActiveControllerChanged();
 		const auto &active = controllers.GetActive();
 		controller.SetValue(active ? active->GetMetaContext() : aeMCController::Ref());
+	});
+	
+	links.SetOnChanged([this](){
+		RebuildRules();
+		NotifyLinkStructureChanged();
+	});
+	links.SetOnObjectAdded([this](aeLink &each){
+		each.SetAnimator(this);
+	});
+	links.SetOnObjectRemoved([this](aeLink &each){
+		each.SetAnimator(nullptr);
+	});
+	links.SetOnActiveChanged([this](){
+		NotifyActiveLinkChanged();
+		const auto &active = links.GetActive();
+		link.SetValue(active ? active->GetMetaContext() : aeMCLink::Ref());
 	});
 	
 	SetSaved(false);
@@ -534,68 +553,32 @@ void aeAnimator::IncrementControllersWith(int locomotionAttribute, float increme
 // Links
 //////////
 
-void aeAnimator::AddLink(aeLink *link){
-	pLinks.AddOrThrow(link);
-	
-	link->SetAnimator(this);
-	NotifyLinkStructureChanged();
+void aeAnimator::AddLink(aeLink *alink){
+	auto list = links.GetValue();
+	list.AddOrThrow(alink);
+	links = list;
 }
 
-void aeAnimator::RemoveLink(aeLink *link){
-	const aeLink::Ref guard(link);
-	pLinks.RemoveOrThrow(link);
-	
-	if(pActiveLink == link){
-		pActiveLink.Clear();
-	}
-	
-	link->SetAnimator(nullptr);
-	
-	RebuildRules();
-	NotifyLinkStructureChanged();
+void aeAnimator::RemoveLink(aeLink *alink){
+	auto list = links.GetValue();
+	list.RemoveOrThrow(alink);
+	links = list;
 }
 
 void aeAnimator::RemoveAllLinks(){
-	if(pLinks.IsEmpty()){
-		return;
-	}
-	
-	SetActiveLink(nullptr);
-	
-	const int ruleCount = pRules.GetCount();
-	int i;
-	for(i=0; i<ruleCount; i++){
-		pRules.GetAt(i)->RemoveLinksFromAllTargets();
-	}
-	
-	const int count = pLinks.GetCount();
-	for(i=0; i<count; i++){
-		pLinks.GetAt(i)->SetAnimator(nullptr);
-	}
-	pLinks.RemoveAll();
-	
-	RebuildRules();
-	NotifyLinkStructureChanged();
+	links = {};
 }
 
-void aeAnimator::SetActiveLink(aeLink *link){
-	if(link == pActiveLink){
-		return;
-	}
-	
-	pActiveLink = link;
-	NotifyActiveLinkChanged();
+void aeAnimator::SetActiveLink(aeLink *alink){
+	links.SetActive(alink);
 }
 
-int aeAnimator::CountLinkUsage(aeLink *link) const{
-	const int ruleCount = pRules.GetCount();
-	int i, usageCount = 0;
-	
-	for(i=0; i<ruleCount; i++){
-		usageCount += pRules.GetAt(i)->CountLinkUsage(link);
-	}
-	
-	return usageCount;
+int aeAnimator::CountLinkUsage(aeLink *alink) const{
+	int count = 0;
+	pRules.Visit([&](const aeRule &rule){
+		count += rule.CountLinkUsage(alink);
+	});
+	return count;
 }
 
 
@@ -951,23 +934,23 @@ void aeAnimator::NotifyControllerStructureChanged(){
 
 void aeAnimator::NotifyActiveLinkChanged(){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ActiveLinkChanged(this, pActiveLink);
+		listener->ActiveLinkChanged(this, links.GetActive());
 	});
 }
 
-void aeAnimator::NotifyLinkChanged(aeLink *link){
-	DEASSERT_NOTNULL(link)
+void aeAnimator::NotifyLinkChanged(aeLink *alink){
+	DEASSERT_NOTNULL(alink)
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->LinkChanged(this, link);
+		listener->LinkChanged(this, alink);
 	});
 	
 	SetChanged(true);
 }
 
-void aeAnimator::NotifyLinkNameChanged(aeLink *link){
-	DEASSERT_NOTNULL(link)
+void aeAnimator::NotifyLinkNameChanged(aeLink *alink){
+	DEASSERT_NOTNULL(alink)
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->LinkNameChanged(this, link);
+		listener->LinkNameChanged(this, alink);
 	});
 	
 	SetChanged(true);
@@ -1296,11 +1279,9 @@ void aeAnimator::pUpdateAnimator(){
 }
 
 void aeAnimator::pUpdateLinks(){
-	const int count = pLinks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pLinks.GetAt(i)->UpdateController();
-	}
+	links.GetValue().Visit([](aeLink &each){
+		each.UpdateController();
+	});
 	RebuildRules();
 }
 

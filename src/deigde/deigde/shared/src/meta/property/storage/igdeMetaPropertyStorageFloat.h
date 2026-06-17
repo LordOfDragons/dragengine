@@ -139,6 +139,12 @@ public:
 		return *this;
 	}
 	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageFloat<P> &operator=(const igdeMetaPropertyStorageFloat<P> &other){
+		SetValue(other.GetValue());
+		return *this;
+	}
+	
 	/** \brief Value is equal. */
 	bool operator==(float value) const{
 		return pValue == value;

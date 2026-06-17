@@ -98,12 +98,19 @@ public:
 			return;
 		}
 		
-		const auto values = pSelection ? property.GetSelection(context)
-			: property.GetPropertyValue(context);
-		
-		if(values.IsNotEmpty()){
-			clipboard->Set(igdeMetaPropertySet::ClipboardData::Ref::New(values));
+		const auto values = pSelection ? property.GetSelection(context) : property.GetPropertyValue(context);
+		igdeMetaPropertySet::Set copiedValues;
+		values.Visit([&](const deObject::Ref &object){
+			const auto copiedObject = property.CopyObject(context, copiedValues, object);
+			if(copiedObject){
+				copiedValues.Add(copiedObject);
+			}
+		});
+		if(copiedValues.IsEmpty()){
+			return;
 		}
+		
+		clipboard->Set(igdeMetaPropertySet::ClipboardData::Ref::New(copiedValues));
 	}
 };
 
@@ -157,7 +164,14 @@ public:
 		}
 		
 		const auto oldData = property.GetPropertyValue(context);
-		const auto newData = pAppend ? oldData + clip->GetData() : clip->GetData();
+		auto newData = pAppend ? oldData : igdeMetaPropertySet::Set();
+		clip->GetData().Visit([&](const deObject::Ref &object){
+			const auto copiedObject = property.CopyObject(context, newData, object);
+			if(copiedObject){
+				newData.Add(copiedObject);
+			}
+		});
+		
 		if(oldData == newData){
 			return;
 		}
@@ -353,6 +367,7 @@ void igdeMetaPropertySetWidget::SelectActiveObject(){
 	}
 	
 	pListBox->SetSelectionWithRefData(pPropertySet.GetActiveObject(GetContext()));
+	pListBox->MakeSelectionVisible();
 }
 
 void igdeMetaPropertySetWidget::StoreActiveObject(){

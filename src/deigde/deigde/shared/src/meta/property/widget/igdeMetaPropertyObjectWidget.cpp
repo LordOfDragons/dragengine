@@ -53,8 +53,7 @@ public:
 		
 		const auto &context = pWidget.GetContext();
 		auto &property = pWidget.GetPropertyObject();
-		const auto &oldValue = property.GetPropertyValue(context);
-		if(newValue == oldValue){
+		if(newValue == property.GetPropertyValue(context)){
 			return;
 		}
 		
@@ -201,8 +200,18 @@ igdeMetaPropertyObject*, const igdeMetaContext::Ref &context){
 	}
 }
 
-void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectsChanged(igdeMetaPropertyObject*){
-	pWidget.UpdateObjectList();
+void igdeMetaPropertyObjectWidget::PropertyListener::OnAllowedObjectsChanged(
+igdeMetaPropertyObject*, const igdeMetaContext::Ref &context){
+	if(!context || pWidget.GetContext() == context){
+		pWidget.UpdateObjectList();
+	}
+}
+
+void igdeMetaPropertyObjectWidget::PropertyListener::OnObjectItemInfoChanged(
+igdeMetaPropertyObject*, const igdeMetaContext::Ref &context){
+	if(!context || pWidget.GetContext() == context){
+		pWidget.UpdateItemInfo();
+	}
 }
 
 
@@ -234,11 +243,13 @@ void igdeMetaPropertyObjectWidget::Create(igdeContainer &container, igdeUIHelper
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ComboBoxFilter(15, 10, false, pPropertyObject.GetDescription(), pComboBox, pListener);
+	if(pPropertyObject.GetSorted()){
+		pComboBox->SetDefaultSorter();
+	}
+	pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
 	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
 	UpdateMatchable(container);
-	
-	UpdateObjectList();
 }
 
 void igdeMetaPropertyObjectWidget::Drop(){
@@ -246,9 +257,42 @@ void igdeMetaPropertyObjectWidget::Drop(){
 		pComboBox->RemoveListener(pListener);
 	}
 	
+	pAllowedObjects.Clear();
 	pListener.Clear();
 	pComboBox.Clear();
 	igdeMetaPropertyWidget::Drop();
+}
+
+void igdeMetaPropertyObjectWidget::SetAllowedObjects(const igdeMetaPropertyObject::ObjectList &objects){
+	if(pAllowedObjects == objects || !pComboBox){
+		return;
+	}
+	
+	pAllowedObjects = objects;
+	
+	RunWithPreventUpdate([&]{
+		pComboBox->RemoveAllItems();
+		pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
+		if(pPropertyObject.IsValid(GetContext())){
+			const auto &context = GetContext();
+			if(objects && objects->GetData().IsNotEmpty()){
+				igdeMetaContextItemInfo info;
+				objects->GetData().Visit([&](const deObject::Ref &object){
+					pPropertyObject.GetObjectItemInfo(context, object, info);
+					auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
+					item->SetRefData(object);
+					pComboBox->AddItem(item);
+				});
+				
+				if(pPropertyObject.GetSorted()){
+					pComboBox->SortItems();
+				}
+				pComboBox->StoreFilterItems();
+			}
+			
+			pComboBox->SetSelectionWithRefData(pPropertyObject.GetPropertyValue(context));
+		}
+	});
 }
 
 void igdeMetaPropertyObjectWidget::Update(){
@@ -265,27 +309,52 @@ void igdeMetaPropertyObjectWidget::Update(){
 }
 
 void igdeMetaPropertyObjectWidget::UpdateObjectList(){
+	SetAllowedObjects(pPropertyObject.IsValid(GetContext())
+		? pPropertyObject.GetPropertyAllowedObjects(GetContext())
+		: igdeMetaPropertyObject::ObjectList());
+}
+
+void igdeMetaPropertyObjectWidget::UpdateItemInfo(){
 	if(!pComboBox){
 		return;
 	}
 	
-	RunWithPreventUpdate([&]{
-		pComboBox->RemoveAllItems();
-		if(pPropertyObject.IsValid(GetContext())){
-			const auto &context = GetContext();
-			const auto &objects = pPropertyObject.GetObjects();
-			igdeMetaContextItemInfo info;
-			objects.Visit([&](const deObject::Ref &object){
-				pPropertyObject.GetObjectItemInfo(context, object, info);
-				auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
-				item->SetRefData(object);
-				pComboBox->AddItem(item);
-			});
-			pComboBox->StoreFilterItems();
-			
-			pComboBox->SetSelectionWithRefData(pPropertyObject.GetPropertyValue(context));
+	const auto &context = GetContext();
+	const bool valid = pPropertyObject.IsValid(context);
+	if(!valid){
+		return;
+	}
+	
+	igdeMetaContextItemInfo info;
+	bool requiresSorting = false;
+	
+	pComboBox->GetItems().VisitIndexed([&](int index, igdeListItem &item){
+		const auto &object = item.GetRefData();
+		if(!object){
+			return;
 		}
+		
+		pPropertyObject.GetObjectItemInfo(context, object, info);
+		
+		const auto &text = info.GetText();
+		const auto &icon = info.GetIcon();
+		const auto &description = info.GetDescription();
+		if(item.GetText() == text && item.GetIcon() == icon && item.GetDescription() == description){
+			return;
+		}
+		
+		requiresSorting |= item.GetText() != text;
+		
+		item.SetText(text);
+		item.SetIcon(icon);
+		item.SetDescription(description);
+		pComboBox->ItemChangedAt(index);
 	});
+	
+	if(pPropertyObject.GetSorted() && requiresSorting){
+		pComboBox->SortItems();
+	}
+	pComboBox->StoreFilterItems();
 }
 
 void igdeMetaPropertyObjectWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -313,4 +382,5 @@ void igdeMetaPropertyObjectWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 
 void igdeMetaPropertyObjectWidget::OnContextChanged(){
 	Update();
+	UpdateObjectList();
 }

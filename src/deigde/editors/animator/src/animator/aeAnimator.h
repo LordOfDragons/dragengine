@@ -53,6 +53,7 @@
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
+#include <deigde/meta/property/igdeMetaPropertyObject.h>
 
 
 // predefinitions
@@ -144,11 +145,14 @@ public:
 	igdeMetaPropertyListTypeStorage<aeController, aeController::List>::Storage controllers;
 	igdeMetaPropertyContextStorage::Storage controller;
 	
+	igdeMetaPropertyListTypeStorage<aeLink, aeLink::List>::Storage links;
+	igdeMetaPropertyContextStorage::Storage link;
+	
+	igdeMetaPropertyObjectType<aeController>::ObjectTypeList allowedListControllers;
+	
+	
 private:
 	aeCamera *pCamera;
-	
-	aeLink::List pLinks;
-	aeLink::Ref pActiveLink;
 	
 	aeRule::List pRules;
 	aeRule::Ref pActiveRule;
@@ -345,7 +349,7 @@ public:
 	/** \name Links */
 	/*@{*/
 	/** Links. */
-	inline const aeLink::List &GetLinks() const{ return pLinks; }
+	inline const aeLink::List &GetLinks() const{ return links; }
 	
 	/** Add link. */
 	void AddLink(aeLink *link);
@@ -357,7 +361,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** Active link or nullptr. */
-	inline const aeLink::Ref &GetActiveLink() const{ return pActiveLink; }
+	inline const aeLink::Ref &GetActiveLink() const{ return links.GetActive(); }
 	
 	/** Set active link or nullptr. */
 	void SetActiveLink(aeLink *link);

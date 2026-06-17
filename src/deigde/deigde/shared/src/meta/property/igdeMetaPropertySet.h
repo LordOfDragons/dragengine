@@ -255,6 +255,16 @@ public:
 	virtual Set GetValidObjects(const ContextRef &context) const;
 	
 	/**
+	 * \brief Create copy of object if possible.
+	 * 
+	 * Subclass can override this method to create a copy of the object. The set parameter
+	 * contains all existing objects. This set can be used to enforce rules, for example unique
+	 * name or limit counts. If nullptr is returned the object cannot be copied.
+	 */
+	virtual ObjectRef CopyObject(const ContextRef &context, const Set &existingObjects,
+		const ObjectRef &object) const;
+	
+	/**
 	 * \brief Create action for target button.
 	 * 
 	 * Subclasses can override this method to create button action. If nullptr is returned
@@ -380,6 +390,11 @@ public:
 		GetObjectItemInfoType(context, object.DynamicCast<T>(), info);
 	}
 	
+	ObjectRef CopyObject(const ContextRef &context, const Set &existingObjects,
+	const ObjectRef &object) const override{
+		return CopyObjectType(context, ConvertSet(existingObjects), object.DynamicCast<T>());
+	}
+	
 	
 	/**
 	 * \brief Get property value matching context.
@@ -424,6 +439,18 @@ public:
 	 */
 	virtual void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object,
 		igdeMetaContextItemInfo &info) const = 0;
+	
+	/**
+	 * \brief Create copy of object if possible.
+	 * 
+	 * Subclass can override this method to create a copy of the object. The set parameter
+	 * contains all existing objects. This set can be used to enforce rules, for example unique
+	 * name or limit counts. If nullptr is returned the object cannot be copied.
+	 */
+	virtual ObjectTypeRef CopyObjectType(const ContextRef &context,
+	const SetType &existingObjects, const ObjectTypeRef &object) const{
+		return {};
+	}
 	/*@}*/
 };
 

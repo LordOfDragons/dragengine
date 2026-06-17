@@ -32,7 +32,32 @@
 // Class igdeMetaPropertyObject::Listener
 ///////////////////////////////////////////
 
-void igdeMetaPropertyObject::Listener::OnObjectsChanged(igdeMetaPropertyObject*){
+void igdeMetaPropertyObject::Listener::OnAllowedObjectsChanged(
+igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
+}
+
+void igdeMetaPropertyObject::Listener::OnObjectItemInfoChanged(
+igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
+}
+
+
+// Class igdeMetaPropertyObject::ListPropertyListener
+///////////////////////////////////////////////////////
+
+igdeMetaPropertyObject::ListChangedListener::ListChangedListener(igdeMetaPropertyObject &property) :
+pProperty(property){
+}
+
+igdeMetaPropertyObject::ListChangedListener::~ListChangedListener() = default;
+
+void igdeMetaPropertyObject::ListChangedListener::OnValueChanged(
+igdeMetaPropertyList*, const ContextRef &context){
+	pProperty.NotifyAllowedObjectsChanged({});
+}
+
+void igdeMetaPropertyObject::ListChangedListener::OnObjectItemInfoChanged(
+igdeMetaPropertyList*, const ContextRef &context){
+	pProperty.NotifyObjectItemInfoChanged({});
 }
 
 
@@ -57,18 +82,27 @@ void igdeMetaPropertyObject::SetDefaultValue(const ObjectRef &value){
 	pDefaultValue = value;
 }
 
+void igdeMetaPropertyObject::SetSorted(bool sorted){
+	pSorted = sorted;
+}
+
 void igdeMetaPropertyObject::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
 }
 
-void igdeMetaPropertyObject::NotifyObjectsChanged(){
+void igdeMetaPropertyObject::NotifyAllowedObjectsChanged(const ContextRef &context){
 	pListeners.Notify([&](Listener &listener){
-		listener.OnObjectsChanged(this);
+		listener.OnAllowedObjectsChanged(this, context);
 	});
 }
 
+void igdeMetaPropertyObject::NotifyObjectItemInfoChanged(const ContextRef &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnObjectItemInfoChanged(this, context);
+	});
+}
 
 igdeMetaPropertyObjectUndo::Ref igdeMetaPropertyObject::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const deObject::Ref &newValue,
@@ -87,25 +121,4 @@ const char *undoInfo, const char *undoInfoLong){
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyObject::CreateWidget(){
 	return igdeMetaPropertyObjectWidget::Ref::New(*this);
-}
-
-
-// igdeMetaPropertyObjectStorage
-///////////////////////////////////
-
-igdeMetaPropertyObjectStorage::igdeMetaPropertyObjectStorage(
-	const char *id, const char *name, const char *description) :
-igdeMetaPropertyObject(id, name, description){
-}
-
-igdeMetaPropertyObjectStorage::~igdeMetaPropertyObjectStorage() = default;
-
-const deObject::Ref &igdeMetaPropertyObjectStorage::GetPropertyValue(
-const igdeMetaContext::Ref &context) const{
-	return GetStorage(context).GetValue();
-}
-
-void igdeMetaPropertyObjectStorage::SetPropertyValue(
-const igdeMetaContext::Ref &context, const deObject::Ref &value){
-	GetStorage(context).SetValue(value);
 }

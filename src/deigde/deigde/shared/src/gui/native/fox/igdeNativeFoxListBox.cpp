@@ -256,9 +256,9 @@ void igdeNativeFoxListBox::SetContentPosition(const decPoint &position){
 }
 
 void igdeNativeFoxListBox::MakeItemVisible(int index){
-	if(!pListBox->isItemVisible(index)){
+	// if(!pListBox->isItemVisible(index)){
 		pListBox->makeItemVisible(index);
-	}
+	// }
 }
 
 void igdeNativeFoxListBox::InsertItem(int index){

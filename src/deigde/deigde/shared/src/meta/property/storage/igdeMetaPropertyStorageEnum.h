@@ -87,6 +87,12 @@ public:
 		return *this;
 	}
 	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageEnum<T, P> &operator=(const igdeMetaPropertyStorageEnum<T, P> &other){
+		SetValue(other.GetValue());
+		return *this;
+	}
+	
 	/** \brief Value is equal. */
 	inline bool operator==(T value) const{ return pValue == value; }
 	/*@}*/

@@ -207,6 +207,12 @@ public:
 		return *this;
 	}
 	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageList<T, P, ListType> &operator=(const igdeMetaPropertyStorageList<T, P, ListType> &other){
+		SetValue(other.GetValue());
+		return *this;
+	}
+	
 	/** \brief Value is equal. */
 	bool operator==(const ListType &value) const{
 		return pValue == value;

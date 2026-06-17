@@ -43,7 +43,7 @@ pLink(link)
 {
 	SetLabel("Link");
 	SetDescription("Link properties");
-	// SetProperties(windowMain.GetMCAnimatorProperties().link.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().link.metaProperties);
 }
 
 aeMCLink::~aeMCLink() = default;

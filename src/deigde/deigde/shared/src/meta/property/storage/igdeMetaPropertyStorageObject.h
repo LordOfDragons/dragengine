@@ -22,34 +22,34 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYSTORAGECOMPLEX_H_
-#define _IGDEMETAPROPERTYSTORAGECOMPLEX_H_
+#ifndef _IGDEMETAPROPERTYSTORAGEOBJECT_H_
+#define _IGDEMETAPROPERTYSTORAGEOBJECT_H_
 
 #include "igdeMetaPropertyStorage.h"
 
 
 /**
- * \brief Complex meta property storage.
+ * \brief Object meta property storage.
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
 template<typename T, typename P>
-class igdeMetaPropertyStorageComplex : public igdeMetaPropertyStorage<P>{
+class igdeMetaPropertyStorageObject : public igdeMetaPropertyStorage<P>{
 private:
-	T pValue = {};
+	P::ObjectTypeRef pValue;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create complex meta property storage. */
-	igdeMetaPropertyStorageComplex(P &property, const deTObjectReference<igdeMetaContext> &context) :
+	/** \brief Create object meta property storage. */
+	igdeMetaPropertyStorageObject(P &property, const deTObjectReference<igdeMetaContext> &context) :
 	igdeMetaPropertyStorage<P>(property, context),
-	pValue(property.GetDefaultValue()){
+	pValue(property.GetDefaultValueType()){
 	}
 	
-	/** \brief Create complex meta property storage with initial value. */
-	igdeMetaPropertyStorageComplex(P &property, const deTObjectReference<igdeMetaContext> &context, const T &initialValue) :
+	/** \brief Create object meta property storage with initial value. */
+	igdeMetaPropertyStorageObject(P &property, const deTObjectReference<igdeMetaContext> &context, const T &initialValue) :
 	igdeMetaPropertyStorage<P>(property, context),
 	pValue(initialValue){
 	}
@@ -59,10 +59,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get value. */
-	inline const T &GetValue() const{ return pValue; }
+	inline const P::ObjectTypeRef &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const T &value, bool notify = true){
+	void SetValue(const P::ObjectTypeRef &value, bool notify = true){
+		if(pValue == value){
+			return;
+		}
+		
+		pValue = value;
+		igdeMetaPropertyStorage<P>::OnValueChanged();
+		if(notify){
+			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
+		}
+	}
+	
+	/** \brief Set value. */
+	void SetValue(T *value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
@@ -79,24 +92,40 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Implicit conversion operator. */
-	operator const T&() const{
+	operator const P::ObjectTypeRef&() const{
+		return GetValue();
+	}
+	
+	/** \brief Implicit conversion operator. */
+	operator T*() const{
 		return GetValue();
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageComplex<T, P> &operator=(const T &value){
+	igdeMetaPropertyStorageObject<T, P> &operator=(const P::ObjectTypeRef &value){
 		SetValue(value);
 		return *this;
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageComplex<T, P> &operator=(const igdeMetaPropertyStorageComplex<T, P> &other){
+	igdeMetaPropertyStorageObject<T, P> &operator=(T*value){
+		SetValue(value);
+		return *this;
+	}
+	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageObject<T, P> &operator=(const igdeMetaPropertyStorageObject<T, P> &other){
 		SetValue(other.GetValue());
 		return *this;
 	}
 	
 	/** \brief Value is equal. */
-	bool operator==(const T &value) const{
+	bool operator==(const P::ObjectTypeRef &value) const{
+		return pValue == value;
+	}
+	
+	/** \brief Value is equal. */
+	bool operator==(T *value) const{
 		return pValue == value;
 	}
 	

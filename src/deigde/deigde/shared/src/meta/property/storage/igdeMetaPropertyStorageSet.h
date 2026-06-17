@@ -171,6 +171,12 @@ public:
 		return *this;
 	}
 	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageSet<T, P> &operator=(const igdeMetaPropertyStorageSet<T, P> &other){
+		SetValue(other.GetValue());
+		return *this;
+	}
+	
 	/** \brief Value is equal. */
 	bool operator==(const typename P::SetType &value) const{
 		return pValue == value;

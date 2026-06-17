@@ -748,4 +748,5 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name='Igde.MetaPropertyList.Action.CopySelection.ToolTip'>Ausgewählten Wert in die Zwischenablage kopieren</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend'>Einfügen und Anhängen</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend.ToolTip'>Aus der Zwischenablage einfügen und anhängen</translation>
+	<translation name='Igde.MetaPropertyList.ListEntry.None'>&lt;Nichts&gt;</translation>
 </languagePack>

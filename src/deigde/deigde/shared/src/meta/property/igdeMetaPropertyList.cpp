@@ -44,15 +44,15 @@ struct sSortEntry{
 /////////////////////////////////////////
 
 void igdeMetaPropertyList::Listener::OnActiveChanged(
-igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+igdeMetaPropertyList*, const ContextRef&){
 }
 
 void igdeMetaPropertyList::Listener::OnSelectionChanged(
-igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+igdeMetaPropertyList*, const ContextRef&){
 }
 
 void igdeMetaPropertyList::Listener::OnObjectItemInfoChanged(
-igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+igdeMetaPropertyList*, const ContextRef&){
 }
 
 
@@ -60,7 +60,7 @@ igdeMetaPropertyList*, const igdeMetaContext::Ref&){
 /////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionRemove::ActionRemove(igdeMetaPropertyList &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeWidget &owner, const ContextRef &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.Remove",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Igde.MetaPropertyList.Action.Remove.ToolTip"),
@@ -109,7 +109,7 @@ void igdeMetaPropertyList::ActionRemove::Update(){
 ////////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionRemoveAll::ActionRemoveAll(igdeMetaPropertyList &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeWidget &owner, const ContextRef &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.RemoveAll",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 	"@Igde.MetaPropertyList.Action.RemoveAll.ToolTip"),
@@ -133,7 +133,7 @@ void igdeMetaPropertyList::ActionRemoveAll::Update(){
 /////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveUp::ActionMoveUp(igdeMetaPropertyList &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeWidget &owner, const ContextRef &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.MoveUp",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 	"@Igde.MetaPropertyList.Action.MoveUp.ToolTip"),
@@ -237,7 +237,7 @@ void igdeMetaPropertyList::ActionMoveUp::SetTop(bool top){
 //////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveTop::ActionMoveTop(igdeMetaPropertyList &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeWidget &owner, const ContextRef &context) :
 ActionMoveUp(property, owner, context)
 {
 	SetText("@Igde.MetaPropertyList.Action.MoveTop");
@@ -251,7 +251,7 @@ ActionMoveUp(property, owner, context)
 ///////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveDown::ActionMoveDown(igdeMetaPropertyList &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeWidget &owner, const ContextRef &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.MoveDown",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 	"@Igde.MetaPropertyList.Action.MoveDown.ToolTip"),
@@ -358,7 +358,7 @@ void igdeMetaPropertyList::ActionMoveDown::SetBottom(bool bottom){
 /////////////////////////////////////////////////
 
 igdeMetaPropertyList::ActionMoveBottom::ActionMoveBottom(igdeMetaPropertyList &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeWidget &owner, const ContextRef &context) :
 ActionMoveDown(property, owner, context)
 {
 	SetText("@Igde.MetaPropertyList.Action.MoveBottom");
@@ -376,9 +376,7 @@ ActionMoveDown(property, owner, context)
 
 igdeMetaPropertyList::igdeMetaPropertyList(
 	const char *id, const char *name, const char *description) :
-igdeMetaProperty(id, name, description),
-pRows(4),
-pMultiSelection(false){
+igdeMetaProperty(id, name, description){
 }
 
 igdeMetaPropertyList::~igdeMetaPropertyList() = default;
@@ -395,25 +393,29 @@ void igdeMetaPropertyList::SetMultiSelection(bool multiSelection){
 	pMultiSelection = multiSelection;
 }
 
-void igdeMetaPropertyList::NotifyValueChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyList::SetSorted(bool sorted){
+	pSorted = sorted;
+}
+
+void igdeMetaPropertyList::NotifyValueChanged(const ContextRef &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
 }
 
-void igdeMetaPropertyList::NotifyActiveChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyList::NotifyActiveChanged(const ContextRef &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnActiveChanged(this, context);
 	});
 }
 
-void igdeMetaPropertyList::NotifySelectionChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyList::NotifySelectionChanged(const ContextRef &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnSelectionChanged(this, context);
 	});
 }
 
-void igdeMetaPropertyList::NotifyObjectItemInfoChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyList::NotifyObjectItemInfoChanged(const ContextRef &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnObjectItemInfoChanged(this, context);
 	});
@@ -421,7 +423,7 @@ void igdeMetaPropertyList::NotifyObjectItemInfoChanged(const igdeMetaContext::Re
 
 
 igdeMetaPropertyListUndo::Ref igdeMetaPropertyList::ChangePropertyValue(
-const igdeMetaContext::Ref &context, const List &newValue,
+const ContextRef &context, const List &newValue,
 const char *undoInfo, const char *undoInfoLong){
 	if(context->GetUndoSystem()){
 		const auto undo = igdeMetaPropertyListUndo::Ref::New(
@@ -435,13 +437,12 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyList::List igdeMetaPropertyList::GetSelection(
-const igdeMetaContext::Ref &context) const{
+igdeMetaPropertyList::List igdeMetaPropertyList::GetSelection(const ContextRef &context) const{
 	auto active = GetActiveObject(context);
 	return active ? List(devctag, active) : List();
 }
 
-void igdeMetaPropertyList::SetSelection(const igdeMetaContext::Ref &context, const List &selection){
+void igdeMetaPropertyList::SetSelection(const ContextRef &context, const List &selection){
 }
 
 igdeMetaProperty::Action::Ref igdeMetaPropertyList::CreateButtonAction(TargetButton, igdeWidget&){
@@ -453,12 +454,17 @@ const ContextRef &context, igdeWidget &owner){
 	AddDefaultContextMenuEntries(contextMenu, context, owner);
 }
 
+igdeMetaPropertyList::ObjectRef igdeMetaPropertyList::CopyObject(
+const ContextRef &context, const List &existingObjects, const ObjectRef &object) const{
+	return {};
+}
+
 igdeMetaPropertyWidget::Ref igdeMetaPropertyList::CreateWidget(){
 	return igdeMetaPropertyListWidget::Ref::New(*this);
 }
 
 void igdeMetaPropertyList::AddDefaultContextMenuEntries(igdeMenuCascade &menu,
-const igdeMetaContext::Ref &context, igdeWidget &owner){
+const ContextRef &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	
 	if(menu.GetChildren().IsNotEmpty()){

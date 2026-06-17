@@ -89,6 +89,12 @@ public:
 		return *this;
 	}
 	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageComplexIsEqualTo<T, P> &operator=(const igdeMetaPropertyStorageComplexIsEqualTo<T, P> &other){
+		SetValue(other.GetValue());
+		return *this;
+	}
+	
 	/** \brief Value is equal. */
 	bool operator==(const T &value) const{
 		return pValue.IsEqualTo(value);

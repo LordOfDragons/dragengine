@@ -115,6 +115,12 @@ public:
 		return *this;
 	}
 	
+	/** \brief Assignment operator. */
+	igdeMetaPropertyStorageString<P> &operator=(const igdeMetaPropertyStorageString<P> &other){
+		SetValue(other.GetValue());
+		return *this;
+	}
+	
 	/** \brief Value is equal. */
 	bool operator==(const decString &value) const{
 		return pValue == value;

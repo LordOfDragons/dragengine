@@ -353,14 +353,13 @@ void igdeMetaPropertyStringSetWidget::SelectActiveString(){
 		return;
 	}
 	
-	RunWithPreventUpdate([&]{
-		const auto active = pPropertyStringSet.GetActiveString(GetContext());
-		if(active){
-			pListBox->SetSelection(pListBox->GetItems().IndexOfMatching([&](const igdeListItem &item){
-				return item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData() == active->GetData();
-			}));
-		}
-	});
+	const auto active = pPropertyStringSet.GetActiveString(GetContext());
+	if(active){
+		pListBox->SetSelection(pListBox->GetItems().IndexOfMatching([&](const igdeListItem &item){
+			return item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData() == active->GetData();
+		}));
+	}
+	pListBox->MakeSelectionVisible();
 }
 
 void igdeMetaPropertyStringSetWidget::StoreActiveString(){

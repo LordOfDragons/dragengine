@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "aeClipboardDataLink.h"
+#include "../animator/aeAnimator.h"
 #include "../animator/link/aeLink.h"
 
 #include <dragengine/common/exceptions.h>
@@ -45,14 +46,14 @@ const char * const aeClipboardDataLink::TYPE_NAME = "link";
 aeClipboardDataLink::aeClipboardDataLink(aeLink *link) :
 igdeClipboardData(TYPE_NAME)
 {
-	pLinks.Add(aeLink::Ref::New(*link));
+	pLinks.Add(aeLink::Ref::New(link->GetAnimator()->GetWindowMain(), *link));
 }
 
 aeClipboardDataLink::aeClipboardDataLink(const aeLink::List &links) :
 igdeClipboardData(TYPE_NAME)
 {
 	links.Visit([&](const aeLink &link){
-		pLinks.Add(aeLink::Ref::New(link));
+		pLinks.Add(aeLink::Ref::New(link.GetAnimator()->GetWindowMain(), link));
 	});
 }
 

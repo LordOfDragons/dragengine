@@ -157,6 +157,8 @@ entfernt, die ihn verwenden. Möchten Sie den Link entfernen?</translation>
 	<translation name="Animator.WPController.ValueSetToUpper.ToolTip">Wert auf Controller-Maximum setzen</translation>
 	<translation name="Animator.WPController.ValueSetToCenter">Auf Mitte setzen</translation>
 	<translation name="Animator.WPController.ValueSetToCenter.ToolTip">Wert auf Controller-Mitte setzen</translation>
+	<translation name="Animator.WPController.ValueSetRandom">Auf Zufall setzen</translation>
+	<translation name="Animator.WPController.ValueSetRandom.ToolTip">Wert auf einen zufälligen Wert innerhalb des Controller-Bereichs setzen</translation>
 	<translation name="Animator.WPController.Clamp">Wert auf Bereich begrenzen</translation>
 	<translation name="Animator.WPController.Clamp.ToolTip">Legt fest, ob der Wert des Controllers auf den angegebenen Bereich begrenzt wird.</translation>
 	<translation name="Animator.WPController.Frozen">Wert einfrieren</translation>
@@ -245,6 +247,7 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPLink.WrapY">Endlos Y</translation>
 	<translation name="Animator.WPLink.WrapY.ToolTip">Y-Wert beginnt von vorne anstatt auf den Bereich begrenzt zu werden</translation>
 	<translation name="Animator.WPLink.LinkCurve">Link-Kurve:</translation>
+	<translation name="Animator.WPLink.LinkCurve.ToolTip">Link-Kurve</translation>
 	<translation name="Animator.WPLink.Action.Copy">Kopieren</translation>
 	<translation name="Animator.WPLink.Action.Copy.ToolTip">Link in die Zwischenablage kopieren</translation>
 	<translation name="Animator.WPLink.Action.Cut">Ausschneiden</translation>

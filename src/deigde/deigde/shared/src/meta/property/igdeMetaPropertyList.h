@@ -27,6 +27,7 @@
 
 #include "igdeMetaProperty.h"
 #include "storage/igdeMetaPropertyStorageList.h"
+#include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/event/igdeAction.h"
 #include "../../gui/model/igdeListItem.h"
 
@@ -63,6 +64,23 @@ public:
 		
 		/** \brief Move entry down. */
 		moveDown
+	};
+	
+	
+	/** \brief Clipboard data. */
+	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<List>{
+	public:
+		using Ref = deTObjectReference<ClipboardData>;
+		
+		/** \brief Type name. */
+		static constexpr const char *TypeName = "MetaProperty.List";
+		
+		explicit inline ClipboardData(const List &value) : igdeTClipboardData<List>(TypeName, value){}
+		explicit inline ClipboardData(List &&value) : igdeTClipboardData<List>(TypeName, value){}
+		
+	protected:
+		/** \brief Clean up object. */
+		~ClipboardData() override = default;
 	};
 	
 	
@@ -158,8 +176,9 @@ public:
 	
 	
 private:
-	int pRows;
-	bool pMultiSelection;
+	int pRows = 4;
+	bool pMultiSelection = false;
+	bool pSorted = false;
 	igdeTListenerList<Listener> pListeners;
 	
 	
@@ -191,6 +210,12 @@ public:
 	
 	/** \brief Set multi selection. */
 	void SetMultiSelection(bool multiSelection);
+	
+	/** \brief Sorted. */
+	inline bool GetSorted() const{ return pSorted; }
+	
+	/** \brief Set sorted. */
+	void SetSorted(bool sorted);
 	
 	
 	/** \brief Listeners. */
@@ -289,6 +314,15 @@ public:
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
 		const ContextRef &context, igdeWidget &owner) override;
 	
+	/**
+	 * \brief Create copy of object if possible.
+	 * 
+	 * Subclass can override this method to create a copy of the object. The list parameter
+	 * contains all existing objects. This list can be used to enforce rules, for example unique
+	 * name or limit counts. If nullptr is returned the object cannot be copied.
+	 */
+	virtual ObjectRef CopyObject(const ContextRef &context, const List &existingObjects,
+		const ObjectRef &object) const;
 	
 	/**
 	 * \brief Create UI widget.
@@ -321,7 +355,7 @@ public:
 
 
 /**
- * \brief List meta property with deObject type.
+ * \brief Typed list meta property.
  */
 template<typename T, typename ListType = decTObjectOrderedSet<T>>
 class igdeMetaPropertyListType : public igdeMetaPropertyList{
@@ -405,10 +439,15 @@ public:
 		SetSelectionType(context, ConvertList(selection));
 	}
 	
-	void GetObjectItemInfo(const ContextRef &context, const ObjectRef &object, igdeMetaContextItemInfo &info) const override{
+	void GetObjectItemInfo(const ContextRef &context, const ObjectRef &object,
+	igdeMetaContextItemInfo &info) const override{
 		GetObjectItemInfoType(context, object.DynamicCast<T>(), info);
 	}
 	
+	ObjectRef CopyObject(const ContextRef &context, const List &existingObjects,
+	const ObjectRef &object) const override{
+		return CopyObjectType(context, ConvertList(existingObjects), object.DynamicCast<T>());
+	}
 	
 	/**
 	 * \brief Get property value matching context.
@@ -453,6 +492,18 @@ public:
 	 */
 	virtual void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object,
 		igdeMetaContextItemInfo &info) const = 0;
+	
+	/**
+	 * \brief Create copy of object if possible.
+	 * 
+	 * Subclass can override this method to create a copy of the object. The list parameter
+	 * contains all existing objects. This list can be used to enforce rules, for example unique
+	 * name or limit counts. If nullptr is returned the object cannot be copied.
+	 */
+	virtual ObjectTypeRef CopyObjectType(const ContextRef &context,
+	const ListType &existingObjects, const ObjectTypeRef &object) const{
+		return {};
+	}
 	/*@}*/
 };
 
@@ -481,35 +532,35 @@ protected:
 public:
 	/*@}*/
 	/** \brief Storage. */
-	virtual Storage &GetStorage(const deTObjectReference<igdeMetaContext> &context) const = 0;
+	virtual Storage &GetStorage(const igdeMetaProperty::ContextRef &context) const = 0;
 	
 	
 	ListType GetPropertyValueType(
-	const deTObjectReference<igdeMetaContext> &context) const override{
+	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetValue();
 	}
 	
-	void SetPropertyValueType(const deTObjectReference<igdeMetaContext> &context,
+	void SetPropertyValueType(const igdeMetaProperty::ContextRef &context,
 	const ListType &value) override{
 		GetStorage(context).SetValue(value);
 	}
 	
 	typename igdeMetaPropertyListTypeStorage<T, ListType>::ObjectTypeRef GetActiveObjectType(
-	const deTObjectReference<igdeMetaContext> &context) const override{
+	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetActive();
 	}
 	
-	void SetActiveObjectType(const deTObjectReference<igdeMetaContext> &context,
+	void SetActiveObjectType(const igdeMetaProperty::ContextRef &context,
 	const typename igdeMetaPropertyListTypeStorage<T, ListType>::ObjectTypeRef &activeObject) override{
 		GetStorage(context).SetActive(activeObject);
 	}
 	
 	ListType GetSelectionType(
-	const deTObjectReference<igdeMetaContext> &context) const override{
+	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetSelection();
 	}
 	
-	void SetSelectionType(const deTObjectReference<igdeMetaContext> &context,
+	void SetSelectionType(const igdeMetaProperty::ContextRef &context,
 	const ListType &selection) override{
 		GetStorage(context).SetSelection(selection);
 	}

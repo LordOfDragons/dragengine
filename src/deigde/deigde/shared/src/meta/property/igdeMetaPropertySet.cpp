@@ -268,6 +268,11 @@ const igdeMetaContext::Ref &context) const{
 	return {};
 }
 
+igdeMetaPropertySet::ObjectRef igdeMetaPropertySet::CopyObject(const ContextRef &context,
+const Set &existingObjects, const ObjectRef &object) const{
+	return {};
+}
+
 igdeMetaProperty::Action::Ref igdeMetaPropertySet::CreateButtonAction(TargetButton, igdeWidget&){
 	return {};
 }

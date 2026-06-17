@@ -27,8 +27,54 @@
 
 #include "aeMCPAnimator.h"
 #include "aeMCPController.h"
+#include "aeMCPLink.h"
 
 class aeWindowMain;
+
+
+/**
+ * Link meta context properties.
+ */
+class aeMCLinkProperties{
+public:
+	deTObjectReference<aeMCPLinkName> name = deTObjectReference<aeMCPLinkName>::New();
+	deTObjectReference<aeMCPLinkController> controller;
+	deTObjectReference<aeMCPLinkRepeat> repeat = deTObjectReference<aeMCPLinkRepeat>::New();
+	deTObjectReference<aeMCPLinkBone> bone = deTObjectReference<aeMCPLinkBone>::New();
+	deTObjectReference<aeMCPLinkBoneParameter> boneParameter = deTObjectReference<aeMCPLinkBoneParameter>::New();
+	deTObjectReference<aeMCPLinkBoneMinimum> boneMinimum = deTObjectReference<aeMCPLinkBoneMinimum>::New();
+	deTObjectReference<aeMCPLinkBoneMaximum> boneMaximum = deTObjectReference<aeMCPLinkBoneMaximum>::New();
+	deTObjectReference<aeMCPLinkVertexPositionSet> vertexPositionSet = deTObjectReference<aeMCPLinkVertexPositionSet>::New();
+	deTObjectReference<aeMCPLinkVertexPositionSetMinimum> vertexPositionSetMinimum = deTObjectReference<aeMCPLinkVertexPositionSetMinimum>::New();
+	deTObjectReference<aeMCPLinkVertexPositionSetMaximum> vertexPositionSetMaximum = deTObjectReference<aeMCPLinkVertexPositionSetMaximum>::New();
+	deTObjectReference<aeMCPLinkWrapY> wrapY = deTObjectReference<aeMCPLinkWrapY>::New();
+	deTObjectReference<aeMCPLinkCurve> curve = deTObjectReference<aeMCPLinkCurve>::New();
+	
+	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
+		decTObjectOrderedSet<igdeMetaProperty>(devctag,
+			name,
+			controller,
+			repeat,
+			bone,
+			boneParameter,
+			boneMinimum,
+			boneMaximum,
+			vertexPositionSet,
+			vertexPositionSetMinimum,
+			vertexPositionSetMaximum,
+			wrapY,
+			curve));
+	
+	deTObjectReference<aeMCPLinks> links = deTObjectReference<aeMCPLinks>::New();
+	deTObjectReference<aeMCPLink> link;
+	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupLinks", "@Animator.WPLink.Links", "@Animator.WPLink.Links.ToolTip",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, links, link));
+	
+	aeMCLinkProperties(aeWindowMain &windowMain) :
+		controller(deTObjectReference<aeMCPLinkController>::New(windowMain)),
+		link(deTObjectReference<aeMCPLink>::New(windowMain)){}
+};
 
 
 /**
@@ -92,6 +138,7 @@ public:
 	deTObjectReference<aeMCPAnimatorAffectedVertexPositionSets> affectedVertexPositionSets = deTObjectReference<aeMCPAnimatorAffectedVertexPositionSets>::New();
 	
 	aeMCControllerProperties controller;
+	aeMCLinkProperties link;
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		decTObjectOrderedSet<igdeMetaProperty>(devctag,
@@ -99,10 +146,14 @@ public:
 			animation,
 			affectedBones,
 			affectedVertexPositionSets,
-			controller.group));
+			controller.group,
+			link.group));
 	
 	aeMCAnimatorProperties(aeWindowMain &windowMain) :
-		controller(windowMain){}
+		controller(windowMain),
+		link(windowMain){
+			controller.controllers->GetListeners().Add(igdeMetaPropertyObject::ListChangedListener::Ref::New(link.controller));
+		}
 };
 
 #endif

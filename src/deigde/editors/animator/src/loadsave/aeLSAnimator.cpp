@@ -1929,7 +1929,7 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 	decXmlElementTag *tag;
 	int i, index;
 	
-	const aeLink::Ref link(aeLink::Ref::New());
+	const aeLink::Ref link(aeLink::Ref::New(*pLSSys->GetWindowMain()));
 	animator.AddLink(link);
 	
 	// parse tag

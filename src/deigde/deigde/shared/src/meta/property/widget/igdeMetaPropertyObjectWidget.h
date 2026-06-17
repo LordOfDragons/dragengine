@@ -54,7 +54,8 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectsChanged(igdeMetaPropertyObject *property) override;
+		void OnAllowedObjectsChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertyObject *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -62,6 +63,7 @@ private:
 	PropertyListener::Ref pPropertyListener;
 	igdeComboBoxFilter::Ref pComboBox;
 	igdeComboBoxListener::Ref pListener;
+	igdeMetaPropertyObject::ObjectList pAllowedObjects;
 	
 	
 public:
@@ -85,6 +87,8 @@ public:
 	/** \brief Assigned property object. */
 	inline igdeMetaPropertyObject &GetPropertyObject() const{ return pPropertyObject; }
 	
+	/** \brief Allowed objects. */
+	inline const igdeMetaPropertyObject::ObjectList &GetAllowedObjects() const{ return pAllowedObjects; }
 	
 	/** \brief Create UI widgets adding them to container. */
 	void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) override;
@@ -92,11 +96,17 @@ public:
 	/** \brief Drop UI widgets. */
 	void Drop() override;
 	
+	/** \brief Set allowed objects. */
+	void SetAllowedObjects(const igdeMetaPropertyObject::ObjectList &objects);
+	
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
 	/** \brief Update object list. */
 	void UpdateObjectList();
+	
+	/** \brief Update item information. */
+	void UpdateItemInfo();
 	
 	/** \brief Combo box widget or nullptr. */
 	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }

@@ -749,4 +749,5 @@ property type so be careful what you enter</translation>
 	<translation name='Igde.MetaPropertyList.Action.CopySelection.ToolTip'>Copy selected value to clipboard</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend'>Paste Append</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend.ToolTip'>Paste from clipboard and append</translation>
+	<translation name='Igde.MetaPropertyList.ListEntry.None'>&lt;None&gt;</translation>
 </languagePack>

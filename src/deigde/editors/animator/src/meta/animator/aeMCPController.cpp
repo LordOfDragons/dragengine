@@ -153,6 +153,11 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
+aeMCPControllers::ObjectTypeRef aeMCPControllers::CopyObjectType(const ContextRef &context,
+const aeController::List &existingObjects, const ObjectTypeRef &object) const{
+	return aeController::Ref::New(WindowMain(context), *object);
+}
+
 igdeMetaProperty::Action::Ref aeMCPControllers::CreateButtonAction(TargetButton target, igdeWidget &owner){
 	switch(target){
 	case TargetButton::add:
@@ -308,6 +313,26 @@ public:
 	}
 };
 
+class cActionValueSetRandom : public igdeMetaProperty::Action{
+	aeMCPControllerCurrentValue &pPropertyCurrent;
+	
+public:
+	cActionValueSetRandom(aeMCPControllerCurrentValue &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+		igdeMetaProperty::Action(owner, context, "@Animator.WPController.ValueSetRandom",
+			nullptr, "@Animator.WPController.ValueSetRandom.ToolTip"),
+		pPropertyCurrent(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyCurrent.IsValid(context)){
+			return;
+		}
+		
+		auto &controller = pPropertyCurrent.Controller(context);
+		pPropertyCurrent.ChangePropertyValue(context, decMath::random(controller.minimumValue, controller.maximumValue), BuildUndoInfo(pPropertyCurrent));
+	}
+};
+
 }
 
 deTObjectReference<igdeMetaPropertyFloatUndo> aeMCPControllerCurrentValue::ChangePropertyValue(
@@ -326,4 +351,5 @@ void aeMCPControllerCurrentValue::AddContextMenuEntries(igdeMenuCascade &context
 	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetToLower>::New(*this, owner, context));
 	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetToUpper>::New(*this, owner, context));
 	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetToCenter>::New(*this, owner, context));
+	helper.MenuCommand(contextMenu, deTObjectReference<cActionValueSetRandom>::New(*this, owner, context));
 }

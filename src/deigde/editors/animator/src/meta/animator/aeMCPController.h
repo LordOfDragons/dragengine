@@ -64,7 +64,9 @@ public:
 	
 	igdeMetaPropertyListUndo::Ref ChangePropertyValue(const ContextRef &context, const List &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr) override;
-		
+	
+	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeController::List &existingObjects, const ObjectTypeRef &object) const override;
+	
 	Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner) override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
 };

@@ -906,7 +906,7 @@ public:
 			return {};
 		}
 		
-		const aeLink::Ref link(aeLink::Ref::New(name));
+		const aeLink::Ref link(aeLink::Ref::New(pWindow, name));
 		return aeULinkAdd::Ref::New(animator, link);
 	}
 };
@@ -924,7 +924,7 @@ public:
 			return {};
 		}
 		
-		auto newLink = aeLink::Ref::New(*link);
+		auto newLink = aeLink::Ref::New(pWindow, *link);
 		newLink->SetName(name);
 		return aeULinkAdd::Ref::New(animator, newLink);
 	}

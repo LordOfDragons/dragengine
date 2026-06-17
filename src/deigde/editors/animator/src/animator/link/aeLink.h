@@ -25,6 +25,8 @@
 #ifndef _AELINK_H_
 #define _AELINK_H_
 
+#include "../../meta/animator/aeMCLink.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/curve/decCurveBezier.h>
@@ -32,8 +34,18 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
+#include <deigde/meta/property/igdeMetaPropertyCurveBezier.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyInteger.h>
+#include <deigde/meta/property/igdeMetaPropertyObject.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+
 class aeAnimator;
 class aeController;
+class aeWindowMain;
 class deAnimatorLink;
 
 
@@ -47,35 +59,36 @@ public:
 	
 	
 private:
+	aeMCLink::Ref pMetaContext;
 	aeAnimator *pAnimator;
 	
 	deAnimatorLink *pEngLink;
 	
-	decString pName;
+	bool pTempNoNotify = false;
 	
-	deTObjectReference<aeController> pController;
-	int pRepeat;
-	decCurveBezier pCurve;
-	
-	decString pBone;
-	deAnimatorLink::eBoneParameter pBoneParameter;
-	float pBoneMinimum;
-	float pBoneMaximum;
-	decString pVertexPositionSet;
-	float pVertexPositionSetMinimum;
-	float pVertexPositionSetMaximum;
-	bool pWrapY;
-	
+public:
+	igdeMetaPropertyStringStorage::Storage name;
+	igdeMetaPropertyObjectStorage<aeController>::Storage controller;
+	igdeMetaPropertyIntegerStorage::Storage repeat;
+	igdeMetaPropertyCurveBezierStorage::Storage curve;
+	igdeMetaPropertyStringStorage::Storage bone;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>::Storage boneParameter;
+	igdeMetaPropertyFloatStorage::Storage boneMinimum;
+	igdeMetaPropertyFloatStorage::Storage boneMaximum;
+	igdeMetaPropertyStringStorage::Storage vertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage vertexPositionSetMinimum;
+	igdeMetaPropertyFloatStorage::Storage vertexPositionSetMaximum;
+	igdeMetaPropertyBooleanStorage::Storage wrapY;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create link. */
-	aeLink(const char *name = "Link");
+	aeLink(aeWindowMain &windowMain, const char *name = "Link");
 	
 	/** Create copy of link. */
-	aeLink(const aeLink &copy);
+	aeLink(aeWindowMain &windowMain, const aeLink &copy);
 	
 	/** Clean up link. */
 protected:
@@ -93,6 +106,9 @@ public:
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);
 	
+	/** Meta context. */
+	inline const aeMCLink::Ref &GetMetaContext() const{ return pMetaContext; }
+	
 	
 	
 	/** Engine controller link or \em nullptr if not managed. */
@@ -101,7 +117,7 @@ public:
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{ return name; }
 	
 	/** Set name. */
 	void SetName(const char *name);
@@ -109,13 +125,13 @@ public:
 	
 	
 	/** Controller or \em nullptr. */
-	inline const deTObjectReference<aeController> &GetController() const{ return pController; }
+	inline const deTObjectReference<aeController> &GetController() const{ return controller; }
 	
 	/** Set controller or \em nullptr. */
 	void SetController(aeController *controller, bool notify = true);
 	
 	/** Repeat count of input value. */
-	inline int GetRepeat() const{ return pRepeat; }
+	inline int GetRepeat() const{ return repeat; }
 	
 	/**
 	 * Set repeat count of input value.
@@ -124,7 +140,7 @@ public:
 	void SetRepeat(int repeat);
 	
 	/** Curve. */
-	const decCurveBezier &GetCurve() const{ return pCurve; }
+	const decCurveBezier &GetCurve() const{ return curve; }
 	
 	/** Set curve. */
 	void SetCurve(const decCurveBezier &curve);
@@ -133,7 +149,7 @@ public:
 	 * Bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	inline const decString &GetBone() const{ return pBone; }
+	inline const decString &GetBone() const{ return bone; }
 	
 	/**
 	 * Set bone to use parameter of as input or empty string to not use.
@@ -145,7 +161,7 @@ public:
 	 * Bone parameter to use as input.
 	 * \version 1.6
 	 */
-	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return pBoneParameter; }
+	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return boneParameter; }
 	
 	/**
 	 * Set bone parameter to use as input.
@@ -157,7 +173,7 @@ public:
 	 * Minimum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMinimum() const{ return pBoneMinimum; }
+	inline float GetBoneMinimum() const{ return boneMinimum; }
 	
 	/**
 	 * Set minimum bone parameter value
@@ -169,7 +185,7 @@ public:
 	 * Maximum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMaximum() const{ return pBoneMaximum; }
+	inline float GetBoneMaximum() const{ return boneMaximum; }
 	
 	/**
 	 * Set maximum bone parameter value.
@@ -178,19 +194,19 @@ public:
 	void SetBoneMaximum(float value);
 	
 	/** Vertex position set to use as input or empty string to not use. */
-	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	inline const decString &GetVertexPositionSet() const{ return vertexPositionSet; }
 	
 	/** Set vertex position set to use as input or empty string to not use. */
 	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Minimum vertex position set parameter value. */
-	inline float GetVertexPositionSetMinimum() const{ return pVertexPositionSetMinimum; }
+	inline float GetVertexPositionSetMinimum() const{ return vertexPositionSetMinimum; }
 	
 	/** Set minimum vertex position set parameter value. */
 	void SetVertexPositionSetMinimum(float value);
 	
 	/** Maximum vertex position set parameter value. */
-	inline float GetVertexPositionSetMaximum() const{ return pVertexPositionSetMaximum; }
+	inline float GetVertexPositionSetMaximum() const{ return vertexPositionSetMaximum; }
 	
 	/** Set maximum vertex position set parameter value. */
 	void SetVertexPositionSetMaximum(float value);
@@ -199,7 +215,7 @@ public:
 	 * Wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	inline bool GetWrapY() const{ return pWrapY; }
+	inline bool GetWrapY() const{ return wrapY; }
 	
 	/**
 	 * Set to wrap Y value instead of clamping.
