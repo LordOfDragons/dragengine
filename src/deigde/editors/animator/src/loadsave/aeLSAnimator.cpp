@@ -2065,7 +2065,7 @@ aeRule::Ref aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimation::Ref rule(aeRuleAnimation::Ref::New(""));
+	const aeRuleAnimation::Ref rule(aeRuleAnimation::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2121,7 +2121,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator 
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimationDifference::Ref rule(aeRuleAnimationDifference::Ref::New(""));
+	const aeRuleAnimationDifference::Ref rule(aeRuleAnimationDifference::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	int i;
 	
@@ -2188,7 +2188,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, a
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimationSelect::Ref rule(aeRuleAnimationSelect::Ref::New(""));
+	const aeRuleAnimationSelect::Ref rule(aeRuleAnimationSelect::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	decStringList moves;
 	const char *name;
@@ -2251,7 +2251,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAni
 
 aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleBoneTransformator::Ref rule(aeRuleBoneTransformator::Ref::New(""));
+	const aeRuleBoneTransformator::Ref rule(aeRuleBoneTransformator::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2396,7 +2396,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeA
 
 aeRule::Ref aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleStateManipulator::Ref rule(aeRuleStateManipulator::Ref::New(""));
+	const aeRuleStateManipulator::Ref rule(aeRuleStateManipulator::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2492,7 +2492,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAn
 
 aeRule::Ref aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleStateSnapshot::Ref rule(aeRuleStateSnapshot::Ref::New(""));
+	const aeRuleStateSnapshot::Ref rule(aeRuleStateSnapshot::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2543,7 +2543,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnima
 
 aeRule::Ref aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleInverseKinematic::Ref rule(aeRuleInverseKinematic::Ref::New(""));
+	const aeRuleInverseKinematic::Ref rule(aeRuleInverseKinematic::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
@@ -2673,7 +2673,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAn
 
 aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleForeignState::Ref rule(aeRuleForeignState::Ref::New(""));
+	const aeRuleForeignState::Ref rule(aeRuleForeignState::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2782,7 +2782,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimat
 
 aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleMirror::Ref rule(aeRuleMirror::Ref::New(""));
+	const aeRuleMirror::Ref rule(aeRuleMirror::Ref::New(*pLSSys->GetWindowMain(), ""));
 	int i;
 	
 	for(i=0; i<root->GetElementCount(); i++){
@@ -2878,7 +2878,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &an
 aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	const int elementCount = root->GetElementCount();
-	const aeRuleGroup::Ref rule(aeRuleGroup::Ref::New(""));
+	const aeRuleGroup::Ref rule(aeRuleGroup::Ref::New(*pLSSys->GetWindowMain(), ""));
 	int i;
 	
 	for(i=0; i<elementCount; i++){
@@ -2956,7 +2956,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 
 aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleSubAnimator::Ref rule(aeRuleSubAnimator::Ref::New(""));
+	const aeRuleSubAnimator::Ref rule(aeRuleSubAnimator::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	const char *name;
@@ -3026,7 +3026,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimato
 
 aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleTrackTo::Ref rule(aeRuleTrackTo::Ref::New(""));
+	const aeRuleTrackTo::Ref rule(aeRuleTrackTo::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -3190,7 +3190,7 @@ aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &a
 
 aeRule::Ref aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleLimit::Ref rule(aeRuleLimit::Ref::New(""));
+	const aeRuleLimit::Ref rule(aeRuleLimit::Ref::New(*pLSSys->GetWindowMain(), ""));
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;

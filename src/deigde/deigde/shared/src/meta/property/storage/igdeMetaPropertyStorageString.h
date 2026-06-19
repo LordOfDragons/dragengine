@@ -64,7 +64,7 @@ public:
 	inline const decString &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const decString &value, bool notify = true){
+	void SetValue(const char *value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
@@ -77,16 +77,13 @@ public:
 	}
 	
 	/** \brief Set value. */
-	void SetValue(const char *value, bool notify = true){
-		if(pValue == value){
-			return;
-		}
-		
-		pValue = value;
-		igdeMetaPropertyStorage<P>::OnValueChanged();
-		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
-		}
+	void SetValue(const decString &value, bool notify = true){
+		SetValue(value.GetString(), notify);
+	}
+	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageString<P> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
 	}
 	/*@}*/
 	

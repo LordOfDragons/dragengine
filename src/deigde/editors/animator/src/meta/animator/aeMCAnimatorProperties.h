@@ -25,106 +25,13 @@
 #ifndef _AEMCANIMATORPROPERTIES_H_
 #define _AEMCANIMATORPROPERTIES_H_
 
+#include "aeMCLinkProperties.h"
+#include "aeMCControllerProperties.h"
+#include "aeMCRuleProperties.h"
+
 #include "aeMCPAnimator.h"
-#include "aeMCPController.h"
-#include "aeMCPLink.h"
 
 class aeWindowMain;
-
-
-/**
- * Link meta context properties.
- */
-class aeMCLinkProperties{
-public:
-	deTObjectReference<aeMCPLinkName> name = deTObjectReference<aeMCPLinkName>::New();
-	deTObjectReference<aeMCPLinkController> controller;
-	deTObjectReference<aeMCPLinkRepeat> repeat = deTObjectReference<aeMCPLinkRepeat>::New();
-	deTObjectReference<aeMCPLinkBone> bone = deTObjectReference<aeMCPLinkBone>::New();
-	deTObjectReference<aeMCPLinkBoneParameter> boneParameter = deTObjectReference<aeMCPLinkBoneParameter>::New();
-	deTObjectReference<aeMCPLinkBoneMinimum> boneMinimum = deTObjectReference<aeMCPLinkBoneMinimum>::New();
-	deTObjectReference<aeMCPLinkBoneMaximum> boneMaximum = deTObjectReference<aeMCPLinkBoneMaximum>::New();
-	deTObjectReference<aeMCPLinkVertexPositionSet> vertexPositionSet = deTObjectReference<aeMCPLinkVertexPositionSet>::New();
-	deTObjectReference<aeMCPLinkVertexPositionSetMinimum> vertexPositionSetMinimum = deTObjectReference<aeMCPLinkVertexPositionSetMinimum>::New();
-	deTObjectReference<aeMCPLinkVertexPositionSetMaximum> vertexPositionSetMaximum = deTObjectReference<aeMCPLinkVertexPositionSetMaximum>::New();
-	deTObjectReference<aeMCPLinkWrapY> wrapY = deTObjectReference<aeMCPLinkWrapY>::New();
-	deTObjectReference<aeMCPLinkCurve> curve = deTObjectReference<aeMCPLinkCurve>::New();
-	
-	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
-		decTObjectOrderedSet<igdeMetaProperty>(devctag,
-			name,
-			controller,
-			repeat,
-			bone,
-			boneParameter,
-			boneMinimum,
-			boneMaximum,
-			vertexPositionSet,
-			vertexPositionSetMinimum,
-			vertexPositionSetMaximum,
-			wrapY,
-			curve));
-	
-	deTObjectReference<aeMCPLinks> links = deTObjectReference<aeMCPLinks>::New();
-	deTObjectReference<aeMCPLink> link;
-	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.groupLinks", "@Animator.WPLink.Links", "@Animator.WPLink.Links.ToolTip",
-		decTObjectOrderedSet<igdeMetaProperty>(devctag, links, link));
-	
-	aeMCLinkProperties(aeWindowMain &windowMain) :
-		controller(deTObjectReference<aeMCPLinkController>::New(windowMain)),
-		link(deTObjectReference<aeMCPLink>::New(windowMain)){}
-};
-
-
-/**
- * Controller meta context properties.
- */
-class aeMCControllerProperties{
-public:
-	deTObjectReference<aeMCPControllerName> name = deTObjectReference<aeMCPControllerName>::New();
-	deTObjectReference<aeMCPControllerMinimumValue> minimumValue = deTObjectReference<aeMCPControllerMinimumValue>::New();
-	deTObjectReference<aeMCPControllerMaximumValue> maximumValue = deTObjectReference<aeMCPControllerMaximumValue>::New();
-	deTObjectReference<aeMCPControllerCurrentValue> currentValue = deTObjectReference<aeMCPControllerCurrentValue>::New();
-	deTObjectReference<aeMCPControllerVector> vector = deTObjectReference<aeMCPControllerVector>::New();
-	deTObjectReference<aeMCPControllerClamp> clamp = deTObjectReference<aeMCPControllerClamp>::New();
-	deTObjectReference<aeMCPControllerFrozen> frozen = deTObjectReference<aeMCPControllerFrozen>::New();
-	deTObjectReference<aeMCPControllerDefaultValue> defaultValue = deTObjectReference<aeMCPControllerDefaultValue>::New();
-	deTObjectReference<aeMCPControllerDefaultVector> defaultVector = deTObjectReference<aeMCPControllerDefaultVector>::New();
-	
-	deTObjectReference<aeMCPControllerLocomotionAttribute> locomotionAttribute = deTObjectReference<aeMCPControllerLocomotionAttribute>::New();
-	deTObjectReference<aeMCPControllerLocomotionLeg> locomotionLeg = deTObjectReference<aeMCPControllerLocomotionLeg>::New();
-	deTObjectReference<aeMCPControllerVectorSimulation> vectorSimulation = deTObjectReference<aeMCPControllerVectorSimulation>::New();
-	deTObjectReference<igdeMetaPropertyGroup> groupLocomotionTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"controller.groupLocomotionTesting", "@Animator.WPController.LocomotionTesting", "@Animator.WPController.LocomotionTesting.ToolTip",
-		decTObjectOrderedSet<igdeMetaProperty>(devctag,
-			locomotionAttribute,
-			locomotionLeg,
-			vectorSimulation));
-	
-	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
-		decTObjectOrderedSet<igdeMetaProperty>(devctag,
-			name,
-			minimumValue,
-			maximumValue,
-			currentValue,
-			vector,
-			clamp,
-			frozen,
-			defaultValue,
-			defaultVector,
-			groupLocomotionTesting)
-	);
-	
-	deTObjectReference<aeMCPControllers> controllers = deTObjectReference<aeMCPControllers>::New();
-	deTObjectReference<aeMCPController> controller;
-	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.groupControllers", "@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip",
-		decTObjectOrderedSet<igdeMetaProperty>(devctag, controllers, controller));
-	
-	aeMCControllerProperties(aeWindowMain &windowMain) :
-		controller(deTObjectReference<aeMCPController>::New(windowMain)){}
-};
 
 
 /**
@@ -139,6 +46,20 @@ public:
 	
 	aeMCControllerProperties controller;
 	aeMCLinkProperties link;
+	aeMCRuleProperties rule;
+	aeMCRuleAnimationProperties ruleAnimation;
+	aeMCRuleAnimationDifferenceProperties ruleAnimationDifference;
+	aeMCRuleAnimationSelectProperties ruleAnimationSelect;
+	aeMCRuleBoneTransformatorProperties ruleBoneTransformator;
+	aeMCRuleForeignStateProperties ruleForeignState;
+	aeMCRuleGroupProperties ruleGroup;
+	aeMCRuleInverseKinematicProperties ruleInverseKinematic;
+	aeMCRuleLimitProperties ruleLimit;
+	aeMCRuleMirrorProperties ruleMirror;
+	aeMCRuleStateManipulatorProperties ruleStateManipulator;
+	aeMCRuleStateSnapshotProperties ruleStateSnapshot;
+	aeMCRuleSubAnimatorProperties ruleSubAnimator;
+	aeMCRuleTrackToProperties ruleTrackTo;
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		decTObjectOrderedSet<igdeMetaProperty>(devctag,
@@ -147,11 +68,27 @@ public:
 			affectedBones,
 			affectedVertexPositionSets,
 			controller.group,
-			link.group));
+			link.group,
+			rule.group));
 	
 	aeMCAnimatorProperties(aeWindowMain &windowMain) :
 		controller(windowMain),
-		link(windowMain){
+		link(windowMain),
+		rule(windowMain),
+		ruleAnimation(rule),
+		ruleAnimationDifference(rule),
+		ruleAnimationSelect(rule),
+		ruleBoneTransformator(rule),
+		ruleForeignState(rule),
+		ruleGroup(rule),
+		ruleInverseKinematic(rule),
+		ruleLimit(rule),
+		ruleMirror(rule),
+		ruleStateManipulator(rule),
+		ruleStateSnapshot(rule),
+		ruleSubAnimator(rule),
+		ruleTrackTo(rule)
+		{
 			controller.controllers->GetListeners().Add(igdeMetaPropertyObject::ListChangedListener::Ref::New(link.controller));
 		}
 };

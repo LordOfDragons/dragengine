@@ -22,17 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeRuleStateSnapshot.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleStateSnapshot.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class aeRuleStateSnapshot
@@ -41,104 +37,99 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleStateSnapshot::aeRuleStateSnapshot(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertStateSnapshot, name),
-pUseLastState(true),
-pID(0),
-pEnablePosition(true),
-pEnableOrientation(true),
-pEnableSize(false),
-pEnableVertexPositionSet(true){
+aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const char *aname) :
+aeRule(windowMain, aeMCRuleStateSnapshot::Ref::New(windowMain, this),
+	deAnimatorRuleVisitorIdentify::ertStateSnapshot, aname),
+useLastState(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.useLastState, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+id(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.id, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+enablePosition(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enablePosition, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+enableOrientation(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableOrientation, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+enableSize(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableSize, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>())
+{
+	useLastState.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetUseLastState(useLastState);
+		}
+		NotifyRuleChanged();
+	});
+	
+	id.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetID(id);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enablePosition.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnablePosition(enablePosition);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableOrientation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableSize.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableSize(enableSize);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	});
 }
 
-aeRuleStateSnapshot::aeRuleStateSnapshot(const aeRuleStateSnapshot &copy) :
-aeRule(copy),
-pUseLastState(copy.pUseLastState),
-pID(copy.pID),
-pEnablePosition(copy.pEnablePosition),
-pEnableOrientation(copy.pEnableOrientation),
-pEnableSize(copy.pEnableSize),
-pEnableVertexPositionSet(copy.pEnableVertexPositionSet){
+aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const aeRuleStateSnapshot &copy) :
+aeRuleStateSnapshot(windowMain, copy.name)
+{
+	pInitCopy(copy);
+	id.SetValue(copy.id, false);
+	enablePosition.SetValue(copy.enablePosition, false);
+	enableOrientation.SetValue(copy.enableOrientation, false);
+	enableSize.SetValue(copy.enableSize, false);
+	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
 }
 
-aeRuleStateSnapshot::~aeRuleStateSnapshot(){
-}
-
+aeRuleStateSnapshot::~aeRuleStateSnapshot() = default;
 
 
 // Management
 ///////////////
 
-void aeRuleStateSnapshot::SetUseLastState(bool useLastState){
-	if(useLastState == pUseLastState){
-		return;
-	}
-	
-	pUseLastState = useLastState;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetUseLastState(useLastState);
-		NotifyRuleChanged();
-	}
+void aeRuleStateSnapshot::SetUseLastState(bool value){
+	useLastState = value;
 }
 
-void aeRuleStateSnapshot::SetID(int id){
-	if(id == pID){
-		return;
-	}
-	
-	pID = id;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetID(id);
-		NotifyRuleChanged();
-	}
+void aeRuleStateSnapshot::SetID(int value){
+	id = value;
 }
 
-void aeRuleStateSnapshot::SetEnablePosition(bool enabled){
-	if(enabled != pEnablePosition){
-		pEnablePosition = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnablePosition(enabled);
-			NotifyRuleChanged();
-		}
-	}
+void aeRuleStateSnapshot::SetEnablePosition(bool value){
+	enablePosition = value;
 }
 
-void aeRuleStateSnapshot::SetEnableOrientation(bool enabled){
-	if(enabled != pEnableOrientation){
-		pEnableOrientation = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableOrientation(enabled);
-			NotifyRuleChanged();
-		}
-	}
+void aeRuleStateSnapshot::SetEnableOrientation(bool value){
+	enableOrientation = value;
 }
 
-void aeRuleStateSnapshot::SetEnableSize(bool enabled){
-	if(enabled != pEnableSize){
-		pEnableSize = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableSize(enabled);
-			NotifyRuleChanged();
-		}
-	}
+void aeRuleStateSnapshot::SetEnableSize(bool value){
+	enableSize = value;
 }
 
-void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool enabled){
-	if(enabled != pEnableVertexPositionSet){
-		pEnableVertexPositionSet = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableVertexPositionSet(enabled);
-			NotifyRuleChanged();
-		}
-	}
+void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool value){
+	enableVertexPositionSet = value;
 }
-
 
 
 deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
@@ -146,17 +137,15 @@ deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetUseLastState(pUseLastState);
-	engRule->SetID(pID);
-	
-	engRule->SetEnablePosition(pEnablePosition);
-	engRule->SetEnableOrientation(pEnableOrientation);
-	engRule->SetEnableSize(pEnableSize);
-	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	engRule->SetUseLastState(useLastState);
+	engRule->SetID(id);
+	engRule->SetEnablePosition(enablePosition);
+	engRule->SetEnableOrientation(enableOrientation);
+	engRule->SetEnableSize(enableSize);
+	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
 	
 	return engRule;
 }
-
 
 
 aeRule::Ref aeRuleStateSnapshot::CreateCopy() const{
@@ -168,17 +157,16 @@ void aeRuleStateSnapshot::ListLinks(aeLink::List &list){
 }
 
 
-
 // Operators
 ///////////////
 
 aeRuleStateSnapshot &aeRuleStateSnapshot::operator=(const aeRuleStateSnapshot &copy){
-	SetUseLastState(copy.pUseLastState);
-	SetID(copy.pID);
-	SetEnablePosition(copy.pEnablePosition);
-	SetEnableOrientation(copy.pEnableOrientation);
-	SetEnableSize(copy.pEnableSize);
-	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
+	useLastState = copy.useLastState;
+	id = copy.id;
+	enablePosition = copy.enablePosition;
+	enableOrientation = copy.enableOrientation;
+	enableSize = copy.enableSize;
+	enableVertexPositionSet = copy.enableVertexPositionSet;
 	aeRule::operator=(copy);
 	return *this;
 }

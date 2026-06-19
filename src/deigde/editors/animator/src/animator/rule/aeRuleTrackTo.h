@@ -26,8 +26,13 @@
 #define _AERULETRACKTO_H_
 
 #include "aeRule.h"
-#include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+
+#include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
 
 /**
@@ -37,24 +42,24 @@ class aeRuleTrackTo : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleTrackTo>;
 	
-	
 private:
-	decString pTrackBone;
-	deAnimatorRuleTrackTo::eTrackAxis pTrackAxis;
-	deAnimatorRuleTrackTo::eTrackAxis pUpAxis;
-	deAnimatorRuleTrackTo::eUpTarget pUpTarget;
-	deAnimatorRuleTrackTo::eLockedAxis pLockedAxis;
-	
 	aeControllerTarget::Ref pTargetPosition;
 	aeControllerTarget::Ref pTargetUp;
+	
+public:
+	igdeMetaPropertyStringStorage::Storage trackBone;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage trackAxis;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage upAxis;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>::Storage upTarget;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>::Storage lockedAxis;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new track to rule. */
-	explicit aeRuleTrackTo(const char *name);
+	aeRuleTrackTo(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a track to rule. */
-	aeRuleTrackTo(const aeRuleTrackTo &copy);
+	aeRuleTrackTo(aeWindowMain &windowMain, const aeRuleTrackTo &copy);
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleTrackTo() override;
@@ -64,23 +69,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the track bone or empty string to use none. */
-	inline const decString &GetTrackBone() const{ return pTrackBone; }
+	inline const decString &GetTrackBone() const{ return trackBone; }
 	/** Set the name of the track bone or empty string to use none. */
 	void SetTrackBone(const char *boneName);
 	/** Retrieve the track axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
+	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return trackAxis; }
 	/** Set the track axis. */
 	void SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up axis. */
-	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pUpAxis; }
+	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return upAxis; }
 	/** Set the up axis. */
 	void SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis);
 	/** Retrieve the up target. */
-	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pUpTarget; }
+	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return upTarget; }
 	/** Set the up target. */
 	void SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target);
 	/** Retrieve the locked axis. */
-	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
+	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return lockedAxis; }
 	/** Set the locked axis. */
 	void SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis);
 	

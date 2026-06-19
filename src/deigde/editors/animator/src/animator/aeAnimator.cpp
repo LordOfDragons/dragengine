@@ -100,7 +100,9 @@ affectedVertexPositionSets(pWindowMain.GetMCAnimatorProperties().affectedVertexP
 controllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContext),
 controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContext),
 links(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContext),
-link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContext)
+link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContext),
+rules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContext),
+rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContext)
 {
 	deEngine * engine = GetEngine();
 	
@@ -231,6 +233,23 @@ link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContext)
 		NotifyActiveLinkChanged();
 		const auto &active = links.GetActive();
 		link.SetValue(active ? active->GetMetaContext() : aeMCLink::Ref());
+	});
+	
+	rules.SetOnChanged([this](){
+		pUpdateRuleIndices();
+		RebuildRules();
+		NotifyRuleStructureChanged();
+	});
+	rules.SetOnObjectAdded([this](aeRule &each){
+		each.SetAnimator(this);
+	});
+	rules.SetOnObjectRemoved([this](aeRule &each){
+		each.SetAnimator(nullptr);
+	});
+	rules.SetOnActiveChanged([this](){
+		NotifyActiveRuleChanged();
+		const auto &active = rules.GetActive();
+		rule.SetValue(active ? active->GetMetaContext() : aeMCRule::Ref());
 	});
 	
 	SetSaved(false);
@@ -575,8 +594,8 @@ void aeAnimator::SetActiveLink(aeLink *alink){
 
 int aeAnimator::CountLinkUsage(aeLink *alink) const{
 	int count = 0;
-	pRules.Visit([&](const aeRule &rule){
-		count += rule.CountLinkUsage(alink);
+	rules.GetValue().Visit([&](const aeRule &each){
+		count += each.CountLinkUsage(alink);
 	});
 	return count;
 }
@@ -586,78 +605,41 @@ int aeAnimator::CountLinkUsage(aeLink *alink) const{
 // Rules
 //////////
 
-void aeAnimator::AddRule(aeRule *rule){
-	pRules.AddOrThrow(rule);
-	
-	rule->SetAnimator(this);
-	RebuildRules();
-	NotifyRuleStructureChanged();
+void aeAnimator::AddRule(aeRule *arule){
+	auto list = rules.GetValue();
+	list.AddOrThrow(arule);
+	rules = list;
 }
 
-void aeAnimator::InsertRuleAt(aeRule *rule, int index){
-	pRules.InsertOrThrow(rule, index);
-	rule->SetAnimator(this);
-	
-	RebuildRules();
-	NotifyRuleStructureChanged();
+void aeAnimator::InsertRuleAt(aeRule *arule, int index){
+	auto list = rules.GetValue();
+	list.InsertOrThrow(arule, index);
+	rules = list;
 }
 
-void aeAnimator::MoveRuleTo(aeRule *rule, int index){
-	pRules.Move(rule, index);
-	RebuildRules();
-	NotifyRuleStructureChanged();
+void aeAnimator::MoveRuleTo(aeRule *arule, int index){
+	auto list = rules.GetValue();
+	list.Move(arule, index);
+	rules = list;
 }
 
-void aeAnimator::RemoveRule(aeRule *rule){
-	const int index = pRules.IndexOf(rule);
-	const aeRule::Ref guard(rule);
-	pRules.RemoveOrThrow(rule);
-	
-	if(pActiveRule == rule){
-		if(pRules.IsNotEmpty()){
-			SetActiveRule(pRules.GetAt(decMath::min(index, pRules.GetCount() - 1)));
-			
-		}else{
-			SetActiveRule(nullptr);
-		}
-	}
-	
-	rule->SetAnimator(nullptr);
-	
-	RebuildRules();
-	NotifyRuleStructureChanged();
+void aeAnimator::RemoveRule(aeRule *arule){
+	auto list = rules.GetValue();
+	list.RemoveOrThrow(arule);
+	rules = list;
 }
 
 void aeAnimator::RemoveAllRules(){
-	if(pRules.IsEmpty()){
-		return;
-	}
-	
-	SetActiveRule(nullptr);
-	
-	const int count = pRules.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetAnimator(nullptr);
-	}
-	pRules.RemoveAll();
-	
-	RebuildRules();
-	NotifyRuleStructureChanged();
+	rules = {};
 }
 
-void aeAnimator::SetActiveRule(aeRule *rule){
-	if(rule == pActiveRule){
-		return;
-	}
-	
-	pActiveRule = rule;
-	NotifyActiveRuleChanged();
+void aeAnimator::SetActiveRule(aeRule *arule){
+	rules.SetActive(arule);
 }
 
 void aeAnimator::RebuildRules(){
-	pRules.Visit([](aeRule &r){
-		r.SetEngineRule(nullptr);
+	rules.GetValue().Visit([](aeRule &each){
+		each.SetEngineRule(nullptr);
 	});
 	
 	if(!pEngAnimator){
@@ -672,10 +654,10 @@ void aeAnimator::RebuildRules(){
 		pEngAnimator->AddRule(engRule);
 	}
 	
-	pRules.Visit([&](aeRule &rule){
-		const deAnimatorRule::Ref engRule(rule.CreateEngineRule());
+	rules.GetValue().Visit([&](aeRule &each){
+		const deAnimatorRule::Ref engRule(each.CreateEngineRule());
 		pEngAnimator->AddRule(engRule);
-		rule.SetEngineRule(engRule);
+		each.SetEngineRule(engRule);
 	});
 }
 
@@ -708,12 +690,12 @@ void aeAnimator::SetListVertexPositionSets(const decStringSet &sets){
 	affectedVertexPositionSets = sets;
 }
 
-void aeAnimator::AddVertexPositionSet(const char *vertexPositionSet){
-	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() + decStringSet(devctag, vertexPositionSet);
+void aeAnimator::AddVertexPositionSet(const char *vps){
+	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() + decStringSet(devctag, vps);
 }
 
-void aeAnimator::RemoveVertexPositionSet(const char *vertexPositionSet){
-	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() - decStringSet(devctag, vertexPositionSet);
+void aeAnimator::RemoveVertexPositionSet(const char *vps){
+	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() - decStringSet(devctag, vps);
 }
 
 void aeAnimator::RemoveAllVertexPositionSets(){
@@ -970,21 +952,21 @@ void aeAnimator::NotifyLinkStructureChanged(){
 
 void aeAnimator::NotifyActiveRuleChanged(){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->ActiveRuleChanged(this, pActiveRule);
+		listener->ActiveRuleChanged(this, rules.GetActive());
 	});
 }
 
-void aeAnimator::NotifyRuleChanged(aeRule *rule){
+void aeAnimator::NotifyRuleChanged(aeRule *arule){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->RuleChanged(this, rule);
+		listener->RuleChanged(this, arule);
 	});
 	
 	SetChanged(true);
 }
 
-void aeAnimator::NotifyRuleNameChanged(aeRule *rule){
+void aeAnimator::NotifyRuleNameChanged(aeRule *arule){
 	pNotifiers.Visit([&](aeAnimatorNotifier *listener){
-		listener->RuleNameChanged(this, rule);
+		listener->RuleNameChanged(this, arule);
 	});
 	
 	SetChanged(true);
@@ -1285,12 +1267,16 @@ void aeAnimator::pUpdateLinks(){
 	RebuildRules();
 }
 
+void aeAnimator::pUpdateRuleIndices(){
+	rules.GetValue().VisitIndexed([](int i, aeRule &each){
+		each.SetIndex(i);
+	});
+}
+
 void aeAnimator::pAnimCompChanged(){
-	const int count = pRules.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->UpdateCompAnim();
-	}
+	rules.GetValue().Visit([](aeRule &each){
+		each.UpdateCompAnim();
+	});
 }
 
 void aeAnimator::pUpdateEngineControllers(){

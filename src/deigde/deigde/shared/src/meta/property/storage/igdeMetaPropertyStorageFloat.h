@@ -89,6 +89,11 @@ public:
 			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 		}
 	}
+	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageFloat<P> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
+	}
 	/*@}*/
 	
 	

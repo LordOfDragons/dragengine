@@ -27,8 +27,11 @@
 
 #include "aeRule.h"
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
-
 
 
 /**
@@ -38,29 +41,28 @@ class aeRuleGroup : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleGroup>;
 	
-	
 private:
 	aeRule::List pRules;
-	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
-	bool pUseCurrentState;
-	deAnimatorRuleGroup::eApplicationTypes pApplicationType;
 	
 	aeControllerTarget::Ref pTargetSelect;
 	
 	bool pTreeListExpanded;
 	
 public:
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage useCurrentState;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage applicationType;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new group rule. */
-	explicit aeRuleGroup(const char *name);
+	explicit aeRuleGroup(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a group rule. */
-	aeRuleGroup(const aeRuleGroup &copy);
+	aeRuleGroup(aeWindowMain &windowMain, const aeRuleGroup &copy);
 	/** Clean up the group rule. */
 protected:
 	~aeRuleGroup() override;
@@ -83,34 +85,34 @@ public:
 	void RemoveAllRules();
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return enableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
+	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	/** Use current animation state instead of empty state. */
-	inline bool GetUseCurrentState() const{ return pUseCurrentState; }
+	inline bool GetUseCurrentState() const{ return useCurrentState; }
 	
 	/** Set if current animation state is used instead of empty state. */
-	void SetUseCurrentState(bool useCurrentState);
+	void SetUseCurrentState(bool value);
 	
 	/** Retrieve the rule application type. */
-	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return pApplicationType; }
+	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return applicationType; }
 	/** Set the rule application type. */
 	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
 	

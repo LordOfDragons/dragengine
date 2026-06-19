@@ -27,9 +27,12 @@
 
 #include "aeRule.h"
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
-
-
 
 /**
  * Foreign state rule.
@@ -38,33 +41,33 @@ class aeRuleForeignState : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleForeignState>;
 	
-	
 private:
-	decString pForeignBone;
-	decString pForeignVertexPositionSet;
-	deAnimatorRuleForeignState::eCoordinateFrames pSourceCoordinateFrame;
-	deAnimatorRuleForeignState::eCoordinateFrames pDestCoordinateFrame;
-	float pScalePosition;
-	float pScaleOrientation;
-	float pScaleSize;
-	float pScaleVertexPositionSet;
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
 	aeControllerTarget::Ref pTargetPosition;
 	aeControllerTarget::Ref pTargetOrientation;
 	aeControllerTarget::Ref pTargetSize;
 	aeControllerTarget::Ref pTargetVertexPositionSet;
 	
 public:
+	igdeMetaPropertyStringStorage::Storage foreignBone;
+	igdeMetaPropertyStringStorage::Storage foreignVertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage scalePosition;
+	igdeMetaPropertyFloatStorage::Storage scaleOrientation;
+	igdeMetaPropertyFloatStorage::Storage scaleSize;
+	igdeMetaPropertyFloatStorage::Storage scaleVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>::Storage sourceCoordinateFrame;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>::Storage destCoordinateFrame;
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new foreign state rule. */
-	explicit aeRuleForeignState(const char *name);
+	explicit aeRuleForeignState(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a foreign state rule. */
-	aeRuleForeignState(const aeRuleForeignState &copy);
+	aeRuleForeignState(aeWindowMain &windowMain, const aeRuleForeignState &copy);
 	/** Clean up the foreign state rule. */
 protected:
 	~aeRuleForeignState() override;
@@ -74,67 +77,67 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the foreign bone. */
-	inline const decString &GetForeignBone() const{ return pForeignBone; }
+	inline const decString &GetForeignBone() const{ return foreignBone; }
 	
 	/** Set the name of the foreign bone. */
 	void SetForeignBone(const char *boneName);
 	
 	/** Retrieve the name of the foreign vertex position set. */
-	inline const decString &GetForeignVertexPositionSet() const{ return pForeignVertexPositionSet; }
+	inline const decString &GetForeignVertexPositionSet() const{ return foreignVertexPositionSet; }
 	
 	/** Set the name of the foreign vertex position set. */
-	void SetForeignVertexPositionSet(const char *vertexPositionSet);
+	void SetForeignVertexPositionSet(const char *value);
 	
 	/** Retrieve the position scale factor. */
-	inline float GetScalePosition() const{ return pScalePosition; }
+	inline float GetScalePosition() const{ return scalePosition; }
 	/** Set the position scale factor. */
-	void SetScalePosition(float scalePosition);
+	void SetScalePosition(float value);
 	/** Retrieve the orientation scale factor. */
-	inline float GetScaleOrientation() const{ return pScaleOrientation; }
+	inline float GetScaleOrientation() const{ return scaleOrientation; }
 	/** Set the orientation scale factor. */
-	void SetScaleOrientation(float scaleOrientation);
+	void SetScaleOrientation(float value);
 	
 	/** Retrieve the size scale factor. */
-	inline float GetScaleSize() const{ return pScaleSize; }
+	inline float GetScaleSize() const{ return scaleSize; }
 	
 	/** Set the size scale factor. */
-	void SetScaleSize(float scaleSize);
+	void SetScaleSize(float value);
 	
 	/** Vertex position set scale factor. */
-	inline float GetScaleVertexPositionSet() const{ return pScaleVertexPositionSet; }
+	inline float GetScaleVertexPositionSet() const{ return scaleVertexPositionSet; }
 	
 	/** Set vertex position set scale factor. */
 	void SetScaleVertexPositionSet(float scale);
 	
 	/** Retrieve the source coordinate frame. */
-	inline deAnimatorRuleForeignState::eCoordinateFrames GetSourceCoordinateFrame() const{ return pSourceCoordinateFrame; }
+	inline deAnimatorRuleForeignState::eCoordinateFrames GetSourceCoordinateFrame() const{ return sourceCoordinateFrame; }
 	/** Set the source coordinate frame. */
 	void SetSourceCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames coordinateFrame);
 	/** Retrieve the destination coordinate frame. */
-	inline deAnimatorRuleForeignState::eCoordinateFrames GetDestCoordinateFrame() const{ return pDestCoordinateFrame; }
+	inline deAnimatorRuleForeignState::eCoordinateFrames GetDestCoordinateFrame() const{ return destCoordinateFrame; }
 	/** Set the destination coordinate frame. */
 	void SetDestCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames coordinateFrame);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return enableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
+	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	/** Retrieve the scale position target. */
 	inline const aeControllerTarget::Ref &GetTargetPosition() const{ return pTargetPosition; }

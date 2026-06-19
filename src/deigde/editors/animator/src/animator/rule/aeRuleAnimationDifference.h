@@ -27,7 +27,9 @@
 
 #include "aeRule.h"
 
-
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
 
 /**
  * Animator rule animation difference.
@@ -36,30 +38,29 @@ class aeRuleAnimationDifference : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleAnimationDifference>;
 	
-	
 private:
-	decString pMove1Name;
-	float pMove1Time;
-	decString pMove2Name;
-	float pMove2Time;
-	bool pUseSameMove;
-	bool pUseComponentSpace;
-	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
 	aeControllerTarget::Ref pTargetLeadMoveTime;
 	aeControllerTarget::Ref pTargetRefMoveTime;
+	
+public:
+	igdeMetaPropertyStringStorage::Storage leadingMoveName;
+	igdeMetaPropertyFloatStorage::Storage leadingMoveTime;
+	igdeMetaPropertyStringStorage::Storage referenceMoveName;
+	igdeMetaPropertyFloatStorage::Storage referenceMoveTime;
+	igdeMetaPropertyBooleanStorage::Storage useSameMove;
+	igdeMetaPropertyBooleanStorage::Storage useComponentSpace;
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator difference rule. */
-	explicit aeRuleAnimationDifference(const char *name);
+	explicit aeRuleAnimationDifference(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of an animator difference rule. */
-	aeRuleAnimationDifference(const aeRuleAnimationDifference &copy);
+	aeRuleAnimationDifference(aeWindowMain &windowMain, const aeRuleAnimationDifference &copy);
 	/** Cleans up the animator difference rule. */
 protected:
 	~aeRuleAnimationDifference() override;
@@ -69,50 +70,50 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the leading animation move. */
-	inline const decString &GetLeadingMoveName() const{ return pMove1Name; }
+	inline const decString &GetLeadingMoveName() const{ return leadingMoveName; }
 	/** Set the leading animation move name. */
-	void SetLeadingMoveName(const char *moveName);
+	void SetLeadingMoveName(const char *value);
 	/** Retrieve the leading animation move time. */
-	inline float GetLeadingMoveTime() const{ return pMove1Time; }
+	inline float GetLeadingMoveTime() const{ return leadingMoveTime; }
 	/** Set the leading animation move time. */
-	void SetLeadingMoveTime(float moveTime);
+	void SetLeadingMoveTime(float value);
 	/** Retrieve the name of the reference animation move. */
-	inline const decString &GetReferenceMoveName() const{ return pMove2Name; }
+	inline const decString &GetReferenceMoveName() const{ return referenceMoveName; }
 	/** Set the reference animation move name. */
-	void SetReferenceMoveName(const char *moveName);
+	void SetReferenceMoveName(const char *value);
 	/** Retrieve the reference animation move time. */
-	inline float GetReferenceMoveTime() const{ return pMove2Time; }
+	inline float GetReferenceMoveTime() const{ return referenceMoveTime; }
 	/** Set the reference animation move time. */
-	void SetReferenceMoveTime(float moveTime);
+	void SetReferenceMoveTime(float value);
 	/** Determine if the reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{ return pUseSameMove; }
+	inline bool GetUseSameMove() const{ return useSameMove; }
 	/** Set if the reference move is the same as the leading move. */
-	void SetUseSameMove(bool useSameMove);
+	void SetUseSameMove(bool value);
 	
 	/** Use component space. */
-	inline bool GetUseComponentSpace() const{ return pUseComponentSpace; }
+	inline bool GetUseComponentSpace() const{ return useComponentSpace; }
 	
 	/** Set use component space. */
-	void SetUseComponentSpace(bool useComponentSpace);
+	void SetUseComponentSpace(bool value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return enableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
+	void SetEnableOrientation(bool value);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	/** Retrieve the leading move time target. */
 	inline const aeControllerTarget::Ref &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }

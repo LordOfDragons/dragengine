@@ -39,6 +39,7 @@
 #include "aeRuleTrackTo.h"
 #include "aeRuleMirror.h"
 #include "../aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <deigde/localization/igdeTranslationManager.h>
 
@@ -63,32 +64,77 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRule::aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name) :
+aeRule::aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext,
+	deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *aname) :
 pAnimator(nullptr),
 pParentGroup(nullptr),
 pEngRule(nullptr),
-pName(name),
+pIndex(-1),
+pMetaContext(std::move(metaContext)),
 pType(type),
-pBlendMode(deAnimatorRule::ebmBlend),
-pBlendFactor(1.0f),
-pInvertBlendFactor(false),
-pEnabled(true),
-pTargetBlendFactor(aeControllerTarget::Ref::New()){
+pTargetBlendFactor(aeControllerTarget::Ref::New()),
+name(windowMain.GetMCAnimatorProperties().rule.name, pMetaContext, aname),
+blendMode(windowMain.GetMCAnimatorProperties().rule.blendMode, pMetaContext),
+blendFactor(windowMain.GetMCAnimatorProperties().rule.blendFactor, pMetaContext),
+invertBlendFactor(windowMain.GetMCAnimatorProperties().rule.invertBlendFactor, pMetaContext),
+enabled(windowMain.GetMCAnimatorProperties().rule.enabled, pMetaContext),
+affectedBones(windowMain.GetMCAnimatorProperties().rule.listBones, pMetaContext),
+affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.listVertexPositionSets, pMetaContext)
+{
+	name.SetOnChanged([this](){
+		if(pAnimator){
+			pAnimator->NotifyRuleNameChanged(this);
+			pAnimator->rules.Property().NotifyObjectItemInfoChanged(pAnimator->GetMetaContext());
+		}
+	});
+	
+	blendMode.SetOnChanged([this](){
+		if(pEngRule){
+			pEngRule->SetBlendMode(blendMode);
+		}
+		NotifyRuleChanged();
+	});
+	
+	blendFactor.SetOnChanged([this](){
+		if(pEngRule){
+			pEngRule->SetBlendFactor(blendFactor);
+		}
+		NotifyRuleChanged();
+	});
+	
+	invertBlendFactor.SetOnChanged([this](){
+		if(pEngRule){
+			pEngRule->SetInvertBlendFactor(invertBlendFactor);
+		}
+		NotifyRuleChanged();
+	});
+	
+	affectedBones.SetOnChanged([this](){
+		if(pEngRule){
+			pEngRule->GetListBones() = affectedBones;
+		}
+		NotifyRuleChanged();
+	});
+	
+	affectedVertexPositionSets.SetOnChanged([this](){
+		if(pEngRule){
+			pEngRule->GetListVertexPositionSets() = affectedVertexPositionSets;
+		}
+		NotifyRuleChanged();
+	});
+	
+	enabled.SetOnChanged([this](){
+		if(pEngRule){
+			pEngRule->SetEnabled(enabled);
+		}
+		NotifyRuleChanged();
+	});
 }
 
-aeRule::aeRule(const aeRule &copy) :
-pAnimator(nullptr),
-pParentGroup(nullptr),
-pEngRule(nullptr),
-pName(copy.pName),
-pType(copy.pType),
-pListBones(copy.pListBones),
-pListVertexPositionSets(copy.pListVertexPositionSets),
-pBlendMode(copy.pBlendMode),
-pBlendFactor(copy.pBlendFactor),
-pInvertBlendFactor(copy.pInvertBlendFactor),
-pEnabled(copy.pEnabled),
-pTargetBlendFactor(aeControllerTarget::Ref::New(copy.pTargetBlendFactor)){
+aeRule::aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext, const aeRule &copy) :
+aeRule(windowMain, std::move(metaContext), copy.pType, copy.name)
+{
+	pInitCopy(copy);
 }
 
 aeRule::~aeRule(){
@@ -126,21 +172,23 @@ void aeRule::SetEngineRule(deAnimatorRule *engRule){
 	pEngRule = engRule;
 }
 
+void aeRule::SetIndex(int index){
+	pIndex = index;
+}
+
 void aeRule::InitEngineRule(deAnimatorRule *engRule) const{
 	if(!engRule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	aeAnimator * const animator = GetAnimator();
+	engRule->SetEnabled(enabled);
+	engRule->SetBlendMode(blendMode);
+	engRule->SetBlendFactor(blendFactor);
+	engRule->SetInvertBlendFactor(invertBlendFactor);
+	engRule->GetListBones() = affectedBones;
+	engRule->GetListVertexPositionSets() = affectedVertexPositionSets;
 	
-	engRule->SetEnabled(pEnabled);
-	engRule->SetBlendMode(pBlendMode);
-	engRule->SetBlendFactor(pBlendFactor);
-	engRule->SetInvertBlendFactor(pInvertBlendFactor);
-	engRule->GetListBones() = pListBones;
-	engRule->GetListVertexPositionSets() = pListVertexPositionSets;
-	
-	pTargetBlendFactor->UpdateEngineTarget(animator, engRule->GetTargetBlendFactor());
+	pTargetBlendFactor->UpdateEngineTarget(GetAnimator(), engRule->GetTargetBlendFactor());
 }
 
 
@@ -151,71 +199,25 @@ void aeRule::SetParentGroup(aeRuleGroup *group){
 
 
 
-void aeRule::SetName(const char *name){
-	if(!name) DETHROW(deeInvalidParam);
-	
-	pName = name;
-	
-	aeAnimator * const animator = GetAnimator();
-	if(animator){
-		animator->NotifyRuleNameChanged(this);
-	}
+void aeRule::SetName(const char *value){
+	name = value;
 }
 
-void aeRule::SetEnabled(bool enabled){
-	if(enabled != pEnabled){
-		pEnabled = enabled;
-		
-		if(pEngRule){
-			pEngRule->SetEnabled(enabled);
-		}
-		
-		NotifyRuleChanged();
-	}
+void aeRule::SetEnabled(bool value){
+	enabled = value;
 }
 
-void aeRule::SetBlendMode(deAnimatorRule::eBlendModes mode){
-	if(mode < deAnimatorRule::ebmBlend || mode > deAnimatorRule::deAnimatorRule::ebmOverlay){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(mode != pBlendMode){
-		pBlendMode = mode;
-		
-		if(pEngRule){
-			pEngRule->SetBlendMode(mode);
-		}
-		
-		NotifyRuleChanged();
-	}
+void aeRule::SetBlendMode(deAnimatorRule::eBlendModes value){
+	blendMode = value;
 }
 
-void aeRule::SetBlendFactor(float factor){
-	if(fabsf(factor - pBlendFactor) > 1e-5f){
-		pBlendFactor = factor;
-		
-		if(pEngRule){
-			pEngRule->SetBlendFactor(factor);
-		}
-		
-		NotifyRuleChanged();
-	}
+void aeRule::SetBlendFactor(float value){
+	blendFactor = value;
 }
 
-void aeRule::SetInvertBlendFactor(bool invert){
-	if(invert == pInvertBlendFactor){
-		return;
-	}
-	
-	pInvertBlendFactor = invert;
-	
-	if(pEngRule){
-		pEngRule->SetInvertBlendFactor(invert);
-	}
-	
-	NotifyRuleChanged();
+void aeRule::SetInvertBlendFactor(bool value){
+	invertBlendFactor = value;
 }
-
 
 
 void aeRule::UpdateCompAnim(){
@@ -280,55 +282,19 @@ void aeRule::OnParentAnimatorChanged(){
 ////////////////////
 
 void aeRule::SetListBones(const decStringSet &bones){
-	if(pListBones == bones){
-		return;
-	}
-	
-	pListBones = bones;
-	
-	if(pEngRule){
-		pEngRule->GetListBones() = bones;
-	}
-	
-	NotifyRuleChanged();
+	affectedBones = bones;
 }
 
 void aeRule::AddBone(const char *bone){
-	if(!bone) DETHROW(deeInvalidParam);
-	
-	if(!pListBones.Has(bone)){
-		pListBones.Add(bone);
-		
-		if(pEngRule){
-			pEngRule->GetListBones().Add(bone);
-		}
-		
-		NotifyRuleChanged();
-	}
+	affectedBones = affectedBones.GetValue() + decStringSet(devctag, bone);
 }
 
 void aeRule::RemoveBone(const char *bone){
-	if(pListBones.Has(bone)){
-		pListBones.Remove(bone);
-		
-		if(pEngRule){
-			pEngRule->GetListBones().Remove(bone);
-		}
-		
-		NotifyRuleChanged();
-	}
+	affectedBones = affectedBones.GetValue() - decStringSet(devctag, bone);
 }
 
 void aeRule::RemoveAllBones(){
-	if(pListBones.GetCount() > 0){
-		pListBones.RemoveAll();
-		
-		if(pEngRule){
-			pEngRule->GetListBones().RemoveAll();
-		}
-		
-		NotifyRuleChanged();
-	}
+	affectedBones = {};
 }
 
 
@@ -337,55 +303,19 @@ void aeRule::RemoveAllBones(){
 ///////////////////////////////////
 
 void aeRule::SetListVertexPositionSets(const decStringSet &sets){
-	if(pListVertexPositionSets == sets){
-		return;
-	}
-	
-	pListVertexPositionSets = sets;
-	
-	if(pEngRule){
-		pEngRule->GetListVertexPositionSets() = sets;
-	}
-	
-	NotifyRuleChanged();
+	affectedVertexPositionSets = sets;
 }
 
-void aeRule::AddVertexPositionSet(const char *vertexPositionSet){
-	DEASSERT_NOTNULL(vertexPositionSet)
-	
-	if(!pListVertexPositionSets.Has(vertexPositionSet)){
-		pListVertexPositionSets.Add(vertexPositionSet);
-		
-		if(pEngRule){
-			pEngRule->GetListVertexPositionSets().Add(vertexPositionSet);
-		}
-		
-		NotifyRuleChanged();
-	}
+void aeRule::AddVertexPositionSet(const char *vps){
+	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() + decStringSet(devctag, vps);
 }
 
-void aeRule::RemoveVertexPositionSet(const char *vertexPositionSet){
-	if(pListVertexPositionSets.Has(vertexPositionSet)){
-		pListVertexPositionSets.Remove(vertexPositionSet);
-		
-		if(pEngRule){
-			pEngRule->GetListVertexPositionSets().Remove(vertexPositionSet);
-		}
-		
-		NotifyRuleChanged();
-	}
+void aeRule::RemoveVertexPositionSet(const char *vps){
+	affectedVertexPositionSets = affectedVertexPositionSets.GetValue() - decStringSet(devctag, vps);
 }
 
 void aeRule::RemoveAllVertexPositionSets(){
-	if(pListVertexPositionSets.GetCount() > 0){
-		pListVertexPositionSets.RemoveAll();
-		
-		if(pEngRule){
-			pEngRule->GetListVertexPositionSets().RemoveAll();
-		}
-		
-		NotifyRuleChanged();
-	}
+	affectedVertexPositionSets = {};
 }
 
 
@@ -394,13 +324,13 @@ void aeRule::RemoveAllVertexPositionSets(){
 //////////////
 
 aeRule &aeRule::operator=(const aeRule &copy){
-	SetName(copy.pName);
-	pListBones = copy.pListBones;
-	pListVertexPositionSets = copy.pListVertexPositionSets;
-	SetBlendMode(copy.pBlendMode);
-	SetBlendFactor(copy.pBlendFactor);
-	SetInvertBlendFactor(copy.pInvertBlendFactor);
-	SetEnabled(copy.pEnabled);
+	SetName(copy.name);
+	affectedBones = copy.affectedBones;
+	affectedVertexPositionSets = copy.affectedVertexPositionSets;
+	blendMode = copy.blendMode;
+	blendFactor = copy.blendFactor;
+	invertBlendFactor = copy.invertBlendFactor;
+	enabled = copy.enabled;
 	pTargetBlendFactor = copy.pTargetBlendFactor;
 	NotifyRuleChanged();
 	return *this;
@@ -411,49 +341,65 @@ aeRule &aeRule::operator=(const aeRule &copy){
 // Helper
 ///////////
 
-aeRule::Ref aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type,
+aeRule::Ref aeRule::CreateRuleFromType(aeWindowMain &windowMain,
+deAnimatorRuleVisitorIdentify::eRuleTypes type,
 const igdeTranslationManager &tm){
 	switch(type){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
-		return aeRuleAnimation::Ref::New(tm.Translate("Animator.Action.Rule.Animation").ToUTF8());
+		return aeRuleAnimation::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.Animation").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationDifference:
-		return aeRuleAnimationDifference::Ref::New(tm.Translate("Animator.Action.Rule.AnimationDifference").ToUTF8());
+		return aeRuleAnimationDifference::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.AnimationDifference").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationSelect:
-		return aeRuleAnimationSelect::Ref::New(tm.Translate("Animator.Action.Rule.AnimationSelect").ToUTF8());
+		return aeRuleAnimationSelect::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.AnimationSelect").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertBoneTransformator:
-		return aeRuleBoneTransformator::Ref::New(tm.Translate("Animator.Action.Rule.BoneTransformator").ToUTF8());
+		return aeRuleBoneTransformator::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.BoneTransformator").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertForeignState:
-		return aeRuleForeignState::Ref::New(tm.Translate("Animator.Action.Rule.ForeignState").ToUTF8());
+		return aeRuleForeignState::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.ForeignState").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
-		return aeRuleGroup::Ref::New(tm.Translate("Animator.Action.Rule.Group").ToUTF8());
+		return aeRuleGroup::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.Group").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertInverseKinematic:
-		return aeRuleInverseKinematic::Ref::New(tm.Translate("Animator.Action.Rule.InverseKinematic").ToUTF8());
+		return aeRuleInverseKinematic::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.InverseKinematic").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
-		return aeRuleLimit::Ref::New(tm.Translate("Animator.Action.Rule.Limit").ToUTF8());
+		return aeRuleLimit::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.Limit").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
-		return aeRuleStateManipulator::Ref::New(tm.Translate("Animator.Action.Rule.StateManipulator").ToUTF8());
+		return aeRuleStateManipulator::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.StateManipulator").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertStateSnapshot:
-		return aeRuleStateSnapshot::Ref::New(tm.Translate("Animator.Action.Rule.StateSnapshot").ToUTF8());
+		return aeRuleStateSnapshot::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.StateSnapshot").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-		return aeRuleSubAnimator::Ref::New(tm.Translate("Animator.Action.Rule.SubAnimator").ToUTF8());
+		return aeRuleSubAnimator::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.SubAnimator").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
-		return aeRuleTrackTo::Ref::New(tm.Translate("Animator.Action.Rule.TrackTo").ToUTF8());
+		return aeRuleTrackTo::Ref::New(windowMain, tm.Translate("Animator.Action.Rule.TrackTo").ToUTF8());
 		
 	case deAnimatorRuleVisitorIdentify::ertMirror:
-		return aeRuleMirror::CreateDefault(tm.Translate("Animator.Action.Rule.Mirror").ToUTF8());
+		return aeRuleMirror::CreateDefault(windowMain, tm.Translate("Animator.Action.Rule.Mirror").ToUTF8());
 		
 	default:
 		DETHROW(deeInvalidParam);
 	}
+}
+
+
+// Protected Functions
+////////////////////////
+
+void aeRule::pInitCopy(const aeRule &copy){
+	name.SetValue(copy.name, false);
+	blendMode.SetValue(copy.blendMode, false);
+	blendFactor.SetValue(copy.blendFactor, false);
+	invertBlendFactor.SetValue(copy.invertBlendFactor, false);
+	enabled.SetValue(copy.enabled, false);
+	affectedBones.SetValue(copy.affectedBones, false);
+	affectedVertexPositionSets.SetValue(copy.affectedVertexPositionSets, false);
+	pTargetBlendFactor = aeControllerTarget::Ref::New(copy.pTargetBlendFactor);
 }

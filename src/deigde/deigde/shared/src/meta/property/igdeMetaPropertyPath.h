@@ -153,7 +153,7 @@ public:
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual const decString &GetPropertyBasePath(const ContextRef &context) const = 0;
+	virtual decString GetPropertyBasePath(const ContextRef &context) const = 0;
 	/*@}*/
 };
 

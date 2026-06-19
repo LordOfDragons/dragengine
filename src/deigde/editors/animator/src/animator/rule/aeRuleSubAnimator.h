@@ -28,12 +28,15 @@
 #include "aeRule.h"
 #include "../controller/aeController.h"
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+
 #include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 
 class aeLoadSaveSystem;
 class deAnimatorRuleSubAnimator;
-
 
 
 /**
@@ -42,28 +45,28 @@ class deAnimatorRuleSubAnimator;
 class aeRuleSubAnimator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleSubAnimator>;
-	
 	using ConnectionList = decTObjectList<aeController>;
 	
-	
 private:
-	decString pPathSubAnimator;
 	deAnimator::Ref pSubAnimator;
 	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
 	
 	ConnectionList pConnections;
+	
+public:
+	igdeMetaPropertyPathStorage::Storage pathSubAnimator;
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new sub animator rule. */
-	explicit aeRuleSubAnimator(const char *name);
+	aeRuleSubAnimator(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a sub animator rule. */
-	aeRuleSubAnimator(const aeRuleSubAnimator &copy);
+	aeRuleSubAnimator(aeWindowMain &windowMain, const aeRuleSubAnimator &copy);
 	/** Clean up the sub animator rule. */
 protected:
 	~aeRuleSubAnimator() override;
@@ -73,9 +76,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the path to the sub animator. */
-	inline const decString &GetPathSubAnimator() const{ return pPathSubAnimator; }
+	inline const decString &GetPathSubAnimator() const{ return pathSubAnimator; }
 	/** Set the path to the sub animator. */
-	void SetPathSubAnimator(const char *path);
+	void SetPathSubAnimator(const char *value);
 	/** Retrieve the sub animator or nullptr if not existing. */
 	inline const deAnimator::Ref &GetSubAnimator() const{ return pSubAnimator; }
 	/** Load the sub animator using the stored path. */
@@ -88,25 +91,25 @@ public:
 	void SetControllerAt(int position, aeController *controller);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return enableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
+	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	/** Create an engine animator rule. */
 	deAnimatorRule::Ref CreateEngineRule() override;

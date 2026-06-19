@@ -47,7 +47,7 @@ public:
 		return Animator(context).rigPath;
 	}
 	
-	const decString &GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
+	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).GetDirectoryPath();
 	}
 };
@@ -66,7 +66,7 @@ public:
 		return Animator(context).animationPath;
 	}
 	
-	const decString &GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
+	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).GetDirectoryPath();
 	}
 };

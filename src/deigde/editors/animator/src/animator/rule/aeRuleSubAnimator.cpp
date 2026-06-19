@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeRuleSubAnimator.h"
 #include "../aeAnimator.h"
 #include "../controller/aeController.h"
@@ -49,12 +45,10 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 
-
 // Definitions
 ////////////////
 
 #define LOGSOURCE "Animator Editor"
-
 
 
 // Class aeRuleSubAnimator
@@ -63,41 +57,83 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleSubAnimator::aeRuleSubAnimator(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator, name),
-pEnablePosition(true),
-pEnableOrientation(true),
-pEnableSize(true),
-pEnableVertexPositionSet(true){
-}
-
-aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :
-aeRule(copy),
-pPathSubAnimator(copy.pPathSubAnimator),
-pEnablePosition(copy.pEnablePosition),
-pEnableOrientation(copy.pEnableOrientation),
-pEnableSize(copy.pEnableSize),
-pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pConnections(copy.pConnections)
+aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const char *aname) :
+aeRule(windowMain, aeMCRuleSubAnimator::Ref::New(windowMain, this),
+	deAnimatorRuleVisitorIdentify::ertSubAnimator, aname),
+pathSubAnimator(windowMain.GetMCAnimatorProperties().ruleSubAnimator.pathSubAnimator, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+enablePosition(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enablePosition, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+enableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOrientation, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+enableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleSubAnimator>())
 {
-	pSubAnimator = copy.pSubAnimator;
+	pathSubAnimator.SetOnChanged([this](){
+		NotifyRuleChanged();
+		LoadSubAnimator();
+	});
+	
+	enablePosition.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(enablePosition);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableOrientation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableSize.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(enableSize);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	});
 }
 
-aeRuleSubAnimator::~aeRuleSubAnimator(){
+aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const aeRuleSubAnimator &copy) :
+aeRuleSubAnimator(windowMain, copy.name)
+{
+	pInitCopy(copy);
+	enablePosition.SetValue(copy.enablePosition, false);
+	enableOrientation.SetValue(copy.enableOrientation, false);
+	enableSize.SetValue(copy.enableSize, false);
+	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
 }
 
+aeRuleSubAnimator::~aeRuleSubAnimator() = default;
 
 
 // Management
 ///////////////
 
-void aeRuleSubAnimator::SetPathSubAnimator(const char *path){
-	if(pPathSubAnimator == path){
-		return;
-	}
-	
-	pPathSubAnimator = path;
-	NotifyRuleChanged();
+void aeRuleSubAnimator::SetPathSubAnimator(const char *value){
+	pathSubAnimator = value;
+}
+
+void aeRuleSubAnimator::SetEnablePosition(bool value){
+	enablePosition = value;
+}
+
+void aeRuleSubAnimator::SetEnableOrientation(bool value){
+	enableOrientation = value;
+}
+
+void aeRuleSubAnimator::SetEnableSize(bool value){
+	enableSize = value;
+}
+
+void aeRuleSubAnimator::SetEnableVertexPositionSet(bool value){
+	enableVertexPositionSet = value;
 }
 
 void aeRuleSubAnimator::LoadSubAnimator(){
@@ -127,14 +163,14 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	aeAnimator::Ref animator;
 	
 	// try to load the animator
-	if(!pPathSubAnimator.IsEmpty()){
+	if(!pathSubAnimator.GetValue().IsEmpty()){
 		parentAnimator->GetLogger()->LogInfoFormat(LOGSOURCE,
-			"Rule Sub Animator: Loading animator %s...", pPathSubAnimator.GetString());
+			"Rule Sub Animator: Loading animator %s...", pathSubAnimator.GetValue().GetString());
 		
 		try{
 			// load from file
 			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
-				decPath::AbsolutePathUnix(pPathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
+				decPath::AbsolutePathUnix(pathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
 			
 			
 			// create animator
@@ -207,7 +243,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 }
 
 
-
 void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
 	if(controller == pConnections.GetAt(position)){
 		return;
@@ -224,53 +259,6 @@ void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
 }
 
 
-
-void aeRuleSubAnimator::SetEnablePosition(bool enabled){
-	if(enabled != pEnablePosition){
-		pEnablePosition = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleSubAnimator::SetEnableOrientation(bool enabled){
-	if(enabled != pEnableOrientation){
-		pEnableOrientation = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleSubAnimator::SetEnableSize(bool enabled){
-	if(enabled != pEnableSize){
-		pEnableSize = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
-	if(enabled != pEnableVertexPositionSet){
-		pEnableVertexPositionSet = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-
-
 deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
 	const deAnimatorRuleSubAnimator::Ref engRule(deAnimatorRuleSubAnimator::Ref::New());
 	
@@ -280,14 +268,13 @@ deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
 	
 	pUpdateConnections(*engRule);
 	
-	engRule->SetEnablePosition(pEnablePosition);
-	engRule->SetEnableOrientation(pEnableOrientation);
-	engRule->SetEnableSize(pEnableSize);
-	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	engRule->SetEnablePosition(enablePosition);
+	engRule->SetEnableOrientation(enableOrientation);
+	engRule->SetEnableSize(enableSize);
+	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
 	
 	return engRule;
 }
-
 
 
 void aeRuleSubAnimator::UpdateCompAnim(){
@@ -299,17 +286,15 @@ void aeRuleSubAnimator::UpdateCompAnim(){
 }
 
 
-
 // Operators
 //////////////
 
 aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
-	SetPathSubAnimator(copy.pPathSubAnimator);
-	
-	SetEnablePosition(copy.pEnablePosition);
-	SetEnableOrientation(copy.pEnableOrientation);
-	SetEnableSize(copy.pEnableSize);
-	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
+	pathSubAnimator = copy.pathSubAnimator;
+	enablePosition = copy.enablePosition;
+	enableOrientation = copy.enableOrientation;
+	enableSize = copy.enableSize;
+	enableVertexPositionSet = copy.enableVertexPositionSet;
 	
 	pSubAnimator = copy.pSubAnimator;
 	pConnections = copy.pConnections;
@@ -361,8 +346,8 @@ void aeRuleSubAnimator::pUpdateConnections(deAnimatorRuleSubAnimator &rule) cons
 			const aeController::List &controllers = GetAnimator()->GetControllers();
 			int i;
 			for(i=0; i<pConnections.GetCount(); i++){
-				const decString &name = pSubAnimator->GetControllers().GetAt(i)->GetName();
-				rule.SetConnectionAt(i, controllers.IndexOfNamed(name));
+				rule.SetConnectionAt(i, controllers.IndexOfNamed(
+					pSubAnimator->GetControllers()[i]->GetName()));
 			}
 			
 		}else{

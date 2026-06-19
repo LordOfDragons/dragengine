@@ -27,7 +27,9 @@
 
 #include "aeRule.h"
 
-
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
 
 /**
  * Animator rule animation.
@@ -36,25 +38,24 @@ class aeRuleAnimation : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleAnimation>;
 	
-	
 private:
-	decString pMoveName;
-	float pMoveTime;
-	
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
 	aeControllerTarget::Ref pTargetMoveTime;
+	
+public:
+	igdeMetaPropertyStringStorage::Storage moveName;
+	igdeMetaPropertyFloatStorage::Storage moveTime;
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animator rule. */
-	explicit aeRuleAnimation(const char *name);
+	explicit aeRuleAnimation(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a animator rule. */
-	aeRuleAnimation(const aeRuleAnimation &copy);
+	aeRuleAnimation(aeWindowMain &windowMain, const aeRuleAnimation &copy);
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleAnimation() override;
@@ -64,32 +65,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the name of the animation move. */
-	inline const decString &GetMoveName() const{ return pMoveName; }
+	inline const decString &GetMoveName() const{ return moveName; }
 	/** Set the animation move name. */
-	void SetMoveName(const char *moveName);
+	void SetMoveName(const char *value);
 	/** Retrieve the animation move time. */
-	inline float GetMoveTime() const{ return pMoveTime; }
+	inline float GetMoveTime() const{ return moveTime; }
 	/** Set the animation move time. */
-	void SetMoveTime(float moveTime);
+	void SetMoveTime(float value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return enableOrientation; }
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
+	void SetEnableOrientation(bool value);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	/** Retrieve the move time target. */
 	inline const aeControllerTarget::Ref &GetTargetMoveTime() const{ return pTargetMoveTime; }

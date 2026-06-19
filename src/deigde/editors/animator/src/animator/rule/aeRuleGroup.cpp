@@ -22,18 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeRuleGroup.h"
 #include "../aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class aeRuleGroup
@@ -42,52 +38,101 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleGroup::aeRuleGroup(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertGroup, name),
-pEnablePosition(true),
-pEnableOrientation(true),
-pEnableSize(false),
-pEnableVertexPositionSet(true),
-pUseCurrentState(false),
-pApplicationType(deAnimatorRuleGroup::eatAll),
-pTargetSelect(aeControllerTarget::Ref::New()),
-pTreeListExpanded(false){
-}
-
-aeRuleGroup::aeRuleGroup(const aeRuleGroup &copy) :
-aeRule(copy),
-pEnablePosition(copy.pEnablePosition),
-pEnableOrientation(copy.pEnableOrientation),
-pEnableSize(copy.pEnableSize),
-pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pUseCurrentState(copy.pUseCurrentState),
-pApplicationType(copy.pApplicationType),
-pTargetSelect(aeControllerTarget::Ref::New(copy.pTargetSelect)),
-pTreeListExpanded(copy.pTreeListExpanded)
+aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const char *aname) :
+aeRule(windowMain, aeMCRuleGroup::Ref::New(windowMain, this),
+	deAnimatorRuleVisitorIdentify::ertGroup, aname),
+pTreeListExpanded(false),
+enablePosition(windowMain.GetMCAnimatorProperties().ruleGroup.enablePosition, GetMetaContext().StaticCast<aeMCRuleGroup>()),
+enableOrientation(windowMain.GetMCAnimatorProperties().ruleGroup.enableOrientation, GetMetaContext().StaticCast<aeMCRuleGroup>()),
+enableSize(windowMain.GetMCAnimatorProperties().ruleGroup.enableSize, GetMetaContext().StaticCast<aeMCRuleGroup>()),
+enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleGroup.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleGroup>()),
+useCurrentState(windowMain.GetMCAnimatorProperties().ruleGroup.useCurrentState, GetMetaContext().StaticCast<aeMCRuleGroup>()),
+applicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, GetMetaContext().StaticCast<aeMCRuleGroup>())
 {
-	const int ruleCount = copy.pRules.GetCount();
-	
-	try{
-		int i;
-		for(i=0; i<ruleCount; i++){
-			const aeRule::Ref rule(copy.pRules.GetAt(i)->CreateCopy());
-			pRules.Add(rule);
-			rule->SetParentGroup(this);
+	enablePosition.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleGroup*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
-		
-	}catch(const deException &){
-		throw;
-	}
+		NotifyRuleChanged();
+	});
+	
+	enableOrientation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableSize.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableSize(enableSize);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	});
+	
+	useCurrentState.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleGroup*)GetEngineRule())->SetUseCurrentState(useCurrentState);
+		}
+		NotifyRuleChanged();
+	});
+	
+	applicationType.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleGroup*)GetEngineRule())->SetApplicationType(applicationType);
+		}
+		NotifyRuleChanged();
+	});
 }
 
-aeRuleGroup::~aeRuleGroup(){
-	pCleanUp();
+aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const aeRuleGroup &copy) :
+aeRuleGroup(windowMain, copy.name)
+{
+	pInitCopy(copy);
+	enableOrientation.SetValue(copy.enableOrientation, false);
+	enableSize.SetValue(copy.enableSize, false);
+	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
+	useCurrentState.SetValue(copy.useCurrentState, false);
+	applicationType.SetValue(copy.applicationType, false);
 }
 
+aeRuleGroup::~aeRuleGroup() = default;
 
 
 // Management
 ///////////////
+
+void aeRuleGroup::SetEnablePosition(bool value){
+	enablePosition = value;
+}
+
+void aeRuleGroup::SetEnableOrientation(bool value){
+	enableOrientation = value;
+}
+
+void aeRuleGroup::SetEnableSize(bool value){
+	enableSize = value;
+}
+
+void aeRuleGroup::SetEnableVertexPositionSet(bool value){
+	enableVertexPositionSet = value;
+}
+
+void aeRuleGroup::SetUseCurrentState(bool value){
+	useCurrentState = value;
+}
+
+void aeRuleGroup::SetApplicationType(deAnimatorRuleGroup::eApplicationTypes value){
+	applicationType = value;
+}
+
 
 void aeRuleGroup::AddRule(aeRule *rule){
 	pRules.AddOrThrow(rule);
@@ -176,79 +221,6 @@ void aeRuleGroup::RemoveAllRules(){
 }
 
 
-
-void aeRuleGroup::SetEnablePosition(bool enabled){
-	if(enabled != pEnablePosition){
-		pEnablePosition = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnablePosition(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleGroup::SetEnableOrientation(bool enabled){
-	if(enabled != pEnableOrientation){
-		pEnableOrientation = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableOrientation(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleGroup::SetEnableSize(bool enabled){
-	if(enabled != pEnableSize){
-		pEnableSize = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableSize(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-void aeRuleGroup::SetEnableVertexPositionSet(bool enabled){
-	if(enabled != pEnableVertexPositionSet){
-		pEnableVertexPositionSet = enabled;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableVertexPositionSet(enabled);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-
-
-void aeRuleGroup::SetUseCurrentState(bool useCurrentState){
-	if(useCurrentState == pUseCurrentState){
-		return;
-	}
-	
-	pUseCurrentState = useCurrentState;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleGroup*)GetEngineRule())->SetUseCurrentState(useCurrentState);
-		NotifyRuleChanged();
-	}
-}
-
-void aeRuleGroup::SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type){
-	if(type != pApplicationType){
-		pApplicationType = type;
-		
-		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetApplicationType(type);
-			NotifyRuleChanged();
-		}
-	}
-}
-
-
-
 void aeRuleGroup::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
@@ -313,7 +285,6 @@ void aeRuleGroup::RemoveLinksFromAllTargets(){
 }
 
 
-
 deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 	const int count = pRules.GetCount();
 	int i;
@@ -334,13 +305,13 @@ deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 		rule->SetEngineRule(subEngRule);
 	}
 	
-	engRule->SetEnablePosition(pEnablePosition);
-	engRule->SetEnableOrientation(pEnableOrientation);
-	engRule->SetEnableSize(pEnableSize);
-	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	engRule->SetEnablePosition(enablePosition);
+	engRule->SetEnableOrientation(enableOrientation);
+	engRule->SetEnableSize(enableSize);
+	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
 	
-	engRule->SetUseCurrentState(pUseCurrentState);
-	engRule->SetApplicationType(pApplicationType);
+	engRule->SetUseCurrentState(useCurrentState);
+	engRule->SetApplicationType(applicationType);
 	
 	pTargetSelect->UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 	
@@ -348,11 +319,9 @@ deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 }
 
 
-
-void aeRuleGroup::SetTreeListExpanded(bool expanded){
-	pTreeListExpanded = expanded;
+void aeRuleGroup::SetTreeListExpanded(bool value){
+	pTreeListExpanded = value;
 }
-
 
 
 aeRule::Ref aeRuleGroup::CreateCopy() const{
@@ -383,18 +352,17 @@ void aeRuleGroup::OnParentAnimatorChanged(){
 }
 
 
-
 // Operators
 //////////////
 
 aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
-	SetEnablePosition(copy.pEnablePosition);
-	SetEnableOrientation(copy.pEnableOrientation);
-	SetEnableSize(copy.pEnableSize);
-	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
-	SetTreeListExpanded(copy.pTreeListExpanded);
-	SetUseCurrentState(copy.pUseCurrentState);
-	SetApplicationType(copy.pApplicationType);
+	enablePosition = copy.enablePosition;
+	enableOrientation = copy.enableOrientation;
+	enableSize = copy.enableSize;
+	enableVertexPositionSet = copy.enableVertexPositionSet;
+	pTreeListExpanded = copy.pTreeListExpanded;
+	useCurrentState = copy.useCurrentState;
+	applicationType = copy.applicationType;
 	pTargetSelect = copy.pTargetSelect;
 	
 	const int ruleCount = copy.pRules.GetCount();

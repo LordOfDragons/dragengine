@@ -62,7 +62,7 @@ public:
 	inline const P::ObjectTypeRef &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const P::ObjectTypeRef &value, bool notify = true){
+	void SetValue(T *value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
@@ -75,16 +75,13 @@ public:
 	}
 	
 	/** \brief Set value. */
-	void SetValue(T *value, bool notify = true){
-		if(pValue == value){
-			return;
-		}
-		
-		pValue = value;
-		igdeMetaPropertyStorage<P>::OnValueChanged();
-		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
-		}
+	void SetValue(const P::ObjectTypeRef &value, bool notify = true){
+		SetValue(value.Pointer(), notify);
+	}
+	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageObject<T, P> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
 	}
 	/*@}*/
 	

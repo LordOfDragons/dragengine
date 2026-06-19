@@ -77,6 +77,11 @@ public:
 		}
 	}
 	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageStringSet<P> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
+	}
+	
 	/** \brief Get selection. */
 	inline const decStringSet &GetSelection() const{ return pSelection; }
 	

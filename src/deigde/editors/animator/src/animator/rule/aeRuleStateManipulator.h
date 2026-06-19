@@ -27,7 +27,10 @@
 
 #include "aeRule.h"
 
-
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 /**
  * Animator rule state manipulator.
@@ -36,36 +39,34 @@ class aeRuleStateManipulator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleStateManipulator>;
 	
-	
 private:
-	decVector pMinPosition;
-	decVector pMaxPosition;
-	decVector pMinRotation;
-	decVector pMaxRotation;
-	decVector pMinSize;
-	decVector pMaxSize;
-	float pMinVertexPositionSet;
-	float pMaxVertexPositionSet;
-	bool pEnablePosition;
-	bool pEnableRotation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
-	
 	aeControllerTarget::Ref pTargetPosition;
 	aeControllerTarget::Ref pTargetRotation;
 	aeControllerTarget::Ref pTargetSize;
 	aeControllerTarget::Ref pTargetVertexPositionSet;
 	
-	
+public:
+	igdeMetaPropertyVectorStorage::Storage minPosition;
+	igdeMetaPropertyVectorStorage::Storage maxPosition;
+	igdeMetaPropertyVectorStorage::Storage minRotation;
+	igdeMetaPropertyVectorStorage::Storage maxRotation;
+	igdeMetaPropertyVectorStorage::Storage minSize;
+	igdeMetaPropertyVectorStorage::Storage maxSize;
+	igdeMetaPropertyFloatStorage::Storage minVertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage maxVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableRotation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	explicit aeRuleStateManipulator(const char *name);
+	aeRuleStateManipulator(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of rule. */
-	aeRuleStateManipulator(const aeRuleStateManipulator &copy);
+	aeRuleStateManipulator(aeWindowMain &windowMain, const aeRuleStateManipulator &copy);
 	
 	/** Clean up rule. */
 protected:
@@ -78,49 +79,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Minimum position. */
-	inline const decVector &GetMinimumPosition() const{ return pMinPosition; }
+	inline const decVector &GetMinimumPosition() const{ return minPosition; }
 	
 	/** Set minimum position. */
-	void SetMinimumPosition(const decVector &position);
+	void SetMinimumPosition(const decVector &value);
 	
 	/** Maximum position. */
-	inline const decVector &GetMaximumPosition() const{ return pMaxPosition; }
+	inline const decVector &GetMaximumPosition() const{ return maxPosition; }
 	
 	/** Set maximum position. */
-	void SetMaximumPosition(const decVector &position);
+	void SetMaximumPosition(const decVector &value);
 	
 	/** Minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{ return pMinRotation; }
+	inline const decVector &GetMinimumRotation() const{ return minRotation; }
 	
 	/** Set minimum rotation. */
-	void SetMinimumRotation(const decVector &rotation);
+	void SetMinimumRotation(const decVector &value);
 	
 	/** Maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{ return pMaxRotation; }
+	inline const decVector &GetMaximumRotation() const{ return maxRotation; }
 	
 	/** Set maximum rotation. */
-	void SetMaximumRotation(const decVector &rotation);
+	void SetMaximumRotation(const decVector &value);
 	
 	/** Minimum size. */
-	inline const decVector &GetMinimumSize() const{ return pMinSize; }
+	inline const decVector &GetMinimumSize() const{ return minSize; }
 	
 	/** Set minimum size. */
-	void SetMinimumSize(const decVector &size);
+	void SetMinimumSize(const decVector &value);
 	
 	/** Maximum size. */
-	inline const decVector &GetMaximumSize() const{ return pMaxSize; }
+	inline const decVector &GetMaximumSize() const{ return maxSize; }
 	
 	/** Set maximum size. */
-	void SetMaximumSize(const decVector &size);
+	void SetMaximumSize(const decVector &value);
 	
 	/** Minimum vertex position set. */
-	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
+	inline float GetMinimumVertexPositionSet() const{ return minVertexPositionSet; }
 	
 	/** Set minimum vertex position set. */
 	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Maximum vertex position set. */
-	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
+	inline float GetMaximumVertexPositionSet() const{ return maxVertexPositionSet; }
 	
 	/** Set maximum vertex position set. */
 	void SetMaximumVertexPositionSet(float weight);
@@ -128,28 +129,28 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	
 	/** Rotation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableRotation; }
+	inline bool GetEnableOrientation() const{ return enableRotation; }
 	
 	/** Set if rotation manipulation is enabled. */
-	void SetEnableRotation(bool enabled);
+	void SetEnableRotation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	
 	

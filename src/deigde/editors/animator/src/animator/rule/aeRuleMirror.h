@@ -27,10 +27,13 @@
 
 #include "aeRule.h"
 
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
-
-
 
 /**
  * Mirror rule.
@@ -59,29 +62,28 @@ public:
 	};
 	
 	
-	
 private:
-	deAnimatorRuleMirror::eMirrorAxis pMirrorAxis;
-	decString pMirrorBone;
 	MatchName::List pMatchNames;
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
 	
-	
+public:
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage mirrorAxis;
+	igdeMetaPropertyStringStorage::Storage mirrorBone;
+	igdeMetaPropertyBooleanStorage::Storage enablePosition;
+	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage enableSize;
+	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	explicit aeRuleMirror(const char *name);
+	aeRuleMirror(aeWindowMain &windowMain, const char *name);
 	
 	/** Create copy of rule. */
-	aeRuleMirror(const aeRuleMirror &copy);
+	aeRuleMirror(aeWindowMain &windowMain, const aeRuleMirror &copy);
 	
 	/** Create rule with default settings. */
-	static aeRuleMirror::Ref CreateDefault(const char *name);
+	static aeRuleMirror::Ref CreateDefault(aeWindowMain &windowMain, const char *name);
 	
 protected:
 	/** Clean up rule. */
@@ -94,13 +96,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mirror axis. */
-	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return pMirrorAxis; }
+	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return mirrorAxis; }
 	
 	/** Set mirror axis. */
 	void SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis);
 	
 	/** Name of mirror bone or empty string to use component. */
-	inline const decString &GetMirrorBone() const{ return pMirrorBone; }
+	inline const decString &GetMirrorBone() const{ return mirrorBone; }
 	
 	/** Set name of mirror bone or empty string to use component. */
 	void SetMirrorBone(const char *boneName);
@@ -124,28 +126,28 @@ public:
 	void RemoveAllMatchNames();
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{ return enablePosition; }
 	
 	/** Set if position manipulation is enabled. */
-	void SetEnablePosition(bool enabled);
+	void SetEnablePosition(bool value);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{ return enableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
-	void SetEnableOrientation(bool enabled);
+	void SetEnableOrientation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{ return enableSize; }
 	
 	/** Set if size manipulation is enabled. */
-	void SetEnableSize(bool enabled);
+	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
-	void SetEnableVertexPositionSet(bool enabled);
+	void SetEnableVertexPositionSet(bool value);
 	
 	
 	

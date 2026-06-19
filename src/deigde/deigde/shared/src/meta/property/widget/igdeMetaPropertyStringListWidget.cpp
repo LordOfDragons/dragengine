@@ -1,0 +1,481 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "igdeMetaPropertyStringListWidget.h"
+#include "../undo/igdeMetaPropertyStringListUndo.h"
+#include "../../igdeMetaContextItemInfo.h"
+#include "../../../clipboard/igdeClipboard.h"
+#include "../../../gui/igdeUIHelper.h"
+#include "../../../environment/igdeEnvironment.h"
+#include "../../../localization/igdeTranslationManager.h"
+
+
+namespace {
+
+class cListener : public igdeListBoxListener{
+	igdeMetaPropertyStringListWidget &pWidget;
+	
+public:
+	explicit cListener(igdeMetaPropertyStringListWidget &widget) :
+	pWidget(widget){
+	}
+	
+	~cListener() override = default;
+	
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(!pWidget.GetPreventUpdate()){
+			pWidget.StoreActiveString();
+		}
+	}
+	
+	void OnItemSelected(igdeListBox *listBox, int index) override{
+		if(!pWidget.GetPreventUpdate()){
+			pWidget.StoreSelection();
+		}
+	}
+	
+	void OnItemDeselected(igdeListBox *listBox, int index) override{
+		if(!pWidget.GetPreventUpdate()){
+			pWidget.StoreSelection();
+		}
+	}
+	
+	void OnDoubleClickItem(igdeListBox *listBox, int index) override{
+	}
+	
+	void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu) override{
+		pWidget.AddContextMenuEntries(menu);
+	}
+};
+
+
+class ActionCopy : public igdeAction{
+protected:
+	igdeMetaPropertyStringListWidget &pWidget;
+	bool pSelection;
+	
+public:
+	ActionCopy(igdeMetaPropertyStringListWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Copy",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Action.Copy.ToolTip"),
+	pWidget(widget), pSelection(false){
+	}
+	
+	~ActionCopy() override = default;
+	
+	void OnAction() override{
+		auto &property = pWidget.GetPropertyStringList();
+		const auto &context = pWidget.GetContext();
+		if(!property.IsValid(context)){
+			return;
+		}
+		
+		auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		const auto values = pSelection ? property.GetSelection(context)
+			: property.GetPropertyValue(context);
+		
+		if(values.IsNotEmpty()){
+			clipboard->Set(igdeMetaPropertyStringList::ClipboardData::Ref::New(values));
+		}
+	}
+};
+
+class ActionCopySelection : public ActionCopy{
+public:
+	ActionCopySelection(igdeMetaPropertyStringListWidget &widget,
+		const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
+	ActionCopy(widget, context, environment)
+	{
+		SetText("@Igde.MetaPropertyList.Action.CopySelection");
+		SetDescription("@Igde.MetaPropertyList.Action.CopySelection.ToolTip");
+		pSelection = true;
+	}
+	
+	~ActionCopySelection() override = default;
+};
+
+
+class ActionPaste : public igdeAction{
+protected:
+	igdeMetaPropertyStringListWidget &pWidget;
+	bool pAppend;
+	
+public:
+	ActionPaste(igdeMetaPropertyStringListWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.Action.Paste",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		"@Igde.Action.Paste.ToolTip"),
+	pWidget(widget), pAppend(false){
+	}
+	
+	~ActionPaste() override = default;
+	
+	void OnAction() override{
+		auto &property = pWidget.GetPropertyStringList();
+		const auto &context = pWidget.GetContext();
+		if(!property.IsValid(context)){
+			return;
+		}
+		
+		const auto clipboard = context->GetClipboard();
+		if(!clipboard){
+			return;
+		}
+		
+		const auto clip = clipboard->GetWithTypeName(
+			igdeMetaPropertyStringList::ClipboardData::TypeName).
+			DynamicCast<igdeMetaPropertyStringList::ClipboardData>();
+		if(!clip){
+			return;
+		}
+		
+		const auto oldData = property.GetPropertyValue(context);
+		auto newData = pAppend ? oldData : decStringList();
+		
+		clip->GetData().Visit([&](const decString &string){
+			if(!newData.Has(string)){
+				newData.Add(string);
+			}
+		});
+		
+		if(oldData == newData){
+			return;
+		}
+		
+		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
+		property.ChangePropertyValue(context, newData,
+			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+	}
+	
+	void Update() override{
+		if(pWidget.GetPropertyStringList().IsValid(pWidget.GetContext())){
+			const auto cb = pWidget.GetContext()->GetClipboard();
+			SetEnabled(cb && cb->HasWithTypeName(
+				igdeMetaPropertyStringList::ClipboardData::TypeName));
+			
+		}else{
+			SetEnabled(false);
+		}
+	}
+};
+
+class ActionPasteAppend : public ActionPaste{
+public:
+	ActionPasteAppend(igdeMetaPropertyStringListWidget &widget,
+		const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
+	ActionPaste(widget, context, environment)
+	{
+		SetText("@Igde.MetaPropertyList.Action.PasteAppend");
+		SetDescription("@Igde.MetaPropertyList.Action.PasteAppend.ToolTip");
+		pAppend = true;
+	}
+	
+	~ActionPasteAppend() override = default;
+};
+
+
+class cActionResetToDefault : public igdeAction{
+	igdeMetaPropertyStringListWidget &pWidget;
+	
+public:
+	cActionResetToDefault(igdeMetaPropertyStringListWidget &widget) :
+	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
+		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
+		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~cActionResetToDefault() override = default;
+	
+	void OnAction() override{
+		const auto &context = pWidget.GetContext();
+		auto &property = pWidget.GetPropertyStringList();
+		if(!property.IsValid(context) || property.GetPropertyValue(context).IsEmpty()){
+			return;
+		}
+		
+		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
+		property.ChangePropertyValue(context, {},
+			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
+				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+	}
+};
+
+}
+
+
+// Class igdeMetaPropertyStringListWidget::PropertyListener
+/////////////////////////////////////////////////////////////
+
+igdeMetaPropertyStringListWidget::PropertyListener::PropertyListener(
+		igdeMetaPropertyStringListWidget &widget) :
+pWidget(widget){
+}
+
+igdeMetaPropertyStringListWidget::PropertyListener::~PropertyListener() = default;
+
+void igdeMetaPropertyStringListWidget::PropertyListener::OnValueChanged(
+igdeMetaPropertyStringList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.Update();
+	}
+}
+
+void igdeMetaPropertyStringListWidget::PropertyListener::OnActiveChanged(
+igdeMetaPropertyStringList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.SelectActiveString();
+	}
+}
+
+void igdeMetaPropertyStringListWidget::PropertyListener::OnSelectionChanged(
+igdeMetaPropertyStringList*, const igdeMetaContext::Ref &context){
+	if(pWidget.GetContext() == context){
+		pWidget.RestoreSelection();
+	}
+}
+
+
+// Class igdeMetaPropertyStringListWidget
+///////////////////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+igdeMetaPropertyStringListWidget::igdeMetaPropertyStringListWidget(
+		igdeMetaPropertyStringList &property) :
+igdeMetaPropertyWidget(property),
+pPropertyStringList(property),
+pPropertyListener(PropertyListener::Ref::New(*this)),
+pRows(property.GetRows())
+{
+	property.GetListeners().Add(pPropertyListener);
+}
+
+igdeMetaPropertyStringListWidget::~igdeMetaPropertyStringListWidget(){
+	Drop();
+	pPropertyStringList.GetListeners().Remove(pPropertyListener);
+}
+
+
+// Management
+///////////////
+
+void igdeMetaPropertyStringListWidget::Create(igdeContainer &container,
+		igdeUIHelper &helper, bool noLabel){
+	DEASSERT_NULL(pListBox)
+	
+	pListener = deTObjectReference<cListener>::New(*this);
+	helper.ListBox(pRows, pPropertyStringList.GetDescription(), pListBox, pListener);
+	pListBox->SetSelectionMode(pPropertyStringList.GetMultiSelection()
+		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
+	
+	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
+		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
+	pAddButton(igdeMetaPropertyStringList::TargetButton::add, helper, buttons);
+	pAddButton(igdeMetaPropertyStringList::TargetButton::remove, helper, buttons);
+	pAddButton(igdeMetaPropertyStringList::TargetButton::moveUp, helper, buttons);
+	pAddButton(igdeMetaPropertyStringList::TargetButton::moveDown, helper, buttons);
+	if(buttons->GetChildren().IsEmpty()){
+		buttons.Clear();
+	}
+	
+	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
+	
+	UpdateMatchable(container);
+}
+
+void igdeMetaPropertyStringListWidget::Drop(){
+	if(pListBox){
+		if(pListener){
+			pListBox->RemoveListener(pListener);
+		}
+		pRows = pListBox->GetRows();
+	}
+	
+	pListener.Clear();
+	pListBox.Clear();
+	pButtonActions.RemoveAll();
+	igdeMetaPropertyWidget::Drop();
+}
+
+void igdeMetaPropertyStringListWidget::Update(){
+	if(!pListBox){
+		return;
+	}
+	
+	const auto &context = GetContext();
+	const bool valid = pPropertyStringList.IsValid(context);
+	RunWithPreventUpdate([&]{
+		pListBox->RemoveAllItems();
+		if(valid){
+			const auto &list = pPropertyStringList.GetPropertyValue(context);
+			igdeMetaContextItemInfo info;
+			list.Visit([&](const decString &string){
+				pPropertyStringList.GetStringItemInfo(context, string, info);
+				auto item = igdeListItem::Ref::New(info.GetText(), info.GetIcon(), info.GetDescription());
+				item->SetRefData(igdeTMetaData<decString>::Ref::New(string));
+				pListBox->AddItem(item);
+			});
+		}
+		pListBox->SetEnabled(valid);
+	});
+	
+	SelectActiveString();
+	RestoreSelection();
+	
+	// the list automatically selects the first item if the list is not empty. this potentially
+	// changes the active object without notification due to RunWithPreventUpdate(). store the
+	// current selection and active object to properly synchronize if anything changed
+	StoreSelection();
+	StoreActiveString();
+}
+
+void igdeMetaPropertyStringListWidget::SelectActiveString(){
+	if(!pListBox || !pPropertyStringList.IsValid(GetContext())){
+		return;
+	}
+	
+	const auto active = pPropertyStringList.GetActiveString(GetContext());
+	if(active){
+		pListBox->SetSelection(pListBox->GetItems().IndexOfMatching([&](const igdeListItem &item){
+			return item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData() == active->GetData();
+		}));
+	}
+	pListBox->MakeSelectionVisible();
+}
+
+void igdeMetaPropertyStringListWidget::StoreActiveString(){
+	if(!pListBox || !pPropertyStringList.IsValid(GetContext())){
+		return;
+	}
+	
+	const auto data = pListBox->GetSelectedItemRefData();
+	pPropertyStringList.SetActiveString(GetContext(), data
+		? igdeMetaPropertyStringList::StringRef::New(
+			data.DynamicCast<igdeTMetaData<decString>>()->GetData())
+		: igdeMetaPropertyStringList::StringRef());
+}
+
+void igdeMetaPropertyStringListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
+	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
+	
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	const auto &context = GetContext();
+	
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	
+	if(context && context->GetClipboard()){
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionCopySelection>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionPasteAppend>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuSeparator(menu);
+	}
+	
+	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+void igdeMetaPropertyStringListWidget::StoreSelection(){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple
+		|| !GetContext() || !pPropertyStringList.IsValid(GetContext())){
+		return;
+	}
+	
+	decStringList selection;
+	pListBox->GetItems().Visit([&](const igdeListItem &item){
+		if(item.GetSelected()){
+			selection.Add(item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData());
+		}
+	});
+	pPropertyStringList.SetSelection(GetContext(), selection);
+}
+
+void igdeMetaPropertyStringListWidget::RestoreSelection(){
+	if(!pListBox || pListBox->GetSelectionMode() != igdeListBox::esmMultiple
+		|| !GetContext() || !pPropertyStringList.IsValid(GetContext())){
+		return;
+	}
+	
+	RunWithPreventUpdate([&]{
+		const auto selection = pPropertyStringList.GetSelection(GetContext());
+		pListBox->GetItems().VisitIndexed([&](int index, igdeListItem &item){
+			const bool selected = selection.Has(
+				item.GetRefData().DynamicCast<igdeTMetaData<decString>>()->GetData());
+			if(item.GetSelected() != selected){
+				if(selected){
+					pListBox->SelectItem(index);
+					
+				}else{
+					pListBox->DeselectItem(index);
+				}
+			}
+		});
+	});
+}
+
+
+// Protected Functions
+////////////////////////
+
+void igdeMetaPropertyStringListWidget::OnContextChanged(){
+	Update();
+	SelectActiveString();
+	RestoreSelection();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.SetContext(GetContext());
+	});
+}
+
+
+// Private Functions
+//////////////////////
+
+void igdeMetaPropertyStringListWidget::pAddButton(
+		igdeMetaPropertyStringList::TargetButton target,
+		igdeUIHelper &helper, igdeContainer &container){
+	igdeButton::Ref button;
+	helper.Button(button, {});
+	button->SetStyle(igdeButton::ebsToolBar);
+	auto action = pPropertyStringList.CreateButtonAction(target, button);
+	if(!action){
+		return;
+	}
+	
+	action->SetContext(GetContext());
+	button->SetAction(action);
+	container.AddChild(button);
+	button->FreeReference();
+}

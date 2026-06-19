@@ -32,6 +32,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyCurveBezier.h>
+#include <deigde/meta/property/igdeMetaPropertyGroup.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyInteger.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>

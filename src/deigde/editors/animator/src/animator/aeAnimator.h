@@ -61,7 +61,6 @@ class igdeEnvironment;
 
 class aeAnimatorLocomotion;
 class aeWakeboard;
-class aeRule;
 class aeUndoSystem;
 class aeCamera;
 class aeSubAnimator;
@@ -148,14 +147,14 @@ public:
 	igdeMetaPropertyListTypeStorage<aeLink, aeLink::List>::Storage links;
 	igdeMetaPropertyContextStorage::Storage link;
 	
+	igdeMetaPropertyListTypeStorage<aeRule, aeRule::List>::Storage rules;
+	igdeMetaPropertyContextStorage::Storage rule;
+	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList allowedListControllers;
 	
 	
 private:
 	aeCamera *pCamera;
-	
-	aeRule::List pRules;
-	aeRule::Ref pActiveRule;
 	
 	AttachmentSet pAttachments;
 	aeAttachment::Ref pActiveAttachment;
@@ -375,7 +374,7 @@ public:
 	/** \name Rules */
 	/*@{*/
 	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return rules; }
 	
 	/** Add rule. */
 	void AddRule(aeRule *rule);
@@ -393,7 +392,7 @@ public:
 	void RemoveAllRules();
 	
 	/** Active rule or nullptr. */
-	inline const aeRule::Ref &GetActiveRule() const{ return pActiveRule; }
+	inline const aeRule::Ref &GetActiveRule() const{ return rules.GetActive(); }
 	
 	/** Set active rule or nullptr. */
 	void SetActiveRule(aeRule *rule);
@@ -572,6 +571,7 @@ private:
 	void pAnimCompChanged();
 	void pUpdateEngineControllers();
 	void pUpdateDDSBones();
+	void pUpdateRuleIndices();
 };
 
 #endif

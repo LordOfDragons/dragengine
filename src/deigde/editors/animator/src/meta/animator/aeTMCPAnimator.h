@@ -40,7 +40,8 @@ template <typename T>
 class aeTMCPAnimator : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimator(const char *id, const char *name, const char *description, A&&... args) : T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimator(const char *id, const char *name, const char *description, A&&... args) :
+		T(id, name, description, std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimator() override{}
@@ -72,7 +73,8 @@ template <typename T>
 class aeTMCPAnimatorController : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimatorController(const char *id, const char *name, const char *description, A&&... args) : T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorController(const char *id, const char *name, const char *description, A&&... args) :
+		T(id, name, description, std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorController() override{}
@@ -104,7 +106,8 @@ template <typename T>
 class aeTMCPAnimatorLink : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimatorLink(const char *id, const char *name, const char *description, A&&... args) : T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorLink(const char *id, const char *name, const char *description, A&&... args) :
+		T(id, name, description, std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorLink() override{}
@@ -132,7 +135,8 @@ template <typename T>
 class aeTMCPAnimatorRule : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimatorRule(const char *id, const char *name, const char *description, A&&... args) : T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorRule(const char *id, const char *name, const char *description, A&&... args) :
+		T(id, name, description, std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorRule() override{}
@@ -155,5 +159,65 @@ public:
 		return context.DynamicCast<aeMCRule>()->GetRuleRef();
 	}
 };
+
+template <typename T, typename C, typename R>
+class aeTMCPAnimatorRuleType : public aeTMCPAnimatorRule<T>{
+public:
+	template <typename... A>
+	aeTMCPAnimatorRuleType(const char *id, const char *name, const char *description, A&&... args) :
+		aeTMCPAnimatorRule<T>(id, name, description, std::forward<A>(args)...) {}
+	
+protected:
+	virtual ~aeTMCPAnimatorRuleType() override{}
+	
+public:
+	bool IsValid(const igdeMetaContext::Ref &context) const override{
+		const auto c = context.DynamicCast<C>();
+		return c && c->GetRule() != nullptr;
+	}
+	
+	inline R &RuleType(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<C>()->GetRuleTypeRef();
+	}
+};
+
+template <typename T>
+using aeTMCPAnimatorRuleAnimation = aeTMCPAnimatorRuleType<T, aeMCRuleAnimation, aeRuleAnimation>;
+
+template <typename T>
+using aeTMCPAnimatorRuleAnimationDifference = aeTMCPAnimatorRuleType<T, aeMCRuleAnimationDifference, aeRuleAnimationDifference>;
+
+template <typename T>
+using aeTMCPAnimatorRuleAnimationSelect = aeTMCPAnimatorRuleType<T, aeMCRuleAnimationSelect, aeRuleAnimationSelect>;
+
+template <typename T>
+using aeTMCPAnimatorRuleBoneTransformator = aeTMCPAnimatorRuleType<T, aeMCRuleBoneTransformator, aeRuleBoneTransformator>;
+
+template <typename T>
+using aeTMCPAnimatorRuleForeignState = aeTMCPAnimatorRuleType<T, aeMCRuleForeignState, aeRuleForeignState>;
+
+template <typename T>
+using aeTMCPAnimatorRuleGroup = aeTMCPAnimatorRuleType<T, aeMCRuleGroup, aeRuleGroup>;
+
+template <typename T>
+using aeTMCPAnimatorRuleInverseKinematic = aeTMCPAnimatorRuleType<T, aeMCRuleInverseKinematic, aeRuleInverseKinematic>;
+
+template <typename T>
+using aeTMCPAnimatorRuleLimit = aeTMCPAnimatorRuleType<T, aeMCRuleLimit, aeRuleLimit>;
+
+template <typename T>
+using aeTMCPAnimatorRuleMirror = aeTMCPAnimatorRuleType<T, aeMCRuleMirror, aeRuleMirror>;
+
+template <typename T>
+using aeTMCPAnimatorRuleStateManipulator = aeTMCPAnimatorRuleType<T, aeMCRuleStateManipulator, aeRuleStateManipulator>;
+
+template <typename T>
+using aeTMCPAnimatorRuleStateSnapshot = aeTMCPAnimatorRuleType<T, aeMCRuleStateSnapshot, aeRuleStateSnapshot>;
+
+template <typename T>
+using aeTMCPAnimatorRuleSubAnimator = aeTMCPAnimatorRuleType<T, aeMCRuleSubAnimator, aeRuleSubAnimator>;
+
+template <typename T>
+using aeTMCPAnimatorRuleTrackTo = aeTMCPAnimatorRuleType<T, aeMCRuleTrackTo, aeRuleTrackTo>;
 
 #endif

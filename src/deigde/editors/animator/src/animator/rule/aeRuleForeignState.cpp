@@ -22,18 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeRuleForeignState.h"
 #include "../aeAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
-
 
 
 // Class aeRuleForeignState
@@ -42,161 +38,186 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeRuleForeignState::aeRuleForeignState(const char *name) :
-aeRule(deAnimatorRuleVisitorIdentify::ertForeignState, name),
-pForeignBone("bone"),
-pSourceCoordinateFrame(deAnimatorRuleForeignState::ecfBoneLocal),
-pDestCoordinateFrame(deAnimatorRuleForeignState::ecfBoneLocal),
-pScalePosition(1.0f),
-pScaleOrientation(1.0f),
-pScaleSize(1.0f),
-pScaleVertexPositionSet(1.0f),
-pEnablePosition(true),
-pEnableOrientation(true),
-pEnableSize(false),
-pEnableVertexPositionSet(true),
+aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const char *aname) :
+aeRule(windowMain, aeMCRuleForeignState::Ref::New(windowMain, this),
+	deAnimatorRuleVisitorIdentify::ertForeignState, aname),
 pTargetPosition(aeControllerTarget::Ref::New()),
 pTargetOrientation(aeControllerTarget::Ref::New()),
 pTargetSize(aeControllerTarget::Ref::New()),
-pTargetVertexPositionSet(aeControllerTarget::Ref::New()){
+pTargetVertexPositionSet(aeControllerTarget::Ref::New()),
+foreignBone(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignBone, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+foreignVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+scalePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.scalePosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+scaleOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleOrientation, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+scaleSize(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+scaleVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+enablePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.enablePosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+enableOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.enableOrientation, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+enableSize(windowMain.GetMCAnimatorProperties().ruleForeignState.enableSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+sourceCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.sourceCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+destCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.destCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>())
+{
+	foreignBone.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetForeignBone(foreignBone);
+		}
+		NotifyRuleChanged();
+	});
+	
+	foreignVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetForeignVertexPositionSet(foreignVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	});
+	
+	scalePosition.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetScalePosition(scalePosition);
+		}
+		NotifyRuleChanged();
+	});
+	
+	scaleOrientation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetScaleOrientation(scaleOrientation);
+		}
+		NotifyRuleChanged();
+	});
+	
+	scaleSize.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetScaleSize(scaleSize);
+		}
+		NotifyRuleChanged();
+	});
+	
+	scaleVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetScaleVertexPositionSet(scaleVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enablePosition.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetEnablePosition(enablePosition);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableOrientation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableSize.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetEnableSize(enableSize);
+		}
+		NotifyRuleChanged();
+	});
+	
+	enableVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+		}
+		NotifyRuleChanged();
+	});
+	
+	sourceCoordinateFrame.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetSourceCoordinateFrame(sourceCoordinateFrame);
+		}
+		NotifyRuleChanged();
+	});
+	
+	destCoordinateFrame.SetOnChanged([this](){
+		if(GetEngineRule()){
+			((deAnimatorRuleForeignState*)GetEngineRule())->SetDestCoordinateFrame(destCoordinateFrame);
+		}
+		NotifyRuleChanged();
+	});
 }
 
-aeRuleForeignState::aeRuleForeignState(const aeRuleForeignState &copy) :
-aeRule(copy),
-pForeignBone(copy.pForeignBone),
-pForeignVertexPositionSet(copy.pForeignVertexPositionSet),
-pSourceCoordinateFrame(copy.pSourceCoordinateFrame),
-pDestCoordinateFrame(copy.pDestCoordinateFrame),
-pScalePosition(copy.pScalePosition),
-pScaleOrientation(copy.pScaleOrientation),
-pScaleSize(copy.pScaleSize),
-pScaleVertexPositionSet(copy.pScaleVertexPositionSet),
-pEnablePosition(copy.pEnablePosition),
-pEnableOrientation(copy.pEnableOrientation),
-pEnableSize(copy.pEnableSize),
-pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
-pTargetPosition(aeControllerTarget::Ref::New(copy.pTargetPosition)),
-pTargetOrientation(aeControllerTarget::Ref::New(copy.pTargetOrientation)),
-pTargetSize(aeControllerTarget::Ref::New(copy.pTargetSize)),
-pTargetVertexPositionSet(aeControllerTarget::Ref::New(copy.pTargetVertexPositionSet)){
+aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const aeRuleForeignState &copy) :
+aeRuleForeignState(windowMain, copy.name)
+{
+	pInitCopy(copy);
+	foreignVertexPositionSet.SetValue(copy.foreignVertexPositionSet, false);
+	scalePosition.SetValue(copy.scalePosition, false);
+	scaleOrientation.SetValue(copy.scaleOrientation, false);
+	scaleSize.SetValue(copy.scaleSize, false);
+	scaleVertexPositionSet.SetValue(copy.scaleVertexPositionSet, false);
+	enablePosition.SetValue(copy.enablePosition, false);
+	enableOrientation.SetValue(copy.enableOrientation, false);
+	enableSize.SetValue(copy.enableSize, false);
+	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
+	sourceCoordinateFrame.SetValue(copy.sourceCoordinateFrame, false);
+	destCoordinateFrame.SetValue(copy.destCoordinateFrame, false);
+	
+	pTargetPosition = aeControllerTarget::Ref::New(copy.pTargetPosition);
+	pTargetOrientation = aeControllerTarget::Ref::New(copy.pTargetOrientation);
+	pTargetSize = aeControllerTarget::Ref::New(copy.pTargetSize);
+	pTargetVertexPositionSet = aeControllerTarget::Ref::New(copy.pTargetVertexPositionSet);
 }
 
-aeRuleForeignState::~aeRuleForeignState(){
-}
-
+aeRuleForeignState::~aeRuleForeignState() = default;
 
 
 // Management
 ///////////////
 
-void aeRuleForeignState::SetForeignBone(const char *boneName){
-	pForeignBone = boneName;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetForeignBone(boneName);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetForeignBone(const char *value){
+	foreignBone = value;
 }
 
-void aeRuleForeignState::SetForeignVertexPositionSet(const char *vertexPositionSet){
-	pForeignVertexPositionSet = vertexPositionSet;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetForeignVertexPositionSet(vertexPositionSet);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetForeignVertexPositionSet(const char *value){
+	foreignVertexPositionSet = value;
 }
 
-void aeRuleForeignState::SetScalePosition(float scalePosition){
-	pScalePosition = scalePosition;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetScalePosition(scalePosition);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetScalePosition(float value){
+	scalePosition = value;
 }
 
-void aeRuleForeignState::SetScaleOrientation(float scaleOrientation){
-	pScaleOrientation = scaleOrientation;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetScaleOrientation(scaleOrientation);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetScaleOrientation(float value){
+	scaleOrientation = value;
 }
 
-void aeRuleForeignState::SetScaleSize(float scaleSize){
-	pScaleSize = scaleSize;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetScaleSize(scaleSize);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetScaleSize(float value){
+	scaleSize = value;
 }
 
-void aeRuleForeignState::SetScaleVertexPositionSet(float scale){
-	pScaleVertexPositionSet = scale;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetScaleVertexPositionSet(scale);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetScaleVertexPositionSet(float value){
+	scaleVertexPositionSet = value;
 }
 
-void aeRuleForeignState::SetEnablePosition(bool enable){
-	pEnablePosition = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetEnablePosition(enable);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetEnablePosition(bool value){
+	enablePosition = value;
 }
 
-void aeRuleForeignState::SetEnableOrientation(bool enable){
-	pEnableOrientation = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetEnableOrientation(enable);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetEnableOrientation(bool value){
+	enableOrientation = value;
 }
 
-void aeRuleForeignState::SetEnableSize(bool enable){
-	pEnableSize = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetEnableSize(enable);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetEnableSize(bool value){
+	enableSize = value;
 }
 
-void aeRuleForeignState::SetEnableVertexPositionSet(bool enable){
-	pEnableVertexPositionSet = enable;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetEnableVertexPositionSet(enable);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetEnableVertexPositionSet(bool value){
+	enableVertexPositionSet = value;
 }
 
-void aeRuleForeignState::SetSourceCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames coordinateFrame){
-	pSourceCoordinateFrame = coordinateFrame;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetSourceCoordinateFrame(coordinateFrame);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetSourceCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames value){
+	sourceCoordinateFrame = value;
 }
 
-void aeRuleForeignState::SetDestCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames coordinateFrame){
-	pDestCoordinateFrame = coordinateFrame;
-	
-	if(GetEngineRule()){
-		((deAnimatorRuleForeignState*)GetEngineRule())->SetDestCoordinateFrame(coordinateFrame);
-		NotifyRuleChanged();
-	}
+void aeRuleForeignState::SetDestCoordinateFrame(deAnimatorRuleForeignState::eCoordinateFrames value){
+	destCoordinateFrame = value;
 }
-
 
 
 void aeRuleForeignState::UpdateTargets(){
@@ -260,18 +281,18 @@ deAnimatorRule::Ref aeRuleForeignState::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetForeignBone(pForeignBone);
-	engRule->SetForeignVertexPositionSet(pForeignBone);
-	engRule->SetScalePosition(pScalePosition);
-	engRule->SetScaleOrientation(pScaleOrientation);
-	engRule->SetScaleSize(pScaleSize);
-	engRule->SetScaleVertexPositionSet(pScaleVertexPositionSet);
-	engRule->SetEnablePosition(pEnablePosition);
-	engRule->SetEnableOrientation(pEnableOrientation);
-	engRule->SetEnableSize(pEnableSize);
-	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-	engRule->SetSourceCoordinateFrame(pSourceCoordinateFrame);
-	engRule->SetDestCoordinateFrame(pDestCoordinateFrame);
+	engRule->SetForeignBone(foreignBone);
+	engRule->SetForeignVertexPositionSet(foreignBone);
+	engRule->SetScalePosition(scalePosition);
+	engRule->SetScaleOrientation(scaleOrientation);
+	engRule->SetScaleSize(scaleSize);
+	engRule->SetScaleVertexPositionSet(scaleVertexPositionSet);
+	engRule->SetEnablePosition(enablePosition);
+	engRule->SetEnableOrientation(enableOrientation);
+	engRule->SetEnableSize(enableSize);
+	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
+	engRule->SetSourceCoordinateFrame(sourceCoordinateFrame);
+	engRule->SetDestCoordinateFrame(destCoordinateFrame);
 	
 	pTargetPosition->UpdateEngineTarget(GetAnimator(), engRule->GetTargetPosition());
 	pTargetOrientation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetOrientation());
@@ -301,18 +322,18 @@ void aeRuleForeignState::ListLinks(aeLink::List &list){
 //////////////
 
 aeRuleForeignState &aeRuleForeignState::operator=(const aeRuleForeignState &copy){
-	SetForeignBone(copy.pForeignBone);
-	SetForeignVertexPositionSet(copy.pForeignVertexPositionSet);
-	SetScalePosition(copy.pScalePosition);
-	SetScaleOrientation(copy.pScaleOrientation);
-	SetScaleSize(copy.pScaleSize);
-	SetScaleVertexPositionSet(copy.pScaleVertexPositionSet);
-	SetSourceCoordinateFrame(copy.pSourceCoordinateFrame);
-	SetDestCoordinateFrame(copy.pDestCoordinateFrame);
-	SetEnablePosition(copy.pEnablePosition);
-	SetEnableOrientation(copy.pEnableOrientation);
-	SetEnableSize(copy.pEnableSize);
-	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
+	foreignBone = copy.foreignBone;
+	foreignVertexPositionSet = copy.foreignVertexPositionSet;
+	scalePosition = copy.scalePosition;
+	scaleOrientation = copy.scaleOrientation;
+	scaleSize = copy.scaleSize;
+	scaleVertexPositionSet = copy.scaleVertexPositionSet;
+	sourceCoordinateFrame = copy.sourceCoordinateFrame;
+	destCoordinateFrame = copy.destCoordinateFrame;
+	enablePosition = copy.enablePosition;
+	enableOrientation = copy.enableOrientation;
+	enableSize = copy.enableSize;
+	enableVertexPositionSet = copy.enableVertexPositionSet;
 	pTargetPosition = copy.pTargetPosition;
 	pTargetOrientation = copy.pTargetOrientation;
 	pTargetSize = copy.pTargetSize;

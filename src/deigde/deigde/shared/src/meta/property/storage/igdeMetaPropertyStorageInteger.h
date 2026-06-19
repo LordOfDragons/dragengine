@@ -123,6 +123,11 @@ public:
 			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 		}
 	}
+	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageInteger<P> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
+	}
 	/*@}*/
 	
 	

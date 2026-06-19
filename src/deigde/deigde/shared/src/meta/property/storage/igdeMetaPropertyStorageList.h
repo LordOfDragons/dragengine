@@ -146,6 +146,11 @@ public:
 		}
 	}
 	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageList<T, P, ListType> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
+	}
+	
 	
 	/** \brief Function to call for objects added to the list. */
 	inline const std::function<void(const ObjectRef&)> &GetOnObjectAdded() const{ return pOnObjectAdded; }
