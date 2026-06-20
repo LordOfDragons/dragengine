@@ -27,6 +27,8 @@
 
 #include "../link/aeLink.h"
 
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 
@@ -45,15 +47,16 @@ public:
 	
 	
 private:
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage &pStorage;
 	aeLink::List pLinks;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new controller target. */
-	aeControllerTarget();
+	aeControllerTarget(igdeMetaPropertyObjectSetStorage<aeLink>::Storage &storage);
 	/** Create a copy of a controller target. */
-	aeControllerTarget(const aeControllerTarget &copy);
+	aeControllerTarget(igdeMetaPropertyObjectSetStorage<aeLink>::Storage &storage, const aeControllerTarget &copy);
 	/** Cleans up the controller target. */
 protected:
 	~aeControllerTarget() override;
@@ -72,11 +75,10 @@ public:
 	/** Removes all links. */
 	void RemoveAllLinks();
 	
-	/** Updates the given engine target. */
-	void UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const;
-	
 	/** Add links to a list of links. */
 	void AddLinksToList(aeLink::List &list);
+	
+	void OnStorageChanged();
 	/*@}*/
 	
 	/** \name Operators */

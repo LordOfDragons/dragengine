@@ -49,7 +49,7 @@ public:
 	/** \brief Create set meta property storage. */
 	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
 	igdeMetaPropertyStorage<P>(property, context),
-	pValue(property.GetDefaultValue()){
+	pValue(property.GetDefaultValueType()){
 	}
 	
 	/** \brief Create set meta property storage with initial value. */
@@ -73,7 +73,7 @@ public:
 		
 		if(pOnObjectRemoved){
 			pValue.Visit([&](const typename P::ObjectTypeRef &object){
-				if(!value.Contains(object)){
+				if(!value.Has(object)){
 					pOnObjectRemoved(object);
 				}
 			});
@@ -81,7 +81,7 @@ public:
 		
 		if(pOnObjectAdded){
 			value.Visit([&](const typename P::ObjectTypeRef &object){
-				if(!pValue.Contains(object)){
+				if(!pValue.Has(object)){
 					pOnObjectAdded(object);
 				}
 			});

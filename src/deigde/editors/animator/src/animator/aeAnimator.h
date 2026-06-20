@@ -141,13 +141,13 @@ public:
 	igdeMetaPropertyStringSetStorage::Storage affectedBones;
 	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
 	
-	igdeMetaPropertyListTypeStorage<aeController, aeController::List>::Storage controllers;
+	igdeMetaPropertyListStorage<aeController, aeController::List>::Storage controllers;
 	igdeMetaPropertyContextStorage::Storage controller;
 	
-	igdeMetaPropertyListTypeStorage<aeLink, aeLink::List>::Storage links;
+	igdeMetaPropertyListStorage<aeLink, aeLink::List>::Storage links;
 	igdeMetaPropertyContextStorage::Storage link;
 	
-	igdeMetaPropertyListTypeStorage<aeRule, aeRule::List>::Storage rules;
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage rules;
 	igdeMetaPropertyContextStorage::Storage rule;
 	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList allowedListControllers;

@@ -44,7 +44,7 @@
 
 
 /** Controllers. */
-class aeMCPControllers : public aeTMCPAnimator<igdeMetaPropertyListTypeStorage<aeController, aeController::List>>{
+class aeMCPControllers : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeController, aeController::List>>{
 public:
 	aeMCPControllers() : aeTMCPAnimator("animator.controllers",
 		"@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip"){

@@ -29,6 +29,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 
@@ -60,6 +61,10 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>::Storage sourceCoordinateFrame;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>::Storage destCoordinateFrame;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetSize;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */

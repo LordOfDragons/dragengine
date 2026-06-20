@@ -27,9 +27,10 @@
 
 #include "aeRule.h"
 
-#include <deigde/meta/property/igdeMetaPropertyString.h>
-#include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyStringList.h>
 
 #include <dragengine/common/string/decStringList.h>
@@ -54,6 +55,8 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
 	igdeMetaPropertyBooleanStorage::Storage enableSize;
 	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetMoveTime;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetSelect;
 	
 public:
 	/** \name Constructors and Destructors */

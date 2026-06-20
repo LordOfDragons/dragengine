@@ -512,22 +512,22 @@ public:
  * \brief List meta property using storage.
  */
 template<typename T, typename ListType = decTObjectOrderedSet<T>>
-class igdeMetaPropertyListTypeStorage : public igdeMetaPropertyListType<T, ListType>{
+class igdeMetaPropertyListStorage : public igdeMetaPropertyListType<T, ListType>{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageList<T, igdeMetaPropertyListTypeStorage<T, ListType>, ListType>;
+	using Storage = igdeMetaPropertyStorageList<T, igdeMetaPropertyListStorage<T, ListType>, ListType>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list meta property with label and description. */
-	igdeMetaPropertyListTypeStorage(const char *id, const char *name, const char *description) :
+	igdeMetaPropertyListStorage(const char *id, const char *name, const char *description) :
 	igdeMetaPropertyListType<T, ListType>(id, name, description){}
 	
 protected:
 	/** \brief Clean up list meta property. */
-	~igdeMetaPropertyListTypeStorage() override = default;
+	~igdeMetaPropertyListStorage() override = default;
 	
 public:
 	/*@}*/
@@ -545,13 +545,13 @@ public:
 		GetStorage(context).SetValue(value);
 	}
 	
-	typename igdeMetaPropertyListTypeStorage<T, ListType>::ObjectTypeRef GetActiveObjectType(
+	typename igdeMetaPropertyListStorage<T, ListType>::ObjectTypeRef GetActiveObjectType(
 	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetActive();
 	}
 	
 	void SetActiveObjectType(const igdeMetaProperty::ContextRef &context,
-	const typename igdeMetaPropertyListTypeStorage<T, ListType>::ObjectTypeRef &activeObject) override{
+	const typename igdeMetaPropertyListStorage<T, ListType>::ObjectTypeRef &activeObject) override{
 		GetStorage(context).SetActive(activeObject);
 	}
 	

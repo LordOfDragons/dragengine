@@ -43,75 +43,53 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeControllerTarget::aeControllerTarget(){
+aeControllerTarget::aeControllerTarget(igdeMetaPropertyObjectSetStorage<aeLink>::Storage &storage) :
+pStorage(storage){
 }
 
-aeControllerTarget::aeControllerTarget(const aeControllerTarget &copy) :
-pLinks(copy.pLinks){
+aeControllerTarget::aeControllerTarget(igdeMetaPropertyObjectSetStorage<aeLink>::Storage &storage, const aeControllerTarget &copy) :
+pStorage(storage),
+pLinks(copy.pLinks)
+{
+	pStorage.SetValue(copy.pStorage, false);
 }
 
-aeControllerTarget::~aeControllerTarget(){
-	RemoveAllLinks();
-}
-
+aeControllerTarget::~aeControllerTarget() = default;
 
 
 // Management
 ///////////////
 
 void aeControllerTarget::AddLink(aeLink *link){
-	DEASSERT_NOTNULL(link)
-	pLinks.Add(link);
+	auto list = pStorage.GetValue();
+	list.Add(link);
+	pStorage = list;
 }
 
 void aeControllerTarget::RemoveLink(aeLink *link){
-	pLinks.Remove(link);
+	auto list = pStorage.GetValue();
+	list.Remove(link);
+	pStorage = list;
 }
 
 void aeControllerTarget::RemoveAllLinks(){
-	pLinks.RemoveAll();
+	pStorage = {};
 }
-
-
-
-void aeControllerTarget::UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const{
-	if(!animator){
-		DETHROW(deeInvalidParam);
-	}
-	
-	target.RemoveAllLinks();
-	
-	deAnimator * const engAnimator = animator->GetEngineAnimator();
-	if(engAnimator){
-		const int linkCount = pLinks.GetCount();
-		int i;
-		
-		for(i=0; i<linkCount; i++){
-			deAnimatorLink * const engLink = ((aeLink*)pLinks.GetAt(i))->GetEngineLink();
-			
-			if(engLink){
-				const int indexLink = engAnimator->GetLinks().IndexOf(engLink);
-				
-				if(indexLink != -1){
-					target.AddLink(indexLink);
-				}
-			}
-		}
-	}
-}
-
-
 
 void aeControllerTarget::AddLinksToList(aeLink::List &list){
 	list += pLinks;
 }
 
+void aeControllerTarget::OnStorageChanged(){
+	pLinks.RemoveAll();
+	pLinks.AddAll(pStorage.GetValue());
+}
 
 
 // Operators
 //////////////
 
 aeControllerTarget &aeControllerTarget::operator=(const aeControllerTarget &copy){
-	pLinks = copy.pLinks;
+	pStorage = copy.pStorage;
 	return *this;
 }

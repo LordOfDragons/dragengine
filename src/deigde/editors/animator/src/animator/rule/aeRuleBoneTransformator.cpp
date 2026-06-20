@@ -41,9 +41,6 @@
 aeRuleBoneTransformator::aeRuleBoneTransformator(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleBoneTransformator::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertBoneTransformator, aname),
-pTargetTranslation(aeControllerTarget::Ref::New()),
-pTargetRotation(aeControllerTarget::Ref::New()),
-pTargetScaling(aeControllerTarget::Ref::New()),
 minTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minTranslation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
 maxTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxTranslation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
 minRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minRotation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
@@ -60,7 +57,10 @@ useAxis(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.useAxis, GetM
 targetBone(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetBone, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
 inputBone(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputBone, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
 coordinateFrame(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.coordinateFrame, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-inputSource(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputSource, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>())
+inputSource(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputSource, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
+targetTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetTranslation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
+targetRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetRotation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
+targetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetScaling, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>())
 {
 	minTranslation.SetOnChanged([this](){
 		if(GetEngineRule()){
@@ -194,6 +194,33 @@ inputSource(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputSour
 		}
 		NotifyRuleChanged();
 	});
+	
+	pTargetTranslation = aeControllerTarget::Ref::New(targetTranslation);
+	targetTranslation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleBoneTransformator*)GetEngineRule())->GetTargetTranslation(), targetTranslation);
+		}
+		pTargetTranslation->OnStorageChanged();
+		NotifyRuleChanged();
+	});
+	
+	pTargetRotation = aeControllerTarget::Ref::New(targetRotation);
+	targetRotation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleBoneTransformator*)GetEngineRule())->GetTargetRotation(), targetRotation);
+		}
+		pTargetRotation->OnStorageChanged();
+		NotifyRuleChanged();
+	});
+	
+	pTargetScaling = aeControllerTarget::Ref::New(targetScaling);
+	targetScaling.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleBoneTransformator*)GetEngineRule())->GetTargetScaling(), targetScaling);
+		}
+		pTargetScaling->OnStorageChanged();
+		NotifyRuleChanged();
+	});
 }
 
 aeRuleBoneTransformator::aeRuleBoneTransformator(aeWindowMain &windowMain, const aeRuleBoneTransformator &copy) :
@@ -217,9 +244,9 @@ aeRuleBoneTransformator(windowMain, copy.name)
 	coordinateFrame.SetValue(copy.coordinateFrame, false);
 	inputSource.SetValue(copy.inputSource, false);
 	
-	pTargetTranslation = aeControllerTarget::Ref::New(copy.pTargetTranslation);
-	pTargetRotation = aeControllerTarget::Ref::New(copy.pTargetRotation);
-	pTargetScaling = aeControllerTarget::Ref::New(copy.pTargetScaling);
+	pTargetTranslation = aeControllerTarget::Ref::New(targetTranslation, copy.pTargetTranslation);
+	pTargetRotation = aeControllerTarget::Ref::New(targetRotation, copy.pTargetRotation);
+	pTargetScaling = aeControllerTarget::Ref::New(targetScaling, copy.pTargetScaling);
 }
 
 aeRuleBoneTransformator::~aeRuleBoneTransformator() = default;
@@ -305,9 +332,9 @@ void aeRuleBoneTransformator::UpdateTargets(){
 		return;
 	}
 	
-	pTargetTranslation->UpdateEngineTarget(GetAnimator(), rule->GetTargetTranslation());
-	pTargetRotation->UpdateEngineTarget(GetAnimator(), rule->GetTargetRotation());
-	pTargetScaling->UpdateEngineTarget(GetAnimator(), rule->GetTargetScaling());
+	pUpdateEngineTarget(rule->GetTargetTranslation(), targetTranslation);
+	pUpdateEngineTarget(rule->GetTargetRotation(), targetRotation);
+	pUpdateEngineTarget(rule->GetTargetScaling(), targetScaling);
 }
 
 int aeRuleBoneTransformator::CountLinkUsage(aeLink *link) const{
@@ -377,9 +404,9 @@ deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
 	engRule->SetInputBone(inputBone);
 	engRule->SetInputSource(inputSource);
 	
-	pTargetTranslation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetTranslation());
-	pTargetRotation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetRotation());
-	pTargetScaling->UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
+	pUpdateEngineTarget(engRule->GetTargetTranslation(), targetTranslation);
+	pUpdateEngineTarget(engRule->GetTargetRotation(), targetRotation);
+	pUpdateEngineTarget(engRule->GetTargetScaling(), targetScaling);
 	
 	// finished
 	return engRule;

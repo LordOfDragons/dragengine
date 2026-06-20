@@ -22,47 +22,48 @@
  * SOFTWARE.
  */
 
-#include "igdeMetaPropertySet.h"
-#include "undo/igdeMetaPropertySetUndo.h"
-#include "widget/igdeMetaPropertySetWidget.h"
-#include "../igdeMetaContextItemInfo.h"
+#include "igdeMetaPropertyObjectSet.h"
+#include "undo/igdeMetaPropertyObjectSetUndo.h"
+#include "widget/igdeMetaPropertyObjectSetWidget.h"
+#include "../igdeMetaContext.h"
 #include "../../gui/igdeUIHelper.h"
+#include "../../gui/igdeCommonDialogs.h"
 #include "../../gui/dialog/igdeDialogSetSelect.h"
 #include "../../environment/igdeEnvironment.h"
-#include "../../undo/igdeUndoSystem.h"
 #include "../../localization/igdeTranslationManager.h"
+#include "../../undo/igdeUndoSystem.h"
 
 
-// Class igdeMetaPropertySet::Listener
-////////////////////////////////////////
+// Class igdeMetaPropertyObjectSet::Listener
+//////////////////////////////////////////////
 
-void igdeMetaPropertySet::Listener::OnActiveChanged(
-igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyObjectSet::Listener::OnActiveChanged(
+igdeMetaPropertyObjectSet*, const igdeMetaContext::Ref&){
 }
 
-void igdeMetaPropertySet::Listener::OnSelectionChanged(
-igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+void igdeMetaPropertyObjectSet::Listener::OnSelectionChanged(
+igdeMetaPropertyObjectSet*, const igdeMetaContext::Ref&){
 }
 
 
-// Class igdeMetaPropertySet::ActionAdd
-/////////////////////////////////////////
+// Class igdeMetaPropertyObjectSet::ActionAdd
+///////////////////////////////////////////////
 
-igdeMetaPropertySet::ActionAdd::ActionAdd(igdeMetaPropertySet &property,
+igdeMetaPropertyObjectSet::ActionAdd::ActionAdd(igdeMetaPropertyObjectSet &property,
 	igdeWidget &owner, const igdeMetaContext::Ref &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.Add",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 	"@Igde.MetaPropertyList.Action.Add.ToolTip"),
-pPropertySet(property){
+pPropertyObjectSet(property){
 }
 
-void igdeMetaPropertySet::ActionAdd::OnAction(){
+void igdeMetaPropertyObjectSet::ActionAdd::OnAction(){
 	const auto &context = GetContext();
-	if(!pPropertySet.IsValid(context)){
+	if(!pPropertyObjectSet.IsValid(context)){
 		return;
 	}
 	
-	const auto candidates = pPropertySet.GetValidObjects(context);
+	const auto candidates = pPropertyObjectSet.GetValidObjects(context);
 	if(candidates.IsEmpty()){
 		return;
 	}
@@ -71,7 +72,7 @@ void igdeMetaPropertySet::ActionAdd::OnAction(){
 	decTObjectDictionary<deObject> candidateMap;
 	igdeMetaContextItemInfo info;
 	candidates.Visit([&](const deObject::Ref &object){
-		pPropertySet.GetObjectItemInfo(context, object, info);
+		pPropertyObjectSet.GetObjectItemInfo(context, object, info);
 		candidateNames.Add(info.GetText());
 		candidateMap.SetAt(info.GetText(), object);
 	});
@@ -85,10 +86,10 @@ void igdeMetaPropertySet::ActionAdd::OnAction(){
 	auto iconPresent = environment.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	auto iconAbsent = environment.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	
-	const auto oldValue = pPropertySet.GetPropertyValue(context);
+	const auto oldValue = pPropertyObjectSet.GetPropertyValue(context);
 	decStringSet oldValueNames;
 	oldValue.Visit([&](const deObject::Ref &object){
-		pPropertySet.GetObjectItemInfo(context, object, info);
+		pPropertyObjectSet.GetObjectItemInfo(context, object, info);
 		oldValueNames.Add(info.GetText());
 	});
 	
@@ -108,142 +109,144 @@ void igdeMetaPropertySet::ActionAdd::OnAction(){
 		return;
 	}
 	
-	pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+	pPropertyObjectSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyObjectSet));
 }
 
-void igdeMetaPropertySet::ActionAdd::Update(){
-	SetEnabled(pPropertySet.IsValid(GetContext()));
+void igdeMetaPropertyObjectSet::ActionAdd::Update(){
+	SetEnabled(pPropertyObjectSet.IsValid(GetContext()));
 }
 
 
-// Class igdeMetaPropertySet::ActionRemove
-////////////////////////////////////////////
+// Class igdeMetaPropertyObjectSet::ActionRemove
+//////////////////////////////////////////////////
 
-igdeMetaPropertySet::ActionRemove::ActionRemove(igdeMetaPropertySet &property,
+igdeMetaPropertyObjectSet::ActionRemove::ActionRemove(igdeMetaPropertyObjectSet &property,
 	igdeWidget &owner, const igdeMetaContext::Ref &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.Remove",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"@Igde.MetaPropertyList.Action.Remove.ToolTip"),
-pPropertySet(property){
+pPropertyObjectSet(property){
 }
 
-void igdeMetaPropertySet::ActionRemove::OnAction(){
+void igdeMetaPropertyObjectSet::ActionRemove::OnAction(){
 	const auto &context = GetContext();
-	if(!pPropertySet.IsValid(context)){
+	if(!pPropertyObjectSet.IsValid(context)){
 		return;
 	}
 	
-	if(pPropertySet.GetMultiSelection()){
-		const auto selection = pPropertySet.GetSelection(context);
+	if(pPropertyObjectSet.GetMultiSelection()){
+		const auto selection = pPropertyObjectSet.GetSelection(context);
 		if(selection.IsEmpty()){
 			return;
 		}
 		
-		auto newValue = pPropertySet.GetPropertyValue(context);
+		auto newValue = pPropertyObjectSet.GetPropertyValue(context);
 		selection.Visit([&](const deObject::Ref &data){
 			newValue.Remove(data);
 		});
 		
-		pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+		pPropertyObjectSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyObjectSet));
 		
 	}else{
-		const auto active = pPropertySet.GetActiveObject(context);
+		const auto active = pPropertyObjectSet.GetActiveObject(context);
 		if(!active){
 			return;
 		}
 		
-		auto newValue = pPropertySet.GetPropertyValue(context);
+		auto newValue = pPropertyObjectSet.GetPropertyValue(context);
 		newValue.Remove(active);
 		
-		pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+		pPropertyObjectSet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyObjectSet));
 	};
 }
 
-void igdeMetaPropertySet::ActionRemove::Update(){
+void igdeMetaPropertyObjectSet::ActionRemove::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context));
+	SetEnabled(pPropertyObjectSet.IsValid(context) && pPropertyObjectSet.GetActiveObject(context));
 }
 
 
-// Class igdeMetaPropertySet::ActionRemoveAll
-///////////////////////////////////////////////
+// Class igdeMetaPropertyObjectSet::ActionRemoveAll
+/////////////////////////////////////////////////////
 
-igdeMetaPropertySet::ActionRemoveAll::ActionRemoveAll(igdeMetaPropertySet &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyObjectSet::ActionRemoveAll::ActionRemoveAll(
+	igdeMetaPropertyObjectSet &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
 Action(owner, context, "@Igde.MetaPropertyList.Action.RemoveAll",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 	"@Igde.MetaPropertyList.Action.RemoveAll.ToolTip"),
-pPropertySet(property){
+pPropertyObjectSet(property){
 }
 
-void igdeMetaPropertySet::ActionRemoveAll::OnAction(){
+void igdeMetaPropertyObjectSet::ActionRemoveAll::OnAction(){
 	const auto &context = GetContext();
-	if(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context)){
-		pPropertySet.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertySet));
+	if(!pPropertyObjectSet.IsValid(context) || pPropertyObjectSet.GetPropertyValue(context).IsEmpty()){
+		return;
 	}
+	
+	pPropertyObjectSet.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertyObjectSet));
 }
 
-void igdeMetaPropertySet::ActionRemoveAll::Update(){
+void igdeMetaPropertyObjectSet::ActionRemoveAll::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context));
+	SetEnabled(pPropertyObjectSet.IsValid(context) && pPropertyObjectSet.GetPropertyValue(context).IsNotEmpty());
 }
 
 
-// Class igdeMetaPropertySet
-//////////////////////////////
+// Class igdeMetaPropertyObjectSet
+////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySet::igdeMetaPropertySet(
+igdeMetaPropertyObjectSet::igdeMetaPropertyObjectSet(
 	const char *id, const char *name, const char *description) :
 igdeMetaProperty(id, name, description),
 pRows(4),
 pMultiSelection(false){
 }
 
-igdeMetaPropertySet::~igdeMetaPropertySet() = default;
+igdeMetaPropertyObjectSet::~igdeMetaPropertyObjectSet() = default;
 
 
 // Management
 ///////////////
 
-void igdeMetaPropertySet::SetDefaultValue(const Set &value){
+void igdeMetaPropertyObjectSet::SetDefaultValue(const Set &value){
 	pDefaultValue = value;
 }
 
-void igdeMetaPropertySet::SetRows(int rows){
+void igdeMetaPropertyObjectSet::SetRows(int rows){
 	pRows = decMath::max(rows, 1);
 }
 
-void igdeMetaPropertySet::SetMultiSelection(bool multiSelection){
+void igdeMetaPropertyObjectSet::SetMultiSelection(bool multiSelection){
 	pMultiSelection = multiSelection;
 }
 
-void igdeMetaPropertySet::NotifyValueChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyObjectSet::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnValueChanged(this, context);
 	});
 }
 
-void igdeMetaPropertySet::NotifyActiveChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyObjectSet::NotifyActiveChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnActiveChanged(this, context);
 	});
 }
 
-void igdeMetaPropertySet::NotifySelectionChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyObjectSet::NotifySelectionChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnSelectionChanged(this, context);
 	});
 }
 
 
-igdeMetaPropertySetUndo::Ref igdeMetaPropertySet::ChangePropertyValue(
+igdeMetaPropertyObjectSetUndo::Ref igdeMetaPropertyObjectSet::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const Set &newValue,
 const char *undoInfo, const char *undoInfoLong){
 	if(context->GetUndoSystem()){
-		const auto undo = igdeMetaPropertySetUndo::Ref::New(
+		const auto undo = igdeMetaPropertyObjectSetUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
 		return undo;
@@ -254,34 +257,35 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertySet::Set igdeMetaPropertySet::GetSelection(
+igdeMetaPropertyObjectSet::Set igdeMetaPropertyObjectSet::GetSelection(
 const igdeMetaContext::Ref &context) const{
 	auto active = GetActiveObject(context);
 	return active ? Set(devctag, active) : Set();
 }
 
-void igdeMetaPropertySet::SetSelection(const igdeMetaContext::Ref&, const Set&){
+void igdeMetaPropertyObjectSet::SetSelection(const igdeMetaContext::Ref&, const Set&){
 }
 
-igdeMetaPropertySet::Set igdeMetaPropertySet::GetValidObjects(
-const igdeMetaContext::Ref &context) const{
+igdeMetaPropertyObjectSet::Set igdeMetaPropertyObjectSet::GetValidObjects(
+const igdeMetaContext::Ref&) const{
 	return {};
 }
 
-igdeMetaPropertySet::ObjectRef igdeMetaPropertySet::CopyObject(const ContextRef &context,
-const Set &existingObjects, const ObjectRef &object) const{
-	return {};
+igdeMetaProperty::Action::Ref igdeMetaPropertyObjectSet::CreateButtonAction(
+TargetButton target, igdeWidget &owner){
+	return CreateDefaultButtonAction(target, owner);
 }
 
-igdeMetaProperty::Action::Ref igdeMetaPropertySet::CreateButtonAction(TargetButton, igdeWidget&){
-	return {};
+void igdeMetaPropertyObjectSet::AddContextMenuEntries(igdeMenuCascade &contextMenu,
+const ContextRef &context, igdeWidget &owner){
+	AddDefaultContextMenuEntries(contextMenu, context, owner);
 }
 
-igdeMetaPropertyWidget::Ref igdeMetaPropertySet::CreateWidget(){
-	return igdeMetaPropertySetWidget::Ref::New(*this);
+igdeMetaPropertyWidget::Ref igdeMetaPropertyObjectSet::CreateWidget(){
+	return igdeMetaPropertyObjectSetWidget::Ref::New(*this);
 }
 
-void igdeMetaPropertySet::AddDefaultContextMenuEntries(igdeMenuCascade &menu,
+void igdeMetaPropertyObjectSet::AddDefaultContextMenuEntries(igdeMenuCascade &menu,
 const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	
@@ -292,9 +296,12 @@ const igdeMetaContext::Ref &context, igdeWidget &owner){
 	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, owner, context));
 }
 
-igdeMetaPropertySet::Action::Ref igdeMetaPropertySet::CreateDefaultButtonAction(
+igdeMetaPropertyObjectSet::Action::Ref igdeMetaPropertyObjectSet::CreateDefaultButtonAction(
 TargetButton target, igdeWidget &owner){
 	switch(target){
+	case TargetButton::add:
+		return ActionAdd::Ref::New(*this, owner);
+		
 	case TargetButton::remove:
 		return ActionRemove::Ref::New(*this, owner);
 		

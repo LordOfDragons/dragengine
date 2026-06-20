@@ -40,6 +40,7 @@
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 
 class aeWindowMain;
@@ -78,6 +79,7 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage enabled;
 	igdeMetaPropertyStringSetStorage::Storage affectedBones;
 	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetBlendFactor;
 	
 protected:
 	/** \name Constructors and Destructors */
@@ -100,6 +102,9 @@ public:
 	aeAnimator *GetAnimator() const;
 	/** Set the parent animator. */
 	void SetAnimator(aeAnimator *animator);
+	
+	/** Parent animator throwing exception if nullptr. */
+	aeAnimator &GetAnimatorRef() const;
 	
 	/** Meta context. */
 	inline const aeMCRule::Ref &GetMetaContext() const{ return pMetaContext; }
@@ -236,6 +241,9 @@ public:
 	
 protected:
 	void pInitCopy(const aeRule &copy);
+	
+	void pUpdateEngineTarget(deAnimatorControllerTarget &target,
+		const igdeMetaPropertyObjectSetStorage<aeLink>::Storage &storage) const;
 };
 
 #endif

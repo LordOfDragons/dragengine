@@ -28,19 +28,22 @@
 #include "aeTMCPAnimator.h"
 #include "../../animator/aeAnimator.h"
 #include "../../animator/rule/aeRule.h"
+#include "../../animator/link/aeLink.h"
 
+#include <deigde/gui/igdeUIHelper.h>
 #include <deigde/meta/igdeMetaContextItemInfo.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
 /** Rules */
 
-class aeMCPRules : public aeTMCPAnimator<igdeMetaPropertyListTypeStorage<aeRule, aeRule::List>>{
+class aeMCPRules : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
 public:
 	aeMCPRules() : aeTMCPAnimator("animator.rules",
 		"@Animator.WPRule.Rules", "@Animator.WPRule.Rules.ToolTip"){
@@ -78,7 +81,7 @@ public:
 	}
 };
 
-	
+
 class aeMCPRuleName : public aeTMCPAnimatorRule<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleName() : aeTMCPAnimatorRule("rule.name",
@@ -206,6 +209,48 @@ public:
 	
 	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
+};
+
+
+template <typename T>
+class aeTMCPRuleTarget : public T{
+public:
+	template <typename... A>
+	aeTMCPRuleTarget(const char *id, const char *name, const char *description, A&&... args) :
+		T(id, name, description, std::forward<A>(args)...){
+			T::SetRows(2);
+			T::SetMultiSelection(true);
+		}
+	
+	~aeTMCPRuleTarget() override = default;
+	
+	void GetObjectItemInfoType(const igdeMetaContext::Ref&, const typename T::ObjectTypeRef &link, igdeMetaContextItemInfo &info) const override{
+		info.SetAll(link->GetName());
+	}
+	
+	typename T::SetType GetValidObjectsType(const igdeMetaContext::Ref &context) const override{
+		return typename T::SetType(T::Rule(context).GetAnimatorRef().links.GetValue());
+	}
+	
+	void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
+		auto &helper = menu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(menu, igdeMetaPropertyObjectSet::ActionAdd::Ref::New(*this, owner, context));
+		T::AddDefaultContextMenuEntries(menu, context, owner);
+	}
+};
+
+
+class aeMCPRuleTargetBlendFactor : public aeTMCPRuleTarget<aeTMCPAnimatorRule<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleTargetBlendFactor() : aeTMCPRuleTarget("rule.targetBlendFactor",
+		"@Animator.Target.BlendFactor", "@Animator.Target.BlendFactor.ToolTip"){
+	};
+	
+	~aeMCPRuleTargetBlendFactor() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Rule(context).targetBlendFactor;
+	}
 };
 
 #endif

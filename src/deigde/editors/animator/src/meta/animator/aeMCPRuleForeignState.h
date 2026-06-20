@@ -32,6 +32,7 @@
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
@@ -235,6 +236,60 @@ public:
 			info.SetAll("??");
 			break;
 		}
+	}
+};
+
+
+class aeMCPRuleForeignStateTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleForeignStateTargetPosition() : aeTMCPRuleTarget("foreignstate.targetPosition",
+		"@Animator.Target.Position", "@Animator.Target.Position.ToolTip"){
+	};
+	
+	~aeMCPRuleForeignStateTargetPosition() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetPosition;
+	}
+};
+
+class aeMCPRuleForeignStateTargetOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleForeignStateTargetOrientation() : aeTMCPRuleTarget("foreignstate.targetOrientation",
+		"@Animator.Target.Orientation", "@Animator.Target.Orientation.ToolTip"){
+	};
+	
+	~aeMCPRuleForeignStateTargetOrientation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetOrientation;
+	}
+};
+
+
+class aeMCPRuleForeignStateTargetSize : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleForeignStateTargetSize() : aeTMCPRuleTarget("foreignstate.targetSize",
+		"@Animator.Target.Size", "@Animator.Target.Size.ToolTip"){
+	};
+	
+	~aeMCPRuleForeignStateTargetSize() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetSize;
+	}
+};
+
+class aeMCPRuleForeignStateTargetVertexPositionSet : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleForeignStateTargetVertexPositionSet() : aeTMCPRuleTarget("foreignstate.targetVertexPositionSet",
+		"@Animator.Target.VertexPositionSet", "@Animator.Target.VertexPositionSet.ToolTip"){
+	};
+	
+	~aeMCPRuleForeignStateTargetVertexPositionSet() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetVertexPositionSet;
 	}
 };
 

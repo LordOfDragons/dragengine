@@ -30,6 +30,7 @@
 #include "../../animator/rule/aeRuleTrackTo.h"
 
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
@@ -265,6 +266,33 @@ public:
 			info.SetAll("??");
 			break;
 		}
+	}
+};
+
+
+class aeMCPRuleTrackToTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleTrackToTargetPosition() : aeTMCPRuleTarget("trackto.targetPosition",
+		"@Animator.Target.Position", "@Animator.Target.Position.ToolTip"){
+	};
+	
+	~aeMCPRuleTrackToTargetPosition() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetPosition;
+	}
+};
+
+class aeMCPRuleTrackToTargetUp : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleTrackToTargetUp() : aeTMCPRuleTarget("trackto.targetUp",
+		"@Animator.Target.Up", "@Animator.Target.Up.ToolTip"){
+	};
+	
+	~aeMCPRuleTrackToTargetUp() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetUp;
 	}
 };
 

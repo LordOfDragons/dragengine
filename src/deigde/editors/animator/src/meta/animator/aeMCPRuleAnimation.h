@@ -31,6 +31,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
@@ -113,6 +114,20 @@ public:
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).enableVertexPositionSet;
+	}
+};
+
+
+class aeMCPRuleAnimationTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimation<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleAnimationTargetMoveTime() : aeTMCPRuleTarget("animation.targetMoveTime",
+		"@Animator.Target.MoveTime", "@Animator.Target.MoveTime.ToolTip"){
+	};
+	
+	~aeMCPRuleAnimationTargetMoveTime() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetMoveTime;
 	}
 };
 

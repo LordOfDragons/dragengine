@@ -29,6 +29,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
@@ -64,6 +65,9 @@ public:
 	igdeMetaPropertyStringStorage::Storage inputBone;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eCoordinateFrames>::Storage coordinateFrame;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eInputSources>::Storage inputSource;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetTranslation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetRotation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetScaling;
 	
 public:
 	/** \name Constructors and Destructors */

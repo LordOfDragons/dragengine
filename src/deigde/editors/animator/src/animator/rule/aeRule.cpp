@@ -72,14 +72,14 @@ pEngRule(nullptr),
 pIndex(-1),
 pMetaContext(std::move(metaContext)),
 pType(type),
-pTargetBlendFactor(aeControllerTarget::Ref::New()),
 name(windowMain.GetMCAnimatorProperties().rule.name, pMetaContext, aname),
 blendMode(windowMain.GetMCAnimatorProperties().rule.blendMode, pMetaContext),
 blendFactor(windowMain.GetMCAnimatorProperties().rule.blendFactor, pMetaContext),
 invertBlendFactor(windowMain.GetMCAnimatorProperties().rule.invertBlendFactor, pMetaContext),
 enabled(windowMain.GetMCAnimatorProperties().rule.enabled, pMetaContext),
 affectedBones(windowMain.GetMCAnimatorProperties().rule.listBones, pMetaContext),
-affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.listVertexPositionSets, pMetaContext)
+affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.listVertexPositionSets, pMetaContext),
+targetBlendFactor(windowMain.GetMCAnimatorProperties().rule.targetBlendFactor, pMetaContext)
 {
 	name.SetOnChanged([this](){
 		if(pAnimator){
@@ -129,6 +129,15 @@ affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.listVertexP
 		}
 		NotifyRuleChanged();
 	});
+	
+	pTargetBlendFactor = aeControllerTarget::Ref::New(targetBlendFactor);
+	targetBlendFactor.SetOnChanged([this](){
+		if(pEngRule){
+			pUpdateEngineTarget(pEngRule->GetTargetBlendFactor(), targetBlendFactor);
+		}
+		pTargetBlendFactor->OnStorageChanged();
+		NotifyRuleChanged();
+	});
 }
 
 aeRule::aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext, const aeRule &copy) :
@@ -166,6 +175,10 @@ void aeRule::SetAnimator(aeAnimator *animator){
 	OnParentAnimatorChanged();
 }
 
+aeAnimator &aeRule::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator);
+	return *pAnimator;
+}
 
 
 void aeRule::SetEngineRule(deAnimatorRule *engRule){
@@ -188,7 +201,7 @@ void aeRule::InitEngineRule(deAnimatorRule *engRule) const{
 	engRule->GetListBones() = affectedBones;
 	engRule->GetListVertexPositionSets() = affectedVertexPositionSets;
 	
-	pTargetBlendFactor->UpdateEngineTarget(GetAnimator(), engRule->GetTargetBlendFactor());
+	pUpdateEngineTarget(engRule->GetTargetBlendFactor(), targetBlendFactor);
 }
 
 
@@ -226,7 +239,7 @@ void aeRule::UpdateCompAnim(){
 void aeRule::UpdateTargets(){
 	aeAnimator * const animator = GetAnimator();
 	if(pEngRule && animator){
-		pTargetBlendFactor->UpdateEngineTarget(animator, pEngRule->GetTargetBlendFactor());
+		pUpdateEngineTarget(pEngRule->GetTargetBlendFactor(), targetBlendFactor);
 	}
 }
 
@@ -401,5 +414,29 @@ void aeRule::pInitCopy(const aeRule &copy){
 	enabled.SetValue(copy.enabled, false);
 	affectedBones.SetValue(copy.affectedBones, false);
 	affectedVertexPositionSets.SetValue(copy.affectedVertexPositionSets, false);
-	pTargetBlendFactor = aeControllerTarget::Ref::New(copy.pTargetBlendFactor);
+	pTargetBlendFactor = aeControllerTarget::Ref::New(targetBlendFactor, copy.pTargetBlendFactor);
+}
+
+void aeRule::pUpdateEngineTarget(deAnimatorControllerTarget &target,
+const igdeMetaPropertyObjectSetStorage<aeLink>::Storage &storage) const{
+	if(!pAnimator){
+		return;
+	}
+	
+	target.RemoveAllLinks();
+	
+	deAnimator * const engAnimator = pAnimator->GetEngineAnimator();
+	if(!engAnimator){
+		return;
+	}
+	
+	storage->Visit([&](const aeLink &link){
+		const auto engLink = link.GetEngineLink();
+		if(engLink){
+			const int indexLink = engAnimator->GetLinks().IndexOf(engLink);
+			if(indexLink != -1){
+				target.AddLink(indexLink);
+			}
+		}
+	});
 }

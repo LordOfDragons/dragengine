@@ -33,6 +33,7 @@
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
@@ -313,6 +314,47 @@ public:
 			info.SetAll("??");
 			break;
 		}
+	}
+};
+
+
+class aeMCPRuleBoneTransformatorTargetTranslation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleBoneTransformatorTargetTranslation() : aeTMCPRuleTarget("bonetransformator.targetTranslation",
+		"@Animator.Target.Translation", "@Animator.Target.Translation.ToolTip"){
+	};
+	
+	~aeMCPRuleBoneTransformatorTargetTranslation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetTranslation;
+	}
+};
+
+class aeMCPRuleBoneTransformatorTargetRotation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleBoneTransformatorTargetRotation() : aeTMCPRuleTarget("bonetransformator.targetRotation",
+		"@Animator.Target.Rotation", "@Animator.Target.Rotation.ToolTip"){
+	};
+	
+	~aeMCPRuleBoneTransformatorTargetRotation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetRotation;
+	}
+};
+
+
+class aeMCPRuleBoneTransformatorTargetScaling : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleBoneTransformatorTargetScaling() : aeTMCPRuleTarget("bonetransformator.targetScaling",
+		"@Animator.Target.Scaling", "@Animator.Target.Scaling.ToolTip"){
+	};
+	
+	~aeMCPRuleBoneTransformatorTargetScaling() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetScaling;
 	}
 };
 

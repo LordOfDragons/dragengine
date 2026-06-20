@@ -647,6 +647,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyInteger.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyList.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyObject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyObjectSet.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPath.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint3.cpp" />
@@ -668,6 +669,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyFloatUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyIntegerUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyListUndo.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyObjectSetUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyObjectUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPathUndo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPoint3Undo.cpp" />
@@ -692,6 +694,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyGroupWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyIntegerWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyListWidget.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyObjectSetWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyObjectWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPathWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPoint3Widget.cpp" />
@@ -1094,6 +1097,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyInteger.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyObject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyObjectSet.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPath.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint3.h" />
@@ -1128,6 +1132,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyFloatUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyIntegerUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyListUndo.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyObjectSetUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyObjectUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPathUndo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\undo\igdeMetaPropertyPoint3Undo.h" />
@@ -1152,6 +1157,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyGroupWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyIntegerWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyListWidget.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyObjectSetWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyObjectWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPathWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPoint3Widget.h" />

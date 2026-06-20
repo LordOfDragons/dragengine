@@ -54,6 +54,7 @@ public:
 	deTObjectReference<aeMCPRuleEnabled> enabled = deTObjectReference<aeMCPRuleEnabled>::New();
 	deTObjectReference<aeMCPRuleListBones> listBones = deTObjectReference<aeMCPRuleListBones>::New();
 	deTObjectReference<aeMCPRuleListVertexPositionSets> listVertexPositionSets = deTObjectReference<aeMCPRuleListVertexPositionSets>::New();
+	deTObjectReference<aeMCPRuleTargetBlendFactor> targetBlendFactor = deTObjectReference<aeMCPRuleTargetBlendFactor>::New();
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
 		decTObjectOrderedSet<igdeMetaProperty>(devctag,
@@ -63,7 +64,8 @@ public:
 			invertBlendFactor,
 			enabled,
 			listBones,
-			listVertexPositionSets));
+			listVertexPositionSets,
+			targetBlendFactor));
 	
 	deTObjectReference<aeMCPRules> rules = deTObjectReference<aeMCPRules>::New();
 	deTObjectReference<aeMCPRule> rule;
@@ -78,6 +80,7 @@ public:
 
 class aeMCRuleAnimationProperties{
 public:
+	deTObjectReference<aeMCPRuleAnimationTargetMoveTime> targetMoveTime = deTObjectReference<aeMCPRuleAnimationTargetMoveTime>::New();
 	deTObjectReference<aeMCPRuleAnimationMoveName> moveName = deTObjectReference<aeMCPRuleAnimationMoveName>::New();
 	deTObjectReference<aeMCPRuleAnimationMoveTime> moveTime = deTObjectReference<aeMCPRuleAnimationMoveTime>::New();
 	deTObjectReference<aeMCPRuleAnimationEnablePosition> enablePosition = deTObjectReference<aeMCPRuleAnimationEnablePosition>::New();
@@ -95,13 +98,16 @@ public:
 			enablePosition,
 			enableOrientation,
 			enableSize,
-			enableVertexPositionSet);
+			enableVertexPositionSet,
+			targetMoveTime);
 	}
 };
 
 
 class aeMCRuleAnimationDifferenceProperties{
 public:
+	deTObjectReference<aeMCPRuleAnimationDifferenceTargetLeadMoveTime> targetLeadMoveTime = deTObjectReference<aeMCPRuleAnimationDifferenceTargetLeadMoveTime>::New();
+	deTObjectReference<aeMCPRuleAnimationDifferenceTargetRefMoveTime> targetRefMoveTime = deTObjectReference<aeMCPRuleAnimationDifferenceTargetRefMoveTime>::New();
 	deTObjectReference<aeMCPRuleAnimationDifferenceLeadingMoveName> leadingMoveName = deTObjectReference<aeMCPRuleAnimationDifferenceLeadingMoveName>::New();
 	deTObjectReference<aeMCPRuleAnimationDifferenceLeadingMoveTime> leadingMoveTime = deTObjectReference<aeMCPRuleAnimationDifferenceLeadingMoveTime>::New();
 	deTObjectReference<aeMCPRuleAnimationDifferenceReferenceMoveName> referenceMoveName = deTObjectReference<aeMCPRuleAnimationDifferenceReferenceMoveName>::New();
@@ -127,13 +133,17 @@ public:
 			enablePosition,
 			enableOrientation,
 			enableSize,
-			enableVertexPositionSet);
+			enableVertexPositionSet,
+			targetLeadMoveTime,
+			targetRefMoveTime);
 	}
 };
 
 
 class aeMCRuleAnimationSelectProperties{
 public:
+	deTObjectReference<aeMCPRuleAnimationSelectTargetMoveTime> targetMoveTime = deTObjectReference<aeMCPRuleAnimationSelectTargetMoveTime>::New();
+	deTObjectReference<aeMCPRuleAnimationSelectTargetSelect> targetSelect = deTObjectReference<aeMCPRuleAnimationSelectTargetSelect>::New();
 	deTObjectReference<aeMCPRuleAnimationSelectMoves> moves = deTObjectReference<aeMCPRuleAnimationSelectMoves>::New();
 	deTObjectReference<aeMCPRuleAnimationSelectEnablePosition> enablePosition = deTObjectReference<aeMCPRuleAnimationSelectEnablePosition>::New();
 	deTObjectReference<aeMCPRuleAnimationSelectEnableOrientation> enableOrientation = deTObjectReference<aeMCPRuleAnimationSelectEnableOrientation>::New();
@@ -149,13 +159,18 @@ public:
 			enablePosition,
 			enableOrientation,
 			enableSize,
-			enableVertexPositionSet);
+			enableVertexPositionSet,
+			targetMoveTime,
+			targetSelect);
 	}
 };
 
 
 class aeMCRuleBoneTransformatorProperties{
 public:
+	deTObjectReference<aeMCPRuleBoneTransformatorTargetTranslation> targetTranslation = deTObjectReference<aeMCPRuleBoneTransformatorTargetTranslation>::New();
+	deTObjectReference<aeMCPRuleBoneTransformatorTargetRotation> targetRotation = deTObjectReference<aeMCPRuleBoneTransformatorTargetRotation>::New();
+	deTObjectReference<aeMCPRuleBoneTransformatorTargetScaling> targetScaling = deTObjectReference<aeMCPRuleBoneTransformatorTargetScaling>::New();
 	deTObjectReference<aeMCPRuleBoneTransformatorMinTranslation> minTranslation = deTObjectReference<aeMCPRuleBoneTransformatorMinTranslation>::New();
 	deTObjectReference<aeMCPRuleBoneTransformatorMaxTranslation> maxTranslation = deTObjectReference<aeMCPRuleBoneTransformatorMaxTranslation>::New();
 	deTObjectReference<aeMCPRuleBoneTransformatorMinRotation> minRotation = deTObjectReference<aeMCPRuleBoneTransformatorMinRotation>::New();
@@ -195,13 +210,20 @@ public:
 			targetBone,
 			inputBone,
 			coordinateFrame,
-			inputSource);
+			inputSource,
+			targetTranslation,
+			targetRotation,
+			targetScaling);
 	}
 };
 
 
 class aeMCRuleForeignStateProperties{
 public:
+	deTObjectReference<aeMCPRuleForeignStateTargetPosition> targetPosition = deTObjectReference<aeMCPRuleForeignStateTargetPosition>::New();
+	deTObjectReference<aeMCPRuleForeignStateTargetOrientation> targetOrientation = deTObjectReference<aeMCPRuleForeignStateTargetOrientation>::New();
+	deTObjectReference<aeMCPRuleForeignStateTargetSize> targetSize = deTObjectReference<aeMCPRuleForeignStateTargetSize>::New();
+	deTObjectReference<aeMCPRuleForeignStateTargetVertexPositionSet> targetVertexPositionSet = deTObjectReference<aeMCPRuleForeignStateTargetVertexPositionSet>::New();
 	deTObjectReference<aeMCPRuleForeignStateForeignBone> foreignBone = deTObjectReference<aeMCPRuleForeignStateForeignBone>::New();
 	deTObjectReference<aeMCPRuleForeignStateForeignVertexPositionSet> foreignVertexPositionSet = deTObjectReference<aeMCPRuleForeignStateForeignVertexPositionSet>::New();
 	deTObjectReference<aeMCPRuleForeignStateScalePosition> scalePosition = deTObjectReference<aeMCPRuleForeignStateScalePosition>::New();
@@ -231,13 +253,18 @@ public:
 			enableSize,
 			enableVertexPositionSet,
 			sourceCoordinateFrame,
-			destCoordinateFrame);
+			destCoordinateFrame,
+			targetPosition,
+			targetOrientation,
+			targetSize,
+			targetVertexPositionSet);
 	}
 };
 
 
 class aeMCRuleGroupProperties{
 public:
+	deTObjectReference<aeMCPRuleGroupTargetSelect> targetSelect = deTObjectReference<aeMCPRuleGroupTargetSelect>::New();
 	deTObjectReference<aeMCPRuleGroupEnablePosition> enablePosition = deTObjectReference<aeMCPRuleGroupEnablePosition>::New();
 	deTObjectReference<aeMCPRuleGroupEnableOrientation> enableOrientation = deTObjectReference<aeMCPRuleGroupEnableOrientation>::New();
 	deTObjectReference<aeMCPRuleGroupEnableSize> enableSize = deTObjectReference<aeMCPRuleGroupEnableSize>::New();
@@ -255,13 +282,20 @@ public:
 			enableSize,
 			enableVertexPositionSet,
 			useCurrentState,
-			applicationType);
+			applicationType,
+			targetSelect);
 	}
 };
 
 
 class aeMCRuleInverseKinematicProperties{
 public:
+	deTObjectReference<aeMCPRuleInverseKinematicTargetGoalPosition> targetGoalPosition = deTObjectReference<aeMCPRuleInverseKinematicTargetGoalPosition>::New();
+	deTObjectReference<aeMCPRuleInverseKinematicTargetGoalOrientation> targetGoalOrientation = deTObjectReference<aeMCPRuleInverseKinematicTargetGoalOrientation>::New();
+	deTObjectReference<aeMCPRuleInverseKinematicTargetLocalPosition> targetLocalPosition = deTObjectReference<aeMCPRuleInverseKinematicTargetLocalPosition>::New();
+	deTObjectReference<aeMCPRuleInverseKinematicTargetLocalOrientation> targetLocalOrientation = deTObjectReference<aeMCPRuleInverseKinematicTargetLocalOrientation>::New();
+	deTObjectReference<aeMCPRuleInverseKinematicTargetReachRange> targetReachRange = deTObjectReference<aeMCPRuleInverseKinematicTargetReachRange>::New();
+	deTObjectReference<aeMCPRuleInverseKinematicTargetReachCenter> targetReachCenter = deTObjectReference<aeMCPRuleInverseKinematicTargetReachCenter>::New();
 	deTObjectReference<aeMCPRuleInverseKinematicGoalPosition> goalPosition = deTObjectReference<aeMCPRuleInverseKinematicGoalPosition>::New();
 	deTObjectReference<aeMCPRuleInverseKinematicGoalOrientation> goalOrientation = deTObjectReference<aeMCPRuleInverseKinematicGoalOrientation>::New();
 	deTObjectReference<aeMCPRuleInverseKinematicLocalPosition> localPosition = deTObjectReference<aeMCPRuleInverseKinematicLocalPosition>::New();
@@ -287,7 +321,13 @@ public:
 			solverBone,
 			reachRange,
 			reachBone,
-			reachCenter);
+			reachCenter,
+			targetGoalPosition,
+			targetGoalOrientation,
+			targetLocalPosition,
+			targetLocalOrientation,
+			targetReachRange,
+			targetReachCenter);
 	}
 };
 
@@ -390,6 +430,10 @@ public:
 
 class aeMCRuleStateManipulatorProperties{
 public:
+	deTObjectReference<aeMCPRuleStateManipulatorTargetPosition> targetPosition = deTObjectReference<aeMCPRuleStateManipulatorTargetPosition>::New();
+	deTObjectReference<aeMCPRuleStateManipulatorTargetRotation> targetRotation = deTObjectReference<aeMCPRuleStateManipulatorTargetRotation>::New();
+	deTObjectReference<aeMCPRuleStateManipulatorTargetSize> targetSize = deTObjectReference<aeMCPRuleStateManipulatorTargetSize>::New();
+	deTObjectReference<aeMCPRuleStateManipulatorTargetVertexPositionSet> targetVertexPositionSet = deTObjectReference<aeMCPRuleStateManipulatorTargetVertexPositionSet>::New();
 	deTObjectReference<aeMCPRuleStateManipulatorMinPosition> minPosition = deTObjectReference<aeMCPRuleStateManipulatorMinPosition>::New();
 	deTObjectReference<aeMCPRuleStateManipulatorMaxPosition> maxPosition = deTObjectReference<aeMCPRuleStateManipulatorMaxPosition>::New();
 	deTObjectReference<aeMCPRuleStateManipulatorMinRotation> minRotation = deTObjectReference<aeMCPRuleStateManipulatorMinRotation>::New();
@@ -419,7 +463,11 @@ public:
 			enablePosition,
 			enableRotation,
 			enableSize,
-			enableVertexPositionSet);
+			enableVertexPositionSet,
+			targetPosition,
+			targetRotation,
+			targetSize,
+			targetVertexPositionSet);
 	}
 };
 
@@ -472,6 +520,8 @@ public:
 
 class aeMCRuleTrackToProperties{
 public:
+	deTObjectReference<aeMCPRuleTrackToTargetPosition> targetPosition = deTObjectReference<aeMCPRuleTrackToTargetPosition>::New();
+	deTObjectReference<aeMCPRuleTrackToTargetUp> targetUp = deTObjectReference<aeMCPRuleTrackToTargetUp>::New();
 	deTObjectReference<aeMCPRuleTrackToTrackBone> trackBone = deTObjectReference<aeMCPRuleTrackToTrackBone>::New();
 	deTObjectReference<aeMCPRuleTrackToTrackAxis> trackAxis = deTObjectReference<aeMCPRuleTrackToTrackAxis>::New();
 	deTObjectReference<aeMCPRuleTrackToUpAxis> upAxis = deTObjectReference<aeMCPRuleTrackToUpAxis>::New();
@@ -486,7 +536,9 @@ public:
 			trackAxis,
 			upAxis,
 			upTarget,
-			lockedAxis);
+			lockedAxis,
+			targetPosition,
+			targetUp);
 	}
 };
 

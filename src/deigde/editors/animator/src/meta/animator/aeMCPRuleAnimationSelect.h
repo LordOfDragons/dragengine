@@ -30,6 +30,7 @@
 #include "../../animator/rule/aeRuleAnimationSelect.h"
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyStringList.h>
 
 
@@ -102,6 +103,33 @@ public:
 	}
 	
 	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+};
+
+
+class aeMCPRuleAnimationSelectTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleAnimationSelectTargetMoveTime() : aeTMCPRuleTarget("animationselect.targetMoveTime",
+		"@Animator.Target.MoveTime", "@Animator.Target.MoveTime.ToolTip"){
+	};
+	
+	~aeMCPRuleAnimationSelectTargetMoveTime() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetMoveTime;
+	}
+};
+
+class aeMCPRuleAnimationSelectTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleAnimationSelectTargetSelect() : aeTMCPRuleTarget("animationselect.targetSelect",
+		"@Animator.Target.Select", "@Animator.Target.Select.ToolTip"){
+	};
+	
+	~aeMCPRuleAnimationSelectTargetSelect() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetSelect;
+	}
 };
 
 

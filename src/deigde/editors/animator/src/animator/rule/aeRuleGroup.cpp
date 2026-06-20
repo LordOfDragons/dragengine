@@ -47,7 +47,8 @@ enableOrientation(windowMain.GetMCAnimatorProperties().ruleGroup.enableOrientati
 enableSize(windowMain.GetMCAnimatorProperties().ruleGroup.enableSize, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleGroup.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 useCurrentState(windowMain.GetMCAnimatorProperties().ruleGroup.useCurrentState, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-applicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, GetMetaContext().StaticCast<aeMCRuleGroup>())
+applicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, GetMetaContext().StaticCast<aeMCRuleGroup>()),
+targetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, GetMetaContext().StaticCast<aeMCRuleGroup>())
 {
 	enablePosition.SetOnChanged([this](){
 		if(GetEngineRule()){
@@ -90,6 +91,15 @@ applicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, 
 		}
 		NotifyRuleChanged();
 	});
+	
+	pTargetSelect = aeControllerTarget::Ref::New(targetSelect);
+	targetSelect.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleGroup*)GetEngineRule())->GetTargetSelect(), targetSelect);
+		}
+		pTargetSelect->OnStorageChanged();
+		NotifyRuleChanged();
+	});
 }
 
 aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const aeRuleGroup &copy) :
@@ -101,6 +111,8 @@ aeRuleGroup(windowMain, copy.name)
 	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
 	useCurrentState.SetValue(copy.useCurrentState, false);
 	applicationType.SetValue(copy.applicationType, false);
+	
+	pTargetSelect = aeControllerTarget::Ref::New(targetSelect, copy.pTargetSelect);
 }
 
 aeRuleGroup::~aeRuleGroup() = default;
@@ -226,7 +238,7 @@ void aeRuleGroup::UpdateTargets(){
 	
 	deAnimatorRuleGroup * const rule = (deAnimatorRuleGroup*)GetEngineRule();
 	if(rule){
-		pTargetSelect->UpdateEngineTarget(GetAnimator(), rule->GetTargetSelect());
+		pUpdateEngineTarget(rule->GetTargetSelect(), targetSelect);
 	}
 	
 	const int count = pRules.GetCount();
@@ -313,7 +325,7 @@ deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 	engRule->SetUseCurrentState(useCurrentState);
 	engRule->SetApplicationType(applicationType);
 	
-	pTargetSelect->UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
+	pUpdateEngineTarget(engRule->GetTargetSelect(), targetSelect);
 	
 	return engRule;
 }

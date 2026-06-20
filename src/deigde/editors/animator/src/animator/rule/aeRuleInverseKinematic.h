@@ -29,6 +29,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
@@ -58,6 +59,12 @@ public:
 	igdeMetaPropertyFloatStorage::Storage reachRange;
 	igdeMetaPropertyStringStorage::Storage reachBone;
 	igdeMetaPropertyVectorStorage::Storage reachCenter;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetGoalPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetGoalOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetLocalPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetLocalOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetReachRange;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetReachCenter;
 	
 public:
 	/** \name Constructors and Destructors */

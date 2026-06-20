@@ -31,6 +31,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
@@ -166,6 +167,33 @@ public:
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).enableVertexPositionSet;
+	}
+};
+
+
+class aeMCPRuleAnimationDifferenceTargetLeadMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleAnimationDifferenceTargetLeadMoveTime() : aeTMCPRuleTarget("animationdifference.targetLeadMoveTime",
+		"@Animator.Target.LeadingMoveTime", "@Animator.Target.LeadingMoveTime.ToolTip"){
+	};
+	
+	~aeMCPRuleAnimationDifferenceTargetLeadMoveTime() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetLeadMoveTime;
+	}
+};
+
+class aeMCPRuleAnimationDifferenceTargetRefMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleAnimationDifferenceTargetRefMoveTime() : aeTMCPRuleTarget("animationdifference.targetRefMoveTime",
+		"@Animator.Target.ReferenceMoveTime", "@Animator.Target.ReferenceMoveTime.ToolTip"){
+	};
+	
+	~aeMCPRuleAnimationDifferenceTargetRefMoveTime() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetRefMoveTime;
 	}
 };
 

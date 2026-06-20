@@ -171,6 +171,10 @@ protected:
 	virtual ~aeTMCPAnimatorRuleType() override{}
 	
 public:
+	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
+		return context.DynamicCast<C>()->Capture();
+	}
+	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<C>();
 		return c && c->GetRule() != nullptr;

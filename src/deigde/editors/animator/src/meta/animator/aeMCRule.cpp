@@ -48,7 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeMCRule::aeMCRule(aeWindowMain &windowMain, aeRule *rule) :
+aeMCRule::aeMCRule(aeWindowMain &windowMain, aeRule *rule, bool guardRule) :
 igdeMetaContext("rule"),
 pWindowMain(windowMain),
 pRule(rule)
@@ -56,6 +56,9 @@ pRule(rule)
 	SetLabel("Rule");
 	SetDescription("Rule properties");
 	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	if(guardRule){
+		pGuardRule = rule;
+	}
 }
 
 aeMCRule::~aeMCRule() = default;
@@ -69,10 +72,8 @@ aeRule &aeMCRule::GetRuleRef() const{
 	return *pRule;
 }
 
-aeMCRule::Ref aeMCRule::Capture() const{
-	auto context = Ref::New(pWindowMain, pRule);
-	context->pGuardRule = pRule;
-	return context;
+igdeMetaContext::Ref aeMCRule::Capture() const{
+	return Ref::New(pWindowMain, pRule, true);
 }
 
 igdeUndoSystem *aeMCRule::GetUndoSystem() const{
@@ -87,12 +88,12 @@ igdeClipboard *aeMCRule::GetClipboard() const{
 // Class aeMCRuleAnimation
 ////////////////////////////
 
-aeMCRuleAnimation::aeMCRuleAnimation(aeWindowMain &windowMain, aeRuleAnimation *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleAnimation::aeMCRuleAnimation(aeWindowMain &windowMain, aeRuleAnimation *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Animation");
 	SetDescription("Rule animation properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleAnimation.metaProperties);
 }
 
 aeMCRuleAnimation::~aeMCRuleAnimation() = default;
@@ -106,16 +107,20 @@ aeRuleAnimation &aeMCRuleAnimation::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleAnimation::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleAnimationDifference
 //////////////////////////////////////
 
-aeMCRuleAnimationDifference::aeMCRuleAnimationDifference(aeWindowMain &windowMain, aeRuleAnimationDifference *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleAnimationDifference::aeMCRuleAnimationDifference(aeWindowMain &windowMain, aeRuleAnimationDifference *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Animation Difference");
 	SetDescription("Rule animation difference properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.metaProperties);
 }
 
 aeMCRuleAnimationDifference::~aeMCRuleAnimationDifference() = default;
@@ -130,16 +135,20 @@ aeRuleAnimationDifference &aeMCRuleAnimationDifference::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleAnimationDifference::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleAnimationSelect
 //////////////////////////////////
 
-aeMCRuleAnimationSelect::aeMCRuleAnimationSelect(aeWindowMain &windowMain, aeRuleAnimationSelect *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleAnimationSelect::aeMCRuleAnimationSelect(aeWindowMain &windowMain, aeRuleAnimationSelect *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Animation Select");
 	SetDescription("Rule animation select properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.metaProperties);
 }
 
 aeMCRuleAnimationSelect::~aeMCRuleAnimationSelect() = default;
@@ -154,16 +163,20 @@ aeRuleAnimationSelect &aeMCRuleAnimationSelect::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleAnimationSelect::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleBoneTransformator
 ////////////////////////////////////
 
-aeMCRuleBoneTransformator::aeMCRuleBoneTransformator(aeWindowMain &windowMain, aeRuleBoneTransformator *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleBoneTransformator::aeMCRuleBoneTransformator(aeWindowMain &windowMain, aeRuleBoneTransformator *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Bone Transformator");
 	SetDescription("Rule bone transformator properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.metaProperties);
 }
 
 aeMCRuleBoneTransformator::~aeMCRuleBoneTransformator() = default;
@@ -178,16 +191,20 @@ aeRuleBoneTransformator &aeMCRuleBoneTransformator::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleBoneTransformator::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleForeignState
 ///////////////////////////////
 
-aeMCRuleForeignState::aeMCRuleForeignState(aeWindowMain &windowMain, aeRuleForeignState *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleForeignState::aeMCRuleForeignState(aeWindowMain &windowMain, aeRuleForeignState *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Foreign State");
 	SetDescription("Rule foreign state properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleForeignState.metaProperties);
 }
 
 aeMCRuleForeignState::~aeMCRuleForeignState() = default;
@@ -202,16 +219,20 @@ aeRuleForeignState &aeMCRuleForeignState::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleForeignState::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleGroup
 ////////////////////////
 
-aeMCRuleGroup::aeMCRuleGroup(aeWindowMain &windowMain, aeRuleGroup *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleGroup::aeMCRuleGroup(aeWindowMain &windowMain, aeRuleGroup *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Group");
 	SetDescription("Rule group properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleGroup.metaProperties);
 }
 
 aeMCRuleGroup::~aeMCRuleGroup() = default;
@@ -226,16 +247,20 @@ aeRuleGroup &aeMCRuleGroup::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleGroup::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleInverseKinematic
 ///////////////////////////////////
 
-aeMCRuleInverseKinematic::aeMCRuleInverseKinematic(aeWindowMain &windowMain, aeRuleInverseKinematic *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleInverseKinematic::aeMCRuleInverseKinematic(aeWindowMain &windowMain, aeRuleInverseKinematic *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Inverse Kinematic");
 	SetDescription("Rule inverse kinematic properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.metaProperties);
 }
 
 aeMCRuleInverseKinematic::~aeMCRuleInverseKinematic() = default;
@@ -250,16 +275,20 @@ aeRuleInverseKinematic &aeMCRuleInverseKinematic::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleInverseKinematic::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleLimit
 ////////////////////////
 
-aeMCRuleLimit::aeMCRuleLimit(aeWindowMain &windowMain, aeRuleLimit *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleLimit::aeMCRuleLimit(aeWindowMain &windowMain, aeRuleLimit *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Limit");
 	SetDescription("Rule limit properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleLimit.metaProperties);
 }
 
 aeMCRuleLimit::~aeMCRuleLimit() = default;
@@ -274,16 +303,20 @@ aeRuleLimit &aeMCRuleLimit::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleLimit::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleMirror
 /////////////////////////
 
-aeMCRuleMirror::aeMCRuleMirror(aeWindowMain &windowMain, aeRuleMirror *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleMirror::aeMCRuleMirror(aeWindowMain &windowMain, aeRuleMirror *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Mirror");
 	SetDescription("Rule mirror properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleMirror.metaProperties);
 }
 
 aeMCRuleMirror::~aeMCRuleMirror() = default;
@@ -298,16 +331,20 @@ aeRuleMirror &aeMCRuleMirror::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleMirror::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleStateManipulator
 ///////////////////////////////////
 
-aeMCRuleStateManipulator::aeMCRuleStateManipulator(aeWindowMain &windowMain, aeRuleStateManipulator *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleStateManipulator::aeMCRuleStateManipulator(aeWindowMain &windowMain, aeRuleStateManipulator *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule State Manipulator");
 	SetDescription("Rule state manipulator properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleStateManipulator.metaProperties);
 }
 
 aeMCRuleStateManipulator::~aeMCRuleStateManipulator() = default;
@@ -322,16 +359,20 @@ aeRuleStateManipulator &aeMCRuleStateManipulator::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleStateManipulator::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleStateSnapshot
 ////////////////////////////////
 
-aeMCRuleStateSnapshot::aeMCRuleStateSnapshot(aeWindowMain &windowMain, aeRuleStateSnapshot *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleStateSnapshot::aeMCRuleStateSnapshot(aeWindowMain &windowMain, aeRuleStateSnapshot *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule State Snapshot");
 	SetDescription("Rule state snapshot properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.metaProperties);
 }
 
 aeMCRuleStateSnapshot::~aeMCRuleStateSnapshot() = default;
@@ -346,16 +387,20 @@ aeRuleStateSnapshot &aeMCRuleStateSnapshot::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleStateSnapshot::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleSubAnimator
 //////////////////////////////
 
-aeMCRuleSubAnimator::aeMCRuleSubAnimator(aeWindowMain &windowMain, aeRuleSubAnimator *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleSubAnimator::aeMCRuleSubAnimator(aeWindowMain &windowMain, aeRuleSubAnimator *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Sub Animator");
 	SetDescription("Rule sub animator properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleSubAnimator.metaProperties);
 }
 
 aeMCRuleSubAnimator::~aeMCRuleSubAnimator() = default;
@@ -370,16 +415,20 @@ aeRuleSubAnimator &aeMCRuleSubAnimator::GetRuleTypeRef() const{
 	return *r;
 }
 
+igdeMetaContext::Ref aeMCRuleSubAnimator::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
+}
+
 
 // Class aeMCRuleTrackTo
 //////////////////////////
 
-aeMCRuleTrackTo::aeMCRuleTrackTo(aeWindowMain &windowMain, aeRuleTrackTo *rule) :
-aeMCRule(windowMain, rule)
+aeMCRuleTrackTo::aeMCRuleTrackTo(aeWindowMain &windowMain, aeRuleTrackTo *rule, bool guardRule) :
+aeMCRule(windowMain, rule, guardRule)
 {
 	SetLabel("Rule Track To");
 	SetDescription("Rule track to properties");
-	SetProperties(windowMain.GetMCAnimatorProperties().rule.metaProperties);
+	SetProperties(windowMain.GetMCAnimatorProperties().ruleTrackTo.metaProperties);
 }
 
 aeMCRuleTrackTo::~aeMCRuleTrackTo() = default;
@@ -392,5 +441,9 @@ aeRuleTrackTo &aeMCRuleTrackTo::GetRuleTypeRef() const{
 	auto r = GetRuleType();
 	DEASSERT_NOTNULL(r)
 	return *r;
+}
+
+igdeMetaContext::Ref aeMCRuleTrackTo::Capture() const{
+	return Ref::New(GetWindowMain(), GetRuleType(), true);
 }
 

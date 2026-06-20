@@ -29,6 +29,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 /**
@@ -48,6 +49,7 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
 	igdeMetaPropertyBooleanStorage::Storage enableSize;
 	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */

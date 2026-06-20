@@ -31,6 +31,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
@@ -191,6 +192,59 @@ public:
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).enableVertexPositionSet;
+	}
+};
+
+
+class aeMCPRuleStateManipulatorTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleStateManipulatorTargetPosition() : aeTMCPRuleTarget("statemanipulator.targetPosition",
+		"@Animator.Target.Position", "@Animator.Target.Position.ToolTip"){
+	};
+	
+	~aeMCPRuleStateManipulatorTargetPosition() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetPosition;
+	}
+};
+
+class aeMCPRuleStateManipulatorTargetRotation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleStateManipulatorTargetRotation() : aeTMCPRuleTarget("statemanipulator.targetRotation",
+		"@Animator.Target.Rotation", "@Animator.Target.Rotation.ToolTip"){
+	};
+	
+	~aeMCPRuleStateManipulatorTargetRotation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetRotation;
+	}
+};
+
+class aeMCPRuleStateManipulatorTargetSize : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleStateManipulatorTargetSize() : aeTMCPRuleTarget("statemanipulator.targetSize",
+		"@Animator.Target.Size", "@Animator.Target.Size.ToolTip"){
+	};
+	
+	~aeMCPRuleStateManipulatorTargetSize() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetSize;
+	}
+};
+
+class aeMCPRuleStateManipulatorTargetVertexPositionSet : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleStateManipulatorTargetVertexPositionSet() : aeTMCPRuleTarget("statemanipulator.targetVertexPositionSet",
+		"@Animator.Target.VertexPositionSet", "@Animator.Target.VertexPositionSet.ToolTip"){
+	};
+	
+	~aeMCPRuleStateManipulatorTargetVertexPositionSet() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetVertexPositionSet;
 	}
 };
 

@@ -28,9 +28,10 @@
 #include "aeRule.h"
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
-#include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 
 
@@ -55,6 +56,7 @@ public:
 	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
 	igdeMetaPropertyBooleanStorage::Storage useCurrentState;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage applicationType;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetSelect;
 	
 public:
 	/** \name Constructors and Destructors */

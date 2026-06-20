@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule meta context. */
-	aeMCRule(aeWindowMain &windowMain, aeRule *rule);
+	aeMCRule(aeWindowMain &windowMain, aeRule *rule, bool guardRule = false);
 	
 protected:
 	/**
@@ -86,7 +86,7 @@ public:
 	aeRule &GetRuleRef() const;
 	
 	/** Capture context. */
-	Ref Capture() const;
+	virtual igdeMetaContext::Ref Capture() const;
 	
 	/** Undo system or nullptr to apply actions immediately. */
 	igdeUndoSystem *GetUndoSystem() const override;
@@ -101,9 +101,10 @@ class aeMCRuleAnimation : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleAnimation>;
 	
-	aeMCRuleAnimation(aeWindowMain &windowMain, aeRuleAnimation *rule);
+	aeMCRuleAnimation(aeWindowMain &windowMain, aeRuleAnimation *rule, bool guardRule = false);
 	aeRuleAnimation *GetRuleType() const;
 	aeRuleAnimation &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleAnimation() override;
@@ -114,9 +115,10 @@ class aeMCRuleAnimationDifference : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleAnimationDifference>;
 	
-	aeMCRuleAnimationDifference(aeWindowMain &windowMain, aeRuleAnimationDifference *rule);
+	aeMCRuleAnimationDifference(aeWindowMain &windowMain, aeRuleAnimationDifference *rule, bool guardRule = false);
 	aeRuleAnimationDifference *GetRuleType() const;
 	aeRuleAnimationDifference &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleAnimationDifference() override;
@@ -127,9 +129,10 @@ class aeMCRuleAnimationSelect : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleAnimationSelect>;
 	
-	aeMCRuleAnimationSelect(aeWindowMain &windowMain, aeRuleAnimationSelect *rule);
+	aeMCRuleAnimationSelect(aeWindowMain &windowMain, aeRuleAnimationSelect *rule, bool guardRule = false);
 	aeRuleAnimationSelect *GetRuleType() const;
 	aeRuleAnimationSelect &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleAnimationSelect() override;
@@ -140,9 +143,10 @@ class aeMCRuleBoneTransformator : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleBoneTransformator>;
 	
-	aeMCRuleBoneTransformator(aeWindowMain &windowMain, aeRuleBoneTransformator *rule);
+	aeMCRuleBoneTransformator(aeWindowMain &windowMain, aeRuleBoneTransformator *rule, bool guardRule = false);
 	aeRuleBoneTransformator *GetRuleType() const;
 	aeRuleBoneTransformator &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleBoneTransformator() override;
@@ -153,9 +157,10 @@ class aeMCRuleForeignState : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleForeignState>;
 	
-	aeMCRuleForeignState(aeWindowMain &windowMain, aeRuleForeignState *rule);
+	aeMCRuleForeignState(aeWindowMain &windowMain, aeRuleForeignState *rule, bool guardRule = false);
 	aeRuleForeignState *GetRuleType() const;
 	aeRuleForeignState &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleForeignState() override;
@@ -166,9 +171,10 @@ class aeMCRuleGroup : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleGroup>;
 	
-	aeMCRuleGroup(aeWindowMain &windowMain, aeRuleGroup *rule);
+	aeMCRuleGroup(aeWindowMain &windowMain, aeRuleGroup *rule, bool guardRule = false);
 	aeRuleGroup *GetRuleType() const;
 	aeRuleGroup &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleGroup() override;
@@ -179,9 +185,10 @@ class aeMCRuleInverseKinematic : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleInverseKinematic>;
 	
-	aeMCRuleInverseKinematic(aeWindowMain &windowMain, aeRuleInverseKinematic *rule);
+	aeMCRuleInverseKinematic(aeWindowMain &windowMain, aeRuleInverseKinematic *rule, bool guardRule = false);
 	aeRuleInverseKinematic *GetRuleType() const;
 	aeRuleInverseKinematic &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleInverseKinematic() override;
@@ -192,9 +199,10 @@ class aeMCRuleLimit : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleLimit>;
 	
-	aeMCRuleLimit(aeWindowMain &windowMain, aeRuleLimit *rule);
+	aeMCRuleLimit(aeWindowMain &windowMain, aeRuleLimit *rule, bool guardRule = false);
 	aeRuleLimit *GetRuleType() const;
 	aeRuleLimit &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleLimit() override;
@@ -205,9 +213,10 @@ class aeMCRuleMirror : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleMirror>;
 	
-	aeMCRuleMirror(aeWindowMain &windowMain, aeRuleMirror *rule);
+	aeMCRuleMirror(aeWindowMain &windowMain, aeRuleMirror *rule, bool guardRule = false);
 	aeRuleMirror *GetRuleType() const;
 	aeRuleMirror &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleMirror() override;
@@ -218,9 +227,10 @@ class aeMCRuleStateManipulator : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleStateManipulator>;
 	
-	aeMCRuleStateManipulator(aeWindowMain &windowMain, aeRuleStateManipulator *rule);
+	aeMCRuleStateManipulator(aeWindowMain &windowMain, aeRuleStateManipulator *rule, bool guardRule = false);
 	aeRuleStateManipulator *GetRuleType() const;
 	aeRuleStateManipulator &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleStateManipulator() override;
@@ -231,9 +241,10 @@ class aeMCRuleStateSnapshot : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleStateSnapshot>;
 	
-	aeMCRuleStateSnapshot(aeWindowMain &windowMain, aeRuleStateSnapshot *rule);
+	aeMCRuleStateSnapshot(aeWindowMain &windowMain, aeRuleStateSnapshot *rule, bool guardRule = false);
 	aeRuleStateSnapshot *GetRuleType() const;
 	aeRuleStateSnapshot &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleStateSnapshot() override;
@@ -244,9 +255,10 @@ class aeMCRuleSubAnimator : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleSubAnimator>;
 	
-	aeMCRuleSubAnimator(aeWindowMain &windowMain, aeRuleSubAnimator *rule);
+	aeMCRuleSubAnimator(aeWindowMain &windowMain, aeRuleSubAnimator *rule, bool guardRule = false);
 	aeRuleSubAnimator *GetRuleType() const;
 	aeRuleSubAnimator &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleSubAnimator() override;
@@ -257,9 +269,10 @@ class aeMCRuleTrackTo : public aeMCRule{
 public:
 	using Ref = deTObjectReference<aeMCRuleTrackTo>;
 	
-	aeMCRuleTrackTo(aeWindowMain &windowMain, aeRuleTrackTo *rule);
+	aeMCRuleTrackTo(aeWindowMain &windowMain, aeRuleTrackTo *rule, bool guardRule = false);
 	aeRuleTrackTo *GetRuleType() const;
 	aeRuleTrackTo &GetRuleTypeRef() const;
+	igdeMetaContext::Ref Capture() const override;
 	
 protected:
 	~aeMCRuleTrackTo() override;

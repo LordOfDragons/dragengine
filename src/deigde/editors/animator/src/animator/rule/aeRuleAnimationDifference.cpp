@@ -41,8 +41,6 @@
 aeRuleAnimationDifference::aeRuleAnimationDifference(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleAnimationDifference::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertAnimationDifference, aname),
-pTargetLeadMoveTime(aeControllerTarget::Ref::New()),
-pTargetRefMoveTime(aeControllerTarget::Ref::New()),
 leadingMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveName, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 leadingMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 referenceMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveName, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
@@ -52,7 +50,9 @@ useComponentSpace(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.u
 enablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 enableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 enableSize(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>())
+enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
+targetLeadMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetLeadMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
+targetRefMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetRefMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>())
 {
 	leadingMoveName.SetOnChanged([this](){
 		if(GetEngineRule()){
@@ -123,6 +123,24 @@ enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationDiffer
 		}
 		NotifyRuleChanged();
 	});
+	
+	pTargetLeadMoveTime = aeControllerTarget::Ref::New(targetLeadMoveTime);
+	targetLeadMoveTime.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleAnimationDifference*)GetEngineRule())->GetTargetLeadingMoveTime(), targetLeadMoveTime);
+		}
+		pTargetLeadMoveTime->OnStorageChanged();
+		NotifyRuleChanged();
+	});
+	
+	pTargetRefMoveTime = aeControllerTarget::Ref::New(targetRefMoveTime);
+	targetRefMoveTime.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleAnimationDifference*)GetEngineRule())->GetTargetReferenceMoveTime(), targetRefMoveTime);
+		}
+		pTargetRefMoveTime->OnStorageChanged();
+		NotifyRuleChanged();
+	});
 }
 
 aeRuleAnimationDifference::aeRuleAnimationDifference(aeWindowMain &windowMain, const aeRuleAnimationDifference &copy) :
@@ -139,8 +157,8 @@ aeRuleAnimationDifference(windowMain, copy.name)
 	enableSize.SetValue(copy.enableSize, false);
 	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
 	
-	pTargetLeadMoveTime = aeControllerTarget::Ref::New(copy.pTargetLeadMoveTime);
-	pTargetRefMoveTime = aeControllerTarget::Ref::New(copy.pTargetRefMoveTime);
+	pTargetLeadMoveTime = aeControllerTarget::Ref::New(targetLeadMoveTime, copy.pTargetLeadMoveTime);
+	pTargetRefMoveTime = aeControllerTarget::Ref::New(targetRefMoveTime, copy.pTargetRefMoveTime);
 }
 
 aeRuleAnimationDifference::~aeRuleAnimationDifference() = default;
@@ -196,8 +214,8 @@ void aeRuleAnimationDifference::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pTargetLeadMoveTime->UpdateEngineTarget(GetAnimator(), rule->GetTargetLeadingMoveTime());
-		pTargetRefMoveTime->UpdateEngineTarget(GetAnimator(), rule->GetTargetReferenceMoveTime());
+		pUpdateEngineTarget(rule->GetTargetLeadingMoveTime(), targetLeadMoveTime);
+		pUpdateEngineTarget(rule->GetTargetReferenceMoveTime(), targetRefMoveTime);
 	}
 }
 
@@ -253,8 +271,8 @@ deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
 	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
 	engRule->SetUseComponentSpace(useComponentSpace);
 	
-	pTargetLeadMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetLeadingMoveTime());
-	pTargetRefMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetReferenceMoveTime());
+	pUpdateEngineTarget(engRule->GetTargetLeadingMoveTime(), targetLeadMoveTime);
+	pUpdateEngineTarget(engRule->GetTargetReferenceMoveTime(), targetRefMoveTime);
 	
 	// finished
 	return engRule;

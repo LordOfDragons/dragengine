@@ -27,10 +27,11 @@
 
 #include "aeRule.h"
 
-#include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
-#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 
@@ -52,6 +53,8 @@ public:
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>::Storage upAxis;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>::Storage upTarget;
 	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>::Storage lockedAxis;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetUp;
 	
 public:
 	/** \name Constructors and Destructors */

@@ -22,28 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYSET_H_
-#define _IGDEMETAPROPERTYSET_H_
+#ifndef _IGDEMETAPROPERTYOBJECTSET_H_
+#define _IGDEMETAPROPERTYOBJECTSET_H_
 
 #include "igdeMetaProperty.h"
 #include "storage/igdeMetaPropertyStorageSet.h"
+#include "../igdeTMetaData.h"
+#include "../igdeMetaContextItemInfo.h"
 #include "../../clipboard/igdeClipboardData.h"
 #include "../../gui/event/igdeAction.h"
 
 #include <dragengine/common/collection/decTSet.h>
 
-class igdeMetaContextItemInfo;
-class igdeMetaPropertySetUndo;
+class igdeMetaPropertyObjectSetUndo;
+
 
 /**
- * \brief Set meta property.
+ * \brief Object set meta property.
  *
  * Includes active object and object selection if supported.
  */
-class DE_DLL_EXPORT igdeMetaPropertySet : public igdeMetaProperty{
+class DE_DLL_EXPORT igdeMetaPropertyObjectSet : public igdeMetaProperty{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertySet>;
+	using Ref = deTObjectReference<igdeMetaPropertyObjectSet>;
 	
 	/** \brief Set of objects. */
 	using Set = decTObjectSet<deObject>;
@@ -68,7 +70,7 @@ public:
 		using Ref = deTObjectReference<ClipboardData>;
 		
 		/** \brief Type name. */
-		static constexpr const char *TypeName = "MetaProperty.Set";
+		static constexpr const char *TypeName = "MetaProperty.ObjectSet";
 		
 		explicit inline ClipboardData(const Set &value) : igdeTClipboardData<Set>(TypeName, value){}
 		explicit inline ClipboardData(Set &&value) : igdeTClipboardData<Set>(TypeName, value){}
@@ -80,53 +82,53 @@ public:
 	
 	
 	/** \brief Listener. */
-	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertySet>{
+	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyObjectSet>{
 	public:
 		/** \brief Active object changed. */
-		virtual void OnActiveChanged(igdeMetaPropertySet *property, const ContextRef &context);
+		virtual void OnActiveChanged(igdeMetaPropertyObjectSet *property, const ContextRef &context);
 		
 		/** \brief Object selection changed. */
-		virtual void OnSelectionChanged(igdeMetaPropertySet *property, const ContextRef &context);
+		virtual void OnSelectionChanged(igdeMetaPropertyObjectSet *property, const ContextRef &context);
 	};
 	
 	
 	/** \brief Add entries action. */
 	class DE_DLL_EXPORT ActionAdd : public Action{
 	private:
-		igdeMetaPropertySet &pPropertySet;
+		igdeMetaPropertyObjectSet &pPropertyObjectSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionAdd>;
-		ActionAdd(igdeMetaPropertySet &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionAdd(igdeMetaPropertyObjectSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
-		inline igdeMetaPropertySet &GetPropertySet() const{ return pPropertySet; }
+		inline igdeMetaPropertyObjectSet &GetPropertyObjectSet() const{ return pPropertyObjectSet; }
 	};
 	
 	/** \brief Remove selected entries action. */
 	class DE_DLL_EXPORT ActionRemove : public Action{
 	private:
-		igdeMetaPropertySet &pPropertySet;
+		igdeMetaPropertyObjectSet &pPropertyObjectSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
-		ActionRemove(igdeMetaPropertySet &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionRemove(igdeMetaPropertyObjectSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
-		inline igdeMetaPropertySet &GetPropertySet() const{ return pPropertySet; }
+		inline igdeMetaPropertyObjectSet &GetPropertyObjectSet() const{ return pPropertyObjectSet; }
 	};
 	
 	/** \brief Remove all entries action. */
 	class DE_DLL_EXPORT ActionRemoveAll : public Action{
 	private:
-		igdeMetaPropertySet &pPropertySet;
+		igdeMetaPropertyObjectSet &pPropertyObjectSet;
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
-		ActionRemoveAll(igdeMetaPropertySet &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionRemoveAll(igdeMetaPropertyObjectSet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
-		inline igdeMetaPropertySet &GetPropertySet() const{ return pPropertySet; }
+		inline igdeMetaPropertyObjectSet &GetPropertyObjectSet() const{ return pPropertyObjectSet; }
 	};
 	
 	
@@ -140,12 +142,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create object meta property with label and description. */
-	igdeMetaPropertySet(const char *id, const char *name, const char *description);
+	/** \brief Create object set meta property with label and description. */
+	igdeMetaPropertyObjectSet(const char *id, const char *name, const char *description);
 	
 protected:
-	/** \brief Clean up object meta property. */
-	~igdeMetaPropertySet() override;
+	/** \brief Clean up object set meta property. */
+	~igdeMetaPropertyObjectSet() override;
 	/*@}*/
 	
 	
@@ -219,12 +221,12 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	virtual deTObjectReference<igdeMetaPropertySetUndo> ChangePropertyValue(
+	virtual deTObjectReference<igdeMetaPropertyObjectSetUndo> ChangePropertyValue(
 		const ContextRef &context, const Set &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
 	/**
-	 * \brief Get active object or nullptr if no active object.
+	 * \brief Get active object or empty object if no active object.
 	 */
 	virtual ObjectRef GetActiveObject(const ContextRef &context) const = 0;
 	
@@ -255,22 +257,21 @@ public:
 	virtual Set GetValidObjects(const ContextRef &context) const;
 	
 	/**
-	 * \brief Create copy of object if possible.
-	 * 
-	 * Subclass can override this method to create a copy of the object. The set parameter
-	 * contains all existing objects. This set can be used to enforce rules, for example unique
-	 * name or limit counts. If nullptr is returned the object cannot be copied.
-	 */
-	virtual ObjectRef CopyObject(const ContextRef &context, const Set &existingObjects,
-		const ObjectRef &object) const;
-	
-	/**
 	 * \brief Create action for target button.
 	 * 
 	 * Subclasses can override this method to create button action. If nullptr is returned
-	 * the button is destroyed.
+	 * the button is destroyed. Default implementation calls CreateDefaultButtonAction().
 	 */
 	virtual Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner);
+	
+	/**
+	 * \brief Add context menu entries.
+	 * 
+	 * Subclasses can override this method to add custom context menu entries.
+	 */
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu,
+		const ContextRef &context, igdeWidget &owner) override;
+	
 	
 	/**
 	 * \brief Create UI widget.
@@ -297,15 +298,14 @@ public:
 };
 
 
-
 /**
- * \brief Set meta property with deObject type.
+ * \brief Object set meta property with deObject type.
  */
 template<typename T>
-class igdeMetaPropertySetType : public igdeMetaPropertySet{
+class igdeMetaPropertyObjectSetType : public igdeMetaPropertyObjectSet{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertySetType<T>>;
+	using Ref = deTObjectReference<igdeMetaPropertyObjectSetType<T>>;
 	
 	/** \brief Set of choices. */
 	using SetType = decTObjectSet<T>;
@@ -317,14 +317,14 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create set meta property with label and description. */
-	igdeMetaPropertySetType(const char *id, const char *name, const char *description) :
-	igdeMetaPropertySet(id, name, description){
+	/** \brief Create object set meta property with label and description. */
+	igdeMetaPropertyObjectSetType(const char *id, const char *name, const char *description) :
+	igdeMetaPropertyObjectSet(id, name, description){
 	}
 	
 protected:
-	/** \brief Clean up set meta property. */
-	~igdeMetaPropertySetType() override = default;
+	/** \brief Clean up object set meta property. */
+	~igdeMetaPropertyObjectSetType() override = default;
 	/*@}*/
 	
 	
@@ -335,7 +335,7 @@ public:
 	Set ConvertSet(const SetType &in) const{
 		Set out;
 		in.Visit([&](const ObjectTypeRef &object){
-			out.Add(object);
+			out.Add(object.Pointer());
 		});
 		return out;
 	}
@@ -347,6 +347,16 @@ public:
 			out.Add(object.DynamicCast<T>());
 		});
 		return out;
+	}
+	
+	/** \brief Default value. */
+	SetType GetDefaultValueType() const{
+		return ConvertSet(igdeMetaPropertyObjectSet::GetDefaultValue());
+	}
+	
+	/** \brief Set default value. */
+	void SetDefaultValueType(const SetType &value){
+		SetDefaultValue(ConvertSet(value));
 	}
 	
 	Set GetPropertyValue(const ContextRef &context) const override{
@@ -363,7 +373,7 @@ public:
 	 * If the context has an undo system the change is recorded as an undo action.
 	 * Otherwise SetPropertyValue() is called directly.
 	 */
-	deTObjectReference<igdeMetaPropertySetUndo> ChangePropertyValueType(
+	deTObjectReference<igdeMetaPropertyObjectSetUndo> ChangePropertyValueType(
 	const ContextRef &context, const SetType &newValue,
 	const char *undoInfo = nullptr, const char *undoInfoLong = nullptr){
 		return ChangePropertyValue(context, ConvertSet(newValue), undoInfo, undoInfoLong);
@@ -390,9 +400,8 @@ public:
 		GetObjectItemInfoType(context, object.DynamicCast<T>(), info);
 	}
 	
-	ObjectRef CopyObject(const ContextRef &context, const Set &existingObjects,
-	const ObjectRef &object) const override{
-		return CopyObjectType(context, ConvertSet(existingObjects), object.DynamicCast<T>());
+	Set GetValidObjects(const ContextRef &context) const override{
+		return ConvertSet(GetValidObjectsType(context));
 	}
 	
 	
@@ -441,74 +450,68 @@ public:
 		igdeMetaContextItemInfo &info) const = 0;
 	
 	/**
-	 * \brief Create copy of object if possible.
-	 * 
-	 * Subclass can override this method to create a copy of the object. The set parameter
-	 * contains all existing objects. This set can be used to enforce rules, for example unique
-	 * name or limit counts. If nullptr is returned the object cannot be copied.
+	 * \brief Valid set of objects.
 	 */
-	virtual ObjectTypeRef CopyObjectType(const ContextRef &context,
-	const SetType &existingObjects, const ObjectTypeRef &object) const{
-		return {};
-	}
+	virtual SetType GetValidObjectsType(const ContextRef &context) const = 0;
 	/*@}*/
 };
 
 
 /**
- * \brief Set meta property using storage.
+ * \brief Object set meta property using storage.
  */
 template<typename T>
-class igdeMetaPropertySetStorage : public igdeMetaPropertySetType<T>{
+class igdeMetaPropertyObjectSetStorage : public igdeMetaPropertyObjectSetType<T>{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertySetStorage<T>>;
+	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertyObjectSetStorage<T>>;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create set meta property with label and description. */
-	igdeMetaPropertySetStorage(const char *id, const char *name, const char *description) :
-	igdeMetaPropertySetType<T>(id, name, description){}
+	/** \brief Create object set meta property with label and description. */
+	igdeMetaPropertyObjectSetStorage(const char *id, const char *name, const char *description) :
+	igdeMetaPropertyObjectSetType<T>(id, name, description){
+	}
 	
 protected:
-	/** \brief Clean up set meta property. */
-	~igdeMetaPropertySetStorage() override = default;
+	/** \brief Clean up object set meta property. */
+	~igdeMetaPropertyObjectSetStorage() override = default;
 	
 public:
 	/*@}*/
 	/** \brief Storage. */
-	virtual Storage &GetStorage(const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const = 0;
+	virtual Storage &GetStorage(const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context) const = 0;
 	
 	
-	typename igdeMetaPropertySetStorage<T>::SetType GetPropertyValueType(
-	const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const override{
+	typename igdeMetaPropertyObjectSetType<T>::SetType GetPropertyValueType(
+	const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context) const override{
 		return GetStorage(context).GetValue();
 	}
 	
-	void SetPropertyValueType(const typename igdeMetaPropertySetStorage<T>::ContextRef &context,
-	const typename igdeMetaPropertySetStorage<T>::SetType &value) override{
+	void SetPropertyValueType(const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context,
+	const typename igdeMetaPropertyObjectSetType<T>::SetType &value) override{
 		GetStorage(context).SetValue(value);
 	}
 	
-	typename igdeMetaPropertySetStorage<T>::ObjectTypeRef GetActiveObjectType(
-	const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const override{
+	typename igdeMetaPropertyObjectSetType<T>::ObjectTypeRef GetActiveObjectType(
+	const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context) const override{
 		return GetStorage(context).GetActive();
 	}
 	
-	void SetActiveObjectType(const typename igdeMetaPropertySetStorage<T>::ContextRef &context,
-	const typename igdeMetaPropertySetStorage<T>::ObjectTypeRef &activeObject) override{
-		GetStorage(context).SetActive(activeObject);
+	void SetActiveObjectType(const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context,
+	const typename igdeMetaPropertyObjectSetType<T>::ObjectTypeRef &activeObject) override{
+		GetStorage(context).SetActive(activeObject.template DynamicCast<T>());
 	}
 	
-	typename igdeMetaPropertySetStorage<T>::SetType GetSelectionType(
-	const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const override{
+	typename igdeMetaPropertyObjectSetType<T>::SetType GetSelectionType(
+	const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context) const override{
 		return GetStorage(context).GetSelection();
 	}
 	
-	void SetSelectionType(const typename igdeMetaPropertySetStorage<T>::ContextRef &context,
-	const typename igdeMetaPropertySetStorage<T>::SetType &selection) override{
+	void SetSelectionType(const typename igdeMetaPropertyObjectSetType<T>::ContextRef &context,
+	const typename igdeMetaPropertyObjectSetType<T>::SetType &selection) override{
 		GetStorage(context).SetSelection(selection);
 	}
 };

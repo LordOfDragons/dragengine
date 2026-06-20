@@ -41,10 +41,6 @@
 aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleForeignState::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertForeignState, aname),
-pTargetPosition(aeControllerTarget::Ref::New()),
-pTargetOrientation(aeControllerTarget::Ref::New()),
-pTargetSize(aeControllerTarget::Ref::New()),
-pTargetVertexPositionSet(aeControllerTarget::Ref::New()),
 foreignBone(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignBone, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
 foreignVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
 scalePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.scalePosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
@@ -56,7 +52,11 @@ enableOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.enableOr
 enableSize(windowMain.GetMCAnimatorProperties().ruleForeignState.enableSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
 enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
 sourceCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.sourceCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-destCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.destCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>())
+destCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.destCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+targetPosition(windowMain.GetMCAnimatorProperties().ruleForeignState.targetPosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+targetOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.targetOrientation, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+targetSize(windowMain.GetMCAnimatorProperties().ruleForeignState.targetSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
+targetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.targetVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>())
 {
 	foreignBone.SetOnChanged([this](){
 		if(GetEngineRule()){
@@ -141,6 +141,42 @@ destCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.destCo
 		}
 		NotifyRuleChanged();
 	});
+	
+	pTargetPosition = aeControllerTarget::Ref::New(targetPosition);
+	targetPosition.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleForeignState*)GetEngineRule())->GetTargetPosition(), targetPosition);
+		}
+		pTargetPosition->OnStorageChanged();
+		NotifyRuleChanged();
+	});
+	
+	pTargetOrientation = aeControllerTarget::Ref::New(targetOrientation);
+	targetOrientation.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleForeignState*)GetEngineRule())->GetTargetOrientation(), targetOrientation);
+		}
+		pTargetOrientation->OnStorageChanged();
+		NotifyRuleChanged();
+	});
+	
+	pTargetSize = aeControllerTarget::Ref::New(targetSize);
+	targetSize.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleForeignState*)GetEngineRule())->GetTargetSize(), targetSize);
+		}
+		pTargetSize->OnStorageChanged();
+		NotifyRuleChanged();
+	});
+	
+	pTargetVertexPositionSet = aeControllerTarget::Ref::New(targetVertexPositionSet);
+	targetVertexPositionSet.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleForeignState*)GetEngineRule())->GetTargetVertexPositionSet(), targetVertexPositionSet);
+		}
+		pTargetVertexPositionSet->OnStorageChanged();
+		NotifyRuleChanged();
+	});
 }
 
 aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const aeRuleForeignState &copy) :
@@ -159,10 +195,10 @@ aeRuleForeignState(windowMain, copy.name)
 	sourceCoordinateFrame.SetValue(copy.sourceCoordinateFrame, false);
 	destCoordinateFrame.SetValue(copy.destCoordinateFrame, false);
 	
-	pTargetPosition = aeControllerTarget::Ref::New(copy.pTargetPosition);
-	pTargetOrientation = aeControllerTarget::Ref::New(copy.pTargetOrientation);
-	pTargetSize = aeControllerTarget::Ref::New(copy.pTargetSize);
-	pTargetVertexPositionSet = aeControllerTarget::Ref::New(copy.pTargetVertexPositionSet);
+	pTargetPosition = aeControllerTarget::Ref::New(targetPosition, copy.pTargetPosition);
+	pTargetOrientation = aeControllerTarget::Ref::New(targetOrientation, copy.pTargetOrientation);
+	pTargetSize = aeControllerTarget::Ref::New(targetSize, copy.pTargetSize);
+	pTargetVertexPositionSet = aeControllerTarget::Ref::New(targetVertexPositionSet, copy.pTargetVertexPositionSet);
 }
 
 aeRuleForeignState::~aeRuleForeignState() = default;
@@ -226,10 +262,10 @@ void aeRuleForeignState::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pTargetPosition->UpdateEngineTarget(GetAnimator(), rule->GetTargetPosition());
-		pTargetOrientation->UpdateEngineTarget(GetAnimator(), rule->GetTargetOrientation());
-		pTargetSize->UpdateEngineTarget(GetAnimator(), rule->GetTargetSize());
-		pTargetVertexPositionSet->UpdateEngineTarget(GetAnimator(), rule->GetTargetVertexPositionSet());
+		pUpdateEngineTarget(rule->GetTargetPosition(), targetPosition);
+		pUpdateEngineTarget(rule->GetTargetOrientation(), targetOrientation);
+		pUpdateEngineTarget(rule->GetTargetSize(), targetSize);
+		pUpdateEngineTarget(rule->GetTargetVertexPositionSet(), targetVertexPositionSet);
 	}
 }
 
@@ -294,10 +330,10 @@ deAnimatorRule::Ref aeRuleForeignState::CreateEngineRule(){
 	engRule->SetSourceCoordinateFrame(sourceCoordinateFrame);
 	engRule->SetDestCoordinateFrame(destCoordinateFrame);
 	
-	pTargetPosition->UpdateEngineTarget(GetAnimator(), engRule->GetTargetPosition());
-	pTargetOrientation->UpdateEngineTarget(GetAnimator(), engRule->GetTargetOrientation());
-	pTargetSize->UpdateEngineTarget(GetAnimator(), engRule->GetTargetSize());
-	pTargetVertexPositionSet->UpdateEngineTarget(GetAnimator(), engRule->GetTargetVertexPositionSet());
+	pUpdateEngineTarget(engRule->GetTargetPosition(), targetPosition);
+	pUpdateEngineTarget(engRule->GetTargetOrientation(), targetOrientation);
+	pUpdateEngineTarget(engRule->GetTargetSize(), targetSize);
+	pUpdateEngineTarget(engRule->GetTargetVertexPositionSet(), targetVertexPositionSet);
 	
 	return engRule;
 }

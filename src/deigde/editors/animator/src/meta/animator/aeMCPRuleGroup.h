@@ -31,6 +31,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 
 
 class aeMCPRuleGroupEnablePosition : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
@@ -131,6 +132,20 @@ public:
 			info.SetAll("??");
 			break;
 		}
+	}
+};
+
+
+class aeMCPRuleGroupTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleGroup<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleGroupTargetSelect() : aeTMCPRuleTarget("group.targetSelect",
+		"@Animator.Target.Select", "@Animator.Target.Select.ToolTip"){
+	};
+	
+	~aeMCPRuleGroupTargetSelect() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetSelect;
 	}
 };
 

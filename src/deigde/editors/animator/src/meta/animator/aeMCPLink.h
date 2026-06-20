@@ -41,7 +41,7 @@
 
 
 /** Links. */
-class aeMCPLinks : public aeTMCPAnimator<igdeMetaPropertyListTypeStorage<aeLink, aeLink::List>>{
+class aeMCPLinks : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeLink, aeLink::List>>{
 public:
 	aeMCPLinks() : aeTMCPAnimator("animator.links",
 		"@Animator.WPLink.Links", "@Animator.WPLink.Links.ToolTip"){

@@ -42,13 +42,13 @@
 aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleAnimation::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertAnimation, aname),
-pTargetMoveTime(aeControllerTarget::Ref::New()),
 moveName(windowMain.GetMCAnimatorProperties().ruleAnimation.moveName, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
 moveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.moveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
 enablePosition(windowMain.GetMCAnimatorProperties().ruleAnimation.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
 enableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimation.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
 enableSize(windowMain.GetMCAnimatorProperties().ruleAnimation.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimation>())
+enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+targetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>())
 {
 	moveName.SetOnChanged([this](){
 		if(GetEngineRule()){
@@ -91,6 +91,15 @@ enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enabl
 		}
 		NotifyRuleChanged();
 	});
+	
+	pTargetMoveTime = aeControllerTarget::Ref::New(targetMoveTime);
+	targetMoveTime.SetOnChanged([this](){
+		if(GetEngineRule()){
+			pUpdateEngineTarget(((deAnimatorRuleAnimation*)GetEngineRule())->GetTargetMoveTime(), targetMoveTime);
+		}
+		pTargetMoveTime->OnStorageChanged();
+		NotifyRuleChanged();
+	});
 }
 
 aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const aeRuleAnimation &copy) :
@@ -103,7 +112,7 @@ aeRuleAnimation(windowMain, copy.name)
 	enableSize.SetValue(copy.enableSize, false);
 	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
 	
-	pTargetMoveTime = aeControllerTarget::Ref::New(copy.pTargetMoveTime);
+	pTargetMoveTime = aeControllerTarget::Ref::New(targetMoveTime, copy.pTargetMoveTime);
 }
 
 aeRuleAnimation::~aeRuleAnimation() = default;
@@ -145,7 +154,7 @@ void aeRuleAnimation::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pTargetMoveTime->UpdateEngineTarget(GetAnimator(), rule->GetTargetMoveTime());
+		pUpdateEngineTarget(rule->GetTargetMoveTime(), targetMoveTime);
 	}
 }
 
@@ -192,7 +201,7 @@ deAnimatorRule::Ref aeRuleAnimation::CreateEngineRule(){
 	engRule->SetEnableSize(enableSize);
 	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
 	
-	pTargetMoveTime->UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
+	pUpdateEngineTarget(engRule->GetTargetMoveTime(), targetMoveTime);
 	
 	// finished
 	return engRule;

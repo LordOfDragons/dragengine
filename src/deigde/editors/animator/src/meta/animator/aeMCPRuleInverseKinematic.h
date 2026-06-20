@@ -32,6 +32,7 @@
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
@@ -162,6 +163,85 @@ public:
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).reachCenter;
+	}
+};
+
+
+class aeMCPRuleInverseKinematicTargetGoalPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleInverseKinematicTargetGoalPosition() : aeTMCPRuleTarget("inversekinematic.targetGoalPosition",
+		"@Animator.Target.GoalPosition", "@Animator.Target.GoalPosition.ToolTip"){
+	};
+	
+	~aeMCPRuleInverseKinematicTargetGoalPosition() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetGoalPosition;
+	}
+};
+
+class aeMCPRuleInverseKinematicTargetGoalOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleInverseKinematicTargetGoalOrientation() : aeTMCPRuleTarget("inversekinematic.targetGoalOrientation",
+		"@Animator.Target.GoalOrientation", "@Animator.Target.GoalOrientation.ToolTip"){
+	};
+	
+	~aeMCPRuleInverseKinematicTargetGoalOrientation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetGoalOrientation;
+	}
+};
+
+class aeMCPRuleInverseKinematicTargetLocalPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleInverseKinematicTargetLocalPosition() : aeTMCPRuleTarget("inversekinematic.targetLocalPosition",
+		"@Animator.Target.LocalPosition", "@Animator.Target.LocalPosition.ToolTip"){
+	};
+	
+	~aeMCPRuleInverseKinematicTargetLocalPosition() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetLocalPosition;
+	}
+};
+
+class aeMCPRuleInverseKinematicTargetLocalOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleInverseKinematicTargetLocalOrientation() : aeTMCPRuleTarget("inversekinematic.targetLocalOrientation",
+		"@Animator.Target.LocalOrientation", "@Animator.Target.LocalOrientation.ToolTip"){
+	};
+	
+	~aeMCPRuleInverseKinematicTargetLocalOrientation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetLocalOrientation;
+	}
+};
+
+class aeMCPRuleInverseKinematicTargetReachRange : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleInverseKinematicTargetReachRange() : aeTMCPRuleTarget("inversekinematic.targetReachRange",
+		"@Animator.Target.ReachRange", "@Animator.Target.ReachRange.ToolTip"){
+	};
+	
+	~aeMCPRuleInverseKinematicTargetReachRange() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetReachRange;
+	}
+};
+
+class aeMCPRuleInverseKinematicTargetReachCenter : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+public:
+	aeMCPRuleInverseKinematicTargetReachCenter() : aeTMCPRuleTarget("inversekinematic.targetReachCenter",
+		"@Animator.Target.ReachCenter", "@Animator.Target.ReachCenter.ToolTip"){
+	};
+	
+	~aeMCPRuleInverseKinematicTargetReachCenter() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).targetReachCenter;
 	}
 };
 
