@@ -153,12 +153,28 @@ decUnicodeString igdeWidget::Translate(const char *entryName) const{
 	return pEnvironment.GetTranslationManager().Translate(entryName);
 }
 
+decUnicodeString igdeWidget::Translate(const decString &entryName, const decUnicodeString &defaultValue) const{
+	return pEnvironment.GetTranslationManager().Translate(entryName, defaultValue);
+}
+
+decUnicodeString igdeWidget::Translate(const char *entryName, const decUnicodeString &defaultValue) const{
+	return pEnvironment.GetTranslationManager().Translate(entryName, defaultValue);
+}
+
 decUnicodeString igdeWidget::TranslateIf(const decString &text) const{
 	return pEnvironment.GetTranslationManager().TranslateIf(text);
 }
 
 decUnicodeString igdeWidget::TranslateIf(const char *text) const{
 	return pEnvironment.GetTranslationManager().TranslateIf(text);
+}
+
+decUnicodeString igdeWidget::TranslateIf(const decString &text, const decUnicodeString &defaultValue) const{
+	return pEnvironment.GetTranslationManager().TranslateIf(text, defaultValue);
+}
+
+decUnicodeString igdeWidget::TranslateIf(const char *text, const decUnicodeString &defaultValue) const{
+	return pEnvironment.GetTranslationManager().TranslateIf(text, defaultValue);
 }
 
 

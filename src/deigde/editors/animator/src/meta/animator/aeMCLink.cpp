@@ -63,6 +63,10 @@ aeMCLink::Ref aeMCLink::Capture() const{
 	return context;
 }
 
+igdeEnvironment &aeMCLink::GetEnvironment() const{
+	return pWindowMain.GetEnvironment();
+}
+
 igdeUndoSystem *aeMCLink::GetUndoSystem() const{
 	return pLink && pLink->GetAnimator() ? pLink->GetAnimator()->GetUndoSystem() : nullptr;
 }

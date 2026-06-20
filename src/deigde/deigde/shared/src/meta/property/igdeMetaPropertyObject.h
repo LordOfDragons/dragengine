@@ -244,7 +244,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	ObjectRef GetPropertyValue(const ContextRef &context) const override{
-		return GetPropertyValueType(context);
+		return GetPropertyValueType(context).template StaticCast<deObject>();
 	}
 	
 	void SetPropertyValue(const ContextRef &context, const ObjectRef &value) override{

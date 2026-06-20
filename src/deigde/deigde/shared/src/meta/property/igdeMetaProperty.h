@@ -153,28 +153,40 @@ public:
 	/** \brief Identifier. */
 	inline const decString &GetId() const{ return pId; }
 	
-	/** \brief Label shown in UI Forms for this property. usually '@translation'. */
+	/** \brief Label shown in UI Forms for this property (usually '@translation'). */
 	inline const decString &GetLabel() const{ return pLabel; }
 	
-	/** \brief Set label shown in UI Forms for this property. usually '@translation'. */
+	/** \brief Set label shown in UI Forms for this property (usually '@translation'). */
 	void SetLabel(const char *label);
 	
-	/** \brief Description to show in UI as tooltip. usually '@translation'. */
+	/** \brief Description to show in UI as tooltip (usually '@translation'). */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
-	/** \brief Set description to show in UI as tooltip. usually '@translation'. */
+	/** \brief Set description to show in UI as tooltip (usually '@translation'). */
 	void SetDescription(const char *description);
 	
-	/** \brief Filter string or empty string to use label. */
+	/**
+	 * \brief Filter string or empty string to use label (usually '@translation').
+	 * 
+	 * If '@translation' is used the filter string is considered empty if the translation
+	 * can not be found. This allows translators to provide a filter translation if they
+	 * need to abbreviate the label without needing to provide it all the time.
+	 */
 	inline const decString &GetFilter() const{ return pFilter; }
 	
-	/** \brief Set filter string or empty string to use label. */
+	/** \brief Set filter string or empty string to use label (usually '@translation'). */
 	void SetFilter(const char *filter);
 	
-	/** \brief Undo info string or empty string to use label. */
+	/**
+	 * \brief Undo info string or empty string to use label (usually '@translation').
+	 * 
+	 * If '@translation' is used the undo info string is considered empty if the translation
+	 * can not be found. This allows translators to provide an undo info translation if they
+	 * need to abbreviate the label without needing to provide it all the time.
+	 */
 	inline const decString &GetUndoInfo() const{ return pUndoInfo; }
 	
-	/** \brief Set undo info string or empty string to use label. */
+	/** \brief Set undo info string or empty string to use label (usually '@translation'). */
 	void SetUndoInfo(const char *undoInfo);
 	
 	/** \brief Hide label in UI Forms. */
@@ -189,12 +201,27 @@ public:
 	/** \brief Set can hide group. */
 	void SetCanHideGroup(bool canHideGroup);
 	
+	
+	/**
+	 * \brief Real filter string.
+	 * 
+	 * Returns GetFilter() or GetLabel(). See GetFilter() for details.
+	 */
+	decString RealFilter(const igdeMetaContext &context) const;
+	
 	/**
 	 * \brief Undo info string or empty to use label.
 	 * 
-	 * Returns undo info string if not empty or label if undo info string is empty.
+	 * Returns GetUndoInfo() or GetLabel(). See GetUndoInfo() for details.
 	 */
-	const decString &GetUndoInfoOrLabel() const;
+	decString RealUndoInfo(const igdeMetaContext &context) const;
+	
+	/** \brief Create action undo info in the form "<label>: <action.name>". */
+	decString RealUndoInfo(const igdeMetaContext &context, const igdeAction &action) const;
+	
+	/** \brief Create action undo info in the form "<label>: <text>". */
+	decString RealUndoInfo(const igdeMetaContext &context, const char *text) const;
+	
 	
 	/**
 	 * \brief Create UI widget.

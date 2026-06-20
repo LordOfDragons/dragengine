@@ -62,6 +62,10 @@ aeMCAnimator::Ref aeMCAnimator::Capture() const{
 	return context;
 }
 
+igdeEnvironment &aeMCAnimator::GetEnvironment() const{
+	return pWindowMain.GetEnvironment();
+}
+
 igdeUndoSystem *aeMCAnimator::GetUndoSystem() const{
 	return pAnimator ? pAnimator->GetUndoSystem() : nullptr;
 }

@@ -62,9 +62,7 @@ decUnicodeString igdeMetaProperty::Action::TranslateIf(const char *text) const{
 }
 
 decString igdeMetaProperty::Action::BuildUndoInfo(const igdeMetaProperty &property) const{
-	const auto &tm = GetTranslationManager();
-	return tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
-		+ ": " + tm.TranslateIf(GetText()).ToUTF8();
+	return property.RealUndoInfo(pContext, *this);
 }
 
 
@@ -110,9 +108,36 @@ void igdeMetaProperty::SetCanHideGroup(bool canHideGroup){
 	pCanHideGroup = canHideGroup;
 }
 
-const decString &igdeMetaProperty::GetUndoInfoOrLabel() const{
-	return pUndoInfo.IsEmpty() ? pLabel : pUndoInfo;
+
+decString igdeMetaProperty::RealFilter(const igdeMetaContext &context) const{
+	const auto &tm = context.GetEnvironment().GetTranslationManager();
+	if(pFilter.IsEmpty()){
+		return tm.TranslateIf(pLabel).ToUTF8();
+	}
+	
+	auto filter = tm.TranslateIf(pFilter, {});
+	return (filter.IsEmpty() ? tm.TranslateIf(pLabel) : filter).ToUTF8();
 }
+
+decString igdeMetaProperty::RealUndoInfo(const igdeMetaContext &context) const{
+	const auto &tm = context.GetEnvironment().GetTranslationManager();
+	if(pUndoInfo.IsEmpty()){
+		return tm.TranslateIf(pLabel).ToUTF8();
+	}
+	
+	const auto undo = tm.TranslateIf(pUndoInfo, {});
+	return (undo.IsEmpty() ? tm.TranslateIf(pLabel) : undo).ToUTF8();
+}
+
+decString igdeMetaProperty::RealUndoInfo(const igdeMetaContext &context, const igdeAction &action) const{
+	return RealUndoInfo(context, action.GetText());
+}
+
+decString igdeMetaProperty::RealUndoInfo(const igdeMetaContext &context, const char *text) const{
+	return RealUndoInfo(context) + ": " + context.GetEnvironment().
+		GetTranslationManager().TranslateIf(text).ToUTF8();
+}
+
 
 void igdeMetaProperty::AddContextMenuEntries(igdeMenuCascade&, const igdeMetaContext::Ref&, igdeWidget&){
 }

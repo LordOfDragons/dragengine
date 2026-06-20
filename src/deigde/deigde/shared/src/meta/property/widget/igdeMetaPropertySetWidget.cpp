@@ -79,7 +79,7 @@ public:
 	ActionCopy(igdeMetaPropertySetWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Copy",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Igde.Action.Copy.ToolTip"),
 	pWidget(widget), pSelection(false){
 	}
@@ -138,7 +138,7 @@ public:
 	ActionPaste(igdeMetaPropertySetWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Paste",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Igde.Action.Paste.ToolTip"),
 	pWidget(widget), pAppend(false){
 	}
@@ -176,10 +176,7 @@ public:
 			return;
 		}
 		
-		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-		property.ChangePropertyValue(context, newData,
-			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		property.ChangePropertyValue(context, newData, property.RealUndoInfo(context, *this));
 	}
 	
 	void Update() override{
@@ -213,7 +210,7 @@ class cActionResetToDefault : public igdeAction{
 public:
 	cActionResetToDefault(igdeMetaPropertySetWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
 	pWidget(widget){
 	}
@@ -227,10 +224,7 @@ public:
 			return;
 		}
 		
-		const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-		property.ChangePropertyValue(context, {},
-			tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(GetText()).ToUTF8());
+		property.ChangePropertyValue(context, {}, property.RealUndoInfo(context, *this));
 	}
 };
 
@@ -381,7 +375,8 @@ void igdeMetaPropertySetWidget::StoreActiveObject(){
 void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
 	
-	auto &helper = menu.GetEnvironment().GetUIHelper();
+	auto &env = menu.GetEnvironment();
+	auto &helper = env.GetUIHelper();
 	auto &context = GetContext();
 	
 	if(menu.GetChildren().IsNotEmpty()){
@@ -389,10 +384,10 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
-		helper.MenuCommand(menu, deTObjectReference<ActionCopySelection>::New(*this, context, helper.GetEnvironment()));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
-		helper.MenuCommand(menu, deTObjectReference<ActionPasteAppend>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+		helper.MenuCommand(menu, deTObjectReference<ActionCopySelection>::New(*this, context, env));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+		helper.MenuCommand(menu, deTObjectReference<ActionPasteAppend>::New(*this, context, env));
 		helper.MenuSeparator(menu);
 	}
 	

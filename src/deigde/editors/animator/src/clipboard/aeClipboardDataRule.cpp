@@ -22,16 +22,9 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "aeClipboardDataRule.h"
-#include "../animator/rule/aeRule.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class aeClipboardDataRule

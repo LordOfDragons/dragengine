@@ -34,6 +34,7 @@
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 
+class igdeEnvironment;
 class igdeUndoSystem;
 class igdeClipboard;
 
@@ -134,6 +135,9 @@ public:
 	
 	/** \brief Set properties. */
 	void SetProperties(const PropertyList::Ref &properties);
+	
+	/** \brief Environment. */
+	virtual igdeEnvironment &GetEnvironment() const = 0;
 	
 	/** \brief Undo system or nullptr to apply actions immediately. */
 	virtual igdeUndoSystem *GetUndoSystem() const = 0;

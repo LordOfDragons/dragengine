@@ -76,6 +76,10 @@ igdeMetaContext::Ref aeMCRule::Capture() const{
 	return Ref::New(pWindowMain, pRule, true);
 }
 
+igdeEnvironment &aeMCRule::GetEnvironment() const{
+	return pWindowMain.GetEnvironment();
+}
+
 igdeUndoSystem *aeMCRule::GetUndoSystem() const{
 	return pRule && pRule->GetAnimator() ? pRule->GetAnimator()->GetUndoSystem() : nullptr;
 }

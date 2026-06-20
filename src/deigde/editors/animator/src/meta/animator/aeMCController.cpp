@@ -63,6 +63,10 @@ aeMCController::Ref aeMCController::Capture() const{
 	return context;
 }
 
+igdeEnvironment &aeMCController::GetEnvironment() const{
+	return pWindowMain.GetEnvironment();
+}
+
 igdeUndoSystem *aeMCController::GetUndoSystem() const{
 	return pController && pController->GetAnimator()
 		? pController->GetAnimator()->GetUndoSystem() : nullptr;

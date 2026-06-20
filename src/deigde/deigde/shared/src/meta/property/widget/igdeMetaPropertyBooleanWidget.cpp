@@ -54,14 +54,8 @@ public:
 			return;
 		}
 		
-		decString strUndoInfo;
-		if(undoInfo){
-			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
-		}
-		property.ChangePropertyValue(context, newValue,
-			undoInfo ? strUndoInfo.GetString() : nullptr);
+		property.ChangePropertyValue(context, newValue, undoInfo
+			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
 	}
 };
 
@@ -103,7 +97,7 @@ class cActionResetToDefault : public igdeAction{
 public:
 	cActionResetToDefault(igdeMetaPropertyBooleanWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
 	pHelper(widget){
 	}

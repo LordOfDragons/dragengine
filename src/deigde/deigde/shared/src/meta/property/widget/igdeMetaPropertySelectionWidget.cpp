@@ -58,14 +58,8 @@ public:
 			return;
 		}
 		
-		decString strUndoInfo;
-		if(undoInfo){
-			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
-		}
-		property.ChangePropertyValue(context, newValue,
-			undoInfo ? strUndoInfo.GetString() : nullptr);
+		property.ChangePropertyValue(context, newValue, undoInfo
+			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
 	}
 };
 
@@ -93,7 +87,7 @@ public:
 	ActionCopy(igdeMetaPropertySelectionWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Copy",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Igde.Action.Copy.ToolTip"),
 	pWidget(widget){
 	}
@@ -125,7 +119,7 @@ public:
 	ActionPaste(igdeMetaPropertySelectionWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Paste",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Igde.Action.Paste.ToolTip"),
 	pHelper(widget){
 	}
@@ -169,7 +163,7 @@ class cActionResetToDefault : public igdeAction{
 public:
 	cActionResetToDefault(igdeMetaPropertySelectionWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
 	pHelper(widget){
 	}
@@ -233,12 +227,11 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
 	const auto &context = GetContext();
-	const auto &tm = pComboBox->GetEnvironment().GetTranslationManager();
 	igdeMetaContextItemInfo info;
 	pPropertySelection.GetChoices().Visit([&](void *choice){
 		pPropertySelection.GetChoiceItemInfo(context, choice, info);
-		pComboBox->AddItem(igdeListItem::Ref::New(tm.TranslateIf(info.GetText()).ToUTF8(),
-			info.GetIcon(), tm.TranslateIf(info.GetDescription()).ToUTF8(), choice));
+		pComboBox->AddItem(igdeListItem::Ref::New(pComboBox->TranslateIf(info.GetText()).ToUTF8(),
+			info.GetIcon(), pComboBox->TranslateIf(info.GetDescription()).ToUTF8(), choice));
 	});
 	
 	UpdateMatchable(container);
@@ -269,7 +262,8 @@ void igdeMetaPropertySelectionWidget::Update(){
 void igdeMetaPropertySelectionWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
 	
-	auto &helper = menu.GetEnvironment().GetUIHelper();
+	auto &env = menu.GetEnvironment();
+	auto &helper = env.GetUIHelper();
 	auto &context = GetContext();
 	
 	if(menu.GetChildren().IsNotEmpty()){
@@ -277,8 +271,8 @@ void igdeMetaPropertySelectionWidget::AddContextMenuEntries(igdeMenuCascade &men
 	}
 	
 	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
 		helper.MenuSeparator(menu);
 	}
 	

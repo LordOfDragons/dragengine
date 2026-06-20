@@ -57,14 +57,8 @@ public:
 			return;
 		}
 		
-		decString strUndoInfo;
-		if(undoInfo){
-			const auto &tm = pWidget.GetEnvironment().GetTranslationManager();
-			strUndoInfo = tm.TranslateIf(property.GetUndoInfoOrLabel()).ToUTF8()
-				+ ": " + tm.TranslateIf(undoInfo).ToUTF8();
-		}
-		property.ChangePropertyValue(context, newValue,
-			undoInfo ? strUndoInfo.GetString() : nullptr);
+		property.ChangePropertyValue(context, newValue, undoInfo
+			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
 	}
 };
 
@@ -92,7 +86,7 @@ public:
 	ActionCopy(igdeMetaPropertyColorWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Copy",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Igde.Action.Copy.ToolTip"),
 	pWidget(widget){
 	}
@@ -124,7 +118,7 @@ public:
 	ActionPaste(igdeMetaPropertyColorWidget &widget, const igdeMetaContext::Ref &context,
 		igdeEnvironment &environment) :
 	igdeAction("@Igde.Action.Paste",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Igde.Action.Paste.ToolTip"),
 	pHelper(widget){
 	}
@@ -167,7 +161,7 @@ class cActionResetToDefault : public igdeAction{
 public:
 	cActionResetToDefault(igdeMetaPropertyColorWidget &widget) :
 	igdeAction("@Igde.MetaProperty.Action.ResetToDefault",
-		widget.GetButtonContextMenu()->GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiUndo),
 		"@Igde.MetaProperty.Action.ResetToDefault.ToolTip"),
 	pHelper(widget){
 	}
@@ -259,7 +253,8 @@ void igdeMetaPropertyColorWidget::Update(){
 void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
 	
-	auto &helper = menu.GetEnvironment().GetUIHelper();
+	auto &env = menu.GetEnvironment();
+	auto &helper = env.GetUIHelper();
 	auto &context = GetContext();
 	
 	if(menu.GetChildren().IsNotEmpty()){
@@ -267,8 +262,8 @@ void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, helper.GetEnvironment()));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, helper.GetEnvironment()));
+		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
 		helper.MenuSeparator(menu);
 	}
 	

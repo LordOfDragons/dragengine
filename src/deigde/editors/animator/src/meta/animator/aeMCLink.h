@@ -73,6 +73,9 @@ public:
 	/** Capture context. */
 	Ref Capture() const;
 	
+	/** Environment. */
+	igdeEnvironment &GetEnvironment() const override;
+	
 	/** Undo system or nullptr to apply actions immediately. */
 	igdeUndoSystem *GetUndoSystem() const override;
 	

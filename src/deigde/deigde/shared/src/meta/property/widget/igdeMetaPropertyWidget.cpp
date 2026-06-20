@@ -92,8 +92,16 @@ void igdeMetaPropertyWidget::Filter(const igdeFilter &filter){
 
 void igdeMetaPropertyWidget::UpdateMatchable(igdeContainer &container){
 	if(pLabel){
-		pMatchable = igdeFilter::Matchable(container.TranslateIf(pProperty->GetFilter().IsEmpty()
-			? pProperty->GetLabel() : pProperty->GetFilter()).ToUTF8());
+		if(pProperty->GetFilter().IsEmpty()){
+			pMatchable = igdeFilter::Matchable(container.TranslateIf(pProperty->GetLabel()).ToUTF8());
+			
+		}else{
+			auto filter = container.TranslateIf(pProperty->GetFilter(), {});
+			if(filter.IsEmpty()){
+				filter = container.TranslateIf(pProperty->GetLabel());
+			}
+			pMatchable = igdeFilter::Matchable(filter.ToUTF8());
+		}
 		
 	}else{
 		pMatchable = {};
