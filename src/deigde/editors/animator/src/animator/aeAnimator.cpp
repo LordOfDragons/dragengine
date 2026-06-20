@@ -93,16 +93,19 @@ aeAnimator::aeAnimator(aeWindowMain &windowMain) :
 igdeEditableEntity(&windowMain.GetEnvironment()),
 pWindowMain(windowMain),
 pMetaContext(aeMCAnimator::Ref::New(windowMain, this)),
+pMetaContextController(aeMCAnimatorController::Ref::New(windowMain, this)),
+pMetaContextLink(aeMCAnimatorLink::Ref::New(windowMain, this)),
+pMetaContextRule(aeMCAnimatorRule::Ref::New(windowMain, this)),
 rigPath(pWindowMain.GetMCAnimatorProperties().rig, pMetaContext),
 animationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
 affectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
 affectedVertexPositionSets(pWindowMain.GetMCAnimatorProperties().affectedVertexPositionSets, pMetaContext),
-controllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContext),
-controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContext),
-links(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContext),
-link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContext),
-rules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContext),
-rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContext)
+controllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaContextController),
+controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContextController),
+links(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContextLink),
+link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContextLink),
+rules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContextRule),
+rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule)
 {
 	deEngine * engine = GetEngine();
 	
@@ -269,6 +272,18 @@ void aeAnimator::Dispose(){
 	RemoveAllAttachments();
 	
 	GetUndoSystem()->RemoveAll();
+	if(pMetaContextRule){
+		pMetaContextRule->Dispose();
+		pMetaContextRule.Clear();
+	}
+	if(pMetaContextLink){
+		pMetaContextLink->Dispose();
+		pMetaContextLink.Clear();
+	}
+	if(pMetaContextController){
+		pMetaContextController->Dispose();
+		pMetaContextController.Clear();
+	}
 	if(pMetaContext){
 		pMetaContext->Dispose();
 		pMetaContext.Clear();

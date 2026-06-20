@@ -181,7 +181,7 @@ void igdeWPMetaContext::pCreatePropertyWidgets(){
 			
 			if(property->GetHideLabel()){
 				form.Clear();
-				widget->Create(form, helper, true);
+				widget->Create(*this, helper, true);
 				
 			}else{
 				if(!form){

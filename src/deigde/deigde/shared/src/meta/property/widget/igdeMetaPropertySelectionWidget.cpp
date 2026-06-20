@@ -226,12 +226,14 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 	helper.ComboBox(15, 10, false, pPropertySelection.GetDescription(), pComboBox, pListener);
 	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
-	const auto &context = GetContext();
-	igdeMetaContextItemInfo info;
-	pPropertySelection.GetChoices().Visit([&](void *choice){
-		pPropertySelection.GetChoiceItemInfo(context, choice, info);
-		pComboBox->AddItem(igdeListItem::Ref::New(pComboBox->TranslateIf(info.GetText()).ToUTF8(),
-			info.GetIcon(), pComboBox->TranslateIf(info.GetDescription()).ToUTF8(), choice));
+	RunWithPreventUpdate([&]{
+		const auto &context = GetContext();
+		igdeMetaContextItemInfo info;
+		pPropertySelection.GetChoices().Visit([&](void *choice){
+			pPropertySelection.GetChoiceItemInfo(context, choice, info);
+			pComboBox->AddItem(igdeListItem::Ref::New(pComboBox->TranslateIf(info.GetText()).ToUTF8(),
+				info.GetIcon(), pComboBox->TranslateIf(info.GetDescription()).ToUTF8(), choice));
+		});
 	});
 	
 	UpdateMatchable(container);

@@ -49,6 +49,7 @@ public:
 		"@Animator.WPRule.Rules", "@Animator.WPRule.Rules.ToolTip"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
+		SetRows(8);
 	}
 	
 	~aeMCPRules() override = default;

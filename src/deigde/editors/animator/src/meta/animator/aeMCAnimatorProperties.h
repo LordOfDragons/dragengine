@@ -66,10 +66,16 @@ public:
 			rig,
 			animation,
 			affectedBones,
-			affectedVertexPositionSets,
-			controller.group,
-			link.group,
-			rule.group));
+			affectedVertexPositionSets));
+	
+	igdeMetaContext::PropertyList::Ref metaPropertiesController =
+		igdeMetaContext::PropertyList::Ref::New(controller.group->GetProperties());
+	
+	igdeMetaContext::PropertyList::Ref metaPropertiesLink =
+		igdeMetaContext::PropertyList::Ref::New(link.group->GetProperties());
+	
+	igdeMetaContext::PropertyList::Ref metaPropertiesRule =
+		igdeMetaContext::PropertyList::Ref::New(rule.group->GetProperties());
 	
 	aeMCAnimatorProperties(aeWindowMain &windowMain) :
 		controller(windowMain),

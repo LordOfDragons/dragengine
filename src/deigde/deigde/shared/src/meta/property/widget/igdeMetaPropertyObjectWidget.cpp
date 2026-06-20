@@ -240,7 +240,9 @@ void igdeMetaPropertyObjectWidget::Create(igdeContainer &container, igdeUIHelper
 	if(pPropertyObject.GetSorted()){
 		pComboBox->SetDefaultSorter();
 	}
-	pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
+	RunWithPreventUpdate([&]{
+		pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
+	});
 	WrapEditWidget(container, helper, noLabel, pComboBox);
 	
 	UpdateMatchable(container);

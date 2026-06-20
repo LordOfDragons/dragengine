@@ -114,6 +114,9 @@ public:
 private:
 	aeWindowMain &pWindowMain;
 	aeMCAnimator::Ref pMetaContext;
+	aeMCAnimatorController::Ref pMetaContextController;
+	aeMCAnimatorLink::Ref pMetaContextLink;
+	aeMCAnimatorRule::Ref pMetaContextRule;
 	
 	deWorld::Ref pEngWorld;
 	
@@ -192,6 +195,9 @@ public:
 	
 	/** Meta context. */
 	inline const aeMCAnimator::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const aeMCAnimatorController::Ref &GetMetaContextController() const{ return pMetaContextController; }
+	inline const aeMCAnimatorLink::Ref &GetMetaContextLink() const{ return pMetaContextLink; }
+	inline const aeMCAnimatorRule::Ref &GetMetaContextRule() const{ return pMetaContextRule; }
 	
 	/** Dispose of all resources. */
 	void Dispose();

@@ -50,6 +50,7 @@ public:
 		"@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
+		SetRows(8);
 	}
 	
 	~aeMCPControllers() override = default;

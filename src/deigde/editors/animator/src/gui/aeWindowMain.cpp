@@ -1480,7 +1480,11 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 
 void aeWindowMain::pUpdateMetaContexts(){
 	auto list = igdeMetaContext::Data::Ref::New();
-	list->GetData().Add(pAnimator ? pAnimator->GetMetaContext() : aeMCAnimator::Ref::New(*this, nullptr));
+	auto &data = list->GetData();
+	data.Add(pAnimator ? pAnimator->GetMetaContext() : aeMCAnimator::Ref::New(*this, nullptr));
+	data.Add(pAnimator ? pAnimator->GetMetaContextController() : aeMCAnimatorController::Ref::New(*this, nullptr));
+	data.Add(pAnimator ? pAnimator->GetMetaContextLink() : aeMCAnimatorLink::Ref::New(*this, nullptr));
+	data.Add(pAnimator ? pAnimator->GetMetaContextRule() : aeMCAnimatorRule::Ref::New(*this, nullptr));
 	// playground, view, undo?
 	SetMetaContexts(list);
 }

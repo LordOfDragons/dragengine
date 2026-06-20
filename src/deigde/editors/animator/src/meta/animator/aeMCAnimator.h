@@ -84,4 +84,26 @@ public:
 	/*@}*/
 };
 
+
+class aeMCAnimatorController : public aeMCAnimator{
+public:
+	using Ref = deTObjectReference<aeMCAnimatorController>;
+	aeMCAnimatorController(aeWindowMain &windowMain, aeAnimator *animator);
+	~aeMCAnimatorController() override;
+};
+
+class aeMCAnimatorLink : public aeMCAnimator{
+public:
+	using Ref = deTObjectReference<aeMCAnimatorLink>;
+	aeMCAnimatorLink(aeWindowMain &windowMain, aeAnimator *animator);
+	~aeMCAnimatorLink() override;
+};
+
+class aeMCAnimatorRule : public aeMCAnimator{
+public:
+	using Ref = deTObjectReference<aeMCAnimatorRule>;
+	aeMCAnimatorRule(aeWindowMain &windowMain, aeAnimator *animator);
+	~aeMCAnimatorRule() override;
+};
+
 #endif

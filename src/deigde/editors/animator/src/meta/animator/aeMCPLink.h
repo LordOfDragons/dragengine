@@ -48,6 +48,7 @@ public:
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetSorted(true);
+		SetRows(8);
 	}
 	
 	~aeMCPLinks() override = default;

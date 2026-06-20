@@ -73,3 +73,42 @@ igdeUndoSystem *aeMCAnimator::GetUndoSystem() const{
 igdeClipboard *aeMCAnimator::GetClipboard() const{
 	return &pWindowMain.GetClipboard();
 }
+
+
+// Class aeMCAnimatorController
+/////////////////////////////////
+
+aeMCAnimatorController::aeMCAnimatorController(aeWindowMain &windowMain, aeAnimator *animator) :
+aeMCAnimator(windowMain, animator){
+	SetLabel("Controller");
+	SetDescription("Controller properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesController);
+}
+
+aeMCAnimatorController::~aeMCAnimatorController() = default;
+
+
+// Class aeMCAnimatorLink
+///////////////////////////
+
+aeMCAnimatorLink::aeMCAnimatorLink(aeWindowMain &windowMain, aeAnimator *animator) :
+aeMCAnimator(windowMain, animator){
+	SetLabel("Link");
+	SetDescription("Link properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesLink);
+}
+
+aeMCAnimatorLink::~aeMCAnimatorLink() = default;
+
+
+// Class aeMCAnimatorRule
+///////////////////////////
+
+aeMCAnimatorRule::aeMCAnimatorRule(aeWindowMain &windowMain, aeAnimator *animator) :
+aeMCAnimator(windowMain, animator){
+	SetLabel("Rule");
+	SetDescription("Rule properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesRule);
+}
+
+aeMCAnimatorRule::~aeMCAnimatorRule() = default;

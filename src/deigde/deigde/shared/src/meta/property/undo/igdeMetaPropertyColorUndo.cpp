@@ -36,7 +36,7 @@ pContext(property.Capture(context)),
 pOldValue(property.GetPropertyValue(context)),
 pNewValue(newValue)
 {
-	SetShortInfo(undoInfo ? undoInfo : property.RealUndoInfo(context, undoInfo).GetString());
+	SetShortInfo(undoInfo ? undoInfo : property.RealUndoInfo(context).GetString());
 	if(undoInfoLong){
 		SetLongInfo(undoInfoLong);
 	}

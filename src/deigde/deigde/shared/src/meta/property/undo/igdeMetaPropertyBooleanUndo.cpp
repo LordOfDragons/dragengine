@@ -34,7 +34,7 @@ igdeMetaPropertyBooleanUndo::igdeMetaPropertyBooleanUndo(
 pProperty(&property),
 pContext(property.Capture(context))
 {
-	SetShortInfo(undoInfo ? undoInfo : property.RealUndoInfo(context, undoInfo).GetString());
+	SetShortInfo(undoInfo ? undoInfo : property.RealUndoInfo(context).GetString());
 	if(undoInfoLong){
 		SetLongInfo(undoInfoLong);
 	}
