@@ -147,19 +147,25 @@ class aeMCPRuleLimitTargetBone : public aeTMCPAnimatorRuleLimit<igdeMetaProperty
 public:
 	aeMCPRuleLimitTargetBone() : aeTMCPAnimatorRuleType("limit.targetBone",
 		"@Animator.WPAPanelRuleLimit.TargetBone", "@Animator.WPAPanelRuleLimit.TargetBone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleLimitTargetBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).targetBone;
 	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+	}
 };
 
 class aeMCPRuleLimitCoordinateFrame : public aeTMCPAnimatorRuleLimit<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleLimit::eCoordinateFrames>>{
 public:
 	aeMCPRuleLimitCoordinateFrame() : aeTMCPAnimatorRuleType("limit.coordinateFrame",
-		"@Animator.WPAPanelRuleLimit.CoordinateFrame", "@Animator.WPAPanelRuleLimit.CoordinateFrame.ToolTip"){
+		"@Animator.WPAPanelRuleLimit.CoordFrame", "@Animator.WPAPanelRuleLimit.CoordFrame.ToolTip"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleLimit::ecfBoneLocal,
 			deAnimatorRuleLimit::ecfComponent,

@@ -26,16 +26,18 @@
 #define _AEMCLINKPROPERTIES_H_
 
 #include "aeMCPLink.h"
+#include "aeMCListeners.h"
 
 #include <deigde/meta/property/igdeMetaPropertyGroup.h>
 
 class aeWindowMain;
+class aeMCAnimatorProperties;
 
 
 class aeMCLinkProperties{
 public:
 	deTObjectReference<aeMCPLinkName> name = deTObjectReference<aeMCPLinkName>::New();
-	deTObjectReference<aeMCPLinkController> controller;
+	deTObjectReference<aeMCPLinkController> controller = deTObjectReference<aeMCPLinkController>::New();
 	deTObjectReference<aeMCPLinkRepeat> repeat = deTObjectReference<aeMCPLinkRepeat>::New();
 	deTObjectReference<aeMCPLinkBone> bone = deTObjectReference<aeMCPLinkBone>::New();
 	deTObjectReference<aeMCPLinkBoneParameter> boneParameter = deTObjectReference<aeMCPLinkBoneParameter>::New();
@@ -68,9 +70,8 @@ public:
 		"animator.groupLinks", "@Animator.WPLink.Links", "@Animator.WPLink.Links.ToolTip",
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, links, link));
 	
-	aeMCLinkProperties(aeWindowMain &windowMain) :
-		controller(deTObjectReference<aeMCPLinkController>::New(windowMain)),
-		link(deTObjectReference<aeMCPLink>::New(windowMain)){}
+	aeMCLinkProperties(aeWindowMain &windowMain);
+	void Init(const aeMCAnimatorProperties &properties);
 };
 
 #endif

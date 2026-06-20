@@ -118,12 +118,18 @@ class aeMCPRuleInverseKinematicSolverBone : public aeTMCPAnimatorRuleInverseKine
 public:
 	aeMCPRuleInverseKinematicSolverBone() : aeTMCPAnimatorRuleType("inversekinematic.solverBone",
 		"@Animator.WPAPanelRuleInverseKinematic.SolverBone", "@Animator.WPAPanelRuleInverseKinematic.SolverBone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleInverseKinematicSolverBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).solverBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
@@ -144,12 +150,18 @@ class aeMCPRuleInverseKinematicReachBone : public aeTMCPAnimatorRuleInverseKinem
 public:
 	aeMCPRuleInverseKinematicReachBone() : aeTMCPAnimatorRuleType("inversekinematic.reachBone",
 		"@Animator.WPAPanelRuleInverseKinematic.ReachBone", "@Animator.WPAPanelRuleInverseKinematic.ReachBone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleInverseKinematicReachBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).reachBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
@@ -170,7 +182,7 @@ public:
 class aeMCPRuleInverseKinematicTargetGoalPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleInverseKinematicTargetGoalPosition() : aeTMCPRuleTarget("inversekinematic.targetGoalPosition",
-		"@Animator.Target.GoalPosition", "@Animator.Target.GoalPosition.ToolTip"){
+		"@Animator.WPAPanelRuleInverseKinematic.GoalPosition", "@Animator.WPAPanelRuleInverseKinematic.GoalPosition.ToolTip"){
 	};
 	
 	~aeMCPRuleInverseKinematicTargetGoalPosition() override = default;
@@ -183,7 +195,7 @@ public:
 class aeMCPRuleInverseKinematicTargetGoalOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleInverseKinematicTargetGoalOrientation() : aeTMCPRuleTarget("inversekinematic.targetGoalOrientation",
-		"@Animator.Target.GoalOrientation", "@Animator.Target.GoalOrientation.ToolTip"){
+		"@Animator.WPAPanelRuleInverseKinematic.GoalOrientation", "@Animator.WPAPanelRuleInverseKinematic.GoalOrientation.ToolTip"){
 	};
 	
 	~aeMCPRuleInverseKinematicTargetGoalOrientation() override = default;
@@ -196,7 +208,7 @@ public:
 class aeMCPRuleInverseKinematicTargetLocalPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleInverseKinematicTargetLocalPosition() : aeTMCPRuleTarget("inversekinematic.targetLocalPosition",
-		"@Animator.Target.LocalPosition", "@Animator.Target.LocalPosition.ToolTip"){
+		"@Animator.WPAPanelRuleInverseKinematic.LocalPosition", "@Animator.WPAPanelRuleInverseKinematic.LocalPosition.ToolTip"){
 	};
 	
 	~aeMCPRuleInverseKinematicTargetLocalPosition() override = default;
@@ -209,7 +221,7 @@ public:
 class aeMCPRuleInverseKinematicTargetLocalOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleInverseKinematicTargetLocalOrientation() : aeTMCPRuleTarget("inversekinematic.targetLocalOrientation",
-		"@Animator.Target.LocalOrientation", "@Animator.Target.LocalOrientation.ToolTip"){
+		"@Animator.WPAPanelRuleInverseKinematic.LocalOrientation", "@Animator.WPAPanelRuleInverseKinematic.LocalOrientation.ToolTip"){
 	};
 	
 	~aeMCPRuleInverseKinematicTargetLocalOrientation() override = default;
@@ -222,7 +234,7 @@ public:
 class aeMCPRuleInverseKinematicTargetReachRange : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleInverseKinematicTargetReachRange() : aeTMCPRuleTarget("inversekinematic.targetReachRange",
-		"@Animator.Target.ReachRange", "@Animator.Target.ReachRange.ToolTip"){
+		"@Animator.WPAPanelRuleInverseKinematic.Range", "@Animator.WPAPanelRuleInverseKinematic.Range.ToolTip"){
 	};
 	
 	~aeMCPRuleInverseKinematicTargetReachRange() override = default;
@@ -235,7 +247,7 @@ public:
 class aeMCPRuleInverseKinematicTargetReachCenter : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleInverseKinematicTargetReachCenter() : aeTMCPRuleTarget("inversekinematic.targetReachCenter",
-		"@Animator.Target.ReachCenter", "@Animator.Target.ReachCenter.ToolTip"){
+		"@Animator.WPAPanelRuleInverseKinematic.ReachCenter", "@Animator.WPAPanelRuleInverseKinematic.ReachCenter.ToolTip"){
 	};
 	
 	~aeMCPRuleInverseKinematicTargetReachCenter() override = default;

@@ -105,7 +105,7 @@ public:
 /** Link controller. */
 class aeMCPLinkController : public aeTMCPAnimatorLink<igdeMetaPropertyObjectStorage<aeController>>{
 public:
-	aeMCPLinkController(aeWindowMain &windowMain) : aeTMCPAnimatorLink("link.controller",
+	aeMCPLinkController() : aeTMCPAnimatorLink("link.controller",
 	"@Animator.WPLink.Controller", "@Animator.WPLink.Controller.ToolTip"){
 		SetSorted(true);
 	};
@@ -117,7 +117,8 @@ public:
 	}
 	
 	void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object, igdeMetaContextItemInfo &info) const override{
-		info.SetAll(object ? object->GetName().GetString() : "@Animator.WPLink.Controller.NoController");
+		info.SetAll(object ? decString::Formatted("{0} ({1})", object->GetName().GetString(), object->GetIndex())
+			: "@Animator.WPLink.Controller.NoController");
 	}
 	
 	ObjectTypeList GetPropertyAllowedObjectsType(const ContextRef &context) const override{
@@ -153,6 +154,7 @@ public:
 		decCurveBezier curve;
 		curve.SetDefaultBezier();
 		SetDefaultValue(curve);
+		SetClamp(true);
 	};
 	
 	~aeMCPLinkCurve() override = default;
@@ -167,13 +169,18 @@ public:
 class aeMCPLinkBone : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPLinkBone() : aeTMCPAnimatorLink("link.bone", "@Animator.WPLink.Bone", "@Animator.WPLink.Bone.ToolTip"){
-		SetEnableStringList(true);
+		SetEnableAllowed(true);
 	};
 	
 	~aeMCPLinkBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Link(context).bone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = Link(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
@@ -277,13 +284,18 @@ class aeMCPLinkVertexPositionSet : public aeTMCPAnimatorLink<igdeMetaPropertyStr
 public:
 	aeMCPLinkVertexPositionSet() : aeTMCPAnimatorLink("link.vertexPositionSet",
 	"@Animator.WPLink.VertexPositionSet", "@Animator.WPLink.VertexPositionSet.ToolTip"){
-		SetEnableStringList(true);
+		SetEnableAllowed(true);
 	};
 	
 	~aeMCPLinkVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Link(context).vertexPositionSet;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = Link(context).GetAnimator();
+		return animator ? animator->hiddenVPSNames.GetValue() : decStringSet();
 	}
 };
 

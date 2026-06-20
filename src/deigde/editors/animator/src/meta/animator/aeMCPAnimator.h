@@ -34,6 +34,38 @@
 #include <deigde/meta/property/igdeMetaPropertyGroup.h>
 
 
+/** Hidden. */
+class aeMCPHiddenBoneNames : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+public:
+	aeMCPHiddenBoneNames() : aeTMCPAnimator("animator.hiddenBoneNames", "", ""){}
+	~aeMCPHiddenBoneNames() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).hiddenBoneNames;
+	}
+};
+
+class aeMCPHiddenVPSNames : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+public:
+	aeMCPHiddenVPSNames() : aeTMCPAnimator("animator.hiddenVPSNames", "", ""){}
+	~aeMCPHiddenVPSNames() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).hiddenVPSNames;
+	}
+};
+
+class aeMCPHiddenMoveNames : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+public:
+	aeMCPHiddenMoveNames() : aeTMCPAnimator("animator.hiddenMoveNames", "", ""){}
+	~aeMCPHiddenMoveNames() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).hiddenMoveNames;
+	}
+};
+
+
 /** Rig path. */
 class aeMCPAnimatorRig : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
 public:
@@ -41,7 +73,7 @@ public:
 		"@Animator.WPAnimator.Rig", "@Animator.WPAnimator.Rig.ToolTip",
 		igdeEnvironment::efpltRig){}
 	
-	~aeMCPAnimatorRig() override{}
+	~aeMCPAnimatorRig() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).rigPath;
@@ -60,7 +92,7 @@ public:
 		"@Animator.WPAnimator.Animation", "@Animator.WPAnimator.Animation.ToolTip",
 		igdeEnvironment::efpltAnimation){}
 	
-	~aeMCPAnimatorAnimation() override{}
+	~aeMCPAnimatorAnimation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).animationPath;
@@ -80,13 +112,13 @@ public:
 			SetMultiSelection(true);
 		}
 	
-	~aeMCPAnimatorAffectedBones() override{}
+	~aeMCPAnimatorAffectedBones() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).affectedBones;
 	}
 	
-	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 
@@ -99,13 +131,13 @@ public:
 			SetMultiSelection(true);
 		}
 	
-	~aeMCPAnimatorAffectedVertexPositionSets() override{}
+	~aeMCPAnimatorAffectedVertexPositionSets() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Animator(context).affectedVertexPositionSets;
 	}
 	
-	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 

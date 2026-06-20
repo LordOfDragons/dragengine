@@ -39,13 +39,18 @@ class aeMCPRuleAnimationDifferenceLeadingMoveName : public aeTMCPAnimatorRuleAni
 public:
 	aeMCPRuleAnimationDifferenceLeadingMoveName() : aeTMCPAnimatorRuleType("animationdifference.leadingMoveName",
 		"@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName", "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveName.ToolTip"){
-		SetDefaultValue("idle");
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleAnimationDifferenceLeadingMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).leadingMoveName;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
 	}
 };
 
@@ -53,7 +58,9 @@ class aeMCPRuleAnimationDifferenceLeadingMoveTime : public aeTMCPAnimatorRuleAni
 public:
 	aeMCPRuleAnimationDifferenceLeadingMoveTime() : aeTMCPAnimatorRuleType("animationdifference.leadingMoveTime",
 		"@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime", "@Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime.ToolTip"){
-	};
+			SetEnableLowerLimit(true);
+			SetEnableUpperLimit(true);
+		};
 	
 	~aeMCPRuleAnimationDifferenceLeadingMoveTime() override = default;
 	
@@ -66,13 +73,18 @@ class aeMCPRuleAnimationDifferenceReferenceMoveName : public aeTMCPAnimatorRuleA
 public:
 	aeMCPRuleAnimationDifferenceReferenceMoveName() : aeTMCPAnimatorRuleType("animationdifference.referenceMoveName",
 		"@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName", "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName.ToolTip"){
-		SetDefaultValue("idle");
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleAnimationDifferenceReferenceMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).referenceMoveName;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
 	}
 };
 
@@ -80,25 +92,14 @@ class aeMCPRuleAnimationDifferenceReferenceMoveTime : public aeTMCPAnimatorRuleA
 public:
 	aeMCPRuleAnimationDifferenceReferenceMoveTime() : aeTMCPAnimatorRuleType("animationdifference.referenceMoveTime",
 		"@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime", "@Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime.ToolTip"){
-	};
+			SetEnableLowerLimit(true);
+			SetEnableUpperLimit(true);
+		};
 	
 	~aeMCPRuleAnimationDifferenceReferenceMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).referenceMoveTime;
-	}
-};
-
-class aeMCPRuleAnimationDifferenceUseSameMove : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyBooleanStorage>{
-public:
-	aeMCPRuleAnimationDifferenceUseSameMove() : aeTMCPAnimatorRuleType("animationdifference.useSameMove",
-		"@Animator.WPAPanelRuleAnimationDifference.SameMove", "@Animator.WPAPanelRuleAnimationDifference.SameMove.ToolTip"){
-	};
-	
-	~aeMCPRuleAnimationDifferenceUseSameMove() override = default;
-	
-	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).useSameMove;
 	}
 };
 

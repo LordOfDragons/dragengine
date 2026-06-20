@@ -140,25 +140,12 @@ void aeMCPRules::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaCont
 // Class aeMCPRuleListBones
 /////////////////////////////
 
-decStringSet aeMCPRuleListBones::GetValidStrings(const igdeMetaContext::Ref &context) const{
+decStringSet aeMCPRuleAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
 	const auto animator = Rule(context).GetAnimator();
-	if(!animator){
-		return {};
-	}
-	
-	const auto rig = animator->GetEngineRig();
-	if(!rig){
-		return {};
-	}
-	
-	decStringSet strings;
-	rig->GetBones().Visit([&](const deRigBone &bone){
-		strings.Add(bone.GetName());
-	});
-	return strings;
+	return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 }
 
-void aeMCPRuleListBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+void aeMCPRuleAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, owner, context));
 	AddDefaultContextMenuEntries(menu, context, owner);
@@ -168,59 +155,13 @@ void aeMCPRuleListBones::AddContextMenuEntries(igdeMenuCascade &menu, const igde
 // Class aeMCPRuleListVertexPositionSets
 //////////////////////////////////////////
 
-decStringSet aeMCPRuleListVertexPositionSets::GetValidStrings(const igdeMetaContext::Ref &context) const{
+decStringSet aeMCPRuleAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
 	const auto animator = Rule(context).GetAnimator();
-	if(!animator){
-		return {};
-	}
-	
-	const auto component = animator->GetEngineComponent();
-	if(!component){
-		return {};
-	}
-	
-	const auto model = component->GetModel();
-	if(!model){
-		return {};
-	}
-	
-	decStringSet strings;
-	model->GetVertexPositionSets().Visit([&](const deModelVertexPositionSet &vps){
-		strings.Add(vps.GetName());
-	});
-	return strings;
+	return animator ? animator->hiddenVPSNames.GetValue() : decStringSet();
 }
 
-void aeMCPRuleListVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+void aeMCPRuleAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionAdd::Ref::New(*this, owner, context));
 	AddDefaultContextMenuEntries(menu, context, owner);
 }
-
-
-// Class aeMCPRuleAnimationSelectMoves
-////////////////////////////////////////
-
-decStringSet aeMCPRuleAnimationSelectMoves::GetValidStrings(const igdeMetaContext::Ref &context) const{
-	const auto animator = Rule(context).GetAnimator();
-	if(!animator){
-		return {};
-	}
-	
-	const auto &engAnimator = animator->GetEngineAnimator();
-	if(!engAnimator){
-		return {};
-	}
-	
-	const auto &engAnimation = engAnimator->GetAnimation();
-	if(!engAnimation){
-		return {};
-	}
-	
-	decStringSet strings;
-	engAnimation->GetMoves().Visit([&](const deAnimationMove &move){
-		strings.Add(move.GetName());
-	});
-	return strings;
-}
-	

@@ -208,7 +208,7 @@ public:
 	cListLinks(aeWPLink &panel) : pPanel(panel){}
 	
 	void OnSelectionChanged(igdeListBox *listBox) override{
-		if(pPanel.GetAnimator()){
+		if(pPanel.GetAnimator() && !pPanel.preventUpdate){
 			pPanel.GetAnimator()->SetActiveLink(listBox->GetSelectedItem()
 				? (aeLink*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
@@ -605,8 +605,7 @@ public:
 
 aeWPLink::aeWPLink(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pPreventUpdate(false)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -631,14 +630,14 @@ pPreventUpdate(false)
 		"@Animator.WPLink.Name.ToolTip", pEditName, cTextName::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "@Animator.WPLink.Controller",
-		"@Animator.WPLink.Controller.ToolTip", pCBController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
+		"@Animator.WPLink.Controller.ToolTip", pCBController, cComboConnectionController::Ref::New(*this, preventUpdate));
 	pCBController->SetDefaultSorter();
 	
 	helper.EditSpinInteger(groupBox, "@Animator.WPLink.Repeat",
 		"@Animator.WPLink.Repeat.ToolTip", 1, 99, pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
 	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.Bone", true,
-		"@Animator.WPLink.Bone.ToolTip", pCBBone, cComboBone::Ref::New(*this, pPreventUpdate));
+		"@Animator.WPLink.Bone.ToolTip", pCBBone, cComboBone::Ref::New(*this, preventUpdate));
 	pCBBone->SetDefaultSorter();
 	
 	helper.ComboBox(groupBox, "@Animator.WPLink.BoneParameter",
@@ -660,7 +659,7 @@ pPreventUpdate(false)
 		"@Animator.WPLink.BoneMaximumValue.ToolTip", pEditBoneMaximum, cTextBoneMaximum::Ref::New(*this));
 	
 	helper.ComboBoxFilter(groupBox, "@Animator.WPLink.VertexPositionSet", true,
-		"@Animator.WPLink.VertexPositionSet.ToolTip", pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, pPreventUpdate));
+		"@Animator.WPLink.VertexPositionSet.ToolTip", pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, preventUpdate));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
 	helper.EditFloat(groupBox, "@Animator.WPLink.VPSMinimumValue",
@@ -720,6 +719,7 @@ void aeWPLink::SelectActiveLink(){
 }
 
 void aeWPLink::UpdateLinkList(){
+	preventUpdate = true;
 	pListLink->UpdateRestoreSelection([&](){
 		pListLink->RemoveAllItems();
 		
@@ -732,6 +732,7 @@ void aeWPLink::UpdateLinkList(){
 	}, 0);
 	
 	UpdateLink();
+	preventUpdate = false;
 }
 
 void aeWPLink::UpdateLink(){
@@ -783,7 +784,7 @@ void aeWPLink::UpdateLink(){
 void aeWPLink::UpdateRigBoneList(){
 	const decString selection(pCBBone->GetText());
 	
-	pPreventUpdate = true;
+	preventUpdate = true;
 	try{
 		pCBBone->RemoveAllItems();
 		
@@ -801,10 +802,10 @@ void aeWPLink::UpdateRigBoneList(){
 		
 		pCBBone->StoreFilterItems();
 		pCBBone->SetText(selection);
-		pPreventUpdate = false;
+		preventUpdate = false;
 		
 	}catch(const deException &){
-		pPreventUpdate = false;
+		preventUpdate = false;
 		throw;
 	}
 }
@@ -812,7 +813,7 @@ void aeWPLink::UpdateRigBoneList(){
 void aeWPLink::UpdateModelVertexPositionSetList(){
 	const decString selection(pCBVertexPositionSet->GetText());
 	
-	pPreventUpdate = true;
+	preventUpdate = true;
 	try{
 		pCBVertexPositionSet->RemoveAllItems();
 		
@@ -831,16 +832,16 @@ void aeWPLink::UpdateModelVertexPositionSetList(){
 		
 		pCBVertexPositionSet->StoreFilterItems();
 		pCBVertexPositionSet->SetText(selection);
-		pPreventUpdate = false;
+		preventUpdate = false;
 		
 	}catch(const deException &){
-		pPreventUpdate = false;
+		preventUpdate = false;
 		throw;
 	}
 }
 
 void aeWPLink::UpdateControllerList(){
-	const igdeUIHelper::EnableBoolGuard pu(pPreventUpdate);
+	const igdeUIHelper::EnableBoolGuard pu(preventUpdate);
 	void * const selection = pCBController->GetSelectedItemData();
 	
 	pCBController->RemoveAllItems();

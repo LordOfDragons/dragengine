@@ -45,7 +45,6 @@ leadingMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.lea
 leadingMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 referenceMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveName, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 referenceMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-useSameMove(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.useSameMove, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 useComponentSpace(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.useComponentSpace, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 enablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 enableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
@@ -78,13 +77,6 @@ targetRefMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.t
 	referenceMoveTime.SetOnChanged([this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetReferenceMoveTime(referenceMoveTime);
-		}
-		NotifyRuleChanged();
-	});
-	
-	useSameMove.SetOnChanged([this](){
-		if(GetEngineRule()){
-			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetUseSameMove(useSameMove);
 		}
 		NotifyRuleChanged();
 	});
@@ -150,7 +142,6 @@ aeRuleAnimationDifference(windowMain, copy.name)
 	leadingMoveTime.SetValue(copy.leadingMoveTime, false);
 	referenceMoveName.SetValue(copy.referenceMoveName, false);
 	referenceMoveTime.SetValue(copy.referenceMoveTime, false);
-	useSameMove.SetValue(copy.useSameMove, false);
 	useComponentSpace.SetValue(copy.useComponentSpace, false);
 	enablePosition.SetValue(copy.enablePosition, false);
 	enableOrientation.SetValue(copy.enableOrientation, false);
@@ -181,10 +172,6 @@ void aeRuleAnimationDifference::SetReferenceMoveName(const char *value){
 
 void aeRuleAnimationDifference::SetReferenceMoveTime(float value){
 	referenceMoveTime = value;
-}
-
-void aeRuleAnimationDifference::SetUseSameMove(bool value){
-	useSameMove = value;
 }
 
 void aeRuleAnimationDifference::SetUseComponentSpace(bool value){
@@ -264,7 +251,6 @@ deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
 	engRule->SetLeadingMoveTime(leadingMoveTime);
 	engRule->SetReferenceMoveName(referenceMoveName);
 	engRule->SetReferenceMoveTime(referenceMoveTime);
-	engRule->SetUseSameMove(useSameMove);
 	engRule->SetEnablePosition(enablePosition);
 	engRule->SetEnableOrientation(enableOrientation);
 	engRule->SetEnableSize(enableSize);
@@ -300,7 +286,6 @@ aeRuleAnimationDifference &aeRuleAnimationDifference::operator=(const aeRuleAnim
 	leadingMoveTime = copy.leadingMoveTime;
 	referenceMoveName = copy.referenceMoveName;
 	referenceMoveTime = copy.referenceMoveTime;
-	useSameMove = copy.useSameMove;
 	enablePosition = copy.enablePosition;
 	enableOrientation = copy.enableOrientation;
 	enableSize = copy.enableSize;

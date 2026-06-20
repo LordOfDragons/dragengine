@@ -102,7 +102,16 @@ public:
 		return RuleType(context).moves;
 	}
 	
-	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override{
+		const auto animator = Rule(context).GetAnimator();
+		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
+	}
+	
+	void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
+		auto &helper = menu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(menu, igdeMetaPropertyStringList::ActionAdd::Ref::New(*this, owner, context));
+		AddDefaultContextMenuEntries(menu, context, owner);
+	}
 };
 
 

@@ -45,7 +45,6 @@ pMove1Name("idle "),
 pMove1Time(0.0f),
 pMove2Name("idle"),
 pMove2Time(0.0f),
-pUseSameMove(false),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(false),
@@ -75,10 +74,6 @@ void deAnimatorRuleAnimationDifference::SetReferenceMoveName(const char *moveNam
 
 void deAnimatorRuleAnimationDifference::SetReferenceMoveTime(float moveTime){
 	pMove2Time = moveTime;
-}
-
-void deAnimatorRuleAnimationDifference::SetUseSameMove(bool useSameMove){
-	pUseSameMove = useSameMove;
 }
 
 void deAnimatorRuleAnimationDifference::SetEnablePosition(bool enabled){

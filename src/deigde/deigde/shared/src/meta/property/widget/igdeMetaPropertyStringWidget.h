@@ -56,7 +56,7 @@ private:
 		
 	public:
 		void OnValueChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
-		void OnStringListChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
+		void OnAllowedStringsChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -99,8 +99,8 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
-	/** \brief Update string list. */
-	void UpdateStringList();
+	/** \brief Update allowed strings. */
+	void UpdateAllowedStrings();
 	
 	
 	/** \brief Text field widget or nullptr. */

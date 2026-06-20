@@ -32,6 +32,7 @@
 #include "../../gui/model/igdeListItem.h"
 
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/string/decStringSet.h>
 
 class igdeMetaPropertyStringUndo;
 
@@ -65,15 +66,14 @@ public:
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyString>{
 	public:
-		/** \brief String list changed. */
-		virtual void OnStringListChanged(igdeMetaPropertyString *property, const ContextRef &context);
+		/** \brief Allowed strings changed. */
+		virtual void OnAllowedStringsChanged(igdeMetaPropertyString *property, const ContextRef &context);
 	};
 	
 	
 private:
 	decString pDefaultValue;
-	bool pEnableStringList;
-	decStringList pStringList;
+	bool pEnableAllowed;
 	igdeTListenerList<Listener> pListeners;
 	
 	
@@ -100,19 +100,11 @@ public:
 	/** \brief Set default value. */
 	void SetDefaultValue(const decString &value);
 	
-	/** \brief Enable string list restriction. */
-	inline bool GetEnableStringList() const{ return pEnableStringList; }
+	/** \brief Enable allowed restriction. */
+	inline bool GetEnableAllowed() const{ return pEnableAllowed; }
 	
-	/** \brief Set enable string list restriction. */
-	void SetEnableStringList(bool enable);
-	
-	/**
-	 * \brief String list to choose from.
-	 *
-	 * After changing the list call NotifyStringListChanged().
-	 */
-	inline decStringList &GetStringList(){ return pStringList; }
-	inline const decStringList &GetStringList() const{ return pStringList; }
+	/** \brief Set enable allowed restriction. */
+	void SetEnableAllowed(bool enable);
 	
 	
 	/** \brief Listeners. */
@@ -122,8 +114,8 @@ public:
 	/** \brief Notify listeners about value change. */
 	void NotifyValueChanged(const ContextRef &context);
 	
-	/** \brief Notify listeners about string list changed. */
-	void NotifyStringListChanged(const ContextRef &context);
+	/** \brief Notify listeners about allowed strings changed. */
+	void NotifyAllowedStringsChanged(const ContextRef &context);
 	
 	
 	/**
@@ -163,6 +155,9 @@ public:
 	virtual deTObjectReference<igdeMetaPropertyStringUndo> ChangePropertyValue(
 		const ContextRef &context, const char *newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
+	
+	/** \brief Allowed strings. */
+	virtual decStringSet GetPropertyAllowedStrings(const ContextRef &context) const;
 	
 	
 	/**

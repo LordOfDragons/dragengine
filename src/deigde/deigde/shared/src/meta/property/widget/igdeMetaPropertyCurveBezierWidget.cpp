@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyCurveBezierWidget.h"
 #include "../undo/igdeMetaPropertyCurveBezierUndo.h"
 #include "../../../gui/igdeUIHelper.h"
+#include "../../../gui/curveedit/igdeDialogEditCurveBezier.h"
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../localization/igdeTranslationManager.h"
 
@@ -207,6 +208,29 @@ public:
 	}
 };
 
+
+class cActionEditInDialog : public igdeAction{
+	igdeMetaPropertyCurveBezierWidget &pWidget;
+	
+public:
+	cActionEditInDialog(igdeMetaPropertyCurveBezierWidget &widget) :
+	igdeAction("@Igde.MetaPropertyCurveBezier.EditInDialog",
+		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
+		"@Igde.MetaPropertyCurveBezier.EditInDialog.ToolTip"),
+	pWidget(widget){
+	}
+	
+	~cActionEditInDialog() override = default;
+	
+	void OnAction() override{
+		pWidget.EditInDialog();
+	}
+	
+	void Update() override{
+		SetEnabled(pWidget.GetPropertyCurveBezier().IsValid(pWidget.GetContext()));
+	}
+};
+
 }
 
 
@@ -238,7 +262,10 @@ igdeMetaPropertyCurveBezierWidget::igdeMetaPropertyCurveBezierWidget(
 	igdeMetaPropertyCurveBezier &property) :
 igdeMetaPropertyWidget(property),
 pPropertyCurveBezier(property),
-pPropertyListener(PropertyListener::Ref::New(*this))
+pPropertyListener(PropertyListener::Ref::New(*this)),
+pClamp(property.GetClamp()),
+pClampMin(property.GetClampMin()),
+pClampMax(property.GetClampMax())
 {
 	pPropertyCurveBezier.GetListeners().Add(pPropertyListener);
 }
@@ -257,17 +284,29 @@ void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIH
 	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ViewCurveBezier(pViewCurveBezier, pListener);
+	pViewCurveBezier->SetClamp(pClamp);
+	pViewCurveBezier->SetClampMin(pClampMin);
+	pViewCurveBezier->SetClampMax(pClampMax);
+	if(pDefaultSize != decPoint()){
+		pViewCurveBezier->SetDefaultSize(pDefaultSize);
+	}
 	WrapEditWidget(container, helper, noLabel, pViewCurveBezier);
 	
 	UpdateMatchable(container);
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
-	if(pViewCurveBezier && pListener){
-		pViewCurveBezier->RemoveListener(pListener);
+	if(pViewCurveBezier){
+		if(pListener){
+			pViewCurveBezier->RemoveListener(pListener);
+			pListener.Clear();
+		}
+		pClamp = pViewCurveBezier->GetClamp();
+		pClampMin = pViewCurveBezier->GetClampMin();
+		pClampMax = pViewCurveBezier->GetClampMax();
+		pDefaultSize = pViewCurveBezier->GetDefaultSize();
+		pViewCurveBezier.Clear();
 	}
-	pListener.Clear();
-	pViewCurveBezier.Clear();
 	igdeMetaPropertyWidget::Drop();
 }
 
@@ -307,6 +346,9 @@ void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &m
 		helper.MenuSeparator(menu);
 	}
 	
+	helper.MenuCommand(menu, deTObjectReference<cActionEditInDialog>::New(*this));
+	helper.MenuSeparator(menu);
+	
 	if(context && context->GetClipboard()){
 		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
 		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
@@ -314,6 +356,28 @@ void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &m
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+void igdeMetaPropertyCurveBezierWidget::EditInDialog(){
+	const auto &context = GetContext();
+	if(!pPropertyCurveBezier.IsValid(context)){
+		return;
+	}
+	
+	auto dialog = igdeDialogEditCurveBezier::Ref::New(
+		GetEnvironment(), pPropertyCurveBezier.GetPropertyValue(context));
+	
+	auto &view = dialog->GetViewCurveBezier();
+	view->SetClamp(pPropertyCurveBezier.GetClamp());
+	view->SetClampMin(pPropertyCurveBezier.GetClampMin());
+	view->SetClampMax(pPropertyCurveBezier.GetClampMax());
+	// view->AddListener(pListener);
+	
+	if(dialog->Run(pViewCurveBezier->GetParentWindow())){
+		pPropertyCurveBezier.ChangePropertyValue(context, dialog->GetCurve(),
+			pPropertyCurveBezier.RealUndoInfo(context,
+				"@Igde.MetaPropertyCurveBezier.EditInDialog").GetString());
+	}
 }
 
 

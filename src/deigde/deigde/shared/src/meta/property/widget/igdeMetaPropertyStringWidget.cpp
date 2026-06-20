@@ -210,10 +210,10 @@ igdeMetaPropertyString*, const igdeMetaContext::Ref &context){
 	}
 }
 
-void igdeMetaPropertyStringWidget::PropertyListener::OnStringListChanged(
+void igdeMetaPropertyStringWidget::PropertyListener::OnAllowedStringsChanged(
 igdeMetaPropertyString*, const igdeMetaContext::Ref &context){
-	if(pWidget.GetContext() == context){
-		pWidget.UpdateStringList();
+	if(!context || pWidget.GetContext() == context){
+		pWidget.UpdateAllowedStrings();
 	}
 }
 
@@ -245,9 +245,13 @@ void igdeMetaPropertyStringWidget::Create(igdeContainer &container, igdeUIHelper
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pComboBox)
 	
-	if(pPropertyString.GetEnableStringList()){
+	if(pPropertyString.GetEnableAllowed()){
 		pComboListener = deTObjectReference<cComboListener>::New(*this);
 		helper.ComboBoxFilter(15, 10, true, pPropertyString.GetDescription(), pComboBox, pComboListener);
+		pComboBox->SetDefaultSorter();
+		/*RunWithPreventUpdate([&]{
+			pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
+		});*/
 		WrapEditWidget(container, helper, noLabel, pComboBox);
 		
 	}else{
@@ -258,7 +262,7 @@ void igdeMetaPropertyStringWidget::Create(igdeContainer &container, igdeUIHelper
 	
 	UpdateMatchable(container);
 	
-	UpdateStringList();
+	UpdateAllowedStrings();
 }
 
 void igdeMetaPropertyStringWidget::Drop(){
@@ -293,20 +297,26 @@ void igdeMetaPropertyStringWidget::Update(){
 	}
 }
 
-void igdeMetaPropertyStringWidget::UpdateStringList(){
+void igdeMetaPropertyStringWidget::UpdateAllowedStrings(){
 	if(!pComboBox){
 		return;
 	}
 	
 	RunWithPreventUpdate([&]{
-		const auto &strings = pPropertyString.GetStringList();
 		pComboBox->RemoveAllItems();
-		strings.Visit([&](const decString &string){
-			pComboBox->AddItem(string);
-		});
-		pComboBox->StoreFilterItems();
+		//pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
 		
-		pComboBox->SetText(GetContext() ? pPropertyString.GetPropertyValue(GetContext()) : decString());
+		const auto &context = GetContext();
+		if(pPropertyString.IsValid(context)){
+			pPropertyString.GetPropertyAllowedStrings(context).Visit([&](const decString &string){
+				pComboBox->AddItem(string);
+			});
+			pComboBox->SortItems();
+			
+			pComboBox->SetText(pPropertyString.GetPropertyValue(GetContext()));
+		}
+		
+		pComboBox->StoreFilterItems();
 	});
 }
 
@@ -336,4 +346,5 @@ void igdeMetaPropertyStringWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 
 void igdeMetaPropertyStringWidget::OnContextChanged(){
 	Update();
+	UpdateAllowedStrings();
 }

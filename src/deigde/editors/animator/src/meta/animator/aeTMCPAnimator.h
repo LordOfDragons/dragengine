@@ -53,7 +53,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCAnimator>();
-		return c && c->GetAnimator() != nullptr;
+		return c && !c->IsDisposed() && c->GetAnimator() != nullptr;
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
@@ -86,7 +86,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCController>();
-		return c && c->GetController() != nullptr;
+		return c && !c->IsDisposed() && c->GetController() != nullptr;
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
@@ -119,7 +119,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCLink>();
-		return c && c->GetLink() != nullptr;
+		return c && !c->IsDisposed() && c->GetLink() != nullptr;
 	}
 	
 	inline aeLink &Link(const igdeMetaContext::Ref &context) const{
@@ -152,7 +152,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCRule>();
-		return c && c->GetRule() != nullptr;
+		return c && !c->IsDisposed() && c->GetRule() != nullptr;
 	}
 	
 	inline aeRule &Rule(const igdeMetaContext::Ref &context) const{
@@ -177,7 +177,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<C>();
-		return c && c->GetRule() != nullptr;
+		return c && !c->IsDisposed() && c->GetRule() != nullptr;
 	}
 	
 	inline R &RuleType(const igdeMetaContext::Ref &context) const{

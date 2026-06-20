@@ -38,12 +38,18 @@ class aeMCPRuleTrackToTrackBone : public aeTMCPAnimatorRuleTrackTo<igdeMetaPrope
 public:
 	aeMCPRuleTrackToTrackBone() : aeTMCPAnimatorRuleType("trackto.trackBone",
 		"@Animator.WPAPanelRuleTrackTo.TrackBone", "@Animator.WPAPanelRuleTrackTo.TrackBone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleTrackToTrackBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).trackBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 

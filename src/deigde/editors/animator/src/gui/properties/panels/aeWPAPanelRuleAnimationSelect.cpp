@@ -331,7 +331,7 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimationSelect)
 	pCBMoves->SetDefaultSorter();
 	helper.Button(formLine, pBtnMoveAdd, cActionMoveAdd::Ref::New(*this));
 	
-	helper.ListBox(groupBox, 4, "@Animator.WPAPanelRuleAnimationSelect.ListMoves.ToolTip",
+	helper.ListBox(groupBox, 4, "@Animator.WPAPanelRuleAnimationSelect.Moves.ToolTip",
 		pListMoves, cListMoves::Ref::New(*this));
 	
 	helper.CheckBoxOnly(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));

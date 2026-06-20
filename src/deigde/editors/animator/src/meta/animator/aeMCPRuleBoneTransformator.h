@@ -214,12 +214,18 @@ class aeMCPRuleBoneTransformatorTargetBone : public aeTMCPAnimatorRuleBoneTransf
 public:
 	aeMCPRuleBoneTransformatorTargetBone() : aeTMCPAnimatorRuleType("bonetransformator.targetBone",
 		"@Animator.WPAPanelRuleBoneTransformator.TargetBone", "@Animator.WPAPanelRuleBoneTransformator.TargetBone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleBoneTransformatorTargetBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).targetBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
@@ -227,12 +233,18 @@ class aeMCPRuleBoneTransformatorInputBone : public aeTMCPAnimatorRuleBoneTransfo
 public:
 	aeMCPRuleBoneTransformatorInputBone() : aeTMCPAnimatorRuleType("bonetransformator.inputBone",
 		"@Animator.WPAPanelRuleBoneTransformator.InputBone", "@Animator.WPAPanelRuleBoneTransformator.InputBone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleBoneTransformatorInputBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).inputBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 

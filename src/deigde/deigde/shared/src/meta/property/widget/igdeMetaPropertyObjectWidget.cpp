@@ -269,6 +269,7 @@ void igdeMetaPropertyObjectWidget::SetAllowedObjects(const igdeMetaPropertyObjec
 	RunWithPreventUpdate([&]{
 		pComboBox->RemoveAllItems();
 		pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
+		
 		if(pPropertyObject.IsValid(GetContext())){
 			const auto &context = GetContext();
 			if(objects && objects->GetData().IsNotEmpty()){
@@ -283,11 +284,12 @@ void igdeMetaPropertyObjectWidget::SetAllowedObjects(const igdeMetaPropertyObjec
 				if(pPropertyObject.GetSorted()){
 					pComboBox->SortItems();
 				}
-				pComboBox->StoreFilterItems();
 			}
 			
 			pComboBox->SetSelectionWithRefData(pPropertyObject.GetPropertyValue(context));
 		}
+		
+		pComboBox->StoreFilterItems();
 	});
 }
 
@@ -378,6 +380,6 @@ void igdeMetaPropertyObjectWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 ////////////////////////
 
 void igdeMetaPropertyObjectWidget::OnContextChanged(){
-	Update();
 	UpdateObjectList();
+	Update();
 }

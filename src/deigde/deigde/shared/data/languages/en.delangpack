@@ -276,6 +276,9 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.DialogCurveBezierCoord.RightHandle">Right Handle:</translation>
 	<translation name="Igde.DialogCurveBezierCoord.RightHandle.ToolTip">Right handle coordinates</translation>
 	
+	<!-- Dialog Edit Curve Bezier -->
+	<translation name="Igde.DialogEditCurveBezier.Title">Edit Curve Bezier</translation>
+	
 	<!-- View Curve Bezier -->
 	<translation name="Igde.ViewCurveBezier.Action.ResetView">Reset View</translation>
 	<translation name="Igde.ViewCurveBezier.Action.ResetView.ToolTip">Reset view to default values</translation>
@@ -750,4 +753,6 @@ property type so be careful what you enter</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend'>Paste Append</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend.ToolTip'>Paste from clipboard and append</translation>
 	<translation name='Igde.MetaPropertyList.ListEntry.None'>&lt;None&gt;</translation>
+	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog'>Edit in Dialog</translation>
+	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog.ToolTip'>Open dialog to edit curve in large view.</translation>
 </languagePack>

@@ -77,12 +77,18 @@ class aeMCPRuleMirrorMirrorBone : public aeTMCPAnimatorRuleMirror<igdeMetaProper
 public:
 	aeMCPRuleMirrorMirrorBone() : aeTMCPAnimatorRuleType("mirror.mirrorBone",
 		"@Animator.WPAPanelRuleMirror.Bone", "@Animator.WPAPanelRuleMirror.Bone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleMirrorMirrorBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).mirrorBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 

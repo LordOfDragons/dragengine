@@ -32,6 +32,14 @@
 #include "rule/aeRule.h"
 #include "../meta/animator/aeMCAnimator.h"
 
+#include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
+#include <deigde/meta/property/igdeMetaPropertyObject.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/deTWeakObjectReference.h>
 #include <dragengine/common/math/decMath.h>
@@ -46,14 +54,6 @@
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
-
-#include <deigde/editableentity/igdeEditableEntity.h>
-#include <deigde/gui/wrapper/igdeWObject.h>
-#include <deigde/meta/property/igdeMetaPropertyContext.h>
-#include <deigde/meta/property/igdeMetaPropertyPath.h>
-#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
-#include <deigde/meta/property/igdeMetaPropertyList.h>
-#include <deigde/meta/property/igdeMetaPropertyObject.h>
 
 
 // predefinitions
@@ -139,6 +139,8 @@ private:
 	decString pDisplayRigPath;
 	
 public:
+	igdeMetaPropertyStringSetStorage::Storage hiddenBoneNames, hiddenVPSNames, hiddenMoveNames;
+	
 	igdeMetaPropertyPathStorage::Storage rigPath;
 	igdeMetaPropertyPathStorage::Storage animationPath;
 	igdeMetaPropertyStringSetStorage::Storage affectedBones;
@@ -175,6 +177,7 @@ private:
 	decString pPathAttConfig;
 	
 	NotifierSet pNotifiers;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -578,6 +581,10 @@ private:
 	void pUpdateEngineControllers();
 	void pUpdateDDSBones();
 	void pUpdateRuleIndices();
+	
+	void pUpdateHiddenBoneNames();
+	void pUpdateHiddenVertexPositionSetNames();
+	void pUpdateHiddenMoveNames();
 };
 
 #endif

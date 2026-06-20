@@ -64,6 +64,10 @@ private:
 	igdeViewCurveBezierListener::Ref pListener;
 	igdeMetaPropertyCurveBezierUndo::Ref pUndoDragging;
 	
+	bool pClamp = false;
+	decVector2 pClampMin, pClampMax;
+	decPoint pDefaultSize;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -110,6 +114,9 @@ public:
 	void AddCurveEditContextMenuEntries(igdeMenuCascade &menu);
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
+	
+	/** \brief Open dialog to edit curve in large view. */
+	void EditInDialog();
 	/*@}*/
 	
 	

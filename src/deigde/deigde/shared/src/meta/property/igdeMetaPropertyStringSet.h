@@ -277,7 +277,7 @@ public:
 	/**
 	 * \brief Valid set of strings.
 	 */
-	virtual decStringSet GetValidStrings(const ContextRef &context) const;
+	virtual decStringSet GetAllowedStrings(const ContextRef &context) const;
 	
 	/**
 	 * \brief Create action for target button.

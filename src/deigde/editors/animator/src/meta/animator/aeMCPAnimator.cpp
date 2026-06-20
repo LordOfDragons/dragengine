@@ -66,15 +66,8 @@ public:
 
 }
 
-decStringSet aeMCPAnimatorAffectedBones::GetValidStrings(const igdeMetaContext::Ref &context) const{
-	decStringSet strings;
-	const auto rig = Animator(context).GetEngineRig();
-	if(rig){
-		rig->GetBones().Visit([&](const deRigBone &bone){
-			strings.Add(bone.GetName());
-		});
-	}
-	return strings;
+decStringSet aeMCPAnimatorAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
+	return Animator(context).hiddenBoneNames;
 }
 
 void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -121,18 +114,8 @@ public:
 
 }
 
-decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetValidStrings(const igdeMetaContext::Ref &context) const{
-	decStringSet strings;
-	const auto component = Animator(context).GetEngineComponent();
-	if(component){
-		const auto model = component->GetModel();
-		if(model){
-			model->GetVertexPositionSets().Visit([&](const deModelVertexPositionSet &vps){
-				strings.Add(vps.GetName());
-			});
-		}
-	}
-	return strings;
+decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
+	return Animator(context).hiddenVPSNames;
 }
 
 void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){

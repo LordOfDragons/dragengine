@@ -40,12 +40,18 @@ class aeMCPRuleForeignStateForeignBone : public aeTMCPAnimatorRuleForeignState<i
 public:
 	aeMCPRuleForeignStateForeignBone() : aeTMCPAnimatorRuleType("foreignstate.foreignBone",
 		"@Animator.WPAPanelRuleForeignState.Bone", "@Animator.WPAPanelRuleForeignState.Bone.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleForeignStateForeignBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).foreignBone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
 	}
 };
 
@@ -53,12 +59,18 @@ class aeMCPRuleForeignStateForeignVertexPositionSet : public aeTMCPAnimatorRuleF
 public:
 	aeMCPRuleForeignStateForeignVertexPositionSet() : aeTMCPAnimatorRuleType("foreignstate.foreignVertexPositionSet",
 		"@Animator.WPAPanelRuleForeignState.VertexPositionSet", "@Animator.WPAPanelRuleForeignState.VertexPositionSet.ToolTip"){
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleForeignStateForeignVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).foreignVertexPositionSet;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenVPSNames.GetValue() : decStringSet();
 	}
 };
 

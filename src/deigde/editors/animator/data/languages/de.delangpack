@@ -555,8 +555,8 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	
 	<!-- Property Panel: Rule Animation Select -->
 	<translation name="Animator.WPAPanelRuleAnimationSelect.AnimationSelect">Animationsauswahl:</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.Moves.ToolTip">Bewegungen</translation>
-	<translation name="Animator.WPAPanelRuleAnimationSelect.ListMoves.ToolTip">Bewegungen, welche zur Auswahl stehen</translation>
+	<translation name="Animator.WPAPanelRuleAnimationSelect.Moves">Bewegungen</translation>
+	<translation name="Animator.WPAPanelRuleAnimationSelect.Moves.ToolTip">Bewegungen, welche zur Auswahl stehen</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd">Hinzufügen</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveAdd.ToolTip">Bewegung zur Liste hinzufügen</translation>
 	<translation name="Animator.WPAPanelRuleAnimationSelect.Action.MoveRemove">Entfernen</translation>
@@ -768,6 +768,47 @@ Wendet alle Regeln (alle) an oder mischt zwei ausgewählte Regeln mithilfe des A
 	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMin.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Minimum beschränkt.</translation>
 	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMax">Maximal</translation>
 	<translation name="Animator.WPAPanelRuleLimit.EnableVPSMax.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Maximum beschränkt.</translation>
+	
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionXMin">Minimum Position X ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionXMin.ToolTip">Legt fest, ob die X-Position von Knochen auf den Mindestwert begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionXMax">Maximum Position X ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionXMax.ToolTip">Legt fest, ob die X-Position von Knochen auf den Maximalwert begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionYMin">Minimum Position Y ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionYMin.ToolTip">Legt fest, ob die Y-Position von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionYMax">Maximum Position Y ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionYMax.ToolTip">Legt fest, ob die Y-Position von Knochen auf den Maximalwert begrenzt wird.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionZMin">Minimum Position Z ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionZMin.ToolTip">Legt fest, ob die Z-Position von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionZMax">Maximum Position Z ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnablePositionZMax.ToolTip">Legt fest, ob die Z-Position von Knochen auf den Maximalwert begrenzt wird.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationXMin">Minimum Drehung X ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationXMin.ToolTip">Legt fest, ob die X-Drehung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationXMax">Maximum Drehung X ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationXMax.ToolTip">Legt fest, ob die X-Drehung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationYMin">Minimum Drehung Y ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationYMin.ToolTip">Legt fest, ob die Y-Drehung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationYMax">Maximum Drehung Y ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationYMax.ToolTip">Legt fest, ob die Y-Drehung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationZMin">Minimum Drehung Z ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationZMin.ToolTip">Legt fest, ob die Z-Drehung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationZMax">Maximum Drehung Z ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableRotationZMax.ToolTip">Legt fest, ob die Z-Drehung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingXMin">Minimum Skalierung X ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingXMin.ToolTip">Legt fest, ob die X-Skalierung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingXMax">Maximum Skalierung X ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingXMax.ToolTip">Legt fest, ob die X-Skalierung von Knochen auf den Maximalwert begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingYMin">Minimum Skalierung Y ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingYMin.ToolTip">Legt fest, ob die Y-Skalierung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingYMax">Maximum Skalierung Y ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingYMax.ToolTip">Legt fest, ob die Y-Skalierung von Knochen gegenüber dem Maximum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingZMin">Minimum Skalierung Z ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingZMin.ToolTip">Legt fest, ob die Z-Skalierung von Knochen gegenüber dem Minimum begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingZMax">Maximum Skalierung Z ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableScalingZMax.ToolTip">Legt fest, ob die Z-Skalierung von Knochen auf den Maximalwert begrenzt ist.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin">Minimum Vert-PosSatz ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Minimum beschränkt.</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax">Maximum Vert-PosSatz ändern</translation>
+	<translation name="Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax.ToolTip">Das Gewicht des Vertex-Positionssatzes ist auf das Maximum beschränkt.</translation>
 	
 	<!-- Property Panel: Rule Mirror -->
 	<translation name="Animator.WPAPanelRuleMirror.Mirror">Spiegeln:</translation>

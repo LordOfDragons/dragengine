@@ -49,6 +49,7 @@ class aeEditLinkMapping;
 class aeWPLink : public igdeContainerScroll{
 public:
 	using Ref = deTObjectReference<aeWPLink>;
+	bool preventUpdate = false;
 	
 	
 private:
@@ -70,8 +71,6 @@ private:
 	igdeTextField::Ref pEditVertexPositionSetMinimum;
 	igdeTextField::Ref pEditVertexPositionSetMaximum;
 	igdeCheckBox::Ref pChkWrapY;
-	
-	bool pPreventUpdate;
 	
 	
 	

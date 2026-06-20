@@ -96,6 +96,9 @@ pMetaContext(aeMCAnimator::Ref::New(windowMain, this)),
 pMetaContextController(aeMCAnimatorController::Ref::New(windowMain, this)),
 pMetaContextLink(aeMCAnimatorLink::Ref::New(windowMain, this)),
 pMetaContextRule(aeMCAnimatorRule::Ref::New(windowMain, this)),
+hiddenBoneNames(pWindowMain.GetMCAnimatorProperties().hiddenBoneNames, pMetaContext),
+hiddenVPSNames(pWindowMain.GetMCAnimatorProperties().hiddenVPSNames, pMetaContext),
+hiddenMoveNames(pWindowMain.GetMCAnimatorProperties().hiddenMoveNames, pMetaContext),
 rigPath(pWindowMain.GetMCAnimatorProperties().rig, pMetaContext),
 animationPath(pWindowMain.GetMCAnimatorProperties().animation, pMetaContext),
 affectedBones(pWindowMain.GetMCAnimatorProperties().affectedBones, pMetaContext),
@@ -1145,7 +1148,33 @@ void aeAnimator::pUpdateComponent(){
 	deEngine * const engine = GetEngine();
 	deModel::Ref displayModel;
 	deSkin::Ref displaySkin;
-	deRig::Ref displayRig;
+	deRig::Ref displayRig, engineRig;
+	
+	try{
+		if(!pDisplayModelPath.IsEmpty()){
+			displayModel = engine->GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath());
+		}
+		if(!pDisplaySkinPath.IsEmpty()){
+			displaySkin = engine->GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath());
+		}
+		if(!pDisplayRigPath.IsEmpty()){
+			displayRig = engine->GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
+		}
+		if(!rigPath->IsEmpty()){
+			engineRig = engine->GetRigManager()->LoadRig(rigPath, GetDirectoryPath());
+		}
+		
+	}catch(const deException &e){
+		GetLogger()->LogException(LOGSOURCE, e);
+	}
+	
+	const bool sameModel = displayModel == pEngComponent ? pEngComponent->GetModel().Pointer() : nullptr;
+	const bool sameEngineRig = engineRig == pEngRig;
+	
+	if(sameModel && displaySkin == pEngComponent->GetSkin()
+	&& displayRig == pEngComponent->GetRig() && sameEngineRig){
+		return;
+	}
 	
 	// detach all colliders
 	DetachAttachments();
@@ -1154,89 +1183,49 @@ void aeAnimator::pUpdateComponent(){
 	pEngCollider->SetComponent(nullptr);
 	pEngCollider->SetEnabled(false);
 	
-	// try to load the model, skin and rig if possible
-	try{
-		if(!pDisplayModelPath.IsEmpty()){
-			displayModel = engine->GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath());
-		}
-		
-		if(!pDisplaySkinPath.IsEmpty()){
-			displaySkin = engine->GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath());
-		}
-		
-		if(!pDisplayRigPath.IsEmpty()){
-			displayRig = engine->GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
-		}
-		
-		if(rigPath->IsEmpty()){
-			pEngRig = nullptr;
-			
-		}else{
-			pEngRig = engine->GetRigManager()->LoadRig(rigPath, GetDirectoryPath());
-		}
-		
-	}catch(const deException &e){
-		GetLogger()->LogException(LOGSOURCE, e);
+	pEngRig = engineRig;
+	
+	// if the skin is missing use the default one
+	if(!displaySkin){
+		displaySkin = GetGameDefinition()->GetDefaultSkin();
 	}
 	
-	// protect the loaded parts
-	try{
-		// if the skin is missing use the default one
-		if(!displaySkin){
-			displaySkin = GetGameDefinition()->GetDefaultSkin();
-		}
-		
-		// reset the animator
-		pEngAnimatorInstance->SetComponent(nullptr); // otherwise the animator is not reset
-		
-		// update the component with the model and skin
-		if(displayModel && displaySkin){
-			if(pEngComponent){
-				pEngComponent->SetModelAndSkin(displayModel, displaySkin);
-				
-			}else{
-				pEngComponent = engine->GetComponentManager()->CreateComponent(displayModel, displaySkin);
-				pEngComponent->SetEnableGI(false);
-				pEngWorld->AddComponent(pEngComponent);
-				
-				pEngCollider->AddAttachment(deColliderAttachment::Ref::New(pEngComponent));
-			}
-			
-		}else if(pEngComponent){
-			deColliderAttachment * const attachment = pEngCollider->GetAttachmentWith(pEngComponent);
-			if(attachment){
-				pEngCollider->RemoveAttachment(attachment);
-			}
-			
-			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent = nullptr;
-		}
-		
-		// set the rig if the component exists
+	// reset the animator
+	pEngAnimatorInstance->SetComponent(nullptr); // otherwise the animator is not reset
+	
+	// update the component with the model and skin
+	if(displayModel && displaySkin){
 		if(pEngComponent){
-			pEngComponent->SetRig(displayRig);
-			pEngComponent->SetVisible(true);
-			pEngComponent->SetPosition(decDVector());
-			pEngComponent->SetOrientation(decQuaternion());
+			pEngComponent->SetModelAndSkin(displayModel, displaySkin);
+			
+		}else{
+			pEngComponent = engine->GetComponentManager()->CreateComponent(displayModel, displaySkin);
+			pEngComponent->SetEnableGI(false);
+			pEngWorld->AddComponent(pEngComponent);
+			
+			pEngCollider->AddAttachment(deColliderAttachment::Ref::New(pEngComponent));
 		}
 		
-		// set animator rig
-		pEngAnimator->SetRig(pEngRig);
-		
-		// free the reference we hold
-		if(displayRig){
-			displayRig = nullptr;
-		}
-		if(displayModel){
-			displayModel = nullptr;
-		}
-		if(displaySkin){
-			displaySkin = nullptr;
+	}else if(pEngComponent){
+		deColliderAttachment * const attachment = pEngCollider->GetAttachmentWith(pEngComponent);
+		if(attachment){
+			pEngCollider->RemoveAttachment(attachment);
 		}
 		
-	}catch(const deException &){
-		throw;
+		pEngWorld->RemoveComponent(pEngComponent);
+		pEngComponent = nullptr;
 	}
+	
+	// set the rig if the component exists
+	if(pEngComponent){
+		pEngComponent->SetRig(displayRig);
+		pEngComponent->SetVisible(true);
+		pEngComponent->SetPosition(decDVector());
+		pEngComponent->SetOrientation(decQuaternion());
+	}
+	
+	// set animator rig
+	pEngAnimator->SetRig(pEngRig);
 	
 	// update the collider
 	pEngCollider->SetComponent(pEngComponent);
@@ -1251,6 +1240,13 @@ void aeAnimator::pUpdateComponent(){
 	
 	// attach colliders
 	AttachAttachments();
+	
+	if(!sameModel){
+		pUpdateHiddenVertexPositionSetNames();
+	}
+	if(!sameEngineRig){
+		pUpdateHiddenBoneNames();
+	}
 }
 
 void aeAnimator::pUpdateAnimator(){
@@ -1266,6 +1262,10 @@ void aeAnimator::pUpdateAnimator(){
 		GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
+	if(animation == pEngAnimator->GetAnimation()){
+		return;
+	}
+	
 	pEngAnimator->SetAnimation(animation);
 	
 	pSubAnimator->SetComponentAndAnimation(pEngComponent, animation);
@@ -1273,6 +1273,7 @@ void aeAnimator::pUpdateAnimator(){
 	pTestingSubAnimator->SetComponent(pEngComponent);
 	
 	pAnimCompChanged();
+	pUpdateHiddenMoveNames();
 }
 
 void aeAnimator::pUpdateLinks(){
@@ -1359,4 +1360,35 @@ void aeAnimator::pUpdateDDSBones(){
 			d.SetVisible(false);
 		}
 	});
+}
+
+
+void aeAnimator::pUpdateHiddenBoneNames(){
+	decStringSet names;
+	if(pEngComponent && pEngComponent->GetRig()){
+		pEngComponent->GetRig()->GetBones().Visit([&](const deRigBone &bone){
+			names.Add(bone.GetName());
+		});
+	}
+	hiddenBoneNames = names;
+}
+
+void aeAnimator::pUpdateHiddenVertexPositionSetNames(){
+	decStringSet names;
+	if(pEngComponent && pEngComponent->GetModel()){
+		pEngComponent->GetModel()->GetVertexPositionSets().Visit([&](const deModelVertexPositionSet &vps){
+			names.Add(vps.GetName());
+		});
+	}
+	hiddenVPSNames = names;
+}
+
+void aeAnimator::pUpdateHiddenMoveNames(){
+	decStringSet names;
+	if(pEngAnimator && pEngAnimator->GetAnimation()){
+		pEngAnimator->GetAnimation()->GetMoves().Visit([&](const deAnimationMove &move){
+			names.Add(move.GetName());
+		});
+	}
+	hiddenMoveNames = names;
 }

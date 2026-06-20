@@ -177,38 +177,38 @@ public:
 };
 
 
-class aeMCPRuleListBones : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
+class aeMCPRuleAffectedBones : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPRuleListBones() : aeTMCPAnimatorRule("rule.affectedBones",
+	aeMCPRuleAffectedBones() : aeTMCPAnimatorRule("rule.affectedBones",
 		"@Animator.WPAPanelRule.AffectedBones", "@Animator.WPAPanelRule.AffectedBones.ToolTip"){
 			SetMultiSelection(true);
 		};
 	
-	~aeMCPRuleListBones() override = default;
+	~aeMCPRuleAffectedBones() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Rule(context).affectedBones;
 	}
 	
-	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 
 
-class aeMCPRuleListVertexPositionSets : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
+class aeMCPRuleAffectedVertexPositionSets : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPRuleListVertexPositionSets() : aeTMCPAnimatorRule("rule.affectedVertexPositionSets",
+	aeMCPRuleAffectedVertexPositionSets() : aeTMCPAnimatorRule("rule.affectedVertexPositionSets",
 		"@Animator.WPAPanelRule.AffectedVertexPositionSets", "@Animator.WPAPanelRule.AffectedVertexPositionSets.ToolTip"){
 			SetMultiSelection(true);
 		};
 	
-	~aeMCPRuleListVertexPositionSets() override = default;
+	~aeMCPRuleAffectedVertexPositionSets() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Rule(context).affectedVertexPositionSets;
 	}
 	
-	decStringSet GetValidStrings(const igdeMetaContext::Ref &context) const override;
+	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 

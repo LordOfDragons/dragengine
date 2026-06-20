@@ -77,14 +77,13 @@ blendMode(windowMain.GetMCAnimatorProperties().rule.blendMode, pMetaContext),
 blendFactor(windowMain.GetMCAnimatorProperties().rule.blendFactor, pMetaContext),
 invertBlendFactor(windowMain.GetMCAnimatorProperties().rule.invertBlendFactor, pMetaContext),
 enabled(windowMain.GetMCAnimatorProperties().rule.enabled, pMetaContext),
-affectedBones(windowMain.GetMCAnimatorProperties().rule.listBones, pMetaContext),
-affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.listVertexPositionSets, pMetaContext),
+affectedBones(windowMain.GetMCAnimatorProperties().rule.affectedBones, pMetaContext),
+affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.affectedVertexPositionSets, pMetaContext),
 targetBlendFactor(windowMain.GetMCAnimatorProperties().rule.targetBlendFactor, pMetaContext)
 {
 	name.SetOnChanged([this](){
 		if(pAnimator){
 			pAnimator->NotifyRuleNameChanged(this);
-			pAnimator->rules.Property().NotifyObjectItemInfoChanged(pAnimator->GetMetaContext());
 		}
 	});
 	

@@ -249,7 +249,7 @@ public:
 	
 	void OnSelectionChanged(igdeTreeList *treeList) override{
 		aeAnimator * const animator = pPanel.GetAnimator();
-		if(animator){
+		if(animator && !pPanel.preventUpdate){
 			animator->SetActiveRule(treeList->GetSelection()
 				? (aeRule*)treeList->GetSelection()->GetData() : nullptr);
 		}
@@ -481,6 +481,7 @@ void aeWPRule::UpdateLinkList(){
 }
 
 void aeWPRule::UpdateRuleTree(){
+	preventUpdate = true;
 	if(pAnimator){
 		igdeTreeItem *nextItem = pTreeRule->GetFirstChild();
 		
@@ -510,6 +511,7 @@ void aeWPRule::UpdateRuleTree(){
 	if(!pTreeRule->GetSelection() && pTreeRule->GetFirstChild()){
 		pTreeRule->SetSelection(pTreeRule->GetFirstChild());
 	}
+	preventUpdate = false;
 }
 
 void aeWPRule::UpdateRuleTreeItem(igdeTreeItem *item, aeRule *rule){

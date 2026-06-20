@@ -57,6 +57,7 @@ class igdeTreeItem;
 class aeWPRule : public igdeContainerScroll{
 public:
 	using Ref = deTObjectReference<aeWPRule>;
+	bool preventUpdate = false;
 	
 	
 private:

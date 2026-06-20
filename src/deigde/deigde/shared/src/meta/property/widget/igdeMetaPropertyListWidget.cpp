@@ -263,7 +263,7 @@ igdeMetaPropertyList*, const igdeMetaContext::Ref &context){
 
 void igdeMetaPropertyListWidget::PropertyListener::OnObjectItemInfoChanged(
 igdeMetaPropertyList*, const igdeMetaContext::Ref &context){
-	if(pWidget.GetContext() == context){
+	if(!context || pWidget.GetContext() == context){
 		pWidget.UpdateItemInfo();
 	}
 }

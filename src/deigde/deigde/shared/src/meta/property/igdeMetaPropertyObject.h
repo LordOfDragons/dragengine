@@ -25,7 +25,7 @@
 #ifndef _IGDEMETAPROPERTYOBJECT_H_
 #define _IGDEMETAPROPERTYOBJECT_H_
 
-#include "igdeMetaPropertyList.h"
+#include "igdeMetaProperty.h"
 #include "storage/igdeMetaPropertyStorageObject.h"
 #include "../igdeTMetaData.h"
 #include "../../clipboard/igdeClipboardData.h"
@@ -75,29 +75,6 @@ public:
 		
 		/** \brief Object item information changed. */
 		virtual void OnObjectItemInfoChanged(igdeMetaPropertyObject *property, const ContextRef &context);
-	};
-	
-	
-	/**
-	 * \brief Adapter listener monitoring a list meta property.
-	 * 
-	 * Calls OnAllowedObjectsChanged() and OnObjectItemInfoChanged() on the listener when the list changes.
-	 * For use by subclasses if GetPropertyAllowedObjects() returns the content of a list property.
-	 */
-	class DE_DLL_EXPORT ListChangedListener : public igdeMetaPropertyList::Listener{
-	private:
-		igdeMetaPropertyObject &pProperty;
-		
-	public:
-		using Ref = deTObjectReference<ListChangedListener>;
-		ListChangedListener(igdeMetaPropertyObject &property);
-		
-	protected:
-		~ListChangedListener() override;
-		
-	public:
-		void OnValueChanged(igdeMetaPropertyList *property, const ContextRef &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const ContextRef &context) override;
 	};
 	
 	

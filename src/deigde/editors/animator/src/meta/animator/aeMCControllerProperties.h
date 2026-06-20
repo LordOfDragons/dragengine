@@ -30,6 +30,7 @@
 #include <deigde/meta/property/igdeMetaPropertyGroup.h>
 
 class aeWindowMain;
+class aeMCAnimatorProperties;
 
 
 class aeMCControllerProperties{
@@ -48,25 +49,9 @@ public:
 	deTObjectReference<aeMCPControllerLocomotionLeg> locomotionLeg = deTObjectReference<aeMCPControllerLocomotionLeg>::New();
 	deTObjectReference<aeMCPControllerVectorSimulation> vectorSimulation = deTObjectReference<aeMCPControllerVectorSimulation>::New();
 	deTObjectReference<igdeMetaPropertyGroup> groupLocomotionTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"controller.groupLocomotionTesting", "@Animator.WPController.LocomotionTesting", "@Animator.WPController.LocomotionTesting.ToolTip",
-		decTObjectOrderedSet<igdeMetaProperty>(devctag,
-			locomotionAttribute,
-			locomotionLeg,
-			vectorSimulation));
+		"controller.groupLocomotionTesting", "@Animator.WPController.LocomotionTesting", "@Animator.WPController.LocomotionTesting.ToolTip");
 	
-	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
-		decTObjectOrderedSet<igdeMetaProperty>(devctag,
-			name,
-			minimumValue,
-			maximumValue,
-			currentValue,
-			vector,
-			clamp,
-			frozen,
-			defaultValue,
-			defaultVector,
-			groupLocomotionTesting)
-	);
+	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	
 	deTObjectReference<aeMCPControllers> controllers = deTObjectReference<aeMCPControllers>::New();
 	deTObjectReference<aeMCPController> controller;
@@ -74,8 +59,8 @@ public:
 		"animator.groupControllers", "@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip",
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, controllers, controller));
 	
-	aeMCControllerProperties(aeWindowMain &windowMain) :
-		controller(deTObjectReference<aeMCPController>::New(windowMain)){}
+	aeMCControllerProperties(aeWindowMain &windowMain);
+	void Init(const aeMCAnimatorProperties &properties);
 };
 
 #endif

@@ -61,7 +61,6 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 	name.SetOnChanged([&](){
 		if(pAnimator){
 			pAnimator->NotifyLinkNameChanged(this);
-			pAnimator->links.Property().NotifyObjectItemInfoChanged(pAnimator->GetMetaContext());
 		}
 	});
 	

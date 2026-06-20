@@ -275,6 +275,9 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.DialogCurveBezierCoord.RightHandle">Rechter Griff:</translation>
 	<translation name="Igde.DialogCurveBezierCoord.RightHandle.ToolTip">Koordinaten des rechten Griffs</translation>
 	
+	<!-- Dialog Edit Curve Bezier -->
+	<translation name="Igde.DialogEditCurveBezier.Title">Kurve bearbeiten</translation>
+	
 	<!-- View Curve Bezier -->
 	<translation name="Igde.ViewCurveBezier.Action.ResetView">Ansicht zurücksetzen</translation>
 	<translation name="Igde.ViewCurveBezier.Action.ResetView.ToolTip">Ansicht auf Standardwerte zurücksetzen</translation>
@@ -749,4 +752,6 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend'>Einfügen und Anhängen</translation>
 	<translation name='Igde.MetaPropertyList.Action.PasteAppend.ToolTip'>Aus der Zwischenablage einfügen und anhängen</translation>
 	<translation name='Igde.MetaPropertyList.ListEntry.None'>&lt;Nichts&gt;</translation>
+	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog'>In Dialog bearbeiten</translation>
+	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog.ToolTip'>Dialog öffnen, um Kurve in großer Ansicht zu bearbeiten.</translation>
 </languagePack>

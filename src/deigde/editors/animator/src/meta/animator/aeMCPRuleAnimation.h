@@ -39,13 +39,18 @@ class aeMCPRuleAnimationMoveName : public aeTMCPAnimatorRuleAnimation<igdeMetaPr
 public:
 	aeMCPRuleAnimationMoveName() : aeTMCPAnimatorRuleType("animation.moveName",
 		"@Animator.WPAPanelRuleAnimation.MoveName", "@Animator.WPAPanelRuleAnimation.MoveName.ToolTip"){
-		SetDefaultValue("idle");
-	};
+			SetEnableAllowed(true);
+		};
 	
 	~aeMCPRuleAnimationMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return RuleType(context).moveName;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		const auto animator = RuleType(context).GetAnimator();
+		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
 	}
 };
 
@@ -53,7 +58,9 @@ class aeMCPRuleAnimationMoveTime : public aeTMCPAnimatorRuleAnimation<igdeMetaPr
 public:
 	aeMCPRuleAnimationMoveTime() : aeTMCPAnimatorRuleType("animation.moveTime",
 		"@Animator.WPAPanelRuleAnimation.MoveTime", "@Animator.WPAPanelRuleAnimation.MoveTime.ToolTip"){
-	};
+			SetEnableLowerLimit(true);
+			SetEnableUpperLimit(true);
+		};
 	
 	~aeMCPRuleAnimationMoveTime() override = default;
 	

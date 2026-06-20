@@ -267,7 +267,7 @@ protected:
 	
 public:
 	enum eFoxIDs{
-		ID_SELF = FXMenuPane::ID_LAST,
+		ID_SELF = FXMenuPane::ID_LAST
 	};
 	
 public:
@@ -286,7 +286,7 @@ FXDEFMAP(igdeNativeFoxPopupMenu) igdeNativeFoxPopupMenuMap[] = {
 	FXMAPFUNC(SEL_LEFTBUTTONPRESS, 0, igdeNativeFoxPopupMenu::onButtonPress),
 	FXMAPFUNC(SEL_LEFTBUTTONRELEASE, 0, igdeNativeFoxPopupMenu::onButtonRelease),
 	FXMAPFUNC(SEL_ENTER, 0, igdeNativeFoxPopupMenu::onEnter),
-	FXMAPFUNC(SEL_LEAVE, 0, igdeNativeFoxPopupMenu::onLeave)
+	FXMAPFUNC(SEL_LEAVE, 0, igdeNativeFoxPopupMenu::onLeave),
 };
 
 FXIMPLEMENT(igdeNativeFoxPopupMenu, FXMenuPane, igdeNativeFoxPopupMenuMap, ARRAYNUMBER(igdeNativeFoxPopupMenuMap))
@@ -331,6 +331,26 @@ long igdeNativeFoxPopupMenu::onEnter(FXObject*, FXSelector, void *pdata){
 long igdeNativeFoxPopupMenu::onLeave(FXObject*, FXSelector, void *pdata){
 	const FXEvent &event = *((FXEvent*)pdata);
 	if(shown() && !contains(event.win_x, event.win_y)){
+		auto hoverWidget = getApp()->findWindowAt(event.root_x, event.root_y);
+		
+		// this is a brutal hack here. when using only the grab() fix below FOX fails to select
+		// menu entries in poped up cascaded menus making them inaccessible. to fix this the
+		// following observation has been made. findWindowAt() always returns either the menu
+		// itself or a cascaded menu. if the mouse is outside the menu and outside any cascaded
+		// menus findWindowAt() returns the menu itself. hence findWindowAt() only returns a
+		// window which is not the menu itself if the mouse is inside a cascaded menu. this
+		// rule is used below to not grab the mouse if the mouse cursor is inside a cascaded menu.
+		// the parent search check is present only to catch potential future changes in FOX
+		// which might suddenly return other windows
+		if(hoverWidget && hoverWidget != this){
+			while(hoverWidget && hoverWidget != this){
+				hoverWidget = hoverWidget->getParent();
+			}
+			if(hoverWidget == this){
+				// mouse is outside the menu but still inside a child menu
+				return 0;
+			}
+		}
 		//printf("Mouse leave at %d, %d\n", event.win_x, event.win_y);
 		grab();
 	}

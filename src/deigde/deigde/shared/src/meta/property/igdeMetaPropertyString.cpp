@@ -32,7 +32,7 @@
 // Class igdeMetaPropertyString::Listener
 ///////////////////////////////////////////
 
-void igdeMetaPropertyString::Listener::OnStringListChanged(
+void igdeMetaPropertyString::Listener::OnAllowedStringsChanged(
 igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 }
 
@@ -46,7 +46,7 @@ igdeMetaPropertyString*, const igdeMetaContext::Ref&){
 igdeMetaPropertyString::igdeMetaPropertyString(
 	const char *id, const char *name, const char *description) :
 igdeMetaProperty(id, name, description),
-pEnableStringList(false){
+pEnableAllowed(false){
 }
 
 igdeMetaPropertyString::~igdeMetaPropertyString() = default;
@@ -59,8 +59,8 @@ void igdeMetaPropertyString::SetDefaultValue(const decString &value){
 	pDefaultValue = value;
 }
 
-void igdeMetaPropertyString::SetEnableStringList(bool enable){
-	pEnableStringList = enable;
+void igdeMetaPropertyString::SetEnableAllowed(bool enable){
+	pEnableAllowed = enable;
 }
 
 void igdeMetaPropertyString::NotifyValueChanged(const igdeMetaContext::Ref &context){
@@ -69,9 +69,9 @@ void igdeMetaPropertyString::NotifyValueChanged(const igdeMetaContext::Ref &cont
 	});
 }
 
-void igdeMetaPropertyString::NotifyStringListChanged(const igdeMetaContext::Ref &context){
+void igdeMetaPropertyString::NotifyAllowedStringsChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
-		listener.OnStringListChanged(this, context);
+		listener.OnAllowedStringsChanged(this, context);
 	});
 }
 
@@ -88,6 +88,10 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+decStringSet igdeMetaPropertyString::GetPropertyAllowedStrings(const igdeMetaContext::Ref &context) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(){

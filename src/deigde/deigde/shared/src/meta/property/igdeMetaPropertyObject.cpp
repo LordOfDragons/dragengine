@@ -41,26 +41,6 @@ igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
 }
 
 
-// Class igdeMetaPropertyObject::ListPropertyListener
-///////////////////////////////////////////////////////
-
-igdeMetaPropertyObject::ListChangedListener::ListChangedListener(igdeMetaPropertyObject &property) :
-pProperty(property){
-}
-
-igdeMetaPropertyObject::ListChangedListener::~ListChangedListener() = default;
-
-void igdeMetaPropertyObject::ListChangedListener::OnValueChanged(
-igdeMetaPropertyList*, const ContextRef &context){
-	pProperty.NotifyAllowedObjectsChanged({});
-}
-
-void igdeMetaPropertyObject::ListChangedListener::OnObjectItemInfoChanged(
-igdeMetaPropertyList*, const ContextRef &context){
-	pProperty.NotifyObjectItemInfoChanged({});
-}
-
-
 // Class igdeMetaPropertyObject
 /////////////////////////////////
 

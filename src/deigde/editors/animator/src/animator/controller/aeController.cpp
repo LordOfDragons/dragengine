@@ -63,7 +63,6 @@ defaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, pMe
 	name.SetOnChanged([this](){
 		if(pAnimator){
 			pAnimator->NotifyControllerNameChanged(this);
-			pAnimator->controllers.Property().NotifyObjectItemInfoChanged(pAnimator->GetMetaContext());
 		}
 	});
 	

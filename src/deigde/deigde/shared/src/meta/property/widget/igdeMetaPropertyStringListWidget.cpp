@@ -458,9 +458,8 @@ void igdeMetaPropertyStringListWidget::OnContextChanged(){
 // Private Functions
 //////////////////////
 
-void igdeMetaPropertyStringListWidget::pAddButton(
-		igdeMetaPropertyStringList::TargetButton target,
-		igdeUIHelper &helper, igdeContainer &container){
+void igdeMetaPropertyStringListWidget::pAddButton(igdeMetaPropertyStringList::TargetButton target,
+igdeUIHelper &helper, igdeContainer &container){
 	igdeButton::Ref button;
 	helper.Button(button, {});
 	button->SetStyle(igdeButton::ebsToolBar);
@@ -472,5 +471,5 @@ void igdeMetaPropertyStringListWidget::pAddButton(
 	action->SetContext(GetContext());
 	button->SetAction(action);
 	container.AddChild(button);
-	button->FreeReference();
+	pButtonActions.Add(action);
 }

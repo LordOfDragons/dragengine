@@ -71,7 +71,7 @@ void igdeMetaPropertyStringList::ActionAdd::OnAction(){
 		return;
 	}
 	
-	const decStringSet candidates = pPropertyStringList.GetValidStrings(context);
+	const decStringSet candidates = pPropertyStringList.GetAllowedStrings(context);
 	if(candidates.IsEmpty()){
 		return;
 	}
@@ -594,7 +594,7 @@ const decString &string, igdeMetaContextItemInfo &info) const{
 	info.SetAll(string);
 }
 
-decStringSet igdeMetaPropertyStringList::GetValidStrings(const igdeMetaContext::Ref&) const{
+decStringSet igdeMetaPropertyStringList::GetAllowedStrings(const igdeMetaContext::Ref&) const{
 	return {};
 }
 

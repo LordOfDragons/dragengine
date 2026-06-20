@@ -39,6 +39,10 @@ class aeWindowMain;
  */
 class aeMCAnimatorProperties{
 public:
+	deTObjectReference<aeMCPHiddenBoneNames> hiddenBoneNames = deTObjectReference<aeMCPHiddenBoneNames>::New();
+	deTObjectReference<aeMCPHiddenVPSNames> hiddenVPSNames = deTObjectReference<aeMCPHiddenVPSNames>::New();
+	deTObjectReference<aeMCPHiddenMoveNames> hiddenMoveNames = deTObjectReference<aeMCPHiddenMoveNames>::New();
+	
 	deTObjectReference<aeMCPAnimatorRig> rig = deTObjectReference<aeMCPAnimatorRig>::New();
 	deTObjectReference<aeMCPAnimatorAnimation> animation = deTObjectReference<aeMCPAnimatorAnimation>::New();
 	deTObjectReference<aeMCPAnimatorAffectedBones> affectedBones = deTObjectReference<aeMCPAnimatorAffectedBones>::New();
@@ -61,42 +65,13 @@ public:
 	aeMCRuleSubAnimatorProperties ruleSubAnimator;
 	aeMCRuleTrackToProperties ruleTrackTo;
 	
-	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New(
-		decTObjectOrderedSet<igdeMetaProperty>(devctag,
-			rig,
-			animation,
-			affectedBones,
-			affectedVertexPositionSets));
+	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
+	igdeMetaContext::PropertyList::Ref metaPropertiesController = igdeMetaContext::PropertyList::Ref::New();
+	igdeMetaContext::PropertyList::Ref metaPropertiesLink = igdeMetaContext::PropertyList::Ref::New();
+	igdeMetaContext::PropertyList::Ref metaPropertiesRule = igdeMetaContext::PropertyList::Ref::New();
 	
-	igdeMetaContext::PropertyList::Ref metaPropertiesController =
-		igdeMetaContext::PropertyList::Ref::New(controller.group->GetProperties());
-	
-	igdeMetaContext::PropertyList::Ref metaPropertiesLink =
-		igdeMetaContext::PropertyList::Ref::New(link.group->GetProperties());
-	
-	igdeMetaContext::PropertyList::Ref metaPropertiesRule =
-		igdeMetaContext::PropertyList::Ref::New(rule.group->GetProperties());
-	
-	aeMCAnimatorProperties(aeWindowMain &windowMain) :
-		controller(windowMain),
-		link(windowMain),
-		rule(windowMain),
-		ruleAnimation(rule),
-		ruleAnimationDifference(rule),
-		ruleAnimationSelect(rule),
-		ruleBoneTransformator(rule),
-		ruleForeignState(rule),
-		ruleGroup(rule),
-		ruleInverseKinematic(rule),
-		ruleLimit(rule),
-		ruleMirror(rule),
-		ruleStateManipulator(rule),
-		ruleStateSnapshot(rule),
-		ruleSubAnimator(rule),
-		ruleTrackTo(rule)
-		{
-			controller.controllers->GetListeners().Add(igdeMetaPropertyObject::ListChangedListener::Ref::New(link.controller));
-		}
+	aeMCAnimatorProperties(aeWindowMain &windowMain);
+	void Init();
 };
 
 #endif

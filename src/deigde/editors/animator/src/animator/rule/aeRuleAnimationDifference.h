@@ -48,7 +48,6 @@ public:
 	igdeMetaPropertyFloatStorage::Storage leadingMoveTime;
 	igdeMetaPropertyStringStorage::Storage referenceMoveName;
 	igdeMetaPropertyFloatStorage::Storage referenceMoveTime;
-	igdeMetaPropertyBooleanStorage::Storage useSameMove;
 	igdeMetaPropertyBooleanStorage::Storage useComponentSpace;
 	igdeMetaPropertyBooleanStorage::Storage enablePosition;
 	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
@@ -88,10 +87,6 @@ public:
 	inline float GetReferenceMoveTime() const{ return referenceMoveTime; }
 	/** Set the reference animation move time. */
 	void SetReferenceMoveTime(float value);
-	/** Determine if the reference move is the same as the leading move. */
-	inline bool GetUseSameMove() const{ return useSameMove; }
-	/** Set if the reference move is the same as the leading move. */
-	void SetUseSameMove(bool value);
 	
 	/** Use component space. */
 	inline bool GetUseComponentSpace() const{ return useComponentSpace; }
