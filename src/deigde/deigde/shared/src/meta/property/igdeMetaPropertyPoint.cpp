@@ -40,6 +40,10 @@ igdeMetaPropertyPoint::igdeMetaPropertyPoint(
 igdeMetaProperty(id, name, description){
 }
 
+igdeMetaPropertyPoint::igdeMetaPropertyPoint(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+}
+
 igdeMetaPropertyPoint::~igdeMetaPropertyPoint() = default;
 
 
@@ -82,6 +86,10 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyPoint::CreateWidget(){
 igdeMetaPropertyPointStorage::igdeMetaPropertyPointStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyPoint(id, name, description){
+}
+
+igdeMetaPropertyPointStorage::igdeMetaPropertyPointStorage(const char *id, const char *translationTag) :
+igdeMetaPropertyPoint(id, translationTag){
 }
 
 igdeMetaPropertyPointStorage::~igdeMetaPropertyPointStorage() = default;

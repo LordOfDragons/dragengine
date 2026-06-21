@@ -53,6 +53,17 @@ pEnableLowerLimit(false),
 pEnableUpperLimit(false){
 }
 
+igdeMetaPropertyFloat::igdeMetaPropertyFloat(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pPrecision(3),
+pDefaultValue(0.0f),
+pLowerLimit(0.0f),
+pUpperLimit(1.0f),
+pTickSpacing(0.1f),
+pEnableLowerLimit(false),
+pEnableUpperLimit(false){
+}
+
 igdeMetaPropertyFloat::~igdeMetaPropertyFloat() = default;
 
 
@@ -135,6 +146,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(){
 igdeMetaPropertyFloatStorage::igdeMetaPropertyFloatStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyFloat(id, name, description){
+}
+
+igdeMetaPropertyFloatStorage::igdeMetaPropertyFloatStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyFloat(id, translationTag){
 }
 
 igdeMetaPropertyFloatStorage::~igdeMetaPropertyFloatStorage() = default;

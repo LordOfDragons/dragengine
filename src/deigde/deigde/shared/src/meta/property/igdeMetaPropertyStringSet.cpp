@@ -254,6 +254,12 @@ pRows(4),
 pMultiSelection(false){
 }
 
+igdeMetaPropertyStringSet::igdeMetaPropertyStringSet(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pRows(4),
+pMultiSelection(false){
+}
+
 igdeMetaPropertyStringSet::~igdeMetaPropertyStringSet() = default;
 
 
@@ -373,6 +379,11 @@ TargetButton target, igdeWidget &owner){
 igdeMetaPropertyStringSetStorage::igdeMetaPropertyStringSetStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyStringSet(id, name, description){
+}
+
+igdeMetaPropertyStringSetStorage::igdeMetaPropertyStringSetStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyStringSet(id, translationTag){
 }
 
 igdeMetaPropertyStringSetStorage::~igdeMetaPropertyStringSetStorage() = default;

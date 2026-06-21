@@ -57,6 +57,9 @@ public:
 	/** \brief Create boolean meta property with label and description. */
 	igdeMetaPropertyBoolean(const char *id, const char *name, const char *description);
 	
+	/** \brief Create boolean meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyBoolean(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up boolean meta property. */
 	~igdeMetaPropertyBoolean() override;
@@ -146,6 +149,9 @@ public:
 	
 	/** \brief Create boolean meta property with label and description. */
 	igdeMetaPropertyBooleanStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyBooleanStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up boolean meta property. */

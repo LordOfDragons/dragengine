@@ -41,6 +41,11 @@ igdeMetaProperty(id, name, description),
 pRows(rows){
 }
 
+igdeMetaPropertyTags::igdeMetaPropertyTags(const char *id, const char *translationTag, int rows) :
+igdeMetaProperty(id, translationTag),
+pRows(rows){
+}
+
 igdeMetaPropertyTags::~igdeMetaPropertyTags() = default;
 
 
@@ -83,6 +88,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyTags::CreateWidget(){
 igdeMetaPropertyTagsStorage::igdeMetaPropertyTagsStorage(
 	const char *id, const char *name, const char *description, int rows) :
 igdeMetaPropertyTags(id, name, description, rows){
+}
+
+igdeMetaPropertyTagsStorage::igdeMetaPropertyTagsStorage(
+	const char *id, const char *translationTag, int rows) :
+igdeMetaPropertyTags(id, translationTag, rows){
 }
 
 igdeMetaPropertyTagsStorage::~igdeMetaPropertyTagsStorage() = default;

@@ -78,6 +78,9 @@ public:
 	/** \brief Create dvector meta property with label and description. */
 	igdeMetaPropertyDVector(const char *id, const char *name, const char *description);
 	
+	/** \brief Create dvector meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyDVector(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up dvector meta property. */
 	~igdeMetaPropertyDVector() override;
@@ -172,6 +175,9 @@ public:
 	
 	/** \brief Create dvector meta property with label and description. */
 	igdeMetaPropertyDVectorStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyDVectorStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up dvector meta property. */

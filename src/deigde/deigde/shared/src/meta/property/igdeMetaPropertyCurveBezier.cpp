@@ -43,6 +43,13 @@ pClampMax(1.0f, 1.0f),
 pClamp(false){
 }
 
+igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pClampMin(0.0f, 0.0f),
+pClampMax(1.0f, 1.0f),
+pClamp(false){
+}
+
 igdeMetaPropertyCurveBezier::~igdeMetaPropertyCurveBezier() = default;
 
 
@@ -97,6 +104,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyCurveBezier::CreateWidget(){
 igdeMetaPropertyCurveBezierStorage::igdeMetaPropertyCurveBezierStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyCurveBezier(id, name, description){
+}
+
+igdeMetaPropertyCurveBezierStorage::igdeMetaPropertyCurveBezierStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyCurveBezier(id, translationTag){
 }
 
 igdeMetaPropertyCurveBezierStorage::~igdeMetaPropertyCurveBezierStorage() = default;

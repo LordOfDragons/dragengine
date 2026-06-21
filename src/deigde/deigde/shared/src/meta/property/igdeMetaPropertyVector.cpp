@@ -40,6 +40,10 @@ igdeMetaPropertyVector::igdeMetaPropertyVector(
 igdeMetaProperty(id, name, description){
 }
 
+igdeMetaPropertyVector::igdeMetaPropertyVector(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+}
+
 igdeMetaPropertyVector::~igdeMetaPropertyVector() = default;
 
 
@@ -82,6 +86,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyVector::CreateWidget(){
 igdeMetaPropertyVectorStorage::igdeMetaPropertyVectorStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyVector(id, name, description){
+}
+
+igdeMetaPropertyVectorStorage::igdeMetaPropertyVectorStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyVector(id, translationTag){
 }
 
 igdeMetaPropertyVectorStorage::~igdeMetaPropertyVectorStorage() = default;

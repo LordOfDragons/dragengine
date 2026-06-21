@@ -67,7 +67,7 @@ public:
 	deTObjectReference<aeMCPLinks> links = deTObjectReference<aeMCPLinks>::New();
 	deTObjectReference<aeMCPLink> link;
 	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.groupLinks", "@Animator.WPLink.Links", "@Animator.WPLink.Links.ToolTip",
+		"animator.groupLinks", "Animator.WPLink.Links",
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, links, link));
 	
 	aeMCLinkProperties(aeWindowMain &windowMain);

@@ -140,6 +140,11 @@ public:
 	 */
 	igdeMetaProperty(const char *id, const char *name, const char *description);
 	
+	/**
+	 * \brief Create meta property with label, description, filter and undo info set from translation tag.
+	 */
+	igdeMetaProperty(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up meta property. */
 	~igdeMetaProperty() override;

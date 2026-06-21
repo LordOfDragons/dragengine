@@ -80,6 +80,9 @@ public:
 	/** \brief Create float meta property with label and description. */
 	igdeMetaPropertyFloat(const char *id, const char *name, const char *description);
 	
+	/** \brief Create float meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyFloat(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up float meta property. */
 	~igdeMetaPropertyFloat() override;
@@ -214,6 +217,9 @@ public:
 	
 	/** \brief Create float meta property with label and description. */
 	igdeMetaPropertyFloatStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyFloatStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up float meta property. */

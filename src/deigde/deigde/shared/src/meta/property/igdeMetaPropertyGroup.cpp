@@ -44,6 +44,16 @@ igdeMetaProperty(id, name, description),
 pProperties(properties){
 }
 
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+}
+
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id,
+	const char *translationTag, const List &properties) :
+igdeMetaProperty(id, translationTag),
+pProperties(properties){
+}
+
 igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
 
 

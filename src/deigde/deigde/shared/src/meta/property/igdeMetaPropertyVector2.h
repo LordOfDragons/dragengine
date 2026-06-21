@@ -76,6 +76,9 @@ public:
 	/** \brief Create vector2 meta property with label and description. */
 	igdeMetaPropertyVector2(const char *id, const char *name, const char *description);
 	
+	/** \brief Create vector2 meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyVector2(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up vector2 meta property. */
 	~igdeMetaPropertyVector2() override;
@@ -164,6 +167,9 @@ public:
 	/*@{*/
 	/** \brief Create vector2 meta property with label and description. */
 	igdeMetaPropertyVector2Storage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyVector2Storage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up vector2 meta property. */

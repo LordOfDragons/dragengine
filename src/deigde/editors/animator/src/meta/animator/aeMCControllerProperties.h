@@ -49,14 +49,14 @@ public:
 	deTObjectReference<aeMCPControllerLocomotionLeg> locomotionLeg = deTObjectReference<aeMCPControllerLocomotionLeg>::New();
 	deTObjectReference<aeMCPControllerVectorSimulation> vectorSimulation = deTObjectReference<aeMCPControllerVectorSimulation>::New();
 	deTObjectReference<igdeMetaPropertyGroup> groupLocomotionTesting = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"controller.groupLocomotionTesting", "@Animator.WPController.LocomotionTesting", "@Animator.WPController.LocomotionTesting.ToolTip");
+		"controller.groupLocomotionTesting", "Animator.WPController.LocomotionTesting");
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	
 	deTObjectReference<aeMCPControllers> controllers = deTObjectReference<aeMCPControllers>::New();
 	deTObjectReference<aeMCPController> controller;
 	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.groupControllers", "@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip",
+		"animator.groupControllers", "Animator.WPController.Controllers",
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, controllers, controller));
 	
 	aeMCControllerProperties(aeWindowMain &windowMain);

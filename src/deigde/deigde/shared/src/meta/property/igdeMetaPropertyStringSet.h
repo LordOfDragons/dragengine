@@ -168,6 +168,9 @@ public:
 	/** \brief Create string set meta property with label and description. */
 	igdeMetaPropertyStringSet(const char *id, const char *name, const char *description);
 	
+	/** \brief Create string set meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyStringSet(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up string set meta property. */
 	~igdeMetaPropertyStringSet() override;
@@ -337,6 +340,9 @@ public:
 	/*@{*/
 	/** \brief Create string set meta property with label and description. */
 	igdeMetaPropertyStringSetStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyStringSetStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up string set meta property. */

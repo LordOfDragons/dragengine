@@ -37,9 +37,9 @@
 class aeMCPRuleGroupEnablePosition : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleGroupEnablePosition() : aeTMCPAnimatorRuleType("group.enablePosition",
-		"@Animator.WPAPanelRuleGroup.EnablePosition", "@Animator.WPAPanelRuleGroup.EnablePosition.ToolTip"){
+		"Animator.WPAPanelRuleGroup.EnablePosition"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleGroupEnablePosition() override = default;
 	
@@ -51,9 +51,9 @@ public:
 class aeMCPRuleGroupEnableOrientation : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleGroupEnableOrientation() : aeTMCPAnimatorRuleType("group.enableOrientation",
-		"@Animator.WPAPanelRuleGroup.EnableRotation", "@Animator.WPAPanelRuleGroup.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleGroup.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleGroupEnableOrientation() override = default;
 	
@@ -65,8 +65,7 @@ public:
 class aeMCPRuleGroupEnableSize : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleGroupEnableSize() : aeTMCPAnimatorRuleType("group.enableSize",
-		"@Animator.WPAPanelRuleGroup.EnableSize", "@Animator.WPAPanelRuleGroup.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleGroup.EnableSize"){}
 	
 	~aeMCPRuleGroupEnableSize() override = default;
 	
@@ -78,9 +77,9 @@ public:
 class aeMCPRuleGroupEnableVertexPositionSet : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleGroupEnableVertexPositionSet() : aeTMCPAnimatorRuleType("group.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleGroup.EnableVertexPositionSet", "@Animator.WPAPanelRuleGroup.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleGroup.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleGroupEnableVertexPositionSet() override = default;
 	
@@ -92,8 +91,7 @@ public:
 class aeMCPRuleGroupUseCurrentState : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleGroupUseCurrentState() : aeTMCPAnimatorRuleType("group.useCurrentState",
-		"@Animator.WPAPanelRuleGroup.UseCurrentState", "@Animator.WPAPanelRuleGroup.UseCurrentState.ToolTip"){
-	};
+		"Animator.WPAPanelRuleGroup.UseCurrentState"){}
 	
 	~aeMCPRuleGroupUseCurrentState() override = default;
 	
@@ -105,12 +103,12 @@ public:
 class aeMCPRuleGroupApplicationType : public aeTMCPAnimatorRuleGroup<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>>{
 public:
 	aeMCPRuleGroupApplicationType() : aeTMCPAnimatorRuleType("group.applicationType",
-		"@Animator.WPAPanelRuleGroup.ApplicationType", "@Animator.WPAPanelRuleGroup.ApplicationType.ToolTip"){
+		"Animator.WPAPanelRuleGroup.ApplicationType"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleGroup::eatAll,
 			deAnimatorRuleGroup::eatSelect));
 		SetDefaultValueEnum(deAnimatorRuleGroup::eatAll);
-	};
+	}
 	
 	~aeMCPRuleGroupApplicationType() override = default;
 	
@@ -139,8 +137,7 @@ public:
 class aeMCPRuleGroupTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleGroup<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleGroupTargetSelect() : aeTMCPRuleTarget("group.targetSelect",
-		"@Animator.Target.Select", "@Animator.Target.Select.ToolTip"){
-	};
+		"Animator.Target.Select"){}
 	
 	~aeMCPRuleGroupTargetSelect() override = default;
 	

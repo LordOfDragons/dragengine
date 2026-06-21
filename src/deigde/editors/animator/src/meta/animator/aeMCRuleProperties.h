@@ -62,7 +62,7 @@ public:
 	deTObjectReference<aeMCPRules> rules = deTObjectReference<aeMCPRules>::New();
 	deTObjectReference<aeMCPRule> rule;
 	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
-		"animator.groupRules", "@Animator.WPRule.Rules", "@Animator.WPRule.Rules.ToolTip");
+		"animator.groupRules", "Animator.WPRule.Rules");
 	
 	aeMCRuleProperties(aeWindowMain &windowMain);
 	void Init(const aeMCAnimatorProperties &properties);

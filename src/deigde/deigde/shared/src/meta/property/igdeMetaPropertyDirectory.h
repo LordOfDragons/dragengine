@@ -57,7 +57,10 @@ public:
 	
 	/** \brief Create directory meta property with label and description. */
 	igdeMetaPropertyDirectory(const char *id, const char *name,
-		const char *description, bool useGameVFS = true);
+		const char *description, bool useGameVFS);
+	
+	/** \brief Create directory meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyDirectory(const char *id, const char *translationTag, bool useGameVFS);
 	
 protected:
 	/** \brief Clean up directory meta property. */
@@ -153,7 +156,11 @@ public:
 	/*@{*/
 	
 	/** \brief Create directory meta property with label and description. */
-	igdeMetaPropertyDirectoryStorage(const char *id, const char *name, const char *description);
+	igdeMetaPropertyDirectoryStorage(const char *id, const char *name,
+		const char *description, bool useGameVFS);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyDirectoryStorage(const char *id, const char *translationTag, bool useGameVFS);
 	
 protected:
 	/** \brief Clean up directory meta property. */

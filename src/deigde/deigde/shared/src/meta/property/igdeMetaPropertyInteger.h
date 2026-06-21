@@ -80,6 +80,9 @@ public:
 	/** \brief Create integer meta property with label and description. */
 	igdeMetaPropertyInteger(const char *id, const char *name, const char *description);
 	
+	/** \brief Create integer meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyInteger(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up integer meta property. */
 	~igdeMetaPropertyInteger() override;
@@ -213,6 +216,9 @@ public:
 	/*@{*/
 	/** \brief Create integer meta property with label and description. */
 	igdeMetaPropertyIntegerStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyIntegerStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up integer meta property. */

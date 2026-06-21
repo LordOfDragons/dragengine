@@ -41,6 +41,11 @@ igdeMetaProperty(id, name, description),
 pPrecision(3){
 }
 
+igdeMetaPropertyDVector::igdeMetaPropertyDVector(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pPrecision(3){
+}
+
 igdeMetaPropertyDVector::~igdeMetaPropertyDVector() = default;
 
 
@@ -87,6 +92,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyDVector::CreateWidget(){
 igdeMetaPropertyDVectorStorage::igdeMetaPropertyDVectorStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyDVector(id, name, description){
+}
+
+igdeMetaPropertyDVectorStorage::igdeMetaPropertyDVectorStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyDVector(id, translationTag){
 }
 
 igdeMetaPropertyDVectorStorage::~igdeMetaPropertyDVectorStorage() = default;

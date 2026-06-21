@@ -70,7 +70,7 @@ public:
 class aeMCPAnimatorRig : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
 public:
 	aeMCPAnimatorRig() : aeTMCPAnimator("animator.rig",
-		"@Animator.WPAnimator.Rig", "@Animator.WPAnimator.Rig.ToolTip",
+		"Animator.WPAnimator.Rig",
 		igdeEnvironment::efpltRig){}
 	
 	~aeMCPAnimatorRig() override = default;
@@ -89,7 +89,7 @@ public:
 class aeMCPAnimatorAnimation : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
 public:
 	aeMCPAnimatorAnimation() : aeTMCPAnimator("animator.animation",
-		"@Animator.WPAnimator.Animation", "@Animator.WPAnimator.Animation.ToolTip",
+		"Animator.WPAnimator.Animation",
 		igdeEnvironment::efpltAnimation){}
 	
 	~aeMCPAnimatorAnimation() override = default;
@@ -108,7 +108,7 @@ public:
 class aeMCPAnimatorAffectedBones : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
 public:
 	aeMCPAnimatorAffectedBones() : aeTMCPAnimator("animator.affectedBones",
-		"@Animator.WPAnimator.AffectedBones", "@Animator.WPAnimator.AffectedBones.ToolTip"){
+		"Animator.WPAnimator.AffectedBones"){
 			SetMultiSelection(true);
 		}
 	
@@ -127,7 +127,7 @@ public:
 class aeMCPAnimatorAffectedVertexPositionSets : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
 public:
 	aeMCPAnimatorAffectedVertexPositionSets() : aeTMCPAnimator("animator.affectedVertexPositionSets",
-		"@Animator.WPAnimator.AffectedVertexPositionSets", "@Animator.WPAnimator.AffectedVertexPositionSets.ToolTip"){
+		"Animator.WPAnimator.AffectedVertexPositionSets"){
 			SetMultiSelection(true);
 		}
 	

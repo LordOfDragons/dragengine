@@ -38,9 +38,9 @@
 class aeMCPRuleAnimationMoveName : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleAnimationMoveName() : aeTMCPAnimatorRuleType("animation.moveName",
-		"@Animator.WPAPanelRuleAnimation.MoveName", "@Animator.WPAPanelRuleAnimation.MoveName.ToolTip"){
+		"Animator.WPAPanelRuleAnimation.MoveName"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleAnimationMoveName() override = default;
 	
@@ -57,10 +57,10 @@ public:
 class aeMCPRuleAnimationMoveTime : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleAnimationMoveTime() : aeTMCPAnimatorRuleType("animation.moveTime",
-		"@Animator.WPAPanelRuleAnimation.MoveTime", "@Animator.WPAPanelRuleAnimation.MoveTime.ToolTip"){
+		"Animator.WPAPanelRuleAnimation.MoveTime"){
 			SetEnableLowerLimit(true);
 			SetEnableUpperLimit(true);
-		};
+		}
 	
 	~aeMCPRuleAnimationMoveTime() override = default;
 	
@@ -72,9 +72,9 @@ public:
 class aeMCPRuleAnimationEnablePosition : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationEnablePosition() : aeTMCPAnimatorRuleType("animation.enablePosition",
-		"@Animator.WPAPanelRuleAnimation.EnablePosition", "@Animator.WPAPanelRuleAnimation.EnablePosition.ToolTip"){
+		"Animator.WPAPanelRuleAnimation.EnablePosition"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleAnimationEnablePosition() override = default;
 	
@@ -86,9 +86,9 @@ public:
 class aeMCPRuleAnimationEnableOrientation : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationEnableOrientation() : aeTMCPAnimatorRuleType("animation.enableOrientation",
-		"@Animator.WPAPanelRuleAnimation.EnableRotation", "@Animator.WPAPanelRuleAnimation.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleAnimation.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleAnimationEnableOrientation() override = default;
 	
@@ -100,8 +100,7 @@ public:
 class aeMCPRuleAnimationEnableSize : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationEnableSize() : aeTMCPAnimatorRuleType("animation.enableSize",
-		"@Animator.WPAPanelRuleAnimation.EnableSize", "@Animator.WPAPanelRuleAnimation.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleAnimation.EnableSize"){}
 	
 	~aeMCPRuleAnimationEnableSize() override = default;
 	
@@ -113,9 +112,9 @@ public:
 class aeMCPRuleAnimationEnableVertexPositionSet : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationEnableVertexPositionSet() : aeTMCPAnimatorRuleType("animation.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleAnimation.EnableVertexPositionSet", "@Animator.WPAPanelRuleAnimation.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleAnimation.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleAnimationEnableVertexPositionSet() override = default;
 	
@@ -128,8 +127,7 @@ public:
 class aeMCPRuleAnimationTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimation<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleAnimationTargetMoveTime() : aeTMCPRuleTarget("animation.targetMoveTime",
-		"@Animator.Target.MoveTime", "@Animator.Target.MoveTime.ToolTip"){
-	};
+		"Animator.Target.MoveTime"){}
 	
 	~aeMCPRuleAnimationTargetMoveTime() override = default;
 	

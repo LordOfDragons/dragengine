@@ -55,6 +55,19 @@ pResourceType(igdeEnvironment::eFilePatternListTypes::efpltAll),
 pCustomPatternList(customPatternList){
 }
 
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *translationTag,
+	igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaProperty(id, translationTag),
+pResourceType(resourceType){
+}
+
+igdeMetaPropertyPath::igdeMetaPropertyPath(const char *id, const char *translationTag,
+	const igdeFilePattern::List &customPatternList) :
+igdeMetaProperty(id, translationTag),
+pResourceType(igdeEnvironment::eFilePatternListTypes::efpltAll),
+pCustomPatternList(customPatternList){
+}
+
 igdeMetaPropertyPath::~igdeMetaPropertyPath() = default;
 
 
@@ -109,6 +122,16 @@ igdeMetaPropertyPath(id, name, description, resourceType){
 igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *name,
 	const char *description, const igdeFilePattern::List &customPatternList) :
 igdeMetaPropertyPath(id, name, description, customPatternList){
+}
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *translationTag,
+	igdeEnvironment::eFilePatternListTypes resourceType) :
+igdeMetaPropertyPath(id, translationTag, resourceType){
+}
+
+igdeMetaPropertyPathStorage::igdeMetaPropertyPathStorage(const char *id, const char *translationTag,
+	const igdeFilePattern::List &customPatternList) :
+igdeMetaPropertyPath(id, translationTag, customPatternList){
 }
 
 igdeMetaPropertyPathStorage::~igdeMetaPropertyPathStorage() = default;

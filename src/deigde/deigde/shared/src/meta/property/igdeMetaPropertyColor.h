@@ -77,6 +77,9 @@ public:
 	/** \brief Create color meta property with label and description. */
 	igdeMetaPropertyColor(const char *id, const char *name, const char *description);
 	
+	/** \brief Create color meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyColor(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up color meta property. */
 	~igdeMetaPropertyColor() override;
@@ -166,6 +169,9 @@ public:
 	
 	/** \brief Create color meta property with label and description. */
 	igdeMetaPropertyColorStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyColorStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up color meta property. */

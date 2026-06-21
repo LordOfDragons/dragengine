@@ -59,6 +59,9 @@ public:
 	/** \brief Create toggle tags meta property with label and description. */
 	igdeMetaPropertyToggleTags(const char *id, const char *name, const char *description, int rows);
 	
+	/** \brief Create toggle tags meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyToggleTags(const char *id, const char *translationTag, int rows);
+	
 protected:
 	/** \brief Clean up toggle tags meta property. */
 	~igdeMetaPropertyToggleTags() override;
@@ -147,6 +150,9 @@ public:
 	/*@{*/
 	/** \brief Create toggle tags meta property with label and description. */
 	igdeMetaPropertyToggleTagsStorage(const char *id, const char *name, const char *description, int rows);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyToggleTagsStorage(const char *id, const char *translationTag, int rows);
 	
 protected:
 	/** \brief Clean up toggle tags meta property. */

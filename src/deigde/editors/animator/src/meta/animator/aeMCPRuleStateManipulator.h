@@ -38,8 +38,7 @@
 class aeMCPRuleStateManipulatorMinPosition : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMinPosition() : aeTMCPAnimatorRuleType("statemanipulator.minPosition",
-		"@Animator.WPAPanelRuleStateManipulator.MinPosition", "@Animator.WPAPanelRuleStateManipulator.MinPosition.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.MinPosition"){}
 	
 	~aeMCPRuleStateManipulatorMinPosition() override = default;
 	
@@ -51,8 +50,7 @@ public:
 class aeMCPRuleStateManipulatorMaxPosition : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxPosition() : aeTMCPAnimatorRuleType("statemanipulator.maxPosition",
-		"@Animator.WPAPanelRuleStateManipulator.MaxPosition", "@Animator.WPAPanelRuleStateManipulator.MaxPosition.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.MaxPosition"){}
 	
 	~aeMCPRuleStateManipulatorMaxPosition() override = default;
 	
@@ -64,8 +62,7 @@ public:
 class aeMCPRuleStateManipulatorMinRotation : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMinRotation() : aeTMCPAnimatorRuleType("statemanipulator.minRotation",
-		"@Animator.WPAPanelRuleStateManipulator.MinRotation", "@Animator.WPAPanelRuleStateManipulator.MinRotation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.MinRotation"){}
 	
 	~aeMCPRuleStateManipulatorMinRotation() override = default;
 	
@@ -77,8 +74,7 @@ public:
 class aeMCPRuleStateManipulatorMaxRotation : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxRotation() : aeTMCPAnimatorRuleType("statemanipulator.maxRotation",
-		"@Animator.WPAPanelRuleStateManipulator.MaxRotation", "@Animator.WPAPanelRuleStateManipulator.MaxRotation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.MaxRotation"){}
 	
 	~aeMCPRuleStateManipulatorMaxRotation() override = default;
 	
@@ -90,9 +86,9 @@ public:
 class aeMCPRuleStateManipulatorMinSize : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMinSize() : aeTMCPAnimatorRuleType("statemanipulator.minSize",
-		"@Animator.WPAPanelRuleStateManipulator.MinScaling", "@Animator.WPAPanelRuleStateManipulator.MinScaling.ToolTip"){
+		"Animator.WPAPanelRuleStateManipulator.MinScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleStateManipulatorMinSize() override = default;
 	
@@ -104,9 +100,9 @@ public:
 class aeMCPRuleStateManipulatorMaxSize : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxSize() : aeTMCPAnimatorRuleType("statemanipulator.maxSize",
-		"@Animator.WPAPanelRuleStateManipulator.MaxScaling", "@Animator.WPAPanelRuleStateManipulator.MaxScaling.ToolTip"){
+		"Animator.WPAPanelRuleStateManipulator.MaxScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleStateManipulatorMaxSize() override = default;
 	
@@ -118,8 +114,7 @@ public:
 class aeMCPRuleStateManipulatorMinVertexPositionSet : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleStateManipulatorMinVertexPositionSet() : aeTMCPAnimatorRuleType("statemanipulator.minVertexPositionSet",
-		"@Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet", "@Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.MinVertexPositionSet"){}
 	
 	~aeMCPRuleStateManipulatorMinVertexPositionSet() override = default;
 	
@@ -131,8 +126,7 @@ public:
 class aeMCPRuleStateManipulatorMaxVertexPositionSet : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleStateManipulatorMaxVertexPositionSet() : aeTMCPAnimatorRuleType("statemanipulator.maxVertexPositionSet",
-		"@Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet", "@Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.MaxVertexPositionSet"){}
 	
 	~aeMCPRuleStateManipulatorMaxVertexPositionSet() override = default;
 	
@@ -144,8 +138,7 @@ public:
 class aeMCPRuleStateManipulatorEnablePosition : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnablePosition() : aeTMCPAnimatorRuleType("statemanipulator.enablePosition",
-		"@Animator.WPAPanelRuleStateManipulator.EnablePosition", "@Animator.WPAPanelRuleStateManipulator.EnablePosition.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.EnablePosition"){}
 	
 	~aeMCPRuleStateManipulatorEnablePosition() override = default;
 	
@@ -157,9 +150,9 @@ public:
 class aeMCPRuleStateManipulatorEnableRotation : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnableRotation() : aeTMCPAnimatorRuleType("statemanipulator.enableRotation",
-		"@Animator.WPAPanelRuleStateManipulator.EnableRotation", "@Animator.WPAPanelRuleStateManipulator.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleStateManipulator.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleStateManipulatorEnableRotation() override = default;
 	
@@ -171,8 +164,7 @@ public:
 class aeMCPRuleStateManipulatorEnableSize : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnableSize() : aeTMCPAnimatorRuleType("statemanipulator.enableSize",
-		"@Animator.WPAPanelRuleStateManipulator.EnableSize", "@Animator.WPAPanelRuleStateManipulator.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleStateManipulator.EnableSize"){}
 	
 	~aeMCPRuleStateManipulatorEnableSize() override = default;
 	
@@ -184,9 +176,9 @@ public:
 class aeMCPRuleStateManipulatorEnableVertexPositionSet : public aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleStateManipulatorEnableVertexPositionSet() : aeTMCPAnimatorRuleType("statemanipulator.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet", "@Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleStateManipulator.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleStateManipulatorEnableVertexPositionSet() override = default;
 	
@@ -199,8 +191,7 @@ public:
 class aeMCPRuleStateManipulatorTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleStateManipulatorTargetPosition() : aeTMCPRuleTarget("statemanipulator.targetPosition",
-		"@Animator.Target.Position", "@Animator.Target.Position.ToolTip"){
-	};
+		"Animator.Target.Position"){}
 	
 	~aeMCPRuleStateManipulatorTargetPosition() override = default;
 	
@@ -212,8 +203,7 @@ public:
 class aeMCPRuleStateManipulatorTargetRotation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleStateManipulatorTargetRotation() : aeTMCPRuleTarget("statemanipulator.targetRotation",
-		"@Animator.Target.Rotation", "@Animator.Target.Rotation.ToolTip"){
-	};
+		"Animator.Target.Rotation"){}
 	
 	~aeMCPRuleStateManipulatorTargetRotation() override = default;
 	
@@ -225,8 +215,7 @@ public:
 class aeMCPRuleStateManipulatorTargetSize : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleStateManipulatorTargetSize() : aeTMCPRuleTarget("statemanipulator.targetSize",
-		"@Animator.Target.Size", "@Animator.Target.Size.ToolTip"){
-	};
+		"Animator.Target.Size"){}
 	
 	~aeMCPRuleStateManipulatorTargetSize() override = default;
 	
@@ -238,8 +227,7 @@ public:
 class aeMCPRuleStateManipulatorTargetVertexPositionSet : public aeTMCPRuleTarget<aeTMCPAnimatorRuleStateManipulator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleStateManipulatorTargetVertexPositionSet() : aeTMCPRuleTarget("statemanipulator.targetVertexPositionSet",
-		"@Animator.Target.VertexPositionSet", "@Animator.Target.VertexPositionSet.ToolTip"){
-	};
+		"Animator.Target.VertexPositionSet"){}
 	
 	~aeMCPRuleStateManipulatorTargetVertexPositionSet() override = default;
 	

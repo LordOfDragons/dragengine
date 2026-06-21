@@ -37,14 +37,14 @@
 class aeMCPRuleMirrorMirrorAxis : public aeTMCPAnimatorRuleMirror<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>>{
 public:
 	aeMCPRuleMirrorMirrorAxis() : aeTMCPAnimatorRuleType("mirror.mirrorAxis",
-		"@Animator.WPAPanelRuleMirror.Axis", "@Animator.WPAPanelRuleMirror.Axis.ToolTip"){
+		"Animator.WPAPanelRuleMirror.Axis"){
 			SetChoicesEnum(ListChoicesEnum(devctag,
 				deAnimatorRuleMirror::emaX,
 				deAnimatorRuleMirror::emaY,
 				deAnimatorRuleMirror::emaZ
 			));
 			SetDefaultValueEnum(deAnimatorRuleMirror::emaX);
-	};
+		}
 	
 	~aeMCPRuleMirrorMirrorAxis() override = default;
 	
@@ -76,9 +76,9 @@ public:
 class aeMCPRuleMirrorMirrorBone : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleMirrorMirrorBone() : aeTMCPAnimatorRuleType("mirror.mirrorBone",
-		"@Animator.WPAPanelRuleMirror.Bone", "@Animator.WPAPanelRuleMirror.Bone.ToolTip"){
+		"Animator.WPAPanelRuleMirror.Bone"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleMirrorMirrorBone() override = default;
 	
@@ -95,9 +95,9 @@ public:
 class aeMCPRuleMirrorEnablePosition : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleMirrorEnablePosition() : aeTMCPAnimatorRuleType("mirror.enablePosition",
-		"@Animator.WPAPanelRuleMirror.EnablePosition", "@Animator.WPAPanelRuleMirror.EnablePosition.ToolTip"){
+		"Animator.WPAPanelRuleMirror.EnablePosition"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleMirrorEnablePosition() override = default;
 	
@@ -109,9 +109,9 @@ public:
 class aeMCPRuleMirrorEnableOrientation : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleMirrorEnableOrientation() : aeTMCPAnimatorRuleType("mirror.enableOrientation",
-		"@Animator.WPAPanelRuleMirror.EnableRotation", "@Animator.WPAPanelRuleMirror.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleMirror.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleMirrorEnableOrientation() override = default;
 	
@@ -123,8 +123,7 @@ public:
 class aeMCPRuleMirrorEnableSize : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleMirrorEnableSize() : aeTMCPAnimatorRuleType("mirror.enableSize",
-		"@Animator.WPAPanelRuleMirror.EnableSize", "@Animator.WPAPanelRuleMirror.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleMirror.EnableSize"){}
 	
 	~aeMCPRuleMirrorEnableSize() override = default;
 	
@@ -136,9 +135,9 @@ public:
 class aeMCPRuleMirrorEnableVertexPositionSet : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleMirrorEnableVertexPositionSet() : aeTMCPAnimatorRuleType("mirror.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleMirror.EnableVertexPositionSet", "@Animator.WPAPanelRuleMirror.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleMirror.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleMirrorEnableVertexPositionSet() override = default;
 	

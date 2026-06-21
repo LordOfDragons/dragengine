@@ -37,9 +37,9 @@
 class aeMCPRuleAnimationSelectEnablePosition : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationSelectEnablePosition() : aeTMCPAnimatorRuleType("animationselect.enablePosition",
-		"@Animator.WPAPanelRuleAnimationSelect.EnablePosition", "@Animator.WPAPanelRuleAnimationSelect.EnablePosition.ToolTip"){
+		"Animator.WPAPanelRuleAnimationSelect.EnablePosition"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleAnimationSelectEnablePosition() override = default;
 	
@@ -51,9 +51,9 @@ public:
 class aeMCPRuleAnimationSelectEnableOrientation : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationSelectEnableOrientation() : aeTMCPAnimatorRuleType("animationselect.enableOrientation",
-		"@Animator.WPAPanelRuleAnimationSelect.EnableRotation", "@Animator.WPAPanelRuleAnimationSelect.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleAnimationSelect.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleAnimationSelectEnableOrientation() override = default;
 	
@@ -65,8 +65,7 @@ public:
 class aeMCPRuleAnimationSelectEnableSize : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationSelectEnableSize() : aeTMCPAnimatorRuleType("animationselect.enableSize",
-		"@Animator.WPAPanelRuleAnimationSelect.EnableSize", "@Animator.WPAPanelRuleAnimationSelect.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleAnimationSelect.EnableSize"){}
 	
 	~aeMCPRuleAnimationSelectEnableSize() override = default;
 	
@@ -78,9 +77,9 @@ public:
 class aeMCPRuleAnimationSelectEnableVertexPositionSet : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleAnimationSelectEnableVertexPositionSet() : aeTMCPAnimatorRuleType("animationselect.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet", "@Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleAnimationSelectEnableVertexPositionSet() override = default;
 	
@@ -92,9 +91,9 @@ public:
 class aeMCPRuleAnimationSelectMoves : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyStringListStorage>{
 public:
 	aeMCPRuleAnimationSelectMoves() : aeTMCPAnimatorRuleType("animationselect.moves",
-		"@Animator.WPAPanelRuleAnimationSelect.Moves", "@Animator.WPAPanelRuleAnimationSelect.Moves.ToolTip"){
+		"Animator.WPAPanelRuleAnimationSelect.Moves"){
 			SetMultiSelection(true);
-		};
+		}
 	
 	~aeMCPRuleAnimationSelectMoves() override = default;
 	
@@ -118,8 +117,7 @@ public:
 class aeMCPRuleAnimationSelectTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleAnimationSelectTargetMoveTime() : aeTMCPRuleTarget("animationselect.targetMoveTime",
-		"@Animator.Target.MoveTime", "@Animator.Target.MoveTime.ToolTip"){
-	};
+		"Animator.Target.MoveTime"){}
 	
 	~aeMCPRuleAnimationSelectTargetMoveTime() override = default;
 	
@@ -131,8 +129,7 @@ public:
 class aeMCPRuleAnimationSelectTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleAnimationSelectTargetSelect() : aeTMCPRuleTarget("animationselect.targetSelect",
-		"@Animator.Target.Select", "@Animator.Target.Select.ToolTip"){
-	};
+		"Animator.Target.Select"){}
 	
 	~aeMCPRuleAnimationSelectTargetSelect() override = default;
 	

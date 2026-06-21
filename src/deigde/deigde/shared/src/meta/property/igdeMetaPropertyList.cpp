@@ -379,6 +379,10 @@ igdeMetaPropertyList::igdeMetaPropertyList(
 igdeMetaProperty(id, name, description){
 }
 
+igdeMetaPropertyList::igdeMetaPropertyList(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+}
+
 igdeMetaPropertyList::~igdeMetaPropertyList() = default;
 
 

@@ -202,6 +202,12 @@ pRows(4),
 pMultiSelection(false){
 }
 
+igdeMetaPropertySet::igdeMetaPropertySet(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pRows(4),
+pMultiSelection(false){
+}
+
 igdeMetaPropertySet::~igdeMetaPropertySet() = default;
 
 

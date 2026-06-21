@@ -40,6 +40,10 @@ igdeMetaPropertyColor::igdeMetaPropertyColor(
 igdeMetaProperty(id, name, description){
 }
 
+igdeMetaPropertyColor::igdeMetaPropertyColor(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+}
+
 igdeMetaPropertyColor::~igdeMetaPropertyColor() = default;
 
 
@@ -82,6 +86,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(){
 igdeMetaPropertyColorStorage::igdeMetaPropertyColorStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyColor(id, name, description){
+}
+
+igdeMetaPropertyColorStorage::igdeMetaPropertyColorStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyColor(id, translationTag){
 }
 
 igdeMetaPropertyColorStorage::~igdeMetaPropertyColorStorage() = default;

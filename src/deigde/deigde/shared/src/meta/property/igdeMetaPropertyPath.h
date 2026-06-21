@@ -68,6 +68,14 @@ public:
 	igdeMetaPropertyPath(const char *id, const char *name, const char *description,
 		const igdeFilePattern::List &customPatternList);
 	
+	/** \brief Create path meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyPath(const char *id, const char *translationTag,
+		igdeEnvironment::eFilePatternListTypes resourceType);
+	
+	/** \brief Create path meta property with label, description, filter and undo info set from translation tag and custom file pattern list. */
+	igdeMetaPropertyPath(const char *id, const char *translationTag,
+		const igdeFilePattern::List &customPatternList);
+	
 protected:
 	/** \brief Clean up path meta property. */
 	~igdeMetaPropertyPath() override;
@@ -176,6 +184,14 @@ public:
 	
 	/** \brief Create path meta property with label, description and custom file pattern list. */
 	igdeMetaPropertyPathStorage(const char *id, const char *name, const char *description,
+		const igdeFilePattern::List &customPatternList);
+	
+	/** \brief Create path meta property with label and description. */
+	igdeMetaPropertyPathStorage(const char *id, const char *translationTag,
+		igdeEnvironment::eFilePatternListTypes resourceType);
+	
+	/** \brief Create path meta property with label, description and custom file pattern list. */
+	igdeMetaPropertyPathStorage(const char *id, const char *translationTag,
 		const igdeFilePattern::List &customPatternList);
 	
 protected:

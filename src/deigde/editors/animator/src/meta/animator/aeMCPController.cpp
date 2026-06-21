@@ -94,7 +94,8 @@ class cActionControllerAdd : public igdeMetaProperty::Action{
 public:
 	cActionControllerAdd(aeMCPControllers &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
 		igdeMetaProperty::Action(owner, context, "@Animator.Action.Controller.Add",
-			nullptr, "@Animator.Action.Controller.Add.ToolTip"),
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+			"@Animator.Action.Controller.Add.ToolTip"),
 		pPropertyController(property){}
 	
 	void OnAction() override{

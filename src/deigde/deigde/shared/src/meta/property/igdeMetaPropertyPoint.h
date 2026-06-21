@@ -77,6 +77,9 @@ public:
 	/** \brief Create point meta property with label and description. */
 	igdeMetaPropertyPoint(const char *id, const char *name, const char *description);
 	
+	/** \brief Create point meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyPoint(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up point meta property. */
 	~igdeMetaPropertyPoint() override;
@@ -165,6 +168,9 @@ public:
 	
 	/** \brief Create point meta property with label and description. */
 	igdeMetaPropertyPointStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyPointStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up point meta property. */

@@ -41,6 +41,11 @@ igdeMetaProperty(id, name, description),
 pDefaultValue(false){
 }
 
+igdeMetaPropertyBoolean::igdeMetaPropertyBoolean(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pDefaultValue(false){
+}
+
 igdeMetaPropertyBoolean::~igdeMetaPropertyBoolean() = default;
 
 
@@ -82,6 +87,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyBoolean::CreateWidget(){
 igdeMetaPropertyBooleanStorage::igdeMetaPropertyBooleanStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyBoolean(id, name, description){
+}
+
+igdeMetaPropertyBooleanStorage::igdeMetaPropertyBooleanStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyBoolean(id, translationTag){
 }
 
 igdeMetaPropertyBooleanStorage::~igdeMetaPropertyBooleanStorage() = default;

@@ -36,14 +36,14 @@
 
 namespace {
 
-/*
 class cActionRuleAdd : public igdeMetaProperty::Action{
 	aeMCPRules &pPropertyRule;
 	
 public:
 	cActionRuleAdd(aeMCPRules &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
 		igdeMetaProperty::Action(owner, context, "@Animator.Action.Rule.Add",
-			nullptr, "@Animator.Action.Rule.Add.ToolTip"),
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+			"@Animator.Action.Rule.Add.ToolTip"),
 		pPropertyRule(property){}
 	
 	void OnAction() override{
@@ -52,18 +52,14 @@ public:
 			return;
 		}
 		
-		decString name(Translate("Animator.DefaultName.Rule").ToUTF8());
-		if(!igdeCommonDialogs::GetString(GetOwner(), "@Animator.Dialog.AddRule.Title",
-		"@Animator.Dialog.AddRule.Name", name)){
-			return;
+		auto &owner = GetOwner();
+		auto menu = igdeMenuCascade::Ref::New(owner.GetEnvironment());
+		pPropertyRule.AddContextMenuEntries(*menu, context, owner);
+		if(menu->GetChildren().IsNotEmpty()){
+			menu->PopupBottom(owner);
 		}
-		
-		auto list = pPropertyRule.GetStorage(context).GetValue();
-		list.Add(aeRule::Ref::New(pPropertyRule.WindowMain(context), name));
-		pPropertyRule.ChangePropertyValueType(context, list, BuildUndoInfo(pPropertyRule));
 	}
 };
-*/
 
 }
 
@@ -75,7 +71,7 @@ const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
 igdeMetaProperty::Action::Ref aeMCPRules::CreateButtonAction(TargetButton target, igdeWidget &owner){
 	switch(target){
 	case TargetButton::add:
-		return {}; //deTObjectReference<cActionRuleAdd>::New(*this, owner);
+		return deTObjectReference<cActionRuleAdd>::New(*this, owner);
 		
 	default:
 		return CreateDefaultButtonAction(target, owner);

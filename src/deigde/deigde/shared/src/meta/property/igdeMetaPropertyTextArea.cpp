@@ -41,6 +41,12 @@ igdeMetaProperty(id, name, description),
 pRows(rows){
 }
 
+igdeMetaPropertyTextArea::igdeMetaPropertyTextArea(
+	const char *id, const char *translationTag, int rows) :
+igdeMetaProperty(id, translationTag),
+pRows(rows){
+}
+
 igdeMetaPropertyTextArea::~igdeMetaPropertyTextArea() = default;
 
 
@@ -87,6 +93,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(){
 igdeMetaPropertyTextAreaStorage::igdeMetaPropertyTextAreaStorage(
 	const char *id, const char *name, const char *description, int rows) :
 igdeMetaPropertyTextArea(id, name, description, rows){
+}
+
+igdeMetaPropertyTextAreaStorage::igdeMetaPropertyTextAreaStorage(
+	const char *id, const char *translationTag, int rows) :
+igdeMetaPropertyTextArea(id, translationTag, rows){
 }
 
 igdeMetaPropertyTextAreaStorage::~igdeMetaPropertyTextAreaStorage() = default;

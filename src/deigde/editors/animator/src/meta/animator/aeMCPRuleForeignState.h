@@ -39,9 +39,9 @@
 class aeMCPRuleForeignStateForeignBone : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleForeignStateForeignBone() : aeTMCPAnimatorRuleType("foreignstate.foreignBone",
-		"@Animator.WPAPanelRuleForeignState.Bone", "@Animator.WPAPanelRuleForeignState.Bone.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.Bone"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleForeignStateForeignBone() override = default;
 	
@@ -58,9 +58,9 @@ public:
 class aeMCPRuleForeignStateForeignVertexPositionSet : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleForeignStateForeignVertexPositionSet() : aeTMCPAnimatorRuleType("foreignstate.foreignVertexPositionSet",
-		"@Animator.WPAPanelRuleForeignState.VertexPositionSet", "@Animator.WPAPanelRuleForeignState.VertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.VertexPositionSet"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleForeignStateForeignVertexPositionSet() override = default;
 	
@@ -77,9 +77,9 @@ public:
 class aeMCPRuleForeignStateScalePosition : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScalePosition() : aeTMCPAnimatorRuleType("foreignstate.scalePosition",
-		"@Animator.WPAPanelRuleForeignState.ScalePosition", "@Animator.WPAPanelRuleForeignState.ScalePosition.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.ScalePosition"){
 		SetDefaultValue(1.0f);
-	};
+	}
 	
 	~aeMCPRuleForeignStateScalePosition() override = default;
 	
@@ -91,9 +91,9 @@ public:
 class aeMCPRuleForeignStateScaleOrientation : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScaleOrientation() : aeTMCPAnimatorRuleType("foreignstate.scaleOrientation",
-		"@Animator.WPAPanelRuleForeignState.ScaleRotation", "@Animator.WPAPanelRuleForeignState.ScaleRotation.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.ScaleRotation"){
 		SetDefaultValue(1.0f);
-	};
+	}
 	
 	~aeMCPRuleForeignStateScaleOrientation() override = default;
 	
@@ -105,9 +105,9 @@ public:
 class aeMCPRuleForeignStateScaleSize : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScaleSize() : aeTMCPAnimatorRuleType("foreignstate.scaleSize",
-		"@Animator.WPAPanelRuleForeignState.ScaleSize", "@Animator.WPAPanelRuleForeignState.ScaleSize.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.ScaleSize"){
 		SetDefaultValue(1.0f);
-	};
+	}
 	
 	~aeMCPRuleForeignStateScaleSize() override = default;
 	
@@ -119,9 +119,9 @@ public:
 class aeMCPRuleForeignStateScaleVertexPositionSet : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleForeignStateScaleVertexPositionSet() : aeTMCPAnimatorRuleType("foreignstate.scaleVertexPositionSet",
-		"@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet", "@Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.ScaleVertexPositionSet"){
 		SetDefaultValue(1.0f);
-	};
+	}
 	
 	~aeMCPRuleForeignStateScaleVertexPositionSet() override = default;
 	
@@ -133,9 +133,9 @@ public:
 class aeMCPRuleForeignStateEnablePosition : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnablePosition() : aeTMCPAnimatorRuleType("foreignstate.enablePosition",
-		"@Animator.WPAPanelRuleForeignState.EnablePosition", "@Animator.WPAPanelRuleForeignState.EnablePosition.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.EnablePosition"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleForeignStateEnablePosition() override = default;
 	
@@ -147,9 +147,9 @@ public:
 class aeMCPRuleForeignStateEnableOrientation : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnableOrientation() : aeTMCPAnimatorRuleType("foreignstate.enableOrientation",
-		"@Animator.WPAPanelRuleForeignState.EnableRotation", "@Animator.WPAPanelRuleForeignState.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleForeignStateEnableOrientation() override = default;
 	
@@ -161,8 +161,7 @@ public:
 class aeMCPRuleForeignStateEnableSize : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnableSize() : aeTMCPAnimatorRuleType("foreignstate.enableSize",
-		"@Animator.WPAPanelRuleForeignState.EnableSize", "@Animator.WPAPanelRuleForeignState.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleForeignState.EnableSize"){}
 	
 	~aeMCPRuleForeignStateEnableSize() override = default;
 	
@@ -174,9 +173,9 @@ public:
 class aeMCPRuleForeignStateEnableVertexPositionSet : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleForeignStateEnableVertexPositionSet() : aeTMCPAnimatorRuleType("foreignstate.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet", "@Animator.WPAPanelRuleForeignState.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleForeignStateEnableVertexPositionSet() override = default;
 	
@@ -188,12 +187,12 @@ public:
 class aeMCPRuleForeignStateSourceCoordinateFrame : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>>{
 public:
 	aeMCPRuleForeignStateSourceCoordinateFrame() : aeTMCPAnimatorRuleType("foreignstate.sourceCoordinateFrame",
-		"@Animator.WPAPanelRuleForeignState.SrcCoordFrame", "@Animator.WPAPanelRuleForeignState.SrcCoordFrame.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.SrcCoordFrame"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleForeignState::ecfBoneLocal,
 			deAnimatorRuleForeignState::ecfComponent));
 		SetDefaultValueEnum(deAnimatorRuleForeignState::ecfBoneLocal);
-	};
+	}
 	
 	~aeMCPRuleForeignStateSourceCoordinateFrame() override = default;
 	
@@ -221,12 +220,12 @@ public:
 class aeMCPRuleForeignStateDestCoordinateFrame : public aeTMCPAnimatorRuleForeignState<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleForeignState::eCoordinateFrames>>{
 public:
 	aeMCPRuleForeignStateDestCoordinateFrame() : aeTMCPAnimatorRuleType("foreignstate.destCoordinateFrame",
-		"@Animator.WPAPanelRuleForeignState.DestCoordFrame", "@Animator.WPAPanelRuleForeignState.DestCoordFrame.ToolTip"){
+		"Animator.WPAPanelRuleForeignState.DestCoordFrame"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleForeignState::ecfBoneLocal,
 			deAnimatorRuleForeignState::ecfComponent));
 		SetDefaultValueEnum(deAnimatorRuleForeignState::ecfBoneLocal);
-	};
+	}
 	
 	~aeMCPRuleForeignStateDestCoordinateFrame() override = default;
 	
@@ -255,8 +254,7 @@ public:
 class aeMCPRuleForeignStateTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleForeignStateTargetPosition() : aeTMCPRuleTarget("foreignstate.targetPosition",
-		"@Animator.Target.Position", "@Animator.Target.Position.ToolTip"){
-	};
+		"Animator.Target.Position"){}
 	
 	~aeMCPRuleForeignStateTargetPosition() override = default;
 	
@@ -268,8 +266,7 @@ public:
 class aeMCPRuleForeignStateTargetOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleForeignStateTargetOrientation() : aeTMCPRuleTarget("foreignstate.targetOrientation",
-		"@Animator.Target.Orientation", "@Animator.Target.Orientation.ToolTip"){
-	};
+		"Animator.Target.Orientation"){}
 	
 	~aeMCPRuleForeignStateTargetOrientation() override = default;
 	
@@ -282,8 +279,7 @@ public:
 class aeMCPRuleForeignStateTargetSize : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleForeignStateTargetSize() : aeTMCPRuleTarget("foreignstate.targetSize",
-		"@Animator.Target.Size", "@Animator.Target.Size.ToolTip"){
-	};
+		"Animator.Target.Size"){}
 	
 	~aeMCPRuleForeignStateTargetSize() override = default;
 	
@@ -295,8 +291,7 @@ public:
 class aeMCPRuleForeignStateTargetVertexPositionSet : public aeTMCPRuleTarget<aeTMCPAnimatorRuleForeignState<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleForeignStateTargetVertexPositionSet() : aeTMCPRuleTarget("foreignstate.targetVertexPositionSet",
-		"@Animator.Target.VertexPositionSet", "@Animator.Target.VertexPositionSet.ToolTip"){
-	};
+		"Animator.Target.VertexPositionSet"){}
 	
 	~aeMCPRuleForeignStateTargetVertexPositionSet() override = default;
 	

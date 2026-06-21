@@ -59,6 +59,9 @@ public:
 	explicit igdeMetaPropertyContext(const char *id,
 		const char *label = "", const char *description = "");
 	
+	/** \brief Create context meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyContext(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up context meta property. */
 	~igdeMetaPropertyContext() override;

@@ -52,6 +52,10 @@ igdeMetaPropertyObject::igdeMetaPropertyObject(
 igdeMetaProperty(id, name, description){
 }
 
+igdeMetaPropertyObject::igdeMetaPropertyObject(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+}
+
 igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;
 
 

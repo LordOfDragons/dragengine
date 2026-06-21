@@ -34,7 +34,7 @@ class cActionEditMenu : public igdeActionContextMenu{
 	igdeMetaPropertyWidget &pWidget;
 public:
 	cActionEditMenu(igdeMetaPropertyWidget &widget, igdeEnvironment &env) :
-	igdeActionContextMenu("", env.GetStockIcon(igdeEnvironment::esiEdit),
+	igdeActionContextMenu("", env.GetStockIcon(igdeEnvironment::esiConfig),
 		"@Igde.MetaProperty.ContextMenu.ToolTip"),
 	pWidget(widget){}
 	

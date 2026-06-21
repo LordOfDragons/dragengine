@@ -85,6 +85,9 @@ public:
 	/** \brief Create selection meta property with label and description. */
 	igdeMetaPropertySelection(const char *id, const char *name, const char *description);
 	
+	/** \brief Create selection meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertySelection(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up selection meta property. */
 	~igdeMetaPropertySelection() override;
@@ -196,8 +199,11 @@ public:
 	/*@{*/
 	/** \brief Create selection meta property with label and description. */
 	igdeMetaPropertySelectionEnum(const char *id, const char *name, const char *description) :
-	igdeMetaPropertySelection(id, name, description){
-	}
+	igdeMetaPropertySelection(id, name, description){}
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertySelectionEnum(const char *id, const char *translationTag) :
+	igdeMetaPropertySelection(id, translationTag){}
 	
 protected:
 	/** \brief Clean up selection meta property. */
@@ -290,6 +296,10 @@ public:
 	/** \brief Create selection meta property with label and description. */
 	igdeMetaPropertySelectionEnumStorage(const char *id, const char *name, const char *description) :
 	igdeMetaPropertySelectionEnum<T>(id, name, description){}
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertySelectionEnumStorage(const char *id, const char *translationTag) :
+	igdeMetaPropertySelectionEnum<T>(id, translationTag){}
 	
 protected:
 	/** \brief Clean up selection meta property. */

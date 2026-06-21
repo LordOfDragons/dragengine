@@ -40,6 +40,11 @@ igdeMetaProperty(id, label, description){
 	SetHideLabel(true);
 }
 
+igdeMetaPropertyContext::igdeMetaPropertyContext(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag){
+	SetHideLabel(true);
+}
+
 igdeMetaPropertyContext::~igdeMetaPropertyContext() = default;
 
 

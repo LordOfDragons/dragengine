@@ -59,6 +59,9 @@ public:
 	/** \brief Create tags meta property with label and description. */
 	igdeMetaPropertyTags(const char *id, const char *name, const char *description, int rows);
 	
+	/** \brief Create tags meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyTags(const char *id, const char *translationTag, int rows);
+	
 protected:
 	/** \brief Clean up tags meta property. */
 	~igdeMetaPropertyTags() override;
@@ -147,6 +150,9 @@ public:
 	/*@{*/
 	/** \brief Create tags meta property with label and description. */
 	igdeMetaPropertyTagsStorage(const char *id, const char *name, const char *description, int rows);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyTagsStorage(const char *id, const char *translationTag, int rows);
 	
 protected:
 	/** \brief Clean up tags meta property. */

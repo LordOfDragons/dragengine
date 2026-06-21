@@ -40,8 +40,7 @@ template <typename T>
 class aeTMCPAnimator : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimator(const char *id, const char *name, const char *description, A&&... args) :
-		T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimator(A&&... args) : T(std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimator() override{}
@@ -73,8 +72,7 @@ template <typename T>
 class aeTMCPAnimatorController : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimatorController(const char *id, const char *name, const char *description, A&&... args) :
-		T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorController(A&&... args) : T(std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorController() override{}
@@ -106,8 +104,7 @@ template <typename T>
 class aeTMCPAnimatorLink : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimatorLink(const char *id, const char *name, const char *description, A&&... args) :
-		T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorLink(A&&... args) : T(std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorLink() override{}
@@ -135,8 +132,7 @@ template <typename T>
 class aeTMCPAnimatorRule : public T{
 public:
 	template <typename... A>
-	aeTMCPAnimatorRule(const char *id, const char *name, const char *description, A&&... args) :
-		T(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorRule(A&&... args) : T(std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorRule() override{}
@@ -164,8 +160,7 @@ template <typename T, typename C, typename R>
 class aeTMCPAnimatorRuleType : public aeTMCPAnimatorRule<T>{
 public:
 	template <typename... A>
-	aeTMCPAnimatorRuleType(const char *id, const char *name, const char *description, A&&... args) :
-		aeTMCPAnimatorRule<T>(id, name, description, std::forward<A>(args)...) {}
+	aeTMCPAnimatorRuleType(A&&... args) : aeTMCPAnimatorRule<T>(std::forward<A>(args)...) {}
 	
 protected:
 	virtual ~aeTMCPAnimatorRuleType() override{}

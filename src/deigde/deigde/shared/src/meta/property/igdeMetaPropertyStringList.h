@@ -230,6 +230,9 @@ public:
 	/** \brief Create string list meta property with label and description. */
 	igdeMetaPropertyStringList(const char *id, const char *name, const char *description);
 	
+	/** \brief Create string list meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyStringList(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up string list meta property. */
 	~igdeMetaPropertyStringList() override;
@@ -403,6 +406,9 @@ public:
 	/*@{*/
 	/** \brief Create string list meta property with label and description. */
 	igdeMetaPropertyStringListStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyStringListStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up string list meta property. */

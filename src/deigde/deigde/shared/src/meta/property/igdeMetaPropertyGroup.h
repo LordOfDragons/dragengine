@@ -52,6 +52,12 @@ public:
 	/** \brief Create group meta property with label and description and properties. */
 	igdeMetaPropertyGroup(const char *id, const char *name, const char *description, const List &properties);
 	
+	/** \brief Create group meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyGroup(const char *id, const char *translationTag);
+	
+	/** \brief Create group meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyGroup(const char *id, const char *translationTag, const List &properties);
+	
 protected:
 	/** \brief Clean up group meta property. */
 	~igdeMetaPropertyGroup() override;

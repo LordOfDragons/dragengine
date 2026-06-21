@@ -78,6 +78,14 @@ pLabel(name),
 pDescription(description){
 }
 
+igdeMetaProperty::igdeMetaProperty(const char *id, const char *translationTag) :
+pId(id),
+pLabel(decString::Formatted("@{0}", translationTag)),
+pDescription(decString::Formatted("@{0}.ToolTip", translationTag)),
+pFilter(decString::Formatted("@{0}.FilterString", translationTag)),
+pUndoInfo(decString::Formatted("@{0}.UndoInfo", translationTag)){
+}
+
 igdeMetaProperty::~igdeMetaProperty() = default;
 
 

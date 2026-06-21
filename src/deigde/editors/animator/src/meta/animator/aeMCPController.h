@@ -47,7 +47,7 @@
 class aeMCPControllers : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeController, aeController::List>>{
 public:
 	aeMCPControllers() : aeTMCPAnimator("animator.controllers",
-		"@Animator.WPController.Controllers", "@Animator.WPController.Controllers.ToolTip"){
+		"Animator.WPController.Controllers"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
@@ -78,7 +78,7 @@ class aeMCPController : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
 public:
 	aeMCPController(aeWindowMain &windowMain) : aeTMCPAnimator("animator.controller", "", ""){
 		SetDefaultValue(aeMCController::Ref::New(windowMain, nullptr));
-	};
+	}
 	
 	~aeMCPController() override = default;
 	
@@ -92,9 +92,9 @@ public:
 class aeMCPControllerName : public aeTMCPAnimatorController<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPControllerName() : aeTMCPAnimatorController("controller.name",
-		"@Animator.WPController.Name", "@Animator.WPController.Name.ToolTip"){
+		"Animator.WPController.Name"){
 			SetDefaultValue("Controller");
-		};
+		}
 	
 	~aeMCPControllerName() override = default;
 	
@@ -108,7 +108,7 @@ public:
 class aeMCPControllerMinimumValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPControllerMinimumValue() : aeTMCPAnimatorController("controller.minimumValue",
-		"@Animator.WPController.MinimumValue", "@Animator.WPController.MinimumValue.ToolTip"){};
+		"Animator.WPController.MinimumValue"){}
 	
 	~aeMCPControllerMinimumValue() override = default;
 	
@@ -122,9 +122,9 @@ public:
 class aeMCPControllerMaximumValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPControllerMaximumValue() : aeTMCPAnimatorController("controller.maximumValue",
-		"@Animator.WPController.MaximumValue", "@Animator.WPController.MaximumValue.ToolTip"){
+		"Animator.WPController.MaximumValue"){
 			SetDefaultValue(1.0f);
-		};
+		}
 	
 	~aeMCPControllerMaximumValue() override = default;
 	
@@ -140,10 +140,10 @@ public:
 class aeMCPControllerCurrentValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPControllerCurrentValue() : aeTMCPAnimatorController("controller.currentValue",
-	"@Animator.WPController.Value", "@Animator.WPController.Value.ToolTip"){
+	"Animator.WPController.Value"){
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
-	};
+	}
 	
 	~aeMCPControllerCurrentValue() override = default;
 	
@@ -162,7 +162,7 @@ public:
 class aeMCPControllerVector : public aeTMCPAnimatorController<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPControllerVector() : aeTMCPAnimatorController("controller.vector",
-		"@Animator.WPController.Vector", "@Animator.WPController.Vector.ToolTip"){};
+		"Animator.WPController.Vector"){}
 	
 	~aeMCPControllerVector() override = default;
 	
@@ -176,7 +176,7 @@ public:
 class aeMCPControllerClamp : public aeTMCPAnimatorController<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPControllerClamp() : aeTMCPAnimatorController("controller.clamp",
-		"@Animator.WPController.Clamp", "@Animator.WPController.Clamp.ToolTip"){};
+		"Animator.WPController.Clamp"){}
 	
 	~aeMCPControllerClamp() override = default;
 	
@@ -190,7 +190,7 @@ public:
 class aeMCPControllerFrozen : public aeTMCPAnimatorController<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPControllerFrozen() : aeTMCPAnimatorController("controller.frozen",
-		"@Animator.WPController.Frozen", "@Animator.WPController.Frozen.ToolTip"){};
+		"Animator.WPController.Frozen"){}
 	
 	~aeMCPControllerFrozen() override = default;
 	
@@ -204,7 +204,7 @@ public:
 class aeMCPControllerLocomotionAttribute : public aeTMCPAnimatorController<igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>>{
 public:
 	aeMCPControllerLocomotionAttribute() : aeTMCPAnimatorController("controller.locomotionAttribute",
-	"@Animator.WPController.Attribute", "@Animator.WPController.Attribute.ToolTip"){
+	"Animator.WPController.Attribute"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeAnimatorLocomotion::eaNone,
 			aeAnimatorLocomotion::eaElapsedTime,
@@ -227,7 +227,7 @@ public:
 			aeAnimatorLocomotion::eaLegPosition,
 			aeAnimatorLocomotion::eaLegOrientation));
 		SetDefaultValueEnum(aeAnimatorLocomotion::eaNone);
-	};
+	}
 	
 	~aeMCPControllerLocomotionAttribute() override = default;
 	
@@ -329,7 +329,7 @@ public:
 class aeMCPControllerLocomotionLeg : public aeTMCPAnimatorController<igdeMetaPropertyIntegerStorage>{
 public:
 	aeMCPControllerLocomotionLeg() : aeTMCPAnimatorController("controller.locomotionLeg",
-		"@Animator.WPController.Leg", "@Animator.WPController.Leg.ToolTip"){};
+		"Animator.WPController.Leg"){}
 	
 	~aeMCPControllerLocomotionLeg() override = default;
 	
@@ -343,13 +343,13 @@ public:
 class aeMCPControllerVectorSimulation : public aeTMCPAnimatorController<igdeMetaPropertySelectionEnumStorage<aeController::eVectorSimulation>>{
 public:
 	aeMCPControllerVectorSimulation() : aeTMCPAnimatorController("controller.vectorSimulation",
-	"@Animator.WPController.VectorSimulation", "@Animator.WPController.VectorSimulation.ToolTip"){
+	"Animator.WPController.VectorSimulation"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeController::evsNone,
 			aeController::evsPosition,
 			aeController::evsRotation));
 		SetDefaultValueEnum(aeController::evsNone);
-	};
+	}
 	
 	~aeMCPControllerVectorSimulation() override = default;
 	
@@ -383,7 +383,7 @@ public:
 class aeMCPControllerDefaultValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPControllerDefaultValue() : aeTMCPAnimatorController("controller.defaultValue",
-		"@Animator.WPController.DefaultValue", "@Animator.WPController.DefaultValue.ToolTip"){};
+		"Animator.WPController.DefaultValue"){}
 	
 	~aeMCPControllerDefaultValue() override = default;
 	
@@ -397,7 +397,7 @@ public:
 class aeMCPControllerDefaultVector : public aeTMCPAnimatorController<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPControllerDefaultVector() : aeTMCPAnimatorController("controller.defaultVector",
-		"@Animator.WPController.DefaultVector", "@Animator.WPController.DefaultVector.ToolTip"){};
+		"Animator.WPController.DefaultVector"){}
 	
 	~aeMCPControllerDefaultVector() override = default;
 	

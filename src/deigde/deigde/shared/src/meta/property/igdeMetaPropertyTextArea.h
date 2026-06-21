@@ -58,6 +58,9 @@ public:
 	/** \brief Create text area meta property with label and description. */
 	igdeMetaPropertyTextArea(const char *id, const char *name, const char *description, int rows);
 	
+	/** \brief Create text area meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyTextArea(const char *id, const char *translationTag, int rows);
+	
 protected:
 	/** \brief Clean up text area meta property. */
 	~igdeMetaPropertyTextArea() override;
@@ -152,6 +155,9 @@ public:
 	/*@{*/
 	/** \brief Create text area meta property with label and description. */
 	igdeMetaPropertyTextAreaStorage(const char *id, const char *name, const char *description, int rows);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyTextAreaStorage(const char *id, const char *translationTag, int rows);
 	
 protected:
 	/** \brief Clean up text area meta property. */

@@ -185,7 +185,8 @@ class cActionLinkAdd : public igdeMetaProperty::Action{
 public:
 	cActionLinkAdd(aeMCPLinks &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
 		igdeMetaProperty::Action(owner, context, "@Animator.Action.Link.Add",
-			nullptr, "@Animator.Action.Link.Add.ToolTip"),
+			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+			"@Animator.Action.Link.Add.ToolTip"),
 		pPropertyLink(property){}
 	
 	void OnAction() override{

@@ -41,6 +41,12 @@ igdeMetaProperty(id, name, description),
 pRows(rows){
 }
 
+igdeMetaPropertyToggleTags::igdeMetaPropertyToggleTags(
+	const char *id, const char *translationTag, int rows) :
+igdeMetaProperty(id, translationTag),
+pRows(rows){
+}
+
 igdeMetaPropertyToggleTags::~igdeMetaPropertyToggleTags() = default;
 
 
@@ -83,6 +89,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyToggleTags::CreateWidget(){
 igdeMetaPropertyToggleTagsStorage::igdeMetaPropertyToggleTagsStorage(
 	const char *id, const char *name, const char *description, int rows) :
 igdeMetaPropertyToggleTags(id, name, description, rows){
+}
+
+igdeMetaPropertyToggleTagsStorage::igdeMetaPropertyToggleTagsStorage(
+	const char *id, const char *translationTag, int rows) :
+igdeMetaPropertyToggleTags(id, translationTag, rows){
 }
 
 igdeMetaPropertyToggleTagsStorage::~igdeMetaPropertyToggleTagsStorage() = default;

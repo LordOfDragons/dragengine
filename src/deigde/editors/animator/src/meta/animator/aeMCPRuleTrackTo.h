@@ -37,9 +37,9 @@
 class aeMCPRuleTrackToTrackBone : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleTrackToTrackBone() : aeTMCPAnimatorRuleType("trackto.trackBone",
-		"@Animator.WPAPanelRuleTrackTo.TrackBone", "@Animator.WPAPanelRuleTrackTo.TrackBone.ToolTip"){
+		"Animator.WPAPanelRuleTrackTo.TrackBone"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleTrackToTrackBone() override = default;
 	
@@ -56,7 +56,7 @@ public:
 class aeMCPRuleTrackToTrackAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
 public:
 	aeMCPRuleTrackToTrackAxis() : aeTMCPAnimatorRuleType("trackto.trackAxis",
-		"@Animator.WPAPanelRuleTrackTo.TrackAxis", "@Animator.WPAPanelRuleTrackTo.TrackAxis.ToolTip"){
+		"Animator.WPAPanelRuleTrackTo.TrackAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::etaPosX,
 			deAnimatorRuleTrackTo::etaPosY,
@@ -65,7 +65,7 @@ public:
 			deAnimatorRuleTrackTo::etaNegY,
 			deAnimatorRuleTrackTo::etaNegZ));
 		SetDefaultValueEnum(deAnimatorRuleTrackTo::etaPosZ);
-	};
+	}
 	
 	~aeMCPRuleTrackToTrackAxis() override = default;
 	
@@ -109,7 +109,7 @@ public:
 class aeMCPRuleTrackToUpAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
 public:
 	aeMCPRuleTrackToUpAxis() : aeTMCPAnimatorRuleType("trackto.upAxis",
-		"@Animator.WPAPanelRuleTrackTo.UpAxis", "@Animator.WPAPanelRuleTrackTo.UpAxis.ToolTip"){
+		"Animator.WPAPanelRuleTrackTo.UpAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::etaPosX,
 			deAnimatorRuleTrackTo::etaPosY,
@@ -118,7 +118,7 @@ public:
 			deAnimatorRuleTrackTo::etaNegY,
 			deAnimatorRuleTrackTo::etaNegZ));
 		SetDefaultValueEnum(deAnimatorRuleTrackTo::etaPosY);
-	};
+	}
 	
 	~aeMCPRuleTrackToUpAxis() override = default;
 	
@@ -162,7 +162,7 @@ public:
 class aeMCPRuleTrackToUpTarget : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>>{
 public:
 	aeMCPRuleTrackToUpTarget() : aeTMCPAnimatorRuleType("trackto.upTarget",
-		"@Animator.WPAPanelRuleTrackTo.UpTarget", "@Animator.WPAPanelRuleTrackTo.UpTarget.ToolTip"){
+		"Animator.WPAPanelRuleTrackTo.UpTarget"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::eutWorldX,
 			deAnimatorRuleTrackTo::eutWorldY,
@@ -175,7 +175,7 @@ public:
 			deAnimatorRuleTrackTo::eutTrackBoneZ,
 			deAnimatorRuleTrackTo::eutController));
 		SetDefaultValueEnum(deAnimatorRuleTrackTo::eutComponentY);
-	};
+	}
 	
 	~aeMCPRuleTrackToUpTarget() override = default;
 	
@@ -235,14 +235,14 @@ public:
 class aeMCPRuleTrackToLockedAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>>{
 public:
 	aeMCPRuleTrackToLockedAxis() : aeTMCPAnimatorRuleType("trackto.lockedAxis",
-		"@Animator.WPAPanelRuleTrackTo.LockedAxis", "@Animator.WPAPanelRuleTrackTo.LockedAxis.ToolTip"){
+		"Animator.WPAPanelRuleTrackTo.LockedAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::elaNone,
 			deAnimatorRuleTrackTo::elaX,
 			deAnimatorRuleTrackTo::elaY,
 			deAnimatorRuleTrackTo::elaZ));
 		SetDefaultValueEnum(deAnimatorRuleTrackTo::elaNone);
-	};
+	}
 	
 	~aeMCPRuleTrackToLockedAxis() override = default;
 	
@@ -279,8 +279,7 @@ public:
 class aeMCPRuleTrackToTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleTrackToTargetPosition() : aeTMCPRuleTarget("trackto.targetPosition",
-		"@Animator.Target.Position", "@Animator.Target.Position.ToolTip"){
-	};
+		"Animator.Target.Position"){}
 	
 	~aeMCPRuleTrackToTargetPosition() override = default;
 	
@@ -292,8 +291,7 @@ public:
 class aeMCPRuleTrackToTargetUp : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleTrackToTargetUp() : aeTMCPRuleTarget("trackto.targetUp",
-		"@Animator.Target.Up", "@Animator.Target.Up.ToolTip"){
-	};
+		"Animator.Target.Up"){}
 	
 	~aeMCPRuleTrackToTargetUp() override = default;
 	

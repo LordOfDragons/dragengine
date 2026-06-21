@@ -49,6 +49,11 @@ igdeMetaProperty(id, name, description),
 pEnableAllowed(false){
 }
 
+igdeMetaPropertyString::igdeMetaPropertyString(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pEnableAllowed(false){
+}
+
 igdeMetaPropertyString::~igdeMetaPropertyString() = default;
 
 
@@ -105,6 +110,10 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyString::CreateWidget(){
 igdeMetaPropertyStringStorage::igdeMetaPropertyStringStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyString(id, name, description){
+}
+
+igdeMetaPropertyStringStorage::igdeMetaPropertyStringStorage(const char *id, const char *translationTag) :
+igdeMetaPropertyString(id, translationTag){
 }
 
 igdeMetaPropertyStringStorage::~igdeMetaPropertyStringStorage() = default;

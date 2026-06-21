@@ -44,7 +44,7 @@
 class aeMCPLinks : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeLink, aeLink::List>>{
 public:
 	aeMCPLinks() : aeTMCPAnimator("animator.links",
-		"@Animator.WPLink.Links", "@Animator.WPLink.Links.ToolTip"){
+		"Animator.WPLink.Links"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetSorted(true);
@@ -90,7 +90,7 @@ public:
 class aeMCPLinkName : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPLinkName() : aeTMCPAnimatorLink("link.name",
-		"@Animator.WPLink.Name", "@Animator.WPLink.Name.ToolTip"){
+		"Animator.WPLink.Name"){
 			SetDefaultValue("Link");
 		};
 	
@@ -106,7 +106,7 @@ public:
 class aeMCPLinkController : public aeTMCPAnimatorLink<igdeMetaPropertyObjectStorage<aeController>>{
 public:
 	aeMCPLinkController() : aeTMCPAnimatorLink("link.controller",
-	"@Animator.WPLink.Controller", "@Animator.WPLink.Controller.ToolTip"){
+	"Animator.WPLink.Controller"){
 		SetSorted(true);
 	};
 	
@@ -132,7 +132,7 @@ public:
 class aeMCPLinkRepeat : public aeTMCPAnimatorLink<igdeMetaPropertyIntegerStorage>{
 public:
 	aeMCPLinkRepeat() : aeTMCPAnimatorLink("link.repeat",
-		"@Animator.WPLink.Repeat", "@Animator.WPLink.Repeat.ToolTip"){
+		"Animator.WPLink.Repeat"){
 			SetDefaultValue(1);
 			SetEnableLowerLimit(true);
 			SetLowerLimit(1);
@@ -150,7 +150,7 @@ public:
 class aeMCPLinkCurve : public aeTMCPAnimatorLink<igdeMetaPropertyCurveBezierStorage>{
 public:
 	aeMCPLinkCurve() : aeTMCPAnimatorLink("link.curve",
-	"@Animator.WPLink.LinkCurve", "@Animator.WPLink.LinkCurve.ToolTip"){
+	"Animator.WPLink.LinkCurve"){
 		decCurveBezier curve;
 		curve.SetDefaultBezier();
 		SetDefaultValue(curve);
@@ -168,7 +168,7 @@ public:
 /** Link bone. */
 class aeMCPLinkBone : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPLinkBone() : aeTMCPAnimatorLink("link.bone", "@Animator.WPLink.Bone", "@Animator.WPLink.Bone.ToolTip"){
+	aeMCPLinkBone() : aeTMCPAnimatorLink("link.bone", "Animator.WPLink.Bone"){
 		SetEnableAllowed(true);
 	};
 	
@@ -189,7 +189,7 @@ public:
 class aeMCPLinkBoneParameter : public aeTMCPAnimatorLink<igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>>{
 public:
 	aeMCPLinkBoneParameter() : aeTMCPAnimatorLink("link.boneParameter",
-		"@Animator.WPLink.BoneParameter", "@Animator.WPLink.BoneParameter.ToolTip"){
+		"Animator.WPLink.BoneParameter"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorLink::ebpPositionX, deAnimatorLink::ebpPositionY, deAnimatorLink::ebpPositionZ,
 			deAnimatorLink::ebpRotationX, deAnimatorLink::ebpRotationY, deAnimatorLink::ebpRotationZ,
@@ -253,7 +253,7 @@ public:
 class aeMCPLinkBoneMinimum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPLinkBoneMinimum() : aeTMCPAnimatorLink("link.boneMinimum",
-		"@Animator.WPLink.BoneMinimumValue", "@Animator.WPLink.BoneMinimumValue.ToolTip"){};
+		"Animator.WPLink.BoneMinimumValue"){};
 	
 	~aeMCPLinkBoneMinimum() override = default;
 	
@@ -267,7 +267,7 @@ public:
 class aeMCPLinkBoneMaximum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPLinkBoneMaximum() : aeTMCPAnimatorLink("link.boneMaximum",
-	"@Animator.WPLink.BoneMaximumValue", "@Animator.WPLink.BoneMaximumValue.ToolTip"){
+	"Animator.WPLink.BoneMaximumValue"){
 		SetDefaultValue(1.0f);
 	};
 	
@@ -283,7 +283,7 @@ public:
 class aeMCPLinkVertexPositionSet : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPLinkVertexPositionSet() : aeTMCPAnimatorLink("link.vertexPositionSet",
-	"@Animator.WPLink.VertexPositionSet", "@Animator.WPLink.VertexPositionSet.ToolTip"){
+	"Animator.WPLink.VertexPositionSet"){
 		SetEnableAllowed(true);
 	};
 	
@@ -304,7 +304,7 @@ public:
 class aeMCPLinkVertexPositionSetMinimum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPLinkVertexPositionSetMinimum() : aeTMCPAnimatorLink("link.vertexPositionSetMinimum",
-		"@Animator.WPLink.VPSMinimumValue", "@Animator.WPLink.VPSMinimumValue.ToolTip"){};
+		"Animator.WPLink.VPSMinimumValue"){};
 	
 	~aeMCPLinkVertexPositionSetMinimum() override = default;
 	
@@ -318,7 +318,7 @@ public:
 class aeMCPLinkVertexPositionSetMaximum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPLinkVertexPositionSetMaximum() : aeTMCPAnimatorLink("link.vertexPositionSetMaximum",
-	"@Animator.WPLink.VPSMaximumValue", "@Animator.WPLink.VPSMaximumValue.ToolTip"){
+	"Animator.WPLink.VPSMaximumValue"){
 		SetDefaultValue(1.0f);
 	};
 	
@@ -334,7 +334,7 @@ public:
 class aeMCPLinkWrapY : public aeTMCPAnimatorLink<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPLinkWrapY() : aeTMCPAnimatorLink("link.wrapY",
-		"@Animator.WPLink.WrapY", "@Animator.WPLink.WrapY.ToolTip"){};
+		"Animator.WPLink.WrapY"){};
 	
 	~aeMCPLinkWrapY() override = default;
 	

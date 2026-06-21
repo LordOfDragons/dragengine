@@ -40,8 +40,7 @@
 class aeMCPRuleBoneTransformatorMinTranslation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorMinTranslation() : aeTMCPAnimatorRuleType("bonetransformator.minTranslation",
-		"@Animator.WPAPanelRuleBoneTransformator.MinTranslation", "@Animator.WPAPanelRuleBoneTransformator.MinTranslation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.MinTranslation"){}
 	
 	~aeMCPRuleBoneTransformatorMinTranslation() override = default;
 	
@@ -53,8 +52,7 @@ public:
 class aeMCPRuleBoneTransformatorMaxTranslation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorMaxTranslation() : aeTMCPAnimatorRuleType("bonetransformator.maxTranslation",
-		"@Animator.WPAPanelRuleBoneTransformator.MaxTranslation", "@Animator.WPAPanelRuleBoneTransformator.MaxTranslation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.MaxTranslation"){}
 	
 	~aeMCPRuleBoneTransformatorMaxTranslation() override = default;
 	
@@ -66,8 +64,7 @@ public:
 class aeMCPRuleBoneTransformatorMinRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorMinRotation() : aeTMCPAnimatorRuleType("bonetransformator.minRotation",
-		"@Animator.WPAPanelRuleBoneTransformator.MinRotation", "@Animator.WPAPanelRuleBoneTransformator.MinRotation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.MinRotation"){}
 	
 	~aeMCPRuleBoneTransformatorMinRotation() override = default;
 	
@@ -79,8 +76,7 @@ public:
 class aeMCPRuleBoneTransformatorMaxRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorMaxRotation() : aeTMCPAnimatorRuleType("bonetransformator.maxRotation",
-		"@Animator.WPAPanelRuleBoneTransformator.MaxRotation", "@Animator.WPAPanelRuleBoneTransformator.MaxRotation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.MaxRotation"){}
 	
 	~aeMCPRuleBoneTransformatorMaxRotation() override = default;
 	
@@ -92,9 +88,9 @@ public:
 class aeMCPRuleBoneTransformatorMinScaling : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorMinScaling() : aeTMCPAnimatorRuleType("bonetransformator.minScaling",
-		"@Animator.WPAPanelRuleBoneTransformator.MinScaling", "@Animator.WPAPanelRuleBoneTransformator.MinScaling.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.MinScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleBoneTransformatorMinScaling() override = default;
 	
@@ -106,9 +102,9 @@ public:
 class aeMCPRuleBoneTransformatorMaxScaling : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorMaxScaling() : aeTMCPAnimatorRuleType("bonetransformator.maxScaling",
-		"@Animator.WPAPanelRuleBoneTransformator.MaxScaling", "@Animator.WPAPanelRuleBoneTransformator.MaxScaling.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.MaxScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleBoneTransformatorMaxScaling() override = default;
 	
@@ -120,9 +116,9 @@ public:
 class aeMCPRuleBoneTransformatorAxis : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleBoneTransformatorAxis() : aeTMCPAnimatorRuleType("bonetransformator.axis",
-		"@Animator.WPAPanelRuleBoneTransformator.Axis", "@Animator.WPAPanelRuleBoneTransformator.Axis.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.Axis"){
 		SetDefaultValue(decVector(0.0f, 0.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleBoneTransformatorAxis() override = default;
 	
@@ -134,8 +130,7 @@ public:
 class aeMCPRuleBoneTransformatorMinAngle : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleBoneTransformatorMinAngle() : aeTMCPAnimatorRuleType("bonetransformator.minAngle",
-		"@Animator.WPAPanelRuleBoneTransformator.MinAngle", "@Animator.WPAPanelRuleBoneTransformator.MinAngle.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.MinAngle"){}
 	
 	~aeMCPRuleBoneTransformatorMinAngle() override = default;
 	
@@ -147,8 +142,7 @@ public:
 class aeMCPRuleBoneTransformatorMaxAngle : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleBoneTransformatorMaxAngle() : aeTMCPAnimatorRuleType("bonetransformator.maxAngle",
-		"@Animator.WPAPanelRuleBoneTransformator.MaxAngle", "@Animator.WPAPanelRuleBoneTransformator.MaxAngle.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.MaxAngle"){}
 	
 	~aeMCPRuleBoneTransformatorMaxAngle() override = default;
 	
@@ -160,8 +154,7 @@ public:
 class aeMCPRuleBoneTransformatorEnablePosition : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleBoneTransformatorEnablePosition() : aeTMCPAnimatorRuleType("bonetransformator.enablePosition",
-		"@Animator.WPAPanelRuleBoneTransformator.EnablePosition", "@Animator.WPAPanelRuleBoneTransformator.EnablePosition.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.EnablePosition"){}
 	
 	~aeMCPRuleBoneTransformatorEnablePosition() override = default;
 	
@@ -173,9 +166,9 @@ public:
 class aeMCPRuleBoneTransformatorEnableOrientation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleBoneTransformatorEnableOrientation() : aeTMCPAnimatorRuleType("bonetransformator.enableOrientation",
-		"@Animator.WPAPanelRuleBoneTransformator.EnableRotation", "@Animator.WPAPanelRuleBoneTransformator.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleBoneTransformatorEnableOrientation() override = default;
 	
@@ -187,8 +180,7 @@ public:
 class aeMCPRuleBoneTransformatorEnableSize : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleBoneTransformatorEnableSize() : aeTMCPAnimatorRuleType("bonetransformator.enableSize",
-		"@Animator.WPAPanelRuleBoneTransformator.EnableSize", "@Animator.WPAPanelRuleBoneTransformator.EnableSize.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.EnableSize"){}
 	
 	~aeMCPRuleBoneTransformatorEnableSize() override = default;
 	
@@ -200,8 +192,7 @@ public:
 class aeMCPRuleBoneTransformatorUseAxis : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleBoneTransformatorUseAxis() : aeTMCPAnimatorRuleType("bonetransformator.useAxis",
-		"@Animator.WPAPanelRuleBoneTransformator.UseAxis", "@Animator.WPAPanelRuleBoneTransformator.UseAxis.ToolTip"){
-	};
+		"Animator.WPAPanelRuleBoneTransformator.UseAxis"){}
 	
 	~aeMCPRuleBoneTransformatorUseAxis() override = default;
 	
@@ -213,9 +204,9 @@ public:
 class aeMCPRuleBoneTransformatorTargetBone : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleBoneTransformatorTargetBone() : aeTMCPAnimatorRuleType("bonetransformator.targetBone",
-		"@Animator.WPAPanelRuleBoneTransformator.TargetBone", "@Animator.WPAPanelRuleBoneTransformator.TargetBone.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.TargetBone"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleBoneTransformatorTargetBone() override = default;
 	
@@ -232,9 +223,9 @@ public:
 class aeMCPRuleBoneTransformatorInputBone : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleBoneTransformatorInputBone() : aeTMCPAnimatorRuleType("bonetransformator.inputBone",
-		"@Animator.WPAPanelRuleBoneTransformator.InputBone", "@Animator.WPAPanelRuleBoneTransformator.InputBone.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.InputBone"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleBoneTransformatorInputBone() override = default;
 	
@@ -251,13 +242,13 @@ public:
 class aeMCPRuleBoneTransformatorCoordinateFrame : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eCoordinateFrames>>{
 public:
 	aeMCPRuleBoneTransformatorCoordinateFrame() : aeTMCPAnimatorRuleType("bonetransformator.coordinateFrame",
-		"@Animator.WPAPanelRuleBoneTransformator.CoordFrame", "@Animator.WPAPanelRuleBoneTransformator.CoordFrame.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.CoordFrame"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleBoneTransformator::ecfBoneLocal,
 			deAnimatorRuleBoneTransformator::ecfComponent,
 			deAnimatorRuleBoneTransformator::ecfTargetBone));
 		SetDefaultValueEnum(deAnimatorRuleBoneTransformator::ecfComponent);
-	};
+	}
 	
 	~aeMCPRuleBoneTransformatorCoordinateFrame() override = default;
 	
@@ -289,14 +280,14 @@ public:
 class aeMCPRuleBoneTransformatorInputSource : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eInputSources>>{
 public:
 	aeMCPRuleBoneTransformatorInputSource() : aeTMCPAnimatorRuleType("bonetransformator.inputSource",
-		"@Animator.WPAPanelRuleBoneTransformator.InputSource", "@Animator.WPAPanelRuleBoneTransformator.InputSource.ToolTip"){
+		"Animator.WPAPanelRuleBoneTransformator.InputSource"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleBoneTransformator::eisTargetBlend,
 			deAnimatorRuleBoneTransformator::eisTargetDirect,
 			deAnimatorRuleBoneTransformator::eisBoneState,
 			deAnimatorRuleBoneTransformator::eisBoneStateInverse));
 		SetDefaultValueEnum(deAnimatorRuleBoneTransformator::eisTargetBlend);
-	};
+	}
 	
 	~aeMCPRuleBoneTransformatorInputSource() override = default;
 	
@@ -333,8 +324,7 @@ public:
 class aeMCPRuleBoneTransformatorTargetTranslation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleBoneTransformatorTargetTranslation() : aeTMCPRuleTarget("bonetransformator.targetTranslation",
-		"@Animator.Target.Translation", "@Animator.Target.Translation.ToolTip"){
-	};
+		"Animator.Target.Translation"){}
 	
 	~aeMCPRuleBoneTransformatorTargetTranslation() override = default;
 	
@@ -346,8 +336,7 @@ public:
 class aeMCPRuleBoneTransformatorTargetRotation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleBoneTransformatorTargetRotation() : aeTMCPRuleTarget("bonetransformator.targetRotation",
-		"@Animator.Target.Rotation", "@Animator.Target.Rotation.ToolTip"){
-	};
+		"Animator.Target.Rotation"){}
 	
 	~aeMCPRuleBoneTransformatorTargetRotation() override = default;
 	
@@ -360,8 +349,7 @@ public:
 class aeMCPRuleBoneTransformatorTargetScaling : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
 	aeMCPRuleBoneTransformatorTargetScaling() : aeTMCPRuleTarget("bonetransformator.targetScaling",
-		"@Animator.Target.Scaling", "@Animator.Target.Scaling.ToolTip"){
-	};
+		"Animator.Target.Scaling"){}
 	
 	~aeMCPRuleBoneTransformatorTargetScaling() override = default;
 	

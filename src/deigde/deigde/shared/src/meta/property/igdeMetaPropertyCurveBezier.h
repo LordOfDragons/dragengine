@@ -81,6 +81,9 @@ public:
 	/** \brief Create curve bezier meta property with label and description. */
 	igdeMetaPropertyCurveBezier(const char *id, const char *name, const char *description);
 	
+	/** \brief Create curve bezier meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyCurveBezier(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up curve bezier meta property. */
 	~igdeMetaPropertyCurveBezier() override;
@@ -188,6 +191,9 @@ public:
 	
 	/** \brief Create curve bezier meta property with label and description. */
 	igdeMetaPropertyCurveBezierStorage(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyCurveBezierStorage(const char *id, const char *translationTag);
 	
 protected:
 	/** \brief Clean up curve bezier meta property. */

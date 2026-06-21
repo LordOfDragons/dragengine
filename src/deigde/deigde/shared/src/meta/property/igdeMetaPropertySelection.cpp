@@ -48,6 +48,11 @@ igdeMetaProperty(id, name, description),
 pDefaultValue(nullptr){
 }
 
+igdeMetaPropertySelection::igdeMetaPropertySelection(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pDefaultValue(nullptr){
+}
+
 igdeMetaPropertySelection::~igdeMetaPropertySelection() = default;
 
 

@@ -39,8 +39,7 @@
 class aeMCPRuleLimitMinPosition : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMinPosition() : aeTMCPAnimatorRuleType("limit.minPosition",
-		"@Animator.WPAPanelRuleLimit.MinPosition", "@Animator.WPAPanelRuleLimit.MinPosition.ToolTip"){
-	};
+		"Animator.WPAPanelRuleLimit.MinPosition"){}
 	
 	~aeMCPRuleLimitMinPosition() override = default;
 	
@@ -52,8 +51,7 @@ public:
 class aeMCPRuleLimitMaxPosition : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMaxPosition() : aeTMCPAnimatorRuleType("limit.maxPosition",
-		"@Animator.WPAPanelRuleLimit.MaxPosition", "@Animator.WPAPanelRuleLimit.MaxPosition.ToolTip"){
-	};
+		"Animator.WPAPanelRuleLimit.MaxPosition"){}
 	
 	~aeMCPRuleLimitMaxPosition() override = default;
 	
@@ -65,8 +63,7 @@ public:
 class aeMCPRuleLimitMinRotation : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMinRotation() : aeTMCPAnimatorRuleType("limit.minRotation",
-		"@Animator.WPAPanelRuleLimit.MinRotation", "@Animator.WPAPanelRuleLimit.MinRotation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleLimit.MinRotation"){}
 	
 	~aeMCPRuleLimitMinRotation() override = default;
 	
@@ -78,8 +75,7 @@ public:
 class aeMCPRuleLimitMaxRotation : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMaxRotation() : aeTMCPAnimatorRuleType("limit.maxRotation",
-		"@Animator.WPAPanelRuleLimit.MaxRotation", "@Animator.WPAPanelRuleLimit.MaxRotation.ToolTip"){
-	};
+		"Animator.WPAPanelRuleLimit.MaxRotation"){}
 	
 	~aeMCPRuleLimitMaxRotation() override = default;
 	
@@ -91,9 +87,9 @@ public:
 class aeMCPRuleLimitMinScaling : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMinScaling() : aeTMCPAnimatorRuleType("limit.minScaling",
-		"@Animator.WPAPanelRuleLimit.MinScaling", "@Animator.WPAPanelRuleLimit.MinScaling.ToolTip"){
+		"Animator.WPAPanelRuleLimit.MinScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleLimitMinScaling() override = default;
 	
@@ -105,9 +101,9 @@ public:
 class aeMCPRuleLimitMaxScaling : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
 public:
 	aeMCPRuleLimitMaxScaling() : aeTMCPAnimatorRuleType("limit.maxScaling",
-		"@Animator.WPAPanelRuleLimit.MaxScaling", "@Animator.WPAPanelRuleLimit.MaxScaling.ToolTip"){
+		"Animator.WPAPanelRuleLimit.MaxScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
-	};
+	}
 	
 	~aeMCPRuleLimitMaxScaling() override = default;
 	
@@ -119,8 +115,7 @@ public:
 class aeMCPRuleLimitMinVertexPositionSet : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleLimitMinVertexPositionSet() : aeTMCPAnimatorRuleType("limit.minVertexPositionSet",
-		"@Animator.WPAPanelRuleLimit.MinVertexPositionSet", "@Animator.WPAPanelRuleLimit.MinVertexPositionSet.ToolTip"){
-	};
+		"Animator.WPAPanelRuleLimit.MinVertexPositionSet"){}
 	
 	~aeMCPRuleLimitMinVertexPositionSet() override = default;
 	
@@ -132,9 +127,9 @@ public:
 class aeMCPRuleLimitMaxVertexPositionSet : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyFloatStorage>{
 public:
 	aeMCPRuleLimitMaxVertexPositionSet() : aeTMCPAnimatorRuleType("limit.maxVertexPositionSet",
-		"@Animator.WPAPanelRuleLimit.MaxVertexPositionSet", "@Animator.WPAPanelRuleLimit.MaxVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleLimit.MaxVertexPositionSet"){
 		SetDefaultValue(1.0f);
-	};
+	}
 	
 	~aeMCPRuleLimitMaxVertexPositionSet() override = default;
 	
@@ -146,9 +141,9 @@ public:
 class aeMCPRuleLimitTargetBone : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyStringStorage>{
 public:
 	aeMCPRuleLimitTargetBone() : aeTMCPAnimatorRuleType("limit.targetBone",
-		"@Animator.WPAPanelRuleLimit.TargetBone", "@Animator.WPAPanelRuleLimit.TargetBone.ToolTip"){
+		"Animator.WPAPanelRuleLimit.TargetBone"){
 			SetEnableAllowed(true);
-		};
+		}
 	
 	~aeMCPRuleLimitTargetBone() override = default;
 	
@@ -165,13 +160,13 @@ public:
 class aeMCPRuleLimitCoordinateFrame : public aeTMCPAnimatorRuleLimit<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleLimit::eCoordinateFrames>>{
 public:
 	aeMCPRuleLimitCoordinateFrame() : aeTMCPAnimatorRuleType("limit.coordinateFrame",
-		"@Animator.WPAPanelRuleLimit.CoordFrame", "@Animator.WPAPanelRuleLimit.CoordFrame.ToolTip"){
-		SetChoicesEnum(ListChoicesEnum(devctag,
-			deAnimatorRuleLimit::ecfBoneLocal,
-			deAnimatorRuleLimit::ecfComponent,
-			deAnimatorRuleLimit::ecfTargetBone));
-		SetDefaultValueEnum(deAnimatorRuleLimit::ecfComponent);
-	};
+		"Animator.WPAPanelRuleLimit.CoordFrame"){
+			SetChoicesEnum(ListChoicesEnum(devctag,
+				deAnimatorRuleLimit::ecfBoneLocal,
+				deAnimatorRuleLimit::ecfComponent,
+				deAnimatorRuleLimit::ecfTargetBone));
+			SetDefaultValueEnum(deAnimatorRuleLimit::ecfComponent);
+		}
 	
 	~aeMCPRuleLimitCoordinateFrame() override = default;
 	
@@ -203,7 +198,7 @@ public:
 class aeMCPRuleLimitEnablePositionXMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionXMin() : aeTMCPAnimatorRuleType("limit.enablePositionXMin",
-		"@Animator.WPAPanelRuleLimit.EnablePositionXMin", "@Animator.WPAPanelRuleLimit.EnablePositionXMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnablePositionXMin"){}
 	
 	~aeMCPRuleLimitEnablePositionXMin() override = default;
 	
@@ -215,7 +210,7 @@ public:
 class aeMCPRuleLimitEnablePositionXMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionXMax() : aeTMCPAnimatorRuleType("limit.enablePositionXMax",
-		"@Animator.WPAPanelRuleLimit.EnablePositionXMax", "@Animator.WPAPanelRuleLimit.EnablePositionXMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnablePositionXMax"){}
 	
 	~aeMCPRuleLimitEnablePositionXMax() override = default;
 	
@@ -227,7 +222,7 @@ public:
 class aeMCPRuleLimitEnablePositionYMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionYMin() : aeTMCPAnimatorRuleType("limit.enablePositionYMin",
-		"@Animator.WPAPanelRuleLimit.EnablePositionYMin", "@Animator.WPAPanelRuleLimit.EnablePositionYMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnablePositionYMin"){}
 	
 	~aeMCPRuleLimitEnablePositionYMin() override = default;
 	
@@ -239,7 +234,7 @@ public:
 class aeMCPRuleLimitEnablePositionYMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionYMax() : aeTMCPAnimatorRuleType("limit.enablePositionYMax",
-		"@Animator.WPAPanelRuleLimit.EnablePositionYMax", "@Animator.WPAPanelRuleLimit.EnablePositionYMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnablePositionYMax"){}
 	
 	~aeMCPRuleLimitEnablePositionYMax() override = default;
 	
@@ -251,7 +246,7 @@ public:
 class aeMCPRuleLimitEnablePositionZMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionZMin() : aeTMCPAnimatorRuleType("limit.enablePositionZMin",
-		"@Animator.WPAPanelRuleLimit.EnablePositionZMin", "@Animator.WPAPanelRuleLimit.EnablePositionZMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnablePositionZMin"){}
 	
 	~aeMCPRuleLimitEnablePositionZMin() override = default;
 	
@@ -263,7 +258,7 @@ public:
 class aeMCPRuleLimitEnablePositionZMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnablePositionZMax() : aeTMCPAnimatorRuleType("limit.enablePositionZMax",
-		"@Animator.WPAPanelRuleLimit.EnablePositionZMax", "@Animator.WPAPanelRuleLimit.EnablePositionZMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnablePositionZMax"){}
 	
 	~aeMCPRuleLimitEnablePositionZMax() override = default;
 	
@@ -275,7 +270,7 @@ public:
 class aeMCPRuleLimitEnableRotationXMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationXMin() : aeTMCPAnimatorRuleType("limit.enableRotationXMin",
-		"@Animator.WPAPanelRuleLimit.EnableRotationXMin", "@Animator.WPAPanelRuleLimit.EnableRotationXMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableRotationXMin"){}
 	
 	~aeMCPRuleLimitEnableRotationXMin() override = default;
 	
@@ -287,7 +282,7 @@ public:
 class aeMCPRuleLimitEnableRotationXMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationXMax() : aeTMCPAnimatorRuleType("limit.enableRotationXMax",
-		"@Animator.WPAPanelRuleLimit.EnableRotationXMax", "@Animator.WPAPanelRuleLimit.EnableRotationXMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableRotationXMax"){}
 	
 	~aeMCPRuleLimitEnableRotationXMax() override = default;
 	
@@ -299,7 +294,7 @@ public:
 class aeMCPRuleLimitEnableRotationYMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationYMin() : aeTMCPAnimatorRuleType("limit.enableRotationYMin",
-		"@Animator.WPAPanelRuleLimit.EnableRotationYMin", "@Animator.WPAPanelRuleLimit.EnableRotationYMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableRotationYMin"){}
 	
 	~aeMCPRuleLimitEnableRotationYMin() override = default;
 	
@@ -311,7 +306,7 @@ public:
 class aeMCPRuleLimitEnableRotationYMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationYMax() : aeTMCPAnimatorRuleType("limit.enableRotationYMax",
-		"@Animator.WPAPanelRuleLimit.EnableRotationYMax", "@Animator.WPAPanelRuleLimit.EnableRotationYMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableRotationYMax"){}
 	
 	~aeMCPRuleLimitEnableRotationYMax() override = default;
 	
@@ -323,7 +318,7 @@ public:
 class aeMCPRuleLimitEnableRotationZMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationZMin() : aeTMCPAnimatorRuleType("limit.enableRotationZMin",
-		"@Animator.WPAPanelRuleLimit.EnableRotationZMin", "@Animator.WPAPanelRuleLimit.EnableRotationZMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableRotationZMin"){}
 	
 	~aeMCPRuleLimitEnableRotationZMin() override = default;
 	
@@ -335,7 +330,7 @@ public:
 class aeMCPRuleLimitEnableRotationZMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableRotationZMax() : aeTMCPAnimatorRuleType("limit.enableRotationZMax",
-		"@Animator.WPAPanelRuleLimit.EnableRotationZMax", "@Animator.WPAPanelRuleLimit.EnableRotationZMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableRotationZMax"){}
 	
 	~aeMCPRuleLimitEnableRotationZMax() override = default;
 	
@@ -347,7 +342,7 @@ public:
 class aeMCPRuleLimitEnableScalingXMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingXMin() : aeTMCPAnimatorRuleType("limit.enableScalingXMin",
-		"@Animator.WPAPanelRuleLimit.EnableScalingXMin", "@Animator.WPAPanelRuleLimit.EnableScalingXMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableScalingXMin"){}
 	
 	~aeMCPRuleLimitEnableScalingXMin() override = default;
 	
@@ -359,7 +354,7 @@ public:
 class aeMCPRuleLimitEnableScalingXMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingXMax() : aeTMCPAnimatorRuleType("limit.enableScalingXMax",
-		"@Animator.WPAPanelRuleLimit.EnableScalingXMax", "@Animator.WPAPanelRuleLimit.EnableScalingXMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableScalingXMax"){}
 	
 	~aeMCPRuleLimitEnableScalingXMax() override = default;
 	
@@ -371,7 +366,7 @@ public:
 class aeMCPRuleLimitEnableScalingYMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingYMin() : aeTMCPAnimatorRuleType("limit.enableScalingYMin",
-		"@Animator.WPAPanelRuleLimit.EnableScalingYMin", "@Animator.WPAPanelRuleLimit.EnableScalingYMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableScalingYMin"){}
 	
 	~aeMCPRuleLimitEnableScalingYMin() override = default;
 	
@@ -383,7 +378,7 @@ public:
 class aeMCPRuleLimitEnableScalingYMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingYMax() : aeTMCPAnimatorRuleType("limit.enableScalingYMax",
-		"@Animator.WPAPanelRuleLimit.EnableScalingYMax", "@Animator.WPAPanelRuleLimit.EnableScalingYMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableScalingYMax"){}
 	
 	~aeMCPRuleLimitEnableScalingYMax() override = default;
 	
@@ -395,7 +390,7 @@ public:
 class aeMCPRuleLimitEnableScalingZMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingZMin() : aeTMCPAnimatorRuleType("limit.enableScalingZMin",
-		"@Animator.WPAPanelRuleLimit.EnableScalingZMin", "@Animator.WPAPanelRuleLimit.EnableScalingZMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableScalingZMin"){}
 	
 	~aeMCPRuleLimitEnableScalingZMin() override = default;
 	
@@ -407,7 +402,7 @@ public:
 class aeMCPRuleLimitEnableScalingZMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableScalingZMax() : aeTMCPAnimatorRuleType("limit.enableScalingZMax",
-		"@Animator.WPAPanelRuleLimit.EnableScalingZMax", "@Animator.WPAPanelRuleLimit.EnableScalingZMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableScalingZMax"){}
 	
 	~aeMCPRuleLimitEnableScalingZMax() override = default;
 	
@@ -419,7 +414,7 @@ public:
 class aeMCPRuleLimitEnableVertexPositionSetMin : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableVertexPositionSetMin() : aeTMCPAnimatorRuleType("limit.enableVertexPositionSetMin",
-		"@Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin", "@Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableVertexPositionSetMin"){}
 	
 	~aeMCPRuleLimitEnableVertexPositionSetMin() override = default;
 	
@@ -431,7 +426,7 @@ public:
 class aeMCPRuleLimitEnableVertexPositionSetMax : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleLimitEnableVertexPositionSetMax() : aeTMCPAnimatorRuleType("limit.enableVertexPositionSetMax",
-		"@Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax", "@Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax.ToolTip"){};
+		"Animator.WPAPanelRuleLimit.EnableVertexPositionSetMax"){}
 	
 	~aeMCPRuleLimitEnableVertexPositionSetMax() override = default;
 	

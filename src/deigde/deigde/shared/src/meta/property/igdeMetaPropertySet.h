@@ -143,6 +143,9 @@ public:
 	/** \brief Create object meta property with label and description. */
 	igdeMetaPropertySet(const char *id, const char *name, const char *description);
 	
+	/** \brief Create object meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertySet(const char *id, const char *translationTag);
+	
 protected:
 	/** \brief Clean up object meta property. */
 	~igdeMetaPropertySet() override;
@@ -319,8 +322,11 @@ public:
 	/*@{*/
 	/** \brief Create set meta property with label and description. */
 	igdeMetaPropertySetType(const char *id, const char *name, const char *description) :
-	igdeMetaPropertySet(id, name, description){
-	}
+	igdeMetaPropertySet(id, name, description){}
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertySetType(const char *id, const char *translationTag) :
+	igdeMetaPropertySet(id, translationTag){}
 	
 protected:
 	/** \brief Clean up set meta property. */
@@ -471,6 +477,10 @@ public:
 	/** \brief Create set meta property with label and description. */
 	igdeMetaPropertySetStorage(const char *id, const char *name, const char *description) :
 	igdeMetaPropertySetType<T>(id, name, description){}
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertySetStorage(const char *id, const char *translationTag) :
+	igdeMetaPropertySetType<T>(id, translationTag){}
 	
 protected:
 	/** \brief Clean up set meta property. */

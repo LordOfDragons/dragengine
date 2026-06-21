@@ -36,9 +36,9 @@
 class aeMCPRuleSubAnimatorPathSubAnimator : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyPathStorage>{
 public:
 	aeMCPRuleSubAnimatorPathSubAnimator() : aeTMCPAnimatorRuleType("subanimator.pathSubAnimator",
-		"@Animator.WPAPanelRuleSubAnimator.Path", "@Animator.WPAPanelRuleSubAnimator.Path.ToolTip",
+		"Animator.WPAPanelRuleSubAnimator.Path",
 		igdeEnvironment::eFilePatternListTypes::efpltAnimator){
-	};
+	}
 	
 	~aeMCPRuleSubAnimatorPathSubAnimator() override = default;
 	
@@ -55,9 +55,9 @@ public:
 class aeMCPRuleSubAnimatorEnablePosition : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnablePosition() : aeTMCPAnimatorRuleType("subanimator.enablePosition",
-		"@Animator.WPAPanelRuleSubAnimator.EnablePosition", "@Animator.WPAPanelRuleSubAnimator.EnablePosition.ToolTip"){
+		"Animator.WPAPanelRuleSubAnimator.EnablePosition"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleSubAnimatorEnablePosition() override = default;
 	
@@ -69,9 +69,9 @@ public:
 class aeMCPRuleSubAnimatorEnableOrientation : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnableOrientation() : aeTMCPAnimatorRuleType("subanimator.enableOrientation",
-		"@Animator.WPAPanelRuleSubAnimator.EnableRotation", "@Animator.WPAPanelRuleSubAnimator.EnableRotation.ToolTip"){
+		"Animator.WPAPanelRuleSubAnimator.EnableRotation"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleSubAnimatorEnableOrientation() override = default;
 	
@@ -83,9 +83,9 @@ public:
 class aeMCPRuleSubAnimatorEnableSize : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnableSize() : aeTMCPAnimatorRuleType("subanimator.enableSize",
-		"@Animator.WPAPanelRuleSubAnimator.EnableSize", "@Animator.WPAPanelRuleSubAnimator.EnableSize.ToolTip"){
+		"Animator.WPAPanelRuleSubAnimator.EnableSize"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleSubAnimatorEnableSize() override = default;
 	
@@ -97,9 +97,9 @@ public:
 class aeMCPRuleSubAnimatorEnableVertexPositionSet : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
 	aeMCPRuleSubAnimatorEnableVertexPositionSet() : aeTMCPAnimatorRuleType("subanimator.enableVertexPositionSet",
-		"@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet", "@Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet.ToolTip"){
+		"Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet"){
 		SetDefaultValue(true);
-	};
+	}
 	
 	~aeMCPRuleSubAnimatorEnableVertexPositionSet() override = default;
 	

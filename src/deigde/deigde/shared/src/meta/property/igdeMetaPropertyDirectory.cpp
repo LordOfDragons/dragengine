@@ -41,6 +41,12 @@ igdeMetaProperty(id, name, description),
 pUseGameVFS(useGameVFS){
 }
 
+igdeMetaPropertyDirectory::igdeMetaPropertyDirectory(
+	const char *id, const char *translationTag, bool useGameVFS) :
+igdeMetaProperty(id, translationTag),
+pUseGameVFS(useGameVFS){
+}
+
 igdeMetaPropertyDirectory::~igdeMetaPropertyDirectory() = default;
 
 
@@ -85,8 +91,13 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(){
 /////////////////////////////////////
 
 igdeMetaPropertyDirectoryStorage::igdeMetaPropertyDirectoryStorage(
-	const char *id, const char *name, const char *description) :
-igdeMetaPropertyDirectory(id, name, description){
+	const char *id, const char *name, const char *description, bool useGameVFS) :
+igdeMetaPropertyDirectory(id, name, description, useGameVFS){
+}
+
+igdeMetaPropertyDirectoryStorage::igdeMetaPropertyDirectoryStorage(
+	const char *id, const char *translationTag, bool useGameVFS) :
+igdeMetaPropertyDirectory(id, translationTag, useGameVFS){
 }
 
 igdeMetaPropertyDirectoryStorage::~igdeMetaPropertyDirectoryStorage() = default;

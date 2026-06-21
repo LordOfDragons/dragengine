@@ -53,6 +53,17 @@ pEnableUpperLimit(false),
 pEnableSpin(false){
 }
 
+igdeMetaPropertyInteger::igdeMetaPropertyInteger(const char *id, const char *translationTag) :
+igdeMetaProperty(id, translationTag),
+pDefaultValue(0),
+pLowerLimit(0),
+pUpperLimit(100),
+pTickSpacing(10),
+pEnableLowerLimit(false),
+pEnableUpperLimit(false),
+pEnableSpin(false){
+}
+
 igdeMetaPropertyInteger::~igdeMetaPropertyInteger() = default;
 
 
@@ -134,6 +145,11 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyInteger::CreateWidget(){
 igdeMetaPropertyIntegerStorage::igdeMetaPropertyIntegerStorage(
 	const char *id, const char *name, const char *description) :
 igdeMetaPropertyInteger(id, name, description){
+}
+
+igdeMetaPropertyIntegerStorage::igdeMetaPropertyIntegerStorage(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyInteger(id, translationTag){
 }
 
 igdeMetaPropertyIntegerStorage::~igdeMetaPropertyIntegerStorage() = default;
