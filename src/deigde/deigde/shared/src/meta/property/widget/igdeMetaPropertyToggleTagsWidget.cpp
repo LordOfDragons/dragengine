@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyToggleTagsWidget.h"
+#include "state/igdeMetaPropertyWidgetStateList.h"
 #include "../igdeMetaPropertyStringSet.h"
 #include "../undo/igdeMetaPropertyToggleTagsUndo.h"
 #include "../../../clipboard/igdeClipboard.h"
@@ -222,14 +223,31 @@ igdeMetaPropertyToggleTagsWidget::~igdeMetaPropertyToggleTagsWidget(){
 void igdeMetaPropertyToggleTagsWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pToggleTags)
 	
+	auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateList::Ref::New();
+		state->rows = pPropertyToggleTags.GetRows();
+		pPropertyToggleTags.SetWidgetState(state);
+	}
+	
 	pAction = deTObjectReference<cAction>::New(*this);
 	helper.ToggleTags(pToggleTags, pAction);
+	pToggleTags->GetListBox().SetRows(state->rows);
 	WrapEditWidget(container, helper, noLabel, pToggleTags);
 	
 	UpdateMatchable(container);
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){
+	if(pToggleTags){
+		auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+		if(state){
+			state->rows = pToggleTags->GetListBox().GetRows();
+		}
+		
+		pToggleTags->SetAction(nullptr);
+	}
+	
 	pAction.Clear();
 	pToggleTags.Clear();
 	igdeMetaPropertyWidget::Drop();
@@ -243,7 +261,8 @@ void igdeMetaPropertyToggleTagsWidget::Update(){
 	const bool valid = pPropertyToggleTags.IsValid(GetContext());
 	RunWithPreventUpdate([&]{
 		pToggleTags->SetTags(valid ? pPropertyToggleTags.GetPropertyValue(GetContext()) : decStringSet());
-		// pToggleTags->SetEnabled(valid); => TODO missing
+		
+		pToggleTags->GetListBox().SetEnabled(valid);
 	});
 }
 

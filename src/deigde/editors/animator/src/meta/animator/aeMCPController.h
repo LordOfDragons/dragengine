@@ -46,8 +46,7 @@
 /** Controllers. */
 class aeMCPControllers : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeController, aeController::List>>{
 public:
-	aeMCPControllers() : aeTMCPAnimator("animator.controllers",
-		"Animator.WPController.Controllers"){
+	aeMCPControllers() : aeTMCPAnimator("animator.controllers", "Animator.WPController.Controllers"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
@@ -91,11 +90,7 @@ public:
 /** Controller name. */
 class aeMCPControllerName : public aeTMCPAnimatorController<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPControllerName() : aeTMCPAnimatorController("controller.name",
-		"Animator.WPController.Name"){
-			SetDefaultValue("Controller");
-		}
-	
+	aeMCPControllerName() : aeTMCPAnimatorController("controller.name", "Animator.WPController.Name"){}
 	~aeMCPControllerName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -107,9 +102,7 @@ public:
 /** Controller minimum value. */
 class aeMCPControllerMinimumValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerMinimumValue() : aeTMCPAnimatorController("controller.minimumValue",
-		"Animator.WPController.MinimumValue"){}
-	
+	aeMCPControllerMinimumValue() : aeTMCPAnimatorController("controller.minimumValue", "Animator.WPController.MinimumValue"){}
 	~aeMCPControllerMinimumValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -121,10 +114,9 @@ public:
 /** Controller maximum value. */
 class aeMCPControllerMaximumValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerMaximumValue() : aeTMCPAnimatorController("controller.maximumValue",
-		"Animator.WPController.MaximumValue"){
-			SetDefaultValue(1.0f);
-		}
+	aeMCPControllerMaximumValue() : aeTMCPAnimatorController("controller.maximumValue", "Animator.WPController.MaximumValue"){
+		SetDefaultValue(1.0f);
+	}
 	
 	~aeMCPControllerMaximumValue() override = default;
 	
@@ -139,8 +131,7 @@ public:
 /** Controller current value. */
 class aeMCPControllerCurrentValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerCurrentValue() : aeTMCPAnimatorController("controller.currentValue",
-	"Animator.WPController.Value"){
+	aeMCPControllerCurrentValue() : aeTMCPAnimatorController("controller.currentValue", "Animator.WPController.Value"){
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 	}
@@ -161,9 +152,7 @@ public:
 /** Controller vector. */
 class aeMCPControllerVector : public aeTMCPAnimatorController<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPControllerVector() : aeTMCPAnimatorController("controller.vector",
-		"Animator.WPController.Vector"){}
-	
+	aeMCPControllerVector() : aeTMCPAnimatorController("controller.vector", "Animator.WPController.Vector"){}
 	~aeMCPControllerVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -175,9 +164,7 @@ public:
 /** Controller clamp. */
 class aeMCPControllerClamp : public aeTMCPAnimatorController<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPControllerClamp() : aeTMCPAnimatorController("controller.clamp",
-		"Animator.WPController.Clamp"){}
-	
+	aeMCPControllerClamp() : aeTMCPAnimatorController("controller.clamp", "Animator.WPController.Clamp"){}
 	~aeMCPControllerClamp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -189,9 +176,7 @@ public:
 /** Controller frozen. */
 class aeMCPControllerFrozen : public aeTMCPAnimatorController<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPControllerFrozen() : aeTMCPAnimatorController("controller.frozen",
-		"Animator.WPController.Frozen"){}
-	
+	aeMCPControllerFrozen() : aeTMCPAnimatorController("controller.frozen", "Animator.WPController.Frozen"){}
 	~aeMCPControllerFrozen() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -203,8 +188,7 @@ public:
 /** Controller locomotion attribute. */
 class aeMCPControllerLocomotionAttribute : public aeTMCPAnimatorController<igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eAttributes>>{
 public:
-	aeMCPControllerLocomotionAttribute() : aeTMCPAnimatorController("controller.locomotionAttribute",
-	"Animator.WPController.Attribute"){
+	aeMCPControllerLocomotionAttribute() : aeTMCPAnimatorController("controller.locomotionAttribute", "Animator.WPController.Attribute"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeAnimatorLocomotion::eaNone,
 			aeAnimatorLocomotion::eaElapsedTime,
@@ -328,9 +312,7 @@ public:
 /** Controller locomotion leg. */
 class aeMCPControllerLocomotionLeg : public aeTMCPAnimatorController<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPControllerLocomotionLeg() : aeTMCPAnimatorController("controller.locomotionLeg",
-		"Animator.WPController.Leg"){}
-	
+	aeMCPControllerLocomotionLeg() : aeTMCPAnimatorController("controller.locomotionLeg", "Animator.WPController.Leg"){}
 	~aeMCPControllerLocomotionLeg() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -342,8 +324,7 @@ public:
 /** Controller vector simulation. */
 class aeMCPControllerVectorSimulation : public aeTMCPAnimatorController<igdeMetaPropertySelectionEnumStorage<aeController::eVectorSimulation>>{
 public:
-	aeMCPControllerVectorSimulation() : aeTMCPAnimatorController("controller.vectorSimulation",
-	"Animator.WPController.VectorSimulation"){
+	aeMCPControllerVectorSimulation() : aeTMCPAnimatorController("controller.vectorSimulation", "Animator.WPController.VectorSimulation"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			aeController::evsNone,
 			aeController::evsPosition,
@@ -382,9 +363,7 @@ public:
 /** Controller default value. */
 class aeMCPControllerDefaultValue : public aeTMCPAnimatorController<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPControllerDefaultValue() : aeTMCPAnimatorController("controller.defaultValue",
-		"Animator.WPController.DefaultValue"){}
-	
+	aeMCPControllerDefaultValue() : aeTMCPAnimatorController("controller.defaultValue", "Animator.WPController.DefaultValue"){}
 	~aeMCPControllerDefaultValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -396,9 +375,7 @@ public:
 /** Controller default vector. */
 class aeMCPControllerDefaultVector : public aeTMCPAnimatorController<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPControllerDefaultVector() : aeTMCPAnimatorController("controller.defaultVector",
-		"Animator.WPController.DefaultVector"){}
-	
+	aeMCPControllerDefaultVector() : aeTMCPAnimatorController("controller.defaultVector", "Animator.WPController.DefaultVector"){}
 	~aeMCPControllerDefaultVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{

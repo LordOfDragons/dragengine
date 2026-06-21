@@ -120,7 +120,7 @@ pPadBottom(TabBookPadBottom(guitheme))
 {
 // 	FXHorizontalFrame * const frameHeader = new FXHorizontalFrame( this,
 // 		LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pAutoScroller = new igdeNativeFoxAutoScroller(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X);
+	pAutoScroller = new igdeNativeFoxAutoScroller(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, true);
 	igdeNativeFoxAutoScroller * const frameHeader = pAutoScroller;
 	
 // 	pBtnScrollHeadersLeft = new FXArrowButton( frameHeader, this, ID_BTN_SCROLL_HEADER_LEFT,

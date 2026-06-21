@@ -45,8 +45,7 @@
 
 class aeMCPRules : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
 public:
-	aeMCPRules() : aeTMCPAnimator("animator.rules",
-		"Animator.WPRule.Rules"){
+	aeMCPRules() : aeTMCPAnimator("animator.rules", "Animator.WPRule.Rules"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
@@ -85,11 +84,7 @@ public:
 
 class aeMCPRuleName : public aeTMCPAnimatorRule<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleName() : aeTMCPAnimatorRule("rule.name",
-		"Animator.WPAPanelRule.Name"){
-			SetDefaultValue("Rule");
-		}
-	
+	aeMCPRuleName() : aeTMCPAnimatorRule("rule.name", "Animator.WPAPanelRule.Name"){}
 	~aeMCPRuleName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -100,8 +95,7 @@ public:
 
 class aeMCPRuleBlendMode : public aeTMCPAnimatorRule<igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>>{
 public:
-	aeMCPRuleBlendMode() : aeTMCPAnimatorRule("rule.blendMode",
-		"Animator.WPAPanelRule.BlendMode"){
+	aeMCPRuleBlendMode() : aeTMCPAnimatorRule("rule.blendMode", "Animator.WPAPanelRule.BlendMode"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRule::ebmBlend,
 			deAnimatorRule::ebmOverlay));
@@ -134,12 +128,11 @@ public:
 
 class aeMCPRuleBlendFactor : public aeTMCPAnimatorRule<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleBlendFactor() : aeTMCPAnimatorRule("rule.blendFactor",
-		"Animator.WPAPanelRule.BlendFactor"){
-			SetEnableLowerLimit(true);
-			SetEnableUpperLimit(true);
-			SetDefaultValue(1.0f);
-		}
+	aeMCPRuleBlendFactor() : aeTMCPAnimatorRule("rule.blendFactor", "Animator.WPAPanelRule.BlendFactor"){
+		SetEnableLowerLimit(true);
+		SetEnableUpperLimit(true);
+		SetDefaultValue(1.0f);
+	}
 	
 	~aeMCPRuleBlendFactor() override = default;
 	
@@ -151,9 +144,7 @@ public:
 
 class aeMCPRuleInvertBlendFactor : public aeTMCPAnimatorRule<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleInvertBlendFactor() : aeTMCPAnimatorRule("rule.invertBlendFactor",
-		"Animator.WPAPanelRule.InvertBlendFactor"){}
-	
+	aeMCPRuleInvertBlendFactor() : aeTMCPAnimatorRule("rule.invertBlendFactor", "Animator.WPAPanelRule.InvertBlendFactor"){}
 	~aeMCPRuleInvertBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -164,10 +155,9 @@ public:
 
 class aeMCPRuleEnabled : public aeTMCPAnimatorRule<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleEnabled() : aeTMCPAnimatorRule("rule.enabled",
-		"Animator.WPAPanelRule.Enabled"){
-			SetDefaultValue(true);
-		}
+	aeMCPRuleEnabled() : aeTMCPAnimatorRule("rule.enabled", "Animator.WPAPanelRule.Enabled"){
+		SetDefaultValue(true);
+	}
 	
 	~aeMCPRuleEnabled() override = default;
 	
@@ -179,10 +169,10 @@ public:
 
 class aeMCPRuleAffectedBones : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPRuleAffectedBones() : aeTMCPAnimatorRule("rule.affectedBones",
-		"Animator.WPAPanelRule.AffectedBones"){
-			SetMultiSelection(true);
-		}
+	aeMCPRuleAffectedBones() : aeTMCPAnimatorRule("rule.affectedBones", "Animator.WPAPanelRule.AffectedBones"){
+		SetMultiSelection(true);
+		SetRows(5);
+	}
 	
 	~aeMCPRuleAffectedBones() override = default;
 	
@@ -197,10 +187,10 @@ public:
 
 class aeMCPRuleAffectedVertexPositionSets : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPRuleAffectedVertexPositionSets() : aeTMCPAnimatorRule("rule.affectedVertexPositionSets",
-		"Animator.WPAPanelRule.AffectedVertexPositionSets"){
-			SetMultiSelection(true);
-		}
+	aeMCPRuleAffectedVertexPositionSets() : aeTMCPAnimatorRule("rule.affectedVertexPositionSets", "Animator.WPAPanelRule.AffectedVertexPositionSets"){
+		SetMultiSelection(true);
+		SetRows(5);
+	}
 	
 	~aeMCPRuleAffectedVertexPositionSets() override = default;
 	
@@ -217,18 +207,10 @@ template <typename T>
 class aeTMCPRuleTarget : public T{
 public:
 	template <typename... A>
-	aeTMCPRuleTarget(const char *id, const char *name, const char *description, A&&... args) :
-		T(id, name, description, std::forward<A>(args)...){
-			T::SetRows(2);
-			T::SetMultiSelection(true);
-		}
-	
-	template <typename... A>
-	aeTMCPRuleTarget(const char *id, const char *translationTag, A&&... args) :
-		T(id, translationTag, std::forward<A>(args)...){
-			T::SetRows(2);
-			T::SetMultiSelection(true);
-		}
+	aeTMCPRuleTarget(A&&... args) : T(std::forward<A>(args)...){
+		T::SetRows(2);
+		T::SetMultiSelection(true);
+	}
 	
 	~aeTMCPRuleTarget() override = default;
 	
@@ -250,8 +232,8 @@ public:
 
 class aeMCPRuleTargetBlendFactor : public aeTMCPRuleTarget<aeTMCPAnimatorRule<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleTargetBlendFactor() : aeTMCPRuleTarget("rule.targetBlendFactor",
-		"Animator.Target.BlendFactor"){
+	aeMCPRuleTargetBlendFactor() : aeTMCPRuleTarget("rule.targetBlendFactor", "Animator.Target.BlendFactor"){
+		SetRows(3);
 	}
 	
 	~aeMCPRuleTargetBlendFactor() override = default;

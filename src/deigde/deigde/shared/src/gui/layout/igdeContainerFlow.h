@@ -81,6 +81,7 @@ private:
 	eAxis pAxis;
 	eStretching pStretching;
 	int pSpacing;
+	bool pAutoScroll;
 	
 	
 	
@@ -88,8 +89,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerFlow(igdeEnvironment &environment, eAxis axis,
-		eStretching stretching = esNone, int spacing = 0);
+	igdeContainerFlow(igdeEnvironment &environment, eAxis axis, eStretching stretching = esNone,
+		int spacing = 0, bool autoScroll = false);
 	
 	
 	
@@ -117,6 +118,8 @@ public:
 	/** \brief Spacing. */
 	inline int GetSpacing() const{ return pSpacing; }
 	
+	/** \brief Auto scroll. */
+	inline bool GetAutoScroll() const{ return pAutoScroll; }
 	
 	
 	/** \brief Add child. */

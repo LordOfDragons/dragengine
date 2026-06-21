@@ -36,15 +36,15 @@
 
 class aeMCPRuleMirrorMirrorAxis : public aeTMCPAnimatorRuleMirror<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>>{
 public:
-	aeMCPRuleMirrorMirrorAxis() : aeTMCPAnimatorRuleType("mirror.mirrorAxis",
-		"Animator.WPAPanelRuleMirror.Axis"){
-			SetChoicesEnum(ListChoicesEnum(devctag,
-				deAnimatorRuleMirror::emaX,
-				deAnimatorRuleMirror::emaY,
-				deAnimatorRuleMirror::emaZ
-			));
-			SetDefaultValueEnum(deAnimatorRuleMirror::emaX);
-		}
+	aeMCPRuleMirrorMirrorAxis() : aeTMCPAnimatorRuleType(
+	"mirror.mirrorAxis", "Animator.WPAPanelRuleMirror.Axis"){
+		SetChoicesEnum(ListChoicesEnum(devctag,
+			deAnimatorRuleMirror::emaX,
+			deAnimatorRuleMirror::emaY,
+			deAnimatorRuleMirror::emaZ
+		));
+		SetDefaultValueEnum(deAnimatorRuleMirror::emaX);
+	}
 	
 	~aeMCPRuleMirrorMirrorAxis() override = default;
 	
@@ -75,10 +75,10 @@ public:
 
 class aeMCPRuleMirrorMirrorBone : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleMirrorMirrorBone() : aeTMCPAnimatorRuleType("mirror.mirrorBone",
-		"Animator.WPAPanelRuleMirror.Bone"){
-			SetEnableAllowed(true);
-		}
+	aeMCPRuleMirrorMirrorBone() : aeTMCPAnimatorRuleType(
+	"mirror.mirrorBone", "Animator.WPAPanelRuleMirror.Bone"){
+		SetEnableAllowed(true);
+	}
 	
 	~aeMCPRuleMirrorMirrorBone() override = default;
 	
@@ -94,8 +94,8 @@ public:
 
 class aeMCPRuleMirrorEnablePosition : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnablePosition() : aeTMCPAnimatorRuleType("mirror.enablePosition",
-		"Animator.WPAPanelRuleMirror.EnablePosition"){
+	aeMCPRuleMirrorEnablePosition() : aeTMCPAnimatorRuleType(
+	"mirror.enablePosition", "Animator.WPAPanelRuleMirror.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
@@ -108,8 +108,8 @@ public:
 
 class aeMCPRuleMirrorEnableOrientation : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnableOrientation() : aeTMCPAnimatorRuleType("mirror.enableOrientation",
-		"Animator.WPAPanelRuleMirror.EnableRotation"){
+	aeMCPRuleMirrorEnableOrientation() : aeTMCPAnimatorRuleType(
+	"mirror.enableOrientation", "Animator.WPAPanelRuleMirror.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -122,8 +122,8 @@ public:
 
 class aeMCPRuleMirrorEnableSize : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnableSize() : aeTMCPAnimatorRuleType("mirror.enableSize",
-		"Animator.WPAPanelRuleMirror.EnableSize"){}
+	aeMCPRuleMirrorEnableSize() : aeTMCPAnimatorRuleType(
+	"mirror.enableSize", "Animator.WPAPanelRuleMirror.EnableSize"){}
 	
 	~aeMCPRuleMirrorEnableSize() override = default;
 	
@@ -134,8 +134,8 @@ public:
 
 class aeMCPRuleMirrorEnableVertexPositionSet : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnableVertexPositionSet() : aeTMCPAnimatorRuleType("mirror.enableVertexPositionSet",
-		"Animator.WPAPanelRuleMirror.EnableVertexPositionSet"){
+	aeMCPRuleMirrorEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	"mirror.enableVertexPositionSet", "Animator.WPAPanelRuleMirror.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	

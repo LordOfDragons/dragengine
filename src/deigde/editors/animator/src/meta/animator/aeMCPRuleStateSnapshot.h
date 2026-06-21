@@ -35,8 +35,8 @@
 
 class aeMCPRuleStateSnapshotUseLastState : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotUseLastState() : aeTMCPAnimatorRuleType("statesnapshot.useLastState",
-		"Animator.WPAPanelRuleStateSnapshot.UseLastState"){
+	aeMCPRuleStateSnapshotUseLastState() : aeTMCPAnimatorRuleType(
+	"statesnapshot.useLastState", "Animator.WPAPanelRuleStateSnapshot.UseLastState"){
 		SetDefaultValue(true);
 	}
 	
@@ -49,8 +49,8 @@ public:
 
 class aeMCPRuleStateSnapshotID : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPRuleStateSnapshotID() : aeTMCPAnimatorRuleType("statesnapshot.id",
-		"Animator.WPAPanelRuleStateSnapshot.ID"){}
+	aeMCPRuleStateSnapshotID() : aeTMCPAnimatorRuleType(
+	"statesnapshot.id", "Animator.WPAPanelRuleStateSnapshot.ID"){}
 	
 	~aeMCPRuleStateSnapshotID() override = default;
 	
@@ -61,8 +61,8 @@ public:
 
 class aeMCPRuleStateSnapshotEnablePosition : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnablePosition() : aeTMCPAnimatorRuleType("statesnapshot.enablePosition",
-		"Animator.WPAPanelRuleStateSnapshot.EnablePosition"){
+	aeMCPRuleStateSnapshotEnablePosition() : aeTMCPAnimatorRuleType(
+	"statesnapshot.enablePosition", "Animator.WPAPanelRuleStateSnapshot.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
@@ -75,8 +75,8 @@ public:
 
 class aeMCPRuleStateSnapshotEnableOrientation : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnableOrientation() : aeTMCPAnimatorRuleType("statesnapshot.enableOrientation",
-		"Animator.WPAPanelRuleStateSnapshot.EnableRotation"){
+	aeMCPRuleStateSnapshotEnableOrientation() : aeTMCPAnimatorRuleType(
+	"statesnapshot.enableOrientation", "Animator.WPAPanelRuleStateSnapshot.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -89,8 +89,8 @@ public:
 
 class aeMCPRuleStateSnapshotEnableSize : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnableSize() : aeTMCPAnimatorRuleType("statesnapshot.enableSize",
-		"Animator.WPAPanelRuleStateSnapshot.EnableSize"){}
+	aeMCPRuleStateSnapshotEnableSize() : aeTMCPAnimatorRuleType(
+	"statesnapshot.enableSize", "Animator.WPAPanelRuleStateSnapshot.EnableSize"){}
 	
 	~aeMCPRuleStateSnapshotEnableSize() override = default;
 	
@@ -101,8 +101,8 @@ public:
 
 class aeMCPRuleStateSnapshotEnableVertexPositionSet : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnableVertexPositionSet() : aeTMCPAnimatorRuleType("statesnapshot.enableVertexPositionSet",
-		"Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet"){
+	aeMCPRuleStateSnapshotEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	"statesnapshot.enableVertexPositionSet", "Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	

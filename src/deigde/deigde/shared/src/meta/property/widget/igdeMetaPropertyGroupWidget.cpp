@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyGroupWidget.h"
+#include "state/igdeMetaPropertyWidgetStateGroup.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
 
@@ -52,7 +53,15 @@ void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper 
 	
 	igdeEnvironment &env = helper.GetEnvironment();
 	
+	auto state = pPropertyGroup.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateGroup>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateGroup::Ref::New();
+		// state->collapsed = pPropertyGroup.GetInitiallyCollapsed();
+		pPropertyGroup.SetWidgetState(state);
+	}
+	
 	pGroupBox = igdeGroupBox::Ref::New(env, pPropertyGroup.GetLabel(), false);
+	pGroupBox->SetCollapsed(state->collapsed);
 	container.AddChild(pGroupBox);
 	
 	pGroupBoxContainer = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -73,6 +82,13 @@ void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){
 }
 
 void igdeMetaPropertyGroupWidget::Drop(){
+	if(pGroupBox){
+		auto state = pPropertyGroup.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateGroup>();
+		if(state){
+			state->collapsed = pGroupBox->GetCollapsed();
+		}
+	}
+	
 	pChildWidgets.Visit([](igdeMetaPropertyWidget &widget){
 		widget.Drop();
 	});

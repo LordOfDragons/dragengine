@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyTagsWidget.h"
+#include "state/igdeMetaPropertyWidgetStateList.h"
 #include "../igdeMetaPropertyStringSet.h"
 #include "../undo/igdeMetaPropertyTagsUndo.h"
 #include "../../../clipboard/igdeClipboard.h"
@@ -221,14 +222,31 @@ igdeMetaPropertyTagsWidget::~igdeMetaPropertyTagsWidget(){
 void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pEditTags)
 	
+	auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateList::Ref::New();
+		state->rows = pPropertyTags.GetRows();
+		pPropertyTags.SetWidgetState(state);
+	}
+	
 	pAction = deTObjectReference<cAction>::New(*this);
 	helper.EditTags(pEditTags, pAction);
+	pEditTags->GetListBox().SetRows(state->rows);
 	WrapEditWidget(container, helper, noLabel, pEditTags);
 	
 	UpdateMatchable(container);
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){
+	if(pEditTags){
+		auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+		if(state){
+			state->rows = pEditTags->GetListBox().GetRows();
+		}
+		
+		pEditTags->SetAction(nullptr);
+	}
+	
 	pAction.Clear();
 	pEditTags.Clear();
 	igdeMetaPropertyWidget::Drop();
@@ -242,7 +260,9 @@ void igdeMetaPropertyTagsWidget::Update(){
 	const bool valid = pPropertyTags.IsValid(GetContext());
 	RunWithPreventUpdate([&]{
 		pEditTags->SetTags(valid ? pPropertyTags.GetPropertyValue(GetContext()) : decStringSet());
-		// pEditTags->SetEnabled(valid); => TODO missing
+		
+		pEditTags->GetListBox().SetEnabled(valid);
+		pEditTags->GetComboBox().SetEnabled(valid);
 	});
 }
 

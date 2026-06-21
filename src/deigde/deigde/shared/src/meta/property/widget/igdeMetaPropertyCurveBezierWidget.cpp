@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyCurveBezierWidget.h"
+#include "state/igdeMetaPropertyWidgetStateCurveBezier.h"
 #include "../undo/igdeMetaPropertyCurveBezierUndo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../gui/curveedit/igdeDialogEditCurveBezier.h"
@@ -262,10 +263,7 @@ igdeMetaPropertyCurveBezierWidget::igdeMetaPropertyCurveBezierWidget(
 	igdeMetaPropertyCurveBezier &property) :
 igdeMetaPropertyWidget(property),
 pPropertyCurveBezier(property),
-pPropertyListener(PropertyListener::Ref::New(*this)),
-pClamp(property.GetClamp()),
-pClampMin(property.GetClampMin()),
-pClampMax(property.GetClampMax())
+pPropertyListener(PropertyListener::Ref::New(*this))
 {
 	pPropertyCurveBezier.GetListeners().Add(pPropertyListener);
 }
@@ -282,13 +280,22 @@ igdeMetaPropertyCurveBezierWidget::~igdeMetaPropertyCurveBezierWidget(){
 void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pViewCurveBezier)
 	
+	auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateCurveBezier::Ref::New();
+		state->clamp = pPropertyCurveBezier.GetClamp();
+		state->clampMin = pPropertyCurveBezier.GetClampMin();
+		state->clampMax = pPropertyCurveBezier.GetClampMax();
+		pPropertyCurveBezier.SetWidgetState(state);
+	}
+	
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ViewCurveBezier(pViewCurveBezier, pListener);
-	pViewCurveBezier->SetClamp(pClamp);
-	pViewCurveBezier->SetClampMin(pClampMin);
-	pViewCurveBezier->SetClampMax(pClampMax);
-	if(pDefaultSize != decPoint()){
-		pViewCurveBezier->SetDefaultSize(pDefaultSize);
+	pViewCurveBezier->SetClamp(state->clamp);
+	pViewCurveBezier->SetClampMin(state->clampMin);
+	pViewCurveBezier->SetClampMax(state->clampMax);
+	if(state->size != decPoint()){
+		pViewCurveBezier->SetDefaultSize(state->size);
 	}
 	WrapEditWidget(container, helper, noLabel, pViewCurveBezier);
 	
@@ -297,16 +304,22 @@ void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIH
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
 	if(pViewCurveBezier){
+		auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
+		if(state){
+			state->clamp = pViewCurveBezier->GetClamp();
+			state->clampMin = pViewCurveBezier->GetClampMin();
+			state->clampMax = pViewCurveBezier->GetClampMax();
+			state->size = pViewCurveBezier->GetDefaultSize();
+		}
+		
 		if(pListener){
 			pViewCurveBezier->RemoveListener(pListener);
-			pListener.Clear();
 		}
-		pClamp = pViewCurveBezier->GetClamp();
-		pClampMin = pViewCurveBezier->GetClampMin();
-		pClampMax = pViewCurveBezier->GetClampMax();
-		pDefaultSize = pViewCurveBezier->GetDefaultSize();
-		pViewCurveBezier.Clear();
 	}
+	
+	pListener.Clear();
+	pViewCurveBezier.Clear();
+	
 	igdeMetaPropertyWidget::Drop();
 }
 

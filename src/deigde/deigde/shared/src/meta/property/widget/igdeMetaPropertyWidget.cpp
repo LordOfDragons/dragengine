@@ -156,6 +156,8 @@ bool noLabel, igdeWidget *widget, igdeWidget *sideWidget){
 	DEASSERT_NULL(pButtonContextMenu)
 	DEASSERT_NULL(pEditContainer)
 	
+	auto &env = helper.GetEnvironment();
+	
 	// label on left side
 	if(!noLabel){
 		helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
@@ -163,14 +165,15 @@ bool noLabel, igdeWidget *widget, igdeWidget *sideWidget){
 	}
 	
 	// edit widget in the center
-	pEditContainer = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
+	pEditContainer = igdeContainerFlow::Ref::New(env,
 		igdeContainerFlow::eaX, igdeContainerFlow::esFirst, 5);
 	
 	pEditContainer->AddChild(widget);
 	
 	// context menu button on the right side
-	auto column = igdeContainerFlow::Ref::New(helper.GetEnvironment(), igdeContainerFlow::eaY,
-		sideWidget ? igdeContainerFlow::esLast : igdeContainerFlow::esNone);
+	auto column = sideWidget
+		? igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 0, true)
+		: igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
 	
 	auto action = deTObjectReference<cActionEditMenu>::New(*this, container.GetEnvironment());
 	helper.Button(column, pButtonContextMenu, action);

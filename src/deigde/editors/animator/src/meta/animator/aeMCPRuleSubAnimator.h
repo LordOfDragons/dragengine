@@ -35,8 +35,8 @@
 
 class aeMCPRuleSubAnimatorPathSubAnimator : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPRuleSubAnimatorPathSubAnimator() : aeTMCPAnimatorRuleType("subanimator.pathSubAnimator",
-		"Animator.WPAPanelRuleSubAnimator.Path",
+	aeMCPRuleSubAnimatorPathSubAnimator() : aeTMCPAnimatorRuleType(
+	"subanimator.pathSubAnimator", "Animator.WPAPanelRuleSubAnimator.Path",
 		igdeEnvironment::eFilePatternListTypes::efpltAnimator){
 	}
 	
@@ -54,8 +54,8 @@ public:
 
 class aeMCPRuleSubAnimatorEnablePosition : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnablePosition() : aeTMCPAnimatorRuleType("subanimator.enablePosition",
-		"Animator.WPAPanelRuleSubAnimator.EnablePosition"){
+	aeMCPRuleSubAnimatorEnablePosition() : aeTMCPAnimatorRuleType(
+	"subanimator.enablePosition", "Animator.WPAPanelRuleSubAnimator.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
@@ -68,8 +68,8 @@ public:
 
 class aeMCPRuleSubAnimatorEnableOrientation : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnableOrientation() : aeTMCPAnimatorRuleType("subanimator.enableOrientation",
-		"Animator.WPAPanelRuleSubAnimator.EnableRotation"){
+	aeMCPRuleSubAnimatorEnableOrientation() : aeTMCPAnimatorRuleType(
+	"subanimator.enableOrientation", "Animator.WPAPanelRuleSubAnimator.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -82,8 +82,8 @@ public:
 
 class aeMCPRuleSubAnimatorEnableSize : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnableSize() : aeTMCPAnimatorRuleType("subanimator.enableSize",
-		"Animator.WPAPanelRuleSubAnimator.EnableSize"){
+	aeMCPRuleSubAnimatorEnableSize() : aeTMCPAnimatorRuleType(
+	"subanimator.enableSize", "Animator.WPAPanelRuleSubAnimator.EnableSize"){
 		SetDefaultValue(true);
 	}
 	
@@ -96,8 +96,8 @@ public:
 
 class aeMCPRuleSubAnimatorEnableVertexPositionSet : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnableVertexPositionSet() : aeTMCPAnimatorRuleType("subanimator.enableVertexPositionSet",
-		"Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet"){
+	aeMCPRuleSubAnimatorEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	"subanimator.enableVertexPositionSet", "Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	

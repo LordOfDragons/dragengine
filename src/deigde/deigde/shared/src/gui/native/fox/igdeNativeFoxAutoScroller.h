@@ -43,7 +43,7 @@ class igdeContainerForm;
 class igdeNativeFoxAutoScroller : public FXComposite{
 	FXDECLARE(igdeNativeFoxAutoScroller)
 protected:
-	   igdeNativeFoxAutoScroller();
+	igdeNativeFoxAutoScroller();
 	
 public:
 	enum eFoxIDs{
@@ -54,13 +54,14 @@ public:
 	
 private:
 	int pScrollPosition;
+	bool pHorizontal;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeNativeFoxAutoScroller(FXComposite *parent, int opts = 0);
+	igdeNativeFoxAutoScroller(FXComposite *parent, int opts, bool horizontal);
 	
 	/** \brief Clean up widget. */
 	~igdeNativeFoxAutoScroller() override;
@@ -70,6 +71,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Horizontal or vertical scrolling. */
+	inline bool GetHorizontal() const{ return pHorizontal; }
+	
 	/** \brief Content window or nullptr. */
 	FXWindow *GetContentWindow() const;
 	
@@ -86,7 +90,8 @@ public:
 	FXint getDefaultHeight() override;
 	void layout() override;
 	
-	void MoveContent(int x);
+	void MoveContentX(int x);
+	void MoveContentY(int y);
 	/*@}*/
 	
 	

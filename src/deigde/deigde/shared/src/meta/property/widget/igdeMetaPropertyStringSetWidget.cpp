@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyStringSetWidget.h"
+#include "state/igdeMetaPropertyWidgetStateList.h"
 #include "../undo/igdeMetaPropertyStringSetUndo.h"
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../clipboard/igdeClipboard.h"
@@ -258,8 +259,7 @@ igdeMetaPropertyStringSet*, const igdeMetaContext::Ref &context){
 igdeMetaPropertyStringSetWidget::igdeMetaPropertyStringSetWidget(igdeMetaPropertyStringSet &property) :
 igdeMetaPropertyWidget(property),
 pPropertyStringSet(property),
-pPropertyListener(PropertyListener::Ref::New(*this)),
-pRows(property.GetRows())
+pPropertyListener(PropertyListener::Ref::New(*this))
 {
 	property.GetListeners().Add(pPropertyListener);
 }
@@ -276,8 +276,15 @@ igdeMetaPropertyStringSetWidget::~igdeMetaPropertyStringSetWidget(){
 void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
+	auto state = pPropertyStringSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateList::Ref::New();
+		state->rows = pPropertyStringSet.GetRows();
+		pPropertyStringSet.SetWidgetState(state);
+	}
+	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ListBox(pRows, pPropertyStringSet.GetDescription(), pListBox, pListener);
+	helper.ListBox(state->rows, pPropertyStringSet.GetDescription(), pListBox, pListener);
 	pListBox->SetDefaultSorter();
 	pListBox->SetSelectionMode(pPropertyStringSet.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
@@ -297,10 +304,14 @@ void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHel
 
 void igdeMetaPropertyStringSetWidget::Drop(){
 	if(pListBox){
+		auto state = pPropertyStringSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+		if(state){
+			state->rows = pListBox->GetRows();
+		}
+		
 		if(pListener){
 			pListBox->RemoveListener(pListener);
 		}
-		pRows = pListBox->GetRows();
 	}
 	
 	pListener.Clear();

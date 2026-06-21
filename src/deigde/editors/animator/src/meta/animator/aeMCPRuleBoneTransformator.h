@@ -39,8 +39,8 @@
 
 class aeMCPRuleBoneTransformatorMinTranslation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorMinTranslation() : aeTMCPAnimatorRuleType("bonetransformator.minTranslation",
-		"Animator.WPAPanelRuleBoneTransformator.MinTranslation"){}
+	aeMCPRuleBoneTransformatorMinTranslation() : aeTMCPAnimatorRuleType(
+	"bonetransformator.minTranslation", "Animator.WPAPanelRuleBoneTransformator.MinTranslation"){}
 	
 	~aeMCPRuleBoneTransformatorMinTranslation() override = default;
 	
@@ -51,8 +51,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMaxTranslation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorMaxTranslation() : aeTMCPAnimatorRuleType("bonetransformator.maxTranslation",
-		"Animator.WPAPanelRuleBoneTransformator.MaxTranslation"){}
+	aeMCPRuleBoneTransformatorMaxTranslation() : aeTMCPAnimatorRuleType(
+	"bonetransformator.maxTranslation", "Animator.WPAPanelRuleBoneTransformator.MaxTranslation"){}
 	
 	~aeMCPRuleBoneTransformatorMaxTranslation() override = default;
 	
@@ -63,8 +63,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMinRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorMinRotation() : aeTMCPAnimatorRuleType("bonetransformator.minRotation",
-		"Animator.WPAPanelRuleBoneTransformator.MinRotation"){}
+	aeMCPRuleBoneTransformatorMinRotation() : aeTMCPAnimatorRuleType(
+	"bonetransformator.minRotation", "Animator.WPAPanelRuleBoneTransformator.MinRotation"){}
 	
 	~aeMCPRuleBoneTransformatorMinRotation() override = default;
 	
@@ -75,8 +75,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMaxRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorMaxRotation() : aeTMCPAnimatorRuleType("bonetransformator.maxRotation",
-		"Animator.WPAPanelRuleBoneTransformator.MaxRotation"){}
+	aeMCPRuleBoneTransformatorMaxRotation() : aeTMCPAnimatorRuleType(
+	"bonetransformator.maxRotation", "Animator.WPAPanelRuleBoneTransformator.MaxRotation"){}
 	
 	~aeMCPRuleBoneTransformatorMaxRotation() override = default;
 	
@@ -87,8 +87,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMinScaling : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorMinScaling() : aeTMCPAnimatorRuleType("bonetransformator.minScaling",
-		"Animator.WPAPanelRuleBoneTransformator.MinScaling"){
+	aeMCPRuleBoneTransformatorMinScaling() : aeTMCPAnimatorRuleType(
+	"bonetransformator.minScaling", "Animator.WPAPanelRuleBoneTransformator.MinScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
@@ -101,8 +101,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMaxScaling : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorMaxScaling() : aeTMCPAnimatorRuleType("bonetransformator.maxScaling",
-		"Animator.WPAPanelRuleBoneTransformator.MaxScaling"){
+	aeMCPRuleBoneTransformatorMaxScaling() : aeTMCPAnimatorRuleType(
+	"bonetransformator.maxScaling", "Animator.WPAPanelRuleBoneTransformator.MaxScaling"){
 		SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 	}
 	
@@ -115,8 +115,8 @@ public:
 
 class aeMCPRuleBoneTransformatorAxis : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleBoneTransformatorAxis() : aeTMCPAnimatorRuleType("bonetransformator.axis",
-		"Animator.WPAPanelRuleBoneTransformator.Axis"){
+	aeMCPRuleBoneTransformatorAxis() : aeTMCPAnimatorRuleType(
+	"bonetransformator.axis", "Animator.WPAPanelRuleBoneTransformator.Axis"){
 		SetDefaultValue(decVector(0.0f, 0.0f, 1.0f));
 	}
 	
@@ -129,8 +129,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMinAngle : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleBoneTransformatorMinAngle() : aeTMCPAnimatorRuleType("bonetransformator.minAngle",
-		"Animator.WPAPanelRuleBoneTransformator.MinAngle"){}
+	aeMCPRuleBoneTransformatorMinAngle() : aeTMCPAnimatorRuleType(
+	"bonetransformator.minAngle", "Animator.WPAPanelRuleBoneTransformator.MinAngle"){}
 	
 	~aeMCPRuleBoneTransformatorMinAngle() override = default;
 	
@@ -141,8 +141,8 @@ public:
 
 class aeMCPRuleBoneTransformatorMaxAngle : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleBoneTransformatorMaxAngle() : aeTMCPAnimatorRuleType("bonetransformator.maxAngle",
-		"Animator.WPAPanelRuleBoneTransformator.MaxAngle"){}
+	aeMCPRuleBoneTransformatorMaxAngle() : aeTMCPAnimatorRuleType(
+	"bonetransformator.maxAngle", "Animator.WPAPanelRuleBoneTransformator.MaxAngle"){}
 	
 	~aeMCPRuleBoneTransformatorMaxAngle() override = default;
 	
@@ -153,8 +153,8 @@ public:
 
 class aeMCPRuleBoneTransformatorEnablePosition : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleBoneTransformatorEnablePosition() : aeTMCPAnimatorRuleType("bonetransformator.enablePosition",
-		"Animator.WPAPanelRuleBoneTransformator.EnablePosition"){}
+	aeMCPRuleBoneTransformatorEnablePosition() : aeTMCPAnimatorRuleType(
+	"bonetransformator.enablePosition", "Animator.WPAPanelRuleBoneTransformator.EnablePosition"){}
 	
 	~aeMCPRuleBoneTransformatorEnablePosition() override = default;
 	
@@ -165,8 +165,8 @@ public:
 
 class aeMCPRuleBoneTransformatorEnableOrientation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleBoneTransformatorEnableOrientation() : aeTMCPAnimatorRuleType("bonetransformator.enableOrientation",
-		"Animator.WPAPanelRuleBoneTransformator.EnableRotation"){
+	aeMCPRuleBoneTransformatorEnableOrientation() : aeTMCPAnimatorRuleType(
+	"bonetransformator.enableOrientation", "Animator.WPAPanelRuleBoneTransformator.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -179,8 +179,8 @@ public:
 
 class aeMCPRuleBoneTransformatorEnableSize : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleBoneTransformatorEnableSize() : aeTMCPAnimatorRuleType("bonetransformator.enableSize",
-		"Animator.WPAPanelRuleBoneTransformator.EnableSize"){}
+	aeMCPRuleBoneTransformatorEnableSize() : aeTMCPAnimatorRuleType(
+	"bonetransformator.enableSize", "Animator.WPAPanelRuleBoneTransformator.EnableSize"){}
 	
 	~aeMCPRuleBoneTransformatorEnableSize() override = default;
 	
@@ -191,8 +191,8 @@ public:
 
 class aeMCPRuleBoneTransformatorUseAxis : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleBoneTransformatorUseAxis() : aeTMCPAnimatorRuleType("bonetransformator.useAxis",
-		"Animator.WPAPanelRuleBoneTransformator.UseAxis"){}
+	aeMCPRuleBoneTransformatorUseAxis() : aeTMCPAnimatorRuleType(
+	"bonetransformator.useAxis", "Animator.WPAPanelRuleBoneTransformator.UseAxis"){}
 	
 	~aeMCPRuleBoneTransformatorUseAxis() override = default;
 	
@@ -203,10 +203,10 @@ public:
 
 class aeMCPRuleBoneTransformatorTargetBone : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleBoneTransformatorTargetBone() : aeTMCPAnimatorRuleType("bonetransformator.targetBone",
-		"Animator.WPAPanelRuleBoneTransformator.TargetBone"){
-			SetEnableAllowed(true);
-		}
+	aeMCPRuleBoneTransformatorTargetBone() : aeTMCPAnimatorRuleType(
+	"bonetransformator.targetBone", "Animator.WPAPanelRuleBoneTransformator.TargetBone"){
+		SetEnableAllowed(true);
+	}
 	
 	~aeMCPRuleBoneTransformatorTargetBone() override = default;
 	
@@ -222,10 +222,10 @@ public:
 
 class aeMCPRuleBoneTransformatorInputBone : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleBoneTransformatorInputBone() : aeTMCPAnimatorRuleType("bonetransformator.inputBone",
-		"Animator.WPAPanelRuleBoneTransformator.InputBone"){
-			SetEnableAllowed(true);
-		}
+	aeMCPRuleBoneTransformatorInputBone() : aeTMCPAnimatorRuleType(
+	"bonetransformator.inputBone", "Animator.WPAPanelRuleBoneTransformator.InputBone"){
+		SetEnableAllowed(true);
+	}
 	
 	~aeMCPRuleBoneTransformatorInputBone() override = default;
 	
@@ -241,8 +241,8 @@ public:
 
 class aeMCPRuleBoneTransformatorCoordinateFrame : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eCoordinateFrames>>{
 public:
-	aeMCPRuleBoneTransformatorCoordinateFrame() : aeTMCPAnimatorRuleType("bonetransformator.coordinateFrame",
-		"Animator.WPAPanelRuleBoneTransformator.CoordFrame"){
+	aeMCPRuleBoneTransformatorCoordinateFrame() : aeTMCPAnimatorRuleType(
+	"bonetransformator.coordinateFrame", "Animator.WPAPanelRuleBoneTransformator.CoordFrame"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleBoneTransformator::ecfBoneLocal,
 			deAnimatorRuleBoneTransformator::ecfComponent,
@@ -279,8 +279,8 @@ public:
 
 class aeMCPRuleBoneTransformatorInputSource : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleBoneTransformator::eInputSources>>{
 public:
-	aeMCPRuleBoneTransformatorInputSource() : aeTMCPAnimatorRuleType("bonetransformator.inputSource",
-		"Animator.WPAPanelRuleBoneTransformator.InputSource"){
+	aeMCPRuleBoneTransformatorInputSource() : aeTMCPAnimatorRuleType(
+	"bonetransformator.inputSource", "Animator.WPAPanelRuleBoneTransformator.InputSource"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleBoneTransformator::eisTargetBlend,
 			deAnimatorRuleBoneTransformator::eisTargetDirect,
@@ -323,8 +323,9 @@ public:
 
 class aeMCPRuleBoneTransformatorTargetTranslation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleBoneTransformatorTargetTranslation() : aeTMCPRuleTarget("bonetransformator.targetTranslation",
-		"Animator.Target.Translation"){}
+	aeMCPRuleBoneTransformatorTargetTranslation() : aeTMCPRuleTarget("bonetransformator.targetTranslation", "Animator.Target.Translation"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleBoneTransformatorTargetTranslation() override = default;
 	
@@ -335,8 +336,9 @@ public:
 
 class aeMCPRuleBoneTransformatorTargetRotation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleBoneTransformatorTargetRotation() : aeTMCPRuleTarget("bonetransformator.targetRotation",
-		"Animator.Target.Rotation"){}
+	aeMCPRuleBoneTransformatorTargetRotation() : aeTMCPRuleTarget("bonetransformator.targetRotation", "Animator.Target.Rotation"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleBoneTransformatorTargetRotation() override = default;
 	
@@ -348,8 +350,9 @@ public:
 
 class aeMCPRuleBoneTransformatorTargetScaling : public aeTMCPRuleTarget<aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleBoneTransformatorTargetScaling() : aeTMCPRuleTarget("bonetransformator.targetScaling",
-		"Animator.Target.Scaling"){}
+	aeMCPRuleBoneTransformatorTargetScaling() : aeTMCPRuleTarget("bonetransformator.targetScaling", "Animator.Target.Scaling"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleBoneTransformatorTargetScaling() override = default;
 	

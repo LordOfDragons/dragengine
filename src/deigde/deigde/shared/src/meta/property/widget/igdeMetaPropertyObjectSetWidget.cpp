@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyObjectSetWidget.h"
+#include "state/igdeMetaPropertyWidgetStateList.h"
 #include "../undo/igdeMetaPropertyObjectSetUndo.h"
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../clipboard/igdeClipboard.h"
@@ -258,8 +259,7 @@ igdeMetaPropertyObjectSet*, const igdeMetaContext::Ref &context){
 igdeMetaPropertyObjectSetWidget::igdeMetaPropertyObjectSetWidget(igdeMetaPropertyObjectSet &property) :
 igdeMetaPropertyWidget(property),
 pPropertyObjectSet(property),
-pPropertyListener(PropertyListener::Ref::New(*this)),
-pRows(property.GetRows())
+pPropertyListener(PropertyListener::Ref::New(*this))
 {
 	property.GetListeners().Add(pPropertyListener);
 }
@@ -276,8 +276,15 @@ igdeMetaPropertyObjectSetWidget::~igdeMetaPropertyObjectSetWidget(){
 void igdeMetaPropertyObjectSetWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
+	auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		state->rows = pPropertyObjectSet.GetRows();
+		pPropertyObjectSet.SetWidgetState(state);
+	}
+	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ListBox(pRows, pPropertyObjectSet.GetDescription(), pListBox, pListener);
+	helper.ListBox(state->rows, pPropertyObjectSet.GetDescription(), pListBox, pListener);
 	pListBox->SetDefaultSorter();
 	pListBox->SetSelectionMode(pPropertyObjectSet.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
@@ -297,10 +304,14 @@ void igdeMetaPropertyObjectSetWidget::Create(igdeContainer &container, igdeUIHel
 
 void igdeMetaPropertyObjectSetWidget::Drop(){
 	if(pListBox){
+		auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+		if(state){
+			state->rows = pListBox->GetRows();
+		}
+		
 		if(pListener){
 			pListBox->RemoveListener(pListener);
 		}
-		pRows = pListBox->GetRows();
 	}
 	
 	pListener.Clear();

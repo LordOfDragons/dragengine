@@ -25,6 +25,8 @@
 #ifndef _IGDEBASEXML_H_
 #define _IGDEBASEXML_H_
 
+#include <functional>
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/string/decString.h>
@@ -144,6 +146,12 @@ public:
 	
 	/** \brief Read point. */
 	void ReadPoint3(const decXmlElementTag &tag, decPoint3 &point);
+	
+	/** \brief Visit tags with visitor receiving element. */
+	void VisitTags(const decXmlElementTag &tag, const std::function<void(const decXmlElementTag &)> &visitor);
+	
+	/** \brief Visit tags with visitor receiving element and tag name. */
+	void VisitTags(const decXmlElementTag &tag, const std::function<void(const decXmlElementTag &, const decString &)> &visitor);
 	
 	
 	

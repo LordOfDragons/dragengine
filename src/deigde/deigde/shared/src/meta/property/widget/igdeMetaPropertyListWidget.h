@@ -65,7 +65,6 @@ private:
 	igdeListBox::Ref pListBox;
 	igdeListBoxListener::Ref pListener;
 	decTOrderedSet<igdeMetaProperty::Action::Ref> pButtonActions;
-	int pRows;
 	
 	
 public:

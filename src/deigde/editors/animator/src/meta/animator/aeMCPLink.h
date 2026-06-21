@@ -43,8 +43,7 @@
 /** Links. */
 class aeMCPLinks : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeLink, aeLink::List>>{
 public:
-	aeMCPLinks() : aeTMCPAnimator("animator.links",
-		"Animator.WPLink.Links"){
+	aeMCPLinks() : aeTMCPAnimator("animator.links", "Animator.WPLink.Links"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetSorted(true);
@@ -89,10 +88,9 @@ public:
 /** Link name. */
 class aeMCPLinkName : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPLinkName() : aeTMCPAnimatorLink("link.name",
-		"Animator.WPLink.Name"){
-			SetDefaultValue("Link");
-		};
+	aeMCPLinkName() : aeTMCPAnimatorLink("link.name", "Animator.WPLink.Name"){
+		SetDefaultValue("Link");
+	};
 	
 	~aeMCPLinkName() override = default;
 	
@@ -105,8 +103,7 @@ public:
 /** Link controller. */
 class aeMCPLinkController : public aeTMCPAnimatorLink<igdeMetaPropertyObjectStorage<aeController>>{
 public:
-	aeMCPLinkController() : aeTMCPAnimatorLink("link.controller",
-	"Animator.WPLink.Controller"){
+	aeMCPLinkController() : aeTMCPAnimatorLink("link.controller", "Animator.WPLink.Controller"){
 		SetSorted(true);
 	};
 	
@@ -131,12 +128,11 @@ public:
 /** Link repeat. */
 class aeMCPLinkRepeat : public aeTMCPAnimatorLink<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPLinkRepeat() : aeTMCPAnimatorLink("link.repeat",
-		"Animator.WPLink.Repeat"){
-			SetDefaultValue(1);
-			SetEnableLowerLimit(true);
-			SetLowerLimit(1);
-		};
+	aeMCPLinkRepeat() : aeTMCPAnimatorLink("link.repeat", "Animator.WPLink.Repeat"){
+		SetDefaultValue(1);
+		SetEnableLowerLimit(true);
+		SetLowerLimit(1);
+	};
 	
 	~aeMCPLinkRepeat() override = default;
 	
@@ -149,8 +145,7 @@ public:
 /** Link curve. */
 class aeMCPLinkCurve : public aeTMCPAnimatorLink<igdeMetaPropertyCurveBezierStorage>{
 public:
-	aeMCPLinkCurve() : aeTMCPAnimatorLink("link.curve",
-	"Animator.WPLink.LinkCurve"){
+	aeMCPLinkCurve() : aeTMCPAnimatorLink("link.curve", "Animator.WPLink.LinkCurve"){
 		decCurveBezier curve;
 		curve.SetDefaultBezier();
 		SetDefaultValue(curve);
@@ -188,8 +183,7 @@ public:
 /** Link bone parameter. */
 class aeMCPLinkBoneParameter : public aeTMCPAnimatorLink<igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>>{
 public:
-	aeMCPLinkBoneParameter() : aeTMCPAnimatorLink("link.boneParameter",
-		"Animator.WPLink.BoneParameter"){
+	aeMCPLinkBoneParameter() : aeTMCPAnimatorLink("link.boneParameter", "Animator.WPLink.BoneParameter"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorLink::ebpPositionX, deAnimatorLink::ebpPositionY, deAnimatorLink::ebpPositionZ,
 			deAnimatorLink::ebpRotationX, deAnimatorLink::ebpRotationY, deAnimatorLink::ebpRotationZ,
@@ -252,9 +246,7 @@ public:
 /** Link bone minimum. */
 class aeMCPLinkBoneMinimum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkBoneMinimum() : aeTMCPAnimatorLink("link.boneMinimum",
-		"Animator.WPLink.BoneMinimumValue"){};
-	
+	aeMCPLinkBoneMinimum() : aeTMCPAnimatorLink("link.boneMinimum", "Animator.WPLink.BoneMinimumValue"){};
 	~aeMCPLinkBoneMinimum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -266,8 +258,7 @@ public:
 /** Link bone maximum. */
 class aeMCPLinkBoneMaximum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkBoneMaximum() : aeTMCPAnimatorLink("link.boneMaximum",
-	"Animator.WPLink.BoneMaximumValue"){
+	aeMCPLinkBoneMaximum() : aeTMCPAnimatorLink("link.boneMaximum", "Animator.WPLink.BoneMaximumValue"){
 		SetDefaultValue(1.0f);
 	};
 	
@@ -282,8 +273,7 @@ public:
 /** Link vertex position set. */
 class aeMCPLinkVertexPositionSet : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPLinkVertexPositionSet() : aeTMCPAnimatorLink("link.vertexPositionSet",
-	"Animator.WPLink.VertexPositionSet"){
+	aeMCPLinkVertexPositionSet() : aeTMCPAnimatorLink("link.vertexPositionSet", "Animator.WPLink.VertexPositionSet"){
 		SetEnableAllowed(true);
 	};
 	
@@ -303,9 +293,7 @@ public:
 /** Link vertex position set minimum. */
 class aeMCPLinkVertexPositionSetMinimum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkVertexPositionSetMinimum() : aeTMCPAnimatorLink("link.vertexPositionSetMinimum",
-		"Animator.WPLink.VPSMinimumValue"){};
-	
+	aeMCPLinkVertexPositionSetMinimum() : aeTMCPAnimatorLink("link.vertexPositionSetMinimum", "Animator.WPLink.VPSMinimumValue"){};
 	~aeMCPLinkVertexPositionSetMinimum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
@@ -317,8 +305,7 @@ public:
 /** Link vertex position set maximum. */
 class aeMCPLinkVertexPositionSetMaximum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkVertexPositionSetMaximum() : aeTMCPAnimatorLink("link.vertexPositionSetMaximum",
-	"Animator.WPLink.VPSMaximumValue"){
+	aeMCPLinkVertexPositionSetMaximum() : aeTMCPAnimatorLink("link.vertexPositionSetMaximum", "Animator.WPLink.VPSMaximumValue"){
 		SetDefaultValue(1.0f);
 	};
 	
@@ -333,9 +320,7 @@ public:
 /** Link wrap Y. */
 class aeMCPLinkWrapY : public aeTMCPAnimatorLink<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPLinkWrapY() : aeTMCPAnimatorLink("link.wrapY",
-		"Animator.WPLink.WrapY"){};
-	
+	aeMCPLinkWrapY() : aeTMCPAnimatorLink("link.wrapY", "Animator.WPLink.WrapY"){};
 	~aeMCPLinkWrapY() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{

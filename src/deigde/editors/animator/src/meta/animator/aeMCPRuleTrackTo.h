@@ -36,10 +36,10 @@
 
 class aeMCPRuleTrackToTrackBone : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleTrackToTrackBone() : aeTMCPAnimatorRuleType("trackto.trackBone",
-		"Animator.WPAPanelRuleTrackTo.TrackBone"){
-			SetEnableAllowed(true);
-		}
+	aeMCPRuleTrackToTrackBone() : aeTMCPAnimatorRuleType(
+	"trackto.trackBone", "Animator.WPAPanelRuleTrackTo.TrackBone"){
+		SetEnableAllowed(true);
+	}
 	
 	~aeMCPRuleTrackToTrackBone() override = default;
 	
@@ -55,8 +55,8 @@ public:
 
 class aeMCPRuleTrackToTrackAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
 public:
-	aeMCPRuleTrackToTrackAxis() : aeTMCPAnimatorRuleType("trackto.trackAxis",
-		"Animator.WPAPanelRuleTrackTo.TrackAxis"){
+	aeMCPRuleTrackToTrackAxis() : aeTMCPAnimatorRuleType(
+	"trackto.trackAxis", "Animator.WPAPanelRuleTrackTo.TrackAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::etaPosX,
 			deAnimatorRuleTrackTo::etaPosY,
@@ -108,8 +108,8 @@ public:
 
 class aeMCPRuleTrackToUpAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
 public:
-	aeMCPRuleTrackToUpAxis() : aeTMCPAnimatorRuleType("trackto.upAxis",
-		"Animator.WPAPanelRuleTrackTo.UpAxis"){
+	aeMCPRuleTrackToUpAxis() : aeTMCPAnimatorRuleType(
+	"trackto.upAxis", "Animator.WPAPanelRuleTrackTo.UpAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::etaPosX,
 			deAnimatorRuleTrackTo::etaPosY,
@@ -161,8 +161,8 @@ public:
 
 class aeMCPRuleTrackToUpTarget : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>>{
 public:
-	aeMCPRuleTrackToUpTarget() : aeTMCPAnimatorRuleType("trackto.upTarget",
-		"Animator.WPAPanelRuleTrackTo.UpTarget"){
+	aeMCPRuleTrackToUpTarget() : aeTMCPAnimatorRuleType(
+	"trackto.upTarget", "Animator.WPAPanelRuleTrackTo.UpTarget"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::eutWorldX,
 			deAnimatorRuleTrackTo::eutWorldY,
@@ -234,8 +234,8 @@ public:
 
 class aeMCPRuleTrackToLockedAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>>{
 public:
-	aeMCPRuleTrackToLockedAxis() : aeTMCPAnimatorRuleType("trackto.lockedAxis",
-		"Animator.WPAPanelRuleTrackTo.LockedAxis"){
+	aeMCPRuleTrackToLockedAxis() : aeTMCPAnimatorRuleType(
+	"trackto.lockedAxis", "Animator.WPAPanelRuleTrackTo.LockedAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::elaNone,
 			deAnimatorRuleTrackTo::elaX,
@@ -278,8 +278,10 @@ public:
 
 class aeMCPRuleTrackToTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleTrackToTargetPosition() : aeTMCPRuleTarget("trackto.targetPosition",
-		"Animator.Target.Position"){}
+	aeMCPRuleTrackToTargetPosition() : aeTMCPRuleTarget(
+	"trackto.targetPosition", "Animator.Target.Position"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleTrackToTargetPosition() override = default;
 	
@@ -290,8 +292,9 @@ public:
 
 class aeMCPRuleTrackToTargetUp : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleTrackToTargetUp() : aeTMCPRuleTarget("trackto.targetUp",
-		"Animator.Target.Up"){}
+	aeMCPRuleTrackToTargetUp() : aeTMCPRuleTarget("trackto.targetUp", "Animator.Target.Up"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleTrackToTargetUp() override = default;
 	

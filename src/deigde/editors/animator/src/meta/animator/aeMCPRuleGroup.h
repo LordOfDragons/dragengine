@@ -36,8 +36,8 @@
 
 class aeMCPRuleGroupEnablePosition : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnablePosition() : aeTMCPAnimatorRuleType("group.enablePosition",
-		"Animator.WPAPanelRuleGroup.EnablePosition"){
+	aeMCPRuleGroupEnablePosition() : aeTMCPAnimatorRuleType(
+	"group.enablePosition", "Animator.WPAPanelRuleGroup.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
@@ -50,8 +50,8 @@ public:
 
 class aeMCPRuleGroupEnableOrientation : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnableOrientation() : aeTMCPAnimatorRuleType("group.enableOrientation",
-		"Animator.WPAPanelRuleGroup.EnableRotation"){
+	aeMCPRuleGroupEnableOrientation() : aeTMCPAnimatorRuleType(
+	"group.enableOrientation", "Animator.WPAPanelRuleGroup.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -64,8 +64,8 @@ public:
 
 class aeMCPRuleGroupEnableSize : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnableSize() : aeTMCPAnimatorRuleType("group.enableSize",
-		"Animator.WPAPanelRuleGroup.EnableSize"){}
+	aeMCPRuleGroupEnableSize() : aeTMCPAnimatorRuleType(
+	"group.enableSize", "Animator.WPAPanelRuleGroup.EnableSize"){}
 	
 	~aeMCPRuleGroupEnableSize() override = default;
 	
@@ -76,8 +76,8 @@ public:
 
 class aeMCPRuleGroupEnableVertexPositionSet : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnableVertexPositionSet() : aeTMCPAnimatorRuleType("group.enableVertexPositionSet",
-		"Animator.WPAPanelRuleGroup.EnableVertexPositionSet"){
+	aeMCPRuleGroupEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	"group.enableVertexPositionSet", "Animator.WPAPanelRuleGroup.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	
@@ -90,8 +90,8 @@ public:
 
 class aeMCPRuleGroupUseCurrentState : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupUseCurrentState() : aeTMCPAnimatorRuleType("group.useCurrentState",
-		"Animator.WPAPanelRuleGroup.UseCurrentState"){}
+	aeMCPRuleGroupUseCurrentState() : aeTMCPAnimatorRuleType(
+	"group.useCurrentState", "Animator.WPAPanelRuleGroup.UseCurrentState"){}
 	
 	~aeMCPRuleGroupUseCurrentState() override = default;
 	
@@ -102,8 +102,8 @@ public:
 
 class aeMCPRuleGroupApplicationType : public aeTMCPAnimatorRuleGroup<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>>{
 public:
-	aeMCPRuleGroupApplicationType() : aeTMCPAnimatorRuleType("group.applicationType",
-		"Animator.WPAPanelRuleGroup.ApplicationType"){
+	aeMCPRuleGroupApplicationType() : aeTMCPAnimatorRuleType(
+	"group.applicationType", "Animator.WPAPanelRuleGroup.ApplicationType"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleGroup::eatAll,
 			deAnimatorRuleGroup::eatSelect));
@@ -136,8 +136,9 @@ public:
 
 class aeMCPRuleGroupTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleGroup<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleGroupTargetSelect() : aeTMCPRuleTarget("group.targetSelect",
-		"Animator.Target.Select"){}
+	aeMCPRuleGroupTargetSelect() : aeTMCPRuleTarget("group.targetSelect", "Animator.Target.Select"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleGroupTargetSelect() override = default;
 	

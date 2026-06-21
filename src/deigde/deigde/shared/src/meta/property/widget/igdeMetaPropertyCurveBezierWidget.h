@@ -64,10 +64,6 @@ private:
 	igdeViewCurveBezierListener::Ref pListener;
 	igdeMetaPropertyCurveBezierUndo::Ref pUndoDragging;
 	
-	bool pClamp = false;
-	decVector2 pClampMin, pClampMax;
-	decPoint pDefaultSize;
-	
 	
 public:
 	/** \name Constructors and Destructors */

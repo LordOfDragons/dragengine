@@ -27,10 +27,11 @@
 
 #include <functional>
 
-#include "../../gui/menu/igdeMenuCascade.h"
+#include "widget/state/igdeMetaPropertyWidgetState.h"
 #include "../../utils/igdeFilter.h"
 #include "../../utils/igdeTListenerList.h"
 #include "../../gui/event/igdeAction.h"
+#include "../../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -129,6 +130,7 @@ private:
 	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
 	bool pHideLabel = false;
 	bool pCanHideGroup = true;
+	igdeMetaPropertyWidgetState::Ref pWidgetState;
 	
 	
 public:
@@ -226,6 +228,13 @@ public:
 	
 	/** \brief Create action undo info in the form "<label>: <text>". */
 	decString RealUndoInfo(const igdeMetaContext &context, const char *text) const;
+	
+	
+	/** \brief Widget state. */
+	inline const igdeMetaPropertyWidgetState::Ref &GetWidgetState() const{ return pWidgetState; }
+	
+	/** \brief Set widget state. */
+	void SetWidgetState(const igdeMetaPropertyWidgetState::Ref &widgetState);
 	
 	
 	/**

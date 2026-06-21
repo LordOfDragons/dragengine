@@ -147,5 +147,10 @@ decString igdeMetaProperty::RealUndoInfo(const igdeMetaContext &context, const c
 }
 
 
+void igdeMetaProperty::SetWidgetState(const igdeMetaPropertyWidgetState::Ref &widgetState){
+	pWidgetState = widgetState;
+}
+
+
 void igdeMetaProperty::AddContextMenuEntries(igdeMenuCascade&, const igdeMetaContext::Ref&, igdeWidget&){
 }

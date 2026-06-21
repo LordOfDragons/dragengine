@@ -37,10 +37,10 @@
 
 class aeMCPRuleAnimationDifferenceLeadingMoveName : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleAnimationDifferenceLeadingMoveName() : aeTMCPAnimatorRuleType("animationdifference.leadingMoveName",
-		"Animator.WPAPanelRuleAnimationDifference.LeadingMoveName"){
-			SetEnableAllowed(true);
-		}
+	aeMCPRuleAnimationDifferenceLeadingMoveName() : aeTMCPAnimatorRuleType(
+	"animationdifference.leadingMoveName", "Animator.WPAPanelRuleAnimationDifference.LeadingMoveName"){
+		SetEnableAllowed(true);
+	}
 	
 	~aeMCPRuleAnimationDifferenceLeadingMoveName() override = default;
 	
@@ -56,11 +56,11 @@ public:
 
 class aeMCPRuleAnimationDifferenceLeadingMoveTime : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleAnimationDifferenceLeadingMoveTime() : aeTMCPAnimatorRuleType("animationdifference.leadingMoveTime",
-		"Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime"){
-			SetEnableLowerLimit(true);
-			SetEnableUpperLimit(true);
-		}
+	aeMCPRuleAnimationDifferenceLeadingMoveTime() : aeTMCPAnimatorRuleType(
+	"animationdifference.leadingMoveTime", "Animator.WPAPanelRuleAnimationDifference.LeadingMoveTime"){
+		SetEnableLowerLimit(true);
+		SetEnableUpperLimit(true);
+	}
 	
 	~aeMCPRuleAnimationDifferenceLeadingMoveTime() override = default;
 	
@@ -71,10 +71,10 @@ public:
 
 class aeMCPRuleAnimationDifferenceReferenceMoveName : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleAnimationDifferenceReferenceMoveName() : aeTMCPAnimatorRuleType("animationdifference.referenceMoveName",
-		"Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName"){
-			SetEnableAllowed(true);
-		}
+	aeMCPRuleAnimationDifferenceReferenceMoveName() : aeTMCPAnimatorRuleType(
+	"animationdifference.referenceMoveName", "Animator.WPAPanelRuleAnimationDifference.ReferenceMoveName"){
+		SetEnableAllowed(true);
+	}
 	
 	~aeMCPRuleAnimationDifferenceReferenceMoveName() override = default;
 	
@@ -90,11 +90,11 @@ public:
 
 class aeMCPRuleAnimationDifferenceReferenceMoveTime : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleAnimationDifferenceReferenceMoveTime() : aeTMCPAnimatorRuleType("animationdifference.referenceMoveTime",
-		"Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime"){
-			SetEnableLowerLimit(true);
-			SetEnableUpperLimit(true);
-		}
+	aeMCPRuleAnimationDifferenceReferenceMoveTime() : aeTMCPAnimatorRuleType(
+	"animationdifference.referenceMoveTime", "Animator.WPAPanelRuleAnimationDifference.ReferenceMoveTime"){
+		SetEnableLowerLimit(true);
+		SetEnableUpperLimit(true);
+	}
 	
 	~aeMCPRuleAnimationDifferenceReferenceMoveTime() override = default;
 	
@@ -105,8 +105,8 @@ public:
 
 class aeMCPRuleAnimationDifferenceUseComponentSpace : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationDifferenceUseComponentSpace() : aeTMCPAnimatorRuleType("animationdifference.useComponentSpace",
-		"Animator.WPAPanelRuleAnimationDifference.ComponentSpace"){}
+	aeMCPRuleAnimationDifferenceUseComponentSpace() : aeTMCPAnimatorRuleType(
+	"animationdifference.useComponentSpace", "Animator.WPAPanelRuleAnimationDifference.ComponentSpace"){}
 	
 	~aeMCPRuleAnimationDifferenceUseComponentSpace() override = default;
 	
@@ -117,8 +117,8 @@ public:
 
 class aeMCPRuleAnimationDifferenceEnablePosition : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationDifferenceEnablePosition() : aeTMCPAnimatorRuleType("animationdifference.enablePosition",
-		"Animator.WPAPanelRuleAnimationDifference.EnablePosition"){
+	aeMCPRuleAnimationDifferenceEnablePosition() : aeTMCPAnimatorRuleType(
+	"animationdifference.enablePosition", "Animator.WPAPanelRuleAnimationDifference.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
@@ -131,8 +131,8 @@ public:
 
 class aeMCPRuleAnimationDifferenceEnableOrientation : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationDifferenceEnableOrientation() : aeTMCPAnimatorRuleType("animationdifference.enableOrientation",
-		"Animator.WPAPanelRuleAnimationDifference.EnableRotation"){
+	aeMCPRuleAnimationDifferenceEnableOrientation() : aeTMCPAnimatorRuleType(
+	"animationdifference.enableOrientation", "Animator.WPAPanelRuleAnimationDifference.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -145,8 +145,8 @@ public:
 
 class aeMCPRuleAnimationDifferenceEnableSize : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationDifferenceEnableSize() : aeTMCPAnimatorRuleType("animationdifference.enableSize",
-		"Animator.WPAPanelRuleAnimationDifference.EnableSize"){}
+	aeMCPRuleAnimationDifferenceEnableSize() : aeTMCPAnimatorRuleType(
+	"animationdifference.enableSize", "Animator.WPAPanelRuleAnimationDifference.EnableSize"){}
 	
 	~aeMCPRuleAnimationDifferenceEnableSize() override = default;
 	
@@ -157,8 +157,8 @@ public:
 
 class aeMCPRuleAnimationDifferenceEnableVertexPositionSet : public aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationDifferenceEnableVertexPositionSet() : aeTMCPAnimatorRuleType("animationdifference.enableVertexPositionSet",
-		"Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet"){
+	aeMCPRuleAnimationDifferenceEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	"animationdifference.enableVertexPositionSet", "Animator.WPAPanelRuleAnimationDifference.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	
@@ -172,8 +172,10 @@ public:
 
 class aeMCPRuleAnimationDifferenceTargetLeadMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleAnimationDifferenceTargetLeadMoveTime() : aeTMCPRuleTarget("animationdifference.targetLeadMoveTime",
-		"Animator.Target.LeadingMoveTime"){}
+	aeMCPRuleAnimationDifferenceTargetLeadMoveTime() : aeTMCPRuleTarget(
+	"animationdifference.targetLeadMoveTime", "Animator.Target.LeadingMoveTime"){
+		SetRows(3);
+	}
 
 	~aeMCPRuleAnimationDifferenceTargetLeadMoveTime() override = default;
 	
@@ -184,8 +186,10 @@ public:
 
 class aeMCPRuleAnimationDifferenceTargetRefMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationDifference<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleAnimationDifferenceTargetRefMoveTime() : aeTMCPRuleTarget("animationdifference.targetRefMoveTime",
-		"Animator.Target.ReferenceMoveTime"){}
+	aeMCPRuleAnimationDifferenceTargetRefMoveTime() : aeTMCPRuleTarget(
+	"animationdifference.targetRefMoveTime", "Animator.Target.ReferenceMoveTime"){
+		SetRows(3);
+	}
 
 	~aeMCPRuleAnimationDifferenceTargetRefMoveTime() override = default;
 	

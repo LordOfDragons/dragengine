@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyStringListWidget.h"
+#include "state/igdeMetaPropertyWidgetStateList.h"
 #include "../undo/igdeMetaPropertyStringListUndo.h"
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../clipboard/igdeClipboard.h"
@@ -269,8 +270,7 @@ igdeMetaPropertyStringListWidget::igdeMetaPropertyStringListWidget(
 		igdeMetaPropertyStringList &property) :
 igdeMetaPropertyWidget(property),
 pPropertyStringList(property),
-pPropertyListener(PropertyListener::Ref::New(*this)),
-pRows(property.GetRows())
+pPropertyListener(PropertyListener::Ref::New(*this))
 {
 	property.GetListeners().Add(pPropertyListener);
 }
@@ -288,8 +288,15 @@ void igdeMetaPropertyStringListWidget::Create(igdeContainer &container,
 		igdeUIHelper &helper, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
+	auto state = pPropertyStringList.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateList::Ref::New();
+		state->rows = pPropertyStringList.GetRows();
+		pPropertyStringList.SetWidgetState(state);
+	}
+	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ListBox(pRows, pPropertyStringList.GetDescription(), pListBox, pListener);
+	helper.ListBox(state->rows, pPropertyStringList.GetDescription(), pListBox, pListener);
 	pListBox->SetSelectionMode(pPropertyStringList.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
 	
@@ -310,10 +317,14 @@ void igdeMetaPropertyStringListWidget::Create(igdeContainer &container,
 
 void igdeMetaPropertyStringListWidget::Drop(){
 	if(pListBox){
+		auto state = pPropertyStringList.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+		if(state){
+			state->rows = pListBox->GetRows();
+		}
+		
 		if(pListener){
 			pListBox->RemoveListener(pListener);
 		}
-		pRows = pListBox->GetRows();
 	}
 	
 	pListener.Clear();

@@ -36,8 +36,8 @@
 
 class aeMCPRuleAnimationSelectEnablePosition : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnablePosition() : aeTMCPAnimatorRuleType("animationselect.enablePosition",
-		"Animator.WPAPanelRuleAnimationSelect.EnablePosition"){
+	aeMCPRuleAnimationSelectEnablePosition() : aeTMCPAnimatorRuleType(
+	"animationselect.enablePosition", "Animator.WPAPanelRuleAnimationSelect.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
@@ -50,8 +50,8 @@ public:
 
 class aeMCPRuleAnimationSelectEnableOrientation : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnableOrientation() : aeTMCPAnimatorRuleType("animationselect.enableOrientation",
-		"Animator.WPAPanelRuleAnimationSelect.EnableRotation"){
+	aeMCPRuleAnimationSelectEnableOrientation() : aeTMCPAnimatorRuleType(
+	"animationselect.enableOrientation", "Animator.WPAPanelRuleAnimationSelect.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
@@ -64,8 +64,8 @@ public:
 
 class aeMCPRuleAnimationSelectEnableSize : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnableSize() : aeTMCPAnimatorRuleType("animationselect.enableSize",
-		"Animator.WPAPanelRuleAnimationSelect.EnableSize"){}
+	aeMCPRuleAnimationSelectEnableSize() : aeTMCPAnimatorRuleType(
+	"animationselect.enableSize", "Animator.WPAPanelRuleAnimationSelect.EnableSize"){}
 	
 	~aeMCPRuleAnimationSelectEnableSize() override = default;
 	
@@ -76,8 +76,8 @@ public:
 
 class aeMCPRuleAnimationSelectEnableVertexPositionSet : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnableVertexPositionSet() : aeTMCPAnimatorRuleType("animationselect.enableVertexPositionSet",
-		"Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet"){
+	aeMCPRuleAnimationSelectEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	"animationselect.enableVertexPositionSet", "Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	
@@ -90,10 +90,10 @@ public:
 
 class aeMCPRuleAnimationSelectMoves : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyStringListStorage>{
 public:
-	aeMCPRuleAnimationSelectMoves() : aeTMCPAnimatorRuleType("animationselect.moves",
-		"Animator.WPAPanelRuleAnimationSelect.Moves"){
-			SetMultiSelection(true);
-		}
+	aeMCPRuleAnimationSelectMoves() : aeTMCPAnimatorRuleType("animationselect.moves", "Animator.WPAPanelRuleAnimationSelect.Moves"){
+		SetMultiSelection(true);
+		SetRows(5);
+	}
 	
 	~aeMCPRuleAnimationSelectMoves() override = default;
 	
@@ -116,8 +116,9 @@ public:
 
 class aeMCPRuleAnimationSelectTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleAnimationSelectTargetMoveTime() : aeTMCPRuleTarget("animationselect.targetMoveTime",
-		"Animator.Target.MoveTime"){}
+	aeMCPRuleAnimationSelectTargetMoveTime() : aeTMCPRuleTarget("animationselect.targetMoveTime", "Animator.Target.MoveTime"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleAnimationSelectTargetMoveTime() override = default;
 	
@@ -128,8 +129,9 @@ public:
 
 class aeMCPRuleAnimationSelectTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
 public:
-	aeMCPRuleAnimationSelectTargetSelect() : aeTMCPRuleTarget("animationselect.targetSelect",
-		"Animator.Target.Select"){}
+	aeMCPRuleAnimationSelectTargetSelect() : aeTMCPRuleTarget("animationselect.targetSelect", "Animator.Target.Select"){
+		SetRows(3);
+	}
 	
 	~aeMCPRuleAnimationSelectTargetSelect() override = default;
 	
