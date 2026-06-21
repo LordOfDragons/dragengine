@@ -363,6 +363,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTags.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierClamp.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierCoord.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogEditCurveBezier.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezier.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.cpp" />
@@ -636,6 +637,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\igdeMetaContext.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\igdeMetaContextItemInfo.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaProperty.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyAdapters.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyBoolean.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyColor.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyContext.cpp" />
@@ -808,6 +810,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTags.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierClamp.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierCoord.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogEditCurveBezier.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezier.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.h" />
@@ -1086,6 +1089,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\igdeMetaContextItemInfo.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\igdeTMetaData.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaProperty.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyAdapters.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyBoolean.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyColor.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyContext.h" />

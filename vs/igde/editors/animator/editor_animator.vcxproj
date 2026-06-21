@@ -347,13 +347,17 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveAttachmentConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCController.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCControllerProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLink.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLinkProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPLink.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPRule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCRule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCRuleProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddBone.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorAddVertexPositionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\animator\aeUAnimatorMirrorBones.cpp" />
@@ -645,6 +649,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCControllerProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLink.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLinkProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCListeners.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPLink.h" />

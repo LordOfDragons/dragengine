@@ -257,6 +257,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierCoord.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogEditCurveBezier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1076,6 +1079,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyAdapters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyBoolean.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1586,6 +1592,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierCoord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogEditCurveBezier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezier.h">
@@ -2420,6 +2429,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyAdapters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyBoolean.h">
