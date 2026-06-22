@@ -1304,6 +1304,15 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateCurveBezier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\module\igdeEditorModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2693,6 +2702,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateCurveBezier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\module\igdeEditorModule.h">

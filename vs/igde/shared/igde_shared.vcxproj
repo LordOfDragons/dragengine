@@ -712,6 +712,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyVector2Widget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyVectorWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyWidget.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateCurveBezier.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateGroup.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateList.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\module\igdeEditorModule.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoader.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListener.cpp" />
@@ -1177,6 +1180,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyVector2Widget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyVectorWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyWidget.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetState.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateCurveBezier.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateGroup.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\state\igdeMetaPropertyWidgetStateList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\module\igdeEditorModule.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoader.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListener.h" />
