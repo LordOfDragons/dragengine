@@ -130,6 +130,8 @@ void aeMCPRules::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaCont
 	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertLimit());
 	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertMirror());
 	menu.AddChild(submenu);
+	
+	AddDefaultContextMenuEntries(menu, context, owner);
 }
 
 

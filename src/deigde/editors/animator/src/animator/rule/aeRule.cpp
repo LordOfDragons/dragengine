@@ -147,6 +147,9 @@ aeRule(windowMain, std::move(metaContext), copy.pType, copy.name)
 
 aeRule::~aeRule(){
 	SetAnimator(nullptr);
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
 }
 
 

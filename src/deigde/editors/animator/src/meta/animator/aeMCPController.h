@@ -50,6 +50,7 @@ public:
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
+		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Controllers");
 	}
 	
 	~aeMCPControllers() override = default;
@@ -164,7 +165,9 @@ public:
 /** Controller clamp. */
 class aeMCPControllerClamp : public aeTMCPAnimatorController<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPControllerClamp() : aeTMCPAnimatorController("controller.clamp", "Animator.WPController.Clamp"){}
+	aeMCPControllerClamp() : aeTMCPAnimatorController("controller.clamp", "Animator.WPController.Clamp"){
+		SetDefaultValue(true);
+	}
 	~aeMCPControllerClamp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{

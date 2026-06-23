@@ -190,7 +190,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	float pCheckValue(float value);
 	void pReleaseGizmos();
 	void pCreateGizmos();

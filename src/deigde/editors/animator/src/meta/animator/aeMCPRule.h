@@ -49,6 +49,7 @@ public:
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
+		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Rules");
 	}
 	
 	~aeMCPRules() override = default;

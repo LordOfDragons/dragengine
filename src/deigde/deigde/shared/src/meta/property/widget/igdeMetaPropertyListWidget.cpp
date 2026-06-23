@@ -111,7 +111,6 @@ public:
 		
 		values.Visit([&](const deObject::Ref &object){
 			const auto copiedObject = property.CopyObject(context, copiedValues, object);
-			printf("Copy: %p '%s' -> %p\n", object.Pointer(), property.GetClipboardDataTypeName().GetString(), copiedObject.Pointer());
 			if(copiedObject){
 				copiedValues.Add(copiedObject);
 			}

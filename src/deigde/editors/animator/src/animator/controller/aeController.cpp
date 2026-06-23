@@ -69,11 +69,13 @@ defaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, pMe
 	minimumValue.SetOnChanged([this](){
 		pOnLimitsChanged();
 		currentValue.SetLowerLimit(minimumValue);
+		currentValue.SetTickSpacing((maximumValue - minimumValue) / 10.0f);
 	});
 	
 	maximumValue.SetOnChanged([this](){
 		pOnLimitsChanged();
 		currentValue.SetUpperLimit(maximumValue);
+		currentValue.SetTickSpacing((maximumValue - minimumValue) / 10.0f);
 	});
 	
 	currentValue.SetOnChanged([this](){
@@ -144,7 +146,10 @@ aeController(windowMain, copy.name)
 }
 
 aeController::~aeController(){
-	pCleanUp();
+	SetAnimator(nullptr);
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
 }
 
 
@@ -475,13 +480,6 @@ void aeController::InverseValue(){
 
 // Private Functions
 //////////////////////
-
-void aeController::pCleanUp(){
-	SetAnimator(nullptr);
-	if(pMetaContext){
-		pMetaContext->Dispose();
-	}
-}
 
 float aeController::pCheckValue(float value){
 	float range = maximumValue - minimumValue;

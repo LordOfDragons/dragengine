@@ -48,6 +48,7 @@ public:
 		SetCanHideGroup(false);
 		SetSorted(true);
 		SetRows(8);
+		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Links");
 	}
 	
 	~aeMCPLinks() override = default;

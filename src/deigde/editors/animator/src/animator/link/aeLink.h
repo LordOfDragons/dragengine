@@ -245,7 +245,6 @@ public:
 	
 	
 private:
-	void pUpdateCurve();
 	void pUpdateBoneLimits();
 };
 

@@ -82,7 +82,10 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 	});
 	
 	curve.SetOnChanged([&](){
-		pUpdateCurve();
+		if(pEngLink){
+			pEngLink->SetCurve(curve);
+			NotifyLinkChanged();
+		}
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
@@ -199,6 +202,7 @@ void aeLink::SetAnimator(aeAnimator *animator){
 		
 		UpdateController();
 		
+		pEngLink->SetCurve(curve);
 		pEngLink->SetRepeat(repeat);
 		pEngLink->SetBone(bone);
 		pEngLink->SetBoneParameter(boneParameter);
@@ -208,8 +212,6 @@ void aeLink::SetAnimator(aeAnimator *animator){
 		pUpdateBoneLimits();
 		
 		NotifyLinkChanged();
-		
-		pUpdateCurve();
 	}
 }
 
@@ -310,16 +312,6 @@ aeLink &aeLink::operator=(const aeLink &copy){
 	vertexPositionSetMaximum = copy.vertexPositionSetMaximum;
 	wrapY = copy.wrapY;
 	return *this;
-}
-
-void aeLink::pUpdateCurve(){
-	if(!pEngLink){
-		return;
-	}
-	
-	pEngLink->SetCurve(curve);
-	
-	NotifyLinkChanged();
 }
 
 void aeLink::pUpdateBoneLimits(){
