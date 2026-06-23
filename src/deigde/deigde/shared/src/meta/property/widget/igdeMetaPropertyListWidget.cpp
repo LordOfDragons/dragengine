@@ -177,8 +177,6 @@ public:
 	void Update() override{
 		if(pWidget.GetPropertyList().IsValid(pWidget.GetContext())){
 			const auto cb = pWidget.GetContext()->GetClipboard();
-			if(cb) printf("Paste.Update: %p '%s' -> %d\n", cb, pWidget.GetPropertyList().GetClipboardDataTypeName().GetString(),
-				cb->HasWithTypeName(pWidget.GetPropertyList().GetClipboardDataTypeName()));
 			SetEnabled(cb && cb->HasWithTypeName(pWidget.GetPropertyList().GetClipboardDataTypeName()));
 			return;
 		}
