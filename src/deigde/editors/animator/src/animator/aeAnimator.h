@@ -39,6 +39,7 @@
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
 #include <deigde/meta/property/igdeMetaPropertyObject.h>
+#include <deigde/utils/igdeUniqueNameGenerator.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTWeakObjectReference.h>
@@ -157,6 +158,7 @@ public:
 	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList allowedListControllers;
 	
+	igdeUniqueNameGenerator uniqueNameController, uniqueNameLink, uniqueNameRule;
 	
 private:
 	aeCamera *pCamera;

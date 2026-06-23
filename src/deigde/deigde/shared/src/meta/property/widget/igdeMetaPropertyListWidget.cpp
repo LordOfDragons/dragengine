@@ -159,11 +159,14 @@ public:
 		}
 		
 		const auto oldData = property.GetPropertyValue(context);
+		igdeMetaPropertyList::List pastedObjects;
 		auto newData = oldData;
+		
 		clip->GetData().Visit([&](const deObject::Ref &object){
 			const auto copiedObject = property.CopyObject(context, newData, object);
 			if(copiedObject){
 				newData.Add(copiedObject);
+				pastedObjects.Add(copiedObject);
 			}
 		});
 		
@@ -172,6 +175,14 @@ public:
 		}
 		
 		property.ChangePropertyValue(context, newData, property.RealUndoInfo(context, *this));
+		
+		if(pastedObjects.IsNotEmpty()){
+			property.SetActiveObject(context, pastedObjects.First());
+			
+			if(property.GetMultiSelection()){
+				property.SetSelection(context, pastedObjects);
+			}
+		}
 	}
 	
 	void Update() override{

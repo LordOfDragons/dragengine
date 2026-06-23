@@ -60,6 +60,13 @@ public:
 		
 		property.ChangePropertyValue(context, newValue, undoInfo
 			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
+		
+		const auto &value = property.GetPropertyValue(context);
+		if(value != newValue && pWidget.GetEditPath()){
+			pWidget.RunWithPreventUpdate([&]{
+				pWidget.GetEditPath()->SetPath(value);
+			});
+		}
 	}
 };
 

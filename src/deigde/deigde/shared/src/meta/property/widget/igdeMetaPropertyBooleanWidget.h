@@ -93,8 +93,11 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
-	/** \brief Boolean box widget or nullptr. */
+	/** \brief Checkbox widget or nullptr. */
 	inline const igdeCheckBox::Ref &GetCheckBox() const{ return pCheckBox; }
+	
+	/** \brief Action or nullptr. */
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	/*@}*/

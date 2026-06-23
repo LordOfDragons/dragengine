@@ -97,6 +97,9 @@ public:
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Controller(context).name;
 	}
+	
+	deTObjectReference<igdeMetaPropertyStringUndo> ChangePropertyValue(const ContextRef &context,
+		const char *newValue, const char *undoInfo = nullptr, const char *undoInfoLong = nullptr) override;
 };
 
 

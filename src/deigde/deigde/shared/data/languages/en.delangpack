@@ -728,6 +728,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Add entry</translation>
 	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Title">Add entries</translation>
 	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Message">Select entries to add</translation>
+	<translation name="Igde.MetaPropertyList.Action.Duplicate">Duplicate</translation>
+	<translation name="Igde.MetaPropertyList.Action.Duplicate.ToolTip">Duplicate entry</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove">Remove</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove.ToolTip">Remove entry</translation>
 	<translation name="Igde.MetaPropertyList.Action.RemoveAll">Remove All</translation>

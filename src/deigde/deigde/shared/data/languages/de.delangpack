@@ -727,6 +727,8 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Eintrag hinzufügen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Title">Einträge hinzufügen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Message">Wählen Sie die hinzuzufügenden Einträge aus</translation>
+	<translation name="Igde.MetaPropertyList.Action.Duplicate">Duplizieren</translation>
+	<translation name="Igde.MetaPropertyList.Action.Duplicate.ToolTip">Eintrag duplizieren</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove">Entfernen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Remove.ToolTip">Eintrag entfernen</translation>
 	<translation name="Igde.MetaPropertyList.Action.RemoveAll">Alle entfernen</translation>

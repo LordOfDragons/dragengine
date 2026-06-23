@@ -60,6 +60,13 @@ public:
 		
 		return property.ChangePropertyValue(context, newValue, undoInfo
 			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
+		
+		const auto &value = property.GetPropertyValue(context);
+		if(value != newValue && pWidget.GetViewCurveBezier()){
+			pWidget.RunWithPreventUpdate([&]{
+				pWidget.GetViewCurveBezier()->SetCurve(value);
+			});
+		}
 	}
 };
 
@@ -387,7 +394,7 @@ void igdeMetaPropertyCurveBezierWidget::EditInDialog(){
 	// view->AddListener(pListener);
 	
 	if(dialog->Run(pViewCurveBezier->GetParentWindow())){
-		pPropertyCurveBezier.ChangePropertyValue(context, dialog->GetCurve(),
+		cListenerHelper(*this).OnValueChanged(dialog->GetCurve(),
 			pPropertyCurveBezier.RealUndoInfo(context,
 				"@Igde.MetaPropertyCurveBezier.EditInDialog").GetString());
 	}

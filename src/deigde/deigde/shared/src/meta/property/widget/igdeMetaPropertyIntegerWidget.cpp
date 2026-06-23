@@ -59,6 +59,21 @@ public:
 		
 		return property.ChangePropertyValue(context, newValue, undoInfo
 			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
+		
+		const auto &value = property.GetPropertyValue(context);
+		if(value != newValue){
+			pWidget.RunWithPreventUpdate([&]{
+				if(pWidget.GetTextField()){
+					pWidget.GetTextField()->SetInteger(value);
+				}
+				if(pWidget.GetEditSliderText()){
+					pWidget.GetEditSliderText()->SetValue((float)value);
+				}
+				if(pWidget.GetSpinTextField()){
+					pWidget.GetSpinTextField()->SetValue(value);
+				}
+			});
+		}
 	}
 };
 

@@ -242,7 +242,9 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 }
 
 aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
-	return aeLink::Ref::New(WindowMain(context), *object);
+	auto copied = aeLink::Ref::New(WindowMain(context), *object);
+	copied->name.SetValue(Animator(context).uniqueNameLink.Generate(copied->name), false);
+	return copied;
 }
 
 igdeMetaProperty::Action::Ref aeMCPLinks::CreateButtonAction(TargetButton target, igdeWidget &owner){

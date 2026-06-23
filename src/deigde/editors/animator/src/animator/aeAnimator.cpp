@@ -181,6 +181,22 @@ rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule)
 		throw;
 	}
 	
+	uniqueNameController.SetIsUnique([this](const decString &name){
+		return !controllers->HasNamed(name);
+	});
+	
+	uniqueNameLink.SetIsUnique([this](const decString &name){
+		return !links->HasMatching([&](const aeLink &each){
+			return each.GetName() == name;
+		});
+	});
+	
+	uniqueNameRule.SetIsUnique([this](const decString &name){
+		return !rules->HasMatching([&](const aeRule &each){
+			return each.GetName() == name;
+		});
+	});
+	
 	rigPath.SetOnChanged([this](){
 		pUpdateComponent();
 		NotifyRigChanged();

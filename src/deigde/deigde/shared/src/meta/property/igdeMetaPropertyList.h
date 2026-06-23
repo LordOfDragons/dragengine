@@ -107,6 +107,20 @@ public:
 	};
 	
 	
+	/** \brief Duplicate selected entries action. */
+	class DE_DLL_EXPORT ActionDuplicate : public Action{
+	private:
+		igdeMetaPropertyList &pPropertyList;
+		
+	public:
+		using Ref = deTObjectReference<ActionDuplicate>;
+		ActionDuplicate(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+		
+		inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
+	};
+	
 	/** \brief Remove selected entries action. */
 	class DE_DLL_EXPORT ActionRemove : public Action{
 	private:
@@ -349,6 +363,7 @@ public:
 	 * 
 	 * Add first context menu entries to add list entries then call AddDefaultContextMenuEntries().
 	 * This adds the following actions:
+	 * - ActionDuplicate
 	 * - ActionRemove
 	 * - ActionRemoveAll
 	 * - ActionMoveUp

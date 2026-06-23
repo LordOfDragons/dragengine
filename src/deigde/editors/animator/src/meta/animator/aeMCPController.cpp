@@ -29,6 +29,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/meta/property/undo/igdeMetaPropertyListUndo.h>
+#include <deigde/meta/property/undo/igdeMetaPropertyStringUndo.h>
 
 #include <dragengine/common/collection/decTList.h>
 
@@ -128,6 +129,16 @@ igdeMetaPropertyListUndo::Ref aeMCPControllers::ChangePropertyValue(const Contex
 const List &newValue, const char *undoInfo, const char *undoInfoLong){
 	const auto undo = deTObjectReference<cUndoSetControllers>::New(*this, context, newValue, undoInfo, undoInfoLong);
 	
+	if(newValue.HasMatching([&](const deObject::Ref &a){
+		return newValue.HasMatching([&](const deObject::Ref &b){
+			return a != b && a.StaticCast<aeController>()->GetName() == b.StaticCast<aeController>()->GetName();
+		});
+	})){
+		igdeCommonDialogs::Error(WindowMain(context), undo->GetShortInfo(),
+			"@Animator.WPController.Dialog.SetControllerName.DuplicateName");
+		return {};
+	}
+	
 	const auto &linksRemoveControllers = undo->GetLinksRemoveControllers();
 	if(linksRemoveControllers.IsNotEmpty()){
 		decStringList names;
@@ -138,7 +149,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 		auto strNames = names.GetCount() > 5 ? DEJoin(names.GetHead(5), ", ") + ", ..." : DEJoin(names, ", ");
 		
 		if(igdeCommonDialogs::QuestionFormat(WindowMain(context), igdeCommonDialogs::ebsYesNo,
-		"@Animator.Dialog.RemoveController.Title", "@Animator.Dialog.RemoveController.Message",
+		undo->GetShortInfo(), "@Animator.Dialog.RemoveController.Message",
 		names.GetCount(), strNames.GetString()) != igdeCommonDialogs::ebYes){
 			return {};
 		}
@@ -156,7 +167,9 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 
 aeMCPControllers::ObjectTypeRef aeMCPControllers::CopyObjectType(const ContextRef &context,
 const aeController::List &existingObjects, const ObjectTypeRef &object) const{
-	return aeController::Ref::New(WindowMain(context), *object);
+	auto copied = aeController::Ref::New(WindowMain(context), *object);
+	copied->name.SetValue(Animator(context).uniqueNameController.Generate(copied->name), false);
+	return copied;
 }
 
 igdeMetaProperty::Action::Ref aeMCPControllers::CreateButtonAction(TargetButton target, igdeWidget &owner){
@@ -173,8 +186,21 @@ void aeMCPControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMe
 	const auto &windowMain = Animator(context).GetWindowMain();
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, windowMain.GetActionControllerAdd());
-	helper.MenuCommand(menu, windowMain.GetActionControllerDuplicate());
 	AddDefaultContextMenuEntries(menu, context, owner);
+}
+
+
+// Class aeMCPControllerName
+//////////////////////////////
+
+igdeMetaPropertyStringUndo::Ref aeMCPControllerName::ChangePropertyValue(
+const ContextRef &context, const char *newValue, const char *undoInfo, const char *undoInfoLong){
+	decString name(newValue);
+	auto animator = Controller(context).GetAnimator();
+	if(animator){
+		name = animator->uniqueNameController.Generate(name, GetPropertyValue(context));
+	}
+	return igdeMetaPropertyStringStorage::ChangePropertyValue(context, name, undoInfo, undoInfoLong);
 }
 
 

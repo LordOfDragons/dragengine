@@ -82,7 +82,7 @@ public:
 	igdeAction("@Igde.Action.Copy",
 		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Igde.Action.Copy.ToolTip"),
-	pWidget(widget), pSelection(false){
+	pWidget(widget){
 	}
 	
 	~ActionCopy() override = default;
@@ -100,19 +100,14 @@ public:
 		}
 		
 		igdeMetaPropertySet::Set values, copiedValues;
-		if(pSelection){
-			if(property.GetMultiSelection()){
-				values = property.GetSelection(context);
-				
-			}else{
-				auto activeObject = property.GetActiveObject(context);
-				if(activeObject){
-					values.Add(activeObject);
-				}
-			}
+		if(property.GetMultiSelection()){
+			values = property.GetSelection(context);
 			
 		}else{
-			values = property.GetPropertyValue(context);
+			auto activeObject = property.GetActiveObject(context);
+			if(activeObject){
+				values.Add(activeObject);
+			}
 		}
 		
 		values.Visit([&](const deObject::Ref &object){
@@ -130,20 +125,6 @@ public:
 	}
 };
 
-class ActionCopySelection : public ActionCopy{
-public:
-	ActionCopySelection(igdeMetaPropertySetWidget &widget,
-		const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-	ActionCopy(widget, context, environment)
-	{
-		SetText("@Igde.MetaPropertyList.Action.CopySelection");
-		SetDescription("@Igde.MetaPropertyList.Action.CopySelection.ToolTip");
-		pSelection = true;
-	}
-	
-	~ActionCopySelection() override = default;
-};
-
 
 class ActionPaste : public igdeAction{
 protected:
@@ -156,7 +137,7 @@ public:
 	igdeAction("@Igde.Action.Paste",
 		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Igde.Action.Paste.ToolTip"),
-	pWidget(widget), pAppend(false){
+	pWidget(widget){
 	}
 	
 	~ActionPaste() override = default;
@@ -180,7 +161,9 @@ public:
 		}
 		
 		const auto oldData = property.GetPropertyValue(context);
-		auto newData = pAppend ? oldData : igdeMetaPropertySet::Set();
+		igdeMetaPropertySet::Set pastedObjects;
+		auto newData = oldData;
+		
 		clip->GetData().Visit([&](const deObject::Ref &object){
 			const auto copiedObject = property.CopyObject(context, newData, object);
 			if(copiedObject){
@@ -193,6 +176,14 @@ public:
 		}
 		
 		property.ChangePropertyValue(context, newData, property.RealUndoInfo(context, *this));
+		
+		if(pastedObjects.IsNotEmpty()){
+			property.SetActiveObject(context, pastedObjects.GetAt(0));
+			
+			if(property.GetMultiSelection()){
+				property.SetSelection(context, pastedObjects);
+			}
+		}
 	}
 	
 	void Update() override{
@@ -203,20 +194,6 @@ public:
 		}
 		SetEnabled(false);
 	}
-};
-
-class ActionPasteAppend : public ActionPaste{
-public:
-	ActionPasteAppend(igdeMetaPropertySetWidget &widget,
-		const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-	ActionPaste(widget, context, environment)
-	{
-		SetText("@Igde.MetaPropertyList.Action.PasteAppend");
-		SetDescription("@Igde.MetaPropertyList.Action.PasteAppend.ToolTip");
-		pAppend = true;
-	}
-	
-	~ActionPasteAppend() override = default;
 };
 
 
@@ -411,9 +388,7 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	
 	if(context && context->GetClipboard()){
 		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionCopySelection>::New(*this, context, env));
 		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPasteAppend>::New(*this, context, env));
 		helper.MenuSeparator(menu);
 	}
 	

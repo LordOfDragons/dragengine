@@ -45,74 +45,72 @@ igdeMetaPropertySet*, const igdeMetaContext::Ref&){
 }
 
 
-// Class igdeMetaPropertySet::ActionAdd
-/////////////////////////////////////////
+// Class igdeMetaPropertySet::ActionDuplicate
+///////////////////////////////////////////////
 
-igdeMetaPropertySet::ActionAdd::ActionAdd(igdeMetaPropertySet &property,
-	igdeWidget &owner, const igdeMetaContext::Ref &context) :
-Action(owner, context, "@Igde.MetaPropertyList.Action.Add",
-	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-	"@Igde.MetaPropertyList.Action.Add.ToolTip"),
+igdeMetaPropertySet::ActionDuplicate::ActionDuplicate(igdeMetaPropertySet &property,
+	igdeWidget &owner, const ContextRef &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Duplicate",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate),
+	"@Igde.MetaPropertyList.Action.Duplicate.ToolTip"),
 pPropertySet(property){
 }
 
-void igdeMetaPropertySet::ActionAdd::OnAction(){
+void igdeMetaPropertySet::ActionDuplicate::OnAction(){
 	const auto &context = GetContext();
 	if(!pPropertySet.IsValid(context)){
 		return;
 	}
 	
-	const auto candidates = pPropertySet.GetValidObjects(context);
-	if(candidates.IsEmpty()){
-		return;
-	}
+	const auto oldValuedData = pPropertySet.GetPropertyValue(context);
+	igdeMetaPropertySet::Set copiedObjects;
+	auto newValue = oldValuedData;
 	
-	decStringSet candidateNames;
-	decTObjectDictionary<deObject> candidateMap;
-	igdeMetaContextItemInfo info;
-	candidates.Visit([&](const deObject::Ref &object){
-		pPropertySet.GetObjectItemInfo(context, object, info);
-		candidateNames.Add(info.GetText());
-		candidateMap.SetAt(info.GetText(), object);
-	});
-	
-	auto &owner = GetOwner();
-	auto &environment = GetEnvironment();
-	auto dialog = igdeDialogSetSelect::Ref::New(environment,
-		"@Igde.MetaPropertyList.Action.Dialog.AddEntries.Title",
-		"@Igde.MetaPropertyList.Action.Dialog.AddEntries.Message", candidateNames);
-	
-	auto iconPresent = environment.GetStockIcon(igdeEnvironment::esiSmallPlus);
-	auto iconAbsent = environment.GetStockIcon(igdeEnvironment::esiSmallMinus);
-	
-	const auto oldValue = pPropertySet.GetPropertyValue(context);
-	decStringSet oldValueNames;
-	oldValue.Visit([&](const deObject::Ref &object){
-		pPropertySet.GetObjectItemInfo(context, object, info);
-		oldValueNames.Add(info.GetText());
-	});
-	
-	dialog->MarkItems(oldValueNames, iconPresent, iconAbsent);
-	if(!dialog->Run(&owner)){
-		return;
-	}
-	
-	auto newValue = oldValue;
-	dialog->GetSelection().Visit([&](const decString &name){
-		if(const auto object = candidateMap.GetAtOrDefault(name)){
-			newValue.Add(object);
+	if(pPropertySet.GetMultiSelection()){
+		const auto selection = pPropertySet.GetSelection(context);
+		if(selection.IsEmpty()){
+			return;
 		}
-	});
+		
+		selection.Visit([&](const deObject::Ref &object){
+			const auto copiedObject = pPropertySet.CopyObject(context, newValue, object);
+			if(copiedObject){
+				newValue.Add(copiedObject);
+				copiedObjects.Add(copiedObject);
+			}
+		});
+		
+	}else{
+		const auto active = pPropertySet.GetActiveObject(context);
+		if(!active){
+			return;
+		}
+		
+		const auto copiedObject = pPropertySet.CopyObject(context, newValue, active);
+		if(copiedObject){
+			newValue.Add(copiedObject);
+			copiedObjects.Add(copiedObject);
+		}
+	}
 	
-	if(newValue == oldValue){
+	if(newValue == oldValuedData){
 		return;
 	}
 	
 	pPropertySet.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertySet));
+	
+	if(copiedObjects.IsNotEmpty()){
+		pPropertySet.SetActiveObject(context, copiedObjects.GetAt(0));
+		
+		if(pPropertySet.GetMultiSelection()){
+			pPropertySet.SetSelection(context, copiedObjects);
+		}
+	}
 }
 
-void igdeMetaPropertySet::ActionAdd::Update(){
-	SetEnabled(pPropertySet.IsValid(GetContext()));
+void igdeMetaPropertySet::ActionDuplicate::Update(){
+	const auto &context = GetContext();
+	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context));
 }
 
 
@@ -272,11 +270,6 @@ const igdeMetaContext::Ref &context) const{
 void igdeMetaPropertySet::SetSelection(const igdeMetaContext::Ref&, const Set&){
 }
 
-igdeMetaPropertySet::Set igdeMetaPropertySet::GetValidObjects(
-const igdeMetaContext::Ref &context) const{
-	return {};
-}
-
 igdeMetaPropertySet::ObjectRef igdeMetaPropertySet::CopyObject(const ContextRef &context,
 const Set &existingObjects, const ObjectRef &object) const{
 	return {};
@@ -297,6 +290,9 @@ const igdeMetaContext::Ref &context, igdeWidget &owner){
 	if(menu.GetChildren().IsNotEmpty()){
 		helper.MenuSeparator(menu);
 	}
+	helper.MenuCommand(menu, ActionDuplicate::Ref::New(*this, owner, context));
+	
+	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, owner, context));
 	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, owner, context));
 }

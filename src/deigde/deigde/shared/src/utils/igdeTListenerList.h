@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDELISTENERS_H_
-#define _IGDELISTENERS_H_
+#ifndef _IGDETLISTENERLIST_H_
+#define _IGDETLISTENERLIST_H_
 
 #include <functional>
 #include <dragengine/deTObjectReference.h>

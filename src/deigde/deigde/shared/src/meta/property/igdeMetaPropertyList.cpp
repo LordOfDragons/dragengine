@@ -56,6 +56,75 @@ igdeMetaPropertyList*, const ContextRef&){
 }
 
 
+// Class igdeMetaPropertyList::ActionDuplicate
+////////////////////////////////////////////////
+
+igdeMetaPropertyList::ActionDuplicate::ActionDuplicate(igdeMetaPropertyList &property,
+	igdeWidget &owner, const ContextRef &context) :
+Action(owner, context, "@Igde.MetaPropertyList.Action.Duplicate",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate),
+	"@Igde.MetaPropertyList.Action.Duplicate.ToolTip"),
+pPropertyList(property){
+}
+
+void igdeMetaPropertyList::ActionDuplicate::OnAction(){
+	const auto &context = GetContext();
+	if(!pPropertyList.IsValid(context)){
+		return;
+	}
+	
+	const auto oldValuedData = pPropertyList.GetPropertyValue(context);
+	igdeMetaPropertyList::List copiedObjects;
+	auto newValue = oldValuedData;
+	
+	if(pPropertyList.GetMultiSelection()){
+		const auto selection = pPropertyList.GetSelection(context);
+		if(selection.IsEmpty()){
+			return;
+		}
+		
+		selection.Visit([&](const deObject::Ref &object){
+			const auto copiedObject = pPropertyList.CopyObject(context, newValue, object);
+			if(copiedObject){
+				newValue.Add(copiedObject);
+				copiedObjects.Add(copiedObject);
+			}
+		});
+		
+	}else{
+		const auto active = pPropertyList.GetActiveObject(context);
+		if(!active){
+			return;
+		}
+		
+		const auto copiedObject = pPropertyList.CopyObject(context, newValue, active);
+		if(copiedObject){
+			newValue.Add(copiedObject);
+			copiedObjects.Add(copiedObject);
+		}
+	}
+	
+	if(newValue == oldValuedData){
+		return;
+	}
+	
+	pPropertyList.ChangePropertyValue(context, newValue, BuildUndoInfo(pPropertyList));
+	
+	if(copiedObjects.IsNotEmpty()){
+		pPropertyList.SetActiveObject(context, copiedObjects.First());
+		
+		if(pPropertyList.GetMultiSelection()){
+			pPropertyList.SetSelection(context, copiedObjects);
+		}
+	}
+}
+
+void igdeMetaPropertyList::ActionDuplicate::Update(){
+	const auto &context = GetContext();
+	SetEnabled(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context));
+}
+
+
 // Class igdeMetaPropertyList::ActionRemove
 /////////////////////////////////////////////
 
@@ -477,6 +546,9 @@ const ContextRef &context, igdeWidget &owner){
 	if(menu.GetChildren().IsNotEmpty()){
 		helper.MenuSeparator(menu);
 	}
+	helper.MenuCommand(menu, ActionDuplicate::Ref::New(*this, owner, context));
+	
+	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, ActionRemove::Ref::New(*this, owner, context));
 	helper.MenuCommand(menu, ActionRemoveAll::Ref::New(*this, owner, context));
 	

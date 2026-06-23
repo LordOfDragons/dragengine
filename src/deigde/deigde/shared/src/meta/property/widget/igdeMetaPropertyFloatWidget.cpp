@@ -59,6 +59,18 @@ public:
 		
 		return property.ChangePropertyValue(context, newValue, undoInfo
 			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
+		
+		const auto &value = property.GetPropertyValue(context);
+		if(fabsf(value - newValue) >= FLOAT_SAFE_EPSILON){
+			pWidget.RunWithPreventUpdate([&]{
+				if(pWidget.GetEditSliderText()){
+					pWidget.GetEditSliderText()->SetValue(value);
+				}
+				if(pWidget.GetTextField()){
+					pWidget.GetTextField()->SetFloat(value);
+				}
+			});
+		}
 	}
 };
 

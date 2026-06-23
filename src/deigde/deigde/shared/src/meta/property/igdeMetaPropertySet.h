@@ -99,16 +99,17 @@ public:
 	};
 	
 	
-	/** \brief Add entries action. */
-	class DE_DLL_EXPORT ActionAdd : public Action{
+	/** \brief Duplicate selected entries action. */
+	class DE_DLL_EXPORT ActionDuplicate : public Action{
 	private:
 		igdeMetaPropertySet &pPropertySet;
 		
 	public:
-		using Ref = deTObjectReference<ActionAdd>;
-		ActionAdd(igdeMetaPropertySet &property, igdeWidget &owner, const ContextRef &context = {});
+		using Ref = deTObjectReference<ActionDuplicate>;
+		ActionDuplicate(igdeMetaPropertySet &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+		
 		inline igdeMetaPropertySet &GetPropertySet() const{ return pPropertySet; }
 	};
 	
@@ -262,11 +263,6 @@ public:
 		igdeMetaContextItemInfo &info) const = 0;
 	
 	/**
-	 * \brief Valid set of objects.
-	 */
-	virtual Set GetValidObjects(const ContextRef &context) const;
-	
-	/**
 	 * \brief Create copy of object if possible.
 	 * 
 	 * Subclass can override this method to create a copy of the object. The set parameter
@@ -297,6 +293,7 @@ public:
 	 * 
 	 * Add first context menu entries to add list entries then call AddDefaultContextMenuEntries().
 	 * This adds the following actions:
+	 * - ActionDuplicate
 	 * - ActionRemove
 	 * - ActionRemoveAll
 	 */

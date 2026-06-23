@@ -65,7 +65,9 @@ public:
 
 aeMCPRules::ObjectTypeRef aeMCPRules::CopyObjectType(const ContextRef &context,
 const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
-	return object->CreateCopy(WindowMain(context));
+	auto copied = object->CreateCopy(WindowMain(context));
+	copied->name.SetValue(Animator(context).uniqueNameRule.Generate(copied->name), false);
+	return copied;
 }
 
 igdeMetaProperty::Action::Ref aeMCPRules::CreateButtonAction(TargetButton target, igdeWidget &owner){
