@@ -93,6 +93,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 		), name = "Export Mode", description = "Export mode", default = '0')
 	#export_move: bpy.props.EnumProperty(items=exportActionList)
 	export_move: bpy.props.StringProperty(default="")
+	export_bone: bpy.props.StringProperty(default="dr.export")
 	
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -194,7 +195,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 		try:
 			result = self.safeExport(context, f, retainContent)
 		finally:
-			f.close()
+			self.finalizeExport(context, f)
 		self.timer.log("finished", peek=True)
 		self.printInfos(context)
 		bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
@@ -223,6 +224,17 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 			self.armature.initAddBones()
 		if self.mesh:
 			self.mesh.initAddVertPosSets()
+		
+		self.exportPoseBone = None
+		self.exportPoseBoneConstraints = []
+		if self.export_bone:
+			bones = self.armature.object.pose.bones
+			if self.export_bone in bones:
+				self.exportPoseBone = bones[self.export_bone]
+				for c in self.exportPoseBone.constraints:
+					if not c.enabled:
+						c.enabled = True
+						self.exportPoseBoneConstraints.append(c)
 	
 	def checkInitState(self, context):
 		if not self.armature and not self.mesh:
@@ -383,6 +395,12 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 			return False
 		
 		return True
+	
+	def finalizeExport(self, context, f):
+		f.close()
+		
+		for c in self.exportPoseBoneConstraints:
+			c.enabled = False
 	
 	def roundToInt(self, value):
 		return int(value + 0.5)
@@ -580,8 +598,9 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 		if self.debugLevel > 0:
 			print("saving moves...")
 		
-		pose = self.armature.object.pose
-		ash = ActionSlotHelper(self.armature.object)
+		obj = self.armature.object
+		pose = obj.pose
+		ash = ActionSlotHelper(obj)
 		
 		# write moves to file
 		countMoves = len(self.moves)
@@ -687,7 +706,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 			f.write(struct.pack("<H", playtime)) # play time in frames
 			
 			# switch action
-			self.armature.object.animation_data.action = move.action
+			obj.animation_data.action = move.action
 			if shapeKeyAction:
 				if not shapeKeys.animation_data:
 					shapeKeys.animation_data_create()
