@@ -1168,11 +1168,16 @@ void aeAnimator::pUpdateComponent(){
 		GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
-	const bool sameModel = displayModel == pEngComponent ? pEngComponent->GetModel().Pointer() : nullptr;
+	const auto oldModel = pEngComponent ? pEngComponent->GetModel().Pointer() : nullptr;
+	const auto oldRig = pEngComponent ? pEngComponent->GetRig().Pointer() : nullptr;
+	const auto oldSkin = pEngComponent ? pEngComponent->GetSkin().Pointer() : nullptr;
+	
+	const bool sameModel = displayModel == oldModel;
+	const bool sameSkin = displaySkin == oldSkin;
+	const bool sameRig = displayRig == oldRig;
 	const bool sameEngineRig = engineRig == pEngRig;
 	
-	if(sameModel && displaySkin == pEngComponent->GetSkin()
-	&& displayRig == pEngComponent->GetRig() && sameEngineRig){
+	if(sameModel && sameSkin && sameRig && sameEngineRig){
 		return;
 	}
 	
