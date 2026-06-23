@@ -150,7 +150,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyFloat::ClipboardData::Ref::New(
-			pWidget.GetPropertyFloat().GetPropertyValue(context)));
+			property, property.GetPropertyValue(context)));
 	}
 };
 
@@ -179,7 +179,7 @@ public:
 			return;
 		}
 		
-		auto clip = clipboard->GetWithTypeName(igdeMetaPropertyFloat::ClipboardData::TypeName)
+		auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyFloat().GetClipboardDataTypeName())
 			.DynamicCast<igdeMetaPropertyFloat::ClipboardData>();
 		if(!clip){
 			return;
@@ -191,7 +191,7 @@ public:
 	void Update() override{
 		if(pHelper.IsValid()){
 			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyFloat::ClipboardData::TypeName));
+			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyFloat().GetClipboardDataTypeName()));
 			
 		}else{
 			SetEnabled(false);
@@ -338,6 +338,8 @@ void igdeMetaPropertyFloatWidget::UpdateLimits(){
 			pEditSliderText->SetRange(
 				valid ? pPropertyFloat.GetPropertyLowerLimit(context) : pPropertyFloat.GetLowerLimit(),
 				valid ? pPropertyFloat.GetPropertyUpperLimit(context) : pPropertyFloat.GetUpperLimit());
+			pEditSliderText->SetTickSpacing(
+				valid ? pPropertyFloat.GetPropertyTickSpacing(context) : pPropertyFloat.GetTickSpacing());
 		});
 	}
 }

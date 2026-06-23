@@ -141,7 +141,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyCurveBezier::ClipboardData::Ref::New(
-			pWidget.GetPropertyCurveBezier().GetPropertyValue(context)));
+			property, property.GetPropertyValue(context)));
 	}
 };
 
@@ -170,7 +170,7 @@ public:
 			return;
 		}
 		
-		const auto clip = clipboard->GetWithTypeName(igdeMetaPropertyCurveBezier::ClipboardData::TypeName).
+		const auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyCurveBezier().GetClipboardDataTypeName()).
 			DynamicCast<igdeMetaPropertyCurveBezier::ClipboardData>();
 		if(!clip){
 			return;
@@ -182,7 +182,7 @@ public:
 	void Update() override{
 		if(pHelper.IsValid()){
 			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyCurveBezier::ClipboardData::TypeName));
+			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyCurveBezier().GetClipboardDataTypeName()));
 			
 		}else{
 			SetEnabled(false);

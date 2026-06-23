@@ -125,7 +125,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyDVector::ClipboardData::Ref::New(
-			pWidget.GetPropertyDVector().GetPropertyValue(context)));
+			property, property.GetPropertyValue(context)));
 	}
 };
 
@@ -154,7 +154,7 @@ public:
 			return;
 		}
 		
-		const auto clip = clipboard->GetWithTypeName(igdeMetaPropertyDVector::ClipboardData::TypeName)
+		const auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyDVector().GetClipboardDataTypeName())
 			.DynamicCast<igdeMetaPropertyDVector::ClipboardData>();
 		if(!clip){
 			return;
@@ -166,7 +166,7 @@ public:
 	void Update() override{
 		if(pHelper.IsValid()){
 			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyDVector::ClipboardData::TypeName));
+			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyDVector().GetClipboardDataTypeName()));
 			
 		}else{
 			SetEnabled(false);

@@ -56,7 +56,11 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.Selection";
 		
-		explicit inline ClipboardData(void *value) : igdeTClipboardData<void*>(TypeName, value){}
+		ClipboardData(const igdeMetaProperty &property, void *value) :
+			ClipboardData(property.GetClipboardDataTypeName(), value){}
+		
+		ClipboardData(const char *typeName, void *value) :
+			igdeTClipboardData<void*>(typeName, value){}
 		
 	protected:
 		/** \brief Clean up object. */

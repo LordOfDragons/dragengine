@@ -51,8 +51,17 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.Point";
 		
-		explicit inline ClipboardData(const decPoint &value) : igdeTClipboardData<decPoint>(TypeName, value){}
-		explicit inline ClipboardData(decPoint &&value) : igdeTClipboardData<decPoint>(TypeName, value){}
+		explicit ClipboardData(const igdeMetaProperty &property, const decPoint &value) :
+			igdeTClipboardData<decPoint>(property.GetClipboardDataTypeName(), value){}
+		
+		explicit ClipboardData(const igdeMetaProperty &property, decPoint &&value) :
+			igdeTClipboardData<decPoint>(property.GetClipboardDataTypeName(), std::move(value)){}
+		
+		explicit ClipboardData(const char *typeName, const decPoint &value) :
+			igdeTClipboardData<decPoint>(typeName, value){}
+		
+		explicit ClipboardData(const char *typeName, decPoint &&value) :
+			igdeTClipboardData<decPoint>(typeName, std::move(value)){}
 		
 	protected:
 		/** \brief Clean up object. */

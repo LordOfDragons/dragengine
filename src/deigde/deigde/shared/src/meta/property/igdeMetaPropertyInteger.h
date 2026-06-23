@@ -49,7 +49,11 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.Integer";
 		
-		explicit inline ClipboardData(int value) : igdeTClipboardData<int>(TypeName, value){}
+		explicit ClipboardData(const igdeMetaProperty &property, int value) :
+			igdeTClipboardData<int>(property.GetClipboardDataTypeName(), value){}
+		
+		explicit ClipboardData(const char *typeName, int value) :
+			igdeTClipboardData<int>(typeName, value){}
 		
 	protected:
 		/** \brief Clean up object. */
@@ -191,6 +195,8 @@ public:
 	/** \brief Get property upper limit matching context. */
 	virtual int GetPropertyUpperLimit(const ContextRef &context) const;
 	
+	/** \brief Get property tick spacing matching context. */
+	virtual int GetPropertyTickSpacing(const ContextRef &context) const;
 	
 	/**
 	 * \brief Create UI widget.
@@ -234,6 +240,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, int value) override;
 	int GetPropertyLowerLimit(const ContextRef &context) const override;
 	int GetPropertyUpperLimit(const ContextRef &context) const override;
+	int GetPropertyTickSpacing(const ContextRef &context) const override;
 };
 
 #endif

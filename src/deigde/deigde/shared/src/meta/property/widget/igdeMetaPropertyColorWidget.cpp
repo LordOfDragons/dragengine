@@ -106,7 +106,7 @@ public:
 		}
 		
 		clipboard->Set(igdeMetaPropertyColor::ClipboardData::Ref::New(
-			property.GetPropertyValue(context)));
+			property, property.GetPropertyValue(context)));
 	}
 };
 
@@ -135,7 +135,7 @@ public:
 			return;
 		}
 		
-		const auto clip = clipboard->GetWithTypeName(igdeMetaPropertyColor::ClipboardData::TypeName).
+		const auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyColor().GetClipboardDataTypeName()).
 			DynamicCast<igdeMetaPropertyColor::ClipboardData>();
 		if(!clip){
 			return;
@@ -147,7 +147,7 @@ public:
 	void Update() override{
 		if(pHelper.IsValid()){
 			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyColor::ClipboardData::TypeName));
+			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyColor().GetClipboardDataTypeName()));
 			return;
 		}
 		SetEnabled(false);

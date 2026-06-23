@@ -40,14 +40,18 @@ igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(
 igdeMetaProperty(id, name, description),
 pClampMin(0.0f, 0.0f),
 pClampMax(1.0f, 1.0f),
-pClamp(false){
+pClamp(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyCurveBezier::igdeMetaPropertyCurveBezier(const char *id, const char *translationTag) :
 igdeMetaProperty(id, translationTag),
 pClampMin(0.0f, 0.0f),
 pClampMax(1.0f, 1.0f),
-pClamp(false){
+pClamp(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyCurveBezier::~igdeMetaPropertyCurveBezier() = default;

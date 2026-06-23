@@ -41,8 +41,7 @@ void igdeMetaPropertyFloat::Listener::OnLimitsChanged(igdeMetaPropertyFloat*, co
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyFloat::igdeMetaPropertyFloat(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertyFloat::igdeMetaPropertyFloat(const char *id, const char *name, const char *description) :
 igdeMetaProperty(id, name, description),
 pPrecision(3),
 pDefaultValue(0.0f),
@@ -50,7 +49,9 @@ pLowerLimit(0.0f),
 pUpperLimit(1.0f),
 pTickSpacing(0.1f),
 pEnableLowerLimit(false),
-pEnableUpperLimit(false){
+pEnableUpperLimit(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyFloat::igdeMetaPropertyFloat(const char *id, const char *translationTag) :
@@ -61,7 +62,9 @@ pLowerLimit(0.0f),
 pUpperLimit(1.0f),
 pTickSpacing(0.1f),
 pEnableLowerLimit(false),
-pEnableUpperLimit(false){
+pEnableUpperLimit(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyFloat::~igdeMetaPropertyFloat() = default;
@@ -134,6 +137,9 @@ float igdeMetaPropertyFloat::GetPropertyUpperLimit(const ContextRef &context) co
 	return pUpperLimit;
 }
 
+float igdeMetaPropertyFloat::GetPropertyTickSpacing(const ContextRef &context) const{
+	return pTickSpacing;
+}
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(){
 	return igdeMetaPropertyFloatWidget::Ref::New(*this);
@@ -169,4 +175,8 @@ float igdeMetaPropertyFloatStorage::GetPropertyLowerLimit(const ContextRef &cont
 
 float igdeMetaPropertyFloatStorage::GetPropertyUpperLimit(const ContextRef &context) const{
 	return GetStorage(context).GetUpperLimit();
+}
+
+float igdeMetaPropertyFloatStorage::GetPropertyTickSpacing(const ContextRef &context) const{
+	return GetStorage(context).GetTickSpacing();
 }

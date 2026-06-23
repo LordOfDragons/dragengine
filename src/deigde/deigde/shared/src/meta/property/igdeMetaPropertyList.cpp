@@ -374,13 +374,16 @@ ActionMoveDown(property, owner, context)
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyList::igdeMetaPropertyList(
-	const char *id, const char *name, const char *description) :
-igdeMetaProperty(id, name, description){
+igdeMetaPropertyList::igdeMetaPropertyList(const char *id, const char *name, const char *description) :
+igdeMetaProperty(id, name, description)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyList::igdeMetaPropertyList(const char *id, const char *translationTag) :
-igdeMetaProperty(id, translationTag){
+igdeMetaProperty(id, translationTag)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyList::~igdeMetaPropertyList() = default;

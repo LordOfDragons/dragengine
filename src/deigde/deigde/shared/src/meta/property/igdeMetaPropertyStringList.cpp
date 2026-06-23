@@ -522,17 +522,21 @@ void igdeMetaPropertyStringList::ActionImportFromText::Update(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyStringList::igdeMetaPropertyStringList(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertyStringList::igdeMetaPropertyStringList(const char *id, const char *name,
+	const char *description) :
 igdeMetaProperty(id, name, description),
 pRows(4),
-pMultiSelection(false){
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyStringList::igdeMetaPropertyStringList(const char *id, const char *translationTag) :
 igdeMetaProperty(id, translationTag),
 pRows(4),
-pMultiSelection(false){
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyStringList::~igdeMetaPropertyStringList() = default;

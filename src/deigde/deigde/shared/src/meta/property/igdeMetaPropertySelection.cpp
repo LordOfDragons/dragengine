@@ -42,15 +42,19 @@ void igdeMetaPropertySelection::Listener::OnChoicesChanged(igdeMetaPropertySelec
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySelection::igdeMetaPropertySelection(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertySelection::igdeMetaPropertySelection(const char *id, const char *name,
+	const char *description) :
 igdeMetaProperty(id, name, description),
-pDefaultValue(nullptr){
+pDefaultValue(nullptr)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertySelection::igdeMetaPropertySelection(const char *id, const char *translationTag) :
 igdeMetaProperty(id, translationTag),
-pDefaultValue(nullptr){
+pDefaultValue(nullptr)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertySelection::~igdeMetaPropertySelection() = default;

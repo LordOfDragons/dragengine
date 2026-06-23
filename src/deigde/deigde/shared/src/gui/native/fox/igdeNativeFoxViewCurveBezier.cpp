@@ -154,6 +154,7 @@ void igdeNativeFoxViewCurveBezierView::UpdateEnabled(){
 	}else{
 		disable();
 	}
+	update();
 }
 
 void igdeNativeFoxViewCurveBezierView::UpdateDefaultSize(){

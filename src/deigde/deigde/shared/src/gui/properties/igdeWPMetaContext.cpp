@@ -191,6 +191,7 @@ void igdeWPMetaContext::pCreatePropertyWidgets(){
 				widget->Create(form, helper, false);
 			}
 			pPropertyWidgets.Add(widget);
+			widget->SetContext(pContext);
 		}
 	});
 }
@@ -252,6 +253,7 @@ igdeContainer &container, const igdeMetaPropertyGroup::Ref &groupProperty){
 				}
 				widget->Create(form, helper, false);
 			}
+			widget->SetContext(pContext);
 			childWidgets.Add(widget);
 		}
 	});

@@ -113,6 +113,7 @@ void igdeMetaPropertyWidget::Drop(){
 	pLabel.Clear();
 	pEditContainer.Clear();
 	pButtonContextMenu.Clear();
+	pContext.Clear();
 }
 
 

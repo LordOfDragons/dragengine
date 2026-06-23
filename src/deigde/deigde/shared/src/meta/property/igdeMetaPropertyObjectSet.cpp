@@ -198,17 +198,21 @@ void igdeMetaPropertyObjectSet::ActionRemoveAll::Update(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyObjectSet::igdeMetaPropertyObjectSet(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertyObjectSet::igdeMetaPropertyObjectSet(const char *id, const char *name,
+	const char *description) :
 igdeMetaProperty(id, name, description),
 pRows(4),
-pMultiSelection(false){
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyObjectSet::igdeMetaPropertyObjectSet(const char *id, const char *translationTag) :
 igdeMetaProperty(id, translationTag),
 pRows(4),
-pMultiSelection(false){
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyObjectSet::~igdeMetaPropertyObjectSet() = default;

@@ -74,7 +74,6 @@ public:
 class ActionCopy : public igdeAction{
 protected:
 	igdeMetaPropertyListWidget &pWidget;
-	bool pSelection;
 	
 public:
 	ActionCopy(igdeMetaPropertyListWidget &widget, const igdeMetaContext::Ref &context,
@@ -82,7 +81,7 @@ public:
 	igdeAction("@Igde.Action.Copy",
 		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"@Igde.Action.Copy.ToolTip"),
-	pWidget(widget), pSelection(false){
+	pWidget(widget){
 	}
 	
 	~ActionCopy() override = default;
@@ -99,41 +98,37 @@ public:
 			return;
 		}
 		
-		const auto values = pSelection ? property.GetSelection(context) : property.GetPropertyValue(context);
-		igdeMetaPropertyList::List copiedValues;
+		igdeMetaPropertyList::List values, copiedValues;
+		if(property.GetMultiSelection()){
+			values = property.GetSelection(context);
+			
+		}else{
+			auto activeObject = property.GetActiveObject(context);
+			if(activeObject){
+				values.Add(activeObject);
+			}
+		}
+		
 		values.Visit([&](const deObject::Ref &object){
 			const auto copiedObject = property.CopyObject(context, copiedValues, object);
+			printf("Copy: %p '%s' -> %p\n", object.Pointer(), property.GetClipboardDataTypeName().GetString(), copiedObject.Pointer());
 			if(copiedObject){
 				copiedValues.Add(copiedObject);
 			}
 		});
+		
 		if(copiedValues.IsEmpty()){
 			return;
 		}
 		
-		clipboard->Set(igdeMetaPropertyList::ClipboardData::Ref::New(std::move(copiedValues)));
+		clipboard->Set(igdeMetaPropertyList::ClipboardData::Ref::New(property, std::move(copiedValues)));
 	}
-};
-
-class ActionCopySelection : public ActionCopy{
-public:
-	ActionCopySelection(igdeMetaPropertyListWidget &widget,
-		const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-	ActionCopy(widget, context, environment)
-	{
-		SetText("@Igde.MetaPropertyList.Action.CopySelection");
-		SetDescription("@Igde.MetaPropertyList.Action.CopySelection.ToolTip");
-		pSelection = true;
-	}
-	
-	~ActionCopySelection() override = default;
 };
 
 
 class ActionPaste : public igdeAction{
 protected:
 	igdeMetaPropertyListWidget &pWidget;
-	bool pAppend;
 	
 public:
 	ActionPaste(igdeMetaPropertyListWidget &widget, const igdeMetaContext::Ref &context,
@@ -141,7 +136,7 @@ public:
 	igdeAction("@Igde.Action.Paste",
 		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"@Igde.Action.Paste.ToolTip"),
-	pWidget(widget), pAppend(false){
+	pWidget(widget){
 	}
 	
 	~ActionPaste() override = default;
@@ -158,14 +153,14 @@ public:
 			return;
 		}
 		
-		const auto clip = clipboard->GetWithTypeName(igdeMetaPropertyList::ClipboardData::TypeName).
+		const auto clip = clipboard->GetWithTypeName(property.GetClipboardDataTypeName()).
 			DynamicCast<igdeMetaPropertyList::ClipboardData>();
 		if(!clip){
 			return;
 		}
 		
 		const auto oldData = property.GetPropertyValue(context);
-		auto newData = pAppend ? oldData : igdeMetaPropertyList::List();
+		auto newData = oldData;
 		clip->GetData().Visit([&](const deObject::Ref &object){
 			const auto copiedObject = property.CopyObject(context, newData, object);
 			if(copiedObject){
@@ -183,25 +178,13 @@ public:
 	void Update() override{
 		if(pWidget.GetPropertyList().IsValid(pWidget.GetContext())){
 			const auto cb = pWidget.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(igdeMetaPropertyList::ClipboardData::TypeName));
+			if(cb) printf("Paste.Update: %p '%s' -> %d\n", cb, pWidget.GetPropertyList().GetClipboardDataTypeName().GetString(),
+				cb->HasWithTypeName(pWidget.GetPropertyList().GetClipboardDataTypeName()));
+			SetEnabled(cb && cb->HasWithTypeName(pWidget.GetPropertyList().GetClipboardDataTypeName()));
 			return;
 		}
 		SetEnabled(false);
 	}
-};
-
-class ActionPasteAppend : public ActionPaste{
-public:
-	ActionPasteAppend(igdeMetaPropertyListWidget &widget,
-		const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
-	ActionPaste(widget, context, environment)
-	{
-		SetText("@Igde.MetaPropertyList.Action.PasteAppend");
-		SetDescription("@Igde.MetaPropertyList.Action.PasteAppend.ToolTip");
-		pAppend = true;
-	}
-	
-	~ActionPasteAppend() override = default;
 };
 
 
@@ -446,9 +429,7 @@ void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	
 	if(context && context->GetClipboard()){
 		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionCopySelection>::New(*this, context, env));
 		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPasteAppend>::New(*this, context, env));
 		helper.MenuSeparator(menu);
 	}
 	

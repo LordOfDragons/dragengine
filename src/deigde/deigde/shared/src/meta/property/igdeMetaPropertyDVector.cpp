@@ -35,15 +35,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyDVector::igdeMetaPropertyDVector(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertyDVector::igdeMetaPropertyDVector(const char *id, const char *name,
+	const char *description) :
 igdeMetaProperty(id, name, description),
-pPrecision(3){
+pPrecision(3)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyDVector::igdeMetaPropertyDVector(const char *id, const char *translationTag) :
 igdeMetaProperty(id, translationTag),
-pPrecision(3){
+pPrecision(3)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyDVector::~igdeMetaPropertyDVector() = default;

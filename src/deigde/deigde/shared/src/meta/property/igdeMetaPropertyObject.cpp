@@ -47,13 +47,17 @@ igdeMetaPropertyObject*, const igdeMetaContext::Ref&){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyObject::igdeMetaPropertyObject(
-	const char *id, const char *name, const char *description) :
-igdeMetaProperty(id, name, description){
+igdeMetaPropertyObject::igdeMetaPropertyObject(const char *id, const char *name,
+	const char *description) :
+igdeMetaProperty(id, name, description)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyObject::igdeMetaPropertyObject(const char *id, const char *translationTag) :
-igdeMetaProperty(id, translationTag){
+igdeMetaProperty(id, translationTag)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyObject::~igdeMetaPropertyObject() = default;

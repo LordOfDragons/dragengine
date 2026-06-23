@@ -127,7 +127,7 @@ public:
 	
 	
 private:
-	decString pId, pLabel, pDescription, pFilter, pUndoInfo;
+	decString pId, pLabel, pDescription, pFilter, pUndoInfo, pClipboardDataTypeName;
 	bool pHideLabel = false;
 	bool pCanHideGroup = true;
 	igdeMetaPropertyWidgetState::Ref pWidgetState;
@@ -208,6 +208,11 @@ public:
 	/** \brief Set can hide group. */
 	void SetCanHideGroup(bool canHideGroup);
 	
+	/** \brief Clipboard data type name or empty string if not supported. */
+	inline const decString &GetClipboardDataTypeName() const{ return pClipboardDataTypeName; }
+	
+	/** \brief Set clipboard data type name or empty string if not supported. */
+	void SetClipboardDataTypeName(const char *name);
 	
 	/**
 	 * \brief Real filter string.

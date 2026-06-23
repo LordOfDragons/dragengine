@@ -70,8 +70,17 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.Set";
 		
-		explicit inline ClipboardData(const Set &value) : igdeTClipboardData<Set>(TypeName, value){}
-		explicit inline ClipboardData(Set &&value) : igdeTClipboardData<Set>(TypeName, value){}
+		explicit ClipboardData(const igdeMetaProperty &property, const Set &value) :
+			igdeTClipboardData<Set>(property.GetClipboardDataTypeName(), value){}
+		
+		explicit ClipboardData(const igdeMetaProperty &property, Set &&value) :
+			igdeTClipboardData<Set>(property.GetClipboardDataTypeName(), std::move(value)){}
+		
+		explicit ClipboardData(const char *typeName, const Set &value) :
+			igdeTClipboardData<Set>(typeName, value){}
+		
+		explicit ClipboardData(const char *typeName, Set &&value) :
+			igdeTClipboardData<Set>(typeName, std::move(value)){}
 		
 	protected:
 		/** \brief Clean up object. */

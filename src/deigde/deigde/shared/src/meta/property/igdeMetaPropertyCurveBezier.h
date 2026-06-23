@@ -52,8 +52,17 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.CurveBezier";
 		
-		explicit inline ClipboardData(const decCurveBezier &value) : igdeTClipboardData<decCurveBezier>(TypeName, value){}
-		explicit inline ClipboardData(decCurveBezier &&value) : igdeTClipboardData<decCurveBezier>(TypeName, value){}
+		ClipboardData(const igdeMetaProperty &property, const decCurveBezier &value) :
+			ClipboardData(property.GetClipboardDataTypeName(), value){}
+		
+		ClipboardData(const igdeMetaProperty &property, decCurveBezier &&value) :
+			ClipboardData(property.GetClipboardDataTypeName(), std::move(value)){}
+		
+		ClipboardData(const char *typeName, const decCurveBezier &value) :
+			igdeTClipboardData<decCurveBezier>(typeName, value){}
+		
+		ClipboardData(const char *typeName, decCurveBezier &&value) :
+			igdeTClipboardData<decCurveBezier>(typeName, std::move(value)){}
 		
 	protected:
 		/** \brief Clean up object. */

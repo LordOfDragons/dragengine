@@ -195,17 +195,20 @@ void igdeMetaPropertySet::ActionRemoveAll::Update(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertySet::igdeMetaPropertySet(
-	const char *id, const char *name, const char *description) :
+igdeMetaPropertySet::igdeMetaPropertySet(const char *id, const char *name, const char *description) :
 igdeMetaProperty(id, name, description),
 pRows(4),
-pMultiSelection(false){
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertySet::igdeMetaPropertySet(const char *id, const char *translationTag) :
 igdeMetaProperty(id, translationTag),
 pRows(4),
-pMultiSelection(false){
+pMultiSelection(false)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertySet::~igdeMetaPropertySet() = default;

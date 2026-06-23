@@ -99,12 +99,27 @@ public:
 			return;
 		}
 		
-		const auto values = pSelection ? property.GetSelection(context)
-			: property.GetPropertyValue(context);
-		
-		if(values.IsNotEmpty()){
-			clipboard->Set(igdeMetaPropertyStringList::ClipboardData::Ref::New(values));
+		decStringList values;
+		if(pSelection){
+			if(property.GetMultiSelection()){
+				values = property.GetSelection(context);
+				
+			}else{
+				auto activeString = property.GetActiveString(context);
+				if(activeString){
+					values.Add(activeString->GetData());
+				}
+			}
+			
+		}else{
+			values = property.GetPropertyValue(context);
 		}
+		
+		if(values.IsEmpty()){
+			return;
+		}
+		
+		clipboard->Set(igdeMetaPropertyStringList::ClipboardData::Ref::New(property, std::move(values)));
 	}
 };
 
@@ -151,8 +166,7 @@ public:
 			return;
 		}
 		
-		const auto clip = clipboard->GetWithTypeName(
-			igdeMetaPropertyStringList::ClipboardData::TypeName).
+		const auto clip = clipboard->GetWithTypeName(property.GetClipboardDataTypeName()).
 			DynamicCast<igdeMetaPropertyStringList::ClipboardData>();
 		if(!clip){
 			return;
@@ -178,7 +192,7 @@ public:
 		if(pWidget.GetPropertyStringList().IsValid(pWidget.GetContext())){
 			const auto cb = pWidget.GetContext()->GetClipboard();
 			SetEnabled(cb && cb->HasWithTypeName(
-				igdeMetaPropertyStringList::ClipboardData::TypeName));
+				pWidget.GetPropertyStringList().GetClipboardDataTypeName()));
 			
 		}else{
 			SetEnabled(false);

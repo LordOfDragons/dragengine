@@ -116,6 +116,10 @@ void igdeMetaProperty::SetCanHideGroup(bool canHideGroup){
 	pCanHideGroup = canHideGroup;
 }
 
+void igdeMetaProperty::SetClipboardDataTypeName(const char *name){
+	pClipboardDataTypeName = name;
+}
+
 
 decString igdeMetaProperty::RealFilter(const igdeMetaContext &context) const{
 	const auto &tm = context.GetEnvironment().GetTranslationManager();

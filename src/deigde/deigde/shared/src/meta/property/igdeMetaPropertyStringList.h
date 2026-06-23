@@ -83,8 +83,17 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.StringList";
 		
-		explicit inline ClipboardData(const decStringList &value) : igdeTClipboardData<decStringList>(TypeName, value){}
-		explicit inline ClipboardData(decStringList &&value) : igdeTClipboardData<decStringList>(TypeName, value){}
+		explicit ClipboardData(const igdeMetaProperty &property, const decStringList &value) :
+			igdeTClipboardData<decStringList>(property.GetClipboardDataTypeName(), value){}
+		
+		explicit ClipboardData(const igdeMetaProperty &property, decStringList &&value) :
+			igdeTClipboardData<decStringList>(property.GetClipboardDataTypeName(), std::move(value)){}
+		
+		explicit ClipboardData(const char *typeName, const decStringList &value) :
+			igdeTClipboardData<decStringList>(typeName, value){}
+		
+		explicit ClipboardData(const char *typeName, decStringList &&value) :
+			igdeTClipboardData<decStringList>(typeName, std::move(value)){}
 		
 	protected:
 		/** \brief Clean up object. */

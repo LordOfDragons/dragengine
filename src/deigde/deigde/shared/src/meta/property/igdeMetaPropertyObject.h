@@ -58,8 +58,17 @@ public:
 		/** \brief Type name. */
 		static constexpr const char *TypeName = "MetaProperty.Object";
 		
-		explicit inline ClipboardData(const ObjectRef &value) : igdeTClipboardData<ObjectRef>(TypeName, value){}
-		explicit inline ClipboardData(ObjectRef &&value) : igdeTClipboardData<ObjectRef>(TypeName, value){}
+		explicit ClipboardData(const igdeMetaProperty &property, const ObjectRef &value) :
+			igdeTClipboardData<ObjectRef>(property.GetClipboardDataTypeName(), value){}
+		
+		explicit ClipboardData(const igdeMetaProperty &property, ObjectRef &&value) :
+			igdeTClipboardData<ObjectRef>(property.GetClipboardDataTypeName(), std::move(value)){}
+		
+		explicit ClipboardData(const char *typeName, const ObjectRef &value) :
+			igdeTClipboardData<ObjectRef>(typeName, value){}
+		
+		explicit ClipboardData(const char *typeName, ObjectRef &&value) :
+			igdeTClipboardData<ObjectRef>(typeName, std::move(value)){}
 		
 	protected:
 		/** \brief Clean up object. */

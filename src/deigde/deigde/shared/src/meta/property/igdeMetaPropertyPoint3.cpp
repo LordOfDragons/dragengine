@@ -35,13 +35,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMetaPropertyPoint3::igdeMetaPropertyPoint3(
-	const char *id, const char *name, const char *description) :
-igdeMetaProperty(id, name, description){
+igdeMetaPropertyPoint3::igdeMetaPropertyPoint3(const char *id, const char *name,
+	const char *description) :
+igdeMetaProperty(id, name, description)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyPoint3::igdeMetaPropertyPoint3(const char *id, const char *translationTag) :
-igdeMetaProperty(id, translationTag){
+igdeMetaProperty(id, translationTag)
+{
+	SetClipboardDataTypeName(ClipboardData::TypeName);
 }
 
 igdeMetaPropertyPoint3::~igdeMetaPropertyPoint3() = default;

@@ -41,25 +41,24 @@ private:
 	float pValue = {};
 	float pLowerLimit = 0.0f;
 	float pUpperLimit = 1.0f;
+	float pTickSpacing = 0.1f;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create float meta property storage. */
-	igdeMetaPropertyStorageFloat(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context),
-	pValue(property.GetDefaultValue()),
-	pLowerLimit(property.GetLowerLimit()),
-	pUpperLimit(property.GetUpperLimit()){
-	}
-	
 	/** \brief Create float meta property storage with initial value. */
 	igdeMetaPropertyStorageFloat(P &property, const deTObjectReference<igdeMetaContext> &context, float initialValue) :
 	igdeMetaPropertyStorage<P>(property, context),
 	pValue(initialValue),
 	pLowerLimit(property.GetLowerLimit()),
-	pUpperLimit(property.GetUpperLimit()){
+	pUpperLimit(property.GetUpperLimit()),
+	pTickSpacing(property.GetTickSpacing()){
+	}
+	
+	/** \brief Create float meta property storage. */
+	igdeMetaPropertyStorageFloat(P &property, const deTObjectReference<igdeMetaContext> &context) :
+	igdeMetaPropertyStorageFloat<P>(property, context, property.GetDefaultValue()){
 	}
 	/*@}*/
 	
@@ -109,9 +108,9 @@ public:
 		}
 		
 		pLowerLimit = value;
+		igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
 		
 		if(igdeMetaPropertyStorage<P>::Property().GetEnableLowerLimit()){
-			igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
 			SetValue(pValue);
 		}
 	}
@@ -126,11 +125,24 @@ public:
 		}
 		
 		pUpperLimit = value;
+		igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
 		
 		if(igdeMetaPropertyStorage<P>::Property().GetEnableUpperLimit()){
-			igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
 			SetValue(pValue);
 		}
+	}
+	
+	/** \brief Tick spacing. */
+	inline float GetTickSpacing() const{ return pTickSpacing; }
+	
+	/** \brief Set tick spacing. */
+	void SetTickSpacing(float value){
+		if(fabsf(pTickSpacing - value) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		
+		pTickSpacing = decMath::max(value, 0.0f);
+		igdeMetaPropertyStorage<P>::Property().NotifyLimitsChanged(igdeMetaPropertyStorage<P>::Context());
 	}
 	
 	/** \brief Implicit conversion operator. */
