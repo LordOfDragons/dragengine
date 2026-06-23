@@ -69,7 +69,7 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	
 	var ECBehaviorPlayerControllable.Tracker pTracker
 	var ActorChanged pActorChanged
-	var bool pLockAzimuth, pLockElevation, pLockLookHorizontal, pLockLookVertical
+	var bool pLockAzimuth, pLockElevation
 	
 	/** \brief Collider AI or \em null if absent. */
 	protected var ECBehaviorColliderAI.Instance colliderAI
@@ -195,11 +195,7 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * with actor looking around.
 	 * 
 	 * If azimuth or elevation are locked the respective value is not changed at all.
-	 * 
-	 * If look horizontal or look vertical are locked the respective value is considered 0.
-	 * 
 	 * If locomotion is present its orientation and looking direction are used.
-	 * 
 	 * Otherwise the azimuth and elevation are set to 0
 	 */
 	func void updateCamera(float elapsed)
@@ -207,19 +203,10 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 			var Locomotion l = locomotion.getLocomotion()
 			
 			if not pLockAzimuth
-				var float angle = l.getOrientation()
-				if not pLockLookHorizontal
-					angle += l.getLookHorizontal()
-				end
-				setAzimuth(angle)
+				setAzimuth(l.getOrientation() + l.getLookHorizontal())
 			end
-			
 			if not pLockElevation
-				var float angle
-				if not pLockLookVertical
-					angle = l.getLookVertical()
-				end
-				setElevation(-angle)
+				setElevation(-l.getLookVertical())
 			end
 			
 		else
@@ -281,38 +268,6 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 */
 	func void setLockElevation(bool lock)
 		pLockElevation = lock
-	end
-	
-	/**
-	 * \brief Lock looking direction horizontal changes.
-	 * \version 1.33
-	 */
-	func bool getLockLookHorizontal()
-		return pLockLookHorizontal
-	end
-	
-	/**
-	 * \brief Set to lock looking direction horizontal changes.
-	 * \version 1.33
-	 */
-	func void setLockLookHorizontal(bool lock)
-		pLockLookHorizontal = lock
-	end
-	
-	/**
-	 * \brief Lock looking direction vertical changes.
-	 * \version 1.33
-	 */
-	func bool getLockLookVertical()
-		return pLockLookVertical
-	end
-	
-	/**
-	 * \brief Set to lock looking direction vertical changes.
-	 * \version 1.33
-	 */
-	func void setLockLookVertical(bool lock)
-		pLockLookVertical = lock
 	end
 	
 	
