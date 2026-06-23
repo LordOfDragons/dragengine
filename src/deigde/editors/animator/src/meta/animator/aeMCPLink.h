@@ -116,7 +116,7 @@ public:
 	
 	void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object, igdeMetaContextItemInfo &info) const override{
 		info.SetAll(object ? decString::Formatted("{0} ({1})", object->GetName().GetString(), object->GetIndex())
-			: "@Animator.WPLink.Controller.NoController");
+			: decString("@Animator.WPLink.Controller.NoController"));
 	}
 	
 	ObjectTypeList GetPropertyAllowedObjectsType(const ContextRef &context) const override{

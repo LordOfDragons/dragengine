@@ -25,6 +25,7 @@
 #ifndef _AELINK_H_
 #define _AELINK_H_
 
+#include "../controller/aeController.h"
 #include "../../meta/animator/aeMCLink.h"
 
 #include <dragengine/deObject.h>
@@ -44,7 +45,6 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 class aeAnimator;
-class aeController;
 class aeWindowMain;
 class deAnimatorLink;
 
