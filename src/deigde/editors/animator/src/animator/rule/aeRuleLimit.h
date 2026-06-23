@@ -77,6 +77,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleLimit() = delete;
+	aeRuleLimit(const aeRuleLimit&) = delete;
+	
 	/** Create a new limit rule. */
 	explicit aeRuleLimit(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a limit rule. */
@@ -232,7 +235,7 @@ public:
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -240,8 +243,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another limit rule to this limit rule. */
-	virtual aeRuleLimit &operator=(const aeRuleLimit &copy);
+	aeRuleLimit &operator=(const aeRuleLimit &copy) = delete;
 	/*@}*/
 };
 

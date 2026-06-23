@@ -286,32 +286,8 @@ void aeRuleSubAnimator::UpdateCompAnim(){
 }
 
 
-// Operators
-//////////////
-
-aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
-	pathSubAnimator = copy.pathSubAnimator;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	
-	pSubAnimator = copy.pSubAnimator;
-	pConnections = copy.pConnections;
-	
-	deAnimatorRuleSubAnimator * const rule = static_cast<deAnimatorRuleSubAnimator*>(GetEngineRule());
-	if(rule){
-		pUpdateConnections(*rule);
-	}
-	
-	aeRule::operator=(copy);
-	return *this;
-}
-
-
-
-aeRule::Ref aeRuleSubAnimator::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleSubAnimator::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleSubAnimator::ListLinks(aeLink::List &list){

@@ -266,33 +266,12 @@ deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleAnimationDifference::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleAnimationDifference::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleAnimationDifference::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetLeadMoveTime->AddLinksToList(list);
 	pTargetRefMoveTime->AddLinksToList(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleAnimationDifference &aeRuleAnimationDifference::operator=(const aeRuleAnimationDifference &copy){
-	leadingMoveName = copy.leadingMoveName;
-	leadingMoveTime = copy.leadingMoveTime;
-	referenceMoveName = copy.referenceMoveName;
-	referenceMoveTime = copy.referenceMoveTime;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	useComponentSpace = copy.useComponentSpace;
-	pTargetLeadMoveTime = copy.pTargetLeadMoveTime;
-	pTargetRefMoveTime = copy.pTargetRefMoveTime;
-	aeRule::operator=(copy);
-	return *this;
 }

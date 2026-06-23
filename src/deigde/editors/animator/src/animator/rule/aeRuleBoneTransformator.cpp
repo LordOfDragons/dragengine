@@ -414,8 +414,8 @@ deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleBoneTransformator::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleBoneTransformator::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleBoneTransformator::ListLinks(aeLink::List &list){
@@ -423,34 +423,4 @@ void aeRuleBoneTransformator::ListLinks(aeLink::List &list){
 	pTargetRotation->AddLinksToList(list);
 	pTargetScaling->AddLinksToList(list);
 	pTargetTranslation->AddLinksToList(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleBoneTransformator &aeRuleBoneTransformator::operator=(const aeRuleBoneTransformator &copy){
-	minTranslation = copy.minTranslation;
-	maxTranslation = copy.maxTranslation;
-	minRotation = copy.minRotation;
-	maxRotation = copy.maxRotation;
-	minScaling = copy.minScaling;
-	maxScaling = copy.maxScaling;
-	axis = copy.axis;
-	minAngle = copy.minAngle;
-	maxAngle = copy.maxAngle;
-	coordinateFrame = copy.coordinateFrame;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	useAxis = copy.useAxis;
-	targetBone = copy.targetBone;
-	inputBone = copy.inputBone;
-	inputSource = copy.inputSource;
-	pTargetTranslation = copy.pTargetTranslation;
-	pTargetRotation = copy.pTargetRotation;
-	pTargetScaling = copy.pTargetScaling;
-	aeRule::operator=(copy);
-	return *this;
 }

@@ -210,28 +210,12 @@ deAnimatorRule::Ref aeRuleTrackTo::CreateEngineRule(){
 }
 
 
-aeRule::Ref aeRuleTrackTo::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleTrackTo::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleTrackTo::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetPosition->AddLinksToList(list);
 	pTargetUp->AddLinksToList(list);
-}
-
-
-// Operators
-///////////////
-
-aeRuleTrackTo &aeRuleTrackTo::operator=(const aeRuleTrackTo &copy){
-	trackBone = copy.trackBone;
-	trackAxis = copy.trackAxis;
-	upAxis = copy.upAxis;
-	upTarget = copy.upTarget;
-	lockedAxis = copy.lockedAxis;
-	pTargetPosition = copy.pTargetPosition;
-	pTargetUp = copy.pTargetUp;
-	aeRule::operator=(copy);
-	return *this;
 }

@@ -213,29 +213,12 @@ deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleAnimationSelect::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleAnimationSelect::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleAnimationSelect::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
 	pTargetMoveTime->AddLinksToList(list);
 	pTargetSelect->AddLinksToList(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleAnimationSelect &aeRuleAnimationSelect::operator=(const aeRuleAnimationSelect &copy){
-	moves = copy.moves;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	pTargetMoveTime = copy.pTargetMoveTime;
-	pTargetSelect = copy.pTargetSelect;
-	aeRule::operator=(copy);
-	return *this;
 }

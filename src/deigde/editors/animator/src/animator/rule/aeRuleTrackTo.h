@@ -59,6 +59,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleTrackTo() = delete;
+	aeRuleTrackTo(const aeRuleTrackTo&) = delete;
+	
 	/** Create a new track to rule. */
 	aeRuleTrackTo(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a track to rule. */
@@ -110,7 +113,7 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -118,8 +121,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another track to rule to this track to rule. */
-	virtual aeRuleTrackTo &operator=(const aeRuleTrackTo &copy);
+	aeRuleTrackTo &operator=(const aeRuleTrackTo &copy) = delete;
 	/*@}*/
 };
 

@@ -335,24 +335,6 @@ void aeRule::RemoveAllVertexPositionSets(){
 
 
 
-// Operators
-//////////////
-
-aeRule &aeRule::operator=(const aeRule &copy){
-	SetName(copy.name);
-	affectedBones = copy.affectedBones;
-	affectedVertexPositionSets = copy.affectedVertexPositionSets;
-	blendMode = copy.blendMode;
-	blendFactor = copy.blendFactor;
-	invertBlendFactor = copy.invertBlendFactor;
-	enabled = copy.enabled;
-	pTargetBlendFactor = copy.pTargetBlendFactor;
-	NotifyRuleChanged();
-	return *this;
-}
-
-
-
 // Helper
 ///////////
 

@@ -61,6 +61,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleAnimationSelect() = delete;
+	aeRuleAnimationSelect(const aeRuleAnimationSelect&) = delete;
+	
 	/** Create animator select rule. */
 	explicit aeRuleAnimationSelect(aeWindowMain &windowMain, const char *name);
 	
@@ -139,7 +142,7 @@ public:
 	
 	
 	/** Create copy of rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -149,8 +152,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animator difference rule to this animator difference rule. */
-	virtual aeRuleAnimationSelect &operator=(const aeRuleAnimationSelect &copy);
+	aeRuleAnimationSelect &operator=(const aeRuleAnimationSelect &copy) = delete;
 	/*@}*/
 };
 

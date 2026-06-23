@@ -54,6 +54,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleAnimation() = delete;
+	aeRuleAnimation(const aeRuleAnimation&) = delete;
+	
 	/** Create a new animator rule. */
 	explicit aeRuleAnimation(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a animator rule. */
@@ -109,7 +112,7 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -117,8 +120,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animation rule to this rule. */
-	virtual aeRuleAnimation &operator=(const aeRuleAnimation &copy);
+	aeRuleAnimation &operator=(const aeRuleAnimation &copy) = delete;
 	/*@}*/
 };
 

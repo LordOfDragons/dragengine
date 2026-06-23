@@ -72,6 +72,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleBoneTransformator() = delete;
+	aeRuleBoneTransformator(const aeRuleBoneTransformator&) = delete;
+	
 	/** Create a new bone transformator rule. */
 	explicit aeRuleBoneTransformator(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a bone transformator rule. */
@@ -189,7 +192,7 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -197,8 +200,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animation rule to this rule. */
-	virtual aeRuleBoneTransformator &operator=(const aeRuleBoneTransformator &copy);
+	aeRuleBoneTransformator &operator=(const aeRuleBoneTransformator &copy) = delete;
 	/*@}*/
 };
 

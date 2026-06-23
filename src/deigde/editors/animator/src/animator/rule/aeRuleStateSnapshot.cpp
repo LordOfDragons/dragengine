@@ -148,25 +148,10 @@ deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
 }
 
 
-aeRule::Ref aeRuleStateSnapshot::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleStateSnapshot::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleStateSnapshot::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-}
-
-
-// Operators
-///////////////
-
-aeRuleStateSnapshot &aeRuleStateSnapshot::operator=(const aeRuleStateSnapshot &copy){
-	useLastState = copy.useLastState;
-	id = copy.id;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	aeRule::operator=(copy);
-	return *this;
 }

@@ -59,6 +59,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleAnimationDifference() = delete;
+	aeRuleAnimationDifference(const aeRuleAnimationDifference&) = delete;
+	
 	/** Create a new animator difference rule. */
 	explicit aeRuleAnimationDifference(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of an animator difference rule. */
@@ -131,7 +134,7 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -139,8 +142,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animator difference rule to this animator difference rule. */
-	virtual aeRuleAnimationDifference &operator=(const aeRuleAnimationDifference &copy);
+	aeRuleAnimationDifference &operator=(const aeRuleAnimationDifference &copy) = delete;
 	/*@}*/
 };
 

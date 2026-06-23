@@ -69,6 +69,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleForeignState() = delete;
+	aeRuleForeignState(const aeRuleForeignState&) = delete;
+	
 	/** Create a new foreign state rule. */
 	explicit aeRuleForeignState(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a foreign state rule. */
@@ -168,7 +171,7 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -176,8 +179,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another foreign state rule to this foreign state rule. */
-	virtual aeRuleForeignState &operator=(const aeRuleForeignState &copy);
+	aeRuleForeignState &operator=(const aeRuleForeignState &copy) = delete;
 	/*@}*/
 };
 

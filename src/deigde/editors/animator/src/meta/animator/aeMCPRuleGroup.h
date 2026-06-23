@@ -147,4 +147,26 @@ public:
 	}
 };
 
+
+class aeMCPRuleGroupRules : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
+public:
+	aeMCPRuleGroupRules() : aeTMCPAnimatorRuleType("ruleGroup.rules", "Animator.WPRule.Rules"){
+		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Controllers");
+	}
+	
+	~aeMCPRuleGroupRules() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return RuleType(context).rules;
+	}
+	
+	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override{
+		info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()));
+	}
+	
+	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects, const ObjectTypeRef &object) const override{
+		return object->CreateCopy(WindowMain(context));
+	}
+};
+
 #endif

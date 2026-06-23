@@ -177,6 +177,7 @@ public:
 
 class aeMCRuleGroupProperties{
 public:
+	deTObjectReference<aeMCPRuleGroupRules> rules = deTObjectReference<aeMCPRuleGroupRules>::New();
 	deTObjectReference<aeMCPRuleGroupEnablePosition> enablePosition = deTObjectReference<aeMCPRuleGroupEnablePosition>::New();
 	deTObjectReference<aeMCPRuleGroupEnableOrientation> enableOrientation = deTObjectReference<aeMCPRuleGroupEnableOrientation>::New();
 	deTObjectReference<aeMCPRuleGroupEnableSize> enableSize = deTObjectReference<aeMCPRuleGroupEnableSize>::New();

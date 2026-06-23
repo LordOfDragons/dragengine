@@ -220,25 +220,8 @@ deAnimatorRule::Ref aeRuleMirror::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleMirror::CreateCopy() const{
-	return Ref::New(*this);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleMirror &aeRuleMirror::operator=(const aeRuleMirror &copy){
-	mirrorAxis = copy.mirrorAxis;
-	mirrorBone = copy.mirrorBone;
-	pMatchNames = copy.pMatchNames;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	aeRule::operator=(copy);
-	return *this;
+aeRule::Ref aeRuleMirror::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 

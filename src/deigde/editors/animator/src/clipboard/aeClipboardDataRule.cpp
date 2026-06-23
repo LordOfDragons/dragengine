@@ -23,6 +23,7 @@
  */
 
 #include "aeClipboardDataRule.h"
+#include "../animator/aeAnimator.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -38,14 +39,14 @@ const char * const aeClipboardDataRule::TYPE_NAME = "rule";
 aeClipboardDataRule::aeClipboardDataRule(aeRule *rule) :
 igdeClipboardData(TYPE_NAME)
 {
-	pRules.Add(rule->CreateCopy());
+	pRules.Add(rule->CreateCopy(rule->GetAnimator()->GetWindowMain()));
 }
 
 aeClipboardDataRule::aeClipboardDataRule(const aeRule::List &rules) :
 igdeClipboardData(TYPE_NAME)
 {
 	rules.Visit([&](const aeRule &rule){
-		pRules.Add(rule.CreateCopy());
+		pRules.Add(rule.CreateCopy(rule.GetAnimator()->GetWindowMain()));
 	});
 }
 

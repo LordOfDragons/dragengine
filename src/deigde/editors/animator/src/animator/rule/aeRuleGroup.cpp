@@ -42,6 +42,7 @@ aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleGroup::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertGroup, aname),
 pTreeListExpanded(false),
+rules(windowMain.GetMCAnimatorProperties().ruleGroup.rules, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 enablePosition(windowMain.GetMCAnimatorProperties().ruleGroup.enablePosition, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 enableOrientation(windowMain.GetMCAnimatorProperties().ruleGroup.enableOrientation, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 enableSize(windowMain.GetMCAnimatorProperties().ruleGroup.enableSize, GetMetaContext().StaticCast<aeMCRuleGroup>()),
@@ -50,44 +51,60 @@ useCurrentState(windowMain.GetMCAnimatorProperties().ruleGroup.useCurrentState, 
 applicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 targetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, GetMetaContext().StaticCast<aeMCRuleGroup>())
 {
+	rules.SetOnChanged([this](){
+		pUpdateRuleIndices();
+		if(GetAnimator()){
+			GetAnimator()->RebuildRules();
+			GetAnimator()->NotifyRuleStructureChanged();
+		}
+	});
+	rules.SetOnObjectAdded([this](aeRule *rule){
+		rule->SetParentGroup(this);
+		rule->SetAnimator(GetAnimator());
+	});
+	rules.SetOnObjectRemoved([this](aeRule *rule){
+		rule->SetParentGroup(nullptr);
+		rule->SetAnimator(nullptr);
+	});
+	
 	enablePosition.SetOnChanged([this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnablePosition(enablePosition);
+			static_cast<deAnimatorRuleGroup*>(GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
 	});
 	
 	enableOrientation.SetOnChanged([this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+			static_cast<deAnimatorRuleGroup*>(GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
 	});
 	
 	enableSize.SetOnChanged([this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableSize(enableSize);
+			static_cast<deAnimatorRuleGroup*>(GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
 	});
 	
 	enableVertexPositionSet.SetOnChanged([this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+			static_cast<deAnimatorRuleGroup*>(GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	});
 	
 	useCurrentState.SetOnChanged([this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetUseCurrentState(useCurrentState);
+			static_cast<deAnimatorRuleGroup*>(GetEngineRule())->SetUseCurrentState(useCurrentState);
 		}
 		NotifyRuleChanged();
 	});
 	
 	applicationType.SetOnChanged([this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleGroup*)GetEngineRule())->SetApplicationType(applicationType);
+			static_cast<deAnimatorRuleGroup*>(GetEngineRule())->SetApplicationType(applicationType);
 		}
 		NotifyRuleChanged();
 	});
@@ -95,7 +112,7 @@ targetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, GetMet
 	pTargetSelect = aeControllerTarget::Ref::New(targetSelect);
 	targetSelect.SetOnChanged([this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleGroup*)GetEngineRule())->GetTargetSelect(), targetSelect);
+			pUpdateEngineTarget(static_cast<deAnimatorRuleGroup*>(GetEngineRule())->GetTargetSelect(), targetSelect);
 		}
 		pTargetSelect->OnStorageChanged();
 		NotifyRuleChanged();
@@ -113,6 +130,12 @@ aeRuleGroup(windowMain, copy.name)
 	applicationType.SetValue(copy.applicationType, false);
 	
 	pTargetSelect = aeControllerTarget::Ref::New(targetSelect, copy.pTargetSelect);
+	
+	aeRule::List copyRules;
+	copy.rules->Visit([&](const aeRule &rule){
+		copyRules.Add(rule.CreateCopy(windowMain));
+	});
+	rules.SetValue(copyRules);
 }
 
 aeRuleGroup::~aeRuleGroup() = default;
@@ -147,119 +170,57 @@ void aeRuleGroup::SetApplicationType(deAnimatorRuleGroup::eApplicationTypes valu
 
 
 void aeRuleGroup::AddRule(aeRule *rule){
-	pRules.AddOrThrow(rule);
-	
-	aeAnimator * const animator = GetAnimator();
-	
-	rule->SetParentGroup(this);
-	rule->SetAnimator(animator);
-	
-	if(animator){
-		animator->RebuildRules();
-		animator->NotifyRuleStructureChanged();
-	}
+	auto list = rules.GetValue();
+	list.AddOrThrow(rule);
+	rules = list;
 }
 
 void aeRuleGroup::InsertRuleAt(aeRule *rule, int index){
-	pRules.InsertOrThrow(rule, index);
-	
-	aeAnimator * const animator = GetAnimator();
-	rule->SetParentGroup(this);
-	rule->SetAnimator(animator);
-	
-	if(animator){
-		animator->RebuildRules();
-		animator->NotifyRuleStructureChanged();
-	}
+	auto list = rules.GetValue();
+	list.InsertOrThrow(rule, index);
+	rules = list;
 }
 
 void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
-	pRules.Move(rule, index);
-	
-	aeAnimator * const animator = GetAnimator();
-	if(animator){
-		animator->RebuildRules();
-		animator->NotifyRuleStructureChanged();
-	}
+	auto list = rules.GetValue();
+	list.Move(rule, index);
+	rules = list;
 }
 
 void aeRuleGroup::RemoveRule(aeRule *rule){
-	const aeRule::Ref guard(rule);
-	const int index = pRules.IndexOf(rule);
-	pRules.RemoveOrThrow(rule);
-	
-	aeAnimator * const animator = GetAnimator();
-	
-	if(animator && rule == animator->GetActiveRule()){
-		if(pRules.IsNotEmpty()){
-			animator->SetActiveRule(pRules.GetAt(decMath::min(index, pRules.GetCount() - 1)));
-			
-		}else{
-			animator->SetActiveRule(this);
-		}
-	}
-	
-	rule->SetParentGroup(nullptr);
-	rule->SetAnimator(nullptr);
-	
-	if(animator){
-		animator->RebuildRules();
-		animator->NotifyRuleStructureChanged();
-	}
+	auto list = rules.GetValue();
+	list.RemoveOrThrow(rule);
+	rules = list;
 }
 
 void aeRuleGroup::RemoveAllRules(){
-	if(pRules.IsEmpty()){
-		return;
-	}
-	
-	aeAnimator * const animator = GetAnimator();
-	
-	if(animator && pRules.Has(animator->GetActiveRule())){
-		animator->SetActiveRule(this);
-	}
-	
-	pRules.Visit([&](aeRule &rule){
-		rule.SetParentGroup(nullptr);
-		rule.SetAnimator(nullptr);
-	});
-	
-	pRules.RemoveAll();
-	
-	if(animator){
-		animator->RebuildRules();
-		animator->NotifyRuleStructureChanged();
-	}
+	rules = {};
 }
 
 
 void aeRuleGroup::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
-	deAnimatorRuleGroup * const rule = (deAnimatorRuleGroup*)GetEngineRule();
-	if(rule){
-		pUpdateEngineTarget(rule->GetTargetSelect(), targetSelect);
+	auto engRule = static_cast<deAnimatorRuleGroup*>(GetEngineRule());
+	if(engRule){
+		pUpdateEngineTarget(engRule->GetTargetSelect(), targetSelect);
 	}
 	
-	const int count = pRules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		((aeRule*)pRules.GetAt(i))->UpdateTargets();
-	}
+	rules->Visit([&](aeRule &rule){
+		rule.UpdateTargets();
+	});
 }
 
 int aeRuleGroup::CountLinkUsage(aeLink *link) const{
-	int i, usageCount = aeRule::CountLinkUsage(link);
-	const int count = pRules.GetCount();
+	int usageCount = aeRule::CountLinkUsage(link);
 	
 	if(pTargetSelect->GetLinks().Has(link)){
 		usageCount++;
 	}
 	
-	for(i=0; i<count; i++){
-		usageCount += pRules.GetAt(i)->CountLinkUsage(link);
-	}
+	rules->Visit([&](const aeRule &rule){
+		usageCount += rule.CountLinkUsage(link);
+	});
 	
 	return usageCount;
 }
@@ -271,12 +232,9 @@ void aeRuleGroup::RemoveLinkFromTargets(aeLink *link){
 		pTargetSelect->RemoveLink(link);
 	}
 	
-	const int count = pRules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->RemoveLinkFromTargets(link);
-	}
+	rules->Visit([&](aeRule &rule){
+		rule.RemoveLinkFromTargets(link);
+	});
 	
 	aeRule::UpdateTargets();
 }
@@ -286,36 +244,28 @@ void aeRuleGroup::RemoveLinksFromAllTargets(){
 	
 	pTargetSelect->RemoveAllLinks();
 	
-	const int count = pRules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->RemoveLinksFromAllTargets();
-	}
+	rules->Visit([&](aeRule &rule){
+		rule.RemoveLinksFromAllTargets();
+	});
 	
 	aeRule::UpdateTargets();
 }
 
 
 deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
-	const int count = pRules.GetCount();
-	int i;
+	rules->Visit([&](aeRule &rule){
+		rule.SetEngineRule(nullptr);
+	});
 	
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetEngineRule(nullptr);
-	}
-	
-	const deAnimatorRuleGroup::Ref engRule(deAnimatorRuleGroup::Ref::New());
+	auto engRule = deAnimatorRuleGroup::Ref::New();
 	
 	InitEngineRule(engRule);
 	
-	for(i=0; i<count; i++){
-		aeRule * const rule = pRules.GetAt(i);
-		
-		const deAnimatorRule::Ref subEngRule(rule->CreateEngineRule());
+	rules->Visit([&](aeRule &rule){
+		auto subEngRule = rule.CreateEngineRule();
 		engRule->AddRule(subEngRule);
-		rule->SetEngineRule(subEngRule);
-	}
+		rule.SetEngineRule(subEngRule);
+	});
 	
 	engRule->SetEnablePosition(enablePosition);
 	engRule->SetEnableOrientation(enableOrientation);
@@ -336,68 +286,26 @@ void aeRuleGroup::SetTreeListExpanded(bool value){
 }
 
 
-aeRule::Ref aeRuleGroup::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleGroup::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleGroup::ListLinks(aeLink::List &list){
-	const int count = pRules.GetCount();
-	int i;
-	
 	aeRule::ListLinks(list);
 	
 	pTargetSelect->AddLinksToList(list);
 	
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->ListLinks(list);
-	}
+	rules->Visit([&](aeRule &rule){
+		rule.ListLinks(list);
+	});
 }
 
 void aeRuleGroup::OnParentAnimatorChanged(){
-	aeAnimator * const animator = GetAnimator();
-	const int count = pRules.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetAnimator(animator);
-	}
+	auto animator = GetAnimator();
+	rules->Visit([&](aeRule &rule){
+		rule.SetAnimator(animator);
+	});
 }
-
-
-// Operators
-//////////////
-
-aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	pTreeListExpanded = copy.pTreeListExpanded;
-	useCurrentState = copy.useCurrentState;
-	applicationType = copy.applicationType;
-	pTargetSelect = copy.pTargetSelect;
-	
-	const int ruleCount = copy.pRules.GetCount();
-	aeRule::Ref rule;
-	int i;
-	
-	RemoveAllRules();
-	try{
-		for(i=0; i<ruleCount; i++){
-			rule = copy.pRules.GetAt(i)->CreateCopy();
-			AddRule(rule);
-			rule->SetParentGroup(this);
-			rule = nullptr;
-		}
-		
-	}catch(const deException &){
-		throw;
-	}
-	
-	aeRule::operator=(copy);
-	return *this;
-}
-
 
 
 // Private Functions
@@ -405,4 +313,10 @@ aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
 
 void aeRuleGroup::pCleanUp(){
 	RemoveAllRules();
+}
+
+void aeRuleGroup::pUpdateRuleIndices(){
+	rules.GetValue().VisitIndexed([](int i, aeRule &each){
+		each.SetIndex(i);
+	});
 }

@@ -49,7 +49,7 @@ pIndex(index){
 	DEASSERT_TRUE(ruleList.IsNotEmpty())
 	
 	ruleList.Visit([&](const aeRule &rule){
-		pRuleList.Add(rule.CreateCopy());
+		pRuleList.Add(rule.CreateCopy(animator->GetWindowMain()));
 	});
 	
 	pAnimator = animator;

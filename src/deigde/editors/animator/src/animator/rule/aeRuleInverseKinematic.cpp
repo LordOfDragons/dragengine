@@ -362,8 +362,8 @@ deAnimatorRule::Ref aeRuleInverseKinematic::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleInverseKinematic::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleInverseKinematic::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleInverseKinematic::ListLinks(aeLink::List &list){
@@ -374,30 +374,4 @@ void aeRuleInverseKinematic::ListLinks(aeLink::List &list){
 	pTargetLocalOrientation->AddLinksToList(list);
 	pTargetReachRange->AddLinksToList(list);
 	pTargetReachCenter->AddLinksToList(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleInverseKinematic &aeRuleInverseKinematic::operator=(const aeRuleInverseKinematic &copy){
-	goalPosition = copy.goalPosition;
-	goalOrientation = copy.goalOrientation;
-	localPosition = copy.localPosition;
-	localOrientation = copy.localOrientation;
-	adjustOrientation = copy.adjustOrientation;
-	useSolverBone = copy.useSolverBone;
-	solverBone = copy.solverBone;
-	reachRange = copy.reachRange;
-	reachCenter = copy.reachCenter;
-	reachBone = copy.reachBone;
-	pTargetGoalPosition = copy.pTargetGoalPosition;
-	pTargetGoalOrientation = copy.pTargetGoalOrientation;
-	pTargetLocalPosition = copy.pTargetLocalPosition;
-	pTargetLocalOrientation = copy.pTargetLocalOrientation;
-	pTargetReachRange = copy.pTargetReachRange;
-	pTargetReachCenter = copy.pTargetReachCenter;
-	aeRule::operator=(copy);
-	return *this;
 }

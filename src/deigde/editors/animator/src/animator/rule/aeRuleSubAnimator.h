@@ -63,6 +63,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleSubAnimator() = delete;
+	aeRuleSubAnimator(const aeRuleSubAnimator&) = delete;
+	
 	/** Create a new sub animator rule. */
 	aeRuleSubAnimator(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a sub animator rule. */
@@ -118,7 +121,7 @@ public:
 	void UpdateCompAnim() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -129,8 +132,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another sub animator rule to this sub animator rule. */
-	virtual aeRuleSubAnimator &operator=(const aeRuleSubAnimator &copy);
+	aeRuleSubAnimator &operator=(const aeRuleSubAnimator &copy) = delete;
 	/*@}*/
 	
 private:

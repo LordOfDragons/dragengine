@@ -348,8 +348,8 @@ deAnimatorRule::Ref aeRuleStateManipulator::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleStateManipulator::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleStateManipulator::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleStateManipulator::ListLinks(aeLink::List &list){
@@ -358,30 +358,4 @@ void aeRuleStateManipulator::ListLinks(aeLink::List &list){
 	pTargetRotation->AddLinksToList(list);
 	pTargetSize->AddLinksToList(list);
 	pTargetVertexPositionSet->AddLinksToList(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleStateManipulator &aeRuleStateManipulator::operator=(const aeRuleStateManipulator &copy){
-	SetMinimumPosition(copy.minPosition);
-	SetMaximumPosition(copy.maxPosition);
-	SetMinimumRotation(copy.minRotation);
-	SetMaximumRotation(copy.maxRotation);
-	SetMinimumSize(copy.minSize);
-	SetMaximumSize(copy.maxSize);
-	SetMinimumVertexPositionSet(copy.minVertexPositionSet);
-	SetMaximumVertexPositionSet(copy.maxVertexPositionSet);
-	SetEnablePosition(copy.enablePosition);
-	SetEnableRotation(copy.enableRotation);
-	SetEnableSize(copy.enableSize);
-	SetEnableVertexPositionSet(copy.enableVertexPositionSet);
-	pTargetPosition = copy.pTargetPosition;
-	pTargetRotation = copy.pTargetRotation;
-	pTargetSize = copy.pTargetSize;
-	pTargetVertexPositionSet = copy.pTargetVertexPositionSet;
-	aeRule::operator=(copy);
-	return *this;
 }

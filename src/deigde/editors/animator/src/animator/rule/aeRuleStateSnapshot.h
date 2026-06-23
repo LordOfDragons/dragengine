@@ -50,6 +50,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleStateSnapshot() = delete;
+	aeRuleStateSnapshot(const aeRuleStateSnapshot&) = delete;
+	
 	/** Create a new state snapshot rule. */
 	aeRuleStateSnapshot(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a state snapshot rule. */
@@ -100,7 +103,7 @@ public:
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -108,8 +111,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another state snapshot rule to this state snapshot rule. */
-	virtual aeRuleStateSnapshot &operator=(const aeRuleStateSnapshot &copy);
+	aeRuleStateSnapshot &operator=(const aeRuleStateSnapshot &copy) = delete;
 	/*@}*/
 };
 

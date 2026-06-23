@@ -84,6 +84,9 @@ public:
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRule() = delete;
+	aeRule(const aeRule&) = delete;
+	
 	/** Create a new animator rule. */
 	aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext,
 		deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name);
@@ -176,7 +179,7 @@ public:
 	void NotifyRuleChanged();
 	
 	/** Create a copy of this rule. */
-	virtual aeRule::Ref CreateCopy() const = 0;
+	virtual aeRule::Ref CreateCopy(aeWindowMain &windowMain) const = 0;
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
@@ -226,8 +229,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another animator rule to this animator rule. */
-	aeRule &operator=(const aeRule &copy);
+	aeRule &operator=(const aeRule &copy) = delete;
 	/*@}*/
 	
 	/** \name Helper */

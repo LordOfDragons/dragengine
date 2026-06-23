@@ -67,6 +67,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleStateManipulator() = delete;
+	aeRuleStateManipulator(const aeRuleStateManipulator&) = delete;
+	
 	/** Create rule. */
 	aeRuleStateManipulator(aeWindowMain &windowMain, const char *name);
 	
@@ -191,7 +194,7 @@ public:
 	
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	
 	
@@ -203,8 +206,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another state manipulator rule to this state manipulator rule. */
-	virtual aeRuleStateManipulator &operator=(const aeRuleStateManipulator &copy);
+	aeRuleStateManipulator &operator=(const aeRuleStateManipulator &copy) = delete;
 	/*@}*/
 };
 

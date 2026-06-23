@@ -76,6 +76,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleMirror() = delete;
+	aeRuleMirror(const aeRuleMirror&) = delete;
+	
 	/** Create rule. */
 	aeRuleMirror(aeWindowMain &windowMain, const char *name);
 	
@@ -155,15 +158,14 @@ public:
 	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create copy of rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	/*@}*/
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy from another rule. */
-	virtual aeRuleMirror &operator=(const aeRuleMirror &copy);
+	aeRuleMirror &operator=(const aeRuleMirror &copy) = delete;
 	/*@}*/
 	
 	

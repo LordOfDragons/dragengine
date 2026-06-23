@@ -630,50 +630,10 @@ deAnimatorRule::Ref aeRuleLimit::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleLimit::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleLimit::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleLimit::ListLinks(aeLink::List &list){
 	aeRule::ListLinks(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleLimit &aeRuleLimit::operator=(const aeRuleLimit &copy){
-	minPosition = copy.minPosition;
-	maxPosition = copy.maxPosition;
-	minRotation = copy.minRotation;
-	maxRotation = copy.maxRotation;
-	minScaling = copy.minScaling;
-	maxScaling = copy.maxScaling;
-	minVertexPositionSet = copy.minVertexPositionSet;
-	maxVertexPositionSet = copy.maxVertexPositionSet;
-	coordinateFrame = copy.coordinateFrame;
-	enablePositionXMin = copy.enablePositionXMin;
-	enablePositionXMax = copy.enablePositionXMax;
-	enablePositionYMin = copy.enablePositionYMin;
-	enablePositionYMax = copy.enablePositionYMax;
-	enablePositionZMin = copy.enablePositionZMin;
-	enablePositionZMax = copy.enablePositionZMax;
-	enableRotationXMin = copy.enableRotationXMin;
-	enableRotationXMax = copy.enableRotationXMax;
-	enableRotationYMin = copy.enableRotationYMin;
-	enableRotationYMax = copy.enableRotationYMax;
-	enableRotationZMin = copy.enableRotationZMin;
-	enableRotationZMax = copy.enableRotationZMax;
-	enableScalingXMin = copy.enableScalingXMin;
-	enableScalingXMax = copy.enableScalingXMax;
-	enableScalingYMin = copy.enableScalingYMin;
-	enableScalingYMax = copy.enableScalingYMax;
-	enableScalingZMin = copy.enableScalingZMin;
-	enableScalingZMax = copy.enableScalingZMax;
-	enableVertexPositionSetMin = copy.enableVertexPositionSetMin;
-	enableVertexPositionSetMax = copy.enableVertexPositionSetMax;
-	targetBone = copy.targetBone;
-	aeRule::operator=(copy);
-	return *this;
 }

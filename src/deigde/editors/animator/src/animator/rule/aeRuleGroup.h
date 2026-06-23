@@ -29,6 +29,7 @@
 
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
 #include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
@@ -43,13 +44,12 @@ public:
 	using Ref = deTObjectReference<aeRuleGroup>;
 	
 private:
-	aeRule::List pRules;
-	
 	aeControllerTarget::Ref pTargetSelect;
 	
 	bool pTreeListExpanded;
 	
 public:
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage rules;
 	igdeMetaPropertyBooleanStorage::Storage enablePosition;
 	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
 	igdeMetaPropertyBooleanStorage::Storage enableSize;
@@ -61,6 +61,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleGroup() = delete;
+	aeRuleGroup(const aeRuleGroup&) = delete;
+	
 	/** Create a new group rule. */
 	explicit aeRuleGroup(aeWindowMain &windowMain, const char *name);
 	/** Create a copy of a group rule. */
@@ -74,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return pRules; }
+	inline const aeRule::List &GetRules() const{ return rules; }
 	/** Add a new rule. */
 	void AddRule(aeRule *rule);
 	/** Insert a new rule. */
@@ -139,7 +142,7 @@ public:
 	void SetTreeListExpanded(bool expanded);
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -150,12 +153,12 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copies another group rule to this group rule. */
-	virtual aeRuleGroup &operator=(const aeRuleGroup &copy);
+	aeRuleGroup &operator=(const aeRuleGroup &copy) = delete;
 	/*@}*/
 	
 private:
 	void pCleanUp();
+	void pUpdateRuleIndices();
 };
 
 #endif

@@ -69,6 +69,9 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
+	aeRuleInverseKinematic() = delete;
+	aeRuleInverseKinematic(const aeRuleInverseKinematic&) = delete;
+	
 	/** Create inverse kinematic rule. */
 	aeRuleInverseKinematic(aeWindowMain &windowMain, const char *name);
 	
@@ -188,7 +191,7 @@ public:
 	
 	
 	/** Create a copy of this rule. */
-	aeRule::Ref CreateCopy() const override;
+	aeRule::Ref CreateCopy(aeWindowMain &windowMain) const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLink::List& list) override;
@@ -196,8 +199,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** Copy another inverse kinematic rule to this inverse kinematic rule. */
-	virtual aeRuleInverseKinematic &operator=(const aeRuleInverseKinematic &copy);
+	aeRuleInverseKinematic &operator=(const aeRuleInverseKinematic &copy) = delete;
 	/*@}*/
 };
 

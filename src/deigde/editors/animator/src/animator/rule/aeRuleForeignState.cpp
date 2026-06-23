@@ -340,8 +340,8 @@ deAnimatorRule::Ref aeRuleForeignState::CreateEngineRule(){
 
 
 
-aeRule::Ref aeRuleForeignState::CreateCopy() const{
-	return Ref::New(*this);
+aeRule::Ref aeRuleForeignState::CreateCopy(aeWindowMain &windowMain) const{
+	return Ref::New(windowMain, *this);
 }
 
 void aeRuleForeignState::ListLinks(aeLink::List &list){
@@ -350,30 +350,4 @@ void aeRuleForeignState::ListLinks(aeLink::List &list){
 	pTargetPosition->AddLinksToList(list);
 	pTargetSize->AddLinksToList(list);
 	pTargetVertexPositionSet->AddLinksToList(list);
-}
-
-
-
-// Operators
-//////////////
-
-aeRuleForeignState &aeRuleForeignState::operator=(const aeRuleForeignState &copy){
-	foreignBone = copy.foreignBone;
-	foreignVertexPositionSet = copy.foreignVertexPositionSet;
-	scalePosition = copy.scalePosition;
-	scaleOrientation = copy.scaleOrientation;
-	scaleSize = copy.scaleSize;
-	scaleVertexPositionSet = copy.scaleVertexPositionSet;
-	sourceCoordinateFrame = copy.sourceCoordinateFrame;
-	destCoordinateFrame = copy.destCoordinateFrame;
-	enablePosition = copy.enablePosition;
-	enableOrientation = copy.enableOrientation;
-	enableSize = copy.enableSize;
-	enableVertexPositionSet = copy.enableVertexPositionSet;
-	pTargetPosition = copy.pTargetPosition;
-	pTargetOrientation = copy.pTargetOrientation;
-	pTargetSize = copy.pTargetSize;
-	pTargetVertexPositionSet = copy.pTargetVertexPositionSet;
-	aeRule::operator=(copy);
-	return *this;
 }
