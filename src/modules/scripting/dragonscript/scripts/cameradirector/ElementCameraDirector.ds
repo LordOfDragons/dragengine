@@ -23,16 +23,14 @@
  */
 
 namespace Dragengine.CameraDirectors
-
 pin Dragengine.Scenery
-
 
 
 /**
  * \brief Place camera relative an element with orbit support.
  * 
  * Camera is placed using a rotation point, oribtal rotation and a matrix local to this
- * rotation point.
+ * rotation point. Optionally a bone can be specified to use as rotation point.
  */
 class ElementCameraDirector extends CameraDirector
 	var Element pElement
@@ -42,17 +40,17 @@ class ElementCameraDirector extends CameraDirector
 	var float pElevation
 	var float pDistance
 	var bool pUseOrientation
+	var String pBone
 	
+	/** \brief Component behavior or null. */
+	protected var ECBehaviorComponent.Instance componentBehavior
 	
 	
 	/** \brief Create camera director. */
 	func new(Element element)
-		pElement = element
 		pPivot = DVector.new()
 		pLocalMatrix = DMatrix.new()
-		pAzimuth = 0
-		pElevation = 0
-		pDistance = 0
+		setElement(element)
 	end
 	
 	/** \brief Create camera director. */
@@ -62,7 +60,6 @@ class ElementCameraDirector extends CameraDirector
 	end
 	
 	
-	
 	/** \brief Element. */
 	func Element getElement()
 		return pElement
@@ -70,7 +67,18 @@ class ElementCameraDirector extends CameraDirector
 	
 	/** \brief Set element. */
 	func void setElement(Element element)
+		if pElement == element
+			return
+		end
+		
 		pElement = element
+		
+		if element != null and element castable BehaviorElement
+			componentBehavior = ECBehaviorComponent.getInstanceIn(element cast BehaviorElement)
+			
+		else
+			componentBehavior = null
+		end
 	end
 	
 	/** \brief Rotation point. */
@@ -156,6 +164,35 @@ class ElementCameraDirector extends CameraDirector
 		pUseOrientation = useOrientation
 	end
 	
+	/**
+	 * \brief Bone name.
+	 * \version 1.33
+	 * 
+	 * If not null this is the name of the bone to use as rotation point. Requires element
+	 * with \ref ECBehaviorComponent#Instance present.
+	 */
+	func String getBone()
+		return pBone
+	end
+	
+	/**
+	 * \brief Set bone name.
+	 * \version 1.33
+	 * 
+	 * If not null this is the name of the bone to use as rotation point. Requires element
+	 * with \ref ECBehaviorComponent#Instance present.
+	 */
+	func void setBone(String bone)
+		pBone = bone
+	end
+	
+	/**
+	 * \brief Component behavior or null.
+	 * \version 1.33
+	 */
+	func ECBehaviorComponent.Instance getComponentBehavior()
+		return componentBehavior
+	end
 	
 	
 	/** \brief Update camera. */
@@ -172,14 +209,29 @@ class ElementCameraDirector extends CameraDirector
 			* DMatrix.newTranslation(0, 0, -pDistance)\
 			* DMatrix.newRotation(-pElevation, pAzimuth, 0)
 		
+		var int boneIndex = -1
+		var Component component
+		if pBone != null and componentBehavior != null
+			component = componentBehavior.getComponent()
+			boneIndex = component.indexOfBoneNamed(pBone)
+		end
+		
 		if pElement == null
 			matrix = matrix * DMatrix.newTranslation(pPivot)
 			
 		elif pUseOrientation
-			matrix = matrix * DMatrix.newTranslation(pPivot) * pElement.getElementMatrix()
+			matrix = matrix * DMatrix.newTranslation(pPivot)
+			if boneIndex != -1
+				matrix = matrix * component.boneGetMatrix(boneIndex).toDMatrix()
+			end
+			matrix = matrix * pElement.getElementMatrix()
 			
 		else
-			matrix = matrix * DMatrix.newTranslation(pElement.getPosition() + pPivot)
+			var DVector pivot = pPivot
+			if boneIndex != -1
+				pivot = pivot + DVector.new(component.boneGetMatrix(boneIndex).getPosition())
+			end
+			matrix = matrix * DMatrix.newTranslation(pElement.getPosition() + pivot)
 		end
 		
 		return matrix
