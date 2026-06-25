@@ -29,6 +29,7 @@
 #include "igdeMetaPropertyObject.h"
 #include "igdeMetaPropertyString.h"
 #include "igdeMetaPropertyStringSet.h"
+#include "igdeMetaPropertyTreeList.h"
 #include "../igdeMetaContext.h"
 
 
@@ -65,6 +66,20 @@ public:
 	};
 	
 	
+	class DE_DLL_EXPORT TreeOnListChanged : public igdeMetaPropertyList::Listener{
+		igdeMetaPropertyTreeList &pProperty;
+		
+	public:
+		using Ref = deTObjectReference<TreeOnListChanged>;
+		TreeOnListChanged(igdeMetaPropertyTreeList &property);
+		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		
+	protected:
+		~TreeOnListChanged() override;
+	};
+	
+	
 	class DE_DLL_EXPORT StringOnStringSetChanged : public igdeMetaPropertyStringSet::Listener{
 		igdeMetaPropertyString &pProperty;
 		
@@ -98,6 +113,7 @@ public:
 	/** \brief Watch property and notify target on changes. */
 	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyString &target);
 	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target);
+	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target);
 	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target);
 	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target);
 };

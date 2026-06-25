@@ -143,6 +143,12 @@ public:
 	/** \brief Item with data starting at parent or nullptr if not found. */
 	igdeTreeItem *GetItemWithData(igdeTreeItem *parent, void *data) const;
 	
+	/** \brief Item with reference data or nullptr if not found. */
+	igdeTreeItem *GetItemWithRefData(const deObject::Ref &data) const;
+	
+	/** \brief Item with reference data starting at parent or nullptr if not found. */
+	igdeTreeItem *GetItemWithRefData(igdeTreeItem *parent, const deObject::Ref &data) const;
+	
 	/** \brief Item is present. */
 	bool HasItem(igdeTreeItem *item) const;
 	
@@ -151,6 +157,9 @@ public:
 	
 	/** \brief Item with data is present. */
 	bool HasItemWithData(void *data) const;
+	
+	/** \brief Item with reference data is present. */
+	bool HasItemWithRefData(const deObject::Ref &data) const;
 	
 	/** \brief Add item as last child of parent. */
 	void AppendItem(igdeTreeItem *parent, igdeTreeItem *item);
@@ -162,6 +171,13 @@ public:
 	void AppendItem(igdeTreeItem *parent, igdeTreeItem::Ref &item, const char *text,
 		igdeIcon *icon = nullptr, void *data = nullptr);
 	
+	/** \brief Add item of type igdeTreeItem with text as last child of parent. */
+	igdeTreeItem *AppendItemRef(igdeTreeItem *parent, const char *text,
+		igdeIcon *icon = nullptr, const deObject::Ref &data = {});
+	
+	void AppendItemRef(igdeTreeItem *parent, igdeTreeItem::Ref &item, const char *text,
+		igdeIcon *icon = nullptr, const deObject::Ref &data = {});
+	
 	/** \brief Insert item before another. */
 	void InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem *item);
 	
@@ -172,6 +188,13 @@ public:
 	void InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
 		const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
+	/** \brief Insert item of type igdeTreeItem with text at index. */
+	igdeTreeItem *InsertItemRefBefore(igdeTreeItem *beforeItem, const char *text,
+		igdeIcon *icon = nullptr, const deObject::Ref &data = {});
+	
+	void InsertItemRefBefore(igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
+		const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
+	
 	/** \brief Insert item after another. */
 	void InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem *item);
 	
@@ -181,6 +204,13 @@ public:
 	
 	void InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
 		const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	
+	/** \brief Insert item of type igdeTreeItem with text at index. */
+	igdeTreeItem *InsertItemRefAfter(igdeTreeItem *afterItem, const char *text,
+		igdeIcon *icon = nullptr, const deObject::Ref &data = {});
+	
+	void InsertItemRefAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
+		const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
 	
 	/** \brief Move item before another. */
 	void MoveItemBefore(igdeTreeItem *item, igdeTreeItem *beforeItem);
@@ -222,15 +252,20 @@ public:
 	/** \brief Selected item or nullptr. */
 	inline const igdeTreeItem::Ref &GetSelection() const{ return pSelection; }
 	
+	/** \brief Selected item data or nullptr. */
+	void *GetSelectionItemData() const;
+	
+	/** \brief Selected item reference data or nullptr. */
+	const deObject::Ref &GetSelectionItemRefData() const;
+	
 	/** \brief Set selected item or nullptr. */
 	void SetSelection(igdeTreeItem *selection);
 	
-	/**
-	 * \brief Set selected item matching data.
-	 * 
-	 * Short-cut for calling SetSelection(IndexOfItemWithData(data)).
-	 */
+	/** \brief Set selected item matching data. */
 	void SetSelectionWithData(void *data);
+	
+	/** \brief Set selected item matching data. */
+	void SetSelectionWithRefData(const deObject::Ref &data);
 	
 	/** \brief Make item visible. */
 	void MakeItemVisible(igdeTreeItem *item);
@@ -322,6 +357,9 @@ protected:
 	/** \brief Item with data. */
 	igdeTreeItem *pGetItemWithData(igdeTreeItem *parent, void *data) const;
 	
+	/** \brief Item with reference data. */
+	igdeTreeItem *pGetItemWithRefData(igdeTreeItem *parent, const deObject::Ref &data) const;
+	
 	/** \brief Item is present. */
 	bool pHasItem(igdeTreeItem *parent, igdeTreeItem *item) const;
 	
@@ -330,6 +368,9 @@ protected:
 	
 	/** \brief Item with data is present. */
 	bool pHasItem(igdeTreeItem *parent, void *data) const;
+	
+	/** \brief Item with reference data is present. */
+	bool pHasItem(igdeTreeItem *parent, const deObject::Ref &data) const;
 	
 	/** \brief Remove item. */
 	void pRemoveItem(igdeTreeItem *item);

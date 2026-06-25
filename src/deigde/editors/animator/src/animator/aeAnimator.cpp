@@ -107,6 +107,7 @@ controllers(pWindowMain.GetMCAnimatorProperties().controller.controllers, pMetaC
 controller(pWindowMain.GetMCAnimatorProperties().controller.controller, pMetaContextController),
 links(pWindowMain.GetMCAnimatorProperties().link.links, pMetaContextLink),
 link(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContextLink),
+ruleTree(pWindowMain.GetMCAnimatorProperties().rule.ruleTree, pMetaContextRule),
 rules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContextRule),
 rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule)
 {
@@ -257,6 +258,12 @@ rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule)
 		link.SetValue(active ? active->GetMetaContext() : aeMCLink::Ref());
 	});
 	
+	ruleTree.SetOnActiveChanged([this](){
+		NotifyActiveRuleChanged();
+		const auto &active = ruleTree.GetActive();
+		rule.SetValue(active ? active->GetMetaContext() : aeMCRule::Ref());
+	});
+	
 	rules.SetOnChanged([this](){
 		pUpdateRuleIndices();
 		RebuildRules();
@@ -267,11 +274,6 @@ rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule)
 	});
 	rules.SetOnObjectRemoved([this](aeRule &each){
 		each.SetAnimator(nullptr);
-	});
-	rules.SetOnActiveChanged([this](){
-		NotifyActiveRuleChanged();
-		const auto &active = rules.GetActive();
-		rule.SetValue(active ? active->GetMetaContext() : aeMCRule::Ref());
 	});
 	
 	SetSaved(false);
@@ -668,7 +670,7 @@ void aeAnimator::RemoveAllRules(){
 }
 
 void aeAnimator::SetActiveRule(aeRule *arule){
-	rules.SetActive(arule);
+	ruleTree.SetActive(arule);
 }
 
 void aeAnimator::RebuildRules(){

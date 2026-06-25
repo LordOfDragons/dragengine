@@ -50,6 +50,9 @@ public:
 	/** \brief Object reference. */
 	using ObjectRef = deTObjectReference<deObject>;
 	
+	/** \brief Selection of objects. */
+	using SelectionSet = decTObjectSet<deObject>;
+	
 	
 	/** \brief Target button. */
 	enum class TargetButton{
@@ -197,6 +200,41 @@ public:
 		ActionMoveBottom(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 	};
 	
+	/** \brief Copy to clipboard action. */
+	class DE_DLL_EXPORT ActionCopy : public Action{
+	protected:
+		igdeMetaPropertyList &pPropertyList;
+		
+	public:
+		using Ref = deTObjectReference<ActionCopy>;
+		ActionCopy(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Cut to clipboard action. */
+	class DE_DLL_EXPORT ActionCut : public ActionRemove{
+	protected:
+		ActionCopy::Ref pActionCopy;
+		
+	public:
+		using Ref = deTObjectReference<ActionCut>;
+		ActionCut(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+	};
+	
+	/** \brief Paste from clipboard action. */
+	class DE_DLL_EXPORT ActionPaste : public Action{
+	protected:
+		igdeMetaPropertyList &pPropertyList;
+		
+	public:
+		using Ref = deTObjectReference<ActionPaste>;
+		ActionPaste(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+	};
+	
 	
 private:
 	int pRows = 4;
@@ -311,12 +349,12 @@ public:
 	/**
 	 * \brief Get object selection.
 	 */
-	virtual List GetSelection(const ContextRef &context) const;
+	virtual SelectionSet GetSelection(const ContextRef &context) const;
 	
 	/**
 	 * \brief Set object selection.
 	 */
-	virtual void SetSelection(const ContextRef &context, const List &selection);
+	virtual void SetSelection(const ContextRef &context, const SelectionSet &selection);
 	
 	/**
 	 * \brief Get object item information.
@@ -393,6 +431,9 @@ public:
 	/** \brief Object type reference. */
 	using ObjectTypeRef = deTObjectReference<T>;
 	
+	/** \brief Selection of object type reference. */
+	using SelectionSetType = decTObjectSet<T>;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -421,7 +462,7 @@ public:
 	List ConvertList(const ListType &in) const{
 		List out;
 		in.Visit([&](const ObjectTypeRef &object){
-			out.Add(object);
+			out.Add(object.Pointer());
 		});
 		return out;
 	}
@@ -429,6 +470,24 @@ public:
 	/** Convert list. */
 	ListType ConvertList(const List &in) const{
 		ListType out;
+		in.Visit([&](const ObjectRef &object){
+			out.Add(object.DynamicCast<T>());
+		});
+		return out;
+	}
+	
+	/** Convert set. */
+	SelectionSet ConvertSet(const SelectionSetType &in) const{
+		SelectionSet out;
+		in.Visit([&](const ObjectTypeRef &object){
+			out.Add(object.Pointer());
+		});
+		return out;
+	}
+	
+	/** Convert set. */
+	SelectionSetType ConvertSet(const SelectionSet &in) const{
+		SelectionSetType out;
 		in.Visit([&](const ObjectRef &object){
 			out.Add(object.DynamicCast<T>());
 		});
@@ -463,12 +522,12 @@ public:
 		SetActiveObjectType(context, activeObject.DynamicCast<T>());
 	}
 	
-	List GetSelection(const ContextRef &context) const override{
-		return ConvertList(GetSelectionType(context));
+	SelectionSet GetSelection(const ContextRef &context) const override{
+		return ConvertSet(GetSelectionType(context));
 	}
 	
-	void SetSelection(const ContextRef &context, const List &selection) override{
-		SetSelectionType(context, ConvertList(selection));
+	void SetSelection(const ContextRef &context, const SelectionSet &selection) override{
+		SetSelectionType(context, ConvertSet(selection));
 	}
 	
 	void GetObjectItemInfo(const ContextRef &context, const ObjectRef &object,
@@ -508,15 +567,15 @@ public:
 	/**
 	 * \brief Get object selection.
 	 */
-	virtual ListType GetSelectionType(const ContextRef &context) const{
+	virtual SelectionSetType GetSelectionType(const ContextRef &context) const{
 		auto active = GetActiveObjectType(context);
-		return active ? ListType(devctag, active) : ListType();
+		return active ? SelectionSetType(devctag, active) : SelectionSetType();
 	}
 	
 	/**
 	 * \brief Set object selection.
 	 */
-	virtual void SetSelectionType(const ContextRef &context, const ListType &selection){
+	virtual void SetSelectionType(const ContextRef &context, const SelectionSetType &selection){
 	}
 	
 	/**
@@ -581,23 +640,23 @@ public:
 		GetStorage(context).SetValue(value);
 	}
 	
-	typename igdeMetaPropertyListStorage<T, ListType>::ObjectTypeRef GetActiveObjectType(
+	typename igdeMetaPropertyListType<T, ListType>::ObjectTypeRef GetActiveObjectType(
 	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetActive();
 	}
 	
 	void SetActiveObjectType(const igdeMetaProperty::ContextRef &context,
-	const typename igdeMetaPropertyListStorage<T, ListType>::ObjectTypeRef &activeObject) override{
+	const typename igdeMetaPropertyListType<T, ListType>::ObjectTypeRef &activeObject) override{
 		GetStorage(context).SetActive(activeObject);
 	}
 	
-	ListType GetSelectionType(
+	typename igdeMetaPropertyListType<T, ListType>::SelectionSetType GetSelectionType(
 	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetSelection();
 	}
 	
 	void SetSelectionType(const igdeMetaProperty::ContextRef &context,
-	const ListType &selection) override{
+	const typename igdeMetaPropertyListType<T, ListType>::SelectionSetType &selection) override{
 		GetStorage(context).SetSelection(selection);
 	}
 };

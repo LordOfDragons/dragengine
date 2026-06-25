@@ -252,7 +252,7 @@ public:
 	inline const igdeIcon::Ref &GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
 	inline const igdeIcon::Ref &GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
 	inline const igdeIcon::Ref &GetIconRuleMirror() const{ return pIconRuleMirror; }
-	igdeIcon *GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const;
+	const igdeIcon::Ref &GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const;
 	
 	
 	

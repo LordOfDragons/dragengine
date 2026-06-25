@@ -24,6 +24,8 @@
 
 #include "aeMCAnimatorProperties.h"
 
+#include <deigde/meta/property/igdeMetaPropertyAdapters.h>
+
 
 aeMCAnimatorProperties::aeMCAnimatorProperties(aeWindowMain &windowMain) :
 controller(windowMain),
@@ -48,6 +50,7 @@ void aeMCAnimatorProperties::Init(){
 	
 	rule.Init(*this);
 	metaPropertiesRule->GetData() += rule.group->GetProperties();
+	igdeMetaPropertyAdapter::OnChanged(rule.rules, rule.ruleTree);
 	
 	ruleAnimation.Init(*this);
 	ruleAnimationDifference.Init(*this);

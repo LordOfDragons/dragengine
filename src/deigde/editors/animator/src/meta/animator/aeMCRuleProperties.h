@@ -59,6 +59,7 @@ public:
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	
+	deTObjectReference<aeMCPRuleTree> ruleTree = deTObjectReference<aeMCPRuleTree>::New();
 	deTObjectReference<aeMCPRules> rules = deTObjectReference<aeMCPRules>::New();
 	deTObjectReference<aeMCPRule> rule;
 	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(

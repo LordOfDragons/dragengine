@@ -71,131 +71,6 @@ public:
 };
 
 
-class ActionCopy : public igdeAction{
-protected:
-	igdeMetaPropertyListWidget &pWidget;
-	
-public:
-	ActionCopy(igdeMetaPropertyListWidget &widget, const igdeMetaContext::Ref &context,
-		igdeEnvironment &environment) :
-	igdeAction("@Igde.Action.Copy",
-		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
-		"@Igde.Action.Copy.ToolTip"),
-	pWidget(widget){
-	}
-	
-	~ActionCopy() override = default;
-	
-	void OnAction() override{
-		auto &property = pWidget.GetPropertyList();
-		const auto &context = pWidget.GetContext();
-		if(!property.IsValid(context)){
-			return;
-		}
-		
-		auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		igdeMetaPropertyList::List values, copiedValues;
-		if(property.GetMultiSelection()){
-			values = property.GetSelection(context);
-			
-		}else{
-			auto activeObject = property.GetActiveObject(context);
-			if(activeObject){
-				values.Add(activeObject);
-			}
-		}
-		
-		values.Visit([&](const deObject::Ref &object){
-			const auto copiedObject = property.CopyObject(context, copiedValues, object);
-			if(copiedObject){
-				copiedValues.Add(copiedObject);
-			}
-		});
-		
-		if(copiedValues.IsEmpty()){
-			return;
-		}
-		
-		clipboard->Set(igdeMetaPropertyList::ClipboardData::Ref::New(property, std::move(copiedValues)));
-	}
-};
-
-
-class ActionPaste : public igdeAction{
-protected:
-	igdeMetaPropertyListWidget &pWidget;
-	
-public:
-	ActionPaste(igdeMetaPropertyListWidget &widget, const igdeMetaContext::Ref &context,
-		igdeEnvironment &environment) :
-	igdeAction("@Igde.Action.Paste",
-		widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
-		"@Igde.Action.Paste.ToolTip"),
-	pWidget(widget){
-	}
-	
-	~ActionPaste() override = default;
-	
-	void OnAction() override{
-		auto &property = pWidget.GetPropertyList();
-		const auto &context = pWidget.GetContext();
-		if(!property.IsValid(context)){
-			return;
-		}
-		
-		const auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		const auto clip = clipboard->GetWithTypeName(property.GetClipboardDataTypeName()).
-			DynamicCast<igdeMetaPropertyList::ClipboardData>();
-		if(!clip){
-			return;
-		}
-		
-		const auto oldData = property.GetPropertyValue(context);
-		igdeMetaPropertyList::List pastedObjects;
-		auto newData = oldData;
-		
-		clip->GetData().Visit([&](const deObject::Ref &object){
-			const auto copiedObject = property.CopyObject(context, newData, object);
-			if(copiedObject){
-				newData.Add(copiedObject);
-				pastedObjects.Add(copiedObject);
-			}
-		});
-		
-		if(oldData == newData){
-			return;
-		}
-		
-		property.ChangePropertyValue(context, newData, property.RealUndoInfo(context, *this));
-		
-		if(pastedObjects.IsNotEmpty()){
-			property.SetActiveObject(context, pastedObjects.First());
-			
-			if(property.GetMultiSelection()){
-				property.SetSelection(context, pastedObjects);
-			}
-		}
-	}
-	
-	void Update() override{
-		if(pWidget.GetPropertyList().IsValid(pWidget.GetContext())){
-			const auto cb = pWidget.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(pWidget.GetPropertyList().GetClipboardDataTypeName()));
-			return;
-		}
-		SetEnabled(false);
-	}
-};
-
-
 class cActionResetToDefault : public igdeAction{
 	igdeMetaPropertyListWidget &pWidget;
 	
@@ -436,8 +311,12 @@ void igdeMetaPropertyListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+		helper.MenuCommand(menu, igdeMetaPropertyList::ActionCopy::Ref::New(
+			pPropertyList, GetButtonContextMenu(), context));
+		helper.MenuCommand(menu, igdeMetaPropertyList::ActionCut::Ref::New(
+			pPropertyList, GetButtonContextMenu(), context));
+		helper.MenuCommand(menu, igdeMetaPropertyList::ActionPaste::Ref::New(
+			pPropertyList, GetButtonContextMenu(), context));
 		helper.MenuSeparator(menu);
 	}
 	

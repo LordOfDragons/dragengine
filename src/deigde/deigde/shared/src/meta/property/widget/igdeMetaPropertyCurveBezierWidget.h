@@ -110,6 +110,7 @@ public:
 	void AddCurveEditContextMenuEntries(igdeMenuCascade &menu);
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
+	void AddContextMenuEntriesEditInDialog(igdeMenuCascade &contextMenu);
 	
 	/** \brief Open dialog to edit curve in large view. */
 	void EditInDialog();

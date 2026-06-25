@@ -163,6 +163,57 @@ public:
 		inline igdeMetaPropertyStringSet &GetPropertyStringSet() const{ return pPropertyStringSet; }
 	};
 	
+	/** \brief Copy to clipboard action. */
+	class ActionCopy : public Action{
+	protected:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
+		bool pSelection;
+		
+	public:
+		using Ref = deTObjectReference<ActionCopy>;
+		ActionCopy(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Copy selection to clipboard action. */
+	class ActionCopySelection : public ActionCopy{
+	public:
+		using Ref = deTObjectReference<ActionCopySelection>;
+		ActionCopySelection(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+	};
+	
+	/** \brief Cut to clipboard action. */
+	class ActionCut : public ActionRemove{
+	protected:
+		ActionCopy::Ref pActionCopy;
+		
+	public:
+		using Ref = deTObjectReference<ActionCut>;
+		ActionCut(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+	};
+	
+	/** \brief Paste from clipboard action. */
+	class ActionPaste : public Action{
+	protected:
+		igdeMetaPropertyStringSet &pPropertyStringSet;
+		bool pAppend;
+		
+	public:
+		using Ref = deTObjectReference<ActionPaste>;
+		ActionPaste(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Paste and append from clipboard action. */
+	class ActionPasteAppend : public ActionPaste{
+	public:
+		using Ref = deTObjectReference<ActionPasteAppend>;
+		ActionPasteAppend(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+	};
+	
 	
 private:
 	decStringSet pDefaultValue;

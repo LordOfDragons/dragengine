@@ -31,58 +31,277 @@
 #include <dragengine/common/collection/decTList.h>
 
 
-// Class aeMCPRules
-/////////////////////
+// Class aeMCPRuleTree
+////////////////////////
 
 namespace {
 
-class cActionRuleAdd : public igdeMetaProperty::Action{
-	aeMCPRules &pPropertyRule;
+class cWalkerRuleTree : public igdeMetaPropertyTreeList::WalkerHelper<aeRule::List>{
+private:
+	const aeAnimator::Ref pAnimator;
 	
 public:
-	cActionRuleAdd(aeMCPRules &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
-		igdeMetaProperty::Action(owner, context, "@Animator.Action.Rule.Add",
-			owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
-			"@Animator.Action.Rule.Add.ToolTip"),
-		pPropertyRule(property){}
+	cWalkerRuleTree(const aeAnimator::Ref &animator) :
+	WalkerHelper<aeRule::List>(&animator->rules.GetValue()),
+	pAnimator(animator){
+	}
+	
+	void SetCurrent(const deObject::Ref &object) override{
+		auto rule = object.DynamicCast<aeRule>();
+		DEASSERT_TRUE(pAnimator == rule->GetAnimator())
+		
+		if(rule->GetParentGroup()){
+			SetList(&rule->GetParentGroup()->rules.GetValue(), rule->GetIndex());
+			
+		}else{
+			SetList(&pAnimator->rules.GetValue(), rule->GetIndex());
+		}
+	}
+	
+	void MoveTreeFirst() override{
+		SetList(&pAnimator->rules.GetValue(), 0);
+	}
+	
+	bool HasChildren() const override{
+		const auto group = GetCurrent().DynamicCast<aeRuleGroup>();
+		return group && group->rules->IsNotEmpty();
+	}
+	
+	bool MoveChildren() override{
+		const auto group = GetCurrent().DynamicCast<aeRuleGroup>();
+		if(!group || group->rules->IsEmpty()){
+			return false;
+		}
+		
+		SetList(&group->rules.GetValue(), 0);
+		return true;
+	}
+	
+	bool HasParent() const override{
+		const auto rule = GetCurrent().DynamicCast<aeRule>();
+		return rule && rule->GetParentGroup();
+	}
+	
+	bool MoveParent() override{
+		const auto rule = GetCurrent().DynamicCast<aeRule>();
+		if(!rule){
+			return false;
+		}
+		
+		const auto parent = rule->GetParentGroup();
+		if(!parent){
+			return false;
+		}
+		
+		const auto parentParent = parent->GetParentGroup();
+		SetList(&(parentParent ? parentParent->rules : pAnimator->rules).GetValue(), parent->GetIndex());
+		return true;
+	}
+};
+
+class cActionRuleAdd : public igdeMetaProperty::Action{
+	aeMCPRuleTree &pPropertyRules;
+	
+public:
+	cActionRuleAdd(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	igdeMetaProperty::Action(owner, context, "@Animator.Action.Rule.Add",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.Action.Rule.Add.ToolTip"),
+	pPropertyRules(property){
+	}
 	
 	void OnAction() override{
 		const auto &context = GetContext();
-		if(!pPropertyRule.IsValid(context)){
+		if(!pPropertyRules.IsValid(context)){
 			return;
 		}
 		
 		auto &owner = GetOwner();
 		auto menu = igdeMenuCascade::Ref::New(owner.GetEnvironment());
-		pPropertyRule.AddContextMenuEntries(*menu, context, owner);
+		pPropertyRules.AddContextMenuEntriesAdd(menu, context, owner);
 		if(menu->GetChildren().IsNotEmpty()){
 			menu->PopupBottom(owner);
 		}
 	}
 };
 
-}
-
-aeMCPRules::ObjectTypeRef aeMCPRules::CopyObjectType(const ContextRef &context,
-const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = object->CreateCopy(WindowMain(context));
-	copied->name.SetValue(Animator(context).uniqueNameRule.Generate(copied->name), false);
-	return copied;
-}
-
-igdeMetaProperty::Action::Ref aeMCPRules::CreateButtonAction(TargetButton target, igdeWidget &owner){
-	switch(target){
-	case TargetButton::add:
-		return deTObjectReference<cActionRuleAdd>::New(*this, owner);
-		
-	default:
-		return CreateDefaultButtonAction(target, owner);
+class cActionBaseRule : public igdeMetaProperty::Action{
+private:
+	aeMCPRuleTree &pPropertyRules;
+	
+public:
+	cActionBaseRule(aeMCPRuleTree &property, igdeWidget &owner, const char *translationTag,
+		igdeIcon *icon, const igdeMetaContext::Ref &context = {}) :
+	Action(owner, context, decString::Formatted("@{0}", translationTag), icon,
+		decString::Formatted("@{0}.ToolTip", translationTag)),
+	pPropertyRules(property){
 	}
+	
+	void OnAction() override{
+		SyncSelection();
+		const auto &context = GetContext();
+		CreateAction(pPropertyRules.GetActionProperty(context), pPropertyRules.GetActionContext(context))->OnAction();
+	}
+	
+	void Update() override{
+		SyncSelection();
+		const auto &context = GetContext();
+		const auto action = CreateAction(pPropertyRules.GetActionProperty(context), pPropertyRules.GetActionContext(context));
+		action->Update();
+		SetEnabled(action->GetEnabled());
+	}
+	
+	void SyncSelection(){
+		const auto &tree = pPropertyRules.Animator(GetContext()).ruleTree;
+		auto &storage = pPropertyRules.GetActionStorage(GetContext());
+		storage.SetActive(storage->Has(tree.GetActive()) ? tree.GetActive() : aeRule::Ref());
+	}
+	
+	inline aeMCPRuleTree &GetPropertyRules() const{ return pPropertyRules; }
+	virtual Action::Ref CreateAction(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) const = 0;
+};
+
+class cActionRuleRemove : public cActionBaseRule{
+public:
+	cActionRuleRemove(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	cActionBaseRule(property, owner, "Igde.MetaPropertyList.Action.Remove",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), context){
+	}
+	
+	Action::Ref CreateAction(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) const override{
+		return igdeMetaPropertyList::ActionRemove::Ref::New(property, GetOwner(), context);
+	}
+};
+
+class cActionRuleMoveUp : public cActionBaseRule{
+public:
+	cActionRuleMoveUp(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	cActionBaseRule(property, owner, "Igde.MetaPropertyList.Action.MoveUp",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), context){
+	}
+	
+	Action::Ref CreateAction(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) const override{
+		return igdeMetaPropertyList::ActionMoveUp::Ref::New(property, GetOwner(), context);
+	}
+};
+
+class cActionRuleMoveDown : public cActionBaseRule{
+public:
+	cActionRuleMoveDown(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	cActionBaseRule(property, owner, "Igde.MetaPropertyList.Action.MoveDown",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), context){
+	}
+	
+	Action::Ref CreateAction(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) const override{
+		return igdeMetaPropertyList::ActionMoveDown::Ref::New(property, GetOwner(), context);
+	}
+};
+
+class cActionRuleCopy : public igdeAction{
+protected:
+	aeMCPRuleTree &pPropertyRules;
+	igdeMetaContext::Ref pContext;
+	
+public:
+	cActionRuleCopy(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	igdeAction("@Igde.Action.Copy", owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+		"@Igde.Action.Copy.ToolTip"),
+	pPropertyRules(property),
+	pContext(context){
+	}
+	
+	~cActionRuleCopy() override = default;
+	
+	void OnAction() override{
+		auto active = pPropertyRules.GetActiveObjectType(pContext);
+		if(active){
+			pContext->GetClipboard()->Set(igdeMetaPropertyList::ClipboardData::Ref::New(
+				pPropertyRules.GetClipboardDataTypeName(), igdeMetaPropertyList::List(devctag,
+					active->CreateCopy(pPropertyRules.WindowMain(pContext)))));
+		}
+	}
+	
+	void Update() override{
+		SetEnabled(pPropertyRules.IsValid(pContext) && pPropertyRules.GetActiveObject(pContext).IsNotNull());
+	}
+};
+
+class cActionRuleCut : public cActionRuleRemove{
+protected:
+	deTObjectReference<cActionRuleCopy> pActionCopy;
+	
+public:
+	cActionRuleCut(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	cActionRuleRemove(property, owner, context),
+	pActionCopy(deTObjectReference<cActionRuleCopy>::New(property, owner, context))
+	{
+		SetText("@Igde.Action.Cut");
+		SetIcon(owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
+		SetDescription("@Igde.Action.Cut.ToolTip");
+	}
+	
+	void OnAction() override{
+		pActionCopy->OnAction();
+		cActionRuleRemove::OnAction();
+	}
+};
+
+class cActionRulePaste : public cActionBaseRule{
+public:
+	cActionRulePaste(aeMCPRuleTree &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	cActionBaseRule(property, owner, "@Igde.Action.Paste",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), context){
+	}
+	
+	Action::Ref CreateAction(igdeMetaPropertyList &property, const igdeMetaContext::Ref &context) const override{
+		return igdeMetaPropertyList::ActionPaste::Ref::New(property, GetOwner(), context);
+	}
+};
+
 }
 
-void aeMCPRules::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+igdeMetaPropertyTreeList::Walker::Ref aeMCPRuleTree::CreateWalker(const ContextRef &context) const{
+	return deTObjectReference<cWalkerRuleTree>::New(aeAnimator::Ref(&Animator(context)));
+}
+
+void aeMCPRuleTree::GetObjectItemInfoType(const ContextRef &context,
+const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
+	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()),
+		WindowMain(context).GetRuleIcon(rule->GetType()));
+}
+
+void aeMCPRuleTree::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
 	auto &environment = menu.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
+	
+	AddContextMenuEntriesAdd(menu, context, owner);
+	
+	auto &property = GetActionProperty(context);
+	auto ctx = GetActionContext(context);
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionDuplicate::Ref::New(property, owner, ctx));
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionRemove::Ref::New(property, owner, ctx));
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionRemoveAll::Ref::New(property, owner, ctx));
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionCopy::Ref::New(property, owner, ctx));
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionCut::Ref::New(property, owner, ctx));
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionPaste::Ref::New(property, owner, ctx));
+	
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionMoveUp::Ref::New(property, owner, ctx));
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionMoveDown::Ref::New(property, owner, ctx));
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionMoveTop::Ref::New(property, owner, ctx));
+	helper.MenuCommand(menu, igdeMetaPropertyList::ActionMoveBottom::Ref::New(property, owner, ctx));
+}
+
+void aeMCPRuleTree::AddContextMenuEntriesAdd(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	auto &environment = menu.GetEnvironment();
+	igdeUIHelper &helper = environment.GetUIHelper();
+	const auto rule = GetActiveRule(context);
 	
 	const aeWindowMain &windowMain = WindowMain(context);
 	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(environment, "@Animator.WPRule.Menu.Add"));
@@ -101,39 +320,98 @@ void aeMCPRules::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaCont
 	helper.MenuCommand(submenu, windowMain.GetActionRuleAddMirror());
 	menu.AddChild(submenu);
 	
-	submenu = igdeMenuCascade::Ref::New(environment, "@Animator.WPRule.Menu.AddIntoGroup");
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnim());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimDiff());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimSelect());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupBoneRot());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupInvKin());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupStateManip());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupStateSnap());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupForeignState());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupGroup());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupSubAnimator());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupTrackTo());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupLimit());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupMirror());
-	menu.AddChild(submenu);
+	if(rule.DynamicCast<aeRuleGroup>()){
+		submenu = igdeMenuCascade::Ref::New(environment, "@Animator.WPRule.Menu.AddIntoGroup");
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnim());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimDiff());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimSelect());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupBoneRot());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupInvKin());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupStateManip());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupStateSnap());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupForeignState());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupGroup());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupSubAnimator());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupTrackTo());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupLimit());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupMirror());
+		menu.AddChild(submenu);
+	}
 	
-	submenu = igdeMenuCascade::Ref::New(environment, "@Animator.WPRule.Menu.Insert");
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnim());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimDiff());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimSelect());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertBoneRot());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertInvKin());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertStateManip());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertStateSnap());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertForeignState());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertGroup());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertSubAnimator());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertTrackTo());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertLimit());
-	helper.MenuCommand(submenu, windowMain.GetActionRuleInsertMirror());
-	menu.AddChild(submenu);
-	
-	AddDefaultContextMenuEntries(menu, context, owner);
+	if(rule){
+		submenu = igdeMenuCascade::Ref::New(environment, "@Animator.WPRule.Menu.Insert");
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnim());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimDiff());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimSelect());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertBoneRot());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertInvKin());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertStateManip());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertStateSnap());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertForeignState());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertGroup());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertSubAnimator());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertTrackTo());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertLimit());
+		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertMirror());
+		menu.AddChild(submenu);
+	}
+}
+
+igdeMetaProperty::Action::Ref aeMCPRuleTree::CreateButtonAction(TargetButton target, igdeWidget &owner){
+	switch(target){
+	case TargetButton::add:
+		return deTObjectReference<cActionRuleAdd>::New(*this, owner);
+		
+	case TargetButton::remove:
+		return deTObjectReference<cActionRuleRemove>::New(*this, owner);
+		
+	case TargetButton::moveUp:
+		return deTObjectReference<cActionRuleMoveUp>::New(*this, owner);
+		
+	case TargetButton::moveDown:
+		return deTObjectReference<cActionRuleMoveDown>::New(*this, owner);
+		
+	default:
+		return {};
+	}
+}
+
+aeRule::Ref aeMCPRuleTree::GetActiveRule(const ContextRef &context) const{
+	return IsValid(context) ? Animator(context).ruleTree.GetActive() : aeRule::Ref();
+}
+
+igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &aeMCPRuleTree::GetActionStorage(const ContextRef &context) const{
+	const auto rule = GetActiveRule(context);
+	const auto parentGroup = rule ? rule->GetParentGroup() : nullptr;
+	return parentGroup ? parentGroup->rules : Animator(context).rules;
+}
+
+igdeMetaPropertyList &aeMCPRuleTree::GetActionProperty(const ContextRef &context) const{
+	return GetActionStorage(context).Property();
+}
+
+igdeMetaContext::Ref aeMCPRuleTree::GetActionContext(const ContextRef &context) const{
+	const auto rule = GetActiveRule(context);
+	const auto parentGroup = rule ? rule->GetParentGroup() : nullptr;
+	return parentGroup ? parentGroup->GetMetaContext().StaticCast<igdeMetaContext>()
+		: Animator(context).GetMetaContext().StaticCast<igdeMetaContext>();
+}
+
+
+// Class aeMCPRules
+/////////////////////
+
+void aeMCPRules::GetObjectItemInfoType(const ContextRef &context,
+const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
+	info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()),
+		WindowMain(context).GetRuleIcon(rule->GetType()));
+}
+
+aeMCPRules::ObjectTypeRef aeMCPRules::CopyObjectType(const ContextRef &context,
+const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
+	auto copied = object->CreateCopy(WindowMain(context));
+	copied->name.SetValue(Animator(context).uniqueNameRule.Generate(copied->name), false);
+	return copied;
 }
 
 

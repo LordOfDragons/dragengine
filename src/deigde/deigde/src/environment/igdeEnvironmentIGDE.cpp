@@ -50,6 +50,16 @@
 #include <dragengine/resources/propfield/dePropField.h>
 #include <dragengine/resources/sensor/deTouchSensor.h>
 
+#ifdef OS_UNIX
+#include <errno.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
+
 
 
 // Class igdeEnvironmentIGDE
@@ -440,6 +450,26 @@ void igdeEnvironmentIGDE::CloseApplication(){
 	if(pWindowMain->CloseWindow()){
 		pWindowMain->Close();
 	}
+}
+
+void igdeEnvironmentIGDE::OpenUrl(const char *url){
+	decString fullUrl(url);
+	if(!fullUrl.BeginsWith("http")){
+		fullUrl = decString::Formatted("https://developer.dragondreams.ch/wiki/doku.php/{0}", fullUrl);
+	}
+	
+	#ifdef OS_W32
+	wchar_t wideUrl[512];
+	deOSWindows::Utf8ToWide(fullUrl.GetString(), wideUrl, 512);
+	ShellExecute(NULL, L"open", wideUrl, NULL, NULL, SW_SHOWDEFAULT);
+	
+	#else
+	if(fork() == 0){
+		const char * const appname = "xdg-open";
+		execlp(appname, appname, fullUrl.GetString(), nullptr);
+		exit(0);
+	}
+	#endif
 }
 
 /*@}*/

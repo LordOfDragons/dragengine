@@ -310,14 +310,11 @@ public:
 /**
  * \brief Set meta property with deObject type.
  */
-template<typename T>
+template<typename T, typename SetType = decTObjectSet<T>>
 class igdeMetaPropertySetType : public igdeMetaPropertySet{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertySetType<T>>;
-	
-	/** \brief Set of choices. */
-	using SetType = decTObjectSet<T>;
+	using Ref = deTObjectReference<igdeMetaPropertySetType<T, SetType>>;
 	
 	/** \brief Object type reference. */
 	using ObjectTypeRef = deTObjectReference<T>;
@@ -347,7 +344,7 @@ public:
 	Set ConvertSet(const SetType &in) const{
 		Set out;
 		in.Visit([&](const ObjectTypeRef &object){
-			out.Add(object);
+			out.Add(object.Pointer());
 		});
 		return out;
 	}
@@ -455,9 +452,9 @@ public:
 	/**
 	 * \brief Create copy of object if possible.
 	 * 
-	 * Subclass can override this method to create a copy of the object. The set parameter
-	 * contains all existing objects. This set can be used to enforce rules, for example unique
-	 * name or limit counts. If nullptr is returned the object cannot be copied.
+	 * Subclass can override this method to create a copy of the object. The existingObjects
+	 * parameter contains all existing objects. This set can be used to enforce rules, for
+	 * example unique name or limit counts. If nullptr is returned the object cannot be copied.
 	 */
 	virtual ObjectTypeRef CopyObjectType(const ContextRef &context,
 	const SetType &existingObjects, const ObjectTypeRef &object) const{
@@ -470,11 +467,11 @@ public:
 /**
  * \brief Set meta property using storage.
  */
-template<typename T>
+template<typename T, typename SetType = decTObjectOrderedSet<T>>
 class igdeMetaPropertySetStorage : public igdeMetaPropertySetType<T>{
 public:
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertySetStorage<T>>;
+	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertySetStorage<T, SetType>, SetType>;
 	
 	
 public:

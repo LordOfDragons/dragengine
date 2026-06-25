@@ -155,6 +155,9 @@ protected:
 	
 	/** \brief Context changed. */
 	virtual void OnContextChanged();
+	
+	/** \brief Edit container for use as widget target only. */
+	inline const igdeContainer::Ref &GetEditContainer() const{ return pEditContainer; }
 };
 
 #endif

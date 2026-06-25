@@ -27,6 +27,7 @@
 
 #include "igdeMetaPropertyStorage.h"
 
+#include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
 
 
@@ -35,13 +36,14 @@
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
-template<typename T, typename P, typename ListType = decTObjectOrderedSet<T>>
+template<typename T, typename P, typename ListType = decTObjectOrderedSet<T>, typename SelectionType = decTObjectSet<T>>
 class igdeMetaPropertyStorageList : public igdeMetaPropertyStorage<P>{
 public:
 	using ObjectRef = deTObjectReference<T>;
 	
 private:
-	ListType pValue, pSelection;
+	ListType pValue;
+	SelectionType pSelection;
 	ObjectRef pActive;
 	std::function<void(const ObjectRef&)> pOnObjectAdded, pOnObjectRemoved;
 	std::function<void()> pOnActiveChanged;
@@ -99,10 +101,10 @@ public:
 	}
 	
 	/** \brief Get selection. */
-	inline const ListType &GetSelection() const{ return pSelection; }
+	inline const SelectionType &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const ListType &selection, bool notify = true){
+	void SetSelection(const SelectionType &selection, bool notify = true){
 		if(pSelection == selection){
 			return;
 		}
@@ -147,7 +149,7 @@ public:
 	}
 	
 	/** \brief Set value. */
-	void SetValue(const igdeMetaPropertyStorageList<T, P, ListType> &value, bool notify = true){
+	void SetValue(const igdeMetaPropertyStorageList<T, P, ListType, SelectionType> &value, bool notify = true){
 		SetValue(value.GetValue(), notify);
 	}
 	

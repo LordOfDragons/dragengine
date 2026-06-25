@@ -494,6 +494,9 @@ public:
 	
 	/** \brief Close application. */
 	virtual void CloseApplication() = 0;
+	
+	/** \brief Open URL. */
+	virtual void OpenUrl(const char *url) = 0;
 	/*@}*/
 };
 

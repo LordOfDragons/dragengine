@@ -44,7 +44,7 @@ void aeMCRuleProperties::Init(const aeMCAnimatorProperties &properties){
 		targetBlendFactor);
 	
 	group->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		rules,
+		ruleTree,
 		rule);
 	
 	igdeMetaPropertyAdapter::OnChanged(name, rules);
@@ -163,6 +163,8 @@ void aeMCRuleGroupProperties::Init(const aeMCAnimatorProperties &properties){
 		useCurrentState,
 		applicationType,
 		targetSelect);
+	
+	igdeMetaPropertyAdapter::OnChanged(rules, properties.rule.ruleTree);
 }
 
 

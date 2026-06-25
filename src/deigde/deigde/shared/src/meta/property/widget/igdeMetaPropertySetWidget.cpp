@@ -123,6 +123,40 @@ public:
 		
 		clipboard->Set(igdeMetaPropertySet::ClipboardData::Ref::New(property, std::move(copiedValues)));
 	}
+	
+	void Update() override{
+		auto &property = pWidget.GetPropertySet();
+		const auto &context = pWidget.GetContext();
+		SetEnabled(property.IsValid(context) && context->GetClipboard()
+			&& !property.GetActiveObject(context).IsNotNull());
+	}
+};
+
+
+class ActionCut : public igdeMetaPropertySet::ActionRemove{
+protected:
+	igdeAction::Ref pActionCopy;
+	
+public:
+	ActionCut(igdeMetaPropertySetWidget &widget, const igdeMetaContext::Ref &context, igdeEnvironment &environment) :
+	igdeMetaPropertySet::ActionRemove(widget.GetPropertySet(), widget.GetButtonContextMenu(), context),
+	pActionCopy(deTObjectReference<ActionCopy>::New(widget, context, environment))
+	{
+		SetText("@Igde.Action.Cut");
+		SetIcon(environment.GetStockIcon(igdeEnvironment::esiCut));
+		SetDescription("@Igde.Action.Cut.ToolTip");
+	}
+	
+	~ActionCut() override = default;
+	
+	void OnAction() override{
+		pActionCopy->OnAction();
+		igdeMetaPropertySet::ActionRemove::OnAction();
+	}
+	
+	void Update() override{
+		igdeMetaPropertySet::ActionRemove::Update();
+	}
 };
 
 
@@ -388,6 +422,7 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	
 	if(context && context->GetClipboard()){
 		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+		helper.MenuCommand(menu, deTObjectReference<ActionCut>::New(*this, context, env));
 		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
 		helper.MenuSeparator(menu);
 	}

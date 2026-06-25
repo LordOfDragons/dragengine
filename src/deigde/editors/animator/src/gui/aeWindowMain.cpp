@@ -363,7 +363,7 @@ igdeStepableTask::Ref aeWindowMain::OnGameDefinitionChanged(){
 
 
 
-igdeIcon *aeWindowMain::GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const{
+const igdeIcon::Ref &aeWindowMain::GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const{
 	switch(type){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
 		return pIconRuleAnimation;
@@ -406,7 +406,7 @@ igdeIcon *aeWindowMain::GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes ty
 		return pIconRuleMirror;
 		
 	default:
-		return nullptr;
+		DETHROW(deeInvalidParam);
 	};
 }
 

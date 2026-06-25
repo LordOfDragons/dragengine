@@ -66,6 +66,27 @@ decString igdeMetaProperty::Action::BuildUndoInfo(const igdeMetaProperty &proper
 }
 
 
+// Class igdeMetaProperty::ActionHelp
+///////////////////////////////////////
+
+igdeMetaProperty::ActionHelp::ActionHelp(igdeEnvironment &environment, const igdeMetaProperty &property) :
+igdeAction("@Igde.MetaProperty.Action.Help",
+	environment.GetStockIcon(igdeEnvironment::esiSearch),
+	"@Igde.MetaProperty.Action.Help.ToolTip"),
+pEnvironment(environment),
+pProperty(property){
+}
+
+igdeMetaProperty::ActionHelp::~ActionHelp() = default;
+
+void igdeMetaProperty::ActionHelp::OnAction(){
+	auto url = pProperty.GetHelpUrl();
+	if(!url.IsEmpty()){
+		pEnvironment.OpenUrl(pProperty.GetHelpUrl());
+	}
+}
+
+
 // Class igdeMetaProperty
 ///////////////////////////
 
@@ -120,6 +141,10 @@ void igdeMetaProperty::SetClipboardDataTypeName(const char *name){
 	pClipboardDataTypeName = name;
 }
 
+void igdeMetaProperty::SetHelpUrl(const char *url){
+	pHelpUrl = url;
+}
+
 
 decString igdeMetaProperty::RealFilter(const igdeMetaContext &context) const{
 	const auto &tm = context.GetEnvironment().GetTranslationManager();
@@ -127,7 +152,7 @@ decString igdeMetaProperty::RealFilter(const igdeMetaContext &context) const{
 		return tm.TranslateIf(pLabel).ToUTF8();
 	}
 	
-	auto filter = tm.TranslateIf(pFilter, {});
+	auto filter = tm.TranslateIf(pFilter, decUnicodeString());
 	return (filter.IsEmpty() ? tm.TranslateIf(pLabel) : filter).ToUTF8();
 }
 
@@ -137,7 +162,7 @@ decString igdeMetaProperty::RealUndoInfo(const igdeMetaContext &context) const{
 		return tm.TranslateIf(pLabel).ToUTF8();
 	}
 	
-	const auto undo = tm.TranslateIf(pUndoInfo, {});
+	const auto undo = tm.TranslateIf(pUndoInfo, decUnicodeString());
 	return (undo.IsEmpty() ? tm.TranslateIf(pLabel) : undo).ToUTF8();
 }
 

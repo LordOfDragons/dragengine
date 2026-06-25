@@ -26,6 +26,7 @@
 #include "undo/igdeMetaPropertyListUndo.h"
 #include "widget/igdeMetaPropertyListWidget.h"
 #include "../igdeMetaContext.h"
+#include "../../clipboard/igdeClipboard.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../localization/igdeTranslationManager.h"
 #include "../../gui/igdeUIHelper.h"
@@ -74,7 +75,7 @@ void igdeMetaPropertyList::ActionDuplicate::OnAction(){
 	}
 	
 	const auto oldValuedData = pPropertyList.GetPropertyValue(context);
-	igdeMetaPropertyList::List copiedObjects;
+	decTObjectOrderedSet<deObject> copiedObjects;
 	auto newValue = oldValuedData;
 	
 	if(pPropertyList.GetMultiSelection()){
@@ -114,7 +115,7 @@ void igdeMetaPropertyList::ActionDuplicate::OnAction(){
 		pPropertyList.SetActiveObject(context, copiedObjects.First());
 		
 		if(pPropertyList.GetMultiSelection()){
-			pPropertyList.SetSelection(context, copiedObjects);
+			pPropertyList.SetSelection(context, igdeMetaPropertyList::SelectionSet(copiedObjects));
 		}
 	}
 }
@@ -187,14 +188,14 @@ pPropertyList(property){
 
 void igdeMetaPropertyList::ActionRemoveAll::OnAction(){
 	const auto &context = GetContext();
-	if(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context)){
+	if(pPropertyList.IsValid(context) && pPropertyList.GetPropertyValue(context).IsNotEmpty()){
 		pPropertyList.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertyList));
 	}
 }
 
 void igdeMetaPropertyList::ActionRemoveAll::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context));
+	SetEnabled(pPropertyList.IsValid(context) && pPropertyList.GetPropertyValue(context).IsNotEmpty());
 }
 
 
@@ -437,6 +438,144 @@ ActionMoveDown(property, owner, context)
 }
 
 
+// Class igdeMetaPropertyList::ActionCopy
+///////////////////////////////////////////
+
+igdeMetaPropertyList::ActionCopy::ActionCopy(igdeMetaPropertyList &property,
+	igdeWidget &owner, const ContextRef &context) :
+Action(owner, context, "@Igde.Action.Copy",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"@Igde.Action.Copy.ToolTip"),
+pPropertyList(property){
+}
+
+void igdeMetaPropertyList::ActionCopy::OnAction(){
+	const auto &context = GetContext();
+	if(!pPropertyList.IsValid(context)){
+		return;
+	}
+	
+	auto clipboard = context->GetClipboard();
+	if(!clipboard){
+		return;
+	}
+	
+	List values, copiedValues;
+	if(pPropertyList.GetMultiSelection()){
+		values.AddAll(pPropertyList.GetSelection(context));
+		
+	}else{
+		auto activeObject = pPropertyList.GetActiveObject(context);
+		if(activeObject){
+			values.Add(activeObject);
+		}
+	}
+	
+	values.Visit([&](const deObject::Ref &object){
+		const auto copiedObject = pPropertyList.CopyObject(context, copiedValues, object);
+		if(copiedObject){
+			copiedValues.Add(copiedObject);
+		}
+	});
+	
+	if(copiedValues.IsEmpty()){
+		return;
+	}
+	
+	clipboard->Set(ClipboardData::Ref::New(pPropertyList, std::move(copiedValues)));
+}
+
+void igdeMetaPropertyList::ActionCopy::Update(){
+	const auto &context = GetContext();
+	SetEnabled(pPropertyList.IsValid(context) && context->GetClipboard()
+		&& pPropertyList.GetActiveObject(context).IsNotNull());
+}
+
+
+// Class igdeMetaPropertyList::ActionCut
+//////////////////////////////////////////
+
+igdeMetaPropertyList::ActionCut::ActionCut(igdeMetaPropertyList &property,
+	igdeWidget &owner, const ContextRef &context) :
+ActionRemove(property, owner, context),
+pActionCopy(ActionCopy::Ref::New(property, owner, context))
+{
+	SetText("@Igde.Action.Cut");
+	SetIcon(owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut));
+	SetDescription("@Igde.Action.Cut.ToolTip");
+}
+
+void igdeMetaPropertyList::ActionCut::OnAction(){
+	pActionCopy->OnAction();
+	ActionRemove::OnAction();
+}
+
+
+// Class igdeMetaPropertyList::ActionPaste
+////////////////////////////////////////////
+
+igdeMetaPropertyList::ActionPaste::ActionPaste(igdeMetaPropertyList &property,
+	igdeWidget &owner, const ContextRef &context) :
+Action(owner, context, "@Igde.Action.Paste",
+	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"@Igde.Action.Paste.ToolTip"),
+pPropertyList(property){
+}
+
+void igdeMetaPropertyList::ActionPaste::OnAction(){
+	const auto &context = GetContext();
+	if(!pPropertyList.IsValid(context)){
+		return;
+	}
+	
+	const auto clipboard = context->GetClipboard();
+	if(!clipboard){
+		return;
+	}
+	
+	const auto clip = clipboard->GetWithTypeName(
+		pPropertyList.GetClipboardDataTypeName()).DynamicCast<ClipboardData>();
+	if(!clip){
+		return;
+	}
+	
+	const auto oldData = pPropertyList.GetPropertyValue(context);
+	List pastedObjects;
+	auto newData = oldData;
+	
+	clip->GetData().Visit([&](const deObject::Ref &object){
+		const auto copiedObject = pPropertyList.CopyObject(context, newData, object);
+		if(copiedObject){
+			newData.Add(copiedObject);
+			pastedObjects.Add(copiedObject);
+		}
+	});
+	
+	if(oldData == newData){
+		return;
+	}
+	
+	pPropertyList.ChangePropertyValue(context, newData, pPropertyList.RealUndoInfo(context, *this));
+	
+	if(pastedObjects.IsNotEmpty()){
+		pPropertyList.SetActiveObject(context, pastedObjects.First());
+		
+		if(pPropertyList.GetMultiSelection()){
+			pPropertyList.SetSelection(context, SelectionSet(pastedObjects));
+		}
+	}
+}
+
+void igdeMetaPropertyList::ActionPaste::Update(){
+	if(pPropertyList.IsValid(GetContext())){
+		const auto cb = GetContext()->GetClipboard();
+		SetEnabled(cb && cb->HasWithTypeName(pPropertyList.GetClipboardDataTypeName()));
+		return;
+	}
+	SetEnabled(false);
+}
+
+
 // Class igdeMetaPropertyList
 ///////////////////////////////
 
@@ -513,12 +652,12 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-igdeMetaPropertyList::List igdeMetaPropertyList::GetSelection(const ContextRef &context) const{
+igdeMetaPropertyList::SelectionSet igdeMetaPropertyList::GetSelection(const ContextRef &context) const{
 	auto active = GetActiveObject(context);
-	return active ? List(devctag, active) : List();
+	return active ? SelectionSet(devctag, active) : SelectionSet();
 }
 
-void igdeMetaPropertyList::SetSelection(const ContextRef &context, const List &selection){
+void igdeMetaPropertyList::SetSelection(const ContextRef &context, const SelectionSet &selection){
 }
 
 igdeMetaProperty::Action::Ref igdeMetaPropertyList::CreateButtonAction(TargetButton, igdeWidget&){

@@ -125,9 +125,38 @@ public:
 		decString BuildUndoInfo(const igdeMetaProperty &property) const;
 	};
 	
+	/** \brief Help action. */
+	class DE_DLL_EXPORT ActionHelp : public igdeAction{
+	public:
+		/** \brief Reference type. */
+		using Ref = deTObjectReference<ActionHelp>;
+		
+	private:
+		igdeEnvironment &pEnvironment;
+		const igdeMetaProperty &pProperty;
+		
+	public:
+		/** \brief Create action. */
+		ActionHelp(igdeEnvironment &environment, const igdeMetaProperty &property);
+		
+	protected:
+		/** \brief Destructor. */
+		~ActionHelp() override;
+		
+	public:
+		/** \brief Property. */
+		inline const igdeMetaProperty &GetProperty() const{ return pProperty; }
+		
+		/** \brief Environment. */
+		inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+		
+		/** \brief Run action. */
+		void OnAction() override;
+	};
+	
 	
 private:
-	decString pId, pLabel, pDescription, pFilter, pUndoInfo, pClipboardDataTypeName;
+	decString pId, pLabel, pDescription, pFilter, pUndoInfo, pClipboardDataTypeName, pHelpUrl;
 	bool pHideLabel = false;
 	bool pCanHideGroup = true;
 	igdeMetaPropertyWidgetState::Ref pWidgetState;
@@ -213,6 +242,20 @@ public:
 	
 	/** \brief Set clipboard data type name or empty string if not supported. */
 	void SetClipboardDataTypeName(const char *name);
+	
+	/**
+	 * \brief Help URL or empty string.
+	 * 
+	 * URL can be absolute or relative to IGDE wiki URL.
+	 */
+	inline const decString &GetHelpUrl() const{ return pHelpUrl; }
+	
+	/**
+	 * \brief Set help URL or empty string if not supported.
+	 * 
+	 * URL can be absolute or relative to IGDE wiki URL.
+	 */
+	void SetHelpUrl(const char *url);
 	
 	/**
 	 * \brief Real filter string.

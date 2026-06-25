@@ -73,3 +73,9 @@ void igdeMetaContextItemInfo::SetAll(const char *text, const char *description, 
 	pDescription = description;
 	pIcon = icon;
 }
+
+void igdeMetaContextItemInfo::SetAll(const char *text, const igdeIcon::Ref &icon){
+	pText = text;
+	pDescription.Empty();
+	pIcon = icon;
+}

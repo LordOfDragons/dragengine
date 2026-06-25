@@ -61,6 +61,24 @@ void igdeMetaPropertyAdapter::ObjectOnListChanged::OnObjectItemInfoChanged(igdeM
 }
 
 
+// igdeMetaPropertyAdapter::TreeOnListChanged
+///////////////////////////////////////////////
+
+igdeMetaPropertyAdapter::TreeOnListChanged::TreeOnListChanged(igdeMetaPropertyTreeList &property) :
+pProperty(property){
+}
+
+igdeMetaPropertyAdapter::TreeOnListChanged::~TreeOnListChanged() = default;
+
+void igdeMetaPropertyAdapter::TreeOnListChanged::OnValueChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+	pProperty.NotifyValueChanged({});
+}
+
+void igdeMetaPropertyAdapter::TreeOnListChanged::OnObjectItemInfoChanged(igdeMetaPropertyList*, const igdeMetaContext::Ref&){
+	pProperty.NotifyObjectItemInfoChanged({});
+}
+
+
 // igdeMetaPropertyAdapter::StringOnStringSetChanged
 //////////////////////////////////////////////////////
 
@@ -98,6 +116,10 @@ void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyList &watch, igdeMetaPro
 
 void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target){
 	watch.GetListeners().Add(ObjectOnListChanged::Ref::New(target));
+}
+
+void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target){
+	watch.GetListeners().Add(TreeOnListChanged::Ref::New(target));
 }
 
 void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target){

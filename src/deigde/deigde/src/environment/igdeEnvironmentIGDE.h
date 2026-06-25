@@ -296,6 +296,9 @@ public:
 	
 	/** \brief Close application. */
 	void CloseApplication() override;
+	
+	/** \brief Open URL. */
+	void OpenUrl(const char *url) override;
 	/*@}*/
 };
 

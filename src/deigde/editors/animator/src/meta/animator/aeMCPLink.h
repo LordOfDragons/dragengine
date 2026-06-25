@@ -148,7 +148,7 @@ class aeMCPLinkCurve : public aeTMCPAnimatorLink<igdeMetaPropertyCurveBezierStor
 public:
 	aeMCPLinkCurve() : aeTMCPAnimatorLink("link.curve", "Animator.WPLink.LinkCurve"){
 		decCurveBezier curve;
-		curve.SetDefaultBezier();
+		curve.SetDefaultLinear();
 		SetDefaultValue(curve);
 		SetClamp(true);
 	};
@@ -158,6 +158,8 @@ public:
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
 		return Link(context).curve;
 	}
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
 };
 
 

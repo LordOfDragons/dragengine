@@ -62,6 +62,7 @@ private:
 	igdeTreeItem::Ref pNext;
 	igdeTreeItem::Ref pFirstChild;
 	void *pData;
+	deObject::Ref pRefData;
 	bool pSelected;
 	bool pExpanded;
 	void *pNativeWidget;
@@ -128,6 +129,12 @@ public:
 	
 	/** \brief Set user data pointer. */
 	void SetData(void *data);
+	
+	/** \brief User reference data. */
+	inline const deObject::Ref &GetRefData() const{ return pRefData; }
+	
+	/** \brief Set user reference data. */
+	void SetRefData(const deObject::Ref &refData);
 	
 	/** \brief Item is selected. */
 	inline bool GetSelected() const{ return pSelected; }

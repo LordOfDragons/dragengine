@@ -80,6 +80,7 @@ public:
 	void SetAll(const char *text);
 	void SetAll(const char *text, const char *description);
 	void SetAll(const char *text, const char *description, const igdeIcon::Ref &icon);
+	void SetAll(const char *text, const igdeIcon::Ref &icon);
 };
 
 #endif

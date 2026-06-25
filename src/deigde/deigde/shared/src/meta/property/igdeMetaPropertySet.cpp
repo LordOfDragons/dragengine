@@ -176,14 +176,14 @@ pPropertySet(property){
 
 void igdeMetaPropertySet::ActionRemoveAll::OnAction(){
 	const auto &context = GetContext();
-	if(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context)){
+	if(pPropertySet.IsValid(context) && pPropertySet.GetPropertyValue(context).IsNotEmpty()){
 		pPropertySet.ChangePropertyValue(context, {}, BuildUndoInfo(pPropertySet));
 	}
 }
 
 void igdeMetaPropertySet::ActionRemoveAll::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetActiveObject(context));
+	SetEnabled(pPropertySet.IsValid(context) && pPropertySet.GetPropertyValue(context).IsNotEmpty());
 }
 
 

@@ -166,10 +166,7 @@ public:
 	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects, const ObjectTypeRef &object) const override{
 		auto copied = object->CreateCopy(WindowMain(context));
-		auto animator = RuleType(context).GetAnimator();
-		if(animator){
-			copied->name.SetValue(animator->uniqueNameRule.Generate(copied->name), false);
-		}
+		copied->name.SetValue(RuleType(context).uniqueNameRule.Generate(copied->name), false);
 		return copied;
 	}
 };

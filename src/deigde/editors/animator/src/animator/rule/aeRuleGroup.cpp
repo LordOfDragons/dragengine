@@ -50,7 +50,13 @@ enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleGroup.enableVer
 useCurrentState(windowMain.GetMCAnimatorProperties().ruleGroup.useCurrentState, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 applicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, GetMetaContext().StaticCast<aeMCRuleGroup>()),
 targetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, GetMetaContext().StaticCast<aeMCRuleGroup>())
-{
+{	
+	uniqueNameRule.SetIsUnique([this](const decString &checkName){
+		return !rules->HasMatching([&](const aeRule &each){
+			return each.GetName() == checkName;
+		});
+	});
+	
 	rules.SetOnChanged([this](){
 		pUpdateRuleIndices();
 		if(GetAnimator()){

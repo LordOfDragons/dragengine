@@ -724,6 +724,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.MetaProperty.Action.ResetToDefault">Reset to Default</translation>
 	<translation name="Igde.MetaProperty.Action.ResetToDefault.ToolTip">Reset property to default value</translation>
 	<translation name="Igde.MetaProperty.Action.ClearFilter.ToolTip">Clear filter</translation>
+	<translation name="Igde.MetaProperty.Action.Help">Help</translation>
+	<translation name="Igde.MetaProperty.Action.Help.ToolTip">Show help for property</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add">Add</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Add entry</translation>
 	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Title">Add entries</translation>

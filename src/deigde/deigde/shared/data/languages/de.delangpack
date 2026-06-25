@@ -723,6 +723,8 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.MetaProperty.Action.ResetToDefault">Auf Standard zurücksetzen</translation>
 	<translation name="Igde.MetaProperty.Action.ResetToDefault.ToolTip">Eigenschaft auf Standardwert zurücksetzen</translation>
 	<translation name="Igde.MetaProperty.Action.ClearFilter.ToolTip">Filter löschen</translation>
+	<translation name="Igde.MetaProperty.Action.Help">Hilfe</translation>
+	<translation name="Igde.MetaProperty.Action.Help.ToolTip">Zeige Hilfe für Eigenschaft</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add">Hinzufügen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Add.ToolTip">Eintrag hinzufügen</translation>
 	<translation name="Igde.MetaPropertyList.Action.Dialog.AddEntries.Title">Einträge hinzufügen</translation>

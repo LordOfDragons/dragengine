@@ -140,9 +140,23 @@ void igdeMetaPropertyWidget::SetContext(const igdeMetaContext::Ref &context){
 	OnContextChanged();
 }
 
-void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
+void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &menu){
+	if(!pEditContainer){
+		return;
+	}
+	
+	const auto &helpUrl = pProperty->GetHelpUrl();
+	if(!helpUrl.IsEmpty()){
+		auto &env = menu.GetEnvironment();
+		auto &helper = env.GetUIHelper();
+		if(menu.GetChildren().IsNotEmpty()){
+			helper.MenuSeparator(menu);
+		}
+		helper.MenuCommand(menu, deTObjectReference<igdeMetaProperty::ActionHelp>::New(env, pProperty));
+	}
+	
 	if(pContext){
-		pProperty->AddContextMenuEntries(contextMenu, pContext, pEditContainer);
+		pProperty->AddContextMenuEntries(menu, pContext, pEditContainer);
 	}
 }
 

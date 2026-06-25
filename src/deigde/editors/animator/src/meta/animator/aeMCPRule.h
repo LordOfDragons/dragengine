@@ -39,9 +39,39 @@
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyTreeList.h>
 
 
 /** Rules */
+
+class aeMCPRuleTree : public aeTMCPAnimator<igdeMetaPropertyTreeListStorage<aeRule>>{
+public:
+	aeMCPRuleTree() : aeTMCPAnimator("animator.ruleTree", "Animator.WPRule.Rules"){
+		SetHideLabel(true);
+		SetCanHideGroup(false);
+		SetRows(8);
+		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Rules");
+	}
+	
+	~aeMCPRuleTree() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).ruleTree;
+	}
+	
+	Walker::Ref CreateWalker(const ContextRef &context) const override;
+	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override;
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
+	void AddContextMenuEntriesAdd(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner);
+	Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner) override;
+	
+	aeRule::Ref GetActiveRule(const ContextRef &context) const;
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &GetActionStorage(const ContextRef &context) const;
+	igdeMetaPropertyList &GetActionProperty(const ContextRef &context) const;
+	ContextRef GetActionContext(const ContextRef &context) const;
+};
+
+
 
 class aeMCPRules : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
 public:
@@ -58,14 +88,8 @@ public:
 		return Animator(context).rules;
 	}
 	
-	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override{
-		info.SetAll(decString::Formatted("{0}: {1}", rule->GetIndex(), rule->GetName()));
-	}
-	
+	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override;
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects, const ObjectTypeRef &object) const override;
-	
-	Action::Ref CreateButtonAction(TargetButton target, igdeWidget &owner) override;
-	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
 };
 
 

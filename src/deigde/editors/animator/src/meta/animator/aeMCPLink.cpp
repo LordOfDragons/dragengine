@@ -37,6 +37,7 @@
 
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
+#include <deigde/meta/property/undo/igdeMetaPropertyCurveBezierUndo.h>
 #include <deigde/meta/property/undo/igdeMetaPropertyListUndo.h>
 
 #include <dragengine/common/collection/decTList.h>
@@ -118,7 +119,6 @@ private:
 			const auto r = rule.DynamicCast<aeRuleAnimationDifference>();
 			process(r->GetTargetLeadingMoveTime());
 			process(r->GetTargetReferenceMoveTime());
-
 			}break;
 			
 		case deAnimatorRuleVisitorIdentify::ertAnimationSelect:{
@@ -261,6 +261,56 @@ void aeMCPLinks::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaCont
 	const auto &windowMain = Animator(context).GetWindowMain();
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, windowMain.GetActionLinkAdd());
-	helper.MenuCommand(menu, windowMain.GetActionLinkDuplicate());
+	helper.MenuCommand(menu, windowMain.GetActionLinkRemoveUnused());
 	AddDefaultContextMenuEntries(menu, context, owner);
+}
+
+
+// Class aeMCPLinkCurve
+/////////////////////////
+
+namespace {
+
+class cActionCurveInsertAt : public igdeMetaProperty::Action{
+	aeMCPLinkCurve &pPropertyCurve;
+	
+public:
+	cActionCurveInsertAt(aeMCPLinkCurve &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	igdeMetaProperty::Action(owner, context, "@Animator.WPLink.Action.CurveInsertAt",
+		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"@Animator.WPLink.Action.CurveInsertAt.ToolTip"),
+	pPropertyCurve(property){
+	}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pPropertyCurve.IsValid(context)){
+			return;
+		}
+		
+		const auto &link = pPropertyCurve.Link(context);
+		const auto &controller = link.GetController();
+		if(!controller){
+			return;
+		}
+		
+		const float x = decMath::linearStep(controller->currentValue, controller->minimumValue, controller->maximumValue);
+		float y = 0.0f;
+		if(!igdeCommonDialogs::GetFloat(GetOwner(), "@Animator.WPLink.Dialog.InsertCurveValue.Title",
+		"@Animator.WPLink.Dialog.InsertCurveValue.YValue", y)){
+			return;
+		}
+		
+		auto curve = link.GetCurve();
+		curve.AddPoint(decVector2(x, y));
+		
+		pPropertyCurve.ChangePropertyValue(context, curve, BuildUndoInfo(pPropertyCurve));
+	}
+};
+
+}
+
+void aeMCPLinkCurve::AddContextMenuEntries(igdeMenuCascade &menu, const ContextRef &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	helper.MenuCommand(menu, deTObjectReference<cActionCurveInsertAt>::New(*this, owner, context));
 }

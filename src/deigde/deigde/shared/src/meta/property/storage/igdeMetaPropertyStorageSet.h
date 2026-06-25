@@ -28,6 +28,7 @@
 #include "igdeMetaPropertyStorage.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decTSet.h>
 
 
 /**
@@ -35,12 +36,16 @@
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
-template<typename T, typename P>
+template<typename T, typename P, typename SetType = decTObjectSet<T>, typename SelectionType = decTObjectSet<T>>
 class igdeMetaPropertyStorageSet : public igdeMetaPropertyStorage<P>{
+public:
+	using ObjectRef = deTObjectReference<T>;
+	
 private:
-	typename P::SetType pValue, pSelection;
-	typename P::ObjectTypeRef pActive;
-	std::function<void(const typename P::ObjectTypeRef&)> pOnObjectAdded, pOnObjectRemoved;
+	SetType pValue;
+	SelectionType pSelection;
+	ObjectRef pActive;
+	std::function<void(const ObjectRef&)> pOnObjectAdded, pOnObjectRemoved;
 	
 	
 public:
@@ -53,7 +58,7 @@ public:
 	}
 	
 	/** \brief Create set meta property storage with initial value. */
-	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context, const typename P::SetType &initialValue) :
+	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context, const SetType &initialValue) :
 	igdeMetaPropertyStorage<P>(property, context),
 	pValue(initialValue){
 	}
@@ -63,16 +68,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get value. */
-	inline const typename P::SetType &GetValue() const{ return pValue; }
+	inline const SetType &GetValue() const{ return pValue; }
 	
 	/** \brief Set value. */
-	void SetValue(const typename P::SetType &value, bool notify = true){
+	void SetValue(const SetType &value, bool notify = true){
 		if(pValue == value){
 			return;
 		}
 		
 		if(pOnObjectRemoved){
-			pValue.Visit([&](const typename P::ObjectTypeRef &object){
+			pValue.Visit([&](const ObjectRef &object){
 				if(!value.Has(object)){
 					pOnObjectRemoved(object);
 				}
@@ -80,7 +85,7 @@ public:
 		}
 		
 		if(pOnObjectAdded){
-			value.Visit([&](const typename P::ObjectTypeRef &object){
+			value.Visit([&](const ObjectRef &object){
 				if(!pValue.Has(object)){
 					pOnObjectAdded(object);
 				}
@@ -96,10 +101,10 @@ public:
 	}
 	
 	/** \brief Get selection. */
-	inline const typename P::SetType &GetSelection() const{ return pSelection; }
+	inline const SelectionType &GetSelection() const{ return pSelection; }
 	
 	/** \brief Set selection. */
-	void SetSelection(const typename P::SetType &selection, bool notify = true){
+	void SetSelection(const SelectionType &selection, bool notify = true){
 		if(pSelection == selection){
 			return;
 		}
@@ -111,10 +116,10 @@ public:
 	}
 	
 	/** \brief Get active object. */
-	inline const typename P::ObjectTypeRef &GetActive() const{ return pActive; }
+	inline const ObjectRef &GetActive() const{ return pActive; }
 	
 	/** \brief Set active object. */
-	void SetActive(const typename P::ObjectTypeRef &active, bool notify = true){
+	void SetActive(const ObjectRef &active, bool notify = true){
 		if(pActive == active){
 			return;
 		}
@@ -126,13 +131,13 @@ public:
 	}
 	
 	/** \brief Set value. */
-	void SetValue(const igdeMetaPropertyStorageSet<T, P> &value, bool notify = true){
+	void SetValue(const igdeMetaPropertyStorageSet<T, P, SetType, SelectionType> &value, bool notify = true){
 		SetValue(value.GetValue(), notify);
 	}
 	
 	
 	/** \brief Function to call for objects added to the set. */
-	inline const std::function<void(const typename P::ObjectTypeRef&)> &GetOnObjectAdded() const{ return pOnObjectAdded; }
+	inline const std::function<void(const ObjectRef&)> &GetOnObjectAdded() const{ return pOnObjectAdded; }
 	
 	/** \brief Set function to call for objects added to the set. */
 	template <typename F>
@@ -147,7 +152,7 @@ public:
 	}
 	
 	/** \brief Function to call for objects removed from the set. */
-	inline const std::function<void(const typename P::ObjectTypeRef&)> &GetOnObjectRemoved() const{ return pOnObjectRemoved; }
+	inline const std::function<void(const ObjectRef&)> &GetOnObjectRemoved() const{ return pOnObjectRemoved; }
 	
 	/** \brief Set function to call for objects removed from the set. */
 	template <typename F>
@@ -166,12 +171,12 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Implicit conversion operator. */
-	operator const typename P::SetType&() const{
+	operator const SetType&() const{
 		return GetValue();
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageSet<T, P> &operator=(const typename P::SetType &value){
+	igdeMetaPropertyStorageSet<T, P> &operator=(const SetType &value){
 		SetValue(value);
 		return *this;
 	}
@@ -183,17 +188,17 @@ public:
 	}
 	
 	/** \brief Value is equal. */
-	bool operator==(const typename P::SetType &value) const{
+	bool operator==(const SetType &value) const{
 		return pValue == value;
 	}
 	
 	/** \brief Access storage type functions. */
-	inline typename P::SetType* operator->(){
+	inline SetType* operator->(){
 		return &pValue;
 	}
 	
 	/** \brief Access storage type functions. */
-	inline const typename P::SetType* operator->() const{
+	inline const SetType* operator->() const{
 		return &pValue;
 	}
 	/*@}*/

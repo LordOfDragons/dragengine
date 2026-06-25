@@ -140,6 +140,14 @@ igdeTreeItem *igdeTreeList::GetItemWithData(igdeTreeItem *parent, void *data) co
 	return pGetItemWithData(parent, data);
 }
 
+igdeTreeItem *igdeTreeList::GetItemWithRefData(const deObject::Ref &data) const{
+	return pGetItemWithRefData(nullptr, data);
+}
+
+igdeTreeItem *igdeTreeList::GetItemWithRefData(igdeTreeItem *parent, const deObject::Ref &data) const{
+	return pGetItemWithRefData(parent, data);
+}
+
 bool igdeTreeList::HasItem(igdeTreeItem *item) const{
 	return pHasItem(nullptr, item);
 }
@@ -149,6 +157,10 @@ bool igdeTreeList::HasItem(const char *text) const{
 }
 
 bool igdeTreeList::HasItemWithData(void *data) const{
+	return pHasItem(nullptr, data);
+}
+
+bool igdeTreeList::HasItemWithRefData(const deObject::Ref &data) const{
 	return pHasItem(nullptr, data);
 }
 
@@ -174,6 +186,19 @@ igdeTreeItem *igdeTreeList::AppendItem(igdeTreeItem *parent, const char *text, i
 void igdeTreeList::AppendItem(igdeTreeItem *parent, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
 	item = igdeTreeItem::Ref::New(text, icon, data);
+	AppendItem(parent, item);
+}
+
+igdeTreeItem *igdeTreeList::AppendItemRef(igdeTreeItem *parent, const char *text, igdeIcon *icon, const deObject::Ref &data){
+	igdeTreeItem::Ref item;
+	AppendItemRef(parent, item, text, icon, data);
+	return item;
+}
+
+void igdeTreeList::AppendItemRef(igdeTreeItem *parent, igdeTreeItem::Ref &item,
+const char *text, igdeIcon *icon, const deObject::Ref &data){
+	item = igdeTreeItem::Ref::New(text, icon);
+	item->SetRefData(data);
 	AppendItem(parent, item);
 }
 
@@ -203,6 +228,20 @@ const char *text, igdeIcon *icon, void *data){
 	InsertItemBefore(beforeItem, item);
 }
 
+igdeTreeItem *igdeTreeList::InsertItemRefBefore(igdeTreeItem *beforeItem, const char *text,
+igdeIcon *icon, const deObject::Ref &data){
+	igdeTreeItem::Ref item;
+	InsertItemRefBefore(beforeItem, item, text, icon, data);
+	return item;
+}
+
+void igdeTreeList::InsertItemRefBefore(igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
+const char *text, igdeIcon *icon, const deObject::Ref &data){
+	item = igdeTreeItem::Ref::New(text, icon);
+	item->SetRefData(data);
+	InsertItemBefore(beforeItem, item);
+}
+
 void igdeTreeList::InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem *item){
 	if(!item || item->GetParent() || item->GetPrevious() || item->GetNext() || !afterItem){
 		DETHROW(deeInvalidParam);
@@ -226,6 +265,20 @@ igdeIcon *icon, void *data){
 void igdeTreeList::InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
 	item = igdeTreeItem::Ref::New(text, icon, data);
+	InsertItemAfter(afterItem, item);
+}
+
+igdeTreeItem *igdeTreeList::InsertItemRefAfter(igdeTreeItem *afterItem, const char *text,
+igdeIcon *icon, const deObject::Ref &data){
+	igdeTreeItem::Ref item;
+	InsertItemRefAfter(afterItem, item, text, icon, data);
+	return item;
+}
+
+void igdeTreeList::InsertItemRefAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
+const char *text, igdeIcon *icon, const deObject::Ref &data){
+	item = igdeTreeItem::Ref::New(text, icon);
+	item->SetRefData(data);
 	InsertItemAfter(afterItem, item);
 }
 
@@ -418,6 +471,15 @@ void igdeTreeList::SortAllItems(){
 
 
 
+void *igdeTreeList::GetSelectionItemData() const{
+	return pSelection ? pSelection->GetData() : nullptr;
+}
+
+const deObject::Ref &igdeTreeList::GetSelectionItemRefData() const{
+	static const deObject::Ref nullRef;
+	return pSelection ? pSelection->GetRefData() : nullRef;
+}
+
 void igdeTreeList::SetSelection(igdeTreeItem *selection){
 	if(selection == pSelection){
 		return;
@@ -431,6 +493,10 @@ void igdeTreeList::SetSelection(igdeTreeItem *selection){
 
 void igdeTreeList::SetSelectionWithData(void *data){
 	SetSelection(pGetItemWithData(nullptr, data));
+}
+
+void igdeTreeList::SetSelectionWithRefData(const deObject::Ref &data){
+	SetSelection(pGetItemWithRefData(nullptr, data));
 }
 
 void igdeTreeList::MakeItemVisible(igdeTreeItem *item){
@@ -607,6 +673,23 @@ igdeTreeItem *igdeTreeList::pGetItemWithData(igdeTreeItem *parent, void *data) c
 	return nullptr;
 }
 
+igdeTreeItem *igdeTreeList::pGetItemWithRefData(igdeTreeItem *parent, const deObject::Ref &data) const{
+	igdeTreeItem *child = parent ? parent->GetFirstChild() : (igdeTreeItem*)pFirstChild;
+	
+	while(child){
+		if(child->GetRefData() == data){
+			return child;
+		}
+		igdeTreeItem * const found = pGetItemWithRefData(child, data);
+		if(found){
+			return found;
+		}
+		child = child->GetNext();
+	}
+	
+	return nullptr;
+}
+
 bool igdeTreeList::pHasItem(igdeTreeItem *parent, igdeTreeItem *item) const{
 	igdeTreeItem *child = parent ? parent->GetFirstChild() : (igdeTreeItem*)pFirstChild;
 	
@@ -638,6 +721,19 @@ bool igdeTreeList::pHasItem(igdeTreeItem *parent, void *data) const{
 	
 	while(child){
 		if(child->GetData() == data || pHasItem(child, data)){
+			return true;
+		}
+		child = child->GetNext();
+	}
+	
+	return false;
+}
+
+bool igdeTreeList::pHasItem(igdeTreeItem *parent, const deObject::Ref &data) const{
+	igdeTreeItem *child = parent ? parent->GetFirstChild() : (igdeTreeItem*)pFirstChild;
+	
+	while(child){
+		if(child->GetRefData() == data || pHasItem(child, data)){
 			return true;
 		}
 		child = child->GetNext();

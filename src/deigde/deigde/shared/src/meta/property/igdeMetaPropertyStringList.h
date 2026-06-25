@@ -216,13 +216,64 @@ public:
 	class DE_DLL_EXPORT ActionImportFromText : public Action{
 	private:
 		igdeMetaPropertyStringList &pPropertyStringList;
-
+		
 	public:
 		using Ref = deTObjectReference<ActionImportFromText>;
 		ActionImportFromText(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		inline igdeMetaPropertyStringList &GetPropertyStringList() const{ return pPropertyStringList; }
+	};
+	
+	/** \brief Copy to clipboard action. */
+	class ActionCopy : public Action{
+	protected:
+		igdeMetaPropertyStringList &pPropertyStringList;
+		bool pSelection;
+		
+	public:
+		using Ref = deTObjectReference<ActionCopy>;
+		ActionCopy(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Copy selection to clipboard action. */
+	class ActionCopySelection : public ActionCopy{
+	public:
+		using Ref = deTObjectReference<ActionCopySelection>;
+		ActionCopySelection(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+	};
+	
+	/** \brief Cut to clipboard action. */
+	class ActionCut : public ActionRemove{
+	protected:
+		ActionCopy::Ref pActionCopy;
+		
+	public:
+		using Ref = deTObjectReference<ActionCut>;
+		ActionCut(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+	};
+	
+	/** \brief Paste from clipboard action. */
+	class ActionPaste : public Action{
+	protected:
+		igdeMetaPropertyStringList &pPropertyStringList;
+		bool pAppend;
+		
+	public:
+		using Ref = deTObjectReference<ActionPaste>;
+		ActionPaste(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		void OnAction() override;
+		void Update() override;
+	};
+	
+	/** \brief Paste and append from clipboard action. */
+	class ActionPasteAppend : public ActionPaste{
+	public:
+		using Ref = deTObjectReference<ActionPasteAppend>;
+		ActionPasteAppend(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
 	};
 	
 	

@@ -39,6 +39,7 @@
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
 #include <deigde/meta/property/igdeMetaPropertyObject.h>
+#include <deigde/meta/property/igdeMetaPropertyTreeList.h>
 #include <deigde/utils/igdeUniqueNameGenerator.h>
 
 #include <dragengine/deObject.h>
@@ -153,6 +154,7 @@ public:
 	igdeMetaPropertyListStorage<aeLink, aeLink::List>::Storage links;
 	igdeMetaPropertyContextStorage::Storage link;
 	
+	igdeMetaPropertyTreeListStorage<aeRule>::Storage ruleTree;
 	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage rules;
 	igdeMetaPropertyContextStorage::Storage rule;
 	
@@ -403,7 +405,7 @@ public:
 	void RemoveAllRules();
 	
 	/** Active rule or nullptr. */
-	inline const aeRule::Ref &GetActiveRule() const{ return rules.GetActive(); }
+	inline const aeRule::Ref &GetActiveRule() const{ return ruleTree.GetActive(); }
 	
 	/** Set active rule or nullptr. */
 	void SetActiveRule(aeRule *rule);
