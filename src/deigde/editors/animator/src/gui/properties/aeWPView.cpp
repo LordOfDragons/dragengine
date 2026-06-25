@@ -425,8 +425,10 @@ public:
 	cComboAttachment(aeWPView &panel) : cBaseComboBox(panel){}
 	
 	void OnChanged(igdeComboBox *comboBox, aeAnimator *animator) override{
-		animator->SetActiveAttachment(comboBox->GetSelectedItem()
-			? (aeAttachment*)comboBox->GetSelectedItem()->GetData() : nullptr);
+		if(!pPanel.preventUpdate){
+			animator->SetActiveAttachment(comboBox->GetSelectedItem()
+				? (aeAttachment*)comboBox->GetSelectedItem()->GetData() : nullptr);
+		}
 	}
 };
 
@@ -446,7 +448,7 @@ public:
 			name.Format("%s #%d", baseName.GetString(), number);
 		}
 		
-		const aeAttachment::Ref attachment(aeAttachment::Ref::New(&pPanel.GetEnvironment(), name));
+		const aeAttachment::Ref attachment(aeAttachment::Ref::New(pPanel.GetWindowProperties().GetWindowMain(), name));
 		animator->AddAttachment(attachment);
 		animator->SetActiveAttachment(attachment);
 	}
@@ -468,7 +470,7 @@ public:
 		
 		animator->RemoveAttachment(attachment);
 		if(animator->GetAttachments().IsNotEmpty()){
-			animator->SetActiveAttachment(animator->GetAttachments().First());
+			animator->SetActiveAttachment(animator->GetAttachments().GetAt(0));
 		}
 	}
 	
@@ -902,6 +904,7 @@ void aeWPView::UpdatePlayback(){
 }
 
 void aeWPView::UpdateAttachmentList(){
+	preventUpdate = true;
 	pCBAttachments->UpdateRestoreSelection([&](){
 		pCBAttachments->RemoveAllItems();
 		
@@ -913,6 +916,7 @@ void aeWPView::UpdateAttachmentList(){
 			pCBAttachments->SortItems();
 		}
 	}, 0);
+	preventUpdate = false;
 	
 	UpdateAttachment();
 }

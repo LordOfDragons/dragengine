@@ -36,10 +36,12 @@
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
-template<typename T, typename P, typename ListType = decTObjectOrderedSet<T>, typename SelectionType = decTObjectSet<T>>
+template<typename T, typename P, typename L = decTObjectOrderedSet<T>, typename S = decTObjectSet<T>>
 class igdeMetaPropertyStorageList : public igdeMetaPropertyStorage<P>{
 public:
 	using ObjectRef = deTObjectReference<T>;
+	using ListType = L;
+	using SelectionType = S;
 	
 private:
 	ListType pValue;
@@ -54,7 +56,11 @@ public:
 	/*@{*/
 	/** \brief Create list meta property storage. */
 	igdeMetaPropertyStorageList(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context){
+	igdeMetaPropertyStorage<P>(property, context)
+	{
+		if constexpr (requires() { { property.GetDefaultValueType() } -> std::convertible_to<ListType>; } ) {
+			pValue = property.GetDefaultValueType();
+		}
 	}
 	
 	/** \brief Create list meta property storage with initial value. */
@@ -119,21 +125,6 @@ public:
 	inline const ObjectRef &GetActive() const{ return pActive; }
 	
 	/** \brief Set active object. */
-	void SetActive(const ObjectRef &active, bool notify = true){
-		if(pActive == active){
-			return;
-		}
-		
-		pActive = active;
-		if(pOnActiveChanged){
-			pOnActiveChanged();
-		}
-		if(notify){
-			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
-		}
-	}
-	
-	/** \brief Set active object. */
 	void SetActive(T* active, bool notify = true){
 		if(pActive == active){
 			return;
@@ -148,8 +139,13 @@ public:
 		}
 	}
 	
+	/** \brief Set active object. */
+	void SetActive(const ObjectRef &active, bool notify = true){
+		SetActive(active.Pointer(), notify);
+	}
+	
 	/** \brief Set value. */
-	void SetValue(const igdeMetaPropertyStorageList<T, P, ListType, SelectionType> &value, bool notify = true){
+	void SetValue(const igdeMetaPropertyStorageList<T,P,L,S> &value, bool notify = true){
 		SetValue(value.GetValue(), notify);
 	}
 	
@@ -209,13 +205,13 @@ public:
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageList<T, P, ListType> &operator=(const ListType &value){
+	igdeMetaPropertyStorageList<T,P,L,S> &operator=(const ListType &value){
 		SetValue(value);
 		return *this;
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageList<T, P, ListType> &operator=(const igdeMetaPropertyStorageList<T, P, ListType> &other){
+	igdeMetaPropertyStorageList<T,P,L,S> &operator=(const igdeMetaPropertyStorageList<T,P,L,S> &other){
 		SetValue(other.GetValue());
 		return *this;
 	}

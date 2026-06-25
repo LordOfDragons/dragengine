@@ -37,9 +37,13 @@
 #include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
 #include <deigde/meta/property/igdeMetaPropertyObject.h>
 #include <deigde/meta/property/igdeMetaPropertyTreeList.h>
+#include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/utils/igdeUniqueNameGenerator.h>
 
 #include <dragengine/deObject.h>
@@ -88,7 +92,7 @@ class aeAnimator : public igdeEditableEntity{
 public:
 	using Ref = deTObjectReference<aeAnimator>;
 	using WeakRef = deTWeakObjectReference<aeAnimator>;
-	using AttachmentSet = decTObjectOrderedSet<aeAttachment>;
+	using AttachmentSet = decTCollectionQueryByName<decTObjectSet<aeAttachment>, aeAttachment>;
 	using NotifierSet = decTObjectOrderedSet<aeAnimatorNotifier>;
 	
 public:
@@ -119,6 +123,8 @@ private:
 	aeMCAnimatorController::Ref pMetaContextController;
 	aeMCAnimatorLink::Ref pMetaContextLink;
 	aeMCAnimatorRule::Ref pMetaContextRule;
+	aeMCAnimatorAttachment::Ref pMetaContextAttachment;
+	aeMCAnimatorView::Ref pMetaContextView;
 	
 	deWorld::Ref pEngWorld;
 	
@@ -136,9 +142,16 @@ private:
 	decTUniqueList<igdeWCoordSysArrows> pDDSBones;
 	float pDDSBoneSize;
 	
-	decString pDisplayModelPath;
-	decString pDisplaySkinPath;
-	decString pDisplayRigPath;
+	aeCamera *pCamera;
+	
+	bool pPaused;
+	
+	aeAnimatorLocomotion *pLocomotion;
+	aeWakeboard *pWakeboard;
+	aeSubAnimator *pSubAnimator;
+	aeSubAnimator *pTestingSubAnimator;
+	
+	NotifierSet pNotifiers;
 	
 public:
 	igdeMetaPropertyStringSetStorage::Storage hiddenBoneNames, hiddenVPSNames, hiddenMoveNames;
@@ -160,28 +173,19 @@ public:
 	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList allowedListControllers;
 	
-	igdeUniqueNameGenerator uniqueNameController, uniqueNameLink, uniqueNameRule;
+	igdeMetaPropertyPathStorage::Storage displayModelPath;
+	igdeMetaPropertyPathStorage::Storage displaySkinPath;
+	igdeMetaPropertyPathStorage::Storage displayRigPath;
+	igdeMetaPropertyFloatStorage::Storage playSpeed;
+	igdeMetaPropertyFloatStorage::Storage timeStep;
+	igdeMetaPropertyBooleanStorage::Storage resetState;
 	
-private:
-	aeCamera *pCamera;
+	igdeMetaPropertySetStorage<aeAttachment, AttachmentSet>::Storage attachments;
+	igdeMetaPropertyContextStorage::Storage attachment;
 	
-	AttachmentSet pAttachments;
-	aeAttachment::Ref pActiveAttachment;
+	igdeUniqueNameGenerator uniqueNameController, uniqueNameLink, uniqueNameRule, uniqueNameAttachment;
 	
-	bool pPaused;
-	float pPlaySpeed;
-	float pTimeStep;
-	
-	aeAnimatorLocomotion *pLocomotion;
-	aeWakeboard *pWakeboard;
-	aeSubAnimator *pSubAnimator;
-	aeSubAnimator *pTestingSubAnimator;
-	bool pResetState;
-	
-	decString pPathAttConfig;
-	
-	NotifierSet pNotifiers;
-	
+	decString pathAttachmentConfig;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -205,6 +209,8 @@ public:
 	inline const aeMCAnimatorController::Ref &GetMetaContextController() const{ return pMetaContextController; }
 	inline const aeMCAnimatorLink::Ref &GetMetaContextLink() const{ return pMetaContextLink; }
 	inline const aeMCAnimatorRule::Ref &GetMetaContextRule() const{ return pMetaContextRule; }
+	inline const aeMCAnimatorAttachment::Ref &GetMetaContextAttachment() const{ return pMetaContextAttachment; }
+	inline const aeMCAnimatorView::Ref &GetMetaContextView() const{ return pMetaContextView; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
@@ -213,15 +219,15 @@ public:
 	void Reset();
 	
 	/** Retrieves the display model path. */
-	inline const decString &GetDisplayModelPath() const{ return pDisplayModelPath; }
+	inline const decString &GetDisplayModelPath() const{ return displayModelPath; }
 	/** Sets the display model path. */
 	void SetDisplayModelPath(const char *path);
 	/** Retrieves the display skin path. */
-	inline const decString &GetDisplaySkinPath() const{ return pDisplaySkinPath; }
+	inline const decString &GetDisplaySkinPath() const{ return displaySkinPath; }
 	/** Sets the display skin path. */
 	void SetDisplaySkinPath(const char *path);
 	/** Retrieves the display rig path. */
-	inline const decString &GetDisplayRigPath() const{ return pDisplayRigPath; }
+	inline const decString &GetDisplayRigPath() const{ return displayRigPath; }
 	/** Sets the display rig path. */
 	void SetDisplayRigPath(const char *path);
 	
@@ -248,11 +254,11 @@ public:
 	/** Sets if the animation is paused. */
 	void SetPaused(bool paused);
 	/** Retrieves the play speed. */
-	inline float GetPlaySpeed() const{ return pPlaySpeed; }
+	inline float GetPlaySpeed() const{ return playSpeed; }
 	/** Sets the play speed. */
 	void SetPlaySpeed(float playSpeed);
 	/** Retrieves the time step. */
-	inline float GetTimeStep() const{ return pTimeStep; }
+	inline float GetTimeStep() const{ return timeStep; }
 	/** Sets the time step. */
 	void SetTimeStep(float timeStep);
 	
@@ -274,7 +280,7 @@ public:
 	inline aeSubAnimator *GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
 	/** Determines if the state is reset before applying the animator. */
-	inline bool GetResetState() const{ return pResetState; }
+	inline bool GetResetState() const{ return resetState; }
 	/** Sets if the state is reset before applying the animator. */
 	void SetResetState(bool resetState);
 	
@@ -286,7 +292,7 @@ public:
 	
 	
 	/** Last file dialog attachment configuration path. */
-	inline const decString &GetPathAttachmentConfig() const{ return pPathAttConfig; }
+	inline const decString &GetPathAttachmentConfig() const{ return pathAttachmentConfig; }
 	
 	/** Set last file dialog attachment configuration path. */
 	void SetPathAttachmentConfig(const char *path);
@@ -459,7 +465,7 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** Attachments. */
-	inline const AttachmentSet &GetAttachments() const{ return pAttachments; }
+	inline const AttachmentSet &GetAttachments() const{ return attachments; }
 	
 	/** Visitor to find attachment by name. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
@@ -474,7 +480,7 @@ public:
 	void RemoveAllAttachments();
 	
 	/** Active attachment or nullptr. */
-	inline const aeAttachment::Ref &GetActiveAttachment() const{ return pActiveAttachment; }
+	inline const aeAttachment::Ref &GetActiveAttachment() const{ return attachments.GetActive(); }
 	
 	/** Set active attachment or nullptr. */
 	void SetActiveAttachment(aeAttachment *attachment);

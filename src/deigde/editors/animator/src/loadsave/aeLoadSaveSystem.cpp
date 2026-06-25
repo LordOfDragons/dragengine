@@ -74,7 +74,7 @@ aeLoadSaveSystem::aeLoadSaveSystem(aeWindowMain *wndMain){
 	
 	try{
 		pLSAnimator = new aeLSAnimator(this);
-		pLSAttConfig = new aeLoadSaveAttachmentConfig(wndMain->GetEnvironment().GetLogger(), LOGSOURCE);
+		pLSAttConfig = new aeLoadSaveAttachmentConfig(*wndMain, wndMain->GetEnvironment().GetLogger(), LOGSOURCE);
 		
 		pBuildFilePattern();
 		

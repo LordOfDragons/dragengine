@@ -53,7 +53,7 @@ class aeAttachment;
 class aeWPView : public igdeContainerScroll{
 public:
 	using Ref = deTObjectReference<aeWPView>;
-	
+	bool preventUpdate = false;
 	
 private:
 	aeWindowProperties &pWindowProperties;

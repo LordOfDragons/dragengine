@@ -422,7 +422,7 @@ public:
 /**
  * \brief Typed list meta property.
  */
-template<typename T, typename ListType = decTObjectOrderedSet<T>>
+template<typename T, typename L = decTObjectOrderedSet<T>>
 class igdeMetaPropertyListType : public igdeMetaPropertyList{
 public:
 	/** \brief Reference type. */
@@ -430,6 +430,9 @@ public:
 	
 	/** \brief Object type reference. */
 	using ObjectTypeRef = deTObjectReference<T>;
+	
+	/** \brief List type. */
+	using ListType = L;
 	
 	/** \brief Selection of object type reference. */
 	using SelectionSetType = decTObjectSet<T>;
@@ -602,11 +605,14 @@ public:
 /**
  * \brief List meta property using storage.
  */
-template<typename T, typename ListType = decTObjectOrderedSet<T>>
-class igdeMetaPropertyListStorage : public igdeMetaPropertyListType<T, ListType>{
+template<typename T, typename L = decTObjectOrderedSet<T>>
+class igdeMetaPropertyListStorage : public igdeMetaPropertyListType<T, L>{
 public:
+	/** \brief List type. */
+	using ListType = L;
+	
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageList<T, igdeMetaPropertyListStorage<T, ListType>, ListType>;
+	using Storage = igdeMetaPropertyStorageList<T, igdeMetaPropertyListStorage<T, L>, L>;
 	
 	
 public:
@@ -614,11 +620,11 @@ public:
 	/*@{*/
 	/** \brief Create list meta property with label and description. */
 	igdeMetaPropertyListStorage(const char *id, const char *name, const char *description) :
-	igdeMetaPropertyListType<T, ListType>(id, name, description){}
+	igdeMetaPropertyListType<T, L>(id, name, description){}
 	
 	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
 	igdeMetaPropertyListStorage(const char *id, const char *translationTag) :
-	igdeMetaPropertyListType<T, ListType>(id, translationTag){}
+	igdeMetaPropertyListType<T, L>(id, translationTag){}
 	
 protected:
 	/** \brief Clean up list meta property. */
@@ -630,33 +636,31 @@ public:
 	virtual Storage &GetStorage(const igdeMetaProperty::ContextRef &context) const = 0;
 	
 	
-	ListType GetPropertyValueType(
-	const igdeMetaProperty::ContextRef &context) const override{
+	ListType GetPropertyValueType(const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetValue();
 	}
 	
-	void SetPropertyValueType(const igdeMetaProperty::ContextRef &context,
-	const ListType &value) override{
+	void SetPropertyValueType(const igdeMetaProperty::ContextRef &context, const ListType &value) override{
 		GetStorage(context).SetValue(value);
 	}
 	
-	typename igdeMetaPropertyListType<T, ListType>::ObjectTypeRef GetActiveObjectType(
+	typename igdeMetaPropertyListType<T, L>::ObjectTypeRef GetActiveObjectType(
 	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetActive();
 	}
 	
 	void SetActiveObjectType(const igdeMetaProperty::ContextRef &context,
-	const typename igdeMetaPropertyListType<T, ListType>::ObjectTypeRef &activeObject) override{
+	const typename igdeMetaPropertyListType<T, L>::ObjectTypeRef &activeObject) override{
 		GetStorage(context).SetActive(activeObject);
 	}
 	
-	typename igdeMetaPropertyListType<T, ListType>::SelectionSetType GetSelectionType(
+	typename igdeMetaPropertyListType<T, L>::SelectionSetType GetSelectionType(
 	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetSelection();
 	}
 	
 	void SetSelectionType(const igdeMetaProperty::ContextRef &context,
-	const typename igdeMetaPropertyListType<T, ListType>::SelectionSetType &selection) override{
+	const typename igdeMetaPropertyListType<T, L>::SelectionSetType &selection) override{
 		GetStorage(context).SetSelection(selection);
 	}
 };

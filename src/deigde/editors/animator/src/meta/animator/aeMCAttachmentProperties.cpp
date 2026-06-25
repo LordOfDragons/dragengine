@@ -22,59 +22,26 @@
  * SOFTWARE.
  */
 
+#include "aeMCAttachmentProperties.h"
 #include "aeMCAnimatorProperties.h"
 
 #include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 
 
-aeMCAnimatorProperties::aeMCAnimatorProperties(aeWindowMain &windowMain) :
-controller(windowMain),
-link(windowMain),
-rule(windowMain),
-attachment(windowMain)
-{
-	Init();
+aeMCAttachmentProperties::aeMCAttachmentProperties(aeWindowMain &windowMain) :
+attachment(deTObjectReference<aeMCPAttachment>::New(windowMain)){
 }
 
-void aeMCAnimatorProperties::Init(){
+void aeMCAttachmentProperties::Init(const aeMCAnimatorProperties &properties){
 	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		rig,
-		animation,
-		affectedBones,
-		affectedVertexPositionSets);
+		name,
+		attachType,
+		boneName);
 	
-	controller.Init(*this);
-	metaPropertiesController->GetData() += controller.group->GetProperties();
+	group->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
+		attachments,
+		attachment);
 	
-	link.Init(*this);
-	metaPropertiesLink->GetData() += link.group->GetProperties();
-	
-	rule.Init(*this);
-	metaPropertiesRule->GetData() += rule.group->GetProperties();
-	igdeMetaPropertyAdapter::OnChanged(rule.rules, rule.ruleTree);
-	
-	ruleAnimation.Init(*this);
-	ruleAnimationDifference.Init(*this);
-	ruleAnimationSelect.Init(*this);
-	ruleBoneTransformator.Init(*this);
-	ruleForeignState.Init(*this);
-	ruleGroup.Init(*this);
-	ruleInverseKinematic.Init(*this);
-	ruleLimit.Init(*this);
-	ruleMirror.Init(*this);
-	ruleStateManipulator.Init(*this);
-	ruleStateSnapshot.Init(*this);
-	ruleSubAnimator.Init(*this);
-	ruleTrackTo.Init(*this);
-	
-	attachment.Init(*this);
-	
-	metaPropertiesView->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
-		displayModelPath,
-		displaySkinPath,
-		displayRigPath,
-		playSpeed,
-		timeStep,
-		resetState,
-		attachment.group);
+	igdeMetaPropertyAdapter::OnChanged(name, attachments);
+	igdeMetaPropertyAdapter::OnChanged(properties.hiddenBoneNames, boneName);
 }

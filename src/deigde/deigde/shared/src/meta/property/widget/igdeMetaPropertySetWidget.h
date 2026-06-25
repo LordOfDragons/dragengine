@@ -56,6 +56,7 @@ private:
 		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
 		void OnActiveChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
 		void OnSelectionChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
@@ -96,6 +97,9 @@ public:
 	
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
+	
+	/** \brief Update item information. */
+	void UpdateItemInfo();
 	
 	/** \brief List box widget or nullptr. */
 	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }

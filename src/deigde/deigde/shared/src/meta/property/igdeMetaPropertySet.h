@@ -96,6 +96,9 @@ public:
 		
 		/** \brief Object selection changed. */
 		virtual void OnSelectionChanged(igdeMetaPropertySet *property, const ContextRef &context);
+		
+		/** \brief Object item information changed. */
+		virtual void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const ContextRef &context);
 	};
 	
 	
@@ -141,7 +144,6 @@ public:
 	
 	
 private:
-	Set pDefaultValue;
 	int pRows;
 	bool pMultiSelection;
 	igdeTListenerList<Listener> pListeners;
@@ -165,12 +167,6 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Default value. */
-	inline const Set &GetDefaultValue() const{ return pDefaultValue; }
-	
-	/** \brief Set default value. */
-	void SetDefaultValue(const Set &value);
-	
 	/** \brief Rows. */
 	inline int GetRows() const{ return pRows; }
 	
@@ -196,6 +192,9 @@ public:
 	
 	/** \brief Notify listeners about object selection changed. */
 	void NotifySelectionChanged(const ContextRef &context);
+	
+	/** \brief Notify listeners about object information changed. */
+	void NotifyObjectItemInfoChanged(const ContextRef &context);
 	
 	
 	/**
@@ -467,11 +466,13 @@ public:
 /**
  * \brief Set meta property using storage.
  */
-template<typename T, typename SetType = decTObjectOrderedSet<T>>
-class igdeMetaPropertySetStorage : public igdeMetaPropertySetType<T>{
+template<typename T, typename S = decTObjectSet<T>>
+class igdeMetaPropertySetStorage : public igdeMetaPropertySetType<T, S>{
 public:
+	using SetType = S;
+	
 	/** \brief Storage type. */
-	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertySetStorage<T, SetType>, SetType>;
+	using Storage = igdeMetaPropertyStorageSet<T, igdeMetaPropertySetStorage<T, S>, S>;
 	
 	
 public:
@@ -479,11 +480,11 @@ public:
 	/*@{*/
 	/** \brief Create set meta property with label and description. */
 	igdeMetaPropertySetStorage(const char *id, const char *name, const char *description) :
-	igdeMetaPropertySetType<T>(id, name, description){}
+	igdeMetaPropertySetType<T, S>(id, name, description){}
 	
 	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
 	igdeMetaPropertySetStorage(const char *id, const char *translationTag) :
-	igdeMetaPropertySetType<T>(id, translationTag){}
+	igdeMetaPropertySetType<T, S>(id, translationTag){}
 	
 protected:
 	/** \brief Clean up set meta property. */
@@ -492,36 +493,32 @@ protected:
 public:
 	/*@}*/
 	/** \brief Storage. */
-	virtual Storage &GetStorage(const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const = 0;
+	virtual Storage &GetStorage(const igdeMetaProperty::ContextRef &context) const = 0;
 	
 	
-	typename igdeMetaPropertySetStorage<T>::SetType GetPropertyValueType(
-	const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const override{
+	SetType GetPropertyValueType(const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetValue();
 	}
 	
-	void SetPropertyValueType(const typename igdeMetaPropertySetStorage<T>::ContextRef &context,
-	const typename igdeMetaPropertySetStorage<T>::SetType &value) override{
+	void SetPropertyValueType(const igdeMetaProperty::ContextRef &context, const SetType &value) override{
 		GetStorage(context).SetValue(value);
 	}
 	
-	typename igdeMetaPropertySetStorage<T>::ObjectTypeRef GetActiveObjectType(
-	const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const override{
+	typename igdeMetaPropertySetStorage<T, S>::ObjectTypeRef GetActiveObjectType(
+	const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetActive();
 	}
 	
-	void SetActiveObjectType(const typename igdeMetaPropertySetStorage<T>::ContextRef &context,
-	const typename igdeMetaPropertySetStorage<T>::ObjectTypeRef &activeObject) override{
+	void SetActiveObjectType(const igdeMetaProperty::ContextRef &context,
+	const typename igdeMetaPropertySetStorage<T, S>::ObjectTypeRef &activeObject) override{
 		GetStorage(context).SetActive(activeObject);
 	}
 	
-	typename igdeMetaPropertySetStorage<T>::SetType GetSelectionType(
-	const typename igdeMetaPropertySetStorage<T>::ContextRef &context) const override{
+	SetType GetSelectionType(const igdeMetaProperty::ContextRef &context) const override{
 		return GetStorage(context).GetSelection();
 	}
 	
-	void SetSelectionType(const typename igdeMetaPropertySetStorage<T>::ContextRef &context,
-	const typename igdeMetaPropertySetStorage<T>::SetType &selection) override{
+	void SetSelectionType(const igdeMetaProperty::ContextRef &context, const SetType &selection) override{
 		GetStorage(context).SetSelection(selection);
 	}
 };

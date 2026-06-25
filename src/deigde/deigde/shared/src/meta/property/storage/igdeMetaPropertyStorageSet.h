@@ -36,16 +36,19 @@
  * 
  * T is the value type and P the meta property type. T has to match the expected value type of P.
  */
-template<typename T, typename P, typename SetType = decTObjectSet<T>, typename SelectionType = decTObjectSet<T>>
+template<typename T, typename P, typename S = decTObjectSet<T>, typename E = decTObjectSet<T>>
 class igdeMetaPropertyStorageSet : public igdeMetaPropertyStorage<P>{
 public:
 	using ObjectRef = deTObjectReference<T>;
+	using SetType = S;
+	using SelectionType = E;
 	
 private:
 	SetType pValue;
 	SelectionType pSelection;
 	ObjectRef pActive;
 	std::function<void(const ObjectRef&)> pOnObjectAdded, pOnObjectRemoved;
+	std::function<void()> pOnActiveChanged;
 	
 	
 public:
@@ -53,8 +56,11 @@ public:
 	/*@{*/
 	/** \brief Create set meta property storage. */
 	igdeMetaPropertyStorageSet(P &property, const deTObjectReference<igdeMetaContext> &context) :
-	igdeMetaPropertyStorage<P>(property, context),
-	pValue(property.GetDefaultValueType()){
+	igdeMetaPropertyStorage<P>(property, context)
+	{
+		if constexpr (requires() { { property.GetDefaultValueType() } -> std::convertible_to<SetType>; } ) {
+			pValue = property.GetDefaultValueType();
+		}
 	}
 	
 	/** \brief Create set meta property storage with initial value. */
@@ -100,6 +106,11 @@ public:
 		}
 	}
 	
+	/** \brief Set value. */
+	void SetValue(const igdeMetaPropertyStorageSet<T,P,S,E> &value, bool notify = true){
+		SetValue(value.GetValue(), notify);
+	}
+	
 	/** \brief Get selection. */
 	inline const SelectionType &GetSelection() const{ return pSelection; }
 	
@@ -119,20 +130,23 @@ public:
 	inline const ObjectRef &GetActive() const{ return pActive; }
 	
 	/** \brief Set active object. */
-	void SetActive(const ObjectRef &active, bool notify = true){
+	void SetActive(T* active, bool notify = true){
 		if(pActive == active){
 			return;
 		}
 		
 		pActive = active;
+		if(pOnActiveChanged){
+			pOnActiveChanged();
+		}
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
 		}
 	}
 	
-	/** \brief Set value. */
-	void SetValue(const igdeMetaPropertyStorageSet<T, P, SetType, SelectionType> &value, bool notify = true){
-		SetValue(value.GetValue(), notify);
+	/** \brief Set active object. */
+	void SetActive(const ObjectRef &active, bool notify = true){
+		SetActive(active.Pointer(), notify);
 	}
 	
 	
@@ -165,6 +179,21 @@ public:
 	void SetOnObjectRemoved(const F& func){
 		pOnObjectRemoved = func;
 	}
+	
+	/** \brief Function to call if active object changed before listeners are notified. */
+	inline const std::function<void()> &GetOnActiveChanged() const{ return pOnActiveChanged; }
+	
+	/** \brief Set function to call if active object changed before listeners are notified. */
+	template <typename F>
+	void SetOnActiveChanged(F&& func){
+		pOnActiveChanged = std::forward<F>(func);
+	}
+	
+	/** \brief Set function to call if active object changed before listeners are notified. */
+	template <typename F>
+	void SetOnActiveChanged(const F& func){
+		pOnActiveChanged = func;
+	}
 	/*@}*/
 	
 	
@@ -176,13 +205,13 @@ public:
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageSet<T, P> &operator=(const SetType &value){
+	igdeMetaPropertyStorageSet<T,P,S,E> &operator=(const SetType &value){
 		SetValue(value);
 		return *this;
 	}
 	
 	/** \brief Assignment operator. */
-	igdeMetaPropertyStorageSet<T, P> &operator=(const igdeMetaPropertyStorageSet<T, P> &other){
+	igdeMetaPropertyStorageSet<T,P,S,E> &operator=(const igdeMetaPropertyStorageSet<T,P,S,E> &other){
 		SetValue(other.GetValue());
 		return *this;
 	}

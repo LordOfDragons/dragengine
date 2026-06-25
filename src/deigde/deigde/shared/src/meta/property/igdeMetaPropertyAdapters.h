@@ -27,6 +27,7 @@
 
 #include "igdeMetaPropertyList.h"
 #include "igdeMetaPropertyObject.h"
+#include "igdeMetaPropertySet.h"
 #include "igdeMetaPropertyString.h"
 #include "igdeMetaPropertyStringSet.h"
 #include "igdeMetaPropertyTreeList.h"
@@ -80,6 +81,48 @@ public:
 	};
 	
 	
+	class DE_DLL_EXPORT StringOnSetChanged : public igdeMetaPropertySet::Listener{
+		igdeMetaPropertyString &pProperty;
+		
+	public:
+		using Ref = deTObjectReference<StringOnSetChanged>;
+		StringOnSetChanged(igdeMetaPropertyString &property);
+		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		
+	protected:
+		~StringOnSetChanged() override;
+	};
+	
+	
+	class DE_DLL_EXPORT ObjectOnSetChanged : public igdeMetaPropertySet::Listener{
+		igdeMetaPropertyObject &pProperty;
+		
+	public:
+		using Ref = deTObjectReference<ObjectOnSetChanged>;
+		ObjectOnSetChanged(igdeMetaPropertyObject &property);
+		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		
+	protected:
+		~ObjectOnSetChanged() override;
+	};
+	
+	
+	class DE_DLL_EXPORT TreeOnSetChanged : public igdeMetaPropertySet::Listener{
+		igdeMetaPropertyTreeList &pProperty;
+		
+	public:
+		using Ref = deTObjectReference<TreeOnSetChanged>;
+		TreeOnSetChanged(igdeMetaPropertyTreeList &property);
+		void OnValueChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		void OnObjectItemInfoChanged(igdeMetaPropertySet *property, const igdeMetaContext::Ref &context) override;
+		
+	protected:
+		~TreeOnSetChanged() override;
+	};
+	
+	
 	class DE_DLL_EXPORT StringOnStringSetChanged : public igdeMetaPropertyStringSet::Listener{
 		igdeMetaPropertyString &pProperty;
 		
@@ -106,6 +149,19 @@ public:
 	};
 	
 	
+	class DE_DLL_EXPORT SetOnStringChanged : public igdeMetaPropertyString::Listener{
+		igdeMetaPropertySet &pProperty;
+		
+	public:
+		using Ref = deTObjectReference<SetOnStringChanged>;
+		SetOnStringChanged(igdeMetaPropertySet &property);
+		void OnValueChanged(igdeMetaPropertyString *property, const igdeMetaContext::Ref &context) override;
+		
+	protected:
+		~SetOnStringChanged() override;
+	};
+	
+	
 private:
 	igdeMetaPropertyAdapter();
 	
@@ -114,8 +170,12 @@ public:
 	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyString &target);
 	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyObject &target);
 	static void OnChanged(igdeMetaPropertyList &watch, igdeMetaPropertyTreeList &target);
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyString &target);
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyObject &target);
+	static void OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyTreeList &target);
 	static void OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target);
 	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target);
+	static void OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertySet &target);
 };
 
 

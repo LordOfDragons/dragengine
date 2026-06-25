@@ -22,41 +22,39 @@
  * SOFTWARE.
  */
 
-#ifndef _AEMCANIMATOR_H_
-#define _AEMCANIMATOR_H_
+#ifndef _AEMCATTACHMENT_H_
+#define _AEMCATTACHMENT_H_
 
 #include <deigde/meta/igdeMetaContext.h>
 
-class aeAnimator;
 class aeWindowMain;
+class aeAttachment;
 
 
 /**
- * Animator meta context.
+ * Attachment meta context.
  */
-class aeMCAnimator : public igdeMetaContext{
+class aeMCAttachment : public igdeMetaContext{
 public:
-	using Ref = deTObjectReference<aeMCAnimator>;
+	using Ref = deTObjectReference<aeMCAttachment>;
 	
 private:
 	aeWindowMain &pWindowMain;
-	aeAnimator *pAnimator;
-	deTObjectReference<aeAnimator> pGuardAnimator;
+	aeAttachment *pAttachment;
+	deTObjectReference<aeAttachment> pGuardAttachment;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create animator meta context. */
-	explicit aeMCAnimator(aeWindowMain &windowMain, aeAnimator *animator);
+	/** Create attachment meta context. */
+	explicit aeMCAttachment(aeWindowMain &windowMain, aeAttachment *attachment);
 	
 protected:
-	aeMCAnimator(aeWindowMain &windowMain, aeAnimator *animator, const char *identifier);
-	
 	/**
 	 * Clean up object.
 	 */
-	virtual ~aeMCAnimator() override;
+	virtual ~aeMCAttachment() override;
 	/*@}*/
 	
 	
@@ -66,11 +64,11 @@ public:
 	/** Window main. */
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	/** Attachment. */
+	inline aeAttachment *GetAttachment() const{ return pAttachment; }
 	
-	/** Animator reference. */
-	aeAnimator &GetAnimatorRef() const;
+	/** Attachment reference. */
+	aeAttachment &GetAttachmentRef() const;
 	
 	/** Capture context. */
 	Ref Capture() const;
@@ -84,42 +82,6 @@ public:
 	/** \brief Clipboard or nullptr if not supported. */
 	igdeClipboard *GetClipboard() const override;
 	/*@}*/
-};
-
-
-class aeMCAnimatorController : public aeMCAnimator{
-public:
-	using Ref = deTObjectReference<aeMCAnimatorController>;
-	aeMCAnimatorController(aeWindowMain &windowMain, aeAnimator *animator);
-	~aeMCAnimatorController() override;
-};
-
-class aeMCAnimatorLink : public aeMCAnimator{
-public:
-	using Ref = deTObjectReference<aeMCAnimatorLink>;
-	aeMCAnimatorLink(aeWindowMain &windowMain, aeAnimator *animator);
-	~aeMCAnimatorLink() override;
-};
-
-class aeMCAnimatorRule : public aeMCAnimator{
-public:
-	using Ref = deTObjectReference<aeMCAnimatorRule>;
-	aeMCAnimatorRule(aeWindowMain &windowMain, aeAnimator *animator);
-	~aeMCAnimatorRule() override;
-};
-
-class aeMCAnimatorView : public aeMCAnimator{
-public:
-	using Ref = deTObjectReference<aeMCAnimatorView>;
-	aeMCAnimatorView(aeWindowMain &windowMain, aeAnimator *animator);
-	~aeMCAnimatorView() override;
-};
-
-class aeMCAnimatorAttachment : public aeMCAnimator{
-public:
-	using Ref = deTObjectReference<aeMCAnimatorAttachment>;
-	aeMCAnimatorAttachment(aeWindowMain &windowMain, aeAnimator *animator);
-	~aeMCAnimatorAttachment() override;
 };
 
 #endif

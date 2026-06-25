@@ -31,6 +31,7 @@
 #include "aeMCController.h"
 #include "aeMCLink.h"
 #include "aeMCRule.h"
+#include "aeMCAttachment.h"
 
 
 /**
@@ -218,5 +219,37 @@ using aeTMCPAnimatorRuleSubAnimator = aeTMCPAnimatorRuleType<T, aeMCRuleSubAnima
 
 template <typename T>
 using aeTMCPAnimatorRuleTrackTo = aeTMCPAnimatorRuleType<T, aeMCRuleTrackTo, aeRuleTrackTo>;
+
+
+/**
+ * Animator attachment meta context property template.
+ */
+template <typename T>
+class aeTMCPAnimatorAttachment : public T{
+public:
+	template <typename... A>
+	aeTMCPAnimatorAttachment(A&&... args) : T(std::forward<A>(args)...) {}
+	
+protected:
+	virtual ~aeTMCPAnimatorAttachment() override{}
+	
+public:
+	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
+		return context.DynamicCast<aeMCAttachment>()->Capture();
+	}
+	
+	bool IsValid(const igdeMetaContext::Ref &context) const override{
+		const auto c = context.DynamicCast<aeMCAttachment>();
+		return c && !c->IsDisposed() && c->GetAttachment() != nullptr;
+	}
+	
+	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAttachment>()->GetWindowMain();
+	}
+	
+	inline aeAttachment &Attachment(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAttachment>()->GetAttachmentRef();
+	}
+};
 
 #endif

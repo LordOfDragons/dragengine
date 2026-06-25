@@ -288,6 +288,13 @@ igdeMetaPropertySet*, const igdeMetaContext::Ref &context){
 	}
 }
 
+void igdeMetaPropertySetWidget::PropertyListener::OnObjectItemInfoChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref &context){
+	if(!context || pWidget.GetContext() == context){
+		pWidget.UpdateItemInfo();
+	}
+}
+
 
 // Class igdeMetaPropertySetWidget
 ////////////////////////////////////
@@ -390,6 +397,43 @@ void igdeMetaPropertySetWidget::Update(){
 	// current selection and active object to properly synchronize if anything changed
 	StoreSelection();
 	StoreActiveObject();
+}
+
+void igdeMetaPropertySetWidget::UpdateItemInfo(){
+	if(!pListBox){
+		return;
+	}
+	
+	const auto &context = GetContext();
+	const bool valid = pPropertySet.IsValid(context);
+	if(!valid){
+		return;
+	}
+	
+	igdeMetaContextItemInfo info;
+	bool requiresSorting = true;
+	
+	pListBox->GetItems().VisitIndexed([&](int index, igdeListItem &item){
+		pPropertySet.GetObjectItemInfo(context, item.GetRefData(), info);
+		
+		const auto &text = info.GetText();
+		const auto &icon = info.GetIcon();
+		const auto &description = info.GetDescription();
+		if(item.GetText() == text && item.GetIcon() == icon && item.GetDescription() == description){
+			return;
+		}
+		
+		requiresSorting |= item.GetText() != text;
+		
+		item.SetText(text);
+		item.SetIcon(icon);
+		item.SetDescription(description);
+		pListBox->ItemChangedAt(index);
+	});
+	
+	if(requiresSorting){
+		pListBox->SortItems();
+	}
 }
 
 void igdeMetaPropertySetWidget::SelectActiveObject(){

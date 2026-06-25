@@ -31,6 +31,9 @@
 #include <deigde/meta/igdeMetaContextItemInfo.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyGroup.h>
 
 
@@ -133,6 +136,91 @@ public:
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
+};
+
+
+/** Display model path. */
+class aeMCPAnimatorDisplayModelPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+public:
+	aeMCPAnimatorDisplayModelPath() : aeTMCPAnimator("animator.displayModelPath", "Animator.WPView.Model", igdeEnvironment::efpltModel){}
+	~aeMCPAnimatorDisplayModelPath() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).displayModelPath;
+	}
+	
+	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetDirectoryPath();
+	}
+};
+
+/** Display skin path. */
+class aeMCPAnimatorDisplaySkinPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+public:
+	aeMCPAnimatorDisplaySkinPath() : aeTMCPAnimator("animator.displaySkinPath", "Animator.WPView.Skin", igdeEnvironment::efpltSkin){}
+	~aeMCPAnimatorDisplaySkinPath() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).displaySkinPath;
+	}
+	
+	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetDirectoryPath();
+	}
+};
+
+/** Display rig path. */
+class aeMCPAnimatorDisplayRigPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+public:
+	aeMCPAnimatorDisplayRigPath() : aeTMCPAnimator("animator.displayRigPath", "Animator.WPView.Rig", igdeEnvironment::efpltRig){}
+	~aeMCPAnimatorDisplayRigPath() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).displayRigPath;
+	}
+	
+	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetDirectoryPath();
+	}
+};
+
+/** Play speed. */
+class aeMCPAnimatorPlaySpeed : public aeTMCPAnimator<igdeMetaPropertyFloatStorage>{
+public:
+	aeMCPAnimatorPlaySpeed() : aeTMCPAnimator("animator.playSpeed", "Animator.WPView.PlaySpeed"){
+		SetDefaultValue(1.0f);
+		SetLowerLimit(0.0f);
+	}
+	~aeMCPAnimatorPlaySpeed() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).playSpeed;
+	}
+};
+
+/** Time step. */
+class aeMCPAnimatorTimeStep : public aeTMCPAnimator<igdeMetaPropertyFloatStorage>{
+public:
+	aeMCPAnimatorTimeStep() : aeTMCPAnimator("animator.timeStep", "Animator.WPView.TimeStep"){
+		SetDefaultValue(0.05f);
+		SetLowerLimit(0.0f);
+	}
+	~aeMCPAnimatorTimeStep() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).timeStep;
+	}
+};
+
+/** Reset state. */
+class aeMCPAnimatorResetState : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+public:
+	aeMCPAnimatorResetState() : aeTMCPAnimator("animator.resetState", "Animator.WPView.ResetState"){}
+	~aeMCPAnimatorResetState() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).resetState;
+	}
 };
 
 #endif

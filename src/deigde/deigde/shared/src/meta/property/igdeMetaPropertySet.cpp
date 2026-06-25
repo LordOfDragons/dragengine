@@ -44,6 +44,10 @@ void igdeMetaPropertySet::Listener::OnSelectionChanged(
 igdeMetaPropertySet*, const igdeMetaContext::Ref&){
 }
 
+void igdeMetaPropertySet::Listener::OnObjectItemInfoChanged(
+igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+}
+
 
 // Class igdeMetaPropertySet::ActionDuplicate
 ///////////////////////////////////////////////
@@ -215,10 +219,6 @@ igdeMetaPropertySet::~igdeMetaPropertySet() = default;
 // Management
 ///////////////
 
-void igdeMetaPropertySet::SetDefaultValue(const Set &value){
-	pDefaultValue = value;
-}
-
 void igdeMetaPropertySet::SetRows(int rows){
 	pRows = decMath::max(rows, 1);
 }
@@ -242,6 +242,12 @@ void igdeMetaPropertySet::NotifyActiveChanged(const igdeMetaContext::Ref &contex
 void igdeMetaPropertySet::NotifySelectionChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnSelectionChanged(this, context);
+	});
+}
+
+void igdeMetaPropertySet::NotifyObjectItemInfoChanged(const igdeMetaContext::Ref &context){
+	pListeners.Notify([&](Listener &listener){
+		listener.OnObjectItemInfoChanged(this, context);
 	});
 }
 

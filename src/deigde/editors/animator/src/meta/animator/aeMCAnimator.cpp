@@ -36,7 +36,11 @@
 ////////////////////////////
 
 aeMCAnimator::aeMCAnimator(aeWindowMain &windowMain, aeAnimator *animator) :
-igdeMetaContext("animator"),
+aeMCAnimator(windowMain, animator, "animator"){
+}
+
+aeMCAnimator::aeMCAnimator(aeWindowMain &windowMain, aeAnimator *animator, const char *identifier) :
+igdeMetaContext(identifier),
 pWindowMain(windowMain),
 pAnimator(animator)
 {
@@ -44,7 +48,7 @@ pAnimator(animator)
 	SetDescription("Animator properties");
 	SetProperties(windowMain.GetMCAnimatorProperties().metaProperties);
 }
-	
+
 aeMCAnimator::~aeMCAnimator() = default;
 
 
@@ -79,7 +83,7 @@ igdeClipboard *aeMCAnimator::GetClipboard() const{
 /////////////////////////////////
 
 aeMCAnimatorController::aeMCAnimatorController(aeWindowMain &windowMain, aeAnimator *animator) :
-aeMCAnimator(windowMain, animator){
+aeMCAnimator(windowMain, animator, "animator_controller"){
 	SetLabel("Controller");
 	SetDescription("Controller properties");
 	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesController);
@@ -92,7 +96,7 @@ aeMCAnimatorController::~aeMCAnimatorController() = default;
 ///////////////////////////
 
 aeMCAnimatorLink::aeMCAnimatorLink(aeWindowMain &windowMain, aeAnimator *animator) :
-aeMCAnimator(windowMain, animator){
+aeMCAnimator(windowMain, animator, "animator_link"){
 	SetLabel("Link");
 	SetDescription("Link properties");
 	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesLink);
@@ -105,10 +109,36 @@ aeMCAnimatorLink::~aeMCAnimatorLink() = default;
 ///////////////////////////
 
 aeMCAnimatorRule::aeMCAnimatorRule(aeWindowMain &windowMain, aeAnimator *animator) :
-aeMCAnimator(windowMain, animator){
+aeMCAnimator(windowMain, animator, "animator_rule"){
 	SetLabel("Rule");
 	SetDescription("Rule properties");
 	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesRule);
 }
 
 aeMCAnimatorRule::~aeMCAnimatorRule() = default;
+
+
+// Class aeMCAnimatorView
+///////////////////////////
+
+aeMCAnimatorView::aeMCAnimatorView(aeWindowMain &windowMain, aeAnimator *animator) :
+aeMCAnimator(windowMain, animator, "animator_view"){
+	SetLabel("View");
+	SetDescription("View properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesView);
+}
+
+aeMCAnimatorView::~aeMCAnimatorView() = default;
+
+
+// Class aeMCAnimatorAttachment
+/////////////////////////////////
+
+aeMCAnimatorAttachment::aeMCAnimatorAttachment(aeWindowMain &windowMain, aeAnimator *animator) :
+aeMCAnimator(windowMain, animator, "animator_attachment"){
+	SetLabel("Attachment");
+	SetDescription("Attachment properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().attachment.metaProperties);
+}
+
+aeMCAnimatorAttachment::~aeMCAnimatorAttachment() = default;

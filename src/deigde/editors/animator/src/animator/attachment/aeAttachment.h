@@ -25,13 +25,18 @@
 #ifndef _AEATTACHMENT_H_
 #define _AEATTACHMENT_H_
 
+#include "../../meta/animator/aeMCAttachment.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
 
 class aeAnimator;
+class aeWindowMain;
 
 class igdeEnvironment;
 
@@ -46,6 +51,9 @@ class aeAttachment : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<aeAttachment>;
+	
+	/** \brief List type. */
+	using List = decTCollectionQueryByName<decTObjectOrderedSet<aeAttachment>, aeAttachment>;
 	
 	
 	/** Attach types. */
@@ -70,31 +78,45 @@ public:
 	};
 	
 private:
+	aeMCAttachment::Ref pMetaContext;
+	
 	aeAnimator *pAnimator;
 	
 	cAsyncLoadListener pAsyncLoadListener;
 	igdeWObject::Ref pObjectWrapper;
 	
-	decString pName;
-	eAttachTypes pAttachType;
-	decString pBoneName;
+public:
+	igdeMetaPropertyStringStorage::Storage name;
+	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage attachType;
+	igdeMetaPropertyStringStorage::Storage boneName;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create attachment. */
-	aeAttachment(igdeEnvironment *environment, const char *name = "Attachment");
+	explicit aeAttachment(aeWindowMain &windowMain, const char *name = "Attachment");
 	
-	/** Clean up attachment. */
+	/** Create copy of attachment. */
+	aeAttachment(aeWindowMain &windowMain, const aeAttachment &copy);
+	
+	aeAttachment(const aeAttachment &copy) = delete;
+	aeAttachment(aeAttachment &&copy) = delete;
+	aeAttachment &operator=(const aeAttachment &copy) = delete;
+	aeAttachment &operator=(aeAttachment &&copy) = delete;
+	
 protected:
+	/** Clean up attachment. */
 	~aeAttachment() override;
-public:
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
+	/** Get meta context. */
+	inline aeMCAttachment::Ref GetMetaContext() const{ return pMetaContext; }
+	
 	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
@@ -104,19 +126,19 @@ public:
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{ return name; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{ return pAttachType; }
+	inline eAttachTypes GetAttachType() const{ return attachType; }
 	
 	/** Set attached type. */
 	void SetAttachType(eAttachTypes type);
 	
 	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{ return pBoneName; }
+	inline const decString &GetBoneName() const{ return boneName; }
 	
 	/** Set name of the bone to attach to. */
 	void SetBoneName(const char *name);

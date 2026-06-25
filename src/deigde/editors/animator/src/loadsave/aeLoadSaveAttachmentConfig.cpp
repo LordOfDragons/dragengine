@@ -29,6 +29,7 @@
 #include "aeLoadSaveAttachmentConfig.h"
 #include "../animator/aeAnimator.h"
 #include "../animator/attachment/aeAttachment.h"
+#include "../gui/aeWindowMain.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -53,8 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeLoadSaveAttachmentConfig::aeLoadSaveAttachmentConfig(deLogger *logger, const char *loggerSource) :
+aeLoadSaveAttachmentConfig::aeLoadSaveAttachmentConfig(aeWindowMain &windowMain, deLogger *logger, const char *loggerSource) :
 igdeBaseXML(logger, loggerSource),
+pWindowMain(windowMain),
 pName("Attachment Configuration"),
 pPattern(".deac"){
 }
@@ -191,7 +193,7 @@ void aeLoadSaveAttachmentConfig::pReadConfiguration(const decXmlElementTag &root
 }
 
 void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, aeAnimator &animator){
-	const aeAttachment::Ref attachment(aeAttachment::Ref::New(animator.GetEnvironment()));
+	const aeAttachment::Ref attachment(aeAttachment::Ref::New(pWindowMain));
 	const int elementCount = root.GetElementCount();
 	int i;
 	

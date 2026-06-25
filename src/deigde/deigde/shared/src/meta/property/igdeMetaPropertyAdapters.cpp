@@ -79,6 +79,60 @@ void igdeMetaPropertyAdapter::TreeOnListChanged::OnObjectItemInfoChanged(igdeMet
 }
 
 
+// igdeMetaPropertyAdapter::StringOnSetChanged
+////////////////////////////////////////////////
+
+igdeMetaPropertyAdapter::StringOnSetChanged::StringOnSetChanged(igdeMetaPropertyString &property) :
+pProperty(property){
+}
+
+igdeMetaPropertyAdapter::StringOnSetChanged::~StringOnSetChanged() = default;
+
+void igdeMetaPropertyAdapter::StringOnSetChanged::OnValueChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+	pProperty.NotifyAllowedStringsChanged({});
+}
+
+void igdeMetaPropertyAdapter::StringOnSetChanged::OnObjectItemInfoChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+	pProperty.NotifyAllowedStringsChanged({});
+}
+
+
+// igdeMetaPropertyAdapter::ObjectOnSetChanged
+////////////////////////////////////////////////
+
+igdeMetaPropertyAdapter::ObjectOnSetChanged::ObjectOnSetChanged(igdeMetaPropertyObject &property) :
+pProperty(property){
+}
+
+igdeMetaPropertyAdapter::ObjectOnSetChanged::~ObjectOnSetChanged() = default;
+
+void igdeMetaPropertyAdapter::ObjectOnSetChanged::OnValueChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+	pProperty.NotifyAllowedObjectsChanged({});
+}
+
+void igdeMetaPropertyAdapter::ObjectOnSetChanged::OnObjectItemInfoChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+	pProperty.NotifyAllowedObjectsChanged({});
+}
+
+
+// igdeMetaPropertyAdapter::TreeOnSetChanged
+//////////////////////////////////////////////
+
+igdeMetaPropertyAdapter::TreeOnSetChanged::TreeOnSetChanged(igdeMetaPropertyTreeList &property) :
+pProperty(property){
+}
+
+igdeMetaPropertyAdapter::TreeOnSetChanged::~TreeOnSetChanged() = default;
+
+void igdeMetaPropertyAdapter::TreeOnSetChanged::OnValueChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+	pProperty.NotifyValueChanged({});
+}
+
+void igdeMetaPropertyAdapter::TreeOnSetChanged::OnObjectItemInfoChanged(igdeMetaPropertySet*, const igdeMetaContext::Ref&){
+	pProperty.NotifyObjectItemInfoChanged({});
+}
+
+
 // igdeMetaPropertyAdapter::StringOnStringSetChanged
 //////////////////////////////////////////////////////
 
@@ -107,6 +161,20 @@ void igdeMetaPropertyAdapter::ListOnStringChanged::OnValueChanged(igdeMetaProper
 }
 
 
+// igdeMetaPropertyAdapter::SetOnStringChanged
+////////////////////////////////////////////////
+
+igdeMetaPropertyAdapter::SetOnStringChanged::SetOnStringChanged(igdeMetaPropertySet &property) :
+pProperty(property){
+}
+
+igdeMetaPropertyAdapter::SetOnStringChanged::~SetOnStringChanged() = default;
+
+void igdeMetaPropertyAdapter::SetOnStringChanged::OnValueChanged(igdeMetaPropertyString*, const igdeMetaContext::Ref&){
+	pProperty.NotifyObjectItemInfoChanged({});
+}
+
+
 // igdeMetaPropertyAdapter
 ////////////////////////////
 
@@ -122,10 +190,26 @@ void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyList &watch, igdeMetaPro
 	watch.GetListeners().Add(TreeOnListChanged::Ref::New(target));
 }
 
+void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyString &target){
+	watch.GetListeners().Add(StringOnSetChanged::Ref::New(target));
+}
+
+void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyObject &target){
+	watch.GetListeners().Add(ObjectOnSetChanged::Ref::New(target));
+}
+
+void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertySet &watch, igdeMetaPropertyTreeList &target){
+	watch.GetListeners().Add(TreeOnSetChanged::Ref::New(target));
+}
+
 void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyStringSet &watch, igdeMetaPropertyString &target){
 	watch.GetListeners().Add(StringOnStringSetChanged::Ref::New(target));
 }
 
 void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertyList &target){
 	watch.GetListeners().Add(ListOnStringChanged::Ref::New(target));
+}
+
+void igdeMetaPropertyAdapter::OnChanged(igdeMetaPropertyString &watch, igdeMetaPropertySet &target){
+	watch.GetListeners().Add(SetOnStringChanged::Ref::New(target));
 }
