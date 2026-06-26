@@ -283,26 +283,28 @@ igdeMetaPropertyFloatWidget::~igdeMetaPropertyFloatWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyFloatWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyFloatWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pEditSliderText)
 	
 	if(pPropertyFloat.GetEnableLowerLimit() && pPropertyFloat.GetEnableUpperLimit()){
 		pSliderListener = deTObjectReference<cSliderListener>::New(*this);
-		helper.EditSliderText(pPropertyFloat.GetDescription(),
+		builder.GetHelper().EditSliderText(pPropertyFloat.GetDescription(),
 			pPropertyFloat.GetLowerLimit(), pPropertyFloat.GetUpperLimit(), 6,
 			pPropertyFloat.GetPrecision(), pPropertyFloat.GetTickSpacing(),
 			pEditSliderText, pSliderListener);
-		WrapEditWidget(container, helper, noLabel, pEditSliderText);
+		pEditSliderText->SetEnabled(false);
+		WrapEditWidget(builder, noLabel, pEditSliderText);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
-		helper.EditFloat(pPropertyFloat.GetDescription(), 10, pPropertyFloat.GetPrecision(),
+		builder.GetHelper().EditFloat(pPropertyFloat.GetDescription(), 10, pPropertyFloat.GetPrecision(),
 			pTextField, pTextListener);
-		WrapEditWidget(container, helper, noLabel, pTextField);
+		pTextField->SetEnabled(false);
+		WrapEditWidget(builder, noLabel, pTextField);
 	}
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyFloatWidget::Drop(){
@@ -339,6 +341,8 @@ void igdeMetaPropertyFloatWidget::Update(){
 			pEditSliderText->SetEnabled(valid);
 		});
 	}
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyFloatWidget::UpdateLimits(){
@@ -378,6 +382,10 @@ void igdeMetaPropertyFloatWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyFloatWidget::IsPropertyValid() const{
+	return pPropertyFloat.IsValid(GetContext());
 }
 
 

@@ -218,4 +218,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decCurveBezier &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyCurveBezierUndo.h"
+
 #endif

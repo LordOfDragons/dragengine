@@ -519,6 +519,7 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPUndoHistory">Undo History:</translation>
 	
 	<!-- WP World Object -->
+	<translation name="Igde.WPWObject.Action.SelectClass">Select Object Class</translation>
 	<translation name="Igde.WPWObject.Action.SelectClass.ToolTip">Brings up a dialog to select the object class.</translation>
 	<translation name="Igde.WPWObject.Visible">Visible</translation>
 	<translation name="Igde.WPWObject.Visible.ToolTip">Object is visible</translation>

@@ -27,6 +27,7 @@
 
 #include "igdeMetaProperty.h"
 #include "storage/igdeMetaPropertyStorageComplex.h"
+#include "../igdeMetaContext.h"
 
 
 /**
@@ -49,6 +50,7 @@ public:
 private:
 	igdeTListenerList<Listener> pListeners;
 	ContextRef pDefaultValue;
+	igdeMetaContext::PropertyList::Ref pProperties;
 	
 	
 public:
@@ -77,6 +79,12 @@ public:
 	
 	/** \brief Set default context. */
 	void SetDefaultValue(const ContextRef &value);
+	
+	/** \brief Properties or nullptr to use context properties. */
+	inline const igdeMetaContext::PropertyList::Ref &GetProperties() const{ return pProperties; }
+	
+	/** \brief Set properties or nullptr to use context properties. */
+	void SetProperties(const igdeMetaContext::PropertyList::Ref &properties);
 	
 	
 	/** \brief Listeners. */

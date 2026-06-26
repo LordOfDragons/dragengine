@@ -159,7 +159,7 @@ igdeMetaPropertyListWidget::~igdeMetaPropertyListWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyListWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pListBox);
 	
 	auto state = pPropertyList.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
@@ -169,6 +169,7 @@ void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &
 		pPropertyList.SetWidgetState(state);
 	}
 	
+	auto &helper = builder.GetHelper();
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ListBox(state->rows, pPropertyList.GetDescription(), pListBox, pListener);
 	pListBox->SetSelectionMode(pPropertyList.GetMultiSelection()
@@ -176,6 +177,7 @@ void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &
 	if(pPropertyList.GetSorted()){
 		pListBox->SetDefaultSorter();
 	}
+	pListBox->SetEnabled(false);
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -187,9 +189,9 @@ void igdeMetaPropertyListWidget::Create(igdeContainer &container, igdeUIHelper &
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
+	WrapEditWidget(builder, noLabel, pListBox, buttons);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyListWidget::Drop(){
@@ -243,6 +245,11 @@ void igdeMetaPropertyListWidget::Update(){
 	// current selection and active object to properly synchronize if anything changed
 	StoreSelection();
 	StoreActiveObject();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.Update();
+	});
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyListWidget::UpdateItemInfo(){
@@ -358,6 +365,10 @@ void igdeMetaPropertyListWidget::RestoreSelection(){
 			}
 		});
 	});
+}
+
+bool igdeMetaPropertyListWidget::IsPropertyValid() const{
+	return pPropertyList.IsValid(GetContext());
 }
 
 

@@ -35,6 +35,136 @@
 #include <dragengine/common/exceptions.h>
 
 
+// Class igdeWPMetaContext::Builder
+/////////////////////////////////////
+
+igdeWPMetaContext::Builder::Builder(igdeUIHelper &helper, igdeContainer *container,
+	igdeMetaPropertyWidget::List *collectWidgets, igdeWPMetaContext::PropertyWidgetCache &widgetCache) :
+igdeMetaPropertyWidget::Builder(helper, collectWidgets),
+pWidgetCache(widgetCache)
+{
+	pContainerStack.Add(container);
+}
+
+igdeWPMetaContext::Builder::~Builder() = default;
+
+
+void igdeWPMetaContext::Builder::AddLine(igdeWidget *label, igdeWidget *edit){
+	DEASSERT_NOTNULL(label)
+	DEASSERT_NOTNULL(edit)
+	
+	if(!pForm){
+		pForm = igdeContainerForm::Ref::New(GetHelper().GetEnvironment());
+		pContainerStack.Last()->AddChild(pForm);
+	}
+	pForm->AddChild(label);
+	pForm->AddChild(edit);
+}
+
+void igdeWPMetaContext::Builder::AddLine(igdeWidget *edit){
+	DEASSERT_NOTNULL(edit)
+	
+	pForm.Clear();
+	pContainerStack.Last()->AddChild(edit);
+}
+
+void igdeWPMetaContext::Builder::OpenGroup(igdeWidget *group, igdeContainer *container){
+	DEASSERT_NOTNULL(container)
+	
+	AddLine(group);
+	pContainerStack.Add(container);
+}
+
+void igdeWPMetaContext::Builder::CloseGroup(){
+	pContainerStack.RemoveLast();
+	pForm.Clear();
+}
+
+void igdeWPMetaContext::Builder::CreatePropertyWidgets(
+const igdeMetaContext::PropertyList::Ref &properties, const igdeMetaContext::Ref &context){
+	if(!properties || properties->GetData().IsEmpty()){
+		return;
+	}
+	
+	properties->GetData().Visit([&](const igdeMetaProperty::Ref &property){
+		const auto group = property.DynamicCast<igdeMetaPropertyGroup>();
+		
+		if(group){
+			const auto widget = CreatePropertyWidget(group, context);
+			if(widget){
+				CollectWidget(widget);
+			}
+			
+		}else{
+			auto widget = pWidgetCache.GetAtOrDefault(property);
+			if(!widget){
+				widget = property->CreateWidget();
+				if(!widget){
+					return;
+				}
+				pWidgetCache.SetAt(property, widget);
+			}
+			
+			widget->Create(*this, property->GetHideLabel());
+			CollectWidget(widget);
+			widget->SetContext(context);
+		}
+	});
+}
+
+igdeMetaPropertyWidget::Ref igdeWPMetaContext::Builder::CreatePropertyWidget(
+const igdeMetaPropertyGroup::Ref &groupProperty, const igdeMetaContext::Ref &context){
+	if(!groupProperty){
+		return {};
+	}
+	
+	auto groupWidget = pWidgetCache.GetAtOrDefault(groupProperty);
+	if(!groupWidget){
+		groupWidget = groupProperty->CreateWidget();
+		if(!groupWidget){
+			return {};
+		}
+		pWidgetCache.SetAt(groupProperty, groupWidget);
+	}
+	
+	groupWidget->Create(*this, true);
+	
+	auto groupWidget2 = groupWidget.DynamicCast<igdeMetaPropertyGroupWidget>();
+	if(!groupWidget2){
+		return groupWidget;
+	}
+	
+	auto &childWidgets = groupWidget2->GetChildWidgets();
+	
+	groupProperty->GetProperties().Visit([&](const igdeMetaProperty::Ref &property){
+		const auto group = property.DynamicCast<igdeMetaPropertyGroup>();
+		
+		if(group){
+			const auto widget = CreatePropertyWidget(group, context);
+			if(widget){
+				childWidgets.Add(widget);
+			}
+			
+		}else{
+			auto widget = pWidgetCache.GetAtOrDefault(property);
+			if(!widget){
+				widget = property->CreateWidget();
+				if(!widget){
+					return;
+				}
+				pWidgetCache.SetAt(property, widget);
+			}
+			
+			widget->Create(*this, property->GetHideLabel());
+			widget->SetContext(context);
+			childWidgets.Add(widget);
+		}
+	});
+	
+	return groupWidget;
+}
+
+
 // Class igdeWPMetaContext::ContextListener
 /////////////////////////////////////////////
 
@@ -124,7 +254,10 @@ bool igdeWPMetaContext::HasVisibleWidgets() const{
 }
 
 void igdeWPMetaContext::UpdatePropertyWidgets(){
-	pCreatePropertyWidgets();
+	pClearPropertyWidgets();
+	Builder(GetEnvironment().GetUIHelperProperties(), this, &pPropertyWidgets, pPropertyWidgetCache)
+		.CreatePropertyWidgets(pProperties, pContext);
+	
 	if(pFilter){
 		pFilterPropertyWidgets();
 	}
@@ -134,7 +267,7 @@ void igdeWPMetaContext::OnLanguageChanged(){
 	igdeContainerFlow::OnLanguageChanged();
 	
 	pPropertyWidgets.Visit([&](igdeMetaPropertyWidget &widget){
-		widget.UpdateMatchable(*this);
+		widget.UpdateMatchable();
 	});
 	pFilterPropertyWidgets();
 }
@@ -142,124 +275,6 @@ void igdeWPMetaContext::OnLanguageChanged(){
 
 // Private Functions
 //////////////////////
-
-void igdeWPMetaContext::pCreatePropertyWidgets(){
-	pClearPropertyWidgets();
-	
-	if(!pContext){
-		return;
-	}
-	
-	if(!pProperties || pProperties->GetData().IsEmpty()){
-		return;
-	}
-	
-	igdeEnvironment &env = GetEnvironment();
-	igdeUIHelper &helper = env.GetUIHelperProperties();
-	auto form = igdeContainerForm::Ref::New(env);
-	AddChild(form);
-	
-	pProperties->GetData().Visit([&](const igdeMetaProperty::Ref &property){
-		auto group = property.DynamicCast<igdeMetaPropertyGroup>();
-		
-		if(group){
-			form.Clear();
-			auto widget = pCreatePropertyGroupWidget(*this, group);
-			if(widget){
-				pPropertyWidgets.Add(widget);
-			}
-			
-		}else{
-			auto widget = pPropertyWidgetCache.GetAtOrDefault(property);
-			if(!widget){
-				widget = property->CreateWidget();
-				if(!widget){
-					return;
-				}
-				pPropertyWidgetCache.SetAt(property, widget);
-			}
-			
-			if(property->GetHideLabel()){
-				form.Clear();
-				widget->Create(*this, helper, true);
-				
-			}else{
-				if(!form){
-					form = igdeContainerForm::Ref::New(env);
-					AddChild(form);
-				}
-				widget->Create(form, helper, false);
-			}
-			pPropertyWidgets.Add(widget);
-			widget->SetContext(pContext);
-		}
-	});
-}
-
-igdeMetaPropertyWidget::Ref igdeWPMetaContext::pCreatePropertyGroupWidget(
-igdeContainer &container, const igdeMetaPropertyGroup::Ref &groupProperty){
-	igdeEnvironment &env = GetEnvironment();
-	igdeUIHelper &helper = env.GetUIHelperProperties();
-	
-	auto groupWidget = pPropertyWidgetCache.GetAtOrDefault(groupProperty);
-	if(!groupWidget){
-		groupWidget = groupProperty->CreateWidget();
-		if(!groupWidget){
-			return {};
-		}
-		pPropertyWidgetCache.SetAt(groupProperty, groupWidget);
-	}
-	
-	groupWidget->Create(container, helper, true);
-	
-	auto groupWidget2 = groupWidget.DynamicCast<igdeMetaPropertyGroupWidget>();
-	if(!groupWidget2 || !groupWidget2->GetGroupBox() || !groupWidget2->GetGroupBoxContainer()
-	|| groupProperty->GetProperties().IsEmpty()){
-		return groupWidget;
-	}
-	
-	igdeContainer &groupContainer = groupWidget2->GetGroupBoxContainer();
-	auto &childWidgets = groupWidget2->GetChildWidgets();
-	igdeContainerForm::Ref form;
-	
-	groupProperty->GetProperties().Visit([&](const igdeMetaProperty::Ref &property){
-		const auto group = property.DynamicCast<igdeMetaPropertyGroup>();
-		
-		if(group){
-			form.Clear();
-			auto widget = pCreatePropertyGroupWidget(groupContainer, group);
-			if(widget){
-				childWidgets.Add(widget);
-			}
-			
-		}else{
-			auto widget = pPropertyWidgetCache.GetAtOrDefault(property);
-			if(!widget){
-				widget = property->CreateWidget();
-				if(!widget){
-					return;
-				}
-				pPropertyWidgetCache.SetAt(property, widget);
-			}
-			
-			if(property->GetHideLabel()){
-				form.Clear();
-				widget->Create(groupContainer, helper, true);
-				
-			}else{
-				if(!form){
-					form = igdeContainerForm::Ref::New(env);
-					groupContainer.AddChild(form);
-				}
-				widget->Create(form, helper, false);
-			}
-			widget->SetContext(pContext);
-			childWidgets.Add(widget);
-		}
-	});
-	
-	return groupWidget;
-}
 
 void igdeWPMetaContext::pClearPropertyWidgets(){
 	pPropertyWidgets.Visit([](igdeMetaPropertyWidget &widget){

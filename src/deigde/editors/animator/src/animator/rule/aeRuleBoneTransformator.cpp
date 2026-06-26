@@ -62,165 +62,165 @@ targetTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.tar
 targetRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetRotation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
 targetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetScaling, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>())
 {
-	minTranslation.SetOnChanged([this](){
+	minTranslation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumTranslation(minTranslation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxTranslation.SetOnChanged([this](){
+	maxTranslation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumTranslation(maxTranslation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minRotation.SetOnChanged([this](){
+	minRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumRotation(minRotation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxRotation.SetOnChanged([this](){
+	maxRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumRotation(maxRotation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minScaling.SetOnChanged([this](){
+	minScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumScaling(minScaling);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxScaling.SetOnChanged([this](){
+	maxScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumScaling(maxScaling);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	axis.SetOnChanged([this](){
+	axis.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetAxis(axis);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minAngle.SetOnChanged([this](){
+	minAngle.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMinimumAngle(minAngle);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxAngle.SetOnChanged([this](){
+	maxAngle.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetMaximumAngle(maxAngle);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableOrientation.SetOnChanged([this](){
+	enableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	useAxis.SetOnChanged([this](){
+	useAxis.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetUseAxis(useAxis);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	targetBone.SetOnChanged([this](){
+	targetBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetTargetBone(targetBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	inputBone.SetOnChanged([this](){
+	inputBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetInputBone(inputBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	coordinateFrame.SetOnChanged([this](){
+	coordinateFrame.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetCoordinateFrame(coordinateFrame);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	inputSource.SetOnChanged([this](){
+	inputSource.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetInputSource(inputSource);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	coordinateFrame.SetOnChanged([this](){
+	coordinateFrame.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetCoordinateFrame(coordinateFrame);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	inputSource.SetOnChanged([this](){
+	inputSource.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleBoneTransformator*)GetEngineRule())->SetInputSource(inputSource);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetTranslation = aeControllerTarget::Ref::New(targetTranslation);
-	targetTranslation.SetOnChanged([this](){
+	targetTranslation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleBoneTransformator*)GetEngineRule())->GetTargetTranslation(), targetTranslation);
 		}
 		pTargetTranslation->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetRotation = aeControllerTarget::Ref::New(targetRotation);
-	targetRotation.SetOnChanged([this](){
+	targetRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleBoneTransformator*)GetEngineRule())->GetTargetRotation(), targetRotation);
 		}
 		pTargetRotation->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetScaling = aeControllerTarget::Ref::New(targetScaling);
-	targetScaling.SetOnChanged([this](){
+	targetScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleBoneTransformator*)GetEngineRule())->GetTargetScaling(), targetScaling);
 		}
 		pTargetScaling->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleBoneTransformator::aeRuleBoneTransformator(aeWindowMain &windowMain, const aeRuleBoneTransformator &copy) :

@@ -152,7 +152,7 @@ igdeMetaPropertyObjectSetWidget::~igdeMetaPropertyObjectSetWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyObjectSetWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyObjectSetWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
 	auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
@@ -162,11 +162,13 @@ void igdeMetaPropertyObjectSetWidget::Create(igdeContainer &container, igdeUIHel
 		pPropertyObjectSet.SetWidgetState(state);
 	}
 	
+	auto &helper = builder.GetHelper();
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ListBox(state->rows, pPropertyObjectSet.GetDescription(), pListBox, pListener);
 	pListBox->SetDefaultSorter();
 	pListBox->SetSelectionMode(pPropertyObjectSet.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
+	pListBox->SetEnabled(false);
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -176,9 +178,9 @@ void igdeMetaPropertyObjectSetWidget::Create(igdeContainer &container, igdeUIHel
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
+	WrapEditWidget(builder, noLabel, pListBox, buttons);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyObjectSetWidget::Drop(){
@@ -230,6 +232,11 @@ void igdeMetaPropertyObjectSetWidget::Update(){
 	// current selection and active object to properly synchronize if anything changed
 	StoreSelection();
 	StoreActiveObject();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.Update();
+	});
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyObjectSetWidget::SelectActiveObject(){
@@ -275,6 +282,10 @@ void igdeMetaPropertyObjectSetWidget::AddContextMenuEntries(igdeMenuCascade &men
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyObjectSetWidget::IsPropertyValid() const{
+	return pPropertyObjectSet.IsValid(GetContext());
 }
 
 void igdeMetaPropertyObjectSetWidget::StoreSelection(){

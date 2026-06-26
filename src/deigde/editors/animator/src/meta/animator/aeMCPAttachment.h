@@ -30,6 +30,7 @@
 #include "../../animator/attachment/aeAttachment.h"
 
 #include <deigde/meta/igdeMetaContextItemInfo.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertySet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
@@ -135,6 +136,17 @@ public:
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Attachment(context).GetAnimator();
 		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+	}
+};
+
+/** Attachment WObject. */
+class aeMCPAttachmentWObject : public aeTMCPAnimatorAttachment<igdeMetaPropertyContextStorage>{
+public:
+	aeMCPAttachmentWObject();
+	~aeMCPAttachmentWObject() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Attachment(context).wobject;
 	}
 };
 

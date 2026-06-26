@@ -232,9 +232,10 @@ igdeMetaPropertyPathWidget::~igdeMetaPropertyPathWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyPathWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pEditPath)
 	
+	auto &helper = builder.GetHelper();
 	pListener = deTObjectReference<cListener>::New(*this);
 	
 	if(pPropertyPath.GetCustomPatternList().IsNotEmpty()){
@@ -245,9 +246,10 @@ void igdeMetaPropertyPathWidget::Create(igdeContainer &container, igdeUIHelper &
 		helper.EditPath(pPropertyPath.GetDescription(),
 			pPropertyPath.GetResourceType(), pEditPath, pListener);
 	}
-	WrapEditWidget(container, helper, noLabel, pEditPath);
+	pEditPath->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pEditPath);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 	
 	UpdateBasePath();
 }
@@ -272,6 +274,8 @@ void igdeMetaPropertyPathWidget::Update(){
 		pEditPath->SetPath(valid ? pPropertyPath.GetPropertyValue(GetContext()) : decString());
 		pEditPath->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyPathWidget::UpdateBasePath(){
@@ -302,6 +306,11 @@ void igdeMetaPropertyPathWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }
+
+bool igdeMetaPropertyPathWidget::IsPropertyValid() const{
+	return pPropertyPath.IsValid(GetContext());
+}
+
 
 // Protected Functions
 ////////////////////////

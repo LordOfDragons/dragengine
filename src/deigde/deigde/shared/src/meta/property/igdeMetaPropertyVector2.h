@@ -194,4 +194,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decVector2 &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyVector2Undo.h"
+
 #endif

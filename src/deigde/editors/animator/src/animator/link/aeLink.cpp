@@ -58,20 +58,20 @@ vertexPositionSetMinimum(windowMain.GetMCAnimatorProperties().link.vertexPositio
 vertexPositionSetMaximum(windowMain.GetMCAnimatorProperties().link.vertexPositionSetMaximum, pMetaContext),
 wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 {
-	name.SetOnChanged([&](){
+	name.onValueChanged = [&](){
 		if(pAnimator){
 			pAnimator->NotifyLinkNameChanged(this);
 		}
-	});
+	};
 	
-	controller.SetOnChanged([&](){
+	controller.onValueChanged = [&](){
 		UpdateController();
 		if(pAnimator && !pTempNoNotify){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 	
-	repeat.SetOnChanged([&](){
+	repeat.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetRepeat(repeat);
 			NotifyLinkChanged();
@@ -79,9 +79,9 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 	
-	curve.SetOnChanged([&](){
+	curve.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetCurve(curve);
 			NotifyLinkChanged();
@@ -89,9 +89,9 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 	
-	bone.SetOnChanged([&](){
+	bone.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetBone(bone);
 			NotifyLinkChanged();
@@ -99,9 +99,9 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 	
-	boneParameter.SetOnChanged([&](){
+	boneParameter.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetBoneParameter(boneParameter);
 			pUpdateBoneLimits();
@@ -110,9 +110,9 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 	
-	boneMinimum.SetOnChanged([&](){
+	boneMinimum.onValueChanged = [&](){
 		if(pEngLink){
 			pUpdateBoneLimits();
 			NotifyLinkChanged();
@@ -120,10 +120,10 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
-	boneMaximum.SetOnChanged(boneMinimum.GetOnChanged());
+	};
+	boneMaximum.onValueChanged = boneMinimum.onValueChanged;
 	
-	vertexPositionSet.SetOnChanged([&](){
+	vertexPositionSet.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetVertexPositionSet(vertexPositionSet);
 			NotifyLinkChanged();
@@ -131,9 +131,9 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 	
-	vertexPositionSetMinimum.SetOnChanged([&](){
+	vertexPositionSetMinimum.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetVertexPositionSetValueRange(vertexPositionSetMinimum, vertexPositionSetMaximum);
 			NotifyLinkChanged();
@@ -141,10 +141,10 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
-	vertexPositionSetMaximum.SetOnChanged(vertexPositionSetMinimum.GetOnChanged());
+	};
+	vertexPositionSetMaximum.onValueChanged = vertexPositionSetMinimum.onValueChanged;
 	
-	wrapY.SetOnChanged([&](){
+	wrapY.onValueChanged = [&](){
 		if(pEngLink){
 			pEngLink->SetWrapY(wrapY);
 			NotifyLinkChanged();
@@ -152,7 +152,7 @@ wrapY(windowMain.GetMCAnimatorProperties().link.wrapY, pMetaContext)
 		if(pAnimator){
 			pAnimator->NotifyLinkChanged(this);
 		}
-	});
+	};
 }
 
 aeLink::aeLink(aeWindowMain &windowMain, const aeLink &copy) :
@@ -293,26 +293,6 @@ void aeLink::UpdateController(){
 	NotifyLinkChanged();
 }
 
-
-
-// Operators
-//////////////
-
-aeLink &aeLink::operator=(const aeLink &copy){
-	name = copy.name;
-	controller = copy.controller;
-	repeat = copy.repeat;
-	curve = copy.curve;
-	bone = copy.bone;
-	boneParameter = copy.boneParameter;
-	boneMinimum = copy.boneMinimum;
-	boneMaximum = copy.boneMaximum;
-	vertexPositionSet = copy.vertexPositionSet;
-	vertexPositionSetMinimum = copy.vertexPositionSetMinimum;
-	vertexPositionSetMaximum = copy.vertexPositionSetMaximum;
-	wrapY = copy.wrapY;
-	return *this;
-}
 
 void aeLink::pUpdateBoneLimits(){
 	if(!pEngLink){

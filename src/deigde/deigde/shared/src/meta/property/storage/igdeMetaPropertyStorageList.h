@@ -47,8 +47,6 @@ private:
 	ListType pValue;
 	SelectionType pSelection;
 	ObjectRef pActive;
-	std::function<void(const ObjectRef&)> pOnObjectAdded, pOnObjectRemoved;
-	std::function<void()> pOnActiveChanged;
 	
 	
 public:
@@ -73,6 +71,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Objects added to the list. */
+	igdeTEvent<const ObjectRef&> onObjectAdded;
+	
+	/** \brief Objects removed from the list. */
+	igdeTEvent<const ObjectRef&> onObjectRemoved;
+	
+	/** \brief Active object changed. */
+	igdeTEvent<> onActiveChanged;
+	
+	
 	/** \brief Get value. */
 	inline const ListType &GetValue() const{ return pValue; }
 	
@@ -82,25 +90,25 @@ public:
 			return;
 		}
 		
-		if(pOnObjectRemoved){
+		if(onObjectRemoved){
 			pValue.Visit([&](const ObjectRef &object){
 				if(!value.Has(object)){
-					pOnObjectRemoved(object);
+					onObjectRemoved(object);
 				}
 			});
 		}
 		
-		if(pOnObjectAdded){
+		if(onObjectAdded){
 			value.Visit([&](const ObjectRef &object){
 				if(!pValue.Has(object)){
-					pOnObjectAdded(object);
+					onObjectAdded(object);
 				}
 			});
 		}
 		
 		pValue = value;
 		
-		igdeMetaPropertyStorage<P>::OnValueChanged();
+		igdeMetaPropertyStorage<P>::onValueChanged();
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 		}
@@ -131,9 +139,7 @@ public:
 		}
 		
 		pActive = active;
-		if(pOnActiveChanged){
-			pOnActiveChanged();
-		}
+		onActiveChanged();
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
 		}
@@ -147,52 +153,6 @@ public:
 	/** \brief Set value. */
 	void SetValue(const igdeMetaPropertyStorageList<T,P,L,S> &value, bool notify = true){
 		SetValue(value.GetValue(), notify);
-	}
-	
-	
-	/** \brief Function to call for objects added to the list. */
-	inline const std::function<void(const ObjectRef&)> &GetOnObjectAdded() const{ return pOnObjectAdded; }
-	
-	/** \brief Set function to call for objects added to the list. */
-	template <typename F>
-	void SetOnObjectAdded(F&& func){
-		pOnObjectAdded = std::forward<F>(func);
-	}
-	
-	/** \brief Set function to call for objects added to the list. */
-	template <typename F>
-	void SetOnObjectAdded(const F& func){
-		pOnObjectAdded = func;
-	}
-	
-	/** \brief Function to call for objects removed from the list. */
-	inline const std::function<void(const ObjectRef&)> &GetOnObjectRemoved() const{ return pOnObjectRemoved; }
-	
-	/** \brief Set function to call for objects removed from the list. */
-	template <typename F>
-	void SetOnObjectRemoved(F&& func){
-		pOnObjectRemoved = std::forward<F>(func);
-	}
-	
-	/** \brief Set function to call for objects removed from the list. */
-	template <typename F>
-	void SetOnObjectRemoved(const F& func){
-		pOnObjectRemoved = func;
-	}
-	
-	/** \brief Function to call if active object changed before listeners are notified. */
-	inline const std::function<void()> &GetOnActiveChanged() const{ return pOnActiveChanged; }
-	
-	/** \brief Set function to call if active object changed before listeners are notified. */
-	template <typename F>
-	void SetOnActiveChanged(F&& func){
-		pOnActiveChanged = std::forward<F>(func);
-	}
-	
-	/** \brief Set function to call if active object changed before listeners are notified. */
-	template <typename F>
-	void SetOnActiveChanged(const F& func){
-		pOnActiveChanged = func;
 	}
 	/*@}*/
 	

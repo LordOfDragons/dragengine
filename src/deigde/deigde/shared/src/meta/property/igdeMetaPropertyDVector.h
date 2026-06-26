@@ -202,4 +202,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decDVector &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyDVectorUndo.h"
+
 #endif

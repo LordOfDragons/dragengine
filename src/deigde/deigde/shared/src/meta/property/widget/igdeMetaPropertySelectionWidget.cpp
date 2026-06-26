@@ -226,12 +226,13 @@ igdeMetaPropertySelectionWidget::~igdeMetaPropertySelectionWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertySelectionWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pComboBox)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ComboBox(15, 10, false, pPropertySelection.GetDescription(), pComboBox, pListener);
-	WrapEditWidget(container, helper, noLabel, pComboBox);
+	builder.GetHelper().ComboBox(15, 10, false, pPropertySelection.GetDescription(), pComboBox, pListener);
+	pComboBox->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pComboBox);
 	
 	RunWithPreventUpdate([&]{
 		const auto &context = GetContext();
@@ -243,7 +244,7 @@ void igdeMetaPropertySelectionWidget::Create(igdeContainer &container, igdeUIHel
 		});
 	});
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertySelectionWidget::Drop(){
@@ -266,6 +267,8 @@ void igdeMetaPropertySelectionWidget::Update(){
 		pComboBox->SetSelectionWithData(valid ? pPropertySelection.GetPropertyValue(GetContext()) : nullptr);
 		pComboBox->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertySelectionWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -286,6 +289,10 @@ void igdeMetaPropertySelectionWidget::AddContextMenuEntries(igdeMenuCascade &men
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertySelectionWidget::IsPropertyValid() const{
+	return pPropertySelection.IsValid(GetContext());
 }
 
 

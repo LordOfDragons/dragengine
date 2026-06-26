@@ -51,6 +51,47 @@ public:
 	using List = decTObjectOrderedSet<igdeMetaPropertyWidget>;
 	
 	
+	/** \brief Builder interface. */
+	class DE_DLL_EXPORT Builder{
+	private:
+		igdeUIHelper &pHelper;
+		igdeMetaPropertyWidget::List *pCollectWidgets;
+		
+	protected:
+		Builder(igdeUIHelper &helper, igdeMetaPropertyWidget::List *collectWidgets);
+		virtual ~Builder();
+		
+	public:
+		/** \brief UI Helper. */
+		inline igdeUIHelper &GetHelper() const{ return pHelper; }
+		
+		/** \brief List to add created widgets to or nullptr. */
+		inline igdeMetaPropertyWidget::List *GetCollectWidgets() const{ return pCollectWidgets; }
+		
+		/** \brief Set list to add created widgets to or nullptr. */
+		void SetCollectWidgets(igdeMetaPropertyWidget::List *collectWidgets);
+		
+		/** \brief Add to collect widget list if list is not nullptr. */
+		void CollectWidget(const igdeMetaPropertyWidget::Ref &widget);
+		
+		/** \brief Add property line with label and edit widget. */
+		virtual void AddLine(igdeWidget *label, igdeWidget *edit) = 0;
+		
+		/** \brief Add property line with only edit widget. */
+		virtual void AddLine(igdeWidget *edit) = 0;
+		
+		/** \brief Open group. */
+		virtual void OpenGroup(igdeWidget *group, igdeContainer *container) = 0;
+		
+		/** \brief Close group. */
+		virtual void CloseGroup() = 0;
+		
+		/** \brief Create property widgets. */
+		virtual void CreatePropertyWidgets(const igdeMetaContext::PropertyList::Ref &properties,
+			const igdeMetaContext::Ref &context) = 0;
+	};
+	
+	
 private:
 	const igdeMetaProperty::Ref pProperty;
 	igdeMetaContext::Ref pContext;
@@ -93,7 +134,7 @@ public:
 	void SetContext(const igdeMetaContext::Ref &context);
 	
 	/** \brief Environment throwing exception if not available. */
-	igdeEnvironment &GetEnvironment() const;
+	virtual igdeEnvironment &GetEnvironment() const;
 	
 	/** \brief Widget is filtered out. */
 	inline bool GetFilteredOut() const{ return pFilteredOut; }
@@ -108,17 +149,17 @@ public:
 	inline const igdeFilter::Matchable &GetMatchable() const{ return pMatchable; }
 	
 	/** \brief Update matchable. */
-	void UpdateMatchable(igdeContainer &container);
+	void UpdateMatchable();
 	
 	
 	/** \brief Create UI widgets adding them to container. */
-	virtual void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) = 0;
+	virtual void Create(Builder &builder, bool noLabel) = 0;
 	
 	/** \brief Drop UI widgets. */
 	virtual void Drop();
 	
 	/** \brief Update UI widgets with current property values. */
-	virtual void Update() = 0;
+	virtual void Update();
 	
 	
 	/** \brief Label or nullptr. */
@@ -142,13 +183,16 @@ public:
 	 * adding menu entries to ensure special menu entries are located last in the menu.
 	 */
 	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
+	
+	/** \brief Property is valid. */
+	virtual bool IsPropertyValid() const;
 	/*@}*/
 	
 	
 protected:
 	/** \brief Create label and context menu button wrapping edit widget. */
-	void WrapEditWidget(igdeContainer &container, igdeUIHelper &helper, bool noLabel,
-		igdeWidget *widget, igdeWidget *sideWidget = nullptr);
+	void WrapEditWidget(Builder &builder, bool noLabel, igdeWidget *widget,
+		igdeWidget *sideWidget = nullptr);
 	
 	/** \brief Update filtered out. */
 	virtual void UpdateFilteredOut();

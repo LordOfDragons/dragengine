@@ -223,14 +223,15 @@ igdeMetaPropertyColorWidget::~igdeMetaPropertyColorWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyColorWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyColorWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pColorBox)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ColorBox(pPropertyColor.GetDescription(), pColorBox, pListener);
-	WrapEditWidget(container, helper, noLabel, pColorBox);
+	builder.GetHelper().ColorBox(pPropertyColor.GetDescription(), pColorBox, pListener);
+	pColorBox->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pColorBox);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyColorWidget::Drop(){
@@ -255,6 +256,8 @@ void igdeMetaPropertyColorWidget::Update(){
 			: pPropertyColor.GetDefaultValue());
 		pColorBox->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -275,6 +278,10 @@ void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyColorWidget::IsPropertyValid() const{
+	return pPropertyColor.IsValid(GetContext());
 }
 
 

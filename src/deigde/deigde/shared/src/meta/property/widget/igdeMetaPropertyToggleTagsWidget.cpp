@@ -220,7 +220,7 @@ igdeMetaPropertyToggleTagsWidget::~igdeMetaPropertyToggleTagsWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyToggleTagsWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyToggleTagsWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pToggleTags)
 	
 	auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
@@ -231,11 +231,11 @@ void igdeMetaPropertyToggleTagsWidget::Create(igdeContainer &container, igdeUIHe
 	}
 	
 	pAction = deTObjectReference<cAction>::New(*this);
-	helper.ToggleTags(pToggleTags, pAction);
+	builder.GetHelper().ToggleTags(pToggleTags, pAction);
 	pToggleTags->GetListBox().SetRows(state->rows);
-	WrapEditWidget(container, helper, noLabel, pToggleTags);
+	WrapEditWidget(builder, noLabel, pToggleTags);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){
@@ -264,6 +264,8 @@ void igdeMetaPropertyToggleTagsWidget::Update(){
 		
 		pToggleTags->GetListBox().SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyToggleTagsWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -284,6 +286,10 @@ void igdeMetaPropertyToggleTagsWidget::AddContextMenuEntries(igdeMenuCascade &me
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyToggleTagsWidget::IsPropertyValid() const{
+	return pPropertyToggleTags.IsValid(GetContext());
 }
 
 

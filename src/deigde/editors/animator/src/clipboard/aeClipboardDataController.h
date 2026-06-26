@@ -45,6 +45,7 @@ public:
 	
 	
 private:
+	aeWindowMain &pWindowMain;
 	aeController::List pControllers;
 	
 	
@@ -53,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataController(aeController *controller);
+	aeClipboardDataController(aeWindowMain &windowMain, aeController *controller);
 	
 	/** Create a new clipboard data. */
-	aeClipboardDataController(const aeController::List &controllers);
+	aeClipboardDataController(aeWindowMain &windowMain, const aeController::List &controllers);
 	
 protected:
 	/**

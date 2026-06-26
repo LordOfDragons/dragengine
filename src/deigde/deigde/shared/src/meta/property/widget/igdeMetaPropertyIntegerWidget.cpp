@@ -303,32 +303,35 @@ igdeMetaPropertyIntegerWidget::~igdeMetaPropertyIntegerWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyIntegerWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyIntegerWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pEditSliderText)
 	DEASSERT_NULL(pSpinTextField)
 	
 	if(pPropertyInteger.GetEnableSpin()){
 		pSpinListener = deTObjectReference<cSpinListener>::New(*this);
-		helper.EditSpinInteger(pPropertyInteger.GetDescription(),
+		builder.GetHelper().EditSpinInteger(pPropertyInteger.GetDescription(),
 			pPropertyInteger.GetLowerLimit(), pPropertyInteger.GetUpperLimit(),
 			pSpinTextField, pSpinListener);
-		WrapEditWidget(container, helper, noLabel, pSpinTextField);
+		pSpinTextField->SetEnabled(false);
+		WrapEditWidget(builder, noLabel, pSpinTextField);
 		
 	}else if(pPropertyInteger.GetEnableLowerLimit() && pPropertyInteger.GetEnableUpperLimit()){
 		pSliderListener = deTObjectReference<cSliderListener>::New(*this);
-		helper.EditSliderText(pPropertyInteger.GetDescription(),
+		builder.GetHelper().EditSliderText(pPropertyInteger.GetDescription(),
 			pPropertyInteger.GetLowerLimit(), pPropertyInteger.GetUpperLimit(), 6,
 			pPropertyInteger.GetTickSpacing(), pEditSliderText, pSliderListener);
-		WrapEditWidget(container, helper, noLabel, pEditSliderText);
+		pEditSliderText->SetEnabled(false);
+		WrapEditWidget(builder, noLabel, pEditSliderText);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
-		helper.EditInteger(pPropertyInteger.GetDescription(), 6, pTextField, pTextListener);
-		WrapEditWidget(container, helper, noLabel, pTextField);
+		builder.GetHelper().EditInteger(pPropertyInteger.GetDescription(), 6, pTextField, pTextListener);
+		pTextField->SetEnabled(false);
+		WrapEditWidget(builder, noLabel, pTextField);
 	}
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyIntegerWidget::Drop(){
@@ -378,6 +381,8 @@ void igdeMetaPropertyIntegerWidget::Update(){
 			pSpinTextField->SetEnabled(valid);
 		});
 	}
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyIntegerWidget::UpdateLimits(){
@@ -425,6 +430,10 @@ void igdeMetaPropertyIntegerWidget::AddContextMenuEntries(igdeMenuCascade &menu)
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyIntegerWidget::IsPropertyValid() const{
+	return pPropertyInteger.IsValid(GetContext());
 }
 
 

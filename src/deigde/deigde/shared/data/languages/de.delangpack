@@ -518,6 +518,7 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.WPUndoHistory">Rückgängig-Verlauf:</translation>
 	
 	<!-- WP World Object -->
+	<translation name="Igde.WPWObject.Action.SelectClass">Objektklasse auswählen</translation>
 	<translation name="Igde.WPWObject.Action.SelectClass.ToolTip">Öffnet ein Dialogfeld zur Auswahl der Objektklasse.</translation>
 	<translation name="Igde.WPWObject.Visible">Sichtbar</translation>
 	<translation name="Igde.WPWObject.Visible.ToolTip">Objekt ist sichtbar</translation>

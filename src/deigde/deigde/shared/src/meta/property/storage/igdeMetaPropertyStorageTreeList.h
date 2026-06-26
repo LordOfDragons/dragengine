@@ -44,7 +44,6 @@ public:
 private:
 	ExpandedSet pExpanded;
 	ObjectRef pActive;
-	std::function<void()> pOnActiveChanged;
 	
 	
 public:
@@ -59,6 +58,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Active object changed. */
+	igdeTEvent<> onActiveChanged;
+	
+	
 	/** \brief Get expanded state. */
 	inline const ExpandedSet &GetExpanded() const{ return pExpanded; }
 	
@@ -84,9 +87,7 @@ public:
 		}
 		
 		pActive = active;
-		if(pOnActiveChanged){
-			pOnActiveChanged();
-		}
+		onActiveChanged();
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
 		}
@@ -99,28 +100,10 @@ public:
 		}
 		
 		pActive = active;
-		if(pOnActiveChanged){
-			pOnActiveChanged();
-		}
+		onActiveChanged();
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyActiveChanged(igdeMetaPropertyStorage<P>::Context());
 		}
-	}
-	
-	
-	/** \brief Function to call if active object changed before listeners are notified. */
-	inline const std::function<void()> &GetOnActiveChanged() const{ return pOnActiveChanged; }
-	
-	/** \brief Set function to call if active object changed before listeners are notified. */
-	template <typename F>
-	void SetOnActiveChanged(F&& func){
-		pOnActiveChanged = std::forward<F>(func);
-	}
-	
-	/** \brief Set function to call if active object changed before listeners are notified. */
-	template <typename F>
-	void SetOnActiveChanged(const F& func){
-		pOnActiveChanged = func;
 	}
 	/*@}*/
 	

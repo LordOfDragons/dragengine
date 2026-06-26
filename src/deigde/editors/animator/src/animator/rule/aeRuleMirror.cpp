@@ -78,47 +78,47 @@ enableOrientation(windowMain.GetMCAnimatorProperties().ruleMirror.enableOrientat
 enableSize(windowMain.GetMCAnimatorProperties().ruleMirror.enableSize, GetMetaContext().StaticCast<aeMCRuleMirror>()),
 enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleMirror.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleMirror>())
 {
-	mirrorAxis.SetOnChanged([this](){
+	mirrorAxis.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorAxis(mirrorAxis);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	mirrorBone.SetOnChanged([this](){
+	mirrorBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorBone(mirrorBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleMirror*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableOrientation.SetOnChanged([this](){
+	enableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSet.SetOnChanged([this](){
+	enableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const aeRuleMirror &copy) :

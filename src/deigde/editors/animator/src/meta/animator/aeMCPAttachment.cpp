@@ -29,6 +29,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/meta/property/undo/igdeMetaPropertySetUndo.h>
 
 
@@ -147,4 +148,12 @@ void aeMCPAttachments::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMe
 	helper.MenuCommand(menu, deTObjectReference<cActionAttachmentSaveConfig>::New(*this, owner, context));
 	
 	AddDefaultContextMenuEntries(menu, context, owner);
+}
+
+
+// Class aeMCPAttachmentWObject
+/////////////////////////////////
+
+aeMCPAttachmentWObject::aeMCPAttachmentWObject() : aeTMCPAnimatorAttachment("animator.attachment.wobject", "", ""){
+	SetProperties(igdeWObject::MetaProperties::Global().GetProperties());
 }

@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyPath.h"
-#include "undo/igdeMetaPropertyPathUndo.h"
 #include "widget/igdeMetaPropertyPathWidget.h"
 #include "../../undo/igdeUndoSystem.h"
 
@@ -104,6 +103,10 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+decString igdeMetaPropertyPath::GetPropertyBasePath(const igdeMetaContext::Ref &context) const{
+	return "";
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(){

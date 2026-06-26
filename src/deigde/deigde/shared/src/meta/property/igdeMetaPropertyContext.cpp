@@ -55,6 +55,10 @@ void igdeMetaPropertyContext::SetDefaultValue(const ContextRef &value){
 	pDefaultValue = value;
 }
 
+void igdeMetaPropertyContext::SetProperties(const igdeMetaContext::PropertyList::Ref &properties){
+	pProperties = properties;
+}
+
 
 void igdeMetaPropertyContext::NotifyValueChanged(const igdeMetaContext::Ref &context){
 	pListeners.Notify([&](Listener &listener){

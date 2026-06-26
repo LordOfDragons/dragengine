@@ -166,7 +166,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataController::Ref::New(controller));
+			aeClipboardDataController::Ref::New(pPanel.GetWindowProperties().GetWindowMain(), controller));
 		return {};
 	}
 };
@@ -182,7 +182,7 @@ public:
 	
 	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataController::Ref::New(controller));
+			aeClipboardDataController::Ref::New(pPanel.GetWindowProperties().GetWindowMain(), controller));
 		return aeURemoveController::Ref::New(animator, controller);
 	}
 };

@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyList.h"
-#include "undo/igdeMetaPropertyListUndo.h"
 #include "widget/igdeMetaPropertyListWidget.h"
 #include "../igdeMetaContext.h"
 #include "../../clipboard/igdeClipboard.h"

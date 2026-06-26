@@ -244,4 +244,7 @@ public:
 	float GetPropertyTickSpacing(const ContextRef &context) const override;
 };
 
+
+#include "undo/igdeMetaPropertyFloatUndo.h"
+
 #endif

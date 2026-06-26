@@ -88,7 +88,7 @@ public:
 	
 	
 	/** \brief Create UI widgets adding them to container. */
-	void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) override;
+	void Create(Builder &builder, bool noLabel) override;
 	
 	/** \brief Drop UI widgets. */
 	void Drop() override;
@@ -114,6 +114,8 @@ public:
 	
 	/** \brief Open dialog to edit curve in large view. */
 	void EditInDialog();
+	
+	bool IsPropertyValid() const override;
 	/*@}*/
 	
 	

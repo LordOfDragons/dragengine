@@ -132,16 +132,17 @@ igdeMetaPropertyTreeListWidget::~igdeMetaPropertyTreeListWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyTreeListWidget::Create(igdeContainer &container,
-igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyTreeListWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pTreeList);
 	
+	auto &helper = builder.GetHelper();
 	pTreeListListener = deTObjectReference<cTreeListListener>::New(*this);
 	helper.TreeList(pPropertyTreeList.GetRows(), pPropertyTreeList.GetDescription(),
 		pTreeList, pTreeListListener);
 	if(pPropertyTreeList.GetSorted()){
 		pTreeList->SetDefaultSorter();
 	}
+	pTreeList->SetEnabled(false);
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -153,9 +154,9 @@ igdeUIHelper &helper, bool noLabel){
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, noLabel, pTreeList, buttons);
+	WrapEditWidget(builder, noLabel, pTreeList, buttons);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyTreeListWidget::Drop(){
@@ -201,6 +202,11 @@ void igdeMetaPropertyTreeListWidget::Update(){
 	// RunWithPreventUpdate(). store the current active object to properly
 	// synchronize if anything changed
 	StoreActiveObject();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.Update();
+	});
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyTreeListWidget::UpdateItemInfo(){
@@ -284,6 +290,10 @@ void igdeMetaPropertyTreeListWidget::RestoreExpanded(){
 
 void igdeMetaPropertyTreeListWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(menu);
+}
+
+bool igdeMetaPropertyTreeListWidget::IsPropertyValid() const{
+	return pPropertyTreeList.IsValid(GetContext());
 }
 
 

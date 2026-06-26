@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "aeAttachment.h"
 #include "../aeAnimator.h"
 #include "../../gui/aeWindowMain.h"
@@ -74,7 +70,8 @@ pAnimator(nullptr),
 pAsyncLoadListener(*this),
 name(windowMain.GetMCAnimatorProperties().attachment.name, pMetaContext, aname),
 attachType(windowMain.GetMCAnimatorProperties().attachment.attachType, pMetaContext),
-boneName(windowMain.GetMCAnimatorProperties().attachment.boneName, pMetaContext)
+boneName(windowMain.GetMCAnimatorProperties().attachment.boneName, pMetaContext),
+wobject(windowMain.GetMCAnimatorProperties().attachment.wobject, pMetaContext)
 {
 	try{
 		decLayerMask layerMask;
@@ -86,26 +83,33 @@ boneName(windowMain.GetMCAnimatorProperties().attachment.boneName, pMetaContext)
 		pObjectWrapper->SetCollisionFilter(decCollisionFilter(layerMask));
 		pObjectWrapper->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		pObjectWrapper->SetAsyncLoadFinished(&pAsyncLoadListener);
+		wobject.SetValue(pObjectWrapper->GetMetaContext(), false);
+		
+		pObjectWrapper->onChanged = [this](){
+			ReattachCollider();
+			if(pAnimator){
+				pAnimator->NotifyAttachmentChanged(this);
+			}
+		};
 		
 	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	name.SetOnChanged([this](){
+	name.onValueChanged = [this](){
 		if(pAnimator){
 			pAnimator->NotifyAttachmentChanged(this);
 		}
-	});
+	};
 	
-	attachType.SetOnChanged([this](){
+	attachType.onValueChanged = [this](){
 		ReattachCollider();
 		if(pAnimator){
 			pAnimator->NotifyAttachmentChanged(this);
 		}
-	});
-	
-	boneName.SetOnChanged(attachType.GetOnChanged());
+	};
+	boneName.onValueChanged = attachType.onValueChanged;
 }
 
 aeAttachment::aeAttachment(aeWindowMain &windowMain, const aeAttachment &copy) :

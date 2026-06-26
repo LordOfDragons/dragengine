@@ -152,7 +152,7 @@ igdeMetaPropertyStringSetWidget::~igdeMetaPropertyStringSetWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyStringSetWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
 	auto state = pPropertyStringSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
@@ -162,11 +162,13 @@ void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHel
 		pPropertyStringSet.SetWidgetState(state);
 	}
 	
+	auto &helper = builder.GetHelper();
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ListBox(state->rows, pPropertyStringSet.GetDescription(), pListBox, pListener);
 	pListBox->SetDefaultSorter();
 	pListBox->SetSelectionMode(pPropertyStringSet.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
+	pListBox->SetEnabled(false);
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -176,9 +178,9 @@ void igdeMetaPropertyStringSetWidget::Create(igdeContainer &container, igdeUIHel
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
+	WrapEditWidget(builder, noLabel, pListBox, buttons);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyStringSetWidget::Drop(){
@@ -230,6 +232,11 @@ void igdeMetaPropertyStringSetWidget::Update(){
 	// current selection and active object to properly synchronize if anything changed
 	StoreSelection();
 	StoreActiveString();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.Update();
+	});
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyStringSetWidget::SelectActiveString(){
@@ -284,6 +291,10 @@ void igdeMetaPropertyStringSetWidget::AddContextMenuEntries(igdeMenuCascade &men
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyStringSetWidget::IsPropertyValid() const{
+	return pPropertyStringSet.IsValid(GetContext());
 }
 
 void igdeMetaPropertyStringSetWidget::StoreSelection(){

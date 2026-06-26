@@ -25,6 +25,7 @@
 #include "aeMCAttachmentProperties.h"
 #include "aeMCAnimatorProperties.h"
 
+#include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/meta/property/igdeMetaPropertyAdapters.h>
 
 
@@ -36,7 +37,8 @@ void aeMCAttachmentProperties::Init(const aeMCAnimatorProperties &properties){
 	metaProperties->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
 		name,
 		attachType,
-		boneName);
+		boneName,
+		wobject);
 	
 	group->GetProperties() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
 		attachments,

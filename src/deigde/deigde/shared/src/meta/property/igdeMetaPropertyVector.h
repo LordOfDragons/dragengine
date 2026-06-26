@@ -27,6 +27,7 @@
 
 #include "igdeMetaProperty.h"
 #include "storage/igdeMetaPropertyStorageComplexIsEqualTo.h"
+#include "storage/igdeMetaPropertyStorageQuaternion.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -167,5 +168,41 @@ public:
 	const decVector &GetPropertyValue(const ContextRef &context) const override;
 	void SetPropertyValue(const ContextRef &context, const decVector &value) override;
 };
+
+
+/**
+ * \brief Vector meta property using quaternion storage.
+ */
+class DE_DLL_EXPORT igdeMetaPropertyVectorStorageQuaternion : public igdeMetaPropertyVector{
+public:
+	/** \brief Storage type. */
+	using Storage = igdeMetaPropertyStorageQuaternion<igdeMetaPropertyVectorStorageQuaternion>;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create Vector meta property with label and description. */
+	igdeMetaPropertyVectorStorageQuaternion(const char *id, const char *name, const char *description);
+	
+	/** \brief Create meta property with label, description, filter and undo info set from translation tag. */
+	igdeMetaPropertyVectorStorageQuaternion(const char *id, const char *translationTag);
+	
+protected:
+	/** \brief Clean up Vector meta property. */
+	~igdeMetaPropertyVectorStorageQuaternion() override;
+	
+public:
+	/*@}*/
+	/** \brief Storage. */
+	virtual Storage &GetStorage(const ContextRef &context) const = 0;
+	
+	
+	const decVector &GetPropertyValue(const ContextRef &context) const override;
+	void SetPropertyValue(const ContextRef &context, const decVector &value) override;
+};
+
+
+#include "undo/igdeMetaPropertyVectorUndo.h"
 
 #endif

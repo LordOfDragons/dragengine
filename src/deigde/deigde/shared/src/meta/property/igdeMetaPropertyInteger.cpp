@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyInteger.h"
-#include "undo/igdeMetaPropertyIntegerUndo.h"
 #include "widget/igdeMetaPropertyIntegerWidget.h"
 #include "../../undo/igdeUndoSystem.h"
 

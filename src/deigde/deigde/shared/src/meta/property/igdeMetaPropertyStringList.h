@@ -488,4 +488,7 @@ public:
 	void SetSelection(const ContextRef &context, const decStringList &selection) override;
 };
 
+
+#include "undo/igdeMetaPropertyStringListUndo.h"
+
 #endif

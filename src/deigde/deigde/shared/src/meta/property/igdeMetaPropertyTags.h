@@ -168,4 +168,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decStringSet &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyTagsUndo.h"
+
 #endif

@@ -89,6 +89,7 @@ public:
 	igdeMetaPropertyStringStorage::Storage name;
 	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage attachType;
 	igdeMetaPropertyStringStorage::Storage boneName;
+	igdeMetaPropertyContextStorage::Storage wobject;
 	
 public:
 	/** \name Constructors and Destructors */

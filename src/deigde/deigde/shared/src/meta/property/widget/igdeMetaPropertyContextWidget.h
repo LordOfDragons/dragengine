@@ -28,7 +28,6 @@
 #include "igdeMetaPropertyWidget.h"
 #include "../igdeMetaPropertyContext.h"
 #include "../igdeMetaPropertyGroup.h"
-#include "../../../gui/layout/igdeContainerFlow.h"
 #include "../../../gui/properties/igdeWPMetaContext.h"
 
 
@@ -59,7 +58,15 @@ private:
 	
 	igdeMetaPropertyContext &pPropertyContext;
 	PropertyListener::Ref pPropertyListener;
-	igdeWPMetaContext::Ref pContextPanel;
+	
+	igdeFilter pFilter;
+	
+	igdeMetaContext::Ref pValueContext;
+	igdeMetaContext::PropertyList::Ref pProperties, pPropertyProperties;
+	igdeMetaPropertyWidget::List pPropertyWidgets;
+	igdeWPMetaContext::PropertyWidgetCache pPropertyWidgetCache;
+	
+	igdeContainer::Ref pContainer;
 	
 	
 public:
@@ -85,7 +92,7 @@ public:
 	
 	
 	/** \brief Create UI widgets adding them to container. */
-	void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) override;
+	void Create(Builder &builder, bool noLabel) override;
 	
 	/** \brief Drop UI widgets. */
 	void Drop() override;
@@ -96,15 +103,17 @@ public:
 	/** \brief Filter widget. */
 	void Filter(const igdeFilter &filter) override;
 	
-	
-	/** \brief Context panel. */
-	inline const igdeWPMetaContext::Ref &GetContextPanel() const{ return pContextPanel; }
+	igdeEnvironment &GetEnvironment() const override;
+	bool IsPropertyValid() const override;
 	/*@}*/
 	
 	
 protected:
 	void UpdateFilteredOut() override;
 	void OnContextChanged() override;
+	void pUpdatePropertyWidgets(Builder &builder, const igdeMetaContext::Ref &context);
+	void pClearPropertyWidgets();
+	void pFilterPropertyWidgets();
 };
 
 #endif

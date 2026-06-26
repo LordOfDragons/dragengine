@@ -300,7 +300,7 @@ igdeMetaPropertyCurveBezierWidget::~igdeMetaPropertyCurveBezierWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyCurveBezierWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pViewCurveBezier)
 	
 	auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
@@ -313,16 +313,17 @@ void igdeMetaPropertyCurveBezierWidget::Create(igdeContainer &container, igdeUIH
 	}
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ViewCurveBezier(pViewCurveBezier, pListener);
+	builder.GetHelper().ViewCurveBezier(pViewCurveBezier, pListener);
 	pViewCurveBezier->SetClamp(state->clamp);
 	pViewCurveBezier->SetClampMin(state->clampMin);
 	pViewCurveBezier->SetClampMax(state->clampMax);
 	if(state->size != decPoint()){
 		pViewCurveBezier->SetDefaultSize(state->size);
 	}
-	WrapEditWidget(container, helper, noLabel, pViewCurveBezier);
+	pViewCurveBezier->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pViewCurveBezier);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
@@ -361,6 +362,8 @@ void igdeMetaPropertyCurveBezierWidget::Update(){
 		pViewCurveBezier->SetClampMax(pPropertyCurveBezier.GetClampMax());
 		pViewCurveBezier->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyCurveBezierWidget::SetUndoDragging(const igdeMetaPropertyCurveBezierUndo::Ref &undo){
@@ -421,6 +424,10 @@ void igdeMetaPropertyCurveBezierWidget::EditInDialog(){
 			pPropertyCurveBezier.RealUndoInfo(context,
 				"@Igde.MetaPropertyCurveBezier.EditInDialog").GetString());
 	}
+}
+
+bool igdeMetaPropertyCurveBezierWidget::IsPropertyValid() const{
+	return pPropertyCurveBezier.IsValid(GetContext());
 }
 
 

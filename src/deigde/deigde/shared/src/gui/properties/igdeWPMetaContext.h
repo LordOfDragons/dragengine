@@ -26,10 +26,13 @@
 #define _IGDEWPMETACONTEXT_H_
 
 #include "../layout/igdeContainerFlow.h"
+#include "../layout/igdeContainerForm.h"
 #include "../../meta/igdeMetaContext.h"
 #include "../../meta/property/igdeMetaPropertyGroup.h"
 #include "../../meta/property/widget/igdeMetaPropertyWidget.h"
 #include "../../utils/igdeFilter.h"
+
+#include <dragengine/common/collection/decTList.h>
 
 
 /**
@@ -42,11 +45,37 @@ public:
 	/** \brief Type holding strong reference. */
 	using Ref = deTObjectReference<igdeWPMetaContext>;
 	
-	/** \brief List of property widgets. */
-	using PropertyWidgetList = decTObjectOrderedSet<igdeMetaPropertyWidget>;
-	
 	/** \brief Map of property widgets. */
 	using PropertyWidgetCache = decTDictionary<igdeMetaProperty::Ref, igdeMetaPropertyWidget::Ref>;
+	
+	
+	/** \brief Builder. */
+	class DE_DLL_EXPORT Builder : public igdeMetaPropertyWidget::Builder{
+	private:
+		igdeWPMetaContext::PropertyWidgetCache &pWidgetCache;
+		decTList<igdeContainer*> pContainerStack;
+		igdeContainerForm::Ref pForm;
+		
+	public:
+		Builder(igdeUIHelper &helper, igdeContainer *container,
+			igdeMetaPropertyWidget::List *collectWidgets,
+			igdeWPMetaContext::PropertyWidgetCache &widgetCache);
+		virtual ~Builder();
+		
+		void AddLine(igdeWidget *label, igdeWidget *edit) override;
+		void AddLine(igdeWidget *edit) override;
+		void OpenGroup(igdeWidget *group, igdeContainer *container) override;
+		void CloseGroup() override;
+		
+		/** \brief Create property widgets. */
+		void CreatePropertyWidgets(const igdeMetaContext::PropertyList::Ref &properties,
+			const igdeMetaContext::Ref &context) override;
+		
+		/** \brief Create property group widget. */
+		igdeMetaPropertyWidget::Ref CreatePropertyWidget(
+			const igdeMetaPropertyGroup::Ref &groupProperty,
+			const igdeMetaContext::Ref &context);
+	};
 	
 	
 private:
@@ -70,7 +99,7 @@ private:
 	igdeFilter pFilter;
 	
 	igdeMetaContext::PropertyList::Ref pProperties;
-	PropertyWidgetList pPropertyWidgets;
+	igdeMetaPropertyWidget::List pPropertyWidgets;
 	PropertyWidgetCache pPropertyWidgetCache;
 	
 	
@@ -121,13 +150,7 @@ public:
 	
 	
 private:
-	void pCreatePropertyWidgets();
-	
-	igdeMetaPropertyWidget::Ref pCreatePropertyGroupWidget(igdeContainer &container,
-		const igdeMetaPropertyGroup::Ref &groupProperty);
-	
 	void pClearPropertyWidgets();
-	
 	void pFilterPropertyWidgets();
 };
 

@@ -161,7 +161,7 @@ public:
 	 * 
 	 * Implemented by subclass.
 	 */
-	virtual decString GetPropertyBasePath(const ContextRef &context) const = 0;
+	virtual decString GetPropertyBasePath(const ContextRef &context) const;
 	/*@}*/
 };
 
@@ -207,5 +207,8 @@ public:
 	const decString &GetPropertyValue(const ContextRef &context) const override;
 	void SetPropertyValue(const ContextRef &context, const decString &value) override;
 };
+
+
+#include "undo/igdeMetaPropertyPathUndo.h"
 
 #endif

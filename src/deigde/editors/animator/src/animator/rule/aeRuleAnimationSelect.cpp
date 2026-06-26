@@ -49,58 +49,58 @@ enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationSelect
 targetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
 targetSelect(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetSelect, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>())
 {
-	moves.SetOnChanged([this](){
+	moves.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetMoves() = moves;
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableOrientation.SetOnChanged([this](){
+	enableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSet.SetOnChanged([this](){
+	enableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationSelect*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetMoveTime = aeControllerTarget::Ref::New(targetMoveTime);
-	targetMoveTime.SetOnChanged([this](){
+	targetMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetTargetMoveTime(), targetMoveTime);
 		}
 		pTargetMoveTime->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetSelect = aeControllerTarget::Ref::New(targetSelect);
-	targetSelect.SetOnChanged([this](){
+	targetSelect.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleAnimationSelect*)GetEngineRule())->GetTargetSelect(), targetSelect);
 		}
 		pTargetSelect->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleAnimationSelect::aeRuleAnimationSelect(aeWindowMain &windowMain, const aeRuleAnimationSelect &copy) :

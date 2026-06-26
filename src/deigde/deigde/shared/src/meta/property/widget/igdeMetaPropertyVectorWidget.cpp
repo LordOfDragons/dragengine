@@ -226,14 +226,15 @@ igdeMetaPropertyVectorWidget::~igdeMetaPropertyVectorWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyVectorWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyVectorWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pEditVector)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditVector(pPropertyVector.GetDescription(), 6, 3, pEditVector, pListener);
-	WrapEditWidget(container, helper, noLabel, pEditVector);
+	builder.GetHelper().EditVector(pPropertyVector.GetDescription(), 6, 3, pEditVector, pListener);
+	pEditVector->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pEditVector);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyVectorWidget::Drop(){
@@ -255,6 +256,8 @@ void igdeMetaPropertyVectorWidget::Update(){
 		pEditVector->SetVector(valid ? pPropertyVector.GetPropertyValue(GetContext()) : decVector());
 		pEditVector->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyVectorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -275,6 +278,10 @@ void igdeMetaPropertyVectorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyVectorWidget::IsPropertyValid() const{
+	return pPropertyVector.IsValid(GetContext());
 }
 
 

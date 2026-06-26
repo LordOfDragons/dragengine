@@ -70,7 +70,7 @@ public:
 	
 	
 	/** \brief Create UI widgets adding them to container. */
-	void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) override;
+	void Create(Builder &builder, bool noLabel) override;
 	
 	/** \brief Filter widget. */
 	void Filter(const igdeFilter &filter) override;

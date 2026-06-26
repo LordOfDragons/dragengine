@@ -81,62 +81,62 @@ affectedBones(windowMain.GetMCAnimatorProperties().rule.affectedBones, pMetaCont
 affectedVertexPositionSets(windowMain.GetMCAnimatorProperties().rule.affectedVertexPositionSets, pMetaContext),
 targetBlendFactor(windowMain.GetMCAnimatorProperties().rule.targetBlendFactor, pMetaContext)
 {
-	name.SetOnChanged([this](){
+	name.onValueChanged = [this](){
 		if(pAnimator){
 			pAnimator->NotifyRuleNameChanged(this);
 		}
-	});
+	};
 	
-	blendMode.SetOnChanged([this](){
+	blendMode.onValueChanged = [this](){
 		if(pEngRule){
 			pEngRule->SetBlendMode(blendMode);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	blendFactor.SetOnChanged([this](){
+	blendFactor.onValueChanged = [this](){
 		if(pEngRule){
 			pEngRule->SetBlendFactor(blendFactor);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	invertBlendFactor.SetOnChanged([this](){
+	invertBlendFactor.onValueChanged = [this](){
 		if(pEngRule){
 			pEngRule->SetInvertBlendFactor(invertBlendFactor);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	affectedBones.SetOnChanged([this](){
+	affectedBones.onValueChanged = [this](){
 		if(pEngRule){
 			pEngRule->GetListBones() = affectedBones;
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	affectedVertexPositionSets.SetOnChanged([this](){
+	affectedVertexPositionSets.onValueChanged = [this](){
 		if(pEngRule){
 			pEngRule->GetListVertexPositionSets() = affectedVertexPositionSets;
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enabled.SetOnChanged([this](){
+	enabled.onValueChanged = [this](){
 		if(pEngRule){
 			pEngRule->SetEnabled(enabled);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetBlendFactor = aeControllerTarget::Ref::New(targetBlendFactor);
-	targetBlendFactor.SetOnChanged([this](){
+	targetBlendFactor.onValueChanged = [this](){
 		if(pEngRule){
 			pUpdateEngineTarget(pEngRule->GetTargetBlendFactor(), targetBlendFactor);
 		}
 		pTargetBlendFactor->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRule::aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext, const aeRule &copy) :

@@ -324,4 +324,7 @@ public:
 	}
 };
 
+
+#include "undo/igdeMetaPropertySelectionUndo.h"
+
 #endif

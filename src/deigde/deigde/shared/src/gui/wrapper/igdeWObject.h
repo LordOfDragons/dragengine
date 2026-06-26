@@ -26,6 +26,13 @@
 #define _IGDEWOBJECT_H_
 
 #include "../../gamedefinition/class/igdeGDClass.h"
+#include "../../meta/igdeMetaContext.h"
+#include "../../meta/property/igdeMetaPropertyBoolean.h"
+#include "../../meta/property/igdeMetaPropertyContext.h"
+#include "../../meta/property/igdeMetaPropertyString.h"
+#include "../../meta/property/igdeMetaPropertyPath.h"
+#include "../../meta/property/igdeMetaPropertyDVector.h"
+#include "../../meta/property/igdeMetaPropertyVector.h"
 #include "../../triggersystem/igdeTriggerTarget.h"
 #include "../../triggersystem/igdeTriggerListener.h"
 
@@ -93,14 +100,162 @@ public:
 	};
 	
 	
+	/** \brief Meta context. */
+	class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
+	private:
+		igdeWObject *pWrapper;
+		igdeWObject::Ref pGuard;
+		
+	public:
+		using Ref = deTObjectReference<MetaContext>;
+		MetaContext(igdeWObject *wrapper);
+		
+		inline igdeWObject *GetWrapper() const{ return pWrapper; }
+		igdeWObject &GetWrapperRef() const;
+		Ref Capture() const;
+		igdeEnvironment &GetEnvironment() const override;
+		igdeUndoSystem *GetUndoSystem() const override;
+		igdeClipboard *GetClipboard() const override;
+		
+	protected:
+		virtual ~MetaContext() override;
+	};
+	
+	/** \brief Meta properties */
+	class DE_DLL_EXPORT MetaProperties{
+	public:
+		template <typename T> class TBase : public T{
+		public:
+			template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
+			
+			igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
+				return context.DynamicCast<MetaContext>()->Capture();
+			}
+			
+			bool IsValid(const igdeMetaContext::Ref &context) const override{
+				const auto c = context.DynamicCast<MetaContext>();
+				return c && !c->IsDisposed();
+			}
+			
+			inline igdeWObject &Wrapper(const igdeMetaContext::Ref &context) const{
+				return context.DynamicCast<MetaContext>()->GetWrapperRef();
+			}
+			
+		protected:
+			virtual ~TBase() override{}
+		};
+		
+		class DE_DLL_EXPORT ObjectClass : public TBase<igdeMetaPropertyStringStorage>{
+		public:
+			ObjectClass();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override;
+			void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
+			
+		protected:
+			~ObjectClass() override;
+		};
+		
+		class DE_DLL_EXPORT World : public TBase<igdeMetaPropertyPathStorage>{
+		public:
+			World();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~World() override;
+		};
+		
+		class DE_DLL_EXPORT Position : public TBase<igdeMetaPropertyDVectorStorage>{
+		public:
+			Position();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Position() override;
+		};
+		
+		class DE_DLL_EXPORT Rotation : public TBase<igdeMetaPropertyVectorStorageQuaternion>{
+		public:
+			Rotation();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Rotation() override;
+		};
+		
+		class DE_DLL_EXPORT Scaling : public TBase<igdeMetaPropertyVectorStorage>{
+		public:
+			Scaling();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			igdeMetaPropertyVectorUndo::Ref ChangePropertyValue(const ContextRef &context,
+				const decVector &newValue, const char *undoInfo = nullptr,
+				const char *undoInfoLong = nullptr) override;
+					
+		protected:
+			~Scaling() override;
+		};
+		
+		class DE_DLL_EXPORT Visible : public TBase<igdeMetaPropertyBooleanStorage>{
+		public:
+			Visible();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Visible() override;
+		};
+		
+		class DE_DLL_EXPORT DynamicCollider : public TBase<igdeMetaPropertyBooleanStorage>{
+		public:
+			DynamicCollider();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~DynamicCollider() override;
+		};
+		
+	private:
+		deTObjectReference<ObjectClass> pObjectClass;
+		deTObjectReference<World> pWorld;
+		deTObjectReference<Position> pPosition;
+		deTObjectReference<Rotation> pRotation;
+		deTObjectReference<Scaling> pScaling;
+		deTObjectReference<Visible> pVisible;
+		deTObjectReference<DynamicCollider> pDynamicCollider;
+		igdeMetaContext::PropertyList::Ref pProperties;
+		
+		MetaProperties();
+		static MetaProperties pGlobal;
+		
+	public:
+		inline const deTObjectReference<ObjectClass> &GetObjectClass() const{ return pObjectClass; }
+		inline const deTObjectReference<World> &GetWorld() const{ return pWorld; }
+		inline const deTObjectReference<Position> &GetPosition() const{ return pPosition; }
+		inline const deTObjectReference<Rotation> &GetRotation() const{ return pRotation; }
+		inline const deTObjectReference<Scaling> &GetScaling() const{ return pScaling; }
+		inline const deTObjectReference<Visible> &GetVisible() const{ return pVisible; }
+		inline const deTObjectReference<DynamicCollider> &GetDynamicCollider() const{ return pDynamicCollider; }
+		inline const igdeMetaContext::PropertyList::Ref &GetProperties() const{ return pProperties; }
+		
+		static const MetaProperties &Global();
+	};
+	
 	
 private:
 	igdeEnvironment &pEnvironment;
 	
+	MetaContext::Ref pMetaContext;
+	
+	igdeMetaPropertyStringStorage::Storage pMPSObjectClass;
+	igdeMetaPropertyPathStorage::Storage pMPSWorld;
+	igdeMetaPropertyDVectorStorage::Storage pMPSPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPSRotation;
+	igdeMetaPropertyVectorStorage::Storage pMPSScaling;
+	igdeMetaPropertyBooleanStorage::Storage pMPSVisible;
+	igdeMetaPropertyBooleanStorage::Storage pMPSDynamicCollider;
+	
 	deWorld::Ref pWorld;
 	deCamera::Ref pCamera;
 	igdeGDClass::Ref pGDClass, pWorldGDClass;
-	decString pPathWorld;
 	
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
@@ -113,9 +268,6 @@ private:
 	decTObjectOrderedSet<igdeWOSubObject> pSubObjects;
 	igdeTriggerListener::Ref pTriggerListener;
 	
-	decDVector pPosition;
-	decQuaternion pOrientation;
-	decVector pScaling;
 	decDMatrix pMatrix, pInvMatrix;
 	
 	decStringDictionary pProperties;
@@ -129,10 +281,8 @@ private:
 	decCollisionFilter pCollisionFilterForceField;
 	decCollisionFilter pCollisionFilterFallback;
 	decCollisionFilter pCollisionFilterInteract;
-	bool pDynamicCollider;
 	bool pRequiresInteraction;
 	
-	bool pVisible;
 	bool pPartiallyHidden;
 	
 	deBaseScriptingCollider *pListenerCollider;
@@ -156,6 +306,10 @@ private:
 	bool pAnyContentVisible;
 	
 	
+public:
+	/** \brief Object changed event. */
+	igdeTEvent<> onChanged;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -164,7 +318,9 @@ public:
 	igdeWObject(igdeEnvironment &environment);
 	
 	igdeWObject(const igdeWObject&) = delete;
+	igdeWObject(igdeWObject&&) = delete;
 	igdeWObject& operator=(const igdeWObject&) = delete;
+	igdeWObject& operator=(igdeWObject&&) = delete;
 
 protected:
 	/** \brief Clean up wrapper. */
@@ -178,6 +334,16 @@ public:
 	/*@{*/
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
+	/** \brief Meta properties. */
+	inline igdeMetaPropertyStringStorage::Storage &GetMPSObjectClass(){ return pMPSObjectClass; }
+	inline igdeMetaPropertyPathStorage::Storage &GetMPSWorld(){ return pMPSWorld; }
+	inline igdeMetaPropertyDVectorStorage::Storage &GetMPSPosition(){ return pMPSPosition; }
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPSRotation(){ return pMPSRotation; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPSScaling(){ return pMPSScaling; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPSVisible(){ return pMPSVisible; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPSDynamicCollider(){ return pMPSDynamicCollider; }
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** \brief World or nullptr. */
 	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
@@ -207,25 +373,25 @@ public:
 	void SetGDClassName(const char *gdClassName);
 	
 	/** \brief Path to world. */
-	inline const decString &GetPathWorld() const{ return pPathWorld; }
+	inline const decString &GetPathWorld() const{ return pMPSWorld; }
 	
 	/** \brief Set path to world. */
 	void SetPathWorld(const char *path);
 	
 	/** \brief Position. */
-	inline decDVector GetPosition() const{ return pPosition; }
+	inline decDVector GetPosition() const{ return pMPSPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline decQuaternion GetOrientation() const{ return pOrientation; }
+	inline decQuaternion GetOrientation() const{ return pMPSRotation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline decVector GetScaling() const{ return pScaling; }
+	inline decVector GetScaling() const{ return pMPSScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
@@ -237,7 +403,7 @@ public:
 	inline const decDMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Determines if the object is visible. */
-	inline bool GetVisible() const{ return pVisible; }
+	inline bool GetVisible() const{ return pMPSVisible; }
 	
 	/** \brief Sets if the object is visible. */
 	void SetVisible(bool visible);
@@ -310,7 +476,7 @@ public:
 	
 	
 	/** \brief Determines if the collider is allowed to be dynamic or always kinematic. */
-	inline bool GetDynamicCollider() const{ return pDynamicCollider; }
+	inline bool GetDynamicCollider() const{ return pMPSDynamicCollider; }
 	
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);

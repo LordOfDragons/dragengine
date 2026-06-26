@@ -225,14 +225,15 @@ igdeMetaPropertyPointWidget::~igdeMetaPropertyPointWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyPointWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyPointWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pEditPoint)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditPoint(pPropertyPoint.GetDescription(), pEditPoint, pListener);
-	WrapEditWidget(container, helper, noLabel, pEditPoint);
+	builder.GetHelper().EditPoint(pPropertyPoint.GetDescription(), pEditPoint, pListener);
+	pEditPoint->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pEditPoint);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyPointWidget::Drop(){
@@ -254,6 +255,8 @@ void igdeMetaPropertyPointWidget::Update(){
 		pEditPoint->SetPoint(valid ? pPropertyPoint.GetPropertyValue(GetContext()) : decPoint());
 		pEditPoint->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyPointWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -274,6 +277,10 @@ void igdeMetaPropertyPointWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyPointWidget::IsPropertyValid() const{
+	return pPropertyPoint.IsValid(GetContext());
 }
 
 

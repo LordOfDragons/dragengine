@@ -176,4 +176,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decString &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyDirectoryUndo.h"
+
 #endif

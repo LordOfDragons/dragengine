@@ -319,7 +319,7 @@ igdeMetaPropertySetWidget::~igdeMetaPropertySetWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertySetWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertySetWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
 	auto state = pPropertySet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
@@ -329,11 +329,13 @@ void igdeMetaPropertySetWidget::Create(igdeContainer &container, igdeUIHelper &h
 		pPropertySet.SetWidgetState(state);
 	}
 	
+	auto &helper = builder.GetHelper();
 	pListener = deTObjectReference<cListener>::New(*this);
 	helper.ListBox(state->rows, pPropertySet.GetDescription(), pListBox, pListener);
 	pListBox->SetDefaultSorter();
 	pListBox->SetSelectionMode(pPropertySet.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
+	pListBox->SetEnabled(false);
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -343,9 +345,9 @@ void igdeMetaPropertySetWidget::Create(igdeContainer &container, igdeUIHelper &h
 		buttons.Clear();
 	}
 	
-	WrapEditWidget(container, helper, noLabel, pListBox, buttons);
+	WrapEditWidget(builder, noLabel, pListBox, buttons);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertySetWidget::Drop(){
@@ -397,6 +399,11 @@ void igdeMetaPropertySetWidget::Update(){
 	// current selection and active object to properly synchronize if anything changed
 	StoreSelection();
 	StoreActiveObject();
+	
+	pButtonActions.Visit([&](igdeMetaProperty::Action &action){
+		action.Update();
+	});
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertySetWidget::UpdateItemInfo(){
@@ -472,6 +479,10 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertySetWidget::IsPropertyValid() const{
+	return pPropertySet.IsValid(GetContext());
 }
 
 void igdeMetaPropertySetWidget::StoreSelection(){

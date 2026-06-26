@@ -49,58 +49,58 @@ lockedAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.lockedAxis, GetMetaC
 targetPosition(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetPosition, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
 targetUp(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetUp, GetMetaContext().StaticCast<aeMCRuleTrackTo>())
 {
-	trackBone.SetOnChanged([this](){
+	trackBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleTrackTo*)GetEngineRule())->SetTrackBone(trackBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	trackAxis.SetOnChanged([this](){
+	trackAxis.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleTrackTo*)GetEngineRule())->SetTrackAxis(trackAxis);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	upAxis.SetOnChanged([this](){
+	upAxis.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleTrackTo*)GetEngineRule())->SetUpAxis(upAxis);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	upTarget.SetOnChanged([this](){
+	upTarget.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleTrackTo*)GetEngineRule())->SetUpTarget(upTarget);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	lockedAxis.SetOnChanged([this](){
+	lockedAxis.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleTrackTo*)GetEngineRule())->SetLockedAxis(lockedAxis);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetPosition = aeControllerTarget::Ref::New(targetPosition);
-	targetPosition.SetOnChanged([this](){
+	targetPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleTrackTo*)GetEngineRule())->GetTargetPosition(), targetPosition);
 		}
 		pTargetPosition->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetUp = aeControllerTarget::Ref::New(targetUp);
-	targetUp.SetOnChanged([this](){
+	targetUp.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleTrackTo*)GetEngineRule())->GetTargetUp(), targetUp);
 		}
 		pTargetUp->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleTrackTo::aeRuleTrackTo(aeWindowMain &windowMain, const aeRuleTrackTo &copy) :

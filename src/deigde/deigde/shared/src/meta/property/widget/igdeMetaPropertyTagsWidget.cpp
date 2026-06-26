@@ -219,7 +219,7 @@ igdeMetaPropertyTagsWidget::~igdeMetaPropertyTagsWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyTagsWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pEditTags)
 	
 	auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
@@ -230,11 +230,11 @@ void igdeMetaPropertyTagsWidget::Create(igdeContainer &container, igdeUIHelper &
 	}
 	
 	pAction = deTObjectReference<cAction>::New(*this);
-	helper.EditTags(pEditTags, pAction);
+	builder.GetHelper().EditTags(pEditTags, pAction);
 	pEditTags->GetListBox().SetRows(state->rows);
-	WrapEditWidget(container, helper, noLabel, pEditTags);
+	WrapEditWidget(builder, noLabel, pEditTags);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){
@@ -264,6 +264,8 @@ void igdeMetaPropertyTagsWidget::Update(){
 		pEditTags->GetListBox().SetEnabled(valid);
 		pEditTags->GetComboBox().SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyTagsWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -284,6 +286,10 @@ void igdeMetaPropertyTagsWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyTagsWidget::IsPropertyValid() const{
+	return pPropertyTags.IsValid(GetContext());
 }
 
 

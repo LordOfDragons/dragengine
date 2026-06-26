@@ -1131,6 +1131,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageObject.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStoragePrimitive.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageQuaternion.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageSet.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageString.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\storage\igdeMetaPropertyStorageStringList.h" />
@@ -1206,6 +1207,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeBaseXML.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeFilter.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeRecentFiles.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeTEvent.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeTListenerList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\utils\igdeUniqueNameGenerator.h" />
   </ItemGroup>

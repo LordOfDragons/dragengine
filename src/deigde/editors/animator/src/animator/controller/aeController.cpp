@@ -60,52 +60,52 @@ vectorSimulation(windowMain.GetMCAnimatorProperties().controller.vectorSimulatio
 defaultValue(windowMain.GetMCAnimatorProperties().controller.defaultValue, pMetaContext),
 defaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, pMetaContext)
 {
-	name.SetOnChanged([this](){
+	name.onValueChanged = [this](){
 		if(pAnimator){
 			pAnimator->NotifyControllerNameChanged(this);
 		}
-	});
+	};
 	
-	minimumValue.SetOnChanged([this](){
+	minimumValue.onValueChanged = [this](){
 		pOnLimitsChanged();
 		currentValue.SetLowerLimit(minimumValue);
 		currentValue.SetTickSpacing((maximumValue - minimumValue) / 10.0f);
-	});
+	};
 	
-	maximumValue.SetOnChanged([this](){
+	maximumValue.onValueChanged = [this](){
 		pOnLimitsChanged();
 		currentValue.SetUpperLimit(maximumValue);
 		currentValue.SetTickSpacing((maximumValue - minimumValue) / 10.0f);
-	});
+	};
 	
-	currentValue.SetOnChanged([this](){
+	currentValue.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
 			instance.GetControllers()[pIndex]->SetCurrentValue(currentValue);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerValueChanged();
-	});
+	};
 	
-	clamp.SetOnChanged([this](){
+	clamp.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
 			instance.GetControllers()[pIndex]->SetClamp(clamp);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerChanged();
-	});
+	};
 	
-	frozen.SetOnChanged([this](){
+	frozen.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
 			instance.GetControllers()[pIndex]->SetFrozen(frozen);
 			instance.NotifyControllerChangedAt(pIndex);
 		}
 		pNotifyControllerChanged();
-	});
+	};
 	
-	vector.SetOnChanged([this](){
+	vector.onValueChanged = [this](){
 		if(pIndex != -1){
 			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
 			instance.GetControllers()[pIndex]->SetVector(vector);
@@ -115,18 +115,18 @@ defaultVector(windowMain.GetMCAnimatorProperties().controller.defaultVector, pMe
 		if(pGizmoIKPosition){
 			pGizmoIKPosition->OnObjectGeometryChanged();
 		}
-	});
+	};
 	
-	locomotionAttribute.SetOnChanged([this](){ pNotifyControllerChanged(); });
+	locomotionAttribute.onValueChanged = [this](){ pNotifyControllerChanged(); };
 	
-	vectorSimulation.SetOnChanged([this](){
+	vectorSimulation.onValueChanged = [this](){
 		pReleaseGizmos();
 		pCreateGizmos();
 		pNotifyControllerChanged();
-	});
+	};
 	
-	defaultValue.SetOnChanged([this](){ pNotifyControllerChanged(); });
-	defaultVector.SetOnChanged([this](){ pNotifyControllerChanged(); });
+	defaultValue.onValueChanged = [this](){ pNotifyControllerChanged(); };
+	defaultVector.onValueChanged = [this](){ pNotifyControllerChanged(); };
 }
 
 aeController::aeController(aeWindowMain &windowMain, const aeController &copy) :

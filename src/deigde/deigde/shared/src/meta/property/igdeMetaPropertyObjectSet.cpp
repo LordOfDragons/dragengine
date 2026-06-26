@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyObjectSet.h"
-#include "undo/igdeMetaPropertyObjectSetUndo.h"
 #include "widget/igdeMetaPropertyObjectSetWidget.h"
 #include "../igdeMetaContext.h"
 #include "../../clipboard/igdeClipboard.h"

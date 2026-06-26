@@ -58,125 +58,125 @@ targetRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetR
 targetSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetSize, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
 targetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateManipulator>())
 {
-	minPosition.SetOnChanged([this](){
+	minPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMinimumPosition(minPosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxPosition.SetOnChanged([this](){
+	maxPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMaximumPosition(maxPosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minRotation.SetOnChanged([this](){
+	minRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMinimumRotation(minRotation.GetValue() * DEG2RAD);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxRotation.SetOnChanged([this](){
+	maxRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMaximumRotation(maxRotation.GetValue() * DEG2RAD);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minSize.SetOnChanged([this](){
+	minSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMinimumSize(minSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxSize.SetOnChanged([this](){
+	maxSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMaximumSize(maxSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minVertexPositionSet.SetOnChanged([this](){
+	minVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMinimumVertexPositionSet(minVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxVertexPositionSet.SetOnChanged([this](){
+	maxVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetMaximumVertexPositionSet(maxVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotation.SetOnChanged([this](){
+	enableRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetEnableRotation(enableRotation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSet.SetOnChanged([this](){
+	enableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleStateManipulator*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetPosition = aeControllerTarget::Ref::New(targetPosition);
-	targetPosition.SetOnChanged([this](){
+	targetPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleStateManipulator*)GetEngineRule())->GetTargetPosition(), targetPosition);
 		}
 		pTargetPosition->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetRotation = aeControllerTarget::Ref::New(targetRotation);
-	targetRotation.SetOnChanged([this](){
+	targetRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleStateManipulator*)GetEngineRule())->GetTargetRotation(), targetRotation);
 		}
 		pTargetRotation->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetSize = aeControllerTarget::Ref::New(targetSize);
-	targetSize.SetOnChanged([this](){
+	targetSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleStateManipulator*)GetEngineRule())->GetTargetSize(), targetSize);
 		}
 		pTargetSize->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetVertexPositionSet = aeControllerTarget::Ref::New(targetVertexPositionSet);
-	targetVertexPositionSet.SetOnChanged([this](){
+	targetVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleStateManipulator*)GetEngineRule())->GetTargetVertexPositionSet(), targetVertexPositionSet);
 		}
 		pTargetVertexPositionSet->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 
 }
 aeRuleStateManipulator::aeRuleStateManipulator(aeWindowMain &windowMain, const aeRuleStateManipulator &copy) :

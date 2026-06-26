@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyBoolean.h"
-#include "undo/igdeMetaPropertyBooleanUndo.h"
 #include "widget/igdeMetaPropertyBooleanWidget.h"
 #include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"

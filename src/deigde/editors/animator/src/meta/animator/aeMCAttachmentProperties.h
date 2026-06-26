@@ -38,6 +38,7 @@ public:
 	deTObjectReference<aeMCPAttachmentName> name = deTObjectReference<aeMCPAttachmentName>::New();
 	deTObjectReference<aeMCPAttachmentAttachType> attachType = deTObjectReference<aeMCPAttachmentAttachType>::New();
 	deTObjectReference<aeMCPAttachmentBoneName> boneName = deTObjectReference<aeMCPAttachmentBoneName>::New();
+	deTObjectReference<aeMCPAttachmentWObject> wobject = deTObjectReference<aeMCPAttachmentWObject>::New();
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	

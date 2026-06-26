@@ -66,38 +66,38 @@ enableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOri
 enableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
 enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleSubAnimator>())
 {
-	pathSubAnimator.SetOnChanged([this](){
+	pathSubAnimator.onValueChanged = [this](){
 		NotifyRuleChanged();
 		LoadSubAnimator();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableOrientation.SetOnChanged([this](){
+	enableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSet.SetOnChanged([this](){
+	enableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const aeRuleSubAnimator &copy) :

@@ -159,16 +159,16 @@ igdeMetaPropertyBooleanWidget::~igdeMetaPropertyBooleanWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyBooleanWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyBooleanWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pCheckBox)
 	
 	
 	pAction = deTObjectReference<cAction>::New(*this, noLabel);
-	helper.CheckBox(pCheckBox, pAction);
+	builder.GetHelper().CheckBox(pCheckBox, pAction);
 	pCheckBox->SetCentered(!noLabel);
-	WrapEditWidget(container, helper, noLabel, pCheckBox);
+	WrapEditWidget(builder, noLabel, pCheckBox);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyBooleanWidget::Drop(){
@@ -187,12 +187,18 @@ void igdeMetaPropertyBooleanWidget::Update(){
 			pAction->Update();
 		});
 	}
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyBooleanWidget::AddContextMenuEntries(igdeMenuCascade &contextMenu){
 	igdeMetaPropertyWidget::AddContextMenuEntries(contextMenu);
 	contextMenu.GetEnvironment().GetUIHelper().MenuCommand(contextMenu,
 		deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyBooleanWidget::IsPropertyValid() const{
+	return pPropertyBoolean.IsValid(GetContext());
 }
 
 

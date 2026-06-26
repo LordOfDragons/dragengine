@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyPoint3.h"
-#include "undo/igdeMetaPropertyPoint3Undo.h"
 #include "widget/igdeMetaPropertyPoint3Widget.h"
 #include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"

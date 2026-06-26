@@ -48,10 +48,10 @@ igdeMetaPropertyGroupWidget::~igdeMetaPropertyGroupWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyGroupWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pGroupBox)
 	
-	igdeEnvironment &env = helper.GetEnvironment();
+	igdeEnvironment &env = builder.GetHelper().GetEnvironment();
 	
 	auto state = pPropertyGroup.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateGroup>();
 	if(!state){
@@ -62,12 +62,13 @@ void igdeMetaPropertyGroupWidget::Create(igdeContainer &container, igdeUIHelper 
 	
 	pGroupBox = igdeGroupBox::Ref::New(env, pPropertyGroup.GetLabel(), false);
 	pGroupBox->SetCollapsed(state->collapsed);
-	container.AddChild(pGroupBox);
 	
 	pGroupBoxContainer = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
 	pGroupBox->AddChild(pGroupBoxContainer);
 	
-	UpdateMatchable(container);
+	builder.OpenGroup(pGroupBox, pGroupBoxContainer);
+	
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){

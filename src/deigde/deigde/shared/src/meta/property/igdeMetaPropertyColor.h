@@ -196,4 +196,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decColor &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyColorUndo.h"
+
 #endif

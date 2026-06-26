@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyContextWidget.h"
 #include "igdeMetaPropertyGroupWidget.h"
 #include "../../../gui/igdeUIHelper.h"
+#include "../../../gui/layout/igdeContainerFlow.h"
 
 
 // Class igdeMetaPropertyContextWidget::PropertyListener
@@ -68,33 +69,85 @@ igdeMetaPropertyContextWidget::~igdeMetaPropertyContextWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyContextWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
-	if(!pContextPanel){
-		pContextPanel = igdeWPMetaContext::Ref::New(helper.GetEnvironment());
+void igdeMetaPropertyContextWidget::Create(Builder &builder, bool noLabel){
+	DEASSERT_NULL(pContainer)
+	
+	pPropertyProperties = pPropertyContext.GetProperties();
+	
+	if(pPropertyProperties){
+		pProperties = pPropertyProperties;
+		const auto restore = builder.GetCollectWidgets();
+		builder.SetCollectWidgets(&pPropertyWidgets);
+		pUpdatePropertyWidgets(builder, pPropertyContext.GetDefaultValue());
+		builder.SetCollectWidgets(restore);
+		
+	}else{
+		pContainer = igdeContainerFlow::Ref::New(builder.GetHelper().GetEnvironment(), igdeContainerFlow::eaY);
+		builder.AddLine(pContainer);
 	}
-	container.AddChild(pContextPanel);
 }
 
 void igdeMetaPropertyContextWidget::Drop(){
-	// we keep the context panel alive to keep the caches inside alive
+	pClearPropertyWidgets();
+	pContainer.Clear();
+	pPropertyProperties.Clear();
+	pProperties.Clear();
+	pValueContext.Clear();
 	igdeMetaPropertyWidget::Drop();
 }
 
 void igdeMetaPropertyContextWidget::Update(){
-	if(!pContextPanel){
-		return;
+	const bool valid = pPropertyContext.IsValid(GetContext());
+	pValueContext = valid ? pPropertyContext.GetPropertyValue(GetContext())
+		: pPropertyContext.GetDefaultValue();
+	
+	const auto properties = pValueContext ? pValueContext->GetProperties() : pPropertyProperties;
+	if(pPropertyProperties){
+		if(pPropertyProperties != properties){
+			return;
+		}
+		
+	}else if(pProperties != properties){
+		pProperties = properties;
+		
+		if(pContainer){
+			igdeWPMetaContext::Builder builder(GetEnvironment().GetUIHelperProperties(),
+				pContainer, &pPropertyWidgets, pPropertyWidgetCache);
+			pUpdatePropertyWidgets(builder, pValueContext);
+		}
 	}
 	
-	const bool valid = pPropertyContext.IsValid(GetContext());
-	pContextPanel->SetContext(valid ? pPropertyContext.GetPropertyValue(GetContext())
-		: pPropertyContext.GetDefaultValue());
+	pPropertyWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.SetContext(pValueContext);
+	});
 }
 
 void igdeMetaPropertyContextWidget::Filter(const igdeFilter &filter){
-	if(pContextPanel){
-		pContextPanel->SetFilter(filter);
+	if(pFilter == filter){
+		return;
 	}
-	SetFilteredOut(filter && !pContextPanel->HasVisibleWidgets());
+	
+	pFilter = filter;
+	
+	if(filter){
+		pFilterPropertyWidgets();
+	}
+	SetFilteredOut(filter && !pPropertyWidgets.HasMatching([](const igdeMetaPropertyWidget &widget){
+		return !widget.GetFilteredOut();
+	}));
+}
+
+igdeEnvironment &igdeMetaPropertyContextWidget::GetEnvironment() const{
+	if(pContainer){
+		return pContainer->GetEnvironment();
+		
+	}else{
+		return igdeMetaPropertyWidget::GetEnvironment();
+	}
+}
+
+bool igdeMetaPropertyContextWidget::IsPropertyValid() const{
+	return pPropertyContext.IsValid(GetContext());
 }
 
 
@@ -103,11 +156,37 @@ void igdeMetaPropertyContextWidget::Filter(const igdeFilter &filter){
 
 void igdeMetaPropertyContextWidget::UpdateFilteredOut(){
 	igdeMetaPropertyWidget::UpdateFilteredOut();
-	if(pContextPanel){
-		pContextPanel->SetVisible(!GetFilteredOut());
+	if(pContainer){
+		pContainer->SetVisible(!GetFilteredOut());
 	}
 }
 
 void igdeMetaPropertyContextWidget::OnContextChanged(){
 	Update();
+}
+
+void igdeMetaPropertyContextWidget::pUpdatePropertyWidgets(
+Builder &builder, const igdeMetaContext::Ref &context){
+	pClearPropertyWidgets();
+	builder.CreatePropertyWidgets(pProperties, context);
+	
+	if(pFilter){
+		pFilterPropertyWidgets();
+	}
+}
+
+void igdeMetaPropertyContextWidget::pClearPropertyWidgets(){
+	pPropertyWidgets.Visit([](igdeMetaPropertyWidget &widget){
+		widget.Drop();
+	});
+	pPropertyWidgets.RemoveAll();
+	if(pContainer){
+		pContainer->RemoveAllChildren();
+	}
+}
+
+void igdeMetaPropertyContextWidget::pFilterPropertyWidgets(){
+	pPropertyWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.Filter(pFilter);
+	});
 }

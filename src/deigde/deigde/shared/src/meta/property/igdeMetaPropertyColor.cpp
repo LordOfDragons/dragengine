@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyColor.h"
-#include "undo/igdeMetaPropertyColorUndo.h"
 #include "widget/igdeMetaPropertyColorWidget.h"
 #include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"

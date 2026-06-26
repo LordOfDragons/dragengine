@@ -58,131 +58,131 @@ targetLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic
 targetReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachRange, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
 targetReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachCenter, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>())
 {
-	goalPosition.SetOnChanged([this](){
+	goalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetGoalPosition(goalPosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	goalOrientation.SetOnChanged([this](){
+	goalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetGoalOrientation(
 				decQuaternion::CreateFromEuler(goalOrientation.GetValue() * DEG2RAD));
 			}
 			NotifyRuleChanged();
-	});
+	};
 	
-	localPosition.SetOnChanged([this](){
+	localPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetLocalPosition(localPosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	localOrientation.SetOnChanged([this](){
+	localOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetLocalOrientation(
 				decQuaternion::CreateFromEuler(localOrientation.GetValue() * DEG2RAD));
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	adjustOrientation.SetOnChanged([this](){
+	adjustOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetAdjustOrientation(adjustOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	useSolverBone.SetOnChanged([this](){
+	useSolverBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetUseSolverBone(useSolverBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	solverBone.SetOnChanged([this](){
+	solverBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetSolverBone(solverBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	reachRange.SetOnChanged([this](){
+	reachRange.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachRange(reachRange);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	reachBone.SetOnChanged([this](){
+	reachBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachBone(reachBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	reachCenter.SetOnChanged([this](){
+	reachCenter.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleInverseKinematic*)GetEngineRule())->SetReachCenter(reachCenter);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetGoalPosition = aeControllerTarget::Ref::New(targetGoalPosition);
-	targetGoalPosition.SetOnChanged([this](){
+	targetGoalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetGoalPosition(), targetGoalPosition);
 		}
 		pTargetGoalPosition->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetGoalOrientation = aeControllerTarget::Ref::New(targetGoalOrientation);
-	targetGoalOrientation.SetOnChanged([this](){
+	targetGoalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetGoalOrientation(), targetGoalOrientation);
 		}
 		pTargetGoalOrientation->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetLocalPosition = aeControllerTarget::Ref::New(targetLocalPosition);
-	targetLocalPosition.SetOnChanged([this](){
+	targetLocalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetLocalPosition(), targetLocalPosition);
 		}
 		pTargetLocalPosition->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetLocalOrientation = aeControllerTarget::Ref::New(targetLocalOrientation);
-	targetLocalOrientation.SetOnChanged([this](){
+	targetLocalOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetLocalOrientation(), targetLocalOrientation);
 		}
 		pTargetLocalOrientation->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetReachRange = aeControllerTarget::Ref::New(targetReachRange);
-	targetReachRange.SetOnChanged([this](){
+	targetReachRange.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetReachRange(), targetReachRange);
 		}
 		pTargetReachRange->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetReachCenter = aeControllerTarget::Ref::New(targetReachCenter);
-	targetReachCenter.SetOnChanged([this](){
+	targetReachCenter.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleInverseKinematic*)GetEngineRule())->GetTargetReachCenter(), targetReachCenter);
 		}
 		pTargetReachCenter->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleInverseKinematic::aeRuleInverseKinematic(aeWindowMain &windowMain, const aeRuleInverseKinematic &copy) :

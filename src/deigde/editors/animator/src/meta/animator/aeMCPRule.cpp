@@ -138,17 +138,24 @@ public:
 	}
 	
 	void OnAction() override{
-		SyncSelection();
 		const auto &context = GetContext();
-		CreateAction(pPropertyRules.GetActionProperty(context), pPropertyRules.GetActionContext(context))->OnAction();
+		if(context && pPropertyRules.IsValid(context)){
+			SyncSelection();
+			CreateAction(pPropertyRules.GetActionProperty(context), pPropertyRules.GetActionContext(context))->OnAction();
+		}
 	}
 	
 	void Update() override{
-		SyncSelection();
 		const auto &context = GetContext();
-		const auto action = CreateAction(pPropertyRules.GetActionProperty(context), pPropertyRules.GetActionContext(context));
-		action->Update();
-		SetEnabled(action->GetEnabled());
+		if(context && pPropertyRules.IsValid(context)){
+			SyncSelection();
+			const auto action = CreateAction(pPropertyRules.GetActionProperty(context), pPropertyRules.GetActionContext(context));
+			action->Update();
+			SetEnabled(action->GetEnabled());
+			
+		}else{
+			SetEnabled(false);
+		}
 	}
 	
 	void SyncSelection(){

@@ -243,4 +243,7 @@ public:
 	int GetPropertyTickSpacing(const ContextRef &context) const override;
 };
 
+
+#include "undo/igdeMetaPropertyIntegerUndo.h"
+
 #endif

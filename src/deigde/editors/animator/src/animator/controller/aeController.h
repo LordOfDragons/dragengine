@@ -98,6 +98,11 @@ public:
 	/** Create copy of controller. */
 	aeController(aeWindowMain &windowMain, const aeController &copy);
 	
+	aeController(const aeController&) = delete;
+	aeController(aeController&&) = delete;
+	aeController& operator=(const aeController&) = delete;
+	aeController& operator=(aeController&&) = delete;
+	
 protected:
 	/** Cleans up the animator controller. */
 	~aeController() override;

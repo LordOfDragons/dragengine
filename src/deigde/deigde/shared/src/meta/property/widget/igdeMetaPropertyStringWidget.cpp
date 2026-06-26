@@ -253,26 +253,29 @@ igdeMetaPropertyStringWidget::~igdeMetaPropertyStringWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyStringWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyStringWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pTextField)
 	DEASSERT_NULL(pComboBox)
 	
+	auto &helper = builder.GetHelper();
 	if(pPropertyString.GetEnableAllowed()){
 		pComboListener = deTObjectReference<cComboListener>::New(*this);
 		helper.ComboBoxFilter(15, 10, true, pPropertyString.GetDescription(), pComboBox, pComboListener);
 		pComboBox->SetDefaultSorter();
+		pComboBox->SetEnabled(false);
 		/*RunWithPreventUpdate([&]{
 			pComboBox->AddItem(pComboBox->Translate("Igde.MetaPropertyList.ListEntry.None").ToUTF8());
 		});*/
-		WrapEditWidget(container, helper, noLabel, pComboBox);
+		WrapEditWidget(builder, noLabel, pComboBox);
 		
 	}else{
 		pTextListener = deTObjectReference<cTextListener>::New(*this);
 		helper.EditString(pPropertyString.GetDescription(), 15, pTextField, pTextListener);
-		WrapEditWidget(container, helper, noLabel, pTextField);
+		pTextField->SetEnabled(false);
+		WrapEditWidget(builder, noLabel, pTextField);
 	}
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 	
 	UpdateAllowedStrings();
 }
@@ -307,6 +310,8 @@ void igdeMetaPropertyStringWidget::Update(){
 			pComboBox->SetEnabled(valid);
 		});
 	}
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyStringWidget::UpdateAllowedStrings(){
@@ -350,6 +355,10 @@ void igdeMetaPropertyStringWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyStringWidget::IsPropertyValid() const{
+	return pPropertyString.IsValid(GetContext());
 }
 
 

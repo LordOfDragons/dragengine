@@ -226,15 +226,16 @@ igdeMetaPropertyTextAreaWidget::~igdeMetaPropertyTextAreaWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyTextAreaWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyTextAreaWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pTextArea)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditString(pPropertyTextArea.GetDescription(), 15,
+	builder.GetHelper().EditString(pPropertyTextArea.GetDescription(), 15,
 		pPropertyTextArea.GetRows(), pTextArea, pListener);
-	WrapEditWidget(container, helper, noLabel, pTextArea);
+	pTextArea->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pTextArea);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyTextAreaWidget::Drop(){
@@ -256,6 +257,8 @@ void igdeMetaPropertyTextAreaWidget::Update(){
 		pTextArea->SetText(valid ? pPropertyTextArea.GetPropertyValue(GetContext()) : decString());
 		pTextArea->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyTextAreaWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -276,6 +279,10 @@ void igdeMetaPropertyTextAreaWidget::AddContextMenuEntries(igdeMenuCascade &menu
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyTextAreaWidget::IsPropertyValid() const{
+	return pPropertyTextArea.IsValid(GetContext());
 }
 
 

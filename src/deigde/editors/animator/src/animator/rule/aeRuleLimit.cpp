@@ -72,355 +72,355 @@ enableScalingZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZM
 enableVertexPositionSetMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
 enableVertexPositionSetMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMax, GetMetaContext().StaticCast<aeMCRuleLimit>())
 {
-	minPosition.SetOnChanged([this](){
+	minPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumPosition(minPosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxPosition.SetOnChanged([this](){
+	maxPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumPosition(maxPosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minRotation.SetOnChanged([this](){
+	minRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumRotation(minRotation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxRotation.SetOnChanged([this](){
+	maxRotation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumRotation(maxRotation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minScaling.SetOnChanged([this](){
+	minScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumScaling(minScaling);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxScaling.SetOnChanged([this](){
+	maxScaling.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumScaling(maxScaling);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	minVertexPositionSet.SetOnChanged([this](){
+	minVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMinimumVertexPositionSet(minVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	maxVertexPositionSet.SetOnChanged([this](){
+	maxVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetMaximumVertexPositionSet(maxVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	targetBone.SetOnChanged([this](){
+	targetBone.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetTargetBone(targetBone);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	coordinateFrame.SetOnChanged([this](){
+	coordinateFrame.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetCoordinateFrame(coordinateFrame);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionXMin.SetOnChanged([this](){
+	enablePositionXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMin(enablePositionXMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionXMax.SetOnChanged([this](){
+	enablePositionXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMax(enablePositionXMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionYMin.SetOnChanged([this](){
+	enablePositionYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMin(enablePositionYMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionYMax.SetOnChanged([this](){
+	enablePositionYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMax(enablePositionYMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionZMin.SetOnChanged([this](){
+	enablePositionZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMin(enablePositionZMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionZMax.SetOnChanged([this](){
+	enablePositionZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMax(enablePositionZMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationXMin.SetOnChanged([this](){
+	enableRotationXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMin(enableRotationXMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationXMax.SetOnChanged([this](){
+	enableRotationXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMax(enableRotationXMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationYMin.SetOnChanged([this](){
+	enableRotationYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMin(enableRotationYMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationYMax.SetOnChanged([this](){
+	enableRotationYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMax(enableRotationYMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationZMin.SetOnChanged([this](){
+	enableRotationZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMin(enableRotationZMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationZMax.SetOnChanged([this](){
+	enableRotationZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMax(enableRotationZMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingXMin.SetOnChanged([this](){
+	enableScalingXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMin(enableScalingXMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingXMax.SetOnChanged([this](){
+	enableScalingXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMax(enableScalingXMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingYMin.SetOnChanged([this](){
+	enableScalingYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMin(enableScalingYMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingYMax.SetOnChanged([this](){
+	enableScalingYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMax(enableScalingYMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingZMin.SetOnChanged([this](){
+	enableScalingZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMin(enableScalingZMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingZMax.SetOnChanged([this](){
+	enableScalingZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMax(enableScalingZMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSetMin.SetOnChanged([this](){
+	enableVertexPositionSetMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMin(enableVertexPositionSetMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSetMax.SetOnChanged([this](){
+	enableVertexPositionSetMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMax(enableVertexPositionSetMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionXMin.SetOnChanged([this](){
+	enablePositionXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMin(enablePositionXMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionXMax.SetOnChanged([this](){
+	enablePositionXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionXMax(enablePositionXMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionYMin.SetOnChanged([this](){
+	enablePositionYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMin(enablePositionYMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionYMax.SetOnChanged([this](){
+	enablePositionYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionYMax(enablePositionYMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionZMin.SetOnChanged([this](){
+	enablePositionZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMin(enablePositionZMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePositionZMax.SetOnChanged([this](){
+	enablePositionZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnablePositionZMax(enablePositionZMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationXMin.SetOnChanged([this](){
+	enableRotationXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMin(enableRotationXMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationXMax.SetOnChanged([this](){
+	enableRotationXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationXMax(enableRotationXMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationYMin.SetOnChanged([this](){
+	enableRotationYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMin(enableRotationYMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationYMax.SetOnChanged([this](){
+	enableRotationYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationYMax(enableRotationYMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationZMin.SetOnChanged([this](){
+	enableRotationZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMin(enableRotationZMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableRotationZMax.SetOnChanged([this](){
+	enableRotationZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableRotationZMax(enableRotationZMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingXMin.SetOnChanged([this](){
+	enableScalingXMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMin(enableScalingXMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingXMax.SetOnChanged([this](){
+	enableScalingXMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingXMax(enableScalingXMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingYMin.SetOnChanged([this](){
+	enableScalingYMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMin(enableScalingYMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingYMax.SetOnChanged([this](){
+	enableScalingYMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingYMax(enableScalingYMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingZMin.SetOnChanged([this](){
+	enableScalingZMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMin(enableScalingZMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableScalingZMax.SetOnChanged([this](){
+	enableScalingZMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableScalingZMax(enableScalingZMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSetMin.SetOnChanged([this](){
+	enableVertexPositionSetMin.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMin(enableVertexPositionSetMin);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSetMax.SetOnChanged([this](){
+	enableVertexPositionSetMax.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleLimit*)GetEngineRule())->SetEnableVertexPositionSetMax(enableVertexPositionSetMax);
 		}
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleLimit::aeRuleLimit(aeWindowMain &windowMain, const aeRuleLimit &copy) :

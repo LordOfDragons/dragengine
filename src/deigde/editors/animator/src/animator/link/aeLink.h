@@ -56,8 +56,7 @@ class aeLink : public deObject{
 public:
 	using Ref = deTObjectReference<aeLink>;
 	using List = decTObjectOrderedSet<aeLink>;
-	
-	
+
 private:
 	aeMCLink::Ref pMetaContext;
 	aeAnimator *pAnimator;
@@ -89,6 +88,11 @@ public:
 	
 	/** Create copy of link. */
 	aeLink(aeWindowMain &windowMain, const aeLink &copy);
+	
+	aeLink(const aeLink&) = delete;
+	aeLink(aeLink&&) = delete;
+	aeLink& operator=(const aeLink&) = delete;
+	aeLink& operator=(aeLink&&) = delete;
 	
 	/** Clean up link. */
 protected:
@@ -233,15 +237,6 @@ public:
 	/** Update controller. */
 	void UpdateController();
 	/*@}*/
-	
-	
-	
-	/** \name Operators */
-	/*@{*/
-	/** Copy link to this link. */
-	aeLink &operator=(const aeLink &copy);
-	/*@}*/
-	
 	
 	
 private:

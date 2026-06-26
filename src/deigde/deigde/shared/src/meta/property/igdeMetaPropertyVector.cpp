@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyVector.h"
-#include "undo/igdeMetaPropertyVectorUndo.h"
 #include "widget/igdeMetaPropertyVectorWidget.h"
 #include "../igdeMetaContext.h"
 #include "../../undo/igdeUndoSystem.h"
@@ -103,4 +102,30 @@ const igdeMetaContext::Ref &context) const{
 void igdeMetaPropertyVectorStorage::SetPropertyValue(
 const igdeMetaContext::Ref &context, const decVector &value){
 	GetStorage(context).SetValue(value);
+}
+
+
+// igdeMetaPropertyVectorStorageQuaternion
+////////////////////////////////////////////
+
+igdeMetaPropertyVectorStorageQuaternion::igdeMetaPropertyVectorStorageQuaternion(
+	const char *id, const char *name, const char *description) :
+igdeMetaPropertyVector(id, name, description){
+}
+
+igdeMetaPropertyVectorStorageQuaternion::igdeMetaPropertyVectorStorageQuaternion(
+	const char *id, const char *translationTag) :
+igdeMetaPropertyVector(id, translationTag){
+}
+
+igdeMetaPropertyVectorStorageQuaternion::~igdeMetaPropertyVectorStorageQuaternion() = default;
+
+const decVector &igdeMetaPropertyVectorStorageQuaternion::GetPropertyValue(
+const igdeMetaContext::Ref &context) const{
+	return GetStorage(context).GetEulerAngles();
+}
+
+void igdeMetaPropertyVectorStorageQuaternion::SetPropertyValue(
+const igdeMetaContext::Ref &context, const decVector &value){
+	GetStorage(context).SetEulerAngles(value);
 }

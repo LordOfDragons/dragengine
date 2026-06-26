@@ -47,7 +47,7 @@ pAnimator(animator)
 	DEASSERT_TRUE(linkList.IsNotEmpty())
 	
 	linkList.Visit([&](const aeLink &link){
-		pLinkList.Add(aeLink::Ref::New(link));
+		pLinkList.Add(aeLink::Ref::New(animator->GetWindowMain(), link));
 	});
 }
 

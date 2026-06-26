@@ -53,86 +53,86 @@ enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationDiffer
 targetLeadMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetLeadMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
 targetRefMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetRefMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>())
 {
-	leadingMoveName.SetOnChanged([this](){
+	leadingMoveName.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetLeadingMoveName(leadingMoveName);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	leadingMoveTime.SetOnChanged([this](){
+	leadingMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetLeadingMoveTime(leadingMoveTime);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	referenceMoveName.SetOnChanged([this](){
+	referenceMoveName.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetReferenceMoveName(referenceMoveName);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	referenceMoveTime.SetOnChanged([this](){
+	referenceMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetReferenceMoveTime(referenceMoveTime);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	useComponentSpace.SetOnChanged([this](){
+	useComponentSpace.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetUseComponentSpace(useComponentSpace);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableOrientation.SetOnChanged([this](){
+	enableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSet.SetOnChanged([this](){
+	enableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimationDifference*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetLeadMoveTime = aeControllerTarget::Ref::New(targetLeadMoveTime);
-	targetLeadMoveTime.SetOnChanged([this](){
+	targetLeadMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleAnimationDifference*)GetEngineRule())->GetTargetLeadingMoveTime(), targetLeadMoveTime);
 		}
 		pTargetLeadMoveTime->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetRefMoveTime = aeControllerTarget::Ref::New(targetRefMoveTime);
-	targetRefMoveTime.SetOnChanged([this](){
+	targetRefMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleAnimationDifference*)GetEngineRule())->GetTargetReferenceMoveTime(), targetRefMoveTime);
 		}
 		pTargetRefMoveTime->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleAnimationDifference::aeRuleAnimationDifference(aeWindowMain &windowMain, const aeRuleAnimationDifference &copy) :

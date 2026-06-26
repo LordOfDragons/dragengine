@@ -227,15 +227,16 @@ igdeMetaPropertyDirectoryWidget::~igdeMetaPropertyDirectoryWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyDirectoryWidget::Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel){
+void igdeMetaPropertyDirectoryWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pEditDirectory)
 	
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.EditDirectory(pPropertyDirectory.GetDescription(), pEditDirectory, pListener,
-		pPropertyDirectory.GetUseGameVFS());
-	WrapEditWidget(container, helper, noLabel, pEditDirectory);
+	builder.GetHelper().EditDirectory(pPropertyDirectory.GetDescription(),
+		pEditDirectory, pListener, pPropertyDirectory.GetUseGameVFS());
+	pEditDirectory->SetEnabled(false);
+	WrapEditWidget(builder, noLabel, pEditDirectory);
 	
-	UpdateMatchable(container);
+	UpdateMatchable();
 }
 
 void igdeMetaPropertyDirectoryWidget::Drop(){
@@ -260,6 +261,8 @@ void igdeMetaPropertyDirectoryWidget::Update(){
 			: pPropertyDirectory.GetDefaultValue());
 		pEditDirectory->SetEnabled(valid);
 	});
+	
+	igdeMetaPropertyWidget::Update();
 }
 
 void igdeMetaPropertyDirectoryWidget::AddContextMenuEntries(igdeMenuCascade &menu){
@@ -280,6 +283,10 @@ void igdeMetaPropertyDirectoryWidget::AddContextMenuEntries(igdeMenuCascade &men
 	}
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
+}
+
+bool igdeMetaPropertyDirectoryWidget::IsPropertyValid() const{
+	return pPropertyDirectory.IsValid(GetContext());
 }
 
 

@@ -25,6 +25,7 @@
 #include "igdeMetaPropertyWidget.h"
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../gui/igdeUIHelper.h"
+#include "../../../localization/igdeTranslationManager.h"
 #include "../../../utils/igdeFilter.h"
 
 
@@ -41,8 +42,33 @@ public:
 	void AddContextMenuEntries(igdeMenuCascade &menu) override{
 		pWidget.AddContextMenuEntries(menu);
 	}
+	
+	void Update() override{
+		SetEnabled(pWidget.IsPropertyValid());
+	}
 };
 
+}
+
+
+// Class igdeMetaPropertyWidget::Builder
+//////////////////////////////////////////
+
+igdeMetaPropertyWidget::Builder::Builder(igdeUIHelper &helper, igdeMetaPropertyWidget::List *collectWidgets) :
+pHelper(helper),
+pCollectWidgets(collectWidgets){
+}
+
+igdeMetaPropertyWidget::Builder::~Builder() = default;
+
+void igdeMetaPropertyWidget::Builder::SetCollectWidgets(igdeMetaPropertyWidget::List *collectWidgets){
+	pCollectWidgets = collectWidgets;
+}
+
+void igdeMetaPropertyWidget::Builder::CollectWidget(const igdeMetaPropertyWidget::Ref &widget){
+	if(pCollectWidgets){
+		pCollectWidgets->Add(widget);
+	}
 }
 
 
@@ -90,15 +116,17 @@ void igdeMetaPropertyWidget::Filter(const igdeFilter &filter){
 	SetFilteredOut(filter && pMatchable && filter.MatchesNot(pMatchable));
 }
 
-void igdeMetaPropertyWidget::UpdateMatchable(igdeContainer &container){
+void igdeMetaPropertyWidget::UpdateMatchable(){
 	if(pLabel){
+		const auto &tm = GetEnvironment().GetTranslationManager();
+		
 		if(pProperty->GetFilter().IsEmpty()){
-			pMatchable = igdeFilter::Matchable(container.TranslateIf(pProperty->GetLabel()).ToUTF8());
+			pMatchable = igdeFilter::Matchable(tm.TranslateIf(pProperty->GetLabel()).ToUTF8());
 			
 		}else{
-			auto filter = container.TranslateIf(pProperty->GetFilter(), {});
+			auto filter = tm.TranslateIf(pProperty->GetFilter(), {});
 			if(filter.IsEmpty()){
-				filter = container.TranslateIf(pProperty->GetLabel());
+				filter = tm.TranslateIf(pProperty->GetLabel());
 			}
 			pMatchable = igdeFilter::Matchable(filter.ToUTF8());
 		}
@@ -114,6 +142,12 @@ void igdeMetaPropertyWidget::Drop(){
 	pEditContainer.Clear();
 	pButtonContextMenu.Clear();
 	pContext.Clear();
+}
+
+void igdeMetaPropertyWidget::Update(){
+	if(pButtonContextMenu){
+		pButtonContextMenu->GetAction()->Update();
+	}
 }
 
 
@@ -160,22 +194,27 @@ void igdeMetaPropertyWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	}
 }
 
+bool igdeMetaPropertyWidget::IsPropertyValid() const{
+	return false;
+}
+
 
 // Protected Functions
 ////////////////////////
 
-void igdeMetaPropertyWidget::WrapEditWidget(igdeContainer &container, igdeUIHelper &helper,
-bool noLabel, igdeWidget *widget, igdeWidget *sideWidget){
+void igdeMetaPropertyWidget::WrapEditWidget(Builder &builder, bool noLabel,
+igdeWidget *widget, igdeWidget *sideWidget){
 	DEASSERT_NOTNULL(widget)
 	DEASSERT_NULL(pLabel)
 	DEASSERT_NULL(pButtonContextMenu)
 	DEASSERT_NULL(pEditContainer)
 	
+	auto &helper = builder.GetHelper();
 	auto &env = helper.GetEnvironment();
 	
 	// label on left side
 	if(!noLabel){
-		helper.Label(container, pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
+		helper.Label(pLabel, pProperty->GetLabel(), pProperty->GetDescription(),
 			igdeLabel::eaLeft | igdeLabel::eaTop);
 	}
 	
@@ -190,7 +229,7 @@ bool noLabel, igdeWidget *widget, igdeWidget *sideWidget){
 		? igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 0, true)
 		: igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
 	
-	auto action = deTObjectReference<cActionEditMenu>::New(*this, container.GetEnvironment());
+	auto action = deTObjectReference<cActionEditMenu>::New(*this, env);
 	helper.Button(column, pButtonContextMenu, action);
 	pButtonContextMenu->SetStyle(igdeButton::ebsToolBar);
 	action->SetWidget(pButtonContextMenu);
@@ -201,7 +240,12 @@ bool noLabel, igdeWidget *widget, igdeWidget *sideWidget){
 	
 	pEditContainer->AddChild(column);
 	
-	container.AddChild(pEditContainer);
+	if(pLabel){
+		builder.AddLine(pLabel, pEditContainer);
+		
+	}else{
+		builder.AddLine(pEditContainer);
+	}
 }
 
 void igdeMetaPropertyWidget::UpdateFilteredOut(){

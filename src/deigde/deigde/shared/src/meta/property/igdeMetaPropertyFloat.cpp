@@ -23,7 +23,6 @@
  */
 
 #include "igdeMetaPropertyFloat.h"
-#include "undo/igdeMetaPropertyFloatUndo.h"
 #include "widget/igdeMetaPropertyFloatWidget.h"
 #include "../../undo/igdeUndoSystem.h"
 

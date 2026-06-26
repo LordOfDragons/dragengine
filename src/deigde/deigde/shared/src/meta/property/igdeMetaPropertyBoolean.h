@@ -167,4 +167,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, bool value) override;
 };
 
+
+#include "undo/igdeMetaPropertyBooleanUndo.h"
+
 #endif

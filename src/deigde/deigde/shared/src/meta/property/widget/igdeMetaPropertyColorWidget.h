@@ -86,7 +86,7 @@ public:
 	
 	
 	/** \brief Create UI widgets adding them to container. */
-	void Create(igdeContainer &container, igdeUIHelper &helper, bool noLabel) override;
+	void Create(Builder &builder, bool noLabel) override;
 	
 	/** \brief Drop UI widgets. */
 	void Drop() override;
@@ -99,6 +99,7 @@ public:
 	inline const igdeColorBox::Ref &GetColorBox() const{ return pColorBox; }
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
+	bool IsPropertyValid() const override;
 	/*@}*/
 	
 	

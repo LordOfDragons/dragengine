@@ -665,4 +665,7 @@ public:
 	}
 };
 
+
+#include "undo/igdeMetaPropertyListUndo.h"
+
 #endif

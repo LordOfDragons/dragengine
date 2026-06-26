@@ -50,56 +50,56 @@ enableSize(windowMain.GetMCAnimatorProperties().ruleAnimation.enableSize, GetMet
 enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
 targetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>())
 {
-	moveName.SetOnChanged([this](){
+	moveName.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimation*)GetEngineRule())->SetMoveName(moveName);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	moveTime.SetOnChanged([this](){
+	moveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimation*)GetEngineRule())->SetMoveTime(moveTime);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enablePosition.SetOnChanged([this](){
+	enablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnablePosition(enablePosition);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableOrientation.SetOnChanged([this](){
+	enableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableOrientation(enableOrientation);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableSize.SetOnChanged([this](){
+	enableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableSize(enableSize);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
-	enableVertexPositionSet.SetOnChanged([this](){
+	enableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
 			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
 		}
 		NotifyRuleChanged();
-	});
+	};
 	
 	pTargetMoveTime = aeControllerTarget::Ref::New(targetMoveTime);
-	targetMoveTime.SetOnChanged([this](){
+	targetMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
 			pUpdateEngineTarget(((deAnimatorRuleAnimation*)GetEngineRule())->GetTargetMoveTime(), targetMoveTime);
 		}
 		pTargetMoveTime->OnStorageChanged();
 		NotifyRuleChanged();
-	});
+	};
 }
 
 aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const aeRuleAnimation &copy) :

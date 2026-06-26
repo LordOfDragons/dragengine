@@ -195,4 +195,7 @@ public:
 	void SetPropertyValue(const ContextRef &context, const decPoint3 &value) override;
 };
 
+
+#include "undo/igdeMetaPropertyPoint3Undo.h"
+
 #endif

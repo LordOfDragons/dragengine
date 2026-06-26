@@ -209,115 +209,115 @@ attachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaCon
 		return !attachments->HasNamed(name);
 	});
 	
-	rigPath.SetOnChanged([this](){
+	rigPath.onValueChanged = [this](){
 		pUpdateComponent();
 		NotifyRigChanged();
-	});
+	};
 	
-	animationPath.SetOnChanged([this](){
+	animationPath.onValueChanged = [this](){
 		pUpdateAnimator();
 		pCamera->SetBone("");
 		NotifyAnimationChanged();
-	});
+	};
 	
-	affectedBones.SetOnChanged([this](){
+	affectedBones.onValueChanged = [this](){
 		if(pEngAnimator){
 			pEngAnimator->GetListBones() = affectedBones;
 			pEngAnimator->NotifyBonesChanged();
 		}
 		NotifyAnimatorChanged();
-	});
+	};
 	
-	affectedVertexPositionSets.SetOnChanged([this](){
+	affectedVertexPositionSets.onValueChanged = [this](){
 		if(pEngAnimator){
 			pEngAnimator->GetListVertexPositionSets() = affectedVertexPositionSets;
 			pEngAnimator->NotifyVertexPositionSetsChanged();
 		}
 		NotifyAnimatorChanged();
-	});
+	};
 	
-	controllers.SetOnChanged([this](){
+	controllers.onValueChanged = [this](){
 		allowedListControllers = igdeMetaPropertyObjectType<aeController>::ObjectTypeList::New(controllers);
 		pUpdateLinks();
 		NotifyControllerStructureChanged();
-	});
-	controllers.SetOnObjectAdded([this](aeController &each){
+	};
+	controllers.onObjectAdded = [this](aeController &each){
 		each.SetAnimator(this);
-	});
-	controllers.SetOnObjectRemoved([this](aeController &each){
+	};
+	controllers.onObjectRemoved = [this](aeController &each){
 		each.SetAnimator(nullptr);
-	});
-	controllers.SetOnActiveChanged([this](){
+	};
+	controllers.onActiveChanged = [this](){
 		NotifyActiveControllerChanged();
 		const auto &active = controllers.GetActive();
-		controller.SetValue(active ? active->GetMetaContext() : aeMCController::Ref());
-	});
+		controller.SetValue(active ? active->GetMetaContext() : controller.Property().GetDefaultValue());
+	};
 	
-	links.SetOnChanged([this](){
+	links.onValueChanged = [this](){
 		RebuildRules();
 		NotifyLinkStructureChanged();
-	});
-	links.SetOnObjectAdded([this](aeLink &each){
+	};
+	links.onObjectAdded = [this](aeLink &each){
 		each.SetAnimator(this);
-	});
-	links.SetOnObjectRemoved([this](aeLink &each){
+	};
+	links.onObjectRemoved = [this](aeLink &each){
 		each.SetAnimator(nullptr);
-	});
-	links.SetOnActiveChanged([this](){
+	};
+	links.onActiveChanged = [this](){
 		NotifyActiveLinkChanged();
 		const auto &active = links.GetActive();
-		link.SetValue(active ? active->GetMetaContext() : aeMCLink::Ref());
-	});
+		link.SetValue(active ? active->GetMetaContext() : link.Property().GetDefaultValue());
+	};
 	
-	ruleTree.SetOnActiveChanged([this](){
+	ruleTree.onActiveChanged = [this](){
 		NotifyActiveRuleChanged();
 		const auto &active = ruleTree.GetActive();
-		rule.SetValue(active ? active->GetMetaContext() : aeMCRule::Ref());
-	});
+		rule.SetValue(active ? active->GetMetaContext() : rule.Property().GetDefaultValue());
+	};
 	
-	rules.SetOnChanged([this](){
+	rules.onValueChanged = [this](){
 		pUpdateRuleIndices();
 		RebuildRules();
 		NotifyRuleStructureChanged();
-	});
-	rules.SetOnObjectAdded([this](aeRule &each){
+	};
+	rules.onObjectAdded = [this](aeRule &each){
 		each.SetAnimator(this);
-	});
-	rules.SetOnObjectRemoved([this](aeRule &each){
+	};
+	rules.onObjectRemoved = [this](aeRule &each){
 		each.SetAnimator(nullptr);
-	});
+	};
 	
-	attachments.SetOnChanged([this](){
+	attachments.onValueChanged = [this](){
 		NotifyAttachmentStructureChanged();
-	});
-	attachments.SetOnObjectAdded([this](aeAttachment &each){
+	};
+	attachments.onObjectAdded = [this](aeAttachment &each){
 		each.SetAnimator(this);
-	});
-	attachments.SetOnObjectRemoved([this](aeAttachment &each){
+	};
+	attachments.onObjectRemoved = [this](aeAttachment &each){
 		each.SetAnimator(nullptr);
-	});
-	attachments.SetOnActiveChanged([this](){
+	};
+	attachments.onActiveChanged = [this](){
 		NotifyActiveAttachmentChanged();
 		const auto &active = attachments.GetActive();
-		attachment.SetValue(active ? active->GetMetaContext() : aeMCAttachment::Ref());
-	});
+		attachment.SetValue(active ? active->GetMetaContext() : attachment.Property().GetDefaultValue());
+	};
 	
-	displayModelPath.SetOnChanged([this](){
+	displayModelPath.onValueChanged = [this](){
 		pUpdateComponent();
-	NotifyModelChanged();
-	});
-	displaySkinPath.SetOnChanged(displayModelPath.GetOnChanged());
-	displayRigPath.SetOnChanged(displayModelPath.GetOnChanged());
+		NotifyModelChanged();
+	};
+	displaySkinPath.onValueChanged = displayModelPath.onValueChanged;
+	displayRigPath.onValueChanged = displayModelPath.onValueChanged;
 	
-	playSpeed.SetOnChanged([this](){
+	playSpeed.onValueChanged = [this](){
 		NotifyPlaybackChanged();
-	});
-	timeStep.SetOnChanged(playSpeed.GetOnChanged());
+	};
+	timeStep.onValueChanged = playSpeed.onValueChanged;
 	
-	resetState.SetOnChanged([this](){
+	resetState.onValueChanged = [this](){
 		RebuildRules();
 		NotifyViewChanged();
-	});
+	};
 	
 	SetSaved(false);
 	SetChanged(false);
