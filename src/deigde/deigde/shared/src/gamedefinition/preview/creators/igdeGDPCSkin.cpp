@@ -33,7 +33,6 @@
 #include "../../../gameproject/igdeGameProject.h"
 #include "../../../gamedefinition/skin/igdeGDSkin.h"
 #include "../../../gamedefinition/sky/igdeGDSkyManager.h"
-#include "../../../gui/wrapper/igdeWSky.h"
 #include "../../../resourceloader/igdeResourceLoaderListener.h"
 #include "../../../resourceloader/igdeResourceLoaderTask.h"
 
@@ -213,7 +212,6 @@ public:
 igdeGDPCSkin::igdeGDPCSkin(igdeEnvironment &environment, igdeGDSkin *gdskin, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
 pGDSkin(gdskin),
-pSky(nullptr),
 pResLoadFinished(false)
 {
 	if(!gdskin){
@@ -224,10 +222,6 @@ pResLoadFinished(false)
 igdeGDPCSkin::~igdeGDPCSkin(){
 	if(pResLoader){
 		pResLoader.DynamicCast<igdeGDPCSkinResLoader>()->Drop();
-		pResLoader = nullptr;
-	}
-	if(pSky){
-		delete pSky;
 	}
 }
 
@@ -262,7 +256,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	pWorld->AddCamera(pCamera);
 	
 	// create sky
-	pSky = new igdeWSky(environment);
+	pSky = igdeWSky::Ref::New(environment);
 	pSky->SetWorld(pWorld);
 	pSky->SetGDDefaultSky();
 	

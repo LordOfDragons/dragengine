@@ -439,6 +439,7 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.WPCamera.Action.Save.ToolTip">Parameter in Datei speichern</translation>
 	<translation name="Igde.WPCamera.Dialog.SaveCamera.Title">Kamera speichern</translation>
 	<translation name="Igde.WPCamera.Action.Menu.ToolTip">Kameramenü</translation>
+	<translation name="Igde.WPCamera.Action.SetDefault">Standardwerte</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultIndoor">Standardwerte Innenraum</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultDay">Standardwerte Tag</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultNight">Standardwerte Nacht</translation>
@@ -470,6 +471,8 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.WPCamera.AdaptionTime">Anpassungszeit:</translation>
 	<translation name="Igde.WPCamera.AdaptionTime.ToolTip">Anpassungszeit in Sekunden</translation>
 	<translation name="Igde.WPCamera.ToneMapping">Tonwertzuordnung:</translation>
+	<translation name="Igde.WPCamera.ToneMapCurve">Tonwertkurve:</translation>
+	<translation name="Igde.WPCamera.ToneMapCurve.ToolTip">Tonwertkurve zur Anpassung von Helligkeit und Kontrast</translation>
 	<translation name="Igde.WPCamera.WhiteIntensity">Weisse Intensität:</translation>
 	<translation name="Igde.WPCamera.WhiteIntensity.ToolTip">Weissintensitätsmultiplikator (verhindert, dass helle Bereiche zu weiss ausgewaschen werden)</translation>
 	<translation name="Igde.WPCamera.CustomCurve">Benutzerdefinierte Kurve:</translation>
@@ -759,4 +762,6 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name='Igde.MetaPropertyList.ListEntry.None'>&lt;Nichts&gt;</translation>
 	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog'>In Dialog bearbeiten</translation>
 	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog.ToolTip'>Dialog öffnen, um Kurve in großer Ansicht zu bearbeiten.</translation>
+	<translation name="Igde.MetaPropertyPath.Action.BrowseGameDef">Spieledefinition durchsuchen...</translation>
+	<translation name="Igde.MetaPropertyPath.Action.BrowseGameDef.ToolTip">Dialog anzeigen, um aus der Spieledefinition auszuwählen</translation>
 </languagePack>

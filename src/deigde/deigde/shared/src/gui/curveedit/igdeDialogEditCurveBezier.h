@@ -71,6 +71,14 @@ public:
 	
 	/** \brief Curve editor. */
 	inline const igdeViewCurveBezier::Ref &GetViewCurveBezier() const{ return pViewCurveBezier; }
+	
+	/**
+	 * \brief Init running.
+	 * 
+	 * Called by Run() after dialog is created. Subclass can implement to init controls
+	 * after the dialog is visible on screen.
+	 */
+	void OnDialogShown() override;
 	/*@}*/
 	
 	

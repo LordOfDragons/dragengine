@@ -236,6 +236,7 @@ void igdeMetaPropertyDVectorWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pEditDVector);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyDVectorWidget::Drop(){

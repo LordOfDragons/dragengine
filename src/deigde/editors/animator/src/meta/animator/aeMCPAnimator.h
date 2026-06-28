@@ -27,14 +27,17 @@
 
 #include "aeTMCPAnimator.h"
 #include "../../animator/aeAnimator.h"
+#include "../../animator/aeSubAnimator.h"
 
 #include <deigde/meta/igdeMetaContextItemInfo.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyGroup.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
 /** Hidden. */
@@ -184,6 +187,32 @@ public:
 	}
 };
 
+/** Base animator path. */
+class aeMCPAnimatorBaseAnimatorPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+public:
+	aeMCPAnimatorBaseAnimatorPath() : aeTMCPAnimator("animator.baseAnimatorPath", "Animator.WPView.Animator", igdeEnvironment::efpltAnimator){}
+	~aeMCPAnimatorBaseAnimatorPath() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).baseAnimatorPath;
+	}
+	
+	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetDirectoryPath();
+	}
+};
+
+/** Reset state. */
+class aeMCPAnimatorResetState : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+public:
+	aeMCPAnimatorResetState() : aeTMCPAnimator("animator.resetState", "Animator.WPView.ResetState"){}
+	~aeMCPAnimatorResetState() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).resetState;
+	}
+};
+
 /** Play speed. */
 class aeMCPAnimatorPlaySpeed : public aeTMCPAnimator<igdeMetaPropertyFloatStorage>{
 public:
@@ -212,14 +241,100 @@ public:
 	}
 };
 
-/** Reset state. */
-class aeMCPAnimatorResetState : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+/** Paused. */
+class aeMCPAnimatorPaused : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPAnimatorResetState() : aeTMCPAnimator("animator.resetState", "Animator.WPView.ResetState"){}
-	~aeMCPAnimatorResetState() override = default;
+	aeMCPAnimatorPaused() : aeTMCPAnimator("animator.paused", "Animator.WPView.Paused"){}
+	~aeMCPAnimatorPaused() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).resetState;
+		return Animator(context).paused;
+	}
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
+};
+
+/** Sky. */
+class aeMCPAnimatorSky : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+public:
+	aeMCPAnimatorSky();
+	~aeMCPAnimatorSky() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).sky;
+	}
+};
+
+/** Environment object. */
+class aeMCPAnimatorEnvironmentObject : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+public:
+	aeMCPAnimatorEnvironmentObject();
+	~aeMCPAnimatorEnvironmentObject() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).environmentObject;
+	}
+};
+
+/** Camera. */
+class aeMCPAnimatorCamera : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+public:
+	aeMCPAnimatorCamera();
+	~aeMCPAnimatorCamera() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).camera;
+	}
+};
+
+/** Camera Attach. */
+class aeMCPAnimatorCameraAttachToBone : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+public:
+	aeMCPAnimatorCameraAttachToBone() : aeTMCPAnimator("animator.cameraAttach", "Animator.WPView.CamAttach"){}
+	~aeMCPAnimatorCameraAttachToBone() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetCamera()->attachToBone;
+	}
+};
+
+/** Camera attach bone. */
+class aeMCPAnimatorCameraAttachBone : public aeTMCPAnimator<igdeMetaPropertyStringStorage>{
+public:
+	aeMCPAnimatorCameraAttachBone() : aeTMCPAnimator("animator.cameraAttachBone", "Animator.WPView.CamBone"){
+		SetEnableAllowed(true);
+	}
+	
+	~aeMCPAnimatorCameraAttachBone() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetCamera()->bone;
+	}
+	
+	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
+		return Animator(context).hiddenBoneNames;
+	}
+};
+
+/** Camera attach relative position. */
+class aeMCPAnimatorCameraAttachRelativePosition : public aeTMCPAnimator<igdeMetaPropertyVectorStorage>{
+public:
+	aeMCPAnimatorCameraAttachRelativePosition() : aeTMCPAnimator("animator.cameraAttachRelativePosition", "Animator.WPView.CamRelPos"){}
+	~aeMCPAnimatorCameraAttachRelativePosition() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetCamera()->relativePosition;
+	}
+};
+
+/** Camera attach relative rotation. */
+class aeMCPAnimatorCameraAttachRelativeRotation : public aeTMCPAnimator<igdeMetaPropertyVectorStorageQuaternion>{
+public:
+	aeMCPAnimatorCameraAttachRelativeRotation() : aeTMCPAnimator("animator.cameraAttachRelativeRotation", "Animator.WPView.CamRelRot"){}
+	~aeMCPAnimatorCameraAttachRelativeRotation() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetCamera()->relativeRotation;
 	}
 };
 

@@ -56,9 +56,11 @@ public:
 	private:
 		igdeUIHelper &pHelper;
 		igdeMetaPropertyWidget::List *pCollectWidgets;
+		igdeMetaContext::Ref pContext;
 		
 	protected:
-		Builder(igdeUIHelper &helper, igdeMetaPropertyWidget::List *collectWidgets);
+		Builder(igdeUIHelper &helper, igdeMetaPropertyWidget::List *collectWidgets,
+			const igdeMetaContext::Ref &context);
 		virtual ~Builder();
 		
 	public:
@@ -74,6 +76,12 @@ public:
 		/** \brief Add to collect widget list if list is not nullptr. */
 		void CollectWidget(const igdeMetaPropertyWidget::Ref &widget);
 		
+		/** \brief Context or nullptr. */
+		inline const igdeMetaContext::Ref &GetContext() const{ return pContext; }
+		
+		/** \brief Set context or nullptr. */
+		void SetContext(const igdeMetaContext::Ref &context);
+		
 		/** \brief Add property line with label and edit widget. */
 		virtual void AddLine(igdeWidget *label, igdeWidget *edit) = 0;
 		
@@ -87,8 +95,7 @@ public:
 		virtual void CloseGroup() = 0;
 		
 		/** \brief Create property widgets. */
-		virtual void CreatePropertyWidgets(const igdeMetaContext::PropertyList::Ref &properties,
-			const igdeMetaContext::Ref &context) = 0;
+		virtual void CreatePropertyWidgets(const igdeMetaProperty::List &properties) = 0;
 	};
 	
 	

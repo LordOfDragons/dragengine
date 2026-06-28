@@ -440,6 +440,7 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPCamera.Action.Save.ToolTip">Save parameters to file</translation>
 	<translation name="Igde.WPCamera.Dialog.SaveCamera.Title">Save Camera</translation>
 	<translation name="Igde.WPCamera.Action.Menu.ToolTip">Camera menu</translation>
+	<translation name="Igde.WPCamera.Action.SetDefault">Set Default</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultIndoor">Set Default Indoor</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultDay">Set Default Day</translation>
 	<translation name="Igde.WPCamera.Action.SetDefaultNight">Set Default Night</translation>
@@ -471,6 +472,8 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.WPCamera.AdaptionTime">Adaption time:</translation>
 	<translation name="Igde.WPCamera.AdaptionTime.ToolTip">Adaption time in seconds</translation>
 	<translation name="Igde.WPCamera.ToneMapping">Tone mapping:</translation>
+	<translation name="Igde.WPCamera.ToneMapCurve">Tone map curve:</translation>
+	<translation name="Igde.WPCamera.ToneMapCurve.ToolTip">Tone map curve for adjusting brightness and contrast</translation>
 	<translation name="Igde.WPCamera.WhiteIntensity">White intensity:</translation>
 	<translation name="Igde.WPCamera.WhiteIntensity.ToolTip">White intensity multiplier (avoid bright parts wash out to white)</translation>
 	<translation name="Igde.WPCamera.CustomCurve">Custom Curve:</translation>
@@ -760,4 +763,6 @@ property type so be careful what you enter</translation>
 	<translation name='Igde.MetaPropertyList.ListEntry.None'>&lt;None&gt;</translation>
 	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog'>Edit in Dialog</translation>
 	<translation name='Igde.MetaPropertyCurveBezier.EditInDialog.ToolTip'>Open dialog to edit curve in large view.</translation>
+	<translation name="Igde.MetaPropertyPath.Action.BrowseGameDef">Browse Game Definition...</translation>
+	<translation name="Igde.MetaPropertyPath.Action.BrowseGameDef.ToolTip">Show dialog to select from game definition</translation>
 </languagePack>

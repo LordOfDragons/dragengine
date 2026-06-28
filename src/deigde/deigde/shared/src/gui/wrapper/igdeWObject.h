@@ -214,29 +214,20 @@ public:
 		};
 		
 	private:
-		deTObjectReference<ObjectClass> pObjectClass;
-		deTObjectReference<World> pWorld;
-		deTObjectReference<Position> pPosition;
-		deTObjectReference<Rotation> pRotation;
-		deTObjectReference<Scaling> pScaling;
-		deTObjectReference<Visible> pVisible;
-		deTObjectReference<DynamicCollider> pDynamicCollider;
-		igdeMetaContext::PropertyList::Ref pProperties;
-		
 		MetaProperties();
-		static MetaProperties pGlobal;
 		
 	public:
-		inline const deTObjectReference<ObjectClass> &GetObjectClass() const{ return pObjectClass; }
-		inline const deTObjectReference<World> &GetWorld() const{ return pWorld; }
-		inline const deTObjectReference<Position> &GetPosition() const{ return pPosition; }
-		inline const deTObjectReference<Rotation> &GetRotation() const{ return pRotation; }
-		inline const deTObjectReference<Scaling> &GetScaling() const{ return pScaling; }
-		inline const deTObjectReference<Visible> &GetVisible() const{ return pVisible; }
-		inline const deTObjectReference<DynamicCollider> &GetDynamicCollider() const{ return pDynamicCollider; }
-		inline const igdeMetaContext::PropertyList::Ref &GetProperties() const{ return pProperties; }
+		deTObjectReference<ObjectClass> objectClass;
+		deTObjectReference<World> world;
+		deTObjectReference<Position> position;
+		deTObjectReference<Rotation> rotation;
+		deTObjectReference<Scaling> scaling;
+		deTObjectReference<Visible> visible;
+		deTObjectReference<DynamicCollider> dynamicCollider;
 		
-		static const MetaProperties &Global();
+		const igdeMetaContext::PropertyList::Ref properties;
+		
+		static MetaProperties global;
 	};
 	
 	
@@ -244,14 +235,6 @@ private:
 	igdeEnvironment &pEnvironment;
 	
 	MetaContext::Ref pMetaContext;
-	
-	igdeMetaPropertyStringStorage::Storage pMPSObjectClass;
-	igdeMetaPropertyPathStorage::Storage pMPSWorld;
-	igdeMetaPropertyDVectorStorage::Storage pMPSPosition;
-	igdeMetaPropertyVectorStorageQuaternion::Storage pMPSRotation;
-	igdeMetaPropertyVectorStorage::Storage pMPSScaling;
-	igdeMetaPropertyBooleanStorage::Storage pMPSVisible;
-	igdeMetaPropertyBooleanStorage::Storage pMPSDynamicCollider;
 	
 	deWorld::Ref pWorld;
 	deCamera::Ref pCamera;
@@ -307,6 +290,27 @@ private:
 	
 	
 public:
+	/** \brief Meta property object class. */
+	igdeMetaPropertyStringStorage::Storage objectClass;
+	
+	/** \brief Meta property world. */
+	igdeMetaPropertyPathStorage::Storage world;
+	
+	/** \brief Meta property position. */
+	igdeMetaPropertyDVectorStorage::Storage position;
+	
+	/** \brief Meta property rotation. */
+	igdeMetaPropertyVectorStorageQuaternion::Storage rotation;
+	
+	/** \brief Meta property scaling. */
+	igdeMetaPropertyVectorStorage::Storage scaling;
+	
+	/** \brief Meta property visible. */
+	igdeMetaPropertyBooleanStorage::Storage visible;
+	
+	/** \brief Meta property dynamic collider. */
+	igdeMetaPropertyBooleanStorage::Storage dynamicCollider;
+	
 	/** \brief Object changed event. */
 	igdeTEvent<> onChanged;
 	
@@ -335,14 +339,7 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief Meta properties. */
-	inline igdeMetaPropertyStringStorage::Storage &GetMPSObjectClass(){ return pMPSObjectClass; }
-	inline igdeMetaPropertyPathStorage::Storage &GetMPSWorld(){ return pMPSWorld; }
-	inline igdeMetaPropertyDVectorStorage::Storage &GetMPSPosition(){ return pMPSPosition; }
-	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPSRotation(){ return pMPSRotation; }
-	inline igdeMetaPropertyVectorStorage::Storage &GetMPSScaling(){ return pMPSScaling; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPSVisible(){ return pMPSVisible; }
-	inline igdeMetaPropertyBooleanStorage::Storage &GetMPSDynamicCollider(){ return pMPSDynamicCollider; }
+	/** \brief Meta context. */
 	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** \brief World or nullptr. */
@@ -373,25 +370,25 @@ public:
 	void SetGDClassName(const char *gdClassName);
 	
 	/** \brief Path to world. */
-	inline const decString &GetPathWorld() const{ return pMPSWorld; }
+	inline const decString &GetPathWorld() const{ return world; }
 	
 	/** \brief Set path to world. */
 	void SetPathWorld(const char *path);
 	
 	/** \brief Position. */
-	inline decDVector GetPosition() const{ return pMPSPosition; }
+	inline decDVector GetPosition() const{ return position; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline decQuaternion GetOrientation() const{ return pMPSRotation; }
+	inline decQuaternion GetOrientation() const{ return rotation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline decVector GetScaling() const{ return pMPSScaling; }
+	inline decVector GetScaling() const{ return scaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
@@ -403,7 +400,7 @@ public:
 	inline const decDMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Determines if the object is visible. */
-	inline bool GetVisible() const{ return pMPSVisible; }
+	inline bool GetVisible() const{ return visible; }
 	
 	/** \brief Sets if the object is visible. */
 	void SetVisible(bool visible);
@@ -476,7 +473,7 @@ public:
 	
 	
 	/** \brief Determines if the collider is allowed to be dynamic or always kinematic. */
-	inline bool GetDynamicCollider() const{ return pMPSDynamicCollider; }
+	inline bool GetDynamicCollider() const{ return dynamicCollider; }
 	
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);

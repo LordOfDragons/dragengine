@@ -404,12 +404,12 @@ public:
 	}
 };
 
-class cActionReset : public cBaseAction{
+class cActionPlaybackReset : public cBaseAction{
 public:
-	using Ref = deTObjectReference<cActionReset>;
+	using Ref = deTObjectReference<cActionPlaybackReset>;
 	
 public:
-	cActionReset(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Reset", nullptr, "@Animator.WPView.Reset.ToolTip"){}
+	cActionPlaybackReset(aeWPView &panel) : cBaseAction(panel, "@Animator.WPView.Reset", nullptr, "@Animator.WPView.Reset.ToolTip"){}
 	
 	void OnAction(aeAnimator *animator) override{
 		animator->GetControllers().Visit([](aeController &controller){
@@ -702,7 +702,7 @@ pWindowProperties(windowProperties)
 	helper.Button(formLine, pBtnFramePrev, cActionFramePrev::Ref::New(*this));
 	helper.Button(formLine, pBtnPauseAnimation, cActionPaused::Ref::New(*this));
 	helper.Button(formLine, pBtnFrameNext, cActionFrameNext::Ref::New(*this));
-	helper.Button(formLine, pBtnResetAnimation, cActionReset::Ref::New(*this));
+	helper.Button(formLine, pBtnResetAnimation, cActionPlaybackReset::Ref::New(*this));
 	
 	
 	// attachments

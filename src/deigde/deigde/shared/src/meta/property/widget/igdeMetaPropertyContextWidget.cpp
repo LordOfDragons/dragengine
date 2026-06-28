@@ -76,15 +76,20 @@ void igdeMetaPropertyContextWidget::Create(Builder &builder, bool noLabel){
 	
 	if(pPropertyProperties){
 		pProperties = pPropertyProperties;
-		const auto restore = builder.GetCollectWidgets();
+		const auto restoreCollectWidgets = builder.GetCollectWidgets();
+		const auto restoreContext = builder.GetContext();
 		builder.SetCollectWidgets(&pPropertyWidgets);
-		pUpdatePropertyWidgets(builder, pPropertyContext.GetDefaultValue());
-		builder.SetCollectWidgets(restore);
+		builder.SetContext(pPropertyContext.GetDefaultValue());
+		pUpdatePropertyWidgets(builder);
+		builder.SetContext(restoreContext);
+		builder.SetCollectWidgets(restoreCollectWidgets);
 		
 	}else{
 		pContainer = igdeContainerFlow::Ref::New(builder.GetHelper().GetEnvironment(), igdeContainerFlow::eaY);
 		builder.AddLine(pContainer);
 	}
+	
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyContextWidget::Drop(){
@@ -112,8 +117,8 @@ void igdeMetaPropertyContextWidget::Update(){
 		
 		if(pContainer){
 			igdeWPMetaContext::Builder builder(GetEnvironment().GetUIHelperProperties(),
-				pContainer, &pPropertyWidgets, pPropertyWidgetCache);
-			pUpdatePropertyWidgets(builder, pValueContext);
+				pContainer, &pPropertyWidgets, pPropertyWidgetCache, pValueContext);
+			pUpdatePropertyWidgets(builder);
 		}
 	}
 	
@@ -165,10 +170,11 @@ void igdeMetaPropertyContextWidget::OnContextChanged(){
 	Update();
 }
 
-void igdeMetaPropertyContextWidget::pUpdatePropertyWidgets(
-Builder &builder, const igdeMetaContext::Ref &context){
+void igdeMetaPropertyContextWidget::pUpdatePropertyWidgets(Builder &builder){
 	pClearPropertyWidgets();
-	builder.CreatePropertyWidgets(pProperties, context);
+	if(pProperties){
+		builder.CreatePropertyWidgets(pProperties->GetData());
+	}
 	
 	if(pFilter){
 		pFilterPropertyWidgets();

@@ -25,6 +25,7 @@
 #ifndef _AEANIMATOR_H_
 #define _AEANIMATOR_H_
 
+#include "aeCamera.h"
 #include "aeAnimatorNotifier.h"
 #include "attachment/aeAttachment.h"
 #include "controller/aeController.h"
@@ -34,6 +35,7 @@
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
@@ -48,6 +50,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTWeakObjectReference.h>
+#include <dragengine/deTUniqueReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -68,12 +71,10 @@ class igdeEnvironment;
 class aeAnimatorLocomotion;
 class aeWakeboard;
 class aeUndoSystem;
-class aeCamera;
 class aeSubAnimator;
 class aeWindowMain;
 
 class igdeGameDefinition;
-class igdeWSky;
 class igdeWCoordSysArrows;
 
 class deEngine;
@@ -128,7 +129,7 @@ private:
 	
 	deWorld::Ref pEngWorld;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	deLight::Ref pEngLight;
@@ -142,24 +143,20 @@ private:
 	decTUniqueList<igdeWCoordSysArrows> pDDSBones;
 	float pDDSBoneSize;
 	
-	aeCamera *pCamera;
-	
-	bool pPaused;
+	aeCamera::Ref pCamera;
 	
 	aeAnimatorLocomotion *pLocomotion;
 	aeWakeboard *pWakeboard;
-	aeSubAnimator *pSubAnimator;
-	aeSubAnimator *pTestingSubAnimator;
+	deTUniqueReference<aeSubAnimator> pSubAnimator;
+	deTUniqueReference<aeSubAnimator> pTestingSubAnimator;
 	
 	NotifierSet pNotifiers;
 	
 public:
 	igdeMetaPropertyStringSetStorage::Storage hiddenBoneNames, hiddenVPSNames, hiddenMoveNames;
 	
-	igdeMetaPropertyPathStorage::Storage rigPath;
-	igdeMetaPropertyPathStorage::Storage animationPath;
-	igdeMetaPropertyStringSetStorage::Storage affectedBones;
-	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
+	igdeMetaPropertyPathStorage::Storage rigPath, animationPath;
+	igdeMetaPropertyStringSetStorage::Storage affectedBones, affectedVertexPositionSets;
 	
 	igdeMetaPropertyListStorage<aeController, aeController::List>::Storage controllers;
 	igdeMetaPropertyContextStorage::Storage controller;
@@ -173,12 +170,15 @@ public:
 	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList allowedListControllers;
 	
-	igdeMetaPropertyPathStorage::Storage displayModelPath;
-	igdeMetaPropertyPathStorage::Storage displaySkinPath;
-	igdeMetaPropertyPathStorage::Storage displayRigPath;
-	igdeMetaPropertyFloatStorage::Storage playSpeed;
-	igdeMetaPropertyFloatStorage::Storage timeStep;
+	igdeMetaPropertyPathStorage::Storage displayModelPath, displaySkinPath, displayRigPath;
+	
+	igdeMetaPropertyPathStorage::Storage baseAnimatorPath;
 	igdeMetaPropertyBooleanStorage::Storage resetState;
+	
+	igdeMetaPropertyFloatStorage::Storage playSpeed, timeStep;
+	igdeMetaPropertyBooleanStorage::Storage paused;
+	
+	igdeMetaPropertyContextStorage::Storage sky, environmentObject, camera;
 	
 	igdeMetaPropertySetStorage<aeAttachment, AttachmentSet>::Storage attachments;
 	igdeMetaPropertyContextStorage::Storage attachment;
@@ -250,7 +250,7 @@ public:
 	void SetDDBoneSize(float size);
 	
 	/** Determines if the animation is paused. */
-	inline bool GetPaused() const{ return pPaused; }
+	inline bool GetPaused() const{ return paused; }
 	/** Sets if the animation is paused. */
 	void SetPaused(bool paused);
 	/** Retrieves the play speed. */
@@ -266,7 +266,7 @@ public:
 	inline const deDebugDrawer::Ref &GetDDBones() const{ return pDDBones; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
@@ -275,9 +275,9 @@ public:
 	/** Retrieves the wakeboard. */
 	inline aeWakeboard &GetWakeboard() const{ return *pWakeboard; }
 	/** Retrieves the sub animator. */
-	inline aeSubAnimator *GetSubAnimator() const{ return pSubAnimator; }
+	inline const deTUniqueReference<aeSubAnimator> &GetSubAnimator() const{ return pSubAnimator; }
 	/** Retrieves the testing sub animator. */
-	inline aeSubAnimator *GetTestingSubAnimator() const{ return pTestingSubAnimator; }
+	inline const deTUniqueReference<aeSubAnimator> &GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
 	/** Determines if the state is reset before applying the animator. */
 	inline bool GetResetState() const{ return resetState; }
@@ -315,7 +315,7 @@ public:
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	/** Retrieves the camera. */
-	inline aeCamera *GetCamera() const{ return pCamera; }
+	inline const aeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Engine rig if present. */
 	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }

@@ -32,7 +32,6 @@
 #include "../../../gamedefinition/igdeGameDefinition.h"
 #include "../../../gamedefinition/sky/igdeGDSky.h"
 #include "../../../gameproject/igdeGameProject.h"
-#include "../../../gui/wrapper/igdeWSky.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -56,19 +55,14 @@
 
 igdeGDPCSky::igdeGDPCSky(igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
-pGDSky(gdsky),
-pSky(nullptr)
+pGDSky(gdsky)
 {
 	if(!gdsky){
 		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeGDPCSky::~igdeGDPCSky(){
-	if(pSky){
-		delete pSky;
-	}
-}
+igdeGDPCSky::~igdeGDPCSky() = default;
 
 
 
@@ -97,7 +91,7 @@ void igdeGDPCSky::PrepareCanvasForRender(){
 	pWorld->AddCamera(pCamera);
 	
 	// create sky
-	pSky = new igdeWSky(environment);
+	pSky = igdeWSky::Ref::New(environment);
 	pSky->SetWorld(pWorld);
 	pSky->SetGDSky(pGDSky);
 	

@@ -157,6 +157,7 @@ void igdeMetaPropertyTreeListWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pTreeList, buttons);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyTreeListWidget::Drop(){

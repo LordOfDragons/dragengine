@@ -237,6 +237,7 @@ void igdeMetaPropertyDirectoryWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pEditDirectory);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyDirectoryWidget::Drop(){

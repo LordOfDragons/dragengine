@@ -34,6 +34,7 @@
 #include "../../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeString.h>
 
 
 class igdeMetaContext;
@@ -262,7 +263,8 @@ public:
 	 * 
 	 * Returns GetFilter() or GetLabel(). See GetFilter() for details.
 	 */
-	decString RealFilter(const igdeMetaContext &context) const;
+	decUnicodeString RealFilter(const igdeMetaContext &context) const;
+	decUnicodeString RealFilter(igdeEnvironment &environment) const;
 	
 	/**
 	 * \brief Undo info string or empty to use label.
@@ -270,6 +272,7 @@ public:
 	 * Returns GetUndoInfo() or GetLabel(). See GetUndoInfo() for details.
 	 */
 	decString RealUndoInfo(const igdeMetaContext &context) const;
+	decString RealUndoInfo(igdeEnvironment &environment) const;
 	
 	/** \brief Create action undo info in the form "<label>: <action.name>". */
 	decString RealUndoInfo(const igdeMetaContext &context, const igdeAction &action) const;

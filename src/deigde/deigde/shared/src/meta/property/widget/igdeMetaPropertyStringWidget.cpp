@@ -278,6 +278,7 @@ void igdeMetaPropertyStringWidget::Create(Builder &builder, bool noLabel){
 	UpdateMatchable();
 	
 	UpdateAllowedStrings();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyStringWidget::Drop(){

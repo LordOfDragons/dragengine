@@ -255,6 +255,7 @@ void igdeMetaPropertyObjectWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pComboBox);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyObjectWidget::Drop(){

@@ -26,13 +26,13 @@
 #define _IGDEGDPPCSKY_H_
 
 #include "igdeGDPreviewCreator.h"
+#include "../../../gui/wrapper/igdeWSky.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
 
 class igdeGDSky;
-class igdeWSky;
 
 
 
@@ -50,7 +50,7 @@ private:
 	
 	deWorld::Ref pWorld;
 	deCamera::Ref pCamera;
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	

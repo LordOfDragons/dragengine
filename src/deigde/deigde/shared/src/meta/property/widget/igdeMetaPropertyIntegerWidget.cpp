@@ -332,6 +332,7 @@ void igdeMetaPropertyIntegerWidget::Create(Builder &builder, bool noLabel){
 	}
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyIntegerWidget::Drop(){

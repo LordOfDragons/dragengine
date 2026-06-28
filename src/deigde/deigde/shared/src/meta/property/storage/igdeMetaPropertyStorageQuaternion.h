@@ -117,12 +117,12 @@ public:
 	/*@{*/
 	/** \brief Implicit conversion operator. */
 	operator const decQuaternion&() const{
-		return GetQuaternion();
+		return pQuaternion;
 	}
 	
 	/** \brief Implicit conversion operator to Euler angles. */
-	operator decVector() const{
-		return GetEulerAngles();
+	operator const decVector&() const{
+		return pEulerAngles;
 	}
 	
 	/** \brief Assignment operator. */

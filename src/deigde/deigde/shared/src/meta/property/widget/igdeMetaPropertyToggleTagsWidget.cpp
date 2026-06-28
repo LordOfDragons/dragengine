@@ -236,6 +236,7 @@ void igdeMetaPropertyToggleTagsWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pToggleTags);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){

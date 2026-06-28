@@ -54,9 +54,11 @@ public:
 // Class igdeMetaPropertyWidget::Builder
 //////////////////////////////////////////
 
-igdeMetaPropertyWidget::Builder::Builder(igdeUIHelper &helper, igdeMetaPropertyWidget::List *collectWidgets) :
+igdeMetaPropertyWidget::Builder::Builder(igdeUIHelper &helper,
+	igdeMetaPropertyWidget::List *collectWidgets, const igdeMetaContext::Ref &context) :
 pHelper(helper),
-pCollectWidgets(collectWidgets){
+pCollectWidgets(collectWidgets),
+pContext(context){
 }
 
 igdeMetaPropertyWidget::Builder::~Builder() = default;
@@ -69,6 +71,10 @@ void igdeMetaPropertyWidget::Builder::CollectWidget(const igdeMetaPropertyWidget
 	if(pCollectWidgets){
 		pCollectWidgets->Add(widget);
 	}
+}
+
+void igdeMetaPropertyWidget::Builder::SetContext(const igdeMetaContext::Ref &context){
+	pContext = context;
 }
 
 
@@ -117,23 +123,7 @@ void igdeMetaPropertyWidget::Filter(const igdeFilter &filter){
 }
 
 void igdeMetaPropertyWidget::UpdateMatchable(){
-	if(pLabel){
-		const auto &tm = GetEnvironment().GetTranslationManager();
-		
-		if(pProperty->GetFilter().IsEmpty()){
-			pMatchable = igdeFilter::Matchable(tm.TranslateIf(pProperty->GetLabel()).ToUTF8());
-			
-		}else{
-			auto filter = tm.TranslateIf(pProperty->GetFilter(), {});
-			if(filter.IsEmpty()){
-				filter = tm.TranslateIf(pProperty->GetLabel());
-			}
-			pMatchable = igdeFilter::Matchable(filter.ToUTF8());
-		}
-		
-	}else{
-		pMatchable = {};
-	}
+	pMatchable = pLabel ? igdeFilter::Matchable(pProperty->RealFilter(GetEnvironment())) : igdeFilter::Matchable();
 }
 
 

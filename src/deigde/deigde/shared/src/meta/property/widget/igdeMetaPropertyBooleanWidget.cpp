@@ -169,6 +169,7 @@ void igdeMetaPropertyBooleanWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pCheckBox);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyBooleanWidget::Drop(){

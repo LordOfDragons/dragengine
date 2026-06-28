@@ -26,6 +26,9 @@
 #include "../igdeMetaPropertyString.h"
 #include "../undo/igdeMetaPropertyPathUndo.h"
 #include "../../../gui/igdeUIHelper.h"
+#include "../../../gui/browse/igdeDialogBrowserParticleEmitter.h"
+#include "../../../gui/browse/igdeDialogBrowserSky.h"
+#include "../../../gui/browse/igdeDialogBrowserSkin.h"
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../clipboard/igdeClipboard.h"
 #include "../../../localization/igdeTranslationManager.h"
@@ -83,6 +86,58 @@ public:
 	
 	void OnEditPathChanged(igdeEditPath *editPath) override{
 		pHelper.OnValueChanged(editPath->GetPath());
+	}
+};
+
+
+class cActionBrowseGameDef : public igdeAction{
+	igdeMetaPropertyPathWidget &pWidget;
+	
+public:
+	cActionBrowseGameDef(igdeMetaPropertyPathWidget &widget, const igdeMetaContext::Ref &context,
+		igdeEnvironment &environment) :
+	igdeAction("@Igde.MetaPropertyPath.Action.BrowseGameDef",
+		environment.GetStockIcon(igdeEnvironment::esiSearch),
+		"@Igde.MetaPropertyPath.Action.BrowseGameDef.ToolTip"),
+	pWidget(widget){}
+	
+	void OnAction() override{
+		auto &property = pWidget.GetPropertyPath();
+		const auto &context = pWidget.GetContext();
+		if(!property.IsValid(context)){
+			return;
+		}
+		
+		auto owner = pWidget.GetButtonContextMenu()->GetParentWindow();
+		const auto &oldPath = property.GetPropertyValue(context);
+		auto newPath = oldPath;
+		
+		switch(property.GetResourceType()){
+		case igdeEnvironment::efpltSkin:
+			if(!igdeDialogBrowserSkin::SelectSkin(owner, newPath)){
+				return;
+			}
+			break;
+			
+		case igdeEnvironment::efpltSky:
+			if(!igdeDialogBrowserSky::SelectSky(owner, newPath)){
+				return;
+			}
+			break;
+			
+		case igdeEnvironment::efpltParticleEmitter:
+			if(!igdeDialogBrowserParticleEmitter::SelectParticleEmitter(owner, newPath)){
+				return;
+			}
+			break;
+			
+		default:
+			return;
+		}
+		
+		if(newPath != oldPath){
+			property.ChangePropertyValue(context, newPath, property.RealUndoInfo(context, *this));
+		}
 	}
 };
 
@@ -252,6 +307,7 @@ void igdeMetaPropertyPathWidget::Create(Builder &builder, bool noLabel){
 	UpdateMatchable();
 	
 	UpdateBasePath();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyPathWidget::Drop(){
@@ -296,6 +352,18 @@ void igdeMetaPropertyPathWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	
 	if(menu.GetChildren().IsNotEmpty()){
 		helper.MenuSeparator(menu);
+	}
+	
+	switch(pPropertyPath.GetResourceType()){
+	case igdeEnvironment::efpltSkin:
+	case igdeEnvironment::efpltSky:
+	case igdeEnvironment::efpltParticleEmitter:
+		helper.MenuCommand(menu, deTObjectReference<cActionBrowseGameDef>::New(*this, context, env));
+		helper.MenuSeparator(menu);
+		break;
+		
+	default:
+		break;
 	}
 	
 	if(context && context->GetClipboard()){

@@ -39,8 +39,9 @@
 /////////////////////////////////////
 
 igdeWPMetaContext::Builder::Builder(igdeUIHelper &helper, igdeContainer *container,
-	igdeMetaPropertyWidget::List *collectWidgets, igdeWPMetaContext::PropertyWidgetCache &widgetCache) :
-igdeMetaPropertyWidget::Builder(helper, collectWidgets),
+	igdeMetaPropertyWidget::List *collectWidgets,
+	igdeWPMetaContext::PropertyWidgetCache &widgetCache, const igdeMetaContext::Ref &context) :
+igdeMetaPropertyWidget::Builder(helper, collectWidgets, context),
 pWidgetCache(widgetCache)
 {
 	pContainerStack.Add(container);
@@ -80,88 +81,24 @@ void igdeWPMetaContext::Builder::CloseGroup(){
 	pForm.Clear();
 }
 
-void igdeWPMetaContext::Builder::CreatePropertyWidgets(
-const igdeMetaContext::PropertyList::Ref &properties, const igdeMetaContext::Ref &context){
-	if(!properties || properties->GetData().IsEmpty()){
+void igdeWPMetaContext::Builder::CreatePropertyWidgets(const igdeMetaProperty::List &properties){
+	if(properties.IsEmpty()){
 		return;
 	}
 	
-	properties->GetData().Visit([&](const igdeMetaProperty::Ref &property){
-		const auto group = property.DynamicCast<igdeMetaPropertyGroup>();
-		
-		if(group){
-			const auto widget = CreatePropertyWidget(group, context);
-			if(widget){
-				CollectWidget(widget);
-			}
-			
-		}else{
-			auto widget = pWidgetCache.GetAtOrDefault(property);
+	properties.Visit([&](const igdeMetaProperty::Ref &property){
+		auto widget = pWidgetCache.GetAtOrDefault(property);
+		if(!widget){
+			widget = property->CreateWidget();
 			if(!widget){
-				widget = property->CreateWidget();
-				if(!widget){
-					return;
-				}
-				pWidgetCache.SetAt(property, widget);
+				return;
 			}
-			
-			widget->Create(*this, property->GetHideLabel());
-			CollectWidget(widget);
-			widget->SetContext(context);
+			pWidgetCache.SetAt(property, widget);
 		}
-	});
-}
-
-igdeMetaPropertyWidget::Ref igdeWPMetaContext::Builder::CreatePropertyWidget(
-const igdeMetaPropertyGroup::Ref &groupProperty, const igdeMetaContext::Ref &context){
-	if(!groupProperty){
-		return {};
-	}
-	
-	auto groupWidget = pWidgetCache.GetAtOrDefault(groupProperty);
-	if(!groupWidget){
-		groupWidget = groupProperty->CreateWidget();
-		if(!groupWidget){
-			return {};
-		}
-		pWidgetCache.SetAt(groupProperty, groupWidget);
-	}
-	
-	groupWidget->Create(*this, true);
-	
-	auto groupWidget2 = groupWidget.DynamicCast<igdeMetaPropertyGroupWidget>();
-	if(!groupWidget2){
-		return groupWidget;
-	}
-	
-	auto &childWidgets = groupWidget2->GetChildWidgets();
-	
-	groupProperty->GetProperties().Visit([&](const igdeMetaProperty::Ref &property){
-		const auto group = property.DynamicCast<igdeMetaPropertyGroup>();
 		
-		if(group){
-			const auto widget = CreatePropertyWidget(group, context);
-			if(widget){
-				childWidgets.Add(widget);
-			}
-			
-		}else{
-			auto widget = pWidgetCache.GetAtOrDefault(property);
-			if(!widget){
-				widget = property->CreateWidget();
-				if(!widget){
-					return;
-				}
-				pWidgetCache.SetAt(property, widget);
-			}
-			
-			widget->Create(*this, property->GetHideLabel());
-			widget->SetContext(context);
-			childWidgets.Add(widget);
-		}
+		widget->Create(*this, property->GetHideLabel());
+		CollectWidget(widget);
 	});
-	
-	return groupWidget;
 }
 
 
@@ -255,8 +192,10 @@ bool igdeWPMetaContext::HasVisibleWidgets() const{
 
 void igdeWPMetaContext::UpdatePropertyWidgets(){
 	pClearPropertyWidgets();
-	Builder(GetEnvironment().GetUIHelperProperties(), this, &pPropertyWidgets, pPropertyWidgetCache)
-		.CreatePropertyWidgets(pProperties, pContext);
+	if(pProperties){
+		Builder(GetEnvironment().GetUIHelperProperties(), this, &pPropertyWidgets,
+			pPropertyWidgetCache, pContext).CreatePropertyWidgets(pProperties->GetData());
+	}
 	
 	if(pFilter){
 		pFilterPropertyWidgets();

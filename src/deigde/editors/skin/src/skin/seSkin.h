@@ -31,7 +31,9 @@
 #include "mapped/seMapped.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -46,9 +48,6 @@ class seDynamicSkin;
 class seDynamicSkinRenderable;
 class seProperty;
 class sePropertyNode;
-
-class igdeWSky;
-class igdeCamera;
 
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
@@ -76,7 +75,7 @@ public:
 private:
 	deWorld::Ref pEngWorld;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	deSkin::Ref pEngSkin;
@@ -96,7 +95,7 @@ private:
 	float pMoveTime;
 	bool pPlayback;
 	
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	seMapped::List pMapped;
 	seMapped::Ref pActiveMapped;
@@ -131,10 +130,10 @@ public:
 	/** Retrieves the engine world. */
 	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	

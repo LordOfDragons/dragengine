@@ -48,7 +48,7 @@ igdeMetaPropertyGroupWidget::~igdeMetaPropertyGroupWidget(){
 // Management
 ///////////////
 
-void igdeMetaPropertyGroupWidget::Create(Builder &builder, bool noLabel){
+void igdeMetaPropertyGroupWidget::Create(Builder &builder, bool){
 	DEASSERT_NULL(pGroupBox)
 	
 	igdeEnvironment &env = builder.GetHelper().GetEnvironment();
@@ -56,19 +56,24 @@ void igdeMetaPropertyGroupWidget::Create(Builder &builder, bool noLabel){
 	auto state = pPropertyGroup.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateGroup>();
 	if(!state){
 		state = igdeMetaPropertyWidgetStateGroup::Ref::New();
-		// state->collapsed = pPropertyGroup.GetInitiallyCollapsed();
+		state->collapsed = pPropertyGroup.GetCollapsed();
 		pPropertyGroup.SetWidgetState(state);
 	}
 	
-	pGroupBox = igdeGroupBox::Ref::New(env, pPropertyGroup.GetLabel(), false);
-	pGroupBox->SetCollapsed(state->collapsed);
+	pGroupBox = igdeGroupBox::Ref::New(env, pPropertyGroup.GetLabel(), state->collapsed);
 	
 	pGroupBoxContainer = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
 	pGroupBox->AddChild(pGroupBoxContainer);
 	
 	builder.OpenGroup(pGroupBox, pGroupBoxContainer);
+	auto restoreCollectWidgets = builder.GetCollectWidgets();
+	builder.SetCollectWidgets(&pChildWidgets);
+	builder.CreatePropertyWidgets(pPropertyGroup.GetProperties());
+	builder.SetCollectWidgets(restoreCollectWidgets);
+	builder.CloseGroup();
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){
@@ -79,6 +84,19 @@ void igdeMetaPropertyGroupWidget::Filter(const igdeFilter &filter){
 			anyNotFilteredOut |= !widget.GetFilteredOut();
 		}
 	});
+	
+	if(filter && anyNotFilteredOut){
+		if(!pHasRestoreCollapsed){
+			pRestoreCollapsed = pGroupBox->GetCollapsed();
+			pHasRestoreCollapsed = true;
+		}
+		pGroupBox->SetCollapsed(false);
+		
+	}else if(pHasRestoreCollapsed){
+		pGroupBox->SetCollapsed(pRestoreCollapsed);
+		pHasRestoreCollapsed = false;
+	}
+	
 	SetFilteredOut(filter && !anyNotFilteredOut);
 }
 

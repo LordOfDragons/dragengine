@@ -34,8 +34,6 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/igdeCamera.h>
-#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
@@ -82,8 +80,6 @@
 
 saeSAnimation::saeSAnimation(igdeEnvironment* environment) :
 igdeEditableEntity(environment),
-pSky(nullptr),
-pCamera(nullptr),
 pDisplayMode(edmWord),
 pDispWordPos(-1),
 pDispWordElapsed(0.0f),
@@ -101,7 +97,7 @@ pDirtyAnimator(true)
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 		
 		// create camera
-		pCamera = new igdeCamera(engine);
+		pCamera = igdeCamera::Ref::New(*environment, engine);
 		pCamera->SetEngineWorld(pEngWorld);
 		pCamera->Reset();
 		pCamera->SetFov(30.0f);
@@ -113,7 +109,7 @@ pDirtyAnimator(true)
 		pCamera->SetPosition(decDVector(0.0, 1.6, 0.0));
 		
 		// create sky
-		pSky = new igdeWSky(*environment);
+		pSky = igdeWSky::Ref::New(*environment);
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pEngWorld);
 		
@@ -745,12 +741,8 @@ void saeSAnimation::pCleanUp(){
 	SetActivePhoneme(nullptr);
 	RemoveAllPhonemes();
 	
-	if(pSky){
-		delete pSky;
-	}
-	if(pCamera){
-		delete pCamera;
-	}
+	pSky.Clear();
+	pCamera.Clear();
 }
 
 

@@ -26,6 +26,7 @@
 #define _IGDEGDPPCSKIN_H_
 
 #include "igdeGDPreviewCreator.h"
+#include "../../../gui/wrapper/igdeWSky.h"
 #include "../../../resourceloader/igdeResourceLoaderListener.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
@@ -38,7 +39,6 @@
 #include <dragengine/resources/light/deLight.h>
 
 class igdeGDSkin;
-class igdeWSky;
 
 
 
@@ -63,7 +63,7 @@ private:
 	deDynamicSkin::Ref pDynamicSkin;
 	deModel::Ref pLightBoxModel;
 	deSkin::Ref pLightBoxSkin;
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	igdeResourceLoaderListener::Ref pResLoader;

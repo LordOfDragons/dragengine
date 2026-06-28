@@ -245,6 +245,7 @@ void igdeMetaPropertySelectionWidget::Create(Builder &builder, bool noLabel){
 	});
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertySelectionWidget::Drop(){

@@ -348,6 +348,7 @@ void igdeMetaPropertySetWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pListBox, buttons);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertySetWidget::Drop(){

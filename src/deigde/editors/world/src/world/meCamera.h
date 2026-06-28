@@ -41,6 +41,9 @@ class deDebugDrawerShape;
  * the engine is not create or updated until it is acquired by the user.
  */
 class meCamera : public igdeCamera{
+public:
+	using Ref = deTObjectReference<meCamera>;
+	
 private:
 	deDebugDrawerShape *pDDVolume;
 	meWorld *pWorld;
@@ -54,11 +57,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new camera. */
-	meCamera(deEngine *engine);
+	meCamera(igdeEnvironment &environment, deEngine *engine);
+	
+protected:
 	/** Cleans up the camera object. */
 	~meCamera() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Dispose of the camera. */

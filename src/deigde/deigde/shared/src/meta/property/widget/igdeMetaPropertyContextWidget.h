@@ -111,7 +111,7 @@ public:
 protected:
 	void UpdateFilteredOut() override;
 	void OnContextChanged() override;
-	void pUpdatePropertyWidgets(Builder &builder, const igdeMetaContext::Ref &context);
+	void pUpdatePropertyWidgets(Builder &builder);
 	void pClearPropertyWidgets();
 	void pFilterPropertyWidgets();
 };

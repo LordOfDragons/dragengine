@@ -38,7 +38,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
-#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -104,9 +103,6 @@ pPreviewMode(epmModel)
 	deEngine * const engine = GetEngine();
 	
 	pEngWorld = nullptr;
-	pCamera = nullptr;
-	
-	pSky = nullptr;
 	
 	pEngSkin = nullptr;
 	pEngComponent = nullptr;
@@ -157,7 +153,7 @@ pPreviewMode(epmModel)
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 		
 		// create camera
-		pCamera = new igdeCamera(engine);
+		pCamera = igdeCamera::Ref::New(*environment, engine);
 		pCamera->SetEngineWorld(pEngWorld);
 		pCamera->Reset();
 		pCamera->SetPosition(decDVector(0.0, 0.0, 0.0));
@@ -168,7 +164,7 @@ pPreviewMode(epmModel)
 		pCamera->SetAdaptionTime(4.0f);
 		
 		// create sky
-		pSky = new igdeWSky(*environment);
+		pSky = igdeWSky::Ref::New(*environment);
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pEngWorld);
 		
@@ -812,14 +808,12 @@ void seSkin::NotifyDynamicSkinActiveRenderableChanged(){
 //////////////////////
 
 void seSkin::pCleanUp(){
-	if(pSky){
-		delete pSky;
-	}
+	pSky.Clear();
 	pEnvObject = nullptr;
 	
 	pListeners.RemoveAll();
 	
-	if(pCamera) delete pCamera;
+	pCamera.Clear();
 	
 	SetActiveTexture(nullptr);
 	RemoveAllTextures();

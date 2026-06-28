@@ -25,7 +25,7 @@
 #ifndef _IGDEFILTER_H_
 #define _IGDEFILTER_H_
 
-#include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeString.h>
 
 
 /**
@@ -37,7 +37,7 @@ public:
 	class DE_DLL_EXPORT Matchable{
 	private:
 		friend class igdeFilter;
-		decString pString, pStringLower;
+		decUnicodeString pString, pStringLower;
 		int pStringLowerLen = 0;
 		
 	public:
@@ -48,6 +48,7 @@ public:
 		
 		/** \brief Create matchable string. */
 		explicit Matchable(const char *string);
+		explicit Matchable(const decUnicodeString &string);
 		
 		/** \brief Create copy of matchable string. */
 		Matchable(const Matchable &other);
@@ -63,7 +64,7 @@ public:
 		/** \name Management */
 		/*@{*/
 		/** \brief String. */
-		inline const decString &GetString() const{ return pString; }
+		inline const decUnicodeString &GetString() const{ return pString; }
 		/*@}*/
 		
 		
@@ -88,7 +89,7 @@ public:
 	
 	
 private:
-	decString pFilter, pFilterLower;
+	decUnicodeString pFilter, pFilterLower;
 	int pFilterLowerLen = 0;
 	
 	
@@ -100,6 +101,7 @@ public:
 	
 	/** \brief Create filter. */
 	explicit igdeFilter(const char *filter);
+	explicit igdeFilter(const decUnicodeString &filter);
 	
 	/** \brief Create copy of filter. */
 	igdeFilter(const igdeFilter &other);
@@ -115,7 +117,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filter. */
-	inline const decString &GetFilter() const{ return pFilter; }
+	inline const decUnicodeString &GetFilter() const{ return pFilter; }
 	
 	/** \brief String matches filter. */
 	bool Matches(const Matchable &string) const;

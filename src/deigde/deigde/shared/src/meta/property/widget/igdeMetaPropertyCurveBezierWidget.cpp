@@ -322,8 +322,10 @@ void igdeMetaPropertyCurveBezierWidget::Create(Builder &builder, bool noLabel){
 	}
 	pViewCurveBezier->SetEnabled(false);
 	WrapEditWidget(builder, noLabel, pViewCurveBezier);
+	pViewCurveBezier->ResetView();
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){

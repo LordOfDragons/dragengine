@@ -37,7 +37,6 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
@@ -72,9 +71,7 @@
 
 skyeSky::skyeSky(igdeEnvironment *environment) :
 igdeEditableEntity(environment),
-pNeedsRebuildSky(true),
-
-pCamera(nullptr)
+pNeedsRebuildSky(true)
 {
 	deEngine * const engine = GetEngine();
 	
@@ -86,7 +83,7 @@ pCamera(nullptr)
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor());
 		
-		pCamera = new igdeCamera(engine);
+		pCamera = igdeCamera::Ref::New(*environment, engine);
 		pCamera->SetEngineWorld(pEngWorld);
 		pCamera->Reset();
 		pCamera->SetHighestIntensity(20.0f);
@@ -820,9 +817,7 @@ void skyeSky::NotifyActiveTargetChanged(skyeLayer *layer){
 void skyeSky::pCleanUp(){
 	pListeners.RemoveAll();
 	
-	if(pCamera){
-		delete pCamera;
-	}
+	pCamera.Clear();
 	
 	SetActiveLayer(nullptr);
 	RemoveAllLayers();

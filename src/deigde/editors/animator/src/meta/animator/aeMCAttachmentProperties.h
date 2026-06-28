@@ -46,7 +46,7 @@ public:
 	deTObjectReference<aeMCPAttachment> attachment;
 	deTObjectReference<igdeMetaPropertyGroup> group = deTObjectReference<igdeMetaPropertyGroup>::New(
 		"animator.groupAttachments", "Animator.WPView.Attachments",
-		decTObjectOrderedSet<igdeMetaProperty>(devctag, attachments, attachment));
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, attachments, attachment), true);
 	
 	aeMCAttachmentProperties(aeWindowMain &windowMain);
 	void Init(const aeMCAnimatorProperties &properties);

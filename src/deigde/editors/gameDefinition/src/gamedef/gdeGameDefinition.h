@@ -44,7 +44,9 @@
 #include "objectClass/snappoint/gdeOCSnapPoint.h"
 #include "objectClass/speaker/gdeOCSpeaker.h"
 
+#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -59,10 +61,6 @@ class gdeOCInherit;
 class gdeOCComponentTexture;
 class gdeOCWorld;
 class gdeSkyController;
-
-class igdeWSky;
-class igdeCamera;
-
 
 
 /**
@@ -145,10 +143,10 @@ public:
 private:
 	deWorld::Ref pWorld;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	float pViewRatio;
 	
 	bool pIsProjectGameDef;
@@ -239,7 +237,7 @@ public:
 	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Camera. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** View ratio used to properly align camera on preview objects. */
 	inline float GetViewRatio() const{ return pViewRatio; }
@@ -248,7 +246,7 @@ public:
 	void SetViewRatio(float viewRatio);
 	
 	/** Sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	
 	/** Environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }

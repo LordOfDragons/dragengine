@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-#include "aeCamera.h"
 #include "aeAnimator.h"
 #include "aeAnimatorNotifier.h"
 #include "aeSubAnimator.h"
@@ -35,7 +34,6 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
-#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -115,9 +113,14 @@ rule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule),
 displayModelPath(pWindowMain.GetMCAnimatorProperties().displayModelPath, pMetaContextView),
 displaySkinPath(pWindowMain.GetMCAnimatorProperties().displaySkinPath, pMetaContextView),
 displayRigPath(pWindowMain.GetMCAnimatorProperties().displayRigPath, pMetaContextView),
+baseAnimatorPath(pWindowMain.GetMCAnimatorProperties().baseAnimatorPath, pMetaContextView),
+resetState(pWindowMain.GetMCAnimatorProperties().resetState, pMetaContextView),
 playSpeed(pWindowMain.GetMCAnimatorProperties().playSpeed, pMetaContextView),
 timeStep(pWindowMain.GetMCAnimatorProperties().timeStep, pMetaContextView),
-resetState(pWindowMain.GetMCAnimatorProperties().resetState, pMetaContextView),
+paused(pWindowMain.GetMCAnimatorProperties().paused, pMetaContextView),
+sky(pWindowMain.GetMCAnimatorProperties().sky, pMetaContextView),
+environmentObject(pWindowMain.GetMCAnimatorProperties().environmentObject, pMetaContextView),
+camera(pWindowMain.GetMCAnimatorProperties().camera, pMetaContextView),
 attachments(pWindowMain.GetMCAnimatorProperties().attachment.attachments, pMetaContextView),
 attachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaContextView)
 {
@@ -133,17 +136,9 @@ attachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaCon
 	
 	pLocomotion = nullptr;
 	pWakeboard = nullptr;
-	pSubAnimator = nullptr;
-	pTestingSubAnimator = nullptr;
-	
-	pCamera = nullptr;
-	
-	pPaused = false;
 	
 	pDDBones = nullptr;
 	pDDSBoneSize = 1.0f;
-	
-	pSky = nullptr;
 	
 	try{
 		SetFilePath("new.deanimator");
@@ -159,9 +154,10 @@ attachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaCon
 		pWakeboard = new aeWakeboard(this);
 		
 		// create sky
-		pSky = new igdeWSky(windowMain.GetEnvironment());
+		pSky = igdeWSky::Ref::New(windowMain.GetEnvironment());
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pEngWorld);
+		sky.SetValue(pSky->GetMetaContext(), false);
 		
 		// create the environment wrapper object
 		pEnvObject = igdeWObject::Ref::New(windowMain.GetEnvironment());
@@ -177,6 +173,7 @@ attachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaCon
 		pEnvObject->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		
 		pEnvObject->SetGDClassName("IGDETestTerrain");
+		environmentObject.SetValue(pEnvObject->GetMetaContext(), false);
 		
 		// create debug drawers
 		pDDBones = engine->GetDebugDrawerManager()->CreateDebugDrawer();
@@ -309,14 +306,34 @@ attachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMetaCon
 	displaySkinPath.onValueChanged = displayModelPath.onValueChanged;
 	displayRigPath.onValueChanged = displayModelPath.onValueChanged;
 	
+	baseAnimatorPath.onValueChanged = [this](){
+		pTestingSubAnimator->SetPathAnimator(baseAnimatorPath);
+		pTestingSubAnimator->LoadAnimator(pWindowMain.GetLoadSaveSystem());
+		NotifyViewChanged();
+	};
+	
+	resetState.onValueChanged = [this](){
+		RebuildRules();
+		NotifyViewChanged();
+	};
+	
+	sky.onValueChanged = [this](){
+		NotifySkyChanged();
+	};
+	environmentObject.onValueChanged = [this](){
+		NotifyEnvObjectChanged();
+	};
+	camera.onValueChanged = [this](){
+		NotifyCameraChanged();
+	};
+	
 	playSpeed.onValueChanged = [this](){
 		NotifyPlaybackChanged();
 	};
 	timeStep.onValueChanged = playSpeed.onValueChanged;
 	
-	resetState.onValueChanged = [this](){
-		RebuildRules();
-		NotifyViewChanged();
+	paused.onValueChanged = [this](){
+		NotifyPlaybackChanged();
 	};
 	
 	SetSaved(false);
@@ -424,7 +441,7 @@ void aeAnimator::UpdateWorld(float elapsed){
 	pLocomotion->Update(realTimeElapsed);
 	
 	// update the controllers which are linked to the elapsed time
-	if(!pPaused){
+	if(!paused){
 		controllers->Visit([&](aeController &each){
 			each.UpdateValue(controllerElapsed);
 		});
@@ -478,7 +495,7 @@ void aeAnimator::UpdateWorld(float elapsed){
 	pLocomotion->PostUpdate();
 	
 	// update attachments
-	if(!pPaused){
+	if(!paused){
 		attachments->Visit([&](aeAttachment &each){
 			each.Update(realTimeElapsed);
 		});
@@ -499,12 +516,8 @@ void aeAnimator::UpdateWorld(float elapsed){
 // Editing
 ////////////
 
-void aeAnimator::SetPaused(bool paused){
-	if(paused != pPaused){
-		pPaused = paused;
-		
-		NotifyPlaybackChanged();
-	}
+void aeAnimator::SetPaused(bool value){
+	paused = value;
 }
 
 void aeAnimator::SetPlaySpeed(float value){
@@ -1057,25 +1070,16 @@ void aeAnimator::pCleanUp(){
 	RemoveAllNotifiers();
 	
 	pEnvObject = nullptr;
-	if(pSky){
-		delete pSky;
-	}
-	
-	if(pCamera){
-		delete pCamera;
-	}
+	pSky.Clear();
+	pCamera.Clear();
 	
 	RemoveAllAttachments();
 	RemoveAllRules();
 	RemoveAllLinks();
 	RemoveAllControllers();
 	
-	if(pTestingSubAnimator){
-		delete pTestingSubAnimator;
-	}
-	if(pSubAnimator){
-		delete pSubAnimator;
-	}
+	pTestingSubAnimator.Clear();
+	pSubAnimator.Clear();
 	if(pWakeboard){
 		delete pWakeboard;
 	}
@@ -1126,19 +1130,16 @@ void aeAnimator::pCreateWorld(){
 	// create animator
 	pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 	
-	// create sub animator
-	pSubAnimator = new aeSubAnimator(engine);
-	
-	// create testing sub animator
-	pTestingSubAnimator = new aeSubAnimator(engine);
+	// create sub animators
+	pSubAnimator = deTUniqueReference<aeSubAnimator>::New(engine);
+	pTestingSubAnimator = deTUniqueReference<aeSubAnimator>::New(engine);
 }
 
 void aeAnimator::pCreateCamera(){
-	pCamera = new aeCamera(this, GetEngine());
-	
+	pCamera = aeCamera::Ref::New(*this, GetEngine());
 	pCamera->SetEngineWorld(pEngWorld);
-	
 	pCamera->Reset();
+	camera.SetValue(pCamera->GetMetaContext(), false);
 }
 
 void aeAnimator::pCreateCollider(){

@@ -25,9 +25,9 @@
 #ifndef _IGDEGIZMOMOUSEKEYLISTENER_H_
 #define _IGDEGIZMOMOUSEKEYLISTENER_H_
 
+#include "../igdeCamera.h"
 #include "../event/igdeMouseKeyListener.h"
 
-class igdeCamera;
 class igdeViewRenderWindow;
 class igdeGizmoManager;
 
@@ -43,7 +43,7 @@ class DE_DLL_EXPORT igdeGizmoMouseKeyListener : public igdeMouseKeyListener{
 private:
 	igdeGizmoManager &pGizmoManager;
 	igdeViewRenderWindow &pView;
-	igdeCamera *pCamera;
+	igdeCamera::Ref pCamera;
 	
 	
 	
@@ -68,7 +68,7 @@ public:
 	inline igdeViewRenderWindow &GetView() const{ return pView; }
 	
 	/** \brief Camera or nullptr. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or nullptr. */
 	void SetCamera(igdeCamera *camera);

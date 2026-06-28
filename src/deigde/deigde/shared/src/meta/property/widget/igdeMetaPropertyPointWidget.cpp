@@ -234,6 +234,7 @@ void igdeMetaPropertyPointWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pEditPoint);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyPointWidget::Drop(){

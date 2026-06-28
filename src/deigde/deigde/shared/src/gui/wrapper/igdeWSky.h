@@ -26,6 +26,8 @@
 #define _IGDEWSKY_H_
 
 #include "../../gamedefinition/sky/igdeGDSky.h"
+#include "../../meta/igdeMetaContext.h"
+#include "../../meta/property/igdeMetaPropertyPath.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -44,8 +46,12 @@ class deSkyController;
  * Provides a simple way to display a sky from game definition or a custom sky.
  * The sky can be modified by changing controller values.
  */
-class DE_DLL_EXPORT igdeWSky{
+class DE_DLL_EXPORT igdeWSky : public deObject{
 public:
+	/** \brief Reference */
+	using Ref = deTObjectReference<igdeWSky>;
+	
+	
 	/** \brief Asynchronous loading finished. */
 	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
@@ -59,38 +65,120 @@ public:
 		virtual void LoadFinished(igdeWSky &wrapper, bool succeeded) = 0;
 	};
 	
+	/** \brief Meta context. */
+	class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
+	private:
+		igdeWSky *pWrapper;
+		igdeWSky::Ref pGuard;
+		
+	public:
+		using Ref = deTObjectReference<MetaContext>;
+		MetaContext(igdeWSky *wrapper);
+		
+		inline igdeWSky *GetWrapper() const{ return pWrapper; }
+		igdeWSky &GetWrapperRef() const;
+		Ref Capture() const;
+		igdeEnvironment &GetEnvironment() const override;
+		igdeUndoSystem *GetUndoSystem() const override;
+		igdeClipboard *GetClipboard() const override;
+		
+	protected:
+		virtual ~MetaContext() override;
+	};
+	
+	/** \brief Meta properties. */
+	class DE_DLL_EXPORT MetaProperties{
+	public:
+		template <typename T> class TBase : public T{
+		public:
+			template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
+			
+			igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
+				return context.DynamicCast<MetaContext>()->Capture();
+			}
+			
+			bool IsValid(const igdeMetaContext::Ref &context) const override{
+				const auto c = context.DynamicCast<MetaContext>();
+				return c && !c->IsDisposed();
+			}
+			
+			inline igdeWSky &Wrapper(const igdeMetaContext::Ref &context) const{
+				return context.DynamicCast<MetaContext>()->GetWrapperRef();
+			}
+			
+		protected:
+			virtual ~TBase() override{}
+		};
+		
+		class DE_DLL_EXPORT Path : public TBase<igdeMetaPropertyPathStorage>{
+		public:
+			Path();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Path() override;
+		};
+		
+	private:
+		MetaProperties();
+		
+	public:
+		deTObjectReference<Path> path;
+		
+		const igdeMetaContext::PropertyList::Ref properties;
+		
+		static MetaProperties global;
+	};
+	
 	
 	
 private:
 	igdeEnvironment &pEnvironment;
 	
+	MetaContext::Ref pMetaContext;
+	
 	deWorld::Ref pEngWorld;
 	deSkyInstance::Ref pEngSkyInstance;
 	float pMaxLightIntensity;
 	igdeGDSky::Ref pGDSky;
-	decString pPath;
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;
 	int pAsyncLoadCounter;
 	
+	
+public:
+	/** \brief Meta property sky path. */
+	igdeMetaPropertyPathStorage::Storage path;
+	
+	/** \brief Sky changed event. */
+	igdeTEvent<> onChanged;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky wrapper. */
-	igdeWSky(igdeEnvironment &environment);
+	explicit igdeWSky(igdeEnvironment &environment);
 	
+	igdeWSky(const igdeWSky &copy) = delete;
+	igdeWSky(igdeWSky &&move) = delete;
+	igdeWSky& operator=(const igdeWSky &other) = delete;
+	igdeWSky& operator=(igdeWSky &&other) = delete;
+	
+protected:
 	/** \brief Clean up wrapper. */
-	~igdeWSky();
+	~igdeWSky() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
+	/** \brief Meta context. */
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** \brief World or nullptr. */
 	inline const deWorld::Ref &GetWorld() const{ return pEngWorld; }
@@ -117,7 +205,7 @@ public:
 	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
 	
 	/** \brief Sky path or nullptr if sky is set manually. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{ return path; }
 	
 	/** \brief Set sky to use. */
 	void SetSky(deSky *sky);
@@ -160,6 +248,8 @@ public:
 	
 	
 private:
+	void pSetSky(deSky *sky);
+	void pSetGDSky(igdeGDSky *gdsky);
 	void pLoadSky(const char *path);
 	void pCheckAsyncLoadFinished();
 };

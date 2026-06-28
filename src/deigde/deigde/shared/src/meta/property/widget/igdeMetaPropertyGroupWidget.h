@@ -45,6 +45,8 @@ private:
 	igdeGroupBox::Ref pGroupBox;
 	igdeContainer::Ref pGroupBoxContainer;
 	List pChildWidgets;
+	bool pRestoreCollapsed = false;
+	bool pHasRestoreCollapsed = false;
 	
 	
 public:

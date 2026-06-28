@@ -235,6 +235,7 @@ void igdeMetaPropertyTagsWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pEditTags);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){

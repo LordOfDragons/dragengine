@@ -33,7 +33,6 @@
 #include "../../../gamedefinition/class/igdeGDClass.h"
 #include "../../../gamedefinition/sky/igdeGDSkyManager.h"
 #include "../../../gameproject/igdeGameProject.h"
-#include "../../../gui/wrapper/igdeWSky.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -77,20 +76,14 @@ igdeGDPCObjectClass::igdeGDPCObjectClass(igdeEnvironment &environment,
 igdeGDClass *gdclass, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
 pGDClass(gdclass),
-pObject(nullptr),
-pSky(nullptr)
+pObject(nullptr)
 {
 	if(!gdclass){
 		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeGDPCObjectClass::~igdeGDPCObjectClass(){
-	if(pSky){
-		delete pSky;
-	}
-}
-
+igdeGDPCObjectClass::~igdeGDPCObjectClass() = default;
 
 
 // Management
@@ -121,7 +114,7 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 	// create light
 	
 	// create sky
-	pSky = new igdeWSky(environment);
+	pSky = igdeWSky::Ref::New(environment);
 	pSky->SetWorld(pWorld);
 	pSky->SetGDDefaultSky();
 	

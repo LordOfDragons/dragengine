@@ -70,9 +70,43 @@ public:
 	deTObjectReference<aeMCPAnimatorDisplayModelPath> displayModelPath = deTObjectReference<aeMCPAnimatorDisplayModelPath>::New();
 	deTObjectReference<aeMCPAnimatorDisplaySkinPath> displaySkinPath = deTObjectReference<aeMCPAnimatorDisplaySkinPath>::New();
 	deTObjectReference<aeMCPAnimatorDisplayRigPath> displayRigPath = deTObjectReference<aeMCPAnimatorDisplayRigPath>::New();
+	
+	deTObjectReference<aeMCPAnimatorResetState> resetState = deTObjectReference<aeMCPAnimatorResetState>::New();
+	deTObjectReference<aeMCPAnimatorBaseAnimatorPath> baseAnimatorPath = deTObjectReference<aeMCPAnimatorBaseAnimatorPath>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupBaseAnimator = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupBaseAnimator", "Animator.WPView.TestingBaseAnimator",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, baseAnimatorPath, resetState), true);
+	
 	deTObjectReference<aeMCPAnimatorPlaySpeed> playSpeed = deTObjectReference<aeMCPAnimatorPlaySpeed>::New();
 	deTObjectReference<aeMCPAnimatorTimeStep> timeStep = deTObjectReference<aeMCPAnimatorTimeStep>::New();
-	deTObjectReference<aeMCPAnimatorResetState> resetState = deTObjectReference<aeMCPAnimatorResetState>::New();
+	deTObjectReference<aeMCPAnimatorPaused> paused = deTObjectReference<aeMCPAnimatorPaused>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupPlayback = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupPlayback", "Animator.WPView.Playback",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, playSpeed, paused));
+	
+	deTObjectReference<aeMCPAnimatorSky> sky = deTObjectReference<aeMCPAnimatorSky>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupSky = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupSky", "Animator.WPView.Sky",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, sky), true);
+	
+	deTObjectReference<aeMCPAnimatorEnvironmentObject> environmentObject = deTObjectReference<aeMCPAnimatorEnvironmentObject>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupEnvironmentObject = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupEnvironmentObject", "Animator.WPView.EnvironmentObject",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, environmentObject), true);
+	
+	deTObjectReference<aeMCPAnimatorCamera> camera = deTObjectReference<aeMCPAnimatorCamera>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupCamera = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupCamera", "Animator.WPView.Camera",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, camera), true);
+	
+	deTObjectReference<aeMCPAnimatorCameraAttachToBone> cameraAttachToBone = deTObjectReference<aeMCPAnimatorCameraAttachToBone>::New();
+	deTObjectReference<aeMCPAnimatorCameraAttachBone> cameraAttachBone = deTObjectReference<aeMCPAnimatorCameraAttachBone>::New();
+	deTObjectReference<aeMCPAnimatorCameraAttachRelativePosition> cameraAttachRelativePosition = deTObjectReference<aeMCPAnimatorCameraAttachRelativePosition>::New();
+	deTObjectReference<aeMCPAnimatorCameraAttachRelativeRotation> cameraAttachRelativeRotation = deTObjectReference<aeMCPAnimatorCameraAttachRelativeRotation>::New();
+	deTObjectReference<igdeMetaPropertyGroup> groupCameraAttach = deTObjectReference<igdeMetaPropertyGroup>::New(
+		"animator.groupCameraAttach", "Animator.WPView.CameraAttaching",
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, cameraAttachToBone, cameraAttachBone,
+			cameraAttachRelativePosition, cameraAttachRelativeRotation), true);
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesController = igdeMetaContext::PropertyList::Ref::New();

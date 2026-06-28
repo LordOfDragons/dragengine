@@ -187,7 +187,7 @@ void meLSXMLWorld::pWriteWorld(decXmlWriter &writer, const meWorld &world){
 void meLSXMLWorld::pWriteWorldEditor(decXmlWriter &writer, const meWorld &world){
 	writer.WriteOpeningTag("worldEditor");
 	
-	const igdeWSky &sky = *world.GetSky();
+	const igdeWSky &sky = world.GetSky();
 	writer.WriteDataTagString("skyPath", sky.GetPath());
 	const int skyControllerCount = sky.GetControllerCount();
 	int i;

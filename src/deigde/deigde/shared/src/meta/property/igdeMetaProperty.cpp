@@ -146,18 +146,26 @@ void igdeMetaProperty::SetHelpUrl(const char *url){
 }
 
 
-decString igdeMetaProperty::RealFilter(const igdeMetaContext &context) const{
-	const auto &tm = context.GetEnvironment().GetTranslationManager();
+decUnicodeString igdeMetaProperty::RealFilter(const igdeMetaContext &context) const{
+	return RealFilter(context.GetEnvironment());
+}
+
+decUnicodeString igdeMetaProperty::RealFilter(igdeEnvironment &environment) const{
+	const auto &tm = environment.GetTranslationManager();
 	if(pFilter.IsEmpty()){
-		return tm.TranslateIf(pLabel).ToUTF8();
+		return tm.TranslateIf(pLabel);
 	}
 	
 	auto filter = tm.TranslateIf(pFilter, decUnicodeString());
-	return (filter.IsEmpty() ? tm.TranslateIf(pLabel) : filter).ToUTF8();
+	return (filter.IsEmpty() ? tm.TranslateIf(pLabel) : filter);
 }
 
 decString igdeMetaProperty::RealUndoInfo(const igdeMetaContext &context) const{
-	const auto &tm = context.GetEnvironment().GetTranslationManager();
+	return RealUndoInfo(context.GetEnvironment());
+}
+
+decString igdeMetaProperty::RealUndoInfo(igdeEnvironment &environment) const{
+	const auto &tm = environment.GetTranslationManager();
 	if(pUndoInfo.IsEmpty()){
 		return tm.TranslateIf(pLabel).ToUTF8();
 	}

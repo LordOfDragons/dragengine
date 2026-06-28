@@ -36,6 +36,12 @@ pStringLowerLen(0){
 }
 
 igdeFilter::Matchable::Matchable(const char *string) :
+pString(decUnicodeString::NewFromUTF8(string)),
+pStringLower(pString.GetLower()),
+pStringLowerLen(pStringLower.GetLength()){
+}
+
+igdeFilter::Matchable::Matchable(const decUnicodeString &string) :
 pString(string),
 pStringLower(pString.GetLower()),
 pStringLowerLen(pStringLower.GetLength()){
@@ -101,6 +107,12 @@ pFilterLowerLen(0){
 }
 
 igdeFilter::igdeFilter(const char *filter) :
+pFilter(decUnicodeString::NewFromUTF8(filter)),
+pFilterLower(pFilter.GetLower()),
+pFilterLowerLen(pFilterLower.GetLength()){
+}
+
+igdeFilter::igdeFilter(const decUnicodeString &filter) :
 pFilter(filter),
 pFilterLower(pFilter.GetLower()),
 pFilterLowerLen(pFilterLower.GetLength()){

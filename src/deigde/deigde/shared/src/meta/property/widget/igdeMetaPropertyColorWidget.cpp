@@ -232,6 +232,7 @@ void igdeMetaPropertyColorWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pColorBox);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyColorWidget::Drop(){

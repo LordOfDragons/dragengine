@@ -155,5 +155,5 @@ void aeMCPAttachments::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMe
 /////////////////////////////////
 
 aeMCPAttachmentWObject::aeMCPAttachmentWObject() : aeTMCPAnimatorAttachment("animator.attachment.wobject", "", ""){
-	SetProperties(igdeWObject::MetaProperties::Global().GetProperties());
+	SetProperties(igdeWObject::MetaProperties::global.properties);
 }

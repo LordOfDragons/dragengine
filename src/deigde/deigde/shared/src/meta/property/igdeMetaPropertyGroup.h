@@ -41,22 +41,23 @@ public:
 	
 private:
 	List pProperties;
+	bool pCollapsed;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create group meta property with label and description. */
-	igdeMetaPropertyGroup(const char *id, const char *name, const char *description);
+	igdeMetaPropertyGroup(const char *id, const char *name, const char *description, bool collapsed = false);
 	
 	/** \brief Create group meta property with label and description and properties. */
-	igdeMetaPropertyGroup(const char *id, const char *name, const char *description, const List &properties);
+	igdeMetaPropertyGroup(const char *id, const char *name, const char *description, const List &properties, bool collapsed = false);
 	
 	/** \brief Create group meta property with label, description, filter and undo info set from translation tag. */
-	igdeMetaPropertyGroup(const char *id, const char *translationTag);
+	igdeMetaPropertyGroup(const char *id, const char *translationTag, bool collapsed = false);
 	
 	/** \brief Create group meta property with label, description, filter and undo info set from translation tag. */
-	igdeMetaPropertyGroup(const char *id, const char *translationTag, const List &properties);
+	igdeMetaPropertyGroup(const char *id, const char *translationTag, const List &properties, bool collapsed = false);
 	
 protected:
 	/** \brief Clean up group meta property. */
@@ -70,6 +71,12 @@ public:
 	/** \brief Get list of properties. */
 	inline List &GetProperties(){ return pProperties; }
 	inline const List &GetProperties() const{ return pProperties; }
+	
+	/** \brief Group is initially collapsed. */
+	inline bool GetCollapsed() const{ return pCollapsed; }
+	
+	/** \brief Set group initially collapsed state. */
+	void SetCollapsed(bool collapsed);
 	
 	
 	/**

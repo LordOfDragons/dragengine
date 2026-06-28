@@ -67,14 +67,19 @@ void aeMCAnimatorProperties::Init(){
 	ruleSubAnimator.Init(*this);
 	ruleTrackTo.Init(*this);
 	
+	igdeMetaPropertyAdapter::OnChanged(hiddenBoneNames, cameraAttachBone);
+	
 	attachment.Init(*this);
 	
 	metaPropertiesView->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
 		displayModelPath,
 		displaySkinPath,
 		displayRigPath,
-		playSpeed,
-		timeStep,
-		resetState,
+		groupBaseAnimator,
+		groupSky,
+		groupEnvironmentObject,
+		groupCamera,
+		groupCameraAttach,
+		groupPlayback,
 		attachment.group);
 }

@@ -27,6 +27,7 @@
 
 #include "igdeGDPreviewCreator.h"
 #include "../../../gui/wrapper/igdeWObject.h"
+#include "../../../gui/wrapper/igdeWSky.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/camera/deCamera.h>
@@ -34,8 +35,6 @@
 #include <dragengine/resources/light/deLight.h>
 
 class igdeGDClass;
-class igdeWSky;
-
 
 
 /**
@@ -62,7 +61,7 @@ private:
 	deCamera::Ref pCamera;
 	deLight::Ref pLight;
 	igdeWObject::Ref pObject;
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	cAsyncFinished pAsyncFinished;

@@ -48,7 +48,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
-#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -112,9 +111,6 @@ ceConversation::ceConversation(igdeEnvironment *environment) : igdeEditableEntit
 	pActiveCoordSystem = nullptr;
 	pActiveProp = nullptr;
 	
-	pCamera = nullptr;
-	pCameraFree = nullptr;
-	
 	pScreenRatio = 1.6f; // 16:10 wide screen
 	pShowRuleOfThirdsAid = false;
 	
@@ -137,7 +133,7 @@ ceConversation::ceConversation(igdeEnvironment *environment) : igdeEditableEntit
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 		
 		// create camera
-		pCamera = new igdeCamera(engine);
+		pCamera = igdeCamera::Ref::New(*environment, engine);
 		
 		pCamera->SetEngineWorld(pEngWorld);
 		
@@ -151,7 +147,7 @@ ceConversation::ceConversation(igdeEnvironment *environment) : igdeEditableEntit
 		pCamera->SetPosition(decDVector(0.0, 1.5, 5.0));
 		
 		// create free camera
-		pCameraFree = new igdeCamera(engine);
+		pCameraFree = igdeCamera::Ref::New(*environment, engine);
 		pCameraFree->Reset();
 		pCameraFree->SetFov(90.0f);
 		pCameraFree->SetHighestIntensity(20.0f);
@@ -180,8 +176,7 @@ ceConversation::ceConversation(igdeEnvironment *environment) : igdeEditableEntit
 		pEngMicrophone->AddSpeaker(pEngSpeakerVAPreview);
 		
 		// create sky
-		
-		pSky = new igdeWSky(*environment);
+		pSky = igdeWSky::Ref::New(*environment);
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pEngWorld);
 		
@@ -1293,9 +1288,7 @@ void ceConversation::pCleanUp(){
 	Dispose();
 	pPlayback = nullptr;
 	
-	if(pSky){
-		delete pSky;
-	}
+	pSky.Clear();
 	pEnvObject = nullptr;
 	RemoveAllProps();
 	
@@ -1310,10 +1303,6 @@ void ceConversation::pCleanUp(){
 			pEngWorld->RemoveMicrophone(pEngMicrophone);
 		}
 	}
-	if(pCameraFree){
-		delete pCameraFree;
-	}
-	if(pCamera){
-		delete pCamera;
-	}
+	pCameraFree.Clear();
+	pCamera.Clear();
 }

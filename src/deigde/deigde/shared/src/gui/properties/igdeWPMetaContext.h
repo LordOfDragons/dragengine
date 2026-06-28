@@ -59,22 +59,15 @@ public:
 	public:
 		Builder(igdeUIHelper &helper, igdeContainer *container,
 			igdeMetaPropertyWidget::List *collectWidgets,
-			igdeWPMetaContext::PropertyWidgetCache &widgetCache);
+			igdeWPMetaContext::PropertyWidgetCache &widgetCache,
+			const igdeMetaContext::Ref &context);
 		virtual ~Builder();
 		
 		void AddLine(igdeWidget *label, igdeWidget *edit) override;
 		void AddLine(igdeWidget *edit) override;
 		void OpenGroup(igdeWidget *group, igdeContainer *container) override;
 		void CloseGroup() override;
-		
-		/** \brief Create property widgets. */
-		void CreatePropertyWidgets(const igdeMetaContext::PropertyList::Ref &properties,
-			const igdeMetaContext::Ref &context) override;
-		
-		/** \brief Create property group widget. */
-		igdeMetaPropertyWidget::Ref CreatePropertyWidget(
-			const igdeMetaPropertyGroup::Ref &groupProperty,
-			const igdeMetaContext::Ref &context);
+		void CreatePropertyWidgets(const igdeMetaProperty::List &properties) override;
 	};
 	
 	

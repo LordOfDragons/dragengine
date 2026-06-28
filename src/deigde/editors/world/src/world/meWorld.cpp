@@ -48,7 +48,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
-#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -104,7 +103,6 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 	
 	pEngColCollider = nullptr;
 	pEngForceField = nullptr;
-	pSky = nullptr;
 	pEngMicrophone = nullptr;
 	
 	pSize.Set(1000.0, 1000.0, 1000.0);
@@ -113,10 +111,6 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 	pWeather = nullptr;
 	
 	pDepChanged = false;
-	
-	pFreeRoamCamera = nullptr;
-	pPlayerCamera = nullptr;
-	pActiveCamera = nullptr;
 	
 	pLumimeter = nullptr;
 	pPathFindTest = nullptr;
@@ -148,7 +142,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pHeightTerrain->SetChanged(false);
 		
 		// create sky
-		pSky = new igdeWSky(*environment);
+		pSky = igdeWSky::Ref::New(*environment);
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pDEWorld);
 		
@@ -160,12 +154,12 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pWeather = new meWeather(this);
 		
 		// create cameras
-		pFreeRoamCamera = new meCamera(engine);
+		pFreeRoamCamera = meCamera::Ref::New(*environment, engine);
 		pFreeRoamCamera->SetName("Free Roaming Camera");
 		pFreeRoamCamera->SetEnableGI(windowMain.GetConfiguration().GetEnableGI());
 		pFreeRoamCamera->SetWorld(this);
 		
-		pPlayerCamera = new meCamera(engine);
+		pPlayerCamera = meCamera::Ref::New(*environment, engine);
 		pPlayerCamera->SetName("Player Camera");
 		pPlayerCamera->SetEnableGI(windowMain.GetConfiguration().GetEnableGI());
 		pPlayerCamera->SetWorld(this);
@@ -279,6 +273,7 @@ void meWorld::Dispose(){
 	
 	pFreeRoamCamera->Dispose();
 	pPlayerCamera->Dispose();
+	pActiveCamera.Clear();
 	pTriggerTable.RemoveAll();
 	
 	RemoveAllNavSpaces();
@@ -1508,12 +1503,9 @@ void meWorld::pCleanUp(){
 	
 	pHeightTerrain = nullptr;
 	
-	if(pPlayerCamera){
-		delete pPlayerCamera;
-	}
-	if(pFreeRoamCamera){
-		delete pFreeRoamCamera;
-	}
+	pPlayerCamera.Clear();
+	pFreeRoamCamera.Clear();
+	pActiveCamera.Clear();
 	if(pWeather){
 		delete pWeather;
 	}
@@ -1530,9 +1522,7 @@ void meWorld::pCleanUp(){
 		delete pGuiParams;
 	}
 	pBgObject = nullptr;
-	if(pSky){
-		delete pSky;
-	}
+	pSky.Clear();
 	if(pDEWorld){
 		if(pEngMicrophone){
 			if(GetEngine()->GetAudioSystem()->GetActiveMicrophone() == pEngMicrophone){

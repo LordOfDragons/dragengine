@@ -305,6 +305,7 @@ void igdeMetaPropertyFloatWidget::Create(Builder &builder, bool noLabel){
 	}
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyFloatWidget::Drop(){

@@ -164,7 +164,7 @@ public:
 	
 	/** \brief Value is equal. */
 	bool operator==(float value) const{
-		return pValue == value;
+		return fabsf(pValue - value) < FLOAT_SAFE_EPSILON;
 	}
 	/*@}*/
 };

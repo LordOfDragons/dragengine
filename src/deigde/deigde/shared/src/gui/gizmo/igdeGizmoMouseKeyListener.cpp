@@ -38,8 +38,7 @@
 igdeGizmoMouseKeyListener::igdeGizmoMouseKeyListener(
 	igdeGizmoManager &gizmoManager, igdeViewRenderWindow &view) :
 pGizmoManager(gizmoManager),
-pView(view),
-pCamera(nullptr){
+pView(view){
 }
 
 igdeGizmoMouseKeyListener::~igdeGizmoMouseKeyListener(){

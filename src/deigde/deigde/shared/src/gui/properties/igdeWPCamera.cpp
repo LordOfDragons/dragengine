@@ -26,7 +26,6 @@
 #include <stdlib.h>
 
 #include "igdeWPCamera.h"
-#include "../igdeCamera.h"
 #include "../igdeUIHelper.h"
 #include "../igdeCheckBox.h"
 #include "../igdeTextField.h"
@@ -547,16 +546,12 @@ const igdeFilePattern::List igdeWPCamera::patternCamera(sCreateFilePatternList()
 ////////////////////////////
 
 igdeWPCamera::igdeWPCamera(igdeEnvironment &environment) :
-igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pCamera(nullptr)
-{
+igdeContainerFlow(environment, igdeContainerFlow::eaY){
 	pCreateContent();
 }
 
 igdeWPCamera::igdeWPCamera(igdeEnvironment &environment, igdeAction *action) :
-igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pCamera(nullptr)
-{
+igdeContainerFlow(environment, igdeContainerFlow::eaY){
 	pCreateContent();
 	SetAction(action);
 }

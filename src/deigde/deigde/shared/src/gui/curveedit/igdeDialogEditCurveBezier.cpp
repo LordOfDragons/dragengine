@@ -68,6 +68,10 @@ void igdeDialogEditCurveBezier::SetCurve(const decCurveBezier &curve){
 	pViewCurveBezier->SetCurve(curve);
 }
 
+void igdeDialogEditCurveBezier::OnDialogShown(){
+	pViewCurveBezier->ResetView();
+}
+
 
 // Private Functions
 //////////////////////

@@ -126,3 +126,59 @@ void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCasc
 	helper.MenuSeparator(menu);
 	helper.MenuCommand(menu, deTObjectReference<cActionAffectedVertexPositionSetsMirror>::New(*this, owner, context));
 }
+
+
+// Class aeMCPAnimatorSky
+///////////////////////////
+
+aeMCPAnimatorSky::aeMCPAnimatorSky() : aeTMCPAnimator("animator.sky", "", ""){
+	SetProperties(igdeWSky::MetaProperties::global.properties);
+}
+
+
+// Class aeMCPAnimatorEnvironmentObject
+/////////////////////////////////////////
+
+aeMCPAnimatorEnvironmentObject::aeMCPAnimatorEnvironmentObject() : aeTMCPAnimator("animator.environmentObject", "", ""){
+	SetProperties(igdeWObject::MetaProperties::global.properties);
+}
+
+
+// Class aeMCPAnimatorCamera
+//////////////////////////////
+
+aeMCPAnimatorCamera::aeMCPAnimatorCamera() : aeTMCPAnimator("animator.camera", "", ""){
+	SetProperties(igdeCamera::MetaProperties::global.properties);
+}
+
+
+// Class aeMCPAnimatorPaused
+//////////////////////////////
+
+namespace {
+
+class cActionPlaybackReset : public igdeMetaProperty::Action{
+	aeMCPAnimatorPaused &pProperty;
+	
+public:
+	cActionPlaybackReset(aeMCPAnimatorPaused &property, igdeWidget &owner, const igdeMetaContext::Ref &context = {}) :
+	Action(owner, context, "@Animator.WPView.Reset", nullptr, "@Animator.WPView.Reset.ToolTip"), pProperty(property){}
+	
+	void OnAction() override{
+		const auto &context = GetContext();
+		if(!pProperty.IsValid(context)){
+			return;
+		}
+		
+		pProperty.Animator(context).GetControllers().Visit([](aeController &controller){
+			controller.ResetValue();
+		});
+	}
+};
+
+}
+
+void aeMCPAnimatorPaused::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	helper.MenuCommand(menu, deTObjectReference<cActionPlaybackReset>::New(*this, owner, context));
+}

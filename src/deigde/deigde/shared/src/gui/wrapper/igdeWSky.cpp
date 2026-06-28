@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeWSky.h"
 #include "../../engine/igdeEngineController.h"
 #include "../../environment/igdeEnvironment.h"
@@ -51,16 +47,76 @@
 #include <dragengine/resources/world/deWorld.h>
 
 
+// Meta Context
+/////////////////
+
+// Class igdeWSky::MetaContext
+////////////////////////////////
+
+igdeWSky::MetaContext::MetaContext(igdeWSky *wrapper) :
+igdeMetaContext("igde.wsky"),
+pWrapper(wrapper){
+	SetProperties(MetaProperties::global.properties);
+}
+
+igdeWSky::MetaContext::~MetaContext() = default;
+
+igdeWSky &igdeWSky::MetaContext::GetWrapperRef() const{
+	DEASSERT_NOTNULL(pWrapper)
+	return *pWrapper;
+}
+
+igdeWSky::MetaContext::Ref igdeWSky::MetaContext::Capture() const{
+	auto context = Ref::New(pWrapper);
+	context->pGuard = pWrapper;
+	return context;
+}
+
+igdeEnvironment &igdeWSky::MetaContext::GetEnvironment() const{
+	return GetWrapperRef().GetEnvironment();
+}
+
+igdeUndoSystem *igdeWSky::MetaContext::GetUndoSystem() const{
+	return nullptr;
+}
+
+igdeClipboard *igdeWSky::MetaContext::GetClipboard() const{
+	return &GetEnvironment().GetClipboard();
+}
+
+
+// Meta Properties
+////////////////////
+
+// igdeWSky::MetaProperties::Path
+igdeWSky::MetaProperties::Path::Path() :
+TBase("igde.wsky.path", "Igde.WPSky.SkyPath", igdeEnvironment::eFilePatternListTypes::efpltSky){
+}
+
+igdeWSky::MetaProperties::Path::~Path() = default;
+
+igdeMetaPropertyPathStorage::Storage &igdeWSky::MetaProperties::Path::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return Wrapper(context).path;
+}
+
+
+// Properties
+
+igdeWSky::MetaProperties igdeWSky::MetaProperties::global;
+
+igdeWSky::MetaProperties::MetaProperties() :
+path(deTObjectReference<Path>::New()),
+properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMetaProperty>(devctag,
+	path))){
+}
+
 
 // Asynchronous load finished listener
 ////////////////////////////////////////
 
-igdeWSky::cAsyncLoadFinished::cAsyncLoadFinished(){
-}
-
-igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished(){
-}
-
+igdeWSky::cAsyncLoadFinished::cAsyncLoadFinished() = default;
+igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished() = default;
 
 
 // Class igdeWSky
@@ -71,15 +127,44 @@ igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished(){
 
 igdeWSky::igdeWSky(igdeEnvironment &environment) :
 pEnvironment(environment),
+pMetaContext(MetaContext::Ref::New(this)),
 pAsyncLoadFinished(nullptr),
-pAsyncLoadCounter(0)
+pAsyncLoadCounter(0),
+path(MetaProperties::global.path, pMetaContext)
 {
-	pEngSkyInstance = environment.GetEngineController()->GetEngine()
-		->GetSkyInstanceManager()->CreateSkyInstance();
+	pEngSkyInstance = environment.GetEngineController()->GetEngine()->
+		GetSkyInstanceManager()->CreateSkyInstance();
+	
+	path.onValueChanged = [this](){
+		if(path->IsEmpty()){
+			pSetGDSky(nullptr);
+			pSetSky(nullptr);
+			return;
+		}
+		
+		auto &skies = pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->GetSkies();
+		auto gdsky = skies.FindWithPath(path);
+		if(!gdsky){
+			gdsky = skies.FindNamed(path);
+		}
+		
+		if(gdsky){
+			pSetGDSky(gdsky);
+			
+		}else{
+			pLoadSky(path);
+		}
+		
+		onChanged();
+	};
 }
 
 igdeWSky::~igdeWSky(){
 	SetWorld(nullptr);
+	
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
 }
 
 
@@ -121,24 +206,9 @@ const deSky *igdeWSky::GetSky() const{
 }
 
 void igdeWSky::SetSky(deSky *sky){
-	if(pEngSkyInstance->GetSky() == sky){
-		return;
-	}
-	
-	pEngSkyInstance->SetSky(sky);
-	pGDSky = nullptr;
-	pPath.Empty();
-	
-	pMaxLightIntensity = 0.0f;
-	if(sky){
-		const int countLayers = sky->GetLayers().GetCount();
-		int i;
-		
-		for(i=0; i<countLayers; i++){
-			const deSkyLayer &layer = sky->GetLayers().GetAt(i);
-			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
-		}
-	}
+	path = "";
+	pSetGDSky(nullptr);
+	pSetSky(sky);
 }
 
 void igdeWSky::SetGDDefaultSky(){
@@ -151,34 +221,16 @@ void igdeWSky::SetGDSky(igdeGDSky *gdsky){
 	}
 	
 	if(gdsky){
-		pLoadSky(gdsky->GetPath());
+		path = gdsky->GetPath();
+		pSetGDSky(gdsky);
 		
 	}else{
 		SetSky(nullptr);
 	}
-	
-	// SetSky sets pGDSky to nullptr if sky is different from the sky in the sky instance.
-	// pLoadSky calls SetSky so the same problem applies to both code path. By setting
-	// the sky after these calls are done it is ensured pGDSky is not suddenly nullptr
-	// although it should not be nullptr
-	pGDSky = gdsky;
 }
 
-void igdeWSky::SetPath(const char *path){
-	igdeGDSky *gdsky = pEnvironment.GetGameProject()->GetGameDefinition()->
-		GetSkyManager()->GetSkies().FindWithPath(path);
-	
-	if(!gdsky){
-		gdsky = pEnvironment.GetGameProject()->GetGameDefinition()->
-			GetSkyManager()->GetSkies().FindNamed(path);
-	}
-	
-	if(gdsky){
-		SetGDSky(gdsky);
-		
-	}else{
-		pLoadSky(path);
-	}
+void igdeWSky::SetPath(const char *value){
+	path = value;
 }
 
 void igdeWSky::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
@@ -225,30 +277,57 @@ void igdeWSky::OnGameDefinitionChanged(){
 // Private Functions
 /////////////////////
 
-void igdeWSky::pLoadSky(const char *path){
+void igdeWSky::pSetSky(deSky *sky){
+	if(pEngSkyInstance->GetSky() == sky){
+		return;
+	}
+	
+	pEngSkyInstance->SetSky(sky);
+	
+	pMaxLightIntensity = 0.0f;
+	if(sky){
+		sky->GetLayers().Visit([&](const deSkyLayer &layer){
+			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
+		});
+	}
+}
+
+void igdeWSky::pSetGDSky(igdeGDSky *gdsky){
+	if(pGDSky == gdsky){
+		return;
+	}
+	pGDSky = gdsky;
+	
+	if(gdsky){
+		pLoadSky(gdsky->GetPath());
+		
+	}else{
+		pSetSky(nullptr);
+	}
+}
+
+void igdeWSky::pLoadSky(const char *value){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	
 	pAsyncLoadCounter = 0;
 	
-	const decPath vfsPath(decPath::CreatePathUnix(path));
+	const auto vfsPath = decPath::CreatePathUnix(value);
 	if(!engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 		pCheckAsyncLoadFinished();
 		return;
 	}
 	
-	igdeLoadSky loadsky(pEnvironment, pEnvironment.GetLogger(), "igdeWSky");
-	
 	try{
-		const deSky::Ref sky(engine.GetSkyManager()->CreateSky());
-		loadsky.Load(path, sky, engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
-		SetSky(sky);
+		auto sky = engine.GetSkyManager()->CreateSky();
+		igdeLoadSky(pEnvironment, pEnvironment.GetLogger(), "igdeWSky").Load(
+			value, sky, engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
+		pSetSky(sky);
 		
 	}catch(const deException &){
 		pCheckAsyncLoadFinished();
 		throw;
 	}
 	
-	pPath = path;
 	pCheckAsyncLoadFinished();
 }
 

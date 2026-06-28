@@ -28,7 +28,6 @@
 #include <stdio.h>
 
 #include "reRig.h"
-#include "reCamera.h"
 #include "reRigBuilder.h"
 #include "reRigNotifier.h"
 #include "reRigTexture.h"
@@ -48,7 +47,6 @@
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
-#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -116,7 +114,6 @@ igdeEditableEntity(environment),
 pEngAnimatorAnim(nullptr),
 pEngAnimatorRestPose(nullptr),
 
-pSky(nullptr),
 pPoseChanged(true),
 
 pModelCollision(false),
@@ -126,8 +123,6 @@ pMoveTime(0.0f),
 pPlayTime(0.0f),
 pUseRestPose(true),
 pPlaybackMove(false),
-
-pCamera(nullptr),
 
 pLockAxisX(false),
 pLockAxisY(false),
@@ -202,7 +197,7 @@ pDirtyRig(true)
 		pCreateCamera();
 		
 		// create sky
-		pSky = new igdeWSky(*environment);
+		pSky = igdeWSky::Ref::New(*environment);
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld(pEngWorld);
 		
@@ -1393,14 +1388,9 @@ void reRig::NotifyActivePushChanged(){
 void reRig::pCleanUp(){
 	SetSimulationRunning(false);
 	
-	if(pSky){
-		delete pSky;
-	}
+	pSky.Clear();
 	pEnvObject = nullptr;
-	
-	if(pCamera){
-		delete pCamera;
-	}
+	pCamera.Clear();
 	
 	if(pSelectionConstraints){
 		delete pSelectionConstraints;
@@ -1447,11 +1437,9 @@ void reRig::pCreateWorld(){
 }
 
 void reRig::pCreateCamera(){
-	pCamera = new reCamera(this, GetEngine());
-	
+	pCamera = reCamera::Ref::New(*this, GetEngine());
 	pCamera->SetName("Orbiting Camera");
 	pCamera->SetEngineWorld(pEngWorld);
-	
 	pCamera->Reset();
 }
 

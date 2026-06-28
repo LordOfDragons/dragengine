@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCamera::meCamera(deEngine *engine) :
-igdeCamera(engine),
+meCamera::meCamera(igdeEnvironment &environment, deEngine *engine) :
+igdeCamera(environment, engine),
 
 pDDVolume(nullptr),
 pWorld(nullptr),

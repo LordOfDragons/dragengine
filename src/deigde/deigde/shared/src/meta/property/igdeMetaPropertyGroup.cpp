@@ -34,24 +34,28 @@
 ////////////////////////////
 
 igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *name,
-	const char *description) :
-igdeMetaProperty(id, name, description){
+	const char *description, bool collapsed) :
+igdeMetaProperty(id, name, description),
+pCollapsed(collapsed){
 }
 
 igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *name,
-	const char *description, const List &properties) :
+	const char *description, const List &properties, bool collapsed) :
 igdeMetaProperty(id, name, description),
-pProperties(properties){
+pProperties(properties),
+pCollapsed(collapsed){
 }
 
-igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *translationTag) :
-igdeMetaProperty(id, translationTag){
+igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id, const char *translationTag, bool collapsed) :
+igdeMetaProperty(id, translationTag),
+pCollapsed(collapsed){
 }
 
 igdeMetaPropertyGroup::igdeMetaPropertyGroup(const char *id,
-	const char *translationTag, const List &properties) :
+	const char *translationTag, const List &properties, bool collapsed) :
 igdeMetaProperty(id, translationTag),
-pProperties(properties){
+pProperties(properties),
+pCollapsed(collapsed){
 }
 
 igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
@@ -59,6 +63,10 @@ igdeMetaPropertyGroup::~igdeMetaPropertyGroup() = default;
 
 // Management
 ///////////////
+
+void igdeMetaPropertyGroup::SetCollapsed(bool collapsed){
+	pCollapsed = collapsed;
+}
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyGroup::CreateWidget(){
 	return igdeMetaPropertyGroupWidget::Ref::New(*this);

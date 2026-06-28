@@ -184,8 +184,6 @@ pWOAsyncFinished(*this)
 	
 	pDDSCoordSysArrows = nullptr;
 	
-	pCamera = nullptr;
-	
 	pRange = 10.0f; //pGetRangeFor(1.0f, 2.0f, 0.01f);
 	
 	pClassDef = nullptr;
@@ -1644,9 +1642,7 @@ void meObject::pCleanUp(){
 	
 	pWObject = nullptr;
 	
-	if(pCamera){
-		delete pCamera;
-	}
+	pCamera.Clear();
 	
 	if(pDDSCoordSysArrows){
 		delete pDDSCoordSysArrows;
@@ -2019,7 +2015,7 @@ void meObject::pUpdateCamera(){
 	
 	if(gdCamera){
 		if(!pCamera && pWorld){
-			pCamera = new meCamera(GetEnvironment()->GetEngineController()->GetEngine());
+			pCamera = meCamera::Ref::New(*GetEnvironment(), GetEnvironment()->GetEngineController()->GetEngine());
 			pCamera->SetEnableGI(pWorld->GetWindowMain().GetConfiguration().GetEnableGI());
 			pCamera->SetShowPreview(pCameraShowPreview);
 			pCamera->SetHostObject(this);
@@ -2027,8 +2023,7 @@ void meObject::pUpdateCamera(){
 		}
 		
 	}else if(pCamera){
-		delete pCamera;
-		pCamera = nullptr;
+		pCamera.Clear();
 	}
 	
 	if(!pCamera || !gdCamera){

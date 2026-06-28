@@ -39,7 +39,9 @@
 #include "playback/cePlayback.h"
 #include "../langpack/ceLangPack.h"
 
+#include <deigde/gui/igdeCamera.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -56,8 +58,6 @@ class ceConversationListener;
 class ceActorPose;
 class ceLoadSaveSystem;
 
-class igdeWSky;
-class igdeCamera;
 class deComponent;
 class deAnimator;
 class deAnimatorInstance;
@@ -99,14 +99,14 @@ public:
 private:
 	deWorld::Ref pEngWorld;
 	
-	igdeWSky *pSky;
+	igdeWSky::Ref pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	deMicrophone::Ref pEngMicrophone;
 	deSpeaker::Ref pEngSpeakerVAPreview;
 	
-	igdeCamera *pCamera;
-	igdeCamera *pCameraFree;
+	igdeCamera::Ref pCamera;
+	igdeCamera::Ref pCameraFree;
 	ceTextBox::Ref pTextBox;
 	cePlayerChoiceBox::Ref pPlayerChoiceBox;
 	ceConversationInfoBox::Ref pInfoBox;
@@ -180,15 +180,15 @@ public:
 	inline const deSpeaker::Ref &GetEngineSpeakerVAPreview() const{ return pEngSpeakerVAPreview; }
 	
 	/** Retrieves the sky wrapper. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline const igdeWSky::Ref &GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the camera. */
-	inline igdeCamera *GetCamera() const{ return pCamera; }
+	inline const igdeCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Free roaming camera. */
-	inline igdeCamera *GetCameraFree() const{ return pCameraFree; }
+	inline const igdeCamera::Ref &GetCameraFree() const{ return pCameraFree; }
 	
 	/** Retrieves the text box. */
 	inline const ceTextBox::Ref &GetTextBox() const{ return pTextBox; }

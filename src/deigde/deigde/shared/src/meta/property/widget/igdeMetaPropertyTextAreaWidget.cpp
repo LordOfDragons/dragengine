@@ -236,6 +236,7 @@ void igdeMetaPropertyTextAreaWidget::Create(Builder &builder, bool noLabel){
 	WrapEditWidget(builder, noLabel, pTextArea);
 	
 	UpdateMatchable();
+	SetContext(builder.GetContext());
 }
 
 void igdeMetaPropertyTextAreaWidget::Drop(){
