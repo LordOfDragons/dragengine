@@ -40,65 +40,65 @@
 aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleStateSnapshot::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertStateSnapshot, aname),
-useLastState(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.useLastState, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-id(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.id, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-enablePosition(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enablePosition, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-enableOrientation(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableOrientation, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-enableSize(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableSize, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>())
+pMPUseLastState(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.useLastState, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+pMPId(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.id, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enablePosition, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableOrientation, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableSize, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>())
 {
-	useLastState.onValueChanged = [this](){
+	pMPUseLastState.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetUseLastState(useLastState);
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetUseLastState(pMPUseLastState);
 		}
 		NotifyRuleChanged();
 	};
 	
-	id.onValueChanged = [this](){
+	pMPId.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetID(id);
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetID(pMPId);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enablePosition.onValueChanged = [this](){
+	pMPEnablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnablePosition(enablePosition);
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnablePosition(pMPEnablePosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableOrientation.onValueChanged = [this](){
+	pMPEnableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableOrientation(pMPEnableOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableSize.onValueChanged = [this](){
+	pMPEnableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableSize(enableSize);
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableSize(pMPEnableSize);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableVertexPositionSet.onValueChanged = [this](){
+	pMPEnableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+			((deAnimatorRuleStateSnapshot*)GetEngineRule())->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 }
 
 aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const aeRuleStateSnapshot &copy) :
-aeRuleStateSnapshot(windowMain, copy.name)
+aeRuleStateSnapshot(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
-	id.SetValue(copy.id, false);
-	enablePosition.SetValue(copy.enablePosition, false);
-	enableOrientation.SetValue(copy.enableOrientation, false);
-	enableSize.SetValue(copy.enableSize, false);
-	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
+	pMPId.SetValue(copy.pMPId, false);
+	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
+	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
+	pMPEnableSize.SetValue(copy.pMPEnableSize, false);
+	pMPEnableVertexPositionSet.SetValue(copy.pMPEnableVertexPositionSet, false);
 }
 
 aeRuleStateSnapshot::~aeRuleStateSnapshot() = default;
@@ -108,27 +108,27 @@ aeRuleStateSnapshot::~aeRuleStateSnapshot() = default;
 ///////////////
 
 void aeRuleStateSnapshot::SetUseLastState(bool value){
-	useLastState = value;
+	pMPUseLastState = value;
 }
 
 void aeRuleStateSnapshot::SetID(int value){
-	id = value;
+	pMPId = value;
 }
 
 void aeRuleStateSnapshot::SetEnablePosition(bool value){
-	enablePosition = value;
+	pMPEnablePosition = value;
 }
 
 void aeRuleStateSnapshot::SetEnableOrientation(bool value){
-	enableOrientation = value;
+	pMPEnableOrientation = value;
 }
 
 void aeRuleStateSnapshot::SetEnableSize(bool value){
-	enableSize = value;
+	pMPEnableSize = value;
 }
 
 void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool value){
-	enableVertexPositionSet = value;
+	pMPEnableVertexPositionSet = value;
 }
 
 
@@ -137,12 +137,12 @@ deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetUseLastState(useLastState);
-	engRule->SetID(id);
-	engRule->SetEnablePosition(enablePosition);
-	engRule->SetEnableOrientation(enableOrientation);
-	engRule->SetEnableSize(enableSize);
-	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
+	engRule->SetUseLastState(pMPUseLastState);
+	engRule->SetID(pMPId);
+	engRule->SetEnablePosition(pMPEnablePosition);
+	engRule->SetEnableOrientation(pMPEnableOrientation);
+	engRule->SetEnableSize(pMPEnableSize);
+	engRule->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 	
 	return engRule;
 }

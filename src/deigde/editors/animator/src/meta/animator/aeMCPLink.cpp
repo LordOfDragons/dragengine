@@ -243,7 +243,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 
 aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = aeLink::Ref::New(WindowMain(context), *object);
-	copied->name.SetValue(Animator(context).uniqueNameLink.Generate(copied->name), false);
+	copied->GetMPName().SetValue(Animator(context).uniqueNameLink.Generate(copied->GetMPName()), false);
 	return copied;
 }
 
@@ -294,7 +294,8 @@ public:
 			return;
 		}
 		
-		const float x = decMath::linearStep(controller->currentValue, controller->minimumValue, controller->maximumValue);
+		const float x = decMath::linearStep(controller->GetMPCurrentValue(),
+			controller->GetMPMinimumValue(), controller->GetMPMaximumValue());
 		float y = 0.0f;
 		if(!igdeCommonDialogs::GetFloat(GetOwner(), "@Animator.WPLink.Dialog.InsertCurveValue.Title",
 		"@Animator.WPLink.Dialog.InsertCurveValue.YValue", y)){

@@ -45,12 +45,12 @@ public:
 	~aeMCPRuleForeignStateForeignBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).foreignBone;
+		return RuleType(context).GetMPForeignBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -64,12 +64,12 @@ public:
 	~aeMCPRuleForeignStateForeignVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).foreignVertexPositionSet;
+		return RuleType(context).GetMPForeignVertexPositionSet();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenVPSNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenVPSNames().GetValue() : decStringSet();
 	}
 };
 
@@ -83,7 +83,7 @@ public:
 	~aeMCPRuleForeignStateScalePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).scalePosition;
+		return RuleType(context).GetMPScalePosition();
 	}
 };
 
@@ -97,7 +97,7 @@ public:
 	~aeMCPRuleForeignStateScaleOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).scaleOrientation;
+		return RuleType(context).GetMPScaleOrientation();
 	}
 };
 
@@ -111,7 +111,7 @@ public:
 	~aeMCPRuleForeignStateScaleSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).scaleSize;
+		return RuleType(context).GetMPScaleSize();
 	}
 };
 
@@ -125,7 +125,7 @@ public:
 	~aeMCPRuleForeignStateScaleVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).scaleVertexPositionSet;
+		return RuleType(context).GetMPScaleVertexPositionSet();
 	}
 };
 
@@ -139,7 +139,7 @@ public:
 	~aeMCPRuleForeignStateEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -153,7 +153,7 @@ public:
 	~aeMCPRuleForeignStateEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -165,7 +165,7 @@ public:
 	~aeMCPRuleForeignStateEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -179,7 +179,7 @@ public:
 	~aeMCPRuleForeignStateEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSet;
+		return RuleType(context).GetMPEnableVertexPositionSet();
 	}
 };
 
@@ -196,7 +196,7 @@ public:
 	~aeMCPRuleForeignStateSourceCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).sourceCoordinateFrame;
+		return RuleType(context).GetMPSourceCoordinateFrame();
 	}
 
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleForeignState::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
@@ -229,7 +229,7 @@ public:
 	~aeMCPRuleForeignStateDestCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).destCoordinateFrame;
+		return RuleType(context).GetMPDestCoordinateFrame();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleForeignState::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
@@ -260,7 +260,7 @@ public:
 	~aeMCPRuleForeignStateTargetPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetPosition;
+		return RuleType(context).GetMPTargetPosition();
 	}
 };
 
@@ -274,7 +274,7 @@ public:
 	~aeMCPRuleForeignStateTargetOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetOrientation;
+		return RuleType(context).GetMPTargetOrientation();
 	}
 };
 
@@ -289,7 +289,7 @@ public:
 	~aeMCPRuleForeignStateTargetSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetSize;
+		return RuleType(context).GetMPTargetSize();
 	}
 };
 
@@ -303,7 +303,7 @@ public:
 	~aeMCPRuleForeignStateTargetVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetVertexPositionSet;
+		return RuleType(context).GetMPTargetVertexPositionSet();
 	}
 };
 

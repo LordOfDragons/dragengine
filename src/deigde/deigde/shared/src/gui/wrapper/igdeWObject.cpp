@@ -221,7 +221,7 @@ igdeEnvironment &igdeWObject::MetaContext::GetEnvironment() const{
 }
 
 igdeUndoSystem *igdeWObject::MetaContext::GetUndoSystem() const{
-	return nullptr;
+	return GetWrapperRef().GetUndoSystem();
 }
 
 igdeClipboard *igdeWObject::MetaContext::GetClipboard() const{
@@ -243,7 +243,7 @@ igdeWObject::MetaProperties::ObjectClass::~ObjectClass() = default;
 
 igdeMetaPropertyStringStorage::Storage &igdeWObject::MetaProperties::ObjectClass::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).objectClass;
+	return Wrapper(context).GetMPObjectClass();
 }
 
 decStringSet igdeWObject::MetaProperties::ObjectClass::GetPropertyAllowedStrings(const ContextRef &context) const{
@@ -272,7 +272,7 @@ igdeWObject::MetaProperties::World::~World() = default;
 
 igdeMetaPropertyPathStorage::Storage &igdeWObject::MetaProperties::World::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).world;
+	return Wrapper(context).GetMPWorld();
 }
 
 
@@ -286,7 +286,7 @@ igdeWObject::MetaProperties::Position::~Position() = default;
 
 igdeMetaPropertyDVectorStorage::Storage &igdeWObject::MetaProperties::Position::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).position;
+	return Wrapper(context).GetMPPosition();
 }
 
 
@@ -300,7 +300,7 @@ igdeWObject::MetaProperties::Rotation::~Rotation() = default;
 
 igdeMetaPropertyVectorStorageQuaternion::Storage &igdeWObject::MetaProperties::Rotation::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).rotation;
+	return Wrapper(context).GetMPRotation();
 }
 
 
@@ -315,7 +315,7 @@ igdeWObject::MetaProperties::Scaling::~Scaling() = default;
 
 igdeMetaPropertyVectorStorage::Storage &igdeWObject::MetaProperties::Scaling::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).scaling;
+	return Wrapper(context).GetMPScaling();
 }
 
 igdeMetaPropertyVectorUndo::Ref igdeWObject::MetaProperties::Scaling::ChangePropertyValue(
@@ -340,7 +340,7 @@ igdeWObject::MetaProperties::Visible::~Visible() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeWObject::MetaProperties::Visible::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).visible;
+	return Wrapper(context).GetMPVisible();
 }
 
 
@@ -353,8 +353,8 @@ TBase("igde.wobject.dynamicCollider", "Igde.WPWObject.DynamicCollider"){
 igdeWObject::MetaProperties::DynamicCollider::~DynamicCollider() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeWObject::MetaProperties::DynamicCollider::GetStorage(
-const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).dynamicCollider;
+const igdeMetaContext::Ref &ref) const{
+	return Wrapper(ref).GetMPDynamicCollider();
 }
 
 
@@ -383,6 +383,7 @@ properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMeta
 
 igdeWObject::igdeWObject(igdeEnvironment &environment) :
 pEnvironment(environment),
+pUndoSystem(nullptr),
 pMetaContext(MetaContext::Ref::New(this)),
 pColliderUserPointer(nullptr),
 pRenderLayerMask(0x1),
@@ -399,13 +400,13 @@ pOutlineColor(1.0f, 0.0f, 0.0f),
 pAsyncLoadFinished(nullptr),
 pAsyncLoadCounter(0),
 pAnyContentVisible(false),
-objectClass(MetaProperties::global.objectClass, pMetaContext),
-world(MetaProperties::global.world, pMetaContext),
-position(MetaProperties::global.position, pMetaContext),
-rotation(MetaProperties::global.rotation, pMetaContext),
-scaling(MetaProperties::global.scaling, pMetaContext),
-visible(MetaProperties::global.visible, pMetaContext),
-dynamicCollider(MetaProperties::global.dynamicCollider, pMetaContext)
+pMPObjectClass(MetaProperties::global.objectClass, pMetaContext),
+pMPWorld(MetaProperties::global.world, pMetaContext),
+pMPPosition(MetaProperties::global.position, pMetaContext),
+pMPRotation(MetaProperties::global.rotation, pMetaContext),
+pMPScaling(MetaProperties::global.scaling, pMetaContext),
+pMPVisible(MetaProperties::global.visible, pMetaContext),
+pMPDynamicCollider(MetaProperties::global.dynamicCollider, pMetaContext)
 {
 	try{
 		pTriggerListener = igdeWObjectTriggerListener::Ref::New(*this);
@@ -429,13 +430,13 @@ dynamicCollider(MetaProperties::global.dynamicCollider, pMetaContext)
 		throw;
 	}
 	
-	objectClass.onValueChanged = [this](){
+	pMPObjectClass.onValueChanged = [this](){
 		SetGDClass(pEnvironment.GetGameProject()->GetGameDefinition()->
-			GetClassManager()->GetClasses().FindNamed(objectClass));
+			GetClassManager()->GetClasses().FindNamed(pMPObjectClass));
 		onChanged();
 	};
 	
-	world.onValueChanged = [this](){
+	pMPWorld.onValueChanged = [this](){
 		pDestroySubObjects();
 		DetachCollider();
 		pWorldGDClass.Clear();
@@ -443,21 +444,21 @@ dynamicCollider(MetaProperties::global.dynamicCollider, pMetaContext)
 		onChanged();
 	};
 	
-	position.onValueChanged = [this](){
+	pMPPosition.onValueChanged = [this](){
 		pUpdateMatrices();
-		pColliderFallback->SetPosition(position);
+		pColliderFallback->SetPosition(pMPPosition);
 		pSubObjectsUpdateGeometry();
 		onChanged();
 	};
 	
-	rotation.onValueChanged = [this](){
+	pMPRotation.onValueChanged = [this](){
 		pUpdateMatrices();
-		pColliderFallback->SetOrientation(rotation);
+		pColliderFallback->SetOrientation(pMPRotation);
 		pSubObjectsUpdateGeometry();
 		onChanged();
 	};
 	
-	scaling.onValueChanged = [this](){
+	pMPScaling.onValueChanged = [this](){
 		pDirtyFallbackColliderShape = true;
 		pUpdateMatrices();
 		pSubObjectsUpdateGeometry();
@@ -465,12 +466,12 @@ dynamicCollider(MetaProperties::global.dynamicCollider, pMetaContext)
 		onChanged();
 	};
 	
-	visible.onValueChanged = [this](){
+	pMPVisible.onValueChanged = [this](){
 		pUpdateVisiblity();
 		onChanged();
 	};
 	
-	dynamicCollider.onValueChanged = [this](){
+	pMPDynamicCollider.onValueChanged = [this](){
 		pUpdateColliderResponseType();
 		onChanged();
 	};
@@ -483,6 +484,10 @@ igdeWObject::~igdeWObject(){
 
 // Management
 ///////////////
+
+void igdeWObject::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
 
 void igdeWObject::SetWorld(deWorld *value){
 	if(value == pWorld){
@@ -534,11 +539,11 @@ void igdeWObject::SetGDClass(igdeGDClass *gdClass){
 }
 
 void igdeWObject::SetGDClassName(const char *gdClassName){
-	objectClass = gdClassName;
+	pMPObjectClass = gdClassName;
 }
 
 void igdeWObject::SetPathWorld(const char *path){
-	world = path;
+	pMPWorld = path;
 }
 
 void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){
@@ -556,21 +561,21 @@ void igdeWObject::SetTriggerTable(igdeTriggerTargetList *triggerTable){
 
 
 void igdeWObject::SetPosition(const decDVector &value){
-	position = value;
+	pMPPosition = value;
 }
 
 void igdeWObject::SetOrientation(const decQuaternion &value){
-	rotation = value;
+	pMPRotation = value;
 }
 
 void igdeWObject::SetScaling(const decVector &value){
-	scaling = value;
+	pMPScaling = value;
 }
 
 
 
 void igdeWObject::SetVisible(bool value){
-	visible = value;
+	pMPVisible = value;
 }
 
 void igdeWObject::SetPartiallyHidden(bool partiallyHidden){
@@ -675,7 +680,7 @@ void igdeWObject::SetCollisionFilterInteract(const decCollisionFilter &collision
 }
 
 void igdeWObject::SetDynamicCollider(bool dynamic){
-	dynamicCollider = dynamic;
+	pMPDynamicCollider = dynamic;
 }
 
 void igdeWObject::SetRequiresInteraction(bool requiresInteraction){
@@ -722,7 +727,7 @@ bool igdeWObject::AllSubObjectsFinishedLoading() const{
 
 
 void igdeWObject::OnGameDefinitionChanged(){
-	objectClass.Property().NotifyAllowedStringsChanged(pMetaContext);
+	pMPObjectClass.Property().NotifyAllowedStringsChanged(pMetaContext);
 	if(pGDClass){
 		SetGDClassName(pGDClass->GetName());
 	}
@@ -879,8 +884,8 @@ void igdeWObject::DetachCollider(){
 	pAttachToBone.Empty();
 	
 	// reset position and orientation otherwise our state and the collider state are out of sync
-	pColliderFallback->SetPosition(position);
-	pColliderFallback->SetOrientation(rotation);
+	pColliderFallback->SetPosition(pMPPosition);
+	pColliderFallback->SetOrientation(pMPRotation);
 	
 	pSubObjectsUpdateGeometry();
 }
@@ -971,7 +976,7 @@ void igdeWObject::SetInteractCollider(deColliderComponent *collider){
 		pEnvironment.SetColliderDelegee(pColliderComponent, nullptr);
 		pEnvironment.SetColliderUserPointer(pColliderComponent, nullptr);
 		pColliderComponent = nullptr;
-		pColliderFallback->SetEnabled(visible && !pPartiallyHidden);
+		pColliderFallback->SetEnabled(pMPVisible && !pPartiallyHidden);
 	}
 	
 	pCollidersInteraction.Visit([&](deCollider *c){
@@ -1077,7 +1082,7 @@ void igdeWObject::pUpdateContent(){
 }
 
 void igdeWObject::pUpdateVisiblity(){
-	const bool partiallyVisible = (visible && !pPartiallyHidden);
+	const bool partiallyVisible = (pMPVisible && !pPartiallyHidden);
 	pColliderFallback->SetEnabled(!pColliderComponent && partiallyVisible);
 	
 	pSubObjectsUpdateVisibility();
@@ -1086,7 +1091,7 @@ void igdeWObject::pUpdateVisiblity(){
 igdeGDClass::Ref igdeWObject::pCreateWorldGDClass(){
 	auto gdclass = igdeGDClass::Ref::New("_World");
 	auto gdcworld = igdeGDCWorld::Ref::New();
-	gdcworld->SetPath(world);
+	gdcworld->SetPath(pMPWorld);
 	gdclass->AddWorld(gdcworld);
 	return gdclass;
 }
@@ -1098,7 +1103,7 @@ void igdeWObject::pCreateSubObjects(){
 		if(pGDClass){
 			pCreateSubObjects("", pGDClass, igdeGDClass::FilterSubObjectsAll);
 			
-		}else if(!world->IsEmpty()){
+		}else if(!pMPWorld->IsEmpty()){
 			if(!pWorldGDClass){
 				pWorldGDClass = pCreateWorldGDClass();
 			}
@@ -1378,7 +1383,7 @@ void igdeWObject::pUpdateColliderResponseType(){
 	if(pColliderComponent){
 		responseType = pColliderComponent->GetResponseType();
 		
-	}else if(dynamicCollider){
+	}else if(pMPDynamicCollider){
 		responseType = deCollider::ertDynamic;
 		
 	}else{
@@ -1397,7 +1402,7 @@ void igdeWObject::pUpdateColliderShapes(){
 	pDirtyFallbackColliderShape = false;
 	decShape::List shapeList;
 	
-	const decVector &s = scaling;
+	const decVector &s = pMPScaling;
 	pSubObjects.Visit([&](igdeWOSubObject &so){
 		if(!so.HasBoxExtends()){
 			return;
@@ -1471,6 +1476,6 @@ void igdeWObject::pPrepareExtends(){
 }
 
 void igdeWObject::pUpdateMatrices(){
-	pMatrix.SetWorld(position.GetValue(), rotation.GetQuaternion(), scaling.GetValue());
+	pMatrix.SetWorld(pMPPosition.GetValue(), pMPRotation.GetQuaternion(), pMPScaling.GetValue());
 	pInvMatrix = pMatrix.QuickInvert();
 }

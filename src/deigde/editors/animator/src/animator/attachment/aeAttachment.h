@@ -85,11 +85,10 @@ private:
 	cAsyncLoadListener pAsyncLoadListener;
 	igdeWObject::Ref pObjectWrapper;
 	
-public:
-	igdeMetaPropertyStringStorage::Storage name;
-	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage attachType;
-	igdeMetaPropertyStringStorage::Storage boneName;
-	igdeMetaPropertyContextStorage::Storage wobject;
+	igdeMetaPropertyStringStorage::Storage pMPName;
+	igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage pMPAttachType;
+	igdeMetaPropertyStringStorage::Storage pMPBoneName;
+	igdeMetaPropertyContextStorage::Storage pMPWObject;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -118,6 +117,12 @@ public:
 	/** Get meta context. */
 	inline aeMCAttachment::Ref GetMetaContext() const{ return pMetaContext; }
 	
+	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
+	inline igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage &GetMPAttachType(){ return pMPAttachType; }
+	inline igdeMetaPropertyStringStorage::Storage &GetMPBoneName(){ return pMPBoneName; }
+	inline igdeMetaPropertyContextStorage::Storage &GetMPWObject(){ return pMPWObject; }
+	
+	
 	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
@@ -127,19 +132,19 @@ public:
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return name; }
+	inline const decString &GetName() const{ return pMPName; }
 	
 	/** Set name. */
 	void SetName(const char *name);
 	
 	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{ return attachType; }
+	inline eAttachTypes GetAttachType() const{ return pMPAttachType; }
 	
 	/** Set attached type. */
 	void SetAttachType(eAttachTypes type);
 	
 	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{ return boneName; }
+	inline const decString &GetBoneName() const{ return pMPBoneName; }
 	
 	/** Set name of the bone to attach to. */
 	void SetBoneName(const char *name);

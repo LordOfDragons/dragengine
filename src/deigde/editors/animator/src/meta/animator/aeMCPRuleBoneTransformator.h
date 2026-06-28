@@ -45,7 +45,7 @@ public:
 	~aeMCPRuleBoneTransformatorMinTranslation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minTranslation;
+		return RuleType(context).GetMPMinTranslation();
 	}
 };
 
@@ -57,11 +57,11 @@ public:
 	~aeMCPRuleBoneTransformatorMaxTranslation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxTranslation;
+		return RuleType(context).GetMPMaxTranslation();
 	}
 };
 
-class aeMCPRuleBoneTransformatorMinRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleBoneTransformatorMinRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleBoneTransformatorMinRotation() : aeTMCPAnimatorRuleType(
 	"bonetransformator.minRotation", "Animator.WPAPanelRuleBoneTransformator.MinRotation"){}
@@ -69,11 +69,11 @@ public:
 	~aeMCPRuleBoneTransformatorMinRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minRotation;
+		return RuleType(context).GetMPMinRotation();
 	}
 };
 
-class aeMCPRuleBoneTransformatorMaxRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleBoneTransformatorMaxRotation : public aeTMCPAnimatorRuleBoneTransformator<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleBoneTransformatorMaxRotation() : aeTMCPAnimatorRuleType(
 	"bonetransformator.maxRotation", "Animator.WPAPanelRuleBoneTransformator.MaxRotation"){}
@@ -81,7 +81,7 @@ public:
 	~aeMCPRuleBoneTransformatorMaxRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxRotation;
+		return RuleType(context).GetMPMaxRotation();
 	}
 };
 
@@ -95,7 +95,7 @@ public:
 	~aeMCPRuleBoneTransformatorMinScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minScaling;
+		return RuleType(context).GetMPMinScaling();
 	}
 };
 
@@ -109,7 +109,7 @@ public:
 	~aeMCPRuleBoneTransformatorMaxScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxScaling;
+		return RuleType(context).GetMPMaxScaling();
 	}
 };
 
@@ -123,7 +123,7 @@ public:
 	~aeMCPRuleBoneTransformatorAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).axis;
+		return RuleType(context).GetMPAxis();
 	}
 };
 
@@ -135,7 +135,7 @@ public:
 	~aeMCPRuleBoneTransformatorMinAngle() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minAngle;
+		return RuleType(context).GetMPMinAngle();
 	}
 };
 
@@ -147,7 +147,7 @@ public:
 	~aeMCPRuleBoneTransformatorMaxAngle() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxAngle;
+		return RuleType(context).GetMPMaxAngle();
 	}
 };
 
@@ -159,7 +159,7 @@ public:
 	~aeMCPRuleBoneTransformatorEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -173,7 +173,7 @@ public:
 	~aeMCPRuleBoneTransformatorEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -185,7 +185,7 @@ public:
 	~aeMCPRuleBoneTransformatorEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -197,7 +197,7 @@ public:
 	~aeMCPRuleBoneTransformatorUseAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).useAxis;
+		return RuleType(context).GetMPUseAxis();
 	}
 };
 
@@ -211,12 +211,12 @@ public:
 	~aeMCPRuleBoneTransformatorTargetBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetBone;
+		return RuleType(context).GetMPTargetBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -230,12 +230,12 @@ public:
 	~aeMCPRuleBoneTransformatorInputBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).inputBone;
+		return RuleType(context).GetMPInputBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -253,7 +253,7 @@ public:
 	~aeMCPRuleBoneTransformatorCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).coordinateFrame;
+		return RuleType(context).GetMPCoordinateFrame();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleBoneTransformator::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
@@ -292,7 +292,7 @@ public:
 	~aeMCPRuleBoneTransformatorInputSource() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).inputSource;
+		return RuleType(context).GetMPInputSource();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleBoneTransformator::eInputSources choice, igdeMetaContextItemInfo &info) const override{
@@ -330,7 +330,7 @@ public:
 	~aeMCPRuleBoneTransformatorTargetTranslation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetTranslation;
+		return RuleType(context).GetMPTargetTranslation();
 	}
 };
 
@@ -343,7 +343,7 @@ public:
 	~aeMCPRuleBoneTransformatorTargetRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetRotation;
+		return RuleType(context).GetMPTargetRotation();
 	}
 };
 
@@ -357,7 +357,7 @@ public:
 	~aeMCPRuleBoneTransformatorTargetScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetScaling;
+		return RuleType(context).GetMPTargetScaling();
 	}
 };
 

@@ -65,13 +65,12 @@ public:
 private:
 	MatchName::List pMatchNames;
 	
-public:
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage mirrorAxis;
-	igdeMetaPropertyStringStorage::Storage mirrorBone;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage pMPMirrorAxis;
+	igdeMetaPropertyStringStorage::Storage pMPMirrorBone;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -98,14 +97,22 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>::Storage &GetMPMirrorAxis(){ return pMPMirrorAxis; }
+	inline igdeMetaPropertyStringStorage::Storage &GetMPMirrorBone(){ return pMPMirrorBone; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	
+	
 	/** Mirror axis. */
-	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return mirrorAxis; }
+	inline deAnimatorRuleMirror::eMirrorAxis GetMirrorAxis() const{ return pMPMirrorAxis; }
 	
 	/** Set mirror axis. */
 	void SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis axis);
 	
 	/** Name of mirror bone or empty string to use component. */
-	inline const decString &GetMirrorBone() const{ return mirrorBone; }
+	inline const decString &GetMirrorBone() const{ return pMPMirrorBone; }
 	
 	/** Set name of mirror bone or empty string to use component. */
 	void SetMirrorBone(const char *boneName);
@@ -129,25 +136,25 @@ public:
 	void RemoveAllMatchNames();
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);

@@ -456,6 +456,9 @@ void aeLSAnimator::pSaveController(decXmlWriter &writer, const aeController &con
 	case aeAnimatorLocomotion::eaLegOrientation:
 		writer.WriteDataTagString("locomotionAttribute", "legOrientation");
 		break;
+		
+	case aeAnimatorLocomotion::eaNone:
+		break;
 	}
 	
 	if(controller.GetLocomotionLeg() > 0){

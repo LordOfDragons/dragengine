@@ -65,7 +65,7 @@ igdeEnvironment &igdeCamera::MetaContext::GetEnvironment() const{
 }
 
 igdeUndoSystem *igdeCamera::MetaContext::GetUndoSystem() const{
-	return nullptr;
+	return GetCameraRef().GetUndoSystem();
 }
 
 igdeClipboard *igdeCamera::MetaContext::GetClipboard() const{
@@ -156,7 +156,7 @@ igdeCamera::MetaProperties::Position::~Position() = default;
 
 igdeMetaPropertyDVectorStorage::Storage &igdeCamera::MetaProperties::Position::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).position;
+	return Camera(context).GetMPPosition();
 }
 
 // igdeCamera::MetaProperties::Rotation
@@ -168,7 +168,7 @@ igdeCamera::MetaProperties::Rotation::~Rotation() = default;
 
 igdeMetaPropertyVectorStorageQuaternion::Storage &igdeCamera::MetaProperties::Rotation::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).rotation;
+	return Camera(context).GetMPRotation();
 }
 
 // igdeCamera::MetaProperties::Distance
@@ -182,7 +182,7 @@ igdeCamera::MetaProperties::Distance::~Distance() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Distance::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).distance;
+	return Camera(context).GetMPDistance();
 }
 
 // igdeCamera::MetaProperties::Fov
@@ -200,7 +200,7 @@ igdeCamera::MetaProperties::Fov::~Fov() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Fov::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).fov;
+	return Camera(context).GetMPFov();
 }
 
 // igdeCamera::MetaProperties::FovRatio
@@ -215,7 +215,7 @@ igdeCamera::MetaProperties::FovRatio::~FovRatio() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::FovRatio::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).fovRatio;
+	return Camera(context).GetMPFovRatio();
 }
 
 // igdeCamera::MetaProperties::ImageDistance
@@ -230,7 +230,7 @@ igdeCamera::MetaProperties::ImageDistance::~ImageDistance() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::ImageDistance::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).imageDistance;
+	return Camera(context).GetMPImageDistance();
 }
 
 // igdeCamera::MetaProperties::ViewDistance
@@ -245,7 +245,7 @@ igdeCamera::MetaProperties::ViewDistance::~ViewDistance() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::ViewDistance::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).viewDistance;
+	return Camera(context).GetMPViewDistance();
 }
 
 // igdeCamera::MetaProperties::EnableHDRR
@@ -258,7 +258,7 @@ igdeCamera::MetaProperties::EnableHDRR::~EnableHDRR() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeCamera::MetaProperties::EnableHDRR::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).enableHDRR;
+	return Camera(context).GetMPEnableHDRR();
 }
 
 // igdeCamera::MetaProperties::EnableGI
@@ -271,7 +271,7 @@ igdeCamera::MetaProperties::EnableGI::~EnableGI() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeCamera::MetaProperties::EnableGI::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).enableGI;
+	return Camera(context).GetMPEnableGI();
 }
 
 // igdeCamera::MetaProperties::Exposure
@@ -286,7 +286,7 @@ igdeCamera::MetaProperties::Exposure::~Exposure() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Exposure::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).exposure;
+	return Camera(context).GetMPExposure();
 }
 
 // igdeCamera::MetaProperties::LowestIntensity
@@ -301,7 +301,7 @@ igdeCamera::MetaProperties::LowestIntensity::~LowestIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::LowestIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).lowestIntensity;
+	return Camera(context).GetMPLowestIntensity();
 }
 
 // igdeCamera::MetaProperties::HighestIntensity
@@ -316,7 +316,7 @@ igdeCamera::MetaProperties::HighestIntensity::~HighestIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::HighestIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).highestIntensity;
+	return Camera(context).GetMPHighestIntensity();
 }
 
 // igdeCamera::MetaProperties::AdaptionTime
@@ -331,7 +331,7 @@ igdeCamera::MetaProperties::AdaptionTime::~AdaptionTime() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::AdaptionTime::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).adaptionTime;
+	return Camera(context).GetMPAdaptionTime();
 }
 
 // igdeCamera::MetaProperties::WhiteIntensity
@@ -346,7 +346,7 @@ igdeCamera::MetaProperties::WhiteIntensity::~WhiteIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::WhiteIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).whiteIntensity;
+	return Camera(context).GetMPWhiteIntensity();
 }
 
 // igdeCamera::MetaProperties::BloomIntensity
@@ -361,7 +361,7 @@ igdeCamera::MetaProperties::BloomIntensity::~BloomIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).bloomIntensity;
+	return Camera(context).GetMPBloomIntensity();
 }
 
 // igdeCamera::MetaProperties::BloomStrength
@@ -376,7 +376,7 @@ igdeCamera::MetaProperties::BloomStrength::~BloomStrength() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomStrength::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).bloomStrength;
+	return Camera(context).GetMPBloomStrength();
 }
 
 // igdeCamera::MetaProperties::BloomBlend
@@ -393,7 +393,7 @@ igdeCamera::MetaProperties::BloomBlend::~BloomBlend() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomBlend::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).bloomBlend;
+	return Camera(context).GetMPBloomBlend();
 }
 
 // igdeCamera::MetaProperties::BloomSize
@@ -410,7 +410,7 @@ igdeCamera::MetaProperties::BloomSize::~BloomSize() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomSize::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).bloomSize;
+	return Camera(context).GetMPBloomSize();
 }
 
 // igdeCamera::MetaProperties::ToneMapCurve
@@ -426,7 +426,7 @@ igdeCamera::MetaProperties::ToneMapCurve::~ToneMapCurve() = default;
 
 igdeMetaPropertyCurveBezierStorage::Storage &igdeCamera::MetaProperties::ToneMapCurve::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).toneMapCurve;
+	return Camera(context).GetMPToneMapCurve();
 }
 
 // Properties
@@ -489,159 +489,160 @@ const igdeFilePattern::List igdeCamera::patternCamera(igdeFilePattern::List(devc
 
 igdeCamera::igdeCamera(igdeEnvironment &environment, deEngine *engine) :
 pEnvironment(environment),
+pUndoSystem(nullptr),
 pMetaContext(MetaContext::Ref::New(this)),
 pName("Camera"),
 pEngine(engine),
-position(MetaProperties::global.position, pMetaContext),
-rotation(MetaProperties::global.rotation, pMetaContext),
-distance(MetaProperties::global.distance, pMetaContext),
-fov(MetaProperties::global.fov, pMetaContext),
-fovRatio(MetaProperties::global.fovRatio, pMetaContext),
-imageDistance(MetaProperties::global.imageDistance, pMetaContext),
-viewDistance(MetaProperties::global.viewDistance, pMetaContext),
-enableHDRR(MetaProperties::global.enableHDRR, pMetaContext),
-enableGI(MetaProperties::global.enableGI, pMetaContext),
-exposure(MetaProperties::global.exposure, pMetaContext),
-lowestIntensity(MetaProperties::global.lowestIntensity, pMetaContext),
-highestIntensity(MetaProperties::global.highestIntensity, pMetaContext),
-adaptionTime(MetaProperties::global.adaptionTime, pMetaContext),
-whiteIntensity(MetaProperties::global.whiteIntensity, pMetaContext),
-bloomIntensity(MetaProperties::global.bloomIntensity, pMetaContext),
-bloomStrength(MetaProperties::global.bloomStrength, pMetaContext),
-bloomBlend(MetaProperties::global.bloomBlend, pMetaContext),
-bloomSize(MetaProperties::global.bloomSize, pMetaContext),
-toneMapCurve(MetaProperties::global.toneMapCurve, pMetaContext)
+pMPPosition(MetaProperties::global.position, pMetaContext),
+pMPRotation(MetaProperties::global.rotation, pMetaContext),
+pMPDistance(MetaProperties::global.distance, pMetaContext),
+pMPFov(MetaProperties::global.fov, pMetaContext),
+pMPFovRatio(MetaProperties::global.fovRatio, pMetaContext),
+pMPImageDistance(MetaProperties::global.imageDistance, pMetaContext),
+pMPViewDistance(MetaProperties::global.viewDistance, pMetaContext),
+pMPEnableHDRR(MetaProperties::global.enableHDRR, pMetaContext),
+pMPEnableGI(MetaProperties::global.enableGI, pMetaContext),
+pMPExposure(MetaProperties::global.exposure, pMetaContext),
+pMPLowestIntensity(MetaProperties::global.lowestIntensity, pMetaContext),
+pMPHighestIntensity(MetaProperties::global.highestIntensity, pMetaContext),
+pMPAdaptionTime(MetaProperties::global.adaptionTime, pMetaContext),
+pMPWhiteIntensity(MetaProperties::global.whiteIntensity, pMetaContext),
+pMPBloomIntensity(MetaProperties::global.bloomIntensity, pMetaContext),
+pMPBloomStrength(MetaProperties::global.bloomStrength, pMetaContext),
+pMPBloomBlend(MetaProperties::global.bloomBlend, pMetaContext),
+pMPBloomSize(MetaProperties::global.bloomSize, pMetaContext),
+pMPToneMapCurve(MetaProperties::global.toneMapCurve, pMetaContext)
 {
 	DEASSERT_NOTNULL(engine)
 	
 	pEngCamera = engine->GetCameraManager()->CreateCamera();
 	
-	fov.SetValue(pEngCamera->GetFov() * RAD2DEG, false);
-	fovRatio.SetValue(pEngCamera->GetFovRatio(), false);
-	imageDistance.SetValue(pEngCamera->GetImageDistance(), false);
-	viewDistance.SetValue(pEngCamera->GetViewDistance(), false);
+	pMPFov.SetValue(pEngCamera->GetFov() * RAD2DEG, false);
+	pMPFovRatio.SetValue(pEngCamera->GetFovRatio(), false);
+	pMPImageDistance.SetValue(pEngCamera->GetImageDistance(), false);
+	pMPViewDistance.SetValue(pEngCamera->GetViewDistance(), false);
 	
-	pEngCamera->SetEnableGI(enableGI);
-	pEngCamera->SetEnableHDRR(enableHDRR);
+	pEngCamera->SetEnableGI(pMPEnableGI);
+	pEngCamera->SetEnableHDRR(pMPEnableHDRR);
 	
-	exposure.SetValue(pEngCamera->GetExposure(), false);
-	lowestIntensity.SetValue(pEngCamera->GetLowestIntensity(), false);
-	highestIntensity.SetValue(pEngCamera->GetHighestIntensity(), false);
-	adaptionTime.SetValue(pEngCamera->GetAdaptionTime(), false);
+	pMPExposure.SetValue(pEngCamera->GetExposure(), false);
+	pMPLowestIntensity.SetValue(pEngCamera->GetLowestIntensity(), false);
+	pMPHighestIntensity.SetValue(pEngCamera->GetHighestIntensity(), false);
+	pMPAdaptionTime.SetValue(pEngCamera->GetAdaptionTime(), false);
 	
-	whiteIntensity.SetValue(pEngCamera->GetWhiteIntensity(), false);
-	bloomIntensity.SetValue(pEngCamera->GetBloomIntensity(), false);
-	bloomStrength.SetValue(pEngCamera->GetBloomStrength(), false);
-	bloomBlend.SetValue(pEngCamera->GetBloomBlend(), false);
-	bloomSize.SetValue(pEngCamera->GetBloomSize(), false);
-	toneMapCurve.SetValue(pEngCamera->GetToneMapCurve(), false);
+	pMPWhiteIntensity.SetValue(pEngCamera->GetWhiteIntensity(), false);
+	pMPBloomIntensity.SetValue(pEngCamera->GetBloomIntensity(), false);
+	pMPBloomStrength.SetValue(pEngCamera->GetBloomStrength(), false);
+	pMPBloomBlend.SetValue(pEngCamera->GetBloomBlend(), false);
+	pMPBloomSize.SetValue(pEngCamera->GetBloomSize(), false);
+	pMPToneMapCurve.SetValue(pEngCamera->GetToneMapCurve(), false);
 	
-	position.onValueChanged = [this](){
+	pMPPosition.onValueChanged = [this](){
 		pUpdateViewMatrix();
 		pUpdateCameraPosition();
 		GeometryChanged();
 		onChanged();
 	};
-	rotation.onValueChanged = position.onValueChanged;
+	pMPRotation.onValueChanged = pMPPosition.onValueChanged;
 	
-	distance.onValueChanged = [this](){
+	pMPDistance.onValueChanged = [this](){
 		pUpdateViewMatrix();
 		pUpdateCameraPosition();
 		onChanged();
 	};
 	
-	fov.onValueChanged = [this](){
-		pEngCamera->SetFov(fov * DEG2RAD);
+	pMPFov.onValueChanged = [this](){
+		pEngCamera->SetFov(pMPFov * DEG2RAD);
 		GeometryChanged();
 		onChanged();
 	};
 	
-	fovRatio.onValueChanged = [this](){
-		pEngCamera->SetFovRatio(fovRatio);
+	pMPFovRatio.onValueChanged = [this](){
+		pEngCamera->SetFovRatio(pMPFovRatio);
 		GeometryChanged();
 		onChanged();
 	};
 	
-	imageDistance.onValueChanged = [this](){
-		pEngCamera->SetImageDistance(imageDistance);
+	pMPImageDistance.onValueChanged = [this](){
+		pEngCamera->SetImageDistance(pMPImageDistance);
 		GeometryChanged();
 		onChanged();
 	};
 	
-	viewDistance.onValueChanged = [this](){
-		pEngCamera->SetViewDistance(viewDistance);
+	pMPViewDistance.onValueChanged = [this](){
+		pEngCamera->SetViewDistance(pMPViewDistance);
 		GeometryChanged();
 		onChanged();
 	};
 	
-	enableHDRR.onValueChanged = [this](){
-		pEngCamera->SetEnableHDRR(enableHDRR);
+	pMPEnableHDRR.onValueChanged = [this](){
+		pEngCamera->SetEnableHDRR(pMPEnableHDRR);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	enableGI.onValueChanged = [this](){
-		pEngCamera->SetEnableGI(enableGI);
+	pMPEnableGI.onValueChanged = [this](){
+		pEngCamera->SetEnableGI(pMPEnableGI);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	exposure.onValueChanged = [this](){
-		pEngCamera->SetExposure(exposure);
+	pMPExposure.onValueChanged = [this](){
+		pEngCamera->SetExposure(pMPExposure);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	lowestIntensity.onValueChanged = [this](){
-		pEngCamera->SetLowestIntensity(lowestIntensity);
+	pMPLowestIntensity.onValueChanged = [this](){
+		pEngCamera->SetLowestIntensity(pMPLowestIntensity);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	highestIntensity.onValueChanged = [this](){
-		pEngCamera->SetHighestIntensity(highestIntensity);
+	pMPHighestIntensity.onValueChanged = [this](){
+		pEngCamera->SetHighestIntensity(pMPHighestIntensity);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	adaptionTime.onValueChanged = [this](){
-		pEngCamera->SetAdaptionTime(adaptionTime);
+	pMPAdaptionTime.onValueChanged = [this](){
+		pEngCamera->SetAdaptionTime(pMPAdaptionTime);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	whiteIntensity.onValueChanged = [this](){
-		pEngCamera->SetWhiteIntensity(whiteIntensity);
+	pMPWhiteIntensity.onValueChanged = [this](){
+		pEngCamera->SetWhiteIntensity(pMPWhiteIntensity);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	bloomIntensity.onValueChanged = [this](){
-		pEngCamera->SetBloomIntensity(bloomIntensity);
+	pMPBloomIntensity.onValueChanged = [this](){
+		pEngCamera->SetBloomIntensity(pMPBloomIntensity);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	bloomStrength.onValueChanged = [this](){
-		pEngCamera->SetBloomStrength(bloomStrength);
+	pMPBloomStrength.onValueChanged = [this](){
+		pEngCamera->SetBloomStrength(pMPBloomStrength);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	bloomBlend.onValueChanged = [this](){
-		pEngCamera->SetBloomBlend(bloomBlend);
+	pMPBloomBlend.onValueChanged = [this](){
+		pEngCamera->SetBloomBlend(pMPBloomBlend);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	bloomSize.onValueChanged = [this](){
-		pEngCamera->SetBloomSize(bloomSize);
+	pMPBloomSize.onValueChanged = [this](){
+		pEngCamera->SetBloomSize(pMPBloomSize);
 		AdaptionChanged();
 		onChanged();
 	};
 	
-	toneMapCurve.onValueChanged = [this](){
-		pEngCamera->SetToneMapCurve(toneMapCurve);
+	pMPToneMapCurve.onValueChanged = [this](){
+		pEngCamera->SetToneMapCurve(pMPToneMapCurve);
 		AdaptionChanged();
 		onChanged();
 	};
@@ -655,6 +656,10 @@ igdeCamera::~igdeCamera(){
 
 // Management
 ///////////////
+
+void igdeCamera::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
 
 void igdeCamera::SetEngineWorld(deWorld *world){
 	if(world == pEngWorld){
@@ -679,79 +684,79 @@ void igdeCamera::SetName(const char *value){
 }
 
 void igdeCamera::SetPosition(const decDVector &value){
-	position = value;
+	pMPPosition = value;
 }
 
 void igdeCamera::SetOrientation(const decVector &value){
-	rotation = value;
+	pMPRotation = value;
 }
 
 void igdeCamera::SetFov(float value){
-	fov = value;
+	pMPFov = value;
 }
 
 void igdeCamera::SetFovRatio(float value){
-	fovRatio = value;
+	pMPFovRatio = value;
 }
 
 void igdeCamera::SetImageDistance(float value){
-	imageDistance = value;
+	pMPImageDistance = value;
 }
 
 void igdeCamera::SetViewDistance(float value){
-	viewDistance = value;
+	pMPViewDistance = value;
 }
 
 void igdeCamera::SetEnableHDRR(bool value){
-	enableHDRR = value;
+	pMPEnableHDRR = value;
 }
 
 void igdeCamera::SetExposure(float value){
-	exposure = value;
+	pMPExposure = value;
 }
 
 void igdeCamera::SetLowestIntensity(float value){
-	lowestIntensity = value;
+	pMPLowestIntensity = value;
 }
 
 void igdeCamera::SetHighestIntensity(float value){
-	highestIntensity = value;
+	pMPHighestIntensity = value;
 }
 
 void igdeCamera::SetAdaptionTime(float value){
-	adaptionTime = value;
+	pMPAdaptionTime = value;
 }
 
 void igdeCamera::SetEnableGI(bool value){
-	enableGI = value;
+	pMPEnableGI = value;
 }
 
 void igdeCamera::SetWhiteIntensity(float value){
-	whiteIntensity = value;
+	pMPWhiteIntensity = value;
 }
 
 void igdeCamera::SetBloomIntensity(float value){
-	bloomIntensity = value;
+	pMPBloomIntensity = value;
 }
 
 void igdeCamera::SetBloomStrength(float value){
-	bloomStrength = value;
+	pMPBloomStrength = value;
 }
 
 void igdeCamera::SetBloomBlend(float value){
-	bloomBlend = value;
+	pMPBloomBlend = value;
 }
 
 void igdeCamera::SetBloomSize(float value){
-	bloomSize = value;
+	pMPBloomSize = value;
 }
 
 void igdeCamera::SetToneMapCurve(const decCurveBezier &curve){
-	toneMapCurve = curve;
+	pMPToneMapCurve = curve;
 }
 
 void igdeCamera::SetDistance(float value){
-	distance = value;
+	pMPDistance = value;
 }
 
 void igdeCamera::Reset(){
@@ -764,8 +769,8 @@ decVector igdeCamera::GetDirectionFor(int width, int height, int x, int y) const
 	int halfWidth = width / 2;
 	decVector direction;
 	
-	direction.x = tanf(fov * DEG2RAD * 0.5f) * ((float)(x - halfWidth) / (float)halfWidth);
-	direction.y = tanf(fov * DEG2RAD * fovRatio * 0.5f)
+	direction.x = tanf(pMPFov * DEG2RAD * 0.5f) * ((float)(x - halfWidth) / (float)halfWidth);
+	direction.y = tanf(pMPFov * DEG2RAD * pMPFovRatio * 0.5f)
 		* ( ( float )( halfHeight - y ) / ( float )halfHeight ) / aspectRatio;
 	direction.z = 1.0f;
 	
@@ -776,41 +781,41 @@ decVector igdeCamera::GetDirectionFor(int width, int height, int x, int y) const
 void igdeCamera::SetDefaultParameters(float alowestIntensity, float ahighestIntensity, float aadaptionTime){
 	const deCamera::Ref camera(pEngine->GetCameraManager()->CreateCamera());
 	
-	fov.SetValue(camera->GetFov() * RAD2DEG, false);
-	fovRatio.SetValue(camera->GetFovRatio(), false);
-	imageDistance.SetValue(camera->GetImageDistance(), false);
-	viewDistance.SetValue(camera->GetViewDistance(), false);
+	pMPFov.SetValue(camera->GetFov() * RAD2DEG, false);
+	pMPFovRatio.SetValue(camera->GetFovRatio(), false);
+	pMPImageDistance.SetValue(camera->GetImageDistance(), false);
+	pMPViewDistance.SetValue(camera->GetViewDistance(), false);
 	
-	enableGI.SetValue(true, false);
-	enableHDRR.SetValue(true, false);
-	exposure.SetValue(camera->GetExposure(), false);
-	lowestIntensity.SetValue(alowestIntensity, false);
-	highestIntensity.SetValue(ahighestIntensity, false);
-	adaptionTime.SetValue(aadaptionTime, false);
+	pMPEnableGI.SetValue(true, false);
+	pMPEnableHDRR.SetValue(true, false);
+	pMPExposure.SetValue(camera->GetExposure(), false);
+	pMPLowestIntensity.SetValue(alowestIntensity, false);
+	pMPHighestIntensity.SetValue(ahighestIntensity, false);
+	pMPAdaptionTime.SetValue(aadaptionTime, false);
 	
-	whiteIntensity.SetValue(camera->GetWhiteIntensity(), false);
-	bloomIntensity.SetValue(camera->GetBloomIntensity(), false);
-	bloomStrength.SetValue(camera->GetBloomStrength(), false);
-	bloomBlend.SetValue(camera->GetBloomBlend(), false);
-	bloomSize.SetValue(camera->GetBloomSize(), false);
-	toneMapCurve.SetValue(camera->GetToneMapCurve(), false);
+	pMPWhiteIntensity.SetValue(camera->GetWhiteIntensity(), false);
+	pMPBloomIntensity.SetValue(camera->GetBloomIntensity(), false);
+	pMPBloomStrength.SetValue(camera->GetBloomStrength(), false);
+	pMPBloomBlend.SetValue(camera->GetBloomBlend(), false);
+	pMPBloomSize.SetValue(camera->GetBloomSize(), false);
+	pMPToneMapCurve.SetValue(camera->GetToneMapCurve(), false);
 	
-	pEngCamera->SetFov(fov * DEG2RAD);
-	pEngCamera->SetFovRatio(fovRatio);
-	pEngCamera->SetImageDistance(imageDistance);
-	pEngCamera->SetViewDistance(viewDistance);
-	pEngCamera->SetEnableHDRR(enableHDRR);
-	pEngCamera->SetExposure(exposure);
-	pEngCamera->SetLowestIntensity(lowestIntensity);
-	pEngCamera->SetHighestIntensity(highestIntensity);
-	pEngCamera->SetAdaptionTime(adaptionTime);
-	pEngCamera->SetEnableGI(enableGI);
-	pEngCamera->SetWhiteIntensity(whiteIntensity);
-	pEngCamera->SetBloomIntensity(bloomIntensity);
-	pEngCamera->SetBloomStrength(bloomStrength);
-	pEngCamera->SetBloomBlend(bloomBlend);
-	pEngCamera->SetBloomSize(bloomSize);
-	pEngCamera->SetToneMapCurve(toneMapCurve);
+	pEngCamera->SetFov(pMPFov * DEG2RAD);
+	pEngCamera->SetFovRatio(pMPFovRatio);
+	pEngCamera->SetImageDistance(pMPImageDistance);
+	pEngCamera->SetViewDistance(pMPViewDistance);
+	pEngCamera->SetEnableHDRR(pMPEnableHDRR);
+	pEngCamera->SetExposure(pMPExposure);
+	pEngCamera->SetLowestIntensity(pMPLowestIntensity);
+	pEngCamera->SetHighestIntensity(pMPHighestIntensity);
+	pEngCamera->SetAdaptionTime(pMPAdaptionTime);
+	pEngCamera->SetEnableGI(pMPEnableGI);
+	pEngCamera->SetWhiteIntensity(pMPWhiteIntensity);
+	pEngCamera->SetBloomIntensity(pMPBloomIntensity);
+	pEngCamera->SetBloomStrength(pMPBloomStrength);
+	pEngCamera->SetBloomBlend(pMPBloomBlend);
+	pEngCamera->SetBloomSize(pMPBloomSize);
+	pEngCamera->SetToneMapCurve(pMPToneMapCurve);
 	
 	GeometryChanged();
 	AdaptionChanged();
@@ -871,6 +876,6 @@ void igdeCamera::pUpdateCameraPosition(){
 }
 
 void igdeCamera::pUpdateViewMatrix(){
-	pViewMatrix = decDMatrix::CreateTranslation(0.0, 0.0, -(double)distance)
-		* decDMatrix::CreateWorld(position, rotation);
+	pViewMatrix = decDMatrix::CreateTranslation(0.0, 0.0, -(double)pMPDistance)
+		* decDMatrix::CreateWorld(pMPPosition, pMPRotation);
 }

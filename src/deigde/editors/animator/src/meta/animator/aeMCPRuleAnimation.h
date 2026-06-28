@@ -44,12 +44,12 @@ public:
 	~aeMCPRuleAnimationMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).moveName;
+		return RuleType(context).GetMPMoveName();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
 	}
 };
 
@@ -63,7 +63,7 @@ public:
 	~aeMCPRuleAnimationMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).moveTime;
+		return RuleType(context).GetMPMoveTime();
 	}
 };
 
@@ -76,7 +76,7 @@ public:
 	~aeMCPRuleAnimationEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -89,7 +89,7 @@ public:
 	~aeMCPRuleAnimationEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -99,7 +99,7 @@ public:
 	~aeMCPRuleAnimationEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -112,7 +112,7 @@ public:
 	~aeMCPRuleAnimationEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSet;
+		return RuleType(context).GetMPEnableVertexPositionSet();
 	}
 };
 
@@ -126,7 +126,7 @@ public:
 	~aeMCPRuleAnimationTargetMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetMoveTime;
+		return RuleType(context).GetMPTargetMoveTime();
 	}
 };
 

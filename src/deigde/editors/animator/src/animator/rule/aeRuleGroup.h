@@ -50,16 +50,16 @@ private:
 	
 	bool pTreeListExpanded;
 	
-public:
-	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage rules;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
-	igdeMetaPropertyBooleanStorage::Storage useCurrentState;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage applicationType;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetSelect;
+	igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage pMPRules;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage pMPUseCurrentState;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage pMPApplicationType;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetSelect;
 	
+public:
 	igdeUniqueNameGenerator uniqueNameRule;
 	
 public:
@@ -80,8 +80,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &GetMPRules(){ return pMPRules; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseCurrentState(){ return pMPUseCurrentState; }
+	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>::Storage &GetMPApplicationType(){ return pMPApplicationType; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetSelect(){ return pMPTargetSelect; }
+	
+	
 	/** Rules. */
-	inline const aeRule::List &GetRules() const{ return rules; }
+	inline const aeRule::List &GetRules() const{ return pMPRules; }
 	/** Add a new rule. */
 	void AddRule(aeRule *rule);
 	/** Insert a new rule. */
@@ -94,34 +104,34 @@ public:
 	void RemoveAllRules();
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
 	
 	/** Use current animation state instead of empty state. */
-	inline bool GetUseCurrentState() const{ return useCurrentState; }
+	inline bool GetUseCurrentState() const{ return pMPUseCurrentState; }
 	
 	/** Set if current animation state is used instead of empty state. */
 	void SetUseCurrentState(bool value);
 	
 	/** Retrieve the rule application type. */
-	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return applicationType; }
+	inline deAnimatorRuleGroup::eApplicationTypes GetApplicationType() const{ return pMPApplicationType; }
 	/** Set the rule application type. */
 	void SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type);
 	

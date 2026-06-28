@@ -44,11 +44,11 @@ public:
 	~aeMCPRuleInverseKinematicGoalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).goalPosition;
+		return RuleType(context).GetMPGoalPosition();
 	}
 };
 
-class aeMCPRuleInverseKinematicGoalOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleInverseKinematicGoalOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleInverseKinematicGoalOrientation() : aeTMCPAnimatorRuleType(
 	"inversekinematic.goalOrientation", "Animator.WPAPanelRuleInverseKinematic.GoalOrientation"){}
@@ -56,7 +56,7 @@ public:
 	~aeMCPRuleInverseKinematicGoalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).goalOrientation;
+		return RuleType(context).GetMPGoalOrientation();
 	}
 };
 
@@ -68,11 +68,11 @@ public:
 	~aeMCPRuleInverseKinematicLocalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).localPosition;
+		return RuleType(context).GetMPLocalPosition();
 	}
 };
 
-class aeMCPRuleInverseKinematicLocalOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleInverseKinematicLocalOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleInverseKinematicLocalOrientation() : aeTMCPAnimatorRuleType(
 	"inversekinematic.localOrientation", "Animator.WPAPanelRuleInverseKinematic.LocalOrientation"){}
@@ -80,7 +80,7 @@ public:
 	~aeMCPRuleInverseKinematicLocalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).localOrientation;
+		return RuleType(context).GetMPLocalOrientation();
 	}
 };
 
@@ -92,7 +92,7 @@ public:
 	~aeMCPRuleInverseKinematicAdjustOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).adjustOrientation;
+		return RuleType(context).GetMPAdjustOrientation();
 	}
 };
 
@@ -104,7 +104,7 @@ public:
 	~aeMCPRuleInverseKinematicUseSolverBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).useSolverBone;
+		return RuleType(context).GetMPUseSolverBone();
 	}
 };
 
@@ -118,12 +118,12 @@ public:
 	~aeMCPRuleInverseKinematicSolverBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).solverBone;
+		return RuleType(context).GetMPSolverBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -135,7 +135,7 @@ public:
 	~aeMCPRuleInverseKinematicReachRange() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).reachRange;
+		return RuleType(context).GetMPReachRange();
 	}
 };
 
@@ -149,12 +149,12 @@ public:
 	~aeMCPRuleInverseKinematicReachBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).reachBone;
+		return RuleType(context).GetMPReachBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -166,7 +166,7 @@ public:
 	~aeMCPRuleInverseKinematicReachCenter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).reachCenter;
+		return RuleType(context).GetMPReachCenter();
 	}
 };
 
@@ -181,7 +181,7 @@ public:
 	~aeMCPRuleInverseKinematicTargetGoalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetGoalPosition;
+		return RuleType(context).GetMPTargetGoalPosition();
 	}
 };
 
@@ -195,7 +195,7 @@ public:
 	~aeMCPRuleInverseKinematicTargetGoalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetGoalOrientation;
+		return RuleType(context).GetMPTargetGoalOrientation();
 	}
 };
 
@@ -209,7 +209,7 @@ public:
 	~aeMCPRuleInverseKinematicTargetLocalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetLocalPosition;
+		return RuleType(context).GetMPTargetLocalPosition();
 	}
 };
 
@@ -223,7 +223,7 @@ public:
 	~aeMCPRuleInverseKinematicTargetLocalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetLocalOrientation;
+		return RuleType(context).GetMPTargetLocalOrientation();
 	}
 };
 
@@ -237,7 +237,7 @@ public:
 	~aeMCPRuleInverseKinematicTargetReachRange() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetReachRange;
+		return RuleType(context).GetMPTargetReachRange();
 	}
 };
 
@@ -251,7 +251,7 @@ public:
 	~aeMCPRuleInverseKinematicTargetReachCenter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetReachCenter;
+		return RuleType(context).GetMPTargetReachCenter();
 	}
 };
 

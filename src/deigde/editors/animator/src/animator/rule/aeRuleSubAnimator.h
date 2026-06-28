@@ -50,15 +50,13 @@ public:
 private:
 	deAnimator::Ref pSubAnimator;
 	
-	
 	ConnectionList pConnections;
 	
-public:
-	igdeMetaPropertyPathStorage::Storage pathSubAnimator;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertyPathStorage::Storage pMPPathSubAnimator;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -78,8 +76,15 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyPathStorage::Storage &GetMPPathSubAnimator(){ return pMPPathSubAnimator; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	
+	
 	/** Retrieve the path to the sub animator. */
-	inline const decString &GetPathSubAnimator() const{ return pathSubAnimator; }
+	inline const decString &GetPathSubAnimator() const{ return pMPPathSubAnimator; }
 	/** Set the path to the sub animator. */
 	void SetPathSubAnimator(const char *value);
 	/** Retrieve the sub animator or nullptr if not existing. */
@@ -94,22 +99,22 @@ public:
 	void SetControllerAt(int position, aeController *controller);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);

@@ -42,7 +42,7 @@ private:
 	
 public:
 	cWalkerRuleTree(const aeAnimator::Ref &animator) :
-	WalkerHelper<aeRule::List>(&animator->rules.GetValue()),
+	WalkerHelper<aeRule::List>(&animator->GetMPRules().GetValue()),
 	pAnimator(animator){
 	}
 	
@@ -51,29 +51,29 @@ public:
 		DEASSERT_TRUE(pAnimator == rule->GetAnimator())
 		
 		if(rule->GetParentGroup()){
-			SetList(&rule->GetParentGroup()->rules.GetValue(), rule->GetIndex());
+			SetList(&rule->GetParentGroup()->GetMPRules().GetValue(), rule->GetIndex());
 			
 		}else{
-			SetList(&pAnimator->rules.GetValue(), rule->GetIndex());
+			SetList(&pAnimator->GetMPRules().GetValue(), rule->GetIndex());
 		}
 	}
 	
 	void MoveTreeFirst() override{
-		SetList(&pAnimator->rules.GetValue(), 0);
+		SetList(&pAnimator->GetMPRules().GetValue(), 0);
 	}
 	
 	bool HasChildren() const override{
 		const auto group = GetCurrent().DynamicCast<aeRuleGroup>();
-		return group && group->rules->IsNotEmpty();
+		return group && group->GetMPRules()->IsNotEmpty();
 	}
 	
 	bool MoveChildren() override{
 		const auto group = GetCurrent().DynamicCast<aeRuleGroup>();
-		if(!group || group->rules->IsEmpty()){
+		if(!group || group->GetMPRules()->IsEmpty()){
 			return false;
 		}
 		
-		SetList(&group->rules.GetValue(), 0);
+		SetList(&group->GetMPRules().GetValue(), 0);
 		return true;
 	}
 	
@@ -94,7 +94,7 @@ public:
 		}
 		
 		const auto parentParent = parent->GetParentGroup();
-		SetList(&(parentParent ? parentParent->rules : pAnimator->rules).GetValue(), parent->GetIndex());
+		SetList(&(parentParent ? parentParent->GetMPRules() : pAnimator->GetMPRules()).GetValue(), parent->GetIndex());
 		return true;
 	}
 };
@@ -159,7 +159,7 @@ public:
 	}
 	
 	void SyncSelection(){
-		const auto &tree = pPropertyRules.Animator(GetContext()).ruleTree;
+		const auto &tree = pPropertyRules.Animator(GetContext()).GetMPRuleTree();
 		auto &storage = pPropertyRules.GetActionStorage(GetContext());
 		storage.SetActive(storage->Has(tree.GetActive()) ? tree.GetActive() : aeRule::Ref());
 	}
@@ -384,13 +384,13 @@ igdeMetaProperty::Action::Ref aeMCPRuleTree::CreateButtonAction(TargetButton tar
 }
 
 aeRule::Ref aeMCPRuleTree::GetActiveRule(const ContextRef &context) const{
-	return IsValid(context) ? Animator(context).ruleTree.GetActive() : aeRule::Ref();
+	return IsValid(context) ? Animator(context).GetMPRuleTree().GetActive() : aeRule::Ref();
 }
 
 igdeMetaPropertyListStorage<aeRule, aeRule::List>::Storage &aeMCPRuleTree::GetActionStorage(const ContextRef &context) const{
 	const auto rule = GetActiveRule(context);
 	const auto parentGroup = rule ? rule->GetParentGroup() : nullptr;
-	return parentGroup ? parentGroup->rules : Animator(context).rules;
+	return parentGroup ? parentGroup->GetMPRules() : Animator(context).GetMPRules();
 }
 
 igdeMetaPropertyList &aeMCPRuleTree::GetActionProperty(const ContextRef &context) const{
@@ -417,7 +417,7 @@ const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const{
 aeMCPRules::ObjectTypeRef aeMCPRules::CopyObjectType(const ContextRef &context,
 const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
 	auto copied = object->CreateCopy(WindowMain(context));
-	copied->name.SetValue(Animator(context).uniqueNameRule.Generate(copied->name), false);
+	copied->GetMPName().SetValue(Animator(context).uniqueNameRule.Generate(copied->GetMPName()), false);
 	return copied;
 }
 
@@ -427,7 +427,7 @@ const aeRule::List &existingObjects, const ObjectTypeRef &object) const{
 
 decStringSet aeMCPRuleAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
 	const auto animator = Rule(context).GetAnimator();
-	return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+	return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 }
 
 void aeMCPRuleAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -442,7 +442,7 @@ void aeMCPRuleAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const 
 
 decStringSet aeMCPRuleAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
 	const auto animator = Rule(context).GetAnimator();
-	return animator ? animator->hiddenVPSNames.GetValue() : decStringSet();
+	return animator ? animator->GetMPHiddenVPSNames().GetValue() : decStringSet();
 }
 
 void aeMCPRuleAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){

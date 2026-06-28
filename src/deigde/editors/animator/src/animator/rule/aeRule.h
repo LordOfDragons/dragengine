@@ -71,15 +71,15 @@ private:
 	
 	aeControllerTarget::Ref pTargetBlendFactor;
 	
-public:
-	igdeMetaPropertyStringStorage::Storage name;
-	igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>::Storage blendMode;
-	igdeMetaPropertyFloatStorage::Storage blendFactor;
-	igdeMetaPropertyBooleanStorage::Storage invertBlendFactor;
-	igdeMetaPropertyBooleanStorage::Storage enabled;
-	igdeMetaPropertyStringSetStorage::Storage affectedBones;
-	igdeMetaPropertyStringSetStorage::Storage affectedVertexPositionSets;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetBlendFactor;
+	igdeMetaPropertyStringStorage::Storage pMPName;
+	igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>::Storage pMPBlendMode;
+	igdeMetaPropertyFloatStorage::Storage pMPBlendFactor;
+	igdeMetaPropertyBooleanStorage::Storage pMPInvertBlendFactor;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnabled;
+	igdeMetaPropertyStringSetStorage::Storage pMPAffectedBones;
+	igdeMetaPropertyStringSetStorage::Storage pMPAffectedVps;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetBlendFactor;
+	
 	
 protected:
 	/** \name Constructors and Destructors */
@@ -101,6 +101,16 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
+	inline igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>::Storage &GetMPBlendMode(){ return pMPBlendMode; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBlendFactor(){ return pMPBlendFactor; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPInvertBlendFactor(){ return pMPInvertBlendFactor; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnabled(){ return pMPEnabled; }
+	inline igdeMetaPropertyStringSetStorage::Storage &GetMPAffectedBones(){ return pMPAffectedBones; }
+	inline igdeMetaPropertyStringSetStorage::Storage &GetMPAffectedVps(){ return pMPAffectedVps; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetBlendFactor(){ return pMPTargetBlendFactor; }
+	
+	
 	/** Retrieve the parent animator. */
 	aeAnimator *GetAnimator() const;
 	/** Set the parent animator. */
@@ -136,24 +146,24 @@ public:
 	void SetParentGroup(aeRuleGroup *group);
 	
 	/** Retrieve the name. */
-	inline const decString &GetName() const{ return name; }
+	inline const decString &GetName() const{ return pMPName; }
 	/** Set the name. */
 	void SetName(const char *filename);
 	
 	/** Determine if the rule is enabled. */
-	inline bool GetEnabled() const{ return enabled; }
+	inline bool GetEnabled() const{ return pMPEnabled; }
 	/** Set if the rule is enabled. */
 	void SetEnabled(bool enabled);
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return blendMode; }
+	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pMPBlendMode; }
 	/** Set the blend mode. */
 	void SetBlendMode(deAnimatorRule::eBlendModes mode);
 	/** Retrieve the blend factor. */
-	inline float GetBlendFactor() const{ return blendFactor; }
+	inline float GetBlendFactor() const{ return pMPBlendFactor; }
 	/** Set the source blend factor. */
 	void SetBlendFactor(float factor);
 	
 	/** Invert blend factor. */
-	inline bool GetInvertBlendFactor() const{ return invertBlendFactor; }
+	inline bool GetInvertBlendFactor() const{ return pMPInvertBlendFactor; }
 	
 	/** Set invert blend factor. */
 	void SetInvertBlendFactor(bool invert);
@@ -190,7 +200,7 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** Retrieve the list of bones. */
-	inline const decStringSet &GetListBones() const{ return affectedBones; }
+	inline const decStringSet &GetListBones() const{ return pMPAffectedBones; }
 	
 	/** Set list of bones. */
 	void SetListBones(const decStringSet &bones);
@@ -210,7 +220,7 @@ public:
 	/** \name Vertex position set management */
 	/*@{*/
 	/** List of vertex position sets. */
-	inline const decStringSet &GetListVertexPositionSets() const{ return affectedVertexPositionSets; }
+	inline const decStringSet &GetListVertexPositionSets() const{ return pMPAffectedVps; }
 	
 	/** Set list of vertex position sets. */
 	void SetListVertexPositionSets(const decStringSet &sets);

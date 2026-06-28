@@ -40,7 +40,6 @@
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerFlow.h"
-#include "../wrapper/igdeWSky.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../gamedefinition/sky/igdeGDSky.h"
 #include "../../gamedefinition/sky/igdeGDSkyManager.h"
@@ -175,16 +174,12 @@ public:
 ////////////////////////////
 
 igdeWPSky::igdeWPSky(igdeEnvironment &environment) :
-igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pSky(nullptr)
-{
+igdeContainerFlow(environment, igdeContainerFlow::eaY){
 	pCreateContent();
 }
 
 igdeWPSky::igdeWPSky(igdeEnvironment &environment, igdeAction *action) :
-igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pSky(nullptr)
-{
+igdeContainerFlow(environment, igdeContainerFlow::eaY){
 	pCreateContent();
 	SetAction(action);
 }

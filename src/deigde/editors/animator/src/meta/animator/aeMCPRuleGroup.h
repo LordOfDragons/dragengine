@@ -44,7 +44,7 @@ public:
 	~aeMCPRuleGroupEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -58,7 +58,7 @@ public:
 	~aeMCPRuleGroupEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -70,7 +70,7 @@ public:
 	~aeMCPRuleGroupEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -84,7 +84,7 @@ public:
 	~aeMCPRuleGroupEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSet;
+		return RuleType(context).GetMPEnableVertexPositionSet();
 	}
 };
 
@@ -96,7 +96,7 @@ public:
 	~aeMCPRuleGroupUseCurrentState() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).useCurrentState;
+		return RuleType(context).GetMPUseCurrentState();
 	}
 };
 
@@ -113,7 +113,7 @@ public:
 	~aeMCPRuleGroupApplicationType() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).applicationType;
+		return RuleType(context).GetMPApplicationType();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleGroup::eApplicationTypes choice, igdeMetaContextItemInfo &info) const override{
@@ -143,7 +143,7 @@ public:
 	~aeMCPRuleGroupTargetSelect() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetSelect;
+		return RuleType(context).GetMPTargetSelect();
 	}
 };
 
@@ -157,7 +157,7 @@ public:
 	~aeMCPRuleGroupRules() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).rules;
+		return RuleType(context).GetMPRules();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override{
@@ -166,7 +166,7 @@ public:
 	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects, const ObjectTypeRef &object) const override{
 		auto copied = object->CreateCopy(WindowMain(context));
-		copied->name.SetValue(RuleType(context).uniqueNameRule.Generate(copied->name), false);
+		copied->GetMPName().SetValue(RuleType(context).uniqueNameRule.Generate(copied->GetMPName()), false);
 		return copied;
 	}
 };

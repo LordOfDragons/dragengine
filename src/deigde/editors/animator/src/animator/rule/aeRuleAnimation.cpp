@@ -42,60 +42,60 @@
 aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleAnimation::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertAnimation, aname),
-moveName(windowMain.GetMCAnimatorProperties().ruleAnimation.moveName, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-moveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.moveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-enablePosition(windowMain.GetMCAnimatorProperties().ruleAnimation.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-enableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimation.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-enableSize(windowMain.GetMCAnimatorProperties().ruleAnimation.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-targetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>())
+pMPMoveName(windowMain.GetMCAnimatorProperties().ruleAnimation.moveName, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+pMPMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.moveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimation.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimation.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimation.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
+pMPTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>())
 {
-	moveName.onValueChanged = [this](){
+	pMPMoveName.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimation*)GetEngineRule())->SetMoveName(moveName);
+			((deAnimatorRuleAnimation*)GetEngineRule())->SetMoveName(pMPMoveName);
 		}
 		NotifyRuleChanged();
 	};
 	
-	moveTime.onValueChanged = [this](){
+	pMPMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimation*)GetEngineRule())->SetMoveTime(moveTime);
+			((deAnimatorRuleAnimation*)GetEngineRule())->SetMoveTime(pMPMoveTime);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enablePosition.onValueChanged = [this](){
+	pMPEnablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnablePosition(enablePosition);
+			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnablePosition(pMPEnablePosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableOrientation.onValueChanged = [this](){
+	pMPEnableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableOrientation(pMPEnableOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableSize.onValueChanged = [this](){
+	pMPEnableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableSize(enableSize);
+			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableSize(pMPEnableSize);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableVertexPositionSet.onValueChanged = [this](){
+	pMPEnableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+			((deAnimatorRuleAnimation*)GetEngineRule())->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 	
-	pTargetMoveTime = aeControllerTarget::Ref::New(targetMoveTime);
-	targetMoveTime.onValueChanged = [this](){
+	pTargetMoveTime = aeControllerTarget::Ref::New(pMPTargetMoveTime);
+	pMPTargetMoveTime.onValueChanged = [this](){
 		if(GetEngineRule()){
-			pUpdateEngineTarget(((deAnimatorRuleAnimation*)GetEngineRule())->GetTargetMoveTime(), targetMoveTime);
+			pUpdateEngineTarget(((deAnimatorRuleAnimation*)GetEngineRule())->GetTargetMoveTime(), pMPTargetMoveTime);
 		}
 		pTargetMoveTime->OnStorageChanged();
 		NotifyRuleChanged();
@@ -103,16 +103,16 @@ targetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime
 }
 
 aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const aeRuleAnimation &copy) :
-aeRuleAnimation(windowMain, copy.name)
+aeRuleAnimation(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
-	moveTime.SetValue(copy.moveTime, false);
-	enablePosition.SetValue(copy.enablePosition, false);
-	enableOrientation.SetValue(copy.enableOrientation, false);
-	enableSize.SetValue(copy.enableSize, false);
-	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
+	pMPMoveTime.SetValue(copy.pMPMoveTime, false);
+	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
+	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
+	pMPEnableSize.SetValue(copy.pMPEnableSize, false);
+	pMPEnableVertexPositionSet.SetValue(copy.pMPEnableVertexPositionSet, false);
 	
-	pTargetMoveTime = aeControllerTarget::Ref::New(targetMoveTime, copy.pTargetMoveTime);
+	pTargetMoveTime = aeControllerTarget::Ref::New(pMPTargetMoveTime, copy.pTargetMoveTime);
 }
 
 aeRuleAnimation::~aeRuleAnimation() = default;
@@ -124,27 +124,27 @@ aeRuleAnimation::~aeRuleAnimation() = default;
 
 
 void aeRuleAnimation::SetMoveName(const char *value){
-	moveName = value;
+	pMPMoveName = value;
 }
 
 void aeRuleAnimation::SetMoveTime(float value){
-	moveTime = value;
+	pMPMoveTime = value;
 }
 
 void aeRuleAnimation::SetEnablePosition(bool value){
-	enablePosition = value;
+	pMPEnablePosition = value;
 }
 
 void aeRuleAnimation::SetEnableOrientation(bool value){
-	enableOrientation = value;
+	pMPEnableOrientation = value;
 }
 
 void aeRuleAnimation::SetEnableSize(bool value){
-	enableSize = value;
+	pMPEnableSize = value;
 }
 
 void aeRuleAnimation::SetEnableVertexPositionSet(bool value){
-	enableVertexPositionSet = value;
+	pMPEnableVertexPositionSet = value;
 }
 
 
@@ -154,7 +154,7 @@ void aeRuleAnimation::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
 	if(rule){
-		pUpdateEngineTarget(rule->GetTargetMoveTime(), targetMoveTime);
+		pUpdateEngineTarget(rule->GetTargetMoveTime(), pMPTargetMoveTime);
 	}
 }
 
@@ -194,14 +194,14 @@ deAnimatorRule::Ref aeRuleAnimation::CreateEngineRule(){
 	// init rule
 	InitEngineRule(engRule);
 	
-	engRule->SetMoveName(moveName);
-	engRule->SetMoveTime(moveTime);
-	engRule->SetEnablePosition(enablePosition);
-	engRule->SetEnableOrientation(enableOrientation);
-	engRule->SetEnableSize(enableSize);
-	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
+	engRule->SetMoveName(pMPMoveName);
+	engRule->SetMoveTime(pMPMoveTime);
+	engRule->SetEnablePosition(pMPEnablePosition);
+	engRule->SetEnableOrientation(pMPEnableOrientation);
+	engRule->SetEnableSize(pMPEnableSize);
+	engRule->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 	
-	pUpdateEngineTarget(engRule->GetTargetMoveTime(), targetMoveTime);
+	pUpdateEngineTarget(engRule->GetTargetMoveTime(), pMPTargetMoveTime);
 	
 	// finished
 	return engRule;

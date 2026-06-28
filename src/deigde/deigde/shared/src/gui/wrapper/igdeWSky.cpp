@@ -77,7 +77,7 @@ igdeEnvironment &igdeWSky::MetaContext::GetEnvironment() const{
 }
 
 igdeUndoSystem *igdeWSky::MetaContext::GetUndoSystem() const{
-	return nullptr;
+	return GetWrapperRef().GetUndoSystem();
 }
 
 igdeClipboard *igdeWSky::MetaContext::GetClipboard() const{
@@ -97,7 +97,7 @@ igdeWSky::MetaProperties::Path::~Path() = default;
 
 igdeMetaPropertyPathStorage::Storage &igdeWSky::MetaProperties::Path::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).path;
+	return Wrapper(context).GetMPPath();
 }
 
 
@@ -127,32 +127,33 @@ igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished() = default;
 
 igdeWSky::igdeWSky(igdeEnvironment &environment) :
 pEnvironment(environment),
+pUndoSystem(nullptr),
 pMetaContext(MetaContext::Ref::New(this)),
 pAsyncLoadFinished(nullptr),
 pAsyncLoadCounter(0),
-path(MetaProperties::global.path, pMetaContext)
+pMPPath(MetaProperties::global.path, pMetaContext)
 {
 	pEngSkyInstance = environment.GetEngineController()->GetEngine()->
 		GetSkyInstanceManager()->CreateSkyInstance();
 	
-	path.onValueChanged = [this](){
-		if(path->IsEmpty()){
+	pMPPath.onValueChanged = [this](){
+		if(pMPPath->IsEmpty()){
 			pSetGDSky(nullptr);
 			pSetSky(nullptr);
 			return;
 		}
 		
 		auto &skies = pEnvironment.GetGameProject()->GetGameDefinition()->GetSkyManager()->GetSkies();
-		auto gdsky = skies.FindWithPath(path);
+		auto gdsky = skies.FindWithPath(pMPPath);
 		if(!gdsky){
-			gdsky = skies.FindNamed(path);
+			gdsky = skies.FindNamed(pMPPath);
 		}
 		
 		if(gdsky){
 			pSetGDSky(gdsky);
 			
 		}else{
-			pLoadSky(path);
+			pLoadSky(pMPPath);
 		}
 		
 		onChanged();
@@ -171,6 +172,10 @@ igdeWSky::~igdeWSky(){
 
 // Management
 ///////////////
+
+void igdeWSky::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
 
 void igdeWSky::SetWorld(deWorld *world){
 	if(world == pEngWorld){
@@ -206,7 +211,7 @@ const deSky *igdeWSky::GetSky() const{
 }
 
 void igdeWSky::SetSky(deSky *sky){
-	path = "";
+	pMPPath = "";
 	pSetGDSky(nullptr);
 	pSetSky(sky);
 }
@@ -221,7 +226,7 @@ void igdeWSky::SetGDSky(igdeGDSky *gdsky){
 	}
 	
 	if(gdsky){
-		path = gdsky->GetPath();
+		pMPPath = gdsky->GetPath();
 		pSetGDSky(gdsky);
 		
 	}else{
@@ -230,7 +235,7 @@ void igdeWSky::SetGDSky(igdeGDSky *gdsky){
 }
 
 void igdeWSky::SetPath(const char *value){
-	path = value;
+	pMPPath = value;
 }
 
 void igdeWSky::SetAsyncLoadFinished(cAsyncLoadFinished *listener){

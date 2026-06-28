@@ -44,7 +44,7 @@ public:
 	~aeMCPRuleLimitMinPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minPosition;
+		return RuleType(context).GetMPMinPosition();
 	}
 };
 
@@ -56,11 +56,11 @@ public:
 	~aeMCPRuleLimitMaxPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxPosition;
+		return RuleType(context).GetMPMaxPosition();
 	}
 };
 
-class aeMCPRuleLimitMinRotation : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleLimitMinRotation : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleLimitMinRotation() : aeTMCPAnimatorRuleType(
 	"limit.minRotation", "Animator.WPAPanelRuleLimit.MinRotation"){}
@@ -68,11 +68,11 @@ public:
 	~aeMCPRuleLimitMinRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minRotation;
+		return RuleType(context).GetMPMinRotation();
 	}
 };
 
-class aeMCPRuleLimitMaxRotation : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleLimitMaxRotation : public aeTMCPAnimatorRuleLimit<igdeMetaPropertyVectorStorageQuaternion>{
 public:
 	aeMCPRuleLimitMaxRotation() : aeTMCPAnimatorRuleType(
 	"limit.maxRotation", "Animator.WPAPanelRuleLimit.MaxRotation"){}
@@ -80,7 +80,7 @@ public:
 	~aeMCPRuleLimitMaxRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxRotation;
+		return RuleType(context).GetMPMaxRotation();
 	}
 };
 
@@ -94,7 +94,7 @@ public:
 	~aeMCPRuleLimitMinScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minScaling;
+		return RuleType(context).GetMPMinScaling();
 	}
 };
 
@@ -108,7 +108,7 @@ public:
 	~aeMCPRuleLimitMaxScaling() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxScaling;
+		return RuleType(context).GetMPMaxScaling();
 	}
 };
 
@@ -120,7 +120,7 @@ public:
 	~aeMCPRuleLimitMinVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).minVertexPositionSet;
+		return RuleType(context).GetMPMinVertexPositionSet();
 	}
 };
 
@@ -134,7 +134,7 @@ public:
 	~aeMCPRuleLimitMaxVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).maxVertexPositionSet;
+		return RuleType(context).GetMPMaxVertexPositionSet();
 	}
 };
 
@@ -148,12 +148,12 @@ public:
 	~aeMCPRuleLimitTargetBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetBone;
+		return RuleType(context).GetMPTargetBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -171,7 +171,7 @@ public:
 	~aeMCPRuleLimitCoordinateFrame() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).coordinateFrame;
+		return RuleType(context).GetMPCoordinateFrame();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleLimit::eCoordinateFrames choice, igdeMetaContextItemInfo &info) const override{
@@ -203,7 +203,7 @@ public:
 	~aeMCPRuleLimitEnablePositionXMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePositionXMin;
+		return RuleType(context).GetMPEnablePositionXMin();
 	}
 };
 
@@ -215,7 +215,7 @@ public:
 	~aeMCPRuleLimitEnablePositionXMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePositionXMax;
+		return RuleType(context).GetMPEnablePositionXMax();
 	}
 };
 
@@ -227,7 +227,7 @@ public:
 	~aeMCPRuleLimitEnablePositionYMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePositionYMin;
+		return RuleType(context).GetMPEnablePositionYMin();
 	}
 };
 
@@ -239,7 +239,7 @@ public:
 	~aeMCPRuleLimitEnablePositionYMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePositionYMax;
+		return RuleType(context).GetMPEnablePositionYMax();
 	}
 };
 
@@ -251,7 +251,7 @@ public:
 	~aeMCPRuleLimitEnablePositionZMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePositionZMin;
+		return RuleType(context).GetMPEnablePositionZMin();
 	}
 };
 
@@ -263,7 +263,7 @@ public:
 	~aeMCPRuleLimitEnablePositionZMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePositionZMax;
+		return RuleType(context).GetMPEnablePositionZMax();
 	}
 };
 
@@ -275,7 +275,7 @@ public:
 	~aeMCPRuleLimitEnableRotationXMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableRotationXMin;
+		return RuleType(context).GetMPEnableRotationXMin();
 	}
 };
 
@@ -287,7 +287,7 @@ public:
 	~aeMCPRuleLimitEnableRotationXMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableRotationXMax;
+		return RuleType(context).GetMPEnableRotationXMax();
 	}
 };
 
@@ -299,7 +299,7 @@ public:
 	~aeMCPRuleLimitEnableRotationYMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableRotationYMin;
+		return RuleType(context).GetMPEnableRotationYMin();
 	}
 };
 
@@ -311,7 +311,7 @@ public:
 	~aeMCPRuleLimitEnableRotationYMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableRotationYMax;
+		return RuleType(context).GetMPEnableRotationYMax();
 	}
 };
 
@@ -323,7 +323,7 @@ public:
 	~aeMCPRuleLimitEnableRotationZMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableRotationZMin;
+		return RuleType(context).GetMPEnableRotationZMin();
 	}
 };
 
@@ -335,7 +335,7 @@ public:
 	~aeMCPRuleLimitEnableRotationZMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableRotationZMax;
+		return RuleType(context).GetMPEnableRotationZMax();
 	}
 };
 
@@ -347,7 +347,7 @@ public:
 	~aeMCPRuleLimitEnableScalingXMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableScalingXMin;
+		return RuleType(context).GetMPEnableScalingXMin();
 	}
 };
 
@@ -359,7 +359,7 @@ public:
 	~aeMCPRuleLimitEnableScalingXMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableScalingXMax;
+		return RuleType(context).GetMPEnableScalingXMax();
 	}
 };
 
@@ -371,7 +371,7 @@ public:
 	~aeMCPRuleLimitEnableScalingYMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableScalingYMin;
+		return RuleType(context).GetMPEnableScalingYMin();
 	}
 };
 
@@ -383,7 +383,7 @@ public:
 	~aeMCPRuleLimitEnableScalingYMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableScalingYMax;
+		return RuleType(context).GetMPEnableScalingYMax();
 	}
 };
 
@@ -395,7 +395,7 @@ public:
 	~aeMCPRuleLimitEnableScalingZMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableScalingZMin;
+		return RuleType(context).GetMPEnableScalingZMin();
 	}
 };
 
@@ -407,7 +407,7 @@ public:
 	~aeMCPRuleLimitEnableScalingZMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableScalingZMax;
+		return RuleType(context).GetMPEnableScalingZMax();
 	}
 };
 
@@ -419,7 +419,7 @@ public:
 	~aeMCPRuleLimitEnableVertexPositionSetMin() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSetMin;
+		return RuleType(context).GetMPEnableVertexPositionSetMin();
 	}
 };
 
@@ -431,7 +431,7 @@ public:
 	~aeMCPRuleLimitEnableVertexPositionSetMax() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSetMax;
+		return RuleType(context).GetMPEnableVertexPositionSetMax();
 	}
 };
 

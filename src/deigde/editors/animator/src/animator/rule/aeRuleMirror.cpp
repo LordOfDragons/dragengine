@@ -71,65 +71,65 @@ aeRuleMirror::Ref aeRuleMirror::CreateDefault(aeWindowMain &windowMain, const ch
 aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleMirror::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertMirror, aname),
-mirrorAxis(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorAxis, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-mirrorBone(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorBone, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-enablePosition(windowMain.GetMCAnimatorProperties().ruleMirror.enablePosition, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-enableOrientation(windowMain.GetMCAnimatorProperties().ruleMirror.enableOrientation, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-enableSize(windowMain.GetMCAnimatorProperties().ruleMirror.enableSize, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleMirror.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleMirror>())
+pMPMirrorAxis(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorAxis, GetMetaContext().StaticCast<aeMCRuleMirror>()),
+pMPMirrorBone(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorBone, GetMetaContext().StaticCast<aeMCRuleMirror>()),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleMirror.enablePosition, GetMetaContext().StaticCast<aeMCRuleMirror>()),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleMirror.enableOrientation, GetMetaContext().StaticCast<aeMCRuleMirror>()),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleMirror.enableSize, GetMetaContext().StaticCast<aeMCRuleMirror>()),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleMirror.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleMirror>())
 {
-	mirrorAxis.onValueChanged = [this](){
+	pMPMirrorAxis.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorAxis(mirrorAxis);
+			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorAxis(pMPMirrorAxis);
 		}
 		NotifyRuleChanged();
 	};
 	
-	mirrorBone.onValueChanged = [this](){
+	pMPMirrorBone.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorBone(mirrorBone);
+			((deAnimatorRuleMirror*)GetEngineRule())->SetMirrorBone(pMPMirrorBone);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enablePosition.onValueChanged = [this](){
+	pMPEnablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleMirror*)GetEngineRule())->SetEnablePosition(enablePosition);
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnablePosition(pMPEnablePosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableOrientation.onValueChanged = [this](){
+	pMPEnableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableOrientation(pMPEnableOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableSize.onValueChanged = [this](){
+	pMPEnableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableSize(enableSize);
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableSize(pMPEnableSize);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableVertexPositionSet.onValueChanged = [this](){
+	pMPEnableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+			((deAnimatorRuleMirror*)GetEngineRule())->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 }
 
 aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const aeRuleMirror &copy) :
-aeRuleMirror(windowMain, copy.name)
+aeRuleMirror(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
-	mirrorBone.SetValue(copy.mirrorBone, false);
-	enablePosition.SetValue(copy.enablePosition, false);
-	enableOrientation.SetValue(copy.enableOrientation, false);
-	enableSize.SetValue(copy.enableSize, false);
-	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
+	pMPMirrorBone.SetValue(copy.pMPMirrorBone, false);
+	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
+	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
+	pMPEnableSize.SetValue(copy.pMPEnableSize, false);
+	pMPEnableVertexPositionSet.SetValue(copy.pMPEnableVertexPositionSet, false);
 }
 
 aeRuleMirror::~aeRuleMirror() = default;
@@ -139,27 +139,27 @@ aeRuleMirror::~aeRuleMirror() = default;
 ///////////////
 
 void aeRuleMirror::SetMirrorAxis(deAnimatorRuleMirror::eMirrorAxis value){
-	mirrorAxis = value;
+	pMPMirrorAxis = value;
 }
 
 void aeRuleMirror::SetMirrorBone(const char *value){
-	mirrorBone = value;
+	pMPMirrorBone = value;
 }
 
 void aeRuleMirror::SetEnablePosition(bool value){
-	enablePosition = value;
+	pMPEnablePosition = value;
 }
 
 void aeRuleMirror::SetEnableOrientation(bool value){
-	enableOrientation = value;
+	pMPEnableOrientation = value;
 }
 
 void aeRuleMirror::SetEnableSize(bool value){
-	enableSize = value;
+	pMPEnableSize = value;
 }
 
 void aeRuleMirror::SetEnableVertexPositionSet(bool value){
-	enableVertexPositionSet = value;
+	pMPEnableVertexPositionSet = value;
 }
 
 
@@ -205,12 +205,12 @@ deAnimatorRule::Ref aeRuleMirror::CreateEngineRule(){
 	
 	InitEngineRule(engRule);
 	
-	engRule->SetMirrorAxis(mirrorAxis);
-	engRule->SetMirrorBone(mirrorBone);
-	engRule->SetEnablePosition(enablePosition);
-	engRule->SetEnableOrientation(enableOrientation);
-	engRule->SetEnableSize(enableSize);
-	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
+	engRule->SetMirrorAxis(pMPMirrorAxis);
+	engRule->SetMirrorBone(pMPMirrorBone);
+	engRule->SetEnablePosition(pMPEnablePosition);
+	engRule->SetEnableOrientation(pMPEnableOrientation);
+	engRule->SetEnableSize(pMPEnableSize);
+	engRule->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 	
 	pMatchNames.Visit([&](const MatchName &matchName){
 		engRule->AddMatchName(matchName.first, matchName.second, matchName.type);

@@ -43,7 +43,7 @@ public:
 	~aeMCPRuleStateSnapshotUseLastState() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).useLastState;
+		return RuleType(context).GetMPUseLastState();
 	}
 };
 
@@ -55,7 +55,7 @@ public:
 	~aeMCPRuleStateSnapshotID() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).id;
+		return RuleType(context).GetMPId();
 	}
 };
 
@@ -69,7 +69,7 @@ public:
 	~aeMCPRuleStateSnapshotEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -83,7 +83,7 @@ public:
 	~aeMCPRuleStateSnapshotEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -95,7 +95,7 @@ public:
 	~aeMCPRuleStateSnapshotEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -109,7 +109,7 @@ public:
 	~aeMCPRuleStateSnapshotEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSet;
+		return RuleType(context).GetMPEnableVertexPositionSet();
 	}
 };
 

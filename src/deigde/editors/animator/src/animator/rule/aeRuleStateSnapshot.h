@@ -39,13 +39,12 @@ class aeRuleStateSnapshot : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleStateSnapshot>;
 	
-public:
-	igdeMetaPropertyBooleanStorage::Storage useLastState;
-	igdeMetaPropertyIntegerStorage::Storage id;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage pMPUseLastState;
+	igdeMetaPropertyIntegerStorage::Storage pMPId;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -65,36 +64,44 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseLastState(){ return pMPUseLastState; }
+	inline igdeMetaPropertyIntegerStorage::Storage &GetMPId(){ return pMPId; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	
+	
 	/** Determine if the last state of the component is used or only the stored state. */
-	inline bool GetUseLastState() const{ return useLastState; }
+	inline bool GetUseLastState() const{ return pMPUseLastState; }
 	/** Set if the last state of the component is used or only the stored state. */
 	void SetUseLastState(bool value);
 	
 	/** Identifier to snapshot state using animator instance. */
-	inline int GetID() const{ return id; }
+	inline int GetID() const{ return pMPId; }
 	
 	/** Set identifier to snapshot state using animator instance. */
 	void SetID(int value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);

@@ -56,7 +56,7 @@ public:
 	~aeMCPRuleTree() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).ruleTree;
+		return Animator(context).GetMPRuleTree();
 	}
 	
 	Walker::Ref CreateWalker(const ContextRef &context) const override;
@@ -85,7 +85,7 @@ public:
 	~aeMCPRules() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).rules;
+		return Animator(context).GetMPRules();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override;
@@ -102,7 +102,7 @@ public:
 	~aeMCPRule() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).rule;
+		return Animator(context).GetMPRule();
 	}
 };
 
@@ -113,7 +113,7 @@ public:
 	~aeMCPRuleName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).name;
+		return Rule(context).GetMPName();
 	}
 };
 
@@ -130,7 +130,7 @@ public:
 	~aeMCPRuleBlendMode() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).blendMode;
+		return Rule(context).GetMPBlendMode();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRule::eBlendModes choice, igdeMetaContextItemInfo &info) const override{
@@ -162,7 +162,7 @@ public:
 	~aeMCPRuleBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).blendFactor;
+		return Rule(context).GetMPBlendFactor();
 	}
 };
 
@@ -173,7 +173,7 @@ public:
 	~aeMCPRuleInvertBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).invertBlendFactor;
+		return Rule(context).GetMPInvertBlendFactor();
 	}
 };
 
@@ -187,7 +187,7 @@ public:
 	~aeMCPRuleEnabled() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).enabled;
+		return Rule(context).GetMPEnabled();
 	}
 };
 
@@ -202,7 +202,7 @@ public:
 	~aeMCPRuleAffectedBones() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).affectedBones;
+		return Rule(context).GetMPAffectedBones();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -220,7 +220,7 @@ public:
 	~aeMCPRuleAffectedVertexPositionSets() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).affectedVertexPositionSets;
+		return Rule(context).GetMPAffectedVps();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -244,7 +244,7 @@ public:
 	}
 	
 	typename T::SetType GetValidObjectsType(const igdeMetaContext::Ref &context) const override{
-		return typename T::SetType(T::Rule(context).GetAnimatorRef().links.GetValue());
+		return typename T::SetType(T::Rule(context).GetAnimatorRef().GetMPLinks().GetValue());
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
@@ -264,7 +264,7 @@ public:
 	~aeMCPRuleTargetBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).targetBlendFactor;
+		return Rule(context).GetMPTargetBlendFactor();
 	}
 };
 

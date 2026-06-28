@@ -44,7 +44,7 @@ public:
 	~aeMCPRuleAnimationSelectEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -58,7 +58,7 @@ public:
 	~aeMCPRuleAnimationSelectEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -70,7 +70,7 @@ public:
 	~aeMCPRuleAnimationSelectEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -84,7 +84,7 @@ public:
 	~aeMCPRuleAnimationSelectEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSet;
+		return RuleType(context).GetMPEnableVertexPositionSet();
 	}
 };
 
@@ -98,12 +98,12 @@ public:
 	~aeMCPRuleAnimationSelectMoves() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).moves;
+		return RuleType(context).GetMPMoves();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override{
 		const auto animator = Rule(context).GetAnimator();
-		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
@@ -123,7 +123,7 @@ public:
 	~aeMCPRuleAnimationSelectTargetMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetMoveTime;
+		return RuleType(context).GetMPTargetLeadMoveTime();
 	}
 };
 
@@ -136,7 +136,7 @@ public:
 	~aeMCPRuleAnimationSelectTargetSelect() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetSelect;
+		return RuleType(context).GetMPTargetSelect();
 	}
 };
 

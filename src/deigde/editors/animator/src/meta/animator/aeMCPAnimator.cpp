@@ -67,7 +67,7 @@ public:
 }
 
 decStringSet aeMCPAnimatorAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
-	return Animator(context).hiddenBoneNames;
+	return Animator(context).GetMPHiddenBoneNames();
 }
 
 void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -115,7 +115,7 @@ public:
 }
 
 decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
-	return Animator(context).hiddenVPSNames;
+	return Animator(context).GetMPHiddenVPSNames();
 }
 
 void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){

@@ -56,7 +56,7 @@ public:
 	~aeMCPControllers() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).controllers;
+		return Animator(context).GetMPControllers();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &controller, igdeMetaContextItemInfo &info) const override{
@@ -83,7 +83,7 @@ public:
 	~aeMCPController() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).controller;
+		return Animator(context).GetMPController();
 	}
 };
 
@@ -95,7 +95,7 @@ public:
 	~aeMCPControllerName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).name;
+		return Controller(context).GetMPName();
 	}
 	
 	deTObjectReference<igdeMetaPropertyStringUndo> ChangePropertyValue(const ContextRef &context,
@@ -110,7 +110,7 @@ public:
 	~aeMCPControllerMinimumValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).minimumValue;
+		return Controller(context).GetMPMinimumValue();
 	}
 };
 
@@ -125,7 +125,7 @@ public:
 	~aeMCPControllerMaximumValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).maximumValue;
+		return Controller(context).GetMPMaximumValue();
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
@@ -143,7 +143,7 @@ public:
 	~aeMCPControllerCurrentValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).currentValue;
+		return Controller(context).GetMPCurrentValue();
 	}
 	
 	deTObjectReference<igdeMetaPropertyFloatUndo> ChangePropertyValue(const ContextRef &context,
@@ -160,7 +160,7 @@ public:
 	~aeMCPControllerVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).vector;
+		return Controller(context).GetMPVector();
 	}
 };
 
@@ -174,7 +174,7 @@ public:
 	~aeMCPControllerClamp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).clamp;
+		return Controller(context).GetMPClamp();
 	}
 };
 
@@ -186,7 +186,7 @@ public:
 	~aeMCPControllerFrozen() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).frozen;
+		return Controller(context).GetMPFrozen();
 	}
 };
 
@@ -222,7 +222,7 @@ public:
 	~aeMCPControllerLocomotionAttribute() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).locomotionAttribute;
+		return Controller(context).GetMPLocomotionAttribute();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, aeAnimatorLocomotion::eAttributes choice, igdeMetaContextItemInfo &info) const override{
@@ -322,7 +322,7 @@ public:
 	~aeMCPControllerLocomotionLeg() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).locomotionLeg;
+		return Controller(context).GetMPLocomotionLeg();
 	}
 };
 
@@ -341,7 +341,7 @@ public:
 	~aeMCPControllerVectorSimulation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).vectorSimulation;
+		return Controller(context).GetMPVectorSimulation();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, aeController::eVectorSimulation choice, igdeMetaContextItemInfo &info) const override{
@@ -373,7 +373,7 @@ public:
 	~aeMCPControllerDefaultValue() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).defaultValue;
+		return Controller(context).GetMPDefaultValue();
 	}
 };
 
@@ -385,7 +385,7 @@ public:
 	~aeMCPControllerDefaultVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Controller(context).defaultVector;
+		return Controller(context).GetMPDefaultVector();
 	}
 };
 

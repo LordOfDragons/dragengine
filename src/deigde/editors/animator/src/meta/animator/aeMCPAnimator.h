@@ -47,7 +47,7 @@ public:
 	~aeMCPHiddenBoneNames() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).hiddenBoneNames;
+		return Animator(context).GetMPHiddenBoneNames();
 	}
 };
 
@@ -57,7 +57,7 @@ public:
 	~aeMCPHiddenVPSNames() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).hiddenVPSNames;
+		return Animator(context).GetMPHiddenVPSNames();
 	}
 };
 
@@ -67,7 +67,7 @@ public:
 	~aeMCPHiddenMoveNames() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).hiddenMoveNames;
+		return Animator(context).GetMPHiddenMoveNames();
 	}
 };
 
@@ -79,7 +79,7 @@ public:
 	~aeMCPAnimatorRig() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).rigPath;
+		return Animator(context).GetMPRigPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -95,7 +95,7 @@ public:
 	~aeMCPAnimatorAnimation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).animationPath;
+		return Animator(context).GetMPAnimationPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -115,7 +115,7 @@ public:
 	~aeMCPAnimatorAffectedBones() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).affectedBones;
+		return Animator(context).GetMPAffectedBones();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -134,7 +134,7 @@ public:
 	~aeMCPAnimatorAffectedVertexPositionSets() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).affectedVertexPositionSets;
+		return Animator(context).GetMPAffectedVertexPositionSets();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -149,7 +149,7 @@ public:
 	~aeMCPAnimatorDisplayModelPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).displayModelPath;
+		return Animator(context).GetMPDisplayModelPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -164,7 +164,7 @@ public:
 	~aeMCPAnimatorDisplaySkinPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).displaySkinPath;
+		return Animator(context).GetMPDisplaySkinPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -179,7 +179,7 @@ public:
 	~aeMCPAnimatorDisplayRigPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).displayRigPath;
+		return Animator(context).GetMPDisplayRigPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -194,7 +194,7 @@ public:
 	~aeMCPAnimatorBaseAnimatorPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).baseAnimatorPath;
+		return Animator(context).GetMPBaseAnimatorPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
@@ -209,7 +209,7 @@ public:
 	~aeMCPAnimatorResetState() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).resetState;
+		return Animator(context).GetMPResetState();
 	}
 };
 
@@ -223,7 +223,7 @@ public:
 	~aeMCPAnimatorPlaySpeed() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).playSpeed;
+		return Animator(context).GetMPPlaySpeed();
 	}
 };
 
@@ -237,7 +237,7 @@ public:
 	~aeMCPAnimatorTimeStep() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).timeStep;
+		return Animator(context).GetMPTimeStep();
 	}
 };
 
@@ -248,7 +248,7 @@ public:
 	~aeMCPAnimatorPaused() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).paused;
+		return Animator(context).GetMPPaused();
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
@@ -261,7 +261,7 @@ public:
 	~aeMCPAnimatorSky() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).sky;
+		return Animator(context).GetMPSky();
 	}
 };
 
@@ -272,7 +272,7 @@ public:
 	~aeMCPAnimatorEnvironmentObject() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).environmentObject;
+		return Animator(context).GetMPEnvironmentObject();
 	}
 };
 
@@ -283,7 +283,7 @@ public:
 	~aeMCPAnimatorCamera() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).camera;
+		return Animator(context).GetMPCamera();
 	}
 };
 
@@ -294,7 +294,7 @@ public:
 	~aeMCPAnimatorCameraAttachToBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->attachToBone;
+		return Animator(context).GetCamera()->GetMPAttachToBone();
 	}
 };
 
@@ -308,11 +308,11 @@ public:
 	~aeMCPAnimatorCameraAttachBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->bone;
+		return Animator(context).GetCamera()->GetMPBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		return Animator(context).hiddenBoneNames;
+		return Animator(context).GetMPHiddenBoneNames();
 	}
 };
 
@@ -323,7 +323,7 @@ public:
 	~aeMCPAnimatorCameraAttachRelativePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->relativePosition;
+		return Animator(context).GetCamera()->GetMPRelativePosition();
 	}
 };
 
@@ -334,7 +334,7 @@ public:
 	~aeMCPAnimatorCameraAttachRelativeRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->relativeRotation;
+		return Animator(context).GetCamera()->GetMPRelativeRotation();
 	}
 };
 

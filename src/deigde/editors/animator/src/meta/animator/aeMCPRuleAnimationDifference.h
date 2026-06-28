@@ -45,12 +45,12 @@ public:
 	~aeMCPRuleAnimationDifferenceLeadingMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).leadingMoveName;
+		return RuleType(context).GetMPLeadingMoveName();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
 	}
 };
 
@@ -65,7 +65,7 @@ public:
 	~aeMCPRuleAnimationDifferenceLeadingMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).leadingMoveTime;
+		return RuleType(context).GetMPLeadingMoveTime();
 	}
 };
 
@@ -79,12 +79,12 @@ public:
 	~aeMCPRuleAnimationDifferenceReferenceMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).referenceMoveName;
+		return RuleType(context).GetMPReferenceMoveName();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenMoveNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
 	}
 };
 
@@ -99,7 +99,7 @@ public:
 	~aeMCPRuleAnimationDifferenceReferenceMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).referenceMoveTime;
+		return RuleType(context).GetMPReferenceMoveTime();
 	}
 };
 
@@ -111,7 +111,7 @@ public:
 	~aeMCPRuleAnimationDifferenceUseComponentSpace() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).useComponentSpace;
+		return RuleType(context).GetMPUseComponentSpace();
 	}
 };
 
@@ -125,7 +125,7 @@ public:
 	~aeMCPRuleAnimationDifferenceEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enablePosition;
+		return RuleType(context).GetMPEnablePosition();
 	}
 };
 
@@ -139,7 +139,7 @@ public:
 	~aeMCPRuleAnimationDifferenceEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableOrientation;
+		return RuleType(context).GetMPEnableOrientation();
 	}
 };
 
@@ -151,7 +151,7 @@ public:
 	~aeMCPRuleAnimationDifferenceEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableSize;
+		return RuleType(context).GetMPEnableSize();
 	}
 };
 
@@ -165,7 +165,7 @@ public:
 	~aeMCPRuleAnimationDifferenceEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).enableVertexPositionSet;
+		return RuleType(context).GetMPEnableVertexPositionSet();
 	}
 };
 
@@ -180,7 +180,7 @@ public:
 	~aeMCPRuleAnimationDifferenceTargetLeadMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetLeadMoveTime;
+		return RuleType(context).GetMPTargetLeadMoveTime();
 	}
 };
 
@@ -194,7 +194,7 @@ public:
 	~aeMCPRuleAnimationDifferenceTargetRefMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetRefMoveTime;
+		return RuleType(context).GetMPTargetRefMoveTime();
 	}
 };
 

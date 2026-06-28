@@ -54,7 +54,7 @@ public:
 	~aeMCPLinks() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).links;
+		return Animator(context).GetMPLinks();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &link, igdeMetaContextItemInfo &info) const override{
@@ -81,7 +81,7 @@ public:
 	~aeMCPLink() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).link;
+		return Animator(context).GetMPLink();
 	}
 };
 
@@ -96,7 +96,7 @@ public:
 	~aeMCPLinkName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).name;
+		return Link(context).GetMPName();
 	}
 };
 
@@ -111,7 +111,7 @@ public:
 	~aeMCPLinkController() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).controller;
+		return Link(context).GetMPController();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object, igdeMetaContextItemInfo &info) const override{
@@ -121,7 +121,7 @@ public:
 	
 	ObjectTypeList GetPropertyAllowedObjectsType(const ContextRef &context) const override{
 		auto animator = Link(context).GetAnimator();
-		return animator ? animator->allowedListControllers : ObjectTypeList::New();
+		return animator ? animator->GetMPAllowedListControllers() : ObjectTypeList::New();
 	}
 };
 
@@ -138,7 +138,7 @@ public:
 	~aeMCPLinkRepeat() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).repeat;
+		return Link(context).GetMPRepeat();
 	}
 };
 
@@ -156,7 +156,7 @@ public:
 	~aeMCPLinkCurve() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).curve;
+		return Link(context).GetMPCurve();
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
@@ -173,12 +173,12 @@ public:
 	~aeMCPLinkBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).bone;
+		return Link(context).GetMPBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Link(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -197,7 +197,7 @@ public:
 	~aeMCPLinkBoneParameter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).boneParameter;
+		return Link(context).GetMPBoneParameter();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorLink::eBoneParameter choice, igdeMetaContextItemInfo &info) const override{
@@ -253,7 +253,7 @@ public:
 	~aeMCPLinkBoneMinimum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).boneMinimum;
+		return Link(context).GetMPBoneMinimum();
 	}
 };
 
@@ -268,7 +268,7 @@ public:
 	~aeMCPLinkBoneMaximum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).boneMaximum;
+		return Link(context).GetMPBoneMaximum();
 	}
 };
 
@@ -283,12 +283,12 @@ public:
 	~aeMCPLinkVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).vertexPositionSet;
+		return Link(context).GetMPVertexPositionSet();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Link(context).GetAnimator();
-		return animator ? animator->hiddenVPSNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenVPSNames().GetValue() : decStringSet();
 	}
 };
 
@@ -300,7 +300,7 @@ public:
 	~aeMCPLinkVertexPositionSetMinimum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).vertexPositionSetMinimum;
+		return Link(context).GetMPVertexPositionSetMinimum();
 	}
 };
 
@@ -315,7 +315,7 @@ public:
 	~aeMCPLinkVertexPositionSetMaximum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).vertexPositionSetMaximum;
+		return Link(context).GetMPVertexPositionSetMaximum();
 	}
 };
 
@@ -327,7 +327,7 @@ public:
 	~aeMCPLinkWrapY() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).wrapY;
+		return Link(context).GetMPWrapY();
 	}
 };
 

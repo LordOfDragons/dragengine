@@ -46,23 +46,22 @@ private:
 	aeControllerTarget::Ref pTargetSize;
 	aeControllerTarget::Ref pTargetVertexPositionSet;
 	
-public:
-	igdeMetaPropertyVectorStorage::Storage minPosition;
-	igdeMetaPropertyVectorStorage::Storage maxPosition;
-	igdeMetaPropertyVectorStorage::Storage minRotation;
-	igdeMetaPropertyVectorStorage::Storage maxRotation;
-	igdeMetaPropertyVectorStorage::Storage minSize;
-	igdeMetaPropertyVectorStorage::Storage maxSize;
-	igdeMetaPropertyFloatStorage::Storage minVertexPositionSet;
-	igdeMetaPropertyFloatStorage::Storage maxVertexPositionSet;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableRotation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetRotation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetSize;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetVertexPositionSet;
+	igdeMetaPropertyVectorStorage::Storage pMPMinPosition;
+	igdeMetaPropertyVectorStorage::Storage pMPMaxPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPMinRotation;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPMaxRotation;
+	igdeMetaPropertyVectorStorage::Storage pMPMinSize;
+	igdeMetaPropertyVectorStorage::Storage pMPMaxSize;
+	igdeMetaPropertyFloatStorage::Storage pMPMinVertexPositionSet;
+	igdeMetaPropertyFloatStorage::Storage pMPMaxVertexPositionSet;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableRotation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetRotation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetSize;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -86,50 +85,68 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPMinPosition(){ return pMPMinPosition; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPMaxPosition(){ return pMPMaxPosition; }
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPMinRotation(){ return pMPMinRotation; }
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPMaxRotation(){ return pMPMaxRotation; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPMinSize(){ return pMPMinSize; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPMaxSize(){ return pMPMaxSize; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPMinVertexPositionSet(){ return pMPMinVertexPositionSet; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPMaxVertexPositionSet(){ return pMPMaxVertexPositionSet; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableRotation(){ return pMPEnableRotation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetPosition(){ return pMPTargetPosition; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetRotation(){ return pMPTargetRotation; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetSize(){ return pMPTargetSize; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetVertexPositionSet(){ return pMPTargetVertexPositionSet; }
+	
+	
 	/** Minimum position. */
-	inline const decVector &GetMinimumPosition() const{ return minPosition; }
+	inline const decVector &GetMinimumPosition() const{ return pMPMinPosition; }
 	
 	/** Set minimum position. */
 	void SetMinimumPosition(const decVector &value);
 	
 	/** Maximum position. */
-	inline const decVector &GetMaximumPosition() const{ return maxPosition; }
+	inline const decVector &GetMaximumPosition() const{ return pMPMaxPosition; }
 	
 	/** Set maximum position. */
 	void SetMaximumPosition(const decVector &value);
 	
 	/** Minimum rotation. */
-	inline const decVector &GetMinimumRotation() const{ return minRotation; }
+	inline const decVector &GetMinimumRotation() const{ return pMPMinRotation; }
 	
 	/** Set minimum rotation. */
 	void SetMinimumRotation(const decVector &value);
 	
 	/** Maximum rotation. */
-	inline const decVector &GetMaximumRotation() const{ return maxRotation; }
+	inline const decVector &GetMaximumRotation() const{ return pMPMaxRotation; }
 	
 	/** Set maximum rotation. */
 	void SetMaximumRotation(const decVector &value);
 	
 	/** Minimum size. */
-	inline const decVector &GetMinimumSize() const{ return minSize; }
+	inline const decVector &GetMinimumSize() const{ return pMPMinSize; }
 	
 	/** Set minimum size. */
 	void SetMinimumSize(const decVector &value);
 	
 	/** Maximum size. */
-	inline const decVector &GetMaximumSize() const{ return maxSize; }
+	inline const decVector &GetMaximumSize() const{ return pMPMaxSize; }
 	
 	/** Set maximum size. */
 	void SetMaximumSize(const decVector &value);
 	
 	/** Minimum vertex position set. */
-	inline float GetMinimumVertexPositionSet() const{ return minVertexPositionSet; }
+	inline float GetMinimumVertexPositionSet() const{ return pMPMinVertexPositionSet; }
 	
 	/** Set minimum vertex position set. */
 	void SetMinimumVertexPositionSet(float weight);
 	
 	/** Maximum vertex position set. */
-	inline float GetMaximumVertexPositionSet() const{ return maxVertexPositionSet; }
+	inline float GetMaximumVertexPositionSet() const{ return pMPMaxVertexPositionSet; }
 	
 	/** Set maximum vertex position set. */
 	void SetMaximumVertexPositionSet(float weight);
@@ -137,25 +154,25 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Rotation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableRotation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableRotation; }
 	
 	/** Set if rotation manipulation is enabled. */
 	void SetEnableRotation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);

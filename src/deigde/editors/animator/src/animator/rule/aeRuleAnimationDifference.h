@@ -43,18 +43,17 @@ private:
 	aeControllerTarget::Ref pTargetLeadMoveTime;
 	aeControllerTarget::Ref pTargetRefMoveTime;
 	
-public:
-	igdeMetaPropertyStringStorage::Storage leadingMoveName;
-	igdeMetaPropertyFloatStorage::Storage leadingMoveTime;
-	igdeMetaPropertyStringStorage::Storage referenceMoveName;
-	igdeMetaPropertyFloatStorage::Storage referenceMoveTime;
-	igdeMetaPropertyBooleanStorage::Storage useComponentSpace;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetLeadMoveTime;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetRefMoveTime;
+	igdeMetaPropertyStringStorage::Storage pMPLeadingMoveName;
+	igdeMetaPropertyFloatStorage::Storage pMPLeadingMoveTime;
+	igdeMetaPropertyStringStorage::Storage pMPReferenceMoveName;
+	igdeMetaPropertyFloatStorage::Storage pMPReferenceMoveTime;
+	igdeMetaPropertyBooleanStorage::Storage pMPUseComponentSpace;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetLeadMoveTime;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetRefMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -74,44 +73,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyStringStorage::Storage &GetMPLeadingMoveName(){ return pMPLeadingMoveName; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLeadingMoveTime(){ return pMPLeadingMoveTime; }
+	inline igdeMetaPropertyStringStorage::Storage &GetMPReferenceMoveName(){ return pMPReferenceMoveName; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPReferenceMoveTime(){ return pMPReferenceMoveTime; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseComponentSpace(){ return pMPUseComponentSpace; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLeadMoveTime(){ return pMPTargetLeadMoveTime; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetRefMoveTime(){ return pMPTargetRefMoveTime; }
+	
+	
 	/** Retrieve the name of the leading animation move. */
-	inline const decString &GetLeadingMoveName() const{ return leadingMoveName; }
+	inline const decString &GetLeadingMoveName() const{ return pMPLeadingMoveName; }
 	/** Set the leading animation move name. */
 	void SetLeadingMoveName(const char *value);
 	/** Retrieve the leading animation move time. */
-	inline float GetLeadingMoveTime() const{ return leadingMoveTime; }
+	inline float GetLeadingMoveTime() const{ return pMPLeadingMoveTime; }
 	/** Set the leading animation move time. */
 	void SetLeadingMoveTime(float value);
 	/** Retrieve the name of the reference animation move. */
-	inline const decString &GetReferenceMoveName() const{ return referenceMoveName; }
+	inline const decString &GetReferenceMoveName() const{ return pMPReferenceMoveName; }
 	/** Set the reference animation move name. */
 	void SetReferenceMoveName(const char *value);
 	/** Retrieve the reference animation move time. */
-	inline float GetReferenceMoveTime() const{ return referenceMoveTime; }
+	inline float GetReferenceMoveTime() const{ return pMPReferenceMoveTime; }
 	/** Set the reference animation move time. */
 	void SetReferenceMoveTime(float value);
 	
 	/** Use component space. */
-	inline bool GetUseComponentSpace() const{ return useComponentSpace; }
+	inline bool GetUseComponentSpace() const{ return pMPUseComponentSpace; }
 	
 	/** Set use component space. */
 	void SetUseComponentSpace(bool value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);

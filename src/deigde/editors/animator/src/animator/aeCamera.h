@@ -61,11 +61,10 @@ private:
 	bool pDirty;
 	bool pNoNotify;
 	
-public:
-	igdeMetaPropertyBooleanStorage::Storage attachToBone;
-	igdeMetaPropertyStringStorage::Storage bone;
-	igdeMetaPropertyVectorStorage::Storage relativePosition;
-	igdeMetaPropertyVectorStorageQuaternion::Storage relativeRotation;
+	igdeMetaPropertyBooleanStorage::Storage pMPAttachToBone;
+	igdeMetaPropertyStringStorage::Storage pMPBone;
+	igdeMetaPropertyVectorStorage::Storage pMPRelativePosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPRelativeRotation;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -81,8 +80,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPAttachToBone(){ return pMPAttachToBone; }
+	inline igdeMetaPropertyStringStorage::Storage &GetMPBone(){ return pMPBone; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPRelativePosition(){ return pMPRelativePosition; }
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPRelativeRotation(){ return pMPRelativeRotation; }
+	
 	/** Bone name. */
-	inline const decString &GetBone() const{ return bone; }
+	inline const decString &GetBone() const{ return pMPBone; }
 	
 	/** Set bone name. */
 	void SetBone(const char *bone);
@@ -100,15 +104,15 @@ public:
 	/** Sets the distance of camera to the center point along the view direction. */
 	void SetFreeDistance(float freeDistance);
 	/** Retrieves the relative position. */
-	inline const decVector &GetRelativePosition() const{ return relativePosition; }
+	inline const decVector &GetRelativePosition() const{ return pMPRelativePosition; }
 	/** Sets the relative position. */
 	void SetRelativePosition(const decVector &relativePosition);
 	/** Retrieves the relative orientation. */
-	inline const decVector &GetRelativeOrientation() const{ return relativeRotation; }
+	inline const decVector &GetRelativeOrientation() const{ return pMPRelativeRotation; }
 	/** Sets the relative orientation. */
 	void SetRelativeOrientation(const decVector &relativeOrientation);
 	/** Determines if this camera is attached to a bone. */
-	inline bool GetAttachToBone() const{ return attachToBone; }
+	inline bool GetAttachToBone() const{ return pMPAttachToBone; }
 	/** Sets if this camera is attached to a bone. */
 	void SetAttachToBone(bool attachToBone);
 	

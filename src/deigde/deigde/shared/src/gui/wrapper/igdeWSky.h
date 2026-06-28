@@ -28,6 +28,7 @@
 #include "../../gamedefinition/sky/igdeGDSky.h"
 #include "../../meta/igdeMetaContext.h"
 #include "../../meta/property/igdeMetaPropertyPath.h"
+#include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -134,6 +135,7 @@ public:
 	
 private:
 	igdeEnvironment &pEnvironment;
+	igdeUndoSystem *pUndoSystem;
 	
 	MetaContext::Ref pMetaContext;
 	
@@ -145,11 +147,10 @@ private:
 	cAsyncLoadFinished *pAsyncLoadFinished;
 	int pAsyncLoadCounter;
 	
+	igdeMetaPropertyPathStorage::Storage pMPPath;
+	
 	
 public:
-	/** \brief Meta property sky path. */
-	igdeMetaPropertyPathStorage::Storage path;
-	
 	/** \brief Sky changed event. */
 	igdeTEvent<> onChanged;
 	
@@ -174,6 +175,16 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Meta property sky path. */
+	inline igdeMetaPropertyPathStorage::Storage &GetMPPath(){ return pMPPath; }
+	
+	/** \brief Undo system or nullptr. */
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
+	
+	
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
@@ -205,7 +216,7 @@ public:
 	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
 	
 	/** \brief Sky path or nullptr if sky is set manually. */
-	inline const decString &GetPath() const{ return path; }
+	inline const decString &GetPath() const{ return pMPPath; }
 	
 	/** \brief Set sky to use. */
 	void SetSky(deSky *sky);

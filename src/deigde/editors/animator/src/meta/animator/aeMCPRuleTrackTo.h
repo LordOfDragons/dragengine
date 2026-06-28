@@ -44,12 +44,12 @@ public:
 	~aeMCPRuleTrackToTrackBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).trackBone;
+		return RuleType(context).GetMPTrackBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = RuleType(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -70,7 +70,7 @@ public:
 	~aeMCPRuleTrackToTrackAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).trackAxis;
+		return RuleType(context).GetMPTrackAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eTrackAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -123,7 +123,7 @@ public:
 	~aeMCPRuleTrackToUpAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).upAxis;
+		return RuleType(context).GetMPUpAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eTrackAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -180,7 +180,7 @@ public:
 	~aeMCPRuleTrackToUpTarget() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).upTarget;
+		return RuleType(context).GetMPUpTarget();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eUpTarget choice, igdeMetaContextItemInfo &info) const override{
@@ -247,7 +247,7 @@ public:
 	~aeMCPRuleTrackToLockedAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).lockedAxis;
+		return RuleType(context).GetMPLockedAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eLockedAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -286,7 +286,7 @@ public:
 	~aeMCPRuleTrackToTargetPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetPosition;
+		return RuleType(context).GetMPTargetPosition();
 	}
 };
 
@@ -299,7 +299,7 @@ public:
 	~aeMCPRuleTrackToTargetUp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).targetUp;
+		return RuleType(context).GetMPTargetUp();
 	}
 };
 

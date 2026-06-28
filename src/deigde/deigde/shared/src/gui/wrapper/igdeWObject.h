@@ -35,6 +35,7 @@
 #include "../../meta/property/igdeMetaPropertyVector.h"
 #include "../../triggersystem/igdeTriggerTarget.h"
 #include "../../triggersystem/igdeTriggerListener.h"
+#include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/common/collection/decTSet.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -233,6 +234,7 @@ public:
 	
 private:
 	igdeEnvironment &pEnvironment;
+	igdeUndoSystem *pUndoSystem;
 	
 	MetaContext::Ref pMetaContext;
 	
@@ -289,28 +291,16 @@ private:
 	bool pAnyContentVisible;
 	
 	
+	igdeMetaPropertyStringStorage::Storage pMPObjectClass;
+	igdeMetaPropertyPathStorage::Storage pMPWorld;
+	igdeMetaPropertyDVectorStorage::Storage pMPPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPRotation;
+	igdeMetaPropertyVectorStorage::Storage pMPScaling;
+	igdeMetaPropertyBooleanStorage::Storage pMPVisible;
+	igdeMetaPropertyBooleanStorage::Storage pMPDynamicCollider;
+	
+	
 public:
-	/** \brief Meta property object class. */
-	igdeMetaPropertyStringStorage::Storage objectClass;
-	
-	/** \brief Meta property world. */
-	igdeMetaPropertyPathStorage::Storage world;
-	
-	/** \brief Meta property position. */
-	igdeMetaPropertyDVectorStorage::Storage position;
-	
-	/** \brief Meta property rotation. */
-	igdeMetaPropertyVectorStorageQuaternion::Storage rotation;
-	
-	/** \brief Meta property scaling. */
-	igdeMetaPropertyVectorStorage::Storage scaling;
-	
-	/** \brief Meta property visible. */
-	igdeMetaPropertyBooleanStorage::Storage visible;
-	
-	/** \brief Meta property dynamic collider. */
-	igdeMetaPropertyBooleanStorage::Storage dynamicCollider;
-	
 	/** \brief Object changed event. */
 	igdeTEvent<> onChanged;
 	
@@ -336,8 +326,36 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Meta property object class. */
+	inline igdeMetaPropertyStringStorage::Storage &GetMPObjectClass(){ return pMPObjectClass; }
+	
+	/** \brief Meta property world. */
+	inline igdeMetaPropertyPathStorage::Storage &GetMPWorld(){ return pMPWorld; }
+	
+	/** \brief Meta property position. */
+	inline igdeMetaPropertyDVectorStorage::Storage &GetMPPosition(){ return pMPPosition; }
+	
+	/** \brief Meta property rotation. */
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPRotation(){ return pMPRotation; }
+	
+	/** \brief Meta property scaling. */
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPScaling(){ return pMPScaling; }
+	
+	/** \brief Meta property visible. */
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPVisible(){ return pMPVisible; }
+	
+	/** \brief Meta property dynamic collider. */
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPDynamicCollider(){ return pMPDynamicCollider; }
+	
+	
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
+	/** \brief Undo system or nullptr. */
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	/** \brief Meta context. */
 	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
@@ -370,25 +388,25 @@ public:
 	void SetGDClassName(const char *gdClassName);
 	
 	/** \brief Path to world. */
-	inline const decString &GetPathWorld() const{ return world; }
+	inline const decString &GetPathWorld() const{ return pMPWorld; }
 	
 	/** \brief Set path to world. */
 	void SetPathWorld(const char *path);
 	
 	/** \brief Position. */
-	inline decDVector GetPosition() const{ return position; }
+	inline decDVector GetPosition() const{ return pMPPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline decQuaternion GetOrientation() const{ return rotation; }
+	inline decQuaternion GetOrientation() const{ return pMPRotation; }
 	
 	/** \brief Set orientation. */
 	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline decVector GetScaling() const{ return scaling; }
+	inline decVector GetScaling() const{ return pMPScaling; }
 	
 	/** \brief Set scaling. */
 	void SetScaling(const decVector &scaling);
@@ -400,7 +418,7 @@ public:
 	inline const decDMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Determines if the object is visible. */
-	inline bool GetVisible() const{ return visible; }
+	inline bool GetVisible() const{ return pMPVisible; }
 	
 	/** \brief Sets if the object is visible. */
 	void SetVisible(bool visible);
@@ -473,7 +491,7 @@ public:
 	
 	
 	/** \brief Determines if the collider is allowed to be dynamic or always kinematic. */
-	inline bool GetDynamicCollider() const{ return dynamicCollider; }
+	inline bool GetDynamicCollider() const{ return pMPDynamicCollider; }
 	
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);

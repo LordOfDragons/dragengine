@@ -34,6 +34,7 @@
 #include "../meta/property/igdeMetaPropertyCurveBezier.h"
 #include "../meta/property/igdeMetaPropertyGroup.h"
 #include "../gui/filedialog/igdeFilePattern.h"
+#include "../undo/igdeUndoSystem.h"
 
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
@@ -323,6 +324,7 @@ public:
 	
 private:
 	igdeEnvironment &pEnvironment;
+	igdeUndoSystem *pUndoSystem;
 	
 	MetaContext::Ref pMetaContext;
 	
@@ -333,6 +335,25 @@ private:
 	
 	decDMatrix pViewMatrix;
 	
+	igdeMetaPropertyDVectorStorage::Storage pMPPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPRotation;
+	igdeMetaPropertyFloatStorage::Storage pMPDistance;
+	igdeMetaPropertyFloatStorage::Storage pMPFov;
+	igdeMetaPropertyFloatStorage::Storage pMPFovRatio;
+	igdeMetaPropertyFloatStorage::Storage pMPImageDistance;
+	igdeMetaPropertyFloatStorage::Storage pMPViewDistance;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableHDRR;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableGI;
+	igdeMetaPropertyFloatStorage::Storage pMPExposure;
+	igdeMetaPropertyFloatStorage::Storage pMPLowestIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPHighestIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPAdaptionTime;
+	igdeMetaPropertyFloatStorage::Storage pMPWhiteIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomIntensity;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomStrength;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomBlend;
+	igdeMetaPropertyFloatStorage::Storage pMPBloomSize;
+	igdeMetaPropertyCurveBezierStorage::Storage pMPToneMapCurve;
 	
 public:
 	/** \brief Camera file pattern list. */
@@ -340,63 +361,6 @@ public:
 	
 	/** \brief Last used camera file. */
 	static decString lastCameraFile;
-	
-	/** \brief Meta property position. */
-	igdeMetaPropertyDVectorStorage::Storage position;
-	
-	/** \brief Meta property rotation. */
-	igdeMetaPropertyVectorStorageQuaternion::Storage rotation;
-	
-	/** \brief Meta property distance. */
-	igdeMetaPropertyFloatStorage::Storage distance;
-	
-	/** \brief Meta property field of view. */
-	igdeMetaPropertyFloatStorage::Storage fov;
-	
-	/** \brief Meta property field of view ratio. */
-	igdeMetaPropertyFloatStorage::Storage fovRatio;
-	
-	/** \brief Meta property image distance. */
-	igdeMetaPropertyFloatStorage::Storage imageDistance;
-	
-	/** \brief Meta property view distance. */
-	igdeMetaPropertyFloatStorage::Storage viewDistance;
-	
-	/** \brief Meta property enable HDRR. */
-	igdeMetaPropertyBooleanStorage::Storage enableHDRR;
-	
-	/** \brief Meta property enable GI. */
-	igdeMetaPropertyBooleanStorage::Storage enableGI;
-	
-	/** \brief Meta property exposure. */
-	igdeMetaPropertyFloatStorage::Storage exposure;
-	
-	/** \brief Meta property lowest intensity. */
-	igdeMetaPropertyFloatStorage::Storage lowestIntensity;
-	
-	/** \brief Meta property highest intensity. */
-	igdeMetaPropertyFloatStorage::Storage highestIntensity;
-	
-	/** \brief Meta property adaption time. */
-	igdeMetaPropertyFloatStorage::Storage adaptionTime;
-	
-	/** \brief Meta property white intensity. */
-	igdeMetaPropertyFloatStorage::Storage whiteIntensity;
-	
-	/** \brief Meta property bloom intensity. */
-	igdeMetaPropertyFloatStorage::Storage bloomIntensity;
-	
-	/** \brief Meta property bloom strength. */
-	igdeMetaPropertyFloatStorage::Storage bloomStrength;
-	
-	/** \brief Meta property bloom blend. */
-	igdeMetaPropertyFloatStorage::Storage bloomBlend;
-	
-	/** \brief Meta property bloom size. */
-	igdeMetaPropertyFloatStorage::Storage bloomSize;
-	
-	/** \brief Meta property tone map curve. */
-	igdeMetaPropertyCurveBezierStorage::Storage toneMapCurve;
 	
 	/** \brief Camera changed event. */
 	igdeTEvent<> onChanged;
@@ -422,8 +386,72 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Meta property position. */
+	inline igdeMetaPropertyDVectorStorage::Storage &GetMPPosition(){ return pMPPosition; }
+	
+	/** \brief Meta property rotation. */
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPRotation(){ return pMPRotation; }
+	
+	/** \brief Meta property distance. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPDistance(){ return pMPDistance; }
+	
+	/** \brief Meta property field of view. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPFov(){ return pMPFov; }
+	
+	/** \brief Meta property field of view ratio. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPFovRatio(){ return pMPFovRatio; }
+	
+	/** \brief Meta property image distance. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPImageDistance(){ return pMPImageDistance; }
+	
+	/** \brief Meta property view distance. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPViewDistance(){ return pMPViewDistance; }
+	
+	/** \brief Meta property enable HDRR. */
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableHDRR(){ return pMPEnableHDRR; }
+	
+	/** \brief Meta property enable GI. */
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableGI(){ return pMPEnableGI; }
+	
+	/** \brief Meta property exposure. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPExposure(){ return pMPExposure; }
+	
+	/** \brief Meta property lowest intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLowestIntensity(){ return pMPLowestIntensity; }
+	
+	/** \brief Meta property highest intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPHighestIntensity(){ return pMPHighestIntensity; }
+	
+	/** \brief Meta property adaption time. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdaptionTime(){ return pMPAdaptionTime; }
+	
+	/** \brief Meta property white intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPWhiteIntensity(){ return pMPWhiteIntensity; }
+	
+	/** \brief Meta property bloom intensity. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomIntensity(){ return pMPBloomIntensity; }
+	
+	/** \brief Meta property bloom strength. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomStrength(){ return pMPBloomStrength; }
+	
+	/** \brief Meta property bloom blend. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomBlend(){ return pMPBloomBlend; }
+	
+	/** \brief Meta property bloom size. */
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPBloomSize(){ return pMPBloomSize; }
+	
+	/** \brief Meta property tone map curve. */
+	inline igdeMetaPropertyCurveBezierStorage::Storage &GetMPToneMapCurve(){ return pMPToneMapCurve; }
+	
+	
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	
+	/** \brief Undo system or nullptr. */
+	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	
+	/** \brief Set undo system or nullptr. */
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	/** \brief Meta context. */
 	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
@@ -447,37 +475,37 @@ public:
 	void SetName(const char *name);
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return position; }
+	inline const decDVector &GetPosition() const{ return pMPPosition; }
 	
 	/** \brief Set position. */
 	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation of the camera. */
-	inline const decVector &GetOrientation() const{ return rotation; }
+	inline const decVector &GetOrientation() const{ return pMPRotation; }
 	
 	/** \brief Set orientation of the camera. */
 	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Field of view in radians. */
-	inline float GetFov() const{ return fov; }
+	inline float GetFov() const{ return pMPFov; }
 	
 	/** \brief Set field of view in radians. */
 	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
-	inline float GetFovRatio() const{ return fovRatio; }
+	inline float GetFovRatio() const{ return pMPFovRatio; }
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
 	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
-	inline float GetImageDistance() const{ return imageDistance; }
+	inline float GetImageDistance() const{ return pMPImageDistance; }
 	
 	/** \brief Set distance to the image plane. */
 	void SetImageDistance(float distance);
 	
 	/** \brief View distance. */
-	inline float GetViewDistance() const{ return viewDistance; }
+	inline float GetViewDistance() const{ return pMPViewDistance; }
 	
 	/** \brief Set view distance. */
 	void SetViewDistance(float viewDistance);
@@ -485,37 +513,37 @@ public:
 	
 	
 	/** \brief Enable high definition range rendering (HDRR) if supported. */
-	inline bool GetEnableHDRR() const{ return enableHDRR; }
+	inline bool GetEnableHDRR() const{ return pMPEnableHDRR; }
 	
 	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
 	void SetEnableHDRR(bool enable);
 	
 	/** \brief Exposure. */
-	inline float GetExposure() const{ return exposure; }
+	inline float GetExposure() const{ return pMPExposure; }
 	
 	/** \brief Set exposure. */
 	void SetExposure(float exposure);
 	
 	/** \brief Lowest intensity the eye can adapt to. */
-	inline float GetLowestIntensity() const{ return lowestIntensity; }
+	inline float GetLowestIntensity() const{ return pMPLowestIntensity; }
 	
 	/** \brief Set lowest intensity the eye can adapt to. */
 	void SetLowestIntensity(float lowestIntensity);
 	
 	/** \brief Highest intensity the eye can adapt to. */
-	inline float GetHighestIntensity() const{ return highestIntensity; }
+	inline float GetHighestIntensity() const{ return pMPHighestIntensity; }
 	
 	/** \brief Set highest intensity the eye can adapt to. */
 	void SetHighestIntensity(float highestIntensity);
 	
 	/** \brief Adaption time of the eye in seconds. */
-	inline float GetAdaptionTime() const{ return adaptionTime; }
+	inline float GetAdaptionTime() const{ return pMPAdaptionTime; }
 	
 	/** \brief Set adaption time of the eye in seconds. */
 	void SetAdaptionTime(float adaptionTime);
 	
 	/** \brief Distance of camera to the center point along the view direction. */
-	inline float GetDistance() const{ return distance; }
+	inline float GetDistance() const{ return pMPDistance; }
 	
 	/** \brief Set distance of camera to the center point along the view direction. */
 	void SetDistance(float distance);
@@ -523,7 +551,7 @@ public:
 	
 	
 	/** \brief Enable global illumination (GI) if supported. */
-	inline bool GetEnableGI() const{ return enableGI; }
+	inline bool GetEnableGI() const{ return pMPEnableGI; }
 	
 	/** \brief Set to enable global illumination (GI) if supported. */
 	void SetEnableGI(bool enable);
@@ -534,7 +562,7 @@ public:
 	 * \brief White intensity multiplier.
 	 * \version 1.21
 	 */
-	inline float GetWhiteIntensity() const{ return whiteIntensity; }
+	inline float GetWhiteIntensity() const{ return pMPWhiteIntensity; }
 	
 	/**
 	 * \brief Set white intensity multiplier.
@@ -546,7 +574,7 @@ public:
 	 * \brief Bloom intensity multiplier.
 	 * \version 1.21
 	 */
-	inline float GetBloomIntensity() const{ return bloomIntensity; }
+	inline float GetBloomIntensity() const{ return pMPBloomIntensity; }
 	
 	/**
 	 * \brief Set bloom intensity multiplier.
@@ -558,7 +586,7 @@ public:
 	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	inline float GetBloomStrength() const{ return bloomStrength; }
+	inline float GetBloomStrength() const{ return pMPBloomStrength; }
 	
 	/**
 	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
@@ -570,7 +598,7 @@ public:
 	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	inline float GetBloomBlend() const{ return bloomBlend; }
+	inline float GetBloomBlend() const{ return pMPBloomBlend; }
 	
 	/**
 	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
@@ -582,7 +610,7 @@ public:
 	 * \brief Bloom size as percentage of screen width.
 	 * \version 1.21
 	 */
-	inline float GetBloomSize() const{ return bloomSize; }
+	inline float GetBloomSize() const{ return pMPBloomSize; }
 	
 	/**
 	 * \brief Bloom size as percentage of screen width.
@@ -596,7 +624,7 @@ public:
 	 * \brief Custom tone mapping curve or empty curve to disable.
 	 * \version 1.21
 	 */
-	inline const decCurveBezier &GetToneMapCurve() const{ return toneMapCurve; }
+	inline const decCurveBezier &GetToneMapCurve() const{ return pMPToneMapCurve; }
 	
 	/**
 	 * \brief Set custom tone mapping curve or empty curve to disable.

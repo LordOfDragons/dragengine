@@ -48,23 +48,22 @@ private:
 	aeControllerTarget::Ref pTargetReachRange;
 	aeControllerTarget::Ref pTargetReachCenter;
 	
-public:
-	igdeMetaPropertyVectorStorage::Storage goalPosition;
-	igdeMetaPropertyVectorStorage::Storage goalOrientation;
-	igdeMetaPropertyVectorStorage::Storage localPosition;
-	igdeMetaPropertyVectorStorage::Storage localOrientation;
-	igdeMetaPropertyBooleanStorage::Storage adjustOrientation;
-	igdeMetaPropertyBooleanStorage::Storage useSolverBone;
-	igdeMetaPropertyStringStorage::Storage solverBone;
-	igdeMetaPropertyFloatStorage::Storage reachRange;
-	igdeMetaPropertyStringStorage::Storage reachBone;
-	igdeMetaPropertyVectorStorage::Storage reachCenter;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetGoalPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetGoalOrientation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetLocalPosition;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetLocalOrientation;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetReachRange;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetReachCenter;
+	igdeMetaPropertyVectorStorage::Storage pMPGoalPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPGoalOrientation;
+	igdeMetaPropertyVectorStorage::Storage pMPLocalPosition;
+	igdeMetaPropertyVectorStorageQuaternion::Storage pMPLocalOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPAdjustOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPUseSolverBone;
+	igdeMetaPropertyStringStorage::Storage pMPSolverBone;
+	igdeMetaPropertyFloatStorage::Storage pMPReachRange;
+	igdeMetaPropertyStringStorage::Storage pMPReachBone;
+	igdeMetaPropertyVectorStorage::Storage pMPReachCenter;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetGoalPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetGoalOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetLocalPosition;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetLocalOrientation;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetReachRange;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetReachCenter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -86,44 +85,62 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPGoalPosition(){ return pMPGoalPosition; }
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPGoalOrientation(){ return pMPGoalOrientation; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPLocalPosition(){ return pMPLocalPosition; }
+	inline igdeMetaPropertyVectorStorageQuaternion::Storage &GetMPLocalOrientation(){ return pMPLocalOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPAdjustOrientation(){ return pMPAdjustOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseSolverBone(){ return pMPUseSolverBone; }
+	inline igdeMetaPropertyStringStorage::Storage &GetMPSolverBone(){ return pMPSolverBone; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPReachRange(){ return pMPReachRange; }
+	inline igdeMetaPropertyStringStorage::Storage &GetMPReachBone(){ return pMPReachBone; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPReachCenter(){ return pMPReachCenter; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetGoalPosition(){ return pMPTargetGoalPosition; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetGoalOrientation(){ return pMPTargetGoalOrientation; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLocalPosition(){ return pMPTargetLocalPosition; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLocalOrientation(){ return pMPTargetLocalOrientation; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetReachRange(){ return pMPTargetReachRange; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetReachCenter(){ return pMPTargetReachCenter; }
+	
+	
 	/** Goal position. */
-	inline const decVector &GetGoalPosition() const{ return goalPosition; }
+	inline const decVector &GetGoalPosition() const{ return pMPGoalPosition; }
 	
 	/** Set goal position. */
 	void SetGoalPosition(const decVector &value);
 	
 	/** Goal orientation. */
-	inline const decVector &GetGoalOrientation() const{ return goalOrientation; }
+	inline const decVector &GetGoalOrientation() const{ return pMPGoalOrientation; }
 	
 	/** Set goal orientation. */
 	void SetGoalOrientation(const decVector &value);
 	
 	/** Local position. */
-	inline const decVector &GetLocalPosition() const{ return localPosition; }
+	inline const decVector &GetLocalPosition() const{ return pMPLocalPosition; }
 	
 	/** Set local position. */
 	void SetLocalPosition(const decVector &value);
 	
 	/** Local orientation. */
-	inline const decVector &GetLocalOrientation() const{ return localOrientation; }
+	inline const decVector &GetLocalOrientation() const{ return pMPLocalOrientation; }
 	
 	/** Set local orientation. */
 	void SetLocalOrientation(const decVector &value);
 	
 	/** Adjust orientation. */
-	inline bool GetAdjustOrientation() const{ return adjustOrientation; }
+	inline bool GetAdjustOrientation() const{ return pMPAdjustOrientation; }
 	
 	/** Set if the orientation is adjusted. */
 	void SetAdjustOrientation(bool value);
 	
 	/** Use solver bone to obtain target position and orientation. */
-	inline bool GetUseSolverBone() const{ return useSolverBone; }
+	inline bool GetUseSolverBone() const{ return pMPUseSolverBone; }
 	
 	/** Set if solver bone is used to obtain target position and orientation. */
 	void SetUseSolverBone(bool value);
 	
 	/** Name of the solver bone if used. */
-	inline const decString &GetSolverBone() const{ return solverBone; }
+	inline const decString &GetSolverBone() const{ return pMPSolverBone; }
 	
 	/** Set the name of the solver bone. */
 	void SetSolverBone(const char *boneName);
@@ -131,13 +148,13 @@ public:
 	
 	
 	/** Limit reach in meters. 0 disables reach limit. */
-	inline float GetReachRange() const{ return reachRange; }
+	inline float GetReachRange() const{ return pMPReachRange; }
 	
 	/** Set limit reach in meters. 0 disables reach limit. */
 	void SetReachRange(float range);
 	
 	/** Bone to use as reach origin or an empty string to use a constant position. */
-	inline const decString &GetReachBone() const{ return reachBone; }
+	inline const decString &GetReachBone() const{ return pMPReachBone; }
 	
 	/**
 	 * Set bone to use as reach origin or an empty string to use a constant position.
@@ -146,7 +163,7 @@ public:
 	void SetReachBone(const char *value);
 	
 	/** Reach center if no bone is used. */
-	inline const decVector &GetReachCenter() const{ return reachCenter; }
+	inline const decVector &GetReachCenter() const{ return pMPReachCenter; }
 	
 	/** Set reach center if no bone is used. */
 	void SetReachCenter(const decVector &value);

@@ -75,6 +75,7 @@ public:
 	
 	/** \brief Get value as Euler angles. */
 	inline const decVector &GetEulerAngles() const{ return pEulerAngles; }
+	inline decVector GetEulerAnglesRadians() const{ return pEulerAngles * DEG2RAD; }
 	
 	/** \brief Set value. */
 	void SetQuaternion(const decQuaternion &value, bool notify = true){
@@ -104,6 +105,10 @@ public:
 		if(notify){
 			igdeMetaPropertyStorage<P>::Property().NotifyValueChanged(igdeMetaPropertyStorage<P>::Context());
 		}
+	}
+	
+	void SetEulerAnglesRadians(const decVector &value, bool notify = true){
+		SetEulerAngles(value * RAD2DEG, notify);
 	}
 	
 	/** \brief Set value. */

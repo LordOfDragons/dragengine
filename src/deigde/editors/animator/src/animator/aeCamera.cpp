@@ -43,31 +43,31 @@
 
 aeCamera::aeCamera(aeAnimator &animator, deEngine *engine) :
 igdeCamera(*animator.GetEnvironment(), engine),
-attachToBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachToBone, animator.GetMetaContextView()),
-bone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachBone, animator.GetMetaContextView()),
-relativePosition(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativePosition, animator.GetMetaContextView()),
-relativeRotation(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativeRotation, animator.GetMetaContextView())
+pMPAttachToBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachToBone, animator.GetMetaContextView()),
+pMPBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachBone, animator.GetMetaContextView()),
+pMPRelativePosition(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativePosition, animator.GetMetaContextView()),
+pMPRelativeRotation(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativeRotation, animator.GetMetaContextView())
 {
 	pAnimator = &animator;
 	
 	pFreeDistance = 0.0f;
 	pDirty = false;
 	
-	attachToBone.onValueChanged = [this](){
+	pMPAttachToBone.onValueChanged = [this](){
 		pDirty = true;
 		pAnimator->NotifyCameraChanged();
 	};
 	
-	bone.onValueChanged = [this](){
+	pMPBone.onValueChanged = [this](){
 		pDirty = true;
 		pAnimator->NotifyCameraChanged();
 	};
 	
-	relativePosition.onValueChanged = [this](){
+	pMPRelativePosition.onValueChanged = [this](){
 		pDirty = true;
 		pAnimator->NotifyCameraChanged();
 	};
-	relativeRotation.onValueChanged = relativePosition.onValueChanged;
+	pMPRelativeRotation.onValueChanged = pMPRelativePosition.onValueChanged;
 }
 
 aeCamera::~aeCamera(){
@@ -79,7 +79,7 @@ aeCamera::~aeCamera(){
 ///////////////
 
 void aeCamera::SetBone(const char *value){
-	bone = value;
+	pMPBone = value;
 }
 
 void aeCamera::SetFreePosition(const decDVector &freePosition){
@@ -110,23 +110,23 @@ void aeCamera::SetFreeDistance(float freeDistance){
 }
 
 void aeCamera::SetRelativePosition(const decVector &value){
-	relativePosition = value;
+	pMPRelativePosition = value;
 }
 
 void aeCamera::SetRelativeOrientation(const decVector &value){
-	relativeRotation = value;
+	pMPRelativeRotation = value;
 }
 
 void aeCamera::SetAttachToBone(bool value){
-	attachToBone = value;
+	pMPAttachToBone = value;
 }
 
 void aeCamera::Update(){
 	aeAnimatorLocomotion &locomotion = pAnimator->GetLocomotion();
 	
-	if(pDirty || attachToBone || locomotion.GetEnabled()){
-		if(attachToBone){
-			decMatrix matrix(decMatrix::CreateWorld(relativePosition, relativeRotation));
+	if(pDirty || pMPAttachToBone || locomotion.GetEnabled()){
+		if(pMPAttachToBone){
+			decMatrix matrix(decMatrix::CreateWorld(pMPRelativePosition, pMPRelativeRotation));
 			deComponent *engComponent = pAnimator->GetEngineComponent();
 			
 			if(engComponent){
@@ -134,8 +134,8 @@ void aeCamera::Update(){
 				
 				engComponent->PrepareBones();
 				
-				if(!bone->IsEmpty() && engComponent->GetRig()){
-					const int index = engComponent->GetRig()->IndexOfBoneNamed(bone);
+				if(!pMPBone->IsEmpty() && engComponent->GetRig()){
+					const int index = engComponent->GetRig()->IndexOfBoneNamed(pMPBone);
 					if(index != -1){
 						compMat = engComponent->GetBoneAt(index).GetMatrix();
 					}
@@ -183,12 +183,12 @@ void aeCamera::Reset(){
 	igdeCamera::Reset();
 	
 	pFreeDistance = 5.0f;
-	bone = "";
+	pMPBone = "";
 	pFreePosition.Set(0.0, 1.5, 0.0);
 	pFreeOrientation.Set(0.0f, 180.0f, 0.0f);
-	relativePosition = decVector();
-	relativeRotation = decQuaternion();
-	attachToBone = false;
+	pMPRelativePosition = decVector();
+	pMPRelativeRotation = decQuaternion();
+	pMPAttachToBone = false;
 	
 	SetExposure(1.0f); // 2.0f
 	SetLowestIntensity(20.0f);

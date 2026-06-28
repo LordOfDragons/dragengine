@@ -49,7 +49,7 @@ public:
 	~aeMCPAttachments() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).attachments;
+		return Animator(context).GetMPAttachments();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &attachment, igdeMetaContextItemInfo &info) const override{
@@ -73,7 +73,7 @@ public:
 	~aeMCPAttachment() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).attachment;
+		return Animator(context).GetMPAttachment();
 	}
 };
 
@@ -84,7 +84,7 @@ public:
 	~aeMCPAttachmentName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Attachment(context).name;
+		return Attachment(context).GetMPName();
 	}
 };
 
@@ -101,7 +101,7 @@ public:
 	~aeMCPAttachmentAttachType() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Attachment(context).attachType;
+		return Attachment(context).GetMPAttachType();
 	}
 	
 	void GetChoiceItemInfoEnum(const igdeMetaContext::Ref &context, aeAttachment::eAttachTypes choice, igdeMetaContextItemInfo &info) const override{
@@ -130,12 +130,12 @@ public:
 	~aeMCPAttachmentBoneName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Attachment(context).boneName;
+		return Attachment(context).GetMPBoneName();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
 		const auto animator = Attachment(context).GetAnimator();
-		return animator ? animator->hiddenBoneNames.GetValue() : decStringSet();
+		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
@@ -146,7 +146,7 @@ public:
 	~aeMCPAttachmentWObject() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Attachment(context).wobject;
+		return Attachment(context).GetMPWObject();
 	}
 };
 

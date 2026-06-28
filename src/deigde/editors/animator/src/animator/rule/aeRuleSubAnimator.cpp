@@ -60,54 +60,54 @@
 aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const char *aname) :
 aeRule(windowMain, aeMCRuleSubAnimator::Ref::New(windowMain, this),
 	deAnimatorRuleVisitorIdentify::ertSubAnimator, aname),
-pathSubAnimator(windowMain.GetMCAnimatorProperties().ruleSubAnimator.pathSubAnimator, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-enablePosition(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enablePosition, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-enableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOrientation, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-enableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-enableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleSubAnimator>())
+pMPPathSubAnimator(windowMain.GetMCAnimatorProperties().ruleSubAnimator.pathSubAnimator, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enablePosition, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOrientation, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleSubAnimator>())
 {
-	pathSubAnimator.onValueChanged = [this](){
+	pMPPathSubAnimator.onValueChanged = [this](){
 		NotifyRuleChanged();
 		LoadSubAnimator();
 	};
 	
-	enablePosition.onValueChanged = [this](){
+	pMPEnablePosition.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(enablePosition);
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnablePosition(pMPEnablePosition);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableOrientation.onValueChanged = [this](){
+	pMPEnableOrientation.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(enableOrientation);
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableOrientation(pMPEnableOrientation);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableSize.onValueChanged = [this](){
+	pMPEnableSize.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(enableSize);
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableSize(pMPEnableSize);
 		}
 		NotifyRuleChanged();
 	};
 	
-	enableVertexPositionSet.onValueChanged = [this](){
+	pMPEnableVertexPositionSet.onValueChanged = [this](){
 		if(GetEngineRule()){
-			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(enableVertexPositionSet);
+			((deAnimatorRuleSubAnimator*)GetEngineRule())->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 		}
 		NotifyRuleChanged();
 	};
 }
 
 aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const aeRuleSubAnimator &copy) :
-aeRuleSubAnimator(windowMain, copy.name)
+aeRuleSubAnimator(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
-	enablePosition.SetValue(copy.enablePosition, false);
-	enableOrientation.SetValue(copy.enableOrientation, false);
-	enableSize.SetValue(copy.enableSize, false);
-	enableVertexPositionSet.SetValue(copy.enableVertexPositionSet, false);
+	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
+	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
+	pMPEnableSize.SetValue(copy.pMPEnableSize, false);
+	pMPEnableVertexPositionSet.SetValue(copy.pMPEnableVertexPositionSet, false);
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator() = default;
@@ -117,23 +117,23 @@ aeRuleSubAnimator::~aeRuleSubAnimator() = default;
 ///////////////
 
 void aeRuleSubAnimator::SetPathSubAnimator(const char *value){
-	pathSubAnimator = value;
+	pMPPathSubAnimator = value;
 }
 
 void aeRuleSubAnimator::SetEnablePosition(bool value){
-	enablePosition = value;
+	pMPEnablePosition = value;
 }
 
 void aeRuleSubAnimator::SetEnableOrientation(bool value){
-	enableOrientation = value;
+	pMPEnableOrientation = value;
 }
 
 void aeRuleSubAnimator::SetEnableSize(bool value){
-	enableSize = value;
+	pMPEnableSize = value;
 }
 
 void aeRuleSubAnimator::SetEnableVertexPositionSet(bool value){
-	enableVertexPositionSet = value;
+	pMPEnableVertexPositionSet = value;
 }
 
 void aeRuleSubAnimator::LoadSubAnimator(){
@@ -163,14 +163,14 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	aeAnimator::Ref animator;
 	
 	// try to load the animator
-	if(!pathSubAnimator.GetValue().IsEmpty()){
+	if(!pMPPathSubAnimator->IsEmpty()){
 		parentAnimator->GetLogger()->LogInfoFormat(LOGSOURCE,
-			"Rule Sub Animator: Loading animator %s...", pathSubAnimator.GetValue().GetString());
+			"Rule Sub Animator: Loading animator %s...", pMPPathSubAnimator->GetString());
 		
 		try{
 			// load from file
 			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
-				decPath::AbsolutePathUnix(pathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
+				decPath::AbsolutePathUnix(pMPPathSubAnimator, parentAnimator->GetDirectoryPath()).GetPathUnix());
 			
 			
 			// create animator
@@ -268,10 +268,10 @@ deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
 	
 	pUpdateConnections(*engRule);
 	
-	engRule->SetEnablePosition(enablePosition);
-	engRule->SetEnableOrientation(enableOrientation);
-	engRule->SetEnableSize(enableSize);
-	engRule->SetEnableVertexPositionSet(enableVertexPositionSet);
+	engRule->SetEnablePosition(pMPEnablePosition);
+	engRule->SetEnableOrientation(pMPEnableOrientation);
+	engRule->SetEnableSize(pMPEnableSize);
+	engRule->SetEnableVertexPositionSet(pMPEnableVertexPositionSet);
 	
 	return engRule;
 }

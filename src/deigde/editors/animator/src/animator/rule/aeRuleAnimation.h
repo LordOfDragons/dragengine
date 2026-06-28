@@ -42,14 +42,13 @@ public:
 private:
 	aeControllerTarget::Ref pTargetMoveTime;
 	
-public:
-	igdeMetaPropertyStringStorage::Storage moveName;
-	igdeMetaPropertyFloatStorage::Storage moveTime;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetMoveTime;
+	igdeMetaPropertyStringStorage::Storage pMPMoveName;
+	igdeMetaPropertyFloatStorage::Storage pMPMoveTime;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetMoveTime;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -69,30 +68,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyStringStorage::Storage &GetMPMoveName(){ return pMPMoveName; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPMoveTime(){ return pMPMoveTime; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetMoveTime(){ return pMPTargetMoveTime; }
+	
+	
 	/** Retrieve the name of the animation move. */
-	inline const decString &GetMoveName() const{ return moveName; }
+	inline const decString &GetMoveName() const{ return pMPMoveName; }
 	/** Set the animation move name. */
 	void SetMoveName(const char *value);
 	/** Retrieve the animation move time. */
-	inline float GetMoveTime() const{ return moveTime; }
+	inline float GetMoveTime() const{ return pMPMoveTime; }
 	/** Set the animation move time. */
 	void SetMoveTime(float value);
 	
 	/** Determine if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	/** Determine if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	/** Determine if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Determine if vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);

@@ -48,15 +48,13 @@ private:
 	aeControllerTarget::Ref pTargetMoveTime;
 	aeControllerTarget::Ref pTargetSelect;
 	
-	
-public:
-	igdeMetaPropertyStringListStorage::Storage moves;
-	igdeMetaPropertyBooleanStorage::Storage enablePosition;
-	igdeMetaPropertyBooleanStorage::Storage enableOrientation;
-	igdeMetaPropertyBooleanStorage::Storage enableSize;
-	igdeMetaPropertyBooleanStorage::Storage enableVertexPositionSet;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetMoveTime;
-	igdeMetaPropertyObjectSetStorage<aeLink>::Storage targetSelect;
+	igdeMetaPropertyStringListStorage::Storage pMPMoves;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableOrientation;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableSize;
+	igdeMetaPropertyBooleanStorage::Storage pMPEnableVertexPositionSet;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetMoveTime;
+	igdeMetaPropertyObjectSetStorage<aeLink>::Storage pMPTargetSelect;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -80,8 +78,17 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyStringListStorage::Storage &GetMPMoves(){ return pMPMoves; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnablePosition(){ return pMPEnablePosition; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableOrientation(){ return pMPEnableOrientation; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableSize(){ return pMPEnableSize; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPEnableVertexPositionSet(){ return pMPEnableVertexPositionSet; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetLeadMoveTime(){ return pMPTargetMoveTime; }
+	inline igdeMetaPropertyObjectSetStorage<aeLink>::Storage &GetMPTargetSelect(){ return pMPTargetSelect; }
+	
+	
 	/** Moves. */
-	inline const decStringList &GetMoves() const{ return moves; }
+	inline const decStringList &GetMoves() const{ return pMPMoves; }
 	
 	/** Set moves. */
 	void SetMoves(const decStringList &moves);
@@ -89,25 +96,25 @@ public:
 	
 	
 	/** Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return enablePosition; }
+	inline bool GetEnablePosition() const{ return pMPEnablePosition; }
 	
 	/** Set if position manipulation is enabled. */
 	void SetEnablePosition(bool value);
 	
 	/** Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return enableOrientation; }
+	inline bool GetEnableOrientation() const{ return pMPEnableOrientation; }
 	
 	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation(bool value);
 	
 	/** Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return enableSize; }
+	inline bool GetEnableSize() const{ return pMPEnableSize; }
 	
 	/** Set if size manipulation is enabled. */
 	void SetEnableSize(bool value);
 	
 	/** Vertex position set manipulation is enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return enableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{ return pMPEnableVertexPositionSet; }
 	
 	/** Set if vertex position set manipulation is enabled. */
 	void SetEnableVertexPositionSet(bool value);
