@@ -477,8 +477,8 @@ void meObject::OnGameDefinitionChanged(){
 }
 
 void meObject::OnActiveCameraChanged(){
-	const meCamera * const camera = pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera() : nullptr;
-	pWObject->SetCamera(camera ? camera->GetEngineCamera().Pointer() : nullptr);
+	auto camera = pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera() : igdeCamera::Ref();
+	pWObject->SetCamera(camera ? camera->GetEngineCamera() : deCamera::Ref());
 	SetVisible(!camera || camera != pCamera);
 }
 

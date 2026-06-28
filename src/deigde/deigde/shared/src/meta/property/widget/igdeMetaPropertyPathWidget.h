@@ -31,6 +31,8 @@
 #include "../../../gui/composed/igdeEditPath.h"
 #include "../../../gui/composed/igdeEditPathListener.h"
 
+class deEngine;
+
 
 /**
  * \brief Path meta property widget class able to add itself to a widget holder.
@@ -103,11 +105,60 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	bool IsPropertyValid() const override;
+	
+	/** \brief Load file and return file content information. */
+	decStringDictionary FileContentInformation() const;
 	/*@}*/
 	
 	
 protected:
 	void OnContextChanged() override;
+	
+	void pFileInfo(igdeEnvironment &environment, const igdeMetaContext::Ref &context,
+		deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoAnimation(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoAnimator(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoFont(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoImage(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoLanguagePack(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	void pFileInfoModel(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoNavigationSpace(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoOcclusionMesh(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoParticleEmitter(igdeEnvironment &environment,deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoRig(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	void pFileInfoSkin(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoSky(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoSynthesizer(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoSound(deEngine &engine, const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoVideo(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoSpeechAnimation(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoCamera(igdeEnvironment &environment, deEngine &engine,
+		const decString &path, decStringDictionary &dict) const;
+	
+	void pFileInfoWorld(deEngine &engine, const decString &path, decStringDictionary &dict) const;
 };
 
 #endif

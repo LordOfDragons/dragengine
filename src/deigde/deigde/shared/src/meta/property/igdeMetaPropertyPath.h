@@ -30,6 +30,8 @@
 #include "../../environment/igdeEnvironment.h"
 #include "../../gui/filedialog/igdeFilePattern.h"
 
+#include <dragengine/common/string/decStringDictionary.h>
+
 class igdeMetaPropertyPathUndo;
 
 
@@ -162,6 +164,18 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual decString GetPropertyBasePath(const ContextRef &context) const;
+	
+	/**
+	 * \brief Additional file resource information.
+	 * 
+	 * If supported by subclass the file has to be read and useful information about the file
+	 * content returned. Errors have to be ignored.
+	 * 
+	 * The path meta property produces already file content information for resource files
+	 * supported by the game engine. Subclass has to provide information for custom file formats.
+	 */
+	virtual void FileContentInformation(const ContextRef &context,
+		const decString &path, decStringDictionary &info) const;
 	/*@}*/
 };
 

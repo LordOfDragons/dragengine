@@ -113,6 +113,10 @@ igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(){
 	return igdeMetaPropertyPathWidget::Ref::New(*this);
 }
 
+void igdeMetaPropertyPath::FileContentInformation(const ContextRef&, const decString&,
+decStringDictionary&) const{
+}
+
 
 // igdeMetaPropertyPathStorage
 ////////////////////////////////

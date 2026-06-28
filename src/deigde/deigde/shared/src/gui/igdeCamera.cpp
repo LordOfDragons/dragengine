@@ -25,6 +25,7 @@
 #include "igdeCamera.h"
 #include "igdeCommonDialogs.h"
 #include "igdeUIHelper.h"
+#include "igdeWindow.h"
 #include "../environment/igdeEnvironment.h"
 #include "../loadsave/igdeLoadSaveCamera.h"
 
@@ -78,12 +79,12 @@ igdeClipboard *igdeCamera::MetaContext::GetClipboard() const{
 
 namespace{
 
-class cActionCameraSetDefaultParams : public igdeMetaProperty::Action{
+class cActionSetDefaultParams : public igdeMetaProperty::Action{
 	igdeCamera &pCamera;
 	const float pLowestIntensity, pHighestIntensity, pAdaptionTime;
 	
 public:
-	cActionCameraSetDefaultParams(igdeCamera &camera, igdeWidget &owner,
+	cActionSetDefaultParams(igdeCamera &camera, igdeWidget &owner,
 		const igdeMetaContext::Ref &context, float lowestIntensity,
 		float highestIntensity, float adaptionTime, const char *translationTag) :
 	Action(owner, context, decString::Formatted("@{}", translationTag), nullptr,
@@ -98,12 +99,12 @@ public:
 	}
 };
 
-class cActionCameraLoad : public igdeMetaProperty::Action{
+class cActionLoad : public igdeMetaProperty::Action{
 	igdeCamera &pCamera;
 	
 public:
-	using Ref = deTObjectReference<cActionCameraLoad>;
-	cActionCameraLoad(igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	using Ref = deTObjectReference<cActionLoad>;
+	cActionLoad(igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
 	Action(owner, context, "@Igde.WPCamera.Action.Load",
 		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch),
 		"@Igde.WPCamera.Action.Load.ToolTip"),
@@ -111,7 +112,9 @@ public:
 	
 	void OnAction() override{
 		if(!igdeCommonDialogs::GetFileOpen(GetOwner(), "@Igde.WPCamera.Dialog.OpenCamera.Title",
-		*GetEnvironment().GetFileSystemGame(), igdeCamera::patternCamera, igdeCamera::lastCameraFile)){
+		*GetEnvironment().GetFileSystemGame(),
+		*pCamera.GetEnvironment().GetOpenFilePatternList(igdeEnvironment::efpltCamera),
+		igdeCamera::lastCameraFile)){
 			return;
 		}
 		
@@ -121,12 +124,12 @@ public:
 	}
 };
 
-class cActionCameraSave : public igdeMetaProperty::Action{
-	igdeCamera &pCamera;
+class cActionSave : public igdeMetaProperty::Action{
+	const igdeCamera &pCamera;
 	
 public:
-	using Ref = deTObjectReference<cActionCameraSave>;
-	cActionCameraSave(igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	using Ref = deTObjectReference<cActionSave>;
+	cActionSave(const igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
 	Action(owner, context, "@Igde.WPCamera.Action.Save",
 		owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"@Igde.WPCamera.Action.Save.ToolTip"),
@@ -134,13 +137,48 @@ public:
 	
 	void OnAction() override{
 		if(!igdeCommonDialogs::GetFileSave(GetOwner(), "@Igde.WPCamera.Dialog.SaveCamera.Title",
-		*GetEnvironment().GetFileSystemGame(), igdeCamera::patternCamera, igdeCamera::lastCameraFile)){
+		*GetEnvironment().GetFileSystemGame(),
+		*pCamera.GetEnvironment().GetSaveFilePatternList(igdeEnvironment::efpltCamera),
+		igdeCamera::lastCameraFile)){
 			return;
 		}
 		
 		igdeLoadSaveCamera lscamera(GetEnvironment(), GetOwner().GetLogger(), "IGDE");
 		lscamera.Save(pCamera, GetEnvironment().GetFileSystemGame()->
 			OpenFileForWriting(decPath::CreatePathUnix(igdeCamera::lastCameraFile)));
+	}
+};
+
+class cActionShowInfo : public igdeMetaProperty::Action{
+	const igdeCamera &pCamera;
+	
+public:
+	cActionShowInfo(const igdeCamera &camera, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	Action(owner, context, "@Igde.WPCamera.Action.ShowInfo",
+		nullptr, "@Igde.WPCamera.Action.ShowInfo.ToolTip"),
+	pCamera(camera){}
+	
+	void OnAction() override{
+		const auto &viewMatrix = pCamera.GetViewMatrix();
+		const auto view = viewMatrix.TransformView();
+		const auto up = viewMatrix.TransformUp();
+		const auto right = viewMatrix.TransformRight();
+		
+		decStringDictionary dict;
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.Position",
+			decString::Formatted("({:.4f}, {:.4f}, {:.4f})", pCamera.GetPosition().x,
+				pCamera.GetPosition().y, pCamera.GetPosition().z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.Rotation",
+			decString::Formatted("({:.2f}, {:.2f}, {:.2f})", pCamera.GetOrientation().x,
+				pCamera.GetOrientation().y, pCamera.GetOrientation().z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.ViewForward",
+			decString::Formatted("({:.3f}, {:.3f}, {:.3f})", view.x, view.y, view.z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.ViewUp",
+			decString::Formatted("({:.3f}, {:.3f}, {:.3f})", up.x, up.y, up.z));
+		dict.SetAt("@Igde.WPCamera.Action.ShowInfo.Key.ViewRight",
+			decString::Formatted("({:.3f}, {:.3f}, {:.3f})", right.x, right.y, right.z));
+		
+		igdeCommonDialogs::ShowInformation(*GetOwner().GetParentWindow(), GetText(), dict);
 	}
 };
 
@@ -480,9 +518,6 @@ properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMeta
 /////////////////////
 
 decString igdeCamera::lastCameraFile("Camera.decamera");
-
-const igdeFilePattern::List igdeCamera::patternCamera(igdeFilePattern::List(devctag,
-	igdeFilePattern::Ref::New("@Igde.LoadSaveSystem.FilePattern.Camera", "*.decamera", ".decamera")));
 
 // Constructor, destructor
 ////////////////////////////
@@ -830,18 +865,21 @@ void igdeCamera::AddContextMenuEntries(igdeMenuCascade &menu, igdeWidget &owner)
 	}
 	auto submenu = igdeMenuCascade::Ref::New(env, "@Igde.WPCamera.Action.SetDefault",
 		env.GetStockIcon(igdeEnvironment::esiSearch));
-	helper.MenuCommand(submenu, deTObjectReference<cActionCameraSetDefaultParams>::New(
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
 		*this, owner, pMetaContext, 1.0f, 1.0f, 0.1f, "Igde.WPCamera.Action.SetDefaultIndoor"));
-	helper.MenuCommand(submenu, deTObjectReference<cActionCameraSetDefaultParams>::New(
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
 		*this, owner, pMetaContext, 20.0f, 20.0f, 0.1f, "Igde.WPCamera.Action.SetDefaultDay"));
-	helper.MenuCommand(submenu, deTObjectReference<cActionCameraSetDefaultParams>::New(
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
 		*this, owner, pMetaContext, 0.1f, 0.1f, 0.1f, "Igde.WPCamera.Action.SetDefaultNight"));
-	helper.MenuCommand(submenu, deTObjectReference<cActionCameraSetDefaultParams>::New(
+	helper.MenuCommand(submenu, deTObjectReference<cActionSetDefaultParams>::New(
 		*this, owner, pMetaContext, 1.0f, 20.0f, 0.1f, "Igde.WPCamera.Action.SetDefaultDynamic"));
 	menu.AddChild(submenu);
 	
-	helper.MenuCommand(menu, deTObjectReference<cActionCameraLoad>::New(*this, owner, pMetaContext));
-	helper.MenuCommand(menu, deTObjectReference<cActionCameraSave>::New(*this, owner, pMetaContext));
+	helper.MenuCommand(menu, deTObjectReference<cActionLoad>::New(*this, owner, pMetaContext));
+	helper.MenuCommand(menu, deTObjectReference<cActionSave>::New(*this, owner, pMetaContext));
+	helper.Separator(menu);
+	
+	helper.MenuCommand(menu, deTObjectReference<cActionShowInfo>::New(*this, owner, pMetaContext));
 }
 
 

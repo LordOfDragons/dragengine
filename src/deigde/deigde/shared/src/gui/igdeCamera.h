@@ -33,7 +33,6 @@
 #include "../meta/property/igdeMetaPropertyString.h"
 #include "../meta/property/igdeMetaPropertyCurveBezier.h"
 #include "../meta/property/igdeMetaPropertyGroup.h"
-#include "../gui/filedialog/igdeFilePattern.h"
 #include "../undo/igdeUndoSystem.h"
 
 #include <dragengine/resources/camera/deCamera.h>
@@ -356,9 +355,6 @@ private:
 	igdeMetaPropertyCurveBezierStorage::Storage pMPToneMapCurve;
 	
 public:
-	/** \brief Camera file pattern list. */
-	static const igdeFilePattern::List patternCamera;
-	
 	/** \brief Last used camera file. */
 	static decString lastCameraFile;
 	

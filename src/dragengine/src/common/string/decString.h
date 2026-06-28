@@ -418,6 +418,12 @@ public:
 	/** \brief Compares the string to another string case insensitive returns -1(less), 0(equal) or 1(greater). */
 	int CompareInsensitive(const char *string) const;
 	
+	/** \brief Compare the string to another string using natural order. */
+	int CompareNatural(const decString &string) const;
+	
+	/** \brief Compare the string to another string using natural order. */
+	int CompareNatural(const char *string) const;
+	
 	/** \brief Begins with string. */
 	bool BeginsWith(const decString &string) const;
 	
@@ -532,6 +538,7 @@ public:
 private:
 	int pCompare(const char *string) const;
 	int pCompareInsensitive(const char *string) const;
+	int pCompareNatural(const char *string) const;
 	bool pBeginsWith(const char *string) const;
 	bool pBeginsWithInsensitive(const char *string) const;
 	bool pEndsWith(const char *string) const;
@@ -558,6 +565,22 @@ inline unsigned int DEHash(const char *key){
 inline int DECompare(const char *a, const char *b){
 	return strcmp(a, b);
 }
+
+class DE_DLL_EXPORT decAscendingComparatorStringNatural : public decTComparator<decString>{
+public:
+	decAscendingComparatorStringNatural() = default;
+	int operator() (const decString &a, const decString &b) override{
+		return a.CompareNatural(b);
+	}
+};
+
+class DE_DLL_EXPORT decDescendingComparatorStringNatural : public decTComparator<decString>{
+public:
+	decDescendingComparatorStringNatural() = default;
+	int operator() (const decString &a, const decString &b) override{
+		return b.CompareNatural(a);
+	}
+};
 
 /** \brief Formatter specialization for decString to be used with std::format. */
 template <>

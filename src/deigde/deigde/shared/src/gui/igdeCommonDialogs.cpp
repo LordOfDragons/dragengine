@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeApplication.h"
 #include "igdeCommonDialogs.h"
 #include "igdeWidget.h"
@@ -35,6 +31,8 @@
 #include "dialog/igdeDialog.h"
 #include "dialog/igdeDialogMultilineValue.h"
 #include "layout/igdeContainerFlow.h"
+#include "layout/igdeContainerForm.h"
+#include "layout/igdeContainerScroll.h"
 #include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
@@ -237,4 +235,32 @@ deVirtualFileSystem &vfs, decString &dirname){
 bool igdeCommonDialogs::SelectSystemFont(igdeWidget &owner, const char *title,
 igdeFont::sConfiguration &config){
 	return igdeNativeCommonDialogs::SelectSystemFont(owner, title, config);
+}
+
+void igdeCommonDialogs::ShowInformation(igdeWidget &owner, const char *title,
+const decStringDictionary &info){
+	auto &environment = owner.GetEnvironment();
+	auto &helper = environment.GetUIHelper();
+	auto dialog = igdeDialog::Ref::New(environment, title);
+	
+	dialog->SetSize(igdeApplication::app().DisplayScaled(decPoint(350,
+		(int)decMath::linearStep((float)info.GetCount(), 5.0f, 20.0f, 160.0f, 440.0f))));
+	
+	auto content = igdeContainerScroll::Ref::New(environment, false, true);
+	
+	auto form = igdeContainerForm::Ref::New(environment);
+	info.GetKeys().GetSorted(decAscendingComparatorStringNatural()).Visit([&](const decString &key){
+		igdeTextField::Ref textField;
+		helper.EditString(form, key, "", 20, textField, {});
+		textField->SetText(info[key]);
+		textField->SetEditable(false);
+	});
+	content->AddChild(form);
+	
+	igdeContainer::Ref buttonBar;
+	dialog->CreateButtonBar(buttonBar, "@Igde.Close");
+	
+	dialog->AddContent(content, buttonBar);
+	
+	dialog->Run(&owner);
 }
