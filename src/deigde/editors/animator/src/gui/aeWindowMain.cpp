@@ -1485,6 +1485,7 @@ void aeWindowMain::pUpdateMetaContexts(){
 	data.Add(pAnimator ? pAnimator->GetMetaContextController() : aeMCAnimatorController::Ref::New(*this, nullptr));
 	data.Add(pAnimator ? pAnimator->GetMetaContextLink() : aeMCAnimatorLink::Ref::New(*this, nullptr));
 	data.Add(pAnimator ? pAnimator->GetMetaContextRule() : aeMCAnimatorRule::Ref::New(*this, nullptr));
+	data.Add(pAnimator ? pAnimator->GetMetaContextPlayground() : aeMCAnimatorPlayground::Ref::New(*this, nullptr));
 	data.Add(pAnimator ? pAnimator->GetMetaContextView() : aeMCAnimatorView::Ref::New(*this, nullptr));
 	// playground, undo?
 	SetMetaContexts(list);

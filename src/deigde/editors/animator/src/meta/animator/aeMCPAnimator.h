@@ -30,13 +30,15 @@
 #include "../../animator/aeSubAnimator.h"
 
 #include <deigde/meta/igdeMetaContextItemInfo.h>
-#include <deigde/meta/property/igdeMetaPropertyContext.h>
-#include <deigde/meta/property/igdeMetaPropertyPath.h>
-#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
-#include <deigde/meta/property/igdeMetaPropertyString.h>
-#include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyGroup.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertySliderBoard.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
@@ -139,6 +141,19 @@ public:
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
+};
+
+
+/** Playground controllers. */
+class aeMCPAnimatorPlaygroundControllers : public aeTMCPAnimatorNoCapture<igdeMetaPropertySliderBoardStorage<aeMCController>>{
+public:
+	aeMCPAnimatorPlaygroundControllers(igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue) :
+		aeTMCPAnimatorNoCapture("animator.playgroundControllers", propertyName, propertyValue){}
+	~aeMCPAnimatorPlaygroundControllers() override = default;
+	
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
+		return Animator(context).GetMPPlayground();
+	}
 };
 
 

@@ -347,6 +347,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveAttachmentConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorLocomotionLegProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorLocomotionProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAttachment.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAttachmentProperties.cpp" />
@@ -355,6 +357,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLink.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLinkProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimatorLocomotion.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAttachment.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPLink.cpp" />
@@ -647,6 +650,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveAttachmentConfig.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\loadsave\aeLoadSaveSystem.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorLocomotionLegProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorLocomotionProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAnimatorProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAttachment.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCAttachmentProperties.h" />
@@ -656,6 +661,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCLinkProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCListeners.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimator.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAnimatorLocomotion.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPAttachment.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPController.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\meta\animator\aeMCPLink.h" />

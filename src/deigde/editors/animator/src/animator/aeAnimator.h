@@ -36,16 +36,20 @@
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/igdeWSky.h>
-#include <deigde/meta/property/igdeMetaPropertyContext.h>
-#include <deigde/meta/property/igdeMetaPropertyPath.h>
-#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
-#include <deigde/meta/property/igdeMetaPropertyString.h>
-#include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyInteger.h>
 #include <deigde/meta/property/igdeMetaPropertyList.h>
 #include <deigde/meta/property/igdeMetaPropertyObject.h>
-#include <deigde/meta/property/igdeMetaPropertyTreeList.h>
+#include <deigde/meta/property/igdeMetaPropertyPath.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
 #include <deigde/meta/property/igdeMetaPropertySet.h>
+#include <deigde/meta/property/igdeMetaPropertySliderBoard.h>
+#include <deigde/meta/property/igdeMetaPropertyString.h>
+#include <deigde/meta/property/igdeMetaPropertyStringSet.h>
+#include <deigde/meta/property/igdeMetaPropertyTreeList.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
 #include <deigde/utils/igdeUniqueNameGenerator.h>
 
 #include <dragengine/deObject.h>
@@ -124,6 +128,7 @@ private:
 	aeMCAnimatorController::Ref pMetaContextController;
 	aeMCAnimatorLink::Ref pMetaContextLink;
 	aeMCAnimatorRule::Ref pMetaContextRule;
+	aeMCAnimatorPlayground::Ref pMetaContextPlayground;
 	aeMCAnimatorAttachment::Ref pMetaContextAttachment;
 	aeMCAnimatorView::Ref pMetaContextView;
 	
@@ -170,6 +175,8 @@ private:
 	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList pMPAllowedListControllers;
 	
+	igdeMetaPropertySliderBoardStorage<aeMCController>::Storage pMPPlaygroundControllers;
+	
 	igdeMetaPropertyPathStorage::Storage pMPDisplayModelPath, pMPDisplaySkinPath, pMPDisplayRigPath;
 	
 	igdeMetaPropertyPathStorage::Storage pMPBaseAnimatorPath;
@@ -212,6 +219,7 @@ public:
 	inline aeMCAnimatorController::Ref &GetMetaContextController(){ return pMetaContextController; }
 	inline aeMCAnimatorLink::Ref &GetMetaContextLink(){ return pMetaContextLink; }
 	inline aeMCAnimatorRule::Ref &GetMetaContextRule(){ return pMetaContextRule; }
+	inline aeMCAnimatorPlayground::Ref &GetMetaContextPlayground(){ return pMetaContextPlayground; }
 	inline aeMCAnimatorAttachment::Ref &GetMetaContextAttachment(){ return pMetaContextAttachment; }
 	inline aeMCAnimatorView::Ref &GetMetaContextView(){ return pMetaContextView; }
 	
@@ -235,6 +243,8 @@ public:
 	inline igdeMetaPropertyContextStorage::Storage &GetMPRule(){ return pMPRule; }
 	
 	inline igdeMetaPropertyObjectType<aeController>::ObjectTypeList &GetMPAllowedListControllers(){ return pMPAllowedListControllers; }
+	
+	inline igdeMetaPropertySliderBoardStorage<aeMCController>::Storage &GetMPPlayground(){ return pMPPlaygroundControllers; }
 	
 	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplayModelPath(){ return pMPDisplayModelPath; }
 	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplaySkinPath(){ return pMPDisplaySkinPath; }
@@ -634,6 +644,7 @@ private:
 	void pUpdateEngineControllers();
 	void pUpdateDDSBones();
 	void pUpdateRuleIndices();
+	void pUpdatePlaygroundControllers();
 	
 	void pUpdateHiddenBoneNames();
 	void pUpdateHiddenVertexPositionSetNames();

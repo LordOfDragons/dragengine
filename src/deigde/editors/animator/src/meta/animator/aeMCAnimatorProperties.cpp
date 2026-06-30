@@ -31,7 +31,8 @@ aeMCAnimatorProperties::aeMCAnimatorProperties(aeWindowMain &windowMain) :
 controller(windowMain),
 link(windowMain),
 rule(windowMain),
-attachment(windowMain)
+attachment(windowMain),
+locomotionLeg(windowMain)
 {
 	Init();
 }
@@ -66,6 +67,18 @@ void aeMCAnimatorProperties::Init(){
 	ruleStateSnapshot.Init(*this);
 	ruleSubAnimator.Init(*this);
 	ruleTrackTo.Init(*this);
+	
+	locomotion.Init(*this);
+	locomotionLeg.Init();
+	
+	playgroundControllers = deTObjectReference<aeMCPAnimatorPlaygroundControllers>::New(controller.name, controller.currentValue);
+	metaPropertiesPlayground->GetData() += decTObjectOrderedSet<igdeMetaProperty>(devctag,
+		playgroundControllers,
+		locomotion.groupTesting,
+		locomotion.groupMovementSpeeds,
+		locomotion.groupAdjustmentTimes,
+		locomotion.groupLegs,
+		locomotion.groupVisualization);
 	
 	igdeMetaPropertyAdapter::OnChanged(hiddenBoneNames, cameraAttachBone);
 	

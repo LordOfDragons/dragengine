@@ -24,6 +24,7 @@
 
 #include "aeMCAnimator.h"
 #include "../../animator/aeAnimator.h"
+#include "../../animator/locomotion/aeAnimatorLocomotionLeg.h"
 #include "../../gui/aeWindowMain.h"
 
 #include <dragengine/common/exceptions.h>
@@ -118,6 +119,19 @@ aeMCAnimator(windowMain, animator, "animator_rule"){
 aeMCAnimatorRule::~aeMCAnimatorRule() = default;
 
 
+// Class aeMCAnimatorPlayground
+/////////////////////////////////
+
+aeMCAnimatorPlayground::aeMCAnimatorPlayground(aeWindowMain &windowMain, aeAnimator *animator) :
+aeMCAnimator(windowMain, animator, "animator_playground"){
+	SetLabel("Playground");
+	SetDescription("Playground");
+	SetProperties(windowMain.GetMCAnimatorProperties().metaPropertiesPlayground);
+}
+
+aeMCAnimatorPlayground::~aeMCAnimatorPlayground() = default;
+
+
 // Class aeMCAnimatorView
 ///////////////////////////
 
@@ -142,3 +156,47 @@ aeMCAnimator(windowMain, animator, "animator_attachment"){
 }
 
 aeMCAnimatorAttachment::~aeMCAnimatorAttachment() = default;
+
+
+// Class aeMCAnimatorLocomotionLeg
+////////////////////////////////////
+
+aeMCAnimatorLocomotionLeg::aeMCAnimatorLocomotionLeg(aeWindowMain &windowMain, aeAnimatorLocomotionLeg *leg) :
+igdeMetaContext("animator_locomotion_leg"),
+pWindowMain(windowMain),
+pLeg(leg)
+{
+	SetLabel("Locomotion Leg");
+	SetDescription("Locomotion leg properties");
+	SetProperties(windowMain.GetMCAnimatorProperties().locomotionLeg.metaProperties);
+}
+
+aeMCAnimatorLocomotionLeg::~aeMCAnimatorLocomotionLeg() = default;
+
+
+// Management
+///////////////
+
+aeAnimatorLocomotionLeg &aeMCAnimatorLocomotionLeg::GetLegRef() const{
+	DEASSERT_NOTNULL(pLeg)
+	return *pLeg;
+}
+
+aeMCAnimatorLocomotionLeg::Ref aeMCAnimatorLocomotionLeg::Capture() const{
+	auto context = Ref::New(pWindowMain, pLeg);
+	context->pGuardLeg = pLeg;
+	return context;
+}
+
+igdeEnvironment &aeMCAnimatorLocomotionLeg::GetEnvironment() const{
+	return pWindowMain.GetEnvironment();
+}
+
+igdeUndoSystem *aeMCAnimatorLocomotionLeg::GetUndoSystem() const{
+	return pLeg && pLeg->GetLocomotion() && pLeg->GetLocomotion()->GetAnimator()
+		? pLeg->GetLocomotion()->GetAnimator()->GetUndoSystem() : nullptr;
+}
+
+igdeClipboard *aeMCAnimatorLocomotionLeg::GetClipboard() const{
+	return &pWindowMain.GetClipboard();
+}

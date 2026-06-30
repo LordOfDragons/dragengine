@@ -30,8 +30,16 @@
 #include "aeALColliderListener.h"
 #include "aeALTouchSensorListener.h"
 #include "aeALGroundChecker.h"
+#include "../../meta/animator/aeMCAnimator.h"
 
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyInteger.h>
+#include <deigde/meta/property/igdeMetaPropertyBoolean.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
+#include <deigde/meta/property/igdeMetaPropertySelection.h>
+#include <deigde/meta/property/igdeMetaPropertyList.h>
+#include <deigde/meta/property/igdeMetaPropertyContext.h>
 
 #include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
@@ -147,6 +155,27 @@ public:
 	
 	
 private:
+	igdeMetaPropertyFloatStorage::Storage pMPLimitLookDown;
+	igdeMetaPropertyFloatStorage::Storage pMPLimitLookUp;
+	igdeMetaPropertyFloatStorage::Storage pMPLimitLookLeft;
+	igdeMetaPropertyFloatStorage::Storage pMPLimitLookRight;
+	igdeMetaPropertyFloatStorage::Storage pMPSpeedWalk;
+	igdeMetaPropertyFloatStorage::Storage pMPSpeedRun;
+	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeUD;
+	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeLR;
+	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeStance;
+	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeOrientation;
+	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeVelocity;
+	igdeMetaPropertyFloatStorage::Storage pMPAdjustTimeTurnIP;
+	igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage pMPLocomotionType;
+	igdeMetaPropertyFloatStorage::Storage pMPLegBlendTime;
+	igdeMetaPropertyIntegerStorage::Storage pMPUseLegPairs;
+	igdeMetaPropertyIntegerStorage::Storage pMPLegIndex;
+	igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>::Storage pMPLegs;
+	igdeMetaPropertyContextStorage::Storage pMPLeg;
+	igdeMetaPropertyBooleanStorage::Storage pMPShowShapes;
+	igdeMetaPropertyBooleanStorage::Storage pMPUseFoGIK;
+	
 	aeAnimator *pAnimator;
 	
 	deDebugDrawer::Ref pDebugDrawer;
@@ -204,29 +233,12 @@ private:
 	float pDragonFootSpread;
 	float pDragonFootRadius;
 	
-	LegList pLegs;
-	int pUseLegPairCount;
-	float pLegBlendTime;
 	deColliderVolume *pLegGCCollider;
 	float pLegGCColliderRadius;
 	
-	eLocomotionTypes pLocomotionType;
-	
-	float pLimitLookDown;
-	float pLimitLookUp;
 	decSmoothFloat pLookUpDown;
-	
-	float pLimitLookRight;
-	float pLimitLookLeft;
 	decSmoothFloat pLookLeftRight;
-	
 	float pTurnLeftRight;
-	
-	float pAdjustTimeTurnIP;
-	
-	float pSpeedWalk;
-	float pSpeedRun;
-	
 	decDVector pPosition;
 	decSmoothFloat pOrientation;
 	float pTurnVelocity;
@@ -255,7 +267,6 @@ private:
 	bool pToggleRun;
 	
 	bool pEnabled;
-	bool pUseFoGIK;
 	
 	bool pIsMoving;
 	bool pIsTurningIP;
@@ -265,13 +276,35 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a animator locomotion. */
-	aeAnimatorLocomotion(aeAnimator *animator);
+	explicit aeAnimatorLocomotion(aeAnimator *animator);
 	/** Cleans up the animator locomotion. */
 	~aeAnimatorLocomotion();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookDown(){ return pMPLimitLookDown; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookUp(){ return pMPLimitLookUp; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookLeft(){ return pMPLimitLookLeft; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLimitLookRight(){ return pMPLimitLookRight; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPSpeedWalk(){ return pMPSpeedWalk; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPSpeedRun(){ return pMPSpeedRun; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeUD(){ return pMPAdjustTimeUD; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeLR(){ return pMPAdjustTimeLR; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeStance(){ return pMPAdjustTimeStance; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeOrientation(){ return pMPAdjustTimeOrientation; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeVelocity(){ return pMPAdjustTimeVelocity; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPAdjustTimeTurnIP(){ return pMPAdjustTimeTurnIP; }
+	inline igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage &GetMPLocomotionType(){ return pMPLocomotionType; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLegBlendTime(){ return pMPLegBlendTime; }
+	inline igdeMetaPropertyIntegerStorage::Storage &GetMPUseLegPairs(){ return pMPUseLegPairs; }
+	inline igdeMetaPropertyListStorage<aeAnimatorLocomotionLeg>::Storage &GetMPLegs(){ return pMPLegs; }
+	inline igdeMetaPropertyIntegerStorage::Storage &GetMPLegIndex(){ return pMPLegIndex; }
+	inline igdeMetaPropertyContextStorage::Storage &GetMPLeg(){ return pMPLeg; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPShowShapes(){ return pMPShowShapes; }
+	inline igdeMetaPropertyBooleanStorage::Storage &GetMPUseFoGIK(){ return pMPUseFoGIK; }
+	
+	
 	/** Resets the locomotion system for a new simulation round. */
 	void Reset();
 	
@@ -310,42 +343,38 @@ public:
 	inline const deColliderVolume::Ref &GetTGCollider() const{ return pTGCollider; }
 	
 	/** Locomotion type. */
-	inline eLocomotionTypes GetLocomotionType() const{ return pLocomotionType; }
+	inline eLocomotionTypes GetLocomotionType() const{ return pMPLocomotionType; }
 	/** Set locomotion type. */
 	void SetLocomotionType(eLocomotionTypes type);
 	
 	/** Legs. */
-	LegList &GetLegs(){ return pLegs; }
-	const LegList &GetLegs() const{ return pLegs; }
+	const LegList &GetLegs() const{ return pMPLegs; }
 	
 	/** Retrieves the number of leg pairs to use. */
-	inline int GetUseLegPairCount() const{ return pUseLegPairCount; }
+	inline int GetUseLegPairCount() const{ return pMPUseLegPairs; }
 	/** Sets the number of leg pairs to use. */
 	void SetUseLegPairCount(int pairCount);
 	/** Retrieves the leg blend time in seconds. */
-	inline float GetLegBlendTime() const{ return pLegBlendTime; }
+	inline float GetLegBlendTime() const{ return pMPLegBlendTime; }
 	/** Sets the leg blend time in seconds. */
 	void SetLegBlendTime(float time);
 	
 	
 	
 	/** Look down limit in degrees. */
-	inline float GetLimitLookDown() const{ return pLimitLookDown; }
-	
+	inline float GetLimitLookDown() const{ return pMPLimitLookDown; }
 	/** Set look down limit in degrees. */
 	void SetLimitLookDown(float degrees);
 	
 	/** Look up limit in degrees. */
-	inline float GetLimitLookUp() const{ return pLimitLookUp; }
-	
+	inline float GetLimitLookUp() const{ return pMPLimitLookUp; }
 	/** Set look up limit in degrees. */
 	void SetLimitLookUp(float degrees);
 	
 	/** Look up down angle in degrees. */
 	inline decSmoothFloat &GetLookUpDown(){ return pLookUpDown; }
 	inline const decSmoothFloat &GetLookUpDown() const{ return pLookUpDown; }
-	
-	/** Set look up down angle in degrees clamped to range. */
+	inline float GetLookUpDownValue() const{ return pMPAdjustTimeUD; }
 	void SetLookUpDown(float degrees);
 	
 	/** Set look up down goal angle in degrees clamped to range. */
@@ -354,13 +383,13 @@ public:
 	
 	
 	/** Look left limit in degrees. */
-	inline float GetLimitLookLeft() const{ return pLimitLookLeft; }
+	inline float GetLimitLookLeft() const{ return pMPLimitLookLeft; }
 	
 	/** Set look left limit in degrees. */
 	void SetLimitLookRight(float degrees);
 	
 	/** Look right limit in degrees. */
-	inline float GetLimitLookRight() const{ return pLimitLookRight; }
+	inline float GetLimitLookRight() const{ return pMPLimitLookRight; }
 	
 	/** Set look right limit in degrees. */
 	void SetLimitLookLeft(float degrees);
@@ -372,7 +401,7 @@ public:
 	
 	
 	/** Adjustment speed for turning in place. */
-	inline float GetAdjustTimeTurnIP() const{ return pAdjustTimeTurnIP; }
+	inline float GetAdjustTimeTurnIP() const{ return pMPAdjustTimeTurnIP; }
 	
 	/** Set adjustment speed for turning in place. */
 	void SetAdjustTimeTurnIP(float adjustTime);
@@ -380,11 +409,11 @@ public:
 	
 	
 	/** Retrieves the walk speed. */
-	inline float GetWalkSpeed() const{ return pSpeedWalk; }
+	inline float GetWalkSpeed() const{ return pMPSpeedWalk; }
 	/** Sets the walk speed. */
 	void SetWalkSpeed(float speed);
 	/** Retrieves the run speed. */
-	inline float GetRunSpeed() const{ return pSpeedRun; }
+	inline float GetRunSpeed() const{ return pMPSpeedRun; }
 	/** Sets the run speed. */
 	void SetRunSpeed(float speed);
 	
@@ -519,7 +548,7 @@ public:
 	/** Sets if the locomotion testing is enabled. */
 	void SetEnabled(bool enabled);
 	/** Determines if the feet-on-ground IK is used. */
-	inline bool GetUseFoGIK() const{ return pUseFoGIK; }
+	inline bool GetUseFoGIK() const{ return pMPUseFoGIK; }
 	/** Sets if the feet-on-ground IK is used. */
 	void SetUseFoGIK(bool use);
 	/*@}*/
@@ -539,6 +568,7 @@ private:
 	void pCheckLookingRangeViolation(float &adjustOrientation);
 	void pUpdateLinearVelocity(float elapsed);
 	void pUpdateStance(float elapsed);
+	void pUseLegPairCountChanged();
 };
 
 #endif

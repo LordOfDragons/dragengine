@@ -28,6 +28,7 @@
 #include <deigde/meta/igdeMetaContext.h>
 
 class aeAnimator;
+class aeAnimatorLocomotionLeg;
 class aeWindowMain;
 
 
@@ -108,6 +109,13 @@ public:
 	~aeMCAnimatorRule() override;
 };
 
+class aeMCAnimatorPlayground : public aeMCAnimator{
+public:
+	using Ref = deTObjectReference<aeMCAnimatorPlayground>;
+	aeMCAnimatorPlayground(aeWindowMain &windowMain, aeAnimator *animator);
+	~aeMCAnimatorPlayground() override;
+};
+
 class aeMCAnimatorView : public aeMCAnimator{
 public:
 	using Ref = deTObjectReference<aeMCAnimatorView>;
@@ -120,6 +128,56 @@ public:
 	using Ref = deTObjectReference<aeMCAnimatorAttachment>;
 	aeMCAnimatorAttachment(aeWindowMain &windowMain, aeAnimator *animator);
 	~aeMCAnimatorAttachment() override;
+};
+
+class aeMCAnimatorLocomotionLeg : public igdeMetaContext{
+public:
+	using Ref = deTObjectReference<aeMCAnimatorLocomotionLeg>;
+	
+private:
+	aeWindowMain &pWindowMain;
+	aeAnimatorLocomotionLeg *pLeg;
+	deTObjectReference<aeAnimatorLocomotionLeg> pGuardLeg;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create locomotion leg meta context. */
+	explicit aeMCAnimatorLocomotionLeg(aeWindowMain &windowMain, aeAnimatorLocomotionLeg *leg);
+	
+protected:
+	/**
+	 * Clean up object.
+	 */
+	virtual ~aeMCAnimatorLocomotionLeg() override;
+	/*@}*/
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Window main. */
+	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
+	/** Leg. */
+	inline aeAnimatorLocomotionLeg *GetLeg() const{ return pLeg; }
+	
+	/** Leg reference. */
+	aeAnimatorLocomotionLeg &GetLegRef() const;
+	
+	/** Capture context. */
+	Ref Capture() const;
+	
+	/** Environment. */
+	igdeEnvironment &GetEnvironment() const override;
+	
+	/** Undo system or nullptr to apply actions immediately. */
+	igdeUndoSystem *GetUndoSystem() const override;
+	
+	/** \brief Clipboard or nullptr if not supported. */
+	igdeClipboard *GetClipboard() const override;
+	/*@}*/
 };
 
 #endif

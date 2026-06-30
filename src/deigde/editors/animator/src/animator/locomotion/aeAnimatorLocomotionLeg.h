@@ -29,10 +29,14 @@
 // includes
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
+#include <deigde/meta/property/igdeMetaPropertyFloat.h>
+#include <deigde/meta/property/igdeMetaPropertyVector.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/common/math/decMath.h>
+
+#include "../../meta/animator/aeMCAnimator.h"
 
 // predefinitions
 class aeAnimatorLocomotion;
@@ -52,19 +56,19 @@ public:
 	
 private:
 	aeAnimatorLocomotion *pLocomotion;
+	aeMCAnimatorLocomotionLeg::Ref pMetaContext;
+	
+	igdeMetaPropertyFloatStorage::Storage pMPLiftOffTime;
+	igdeMetaPropertyFloatStorage::Storage pMPPutDownTime;
+	igdeMetaPropertyVectorStorage::Storage pMPPutDownPosStand;
+	igdeMetaPropertyVectorStorage::Storage pMPPutDownPosWalk;
+	igdeMetaPropertyVectorStorage::Storage pMPPutDownPosRun;
 	
 	igdeWDebugDrawerShape::Ref pDDSLocked;
 	igdeWCoordSysArrows pDDSLockedCF;
 	igdeWDebugDrawerShape::Ref pDDSPredict;
 	
 	decString pName;
-	
-	decVector pPutDownPosStand;
-	decVector pPutDownPosWalk;
-	decVector pPutDownPosRun;
-	
-	float pLiftOffTime;
-	float pPutDownTime;
 	
 	bool pPositionLocked;
 	decDVector pLockedPosition;
@@ -99,30 +103,42 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline const aeMCAnimatorLocomotionLeg::Ref &GetMetaContext() const{ return pMetaContext; }
+	
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPLiftOffTime(){ return pMPLiftOffTime; }
+	inline igdeMetaPropertyFloatStorage::Storage &GetMPPutDownTime(){ return pMPPutDownTime; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPPutDownPosStand(){ return pMPPutDownPosStand; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPPutDownPosWalk(){ return pMPPutDownPosWalk; }
+	inline igdeMetaPropertyVectorStorage::Storage &GetMPPutDownPosRun(){ return pMPPutDownPosRun; }
+	
+	
+	/** Locomotion */
+	inline aeAnimatorLocomotion *GetLocomotion() const{ return pLocomotion; }
+	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Sets the name. */
 	void SetName(const char *name);
 	
 	/** Retrieves the stand put down position. */
-	inline const decVector &GetPutDownPositionStand() const{ return pPutDownPosStand; }
+	inline const decVector &GetPutDownPositionStand() const{ return pMPPutDownPosStand; }
 	/** Sets the stand put down position. */
 	void SetPutDownPositionStand(const decVector &position);
 	/** Retrieves the walk put down position. */
-	inline const decVector &GetPutDownPositionWalk() const{ return pPutDownPosWalk; }
+	inline const decVector &GetPutDownPositionWalk() const{ return pMPPutDownPosWalk; }
 	/** Sets the walk put down position. */
 	void SetPutDownPositionWalk(const decVector &position);
 	/** Retrieves the run put down position. */
-	inline const decVector &GetPutDownPositionRun() const{ return pPutDownPosRun; }
+	inline const decVector &GetPutDownPositionRun() const{ return pMPPutDownPosRun; }
 	/** Sets the run put down position. */
 	void SetPutDownPositionRun(const decVector &position);
 	
 	/** Retrieves the lift off time. */
-	inline float GetLiftOffTime() const{ return pLiftOffTime; }
+	inline float GetLiftOffTime() const{ return pMPLiftOffTime; }
 	/** Sets the lift off time. */
 	void SetLiftOffTime(float time);
 	/** Retrieves the put down time. */
-	inline float GetPutDownTime() const{ return pPutDownTime; }
+	inline float GetPutDownTime() const{ return pMPPutDownTime; }
 	/** Sets the put down time. */
 	void SetPutDownTime(float time);
 	

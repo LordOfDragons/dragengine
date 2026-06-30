@@ -32,8 +32,10 @@
 #include "aeAnimatorLocomotionLeg.h"
 #include "../aeAnimator.h"
 #include "../aeSubAnimator.h"
+#include "../../gui/aeWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/meta/igdeMetaContext.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -68,6 +70,27 @@
 ////////////////////////////
 
 aeAnimatorLocomotion::aeAnimatorLocomotion(aeAnimator *animator) :
+pMPLimitLookDown(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.limitLookDown, animator->GetMetaContextPlayground()),
+pMPLimitLookUp(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.limitLookUp, animator->GetMetaContextPlayground()),
+pMPLimitLookLeft(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.limitLookLeft, animator->GetMetaContextPlayground()),
+pMPLimitLookRight(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.limitLookRight, animator->GetMetaContextPlayground()),
+pMPSpeedWalk(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.speedWalk, animator->GetMetaContextPlayground()),
+pMPSpeedRun(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.speedRun, animator->GetMetaContextPlayground()),
+pMPAdjustTimeUD(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.adjustTimeUpDown, animator->GetMetaContextPlayground()),
+pMPAdjustTimeLR(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.adjustTimeLeftRight, animator->GetMetaContextPlayground()),
+pMPAdjustTimeStance(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.adjustTimeStance, animator->GetMetaContextPlayground()),
+pMPAdjustTimeOrientation(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.adjustTimeOrientation, animator->GetMetaContextPlayground()),
+pMPAdjustTimeVelocity(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.adjustTimeVelocity, animator->GetMetaContextPlayground()),
+pMPAdjustTimeTurnIP(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.adjustTimeTurnIP, animator->GetMetaContextPlayground()),
+pMPLocomotionType(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.type, animator->GetMetaContextPlayground()),
+pMPLegBlendTime(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.legBlendTime, animator->GetMetaContextPlayground()),
+pMPUseLegPairs(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.useLegPairs, animator->GetMetaContextPlayground()),
+pMPLegIndex(animator->GetWindowMain().GetMCAnimatorProperties().locomotionLeg.legIndex, animator->GetMetaContextPlayground()),
+pMPLegs(animator->GetWindowMain().GetMCAnimatorProperties().locomotionLeg.legs, animator->GetMetaContextPlayground()),
+pMPLeg(animator->GetWindowMain().GetMCAnimatorProperties().locomotionLeg.leg, animator->GetMetaContextPlayground()),
+pMPShowShapes(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.showShapes, animator->GetMetaContextPlayground()),
+pMPUseFoGIK(animator->GetWindowMain().GetMCAnimatorProperties().locomotion.useFoGIK, animator->GetMetaContextPlayground()),
+
 pAnimator(animator),
 pColliderPosition(0.0f, 0.4f, 0.0f),
 pColliderRadius(0.4f),
@@ -102,25 +125,9 @@ pDragonFootBack(-0.6f),
 pDragonFootSpread(0.2f),
 pDragonFootRadius(0.2f),
 
-pUseLegPairCount(1),
-pLegBlendTime(0.0f),
 pLegGCCollider(nullptr),
 pLegGCColliderRadius(0.05f),
-
-pLocomotionType(eltNatural),
-
-pLimitLookDown(-90.0f),
-pLimitLookUp(90.0f),
-
-pLimitLookRight(90.0f),
-pLimitLookLeft(-90.0f),
-
 pTurnLeftRight(0.0f),
-
-pAdjustTimeTurnIP(1.0f),
-
-pSpeedWalk(1.25f),
-pSpeedRun(4.0f),
 
 pPosition(),
 pTurnVelocity(0.0f),
@@ -144,7 +151,6 @@ pToggleCrouch(false),
 pToggleRun(false),
 
 pEnabled(false),
-pUseFoGIK(false),
 
 pIsMoving(false),
 pIsTurningIP(false),
@@ -165,7 +171,7 @@ pTurnIP(0.0f)
 	pOrientation.SetAdjustRange(90.0f);
 	pOrientation.SetAdjustTime(1.0f);
 	
-	pLinearVelocity.SetAdjustRange(pSpeedRun);
+	pLinearVelocity.SetAdjustRange(pMPSpeedRun);
 	pLinearVelocity.SetAdjustTime(0.5f);
 	
 	pStance.SetAdjustRange(1.0f);
@@ -232,11 +238,14 @@ pTurnIP(0.0f)
 		pCreateTouchSensor();
 		
 		// create 4 legs
+		auto legs = LegList();
 		for(i=0; i<4; i++){
 			aeAnimatorLocomotionLeg::Ref leg(aeAnimatorLocomotionLeg::Ref::New(this));
 			leg->SetShapesVisible(i < 2);
-			pLegs.Add(leg);
+			legs.Add(leg);
 		}
+		pMPLegs = legs;
+		pMPLeg = pMPLegs->GetAt(0)->GetMetaContext();
 		
 		// update the leg pair information
 		SetUseLegPairCount(1);
@@ -245,6 +254,76 @@ pTurnIP(0.0f)
 		pCleanUp();
 		throw;
 	}
+	
+	pMPLocomotionType.onValueChanged = [this](){
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPLimitLookDown.onValueChanged = [this](){
+		SetLookUpDown(pLookUpDown.GetValue());
+		SetLookUpDownGoal(pLookUpDown.GetGoal());
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	pMPLimitLookUp.onValueChanged = pMPLimitLookDown.onValueChanged;
+	
+	pMPLimitLookLeft.onValueChanged = pMPLocomotionType.onValueChanged;
+	pMPLimitLookRight.onValueChanged = pMPLocomotionType.onValueChanged;
+	pMPSpeedWalk.onValueChanged = pMPLocomotionType.onValueChanged;
+	
+	pMPSpeedRun.onValueChanged = [this](){
+		pLinearVelocity.SetAdjustRange(pMPSpeedRun);
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPAdjustTimeUD.onValueChanged = [this](){
+		pLookUpDown.SetAdjustTime(pMPAdjustTimeUD);
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPAdjustTimeLR.onValueChanged = [this](){
+		pLookLeftRight.SetAdjustTime(pMPAdjustTimeLR);
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPAdjustTimeStance.onValueChanged = [this](){
+		pStance.SetAdjustTime(pMPAdjustTimeStance);
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPAdjustTimeOrientation.onValueChanged = [this](){
+		pOrientation.SetAdjustTime(pMPAdjustTimeOrientation);
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPAdjustTimeVelocity.onValueChanged = [this](){
+		pLinearVelocity.SetAdjustTime(pMPAdjustTimeVelocity);
+		pAnimator->NotifyLocomotionChanged();
+		pAnimator->SetChanged(true);
+	};
+	
+	pMPAdjustTimeTurnIP.onValueChanged = pMPLocomotionType.onValueChanged;
+	pMPLegBlendTime.onValueChanged = pMPLocomotionType.onValueChanged;
+	
+	pMPUseLegPairs.onValueChanged = [this](){
+		pUseLegPairCountChanged();
+	};
+	
+	pMPShowShapes.onValueChanged = [this](){
+		pDebugDrawer->SetVisible(pMPShowShapes);
+	};
+	
+	// pMPUseFoGIK.onValueChanged = [](){};
+	
+	pMPLegIndex.onValueChanged = [this](){
+		pMPLeg = pMPLegs->GetAt(pMPLegIndex)->GetMetaContext();
+	};
 }
 
 aeAnimatorLocomotion::~aeAnimatorLocomotion(){
@@ -296,8 +375,8 @@ void aeAnimatorLocomotion::Reset(){
 	pTurnIP = 0.0f;
 	pTouchingGround = false;
 	
-	pLegs.Visit([](aeAnimatorLocomotionLeg &l){
-		l.Reset();
+	pMPLegs->Visit([](aeAnimatorLocomotionLeg &leg){
+		leg.Reset();
 	});
 }
 
@@ -322,7 +401,7 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		decShape::List shapeList;
 		
 		// update shape of movement collider
-		if(pUseLegPairCount == 1){
+		if(pMPUseLegPairs == 1){
 			shapeList.Add(decShapeSphere::Ref::New(pColliderRadius, pColliderPosition));
 			
 		}else{
@@ -330,7 +409,8 @@ void aeAnimatorLocomotion::UpdateCollider(){
 			shapeList.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, 0.6f)));
 			shapeList.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, -0.6f)));
 			/*
-			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				shapeList.AddShape(shape);
+			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
+			shapeList.AddShape(shape);
 			shape = nullptr;
 			*/
 		}
@@ -343,29 +423,34 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		//pGroundCheckCollider->RemoveAllShapes();
 		//pFootCollider->RemoveAllShapes();
 		
-		if(pUseLegPairCount == 1){
+		if(pMPUseLegPairs == 1){
 			/*
-			shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pGroundCheckCollider->AddShape(shape);
+			shape = new decShapeSphere(pColliderRadius, pColliderPosition);
+			pGroundCheckCollider->AddShape(shape);
 			shape = nullptr;
 			*/
 			/*
-			shape = new decShapeSphere(pColliderRadius);				pGroundCheckCollider->AddShape(shape);
+			shape = new decShapeSphere(pColliderRadius);
+			pGroundCheckCollider->AddShape(shape);
 			shape = nullptr;
 			*/
 			shapeListTG.Add(decShapeBox::Ref::New(decVector(0.01f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f)));
 			
 		}else{
 			/*
-			shape = new decShapeSphere(pDragonColHandsRadius);				pGroundCheckCollider->AddShape(shape);
+			shape = new decShapeSphere(pDragonColHandsRadius);
+			pGroundCheckCollider->AddShape(shape);
 			shape = nullptr;
 			*/
 			/*
-			shape = new decShapeSphere(pDragonFootRadius);				pFootCollider->AddShape(shape);
+			shape = new decShapeSphere(pDragonFootRadius);
+			pFootCollider->AddShape(shape);
 			shape = nullptr;
 			*/
 			
 			/*
-			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDragonColBody->AddShape(shape);
+			shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
+			pDragonColBody->AddShape(shape);
 			shape = nullptr;
 			*/
 			shapeListDCB.Add(decShapeSphere::Ref::New(0.4f, decVector(0.0f, 0.8f, 0.6f)));
@@ -396,7 +481,7 @@ void aeAnimatorLocomotion::UpdateCollider(){
 			pDDSGroundPlane[i]->RemoveAllShapes();
 		}
 		
-		if(pUseLegPairCount == 1){
+		if(pMPUseLegPairs == 1){
 			pDDSCollider->AddShape(decShapeSphere::Ref::New(pColliderRadius, pColliderPosition));
 			
 			pDDSDragonColHands->AddShape(decShapeSphere::Ref::New(pColliderRadius));
@@ -470,167 +555,22 @@ bool aeAnimatorLocomotion::GetShowShapes() const{
 }
 
 void aeAnimatorLocomotion::SetShowShapes(bool showShapes){
-	pDebugDrawer->SetVisible(showShapes);
+	pMPShowShapes = showShapes;
 }
 
 
 
 void aeAnimatorLocomotion::SetLocomotionType(eLocomotionTypes type){
-	if(type == pLocomotionType){
-		return;
-	}
-	
-	pLocomotionType = type;
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPLocomotionType = type;
 }
 
 
 void aeAnimatorLocomotion::SetLegBlendTime(float time){
-	if(fabsf(time - pLegBlendTime) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLegBlendTime = time;
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPLegBlendTime = time;
 }
 
 void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
-	if(pairCount < 1 || pairCount > 2){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pairCount == pUseLegPairCount){
-		return;
-	}
-	
-	int l, legCount = pairCount * 2;
-	
-	pUseLegPairCount = pairCount;
-	
-	if(pairCount == 1){
-		pTSGroundPosition.Set(0.0f, 0.0f, 0.0f);
-		//pTSGroundExtents.Set( 0.4f, 0.1f, 0.4f );
-		pTSGroundExtents.Set(0.4f, 0.5f, 0.8f);
-		
-		pDDSCollider->SetVisible(true);
-		
-		pDDSDragonColBody->SetVisible(false);
-		pDDSDragonColHead->SetVisible(false);
-		pDDSDragonColHands->SetVisible(false);
-		pDDSDragonColFeet->SetVisible(false);
-		
-		pLegs[0]->SetVisBoneName("ikb.foot.l");
-		pLegs[1]->SetVisBoneName("ikb.foot.r");
-		
-	}else{
-		pTSGroundPosition.Set(0.0f, 0.0f, 0.0f);
-		pTSGroundExtents.Set(0.6f, 0.8f, 2.0f);
-		/*
-		pDDSCollider->SetVisible(false);
-		
-		pDDSDragonColBody->SetVisible(true);
-		pDDSDragonColHead->SetVisible(true);
-		pDDSDragonColHands->SetVisible(true);
-		pDDSDragonColFeet->SetVisible(true);
-		*/
-		pDDSCollider->SetVisible(true);
-		
-		pDDSDragonColBody->SetVisible(false);
-		pDDSDragonColHead->SetVisible(false);
-		pDDSDragonColHands->SetVisible(false);
-		pDDSDragonColFeet->SetVisible(false);
-		
-		pLegs.GetAt(0)->SetVisBoneName("ikb.hand.l");
-		pLegs.GetAt(1)->SetVisBoneName("ikb.hand.r");
-		pLegs.GetAt(2)->SetVisBoneName("ikb.foot.l");
-		pLegs.GetAt(3)->SetVisBoneName("ikb.foot.r");
-	}
-	
-	for(l=0; l<pLegs.GetCount(); l++){
-		pLegs.GetAt(l)->SetShapesVisible(l < legCount);
-	}
-	
-	UpdateCollider();
-	UpdateTouchSensors();
-	
-	// update the sub animator for ik purpose
-	aeSubAnimator *subAnimator = pAnimator->GetSubAnimator();
-	decVector minRot(-45.0f, -180.0f, -45.0f);
-	decVector maxRot(0.0f, 180.0f, 45.0f);
-	
-	subAnimator->ClearAnimator();
-	subAnimator->AddRuleSS();
-	
-	if(pairCount == 1){
-		decVector localPosFoot(0.0f, 0.0f, 0.2f/*0.133f*/);
-		
-		subAnimator->AddRuleSS();
-		subAnimator->EnableRule(1, false);
-// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
-// 		subAnimator->AddBoneToRule( 1, "ikb.foot.l" );
-// 		subAnimator->EnableRule( 1, true );
-		
-		subAnimator->AddRuleSS();
-		subAnimator->EnableRule(1, false);
-// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
-// 		subAnimator->AddBoneToRule( 2, "ikb.foot.r" );
-// 		subAnimator->EnableRule( 2, true );
-		
-		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.l", -1);
-		subAnimator->AddBoneToRule(3, "leg.u.l");
-		subAnimator->AddBoneToRule(3, "foot.l");
-		
-		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.r", -1);
-		subAnimator->AddBoneToRule(4, "leg.u.r");
-		subAnimator->AddBoneToRule(4, "foot.r");
-		
-	}else{
-		decVector localPosHand(0.0f, 0.0f, 0.1236f); //localPosHand(0.0f, 0.0f, 0.206f);
-		decVector localPosFoot(0.0f, 0.0f, 0.078f); //localPosFoot(0.0f, 0.0f, 0.130f);
-		
-		subAnimator->AddRuleSS();
-		subAnimator->EnableRule(1, false);
-// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
-// 		subAnimator->AddBoneToRule( 1, "ikb.hand.l" );
-// 		
-		subAnimator->AddRuleSS();
-		subAnimator->EnableRule(1, false);
-// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
-// 		subAnimator->AddBoneToRule( 2, "ikb.hand.r" );
-		
-		subAnimator->AddRuleSS();
-		subAnimator->EnableRule(1, false);
-// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
-// 		subAnimator->AddBoneToRule( 3, "ikb.foot.l" );
-		
-		subAnimator->AddRuleSS();
-		subAnimator->EnableRule(1, false);
-// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
-// 		subAnimator->AddBoneToRule( 4, "ikb.foot.r" );
-		
-		subAnimator->AddRuleIK(localPosHand, decVector(), "ikt.hand.l", -1);
-		subAnimator->AddBoneToRule(5, "shoulder.l");
-		subAnimator->AddBoneToRule(5, "hand2.l");
-		
-		subAnimator->AddRuleIK(localPosHand, decVector(), "ikt.hand.r", -1);
-		subAnimator->AddBoneToRule(6, "shoulder.r");
-		subAnimator->AddBoneToRule(6, "hand2.r");
-		
-		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.l", -1);
-		subAnimator->AddBoneToRule(7, "leg.u.l");
-		subAnimator->AddBoneToRule(7, "foot2.l");
-		
-		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.r", -1);
-		subAnimator->AddBoneToRule(8, "leg.u.r");
-		subAnimator->AddBoneToRule(8, "foot2.r");
-	}
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPUseLegPairs = pairCount;
 }
 
 
@@ -651,106 +591,50 @@ void aeAnimatorLocomotion::SetEnabled(bool enabled){
 }
 
 void aeAnimatorLocomotion::SetUseFoGIK(bool use){
-	pUseFoGIK = use;
+	pMPUseFoGIK = use;
 }
 
 
 
 void aeAnimatorLocomotion::SetLimitLookDown(float degrees){
-	if(fabsf(degrees - pLimitLookDown) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLimitLookDown = degrees;
-	
-	SetLookUpDown(pLookUpDown.GetValue());
-	SetLookUpDownGoal(pLookUpDown.GetGoal());
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPLimitLookDown = degrees;
 }
 
 void aeAnimatorLocomotion::SetLimitLookUp(float degrees){
-	if(fabsf(degrees - pLimitLookUp) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLimitLookUp = degrees;
-	
-	SetLookUpDown(pLookUpDown.GetValue());
-	SetLookUpDownGoal(pLookUpDown.GetGoal());
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPLimitLookUp = degrees;
 }
 
 void aeAnimatorLocomotion::SetLookUpDown(float degrees){
-	pLookUpDown.SetValue(decMath::clamp(degrees, pLimitLookDown, pLimitLookUp));
+	pLookUpDown.SetValue(decMath::clamp(degrees, pMPLimitLookDown, pMPLimitLookUp));
 }
 
 void aeAnimatorLocomotion::SetLookUpDownGoal(float degrees){
-	pLookUpDown.SetGoal(decMath::clamp(degrees, pLimitLookDown, pLimitLookUp));
+	pLookUpDown.SetGoal(decMath::clamp(degrees, pMPLimitLookDown, pMPLimitLookUp));
 }
 
 
 
 void aeAnimatorLocomotion::SetLimitLookLeft(float degrees){
-	if(fabsf(degrees - pLimitLookLeft) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLimitLookLeft = degrees;
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPLimitLookLeft = degrees;
 }
 
 void aeAnimatorLocomotion::SetLimitLookRight(float degrees){
-	if(fabsf(degrees - pLimitLookRight) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pLimitLookRight = degrees;
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPLimitLookRight = degrees;
 }
 
 
 void aeAnimatorLocomotion::SetAdjustTimeTurnIP(float adjustTime){
-	if(fabsf(adjustTime - pAdjustTimeTurnIP) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pAdjustTimeTurnIP = decMath::max(adjustTime, 0.0f);
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPAdjustTimeTurnIP = adjustTime;
 }
 
 
 
 void aeAnimatorLocomotion::SetWalkSpeed(float speed){
-	if(fabsf(speed - pSpeedWalk) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pSpeedWalk = decMath::max(speed, 0.0f);
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPSpeedWalk = speed;
 }
 
 void aeAnimatorLocomotion::SetRunSpeed(float speed){
-	if(fabsf(speed - pSpeedRun) < FLOAT_SAFE_EPSILON){
-		return;
-	}
-	
-	pSpeedRun = decMath::max(speed, 0.0f);
-	pLinearVelocity.SetAdjustRange(pSpeedRun);
-	
-	pAnimator->NotifyLocomotionChanged();
-	pAnimator->SetChanged(true);
+	pMPSpeedRun = speed;
 }
 
 
@@ -860,22 +744,19 @@ void aeAnimatorLocomotion::Update(float elapsed){
 	if(pCollider){
 		pCollider->SetLinearVelocity(pLinearVelocity.GetValue());
 		
-		if(pLegs.GetCount() > 1){
+		if(pMPLegs->GetCount() > 1){
 			pCollider->SetAngularVelocity(pAngularVelocity);
 		}
 	}
 	
 	// update legs
-	const int legCount = pUseLegPairCount * 2;
-	int i;
-	
-	for(i=0; i<legCount; i++){
-		pLegs.GetAt(i)->Update(elapsed);
-	}
+	pMPLegs->Visit(0, pMPUseLegPairs * 2, [&](aeAnimatorLocomotionLeg &leg){
+		leg.Update(elapsed);
+	});
 	
 	// now we can determine the real look up down which is altered by the body tilt
 	// for multiple leg pair characters
-// 	if( pUseLegPairCount > 1 ){
+// 	if( pMPUseLegPairs > 1 ){
 // 		SetLookUpDown( pLookUpDown.GetValue() - pTiltUpDown );
 // 	}
 }
@@ -989,24 +870,21 @@ void aeAnimatorLocomotion::PostPhysics(){
 
 void aeAnimatorLocomotion::FeetOnGround(){
 	aeSubAnimator &subAnimator = *pAnimator->GetSubAnimator();
-	int l, legCount = pUseLegPairCount * 2;
 	
 	// determine the ik parameters for the post animator stage
-	for(l=0; l<legCount; l++){
-		pLegs[l]->PostUpdate();
-	}
+	pMPLegs->Visit(0, pMPUseLegPairs * 2, [&](aeAnimatorLocomotionLeg &leg){
+		leg.PostUpdate();
+	});
 	
 	// apply the feet on ground animator
-	if(pUseFoGIK){
+	if(pMPUseFoGIK){
 		subAnimator.Apply();
 	}
 }
 
 void aeAnimatorLocomotion::PostUpdate(){
-	int l, legCount = pUseLegPairCount * 2;
-	
 	// update debug drawes for visualizing the results
-	if(pUseLegPairCount == 1){
+	if(pMPUseLegPairs == 1){
 		decDVector testpos1(0.0, (double)pColliderPosition.y, 0.3); // 0.4-0.5 for running
 		decDVector testpos2(0.0, (double)pColliderPosition.y, -0.3);
 		
@@ -1032,9 +910,9 @@ void aeAnimatorLocomotion::PostUpdate(){
 	pDDSGroundPlane[3]->SetPosition(decDVector((double)pGroundPlaneRight,
 		(double)pGroundPlaneOffsetBR, (double)pGroundPlaneBack));
 	
-	for(l=0; l<legCount; l++){
-		pLegs[l]->UpdateDebugDrawers();
-	}
+	pMPLegs->Visit(0, pMPUseLegPairs * 2, [&](aeAnimatorLocomotionLeg &leg){
+		leg.UpdateDebugDrawers();
+	});
 }
 
 
@@ -1179,7 +1057,7 @@ void aeAnimatorLocomotion::pUpdateLooking(float elapsed){
 }
 
 void aeAnimatorLocomotion::pUpdateTurnLeftRight(float elapsed){
-	switch(pLocomotionType){
+	switch(pMPLocomotionType){
 	case eltNatural:
 	case eltFPS:
 		break;
@@ -1200,7 +1078,7 @@ void aeAnimatorLocomotion::pUpdateIsMoving(){
 	
 	// process input
 	isMoving = pKeyForward || pKeyBackward;
-	if(pLocomotionType != eltVehicle){
+	if(pMPLocomotionType != eltVehicle){
 		isMoving |= pKeyStepLeft || pKeyStepRight;
 	}
 	
@@ -1236,7 +1114,7 @@ void aeAnimatorLocomotion::pUpdateOrientation(float elapsed){
 	SetOrientation(pOrientation.GetValue() + adjustOrientation);
 	
 	pLookLeftRight.SetValue(pLookLeftRight.GetValue() - adjustOrientation);
-	if(pLocomotionType != eltVehicle){
+	if(pMPLocomotionType != eltVehicle){
 		pLookLeftRight.SetGoal(pLookLeftRight.GetGoal() - adjustOrientation);
 	}
 	
@@ -1252,7 +1130,7 @@ void aeAnimatorLocomotion::pUpdateOrientation(float elapsed){
 
 void aeAnimatorLocomotion::pUpdateOrientationMoving(float elapsed, float &adjustOrientation){
 	// adjust value for no smoothing. this is locomotion type dependent
-	switch(pLocomotionType){
+	switch(pMPLocomotionType){
 	case eltNatural:
 		adjustOrientation = pTurnLeftRight + pLookLeftRight.GetGoal() + pCalcMovingDirectionNatural();
 		break;
@@ -1285,7 +1163,7 @@ void aeAnimatorLocomotion::pUpdateOrientationNotMoving(float elapsed, float &adj
 	pOrientation.SetValue(oldOrientation);
 	
 	// turn in place rotation if required
-	if(pLocomotionType != eltVehicle){
+	if(pMPLocomotionType != eltVehicle){
 		if(pLookLeftRight.GetGoal() > 70.0f){
 			if(pIsTurningIP){
 				if(pTurnIP < 0.0f){
@@ -1315,7 +1193,7 @@ void aeAnimatorLocomotion::pUpdateOrientationNotMoving(float elapsed, float &adj
 		
 		if(pIsTurningIP){
 			if(pTurnIP > 0.0f){
-				adjustOrientation = 90.0f * elapsed / pAdjustTimeTurnIP;
+				adjustOrientation = 90.0f * elapsed / pMPAdjustTimeTurnIP;
 				
 				if(adjustOrientation > pTurnIP){
 					adjustOrientation = pTurnIP;
@@ -1327,7 +1205,7 @@ void aeAnimatorLocomotion::pUpdateOrientationNotMoving(float elapsed, float &adj
 				}
 				
 			}else{
-				adjustOrientation = -90.0f * elapsed / pAdjustTimeTurnIP;
+				adjustOrientation = -90.0f * elapsed / pMPAdjustTimeTurnIP;
 				
 				if(adjustOrientation < pTurnIP){
 					adjustOrientation = pTurnIP;
@@ -1375,7 +1253,7 @@ float aeAnimatorLocomotion::pCalcMovingDirectionNatural() const{
 void aeAnimatorLocomotion::pCheckLookingRangeViolation(float &adjustOrientation){
 	bool canTurn = true;
 	
-	if(pLocomotionType == eltVehicle){
+	if(pMPLocomotionType == eltVehicle){
 		canTurn = false;
 	}
 	
@@ -1391,13 +1269,13 @@ void aeAnimatorLocomotion::pCheckLookingRangeViolation(float &adjustOrientation)
 		
 	// if we can not turn clamp the looking to the limits
 	}else{
-		if(pLookLeftRight.GetValue() - adjustOrientation > pLimitLookRight){
-			pLookLeftRight.SetValue(pLimitLookRight);
-			pLookLeftRight.SetGoal(pLimitLookRight);
+		if(pLookLeftRight.GetValue() - adjustOrientation > pMPLimitLookRight){
+			pLookLeftRight.SetValue(pMPLimitLookRight);
+			pLookLeftRight.SetGoal(pMPLimitLookRight);
 			
-		}else if(pLookLeftRight.GetValue() - adjustOrientation < pLimitLookLeft){
-			pLookLeftRight.SetValue(pLimitLookLeft);
-			pLookLeftRight.SetGoal(pLimitLookLeft);
+		}else if(pLookLeftRight.GetValue() - adjustOrientation < pMPLimitLookLeft){
+			pLookLeftRight.SetValue(pMPLimitLookLeft);
+			pLookLeftRight.SetGoal(pMPLimitLookLeft);
 		}
 	}
 }
@@ -1408,10 +1286,10 @@ void aeAnimatorLocomotion::pUpdateLinearVelocity(float elapsed){
 	
 	if(pIsMoving){
 		if(pToggleRun){
-			speed = pSpeedRun;
+			speed = pMPSpeedRun;
 			
 		}else{
-			speed = pSpeedWalk;
+			speed = pMPSpeedWalk;
 		}
 	}
 	
@@ -1419,7 +1297,7 @@ void aeAnimatorLocomotion::pUpdateLinearVelocity(float elapsed){
 	if(pIsMoving){
 		float orientation = pOrientation.GetValue();
 		
-		switch(pLocomotionType){
+		switch(pMPLocomotionType){
 		case eltNatural:
 		case eltFPS:
 			orientation += pLookLeftRight.GetValue();
@@ -1473,7 +1351,7 @@ void aeAnimatorLocomotion::pUpdateLinearVelocity(float elapsed){
 	
 	SetMovingDirection(pVelocityOrientation - pOrientation.GetValue());
 	
-	switch(pLocomotionType){
+	switch(pMPLocomotionType){
 	case eltNatural:
 	case eltVehicle:
 		if(fabs(pMovingDirection) > 90.0f){
@@ -1490,4 +1368,127 @@ void aeAnimatorLocomotion::pUpdateLinearVelocity(float elapsed){
 void aeAnimatorLocomotion::pUpdateStance(float elapsed){
 	pStance.SetGoal(pToggleCrouch ? 1.0f : 0.0f);
 	pStance.Update(elapsed);
+}
+
+void aeAnimatorLocomotion::pUseLegPairCountChanged(){
+	if(pMPUseLegPairs == 1){
+		pTSGroundPosition.Set(0.0f, 0.0f, 0.0f);
+		//pTSGroundExtents.Set( 0.4f, 0.1f, 0.4f );
+		pTSGroundExtents.Set(0.4f, 0.5f, 0.8f);
+		
+		pDDSCollider->SetVisible(true);
+		
+		pDDSDragonColBody->SetVisible(false);
+		pDDSDragonColHead->SetVisible(false);
+		pDDSDragonColHands->SetVisible(false);
+		pDDSDragonColFeet->SetVisible(false);
+		
+		pMPLegs->GetAt(0)->SetVisBoneName("ikb.foot.l");
+		pMPLegs->GetAt(1)->SetVisBoneName("ikb.foot.r");
+		
+	}else{
+		pTSGroundPosition.Set(0.0f, 0.0f, 0.0f);
+		pTSGroundExtents.Set(0.6f, 0.8f, 2.0f);
+		/*
+		pDDSCollider->SetVisible(false);
+		
+		pDDSDragonColBody->SetVisible(true);
+		pDDSDragonColHead->SetVisible(true);
+		pDDSDragonColHands->SetVisible(true);
+		pDDSDragonColFeet->SetVisible(true);
+		*/
+		pDDSCollider->SetVisible(true);
+		
+		pDDSDragonColBody->SetVisible(false);
+		pDDSDragonColHead->SetVisible(false);
+		pDDSDragonColHands->SetVisible(false);
+		pDDSDragonColFeet->SetVisible(false);
+		
+		pMPLegs->GetAt(0)->SetVisBoneName("ikb.hand.l");
+		pMPLegs->GetAt(1)->SetVisBoneName("ikb.hand.r");
+		pMPLegs->GetAt(2)->SetVisBoneName("ikb.foot.l");
+		pMPLegs->GetAt(3)->SetVisBoneName("ikb.foot.r");
+	}
+	
+	pMPLegs->VisitIndexed([&](int i, aeAnimatorLocomotionLeg &leg){
+		leg.SetShapesVisible(i < pMPUseLegPairs * 2);
+	});
+	
+	UpdateCollider();
+	UpdateTouchSensors();
+	
+	// update the sub animator for ik purpose
+	aeSubAnimator *subAnimator = pAnimator->GetSubAnimator();
+	decVector minRot(-45.0f, -180.0f, -45.0f);
+	decVector maxRot(0.0f, 180.0f, 45.0f);
+	
+	subAnimator->ClearAnimator();
+	subAnimator->AddRuleSS();
+	
+	if(pMPUseLegPairs == 1){
+		decVector localPosFoot(0.0f, 0.0f, 0.2f/*0.133f*/);
+		
+		subAnimator->AddRuleSS();
+		subAnimator->EnableRule(1, false);
+// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
+// 		subAnimator->AddBoneToRule( 1, "ikb.foot.l" );
+// 		subAnimator->EnableRule( 1, true );
+		
+		subAnimator->AddRuleSS();
+		subAnimator->EnableRule(1, false);
+// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
+// 		subAnimator->AddBoneToRule( 2, "ikb.foot.r" );
+// 		subAnimator->EnableRule( 2, true );
+		
+		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.l", -1);
+		subAnimator->AddBoneToRule(3, "leg.u.l");
+		subAnimator->AddBoneToRule(3, "foot.l");
+		
+		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.r", -1);
+		subAnimator->AddBoneToRule(4, "leg.u.r");
+		subAnimator->AddBoneToRule(4, "foot.r");
+		
+	}else{
+		decVector localPosHand(0.0f, 0.0f, 0.1236f); //localPosHand(0.0f, 0.0f, 0.206f);
+		decVector localPosFoot(0.0f, 0.0f, 0.078f); //localPosFoot(0.0f, 0.0f, 0.130f);
+		
+		subAnimator->AddRuleSS();
+		subAnimator->EnableRule(1, false);
+// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
+// 		subAnimator->AddBoneToRule( 1, "ikb.hand.l" );
+// 		
+		subAnimator->AddRuleSS();
+		subAnimator->EnableRule(1, false);
+// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
+// 		subAnimator->AddBoneToRule( 2, "ikb.hand.r" );
+		
+		subAnimator->AddRuleSS();
+		subAnimator->EnableRule(1, false);
+// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
+// 		subAnimator->AddBoneToRule( 3, "ikb.foot.l" );
+		
+		subAnimator->AddRuleSS();
+		subAnimator->EnableRule(1, false);
+// 		subAnimator->AddRuleTG( minRot, maxRot, -1, -1, -1 );
+// 		subAnimator->AddBoneToRule( 4, "ikb.foot.r" );
+		
+		subAnimator->AddRuleIK(localPosHand, decVector(), "ikt.hand.l", -1);
+		subAnimator->AddBoneToRule(5, "shoulder.l");
+		subAnimator->AddBoneToRule(5, "hand2.l");
+		
+		subAnimator->AddRuleIK(localPosHand, decVector(), "ikt.hand.r", -1);
+		subAnimator->AddBoneToRule(6, "shoulder.r");
+		subAnimator->AddBoneToRule(6, "hand2.r");
+		
+		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.l", -1);
+		subAnimator->AddBoneToRule(7, "leg.u.l");
+		subAnimator->AddBoneToRule(7, "foot2.l");
+		
+		subAnimator->AddRuleIK(localPosFoot, decVector(), "ikt.foot.r", -1);
+		subAnimator->AddBoneToRule(8, "leg.u.r");
+		subAnimator->AddBoneToRule(8, "foot2.r");
+	}
+	
+	pAnimator->NotifyLocomotionChanged();
+	pAnimator->SetChanged(true);
 }

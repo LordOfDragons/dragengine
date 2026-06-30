@@ -58,7 +58,7 @@ public:
 			return {};
 		}
 		
-		return property.ChangePropertyValue(context, newValue, undoInfo
+		auto undo = property.ChangePropertyValue(context, newValue, undoInfo
 			? property.RealUndoInfo(context, undoInfo).GetString() : nullptr);
 		
 		const auto &value = property.GetPropertyValue(context);
@@ -67,6 +67,8 @@ public:
 				pWidget.GetViewCurveBezier()->SetCurve(value);
 			});
 		}
+		
+		return undo;
 	}
 };
 

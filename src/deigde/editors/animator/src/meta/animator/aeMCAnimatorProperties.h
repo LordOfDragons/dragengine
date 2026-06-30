@@ -29,6 +29,8 @@
 #include "aeMCControllerProperties.h"
 #include "aeMCRuleProperties.h"
 #include "aeMCAttachmentProperties.h"
+#include "aeMCAnimatorLocomotionProperties.h"
+#include "aeMCAnimatorLocomotionLegProperties.h"
 
 #include "aeMCPAnimator.h"
 
@@ -66,6 +68,10 @@ public:
 	aeMCRuleSubAnimatorProperties ruleSubAnimator;
 	aeMCRuleTrackToProperties ruleTrackTo;
 	aeMCAttachmentProperties attachment;
+	aeMCAnimatorLocomotionProperties locomotion;
+	aeMCAnimatorLocomotionLegProperties locomotionLeg;
+	
+	deTObjectReference<aeMCPAnimatorPlaygroundControllers> playgroundControllers;
 	
 	deTObjectReference<aeMCPAnimatorDisplayModelPath> displayModelPath = deTObjectReference<aeMCPAnimatorDisplayModelPath>::New();
 	deTObjectReference<aeMCPAnimatorDisplaySkinPath> displaySkinPath = deTObjectReference<aeMCPAnimatorDisplaySkinPath>::New();
@@ -112,6 +118,7 @@ public:
 	igdeMetaContext::PropertyList::Ref metaPropertiesController = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesLink = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesRule = igdeMetaContext::PropertyList::Ref::New();
+	igdeMetaContext::PropertyList::Ref metaPropertiesPlayground = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesView = igdeMetaContext::PropertyList::Ref::New();
 	
 	aeMCAnimatorProperties(aeWindowMain &windowMain);

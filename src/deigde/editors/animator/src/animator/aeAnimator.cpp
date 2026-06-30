@@ -28,6 +28,7 @@
 #include "controller/aeController.h"
 #include "link/aeLink.h"
 #include "locomotion/aeAnimatorLocomotion.h"
+#include "locomotion/aeAnimatorLocomotionLeg.h"
 #include "wakeboard/aeWakeboard.h"
 #include "rule/aeRule.h"
 #include "../gui/aeWindowMain.h"
@@ -94,6 +95,7 @@ pMetaContext(aeMCAnimator::Ref::New(windowMain, this)),
 pMetaContextController(aeMCAnimatorController::Ref::New(windowMain, this)),
 pMetaContextLink(aeMCAnimatorLink::Ref::New(windowMain, this)),
 pMetaContextRule(aeMCAnimatorRule::Ref::New(windowMain, this)),
+pMetaContextPlayground(aeMCAnimatorPlayground::Ref::New(windowMain, this)),
 pMetaContextAttachment(aeMCAnimatorAttachment::Ref::New(windowMain, this)),
 pMetaContextView(aeMCAnimatorView::Ref::New(windowMain, this)),
 pMPHiddenBoneNames(pWindowMain.GetMCAnimatorProperties().hiddenBoneNames, pMetaContext),
@@ -110,6 +112,7 @@ pMPLink(pWindowMain.GetMCAnimatorProperties().link.link, pMetaContextLink),
 pMPRuleTree(pWindowMain.GetMCAnimatorProperties().rule.ruleTree, pMetaContextRule),
 pMPRules(pWindowMain.GetMCAnimatorProperties().rule.rules, pMetaContextRule),
 pMPRule(pWindowMain.GetMCAnimatorProperties().rule.rule, pMetaContextRule),
+pMPPlaygroundControllers(pWindowMain.GetMCAnimatorProperties().playgroundControllers, pMetaContextPlayground),
 pMPDisplayModelPath(pWindowMain.GetMCAnimatorProperties().displayModelPath, pMetaContextView),
 pMPDisplaySkinPath(pWindowMain.GetMCAnimatorProperties().displaySkinPath, pMetaContextView),
 pMPDisplayRigPath(pWindowMain.GetMCAnimatorProperties().displayRigPath, pMetaContextView),
@@ -237,6 +240,7 @@ pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMeta
 		pMPAllowedListControllers = igdeMetaPropertyObjectType<aeController>::ObjectTypeList::New(pMPControllers);
 		pUpdateLinks();
 		NotifyControllerStructureChanged();
+		pUpdatePlaygroundControllers();
 	};
 	pMPControllers.onObjectAdded = [this](aeController &each){
 		each.SetAnimator(this);
@@ -336,7 +340,6 @@ pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMeta
 		NotifyPlaybackChanged();
 	};
 	
-	SetSaved(false);
 	SetChanged(false);
 }
 
@@ -1307,6 +1310,15 @@ void aeAnimator::pUpdateRuleIndices(){
 		each.SetIndex(i);
 	});
 }
+
+void aeAnimator::pUpdatePlaygroundControllers(){
+	aeMCPAnimatorPlaygroundControllers::ListType sliders;
+	pMPControllers->Visit([&](const aeController &controller){
+		sliders.Add(controller.GetMetaContext());
+	});
+	pMPPlaygroundControllers = sliders;
+}
+
 
 void aeAnimator::pAnimCompChanged(){
 	pMPRules.GetValue().Visit([](aeRule &each){

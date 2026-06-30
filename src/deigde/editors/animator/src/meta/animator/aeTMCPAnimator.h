@@ -53,7 +53,32 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCAnimator>();
-		return c && !c->IsDisposed() && c->GetAnimator() != nullptr;
+		return c && !c->IsDisposed() && c->GetAnimator();
+	}
+	
+	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAnimator>()->GetWindowMain();
+	}
+	
+	inline aeAnimator &Animator(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAnimator>()->GetAnimatorRef();
+	}
+};
+
+
+template <typename T>
+class aeTMCPAnimatorNoCapture : public T{
+public:
+	template <typename... A>
+	aeTMCPAnimatorNoCapture(A&&... args) : T(std::forward<A>(args)...) {}
+	
+protected:
+	virtual ~aeTMCPAnimatorNoCapture() override{}
+	
+public:
+	bool IsValid(const igdeMetaContext::Ref &context) const override{
+		const auto c = context.DynamicCast<aeMCAnimator>();
+		return c && !c->IsDisposed() && c->GetAnimator();
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
@@ -85,7 +110,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCController>();
-		return c && !c->IsDisposed() && c->GetController() != nullptr;
+		return c && !c->IsDisposed() && c->GetController();
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
@@ -117,7 +142,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCLink>();
-		return c && !c->IsDisposed() && c->GetLink() != nullptr;
+		return c && !c->IsDisposed() && c->GetLink();
 	}
 	
 	inline aeLink &Link(const igdeMetaContext::Ref &context) const{
@@ -149,7 +174,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCRule>();
-		return c && !c->IsDisposed() && c->GetRule() != nullptr;
+		return c && !c->IsDisposed() && c->GetRule();
 	}
 	
 	inline aeRule &Rule(const igdeMetaContext::Ref &context) const{
@@ -173,7 +198,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<C>();
-		return c && !c->IsDisposed() && c->GetRule() != nullptr;
+		return c && !c->IsDisposed() && c->GetRule();
 	}
 	
 	inline R &RuleType(const igdeMetaContext::Ref &context) const{
@@ -240,7 +265,7 @@ public:
 	
 	bool IsValid(const igdeMetaContext::Ref &context) const override{
 		const auto c = context.DynamicCast<aeMCAttachment>();
-		return c && !c->IsDisposed() && c->GetAttachment() != nullptr;
+		return c && !c->IsDisposed() && c->GetAttachment();
 	}
 	
 	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
@@ -249,6 +274,38 @@ public:
 	
 	inline aeAttachment &Attachment(const igdeMetaContext::Ref &context) const{
 		return context.DynamicCast<aeMCAttachment>()->GetAttachmentRef();
+	}
+};
+
+
+/**
+ * Animator locomotion leg meta context property template.
+ */
+template <typename T>
+class aeTMCPAnimatorLocomotionLeg : public T{
+public:
+	template <typename... A>
+	aeTMCPAnimatorLocomotionLeg(A&&... args) : T(std::forward<A>(args)...) {}
+	
+protected:
+	virtual ~aeTMCPAnimatorLocomotionLeg() override{}
+	
+public:
+	igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
+		return context.DynamicCast<aeMCAnimatorLocomotionLeg>()->Capture();
+	}
+	
+	bool IsValid(const igdeMetaContext::Ref &context) const override{
+		const auto c = context.DynamicCast<aeMCAnimatorLocomotionLeg>();
+		return c && !c->IsDisposed() && c->GetLeg();
+	}
+	
+	inline aeWindowMain &WindowMain(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAnimatorLocomotionLeg>()->GetWindowMain();
+	}
+	
+	inline aeAnimatorLocomotionLeg &Leg(const igdeMetaContext::Ref &context) const{
+		return context.DynamicCast<aeMCAnimatorLocomotionLeg>()->GetLegRef();
 	}
 };
 

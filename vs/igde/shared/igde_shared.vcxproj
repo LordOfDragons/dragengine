@@ -655,6 +655,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint3.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySelection.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySet.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySliderBoard.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyString.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringList.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringSet.cpp" />
@@ -704,6 +705,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPointWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySelectionWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySetWidget.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySliderBoardWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringListWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringSetWidget.cpp" />
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringWidget.cpp" />
@@ -1113,6 +1115,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyPoint3.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySelection.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySet.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertySliderBoard.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyString.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringList.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\igdeMetaPropertyStringSet.h" />
@@ -1177,6 +1180,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyPointWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySelectionWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySetWidget.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertySliderBoardWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringListWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringSetWidget.h" />
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\meta\property\widget\igdeMetaPropertyStringWidget.h" />

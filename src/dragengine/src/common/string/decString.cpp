@@ -1772,8 +1772,7 @@ int decString::pCompareInsensitive(const char *string) const{
 	int compare, i = 0;
 	
 	do{
-		compare = tolower((unsigned char)pString[i])
-			- tolower((unsigned char)string[i]);
+		compare = tolower((unsigned char)pString[i]) - tolower((unsigned char)string[i]);
 		if(compare != 0){
 			return compare;
 		}
