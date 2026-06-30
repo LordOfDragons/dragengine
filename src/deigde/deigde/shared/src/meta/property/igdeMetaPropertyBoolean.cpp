@@ -63,7 +63,7 @@ void igdeMetaPropertyBoolean::NotifyValueChanged(const igdeMetaContext::Ref &con
 
 igdeMetaPropertyBooleanUndo::Ref igdeMetaPropertyBoolean::ChangePropertyValue(
 const igdeMetaContext::Ref &context, bool newValue, const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyBooleanUndo::Ref::New(
 			*this, context, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);

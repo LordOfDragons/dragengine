@@ -733,7 +733,7 @@ void igdeMetaPropertyStringList::NotifySelectionChanged(const igdeMetaContext::R
 igdeMetaPropertyStringListUndo::Ref igdeMetaPropertyStringList::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decStringList &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyStringListUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);

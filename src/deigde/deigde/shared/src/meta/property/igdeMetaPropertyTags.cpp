@@ -64,7 +64,7 @@ void igdeMetaPropertyTags::NotifyValueChanged(const igdeMetaContext::Ref &contex
 igdeMetaPropertyTagsUndo::Ref igdeMetaPropertyTags::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decStringSet &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyTagsUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -74,6 +74,10 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+igdeMetaPropertyTags::PresetList igdeMetaPropertyTags::GetPropertyPresets(const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyTags::CreateWidget(){

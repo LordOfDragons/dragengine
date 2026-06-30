@@ -86,7 +86,7 @@ void igdeMetaPropertyString::NotifyAllowedStringsChanged(const igdeMetaContext::
 igdeMetaPropertyStringUndo::Ref igdeMetaPropertyString::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyStringUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -98,7 +98,11 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-decStringSet igdeMetaPropertyString::GetPropertyAllowedStrings(const igdeMetaContext::Ref &context) const{
+decStringSet igdeMetaPropertyString::GetPropertyAllowedStrings(const igdeMetaContext::Ref&) const{
+	return {};
+}
+
+igdeMetaPropertyString::PresetList igdeMetaPropertyString::GetPropertyPresets(const ContextRef&) const{
 	return {};
 }
 

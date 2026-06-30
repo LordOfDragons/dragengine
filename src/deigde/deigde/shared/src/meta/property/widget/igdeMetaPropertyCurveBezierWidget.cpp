@@ -257,6 +257,26 @@ public:
 	}
 };
 
+
+class cActionPreset : public igdeAction{
+	cListenerHelper pHelper;
+	igdeMetaPropertyCurveBezier::Preset::Ref pPreset;
+	
+public:
+	cActionPreset(igdeMetaPropertyCurveBezierWidget &widget,
+		const igdeMetaPropertyCurveBezier::Preset::Ref &preset) :
+	igdeAction(preset->GetName(), preset->GetIcon(), preset->GetDescription()),
+	pHelper(widget),
+	pPreset(preset){
+	}
+	
+	~cActionPreset() override = default;
+	
+	void OnAction() override{
+		pHelper.OnValueChanged(pPreset->GetValue(), GetText());
+	}
+};
+
 }
 
 
@@ -305,24 +325,10 @@ igdeMetaPropertyCurveBezierWidget::~igdeMetaPropertyCurveBezierWidget(){
 void igdeMetaPropertyCurveBezierWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pViewCurveBezier)
 	
-	auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
-	if(!state){
-		state = igdeMetaPropertyWidgetStateCurveBezier::Ref::New();
-		state->clamp = pPropertyCurveBezier.GetClamp();
-		state->clampMin = pPropertyCurveBezier.GetClampMin();
-		state->clampMax = pPropertyCurveBezier.GetClampMax();
-		pPropertyCurveBezier.SetWidgetState(state);
-	}
-	
 	pListener = deTObjectReference<cListener>::New(*this);
 	builder.GetHelper().ViewCurveBezier(pViewCurveBezier, pListener);
-	pViewCurveBezier->SetClamp(state->clamp);
-	pViewCurveBezier->SetClampMin(state->clampMin);
-	pViewCurveBezier->SetClampMax(state->clampMax);
-	if(state->size != decPoint()){
-		pViewCurveBezier->SetDefaultSize(state->size);
-	}
 	pViewCurveBezier->SetEnabled(false);
+	OnActivate();
 	WrapEditWidget(builder, noLabel, pViewCurveBezier);
 	pViewCurveBezier->ResetView();
 	
@@ -331,18 +337,10 @@ void igdeMetaPropertyCurveBezierWidget::Create(Builder &builder, bool noLabel){
 }
 
 void igdeMetaPropertyCurveBezierWidget::Drop(){
-	if(pViewCurveBezier){
-		auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
-		if(state){
-			state->clamp = pViewCurveBezier->GetClamp();
-			state->clampMin = pViewCurveBezier->GetClampMin();
-			state->clampMax = pViewCurveBezier->GetClampMax();
-			state->size = pViewCurveBezier->GetDefaultSize();
-		}
-		
-		if(pListener){
-			pViewCurveBezier->RemoveListener(pListener);
-		}
+	OnDeactivate();
+	
+	if(pViewCurveBezier && pListener){
+		pViewCurveBezier->RemoveListener(pListener);
 	}
 	
 	pListener.Clear();
@@ -398,6 +396,16 @@ void igdeMetaPropertyCurveBezierWidget::AddContextMenuEntries(igdeMenuCascade &m
 		helper.MenuSeparator(menu);
 	}
 	
+	const auto presets = pPropertyCurveBezier.GetPropertyPresets(context);
+	if(presets.IsNotEmpty()){
+		auto submenu = igdeMenuCascade::Ref::New(env, "@Igde.MetaProperty.Action.Presets");
+		presets.Visit([&](const igdeMetaPropertyCurveBezier::Preset::Ref &preset){
+			helper.MenuCommand(submenu, deTObjectReference<cActionPreset>::New(*this, preset));
+		});
+		menu.AddChild(submenu);
+		helper.MenuSeparator(menu);
+	}
+	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }
 
@@ -432,6 +440,43 @@ void igdeMetaPropertyCurveBezierWidget::EditInDialog(){
 
 bool igdeMetaPropertyCurveBezierWidget::IsPropertyValid() const{
 	return pPropertyCurveBezier.IsValid(GetContext());
+}
+
+void igdeMetaPropertyCurveBezierWidget::OnActivate(){
+	auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateCurveBezier::Ref::New();
+		state->clamp = pPropertyCurveBezier.GetClamp();
+		state->clampMin = pPropertyCurveBezier.GetClampMin();
+		state->clampMax = pPropertyCurveBezier.GetClampMax();
+		pPropertyCurveBezier.SetWidgetState(state);
+	}
+	
+	if(pViewCurveBezier){
+		pViewCurveBezier->SetClamp(state->clamp);
+		pViewCurveBezier->SetClampMin(state->clampMin);
+		pViewCurveBezier->SetClampMax(state->clampMax);
+		if(state->size != decPoint()){
+			pViewCurveBezier->SetDefaultSize(state->size);
+		}
+	}
+}
+
+void igdeMetaPropertyCurveBezierWidget::OnDeactivate(){
+	if(!pViewCurveBezier){
+		return;
+	}
+	
+	auto state = pPropertyCurveBezier.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateCurveBezier>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateCurveBezier::Ref::New();
+		pPropertyCurveBezier.SetWidgetState(state);
+	}
+	
+	state->clamp = pViewCurveBezier->GetClamp();
+	state->clampMin = pViewCurveBezier->GetClampMin();
+	state->clampMax = pViewCurveBezier->GetClampMax();
+	state->size = pViewCurveBezier->GetDefaultSize();
 }
 
 

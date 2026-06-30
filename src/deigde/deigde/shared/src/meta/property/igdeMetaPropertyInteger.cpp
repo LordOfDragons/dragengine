@@ -116,7 +116,7 @@ void igdeMetaPropertyInteger::NotifyLimitsChanged(const igdeMetaContext::Ref &co
 
 igdeMetaPropertyIntegerUndo::Ref igdeMetaPropertyInteger::ChangePropertyValue(
 const igdeMetaContext::Ref &context, int newValue, const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyIntegerUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -128,16 +128,21 @@ const igdeMetaContext::Ref &context, int newValue, const char *undoInfo, const c
 	}
 }
 
-int igdeMetaPropertyInteger::GetPropertyLowerLimit(const ContextRef &context) const{
+int igdeMetaPropertyInteger::GetPropertyLowerLimit(const ContextRef&) const{
 	return pLowerLimit;
 }
 
-int igdeMetaPropertyInteger::GetPropertyUpperLimit(const ContextRef &context) const{
+int igdeMetaPropertyInteger::GetPropertyUpperLimit(const ContextRef&) const{
 	return pUpperLimit;
 }
 
-int igdeMetaPropertyInteger::GetPropertyTickSpacing(const ContextRef &context) const{
+int igdeMetaPropertyInteger::GetPropertyTickSpacing(const ContextRef&) const{
 	return pTickSpacing;
+}
+
+igdeMetaPropertyInteger::PresetList igdeMetaPropertyInteger::GetPropertyPresets(
+const ContextRef&) const{
+	return {};
 }
 
 

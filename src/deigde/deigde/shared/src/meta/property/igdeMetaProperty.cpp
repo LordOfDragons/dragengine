@@ -137,6 +137,10 @@ void igdeMetaProperty::SetCanHideGroup(bool canHideGroup){
 	pCanHideGroup = canHideGroup;
 }
 
+void igdeMetaProperty::SetCanUndo(bool canUndo){
+	pCanUndo = canUndo;
+}
+
 void igdeMetaProperty::SetClipboardDataTypeName(const char *name){
 	pClipboardDataTypeName = name;
 }

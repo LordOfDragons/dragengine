@@ -168,6 +168,8 @@ public:
 	
 	/** \brief Set sliding undo or nullptr. */
 	void SetUndoSliding(const igdeMetaPropertyFloatUndo::Ref &undo);
+	
+	bool IsPropertyValid() const override;
 	/*@}*/
 	
 	

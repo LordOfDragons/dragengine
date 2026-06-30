@@ -65,7 +65,7 @@ void igdeMetaPropertyColor::NotifyValueChanged(const igdeMetaContext::Ref &conte
 igdeMetaPropertyColorUndo::Ref igdeMetaPropertyColor::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decColor &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyColorUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -75,6 +75,10 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+igdeMetaPropertyColor::PresetList igdeMetaPropertyColor::GetPropertyPresets(const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyColor::CreateWidget(){

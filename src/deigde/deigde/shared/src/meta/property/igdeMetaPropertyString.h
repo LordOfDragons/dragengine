@@ -45,6 +45,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyString>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decString>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Clipboard data. */
 	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decString>{
@@ -170,6 +176,9 @@ public:
 	
 	/** \brief Allowed strings. */
 	virtual decStringSet GetPropertyAllowedStrings(const ContextRef &context) const;
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	
 	/**

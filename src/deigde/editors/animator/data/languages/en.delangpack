@@ -446,6 +446,10 @@ all the targets using it. Do you want to remove the link?</translation>
 	<translation name="Animator.WPPlayground.ShowShapes.ToolTip">Determines if shapes are shown</translation>
 	<translation name="Animator.WPPlayground.UseFoGIK">Use Feet-On-Ground IK</translation>
 	<translation name="Animator.WPPlayground.UseFoGIK.ToolTip">Determines the feet-on-ground IK is used</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersReset">Reset</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersReset.ToolTip">Reset attribute driven values</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersFullReset">Full Reset</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersFullReset.ToolTip">Reset all values</translation>
 	
 	<!-- Property Panel: Rule (Base) -->
 	<translation name="Animator.WPAPanelRule.GeneralSettings">General Settings:</translation>

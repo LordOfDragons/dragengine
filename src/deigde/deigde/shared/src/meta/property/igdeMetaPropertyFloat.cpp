@@ -116,7 +116,7 @@ void igdeMetaPropertyFloat::NotifyLimitsChanged(const igdeMetaContext::Ref &cont
 igdeMetaPropertyFloatUndo::Ref igdeMetaPropertyFloat::ChangePropertyValue(
 const igdeMetaContext::Ref &context, float newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyFloatUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -128,16 +128,20 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-float igdeMetaPropertyFloat::GetPropertyLowerLimit(const ContextRef &context) const{
+float igdeMetaPropertyFloat::GetPropertyLowerLimit(const ContextRef&) const{
 	return pLowerLimit;
 }
 
-float igdeMetaPropertyFloat::GetPropertyUpperLimit(const ContextRef &context) const{
+float igdeMetaPropertyFloat::GetPropertyUpperLimit(const ContextRef&) const{
 	return pUpperLimit;
 }
 
-float igdeMetaPropertyFloat::GetPropertyTickSpacing(const ContextRef &context) const{
+float igdeMetaPropertyFloat::GetPropertyTickSpacing(const ContextRef&) const{
 	return pTickSpacing;
+}
+
+igdeMetaPropertyFloat::PresetList igdeMetaPropertyFloat::GetPropertyPresets(const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyFloat::CreateWidget(){

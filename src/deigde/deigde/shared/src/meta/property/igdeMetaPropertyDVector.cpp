@@ -72,7 +72,7 @@ void igdeMetaPropertyDVector::NotifyValueChanged(const igdeMetaContext::Ref &con
 igdeMetaPropertyDVectorUndo::Ref igdeMetaPropertyDVector::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const decDVector &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyDVectorUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -82,6 +82,11 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+igdeMetaPropertyDVector::PresetList igdeMetaPropertyDVector::GetPropertyPresets(
+const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyDVector::CreateWidget(){

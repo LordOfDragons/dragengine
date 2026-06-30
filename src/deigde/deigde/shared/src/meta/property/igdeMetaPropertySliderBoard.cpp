@@ -34,16 +34,17 @@
 ////////////////////////////
 
 igdeMetaPropertySliderBoard::igdeMetaPropertySliderBoard(const char *id,
-	igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue) :
+	igdeMetaPropertyString *propertySliderName, igdeMetaPropertyFloat *propertySliderValue) :
 igdeMetaProperty(id, "", ""),
-pPropertyName(propertyName),
-pPropertyValue(propertyValue)
+pPropertySliderName(propertySliderName),
+pPropertySliderValue(propertySliderValue)
 {
-	DEASSERT_NOTNULL(propertyName)
-	DEASSERT_NOTNULL(propertyValue)
+	DEASSERT_NOTNULL(propertySliderName)
+	DEASSERT_NOTNULL(propertySliderValue)
 	
 	SetHideLabel(true);
 	SetCanHideGroup(false);
+	SetCanUndo(false);
 }
 
 igdeMetaPropertySliderBoard::~igdeMetaPropertySliderBoard() = default;

@@ -60,7 +60,7 @@ void igdeMetaPropertyGroupWidget::Create(Builder &builder, bool){
 		pPropertyGroup.SetWidgetState(state);
 	}
 	
-	pGroupBox = igdeGroupBox::Ref::New(env, pPropertyGroup.GetLabel(), state->collapsed);
+	pGroupBox = igdeGroupBox::Ref::New(env, pPropertyGroup.GetLabel(), "", state->collapsed);
 	
 	pGroupBoxContainer = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esNone);
 	pGroupBox->AddChild(pGroupBoxContainer);
@@ -119,6 +119,38 @@ void igdeMetaPropertyGroupWidget::Drop(){
 }
 
 void igdeMetaPropertyGroupWidget::Update(){
+}
+
+void igdeMetaPropertyGroupWidget::OnActivate(){
+	auto state = pPropertyGroup.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateGroup>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateGroup::Ref::New();
+		state->collapsed = pPropertyGroup.GetCollapsed();
+		pPropertyGroup.SetWidgetState(state);
+	}
+	
+	if(pGroupBox){
+		pGroupBox->SetCollapsed(state->collapsed);
+	}
+	
+	pChildWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.OnActivate();
+	});
+}
+
+void igdeMetaPropertyGroupWidget::OnDeactivate(){
+	if(pGroupBox){
+		auto state = pPropertyGroup.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateGroup>();
+		if(!state){
+			state = igdeMetaPropertyWidgetStateGroup::Ref::New();
+			pPropertyGroup.SetWidgetState(state);
+		}
+		state->collapsed = pGroupBox->GetCollapsed();
+	}
+	
+	pChildWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.OnDeactivate();
+	});
 }
 
 

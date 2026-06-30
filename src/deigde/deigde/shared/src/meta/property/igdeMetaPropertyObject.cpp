@@ -94,7 +94,7 @@ void igdeMetaPropertyObject::NotifyObjectItemInfoChanged(const ContextRef &conte
 igdeMetaPropertyObjectUndo::Ref igdeMetaPropertyObject::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const deObject::Ref &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyObjectUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);

@@ -76,6 +76,48 @@ public:
 		virtual void OnValueChanged(P *property, const ContextRef &context){}
 	};
 	
+	
+	/** \brief Preset. */
+	template <typename T>
+	class TPreset : public deObject{
+	private:
+		decString pName, pDescription;
+		igdeIcon::Ref pIcon;
+		T pValue;
+		
+	public:
+		/** \brief Reference type. */
+		using Ref = deTObjectReference<TPreset<T>>;
+		
+	public:
+		/** \brief Create preset. */
+		TPreset(const char *name, const T &value, igdeIcon *icon = nullptr) :
+		pName(name), pIcon(icon), pValue(value){
+		}
+		
+		TPreset(const char *name, const char *description, const T &value, igdeIcon *icon = nullptr) :
+		pName(name), pDescription(description), pIcon(icon), pValue(value){
+		}
+		
+	protected:
+		/** \brief Clean up preset. */
+		~TPreset() override = default;
+		
+	public:
+		/** \brief Name. */
+		inline const decString &GetName() const{ return pName; }
+		
+		/** \brief Description. */
+		inline const decString &GetDescription() const{ return pDescription; }
+		
+		/** \brief Icon or nullptr. */
+		inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
+		
+		/** \brief Value. */
+		inline const T &GetValue() const{ return pValue; }
+	};
+	
+	
 	/** \brief Base action storing owner and dynamic context. */
 	class DE_DLL_EXPORT Action : public igdeAction{
 	public:
@@ -160,6 +202,7 @@ private:
 	decString pId, pLabel, pDescription, pFilter, pUndoInfo, pClipboardDataTypeName, pHelpUrl;
 	bool pHideLabel = false;
 	bool pCanHideGroup = true;
+	bool pCanUndo = true;
 	igdeMetaPropertyWidgetState::Ref pWidgetState;
 	
 	
@@ -237,6 +280,12 @@ public:
 	
 	/** \brief Set can hide group. */
 	void SetCanHideGroup(bool canHideGroup);
+	
+	/** \brief Can undo. */
+	inline bool GetCanUndo() const{ return pCanUndo; }
+	
+	/** \brief Set can undo. */
+	void SetCanUndo(bool canUndo);
 	
 	/** \brief Clipboard data type name or empty string if not supported. */
 	inline const decString &GetClipboardDataTypeName() const{ return pClipboardDataTypeName; }

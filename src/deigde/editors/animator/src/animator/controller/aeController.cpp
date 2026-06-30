@@ -380,7 +380,7 @@ void aeController::UpdateValue(float elapsed){
 	}
 }
 
-void aeController::ResetValue(){
+void aeController::ResetValue(bool fullReset){
 	const aeAnimatorLocomotion &locomotion = pAnimator->GetLocomotion();
 	
 	switch(pMPLocomotionAttribute){
@@ -467,8 +467,11 @@ void aeController::ResetValue(){
 		break;
 		
 	default:
-		SetCurrentValue(pMPDefaultValue);
-		SetVector(pMPDefaultVector);
+		if(fullReset){
+			SetCurrentValue(pMPDefaultValue);
+			SetVector(pMPDefaultVector);
+		}
+		break;
 	}
 }
 

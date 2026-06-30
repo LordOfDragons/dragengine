@@ -440,6 +440,10 @@ ausgewählten Animationsbewegung festgelegt.</translation>
 	<translation name="Animator.WPPlayground.ShowShapes.ToolTip">Legt fest, ob Knochenformen angezeigt werden</translation>
 	<translation name="Animator.WPPlayground.UseFoGIK">Benutze Fuss-auf-Boden IK</translation>
 	<translation name="Animator.WPPlayground.UseFoGIK.ToolTip">Legt fest, ob die Fuss-auf-Boden inverse Kinematik verwendet wird</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersReset">Zurücksetzen</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersReset.ToolTip">Setzt die attributgesteuerten Werte zurück</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersFullReset">Vollständiges Zurücksetzen</translation>
+	<translation name="Animator.WPPlayground.Action.ControllersFullReset.ToolTip">Setzt alle Werte zurück</translation>
 	
 	<!-- Property Panel: Rule (Base) -->
 	<translation name="Animator.WPAPanelRule.GeneralSettings">Allgemeine Einstellungen:</translation>

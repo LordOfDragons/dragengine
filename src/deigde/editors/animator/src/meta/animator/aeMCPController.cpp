@@ -155,7 +155,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 		}
 	}
 	
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		context->GetUndoSystem()->Add(undo);
 		return undo;
 		

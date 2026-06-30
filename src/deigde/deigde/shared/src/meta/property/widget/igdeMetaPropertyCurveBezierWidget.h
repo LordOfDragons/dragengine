@@ -116,6 +116,8 @@ public:
 	void EditInDialog();
 	
 	bool IsPropertyValid() const override;
+	void OnActivate() override;
+	void OnDeactivate() override;
 	/*@}*/
 	
 	

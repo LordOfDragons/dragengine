@@ -43,6 +43,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyCurveBezier>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decCurveBezier>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Clipboard data. */
 	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decCurveBezier>{
@@ -173,6 +179,9 @@ public:
 	virtual deTObjectReference<igdeMetaPropertyCurveBezierUndo> ChangePropertyValue(
 		const ContextRef &context, const decCurveBezier &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	
 	/**

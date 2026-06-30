@@ -146,7 +146,7 @@ public:
 	/** Updates the controller if required. */
 	void UpdateValue(float elapsed);
 	/** Resets the controller if linked to a locomotion attribute. */
-	void ResetValue();
+	void ResetValue(bool fullReset = false);
 	/** Inverses the current value. */
 	void InverseValue();
 	

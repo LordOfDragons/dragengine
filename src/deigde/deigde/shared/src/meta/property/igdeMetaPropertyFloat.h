@@ -40,6 +40,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyFloat>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<float>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Clipboard data. */
 	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<float>{
@@ -197,6 +203,9 @@ public:
 	
 	/** \brief Get property tick spacing matching context. */
 	virtual float GetPropertyTickSpacing(const ContextRef &context) const;
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	/**
 	 * \brief Create UI widget.

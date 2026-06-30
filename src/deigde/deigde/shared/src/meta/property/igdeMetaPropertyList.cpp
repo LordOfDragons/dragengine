@@ -639,7 +639,7 @@ void igdeMetaPropertyList::NotifyObjectItemInfoChanged(const ContextRef &context
 igdeMetaPropertyListUndo::Ref igdeMetaPropertyList::ChangePropertyValue(
 const ContextRef &context, const List &newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyListUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);

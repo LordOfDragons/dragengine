@@ -93,7 +93,7 @@ void igdeMetaPropertyPath::NotifyBasePathChanged(const igdeMetaContext::Ref &con
 igdeMetaPropertyPathUndo::Ref igdeMetaPropertyPath::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyPathUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -105,8 +105,12 @@ const char *undoInfo, const char *undoInfoLong){
 	}
 }
 
-decString igdeMetaPropertyPath::GetPropertyBasePath(const igdeMetaContext::Ref &context) const{
+decString igdeMetaPropertyPath::GetPropertyBasePath(const ContextRef&) const{
 	return "";
+}
+
+igdeMetaPropertyPath::PresetList igdeMetaPropertyPath::GetPropertyPresets(const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyPath::CreateWidget(){

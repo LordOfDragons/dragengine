@@ -42,6 +42,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyPoint>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decPoint>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Clipboard data. */
 	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decPoint>{
@@ -151,6 +157,9 @@ public:
 	virtual deTObjectReference<igdeMetaPropertyPointUndo> ChangePropertyValue(
 		const ContextRef &context, const decPoint &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	/**
 	 * \brief Create UI widget.

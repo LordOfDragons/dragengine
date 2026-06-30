@@ -23,6 +23,7 @@
  */
 
 #include "igdeMetaPropertyTreeListWidget.h"
+#include "state/igdeMetaPropertyWidgetStateList.h"
 #include "../../igdeMetaContextItemInfo.h"
 #include "../../../gui/igdeUIHelper.h"
 #include "../../../environment/igdeEnvironment.h"
@@ -143,6 +144,7 @@ void igdeMetaPropertyTreeListWidget::Create(Builder &builder, bool noLabel){
 		pTreeList->SetDefaultSorter();
 	}
 	pTreeList->SetEnabled(false);
+	OnActivate();
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -161,6 +163,8 @@ void igdeMetaPropertyTreeListWidget::Create(Builder &builder, bool noLabel){
 }
 
 void igdeMetaPropertyTreeListWidget::Drop(){
+	OnDeactivate();
+	
 	if(pTreeList && pTreeListListener){
 		pTreeList->RemoveListener(pTreeListListener);
 	}
@@ -295,6 +299,33 @@ void igdeMetaPropertyTreeListWidget::AddContextMenuEntries(igdeMenuCascade &menu
 
 bool igdeMetaPropertyTreeListWidget::IsPropertyValid() const{
 	return pPropertyTreeList.IsValid(GetContext());
+}
+
+void igdeMetaPropertyTreeListWidget::OnActivate(){
+	auto state = pPropertyTreeList.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateList::Ref::New();
+		state->rows = pPropertyTreeList.GetRows();
+		pPropertyTreeList.SetWidgetState(state);
+	}
+	
+	if(pTreeList){
+		pTreeList->SetRows(state->rows);
+	}
+}
+
+void igdeMetaPropertyTreeListWidget::OnDeactivate(){
+	if(!pTreeList){
+		return;
+	}
+	
+	auto state = pPropertyTreeList.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = igdeMetaPropertyWidgetStateList::Ref::New();
+		pPropertyTreeList.SetWidgetState(state);
+	}
+	
+	state->rows = pTreeList->GetRows();
 }
 
 

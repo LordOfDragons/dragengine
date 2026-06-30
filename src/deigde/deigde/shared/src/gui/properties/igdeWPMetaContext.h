@@ -139,6 +139,12 @@ public:
 	
 	/** \brief Active language changed. */
 	void OnLanguageChanged() override;
+	
+	/** \brief Widget has been activated. */
+	void OnActivate();
+	
+	/** \brief Widget has been deactivated. */
+	void OnDeactivate();
 	/*@}*/
 	
 	

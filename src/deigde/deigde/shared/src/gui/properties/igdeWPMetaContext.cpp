@@ -211,6 +211,18 @@ void igdeWPMetaContext::OnLanguageChanged(){
 	pFilterPropertyWidgets();
 }
 
+void igdeWPMetaContext::OnActivate(){
+	pPropertyWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.OnActivate();
+	});
+}
+
+void igdeWPMetaContext::OnDeactivate(){
+	pPropertyWidgets.Visit([&](igdeMetaPropertyWidget &widget){
+		widget.OnDeactivate();
+	});
+}
+
 
 // Private Functions
 //////////////////////

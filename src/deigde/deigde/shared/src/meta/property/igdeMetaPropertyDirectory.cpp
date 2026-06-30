@@ -69,7 +69,7 @@ void igdeMetaPropertyDirectory::NotifyValueChanged(const igdeMetaContext::Ref &c
 igdeMetaPropertyDirectoryUndo::Ref igdeMetaPropertyDirectory::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyDirectoryUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -79,6 +79,11 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+igdeMetaPropertyDirectory::PresetList igdeMetaPropertyDirectory::GetPropertyPresets(
+const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyDirectory::CreateWidget(){

@@ -47,6 +47,89 @@
 #include <dragengine/resources/world/deWorld.h>
 
 
+// igdeWSky::Controller
+/////////////////////////
+
+igdeWSky::Controller::MetaContext::MetaContext(igdeWSky::Controller *controller) :
+igdeMetaContext("igde.wsky.controller"),
+pController(controller){
+}
+
+igdeWSky::Controller::MetaContext::~MetaContext() = default;
+
+igdeWSky::Controller &igdeWSky::Controller::MetaContext::GetControllerRef() const{
+	DEASSERT_NOTNULL(pController)
+	return *pController;
+}
+
+igdeWSky::Controller::MetaContext::Ref igdeWSky::Controller::MetaContext::Capture() const{
+	auto context = Ref::New(pController);
+	context->pGuard = pController;
+	return context;
+}
+
+igdeEnvironment &igdeWSky::Controller::MetaContext::GetEnvironment() const{
+	return GetControllerRef().GetWrapper().GetEnvironment();
+}
+
+igdeUndoSystem *igdeWSky::Controller::MetaContext::GetUndoSystem() const{
+	return GetControllerRef().GetWrapper().GetUndoSystem();
+}
+
+igdeClipboard *igdeWSky::Controller::MetaContext::GetClipboard() const{
+	return &GetEnvironment().GetClipboard();
+}
+
+
+igdeWSky::Controller::MetaProperties::Name::Name() : TBase("igde.wsky.controller.name", "", ""){
+}
+
+igdeWSky::Controller::MetaProperties::Name::~Name() = default;
+
+igdeMetaPropertyStringStorage::Storage &igdeWSky::Controller::MetaProperties::Name::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return ControllerRef(context).GetMPName();
+}
+
+
+igdeWSky::Controller::MetaProperties::Value::Value() : TBase("igde.wsky.controller.value", "", ""){
+}
+
+igdeWSky::Controller::MetaProperties::Value::~Value() = default;
+
+igdeMetaPropertyFloatStorage::Storage &igdeWSky::Controller::MetaProperties::Value::GetStorage(
+const igdeMetaContext::Ref &context) const{
+	return ControllerRef(context).GetMPValue();
+}
+
+
+igdeWSky::Controller::MetaProperties igdeWSky::Controller::MetaProperties::global;
+
+igdeWSky::Controller::MetaProperties::MetaProperties() :
+name(deTObjectReference<Name>::New()),
+value(deTObjectReference<Value>::New()){
+}
+
+
+igdeWSky::Controller::Controller(igdeWSky &wrapper, int index) :
+pWrapper(wrapper),
+pIndex(index),
+pMetaContext(igdeWSky::Controller::MetaContext::Ref::New(this)),
+pMPName(igdeWSky::Controller::MetaProperties::global.name, pMetaContext),
+pMPValue(igdeWSky::Controller::MetaProperties::global.value, pMetaContext)
+{
+	pMPValue.onValueChanged = [this](){
+		pWrapper.SetControllerValue(pIndex, pMPValue);
+	};
+}
+
+igdeWSky::Controller::~Controller(){
+	if(pMetaContext){
+		pMetaContext->Dispose();
+	}
+}
+
+
 // Meta Context
 /////////////////
 
@@ -89,6 +172,7 @@ igdeClipboard *igdeWSky::MetaContext::GetClipboard() const{
 ////////////////////
 
 // igdeWSky::MetaProperties::Path
+
 igdeWSky::MetaProperties::Path::Path() :
 TBase("igde.wsky.path", "Igde.WPSky.SkyPath", igdeEnvironment::eFilePatternListTypes::efpltSky){
 }
@@ -101,14 +185,29 @@ const igdeMetaContext::Ref &context) const{
 }
 
 
+// igdeWSky::MetaProperties::Sliders
+
+igdeWSky::MetaProperties::Sliders::Sliders() : TBaseNoCapture("igde.wsky.sliders",
+	igdeWSky::Controller::MetaProperties::global.name,
+	igdeWSky::Controller::MetaProperties::global.value){}
+
+igdeWSky::MetaProperties::Sliders::~Sliders() = default;
+
+igdeMetaPropertySliderBoardStorage<igdeWSky::Controller::MetaContext>::Storage&
+igdeWSky::MetaProperties::Sliders::GetStorage(const igdeMetaContext::Ref &context) const{
+	return Wrapper(context).GetMPSliders();
+}
+
+
 // Properties
 
 igdeWSky::MetaProperties igdeWSky::MetaProperties::global;
 
 igdeWSky::MetaProperties::MetaProperties() :
 path(deTObjectReference<Path>::New()),
-properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMetaProperty>(devctag,
-	path))){
+sliders(deTObjectReference<Sliders>::New()),
+properties(igdeMetaContext::PropertyList::Ref::New(
+	decTObjectOrderedSet<igdeMetaProperty>(devctag, path, sliders))){
 }
 
 
@@ -131,7 +230,8 @@ pUndoSystem(nullptr),
 pMetaContext(MetaContext::Ref::New(this)),
 pAsyncLoadFinished(nullptr),
 pAsyncLoadCounter(0),
-pMPPath(MetaProperties::global.path, pMetaContext)
+pMPPath(MetaProperties::global.path, pMetaContext),
+pMPSliders(MetaProperties::global.sliders, pMetaContext)
 {
 	pEngSkyInstance = environment.GetEngineController()->GetEngine()->
 		GetSkyInstanceManager()->CreateSkyInstance();
@@ -169,7 +269,6 @@ igdeWSky::~igdeWSky(){
 }
 
 
-
 // Management
 ///////////////
 
@@ -202,7 +301,12 @@ const deSkyController &igdeWSky::GetControllerAt(int index) const{
 }
 
 void igdeWSky::SetControllerValue(int index, float value){
-	pEngSkyInstance->GetControllers().GetAt(index)->SetCurrentValue(value);
+	auto &engController = pEngSkyInstance->GetControllers()[index];
+	if(fabsf(engController->GetCurrentValue() - value) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	engController->SetCurrentValue(value);
 	pEngSkyInstance->NotifyControllerChangedAt(index);
 }
 
@@ -243,7 +347,6 @@ void igdeWSky::SetAsyncLoadFinished(cAsyncLoadFinished *listener){
 }
 
 
-
 void igdeWSky::OnGameDefinitionChanged(){
 	if(!pGDSky){
 		return; // custom sky or loaded from file
@@ -278,7 +381,6 @@ void igdeWSky::OnGameDefinitionChanged(){
 }
 
 
-
 // Private Functions
 /////////////////////
 
@@ -295,6 +397,8 @@ void igdeWSky::pSetSky(deSky *sky){
 			pMaxLightIntensity += layer.GetLightIntensity() + layer.GetAmbientIntensity();
 		});
 	}
+	
+	pUpdateMPControllers();
 }
 
 void igdeWSky::pSetGDSky(igdeGDSky *gdsky){
@@ -344,4 +448,29 @@ void igdeWSky::pCheckAsyncLoadFinished(){
 	if(pAsyncLoadFinished){
 		pAsyncLoadFinished->LoadFinished(*this, true);
 	}
+}
+
+void igdeWSky::pUpdateMPControllers(){
+	MetaProperties::Sliders::ListType sliders;
+	decTObjectOrderedSet<Controller> controllers;
+	
+	if(pEngSkyInstance){
+		pEngSkyInstance->GetControllers().VisitIndexed([&](int i, const deSkyController::Ref &engController){
+			auto controller = Controller::Ref::New(*this, i);
+			const float minimum = engController->GetMinimumValue();
+			const float maximum = engController->GetMaximumValue();
+			
+			controller->GetMPName() = engController->GetName();
+			controller->GetMPValue().SetLowerLimit(minimum);
+			controller->GetMPValue().SetUpperLimit(maximum);
+			controller->GetMPValue().SetTickSpacing((maximum - minimum) / 10.0f);
+			controller->GetMPValue() = engController->GetCurrentValue();
+			
+			controllers.Add(controller);
+			sliders.Add(controller->GetMetaContext());
+		});
+	}
+	
+	pMPSliders = sliders;
+	pControllers = std::move(controllers);
 }

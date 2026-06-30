@@ -30,6 +30,7 @@
 #include "aeALColliderListener.h"
 #include "aeALTouchSensorListener.h"
 #include "aeALGroundChecker.h"
+#include "aeAnimatorLocomotionLeg.h"
 #include "../../meta/animator/aeMCAnimator.h"
 
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
@@ -51,7 +52,6 @@
 
 // predefinitions
 class aeAnimator;
-class aeAnimatorLocomotionLeg;
 class deLogger;
 
 

@@ -69,7 +69,7 @@ void igdeMetaPropertyTextArea::NotifyValueChanged(const igdeMetaContext::Ref &co
 igdeMetaPropertyTextAreaUndo::Ref igdeMetaPropertyTextArea::ChangePropertyValue(
 const igdeMetaContext::Ref &context, const char *newValue,
 const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertyTextAreaUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);
@@ -79,6 +79,11 @@ const char *undoInfo, const char *undoInfoLong){
 		SetPropertyValue(context, newValue);
 		return {};
 	}
+}
+
+igdeMetaPropertyTextArea::PresetList igdeMetaPropertyTextArea::GetPropertyPresets(
+const ContextRef&) const{
+	return {};
 }
 
 igdeMetaPropertyWidget::Ref igdeMetaPropertyTextArea::CreateWidget(){

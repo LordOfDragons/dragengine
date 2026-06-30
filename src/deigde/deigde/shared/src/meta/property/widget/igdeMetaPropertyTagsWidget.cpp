@@ -176,6 +176,25 @@ public:
 	}
 };
 
+
+class cActionPreset : public igdeAction{
+	cListenerHelper pHelper;
+	igdeMetaPropertyTags::Preset::Ref pPreset;
+	
+public:
+	cActionPreset(igdeMetaPropertyTagsWidget &widget, const igdeMetaPropertyTags::Preset::Ref &preset) :
+	igdeAction(preset->GetName(), preset->GetIcon(), preset->GetDescription()),
+	pHelper(widget),
+	pPreset(preset){
+	}
+	
+	~cActionPreset() override = default;
+	
+	void OnAction() override{
+		pHelper.OnValueChanged(pPreset->GetValue(), GetText());
+	}
+};
+
 }
 
 
@@ -222,16 +241,9 @@ igdeMetaPropertyTagsWidget::~igdeMetaPropertyTagsWidget(){
 void igdeMetaPropertyTagsWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pEditTags)
 	
-	auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
-	if(!state){
-		state = igdeMetaPropertyWidgetStateList::Ref::New();
-		state->rows = pPropertyTags.GetRows();
-		pPropertyTags.SetWidgetState(state);
-	}
-	
 	pAction = deTObjectReference<cAction>::New(*this);
 	builder.GetHelper().EditTags(pEditTags, pAction);
-	pEditTags->GetListBox().SetRows(state->rows);
+	OnActivate();
 	WrapEditWidget(builder, noLabel, pEditTags);
 	
 	UpdateMatchable();
@@ -239,12 +251,9 @@ void igdeMetaPropertyTagsWidget::Create(Builder &builder, bool noLabel){
 }
 
 void igdeMetaPropertyTagsWidget::Drop(){
+	OnDeactivate();
+	
 	if(pEditTags){
-		auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
-		if(state){
-			state->rows = pEditTags->GetListBox().GetRows();
-		}
-		
 		pEditTags->SetAction(nullptr);
 	}
 	
@@ -286,12 +295,50 @@ void igdeMetaPropertyTagsWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 		helper.MenuSeparator(menu);
 	}
 	
+	const auto presets = pPropertyTags.GetPropertyPresets(context);
+	if(presets.IsNotEmpty()){
+		auto submenu = igdeMenuCascade::Ref::New(env, "@Igde.MetaProperty.Action.Presets");
+		presets.Visit([&](const igdeMetaPropertyTags::Preset::Ref &preset){
+			helper.MenuCommand(submenu, deTObjectReference<cActionPreset>::New(*this, preset));
+		});
+		menu.AddChild(submenu);
+		helper.MenuSeparator(menu);
+	}
+	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }
 
 bool igdeMetaPropertyTagsWidget::IsPropertyValid() const{
 	return pPropertyTags.IsValid(GetContext());
 }
+
+void igdeMetaPropertyTagsWidget::OnActivate(){
+	auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		state->rows = pPropertyTags.GetRows();
+		pPropertyTags.SetWidgetState(state);
+	}
+	
+	if(pEditTags){
+		pEditTags->GetListBox().SetRows(state->rows);
+	}
+}
+
+void igdeMetaPropertyTagsWidget::OnDeactivate(){
+	if(!pEditTags){
+		return;
+	}
+	
+	auto state = pPropertyTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		pPropertyTags.SetWidgetState(state);
+	}
+	
+	state->rows = pEditTags->GetListBox().GetRows();
+}
+
 
 
 // Protected Functions

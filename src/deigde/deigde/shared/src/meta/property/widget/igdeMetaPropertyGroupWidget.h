@@ -93,6 +93,9 @@ public:
 	/** \brief Child widgets. */
 	inline List &GetChildWidgets(){ return pChildWidgets; }
 	inline const List &GetChildWidgets() const{ return pChildWidgets; }
+	
+	void OnActivate() override;
+	void OnDeactivate() override;
 	/*@}*/
 	
 	

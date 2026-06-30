@@ -128,6 +128,79 @@ void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCasc
 }
 
 
+// Playground controllers
+///////////////////////////
+
+namespace{
+
+class cActionPlaygroundControllersReset : public igdeMetaProperty::Action{
+	aeMCPAnimatorPlaygroundControllers &pProperty;
+	
+public:
+	cActionPlaygroundControllersReset(aeMCPAnimatorPlaygroundControllers &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeMetaProperty::Action(owner, context, "@Animator.WPPlayground.Action.ControllersReset",
+		nullptr, "@Animator.WPPlayground.Action.ControllersReset.ToolTip"),
+	pProperty(property){}
+	
+	~cActionPlaygroundControllersReset() override = default;
+	
+	void OnAction() override{
+		auto &context = GetContext();
+		if(!pProperty.IsValid(context)){
+			return;
+		}
+		
+		pProperty.Animator(context).GetMPControllers()->Visit([&](aeController &controller){
+			controller.ResetValue();
+		});
+	}
+};
+
+class cActionPlaygroundControllersFullReset : public igdeMetaProperty::Action{
+	aeMCPAnimatorPlaygroundControllers &pProperty;
+	
+public:
+	cActionPlaygroundControllersFullReset(aeMCPAnimatorPlaygroundControllers &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
+	igdeMetaProperty::Action(owner, context, "@Animator.WPPlayground.Action.ControllersFullReset",
+		nullptr, "@Animator.WPPlayground.Action.ControllersFullReset.ToolTip"),
+	pProperty(property){}
+	
+	~cActionPlaygroundControllersFullReset() override = default;
+	
+	void OnAction() override{
+		auto &context = GetContext();
+		if(!pProperty.IsValid(context)){
+			return;
+		}
+		
+		pProperty.Animator(context).GetMPControllers()->Visit([&](aeController &controller){
+			controller.ResetValue(true);
+		});
+	}
+};
+
+}
+
+aeMCPAnimatorPlaygroundControllers::aeMCPAnimatorPlaygroundControllers(igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue) :
+aeTMCPAnimatorNoCapture("animator.playgroundControllers", propertyName, propertyValue){
+}
+
+aeMCPAnimatorPlaygroundControllers::~aeMCPAnimatorPlaygroundControllers() = default;
+
+aeMCPAnimatorPlaygroundControllers::Storage &aeMCPAnimatorPlaygroundControllers::GetStorage(const igdeMetaContext::Ref &context) const{
+	return Animator(context).GetMPPlayground();
+}
+
+void aeMCPAnimatorPlaygroundControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
+	auto &helper = menu.GetEnvironment().GetUIHelper();
+	if(menu.GetChildren().IsNotEmpty()){
+		helper.MenuSeparator(menu);
+	}
+	helper.MenuCommand(menu, deTObjectReference<cActionPlaygroundControllersReset>::New(*this, owner, context));
+	helper.MenuCommand(menu, deTObjectReference<cActionPlaygroundControllersFullReset>::New(*this, owner, context));
+}
+
+
 // Class aeMCPAnimatorSky
 ///////////////////////////
 

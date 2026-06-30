@@ -155,20 +155,14 @@ igdeMetaPropertyObjectSetWidget::~igdeMetaPropertyObjectSetWidget(){
 void igdeMetaPropertyObjectSetWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pListBox)
 	
-	auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
-	if(!state){
-		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
-		state->rows = pPropertyObjectSet.GetRows();
-		pPropertyObjectSet.SetWidgetState(state);
-	}
-	
 	auto &helper = builder.GetHelper();
 	pListener = deTObjectReference<cListener>::New(*this);
-	helper.ListBox(state->rows, pPropertyObjectSet.GetDescription(), pListBox, pListener);
+	helper.ListBox(pPropertyObjectSet.GetRows(), pPropertyObjectSet.GetDescription(), pListBox, pListener);
 	pListBox->SetDefaultSorter();
 	pListBox->SetSelectionMode(pPropertyObjectSet.GetMultiSelection()
 		? igdeListBox::esmMultiple : igdeListBox::esmSingle);
 	pListBox->SetEnabled(false);
+	OnActivate();
 	
 	auto buttons = igdeContainerFlow::Ref::New(helper.GetEnvironment(),
 		igdeContainerFlow::eaY, igdeContainerFlow::esNone);
@@ -185,15 +179,10 @@ void igdeMetaPropertyObjectSetWidget::Create(Builder &builder, bool noLabel){
 }
 
 void igdeMetaPropertyObjectSetWidget::Drop(){
-	if(pListBox){
-		auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
-		if(state){
-			state->rows = pListBox->GetRows();
-		}
-		
-		if(pListener){
-			pListBox->RemoveListener(pListener);
-		}
+	OnDeactivate();
+	
+	if(pListBox && pListener){
+		pListBox->RemoveListener(pListener);
 	}
 	
 	pListener.Clear();
@@ -324,6 +313,33 @@ void igdeMetaPropertyObjectSetWidget::RestoreSelection(){
 			}
 		});
 	});
+}
+
+void igdeMetaPropertyObjectSetWidget::OnActivate(){
+	auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		state->rows = pPropertyObjectSet.GetRows();
+		pPropertyObjectSet.SetWidgetState(state);
+	}
+	
+	if(pListBox){
+		pListBox->SetRows(state->rows);
+	}
+}
+
+void igdeMetaPropertyObjectSetWidget::OnDeactivate(){
+	if(!pListBox){
+		return;
+	}
+	
+	auto state = pPropertyObjectSet.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		pPropertyObjectSet.SetWidgetState(state);
+	}
+	
+	state->rows = pListBox->GetRows();
 }
 
 

@@ -188,6 +188,12 @@ bool igdeMetaPropertyWidget::IsPropertyValid() const{
 	return false;
 }
 
+void igdeMetaPropertyWidget::OnActivate(){
+}
+
+void igdeMetaPropertyWidget::OnDeactivate(){
+}
+
 
 // Protected Functions
 ////////////////////////

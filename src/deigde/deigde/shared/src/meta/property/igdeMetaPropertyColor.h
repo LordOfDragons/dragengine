@@ -42,6 +42,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyColor>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decColor>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Clipboard data. */
 	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decColor>{
@@ -152,6 +158,8 @@ public:
 		const ContextRef &context, const decColor &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
 	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	/**
 	 * \brief Create UI widget.

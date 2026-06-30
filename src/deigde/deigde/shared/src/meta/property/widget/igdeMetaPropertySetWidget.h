@@ -112,6 +112,8 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	bool IsPropertyValid() const override;
+	void OnActivate() override;
+	void OnDeactivate() override;
 	
 	/** \brief Store selection. */
 	void StoreSelection();

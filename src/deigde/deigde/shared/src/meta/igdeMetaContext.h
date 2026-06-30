@@ -140,10 +140,10 @@ public:
 	virtual igdeEnvironment &GetEnvironment() const = 0;
 	
 	/** \brief Undo system or nullptr to apply actions immediately. */
-	virtual igdeUndoSystem *GetUndoSystem() const = 0;
+	virtual igdeUndoSystem *GetUndoSystem() const;
 	
 	/** \brief Clipboard or nullptr if not supported. */
-	virtual igdeClipboard *GetClipboard() const = 0;
+	virtual igdeClipboard *GetClipboard() const;
 	
 	/** \brief Listeners. */
 	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }

@@ -41,6 +41,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyVector2>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decVector2>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Clipboard data. */
 	class DE_DLL_EXPORT ClipboardData : public igdeTClipboardData<decVector2>{
@@ -150,6 +156,9 @@ public:
 	virtual deTObjectReference<igdeMetaPropertyVector2Undo> ChangePropertyValue(
 		const ContextRef &context, const decVector2 &newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	
 	/**

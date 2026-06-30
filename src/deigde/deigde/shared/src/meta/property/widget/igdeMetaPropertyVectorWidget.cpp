@@ -182,6 +182,26 @@ public:
 	}
 };
 
+
+class cActionPreset : public igdeAction{
+	cListenerHelper pHelper;
+	igdeMetaPropertyVector::Preset::Ref pPreset;
+	
+public:
+	cActionPreset(igdeMetaPropertyVectorWidget &widget,
+		const igdeMetaPropertyVector::Preset::Ref &preset) :
+	igdeAction(preset->GetName(), preset->GetIcon(), preset->GetDescription()),
+	pHelper(widget),
+	pPreset(preset){
+	}
+	
+	~cActionPreset() override = default;
+	
+	void OnAction() override{
+		pHelper.OnValueChanged(pPreset->GetValue(), GetText());
+	}
+};
+
 }
 
 
@@ -275,6 +295,16 @@ void igdeMetaPropertyVectorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 	if(context && context->GetClipboard()){
 		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
 		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+		helper.MenuSeparator(menu);
+	}
+	
+	const auto presets = pPropertyVector.GetPropertyPresets(context);
+	if(presets.IsNotEmpty()){
+		auto submenu = igdeMenuCascade::Ref::New(env, "@Igde.MetaProperty.Action.Presets");
+		presets.Visit([&](const igdeMetaPropertyVector::Preset::Ref &preset){
+			helper.MenuCommand(submenu, deTObjectReference<cActionPreset>::New(*this, preset));
+		});
+		menu.AddChild(submenu);
 		helper.MenuSeparator(menu);
 	}
 	

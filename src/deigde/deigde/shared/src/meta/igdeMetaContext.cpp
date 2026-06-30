@@ -83,6 +83,14 @@ void igdeMetaContext::SetProperties(const PropertyList::Ref &properties){
 	NotifyPropertiesChanged();
 }
 
+igdeUndoSystem *igdeMetaContext::GetUndoSystem() const{
+	return nullptr;
+}
+
+igdeClipboard *igdeMetaContext::GetClipboard() const{
+	return nullptr;
+}
+
 void igdeMetaContext::NotifyPropertiesChanged(){
 	pListeners.Notify([&](Listener &listener){
 		listener.OnPropertiesChanged(this);

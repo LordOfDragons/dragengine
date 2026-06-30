@@ -246,6 +246,7 @@ public:
 		SetEnableLowerLimit(true);
 		SetUpperLimit(2);
 		SetEnableUpperLimit(true);
+		SetTickSpacing(1);
 		SetDefaultValue(1);
 	}
 	~aeMCPAnimatorLocomotionUseLegPairs() override = default;
@@ -384,6 +385,8 @@ public:
 		SetEnableLowerLimit(true);
 		SetUpperLimit(3);
 		SetEnableUpperLimit(true);
+		SetTickSpacing(1);
+		SetCanUndo(false);
 	}
 	~aeMCPAnimatorLocomotionLegIndex() override = default;
 	

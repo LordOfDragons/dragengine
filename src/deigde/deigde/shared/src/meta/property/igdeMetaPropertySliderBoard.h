@@ -58,8 +58,8 @@ public:
 	
 	
 private:
-	const igdeMetaPropertyString::Ref pPropertyName;
-	const igdeMetaPropertyFloat::Ref pPropertyValue;
+	const igdeMetaPropertyString::Ref pPropertySliderName;
+	const igdeMetaPropertyFloat::Ref pPropertySliderValue;
 	igdeTListenerList<Listener> pListeners;
 	
 	
@@ -67,8 +67,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create slider board meta property. */
-	igdeMetaPropertySliderBoard(const char *id, igdeMetaPropertyString *propertyName,
-		igdeMetaPropertyFloat *propertyValue);
+	igdeMetaPropertySliderBoard(const char *id, igdeMetaPropertyString *propertySliderName,
+		igdeMetaPropertyFloat *propertySliderValue);
 	
 protected:
 	/** \brief Clean up slider board meta property. */
@@ -80,10 +80,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get property name. */
-	inline const igdeMetaPropertyString::Ref &GetPropertyName() const{ return pPropertyName; }
+	inline const igdeMetaPropertyString::Ref &GetPropertySliderName() const{ return pPropertySliderName; }
 	
 	/** \brief Get property value. */
-	inline const igdeMetaPropertyFloat::Ref &GetPropertyValue() const{ return pPropertyValue; }
+	inline const igdeMetaPropertyFloat::Ref &GetPropertySliderValue() const{ return pPropertySliderValue; }
 	
 	/** \brief Listeners. */
 	inline igdeTListenerList<Listener> &GetListeners(){ return pListeners; }
@@ -138,9 +138,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create slider board meta property with label and description. */
-	igdeMetaPropertySliderBoardType(const char *id, igdeMetaPropertyString *propertyName,
-		igdeMetaPropertyFloat *propertyValue) :
-	igdeMetaPropertySliderBoard(id, propertyName, propertyValue){}
+	igdeMetaPropertySliderBoardType(const char *id, igdeMetaPropertyString *propertySliderName,
+		igdeMetaPropertyFloat *propertySliderValue) :
+	igdeMetaPropertySliderBoard(id, propertySliderName, propertySliderValue){}
 	
 protected:
 	/** \brief Clean up slider board meta property. */
@@ -201,9 +201,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create slider board meta property. */
-	igdeMetaPropertySliderBoardStorage(const char *id, igdeMetaPropertyString *propertyName,
-		igdeMetaPropertyFloat *propertyValue) :
-	igdeMetaPropertySliderBoardType<T, L>(id, propertyName, propertyValue){}
+	igdeMetaPropertySliderBoardStorage(const char *id, igdeMetaPropertyString *propertySliderName,
+		igdeMetaPropertyFloat *propertySliderValue) :
+	igdeMetaPropertySliderBoardType<T, L>(id, propertySliderName, propertySliderValue){}
 	
 protected:
 	/** \brief Clean up slider board meta property. */

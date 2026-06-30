@@ -138,6 +138,7 @@ public:
 	aeMCPControllerCurrentValue() : aeTMCPAnimatorController("controller.currentValue", "Animator.WPController.Value"){
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
+		SetCanUndo(false);
 	}
 	
 	~aeMCPControllerCurrentValue() override = default;
@@ -156,7 +157,10 @@ public:
 /** Controller vector. */
 class aeMCPControllerVector : public aeTMCPAnimatorController<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPControllerVector() : aeTMCPAnimatorController("controller.vector", "Animator.WPController.Vector"){}
+	aeMCPControllerVector() : aeTMCPAnimatorController("controller.vector", "Animator.WPController.Vector"){
+		SetCanUndo(false);
+	}
+	
 	~aeMCPControllerVector() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{

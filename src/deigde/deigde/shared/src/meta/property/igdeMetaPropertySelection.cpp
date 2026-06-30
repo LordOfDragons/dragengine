@@ -84,7 +84,7 @@ void igdeMetaPropertySelection::NotifyChoicesChanged(){
 
 igdeMetaPropertySelectionUndo::Ref igdeMetaPropertySelection::ChangePropertyValue(
 const igdeMetaContext::Ref &context, void *newValue, const char *undoInfo, const char *undoInfoLong){
-	if(context->GetUndoSystem()){
+	if(context->GetUndoSystem() && GetCanUndo()){
 		const auto undo = igdeMetaPropertySelectionUndo::Ref::New(
 			*this, context, newValue, undoInfo, undoInfoLong);
 		context->GetUndoSystem()->Add(undo);

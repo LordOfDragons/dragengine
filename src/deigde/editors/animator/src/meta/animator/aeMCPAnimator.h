@@ -147,13 +147,10 @@ public:
 /** Playground controllers. */
 class aeMCPAnimatorPlaygroundControllers : public aeTMCPAnimatorNoCapture<igdeMetaPropertySliderBoardStorage<aeMCController>>{
 public:
-	aeMCPAnimatorPlaygroundControllers(igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue) :
-		aeTMCPAnimatorNoCapture("animator.playgroundControllers", propertyName, propertyValue){}
-	~aeMCPAnimatorPlaygroundControllers() override = default;
-	
-	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPPlayground();
-	}
+	aeMCPAnimatorPlaygroundControllers(igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue);
+	~aeMCPAnimatorPlaygroundControllers() override;
+	Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 
 

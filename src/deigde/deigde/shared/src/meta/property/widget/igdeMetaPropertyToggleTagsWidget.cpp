@@ -176,6 +176,26 @@ public:
 	}
 };
 
+
+class cActionPreset : public igdeAction{
+	cListenerHelper pHelper;
+	igdeMetaPropertyToggleTags::Preset::Ref pPreset;
+	
+public:
+	cActionPreset(igdeMetaPropertyToggleTagsWidget &widget,
+		const igdeMetaPropertyToggleTags::Preset::Ref &preset) :
+	igdeAction(preset->GetName(), preset->GetIcon(), preset->GetDescription()),
+	pHelper(widget),
+	pPreset(preset){
+	}
+	
+	~cActionPreset() override = default;
+	
+	void OnAction() override{
+		pHelper.OnValueChanged(pPreset->GetValue(), GetText());
+	}
+};
+
 }
 
 
@@ -223,16 +243,9 @@ igdeMetaPropertyToggleTagsWidget::~igdeMetaPropertyToggleTagsWidget(){
 void igdeMetaPropertyToggleTagsWidget::Create(Builder &builder, bool noLabel){
 	DEASSERT_NULL(pToggleTags)
 	
-	auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
-	if(!state){
-		state = igdeMetaPropertyWidgetStateList::Ref::New();
-		state->rows = pPropertyToggleTags.GetRows();
-		pPropertyToggleTags.SetWidgetState(state);
-	}
-	
 	pAction = deTObjectReference<cAction>::New(*this);
 	builder.GetHelper().ToggleTags(pToggleTags, pAction);
-	pToggleTags->GetListBox().SetRows(state->rows);
+	OnActivate();
 	WrapEditWidget(builder, noLabel, pToggleTags);
 	
 	UpdateMatchable();
@@ -240,12 +253,9 @@ void igdeMetaPropertyToggleTagsWidget::Create(Builder &builder, bool noLabel){
 }
 
 void igdeMetaPropertyToggleTagsWidget::Drop(){
+	OnDeactivate();
+	
 	if(pToggleTags){
-		auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
-		if(state){
-			state->rows = pToggleTags->GetListBox().GetRows();
-		}
-		
 		pToggleTags->SetAction(nullptr);
 	}
 	
@@ -286,11 +296,48 @@ void igdeMetaPropertyToggleTagsWidget::AddContextMenuEntries(igdeMenuCascade &me
 		helper.MenuSeparator(menu);
 	}
 	
+	const auto presets = pPropertyToggleTags.GetPropertyPresets(context);
+	if(presets.IsNotEmpty()){
+		auto submenu = igdeMenuCascade::Ref::New(env, "@Igde.MetaProperty.Action.Presets");
+		presets.Visit([&](const igdeMetaPropertyToggleTags::Preset::Ref &preset){
+			helper.MenuCommand(submenu, deTObjectReference<cActionPreset>::New(*this, preset));
+		});
+		menu.AddChild(submenu);
+		helper.MenuSeparator(menu);
+	}
+	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }
 
 bool igdeMetaPropertyToggleTagsWidget::IsPropertyValid() const{
 	return pPropertyToggleTags.IsValid(GetContext());
+}
+
+void igdeMetaPropertyToggleTagsWidget::OnActivate(){
+	auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		state->rows = pPropertyToggleTags.GetRows();
+		pPropertyToggleTags.SetWidgetState(state);
+	}
+	
+	if(pToggleTags){
+		pToggleTags->GetListBox().SetRows(state->rows);
+	}
+}
+
+void igdeMetaPropertyToggleTagsWidget::OnDeactivate(){
+	if(!pToggleTags){
+		return;
+	}
+	
+	auto state = pPropertyToggleTags.GetWidgetState().DynamicCast<igdeMetaPropertyWidgetStateList>();
+	if(!state){
+		state = deTObjectReference<igdeMetaPropertyWidgetStateList>::New();
+		pPropertyToggleTags.SetWidgetState(state);
+	}
+	
+	state->rows = pToggleTags->GetListBox().GetRows();
 }
 
 

@@ -28,6 +28,10 @@
 #include "../../gamedefinition/sky/igdeGDSky.h"
 #include "../../meta/igdeMetaContext.h"
 #include "../../meta/property/igdeMetaPropertyPath.h"
+#include "../../meta/property/igdeMetaPropertyString.h"
+#include "../../meta/property/igdeMetaPropertyFloat.h"
+#include "../../meta/property/igdeMetaPropertyList.h"
+#include "../../meta/property/igdeMetaPropertySliderBoard.h"
 #include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -65,6 +69,104 @@ public:
 		/** \brief Loading finished. */
 		virtual void LoadFinished(igdeWSky &wrapper, bool succeeded) = 0;
 	};
+	
+	
+	/** \brief Sky controller. */
+	class DE_DLL_EXPORT Controller : public deObject{
+	public:
+		using Ref = deTObjectReference<Controller>;
+		
+		class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
+		private:
+			Controller *pController;
+			Controller::Ref pGuard;
+			
+		public:
+			using Ref = deTObjectReference<MetaContext>;
+			MetaContext(Controller *controller);
+			
+			inline Controller *GetController() const{ return pController; }
+			Controller &GetControllerRef() const;
+			Ref Capture() const;
+			igdeEnvironment &GetEnvironment() const override;
+			igdeUndoSystem *GetUndoSystem() const override;
+			igdeClipboard *GetClipboard() const override;
+			
+		protected:
+			virtual ~MetaContext() override;
+		};
+		
+		class DE_DLL_EXPORT MetaProperties{
+		public:
+			template <typename T> class TBase : public T{
+			public:
+				template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
+				
+				igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
+					return context.DynamicCast<MetaContext>()->Capture();
+				}
+				
+				bool IsValid(const igdeMetaContext::Ref &context) const override{
+					const auto c = context.DynamicCast<MetaContext>();
+					return c && !c->IsDisposed();
+				}
+				
+				inline Controller &ControllerRef(const igdeMetaContext::Ref &context) const{
+					return context.DynamicCast<MetaContext>()->GetControllerRef();
+				}
+				
+			protected:
+				virtual ~TBase() override{}
+			};
+			
+			class DE_DLL_EXPORT Name : public TBase<igdeMetaPropertyStringStorage>{
+			public:
+				Name();
+				Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+				
+			protected:
+				~Name() override;
+			};
+			
+			class DE_DLL_EXPORT Value : public TBase<igdeMetaPropertyFloatStorage>{
+			public:
+				Value();
+				Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+				
+			protected:
+				~Value() override;
+			};
+			
+		private:
+			MetaProperties();
+			
+		public:
+			deTObjectReference<Name> name;
+			deTObjectReference<Value> value;
+			
+			static MetaProperties global;
+		};
+		
+	private:
+		igdeWSky &pWrapper;
+		int pIndex;
+		MetaContext::Ref pMetaContext;
+		igdeMetaPropertyStringStorage::Storage pMPName;
+		igdeMetaPropertyFloatStorage::Storage pMPValue;
+		
+	public:
+		Controller(igdeWSky &wrapper, int index);
+		
+	protected:
+		~Controller() override;
+		
+	public:
+		inline igdeWSky &GetWrapper() const{ return pWrapper; }
+		inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+		inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
+		inline igdeMetaPropertyFloatStorage::Storage &GetMPValue(){ return pMPValue; }
+	};
+	
 	
 	/** \brief Meta context. */
 	class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
@@ -111,6 +213,23 @@ public:
 			virtual ~TBase() override{}
 		};
 		
+		template <typename T> class TBaseNoCapture : public T{
+		public:
+			template <typename... A> TBaseNoCapture(A&&... args) : T(std::forward<A>(args)...) {}
+			
+			bool IsValid(const igdeMetaContext::Ref &context) const override{
+				const auto c = context.DynamicCast<MetaContext>();
+				return c && !c->IsDisposed();
+			}
+			
+			inline igdeWSky &Wrapper(const igdeMetaContext::Ref &context) const{
+				return context.DynamicCast<MetaContext>()->GetWrapperRef();
+			}
+			
+		protected:
+			virtual ~TBaseNoCapture() override{}
+		};
+		
 		class DE_DLL_EXPORT Path : public TBase<igdeMetaPropertyPathStorage>{
 		public:
 			Path();
@@ -120,17 +239,26 @@ public:
 			~Path() override;
 		};
 		
+		class DE_DLL_EXPORT Sliders : public TBaseNoCapture<igdeMetaPropertySliderBoardStorage<Controller::MetaContext>>{
+		public:
+			Sliders();
+			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
+			
+		protected:
+			~Sliders() override;
+		};
+		
+		
 	private:
 		MetaProperties();
 		
 	public:
 		deTObjectReference<Path> path;
-		
+		deTObjectReference<Sliders> sliders;
 		const igdeMetaContext::PropertyList::Ref properties;
 		
 		static MetaProperties global;
 	};
-	
 	
 	
 private:
@@ -148,6 +276,8 @@ private:
 	int pAsyncLoadCounter;
 	
 	igdeMetaPropertyPathStorage::Storage pMPPath;
+	decTObjectOrderedSet<Controller> pControllers;
+	igdeMetaPropertySliderBoardStorage<Controller::MetaContext>::Storage pMPSliders;
 	
 	
 public:
@@ -177,6 +307,9 @@ public:
 	/*@{*/
 	/** \brief Meta property sky path. */
 	inline igdeMetaPropertyPathStorage::Storage &GetMPPath(){ return pMPPath; }
+	
+	/** \brief Meta property sky sliders. */
+	inline igdeMetaPropertySliderBoardStorage<Controller::MetaContext>::Storage &GetMPSliders(){ return pMPSliders; }
 	
 	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
@@ -211,6 +344,9 @@ public:
 	
 	/** \brief Get sky or nullptr. */
 	const deSky *GetSky() const;
+	
+	/** \brief Get sky instance or nullptr. */
+	inline const deSkyInstance::Ref &GetSkyInstance() const{ return pEngSkyInstance; }
 	
 	/** \brief Game definition sky or nullptr if sky is set manually. */
 	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
@@ -263,6 +399,7 @@ private:
 	void pSetGDSky(igdeGDSky *gdsky);
 	void pLoadSky(const char *path);
 	void pCheckAsyncLoadFinished();
+	void pUpdateMPControllers();
 };
 
 #endif

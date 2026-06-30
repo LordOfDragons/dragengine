@@ -43,6 +43,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyPath>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decString>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyPath>{
@@ -164,6 +170,9 @@ public:
 	 * Implemented by subclass.
 	 */
 	virtual decString GetPropertyBasePath(const ContextRef &context) const;
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	/**
 	 * \brief Additional file resource information.

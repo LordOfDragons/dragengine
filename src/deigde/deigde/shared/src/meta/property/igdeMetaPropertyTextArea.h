@@ -39,6 +39,12 @@ public:
 	/** \brief Reference type. */
 	using Ref = deTObjectReference<igdeMetaPropertyTextArea>;
 	
+	/** \brief Present. */
+	using Preset = TPreset<decString>;
+	
+	/** \brief Present list. */
+	using PresetList = decTObjectOrderedSet<Preset>;
+	
 	
 	/** \brief Listener. */
 	class DE_DLL_EXPORT Listener : public TListener<igdeMetaPropertyTextArea>{
@@ -129,6 +135,9 @@ public:
 	virtual deTObjectReference<igdeMetaPropertyTextAreaUndo> ChangePropertyValue(
 		const ContextRef &context, const char *newValue,
 		const char *undoInfo = nullptr, const char *undoInfoLong = nullptr);
+	
+	/** \brief Presets. */
+	virtual PresetList GetPropertyPresets(const ContextRef &context) const;
 	
 	
 	/**

@@ -169,6 +169,8 @@ void igdeWPMetaContextList::pCreateContextPanels(){
 		scrollPanel->AddChild(panel);
 		pTabBook->AddChild(scrollPanel, context->GetLabel(), context->GetIcon(), context->GetDescription());
 		
+		panel->OnActivate();
+		
 		pContextPanels.Add(panel);
 		panel->SetContext(context);
 		panel->SetFilter(pFilter);
@@ -176,6 +178,9 @@ void igdeWPMetaContextList::pCreateContextPanels(){
 }
 
 void igdeWPMetaContextList::pClearContextPanels(){
+	pContextPanels.Visit([](igdeWPMetaContext &panel){
+		panel.OnDeactivate();
+	});
 	pContextPanels.RemoveAll();
 	pTabBook->RemoveAllChildren();
 	

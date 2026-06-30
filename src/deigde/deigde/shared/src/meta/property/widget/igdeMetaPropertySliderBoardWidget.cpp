@@ -51,7 +51,7 @@ public:
 			return {};
 		}
 		
-		auto &propertyValue = pWidget.GetPropertySliderBoard().GetPropertyValue();
+		auto &propertyValue = pWidget.GetPropertySliderBoard().GetPropertySliderValue();
 		const float oldValue = propertyValue->GetPropertyValue(slider.context);
 		if(fabsf(newValue - oldValue) < FLOAT_SAFE_EPSILON){
 			return {};
@@ -212,14 +212,14 @@ pNamePropertyListener(NamePropertyListener::Ref::New(*this)),
 pValuePropertyListener(ValuePropertyListener::Ref::New(*this))
 {
 	property.GetListeners().Add(pPropertyListener);
-	property.GetPropertyName()->GetListeners().Add(pNamePropertyListener);
-	property.GetPropertyValue()->GetListeners().Add(pValuePropertyListener);
+	property.GetPropertySliderName()->GetListeners().Add(pNamePropertyListener);
+	property.GetPropertySliderValue()->GetListeners().Add(pValuePropertyListener);
 }
 
 igdeMetaPropertySliderBoardWidget::~igdeMetaPropertySliderBoardWidget(){
 	Drop();
-	pPropertySliderBoard.GetPropertyValue()->GetListeners().Remove(pValuePropertyListener);
-	pPropertySliderBoard.GetPropertyName()->GetListeners().Remove(pNamePropertyListener);
+	pPropertySliderBoard.GetPropertySliderValue()->GetListeners().Remove(pValuePropertyListener);
+	pPropertySliderBoard.GetPropertySliderName()->GetListeners().Remove(pNamePropertyListener);
 	pPropertySliderBoard.GetListeners().Remove(pPropertyListener);
 }
 
@@ -260,7 +260,7 @@ void igdeMetaPropertySliderBoardWidget::UpdateSliderValues(){
 		return;
 	}
 	
-	auto &propertyValue = pPropertySliderBoard.GetPropertyValue();
+	auto &propertyValue = pPropertySliderBoard.GetPropertySliderValue();
 	RunWithPreventUpdate([&]{
 		pSliders.Visit([&](const igdeMetaPropertySliderBoardWidget::Slider &slider){
 			const auto &sliderContext = slider.context;
@@ -277,7 +277,7 @@ void igdeMetaPropertySliderBoardWidget::UpdateSliderNames(){
 		return;
 	}
 	
-	auto &propertyName = pPropertySliderBoard.GetPropertyName();
+	auto &propertyName = pPropertySliderBoard.GetPropertySliderName();
 	RunWithPreventUpdate([&]{
 		pSliders.Visit([&](const igdeMetaPropertySliderBoardWidget::Slider &slider){
 			const auto &sliderContext = slider.context;
@@ -292,7 +292,7 @@ void igdeMetaPropertySliderBoardWidget::UpdateSliderLimits(){
 		return;
 	}
 	
-	auto &propertyValue = pPropertySliderBoard.GetPropertyValue();
+	auto &propertyValue = pPropertySliderBoard.GetPropertySliderValue();
 	RunWithPreventUpdate([&]{
 		pSliders.Visit([&](const igdeMetaPropertySliderBoardWidget::Slider &slider){
 			const auto &sliderContext = slider.context;
@@ -317,6 +317,10 @@ bool igdeMetaPropertySliderBoardWidget::HasSliderContext(const igdeMetaContext::
 
 void igdeMetaPropertySliderBoardWidget::SetUndoSliding(const igdeMetaPropertyFloatUndo::Ref &undo){
 	pUndoSliding = undo;
+}
+
+bool igdeMetaPropertySliderBoardWidget::IsPropertyValid() const{
+	return pPropertySliderBoard.IsValid(GetContext());
 }
 
 
@@ -344,8 +348,8 @@ void igdeMetaPropertySliderBoardWidget::pRebuildBoard(){
 		}
 		
 		auto &helper = pContainer->GetEnvironment().GetUIHelperProperties();
-		auto &propertyName = pPropertySliderBoard.GetPropertyName();
-		auto &propertyValue = pPropertySliderBoard.GetPropertyValue();
+		auto &propertyName = pPropertySliderBoard.GetPropertySliderName();
+		auto &propertyValue = pPropertySliderBoard.GetPropertySliderValue();
 		
 		pPropertySliderBoard.GetPropertyValue(context).Visit([&](const igdeMetaContext::Ref &sliderContext){
 			const bool validName = propertyName->IsValid(sliderContext);

@@ -193,6 +193,12 @@ public:
 	
 	/** \brief Property is valid. */
 	virtual bool IsPropertyValid() const;
+	
+	/** \brief Widget has been activated. */
+	virtual void OnActivate();
+	
+	/** \brief Widget has been deactivated. */
+	virtual void OnDeactivate();
 	/*@}*/
 	
 	
