@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2026, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,44 +22,15 @@
  * SOFTWARE.
  */
 
+#include "deBaseSceneModule.h"
 
-namespace Dragengine
 
 
-/**
- * \brief ResourceLoader type.
- */
-enum ResourceLoaderType
-	/** \brief Animation. */
-	animation
-	
-	/** \brief Font. */
-	font
-	
-	/** \brief Image. */
-	image
-	
-	/** \brief LanguagePack. */
-	languagePack
-	
-	/** \brief Model. */
-	model
-	
-	/** \brief Occlusion Mesh. */
-	occlusionMesh
-	
-	/** \brief Rig. */
-	rig
-	
-	/** \brief Scene. */
-	scene
-	
-	/** \brief Skin. */
-	skin
-	
-	/** \brief Sound. */
-	sound
-	
-	/** \brief Video. */
-	video
-end
+// Class deBaseSceneModule
+////////////////////////////
+
+deBaseSceneModule::deBaseSceneModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
+}
+
+deBaseSceneModule::~deBaseSceneModule() = default;

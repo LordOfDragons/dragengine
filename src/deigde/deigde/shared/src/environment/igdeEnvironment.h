@@ -82,6 +82,7 @@ public:
 		efpltOcclusionMesh, //!< Occlusion mesh.
 		efpltParticleEmitter, //!< Particle Emitter.
 		efpltRig, //!< Rig.
+		efpltScene, //!< Scene.
 		efpltSkin, //!< Skin.
 		efpltSky, //!< Sky.
 		efpltSynthesizer, //!< Synthesizer.

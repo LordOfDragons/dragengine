@@ -132,7 +132,17 @@ public:
 		 * \brief Service module.
 		 * \version 1.23
 		 */
-		emtService
+		emtService,
+		
+		/**
+		 * \brief Scene module.
+		 * \version 1.28
+		 *
+		 * Handles scene file formats like FBX or GLB containing multiple objects such
+		 * as models, skins, rigs and animations. Used to import entire scenes from
+		 * another application.
+		 */
+		emtScene
 	};
 	
 	/**
