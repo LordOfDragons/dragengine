@@ -387,6 +387,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-toplevel-icon-protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2304,6 +2307,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-toplevel-icon-protocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h">

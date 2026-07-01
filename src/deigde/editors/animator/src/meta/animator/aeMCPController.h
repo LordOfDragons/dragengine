@@ -322,7 +322,13 @@ public:
 /** Controller locomotion leg. */
 class aeMCPControllerLocomotionLeg : public aeTMCPAnimatorController<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPControllerLocomotionLeg() : aeTMCPAnimatorController("controller.locomotionLeg", "Animator.WPController.Leg"){}
+	aeMCPControllerLocomotionLeg() : aeTMCPAnimatorController("controller.locomotionLeg", "Animator.WPController.Leg"){
+		SetLowerLimit(0);
+		SetEnableLowerLimit(true);
+		SetUpperLimit(3);
+		SetEnableUpperLimit(true);
+		SetTickSpacing(1);
+	}
 	~aeMCPControllerLocomotionLeg() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{

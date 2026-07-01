@@ -541,6 +541,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\wayland-defs.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-decoration-protocol.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-toplevel-icon-protocol.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFontGlyphs.cpp" />
@@ -1182,6 +1183,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\wayland-defs.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-decoration-protocol.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-shell-protocol.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wayland\xdg-toplevel-icon-protocol.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\extensions\wglext.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglFont.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFont.h" />

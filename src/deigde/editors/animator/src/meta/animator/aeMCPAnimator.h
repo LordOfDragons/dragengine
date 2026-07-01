@@ -40,6 +40,7 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertyStringSet.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
+#include <deigde/meta/property/igdeMetaPropertyUndoHistory.h>
 
 
 /** Hidden. */

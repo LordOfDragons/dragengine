@@ -114,6 +114,8 @@ public:
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, cameraAttachToBone, cameraAttachBone,
 			cameraAttachRelativePosition, cameraAttachRelativeRotation), true);
 	
+	igdeMetaPropertyUndoHistory::Ref undoHistory = igdeMetaPropertyUndoHistory::Ref::New("animator.undoHistory");
+	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesController = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesLink = igdeMetaContext::PropertyList::Ref::New();

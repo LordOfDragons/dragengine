@@ -340,6 +340,7 @@ pMPAttachment(pWindowMain.GetMCAnimatorProperties().attachment.attachment, pMeta
 		NotifyPlaybackChanged();
 	};
 	
+	GetUndoSystem()->SetMetaProperty(pMetaContext, pWindowMain.GetMCAnimatorProperties().undoHistory);
 	SetChanged(false);
 }
 

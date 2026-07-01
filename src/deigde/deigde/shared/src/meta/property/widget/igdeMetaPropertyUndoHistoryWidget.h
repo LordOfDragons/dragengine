@@ -22,48 +22,43 @@
  * SOFTWARE.
  */
 
-#ifndef _IGDEMETAPROPERTYLISTWIDGET_H_
-#define _IGDEMETAPROPERTYLISTWIDGET_H_
+#ifndef _IGDEMETAPROPERTYUNDOHISTORYWIDGET_H_
+#define _IGDEMETAPROPERTYUNDOHISTORYWIDGET_H_
 
 #include "igdeMetaPropertyWidget.h"
-#include "../igdeMetaPropertyList.h"
-#include "../../../gui/igdeLabel.h"
+#include "../igdeMetaPropertyUndoHistory.h"
 #include "../../../gui/igdeListBox.h"
-#include "../../../gui/event/igdeListBoxListener.h"
+#include "../../../gui/resources/igdeIcon.h"
 
 
 /**
- * \brief List meta property widget class able to add itself to a widget holder.
+ * \brief Undo history meta property widget class able to add itself to a widget holder.
  */
-class DE_DLL_EXPORT igdeMetaPropertyListWidget : public igdeMetaPropertyWidget{
+class DE_DLL_EXPORT igdeMetaPropertyUndoHistoryWidget : public igdeMetaPropertyWidget{
 public:
 	/** \brief Reference type. */
-	using Ref = deTObjectReference<igdeMetaPropertyListWidget>;
+	using Ref = deTObjectReference<igdeMetaPropertyUndoHistoryWidget>;
 	
 	
 private:
-	class PropertyListener : public igdeMetaPropertyList::Listener{
-		igdeMetaPropertyListWidget &pWidget;
+	class PropertyListener : public igdeMetaPropertyUndoHistory::Listener{
+		igdeMetaPropertyUndoHistoryWidget &pWidget;
 		
 	public:
 		using Ref = deTObjectReference<PropertyListener>;
-		PropertyListener(igdeMetaPropertyListWidget &widget);
+		PropertyListener(igdeMetaPropertyUndoHistoryWidget &widget);
 		
 	protected:
 		~PropertyListener() override;
 		
 	public:
-		void OnValueChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnActiveChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnSelectionChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
-		void OnObjectItemInfoChanged(igdeMetaPropertyList *property, const igdeMetaContext::Ref &context) override;
+		void OnValueChanged(igdeMetaPropertyUndoHistory *property, const igdeMetaContext::Ref &context) override;
 	};
 	
 	
-	igdeMetaPropertyList &pPropertyList;
+	igdeMetaPropertyUndoHistory &pPropertyUndoHistory;
 	PropertyListener::Ref pPropertyListener;
 	igdeListBox::Ref pListBox;
-	igdeListBoxListener::Ref pListener;
 	decTOrderedSet<igdeMetaProperty::Action::Ref> pButtonActions;
 	
 	
@@ -73,11 +68,11 @@ public:
 	/**
 	 * \brief Create meta property widget for property.
 	 */
-	explicit igdeMetaPropertyListWidget(igdeMetaPropertyList &property);
+	explicit igdeMetaPropertyUndoHistoryWidget(igdeMetaPropertyUndoHistory &property);
 	
 protected:
 	/** \brief Clean up widget. */
-	~igdeMetaPropertyListWidget() override;
+	~igdeMetaPropertyUndoHistoryWidget() override;
 	
 public:
 	/*@}*/
@@ -85,8 +80,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Assigned property list. */
-	inline igdeMetaPropertyList &GetPropertyList() const{ return pPropertyList; }
+	/** \brief Assigned property undo history. */
+	inline igdeMetaPropertyUndoHistory &GetPropertyUndoHistory() const{ return pPropertyUndoHistory; }
 	
 	/** \brief Create UI widgets adding them to container. */
 	void Create(Builder &builder, bool noLabel) override;
@@ -97,23 +92,8 @@ public:
 	/** \brief Update UI widgets with current property values. */
 	void Update() override;
 	
-	/** \brief Update item information. */
-	void UpdateItemInfo();
-	
 	/** \brief List box widget or nullptr. */
 	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
-	
-	/** \brief Select active object. */
-	void SelectActiveObject();
-	
-	/** \brief Store active object. */
-	void StoreActiveObject();
-	
-	/** \brief Store selection. */
-	void StoreSelection();
-	
-	/** \brief Restore selection. */
-	void RestoreSelection();
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override;
 	bool IsPropertyValid() const override;
@@ -127,7 +107,7 @@ protected:
 	
 	
 private:
-	void pAddButton(igdeMetaPropertyList::TargetButton target,
+	void pAddButton(const igdeMetaProperty::Action::Ref &action,
 		igdeUIHelper &helper, igdeContainer &container);
 };
 

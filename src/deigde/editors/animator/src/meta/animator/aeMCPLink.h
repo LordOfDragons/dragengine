@@ -133,6 +133,7 @@ public:
 		SetDefaultValue(1);
 		SetEnableLowerLimit(true);
 		SetLowerLimit(1);
+		SetEnableSpin(true);
 	};
 	
 	~aeMCPLinkRepeat() override = default;

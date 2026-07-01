@@ -847,7 +847,7 @@ void aeWPView::UpdateEnvObject(){
 }
 
 void aeWPView::UpdateCamera(){
-	const aeCamera * const camera = pAnimator ? pAnimator->GetCamera() : nullptr;
+	const aeCamera * const camera = pAnimator ? pAnimator->GetCamera().Pointer() : nullptr;
 	
 	pWPCamera->UpdateCamera();
 	

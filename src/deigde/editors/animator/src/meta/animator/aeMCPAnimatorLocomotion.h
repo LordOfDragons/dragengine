@@ -386,6 +386,7 @@ public:
 		SetUpperLimit(3);
 		SetEnableUpperLimit(true);
 		SetTickSpacing(1);
+		SetEnableSpin(true);
 		SetCanUndo(false);
 	}
 	~aeMCPAnimatorLocomotionLegIndex() override = default;

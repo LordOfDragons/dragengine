@@ -94,5 +94,6 @@ void aeMCAnimatorProperties::Init(){
 		groupCamera,
 		groupCameraAttach,
 		groupPlayback,
-		attachment.group);
+		attachment.group,
+		undoHistory);
 }

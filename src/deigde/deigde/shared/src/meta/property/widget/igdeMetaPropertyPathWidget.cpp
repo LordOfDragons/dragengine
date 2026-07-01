@@ -488,7 +488,7 @@ bool igdeMetaPropertyPathWidget::IsPropertyValid() const{
 }
 
 decStringDictionary igdeMetaPropertyPathWidget::FileContentInformation() const{
-	if(!pEditPath || !pEditPath->GetParentWindow()){
+	if(!pEditPath || !pEditPath->GetParentWindow() || pEditPath->GetPath().IsEmpty()){
 		return {};
 	}
 	
@@ -510,6 +510,10 @@ decStringDictionary igdeMetaPropertyPathWidget::FileContentInformation() const{
 		const auto path = pEditPath->GetAbsolutePath();
 		const auto vfsPath = decPath::CreatePathUnix(path);
 		const auto &vfs = engine.GetVirtualFileSystem();
+		if(!vfs->CanReadFile(vfsPath)){
+			return {};
+		}
+		
 		const auto size = vfs->GetFileSize(vfsPath);
 		dict.SetAt("@Igde.MetaPropertyPath.FileInfo.Key.File.Path", path);
 		dict.SetAt("@Igde.MetaPropertyPath.FileInfo.Key.File.Name", vfsPath.GetLastComponent());

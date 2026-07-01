@@ -840,4 +840,6 @@ Eigenschaftstyp verstossen könnte.</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Sound.Playtime">Spielzeit</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Video.Framerate">Bildrate</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Video.Frames">Bilder</translation>
+	<translation name="Igde.MetaPropertyUndoHistory.Property">Rückgängig-Verlauf</translation>
+	<translation name="Igde.MetaPropertyUndoHistory.Property.ToolTip">Rückgängig-Verlauf</translation>
 </languagePack>

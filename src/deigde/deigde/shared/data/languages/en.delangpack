@@ -843,4 +843,6 @@ property type so be careful what you enter</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Sound.Playtime">Playtime</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Video.Framerate">Framerate</translation>
 	<translation name="Igde.MetaPropertyPath.FileInfo.Key.Video.Frames">Frames</translation>
+	<translation name="Igde.MetaPropertyUndoHistory.Property">Undo History</translation>
+	<translation name="Igde.MetaPropertyUndoHistory.Property.ToolTip">Undo history</translation>
 </languagePack>
