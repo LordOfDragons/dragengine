@@ -186,7 +186,7 @@ public:
 			return;
 		}
 		
-		igdeGDClass *gdClass = pPropertyClass.Wrapper(context).GetGDClass();
+		igdeGDClass *gdClass = pPropertyClass.Owner(context).GetGDClass();
 		if(igdeDialogBrowserObjectClass::SelectObjectClass(&GetOwner(), gdClass)){
 			pPropertyClass.ChangePropertyValue(context, gdClass->GetName());
 		}
@@ -195,37 +195,10 @@ public:
 
 }
 
-igdeWObject::MetaContext::MetaContext(igdeWObject *wrapper) :
-igdeMetaContext("igde.wobject"), pWrapper(wrapper)
-{
-	SetLabel("Object Wrapper");
-	SetDescription("Object Wrapper properties");
-	SetProperties(igdeWObject::MetaProperties::global.properties);
-}
-
-igdeWObject::MetaContext::~MetaContext() = default;
-
-igdeWObject &igdeWObject::MetaContext::GetWrapperRef() const{
-	DEASSERT_NOTNULL(pWrapper)
-	return *pWrapper;
-}
-
-igdeWObject::MetaContext::Ref igdeWObject::MetaContext::Capture() const{
-	auto context = Ref::New(pWrapper);
-	context->pGuard = pWrapper;
-	return context;
-}
-
-igdeEnvironment &igdeWObject::MetaContext::GetEnvironment() const{
-	return GetWrapperRef().GetEnvironment();
-}
-
-igdeUndoSystem *igdeWObject::MetaContext::GetUndoSystem() const{
-	return GetWrapperRef().GetUndoSystem();
-}
-
-igdeClipboard *igdeWObject::MetaContext::GetClipboard() const{
-	return &GetWrapperRef().GetEnvironment().GetClipboard();
+igdeWObject::MetaContext::Ref igdeWObject::CreateMetaContext(igdeWObject *wrapper){
+	return igdeWObject::MetaContext::Ref::New("igde.wobject",
+		"Object Wrapper", "Object Wrapper properties",
+		igdeWObject::MetaProperties::global.properties, wrapper);
 }
 
 
@@ -235,7 +208,7 @@ igdeClipboard *igdeWObject::MetaContext::GetClipboard() const{
 // ObjectClass
 
 igdeWObject::MetaProperties::ObjectClass::ObjectClass() :
-TBase("igde.wobject.class", "Igde.WPWObject.Class"){
+igdeMetaPropertyMCT("igde.wobject.class", "Igde.WPWObject.Class"){
 	SetEnableAllowed(true);
 }
 
@@ -243,12 +216,12 @@ igdeWObject::MetaProperties::ObjectClass::~ObjectClass() = default;
 
 igdeMetaPropertyStringStorage::Storage &igdeWObject::MetaProperties::ObjectClass::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPObjectClass();
+	return Owner(context).GetMPObjectClass();
 }
 
 decStringSet igdeWObject::MetaProperties::ObjectClass::GetPropertyAllowedStrings(const ContextRef &context) const{
 	decStringSet set;
-	Wrapper(context).GetEnvironment().GetGameProject()->GetGameDefinition()->GetClassManager()->
+	Owner(context).GetEnvironment().GetGameProject()->GetGameDefinition()->GetClassManager()->
 		GetClasses().Visit([&](const igdeGDClass &gdClass){
 			set.Add(gdClass.GetName());
 		});
@@ -265,49 +238,49 @@ igdeMenuCascade &menu, const ContextRef &context, igdeWidget &owner){
 // World
 
 igdeWObject::MetaProperties::World::World() :
-TBase("igde.wobject.world", "Igde.WPWObject.World", igdeEnvironment::eFilePatternListTypes::efpltWorld){
+igdeMetaPropertyMCT("igde.wobject.world", "Igde.WPWObject.World", igdeEnvironment::eFilePatternListTypes::efpltWorld){
 }
 
 igdeWObject::MetaProperties::World::~World() = default;
 
 igdeMetaPropertyPathStorage::Storage &igdeWObject::MetaProperties::World::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPWorld();
+	return Owner(context).GetMPWorld();
 }
 
 
 // Position
 
 igdeWObject::MetaProperties::Position::Position() :
-TBase("igde.wobject.position", "Igde.WPWObject.Position"){
+igdeMetaPropertyMCT("igde.wobject.position", "Igde.WPWObject.Position"){
 }
 
 igdeWObject::MetaProperties::Position::~Position() = default;
 
 igdeMetaPropertyDVectorStorage::Storage &igdeWObject::MetaProperties::Position::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPPosition();
+	return Owner(context).GetMPPosition();
 }
 
 
 // Rotation
 
 igdeWObject::MetaProperties::Rotation::Rotation() :
-TBase("igde.wobject.rotation", "Igde.WPWObject.Orientation"){
+igdeMetaPropertyMCT("igde.wobject.rotation", "Igde.WPWObject.Orientation"){
 }
 
 igdeWObject::MetaProperties::Rotation::~Rotation() = default;
 
 igdeMetaPropertyVectorStorageQuaternion::Storage &igdeWObject::MetaProperties::Rotation::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPRotation();
+	return Owner(context).GetMPRotation();
 }
 
 
 // Scaling
 
 igdeWObject::MetaProperties::Scaling::Scaling() :
-TBase("igde.wobject.scaling", "Igde.WPWObject.Scaling"){
+igdeMetaPropertyMCT("igde.wobject.scaling", "Igde.WPWObject.Scaling"){
 	SetDefaultValue(decVector(1.0f, 1.0f, 1.0f));
 }
 
@@ -315,13 +288,13 @@ igdeWObject::MetaProperties::Scaling::~Scaling() = default;
 
 igdeMetaPropertyVectorStorage::Storage &igdeWObject::MetaProperties::Scaling::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPScaling();
+	return Owner(context).GetMPScaling();
 }
 
 igdeMetaPropertyVectorUndo::Ref igdeWObject::MetaProperties::Scaling::ChangePropertyValue(
 const ContextRef &context, const decVector &newValue, const char *undoInfo, const char *undoInfoLong){
 	const auto absScaling = newValue.Absolute();
-	return TBase::ChangePropertyValue(context, decVector(
+	return igdeMetaPropertyMCT::ChangePropertyValue(context, decVector(
 		absScaling.x > 1e-5f ? newValue.x : (newValue.x > 0.0f ? 1e-5f : -1e-5f),
 		absScaling.y > 1e-5f ? newValue.y : (newValue.y > 0.0f ? 1e-5f : -1e-5f),
 		absScaling.z > 1e-5f ? newValue.z : (newValue.z > 0.0f ? 1e-5f : -1e-5f)),
@@ -332,7 +305,7 @@ const ContextRef &context, const decVector &newValue, const char *undoInfo, cons
 // Visible
 
 igdeWObject::MetaProperties::Visible::Visible() :
-TBase("igde.wobject.visible", "Igde.WPWObject.Visible"){
+igdeMetaPropertyMCT("igde.wobject.visible", "Igde.WPWObject.Visible"){
 	SetDefaultValue(true);
 }
 
@@ -340,21 +313,21 @@ igdeWObject::MetaProperties::Visible::~Visible() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeWObject::MetaProperties::Visible::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPVisible();
+	return Owner(context).GetMPVisible();
 }
 
 
 // DynamicCollider
 
 igdeWObject::MetaProperties::DynamicCollider::DynamicCollider() :
-TBase("igde.wobject.dynamicCollider", "Igde.WPWObject.DynamicCollider"){
+igdeMetaPropertyMCT("igde.wobject.dynamicCollider", "Igde.WPWObject.DynamicCollider"){
 }
 
 igdeWObject::MetaProperties::DynamicCollider::~DynamicCollider() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeWObject::MetaProperties::DynamicCollider::GetStorage(
-const igdeMetaContext::Ref &ref) const{
-	return Wrapper(ref).GetMPDynamicCollider();
+const igdeMetaContext::Ref &context) const{
+	return Owner(context).GetMPDynamicCollider();
 }
 
 
@@ -384,7 +357,7 @@ properties(igdeMetaContext::PropertyList::Ref::New(decTObjectOrderedSet<igdeMeta
 igdeWObject::igdeWObject(igdeEnvironment &environment) :
 pEnvironment(environment),
 pUndoSystem(nullptr),
-pMetaContext(MetaContext::Ref::New(this)),
+pMetaContext(CreateMetaContext(this)),
 pColliderUserPointer(nullptr),
 pRenderLayerMask(0x1),
 pRenderEnvMapMask(0x2),

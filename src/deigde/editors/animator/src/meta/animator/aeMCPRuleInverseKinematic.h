@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULEINVERSEKINEMATIC_H_
 #define _AEMCPRULEINVERSEKINEMATIC_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleInverseKinematic.h"
 
@@ -36,81 +35,81 @@
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
 
 
-class aeMCPRuleInverseKinematicGoalPosition : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleInverseKinematicGoalPosition : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleInverseKinematicGoalPosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicGoalPosition() : igdeMetaPropertyMCT(
 	"inversekinematic.goalPosition", "Animator.WPAPanelRuleInverseKinematic.GoalPosition"){}
 	
 	~aeMCPRuleInverseKinematicGoalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPGoalPosition();
+		return Owner(context).GetMPGoalPosition();
 	}
 };
 
-class aeMCPRuleInverseKinematicGoalOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPRuleInverseKinematicGoalOrientation : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
-	aeMCPRuleInverseKinematicGoalOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicGoalOrientation() : igdeMetaPropertyMCT(
 	"inversekinematic.goalOrientation", "Animator.WPAPanelRuleInverseKinematic.GoalOrientation"){}
 	
 	~aeMCPRuleInverseKinematicGoalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPGoalOrientation();
+		return Owner(context).GetMPGoalOrientation();
 	}
 };
 
-class aeMCPRuleInverseKinematicLocalPosition : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleInverseKinematicLocalPosition : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleInverseKinematicLocalPosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicLocalPosition() : igdeMetaPropertyMCT(
 	"inversekinematic.localPosition", "Animator.WPAPanelRuleInverseKinematic.LocalPosition"){}
 	
 	~aeMCPRuleInverseKinematicLocalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPLocalPosition();
+		return Owner(context).GetMPLocalPosition();
 	}
 };
 
-class aeMCPRuleInverseKinematicLocalOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPRuleInverseKinematicLocalOrientation : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
-	aeMCPRuleInverseKinematicLocalOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicLocalOrientation() : igdeMetaPropertyMCT(
 	"inversekinematic.localOrientation", "Animator.WPAPanelRuleInverseKinematic.LocalOrientation"){}
 	
 	~aeMCPRuleInverseKinematicLocalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPLocalOrientation();
+		return Owner(context).GetMPLocalOrientation();
 	}
 };
 
-class aeMCPRuleInverseKinematicAdjustOrientation : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleInverseKinematicAdjustOrientation : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleInverseKinematicAdjustOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicAdjustOrientation() : igdeMetaPropertyMCT(
 	"inversekinematic.adjustOrientation", "Animator.WPAPanelRuleInverseKinematic.AdjustOrientation"){}
 	
 	~aeMCPRuleInverseKinematicAdjustOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPAdjustOrientation();
+		return Owner(context).GetMPAdjustOrientation();
 	}
 };
 
-class aeMCPRuleInverseKinematicUseSolverBone : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleInverseKinematicUseSolverBone : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleInverseKinematicUseSolverBone() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicUseSolverBone() : igdeMetaPropertyMCT(
 	"inversekinematic.useSolverBone", "Animator.WPAPanelRuleInverseKinematic.UseSolverBone"){}
 	
 	~aeMCPRuleInverseKinematicUseSolverBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPUseSolverBone();
+		return Owner(context).GetMPUseSolverBone();
 	}
 };
 
-class aeMCPRuleInverseKinematicSolverBone : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyStringStorage>{
+class aeMCPRuleInverseKinematicSolverBone : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleInverseKinematicSolverBone() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicSolverBone() : igdeMetaPropertyMCT(
 	"inversekinematic.solverBone", "Animator.WPAPanelRuleInverseKinematic.SolverBone"){
 		SetEnableAllowed(true);
 	}
@@ -118,30 +117,30 @@ public:
 	~aeMCPRuleInverseKinematicSolverBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPSolverBone();
+		return Owner(context).GetMPSolverBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = RuleType(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleInverseKinematicReachRange : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleInverseKinematicReachRange : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleInverseKinematicReachRange() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicReachRange() : igdeMetaPropertyMCT(
 	"inversekinematic.reachRange", "Animator.WPAPanelRuleInverseKinematic.Range"){}
 	
 	~aeMCPRuleInverseKinematicReachRange() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPReachRange();
+		return Owner(context).GetMPReachRange();
 	}
 };
 
-class aeMCPRuleInverseKinematicReachBone : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyStringStorage>{
+class aeMCPRuleInverseKinematicReachBone : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleInverseKinematicReachBone() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicReachBone() : igdeMetaPropertyMCT(
 	"inversekinematic.reachBone", "Animator.WPAPanelRuleInverseKinematic.ReachBone"){
 		SetEnableAllowed(true);
 	}
@@ -149,109 +148,91 @@ public:
 	~aeMCPRuleInverseKinematicReachBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPReachBone();
+		return Owner(context).GetMPReachBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = RuleType(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleInverseKinematicReachCenter : public aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyVectorStorage>{
+class aeMCPRuleInverseKinematicReachCenter : public aeRuleInverseKinematic::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPRuleInverseKinematicReachCenter() : aeTMCPAnimatorRuleType(
+	aeMCPRuleInverseKinematicReachCenter() : igdeMetaPropertyMCT(
 	"inversekinematic.reachCenter", "Animator.WPAPanelRuleInverseKinematic.ReachCenter"){}
 	
 	~aeMCPRuleInverseKinematicReachCenter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPReachCenter();
+		return Owner(context).GetMPReachCenter();
 	}
 };
 
 
-class aeMCPRuleInverseKinematicTargetGoalPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleInverseKinematicTargetGoalPosition : public aeRule::MetaPropertyTarget<aeRuleInverseKinematic>{
 public:
-	aeMCPRuleInverseKinematicTargetGoalPosition() : aeTMCPRuleTarget(
-	"inversekinematic.targetGoalPosition", "Animator.WPAPanelRuleInverseKinematic.GoalPosition"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleInverseKinematicTargetGoalPosition() : MetaPropertyTarget(
+	"inversekinematic.targetGoalPosition", "Animator.WPAPanelRuleInverseKinematic.GoalPosition"){}
 	~aeMCPRuleInverseKinematicTargetGoalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetGoalPosition();
+		return Owner(context).GetMPTargetGoalPosition();
 	}
 };
 
-class aeMCPRuleInverseKinematicTargetGoalOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleInverseKinematicTargetGoalOrientation : public aeRule::MetaPropertyTarget<aeRuleInverseKinematic>{
 public:
-	aeMCPRuleInverseKinematicTargetGoalOrientation() : aeTMCPRuleTarget(
-	"inversekinematic.targetGoalOrientation", "Animator.WPAPanelRuleInverseKinematic.GoalOrientation"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleInverseKinematicTargetGoalOrientation() : MetaPropertyTarget(
+	"inversekinematic.targetGoalOrientation", "Animator.WPAPanelRuleInverseKinematic.GoalOrientation"){}
 	~aeMCPRuleInverseKinematicTargetGoalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetGoalOrientation();
+		return Owner(context).GetMPTargetGoalOrientation();
 	}
 };
 
-class aeMCPRuleInverseKinematicTargetLocalPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleInverseKinematicTargetLocalPosition : public aeRule::MetaPropertyTarget<aeRuleInverseKinematic>{
 public:
-	aeMCPRuleInverseKinematicTargetLocalPosition() : aeTMCPRuleTarget(
-	"inversekinematic.targetLocalPosition", "Animator.WPAPanelRuleInverseKinematic.LocalPosition"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleInverseKinematicTargetLocalPosition() : MetaPropertyTarget(
+	"inversekinematic.targetLocalPosition", "Animator.WPAPanelRuleInverseKinematic.LocalPosition"){}
 	~aeMCPRuleInverseKinematicTargetLocalPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetLocalPosition();
+		return Owner(context).GetMPTargetLocalPosition();
 	}
 };
 
-class aeMCPRuleInverseKinematicTargetLocalOrientation : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleInverseKinematicTargetLocalOrientation : public aeRule::MetaPropertyTarget<aeRuleInverseKinematic>{
 public:
-	aeMCPRuleInverseKinematicTargetLocalOrientation() : aeTMCPRuleTarget(
-	"inversekinematic.targetLocalOrientation", "Animator.WPAPanelRuleInverseKinematic.LocalOrientation"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleInverseKinematicTargetLocalOrientation() : MetaPropertyTarget(
+	"inversekinematic.targetLocalOrientation", "Animator.WPAPanelRuleInverseKinematic.LocalOrientation"){}
 	~aeMCPRuleInverseKinematicTargetLocalOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetLocalOrientation();
+		return Owner(context).GetMPTargetLocalOrientation();
 	}
 };
 
-class aeMCPRuleInverseKinematicTargetReachRange : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleInverseKinematicTargetReachRange : public aeRule::MetaPropertyTarget<aeRuleInverseKinematic>{
 public:
-	aeMCPRuleInverseKinematicTargetReachRange() : aeTMCPRuleTarget(
-	"inversekinematic.targetReachRange", "Animator.WPAPanelRuleInverseKinematic.Range"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleInverseKinematicTargetReachRange() : MetaPropertyTarget(
+	"inversekinematic.targetReachRange", "Animator.WPAPanelRuleInverseKinematic.Range"){}
 	~aeMCPRuleInverseKinematicTargetReachRange() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetReachRange();
+		return Owner(context).GetMPTargetReachRange();
 	}
 };
 
-class aeMCPRuleInverseKinematicTargetReachCenter : public aeTMCPRuleTarget<aeTMCPAnimatorRuleInverseKinematic<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleInverseKinematicTargetReachCenter : public aeRule::MetaPropertyTarget<aeRuleInverseKinematic>{
 public:
-	aeMCPRuleInverseKinematicTargetReachCenter() : aeTMCPRuleTarget(
-	"inversekinematic.targetReachCenter", "Animator.WPAPanelRuleInverseKinematic.ReachCenter"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleInverseKinematicTargetReachCenter() : MetaPropertyTarget(
+	"inversekinematic.targetReachCenter", "Animator.WPAPanelRuleInverseKinematic.ReachCenter"){}
 	~aeMCPRuleInverseKinematicTargetReachCenter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetReachCenter();
+		return Owner(context).GetMPTargetReachCenter();
 	}
 };
 

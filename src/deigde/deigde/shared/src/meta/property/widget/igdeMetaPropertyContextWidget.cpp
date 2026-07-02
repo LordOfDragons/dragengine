@@ -134,9 +134,7 @@ void igdeMetaPropertyContextWidget::Filter(const igdeFilter &filter){
 	
 	pFilter = filter;
 	
-	if(filter){
-		pFilterPropertyWidgets();
-	}
+	pFilterPropertyWidgets();
 	SetFilteredOut(filter && !pPropertyWidgets.HasMatching([](const igdeMetaPropertyWidget &widget){
 		return !widget.GetFilteredOut();
 	}));
@@ -175,10 +173,7 @@ void igdeMetaPropertyContextWidget::pUpdatePropertyWidgets(Builder &builder){
 	if(pProperties){
 		builder.CreatePropertyWidgets(pProperties->GetData());
 	}
-	
-	if(pFilter){
-		pFilterPropertyWidgets();
-	}
+	pFilterPropertyWidgets();
 }
 
 void igdeMetaPropertyContextWidget::pClearPropertyWidgets(){

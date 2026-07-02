@@ -27,7 +27,6 @@
 
 #include "../locomotion/aeAnimatorLocomotion.h"
 #include "../../gui/gizmo/aeGizmoControllerIKPosition.h"
-#include "../../meta/animator/aeMCController.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -66,8 +65,14 @@ public:
 	};
 	
 	
+	using MetaContext = igdeMetaContextType<aeController>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeController *controller);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
-	aeMCController::Ref pMetaContext;
+	MetaContext::Ref pMetaContext;
 	aeAnimator *pAnimator;
 	int pIndex;
 	
@@ -127,8 +132,13 @@ public:
 	
 	/** Retrieves the parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	aeAnimator &GetAnimatorRef() const;
+	
 	/** Sets the parent animator. */
 	void SetAnimator(aeAnimator *animator);
+	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
 	
 	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
@@ -137,7 +147,7 @@ public:
 	void SetIndex(int index);
 	
 	/** Meta context. */
-	inline const aeMCController::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pMPName; }

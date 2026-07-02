@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULESUBANIMATOR_H_
 #define _AEMCPRULESUBANIMATOR_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleSubAnimator.h"
 
@@ -33,9 +32,9 @@
 #include <deigde/meta/property/igdeMetaPropertyPath.h>
 
 
-class aeMCPRuleSubAnimatorPathSubAnimator : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPRuleSubAnimatorPathSubAnimator : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPRuleSubAnimatorPathSubAnimator() : aeTMCPAnimatorRuleType(
+	aeMCPRuleSubAnimatorPathSubAnimator() : igdeMetaPropertyMCT(
 	"subanimator.pathSubAnimator", "Animator.WPAPanelRuleSubAnimator.Path",
 		igdeEnvironment::eFilePatternListTypes::efpltAnimator){
 	}
@@ -43,18 +42,18 @@ public:
 	~aeMCPRuleSubAnimatorPathSubAnimator() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPPathSubAnimator();
+		return Owner(context).GetMPPathSubAnimator();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		const auto animator = RuleType(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetDirectoryPath() : decString();
 	}
 };
 
-class aeMCPRuleSubAnimatorEnablePosition : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnablePosition : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnablePosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleSubAnimatorEnablePosition() : igdeMetaPropertyMCT(
 	"subanimator.enablePosition", "Animator.WPAPanelRuleSubAnimator.EnablePosition"){
 		SetDefaultValue(true);
 	}
@@ -62,13 +61,13 @@ public:
 	~aeMCPRuleSubAnimatorEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnablePosition();
+		return Owner(context).GetMPEnablePosition();
 	}
 };
 
-class aeMCPRuleSubAnimatorEnableOrientation : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnableOrientation : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnableOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleSubAnimatorEnableOrientation() : igdeMetaPropertyMCT(
 	"subanimator.enableOrientation", "Animator.WPAPanelRuleSubAnimator.EnableRotation"){
 		SetDefaultValue(true);
 	}
@@ -76,13 +75,13 @@ public:
 	~aeMCPRuleSubAnimatorEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableOrientation();
+		return Owner(context).GetMPEnableOrientation();
 	}
 };
 
-class aeMCPRuleSubAnimatorEnableSize : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnableSize : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnableSize() : aeTMCPAnimatorRuleType(
+	aeMCPRuleSubAnimatorEnableSize() : igdeMetaPropertyMCT(
 	"subanimator.enableSize", "Animator.WPAPanelRuleSubAnimator.EnableSize"){
 		SetDefaultValue(true);
 	}
@@ -90,13 +89,13 @@ public:
 	~aeMCPRuleSubAnimatorEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableSize();
+		return Owner(context).GetMPEnableSize();
 	}
 };
 
-class aeMCPRuleSubAnimatorEnableVertexPositionSet : public aeTMCPAnimatorRuleSubAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleSubAnimatorEnableVertexPositionSet : public aeRuleSubAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleSubAnimatorEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	aeMCPRuleSubAnimatorEnableVertexPositionSet() : igdeMetaPropertyMCT(
 	"subanimator.enableVertexPositionSet", "Animator.WPAPanelRuleSubAnimator.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
@@ -104,7 +103,7 @@ public:
 	~aeMCPRuleSubAnimatorEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableVertexPositionSet();
+		return Owner(context).GetMPEnableVertexPositionSet();
 	}
 };
 

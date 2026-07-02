@@ -131,7 +131,7 @@ void syneSourceChain::UpdateSounds(){
 				sound = pEngine->GetSoundManager()->LoadSound(path, basePath, false);
 				
 			}catch(const deException &){
-				GetSynthesizer()->GetEnvironment()->GetLogger()->LogInfoFormat("Synthesizer Editor",
+				GetSynthesizer()->GetEnvironment().GetLogger()->LogInfoFormat("Synthesizer Editor",
 					"Failed to load sound '%s' (base directory '%s')", path.GetString(), basePath.GetString());
 			}
 		}

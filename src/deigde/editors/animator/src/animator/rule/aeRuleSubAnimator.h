@@ -47,6 +47,12 @@ public:
 	using Ref = deTObjectReference<aeRuleSubAnimator>;
 	using ConnectionList = decTObjectList<aeController>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleSubAnimator, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleSubAnimator *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	deAnimator::Ref pSubAnimator;
 	
@@ -71,6 +77,8 @@ public:
 	/** Clean up the sub animator rule. */
 protected:
 	~aeRuleSubAnimator() override;
+private:
+	aeRuleSubAnimator(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

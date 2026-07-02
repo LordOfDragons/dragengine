@@ -153,7 +153,7 @@ void meCLClosestElement::CollisionResponse(deCollider *owner, deCollisionInfo *i
 		
 	}else if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-			*pWorld.GetEnvironment(), info->GetCollider() );
+			pWorld.GetEnvironment(), info->GetCollider() );
 		if(!colliderOwner){
 			return;
 		}

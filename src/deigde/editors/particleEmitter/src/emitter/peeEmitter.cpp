@@ -83,7 +83,7 @@
 ////////////////////////////
 
 peeEmitter::peeEmitter(igdeEnvironment *environment, peeLoadSaveSystem &loadSaveSystem) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pLoadSaveSystem(loadSaveSystem)
 {
 	deEngine * const engine = GetEngine();

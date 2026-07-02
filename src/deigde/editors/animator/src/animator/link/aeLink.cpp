@@ -38,11 +38,16 @@
 // Class aeLink
 /////////////////
 
+aeLink::MetaContext::Ref aeLink::CreateMetaContext(aeWindowMain &windowMain, aeLink *link){
+	return MetaContext::Ref::New("animator.link", "Link", "Link properties",
+		windowMain.GetMCAnimatorProperties().link.metaProperties, link);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeLink::aeLink(aeWindowMain &windowMain, const char *aname) :
-pMetaContext(aeMCLink::Ref::New(windowMain, this)),
+pMetaContext(CreateMetaContext(windowMain, this)),
 pAnimator(nullptr),
 pEngLink(nullptr),
 pMPName(windowMain.GetMCAnimatorProperties().link.name, pMetaContext, aname),
@@ -183,6 +188,11 @@ aeLink::~aeLink(){
 // Management
 ///////////////
 
+aeAnimator &aeLink::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator)
+	return *pAnimator;
+}
+
 void aeLink::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
@@ -213,6 +223,14 @@ void aeLink::SetAnimator(aeAnimator *animator){
 		
 		NotifyLinkChanged();
 	}
+}
+
+igdeEnvironment &aeLink::GetEnvironment() const{
+	return GetAnimatorRef().GetEnvironment();
+}
+
+igdeUndoSystem *aeLink::GetUndoSystem() const{
+	return GetAnimatorRef().GetUndoSystem();
 }
 
 void aeLink::SetName(const char *aname){

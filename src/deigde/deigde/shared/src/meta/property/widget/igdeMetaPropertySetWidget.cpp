@@ -94,11 +94,6 @@ public:
 			return;
 		}
 		
-		auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
 		igdeMetaPropertySet::Set values, copiedValues;
 		if(property.GetMultiSelection()){
 			values = property.GetSelection(context);
@@ -121,14 +116,14 @@ public:
 			return;
 		}
 		
-		clipboard->Set(igdeMetaPropertySet::ClipboardData::Ref::New(property, std::move(copiedValues)));
+		context->GetClipboard().Set(igdeMetaPropertySet::ClipboardData::Ref::New(
+			property, std::move(copiedValues)));
 	}
 	
 	void Update() override{
 		auto &property = pWidget.GetPropertySet();
 		const auto &context = pWidget.GetContext();
-		SetEnabled(property.IsValid(context) && context->GetClipboard()
-			&& !property.GetActiveObject(context).IsNotNull());
+		SetEnabled(property.IsValid(context) && property.GetActiveObject(context));
 	}
 };
 
@@ -183,13 +178,9 @@ public:
 			return;
 		}
 		
-		const auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		const auto clip = clipboard->GetWithTypeName(property.GetClipboardDataTypeName()).
-			DynamicCast<igdeMetaPropertySet::ClipboardData>();
+		const auto clip = context->GetClipboard().
+			GetWithTypeName(property.GetClipboardDataTypeName()).
+				DynamicCast<igdeMetaPropertySet::ClipboardData>();
 		if(!clip){
 			return;
 		}
@@ -221,12 +212,9 @@ public:
 	}
 	
 	void Update() override{
-		if(pWidget.GetPropertySet().IsValid(pWidget.GetContext())){
-			const auto cb = pWidget.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(pWidget.GetPropertySet().GetClipboardDataTypeName()));
-			return;
-		}
-		SetEnabled(false);
+		SetEnabled(pWidget.GetPropertySet().IsValid(pWidget.GetContext())
+			&& pWidget.GetContext()->GetClipboard().HasWithTypeName(
+				pWidget.GetPropertySet().GetClipboardDataTypeName()));
 	}
 };
 
@@ -461,12 +449,10 @@ void igdeMetaPropertySetWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 		helper.MenuSeparator(menu);
 	}
 	
-	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionCut>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
-		helper.MenuSeparator(menu);
-	}
+	helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+	helper.MenuCommand(menu, deTObjectReference<ActionCut>::New(*this, context, env));
+	helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+	helper.MenuSeparator(menu);
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }

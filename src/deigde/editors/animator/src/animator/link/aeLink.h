@@ -26,7 +26,6 @@
 #define _AELINK_H_
 
 #include "../controller/aeController.h"
-#include "../../meta/animator/aeMCLink.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -35,6 +34,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
+#include <deigde/meta/igdeMetaContext.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyCurveBezier.h>
@@ -56,9 +56,15 @@ class aeLink : public deObject{
 public:
 	using Ref = deTObjectReference<aeLink>;
 	using List = decTObjectOrderedSet<aeLink>;
-
+	
+	using MetaContext = igdeMetaContextType<aeLink>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeLink *link);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
-	aeMCLink::Ref pMetaContext;
+	MetaContext::Ref pMetaContext;
 	aeAnimator *pAnimator;
 	
 	deAnimatorLink *pEngLink;
@@ -119,12 +125,16 @@ public:
 	
 	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	aeAnimator &GetAnimatorRef() const;
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);
 	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
+	
 	/** Meta context. */
-	inline const aeMCLink::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	
 	

@@ -553,7 +553,7 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 		const decPath path(decPath::AbsolutePathUnix(pPathNavSpace, baseDir));
 		
 		if(pEngine.GetVirtualFileSystem()->ExistsFile(path)){
-			igdeLoadSaveHTNavSpace loadNavSpace(*world.GetEnvironment(), LOGSOURCE);
+			igdeLoadSaveHTNavSpace loadNavSpace(world.GetEnvironment(), LOGSOURCE);
 			deHeightTerrainNavSpace *engNavSpace = nullptr;
 			
 			try{

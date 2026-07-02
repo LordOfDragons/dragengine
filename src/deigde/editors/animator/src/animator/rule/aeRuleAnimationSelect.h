@@ -43,6 +43,11 @@ class aeRuleAnimationSelect : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleAnimationSelect>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleAnimationSelect, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimationSelect *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
 	aeControllerTarget::Ref pTargetMoveTime;
@@ -71,6 +76,8 @@ public:
 	/** Clean up animator select rule. */
 protected:
 	~aeRuleAnimationSelect() override;
+private:
+	aeRuleAnimationSelect(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

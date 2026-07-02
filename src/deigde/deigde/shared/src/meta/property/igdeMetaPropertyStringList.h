@@ -119,7 +119,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionAdd>;
-		ActionAdd(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionAdd(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		inline igdeMetaPropertyStringList &GetPropertyStringList() const{ return pPropertyStringList; }
@@ -132,7 +133,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionRemove>;
-		ActionRemove(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionRemove(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		inline igdeMetaPropertyStringList &GetPropertyStringList() const{ return pPropertyStringList; }
@@ -145,7 +147,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionRemoveAll>;
-		ActionRemoveAll(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionRemoveAll(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		inline igdeMetaPropertyStringList &GetPropertyStringList() const{ return pPropertyStringList; }
@@ -159,7 +162,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionMoveUp>;
-		ActionMoveUp(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionMoveUp(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		
@@ -172,7 +176,8 @@ public:
 	class DE_DLL_EXPORT ActionMoveTop : public ActionMoveUp{
 	public:
 		using Ref = deTObjectReference<ActionMoveTop>;
-		ActionMoveTop(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionMoveTop(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 	};
 	
 	/** \brief Move entry down action. */
@@ -183,7 +188,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionMoveDown>;
-		ActionMoveDown(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionMoveDown(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		
@@ -196,7 +202,8 @@ public:
 	class DE_DLL_EXPORT ActionMoveBottom : public ActionMoveDown{
 	public:
 		using Ref = deTObjectReference<ActionMoveBottom>;
-		ActionMoveBottom(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionMoveBottom(igdeMetaPropertyStringList &property,
+			igdeWidget &owner, const ContextRef &context = {});
 	};
 	
 	/** \brief Export to text action. */
@@ -206,7 +213,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionExportAsText>;
-		ActionExportAsText(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionExportAsText(igdeMetaPropertyStringList &property,
+			igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		inline igdeMetaPropertyStringList &GetPropertyStringList() const{ return pPropertyStringList; }
@@ -219,7 +227,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionImportFromText>;
-		ActionImportFromText(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionImportFromText(igdeMetaPropertyStringList &property,
+			igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 		inline igdeMetaPropertyStringList &GetPropertyStringList() const{ return pPropertyStringList; }
@@ -233,7 +242,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionCopy>;
-		ActionCopy(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionCopy(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 	};
@@ -242,7 +252,8 @@ public:
 	class ActionCopySelection : public ActionCopy{
 	public:
 		using Ref = deTObjectReference<ActionCopySelection>;
-		ActionCopySelection(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionCopySelection(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 	};
 	
 	/** \brief Cut to clipboard action. */
@@ -252,7 +263,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionCut>;
-		ActionCut(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionCut(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 	};
 	
@@ -260,20 +272,39 @@ public:
 	class ActionPaste : public Action{
 	protected:
 		igdeMetaPropertyStringList &pPropertyStringList;
-		bool pAppend;
+		bool pReplace = false;
+		int pIndex = -1;
 		
 	public:
 		using Ref = deTObjectReference<ActionPaste>;
-		ActionPaste(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionPaste(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 	};
 	
-	/** \brief Paste and append from clipboard action. */
-	class ActionPasteAppend : public ActionPaste{
+	/** \brief Paste before from clipboard action. */
+	class DE_DLL_EXPORT ActionPasteBefore : public ActionPaste{
 	public:
-		using Ref = deTObjectReference<ActionPasteAppend>;
-		ActionPasteAppend(igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context = {});
+		using Ref = deTObjectReference<ActionPasteBefore>;
+		ActionPasteBefore(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
+	};
+	
+	/** \brief Paste after from clipboard action. */
+	class DE_DLL_EXPORT ActionPasteAfter : public ActionPaste{
+	public:
+		using Ref = deTObjectReference<ActionPasteAfter>;
+		ActionPasteAfter(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
+	};
+	
+	/** \brief Paste replace from clipboard action. */
+	class DE_DLL_EXPORT ActionPasteReplace : public ActionPaste{
+	public:
+		using Ref = deTObjectReference<ActionPasteReplace>;
+		ActionPasteReplace(igdeMetaPropertyStringList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 	};
 	
 	

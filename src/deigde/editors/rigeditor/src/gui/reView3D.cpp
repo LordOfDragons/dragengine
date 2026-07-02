@@ -345,7 +345,7 @@ public:
 				return false;
 			}
 			
-			pUndo = reUMoveShape::Ref::New(*rig.GetEnvironment(), list);
+			pUndo = reUMoveShape::Ref::New(rig.GetEnvironment(), list);
 			
 			if(activeShape){
 				pRotationMatrix.SetRotation(activeShape->GetOrientation() * DEG2RAD);
@@ -367,7 +367,7 @@ public:
 				return false;
 			}
 			
-			pUndo = reUMovePush::Ref::New(*rig.GetEnvironment(), list);
+			pUndo = reUMovePush::Ref::New(rig.GetEnvironment(), list);
 			
 			if(activePush){
 				pRotationMatrix.SetRotation(activePush->GetOrientation() * DEG2RAD);
@@ -594,7 +594,7 @@ public:
 				});
 				center /= (float)list.GetCount();
 				
-				pUndo = reURotateShape::Ref::New(*rig.GetEnvironment(), list);
+				pUndo = reURotateShape::Ref::New(rig.GetEnvironment(), list);
 				pUndo.DynamicCast<reURotateShape>()->SetModifyPosition(list.GetCount() > 1);
 				}break;
 				
@@ -610,7 +610,7 @@ public:
 					return acc + push.GetPosition();
 				}) / (float)list.GetCount();
 				
-				pUndo = reURotatePush::Ref::New(*rig.GetEnvironment(), list);
+				pUndo = reURotatePush::Ref::New(rig.GetEnvironment(), list);
 				pUndo.DynamicCast<reURotatePush>()->SetModifyPosition(list.GetCount() > 1);
 				}break;
 				

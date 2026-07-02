@@ -42,6 +42,13 @@ class aeRuleLimit : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleLimit>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleLimit, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleLimit *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
+private:
 	igdeMetaPropertyVectorStorage::Storage pMPMinPosition;
 	igdeMetaPropertyVectorStorage::Storage pMPMaxPosition;
 	igdeMetaPropertyVectorStorageQuaternion::Storage pMPMinRotation;
@@ -86,6 +93,8 @@ public:
 	/** Clean up the limit rule. */
 protected:
 	~aeRuleLimit() override;
+private:
+	aeRuleLimit(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

@@ -200,7 +200,7 @@ void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		SetRenderWorld(gameDefinition->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(gameDefinition->GetCamera());
 		
-		deVirtualFileSystem * const vfs = gameDefinition->GetEnvironment()->GetFileSystemIGDE();
+		deVirtualFileSystem * const vfs = gameDefinition->GetEnvironment().GetFileSystemIGDE();
 		deEngine &engine = *gameDefinition->GetEngine();
 		deModelManager &modelManager = *engine.GetModelManager();
 		
@@ -742,8 +742,8 @@ void gdeViewActiveObject::pInitParticleEmitter(){
 	deParticleEmitter::Ref engEmitter;
 	decBaseFileReader::Ref reader;
 	
-	igdeLoadParticleEmitter loader(*pGameDefinition->GetEnvironment(),
-		pGameDefinition->GetEnvironment()->GetLogger(), "gdeGDEditActiveObject");
+	igdeLoadParticleEmitter loader(pGameDefinition->GetEnvironment(),
+		pGameDefinition->GetEnvironment().GetLogger(), "gdeGDEditActiveObject");
 	
 	decPath path;
 	path.SetFromUnix(particleEmitter->GetPath());

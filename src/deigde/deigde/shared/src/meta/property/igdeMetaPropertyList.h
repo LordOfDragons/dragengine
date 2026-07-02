@@ -227,12 +227,29 @@ public:
 	class DE_DLL_EXPORT ActionPaste : public Action{
 	protected:
 		igdeMetaPropertyList &pPropertyList;
+		int pIndex = -1;
 		
 	public:
 		using Ref = deTObjectReference<ActionPaste>;
 		ActionPaste(igdeMetaPropertyList &property, igdeWidget &owner, const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
+	};
+	
+	/** \brief Paste before from clipboard action. */
+	class DE_DLL_EXPORT ActionPasteBefore : public ActionPaste{
+	public:
+		using Ref = deTObjectReference<ActionPasteBefore>;
+		ActionPasteBefore(igdeMetaPropertyList &property, igdeWidget &owner,
+			const ContextRef &context = {});
+	};
+	
+	/** \brief Paste after from clipboard action. */
+	class DE_DLL_EXPORT ActionPasteAfter : public ActionPaste{
+	public:
+		using Ref = deTObjectReference<ActionPasteAfter>;
+		ActionPasteAfter(igdeMetaPropertyList &property, igdeWidget &owner,
+			const ContextRef &context = {});
 	};
 	
 	

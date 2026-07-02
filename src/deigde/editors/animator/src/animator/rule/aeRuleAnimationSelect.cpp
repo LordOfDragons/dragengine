@@ -35,19 +35,26 @@
 // Class aeRuleAnimationSelect
 ////////////////////////////////
 
+aeRuleAnimationSelect::MetaContext::Ref aeRuleAnimationSelect::CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimationSelect *rule){
+	return MetaContext::Ref::New("animator.rule_animation_select", "Rule Animation Select", "Rule animation select properties",
+		windowMain.GetMCAnimatorProperties().ruleAnimationSelect.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleAnimationSelect::aeRuleAnimationSelect(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleAnimationSelect::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertAnimationSelect, aname),
-pMPMoves(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.moves, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
-pMPTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>()),
-pMPTargetSelect(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetSelect, GetMetaContext().StaticCast<aeMCRuleAnimationSelect>())
+aeRuleAnimationSelect(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleAnimationSelect::aeRuleAnimationSelect(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertAnimationSelect, aname),
+pMPMoves(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.moves, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.enableVertexPositionSet, metaContext),
+pMPTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetMoveTime, metaContext),
+pMPTargetSelect(windowMain.GetMCAnimatorProperties().ruleAnimationSelect.targetSelect, metaContext)
 {
 	pMPMoves.onValueChanged = [this](){
 		if(GetEngineRule()){

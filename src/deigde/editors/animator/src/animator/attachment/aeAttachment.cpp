@@ -61,11 +61,16 @@ void aeAttachment::cAsyncLoadListener::LoadFinished(igdeWObject &wrapper, bool s
 // Class aeAttachment
 ///////////////////////
 
+aeAttachment::MetaContext::Ref aeAttachment::CreateMetaContext(aeWindowMain &windowMain, aeAttachment *attachment){
+	return MetaContext::Ref::New("animator.attachment", "Attachment", "Attachment properties",
+		windowMain.GetMCAnimatorProperties().attachment.metaProperties, attachment);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeAttachment::aeAttachment(aeWindowMain &windowMain, const char *aname) :
-pMetaContext(aeMCAttachment::Ref::New(windowMain, this)),
+pMetaContext(CreateMetaContext(windowMain, this)),
 pAnimator(nullptr),
 pAsyncLoadListener(*this),
 pMPName(windowMain.GetMCAnimatorProperties().attachment.name, pMetaContext, aname),
@@ -128,6 +133,11 @@ aeAttachment::~aeAttachment(){
 // Management
 ///////////////
 
+aeAnimator &aeAttachment::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator)
+	return *pAnimator;
+}
+
 void aeAttachment::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
@@ -145,6 +155,13 @@ void aeAttachment::SetAnimator(aeAnimator *animator){
 	}
 }
 
+igdeEnvironment &aeAttachment::GetEnvironment() const{
+	return GetAnimatorRef().GetEnvironment();
+}
+
+igdeUndoSystem *aeAttachment::GetUndoSystem() const{
+	return GetAnimatorRef().GetUndoSystem();
+}
 
 
 void aeAttachment::SetName(const char *aname){

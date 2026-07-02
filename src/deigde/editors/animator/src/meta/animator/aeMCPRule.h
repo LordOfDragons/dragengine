@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULE_H_
 #define _AEMCPRULE_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/aeAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/link/aeLink.h"
@@ -44,9 +43,9 @@
 
 /** Rules */
 
-class aeMCPRuleTree : public aeTMCPAnimator<igdeMetaPropertyTreeListStorage<aeRule>>{
+class aeMCPRuleTree : public aeAnimator::MetaProperty<igdeMetaPropertyTreeListStorage<aeRule>>{
 public:
-	aeMCPRuleTree() : aeTMCPAnimator("animator.ruleTree", "Animator.WPRule.Rules"){
+	aeMCPRuleTree() : igdeMetaPropertyMCT("animator.ruleTree", "Animator.WPRule.Rules"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
@@ -56,7 +55,7 @@ public:
 	~aeMCPRuleTree() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPRuleTree();
+		return Owner(context).GetMPRuleTree();
 	}
 	
 	Walker::Ref CreateWalker(const ContextRef &context) const override;
@@ -73,9 +72,9 @@ public:
 
 
 
-class aeMCPRules : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
+class aeMCPRules : public aeAnimator::MetaProperty<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
 public:
-	aeMCPRules() : aeTMCPAnimator("animator.rules", "Animator.WPRule.Rules"){
+	aeMCPRules() : igdeMetaPropertyMCT("animator.rules", "Animator.WPRule.Rules"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetRows(8);
@@ -85,7 +84,7 @@ public:
 	~aeMCPRules() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPRules();
+		return Owner(context).GetMPRules();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override;
@@ -93,34 +92,34 @@ public:
 };
 
 
-class aeMCPRule : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+class aeMCPRule : public aeAnimator::MetaProperty<igdeMetaPropertyContextStorage>{
 public:
-	aeMCPRule(aeWindowMain &windowMain) : aeTMCPAnimator("animator.rule", "", ""){
-		SetDefaultValue(aeMCRule::Ref::New(windowMain, nullptr));
+	aeMCPRule(aeWindowMain &windowMain) : igdeMetaPropertyMCT("animator.rule", "", ""){
+		SetDefaultValue(aeRule::CreateMetaContext(windowMain, nullptr));
 	}
 	
 	~aeMCPRule() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPRule();
+		return Owner(context).GetMPRule();
 	}
 };
 
 
-class aeMCPRuleName : public aeTMCPAnimatorRule<igdeMetaPropertyStringStorage>{
+class aeMCPRuleName : public aeRule::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleName() : aeTMCPAnimatorRule("rule.name", "Animator.WPAPanelRule.Name"){}
+	aeMCPRuleName() : igdeMetaPropertyMCT("rule.name", "Animator.WPAPanelRule.Name"){}
 	~aeMCPRuleName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPName();
+		return Owner(context).GetMPName();
 	}
 };
 
 
-class aeMCPRuleBlendMode : public aeTMCPAnimatorRule<igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>>{
+class aeMCPRuleBlendMode : public aeRule::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRule::eBlendModes>>{
 public:
-	aeMCPRuleBlendMode() : aeTMCPAnimatorRule("rule.blendMode", "Animator.WPAPanelRule.BlendMode"){
+	aeMCPRuleBlendMode() : igdeMetaPropertyMCT("rule.blendMode", "Animator.WPAPanelRule.BlendMode"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRule::ebmBlend,
 			deAnimatorRule::ebmOverlay));
@@ -130,7 +129,7 @@ public:
 	~aeMCPRuleBlendMode() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPBlendMode();
+		return Owner(context).GetMPBlendMode();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRule::eBlendModes choice, igdeMetaContextItemInfo &info) const override{
@@ -151,9 +150,9 @@ public:
 };
 
 
-class aeMCPRuleBlendFactor : public aeTMCPAnimatorRule<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleBlendFactor : public aeRule::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleBlendFactor() : aeTMCPAnimatorRule("rule.blendFactor", "Animator.WPAPanelRule.BlendFactor"){
+	aeMCPRuleBlendFactor() : igdeMetaPropertyMCT("rule.blendFactor", "Animator.WPAPanelRule.BlendFactor"){
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 		SetDefaultValue(1.0f);
@@ -162,39 +161,39 @@ public:
 	~aeMCPRuleBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPBlendFactor();
+		return Owner(context).GetMPBlendFactor();
 	}
 };
 
 
-class aeMCPRuleInvertBlendFactor : public aeTMCPAnimatorRule<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleInvertBlendFactor : public aeRule::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleInvertBlendFactor() : aeTMCPAnimatorRule("rule.invertBlendFactor", "Animator.WPAPanelRule.InvertBlendFactor"){}
+	aeMCPRuleInvertBlendFactor() : igdeMetaPropertyMCT("rule.invertBlendFactor", "Animator.WPAPanelRule.InvertBlendFactor"){}
 	~aeMCPRuleInvertBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPInvertBlendFactor();
+		return Owner(context).GetMPInvertBlendFactor();
 	}
 };
 
 
-class aeMCPRuleEnabled : public aeTMCPAnimatorRule<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleEnabled : public aeRule::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleEnabled() : aeTMCPAnimatorRule("rule.enabled", "Animator.WPAPanelRule.Enabled"){
+	aeMCPRuleEnabled() : igdeMetaPropertyMCT("rule.enabled", "Animator.WPAPanelRule.Enabled"){
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleEnabled() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPEnabled();
+		return Owner(context).GetMPEnabled();
 	}
 };
 
 
-class aeMCPRuleAffectedBones : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
+class aeMCPRuleAffectedBones : public aeRule::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPRuleAffectedBones() : aeTMCPAnimatorRule("rule.affectedBones", "Animator.WPAPanelRule.AffectedBones"){
+	aeMCPRuleAffectedBones() : igdeMetaPropertyMCT("rule.affectedBones", "Animator.WPAPanelRule.AffectedBones"){
 		SetMultiSelection(true);
 		SetRows(5);
 	}
@@ -202,7 +201,7 @@ public:
 	~aeMCPRuleAffectedBones() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPAffectedBones();
+		return Owner(context).GetMPAffectedBones();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -210,9 +209,9 @@ public:
 };
 
 
-class aeMCPRuleAffectedVertexPositionSets : public aeTMCPAnimatorRule<igdeMetaPropertyStringSetStorage>{
+class aeMCPRuleAffectedVertexPositionSets : public aeRule::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPRuleAffectedVertexPositionSets() : aeTMCPAnimatorRule("rule.affectedVertexPositionSets", "Animator.WPAPanelRule.AffectedVertexPositionSets"){
+	aeMCPRuleAffectedVertexPositionSets() : igdeMetaPropertyMCT("rule.affectedVertexPositionSets", "Animator.WPAPanelRule.AffectedVertexPositionSets"){
 		SetMultiSelection(true);
 		SetRows(5);
 	}
@@ -220,7 +219,7 @@ public:
 	~aeMCPRuleAffectedVertexPositionSets() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPAffectedVps();
+		return Owner(context).GetMPAffectedVps();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -228,43 +227,13 @@ public:
 };
 
 
-template <typename T>
-class aeTMCPRuleTarget : public T{
+class aeMCPRuleTargetBlendFactor : public aeRule::MetaPropertyTarget<aeRule>{
 public:
-	template <typename... A>
-	aeTMCPRuleTarget(A&&... args) : T(std::forward<A>(args)...){
-		T::SetRows(2);
-		T::SetMultiSelection(true);
-	}
-	
-	~aeTMCPRuleTarget() override = default;
-	
-	void GetObjectItemInfoType(const igdeMetaContext::Ref&, const typename T::ObjectTypeRef &link, igdeMetaContextItemInfo &info) const override{
-		info.SetAll(link->GetName());
-	}
-	
-	typename T::SetType GetValidObjectsType(const igdeMetaContext::Ref &context) const override{
-		return typename T::SetType(T::Rule(context).GetAnimatorRef().GetMPLinks().GetValue());
-	}
-	
-	void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
-		auto &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(menu, igdeMetaPropertyObjectSet::ActionAdd::Ref::New(*this, owner, context));
-		T::AddDefaultContextMenuEntries(menu, context, owner);
-	}
-};
-
-
-class aeMCPRuleTargetBlendFactor : public aeTMCPRuleTarget<aeTMCPAnimatorRule<igdeMetaPropertyObjectSetStorage<aeLink>>>{
-public:
-	aeMCPRuleTargetBlendFactor() : aeTMCPRuleTarget("rule.targetBlendFactor", "Animator.Target.BlendFactor"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleTargetBlendFactor() : MetaPropertyTarget("rule.targetBlendFactor", "Animator.Target.BlendFactor"){}
 	~aeMCPRuleTargetBlendFactor() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Rule(context).GetMPTargetBlendFactor();
+		return Owner(context).GetMPTargetBlendFactor();
 	}
 };
 

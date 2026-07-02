@@ -102,51 +102,13 @@ public:
 	
 	
 	/** \brief Meta context. */
-	class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
-	private:
-		igdeWObject *pWrapper;
-		igdeWObject::Ref pGuard;
-		
-	public:
-		using Ref = deTObjectReference<MetaContext>;
-		MetaContext(igdeWObject *wrapper);
-		
-		inline igdeWObject *GetWrapper() const{ return pWrapper; }
-		igdeWObject &GetWrapperRef() const;
-		Ref Capture() const;
-		igdeEnvironment &GetEnvironment() const override;
-		igdeUndoSystem *GetUndoSystem() const override;
-		igdeClipboard *GetClipboard() const override;
-		
-	protected:
-		virtual ~MetaContext() override;
-	};
+	using MetaContext = igdeMetaContextType<igdeWObject>;
+	static MetaContext::Ref CreateMetaContext(igdeWObject *wrapper);
 	
 	/** \brief Meta properties */
 	class DE_DLL_EXPORT MetaProperties{
 	public:
-		template <typename T> class TBase : public T{
-		public:
-			template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
-			
-			igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-				return context.DynamicCast<MetaContext>()->Capture();
-			}
-			
-			bool IsValid(const igdeMetaContext::Ref &context) const override{
-				const auto c = context.DynamicCast<MetaContext>();
-				return c && !c->IsDisposed();
-			}
-			
-			inline igdeWObject &Wrapper(const igdeMetaContext::Ref &context) const{
-				return context.DynamicCast<MetaContext>()->GetWrapperRef();
-			}
-			
-		protected:
-			virtual ~TBase() override{}
-		};
-		
-		class DE_DLL_EXPORT ObjectClass : public TBase<igdeMetaPropertyStringStorage>{
+		class DE_DLL_EXPORT ObjectClass : public igdeMetaPropertyMCT<igdeMetaPropertyStringStorage, MetaContext>{
 		public:
 			ObjectClass();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -157,7 +119,7 @@ public:
 			~ObjectClass() override;
 		};
 		
-		class DE_DLL_EXPORT World : public TBase<igdeMetaPropertyPathStorage>{
+		class DE_DLL_EXPORT World : public igdeMetaPropertyMCT<igdeMetaPropertyPathStorage, MetaContext>{
 		public:
 			World();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -166,7 +128,7 @@ public:
 			~World() override;
 		};
 		
-		class DE_DLL_EXPORT Position : public TBase<igdeMetaPropertyDVectorStorage>{
+		class DE_DLL_EXPORT Position : public igdeMetaPropertyMCT<igdeMetaPropertyDVectorStorage, MetaContext>{
 		public:
 			Position();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -175,7 +137,7 @@ public:
 			~Position() override;
 		};
 		
-		class DE_DLL_EXPORT Rotation : public TBase<igdeMetaPropertyVectorStorageQuaternion>{
+		class DE_DLL_EXPORT Rotation : public igdeMetaPropertyMCT<igdeMetaPropertyVectorStorageQuaternion, MetaContext>{
 		public:
 			Rotation();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -184,7 +146,7 @@ public:
 			~Rotation() override;
 		};
 		
-		class DE_DLL_EXPORT Scaling : public TBase<igdeMetaPropertyVectorStorage>{
+		class DE_DLL_EXPORT Scaling : public igdeMetaPropertyMCT<igdeMetaPropertyVectorStorage, MetaContext>{
 		public:
 			Scaling();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -196,7 +158,7 @@ public:
 			~Scaling() override;
 		};
 		
-		class DE_DLL_EXPORT Visible : public TBase<igdeMetaPropertyBooleanStorage>{
+		class DE_DLL_EXPORT Visible : public igdeMetaPropertyMCT<igdeMetaPropertyBooleanStorage, MetaContext>{
 		public:
 			Visible();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -205,7 +167,7 @@ public:
 			~Visible() override;
 		};
 		
-		class DE_DLL_EXPORT DynamicCollider : public TBase<igdeMetaPropertyBooleanStorage>{
+		class DE_DLL_EXPORT DynamicCollider : public igdeMetaPropertyMCT<igdeMetaPropertyBooleanStorage, MetaContext>{
 		public:
 			DynamicCollider();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;

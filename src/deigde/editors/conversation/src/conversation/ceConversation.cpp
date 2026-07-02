@@ -97,7 +97,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceConversation::ceConversation(igdeEnvironment *environment) : igdeEditableEntity(environment){
+ceConversation::ceConversation(igdeEnvironment *environment) : igdeEditableEntity(*environment){
 	deEngine * const engine = GetEngine();
 	
 	pSky = nullptr;

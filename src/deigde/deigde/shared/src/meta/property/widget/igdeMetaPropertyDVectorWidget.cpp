@@ -126,12 +126,7 @@ public:
 			return;
 		}
 		
-		auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		clipboard->Set(igdeMetaPropertyDVector::ClipboardData::Ref::New(
+		pWidget.GetContext()->GetClipboard().Set(igdeMetaPropertyDVector::ClipboardData::Ref::New(
 			property, property.GetPropertyValue(context)));
 	}
 };
@@ -156,13 +151,9 @@ public:
 			return;
 		}
 		
-		const auto clipboard = pHelper.GetContext()->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		const auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyDVector().GetClipboardDataTypeName())
-			.DynamicCast<igdeMetaPropertyDVector::ClipboardData>();
+		const auto clip = pHelper.GetContext()->GetClipboard().
+			GetWithTypeName(pHelper.GetPropertyDVector().GetClipboardDataTypeName()).
+				DynamicCast<igdeMetaPropertyDVector::ClipboardData>();
 		if(!clip){
 			return;
 		}
@@ -171,13 +162,8 @@ public:
 	}
 	
 	void Update() override{
-		if(pHelper.IsValid()){
-			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyDVector().GetClipboardDataTypeName()));
-			
-		}else{
-			SetEnabled(false);
-		}
+		SetEnabled(pHelper.IsValid() && pHelper.GetContext()->GetClipboard().
+			HasWithTypeName(pHelper.GetPropertyDVector().GetClipboardDataTypeName()));
 	}
 };
 
@@ -295,11 +281,9 @@ void igdeMetaPropertyDVectorWidget::AddContextMenuEntries(igdeMenuCascade &menu)
 		helper.MenuSeparator(menu);
 	}
 	
-	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
-		helper.MenuSeparator(menu);
-	}
+	helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+	helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+	helper.MenuSeparator(menu);
 	
 	const auto presets = pPropertyDVector.GetPropertyPresets(context);
 	if(presets.IsNotEmpty()){

@@ -130,7 +130,7 @@ void projRemoteServer::pExitThread(){
 }
 
 void projRemoteServer::pUpdateTaskProfileData(){
-	igdeEnvironment &env = *pProject.GetEnvironment();
+	igdeEnvironment &env = pProject.GetEnvironment();
 	
 	pTaskProfileData = std::make_shared<TaskProfileData>();
 	

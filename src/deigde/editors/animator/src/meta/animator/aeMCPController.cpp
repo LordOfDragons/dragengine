@@ -54,7 +54,7 @@ public:
 	const igdeMetaPropertyList::List &newValue, const char *undoInfo, const char *undoInfoLong) :
 	igdeMetaPropertyListUndo(property, context, newValue, undoInfo, undoInfoLong)
 	{
-		const auto &animator = property.Animator(context);
+		const auto &animator = property.Owner(context);
 		const auto oldControllers = property.ConvertList(GetOldValue());
 		const auto newControllers = property.ConvertList(GetNewValue());
 		const auto &links = animator.GetLinks();
@@ -118,7 +118,7 @@ public:
 			return;
 		}
 		
-		list.Add(aeController::Ref::New(pPropertyController.Animator(context).GetWindowMain(), name));
+		list.Add(aeController::Ref::New(pPropertyController.Owner(context).GetWindowMain(), name));
 		pPropertyController.ChangePropertyValueType(context, list, BuildUndoInfo(pPropertyController));
 	}
 };
@@ -134,7 +134,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 			return a != b && a.StaticCast<aeController>()->GetName() == b.StaticCast<aeController>()->GetName();
 		});
 	})){
-		igdeCommonDialogs::Error(WindowMain(context), undo->GetShortInfo(),
+		igdeCommonDialogs::Error(Owner(context).GetWindowMain(), undo->GetShortInfo(),
 			"@Animator.WPController.Dialog.SetControllerName.DuplicateName");
 		return {};
 	}
@@ -148,7 +148,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 		names.SortAscending();
 		auto strNames = names.GetCount() > 5 ? DEJoin(names.GetHead(5), ", ") + ", ..." : DEJoin(names, ", ");
 		
-		if(igdeCommonDialogs::QuestionFormat(WindowMain(context), igdeCommonDialogs::ebsYesNo,
+		if(igdeCommonDialogs::QuestionFormat(Owner(context).GetWindowMain(), igdeCommonDialogs::ebsYesNo,
 		undo->GetShortInfo(), "@Animator.Dialog.RemoveController.Message",
 		names.GetCount(), strNames.GetString()) != igdeCommonDialogs::ebYes){
 			return {};
@@ -167,8 +167,8 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 
 aeMCPControllers::ObjectTypeRef aeMCPControllers::CopyObjectType(const ContextRef &context,
 const aeController::List &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = aeController::Ref::New(WindowMain(context), *object);
-	copied->GetMPName().SetValue(Animator(context).uniqueNameController.Generate(copied->GetMPName()), false);
+	auto copied = aeController::Ref::New(Owner(context).GetWindowMain(), *object);
+	copied->GetMPName().SetValue(Owner(context).uniqueNameController.Generate(copied->GetMPName()), false);
 	return copied;
 }
 
@@ -183,7 +183,7 @@ igdeMetaProperty::Action::Ref aeMCPControllers::CreateButtonAction(TargetButton 
 }
 
 void aeMCPControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	const auto &windowMain = Animator(context).GetWindowMain();
+	const auto &windowMain = Owner(context).GetWindowMain();
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, windowMain.GetActionControllerAdd());
 	AddDefaultContextMenuEntries(menu, context, owner);
@@ -196,7 +196,7 @@ void aeMCPControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMe
 igdeMetaPropertyStringUndo::Ref aeMCPControllerName::ChangePropertyValue(
 const ContextRef &context, const char *newValue, const char *undoInfo, const char *undoInfoLong){
 	decString name(newValue);
-	auto animator = Controller(context).GetAnimator();
+	auto animator = Owner(context).GetAnimator();
 	if(animator){
 		name = animator->uniqueNameController.Generate(name, GetPropertyValue(context));
 	}
@@ -224,7 +224,7 @@ public:
 			return;
 		}
 		
-		auto &controller = pPropertyMaximum.Controller(context);
+		auto &controller = pPropertyMaximum.Owner(context);
 		if(!controller.GetAnimator()){
 			return;
 		}
@@ -293,7 +293,7 @@ public:
 			return;
 		}
 		
-		auto &controller = pPropertyCurrent.Controller(context);
+		auto &controller = pPropertyCurrent.Owner(context);
 		pPropertyCurrent.ChangePropertyValue(context, controller.GetMPMinimumValue(), BuildUndoInfo(pPropertyCurrent));
 	}
 };
@@ -314,7 +314,7 @@ public:
 			return;
 		}
 		
-		auto &controller = pPropertyCurrent.Controller(context);
+		auto &controller = pPropertyCurrent.Owner(context);
 		pPropertyCurrent.ChangePropertyValue(context, controller.GetMPMaximumValue(), BuildUndoInfo(pPropertyCurrent));
 	}
 };
@@ -335,7 +335,7 @@ public:
 			return;
 		}
 		
-		auto &controller = pPropertyCurrent.Controller(context);
+		auto &controller = pPropertyCurrent.Owner(context);
 		pPropertyCurrent.ChangePropertyValue(context,
 			(controller.GetMPMinimumValue() + controller.GetMPMaximumValue()) / 2.0f,
 			BuildUndoInfo(pPropertyCurrent));
@@ -357,7 +357,7 @@ public:
 			return;
 		}
 		
-		auto &controller = pPropertyCurrent.Controller(context);
+		auto &controller = pPropertyCurrent.Owner(context);
 		pPropertyCurrent.ChangePropertyValue(context,
 			decMath::random(controller.GetMPMinimumValue(), controller.GetMPMaximumValue()),
 			BuildUndoInfo(pPropertyCurrent));
@@ -368,10 +368,10 @@ public:
 
 deTObjectReference<igdeMetaPropertyFloatUndo> aeMCPControllerCurrentValue::ChangePropertyValue(
 const ContextRef &context, float newValue, const char *undoInfo, const char *undoInfoLong){
-	if(Controller(context).GetMPFrozen()){
+	if(Owner(context).GetMPFrozen()){
 		return {};
 	}
-	return aeTMCPAnimatorController::ChangePropertyValue(context, newValue, undoInfo, undoInfoLong);
+	return igdeMetaPropertyMCT::ChangePropertyValue(context, newValue, undoInfo, undoInfoLong);
 }
 
 void aeMCPControllerCurrentValue::AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner){

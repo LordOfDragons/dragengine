@@ -29,6 +29,7 @@
 #include "../igdeTMetaData.h"
 
 class igdeUndoSystem;
+class igdeMetaPropertyGroup;
 
 
 /**
@@ -58,6 +59,13 @@ public:
 	/** \brief Create undo history meta property. */
 	igdeMetaPropertyUndoHistory(const char *id, const char *translationTag = "Igde.MetaPropertyUndoHistory.Property");
 	igdeMetaPropertyUndoHistory(const char *id, const char *name, const char *description);
+	
+	/** \brief Create undo history meta property for use in a group. */
+	static Ref CreateForGroup(const char *id);
+	
+	/** \brief Create undo history meta property group containing property. */
+	static deTObjectReference<igdeMetaPropertyGroup> CreateGroup(const char *id, const Ref &property,
+		bool collapsed = true, const char *translationTag = "Igde.MetaPropertyUndoHistory.Property");
 	
 protected:
 	/** \brief Clean up undo history meta property. */

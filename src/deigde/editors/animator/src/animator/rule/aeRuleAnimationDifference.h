@@ -39,6 +39,12 @@ class aeRuleAnimationDifference : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleAnimationDifference>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleAnimationDifference, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimationDifference *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetLeadMoveTime;
 	aeControllerTarget::Ref pTargetRefMoveTime;
@@ -68,6 +74,8 @@ public:
 	/** Cleans up the animator difference rule. */
 protected:
 	~aeRuleAnimationDifference() override;
+private:
+	aeRuleAnimationDifference(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

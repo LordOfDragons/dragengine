@@ -52,7 +52,6 @@ void aeMCAnimatorProperties::Init(){
 	
 	rule.Init(*this);
 	metaPropertiesRule->GetData() += rule.group->GetProperties();
-	igdeMetaPropertyAdapter::OnChanged(rule.rules, rule.ruleTree);
 	
 	ruleAnimation.Init(*this);
 	ruleAnimationDifference.Init(*this);
@@ -95,5 +94,5 @@ void aeMCAnimatorProperties::Init(){
 		groupCameraAttach,
 		groupPlayback,
 		attachment.group,
-		undoHistory);
+		groupUndoHistory);
 }

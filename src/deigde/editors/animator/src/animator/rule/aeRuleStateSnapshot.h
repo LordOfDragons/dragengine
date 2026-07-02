@@ -39,6 +39,13 @@ class aeRuleStateSnapshot : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleStateSnapshot>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleStateSnapshot, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleStateSnapshot *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
+private:
 	igdeMetaPropertyBooleanStorage::Storage pMPUseLastState;
 	igdeMetaPropertyIntegerStorage::Storage pMPId;
 	igdeMetaPropertyBooleanStorage::Storage pMPEnablePosition;
@@ -59,6 +66,8 @@ public:
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleStateSnapshot() override;
+private:
+	aeRuleStateSnapshot(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

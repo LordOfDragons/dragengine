@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include "igdeMetaPropertyGroup.h"
 #include "igdeMetaPropertyUndoHistory.h"
 #include "widget/igdeMetaPropertyUndoHistoryWidget.h"
 #include "../igdeMetaContext.h"
@@ -44,6 +45,20 @@ igdeMetaPropertyUndoHistory::igdeMetaPropertyUndoHistory(const char *id, const c
 igdeMetaProperty(id, name, description)
 {
 	SetCanUndo(false);
+}
+
+igdeMetaPropertyUndoHistory::Ref igdeMetaPropertyUndoHistory::CreateForGroup(const char *id){
+	auto property = Ref::New(id, "", "");
+	property->SetHideLabel(true);
+	property->SetCanHideGroup(false);
+	property->SetRows(8);
+	return property;
+}
+
+igdeMetaPropertyGroup::Ref igdeMetaPropertyUndoHistory::CreateGroup(
+const char *id, const Ref &property, bool collapsed, const char *translationTag){
+	return igdeMetaPropertyGroup::Ref::New(id, translationTag,
+		decTObjectOrderedSet<igdeMetaProperty>(devctag, property), collapsed);
 }
 
 igdeMetaPropertyUndoHistory::~igdeMetaPropertyUndoHistory() = default;

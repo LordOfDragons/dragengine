@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULEANIMATIONSELECT_H_
 #define _AEMCPRULEANIMATIONSELECT_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleAnimationSelect.h"
 
@@ -34,9 +33,9 @@
 #include <deigde/meta/property/igdeMetaPropertyStringList.h>
 
 
-class aeMCPRuleAnimationSelectEnablePosition : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationSelectEnablePosition : public aeRuleAnimationSelect::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnablePosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleAnimationSelectEnablePosition() : igdeMetaPropertyMCT(
 	"animationselect.enablePosition", "Animator.WPAPanelRuleAnimationSelect.EnablePosition"){
 		SetDefaultValue(true);
 	}
@@ -44,13 +43,13 @@ public:
 	~aeMCPRuleAnimationSelectEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnablePosition();
+		return Owner(context).GetMPEnablePosition();
 	}
 };
 
-class aeMCPRuleAnimationSelectEnableOrientation : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationSelectEnableOrientation : public aeRuleAnimationSelect::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnableOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleAnimationSelectEnableOrientation() : igdeMetaPropertyMCT(
 	"animationselect.enableOrientation", "Animator.WPAPanelRuleAnimationSelect.EnableRotation"){
 		SetDefaultValue(true);
 	}
@@ -58,25 +57,25 @@ public:
 	~aeMCPRuleAnimationSelectEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableOrientation();
+		return Owner(context).GetMPEnableOrientation();
 	}
 };
 
-class aeMCPRuleAnimationSelectEnableSize : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationSelectEnableSize : public aeRuleAnimationSelect::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnableSize() : aeTMCPAnimatorRuleType(
+	aeMCPRuleAnimationSelectEnableSize() : igdeMetaPropertyMCT(
 	"animationselect.enableSize", "Animator.WPAPanelRuleAnimationSelect.EnableSize"){}
 	
 	~aeMCPRuleAnimationSelectEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableSize();
+		return Owner(context).GetMPEnableSize();
 	}
 };
 
-class aeMCPRuleAnimationSelectEnableVertexPositionSet : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationSelectEnableVertexPositionSet : public aeRuleAnimationSelect::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationSelectEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	aeMCPRuleAnimationSelectEnableVertexPositionSet() : igdeMetaPropertyMCT(
 	"animationselect.enableVertexPositionSet", "Animator.WPAPanelRuleAnimationSelect.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
@@ -84,13 +83,13 @@ public:
 	~aeMCPRuleAnimationSelectEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableVertexPositionSet();
+		return Owner(context).GetMPEnableVertexPositionSet();
 	}
 };
 
-class aeMCPRuleAnimationSelectMoves : public aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyStringListStorage>{
+class aeMCPRuleAnimationSelectMoves : public aeRuleAnimationSelect::MetaProperty<igdeMetaPropertyStringListStorage>{
 public:
-	aeMCPRuleAnimationSelectMoves() : aeTMCPAnimatorRuleType("animationselect.moves", "Animator.WPAPanelRuleAnimationSelect.Moves"){
+	aeMCPRuleAnimationSelectMoves() : igdeMetaPropertyMCT("animationselect.moves", "Animator.WPAPanelRuleAnimationSelect.Moves"){
 		SetMultiSelection(true);
 		SetRows(5);
 	}
@@ -98,11 +97,11 @@ public:
 	~aeMCPRuleAnimationSelectMoves() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPMoves();
+		return Owner(context).GetMPMoves();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override{
-		const auto animator = Rule(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
 	}
 	
@@ -114,29 +113,23 @@ public:
 };
 
 
-class aeMCPRuleAnimationSelectTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleAnimationSelectTargetMoveTime : public aeRule::MetaPropertyTarget<aeRuleAnimationSelect>{
 public:
-	aeMCPRuleAnimationSelectTargetMoveTime() : aeTMCPRuleTarget("animationselect.targetMoveTime", "Animator.Target.MoveTime"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleAnimationSelectTargetMoveTime() : MetaPropertyTarget("animationselect.targetMoveTime", "Animator.Target.MoveTime"){}
 	~aeMCPRuleAnimationSelectTargetMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetLeadMoveTime();
+		return Owner(context).GetMPTargetLeadMoveTime();
 	}
 };
 
-class aeMCPRuleAnimationSelectTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimationSelect<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleAnimationSelectTargetSelect : public aeRule::MetaPropertyTarget<aeRuleAnimationSelect>{
 public:
-	aeMCPRuleAnimationSelectTargetSelect() : aeTMCPRuleTarget("animationselect.targetSelect", "Animator.Target.Select"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleAnimationSelectTargetSelect() : MetaPropertyTarget("animationselect.targetSelect", "Animator.Target.Select"){}
 	~aeMCPRuleAnimationSelectTargetSelect() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetSelect();
+		return Owner(context).GetMPTargetSelect();
 	}
 };
 

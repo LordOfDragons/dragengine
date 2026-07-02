@@ -65,18 +65,25 @@ aeRuleMirror::Ref aeRuleMirror::CreateDefault(aeWindowMain &windowMain, const ch
 // Class aeRuleMirror
 ///////////////////////
 
+aeRuleMirror::MetaContext::Ref aeRuleMirror::CreateMetaContext(aeWindowMain &windowMain, aeRuleMirror *rule){
+	return MetaContext::Ref::New("animator.rule_mirror", "Rule Mirror", "Rule mirror properties",
+		windowMain.GetMCAnimatorProperties().ruleMirror.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleMirror::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertMirror, aname),
-pMPMirrorAxis(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorAxis, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-pMPMirrorBone(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorBone, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleMirror.enablePosition, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleMirror.enableOrientation, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleMirror.enableSize, GetMetaContext().StaticCast<aeMCRuleMirror>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleMirror.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleMirror>())
+aeRuleMirror(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleMirror::aeRuleMirror(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertMirror, aname),
+pMPMirrorAxis(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorAxis, metaContext),
+pMPMirrorBone(windowMain.GetMCAnimatorProperties().ruleMirror.mirrorBone, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleMirror.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleMirror.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleMirror.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleMirror.enableVertexPositionSet, metaContext)
 {
 	pMPMirrorAxis.onValueChanged = [this](){
 		if(GetEngineRule()){

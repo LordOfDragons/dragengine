@@ -71,7 +71,7 @@ pProject(project)
 	}
 	
 	decPath path;
-	path.SetFromNative(project.GetEnvironment()->GetGameProject()->GetDirectoryPath());
+	path.SetFromNative(project.GetEnvironment().GetGameProject()->GetDirectoryPath());
 	path.AddUnixPath(filename);
 	
 	pPathLogFile = path.GetPathNative();
@@ -393,7 +393,7 @@ void projRemoteClient::pBuildGameXml(decXmlWriter &writer, const projProfile &pr
 	writer.WriteDataTagString("creator", profile.GetCreator());
 	writer.WriteDataTagString("homepage", profile.GetWebsite());
 	
-	igdeEnvironment &env = *pProject.GetEnvironment();
+	igdeEnvironment &env = pProject.GetEnvironment();
 	const decStringSet &iconPathList = profile.GetIcons();
 	const int iconPathCount = iconPathList.GetCount();
 	if(iconPathCount > 0){

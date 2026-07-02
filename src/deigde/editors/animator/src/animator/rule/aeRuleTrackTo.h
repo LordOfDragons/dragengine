@@ -43,6 +43,12 @@ class aeRuleTrackTo : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleTrackTo>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleTrackTo, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleTrackTo *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetPosition;
 	aeControllerTarget::Ref pTargetUp;
@@ -68,6 +74,8 @@ public:
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleTrackTo() override;
+private:
+	aeRuleTrackTo(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

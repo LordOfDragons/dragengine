@@ -35,21 +35,28 @@
 // Class aeRuleGroup
 //////////////////////
 
+aeRuleGroup::MetaContext::Ref aeRuleGroup::CreateMetaContext(aeWindowMain &windowMain, aeRuleGroup *rule){
+	return MetaContext::Ref::New("animator.rule_group", "Rule Group", "Rule group properties",
+		windowMain.GetMCAnimatorProperties().ruleGroup.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleGroup::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertGroup, aname),
+aeRuleGroup(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertGroup, aname),
 pTreeListExpanded(false),
-pMPRules(windowMain.GetMCAnimatorProperties().ruleGroup.rules, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleGroup.enablePosition, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleGroup.enableOrientation, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleGroup.enableSize, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleGroup.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPUseCurrentState(windowMain.GetMCAnimatorProperties().ruleGroup.useCurrentState, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPApplicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, GetMetaContext().StaticCast<aeMCRuleGroup>()),
-pMPTargetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, GetMetaContext().StaticCast<aeMCRuleGroup>())
+pMPRules(windowMain.GetMCAnimatorProperties().ruleGroup.rules, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleGroup.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleGroup.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleGroup.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleGroup.enableVertexPositionSet, metaContext),
+pMPUseCurrentState(windowMain.GetMCAnimatorProperties().ruleGroup.useCurrentState, metaContext),
+pMPApplicationType(windowMain.GetMCAnimatorProperties().ruleGroup.applicationType, metaContext),
+pMPTargetSelect(windowMain.GetMCAnimatorProperties().ruleGroup.targetSelect, metaContext)
 {	
 	uniqueNameRule.SetIsUnique([this](const decString &checkName){
 		return !pMPRules->HasMatching([&](const aeRule &each){
@@ -129,11 +136,13 @@ aeRuleGroup::aeRuleGroup(aeWindowMain &windowMain, const aeRuleGroup &copy) :
 aeRuleGroup(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
 	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
 	pMPEnableSize.SetValue(copy.pMPEnableSize, false);
 	pMPEnableVertexPositionSet.SetValue(copy.pMPEnableVertexPositionSet, false);
 	pMPUseCurrentState.SetValue(copy.pMPUseCurrentState, false);
 	pMPApplicationType.SetValue(copy.pMPApplicationType, false);
+	pMPTargetSelect.SetValue(copy.pMPTargetSelect, false);
 	
 	pTargetSelect = aeControllerTarget::Ref::New(pMPTargetSelect, copy.pTargetSelect);
 	

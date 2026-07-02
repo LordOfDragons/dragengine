@@ -40,11 +40,16 @@
 // Class aeController
 ///////////////////////
 
+aeController::MetaContext::Ref aeController::CreateMetaContext(aeWindowMain &windowMain, aeController *controller){
+	return MetaContext::Ref::New("animator.controller", "Controller", "Controller properties",
+		windowMain.GetMCAnimatorProperties().controller.metaProperties, controller);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeController::aeController(aeWindowMain &windowMain, const char *aname) :
-pMetaContext(aeMCController::Ref::New(windowMain, this)),
+pMetaContext(CreateMetaContext(windowMain, this)),
 pAnimator(nullptr),
 pIndex(-1),
 pMPName(windowMain.GetMCAnimatorProperties().controller.name, pMetaContext, aname),
@@ -157,6 +162,11 @@ aeController::~aeController(){
 // Management
 ///////////////
 
+aeAnimator &aeController::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator)
+	return *pAnimator;
+}
+
 void aeController::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
@@ -168,6 +178,14 @@ void aeController::SetAnimator(aeAnimator *animator){
 	pIndex = -1;
 	
 	pCreateGizmos();
+}
+
+igdeEnvironment &aeController::GetEnvironment() const{
+	return GetAnimatorRef().GetEnvironment();
+}
+
+igdeUndoSystem *aeController::GetUndoSystem() const{
+	return GetAnimatorRef().GetUndoSystem();
 }
 
 void aeController::SetIndex(int index){
@@ -532,7 +550,7 @@ void aeController::pCreateGizmos(){
 	
 	switch(pMPVectorSimulation){
 	case evsPosition:
-		pGizmoIKPosition = aeGizmoControllerIKPosition::Ref::New(*pAnimator->GetEnvironment(), *this);
+		pGizmoIKPosition = aeGizmoControllerIKPosition::Ref::New(pAnimator->GetEnvironment(), *this);
 		pGizmoIKPosition->SetWorld(pAnimator->GetEngineWorld());
 		break;
 		

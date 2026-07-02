@@ -51,7 +51,7 @@ public:
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
 		const auto &context = GetContext();
 		if(pPropertyBones.IsValid(context)){
-			auto undo = aeUAnimatorMirrorBones::Ref::New(&pPropertyBones.Animator(context));
+			auto undo = aeUAnimatorMirrorBones::Ref::New(&pPropertyBones.Owner(context));
 			if(undo->HasAnyEffect()){
 				context->GetUndoSystem()->Add(undo);
 			}
@@ -67,7 +67,7 @@ public:
 }
 
 decStringSet aeMCPAnimatorAffectedBones::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
-	return Animator(context).GetMPHiddenBoneNames();
+	return Owner(context).GetMPHiddenBoneNames();
 }
 
 void aeMCPAnimatorAffectedBones::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -99,7 +99,7 @@ public:
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
 		const auto &context = GetContext();
 		if(pPropertyVPS.IsValid(context)){
-			auto undo = aeUAnimatorMirrorVertexPositionSets::Ref::New(&pPropertyVPS.Animator(context));
+			auto undo = aeUAnimatorMirrorVertexPositionSets::Ref::New(&pPropertyVPS.Owner(context));
 			if(undo->HasAnyEffect()){
 				context->GetUndoSystem()->Add(undo);
 			}
@@ -115,7 +115,7 @@ public:
 }
 
 decStringSet aeMCPAnimatorAffectedVertexPositionSets::GetAllowedStrings(const igdeMetaContext::Ref &context) const{
-	return Animator(context).GetMPHiddenVPSNames();
+	return Owner(context).GetMPHiddenVPSNames();
 }
 
 void aeMCPAnimatorAffectedVertexPositionSets::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -150,7 +150,7 @@ public:
 			return;
 		}
 		
-		pProperty.Animator(context).GetMPControllers()->Visit([&](aeController &controller){
+		pProperty.Owner(context).GetMPControllers()->Visit([&](aeController &controller){
 			controller.ResetValue();
 		});
 	}
@@ -173,7 +173,7 @@ public:
 			return;
 		}
 		
-		pProperty.Animator(context).GetMPControllers()->Visit([&](aeController &controller){
+		pProperty.Owner(context).GetMPControllers()->Visit([&](aeController &controller){
 			controller.ResetValue(true);
 		});
 	}
@@ -182,13 +182,13 @@ public:
 }
 
 aeMCPAnimatorPlaygroundControllers::aeMCPAnimatorPlaygroundControllers(igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue) :
-aeTMCPAnimatorNoCapture("animator.playgroundControllers", propertyName, propertyValue){
+igdeMetaPropertyMCTNoCapture("animator.playgroundControllers", propertyName, propertyValue){
 }
 
 aeMCPAnimatorPlaygroundControllers::~aeMCPAnimatorPlaygroundControllers() = default;
 
 aeMCPAnimatorPlaygroundControllers::Storage &aeMCPAnimatorPlaygroundControllers::GetStorage(const igdeMetaContext::Ref &context) const{
-	return Animator(context).GetMPPlayground();
+	return Owner(context).GetMPPlayground();
 }
 
 void aeMCPAnimatorPlaygroundControllers::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
@@ -204,7 +204,7 @@ void aeMCPAnimatorPlaygroundControllers::AddContextMenuEntries(igdeMenuCascade &
 // Class aeMCPAnimatorSky
 ///////////////////////////
 
-aeMCPAnimatorSky::aeMCPAnimatorSky() : aeTMCPAnimator("animator.sky", "", ""){
+aeMCPAnimatorSky::aeMCPAnimatorSky() : igdeMetaPropertyMCT("animator.sky", "", ""){
 	SetProperties(igdeWSky::MetaProperties::global.properties);
 }
 
@@ -212,7 +212,7 @@ aeMCPAnimatorSky::aeMCPAnimatorSky() : aeTMCPAnimator("animator.sky", "", ""){
 // Class aeMCPAnimatorEnvironmentObject
 /////////////////////////////////////////
 
-aeMCPAnimatorEnvironmentObject::aeMCPAnimatorEnvironmentObject() : aeTMCPAnimator("animator.environmentObject", "", ""){
+aeMCPAnimatorEnvironmentObject::aeMCPAnimatorEnvironmentObject() : igdeMetaPropertyMCT("animator.environmentObject", "", ""){
 	SetProperties(igdeWObject::MetaProperties::global.properties);
 }
 
@@ -220,7 +220,7 @@ aeMCPAnimatorEnvironmentObject::aeMCPAnimatorEnvironmentObject() : aeTMCPAnimato
 // Class aeMCPAnimatorCamera
 //////////////////////////////
 
-aeMCPAnimatorCamera::aeMCPAnimatorCamera() : aeTMCPAnimator("animator.camera", "", ""){
+aeMCPAnimatorCamera::aeMCPAnimatorCamera() : igdeMetaPropertyMCT("animator.camera", "", ""){
 	SetProperties(igdeCamera::MetaProperties::global.properties);
 }
 
@@ -243,7 +243,7 @@ public:
 			return;
 		}
 		
-		pProperty.Animator(context).GetControllers().Visit([](aeController &controller){
+		pProperty.Owner(context).GetControllers().Visit([](aeController &controller){
 			controller.ResetValue();
 		});
 	}

@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCamera::reCamera(reRig &rig, deEngine *engine) : igdeCamera(*rig.GetEnvironment(), engine){
+reCamera::reCamera(reRig &rig, deEngine *engine) : igdeCamera(rig.GetEnvironment(), engine){
 	pRig = &rig;
 	
 	pFreeDistance = 0.0f;

@@ -407,6 +407,6 @@ void skyeLayer::pUpdateSkin(){
 			LoadSkin(pPathSkin, pSky->GetDirectoryPath());
 		
 	}catch(const deException &){
-		pEngSkin = pSky->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
+		pEngSkin = pSky->GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 	}
 }

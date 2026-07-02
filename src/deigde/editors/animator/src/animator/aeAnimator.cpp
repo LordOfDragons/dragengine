@@ -74,30 +74,63 @@
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
 
-
 // Definitions
 ////////////////
 
 #define LOGSOURCE "Animator Editor"
 
 
-
 // Class aeAnimator
 /////////////////////
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContext(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator", "Animator", "Animator properties",
+		windowMain.GetMCAnimatorProperties().metaProperties, animator);
+}
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextController(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator_controller", "Controller", "Animator controller properties",
+		windowMain.GetMCAnimatorProperties().metaPropertiesController, animator);
+}
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextLink(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator_link", "Link", "Animator link properties",
+		windowMain.GetMCAnimatorProperties().metaPropertiesLink, animator);
+}
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextRule(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator_rule", "Rule", "Animator rule properties",
+		windowMain.GetMCAnimatorProperties().metaPropertiesRule, animator);
+}
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextPlayground(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator_playground", "Playground", "Animator playground properties",
+		windowMain.GetMCAnimatorProperties().metaPropertiesPlayground, animator);
+}
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextAttachment(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator_attachment", "Attachment", "Animator attachment properties",
+		windowMain.GetMCAnimatorProperties().attachment.metaProperties, animator);
+}
+
+aeAnimator::MetaContext::Ref aeAnimator::CreateMetaContextView(aeWindowMain &windowMain, aeAnimator *animator){
+	return MetaContext::Ref::New("animator.animator_view", "View", "Animator view properties",
+		windowMain.GetMCAnimatorProperties().metaPropertiesView, animator);
+}
 
 // Constructor, destructor
 ////////////////////////////
 
 aeAnimator::aeAnimator(aeWindowMain &windowMain) :
-igdeEditableEntity(&windowMain.GetEnvironment()),
+igdeEditableEntity(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pMetaContext(aeMCAnimator::Ref::New(windowMain, this)),
-pMetaContextController(aeMCAnimatorController::Ref::New(windowMain, this)),
-pMetaContextLink(aeMCAnimatorLink::Ref::New(windowMain, this)),
-pMetaContextRule(aeMCAnimatorRule::Ref::New(windowMain, this)),
-pMetaContextPlayground(aeMCAnimatorPlayground::Ref::New(windowMain, this)),
-pMetaContextAttachment(aeMCAnimatorAttachment::Ref::New(windowMain, this)),
-pMetaContextView(aeMCAnimatorView::Ref::New(windowMain, this)),
+pMetaContext(CreateMetaContext(windowMain, this)),
+pMetaContextController(CreateMetaContextController(windowMain, this)),
+pMetaContextLink(CreateMetaContextLink(windowMain, this)),
+pMetaContextRule(CreateMetaContextRule(windowMain, this)),
+pMetaContextPlayground(CreateMetaContextPlayground(windowMain, this)),
+pMetaContextAttachment(CreateMetaContextAttachment(windowMain, this)),
+pMetaContextView(CreateMetaContextView(windowMain, this)),
 pMPHiddenBoneNames(pWindowMain.GetMCAnimatorProperties().hiddenBoneNames, pMetaContext),
 pMPHiddenVpsNames(pWindowMain.GetMCAnimatorProperties().hiddenVPSNames, pMetaContext),
 pMPHiddenMoveNames(pWindowMain.GetMCAnimatorProperties().hiddenMoveNames, pMetaContext),

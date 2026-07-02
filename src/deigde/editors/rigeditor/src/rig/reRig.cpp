@@ -110,7 +110,7 @@
 ////////////////////////////
 
 reRig::reRig(igdeEnvironment *environment) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pEngAnimatorAnim(nullptr),
 pEngAnimatorRestPose(nullptr),
 
@@ -661,7 +661,7 @@ void reRig::SetAmbientLight(const decColor &ambientLight){
 }
 
 void reRig::InitDelegates(){
-	GetEnvironment()->SetColliderDelegee(pEngSimCollider, &pCLSimulation);
+	GetEnvironment().SetColliderDelegee(pEngSimCollider, &pCLSimulation);
 }
 
 

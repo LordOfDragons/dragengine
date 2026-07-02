@@ -24,6 +24,7 @@
 
 #include "igdeMetaContext.h"
 #include "property/igdeMetaProperty.h"
+#include "../environment/igdeEnvironment.h"
 
 
 // Class igdeMetaContext::Listener
@@ -43,6 +44,25 @@ void igdeMetaContext::Listener::OnPropertiesChanged(igdeMetaContext*){}
 
 igdeMetaContext::igdeMetaContext(const char *identifier) :
 pIdentifier(identifier),
+pDisposed(false){
+}
+
+igdeMetaContext::igdeMetaContext(const char *identifier, const char *label, const char *description,
+	const igdeIcon::Ref &icon, const PropertyList::Ref &properties) :
+pIdentifier(identifier),
+pLabel(label),
+pDescription(description),
+pIcon(icon),
+pProperties(properties),
+pDisposed(false){
+}
+
+igdeMetaContext::igdeMetaContext(const igdeMetaContext &copy) :
+pIdentifier(copy.pIdentifier),
+pLabel(copy.pLabel),
+pDescription(copy.pDescription),
+pIcon(copy.pIcon),
+pProperties(copy.pProperties),
 pDisposed(false){
 }
 
@@ -87,8 +107,8 @@ igdeUndoSystem *igdeMetaContext::GetUndoSystem() const{
 	return nullptr;
 }
 
-igdeClipboard *igdeMetaContext::GetClipboard() const{
-	return nullptr;
+igdeClipboard &igdeMetaContext::GetClipboard() const{
+	return GetEnvironment().GetClipboard();
 }
 
 void igdeMetaContext::NotifyPropertiesChanged(){

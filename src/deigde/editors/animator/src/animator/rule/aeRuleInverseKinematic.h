@@ -40,6 +40,12 @@ class aeRuleInverseKinematic : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleInverseKinematic>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleInverseKinematic, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleInverseKinematic *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetGoalPosition;
 	aeControllerTarget::Ref pTargetGoalOrientation;
@@ -80,6 +86,8 @@ public:
 	/** Clean up the animator rule. */
 protected:
 	~aeRuleInverseKinematic() override;
+private:
+	aeRuleInverseKinematic(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

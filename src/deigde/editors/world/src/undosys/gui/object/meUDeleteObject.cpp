@@ -62,7 +62,7 @@ pWorld(nullptr)
 		}
 	});
 	
-	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	igdeTranslationManager &tm = world->GetEnvironment().GetTranslationManager();
 	
 	SetShortInfo("@World.UDeleteObject.DeleteObjects");
 	decString text;

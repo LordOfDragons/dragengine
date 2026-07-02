@@ -454,11 +454,6 @@ void igdeMetaPropertyList::ActionCopy::OnAction(){
 		return;
 	}
 	
-	auto clipboard = context->GetClipboard();
-	if(!clipboard){
-		return;
-	}
-	
 	List values, copiedValues;
 	if(pPropertyList.GetMultiSelection()){
 		values.AddAll(pPropertyList.GetSelection(context));
@@ -481,13 +476,12 @@ void igdeMetaPropertyList::ActionCopy::OnAction(){
 		return;
 	}
 	
-	clipboard->Set(ClipboardData::Ref::New(pPropertyList, std::move(copiedValues)));
+	context->GetClipboard().Set(ClipboardData::Ref::New(pPropertyList, std::move(copiedValues)));
 }
 
 void igdeMetaPropertyList::ActionCopy::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertyList.IsValid(context) && context->GetClipboard()
-		&& pPropertyList.GetActiveObject(context).IsNotNull());
+	SetEnabled(pPropertyList.IsValid(context) && pPropertyList.GetActiveObject(context));
 }
 
 
@@ -527,12 +521,7 @@ void igdeMetaPropertyList::ActionPaste::OnAction(){
 		return;
 	}
 	
-	const auto clipboard = context->GetClipboard();
-	if(!clipboard){
-		return;
-	}
-	
-	const auto clip = clipboard->GetWithTypeName(
+	const auto clip = context->GetClipboard().GetWithTypeName(
 		pPropertyList.GetClipboardDataTypeName()).DynamicCast<ClipboardData>();
 	if(!clip){
 		return;
@@ -541,11 +530,12 @@ void igdeMetaPropertyList::ActionPaste::OnAction(){
 	const auto oldData = pPropertyList.GetPropertyValue(context);
 	List pastedObjects;
 	auto newData = oldData;
+	int index = pIndex == -1 ? newData.GetCount() : decMath::clamp(pIndex, 0, newData.GetCount());
 	
 	clip->GetData().Visit([&](const deObject::Ref &object){
 		const auto copiedObject = pPropertyList.CopyObject(context, newData, object);
 		if(copiedObject){
-			newData.Add(copiedObject);
+			newData.Insert(copiedObject, index++);
 			pastedObjects.Add(copiedObject);
 		}
 	});
@@ -566,12 +556,40 @@ void igdeMetaPropertyList::ActionPaste::OnAction(){
 }
 
 void igdeMetaPropertyList::ActionPaste::Update(){
-	if(pPropertyList.IsValid(GetContext())){
-		const auto cb = GetContext()->GetClipboard();
-		SetEnabled(cb && cb->HasWithTypeName(pPropertyList.GetClipboardDataTypeName()));
-		return;
-	}
-	SetEnabled(false);
+	SetEnabled(pPropertyList.IsValid(GetContext())
+		&& GetContext()->GetClipboard().HasWithTypeName(pPropertyList.GetClipboardDataTypeName()));
+}
+
+
+// Class igdeMetaPropertyList::ActionPasteBefore
+//////////////////////////////////////////////////
+
+igdeMetaPropertyList::ActionPasteBefore::ActionPasteBefore(igdeMetaPropertyList &property,
+	igdeWidget &owner, const ContextRef &context) :
+ActionPaste(property, owner, context)
+{
+	SetText("@Igde.Action.PasteBefore");
+	SetDescription("@Igde.Action.PasteBefore.ToolTip");
+	
+	auto list = property.GetPropertyValue(context);
+	auto active = property.GetActiveObject(context);
+	pIndex = active ? list.IndexOf(active) : list.GetCount();
+}
+
+
+// Class igdeMetaPropertyList::ActionPasteAfter
+/////////////////////////////////////////////////
+
+igdeMetaPropertyList::ActionPasteAfter::ActionPasteAfter(igdeMetaPropertyList &property,
+	igdeWidget &owner, const ContextRef &context) :
+ActionPaste(property, owner, context)
+{
+	SetText("@Igde.Action.PasteAfter");
+	SetDescription("@Igde.Action.PasteAfter.ToolTip");
+	
+	auto list = property.GetPropertyValue(context);
+	auto active = property.GetActiveObject(context);
+	pIndex = active ? list.IndexOf(active) + 1 : list.GetCount();
 }
 
 

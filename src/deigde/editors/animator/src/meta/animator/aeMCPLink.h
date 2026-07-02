@@ -26,7 +26,6 @@
 #define _AEMCPLINK_H_
 
 #include "aeMCPController.h"
-#include "aeTMCPAnimator.h"
 #include "../../animator/aeAnimator.h"
 #include "../../animator/link/aeLink.h"
 
@@ -41,9 +40,9 @@
 
 
 /** Links. */
-class aeMCPLinks : public aeTMCPAnimator<igdeMetaPropertyListStorage<aeLink, aeLink::List>>{
+class aeMCPLinks : public aeAnimator::MetaProperty<igdeMetaPropertyListStorage<aeLink, aeLink::List>>{
 public:
-	aeMCPLinks() : aeTMCPAnimator("animator.links", "Animator.WPLink.Links"){
+	aeMCPLinks() : igdeMetaPropertyMCT("animator.links", "Animator.WPLink.Links"){
 		SetHideLabel(true);
 		SetCanHideGroup(false);
 		SetSorted(true);
@@ -54,7 +53,7 @@ public:
 	~aeMCPLinks() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPLinks();
+		return Owner(context).GetMPLinks();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &link, igdeMetaContextItemInfo &info) const override{
@@ -72,46 +71,46 @@ public:
 
 
 /** Link. */
-class aeMCPLink : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+class aeMCPLink : public aeAnimator::MetaProperty<igdeMetaPropertyContextStorage>{
 public:
-	aeMCPLink(aeWindowMain &windowMain) : aeTMCPAnimator("animator.link", "", ""){
-		SetDefaultValue(aeMCLink::Ref::New(windowMain, nullptr));
+	aeMCPLink(aeWindowMain &windowMain) : igdeMetaPropertyMCT("animator.link", "", ""){
+		SetDefaultValue(aeLink::CreateMetaContext(windowMain, nullptr));
 	};
 	
 	~aeMCPLink() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPLink();
+		return Owner(context).GetMPLink();
 	}
 };
 
 
 /** Link name. */
-class aeMCPLinkName : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
+class aeMCPLinkName : public aeLink::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPLinkName() : aeTMCPAnimatorLink("link.name", "Animator.WPLink.Name"){
+	aeMCPLinkName() : igdeMetaPropertyMCT("link.name", "Animator.WPLink.Name"){
 		SetDefaultValue("Link");
 	};
 	
 	~aeMCPLinkName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPName();
+		return Owner(context).GetMPName();
 	}
 };
 
 
 /** Link controller. */
-class aeMCPLinkController : public aeTMCPAnimatorLink<igdeMetaPropertyObjectStorage<aeController>>{
+class aeMCPLinkController : public aeLink::MetaProperty<igdeMetaPropertyObjectStorage<aeController>>{
 public:
-	aeMCPLinkController() : aeTMCPAnimatorLink("link.controller", "Animator.WPLink.Controller"){
+	aeMCPLinkController() : igdeMetaPropertyMCT("link.controller", "Animator.WPLink.Controller"){
 		SetSorted(true);
 	};
 	
 	~aeMCPLinkController() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPController();
+		return Owner(context).GetMPController();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef &context, const ObjectTypeRef &object, igdeMetaContextItemInfo &info) const override{
@@ -120,16 +119,16 @@ public:
 	}
 	
 	ObjectTypeList GetPropertyAllowedObjectsType(const ContextRef &context) const override{
-		auto animator = Link(context).GetAnimator();
+		auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPAllowedListControllers() : ObjectTypeList::New();
 	}
 };
 
 
 /** Link repeat. */
-class aeMCPLinkRepeat : public aeTMCPAnimatorLink<igdeMetaPropertyIntegerStorage>{
+class aeMCPLinkRepeat : public aeLink::MetaProperty<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPLinkRepeat() : aeTMCPAnimatorLink("link.repeat", "Animator.WPLink.Repeat"){
+	aeMCPLinkRepeat() : igdeMetaPropertyMCT("link.repeat", "Animator.WPLink.Repeat"){
 		SetDefaultValue(1);
 		SetEnableLowerLimit(true);
 		SetLowerLimit(1);
@@ -139,15 +138,15 @@ public:
 	~aeMCPLinkRepeat() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPRepeat();
+		return Owner(context).GetMPRepeat();
 	}
 };
 
 
 /** Link curve. */
-class aeMCPLinkCurve : public aeTMCPAnimatorLink<igdeMetaPropertyCurveBezierStorage>{
+class aeMCPLinkCurve : public aeLink::MetaProperty<igdeMetaPropertyCurveBezierStorage>{
 public:
-	aeMCPLinkCurve() : aeTMCPAnimatorLink("link.curve", "Animator.WPLink.LinkCurve"){
+	aeMCPLinkCurve() : igdeMetaPropertyMCT("link.curve", "Animator.WPLink.LinkCurve"){
 		decCurveBezier curve;
 		curve.SetDefaultLinear();
 		SetDefaultValue(curve);
@@ -157,7 +156,7 @@ public:
 	~aeMCPLinkCurve() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPCurve();
+		return Owner(context).GetMPCurve();
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const ContextRef &context, igdeWidget &owner) override;
@@ -165,29 +164,29 @@ public:
 
 
 /** Link bone. */
-class aeMCPLinkBone : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
+class aeMCPLinkBone : public aeLink::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPLinkBone() : aeTMCPAnimatorLink("link.bone", "Animator.WPLink.Bone"){
+	aeMCPLinkBone() : igdeMetaPropertyMCT("link.bone", "Animator.WPLink.Bone"){
 		SetEnableAllowed(true);
 	};
 	
 	~aeMCPLinkBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPBone();
+		return Owner(context).GetMPBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = Link(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
 
 /** Link bone parameter. */
-class aeMCPLinkBoneParameter : public aeTMCPAnimatorLink<igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>>{
+class aeMCPLinkBoneParameter : public aeLink::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorLink::eBoneParameter>>{
 public:
-	aeMCPLinkBoneParameter() : aeTMCPAnimatorLink("link.boneParameter", "Animator.WPLink.BoneParameter"){
+	aeMCPLinkBoneParameter() : igdeMetaPropertyMCT("link.boneParameter", "Animator.WPLink.BoneParameter"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorLink::ebpPositionX, deAnimatorLink::ebpPositionY, deAnimatorLink::ebpPositionZ,
 			deAnimatorLink::ebpRotationX, deAnimatorLink::ebpRotationY, deAnimatorLink::ebpRotationZ,
@@ -198,7 +197,7 @@ public:
 	~aeMCPLinkBoneParameter() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPBoneParameter();
+		return Owner(context).GetMPBoneParameter();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorLink::eBoneParameter choice, igdeMetaContextItemInfo &info) const override{
@@ -248,87 +247,87 @@ public:
 
 
 /** Link bone minimum. */
-class aeMCPLinkBoneMinimum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
+class aeMCPLinkBoneMinimum : public aeLink::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkBoneMinimum() : aeTMCPAnimatorLink("link.boneMinimum", "Animator.WPLink.BoneMinimumValue"){};
+	aeMCPLinkBoneMinimum() : igdeMetaPropertyMCT("link.boneMinimum", "Animator.WPLink.BoneMinimumValue"){};
 	~aeMCPLinkBoneMinimum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPBoneMinimum();
+		return Owner(context).GetMPBoneMinimum();
 	}
 };
 
 
 /** Link bone maximum. */
-class aeMCPLinkBoneMaximum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
+class aeMCPLinkBoneMaximum : public aeLink::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkBoneMaximum() : aeTMCPAnimatorLink("link.boneMaximum", "Animator.WPLink.BoneMaximumValue"){
+	aeMCPLinkBoneMaximum() : igdeMetaPropertyMCT("link.boneMaximum", "Animator.WPLink.BoneMaximumValue"){
 		SetDefaultValue(1.0f);
 	};
 	
 	~aeMCPLinkBoneMaximum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPBoneMaximum();
+		return Owner(context).GetMPBoneMaximum();
 	}
 };
 
 
 /** Link vertex position set. */
-class aeMCPLinkVertexPositionSet : public aeTMCPAnimatorLink<igdeMetaPropertyStringStorage>{
+class aeMCPLinkVertexPositionSet : public aeLink::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPLinkVertexPositionSet() : aeTMCPAnimatorLink("link.vertexPositionSet", "Animator.WPLink.VertexPositionSet"){
+	aeMCPLinkVertexPositionSet() : igdeMetaPropertyMCT("link.vertexPositionSet", "Animator.WPLink.VertexPositionSet"){
 		SetEnableAllowed(true);
 	};
 	
 	~aeMCPLinkVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPVertexPositionSet();
+		return Owner(context).GetMPVertexPositionSet();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = Link(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenVPSNames().GetValue() : decStringSet();
 	}
 };
 
 
 /** Link vertex position set minimum. */
-class aeMCPLinkVertexPositionSetMinimum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
+class aeMCPLinkVertexPositionSetMinimum : public aeLink::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkVertexPositionSetMinimum() : aeTMCPAnimatorLink("link.vertexPositionSetMinimum", "Animator.WPLink.VPSMinimumValue"){};
+	aeMCPLinkVertexPositionSetMinimum() : igdeMetaPropertyMCT("link.vertexPositionSetMinimum", "Animator.WPLink.VPSMinimumValue"){};
 	~aeMCPLinkVertexPositionSetMinimum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPVertexPositionSetMinimum();
+		return Owner(context).GetMPVertexPositionSetMinimum();
 	}
 };
 
 
 /** Link vertex position set maximum. */
-class aeMCPLinkVertexPositionSetMaximum : public aeTMCPAnimatorLink<igdeMetaPropertyFloatStorage>{
+class aeMCPLinkVertexPositionSetMaximum : public aeLink::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPLinkVertexPositionSetMaximum() : aeTMCPAnimatorLink("link.vertexPositionSetMaximum", "Animator.WPLink.VPSMaximumValue"){
+	aeMCPLinkVertexPositionSetMaximum() : igdeMetaPropertyMCT("link.vertexPositionSetMaximum", "Animator.WPLink.VPSMaximumValue"){
 		SetDefaultValue(1.0f);
 	};
 	
 	~aeMCPLinkVertexPositionSetMaximum() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPVertexPositionSetMaximum();
+		return Owner(context).GetMPVertexPositionSetMaximum();
 	}
 };
 
 
 /** Link wrap Y. */
-class aeMCPLinkWrapY : public aeTMCPAnimatorLink<igdeMetaPropertyBooleanStorage>{
+class aeMCPLinkWrapY : public aeLink::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPLinkWrapY() : aeTMCPAnimatorLink("link.wrapY", "Animator.WPLink.WrapY"){};
+	aeMCPLinkWrapY() : igdeMetaPropertyMCT("link.wrapY", "Animator.WPLink.WrapY"){};
 	~aeMCPLinkWrapY() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Link(context).GetMPWrapY();
+		return Owner(context).GetMPWrapY();
 	}
 };
 

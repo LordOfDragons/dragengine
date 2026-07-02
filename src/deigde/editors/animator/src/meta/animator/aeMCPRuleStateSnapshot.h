@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULESTATESNAPSHOT_H_
 #define _AEMCPRULESTATESNAPSHOT_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleStateSnapshot.h"
 
@@ -33,9 +32,9 @@
 #include <deigde/meta/property/igdeMetaPropertyInteger.h>
 
 
-class aeMCPRuleStateSnapshotUseLastState : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateSnapshotUseLastState : public aeRuleStateSnapshot::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotUseLastState() : aeTMCPAnimatorRuleType(
+	aeMCPRuleStateSnapshotUseLastState() : igdeMetaPropertyMCT(
 	"statesnapshot.useLastState", "Animator.WPAPanelRuleStateSnapshot.UseLastState"){
 		SetDefaultValue(true);
 	}
@@ -43,25 +42,25 @@ public:
 	~aeMCPRuleStateSnapshotUseLastState() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPUseLastState();
+		return Owner(context).GetMPUseLastState();
 	}
 };
 
-class aeMCPRuleStateSnapshotID : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyIntegerStorage>{
+class aeMCPRuleStateSnapshotID : public aeRuleStateSnapshot::MetaProperty<igdeMetaPropertyIntegerStorage>{
 public:
-	aeMCPRuleStateSnapshotID() : aeTMCPAnimatorRuleType(
+	aeMCPRuleStateSnapshotID() : igdeMetaPropertyMCT(
 	"statesnapshot.id", "Animator.WPAPanelRuleStateSnapshot.ID"){}
 	
 	~aeMCPRuleStateSnapshotID() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPId();
+		return Owner(context).GetMPId();
 	}
 };
 
-class aeMCPRuleStateSnapshotEnablePosition : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateSnapshotEnablePosition : public aeRuleStateSnapshot::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnablePosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleStateSnapshotEnablePosition() : igdeMetaPropertyMCT(
 	"statesnapshot.enablePosition", "Animator.WPAPanelRuleStateSnapshot.EnablePosition"){
 		SetDefaultValue(true);
 	}
@@ -69,13 +68,13 @@ public:
 	~aeMCPRuleStateSnapshotEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnablePosition();
+		return Owner(context).GetMPEnablePosition();
 	}
 };
 
-class aeMCPRuleStateSnapshotEnableOrientation : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateSnapshotEnableOrientation : public aeRuleStateSnapshot::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnableOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleStateSnapshotEnableOrientation() : igdeMetaPropertyMCT(
 	"statesnapshot.enableOrientation", "Animator.WPAPanelRuleStateSnapshot.EnableRotation"){
 		SetDefaultValue(true);
 	}
@@ -83,25 +82,25 @@ public:
 	~aeMCPRuleStateSnapshotEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableOrientation();
+		return Owner(context).GetMPEnableOrientation();
 	}
 };
 
-class aeMCPRuleStateSnapshotEnableSize : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateSnapshotEnableSize : public aeRuleStateSnapshot::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnableSize() : aeTMCPAnimatorRuleType(
+	aeMCPRuleStateSnapshotEnableSize() : igdeMetaPropertyMCT(
 	"statesnapshot.enableSize", "Animator.WPAPanelRuleStateSnapshot.EnableSize"){}
 	
 	~aeMCPRuleStateSnapshotEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableSize();
+		return Owner(context).GetMPEnableSize();
 	}
 };
 
-class aeMCPRuleStateSnapshotEnableVertexPositionSet : public aeTMCPAnimatorRuleStateSnapshot<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleStateSnapshotEnableVertexPositionSet : public aeRuleStateSnapshot::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleStateSnapshotEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	aeMCPRuleStateSnapshotEnableVertexPositionSet() : igdeMetaPropertyMCT(
 	"statesnapshot.enableVertexPositionSet", "Animator.WPAPanelRuleStateSnapshot.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
@@ -109,7 +108,7 @@ public:
 	~aeMCPRuleStateSnapshotEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableVertexPositionSet();
+		return Owner(context).GetMPEnableVertexPositionSet();
 	}
 };
 

@@ -190,7 +190,7 @@ void ceLoadSaveCTS::pReadCTS(const decXmlElementTag &root, ceConversation &conve
 		
 		if(tag){
 			if(strcmp(tag->GetName(), "actor") == 0){
-				const ceConversationActor::Ref actor(ceConversationActor::Ref::New(*conversation.GetEnvironment()));
+				const ceConversationActor::Ref actor(ceConversationActor::Ref::New(conversation.GetEnvironment()));
 				pLSSys->GetLSCTA()->ReadActor(*tag, actor);
 				conversation.AddActor(actor);
 				

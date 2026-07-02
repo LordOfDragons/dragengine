@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUDecalScale::meUDecalScale(meWorld *world) :
-meBaseUndoScale(*world->GetEnvironment())
+meBaseUndoScale(world->GetEnvironment())
 {
 	if(!world) DETHROW(deeInvalidParam);
 	

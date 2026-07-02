@@ -63,56 +63,24 @@ public:
 	
 	
 	/** \brief Meta context. */
-	class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
-	private:
-		igdeCamera *pCamera;
-		igdeCamera::Ref pGuard;
-		
-	public:
-		using Ref = deTObjectReference<MetaContext>;
-		MetaContext(igdeCamera *camera);
-		
-		inline igdeCamera *GetCamera() const{ return pCamera; }
-		igdeCamera &GetCameraRef() const;
-		Ref Capture() const;
-		igdeEnvironment &GetEnvironment() const override;
-		igdeUndoSystem *GetUndoSystem() const override;
-		igdeClipboard *GetClipboard() const override;
-		
-	protected:
-		virtual ~MetaContext() override;
-	};
+	using MetaContext = igdeMetaContextType<igdeCamera>;
+	static MetaContext::Ref CreateMetaContext(igdeCamera *camera);
 	
 	/** \brief Meta properties. */
 	class DE_DLL_EXPORT MetaProperties{
 	public:
-		template <typename T> class TBase : public T{
+		template<typename T>
+		class MetaProperty : public igdeMetaPropertyMCT<T, MetaContext>{
 		public:
-			template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
+			using igdeMetaPropertyMCT<T, MetaContext>::igdeMetaPropertyMCT;
 			
-			igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-				return context.DynamicCast<MetaContext>()->Capture();
+			void AddContextMenuEntries(igdeMenuCascade& menu,
+			const igdeMetaContext::Ref& context, igdeWidget& owner) override{
+				this->Owner(context).AddContextMenuEntries(menu, owner);
 			}
-			
-			bool IsValid(const igdeMetaContext::Ref &context) const override{
-				const auto c = context.DynamicCast<MetaContext>();
-				return c && !c->IsDisposed();
-			}
-			
-			inline igdeCamera &Camera(const igdeMetaContext::Ref &context) const{
-				return context.DynamicCast<MetaContext>()->GetCameraRef();
-			}
-			
-			void AddContextMenuEntries(igdeMenuCascade &contextMenu,
-			const igdeMetaContext::Ref &context, igdeWidget &owner) override{
-				Camera(context).AddContextMenuEntries(contextMenu, owner);
-			}
-			
-		protected:
-			virtual ~TBase() override{}
 		};
 		
-		class DE_DLL_EXPORT Position : public TBase<igdeMetaPropertyDVectorStorage>{
+		class DE_DLL_EXPORT Position : public MetaProperty<igdeMetaPropertyDVectorStorage>{
 		public:
 			Position();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -121,7 +89,7 @@ public:
 			~Position() override;
 		};
 		
-		class DE_DLL_EXPORT Rotation : public TBase<igdeMetaPropertyVectorStorageQuaternion>{
+		class DE_DLL_EXPORT Rotation : public MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 		public:
 			Rotation();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -130,7 +98,7 @@ public:
 			~Rotation() override;
 		};
 		
-		class DE_DLL_EXPORT Distance : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT Distance : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			Distance();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -139,7 +107,7 @@ public:
 			~Distance() override;
 		};
 		
-		class DE_DLL_EXPORT Fov : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT Fov : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			Fov();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -148,7 +116,7 @@ public:
 			~Fov() override;
 		};
 		
-		class DE_DLL_EXPORT FovRatio : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT FovRatio : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			FovRatio();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -157,7 +125,7 @@ public:
 			~FovRatio() override;
 		};
 		
-		class DE_DLL_EXPORT ImageDistance : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT ImageDistance : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			ImageDistance();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -166,7 +134,7 @@ public:
 			~ImageDistance() override;
 		};
 		
-		class DE_DLL_EXPORT ViewDistance : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT ViewDistance : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			ViewDistance();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -175,7 +143,7 @@ public:
 			~ViewDistance() override;
 		};
 		
-		class DE_DLL_EXPORT EnableHDRR : public TBase<igdeMetaPropertyBooleanStorage>{
+		class DE_DLL_EXPORT EnableHDRR : public MetaProperty<igdeMetaPropertyBooleanStorage>{
 		public:
 			EnableHDRR();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -184,7 +152,7 @@ public:
 			~EnableHDRR() override;
 		};
 		
-		class DE_DLL_EXPORT EnableGI : public TBase<igdeMetaPropertyBooleanStorage>{
+		class DE_DLL_EXPORT EnableGI : public MetaProperty<igdeMetaPropertyBooleanStorage>{
 		public:
 			EnableGI();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -193,7 +161,7 @@ public:
 			~EnableGI() override;
 		};
 		
-		class DE_DLL_EXPORT Exposure : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT Exposure : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			Exposure();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -202,7 +170,7 @@ public:
 			~Exposure() override;
 		};
 		
-		class DE_DLL_EXPORT LowestIntensity : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT LowestIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			LowestIntensity();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -211,7 +179,7 @@ public:
 			~LowestIntensity() override;
 		};
 		
-		class DE_DLL_EXPORT HighestIntensity : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT HighestIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			HighestIntensity();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -220,7 +188,7 @@ public:
 			~HighestIntensity() override;
 		};
 		
-		class DE_DLL_EXPORT AdaptionTime : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT AdaptionTime : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			AdaptionTime();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -229,7 +197,7 @@ public:
 			~AdaptionTime() override;
 		};
 		
-		class DE_DLL_EXPORT WhiteIntensity : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT WhiteIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			WhiteIntensity();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -238,7 +206,7 @@ public:
 			~WhiteIntensity() override;
 		};
 		
-		class DE_DLL_EXPORT BloomIntensity : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT BloomIntensity : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			BloomIntensity();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -247,7 +215,7 @@ public:
 			~BloomIntensity() override;
 		};
 		
-		class DE_DLL_EXPORT BloomStrength : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT BloomStrength : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			BloomStrength();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -256,7 +224,7 @@ public:
 			~BloomStrength() override;
 		};
 		
-		class DE_DLL_EXPORT BloomBlend : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT BloomBlend : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			BloomBlend();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -265,7 +233,7 @@ public:
 			~BloomBlend() override;
 		};
 		
-		class DE_DLL_EXPORT BloomSize : public TBase<igdeMetaPropertyFloatStorage>{
+		class DE_DLL_EXPORT BloomSize : public MetaProperty<igdeMetaPropertyFloatStorage>{
 		public:
 			BloomSize();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -274,7 +242,7 @@ public:
 			~BloomSize() override;
 		};
 		
-		class DE_DLL_EXPORT ToneMapCurve : public TBase<igdeMetaPropertyCurveBezierStorage>{
+		class DE_DLL_EXPORT ToneMapCurve : public MetaProperty<igdeMetaPropertyCurveBezierStorage>{
 		public:
 			ToneMapCurve();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;

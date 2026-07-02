@@ -29,19 +29,16 @@
 // includes
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
+#include <deigde/meta/igdeMetaContext.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertyVector.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-
 #include <dragengine/common/math/decMath.h>
 
-#include "../../meta/animator/aeMCAnimator.h"
-
-// predefinitions
 class aeAnimatorLocomotion;
-
-
+class aeWindowMain;
 
 /**
  * Animator Locomotion Leg.
@@ -53,10 +50,15 @@ class aeAnimatorLocomotionLeg : public deObject{
 public:
 	using Ref = deTObjectReference<aeAnimatorLocomotionLeg>;
 	
+	using MetaContext = igdeMetaContextType<aeAnimatorLocomotionLeg>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeAnimatorLocomotionLeg *leg);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
 	
 private:
 	aeAnimatorLocomotion *pLocomotion;
-	aeMCAnimatorLocomotionLeg::Ref pMetaContext;
+	MetaContext::Ref pMetaContext;
 	
 	igdeMetaPropertyFloatStorage::Storage pMPLiftOffTime;
 	igdeMetaPropertyFloatStorage::Storage pMPPutDownTime;
@@ -103,7 +105,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline const aeMCAnimatorLocomotionLeg::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	inline igdeMetaPropertyFloatStorage::Storage &GetMPLiftOffTime(){ return pMPLiftOffTime; }
 	inline igdeMetaPropertyFloatStorage::Storage &GetMPPutDownTime(){ return pMPPutDownTime; }
@@ -114,6 +116,10 @@ public:
 	
 	/** Locomotion */
 	inline aeAnimatorLocomotion *GetLocomotion() const{ return pLocomotion; }
+	aeAnimatorLocomotion &GetLocomotionRef() const;
+	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
 	
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

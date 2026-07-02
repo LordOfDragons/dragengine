@@ -42,35 +42,9 @@
 // Class igdeCamera::MetaContext
 //////////////////////////////////
 
-igdeCamera::MetaContext::MetaContext(igdeCamera *camera) :
-igdeMetaContext("igde.camera"),
-pCamera(camera){
-	SetProperties(MetaProperties::global.properties);
-}
-
-igdeCamera::MetaContext::~MetaContext() = default;
-
-igdeCamera &igdeCamera::MetaContext::GetCameraRef() const{
-	DEASSERT_NOTNULL(pCamera)
-	return *pCamera;
-}
-
-igdeCamera::MetaContext::Ref igdeCamera::MetaContext::Capture() const{
-	auto context = Ref::New(pCamera);
-	context->pGuard = pCamera;
-	return context;
-}
-
-igdeEnvironment &igdeCamera::MetaContext::GetEnvironment() const{
-	return GetCameraRef().GetEnvironment();
-}
-
-igdeUndoSystem *igdeCamera::MetaContext::GetUndoSystem() const{
-	return GetCameraRef().GetUndoSystem();
-}
-
-igdeClipboard *igdeCamera::MetaContext::GetClipboard() const{
-	return &GetEnvironment().GetClipboard();
+igdeCamera::MetaContext::Ref igdeCamera::CreateMetaContext(igdeCamera *camera){
+	return igdeCamera::MetaContext::Ref::New("igde.camera",
+		igdeCamera::MetaProperties::global.properties, camera);
 }
 
 
@@ -187,31 +161,31 @@ public:
 
 // igdeCamera::MetaProperties::Position
 igdeCamera::MetaProperties::Position::Position() :
-TBase("igde.camera.position", "Igde.WPCamera.Position"){
+MetaProperty("igde.camera.position", "Igde.WPCamera.Position"){
 }
 
 igdeCamera::MetaProperties::Position::~Position() = default;
 
 igdeMetaPropertyDVectorStorage::Storage &igdeCamera::MetaProperties::Position::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPPosition();
+	return Owner(context).GetMPPosition();
 }
 
 // igdeCamera::MetaProperties::Rotation
 igdeCamera::MetaProperties::Rotation::Rotation() :
-TBase("igde.camera.rotation", "Igde.WPCamera.Rotation"){
+MetaProperty("igde.camera.rotation", "Igde.WPCamera.Rotation"){
 }
 
 igdeCamera::MetaProperties::Rotation::~Rotation() = default;
 
 igdeMetaPropertyVectorStorageQuaternion::Storage &igdeCamera::MetaProperties::Rotation::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPRotation();
+	return Owner(context).GetMPRotation();
 }
 
 // igdeCamera::MetaProperties::Distance
 igdeCamera::MetaProperties::Distance::Distance() :
-TBase("igde.camera.distance", "Igde.WPCamera.OrbitDistance"){
+MetaProperty("igde.camera.distance", "Igde.WPCamera.OrbitDistance"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 }
@@ -220,12 +194,12 @@ igdeCamera::MetaProperties::Distance::~Distance() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Distance::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPDistance();
+	return Owner(context).GetMPDistance();
 }
 
 // igdeCamera::MetaProperties::Fov
 igdeCamera::MetaProperties::Fov::Fov() :
-TBase("igde.camera.fov", "Igde.WPCamera.FieldOfView"){
+MetaProperty("igde.camera.fov", "Igde.WPCamera.FieldOfView"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetUpperLimit(180.0f);
@@ -238,12 +212,12 @@ igdeCamera::MetaProperties::Fov::~Fov() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Fov::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPFov();
+	return Owner(context).GetMPFov();
 }
 
 // igdeCamera::MetaProperties::FovRatio
 igdeCamera::MetaProperties::FovRatio::FovRatio() :
-TBase("igde.camera.fovRatio", "Igde.WPCamera.FieldOfViewRatio"){
+MetaProperty("igde.camera.fovRatio", "Igde.WPCamera.FieldOfViewRatio"){
 	SetLowerLimit(0.01f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(1.0f);
@@ -253,12 +227,12 @@ igdeCamera::MetaProperties::FovRatio::~FovRatio() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::FovRatio::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPFovRatio();
+	return Owner(context).GetMPFovRatio();
 }
 
 // igdeCamera::MetaProperties::ImageDistance
 igdeCamera::MetaProperties::ImageDistance::ImageDistance() :
-TBase("igde.camera.imageDistance", "Igde.WPCamera.ImageDistance"){
+MetaProperty("igde.camera.imageDistance", "Igde.WPCamera.ImageDistance"){
 	SetLowerLimit(1e-4f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(0.01f);
@@ -268,12 +242,12 @@ igdeCamera::MetaProperties::ImageDistance::~ImageDistance() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::ImageDistance::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPImageDistance();
+	return Owner(context).GetMPImageDistance();
 }
 
 // igdeCamera::MetaProperties::ViewDistance
 igdeCamera::MetaProperties::ViewDistance::ViewDistance() :
-TBase("igde.camera.viewDistance", "Igde.WPCamera.ViewDistance"){
+MetaProperty("igde.camera.viewDistance", "Igde.WPCamera.ViewDistance"){
 	SetLowerLimit(1e-3f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(200.0f);
@@ -283,12 +257,12 @@ igdeCamera::MetaProperties::ViewDistance::~ViewDistance() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::ViewDistance::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPViewDistance();
+	return Owner(context).GetMPViewDistance();
 }
 
 // igdeCamera::MetaProperties::EnableHDRR
 igdeCamera::MetaProperties::EnableHDRR::EnableHDRR() :
-TBase("igde.camera.enableHDRR", "Igde.WPCamera.Action.EnableHDRR"){
+MetaProperty("igde.camera.enableHDRR", "Igde.WPCamera.Action.EnableHDRR"){
 	SetDefaultValue(true);
 }
 
@@ -296,12 +270,12 @@ igdeCamera::MetaProperties::EnableHDRR::~EnableHDRR() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeCamera::MetaProperties::EnableHDRR::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPEnableHDRR();
+	return Owner(context).GetMPEnableHDRR();
 }
 
 // igdeCamera::MetaProperties::EnableGI
 igdeCamera::MetaProperties::EnableGI::EnableGI() :
-TBase("igde.camera.enableGI", "Igde.WPCamera.Action.EnableGI"){
+MetaProperty("igde.camera.enableGI", "Igde.WPCamera.Action.EnableGI"){
 	SetDefaultValue(true);
 }
 
@@ -309,12 +283,12 @@ igdeCamera::MetaProperties::EnableGI::~EnableGI() = default;
 
 igdeMetaPropertyBooleanStorage::Storage &igdeCamera::MetaProperties::EnableGI::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPEnableGI();
+	return Owner(context).GetMPEnableGI();
 }
 
 // igdeCamera::MetaProperties::Exposure
 igdeCamera::MetaProperties::Exposure::Exposure() :
-TBase("igde.camera.exposure", "Igde.WPCamera.Exposure"){
+MetaProperty("igde.camera.exposure", "Igde.WPCamera.Exposure"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(1.0f);
@@ -324,12 +298,12 @@ igdeCamera::MetaProperties::Exposure::~Exposure() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::Exposure::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPExposure();
+	return Owner(context).GetMPExposure();
 }
 
 // igdeCamera::MetaProperties::LowestIntensity
 igdeCamera::MetaProperties::LowestIntensity::LowestIntensity() :
-TBase("igde.camera.lowestIntensity", "Igde.WPCamera.LowerIntensity"){
+MetaProperty("igde.camera.lowestIntensity", "Igde.WPCamera.LowerIntensity"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(1.0f);
@@ -339,12 +313,12 @@ igdeCamera::MetaProperties::LowestIntensity::~LowestIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::LowestIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPLowestIntensity();
+	return Owner(context).GetMPLowestIntensity();
 }
 
 // igdeCamera::MetaProperties::HighestIntensity
 igdeCamera::MetaProperties::HighestIntensity::HighestIntensity() :
-TBase("igde.camera.highestIntensity", "Igde.WPCamera.HigherIntensity"){
+MetaProperty("igde.camera.highestIntensity", "Igde.WPCamera.HigherIntensity"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(1.0f);
@@ -354,12 +328,12 @@ igdeCamera::MetaProperties::HighestIntensity::~HighestIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::HighestIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPHighestIntensity();
+	return Owner(context).GetMPHighestIntensity();
 }
 
 // igdeCamera::MetaProperties::AdaptionTime
 igdeCamera::MetaProperties::AdaptionTime::AdaptionTime() :
-TBase("igde.camera.adaptionTime", "Igde.WPCamera.AdaptionTime"){
+MetaProperty("igde.camera.adaptionTime", "Igde.WPCamera.AdaptionTime"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(0.1f);
@@ -369,12 +343,12 @@ igdeCamera::MetaProperties::AdaptionTime::~AdaptionTime() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::AdaptionTime::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPAdaptionTime();
+	return Owner(context).GetMPAdaptionTime();
 }
 
 // igdeCamera::MetaProperties::WhiteIntensity
 igdeCamera::MetaProperties::WhiteIntensity::WhiteIntensity() :
-TBase("igde.camera.whiteIntensity", "Igde.WPCamera.WhiteIntensity"){
+MetaProperty("igde.camera.whiteIntensity", "Igde.WPCamera.WhiteIntensity"){
 	SetLowerLimit(0.01f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(2.0f);
@@ -384,12 +358,12 @@ igdeCamera::MetaProperties::WhiteIntensity::~WhiteIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::WhiteIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPWhiteIntensity();
+	return Owner(context).GetMPWhiteIntensity();
 }
 
 // igdeCamera::MetaProperties::BloomIntensity
 igdeCamera::MetaProperties::BloomIntensity::BloomIntensity() :
-TBase("igde.camera.bloomIntensity", "Igde.WPCamera.BloomIntensity"){
+MetaProperty("igde.camera.bloomIntensity", "Igde.WPCamera.BloomIntensity"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(1.0f);
@@ -399,12 +373,12 @@ igdeCamera::MetaProperties::BloomIntensity::~BloomIntensity() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomIntensity::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPBloomIntensity();
+	return Owner(context).GetMPBloomIntensity();
 }
 
 // igdeCamera::MetaProperties::BloomStrength
 igdeCamera::MetaProperties::BloomStrength::BloomStrength() :
-TBase("igde.camera.bloomStrength", "Igde.WPCamera.BloomStrength"){
+MetaProperty("igde.camera.bloomStrength", "Igde.WPCamera.BloomStrength"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetDefaultValue(0.25f);
@@ -414,12 +388,12 @@ igdeCamera::MetaProperties::BloomStrength::~BloomStrength() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomStrength::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPBloomStrength();
+	return Owner(context).GetMPBloomStrength();
 }
 
 // igdeCamera::MetaProperties::BloomBlend
 igdeCamera::MetaProperties::BloomBlend::BloomBlend() :
-TBase("igde.camera.bloomBlend", "Igde.WPCamera.BloomBlend"){
+MetaProperty("igde.camera.bloomBlend", "Igde.WPCamera.BloomBlend"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetUpperLimit(1.0f);
@@ -431,12 +405,12 @@ igdeCamera::MetaProperties::BloomBlend::~BloomBlend() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomBlend::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPBloomBlend();
+	return Owner(context).GetMPBloomBlend();
 }
 
 // igdeCamera::MetaProperties::BloomSize
 igdeCamera::MetaProperties::BloomSize::BloomSize() :
-TBase("igde.camera.bloomSize", "Igde.WPCamera.BloomSize"){
+MetaProperty("igde.camera.bloomSize", "Igde.WPCamera.BloomSize"){
 	SetLowerLimit(0.0f);
 	SetEnableLowerLimit(true);
 	SetUpperLimit(1.0f);
@@ -448,12 +422,12 @@ igdeCamera::MetaProperties::BloomSize::~BloomSize() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeCamera::MetaProperties::BloomSize::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPBloomSize();
+	return Owner(context).GetMPBloomSize();
 }
 
 // igdeCamera::MetaProperties::ToneMapCurve
 igdeCamera::MetaProperties::ToneMapCurve::ToneMapCurve() :
-TBase("igde.camera.toneMapCurve", "Igde.WPCamera.ToneMapCurve"){
+MetaProperty("igde.camera.toneMapCurve", "Igde.WPCamera.ToneMapCurve"){
 	SetClampMin(decVector2(0.0f, 0.0f));
 	SetClampMax(decVector2(3.0f, 1.0f));
 	SetClamp(true);
@@ -464,7 +438,7 @@ igdeCamera::MetaProperties::ToneMapCurve::~ToneMapCurve() = default;
 
 igdeMetaPropertyCurveBezierStorage::Storage &igdeCamera::MetaProperties::ToneMapCurve::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Camera(context).GetMPToneMapCurve();
+	return Owner(context).GetMPToneMapCurve();
 }
 
 // Properties
@@ -525,7 +499,7 @@ decString igdeCamera::lastCameraFile("Camera.decamera");
 igdeCamera::igdeCamera(igdeEnvironment &environment, deEngine *engine) :
 pEnvironment(environment),
 pUndoSystem(nullptr),
-pMetaContext(MetaContext::Ref::New(this)),
+pMetaContext(CreateMetaContext(this)),
 pName("Camera"),
 pEngine(engine),
 pMPPosition(MetaProperties::global.position, pMetaContext),

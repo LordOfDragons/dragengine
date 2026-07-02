@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULEANIMATION_H_
 #define _AEMCPRULEANIMATION_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleAnimation.h"
 
@@ -35,27 +34,27 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
-class aeMCPRuleAnimationMoveName : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyStringStorage>{
+class aeMCPRuleAnimationMoveName : public aeRuleAnimation::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleAnimationMoveName() : aeTMCPAnimatorRuleType("animation.moveName", "Animator.WPAPanelRuleAnimation.MoveName"){
+	aeMCPRuleAnimationMoveName() : igdeMetaPropertyMCT("animation.moveName", "Animator.WPAPanelRuleAnimation.MoveName"){
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPRuleAnimationMoveName() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPMoveName();
+		return Owner(context).GetMPMoveName();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = RuleType(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenMoveNames().GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleAnimationMoveTime : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyFloatStorage>{
+class aeMCPRuleAnimationMoveTime : public aeRuleAnimation::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPRuleAnimationMoveTime() : aeTMCPAnimatorRuleType("animation.moveTime", "Animator.WPAPanelRuleAnimation.MoveTime"){
+	aeMCPRuleAnimationMoveTime() : igdeMetaPropertyMCT("animation.moveTime", "Animator.WPAPanelRuleAnimation.MoveTime"){
 		SetEnableLowerLimit(true);
 		SetEnableUpperLimit(true);
 	}
@@ -63,70 +62,67 @@ public:
 	~aeMCPRuleAnimationMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPMoveTime();
+		return Owner(context).GetMPMoveTime();
 	}
 };
 
-class aeMCPRuleAnimationEnablePosition : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnablePosition : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnablePosition() : aeTMCPAnimatorRuleType("animation.enablePosition", "Animator.WPAPanelRuleAnimation.EnablePosition"){
+	aeMCPRuleAnimationEnablePosition() : igdeMetaPropertyMCT("animation.enablePosition", "Animator.WPAPanelRuleAnimation.EnablePosition"){
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnablePosition();
+		return Owner(context).GetMPEnablePosition();
 	}
 };
 
-class aeMCPRuleAnimationEnableOrientation : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnableOrientation : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnableOrientation() : aeTMCPAnimatorRuleType("animation.enableOrientation", "Animator.WPAPanelRuleAnimation.EnableRotation"){
+	aeMCPRuleAnimationEnableOrientation() : igdeMetaPropertyMCT("animation.enableOrientation", "Animator.WPAPanelRuleAnimation.EnableRotation"){
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableOrientation();
+		return Owner(context).GetMPEnableOrientation();
 	}
 };
 
-class aeMCPRuleAnimationEnableSize : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnableSize : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnableSize() : aeTMCPAnimatorRuleType("animation.enableSize", "Animator.WPAPanelRuleAnimation.EnableSize"){}
+	aeMCPRuleAnimationEnableSize() : igdeMetaPropertyMCT("animation.enableSize", "Animator.WPAPanelRuleAnimation.EnableSize"){}
 	~aeMCPRuleAnimationEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableSize();
+		return Owner(context).GetMPEnableSize();
 	}
 };
 
-class aeMCPRuleAnimationEnableVertexPositionSet : public aeTMCPAnimatorRuleAnimation<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleAnimationEnableVertexPositionSet : public aeRuleAnimation::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleAnimationEnableVertexPositionSet() : aeTMCPAnimatorRuleType("animation.enableVertexPositionSet", "Animator.WPAPanelRuleAnimation.EnableVertexPositionSet"){
+	aeMCPRuleAnimationEnableVertexPositionSet() : igdeMetaPropertyMCT("animation.enableVertexPositionSet", "Animator.WPAPanelRuleAnimation.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
 	
 	~aeMCPRuleAnimationEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableVertexPositionSet();
+		return Owner(context).GetMPEnableVertexPositionSet();
 	}
 };
 
 
-class aeMCPRuleAnimationTargetMoveTime : public aeTMCPRuleTarget<aeTMCPAnimatorRuleAnimation<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleAnimationTargetMoveTime : public aeRule::MetaPropertyTarget<aeRuleAnimation>{
 public:
-	aeMCPRuleAnimationTargetMoveTime() : aeTMCPRuleTarget("animation.targetMoveTime", "Animator.Target.MoveTime"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleAnimationTargetMoveTime() : MetaPropertyTarget("animation.targetMoveTime", "Animator.Target.MoveTime"){}
 	~aeMCPRuleAnimationTargetMoveTime() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetMoveTime();
+		return Owner(context).GetMPTargetMoveTime();
 	}
 };
 

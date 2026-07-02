@@ -24,6 +24,12 @@
 	<translation name='Igde.Action.Copy.ToolTip'>Copy to clipboard</translation>
 	<translation name='Igde.Action.Paste'>Paste</translation>
 	<translation name='Igde.Action.Paste.ToolTip'>Paste from clipboard</translation>
+	<translation name='Igde.Action.PasteBefore'>Paste Before</translation>
+	<translation name='Igde.Action.PasteBefore.ToolTip'>Paste before from clipboard</translation>
+	<translation name='Igde.Action.PasteAfter'>Paste After</translation>
+	<translation name='Igde.Action.PasteAfter.ToolTip'>Paste after from clipboard</translation>
+	<translation name='Igde.Action.PasteReplace'>Paste and Replace</translation>
+	<translation name='Igde.Action.PasteReplace.ToolTip'>Paste from clipboard and replace</translation>
 	<translation name='Igde.Action.Duplicate'>Duplicate</translation>
 	<translation name='Igde.Action.Duplicate.ToolTip'>Duplicate selection</translation>
 	<translation name='Igde.Tab.UndoHistory'>Undo History</translation>

@@ -54,7 +54,7 @@
 ////////////////////////////
 
 feFont::feFont(igdeEnvironment *environment) :
-igdeEditableEntity(environment)
+igdeEditableEntity(*environment)
 {
 	SetFilePath("new.defont");
 	pLineHeight = 10;

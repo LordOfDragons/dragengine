@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////
 
 aeMCPAnimatorLocomotionType::aeMCPAnimatorLocomotionType() :
-aeTMCPAnimator("animator.playgroundLocomotionType", "Animator.WPPlayground.LocomotionType"){
+igdeMetaPropertyMCT("animator.playgroundLocomotionType", "Animator.WPPlayground.LocomotionType"){
 	SetChoicesEnum(ListChoicesEnum(devctag,
 		aeAnimatorLocomotion::eltNatural,
 		aeAnimatorLocomotion::eltFPS,
@@ -42,7 +42,7 @@ aeMCPAnimatorLocomotionType::~aeMCPAnimatorLocomotionType() = default;
 
 igdeMetaPropertySelectionEnumStorage<aeAnimatorLocomotion::eLocomotionTypes>::Storage&
 aeMCPAnimatorLocomotionType::GetStorage(const igdeMetaContext::Ref &context) const{
-	return Animator(context).GetLocomotion().GetMPLocomotionType();
+	return Owner(context).GetLocomotion().GetMPLocomotionType();
 }
 
 void aeMCPAnimatorLocomotionType::GetChoiceItemInfoEnum(const ContextRef &context,

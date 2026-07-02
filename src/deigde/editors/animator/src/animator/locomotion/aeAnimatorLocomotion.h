@@ -31,7 +31,6 @@
 #include "aeALTouchSensorListener.h"
 #include "aeALGroundChecker.h"
 #include "aeAnimatorLocomotionLeg.h"
-#include "../../meta/animator/aeMCAnimator.h"
 
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
@@ -310,6 +309,8 @@ public:
 	
 	/** Retrieves the animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	aeAnimator &GetAnimatorRef() const;
+	
 	/** Retrieves the logger. */
 	deLogger *GetLogger() const;
 	

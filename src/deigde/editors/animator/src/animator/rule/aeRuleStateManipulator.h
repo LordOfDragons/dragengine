@@ -40,6 +40,12 @@ class aeRuleStateManipulator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleStateManipulator>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleStateManipulator, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleStateManipulator *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetPosition;
 	aeControllerTarget::Ref pTargetRotation;
@@ -78,6 +84,8 @@ public:
 	/** Clean up rule. */
 protected:
 	~aeRuleStateManipulator() override;
+private:
+	aeRuleStateManipulator(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

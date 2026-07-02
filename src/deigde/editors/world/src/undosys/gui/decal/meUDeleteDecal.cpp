@@ -53,7 +53,7 @@ meUDeleteDecal::meUDeleteDecal(meWorld *world){
 		pDecals.Add(meUndoDataDecal::Ref::New(decal));
 	});
 	
-	igdeTranslationManager &tm = world->GetEnvironment()->GetTranslationManager();
+	igdeTranslationManager &tm = world->GetEnvironment().GetTranslationManager();
 	
 	SetShortInfo("@World.UDeleteDecal.DeleteDecals");
 	if(pDecals.GetCount() > 1){

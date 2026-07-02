@@ -376,7 +376,7 @@ void meCLSelect::RunAction(int selectIndex){
 void meCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-			*pWorld.GetEnvironment(), info->GetCollider() );
+			pWorld.GetEnvironment(), info->GetCollider() );
 		if(!colliderOwner){
 			return;
 		}

@@ -45,6 +45,12 @@ class aeRuleGroup : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleGroup>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleGroup, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleGroup *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetSelect;
 	
@@ -75,6 +81,8 @@ public:
 	/** Clean up the group rule. */
 protected:
 	~aeRuleGroup() override;
+private:
+	aeRuleGroup(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

@@ -114,7 +114,8 @@ public:
 		decTObjectOrderedSet<igdeMetaProperty>(devctag, cameraAttachToBone, cameraAttachBone,
 			cameraAttachRelativePosition, cameraAttachRelativeRotation), true);
 	
-	igdeMetaPropertyUndoHistory::Ref undoHistory = igdeMetaPropertyUndoHistory::Ref::New("animator.undoHistory");
+	igdeMetaPropertyUndoHistory::Ref undoHistory = igdeMetaPropertyUndoHistory::CreateForGroup("animator.undoHistory");
+	deTObjectReference<igdeMetaPropertyGroup> groupUndoHistory = igdeMetaPropertyUndoHistory::CreateGroup("animator.groupUndoHistory", undoHistory);
 	
 	igdeMetaContext::PropertyList::Ref metaProperties = igdeMetaContext::PropertyList::Ref::New();
 	igdeMetaContext::PropertyList::Ref metaPropertiesController = igdeMetaContext::PropertyList::Ref::New();

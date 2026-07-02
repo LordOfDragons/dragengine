@@ -120,7 +120,7 @@ void meCLCollect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 		
 	}else if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-			*pWorld.GetEnvironment(), info->GetCollider());
+			pWorld.GetEnvironment(), info->GetCollider());
 		if(!colliderOwner){
 			return;
 		}

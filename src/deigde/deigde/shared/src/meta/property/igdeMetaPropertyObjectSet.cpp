@@ -210,11 +210,6 @@ void igdeMetaPropertyObjectSet::ActionCopy::OnAction(){
 		return;
 	}
 	
-	auto clipboard = context->GetClipboard();
-	if(!clipboard){
-		return;
-	}
-	
 	Set values;
 	if(pSelection){
 		if(pPropertyObjectSet.GetMultiSelection()){
@@ -232,14 +227,13 @@ void igdeMetaPropertyObjectSet::ActionCopy::OnAction(){
 	}
 	
 	if(values.IsNotEmpty()){
-		clipboard->Set(ClipboardData::Ref::New(pPropertyObjectSet, std::move(values)));
+		context->GetClipboard().Set(ClipboardData::Ref::New(pPropertyObjectSet, std::move(values)));
 	}
 }
 
 void igdeMetaPropertyObjectSet::ActionCopy::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertyObjectSet.IsValid(context) && context->GetClipboard()
-		&& pPropertyObjectSet.GetActiveObject(context).IsNotNull());
+	SetEnabled(pPropertyObjectSet.IsValid(context) && pPropertyObjectSet.GetActiveObject(context));
 }
 
 
@@ -282,8 +276,7 @@ igdeMetaPropertyObjectSet::ActionPaste::ActionPaste(igdeMetaPropertyObjectSet &p
 Action(owner, context, "@Igde.Action.Paste",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 	"@Igde.Action.Paste.ToolTip"),
-pPropertyObjectSet(property),
-pAppend(false){
+pPropertyObjectSet(property){
 }
 
 void igdeMetaPropertyObjectSet::ActionPaste::OnAction(){
@@ -292,19 +285,14 @@ void igdeMetaPropertyObjectSet::ActionPaste::OnAction(){
 		return;
 	}
 	
-	const auto clipboard = context->GetClipboard();
-	if(!clipboard){
-		return;
-	}
-	
-	const auto clip = clipboard->GetWithTypeName(
+	const auto clip = context->GetClipboard().GetWithTypeName(
 		pPropertyObjectSet.GetClipboardDataTypeName()).DynamicCast<ClipboardData>();
 	if(!clip){
 		return;
 	}
 	
 	const auto oldValue = pPropertyObjectSet.GetPropertyValue(context);
-	const auto newValue = pAppend ? oldValue + clip->GetData() : clip->GetData();
+	const auto newValue = pReplace ? clip->GetData() : oldValue + clip->GetData();
 	if(oldValue == newValue){
 		return;
 	}
@@ -313,26 +301,22 @@ void igdeMetaPropertyObjectSet::ActionPaste::OnAction(){
 }
 
 void igdeMetaPropertyObjectSet::ActionPaste::Update(){
-	if(pPropertyObjectSet.IsValid(GetContext())){
-		const auto cb = GetContext()->GetClipboard();
-		SetEnabled(cb && cb->HasWithTypeName(pPropertyObjectSet.GetClipboardDataTypeName()));
-		
-	}else{
-		SetEnabled(false);
-	}
+	SetEnabled(pPropertyObjectSet.IsValid(GetContext())
+		&& GetContext()->GetClipboard().HasWithTypeName(pPropertyObjectSet.GetClipboardDataTypeName()));
+
 }
 
 
-// Class igdeMetaPropertyObjectSet::ActionPasteAppend
-///////////////////////////////////////////////////////
+// Class igdeMetaPropertyObjectSet::ActionPasteReplace
+////////////////////////////////////////////////////////
 
-igdeMetaPropertyObjectSet::ActionPasteAppend::ActionPasteAppend(
+igdeMetaPropertyObjectSet::ActionPasteReplace::ActionPasteReplace(
 	igdeMetaPropertyObjectSet &property, igdeWidget &owner, const igdeMetaContext::Ref &context) :
 ActionPaste(property, owner, context)
 {
-	SetText("@Igde.MetaPropertyList.Action.PasteAppend");
-	SetDescription("@Igde.MetaPropertyList.Action.PasteAppend.ToolTip");
-	pAppend = true;
+	SetText("@Igde.Action.PasteReplace");
+	SetDescription("@Igde.Action.PasteReplace.ToolTip");
+	pReplace = true;
 }
 
 

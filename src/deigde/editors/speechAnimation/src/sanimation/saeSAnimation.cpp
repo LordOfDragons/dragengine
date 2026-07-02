@@ -79,7 +79,7 @@
 ////////////////////////////
 
 saeSAnimation::saeSAnimation(igdeEnvironment* environment) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pDisplayMode(edmWord),
 pDispWordPos(-1),
 pDispWordElapsed(0.0f),

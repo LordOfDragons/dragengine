@@ -42,6 +42,12 @@ class aeRuleForeignState : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleForeignState>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleForeignState, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleForeignState *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetPosition;
 	aeControllerTarget::Ref pTargetOrientation;
@@ -78,6 +84,8 @@ public:
 	/** Clean up the foreign state rule. */
 protected:
 	~aeRuleForeignState() override;
+private:
+	aeRuleForeignState(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

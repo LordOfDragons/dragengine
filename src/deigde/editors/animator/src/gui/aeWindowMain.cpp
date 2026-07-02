@@ -1480,13 +1480,13 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 
 void aeWindowMain::pUpdateMetaContexts(){
 	auto list = igdeMetaContext::Data::Ref::New();
-	auto &data = list->GetData();
-	data.Add(pAnimator ? pAnimator->GetMetaContext() : aeMCAnimator::Ref::New(*this, nullptr));
-	data.Add(pAnimator ? pAnimator->GetMetaContextController() : aeMCAnimatorController::Ref::New(*this, nullptr));
-	data.Add(pAnimator ? pAnimator->GetMetaContextLink() : aeMCAnimatorLink::Ref::New(*this, nullptr));
-	data.Add(pAnimator ? pAnimator->GetMetaContextRule() : aeMCAnimatorRule::Ref::New(*this, nullptr));
-	data.Add(pAnimator ? pAnimator->GetMetaContextPlayground() : aeMCAnimatorPlayground::Ref::New(*this, nullptr));
-	data.Add(pAnimator ? pAnimator->GetMetaContextView() : aeMCAnimatorView::Ref::New(*this, nullptr));
-	// playground, undo?
+	auto &d = list->GetData();
+	auto &a = pAnimator;
+	d.Add(a ? a->GetMetaContext() : aeAnimator::CreateMetaContext(*this, nullptr));
+	d.Add(a ? a->GetMetaContextController() : aeAnimator::CreateMetaContextController(*this, nullptr));
+	d.Add(a ? a->GetMetaContextLink() : aeAnimator::CreateMetaContextLink(*this, nullptr));
+	d.Add(a ? a->GetMetaContextRule() : aeAnimator::CreateMetaContextRule(*this, nullptr));
+	d.Add(a ? a->GetMetaContextPlayground() : aeAnimator::CreateMetaContextPlayground(*this, nullptr));
+	d.Add(a ? a->GetMetaContextView() : aeAnimator::CreateMetaContextView(*this, nullptr));
 	SetMetaContexts(list);
 }

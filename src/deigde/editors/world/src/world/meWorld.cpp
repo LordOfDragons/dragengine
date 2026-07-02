@@ -93,7 +93,7 @@
 ////////////////////////////
 
 meWorld::meWorld(meWindowMain &windowMain, igdeEnvironment *environment) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pWindowMain(windowMain),
 pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 {
@@ -291,7 +291,7 @@ void meWorld::Reset(){
 }
 
 void meWorld::InitDelegates(){
-	if(pHeightTerrain) pHeightTerrain->InitDelegates(GetEnvironment());
+	if(pHeightTerrain) pHeightTerrain->InitDelegates(&GetEnvironment());
 }
 
 

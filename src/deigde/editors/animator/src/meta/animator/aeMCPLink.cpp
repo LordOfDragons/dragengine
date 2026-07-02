@@ -65,7 +65,7 @@ public:
 	const igdeMetaPropertyList::List &newValue, const char *undoInfo, const char *undoInfoLong) :
 	igdeMetaPropertyListUndo(property, context, newValue, undoInfo, undoInfoLong)
 	{
-		const auto &animator = property.Animator(context);
+		const auto &animator = property.Owner(context);
 		const auto oldLinks = property.ConvertList(GetOldValue());
 		const auto newLinks = property.ConvertList(GetNewValue());
 		const auto &rules = animator.GetRules();
@@ -202,7 +202,7 @@ public:
 		}
 		
 		auto list = pPropertyLink.GetStorage(context).GetValue();
-		list.Add(aeLink::Ref::New(pPropertyLink.WindowMain(context), name));
+		list.Add(aeLink::Ref::New(pPropertyLink.Owner(context).GetWindowMain(), name));
 		pPropertyLink.ChangePropertyValueType(context, list, BuildUndoInfo(pPropertyLink));
 	}
 };
@@ -224,7 +224,7 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 		names.SortAscending();
 		auto strNames = names.GetCount() > 5 ? DEJoin(names.GetHead(5), ", ") + ", ..." : DEJoin(names, ", ");
 		
-		if(igdeCommonDialogs::QuestionFormat(WindowMain(context), igdeCommonDialogs::ebsYesNo,
+		if(igdeCommonDialogs::QuestionFormat(Owner(context).GetWindowMain(), igdeCommonDialogs::ebsYesNo,
 		"@Animator.Dialog.RemoveLink.Title", "@Animator.Dialog.RemoveLink.Message",
 		names.GetCount(), strNames.GetString()) != igdeCommonDialogs::ebYes){
 			return {};
@@ -242,8 +242,8 @@ const List &newValue, const char *undoInfo, const char *undoInfoLong){
 }
 
 aeMCPLinks::ObjectTypeRef aeMCPLinks::CopyObjectType(const ContextRef &context, const aeLink::List &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = aeLink::Ref::New(WindowMain(context), *object);
-	copied->GetMPName().SetValue(Animator(context).uniqueNameLink.Generate(copied->GetMPName()), false);
+	auto copied = aeLink::Ref::New(Owner(context).GetWindowMain(), *object);
+	copied->GetMPName().SetValue(Owner(context).uniqueNameLink.Generate(copied->GetMPName()), false);
 	return copied;
 }
 
@@ -258,7 +258,7 @@ igdeMetaProperty::Action::Ref aeMCPLinks::CreateButtonAction(TargetButton target
 }
 
 void aeMCPLinks::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner){
-	const auto &windowMain = Animator(context).GetWindowMain();
+	const auto &windowMain = Owner(context).GetWindowMain();
 	auto &helper = menu.GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, windowMain.GetActionLinkAdd());
 	helper.MenuCommand(menu, windowMain.GetActionLinkRemoveUnused());
@@ -288,7 +288,7 @@ public:
 			return;
 		}
 		
-		const auto &link = pPropertyCurve.Link(context);
+		const auto &link = pPropertyCurve.Owner(context);
 		const auto &controller = link.GetController();
 		if(!controller){
 			return;

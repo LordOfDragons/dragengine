@@ -42,7 +42,7 @@
 ////////////////////////////
 
 aeCamera::aeCamera(aeAnimator &animator, deEngine *engine) :
-igdeCamera(*animator.GetEnvironment(), engine),
+igdeCamera(animator.GetEnvironment(), engine),
 pMPAttachToBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachToBone, animator.GetMetaContextView()),
 pMPBone(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachBone, animator.GetMetaContextView()),
 pMPRelativePosition(animator.GetWindowMain().GetMCAnimatorProperties().cameraAttachRelativePosition, animator.GetMetaContextView()),

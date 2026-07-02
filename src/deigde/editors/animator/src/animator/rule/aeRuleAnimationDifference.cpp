@@ -35,23 +35,30 @@
 // Class aeRuleAnimationDifference
 ////////////////////////////////////
 
+aeRuleAnimationDifference::MetaContext::Ref aeRuleAnimationDifference::CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimationDifference *rule){
+	return MetaContext::Ref::New("animator.rule_animation_difference", "Rule Animation Difference", "Rule animation difference properties",
+		windowMain.GetMCAnimatorProperties().ruleAnimationDifference.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleAnimationDifference::aeRuleAnimationDifference(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleAnimationDifference::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertAnimationDifference, aname),
-pMPLeadingMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveName, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPLeadingMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPReferenceMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveName, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPReferenceMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPUseComponentSpace(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.useComponentSpace, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPTargetLeadMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetLeadMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>()),
-pMPTargetRefMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetRefMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimationDifference>())
+aeRuleAnimationDifference(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleAnimationDifference::aeRuleAnimationDifference(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertAnimationDifference, aname),
+pMPLeadingMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveName, metaContext),
+pMPLeadingMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.leadingMoveTime, metaContext),
+pMPReferenceMoveName(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveName, metaContext),
+pMPReferenceMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.referenceMoveTime, metaContext),
+pMPUseComponentSpace(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.useComponentSpace, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.enableVertexPositionSet, metaContext),
+pMPTargetLeadMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetLeadMoveTime, metaContext),
+pMPTargetRefMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimationDifference.targetRefMoveTime, metaContext)
 {
 	pMPLeadingMoveName.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -139,6 +146,7 @@ aeRuleAnimationDifference::aeRuleAnimationDifference(aeWindowMain &windowMain, c
 aeRuleAnimationDifference(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPLeadingMoveName.SetValue(copy.pMPLeadingMoveName, false);
 	pMPLeadingMoveTime.SetValue(copy.pMPLeadingMoveTime, false);
 	pMPReferenceMoveName.SetValue(copy.pMPReferenceMoveName, false);
 	pMPReferenceMoveTime.SetValue(copy.pMPReferenceMoveTime, false);

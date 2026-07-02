@@ -35,19 +35,26 @@
 // Class aeRuleTrackTo
 ////////////////////////
 
+aeRuleTrackTo::MetaContext::Ref aeRuleTrackTo::CreateMetaContext(aeWindowMain &windowMain, aeRuleTrackTo *rule){
+	return MetaContext::Ref::New("animator.rule_track_to", "Rule Track To", "Rule track to properties",
+		windowMain.GetMCAnimatorProperties().ruleTrackTo.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleTrackTo::aeRuleTrackTo(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleTrackTo::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertTrackTo, aname),
-pMPTrackBone(windowMain.GetMCAnimatorProperties().ruleTrackTo.trackBone, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
-pMPTrackAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.trackAxis, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
-pMPUpAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.upAxis, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
-pMPUpTarget(windowMain.GetMCAnimatorProperties().ruleTrackTo.upTarget, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
-pMPLockedAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.lockedAxis, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
-pMPTargetPosition(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetPosition, GetMetaContext().StaticCast<aeMCRuleTrackTo>()),
-pMPTargetUp(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetUp, GetMetaContext().StaticCast<aeMCRuleTrackTo>())
+aeRuleTrackTo(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleTrackTo::aeRuleTrackTo(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertTrackTo, aname),
+pMPTrackBone(windowMain.GetMCAnimatorProperties().ruleTrackTo.trackBone, metaContext),
+pMPTrackAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.trackAxis, metaContext),
+pMPUpAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.upAxis, metaContext),
+pMPUpTarget(windowMain.GetMCAnimatorProperties().ruleTrackTo.upTarget, metaContext),
+pMPLockedAxis(windowMain.GetMCAnimatorProperties().ruleTrackTo.lockedAxis, metaContext),
+pMPTargetPosition(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetPosition, metaContext),
+pMPTargetUp(windowMain.GetMCAnimatorProperties().ruleTrackTo.targetUp, metaContext)
 {
 	pMPTrackBone.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -107,6 +114,7 @@ aeRuleTrackTo::aeRuleTrackTo(aeWindowMain &windowMain, const aeRuleTrackTo &copy
 aeRuleTrackTo(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPTrackBone.SetValue(copy.pMPTrackBone, false);
 	pMPTrackAxis.SetValue(copy.pMPTrackAxis, false);
 	pMPUpAxis.SetValue(copy.pMPUpAxis, false);
 	pMPUpTarget.SetValue(copy.pMPUpTarget, false);

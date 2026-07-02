@@ -55,7 +55,7 @@
 ////////////////////////////
 
 projProject::projProject(igdeEnvironment *environment) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 
 pScriptDirectory("/scripts"),
 pGameObject("MyGameApp"),

@@ -146,6 +146,9 @@ private:
 	void pUpdateTreeItem(igdeTreeItem *item);
 	void pUpdateTreeItem(igdeTreeItem *item, bool isExpanded);
 	
+	void pUpdateTreeItemRecursive(igdeTreeItem *item);
+	void pUpdateTreeItemRecursive(igdeTreeItem *item, bool isExpanded);
+	
 	void pRestoreExpanded(igdeTreeItem *item, const igdeMetaPropertyTreeList::ExpandedSet &expanded);
 };
 

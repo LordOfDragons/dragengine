@@ -31,11 +31,11 @@
 #include "controller/aeController.h"
 #include "link/aeLink.h"
 #include "rule/aeRule.h"
-#include "../meta/animator/aeMCAnimator.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/igdeWSky.h>
+#include <deigde/meta/igdeMetaContext.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyContext.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
@@ -122,15 +122,30 @@ public:
 		eclGizmo
 	};
 	
+	using MetaContext = igdeMetaContextType<aeAnimator>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextController(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextLink(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextRule(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextPlayground(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextAttachment(aeWindowMain &windowMain, aeAnimator *animator);
+	static MetaContext::Ref CreateMetaContextView(aeWindowMain &windowMain, aeAnimator *animator);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
+	template<typename T>
+	using MetaPropertyNoCapture = igdeMetaPropertyMCTNoCapture<T, MetaContext>;
+	
 private:
 	aeWindowMain &pWindowMain;
-	aeMCAnimator::Ref pMetaContext;
-	aeMCAnimatorController::Ref pMetaContextController;
-	aeMCAnimatorLink::Ref pMetaContextLink;
-	aeMCAnimatorRule::Ref pMetaContextRule;
-	aeMCAnimatorPlayground::Ref pMetaContextPlayground;
-	aeMCAnimatorAttachment::Ref pMetaContextAttachment;
-	aeMCAnimatorView::Ref pMetaContextView;
+	MetaContext::Ref pMetaContext;
+	MetaContext::Ref pMetaContextController;
+	MetaContext::Ref pMetaContextLink;
+	MetaContext::Ref pMetaContextRule;
+	MetaContext::Ref pMetaContextPlayground;
+	MetaContext::Ref pMetaContextAttachment;
+	MetaContext::Ref pMetaContextView;
 	
 	deWorld::Ref pEngWorld;
 	
@@ -175,7 +190,7 @@ private:
 	
 	igdeMetaPropertyObjectType<aeController>::ObjectTypeList pMPAllowedListControllers;
 	
-	igdeMetaPropertySliderBoardStorage<aeMCController>::Storage pMPPlaygroundControllers;
+	igdeMetaPropertySliderBoardStorage<aeController::MetaContext>::Storage pMPPlaygroundControllers;
 	
 	igdeMetaPropertyPathStorage::Storage pMPDisplayModelPath, pMPDisplaySkinPath, pMPDisplayRigPath;
 	
@@ -215,13 +230,13 @@ public:
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Meta context. */
-	inline const aeMCAnimator::Ref &GetMetaContext() const{ return pMetaContext; }
-	inline aeMCAnimatorController::Ref &GetMetaContextController(){ return pMetaContextController; }
-	inline aeMCAnimatorLink::Ref &GetMetaContextLink(){ return pMetaContextLink; }
-	inline aeMCAnimatorRule::Ref &GetMetaContextRule(){ return pMetaContextRule; }
-	inline aeMCAnimatorPlayground::Ref &GetMetaContextPlayground(){ return pMetaContextPlayground; }
-	inline aeMCAnimatorAttachment::Ref &GetMetaContextAttachment(){ return pMetaContextAttachment; }
-	inline aeMCAnimatorView::Ref &GetMetaContextView(){ return pMetaContextView; }
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const MetaContext::Ref &GetMetaContextController() const{ return pMetaContextController; }
+	inline const MetaContext::Ref &GetMetaContextLink() const{ return pMetaContextLink; }
+	inline const MetaContext::Ref &GetMetaContextRule() const{ return pMetaContextRule; }
+	inline const MetaContext::Ref &GetMetaContextPlayground() const{ return pMetaContextPlayground; }
+	inline const MetaContext::Ref &GetMetaContextAttachment() const{ return pMetaContextAttachment; }
+	inline const MetaContext::Ref &GetMetaContextView() const{ return pMetaContextView; }
 	
 	inline igdeMetaPropertyStringSetStorage::Storage &GetMPHiddenBoneNames(){ return pMPHiddenBoneNames; }
 	inline igdeMetaPropertyStringSetStorage::Storage &GetMPHiddenVPSNames(){ return pMPHiddenVpsNames; }
@@ -244,7 +259,7 @@ public:
 	
 	inline igdeMetaPropertyObjectType<aeController>::ObjectTypeList &GetMPAllowedListControllers(){ return pMPAllowedListControllers; }
 	
-	inline igdeMetaPropertySliderBoardStorage<aeMCController>::Storage &GetMPPlayground(){ return pMPPlaygroundControllers; }
+	inline igdeMetaPropertySliderBoardStorage<aeController::MetaContext>::Storage &GetMPPlayground(){ return pMPPlaygroundControllers; }
 	
 	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplayModelPath(){ return pMPDisplayModelPath; }
 	inline igdeMetaPropertyPathStorage::Storage &GetMPDisplaySkinPath(){ return pMPDisplaySkinPath; }

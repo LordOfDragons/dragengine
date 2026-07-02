@@ -140,7 +140,7 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 		meObject::Ref object;
 		
 		try{
-			object = meObject::Ref::New(world.GetEnvironment());
+			object = meObject::Ref::New(&world.GetEnvironment());
 			object->SetClassName(guiparams.GetBrowseClass().GetString());
 			object->SetID(world.NextObjectID());
 			
@@ -184,7 +184,7 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 	}if(elementMode == meWorldGuiParameters::eemNavSpace){
 		pCreateClosestElementVisitor();
 		
-		const meNavigationSpace::Ref navspace(meNavigationSpace::Ref::New(world.GetEnvironment()));
+		const meNavigationSpace::Ref navspace(meNavigationSpace::Ref::New(&world.GetEnvironment()));
 		
 		try{
 			pUndoAddNavSpace = meUAddNavSpace::Ref::New(&world, decPoint3(), navspace);

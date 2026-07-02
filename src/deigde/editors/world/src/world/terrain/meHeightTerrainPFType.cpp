@@ -153,7 +153,7 @@ void meHeightTerrainPFType::SetPathSkin(const char *path){
 		}catch(const deException &){
 			if(pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain()){
 				pSkin = pPFLayer->GetHTSector()->GetHeightTerrain()->GetWorld().
-					GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
+					GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 			}
 		}
 	}

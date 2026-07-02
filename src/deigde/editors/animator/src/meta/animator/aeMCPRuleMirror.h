@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULEMIRROR_H_
 #define _AEMCPRULEMIRROR_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleMirror.h"
 
@@ -34,9 +33,9 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
-class aeMCPRuleMirrorMirrorAxis : public aeTMCPAnimatorRuleMirror<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>>{
+class aeMCPRuleMirrorMirrorAxis : public aeRuleMirror::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleMirror::eMirrorAxis>>{
 public:
-	aeMCPRuleMirrorMirrorAxis() : aeTMCPAnimatorRuleType(
+	aeMCPRuleMirrorMirrorAxis() : igdeMetaPropertyMCT(
 	"mirror.mirrorAxis", "Animator.WPAPanelRuleMirror.Axis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleMirror::emaX,
@@ -49,7 +48,7 @@ public:
 	~aeMCPRuleMirrorMirrorAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPMirrorAxis();
+		return Owner(context).GetMPMirrorAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleMirror::eMirrorAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -73,9 +72,9 @@ public:
 	}
 };
 
-class aeMCPRuleMirrorMirrorBone : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyStringStorage>{
+class aeMCPRuleMirrorMirrorBone : public aeRuleMirror::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleMirrorMirrorBone() : aeTMCPAnimatorRuleType(
+	aeMCPRuleMirrorMirrorBone() : igdeMetaPropertyMCT(
 	"mirror.mirrorBone", "Animator.WPAPanelRuleMirror.Bone"){
 		SetEnableAllowed(true);
 	}
@@ -83,18 +82,18 @@ public:
 	~aeMCPRuleMirrorMirrorBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPMirrorBone();
+		return Owner(context).GetMPMirrorBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = RuleType(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleMirrorEnablePosition : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleMirrorEnablePosition : public aeRuleMirror::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnablePosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleMirrorEnablePosition() : igdeMetaPropertyMCT(
 	"mirror.enablePosition", "Animator.WPAPanelRuleMirror.EnablePosition"){
 		SetDefaultValue(true);
 	}
@@ -102,13 +101,13 @@ public:
 	~aeMCPRuleMirrorEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnablePosition();
+		return Owner(context).GetMPEnablePosition();
 	}
 };
 
-class aeMCPRuleMirrorEnableOrientation : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleMirrorEnableOrientation : public aeRuleMirror::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnableOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleMirrorEnableOrientation() : igdeMetaPropertyMCT(
 	"mirror.enableOrientation", "Animator.WPAPanelRuleMirror.EnableRotation"){
 		SetDefaultValue(true);
 	}
@@ -116,25 +115,25 @@ public:
 	~aeMCPRuleMirrorEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableOrientation();
+		return Owner(context).GetMPEnableOrientation();
 	}
 };
 
-class aeMCPRuleMirrorEnableSize : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleMirrorEnableSize : public aeRuleMirror::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnableSize() : aeTMCPAnimatorRuleType(
+	aeMCPRuleMirrorEnableSize() : igdeMetaPropertyMCT(
 	"mirror.enableSize", "Animator.WPAPanelRuleMirror.EnableSize"){}
 	
 	~aeMCPRuleMirrorEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableSize();
+		return Owner(context).GetMPEnableSize();
 	}
 };
 
-class aeMCPRuleMirrorEnableVertexPositionSet : public aeTMCPAnimatorRuleMirror<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleMirrorEnableVertexPositionSet : public aeRuleMirror::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleMirrorEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	aeMCPRuleMirrorEnableVertexPositionSet() : igdeMetaPropertyMCT(
 	"mirror.enableVertexPositionSet", "Animator.WPAPanelRuleMirror.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
@@ -142,7 +141,7 @@ public:
 	~aeMCPRuleMirrorEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableVertexPositionSet();
+		return Owner(context).GetMPEnableVertexPositionSet();
 	}
 };
 

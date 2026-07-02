@@ -56,7 +56,7 @@ public:
 		}
 		
 		auto list = pPropertyAttachment.GetPropertyValueType(context);
-		list.Add(aeAttachment::Ref::New(pPropertyAttachment.WindowMain(context), Translate("Animator.DefaultName.Attachment").ToUTF8()));
+		list.Add(aeAttachment::Ref::New(pPropertyAttachment.Owner(context).GetWindowMain(), Translate("Animator.DefaultName.Attachment").ToUTF8()));
 		pPropertyAttachment.ChangePropertyValueType(context, list, BuildUndoInfo(pPropertyAttachment));
 	}
 };
@@ -78,7 +78,7 @@ public:
 			return;
 		}
 		
-		auto &animator = pPropertyAttachments.Animator(context);
+		auto &animator = pPropertyAttachments.Owner(context);
 		auto &windowMain = animator.GetWindowMain();
 		auto &lssys = windowMain.GetLoadSaveSystem();
 		if(!igdeCommonDialogs::GetFileOpen(windowMain, "@Animator.WPView.Dialog.OpenAttachmentConfig.Title",
@@ -107,7 +107,7 @@ public:
 			return;
 		}
 		
-		auto &animator = pPropertyAttachments.Animator(context);
+		auto &animator = pPropertyAttachments.Owner(context);
 		auto &windowMain = animator.GetWindowMain();
 		auto &lssys = windowMain.GetLoadSaveSystem();
 		if(!igdeCommonDialogs::GetFileSave(windowMain, "@Animator.WPView.Dialog.SaveAttachmentConfig.Title",
@@ -123,8 +123,8 @@ public:
 
 aeAttachment::Ref aeMCPAttachments::CopyObjectType(const ContextRef &context,
 const SetType &existingObjects, const ObjectTypeRef &object) const{
-	auto copied = aeAttachment::Ref::New(WindowMain(context), *object);
-	copied->GetMPName().SetValue(Animator(context).uniqueNameAttachment.Generate(copied->GetMPName()), false);
+	auto copied = aeAttachment::Ref::New(Owner(context).GetWindowMain(), *object);
+	copied->GetMPName().SetValue(Owner(context).uniqueNameAttachment.Generate(copied->GetMPName()), false);
 	return copied;
 }
 
@@ -154,6 +154,6 @@ void aeMCPAttachments::AddContextMenuEntries(igdeMenuCascade &menu, const igdeMe
 // Class aeMCPAttachmentWObject
 /////////////////////////////////
 
-aeMCPAttachmentWObject::aeMCPAttachmentWObject() : aeTMCPAnimatorAttachment("animator.attachment.wobject", "", ""){
+aeMCPAttachmentWObject::aeMCPAttachmentWObject() : igdeMetaPropertyMCT("animator.attachment.wobject", "", ""){
 	SetProperties(igdeWObject::MetaProperties::global.properties);
 }

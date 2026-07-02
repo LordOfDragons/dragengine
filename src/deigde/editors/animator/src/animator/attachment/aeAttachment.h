@@ -25,13 +25,12 @@
 #ifndef _AEATTACHMENT_H_
 #define _AEATTACHMENT_H_
 
-#include "../../meta/animator/aeMCAttachment.h"
-
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 #include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/meta/igdeMetaContext.h>
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
 
@@ -77,8 +76,14 @@ public:
 		void LoadFinished(igdeWObject &wrapper, bool succeeded) override;
 	};
 	
+	using MetaContext = igdeMetaContextType<aeAttachment>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeAttachment *attachment);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
-	aeMCAttachment::Ref pMetaContext;
+	MetaContext::Ref pMetaContext;
 	
 	aeAnimator *pAnimator;
 	
@@ -115,7 +120,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get meta context. */
-	inline aeMCAttachment::Ref GetMetaContext() const{ return pMetaContext; }
+	inline MetaContext::Ref GetMetaContext() const{ return pMetaContext; }
 	
 	inline igdeMetaPropertyStringStorage::Storage &GetMPName(){ return pMPName; }
 	inline igdeMetaPropertySelectionEnumStorage<eAttachTypes>::Storage &GetMPAttachType(){ return pMPAttachType; }
@@ -125,10 +130,13 @@ public:
 	
 	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	aeAnimator &GetAnimatorRef() const;
 	
 	/** Set parent animator. */
 	void SetAnimator(aeAnimator *animator);
 	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
 	
 	
 	/** Name. */

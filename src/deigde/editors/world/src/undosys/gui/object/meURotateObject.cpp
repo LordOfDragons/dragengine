@@ -38,7 +38,7 @@
 ////////////////////////////
 
 meURotateObject::meURotateObject(meWorld *world, const meObject::List &objects) :
-meBaseUndoRotate(*world->GetEnvironment())
+meBaseUndoRotate(world->GetEnvironment())
 {
 	DEASSERT_NOTNULL(world)
 	

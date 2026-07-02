@@ -136,7 +136,7 @@ void meCLAddDecal::RunAction(){
 		decalSize = pUndo->GetDecal()->GetSize();
 		
 	}else{
-		meDecal::Ref decal(meDecal::Ref::New(pWorld->GetEnvironment()));
+		meDecal::Ref decal(meDecal::Ref::New(&pWorld->GetEnvironment()));
 		
 		decal->SetSkinPath(browseSkin);
 		decal->SetSize(decal->GetDefaultSize(0.5f));
@@ -172,7 +172,7 @@ void meCLAddDecal::Cancel(){
 void meCLAddDecal::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsCollider()){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-			*pWorld->GetEnvironment(), info->GetCollider() );
+			pWorld->GetEnvironment(), info->GetCollider() );
 		if(!colliderOwner){
 			return;
 		}

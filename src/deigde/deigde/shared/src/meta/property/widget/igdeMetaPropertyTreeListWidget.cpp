@@ -227,7 +227,7 @@ void igdeMetaPropertyTreeListWidget::UpdateItemInfo(){
 	
 	igdeTreeItem *item = pTreeList->GetFirstChild();
 	while(item){
-		pUpdateTreeItem(item);
+		pUpdateTreeItemRecursive(item);
 		item = item->GetNext();
 	}
 	
@@ -431,6 +431,20 @@ void igdeMetaPropertyTreeListWidget::pUpdateTreeItem(igdeTreeItem *item, bool is
 		item->SetDescription(description);
 		item->SetExpanded(isExpanded);
 		pTreeList->ItemChanged(item);
+	}
+}
+
+void igdeMetaPropertyTreeListWidget::pUpdateTreeItemRecursive(igdeTreeItem *item){
+	pUpdateTreeItemRecursive(item, item->GetExpanded());
+}
+
+void igdeMetaPropertyTreeListWidget::pUpdateTreeItemRecursive(igdeTreeItem *item, bool isExpanded){
+	pUpdateTreeItem(item, isExpanded);
+	
+	item = item->GetFirstChild();
+	while(item){
+		pUpdateTreeItemRecursive(item);
+		item = item->GetNext();
 	}
 }
 

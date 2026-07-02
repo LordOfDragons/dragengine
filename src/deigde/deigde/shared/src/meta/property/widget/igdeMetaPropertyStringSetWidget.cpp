@@ -266,19 +266,17 @@ void igdeMetaPropertyStringSetWidget::AddContextMenuEntries(igdeMenuCascade &men
 		helper.MenuSeparator(menu);
 	}
 	
-	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionCopy::Ref::New(
-			pPropertyStringSet, GetButtonContextMenu(), context));
-		helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionCopySelection::Ref::New(
-			pPropertyStringSet, GetButtonContextMenu(), context));
-		helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionCut::Ref::New(
-			pPropertyStringSet, GetButtonContextMenu(), context));
-		helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionPaste::Ref::New(
-			pPropertyStringSet, GetButtonContextMenu(), context));
-		helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionPasteAppend::Ref::New(
-			pPropertyStringSet, GetButtonContextMenu(), context));
-		helper.MenuSeparator(menu);
-	}
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionCopy::Ref::New(
+		pPropertyStringSet, GetButtonContextMenu(), context));
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionCopySelection::Ref::New(
+		pPropertyStringSet, GetButtonContextMenu(), context));
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionCut::Ref::New(
+		pPropertyStringSet, GetButtonContextMenu(), context));
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionPaste::Ref::New(
+		pPropertyStringSet, GetButtonContextMenu(), context));
+	helper.MenuCommand(menu, igdeMetaPropertyStringSet::ActionPasteReplace::Ref::New(
+		pPropertyStringSet, GetButtonContextMenu(), context));
+	helper.MenuSeparator(menu);
 	
 	helper.MenuCommand(menu, deTObjectReference<cActionResetToDefault>::New(*this));
 }

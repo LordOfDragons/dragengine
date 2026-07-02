@@ -372,7 +372,7 @@ public:
 			return;
 		}
 		
-		pWindow.SetSAnimation(saeSAnimation::Ref::New(pWindow.GetLoadSaveSystem().LoadSAnimation(filename)));
+		pWindow.SetSAnimation(pWindow.GetLoadSaveSystem().LoadSAnimation(filename));
 		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };

@@ -34,18 +34,25 @@
 // Class aeRuleStateSnapshot
 //////////////////////////////
 
+aeRuleStateSnapshot::MetaContext::Ref aeRuleStateSnapshot::CreateMetaContext(aeWindowMain &windowMain, aeRuleStateSnapshot *rule){
+	return MetaContext::Ref::New("animator.rule_state_snapshot", "Rule State Snapshot", "Rule state snapshot properties",
+		windowMain.GetMCAnimatorProperties().ruleStateSnapshot.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleStateSnapshot::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertStateSnapshot, aname),
-pMPUseLastState(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.useLastState, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-pMPId(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.id, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enablePosition, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableOrientation, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableSize, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateSnapshot>())
+aeRuleStateSnapshot(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertStateSnapshot, aname),
+pMPUseLastState(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.useLastState, metaContext),
+pMPId(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.id, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateSnapshot.enableVertexPositionSet, metaContext)
 {
 	pMPUseLastState.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -94,6 +101,7 @@ aeRuleStateSnapshot::aeRuleStateSnapshot(aeWindowMain &windowMain, const aeRuleS
 aeRuleStateSnapshot(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPUseLastState.SetValue(copy.pMPUseLastState, false);
 	pMPId.SetValue(copy.pMPId, false);
 	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
 	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);

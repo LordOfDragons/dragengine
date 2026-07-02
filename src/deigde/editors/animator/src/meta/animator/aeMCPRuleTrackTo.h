@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULETRACKTO_H_
 #define _AEMCPRULETRACKTO_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleTrackTo.h"
 
@@ -34,9 +33,9 @@
 #include <deigde/meta/property/igdeMetaPropertyString.h>
 
 
-class aeMCPRuleTrackToTrackBone : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyStringStorage>{
+class aeMCPRuleTrackToTrackBone : public aeRuleTrackTo::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPRuleTrackToTrackBone() : aeTMCPAnimatorRuleType(
+	aeMCPRuleTrackToTrackBone() : igdeMetaPropertyMCT(
 	"trackto.trackBone", "Animator.WPAPanelRuleTrackTo.TrackBone"){
 		SetEnableAllowed(true);
 	}
@@ -44,18 +43,18 @@ public:
 	~aeMCPRuleTrackToTrackBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTrackBone();
+		return Owner(context).GetMPTrackBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		const auto animator = RuleType(context).GetAnimator();
+		const auto animator = Owner(context).GetAnimator();
 		return animator ? animator->GetMPHiddenBoneNames().GetValue() : decStringSet();
 	}
 };
 
-class aeMCPRuleTrackToTrackAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
+class aeMCPRuleTrackToTrackAxis : public aeRuleTrackTo::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
 public:
-	aeMCPRuleTrackToTrackAxis() : aeTMCPAnimatorRuleType(
+	aeMCPRuleTrackToTrackAxis() : igdeMetaPropertyMCT(
 	"trackto.trackAxis", "Animator.WPAPanelRuleTrackTo.TrackAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::etaPosX,
@@ -70,7 +69,7 @@ public:
 	~aeMCPRuleTrackToTrackAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTrackAxis();
+		return Owner(context).GetMPTrackAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eTrackAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -106,9 +105,9 @@ public:
 	}
 };
 
-class aeMCPRuleTrackToUpAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
+class aeMCPRuleTrackToUpAxis : public aeRuleTrackTo::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eTrackAxis>>{
 public:
-	aeMCPRuleTrackToUpAxis() : aeTMCPAnimatorRuleType(
+	aeMCPRuleTrackToUpAxis() : igdeMetaPropertyMCT(
 	"trackto.upAxis", "Animator.WPAPanelRuleTrackTo.UpAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::etaPosX,
@@ -123,7 +122,7 @@ public:
 	~aeMCPRuleTrackToUpAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPUpAxis();
+		return Owner(context).GetMPUpAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eTrackAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -159,9 +158,9 @@ public:
 	}
 };
 
-class aeMCPRuleTrackToUpTarget : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>>{
+class aeMCPRuleTrackToUpTarget : public aeRuleTrackTo::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eUpTarget>>{
 public:
-	aeMCPRuleTrackToUpTarget() : aeTMCPAnimatorRuleType(
+	aeMCPRuleTrackToUpTarget() : igdeMetaPropertyMCT(
 	"trackto.upTarget", "Animator.WPAPanelRuleTrackTo.UpTarget"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::eutWorldX,
@@ -180,7 +179,7 @@ public:
 	~aeMCPRuleTrackToUpTarget() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPUpTarget();
+		return Owner(context).GetMPUpTarget();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eUpTarget choice, igdeMetaContextItemInfo &info) const override{
@@ -232,9 +231,9 @@ public:
 	}
 };
 
-class aeMCPRuleTrackToLockedAxis : public aeTMCPAnimatorRuleTrackTo<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>>{
+class aeMCPRuleTrackToLockedAxis : public aeRuleTrackTo::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleTrackTo::eLockedAxis>>{
 public:
-	aeMCPRuleTrackToLockedAxis() : aeTMCPAnimatorRuleType(
+	aeMCPRuleTrackToLockedAxis() : igdeMetaPropertyMCT(
 	"trackto.lockedAxis", "Animator.WPAPanelRuleTrackTo.LockedAxis"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleTrackTo::elaNone,
@@ -247,7 +246,7 @@ public:
 	~aeMCPRuleTrackToLockedAxis() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPLockedAxis();
+		return Owner(context).GetMPLockedAxis();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleTrackTo::eLockedAxis choice, igdeMetaContextItemInfo &info) const override{
@@ -276,30 +275,23 @@ public:
 };
 
 
-class aeMCPRuleTrackToTargetPosition : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleTrackToTargetPosition : public aeRule::MetaPropertyTarget<aeRuleTrackTo>{
 public:
-	aeMCPRuleTrackToTargetPosition() : aeTMCPRuleTarget(
-	"trackto.targetPosition", "Animator.Target.Position"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleTrackToTargetPosition() : MetaPropertyTarget("trackto.targetPosition", "Animator.Target.Position"){}
 	~aeMCPRuleTrackToTargetPosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetPosition();
+		return Owner(context).GetMPTargetPosition();
 	}
 };
 
-class aeMCPRuleTrackToTargetUp : public aeTMCPRuleTarget<aeTMCPAnimatorRuleTrackTo<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleTrackToTargetUp : public aeRule::MetaPropertyTarget<aeRuleTrackTo>{
 public:
-	aeMCPRuleTrackToTargetUp() : aeTMCPRuleTarget("trackto.targetUp", "Animator.Target.Up"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleTrackToTargetUp() : MetaPropertyTarget("trackto.targetUp", "Animator.Target.Up"){}
 	~aeMCPRuleTrackToTargetUp() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetUp();
+		return Owner(context).GetMPTargetUp();
 	}
 };
 

@@ -57,7 +57,7 @@ meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
 	
 	pWorld = world;
 	clip->GetObjects().Visit([&](const meCDOObject &cdo){
-		const meObject::Ref object(meObject::Ref::New(world->GetEnvironment()));
+		const meObject::Ref object(meObject::Ref::New(&world->GetEnvironment()));
 		object->SetID(world->NextObjectID());
 		cdo.UpdateObject(object);
 		pObjects.Add(object);

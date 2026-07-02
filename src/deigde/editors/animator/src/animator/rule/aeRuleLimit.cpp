@@ -35,42 +35,49 @@
 // Class aeRuleLimit
 //////////////////////
 
+aeRuleLimit::MetaContext::Ref aeRuleLimit::CreateMetaContext(aeWindowMain &windowMain, aeRuleLimit *rule){
+	return MetaContext::Ref::New("animator.rule_limit", "Rule Limit", "Rule limit properties",
+		windowMain.GetMCAnimatorProperties().ruleLimit.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleLimit::aeRuleLimit(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleLimit::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertLimit, aname),
-pMPMinPosition(windowMain.GetMCAnimatorProperties().ruleLimit.minPosition, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMaxPosition(windowMain.GetMCAnimatorProperties().ruleLimit.maxPosition, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleLimit.minRotation, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleLimit.maxRotation, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMinScaling(windowMain.GetMCAnimatorProperties().ruleLimit.minScaling, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMaxScaling(windowMain.GetMCAnimatorProperties().ruleLimit.maxScaling, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMinVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.minVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPMaxVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.maxVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPTargetBone(windowMain.GetMCAnimatorProperties().ruleLimit.targetBone, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleLimit.coordinateFrame, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnablePositionXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnablePositionXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnablePositionYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnablePositionYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnablePositionZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnablePositionZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableRotationXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableRotationXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableRotationYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableRotationYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableRotationZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableRotationZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableScalingXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableScalingXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableScalingYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableScalingYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableScalingZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableScalingZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMax, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableVertexPositionSetMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMin, GetMetaContext().StaticCast<aeMCRuleLimit>()),
-pMPEnableVertexPositionSetMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMax, GetMetaContext().StaticCast<aeMCRuleLimit>())
+aeRuleLimit(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleLimit::aeRuleLimit(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertLimit, aname),
+pMPMinPosition(windowMain.GetMCAnimatorProperties().ruleLimit.minPosition, metaContext),
+pMPMaxPosition(windowMain.GetMCAnimatorProperties().ruleLimit.maxPosition, metaContext),
+pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleLimit.minRotation, metaContext),
+pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleLimit.maxRotation, metaContext),
+pMPMinScaling(windowMain.GetMCAnimatorProperties().ruleLimit.minScaling, metaContext),
+pMPMaxScaling(windowMain.GetMCAnimatorProperties().ruleLimit.maxScaling, metaContext),
+pMPMinVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.minVertexPositionSet, metaContext),
+pMPMaxVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleLimit.maxVertexPositionSet, metaContext),
+pMPTargetBone(windowMain.GetMCAnimatorProperties().ruleLimit.targetBone, metaContext),
+pMPCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleLimit.coordinateFrame, metaContext),
+pMPEnablePositionXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMin, metaContext),
+pMPEnablePositionXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionXMax, metaContext),
+pMPEnablePositionYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMin, metaContext),
+pMPEnablePositionYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionYMax, metaContext),
+pMPEnablePositionZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMin, metaContext),
+pMPEnablePositionZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enablePositionZMax, metaContext),
+pMPEnableRotationXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMin, metaContext),
+pMPEnableRotationXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationXMax, metaContext),
+pMPEnableRotationYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMin, metaContext),
+pMPEnableRotationYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationYMax, metaContext),
+pMPEnableRotationZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMin, metaContext),
+pMPEnableRotationZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableRotationZMax, metaContext),
+pMPEnableScalingXMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMin, metaContext),
+pMPEnableScalingXMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingXMax, metaContext),
+pMPEnableScalingYMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMin, metaContext),
+pMPEnableScalingYMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingYMax, metaContext),
+pMPEnableScalingZMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMin, metaContext),
+pMPEnableScalingZMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableScalingZMax, metaContext),
+pMPEnableVertexPositionSetMin(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMin, metaContext),
+pMPEnableVertexPositionSetMax(windowMain.GetMCAnimatorProperties().ruleLimit.enableVertexPositionSetMax, metaContext)
 {
 	pMPMinPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -427,6 +434,7 @@ aeRuleLimit::aeRuleLimit(aeWindowMain &windowMain, const aeRuleLimit &copy) :
 aeRuleLimit(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPMinPosition.SetValue(copy.pMPMinPosition, false);
 	pMPMaxPosition.SetValue(copy.pMPMaxPosition, false);
 	pMPMinRotation.SetValue(copy.pMPMinRotation, false);
 	pMPMaxRotation.SetValue(copy.pMPMaxRotation, false);

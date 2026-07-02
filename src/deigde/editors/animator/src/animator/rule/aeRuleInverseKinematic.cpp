@@ -35,28 +35,35 @@
 // Class aeRuleInverseKinematic
 /////////////////////////////////
 
+aeRuleInverseKinematic::MetaContext::Ref aeRuleInverseKinematic::CreateMetaContext(aeWindowMain &windowMain, aeRuleInverseKinematic *rule){
+	return MetaContext::Ref::New("animator.rule_inverse_kinematic", "Rule Inverse Kinematic", "Rule inverse kinematic properties",
+		windowMain.GetMCAnimatorProperties().ruleInverseKinematic.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleInverseKinematic::aeRuleInverseKinematic(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleInverseKinematic::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertInverseKinematic, aname),
-pMPGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalPosition, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalOrientation, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localPosition, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localOrientation, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPAdjustOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.adjustOrientation, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPUseSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.useSolverBone, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.solverBone, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachRange, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPReachBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachBone, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachCenter, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPTargetGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalPosition, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPTargetGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalOrientation, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPTargetLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalPosition, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPTargetLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalOrientation, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPTargetReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachRange, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>()),
-pMPTargetReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachCenter, GetMetaContext().StaticCast<aeMCRuleInverseKinematic>())
+aeRuleInverseKinematic(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleInverseKinematic::aeRuleInverseKinematic(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertInverseKinematic, aname),
+pMPGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalPosition, metaContext),
+pMPGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.goalOrientation, metaContext),
+pMPLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localPosition, metaContext),
+pMPLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.localOrientation, metaContext),
+pMPAdjustOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.adjustOrientation, metaContext),
+pMPUseSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.useSolverBone, metaContext),
+pMPSolverBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.solverBone, metaContext),
+pMPReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachRange, metaContext),
+pMPReachBone(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachBone, metaContext),
+pMPReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.reachCenter, metaContext),
+pMPTargetGoalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalPosition, metaContext),
+pMPTargetGoalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetGoalOrientation, metaContext),
+pMPTargetLocalPosition(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalPosition, metaContext),
+pMPTargetLocalOrientation(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetLocalOrientation, metaContext),
+pMPTargetReachRange(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachRange, metaContext),
+pMPTargetReachCenter(windowMain.GetMCAnimatorProperties().ruleInverseKinematic.targetReachCenter, metaContext)
 {
 	pMPGoalPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -187,6 +194,7 @@ aeRuleInverseKinematic::aeRuleInverseKinematic(aeWindowMain &windowMain, const a
 aeRuleInverseKinematic(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPGoalPosition.SetValue(copy.pMPGoalPosition, false);
 	pMPGoalOrientation.SetValue(copy.pMPGoalOrientation, false);
 	pMPLocalPosition.SetValue(copy.pMPLocalPosition, false);
 	pMPLocalOrientation.SetValue(copy.pMPLocalOrientation, false);

@@ -25,7 +25,6 @@
 #ifndef _AEMCPRULEGROUP_H_
 #define _AEMCPRULEGROUP_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/rule/aeRule.h"
 #include "../../animator/rule/aeRuleGroup.h"
 
@@ -34,9 +33,9 @@
 #include <deigde/meta/property/igdeMetaPropertyObjectSet.h>
 
 
-class aeMCPRuleGroupEnablePosition : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleGroupEnablePosition : public aeRuleGroup::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnablePosition() : aeTMCPAnimatorRuleType(
+	aeMCPRuleGroupEnablePosition() : igdeMetaPropertyMCT(
 	"group.enablePosition", "Animator.WPAPanelRuleGroup.EnablePosition"){
 		SetDefaultValue(true);
 	}
@@ -44,13 +43,13 @@ public:
 	~aeMCPRuleGroupEnablePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnablePosition();
+		return Owner(context).GetMPEnablePosition();
 	}
 };
 
-class aeMCPRuleGroupEnableOrientation : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleGroupEnableOrientation : public aeRuleGroup::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnableOrientation() : aeTMCPAnimatorRuleType(
+	aeMCPRuleGroupEnableOrientation() : igdeMetaPropertyMCT(
 	"group.enableOrientation", "Animator.WPAPanelRuleGroup.EnableRotation"){
 		SetDefaultValue(true);
 	}
@@ -58,25 +57,25 @@ public:
 	~aeMCPRuleGroupEnableOrientation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableOrientation();
+		return Owner(context).GetMPEnableOrientation();
 	}
 };
 
-class aeMCPRuleGroupEnableSize : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleGroupEnableSize : public aeRuleGroup::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnableSize() : aeTMCPAnimatorRuleType(
+	aeMCPRuleGroupEnableSize() : igdeMetaPropertyMCT(
 	"group.enableSize", "Animator.WPAPanelRuleGroup.EnableSize"){}
 	
 	~aeMCPRuleGroupEnableSize() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableSize();
+		return Owner(context).GetMPEnableSize();
 	}
 };
 
-class aeMCPRuleGroupEnableVertexPositionSet : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleGroupEnableVertexPositionSet : public aeRuleGroup::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupEnableVertexPositionSet() : aeTMCPAnimatorRuleType(
+	aeMCPRuleGroupEnableVertexPositionSet() : igdeMetaPropertyMCT(
 	"group.enableVertexPositionSet", "Animator.WPAPanelRuleGroup.EnableVertexPositionSet"){
 		SetDefaultValue(true);
 	}
@@ -84,25 +83,25 @@ public:
 	~aeMCPRuleGroupEnableVertexPositionSet() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPEnableVertexPositionSet();
+		return Owner(context).GetMPEnableVertexPositionSet();
 	}
 };
 
-class aeMCPRuleGroupUseCurrentState : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyBooleanStorage>{
+class aeMCPRuleGroupUseCurrentState : public aeRuleGroup::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPRuleGroupUseCurrentState() : aeTMCPAnimatorRuleType(
+	aeMCPRuleGroupUseCurrentState() : igdeMetaPropertyMCT(
 	"group.useCurrentState", "Animator.WPAPanelRuleGroup.UseCurrentState"){}
 	
 	~aeMCPRuleGroupUseCurrentState() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPUseCurrentState();
+		return Owner(context).GetMPUseCurrentState();
 	}
 };
 
-class aeMCPRuleGroupApplicationType : public aeTMCPAnimatorRuleGroup<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>>{
+class aeMCPRuleGroupApplicationType : public aeRuleGroup::MetaProperty<igdeMetaPropertySelectionEnumStorage<deAnimatorRuleGroup::eApplicationTypes>>{
 public:
-	aeMCPRuleGroupApplicationType() : aeTMCPAnimatorRuleType(
+	aeMCPRuleGroupApplicationType() : igdeMetaPropertyMCT(
 	"group.applicationType", "Animator.WPAPanelRuleGroup.ApplicationType"){
 		SetChoicesEnum(ListChoicesEnum(devctag,
 			deAnimatorRuleGroup::eatAll,
@@ -113,7 +112,7 @@ public:
 	~aeMCPRuleGroupApplicationType() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPApplicationType();
+		return Owner(context).GetMPApplicationType();
 	}
 	
 	void GetChoiceItemInfoEnum(const ContextRef &context, deAnimatorRuleGroup::eApplicationTypes choice, igdeMetaContextItemInfo &info) const override{
@@ -134,30 +133,27 @@ public:
 };
 
 
-class aeMCPRuleGroupTargetSelect : public aeTMCPRuleTarget<aeTMCPAnimatorRuleGroup<igdeMetaPropertyObjectSetStorage<aeLink>>>{
+class aeMCPRuleGroupTargetSelect : public aeRule::MetaPropertyTarget<aeRuleGroup>{
 public:
-	aeMCPRuleGroupTargetSelect() : aeTMCPRuleTarget("group.targetSelect", "Animator.Target.Select"){
-		SetRows(3);
-	}
-	
+	aeMCPRuleGroupTargetSelect() : MetaPropertyTarget("group.targetSelect", "Animator.Target.Select"){}
 	~aeMCPRuleGroupTargetSelect() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPTargetSelect();
+		return Owner(context).GetMPTargetSelect();
 	}
 };
 
 
-class aeMCPRuleGroupRules : public aeTMCPAnimatorRuleGroup<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
+class aeMCPRuleGroupRules : public aeRuleGroup::MetaProperty<igdeMetaPropertyListStorage<aeRule, aeRule::List>>{
 public:
-	aeMCPRuleGroupRules() : aeTMCPAnimatorRuleType("ruleGroup.rules", "Animator.WPRule.Rules"){
-		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Controllers");
+	aeMCPRuleGroupRules() : igdeMetaPropertyMCT("ruleGroup.rules", "Animator.WPRule.Rules"){
+		SetClipboardDataTypeName(GetClipboardDataTypeName() + ".Animator.Rules");
 	}
 	
 	~aeMCPRuleGroupRules() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return RuleType(context).GetMPRules();
+		return Owner(context).GetMPRules();
 	}
 	
 	void GetObjectItemInfoType(const ContextRef&, const ObjectTypeRef &rule, igdeMetaContextItemInfo &info) const override{
@@ -165,8 +161,9 @@ public:
 	}
 	
 	ObjectTypeRef CopyObjectType(const ContextRef &context, const aeRule::List &existingObjects, const ObjectTypeRef &object) const override{
-		auto copied = object->CreateCopy(WindowMain(context));
-		copied->GetMPName().SetValue(RuleType(context).uniqueNameRule.Generate(copied->GetMPName()), false);
+		auto &rule = Owner(context);
+		auto copied = object->CreateCopy(rule.GetAnimatorRef().GetWindowMain());
+		copied->GetMPName().SetValue(rule.uniqueNameRule.Generate(copied->GetMPName()), false);
 		return copied;
 	}
 };

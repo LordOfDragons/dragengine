@@ -36,19 +36,26 @@
 // Class aeRuleAnimation
 //////////////////////////
 
+aeRuleAnimation::MetaContext::Ref aeRuleAnimation::CreateMetaContext(aeWindowMain &windowMain, aeRuleAnimation *rule){
+	return MetaContext::Ref::New("animator.rule_animation", "Rule Animation", "Rule animation properties",
+		windowMain.GetMCAnimatorProperties().ruleAnimation.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleAnimation::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertAnimation, aname),
-pMPMoveName(windowMain.GetMCAnimatorProperties().ruleAnimation.moveName, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-pMPMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.moveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimation.enablePosition, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimation.enableOrientation, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimation.enableSize, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleAnimation>()),
-pMPTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime, GetMetaContext().StaticCast<aeMCRuleAnimation>())
+aeRuleAnimation(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertAnimation, aname),
+pMPMoveName(windowMain.GetMCAnimatorProperties().ruleAnimation.moveName, metaContext),
+pMPMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.moveTime, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleAnimation.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleAnimation.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleAnimation.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleAnimation.enableVertexPositionSet, metaContext),
+pMPTargetMoveTime(windowMain.GetMCAnimatorProperties().ruleAnimation.targetMoveTime, metaContext)
 {
 	pMPMoveName.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -106,6 +113,7 @@ aeRuleAnimation::aeRuleAnimation(aeWindowMain &windowMain, const aeRuleAnimation
 aeRuleAnimation(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPMoveName.SetValue(copy.pMPMoveName, false);
 	pMPMoveTime.SetValue(copy.pMPMoveTime, false);
 	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
 	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);

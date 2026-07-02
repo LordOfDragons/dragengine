@@ -158,12 +158,7 @@ public:
 			return;
 		}
 		
-		auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		clipboard->Set(igdeMetaPropertyFloat::ClipboardData::Ref::New(
+		context->GetClipboard().Set(igdeMetaPropertyFloat::ClipboardData::Ref::New(
 			property, property.GetPropertyValue(context)));
 	}
 };
@@ -188,13 +183,9 @@ public:
 			return;
 		}
 		
-		const auto clipboard = pHelper.GetContext()->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyFloat().GetClipboardDataTypeName())
-			.DynamicCast<igdeMetaPropertyFloat::ClipboardData>();
+		auto clip = pHelper.GetContext()->GetClipboard().
+			GetWithTypeName(pHelper.GetPropertyFloat().GetClipboardDataTypeName()).
+				DynamicCast<igdeMetaPropertyFloat::ClipboardData>();
 		if(!clip){
 			return;
 		}
@@ -203,13 +194,8 @@ public:
 	}
 	
 	void Update() override{
-		if(pHelper.IsValid()){
-			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyFloat().GetClipboardDataTypeName()));
-			
-		}else{
-			SetEnabled(false);
-		}
+		SetEnabled(pHelper.IsValid() && pHelper.GetContext()->GetClipboard().
+			HasWithTypeName(pHelper.GetPropertyFloat().GetClipboardDataTypeName()));
 	}
 };
 
@@ -398,11 +384,9 @@ void igdeMetaPropertyFloatWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 		helper.MenuSeparator(menu);
 	}
 	
-	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
-		helper.MenuSeparator(menu);
-	}
+	helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+	helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+	helper.MenuSeparator(menu);
 	
 	const auto presets = pPropertyFloat.GetPropertyPresets(context);
 	if(presets.IsNotEmpty()){

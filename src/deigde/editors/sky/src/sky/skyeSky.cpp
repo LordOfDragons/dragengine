@@ -70,7 +70,7 @@
 ////////////////////////////
 
 skyeSky::skyeSky(igdeEnvironment *environment) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pNeedsRebuildSky(true)
 {
 	deEngine * const engine = GetEngine();

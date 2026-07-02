@@ -62,6 +62,13 @@ public:
 	};
 	
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleMirror, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleMirror *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
+	
 private:
 	MatchName::List pMatchNames;
 	
@@ -90,6 +97,9 @@ public:
 protected:
 	/** Clean up rule. */
 	~aeRuleMirror() override;
+	
+private:
+	aeRuleMirror(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 	/*@}*/
 	
 	

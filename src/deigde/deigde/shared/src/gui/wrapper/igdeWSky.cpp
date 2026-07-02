@@ -50,56 +50,26 @@
 // igdeWSky::Controller
 /////////////////////////
 
-igdeWSky::Controller::MetaContext::MetaContext(igdeWSky::Controller *controller) :
-igdeMetaContext("igde.wsky.controller"),
-pController(controller){
-}
-
-igdeWSky::Controller::MetaContext::~MetaContext() = default;
-
-igdeWSky::Controller &igdeWSky::Controller::MetaContext::GetControllerRef() const{
-	DEASSERT_NOTNULL(pController)
-	return *pController;
-}
-
-igdeWSky::Controller::MetaContext::Ref igdeWSky::Controller::MetaContext::Capture() const{
-	auto context = Ref::New(pController);
-	context->pGuard = pController;
-	return context;
-}
-
-igdeEnvironment &igdeWSky::Controller::MetaContext::GetEnvironment() const{
-	return GetControllerRef().GetWrapper().GetEnvironment();
-}
-
-igdeUndoSystem *igdeWSky::Controller::MetaContext::GetUndoSystem() const{
-	return GetControllerRef().GetWrapper().GetUndoSystem();
-}
-
-igdeClipboard *igdeWSky::Controller::MetaContext::GetClipboard() const{
-	return &GetEnvironment().GetClipboard();
+igdeWSky::Controller::MetaContext::Ref igdeWSky::Controller::CreateMetaContext(Controller *controller){
+	return igdeWSky::Controller::MetaContext::Ref::New("igde.wsky.controller", controller);
 }
 
 
-igdeWSky::Controller::MetaProperties::Name::Name() : TBase("igde.wsky.controller.name", "", ""){
-}
-
+igdeWSky::Controller::MetaProperties::Name::Name() : igdeMetaPropertyMCT("igde.wsky.controller.name", "", ""){}
 igdeWSky::Controller::MetaProperties::Name::~Name() = default;
 
 igdeMetaPropertyStringStorage::Storage &igdeWSky::Controller::MetaProperties::Name::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return ControllerRef(context).GetMPName();
+	return Owner(context).GetMPName();
 }
 
 
-igdeWSky::Controller::MetaProperties::Value::Value() : TBase("igde.wsky.controller.value", "", ""){
-}
-
+igdeWSky::Controller::MetaProperties::Value::Value() : igdeMetaPropertyMCT("igde.wsky.controller.value", "", ""){}
 igdeWSky::Controller::MetaProperties::Value::~Value() = default;
 
 igdeMetaPropertyFloatStorage::Storage &igdeWSky::Controller::MetaProperties::Value::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return ControllerRef(context).GetMPValue();
+	return Owner(context).GetMPValue();
 }
 
 
@@ -114,7 +84,7 @@ value(deTObjectReference<Value>::New()){
 igdeWSky::Controller::Controller(igdeWSky &wrapper, int index) :
 pWrapper(wrapper),
 pIndex(index),
-pMetaContext(igdeWSky::Controller::MetaContext::Ref::New(this)),
+pMetaContext(CreateMetaContext(this)),
 pMPName(igdeWSky::Controller::MetaProperties::global.name, pMetaContext),
 pMPValue(igdeWSky::Controller::MetaProperties::global.value, pMetaContext)
 {
@@ -129,6 +99,14 @@ igdeWSky::Controller::~Controller(){
 	}
 }
 
+igdeEnvironment &igdeWSky::Controller::GetEnvironment() const{
+	return pWrapper.GetEnvironment();
+}
+	
+igdeUndoSystem *igdeWSky::Controller::GetUndoSystem() const{
+	return pWrapper.GetUndoSystem();
+}
+
 
 // Meta Context
 /////////////////
@@ -136,35 +114,8 @@ igdeWSky::Controller::~Controller(){
 // Class igdeWSky::MetaContext
 ////////////////////////////////
 
-igdeWSky::MetaContext::MetaContext(igdeWSky *wrapper) :
-igdeMetaContext("igde.wsky"),
-pWrapper(wrapper){
-	SetProperties(MetaProperties::global.properties);
-}
-
-igdeWSky::MetaContext::~MetaContext() = default;
-
-igdeWSky &igdeWSky::MetaContext::GetWrapperRef() const{
-	DEASSERT_NOTNULL(pWrapper)
-	return *pWrapper;
-}
-
-igdeWSky::MetaContext::Ref igdeWSky::MetaContext::Capture() const{
-	auto context = Ref::New(pWrapper);
-	context->pGuard = pWrapper;
-	return context;
-}
-
-igdeEnvironment &igdeWSky::MetaContext::GetEnvironment() const{
-	return GetWrapperRef().GetEnvironment();
-}
-
-igdeUndoSystem *igdeWSky::MetaContext::GetUndoSystem() const{
-	return GetWrapperRef().GetUndoSystem();
-}
-
-igdeClipboard *igdeWSky::MetaContext::GetClipboard() const{
-	return &GetEnvironment().GetClipboard();
+igdeWSky::MetaContext::Ref igdeWSky::CreateMetaContext(igdeWSky *wrapper){
+	return igdeWSky::MetaContext::Ref::New("igde.wsky", MetaProperties::global.properties, wrapper);
 }
 
 
@@ -174,20 +125,20 @@ igdeClipboard *igdeWSky::MetaContext::GetClipboard() const{
 // igdeWSky::MetaProperties::Path
 
 igdeWSky::MetaProperties::Path::Path() :
-TBase("igde.wsky.path", "Igde.WPSky.SkyPath", igdeEnvironment::eFilePatternListTypes::efpltSky){
+igdeMetaPropertyMCT("igde.wsky.path", "Igde.WPSky.SkyPath", igdeEnvironment::eFilePatternListTypes::efpltSky){
 }
 
 igdeWSky::MetaProperties::Path::~Path() = default;
 
 igdeMetaPropertyPathStorage::Storage &igdeWSky::MetaProperties::Path::GetStorage(
 const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPPath();
+	return Owner(context).GetMPPath();
 }
 
 
 // igdeWSky::MetaProperties::Sliders
 
-igdeWSky::MetaProperties::Sliders::Sliders() : TBaseNoCapture("igde.wsky.sliders",
+igdeWSky::MetaProperties::Sliders::Sliders() : igdeMetaPropertyMCTNoCapture("igde.wsky.sliders",
 	igdeWSky::Controller::MetaProperties::global.name,
 	igdeWSky::Controller::MetaProperties::global.value){}
 
@@ -195,7 +146,7 @@ igdeWSky::MetaProperties::Sliders::~Sliders() = default;
 
 igdeMetaPropertySliderBoardStorage<igdeWSky::Controller::MetaContext>::Storage&
 igdeWSky::MetaProperties::Sliders::GetStorage(const igdeMetaContext::Ref &context) const{
-	return Wrapper(context).GetMPSliders();
+	return Owner(context).GetMPSliders();
 }
 
 
@@ -227,7 +178,7 @@ igdeWSky::cAsyncLoadFinished::~cAsyncLoadFinished() = default;
 igdeWSky::igdeWSky(igdeEnvironment &environment) :
 pEnvironment(environment),
 pUndoSystem(nullptr),
-pMetaContext(MetaContext::Ref::New(this)),
+pMetaContext(CreateMetaContext(this)),
 pAsyncLoadFinished(nullptr),
 pAsyncLoadCounter(0),
 pMPPath(MetaProperties::global.path, pMetaContext),

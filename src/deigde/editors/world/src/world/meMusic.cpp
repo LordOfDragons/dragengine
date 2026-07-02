@@ -77,7 +77,7 @@ void meMusic::SetPath(const char *path){
 			pSpeaker->SetSound(pWorld.GetEngine()->GetSoundManager()->LoadSound(path, "/", false));
 			
 		}catch(const deException &e){
-			pWorld.GetEnvironment()->GetLogger()->LogException(LOGSOURCE, e);
+			pWorld.GetEnvironment().GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
 	

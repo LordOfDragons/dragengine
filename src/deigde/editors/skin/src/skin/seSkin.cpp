@@ -97,7 +97,7 @@
 ////////////////////////////
 
 seSkin::seSkin(igdeEnvironment *environment) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pPreviewMode(epmModel)
 {
 	deEngine * const engine = GetEngine();

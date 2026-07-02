@@ -107,12 +107,7 @@ public:
 			return;
 		}
 		
-		auto clipboard = context->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		clipboard->Set(igdeMetaPropertyColor::ClipboardData::Ref::New(
+		pWidget.GetContext()->GetClipboard().Set(igdeMetaPropertyColor::ClipboardData::Ref::New(
 			property, property.GetPropertyValue(context)));
 	}
 };
@@ -137,13 +132,9 @@ public:
 			return;
 		}
 		
-		const auto clipboard = pHelper.GetContext()->GetClipboard();
-		if(!clipboard){
-			return;
-		}
-		
-		const auto clip = clipboard->GetWithTypeName(pHelper.GetPropertyColor().GetClipboardDataTypeName()).
-			DynamicCast<igdeMetaPropertyColor::ClipboardData>();
+		const auto clip = pHelper.GetContext()->GetClipboard().
+			GetWithTypeName(pHelper.GetPropertyColor().GetClipboardDataTypeName()).
+				DynamicCast<igdeMetaPropertyColor::ClipboardData>();
 		if(!clip){
 			return;
 		}
@@ -152,12 +143,8 @@ public:
 	}
 	
 	void Update() override{
-		if(pHelper.IsValid()){
-			const auto cb = pHelper.GetContext()->GetClipboard();
-			SetEnabled(cb && cb->HasWithTypeName(pHelper.GetPropertyColor().GetClipboardDataTypeName()));
-			return;
-		}
-		SetEnabled(false);
+		SetEnabled(pHelper.IsValid() && pHelper.GetContext()->GetClipboard().
+			HasWithTypeName(pHelper.GetPropertyColor().GetClipboardDataTypeName()));
 	}
 };
 
@@ -292,11 +279,9 @@ void igdeMetaPropertyColorWidget::AddContextMenuEntries(igdeMenuCascade &menu){
 		helper.MenuSeparator(menu);
 	}
 	
-	if(context && context->GetClipboard()){
-		helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
-		helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
-		helper.MenuSeparator(menu);
-	}
+	helper.MenuCommand(menu, deTObjectReference<ActionCopy>::New(*this, context, env));
+	helper.MenuCommand(menu, deTObjectReference<ActionPaste>::New(*this, context, env));
+	helper.MenuSeparator(menu);
 	
 	const auto presets = pPropertyColor.GetPropertyPresets(context);
 	if(presets.IsNotEmpty()){

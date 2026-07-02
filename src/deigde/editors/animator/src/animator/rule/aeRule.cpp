@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-
 #include "aeRule.h"
 #include "aeRuleAnimation.h"
 #include "aeRuleAnimationDifference.h"
@@ -61,16 +59,21 @@
 // Class aeRule
 /////////////////
 
+aeRule::MetaContext::Ref aeRule::CreateMetaContext(aeWindowMain &windowMain, aeRule *rule){
+	return MetaContext::Ref::New("animator.rule", "Rule", "Rule properties",
+		windowMain.GetMCAnimatorProperties().rule.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
-aeRule::aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext,
+aeRule::aeRule(aeWindowMain &windowMain, const MetaContext::Ref &metaContext,
 	deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *aname) :
 pAnimator(nullptr),
 pParentGroup(nullptr),
 pEngRule(nullptr),
 pIndex(-1),
-pMetaContext(std::move(metaContext)),
+pMetaContext(metaContext),
 pType(type),
 pMPName(windowMain.GetMCAnimatorProperties().rule.name, pMetaContext, aname),
 pMPBlendMode(windowMain.GetMCAnimatorProperties().rule.blendMode, pMetaContext),
@@ -139,8 +142,8 @@ pMPTargetBlendFactor(windowMain.GetMCAnimatorProperties().rule.targetBlendFactor
 	};
 }
 
-aeRule::aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext, const aeRule &copy) :
-aeRule(windowMain, std::move(metaContext), copy.pType, copy.pMPName)
+aeRule::aeRule(aeWindowMain &windowMain, const MetaContext::Ref &metaContext, const aeRule &copy) :
+aeRule(windowMain, metaContext, copy.pType, copy.pMPName)
 {
 	pInitCopy(copy);
 }
@@ -180,6 +183,14 @@ void aeRule::SetAnimator(aeAnimator *animator){
 aeAnimator &aeRule::GetAnimatorRef() const{
 	DEASSERT_NOTNULL(pAnimator);
 	return *pAnimator;
+}
+
+igdeEnvironment &aeRule::GetEnvironment() const{
+	return GetAnimatorRef().GetEnvironment();
+}
+
+igdeUndoSystem *aeRule::GetUndoSystem() const{
+	return GetAnimatorRef().GetUndoSystem();
 }
 
 

@@ -35,28 +35,35 @@
 // Class aeRuleStateManipulator
 /////////////////////////////////
 
+aeRuleStateManipulator::MetaContext::Ref aeRuleStateManipulator::CreateMetaContext(aeWindowMain &windowMain, aeRuleStateManipulator *rule){
+	return MetaContext::Ref::New("animator.rule_state_manipulator", "Rule State Manipulator", "Rule state manipulator properties",
+		windowMain.GetMCAnimatorProperties().ruleStateManipulator.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleStateManipulator::aeRuleStateManipulator(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleStateManipulator::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertStateManipulator, aname),
-pMPMinPosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minPosition, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMaxPosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxPosition, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minRotation, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxRotation, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMinSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minSize, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMaxSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxSize, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMinVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPMaxVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enablePosition, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPEnableRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enableRotation, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enableSize, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPTargetPosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetPosition, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPTargetRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetRotation, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPTargetSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetSize, GetMetaContext().StaticCast<aeMCRuleStateManipulator>()),
-pMPTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleStateManipulator>())
+aeRuleStateManipulator(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleStateManipulator::aeRuleStateManipulator(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertStateManipulator, aname),
+pMPMinPosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minPosition, metaContext),
+pMPMaxPosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxPosition, metaContext),
+pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minRotation, metaContext),
+pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxRotation, metaContext),
+pMPMinSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minSize, metaContext),
+pMPMaxSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxSize, metaContext),
+pMPMinVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.minVertexPositionSet, metaContext),
+pMPMaxVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.maxVertexPositionSet, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enablePosition, metaContext),
+pMPEnableRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enableRotation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.enableVertexPositionSet, metaContext),
+pMPTargetPosition(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetPosition, metaContext),
+pMPTargetRotation(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetRotation, metaContext),
+pMPTargetSize(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetSize, metaContext),
+pMPTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleStateManipulator.targetVertexPositionSet, metaContext)
 {
 	pMPMinPosition.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -183,6 +190,7 @@ aeRuleStateManipulator::aeRuleStateManipulator(aeWindowMain &windowMain, const a
 aeRuleStateManipulator(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPMinPosition.SetValue(copy.pMPMinPosition, false);
 	pMPMaxPosition.SetValue(copy.pMPMaxPosition, false);
 	pMPMinRotation.SetValue(copy.pMPMinRotation, false);
 	pMPMaxRotation.SetValue(copy.pMPMaxRotation, false);

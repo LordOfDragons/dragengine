@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUDecalRotate::meUDecalRotate(meWorld *world) :
-meBaseUndoRotate(*world->GetEnvironment())
+meBaseUndoRotate(world->GetEnvironment())
 {
 	if(!world) DETHROW(deeInvalidParam);
 	

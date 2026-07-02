@@ -35,28 +35,35 @@
 // Class aeRuleForeignState
 /////////////////////////////
 
+aeRuleForeignState::MetaContext::Ref aeRuleForeignState::CreateMetaContext(aeWindowMain &windowMain, aeRuleForeignState *rule){
+	return MetaContext::Ref::New("animator.rule_foreign_state", "Rule Foreign State", "Rule foreign state properties",
+		windowMain.GetMCAnimatorProperties().ruleForeignState.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleForeignState::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertForeignState, aname),
-pMPForeignBone(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignBone, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPForeignVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPScalePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.scalePosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPScaleOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleOrientation, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPScaleSize(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPScaleVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.enablePosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.enableOrientation, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleForeignState.enableSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPSourceCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.sourceCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPDestCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.destCoordinateFrame, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPTargetPosition(windowMain.GetMCAnimatorProperties().ruleForeignState.targetPosition, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPTargetOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.targetOrientation, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPTargetSize(windowMain.GetMCAnimatorProperties().ruleForeignState.targetSize, GetMetaContext().StaticCast<aeMCRuleForeignState>()),
-pMPTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.targetVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleForeignState>())
+aeRuleForeignState(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertForeignState, aname),
+pMPForeignBone(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignBone, metaContext),
+pMPForeignVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.foreignVertexPositionSet, metaContext),
+pMPScalePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.scalePosition, metaContext),
+pMPScaleOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleOrientation, metaContext),
+pMPScaleSize(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleSize, metaContext),
+pMPScaleVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.scaleVertexPositionSet, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleForeignState.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleForeignState.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.enableVertexPositionSet, metaContext),
+pMPSourceCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.sourceCoordinateFrame, metaContext),
+pMPDestCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleForeignState.destCoordinateFrame, metaContext),
+pMPTargetPosition(windowMain.GetMCAnimatorProperties().ruleForeignState.targetPosition, metaContext),
+pMPTargetOrientation(windowMain.GetMCAnimatorProperties().ruleForeignState.targetOrientation, metaContext),
+pMPTargetSize(windowMain.GetMCAnimatorProperties().ruleForeignState.targetSize, metaContext),
+pMPTargetVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleForeignState.targetVertexPositionSet, metaContext)
 {
 	pMPForeignBone.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -183,6 +190,7 @@ aeRuleForeignState::aeRuleForeignState(aeWindowMain &windowMain, const aeRuleFor
 aeRuleForeignState(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPForeignBone.SetValue(copy.pMPForeignBone, false);
 	pMPForeignVertexPositionSet.SetValue(copy.pMPForeignVertexPositionSet, false);
 	pMPScalePosition.SetValue(copy.pMPScalePosition, false);
 	pMPScaleOrientation.SetValue(copy.pMPScaleOrientation, false);

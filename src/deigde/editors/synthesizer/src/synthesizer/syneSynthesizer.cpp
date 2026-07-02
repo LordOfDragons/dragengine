@@ -69,7 +69,7 @@
 ////////////////////////////
 
 syneSynthesizer::syneSynthesizer(igdeEnvironment *environment, syneLoadSaveSystem &lssys) :
-igdeEditableEntity(environment),
+igdeEditableEntity(*environment),
 pLoadSaveSystem(lssys),
 pChannelCount(1),
 pSampleRate(44100),

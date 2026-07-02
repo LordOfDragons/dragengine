@@ -76,50 +76,15 @@ public:
 	public:
 		using Ref = deTObjectReference<Controller>;
 		
-		class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
-		private:
-			Controller *pController;
-			Controller::Ref pGuard;
-			
-		public:
-			using Ref = deTObjectReference<MetaContext>;
-			MetaContext(Controller *controller);
-			
-			inline Controller *GetController() const{ return pController; }
-			Controller &GetControllerRef() const;
-			Ref Capture() const;
-			igdeEnvironment &GetEnvironment() const override;
-			igdeUndoSystem *GetUndoSystem() const override;
-			igdeClipboard *GetClipboard() const override;
-			
-		protected:
-			virtual ~MetaContext() override;
-		};
+		igdeEnvironment &GetEnvironment() const;
+		igdeUndoSystem *GetUndoSystem() const;
+		
+		using MetaContext = igdeMetaContextType<Controller>;
+		static MetaContext::Ref CreateMetaContext(Controller *controller);
 		
 		class DE_DLL_EXPORT MetaProperties{
 		public:
-			template <typename T> class TBase : public T{
-			public:
-				template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
-				
-				igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-					return context.DynamicCast<MetaContext>()->Capture();
-				}
-				
-				bool IsValid(const igdeMetaContext::Ref &context) const override{
-					const auto c = context.DynamicCast<MetaContext>();
-					return c && !c->IsDisposed();
-				}
-				
-				inline Controller &ControllerRef(const igdeMetaContext::Ref &context) const{
-					return context.DynamicCast<MetaContext>()->GetControllerRef();
-				}
-				
-			protected:
-				virtual ~TBase() override{}
-			};
-			
-			class DE_DLL_EXPORT Name : public TBase<igdeMetaPropertyStringStorage>{
+			class DE_DLL_EXPORT Name : public igdeMetaPropertyMCT<igdeMetaPropertyStringStorage, MetaContext>{
 			public:
 				Name();
 				Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -128,7 +93,7 @@ public:
 				~Name() override;
 			};
 			
-			class DE_DLL_EXPORT Value : public TBase<igdeMetaPropertyFloatStorage>{
+			class DE_DLL_EXPORT Value : public igdeMetaPropertyMCT<igdeMetaPropertyFloatStorage, MetaContext>{
 			public:
 				Value();
 				Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -169,68 +134,13 @@ public:
 	
 	
 	/** \brief Meta context. */
-	class DE_DLL_EXPORT MetaContext : public igdeMetaContext{
-	private:
-		igdeWSky *pWrapper;
-		igdeWSky::Ref pGuard;
-		
-	public:
-		using Ref = deTObjectReference<MetaContext>;
-		MetaContext(igdeWSky *wrapper);
-		
-		inline igdeWSky *GetWrapper() const{ return pWrapper; }
-		igdeWSky &GetWrapperRef() const;
-		Ref Capture() const;
-		igdeEnvironment &GetEnvironment() const override;
-		igdeUndoSystem *GetUndoSystem() const override;
-		igdeClipboard *GetClipboard() const override;
-		
-	protected:
-		virtual ~MetaContext() override;
-	};
+	using MetaContext = igdeMetaContextType<igdeWSky>;
+	static MetaContext::Ref CreateMetaContext(igdeWSky *wrapper);
 	
 	/** \brief Meta properties. */
 	class DE_DLL_EXPORT MetaProperties{
 	public:
-		template <typename T> class TBase : public T{
-		public:
-			template <typename... A> TBase(A&&... args) : T(std::forward<A>(args)...) {}
-			
-			igdeMetaContext::Ref Capture(const igdeMetaContext::Ref &context) const override{
-				return context.DynamicCast<MetaContext>()->Capture();
-			}
-			
-			bool IsValid(const igdeMetaContext::Ref &context) const override{
-				const auto c = context.DynamicCast<MetaContext>();
-				return c && !c->IsDisposed();
-			}
-			
-			inline igdeWSky &Wrapper(const igdeMetaContext::Ref &context) const{
-				return context.DynamicCast<MetaContext>()->GetWrapperRef();
-			}
-			
-		protected:
-			virtual ~TBase() override{}
-		};
-		
-		template <typename T> class TBaseNoCapture : public T{
-		public:
-			template <typename... A> TBaseNoCapture(A&&... args) : T(std::forward<A>(args)...) {}
-			
-			bool IsValid(const igdeMetaContext::Ref &context) const override{
-				const auto c = context.DynamicCast<MetaContext>();
-				return c && !c->IsDisposed();
-			}
-			
-			inline igdeWSky &Wrapper(const igdeMetaContext::Ref &context) const{
-				return context.DynamicCast<MetaContext>()->GetWrapperRef();
-			}
-			
-		protected:
-			virtual ~TBaseNoCapture() override{}
-		};
-		
-		class DE_DLL_EXPORT Path : public TBase<igdeMetaPropertyPathStorage>{
+		class DE_DLL_EXPORT Path : public igdeMetaPropertyMCT<igdeMetaPropertyPathStorage, MetaContext>{
 		public:
 			Path();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;
@@ -239,7 +149,8 @@ public:
 			~Path() override;
 		};
 		
-		class DE_DLL_EXPORT Sliders : public TBaseNoCapture<igdeMetaPropertySliderBoardStorage<Controller::MetaContext>>{
+		class DE_DLL_EXPORT Sliders : public igdeMetaPropertyMCTNoCapture<
+		igdeMetaPropertySliderBoardStorage<Controller::MetaContext>, MetaContext>{
 		public:
 			Sliders();
 			Storage &GetStorage(const igdeMetaContext::Ref &context) const override;

@@ -534,11 +534,6 @@ void igdeMetaPropertyStringList::ActionCopy::OnAction(){
 		return;
 	}
 	
-	auto clipboard = context->GetClipboard();
-	if(!clipboard){
-		return;
-	}
-	
 	decStringList values;
 	if(pSelection){
 		if(pPropertyStringList.GetMultiSelection()){
@@ -559,13 +554,12 @@ void igdeMetaPropertyStringList::ActionCopy::OnAction(){
 		return;
 	}
 	
-	clipboard->Set(ClipboardData::Ref::New(pPropertyStringList, std::move(values)));
+	context->GetClipboard().Set(ClipboardData::Ref::New(pPropertyStringList, std::move(values)));
 }
 
 void igdeMetaPropertyStringList::ActionCopy::Update(){
 	const auto &context = GetContext();
-	SetEnabled(pPropertyStringList.IsValid(context) && context->GetClipboard()
-		&& pPropertyStringList.GetActiveString(context).IsNotNull());
+	SetEnabled(pPropertyStringList.IsValid(context) && pPropertyStringList.GetActiveString(context));
 }
 
 
@@ -609,8 +603,7 @@ igdeMetaPropertyStringList::ActionPaste::ActionPaste(igdeMetaPropertyStringList 
 Action(owner, context, "@Igde.Action.Paste",
 	owner.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 	"@Igde.Action.Paste.ToolTip"),
-pPropertyStringList(property),
-pAppend(false){
+pPropertyStringList(property){
 }
 
 void igdeMetaPropertyStringList::ActionPaste::OnAction(){
@@ -619,24 +612,18 @@ void igdeMetaPropertyStringList::ActionPaste::OnAction(){
 		return;
 	}
 	
-	const auto clipboard = context->GetClipboard();
-	if(!clipboard){
-		return;
-	}
-	
-	const auto clip = clipboard->GetWithTypeName(
+	const auto clip = context->GetClipboard().GetWithTypeName(
 		pPropertyStringList.GetClipboardDataTypeName()).DynamicCast<ClipboardData>();
 	if(!clip){
 		return;
 	}
 	
 	const auto oldData = pPropertyStringList.GetPropertyValue(context);
-	auto newData = pAppend ? oldData : decStringList();
+	auto newData = pReplace ? decStringList() : oldData;
+	int index = pIndex == -1 ? newData.GetCount() : decMath::clamp(pIndex, 0, newData.GetCount());
 	
 	clip->GetData().Visit([&](const decString &string){
-		if(!newData.Has(string)){
-			newData.Add(string);
-		}
+		newData.Insert(string, index++);
 	});
 	
 	if(oldData == newData){
@@ -647,26 +634,53 @@ void igdeMetaPropertyStringList::ActionPaste::OnAction(){
 }
 
 void igdeMetaPropertyStringList::ActionPaste::Update(){
-	if(pPropertyStringList.IsValid(GetContext())){
-		const auto cb = GetContext()->GetClipboard();
-		SetEnabled(cb && cb->HasWithTypeName(pPropertyStringList.GetClipboardDataTypeName()));
-		
-	}else{
-		SetEnabled(false);
-	}
+	SetEnabled(pPropertyStringList.IsValid(GetContext())
+		&& GetContext()->GetClipboard().HasWithTypeName(pPropertyStringList.GetClipboardDataTypeName()));
 }
 
 
-// Class igdeMetaPropertyStringList::ActionPasteAppend
+// Class igdeMetaPropertyStringList::ActionPasteBefore
 ////////////////////////////////////////////////////////
 
-igdeMetaPropertyStringList::ActionPasteAppend::ActionPasteAppend(
+igdeMetaPropertyStringList::ActionPasteBefore::ActionPasteBefore(igdeMetaPropertyStringList &property,
+	igdeWidget &owner, const ContextRef &context) :
+ActionPaste(property, owner, context)
+{
+	SetText("@Igde.Action.PasteBefore");
+	SetDescription("@Igde.Action.PasteBefore.ToolTip");
+	
+	auto list = property.GetPropertyValue(context);
+	auto active = property.GetActiveString(context);
+	pIndex = active ? list.IndexOf(*active) : list.GetCount();
+}
+
+
+// Class igdeMetaPropertyStringList::ActionPasteAfter
+///////////////////////////////////////////////////////
+
+igdeMetaPropertyStringList::ActionPasteAfter::ActionPasteAfter(igdeMetaPropertyStringList &property,
+	igdeWidget &owner, const ContextRef &context) :
+ActionPaste(property, owner, context)
+{
+	SetText("@Igde.Action.PasteAfter");
+	SetDescription("@Igde.Action.PasteAfter.ToolTip");
+	
+	auto list = property.GetPropertyValue(context);
+	auto active = property.GetActiveString(context);
+	pIndex = active ? list.IndexOf(*active) + 1 : list.GetCount();
+}
+
+
+// Class igdeMetaPropertyStringList::ActionPasteReplace
+/////////////////////////////////////////////////////////
+
+igdeMetaPropertyStringList::ActionPasteReplace::ActionPasteReplace(
 	igdeMetaPropertyStringList &property, igdeWidget &owner, const ContextRef &context) :
 ActionPaste(property, owner, context)
 {
-	SetText("@Igde.MetaPropertyList.Action.PasteAppend");
-	SetDescription("@Igde.MetaPropertyList.Action.PasteAppend.ToolTip");
-	pAppend = true;
+	SetText("@Igde.Action.PasteReplace");
+	SetDescription("@Igde.Action.PasteReplace.ToolTip");
+	pReplace = true;
 }
 
 

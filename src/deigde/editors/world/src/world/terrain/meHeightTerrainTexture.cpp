@@ -388,7 +388,7 @@ void meHeightTerrainTexture::pLoadSkin(){
 				
 			}catch(const deException &e){
 				pSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
-				pSkin = pSector->GetHeightTerrain()->GetWorld().GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
+				pSkin = pSector->GetHeightTerrain()->GetWorld().GetEnvironment().GetStockSkin(igdeEnvironment::essError);
 			}
 		}
 	}

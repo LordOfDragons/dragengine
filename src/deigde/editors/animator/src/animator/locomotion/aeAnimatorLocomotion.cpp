@@ -381,6 +381,10 @@ void aeAnimatorLocomotion::Reset(){
 }
 
 
+aeAnimator &aeAnimatorLocomotion::GetAnimatorRef() const{
+	DEASSERT_NOTNULL(pAnimator)
+	return *pAnimator;
+}
 
 deLogger *aeAnimatorLocomotion::GetLogger() const{
 	return pAnimator->GetLogger();
@@ -960,7 +964,7 @@ void aeAnimatorLocomotion::pCleanUp(){
 void aeAnimatorLocomotion::pCreateCollider(){
 	// NOTE: The collider component would use layer eclProxies.
 	
-	igdeEnvironment &environment = *pAnimator->GetEnvironment();
+	igdeEnvironment &environment = pAnimator->GetEnvironment();
 	deColliderManager &colmgr = *pAnimator->GetEngine()->GetColliderManager();
 	deWorld &engWorld = *pAnimator->GetEngineWorld();
 	decLayerMask layermask1;
@@ -1039,7 +1043,7 @@ void aeAnimatorLocomotion::pCreateTouchSensor(){
 	pTouchSensor->SetCollisionFilter(decCollisionFilter(layerMask, layerMask));
 	
 	// register ourself as delegee of this touch sensor
-	pAnimator->GetEnvironment()->SetTouchSensorDelegee(pTouchSensor, &pTouchSensorListener);
+	pAnimator->GetEnvironment().SetTouchSensorDelegee(pTouchSensor, &pTouchSensorListener);
 	
 	// add the touch sensor to the world
 	pAnimator->GetEngineWorld()->AddTouchSensor(pTouchSensor);

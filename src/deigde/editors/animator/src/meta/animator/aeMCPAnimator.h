@@ -25,7 +25,6 @@
 #ifndef _AEMCPANIMATOR_H_
 #define _AEMCPANIMATOR_H_
 
-#include "aeTMCPAnimator.h"
 #include "../../animator/aeAnimator.h"
 #include "../../animator/aeSubAnimator.h"
 
@@ -44,73 +43,73 @@
 
 
 /** Hidden. */
-class aeMCPHiddenBoneNames : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+class aeMCPHiddenBoneNames : public aeAnimator::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPHiddenBoneNames() : aeTMCPAnimator("animator.hiddenBoneNames", "", ""){}
+	aeMCPHiddenBoneNames() : igdeMetaPropertyMCT("animator.hiddenBoneNames", "", ""){}
 	~aeMCPHiddenBoneNames() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPHiddenBoneNames();
+		return Owner(context).GetMPHiddenBoneNames();
 	}
 };
 
-class aeMCPHiddenVPSNames : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+class aeMCPHiddenVPSNames : public aeAnimator::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPHiddenVPSNames() : aeTMCPAnimator("animator.hiddenVPSNames", "", ""){}
+	aeMCPHiddenVPSNames() : igdeMetaPropertyMCT("animator.hiddenVPSNames", "", ""){}
 	~aeMCPHiddenVPSNames() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPHiddenVPSNames();
+		return Owner(context).GetMPHiddenVPSNames();
 	}
 };
 
-class aeMCPHiddenMoveNames : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+class aeMCPHiddenMoveNames : public aeAnimator::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPHiddenMoveNames() : aeTMCPAnimator("animator.hiddenMoveNames", "", ""){}
+	aeMCPHiddenMoveNames() : igdeMetaPropertyMCT("animator.hiddenMoveNames", "", ""){}
 	~aeMCPHiddenMoveNames() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPHiddenMoveNames();
+		return Owner(context).GetMPHiddenMoveNames();
 	}
 };
 
 
 /** Rig path. */
-class aeMCPAnimatorRig : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPAnimatorRig : public aeAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPAnimatorRig() : aeTMCPAnimator("animator.rig", "Animator.WPAnimator.Rig", igdeEnvironment::efpltRig){}
+	aeMCPAnimatorRig() : igdeMetaPropertyMCT("animator.rig", "Animator.WPAnimator.Rig", igdeEnvironment::efpltRig){}
 	~aeMCPAnimatorRig() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPRigPath();
+		return Owner(context).GetMPRigPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetDirectoryPath();
+		return Owner(context).GetDirectoryPath();
 	}
 };
 
 
 /** Animation path. */
-class aeMCPAnimatorAnimation : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPAnimatorAnimation : public aeAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPAnimatorAnimation() : aeTMCPAnimator("animator.animation", "Animator.WPAnimator.Animation", igdeEnvironment::efpltAnimation){}
+	aeMCPAnimatorAnimation() : igdeMetaPropertyMCT("animator.animation", "Animator.WPAnimator.Animation", igdeEnvironment::efpltAnimation){}
 	~aeMCPAnimatorAnimation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPAnimationPath();
+		return Owner(context).GetMPAnimationPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetDirectoryPath();
+		return Owner(context).GetDirectoryPath();
 	}
 };
 
 
 /** Affected bones. */
-class aeMCPAnimatorAffectedBones : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+class aeMCPAnimatorAffectedBones : public aeAnimator::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPAnimatorAffectedBones() : aeTMCPAnimator("animator.affectedBones", "Animator.WPAnimator.AffectedBones"){
+	aeMCPAnimatorAffectedBones() : igdeMetaPropertyMCT("animator.affectedBones", "Animator.WPAnimator.AffectedBones"){
 		SetMultiSelection(true);
 		SetRows(5);
 	}
@@ -118,7 +117,7 @@ public:
 	~aeMCPAnimatorAffectedBones() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPAffectedBones();
+		return Owner(context).GetMPAffectedBones();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -127,9 +126,9 @@ public:
 
 
 /** Affected vertex position sets. */
-class aeMCPAnimatorAffectedVertexPositionSets : public aeTMCPAnimator<igdeMetaPropertyStringSetStorage>{
+class aeMCPAnimatorAffectedVertexPositionSets : public aeAnimator::MetaProperty<igdeMetaPropertyStringSetStorage>{
 public:
-	aeMCPAnimatorAffectedVertexPositionSets() : aeTMCPAnimator("animator.affectedVertexPositionSets", "Animator.WPAnimator.AffectedVertexPositionSets"){
+	aeMCPAnimatorAffectedVertexPositionSets() : igdeMetaPropertyMCT("animator.affectedVertexPositionSets", "Animator.WPAnimator.AffectedVertexPositionSets"){
 		SetMultiSelection(true);
 		SetRows(5);
 	}
@@ -137,7 +136,7 @@ public:
 	~aeMCPAnimatorAffectedVertexPositionSets() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPAffectedVertexPositionSets();
+		return Owner(context).GetMPAffectedVertexPositionSets();
 	}
 	
 	decStringSet GetAllowedStrings(const igdeMetaContext::Ref &context) const override;
@@ -146,7 +145,7 @@ public:
 
 
 /** Playground controllers. */
-class aeMCPAnimatorPlaygroundControllers : public aeTMCPAnimatorNoCapture<igdeMetaPropertySliderBoardStorage<aeMCController>>{
+class aeMCPAnimatorPlaygroundControllers : public aeAnimator::MetaPropertyNoCapture<igdeMetaPropertySliderBoardStorage<aeController::MetaContext>>{
 public:
 	aeMCPAnimatorPlaygroundControllers(igdeMetaPropertyString *propertyName, igdeMetaPropertyFloat *propertyValue);
 	~aeMCPAnimatorPlaygroundControllers() override;
@@ -156,198 +155,198 @@ public:
 
 
 /** Display model path. */
-class aeMCPAnimatorDisplayModelPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPAnimatorDisplayModelPath : public aeAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPAnimatorDisplayModelPath() : aeTMCPAnimator("animator.displayModelPath", "Animator.WPView.Model", igdeEnvironment::efpltModel){}
+	aeMCPAnimatorDisplayModelPath() : igdeMetaPropertyMCT("animator.displayModelPath", "Animator.WPView.Model", igdeEnvironment::efpltModel){}
 	~aeMCPAnimatorDisplayModelPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPDisplayModelPath();
+		return Owner(context).GetMPDisplayModelPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetDirectoryPath();
+		return Owner(context).GetDirectoryPath();
 	}
 };
 
 /** Display skin path. */
-class aeMCPAnimatorDisplaySkinPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPAnimatorDisplaySkinPath : public aeAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPAnimatorDisplaySkinPath() : aeTMCPAnimator("animator.displaySkinPath", "Animator.WPView.Skin", igdeEnvironment::efpltSkin){}
+	aeMCPAnimatorDisplaySkinPath() : igdeMetaPropertyMCT("animator.displaySkinPath", "Animator.WPView.Skin", igdeEnvironment::efpltSkin){}
 	~aeMCPAnimatorDisplaySkinPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPDisplaySkinPath();
+		return Owner(context).GetMPDisplaySkinPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetDirectoryPath();
+		return Owner(context).GetDirectoryPath();
 	}
 };
 
 /** Display rig path. */
-class aeMCPAnimatorDisplayRigPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPAnimatorDisplayRigPath : public aeAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPAnimatorDisplayRigPath() : aeTMCPAnimator("animator.displayRigPath", "Animator.WPView.Rig", igdeEnvironment::efpltRig){}
+	aeMCPAnimatorDisplayRigPath() : igdeMetaPropertyMCT("animator.displayRigPath", "Animator.WPView.Rig", igdeEnvironment::efpltRig){}
 	~aeMCPAnimatorDisplayRigPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPDisplayRigPath();
+		return Owner(context).GetMPDisplayRigPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetDirectoryPath();
+		return Owner(context).GetDirectoryPath();
 	}
 };
 
 /** Base animator path. */
-class aeMCPAnimatorBaseAnimatorPath : public aeTMCPAnimator<igdeMetaPropertyPathStorage>{
+class aeMCPAnimatorBaseAnimatorPath : public aeAnimator::MetaProperty<igdeMetaPropertyPathStorage>{
 public:
-	aeMCPAnimatorBaseAnimatorPath() : aeTMCPAnimator("animator.baseAnimatorPath", "Animator.WPView.Animator", igdeEnvironment::efpltAnimator){}
+	aeMCPAnimatorBaseAnimatorPath() : igdeMetaPropertyMCT("animator.baseAnimatorPath", "Animator.WPView.Animator", igdeEnvironment::efpltAnimator){}
 	~aeMCPAnimatorBaseAnimatorPath() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPBaseAnimatorPath();
+		return Owner(context).GetMPBaseAnimatorPath();
 	}
 	
 	decString GetPropertyBasePath(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetDirectoryPath();
+		return Owner(context).GetDirectoryPath();
 	}
 };
 
 /** Reset state. */
-class aeMCPAnimatorResetState : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPAnimatorResetState : public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPAnimatorResetState() : aeTMCPAnimator("animator.resetState", "Animator.WPView.ResetState"){}
+	aeMCPAnimatorResetState() : igdeMetaPropertyMCT("animator.resetState", "Animator.WPView.ResetState"){}
 	~aeMCPAnimatorResetState() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPResetState();
+		return Owner(context).GetMPResetState();
 	}
 };
 
 /** Play speed. */
-class aeMCPAnimatorPlaySpeed : public aeTMCPAnimator<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorPlaySpeed : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorPlaySpeed() : aeTMCPAnimator("animator.playSpeed", "Animator.WPView.PlaySpeed"){
+	aeMCPAnimatorPlaySpeed() : igdeMetaPropertyMCT("animator.playSpeed", "Animator.WPView.PlaySpeed"){
 		SetDefaultValue(1.0f);
 		SetLowerLimit(0.0f);
 	}
 	~aeMCPAnimatorPlaySpeed() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPPlaySpeed();
+		return Owner(context).GetMPPlaySpeed();
 	}
 };
 
 /** Time step. */
-class aeMCPAnimatorTimeStep : public aeTMCPAnimator<igdeMetaPropertyFloatStorage>{
+class aeMCPAnimatorTimeStep : public aeAnimator::MetaProperty<igdeMetaPropertyFloatStorage>{
 public:
-	aeMCPAnimatorTimeStep() : aeTMCPAnimator("animator.timeStep", "Animator.WPView.TimeStep"){
+	aeMCPAnimatorTimeStep() : igdeMetaPropertyMCT("animator.timeStep", "Animator.WPView.TimeStep"){
 		SetDefaultValue(0.05f);
 		SetLowerLimit(0.0f);
 	}
 	~aeMCPAnimatorTimeStep() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPTimeStep();
+		return Owner(context).GetMPTimeStep();
 	}
 };
 
 /** Paused. */
-class aeMCPAnimatorPaused : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPAnimatorPaused : public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPAnimatorPaused() : aeTMCPAnimator("animator.paused", "Animator.WPView.Paused"){}
+	aeMCPAnimatorPaused() : igdeMetaPropertyMCT("animator.paused", "Animator.WPView.Paused"){}
 	~aeMCPAnimatorPaused() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPPaused();
+		return Owner(context).GetMPPaused();
 	}
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu, const igdeMetaContext::Ref &context, igdeWidget &owner) override;
 };
 
 /** Sky. */
-class aeMCPAnimatorSky : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+class aeMCPAnimatorSky : public aeAnimator::MetaProperty<igdeMetaPropertyContextStorage>{
 public:
 	aeMCPAnimatorSky();
 	~aeMCPAnimatorSky() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPSky();
+		return Owner(context).GetMPSky();
 	}
 };
 
 /** Environment object. */
-class aeMCPAnimatorEnvironmentObject : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+class aeMCPAnimatorEnvironmentObject : public aeAnimator::MetaProperty<igdeMetaPropertyContextStorage>{
 public:
 	aeMCPAnimatorEnvironmentObject();
 	~aeMCPAnimatorEnvironmentObject() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPEnvironmentObject();
+		return Owner(context).GetMPEnvironmentObject();
 	}
 };
 
 /** Camera. */
-class aeMCPAnimatorCamera : public aeTMCPAnimator<igdeMetaPropertyContextStorage>{
+class aeMCPAnimatorCamera : public aeAnimator::MetaProperty<igdeMetaPropertyContextStorage>{
 public:
 	aeMCPAnimatorCamera();
 	~aeMCPAnimatorCamera() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetMPCamera();
+		return Owner(context).GetMPCamera();
 	}
 };
 
 /** Camera Attach. */
-class aeMCPAnimatorCameraAttachToBone : public aeTMCPAnimator<igdeMetaPropertyBooleanStorage>{
+class aeMCPAnimatorCameraAttachToBone : public aeAnimator::MetaProperty<igdeMetaPropertyBooleanStorage>{
 public:
-	aeMCPAnimatorCameraAttachToBone() : aeTMCPAnimator("animator.cameraAttach", "Animator.WPView.CamAttach"){}
+	aeMCPAnimatorCameraAttachToBone() : igdeMetaPropertyMCT("animator.cameraAttach", "Animator.WPView.CamAttach"){}
 	~aeMCPAnimatorCameraAttachToBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->GetMPAttachToBone();
+		return Owner(context).GetCamera()->GetMPAttachToBone();
 	}
 };
 
 /** Camera attach bone. */
-class aeMCPAnimatorCameraAttachBone : public aeTMCPAnimator<igdeMetaPropertyStringStorage>{
+class aeMCPAnimatorCameraAttachBone : public aeAnimator::MetaProperty<igdeMetaPropertyStringStorage>{
 public:
-	aeMCPAnimatorCameraAttachBone() : aeTMCPAnimator("animator.cameraAttachBone", "Animator.WPView.CamBone"){
+	aeMCPAnimatorCameraAttachBone() : igdeMetaPropertyMCT("animator.cameraAttachBone", "Animator.WPView.CamBone"){
 		SetEnableAllowed(true);
 	}
 	
 	~aeMCPAnimatorCameraAttachBone() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->GetMPBone();
+		return Owner(context).GetCamera()->GetMPBone();
 	}
 	
 	decStringSet GetPropertyAllowedStrings(const ContextRef &context) const override{
-		return Animator(context).GetMPHiddenBoneNames();
+		return Owner(context).GetMPHiddenBoneNames();
 	}
 };
 
 /** Camera attach relative position. */
-class aeMCPAnimatorCameraAttachRelativePosition : public aeTMCPAnimator<igdeMetaPropertyVectorStorage>{
+class aeMCPAnimatorCameraAttachRelativePosition : public aeAnimator::MetaProperty<igdeMetaPropertyVectorStorage>{
 public:
-	aeMCPAnimatorCameraAttachRelativePosition() : aeTMCPAnimator("animator.cameraAttachRelativePosition", "Animator.WPView.CamRelPos"){}
+	aeMCPAnimatorCameraAttachRelativePosition() : igdeMetaPropertyMCT("animator.cameraAttachRelativePosition", "Animator.WPView.CamRelPos"){}
 	~aeMCPAnimatorCameraAttachRelativePosition() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->GetMPRelativePosition();
+		return Owner(context).GetCamera()->GetMPRelativePosition();
 	}
 };
 
 /** Camera attach relative rotation. */
-class aeMCPAnimatorCameraAttachRelativeRotation : public aeTMCPAnimator<igdeMetaPropertyVectorStorageQuaternion>{
+class aeMCPAnimatorCameraAttachRelativeRotation : public aeAnimator::MetaProperty<igdeMetaPropertyVectorStorageQuaternion>{
 public:
-	aeMCPAnimatorCameraAttachRelativeRotation() : aeTMCPAnimator("animator.cameraAttachRelativeRotation", "Animator.WPView.CamRelRot"){}
+	aeMCPAnimatorCameraAttachRelativeRotation() : igdeMetaPropertyMCT("animator.cameraAttachRelativeRotation", "Animator.WPView.CamRelRot"){}
 	~aeMCPAnimatorCameraAttachRelativeRotation() override = default;
 	
 	Storage &GetStorage(const igdeMetaContext::Ref &context) const override{
-		return Animator(context).GetCamera()->GetMPRelativeRotation();
+		return Owner(context).GetCamera()->GetMPRelativeRotation();
 	}
 };
 

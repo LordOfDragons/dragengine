@@ -35,32 +35,39 @@
 // Class aeRuleBoneTransformator
 //////////////////////////////////
 
+aeRuleBoneTransformator::MetaContext::Ref aeRuleBoneTransformator::CreateMetaContext(aeWindowMain &windowMain, aeRuleBoneTransformator *rule){
+	return MetaContext::Ref::New("animator.rule_bone_transformator", "Rule Bone Transformator", "Rule bone transformator properties",
+		windowMain.GetMCAnimatorProperties().ruleBoneTransformator.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleBoneTransformator::aeRuleBoneTransformator(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleBoneTransformator::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertBoneTransformator, aname),
-pMPMinTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minTranslation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMaxTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxTranslation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minRotation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxRotation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMinScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minScaling, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMaxScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxScaling, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPAxis(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.axis, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMinAngle(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minAngle, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPMaxAngle(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxAngle, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.enablePosition, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.enableOrientation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.enableSize, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPUseAxis(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.useAxis, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPTargetBone(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetBone, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPInputBone(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputBone, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.coordinateFrame, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPInputSource(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputSource, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPTargetTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetTranslation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPTargetRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetRotation, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>()),
-pMPTargetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetScaling, GetMetaContext().StaticCast<aeMCRuleBoneTransformator>())
+aeRuleBoneTransformator(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleBoneTransformator::aeRuleBoneTransformator(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertBoneTransformator, aname),
+pMPMinTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minTranslation, metaContext),
+pMPMaxTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxTranslation, metaContext),
+pMPMinRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minRotation, metaContext),
+pMPMaxRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxRotation, metaContext),
+pMPMinScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minScaling, metaContext),
+pMPMaxScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxScaling, metaContext),
+pMPAxis(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.axis, metaContext),
+pMPMinAngle(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.minAngle, metaContext),
+pMPMaxAngle(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.maxAngle, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.enableSize, metaContext),
+pMPUseAxis(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.useAxis, metaContext),
+pMPTargetBone(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetBone, metaContext),
+pMPInputBone(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputBone, metaContext),
+pMPCoordinateFrame(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.coordinateFrame, metaContext),
+pMPInputSource(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.inputSource, metaContext),
+pMPTargetTranslation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetTranslation, metaContext),
+pMPTargetRotation(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetRotation, metaContext),
+pMPTargetScaling(windowMain.GetMCAnimatorProperties().ruleBoneTransformator.targetScaling, metaContext)
 {
 	pMPMinTranslation.onValueChanged = [this](){
 		if(GetEngineRule()){
@@ -227,6 +234,7 @@ aeRuleBoneTransformator::aeRuleBoneTransformator(aeWindowMain &windowMain, const
 aeRuleBoneTransformator(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPMinTranslation.SetValue(copy.pMPMinTranslation, false);
 	pMPMaxTranslation.SetValue(copy.pMPMaxTranslation, false);
 	pMPMinRotation.SetValue(copy.pMPMinRotation, false);
 	pMPMaxRotation.SetValue(copy.pMPMaxRotation, false);

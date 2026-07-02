@@ -183,7 +183,7 @@ bool meLoadXMLWorldTask::Step(){
 			pWorld->SetNextObjectID(decUniqueID(GetCDataString(*tag)));
 			
 		}else if(strcmp(tag->GetName(), "object") == 0){
-			const meObject::Ref object(meObject::Ref::New(pWorld->GetEnvironment()));
+			const meObject::Ref object(meObject::Ref::New(&pWorld->GetEnvironment()));
 			pLoadObject(*tag, object);
 			if(object->GetID() == decUniqueID()){
 				object->SetID(pWorld->NextObjectID());
@@ -191,12 +191,12 @@ bool meLoadXMLWorldTask::Step(){
 			pWorld->AddObject(object);
 			
 		}else if(strcmp(tag->GetName(), "decal") == 0){
-			const meDecal::Ref decal(meDecal::Ref::New(pWorld->GetEnvironment()));
+			const meDecal::Ref decal(meDecal::Ref::New(&pWorld->GetEnvironment()));
 			pLoadDecal(*tag, decal);
 			pWorld->AddDecal(decal);
 			
 		}else if(strcmp(tag->GetName(), "navigationSpace") == 0){
-			const meNavigationSpace::Ref navspace(meNavigationSpace::Ref::New(pWorld->GetEnvironment()));
+			const meNavigationSpace::Ref navspace(meNavigationSpace::Ref::New(&pWorld->GetEnvironment()));
 			pLoadNavigationSpace(*tag, navspace);
 			pWorld->AddNavSpace(navspace);
 			

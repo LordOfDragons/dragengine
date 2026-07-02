@@ -54,17 +54,24 @@
 // Class aeRuleSubAnimator
 ////////////////////////////
 
+aeRuleSubAnimator::MetaContext::Ref aeRuleSubAnimator::CreateMetaContext(aeWindowMain &windowMain, aeRuleSubAnimator *rule){
+	return MetaContext::Ref::New("animator.rule_sub_animator", "Rule Sub Animator", "Rule sub animator properties",
+		windowMain.GetMCAnimatorProperties().ruleSubAnimator.metaProperties, rule);
+}
+
 // Constructor, destructor
 ////////////////////////////
 
 aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const char *aname) :
-aeRule(windowMain, aeMCRuleSubAnimator::Ref::New(windowMain, this),
-	deAnimatorRuleVisitorIdentify::ertSubAnimator, aname),
-pMPPathSubAnimator(windowMain.GetMCAnimatorProperties().ruleSubAnimator.pathSubAnimator, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enablePosition, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOrientation, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, GetMetaContext().StaticCast<aeMCRuleSubAnimator>()),
-pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, GetMetaContext().StaticCast<aeMCRuleSubAnimator>())
+aeRuleSubAnimator(windowMain, aname, CreateMetaContext(windowMain, this)){}
+
+aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const char *aname, const MetaContext::Ref &metaContext) :
+aeRule(windowMain, metaContext, deAnimatorRuleVisitorIdentify::ertSubAnimator, aname),
+pMPPathSubAnimator(windowMain.GetMCAnimatorProperties().ruleSubAnimator.pathSubAnimator, metaContext),
+pMPEnablePosition(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enablePosition, metaContext),
+pMPEnableOrientation(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableOrientation, metaContext),
+pMPEnableSize(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableSize, metaContext),
+pMPEnableVertexPositionSet(windowMain.GetMCAnimatorProperties().ruleSubAnimator.enableVertexPositionSet, metaContext)
 {
 	pMPPathSubAnimator.onValueChanged = [this](){
 		NotifyRuleChanged();
@@ -104,6 +111,7 @@ aeRuleSubAnimator::aeRuleSubAnimator(aeWindowMain &windowMain, const aeRuleSubAn
 aeRuleSubAnimator(windowMain, copy.GetName())
 {
 	pInitCopy(copy);
+	pMPPathSubAnimator.SetValue(copy.pMPPathSubAnimator, false);
 	pMPEnablePosition.SetValue(copy.pMPEnablePosition, false);
 	pMPEnableOrientation.SetValue(copy.pMPEnableOrientation, false);
 	pMPEnableSize.SetValue(copy.pMPEnableSize, false);

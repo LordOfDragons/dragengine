@@ -27,7 +27,6 @@
 
 #include "../controller/aeControllerTarget.h"
 #include "../link/aeLink.h"
-#include "../../meta/animator/aeMCRule.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decTOrderedSet.h>
@@ -36,6 +35,8 @@
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
+#include <deigde/gui/igdeUIHelper.h>
+#include <deigde/meta/igdeMetaContext.h>
 #include <deigde/meta/property/igdeMetaPropertyBoolean.h>
 #include <deigde/meta/property/igdeMetaPropertyFloat.h>
 #include <deigde/meta/property/igdeMetaPropertySelection.h>
@@ -59,6 +60,40 @@ public:
 	using Ref = deTObjectReference<aeRule>;
 	using List = decTObjectOrderedSet<aeRule>;
 	
+	using MetaContext = igdeMetaContextType<aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRule *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
+	template <typename R>
+	class MetaPropertyTarget : public R::MetaProperty<igdeMetaPropertyObjectSetStorage<aeLink>> {
+	public:
+		template <typename... A>
+		MetaPropertyTarget(A&&... args) : R::MetaProperty<igdeMetaPropertyObjectSetStorage<aeLink>>(std::forward<A>(args)...){
+			this->SetRows(3);
+			this->SetMultiSelection(true);
+		}
+		
+		void GetObjectItemInfoType(const igdeMetaContext::Ref&,
+		const aeLink::Ref &link, igdeMetaContextItemInfo &info) const override{
+			info.SetAll(link->GetName());
+		}
+		
+		igdeMetaPropertyObjectSetStorage<aeLink>::SetType GetValidObjectsType(const igdeMetaContext::Ref &context) const override{
+			return igdeMetaPropertyObjectSetStorage<aeLink>::SetType(this->Owner(context).GetAnimatorRef().GetMPLinks().GetValue());
+		}
+		
+		void AddContextMenuEntries(igdeMenuCascade &menu, const igdeMetaContext::Ref &context, igdeWidget &owner) override{
+			auto &helper = menu.GetEnvironment().GetUIHelper();
+			helper.MenuCommand(menu, igdeMetaPropertyObjectSet::ActionAdd::Ref::New(*this, owner, context));
+			this->AddDefaultContextMenuEntries(menu, context, owner);
+		}
+		
+	protected:
+		~MetaPropertyTarget() override = default;
+	};
+	
 	
 private:
 	aeAnimator *pAnimator;
@@ -66,7 +101,7 @@ private:
 	deAnimatorRule *pEngRule;
 	int pIndex;
 	
-	aeMCRule::Ref pMetaContext;
+	MetaContext::Ref pMetaContext;
 	deAnimatorRuleVisitorIdentify::eRuleTypes pType;
 	
 	aeControllerTarget::Ref pTargetBlendFactor;
@@ -88,11 +123,11 @@ protected:
 	aeRule(const aeRule&) = delete;
 	
 	/** Create a new animator rule. */
-	aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext,
+	aeRule(aeWindowMain &windowMain, const MetaContext::Ref &metaContext,
 		deAnimatorRuleVisitorIdentify::eRuleTypes type, const char *name);
 	
 	/** Create a copy of an animator rule. */
-	aeRule(aeWindowMain &windowMain, aeMCRule::Ref &&metaContext, const aeRule &copy);
+	aeRule(aeWindowMain &windowMain, const MetaContext::Ref &metaContext, const aeRule &copy);
 	
 	/** Clean up the animator rule. */
 	~aeRule() override;
@@ -119,8 +154,11 @@ public:
 	/** Parent animator throwing exception if nullptr. */
 	aeAnimator &GetAnimatorRef() const;
 	
+	igdeEnvironment &GetEnvironment() const;
+	igdeUndoSystem *GetUndoSystem() const;
+	
 	/** Meta context. */
-	inline const aeMCRule::Ref &GetMetaContext() const{ return pMetaContext; }
+	inline const MetaContext::Ref &GetMetaContext() const{ return pMetaContext; }
 	
 	/** Retrieve the engine animator rule or nullptr. */
 	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }

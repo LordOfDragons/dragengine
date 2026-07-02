@@ -48,6 +48,7 @@ void aeMCRuleProperties::Init(const aeMCAnimatorProperties &properties){
 		rule);
 	
 	igdeMetaPropertyAdapter::OnChanged(name, rules);
+	igdeMetaPropertyAdapter::OnChanged(rules, ruleTree);
 }
 
 
@@ -164,6 +165,7 @@ void aeMCRuleGroupProperties::Init(const aeMCAnimatorProperties &properties){
 		applicationType,
 		targetSelect);
 	
+	igdeMetaPropertyAdapter::OnChanged(properties.rule.name, rules);
 	igdeMetaPropertyAdapter::OnChanged(rules, properties.rule.ruleTree);
 }
 

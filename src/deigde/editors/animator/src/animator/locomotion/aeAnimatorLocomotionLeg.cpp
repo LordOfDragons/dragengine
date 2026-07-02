@@ -59,12 +59,17 @@
 // Class aeAnimatorLocomotionLeg
 //////////////////////////////////
 
+aeAnimatorLocomotionLeg::MetaContext::Ref aeAnimatorLocomotionLeg::CreateMetaContext(aeWindowMain &windowMain, aeAnimatorLocomotionLeg *leg){
+	return MetaContext::Ref::New("animator.animator_locomotion_leg", "Leg", "Animator locomotion leg properties",
+		windowMain.GetMCAnimatorProperties().locomotionLeg.metaProperties, leg);
+}
+
 // Constructor, destructor
 ////////////////////////////
-
+	
 aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotion) :
 pLocomotion(locomotion),
-pMetaContext(aeMCAnimatorLocomotionLeg::Ref::New(locomotion->GetAnimator()->GetWindowMain(), this)),
+pMetaContext(CreateMetaContext(GetLocomotionRef().GetAnimatorRef().GetWindowMain(), this)),
 pMPLiftOffTime(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotionLeg.liftOffTime, pMetaContext),
 pMPPutDownTime(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotionLeg.putDownTime, pMetaContext),
 pMPPutDownPosStand(locomotion->GetAnimator()->GetWindowMain().GetMCAnimatorProperties().locomotionLeg.putDownPosStand, pMetaContext),
@@ -116,6 +121,19 @@ aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
 
 // Management
 ///////////////
+
+aeAnimatorLocomotion &aeAnimatorLocomotionLeg::GetLocomotionRef() const{
+	DEASSERT_NOTNULL(pLocomotion)
+	return *pLocomotion;
+}
+
+igdeEnvironment &aeAnimatorLocomotionLeg::GetEnvironment() const{
+	return GetLocomotionRef().GetAnimatorRef().GetEnvironment();
+}
+
+igdeUndoSystem *aeAnimatorLocomotionLeg::GetUndoSystem() const{
+	return GetLocomotionRef().GetAnimatorRef().GetUndoSystem();
+}
 
 void aeAnimatorLocomotionLeg::SetName(const char *name){
 	if(!name) DETHROW(deeInvalidParam);

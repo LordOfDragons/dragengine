@@ -190,7 +190,8 @@ public:
 		
 	public:
 		using Ref = deTObjectReference<ActionCut>;
-		ActionCut(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionCut(igdeMetaPropertyStringSet &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 	};
 	
@@ -198,20 +199,22 @@ public:
 	class ActionPaste : public Action{
 	protected:
 		igdeMetaPropertyStringSet &pPropertyStringSet;
-		bool pAppend;
+		bool pReplace = false;
 		
 	public:
 		using Ref = deTObjectReference<ActionPaste>;
-		ActionPaste(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+		ActionPaste(igdeMetaPropertyStringSet &property, igdeWidget &owner,
+			const ContextRef &context = {});
 		void OnAction() override;
 		void Update() override;
 	};
 	
-	/** \brief Paste and append from clipboard action. */
-	class ActionPasteAppend : public ActionPaste{
+	/** \brief Paste replace from clipboard action. */
+	class DE_DLL_EXPORT ActionPasteReplace : public ActionPaste{
 	public:
-		using Ref = deTObjectReference<ActionPasteAppend>;
-		ActionPasteAppend(igdeMetaPropertyStringSet &property, igdeWidget &owner, const ContextRef &context = {});
+		using Ref = deTObjectReference<ActionPasteReplace>;
+		ActionPasteReplace(igdeMetaPropertyStringSet &property, igdeWidget &owner,
+			const ContextRef &context = {});
 	};
 	
 	

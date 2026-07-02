@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUDecalMove::meUDecalMove(meWorld *world) :
-meBaseUndoMove(*world->GetEnvironment())
+meBaseUndoMove(world->GetEnvironment())
 {
 	if(!world) DETHROW(deeInvalidParam);
 	

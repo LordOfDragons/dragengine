@@ -43,6 +43,12 @@ class aeRuleBoneTransformator : public aeRule{
 public:
 	using Ref = deTObjectReference<aeRuleBoneTransformator>;
 	
+	using MetaContext = igdeMetaContextTypeInherit<aeRuleBoneTransformator, aeRule>;
+	static MetaContext::Ref CreateMetaContext(aeWindowMain &windowMain, aeRuleBoneTransformator *rule);
+	
+	template<typename T>
+	using MetaProperty = igdeMetaPropertyMCT<T, MetaContext>;
+	
 private:
 	aeControllerTarget::Ref pTargetTranslation, pTargetRotation, pTargetScaling;
 	
@@ -80,6 +86,8 @@ public:
 	/** Clean up the bone transformator rule. */
 protected:
 	~aeRuleBoneTransformator() override;
+private:
+	aeRuleBoneTransformator(aeWindowMain &windowMain, const char *name, const MetaContext::Ref &metaContext);
 public:
 	/*@}*/
 	

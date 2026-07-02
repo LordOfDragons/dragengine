@@ -49,7 +49,7 @@ meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
 	
 	pParentObject = parentObject;
 	try{
-		pDecal = meDecal::Ref::New(world->GetEnvironment());
+		pDecal = meDecal::Ref::New(&world->GetEnvironment());
 		SetShortInfo("@World.UAddObjectDecal.AddObjectDecal");
 		UpdateInfos();
 		

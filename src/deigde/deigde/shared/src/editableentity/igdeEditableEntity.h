@@ -28,6 +28,7 @@
 #include <dragengine/deObject.h>
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/deTUniqueReference.h>
 
 class igdeGameDefinition;
 class igdeEnvironment;
@@ -61,14 +62,14 @@ class deLogger;
  */
 class DE_DLL_EXPORT igdeEditableEntity : public deObject{
 private:
-	igdeEnvironment *pEnvironment;
+	igdeEnvironment &pEnvironment;
 	
 	decString pPathDirectory;
 	decString pPathFile;
 	bool pChanged;
 	bool pSaved;
 	
-	igdeUndoSystem *pUndoSystem;
+	deTUniqueReference<igdeUndoSystem> pUndoSystem;
 	
 	
 	
@@ -86,7 +87,7 @@ public:
 	 * file name in the constructor of the subclass. The saved and changed
 	 * state are both set to false.
 	 */
-	igdeEditableEntity(igdeEnvironment *environment);
+	igdeEditableEntity(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up editable entity. */
@@ -100,7 +101,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the environment. */
-	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the engine object. */
 	deEngine *GetEngine() const;
 	
@@ -136,7 +137,7 @@ public:
 	void SetSaved(bool saved);
 	
 	/** \brief Retrieves the undo system. */
-	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	inline const deTUniqueReference<igdeUndoSystem> &GetUndoSystem() const{ return pUndoSystem; }
 	
 	/** \brief Notifies all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();

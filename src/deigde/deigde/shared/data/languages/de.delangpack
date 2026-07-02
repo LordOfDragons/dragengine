@@ -23,6 +23,12 @@
 	<translation name="Igde.Action.Copy.ToolTip">In die Zwischenablage kopieren</translation>
 	<translation name="Igde.Action.Paste">Einfügen</translation>
 	<translation name="Igde.Action.Paste.ToolTip">Aus der Zwischenablage einfügen</translation>
+	<translation name="Igde.Action.PasteBefore">Davor Einfügen</translation>
+	<translation name="Igde.Action.PasteBefore.ToolTip">Aus der Zwischenablage davor einfügen</translation>
+	<translation name="Igde.Action.PasteAfter">Danach Einfügen</translation>
+	<translation name="Igde.Action.PasteAfter.ToolTip">Aus der Zwischenablage danach einfügen</translation>
+	<translation name="Igde.Action.PasteReplace">Einfügen und Ersetzen</translation>
+	<translation name="Igde.Action.PasteReplace.ToolTip">Aus der Zwischenablage einfügen und ersetzen</translation>
 	<translation name="Igde.Action.Duplicate">Duplizieren</translation>
 	<translation name="Igde.Action.Duplicate.ToolTip">Auswahl duplizieren</translation>
 	<translation name="Igde.Tab.UndoHistory">Rückgängig-Verlauf</translation>
